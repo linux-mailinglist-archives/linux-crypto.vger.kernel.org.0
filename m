@@ -2,224 +2,216 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C12D4F00CA
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 12:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383FC4F0147
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 13:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354050AbiDBKy0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 Apr 2022 06:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        id S234240AbiDBLzz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 Apr 2022 07:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354576AbiDBKyX (ORCPT
+        with ESMTP id S233598AbiDBLzx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 2 Apr 2022 06:54:23 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BA414865A
-        for <linux-crypto@vger.kernel.org>; Sat,  2 Apr 2022 03:52:16 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id dr20so10668120ejc.6
-        for <linux-crypto@vger.kernel.org>; Sat, 02 Apr 2022 03:52:16 -0700 (PDT)
+        Sat, 2 Apr 2022 07:55:53 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A592427E0
+        for <linux-crypto@vger.kernel.org>; Sat,  2 Apr 2022 04:54:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id h16so3197176wmd.0
+        for <linux-crypto@vger.kernel.org>; Sat, 02 Apr 2022 04:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Zu8eKPzRskdlQlbramfPaoD/f1fGti5TmNsQY/hQanM=;
-        b=GY1j8tzy/iDpw5ZJczyjRnKh/rlWb7bFzscp7zALfPv6PUvQKhRLyFUClMnBwdOit1
-         Qjco5r1NYNkX48o1HPbAJENvDQYr4Ji2z8feBQMHUpsmyTOkI7Z+Ag9eSCxya8oa3n13
-         74HghIOf/UOx8ZIFpgRrXCOCquCfHl57OF+1OIPOSf1NeSK57R1iaDX+TZs6ZxdXEzhO
-         ecK7nqqnlwYk5alg+boRREXT74AfNPKjmmw+stYPehetPDmT47qZJkQeOyT1AiAh4EBN
-         BIcgOCVM2u1OYM2BM4BOXcBDsli3ZupoRbO2jV3QlrawgXFDX2KckQx8qcvAuq+fjHHo
-         8Fvw==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=V52rlSjUBjX18q5ePyn3LpZBqOKHJkgta+5HwLHOMW0=;
+        b=XnK5bAIIi3zv7T/ehR45S4jlZjPkJ3/qNvHnmVWibopnvsRSX4bQ+IXKBkxvYpvObo
+         zkFccOHMwJZam2O2w9NUGl5eXq5f2qkDQGKJjNZiCRfZLKiPSCcb0t1e+x1wg5fQCOfZ
+         5PjVSFI2HvTAgFYVgr+E5DuGbFmD2e09RTJfrLSRnmSbwnXLmSkfSjBzcmTOwPQNAzH1
+         VsGUp/c8zQMvbc8wbfyQ5I9g9gxjDEGL1mbELrDq7DKFBitRQnHsbwbx/LD9KBugb5jx
+         MAoi5cljy4BS0owsuIF2L8AR8t+jdmr/9d0AnFAnzbIDklNdTDaPiHA2jJGfefJj/q5k
+         ek+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=Zu8eKPzRskdlQlbramfPaoD/f1fGti5TmNsQY/hQanM=;
-        b=VG2ZMbDkLm6m5+6P4Eh7EDP7DY4Temd9IwJd9Yxfy2xN0NYD0FtgFPsXGiyQrpUzsQ
-         uliNXNBAouyboqQ98SbZO3YfdfoT4mHdmhEyn1t4BjO0qZnW8/dAGr/FtMNZbUwuGlbv
-         +aVT/GIA/cx7SbEzLFEofBIqTFXHKiG4yXzSQ5t3GivbeP1v4k3UizcTnQRFBTBlQp+F
-         lprx1YSJBnl8UjTzA/VdFjqrKJ1HsxzFIUf/+sbLTjyFZrJPnPslyHZ47HsQ5wGGzpFL
-         1E/Nr6GkbkdoZqHFgPkKklhP1SiQENaUJycfDODQmVULFZMUSOqdFsyllxioMTkVlxDG
-         r1MQ==
-X-Gm-Message-State: AOAM533fmptyFkDx+ajApWRy5WOgRLrwb+I2aaknEU0ulchDkcRhtcQR
-        0MQKYDpDH8i7nPYnzkGgo9QoDBGGbLSFm3OpQ50=
-X-Google-Smtp-Source: ABdhPJz5+6PACXGqfh3RKI04rKN0HSLK/vS+N6oXQKeLI1lmw2daUD2eqc4MZA333CysDKTaGXC64G4Wduj0dDB9GmI=
-X-Received: by 2002:a17:907:1b10:b0:6e4:bac5:f080 with SMTP id
- mp16-20020a1709071b1000b006e4bac5f080mr3434011ejc.24.1648896735229; Sat, 02
- Apr 2022 03:52:15 -0700 (PDT)
+        bh=V52rlSjUBjX18q5ePyn3LpZBqOKHJkgta+5HwLHOMW0=;
+        b=3OCyp4SwbPiF/gkn3BGNLjL9OlH4wThya884YyDzzldVpjyvw6yWzhX/vg7Ynq3/FJ
+         LvwmsKL1WgXeSBEHGIKqV1afgp3wRcJrXjd0tKChCWvVfQKxTWu4yWWYvYNQgJk4EXSh
+         B0sfrkq+mnufpvHGNvglFr9uFsBzh33Jb1PvGwre1Rg9DTPmkb6seLJ5dvRhCqwqLBll
+         xqaN9iKJ1FzBdNxrlz7nEx/zML/JJYXHUH+pqEN7oo4MlKtQ+oT4KUBnjPYKs5E2dcQI
+         wYADx3go+PQB5PYSb4ddSS1Lh8WahlMPqBGnDpSZv23QCGI5wyzfpNvrxt/by0TjCCsl
+         OvWg==
+X-Gm-Message-State: AOAM532XTXSjYDxuRinGtjOOH+aQHiMJc149OGeBVZKrGhxgGdLTIoJw
+        x8HU0cOmBf1/RwL/wRQ7yXt/DQ==
+X-Google-Smtp-Source: ABdhPJzUxBryntMkO+ZJ8h+ZNSftDQhD4nc+rc5NkfcA9DVOV7UTv+TTeh6AFJbQTccTWOey+XICoA==
+X-Received: by 2002:a7b:cb84:0:b0:382:a9b9:2339 with SMTP id m4-20020a7bcb84000000b00382a9b92339mr12503684wmi.91.1648900440042;
+        Sat, 02 Apr 2022 04:54:00 -0700 (PDT)
+Received: from [192.168.0.171] (xdsl-188-155-201-27.adslplus.ch. [188.155.201.27])
+        by smtp.gmail.com with ESMTPSA id h11-20020a05600c414b00b0038e4b2f0478sm6504812wmm.1.2022.04.02.04.53.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Apr 2022 04:53:59 -0700 (PDT)
+Message-ID: <30305936-4b69-e1ce-44c2-0d1d113b460e@linaro.org>
+Date:   Sat, 2 Apr 2022 13:53:58 +0200
 MIME-Version: 1.0
-From:   Duke Abbaddon <duke.abbaddon@gmail.com>
-Date:   Sat, 2 Apr 2022 11:52:16 +0100
-Message-ID: <CAHpNFcOhLyPqE4-0f7vZ1rRRdC6BK6UgX17bJrM8_99GQ9T5bQ@mail.gmail.com>
-Subject: VecSR is really good for secondary loading of sprites & text; In
- these terms very good for pre loading on for example the X86, RISC, AMIGA &
- Famicon type devices, With appropriate loading into Sprite buffers or
- Emulated Secondaries (Special Animations) or Font Buffers. RS
-To:     torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v4 28/33] dt-bindings: crypto: rockchip: convert to new
+ driver bindings
+Content-Language: en-US
+To:     Corentin Labbe <clabbe@baylibre.com>, heiko@sntech.de,
+        herbert@gondor.apana.org.au, krzk+dt@kernel.org, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+References: <20220401201804.2867154-1-clabbe@baylibre.com>
+ <20220401201804.2867154-29-clabbe@baylibre.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220401201804.2867154-29-clabbe@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-VecSR is really good for secondary loading of sprites & text; In these
-terms very good for pre loading on for example the X86, RISC, AMIGA &
-Famicon type devices,
-With appropriate loading into Sprite buffers or Emulated Secondaries
-(Special Animations) or Font Buffers.
+On 01/04/2022 22:17, Corentin Labbe wrote:
+> The latest addition to the rockchip crypto driver need to update the
+> driver bindings.
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  .../crypto/rockchip,rk3288-crypto.yaml        | 68 +++++++++++++++++--
+>  1 file changed, 63 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/rockchip,rk3288-crypto.yaml b/Documentation/devicetree/bindings/crypto/rockchip,rk3288-crypto.yaml
+> index 66db671118c3..e6c00bc8bebf 100644
+> --- a/Documentation/devicetree/bindings/crypto/rockchip,rk3288-crypto.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/rockchip,rk3288-crypto.yaml
+> @@ -11,8 +11,18 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - rockchip,rk3288-crypto
+> +    oneOf:
+> +      - description: crypto IP present on RK3288 SoCs
+> +        items:
+> +          - const: rockchip,rk3288-crypto
+> +      - description: crypto IP present on RK3328 SoCs
 
-Although Large TT-SVG & OT-SVG fonts load well in 8MB Ram on the Amiga
-with Integer & Emulated Float (Library); Traditional BitMap fonts work
-well in a Set Size & can resize well if cached!
+These two comments are not helping, so this should be just enum.
 
-The full process leads upto the terminal & how to optimise CON,
-We can & will need to exceed capacities of any system & To improve them!
+> +        items:
+> +          - const: rockchip,rk3328-crypto
+> +      - description: crypto IPs present on RK3399. crypto0 is the first IP with
+> +                     RSA support, crypto1 is the second IP without RSA.
 
-presenting: Dev-Con-VectorE=C2=B2
+The second part of this comment is helpful, first not. You have chosen
+enum in your first patch, so just extend it with comments. Additionally
+indexing does not scale. What if next generation reverses it and crypto0
+does not have RSA and crypto1 has?
 
-Fast/dev/CON 3DText & Audio Almost any CPU & GPU ''SiMD & Float/int"
-Class VESA Console +
+Something like:
 
-With Console in VecSR you can 3DText & Audio,
+properties:
+  compatible:
+    enum:
+      - rockchip,rk3288-crypto
+      - rockchip,rk3328-crypto
+        # With RSA
+      - rockchip,rk3399-crypto-rsa
+        # Without RSA
+      - rockchip,rk3399-crypto-norsa
 
-VecSR Firmware update 2022 For immediate implementation in all
-operating systems & ROM's
+> +        enum:
+> +          - rockchip,rk3399-crypto0
+> +          - rockchip,rk3399-crypto1
+>  
+>    reg:
+>      maxItems: 1
+> @@ -21,16 +31,65 @@ properties:
+>      maxItems: 1
+>  
+>    clocks:
+> +    minItems: 3
+>      maxItems: 4
+>  
+>    clock-names:
+> +    minItems: 3
+>      maxItems: 4
+>  
+>    resets:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 3
+>  
+>    reset-names:
+> -    maxItems: 1
+> +    deprecated: true
 
-Potential is fast & useful
+Why reset-names are being deprecated? Did we talk about this?
 
-DT
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3288-crypto
+> +    then:
+> +      properties:
+> +        clock-names:
+> +          items:
+> +            - const: "aclk"
+> +            - const: "hclk"
+> +            - const: "sclk"
+> +            - const: "apb_pclk"
+> +          minItems: 4
 
-https://lkml.org/lkml/2022/4/1/1451
+minItems for clocks
+max for resets and reset-names
 
-*****
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3328-crypto
+> +    then:
+> +      properties:
+> +        clock-names:
+> +          items:
+> +            - const: "hclk_master"
+> +            - const: "hclk_slave"
+> +            - const: "sclk"
+> +          maxItems: 3
 
-VecSR - Vector Standard Render
+min/max for clocks
+max for resets and reset-names
 
-VESA Standards : Vector Graphics, Boxes, Ellipses, Curves & Fonts :
-Consolas & other brilliant fonts : (c)RS
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - rockchip,rk3399-crypto0
+> +              - rockchip,rk3399-crypto1
+> +    then:
+> +      properties:
+> +        clock-names:
+> +          items:
+> +            - const: "hclk_master"
+> +            - const: "hclk_slave"
+> +            - const: "sclk"
+> +          maxItems: 3
+> +        resets:
+> +          minItems: 3
 
-SiMD Render - Vector Graphics, Boxes, Ellipses, Curves & Fonts
+Similarly.
 
-OT-SVG Fonts & TT-SVG Obviously Rendered in Direct X 9+ & OpenGL 3+
-Mode & Desktop Rendering modes
 
-Improve Console & TV & BIOS & General Animated Render
-
-Vector Display Standards with low relative CPU Weight
-SiMD Polygon Font Method Render
-
-Default option point scaling (the space) : Metadata Vector Fonts with
-Curl mathematical vector :
-
-16 Bit : SiMD 1 width
-32 Bit : SiMD Double Width
-
-High precision for AVX 32Bit to 256Bit width precision.
-
-Vectoring with SiMD allows traditional CPU mastered VESA Emulation
-desktops & safe mode to be super fast & displays to conform to VESA
-render standards with little effort & a 1MB Table ROM.
-
-Though the VESA & HDMI & DisplayPort standards Facilitates direct low
-bandwidth transport of and transformation of 3D & 2D graphics & fonts
-into directly Rendered Super High Fidelity SiMD & AVX Rendering Vector
-
-Display Standards Vector Render : DSVR-SiMD Can and will be directly
-rendered to a Surface for visual element : SfVE-Vec
-
-As such transport of Vectors & transformation onto display (Monitor,
-3D Unit, Render, TV, & Though HDMI, PCI Port & DP & RAM)
-
-Directly resolve The total graphics pipeline into high quality output
-or input & allow communication of almost infinite Floating point
-values for all rendered 3D & 2D Elements on a given surface (RAM
-Render Page or Surface)
-
-In high precision that is almost unbeatable & yet consumes many levels
-less RAM & Transport Protocol bandwidth,
-
-Further more can also render Vector 3D & 2D Audio & other elements
-though Vector 'Fonting' Systems, Examples exist : 3D Wave Tables,
-Harmonic reproduction units for example Yamaha and Casio keyboards.
-
-(c)Rupert S
-
-https://science.n-helix.com/2016/04/3d-desktop-virtualization.html
-
-https://science.n-helix.com/2019/06/vulkan-stack.html
-
-https://science.n-helix.com/2019/06/kernel.html
-
-https://science.n-helix.com/2022/03/fsr-focal-length.html
-
-https://science.n-helix.com/2018/01/integer-floats-with-remainder-theory.ht=
-ml
-
-https://bit.ly/VESA_BT
-
-*
-
-*Application of SiMD Polygon Font Method Render
-*3D Render method with Console input DEMO : RS
-
-3D Display access to correct display of fonts at angles in games &
-apps without Utilizing 3rd Axis maths on a simple Shape polygon Vector
-font or shape. (c)Rupert S
-
-3rd dimensional access with vector fonts by a simple method:
-
-Render text to virtual screen layer AKA a fully rendered monochrome, 2
-colour or multi colour..
-
-Bitmap/Texture,
-
-Due to latency we have 3 frames ahead to render to bitmap DPT 3 / Dot 5
-
-Can be higher resolution & we can sub sample with closer view priority...
-
-We then rotate the texture on our output polygon & factor size differential=
-.
-
-The maths is simple enough to implement in games on an SSE configured
-Celeron D (depending on resolution and Bilinear filter & resize
-
-Why ? Because rotating a polygon is harder than subtracting or adding
-width, Hight & direction to fully complex polygon Fonts & Polygon
-lines or curves...
-
-The maths is simple enough to implement in games on an SSE configured
-Celeron D (depending on resolution and Bilinear filter & resize.
-
-*
-
-VecSR is really good for secondary loading of sprites & text; In these
-terms very good for pre loading on for example the X86, RISC, AMIGA &
-Famicon type devices,
-With appropriate loading into Sprite buffers or Emulated Secondaries
-(Special Animations) or Font Buffers.
-
-Although Large TT-SVG & OT-SVG fonts load well in 8MB Ram on the Amiga
-with Integer & Emulated Float (Library); Traditional BitMap fonts work
-well in a Set Size & can resize well if cached!
-
-The full process leads upto the terminal & how to optimise CON,
-We can & will need to exceed capacities of any system & To improve them!
-
-presenting: Dev-Con-VectorE=C2=B2
-Fast/dev/CON 3DText & Audio Almost any CPU & GPU ''SiMD & Float/int"
-Class VESA Console +
-
-With Console in VecSR you can 3DText & Audio,
-
-VecSR Firmware update 2022 For immediate implementation in all
-operating systems & ROM's
-
-Potential is fast & useful.
-
-*
-
-https://science.n-helix.com/2022/04/vecsr.html
+Best regards,
+Krzysztof
