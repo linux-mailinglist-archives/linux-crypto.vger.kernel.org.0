@@ -2,163 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C0C4EFDB7
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 03:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6344EFEB9
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 06:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344755AbiDBBWG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 1 Apr 2022 21:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51314 "EHLO
+        id S237214AbiDBEqs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 Apr 2022 00:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241352AbiDBBWF (ORCPT
+        with ESMTP id S236134AbiDBEqs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 1 Apr 2022 21:22:05 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CAE2FE49
-        for <linux-crypto@vger.kernel.org>; Fri,  1 Apr 2022 18:20:14 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id bh17so9231701ejb.8
-        for <linux-crypto@vger.kernel.org>; Fri, 01 Apr 2022 18:20:14 -0700 (PDT)
+        Sat, 2 Apr 2022 00:46:48 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC98A103BA8;
+        Fri,  1 Apr 2022 21:44:56 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id lr4so9660725ejb.11;
+        Fri, 01 Apr 2022 21:44:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=IaS1hkvmveC5IBbs3iH06s2bJz4c3BLVqz2F+DTX2Y4=;
-        b=DkN2+IoGQRNVn9I3tQluJaEc0MtViO8LRtF2NJ4s7IaMBLZLmCvQWoKwHzIenK2Uvt
-         oM6wyR7cpVpw/DP2N18V03yoXgGRVrapdyCInNpevW5rlrzsyvf5gqZL4sA2Rw4B9ZJg
-         3UOY3d8SQ47sXetoK5U9iEEGwQTb8Ff0UQw5PtcJEam5PYMgJASsTyuSg/uaNe/g3fMz
-         yqwj0iiYgM3HaLEVT5o3TRcIIHaIQnbEZiSbYiR2x9jyWrHznvIUDRuJBO5JN4SX+MQD
-         8mzqNLGq4bG6euGysH79oPKXg+fJLacgaCYuRQu3I8s681Fy18Rz98Cx4bqbek74Luqn
-         hifw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=huB97C9JBbD4NTragcMdF5Fe+et3P5wIBlAUz2Cnm5I=;
+        b=pkItxN8skI+/hoTjotTO11YLRC79aIEmK9zrlQYQGwHFPTYzrmxMYRdEyohxMNAaqH
+         VdDrr/d4JSaUHhWA6GeFPQVUEMAT6PUMOnoIgntfbqZYlg7y53a8JHLc3LiZ3NgQJ+Q6
+         mDK3FS3+yXP4gwKgxdioMVmQn71Ldm2RRIsypCLBVVMI14nAYI7rPc02LnWR0ZfMWg9s
+         FGsCRKtMeY+dyJFREY8NAbkulli4VBrcu/hKk8TQ9HDMgbvynToOjg4rhsBAqYYfgAc6
+         MInrRIYSk6hFKDUdND7aLHJwzPlUi8I70WTXkUH30jPIq9KHvg74wR0tspRfGcwhkxhE
+         7MGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=IaS1hkvmveC5IBbs3iH06s2bJz4c3BLVqz2F+DTX2Y4=;
-        b=QJzUzp7cxNJxr3ojuGW3A9m1rwHq8bLyRh0FroxVb+gNBW8axG7O9V/6ClNzX/AHDa
-         Zpqy6osaPjNlocoxKSBVRLm5d4pmNewa3DZN0mmh55kIp8lwdpEcHScOdE+hJHyGEiOM
-         RsYSR/KjPHuYOv4bfgWznFzf0JhQQ2XoEe3cxG2kGVd1d3QOBHboLkG4SuOPHgApYbnh
-         uJwbWXRBhTbmZUmmrdnbjmzgW+gyzduMR9mgzjbJOx7mBgIBoLmzwp7L+u/WpW1crDTZ
-         j2y0AqZaRIXgV42Nvw32tJCAAxvUVkuIJ8rLN8NyHMqxAerFhRdSOPwskW8wHrzivrvI
-         Fwlg==
-X-Gm-Message-State: AOAM531HC4ZYN+xRD5E/SxmoDZeWZPxLCDGVU8Evj/smgue9hRcj7Ik9
-        SDOzNPLq64frGZ1Fs/7GryenemiUkTR/3SwQoqw=
-X-Google-Smtp-Source: ABdhPJxdMQmVZLNF+7vq8tj4btDtW9ROcnQCx3SXwX2vXAT2C3lTN7xw3dnuRurNZE+ZiQItXzYYUylWjK6AIFqxWz8=
-X-Received: by 2002:a17:907:6e06:b0:6e4:dae7:9574 with SMTP id
- sd6-20020a1709076e0600b006e4dae79574mr2172572ejc.540.1648862413069; Fri, 01
- Apr 2022 18:20:13 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=huB97C9JBbD4NTragcMdF5Fe+et3P5wIBlAUz2Cnm5I=;
+        b=euaHCe2jQ6rvJ+5eWS5KdCDfCuiN4KbNCiWgILl/tVapuEykRnwzrY5IHXZ5ZggeHb
+         rXu73QF35IXvlJxWUyfr1cKFsUQ4N8tbX27aGBznWNJQxMtNlBpQ5yL3bwN5/qa/bX2F
+         UrnxvBqQ8nmnGDFcr19+EBX8kTgmhyj6g4mpGnF3ivryXK86OLRbe4Yy6TUTfJj0LbX2
+         haJ41a+RzyFyLTT3RrfT/qUADWQqIaD/kg+rnYWH/S+P5Lrcp1sZq2hVqhe+mK/8w0L5
+         rVO0RFCRxwjH3LCF3891V+GUMPP6tyUkzSK5pDQkPHj+sYV5VN4RbtgOi/iTng6QNbTw
+         EjxA==
+X-Gm-Message-State: AOAM531AfbtXh2TJ5VznTpfIJgyC8L14ltSCba380rfVHegR2gJ7iKVS
+        h+yLjdpTYdEmknGsy8ze6PjRG2ReBA+EueQyvXY=
+X-Google-Smtp-Source: ABdhPJxGUbe2S/w0yEZATeM3Hg+1QWKhd1I/yFnFNIB5iULEMsTrThhTL9l10t/icmfRuf01nhoUGdG88OHyKDLm3v4=
+X-Received: by 2002:a17:907:7e96:b0:6da:f7ee:4a25 with SMTP id
+ qb22-20020a1709077e9600b006daf7ee4a25mr2509602ejc.436.1648874695341; Fri, 01
+ Apr 2022 21:44:55 -0700 (PDT)
 MIME-Version: 1.0
-From:   Duke Abbaddon <duke.abbaddon@gmail.com>
-Date:   Sat, 2 Apr 2022 02:20:14 +0100
-Message-ID: <CAHpNFcOpX0JwcqrPSQkP0oV10EFhJmCiMZOYKis+xSQO5C_rDg@mail.gmail.com>
-Subject: Fast/dev/CON 3DText & Audio Almost any CPU & GPU ''SiMD & Float/int"
- Class VESA Console + With Console in VecSR you can 3DText & Audio + VecSR
- Firmware update 2022 For immediate implementation in all operating systems & ROM's
-To:     torvalds@linux-foundation.org
+References: <20220331150706.124075-1-Jason@zx2c4.com> <20220331152641.169301-1-Jason@zx2c4.com>
+In-Reply-To: <20220331152641.169301-1-Jason@zx2c4.com>
+From:   Sandy Harris <sandyinchina@gmail.com>
+Date:   Sat, 2 Apr 2022 12:44:42 +0800
+Message-ID: <CACXcFm=vw6XCnO8peYH4V+sPR076O-Gav46r83+CZJ8oXM8iHA@mail.gmail.com>
+Subject: Re: [PATCH v2] random: mix build-time latent entropy into pool at init
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Theodore Ts'o" <tytso@mit.edu>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-VecSR Firmware update 2022 For immediate implementation in all
-operating systems, monitors, TV's & equipment such as Mouses, Audio
-Systems & Webcams
+On Fri, Apr 1, 2022 at 11:16 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
 
-VecSR - Vector Standard Render
+> Prior, the "input_pool_data" array needed no real initialization, and so
+> it was easy to mark it with __latent_entropy to populate it during
+> compile-time.
 
-VESA Standards : Vector Graphics, Boxes, Ellipses, Curves & Fonts :
-Consolas & other brilliant fonts : (c)RS
+As I see it, that was the correct approach.
 
-SiMD Render - Vector Graphics, Boxes, Ellipses, Curves & Fonts
+> In switching to using a hash function, this required us to
+> specifically initialize it to some specific state,
 
-OT-SVG Fonts & TT-SVG Obviously Rendered in Direct X 9+ & OpenGL 3+
-Mode & Desktop Rendering modes
+Hash functions do not require that. Any such function must
+work correctly with a new input block and a more-or-less
+random state from hashing previous blocks.
 
-Improve Console & TV & BIOS & General Animated Render
+In general, except perhaps at boot time, I do not think
+any of the hopefully-random data structures -- input
+pool, hash context or chacha context -- should ever be
+set to any specific state. Update them only with += or
+^= and preferably not with constants.
 
-Vector Display Standards with low relative CPU Weight
-SiMD Polygon Font Method Render
+What requires a fixed initialisation is your decision to
+eliminate the input pool & just collect entropy in a hash
+context. In effect you are reducing the driver to a
+Yarrow-like design, which I think is an error.
 
-Default option point scaling (the space) : Metadata Vector Fonts with
-Curl mathematical vector :
+Yarrow is a good design, but it has limitations; in particular
+the Yarrow paper says the cryptographic strength is limited
+to the size of the hash context, 160 bits for their SHA-1 &
+512 for our Blake.
 
-16 Bit : SiMD 1 width
-32 Bit : SiMD Double Width
+512 bits is more than enough for nearly all use cases, but
+we may have some where it is not. How many random bits
+are needed to generate a 4k-bit PGP key?
 
-High precision for AVX 32Bit to 256Bit width precision.
+Will some users try to generate one-time pads from /dev/random?
+The OTP security proof requires truly random data as long as the
+message; with anything short of that the proof fails & you get
+a stream cipher.
 
-Vectoring with SiMD allows traditional CPU mastered VESA Emulation
-desktops & safe mode to be super fast & displays to conform to VESA
-render standards with little effort & a 1MB Table ROM.
-
-Though the VESA & HDMI & DisplayPort standards Facilitates direct low
-bandwidth transport of and transformation of 3D & 2D graphics & fonts
-into directly Rendered Super High Fidelity SiMD & AVX Rendering Vector
-
-Display Standards Vector Render : DSVR-SiMD Can and will be directly
-rendered to a Surface for visual element : SfVE-Vec
-
-As such transport of Vectors & transformation onto display (Monitor,
-3D Unit, Render, TV, & Though HDMI, PCI Port & DP & RAM)
-
-Directly resolve The total graphics pipeline into high quality output
-or input & allow communication of almost infinite Floating point
-values for all rendered 3D & 2D Elements on a given surface (RAM
-Render Page or Surface)
-
-In high precision that is almost unbeatable & yet consumes many levels
-less RAM & Transport Protocol bandwidth,
-
-Further more can also render Vector 3D & 2D Audio & other elements
-though Vector 'Fonting' Systems, Examples exist : 3D Wave Tables,
-Harmonic reproduction units for example Yamaha and Casio keyboards.
-
-(c)Rupert S
-
-https://science.n-helix.com/2016/04/3d-desktop-virtualization.html
-
-https://science.n-helix.com/2019/06/vulkan-stack.html
-
-https://science.n-helix.com/2019/06/kernel.html
-
-https://science.n-helix.com/2022/03/fsr-focal-length.html
-
-https://science.n-helix.com/2018/01/integer-floats-with-remainder-theory.html
-
-https://bit.ly/VESA_BT
-
-*
-
-*Application of SiMD Polygon Font Method Render
-*3D Render method with Console input DEMO : RS
-
-3D Display access to correct display of fonts at angles in games &
-apps without Utilizing 3rd Axis maths on a simple Shape polygon Vector
-font or shape. (c)Rupert S
-
-3rd dimensional access with vector fonts by a simple method:
-
-Render text to virtual screen layer AKA a fully rendered monochrome, 2
-colour or multi colour..
-
-Bitmap/Texture,
-
-Due to latency we have 3 frames ahead to render to bitmap DPT 3 / Dot 5
-
-Can be higher resolution & we can sub sample with closer view priority...
-
-We then rotate the texture on our output polygon & factor size differential.
-
-The maths is simple enough to implement in games on an SSE configured
-Celeron D (depending on resolution and Bilinear filter & resize
-
-Why ? Because rotating a polygon is harder than subtracting or adding
-width, Hight & direction to fully complex polygon Fonts & Polygon
-lines or curves...
-
-The maths is simple enough to implement in games on an SSE configured
-Celeron D (depending on resolution and Bilinear filter & resize.
-
-https://science.n-helix.com/2022/04/vecsr.html
+Patches will follow, but likely not soon; I'm busy with
+other things.
