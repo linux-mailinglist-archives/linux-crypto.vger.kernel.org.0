@@ -2,219 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE2C4F0464
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 17:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0E44F05C6
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 21:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357289AbiDBPZ7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 Apr 2022 11:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        id S240733AbiDBT32 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 Apr 2022 15:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357258AbiDBPZ4 (ORCPT
+        with ESMTP id S231857AbiDBT31 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 2 Apr 2022 11:25:56 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FA833E03
-        for <linux-crypto@vger.kernel.org>; Sat,  2 Apr 2022 08:24:02 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id r10so453306eda.1
-        for <linux-crypto@vger.kernel.org>; Sat, 02 Apr 2022 08:24:02 -0700 (PDT)
+        Sat, 2 Apr 2022 15:29:27 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5836D3982C
+        for <linux-crypto@vger.kernel.org>; Sat,  2 Apr 2022 12:27:34 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id qh7so2320989ejb.11
+        for <linux-crypto@vger.kernel.org>; Sat, 02 Apr 2022 12:27:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=pR6BQtJb61in8LI2RFfYMWRuA6qssaKJHiA8Szyk98E=;
-        b=dZ6B0rmBbn6QRB2CGYnKiqt+A9OfjP0b9Jb+mdx5Mab9Pr83Xz22KmJlJg5iGhjeSJ
-         FPAmXXt7CqZ7Em9Azz3XvAHCuLPogY98MjzgGQosw8tedERX4o2r/q86H0MpYGCu2LTz
-         dBAKpzc404DUv66B57/Gj7sL8T25YCTSr6+aTvfytSgvSXYAlJticmMXCmICrWQE2W5q
-         YvdZiQfvaqPre0TPUbZXMgxcXrJyEt6blc35OU1IH4k0ymKi2BmzECb9sTYnbeAxPuTG
-         9wnLW+SYrRDLcqdP+oxwcFHqOKSQV1LWVLU55Z67H5kf1Cve/6zCw+c4A52w80Dmn0LH
-         ussA==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=B/ThbT3SvZKv7VBFEIOx/aCT3sIWnDNaa+6uy/zfsM4=;
+        b=O+DYIcytzcGH8LsniuGvzc2VJVr6cymGR5ki+yc8dKSyiQa4ST2C04SjHaClrr/Dyd
+         rPwx4rn/13xt6+XkEfBruUXf5yS5uchOzmxnzQrGFUOYeu0E2s6TrY6SfCCGq/hNNUxh
+         OhW2kTsmvPedmVI5zSAuOSzL2jDrWYBQAWB+A7UVkHopWu11T8frRst1Z5gl5pFWhvXY
+         FuD0hflgf/PZy17AgOobHb5lHfF+bAzZOUAqVVSanEgl3sIdfPM3i2kGw6Jad5DefrI0
+         Dj3aMKYGslQqlRhZLALva5pqXuLeV29r4qobp7ruxuKfLTm6FB4CfR/GUhSuiqk/edBu
+         +hYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=pR6BQtJb61in8LI2RFfYMWRuA6qssaKJHiA8Szyk98E=;
-        b=LRZU9u8p5DIiv/fXZiBrdMULw1lDOOVWVqS47YaFGW59+n5dPm+3d7za+Aae+GnKcE
-         oOhzMvEiakI5wNFYP4vkZkHgelNBVdAAgwMYteYc2ERY0zaKWJs5CeXsEwJ3SnEQdrT+
-         HkKrUlMPC0DSg1bx/UHFCYXVFOsLXHWX5HhQCOhW2jQNwSgeFAaTJgcNPbkiVZn8aXtv
-         kQ5DBDt6z0Gc2DKl823dAmtT8JOkDU5oKXf7iqECPinO/Nz6teOTkmfXMbduhncRCStp
-         l8BvAvecdhiX6ii9Rwy6Hv8OY8Rg8JPqsmufQi/NHXsXT0I+4aA/y+K4R6PGwQCXR73n
-         hMuA==
-X-Gm-Message-State: AOAM530gDaqCkxX985JqqGGhEW22+rF9G24fFP3+5K9ypUhTzZNP5kbT
-        SdHqFK0V+sstRnsocMwk96fu9Q62KPn/uZvgQDU=
-X-Google-Smtp-Source: ABdhPJzfpO9x/irXYPkJ+ByoIvEYWhB4lC8ADz0LH3KvLOarjg5u+B3PSgy9KA+2ojraLBe96jZg8Byr6KLOqqlpQQU=
-X-Received: by 2002:a05:6402:1e8b:b0:41c:59f6:2c26 with SMTP id
- f11-20020a0564021e8b00b0041c59f62c26mr8136977edf.156.1648913040944; Sat, 02
- Apr 2022 08:24:00 -0700 (PDT)
+        bh=B/ThbT3SvZKv7VBFEIOx/aCT3sIWnDNaa+6uy/zfsM4=;
+        b=kVrRmmHZqnNZdtnII3VFsoAhTHs3SQxf00xJRzrtcJ2vG2jygCA9fHCct6suWXj8QM
+         a4Fogj4eQQRPHfINBr7efl29XZlUlSAaQ5i4lQu98k9c8rdlxhhWkfGZInvDuVz/NRVz
+         KY3g2nsta4quU/V8+wdzc0YWZJkZTxpudDPxXRIj1Vp/xlSMWrIA6SHxIfmTXjzPi7mc
+         oFAHzDFRM7xfYmd1ENm8f2J2s1t3ZuTT6/DhGTYe1I8V5fOYb9Eljg1ROw5n2GHkiFd0
+         gUDK5E2O6NC/I+0hkTnlpvMBIjD3LoFwL5BXfhyk1DnfuhHLl8cGkIqMwU+UAI/uKGke
+         KVGg==
+X-Gm-Message-State: AOAM530KpgaWMDBCKrrqR1un/xhR2gOYnjxbiENL4Q5JJjVsXw36Yk64
+        H83rM1MulVs6410salJvTjCy9g==
+X-Google-Smtp-Source: ABdhPJzd9yaY1T32nO+3zxYbCF1eHA+h4DL4En/lqWXtB9SjL9rtunjp4WJcpVorDE8q85caXJ35Ng==
+X-Received: by 2002:a17:906:c107:b0:6df:c114:e286 with SMTP id do7-20020a170906c10700b006dfc114e286mr4846182ejc.216.1648927652962;
+        Sat, 02 Apr 2022 12:27:32 -0700 (PDT)
+Received: from [192.168.0.171] (xdsl-188-155-201-27.adslplus.ch. [188.155.201.27])
+        by smtp.gmail.com with ESMTPSA id qp27-20020a170907207b00b006e66a4e924bsm972077ejb.201.2022.04.02.12.27.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Apr 2022 12:27:32 -0700 (PDT)
+Message-ID: <bdd2e853-d056-2646-f9c7-f58321134d5d@linaro.org>
+Date:   Sat, 2 Apr 2022 21:27:31 +0200
 MIME-Version: 1.0
-From:   Duke Abbaddon <duke.abbaddon@gmail.com>
-Date:   Sat, 2 Apr 2022 16:24:03 +0100
-Message-ID: <CAHpNFcM_1BnAzzSYbpQ1gX8H3u+FY_nLag3OY8+3CJ44N7tU8Q@mail.gmail.com>
-Subject: submit it for inclusion in the standard along with Vector Compression
- VESA Standard Display protocol 3
-To:     torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] dt-bindings: crypto: sun8i-ce: remove extra line
+Content-Language: en-US
+To:     Corentin Labbe <clabbe@baylibre.com>, davem@davemloft.net,
+        herbert@gondor.apana.org.au, jernej.skrabec@gmail.com,
+        krzk+dt@kernel.org, robh+dt@kernel.org, samuel@sholland.org,
+        wens@csie.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@lists.linux.dev
+References: <20220324144233.1119495-1-clabbe@baylibre.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220324144233.1119495-1-clabbe@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-is QFT a Zero compression or low level compression version of DSC
-1.2b? Maybe X-OR X=3D1 New Data & X=3D0 being not sent ? Therefore Masking
-The Frame Buffer!
+On 24/03/2022 15:42, Corentin Labbe wrote:
+> yamllint complains about this extra line.
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml | 1 -
+>  1 file changed, 1 deletion(-)
+> 
 
-If not i dually submit it for inclusion in the standard along with
-Vector Compression VESA Standard Display protocol 3
-https://lkml.org/lkml/2022/4/2/295
+Thanks for the patch. It's ok, but this should be rather done for all
+files. Otherwise it's a churn.
 
-"QFT transports each frame at a higher rate to decrease =E2=80=9Cdisplay
-latency=E2=80=9D, which is the amount of time between a frame being ready f=
-or
-transport in the GPU and that frame being completely displayed. This
-latency is the sum of the transport time through the source=E2=80=99s outpu=
-t
-circuits, the transport time across the interface, the processing of
-the video data in the display, and the painting of the screen with the
-new data. This overall latency affects the responsiveness of games:
-how long it appears between a button is pressed to the time at which
-the resultant action is observed on the screen.
+I sent a global cleanup.
 
-While there are a lot of variables in this equation, not many are
-adjustable from an HDMI specification perspective. QFT operates on the
-transport portion of this equation by reducing the time it takes to
-send only the active video across the cable. This results in reduced
-display latency and increased responsiveness."
-
-*****
-
-VecSR - Vector Standard Render
-
-VESA Standards : Vector Graphics, Boxes, Ellipses, Curves & Fonts :
-Consolas & other brilliant fonts : (c)RS
-
-SiMD Render - Vector Graphics, Boxes, Ellipses, Curves & Fonts
-
-OT-SVG Fonts & TT-SVG Obviously Rendered in Direct X 9+ & OpenGL 3+
-Mode & Desktop Rendering modes
-
-Improve Console & TV & BIOS & General Animated Render
-
-Vector Display Standards with low relative CPU Weight
-SiMD Polygon Font Method Render
-
-Default option point scaling (the space) : Metadata Vector Fonts with
-Curl mathematical vector :
-
-16 Bit : SiMD 1 width
-32 Bit : SiMD Double Width
-
-High precision for AVX 32Bit to 256Bit width precision.
-
-Vectoring with SiMD allows traditional CPU mastered VESA Emulation
-desktops & safe mode to be super fast & displays to conform to VESA
-render standards with little effort & a 1MB Table ROM.
-
-Though the VESA & HDMI & DisplayPort standards Facilitates direct low
-bandwidth transport of and transformation of 3D & 2D graphics & fonts
-into directly Rendered Super High Fidelity SiMD & AVX Rendering Vector
-
-Display Standards Vector Render : DSVR-SiMD Can and will be directly
-rendered to a Surface for visual element : SfVE-Vec
-
-As such transport of Vectors & transformation onto display (Monitor,
-3D Unit, Render, TV, & Though HDMI, PCI Port & DP & RAM)
-
-Directly resolve The total graphics pipeline into high quality output
-or input & allow communication of almost infinite Floating point
-values for all rendered 3D & 2D Elements on a given surface (RAM
-Render Page or Surface)
-
-In high precision that is almost unbeatable & yet consumes many levels
-less RAM & Transport Protocol bandwidth,
-
-Further more can also render Vector 3D & 2D Audio & other elements
-though Vector 'Fonting' Systems, Examples exist : 3D Wave Tables,
-Harmonic reproduction units for example Yamaha and Casio keyboards.
-
-(c)Rupert S
-
-https://science.n-helix.com/2016/04/3d-desktop-virtualization.html
-
-https://science.n-helix.com/2019/06/vulkan-stack.html
-
-https://science.n-helix.com/2019/06/kernel.html
-
-https://science.n-helix.com/2022/03/fsr-focal-length.html
-
-https://science.n-helix.com/2018/01/integer-floats-with-remainder-theory.ht=
-ml
-
-https://bit.ly/VESA_BT
-
-*
-
-*Application of SiMD Polygon Font Method Render
-*3D Render method with Console input DEMO : RS
-
-3D Display access to correct display of fonts at angles in games &
-apps without Utilizing 3rd Axis maths on a simple Shape polygon Vector
-font or shape. (c)Rupert S
-
-3rd dimensional access with vector fonts by a simple method:
-
-Render text to virtual screen layer AKA a fully rendered monochrome, 2
-colour or multi colour..
-
-Bitmap/Texture,
-
-Due to latency we have 3 frames ahead to render to bitmap DPT 3 / Dot 5
-
-Can be higher resolution & we can sub sample with closer view priority...
-
-We then rotate the texture on our output polygon & factor size differential=
-.
-
-The maths is simple enough to implement in games on an SSE configured
-Celeron D (depending on resolution and Bilinear filter & resize
-
-Why ? Because rotating a polygon is harder than subtracting or adding
-width, Hight & direction to fully complex polygon Fonts & Polygon
-lines or curves...
-
-The maths is simple enough to implement in games on an SSE configured
-Celeron D (depending on resolution and Bilinear filter & resize.
-
-*
-
-VecSR is really good for secondary loading of sprites & text; In these
-terms very good for pre loading on for example the X86, RISC, AMIGA &
-Famicon type devices,
-With appropriate loading into Sprite buffers or Emulated Secondaries
-(Special Animations) or Font Buffers.
-
-Although Large TT-SVG & OT-SVG fonts load well in 8MB Ram on the Amiga
-with Integer & Emulated Float (Library); Traditional BitMap fonts work
-well in a Set Size & can resize well if cached!
-
-The full process leads upto the terminal & how to optimise CON,
-We can & will need to exceed capacities of any system & To improve them!
-
-presenting: Dev-Con-VectorE=C2=B2
-Fast/dev/CON 3DText & Audio Almost any CPU & GPU ''SiMD & Float/int"
-Class VESA Console +
-
-With Console in VecSR you can 3DText & Audio,
-
-VecSR Firmware update 2022 For immediate implementation in all
-operating systems & ROM's
-
-Potential is fast & useful.
-
-*
-
-https://science.n-helix.com/2022/04/vecsr.html
+Best regards,
+Krzysztof
