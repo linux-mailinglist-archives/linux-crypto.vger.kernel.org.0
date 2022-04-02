@@ -2,245 +2,224 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FE94EFFAC
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 10:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C12D4F00CA
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 12:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239258AbiDBIZp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 Apr 2022 04:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
+        id S1354050AbiDBKy0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 Apr 2022 06:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239213AbiDBIZp (ORCPT
+        with ESMTP id S1354576AbiDBKyX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 2 Apr 2022 04:25:45 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BF14F460;
-        Sat,  2 Apr 2022 01:23:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648887833; x=1680423833;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Gnc7Vq8A0AMWRP1SecSxWIcpYauRkoVdUdGm+VQNnk4=;
-  b=IX/G6zEz1qzhXNMY22Xpsdpu2uU0a48uSYEQ3oELiDYmDqplvsdN2ib+
-   UgOOimYRSItO9PRLZQLeOQGE9x5OTse6SKsvIJ+G6+UN+bkTMsq95kZDG
-   MNSPk/IihmpNOMFo5csCeAy1rqbUL+I0CYDouBrORFzhTIgYqEez4jFAS
-   KwV/mGnyqP00/k6zmVm/8yCtOuOrykdZufWTVs+O4nqyozQ+Ln4zISNAG
-   eQRENExaXXJlSBUIwocO9O1bpmIpSGS149APlcp3qFkynHqXtJpcgF9nc
-   JMaIaDxQtuNgIuydGWHYJwRCJBoCVOxwlpPgp5RJ2lkix2tgVrebzrldr
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10304"; a="240225766"
-X-IronPort-AV: E=Sophos;i="5.90,229,1643702400"; 
-   d="scan'208";a="240225766"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2022 01:23:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,229,1643702400"; 
-   d="scan'208";a="587101927"
-Received: from lkp-server02.sh.intel.com (HELO 3231c491b0e2) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 02 Apr 2022 01:23:50 -0700
-Received: from kbuild by 3231c491b0e2 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1naZ2z-00025L-9v;
-        Sat, 02 Apr 2022 08:23:49 +0000
-Date:   Sat, 2 Apr 2022 16:22:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Corentin Labbe <clabbe@baylibre.com>, heiko@sntech.de,
-        herbert@gondor.apana.org.au, krzk+dt@kernel.org, robh+dt@kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: Re: [PATCH v4 10/33] crypto: rockchip: rework by using crypto_engine
-Message-ID: <202204021634.IhyHrjoT-lkp@intel.com>
-References: <20220401201804.2867154-11-clabbe@baylibre.com>
+        Sat, 2 Apr 2022 06:54:23 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BA414865A
+        for <linux-crypto@vger.kernel.org>; Sat,  2 Apr 2022 03:52:16 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id dr20so10668120ejc.6
+        for <linux-crypto@vger.kernel.org>; Sat, 02 Apr 2022 03:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Zu8eKPzRskdlQlbramfPaoD/f1fGti5TmNsQY/hQanM=;
+        b=GY1j8tzy/iDpw5ZJczyjRnKh/rlWb7bFzscp7zALfPv6PUvQKhRLyFUClMnBwdOit1
+         Qjco5r1NYNkX48o1HPbAJENvDQYr4Ji2z8feBQMHUpsmyTOkI7Z+Ag9eSCxya8oa3n13
+         74HghIOf/UOx8ZIFpgRrXCOCquCfHl57OF+1OIPOSf1NeSK57R1iaDX+TZs6ZxdXEzhO
+         ecK7nqqnlwYk5alg+boRREXT74AfNPKjmmw+stYPehetPDmT47qZJkQeOyT1AiAh4EBN
+         BIcgOCVM2u1OYM2BM4BOXcBDsli3ZupoRbO2jV3QlrawgXFDX2KckQx8qcvAuq+fjHHo
+         8Fvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Zu8eKPzRskdlQlbramfPaoD/f1fGti5TmNsQY/hQanM=;
+        b=VG2ZMbDkLm6m5+6P4Eh7EDP7DY4Temd9IwJd9Yxfy2xN0NYD0FtgFPsXGiyQrpUzsQ
+         uliNXNBAouyboqQ98SbZO3YfdfoT4mHdmhEyn1t4BjO0qZnW8/dAGr/FtMNZbUwuGlbv
+         +aVT/GIA/cx7SbEzLFEofBIqTFXHKiG4yXzSQ5t3GivbeP1v4k3UizcTnQRFBTBlQp+F
+         lprx1YSJBnl8UjTzA/VdFjqrKJ1HsxzFIUf/+sbLTjyFZrJPnPslyHZ47HsQ5wGGzpFL
+         1E/Nr6GkbkdoZqHFgPkKklhP1SiQENaUJycfDODQmVULFZMUSOqdFsyllxioMTkVlxDG
+         r1MQ==
+X-Gm-Message-State: AOAM533fmptyFkDx+ajApWRy5WOgRLrwb+I2aaknEU0ulchDkcRhtcQR
+        0MQKYDpDH8i7nPYnzkGgo9QoDBGGbLSFm3OpQ50=
+X-Google-Smtp-Source: ABdhPJz5+6PACXGqfh3RKI04rKN0HSLK/vS+N6oXQKeLI1lmw2daUD2eqc4MZA333CysDKTaGXC64G4Wduj0dDB9GmI=
+X-Received: by 2002:a17:907:1b10:b0:6e4:bac5:f080 with SMTP id
+ mp16-20020a1709071b1000b006e4bac5f080mr3434011ejc.24.1648896735229; Sat, 02
+ Apr 2022 03:52:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220401201804.2867154-11-clabbe@baylibre.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Sat, 2 Apr 2022 11:52:16 +0100
+Message-ID: <CAHpNFcOhLyPqE4-0f7vZ1rRRdC6BK6UgX17bJrM8_99GQ9T5bQ@mail.gmail.com>
+Subject: VecSR is really good for secondary loading of sprites & text; In
+ these terms very good for pre loading on for example the X86, RISC, AMIGA &
+ Famicon type devices, With appropriate loading into Sprite buffers or
+ Emulated Secondaries (Special Animations) or Font Buffers. RS
+To:     torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Corentin,
+VecSR is really good for secondary loading of sprites & text; In these
+terms very good for pre loading on for example the X86, RISC, AMIGA &
+Famicon type devices,
+With appropriate loading into Sprite buffers or Emulated Secondaries
+(Special Animations) or Font Buffers.
 
-I love your patch! Perhaps something to improve:
+Although Large TT-SVG & OT-SVG fonts load well in 8MB Ram on the Amiga
+with Integer & Emulated Float (Library); Traditional BitMap fonts work
+well in a Set Size & can resize well if cached!
 
-[auto build test WARNING on next-20220331]
-[also build test WARNING on v5.17]
-[cannot apply to rockchip/for-next herbert-cryptodev-2.6/master herbert-crypto-2.6/master v5.17 v5.17-rc8 v5.17-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+The full process leads upto the terminal & how to optimise CON,
+We can & will need to exceed capacities of any system & To improve them!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Corentin-Labbe/crypto-rockchip-permit-to-pass-self-tests/20220402-042221
-base:    fdcbcd1348f4ef713668bae1b0fa9774e1811205
-config: arm64-buildonly-randconfig-r001-20220402 (https://download.01.org/0day-ci/archive/20220402/202204021634.IhyHrjoT-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project c4a1b07d0979e7ff20d7d541af666d822d66b566)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/be381eb03ba20a6e06f0e880a9929d14a1e13064
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Corentin-Labbe/crypto-rockchip-permit-to-pass-self-tests/20220402-042221
-        git checkout be381eb03ba20a6e06f0e880a9929d14a1e13064
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/crypto/rockchip/
+presenting: Dev-Con-VectorE=C2=B2
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Fast/dev/CON 3DText & Audio Almost any CPU & GPU ''SiMD & Float/int"
+Class VESA Console +
 
-All warnings (new ones prefixed by >>):
+With Console in VecSR you can 3DText & Audio,
 
-   drivers/crypto/rockchip/rk3288_crypto_skcipher.c:21:46: error: use of undeclared identifier 'tfm'
-           unsigned int bs = crypto_skcipher_blocksize(tfm);
-                                                       ^
->> drivers/crypto/rockchip/rk3288_crypto_skcipher.c:328:6: warning: variable 'n' set but not used [-Wunused-but-set-variable]
-           int n = 0;
-               ^
-   1 warning and 1 error generated.
+VecSR Firmware update 2022 For immediate implementation in all
+operating systems & ROM's
 
+Potential is fast & useful
 
-vim +/n +328 drivers/crypto/rockchip/rk3288_crypto_skcipher.c
+DT
 
-   319	
-   320	static int rk_cipher_run(struct crypto_engine *engine, void *async_req)
-   321	{
-   322		struct skcipher_request *areq = container_of(async_req, struct skcipher_request, base);
-   323		struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
-   324		struct rk_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
-   325		struct rk_cipher_rctx *rctx = skcipher_request_ctx(areq);
-   326		struct scatterlist *sgs, *sgd;
-   327		int err = 0;
- > 328		int n = 0;
-   329		int ivsize = crypto_skcipher_ivsize(tfm);
-   330		int offset;
-   331		u8 iv[AES_BLOCK_SIZE];
-   332		u8 biv[AES_BLOCK_SIZE];
-   333		u8 *ivtouse = areq->iv;
-   334		unsigned int len = areq->cryptlen;
-   335		unsigned int todo;
-   336	
-   337		ivsize = crypto_skcipher_ivsize(tfm);
-   338		if (areq->iv && crypto_skcipher_ivsize(tfm) > 0) {
-   339			if (rctx->mode & RK_CRYPTO_DEC) {
-   340				offset = areq->cryptlen - ivsize;
-   341				scatterwalk_map_and_copy(rctx->backup_iv, areq->src,
-   342							 offset, ivsize, 0);
-   343			}
-   344		}
-   345	
-   346		sgs = areq->src;
-   347		sgd = areq->dst;
-   348	
-   349		while (sgs && sgd && len) {
-   350			if (!sgs->length) {
-   351				sgs = sg_next(sgs);
-   352				sgd = sg_next(sgd);
-   353				continue;
-   354			}
-   355			if (rctx->mode & RK_CRYPTO_DEC) {
-   356				/* we backup last block of source to be used as IV at next step */
-   357				offset = sgs->length - ivsize;
-   358				scatterwalk_map_and_copy(biv, sgs, offset, ivsize, 0);
-   359			}
-   360			if (sgs == sgd) {
-   361				err = dma_map_sg(ctx->dev->dev, sgs, 1, DMA_BIDIRECTIONAL);
-   362				if (err <= 0) {
-   363					err = -EINVAL;
-   364					goto theend_iv;
-   365				}
-   366			} else {
-   367				err = dma_map_sg(ctx->dev->dev, sgs, 1, DMA_TO_DEVICE);
-   368				if (err <= 0) {
-   369					err = -EINVAL;
-   370					goto theend_iv;
-   371				}
-   372				err = dma_map_sg(ctx->dev->dev, sgd, 1, DMA_FROM_DEVICE);
-   373				if (err <= 0) {
-   374					err = -EINVAL;
-   375					goto theend_sgs;
-   376				}
-   377			}
-   378			err = 0;
-   379			rk_ablk_hw_init(ctx->dev, areq);
-   380			if (ivsize) {
-   381				if (ivsize == DES_BLOCK_SIZE)
-   382					memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_IV_0, ivtouse, ivsize);
-   383				else
-   384					memcpy_toio(ctx->dev->reg + RK_CRYPTO_AES_IV_0, ivtouse, ivsize);
-   385			}
-   386			reinit_completion(&ctx->dev->complete);
-   387			ctx->dev->status = 0;
-   388	
-   389			todo = min(sg_dma_len(sgs), len);
-   390			len -= todo;
-   391			crypto_dma_start(ctx->dev, sgs, sgd, todo / 4);
-   392			wait_for_completion_interruptible_timeout(&ctx->dev->complete,
-   393								  msecs_to_jiffies(2000));
-   394			if (!ctx->dev->status) {
-   395				dev_err(ctx->dev->dev, "DMA timeout\n");
-   396				err = -EFAULT;
-   397				goto theend;
-   398			}
-   399			if (sgs == sgd) {
-   400				dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_BIDIRECTIONAL);
-   401			} else {
-   402				dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_TO_DEVICE);
-   403				dma_unmap_sg(ctx->dev->dev, sgd, 1, DMA_FROM_DEVICE);
-   404			}
-   405			if (rctx->mode & RK_CRYPTO_DEC) {
-   406				memcpy(iv, biv, ivsize);
-   407				ivtouse = iv;
-   408			} else {
-   409				offset = sgd->length - ivsize;
-   410				scatterwalk_map_and_copy(iv, sgd, offset, ivsize, 0);
-   411				ivtouse = iv;
-   412			}
-   413			sgs = sg_next(sgs);
-   414			sgd = sg_next(sgd);
-   415			n++;
-   416		}
-   417	
-   418		if (areq->iv && ivsize > 0) {
-   419			offset = areq->cryptlen - ivsize;
-   420			if (rctx->mode & RK_CRYPTO_DEC) {
-   421				memcpy(areq->iv, rctx->backup_iv, ivsize);
-   422				memzero_explicit(rctx->backup_iv, ivsize);
-   423			} else {
-   424				scatterwalk_map_and_copy(areq->iv, areq->dst, offset,
-   425							 ivsize, 0);
-   426			}
-   427		}
-   428	
-   429	theend:
-   430		local_bh_disable();
-   431		crypto_finalize_skcipher_request(engine, areq, err);
-   432		local_bh_enable();
-   433		return 0;
-   434	
-   435	theend_sgs:
-   436		if (sgs == sgd) {
-   437			dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_BIDIRECTIONAL);
-   438		} else {
-   439			dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_TO_DEVICE);
-   440			dma_unmap_sg(ctx->dev->dev, sgd, 1, DMA_FROM_DEVICE);
-   441		}
-   442	theend_iv:
-   443		return err;
-   444	}
-   445	
+https://lkml.org/lkml/2022/4/1/1451
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+*****
+
+VecSR - Vector Standard Render
+
+VESA Standards : Vector Graphics, Boxes, Ellipses, Curves & Fonts :
+Consolas & other brilliant fonts : (c)RS
+
+SiMD Render - Vector Graphics, Boxes, Ellipses, Curves & Fonts
+
+OT-SVG Fonts & TT-SVG Obviously Rendered in Direct X 9+ & OpenGL 3+
+Mode & Desktop Rendering modes
+
+Improve Console & TV & BIOS & General Animated Render
+
+Vector Display Standards with low relative CPU Weight
+SiMD Polygon Font Method Render
+
+Default option point scaling (the space) : Metadata Vector Fonts with
+Curl mathematical vector :
+
+16 Bit : SiMD 1 width
+32 Bit : SiMD Double Width
+
+High precision for AVX 32Bit to 256Bit width precision.
+
+Vectoring with SiMD allows traditional CPU mastered VESA Emulation
+desktops & safe mode to be super fast & displays to conform to VESA
+render standards with little effort & a 1MB Table ROM.
+
+Though the VESA & HDMI & DisplayPort standards Facilitates direct low
+bandwidth transport of and transformation of 3D & 2D graphics & fonts
+into directly Rendered Super High Fidelity SiMD & AVX Rendering Vector
+
+Display Standards Vector Render : DSVR-SiMD Can and will be directly
+rendered to a Surface for visual element : SfVE-Vec
+
+As such transport of Vectors & transformation onto display (Monitor,
+3D Unit, Render, TV, & Though HDMI, PCI Port & DP & RAM)
+
+Directly resolve The total graphics pipeline into high quality output
+or input & allow communication of almost infinite Floating point
+values for all rendered 3D & 2D Elements on a given surface (RAM
+Render Page or Surface)
+
+In high precision that is almost unbeatable & yet consumes many levels
+less RAM & Transport Protocol bandwidth,
+
+Further more can also render Vector 3D & 2D Audio & other elements
+though Vector 'Fonting' Systems, Examples exist : 3D Wave Tables,
+Harmonic reproduction units for example Yamaha and Casio keyboards.
+
+(c)Rupert S
+
+https://science.n-helix.com/2016/04/3d-desktop-virtualization.html
+
+https://science.n-helix.com/2019/06/vulkan-stack.html
+
+https://science.n-helix.com/2019/06/kernel.html
+
+https://science.n-helix.com/2022/03/fsr-focal-length.html
+
+https://science.n-helix.com/2018/01/integer-floats-with-remainder-theory.ht=
+ml
+
+https://bit.ly/VESA_BT
+
+*
+
+*Application of SiMD Polygon Font Method Render
+*3D Render method with Console input DEMO : RS
+
+3D Display access to correct display of fonts at angles in games &
+apps without Utilizing 3rd Axis maths on a simple Shape polygon Vector
+font or shape. (c)Rupert S
+
+3rd dimensional access with vector fonts by a simple method:
+
+Render text to virtual screen layer AKA a fully rendered monochrome, 2
+colour or multi colour..
+
+Bitmap/Texture,
+
+Due to latency we have 3 frames ahead to render to bitmap DPT 3 / Dot 5
+
+Can be higher resolution & we can sub sample with closer view priority...
+
+We then rotate the texture on our output polygon & factor size differential=
+.
+
+The maths is simple enough to implement in games on an SSE configured
+Celeron D (depending on resolution and Bilinear filter & resize
+
+Why ? Because rotating a polygon is harder than subtracting or adding
+width, Hight & direction to fully complex polygon Fonts & Polygon
+lines or curves...
+
+The maths is simple enough to implement in games on an SSE configured
+Celeron D (depending on resolution and Bilinear filter & resize.
+
+*
+
+VecSR is really good for secondary loading of sprites & text; In these
+terms very good for pre loading on for example the X86, RISC, AMIGA &
+Famicon type devices,
+With appropriate loading into Sprite buffers or Emulated Secondaries
+(Special Animations) or Font Buffers.
+
+Although Large TT-SVG & OT-SVG fonts load well in 8MB Ram on the Amiga
+with Integer & Emulated Float (Library); Traditional BitMap fonts work
+well in a Set Size & can resize well if cached!
+
+The full process leads upto the terminal & how to optimise CON,
+We can & will need to exceed capacities of any system & To improve them!
+
+presenting: Dev-Con-VectorE=C2=B2
+Fast/dev/CON 3DText & Audio Almost any CPU & GPU ''SiMD & Float/int"
+Class VESA Console +
+
+With Console in VecSR you can 3DText & Audio,
+
+VecSR Firmware update 2022 For immediate implementation in all
+operating systems & ROM's
+
+Potential is fast & useful.
+
+*
+
+https://science.n-helix.com/2022/04/vecsr.html
