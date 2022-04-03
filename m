@@ -2,109 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A734F061E
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Apr 2022 22:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA62D4F06FE
+	for <lists+linux-crypto@lfdr.de>; Sun,  3 Apr 2022 05:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344435AbiDBUVC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 2 Apr 2022 16:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        id S231868AbiDCDIX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 2 Apr 2022 23:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234565AbiDBUVB (ORCPT
+        with ESMTP id S231309AbiDCDIT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 2 Apr 2022 16:21:01 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC7136B70
-        for <linux-crypto@vger.kernel.org>; Sat,  2 Apr 2022 13:19:07 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id u3so8846658wrg.3
-        for <linux-crypto@vger.kernel.org>; Sat, 02 Apr 2022 13:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=efzOv4dIr4tgBETsjp5OsgnPN6Aum/KcEtDZ5+WY/5s=;
-        b=NWCjcZfwqzrcjp5G5OuxNnq/23Iby1ljMuBql2dbBOBMNfS6NzDqEVqTbC0EETLXxw
-         9U9H72AWN9sdKdf4Ds5vMKB0jy7J8JqOVB8NWX6zyWmv1ZNy9P71C9heOmKCvJhSX9sB
-         rJhUI5CgZwfD5XZxm7gS9hELr3qWF9wY3KHePW5cvO9ismWLhNC+9vbjVaawNAWYHt3E
-         t1OtmWsPSjuP1X4If5aUxoxG3bxQBBSDeMfnljMbpCyH/JvOStbnsesYxBL1Tg+gVmPi
-         r7ZDAFCaXKIaNjkgnKj9OOtz03dpR6cthm3YvqSBnJZ+8bELz8fvkBGlhVL8ViSPc9RW
-         6wFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=efzOv4dIr4tgBETsjp5OsgnPN6Aum/KcEtDZ5+WY/5s=;
-        b=M9dcOEPDt8N+DcsJTaP9rjFRL+aqbcdnQFOpbcEqt+4hxNDVGwEmvDMeqxKZZHJ1VF
-         8xQcSOTahFEJ0uH0bxVAqq2UloKfuNu/3MRTAuK8WqM4CUq8thhB9oAkrRzFvbnUfYAi
-         QCRnvxVNNMoB1A5hfUJJrqCV0kyPQzZhn3AUNFqyLRfVVoLF16DMN8nr3ZBdX5IjdCiG
-         W3uCcDLs+4TP3Y4MSC0t6QZn3TC+USvHfiZHLyFeBrhz9Z0n5nx403/qd/Nr1se2prV+
-         BTLcNwS9/ve2ALThEfC3TBG1P8JGSzad2ubxVOV0c3XlAIzT6XnL1ANhcu6IjYW7o8mg
-         HjlQ==
-X-Gm-Message-State: AOAM530djaFOhOgq8UziJ4TcgGLIvgK4X5YTRwa/bzxIkgwAUy6Y+yjB
-        T73yiht1/CKuj2THv1NQg2CCSu/xYT7HxMcq
-X-Google-Smtp-Source: ABdhPJwwADkU22Qt/uwzkEAdoHaiz77EIhH44oK6ZYfgfzgGV14uHRVicGD7jKPWsdyDYtAt/fb4Sg==
-X-Received: by 2002:a5d:58d9:0:b0:203:fc5c:ba87 with SMTP id o25-20020a5d58d9000000b00203fc5cba87mr11845270wrf.79.1648930746405;
-        Sat, 02 Apr 2022 13:19:06 -0700 (PDT)
-Received: from [192.168.0.171] (xdsl-188-155-201-27.adslplus.ch. [188.155.201.27])
-        by smtp.gmail.com with ESMTPSA id 2-20020a056000154200b00203ee1fd1desm5810812wry.64.2022.04.02.13.19.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Apr 2022 13:19:05 -0700 (PDT)
-Message-ID: <793a88b8-148e-c9a0-3c21-4f15380e1085@linaro.org>
-Date:   Sat, 2 Apr 2022 22:19:05 +0200
+        Sat, 2 Apr 2022 23:08:19 -0400
+X-Greylist: delayed 362 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 02 Apr 2022 20:06:24 PDT
+Received: from mta-out-01.alice.it (mta-out-01.alice.it [217.169.118.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 57CD638DAF
+        for <linux-crypto@vger.kernel.org>; Sat,  2 Apr 2022 20:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alice.it; s=20211207; t=1648955184; 
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        h=Reply-To:From:To:Date:Message-ID:MIME-Version;
+        b=k+TwgV3qjycu/WhjdJvwtr5KUIA1qeEdCJNu4ABqlP5AfsJzKW3fktnm04pxArH6thFq8eT56qfWf+NsrQ2rmL6HW/vj8W/AW4DAaC4JxIwRKbpGgJhBdisTZ3tokMdu5rW/MAGG73P5YVsOYfrHH6iTmPSuhC9FPh4d2ECrtHhOqO20pYrECfkehfiEHEo4FEocxStOtOGwhz71JFjPBs4/LrYhBABaWKMUXmq3AZf38s2rNgml9NeUcsvLg4HRkXzHZn4DUlDcL52sivLcghe1j3NZcLMM5T3PdLke7wbP3S7n6jbFC16XyRmbbg8+CLeU64bo2X84EuDZ4J7YZg==
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgedvvddrudeiledgiedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuvffgnffgvefqoffkvfetnffktedpqfgfvfenuceurghilhhouhhtmecufedtudenucfgmhhpthihuchsuhgsjhgvtghtucdluddtmdengfhmphhthicusghougihucdlhedtmdenucfjughrpehrhffvfffkggestddtfedttddttdenucfhrhhomhephggvuchhrghvvgcurghnuchofhhfvghruchtohcuihhnvhgvshhtuchinhcuhihouhhrucgtohhunhhtrhihuchunhguvghrucgruchjohhinhhtuchvvghnthhurhgvuchprghrthhnvghrshhhihhpuchplhgvrghsvgcurhgvphhlhicufhhorhcumhhorhgvucguvghtrghilhhsuceofhgpphgvnhhnrgesrghlihgtvgdrihhtqeenucggtffrrghtthgvrhhnpeehjeetgefhleetiedtkeelfffgjeeugeegleekueffgfegtdekkeeifedvvdffteenucfkphepudejiedrvddvjedrvdegvddrudeltdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopegrlhhitggvrdhithdpihhnvghtpedujeeirddvvdejrddvgedvrdduledtpdhmrghilhhfrhhomhepfhgpphgvnhhnrgesrghlihgtvgdrihhtpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqtghrhihpthhosehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-RazorGate-Vade-Verdict: clean 60
+X-RazorGate-Vade-Classification: clean
+Received: from alice.it (176.227.242.190) by mta-out-01.alice.it (5.8.807.04) (authenticated as f_penna@alice.it)
+        id 6244775000E19C64 for linux-crypto@vger.kernel.org; Sun, 3 Apr 2022 05:00:20 +0200
+Reply-To: dougfield20@inbox.lv
+From:   We have an offer to invest in your country under a
+         joint venture partnership please reply for more
+         details <f_penna@alice.it>
+To:     linux-crypto@vger.kernel.org
+Date:   02 Apr 2022 20:00:19 -0700
+Message-ID: <20220402200019.ABAA840A4F1FC4F0@alice.it>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v4 28/33] dt-bindings: crypto: rockchip: convert to new
- driver bindings
-Content-Language: en-US
-To:     LABBE Corentin <clabbe@baylibre.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     heiko@sntech.de, herbert@gondor.apana.org.au, krzk+dt@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-References: <20220401201804.2867154-1-clabbe@baylibre.com>
- <20220401201804.2867154-29-clabbe@baylibre.com>
- <30305936-4b69-e1ce-44c2-0d1d113b460e@linaro.org> <Ykitm1uLmQtNy3b2@Red>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <Ykitm1uLmQtNy3b2@Red>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_50,BODY_EMPTY,
+        DKIM_INVALID,DKIM_SIGNED,EMPTY_MESSAGE,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,MISSING_SUBJECT,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.7 RCVD_IN_DNSWL_LOW RBL: Sender listed at https://www.dnswl.org/,
+        *       low trust
+        *      [217.169.118.7 listed in list.dnswl.org]
+        *  0.0 RCVD_IN_MSPIKE_L3 RBL: Low reputation (-3)
+        *      [217.169.118.7 listed in bl.mailspike.net]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5091]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [f_penna[at]alice.it]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [dougfield20[at]inbox.lv]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  2.3 EMPTY_MESSAGE Message appears to have no textual parts and no
+        *      Subject: text
+        *  1.8 MISSING_SUBJECT Missing Subject: header
+        *  0.1 DKIM_INVALID DKIM or DK signature exists, but is not valid
+        *  0.0 RCVD_IN_MSPIKE_BL Mailspike blacklisted
+        *  0.0 BODY_EMPTY No body text in message
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 02/04/2022 22:10, LABBE Corentin wrote:
-> Le Sat, Apr 02, 2022 at 01:53:58PM +0200, Krzysztof Kozlowski a écrit :
->> On 01/04/2022 22:17, Corentin Labbe wrote:
->>> The latest addition to the rockchip crypto driver need to update the
->>> driver bindings.
->>>
-
->>>  
->>>    reset-names:
->>> -    maxItems: 1
->>> +    deprecated: true
->>
->> Why reset-names are being deprecated? Did we talk about this?
->>
-> 
-> Since I use the devm_reset_control_array_get_exclusive, there is no need to have reset-names.
-
-The reset-names are not only for Linux driver. In any case, Linux driver
-could get always reset/clock/gpio by index, not by name.
-
-Additionally, there can be different implementation in different
-system/user of bindings.
-
-Therefore the driver implementation does not matter (or matters little)
-for the bindings, so for multi entries the reset-names are needed.
-
-Best regards,
-Krzysztof
