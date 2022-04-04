@@ -2,141 +2,431 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5D24F204C
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 01:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457D94F20AE
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 04:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbiDDXgL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 4 Apr 2022 19:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
+        id S229506AbiDEBxk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 4 Apr 2022 21:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbiDDXgK (ORCPT
+        with ESMTP id S229457AbiDEBxj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 4 Apr 2022 19:36:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E6813EB7;
-        Mon,  4 Apr 2022 16:34:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 98A43B81A12;
-        Mon,  4 Apr 2022 23:34:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F290C2BBE4;
-        Mon,  4 Apr 2022 23:34:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649115243;
-        bh=eyAsMKYGzvH+3OrgXnEs+25VO7XTUXzbVRM181PAF5U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eh2BN5YS5fjaSbHOqWp41DWSblIIt/lekO/Z/1O6HKNmGiF5IWQXxVme0XUwPkRPv
-         pawsPW+56uspMKlkm+7O+ogN6DC0h2iPHD3D1UgUvWEg1ZxvhiuEGMCZb54YD8NlG+
-         5sDNJnUwcfyPShs5oL8e4ryBW/WwUfu/uwofE2neiFuz8gymutRaZhIH0+B9/Uc3Y5
-         Gcu8/PrKrz+fRPQGInplyt2Eo6kO1XrwNOvkdljXSihi2o6L4DXo2zwCgF+AZvvR68
-         JZeqJDK0d9Q2J24LBQxG5eIwgbXc8oMJJQcZiO60Dk7oqoeUWKjCXg4MgAaG651P3t
-         Kjl/GGM1oeDdw==
-Date:   Mon, 4 Apr 2022 16:34:01 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: testmgr - test in-place en/decryption with two
- sglists
-Message-ID: <YkuAaabISmyqcjoS@sol.localdomain>
-References: <20220326071159.56056-1-ebiggers@kernel.org>
- <CAOtvUMfpqxrdgmnzpkCW=EdUmquXYC6F=rwW+n8koJAt0Wg38g@mail.gmail.com>
+        Mon, 4 Apr 2022 21:53:39 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFAD15E205
+        for <linux-crypto@vger.kernel.org>; Mon,  4 Apr 2022 18:08:34 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id p10so20403284lfa.12
+        for <linux-crypto@vger.kernel.org>; Mon, 04 Apr 2022 18:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CWwE63Uj70Dz+evqLhQ44oFva+2asIsEVowZ5R1Hj4s=;
+        b=MTLi0SN2/CtQ9VsgDxb4iZw37Af+lcedVzKzwlt/rmiU3szSaf1Mv3N/u9xi3EjKW4
+         As58Mj2xb6L0b04HBhREhOF8LOwlWJtKm6vySkVCOclR11PWOC6bhMTYqgE05YJhtBdb
+         5OQ3jY3GywxxqaPBCQtQbevm0MzOCT72UjiWNZM4dmLvb5WJEN1gYU8dQ6hroNZA1ZCP
+         S8AMDnex+b44bPoRiKsyTACN7qHEPi1mkQP3F4JZWO4U0iSsQNR5wQRuyMUb73/7G4qF
+         n6uxWWdRtzpkW2SMWrnLG/oq95ZvLjK62GJT9FntZmFsCbAyqgHqvFNdWlyOAPhHY5mH
+         T0OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CWwE63Uj70Dz+evqLhQ44oFva+2asIsEVowZ5R1Hj4s=;
+        b=RGYpyszyOdRbO5L1+gIWeg8nu42LFKzIgApmUa2QFAO/aKzx5p0muWlyuUBXKyLd/k
+         VgY3kSrHUYqYQo3p7Ejo6oLQiaRqyDc1n8BBeJbvKgBTSq19LdHUcwvu3ZM1CtetO7V5
+         ivckLjB/oB/rrWa+mH2pLGXNwI9uqkiQh+W0F1T3dg43RcqC7xMI1AC5IYbLRLYfLn6y
+         RK9kr6+w+rGZDgvx/+fi8VzwTcdPM0rsiTh0P05AA/+QPcHSocHV7H2NnTJKeSCTd/Yw
+         +K+1G1w4hn/JR5GjWQgoiE9KBR2bN6+gvIJMG8VzXP0FiSfgBuYXNXxM2u2hAp8rPLQ6
+         vC1g==
+X-Gm-Message-State: AOAM533QX174VWKAL8OOtJlOassgWlysp7B5DoCOC4FRahiuTdTFehfO
+        BH/F2tB5NZQANARIZ9JAswb1I72NNVkHzZKFAoVtl320QJPoKz/M
+X-Google-Smtp-Source: ABdhPJzBsKO2j9MyoYnx+NlhM7baoEAm89DrhoHnN5DW27ua2r0tUJkiTippVbrs/IZPEpxjLGP1OVm7wmko/9JjohY=
+X-Received: by 2002:a05:6402:3604:b0:41c:c4e6:2988 with SMTP id
+ el4-20020a056402360400b0041cc4e62988mr631649edb.157.1649115815748; Mon, 04
+ Apr 2022 16:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOtvUMfpqxrdgmnzpkCW=EdUmquXYC6F=rwW+n8koJAt0Wg38g@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Tue, 5 Apr 2022 00:43:24 +0100
+Message-ID: <CAHpNFcPWphMzXVYiPtkyUVBUQKWUc_cW4NkG4k4xeiGbUYBHhA@mail.gmail.com>
+Subject: Parallax Cryptographic Processing Unit: RS AES-CCM & AES-GCM & Other
+ Cypher Modulus + CCM & GCM can be accelerated with a joint AES Crypto module
+ : Modulus Dual Encrypt & Decrypt package : Processor feature
+To:     torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Mar 27, 2022 at 09:04:43AM +0300, Gilad Ben-Yossef wrote:
-> On Sat, Mar 26, 2022 at 10:13 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > From: Eric Biggers <ebiggers@google.com>
-> >
-> > As was established in the thread
-> > https://lore.kernel.org/linux-crypto/20220223080400.139367-1-gilad@benyossef.com/T/#u,
-> > many crypto API users doing in-place en/decryption don't use the same
-> > scatterlist pointers for the source and destination, but rather use
-> > separate scatterlists that point to the same memory.  This case isn't
-> > tested by the self-tests, resulting in bugs.
-> >
-> > This is the natural usage of the crypto API in some cases, so requiring
-> > API users to avoid this usage is not reasonable.
-> >
-> > Therefore, update the self-tests to start testing this case.
-> >
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> 
-> 
-> Thank you Eric.
-> 
-> I have given this a lot of thought and here is what I predict will
-> happen thanks to this added test:
-> - We will not find a driver that this breaks, in the sense of
-> producing wrong results and triggering failure in this test.
-> - We probably will see drivers that when running this test when DMA
-> debug is compiled and enabled trigger the debug warning about double
-> DMA mapping of the same cache line.
-> 
-> The reason is that these double mapping stemming from this test will
-> be from mapping the same buffer as source and destination.
-> As such, the situation that is the cause for the DMA debug warning, of
-> a mapping causing  cache flush invalidate, followed by DMA, followed
-> by another mapping causing cache flush/invalidate while the DMA is in
-> flight, will not happen. Instead we will have mapping ->
-> flush/invalidate -> another mapping -> flush/invalidate -> DMA ...
-> 
-> Note, this is certainly not a claim we should not add this test! on
-> the contrary ...
-> 
-> In fact, I would be tempted to claim that this means the real problem
-> is with an over zealous DMA debug logic. Unfortunately, I can think of
-> other scenarios where things are not so simple:
-> 
-> For example, what happens if a crypto API user has a buffer, which it
-> divides into two parts, and then submit a crypto op on one part and
-> another crypto op on the 2nd part (say encrypt and hash, just as an
-> example). For the best of my knowledge, there is nothing forcing the
-> split between the two parts to fall on a cache line. This can cause a
-> double mapping of the same cache line - and this time the warning is
-> real, because we are not guaranteed a single DMA operation following
-> the two mappings. There is nothing much a crypto driver can do even -
-> the two operations don't have to be done by the same driver at all...
-> 
-> I believe the scenario you are proposing to test is a benign example
-> of a larger issue. I also believe this is an example of Worse in
-> Better* and that the right solution is to dictate certain rules on the
-> callers of the crypto API. Whether these rules should or should not
-> include a limitation of not passing the same buffer via two different
-> scatter gather list to the same crypto op is debatable, but I think we
-> cannot run away from defining some rules.
-> 
-> I would really love for others to voice an opinion on this. It seems a
-> rather narrow discussion so far between the two of us on what I feel
-> is  a broader issue.
+Duke Abbaddon <duke.abbaddon@gmail.com>
+Mon, Apr 4, 10:41 AM (13 hours ago)
+to torvalds, bcc: heiko, bcc: guoren, bcc: atish.patra, bcc: hch, bcc:
+Anup, bcc: :, bcc: Dennis, bcc: ebiggers@kernel.org, bcc: Emil, bcc:
+jarkko@kernel.org, bcc: Jonathan, bcc: keyrings@vger.kernel.org, bcc:
+kvalo@kernel.org, bcc: linux-crypto@vger.kernel.org, bcc:
+linux-iio@vger.kernel.org, bcc: linux-integrity@vger.kernel.org, bcc:
+linux-kernel@vger.kernel.org, bcc: linux-mips@vger.kernel.org, bcc:
+linux-security-module@vger.kernel.org, bcc:
+linux-wireless@vger.kernel.org, bcc: luto@kernel.org, bcc: Nathan,
+bcc: netdev@vger.kernel.org, bcc: sultan@kerneltoast.com, bcc:
+ak@linux.intel.com, bcc: Andrew, bcc: Andy, bcc:
+development@linux.org, bcc: feedback@linux.org, bcc:
+geert@linux-m68k.org, bcc: Greg, bcc: hostmaster+ntp@linux-ia64.org,
+bcc: jejb@linux.ibm.com, bcc: kirill.shutemov@linux.intel.com, bcc:
+linus@linux.org, bcc: linux-m68k@lists.linux-m68k.org, bcc:
+linux-riscv@lists.infradead.org, bcc: linux@dominikbrodowski.net, bcc:
+Micha=C5=82, bcc: press@linux.org, bcc: Rasmus, bcc:
+sathyanarayanan.kuppuswamy@linux.intel.com, bcc: security@linux.org,
+bcc: support@linux.org, bcc: torvalds@linux-foundation.org, bcc:
+webmaster@linux.org, bcc: zohar@linux.ibm.com, bcc:
+info@vialicensing.com, bcc: corpcomm@qualcomm.com, bcc:
+rukikaire@un.org, bcc: virt-owner@lists.fedoraproject.org, bcc:
+martin@strongswan.org, bcc: security@microsoft.com, bcc:
+sotonino@un.org, bcc: security@ubuntu.com, bcc:
+opencode@microsoft.com, bcc: moses.osani@un.org, bcc:
+webmaster@playstation.com, bcc: webmaster@amazon.com, bcc:
+Corporate.Secretary@amd.com, bcc: haqf@un.org, bcc:
+Copyright_Agent@spe.sony.com, bcc: tremblay@un.org, bcc:
+webmaster@sony.com, bcc: dujarric@un.org, bcc: consul@ps.mofa.go.jp,
+bcc: press@eu.sony.com, bcc: agriculture@rusemb.org.uk, bcc:
+suzuki.poulose@arm.com, bcc: grovesn@un.org, bcc: kaneko@un.org, bcc:
+media.help@apple.com, bcc: security@asus.com, bcc:
+visa@egyptconsulate.co.uk, bcc: help.redhat.com, bcc:
+cirrus_logic@pr-tocs.co.jp, bcc: customercare@logitech.com, bcc: Logi,
+bcc: logitech@feverpr.com, bcc: logitech@vertigo6.nl, bcc:
+logitech@wellcom.fr, bcc: mediarelations@logitech.com, bcc:
+morchard@scottlogic.co.uk, bcc: samasaki@logitech.com, bcc:
+slan@logitech.com, bcc: support@logitech.com, bcc: pctech@realtek.com,
+bcc: press@google.com, bcc: Nintendo, bcc: tech.support@amd.com, bcc:
+Nvidia, bcc: security@intel.com, bcc: saporit@us.ibm.com, bcc:
+Gabriel.Kerneis@ssi.gouv.fr, bcc: hughsient@gmail.com, bcc:
+ksuzuki@polyphony.co.jp, bcc: uchimura@polyphony.co.jp, bcc:
+mario.limonciello@amd.com, bcc: thomas.lendacky@amd.com, bcc:
+john.allen@amd.com, bcc: herbert@gondor.apana.org.au
 
-I don't have an answer, sorry.
+Modulus Dual Encrypt & Decrypt package : Processor feature (c)RS
 
-I personally don't actually have a lot of interest in the crypto accelerator
-support in the crypto API, since in the domain I work in (storage encryption)
-it's much more common for inline encryption hardware to be used instead, and
-that has its own support in the Linux block layer, separate from the crypto API.
+AES-CCM & AES-GCM & Other Cypher Modulus + CCM & GCM can be
+accelerated with a joint AES Crypto module,
 
-If there are fundamental issues with how crypto accelerators are supported in
-the crypto API, then I think that the people who actually care about such
-hardware need to get together to create a plan for correctly supporting it.
-Doing separate crypto operations on contiguous buffers is absolutely something
-that users can expect to work, so if that in fact cannot work, then I expect
-that this limitation will need to be very explicitly documented and checked in
-the crypto API, and users will need to explicitly opt-in to being able to use
-crypto accelerators rather than having them (sort of) be used by default.
+Processor feature & package : Module list:
 
-- Eric
+2 Decryption pipelines working in parallel,
+With a Shared cache & RAM Module
+Modulus & Semi-parallel modulating decryption & Encryption combined
+with Encapsulation Cypher IP Protocol packet
+
+Parallax Cryptographic Processing Unit: RS
+
+The capacity To Multiply decryption on specific hardware in situations
+such as lower Bit precision is to be implemented as follows:
+
+On AES-NI & ARM Cryptographic processors; In particular PPS(ARM+) & SiMD ..
+
+The capacity to exploit the fact that the nonce is 16Bit to 64Bit &
+full float upto 128Bit for legal decryption (client) means there is a
+simple method to use:
+
+In situations that a AES-NI & ARM Cryptographic unit can process 2
+threads on a 256Bit Function we can do both the main 128Bit/192Bit &
+the nonce 16Bit to 64Bit & Enable a single instruction Roll to
+Synchronise both The main HASH & Nonce.
+
+AES & Crypto hardware can utilise the CPU/GPU/Processor FPU & SiMD to
+decrypt the nonce (smaller so fast) & in the same 8bto to 64Bits of
+code; Inline & parallax the cryptographic function.
+
+With a 256Bit AES-NI & Cryptographic unit : Parallel Decryption &
+Return Encryption by using 2x 128Bit & a Processor Enciphered Nonce.
+
+(c)Rupert S
+
+*reference* https://bit.ly/VESA_BT
+
+Performance Comparison of AES-CCM and AES-GCM Authenticated Encryption Mode=
+s
+http://worldcomp-proceedings.com/proc/p2016/SAM9746.pdf
+
+Basic comparison of Modes for Authenticated-Encryption -IAPM, XCBC,
+OCB, CCM, EAX, CWC, GCM, PCFB, CS
+https://www.fi.muni.cz/~xsvenda/docs/AE_comparison_ipics04.pdf
+
+*****
+ICE-SSRTP GEA Replacement 2022 + (c)RS
+
+"GEA-1 and GEA-2, which are very similar (GEA-2 is just an extension
+of GEA-1 with a higher amount of processing, and apparently not
+weakened) are bit-oriented stream ciphers."
+
+GEA-2 > GEA-3 is therefor 64Bit Safe (Mobile calls) & 128Bit Safe
+(Reasonable security)
+SHA2, SHA3therefor 128Bit Safe (Reasonable security Mobile) ++
+AES & PolyChaCha both provide a premise of 128Bit++
+
+So by reason alone GEA has a place in our hearts.
+
+*
+
+ICE-SSRTP GEA Replacement 2022 + (c)RS
+
+IiCE-SSR for digital channel infrastructure can help heal GPRS+ 3G+ 4G+ 5G+
+
+Time NTP Protocols : is usable in 2G+ <> 5G+LTE Network SIM
+
+ICE-SSRTP Encryption AES,Blake2, Poly ChaCha, SM4, SHA2, SHA3, GEA-1 and GE=
+A-2
+'Ideal for USB Dongle & Radio' in Rust RS ' Ideal for Quality TPM
+Implementation'
+
+"GEA-1 and GEA-2, which are very similar (GEA-2 is just an extension
+of GEA-1 with a higher amount of processing, and apparently not
+weakened) are bit-oriented stream ciphers."
+
+IiCE-SSRTP : Interleaved Inverted Signal Send & Receive Time Crystal Protoc=
+ol
+
+Interleaved signals help Isolate noise from a Signal Send & Receive ...
+
+Overlapping inverted waves are a profile for complex audio & FFT is the res=
+ult.
+
+Interleaved, Inverted & Compressed & a simple encryption?
+
+*
+
+Time differentiated : Interleave, Inversion & differentiating Elliptic curv=
+e.
+
+We will be able to know and test the Cypher : PRINCIPLE OF INTENT TO TRUST
+
+We know of a cypher but : (Principle RS)
+
+We blend the cypher..
+Interleaved pages of a cypher obfuscate : PAL CScam does this
+
+Timed : Theoretically unique to you in principle for imprecision, But
+we cannot really have imprecise in Crypto!
+
+But we can have a set time & in effect Elliptic curve a transient variable =
+T,
+With this, Interleave the resulting pages (RAM Buffer Concept)
+
+Invert them over Time Var =3D T
+
+We can do all & principally this is relatively simple.
+
+(c)RS
+
+*
+
+Modulus Dual Encrypt & Decrypt package : Processor feature (c)RS
+
+AES-CCM & AES-GCM & Other Cypher Modulus + CCM & GCM can be
+accelerated with a joint AES Crypto module,
+
+Processor feature & package : Module list:
+
+2 Decryption pipelines working in parallel,
+With a Shared cache & RAM Module
+Modulus & Semi-parallel modulating decryption & Encryption combined
+with Encapsulation Cypher IP Protocol packet
+
+Parallax Cryptographic Processing Unit: RS
+
+The capacity To Multiply decryption on specific hardware in situations
+such as lower Bit precision is to be implemented as follows:
+
+On AES-NI & ARM Cryptographic processors; In particular PSP+PPS(ARM+) & SiM=
+D ..
+
+The capacity to exploit the fact that the nonce is 16Bit to 64Bit &
+full float upto 128Bit for legal decryption (client) means there is a
+simple method to use:
+
+In situations that a AES-NI & ARM Cryptographic unit can process 2
+threads on a 256Bit Function we can do both the main 128Bit/192Bit &
+the nonce 16Bit to 64Bit & Enable a single instruction Roll to
+Synchronise both The main HASH & Nonce.
+
+AES & Crypto hardware can utilise the CPU/GPU/Processor FPU & SiMD to
+decrypt the nonce (smaller so fast) & in the same 8bto to 64Bits of
+code; Inline & parallax the cryptographic function.
+
+With a 256Bit AES-NI & Cryptographic unit : Parallel Decryption &
+Return Encryption by using 2x 128Bit & a Processor Enciphered Nonce.
+
+(c)Rupert S
+
+*reference*
+
+Performance Comparison of AES-CCM and AES-GCM Authenticated Encryption Mode=
+s
+http://worldcomp-proceedings.com/proc/p2016/SAM9746.pdf
+
+Basic comparison of Modes for Authenticated-Encryption -IAPM, XCBC,
+OCB, CCM, EAX, CWC, GCM, PCFB, CS
+https://www.fi.muni.cz/~xsvenda/docs/AE_comparison_ipics04.pdf
+
+
+*
+
+Example of use:
+
+Nostalgic TriBand : Independence RADIO : Send : Receive :Rebel-you trade ma=
+rker
+
+Nostalgic TriBand 5hz banding 2 to 5 bands, Close proximity..
+Interleaved channel BAND.
+
+Microchip clock and 50Mhz Risc Rio processor : 8Bit : 16Bit : 18Bit
+Coprocessor digital channel selector &
+
+channel Key selection based on unique..
+
+Crystal time Quartz with Synced Tick (Regulated & modular)
+
+All digital interface and resistor ring channel & sync selector with
+micro band tuning firmware.
+
+(c)Rupert S
+
+*
+
+Good for cables ? and noise ?
+
+Presenting :  IiCE-SSR for digital channel infrastructure & cables
+<Yes Even The Internet &+ Ethernet 5 Band>
+
+So the question of interleaved Bands & or signal inversion is a simple
+question but we have,
+
+SSD & HDD Cables & does signal inversion help us? Do interleaving bands hel=
+p us?
+
+In Audio inversion would be a strange way to hear! but the inversion
+does help alleviate ...
+
+Transistor emission fatigue...
+
+IiCE-SSRTP : Interleaved Inverted Signal Send & Receive Time Crystal Protoc=
+ol
+
+Interleaved signals help Isolate noise from a Signal Send & Receive ...
+
+Overlapping inverted waves are a profile for complex audio & FFT is the res=
+ult.
+
+Interleaved, Inverted & Compressed & a simple encryption?
+
+Good for cables ? and noise ?
+
+Presenting : IiCE for digital channel infrastructure & cables <Yes
+Even The Internet &+ Ethernet 5 Band>
+
+(c) Rupert S
+
+https://science.n-helix.com/2018/12/rng.html
+
+https://science.n-helix.com/2022/02/rdseed.html
+
+https://science.n-helix.com/2017/04/rng-and-random-web.html
+
+https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+https://science.n-helix.com/2021/11/monticarlo-workload-selector.html
+
+https://science.n-helix.com/2022/03/security-aspect-leaf-hash-identifiers.h=
+tml
+
+
+Audio, Visual & Bluetooth & Headset & mobile developments only go so far:
+
+https://science.n-helix.com/2022/02/visual-acuity-of-eye-replacements.html
+
+https://science.n-helix.com/2022/03/ice-ssrtp.html
+
+https://science.n-helix.com/2021/11/ihmtes.html
+
+https://science.n-helix.com/2021/10/eccd-vr-3datmos-enhanced-codec.html
+https://science.n-helix.com/2021/11/wave-focus-anc.html
+https://science.n-helix.com/2021/12/3d-audio-plugin.html
+
+Integral to Telecoms Security TRNG
+
+*RAND OP Ubuntu :
+https://manpages.ubuntu.com/manpages/trusty/man1/pollinate.1.html
+
+https://pollinate.n-helix.com
+
+*
+
+***** Dukes Of THRUST ******
+
+Nostalgic TriBand : Independence RADIO : Send : Receive :Rebel-you trade ma=
+rkerz
+
+Nostalgic TriBand 5hz banding 2 to 5 bands, Close proximity..
+Interleaved channel BAND.
+
+Microchip clock and 50Mhz Risc Rio processor : 8Bit : 16Bit : 18Bit
+Coprocessor digital channel selector &
+
+channel Key selection based on unique..
+
+Crystal time Quartz with Synced Tick (Regulated & modular)
+
+All digital interface and resistor ring channel & sync selector with
+micro band tuning firmware.
+
+(c)Rupert S
+
+Dev/Random : Importance
+
+Dev/Random : Importance : Our C/T/RNG Can Help GEA-2 Open Software
+implementation of 3 Bits (T/RNG) Not 1 : We need Chaos : GEA-1 and
+GEA-2 Implementations we will improve with our /Dev/Random
+
+Our C/T/RNG Can Help GEA-2 Open Software implementation of 3 Bits
+(T/RNG) Not 1 : We need Chaos : GEA-1 and GEA-2 Implementations we
+will improve with our /Dev/Random
+
+We can improve GPRS 2G to 5G networks still need to save power, GPRS
+Doubles a phones capacity to run all day,
+
+Code can and will be improved, Proposals include:
+
+Blake2
+ChaCha
+SM4
+SHA2
+SHA3
+
+Elliptic Encipher
+AES
+Poly ChaCha
+
+Firstly we need a good solid & stable /dev/random
+
+So we can examine the issue with a true SEED!
+
+Rupert S https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+TRNG Samples & Method DRAND Proud!
+
+https://drive.google.com/file/d/1b_Sl1oI7qTlc6__ihLt-N601nyLsY7QU/view?usp=
+=3Ddrive_web
+https://drive.google.com/file/d/1yi4ERt0xdPc9ooh9vWrPY1LV_eXV-1Wc/view?usp=
+=3Ddrive_web
+https://drive.google.com/file/d/11dKUNl0ngouSIJzOD92lO546tfGwC0tu/view?usp=
+=3Ddrive_web
+https://drive.google.com/file/d/10a0E4Gh5S-itzBVh0fOaxS7JS9ru-68T/view?usp=
+=3Ddrive_web
+
+https://github.com/P1sec/gea-implementation
