@@ -2,48 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A745A4F4FF8
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 04:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83E74F4FC9
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 04:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348805AbiDFBH4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Apr 2022 21:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
+        id S239984AbiDFBBm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Apr 2022 21:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1445942AbiDEPnu (ORCPT
+        with ESMTP id S1457457AbiDEQDP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Apr 2022 11:43:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2CF194819;
-        Tue,  5 Apr 2022 07:10:26 -0700 (PDT)
+        Tue, 5 Apr 2022 12:03:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5E0B78;
+        Tue,  5 Apr 2022 08:46:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 372BAB81C9B;
-        Tue,  5 Apr 2022 14:10:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A8CFC385A6;
-        Tue,  5 Apr 2022 14:10:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7003261864;
+        Tue,  5 Apr 2022 15:46:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BFDEC385A0;
+        Tue,  5 Apr 2022 15:46:37 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="OqzFRuQw"
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="IrqXNjNr"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649167820;
+        t=1649173595;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=KY5AEKEkClJXCIcB/dp2K6YipiPmN6Pkkmc24/xM1sc=;
-        b=OqzFRuQwwJQY39ID/slPUumYo6AOavy60E9Jx/PhGjvSpalfA9QaWfYovGjvouaDvLKbcc
-        8Y9+iNUVaOEas6EsxLIxTQa2xEvq7DfBph6PJoYhE49AnrjBdLnH+SW111QD2coIaLxXyo
-        nuigC41yGXliUAzBh0XPKdNA1zzrexA=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 61798ffe (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 5 Apr 2022 14:10:20 +0000 (UTC)
+        bh=kMW6nv0KgyiuvN9yvKUvui9YNVE/98hEjd4XPkThs90=;
+        b=IrqXNjNr7ddyqE5MMjbXjHDxIX0NW+WVojRksZ6m0S4+lmcqURfAp2f6dg+tp5HZEYj0BN
+        7VDPM5mxDQYq2XrJtyazvVVJ+LnJm9flQ72ub1UFG5bYuX5BUoj+xjFn3GR00z2iP+ZMZg
+        0G9HiVfUq8xpP0VzzddhAzUow8GfS9k=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ebe173d8 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Tue, 5 Apr 2022 15:46:35 +0000 (UTC)
 From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        torvalds@linux-foundation.org
+To:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: [PATCH] random: opportunistically initialize on /dev/urandom reads
-Date:   Tue,  5 Apr 2022 16:09:06 +0200
-Message-Id: <20220405140906.222350-1-Jason@zx2c4.com>
+        Theodore Ts'o <tytso@mit.edu>, Jann Horn <jannh@google.com>
+Subject: [PATCH] random: do not allow user to keep crng key around on stack
+Date:   Tue,  5 Apr 2022 17:46:27 +0200
+Message-Id: <20220405154627.244473-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,56 +54,82 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In 6f98a4bfee72 ("random: block in /dev/urandom"), we tried to make a
-successful try_to_generate_entropy() call *required* if the RNG was not
-already initialized. Unfortunately, weird architectures and old
-userspaces combined in TCG test harnesses, making that change still not
-realistic, so it was reverted in 0313bc278dac ("Revert "random: block in
-/dev/urandom"").
+The fast key erasure RNG design relies on the key that's used to be used
+and then discarded. We do this, making judicious use of
+memzero_explicit().  However, reads to /dev/urandom and calls to
+getrandom() involve a copy_to_user(), and userspace can use FUSE or
+userfaultfd, or make a massive call, dynamically remap memory addresses
+as it goes, and set the process priority to idle, in order to keep a
+kernel stack alive indefinitely. By probing
+/proc/sys/kernel/random/entropy_avail to learn when the crng key is
+refreshed, a malicious userspace could mount this attack every 5 minutes
+thereafter, breaking the crng's forward secrecy.
 
-However, rather than making a successful try_to_generate_entropy() call
-*required*, we can instead make it *best-effort*.
+In order to fix this, we just overwrite the stack's key with the first
+32 bytes of the "free" fast key erasure output. This makes short reads a
+tiny bit slower, since they no longer get 32 bytes for free, but short
+reads are already faster than syscall overhead, so it doesn't matter.
+And for long reads, the difference is lost in the amortization, so it
+doesn't change anything.
 
-If try_to_generate_entropy() fails, it fails, and nothing changes from
-the current behavior. If it succeeds, then /dev/urandom becomes safe to
-use for free. This way, we don't risk the regression potential that led
-to us reverting the required-try_to_generate_entropy() call before.
-
-Practically speaking, this means that at least on x86, /dev/urandom
-becomes safe. Probably other architectures with working cycle counters
-will also become safe. And architectures with slow or broken cycle
-counters at least won't be affected at all by this change.
-
-So it may not be the glorious "all things are unified!" change we were
-hoping for initially, but practically speaking, it makes a positive
-impact.
+We don't need to do this for get_random_bytes() and the various
+kernel-space callers, and later, if we ever switch to always batching,
+this won't be necessary either, so there's no need to change the API of
+these functions.
 
 Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Jann Horn <jannh@google.com>
+Fixes: c92e040d575a ("random: add backtracking protection to the CRNG")
+Fixes: 186873c549df ("random: use simpler fast key erasure flow on per-cpu keys")
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- drivers/char/random.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/char/random.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index ee3ad2ba0942..388025d6d38d 100644
+index 388025d6d38d..1eb220a5f44f 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1534,6 +1534,13 @@ static ssize_t urandom_read(struct file *file, char __user *buf, size_t nbytes,
- {
- 	static int maxwarn = 10;
+@@ -532,19 +532,20 @@ static ssize_t get_random_bytes_user(void __user *buf, size_t nbytes)
+ 	if (!nbytes)
+ 		return 0;
  
+-	len = min_t(size_t, 32, nbytes);
+-	crng_make_state(chacha_state, output, len);
+-
+-	if (copy_to_user(buf, output, len))
+-		return -EFAULT;
+-	nbytes -= len;
+-	buf += len;
+-	ret += len;
 +	/*
-+	 * Opportunistically attempt to initialize the RNG on platforms that
-+	 * have fast cycle counters, but don't (for now) require it to succeed.
++	 * Immediately overwrite the ChaCha key at index 4, in case userspace
++	 * causes copy_to_user() below to sleep forever, so that we still
++	 * retain forward secrecy in that case.
 +	 */
-+	if (!crng_ready())
-+		try_to_generate_entropy();
-+
- 	if (!crng_ready() && maxwarn > 0) {
- 		maxwarn--;
- 		if (__ratelimit(&urandom_warning))
++	crng_make_state(chacha_state, (u8 *)&chacha_state[4], CHACHA_KEY_SIZE);
+ 
+-	while (nbytes) {
++	do {
+ 		if (large_request && need_resched()) {
+-			if (signal_pending(current))
++			if (signal_pending(current)) {
++				if (!ret)
++					ret = -ERESTARTSYS;
+ 				break;
++			}
+ 			schedule();
+ 		}
+ 
+@@ -561,7 +562,7 @@ static ssize_t get_random_bytes_user(void __user *buf, size_t nbytes)
+ 		nbytes -= len;
+ 		buf += len;
+ 		ret += len;
+-	}
++	} while (nbytes);
+ 
+ 	memzero_explicit(chacha_state, sizeof(chacha_state));
+ 	memzero_explicit(output, sizeof(output));
 -- 
 2.35.1
 
