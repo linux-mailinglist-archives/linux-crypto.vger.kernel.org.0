@@ -2,169 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DACCD4F4FFF
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 04:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2AA4F5034
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 04:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349182AbiDFBH6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Apr 2022 21:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
+        id S1356190AbiDFBID (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Apr 2022 21:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573249AbiDESdI (ORCPT
+        with ESMTP id S1573368AbiDES6w (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Apr 2022 14:33:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCFD13F6F;
-        Tue,  5 Apr 2022 11:31:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2E658B81B14;
-        Tue,  5 Apr 2022 18:31:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3366DC385A1;
-        Tue,  5 Apr 2022 18:31:06 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="SOtPvIfJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649183464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hbxqdGXgyHvo5AZa69EezkVZK00OXI6xcfpBHqxTVg4=;
-        b=SOtPvIfJBBo7Ll+oKVTzb0xG0lVgEdvzjHoX5FCiY8JTUcs5XJnYPOu/9AnflugSN4MdyS
-        2lgETjqPK518zBXxlr3PIHca/HXalAEpIdQWXfecwUEpHGBh9zNrl4KwtVOA1tiNc3suCW
-        PKnDUdtxBQhqrvIVgAa9qJPxvId1toI=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id acef312e (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 5 Apr 2022 18:31:03 +0000 (UTC)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-2eafabbc80aso940677b3.11;
-        Tue, 05 Apr 2022 11:31:03 -0700 (PDT)
-X-Gm-Message-State: AOAM530/T5dibtLIxu9ljwwY6CeNSLFx7CO1cxH6lNXiyaUJrOxdDVy+
-        pecHXeZ091exPhjAGz5hauEJQQCK/zIUUS+dTgQ=
-X-Google-Smtp-Source: ABdhPJwBrfhlV2iCrDW6M6Sdg8CZoXh/UbqAyjn4rF42JQwJxIwyGOSD/7Xb9oLf69tgXjWqvKGQMpznf2vWHdbgjDk=
-X-Received: by 2002:a81:66c3:0:b0:2eb:41cf:1202 with SMTP id
- a186-20020a8166c3000000b002eb41cf1202mr4071961ywc.396.1649183462664; Tue, 05
- Apr 2022 11:31:02 -0700 (PDT)
+        Tue, 5 Apr 2022 14:58:52 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3DFCD338
+        for <linux-crypto@vger.kernel.org>; Tue,  5 Apr 2022 11:56:53 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id h11so257736ljb.2
+        for <linux-crypto@vger.kernel.org>; Tue, 05 Apr 2022 11:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zSvDe2wXRWjVXLEeBb9YX8FvDd3b9Nj5l9utIPFSSwc=;
+        b=IhyRdaotisLwt7fVHkbbAVd8yCn1BLRomcM+qu6u/xZ9Xx0SPc1HY9AXMeDo4HAAai
+         FhFmInf2Zf/ZWw3z04p7+qcFnWcYMtYX98wJI4MgIr1B6eHBp3DkPGzyfpnXPEHlSbO3
+         x5sj/rqZaZEOH2Zel5umautUuhgGoXRKYUfPk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zSvDe2wXRWjVXLEeBb9YX8FvDd3b9Nj5l9utIPFSSwc=;
+        b=uSBi7raUW9N166gjjLZVd8K6uluCGJ3BJDnB7ufJqcpsv/3+BPvCQD0oSGup21BRDZ
+         tG7xlA2VvsEYzDqG2EIkJg59MTABGp0U4mnoXBc3ny7Uz1bKAA89UMapLZwmy+ULfQqk
+         c3X3pO2WZjksUL1IvFEI3pcuzVz0UxAAZisNqConb6LrI8WjMN9IpcTYxJAc0wz0wAH3
+         FgtXKDzvCZmJXZchRn++XMtGHXdKIz8PGooMoJto4nMmoEP5kBQIOoQ7UFOw+wjilDL8
+         s8kkHXVleJ/rNT6nCA6csE4ydnpv911iXSWdB7lDo9CFShlmp7XWgVTxb3IFblj2St9q
+         fAXg==
+X-Gm-Message-State: AOAM530ABC3/05Wv1S3bCp6DVtL2p1AffQHkpmNAMl2kFFZ4D07QRv1D
+        19m5nw/D4X95/3sxi3GWMUD+CSXzwowaNd/it4s=
+X-Google-Smtp-Source: ABdhPJyrkgFeZsXMswMv6duiEyKPB/ojU62cIWH6gXkB4ogVibRWL3i8cCI7yNdz8GpxAH4D2DDzcg==
+X-Received: by 2002:a05:651c:179f:b0:24b:1406:5f55 with SMTP id bn31-20020a05651c179f00b0024b14065f55mr2990509ljb.361.1649185011462;
+        Tue, 05 Apr 2022 11:56:51 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id l20-20020a056512111400b0044aba8206ccsm1585608lfg.253.2022.04.05.11.56.50
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Apr 2022 11:56:50 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id b43so209507ljr.10
+        for <linux-crypto@vger.kernel.org>; Tue, 05 Apr 2022 11:56:50 -0700 (PDT)
+X-Received: by 2002:a2e:8e23:0:b0:24b:14f6:d71d with SMTP id
+ r3-20020a2e8e23000000b0024b14f6d71dmr3094398ljk.443.1649185009914; Tue, 05
+ Apr 2022 11:56:49 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220405140906.222350-1-Jason@zx2c4.com> <CAHk-=wjFSsa7ZTFOiDCpZbwQsCKdAo3KFetSpGCjusqjjcb2XA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjFSsa7ZTFOiDCpZbwQsCKdAo3KFetSpGCjusqjjcb2XA@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 5 Apr 2022 20:30:51 +0200
-X-Gmail-Original-Message-ID: <CAHmME9pPG2cgyfi6gV4NONXEc86Kw8_ejpOQUqcoaf3Mq1=Cfw@mail.gmail.com>
-Message-ID: <CAHmME9pPG2cgyfi6gV4NONXEc86Kw8_ejpOQUqcoaf3Mq1=Cfw@mail.gmail.com>
+ <CAHmME9pPG2cgyfi6gV4NONXEc86Kw8_ejpOQUqcoaf3Mq1=Cfw@mail.gmail.com>
+In-Reply-To: <CAHmME9pPG2cgyfi6gV4NONXEc86Kw8_ejpOQUqcoaf3Mq1=Cfw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 5 Apr 2022 11:56:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wib4v7epabkEZmk5ZsJhHBX5UiVCwT9BWyeWrOwMrKkrA@mail.gmail.com>
+Message-ID: <CAHk-=wib4v7epabkEZmk5ZsJhHBX5UiVCwT9BWyeWrOwMrKkrA@mail.gmail.com>
 Subject: Re: [PATCH] random: opportunistically initialize on /dev/urandom reads
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         "Theodore Ts'o" <tytso@mit.edu>,
         Dominik Brodowski <linux@dominikbrodowski.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Linus,
-
-On Tue, Apr 5, 2022 at 7:37 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-
-> Right now wait_for_random_bytes() returns an error that most people
-> then just ignore. Including drivers/net/wireguard/cookie.c.
+On Tue, Apr 5, 2022 at 11:31 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
 >
-> So instead of returning an error that nobody can do much about, how
-> about we move the warning code into wait_for_random_bytes()?
-> I think this is a good change, as it's a bit pointless to warn about
-> uninitialized random data if we can just initialize it.
-
-WireGuard's usage of these APIs breaks down to:
-1) in receive.c, rng_is_initialized() is checked, and incoming
-handshake & cookie packets are dropped if the RNG isn't initialized,
-so that an attacker can't queue up tons of work to do before it can be
-done.
-2) in noise.c, wait_for_random_bytes() is called before taking locks,
-because later curve25519_generate_secret() uses
-get_random_bytes_wait() internally. This happens in a worker, so
-wait_for_random_bytes() can't fail, since there's no default-enabled
-signal delivery (I think=E2=80=BD That's been my assumption anyhow.) This
-actually is just out of an abundance of caution, because step (1)
-means we'll never hit this uninitialized.
-3) in cookie.c, get_random_bytes_wait() is called so that we don't
-leak premature randomness via the rather large nonce parameter. But
-the same caveats as (2) apply: worker, so no signals, and protected by
-(1) still.
-
-If my assumption about signal delivery is wrong, I'll need to revisit
-this. But anyway I think that's what explains why some of those cases
-check the return value and others don't, and why
-get_random_bytes_wait() isn't a __must_check.
-
-> I do wonder if it wouldn't be better to perhaps move this all into
-> wait_for_random_bytes(), though, and add an argument to that function
-> for "no delay".
+> It sounds like your suggestion would be to make that:
 >
-> Because I think we should at the same time also add a warning to
-> wait_for_random_bytes() for the "uhhhuh, it timed out".
+>   while (!crng_ready()) {
+>     int ret;
 >
-> So instead of returning an error that nobody can do much about, how
-> about we move the warning code into wait_for_random_bytes()?
+>     try_to_generate_entropy();
+>     if (nodelay && !crng_ready()) {
+>       warn(...);
+>       return -EBUSY;
+>     }
+>     ret = wait_event_interruptible_timeout(crng_init_wait, crng_ready(), HZ);
+>     if (ret)
+>       return ret > 0 ? 0 : ret;
+>   }
 
-Just so we're on the same page here, wait_for_random_bytes() does this now:
+Yes. Except I'd almost warn for the "ret < 0" case too, since almost
+nobody seems to check it.
 
-  while (!crng_ready()) {
-    int ret;
+But hey, maybe callers that are interrupted by a signal check for that
+separately. I guess it's _possible_.
 
-    try_to_generate_entropy();
-    ret =3D wait_event_interruptible_timeout(crng_init_wait, crng_ready(), =
-HZ);
-    if (ret)
-      return ret > 0 ? 0 : ret;
-  }
-
-So it either eventually returns 0, or it gets interrupted by a signal.
-It never times out without trying again.
-
-It sounds like your suggestion would be to make that:
-
-  while (!crng_ready()) {
-    int ret;
-
-    try_to_generate_entropy();
-    if (nodelay && !crng_ready()) {
-      warn(...);
-      return -EBUSY;
-    }
-    ret =3D wait_event_interruptible_timeout(crng_init_wait, crng_ready(), =
-HZ);
-    if (ret)
-      return ret > 0 ? 0 : ret;
-  }
-
-or maybe you want to always wait at least a second, a la:
-
-  while (!crng_ready()) {
-    int ret;
-
-    try_to_generate_entropy();
-    ret =3D wait_event_interruptible_timeout(crng_init_wait, crng_ready(), =
-HZ);
-    if (ret)
-      return ret > 0 ? 0 : ret;
-    if (nodelay && !ret) {
-      warn(...);
-      return -EBUSY;
-    }
-  }
-
-I guess we could do one of these, though IMHO it's a bit awkward,
-making for a sort of, "wait, but don't actually" circumstance. Though,
-I can see the appeal of having only one caller of
-try_to_generate_entropy(), tied to one circumstance, and fit all the
-things through that circumstance. Six of one...
-
-Jason
+             Linus
