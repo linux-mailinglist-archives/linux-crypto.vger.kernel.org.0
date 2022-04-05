@@ -2,147 +2,386 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A504F212F
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 06:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D3B4F21B9
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 06:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbiDECt4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 4 Apr 2022 22:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        id S230368AbiDEEIu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Apr 2022 00:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbiDECtm (ORCPT
+        with ESMTP id S230336AbiDEEIs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 4 Apr 2022 22:49:42 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C813256E5
-        for <linux-crypto@vger.kernel.org>; Mon,  4 Apr 2022 18:56:07 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id y32so5333994lfa.6
-        for <linux-crypto@vger.kernel.org>; Mon, 04 Apr 2022 18:56:07 -0700 (PDT)
+        Tue, 5 Apr 2022 00:08:48 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EAA292
+        for <linux-crypto@vger.kernel.org>; Mon,  4 Apr 2022 21:06:44 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id q26so5784985edc.7
+        for <linux-crypto@vger.kernel.org>; Mon, 04 Apr 2022 21:06:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cRMKHMEeY9+RKsGGifttcYB8078b1P2NNUuN3rXNHsA=;
-        b=LlZFviyzsfP62rQJSDGGCX3c9ZzlqUhIw0Grkn+0VsM5rBKFmnTsvaGr6mPFYw/tj6
-         ZBlT4zeTLpFbNjJFxipLzirk3SZnQBkKZztZrogl8TdhoIqBfNsmEHMQAwoLN4wDBSb1
-         RX6dA3jOFOe37TqV8nAumLk8bTAHjDZcvlCQ7IG1JaltWKxP8ngirmIA6lxxLG8A2Jz+
-         A/eJ43HBVW5k9XKtbxoZealcoZb77DOHQc72k2eDNR0zVMPrdx6whfcxtnwjka6gcAen
-         A1ItInfmns7dDfPE74B3SyF17i4AKPzOoaFKdp52yNvyaChvEdHGjckkPvPTrw3IIDYA
-         fxoA==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=k33GZGWU+w9uUOgE7RI/0gXQX1NT8yDgH8ann6GGs8w=;
+        b=bxGBiyEIZStrtD3+4iQ1HCM1sWxhlXV10+iqEn/qlNsNX+5jYs2oeIrAi38GhH3C/S
+         c4jmU83itAIPmrqzQsT48+z9H0vZrIhLoIvwKeWHiAcWWZh6Rg0n8hISzOGzlrM8qjss
+         GUH0oG8ecLJJgWZesSFb6l0iqdc7YCTiHwoTZ+UwPKDeDaddbqwYkO+PhnucQWqqOI5z
+         aXQuqLdPO5kq9uzkL7RUjUz6OOsmFI8eWqAFhel/n5OnlxRJSpL34TAzn+pq0PyA+dVp
+         SntH10wmVLUg7gRuVFaDTOSkTQXEU5W3v4ZPNRSzW+wAc7bhj7EjZGWtG2NJu4+Z+vzc
+         Xt1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cRMKHMEeY9+RKsGGifttcYB8078b1P2NNUuN3rXNHsA=;
-        b=fy7Nh8VjWSti+hV+3yp0rlKH8rg6107knL8WvM2GQKyA4nuVrdYXVmg9x6+iLJ0jvE
-         I094FIghrlyqtSlx4aZ59lapJhPRVcga53HzVmwsLV7/68FR8wNKSrOB5A5BQPUgjtLc
-         lTNX9O3KNke0S1TqSKkhYjy5luszx/j3Glk0so/VUzcqAY4p2uUz8WK0fuZ4I7B7Z8KM
-         G9/sq2xHOLpP5rR7PvhqI6RswCJz2L75oDEs53YayICwLDc05tiKrCfMkXxYxOvLrsWd
-         IMNam1MFH+uU0ct3agpjCkIEsO8vP/xwYfWp1wQx5hImb34Av/qc+XqfmUAYZ2dsWsHM
-         ///g==
-X-Gm-Message-State: AOAM5304TSnYc9+kPPgXFYGD83finctPKaCWN2n5LxTG9cw4Y5xmkhn/
-        Bv5uCalkwLif0y8IsgFOzjG3pNNz2Cqfuzl0EEKPmCJDkfg=
-X-Google-Smtp-Source: ABdhPJwP68brfn2rAlyZj8ifciA/yGBj3dOA1XzN+z0hIDf8y32OrKqN3zR2RIoCsOMVm7zYU2M/MhPE2Upm9zNrwX4=
-X-Received: by 2002:a05:6512:1153:b0:44a:3b47:4f88 with SMTP id
- m19-20020a056512115300b0044a3b474f88mr852181lfg.447.1649123765408; Mon, 04
- Apr 2022 18:56:05 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=k33GZGWU+w9uUOgE7RI/0gXQX1NT8yDgH8ann6GGs8w=;
+        b=feTIG995PxViM3uONC+wi/34XuKE43bpFOzz5BQ8spg2WMOVXqboG6wa3EdIU2xYOL
+         /u5i/UPIKF5T0UFcYUTZfjqqZES8KAV97IHx3hbf07NKDE3a27SW9wuXuOwFGNPQ9MYb
+         dgqADyJ2CHYO90qbvgpLWmMELRrqaKjgxI/kZdHWcv4yEaKn5vlE96efnAOHzfJmzdxa
+         OaS0npkdcXAmOYRGOfsN4yo9yXF8m6W6B9raV6I391MZpQHN2nMPQJ/pL4Z4ca8e6Fzy
+         fuC238jcB3dRg5ePkkHkI7EpHZ3pqa8wBe+uVQua2vTqMPimilRBGyn8aT2DSb+omJ4p
+         8kIQ==
+X-Gm-Message-State: AOAM532RDlZ4ivfE4io7xJDDWizCrWcxgYUUWJ9fXttKvKI9L+sc/6XV
+        f/hPVvKDsKniTGrUGM5ftPAPKG1eQ28D/dAmSP8=
+X-Google-Smtp-Source: ABdhPJzIwxH2Bdxpe3kP5X875Mjtstqa6tDNBqcHYydSExz556mCkxa77yqXPypcDIe5L5yfy2+OGnvw8Xqzcr2Wdek=
+X-Received: by 2002:a05:6402:3604:b0:41c:c4e6:2988 with SMTP id
+ el4-20020a056402360400b0041cc4e62988mr1477962edb.157.1649131602779; Mon, 04
+ Apr 2022 21:06:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220315230035.3792663-1-nhuck@google.com> <20220315230035.3792663-8-nhuck@google.com>
- <YjvLZkjW2ts8qDfr@sol.localdomain>
-In-Reply-To: <YjvLZkjW2ts8qDfr@sol.localdomain>
-From:   Nathan Huckleberry <nhuck@google.com>
-Date:   Mon, 4 Apr 2022 20:55:54 -0500
-Message-ID: <CAJkfWY7gU7ZfziTmUbRKkWH4yLW6mQ3MrWZ6-UQW=EfBG0FtXg@mail.gmail.com>
-Subject: Re: [PATCH v3 7/8] crypto: arm64/polyval: Add PMULL accelerated
- implementation of POLYVAL
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Tue, 5 Apr 2022 05:06:31 +0100
+Message-ID: <CAHpNFcMO+-rxX=T4GPX9C8hb81AfMP8KhEaxiozFx3URRcf89Q@mail.gmail.com>
+Subject: Device Cache Align 'code align also speeds up prefetch' RS 128Bit
+ Buffer to Cache Align = Pure, 32Bit,64Bit,128Bit Align Quads & Float Quads -
+ HDD,SSD & Subject: Hardware Dual Encrypt & Decrypt : Hardware Accelerators
+To:     torvalds@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 8:37 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Tue, Mar 15, 2022 at 11:00:34PM +0000, Nathan Huckleberry wrote:
-> > Add hardware accelerated version of POLYVAL for ARM64 CPUs with
-> > Crypto Extension support.
->
-> Nit: It's "Crypto Extensions", not "Crypto Extension".
->
-> > +config CRYPTO_POLYVAL_ARM64_CE
-> > +     tristate "POLYVAL using ARMv8 Crypto Extensions (for HCTR2)"
-> > +     depends on KERNEL_MODE_NEON
-> > +     select CRYPTO_CRYPTD
-> > +     select CRYPTO_HASH
-> > +     select CRYPTO_POLYVAL
->
-> CRYPTO_POLYVAL selects CRYPTO_HASH already, so there's no need to select it
-> here.
->
-> > +/*
-> > + * Perform polynomial evaluation as specified by POLYVAL.  This computes:
-> > + *   h^n * accumulator + h^n * m_0 + ... + h^1 * m_{n-1}
-> > + * where n=nblocks, h is the hash key, and m_i are the message blocks.
-> > + *
-> > + * x0 - pointer to message blocks
-> > + * x1 - pointer to precomputed key powers h^8 ... h^1
-> > + * x2 - number of blocks to hash
-> > + * x3 - pointer to accumulator
-> > + *
-> > + * void pmull_polyval_update(const u8 *in, const struct polyval_ctx *ctx,
-> > + *                        size_t nblocks, u8 *accumulator);
-> > + */
-> > +SYM_FUNC_START(pmull_polyval_update)
-> > +     adr             TMP, .Lgstar
-> > +     ld1             {GSTAR.2d}, [TMP]
-> > +     ld1             {SUM.16b}, [x3]
-> > +     ands            PARTIAL_LEFT, BLOCKS_LEFT, #7
-> > +     beq             .LskipPartial
-> > +     partial_stride
-> > +.LskipPartial:
-> > +     subs            BLOCKS_LEFT, BLOCKS_LEFT, #NUM_PRECOMPUTE_POWERS
-> > +     blt             .LstrideLoopExit
-> > +     ld1             {KEY8.16b, KEY7.16b, KEY6.16b, KEY5.16b}, [x1], #64
-> > +     ld1             {KEY4.16b, KEY3.16b, KEY2.16b, KEY1.16b}, [x1], #64
-> > +     full_stride 0
-> > +     subs            BLOCKS_LEFT, BLOCKS_LEFT, #NUM_PRECOMPUTE_POWERS
-> > +     blt             .LstrideLoopExitReduce
-> > +.LstrideLoop:
-> > +     full_stride 1
-> > +     subs            BLOCKS_LEFT, BLOCKS_LEFT, #NUM_PRECOMPUTE_POWERS
-> > +     bge             .LstrideLoop
-> > +.LstrideLoopExitReduce:
-> > +     montgomery_reduction
-> > +     mov             SUM.16b, PH.16b
-> > +.LstrideLoopExit:
-> > +     st1             {SUM.16b}, [x3]
-> > +     ret
-> > +SYM_FUNC_END(pmull_polyval_update)
->
-> Is there a reason why partial_stride is done first in the arm64 implementation,
-> but last in the x86 implementation?  It would be nice if the implementations
-> worked the same way.  Probably last would be better?  What is the advantage of
-> doing it first?
+DMAC yep Security Align 128Bits to Cache Array
+Align that 128Bit Buffer to Cache Align = Pure, 32Bit,64Bit,128Bit
+Align Quads & Float Quads -
+HDD,SDD normally have the EIDD DDI Equivalent
+Device Cache Align 'code align also speeds up prefetch' Radio AKA Wifi
+is also aligned & Internet protocols
 
-It was so I could return early without loading keys into registers,
-since I only need them if there's
-a full stride. I was able to rewrite it in the same way that the x86
-implementation works.
->
-> Besides that, many of the comments I made on the x86 implementation apply to the
-> arm64 implementation too.
->
-> - Eric
+RS
+
+https://lkml.org/lkml/2022/4/4/1254
+https://lore.kernel.org/all/20220404194510.9206-2-mario.limonciello@amd.com/
+
+Subject: Hardware Dual Encrypt & Decrypt : Hardware Accelerators
+
+
+(indirect) - Plan & method RS
+
+Modulus Dual Encrypt & Decrypt package : Processor feature (c)RS
+
+AES-CCM & AES-GCM & Other Cypher Modulus + CCM & GCM can be
+accelerated with a joint AES Crypto module,
+
+Processor feature & package : Module list:
+
+2 Decryption pipelines working in parallel,
+With a Shared cache & RAM Module
+Modulus & Semi-parallel modulating decryption & Encryption combined
+with Encapsulation Cypher IP Protocol packet
+
+Parallax Cryptographic Processing Unit: RS
+
+The capacity To Multiply decryption on specific hardware in situations
+such as lower Bit precision is to be implemented as follows:
+
+On AES-NI & ARM Cryptographic processors; In particular PPS(ARM+) & SiMD ..
+
+The capacity to exploit the fact that the nonce is 16Bit to 64Bit &
+full float upto 128Bit for legal decryption (client) means there is a
+simple method to use:
+
+In situations that a AES-NI & ARM Cryptographic unit can process 2
+threads on a 256Bit Function we can do both the main 128Bit/192Bit &
+the nonce 16Bit to 64Bit & Enable a single instruction Roll to
+Synchronise both The main HASH & Nonce.
+
+AES & Crypto hardware can utilise the CPU/GPU/Processor FPU & SiMD to
+decrypt the nonce (smaller so fast) & in the same 8bto to 64Bits of
+code; Inline & parallax the cryptographic function.
+
+With a 256Bit AES-NI & Cryptographic unit : Parallel Decryption &
+Return Encryption by using 2x 128Bit & a Processor Enciphered Nonce.
+
+(c)Rupert S
+
+*reference* https://bit.ly/VESA_BT
+
+Dual Encrypt & Decrypt : Hardware Accelerators (indirect)
+https://lkml.org/lkml/2022/4/4/1153
+https://lore.kernel.org/linux-crypto/20220223080400.139367-1-gilad@benyossef.com/T/#u,
+
+Performance Comparison of AES-CCM and AES-GCM Authenticated Encryption Modes
+http://worldcomp-proceedings.com/proc/p2016/SAM9746.pdf
+
+Basic comparison of Modes for Authenticated-Encryption -IAPM, XCBC,
+OCB, CCM, EAX, CWC, GCM, PCFB, CS
+https://www.fi.muni.cz/~xsvenda/docs/AE_comparison_ipics04.pdf
+
+*****
+
+ICE-SSRTP GEA Replacement 2022 + (c)RS
+
+"GEA-1 and GEA-2, which are very similar (GEA-2 is just an extension
+of GEA-1 with a higher amount of processing, and apparently not
+weakened) are bit-oriented stream ciphers."
+
+GEA-2 > GEA-3 is therefor 64Bit Safe (Mobile calls) & 128Bit Safe
+(Reasonable security)
+SHA2, SHA3therefor 128Bit Safe (Reasonable security Mobile) ++
+AES & PolyChaCha both provide a premise of 128Bit++
+
+So by reason alone GEA has a place in our hearts.
+
+*
+
+ICE-SSRTP GEA Replacement 2022 + (c)RS
+
+IiCE-SSR for digital channel infrastructure can help heal GPRS+ 3G+ 4G+ 5G+
+
+Time NTP Protocols : is usable in 2G+ <> 5G+LTE Network SIM
+
+ICE-SSRTP Encryption AES,Blake2, Poly ChaCha, SM4, SHA2, SHA3, GEA-1 and GEA-2
+'Ideal for USB Dongle & Radio' in Rust RS ' Ideal for Quality TPM
+Implementation'
+
+"GEA-1 and GEA-2, which are very similar (GEA-2 is just an extension
+of GEA-1 with a higher amount of processing, and apparently not
+weakened) are bit-oriented stream ciphers."
+
+IiCE-SSRTP : Interleaved Inverted Signal Send & Receive Time Crystal Protocol
+
+Interleaved signals help Isolate noise from a Signal Send & Receive ...
+
+Overlapping inverted waves are a profile for complex audio & FFT is the result.
+
+Interleaved, Inverted & Compressed & a simple encryption?
+
+*
+
+Time differentiated : Interleave, Inversion & differentiating Elliptic curve.
+
+We will be able to know and test the Cypher : PRINCIPLE OF INTENT TO TRUST
+
+We know of a cypher but : (Principle RS)
+
+We blend the cypher..
+Interleaved pages of a cypher obfuscate : PAL CScam does this
+
+Timed : Theoretically unique to you in principle for imprecision, But
+we cannot really have imprecise in Crypto!
+
+But we can have a set time & in effect Elliptic curve a transient variable T,
+With this, Interleave the resulting pages (RAM Buffer Concept)
+
+Invert them over Time Var = T
+
+We can do all & principally this is relatively simple.
+
+(c)RS
+
+*
+
+Modulus Dual Encrypt & Decrypt package : Processor feature (c)RS
+
+AES-CCM & AES-GCM & Other Cypher Modulus + CCM & GCM can be
+accelerated with a joint AES Crypto module,
+
+Processor feature & package : Module list:
+
+2 Decryption pipelines working in parallel,
+With a Shared cache & RAM Module
+Modulus & Semi-parallel modulating decryption & Encryption combined
+with Encapsulation Cypher IP Protocol packet
+
+Parallax Cryptographic Processing Unit: RS
+
+The capacity To Multiply decryption on specific hardware in situations
+such as lower Bit precision is to be implemented as follows:
+
+On AES-NI & ARM Cryptographic processors; In particular PSP+PPS(ARM+) & SiMD ..
+
+The capacity to exploit the fact that the nonce is 16Bit to 64Bit &
+full float upto 128Bit for legal decryption (client) means there is a
+simple method to use:
+
+In situations that a AES-NI & ARM Cryptographic unit can process 2
+threads on a 256Bit Function we can do both the main 128Bit/192Bit &
+the nonce 16Bit to 64Bit & Enable a single instruction Roll to
+Synchronise both The main HASH & Nonce.
+
+AES & Crypto hardware can utilise the CPU/GPU/Processor FPU & SiMD to
+decrypt the nonce (smaller so fast) & in the same 8bto to 64Bits of
+code; Inline & parallax the cryptographic function.
+
+With a 256Bit AES-NI & Cryptographic unit : Parallel Decryption &
+Return Encryption by using 2x 128Bit & a Processor Enciphered Nonce.
+
+(c)Rupert S
+
+*reference*
+
+Performance Comparison of AES-CCM and AES-GCM Authenticated Encryption Modes
+http://worldcomp-proceedings.com/proc/p2016/SAM9746.pdf
+
+Basic comparison of Modes for Authenticated-Encryption -IAPM, XCBC,
+OCB, CCM, EAX, CWC, GCM, PCFB, CS
+https://www.fi.muni.cz/~xsvenda/docs/AE_comparison_ipics04.pdf
+
+
+*
+
+Example of use:
+
+Nostalgic TriBand : Independence RADIO : Send : Receive :Rebel-you trade marker
+
+Nostalgic TriBand 5hz banding 2 to 5 bands, Close proximity..
+Interleaved channel BAND.
+
+Microchip clock and 50Mhz Risc Rio processor : 8Bit : 16Bit : 18Bit
+Coprocessor digital channel selector &
+
+channel Key selection based on unique..
+
+Crystal time Quartz with Synced Tick (Regulated & modular)
+
+All digital interface and resistor ring channel & sync selector with
+micro band tuning firmware.
+
+(c)Rupert S
+
+*
+
+Good for cables ? and noise ?
+
+Presenting :  IiCE-SSR for digital channel infrastructure & cables
+<Yes Even The Internet &+ Ethernet 5 Band>
+
+So the question of interleaved Bands & or signal inversion is a simple
+question but we have,
+
+SSD & HDD Cables & does signal inversion help us? Do interleaving bands help us?
+
+In Audio inversion would be a strange way to hear! but the inversion
+does help alleviate ...
+
+Transistor emission fatigue...
+
+IiCE-SSRTP : Interleaved Inverted Signal Send & Receive Time Crystal Protocol
+
+Interleaved signals help Isolate noise from a Signal Send & Receive ...
+
+Overlapping inverted waves are a profile for complex audio & FFT is the result.
+
+Interleaved, Inverted & Compressed & a simple encryption?
+
+Good for cables ? and noise ?
+
+Presenting : IiCE for digital channel infrastructure & cables <Yes
+Even The Internet &+ Ethernet 5 Band>
+
+(c) Rupert S
+
+https://science.n-helix.com/2018/12/rng.html
+
+https://science.n-helix.com/2022/02/rdseed.html
+
+https://science.n-helix.com/2017/04/rng-and-random-web.html
+
+https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+https://science.n-helix.com/2021/11/monticarlo-workload-selector.html
+
+https://science.n-helix.com/2022/03/security-aspect-leaf-hash-identifiers.html
+
+
+Audio, Visual & Bluetooth & Headset & mobile developments only go so far:
+
+https://science.n-helix.com/2022/02/visual-acuity-of-eye-replacements.html
+
+https://science.n-helix.com/2022/03/ice-ssrtp.html
+
+https://science.n-helix.com/2021/11/ihmtes.html
+
+https://science.n-helix.com/2021/10/eccd-vr-3datmos-enhanced-codec.html
+https://science.n-helix.com/2021/11/wave-focus-anc.html
+https://science.n-helix.com/2021/12/3d-audio-plugin.html
+
+Integral to Telecoms Security TRNG
+
+*RAND OP Ubuntu :
+https://manpages.ubuntu.com/manpages/trusty/man1/pollinate.1.html
+
+https://pollinate.n-helix.com
+
+*
+
+***** Dukes Of THRUST ******
+
+Nostalgic TriBand : Independence RADIO : Send : Receive :Rebel-you trade markerz
+
+Nostalgic TriBand 5hz banding 2 to 5 bands, Close proximity..
+Interleaved channel BAND.
+
+Microchip clock and 50Mhz Risc Rio processor : 8Bit : 16Bit : 18Bit
+Coprocessor digital channel selector &
+
+channel Key selection based on unique..
+
+Crystal time Quartz with Synced Tick (Regulated & modular)
+
+All digital interface and resistor ring channel & sync selector with
+micro band tuning firmware.
+
+(c)Rupert S
+
+Dev/Random : Importance
+
+Dev/Random : Importance : Our C/T/RNG Can Help GEA-2 Open Software
+implementation of 3 Bits (T/RNG) Not 1 : We need Chaos : GEA-1 and
+GEA-2 Implementations we will improve with our /Dev/Random
+
+Our C/T/RNG Can Help GEA-2 Open Software implementation of 3 Bits
+(T/RNG) Not 1 : We need Chaos : GEA-1 and GEA-2 Implementations we
+will improve with our /Dev/Random
+
+We can improve GPRS 2G to 5G networks still need to save power, GPRS
+Doubles a phones capacity to run all day,
+
+Code can and will be improved, Proposals include:
+
+Blake2
+ChaCha
+SM4
+SHA2
+SHA3
+
+Elliptic Encipher
+AES
+Poly ChaCha
+
+Firstly we need a good solid & stable /dev/random
+
+So we can examine the issue with a true SEED!
+
+Rupert S https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+TRNG Samples & Method DRAND Proud!
+
+https://drive.google.com/file/d/1b_Sl1oI7qTlc6__ihLt-N601nyLsY7QU/view?usp=drive_web
+https://drive.google.com/file/d/1yi4ERt0xdPc9ooh9vWrPY1LV_eXV-1Wc/view?usp=drive_web
+https://drive.google.com/file/d/11dKUNl0ngouSIJzOD92lO546tfGwC0tu/view?usp=drive_web
+https://drive.google.com/file/d/10a0E4Gh5S-itzBVh0fOaxS7JS9ru-68T/view?usp=drive_web
+
+https://github.com/P1sec/gea-implementation
