@@ -2,112 +2,442 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 690644F228D
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 07:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E2A4F22B0
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 07:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbiDEFXs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Apr 2022 01:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
+        id S229963AbiDEFuc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Apr 2022 01:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbiDEFXa (ORCPT
+        with ESMTP id S229731AbiDEFu0 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Apr 2022 01:23:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E6E32DC3
-        for <linux-crypto@vger.kernel.org>; Mon,  4 Apr 2022 22:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1649136049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hXNd3S63I+/DnvIHKzVjn0CsQfzi1GKX7Atsgl6DyUY=;
-        b=Aj8viwLBQejEOhZ4x+8nLx/BkAe0HyKtHO8v1WZ6hPVfiGO728bj6zCLDd7rTgjnEL+LQ1
-        9sZqfcLgTBmClRPjoxGsIHjH5cTIUKis1GwX7yHp3cCPpzh+zKSYelCUW4q6bYMXIxviso
-        GUDg2k8vi8e1A4j0g1KYoVWtcuQhT2I=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-331-07UXkeM_MOa6v5P6ZyydUg-1; Tue, 05 Apr 2022 01:20:48 -0400
-X-MC-Unique: 07UXkeM_MOa6v5P6ZyydUg-1
-Received: by mail-wm1-f71.google.com with SMTP id r206-20020a1c44d7000000b0038e6a1b25f1so756394wma.7
-        for <linux-crypto@vger.kernel.org>; Mon, 04 Apr 2022 22:20:47 -0700 (PDT)
+        Tue, 5 Apr 2022 01:50:26 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BC991
+        for <linux-crypto@vger.kernel.org>; Mon,  4 Apr 2022 22:48:27 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id bh17so24358421ejb.8
+        for <linux-crypto@vger.kernel.org>; Mon, 04 Apr 2022 22:48:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=UDHAMxs9mV1EMuLwtCxTt6T4FIB57N3ZOKBk0SEX43I=;
+        b=QaFSLDRdIAu5jQgFLWMNCpzMa5yvS6h8MbRbV6I0PLoNleptEM54m2gTYRdrZBPAct
+         HAEbYcso3gv2WMCfxwtzTA4rktsHyJBulhlxBvBiCLnV5KS6Bg9btgh4L6UFwwPpCdY1
+         niTjGdTQ9D2/sYFebCy34OmN7lfL5Bu2yTbiBv9KtslnWEjP9b3bXILHA5TBJI9qfqWY
+         jf652FCx3cAeRyFl8wIlI8G+3/F3W0AclggEj3xWO/3BKetis2VTcf9XCL9D09TySmS6
+         FEJO5JS8grk9ppcmyTXVxxsHeAnnfoRKlylvzkuIoQKkRLe5FX8r9t3ytVH2nYLTNknl
+         wK6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hXNd3S63I+/DnvIHKzVjn0CsQfzi1GKX7Atsgl6DyUY=;
-        b=nOUEE3zGOiqcoSWifcDxyYODgikBP4uMvIPrAQOO6s7yeCZqr0KDTR+Z8agxIYzqSX
-         CJh370q7ESnzdNOApBeN1P3bXTw3OBZed6qs0M1xfVlVlYtrgxDZTNYdwSWVjNkS4aCy
-         4F8Ejxi6A6Y+hutGFBv3m6U89whUcTdHpdMLJ5YIGzQw2i+rf0+PDXom7OvoLGGVsQA5
-         H3FcFl2iJWxDwX3z4QTtwKmh3/5i+jNN+FSuKlnaCg3ejUO/bTsn6uFppR5BZuANZ9UG
-         D5jK7yrFzP+Sizu9Gr9XF1RBOl8G4VT8CMmWMyDGjaiYWqU4ylxV4sfIXK/cI4q6kmns
-         LOWA==
-X-Gm-Message-State: AOAM5328aCyBXAjyGibhGdFHb7HfG6gIYwzKMdSML6pXr6TP3uubS2PL
-        SbuyQMYuVUnWJYbwNlOwCEweB9Af7zy77N7sLkle90g7mvPM9SsjogxZhTygx71amuUKv5Ug74C
-        /9Atwlc54AjIAaUoqOfV3Nahe
-X-Received: by 2002:a7b:cb87:0:b0:38e:7464:f796 with SMTP id m7-20020a7bcb87000000b0038e7464f796mr1343555wmi.133.1649136046821;
-        Mon, 04 Apr 2022 22:20:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz5pSIpqXDbMjBhGhF2Ym8NkkUzOiS8ugQkJZJSUEkD8mJRZ/i+6rvspLskok00+YPdm3I8bA==
-X-Received: by 2002:a7b:cb87:0:b0:38e:7464:f796 with SMTP id m7-20020a7bcb87000000b0038e7464f796mr1343528wmi.133.1649136046521;
-        Mon, 04 Apr 2022 22:20:46 -0700 (PDT)
-Received: from redhat.com ([2.52.17.211])
-        by smtp.gmail.com with ESMTPSA id d14-20020a056000186e00b0020405198faasm12295878wri.52.2022.04.04.22.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Apr 2022 22:20:45 -0700 (PDT)
-Date:   Tue, 5 Apr 2022 01:20:41 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     zhenwei pi <pizhenwei@bytedance.com>, arei.gonglei@huawei.com,
-        jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        herbert@gondor.apana.org.au, helei.sig11@bytedance.com
-Subject: Re: [PATCH v3 0/4] Introduce akcipher service for virtio-crypto
-Message-ID: <20220405012015-mutt-send-email-mst@kernel.org>
-References: <20220302033917.1295334-1-pizhenwei@bytedance.com>
- <a9d1dfc1-080e-fba2-8fbb-28718b067e0d@bytedance.com>
- <20220307040431-mutt-send-email-mst@kernel.org>
- <87h778g8nn.fsf@redhat.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=UDHAMxs9mV1EMuLwtCxTt6T4FIB57N3ZOKBk0SEX43I=;
+        b=N5VyORQlxry8JNSY9SDDXo90ZP6CsAbDZ4CAmXem9WkiS9YKFzlvJTToaHBYgik7dK
+         nsb7a/e0q3fjIVD8s4din2dV23X27mZFKOQ8r2QopMdoTSJh0sfnnZmqIcS52qOEYbM7
+         6WI42AZ62qXOfbHRaUhurmFbslhMM4jksl9SuZyk9DYfbhwW7LdND4JKEhoK9jUk3gns
+         1dBQL2o0qNJR4rCuUefwFNGUZl6RM/OvMdEVPFe1NvaCrEmFqn9HTJX3c6/znpO5gxrX
+         QH4OOQDda3kD/xDxvkDwxaGA6ORwRtJEb+JzQtTgfW/b2/LUept1AczXAEJ/3D4AjBT3
+         1wFg==
+X-Gm-Message-State: AOAM532kViTwQreSC9nMA/BNj3EagsT32i7JzxP/uPS6tm55xj5Zi+m1
+        J8s4Y/Id+q5G8KsCiZekxKvX4+TT80cRSSVrYU4=
+X-Google-Smtp-Source: ABdhPJyZyVtRY0qmb1cHAXrDsY6J0hmABrGvKcpsHaHvh5isaDs9Pm82ZSa9uDWiwoTP46TQzvh3SdK+tIut+hmGEpE=
+X-Received: by 2002:a17:907:d13:b0:6e0:b799:8fcc with SMTP id
+ gn19-20020a1709070d1300b006e0b7998fccmr1836715ejc.11.1649137705679; Mon, 04
+ Apr 2022 22:48:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h778g8nn.fsf@redhat.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Tue, 5 Apr 2022 06:48:09 +0100
+Message-ID: <CAHpNFcO-iDrRSVvgogwQgkxXOogBuiLKPkQ4XQ4X0x1d9CS-MQ@mail.gmail.com>
+Subject: Secure-Enable PSP + SGX + Initiator Security Virtualise 2022
+To:     torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Apr 04, 2022 at 05:39:24PM +0200, Cornelia Huck wrote:
-> On Mon, Mar 07 2022, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> 
-> > On Mon, Mar 07, 2022 at 10:42:30AM +0800, zhenwei pi wrote:
-> >> Hi, Michael & Lei
-> >> 
-> >> The full patchset has been reviewed by Gonglei, thanks to Gonglei.
-> >> Should I modify the virtio crypto specification(use "__le32 akcipher_algo;"
-> >> instead of "__le32 reserve;" only, see v1->v2 change), and start a new issue
-> >> for a revoting procedure?
-> >
-> > You can but not it probably will be deferred to 1.3. OK with you?
-> >
-> >> Also cc Cornelia Huck.
-> 
-> [Apologies, I'm horribly behind on my email backlog, and on virtio
-> things in general :(]
-> 
-> The akcipher update had been deferred for 1.2, so I think it will be 1.3
-> material. However, I just noticed while browsing the fine lwn.net merge
-> window summary that this seems to have been merged already. That
-> situation is less than ideal, although I don't expect any really bad
-> problems, given that there had not been any negative feedback for the
-> spec proposal that I remember.
+Secure-Enable PSP + SGX + Initiator Security Virtualise 2022
 
-Let's open a 1.3 branch? What do you think?
+Proper initiation requires at least a basic permission statement
+before kernel load:RS
 
--- 
-MST
+<VMaWare Initiator>
+Firmware, bios load <init>1 }
+Boot Loader <init>2         } Enclave 1
+Kernel Jack on safe boot <init>3 : Enclave 2
+Core Modules <init>4 Enclave 3
+System <init><init><init><init><init>
 
+(c)Rupert S https://bit.ly/VESA_BT
+
+> > + * Some 'Enable PSP + SGX' functions require that no cached linear-to-physical address
+> > + * mappings are present before they can succeed. Collaborate with
+> > + * hardware via ENCLS[ETRACK] to ensure that all cached
+> > + * linear-to-physical address mappings belonging to all threads of
+> > + * the enclave are cleared. See sgx_encl_cpumask() for details.
+
+Cache Buffer can hide locations from direct attack! <VERUALISE LOC>
+But do involve a potential page break if not aligned
+
+> > + * Return valid permission fields from a secinfo structure provided by
+> > + * user space. The secinfo structure is required to only have bits in
+> > + * the permission fields set.
+
+Virtualise buffer can lazy IO & Lazy DMA #Thread mate DT
+
+> > + * Ensure enclave is ready for SGX2 functions. Readiness is checked
+> > + * by ensuring the hardware supports SGX2 and the enclave is initialized
+> > + * and thus able to handle requests to modify pages within it.
+
+Boot time check can validate SGX & PSP & YES Cache a relocatable table,
+Direct Read required INT & IO Activations & is not Cache permitted one
+presumes. DT
+
+> > Changes since V2:
+> > - Include the sgx_ioc_sgx2_ready() utility
+> >   that previously was in "x86/sgx: Support relaxing of enclave page
+> >   permissions" that is removed from the next version.
+> > - Few renames requested >
+
+Broken Alignment DT
+Separated BASE Code DT
+
+Strict Code Align =1
+Buffer RELOC = 1
+Security permission Buffer = 751
+
+Enable PSP + SGX
+
+https://lkml.org/lkml/2022/4/5/29
+https://lkml.org/lkml/2022/4/5/27
+https://lkml.org/lkml/2022/4/5/25
+
+*****
+
+DMAC yep Security Align 128Bits to Cache Array
+Align that 128Bit Buffer to Cache Align = Pure, 32Bit,64Bit,128Bit
+Align Quads & Float Quads -
+HDD,SDD normally have the EIDD DDI Equivalent
+Device Cache Align 'code align also speeds up prefetch' Radio AKA Wifi
+is also aligned & Internet protocols
+
+RS
+
+https://lkml.org/lkml/2022/4/4/1254
+https://lore.kernel.org/all/20220404194510.9206-2-mario.limonciello@amd.com/
+
+Subject: Hardware Dual Encrypt & Decrypt : Hardware Accelerators
+
+
+(indirect) - Plan & method RS
+
+Modulus Dual Encrypt & Decrypt package : Processor feature (c)RS
+
+AES-CCM & AES-GCM & Other Cypher Modulus + CCM & GCM can be
+accelerated with a joint AES Crypto module,
+
+Processor feature & package : Module list:
+
+2 Decryption pipelines working in parallel,
+With a Shared cache & RAM Module
+Modulus & Semi-parallel modulating decryption & Encryption combined
+with Encapsulation Cypher IP Protocol packet
+
+Parallax Cryptographic Processing Unit: RS
+
+The capacity To Multiply decryption on specific hardware in situations
+such as lower Bit precision is to be implemented as follows:
+
+On AES-NI & ARM Cryptographic processors; In particular PPS(ARM+) & SiMD ..
+
+The capacity to exploit the fact that the nonce is 16Bit to 64Bit &
+full float upto 128Bit for legal decryption (client) means there is a
+simple method to use:
+
+In situations that a AES-NI & ARM Cryptographic unit can process 2
+threads on a 256Bit Function we can do both the main 128Bit/192Bit &
+the nonce 16Bit to 64Bit & Enable a single instruction Roll to
+Synchronise both The main HASH & Nonce.
+
+AES & Crypto hardware can utilise the CPU/GPU/Processor FPU & SiMD to
+decrypt the nonce (smaller so fast) & in the same 8bto to 64Bits of
+code; Inline & parallax the cryptographic function.
+
+With a 256Bit AES-NI & Cryptographic unit : Parallel Decryption &
+Return Encryption by using 2x 128Bit & a Processor Enciphered Nonce.
+
+(c)Rupert S
+
+*reference* https://bit.ly/VESA_BT
+
+Dual Encrypt & Decrypt : Hardware Accelerators (indirect)
+https://lkml.org/lkml/2022/4/4/1153
+https://lore.kernel.org/linux-crypto/20220223080400.139367-1-gilad@benyossef.com/T/#u,
+
+Performance Comparison of AES-CCM and AES-GCM Authenticated Encryption Modes
+http://worldcomp-proceedings.com/proc/p2016/SAM9746.pdf
+
+Basic comparison of Modes for Authenticated-Encryption -IAPM, XCBC,
+OCB, CCM, EAX, CWC, GCM, PCFB, CS
+https://www.fi.muni.cz/~xsvenda/docs/AE_comparison_ipics04.pdf
+
+*****
+
+ICE-SSRTP GEA Replacement 2022 + (c)RS
+
+"GEA-1 and GEA-2, which are very similar (GEA-2 is just an extension
+of GEA-1 with a higher amount of processing, and apparently not
+weakened) are bit-oriented stream ciphers."
+
+GEA-2 > GEA-3 is therefor 64Bit Safe (Mobile calls) & 128Bit Safe
+(Reasonable security)
+SHA2, SHA3therefor 128Bit Safe (Reasonable security Mobile) ++
+AES & PolyChaCha both provide a premise of 128Bit++
+
+So by reason alone GEA has a place in our hearts.
+
+*
+
+ICE-SSRTP GEA Replacement 2022 + (c)RS
+
+IiCE-SSR for digital channel infrastructure can help heal GPRS+ 3G+ 4G+ 5G+
+
+Time NTP Protocols : is usable in 2G+ <> 5G+LTE Network SIM
+
+ICE-SSRTP Encryption AES,Blake2, Poly ChaCha, SM4, SHA2, SHA3, GEA-1 and GEA-2
+'Ideal for USB Dongle & Radio' in Rust RS ' Ideal for Quality TPM
+Implementation'
+
+"GEA-1 and GEA-2, which are very similar (GEA-2 is just an extension
+of GEA-1 with a higher amount of processing, and apparently not
+weakened) are bit-oriented stream ciphers."
+
+IiCE-SSRTP : Interleaved Inverted Signal Send & Receive Time Crystal Protocol
+
+Interleaved signals help Isolate noise from a Signal Send & Receive ...
+
+Overlapping inverted waves are a profile for complex audio & FFT is the result.
+
+Interleaved, Inverted & Compressed & a simple encryption?
+
+*
+
+Time differentiated : Interleave, Inversion & differentiating Elliptic curve.
+
+We will be able to know and test the Cypher : PRINCIPLE OF INTENT TO TRUST
+
+We know of a cypher but : (Principle RS)
+
+We blend the cypher..
+Interleaved pages of a cypher obfuscate : PAL CScam does this
+
+Timed : Theoretically unique to you in principle for imprecision, But
+we cannot really have imprecise in Crypto!
+
+But we can have a set time & in effect Elliptic curve a transient variable T,
+With this, Interleave the resulting pages (RAM Buffer Concept)
+
+Invert them over Time Var = T
+
+We can do all & principally this is relatively simple.
+
+(c)RS
+
+*
+
+Modulus Dual Encrypt & Decrypt package : Processor feature (c)RS
+
+AES-CCM & AES-GCM & Other Cypher Modulus + CCM & GCM can be
+accelerated with a joint AES Crypto module,
+
+Processor feature & package : Module list:
+
+2 Decryption pipelines working in parallel,
+With a Shared cache & RAM Module
+Modulus & Semi-parallel modulating decryption & Encryption combined
+with Encapsulation Cypher IP Protocol packet
+
+Parallax Cryptographic Processing Unit: RS
+
+The capacity To Multiply decryption on specific hardware in situations
+such as lower Bit precision is to be implemented as follows:
+
+On AES-NI & ARM Cryptographic processors; In particular PSP+PPS(ARM+) & SiMD ..
+
+The capacity to exploit the fact that the nonce is 16Bit to 64Bit &
+full float upto 128Bit for legal decryption (client) means there is a
+simple method to use:
+
+In situations that a AES-NI & ARM Cryptographic unit can process 2
+threads on a 256Bit Function we can do both the main 128Bit/192Bit &
+the nonce 16Bit to 64Bit & Enable a single instruction Roll to
+Synchronise both The main HASH & Nonce.
+
+AES & Crypto hardware can utilise the CPU/GPU/Processor FPU & SiMD to
+decrypt the nonce (smaller so fast) & in the same 8bto to 64Bits of
+code; Inline & parallax the cryptographic function.
+
+With a 256Bit AES-NI & Cryptographic unit : Parallel Decryption &
+Return Encryption by using 2x 128Bit & a Processor Enciphered Nonce.
+
+(c)Rupert S
+
+*reference*
+
+Performance Comparison of AES-CCM and AES-GCM Authenticated Encryption Modes
+http://worldcomp-proceedings.com/proc/p2016/SAM9746.pdf
+
+Basic comparison of Modes for Authenticated-Encryption -IAPM, XCBC,
+OCB, CCM, EAX, CWC, GCM, PCFB, CS
+https://www.fi.muni.cz/~xsvenda/docs/AE_comparison_ipics04.pdf
+
+
+*
+
+Example of use:
+
+Nostalgic TriBand : Independence RADIO : Send : Receive :Rebel-you trade marker
+
+Nostalgic TriBand 5hz banding 2 to 5 bands, Close proximity..
+Interleaved channel BAND.
+
+Microchip clock and 50Mhz Risc Rio processor : 8Bit : 16Bit : 18Bit
+Coprocessor digital channel selector &
+
+channel Key selection based on unique..
+
+Crystal time Quartz with Synced Tick (Regulated & modular)
+
+All digital interface and resistor ring channel & sync selector with
+micro band tuning firmware.
+
+(c)Rupert S
+
+*
+
+Good for cables ? and noise ?
+
+Presenting :  IiCE-SSR for digital channel infrastructure & cables
+<Yes Even The Internet &+ Ethernet 5 Band>
+
+So the question of interleaved Bands & or signal inversion is a simple
+question but we have,
+
+SSD & HDD Cables & does signal inversion help us? Do interleaving bands help us?
+
+In Audio inversion would be a strange way to hear! but the inversion
+does help alleviate ...
+
+Transistor emission fatigue...
+
+IiCE-SSRTP : Interleaved Inverted Signal Send & Receive Time Crystal Protocol
+
+Interleaved signals help Isolate noise from a Signal Send & Receive ...
+
+Overlapping inverted waves are a profile for complex audio & FFT is the result.
+
+Interleaved, Inverted & Compressed & a simple encryption?
+
+Good for cables ? and noise ?
+
+Presenting : IiCE for digital channel infrastructure & cables <Yes
+Even The Internet &+ Ethernet 5 Band>
+
+(c) Rupert S
+
+https://science.n-helix.com/2018/12/rng.html
+
+https://science.n-helix.com/2022/02/rdseed.html
+
+https://science.n-helix.com/2017/04/rng-and-random-web.html
+
+https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+https://science.n-helix.com/2021/11/monticarlo-workload-selector.html
+
+https://science.n-helix.com/2022/03/security-aspect-leaf-hash-identifiers.html
+
+
+Audio, Visual & Bluetooth & Headset & mobile developments only go so far:
+
+https://science.n-helix.com/2022/02/visual-acuity-of-eye-replacements.html
+
+https://science.n-helix.com/2022/03/ice-ssrtp.html
+
+https://science.n-helix.com/2021/11/ihmtes.html
+
+https://science.n-helix.com/2021/10/eccd-vr-3datmos-enhanced-codec.html
+https://science.n-helix.com/2021/11/wave-focus-anc.html
+https://science.n-helix.com/2021/12/3d-audio-plugin.html
+
+Integral to Telecoms Security TRNG
+
+*RAND OP Ubuntu :
+https://manpages.ubuntu.com/manpages/trusty/man1/pollinate.1.html
+
+https://pollinate.n-helix.com
+
+*
+
+***** Dukes Of THRUST ******
+
+Nostalgic TriBand : Independence RADIO : Send : Receive :Rebel-you trade markerz
+
+Nostalgic TriBand 5hz banding 2 to 5 bands, Close proximity..
+Interleaved channel BAND.
+
+Microchip clock and 50Mhz Risc Rio processor : 8Bit : 16Bit : 18Bit
+Coprocessor digital channel selector &
+
+channel Key selection based on unique..
+
+Crystal time Quartz with Synced Tick (Regulated & modular)
+
+All digital interface and resistor ring channel & sync selector with
+micro band tuning firmware.
+
+(c)Rupert S
+
+Dev/Random : Importance
+
+Dev/Random : Importance : Our C/T/RNG Can Help GEA-2 Open Software
+implementation of 3 Bits (T/RNG) Not 1 : We need Chaos : GEA-1 and
+GEA-2 Implementations we will improve with our /Dev/Random
+
+Our C/T/RNG Can Help GEA-2 Open Software implementation of 3 Bits
+(T/RNG) Not 1 : We need Chaos : GEA-1 and GEA-2 Implementations we
+will improve with our /Dev/Random
+
+We can improve GPRS 2G to 5G networks still need to save power, GPRS
+Doubles a phones capacity to run all day,
+
+Code can and will be improved, Proposals include:
+
+Blake2
+ChaCha
+SM4
+SHA2
+SHA3
+
+Elliptic Encipher
+AES
+Poly ChaCha
+
+Firstly we need a good solid & stable /dev/random
+
+So we can examine the issue with a true SEED!
+
+Rupert S https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+TRNG Samples & Method DRAND Proud!
+
+https://drive.google.com/file/d/1b_Sl1oI7qTlc6__ihLt-N601nyLsY7QU/view?usp=drive_web
+https://drive.google.com/file/d/1yi4ERt0xdPc9ooh9vWrPY1LV_eXV-1Wc/view?usp=drive_web
+https://drive.google.com/file/d/11dKUNl0ngouSIJzOD92lO546tfGwC0tu/view?usp=drive_web
+https://drive.google.com/file/d/10a0E4Gh5S-itzBVh0fOaxS7JS9ru-68T/view?usp=drive_web
+
+https://github.com/P1sec/gea-implementation
