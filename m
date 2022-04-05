@@ -2,106 +2,167 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656074F25D1
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 09:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993EE4F249F
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Apr 2022 09:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbiDEHw1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Apr 2022 03:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
+        id S229614AbiDEHZG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Apr 2022 03:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbiDEHvm (ORCPT
+        with ESMTP id S231173AbiDEHZF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Apr 2022 03:51:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02431835E;
-        Tue,  5 Apr 2022 00:47:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 02ECC616C4;
-        Tue,  5 Apr 2022 07:47:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D859AC340EE;
-        Tue,  5 Apr 2022 07:47:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1649144871;
-        bh=XbcS6J5pKTc2UDgppCxx12CWm5kB7pk+jArTB3TU6mc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MRyPXqiWub7ZQCR3XYncrv5V2+03gIAEaNjYJSDQWQ1XB9/Oj5hbNPbSiqdScU64C
-         kyLYkCceXakv3CfK6LpD4lfh1IBslX3EadDuFY3aPJ29oYxrjQVr3L0pDKOb/aCYCa
-         09Mi6kVNXIvEA1eXoMQJl/8fefDBVB4iBT/YoZik=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Marc Orr <marcorr@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.17 0201/1126] crypto: ccp - Ensure psp_ret is always initd in __sev_platform_init_locked()
-Date:   Tue,  5 Apr 2022 09:15:48 +0200
-Message-Id: <20220405070413.506377453@linuxfoundation.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220405070407.513532867@linuxfoundation.org>
-References: <20220405070407.513532867@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Tue, 5 Apr 2022 03:25:05 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4C66261
+        for <linux-crypto@vger.kernel.org>; Tue,  5 Apr 2022 00:23:05 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id d10so9016209edj.0
+        for <linux-crypto@vger.kernel.org>; Tue, 05 Apr 2022 00:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=+8o8z5eAjLzoYYRvcyTFAdvRMOxVZDs+vsqJse2i6K8=;
+        b=Y5/3UhaHntNXfB2TN4ZFHBeoH7NHgcGpTBvw1CDMino9u74zFb7p+n/AYkI5T3TzzM
+         c8IyXxav15nxKvzaW8lxlIeT2aWt7xmn50foWzvXIPsDm72fgvkEgutX2Fv7vuUWZLcK
+         2df8ytRflytA49ox9FZbr04iHoJWNC1JU0T3wJjPJM4MjnwSgTguSDSmfdgkGbRmkqQm
+         ITXlzLboQQMQ8CfG78FNhSqZFVQ8I3o1dT6NIEOdeynGDgcqNGuo01n1I0OYVmFzm/tM
+         5+50j0VZUFkKXUoLKI/86JPQfhUNOEcTrWa17daDZbrWiayeZDO5H5MFJaMsct7JUf4V
+         WSFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=+8o8z5eAjLzoYYRvcyTFAdvRMOxVZDs+vsqJse2i6K8=;
+        b=Y/JPhoJdPQ1DmJuY3H46Fi5xioROgsQUAKlcWAfnsEsQnXqovI1QaMoi22aIwAwt9L
+         YBE9rRnq6CiEZP4+LeYxB/ARgCZhT7HU4lPWQadESbHcW7xvgDolVrDSevNpMVq700+c
+         wlZbpUby6VMiS/88W2rFZbwddC0IAqQeJ3S1ZHR+Y8QV/DfVLhoFDGHOR7dqEaBktFR5
+         24M628SVatkSa4jZzQoVU0gcND41LPEzOpHE/tHuqdgjmcFHuMEAC2nfNQhrdxYIWlk4
+         jzgyppISqbFBYTr78PVlz+ePuK1V/ihC6+HY50ETfg2JCezrCcUCuLQz+Vw5Sunkj4kT
+         fgng==
+X-Gm-Message-State: AOAM532C1w87VDDO4hJEKgQTkD7u3L6rkDuTwncef9JVRPfi++dZfT1r
+        dxHmhGYd/qOWR3+4ptMqjuOK3R79kYVi2vblW+A=
+X-Google-Smtp-Source: ABdhPJxszRfb4MAH+uRd8PDmlTXfLlXkLh3f6uRbdWkZbR4uEU9HGWYcTJVRXAETr72FGznghHf2knvK56APV21QgOw=
+X-Received: by 2002:a05:6402:4414:b0:419:28bc:55dc with SMTP id
+ y20-20020a056402441400b0041928bc55dcmr2203578eda.130.1649143384192; Tue, 05
+ Apr 2022 00:23:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Duke Abbaddon <duke.abbaddon@gmail.com>
+Date:   Tue, 5 Apr 2022 08:22:53 +0100
+Message-ID: <CAHpNFcO+WoN1A1uHuoV2YhgiZnLkiddw3_D8nLA4LygTZWU7Gw@mail.gmail.com>
+Subject: Secure-Enable PSP + SGX + Initiator Security Virtualise 2022 : Self
+ Tests & Thread control pages *Kernel Base L1:L2,L3:Cache MontiCarlos
+ Processor Feature & Task Manger*
+To:     torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Peter Gonda <pgonda@google.com>
+Secure-Enable PSP + SGX + Initiator Security Virtualise 2022
 
-[ Upstream commit 1e1ec11d3ec3134e05d4710f4dee5f9bd05e828d ]
+Proper initiation requires at least a basic permission statement
+before kernel load:RS
 
-Initialize psp_ret inside of __sev_platform_init_locked() because there
-are many failure paths with PSP initialization that do not set
-__sev_do_cmd_locked().
+<VMaWare Initiator>
+Firmware, bios load <init>1 }
+Boot Loader <init>2         } Enclave 1
+Kernel Jack on safe boot <init>3 : Enclave 2
+Core Modules <init>4 Enclave 3
+System <init><init><init><init><init>
 
-Fixes: e423b9d75e77: ("crypto: ccp - Move SEV_INIT retry for corrupted data")
+(c)Rupert S https://bit.ly/VESA_BT
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: John Allen <john.allen@amd.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/ccp/sev-dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > + * Some 'Enable PSP + SGX' functions require that no cached linear-to-physical address
+> > + * mappings are present before they can succeed. Collaborate with
+> > + * hardware via ENCLS[ETRACK] to ensure that all cached
+> > + * linear-to-physical address mappings belonging to all threads of
+> > + * the enclave are cleared. See sgx_encl_cpumask() for details.
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 8fd774a10edc..6ab93dfd478a 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -413,7 +413,7 @@ static int __sev_platform_init_locked(int *error)
- {
- 	struct psp_device *psp = psp_master;
- 	struct sev_device *sev;
--	int rc, psp_ret;
-+	int rc, psp_ret = -1;
- 	int (*init_function)(int *error);
- 
- 	if (!psp || !psp->sev_data)
--- 
-2.34.1
+Cache Buffer can hide locations from direct attack! <VIRUALISE LOC>
+But do involve a potential page break if not aligned
+
+> > + * Return valid permission fields from a secinfo structure provided by
+> > + * user space. The secinfo structure is required to only have bits in
+> > + * the permission fields set.
+
+Virtualise buffer can lazy IO & Lazy DMA #Thread mate DT
+
+> > + * Ensure enclave is ready for SGX2 functions. Readiness is checked
+> > + * by ensuring the hardware supports SGX2 and the enclave is initialized
+> > + * and thus able to handle requests to modify pages within it.
+
+Boot time check can validate SGX & PSP & YES Cache a relocatable table,
+Direct Read required INT & IO Activations & is not Cache permitted one
+presumes. DT
+
+> > Changes since V2:
+> > - Include the sgx_ioc_sgx2_ready() utility
+> >   that previously was in "x86/sgx: Support relaxing of enclave page
+> >   permissions" that is removed from the next version.
+> > - Few renames requested >
+
+Broken Alignment DT
+Separated BASE Code DT
+
+Strict Code Align =1
+Buffer RELOC = 1
+Security permission Buffer = 751
+
+Enable PSP + SGX
+
+https://lkml.org/lkml/2022/4/5/29
+https://lkml.org/lkml/2022/4/5/27
+https://lkml.org/lkml/2022/4/5/25
+
+https://lkml.org/lkml/2022/4/5/50
+
+https://lkml.org/lkml/2022/4/4/982
+
+Self Tests & Thread control pages *Kernel Base L1:L2,L3:Cache
+MontiCarlos Processor Feature & Task Manger* >> Reference :
+https://science.n-helix.com/2021/11/monticarlo-workload-selector.html
+
+https://lkml.org/lkml/2022/4/5/119
+https://lkml.org/lkml/2022/4/5/120
+https://lkml.org/lkml/2022/4/5/121
+https://lkml.org/lkml/2022/4/5/122
+https://lkml.org/lkml/2022/4/5/123
+https://lkml.org/lkml/2022/4/5/125
+https://lkml.org/lkml/2022/4/5/127
+https://lkml.org/lkml/2022/4/5/128
+https://lkml.org/lkml/2022/4/5/129
+https://lkml.org/lkml/2022/4/5/130
+
+<< Self Tests & Thread control pages *Kernel Base L1:L2,L3:Cache
+MontiCarlos Processor Feature & Task Manger*
+
+*
+
+https://science.n-helix.com/2018/12/rng.html
+
+https://science.n-helix.com/2022/02/rdseed.html
+
+https://science.n-helix.com/2017/04/rng-and-random-web.html
+
+https://science.n-helix.com/2022/02/interrupt-entropy.html
+
+https://science.n-helix.com/2021/11/monticarlo-workload-selector.html
+
+https://science.n-helix.com/2022/03/security-aspect-leaf-hash-identifiers.html
 
 
+Audio, Visual & Bluetooth & Headset & mobile developments only go so far:
 
+https://science.n-helix.com/2022/02/visual-acuity-of-eye-replacements.html
+
+https://science.n-helix.com/2022/03/ice-ssrtp.html
+
+https://science.n-helix.com/2021/11/ihmtes.html
+
+https://science.n-helix.com/2021/10/eccd-vr-3datmos-enhanced-codec.html
+https://science.n-helix.com/2021/11/wave-focus-anc.html
+https://science.n-helix.com/2021/12/3d-audio-plugin.html
