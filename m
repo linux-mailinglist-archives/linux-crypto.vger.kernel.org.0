@@ -2,53 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 225524F666C
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 19:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6180F4F680C
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 19:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238352AbiDFREY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 6 Apr 2022 13:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
+        id S239756AbiDFR5P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 6 Apr 2022 13:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238420AbiDFREI (ORCPT
+        with ESMTP id S239758AbiDFR5H (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 6 Apr 2022 13:04:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5DD4922D8
-        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 07:27:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 081ED619B0
-        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 14:27:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6996CC385A1;
-        Wed,  6 Apr 2022 14:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649255256;
-        bh=3xQ+IicuJxqqbSbGdLZz0hgbQcodwyR88fOD06OHSSo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MzYiTxoI9DwsbcT1Uav2SIU5om2VwRat3kFVSH/+AWm/Ce3qPCLw4+y/KuXtrgobv
-         0kQ4UVwrI4mknyQzCV4ZCVDo5MJIKdG0v0XyNLEU0g74aab7f+Z4yGFK3L8+UGzuyw
-         Q3vgAChT3rEeG/YrOtFfNz0q8Q/TRzu+9uFs5trR7BCbnlH3khDk7zwWUk3GqRwxdT
-         eKWVfcFdk7rkCvFYznQysBzeG8RKTS1ka2jck8rslU4mrE15RIQVuj4OLEw2TGp9T3
-         FrJb3/a58/HQE7ZCZods0WpW7zTYMpfh/UmTJvMdgy85DmA/fatqUYq3AL3USPMFtP
-         VIr2X0jpQ9dnA==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, keescook@chromium.org,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 8/8] crypto: safexcel - reduce alignment of stack buffer
-Date:   Wed,  6 Apr 2022 16:27:15 +0200
-Message-Id: <20220406142715.2270256-9-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220406142715.2270256-1-ardb@kernel.org>
-References: <20220406142715.2270256-1-ardb@kernel.org>
+        Wed, 6 Apr 2022 13:57:07 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02293305B22;
+        Wed,  6 Apr 2022 09:07:12 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id 12so2831088oix.12;
+        Wed, 06 Apr 2022 09:07:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mi0PlXno3D6jBV7awtJNZHmVjzTuCmSnSrCiUvwpU7E=;
+        b=ixA+1+fWlID6n92LIWvIyDbKuSPpFwo/ptM4XSfETNyHRztEoISeuDm5oZOuBfejFA
+         cdz3ZZJx4uvmM3qrCfDt1fX5xa/W47mHPv43UE1MiViOzbrzXPWzy5HB/69wFAR/UvgS
+         l8D0qbFbcX4en5QUcqp2oHfbOL7BM4jMbyBFsG8JP3Wye62z/mkBRT4bvZ/ZnVL8npBJ
+         kh0l2C25nNAeQTJxLjxMqzCd+ZIMAC33ljbzKaG4YBb8aYjDMcDsNONcT+pecjDvM3Ym
+         my9d+7ELK8uqzb6N41hDEUv4NO9lIb9nOlZ8a1D8YZXDV+F7d0BpTrC6pwpP8oOofjkz
+         PpYQ==
+X-Gm-Message-State: AOAM530WwdKiwYs1OJ3zYCBky39w8xkAL/bqm9GAGo1uKfNSJbG8VYE+
+        9hX6gnUS8TyELR3hXA6I1A==
+X-Google-Smtp-Source: ABdhPJyf9cDvzdnJyrz88zNtK+fVSdGACNFc6ZhTULEzyvDAXPx26QtcqONjw4TvsYhTPVBvMs061A==
+X-Received: by 2002:a05:6808:2183:b0:2da:6d62:6ec6 with SMTP id be3-20020a056808218300b002da6d626ec6mr3895459oib.51.1649261230982;
+        Wed, 06 Apr 2022 09:07:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id mj27-20020a0568700d9b00b000de29e1d6adsm4905187oab.16.2022.04.06.09.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Apr 2022 09:07:10 -0700 (PDT)
+Received: (nullmailer pid 2334572 invoked by uid 1000);
+        Wed, 06 Apr 2022 16:07:09 -0000
+Date:   Wed, 6 Apr 2022 11:07:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     krzk+dt@kernel.org, linux-crypto@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
+        heiko@sntech.de, herbert@gondor.apana.org.au,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 29/33] clk: rk3399: use proper crypto0 name
+Message-ID: <Yk26rQaTfZ1QvLN0@robh.at.kernel.org>
+References: <20220401201804.2867154-1-clabbe@baylibre.com>
+ <20220401201804.2867154-30-clabbe@baylibre.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=960; h=from:subject; bh=3xQ+IicuJxqqbSbGdLZz0hgbQcodwyR88fOD06OHSSo=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBiTaNC33cNzLbEs2ctiZcRkxp9Jz9syQOEHvI9dgDi Q9VvunOJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYk2jQgAKCRDDTyI5ktmPJCI4DA DAtL7mc/MboQUat0d9C03b7ZxT7QAcu99P/I8DjwzQh2xGP1jTjX5oPQ3RIzmfDnXNYBFqpSxd6eyo 3y4CjAG/aEa+2gFdgC/+yQQfUnU5Hmvsh6PxgM1ZcJS+OA6jTODNGwvdm3VAleb66AcyaSqo6kYtvq zJH4g7d36CLzlp8D5gI7MsetFoud/YZN7/adlx6mYxAftKnZ7wT6qUQivZF15y/a4zIUgrJiO2y2p6 Q7XDJBRSudlhAxLrOZF4ts9mzEAESqx+rf+4VQ5YDRpfl/JJ+rROtroOO81PrFdxcwGSnz0eyBjM6G M+mWwxidmpsmbsyG1w/clZcuY14vxUFHL600gYa6GnCqjQfi5FN8btJxaMPPigki+hQsLAjHdcFtAF MP0/FyprXAgoZ3PvJbvnP4gcbYGxFLrhV8s4f7EjoYeDuAmBMLe6O/LXT9o3SlfTPYGtJTnLeVpUiw P/+1MJjbN2Cwcl2eW+4cmFVHwcrNrUJ4kpGMuqyoj+jQM=
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220401201804.2867154-30-clabbe@baylibre.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,28 +66,15 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Now that skcipher, AEAD and ahash have all been updated to use a request
-structure that itself is not aligned for DMA, we can relax the alignment
-requirement of the EIP197 stack buffers as well.
+On Fri, 01 Apr 2022 20:18:00 +0000, Corentin Labbe wrote:
+> RK3399 has 2 crypto instance, named crypto0 and crypto1 in the TRM.
+> Only reset for crypto1 is correctly named, but crypto0 is not.
+> Since nobody use them, add a 0 to be consistent with the TRM and crypto1 entries.
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  include/dt-bindings/clock/rk3399-cru.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/crypto/inside-secure/safexcel.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index b5033803714a..25020f034f47 100644
---- a/drivers/crypto/inside-secure/safexcel.h
-+++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -66,7 +66,7 @@
- 					       CRYPTO_MINALIGN) +		\
- 					 sizeof(struct safexcel_cipher_req))
- #define EIP197_REQUEST_ON_STACK(name, type, size) \
--	char __##name##_desc[size] CRYPTO_MINALIGN_ATTR; \
-+	char __##name##_desc[size] CRYPTO_REQ_MINALIGN_ATTR; \
- 	struct type##_request *name = (void *)__##name##_desc
- 
- /* Xilinx dev board base offsets */
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
