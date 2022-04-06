@@ -2,48 +2,48 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03804F665C
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 19:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225524F666C
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 19:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238297AbiDFREh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 6 Apr 2022 13:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        id S238352AbiDFREY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 6 Apr 2022 13:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238422AbiDFREI (ORCPT
+        with ESMTP id S238420AbiDFREI (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 6 Apr 2022 13:04:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831A44922DD
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5DD4922D8
         for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 07:27:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 33E0EB82252
-        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 14:27:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDBD2C385A3;
-        Wed,  6 Apr 2022 14:27:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 081ED619B0
+        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 14:27:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6996CC385A1;
+        Wed,  6 Apr 2022 14:27:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649255255;
-        bh=2KqtO9ZfcftXFWtkQBPByUGxg2nETlz9BoiAzSQJ1ME=;
+        s=k20201202; t=1649255256;
+        bh=3xQ+IicuJxqqbSbGdLZz0hgbQcodwyR88fOD06OHSSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PHnZLKLo2GPUS6hSNJxWr7vy/wP0YLs8Xnm8yu7ADdxhclIS2HERLU2IP37UUI9HK
-         IdQ5lsp2fz32lY/eKlXsM84nWp4PXqzsd2yTNL0VunagYvLgASWKDp02s2eoLgK5Fe
-         XzVq12IUTyhCFnZYSgnPp7Y5zIyNIdOfL2qoNy8Q1HKG5Yfpn9o93gWVJbatF2yuOD
-         D9kFDdrqLOQxMaVjciuPy79qbGMRI3HGI1Smgb5W++w9Nmu3FfLhKD9F0cXC4IzifE
-         vJA/4xkxSbVE+s7ibOuspB8LohhbIpOKJjQwkeYk8Mui/VTkf/ZF3ZIF0+eAp0ZSFw
-         gevw6HfwC43iw==
+        b=MzYiTxoI9DwsbcT1Uav2SIU5om2VwRat3kFVSH/+AWm/Ce3qPCLw4+y/KuXtrgobv
+         0kQ4UVwrI4mknyQzCV4ZCVDo5MJIKdG0v0XyNLEU0g74aab7f+Z4yGFK3L8+UGzuyw
+         Q3vgAChT3rEeG/YrOtFfNz0q8Q/TRzu+9uFs5trR7BCbnlH3khDk7zwWUk3GqRwxdT
+         eKWVfcFdk7rkCvFYznQysBzeG8RKTS1ka2jck8rslU4mrE15RIQVuj4OLEw2TGp9T3
+         FrJb3/a58/HQE7ZCZods0WpW7zTYMpfh/UmTJvMdgy85DmA/fatqUYq3AL3USPMFtP
+         VIr2X0jpQ9dnA==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, keescook@chromium.org,
         Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 7/8] crypto: ahash - avoid DMA alignment for request structures unless needed
-Date:   Wed,  6 Apr 2022 16:27:14 +0200
-Message-Id: <20220406142715.2270256-8-ardb@kernel.org>
+Subject: [PATCH 8/8] crypto: safexcel - reduce alignment of stack buffer
+Date:   Wed,  6 Apr 2022 16:27:15 +0200
+Message-Id: <20220406142715.2270256-9-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220406142715.2270256-1-ardb@kernel.org>
 References: <20220406142715.2270256-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2242; h=from:subject; bh=2KqtO9ZfcftXFWtkQBPByUGxg2nETlz9BoiAzSQJ1ME=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBiTaNB72ErJCPBXR93LPKYLwjlp6ikb8R1gricj8QN pddACUKJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYk2jQQAKCRDDTyI5ktmPJG4LC/ 9PG+G5I2qS0lZXHGekRj+aM6VF0dxtRpAQy9j1pPcsqHPvzL9vwmLtXVzdKsN6rVGEXstYXRfmgN4k YuFYnP+AOI4uB+UQhY0F2QTEa24tgCS6Mrhbq7YJV2YYiXqS+/l1EBPcnAXSTUwA2Y83ye8Op13vEU lheuUxBSm1YXEAefwCOMv/851XyvsC/bbBdb6sSFqWrLcOv+cRpxJepn5iTKRLylofdp+NFwb1G4Qe QSkplhp96RCvRGLVtNHDfoC5yP+J2K0e8QkM8Vzwx6aw14wxei3gNkt7PK76VHWCYqngr1DVfCfCKe 8ObeFswbCnX8oI2Vi3LKgEmEKJMHhuV4uLatrxnMJNDB6rAFHMmcLlmOJHpOEVICRJxviAOR7/NgbZ ohYO2pdrmaIcFPdITREL4RsHXF2I0zDt25PUBXk6XPEBp4Zi2ftE9Lsd/pvcIcXQdMo6ssVBrCs0q5 6HArpnv4mQ3ogHxpkATDHfnhoQc6icHSfmDVn69gJoXEc=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=960; h=from:subject; bh=3xQ+IicuJxqqbSbGdLZz0hgbQcodwyR88fOD06OHSSo=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBiTaNC33cNzLbEs2ctiZcRkxp9Jz9syQOEHvI9dgDi Q9VvunOJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYk2jQgAKCRDDTyI5ktmPJCI4DA DAtL7mc/MboQUat0d9C03b7ZxT7QAcu99P/I8DjwzQh2xGP1jTjX5oPQ3RIzmfDnXNYBFqpSxd6eyo 3y4CjAG/aEa+2gFdgC/+yQQfUnU5Hmvsh6PxgM1ZcJS+OA6jTODNGwvdm3VAleb66AcyaSqo6kYtvq zJH4g7d36CLzlp8D5gI7MsetFoud/YZN7/adlx6mYxAftKnZ7wT6qUQivZF15y/a4zIUgrJiO2y2p6 Q7XDJBRSudlhAxLrOZF4ts9mzEAESqx+rf+4VQ5YDRpfl/JJ+rROtroOO81PrFdxcwGSnz0eyBjM6G M+mWwxidmpsmbsyG1w/clZcuY14vxUFHL600gYa6GnCqjQfi5FN8btJxaMPPigki+hQsLAjHdcFtAF MP0/FyprXAgoZ3PvJbvnP4gcbYGxFLrhV8s4f7EjoYeDuAmBMLe6O/LXT9o3SlfTPYGtJTnLeVpUiw P/+1MJjbN2Cwcl2eW+4cmFVHwcrNrUJ4kpGMuqyoj+jQM=
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -56,63 +56,28 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-AHASH request structures are currently aligned to minimal DMA alignment
-for the arcitecture, which defaults to 128 bytes on arm64. This is
-excessive, and rarely needed, i.e., only when doing non-coherent inbound
-DMA on the contents of the request context buffer. So let's relax this
-requirement, and only use this alignment if the
-CRYPTO_ALG_NEED_DMA_ALIGNMENT flag is set by the implementation.
+Now that skcipher, AEAD and ahash have all been updated to use a request
+structure that itself is not aligned for DMA, we can relax the alignment
+requirement of the EIP197 stack buffers as well.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- include/crypto/hash.h          |  5 +++--
- include/crypto/internal/hash.h | 10 +++++++++-
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ drivers/crypto/inside-secure/safexcel.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index f140e4643949..cd16c37c38af 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -56,7 +56,7 @@ struct ahash_request {
- 	/* This field may only be used by the ahash API code. */
- 	void *priv;
+diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
+index b5033803714a..25020f034f47 100644
+--- a/drivers/crypto/inside-secure/safexcel.h
++++ b/drivers/crypto/inside-secure/safexcel.h
+@@ -66,7 +66,7 @@
+ 					       CRYPTO_MINALIGN) +		\
+ 					 sizeof(struct safexcel_cipher_req))
+ #define EIP197_REQUEST_ON_STACK(name, type, size) \
+-	char __##name##_desc[size] CRYPTO_MINALIGN_ATTR; \
++	char __##name##_desc[size] CRYPTO_REQ_MINALIGN_ATTR; \
+ 	struct type##_request *name = (void *)__##name##_desc
  
--	void *__ctx[] CRYPTO_MINALIGN_ATTR;
-+	void *__ctx[] CRYPTO_REQ_MINALIGN_ATTR;
- };
- 
- /**
-@@ -417,7 +417,8 @@ static inline unsigned int crypto_ahash_reqsize(struct crypto_ahash *tfm)
- 
- static inline void *ahash_request_ctx(struct ahash_request *req)
- {
--	return req->__ctx;
-+	return PTR_ALIGN(&req->__ctx,
-+			 crypto_tfm_alg_req_alignmask(req->base.tfm) + 1);
- }
- 
- /**
-diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index 25806141db59..222c2df009c6 100644
---- a/include/crypto/internal/hash.h
-+++ b/include/crypto/internal/hash.h
-@@ -143,7 +143,15 @@ static inline struct ahash_alg *__crypto_ahash_alg(struct crypto_alg *alg)
- static inline void crypto_ahash_set_reqsize(struct crypto_ahash *tfm,
- 					    unsigned int reqsize)
- {
--	tfm->reqsize = reqsize;
-+	unsigned int align = crypto_tfm_alg_req_alignmask(crypto_ahash_tfm(tfm)) + 1;
-+
-+	/*
-+	 * The request structure itself is only aligned to CRYPTO_REQ_MINALIGN,
-+	 * so we need to add some headroom, allowing us to return a suitably
-+	 * aligned context buffer pointer. We also need to round up the size so
-+	 * we don't end up sharing a cacheline at the end of the buffer.
-+	 */
-+	tfm->reqsize = ALIGN(reqsize, align) + align - CRYPTO_REQ_MINALIGN;
- }
- 
- static inline struct crypto_instance *ahash_crypto_instance(
+ /* Xilinx dev board base offsets */
 -- 
 2.30.2
 
