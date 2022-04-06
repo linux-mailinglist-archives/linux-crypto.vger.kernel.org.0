@@ -2,53 +2,48 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95114F6643
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 19:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D68D4F667A
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Apr 2022 19:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238251AbiDFREP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 6 Apr 2022 13:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S238337AbiDFREV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 6 Apr 2022 13:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238266AbiDFREC (ORCPT
+        with ESMTP id S238319AbiDFREC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Wed, 6 Apr 2022 13:04:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880AB48782B
-        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 07:27:25 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B12490FFA
+        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 07:27:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE91B617A5
-        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 14:27:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA072C385A1;
-        Wed,  6 Apr 2022 14:27:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 64ABB619BF
+        for <linux-crypto@vger.kernel.org>; Wed,  6 Apr 2022 14:27:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C64EAC385A3;
+        Wed,  6 Apr 2022 14:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649255244;
-        bh=PCK62i20Ft+uGq0DJl+cExsuzto56UOLksJaM9cdlOo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CpGmHvuyyNmlP6jElFeeXqqQQy0dK77HBLnS+EQ+1942+s9Acn0KgReUE5N8/mMBg
-         he2M7TnX2j+jhgBkLXPZdvqfWTaE0VRYTWNsehgi5hDcPJFnUVERZED5EjEJG0oPQ/
-         JsG9zoNfmSeDVuMrRfLNLyrZCzFGfDqiKKMku4SzXtqWj6wxh+S9oPbsti1WQiB7Te
-         Eo4ubJlCr0mxvHTMdpHLnQtokHsrFDaUkJIvg2Lt3/bpLv0RGY4yIXkWVmK8dnQs4K
-         bZ5f/7jOmnR1p4Zj+d1t7H1hwdyW05h8n2PpZH/mNwHFqMfLOzPQffr9KqSJz+FF1B
-         JBWtyW3G0gsnA==
+        s=k20201202; t=1649255245;
+        bh=9ACSIxSqAOiR/DBYbDGfE1IBJTvqVYFmb2NFi/alMqA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RVDIuY9WD8D/oz3HmaaIV28h2HfUEAmQQmz8R0z+r0MPxNkwmdIoZpM42ClZWF/F8
+         tcYssnnPnOLUWRCwneEj8I/3oeFSQ8XLZAHY3I3xZYBpwZK74NJFVzk8EQScphqhr1
+         lnxbXSYcsGnPoAb/y5bS2VCFS+48Lp7cvySvpbhl4yJKT2PjsWYc3U/GcBbx3udji8
+         xDjIfH9xnT+9m7m/6GY/+m27Q5zBkS5WiTGPvhUqKpRalC2R1nUU/VtuxEADWUJ52f
+         ViRjMOms2nnJZbM6Y2gp3oYg65YpVfUUp9tPTLVIxChw0u/BdtHWJul3C7aAKLvZNf
+         VqIMFHRLQeNyA==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     herbert@gondor.apana.org.au, keescook@chromium.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [PATCH 0/8] crypto: avoid DMA padding for request structures
-Date:   Wed,  6 Apr 2022 16:27:07 +0200
-Message-Id: <20220406142715.2270256-1-ardb@kernel.org>
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 1/8] crypto: add flag for algos that need DMA aligned context buffers
+Date:   Wed,  6 Apr 2022 16:27:08 +0200
+Message-Id: <20220406142715.2270256-2-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220406142715.2270256-1-ardb@kernel.org>
+References: <20220406142715.2270256-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7104; h=from:subject; bh=PCK62i20Ft+uGq0DJl+cExsuzto56UOLksJaM9cdlOo=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBiTaM1frsNpHTqcIMT+TKAEcGM0XwuDJg6aMvxitMY VNmZ1byJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYk2jNQAKCRDDTyI5ktmPJLVDDA CCB8WwlRPMWdO0qZJbip7+Gjb3hTKafI9J0W6sbvp71Vl3mTpJKDYwjdaBopbgtGC8PuadrcP5qMB0 7u02dgwIlfFVDsY3ABLVXEGh6XrlZsOCDAsfHYgubUN54ZgkKiF8/V2XX6SXRcNKb7wSaUBRrTTciv kyNuyLhKy8bpZYeTTMLT6VzoBMR9JHHRA6SVWQhvqrKuivyVjAwjiJp/Y8ntB8kkZC4ydFgErpC3fV QDvsRgwxipguay+fzt2CWSlRKFbB0wWAOBnf58+OAZfuvFVY/RxriDMfbMVUdVktY7W+UVmVPbgzPC px3AogWdaMepZSh1dKGEDkQJZuExeZ3pYn50yKha1WyDMg+2nqF5OcutdMEQHi/ukymC2/t/MetPLH QjL2h/PxCEF9RiE0SK/cbFcyqTxK9KQLfPqrWlUkGmEhVopC0n3/vPdwU5y8ilCQJWNw0GBun8mauZ WFMkrurvwx8alpjjNfOtFODSZlKF13BdH8X4BBT2cFH78=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1464; h=from:subject; bh=9ACSIxSqAOiR/DBYbDGfE1IBJTvqVYFmb2NFi/alMqA=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBiTaM3OzTjBGhpBJh1MftlN1sJ3GUHAYiIFEE5j6WW OuV5Ic2JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYk2jNwAKCRDDTyI5ktmPJELXC/ oDq7t+Je2fBkhksPgtE4/qngfLsI/uoTGq+qRcw98NkTWXpYMbSIeZ5K9kV46+nZLRqOf8T0DL6xUM dO+IgCF4/GtoGKkXh1GOe+rnfj4kuEmZ1OSdZfmB/8yu1nSjbKqC40txzM/iBRN6GhbwE4nLMllp39 Ygk6AoaBe9ci85LI4Lh1Nj6pgeFBqDpIhGCsM4NhkWqFzokAbgvcc9wNoh2ivF9e3UoZsU8ApNJk62 YQXOJl98LNw9Ak6FznHL3ZpzCD5TN2Zh26LRnItfWYPxYCXDhgLeDg18PETTgZtxmajMpR2T8/S6is dTOxZSUAEOSm8cZw7+bV4BuxSUbQW2SkK9QTLOBnBpa8VWMzDRHLeFyq/MaD3+xnxim6BH30TVe9zO tjSX1lMIejjVPk6UxvkHOF2hjL3MlJ6VzUif+niK2eJmN9XIVCUcseia0pCHPKWEB6F63VpUFVvfr6 h3is68J+MeMqp8FGPTHdWvv6mh++M/nYJvBdWvO44nsUA=
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -61,133 +56,41 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This series is related to Catalin's work [0] on reducing the memory
-overhead of supporting non-coherent DMA, which requires memory buffers
-to be rounded up to avoid corruption by the cache invalidation that is
-needed for inbound DMA.
+On architectures that support non-coherent DMA, we align and round up
+all dynamically allocated request and TFM structures to the worst case
+DMA alignment, which is 128 bytes on arm64, even though most systems
+only have 64 byte cachelines, are cache coherent for DMA, don't use
+use accelerators for crypto, or the driver for the accelerator does not
+DMA into the request context buffer to begin with.
 
-In the crypto subsystem, every skcipher, aead or ahash request requires
-a request struct to be allocated, and these are usually backed by
-kmalloc(). Such request buffers are sized dynamically, based on the
-requirements of the implementation of the algorithm, and the surplus is
-made available to the driver via an opaque context pointer.
+We can relax this requirement, by only performing this rounding for
+algorithms that are backed by an implementation that actually requires
+it. So introduce CRYPTO_ALG_NEED_DMA_ALIGNMENT for this purpose, which
+will be wired up in subsequent patches.
 
-Since some drivers may perform inbound non-coherent DMA into that
-buffer, it must not share any cachelines with adjacent allocations, and
-this is why the context pointer is rounded up to ARCH_KMALLOC_MINALIGN,
-which takes the minimum DMA alignment into account on architectures
-where this is needed.
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ include/linux/crypto.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-This means that, even when using crypto drivers that don't do DMA to
-begin with (which includes synchronous skciphers, aeads and ahashes
-based on CPU instructions), or that do only coherent DMA are forced to
-perform this padding and alignment, which may affect the memory
-footprint substantially: on arm64, the compile time minimum DMA
-alignment is 128 bytes.
-
-So instead, require drivers to set a new flag
-CRYPTO_ALG_NEED_DMA_ALIGNMENT if it performs DMA into the context
-buffers, and only take DMA alignment into account if the flag is set.
-
-Initially, we set this flag for all asynchronous accelerator drivers in
-drivers/crypto, which simply preserves the status quo for these systems
-once the subsequent patches get rid of this overhead. Future patches
-could be applied to drivers that don't actually need it, or only need it
-when running in non-coherent mode.
-
-Note that the new approach proposed here still uses the compile time
-value for DMA alignment, but this can be updated to use the runtime
-values (which is usually lower and therefore less wasteful) after
-Catalin's changes land.
-
-[0] https://lore.kernel.org/linux-arm-kernel/20220405135758.774016-1-catalin.marinas@arm.com/
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Eric Biggers <ebiggers@kernel.org>,
-Cc: Gilad Ben-Yossef <gilad@benyossef.com>
-Cc: Corentin Labbe <clabbe@baylibre.com>
-Cc: Saravana Kannan <saravanak@google.com>
-
-Ard Biesheuvel (8):
-  crypto: add flag for algos that need DMA aligned context buffers
-  crypto: safexcel - take request size after setting TFM
-  crypto: drivers - set CRYPTO_ALG_NEED_DMA_ALIGNMENT where needed
-  crypto: drivers - avoid setting skcipher TFM reqsize directly
-  crypto: skcipher - avoid rounding up request size to DMA alignment
-  crypto: aead - avoid DMA alignment for request structures unless
-    needed
-  crypto: ahash - avoid DMA alignment for request structures unless
-    needed
-  crypto: safexcel - reduce alignment of stack buffer
-
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c |  6 +-
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c   | 20 +++----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c |  6 +-
- drivers/crypto/amcc/crypto4xx_core.c                |  8 +++
- drivers/crypto/amlogic/amlogic-gxl-cipher.c         |  5 +-
- drivers/crypto/amlogic/amlogic-gxl-core.c           |  2 +
- drivers/crypto/atmel-aes.c                          |  2 +-
- drivers/crypto/atmel-sha.c                          |  2 +-
- drivers/crypto/atmel-tdes.c                         |  2 +-
- drivers/crypto/axis/artpec6_crypto.c                |  8 +++
- drivers/crypto/bcm/cipher.c                         | 23 +++++++-
- drivers/crypto/caam/caamalg.c                       |  4 +-
- drivers/crypto/caam/caamalg_qi.c                    |  2 +
- drivers/crypto/caam/caamalg_qi2.c                   |  4 +-
- drivers/crypto/caam/caamhash.c                      |  3 +-
- drivers/crypto/cavium/cpt/cptvf_algs.c              |  6 ++
- drivers/crypto/cavium/nitrox/nitrox_aead.c          |  6 +-
- drivers/crypto/cavium/nitrox/nitrox_skcipher.c      | 24 +++++---
- drivers/crypto/ccree/cc_aead.c                      |  3 +
- drivers/crypto/ccree/cc_cipher.c                    |  3 +
- drivers/crypto/ccree/cc_hash.c                      |  6 ++
- drivers/crypto/chelsio/chcr_algo.c                  |  5 +-
- drivers/crypto/gemini/sl3516-ce-cipher.c            |  5 +-
- drivers/crypto/gemini/sl3516-ce-core.c              |  1 +
- drivers/crypto/hifn_795x.c                          |  4 +-
- drivers/crypto/hisilicon/sec/sec_algs.c             |  8 +++
- drivers/crypto/hisilicon/sec2/sec_crypto.c          |  2 +
- drivers/crypto/inside-secure/safexcel.h             | 17 +++---
- drivers/crypto/inside-secure/safexcel_cipher.c      | 55 ++++++++++++++++--
- drivers/crypto/inside-secure/safexcel_hash.c        | 26 +++++++++
- drivers/crypto/ixp4xx_crypto.c                      |  2 +
- drivers/crypto/keembay/keembay-ocs-aes-core.c       | 12 ++++
- drivers/crypto/keembay/keembay-ocs-hcu-core.c       | 30 ++++++----
- drivers/crypto/marvell/cesa/cipher.c                |  6 ++
- drivers/crypto/marvell/cesa/hash.c                  |  6 ++
- drivers/crypto/marvell/octeontx/otx_cptvf_algs.c    | 60 +++++++++++++++-----
- drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c  | 52 ++++++++++++-----
- drivers/crypto/mxs-dcp.c                            |  8 ++-
- drivers/crypto/n2_core.c                            |  1 +
- drivers/crypto/omap-aes.c                           |  5 ++
- drivers/crypto/omap-des.c                           |  4 ++
- drivers/crypto/omap-sham.c                          | 12 ++++
- drivers/crypto/qce/aead.c                           |  1 +
- drivers/crypto/qce/sha.c                            |  3 +-
- drivers/crypto/qce/skcipher.c                       |  1 +
- drivers/crypto/rockchip/rk3288_crypto_ahash.c       |  3 +
- drivers/crypto/rockchip/rk3288_crypto_skcipher.c    | 18 ++++--
- drivers/crypto/s5p-sss.c                            |  6 ++
- drivers/crypto/sa2ul.c                              |  9 +++
- drivers/crypto/sahara.c                             | 14 +++--
- drivers/crypto/stm32/stm32-cryp.c                   | 27 ++++++---
- drivers/crypto/stm32/stm32-hash.c                   |  8 +++
- drivers/crypto/talitos.c                            | 40 +++++++++++++
- drivers/crypto/ux500/cryp/cryp_core.c               | 21 ++++---
- drivers/crypto/ux500/hash/hash_core.c               | 12 ++--
- drivers/crypto/xilinx/zynqmp-aes-gcm.c              |  1 +
- include/crypto/aead.h                               |  2 +-
- include/crypto/hash.h                               |  5 +-
- include/crypto/internal/aead.h                      | 13 ++++-
- include/crypto/internal/hash.h                      | 10 +++-
- include/crypto/internal/skcipher.h                  | 13 ++++-
- include/crypto/skcipher.h                           |  8 +--
- include/linux/crypto.h                              | 21 +++++++
- 63 files changed, 568 insertions(+), 134 deletions(-)
-
+diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+index 2324ab6f1846..f2e95fb6cedb 100644
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -100,6 +100,13 @@
+  */
+ #define CRYPTO_NOLOAD			0x00008000
+ 
++/*
++ * Whether context buffers require DMA alignment. This is the case for
++ * drivers that perform non-coherent inbound DMA on the context buffer
++ * directly, but should not be needed otherwise.
++ */
++#define CRYPTO_ALG_NEED_DMA_ALIGNMENT	0x00010000
++
+ /*
+  * The algorithm may allocate memory during request processing, i.e. during
+  * encryption, decryption, or hashing.  Users can request an algorithm with this
 -- 
 2.30.2
 
