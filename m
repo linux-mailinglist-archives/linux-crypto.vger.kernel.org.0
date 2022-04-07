@@ -2,50 +2,51 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 114214F853B
+	by mail.lfdr.de (Postfix) with ESMTP id EBB464F853C
 	for <lists+linux-crypto@lfdr.de>; Thu,  7 Apr 2022 18:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345844AbiDGQxY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Apr 2022 12:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S1345833AbiDGQxZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Apr 2022 12:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345833AbiDGQxO (ORCPT
+        with ESMTP id S1345858AbiDGQxW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Apr 2022 12:53:14 -0400
+        Thu, 7 Apr 2022 12:53:22 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7393700B
-        for <linux-crypto@vger.kernel.org>; Thu,  7 Apr 2022 09:51:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105F211A37
+        for <linux-crypto@vger.kernel.org>; Thu,  7 Apr 2022 09:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649350274; x=1680886274;
+  t=1649350276; x=1680886276;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jw3UQ8ojxhq/Fcg4RvfL/PcsmV367ro/g+enUqfCBr4=;
-  b=lbfHbPTYGzCxtxh5m3Jl//0CPdNhBaKEvuXL1HSrsJ0w1GGMsmMqtElO
-   dNQTz6QWq+4HKMG/wozGyZFeCtjfq7SZms4MieaYTlsEENgQtfq3Ub7D+
-   ngBSIBdueEzxnW/Si5NBs3D6NzbjVp0K2D2kz7fFbQx8Yb45O2sQekF7t
-   /kLIWtC0GqgdokiHH8Xq6eYEdVBEChHlmbW6i+ypNdNut/+a8jFkg7buS
-   xFDODtCWOz4TYik/QR+dacjX0a9PpNr94+YLRxOVSwKdhsoB0GDDZv7s2
-   PnWZq0u1Jk/WUKW82dXwiLzYwur4TtuzUWaU7/cmqs+8WfZE6DUSih87b
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="241312050"
+  bh=Fmltnfxcr440AqeR4iM7RcgLXqxDxaud8Rf3z7URLf8=;
+  b=WS3kyUV7aN/EB0+8XMmgHn42dTxsqyqn/dDff9lstKUUbVo1QbLYOmQL
+   Os9L1M6gF1/u4myr7o/YcNXTfhRf0gfiIQDo6lsD2igaPoXSTIiCvsrJO
+   T3U2XDMtHluFPqK6uqnXVdvXui+jp2Y+DCZSY57wMFSHPkhpfODNlKwo9
+   Mh5SwD9gh/R+KRr8aOX/WsmPPHlRmDZCj5yM36DErBFtlMiwSMdbLDZ2v
+   GtkWi4Fwe1W/wwBHxC6qkonaQO2nk59xZLJ6cA89BuTAMytrDDQQHvL/G
+   FGGBZIIaBaCLRJKDvwlZ+NmKU9UraDoAbhVXpMozvc8z/8fvsXLM2VZGO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="241312058"
 X-IronPort-AV: E=Sophos;i="5.90,242,1643702400"; 
-   d="scan'208";a="241312050"
+   d="scan'208";a="241312058"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2022 09:51:14 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2022 09:51:15 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,242,1643702400"; 
-   d="scan'208";a="652898355"
+   d="scan'208";a="652898359"
 Received: from silpixa00393544.ir.intel.com ([10.237.213.118])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Apr 2022 09:51:12 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 07 Apr 2022 09:51:14 -0700
 From:   Marco Chiappero <marco.chiappero@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         giovanni.cabiddu@intel.com,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
         Marco Chiappero <marco.chiappero@intel.com>
-Subject: [PATCH v2 07/16] crypto: qat - add missing restarting event notification in VFs
-Date:   Thu,  7 Apr 2022 17:54:46 +0100
-Message-Id: <20220407165455.256777-8-marco.chiappero@intel.com>
+Subject: [PATCH v2 08/16] crypto: qat - add check for invalid PFVF protocol version 0
+Date:   Thu,  7 Apr 2022 17:54:47 +0100
+Message-Id: <20220407165455.256777-9-marco.chiappero@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220407165455.256777-1-marco.chiappero@intel.com>
 References: <20220407165455.256777-1-marco.chiappero@intel.com>
@@ -62,29 +63,35 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-VF drivers are notified via PFVF of the VFs being disabled, but
-such notification was not propagated within the VF driver.
-Dispatch the ADF_EVENT_RESTARTING event by adding a missing call
-to adf_dev_restarting_notify().
+From: Wojciech Ziemba <wojciech.ziemba@intel.com>
 
+PFVF protocol version 0 is not a valid version, but PF drivers
+currently would report any such version from VFs as compatible.
+This patch adds an extra check for the invalid PFVF protocol
+version 0.
+
+Signed-off-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
 Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
 ---
- drivers/crypto/qat/qat_common/adf_vf_isr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_vf_isr.c b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-index 86c3bd0c9c2b..8c95fcd8e64b 100644
---- a/drivers/crypto/qat/qat_common/adf_vf_isr.c
-+++ b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-@@ -70,6 +70,7 @@ static void adf_dev_stop_async(struct work_struct *work)
- 		container_of(work, struct adf_vf_stop_data, work);
- 	struct adf_accel_dev *accel_dev = stop_data->accel_dev;
+diff --git a/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c b/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
+index 588352de1ef0..c059b98836aa 100644
+--- a/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
++++ b/drivers/crypto/qat/qat_common/adf_pfvf_pf_proto.c
+@@ -242,7 +242,9 @@ static int adf_handle_vf2pf_msg(struct adf_accel_dev *accel_dev, u8 vf_nr,
+ 			"VersionRequest received from VF%d (vers %d) to PF (vers %d)\n",
+ 			vf_nr, vf_compat_ver, ADF_PFVF_COMPAT_THIS_VERSION);
  
-+	adf_dev_restarting_notify(accel_dev);
- 	adf_dev_stop(accel_dev);
- 	adf_dev_shutdown(accel_dev);
- 
+-		if (vf_compat_ver <= ADF_PFVF_COMPAT_THIS_VERSION)
++		if (vf_compat_ver == 0)
++			compat = ADF_PF2VF_VF_INCOMPATIBLE;
++		else if (vf_compat_ver <= ADF_PFVF_COMPAT_THIS_VERSION)
+ 			compat = ADF_PF2VF_VF_COMPATIBLE;
+ 		else
+ 			compat = ADF_PF2VF_VF_COMPAT_UNKNOWN;
 -- 
 2.34.1
 
