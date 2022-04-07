@@ -2,50 +2,50 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C09494F8538
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Apr 2022 18:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6914F853A
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Apr 2022 18:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345868AbiDGQxW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Apr 2022 12:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S1345841AbiDGQxX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Apr 2022 12:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345844AbiDGQxM (ORCPT
+        with ESMTP id S1345849AbiDGQxN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Apr 2022 12:53:12 -0400
+        Thu, 7 Apr 2022 12:53:13 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEC55DE78
-        for <linux-crypto@vger.kernel.org>; Thu,  7 Apr 2022 09:51:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF14382332
+        for <linux-crypto@vger.kernel.org>; Thu,  7 Apr 2022 09:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649350271; x=1680886271;
+  t=1649350272; x=1680886272;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nKMjKa7P8iE+d2qWgKFj9xmHYb9DshK9Ru74HI5pbkA=;
-  b=fdvacGwoEM43em2diO503xhw+Na4TCQ66UV3IUDhSv2LvoNYFzMx+h3x
-   B/ef+czu+6lg93SHsIwrSbieZouaptTOVZ+8IGh4sZOk/wbEsOygrVRvH
-   saLILZpQUsJr7Z7j75hkygczm6mv6ZIKdv9XJw8dEz/8kEzWHTVsMBfIB
-   fvBsscOouBbvFprmwuWvF94Z+eoHt9FZ4a9CMJQxyrfEHD/gGEJyIY7pj
-   P97/kz5njUH28b1PKfNmhCvkSi17+Fjyp9TZh8CqT9U88rFcdrThrT5CA
-   2qJGW6nmtNFFHg4HmPICgyudP903EDpaM9WjanQ8wjG+AU600d2e5csHR
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="241312042"
+  bh=58saA/o1EdZ3a1m4vHbQDfSobGluPWIU6nJJlJKRTNQ=;
+  b=H5uDo5M764MhFAvHKfSD7qWf7NqWNGF/A2r+x/B/z7tdS3wjOw882tv1
+   AsUmAaHrigI3G+hq5ga8gpw6LeSc2IrRMlQfE3vYxUoROt6l/XUaT+l/i
+   ST4+5gvarn8i8UfvjYlxY1isZqWTu2IYQ2fJY3FLq2FS2+yx/jtQRnOaB
+   k7wB4WhHQL/WSVloNmgaD0vVpcLW8dB8vBFqogDSBukRzajtqfiaXOsdk
+   N/N5YKHQkmJEvnlKWRYAPLfjAUGFOlTm1RwnHlDx88a5qD+7yKX3X9cXS
+   TmznSaZKaIQM1ZMwi+6+UdgCrtNYC7WDEKOthmc3neLSDZK5KmnIN9r4j
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="241312047"
 X-IronPort-AV: E=Sophos;i="5.90,242,1643702400"; 
-   d="scan'208";a="241312042"
+   d="scan'208";a="241312047"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2022 09:51:11 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2022 09:51:12 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,242,1643702400"; 
-   d="scan'208";a="652898323"
+   d="scan'208";a="652898351"
 Received: from silpixa00393544.ir.intel.com ([10.237.213.118])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Apr 2022 09:51:09 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 07 Apr 2022 09:51:11 -0700
 From:   Marco Chiappero <marco.chiappero@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         giovanni.cabiddu@intel.com,
         Marco Chiappero <marco.chiappero@intel.com>
-Subject: [PATCH v2 05/16] crypto: qat - remove unused PFVF stubs
-Date:   Thu,  7 Apr 2022 17:54:44 +0100
-Message-Id: <20220407165455.256777-6-marco.chiappero@intel.com>
+Subject: [PATCH v2 06/16] crypto: qat - remove unnecessary tests to detect PFVF support
+Date:   Thu,  7 Apr 2022 17:54:45 +0100
+Message-Id: <20220407165455.256777-7-marco.chiappero@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220407165455.256777-1-marco.chiappero@intel.com>
 References: <20220407165455.256777-1-marco.chiappero@intel.com>
@@ -62,49 +62,48 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Previously, the GEN4 host driver supported SR-IOV but had no working
+implementation of the PFVF protocol to communicate with VF drivers.
+Since all the host drivers for QAT devices now support both SR-IOV and
+PFVF, remove the old and unnecessary checks to test PFVF support.
 
-The functions adf_enable_pf2vf_interrupts(), adf_flush_vf_wq() and
-adf_disable_pf2vf_interrupts() are not referenced when the driver is
-compiled with CONFIG_PCI_IOV=n. This patch removes these unused stubs.
-
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
-Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 ---
- drivers/crypto/qat/qat_common/adf_common_drv.h | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/crypto/qat/qat_common/adf_sriov.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_common_drv.h b/drivers/crypto/qat/qat_common/adf_common_drv.h
-index e8c9b77c0d66..feecf1035a90 100644
---- a/drivers/crypto/qat/qat_common/adf_common_drv.h
-+++ b/drivers/crypto/qat/qat_common/adf_common_drv.h
-@@ -217,14 +217,6 @@ static inline void adf_disable_sriov(struct adf_accel_dev *accel_dev)
- {
- }
+diff --git a/drivers/crypto/qat/qat_common/adf_sriov.c b/drivers/crypto/qat/qat_common/adf_sriov.c
+index 81f484cbad3d..71d75f65b504 100644
+--- a/drivers/crypto/qat/qat_common/adf_sriov.c
++++ b/drivers/crypto/qat/qat_common/adf_sriov.c
+@@ -74,8 +74,7 @@ static int adf_enable_sriov(struct adf_accel_dev *accel_dev)
+ 		hw_data->configure_iov_threads(accel_dev, true);
  
--static inline void adf_enable_pf2vf_interrupts(struct adf_accel_dev *accel_dev)
--{
--}
--
--static inline void adf_disable_pf2vf_interrupts(struct adf_accel_dev *accel_dev)
--{
--}
--
- static inline int adf_init_pf_wq(void)
- {
- 	return 0;
-@@ -243,10 +235,6 @@ static inline void adf_exit_vf_wq(void)
- {
- }
+ 	/* Enable VF to PF interrupts for all VFs */
+-	if (hw_data->pfvf_ops.get_pf2vf_offset)
+-		adf_enable_vf2pf_interrupts(accel_dev, BIT_ULL(totalvfs) - 1);
++	adf_enable_vf2pf_interrupts(accel_dev, BIT_ULL(totalvfs) - 1);
  
--static inline void adf_flush_vf_wq(struct adf_accel_dev *accel_dev)
--{
--}
--
- #endif
+ 	/*
+ 	 * Due to the hardware design, when SR-IOV and the ring arbiter
+@@ -104,14 +103,11 @@ void adf_disable_sriov(struct adf_accel_dev *accel_dev)
+ 	if (!accel_dev->pf.vf_info)
+ 		return;
  
- static inline void __iomem *adf_get_pmisc_base(struct adf_accel_dev *accel_dev)
+-	if (hw_data->pfvf_ops.get_pf2vf_offset)
+-		adf_pf2vf_notify_restarting(accel_dev);
+-
++	adf_pf2vf_notify_restarting(accel_dev);
+ 	pci_disable_sriov(accel_to_pci_dev(accel_dev));
+ 
+ 	/* Disable VF to PF interrupts */
+-	if (hw_data->pfvf_ops.get_pf2vf_offset)
+-		adf_disable_vf2pf_interrupts(accel_dev, GENMASK(31, 0));
++	adf_disable_vf2pf_interrupts(accel_dev, GENMASK(31, 0));
+ 
+ 	/* Clear Valid bits in AE Thread to PCIe Function Mapping */
+ 	if (hw_data->configure_iov_threads)
 -- 
 2.34.1
 
