@@ -2,51 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFED14F8532
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Apr 2022 18:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E784F8533
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Apr 2022 18:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345836AbiDGQxH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1345838AbiDGQxH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 7 Apr 2022 12:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbiDGQxG (ORCPT
+        with ESMTP id S244193AbiDGQxG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 7 Apr 2022 12:53:06 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F80B11A37
-        for <linux-crypto@vger.kernel.org>; Thu,  7 Apr 2022 09:51:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855A95FA2
+        for <linux-crypto@vger.kernel.org>; Thu,  7 Apr 2022 09:51:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649350265; x=1680886265;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QuSbmBOxftIzhrg6RL3xjzoQkGIYcJhHuUAh7qbXrFs=;
-  b=hn4JdtsskaTMQb9GzKvkE7b753I88T3yn4Lw1K157IpNkni6q55/CBHl
-   GIBH53t5EuIQn+piylqInslroCYkuq80nFIdBaRTQMQQUlBnr4nhfDMdg
-   5k1H66li4e1kNlW2f03C5dD0IkYrUIsS7HC6EWz/mvsLGHZyrwRmXpOzb
-   d9quj+y+wNxzXSjC+a4ypdQia/nj+69/5Rpcsa/GqZ8LeEDyi4/38UHDr
-   wGiXiSGVArzWyI5voVbcubjj/c6d7qO6LfPQ60OFuHwVAbEudq3LHYcLn
-   cctW/GCkGGwZcUcMumRBrliPZOHASYWLt4F+YmLISgkiAgU9UTly+bHMt
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="241311992"
+  t=1649350266; x=1680886266;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=m2r0N6cjT2YMCTdugYcr941LY0lFcIhBV2ONAbTW6FE=;
+  b=oG3o6k50NmlZgM6hjoaTW3JMWq9VUH1f23wh4/7yhgcYceEFaf++NITq
+   yjsVTGMu31KyxKlp2bJYjOdcfvTyBoDM7bopd6ZEoMir2Bn0KZGS91XIW
+   S/ASkc2vVvf2CZvizBlO1fPvcmNb3s69FuEv0hCnngn6gMajx6al5kmT3
+   zSmBi2zz7B3EdpubysiIIhU1h+5GzmqyfrTcpGyogoAu6K9NLEKJwKPJc
+   gJy33HFwteoz8LfCcCH5ohOESHObmCHch02AMYp4FOFRECuCC7OjPnARv
+   vrdT9BCcZTgXIajDPSaYBjxs6PsJIIGwp+iLfGlBokcOZbcrawkUWPpP7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="241312000"
 X-IronPort-AV: E=Sophos;i="5.90,242,1643702400"; 
-   d="scan'208";a="241311992"
+   d="scan'208";a="241312000"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2022 09:51:03 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2022 09:51:05 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,242,1643702400"; 
-   d="scan'208";a="652898263"
+   d="scan'208";a="652898278"
 Received: from silpixa00393544.ir.intel.com ([10.237.213.118])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Apr 2022 09:51:02 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 07 Apr 2022 09:51:03 -0700
 From:   Marco Chiappero <marco.chiappero@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         giovanni.cabiddu@intel.com,
         Marco Chiappero <marco.chiappero@intel.com>
-Subject: [PATCH v2 00/16] crypto: qat - misc fixes
-Date:   Thu,  7 Apr 2022 17:54:39 +0100
-Message-Id: <20220407165455.256777-1-marco.chiappero@intel.com>
+Subject: [PATCH v2 01/16] crypto: qat - set CIPHER capability for DH895XCC
+Date:   Thu,  7 Apr 2022 17:54:40 +0100
+Message-Id: <20220407165455.256777-2-marco.chiappero@intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220407165455.256777-1-marco.chiappero@intel.com>
+References: <20220407165455.256777-1-marco.chiappero@intel.com>
 MIME-Version: 1.0
 Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
 Content-Transfer-Encoding: 8bit
@@ -60,70 +62,51 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This set contains a collection of fixes for DH895XCC (the first two
-patches), PFVF (most of the set) and a few more.
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-Patches one and two correct the lack of necessary flags to indicate the
-presence of specific HW capabilities, which could result in VFs unable
-to work correctly.
+Set the CIPHER capability for QAT DH895XCC devices if the hardware supports
+it. This is done if both the CIPHER and the AUTHENTICATION engines are
+available on the device.
 
-The third patch fixes some ring interrupts silently enabled even when
-VFs are active, while the fourth one is just a style fix.
+Fixes: ad1332aa67ec ("crypto: qat - add support for capability detection")
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
+Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
+---
+ .../crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c   | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Patches from five to eleven are minor PFVF fixes, while patch twelve
-addresses a bigger problem which caused lost PFVF messages due to
-unhandled interrupts during bursts of PFVF messages from multiple VFs.
-This was usually noticeable when restarting many VMs/VFs at the same
-time. The remainder of the set is a refactoring resulting from the
-previous fix, but split into multiple commits to ease the review.
-
-Changes from v1:
-
-- Addition of patches #3, #4, #6, #7, #8, #9, #10 and #11.
-
-Giovanni Cabiddu (3):
-  crypto: qat - set CIPHER capability for DH895XCC
-  crypto: qat - set COMPRESSION capability for DH895XCC
-  crypto: qat - remove unused PFVF stubs
-
-Marco Chiappero (12):
-  crypto: qat - fix ETR sources enabled by default on GEN2 devices
-  crypto: qat - remove unneeded braces
-  crypto: qat - remove unnecessary tests to detect PFVF support
-  crypto: qat - add missing restarting event notification in VFs
-  crypto: qat - test PFVF registers for spurious interrupts on GEN4
-  crypto: qat - fix wording and formatting in code comment
-  crypto: qat - fix off-by-one error in PFVF debug print
-  crypto: qat - rework the VF2PF interrupt handling logic
-  crypto: qat - leverage the GEN2 VF mask definiton
-  crypto: qat - replace disable_vf2pf_interrupts()
-  crypto: qat - use u32 variables in all GEN4 pfvf_ops
-  crypto: qat - remove line wrapping for pfvf_ops functions
-
-Wojciech Ziemba (1):
-  crypto: qat - add check for invalid PFVF protocol version 0
-
- .../crypto/qat/qat_c3xxx/adf_c3xxx_hw_data.c  |  15 +--
- .../crypto/qat/qat_c3xxx/adf_c3xxx_hw_data.h  |   4 -
- .../crypto/qat/qat_c62x/adf_c62x_hw_data.c    |  15 +--
- .../crypto/qat/qat_c62x/adf_c62x_hw_data.h    |   4 -
- .../crypto/qat/qat_common/adf_accel_devices.h |   4 +-
- .../crypto/qat/qat_common/adf_common_drv.h    |  18 +--
- .../crypto/qat/qat_common/adf_gen2_hw_data.c  |  13 ++
- .../crypto/qat/qat_common/adf_gen2_hw_data.h  |   6 +
- drivers/crypto/qat/qat_common/adf_gen2_pfvf.c |  78 ++++++-----
- drivers/crypto/qat/qat_common/adf_gen4_pfvf.c |  61 ++++++---
- drivers/crypto/qat/qat_common/adf_isr.c       |  21 ++-
- drivers/crypto/qat/qat_common/adf_pfvf_msg.h  |   4 +-
- .../crypto/qat/qat_common/adf_pfvf_pf_proto.c |   6 +-
- drivers/crypto/qat/qat_common/adf_sriov.c     |  13 +-
- drivers/crypto/qat/qat_common/adf_vf_isr.c    |   1 +
- .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.c   | 126 ++++++++++--------
- .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.h   |   4 -
- 17 files changed, 206 insertions(+), 187 deletions(-)
-
-
-base-commit: 25d8a743a4810228f9b391f6face4777b28bae7b
+diff --git a/drivers/crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c b/drivers/crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c
+index 09599fe4d2f3..ff13047772e3 100644
+--- a/drivers/crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c
++++ b/drivers/crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c
+@@ -58,17 +58,23 @@ static u32 get_accel_cap(struct adf_accel_dev *accel_dev)
+ 
+ 	capabilities = ICP_ACCEL_CAPABILITIES_CRYPTO_SYMMETRIC |
+ 		       ICP_ACCEL_CAPABILITIES_CRYPTO_ASYMMETRIC |
+-		       ICP_ACCEL_CAPABILITIES_AUTHENTICATION;
++		       ICP_ACCEL_CAPABILITIES_AUTHENTICATION |
++		       ICP_ACCEL_CAPABILITIES_CIPHER;
+ 
+ 	/* Read accelerator capabilities mask */
+ 	pci_read_config_dword(pdev, ADF_DEVICE_LEGFUSE_OFFSET, &legfuses);
+ 
+-	if (legfuses & ICP_ACCEL_MASK_CIPHER_SLICE)
++	/* A set bit in legfuses means the feature is OFF in this SKU */
++	if (legfuses & ICP_ACCEL_MASK_CIPHER_SLICE) {
+ 		capabilities &= ~ICP_ACCEL_CAPABILITIES_CRYPTO_SYMMETRIC;
++		capabilities &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
++	}
+ 	if (legfuses & ICP_ACCEL_MASK_PKE_SLICE)
+ 		capabilities &= ~ICP_ACCEL_CAPABILITIES_CRYPTO_ASYMMETRIC;
+-	if (legfuses & ICP_ACCEL_MASK_AUTH_SLICE)
++	if (legfuses & ICP_ACCEL_MASK_AUTH_SLICE) {
+ 		capabilities &= ~ICP_ACCEL_CAPABILITIES_AUTHENTICATION;
++		capabilities &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
++	}
+ 	if (legfuses & ICP_ACCEL_MASK_COMPRESS_SLICE)
+ 		capabilities &= ~ICP_ACCEL_CAPABILITIES_COMPRESSION;
+ 
 -- 
 2.34.1
 
