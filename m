@@ -2,74 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED194F90DD
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Apr 2022 10:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D42C4F9295
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Apr 2022 12:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbiDHIek (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 8 Apr 2022 04:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
+        id S232117AbiDHKMG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 8 Apr 2022 06:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbiDHIei (ORCPT
+        with ESMTP id S229565AbiDHKME (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 8 Apr 2022 04:34:38 -0400
-Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D542FF51B;
-        Fri,  8 Apr 2022 01:32:27 -0700 (PDT)
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1nck2O-000SI1-W0; Fri, 08 Apr 2022 18:32:14 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 08 Apr 2022 16:32:13 +0800
-Date:   Fri, 8 Apr 2022 16:32:13 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Jakob Koschel <jakobkoschel@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Lee Jones <lee.jones@linaro.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
-        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
-        Cristiano Giuffrida <c.giuffrida@vu.nl>,
-        "Bos, H.J." <h.j.bos@vu.nl>
-Subject: Re: [PATCH] crypto: cavium/nitrox - remove check of list iterator
- against head past the loop body
-Message-ID: <Yk/zDVxvgyepUKwX@gondor.apana.org.au>
-References: <20220331215910.884374-1-jakobkoschel@gmail.com>
+        Fri, 8 Apr 2022 06:12:04 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC8B58E6D;
+        Fri,  8 Apr 2022 03:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1649412599; x=1680948599;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PRW1z5BDKUyVp87gb5BA0bIYa/nZ8N7XjvhnUwpnBG8=;
+  b=HnOM63grL35nN5rXKNAZs0ATZoPm0DdcdILckJ2J5HKi28HQpdFb/3xO
+   +YrF7qJFfn0WsYhslTGUdxz8LgTx6sXnh3ubpbdqq4vcVWDKAhq/fHTvV
+   VEyVcPAskcfOtGhwE30y6UZNTTr39blTGCm5FUxBQdVAkTCXcbhNmkbZv
+   Mu12++WAXPXKmJKiNqkokPMpJgVUZWqmAth8gbuvyIKydGQh0UKEPbjhL
+   6PaIiXhZRsG6RI4xUS0+m9Sh9VH31wL9a7rqnrfvLVOKY5csJEkTdGbs6
+   sQm3668t3Vk1ynJG/rJwdqoATWKWeBm8yzTCfOzml/ZY4HzBnmenKa2HI
+   w==;
+X-IronPort-AV: E=Sophos;i="5.90,244,1643698800"; 
+   d="scan'208";a="91749499"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Apr 2022 03:09:58 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Fri, 8 Apr 2022 03:09:57 -0700
+Received: from wendy.microchip.com (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
+ Transport; Fri, 8 Apr 2022 03:09:56 -0700
+From:   <conor.dooley@microchip.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [v2] Add support for hwrng on PolarFire SoC
+Date:   Fri, 8 Apr 2022 10:09:11 +0000
+Message-ID: <20220408100911.1638478-1-conor.dooley@microchip.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220331215910.884374-1-jakobkoschel@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 11:59:10PM +0200, Jakob Koschel wrote:
-> When list_for_each_entry() completes the iteration over the whole list
-> without breaking the loop, the iterator value will be a bogus pointer
-> computed based on the head element.
-> 
-> While it is safe to use the pointer to determine if it was computed
-> based on the head element, either with list_entry_is_head() or
-> &pos->member == head, using the iterator variable after the loop should
-> be avoided.
-> 
-> In preparation to limit the scope of a list iterator to the list
-> traversal loop, use a dedicated pointer to point to the found element [1].
-> 
-> Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/ [1]
-> Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
-> ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Patch applied.  Thanks.
+As it says on the tin, add support for the hardware rng on PolarFire
+SoC, which is accessed via the system controller.
+I dropped the maintainers entry change that v1 had, I will send a
+single update via RISCV to avoid any conflicts.
+
+On v1 I replied saying there was a refcount issue, but that's not
+actually the case, so no changes required there.
+
+Thanks,
+Conor
+
+Changes since v1:
+- Rebased on v5.18-rc1
+- Dropped the MAINTAINERS change
+- Added quality estimation
+
+Conor Dooley (1):
+  hwrng: mpfs - add polarfire soc hwrng support
+
+ drivers/char/hw_random/Kconfig    |  13 ++++
+ drivers/char/hw_random/Makefile   |   1 +
+ drivers/char/hw_random/mpfs-rng.c | 104 ++++++++++++++++++++++++++++++
+ 3 files changed, 118 insertions(+)
+ create mode 100644 drivers/char/hw_random/mpfs-rng.c
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.35.1
+
