@@ -2,47 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247134FA5BC
-	for <lists+linux-crypto@lfdr.de>; Sat,  9 Apr 2022 10:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3DA4FA684
+	for <lists+linux-crypto@lfdr.de>; Sat,  9 Apr 2022 11:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240439AbiDIILZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 9 Apr 2022 04:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
+        id S241429AbiDIJhH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 9 Apr 2022 05:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235153AbiDIILT (ORCPT
+        with ESMTP id S241311AbiDIJhD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 9 Apr 2022 04:11:19 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DB738199;
-        Sat,  9 Apr 2022 01:09:12 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Kb76c5Hpxz1HBbZ;
-        Sat,  9 Apr 2022 16:08:40 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+        Sat, 9 Apr 2022 05:37:03 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4623D23EC7F;
+        Sat,  9 Apr 2022 02:34:45 -0700 (PDT)
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Kb8z95pl0zDq8C;
+        Sat,  9 Apr 2022 17:32:21 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Sat, 9 Apr 2022 16:09:11 +0800
-Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
- (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Sat, 9 Apr
- 2022 16:09:10 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>,
-        <liulongfang@huawei.com>
-Subject: [PATCH 11/11] crypto: hisilicon/zip - support last word dumping
-Date:   Sat, 9 Apr 2022 16:03:28 +0800
-Message-ID: <20220409080328.15783-12-yekai13@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20220409080328.15783-1-yekai13@huawei.com>
-References: <20220409080328.15783-1-yekai13@huawei.com>
+ 15.1.2308.21; Sat, 9 Apr 2022 17:34:42 +0800
+Received: from localhost.localdomain (10.67.164.66) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sat, 9 Apr 2022 17:34:41 +0800
+From:   Yang Shen <shenyang39@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <liulongfang@huawei.com>
+Subject: [PATCH] crypto: hisilicon/sgl - align the hardware sgl dma address
+Date:   Sat, 9 Apr 2022 17:33:09 +0800
+Message-ID: <20220409093309.55715-1-shenyang39@huawei.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml100012.china.huawei.com (7.185.36.121)
+X-Originating-IP: [10.67.164.66]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
@@ -53,174 +50,37 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-1. Add some debugging registers.
-2. Add last word dumping function during zip engine controller reset.
+The hardware needs aligned sgl dma address. So expend the sgl_size to
+align 64 bytes.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
+Signed-off-by: Yang Shen <shenyang39@huawei.com>
 ---
- drivers/crypto/hisilicon/zip/zip_main.c | 107 +++++++++++++++++++++++-
- 1 file changed, 106 insertions(+), 1 deletion(-)
+ drivers/crypto/hisilicon/sgl.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 2d5663d8d87f..9c925e9c0a2d 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -234,6 +234,22 @@ static const struct debugfs_reg32 hzip_dfx_regs[] = {
- 	{"HZIP_DECOMP_LZ77_CURR_ST       ",  0x9cull},
- };
+diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
+index f7efc02b065f..2b6f2281cfd6 100644
+--- a/drivers/crypto/hisilicon/sgl.c
++++ b/drivers/crypto/hisilicon/sgl.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2019 HiSilicon Limited. */
++#include <linux/align.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/hisi_acc_qm.h>
+ #include <linux/module.h>
+@@ -64,8 +65,9 @@ struct hisi_acc_sgl_pool *hisi_acc_create_sgl_pool(struct device *dev,
+ 	if (!dev || !count || !sge_nr || sge_nr > HISI_ACC_SGL_SGE_NR_MAX)
+ 		return ERR_PTR(-EINVAL);
  
-+static const struct debugfs_reg32 hzip_com_dfx_regs[] = {
-+	{"HZIP_CLOCK_GATE_CTRL           ",  0x301004},
-+	{"HZIP_CORE_INT_RAS_CE_ENB       ",  0x301160},
-+	{"HZIP_CORE_INT_RAS_NFE_ENB      ",  0x301164},
-+	{"HZIP_CORE_INT_RAS_FE_ENB       ",  0x301168},
-+	{"HZIP_UNCOM_ERR_RAS_CTRL        ",  0x30116C},
-+};
-+
-+static const struct debugfs_reg32 hzip_dump_dfx_regs[] = {
-+	{"HZIP_GET_BD_NUM                ",  0x00ull},
-+	{"HZIP_GET_RIGHT_BD              ",  0x04ull},
-+	{"HZIP_GET_ERROR_BD              ",  0x08ull},
-+	{"HZIP_DONE_BD_NUM               ",  0x0cull},
-+	{"HZIP_MAX_DELAY                 ",  0x20ull},
-+};
-+
- /* define the ZIP's dfx regs region and region length */
- static struct dfx_diff_registers hzip_diff_regs[] = {
- 	{
-@@ -773,6 +789,87 @@ static void hisi_zip_debugfs_exit(struct hisi_qm *qm)
- 	}
- }
+-	sgl_size = sizeof(struct acc_hw_sge) * sge_nr +
+-		   sizeof(struct hisi_acc_hw_sgl);
++	sgl_size = ALIGN(sizeof(struct acc_hw_sge) * sge_nr +
++			 sizeof(struct hisi_acc_hw_sgl),
++			 HISI_ACC_SGL_ALIGN_SIZE);
  
-+static int hisi_zip_show_last_regs_init(struct hisi_qm *qm)
-+{
-+	int core_dfx_regs_num =  ARRAY_SIZE(hzip_dump_dfx_regs);
-+	int com_dfx_regs_num = ARRAY_SIZE(hzip_com_dfx_regs);
-+	struct qm_debug *debug = &qm->debug;
-+	void __iomem *io_base;
-+	int i, j, idx;
-+
-+	debug->last_words = kcalloc(core_dfx_regs_num * HZIP_CORE_NUM +
-+			com_dfx_regs_num, sizeof(unsigned int), GFP_KERNEL);
-+	if (!debug->last_words)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < com_dfx_regs_num; i++) {
-+		io_base = qm->io_base + hzip_com_dfx_regs[i].offset;
-+		debug->last_words[i] = readl_relaxed(io_base);
-+	}
-+
-+	for (i = 0; i < HZIP_CORE_NUM; i++) {
-+		io_base = qm->io_base + core_offsets[i];
-+		for (j = 0; j < core_dfx_regs_num; j++) {
-+			idx = com_dfx_regs_num + i * core_dfx_regs_num + j;
-+			debug->last_words[idx] = readl_relaxed(
-+				io_base + hzip_dump_dfx_regs[j].offset);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void hisi_zip_show_last_regs_uninit(struct hisi_qm *qm)
-+{
-+	struct qm_debug *debug = &qm->debug;
-+
-+	if (qm->fun_type == QM_HW_VF || !debug->last_words)
-+		return;
-+
-+	kfree(debug->last_words);
-+	debug->last_words = NULL;
-+}
-+
-+static void hisi_zip_show_last_dfx_regs(struct hisi_qm *qm)
-+{
-+	int core_dfx_regs_num =  ARRAY_SIZE(hzip_dump_dfx_regs);
-+	int com_dfx_regs_num = ARRAY_SIZE(hzip_com_dfx_regs);
-+	struct qm_debug *debug = &qm->debug;
-+	char buf[HZIP_BUF_SIZE];
-+	void __iomem *base;
-+	int i, j, idx;
-+	u32 val;
-+
-+	if (qm->fun_type == QM_HW_VF || !debug->last_words)
-+		return;
-+
-+	for (i = 0; i < com_dfx_regs_num; i++) {
-+		val = readl_relaxed(qm->io_base + hzip_com_dfx_regs[i].offset);
-+		if (debug->last_words[i] != val)
-+			pci_info(qm->pdev, "com_dfx: %s \t= 0x%08x => 0x%08x\n",
-+				hzip_com_dfx_regs[i].name, debug->last_words[i], val);
-+	}
-+
-+	for (i = 0; i < HZIP_CORE_NUM; i++) {
-+		if (i < HZIP_COMP_CORE_NUM)
-+			scnprintf(buf, sizeof(buf), "Comp_core-%d", i);
-+		else
-+			scnprintf(buf, sizeof(buf), "Decomp_core-%d",
-+				  i - HZIP_COMP_CORE_NUM);
-+		base = qm->io_base + core_offsets[i];
-+
-+		pci_info(qm->pdev, "==>%s:\n", buf);
-+		/* dump last word for dfx regs during control resetting */
-+		for (j = 0; j < core_dfx_regs_num; j++) {
-+			idx = com_dfx_regs_num + i * core_dfx_regs_num + j;
-+			val = readl_relaxed(base + hzip_dump_dfx_regs[j].offset);
-+			if (debug->last_words[idx] != val)
-+				pci_info(qm->pdev, "%s \t= 0x%08x => 0x%08x\n",
-+					hzip_dump_dfx_regs[j].name, debug->last_words[idx], val);
-+		}
-+	}
-+}
-+
- static void hisi_zip_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- {
- 	const struct hisi_zip_hw_error *err = zip_hw_error;
-@@ -860,6 +957,7 @@ static const struct hisi_qm_err_ini hisi_zip_err_ini = {
- 	.close_axi_master_ooo	= hisi_zip_close_axi_master_ooo,
- 	.open_sva_prefetch	= hisi_zip_open_sva_prefetch,
- 	.close_sva_prefetch	= hisi_zip_close_sva_prefetch,
-+	.show_last_dfx_regs	= hisi_zip_show_last_dfx_regs,
- 	.err_info_init		= hisi_zip_err_info_init,
- };
- 
-@@ -867,6 +965,7 @@ static int hisi_zip_pf_probe_init(struct hisi_zip *hisi_zip)
- {
- 	struct hisi_qm *qm = &hisi_zip->qm;
- 	struct hisi_zip_ctrl *ctrl;
-+	int ret;
- 
- 	ctrl = devm_kzalloc(&qm->pdev->dev, sizeof(*ctrl), GFP_KERNEL);
- 	if (!ctrl)
-@@ -882,7 +981,11 @@ static int hisi_zip_pf_probe_init(struct hisi_zip *hisi_zip)
- 	hisi_qm_dev_err_init(qm);
- 	hisi_zip_debug_regs_clear(qm);
- 
--	return 0;
-+	ret = hisi_zip_show_last_regs_init(qm);
-+	if (ret)
-+		pci_err(qm->pdev, "Failed to init last word regs!\n");
-+
-+	return ret;
- }
- 
- static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
-@@ -1026,6 +1129,7 @@ static int hisi_zip_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	hisi_qm_stop(qm, QM_NORMAL);
- 
- err_dev_err_uninit:
-+	hisi_zip_show_last_regs_uninit(qm);
- 	hisi_qm_dev_err_uninit(qm);
- 
- err_qm_uninit:
-@@ -1047,6 +1151,7 @@ static void hisi_zip_remove(struct pci_dev *pdev)
- 
- 	hisi_zip_debugfs_exit(qm);
- 	hisi_qm_stop(qm, QM_NORMAL);
-+	hisi_zip_show_last_regs_uninit(qm);
- 	hisi_qm_dev_err_uninit(qm);
- 	hisi_zip_qm_uninit(qm);
- }
+ 	/*
+ 	 * the pool may allocate a block of memory of size PAGE_SIZE * 2^(MAX_ORDER - 1),
 -- 
-2.33.0
+2.24.0
 
