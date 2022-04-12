@@ -2,124 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591B34FC766
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Apr 2022 00:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE4E4FDB56
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Apr 2022 12:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235026AbiDKWPb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 Apr 2022 18:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
+        id S245536AbiDLKCD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 12 Apr 2022 06:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbiDKWPa (ORCPT
+        with ESMTP id S1377966AbiDLHyv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 Apr 2022 18:15:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B49162E8;
-        Mon, 11 Apr 2022 15:13:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 97EE76173E;
-        Mon, 11 Apr 2022 22:13:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C231C385A3;
-        Mon, 11 Apr 2022 22:13:13 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="KybX01zY"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649715191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSudnh1FVwn/cRuaWERLZCgg6VCPqB/kIypq5KjigTQ=;
-        b=KybX01zYWKByBGHHcfMAmavnP7L0p3jg7aV2fmW50XiFpz7B1LAEyJXHq3V4iRh7NnrsVG
-        WlIHJ9f0wTZy8WOOgmyYrCIi8QNK9nY17FyQTt9LA8IcFXu4dkJkUI/J2c7LyuJha0Ot6K
-        tj5LHYp+jIpnZFZ/H9s4FciDdH7BJ7o=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 43c1faab (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Mon, 11 Apr 2022 22:13:10 +0000 (UTC)
-Received: by mail-yb1-xb2a.google.com with SMTP id p65so11704866ybp.9;
-        Mon, 11 Apr 2022 15:13:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531o3aMtHXCKOjNg5ZH62+QRpI2yDLO1zJgtX3N5nGdsMGVgt6jA
-        1CxTuqgqwJRJjIifKG5V2sqCHa2KYEntwdUMm64=
-X-Google-Smtp-Source: ABdhPJyrbHcZ7X1J23rQnANqA3RR06u0ZM3R7CT8etsKwGDR+r4LAk7JuXL3JmvpUSxPvBr0OEr8z3kykwSI+XeJazE=
-X-Received: by 2002:a5b:6cf:0:b0:61e:1371:3cda with SMTP id
- r15-20020a5b06cf000000b0061e13713cdamr24066153ybq.235.1649714889427; Mon, 11
- Apr 2022 15:08:09 -0700 (PDT)
+        Tue, 12 Apr 2022 03:54:51 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB039F8;
+        Tue, 12 Apr 2022 00:33:32 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23C7XI09092329;
+        Tue, 12 Apr 2022 02:33:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1649748798;
+        bh=VdCs/Pjh+iURxxt1j4N/dr32rlnP02nAMXE1v7NZKvs=;
+        h=From:To:CC:Subject:Date;
+        b=uzXEO5wn9Hu2ga7934M8A5BhJGO5x9fecsbpw54zw/DpGcfKp+mxw8cVaNFLtd3A0
+         DgVTI/QZIUBM7pWIci4weKaSCfAhP2wXGqffpWi1ApRjMiDlX0NycQdByjtAONmUd3
+         p5TaqJrZ0msS9f9xjR3q/uX1mzHqNfcTg7YdAWZk=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23C7XIrR126912
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Apr 2022 02:33:18 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 12
+ Apr 2022 02:30:17 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 12 Apr 2022 02:30:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23C7UHL0026687;
+        Tue, 12 Apr 2022 02:30:17 -0500
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+To:     <linux-crypto@vger.kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <krzysztof.kozlowski+dt@linaro.org>, <j-choudhary@ti.com>,
+        <robh+dt@kernel.org>
+Subject: [PATCH 0/2] New compatible for sa3ul for AM62x
+Date:   Tue, 12 Apr 2022 13:00:14 +0530
+Message-ID: <20220412073016.6014-1-j-choudhary@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20220410214951.55294-1-Jason@zx2c4.com> <20220410214951.55294-4-Jason@zx2c4.com>
- <87sfqkf2y1.ffs@tglx>
-In-Reply-To: <87sfqkf2y1.ffs@tglx>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 12 Apr 2022 00:07:58 +0200
-X-Gmail-Original-Message-ID: <CAHmME9qU7x3=KsjfH0qDW=isdcGxTweHbssvshYxkV5iHpamGw@mail.gmail.com>
-Message-ID: <CAHmME9qU7x3=KsjfH0qDW=isdcGxTweHbssvshYxkV5iHpamGw@mail.gmail.com>
-Subject: Re: [PATCH v2 03/11] m68k: use ktime_read_raw_clock() for
- random_get_entropy() instead of zero
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Thomas,
+This series add the new compatible for sa3ul in the bindings and
+driver file which will be used further in device tree nodes to
+enable crypto support in TI SoC AM62x.
 
-On Mon, Apr 11, 2022 at 10:18 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > diff --git a/arch/m68k/include/asm/timex.h b/arch/m68k/include/asm/timex.h
-> > index 6a21d9358280..5351b10e1b18 100644
-> > --- a/arch/m68k/include/asm/timex.h
-> > +++ b/arch/m68k/include/asm/timex.h
-> > @@ -35,7 +35,7 @@ static inline unsigned long random_get_entropy(void)
-> >  {
-> >       if (mach_random_get_entropy)
-> >               return mach_random_get_entropy();
-> > -     return 0;
-> > +     return ktime_read_raw_clock();
->
-> I'd rather do something like this in a common header:
->
-> unsigned long random_get_entropy_fallback(void);
->
-> and use random_get_entropy_fallback() in the architecture specific
-> files.
->
-> That way you can encapsulate the fallback implementation in the random
-> code and if it turns out that ktime_read_raw_clock() is a stupid idea or
-> someone has a better idea then you have to change exactly one place and
-> not patch the whole tree again.
+I will post the patch to enable crypto accelerator once this series
+is merged.
 
-Absolutely. That's a good idea. I'll do that for v3.
+Jayesh Choudhary (2):
+  dt-bindings: crypto: ti,sa2ul: Add a new compatible for AM62
+  crypto: sa2ul: Add the new compatible for AM62
 
-Jason
+ Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml | 1 +
+ drivers/crypto/sa2ul.c                                 | 1 +
+ 2 files changed, 2 insertions(+)
+
+-- 
+2.17.1
+
