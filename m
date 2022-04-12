@@ -2,61 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B494FDB58
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Apr 2022 12:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855964FDD09
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Apr 2022 13:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353148AbiDLKCF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 12 Apr 2022 06:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
+        id S1359736AbiDLKtZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 12 Apr 2022 06:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377925AbiDLHyl (ORCPT
+        with ESMTP id S1358089AbiDLKqR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 12 Apr 2022 03:54:41 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8826D5047A;
-        Tue, 12 Apr 2022 00:31:55 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23C7VnrD012170;
-        Tue, 12 Apr 2022 02:31:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1649748709;
-        bh=vSHKAce0PuZloOOm4qVWYzbOX8w6lDDgPlaHriTZ10M=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=JqDbimH7940kctnxRkiuOG++gKolPnJBGU4z23O+P94wp9ar6/UclfGFIFiUFE+ps
-         B2Gu7thtSLJqbLZKMq/ziQE/GFBTt0XNyduZpVHR36MTBqw22imQOPZvIxMJIHr2Mx
-         bcDdiq2H0iNDjGhKLtlzzG7/+WQFW49qNmDo5wXE=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23C7VnVM057477
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Apr 2022 02:31:49 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 12
- Apr 2022 02:30:21 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 12 Apr 2022 02:30:20 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23C7UKhI026798;
-        Tue, 12 Apr 2022 02:30:20 -0500
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <linux-crypto@vger.kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <krzysztof.kozlowski+dt@linaro.org>, <j-choudhary@ti.com>,
-        <robh+dt@kernel.org>
-Subject: [PATCH 2/2] crypto: sa2ul: Add the new compatible for AM62
-Date:   Tue, 12 Apr 2022 13:00:16 +0530
-Message-ID: <20220412073016.6014-3-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220412073016.6014-1-j-choudhary@ti.com>
-References: <20220412073016.6014-1-j-choudhary@ti.com>
+        Tue, 12 Apr 2022 06:46:17 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7FC6660D
+        for <linux-crypto@vger.kernel.org>; Tue, 12 Apr 2022 02:47:20 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id g18so10616966wrb.10
+        for <linux-crypto@vger.kernel.org>; Tue, 12 Apr 2022 02:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=jEYu5Dc4DrM1CeiFx20rntUZKHdIKyhqBQGEbRb+QEo=;
+        b=MSfYzpmK8tn+uXXhR01V+fNirOZU31wliDT7ahVZuBpemgDi/9lLDSAJVDYSpZeTbK
+         YQQZ3Vi4EWOxx+dFtFXwenHouaTwLx4s++6Ihuj5g+cZwyxYaYqJwNHwBcWqwNDIABXV
+         sOF6eSR1FEjx2RARMY/b+sgg4jvWhwV/ntSyVIY5zJ2sMknGhHuIz38NMCHOzaW5vnug
+         tbygB8NQlSK7osT568Zcj0/Y6GhTiRlqhnYZ+hfp3EWdCoS5NmUwBSzyEUxCiZImo9KD
+         EVx0gknoyTlaDOb2phm0TpbMkQbbRVWfP0oorSNsd7q3GbydRyQvu3Mn6URcFylPvZH2
+         Enaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=jEYu5Dc4DrM1CeiFx20rntUZKHdIKyhqBQGEbRb+QEo=;
+        b=6lN96g+mVsbNxbXEPZzt5fsW3GtaNTi2G/0wdaGImY2lhIc/Muq2CTrCUkVLmRMRkT
+         hKjRakLAJxVfNvN1nv+fDCefBW96jiVF2uSmRK+2ht6UrzyovLqLvteYmkTXW9cXvgAU
+         cGeJvVnuR2ktKDXwQri6udlJsMjHirnXMmQD+6Q1Ix0kUFLTYcKYMLRdbjRxs7TD9pde
+         oS15BIe2OCCxNvaFnHPVGtWyTts0J8Ijss7cYXCkpReiAVD5gaE3XayoDQvSXmbGWWtv
+         KG8RbcLvATaUWnwP5PGAKqx0hWPhvK0rw3Ak9fUbsCjLnLzOHbiHimZx3cOfe3Uu8JaI
+         GHog==
+X-Gm-Message-State: AOAM532xvpfwgS/TM+lKiblccNheFyPxUOZWOTcxFcvDrIrhdHP//WWp
+        nPQ8Qo8I1o8ij6mRkafE9v4=
+X-Google-Smtp-Source: ABdhPJxCyWsrTSnfaBIu38O7iMTAsodQWY+yafnQ23aeJwg2qr3DNeFG5SxlCZ0qf1FD8HUV3c+OzA==
+X-Received: by 2002:a5d:598a:0:b0:204:6fb:6461 with SMTP id n10-20020a5d598a000000b0020406fb6461mr28331617wri.132.1649756839021;
+        Tue, 12 Apr 2022 02:47:19 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.googlemail.com with ESMTPSA id o6-20020a05600002c600b00207a389117csm7316817wry.53.2022.04.12.02.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Apr 2022 02:47:18 -0700 (PDT)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Message-ID: <df758c80-ea85-d324-ad05-9bf07bb569e3@redhat.com>
+Date:   Tue, 12 Apr 2022 11:47:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v4 0/8] Introduce akcipher service for virtio-crypto
+Content-Language: en-US
+To:     zhenwei pi <pizhenwei@bytedance.com>, mst@redhat.com,
+        berrange@redhat.com, arei.gonglei@huawei.com,
+        Simo Sorce <simo@redhat.com>
+Cc:     helei.sig11@bytedance.com, jasowang@redhat.com, cohuck@redhat.com,
+        qemu-devel@nongnu.org, virtualization@lists.linux-foundation.org,
+        linux-crypto@vger.kernel.org
+References: <20220411104327.197048-1-pizhenwei@bytedance.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20220411104327.197048-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,25 +80,24 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add the new compatible for am62x in of_match_table.
 
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
----
- drivers/crypto/sa2ul.c | 1 +
- 1 file changed, 1 insertion(+)
+> In our plan, the feature is designed for HTTPS offloading case and
+> other applications which use kernel RSA/ecdsa by keyctl syscall.
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index 51b58e57153f..6957a125b447 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -2379,6 +2379,7 @@ static const struct of_device_id of_match[] = {
- 	{ .compatible = "ti,j721e-sa2ul", .data = &am654_match_data, },
- 	{ .compatible = "ti,am654-sa2ul", .data = &am654_match_data, },
- 	{ .compatible = "ti,am64-sa2ul", .data = &am64_match_data, },
-+	{ .compatible = "ti,am62-sa3ul", .data = &am64_match_data, },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, of_match);
--- 
-2.17.1
+Hi Zhenwei,
 
+what is the % of time spent doing asymmetric key operations in your
+benchmark?  I am not very familiar with crypto acceleration but my
+understanding has always been that most time is spent doing either
+hashing (for signing) or symmetric key operations (for encryption).
+
+If I understand correctly, without support for acceleration these 
+patches are more of a demonstration of virtio-crypto, or usable for 
+testing purposes.
+
+Would it be possible to extend virtio-crypto to use keys already in the
+host keyctl, or in a PKCS#11 smartcard, so that virtio-crypto could also
+provide the functionality of an HSM?  Or does the standard require that
+the keys are provided by the guest?
+
+Paolo
