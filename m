@@ -2,175 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1751E4FEFA9
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Apr 2022 08:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E734FF3F3
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Apr 2022 11:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbiDMGTA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 13 Apr 2022 02:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
+        id S234669AbiDMJpE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 13 Apr 2022 05:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbiDMGS7 (ORCPT
+        with ESMTP id S234509AbiDMJpB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 13 Apr 2022 02:18:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E76340CE
-        for <linux-crypto@vger.kernel.org>; Tue, 12 Apr 2022 23:16:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BB2461CF1
-        for <linux-crypto@vger.kernel.org>; Wed, 13 Apr 2022 06:16:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0828C385AA
-        for <linux-crypto@vger.kernel.org>; Wed, 13 Apr 2022 06:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649830598;
-        bh=okRlPQNcB+6A2GoR1KXbY9jJModBQBGkTc2iPAB4FmE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hc2Q1d4dmHsBNg6vj1/IOtdoyJGCzVDN3SqobL3FcB5P0ZbbtaUdbUEY43PlysS6k
-         FdoVqX3XNgAZm/qmzPkLjbvwYeTTikAJOYFo7zYCqDzuH/aMEfhi/pfWubr4Kidohf
-         kwaFHO19CuWq306/Z5+or/87d1yhw9DlOKKtnykDhqVXcXgKsal0EC9qDAdYt3QTAu
-         4zbnS5JDkYNlkHZ30PyflziK//krMQWq3Zy8EStflQnqaRXexJvfMLd/WsYnr8qHyC
-         bKUuLliJGtFOzGxJgt8UeO2Fxgk7ElA2XZoyHO7l2uwXZduxUOWTTtjXl2TOpZ809R
-         3aMTRTp5aM+7A==
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-d6ca46da48so1002230fac.12
-        for <linux-crypto@vger.kernel.org>; Tue, 12 Apr 2022 23:16:38 -0700 (PDT)
-X-Gm-Message-State: AOAM531RZKLWMY8FWrd7LDktMH6SDFQG9saNk+Vnx+QklxJOK8qTCEhO
-        ItVIFjk3NexBDDBevEhFu5/s2NMkvThj1zjosr4=
-X-Google-Smtp-Source: ABdhPJyTEU5Ld+JducL+E0wR8/qSIBVvVJ5uZR0ho/+DxZ7jgaAd8UN6/dfIhQ6Y+oZVckF2C3G/1GVJ4f82SoLLW/M=
-X-Received: by 2002:a05:6870:eaa5:b0:da:b3f:2b45 with SMTP id
- s37-20020a056870eaa500b000da0b3f2b45mr3814788oap.228.1649830597712; Tue, 12
- Apr 2022 23:16:37 -0700 (PDT)
+        Wed, 13 Apr 2022 05:45:01 -0400
+Received: from mail.growthmindset24.pl (mail.growthmindset24.pl [212.237.36.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B8C55BEF
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Apr 2022 02:42:40 -0700 (PDT)
+Received: by mail.growthmindset24.pl (Postfix, from userid 1001)
+        id 1196F87EBE; Tue, 12 Apr 2022 08:56:13 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=growthmindset24.pl;
+        s=mail; t=1649750191;
+        bh=FDuFY3XQoq0gMX1b2gxgT7Py2p4Sxl0PJZYZ4NVaPho=;
+        h=Date:From:To:Subject:From;
+        b=Bsg/JYFhIm5AMvNwuPmMvqZMlE4pculPdvnyKZbo2f4anx5tYnVmLLzMZsCXPeT7o
+         MJRmhBJeMTB5q0U1W5ORNILhhQzlJHc2xtpPTCISUtfOFzZ4Rop1LCMtTe6q55d1DR
+         hKtJycFBCai6dY7ei1pI1fDlfzYN8jT9Wci1Niq8KmQknSFise12kBOHjVo6yTfFKy
+         gV4ru2NzqCOEnpGnUbckZAnvUsXW4qsjzB/gtpRr34xHrGiWDONahftSpuAVykPAB6
+         Js7dK5Tj9AhXOqUZGDiL8eQRWcOr8/u+KwPezkQjZG3I+QH2+b3IUCNdW/mT2j7PFG
+         0XAZO0cLTiu7g==
+Received: by mail.growthmindset24.pl for <linux-crypto@vger.kernel.org>; Tue, 12 Apr 2022 07:56:00 GMT
+Message-ID: <20220412073001-0.1.2w.d80c.0.o9uzh080gl@growthmindset24.pl>
+Date:   Tue, 12 Apr 2022 07:56:00 GMT
+From:   =?UTF-8?Q? "Przemys=C5=82aw_Wr=C3=B3blewski" ?= 
+        <przemyslaw.wroblewski@growthmindset24.pl>
+To:     <linux-crypto@vger.kernel.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.growthmindset24.pl
 MIME-Version: 1.0
-References: <20220412172816.917723-1-nhuck@google.com> <20220412172816.917723-9-nhuck@google.com>
- <YlZpUijo/1nJp0Bw@sol.localdomain>
-In-Reply-To: <YlZpUijo/1nJp0Bw@sol.localdomain>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 13 Apr 2022 08:16:25 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH1C8W6Cxa7jTZ8_h3L4_Xefwv2=r1JRNva101CvWWsjw@mail.gmail.com>
-Message-ID: <CAMj1kXH1C8W6Cxa7jTZ8_h3L4_Xefwv2=r1JRNva101CvWWsjw@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] fscrypt: Add HCTR2 support for filename encryption
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Nathan Huckleberry <nhuck@google.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Paul Crowley <paulcrowley@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 13 Apr 2022 at 08:10, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Tue, Apr 12, 2022 at 05:28:16PM +0000, Nathan Huckleberry wrote:
-> > HCTR2 is a tweakable, length-preserving encryption mode.  It has the
-> > same security guarantees as Adiantum, but is intended for use on CPUs
-> > with dedicated crypto instructions.  It fixes a known weakness with
-> > filename encryption: when two filenames in the same directory share a
-> > prefix of >= 16 bytes, with CTS-CBC their encrypted filenames share a
-> > common substring, leaking information.  HCTR2 does not have this
-> > problem.
-> >
-> > More information on HCTR2 can be found here: Length-preserving
-> > encryption with HCTR2: https://eprint.iacr.org/2021/1441.pdf
->
-> Please quote titles to distinguish them from the surrounding text.  E.g.
->
-> More information on HCTR2 can be found in the paper "Length-preserving
-> encryption with HCTR2" (https://eprint.iacr.org/2021/1441.pdf)
->
->
-> >
-> > Signed-off-by: Nathan Huckleberry <nhuck@google.com>
-> > ---
-> >  Documentation/filesystems/fscrypt.rst | 19 ++++++++++++++-----
-> >  fs/crypto/fscrypt_private.h           |  2 +-
-> >  fs/crypto/keysetup.c                  |  7 +++++++
-> >  fs/crypto/policy.c                    |  4 ++++
-> >  include/uapi/linux/fscrypt.h          |  3 ++-
-> >  tools/include/uapi/linux/fscrypt.h    |  3 ++-
-> >  6 files changed, 30 insertions(+), 8 deletions(-)
->
-> Can you make sure that all fscrypt patches are Cc'ed to the linux-fscrypt
-> mailing list?  In this case, just Cc the whole series to there.
->
-> >
-> > diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> > index 4d5d50dca65c..09915086abd8 100644
-> > --- a/Documentation/filesystems/fscrypt.rst
-> > +++ b/Documentation/filesystems/fscrypt.rst
-> > @@ -337,6 +337,7 @@ Currently, the following pairs of encryption modes are supported:
-> >  - AES-256-XTS for contents and AES-256-CTS-CBC for filenames
-> >  - AES-128-CBC for contents and AES-128-CTS-CBC for filenames
-> >  - Adiantum for both contents and filenames
-> > +- AES-256-XTS for contents and AES-256-HCTR2 for filenames
-> >
-> >  If unsure, you should use the (AES-256-XTS, AES-256-CTS-CBC) pair.
-> >
-> > @@ -357,6 +358,14 @@ To use Adiantum, CONFIG_CRYPTO_ADIANTUM must be enabled.  Also, fast
-> >  implementations of ChaCha and NHPoly1305 should be enabled, e.g.
-> >  CONFIG_CRYPTO_CHACHA20_NEON and CONFIG_CRYPTO_NHPOLY1305_NEON for ARM.
-> >
-> > +AES-256-HCTR2 is another true wide-block encryption mode.  It has the same
-> > +security guarantees as Adiantum, but is intended for use on CPUs with dedicated
-> > +crypto instructions. See the paper "Length-preserving encryption with HCTR2"
-> > +(https://eprint.iacr.org/2021/1441.pdf) for more details. To use HCTR2,
-> > +CONFIG_CRYPTO_HCTR2 must be enabled. Also, fast implementations of XCTR and
-> > +POLYVAL should be enabled, e.g. CRYPTO_POLYVAL_ARM64_CE and
-> > +CRYPTO_AES_ARM64_CE_BLK for ARM64.
->
-> "same security guarantees as Adiantum" is not really correct.  Both Adiantum and
-> HCTR2 are secure super-pseudorandom permutations if their underlying primitives
-> are secure.  So their security guarantees are pretty similar, but not literally
-> the same.  Can you reword this?  This potentially-misleading claim also showed
-> up in the commit message.
->
-> > diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-> > index ed3d623724cd..fa8bdb8c76b7 100644
-> > --- a/fs/crypto/policy.c
-> > +++ b/fs/crypto/policy.c
-> > @@ -54,6 +54,10 @@ static bool fscrypt_valid_enc_modes(u32 contents_mode, u32 filenames_mode)
-> >           filenames_mode == FSCRYPT_MODE_ADIANTUM)
-> >               return true;
-> >
-> > +     if (contents_mode == FSCRYPT_MODE_AES_256_XTS &&
-> > +         filenames_mode == FSCRYPT_MODE_AES_256_HCTR2)
-> > +             return true;
-> > +
-> >       return false;
-> >  }
->
-> This is allowing HCTR2 for both v1 and v2 encryption policies.  I don't think we
-> should add any new features to v1 encryption policies, as they are deprecated.
-> How about allowing HCTR2 for v2 encryption policies only?  This is the first new
-> encryption mode where this issue has come up, but this could be handled easily
-> by splitting fscrypt_valid_enc_modes() into fscrypt_valid_enc_modes_v1() and
-> fscrypt_valid_enc_modes_v2().  The v2 one can call the v1 one to share code.
->
-> > diff --git a/tools/include/uapi/linux/fscrypt.h b/tools/include/uapi/linux/fscrypt.h
-> > index 9f4428be3e36..a756b29afcc2 100644
-> > --- a/tools/include/uapi/linux/fscrypt.h
-> > +++ b/tools/include/uapi/linux/fscrypt.h
-> > @@ -27,7 +27,8 @@
-> >  #define FSCRYPT_MODE_AES_128_CBC             5
-> >  #define FSCRYPT_MODE_AES_128_CTS             6
-> >  #define FSCRYPT_MODE_ADIANTUM                        9
-> > -/* If adding a mode number > 9, update FSCRYPT_MODE_MAX in fscrypt_private.h */
-> > +#define FSCRYPT_MODE_AES_256_HCTR2           10
-> > +/* If adding a mode number > 10, update FSCRYPT_MODE_MAX in fscrypt_private.h */
-> >
->
-> As far as I know, you don't actually need to update the copy of UAPI headers in
-> tools/.  The people who maintain those files handle that.  It doesn't make sense
-> to have copies of files in the source tree anyway.
->
+Dzie=C5=84 dobry,
 
-Doesn't the x86 build emit a warning if these go out of sync?
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
+
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
+
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
+
+
+Pozdrawiam,
+Przemys=C5=82aw Wr=C3=B3blewski
