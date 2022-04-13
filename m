@@ -2,105 +2,162 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C034E4FFAC9
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Apr 2022 17:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB3E4FFE72
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Apr 2022 21:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbiDMQBE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 13 Apr 2022 12:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        id S237715AbiDMTJs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 13 Apr 2022 15:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235138AbiDMQBE (ORCPT
+        with ESMTP id S236600AbiDMTJr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 13 Apr 2022 12:01:04 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17546579C
-        for <linux-crypto@vger.kernel.org>; Wed, 13 Apr 2022 08:58:40 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id p4-20020a631e44000000b00399598a48c5so1330481pgm.1
-        for <linux-crypto@vger.kernel.org>; Wed, 13 Apr 2022 08:58:40 -0700 (PDT)
+        Wed, 13 Apr 2022 15:09:47 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104966E4F5
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Apr 2022 12:07:23 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id v64-20020a1cac43000000b0038cfd1b3a6dso4579546wme.5
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Apr 2022 12:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=esOVAp2irCJ3Vjv6n3zKptfZxPr7nea31riVyn8IwzA=;
-        b=mugdlaJfqV6BzoMRpaiK5wVOC89SQxXWIv/7SA2IWoQeqGxtkOVO5e99zdgZO6ByHl
-         waiSJsfhCL8jqtYwCQ+fct8ZE+R7hsIX7mDJG3xCepYJfGzVjAF17sRtKceMz1Ke6++B
-         jjzcxRMODxHIXlk+civmhu5EkMlEGgmhhDBQ39UBF8bdxHZTihLRAEhZ+kFHYq7ZqRFj
-         BGZxnU/CjHVMuSNUZ+YeDA5zl9m/A0BEuNgfjkFNb5KPtaZ10l4OfZXEfO2hotQy1l2A
-         LmoeViJzWmwIYiPEioHmqUIQ/ZkrOXZayOBr74hv0PSB3twNNCLdMtbml7MOTKkjjJjB
-         KcuA==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VTPr3m/S0BGE4rHVT3R7JCsuYjNSptwx0algC29rCig=;
+        b=v2uVvXJycyac1gbVQqLZdI38/uzuJ9skXiIPXFhlCSewK0xqrdfLrcxw27X/1Godto
+         VJRqxXICMmllGYPYdUT4Ls8FC3yDY3Q+BsATnr+z5ctjntqs5nrBKMn+vbeXxZ7PJuYT
+         LEIYlEEtgLUYu9lYAOi9QM72ZpLp/4pEmyLatoqx0OBNnVevZ7xZnJuN8BWsqi9r5ZTX
+         WloZN66tmFyLL6BCiLEjc1rvsEfSwccX6uAqKxwTEifg4gG8646xo452RKibBcpm2JAR
+         nG3QjI/4HfAAb/dZKAopgcKaUttAR/72hDeIcMBJJgkRqsr0qU27UN+AFoylzL8pu3FM
+         NfwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=esOVAp2irCJ3Vjv6n3zKptfZxPr7nea31riVyn8IwzA=;
-        b=BHFmYRi+fIUsCg3ENhHFUzeXfsB5wgDsQaJKpngKhyVai0D/KauIOEqOxtXKcsdVPO
-         rrzLVpRjZpbjWHTBcDXUN9LxUc1i4mg8nf5NPUa+9F4gOI1VsdWRwC6vWXZN2Z8J7yI6
-         wLXteSxFBTvFaJvQSLLtxxJuAfzOlJxy1ZwPmSBJwJSO2wyPIZ10YpqM+z2cSwCx4lol
-         Ta1/FtAAEt496FNTZIVLBHVsqVT4f6EMoEG9suKutvSyKn8IWJB7AuVKuOYLvgFYMbLF
-         eCD7b26avL22bEo2eUgfgN3iwXmJYASjm3QaEkWA25L+WLMRmhNura22sIr24YjdqaMC
-         NsqA==
-X-Gm-Message-State: AOAM5325QY64p/xvg9KrJceruMvP+6f8pW2shZ3Qr8Ve+yOjTlrRwwRo
-        zZA1HqbUo7tl0IaaHGvH7qSrjOmYMQjrHqdAofbClmO0WkAPOoiLj2Ukzr53ZAdbbAaE177S6cy
-        SeOw10wRAcGLqRwtJoPZE93SyvR/k4p48T+642i2d2/VZh6shDaB7wJ+4YgwmaeE3sWyFpw==
-X-Google-Smtp-Source: ABdhPJxIsFvYT4ZGMIA9rMTLc6Euk99wC0DXG4Y79LtsWB+wAou+COvDqA1Unv9b4P15r7HklQzyIXoFiTI=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:203:9bb6:f53:456a:fd2d])
- (user=pgonda job=sendgmr) by 2002:a17:90b:2384:b0:1cb:5223:9dc4 with SMTP id
- mr4-20020a17090b238400b001cb52239dc4mr58307pjb.1.1649865519822; Wed, 13 Apr
- 2022 08:58:39 -0700 (PDT)
-Date:   Wed, 13 Apr 2022 08:58:35 -0700
-Message-Id: <20220413155835.439785-1-pgonda@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.35.1.1178.g4f1659d476-goog
-Subject: [PATCH] crypto: ccp - Log when resetting PSP SEV state
-From:   Peter Gonda <pgonda@google.com>
-To:     linux-crypto@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VTPr3m/S0BGE4rHVT3R7JCsuYjNSptwx0algC29rCig=;
+        b=bk8PfQKWCMuZWniLVXJhwZrir6hCASFpRUQHf4Rgk34P9kkBgDZdZFTZHcD1o39vwq
+         6+CALCEurIRf8mmERqF22uNGktMbXVSEvSNhxoPCNiNHAw6/n847hqa9DYaqJVu15SJ6
+         Bx5il0jWamBRakwBVma1fhWvrTjGut34HAvdK+goLftqAXXzX+mvtE2Zq6upUdZdtunG
+         cgiNZlfyy6Qev33/RKd1RFPF4QiF3cym3REF1EY5HXCvrZnNtpK0GPimiVwzpd/YI9IM
+         6tBvetd2PvxcdzCN9MreGIZWuY9MuwrQCgoeX0oVYEqyIbAZOya63ThVhXylr4yzg7wW
+         9FnQ==
+X-Gm-Message-State: AOAM533INhXlKLNybX1BlgRdQNLm3D8UX6ra8LaFBAsbGvbe0QFTWYx+
+        Ki8DHlLsItnakHlQAIx4HjVggw==
+X-Google-Smtp-Source: ABdhPJy3Zm0d9WLFXlxY8wjdG5QcmyfAeFG5RnJbTiNY5DAeOozBTazEP8+Gnbptt0o1bwwfdklLKg==
+X-Received: by 2002:a1c:2744:0:b0:382:a9b7:1c8a with SMTP id n65-20020a1c2744000000b00382a9b71c8amr127289wmn.187.1649876841577;
+        Wed, 13 Apr 2022 12:07:21 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id o29-20020a05600c511d00b0038e3532b23csm3551852wms.15.2022.04.13.12.07.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Apr 2022 12:07:20 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     heiko@sntech.de, herbert@gondor.apana.org.au,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v5 00/33] crypto: rockchip: permit to pass self-tests
+Date:   Wed, 13 Apr 2022 19:06:40 +0000
+Message-Id: <20220413190713.1427956-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Currently when the PSP returns a SECURE_DATA_INVALID error on INIT or
-INIT_EX the driver retries the command once which should reset the PSP's
-state SEV related state, meaning the PSP will regenerate its keying
-material. This is logged with a dbg log but given this will change
-system state this should be logged at a higher priority and with more
-information.
+Hello
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: John Allen <john.allen@amd.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- drivers/crypto/ccp/sev-dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The rockchip crypto driver is broken and do not pass self-tests.
+This serie's goal is to permit to become usable and pass self-tests.
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 6ab93dfd478a..fd928199bf1e 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -435,7 +435,7 @@ static int __sev_platform_init_locked(int *error)
- 		 * initialization function should succeed by replacing the state
- 		 * with a reset state.
- 		 */
--		dev_dbg(sev->dev, "SEV: retrying INIT command");
-+		dev_err(sev->dev, "SEV: retrying INIT command because of SECURE_DATA_INVALID error. Retrying once to reset PSP SEV state.");
- 		rc = init_function(&psp_ret);
- 	}
- 	if (error)
+This whole serie is tested on a rk3328-rock64, rk3288-miqi and
+rk3399-khadas-edge-v with selftests (with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y)
+
+Since I didnt own rk3399 hardware, I worked on an emulated one until I
+grab some co-worker rk3399 board.
+People wanting to test this serie without the hardware can try my qemu branch at
+https://github.com/montjoie/qemu/tree/rkcrypto
+
+Regards
+
+Changes since v1:
+- select CRYPTO_ENGINE
+- forgot to free fallbacks TFMs
+- fixed kernel test robots warning
+- add the PM patch
+
+Changes since v2:
+- Added DMA clock back to 3288 since it dont work without it
+- fallback needed to select CBC and ECB configs
+- Added support for rk3399
+- Added more patch (style, read_poll_timeout)
+
+Changes since v3:
+- full rewrite of support for RK3399
+- splited dt-binding patch in two
+
+Changes since v4:
+- Another full rewrite of support for RK3399
+- Fixed dt-binding from Krzysztof Kozlowski's comments
+- Use readl_poll_timeout() instead of read_poll_timeout()
+- Rewrite the fallback SG tests
+
+Corentin Labbe (33):
+  crypto: rockchip: use dev_err for error message about interrupt
+  crypto: rockchip: do not use uninitialized variable
+  crypto: rockchip: do not do custom power management
+  crypto: rockchip: fix privete/private typo
+  crypto: rockchip: do not store mode globally
+  crypto: rockchip: add fallback for cipher
+  crypto: rockchip: add fallback for ahash
+  crypto: rockchip: better handle cipher key
+  crypto: rockchip: remove non-aligned handling
+  crypto: rockchip: rework by using crypto_engine
+  crypto: rockchip: rewrite type
+  crypto: rockchip: add debugfs
+  crypto: rockchip: introduce PM
+  crypto: rockchip: handle reset also in PM
+  crypto: rockchip: use clk_bulk to simplify clock management
+  crypto: rockchip: add myself as maintainer
+  crypto: rockchip: use read_poll_timeout
+  crypto: rockchip: fix style issue
+  crypto: rockchip: add support for rk3328
+  crypto: rockchip: rename ablk functions to cipher
+  crypto: rockchip: rework rk_handle_req function
+  crypto: rockchip: use a rk_crypto_info variable instead of lot of
+    indirection
+  crypto: rockchip: use the rk_crypto_info given as parameter
+  dt-bindings: crypto: convert rockchip-crypto to YAML
+  dt-bindings: crypto: rockchip: convert to new driver bindings
+  clk: rk3399: use proper crypto0 name
+  arm64: dts: rockchip: add rk3328 crypto node
+  arm64: dts: rockchip: rk3399: add crypto node
+  crypto: rockchip: store crypto_info in request context
+  crypto: rockchip: Check for clocks numbers and their frequencies
+  crypto: rockchip: rk_ahash_reg_init use crypto_info from parameter
+  crypto: rockchip: permit to have more than one reset
+  crypto: rockchip: Add support for RK3399
+
+ .../crypto/rockchip,rk3288-crypto.yaml        | 133 +++++
+ .../bindings/crypto/rockchip-crypto.txt       |  28 -
+ MAINTAINERS                                   |   7 +
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi      |  11 +
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  20 +
+ drivers/crypto/Kconfig                        |  15 +
+ drivers/crypto/rockchip/rk3288_crypto.c       | 511 ++++++++--------
+ drivers/crypto/rockchip/rk3288_crypto.h       | 107 ++--
+ drivers/crypto/rockchip/rk3288_crypto_ahash.c | 267 +++++----
+ .../crypto/rockchip/rk3288_crypto_skcipher.c  | 543 ++++++++++--------
+ include/dt-bindings/clock/rk3399-cru.h        |   6 +-
+ 11 files changed, 953 insertions(+), 695 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/crypto/rockchip,rk3288-crypto.yaml
+ delete mode 100644 Documentation/devicetree/bindings/crypto/rockchip-crypto.txt
+
 -- 
-2.35.1.1178.g4f1659d476-goog
+2.35.1
 
