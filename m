@@ -2,104 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC184FF202
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Apr 2022 10:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFDE4FF4A5
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Apr 2022 12:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbiDMIfj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 13 Apr 2022 04:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        id S234883AbiDMKYg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 13 Apr 2022 06:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbiDMIfi (ORCPT
+        with ESMTP id S229580AbiDMKYg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 13 Apr 2022 04:35:38 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063B54E39D;
-        Wed, 13 Apr 2022 01:33:16 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23D8X59m108346;
-        Wed, 13 Apr 2022 03:33:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1649838785;
-        bh=HOPOflYBcnV/LFPZgAip1/IVvOFdFr6KgIKVx26qgnc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=RJoo7a9f/wiR5560OR2zPXmctcbRR3mjI7HNzOuXQcjEWcaEQeB+Enj6flVMvt8+m
-         dMQEOEF8h8jbZ8Cs9trBqUrKzq8BnY6G1pw/cGNhczYuS4qqxJo9x5AwtRIf4P9xia
-         Al9vcAZGh5GujZKnwbc5t9CENnlDcHeuN9SMH0jI=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23D8X4Kj019983
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Apr 2022 03:33:04 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 13
- Apr 2022 03:33:04 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 13 Apr 2022 03:33:04 -0500
-Received: from [172.24.147.118] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23D8X12W013738;
-        Wed, 13 Apr 2022 03:33:02 -0500
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: ti,sa2ul: Add a new compatible
- for AM62
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <linux-crypto@vger.kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>
-References: <20220412073016.6014-1-j-choudhary@ti.com>
- <20220412073016.6014-2-j-choudhary@ti.com>
- <aeff85cb-45b2-c7d6-5ce8-edd6776fbfe4@linaro.org>
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-Message-ID: <60fd105f-9263-0afd-a489-a289fc414189@ti.com>
-Date:   Wed, 13 Apr 2022 14:03:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 13 Apr 2022 06:24:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C065640C;
+        Wed, 13 Apr 2022 03:22:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 766D261D2D;
+        Wed, 13 Apr 2022 10:22:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C468C385A4;
+        Wed, 13 Apr 2022 10:22:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649845334;
+        bh=WkWz5MkjiuAA8gGAG2uM+XkeWqraNIKMu2kBxG+E2Iw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sLL4tle5Doriw4yMhQWIHHzUyEJTRxfcFDsei/9Filjn6v/Eby404zt2t92Ak2gd4
+         Hfd2Mk1dycQ4ir8Nij6eOWYfwIbJXCMw/DU4xVWsoux519rIiTrMtnckHnLTIkqnop
+         YiE18jsNW6p6lIJmDq74vdCQZP/q1QOqUHitIYf/bnIK15tTRoH8JSd02kUmWTT2da
+         0lipni9BL+pHEyYYh8U4migDtnjqVJr9zj+zYidUcT/muZkWg+DeJE5VIU1/3K80/z
+         aBiVICrqx87JKqvOEVn9fE2pCWXKT6KoInMuWpcu3TodV4BOi1HYOdp5L6wMd2tVD/
+         aTbZRoIzU9csQ==
+Date:   Wed, 13 Apr 2022 11:22:09 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: arm64/sm4 - Fix wrong dependency of NEON/CE
+ implementation
+Message-ID: <20220413102209.GB1229@willie-the-truck>
+References: <20220411031313.35449-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <aeff85cb-45b2-c7d6-5ce8-edd6776fbfe4@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220411031313.35449-1-tianjia.zhang@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Mon, Apr 11, 2022 at 11:13:13AM +0800, Tianjia Zhang wrote:
+> Commit d2825fa9365d ("crypto: sm3,sm4 - move into crypto directory")
+> moved the sm4 library implementation from the lib/crypto directory to
+> the crypto directory and configured the name as CRYPTO_SM4. The arm64
+> SM4 NEON/CE implementation depends on this and needs to be modified
+> uniformly.
 
-Hi,
+d2825fa9365d doesn't appear in my tree -- is this something in linux-next?
 
-On 12/04/22 5:33 pm, Krzysztof Kozlowski wrote:
-> On 12/04/2022 09:30, Jayesh Choudhary wrote:
->> Add the AM62 version of sa3ul to the compatible list.
->>
->> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
->> ---
->>  Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
->> index a410d2cedde6..02f47c2e7998 100644
->> --- a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
->> +++ b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
->> @@ -15,6 +15,7 @@ properties:
->>        - ti,j721e-sa2ul
->>        - ti,am654-sa2ul
->>        - ti,am64-sa2ul
->> +      - ti,am62-sa3ul
->>  
-> 
-> Just to be sure - dma-coherent is not required for this device (see
-> final "if:" in the bindings)?
-> 
-
-Yeah that's right.
-dma-coherent is not required for this device.
-
-Regards,
--Jayesh
+Will
