@@ -2,130 +2,120 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB4B506354
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 Apr 2022 06:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD2D5063CE
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 Apr 2022 07:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348368AbiDSEgu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 19 Apr 2022 00:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
+        id S1348521AbiDSFSI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 19 Apr 2022 01:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348346AbiDSEgr (ORCPT
+        with ESMTP id S1348523AbiDSFSG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 19 Apr 2022 00:36:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C89A2F03D
-        for <linux-crypto@vger.kernel.org>; Mon, 18 Apr 2022 21:33:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 67DA4B81135
-        for <linux-crypto@vger.kernel.org>; Tue, 19 Apr 2022 04:33:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE4DCC385A5;
-        Tue, 19 Apr 2022 04:33:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650342832;
-        bh=ERbTfVr1p9Bgf4ihbKXPpcYlphiEnr4Iq3Ts3RgKnis=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=md2CRBcbakRo8UESItuhDI59RmyYFJmR5RcWQ7xb4BtSZWh+WJLFYtssc0Aevc1Qv
-         NfVoZSuD8c3/bdwqvdknTWxLd858yJk0b3BSWzCZyANzjmoz448jfVy6mNUzjHlWV6
-         xWeUT6HbgWCv5Kbmw/9E4tJMu3sxzWxOBhUc7J2LD7LvRrJDgQ7eX8JAcOSZQkyyQ5
-         N68oYTiXZC9Ox0Y7L0qdi7Jmqdx3jF6ePsQPvTPbuBpr1TW8kU5ChI1wraN3TcXN5D
-         XSxmV3vAqiUbEFtkN4gZiHvqVbCGsiW8HTwmt0MDygzZgPZaTEq7LC/l/OLto+UGht
-         kbMvfj30aBkXg==
-Date:   Mon, 18 Apr 2022 21:33:50 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v4 5/8] crypto: arm64/aes-xctr: Add accelerated
- implementation of XCTR
-Message-ID: <Yl47rptSdSetygym@sol.localdomain>
-References: <20220412172816.917723-1-nhuck@google.com>
- <20220412172816.917723-6-nhuck@google.com>
+        Tue, 19 Apr 2022 01:18:06 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E05220FA
+        for <linux-crypto@vger.kernel.org>; Mon, 18 Apr 2022 22:15:23 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-de3eda6b5dso16398722fac.0
+        for <linux-crypto@vger.kernel.org>; Mon, 18 Apr 2022 22:15:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=ZQ+Chfr41Ap1rnBqjRyg9YSdPtFNo1mvhN33hifHLWI=;
+        b=SgYB1IeyZzeluQKAhNlXoUvDdLKB9j73p/SJpqG1ghc6xhT1sjHPNkvvWk5dRRvXJ6
+         DyYnnuVkTHBCiLS1Z85mzCXBleMrUks6k3S3EJORfwP3nuq5rGj4tzu5Z7ocJTp3lILq
+         G5JqAVtYLNhE9jdUVbLDGAGkw4yxRVE1GcXnSzirGT/YjQf8DKi1zdErSIu0lX3y1kUU
+         3/AtEVkLvoM2WFULUoZwUe2cwtM0jUvAtWXuM3VV4pkcdxht3Y1uMvrwThMXVYv034yL
+         E8lRvhGDx18PB2R28NqvV2eN/uzeCM76THYJtQNJPnArgA02FpBczPGrsgndOVK+cztV
+         uPUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=ZQ+Chfr41Ap1rnBqjRyg9YSdPtFNo1mvhN33hifHLWI=;
+        b=VBq2wMPF8NuFH5BbBaeHAZQ9mYx5AmBSPKNaaEGGr1R6PVzAAlBzhul1ImDFEEcV/K
+         fgWwuBhJQAaco+D2sblDOqt28SRJkCI7IQNuumEakrhOxATJIxFsFi7Vw1iZaJETRPEy
+         jhVDXdbd2nfycIe4cTn2p2JSQXIUfkxZT7YB2VVkHL7FFfWVmG4sn4swU+TT+4C7HgWr
+         ENVL/z0E2TxE/kMH63hTfzDc+G9c7AeEqii2kWs2gzCXf4vqbg5UNC445tIo/QVQSbqS
+         Z9IWdPQpf7SauBWcouf1BFA6LGNnMRqZUkby3h0XPuKDdLqwnrB3yWbkQ57f3xinaObg
+         9RMw==
+X-Gm-Message-State: AOAM530l6922kfjz8ZsNT28h4+Grox1Hr0HWzCSTR+pu/qpf48FQujyX
+        d6ODls6HZS3BKTHwjNsNtgVXOZ/eG0Iy0rV4QYw=
+X-Google-Smtp-Source: ABdhPJz2uzcpUpHik1ep7TmFi2HqW9KO6ld7aJNTpDJ5WP/l2DTJPKPewetwXDfLsvnw2mX57wfAxV1k6WhxmtTRCp8=
+X-Received: by 2002:a05:6870:5829:b0:de:ab74:44c1 with SMTP id
+ r41-20020a056870582900b000deab7444c1mr7573139oap.167.1650345322978; Mon, 18
+ Apr 2022 22:15:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220412172816.917723-6-nhuck@google.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Sender: mr.azzizsalim@gmail.com
+Received: by 2002:ac9:5c8:0:0:0:0:0 with HTTP; Mon, 18 Apr 2022 22:15:22 -0700 (PDT)
+From:   "Mr. Jimmy Moore" <jimmymoore265@gmail.com>
+Date:   Tue, 19 Apr 2022 06:15:22 +0100
+X-Google-Sender-Auth: Ozf3iddArM0AgEr7o7Lh8s0LqvI
+Message-ID: <CADCzDA2oafToaFUrYuXa6hUfR6Qh=Wm7e3fACqZ=h5GXoy0KYg@mail.gmail.com>
+Subject: YOUR OVERDUE COMPENSATION.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_NAME_FM_MR_MRS,
+        LOTS_OF_MONEY,LOTTO_DEPT,MILLION_USD,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2001:4860:4864:20:0:0:0:2f listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [jimmymoore265[at]gmail.com]
+        *  0.0 MILLION_USD BODY: Talks about millions of dollars
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  1.5 HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  1.4 LOTTO_DEPT Claims Department
+        *  2.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 05:28:13PM +0000, Nathan Huckleberry wrote:
-> diff --git a/arch/arm64/crypto/aes-modes.S b/arch/arm64/crypto/aes-modes.S
-> index dc35eb0245c5..ac37e2f7ca84 100644
-> --- a/arch/arm64/crypto/aes-modes.S
-> +++ b/arch/arm64/crypto/aes-modes.S
-> @@ -479,6 +479,140 @@ ST5(	mov		v3.16b, v4.16b			)
->  	b		.Lctrout
->  AES_FUNC_END(aes_ctr_encrypt)
->  
-> +	/*
-> +	 * aes_xctr_encrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
-> +	 *		   int bytes, u8 const ctr[], u8 finalbuf[], int
-> +	 *		   byte_ctr)
-> +	 */
-> +
+UNITED NATIONS COVID-19 OVERDUE COMPENSATION UNIT.
+REFERENCE PAYMENT CODE: 8525595
+BAILOUT AMOUNT:$10.5 MILLION USD
+ADDRESS: NEW YORK, NY 10017, UNITED STATES
 
-What is the 'finalbuf' parameter for?  It is never used.
+Dear award recipient, Covid-19 Compensation funds.
 
-Why is byte_ctr an 'int' here but an 'unsigned int' in the .c file?
+You are receiving this correspondence because we have finally reached
+a consensus with UN, IRS and IMF that your total fund worth $10.5
+Million Dollars of Covid-19 Compensation payment shall be delivered to
+your nominated mode of receipt, and you are expected to pay the sum of
+$12,000 for levies owed to authorities after receiving your funds.
 
-It looks like 'ctr' is actually the IV; perhaps it should be called 'iv' to
-distinguish it from the byte_ctr?
+You have a grace period of 2 weeks to pay the $12,000 levy after you
+have receive your Covid-19 Compensation total sum of $10.5 Million. We
+shall proceed with the payment of your bailout grant only if you agree
+to the terms and conditions stated.
 
-As mentioned elsewhere, please don't have a line break between a parameter's
-type and name.
+Contact Dr. Mustafa Ali for more information by email on:(
+mustafa.ali@rahroco.com ) Your consent in this regard would be highly
+appreciated.
 
-Generally, comments and register aliases would be super helpful throughout the
-code.  As-is, this is much harder to read than the x86 version...
-
-Also, this function is heavily duplicated with aes_ctr_encrypt.  Did you
-consider generating both from a single macro, like you did with the x86 version?
-
-> +	umov		x12, vctr.d[0]		/* keep ctr in reg */
-
-/* keep first 8 bytes of IV in reg */
-
-> +	lsr		x7, x7, #4
-
-x7 needs to be w7, since it corresponds to a 32-bit parameter ('int byte_ctr').
-The upper 32 bits of the register are not guaranteed to be zero.
-
-> +	sub		x7, x11, #MAX_STRIDE
-> +	eor		x7, x12, x7
-> +	ins		v0.d[0], x7
-> +	sub		x7, x11, #MAX_STRIDE - 1
-> +	sub		x8, x11, #MAX_STRIDE - 2
-> +	eor		x7, x7, x12
-> +	sub		x9, x11, #MAX_STRIDE - 3
-> +	mov		v1.d[0], x7
-> +	eor		x8, x8, x12
-> +	eor		x9, x9, x12
-> +ST5(	sub		x10, x11, #MAX_STRIDE - 4)
-> +	mov		v2.d[0], x8
-> +	eor		x10, x10, x12
-> +	mov		v3.d[0], x9
-> +ST5(	mov		v4.d[0], x10			)
-
-There seem to be some unnecessarily tight instruction dependencies here.  E.g.,
-the first 3 instructions are all sequential.  Are there not enough free
-registers to write it otherwise?  I.e. do all the sub's first, then the eor's,
-then the mov's.
-
-The trailing parenthesis after #MAX_STRIDE - 4 should be indented another level.
-As-is it looks like a typo.
-
-Why does one place use 'ins' and the others use 'mov'?
-
-- Eric
+Best Regards,
+Mr. Jimmy Moore.
+Undersecretary General United Nations
+Office of Internal Oversight-UNIOS
+UN making the world a better place
+http://www.un.org/sg/
