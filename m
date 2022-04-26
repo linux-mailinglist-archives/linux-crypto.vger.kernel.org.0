@@ -2,126 +2,144 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FDF50FC5D
-	for <lists+linux-crypto@lfdr.de>; Tue, 26 Apr 2022 13:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5754650FEF5
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 Apr 2022 15:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349724AbiDZMAY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 26 Apr 2022 08:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        id S236980AbiDZN1b (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 26 Apr 2022 09:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239509AbiDZMAV (ORCPT
+        with ESMTP id S232849AbiDZN1b (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 26 Apr 2022 08:00:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B9B45469B
-        for <linux-crypto@vger.kernel.org>; Tue, 26 Apr 2022 04:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650974233;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FtGBciEbW3HrGbgfdt44SW/MAlLfJ/KV2/2Bj92AK+4=;
-        b=SHiL0itjCnFnyEKaCVcL8TsDEvUw8LkRyHa2yn/Kd2wM9eNSbYiZDtn3RC+Fx5oZiNrom1
-        sz+66ckJQ1uT7DHckUltbE9BSQw2OdlOMSBn4Y0dYWvhEwBLpj1k4+LpOsx1hQd6b9jr5J
-        pe/nmnRLS/ZoMO1fZxla/aIWiliZj5o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-650-GDLsOS10NyK7qFRCVICpZg-1; Tue, 26 Apr 2022 07:57:11 -0400
-X-MC-Unique: GDLsOS10NyK7qFRCVICpZg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6FF5C83395E;
-        Tue, 26 Apr 2022 11:57:11 +0000 (UTC)
-Received: from redhat.com (unknown [10.33.36.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54E9440F9D40;
-        Tue, 26 Apr 2022 11:57:08 +0000 (UTC)
-Date:   Tue, 26 Apr 2022 12:57:05 +0100
-From:   Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-To:     zhenwei pi <pizhenwei@bytedance.com>
-Cc:     mst@redhat.com, arei.gonglei@huawei.com, qemu-devel@nongnu.org,
-        virtualization@lists.linux-foundation.org,
-        linux-crypto@vger.kernel.org, helei.sig11@bytedance.com,
-        cohuck@redhat.com, jasowang@redhat.com
-Subject: Re: [PATCH v4 7/8] tests/crypto: Add test suite for crypto akcipher
-Message-ID: <YmfeEaQHupPLBteU@redhat.com>
-Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-References: <20220411104327.197048-1-pizhenwei@bytedance.com>
- <20220411104327.197048-8-pizhenwei@bytedance.com>
+        Tue, 26 Apr 2022 09:27:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF00218C466;
+        Tue, 26 Apr 2022 06:24:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B0FD23A;
+        Tue, 26 Apr 2022 06:24:23 -0700 (PDT)
+Received: from donnerap.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BDF543F774;
+        Tue, 26 Apr 2022 06:24:21 -0700 (PDT)
+Date:   Tue, 26 Apr 2022 14:24:19 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Diego Sueiro <diego.sueiro@arm.com>,
+        Laurent Vivier <lvivier@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        liviu.dudau@arm.com, sudeep.holla@arm.com,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH] arm64: dts: fvp: Add virtio-rng support
+Message-ID: <20220426142419.34f815a2@donnerap.cambridge.arm.com>
+In-Reply-To: <ac3be672c636091ee1e079cadce776b1fb7e0b2e.1650543392.git.diego.sueiro@arm.com>
+References: <ac3be672c636091ee1e079cadce776b1fb7e0b2e.1650543392.git.diego.sueiro@arm.com>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220411104327.197048-8-pizhenwei@bytedance.com>
-User-Agent: Mutt/2.1.5 (2021-12-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 06:43:26PM +0800, zhenwei pi wrote:
-> From: lei he <helei.sig11@bytedance.com>
-> 
-> Add unit test and benchmark test for crypto akcipher.
-> 
-> Signed-off-by: lei he <helei.sig11@bytedance.com>
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+On Thu, 21 Apr 2022 15:35:21 +0100
+Diego Sueiro <diego.sueiro@arm.com> wrote:
+
+Hi,
+
+> The virtio-rng is available from FVP_Base_RevC-2xAEMvA version 11.17, so add
+> the devicetree node to support it.
+
+The change looks good, although it probably deserves to mention the reason
+for keeping it "disabled" by default (older FVP versions not having the
+device, so they throw an SError on probe).
+
+But when testing it, I discovered that there is some problem with later
+kernels. It works fine up to v5.15, but breaks later on. I bisected it
+down to:
+
+=============
+commit 9a4b612d675b03f7fc9fa1957ca399c8223f3954
+Author: Laurent Vivier <lvivier@redhat.com>
+Date:   Thu Oct 28 12:11:11 2021 +0200
+    
+    hwrng: virtio - always add a pending request
+
+    If we ensure we have already some data available by enqueuing
+    again the buffer once data are exhausted, we can return what we
+    have without waiting for the device answer.
+=============
+
+The effect is that any access to /dev/hwrng hangs, it looks like it's
+waiting for an interrupt to fire (core goes to WFI). The process reading
+the char dev can be Ctrl-C'ed, but there will be no output, and the
+interrupt counter in /proc/interrupts does not increase.
+It works fine with any kernel under QEMU, but definitely breaks the FVP
+usage (reverting that patch makes it work again on mainline).
+
+I didn't have a closer look yet (and have limited knowledge about the
+internals of virtio and virtio-rng in particular), but was wondering if
+someone could give a hint at what could be the issue or the direction to
+debug that?
+
+Cheers,
+Andre
+
+> Signed-off-by: Diego Sueiro <diego.sueiro@arm.com>
 > ---
->  tests/bench/benchmark-crypto-akcipher.c | 161 ++++++
->  tests/bench/meson.build                 |   4 +
->  tests/bench/test_akcipher_keys.inc      | 537 ++++++++++++++++++
->  tests/unit/meson.build                  |   1 +
->  tests/unit/test-crypto-akcipher.c       | 708 ++++++++++++++++++++++++
->  5 files changed, 1411 insertions(+)
->  create mode 100644 tests/bench/benchmark-crypto-akcipher.c
->  create mode 100644 tests/bench/test_akcipher_keys.inc
->  create mode 100644 tests/unit/test-crypto-akcipher.c
+>  arch/arm64/boot/dts/arm/fvp-base-revc.dts            | 3 ++-
+>  arch/arm64/boot/dts/arm/rtsm_ve-motherboard-rs2.dtsi | 7 +++++++
+>  arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi     | 2 +-
+>  3 files changed, 10 insertions(+), 2 deletions(-)
 > 
-
-> diff --git a/tests/bench/test_akcipher_keys.inc b/tests/bench/test_akcipher_keys.inc
-> new file mode 100644
-> index 0000000000..7adf218135
-> --- /dev/null
-> +++ b/tests/bench/test_akcipher_keys.inc
-> @@ -0,0 +1,537 @@
-> +/*
-> + * Copyright (c) 2022 Bytedance, and/or its affiliates
-> + *
-> + * This work is licensed under the terms of the GNU GPL, version 2 or later.
-> + * See the COPYING file in the top-level directory.
-> + *
-> + * Author: lei he <helei.sig11@bytedance.com>
-> + */
+> diff --git a/arch/arm64/boot/dts/arm/fvp-base-revc.dts b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
+> index 269b649934b5..a496e39e6204 100644
+> --- a/arch/arm64/boot/dts/arm/fvp-base-revc.dts
+> +++ b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
+> @@ -241,6 +241,7 @@ bus@8000000 {
+>  				<0 0 41 &gic 0 0 GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+>  				<0 0 42 &gic 0 0 GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>,
+>  				<0 0 43 &gic 0 0 GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>,
+> -				<0 0 44 &gic 0 0 GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+> +				<0 0 44 &gic 0 0 GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
+> +				<0 0 46 &gic 0 0 GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+>  	};
+>  };
+> diff --git a/arch/arm64/boot/dts/arm/rtsm_ve-motherboard-rs2.dtsi b/arch/arm64/boot/dts/arm/rtsm_ve-motherboard-rs2.dtsi
+> index 33182d9e5826..1b6326514c97 100644
+> --- a/arch/arm64/boot/dts/arm/rtsm_ve-motherboard-rs2.dtsi
+> +++ b/arch/arm64/boot/dts/arm/rtsm_ve-motherboard-rs2.dtsi
+> @@ -21,6 +21,13 @@ virtio-net@150000 {
+>  					reg = <0x150000 0x200>;
+>  					interrupts = <44>;
+>  				};
 > +
-> +/* RSA test keys, generated by OpenSSL */
-> +static const uint8_t rsa1024_priv_key[] = {
-> +    0x30, 0x82, 0x02, 0x5c, 0x02, 0x01, 0x00, 0x02,
-> +	0x81, 0x81, 0x00, 0xe6, 0x4d, 0x76, 0x4f, 0xb2,
-
-snip
-
-For the patch as is:
-
- Reviewed-by: Daniel P. Berrangé <berrange@redhat.com>
-
-
-It could be nice to add another test with some intentionally corrupt
-RSA keys with bad DER encoding, as a way to prove that we're handling
-errors in DER decoding correctly when faced with malicous data from a
-bad guest.
-
-With regards,
-Daniel
--- 
-|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
-|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
-|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
+> +				virtio-rng@200000 {
+> +					compatible = "virtio,mmio";
+> +					reg = <0x200000 0x200>;
+> +					interrupts = <46>;
+> +					status = "disabled";
+> +				};
+>  			};
+>  		};
+>  	};
+> diff --git a/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi b/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi
+> index 5f6cab668aa0..a999e7f52d8b 100644
+> --- a/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi
+> +++ b/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi
+> @@ -110,7 +110,7 @@ iofpga-bus@300000000 {
+>  				compatible = "simple-bus";
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -				ranges = <0 3 0 0x200000>;
+> +				ranges = <0 3 0 0x210000>;
+>  
+>  				v2m_sysreg: sysreg@10000 {
+>  					compatible = "arm,vexpress-sysreg";
 
