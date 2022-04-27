@@ -2,73 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F5A511278
-	for <lists+linux-crypto@lfdr.de>; Wed, 27 Apr 2022 09:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AA4511298
+	for <lists+linux-crypto@lfdr.de>; Wed, 27 Apr 2022 09:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357953AbiD0Hca (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 27 Apr 2022 03:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
+        id S1358889AbiD0HhO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 27 Apr 2022 03:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358815AbiD0Hc3 (ORCPT
+        with ESMTP id S1358888AbiD0HhN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 27 Apr 2022 03:32:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFA87DAA0;
-        Wed, 27 Apr 2022 00:29:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 85DFBB824B0;
-        Wed, 27 Apr 2022 07:29:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4C8BC385A7;
-        Wed, 27 Apr 2022 07:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651044557;
-        bh=C2ptwWy8eBtL0+IRwpAfnTThad/PS6GU4Cu3msgQJiQ=;
-        h=In-Reply-To:References:Cc:To:From:Subject:Date:From;
-        b=SEhk+2ORaHP4Q6rHgqflWbPczxWXIzZ0exYgops1kjW0YuSdvilVQl7zzTMDimkNe
-         cofQs7q2ZoE8iMZAt2iuhopI/+IVRU4dyOkA3BvIe9IKADUBOuJ/upT7Dltz21Y32N
-         BhK6oLESmk+R4XPps+nv1bD7BVkV2lh7jVfcAcufNmsY0KEANSNyj13bPGHg92/Bgn
-         ZVmb+QNZQ277YFSXA9rZp3/kRyacDhMbLHcqI1sMo7i6ah0qSmDHw87oe8KpnBTv2a
-         ofKWNy9PqC/pfm8b+3rzneH2C8+7WBRhMXSG20r5DNePajR3FnnLRgA2fjSViedK/8
-         UDDPtzUYx3kWA==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20220427070349.388246-1-juergh@protonmail.com>
-References: <20220427070349.388246-1-juergh@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Juerg Haefliger <juergh@protonmail.com>
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Wed, 27 Apr 2022 03:37:13 -0400
+Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9828D6AD
+        for <linux-crypto@vger.kernel.org>; Wed, 27 Apr 2022 00:34:02 -0700 (PDT)
+Date:   Wed, 27 Apr 2022 07:33:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail2; t=1651044838;
+        bh=piUpAc0wGe60Avq75CM5bLwVBo2lSgqrOZtXltVybnw=;
+        h=Date:To:From:Cc:Reply-To:Subject:Message-ID:In-Reply-To:
+         References:Feedback-ID:From:To:Cc:Date:Subject:Reply-To:
+         Feedback-ID:Message-ID;
+        b=p5TANCxWDN0iWpN28SVEjXN5FOsv0HnWN0jkP8EzNU7VQ3k4FHpfhTDHYZbusqW1I
+         QSEKXWs3y3ROFkOIkVYN3/HBbZpgjUDRY8rwdWT0neQfuB+uPCIsuS1vNigmatzbIz
+         ve5aIKNnBb8W1o0+592wRjya+EPvbTrCkWZoBLpD8+iXoLuPGfwZ5SfuNhnJVL6slm
+         P9fQe+2kBAG61MPiQrIDCDJITmA55lmTjLOweohHWGmSU4zbeVPXcxnS4d+RQIFvvR
+         74hNiU2XMxGgM06UAkHGux0MF9PbIBw5Nvr5hiCzHg9OaB9kRYxUKWd9P+5FESAJV1
+         MQZJ6REW/w6JA==
+To:     Antoine Tenart <atenart@kernel.org>
+From:   Juerg Haefliger <juergh@protonmail.com>
+Cc:     Juerg Haefliger <juerg.haefliger@canonical.com>,
         davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org
-From:   Antoine Tenart <atenart@kernel.org>
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Juerg Haefliger <juergh@protonmail.com>
 Subject: Re: [PATCH] crypto: inside-secure - Add MODULE_FIRMWARE macros
-Message-ID: <165104455443.3327.8052402101857118285@kwain>
-Date:   Wed, 27 Apr 2022 09:29:14 +0200
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <20220427093252.00d013c9@smeagol>
+In-Reply-To: <165104455443.3327.8052402101857118285@kwain>
+References: <20220427070349.388246-1-juergh@protonmail.com> <165104455443.3327.8052402101857118285@kwain>
+Feedback-ID: 10260306:user:proton
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="b1_xJCHnbO4zpyNtxSqi4ebN97ZiN1dTAelSXPpKazELCM"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Juerg,
+This is a multi-part message in MIME format.
 
-Quoting Juerg Haefliger (2022-04-27 09:03:49)
-> +
-> +MODULE_FIRMWARE("inside-secure/eip197b/ifpp.bin");
-> +MODULE_FIRMWARE("inside-secure/eip197b/ipue.bin");
-> +MODULE_FIRMWARE("inside-secure/eip197d/ifpp.bin");
-> +MODULE_FIRMWARE("inside-secure/eip197d/ipue.bin");
-> +MODULE_FIRMWARE("inside-secure/eip197_minifw/ifpp.bin");
-> +MODULE_FIRMWARE("inside-secure/eip197_minifw/ipue.bin");
+--b1_xJCHnbO4zpyNtxSqi4ebN97ZiN1dTAelSXPpKazELCM
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-There's also the old location when the EIP197b firmwares were at the
-root of the linux-firmware repo. The driver still supports it, so I
-guess those two should have a MODULE_FIRMWARE entry too.
+On Wed, 27 Apr 2022 09:29:14 +0200
+"Antoine Tenart" <atenart@kernel.org> wrote:
 
-Thanks,
-Antoine
+> Hello Juerg,
+>
+> Quoting Juerg Haefliger (2022-04-27 09:03:49)
+> > +
+> > +MODULE_FIRMWARE("inside-secure/eip197b/ifpp.bin");
+> > +MODULE_FIRMWARE("inside-secure/eip197b/ipue.bin");
+> > +MODULE_FIRMWARE("inside-secure/eip197d/ifpp.bin");
+> > +MODULE_FIRMWARE("inside-secure/eip197d/ipue.bin");
+> > +MODULE_FIRMWARE("inside-secure/eip197_minifw/ifpp.bin");
+> > +MODULE_FIRMWARE("inside-secure/eip197_minifw/ipue.bin");
+>
+> There's also the old location when the EIP197b firmwares were at the
+> root of the linux-firmware repo. The driver still supports it, so I
+> guess those two should have a MODULE_FIRMWARE entry too.
+
+Hi Antoine,
+
+Yeah, I was wondering about that myself but wasn't sure if it should be add=
+ed.
+Will add it then and send a v2.
+
+...Juerg
+
+
+> Thanks,
+> Antoine
+
+
+--b1_xJCHnbO4zpyNtxSqi4ebN97ZiN1dTAelSXPpKazELCM
+Content-Type: application/pgp-signature; name=attachment.sig
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=attachment.sig
+
+LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0NCg0KaVFJekJBRUJDZ0FkRmlFRWhaZlU5Nkl1
+cHJ2aUxkZUxEOU9MQ1F1bVFyY0ZBbUpvOGFRQUNna1FEOU9MQ1F1bQ0KUXJlYm1BLzlHeDV5M2NG
+V1Uvd3dsUXQrM3dQcUlXNndJWEV4UWxLdEdueVJiMEhka1gwakxBWXJna29OYldaTw0KbC9GdXZz
+RVg5T0Qya3JWWUFEWElLSExFdVVVbnc1bHlGT3Vvd2UzalE0YWhYSGVJc3FPYmp2ZEpKQUh3OWd4
+Yw0KeGpXYmpIRC9kQ0dtcmpaNjZUWHBzY0hhRmN4YnQvVXBxVjRLd1BiRzRoY0U4cFduV2ZSYis3
+eG9Ib0NhaGg3ZA0KVVY2RVVBS0pZNWg0bFNsWG40T2ttWW9tRXlDT2RKbXM2bmluZDNTbXZWV1lw
+TlZxU1diRmtQWTRqOFpIenVrTQ0KMXVXNHpaYityL01CaGprUTV5Q3VGbmYwcys5NnR5OVRBVnoz
+VGdmdWwvUTl1bGlPTmJVenBoNHRrRm9MenRoeg0KOVpmT3RHODFHbnpjRGczL3E3b0pwRXYvUzNq
+K1NxQ2FUUWRIVzJZSFBKSmMrbzFoQ3J4OFNYdUVhbDNHdHlueA0Kc1MzQkh0eUtEdUhrYmt4b1Qw
+dXJtZkdDYW1HVDlEM21tOEptd0tXdy81aFlHSWwrdzFIZ3B5Qm92eno1Y0cveg0KL2gyN3l4bUli
+YkVEdHFnZFVQVS9XcjNaL2s1cWZCQjFDZGE5L0g5dWx1Zmw2bzRUZ3RUdzl5d3k4QkQ2L3BuYw0K
+V1VZSjdLRHJZU1pwZ3ZQRlR2Um40N3NhbHpBbmt2RHZ2a2krN0x5ZlV1dkJObVBLUEVhL2t4Ymlm
+UW9tNW9ScA0KNUE0eHJhRm5OY2FhTDVaMmU1YzlKSDlwRzVGQWJsK1VmVmI2MkJKeGovMlEzVVBE
+ZmVkSUtpa0J0WUNUc2VDTg0Kc1pySGZBMTN1QmRNaTM3R1VVRDZVNGE1dy94NFdXTHVBUENIZEhs
+WVk5YlNYb0VObEE0PQ0KPVczZ04NCi0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQ0K
+
+--b1_xJCHnbO4zpyNtxSqi4ebN97ZiN1dTAelSXPpKazELCM--
+
