@@ -2,96 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 761B0513AAD
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Apr 2022 19:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C5D513CFB
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Apr 2022 23:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234695AbiD1RPe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 Apr 2022 13:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        id S1351981AbiD1VDd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 28 Apr 2022 17:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234884AbiD1RPd (ORCPT
+        with ESMTP id S1351979AbiD1VDd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 Apr 2022 13:15:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D615B3EA
-        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 10:12:18 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1nk7gX-0006Be-Tu; Thu, 28 Apr 2022 19:12:09 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1nk7gX-005nMB-Ip; Thu, 28 Apr 2022 19:12:08 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1nk7gV-006FUT-Gw; Thu, 28 Apr 2022 19:12:07 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@pengutronix.de
-Subject: [PATCH 2/2] crypto: atmel-sha204a: Suppress duplicate error message
-Date:   Thu, 28 Apr 2022 19:11:46 +0200
-Message-Id: <20220428171146.188331-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220428171146.188331-1-u.kleine-koenig@pengutronix.de>
-References: <20220428171146.188331-1-u.kleine-koenig@pengutronix.de>
+        Thu, 28 Apr 2022 17:03:33 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C112B33EBC
+        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 14:00:17 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id g6so11931189ejw.1
+        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 14:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=UIbSwXETQo8py8NKWWoOzTbdb19k4UaVxjqlebXhaiE=;
+        b=YIW6hvy4E9AO2RG7jNSiPXUtArPCZkLu0e95qaAirJcph4Lzf4b/M/V8mtM1TuCf9u
+         zU/su830r1YOELbE+uLyQH9w44+t79XoGR7jZwcU+DFkJS87M/VWdsAaoRc4lByilPDm
+         4ic57sa3WCYK6GUt+cuxtv3nfAbigLs/9qOUl8iAbLo4+gCojaJeqB4/rVPfTbXoSlnz
+         6442NfMromgRp/zcZ1401KXgh+U1LuVtTt/yKUrSpUEM2b/z6y1pRyngEHdgGj7oYp45
+         llNN40ru31qanqtLOy/VKBybYw34fCh/xgHgLTJ7apAlSIexBYPdD4knMjt41tN6st78
+         Wg7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=UIbSwXETQo8py8NKWWoOzTbdb19k4UaVxjqlebXhaiE=;
+        b=FjU4P7roJzB3MJYugyn3pHRx18ArWfcJXg7XSz54r8Fz4bgarvZsciY4bvRbIT9js5
+         EaIrcAmGEtPKCrVz6Fs1bnneACQ9+lAAInSyEAr5vHDSDEJamblvfZGy54EXiCYsIfRC
+         BqN6YuYISwYhrzgwQVgkGbRgVzGuo5+Mzm3gl7wXjc/NhFA066l7gLitSNd//mwgAeI6
+         NF4rg2BCA/VQaLDAM86+EIZQA6jSZnnD6ZRvrhtW1KNXk5NsNRUD8m8vx7go5hQX94Ui
+         KYKALF/vYiBBBPqKLkWbF/jWi5e9acWMLJrtt79Nxn279icNDjyYgpG59FXF3AA+H5Pk
+         4IWw==
+X-Gm-Message-State: AOAM530dIhdzRHR6RYBHczAvGN6V2qMIB19ONn/G1WY6Ob2jaBiXPzi0
+        OSB5nUB3w7jQy4KQoVuVJQlGfo9az5QYsiEvt2M=
+X-Google-Smtp-Source: ABdhPJyBgNAU+0WXzYIe3je3JHNZsgTvdzt1hUkZkBHqpEjC6SyEJKtPFNwv3xQ+WOm040kYXBSTtKpkq1HjSXYCp/U=
+X-Received: by 2002:a17:906:7307:b0:6da:92e1:9c83 with SMTP id
+ di7-20020a170906730700b006da92e19c83mr33432377ejc.459.1651179615981; Thu, 28
+ Apr 2022 14:00:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1421; h=from:subject; bh=dULXhhIy46nVMYAUp2LhjGfrO/i/Y09zX1dcnzPKoGU=; b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBiasrPq0XoXAKagHpsB8sM6G3iYsdiN2oez9DR0LWA jRJ5CRaJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYmrKzwAKCRDB/BR4rcrsCQ8cB/ 4szPgonLJVifD33+nyLWfuPUnHfaAyipo+rST3nVh3ajJ3YOgQTzZMU+eFaqkK6mJGTo5VOmax4Q8c INhjwyyntxHu014xmHHpRpqdT89MrsufBzIDQOE5DuhSxmHEEqmxj1O2Y8pPk4/0pkEV/OVmGRNtAJ OwGNFOf6TaXRjCKfGt9dt1kwVLwKzcxyxi8R2q1gCzIc7A5GjEwatgsNNG2PtEFqU4Vq8LMwwZ9XGD nnNg+ZrIBV/WJ2GD2FYvGo9V33xPHRtMdR4bCwMHZZRkv6RzUpc7XvwJaW2SxbWYZSsnKnzE9WDSbB j/jtw6GOvqx8hDpgMgRZHabbn/9Rz5
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a50:8759:0:0:0:0:0 with HTTP; Thu, 28 Apr 2022 14:00:14
+ -0700 (PDT)
+Reply-To: fionahill.usa@outlook.com
+From:   Fiona Hill <fionahill578@gmail.com>
+Date:   Thu, 28 Apr 2022 14:00:14 -0700
+Message-ID: <CAFw126F7GqeioiMQ-uYTWSO1uuYtZvzqC1iEJqJhwN6Ry033QQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Returning an error value in an i2c remove callback results in an error
-message being emitted by the i2c core, but otherwise it doesn't make a
-difference. The device goes away anyhow and the devm cleanups are
-called.
-
-As atmel_sha204a_remove already emits an error message ant the additional
-error message by the i2c core doesn't add any useful information, change
-the return value to zero to suppress this error message.
-
-Note that after atmel_sha204a_remove() returns *i2c_priv is freed, so there
-is trouble ahead because atmel_sha204a_rng_done() might be called after
-that freeing. So make the error message a bit more frightening.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/crypto/atmel-sha204a.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index c71fc86eb849..fecc56b19ba6 100644
---- a/drivers/crypto/atmel-sha204a.c
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -121,8 +121,8 @@ static int atmel_sha204a_remove(struct i2c_client *client)
- 	struct atmel_i2c_client_priv *i2c_priv = i2c_get_clientdata(client);
- 
- 	if (atomic_read(&i2c_priv->tfm_count)) {
--		dev_err(&client->dev, "Device is busy\n");
--		return -EBUSY;
-+		dev_emerg(&client->dev, "Device is busy, will remove it anyhow\n");
-+		return 0;
- 	}
- 
- 	kfree((void *)i2c_priv->hwrng.priv);
 -- 
-2.35.1
-
+Hello, did you receive my message i sent to you ?
