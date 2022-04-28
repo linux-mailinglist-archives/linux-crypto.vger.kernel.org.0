@@ -2,70 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8120751359B
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Apr 2022 15:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510E6513655
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Apr 2022 16:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347616AbiD1Nsi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 Apr 2022 09:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
+        id S233320AbiD1OIH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 28 Apr 2022 10:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347600AbiD1Ns1 (ORCPT
+        with ESMTP id S241057AbiD1OIC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 Apr 2022 09:48:27 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B7226548
-        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 06:45:12 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1nk4Rd-00040Y-7B; Thu, 28 Apr 2022 15:44:33 +0200
-Message-ID: <73bb42fc-5d69-0c89-d42f-226a6d13248f@pengutronix.de>
-Date:   Thu, 28 Apr 2022 15:44:27 +0200
+        Thu, 28 Apr 2022 10:08:02 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E8FB714C
+        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 07:04:19 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id k14so4100874pga.0
+        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 07:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zkXWp8YkbHgF6tQunE9Dc1g1IZuQaUaeHQc84WiuWuw=;
+        b=KBf5cjMviFZ3XkhqoulAuU+Jozs8mLNv5F50zJqFkTDeA1vc1WC+OIpkszs1/B6/Si
+         5OpAckCU1cI+q4cMIwDF2JXatP1r7CO6u2va16Bq6oWc1WDFcNVejtRuNg3SdnpqQkh3
+         O6eLvIGjcDA5YoOCQJXIvkyHwG6RwYEzkQvTbokrO5hMGUj8z5fuFw2jb3Xq4wq4wGEH
+         aNPEwhWKFY5y2XN/Fb31CLW2mpvD0njJ7sxC400FLH6bUoyTsIuCTquJwHkZgSHjE8Wm
+         OJ9hkPOE66NwbsoJ7fAGbd5feXBs/WoYAMxTNwPwY4OkknzyjcxkIz6D6D+1OAzX21Db
+         uo1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zkXWp8YkbHgF6tQunE9Dc1g1IZuQaUaeHQc84WiuWuw=;
+        b=rEqO1zBR51AFCKtO5d13C+zyU2BAsxkrRkWtDwZjjfiTLqZ4pRgLnULWYKk771pWRt
+         zJK7keILPGcKFih1YAkIcOkku1d7L2zDBN8c7QLRduU/31+Rv+1Z/afsUbiNTLLgbuFq
+         VHRnDsQD5zSe8ZznAPlmKulYzlo8cLJELBnk2aWlw9KMZMOym4S76Gos4y958/PAe0BD
+         tqwq9zQbiUvArBSLZE0kWc1fhWuyUflz+vWECFFT4WR+cTX+mTy+SrL3ssqUeTUMOa67
+         92zhRDWT1jP8UndZHt4eHOnHpM2B0id4+AeRvC8n52oNrly/2DOuZUu7anteCxypzdkO
+         HH1g==
+X-Gm-Message-State: AOAM533VOV96eSOR4OCLaaXLU+k6v4OfjsDYlfMa5qeBNknlJDKR4WUF
+        5dg9K3EG7I95FAmvoAkxgCRd0Q==
+X-Google-Smtp-Source: ABdhPJxbR3dazvNTLyiio1zH4TfsUXSelYR5IENf0r/5fyXtYZI4SWjfy6a0vf2pfkG2atZ8JyAmjA==
+X-Received: by 2002:a05:6a00:b4d:b0:50d:7e9f:1ff0 with SMTP id p13-20020a056a000b4d00b0050d7e9f1ff0mr9151453pfo.80.1651154658806;
+        Thu, 28 Apr 2022 07:04:18 -0700 (PDT)
+Received: from always-x1.www.tendawifi.com ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id x129-20020a623187000000b0050835f6d6a1sm38975pfx.9.2022.04.28.07.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Apr 2022 07:04:18 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     mst@redhat.com, arei.gonglei@huawei.com, berrange@redhat.com
+Cc:     qemu-devel@nongnu.org, virtualization@lists.linux-foundation.org,
+        linux-crypto@vger.kernel.org, helei.sig11@bytedance.com,
+        jasowang@redhat.com, cohuck@redhat.com,
+        zhenwei pi <pizhenwei@bytedance.com>
+Subject: [PATCH v5 0/9] Introduce akcipher service for virtio-crypto
+Date:   Thu, 28 Apr 2022 21:59:34 +0800
+Message-Id: <20220428135943.178254-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [EXT] [PATCH v7 0/6] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-Content-Language: en-US
-To:     Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Andreas Rammhold <andreas@rammhold.de>,
-        "tharvey@gateworks.com" <tharvey@gateworks.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <20220415205647.46056-1-a.fatoum@pengutronix.de>
- <DU2PR04MB86306B75C018C7CAB9FFA57195FD9@DU2PR04MB8630.eurprd04.prod.outlook.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <DU2PR04MB86306B75C018C7CAB9FFA57195FD9@DU2PR04MB8630.eurprd04.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,246 +70,151 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Pankaj,
+Hi, Lei & MST
 
-On 28.04.22 14:50, Pankaj Gupta wrote:
-> Hi Ahmad,
-> 
-> I have tested the patch-set.
-> It is working as expected even when CAAM is compiled as kernel module.
-> 
-> Reviewed-by: Pankaj Gupta <pankaj.gupta@nxp.com>
-> Tested-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+Daniel has started to review the akcipher framework and nettle & gcrypt
+implementation, this part seems to be ready soon. Thanks a lot to Daniel!
 
-Thanks for test and review. I have applied the tags on all patches
-in the series except the Tested-by for the last two. I think a Tested-by
-for maintainer and doc changes looks a bit odd. ^^
+And the last patch "crypto: Introduce RSA algorithm" handles akcipher
+requests from guest and uses the new akcipher service. The new feature
+can be used to test by the builtin driver. I would appreciate it if you
+could review patch.
 
-I will incorporate Jarkko's documentation feedback and send a new series
-shortly.
+v4 -> v5:
+- Move QCryptoAkCipher into akcipherpriv.h, and modify the related comments.
+- Rename asn1_decoder.c to der.c.
+- Code style fix: use 'cleanup' & 'error' lables.
+- Allow autoptr type to auto-free.
+- Add test cases for rsakey to handle DER error.
+- Other minor fixes.
 
-Cheers,
-Ahmad
+v3 -> v4:
+- Coding style fix: Akcipher -> AkCipher, struct XXX -> XXX, Rsa -> RSA,
+XXX-alg -> XXX-algo.
+- Change version info in qapi/crypto.json, from 7.0 -> 7.1.
+- Remove ecdsa from qapi/crypto.json, it would be introduced with the implemetion later.
+- Use QCryptoHashAlgothrim instead of QCryptoRSAHashAlgorithm(removed) in qapi/crypto.json.
+- Rename arguments of qcrypto_akcipher_XXX to keep aligned with qcrypto_cipher_XXX(dec/enc/sign/vefiry -> in/out/in2), and add qcrypto_akcipher_max_XXX APIs.
+- Add new API: qcrypto_akcipher_supports.
+- Change the return value of qcrypto_akcipher_enc/dec/sign, these functions return the actual length of result.
+- Separate ASN.1 source code and test case clean.
+- Disable RSA raw encoding for akcipher-nettle.
+- Separate RSA key parser into rsakey.{hc}, and implememts it with builtin-asn1-decoder and nettle respectivly.
+- Implement RSA(pkcs1 and raw encoding) algorithm by gcrypt. This has higher priority than nettle.
+- For some akcipher operations(eg, decryption of pkcs1pad(rsa)), the length of returned result maybe less than the dst buffer size, return the actual length of result instead of the buffer length to the guest side. (in function virtio_crypto_akcipher_input_data_helper)
+- Other minor changes.
 
-> 
-> Regards
-> Pankaj
-> 
->> -----Original Message-----
->> From: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> Sent: Saturday, April 16, 2022 2:27 AM
->> To: Jarkko Sakkinen <jarkko@kernel.org>; Horia Geanta
->> <horia.geanta@nxp.com>; Mimi Zohar <zohar@linux.ibm.com>; Pankaj
->> Gupta <pankaj.gupta@nxp.com>; Herbert Xu
->> <herbert@gondor.apana.org.au>; David S. Miller <davem@davemloft.net>;
->> James Bottomley <jejb@linux.ibm.com>
->> Cc: kernel@pengutronix.de; David Howells <dhowells@redhat.com>; James
->> Morris <jmorris@namei.org>; Serge E. Hallyn <serge@hallyn.com>; Steffen
->> Trumtrar <s.trumtrar@pengutronix.de>; Jan Luebbe
->> <j.luebbe@pengutronix.de>; David Gstir <david@sigma-star.at>; Eric Biggers
->> <ebiggers@kernel.org>; Richard Weinberger <richard@nod.at>; Franck
->> Lenormand <franck.lenormand@nxp.com>; Sumit Garg
->> <sumit.garg@linaro.org>; Andreas Rammhold <andreas@rammhold.de>;
->> tharvey@gateworks.com; Matthias Schiffer <matthias.schiffer@ew.tq-
->> group.com>; linux-integrity@vger.kernel.org; keyrings@vger.kernel.org;
->> linux-crypto@vger.kernel.org; linux-kernel@vger.kernel.org; linux-security-
->> module@vger.kernel.org
->> Subject: [EXT] [PATCH v7 0/6] KEYS: trusted: Introduce support for NXP
->> CAAM-based trusted keys
->>
->> Caution: EXT Email
->>
->> Series applies on top of v5.18-rc2
->>
->> v6 was here:
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.k
->> ernel.org%2Flinux-integrity%2F20220316164335.1720255-1-
->> a.fatoum%40pengutronix.de%2F&amp;data=04%7C01%7Cpankaj.gupta%40n
->> xp.com%7C59fba782ed2445f72a3708da1f228c18%7C686ea1d3bc2b4c6fa92cd
->> 99c5c301635%7C0%7C0%7C637856530483504933%7CUnknown%7CTWFpbGZ
->> sb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6M
->> n0%3D%7C3000&amp;sdata=HX0dpx79%2BRpfD0CTzd59XgcdEIOmUV0BtL3Y
->> 36Sx1AY%3D&amp;reserved=0
->>
->> Changelog is beneath each individual patch.
->>
->>
->> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
->> built into many newer i.MX and QorIQ SoCs by NXP.
->>
->> Its blob mechanism can AES encrypt/decrypt user data using a unique never-
->> disclosed device-specific key.
->>
->> There has been multiple discussions on how to represent this within the
->> kernel:
->>
->> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
->> built into many newer i.MX and QorIQ SoCs by NXP.
->>
->> Its blob mechanism can AES encrypt/decrypt user data using a unique never-
->> disclosed device-specific key. There has been multiple discussions on how to
->> represent this within the kernel:
->>
->>  - [RFC] crypto: caam - add red blobifier
->>    Steffen implemented[1] a PoC sysfs driver to start a discussion on how to
->>    best integrate the blob mechanism.
->>    Mimi suggested that it could be used to implement trusted keys.
->>    Trusted keys back then were a TPM-only feature.
->>
->>  - security/keys/secure_key: Adds the secure key support based on CAAM.
->>    Udit Agarwal added[2] a new "secure" key type with the CAAM as backend.
->>    The key material stays within the kernel only.
->>    Mimi and James agreed that this needs a generic interface, not specific
->>    to CAAM. Mimi suggested trusted keys. Jan noted that this could serve as
->>    basis for TEE-backed keys.
->>
->>  - [RFC] drivers: crypto: caam: key: Add caam_tk key type
->>    Franck added[3] a new "caam_tk" key type based on Udit's work. This time
->>    it uses CAAM "black blobs" instead of "red blobs", so key material stays
->>    within the CAAM and isn't exposed to kernel in plaintext.
->>    James voiced the opinion that there should be just one user-facing generic
->>    wrap/unwrap key type with multiple possible handlers.
->>    David suggested trusted keys.
->>
->>  - Introduce TEE based Trusted Keys support
->>    Sumit reworked[4] trusted keys to support multiple possible backends with
->>    one chosen at boot time and added a new TEE backend along with TPM.
->>    This now sits in Jarkko's master branch to be sent out for v5.13
->>
->> This patch series builds on top of Sumit's rework to have the CAAM as yet
->> another trusted key backend.
->>
->> The CAAM bits are based on Steffen's initial patch from 2015. His work had
->> been used in the field for some years now, so I preferred not to deviate too
->> much from it.
->>
->> This series has been tested with dmcrypt[5] on an i.MX6Q/DL and an
->> i.MX8M[6].
->>
->> Looking forward to your feedback.
->>
->> Cheers,
->> Ahmad
->>
->>  [1]:
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.k
->> ernel.org%2Flinux-crypto%2F1447082306-19946-2-git-send-email-
->> s.trumtrar%40pengutronix.de%2F&amp;data=04%7C01%7Cpankaj.gupta%40
->> nxp.com%7C59fba782ed2445f72a3708da1f228c18%7C686ea1d3bc2b4c6fa92c
->> d99c5c301635%7C0%7C0%7C637856530483504933%7CUnknown%7CTWFpbG
->> Zsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
->> Mn0%3D%7C3000&amp;sdata=1SsslHlyFr2xaWNsE3aa0DEdQ3r5%2BLqDI16X
->> bLBEi5M%3D&amp;reserved=0
->>  [2]:
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.k
->> ernel.org%2Flinux-integrity%2F20180723111432.26830-1-
->> udit.agarwal%40nxp.com%2F&amp;data=04%7C01%7Cpankaj.gupta%40nxp.
->> com%7C59fba782ed2445f72a3708da1f228c18%7C686ea1d3bc2b4c6fa92cd99c
->> 5c301635%7C0%7C0%7C637856530483504933%7CUnknown%7CTWFpbGZsb3
->> d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
->> %3D%7C3000&amp;sdata=%2FvQXaQAJZc5aid84IWIUyfRLSUPSylOhkpoaB%2
->> FAgMgs%3D&amp;reserved=0
->>  [3]:
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.k
->> ernel.org%2Flkml%2F1551456599-10603-2-git-send-email-
->> franck.lenormand%40nxp.com%2F&amp;data=04%7C01%7Cpankaj.gupta%4
->> 0nxp.com%7C59fba782ed2445f72a3708da1f228c18%7C686ea1d3bc2b4c6fa92
->> cd99c5c301635%7C0%7C0%7C637856530483504933%7CUnknown%7CTWFpb
->> GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI
->> 6Mn0%3D%7C3000&amp;sdata=%2F2fSdeN%2FG%2BObdJW9hpPrR%2B%2B
->> KoKOvtUGvijdu2rgSMCg%3D&amp;reserved=0
->>  [4]:
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.k
->> ernel.org%2Flkml%2F1604419306-26105-1-git-send-email-
->> sumit.garg%40linaro.org%2F&amp;data=04%7C01%7Cpankaj.gupta%40nxp.c
->> om%7C59fba782ed2445f72a3708da1f228c18%7C686ea1d3bc2b4c6fa92cd99c5
->> c301635%7C0%7C0%7C637856530483504933%7CUnknown%7CTWFpbGZsb3d
->> 8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%
->> 3D%7C3000&amp;sdata=YNRk2%2FYFm9mI8vEigYxoIDRcHilHR4U6uqYXSj8dJ
->> VI%3D&amp;reserved=0
->>  [5]:
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.k
->> ernel.org%2Flinux-integrity%2F20210122084321.24012-2-
->> a.fatoum%40pengutronix.de%2F&amp;data=04%7C01%7Cpankaj.gupta%40n
->> xp.com%7C59fba782ed2445f72a3708da1f228c18%7C686ea1d3bc2b4c6fa92cd
->> 99c5c301635%7C0%7C0%7C637856530483504933%7CUnknown%7CTWFpbGZ
->> sb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6M
->> n0%3D%7C3000&amp;sdata=TlA7QBMbBGhJTyx5wHk3%2BhQUhuqBWW3W
->> tEZq94w13kY%3D&amp;reserved=0
->>  [6]:
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.k
->> ernel.org%2Flinux-
->> integrity%2FDU2PR04MB8630D83FE9BBC0D782C4FAF595089%40DU2PR04MB
->> 8630.eurprd04.prod.outlook.com%2F&amp;data=04%7C01%7Cpankaj.gupta
->> %40nxp.com%7C59fba782ed2445f72a3708da1f228c18%7C686ea1d3bc2b4c6fa
->> 92cd99c5c301635%7C0%7C0%7C637856530483504933%7CUnknown%7CTWFp
->> bGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVC
->> I6Mn0%3D%7C3000&amp;sdata=jOJusQxZ%2BUfjxDKyMImc4BYjO8sFmamV
->> b5LnAo%2BknFc%3D&amp;reserved=0
->>
->> ---
->> To: Jarkko Sakkinen <jarkko@kernel.org>
->> To: "Horia Geantă" <horia.geanta@nxp.com>
->> To: Mimi Zohar <zohar@linux.ibm.com>
->> To: Pankaj Gupta <pankaj.gupta@nxp.com>
->> To: Herbert Xu <herbert@gondor.apana.org.au>
->> To: "David S. Miller" <davem@davemloft.net>
->> To: James Bottomley <jejb@linux.ibm.com>
->> Cc: David Howells <dhowells@redhat.com>
->> Cc: James Morris <jmorris@namei.org>
->> Cc: "Serge E. Hallyn" <serge@hallyn.com>
->> Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>
->> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
->> Cc: David Gstir <david@sigma-star.at>
->> Cc: Eric Biggers <ebiggers@kernel.org>
->> Cc: Richard Weinberger <richard@nod.at>
->> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
->> Cc: Sumit Garg <sumit.garg@linaro.org>
->> Cc: Andreas Rammhold <andreas@rammhold.de>
->> Cc: Tim Harvey <tharvey@gateworks.com>
->> Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
->> Cc: linux-integrity@vger.kernel.org
->> Cc: keyrings@vger.kernel.org
->> Cc: linux-crypto@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-security-module@vger.kernel.org
->>
->> Ahmad Fatoum (6):
->>   KEYS: trusted: allow use of TEE as backend without TCG_TPM support
->>   KEYS: trusted: allow use of kernel RNG for key material
->>   crypto: caam - add in-kernel interface for blob generator
->>   KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
->>   doc: trusted-encrypted: describe new CAAM trust source
->>   MAINTAINERS: add myself as CAAM trusted key maintainer
->>
->>  .../admin-guide/kernel-parameters.txt         |  11 ++
->>  .../security/keys/trusted-encrypted.rst       |  60 ++++++-
->>  MAINTAINERS                                   |   9 +
->>  drivers/crypto/caam/Kconfig                   |   3 +
->>  drivers/crypto/caam/Makefile                  |   1 +
->>  drivers/crypto/caam/blob_gen.c                | 164 ++++++++++++++++++
->>  include/keys/trusted-type.h                   |   2 +-
->>  include/keys/trusted_caam.h                   |  11 ++
->>  include/soc/fsl/caam-blob.h                   | 102 +++++++++++
->>  security/keys/Kconfig                         |  18 +-
->>  security/keys/trusted-keys/Kconfig            |  38 ++++
->>  security/keys/trusted-keys/Makefile           |  10 +-
->>  security/keys/trusted-keys/trusted_caam.c     |  82 +++++++++
->>  security/keys/trusted-keys/trusted_core.c     |  45 ++++-
->>  14 files changed, 527 insertions(+), 29 deletions(-)  create mode 100644
->> drivers/crypto/caam/blob_gen.c  create mode 100644
->> include/keys/trusted_caam.h  create mode 100644 include/soc/fsl/caam-
->> blob.h  create mode 100644 security/keys/trusted-keys/Kconfig
->>  create mode 100644 security/keys/trusted-keys/trusted_caam.c
->>
->> --
->> 2.30.2
-> 
-> 
+Thanks to Daniel!
 
+Eric pointed out this missing part of use case, send it here again.
+
+In our plan, the feature is designed for HTTPS offloading case and other applications which use kernel RSA/ecdsa by keyctl syscall. The full picture shows bellow:
+
+
+                  Nginx/openssl[1] ... Apps
+Guest   -----------------------------------------
+                   virtio-crypto driver[2]
+-------------------------------------------------
+                   virtio-crypto backend[3]
+Host    -----------------------------------------
+                  /          |          \
+              builtin[4]   vhost     keyctl[5] ...
+
+
+[1] User applications can offload RSA calculation to kernel by keyctl syscall. There is no keyctl engine in openssl currently, we developed a engine and tried to contribute it to openssl upstream, but openssl 1.x does not accept new feature. Link:
+    https://github.com/openssl/openssl/pull/16689
+
+This branch is available and maintained by Lei <helei.sig11@bytedance.com>
+    https://github.com/TousakaRin/openssl/tree/OpenSSL_1_1_1-kctl_engine
+
+We tested nginx(change config file only) with openssl keyctl engine, it works fine.
+
+[2] virtio-crypto driver is used to communicate with host side, send requests to host side to do asymmetric calculation.
+    https://lkml.org/lkml/2022/3/1/1425
+
+[3] virtio-crypto backend handles requests from guest side, and forwards request to crypto backend driver of QEMU.
+
+[4] Currently RSA is supported only in builtin driver. This driver is supposed to test the full feature without other software(Ex vhost process) and hardware dependence. ecdsa is introduced into qapi type without implementation, this may be implemented in Q3-2022 or later. If ecdsa type definition should be added with the implementation together, I'll remove this in next version.
+
+[5] keyctl backend is in development, we will post this feature in Q2-2022. keyctl backend can use hardware acceleration(Ex, Intel QAT).
+
+Setup the full environment, tested with Intel QAT on host side, the QPS of HTTPS increase to ~200% in a guest.
+
+VS PCI passthrough: the most important benefit of this solution makes the VM migratable.
+
+v2 -> v3:
+- Introduce akcipher types to qapi
+- Add test/benchmark suite for akcipher class
+- Seperate 'virtio_crypto: Support virtio crypto asym operation' into:
+  - crypto: Introduce akcipher crypto class
+  - virtio-crypto: Introduce RSA algorithm
+
+v1 -> v2:
+- Update virtio_crypto.h from v2 version of related kernel patch.
+
+v1:
+- Support akcipher for virtio-crypto.
+- Introduce akcipher class.
+- Introduce ASN1 decoder into QEMU.
+- Implement RSA backend by nettle/hogweed.
+
+Lei He (6):
+  qapi: crypto-akcipher: Introduce akcipher types to qapi
+  crypto: add ASN.1 DER decoder
+  crypto: Implement RSA algorithm by hogweed
+  crypto: Implement RSA algorithm by gcrypt
+  test/crypto: Add test suite for crypto akcipher
+  tests/crypto: Add test suite for RSA keys
+
+Zhenwei Pi (3):
+  virtio-crypto: header update
+  crypto: Introduce akcipher crypto class
+  crypto: Introduce RSA algorithm
+
+ backends/cryptodev-builtin.c                  | 272 ++++-
+ backends/cryptodev-vhost-user.c               |  34 +-
+ backends/cryptodev.c                          |  32 +-
+ crypto/akcipher-gcrypt.c.inc                  | 520 +++++++++
+ crypto/akcipher-nettle.c.inc                  | 432 ++++++++
+ crypto/akcipher.c                             | 108 ++
+ crypto/akcipherpriv.h                         |  55 +
+ crypto/der.c                                  | 190 ++++
+ crypto/der.h                                  |  82 ++
+ crypto/meson.build                            |   6 +
+ crypto/rsakey-builtin.c.inc                   | 209 ++++
+ crypto/rsakey-nettle.c.inc                    | 154 +++
+ crypto/rsakey.c                               |  44 +
+ crypto/rsakey.h                               |  94 ++
+ hw/virtio/virtio-crypto.c                     | 323 ++++--
+ include/crypto/akcipher.h                     | 158 +++
+ include/hw/virtio/virtio-crypto.h             |   5 +-
+ .../standard-headers/linux/virtio_crypto.h    |  82 +-
+ include/sysemu/cryptodev.h                    |  83 +-
+ meson.build                                   |  11 +
+ qapi/crypto.json                              |  64 ++
+ tests/bench/benchmark-crypto-akcipher.c       | 157 +++
+ tests/bench/meson.build                       |   4 +
+ tests/bench/test_akcipher_keys.inc            | 537 ++++++++++
+ tests/unit/meson.build                        |   2 +
+ tests/unit/test-crypto-akcipher.c             | 990 ++++++++++++++++++
+ tests/unit/test-crypto-der.c                  | 290 +++++
+ 27 files changed, 4792 insertions(+), 146 deletions(-)
+ create mode 100644 crypto/akcipher-gcrypt.c.inc
+ create mode 100644 crypto/akcipher-nettle.c.inc
+ create mode 100644 crypto/akcipher.c
+ create mode 100644 crypto/akcipherpriv.h
+ create mode 100644 crypto/der.c
+ create mode 100644 crypto/der.h
+ create mode 100644 crypto/rsakey-builtin.c.inc
+ create mode 100644 crypto/rsakey-nettle.c.inc
+ create mode 100644 crypto/rsakey.c
+ create mode 100644 crypto/rsakey.h
+ create mode 100644 include/crypto/akcipher.h
+ create mode 100644 tests/bench/benchmark-crypto-akcipher.c
+ create mode 100644 tests/bench/test_akcipher_keys.inc
+ create mode 100644 tests/unit/test-crypto-akcipher.c
+ create mode 100644 tests/unit/test-crypto-der.c
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.20.1
+
