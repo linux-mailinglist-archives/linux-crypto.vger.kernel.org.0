@@ -2,68 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C5D513CFB
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Apr 2022 23:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B51513F79
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Apr 2022 02:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351981AbiD1VDd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 28 Apr 2022 17:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        id S1353546AbiD2AUZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 28 Apr 2022 20:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351979AbiD1VDd (ORCPT
+        with ESMTP id S1351307AbiD2AUZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 28 Apr 2022 17:03:33 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C112B33EBC
-        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 14:00:17 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id g6so11931189ejw.1
-        for <linux-crypto@vger.kernel.org>; Thu, 28 Apr 2022 14:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=UIbSwXETQo8py8NKWWoOzTbdb19k4UaVxjqlebXhaiE=;
-        b=YIW6hvy4E9AO2RG7jNSiPXUtArPCZkLu0e95qaAirJcph4Lzf4b/M/V8mtM1TuCf9u
-         zU/su830r1YOELbE+uLyQH9w44+t79XoGR7jZwcU+DFkJS87M/VWdsAaoRc4lByilPDm
-         4ic57sa3WCYK6GUt+cuxtv3nfAbigLs/9qOUl8iAbLo4+gCojaJeqB4/rVPfTbXoSlnz
-         6442NfMromgRp/zcZ1401KXgh+U1LuVtTt/yKUrSpUEM2b/z6y1pRyngEHdgGj7oYp45
-         llNN40ru31qanqtLOy/VKBybYw34fCh/xgHgLTJ7apAlSIexBYPdD4knMjt41tN6st78
-         Wg7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=UIbSwXETQo8py8NKWWoOzTbdb19k4UaVxjqlebXhaiE=;
-        b=FjU4P7roJzB3MJYugyn3pHRx18ArWfcJXg7XSz54r8Fz4bgarvZsciY4bvRbIT9js5
-         EaIrcAmGEtPKCrVz6Fs1bnneACQ9+lAAInSyEAr5vHDSDEJamblvfZGy54EXiCYsIfRC
-         BqN6YuYISwYhrzgwQVgkGbRgVzGuo5+Mzm3gl7wXjc/NhFA066l7gLitSNd//mwgAeI6
-         NF4rg2BCA/VQaLDAM86+EIZQA6jSZnnD6ZRvrhtW1KNXk5NsNRUD8m8vx7go5hQX94Ui
-         KYKALF/vYiBBBPqKLkWbF/jWi5e9acWMLJrtt79Nxn279icNDjyYgpG59FXF3AA+H5Pk
-         4IWw==
-X-Gm-Message-State: AOAM530dIhdzRHR6RYBHczAvGN6V2qMIB19ONn/G1WY6Ob2jaBiXPzi0
-        OSB5nUB3w7jQy4KQoVuVJQlGfo9az5QYsiEvt2M=
-X-Google-Smtp-Source: ABdhPJyBgNAU+0WXzYIe3je3JHNZsgTvdzt1hUkZkBHqpEjC6SyEJKtPFNwv3xQ+WOm040kYXBSTtKpkq1HjSXYCp/U=
-X-Received: by 2002:a17:906:7307:b0:6da:92e1:9c83 with SMTP id
- di7-20020a170906730700b006da92e19c83mr33432377ejc.459.1651179615981; Thu, 28
- Apr 2022 14:00:15 -0700 (PDT)
+        Thu, 28 Apr 2022 20:20:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9B627CF9;
+        Thu, 28 Apr 2022 17:17:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A9E74B830A9;
+        Fri, 29 Apr 2022 00:17:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAC8C385AD;
+        Fri, 29 Apr 2022 00:17:05 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="i1c9xOsU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1651191423;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N6XdKUj5iYJ5RwXtCRVRiwXorABzoye1SBxh5BDCkro=;
+        b=i1c9xOsUF+LWwlI4RpyMAD/JNy2GTZMlypd0y4aaVYhgqSJKA9SuCLEn5URQN03fYnXMCK
+        kLQzgwp1QbQtPlr2xo7ZxFh1yv2O2PyDtLjpDEGR6XE4HnIJWQIkhTeH7M/gfkQfDcnwu1
+        rl9j3RbM+5TxC1rvp1p8UiHyRPgwQhg=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9e137a29 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 29 Apr 2022 00:17:02 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     Stafford Horne <shorne@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v7 11/17] openrisc: account for 0 starting value in random_get_entropy()
+Date:   Fri, 29 Apr 2022 02:16:48 +0200
+Message-Id: <20220429001648.1671472-1-Jason@zx2c4.com>
+In-Reply-To: <20220423212623.1957011-12-Jason@zx2c4.com>
+References: <20220423212623.1957011-12-Jason@zx2c4.com>
 MIME-Version: 1.0
-Received: by 2002:a50:8759:0:0:0:0:0 with HTTP; Thu, 28 Apr 2022 14:00:14
- -0700 (PDT)
-Reply-To: fionahill.usa@outlook.com
-From:   Fiona Hill <fionahill578@gmail.com>
-Date:   Thu, 28 Apr 2022 14:00:14 -0700
-Message-ID: <CAFw126F7GqeioiMQ-uYTWSO1uuYtZvzqC1iEJqJhwN6Ry033QQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+As a sanity check, this series makes sure that during early boot, the
+cycle counter isn't returning all zeros. However, OpenRISC's TTCR timer
+can be rather slow and starts out as zero during stages of early boot.
+We know it works, however. So just always add 1 to random_get_entropy()
+so that it doesn't trigger these checks.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Acked-by: Stafford Horne <shorne@gmail.com>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Changes v6->v7:
+- Add 1 to cycle counter to account for functional but slow-to-begin
+  counter on QEMU.
+
+ arch/openrisc/include/asm/timex.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/openrisc/include/asm/timex.h b/arch/openrisc/include/asm/timex.h
+index d52b4e536e3f..a78a5807c927 100644
+--- a/arch/openrisc/include/asm/timex.h
++++ b/arch/openrisc/include/asm/timex.h
+@@ -23,6 +23,9 @@ static inline cycles_t get_cycles(void)
+ {
+ 	return mfspr(SPR_TTCR);
+ }
++#define get_cycles get_cycles
++
++#define random_get_entropy() ((unsigned long)get_cycles() + 1)
+ 
+ /* This isn't really used any more */
+ #define CLOCK_TICK_RATE 1000
 -- 
-Hello, did you receive my message i sent to you ?
+2.35.1
+
