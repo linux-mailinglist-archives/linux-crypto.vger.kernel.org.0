@@ -2,95 +2,117 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A79515D89
-	for <lists+linux-crypto@lfdr.de>; Sat, 30 Apr 2022 15:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F085515CDE
+	for <lists+linux-crypto@lfdr.de>; Sat, 30 Apr 2022 14:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359165AbiD3NaW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 30 Apr 2022 09:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
+        id S238474AbiD3M2D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 30 Apr 2022 08:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238390AbiD3NaQ (ORCPT
+        with ESMTP id S232836AbiD3M2C (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 30 Apr 2022 09:30:16 -0400
-X-Greylist: delayed 43879 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 30 Apr 2022 06:26:44 PDT
-Received: from spiderman.my-portal.gr (spiderman.my-portal.gr [144.76.89.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E672635DC4;
-        Sat, 30 Apr 2022 06:26:44 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by spiderman.my-portal.gr (Postfix) with ESMTP id 06BDDE7B50F;
-        Tue, 26 Apr 2022 01:59:45 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at spiderman.my-portal.gr
-Received: from spiderman.my-portal.gr ([127.0.0.1])
-        by localhost (spiderman.my-portal.gr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id oGsCGVyA5pyF; Tue, 26 Apr 2022 01:59:44 +0300 (EEST)
-Received: from www.hotelartemision.gr (localhost [127.0.0.1])
-        (Authenticated sender: info@hotelartemision.gr)
-        by spiderman.my-portal.gr (Postfix) with ESMTPA id DF9C9E79769;
-        Tue, 26 Apr 2022 00:10:23 +0300 (EEST)
-Received: from 209.107.210.62
-        (SquirrelMail authenticated user info@hotelartemision.gr)
-        by www.hotelartemision.gr with HTTP;
-        Mon, 25 Apr 2022 21:10:28 -0000
-Message-ID: <673c688bea437d65e20731991b094957.squirrel@www.hotelartemision.gr>
-Date:   Mon, 25 Apr 2022 21:10:28 -0000
-Subject: RE:
-From:   "Mackenzie Scott" <info@hotelartemision.gr>
-Reply-To: "Mackenzie Scott" <info@ebumk.com.br>
-User-Agent: SquirrelMail/1.4.23 [SVN]
+        Sat, 30 Apr 2022 08:28:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79A0139;
+        Sat, 30 Apr 2022 05:24:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4367560AE5;
+        Sat, 30 Apr 2022 12:24:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23826C385A7;
+        Sat, 30 Apr 2022 12:24:38 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="eshy/VUi"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1651321475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fgcN0qR53PxDNDyRz8mDwIaBEjIsjkyTe89/FfZgIDM=;
+        b=eshy/VUiIAgCcfeuV75Wr/Er5w1aUXt6kzCJoYjL15KSNHeEk5Jh2kfFZE04m/Q87EiXym
+        PF2/F+ko2ujnFvZfStEdi9cFC/HZqkpv+lmKPIP8OWcglsvBB5pRZAhWxmxKRJcfHYA6V9
+        N9vHELmyGyG+03V5TZgeyG3/1+c+VV8=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f9b1305e (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Sat, 30 Apr 2022 12:24:35 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        openrisc@lists.librecores.org, shorne@gmail.com
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v8 06/19] openrisc: start CPU timer early in boot
+Date:   Sat, 30 Apr 2022 14:24:33 +0200
+Message-Id: <20220430122433.2719029-1-Jason@zx2c4.com>
+In-Reply-To: <20220430122355.2718797-1-Jason@zx2c4.com>
+References: <20220430122355.2718797-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-X-Priority: 3 (Normal)
-Importance: Normal
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_50,LOTS_OF_MONEY,
-        MISSING_HEADERS,REPLYTO_WITHOUT_TO_CC,SPF_FAIL,SPF_HELO_NONE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+In order to measure the boot process, the timer should be switched on as
+early in boot as possible. This is necessary so that by the time the
+setup code reaches random_init(), get_cycles() (by way of
+random_get_entropy()) returns non-zero, indicating that it is actually
+capable of counting. So this commit enables the timer immediately upon
+booting up. As well, the commit define the get_cycles macro, like the
+previous patches in this series, so that generic code is aware that it's
+implemented by the platform, as is done on other archs.
 
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Stafford Horne <shorne@gmail.com>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Changes v7->v8:
+- Rather than doing get_cycles()+1 to handle the early boot case,
+  actually start the timer early in boot. This has the huge advantage of
+  properly measuring the boot sequence timing, which could be a valuable
+  source of entropy.
 
+ arch/openrisc/include/asm/timex.h | 1 +
+ arch/openrisc/kernel/setup.c      | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-Xin chào,
-
-Tôi là Mackenzie Scott, v&#7907; c&#361; c&#7911;a ng&#432;&#7901;i sáng
-l&#7853;p kiêm Giám &#273;&#7889;c &#273;i&#7873;u hành Amazon (Jeff
-Bezos).
-Tôi quyên góp 4 t&#7927; &#273;ô la cho các t&#7893; ch&#7913;c t&#7915;
-thi&#7879;n, cá nhân và tr&#432;&#7901;ng cao &#273;&#7859;ng trên toàn
-c&#7847;u t&#7915; Qu&#7929; c&#7911;a Scott, &#273;&#7875; h&#7895;
-tr&#7907; ngay l&#7853;p t&#7913;c cho nh&#7919;ng ng&#432;&#7901;i
-b&#7883; thi&#7879;t h&#7841;i v&#7873; kinh t&#7871; do &#273;&#7841;i
-d&#7883;ch COVID-19 và b&#7841;n là m&#7897;t trong nh&#7919;ng
-ng&#432;&#7901;i may m&#7855;n chi&#7871;n th&#7855;ng.
-Tôi có m&#7897;t kho&#7843;n tài tr&#7907; tr&#7883; giá $ 100,800,000 cho
-b&#7841;n và c&#7897;ng &#273;&#7891;ng c&#7911;a b&#7841;n.
-Liên h&#7879; v&#7899;i tôi &#273;&#7875; bi&#7871;t thêm thông tin
-n&#7871;u b&#7841;n quan tâm.
-
-Trân tr&#7885;ng
-Mackenzie Scott
-
-
-
-
-
-
-Hello,
-
-I am Mackenzie Scott, ex-wife of Amazon founder and CEO(Jeff Bezos).
-I'm donating $ 4 billion to charities, individuals and colleges across the
-Globe from the Scott's Foundation, to provide immediate support to people
-suffering economically from the  COVID-19 pandemic and you are one of the
-lucky winners.
-I have a donation grant worth $100,800,000 for you and your community.
-Contact me for more information if you are interested.
-
-Best regards
-Mackenzie Scott
+diff --git a/arch/openrisc/include/asm/timex.h b/arch/openrisc/include/asm/timex.h
+index d52b4e536e3f..5487fa93dd9b 100644
+--- a/arch/openrisc/include/asm/timex.h
++++ b/arch/openrisc/include/asm/timex.h
+@@ -23,6 +23,7 @@ static inline cycles_t get_cycles(void)
+ {
+ 	return mfspr(SPR_TTCR);
+ }
++#define get_cycles get_cycles
+ 
+ /* This isn't really used any more */
+ #define CLOCK_TICK_RATE 1000
+diff --git a/arch/openrisc/kernel/setup.c b/arch/openrisc/kernel/setup.c
+index 0cd04d936a7a..1cb7c1770a17 100644
+--- a/arch/openrisc/kernel/setup.c
++++ b/arch/openrisc/kernel/setup.c
+@@ -220,6 +220,13 @@ void __init setup_cpuinfo(void)
+ 
+ void __init or1k_early_setup(void *fdt)
+ {
++	/* Start the TTCR as early as possible, so that the RNG can make use of
++	 * measurements of boot time from the earliest opportunity. Especially
++	 * important is that the TTCR does not return zero by the time we reach
++	 * rand_initialize().
++	 */
++	mtspr(SPR_TTMR, SPR_TTMR_CR);
++
+ 	if (fdt)
+ 		pr_info("FDT at %p\n", fdt);
+ 	else {
+-- 
+2.35.1
 
