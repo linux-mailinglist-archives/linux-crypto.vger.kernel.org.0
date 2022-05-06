@@ -2,71 +2,50 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF83451E101
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 May 2022 23:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2012251E16C
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 May 2022 23:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444410AbiEFV0p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 May 2022 17:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
+        id S1444602AbiEFV6z (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 May 2022 17:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245548AbiEFV0o (ORCPT
+        with ESMTP id S234286AbiEFV6v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 May 2022 17:26:44 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD6163385
-        for <linux-crypto@vger.kernel.org>; Fri,  6 May 2022 14:23:00 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id y32so14601090lfa.6
-        for <linux-crypto@vger.kernel.org>; Fri, 06 May 2022 14:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qxpYk/i1uMx/9W+J+m0qdABTnqS48FNlgI8p4QJG9kg=;
-        b=krrUKq7r9Ve/PfbbgWMQe08vgB7gzJafF4FAvb8xdfkMWPV87Dm7kmN/XGQTHHnaCE
-         02aP+pLoB/UW9KxGP9N8mg6lodgHOBnkJ6Dkrjp6hqrGu3cRShXzqTVGYEM1WfrpkRVD
-         AMdev99Vk9jW+HwRlkU+J9+77s3iaJNkrtDZnbR+5HUF5A8ZLF5WV9FPWV4RmmgeAFPA
-         228SnlwQBDRP4gEeYWoPwIxSptMj9ZWPCnrA96CCc97SKQWg72d4lC1m095yVo8Jdk3h
-         n4XtRJC0euV2An3UWY8MTXMQAHC44kkhW1rUXmoNCtOuT/heAtJJRJ0oZHOiBL8yKnoe
-         dlXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qxpYk/i1uMx/9W+J+m0qdABTnqS48FNlgI8p4QJG9kg=;
-        b=NZG0N4JPDplE7KfPhcXgcTReAqonLL0R5Wz4WoglALBtTfnoVMu6j9G0C5j1FasV3w
-         /XEJO0NvO7heV3O32IH1FVWJ4Eu9dT9oltvEvCsW18UANB6AORr/6K/nuDIRQPZSfTzY
-         oH3BMdk3XWTKa5lNn97fWYg3x+OT0583tgqKdRBfazvPGmL0Y+df9punpCxwt3dpli9X
-         L/D6niHUHr6LEqbiWI5e70zG51/xQ9tJzN1yoNRar9FXiF2MYxffv9/403ndqw85EU3y
-         HwJHkcvhIda28wBBbHGUeh67mku3B9r/GMsV6k8PZENlmQkfOg+twovhWGPL1JX8hkGq
-         Jl9g==
-X-Gm-Message-State: AOAM53317AeYaHIqPs6t2gSmqVSxgp527NbjY3ZfiDXJO2rVZ0sjzabn
-        2+dvsuG9yXwNgWebp1P3tit6aFGpi2vLJ5+QTnhPog==
-X-Google-Smtp-Source: ABdhPJwtWl922lDNxtpgcPRbGCEUkm78yi8gsQd7xUwx2Ap9G/Q4F/o+IH1eKspy4pPQBMYDUeGtCUHBahsYZet3EtY=
-X-Received: by 2002:a05:6512:1051:b0:473:b70c:941a with SMTP id
- c17-20020a056512105100b00473b70c941amr3894879lfb.238.1651872178383; Fri, 06
- May 2022 14:22:58 -0700 (PDT)
+        Fri, 6 May 2022 17:58:51 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46056FA25;
+        Fri,  6 May 2022 14:55:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 84753B8366B;
+        Fri,  6 May 2022 21:55:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC4CDC385A9;
+        Fri,  6 May 2022 21:55:03 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Pr3GGZvh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1651874101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=l1+Gz1r+S663SM+LnHF0Br7T7zR5BrwJ05uUG5tXH+g=;
+        b=Pr3GGZvhztrzf1rkg2zjj/GyWlAMWC6hPCAXHwUg+0dAWVIcTSNjYnZuDiVUQecxhdn3m9
+        Lp+uRJj272AJx48vfSsGrv8ws9NYHp+eUaDmsZqf7coNmE1ZbYtOu97Msk63Qq0Sl/ae/m
+        kQ36My6lHCkimtmcZPfe2+8SL1Gm6A8=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 37c3fc09 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 6 May 2022 21:55:01 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH 1/3] random: order timer entropy functions below interrupt functions
+Date:   Fri,  6 May 2022 23:54:52 +0200
+Message-Id: <20220506215454.1671-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-References: <20220504001823.2483834-1-nhuck@google.com> <20220504001823.2483834-7-nhuck@google.com>
- <YnS07JPEoeFlsRAQ@sol.localdomain>
-In-Reply-To: <YnS07JPEoeFlsRAQ@sol.localdomain>
-From:   Nathan Huckleberry <nhuck@google.com>
-Date:   Fri, 6 May 2022 16:22:46 -0500
-Message-ID: <CAJkfWY4U9C3nAhZH+3Gt-hit9=8SHaCt5vX9ocPjYeABGMr_Mg@mail.gmail.com>
-Subject: Re: [PATCH v6 6/9] crypto: arm64/aes-xctr: Improve readability of
- XCTR and CTR modes
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,104 +53,239 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, May 6, 2022 at 12:41 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Wed, May 04, 2022 at 12:18:20AM +0000, Nathan Huckleberry wrote:
-> > Added some clarifying comments, changed the register allocations to make
-> > the code clearer, and added register aliases.
-> >
-> > Signed-off-by: Nathan Huckleberry <nhuck@google.com>
->
-> I was a bit surprised to see this after the xctr support patch rather than
-> before.  Doing the cleanup first would make adding and reviewing the xctr
-> support easier.  But it's not a big deal; if you already tested it this way you
-> can just leave it as-is if you want.
->
-> A few minor comments below.
->
-> > +     /*
-> > +      * Set up the counter values in v0-v4.
-> > +      *
-> > +      * If we are encrypting less than MAX_STRIDE blocks, the tail block
-> > +      * handling code expects the last keystream block to be in v4.  For
-> > +      * example: if encrypting two blocks with MAX_STRIDE=5, then v3 and v4
-> > +      * should have the next two counter blocks.
-> > +      */
->
-> The first two mentions of v4 should actually be v{MAX_STRIDE-1}, as it is
-> actually v4 for MAX_STRIDE==5 and v3 for MAX_STRIDE==4.
->
-> > @@ -355,16 +383,16 @@ AES_FUNC_END(aes_cbc_cts_decrypt)
-> >       mov             v3.16b, vctr.16b
-> >  ST5( mov             v4.16b, vctr.16b                )
-> >       .if \xctr
-> > -             sub             x6, x11, #MAX_STRIDE - 1
-> > -             sub             x7, x11, #MAX_STRIDE - 2
-> > -             sub             x8, x11, #MAX_STRIDE - 3
-> > -             sub             x9, x11, #MAX_STRIDE - 4
-> > -ST5(         sub             x10, x11, #MAX_STRIDE - 5       )
-> > -             eor             x6, x6, x12
-> > -             eor             x7, x7, x12
-> > -             eor             x8, x8, x12
-> > -             eor             x9, x9, x12
-> > -             eor             x10, x10, x12
-> > +             sub             x6, CTR, #MAX_STRIDE - 1
-> > +             sub             x7, CTR, #MAX_STRIDE - 2
-> > +             sub             x8, CTR, #MAX_STRIDE - 3
-> > +             sub             x9, CTR, #MAX_STRIDE - 4
-> > +ST5(         sub             x10, CTR, #MAX_STRIDE - 5       )
-> > +             eor             x6, x6, IV_PART
-> > +             eor             x7, x7, IV_PART
-> > +             eor             x8, x8, IV_PART
-> > +             eor             x9, x9, IV_PART
-> > +             eor             x10, x10, IV_PART
->
-> The eor into x10 should be enclosed by ST5(), since it's dead code otherwise.
->
-> > +     /*
-> > +      * If there are at least MAX_STRIDE blocks left, XOR the plaintext with
-> > +      * keystream and store.  Otherwise jump to tail handling.
-> > +      */
->
-> Technically this could be XOR-ing with either the plaintext or the ciphertext.
-> Maybe write "data" instead.
->
-> >  .Lctrtail1x\xctr:
-> > -     sub             x7, x6, #16
-> > -     csel            x6, x6, x7, eq
-> > -     add             x1, x1, x6
-> > -     add             x0, x0, x6
-> > -     ld1             {v5.16b}, [x1]
-> > -     ld1             {v6.16b}, [x0]
-> > +     /*
-> > +      * Handle <= 16 bytes of plaintext
-> > +      */
-> > +     sub             x8, x7, #16
-> > +     csel            x7, x7, x8, eq
-> > +     add             IN, IN, x7
-> > +     add             OUT, OUT, x7
-> > +     ld1             {v5.16b}, [IN]
-> > +     ld1             {v6.16b}, [OUT]
-> >  ST5( mov             v3.16b, v4.16b                  )
-> >       encrypt_block   v3, w3, x2, x8, w7
->
-> w3 and x2 should be ROUNDS_W and KEY, respectively.
->
-> This code also has the very unusual property that it reads and writes before the
-> buffers given.  Specifically, for bytes < 16, it access the 16 bytes beginning
-> at &in[bytes - 16] and &dst[bytes - 16].  Mentioning this explicitly would be
-> very helpful, particularly in the function comments for aes_ctr_encrypt() and
-> aes_xctr_encrypt(), and maybe in the C code, so that anyone calling these
-> functions has this in mind.
+There are no code changes here; this is just a reordering of functions,
+so that in subsequent commits, the timer entropy functions can call into
+the interrupt ones.
 
-If bytes < 16, then the C code uses a buffer of 16 bytes to avoid
-this. I'll add some comments explaining that because its not entirely
-clear what is happening in the C unless you've taken a deep dive into
-the asm.
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ drivers/char/random.c | 206 +++++++++++++++++++++---------------------
+ 1 file changed, 103 insertions(+), 103 deletions(-)
 
->
-> Anyway, with the above addressed feel free to add:
->
->         Reviewed-by: Eric Biggers <ebiggers@google.com>
->
-> - Eric
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 893b8f15fcfe..d15f2133e804 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -1011,109 +1011,6 @@ void add_device_randomness(const void *buf, size_t size)
+ }
+ EXPORT_SYMBOL(add_device_randomness);
+ 
+-/* There is one of these per entropy source */
+-struct timer_rand_state {
+-	unsigned long last_time;
+-	long last_delta, last_delta2;
+-};
+-
+-/*
+- * This function adds entropy to the entropy "pool" by using timing
+- * delays.  It uses the timer_rand_state structure to make an estimate
+- * of how many bits of entropy this call has added to the pool.
+- *
+- * The number "num" is also added to the pool - it should somehow describe
+- * the type of event which just happened.  This is currently 0-255 for
+- * keyboard scan codes, and 256 upwards for interrupts.
+- */
+-static void add_timer_randomness(struct timer_rand_state *state, unsigned int num)
+-{
+-	unsigned long entropy = random_get_entropy(), now = jiffies, flags;
+-	long delta, delta2, delta3;
+-
+-	spin_lock_irqsave(&input_pool.lock, flags);
+-	_mix_pool_bytes(&entropy, sizeof(entropy));
+-	_mix_pool_bytes(&num, sizeof(num));
+-	spin_unlock_irqrestore(&input_pool.lock, flags);
+-
+-	if (crng_ready())
+-		return;
+-
+-	/*
+-	 * Calculate number of bits of randomness we probably added.
+-	 * We take into account the first, second and third-order deltas
+-	 * in order to make our estimate.
+-	 */
+-	delta = now - READ_ONCE(state->last_time);
+-	WRITE_ONCE(state->last_time, now);
+-
+-	delta2 = delta - READ_ONCE(state->last_delta);
+-	WRITE_ONCE(state->last_delta, delta);
+-
+-	delta3 = delta2 - READ_ONCE(state->last_delta2);
+-	WRITE_ONCE(state->last_delta2, delta2);
+-
+-	if (delta < 0)
+-		delta = -delta;
+-	if (delta2 < 0)
+-		delta2 = -delta2;
+-	if (delta3 < 0)
+-		delta3 = -delta3;
+-	if (delta > delta2)
+-		delta = delta2;
+-	if (delta > delta3)
+-		delta = delta3;
+-
+-	/*
+-	 * delta is now minimum absolute delta.
+-	 * Round down by 1 bit on general principles,
+-	 * and limit entropy estimate to 12 bits.
+-	 */
+-	credit_init_bits(min_t(unsigned int, fls(delta >> 1), 11));
+-}
+-
+-void add_input_randomness(unsigned int type, unsigned int code,
+-			  unsigned int value)
+-{
+-	static unsigned char last_value;
+-	static struct timer_rand_state input_timer_state = { INITIAL_JIFFIES };
+-
+-	/* Ignore autorepeat and the like. */
+-	if (value == last_value)
+-		return;
+-
+-	last_value = value;
+-	add_timer_randomness(&input_timer_state,
+-			     (type << 4) ^ code ^ (code >> 4) ^ value);
+-}
+-EXPORT_SYMBOL_GPL(add_input_randomness);
+-
+-#ifdef CONFIG_BLOCK
+-void add_disk_randomness(struct gendisk *disk)
+-{
+-	if (!disk || !disk->random)
+-		return;
+-	/* First major is 1, so we get >= 0x200 here. */
+-	add_timer_randomness(disk->random, 0x100 + disk_devt(disk));
+-}
+-EXPORT_SYMBOL_GPL(add_disk_randomness);
+-
+-void rand_initialize_disk(struct gendisk *disk)
+-{
+-	struct timer_rand_state *state;
+-
+-	/*
+-	 * If kzalloc returns null, we just won't use that entropy
+-	 * source.
+-	 */
+-	state = kzalloc(sizeof(struct timer_rand_state), GFP_KERNEL);
+-	if (state) {
+-		state->last_time = INITIAL_JIFFIES;
+-		disk->random = state;
+-	}
+-}
+-#endif
+-
+ /*
+  * Interface for in-kernel drivers of true hardware RNGs.
+  * Those devices may produce endless random bits and will be throttled
+@@ -1310,6 +1207,109 @@ void add_interrupt_randomness(int irq)
+ }
+ EXPORT_SYMBOL_GPL(add_interrupt_randomness);
+ 
++/* There is one of these per entropy source */
++struct timer_rand_state {
++	unsigned long last_time;
++	long last_delta, last_delta2;
++};
++
++/*
++ * This function adds entropy to the entropy "pool" by using timing
++ * delays.  It uses the timer_rand_state structure to make an estimate
++ * of how many bits of entropy this call has added to the pool.
++ *
++ * The number "num" is also added to the pool - it should somehow describe
++ * the type of event which just happened.  This is currently 0-255 for
++ * keyboard scan codes, and 256 upwards for interrupts.
++ */
++static void add_timer_randomness(struct timer_rand_state *state, unsigned int num)
++{
++	unsigned long entropy = random_get_entropy(), now = jiffies, flags;
++	long delta, delta2, delta3;
++
++	spin_lock_irqsave(&input_pool.lock, flags);
++	_mix_pool_bytes(&entropy, sizeof(entropy));
++	_mix_pool_bytes(&num, sizeof(num));
++	spin_unlock_irqrestore(&input_pool.lock, flags);
++
++	if (crng_ready())
++		return;
++
++	/*
++	 * Calculate number of bits of randomness we probably added.
++	 * We take into account the first, second and third-order deltas
++	 * in order to make our estimate.
++	 */
++	delta = now - READ_ONCE(state->last_time);
++	WRITE_ONCE(state->last_time, now);
++
++	delta2 = delta - READ_ONCE(state->last_delta);
++	WRITE_ONCE(state->last_delta, delta);
++
++	delta3 = delta2 - READ_ONCE(state->last_delta2);
++	WRITE_ONCE(state->last_delta2, delta2);
++
++	if (delta < 0)
++		delta = -delta;
++	if (delta2 < 0)
++		delta2 = -delta2;
++	if (delta3 < 0)
++		delta3 = -delta3;
++	if (delta > delta2)
++		delta = delta2;
++	if (delta > delta3)
++		delta = delta3;
++
++	/*
++	 * delta is now minimum absolute delta.
++	 * Round down by 1 bit on general principles,
++	 * and limit entropy estimate to 12 bits.
++	 */
++	credit_init_bits(min_t(unsigned int, fls(delta >> 1), 11));
++}
++
++void add_input_randomness(unsigned int type, unsigned int code,
++			  unsigned int value)
++{
++	static unsigned char last_value;
++	static struct timer_rand_state input_timer_state = { INITIAL_JIFFIES };
++
++	/* Ignore autorepeat and the like. */
++	if (value == last_value)
++		return;
++
++	last_value = value;
++	add_timer_randomness(&input_timer_state,
++			     (type << 4) ^ code ^ (code >> 4) ^ value);
++}
++EXPORT_SYMBOL_GPL(add_input_randomness);
++
++#ifdef CONFIG_BLOCK
++void add_disk_randomness(struct gendisk *disk)
++{
++	if (!disk || !disk->random)
++		return;
++	/* First major is 1, so we get >= 0x200 here. */
++	add_timer_randomness(disk->random, 0x100 + disk_devt(disk));
++}
++EXPORT_SYMBOL_GPL(add_disk_randomness);
++
++void rand_initialize_disk(struct gendisk *disk)
++{
++	struct timer_rand_state *state;
++
++	/*
++	 * If kzalloc returns null, we just won't use that entropy
++	 * source.
++	 */
++	state = kzalloc(sizeof(struct timer_rand_state), GFP_KERNEL);
++	if (state) {
++		state->last_time = INITIAL_JIFFIES;
++		disk->random = state;
++	}
++}
++#endif
++
+ struct entropy_timer_state {
+ 	unsigned long entropy;
+ 	struct timer_list timer;
+-- 
+2.35.1
+
