@@ -2,136 +2,94 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9989F51D136
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 May 2022 08:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FC351D2B9
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 May 2022 09:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbiEFGaT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 May 2022 02:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51858 "EHLO
+        id S1389789AbiEFIC7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 May 2022 04:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbiEFGaR (ORCPT
+        with ESMTP id S1389792AbiEFIC6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 May 2022 02:30:17 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4FC5E171
-        for <linux-crypto@vger.kernel.org>; Thu,  5 May 2022 23:26:33 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1nmrPo-0005oH-Ma; Fri, 06 May 2022 08:26:13 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <afa@pengutronix.de>)
-        id 1nmrPi-000edh-C9; Fri, 06 May 2022 08:26:05 +0200
-Received: from afa by dude04.red.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <afa@pengutronix.de>)
-        id 1nmrPf-004Tw9-LV; Fri, 06 May 2022 08:26:03 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     kernel@pengutronix.de, Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Richard Weinberger <richard@nod.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Michael Walle <michael@walle.cc>,
-        Sumit Garg <sumit.garg@linaro.org>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH v9 7/7] MAINTAINERS: add KEYS-TRUSTED-CAAM
-Date:   Fri,  6 May 2022 08:25:53 +0200
-Message-Id: <20220506062553.1068296-8-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220506062553.1068296-1-a.fatoum@pengutronix.de>
-References: <20220506062553.1068296-1-a.fatoum@pengutronix.de>
+        Fri, 6 May 2022 04:02:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671D567D1D;
+        Fri,  6 May 2022 00:59:16 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1651823954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SPOE0gYWj9j1dUjvgP39Og9ua3b0mQKYArT3BeYIUVI=;
+        b=255WrnOczyR8EQwEk84iFJCj7oJ4quj5izYkLwsSq66vyRivpLwlq/pzCLKdSma1xzKEzh
+        LNdM83Cwb2R36TqLk3wXJygrGjsD9Dgs+XpP5gAXFp0gDfQLYp8if4ybJG89BIE1UzhfaY
+        XH3R8Rz0YYqdGVfivs86USKPOop6pSfFUQWEpVF/wGdAih70WGXSRLaEWsn68XKdReifig
+        UZp1vw0ODYvXvzx9BgK90PQ2XnWbcpf5n2EqOZZQD1kDcQc8AA9AAEr1Wb0DYYVrQZjZ0h
+        GDe+ZTOnoCi6DViTIX0SGN5dQhSsspMkMMEADk4lUutXu/21TeFf8URptclHZg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1651823954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SPOE0gYWj9j1dUjvgP39Og9ua3b0mQKYArT3BeYIUVI=;
+        b=pevZyCpSMuLeLpDdi23KVJ4rQtQaXyYYUTbDx6+vxW8a/19C9mM8QlRtryJ71e/4Bqt67m
+        2tO7cvcCscS9otDw==
+To:     kernel test robot <oliver.sang@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     0day robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Theodore Ts'o <tytso@mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        linux-crypto@vger.kernel.org, nathan@kernel.org,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [timekeeping]  3aeaac747d: PANIC:early_exception
+In-Reply-To: <20220506032023.GA23061@xsang-OptiPlex-9020>
+References: <20220506032023.GA23061@xsang-OptiPlex-9020>
+Date:   Fri, 06 May 2022 09:59:13 +0200
+Message-ID: <8735hnhz1q.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Create a maintainer entry for CAAM trusted keys in the Linux keyring.
+On Fri, May 06 2022 at 11:20, kernel test robot wrote:
+> PANIC: early exception 0x0d IP 10:ffffffff812cef11 error 0 cr2 0xffff888004a3aff8
+> [ 0.000000][ T0] add_device_randomness (kbuild/src/rand-3/drivers/char/random.c:1028) 
+> [ 0.000000][ T0] ? dmi_walk_early (kbuild/src/rand-3/drivers/firmware/dmi_scan.c:470) 
+> [ 0.000000][ T0] dmi_walk_early (kbuild/src/rand-3/drivers/firmware/dmi_scan.c:151) 
+> [ 0.000000][ T0] dmi_present (kbuild/src/rand-3/drivers/firmware/dmi_scan.c:605)
 
-Reviewed-by: Pankaj Gupta <pankaj.gupta@nxp.com>
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-v8 -> v9:
-  - rewrite commit message (Jarkko)
-v7 -> v8:
-  - add Pankaj's Reviewed-by
-v6 -> v7:
-  - split off as separate patch (Jarkko)
+Duh.
 
-To: Jarkko Sakkinen <jarkko@kernel.org>
-To: James Bottomley <jejb@linux.ibm.com>
-To: Mimi Zohar <zohar@linux.ibm.com>
-To: David Howells <dhowells@redhat.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: "Horia Geantă" <horia.geanta@nxp.com>
-Cc: Pankaj Gupta <pankaj.gupta@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Jan Luebbe <j.luebbe@pengutronix.de>
-Cc: David Gstir <david@sigma-star.at>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Franck LENORMAND <franck.lenormand@nxp.com>
-Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Michael Walle <michael@walle.cc>
-Cc: Sumit Garg <sumit.garg@linaro.org>
-Cc: keyrings@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-integrity@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+So this wants to be:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5e8c2f611766..e58e6fc3016d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10855,6 +10855,15 @@ S:	Supported
- F:	include/keys/trusted_tee.h
- F:	security/keys/trusted-keys/trusted_tee.c
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -2380,6 +2381,20 @@ static int timekeeping_validate_timex(co
+ 	return 0;
+ }
  
-+KEYS-TRUSTED-CAAM
-+M:	Ahmad Fatoum <a.fatoum@pengutronix.de>
-+R:	Pengutronix Kernel Team <kernel@pengutronix.de>
-+L:	linux-integrity@vger.kernel.org
-+L:	keyrings@vger.kernel.org
-+S:	Maintained
-+F:	include/keys/trusted_caam.h
-+F:	security/keys/trusted-keys/trusted_caam.c
++/**
++ * random_get_entropy_fallback - Returns the raw clock source value,
++ * used by random.c for platforms with no valid random_get_entropy().
++ */
++unsigned long random_get_entropy_fallback(void)
++{
++	struct tk_read_base *tkr = &tk_core.timekeeper.tkr_mono;
++	struct clocksource *clock = READ_ONCE(tkr->clock);
 +
- KEYS/KEYRINGS
- M:	David Howells <dhowells@redhat.com>
- M:	Jarkko Sakkinen <jarkko@kernel.org>
--- 
-2.30.2
-
++	if (!timekeeping_suspended && clock)
++		return clock->read(clock);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(random_get_entropy_fallback);
+ 
+ /**
+  * do_adjtimex() - Accessor function to NTP __do_adjtimex function
