@@ -2,98 +2,176 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B27151E0A2
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 May 2022 23:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF83451E101
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 May 2022 23:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444336AbiEFVJf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 May 2022 17:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
+        id S1444410AbiEFV0p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 May 2022 17:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444356AbiEFVJE (ORCPT
+        with ESMTP id S245548AbiEFV0o (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 May 2022 17:09:04 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28860B7A
-        for <linux-crypto@vger.kernel.org>; Fri,  6 May 2022 14:05:20 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x18so8581715plg.6
-        for <linux-crypto@vger.kernel.org>; Fri, 06 May 2022 14:05:20 -0700 (PDT)
+        Fri, 6 May 2022 17:26:44 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD6163385
+        for <linux-crypto@vger.kernel.org>; Fri,  6 May 2022 14:23:00 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id y32so14601090lfa.6
+        for <linux-crypto@vger.kernel.org>; Fri, 06 May 2022 14:23:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=VSSUIwdzgxQxnEkB7+u7pnweyPajIQMP3nQqWYs8VX0=;
-        b=Pikzf05RvlgsNiSN1x8VQddbQlHNU8w6b4F5093LpuzcM0ntMpgrUYdcKzhnhHB48+
-         nxofPjncbzlNuBNgooKcMle2Y5ylBJZ6O8MOl6jmb+4GXhkX7JY7QlgBzU7KDKtY2S+t
-         hdYkJvFaRkTyMTuFzz2JqLAY96/AXzO6tgScVG1YJD9G5UO3G+tZ8nGL14yI0+9uPzhC
-         wx/zFVXeSa1h7d0nK/9Qv4fLpnyxu41DB2or0mzOQHpWd2RcmeWfuVLsEUjsRWphAt0g
-         4hy8H6gBdpRcYFXBRhobSZg5COn6SmVmFJv6lpApXA5BMZTju/Hca9z5AiK8OWFQZRyE
-         91pg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qxpYk/i1uMx/9W+J+m0qdABTnqS48FNlgI8p4QJG9kg=;
+        b=krrUKq7r9Ve/PfbbgWMQe08vgB7gzJafF4FAvb8xdfkMWPV87Dm7kmN/XGQTHHnaCE
+         02aP+pLoB/UW9KxGP9N8mg6lodgHOBnkJ6Dkrjp6hqrGu3cRShXzqTVGYEM1WfrpkRVD
+         AMdev99Vk9jW+HwRlkU+J9+77s3iaJNkrtDZnbR+5HUF5A8ZLF5WV9FPWV4RmmgeAFPA
+         228SnlwQBDRP4gEeYWoPwIxSptMj9ZWPCnrA96CCc97SKQWg72d4lC1m095yVo8Jdk3h
+         n4XtRJC0euV2An3UWY8MTXMQAHC44kkhW1rUXmoNCtOuT/heAtJJRJ0oZHOiBL8yKnoe
+         dlXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=VSSUIwdzgxQxnEkB7+u7pnweyPajIQMP3nQqWYs8VX0=;
-        b=GixAmutGRLz7bDmBXQl6OKQ0XVlo1eOXU6GTjZfIrXT8yXDUGaJ54iFkB5mlmPDJgs
-         p2ksr6j/Lhog6zaFjKRRF0lpbvGQb6DYk08qBRT83pl/C2YbV1wktJj1XGu6BVFdVWb5
-         xD4+X+FIw/C+GpFo5Tbp4ZnTk5/kYx7D2n1i4D4C+rywKwCB0bFBssksh7wrQePXjWBR
-         HnlxRo5bCQsWVvm/zRznRZYFsKPy2I3srbmgpqla23d4XWomy3SjyYWw8S2Y3fQRCclq
-         K+Y6PwSACtvZFWNIuSPio7F8++vRJRxCZ5welhN8veSOMEKL5e0Hm/Ky43dCljq4wx6/
-         2Bzg==
-X-Gm-Message-State: AOAM533KEnswp/IeTRaEPNAVjKHExCMccK5YDCwwQlnc/ppubF1Us8JJ
-        UOlaHkFjo2/nPiWDLaV5Pa8cG7OEOkZE9P8ijw==
-X-Google-Smtp-Source: ABdhPJx7z4moOE2gpr/KlS+3C9TQAnAO3wCwszoE5VU4KaQgpBr5SM/EngTmKFwvPUIFIAmNZ9KZadvdCoWslU4jbxM=
-X-Received: by 2002:a17:90a:b106:b0:1d9:7cde:7914 with SMTP id
- z6-20020a17090ab10600b001d97cde7914mr6294782pjq.56.1651871119761; Fri, 06 May
- 2022 14:05:19 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qxpYk/i1uMx/9W+J+m0qdABTnqS48FNlgI8p4QJG9kg=;
+        b=NZG0N4JPDplE7KfPhcXgcTReAqonLL0R5Wz4WoglALBtTfnoVMu6j9G0C5j1FasV3w
+         /XEJO0NvO7heV3O32IH1FVWJ4Eu9dT9oltvEvCsW18UANB6AORr/6K/nuDIRQPZSfTzY
+         oH3BMdk3XWTKa5lNn97fWYg3x+OT0583tgqKdRBfazvPGmL0Y+df9punpCxwt3dpli9X
+         L/D6niHUHr6LEqbiWI5e70zG51/xQ9tJzN1yoNRar9FXiF2MYxffv9/403ndqw85EU3y
+         HwJHkcvhIda28wBBbHGUeh67mku3B9r/GMsV6k8PZENlmQkfOg+twovhWGPL1JX8hkGq
+         Jl9g==
+X-Gm-Message-State: AOAM53317AeYaHIqPs6t2gSmqVSxgp527NbjY3ZfiDXJO2rVZ0sjzabn
+        2+dvsuG9yXwNgWebp1P3tit6aFGpi2vLJ5+QTnhPog==
+X-Google-Smtp-Source: ABdhPJwtWl922lDNxtpgcPRbGCEUkm78yi8gsQd7xUwx2Ap9G/Q4F/o+IH1eKspy4pPQBMYDUeGtCUHBahsYZet3EtY=
+X-Received: by 2002:a05:6512:1051:b0:473:b70c:941a with SMTP id
+ c17-20020a056512105100b00473b70c941amr3894879lfb.238.1651872178383; Fri, 06
+ May 2022 14:22:58 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac4:9906:0:b0:4ba:807b:b8f3 with HTTP; Fri, 6 May 2022
- 14:05:18 -0700 (PDT)
-Reply-To: warren001buffett@gmail.com
-In-Reply-To: <CAD_xG_pvNZK6BFCW+28Xv4DE=_5rbDZXDok2BYNn9xw6Ma7iow@mail.gmail.com>
-References: <CAD_xG_pvNZK6BFCW+28Xv4DE=_5rbDZXDok2BYNn9xw6Ma7iow@mail.gmail.com>
-From:   Warren Buffett <guidayema@gmail.com>
-Date:   Fri, 6 May 2022 21:05:18 +0000
-Message-ID: <CAD_xG_pXizBD6pW=-K0ttmT_EZuS+8BZv7pSZcaHdzR-qQhVZA@mail.gmail.com>
-Subject: Fwd: My name is Warren Buffett, an American businessman.
-To:     undisclosed-recipients:;
+References: <20220504001823.2483834-1-nhuck@google.com> <20220504001823.2483834-7-nhuck@google.com>
+ <YnS07JPEoeFlsRAQ@sol.localdomain>
+In-Reply-To: <YnS07JPEoeFlsRAQ@sol.localdomain>
+From:   Nathan Huckleberry <nhuck@google.com>
+Date:   Fri, 6 May 2022 16:22:46 -0500
+Message-ID: <CAJkfWY4U9C3nAhZH+3Gt-hit9=8SHaCt5vX9ocPjYeABGMr_Mg@mail.gmail.com>
+Subject: Re: [PATCH v6 6/9] crypto: arm64/aes-xctr: Improve readability of
+ XCTR and CTR modes
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:642 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4985]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [guidayema[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-My name is Warren Buffett, an American businessman and investor I have
-something important to discuss with you.
+On Fri, May 6, 2022 at 12:41 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, May 04, 2022 at 12:18:20AM +0000, Nathan Huckleberry wrote:
+> > Added some clarifying comments, changed the register allocations to make
+> > the code clearer, and added register aliases.
+> >
+> > Signed-off-by: Nathan Huckleberry <nhuck@google.com>
+>
+> I was a bit surprised to see this after the xctr support patch rather than
+> before.  Doing the cleanup first would make adding and reviewing the xctr
+> support easier.  But it's not a big deal; if you already tested it this way you
+> can just leave it as-is if you want.
+>
+> A few minor comments below.
+>
+> > +     /*
+> > +      * Set up the counter values in v0-v4.
+> > +      *
+> > +      * If we are encrypting less than MAX_STRIDE blocks, the tail block
+> > +      * handling code expects the last keystream block to be in v4.  For
+> > +      * example: if encrypting two blocks with MAX_STRIDE=5, then v3 and v4
+> > +      * should have the next two counter blocks.
+> > +      */
+>
+> The first two mentions of v4 should actually be v{MAX_STRIDE-1}, as it is
+> actually v4 for MAX_STRIDE==5 and v3 for MAX_STRIDE==4.
+>
+> > @@ -355,16 +383,16 @@ AES_FUNC_END(aes_cbc_cts_decrypt)
+> >       mov             v3.16b, vctr.16b
+> >  ST5( mov             v4.16b, vctr.16b                )
+> >       .if \xctr
+> > -             sub             x6, x11, #MAX_STRIDE - 1
+> > -             sub             x7, x11, #MAX_STRIDE - 2
+> > -             sub             x8, x11, #MAX_STRIDE - 3
+> > -             sub             x9, x11, #MAX_STRIDE - 4
+> > -ST5(         sub             x10, x11, #MAX_STRIDE - 5       )
+> > -             eor             x6, x6, x12
+> > -             eor             x7, x7, x12
+> > -             eor             x8, x8, x12
+> > -             eor             x9, x9, x12
+> > -             eor             x10, x10, x12
+> > +             sub             x6, CTR, #MAX_STRIDE - 1
+> > +             sub             x7, CTR, #MAX_STRIDE - 2
+> > +             sub             x8, CTR, #MAX_STRIDE - 3
+> > +             sub             x9, CTR, #MAX_STRIDE - 4
+> > +ST5(         sub             x10, CTR, #MAX_STRIDE - 5       )
+> > +             eor             x6, x6, IV_PART
+> > +             eor             x7, x7, IV_PART
+> > +             eor             x8, x8, IV_PART
+> > +             eor             x9, x9, IV_PART
+> > +             eor             x10, x10, IV_PART
+>
+> The eor into x10 should be enclosed by ST5(), since it's dead code otherwise.
+>
+> > +     /*
+> > +      * If there are at least MAX_STRIDE blocks left, XOR the plaintext with
+> > +      * keystream and store.  Otherwise jump to tail handling.
+> > +      */
+>
+> Technically this could be XOR-ing with either the plaintext or the ciphertext.
+> Maybe write "data" instead.
+>
+> >  .Lctrtail1x\xctr:
+> > -     sub             x7, x6, #16
+> > -     csel            x6, x6, x7, eq
+> > -     add             x1, x1, x6
+> > -     add             x0, x0, x6
+> > -     ld1             {v5.16b}, [x1]
+> > -     ld1             {v6.16b}, [x0]
+> > +     /*
+> > +      * Handle <= 16 bytes of plaintext
+> > +      */
+> > +     sub             x8, x7, #16
+> > +     csel            x7, x7, x8, eq
+> > +     add             IN, IN, x7
+> > +     add             OUT, OUT, x7
+> > +     ld1             {v5.16b}, [IN]
+> > +     ld1             {v6.16b}, [OUT]
+> >  ST5( mov             v3.16b, v4.16b                  )
+> >       encrypt_block   v3, w3, x2, x8, w7
+>
+> w3 and x2 should be ROUNDS_W and KEY, respectively.
+>
+> This code also has the very unusual property that it reads and writes before the
+> buffers given.  Specifically, for bytes < 16, it access the 16 bytes beginning
+> at &in[bytes - 16] and &dst[bytes - 16].  Mentioning this explicitly would be
+> very helpful, particularly in the function comments for aes_ctr_encrypt() and
+> aes_xctr_encrypt(), and maybe in the C code, so that anyone calling these
+> functions has this in mind.
 
-Mr. Warren Buffett
-warren001buffett@gmail.com
-Chief Executive Officer: Berkshire Hathaway
-aphy/Warren-Edward-Buffett
+If bytes < 16, then the C code uses a buffer of 16 bytes to avoid
+this. I'll add some comments explaining that because its not entirely
+clear what is happening in the C unless you've taken a deep dive into
+the asm.
+
+>
+> Anyway, with the above addressed feel free to add:
+>
+>         Reviewed-by: Eric Biggers <ebiggers@google.com>
+>
+> - Eric
