@@ -2,99 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F9551E8B0
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 May 2022 18:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4024151E948
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 May 2022 20:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238286AbiEGRDH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 7 May 2022 13:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
+        id S1352775AbiEGS4D (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 7 May 2022 14:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232817AbiEGRDG (ORCPT
+        with ESMTP id S241402AbiEGS4B (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 7 May 2022 13:03:06 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BC811A1A
-        for <linux-crypto@vger.kernel.org>; Sat,  7 May 2022 09:59:18 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x18so10210585plg.6
-        for <linux-crypto@vger.kernel.org>; Sat, 07 May 2022 09:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=5vqN6t3JU5DyBeppSoCvHcP38qUC2msIwHIXAHopaME=;
-        b=KvwV2pTznpc+1piYUIgfAw8ZVyAnxYol9UJLgS7YrO938Fm/NZ8dBAetMKb5Y7V91e
-         D9fAiRL3wSczqIr3vByPCpZOlK1BT5PVGJAZUXHanPm3DPFZSsS6U+E6b3lVSAf/2ETF
-         F4ETP6DGiPIr5TRvysB9VHVd6K5SxxPVhKAZCMRIQZGEtW8OnihCrRfX7xfel2hkNcKm
-         oz0mf7eG9WVzwr28vB5qkHxoYWYB2tvJAvudzU1U+TuENxgfqtyC/y1OgjzYT4u0cAcd
-         8v1Hewtz5oF0fw6Ru3VjfYdsGe1RGORWbPSdP3P41W7PuP8+n724IESbpIyViM/8cxIf
-         zTwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=5vqN6t3JU5DyBeppSoCvHcP38qUC2msIwHIXAHopaME=;
-        b=DasN7f43Mr9Qt2WlgmJN0J6K073JsalMC/psfgucRWrn99kwvCG/Jk/N7Iscbvs5HP
-         k53n/ZU6VT8jtQVS2DFfUCgKWJlQcluX3u3+aQ37L2R/J5WpPDWpRo9boEzkt1dWeh01
-         61uPfBoS6L+Kbadc7510AjAI6vwRg33fuvJUIEMMWK7eAPU2dSPcvVTwK5tCHHs+ed1N
-         DhNeYgWseVJlITZxZD5dKvW+kEGD08knv4opB0NTCwdj4N7XrzaRs/v/qRw44ReXGDTE
-         C/TcsFz1oFRorgBadUkq3e0ZCqO/pdxw+W73WDc/k1YfCUl03PvEL/XvqNzdmxi+3kyf
-         57Yw==
-X-Gm-Message-State: AOAM532X2dKgg6aofemJhYmiuGdhSlTFIyc7ZpZvyu59wLtIKHKaYGpR
-        ztNbexwbqDRAM504e5zn/lrFyYK+u+xoXETx0Wg=
-X-Google-Smtp-Source: ABdhPJxqyk8zzFVAs8pUkb7hL5rBFCoNSKuHqF5RfwLJoufcODgfpjCf6rdeFrCvRQtditjZjbgFMibL7BlwlQlQPo0=
-X-Received: by 2002:a17:902:f542:b0:15e:b6d2:88d9 with SMTP id
- h2-20020a170902f54200b0015eb6d288d9mr8738800plf.128.1651942758133; Sat, 07
- May 2022 09:59:18 -0700 (PDT)
+        Sat, 7 May 2022 14:56:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58B46353;
+        Sat,  7 May 2022 11:52:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4A4B7B80BA3;
+        Sat,  7 May 2022 18:52:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C7B7C385A6;
+        Sat,  7 May 2022 18:52:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651949530;
+        bh=9z+0Uhzj5HvNSbWx5E2/P4ju5NxGmTVepjaKhY7U7aY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hF3XHaR4bzcqjVTTDMGuwcsYwob+vCce124Wf0CpxQ9hf4H+qDXwA0bNai6fo+Nys
+         SnyCvvIF0E5quKbHYFTBQpmzhh4FJcgHqMQn5m3BINdR7wofX/nk80XIlpGKEbVRsm
+         B04vQpYiXuNJuDrE2nUUDopaeAFCQQPBcXKBB5tcwuVS9qyzZwYMprI/8aPHvuiZ/M
+         3CdM5LYsmH3eQKfP/ghop8NOlv1Ajt3CM8/Rl4BZMYaTdgLE7o51PJ5xL/79FjFJVN
+         x/XBjn0Al0JyjnHX6eVGzp/Elrmmph243QssvChVAzh8lcR6wm+tQ6A9l+KuGcVZz9
+         qEgem64Y6kH9g==
+Date:   Sat, 7 May 2022 11:52:08 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, vdronov@redhat.com, stable@vger.kernel.org,
+        Adam Guerin <adam.guerin@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>
+Subject: Re: [PATCH 07/12] crypto: qat - set to zero DH parameters before free
+Message-ID: <Yna/2Iwdr8zcwi+q@sol.localdomain>
+References: <20220506082327.21605-1-giovanni.cabiddu@intel.com>
+ <20220506082327.21605-8-giovanni.cabiddu@intel.com>
+ <YnTpJkTXwmYyE9lQ@kroah.com>
+ <YnTx7fs30scrrjmQ@silpixa00400314>
+ <YnUzsAQd682pJjMt@kroah.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:ae98:0:0:0:0 with HTTP; Sat, 7 May 2022 09:59:17
- -0700 (PDT)
-Reply-To: rkeenj7@gmail.com
-From:   "Keen J. Richardson" <richardsonkeenj@gmail.com>
-Date:   Sat, 7 May 2022 16:59:17 +0000
-Message-ID: <CAO5iNP53+gugaAn34QtyewjMSS1dgtS9hr=fu+8BMKmjcE5Fjg@mail.gmail.com>
-Subject: GOOD DAY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:644 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4838]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [rkeenj7[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [richardsonkeenj[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YnUzsAQd682pJjMt@kroah.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-A mail was sent to you sometime last week with the expectation of
-having a return mail from you but to my surprise you never bothered to
-reply. Kindly reply for further explanations.
+On Fri, May 06, 2022 at 04:41:52PM +0200, Greg KH wrote:
+> On Fri, May 06, 2022 at 11:01:17AM +0100, Giovanni Cabiddu wrote:
+> > On Fri, May 06, 2022 at 11:23:50AM +0200, Greg KH wrote:
+> > > On Fri, May 06, 2022 at 09:23:22AM +0100, Giovanni Cabiddu wrote:
+> > > > Set to zero the DH context buffers containing the DH key before they are
+> > > > freed.
+> > > 
+> > > That says what, but not why.
+> > > 
+> > > > Cc: stable@vger.kernel.org
+> > > > Fixes: c9839143ebbf ("crypto: qat - Add DH support")
+> > > > Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+> > > > Reviewed-by: Adam Guerin <adam.guerin@intel.com>
+> > > > Reviewed-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
+> > > > ---
+> > > >  drivers/crypto/qat/qat_common/qat_asym_algs.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/crypto/qat/qat_common/qat_asym_algs.c b/drivers/crypto/qat/qat_common/qat_asym_algs.c
+> > > > index d75eb77c9fb9..2fec89b8a188 100644
+> > > > --- a/drivers/crypto/qat/qat_common/qat_asym_algs.c
+> > > > +++ b/drivers/crypto/qat/qat_common/qat_asym_algs.c
+> > > > @@ -421,14 +421,17 @@ static int qat_dh_set_params(struct qat_dh_ctx *ctx, struct dh *params)
+> > > >  static void qat_dh_clear_ctx(struct device *dev, struct qat_dh_ctx *ctx)
+> > > >  {
+> > > >  	if (ctx->g) {
+> > > > +		memzero_explicit(ctx->g, ctx->p_size);
+> > > >  		dma_free_coherent(dev, ctx->p_size, ctx->g, ctx->dma_g);
+> > > 
+> > > Why is a memset() not sufficient here?
+> > Based on the previous conversation a memset() should be sufficient.
+> > 
+> > > And what is this solving?  Who would get this stale data?
+> > This is to make sure the buffer containing sensitive data (i.e. a key)
+> > is not leaked out by a subsequent allocation.
+> 
+> But as all sane distros have CONFIG_INIT_ON_ALLOC_DEFAULT_ON enabled,
+> right?  That should handle any worries you have with secrets being on
+> the heap.  But even then, are you trying to protect yourself against
+> other kernel modules?  Think this through...
+> 
 
-Respectfully yours,
-keen J. Richardson
+This patch looks fine to me; it's always recommended to zero out crypto keys at
+the end of their lifetime so that they can't be recovered from free memory if
+system memory is compromised before the memory happens to be allocated and
+overwritten again.  See the hundreds of existing callers of kfree_sensitive(),
+which exist for exactly this reason.
+
+Note that preventing the key from being "leaked out by a subsequent allocation"
+is *not* the point, and thus CONFIG_INIT_ON_ALLOC_DEFAULT_ON is irrelevant.
+
+- Eric
