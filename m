@@ -2,146 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6078B522A73
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 May 2022 05:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA17B522B1A
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 May 2022 06:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbiEKDbv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 May 2022 23:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
+        id S237163AbiEKEjY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 May 2022 00:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241887AbiEKDbt (ORCPT
+        with ESMTP id S235150AbiEKEjO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 May 2022 23:31:49 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FC25F276
-        for <linux-crypto@vger.kernel.org>; Tue, 10 May 2022 20:31:47 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id qe3-20020a17090b4f8300b001dc24e4da73so2894313pjb.1
-        for <linux-crypto@vger.kernel.org>; Tue, 10 May 2022 20:31:47 -0700 (PDT)
+        Wed, 11 May 2022 00:39:14 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6196914B675
+        for <linux-crypto@vger.kernel.org>; Tue, 10 May 2022 21:39:12 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id j14so755639plx.3
+        for <linux-crypto@vger.kernel.org>; Tue, 10 May 2022 21:39:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=0Cuz/4c60eAy74LVoGu/qfMMHC1/J7T3iJogMolLBpY=;
-        b=V4ZE0XDxk26uwPSQS8dJPeFtf5cIpGdQnSJhziEOEYbidw5ZiU1L5yPsD1GPsa+HOz
-         tQTsF4MIFhOYiUuXT6VrVPnZ/YDdwSKEj8Jxz2hjTZe+Q2WitMTb3TRmYchmTZwsrBht
-         NO0blCP5OEyyYsvgJLxXOBrITmTOtMAt6Dsao/WkJUbNf4QEhGMIzV4Pqdm/VE7dkKu/
-         vMz0QnLSUIMnzs/ikouWcRwlLJg01nwuGrXJ2zLlfoBsoRmN9/jwbojf7rQsr/AmvB+e
-         U5mc9rqZahHXdbY5SeXRJI5hTe3QpmaAdq4cCycFRusJxZ6FOmKGdTWhQ2UteZOsc7DZ
-         LLJA==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
+        b=nrkBIDyCffFbQz5WNhQU88q5l+bx8m1CoLNL/nRcxBFZRgp3B2RwRJzpJi69hjmFPQ
+         Eotn36CVTQor8sTwq84btYhQQ+OsypTpYdHIfGkC/Ekjg8a9U0HkQq0T/gbcQg5/if4Y
+         i1yzcJYhTRMm8ny1NIiOYUNRazrfloxlCC/1XVxW2+TG0ItQpx2/G3cXjgMuOALgO1Rc
+         auxKHXwS3ghK6vFFIfR8essc70JXfRi2oIpi3YT/VLqISCMTaVWCOI/Xf0rWfpfTmlnw
+         XgqCFC8jOuHD5AjsEtox3h0b9tzcHlVM0fA1RrJyDFubK9aS707t1BYf/K43qSc4slo4
+         wrQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0Cuz/4c60eAy74LVoGu/qfMMHC1/J7T3iJogMolLBpY=;
-        b=37dkozP7SGNn+Rwcht8BoR6C6A7wltO/Vf/IrcqLFvlEgRMuMYgnEoSvc1swFxzGsq
-         ZAu8bX8Ww8UBL9gBtCEmbSZDksr7gfFcn2ILCGTE7lEkPo1WUmwAhEjwbIRDaHPvPq3J
-         We/7BO2jxpbtDN4vGPNYbuq9Mtmn59WNb0Te9+GGUAOnLf8skp3HOAwYqRkwzXJe1u1H
-         ZI+om6XCP2DUNxiIvU8gANytd0axk5blmyh6bsqsE+hHf7P5qfBWcV1LtY5gX0wlnr02
-         XyKndaY+kKFFopopJimbASAMx+HS+jyrIW3SyI7PQQSVC5dosTQnowKoZT9Fa45wS9Ct
-         iyog==
-X-Gm-Message-State: AOAM533HDYglAoCA+byvoNpDxjtigevCHD0msQaHxmuvGEakhjTgdwUy
-        G2rkQRTuEjwdJyqQqI31PM+vTg==
-X-Google-Smtp-Source: ABdhPJxY0SlCXZqyVxerhzEeDAaBhp6GhEa2eaFw/HdrskiYy68wUGSjbKGUmrMT8YnswcQAMiPSSg==
-X-Received: by 2002:a17:90b:194f:b0:1dd:a47:3db5 with SMTP id nk15-20020a17090b194f00b001dd0a473db5mr3157292pjb.74.1652239907513;
-        Tue, 10 May 2022 20:31:47 -0700 (PDT)
-Received: from [10.255.89.252] ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id q6-20020a056a0002a600b0050dc76281f0sm307226pfs.202.2022.05.10.20.31.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 May 2022 20:31:46 -0700 (PDT)
-Message-ID: <55fc700a-9cdb-a4ed-c155-5b03a328eb6c@bytedance.com>
-Date:   Wed, 11 May 2022 11:27:52 +0800
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
+        b=si5SF+BqsfqV+sMP4ZiGqt7EW0UgfPbBFILCdr7eZLDHDBOvzVbZ+c9iemD3PiJoIS
+         RJ8WElCGhq8Fbz0kSF4a5dkr6/mDKy6+AM38ttyYp9BbwBKbBEI+QBImU1e6x7G1zPm3
+         LygtmPC+x7mYuvsIwQHIZNtFaaJyR1DLJUj+lKupFVGLZflue61/VfwiNwJoznfib3L5
+         0lcvIeaMKRZxbsGnNWks5lnE+u6igy6leSfXSzRZLx6dSEl+2J2jh7BTJTwbwlBC6Zyi
+         Unn2VyGCRZFcV19OnA9m88YFfZOCHdojBy3Mleb5iIP6rG/RQcZGx9xf+RZ90NlWQYN/
+         okAA==
+X-Gm-Message-State: AOAM532agtuGcicYZeiWetshFUwDjaVAf2VSYLxzm1lp43N95tLz/s5C
+        MUcNMdDgMd+mTu9OxQPVZ/Q7cl7hSZa1tRi3pvY=
+X-Google-Smtp-Source: ABdhPJwbKHmbnZDflMHBZCcp2YbZAAZvFdPcM4owWeuPIkoxodmwIZJ+Xpgi08ylB1RFXLrw63SQRxJzumbwJKMTxhs=
+X-Received: by 2002:a17:90b:1007:b0:1dc:9862:68af with SMTP id
+ gm7-20020a17090b100700b001dc986268afmr3261389pjb.205.1652243951499; Tue, 10
+ May 2022 21:39:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: PING: [PATCH v6 0/5] virtio-crypto: Improve performance
-Content-Language: en-US
-To:     mst@redhat.com
-Cc:     jasowang@redhat.com, arei.gonglei@huawei.com,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-crypto@vger.kernel.org, helei.sig11@bytedance.com,
-        davem@davemloft.net
-References: <20220506131627.180784-1-pizhenwei@bytedance.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-In-Reply-To: <20220506131627.180784-1-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6a10:319:0:0:0:0 with HTTP; Tue, 10 May 2022 21:39:10
+ -0700 (PDT)
+From:   Private Mail <privatemail1961@gmail.com>
+Date:   Tue, 10 May 2022 21:39:10 -0700
+Message-ID: <CANjAOAiiVcSrSv31FjThCVmeppS54UVvGVj3SRSvMfxOB+T8DA@mail.gmail.com>
+Subject: Have you had this? It is for your Benefit
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.3 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
+        BAYES_50,DEAR_BENEFICIARY,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+        DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,
+        LOTS_OF_MONEY,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi, Michael
+Our Ref: BG/WA0151/2022
 
-I would appreciate it if you could review this series!
+Dear Beneficiary
 
-On 5/6/22 21:16, zhenwei pi wrote:
-> v5 -> v6:
->   - Minor fix for crypto_engine_alloc_init_and_set().
->   - All the patches have been reviewed by Gonglei, add this in patch.
->   Thanks to Gonglei.
-> 
-> v4 -> v5:
->   - Fix potentially dereferencing uninitialized variables in
->     'virtio-crypto: use private buffer for control request'.
->     Thanks to Dan Carpenter!
-> 
-> v3 -> v4:
->   - Don't create new file virtio_common.c, the new functions are added
->     into virtio_crypto_core.c
->   - Split the first patch into two parts:
->       1, change code style,
->       2, use private buffer instead of shared buffer
->   - Remove relevant change.
->   - Other minor changes.
-> 
-> v2 -> v3:
->   - Jason suggested that spliting the first patch into two part:
->       1, using private buffer
->       2, remove the busy polling
->     Rework as Jason's suggestion, this makes the smaller change in
->     each one and clear.
-> 
-> v1 -> v2:
->   - Use kfree instead of kfree_sensitive for insensitive buffer.
->   - Several coding style fix.
->   - Use memory from current node, instead of memory close to device
->   - Add more message in commit, also explain why removing per-device
->     request buffer.
->   - Add necessary comment in code to explain why using kzalloc to
->     allocate struct virtio_crypto_ctrl_request.
-> 
-> v1:
-> The main point of this series is to improve the performance for
-> virtio crypto:
-> - Use wait mechanism instead of busy polling for ctrl queue, this
->    reduces CPU and lock racing, it's possiable to create/destroy session
->    parallelly, QPS increases from ~40K/s to ~200K/s.
-> - Enable retry on crypto engine to improve performance for data queue,
->    this allows the larger depth instead of 1.
-> - Fix dst data length in akcipher service.
-> - Other style fix.
-> 
-> lei he (2):
->    virtio-crypto: adjust dst_len at ops callback
->    virtio-crypto: enable retry for virtio-crypto-dev
-> 
-> zhenwei pi (3):
->    virtio-crypto: change code style
->    virtio-crypto: use private buffer for control request
->    virtio-crypto: wait ctrl queue instead of busy polling
-> 
->   .../virtio/virtio_crypto_akcipher_algs.c      |  95 ++++++------
->   drivers/crypto/virtio/virtio_crypto_common.h  |  21 ++-
->   drivers/crypto/virtio/virtio_crypto_core.c    |  55 ++++++-
->   .../virtio/virtio_crypto_skcipher_algs.c      | 140 ++++++++----------
->   4 files changed, 182 insertions(+), 129 deletions(-)
-> 
+Subject: An Estate of US$15.8 Million
 
--- 
-zhenwei pi
+Blount and Griffin Genealogical Investigators specializes in probate
+research to locate missing heirs and beneficiaries to estates in the
+United Kingdom and Europe.
+
+We can also help you find wills, obtain copies of certificates, help
+you to administer an estate, as well as calculating how an estate,
+intestacy or trust should be distributed.
+
+You may be entitled to a large pay out for an inheritance in Europe
+worth US$15.8 million. We have discovered an estate belonging to the
+late Depositor has remained unclaimed since he died in 2011 and we
+have strong reasons to believe you are the closest living relative to
+the deceased we can find.
+
+You may unknowingly be the heir of this person who died without
+leaving a will (intestate). We will conduct a probate research to
+prove your entitlement, and can submit a claim on your behalf all at
+no risk to yourselves.
+
+Our service fee of 10% will be paid to us after you have received the estate.
+
+The estate transfer process should take just a matter of days as we
+have the mechanism and expertise to get this done very quickly. This
+message may come to you as a shock, however we hope to work with you
+to transfer the estate to you as quickly as possible.
+
+Feel free to email our senior case worker Mr. Malcolm Casey on email:
+malcolmcasey68@yahoo.com for further discussions.
+
+With warm regards,
+
+Mr. Blount W. Gort, CEO.
+Blount and Griffin Associates Inc
