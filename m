@@ -2,206 +2,132 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A557525073
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 May 2022 16:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4485251B9
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 May 2022 17:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237661AbiELOmv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 May 2022 10:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57422 "EHLO
+        id S1344555AbiELP7a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 May 2022 11:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347679AbiELOmu (ORCPT
+        with ESMTP id S1343533AbiELP73 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 May 2022 10:42:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF76912F1FB;
-        Thu, 12 May 2022 07:42:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84A8D61D97;
-        Thu, 12 May 2022 14:42:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E4ABC385B8;
-        Thu, 12 May 2022 14:42:46 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="YtIeksBU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1652366563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gWUocIy/tgF/SXusgcvVJW35oWk0cQUP/+N1/z9CBNw=;
-        b=YtIeksBUETN9uqiHC+WHAR2AUffWn7s3lspdhayfH/lURWcApGU7n+UWXoYQEGs3kZ4zoF
-        H4OwILjrOBkMhyABXI7OODln6F+0X71pGUT1IWTzO35rbEQ1SwMwTnpSk/00GslndzupZz
-        ThMgpe6pEf1h5PtHPvFBcNHO1vT6zks=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 3574667a (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Thu, 12 May 2022 14:42:43 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Sultan Alsawaf <sultan@kerneltoast.com>
-Subject: [PATCH v3] random: use static branch for crng_ready()
-Date:   Thu, 12 May 2022 16:42:35 +0200
-Message-Id: <20220512144235.2466-1-Jason@zx2c4.com>
-In-Reply-To: <20220512122244.2805-1-Jason@zx2c4.com>
-References: <20220512122244.2805-1-Jason@zx2c4.com>
+        Thu, 12 May 2022 11:59:29 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B54C9EF7
+        for <linux-crypto@vger.kernel.org>; Thu, 12 May 2022 08:59:28 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id p12so5241035pfn.0
+        for <linux-crypto@vger.kernel.org>; Thu, 12 May 2022 08:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=+GNQEVhDTg5gSuglbo+Hey8Sv7o9UNbWWWJQEXw3sck=;
+        b=DdBax10Os2JpGputLY23KxkqHJ2XoGTcplN2MM28Kb9s3KcRGsRETi2Xzll465IHZ0
+         IMnpuj3hXCQ97q0J41vB9oDV38SjmZn7SNsIK/NkXAzBXKy+Os+1MpHh6qqBWL3pFq18
+         YxSDOj1N8g+SNvvAgPIojPXcwLPCDOuSjpdyl+wVprFAWZxGFv4OrWHoYRqPdSYSnSPm
+         cy1RXQyZ3pA+B0uqkyLM2BxT1Tkr3yphldba7SiGEg8lQlR8MOIRcuPH3shTroNzEIjl
+         r5SCnFyXlPOwg0V1PQ/pVk5XFpahjLl5n859Wei6vl0T7GPvZInYFznkFpUvoCo5VHY2
+         avdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=+GNQEVhDTg5gSuglbo+Hey8Sv7o9UNbWWWJQEXw3sck=;
+        b=qSNghetfRPbjsg6ail2F7Cui0H88pn56T6uyeBhaD1eJbK+56HpgdS+cQwR8l9KlMY
+         8S8WJ6gBQwFkzOuf/xKn9eXgTd+WtCOP6Y88y2J1jRTelKakgxMbrA4Ei3/RQ0OGmf7b
+         hAVDDipc/gaUPQP9XKdcIQkexCLU4bcA5Kw1SWnr9G31sf5PtQezeDoo4UVZq0GWIRHG
+         0L6wvH4wlqLnh352M3nV4IyoEwxIQ8IxqP6PX254WJGdU1lZd3uLF/c2xNphRQJSQzOq
+         RgH4Sqql3SHm1+PNThXif3HF2kJ2os1hnE8QnG8uzHrd8NKcRII8iUbG5nOTqLolo8HC
+         iOAw==
+X-Gm-Message-State: AOAM530BFmR+YKp1+h2u3EJiPUrAGP16P2gbxxOhz2epCaUVq5ro9iJL
+        +65GBu06kZMZWOqI3+r3hy+083AN9kUyhqKt0rY=
+X-Google-Smtp-Source: ABdhPJwfPml6e3VUfpEKfiwnXag+QJNcXAtqBVfjcDuUiZ9xYGxgSYk6rInlopZ/EaRwjhqHJTr9uSCeEwULM+YD5SQ=
+X-Received: by 2002:aa7:83d0:0:b0:50c:eb2b:8e8a with SMTP id
+ j16-20020aa783d0000000b0050ceb2b8e8amr215928pfn.31.1652371167520; Thu, 12 May
+ 2022 08:59:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6a20:d2c7:b0:7f:757b:3407 with HTTP; Thu, 12 May 2022
+ 08:59:27 -0700 (PDT)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <huisterlui75@gmail.com>
+Date:   Thu, 12 May 2022 15:59:27 +0000
+Message-ID: <CAAcQqWhs4+jOg8_im=ocadhxqA7Vh4E0kXqEXp5jK6eieW6wSg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Since crng_ready() is only false briefly during initialization and then
-forever after becomes true, we don't need to evaluate it after, making
-it a prime candidate for a static branch.
+Pakun oma s=C3=B5prust ja usun, et v=C3=B5tate mind hea s=C3=BCdamega vastu=
+. Mul
+paluti teiega =C3=BChendust v=C3=B5tta ja uurida, kuidas saaksime =C3=BCkst=
+eist k=C3=B5ige
+paremini toetada. Olen pr Kodjovi Hegbor T=C3=BCrgist ja t=C3=B6=C3=B6tan e=
+ttev=C3=B5ttes
+StandardBNP bank limited Turkey operatsioonide osakonna juhina. Usun,
+et see on Jumala tahe, et ma kohtun teiega n=C3=BC=C3=BCd. Mul on oluline
+=C3=A4rivestlus, mida tahan teiega jagada ja millest ma usun, et olete
+huvitatud, kuna see on seotud teie perekonnanimega ja toob teile
+sellest kasu.
 
-One complication, however, is that it changes state in a particular call
-to credit_init_bits(), which might be made from atomic context, which
-means we must kick off a workqueue to change the static key.
+ 2006. aastal avas teie riigi kodanik minu pangas kalendri 36-kuulise
+mitteresidendi konto v=C3=A4=C3=A4rtusega 8 400 000 naela. Selle tagatisrah=
+a
+lepingu kehtivusaeg oli 16. jaanuar 2009. Kahjuks hukkus ta 12. mail
+2008 Hiinas Sichuanis surmaga l=C3=B5ppenud maav=C3=A4rinas, mis tappis
+=C3=A4rireisil viibides v=C3=A4hemalt 68 000 inimest.
 
-Further complicating things, credit_init_bits() may be called
-sufficiently early on in system initialization such that system_wq is
-NULL. In that case, we skip scheduling the work item from
-credit_init_bits(), but check to see if the rng is already initialized
-by the time it hits random_init(), in which case we assume that there
-was no crediting event between system_wq becoming non-NULL and
-random_init() being called, so we schedule the work then.
+Minu panga juhtkond pole tema surmast veel kuulnud, teadsin sellest,
+sest ta oli minu s=C3=B5ber ja mina tema kontohaldur, kui konto avati enne
+minu edutamist. Siiski, h=C3=A4rra
+ ei maininud konto avamisel l=C3=A4hisugulasi/p=C3=A4rijaid ning ta ei olnu=
+d
+abielus ega tal polnud lapsi. Eelmisel n=C3=A4dalal palus mu panga juhtkond
+mul anda juhiseid, mida teha tema rahadega, kui lepingut kavatsetakse
+pikendada.
 
-We make that assumption because this is still being called in an early
-boot environement in which IRQs are disabled. To understand more
-clearly, the two flows are as follows.
+Ma tean, et see juhtub ja seep=C3=A4rast olen otsinud vahendeid olukorra
+lahendamiseks, sest kui mu pangadirektorid teavad, et nad on surnud ja
+neil pole p=C3=A4rijat, v=C3=B5tavad nad raha isiklikuks tarbeks, m=C3=B5ne=
+d aga ei
+tea. ei taha, et midagi sellist juhtuks. See oli siis, kui ma n=C3=A4gin
+teie perekonnanime, olin =C3=B5nnelik ja otsin n=C3=BC=C3=BCd teie koost=C3=
+=B6=C3=B6d, et
+esitleda teid l=C3=A4hisugulasena/konto p=C3=A4rijana, kuna teil on temaga =
+sama
+perekonnanimi ja minu panga peakontor vabastab konto sina. Risk
+puudub; tehing tehakse seadusliku lepingu alusel, mis kaitseb teid
+=C3=B5igusrikkumiste eest.
 
-First possibility, in which credit_init_bits() is called relatively late
-in boot:
+Meil on parem raha v=C3=A4lja n=C3=B5uda, kui lubada pangajuhtidel see v=C3=
+=B5tta,
+nad on juba rikkad. Ma ei ole ahne inimene, seega soovitan jagada raha
+v=C3=B5rdselt, 50/50% m=C3=B5lema poole vahel. Minu osa aitab mul alustada =
+oma
+=C3=A4ri ja kasutada saadud tulu heategevuseks, mis oli minu unistus.
 
-  - workqueue_init_early()
-  - ...
-  - random_init()
-    * crng_ready()==false → do nothing
-  - ...
-  - credit_init_bits(256)
-    * system_wq!=NULL → schedule_work()
-
-Second possibility, in which credit_init_bits() is called by the super
-early EFI-handling code:
-
-  - credit_init_bits(256)
-    * system_wq==NULL → do nothing
-  - workqueue_init_early()
-  - rcu_init(), trace_init(), initcall_debug_enable(),
-    context_tracking_init(), early_irq_init(), init_IRQ(), tick_init(),
-    rcu_init_nohz(), init_timers(), srcu_init(), hrtimers_init(),
-    softirq_init(), timekeeping_init(), kfence_init(), time_init()
-    * We assume that none of these call credit_init_bits(). Since IRQs
-      are still off, we don't have to worry about other code preempting
-      these.
-  - random_init()
-    * crng_ready()==true → schedule_work()
-
-Finally, schedule_work() must be called outside of the base_crng.lock,
-because it can call into get_random_u32() itself, which will in some
-cases attempt to acquire that same lock. So we hoist it outside of the
-locked region, and ensure that the branches for that complexity get
-removed as well.
-
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Sultan Alsawaf <sultan@kerneltoast.com>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
-Dominik - this is somewhat reminiscent of the misery we went through
-with the NUMA node workqueue situation, which I was pretty happy about
-removing. Hopefully recent other simplifications make adding something
-similar back in not quite as bad, but if you've got the bandwidth, this
-could use another pair of eyes. -Jason
-
-Changes v2->v3:
-- Call schedule_work() outside of the lock.
-
-Changes v1->v2:
-- Use a workqueue instead of doing it on-demand.
-
- drivers/char/random.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 2f5460edba28..ecf017ac5c3d 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -79,7 +79,8 @@ static enum {
- 	CRNG_EARLY = 1, /* At least POOL_EARLY_BITS collected */
- 	CRNG_READY = 2  /* Fully initialized with POOL_READY_BITS collected */
- } crng_init = CRNG_EMPTY;
--#define crng_ready() (likely(crng_init >= CRNG_READY))
-+static DEFINE_STATIC_KEY_FALSE(crng_is_ready);
-+#define crng_ready() (static_branch_likely(&crng_is_ready) || crng_init >= CRNG_READY)
- /* Various types of waiters for crng_init->CRNG_READY transition. */
- static DECLARE_WAIT_QUEUE_HEAD(crng_init_wait);
- static struct fasync_struct *fasync;
-@@ -109,6 +110,12 @@ bool rng_is_initialized(void)
- }
- EXPORT_SYMBOL(rng_is_initialized);
- 
-+static void crng_set_ready(struct work_struct *work)
-+{
-+	static_branch_enable(&crng_is_ready);
-+}
-+static DECLARE_WORK(crng_set_ready_work, crng_set_ready);
-+
- /* Used by wait_for_random_bytes(), and considered an entropy collector, below. */
- static void try_to_generate_entropy(void);
- 
-@@ -252,6 +259,7 @@ static void crng_reseed(void)
- 	unsigned long flags;
- 	unsigned long next_gen;
- 	u8 key[CHACHA_KEY_SIZE];
-+	bool was_ready;
- 
- 	extract_entropy(key, sizeof(key));
- 
-@@ -268,9 +276,12 @@ static void crng_reseed(void)
- 		++next_gen;
- 	WRITE_ONCE(base_crng.generation, next_gen);
- 	WRITE_ONCE(base_crng.birth, jiffies);
-+	was_ready = crng_ready();
- 	crng_init = CRNG_READY;
- 	spin_unlock_irqrestore(&base_crng.lock, flags);
- 	memzero_explicit(key, sizeof(key));
-+	if (!static_branch_likely(&crng_is_ready) && !was_ready && system_wq)
-+		schedule_work(&crng_set_ready_work);
- }
- 
- /*
-@@ -948,9 +959,18 @@ int __init random_init(const char *command_line)
- 	_mix_pool_bytes(command_line, strlen(command_line));
- 	add_latent_entropy();
- 
--	if (crng_ready())
-+	if (crng_ready()) {
-+		/*
-+		 * If this function is called with the crng already
-+		 * initialized, then it means it was done so prior to
-+		 * system_wq being available, which means we should now
-+		 * schedule the work to change the static key from here.
-+		 */
-+		schedule_work(&crng_set_ready_work);
-+
-+		/* Immediately use the above architectural contributions. */
- 		crng_reseed();
--	else if (trust_cpu)
-+	} else if (trust_cpu)
- 		credit_init_bits(arch_init * 8);
- 
- 	WARN_ON(register_pm_notifier(&pm_notifier));
--- 
-2.35.1
-
+Palun andke mulle oma m=C3=B5tted minu ettepaneku kohta, ma vajan selle
+tehingu puhul teie abi. Ma olen valinud su mind aitama, mitte minu
+enda tegude t=C3=B5ttu, mu kallis, vaid Jumala poolt. Ma tahtsin, et sa
+teaksid, et v=C3=B5tsin aega selle s=C3=B5numi p=C3=A4rast palvetada, enne =
+kui v=C3=B5tsin
+sinuga =C3=BChendust, et jagada, avaldage mulle oma arvamust ja palun.
+k=C3=A4sitlege seda teavet T=C3=84IESTI SALAJASena. P=C3=A4rast teie vastus=
+e saamist
+ainult minu isikliku e-posti aadressi kaudu msbelinaya892@gmail.com
+annab teile tehingu =C3=BCksikasjad. Ja fondi deposiitsertifikaadi ja fondi
+loonud ettev=C3=B5tte asutamiskirja koopia.
+Jumal =C3=B5nnistagu teie kiiret vastust oodates
+Parimate soovidega
+Proua Kodjovi Hegbor
+msbelinaya892@gmail.com
