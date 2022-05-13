@@ -2,73 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0BF525CEF
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 May 2022 10:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C72525D06
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 May 2022 10:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357650AbiEMIKe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 13 May 2022 04:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        id S1354086AbiEMIHY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 13 May 2022 04:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378101AbiEMIKb (ORCPT
+        with ESMTP id S1378092AbiEMIHS (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 13 May 2022 04:10:31 -0400
-Received: from mail.coredeal.pl (mail.coredeal.pl [51.75.73.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8992A4A2A
-        for <linux-crypto@vger.kernel.org>; Fri, 13 May 2022 01:10:29 -0700 (PDT)
-Received: by mail.coredeal.pl (Postfix, from userid 1002)
-        id 61DFAA4E00; Fri, 13 May 2022 08:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=coredeal.pl; s=mail;
-        t=1652429240; bh=9KGuIG62LgzC9aYmjKxzocuYLRCVghXg6v9Q1q2LHec=;
-        h=Date:From:To:Subject:From;
-        b=Cm8qgh7qFnsblJS5yCWHkYN3t6D1dlEjA/tzpsuhd9/g5MU4zc/C7oel+HnhqTZTD
-         17BkS8XRpDGMV3JGe+9ki1ywOjOUNoVea3nVCDVTISZnVWGhhlA0marnyH3EGeQHqc
-         +zlzaO/kKAOiF26MHYdKukuinVl1af6oyKXZAZTKy6fzMIvCM//f1GfTSoTYCltCxX
-         gAJII9BUDcAqr0vpCKRCgpcDMOEZx25lYODl/5i0MbGCCRNV5dlHgSgO/WRmDGHon1
-         jNlwsWg1p1o+r8kNRiOO0oUMwX68VUIIwl5G9H75tzhfJ+R0lK7ehdYtWMehRlkBG/
-         KVQVhFELtYSkA==
-Received: by mail.coredeal.pl for <linux-crypto@vger.kernel.org>; Fri, 13 May 2022 08:05:55 GMT
-Message-ID: <20220513064500-0.1.33.o0kc.0.h1u0je4akg@coredeal.pl>
-Date:   Fri, 13 May 2022 08:05:55 GMT
-From:   "Krzysztof Maj" <krzysztof.maj@coredeal.pl>
-To:     <linux-crypto@vger.kernel.org>
-Subject: Biznesowy angielski
-X-Mailer: mail.coredeal.pl
+        Fri, 13 May 2022 04:07:18 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C762354FA5;
+        Fri, 13 May 2022 01:07:11 -0700 (PDT)
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4L01Rl29PBz1JBG0;
+        Fri, 13 May 2022 16:05:55 +0800 (CST)
+Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 13 May 2022 16:07:09 +0800
+Received: from [10.67.103.212] (10.67.103.212) by
+ dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 13 May 2022 16:07:09 +0800
+Subject: Re: [PATCH] crypto: hisilicon/sec - delele the flag
+ CRYPTO_ALG_ALLOCATES_MEMORY
+To:     <herbert@gondor.apana.org.au>
+References: <20220513075542.16227-1-yekai13@huawei.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>
+From:   "yekai(A)" <yekai13@huawei.com>
+Message-ID: <ce014c64-b25a-da31-1468-c673b3e27aad@huawei.com>
+Date:   Fri, 13 May 2022 16:07:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220513075542.16227-1-yekai13@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.212]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml100012.china.huawei.com (7.185.36.121)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
-
-czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
-swoich pracownik=C3=B3w?
-
-Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
-w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
-ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
-=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
-
-Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
-=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
-re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
-o=C5=BCliwo=C5=9Bci biznesowe.=20
-
-Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
- kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
-za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
-=2E
-
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
-w i opowiedzie=C4=87 jak dzia=C5=82amy?=20
 
 
-Pozdrawiam
-Krzysztof Maj
+On 2022/5/13 15:55, Kai Ye wrote:
+> Should not to uses the CRYPTO_ALG_ALLOCATES_MEMORY in SEC2. The SEC2
+> driver uses the pre-allocated buffers, including the src sgl pool, dst
+> sgl pool and other qp ctx resources. (e.g. IV buffer, mac buffer, key
+> buffer). The SEC2 driver doesn't allocate memory during request processing.
+> The driver only maps software sgl to allocated hardware sgl during I/O. So
+> here is fix it.
+>
+> Signed-off-by: Kai Ye <yekai13@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/sec2/sec_crypto.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> index a91635c348b5..6eebe739893c 100644
+> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> @@ -2113,7 +2113,6 @@ static int sec_skcipher_decrypt(struct skcipher_request *sk_req)
+>  		.cra_driver_name = "hisi_sec_"sec_cra_name,\
+>  		.cra_priority = SEC_PRIORITY,\
+>  		.cra_flags = CRYPTO_ALG_ASYNC |\
+> -		 CRYPTO_ALG_ALLOCATES_MEMORY |\
+>  		 CRYPTO_ALG_NEED_FALLBACK,\
+>  		.cra_blocksize = blk_size,\
+>  		.cra_ctxsize = sizeof(struct sec_ctx),\
+> @@ -2366,7 +2365,6 @@ static int sec_aead_decrypt(struct aead_request *a_req)
+>  		.cra_driver_name = "hisi_sec_"sec_cra_name,\
+>  		.cra_priority = SEC_PRIORITY,\
+>  		.cra_flags = CRYPTO_ALG_ASYNC |\
+> -		 CRYPTO_ALG_ALLOCATES_MEMORY |\
+>  		 CRYPTO_ALG_NEED_FALLBACK,\
+>  		.cra_blocksize = blk_size,\
+>  		.cra_ctxsize = sizeof(struct sec_ctx),\
+>
+
+Please ignore this patch, There was a title misspelled, "delete->delele"
+
+
+Thanks
+Kai
