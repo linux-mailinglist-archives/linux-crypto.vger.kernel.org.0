@@ -2,133 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9C9525A68
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 May 2022 05:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADAE525B87
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 May 2022 08:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347440AbiEMDyV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 12 May 2022 23:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        id S1377332AbiEMG03 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 13 May 2022 02:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376865AbiEMDyT (ORCPT
+        with ESMTP id S1377309AbiEMG0Y (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 12 May 2022 23:54:19 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF5E663C1
-        for <linux-crypto@vger.kernel.org>; Thu, 12 May 2022 20:54:17 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 137so6379988pgb.5
-        for <linux-crypto@vger.kernel.org>; Thu, 12 May 2022 20:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Sdy4JWVMgzouLiUuz2tCTiM3qS000Ug614pPLg974GQ=;
-        b=vqmu5UC4sY7X1lyXBtg1p5wMTx2LVa+3jvsaYuBa7srCB3GpZmRcvIFiQp2vfTU7Pv
-         eSvBoLoNz/ttuBceOcbDJC3+hDuAwLxsCp84eOjzJHNlfPdk8s9z4Eym7jLPQEVplVzD
-         ldq1aPWqSRKQjTCK5w610yr6sbWTa9OV1zGehsH9rGw7raf15KRqvPAbvreobdWWtmWz
-         A6251J8zMKkeyYW/XLUXPgFW3QYz9ZXSixbZChOvA8jL040euOQVEf7DRqiHKKNlvGf/
-         GbrxwHbx//ztt7/1T8MiZ2NIGZI9GV6Ryv4afc0ypp+fzj/32u8mZndEvSzZb+POdiWz
-         Vodg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Sdy4JWVMgzouLiUuz2tCTiM3qS000Ug614pPLg974GQ=;
-        b=Hf//nhV3xO0QfTOYX5HjCz5Tq+ZoawPDmVJ372q6n4CLsuxrgxmz/9/Xjep5PuzrrE
-         3q9144GWGqYFAuwbwKq0WIqTHUVUmj1qQX5npIrbeowtrfSL0kGssSKBfwQiwB3FQXOm
-         B36/Mkk1i/dyJAP5P5q5HHNWPQgpCFWf6ykohngBWurVUmsLd0PB9DOkOhUkgXIrKytP
-         h7GTX29BkWhQN4uQZndxKM6T/DIMeuXEiEz+R1LjgX9dBWiZMUYsjDGis+7+tvHD63Nj
-         g1ZC3u+OGVsmKU4MDeA5pv58ZhpOeiLkCPUf7px59aBpkWkT37StM7Xp5t171tXsGOap
-         Z8aA==
-X-Gm-Message-State: AOAM533jKckX/LnDsOzZ30J3r4/eeWgeRO9yszIhY9KGyK/PY7ZXEhR/
-        fzxbmgyKaEzKDm+K2bzRBgT4IA==
-X-Google-Smtp-Source: ABdhPJyMwqzVGhhlXUsB2d/mXiL8fGEDAMUZIgY+YPHRDqo7t6DyFSdT21UUHdeLYUoWnpc5riIUeQ==
-X-Received: by 2002:a65:6e82:0:b0:381:71c9:9856 with SMTP id bm2-20020a656e82000000b0038171c99856mr2357297pgb.316.1652414056895;
-        Thu, 12 May 2022 20:54:16 -0700 (PDT)
-Received: from [10.255.89.252] ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id y124-20020a62ce82000000b0050dc76281f9sm566919pfg.211.2022.05.12.20.54.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 May 2022 20:54:16 -0700 (PDT)
-Message-ID: <67aedc07-96d7-4078-611e-a01b3a93904f@bytedance.com>
-Date:   Fri, 13 May 2022 11:50:20 +0800
+        Fri, 13 May 2022 02:26:24 -0400
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB83275CF;
+        Thu, 12 May 2022 23:26:21 -0700 (PDT)
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from owl.dominikbrodowski.net (owl.brodo.linta [10.2.0.111])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id F3FD0201409;
+        Fri, 13 May 2022 06:26:05 +0000 (UTC)
+Received: by owl.dominikbrodowski.net (Postfix, from userid 1000)
+        id 18A7B80914; Fri, 13 May 2022 08:18:30 +0200 (CEST)
+Date:   Fri, 13 May 2022 08:18:30 +0200
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] random: credit architectural init the exact amount
+Message-ID: <Yn34NiJUnZOgK99X@owl.dominikbrodowski.net>
+References: <20220512133835.102028-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: Re: [PATCH v5 1/9] virtio-crypto: header update
-Content-Language: en-US
-To:     =?UTF-8?Q?Daniel_P=2e_Berrang=c3=a9?= <berrange@redhat.com>
-Cc:     mst@redhat.com, arei.gonglei@huawei.com, qemu-devel@nongnu.org,
-        virtualization@lists.linux-foundation.org,
-        linux-crypto@vger.kernel.org, helei.sig11@bytedance.com,
-        jasowang@redhat.com, cohuck@redhat.com
-References: <20220428135943.178254-1-pizhenwei@bytedance.com>
- <20220428135943.178254-2-pizhenwei@bytedance.com>
- <YnzZhjwbD6PaKx+2@redhat.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-In-Reply-To: <YnzZhjwbD6PaKx+2@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220512133835.102028-1-Jason@zx2c4.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi, Daniel
+Am Thu, May 12, 2022 at 03:38:35PM +0200 schrieb Jason A. Donenfeld:
+> RDRAND and RDSEED can fail sometimes, which is fine. We currently
+> initialize the RNG with 512 bits of RDRAND/RDSEED. We only need 256 bits
+> of those to succeed in order to initialize the RNG. Instead of the
+> current "all or nothing" approach, actually credit these contributions
+> the amount that is actually contributed.
+> 
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>  drivers/char/random.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/char/random.c b/drivers/char/random.c
+> index bd80d74a7f8c..9ffa41c5e092 100644
+> --- a/drivers/char/random.c
+> +++ b/drivers/char/random.c
+> @@ -934,9 +934,8 @@ static struct notifier_block pm_notifier = { .notifier_call = random_pm_notifica
+>   */
+>  int __init random_init(const char *command_line)
+>  {
+> -	size_t i;
+>  	ktime_t now = ktime_get_real();
+> -	bool arch_init = true;
+> +	unsigned int i, arch_init;
 
-Something I do in my local branch(for the v6 series):
-- [PATCH v5 1/9] virtio-crypto: header update
-- [PATCH v5 3/9] crypto: Introduce akcipher crypto class
-   Add 'Reviewed-by: Daniel P. Berrangé <berrange@redhat.com>'
+Maybe s/arch_init/arch_init_cnt/g to clarify that this is now used as a
+counter?
 
-- [PATCH v5 4/9] crypto: add ASN.1 DER decoder
-- [PATCH v5 7/9] test/crypto: Add test suite for crypto akcipher
-   Fixed the issues you pointed out.
+Otherwise, looks good:
 
-Do you have suggestions about the other patches? Or I'll send the v6 series?
+	Reviewed-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
-On 5/12/22 17:55, Daniel P. Berrangé wrote:
-> On Thu, Apr 28, 2022 at 09:59:35PM +0800, zhenwei pi wrote:
->> Update header from linux, support akcipher service.
->>
->> Reviewed-by: Gonglei <arei.gonglei@huawei.com>
->> Signed-off-by: lei he <helei.sig11@bytedance.com>
->> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
->> ---
->>   .../standard-headers/linux/virtio_crypto.h    | 82 ++++++++++++++++++-
->>   1 file changed, 81 insertions(+), 1 deletion(-)
-> 
-> I see these changes were now merged in linux.git with
-> 
->    commit 24e19590628b58578748eeaec8140bf9c9dc00d9
->    Author:     zhenwei pi <pizhenwei@bytedance.com>
->    AuthorDate: Wed Mar 2 11:39:15 2022 +0800
->    Commit:     Michael S. Tsirkin <mst@redhat.com>
->    CommitDate: Mon Mar 28 16:52:58 2022 -0400
-> 
->      virtio-crypto: introduce akcipher service
->      
->      Introduce asymmetric service definition, asymmetric operations and
->      several well known algorithms.
->      
->      Co-developed-by: lei he <helei.sig11@bytedance.com>
->      Signed-off-by: lei he <helei.sig11@bytedance.com>
->      Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
->      Link: https://lore.kernel.org/r/20220302033917.1295334-3-pizhenwei@bytedance.com
->      Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
->      Reviewed-by: Gonglei <arei.gonglei@huawei.com>
-> 
-> 
-> And the changes proposed here match that, so
-> 
->    Reviewed-by: Daniel P. Berrangé <berrange@redhat.com>
-> 
-> 
-> With regards,
-> Daniel
-
--- 
-zhenwei pi
+Thanks,
+	Dominik
