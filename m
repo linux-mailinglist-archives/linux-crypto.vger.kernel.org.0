@@ -2,154 +2,170 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DA452B60E
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 May 2022 11:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F39E52B591
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 May 2022 11:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbiERJDi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 May 2022 05:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
+        id S233534AbiERIyw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 May 2022 04:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233672AbiERJDi (ORCPT
+        with ESMTP id S233535AbiERIyu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 May 2022 05:03:38 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4753E1238A8;
-        Wed, 18 May 2022 02:03:37 -0700 (PDT)
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24I8isbW017356;
-        Wed, 18 May 2022 09:03:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version : date :
- from : to : subject : reply-to : in-reply-to : references : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=5b9ExFuV/mdbXBcWZ/YTWQ8xvIPBld8ClYxJkOjjqFQ=;
- b=sqwyNbO3CE+rC7+zMxgccmjhhR53iMoeId7JVnXtt0+SLjU3h7qRfvCTu7Jk3sT0muZl
- sAT3zUIm6J8WjVmY/Gph2VWo/3ZP7beHmoJ23SdNjuPItewc+k9MU0EKqexfc8XIOEJP
- ZsealRbOxzpn8c2wPDhFpYOxP3bSC270ieS/dTPYHZAp5OlDO+hnYnSodlZ3lA8BG/A3
- Or3StUKx0tvPgULlOip/Ulf+mUyR4RnUlYxOhALrqSa9pZoqP4pHbWTAea8NEZcTQzzx
- 6JhHA9HQHMzGJGyYnIOEfnVie66PvHauH5w1GTQqXNpxGQPlNoDVL0ccRlAOs0na/nu1 BA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g4wjh8css-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 May 2022 09:03:34 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24I93XcF013967;
-        Wed, 18 May 2022 09:03:33 GMT
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g4wjh8a9d-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 May 2022 09:03:33 +0000
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24I8QeWP021832;
-        Wed, 18 May 2022 08:30:32 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma01dal.us.ibm.com with ESMTP id 3g242b9xhc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 May 2022 08:30:32 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24I8UVaS22348232
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 May 2022 08:30:31 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7FB88112065;
-        Wed, 18 May 2022 08:30:31 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05A65112063;
-        Wed, 18 May 2022 08:30:31 +0000 (GMT)
-Received: from ltc.linux.ibm.com (unknown [9.10.229.42])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 18 May 2022 08:30:30 +0000 (GMT)
+        Wed, 18 May 2022 04:54:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E8E13C0B6;
+        Wed, 18 May 2022 01:54:24 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 04B6A1F9A4;
+        Wed, 18 May 2022 08:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652864063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=06nyVlCgwJloMa3Sgbdy84v4l9AGS+6HLkM9Egdi3zA=;
+        b=uDiK6ZQrV58T7Sse8eaWlPU/3YOfscJkXv3EILIbosD7HQybDKyxvcVVoFbmUsqTnGDWOC
+        4CJ72erIQVpdbKFsT+vzEs5YDvh5g2rDpQI37Yrwv7EeYQF5L0T6eBevotMPC/qL715vvd
+        nBQrLN7qvUP+ufxvplkKEKxxqZ6CM98=
+Received: from suse.cz (unknown [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 6C56E2C141;
+        Wed, 18 May 2022 08:54:22 +0000 (UTC)
+Date:   Wed, 18 May 2022 10:54:22 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH] random: remove mostly unused async readiness notifier
+Message-ID: <YoS0Pn9IotUrQh01@alley>
+References: <YoD7hn4yBHE0RYUa@zx2c4.com>
+ <20220515131927.474097-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Date:   Wed, 18 May 2022 10:30:30 +0200
-From:   Harald Freudenberger <freude@linux.ibm.com>
-To:     undisclosed-recipients:;
-Subject: Re: [PATCH] s390/crypto: fix scatterwalk_unmap() callers in AES-GCM
-Reply-To: freude@linux.ibm.com
-In-Reply-To: <YoPi5eH+oFJ2anQh@osiris>
-References: <20220517143047.3054498-1-jannh@google.com>
- <YoPi5eH+oFJ2anQh@osiris>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <b07a2e97b1198007ea170a91cecbd9d1@linux.ibm.com>
-X-Sender: freude@linux.ibm.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9EUW4Wyvf76gYoLAuzxu8q96O3eUjMhp
-X-Proofpoint-ORIG-GUID: 0rNeDyJbJunPJw4CkZwJGcEECBwMHQ_t
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-18_03,2022-05-17_02,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- mlxscore=0 priorityscore=1501 adultscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=799 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205180048
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220515131927.474097-1-Jason@zx2c4.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2022-05-17 20:01, Heiko Carstens wrote:
-> On Tue, May 17, 2022 at 04:30:47PM +0200, Jann Horn wrote:
->> The argument of scatterwalk_unmap() is supposed to be the void* that 
->> was
->> returned by the previous scatterwalk_map() call.
->> The s390 AES-GCM implementation was instead passing the pointer to the
->> struct scatter_walk.
->> 
->> This doesn't actually break anything because scatterwalk_unmap() only 
->> uses
->> its argument under CONFIG_HIGHMEM and ARCH_HAS_FLUSH_ON_KUNMAP.
->> 
->> Note that I have not tested this patch in any way, not even 
->> compile-tested
->> it.
->> 
->> Fixes: bf7fa038707c ("s390/crypto: add s390 platform specific aes gcm 
->> support.")
->> Signed-off-by: Jann Horn <jannh@google.com>
->> ---
->> IDK which tree this has to go through - s390 or crypto?
->> maybe s390 is better, since they can actually test it?
->> 
->>  arch/s390/crypto/aes_s390.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
+On Sun 2022-05-15 15:19:27, Jason A. Donenfeld wrote:
+> The register_random_ready_notifier() notifier is somewhat complicated,
+> and was already recently rewritten to use notifier blocks. It is only
+> used now by one consumer in the kernel, vsprintf.c, for which the async
+> mechanism is really overly complex for what it actually needs. This
+> commit removes register_random_ready_notifier() and unregister_random_
+> ready_notifier(), because it just adds complication with little utility,
+> and changes vsprintf.c to just check on `!rng_is_initialized() &&
+> !rng_has_arch_random()`, which will eventually be true. Performance-
+> wise, that code was already using a static branch, so there's basically
+> no overhead at all to this change.
 > 
-> This can go via the s390 tree, however I'd like to have an ACK from
-> Harald, who wrote the original code.
-> 
->> diff --git a/arch/s390/crypto/aes_s390.c b/arch/s390/crypto/aes_s390.c
->> index 54c7536f2482..1023e9d43d44 100644
->> --- a/arch/s390/crypto/aes_s390.c
->> +++ b/arch/s390/crypto/aes_s390.c
->> @@ -701,7 +701,7 @@ static inline void 
->> _gcm_sg_unmap_and_advance(struct gcm_sg_walk *gw,
->>  					     unsigned int nbytes)
->>  {
->>  	gw->walk_bytes_remain -= nbytes;
->> -	scatterwalk_unmap(&gw->walk);
->> +	scatterwalk_unmap(gw->walk_ptr);
->>  	scatterwalk_advance(&gw->walk, nbytes);
->>  	scatterwalk_done(&gw->walk, 0, gw->walk_bytes_remain);
->>  	gw->walk_ptr = NULL;
->> @@ -776,7 +776,7 @@ static int gcm_out_walk_go(struct gcm_sg_walk *gw, 
->> unsigned int minbytesneeded)
->>  		goto out;
->>  	}
->> 
->> -	scatterwalk_unmap(&gw->walk);
->> +	scatterwalk_unmap(gw->walk_ptr);
->>  	gw->walk_ptr = NULL;
->> 
->>  	gw->ptr = gw->buf;
->> 
->> base-commit: 42226c989789d8da4af1de0c31070c96726d990c
->> --
->> 2.36.0.550.gb090851708-goog
->> 
-Ok, tests pass. Here is my Acked-by: Harald Freudenberger 
-<freude@linux.ibm.com>
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -750,60 +750,37 @@ static int __init debug_boot_weak_hash_enable(char *str)
+>  }
+>  early_param("debug_boot_weak_hash", debug_boot_weak_hash_enable);
+>  
+> -static DEFINE_STATIC_KEY_TRUE(not_filled_random_ptr_key);
+> -static siphash_key_t ptr_key __read_mostly;
+> +static DEFINE_STATIC_KEY_FALSE(filled_random_ptr_key);
+>  
+>  static void enable_ptr_key_workfn(struct work_struct *work)
+>  {
+> -	get_random_bytes(&ptr_key, sizeof(ptr_key));
+> -	/* Needs to run from preemptible context */
+> -	static_branch_disable(&not_filled_random_ptr_key);
+> +	static_branch_enable(&filled_random_ptr_key);
+>  }
+>  
+> -static DECLARE_WORK(enable_ptr_key_work, enable_ptr_key_workfn);
+> -
+> -static int fill_random_ptr_key(struct notifier_block *nb,
+> -			       unsigned long action, void *data)
+> +/* Maps a pointer to a 32 bit unique identifier. */
+> +static inline int __ptr_to_hashval(const void *ptr, unsigned long *hashval_out)
+>  {
+> -	/* This may be in an interrupt handler. */
+> -	queue_work(system_unbound_wq, &enable_ptr_key_work);
+> -	return 0;
+> -}
+> -
+> -static struct notifier_block random_ready = {
+> -	.notifier_call = fill_random_ptr_key
+> -};
+> +	static siphash_key_t ptr_key __read_mostly;
+> +	unsigned long hashval;
+>  
+> -static int __init initialize_ptr_random(void)
+> -{
+> -	int ret;
+> +	if (!static_branch_likely(&filled_random_ptr_key)) {
+> +		static bool filled = false;
+> +		static DEFINE_SPINLOCK(filling);
+> +		static DECLARE_WORK(enable_ptr_key_work, enable_ptr_key_workfn);
+> +		unsigned long flags;
+>  
+> -	/* Don't bother waiting for RNG to be ready if RDRAND is mixed in already. */
+> -	if (rng_has_arch_random()) {
+> -		enable_ptr_key_workfn(&enable_ptr_key_work);
+> -		return 0;
+> -	}
+> +		if (!rng_is_initialized() && !rng_has_arch_random())
+> +			return -EAGAIN;
+>  
+> -	ret = register_random_ready_notifier(&random_ready);
+> -	if (!ret) {
+> -		return 0;
+> -	} else if (ret == -EALREADY) {
+> -		/* This is in preemptible context */
+> -		enable_ptr_key_workfn(&enable_ptr_key_work);
+> -		return 0;
+> +		spin_lock_irqsave(&filling, flags);
+
+I thought more about this and there is a small risk of a deadlock
+when get_random_bytes() or queue_work() or NMI calls
+printk()/vsprintf() with %p here.
+
+A simple solution would be to use trylock():
+
+		if (!spin_trylock_irqsave(&filling, flags))
+			return -EDEADLK;
+
+Could we do this change, please?
+
+I do not mind if it will be done by re-spinning the original
+patch or another patch on top of it.
+
+Best Regards,
+Petr
+
+
+> +		if (!filled) {
+> +			get_random_bytes(&ptr_key, sizeof(ptr_key));
+> +			queue_work(system_unbound_wq, &enable_ptr_key_work);
+> +			filled = true;
+> +		}
+> +		spin_unlock_irqrestore(&filling, flags);
+>  	}
+>  
+> -	return ret;
+> -}
+> -early_initcall(initialize_ptr_random);
+> -
+> -/* Maps a pointer to a 32 bit unique identifier. */
+> -static inline int __ptr_to_hashval(const void *ptr, unsigned long *hashval_out)
+> -{
+> -	unsigned long hashval;
+> -
+> -	if (static_branch_unlikely(&not_filled_random_ptr_key))
+> -		return -EAGAIN;
+>  
+>  #ifdef CONFIG_64BIT
+>  	hashval = (unsigned long)siphash_1u64((u64)ptr, &ptr_key);
