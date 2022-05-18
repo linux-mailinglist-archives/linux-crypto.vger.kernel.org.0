@@ -2,56 +2,55 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E743452B8C9
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 May 2022 13:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7118552B8AC
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 May 2022 13:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbiERLXG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 May 2022 07:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235416AbiERLW7 (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
+        id S235411AbiERLW7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Wed, 18 May 2022 07:22:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9625515E61F
-        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 04:22:55 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235398AbiERLW5 (ORCPT
+        <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 18 May 2022 07:22:57 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265E215E49D
+        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 04:22:54 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DC58F21BB4;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5A0F31F37F;
         Wed, 18 May 2022 11:22:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1652872973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WF6NevLroG13bbxDWgXFTcFv3dzQDk34o2JRpiv54RA=;
-        b=fglL3TW0+68JqNKi8Z81aDK+l+rPWuTgOxO7R7XEIxemox7Ya0iqi3VG3Phd+aatZViVmB
-        Q4gam28QA3Ljadm9ExnnTzf2vdjR0K6eiORwJEWpI7w4GPAXb8bjGvw6j1acgNIreU3vwU
-        JZL4obMFkmGNd1WWbd+aEpXipilUYBk=
+        bh=OOo8A7oXWoD/i3b5sE0bN12pVWy0NJIyZuE/spSnxJI=;
+        b=an1Q8YYA7CjYgqf92u4ZPntEZwa0U+PMg1UFkcGxq3irN0IDLJPIrtfRA9kJrwwJEXHVfm
+        c2UJFCgJK5LVuX3e16S4+bHzEOqAki2ztYjoPnAygeazlPwMsjv6jf24jVCXKBpgTgX05J
+        W2RqE/B4qNuOLH68s33I7/e19qlnwcE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1652872973;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WF6NevLroG13bbxDWgXFTcFv3dzQDk34o2JRpiv54RA=;
-        b=MhjYUtfQ8nw5v0v0s2+i830I0rZiXitMoEZx7NiS2DOnnP9VznF8IN+n+dKTFpX4ZKiFaZ
-        l5NFY4UsIMUFpWAw==
+        bh=OOo8A7oXWoD/i3b5sE0bN12pVWy0NJIyZuE/spSnxJI=;
+        b=cOyFGU6glfTy2IvjUbXPHWBEvmbFLejg0t57NaUpD+xhoBlAkeUHIviGRqdoCCsONY2/rQ
+        b5kRmeJfeZd3JpBg==
 Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id D15D32C143;
+        by relay2.suse.de (Postfix) with ESMTP id 4A4432C142;
         Wed, 18 May 2022 11:22:52 +0000 (UTC)
 Received: by adalid.arch.suse.de (Postfix, from userid 16045)
-        id 75BB75194509; Wed, 18 May 2022 13:22:52 +0200 (CEST)
+        id 7B447519450B; Wed, 18 May 2022 13:22:52 +0200 (CEST)
 From:   Hannes Reinecke <hare@suse.de>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
         linux-nvme@lists.infradead.org, linux-crypto@vger.kernel.org,
         Hannes Reinecke <hare@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
+        Eric Biggers <ebiggers@kernel.org>,
         Himanshu Madhani <himanshu.madhani@oracle.com>
-Subject: [PATCH 02/11] crypto: add crypto_has_kpp()
-Date:   Wed, 18 May 2022 13:22:25 +0200
-Message-Id: <20220518112234.24264-3-hare@suse.de>
+Subject: [PATCH 03/11] lib/base64: RFC4648-compliant base64 encoding
+Date:   Wed, 18 May 2022 13:22:26 +0200
+Message-Id: <20220518112234.24264-4-hare@suse.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220518112234.24264-1-hare@suse.de>
 References: <20220518112234.24264-1-hare@suse.de>
@@ -67,49 +66,165 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add helper function to determine if a given key-agreement protocol
-primitive is supported.
+Add RFC4648-compliant base64 encoding and decoding routines, based on
+the base64url encoding in fs/crypto/fname.c.
 
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Eric Biggers <ebiggers@kernel.org>
 Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
 Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- crypto/kpp.c         | 6 ++++++
- include/crypto/kpp.h | 2 ++
- 2 files changed, 8 insertions(+)
+ include/linux/base64.h |  16 +++++++
+ lib/Makefile           |   2 +-
+ lib/base64.c           | 103 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 120 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/base64.h
+ create mode 100644 lib/base64.c
 
-diff --git a/crypto/kpp.c b/crypto/kpp.c
-index 7aa6ba4b60a4..678e871ce418 100644
---- a/crypto/kpp.c
-+++ b/crypto/kpp.c
-@@ -104,6 +104,12 @@ int crypto_grab_kpp(struct crypto_kpp_spawn *spawn,
- }
- EXPORT_SYMBOL_GPL(crypto_grab_kpp);
- 
-+int crypto_has_kpp(const char *alg_name, u32 type, u32 mask)
+diff --git a/include/linux/base64.h b/include/linux/base64.h
+new file mode 100644
+index 000000000000..660d4cb1ef31
+--- /dev/null
++++ b/include/linux/base64.h
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * base64 encoding, lifted from fs/crypto/fname.c.
++ */
++
++#ifndef _LINUX_BASE64_H
++#define _LINUX_BASE64_H
++
++#include <linux/types.h>
++
++#define BASE64_CHARS(nbytes)   DIV_ROUND_UP((nbytes) * 4, 3)
++
++int base64_encode(const u8 *src, int len, char *dst);
++int base64_decode(const char *src, int len, u8 *dst);
++
++#endif /* _LINUX_BASE64_H */
+diff --git a/lib/Makefile b/lib/Makefile
+index 6b9ffc1bd1ee..81a8c8230148 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -46,7 +46,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
+ 	 bust_spinlocks.o kasprintf.o bitmap.o scatterlist.o \
+ 	 list_sort.o uuid.o iov_iter.o clz_ctz.o \
+ 	 bsearch.o find_bit.o llist.o memweight.o kfifo.o \
+-	 percpu-refcount.o rhashtable.o \
++	 percpu-refcount.o rhashtable.o base64.o \
+ 	 once.o refcount.o usercopy.o errseq.o bucket_locks.o \
+ 	 generic-radix-tree.o
+ obj-$(CONFIG_STRING_SELFTEST) += test_string.o
+diff --git a/lib/base64.c b/lib/base64.c
+new file mode 100644
+index 000000000000..b736a7a431c5
+--- /dev/null
++++ b/lib/base64.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * base64.c - RFC4648-compliant base64 encoding
++ *
++ * Copyright (c) 2020 Hannes Reinecke, SUSE
++ *
++ * Based on the base64url routines from fs/crypto/fname.c
++ * (which are using the URL-safe base64 encoding),
++ * modified to use the standard coding table from RFC4648 section 4.
++ */
++
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/export.h>
++#include <linux/string.h>
++#include <linux/base64.h>
++
++static const char base64_table[65] =
++	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
++
++/**
++ * base64_encode() - base64-encode some binary data
++ * @src: the binary data to encode
++ * @srclen: the length of @src in bytes
++ * @dst: (output) the base64-encoded string.  Not NUL-terminated.
++ *
++ * Encodes data using base64 encoding, i.e. the "Base 64 Encoding" specified
++ * by RFC 4648, including the  '='-padding.
++ *
++ * Return: the length of the resulting base64-encoded string in bytes.
++ */
++int base64_encode(const u8 *src, int srclen, char *dst)
 +{
-+	return crypto_type_has_alg(alg_name, &crypto_kpp_type, type, mask);
++	u32 ac = 0;
++	int bits = 0;
++	int i;
++	char *cp = dst;
++
++	for (i = 0; i < srclen; i++) {
++		ac = (ac << 8) | src[i];
++		bits += 8;
++		do {
++			bits -= 6;
++			*cp++ = base64_table[(ac >> bits) & 0x3f];
++		} while (bits >= 6);
++	}
++	if (bits) {
++		*cp++ = base64_table[(ac << (6 - bits)) & 0x3f];
++		bits -= 6;
++	}
++	while (bits < 0) {
++		*cp++ = '=';
++		bits += 2;
++	}
++	return cp - dst;
 +}
-+EXPORT_SYMBOL_GPL(crypto_has_kpp);
++EXPORT_SYMBOL_GPL(base64_encode);
 +
- static void kpp_prepare_alg(struct kpp_alg *alg)
- {
- 	struct crypto_alg *base = &alg->base;
-diff --git a/include/crypto/kpp.h b/include/crypto/kpp.h
-index cccceadc164b..24d01e9877c1 100644
---- a/include/crypto/kpp.h
-+++ b/include/crypto/kpp.h
-@@ -104,6 +104,8 @@ struct kpp_alg {
-  */
- struct crypto_kpp *crypto_alloc_kpp(const char *alg_name, u32 type, u32 mask);
- 
-+int crypto_has_kpp(const char *alg_name, u32 type, u32 mask);
++/**
++ * base64_decode() - base64-decode a string
++ * @src: the string to decode.  Doesn't need to be NUL-terminated.
++ * @srclen: the length of @src in bytes
++ * @dst: (output) the decoded binary data
++ *
++ * Decodes a string using base64 encoding, i.e. the "Base 64 Encoding"
++ * specified by RFC 4648, including the  '='-padding.
++ *
++ * This implementation hasn't been optimized for performance.
++ *
++ * Return: the length of the resulting decoded binary data in bytes,
++ *	   or -1 if the string isn't a valid base64 string.
++ */
++int base64_decode(const char *src, int srclen, u8 *dst)
++{
++	u32 ac = 0;
++	int bits = 0;
++	int i;
++	u8 *bp = dst;
 +
- static inline struct crypto_tfm *crypto_kpp_tfm(struct crypto_kpp *tfm)
- {
- 	return &tfm->base;
++	for (i = 0; i < srclen; i++) {
++		const char *p = strchr(base64_table, src[i]);
++
++		if (src[i] == '=') {
++			ac = (ac << 6);
++			bits += 6;
++			if (bits >= 8)
++				bits -= 8;
++			continue;
++		}
++		if (p == NULL || src[i] == 0)
++			return -1;
++		ac = (ac << 6) | (p - base64_table);
++		bits += 6;
++		if (bits >= 8) {
++			bits -= 8;
++			*bp++ = (u8)(ac >> bits);
++		}
++	}
++	if (ac & ((1 << bits) - 1))
++		return -1;
++	return bp - dst;
++}
++EXPORT_SYMBOL_GPL(base64_decode);
 -- 
 2.29.2
 
