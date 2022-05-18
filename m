@@ -2,83 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7224752C5F1
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 May 2022 00:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216DD52C6E7
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 May 2022 00:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbiERWFw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 May 2022 18:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        id S231241AbiERW5N (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 May 2022 18:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiERWFm (ORCPT
+        with ESMTP id S231207AbiERW5A (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 May 2022 18:05:42 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B234ABF66
-        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 15:03:38 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id ds11so3406510pjb.0
-        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 15:03:38 -0700 (PDT)
+        Wed, 18 May 2022 18:57:00 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D770F0C
+        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id x2so5821690ybi.8
+        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iMSU8o/vmnYNF8oQukQMHTmX2hEc142qWw/OVQkloYA=;
-        b=MOOXL5WVm4dB91B2uKf9xSR4S+HJHSL0TSMbqIdkTz9lYASuHqAVOAh95f3WbJIGEb
-         2IaGHgmG9CFXLXuPdZupCWf8T178NlwE1qWO2jFgLEwYvF+sfpOK8l6uvCeDw5Wt4s/P
-         33mlqihbA8q89DMJJhJswWsj/E81EP1S3Q2TM=
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
+        b=ovbcf3BPb/ZrA/FpQ+ZjErGDIEZ9sF3fYOxqsE4Z0xdiTlYY9UY36hS3ty6MLllddq
+         FdZzNc2PcFHW5cwKZ0FlQqx6F8uTY06Ab/cmT+eL89dkm6I4fHT5v6DDGzwY+fqIjM8b
+         RjeYQt93Ckr4p0lPVWY342OwWKznH6xDl4nV36uj7bwrBPcHFh3ePzF5GNEmu/mQBhIV
+         GwWDekgJIDWSV60014hyLdzt2NtjUStY8MI6SiwBWMH8LEBnRGkE0W6Db0zUE9IYWmDQ
+         Ifd6nbhkESdcIbQrjo3sdEfmdPtb1VAIHCw/LAZv1DOtvQwqLYnhML4dVDmuoYeMmVFn
+         q7TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iMSU8o/vmnYNF8oQukQMHTmX2hEc142qWw/OVQkloYA=;
-        b=Vhh1opKaoqdkZYD/wE3QhORpLpwmkkUs/yzzBXCwb5Q+0btjOGwVpOwfDcXpjCmwsL
-         oNG5mNgMd3Yow+Ow/Fkra7+EGMFJuy/r4vobQlcGgQs8ZY7mMMRR5dssjeBrmgS2KMqA
-         HC9CwHuvH/D2YepuNN/urd62Bt/uMTcj8bRz7jeDz29YGGmuZwSs72dn/AKlqgJrEPSr
-         PsV4yJ+LkoeVbqkXgP+dmSGJzBgKgNyfx5Q0/bxZZs9e1Ah0XsXbxZkwjWiukSG1j1zK
-         UEMDLYUWw5zAopQAyDRKvHdK+uG48tIpKfXi4ngFeiLsip28kW7rftajQhB7COVthRJp
-         O46A==
-X-Gm-Message-State: AOAM531VrzlpAE8RKCjjBjpjcc7ZRV4yTWupOt75BbXI0nDK4pehLO9C
-        3i23mqYNr4hLz42tNRe2gCrGsA==
-X-Google-Smtp-Source: ABdhPJy+E8w/oaLMW4XqP48igVHAKcm8FsJk8ICdSbgkBYqluSRAo5HHX3Oe93HcFbp3abQCi2+fww==
-X-Received: by 2002:a17:903:1c3:b0:161:8b3d:7948 with SMTP id e3-20020a17090301c300b001618b3d7948mr1426496plh.158.1652911418065;
-        Wed, 18 May 2022 15:03:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p42-20020a056a0026ea00b0050dc762818dsm2529221pfw.103.2022.05.18.15.03.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 May 2022 15:03:37 -0700 (PDT)
-Date:   Wed, 18 May 2022 15:03:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     GUO Zihua <guozihua@huawei.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, dhowells@redhat.com,
-        herbert@gondor.apana.org.au, gustavoars@kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3] crypto: Use struct_size() helper in kmalloc()
-Message-ID: <202205181503.AA72D88E15@keescook>
-References: <20220518062518.236965-1-guozihua@huawei.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
+        b=7ClzwDQ0Lzh1s0JBJO3Y5yuGQxvufL+X4xiDKTDhHITe1Th+9GfVgP8HHI6oghRajY
+         /jLgYYtKpBFlcHZjjOa6rDSDlu3aimM2ps2ARrSBgL3bUTH53pM/a21Kac+ue4Cw32Rr
+         9iefiUtQhR03egVv9u7eSzMDh5c4oXsKAFDpViUBw4lqKD9ib2I1gDroHv/3EB+Y0M1l
+         eGRuQ4wjt2XxvxU4eNyqaf17XIJTVIAPr94yrnqti/oPsVjX+cSQEi9hxht9h5eTu9u+
+         i/XuS/CX3FRQBwAe4u0n0NCEmPkhfo7N7PFV+rOZqfV9EGRNvYxP/Yx5eU1nibZaB4tw
+         WT9Q==
+X-Gm-Message-State: AOAM531IzQL9boXFFjcG3TQzWJGSNqVoVL5XxiYggzf6CEvUkN09FvfS
+        SWoPZJoKNkIqMHV7mMjzWwAt5styg1lTF5J2qa4=
+X-Google-Smtp-Source: ABdhPJyyLDAg+sVdsLTxwEXiZ5avjedwK/uWMP/Y3UWcChEjwDE+iXuY4kOycHY8vIqM/rcV0hLTcVdg0IN0RAQYgBc=
+X-Received: by 2002:a5b:f87:0:b0:64a:9aa6:e181 with SMTP id
+ q7-20020a5b0f87000000b0064a9aa6e181mr1852277ybh.157.1652914614913; Wed, 18
+ May 2022 15:56:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518062518.236965-1-guozihua@huawei.com>
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Received: by 2002:a05:7000:7143:0:0:0:0 with HTTP; Wed, 18 May 2022 15:56:53
+ -0700 (PDT)
+Reply-To: tonywenn@asia.com
+From:   Tony Wen <weboutloock4@gmail.com>
+Date:   Thu, 19 May 2022 06:56:53 +0800
+Message-ID: <CAE2_YrD=5bo8j9+ah-xptEBBV-HEC4=Gb0SRHf996phiopc3WQ@mail.gmail.com>
+Subject: engage
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b35 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4933]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [weboutloock4[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [weboutloock4[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, May 18, 2022 at 02:25:18PM +0800, GUO Zihua wrote:
-> Make use of struct_size() helper for structures containing flexible array
-> member instead of sizeof() which prevents potential issues, as well as
-> increase readability.
-> 
-> Reference: https://lore.kernel.org/all/CAHk-=wiGWjxs7EVUpccZEi6esvjpHJdgHQ=vtUeJ5crL62hx9A@mail.gmail.com/
-> 
-> Signed-off-by: GUO Zihua <guozihua@huawei.com>
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Can I engage your services?
