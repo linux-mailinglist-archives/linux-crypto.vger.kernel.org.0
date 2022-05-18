@@ -2,147 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D5E52B8D9
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 May 2022 13:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C3352BC89
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 May 2022 16:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235557AbiERLXD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 May 2022 07:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        id S237491AbiERNAq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 May 2022 09:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235413AbiERLW7 (ORCPT
+        with ESMTP id S237425AbiERNAp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 May 2022 07:22:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EAD15E617
-        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 04:22:55 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6719421BB0;
-        Wed, 18 May 2022 11:22:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1652872973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PWW8KtETebgaTkzOWq5LzP/4FDLtdsx7XewVO5qKMns=;
-        b=JxW32sgb+WiWx3Je9MXW7jI04xoRtL4+c64n5ZvIfplXw7aR/D9P3zXiq+rGwhitoEcBP1
-        oCVitOuoVGzfqJ7LeCPa8BEn9kG+Vaw+FstS2LW9cVAr5SnS4NW8bJZNdgsE6nAICyAWtD
-        do5FVICSLv1lOiGpCDCMWd0zKoAaFRY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1652872973;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PWW8KtETebgaTkzOWq5LzP/4FDLtdsx7XewVO5qKMns=;
-        b=aIsjNMBHxnhPOCXHfpvlNsgwVUESLcroudcVFF57bSqlvMxr2bRkvBHgtA3msL/FwqX0eF
-        4Aw4I7TYvKnXdSDw==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 5F0872C152;
-        Wed, 18 May 2022 11:22:53 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 16045)
-        id B46F9519451B; Wed, 18 May 2022 13:22:52 +0200 (CEST)
-From:   Hannes Reinecke <hare@suse.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-        linux-nvme@lists.infradead.org, linux-crypto@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 11/11] nvmet-auth: expire authentication sessions
-Date:   Wed, 18 May 2022 13:22:34 +0200
-Message-Id: <20220518112234.24264-12-hare@suse.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220518112234.24264-1-hare@suse.de>
-References: <20220518112234.24264-1-hare@suse.de>
+        Wed, 18 May 2022 09:00:45 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C2BC1115D;
+        Wed, 18 May 2022 06:00:42 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F0A723A;
+        Wed, 18 May 2022 06:00:42 -0700 (PDT)
+Received: from [10.57.34.214] (unknown [10.57.34.214])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4134E3F73D;
+        Wed, 18 May 2022 06:00:41 -0700 (PDT)
+Message-ID: <8f6d8d1f-2872-15b9-d38b-1e8eb26f781b@foss.arm.com>
+Date:   Wed, 18 May 2022 14:00:40 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+To:     ardb@kernel.org
+Cc:     davem@davemloft.net, giovanni.cabiddu@intel.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qat-linux@intel.com,
+        yoan.picchi@arm.com, andre.przywara@arm.com
+References: <CAMj1kXGAiA-SkTFD5EgcacYao0RKT7oK0AxvxkR7Ho_KZSGXCw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] Removes the x86 dependency on the QAT drivers
+Reply-To: yoan.picchi@arm.com
+Content-Language: en-CA
+From:   Yoan Picchi <yoan.picchi@foss.arm.com>
+In-Reply-To: <CAMj1kXGAiA-SkTFD5EgcacYao0RKT7oK0AxvxkR7Ho_KZSGXCw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-9.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Each authentication step is required to be completed within the
-KATO interval (or two minutes if not set). So add a workqueue function
-to reset the transaction ID and the expected next protocol step;
-this will automatically the next authentication command referring
-to the terminated authentication.
+ >> From: Yoan Picchi <yoan.picchi@arm.com>
+ >>
+ >> The QAT acceleration card can be very helpfull for some tasks like
+ >> dealing with IPSEC but it is currently restricted to be used only on 
+x86 machine.
+ >> Looking at the code we didn't see any reasons why those drivers might
+ >> not work on other architectures. We've successfully built all of them
+ >> on x86, arm64, arm32, mips64, powerpc64, riscv64 and sparc64.
+ >>
+ >> We also have tested the driver with an Intel Corporation C62x Chipset
+ >> QuickAssist Technology (rev 04) PCIe card on an arm64 server. After
+ >> the numa patch, it works with the AF_ALG crypto userland interface,
+ >> allowing us to encrypt some data with cbc for instance. We've also
+ >> successfully created some VF, bound them to DPDK, and used the card
+ >> this way, thus showing some real life usecases of x86 do work on 
+arm64 too.
+ >>
+ >> Please let us know if we missed something that would warrants some
+ >> further testing.
+ >Thanks Yoan.
+ >
+ >Can you please confirm that you tested the driver on the platform you 
+reported using a kernel with CONFIG_CRYPTO_MANAGER_DISABLE_TESTS not set 
+and CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y and the self test >is passing?
+ >You can check it by running
+ >    $ cat /proc/crypto | grep -B 4 passed | grep -e "qat_\|qat-" | 
+sort This should report:
+ >    driver       : qat_aes_cbc
+ >    driver       : qat_aes_cbc_hmac_sha1
+ >    driver       : qat_aes_cbc_hmac_sha256
+ >    driver       : qat_aes_cbc_hmac_sha512
+ >    driver       : qat_aes_ctr
+ >    driver       : qat_aes_xts
+ >    driver       : qat-dh
+ >    driver       : qat-rsa
+ >
+ >Note that if you are using the HEAD of cryptodev-2.6 you will have to 
+either revert 8893d27ffcaf6ec6267038a177cb87bcde4dd3de or apply
+ >https://patchwork.kernel.org/project/linux-crypto/list/?series=639755 
+as the algorithms have been temporarily disabled.
+ >
+ >Regards,
+ >
+ >--
+ >Giovanni
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
----
- drivers/nvme/target/auth.c             |  1 +
- drivers/nvme/target/fabrics-cmd-auth.c | 20 +++++++++++++++++++-
- drivers/nvme/target/nvmet.h            |  1 +
- 3 files changed, 21 insertions(+), 1 deletion(-)
+Hi Giovanni.
 
-diff --git a/drivers/nvme/target/auth.c b/drivers/nvme/target/auth.c
-index 71e13d7eb511..183af0b24523 100644
---- a/drivers/nvme/target/auth.c
-+++ b/drivers/nvme/target/auth.c
-@@ -218,6 +218,7 @@ int nvmet_setup_auth(struct nvmet_ctrl *ctrl)
- 
- void nvmet_auth_sq_free(struct nvmet_sq *sq)
- {
-+	cancel_delayed_work(&sq->auth_expired_work);
- 	kfree(sq->dhchap_c1);
- 	sq->dhchap_c1 = NULL;
- 	kfree(sq->dhchap_c2);
-diff --git a/drivers/nvme/target/fabrics-cmd-auth.c b/drivers/nvme/target/fabrics-cmd-auth.c
-index 3156b052da4d..0d2571d03272 100644
---- a/drivers/nvme/target/fabrics-cmd-auth.c
-+++ b/drivers/nvme/target/fabrics-cmd-auth.c
-@@ -12,9 +12,22 @@
- #include "nvmet.h"
- #include "../host/auth.h"
- 
-+static void nvmet_auth_expired_work(struct work_struct *work)
-+{
-+	struct nvmet_sq *sq = container_of(to_delayed_work(work),
-+			struct nvmet_sq, auth_expired_work);
-+
-+	pr_debug("%s: ctrl %d qid %d transaction %u expired, resetting\n",
-+		 __func__, sq->ctrl->cntlid, sq->qid, sq->dhchap_tid);
-+	sq->dhchap_step = NVME_AUTH_DHCHAP_MESSAGE_NEGOTIATE;
-+	sq->dhchap_tid = -1;
-+}
-+
- void nvmet_init_auth(struct nvmet_ctrl *ctrl, struct nvmet_req *req)
- {
- 	/* Initialize in-band authentication */
-+	INIT_DELAYED_WORK(&req->sq->auth_expired_work,
-+			  nvmet_auth_expired_work);
- 	req->sq->authenticated = false;
- 	req->sq->dhchap_step = NVME_AUTH_DHCHAP_MESSAGE_NEGOTIATE;
- 	req->cqe->result.u32 |= 0x2 << 16;
-@@ -326,8 +339,13 @@ void nvmet_execute_auth_send(struct nvmet_req *req)
- 	req->cqe->result.u64 = 0;
- 	nvmet_req_complete(req, status);
- 	if (req->sq->dhchap_step != NVME_AUTH_DHCHAP_MESSAGE_SUCCESS2 &&
--	    req->sq->dhchap_step != NVME_AUTH_DHCHAP_MESSAGE_FAILURE2)
-+	    req->sq->dhchap_step != NVME_AUTH_DHCHAP_MESSAGE_FAILURE2) {
-+		unsigned long auth_expire_secs = ctrl->kato ? ctrl->kato : 120;
-+
-+		mod_delayed_work(system_wq, &req->sq->auth_expired_work,
-+				 auth_expire_secs * HZ);
- 		return;
-+	}
- 	/* Final states, clear up variables */
- 	nvmet_auth_sq_free(req->sq);
- 	if (req->sq->dhchap_step == NVME_AUTH_DHCHAP_MESSAGE_FAILURE2)
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index 8b239aec3ca2..829fb1d78ee1 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -109,6 +109,7 @@ struct nvmet_sq {
- 	u32			sqhd;
- 	bool			sqhd_disabled;
- #ifdef CONFIG_NVME_TARGET_AUTH
-+	struct delayed_work	auth_expired_work;
- 	bool			authenticated;
- 	u16			dhchap_tid;
- 	u16			dhchap_status;
--- 
-2.29.2
+Thanks for the instructions, I did not know of this test.
+I rebuilt my kernel on arm64 with those parameter and I confirm I get 
+the same output with
+$ cat /proc/crypto | grep -B 4 passed | grep -e "qat_\|qat-" | sort
+
+Kindly,
+Yoan
 
