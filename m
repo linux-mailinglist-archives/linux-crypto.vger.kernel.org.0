@@ -2,93 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216DD52C6E7
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 May 2022 00:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5392752C92F
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 May 2022 03:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbiERW5N (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 18 May 2022 18:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45044 "EHLO
+        id S232345AbiESBU7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 18 May 2022 21:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbiERW5A (ORCPT
+        with ESMTP id S231502AbiESBU6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 18 May 2022 18:57:00 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D770F0C
-        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id x2so5821690ybi.8
-        for <linux-crypto@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
-        b=ovbcf3BPb/ZrA/FpQ+ZjErGDIEZ9sF3fYOxqsE4Z0xdiTlYY9UY36hS3ty6MLllddq
-         FdZzNc2PcFHW5cwKZ0FlQqx6F8uTY06Ab/cmT+eL89dkm6I4fHT5v6DDGzwY+fqIjM8b
-         RjeYQt93Ckr4p0lPVWY342OwWKznH6xDl4nV36uj7bwrBPcHFh3ePzF5GNEmu/mQBhIV
-         GwWDekgJIDWSV60014hyLdzt2NtjUStY8MI6SiwBWMH8LEBnRGkE0W6Db0zUE9IYWmDQ
-         Ifd6nbhkESdcIbQrjo3sdEfmdPtb1VAIHCw/LAZv1DOtvQwqLYnhML4dVDmuoYeMmVFn
-         q7TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
-        b=7ClzwDQ0Lzh1s0JBJO3Y5yuGQxvufL+X4xiDKTDhHITe1Th+9GfVgP8HHI6oghRajY
-         /jLgYYtKpBFlcHZjjOa6rDSDlu3aimM2ps2ARrSBgL3bUTH53pM/a21Kac+ue4Cw32Rr
-         9iefiUtQhR03egVv9u7eSzMDh5c4oXsKAFDpViUBw4lqKD9ib2I1gDroHv/3EB+Y0M1l
-         eGRuQ4wjt2XxvxU4eNyqaf17XIJTVIAPr94yrnqti/oPsVjX+cSQEi9hxht9h5eTu9u+
-         i/XuS/CX3FRQBwAe4u0n0NCEmPkhfo7N7PFV+rOZqfV9EGRNvYxP/Yx5eU1nibZaB4tw
-         WT9Q==
-X-Gm-Message-State: AOAM531IzQL9boXFFjcG3TQzWJGSNqVoVL5XxiYggzf6CEvUkN09FvfS
-        SWoPZJoKNkIqMHV7mMjzWwAt5styg1lTF5J2qa4=
-X-Google-Smtp-Source: ABdhPJyyLDAg+sVdsLTxwEXiZ5avjedwK/uWMP/Y3UWcChEjwDE+iXuY4kOycHY8vIqM/rcV0hLTcVdg0IN0RAQYgBc=
-X-Received: by 2002:a5b:f87:0:b0:64a:9aa6:e181 with SMTP id
- q7-20020a5b0f87000000b0064a9aa6e181mr1852277ybh.157.1652914614913; Wed, 18
- May 2022 15:56:54 -0700 (PDT)
+        Wed, 18 May 2022 21:20:58 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A141532058;
+        Wed, 18 May 2022 18:20:54 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L3X6F67D7zQkGC;
+        Thu, 19 May 2022 09:17:57 +0800 (CST)
+Received: from huawei.com (10.67.175.31) by dggpemm500024.china.huawei.com
+ (7.185.36.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
+ 2022 09:20:52 +0800
+From:   GUO Zihua <guozihua@huawei.com>
+To:     <keyrings@vger.kernel.org>
+CC:     <linux-crypto@vger.kernel.org>, <davem@davemloft.net>,
+        <dhowells@redhat.com>, <herbert@gondor.apana.org.au>,
+        <gustavoars@kernel.org>, <keescook@chromium.org>,
+        <linux-hardening@vger.kernel.org>
+Subject: [PATCH v4] crypto: Use struct_size() helper with kmalloc()
+Date:   Thu, 19 May 2022 09:19:18 +0800
+Message-ID: <20220519011918.173538-1-guozihua@huawei.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-Received: by 2002:a05:7000:7143:0:0:0:0 with HTTP; Wed, 18 May 2022 15:56:53
- -0700 (PDT)
-Reply-To: tonywenn@asia.com
-From:   Tony Wen <weboutloock4@gmail.com>
-Date:   Thu, 19 May 2022 06:56:53 +0800
-Message-ID: <CAE2_YrD=5bo8j9+ah-xptEBBV-HEC4=Gb0SRHf996phiopc3WQ@mail.gmail.com>
-Subject: engage
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.31]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500024.china.huawei.com (7.185.36.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:b35 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4933]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [weboutloock4[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [weboutloock4[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Can I engage your services?
+Make use of struct_size() helper for structures containing flexible array
+member instead of sizeof() which prevents potential issues, as well as
+increase readability.
+
+Reference: https://lore.kernel.org/all/CAHk-=wiGWjxs7EVUpccZEi6esvjpHJdgHQ=vtUeJ5crL62hx9A@mail.gmail.com/
+
+Signed-off-by: GUO Zihua <guozihua@huawei.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+---
+
+v4:
+    Change subject from "in kmalloc" to "with kmalloc" following David's
+suggestion. Added Kees' review-by.
+v3:
+    Update commit message according to Gustavo's review.
+v2:
+    Use size_add() helper following Kees Cook's suggestion.
+---
+ crypto/asymmetric_keys/asymmetric_type.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/crypto/asymmetric_keys/asymmetric_type.c b/crypto/asymmetric_keys/asymmetric_type.c
+index 41a2f0eb4ce4..e020222b1fe5 100644
+--- a/crypto/asymmetric_keys/asymmetric_type.c
++++ b/crypto/asymmetric_keys/asymmetric_type.c
+@@ -152,7 +152,7 @@ struct asymmetric_key_id *asymmetric_key_generate_id(const void *val_1,
+ {
+ 	struct asymmetric_key_id *kid;
+ 
+-	kid = kmalloc(sizeof(struct asymmetric_key_id) + len_1 + len_2,
++	kid = kmalloc(struct_size(kid, data, size_add(len_1, len_2)),
+ 		      GFP_KERNEL);
+ 	if (!kid)
+ 		return ERR_PTR(-ENOMEM);
+@@ -244,7 +244,7 @@ struct asymmetric_key_id *asymmetric_key_hex_to_key_id(const char *id)
+ 	if (asciihexlen & 1)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	match_id = kmalloc(sizeof(struct asymmetric_key_id) + asciihexlen / 2,
++	match_id = kmalloc(struct_size(match_id, data, asciihexlen / 2),
+ 			   GFP_KERNEL);
+ 	if (!match_id)
+ 		return ERR_PTR(-ENOMEM);
+-- 
+2.36.0
+
