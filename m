@@ -2,177 +2,133 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6933D533AC6
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 May 2022 12:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7505533D70
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 May 2022 15:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbiEYKmq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 25 May 2022 06:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
+        id S230120AbiEYNMs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 25 May 2022 09:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbiEYKmq (ORCPT
+        with ESMTP id S231377AbiEYNMq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 25 May 2022 06:42:46 -0400
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE23986EE
-        for <linux-crypto@vger.kernel.org>; Wed, 25 May 2022 03:42:43 -0700 (PDT)
-Received: by mail-wr1-f43.google.com with SMTP id g23so1693462wrb.13
-        for <linux-crypto@vger.kernel.org>; Wed, 25 May 2022 03:42:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=cYFvf5S74zrkxiUcx9efmkq8IReMie2+kmRtGzK9T9A=;
-        b=TfpTzoFFZCJTK9FuYkIGFGRIue6tkfDQFNQuHWhJ5NgTBWBlEGDj3EV3qiDFcxH+1B
-         xzBD8Y9YstNKqzqLk+YxoBZa/sAdOoodzjQPb0C5no7oJH0dwL8/AqCdY9w+os2COHjZ
-         vF7VrP7jT0+gf5iOKAclI0M3vw3irm0HEcgFnOjUUaVOYIuwiCxV8feAlhcAsTB2YypY
-         9M9uKSH16jj7rCdsT6rv3I8GJJ7GNKm9bNroO9MbNglMkCLEkV1HxcYEYSlasaBmtyyO
-         YtpqyeM0qL1TXYi++1Tx5svaGQsneHQrUsMVrcDqHdhwKhBFqo4Fk4TkEyrP0TwtlR4e
-         GnKQ==
-X-Gm-Message-State: AOAM532pomd3aLjBcQT6hP8/SxijMQlE1zJ3chw2pBUiNFz38lVxVfY0
-        tokHeFrlevIBrC66WRIWjBUFV2ysHFE=
-X-Google-Smtp-Source: ABdhPJwVvlVhvwu055D6La1n8dBFZz/FVJlSa2HTQmGMFjI+M0cb6I0EvT6Q0weDGII3foC6XGglwg==
-X-Received: by 2002:a5d:6782:0:b0:20f:dd3a:3edf with SMTP id v2-20020a5d6782000000b0020fdd3a3edfmr12628365wru.517.1653475362422;
-        Wed, 25 May 2022 03:42:42 -0700 (PDT)
-Received: from [192.168.64.180] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
-        by smtp.gmail.com with ESMTPSA id b24-20020a7bc258000000b003974ba5cacdsm1750495wmj.35.2022.05.25.03.42.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 May 2022 03:42:42 -0700 (PDT)
-Message-ID: <e2845be6-6759-5330-7d79-77c733af22b1@grimberg.me>
-Date:   Wed, 25 May 2022 13:42:40 +0300
+        Wed, 25 May 2022 09:12:46 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4157C5FEA;
+        Wed, 25 May 2022 06:12:44 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0C1F1FB;
+        Wed, 25 May 2022 06:12:43 -0700 (PDT)
+Received: from donnerap.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 875D73F66F;
+        Wed, 25 May 2022 06:12:42 -0700 (PDT)
+Date:   Wed, 25 May 2022 14:12:39 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     yoan.picchi@arm.com, ardb@kernel.org, davem@davemloft.net,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qat-linux@intel.com
+Subject: Re: [RFC PATCH 2/2] Removes the x86 dependency on the QAT drivers
+Message-ID: <20220525141239.48589f25@donnerap.cambridge.arm.com>
+In-Reply-To: <YoyOg/kYGtO+nQac@silpixa00400314>
+References: <CAMj1kXGAiA-SkTFD5EgcacYao0RKT7oK0AxvxkR7Ho_KZSGXCw@mail.gmail.com>
+        <8f6d8d1f-2872-15b9-d38b-1e8eb26f781b@foss.arm.com>
+        <YoyOg/kYGtO+nQac@silpixa00400314>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 09/11] nvmet: Implement basic In-Band Authentication
-Content-Language: en-US
-To:     Hannes Reinecke <hare@suse.de>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Keith Busch <kbusch@kernel.org>, linux-nvme@lists.infradead.org,
-        linux-crypto@vger.kernel.org
-References: <20220518112234.24264-1-hare@suse.de>
- <20220518112234.24264-10-hare@suse.de>
- <e13a0c12-362d-e4b6-c558-03367815264b@nvidia.com>
- <903b586c-b539-c4e5-9233-7e24aa55f11b@suse.de>
-From:   Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <903b586c-b539-c4e5-9233-7e24aa55f11b@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On Tue, 24 May 2022 08:51:31 +0100
+Giovanni Cabiddu <giovanni.cabiddu@intel.com> wrote:
 
->> Hi Hannes,
->>
->> On 5/18/2022 2:22 PM, Hannes Reinecke wrote:
->>> Implement NVMe-oF In-Band authentication according to NVMe TPAR 8006.
->>> This patch adds three additional configfs entries 'dhchap_key',
->>> 'dhchap_ctrl_key', and 'dhchap_hash' to the 'host' configfs directory.
->>> The 'dhchap_key' and 'dhchap_ctrl_key' entries need to be in the ASCII
->>> format as specified in NVMe Base Specification v2.0 section 8.13.5.8
->>> 'Secret representation'.
->>> 'dhchap_hash' defaults to 'hmac(sha256)', and can be written to to
->>> switch to a different HMAC algorithm.
->>>
->>> Signed-off-by: Hannes Reinecke <hare@suse.de>
->>> ---
->>>   drivers/nvme/target/Kconfig            |  12 +
->>>   drivers/nvme/target/Makefile           |   1 +
->>>   drivers/nvme/target/admin-cmd.c        |   2 +
->>>   drivers/nvme/target/auth.c             | 367 ++++++++++++++++++
->>>   drivers/nvme/target/configfs.c         | 107 +++++-
->>>   drivers/nvme/target/core.c             |  11 +
->>>   drivers/nvme/target/fabrics-cmd-auth.c | 491 +++++++++++++++++++++++++
->>>   drivers/nvme/target/fabrics-cmd.c      |  38 +-
->>>   drivers/nvme/target/nvmet.h            |  62 ++++
->>>   9 files changed, 1088 insertions(+), 3 deletions(-)
->>>   create mode 100644 drivers/nvme/target/auth.c
->>>   create mode 100644 drivers/nvme/target/fabrics-cmd-auth.c
->>>
->>> diff --git a/drivers/nvme/target/Kconfig b/drivers/nvme/target/Kconfig
->>> index 973561c93888..e569319be679 100644
->>> --- a/drivers/nvme/target/Kconfig
->>> +++ b/drivers/nvme/target/Kconfig
->>> @@ -83,3 +83,15 @@ config NVME_TARGET_TCP
->>>         devices over TCP.
->>>         If unsure, say N.
->>> +
->>> +config NVME_TARGET_AUTH
->>> +    bool "NVMe over Fabrics In-band Authentication support"
->>> +    depends on NVME_TARGET
->>> +    depends on NVME_AUTH
->>> +    select CRYPTO_HMAC
->>> +    select CRYPTO_SHA256
->>> +    select CRYPTO_SHA512
->>> +    help
->>> +      This enables support for NVMe over Fabrics In-band Authentication
->>> +
->>> +      If unsure, say N.
->>> diff --git a/drivers/nvme/target/Makefile b/drivers/nvme/target/Makefile
->>> index 9837e580fa7e..c66820102493 100644
->>> --- a/drivers/nvme/target/Makefile
->>> +++ b/drivers/nvme/target/Makefile
->>> @@ -13,6 +13,7 @@ nvmet-y        += core.o configfs.o admin-cmd.o 
->>> fabrics-cmd.o \
->>>               discovery.o io-cmd-file.o io-cmd-bdev.o
->>>   nvmet-$(CONFIG_NVME_TARGET_PASSTHRU)    += passthru.o
->>>   nvmet-$(CONFIG_BLK_DEV_ZONED)        += zns.o
->>> +nvmet-$(CONFIG_NVME_TARGET_AUTH)    += fabrics-cmd-auth.o auth.o
->>>   nvme-loop-y    += loop.o
->>>   nvmet-rdma-y    += rdma.o
->>>   nvmet-fc-y    += fc.o
->>> diff --git a/drivers/nvme/target/admin-cmd.c 
->>> b/drivers/nvme/target/admin-cmd.c
->>> index 31df40ac828f..fc8a957fad0a 100644
->>> --- a/drivers/nvme/target/admin-cmd.c
->>> +++ b/drivers/nvme/target/admin-cmd.c
->>> @@ -1018,6 +1018,8 @@ u16 nvmet_parse_admin_cmd(struct nvmet_req *req)
->>>       if (nvme_is_fabrics(cmd))
->>>           return nvmet_parse_fabrics_admin_cmd(req);
->>> +    if (unlikely(!nvmet_check_auth_status(req)))
->>> +        return NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
->>>       if (nvmet_is_disc_subsys(nvmet_req_subsys(req)))
->>>           return nvmet_parse_discovery_cmd(req);
->>> diff --git a/drivers/nvme/target/auth.c b/drivers/nvme/target/auth.c
->>> new file mode 100644
->>> index 000000000000..003c0faad7ff
->>> --- /dev/null
->>> +++ b/drivers/nvme/target/auth.c
->>> @@ -0,0 +1,367 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * NVMe over Fabrics DH-HMAC-CHAP authentication.
->>> + * Copyright (c) 2020 Hannes Reinecke, SUSE Software Solutions.
->>> + * All rights reserved.
->>> + */
->>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->>> +#include <linux/module.h>
->>> +#include <linux/init.h>
->>> +#include <linux/slab.h>
->>> +#include <linux/err.h>
->>> +#include <crypto/hash.h>
->>> +#include <linux/crc32.h>
->>> +#include <linux/base64.h>
->>> +#include <linux/ctype.h>
->>> +#include <linux/random.h>
->>> +#include <asm/unaligned.h>
->>> +
->>> +#include "nvmet.h"
->>> +#include "../host/auth.h"
->>
->> maybe we can put the common stuff to include/linux/nvme-auth.h instead 
->> of doing ../host/auth.h ?
->>
->>
-> Yes, we can do that.
-> Will be fixing it for the next round.
+Hi,
 
-We already do that in nvmet-loop, I don't think it is really needed.
+> On Wed, May 18, 2022 at 02:00:40PM +0100, Yoan Picchi wrote:
+> > >> From: Yoan Picchi <yoan.picchi@arm.com>
+> > >>
+> > >> The QAT acceleration card can be very helpfull for some tasks like
+> > >> dealing with IPSEC but it is currently restricted to be used only on x86  
+> > machine.  
+> > >> Looking at the code we didn't see any reasons why those drivers might
+> > >> not work on other architectures. We've successfully built all of them
+> > >> on x86, arm64, arm32, mips64, powerpc64, riscv64 and sparc64.
+> > >>
+> > >> We also have tested the driver with an Intel Corporation C62x Chipset
+> > >> QuickAssist Technology (rev 04) PCIe card on an arm64 server. After
+> > >> the numa patch, it works with the AF_ALG crypto userland interface,
+> > >> allowing us to encrypt some data with cbc for instance. We've also
+> > >> successfully created some VF, bound them to DPDK, and used the card
+> > >> this way, thus showing some real life usecases of x86 do work on arm64  
+> > too.  
+> > >>
+> > >> Please let us know if we missed something that would warrants some
+> > >> further testing.  
+> > >Thanks Yoan.
+> > >
+> > >Can you please confirm that you tested the driver on the platform you  
+> > reported using a kernel with CONFIG_CRYPTO_MANAGER_DISABLE_TESTS not set and
+> > CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y and the self test >is passing?  
+> > >You can check it by running
+> > >ï¿½ï¿½ï¿½ $ cat /proc/crypto | grep -B 4 passed | grep -e "qat_\|qat-" | sort  
+> > This should report:  
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat_aes_cbc
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat_aes_cbc_hmac_sha1
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat_aes_cbc_hmac_sha256
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat_aes_cbc_hmac_sha512
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat_aes_ctr
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat_aes_xts
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat-dh
+> > >ï¿½ï¿½ï¿½ driverï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : qat-rsa
+> > >
+> > >Note that if you are using the HEAD of cryptodev-2.6 you will have to  
+> > either revert 8893d27ffcaf6ec6267038a177cb87bcde4dd3de or apply  
+> > >https://patchwork.kernel.org/project/linux-crypto/list/?series=639755 as  
+> > the algorithms have been temporarily disabled.  
+> > >
+> > >Regards,
+> > >
+> > >--
+> > >Giovanni  
+> > 
+> > Hi Giovanni.
+> > 
+> > Thanks for the instructions, I did not know of this test.
+> > I rebuilt my kernel on arm64 with those parameter and I confirm I get the
+> > same output with
+> > $ cat /proc/crypto | grep -B 4 passed | grep -e "qat_\|qat-" | sort  
+> Thats great. Thanks.
+> 
+> Is the platform where you ran the tests little or big endian?
+
+It's definitely little endian.
+The cores in there can be switched between LE and BE, but I think
+realistically no one ever runs a BE configuration. Compiling the kernel
+for BE is rather straight-forward, but I wouldn't know of any serious
+userland to run with it (short of a self-compiled busybox or buildroot).
+
+> If little endian, can you re-test on a big endian system?
+
+So you can just compile a kernel with CONFIG_CPU_BIG_ENDIAN=y, but you
+cannot boot it easily, since CONFIG_EFI depends on !CPU_BIG_ENDIAN,
+and UEFI is the only way to boot that (server) machine.
+So kexec and a KVM guest are the other options. Kexec has the disadvantage of
+requiring a DT (because ACPI is also incompatible with BE), and for KVM we
+would need to check whether this actually works, since BE guests are much
+less tested, plus the device pass-through imposing more challenges.
+
+So testing this in BE is a bit more involved, and the practicality of such
+a setup is very questionable. If you are concerned, should we just say:
+	depends on PCI && !CPU_BIG_ENDIAN
+At least until we have reports that confirm proper BE operation?
+
+Cheers,
+Andre
