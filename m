@@ -2,188 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85121535E4E
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 May 2022 12:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6444F536331
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 May 2022 15:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350613AbiE0KaN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 May 2022 06:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        id S244893AbiE0NIz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Fri, 27 May 2022 09:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350789AbiE0K3w (ORCPT
+        with ESMTP id S232082AbiE0NIy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 May 2022 06:29:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A5F6129EE7
-        for <linux-crypto@vger.kernel.org>; Fri, 27 May 2022 03:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653647390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LwZPFqIRJiz/mjivgVRtjcs5bLzTBRhho+OpN7zzsp8=;
-        b=USHyu2VNzjzRI0VSg0YZMSdr4mqsR/IhZ9QUv/bMC0wXqEq+crfLM+Wfwq/c1dp3mf5dC4
-        DvmWU5egMsrBxW4HoI58UTs71Y1bQ/HomhLdSYEHLJLzXgkMvQKo3bbq7kDVxBvPmA97Xg
-        VYqcRs1vhYnbUMuWST5F50pJv48aiC8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-7-RY5GnNj3NkiC3oz1VrmNbQ-1; Fri, 27 May 2022 06:29:48 -0400
-X-MC-Unique: RY5GnNj3NkiC3oz1VrmNbQ-1
-Received: by mail-wm1-f70.google.com with SMTP id k5-20020a05600c0b4500b003941ca130f9so2236660wmr.0
-        for <linux-crypto@vger.kernel.org>; Fri, 27 May 2022 03:29:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LwZPFqIRJiz/mjivgVRtjcs5bLzTBRhho+OpN7zzsp8=;
-        b=P78dibj3y6Dx0qqAE+edGec1TftxzrEwtKx058liinY+zQl/XJOtqmsAo+btQXmHzM
-         c9rX3xKCFf1SOO+Aoghpdu9vMGIQ2KhrfF82+tij1u7u/lO910ZNHx/6PxqmJT0Yg+T6
-         Xlp3XUGY9hk76U2/ycVZ42N0DGrNyb/VyJ+6sqo75nwMm+hcTiliZ8ZMbu3F4Xc/VSGP
-         D216EBiJiCOmsJRMK2i72bwTg4otq3TJfrWEaAVRtDmHoJDU2JIPmG8zAWZfFiZ88UCr
-         MlFXpUoy/5WMxd+GQKZUM9TMXiyFgufs//jMONLpLvUlXKdoSwFUmHEfMD6TgBqXRloo
-         VZ3g==
-X-Gm-Message-State: AOAM532+kbw/A/CdZH/15Fwe6/ZVDpxx79rGqfPzuJmUqTf1QkTlBpO5
-        MJnRXCwNBVhQeKxMPxNGPmsuZodAaLM7jIIuLwutIr8+duWWEfIEhnT64ES6byAU9VFOI25Ymml
-        6oBn+CbXIGnr7fX1a8YXy1hUY
-X-Received: by 2002:a05:600c:268a:b0:397:48d4:f6ad with SMTP id 10-20020a05600c268a00b0039748d4f6admr6433896wmt.134.1653647387632;
-        Fri, 27 May 2022 03:29:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwIfPwi/cxkq5NvC1Uj/iwugQqN4hK/nrAnna0hSd9oRlJyVgf6OS4vhXpx6o3Vxd5nu2q/BA==
-X-Received: by 2002:a05:600c:268a:b0:397:48d4:f6ad with SMTP id 10-20020a05600c268a00b0039748d4f6admr6433879wmt.134.1653647387417;
-        Fri, 27 May 2022 03:29:47 -0700 (PDT)
-Received: from redhat.com ([2.55.130.213])
-        by smtp.gmail.com with ESMTPSA id n1-20020adfe341000000b0020e68dd2598sm1351811wrj.97.2022.05.27.03.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 May 2022 03:29:46 -0700 (PDT)
-Date:   Fri, 27 May 2022 06:29:42 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     keliu <liuke94@huawei.com>
-Cc:     mpm@selenic.com, herbert@gondor.apana.org.au, minyard@acm.org,
-        sudipm.mukherjee@gmail.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, lvivier@redhat.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: char: Directly use ida_alloc()/free()
-Message-ID: <20220527062822-mutt-send-email-mst@kernel.org>
-References: <20220527074422.2475104-1-liuke94@huawei.com>
+        Fri, 27 May 2022 09:08:54 -0400
+X-Greylist: delayed 7202 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 May 2022 06:08:53 PDT
+Received: from mail.composit.net (mail.composit.net [195.49.185.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AA7FFED7BC;
+        Fri, 27 May 2022 06:08:53 -0700 (PDT)
+Received: from mail.composit.net (localhost.localdomain [127.0.0.1])
+        by mail.composit.net (Proxmox) with ESMTP id 6A7C13941C0;
+        Fri, 27 May 2022 14:04:50 +0300 (MSK)
+Received: from mail.composit.net (unknown [192.168.101.14])
+        by mail.composit.net (Proxmox) with SMTP id 315AE386970;
+        Fri, 27 May 2022 14:04:50 +0300 (MSK)
+Received: from [192.168.1.105] (Unknown [197.234.219.23])
+        by mail.composit.net with ESMTPSA
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256)
+        ; Fri, 27 May 2022 14:04:51 +0300
+Message-ID: <71DDB2B1-2A37-45B2-B68A-F7F20F810133@mail.composit.net>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220527074422.2475104-1-liuke94@huawei.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Greetings From Ukraine.  
+To:     Recipients <heiss@dnet.it>
+From:   "Kostiantyn Chichkov" <heiss@dnet.it>
+Date:   Fri, 27 May 2022 12:00:41 +0100
+Reply-To: kostiantync@online.ee
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_SBL,RCVD_IN_SORBS_WEB,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  1.3 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in
+        *      bl.spamcop.net
+        *      [Blocked - see <https://www.spamcop.net/bl.shtml?195.49.185.119>]
+        *  1.5 RCVD_IN_SORBS_WEB RBL: SORBS: sender is an abusable web server
+        *      [197.234.219.23 listed in dnsbl.sorbs.net]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [197.234.219.23 listed in zen.spamhaus.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [195.49.185.119 listed in bl.score.senderscore.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, May 27, 2022 at 07:44:22AM +0000, keliu wrote:
-> Use ida_alloc()/ida_free() instead of deprecated
-> ida_simple_get()/ida_simple_remove() .
-> 
-> Signed-off-by: keliu <liuke94@huawei.com>
+Good Morning,
 
+We are Kostiantyn Chychkov and Maryna Chudnovska from Ukraine, we need your service, we have gone through your profile and we will like to work with you on an important service that needs urgent attention due to the ongoing war in our country. Kindly acknowledge this inquiry as soon as possible for a detailed discussion about the service.
 
-virtio bits
+Thank you.
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Yours expectantly,
 
+Kostiantyn Chichkov & Ms. Maryna Chudnovska,
+From Ukraine.
 
-pls cc people that commented on a similar patch in the past though.
-
-Thanks!
-
-> ---
->  drivers/char/hw_random/virtio-rng.c | 6 +++---
->  drivers/char/ipmi/ipmi_msghandler.c | 4 ++--
->  drivers/char/ppdev.c                | 6 +++---
->  3 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-> index e856df7e285c..0ee602963c50 100644
-> --- a/drivers/char/hw_random/virtio-rng.c
-> +++ b/drivers/char/hw_random/virtio-rng.c
-> @@ -135,7 +135,7 @@ static int probe_common(struct virtio_device *vdev)
->  	if (!vi)
->  		return -ENOMEM;
->  
-> -	vi->index = index = ida_simple_get(&rng_index_ida, 0, 0, GFP_KERNEL);
-> +	vi->index = index = ida_alloc(&rng_index_ida, GFP_KERNEL);
->  	if (index < 0) {
->  		err = index;
->  		goto err_ida;
-> @@ -165,7 +165,7 @@ static int probe_common(struct virtio_device *vdev)
->  	return 0;
->  
->  err_find:
-> -	ida_simple_remove(&rng_index_ida, index);
-> +	ida_free(&rng_index_ida, index);
->  err_ida:
->  	kfree(vi);
->  	return err;
-> @@ -183,7 +183,7 @@ static void remove_common(struct virtio_device *vdev)
->  		hwrng_unregister(&vi->hwrng);
->  	virtio_reset_device(vdev);
->  	vdev->config->del_vqs(vdev);
-> -	ida_simple_remove(&rng_index_ida, vi->index);
-> +	ida_free(&rng_index_ida, vi->index);
->  	kfree(vi);
->  }
->  
-> diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-> index f1827257ef0e..c1584ed24a6b 100644
-> --- a/drivers/char/ipmi/ipmi_msghandler.c
-> +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> @@ -3018,7 +3018,7 @@ static void cleanup_bmc_work(struct work_struct *work)
->  	int id = bmc->pdev.id; /* Unregister overwrites id */
->  
->  	platform_device_unregister(&bmc->pdev);
-> -	ida_simple_remove(&ipmi_bmc_ida, id);
-> +	ida_free(&ipmi_bmc_ida, id);
->  }
->  
->  static void
-> @@ -3134,7 +3134,7 @@ static int __ipmi_bmc_register(struct ipmi_smi *intf,
->  
->  		bmc->pdev.name = "ipmi_bmc";
->  
-> -		rv = ida_simple_get(&ipmi_bmc_ida, 0, 0, GFP_KERNEL);
-> +		rv = ida_alloc(&ipmi_bmc_ida, GFP_KERNEL);
->  		if (rv < 0) {
->  			kfree(bmc);
->  			goto out;
-> diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
-> index 38b46c7d1737..f6024d97fe70 100644
-> --- a/drivers/char/ppdev.c
-> +++ b/drivers/char/ppdev.c
-> @@ -299,7 +299,7 @@ static int register_device(int minor, struct pp_struct *pp)
->  		goto err;
->  	}
->  
-> -	index = ida_simple_get(&ida_index, 0, 0, GFP_KERNEL);
-> +	index = ida_alloc(&ida_index, GFP_KERNEL);
->  	memset(&ppdev_cb, 0, sizeof(ppdev_cb));
->  	ppdev_cb.irq_func = pp_irq;
->  	ppdev_cb.flags = (pp->flags & PP_EXCL) ? PARPORT_FLAG_EXCL : 0;
-> @@ -310,7 +310,7 @@ static int register_device(int minor, struct pp_struct *pp)
->  	if (!pdev) {
->  		pr_warn("%s: failed to register device!\n", name);
->  		rc = -ENXIO;
-> -		ida_simple_remove(&ida_index, index);
-> +		ida_free(&ida_index, index);
->  		goto err;
->  	}
->  
-> @@ -750,7 +750,7 @@ static int pp_release(struct inode *inode, struct file *file)
->  
->  	if (pp->pdev) {
->  		parport_unregister_device(pp->pdev);
-> -		ida_simple_remove(&ida_index, pp->index);
-> +		ida_free(&ida_index, pp->index);
->  		pp->pdev = NULL;
->  		pr_debug(CHRDEV "%x: unregistered pardevice\n", minor);
->  	}
-> -- 
-> 2.25.1
 
