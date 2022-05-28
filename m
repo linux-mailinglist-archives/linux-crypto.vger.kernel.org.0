@@ -2,43 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F1C5369A5
-	for <lists+linux-crypto@lfdr.de>; Sat, 28 May 2022 03:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686CA536A7E
+	for <lists+linux-crypto@lfdr.de>; Sat, 28 May 2022 05:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235370AbiE1BTy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 May 2022 21:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        id S1354788AbiE1D7e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 May 2022 23:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355355AbiE1BTx (ORCPT
+        with ESMTP id S229683AbiE1D7d (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 May 2022 21:19:53 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDF31271A1;
-        Fri, 27 May 2022 18:19:52 -0700 (PDT)
-Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L93k73fGfzDqWl;
-        Sat, 28 May 2022 09:19:43 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by kwepemi500015.china.huawei.com
- (7.221.188.92) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 28 May
- 2022 09:19:47 +0800
-From:   Zheng Bin <zhengbin13@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <Jason@zx2c4.com>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <zhengbin13@huawei.com>, <gaochao49@huawei.com>
-Subject: [PATCH -next] crypto: curve25519 - Fix build error when CRYPTO_MANAGER_DISABLE_TESTS!=y && CRYPTO=m
-Date:   Sat, 28 May 2022 09:33:18 +0800
-Message-ID: <20220528013318.1621047-1-zhengbin13@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 27 May 2022 23:59:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0629C62BEF;
+        Fri, 27 May 2022 20:59:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 971DD61C19;
+        Sat, 28 May 2022 03:59:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADED1C34100;
+        Sat, 28 May 2022 03:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653710372;
+        bh=hzVHSh4zr2vcIAinWH7zTymLIFQZIDTSRvcZXhAJ7Fo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sOlksaREXBsfBPvs4hqb11pZ8Um6NmMrLFPvrzu3BYFO8jXRWYiQH5QpAMBayUbt2
+         j3fTCF//XRZeQ5OZp6wMUuNSfRxavj4Db8dOrwmBVasa7+eoWdVcSWLudkXlYTtKbu
+         5evGnCX6n3p3bZhw5m+8V+icPgVmmnxgNJyaQPKkEzc+CSqBZa/Mw6ZXcX8C8amxcB
+         iEsPRo8sYLB3vg9SWTEu8s4PNIgttSwJDfrEfXupl5YC7EKsd0tucsuRQxkSG51IIE
+         +WRFhzHCdjEbZbCvNqT28wi1ASbrBfAhQvT+sNBkWOO07wBB0fl4hco7zMFYaGrRe9
+         m/SuOQB7NO9Tg==
+Date:   Fri, 27 May 2022 20:59:29 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        herbert@gondor.apana.org.au, gaochao <gaochao49@huawei.com>,
+        Ard Biesheuvel <ardb@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH crypto v2] crypto: blake2s - remove shash module
+Message-ID: <YpGeIT1KHv9QwF4X@sol.localdomain>
+References: <YpCGQvpirQWaAiRF@zx2c4.com>
+ <20220527081106.63227-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500015.china.huawei.com (7.221.188.92)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220527081106.63227-1-Jason@zx2c4.com>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -47,34 +56,72 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-If CRYPTO_MANAGER_DISABLE_TESTS!=y, CRYPTO=m, bulding fails:
+On Fri, May 27, 2022 at 10:11:06AM +0200, Jason A. Donenfeld wrote:
+> BLAKE2s has no use as an shash, with no users of it.
 
-lib/crypto/curve25519-selftest.o: In function `curve25519_selftest':
-curve25519-selftest.c:(.init.text+0x60): undefined reference to `__crypto_memneq'
-curve25519-selftest.c:(.init.text+0xec): undefined reference to `__crypto_memneq'
-curve25519-selftest.c:(.init.text+0x114): undefined reference to `__crypto_memneq'
-curve25519-selftest.c:(.init.text+0x154): undefined reference to `__crypto_memneq'
+"no use" => "no known current use".
 
-Add depends for CRYPTO_LIB_CURVE25519 to fix this.
+> diff --git a/lib/crypto/blake2s-selftest.c b/lib/crypto/blake2s-selftest.c
+> index 409e4b728770..38996ee73a64 100644
+> --- a/lib/crypto/blake2s-selftest.c
+> +++ b/lib/crypto/blake2s-selftest.c
+> @@ -4,6 +4,8 @@
+>   */
+>  
+>  #include <crypto/internal/blake2s.h>
+> +#include <linux/kernel.h>
+> +#include <linux/random.h>
+>  #include <linux/string.h>
+>  
+>  /*
+> @@ -548,7 +550,8 @@ bool __init blake2s_selftest(void)
+>  	u8 key[BLAKE2S_KEY_SIZE];
+>  	u8 buf[ARRAY_SIZE(blake2s_testvecs)];
+>  	u8 hash[BLAKE2S_HASH_SIZE];
+> -	struct blake2s_state state;
+> +	u8 blocks[BLAKE2S_BLOCK_SIZE * 4];
+> +	struct blake2s_state state, state1, state2;
+>  	bool success = true;
+>  	int i, l;
+>  
+> @@ -587,5 +590,32 @@ bool __init blake2s_selftest(void)
+>  		}
+>  	}
+>  
+> +	for (i = 0; i < 2048; ++i) {
+> +		get_random_bytes(blocks, sizeof(blocks));
+> +		get_random_bytes(&state, sizeof(state));
+> +
+> +		memcpy(&state1, &state, sizeof(state1));
+> +		memcpy(&state2, &state, sizeof(state2));
+> +		blake2s_compress(&state1, blocks, 4, sizeof(blocks));
+> +		blake2s_compress_generic(&state2, blocks, 4, sizeof(blocks));
+> +		if (memcmp(&state1, &state2, sizeof(state1))) {
+> +			pr_err("blake2s random compress self-test %d: FAIL\n",
+> +			       i + 1);
+> +			success = false;
+> +		}
+> +
+> +		for (l = 1; l < 8; ++l) {
+> +			memcpy(&state1, &state, sizeof(state1));
+> +			memcpy(&state2, &state, sizeof(state2));
+> +			blake2s_compress(&state1, blocks + l, 3, sizeof(blocks) - BLAKE2S_BLOCK_SIZE);
+> +			blake2s_compress_generic(&state2, blocks + l, 3, sizeof(blocks) - BLAKE2S_BLOCK_SIZE);
+> +			if (memcmp(&state1, &state2, sizeof(state1))) {
+> +				pr_err("blake2s random compress align %d self-test %d: FAIL\n",
+> +				       l, i + 1);
+> +				success = false;
+> +			}
+> +		}
+> +	}
 
-Fixes: aa127963f1ca ("crypto: lib/curve25519 - re-add selftests")
-Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
----
- lib/crypto/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+This doesn't compile on arm, since blake2s_compress_generic() isn't defined.
 
-diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
-index 9856e291f414..f233bed9f214 100644
---- a/lib/crypto/Kconfig
-+++ b/lib/crypto/Kconfig
-@@ -70,6 +70,7 @@ config CRYPTO_LIB_CURVE25519_GENERIC
- config CRYPTO_LIB_CURVE25519
- 	tristate "Curve25519 scalar multiplication library"
- 	depends on CRYPTO_ARCH_HAVE_LIB_CURVE25519 || !CRYPTO_ARCH_HAVE_LIB_CURVE25519
-+	depends on (CRYPTO && CRYPTO_MANAGER_DISABLE_TESTS!=y) || (CRYPTO_MANAGER_DISABLE_TESTS=y)
- 	select CRYPTO_LIB_CURVE25519_GENERIC if CRYPTO_ARCH_HAVE_LIB_CURVE25519=n
- 	help
- 	  Enable the Curve25519 library interface. This interface may be
---
-2.31.1
+Also, the wrong value is being passed for the 'inc' argument.
 
+2048 iterations is also a lot.  Doing a lot of iterations here doesn't
+meaningfully increase the test coverage.
+
+And please run checkpatch; those are some very long lines :-(
+
+- Eric
