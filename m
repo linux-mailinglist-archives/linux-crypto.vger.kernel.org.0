@@ -2,58 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BA553696D
-	for <lists+linux-crypto@lfdr.de>; Sat, 28 May 2022 02:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A280C5369AA
+	for <lists+linux-crypto@lfdr.de>; Sat, 28 May 2022 03:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbiE1AjV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 May 2022 20:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
+        id S1355417AbiE1BVb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 May 2022 21:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbiE1AjV (ORCPT
+        with ESMTP id S241873AbiE1BV3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 May 2022 20:39:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E69B496B3;
-        Fri, 27 May 2022 17:39:19 -0700 (PDT)
+        Fri, 27 May 2022 21:21:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF56612AB30;
+        Fri, 27 May 2022 18:21:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61691B825E7;
-        Sat, 28 May 2022 00:39:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C1DC385A9;
-        Sat, 28 May 2022 00:39:16 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5A9F1B82637;
+        Sat, 28 May 2022 01:21:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 234CCC385A9;
+        Sat, 28 May 2022 01:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653698357;
-        bh=8kvWjLS5nLEsyvb9/kvzb99/2a/PJ7zI0saL5NfzYUI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WniJ/Q+vFJF5P62ha9Slb96mIhdog9bpxFNAYC9bSxM88NO8iwfxzkhtYJjEjtLuf
-         kd5RrcwThGqW+WoM6lJNyySRexA08gRtmHT/arQddz/af/OLaOZDuBFoZiHlXzLUYU
-         ohi4KL2Ftq76m1G6yDFMf/6Rh1ckoCro3LiBFGS35OnOiw+7/AL0KZBJlMNj/GxDL2
-         imuw2HXKuDj9MldfaqntYEa7xNxqhLvYJyYcZ9PMtNwOee5sBZhst4XwT78p0Y0Cvn
-         RB55Io5w6INiT6ASWC5VmrazKgESFYqaQV+8Jni20c51j+0JboP1Itwr3JFENmZh1e
-         mGmL0Ov4UNHBQ==
-Date:   Fri, 27 May 2022 17:39:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Shijith Thotton <sthotton@marvell.com>
-Cc:     Arnaud Ebalard <arno@natisbad.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        <linux-crypto@vger.kernel.org>, <jerinj@marvell.com>,
-        <sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
+        s=k20201202; t=1653700885;
+        bh=81OIyW59KL8zJ4RBHbad9qMQj/FTbdeHmPCRRO0/qNA=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=rOCAah0RXphFxUzkB591gIW70wLBpuvx8V54ATcTmaCdgoGN2Uu83JjzfYYoSFoz5
+         hn4fwWGbPsnarqsoxVpqyaWTKckBX8njt0nW/QlfLiWE07XU0xVl4SSIKfilFLs1ry
+         iE89GLC/VnDYRCWFqfYWtQda0EqpV/UvakobW5igs+sr4TFrBcajgJJxmiYaw0RbgY
+         ZFkT7Diyb/MsDJR9MZzCa6dtKGBs+ogkgM2Hy+aF5rjtbdYIOBJxVi5g0Id0aIjeDK
+         4aim6YbE8p/UaQGKbYpSLpRoUv5fZQCdMGupuNJm11rfF1uybJA1p7Gm1DIcG0ZbhO
+         N4RCGuffAZpFg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 10589EAC081;
+        Sat, 28 May 2022 01:21:25 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto Fixes for 5.19
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
+References: <20210108035450.GA6191@gondor.apana.org.au>
+ <20210708030913.GA32097@gondor.apana.org.au>
+ <20210817013601.GA14148@gondor.apana.org.au>
+ <20210929023843.GA28594@gondor.apana.org.au>
+ <20211029041408.GA3192@gondor.apana.org.au>
+ <20211112104815.GA14105@gondor.apana.org.au>
+ <YcKz4wHYTe3qlW7L@gondor.apana.org.au>
+ <YgMn+1qQPQId50hO@gondor.apana.org.au>
+ <YjE5yThYIzih2kM6@gondor.apana.org.au>
+ <YkUdKiJflWqxBmx5@gondor.apana.org.au> <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git tags/v5.19-p1
+X-PR-Tracked-Commit-Id: e4e62bbc6aba49a5edb3156ec65f6698ff37d228
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d075c0c1be279c5f4c6688ac0442fff6494e56bc
+Message-Id: <165370088505.10997.16739846821297828541.pr-tracker-bot@kernel.org>
+Date:   Sat, 28 May 2022 01:21:25 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "open list:MARVELL OCTEONTX2 RVU ADMIN FUNCTION DRIVER" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] octeontx2-af: fix operand size in bitwise operation
-Message-ID: <20220527173915.1c30cdb7@kernel.org>
-In-Reply-To: <6baefc0e5cddb99df98b6a96a15fbd0328b12bda.1653637964.git.sthotton@marvell.com>
-References: <6baefc0e5cddb99df98b6a96a15fbd0328b12bda.1653637964.git.sthotton@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -64,21 +72,15 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 27 May 2022 13:29:28 +0530 Shijith Thotton wrote:
-> Made size of operands same in bitwise operations.
-> 
-> The patch fixes the klocwork issue, operands in a bitwise operation
-> have different size at line 375 and 483.
-> 
-> Signed-off-by: Shijith Thotton <sthotton@marvell.com>
+The pull request you sent on Fri, 27 May 2022 19:29:02 +0800:
 
-# Form letter - net-next is closed
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git tags/v5.19-p1
 
-We have already sent the networking pull request for 5.19
-and therefore net-next is closed for new drivers, features,
-code refactoring and optimizations. We are currently accepting
-bug fixes only.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d075c0c1be279c5f4c6688ac0442fff6494e56bc
 
-Please repost when net-next reopens after 5.19-rc1 is cut.
+Thank you!
 
-RFC patches sent for review only are obviously welcome at any time.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
