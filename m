@@ -2,132 +2,110 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E605378EC
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 May 2022 12:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8C95384B8
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 May 2022 17:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbiE3KJV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 May 2022 06:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
+        id S239159AbiE3PWC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 May 2022 11:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235095AbiE3KJU (ORCPT
+        with ESMTP id S242987AbiE3PUz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 May 2022 06:09:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587CA7B9CA;
-        Mon, 30 May 2022 03:09:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 12E20B80CEE;
-        Mon, 30 May 2022 10:09:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFA09C34119;
-        Mon, 30 May 2022 10:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653905356;
-        bh=/kppvhYwD8/XAUtnmJGkTh0/Ss6kFj/Di0BL20r+ByY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FJWwmKAoz1OhR0fCXaw00w8fpI0D5h7Kf9X+efPrrCEfyMERp9hKgiUrJosKGQitv
-         Vytjn5kzWtH/P8LCemSknMl+TzlBPTf8NLWRxki0Ax406pk05vMK3XS4yOLFhlmrP9
-         kT/9NExxMXxolh/idTx4hsJYae4PHtqR23Q+V8zSuRIw/fXjhkDek8ZSezuf8rvtwW
-         fAzUR1/z1tNvy7Xj+2xIoirIHAuO0zGXWLWffCb9AH1ZJKYagw5++jDVJOSE8SqKFz
-         zJ+qKBIVcC5EY6UtT0qolpuQqng4eczB3h5CJmd2yyrS+4VoWdS0tYpuUhEdnIYnfw
-         tFGFa8WI1UWbw==
-Received: by mail-ot1-f43.google.com with SMTP id e11-20020a9d6e0b000000b0060afcbafa80so7406146otr.3;
-        Mon, 30 May 2022 03:09:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531SnS3dnRwh1/wMhThx3QKXH9f3X8fb+7ekiiPe8ocq/QUEU9e8
-        K+ztaQvkA6qPDsT+oLI3LTfrw2lexZc9VOLXIAQ=
-X-Google-Smtp-Source: ABdhPJxlYII5iC3+bAlEIZXSUojaOxYZF3pyifh19p4ELiRg5+9LGZcvlwIiQk+X/1RMsijPyi+2Rn3qVYB6vhveKJk=
-X-Received: by 2002:a9d:76d5:0:b0:60b:1882:78bd with SMTP id
- p21-20020a9d76d5000000b0060b188278bdmr13976917otl.71.1653905355895; Mon, 30
- May 2022 03:09:15 -0700 (PDT)
+        Mon, 30 May 2022 11:20:55 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B43A122B4C
+        for <linux-crypto@vger.kernel.org>; Mon, 30 May 2022 07:22:56 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id y8so11424981iof.10
+        for <linux-crypto@vger.kernel.org>; Mon, 30 May 2022 07:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=XJqXgw0Qi4Ge6Q57wB4GlvotoYnhUuSq68y9152a6AE=;
+        b=Uon8wdSqHAkD3+idsDwqsw5/RYE9GUuamAt3cXARqV3NAeDaGTFSLoXs/G0hoAHt+5
+         codSJJxeeG8vzFjwPvQIVi8pQwh8BHkUEnJ12EbeOHHixGjwXNoKXbv093UEgoEUQfeX
+         Wod0GKDhAdiR/Ye/ytirv8v0lLWuUvpQJix1wPyUwccxWGh+xUage9MXo7G5h4Fk521r
+         DI2oe8/v8oseOn3Ob0K+CIOBqiMgej7MNHpUOxL774B1gIBhklt7oanUcWy5rMkcHIBO
+         DPJxFGRqOeAdN5gDE89YSbgO4qUovR5BE7nFCFMjyJGWrnHFIj5hKg5UUE4gd+cXFCdp
+         hO1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=XJqXgw0Qi4Ge6Q57wB4GlvotoYnhUuSq68y9152a6AE=;
+        b=n+GHLaEb3xdFalkp77uVBw6j9Q58kY3NhGKRSjgO5aypNICfXI7E5OAbkoMpqLJ0Go
+         3FpTI7lmwegbcDT430tbrAPpIcx6bad8KD0dYpVK+inRmu5z2Pyd+4q5VEfKHtA2RON2
+         ACNWqk1WoKkkcOxLMTKlMHRsniyUfhIk3h+cDCcTWSMiMgkhiOSjLJdouSptGxG6uKiI
+         6Yx9ixGaD+yrcfMBeFMvD1i98OUhu+Ie3CqnEZe09/5PK5kpWQwcx6YbAdVf1OGzJzCT
+         4u7RvVa7ynfwA+zGBcwJCeQBedKPmT1VYezY/Q16gB+R9d6SdlHUWHJNFlDDxdcuTSW2
+         j43Q==
+X-Gm-Message-State: AOAM5329NaNHykF0CFTg3bCBnXzgHnKlZ801jc9Mwzq9GyFz4X2NVC/6
+        m7zEAk+3VsFN7/jvHtgBFGoXOv+Oa64iYWCjJ5w=
+X-Google-Smtp-Source: ABdhPJwtvJ+07dKTyr7TpOGjLPDpnwsexIyHiV/hfgzfTPNlT+ipRRN6pgsw9s1i3X6T+BTCXU16HSeeuxtReVm1TBY=
+X-Received: by 2002:a05:6638:498e:b0:32e:be76:f908 with SMTP id
+ cv14-20020a056638498e00b0032ebe76f908mr20858880jab.66.1653920570933; Mon, 30
+ May 2022 07:22:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAMj1kXEF6KV=3CXhaRKygBs9hvun7=bKRua5NbWOrksaZBgtCQ@mail.gmail.com>
- <49eb2888-712e-7c81-313b-aec58e906778@foss.arm.com>
-In-Reply-To: <49eb2888-712e-7c81-313b-aec58e906778@foss.arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 30 May 2022 12:09:04 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEj6eGT8LszJTgBAec3Aq9tgsPC-cByGJ1vEXKny3Ui5Q@mail.gmail.com>
-Message-ID: <CAMj1kXEj6eGT8LszJTgBAec3Aq9tgsPC-cByGJ1vEXKny3Ui5Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] Removes the x86 dependency on the QAT drivers
-To:     yoan.picchi@arm.com
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        qat-linux <qat-linux@intel.com>
+Received: by 2002:a05:6622:f06:0:0:0:0 with HTTP; Mon, 30 May 2022 07:22:50
+ -0700 (PDT)
+Reply-To: barristerbenjamin221@gmail.com
+From:   Attorney Amadou <koadaidrissa1@gmail.com>
+Date:   Mon, 30 May 2022 07:22:50 -0700
+Message-ID: <CAOh7+P_+cJJknP6BJXj8NWX7nn8nkbA=aoSG2t49pestA9PG0g@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+X-Spam-Status: Yes, score=7.7 required=5.0 tests=BAYES_99,BAYES_999,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:d41 listed in]
+        [list.dnswl.org]
+        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
+        *      [score: 1.0000]
+        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
+        *      [score: 1.0000]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [koadaidrissa1[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [barristerbenjamin221[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [koadaidrissa1[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 30 May 2022 at 11:58, Yoan Picchi <yoan.picchi@foss.arm.com> wrote:
->
->  > On Wed, 18 May 2022 at 17:55, Andre Przywara <andre.przywara@arm.com>
-> wrote:
->  > >
->  > > On Tue, 17 May 2022 10:11:09 +0200
->  > > Ard Biesheuvel <ardb@kernel.org> wrote:
->  > >
->  > > Hi,
->  > >
->  > > > On Mon, 16 May 2022 at 12:16, <yoan.picchi@arm.com> wrote:
->  > > > >
->  > > > > From: Yoan Picchi <yoan.picchi@arm.com>
->  > > > >
->  > > > > This dependency looks outdated. After the previous patch, we
-> have been able
->  > > > > to use this driver to encrypt some data and to create working
-> VF on arm64.
->  > > > >
->  > > > > Signed-off-by: Yoan Picchi <yoan.picchi@arm.com>
->  > > >
->  > > > Are you sure the driver is safe for non-coherent DMA as well?
->  > >
->  > > That depends on your definition of "sure".
->  > > We indeed tested this only on a server with coherent PCIe.
->  > >
->  > > I skimmed through the driver, and it looks like to use the DMA API
->  > > correctly:
->  > > - I see dma_alloc_coherent() calls for DMA ring buffers.
->  > > - There are dma_map_single()/dma_unmap_single() pairs in other parts.
->  > > - Accesses to the BARs are capsuled via macros, using readl/writel.
->  > > - Access the the SRAM BAR is also only done via those macros.
->  > >
->  > > I didn't go through the driver systematically, and of course the
->  > > interesting parts are the ones you don't see easily, so I am eager
-> to hear
->  > > any other opinions on this topic.
->  > >
->  > > Ard, do you have anything special in mind? Is there something to
-> look out
->  > > for, specifically?
->  > >
->  >
->  > If it uses the DMA api consistently and correctly, and works as
->  > expected when running under a SMMU, things are probably fine
->  >
->  > > The few cards we have access to are in some server in the data
-> centre, so
->  > > I can't easily walk in with, say a RockPro64, and test this there.
->  > >
->  >
->  > I suppose this implies that you have tested with SMMUs enabled.
->
-> Sorry for the delay, I was away for a few days.
-> Actually, our previous attempts were with the iommu set to passthrough,
-> but I
-> just tested without the passthrough and it works the same way.
-
-Thanks for confirming.
-
-So this looks fine to me as far as un-x86-like DMA topologies are
-concerned. I do agree that big-endian should be forbidden or tested
-thoroughly as well.
+SGVsbG8gZGVhciBmcmllbmQuDQoNClBsZWFzZSBJIHdpbGwgbG92ZSB0byBkaXNjdXNzIHNvbWV0
+aGluZyB2ZXJ5IGltcG9ydGFudCB3aXRoIHlvdSwgSQ0Kd2lsbCBhcHByZWNpYXRlIGl0IGlmIHlv
+dSBncmFudCBtZSBhdWRpZW5jZS4NCg0KU2luY2VyZWx5Lg0KQmFycmlzdGVyIEFtYWRvdSBCZW5q
+YW1pbiBFc3EuDQouLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4NCuimquaEm+OB
+quOCi+WPi+S6uuOAgeOBk+OCk+OBq+OBoeOBr+OAgg0KDQrnp4Hjga/jgYLjgarjgZ/jgajpnZ7l
+uLjjgavph43opoHjgarjgZPjgajjgavjgaTjgYTjgaboqbHjgZflkIjjgYbjga7jgYzlpKflpb3j
+gY3jgafjgZnjgIHjgYLjgarjgZ/jgYznp4HjgavogbTooYbjgpLkuI7jgYjjgabjgY/jgozjgozj
+gbDnp4Hjga/jgZ3jgozjgpLmhJ/orJ3jgZfjgb7jgZnjgIINCg0K5b+D44GL44KJ44CCDQrjg5Dj
+g6rjgrnjgr/jg7zjgqLjg57jg4njgqXjg5njg7Pjgrjjg6Pjg5/jg7NFc3HjgIINCg==
