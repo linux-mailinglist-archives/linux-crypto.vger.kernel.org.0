@@ -2,110 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8C95384B8
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 May 2022 17:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C395386D3
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 May 2022 19:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239159AbiE3PWC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 May 2022 11:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
+        id S237185AbiE3Rgc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 May 2022 13:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242987AbiE3PUz (ORCPT
+        with ESMTP id S229790AbiE3Rgb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 May 2022 11:20:55 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B43A122B4C
-        for <linux-crypto@vger.kernel.org>; Mon, 30 May 2022 07:22:56 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id y8so11424981iof.10
-        for <linux-crypto@vger.kernel.org>; Mon, 30 May 2022 07:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=XJqXgw0Qi4Ge6Q57wB4GlvotoYnhUuSq68y9152a6AE=;
-        b=Uon8wdSqHAkD3+idsDwqsw5/RYE9GUuamAt3cXARqV3NAeDaGTFSLoXs/G0hoAHt+5
-         codSJJxeeG8vzFjwPvQIVi8pQwh8BHkUEnJ12EbeOHHixGjwXNoKXbv093UEgoEUQfeX
-         Wod0GKDhAdiR/Ye/ytirv8v0lLWuUvpQJix1wPyUwccxWGh+xUage9MXo7G5h4Fk521r
-         DI2oe8/v8oseOn3Ob0K+CIOBqiMgej7MNHpUOxL774B1gIBhklt7oanUcWy5rMkcHIBO
-         DPJxFGRqOeAdN5gDE89YSbgO4qUovR5BE7nFCFMjyJGWrnHFIj5hKg5UUE4gd+cXFCdp
-         hO1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=XJqXgw0Qi4Ge6Q57wB4GlvotoYnhUuSq68y9152a6AE=;
-        b=n+GHLaEb3xdFalkp77uVBw6j9Q58kY3NhGKRSjgO5aypNICfXI7E5OAbkoMpqLJ0Go
-         3FpTI7lmwegbcDT430tbrAPpIcx6bad8KD0dYpVK+inRmu5z2Pyd+4q5VEfKHtA2RON2
-         ACNWqk1WoKkkcOxLMTKlMHRsniyUfhIk3h+cDCcTWSMiMgkhiOSjLJdouSptGxG6uKiI
-         6Yx9ixGaD+yrcfMBeFMvD1i98OUhu+Ie3CqnEZe09/5PK5kpWQwcx6YbAdVf1OGzJzCT
-         4u7RvVa7ynfwA+zGBcwJCeQBedKPmT1VYezY/Q16gB+R9d6SdlHUWHJNFlDDxdcuTSW2
-         j43Q==
-X-Gm-Message-State: AOAM5329NaNHykF0CFTg3bCBnXzgHnKlZ801jc9Mwzq9GyFz4X2NVC/6
-        m7zEAk+3VsFN7/jvHtgBFGoXOv+Oa64iYWCjJ5w=
-X-Google-Smtp-Source: ABdhPJwtvJ+07dKTyr7TpOGjLPDpnwsexIyHiV/hfgzfTPNlT+ipRRN6pgsw9s1i3X6T+BTCXU16HSeeuxtReVm1TBY=
-X-Received: by 2002:a05:6638:498e:b0:32e:be76:f908 with SMTP id
- cv14-20020a056638498e00b0032ebe76f908mr20858880jab.66.1653920570933; Mon, 30
- May 2022 07:22:50 -0700 (PDT)
+        Mon, 30 May 2022 13:36:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F07B6898D;
+        Mon, 30 May 2022 10:36:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 902A3B80DC0;
+        Mon, 30 May 2022 17:36:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DF5DC385B8;
+        Mon, 30 May 2022 17:36:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653932188;
+        bh=FoOGGS5HbF/zub9jWYSV2y47AxBkhodh4GDcvNJTV/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k9XidlBjS90S1D3ozRaqkXwNoMLtXaaUSzgtU8f/9GuNDlh7sC/92xLJXDU4IZN6C
+         Hh6rFuhGvl1O8YDK+6xu7FAL4BXeW7+CqWwh8vyrLY0hVM4nNEdd5/Qv90zTJ4gjhs
+         2hwy8RLr1rKQghxP6wKv1cSRK1mrQKJZ+PtTsIQ9t6IHG/mSKietwUakM8Btp0U1us
+         teAMQzQ3QHhDj+D9C/6xe6ZX/8XxXUtN0zlx7hM3ApDk2WtCuw6VwFQliMwbeEDTVn
+         ICejKzj4wdYHo5lhN2BYhDTqq49SsHp/xDYTSB7+DmswshdDFlT1d8S39UDUuFy7x8
+         I1Gq9SLH0VtLA==
+Date:   Mon, 30 May 2022 10:36:26 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zheng Bin <zhengbin13@huawei.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH crypto] crypto: memneq - move into lib/
+Message-ID: <YpUAmiBSb6oEr1oc@sol.localdomain>
+References: <CAHmME9rWfUnUmHR5xo_+WdS0Wgv8yXQb+LqAo24XdoQQR4Wn8w@mail.gmail.com>
+ <20220528102429.189731-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6622:f06:0:0:0:0 with HTTP; Mon, 30 May 2022 07:22:50
- -0700 (PDT)
-Reply-To: barristerbenjamin221@gmail.com
-From:   Attorney Amadou <koadaidrissa1@gmail.com>
-Date:   Mon, 30 May 2022 07:22:50 -0700
-Message-ID: <CAOh7+P_+cJJknP6BJXj8NWX7nn8nkbA=aoSG2t49pestA9PG0g@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: Yes, score=7.7 required=5.0 tests=BAYES_99,BAYES_999,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:d41 listed in]
-        [list.dnswl.org]
-        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [koadaidrissa1[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [barristerbenjamin221[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [koadaidrissa1[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220528102429.189731-1-Jason@zx2c4.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-SGVsbG8gZGVhciBmcmllbmQuDQoNClBsZWFzZSBJIHdpbGwgbG92ZSB0byBkaXNjdXNzIHNvbWV0
-aGluZyB2ZXJ5IGltcG9ydGFudCB3aXRoIHlvdSwgSQ0Kd2lsbCBhcHByZWNpYXRlIGl0IGlmIHlv
-dSBncmFudCBtZSBhdWRpZW5jZS4NCg0KU2luY2VyZWx5Lg0KQmFycmlzdGVyIEFtYWRvdSBCZW5q
-YW1pbiBFc3EuDQouLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4NCuimquaEm+OB
-quOCi+WPi+S6uuOAgeOBk+OCk+OBq+OBoeOBr+OAgg0KDQrnp4Hjga/jgYLjgarjgZ/jgajpnZ7l
-uLjjgavph43opoHjgarjgZPjgajjgavjgaTjgYTjgaboqbHjgZflkIjjgYbjga7jgYzlpKflpb3j
-gY3jgafjgZnjgIHjgYLjgarjgZ/jgYznp4HjgavogbTooYbjgpLkuI7jgYjjgabjgY/jgozjgozj
-gbDnp4Hjga/jgZ3jgozjgpLmhJ/orJ3jgZfjgb7jgZnjgIINCg0K5b+D44GL44KJ44CCDQrjg5Dj
-g6rjgrnjgr/jg7zjgqLjg57jg4njgqXjg5njg7Pjgrjjg6Pjg5/jg7NFc3HjgIINCg==
+On Sat, May 28, 2022 at 12:24:29PM +0200, Jason A. Donenfeld wrote:
+> This is used by code that doesn't need CONFIG_CRYPTO, so move this into
+> lib/ with a Kconfig option so that it can be selected by whatever needs
+> it.
+> 
+> This fixes a linker error Zheng pointed out when
+> CRYPTO_MANAGER_DISABLE_TESTS!=y and CRYPTO=m:
+> 
+>   lib/crypto/curve25519-selftest.o: In function `curve25519_selftest':
+>   curve25519-selftest.c:(.init.text+0x60): undefined reference to `__crypto_memneq'
+>   curve25519-selftest.c:(.init.text+0xec): undefined reference to `__crypto_memneq'
+>   curve25519-selftest.c:(.init.text+0x114): undefined reference to `__crypto_memneq'
+>   curve25519-selftest.c:(.init.text+0x154): undefined reference to `__crypto_memneq'
+> 
+> Reported-by: Zheng Bin <zhengbin13@huawei.com>
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: stable@vger.kernel.org
+> Fixes: aa127963f1ca ("crypto: lib/curve25519 - re-add selftests")
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+> I'm traveling over the next week, and there are a few ways to skin this
+> cat, so if somebody here sees issue, feel free to pick this v1 up and
+> fashion a v2 out of it.
+> 
+>  crypto/Kconfig           | 1 +
+>  crypto/Makefile          | 2 +-
+>  lib/Kconfig              | 3 +++
+>  lib/Makefile             | 1 +
+>  lib/crypto/Kconfig       | 1 +
+>  {crypto => lib}/memneq.c | 0
+>  6 files changed, 7 insertions(+), 1 deletion(-)
+>  rename {crypto => lib}/memneq.c (100%)
+
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+
+- Eric
