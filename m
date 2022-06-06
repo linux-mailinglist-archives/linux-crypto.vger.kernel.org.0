@@ -2,21 +2,21 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B200453E3AA
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Jun 2022 10:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C11753E1E0
+	for <lists+linux-crypto@lfdr.de>; Mon,  6 Jun 2022 10:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbiFFGuJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 6 Jun 2022 02:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
+        id S230145AbiFFGuL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 6 Jun 2022 02:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbiFFGt5 (ORCPT
+        with ESMTP id S230169AbiFFGuC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 6 Jun 2022 02:49:57 -0400
+        Mon, 6 Jun 2022 02:50:02 -0400
 Received: from twspam01.aspeedtech.com (twspam01.aspeedtech.com [211.20.114.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3106F1148
-        for <linux-crypto@vger.kernel.org>; Sun,  5 Jun 2022 23:49:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DB7B9D
+        for <linux-crypto@vger.kernel.org>; Sun,  5 Jun 2022 23:50:01 -0700 (PDT)
 Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 2566YucS035313;
+        by twspam01.aspeedtech.com with ESMTP id 2566YucT035313;
         Mon, 6 Jun 2022 14:34:57 +0800 (GMT-8)
         (envelope-from neal_liu@aspeedtech.com)
 Received: from localhost.localdomain (192.168.10.10) by TWMBX02.aspeed.com
@@ -33,11 +33,10 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
 CC:     <linux-aspeed@lists.ozlabs.org>, <linux-crypto@vger.kernel.org>,
         <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <BMC-SW@aspeedtech.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 2/5] dt-bindings: clock: Add AST2600 HACE reset definition
-Date:   Mon, 6 Jun 2022 14:49:32 +0800
-Message-ID: <20220606064935.1458903-3-neal_liu@aspeedtech.com>
+        <linux-kernel@vger.kernel.org>, <BMC-SW@aspeedtech.com>
+Subject: [PATCH v2 3/5] ARM: dts: aspeed: Add HACE device controller node
+Date:   Mon, 6 Jun 2022 14:49:33 +0800
+Message-ID: <20220606064935.1458903-4-neal_liu@aspeedtech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220606064935.1458903-1-neal_liu@aspeedtech.com>
 References: <20220606064935.1458903-1-neal_liu@aspeedtech.com>
@@ -48,7 +47,7 @@ X-Originating-IP: [192.168.10.10]
 X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
  (192.168.0.24)
 X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 2566YucS035313
+X-MAIL: twspam01.aspeedtech.com 2566YucT035313
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -58,27 +57,33 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add HACE reset bit definition for ast2600.
+Add hace node to device tree for AST2600.
 
 Signed-off-by: Neal Liu <neal_liu@aspeedtech.com>
 Signed-off-by: Johnny Huang <johnny_huang@aspeedtech.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- include/dt-bindings/clock/ast2600-clock.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/aspeed-g6.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/dt-bindings/clock/ast2600-clock.h b/include/dt-bindings/clock/ast2600-clock.h
-index 62b9520a00fd..d8b0db2f7a7d 100644
---- a/include/dt-bindings/clock/ast2600-clock.h
-+++ b/include/dt-bindings/clock/ast2600-clock.h
-@@ -111,6 +111,7 @@
- #define ASPEED_RESET_PCIE_RC_O		19
- #define ASPEED_RESET_PCIE_RC_OEN	18
- #define ASPEED_RESET_PCI_DP		5
-+#define ASPEED_RESET_HACE		4
- #define ASPEED_RESET_AHB		1
- #define ASPEED_RESET_SDRAM		0
+diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+index 3d5ce9da42c3..371d2a6b56ef 100644
+--- a/arch/arm/boot/dts/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+@@ -304,6 +304,14 @@ apb {
+ 			#size-cells = <1>;
+ 			ranges;
  
++			hace: crypto@1e6d0000 {
++				compatible = "aspeed,ast2600-hace";
++				reg = <0x1e6d0000 0x200>;
++				interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&syscon ASPEED_CLK_GATE_YCLK>;
++				resets = <&syscon ASPEED_RESET_HACE>;
++			};
++
+ 			syscon: syscon@1e6e2000 {
+ 				compatible = "aspeed,ast2600-scu", "syscon", "simple-mfd";
+ 				reg = <0x1e6e2000 0x1000>;
 -- 
 2.25.1
 
