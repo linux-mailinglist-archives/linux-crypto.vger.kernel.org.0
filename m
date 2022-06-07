@@ -2,140 +2,132 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D7453F901
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jun 2022 11:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30CB53F9B0
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jun 2022 11:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238874AbiFGJF7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 7 Jun 2022 05:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
+        id S239491AbiFGJ2M (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 7 Jun 2022 05:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237671AbiFGJF6 (ORCPT
+        with ESMTP id S239449AbiFGJ2F (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 7 Jun 2022 05:05:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77DE4D2471
-        for <linux-crypto@vger.kernel.org>; Tue,  7 Jun 2022 02:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654592756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HhinCZb2A9zT1SaIBzoENIRctzxd17wZ4GhZVdK/SiM=;
-        b=JMi82Rs6HWHoGnmrMLQBV22gDWtP5oO9TUFAzPPtM9IzYIEyLeQJVPGp+9Dybd4uyF28QG
-        1qVpgqDoYcjmLehqUWPWrxqwzyJFBHzj+aiAXs6J1lV0WeOMuU8Q8LLBeYz0dYW1UiJzVZ
-        5WWakmswsL+ZT6lNLoZD8f0gImcpx6U=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-198-VZ7hXx8fPfCpgjB1m_exmQ-1; Tue, 07 Jun 2022 05:05:55 -0400
-X-MC-Unique: VZ7hXx8fPfCpgjB1m_exmQ-1
-Received: by mail-lj1-f200.google.com with SMTP id s15-20020a2e9c0f000000b002554eee26ebso2847543lji.21
-        for <linux-crypto@vger.kernel.org>; Tue, 07 Jun 2022 02:05:54 -0700 (PDT)
+        Tue, 7 Jun 2022 05:28:05 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FA03CA6D
+        for <linux-crypto@vger.kernel.org>; Tue,  7 Jun 2022 02:28:01 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id r14-20020a056830418e00b0060b8da9ff75so12504705otu.11
+        for <linux-crypto@vger.kernel.org>; Tue, 07 Jun 2022 02:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ohM259uqobJqtM7gttWurWj7P+4iDfPJquHax95olDY=;
+        b=gujHBVxqWIlmngbJHwwatlrY6K2BhXGLJOXKENebOL4hOCXVjvoa+7rQ+wCwOuo7nz
+         8e28HbaszMFtjrNu2xJwHUtJo1p0vWs5cPK29M2FpYQX1yrDGputAW1tF1NfmP59wawm
+         4ciGU9SnxDgRMb84mTOs96+/9zN97uENfqj9/+eZfuG77h5pSaMszmbmnWOwi9m+gNzd
+         5NtwsZACk2ULSP0cRt0MdNUxBuwzIbCfzmloCBb/Ue1QhCyZ8f6GEgrTXVIY7durHnKk
+         UWQF6j7yHnTlxlvI9xCgSzii4NusQH9ADfpyzQwiF9b+OrCBSH3adFs9TwqclNBk9aQF
+         O14A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HhinCZb2A9zT1SaIBzoENIRctzxd17wZ4GhZVdK/SiM=;
-        b=C9B15If2pFW8kxagDzftFlMtSacqyMgm35WSa6RrUCiXUX2yOc0A0Vq4/YYfPTHozG
-         DosxKvTa++IDFuhriewkzQAzrB4RmATj7TK7YyqmG6VZtmpab5TiJuBKwL/FlvmAVkxs
-         Ag8dBF3P03GGMFn+B/arMKQMa2uk3tuAJjaOf9YSiR1l1wOt2CzBxFB8ng2NxDtSM4F2
-         HnJRW82XNpgwTI97GykXUa3BAlPZfTpYst9R/hnWaOoqhJBvRbW9ozXCIpsjFpyuS5Ow
-         198BwfPbGKOofmbmw5Dkp2rOuxJpwsfbsUaXWXVdLmrNZe8Rpfx9KKw7RSRTHL8JRVxX
-         xkEQ==
-X-Gm-Message-State: AOAM532FHOT+1TAAxRO/SlZTVtkZMzgVnaqiH+fSYPGLFR8zK3U7Qj2D
-        ytL50tjrnt1jRnDuvuVhLOFnHSGuutWRCmD7c/vu2Hu7FiDifLEB7lbc7PshtMNwuljFo1Ctf3/
-        ynLWyWPem5Ib7/J/5gPiBw5iUEQJvbim6ArKyQor7
-X-Received: by 2002:ac2:4e0f:0:b0:479:54a6:f9bb with SMTP id e15-20020ac24e0f000000b0047954a6f9bbmr4062067lfr.257.1654592753310;
-        Tue, 07 Jun 2022 02:05:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIDIoF2LjR2OH4SEODLzhZJg0EllYDRK8WAKxmcexYZWRF7HIyxPgpDkGpn53Kll+hiDhH2iHOfgcC1b+DWMs=
-X-Received: by 2002:ac2:4e0f:0:b0:479:54a6:f9bb with SMTP id
- e15-20020ac24e0f000000b0047954a6f9bbmr4062047lfr.257.1654592753037; Tue, 07
- Jun 2022 02:05:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ohM259uqobJqtM7gttWurWj7P+4iDfPJquHax95olDY=;
+        b=6+lX+xRGweXVqseiMJfxak5zV4RDg6pFopznZ2D2yuJqJTi+UQFCZiza+wxuah7fZ3
+         JPNEDPaFaBmUUUwrZjba/lfcVIMN0d1bBpUxqF4iIlQJzdqNTy4j4e9e9BUGQuWkqxcM
+         Rxb1CJbLSXyLgVqFC4VEp2SIjSyeIauk9nh9bToVlleNr69WxVUbkI1uC1oCDUOtEnpi
+         Xykxe2k/RB+a9wnTFgPwF+bbcSV5roYUZ7HG3Ug2pULVhA6EVDegxWjt2O0BRu/UYgDw
+         WwyjjuI4JNFgLKuYoqrVqqBssYzoDkwyIFn4c89v3JqvqSYC8aposV4OFNBVfhBoNUwL
+         OPYA==
+X-Gm-Message-State: AOAM533zTEL5w7LI9JaboncxpMcWuKMgf5uHVWl1t52pWkG8iTAn4dLo
+        9sQFxTbUj9rLDJ6BCaFTDk0CW5fDi9IAaZbtC5A=
+X-Google-Smtp-Source: ABdhPJxTYNOyqQTj+pRtv7B26L++zgaw4oyR9fAzq9Xjy/qi86fDOL5mMOdKcDA6Petw4QZgBH7CHdeaexgYk1On3ls=
+X-Received: by 2002:a05:6830:919:b0:60a:fe63:e321 with SMTP id
+ v25-20020a056830091900b0060afe63e321mr11494607ott.227.1654594080399; Tue, 07
+ Jun 2022 02:28:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000fc128605e08585c6@google.com> <00000000000068486805e0d68f94@google.com>
-In-Reply-To: <00000000000068486805e0d68f94@google.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 7 Jun 2022 17:05:41 +0800
-Message-ID: <CACGkMEvCmtmfBSDeq1psgW4+MTymfs_T-EFQx=2UdXfy1vWDiw@mail.gmail.com>
-Subject: Re: [syzbot] INFO: task hung in add_early_randomness (2)
-To:     syzbot <syzbot+5b59d6d459306a556f54@syzkaller.appspotmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux@dominikbrodowski.net, mpm@selenic.com, mst <mst@redhat.com>,
-        syzkaller-bugs@googlegroups.com,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, yuehaibing@huawei.com
-Content-Type: multipart/mixed; boundary="0000000000004b57ae05e0d7e507"
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+Received: by 2002:a05:6358:99a5:b0:a2:a1fa:9308 with HTTP; Tue, 7 Jun 2022
+ 02:28:00 -0700 (PDT)
+Reply-To: robertbaileys_spende@aol.com
+From:   Robert Baileys <mercymiji.j@gmail.com>
+Date:   Tue, 7 Jun 2022 11:28:00 +0200
+Message-ID: <CAAD1zOZ9bCDqBnjmbC3dQfgC=P2zTqAS=TP3q5qK5TFB5=Q9dQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:32b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [mercymiji.j[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.3 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---0000000000004b57ae05e0d7e507
-Content-Type: text/plain; charset="UTF-8"
+--=20
+Hallo, lieber Beg=C3=BCnstigter,
 
-On Tue, Jun 7, 2022 at 3:30 PM syzbot
-<syzbot+5b59d6d459306a556f54@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this issue to:
->
-> commit 8b4ec69d7e098a7ddf832e1e7840de53ed474c77
-> Author: Jason Wang <jasowang@redhat.com>
-> Date:   Fri May 27 06:01:19 2022 +0000
->
->     virtio: harden vring IRQ
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1175c3c7f00000
-> start commit:   f2906aa86338 Linux 5.19-rc1
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1375c3c7f00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1575c3c7f00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=cbd131cc02ee620e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5b59d6d459306a556f54
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104f4d4ff00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d6782df00000
->
-> Reported-by: syzbot+5b59d6d459306a556f54@syzkaller.appspotmail.com
-> Fixes: 8b4ec69d7e09 ("virtio: harden vring IRQ")
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->
+Sie haben diese E-Mail von der Robert Bailey Foundation erhalten. Ich
+bin ein pensionierter Regierungsangestellter aus Harlem und ein
+Powerball-Lotterie-Jackpot-Gewinner von 343,8 Millionen Dollar. Ich
+bin der gr=C3=B6=C3=9Fte Jackpot-Gewinner in der Geschichte der New York Lo=
+ttery
+in Amerika. Ich habe diesen Wettbewerb am 27. Oktober 2018 gewonnen
+und m=C3=B6chte Ihnen mitteilen, dass Google in Kooperation mit Microsoft
+Ihre "E-Mail-Adresse" f=C3=BCr meine Anfrage hat und diese 3.000.000,00
+Millionen Euro kosten wird. Ich spende diese 3 Millionen Euro an Sie,
+um auch Wohlt=C3=A4tigkeitsorganisationen und armen Menschen in Ihrer
+Gemeinde zu helfen, damit wir die Welt zu einem besseren Ort f=C3=BCr alle
+machen k=C3=B6nnen. Bitte besuchen Sie die folgende Website f=C3=BCr weiter=
+e
+Informationen, damit Sie diesen 3 Mio. EUR Ausgaben nicht skeptisch
+gegen=C3=BCberstehen.
+https://nypost.com/2018/11/14/meet-the-winner-of-the-biggest-lottery-jackpo=
+t-in-new-york-history/Sie
+Weitere Best=C3=A4tigungen kann ich auch auf meinem Youtube suchen:
+https://www.youtube.com/watch?v=3DH5vT18Ysavc
+Bitte antworten Sie mir per E-Mail (robertbaileys_spende@aol.com).
+Sie m=C3=BCssen diese E-Mail sofort beantworten, damit die =C3=BCberweisend=
+e
+Bank mit dem Erhalt dieser Spende in H=C3=B6he von 3.000.000,00 Millionen
+Euro beginnen kann.
+Bitte kontaktieren Sie die untenstehende E-Mail-Adresse f=C3=BCr weitere
+Informationen, damit Sie diese Spende von der =C3=BCberweisenden Bank
+erhalten k=C3=B6nnen. E-Mail: robertbaileys_spende@aol.com
 
-I wonder if it's related to shared IRQ.
+Gr=C3=BC=C3=9Fe,
+Robert Bailey
+* * * * * * * * * * * * * * * *
 
-Want to know if the attached patch works.
-
-Thanks
-
---0000000000004b57ae05e0d7e507
-Content-Type: application/octet-stream; 
-	name="0001-virtio_ring-use-IRQ_HANDLED.patch"
-Content-Disposition: attachment; 
-	filename="0001-virtio_ring-use-IRQ_HANDLED.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_l43xsnpi0>
-X-Attachment-Id: f_l43xsnpi0
-
-RnJvbSAyY2JlOWYwODViMTZiOGExOTE4ODFiZTg4MDgxOGQwNzA1NjQxNzhkIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBKYXNvbiBXYW5nIDxqYXNvd2FuZ0ByZWRoYXQuY29tPgpEYXRl
-OiBUdWUsIDcgSnVuIDIwMjIgMTY6NTY6MjcgKzA4MDAKU3ViamVjdDogW1BBVENIXSB2aXJ0aW9f
-cmluZzogdXNlIElSUV9IQU5ETEVELgpDb250ZW50LXR5cGU6IHRleHQvcGxhaW4KClNpZ25lZC1v
-ZmYtYnk6IEphc29uIFdhbmcgPGphc293YW5nQHJlZGhhdC5jb20+Ci0tLQogZHJpdmVycy92aXJ0
-aW8vdmlydGlvX3JpbmcuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
-MSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMg
-Yi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCmluZGV4IDEzYTczNDhjZWRmZi4uMWFmNTVl
-NTc2NTA1IDEwMDY0NAotLS0gYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCisrKyBiL2Ry
-aXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKQEAgLTIxMzcsNyArMjEzNyw3IEBAIGlycXJldHVy
-bl90IHZyaW5nX2ludGVycnVwdChpbnQgaXJxLCB2b2lkICpfdnEpCiAJaWYgKHVubGlrZWx5KHZx
-LT5icm9rZW4pKSB7CiAJCWRldl93YXJuX29uY2UoJnZxLT52cS52ZGV2LT5kZXYsCiAJCQkgICAg
-ICAidmlydGlvIHZyaW5nIElSUSByYWlzZWQgYmVmb3JlIERSSVZFUl9PSyIpOwotCQlyZXR1cm4g
-SVJRX05PTkU7CisJCXJldHVybiBJUlFfSEFORExFRDsKIAl9CiAKIAkvKiBKdXN0IGEgaGludCBm
-b3IgcGVyZm9ybWFuY2U6IHNvIGl0J3Mgb2sgdGhhdCB0aGlzIGNhbiBiZSByYWN5ISAqLwotLSAK
-Mi4yNS4xCgo=
---0000000000004b57ae05e0d7e507--
-
+Powerball-Jackpot-Gewinner
+E-Mail: robertbaileys_spende@aol.com
