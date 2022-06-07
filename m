@@ -2,94 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A8453F1E2
-	for <lists+linux-crypto@lfdr.de>; Mon,  6 Jun 2022 23:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334DB53F312
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jun 2022 02:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbiFFV42 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 6 Jun 2022 17:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
+        id S232810AbiFGAuu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 6 Jun 2022 20:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbiFFV41 (ORCPT
+        with ESMTP id S231290AbiFGAut (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 6 Jun 2022 17:56:27 -0400
-X-Greylist: delayed 507 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 06 Jun 2022 14:56:24 PDT
-Received: from vps87552.serveur-vps.net (vps87552.serveur-vps.net [31.207.38.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AA25F252;
-        Mon,  6 Jun 2022 14:56:24 -0700 (PDT)
-Received: from vps87552.serveur-vps.net (localhost [127.0.0.1])
-        (Authenticated sender: offre-valable_pourtous@adiegroup24.com)
-        by vps87552.serveur-vps.net (Postfix) with ESMTPA id 833437081FD;
-        Mon,  6 Jun 2022 23:47:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=adiegroup24.com;
-        s=default; t=1654552073; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=hI96B4AvQ94OtQD5c66/SHmG3wRTtyUZYZfeujzxVPM=;
-        b=XLCzvx9AHRL5xq7R0GvIT7nMBso+E/jQfmmObmPrMJMSVUmHvY2Ijc+/2ZsTxaF6rszykZ
-        0HskBjNPc0Rvgk3C6bvi2YfXzNY7U28+UXVKTCOm54g/G52exA3LwxI2BY77U6QY4U0M3g
-        z8DeJ61uSRmALOA50Q9u1rhYwZg9dJhpQ5D0qafNLEWFtSrRpzOx0HD3b4FQW7+cvdUhZt
-        4L7qywHUNZsdLsehBuQRpvsjiANPJmpscPw9zJcoKjwQX9CNA2h0nUH7ur5wgD891VkOBJ
-        o2AzMXFC/w6acsYcGMml0oQosywZOdWHudJBrB/6KJ5mx70DEkt1JcMtrxz6JA==
+        Mon, 6 Jun 2022 20:50:49 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 324A6BA559;
+        Mon,  6 Jun 2022 17:50:48 -0700 (PDT)
+Received: from [192.168.87.104] (unknown [50.47.106.71])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 87E1320BE625;
+        Mon,  6 Jun 2022 17:50:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 87E1320BE625
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1654563047;
+        bh=mNIWq9mEXLrb2v1fqG+qEYhLSaH2HfCn23YiIjp/ozs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MmasGyKFt3+ENYRwLKiFpoiehKjYBtnkFGsVFLDwFYkPbHgu4xCmT9g3LpBW98z80
+         QZqERPjYGTiFrDX5ozdsaBbkYtYsVNQW2IAFvxy8LczsPaFDWcNSo+EoVpO3wT/ykY
+         tQ2GxmhBC/gs2UkznfLjNQ6TI1QR9WyzwWInZ7lc=
+Message-ID: <bba832ec-ea64-71db-385a-ab9816e7239c@linux.microsoft.com>
+Date:   Mon, 6 Jun 2022 17:50:45 -0700
 MIME-Version: 1.0
-Date:   Mon, 06 Jun 2022 23:47:52 +0200
-From:   =?UTF-8?Q?Gelegenheit_f=C3=BCr_alle?= 
-        <offre-valable_pourtous@adiegroup24.com>
-To:     undisclosed-recipients:;
-Subject: =?UTF-8?Q?Gelegenheit_f=C3=BCr_alle?=
-Reply-To: noellepaul000@gmail.com
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <867f7a60a74cdb09cf1f35b2cb1a4bdc@adiegroup24.com>
-X-Sender: offre-valable_pourtous@adiegroup24.com
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
-X-Spam-Status: Yes, score=5.8 required=5.0 tests=BAYES_99,BAYES_999,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [noellepaul000[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *****
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v2 3/5] ARM: dts: aspeed: Add HACE device controller node
+Content-Language: en-US
+To:     Neal Liu <neal_liu@aspeedtech.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Johnny Huang <johnny_huang@aspeedtech.com>
+Cc:     devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        BMC-SW@aspeedtech.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20220606064935.1458903-1-neal_liu@aspeedtech.com>
+ <20220606064935.1458903-4-neal_liu@aspeedtech.com>
+From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
+In-Reply-To: <20220606064935.1458903-4-neal_liu@aspeedtech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-22.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On 6/5/2022 11:49 PM, Neal Liu wrote:
+> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+> index 3d5ce9da42c3..371d2a6b56ef 100644
+> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> @@ -304,6 +304,14 @@ apb {
+>   			#size-cells = <1>;
+>   			ranges;
+>   
+> +			hace: crypto@1e6d0000 {
+> +				compatible = "aspeed,ast2600-hace";
+> +				reg = <0x1e6d0000 0x200>;
+> +				interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&syscon ASPEED_CLK_GATE_YCLK>;
+> +				resets = <&syscon ASPEED_RESET_HACE>;
 
+Shouldn't the left side be also 'crypto', see existing crypto nodes in 
+arch/arm64/dts for example.
 
--- 
-Wir sind ein Geldverleihdienst zwischen Privatpersonen, der jedem hilft,
-der einen Kredit benötigt. Wir können Ihnen einen Kredit zwischen 1000
-€ und 25.000.000 € mit einem festen Zinssatz von 1,5 % gewähren.
-Erhalten Sie einen Kredit, um Ihre Schulden zu begleichen, Ihre Projekte
-durchzuführen, Ihr Traumhaus oder Auto zu kaufen. Wir bieten das 
-Darlehen
-jedem an, der zu unseren Bedingungen zurückzahlen kann. Sie müssen einen
-Kredit aufnehmen: Finanzierung * Wohnungsbaudarlehen * 
-Investitionsdarlehen
-* Autokredit * Konsolidierungsschuld * Kreditlinie * Hypothekendarlehen 
-*
-Kreditablösung * Privatdarlehen. Sie sind aktenkundig, haben Bankverbot
-und werden von Banken nicht bevorzugt oder noch besser, Sie haben ein
-Projekt und brauchen eine Finanzierung, eine schlechte Kreditakte oder
-brauchen Geld, um Rechnungen zu bezahlen E-Mail:: 
-noellepaul000@gmail.com
+			crypto: crypto@1e6d0000 {
+				...
+
+Regards,
+Dhananjay
