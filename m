@@ -2,56 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 549E15426C0
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jun 2022 08:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1E6542840
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jun 2022 09:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbiFHGxt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 8 Jun 2022 02:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
+        id S233082AbiFHHqD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 8 Jun 2022 03:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354591AbiFHGTl (ORCPT
+        with ESMTP id S240299AbiFHHiR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 8 Jun 2022 02:19:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 642B1B1FF
-        for <linux-crypto@vger.kernel.org>; Tue,  7 Jun 2022 23:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654668889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WgWKGhriuZ/b08VwpIQ7c/Jw4pb896/SIme7WzVP+jY=;
-        b=TGEAv/zHrzrfdHSK9ZffSwM6MS1Eq0jbYFJxyesVPQVLeRgzSnGdIN2cuM+n8xGn+OJ0FQ
-        1dkcYwruzZaR2SBNb1TOVPZih7VfW8o4JzCXEdKmTdHj4SoP7hxm3NCpE/b3Ir6L8pDdVJ
-        ZpK6WycmDI2LViBeNXwEW6oIwYdai84=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-324-jMlX7HzrOBWmWzfaYQeWtA-1; Wed, 08 Jun 2022 02:14:48 -0400
-X-MC-Unique: jMlX7HzrOBWmWzfaYQeWtA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 206043804518;
-        Wed,  8 Jun 2022 06:14:34 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-13-97.pek2.redhat.com [10.72.13.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B808F2166B26;
-        Wed,  8 Jun 2022 06:14:25 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, mpm@selenic.com, herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvivier@redhat.com, Jason Wang <jasowang@redhat.com>,
-        syzbot+5b59d6d459306a556f54@syzkaller.appspotmail.com
-Subject: [PATCH] virtio-rng: make device ready before making request
-Date:   Wed,  8 Jun 2022 14:14:22 +0800
-Message-Id: <20220608061422.38437-1-jasowang@redhat.com>
+        Wed, 8 Jun 2022 03:38:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E181C0CB6
+        for <linux-crypto@vger.kernel.org>; Wed,  8 Jun 2022 00:04:20 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1nypji-0002oR-6h; Wed, 08 Jun 2022 09:04:14 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1nypjh-0078UY-4b; Wed, 08 Jun 2022 09:04:11 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1nypje-00EvIo-T1; Wed, 08 Jun 2022 09:04:10 +0200
+Date:   Wed, 8 Jun 2022 09:04:08 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Tudor.Ambarus@microchip.com
+Cc:     alexandre.belloni@bootlin.com, Nicolas.Ferre@microchip.com,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        Claudiu.Beznea@microchip.com, linux-arm-kernel@lists.infradead.org,
+        linux-i2c@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] crypto: atmel-ecc - Remove duplicated error reporting in
+ .remove()
+Message-ID: <20220608070408.odie7hrcnfasegbr@pengutronix.de>
+References: <7ffd4d35-938a-3e82-b39b-92e76819fa92@microchip.com>
+ <20220520172100.773730-1-u.kleine-koenig@pengutronix.de>
+ <fd8d1ca1-b6fa-ecb9-ba71-80449af59a9a@microchip.com>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4gnzjrjot45eo7jj"
+Content-Disposition: inline
+In-Reply-To: <fd8d1ca1-b6fa-ecb9-ba71-80449af59a9a@microchip.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,32 +60,62 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Current virtio-rng does a entropy request before DRIVER_OK, this
-violates the spec and kernel will ignore the interrupt after commit
-8b4ec69d7e09 ("virtio: harden vring IRQ").
 
-Fixing this by making device ready before the request.
+--4gnzjrjot45eo7jj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 8b4ec69d7e09 ("virtio: harden vring IRQ")
-Reported-and-tested-by: syzbot+5b59d6d459306a556f54@syzkaller.appspotmail.com
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/char/hw_random/virtio-rng.c | 2 ++
- 1 file changed, 2 insertions(+)
+Hello
 
-diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-index e856df7e285c..a6f3a8a2aca6 100644
---- a/drivers/char/hw_random/virtio-rng.c
-+++ b/drivers/char/hw_random/virtio-rng.c
-@@ -159,6 +159,8 @@ static int probe_common(struct virtio_device *vdev)
- 		goto err_find;
- 	}
- 
-+	virtio_device_ready(vdev);
-+
- 	/* we always have a pending entropy request */
- 	request_entropy(vi);
- 
--- 
-2.25.1
+On Wed, Jun 08, 2022 at 04:33:48AM +0000, Tudor.Ambarus@microchip.com wrote:
+> On 5/20/22 20:21, Uwe Kleine-K=F6nig wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
+the content is safe
+> >=20
+> > Returning an error value in an i2c remove callback results in an error
+> > message being emitted by the i2c core, but otherwise it doesn't make a
+> > difference. The device goes away anyhow and the devm cleanups are
+> > called.
+> >=20
+> > As atmel_ecc_remove() already emits an error message on failure and the
+> > additional error message by the i2c core doesn't add any useful
+> > information, change the return value to zero to suppress this message.
+> >=20
+> > Also make the error message a bit more drastical because when the device
+> > is still busy on remove, it's likely that it will access freed memory
+> > soon.
+> >=20
+> > This patch is a preparation for making i2c remove callbacks return void.
+> >=20
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+>=20
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
+In the past patches were picked up by Herbert. I assume your R-b tag was
+the missing bit to make him pick up this patch? To make a bit more sure
+that will happen, I added him and davem to Cc.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4gnzjrjot45eo7jj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmKgSeUACgkQwfwUeK3K
+7Am/5Af+NIWhwEUYLdsOV0/RIhZ8itERCDfCVrnMb8K5KwOQ+PgWSJiYcj0kSZnM
+tXavBcIqOV94MPWA9ra6PueGGdDHjU5NamPOHSD3c6z9ZWhny96VRIKYonjlG95j
+1Al8wNonhgH4H/qiaFlhoW4QPhZUGQPfHRNqLT0Sql9iT2TYBkGls9sKHPtFMwOn
+QzhM1xCMee5UKWryWf42mhZIA7/GPu131+ZJFBVODXlzYd7krlNuKRegUul8r0pl
+T5F31aLeD+2tjST884EdzsseTSHaH5C0Z4ff8MmUNnd8zezvOZrwtLFaIGrKjSGV
+LLQBHkO2AS1MiUnv0nF110HEPSwpYQ==
+=Tb4p
+-----END PGP SIGNATURE-----
+
+--4gnzjrjot45eo7jj--
