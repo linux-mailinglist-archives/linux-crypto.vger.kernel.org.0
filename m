@@ -2,351 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4750F54B0BB
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 14:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F9754B0B3
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 14:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357123AbiFNMbH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1356626AbiFNMbH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Tue, 14 Jun 2022 08:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356858AbiFNM3i (ORCPT
+        with ESMTP id S242874AbiFNM2b (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jun 2022 08:29:38 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEDB2459B;
-        Tue, 14 Jun 2022 05:29:36 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LMnmj33QMzDqsq;
-        Tue, 14 Jun 2022 20:29:09 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 14 Jun 2022 20:29:34 +0800
-Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
- (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 14 Jun
- 2022 20:29:34 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>,
-        <linux-accelerators@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>,
-        <yekai13@huawei.com>
-Subject: [PATCH 3/3] crypto: hisilicon/qm - defining the device isolation strategy
-Date:   Tue, 14 Jun 2022 20:23:11 +0800
-Message-ID: <20220614122311.824-7-yekai13@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20220614122311.824-1-yekai13@huawei.com>
-References: <20220614122311.824-1-yekai13@huawei.com>
+        Tue, 14 Jun 2022 08:28:31 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C76C27B3C
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 05:28:23 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1014b2752c1so5245375fac.11
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 05:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=lBFrwc11MgcaK75qf3EwNhKoIfwLYz4Dn7scEjO7Hwc=;
+        b=Y9nru7uKQHP8S8uMgk7AhKq0O397+YpG7ni4AgB69hB4dDtI4PddWIbXWdaCiTVQPB
+         1bHn9yTVV5RA/+VUK5cxfgGjdaSgyMo0C4pSR5oeJvcLuHtnJiBaCTHZngR87ZC5HMKc
+         rZcA7lo7S2q4eOxA3U2T1I18OcXwDtjjmGczVjyE8fFSK5OuK9HZzUbYZ4pWl8zmgLPL
+         NF5VtlhZwmsdTnYx9h9OQWiU6ZaH4AAoEPcdnr9/1AQlDI3jQLBl59Zc1lq33HIkDB9M
+         5mvOfPLeoOzgj6pr8wjNJ3N8Vha9dO8gTkaCtyEYGriE8GrxsgxWUrSv33rsa1ZshNpl
+         uqQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=lBFrwc11MgcaK75qf3EwNhKoIfwLYz4Dn7scEjO7Hwc=;
+        b=QSliIJXAiCQgJqbAnidcc+boWwH6z8lEPPpJLAmAqWIX4ohPOvmxcXG1GC9zHgaFf4
+         BLCBYL8EYVIGjzncyEk0ZOAGoGWgmvEGdO+K8j+oqH7tt7zVXbNnX64i9I+LaZGShKkl
+         NXTOq55AT9+0hdgmmmB56xSSfYBlrxSJCGJ97OSVqRgiYWetCdJ7v1fnf0JbsIWuHWau
+         2m3YPIFD3eD+APeUBBr/XRrQpbUkm+yCDFXRnScfrCRKyhCWrio6zS9zTL7f+QAh4mgt
+         J/ja4smwJ7NTS7bJgxknFe2k6J/UGSrfhxNzG663bU6wdkcWJvTJTZoxKoEGPukEFSkJ
+         n3xg==
+X-Gm-Message-State: AJIora+TnGemiF/wuC6BvpSRiEkYHIZ4N+1OiGfbA5HzoG9/Anj91vnH
+        jHLu03EmhAgot/h+2c1WYeeUM7sxXKdtmd5foJY=
+X-Google-Smtp-Source: AGRyM1vsEMgew+gYftu8Ww4LlASRxmMj6056rLqsY3XL/PsVz/o4YvE4qWlutapfa3VyXBxJId1inO4Rji9lyINiosA=
+X-Received: by 2002:a05:6870:d287:b0:f1:c50b:9dd1 with SMTP id
+ d7-20020a056870d28700b000f1c50b9dd1mr2109655oae.45.1655209702540; Tue, 14 Jun
+ 2022 05:28:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a8a:c46:0:b0:42d:ab20:ed24 with HTTP; Tue, 14 Jun 2022
+ 05:28:22 -0700 (PDT)
+From:   Daniel Affum <danielaffum05@gmail.com>
+Date:   Tue, 14 Jun 2022 15:28:22 +0300
+Message-ID: <CAPkju_P7cbdBPF5Z70Y93xkQOC7yPjPhbLOmm2208JgB3=QrgQ@mail.gmail.com>
+Subject: Confirm Receipt
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Define the device isolation strategy by the device driver. if the
-AER error frequency exceeds the value of setting for a certain
-period of time, The device will not be available in user space. The VF
-device use the PF device isolation strategy. All the hardware errors
-are processed by PF driver.
+Hello Dear,
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 155 +++++++++++++++++++++++++++++++---
- include/linux/hisi_acc_qm.h   |   9 ++
- 2 files changed, 152 insertions(+), 12 deletions(-)
+I am Daniel Affum a retired civil servant i have a  business to
+discuss with you from the Eastern part of Africa aimed at agreed
+percentage upon your acceptance of my hand in business and friendship.
+Kindly respond to me if you are interested to partner with me for an
+update.Very important.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index b4ca2eb034d7..391d83929ad2 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -12,7 +12,6 @@
- #include <linux/pm_runtime.h>
- #include <linux/seq_file.h>
- #include <linux/slab.h>
--#include <linux/uacce.h>
- #include <linux/uaccess.h>
- #include <uapi/misc/uacce/hisi_qm.h>
- #include <linux/hisi_acc_qm.h>
-@@ -417,6 +416,16 @@ struct hisi_qm_resource {
- 	struct list_head list;
- };
- 
-+/**
-+ * struct qm_hw_err - structure of describes the device err
-+ * @list: hardware error list
-+ * @tick_stamp: timestamp when the error occurred
-+ */
-+struct qm_hw_err {
-+	struct list_head list;
-+	unsigned long long tick_stamp;
-+};
-+
- struct hisi_qm_hw_ops {
- 	int (*get_vft)(struct hisi_qm *qm, u32 *base, u32 *number);
- 	void (*qm_db)(struct hisi_qm *qm, u16 qn,
-@@ -3265,6 +3274,7 @@ static int hisi_qm_uacce_get_queue(struct uacce_device *uacce,
- 	qp->event_cb = qm_qp_event_notifier;
- 	qp->pasid = arg;
- 	qp->is_in_kernel = false;
-+	atomic_inc(&qm->uacce_ref);
- 
- 	return 0;
- }
-@@ -3272,7 +3282,9 @@ static int hisi_qm_uacce_get_queue(struct uacce_device *uacce,
- static void hisi_qm_uacce_put_queue(struct uacce_queue *q)
- {
- 	struct hisi_qp *qp = q->priv;
-+	struct hisi_qm *qm = qp->qm;
- 
-+	atomic_dec(&qm->uacce_ref);
- 	hisi_qm_cache_wb(qp->qm);
- 	hisi_qm_release_qp(qp);
- }
-@@ -3397,6 +3409,102 @@ static long hisi_qm_uacce_ioctl(struct uacce_queue *q, unsigned int cmd,
- 	return 0;
- }
- 
-+/**
-+ * qm_hw_err_isolate() - Try to isolate the uacce device with its VFs
-+ * @qm: The qm which we want to configure.
-+ *
-+ * according to user's configuration of isolation strategy. Warning: this
-+ * API should be called while there is no user on the device, or the users
-+ * on this device are suspended by slot resetting preparation of PCI AER.
-+ */
-+static int qm_hw_err_isolate(struct hisi_qm *qm)
-+{
-+	struct qm_hw_err *err, *tmp, *hw_err;
-+	struct qm_err_isolate *isolate;
-+	u32 count = 0;
-+
-+	isolate = &qm->isolate_data;
-+
-+#define SECONDS_PER_HOUR	3600
-+
-+	/* All the hw errs are processed by PF driver */
-+	if (qm->uacce->is_vf || atomic_read(&isolate->is_isolate) ||
-+		!isolate->hw_err_isolate_hz)
-+		return 0;
-+
-+	hw_err = kzalloc(sizeof(*hw_err), GFP_ATOMIC);
-+	if (!hw_err)
-+		return -ENOMEM;
-+	hw_err->tick_stamp = jiffies;
-+	list_for_each_entry_safe(err, tmp, &qm->uacce_hw_errs, list) {
-+		if ((hw_err->tick_stamp - err->tick_stamp) / HZ >
-+		    SECONDS_PER_HOUR) {
-+			list_del(&err->list);
-+			kfree(err);
-+		} else {
-+			count++;
-+		}
-+	}
-+	list_add(&hw_err->list, &qm->uacce_hw_errs);
-+
-+	if (count >= isolate->hw_err_isolate_hz)
-+		atomic_set(&isolate->is_isolate, 1);
-+
-+	return 0;
-+}
-+
-+static void qm_hw_err_destroy(struct hisi_qm *qm)
-+{
-+	struct qm_hw_err *err, *tmp;
-+
-+	list_for_each_entry_safe(err, tmp, &qm->uacce_hw_errs, list) {
-+		list_del(&err->list);
-+		kfree(err);
-+	}
-+}
-+
-+static enum uacce_dev_state hisi_qm_get_isolate_state(struct uacce_device *uacce)
-+{
-+	struct hisi_qm *qm = uacce->priv;
-+	struct hisi_qm *pf_qm;
-+
-+	if (uacce->is_vf) {
-+		pf_qm = pci_get_drvdata(pci_physfn(qm->pdev));
-+		qm->isolate_data.is_isolate = pf_qm->isolate_data.is_isolate;
-+	}
-+
-+	return atomic_read(&qm->isolate_data.is_isolate) ?
-+			UACCE_DEV_ISOLATE : UACCE_DEV_NORMAL;
-+}
-+
-+static int hisi_qm_isolate_strategy_write(struct uacce_device *uacce,
-+						const char *buf)
-+{
-+	struct hisi_qm *qm = uacce->priv;
-+	unsigned long val = 0;
-+
-+#define MAX_ISOLATE_STRATEGY	65535
-+
-+	if (atomic_read(&qm->uacce_ref))
-+		return -EBUSY;
-+
-+	/* must be set by PF */
-+	if (atomic_read(&qm->isolate_data.is_isolate) || uacce->is_vf)
-+		return -EINVAL;
-+
-+	if (kstrtoul(buf, 0, &val) < 0)
-+		return -EINVAL;
-+
-+	if (val > MAX_ISOLATE_STRATEGY)
-+		return -EINVAL;
-+
-+	qm->isolate_data.hw_err_isolate_hz = val;
-+	dev_info(&qm->pdev->dev,
-+		"the value of isolate_strategy is set to %lu.\n", val);
-+
-+	return 0;
-+}
-+
- static const struct uacce_ops uacce_qm_ops = {
- 	.get_available_instances = hisi_qm_get_available_instances,
- 	.get_queue = hisi_qm_uacce_get_queue,
-@@ -3405,9 +3513,22 @@ static const struct uacce_ops uacce_qm_ops = {
- 	.stop_queue = hisi_qm_uacce_stop_queue,
- 	.mmap = hisi_qm_uacce_mmap,
- 	.ioctl = hisi_qm_uacce_ioctl,
-+	.get_isolate_state = hisi_qm_get_isolate_state,
- 	.is_q_updated = hisi_qm_is_q_updated,
-+	.isolate_strategy_write = hisi_qm_isolate_strategy_write,
- };
- 
-+static void qm_remove_uacce(struct hisi_qm *qm)
-+{
-+	struct uacce_device *uacce = qm->uacce;
-+
-+	if (qm->use_sva) {
-+		qm_hw_err_destroy(qm);
-+		uacce_remove(uacce);
-+		qm->uacce = NULL;
-+	}
-+}
-+
- static int qm_alloc_uacce(struct hisi_qm *qm)
- {
- 	struct pci_dev *pdev = qm->pdev;
-@@ -3420,6 +3541,7 @@ static int qm_alloc_uacce(struct hisi_qm *qm)
- 	};
- 	int ret;
- 
-+	INIT_LIST_HEAD(&qm->uacce_hw_errs);
- 	ret = strscpy(interface.name, dev_driver_string(&pdev->dev),
- 		      sizeof(interface.name));
- 	if (ret < 0)
-@@ -3433,8 +3555,7 @@ static int qm_alloc_uacce(struct hisi_qm *qm)
- 		qm->use_sva = true;
- 	} else {
- 		/* only consider sva case */
--		uacce_remove(uacce);
--		qm->uacce = NULL;
-+		qm_remove_uacce(qm);
- 		return -EINVAL;
- 	}
- 
-@@ -5074,6 +5195,12 @@ static int qm_controller_reset_prepare(struct hisi_qm *qm)
- 		return ret;
- 	}
- 
-+	if (qm->use_sva) {
-+		ret = qm_hw_err_isolate(qm);
-+		if (ret)
-+			pci_err(pdev, "failed to isolate hw err!\n");
-+	}
-+
- 	ret = qm_wait_vf_prepare_finish(qm);
- 	if (ret)
- 		pci_err(pdev, "failed to stop by vfs in soft reset!\n");
-@@ -5401,19 +5528,24 @@ static int qm_controller_reset(struct hisi_qm *qm)
- 	ret = qm_soft_reset(qm);
- 	if (ret) {
- 		pci_err(pdev, "Controller reset failed (%d)\n", ret);
--		qm_reset_bit_clear(qm);
--		return ret;
-+		goto err_reset;
- 	}
- 
- 	ret = qm_controller_reset_done(qm);
--	if (ret) {
--		qm_reset_bit_clear(qm);
--		return ret;
--	}
-+	if (ret)
-+		goto err_reset;
- 
- 	pci_info(pdev, "Controller reset complete\n");
--
- 	return 0;
-+
-+err_reset:
-+	pci_err(pdev, "Controller reset failed (%d)\n", ret);
-+	qm_reset_bit_clear(qm);
-+
-+	/* if resetting fails, isolate the device */
-+	if (qm->use_sva && !qm->uacce->is_vf)
-+		atomic_set(&qm->isolate_data.is_isolate, 1);
-+	return ret;
- }
- 
- /**
-@@ -6186,8 +6318,7 @@ int hisi_qm_init(struct hisi_qm *qm)
- 
- err_alloc_uacce:
- 	if (qm->use_sva) {
--		uacce_remove(qm->uacce);
--		qm->uacce = NULL;
-+		qm_remove_uacce(qm);
- 	}
- err_irq_register:
- 	qm_irq_unregister(qm);
-diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index 6cabafffd0dd..c090aaaf9974 100644
---- a/include/linux/hisi_acc_qm.h
-+++ b/include/linux/hisi_acc_qm.h
-@@ -8,6 +8,7 @@
- #include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/uacce.h>
- 
- #define QM_QNUM_V1			4096
- #define QM_QNUM_V2			1024
-@@ -265,6 +266,11 @@ struct hisi_qm_list {
- 	void (*unregister_from_crypto)(struct hisi_qm *qm);
- };
- 
-+struct qm_err_isolate {
-+	u32 hw_err_isolate_hz;	/* user cfg freq which triggers isolation */
-+	atomic_t is_isolate;
-+};
-+
- struct hisi_qm {
- 	enum qm_hw_ver ver;
- 	enum qm_fun_type fun_type;
-@@ -329,6 +335,9 @@ struct hisi_qm {
- 	struct qm_shaper_factor *factor;
- 	u32 mb_qos;
- 	u32 type_rate;
-+	struct list_head uacce_hw_errs;
-+	atomic_t uacce_ref; /* reference of the uacce */
-+	struct qm_err_isolate isolate_data;
- };
- 
- struct hisi_qp_status {
--- 
-2.33.0
-
+Yours Sincerely,
+Daniel Affum.
+Reply to:danielaffum005@yahoo.com
