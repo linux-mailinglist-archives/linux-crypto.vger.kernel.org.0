@@ -2,128 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D425554AE39
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 12:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E51854B050
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 14:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354365AbiFNKYh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jun 2022 06:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
+        id S1356856AbiFNMQP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jun 2022 08:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354324AbiFNKYg (ORCPT
+        with ESMTP id S1357014AbiFNMOX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jun 2022 06:24:36 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF784756F
-        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 03:24:35 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id l20so2430466lji.0
-        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 03:24:35 -0700 (PDT)
+        Tue, 14 Jun 2022 08:14:23 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09DD120B8
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 05:14:14 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id a21-20020a9d4715000000b0060bfaac6899so6399026otf.12
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 05:14:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=HI7mop9v/Y4k/2K8Z+RNWKGLaK3HTeAH+wJXPA8w/Fs=;
-        b=j9z7E3LhkYeVhJrLSOvV6+h//X9SN6bJY5GbepuBroDICPUtMwrNuGq4z3UsTvJvLN
-         QVY4Xv0ti6v923ER437MG+KpOhrWpjxtL26CApp+xBPWbkb0qycm12RHYkfp/JK8dnkI
-         OKmAnMaWmc/r41bWS7sBxhMe8aiik+WIGGKusADuVChSza22YmJRZM3+fwGV8d83bzBm
-         a42vCVxcj0rbmSCJJEyMV8a6oHMf+SY695tgzDm6oA15SQoAw1WBrozRrJZOQnpYSyhe
-         Dl0R7k4dpqV7Tu4+aCfMk51/iElFhumw77xqxgNoqzFKK8M2Ch7EnDUNWtAKacSTmJqD
-         3FuA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=lBFrwc11MgcaK75qf3EwNhKoIfwLYz4Dn7scEjO7Hwc=;
+        b=UNA00ExpSe/IYk9qRpK3nhNY3MQGhIZVH9b+TBjq+LdlUjXIh78z6gPdY8GF0sQHK1
+         HJ2n3gfPpUPhyyacfGQvRyEpF1QlynrQ30w+G5Aew5oVgyNdOMVYVhySdHNUBZObva2y
+         PuLir0DHRxYshYjhyycNkTLQ7VsAQLmTK6m5EVJfcKtgRbmxa7D08ugJk7y5pLRJ/ze1
+         6cL1+ieOt2sNltOPHDSKZebgxow79UdI2TUNij2cNTn50jsq9VR126vHNmWni88LExVM
+         7xKsxa1nHQ7JrwK4VAXG7j0wCn6FqCQrLI4ANDOm8760jdm8KbeqIvWnFua/uGvpfZQ4
+         nejg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=HI7mop9v/Y4k/2K8Z+RNWKGLaK3HTeAH+wJXPA8w/Fs=;
-        b=vni4HzbzeD9BDcqXJj0XCd3GddTWnozGZ9z8e1OZJpg+robE7jdxaf4Uf2xvrZKmVv
-         JYaodvsAcWEX4UXrg+RqzcokjiSNEM+81gTPkH1C9v+br4IT1pwU2zlIUmxdeCxa02Kq
-         XUf6rUYoBnQvcRWl26pEezVZdPmMfWt471prpgUYZimr1aTyZLLParpZxPNYQ5+L6CHq
-         sTb0J9DK7wvuEAc8z0lFAJQ3WnBhiLMEZQQclZhV55YYUW+JG6dCo34X6hUHkpEONZQu
-         TuFfxmKa+zWbVC5NT5Spol98adLSBHXSbNcwPk3RZEX8Sfeyei6a0XsNKsiNERe4tv70
-         dOTQ==
-X-Gm-Message-State: AJIora+tsqtVcbgPe2Jppiu76QhMreFpTFaNyjBvhtackIqP5NAlRz4d
-        hk3kIcYROWwSomXWxUJJyR2/ka8hdlqt85+CC+4=
-X-Google-Smtp-Source: AGRyM1sGpPe/hZW5Jp28X6Xz2nFwOkAaeO10NgUSU1VVr66KqNRxwnLsXmvK3cpiRXpA9lgGxAdRe45XZZp2UyiAPqY=
-X-Received: by 2002:a2e:9609:0:b0:255:8364:9fd8 with SMTP id
- v9-20020a2e9609000000b0025583649fd8mr2073413ljh.132.1655202273152; Tue, 14
- Jun 2022 03:24:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=lBFrwc11MgcaK75qf3EwNhKoIfwLYz4Dn7scEjO7Hwc=;
+        b=1EExvOuv0LSZquc1DEpNg4WT5kx480oFjQWLYUJHfu1GqEv+vZAZ5x4PloMhuYU2RB
+         zHnmiN0TBlDZXyEhlh2Z6X1ibZUPIeEzNS98yfFNCgIEK4RIBKFCPUjgfY5APdNFG/oQ
+         sqqvJS/inus6a5fM9B0e8fLn5wf4OKaQM7bBSo/cf35b0bf77RSfyBg08r6SNt4Os/2h
+         usW6Z20GTwC34MRjE0mJ2q3pwim5Orsdi+iq0yt8S8ocRSQy5BKFLQN6YMBu3RGzEot3
+         cDGQmNl7rxGPIkq+hF0LDl+xOgDduME4/jRIuu16cHOm+UJzBC1ZpafUYKW6KOOc6YfI
+         3l/A==
+X-Gm-Message-State: AOAM532UryrUNap306DCeT8TRXmwKUW9JF1ALCa/w2GWHhcj7fJcn2/I
+        R8rXXgptuVENmSJl0LZQmVXla3BTZVCpSIp4NFo=
+X-Google-Smtp-Source: ABdhPJxH036Sb3549Y0f3hc7Zhwns93SCbnuybCuqmcROW8sIBDtc8O0vPfU6QLql+6epoXLTxfkWaoTwfvvDQjMptA=
+X-Received: by 2002:a05:6830:1691:b0:60c:1eb1:6ddf with SMTP id
+ k17-20020a056830169100b0060c1eb16ddfmr1906144otr.205.1655208853785; Tue, 14
+ Jun 2022 05:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:aa6:d990:0:b0:1e5:95e:790e with HTTP; Tue, 14 Jun 2022
- 03:24:32 -0700 (PDT)
-Reply-To: mesquitamario121@gmail.com
-From:   Fast Track Agent <moussanouhmanou@gmail.com>
-Date:   Tue, 14 Jun 2022 03:24:32 -0700
-Message-ID: <CAPCdybF7v80G59woR9XbmVvXNne=w9dDThbUB+Oydk+Xj3pNtw@mail.gmail.com>
-Subject: =?UTF-8?Q?atenci=C3=B3n_urgente?=
+Received: by 2002:a8a:c46:0:b0:42d:ab20:ed24 with HTTP; Tue, 14 Jun 2022
+ 05:14:13 -0700 (PDT)
+From:   Daniel Affum <danielaffum05@gmail.com>
+Date:   Tue, 14 Jun 2022 15:14:13 +0300
+Message-ID: <CAPkju_PQmptLCUNLrFjDqn4sN-xwFQ9XOg5Cv+KN_pd6V1aXpA@mail.gmail.com>
+Subject: Confirm Receipt
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:22b listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5005]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [moussanouhmanou[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mesquitamario121[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.3 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-=C2=A1=C2=A1PROPIETARIO DE TARJETA ATM!!
+Hello Dear,
 
-Hemos acordado finalmente entregar su caja de env=C3=ADo que contiene tela,
-Computadora port=C3=A1til y Iphone 8plus con una TARJETA ATM con un valor
-de fondo de $ 2,500,000.00
-a trav=C3=A9s de la empresa nacional Fast Track. El agente ya est=C3=A1 en
-Aeropuerto Internacional con su paquete,
+I am Daniel Affum a retired civil servant i have a  business to
+discuss with you from the Eastern part of Africa aimed at agreed
+percentage upon your acceptance of my hand in business and friendship.
+Kindly respond to me if you are interested to partner with me for an
+update.Very important.
 
-Logramos esto con la ayuda del director del FMI, John Andy, el I.M.F.
-director y todos los acuerdos necesarios se concluyeron con =C3=A9xito con
-Empresa de entrega Fast Track.
-
-P=C3=B3ngase en contacto con el oficial de env=C3=ADo de la empresa de entr=
-ega
-Fast Track, el Sr. Mario Mesquita
-
-con su informaci=C3=B3n de entrega, como:
-
-(1) Nombre completo ......
-(2) N=C3=BAmero de m=C3=B3vil... o n=C3=BAmero de WhatsApp
-(3) Direcci=C3=B3n de residencia .....
-(4) C=C3=B3digo postal
-
-a su correo electr=C3=B3nico: (mesquitamario121@gmail.com) para recibir la
-TARJETA ATM
-(GL-1416) c=C3=B3digo de registro y su PIN (4917).
-
-
-Tuyo sinceramente
-kate andy
+Yours Sincerely,
+Daniel Affum.
+Reply to:danielaffum005@yahoo.com
