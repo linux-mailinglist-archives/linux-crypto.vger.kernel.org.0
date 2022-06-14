@@ -2,75 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E51854B050
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 14:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F4C54B0F3
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 14:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356856AbiFNMQP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jun 2022 08:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        id S1357126AbiFNMbJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jun 2022 08:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357014AbiFNMOX (ORCPT
+        with ESMTP id S1356837AbiFNM3h (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jun 2022 08:14:23 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09DD120B8
-        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 05:14:14 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id a21-20020a9d4715000000b0060bfaac6899so6399026otf.12
-        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 05:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=lBFrwc11MgcaK75qf3EwNhKoIfwLYz4Dn7scEjO7Hwc=;
-        b=UNA00ExpSe/IYk9qRpK3nhNY3MQGhIZVH9b+TBjq+LdlUjXIh78z6gPdY8GF0sQHK1
-         HJ2n3gfPpUPhyyacfGQvRyEpF1QlynrQ30w+G5Aew5oVgyNdOMVYVhySdHNUBZObva2y
-         PuLir0DHRxYshYjhyycNkTLQ7VsAQLmTK6m5EVJfcKtgRbmxa7D08ugJk7y5pLRJ/ze1
-         6cL1+ieOt2sNltOPHDSKZebgxow79UdI2TUNij2cNTn50jsq9VR126vHNmWni88LExVM
-         7xKsxa1nHQ7JrwK4VAXG7j0wCn6FqCQrLI4ANDOm8760jdm8KbeqIvWnFua/uGvpfZQ4
-         nejg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=lBFrwc11MgcaK75qf3EwNhKoIfwLYz4Dn7scEjO7Hwc=;
-        b=1EExvOuv0LSZquc1DEpNg4WT5kx480oFjQWLYUJHfu1GqEv+vZAZ5x4PloMhuYU2RB
-         zHnmiN0TBlDZXyEhlh2Z6X1ibZUPIeEzNS98yfFNCgIEK4RIBKFCPUjgfY5APdNFG/oQ
-         sqqvJS/inus6a5fM9B0e8fLn5wf4OKaQM7bBSo/cf35b0bf77RSfyBg08r6SNt4Os/2h
-         usW6Z20GTwC34MRjE0mJ2q3pwim5Orsdi+iq0yt8S8ocRSQy5BKFLQN6YMBu3RGzEot3
-         cDGQmNl7rxGPIkq+hF0LDl+xOgDduME4/jRIuu16cHOm+UJzBC1ZpafUYKW6KOOc6YfI
-         3l/A==
-X-Gm-Message-State: AOAM532UryrUNap306DCeT8TRXmwKUW9JF1ALCa/w2GWHhcj7fJcn2/I
-        R8rXXgptuVENmSJl0LZQmVXla3BTZVCpSIp4NFo=
-X-Google-Smtp-Source: ABdhPJxH036Sb3549Y0f3hc7Zhwns93SCbnuybCuqmcROW8sIBDtc8O0vPfU6QLql+6epoXLTxfkWaoTwfvvDQjMptA=
-X-Received: by 2002:a05:6830:1691:b0:60c:1eb1:6ddf with SMTP id
- k17-20020a056830169100b0060c1eb16ddfmr1906144otr.205.1655208853785; Tue, 14
- Jun 2022 05:14:13 -0700 (PDT)
+        Tue, 14 Jun 2022 08:29:37 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAE0237DB;
+        Tue, 14 Jun 2022 05:29:35 -0700 (PDT)
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LMnkw1yWczgYqs;
+        Tue, 14 Jun 2022 20:27:36 +0800 (CST)
+Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 14 Jun 2022 20:29:33 +0800
+Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
+ (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 14 Jun
+ 2022 20:29:33 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>,
+        <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>,
+        <yekai13@huawei.com>
+Subject: [PATCH v2 0/3] crypto: hisilicon - supports device isolation feature
+Date:   Tue, 14 Jun 2022 20:23:05 +0800
+Message-ID: <20220614122311.824-1-yekai13@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a8a:c46:0:b0:42d:ab20:ed24 with HTTP; Tue, 14 Jun 2022
- 05:14:13 -0700 (PDT)
-From:   Daniel Affum <danielaffum05@gmail.com>
-Date:   Tue, 14 Jun 2022 15:14:13 +0300
-Message-ID: <CAPkju_PQmptLCUNLrFjDqn4sN-xwFQ9XOg5Cv+KN_pd6V1aXpA@mail.gmail.com>
-Subject: Confirm Receipt
-To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml100012.china.huawei.com (7.185.36.121)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Dear,
+Add the hardware error isolation feature for ACC. Defines a driver debugfs
+node that used to configures the hardware error frequency. When the error
+frequency is exceeded, the device will be isolated. The isolation strategy 
+can be defined in each driver module. e.g. Defining the isolation strategy
+for ACC, if the AER error frequency exceeds the value of setting for a 
+certain period of time, The device will not be available in user space. The
+VF device use the PF device isolation strategy. as well as the isolation 
+strategy should not be set during device use.
 
-I am Daniel Affum a retired civil servant i have a  business to
-discuss with you from the Eastern part of Africa aimed at agreed
-percentage upon your acceptance of my hand in business and friendship.
-Kindly respond to me if you are interested to partner with me for an
-update.Very important.
+changes v1->v2:
+	1、deleted dev_to_uacce api.
+	2、add vfs node doc. 
+	3、move uacce->ref to driver.
 
-Yours Sincerely,
-Daniel Affum.
-Reply to:danielaffum005@yahoo.com
+Kai Ye (3):
+  uacce: supports device isolation feature
+  Documentation: add a isolation strategy vfs node for uacce
+  crypto: hisilicon/qm - defining the device isolation strategy
+
+ Documentation/ABI/testing/sysfs-driver-uacce |  17 ++
+ drivers/crypto/hisilicon/qm.c                | 157 +++++++++++++++++--
+ drivers/misc/uacce/uacce.c                   |  37 +++++
+ include/linux/hisi_acc_qm.h                  |   9 ++
+ include/linux/uacce.h                        |  16 +-
+ 5 files changed, 219 insertions(+), 17 deletions(-)
+
+-- 
+2.33.0
+
