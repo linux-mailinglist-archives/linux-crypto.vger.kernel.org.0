@@ -2,195 +2,128 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6380E54AC8F
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 10:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D425554AE39
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jun 2022 12:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242407AbiFNIxt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 14 Jun 2022 04:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        id S1354365AbiFNKYh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 14 Jun 2022 06:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355973AbiFNIxI (ORCPT
+        with ESMTP id S1354324AbiFNKYg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 14 Jun 2022 04:53:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2139D14D36
-        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 01:53:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655196786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vkrp4CO/9UvJmo5cc1dfyzRQg7YqDey+RKfYJG/5u98=;
-        b=hCA1H4J1s2PRIO6VVPDP+i3H1U1YrD+b7GOkc4pjgNsMFf8VAxyuCe7NjpDI6y/IrFjKFj
-        kIxVnEQg/lTg5OQJtCXN7dFhxzZS93F3BNoJ+ol1DIOcKi1ybm5Ksf4e1GCuotO87XjwIf
-        e3uYXKYlYKpw0st3NrNmyw8Au050p2I=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-451-7-SVUyi2MX2rrMf81G7u_g-1; Tue, 14 Jun 2022 04:53:04 -0400
-X-MC-Unique: 7-SVUyi2MX2rrMf81G7u_g-1
-Received: by mail-lf1-f69.google.com with SMTP id f32-20020a0565123b2000b004791bf1af10so4228207lfv.1
-        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 01:53:04 -0700 (PDT)
+        Tue, 14 Jun 2022 06:24:36 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF784756F
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 03:24:35 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id l20so2430466lji.0
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jun 2022 03:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=HI7mop9v/Y4k/2K8Z+RNWKGLaK3HTeAH+wJXPA8w/Fs=;
+        b=j9z7E3LhkYeVhJrLSOvV6+h//X9SN6bJY5GbepuBroDICPUtMwrNuGq4z3UsTvJvLN
+         QVY4Xv0ti6v923ER437MG+KpOhrWpjxtL26CApp+xBPWbkb0qycm12RHYkfp/JK8dnkI
+         OKmAnMaWmc/r41bWS7sBxhMe8aiik+WIGGKusADuVChSza22YmJRZM3+fwGV8d83bzBm
+         a42vCVxcj0rbmSCJJEyMV8a6oHMf+SY695tgzDm6oA15SQoAw1WBrozRrJZOQnpYSyhe
+         Dl0R7k4dpqV7Tu4+aCfMk51/iElFhumw77xqxgNoqzFKK8M2Ch7EnDUNWtAKacSTmJqD
+         3FuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vkrp4CO/9UvJmo5cc1dfyzRQg7YqDey+RKfYJG/5u98=;
-        b=BbRmsmUTBmWp9y0LYJVxQFcDnBkrzIw+nq/8Uh5loVL2TOJAWcasJ+KBPLpGhcxzUA
-         507J1AXOIg2QkdchpXggCqc98y6z2dw7XlX9yLhkRxpNs1H/7Fp//mg8PNBmu0ytiW4a
-         ouN8qnxKn9bD37hbV1XG0HUa430V2EhOYRHT22Hvwv10Oa9HM90/DxFSRVDu02h78XuW
-         PHyCaustWE6cO2edJY8U7IHYRqvI4at0aZTtHnxRpwx2PUlH3n1mDFXD55lpJ/2yMxcK
-         nL/K7bi2ffVUgaeR+oiKYpvkTQWRBb5/gLAEXM3PeAwxr5md9beYQP8Vrn6sAvgGwdIU
-         m+BQ==
-X-Gm-Message-State: AJIora+xZ61d0qX5Ocxvonn3D9QJ3kaVH3vr5pNQjUgu/WKSBTRhq5PU
-        dRZ9jRmG7o0869EwjmLctU9I01QBO0Koi6O+cHiZjvqU2cTPBsMpYZybjgnm3RjsNQd/mKz5PcY
-        or/LUpKdIEYgVr/mUsrEpwJh2QIKh9jw4QSN3NFQA
-X-Received: by 2002:a05:6512:3130:b0:479:385f:e2ac with SMTP id p16-20020a056512313000b00479385fe2acmr2413167lfd.575.1655196782570;
-        Tue, 14 Jun 2022 01:53:02 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1v4GFXDXwQ+WJme+RK3CludKMXoAn8uXS7Pj1PsZfLPvN+oKO5SkXXzy51Kwnu4qCl2+DwKCFXMBbWyhCpH97A=
-X-Received: by 2002:a05:6512:3130:b0:479:385f:e2ac with SMTP id
- p16-20020a056512313000b00479385fe2acmr2413138lfd.575.1655196781990; Tue, 14
- Jun 2022 01:53:01 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=HI7mop9v/Y4k/2K8Z+RNWKGLaK3HTeAH+wJXPA8w/Fs=;
+        b=vni4HzbzeD9BDcqXJj0XCd3GddTWnozGZ9z8e1OZJpg+robE7jdxaf4Uf2xvrZKmVv
+         JYaodvsAcWEX4UXrg+RqzcokjiSNEM+81gTPkH1C9v+br4IT1pwU2zlIUmxdeCxa02Kq
+         XUf6rUYoBnQvcRWl26pEezVZdPmMfWt471prpgUYZimr1aTyZLLParpZxPNYQ5+L6CHq
+         sTb0J9DK7wvuEAc8z0lFAJQ3WnBhiLMEZQQclZhV55YYUW+JG6dCo34X6hUHkpEONZQu
+         TuFfxmKa+zWbVC5NT5Spol98adLSBHXSbNcwPk3RZEX8Sfeyei6a0XsNKsiNERe4tv70
+         dOTQ==
+X-Gm-Message-State: AJIora+tsqtVcbgPe2Jppiu76QhMreFpTFaNyjBvhtackIqP5NAlRz4d
+        hk3kIcYROWwSomXWxUJJyR2/ka8hdlqt85+CC+4=
+X-Google-Smtp-Source: AGRyM1sGpPe/hZW5Jp28X6Xz2nFwOkAaeO10NgUSU1VVr66KqNRxwnLsXmvK3cpiRXpA9lgGxAdRe45XZZp2UyiAPqY=
+X-Received: by 2002:a2e:9609:0:b0:255:8364:9fd8 with SMTP id
+ v9-20020a2e9609000000b0025583649fd8mr2073413ljh.132.1655202273152; Tue, 14
+ Jun 2022 03:24:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000008ea7ac05e09b46a6@google.com> <CACT4Y+Z8fdbQ9Kq1gHSha2q7a6RrOajbPKrSVCFyLNS95XkVgQ@mail.gmail.com>
- <CACGkMEuK=bYcpNfjcsh64K0_-nYX2btw9Mi9uWsCYcfENBcHuA@mail.gmail.com> <CACT4Y+YF+Jo5kgjqBouw3NnKUq0pxF3geJhbACpN3QgtHSj8kQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+YF+Jo5kgjqBouw3NnKUq0pxF3geJhbACpN3QgtHSj8kQ@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 14 Jun 2022 16:52:50 +0800
-Message-ID: <CACGkMEtaxSBzY+it6N8UmNssDxiCGJ48YrVQEPQSpEisedkwFg@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: INFO: task hung in hwrng_register
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+6da75abeed821109137b@syzkaller.appspotmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux@dominikbrodowski.net, llvm@lists.linux.dev, mpm@selenic.com,
-        syzkaller-bugs@googlegroups.com,
-        Laurent Vivier <lvivier@redhat.com>
+Received: by 2002:aa6:d990:0:b0:1e5:95e:790e with HTTP; Tue, 14 Jun 2022
+ 03:24:32 -0700 (PDT)
+Reply-To: mesquitamario121@gmail.com
+From:   Fast Track Agent <moussanouhmanou@gmail.com>
+Date:   Tue, 14 Jun 2022 03:24:32 -0700
+Message-ID: <CAPCdybF7v80G59woR9XbmVvXNne=w9dDThbUB+Oydk+Xj3pNtw@mail.gmail.com>
+Subject: =?UTF-8?Q?atenci=C3=B3n_urgente?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:22b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5005]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [moussanouhmanou[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mesquitamario121[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.3 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jun 14, 2022 at 4:50 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Tue, 14 Jun 2022 at 10:07, Jason Wang <jasowang@redhat.com> wrote:
-> > > On Sat, 4 Jun 2022 at 10:46, syzbot
-> > > <syzbot+6da75abeed821109137b@syzkaller.appspotmail.com> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    032dcf09e2bf Merge tag 'gpio-fixes-for-v5.19-rc1' of git:/..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=14409a93f00000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=99f457384a4fea79
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=6da75abeed821109137b
-> > > > compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+6da75abeed821109137b@syzkaller.appspotmail.com
-> > >
-> > > +Jason, Laurent
-> > >
-> > > This started appearing at the same time as 'task hung in
-> > > add_early_randomness" bug reports:
-> > > https://syzkaller.appspot.com/bug?id=256d08cc261a3c38832064a33df4c928b3cd0ef0
-> > > https://syzkaller.appspot.com/bug?id=be1d99e09e499aed3939dc678718371984104e5c
-> > > https://syzkaller.appspot.com/bug?id=1cd11df5d984c694e3e7fc9fe271389b2340bed0
-> > > https://syzkaller.appspot.com/bug?id=35496bafab4c3f81f0b0d6d72c69787300629740
-> > >
-> > > Is this also fixed by "virtio-rng: make device ready before making
-> > > request" patch?
-> >
-> > Yes, I think so.
-> >
-> > Thanks
->
-> Let's tell the bot so that it reports such bugs in future:
->
-> #syz fix: virtio-rng: make device ready before making request
+=C2=A1=C2=A1PROPIETARIO DE TARJETA ATM!!
 
-Ok.
+Hemos acordado finalmente entregar su caja de env=C3=ADo que contiene tela,
+Computadora port=C3=A1til y Iphone 8plus con una TARJETA ATM con un valor
+de fondo de $ 2,500,000.00
+a trav=C3=A9s de la empresa nacional Fast Track. El agente ya est=C3=A1 en
+Aeropuerto Internacional con su paquete,
 
-Thanks
+Logramos esto con la ayuda del director del FMI, John Andy, el I.M.F.
+director y todos los acuerdos necesarios se concluyeron con =C3=A9xito con
+Empresa de entrega Fast Track.
 
->
->
-> > > > INFO: task swapper/0:1 blocked for more than 143 seconds.
-> > > >       Not tainted 5.18.0-syzkaller-13760-g032dcf09e2bf #0
-> > > > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > > task:swapper/0       state:D stack:21080 pid:    1 ppid:     0 flags:0x00004000
-> > > > Call Trace:
-> > > >  <TASK>
-> > > >  context_switch kernel/sched/core.c:5116 [inline]
-> > > >  __schedule+0x957/0xec0 kernel/sched/core.c:6428
-> > > >  schedule+0xeb/0x1b0 kernel/sched/core.c:6500
-> > > >  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6559
-> > > >  __mutex_lock_common+0xecf/0x26c0 kernel/locking/mutex.c:679
-> > > >  __mutex_lock kernel/locking/mutex.c:747 [inline]
-> > > >  mutex_lock_nested+0x17/0x20 kernel/locking/mutex.c:799
-> > > >  add_early_randomness drivers/char/hw_random/core.c:69 [inline]
-> > > >  hwrng_register+0x3bf/0x680 drivers/char/hw_random/core.c:599
-> > > >  virtrng_scan+0x3e/0x90 drivers/char/hw_random/virtio-rng.c:205
-> > > >  virtio_dev_probe+0xa03/0xba0 drivers/virtio/virtio.c:313
-> > > >  call_driver_probe+0x96/0x250
-> > > >  really_probe+0x220/0x940 drivers/base/dd.c:634
-> > > >  __driver_probe_device+0x1f4/0x3f0 drivers/base/dd.c:764
-> > > >  driver_probe_device+0x50/0x240 drivers/base/dd.c:794
-> > > >  __driver_attach+0x35f/0x5a0 drivers/base/dd.c:1163
-> > > >  bus_for_each_dev+0x188/0x1f0 drivers/base/bus.c:301
-> > > >  bus_add_driver+0x32f/0x600 drivers/base/bus.c:618
-> > > >  bus_add_driver+0x32f/0x600 drivers/base/bus.c:618
-> > > >  driver_register+0x2e9/0x3e0 drivers/base/driver.c:240
-> > > >  do_one_initcall+0xbd/0x2b0 init/main.c:1295
-> > > >  do_initcall_level+0x168/0x218 init/main.c:1368
-> > > >  do_initcalls+0x4b/0x8c init/main.c:1384
-> > > >  kernel_init_freeable+0x43a/0x5c3 init/main.c:1610
-> > > >  kernel_init+0x19/0x2b0 init/main.c:1499
-> > > >  ret_from_fork+0x1f/0x30
-> > > >  </TASK>
-> > > >
-> > > > Showing all locks held in the system:
-> > > > 2 locks held by swapper/0/1:
-> > > >  #0: ffff8881468d4170 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:835 [inline]
-> > > >  #0: ffff8881468d4170 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:1054 [inline]
-> > > >  #0: ffff8881468d4170 (&dev->mutex){....}-{3:3}, at: __driver_attach+0x353/0x5a0 drivers/base/dd.c:1162
-> > > >  #1: ffffffff8d24ccc8 (reading_mutex){+.+.}-{3:3}, at: add_early_randomness drivers/char/hw_random/core.c:69 [inline]
-> > > >  #1: ffffffff8d24ccc8 (reading_mutex){+.+.}-{3:3}, at: hwrng_register+0x3bf/0x680 drivers/char/hw_random/core.c:599
-> > > > 2 locks held by pr/ttyS0/16:
-> > > > 1 lock held by khungtaskd/29:
-> > > >  #0: ffffffff8cb1eee0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
-> > > > 2 locks held by kworker/u4:4/56:
-> > > >  #0: ffff888011c69138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x796/0xd10 kernel/workqueue.c:2262
-> > > >  #1: ffffc900013e7d00 ((work_completion)(&(&kfence_timer)->work)){+.+.}-{0:0}, at: process_one_work+0x7d0/0xd10 kernel/workqueue.c:2264
-> > > > 1 lock held by hwrng/755:
-> > > >  #0: ffffffff8d24ccc8 (reading_mutex){+.+.}-{3:3}, at: hwrng_fillfn+0xec/0x470 drivers/char/hw_random/core.c:503
-> > > >
-> > > > =============================================
-> > > >
-> > > >
-> > > >
-> > > > ---
-> > > > This report is generated by a bot. It may contain errors.
-> > > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > > >
-> > > > syzbot will keep track of this issue. See:
-> > > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > > >
-> > > > --
-> > > > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> > > > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > > > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000008ea7ac05e09b46a6%40google.com.
-> > >
-> >
->
+P=C3=B3ngase en contacto con el oficial de env=C3=ADo de la empresa de entr=
+ega
+Fast Track, el Sr. Mario Mesquita
 
+con su informaci=C3=B3n de entrega, como:
+
+(1) Nombre completo ......
+(2) N=C3=BAmero de m=C3=B3vil... o n=C3=BAmero de WhatsApp
+(3) Direcci=C3=B3n de residencia .....
+(4) C=C3=B3digo postal
+
+a su correo electr=C3=B3nico: (mesquitamario121@gmail.com) para recibir la
+TARJETA ATM
+(GL-1416) c=C3=B3digo de registro y su PIN (4917).
+
+
+Tuyo sinceramente
+kate andy
