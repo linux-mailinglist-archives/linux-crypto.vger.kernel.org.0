@@ -2,80 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 701DB54DEE9
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jun 2022 12:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274F654E24E
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Jun 2022 15:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376451AbiFPKZ0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Jun 2022 06:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S231578AbiFPNpy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Jun 2022 09:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376467AbiFPKZV (ORCPT
+        with ESMTP id S1377096AbiFPNpx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Jun 2022 06:25:21 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747EB5DA26
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Jun 2022 03:25:19 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id c2so1567898lfk.0
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Jun 2022 03:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
-        b=W910NhxhsjMJh8xmTqiBb+n/d8vNhkQvEK3uQsx019H/NVF/HsRkR91Mwgf5NoOA2o
-         +G9NG8HKS3dufLn4HoWATUwViMwR/sm7gdhYVGjSBp65IoH9/VzeePSRwsxtnWyD2IYd
-         /P+anhEIznyuyfYSv0fd8QvDY0LuzCx2TbyvmZF5dM2Nj4uA7+9FyoHxvD1xuHmQyiMU
-         TCzjnL3q1oIV583xyWy0s+D4KRyb2LgtwArAnNeV+m1AO8ORaxA26nm4VB9kA/9NXW1T
-         yHcu0NzK0YGRQb2+53awbQan+6daAbhIX2qCkYqY9Qavm2WmKJIEIH3npl/ZhVNAwvQV
-         qPgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
-        b=KmA0JLVocw96bTMPerhFFExiXiPHkEqKDyQU8p17/wv7CsSPor8lttYCEkAwExp6vw
-         G/sgmWEYU/KrxlEVDrWY8+vAg9Xiw5KWLDtSMiea3FJRbiyYFXuont9Z6rceSwkTVbKw
-         Ldv6sxuv7tlmuJmhep+kDGtCfauUUudp7G0fi5OpJ/zFpDsbwjPnDSggwwzBeS9LgydE
-         fuXMHMU8K5NNLmthUi/5LHYLrfwWlxpZI5YQixQmszlFH8LhijF6EQF2RWqlE4HFJIHN
-         4J1apc+nhBt8bsRlhEmCjQcTepp1Ivnl31N4Ue/rRGCE+H55hT83BlQbk2Whi8kljgoI
-         +sLg==
-X-Gm-Message-State: AJIora+2Pq+tTW0873Ne0IKDPFBv9Euobde/LPAIFRh/e6QXrqfv7W7Z
-        TtFiATU/A6b3Zrvkv2sXZtrptSYQsevar51JQYs=
-X-Google-Smtp-Source: AGRyM1v2MTXGyROmKEYPPr3IJqOTubJyWU9u6UFQYhvDngD40bhPycsNsVME02FGDV5945mXaS61m+8B4cqbLiC7v1U=
-X-Received: by 2002:a05:6512:3448:b0:479:10f0:11c7 with SMTP id
- j8-20020a056512344800b0047910f011c7mr2248569lfr.521.1655375117521; Thu, 16
- Jun 2022 03:25:17 -0700 (PDT)
+        Thu, 16 Jun 2022 09:45:53 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437273120C;
+        Thu, 16 Jun 2022 06:45:52 -0700 (PDT)
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LP3N46PqQz680Bd;
+        Thu, 16 Jun 2022 21:45:40 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 16 Jun 2022 15:45:49 +0200
+Received: from localhost (10.202.226.42) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 16 Jun
+ 2022 14:45:48 +0100
+Date:   Thu, 16 Jun 2022 14:45:47 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "yekai(A)" <yekai13@huawei.com>
+CC:     Kai Ye via Linux-accelerators 
+        <linux-accelerators@lists.ozlabs.org>,
+        <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <linux-crypto@vger.kernel.org>,
+        <zhangfei.gao@linaro.org>
+Subject: Re: [PATCH v2 3/3] crypto: hisilicon/qm - defining the device
+ isolation strategy
+Message-ID: <20220616144547.00003093@Huawei.com>
+In-Reply-To: <f4fde630-a2ba-2416-5091-33c510c30593@huawei.com>
+References: <20220614122943.1406-1-yekai13@huawei.com>
+        <20220614122943.1406-4-yekai13@huawei.com>
+        <20220615140249.000077f8@Huawei.com>
+        <f4fde630-a2ba-2416-5091-33c510c30593@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; i686-w64-mingw32)
 MIME-Version: 1.0
-Received: by 2002:a05:6520:28c2:b0:1f3:cf5:e20d with HTTP; Thu, 16 Jun 2022
- 03:25:16 -0700 (PDT)
-Reply-To: clmloans9@gmail.com
-From:   MR ANTHONY EDWARD <bashirusman02021@gmail.com>
-Date:   Thu, 16 Jun 2022 11:25:16 +0100
-Message-ID: <CAGOBX5aJ01nW_foH2aLY6UF6s28QePJ4_J3aCt=hjQSuJNsdog@mail.gmail.com>
-Subject: DARLEHENSANGEBOT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.226.42]
+X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
-Ben=C3=B6tigen Sie ein Gesch=C3=A4ftsdarlehen oder ein Darlehen jeglicher A=
-rt?
-Wenn ja, kontaktieren Sie uns
+...
 
-*Vollst=C3=A4ndiger Name:
-* Ben=C3=B6tigte Menge:
-*Leihdauer:
-*Mobiltelefon:
-*Land:
+> >  
+> >> +	hw_err->tick_stamp = jiffies;
+> >> +	list_for_each_entry_safe(err, tmp, &qm->uacce_hw_errs, list) {  
+> >
+> > These are ordered (I think). Could take advantage of that by
+> > maintaining count of elements in parallel to the list then walking
+> > list in right direction + stop when you reach last one to need
+> > deleting.
+> >  
+> 
+> thanks, The current list + jiffies solution seems more simple.
+
+If list always remains relatively short then that's probably fine.
+
+> >  
+> >> +		if ((hw_err->tick_stamp - err->tick_stamp) / HZ >
+> >> +		    SECONDS_PER_HOUR) {
+> >> +			list_del(&err->list);
+> >> +			kfree(err);
+> >> +		} else {
+> >> +			count++;
+> >> +		}
+> >> +	}
+> >> +	list_add(&hw_err->list, &qm->uacce_hw_errs);
+> >> +
+> >> +	if (count >= isolate->hw_err_isolate_hz)
+> >> +		atomic_set(&isolate->is_isolate, 1);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +  
+> >
+> > ...
+> >  
+> >> +static int hisi_qm_isolate_strategy_write(struct uacce_device *uacce,
+> >> +						const char *buf)
+> >> +{
+> >> +	struct hisi_qm *qm = uacce->priv;
+> >> +	unsigned long val = 0;
+> >> +
+> >> +#define MAX_ISOLATE_STRATEGY	65535
+> >> +
+> >> +	if (atomic_read(&qm->uacce_ref))
+> >> +		return -EBUSY;
+> >> +
+> >> +	/* must be set by PF */
+> >> +	if (atomic_read(&qm->isolate_data.is_isolate) || uacce->is_vf)  
+> >
+> > Why is the file visible on the vf?  Hide it or don't register it for vfs.  
+> Because VF devices can be registered with UACCE. So this file node can 
+> be visited on the vf. We're not sure if someone else's device is the 
+> same as qm. So i configure it this way by driver. the 'isolate_strategy' 
+> must be set by pf.
+> 
+
+If possible have the uacce registration from the driver provide information
+on whether this applies to the VF.  Much better to have no file presented
+by the VF than one that always returns an error code.
+
+Jonathan
+
