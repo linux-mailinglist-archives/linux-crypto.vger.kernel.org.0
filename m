@@ -2,25 +2,25 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD62354F4AE
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Jun 2022 11:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C133854F4B6
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Jun 2022 11:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380496AbiFQJz5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 17 Jun 2022 05:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        id S1381031AbiFQJ7w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 17 Jun 2022 05:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbiFQJz4 (ORCPT
+        with ESMTP id S234702AbiFQJ7v (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 17 Jun 2022 05:55:56 -0400
+        Fri, 17 Jun 2022 05:59:51 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1AC4F4AE2C;
-        Fri, 17 Jun 2022 02:55:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C2606517DE;
+        Fri, 17 Jun 2022 02:59:50 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5D4812FC;
-        Fri, 17 Jun 2022 02:55:54 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC2D812FC;
+        Fri, 17 Jun 2022 02:59:50 -0700 (PDT)
 Received: from ampere-altra-2-1.usa.Arm.com (ampere-altra-2-1.usa.arm.com [10.118.91.158])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 974FE3F73B;
-        Fri, 17 Jun 2022 02:55:54 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D4353F73B;
+        Fri, 17 Jun 2022 02:59:50 -0700 (PDT)
 From:   Yoan Picchi <yoan.picchi@arm.com>
 To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -28,9 +28,9 @@ To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Andre Przywara <andre.przywara@arm.com>,
         Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 0/2] Crypto: Remove x86 dependency on QAT drivers
-Date:   Fri, 17 Jun 2022 09:55:48 +0000
-Message-Id: <20220617095548.436758-1-yoan.picchi@arm.com>
+Subject: [PATCH v3 0/2] crypto: qat - Remove x86 dependency on QAT drivers
+Date:   Fri, 17 Jun 2022 09:59:43 +0000
+Message-Id: <20220617095945.437601-1-yoan.picchi@arm.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,16 +57,16 @@ VF, bound them to DPDK, and used the card this way, thus showing some real
 life usecases of x86 do work on arm64 too.
 
 Changelog v1 ... v2:
-- add COMPILE_TEST to Kconfig
+- Add COMPILE_TEST to Kconfig
 
 Changelog v2 ... v3:
 - Add the Crypto tag to the commit header
 
 Andre Przywara (1):
-  crypto: qat: replace get_current_node() with numa_node_id()
+  crypto: qat - replace get_current_node() with numa_node_id()
 
 Yoan Picchi (1):
-  Removes the x86 dependency on the QAT drivers
+  crypto: qat - Removes the x86 dependency on the QAT drivers
 
  drivers/crypto/qat/Kconfig                     | 14 +++++++-------
  drivers/crypto/qat/qat_common/adf_common_drv.h |  5 -----
