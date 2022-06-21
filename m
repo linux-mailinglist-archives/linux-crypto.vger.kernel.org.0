@@ -2,152 +2,108 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9733552DC1
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jun 2022 10:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E43552EBF
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Jun 2022 11:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346799AbiFUI6z (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Jun 2022 04:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
+        id S1349218AbiFUJjs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Jun 2022 05:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348591AbiFUI6k (ORCPT
+        with ESMTP id S1349157AbiFUJjq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Jun 2022 04:58:40 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AFCE1C;
-        Tue, 21 Jun 2022 01:58:38 -0700 (PDT)
-Received: from zn.tnic (p2e55dbad.dip0.t-ipconnect.de [46.85.219.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56AB81EC0576;
-        Tue, 21 Jun 2022 10:58:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1655801913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=THe01fFq/VVSfqs+JIwBFS+S4rUvRCAH2e4Ug2QOtbU=;
-        b=D+3TDXk5A70FXJH4amYBCqq2eUl/InLmvpky5ywFpHbkfYH1+/Kz38D2aCavRLr5MNpjLH
-        ZN1T8Ki7n5eZa/dUy75+mre+HAkaSlGhiRRig23k/VnuKHepcD61Q+DSn+RLtU4GXIJM+n
-        OKktuV65Kc6g13PHIcdaO7+gvy4nPsk=
-Date:   Tue, 21 Jun 2022 10:58:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
-        pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, michael.roth@amd.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        dgilbert@redhat.com, jarkko@kernel.org
-Subject: Re: [PATCH Part2 v6 01/49] x86/cpufeatures: Add SEV-SNP CPU feature
-Message-ID: <YrGINaPc3cojG6/3@zn.tnic>
-References: <cover.1655761627.git.ashish.kalra@amd.com>
- <7abfca61f8595c036e1bd9f1d65ab78af0006627.1655761627.git.ashish.kalra@amd.com>
+        Tue, 21 Jun 2022 05:39:46 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06C127B03
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Jun 2022 02:39:45 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-31772f8495fso123840237b3.4
+        for <linux-crypto@vger.kernel.org>; Tue, 21 Jun 2022 02:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=NKhg6kSkfnglJlsPDVUWhCY3Iibudx7OhZC5CePFgeNekYJKNrcmU8wB8gkktmjPqY
+         f0o4DET3nwW7oGb1WQAmWVCm6yLISrVrQXMY/9qoCppMNLX7K/jA/JZ+JMs1mNT38j+N
+         qSlM2vTiSOIkQo5cZ6oY4dkMVda7fWn0vzKRT295Q67AStI8u0BTanvw38uSxo4IMvFm
+         mtbeFJOQugEk6bmbrSLJZHxNWvSEoU0AT9TQz59V3jAGDZbWiI6U0Fx8UlroTYMr9wGQ
+         +xC78kHT5AZK7k/f6wmWhdDj3ThC5Cy20ctCKCcYvb/idPExEpgvQXB/UX/ziCu3vO07
+         Q2/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=39LgJOwaipD2MjgK0gwkj7GiGj3gT9W9OFkxuFq3vWkoEVbQny8iolhxZfeRXxfjkv
+         7yzGrfk0EBF8jfivzTjP1gdyBiQ4XNsDVuz7ISWd120aZY1vib6iYHaJqQslXc9B+KNy
+         139bV/dse2BBOpjnPw9KABcA8FGHt4AgkNP7YGs6+f7Nxfz9vEeufNISNafLWaK8MwTe
+         hZu7YE6hwCYLhIw7qnX2Ooq7SCVeoiD10LAQcYNNhEKoHSueCbKgdRzNKm/o9Xw9fLuV
+         c0JnA41H1aM0VrKs+KX0fivcXnWDxzXGykr4Sgz7DUnx5zwW7Ip4i5waBXBOJPPVoknn
+         kd8A==
+X-Gm-Message-State: AJIora++JWe668u1g1LQaYQiWR3yLO5mLYjmNfo2u7fqCx2f6v8u05TU
+        Rf3TMftYG5AQmS/s25MDHfaaedFD9U9BPl6l1/A=
+X-Google-Smtp-Source: AGRyM1sTF/SvvxCyraPE52znD36ZX02jNmxmam87lP8bWzXT3yTfChS1a9JgJI9LjBXh9tpS4qLO5E/t+5efudcEruY=
+X-Received: by 2002:a0d:d7c7:0:b0:317:bfe8:4f2 with SMTP id
+ z190-20020a0dd7c7000000b00317bfe804f2mr12417910ywd.276.1655804384555; Tue, 21
+ Jun 2022 02:39:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7abfca61f8595c036e1bd9f1d65ab78af0006627.1655761627.git.ashish.kalra@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7010:e10a:b0:2d9:e631:94d0 with HTTP; Tue, 21 Jun 2022
+ 02:39:44 -0700 (PDT)
+Reply-To: dimitryedik@gmail.com
+From:   Dimitry Edik <lsbthdwrds@gmail.com>
+Date:   Tue, 21 Jun 2022 02:39:44 -0700
+Message-ID: <CAGrL05aBO8rbFuij24J-APa+Luis69gEjhj35iv_GZfkHCVYDQ@mail.gmail.com>
+Subject: Dear Partner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:1135 listed in]
+        [list.dnswl.org]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [lsbthdwrds[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jun 20, 2022 at 10:59:01PM +0000, Ashish Kalra wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> Add CPU feature detection for Secure Encrypted Virtualization with
-> Secure Nested Paging. This feature adds a strong memory integrity
-> protection to help prevent malicious hypervisor-based attacks like
-> data replay, memory re-mapping, and more.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Hello Dear,
 
-verify_tags: Warning: Sender Ashish Kalra <Ashish.Kalra@amd.com> hasn't signed off on the patch!
+My Name is Dimitry Edik from Russia A special assistance to my Russia
+boss who deals in oil import and export He was killed by the Ukraine
+soldiers at the border side. He supplied
+oil to the Philippines company and he was paid over 90 per cent of the
+transaction and the remaining $18.6 Million dollars have been paid into a
+Taiwan bank in the Philippines..i want a partner that will assist me
+with the claims. Is a (DEAL ) 40% for you and 60% for me
+I have all information for the claims.
+Kindly read and reply to me back is 100 per cent risk-free
 
-When you send someone else's patch, you need to add your SOB underneath
-it to state that you have handled that patch too, on its way mainline.
-
-While waiting for review, please brush up on the development process by
-perusing the documentation in Documentation/process/ and especially
-
-Documentation/process/submitting-patches.rst
-
-> ---
->  arch/x86/include/asm/cpufeatures.h       | 1 +
->  arch/x86/kernel/cpu/amd.c                | 3 ++-
->  tools/arch/x86/include/asm/cpufeatures.h | 1 +
->  3 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 30da1341f226..1cba0217669f 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -407,6 +407,7 @@
->  #define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
->  #define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
->  #define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
-> +#define X86_FEATURE_SEV_SNP		(19*32+4)  /* AMD Secure Encrypted Virtualization - Secure Nested Paging */
-
-Do you not see how there's a space between the '+' and the single-digit
-number so that the vertical formatting works?
-
->  #define X86_FEATURE_SME_COHERENT	(19*32+10) /* "" AMD hardware-enforced cache coherency */
->  
->  /*
-> diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-> index 0c0b09796ced..2e87015a9d69 100644
-> --- a/arch/x86/kernel/cpu/amd.c
-> +++ b/arch/x86/kernel/cpu/amd.c
-> @@ -559,7 +559,7 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
->  	 *	      If the kernel has not enabled SME via any means then
->  	 *	      don't advertise the SME feature.
->  	 *   For SEV: If BIOS has not enabled SEV then don't advertise the
-> -	 *            SEV and SEV_ES feature (set in scattered.c).
-> +	 *            SEV, SEV_ES and SEV_SNP feature.
-
-Let's generalize that so that it doesn't get updated with every feature:
-
-"... then don't advertize SEV and any additional functionality based on it."
-
->  	 *
->  	 *   In all cases, since support for SME and SEV requires long mode,
->  	 *   don't advertise the feature under CONFIG_X86_32.
-> @@ -594,6 +594,7 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
->  clear_sev:
->  		setup_clear_cpu_cap(X86_FEATURE_SEV);
->  		setup_clear_cpu_cap(X86_FEATURE_SEV_ES);
-> +		setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
->  	}
->  }
->  
-> diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
-> index 73e643ae94b6..a636342ecb26 100644
-> --- a/tools/arch/x86/include/asm/cpufeatures.h
-> +++ b/tools/arch/x86/include/asm/cpufeatures.h
-> @@ -405,6 +405,7 @@
->  #define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
->  #define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
->  #define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
-> +#define X86_FEATURE_SEV_SNP		(19*32+4)  /* AMD Secure Encrypted Virtualization - Secure Nested Paging */
->  #define X86_FEATURE_SME_COHERENT	(19*32+10) /* "" AMD hardware-enforced cache coherency */
-
-Ditto.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yours Sincerely
+Dimitry Edik
