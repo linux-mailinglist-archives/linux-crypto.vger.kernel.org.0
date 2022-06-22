@@ -2,119 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71D4554E14
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jun 2022 16:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17025554E48
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Jun 2022 17:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358602AbiFVO7I (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 Jun 2022 10:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        id S1358881AbiFVPDq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 Jun 2022 11:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358888AbiFVO6h (ORCPT
+        with ESMTP id S1357692AbiFVPDo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 Jun 2022 10:58:37 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2389636308;
-        Wed, 22 Jun 2022 07:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655909912; x=1687445912;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KIu2os6/xgxh1AGNcBH9yuG71tpVxfYaQBSW95DqGr4=;
-  b=C4XyESYxUSG8tTbzYSa4fxCwWkfyyZqvnaz6x1lyuIJJPhPlQF/57Be2
-   HiYxWguRw2/Uhhnd4UF4/HWZ/dFmyZf9c42ShxRPyinYDRfvOABBCIY0F
-   xMs0SyDIggImV3qlHT2KCHbkBxWRGMaWnPTiMYfF2uKJYBjlL2BVWy87B
-   ZwQUxZ1Gt4KptoQjjAWglXIfsNsKi/C1Dv30uNfZBiS8jgDeWqsPjn+WI
-   hJr1rBQKPb2SZGSfbW0pn/8uF4TjUdlgEyaxe3YiCMSThxa3W9Jm7zpMj
-   zLpF2NewiW8vX/iYLCftyHv+CeuHfSD897TKqCXrDmO5qwHIjAle4f2RT
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="366760359"
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="366760359"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 07:58:31 -0700
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="677591901"
-Received: from bshakya-mobl.amr.corp.intel.com (HELO [10.212.188.76]) ([10.212.188.76])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 07:58:30 -0700
-Message-ID: <84c84de9-f5f1-1f8c-fa7c-6a416ea3373e@intel.com>
-Date:   Wed, 22 Jun 2022 07:58:12 -0700
+        Wed, 22 Jun 2022 11:03:44 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68812674
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Jun 2022 08:03:41 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id y6so15655827plg.0
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Jun 2022 08:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=vhZEVnaGNBjosB86GDUW8b2wHjB/+QU31bPXl36TqFE=;
+        b=lmXhPRDXrnlbYClAFJkfHZYdowqXsf1nTuDLZnU/Y1W/T6TJ8ApbIv950i47frAtN/
+         OtndHJQoWJG+weygm2GuosJduERMEzUHLtTF4oGKopzqXa+c5O1ob2p5JuwuGNaCZz0D
+         0k2iO6ZG6gpeVsjTt5A+NLMvCH8qDkpG8Ex3xIMBpunG6BNJWrlCGLJYo7boJK6pvBIx
+         W4x550ST0gVpK9sdxwL58OfMVVl7H7xG/39bSvJCxipLUGbdwSBY6WRzvY6hd28wfB/N
+         vDKUfqITg8PxsgA4g6gEDGmS0K0dBg3KSntFmGDvcmLKkvSy/F4e+TYysqkO/txSQBCJ
+         afFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=vhZEVnaGNBjosB86GDUW8b2wHjB/+QU31bPXl36TqFE=;
+        b=wjdGf4RK/gzzhvh3H6Om/VmwJu1oWwCPai2KHJiBa8nFMXBjSmMka1DpXjSK5yFI6M
+         0APBOndPSUob+ULAgl1NYp/2cP8x97djSXrfqQ3VlsDlPgXCdLBl8A3jX+Y7rddnspaN
+         BglOYUL0eFpvnsrj9QRIIS4j5SQLBcAPDatpDtZr/qpCYqFU8rI+YbieXPmcGfXjAdi8
+         r8b2kHidAofL54yQosc4YdQVXz0NRfHmT82ZCcXVPqtPFkP76H2GAmD2ms4bDYUBOhVr
+         9zxs1a6FxcFWdZ8pn54QVCqKUUMmeKHRS7CAi7wLBzmp0iYcPxsGNbEZUo8on7kSUOU+
+         UkzA==
+X-Gm-Message-State: AJIora+9BYaAkjMMLnQiTt9Lm51u1D9yTLhsgJboaAbb8vxrB2o2PxPz
+        gNJBgKnwaoJbi5CRULQEhosFU9JqWjktTXo4/7k=
+X-Google-Smtp-Source: AGRyM1ulxotWsDV/SS5wzW6q4zt5LXu3F658bS4StYWI/FgPuIBqBz38zqk7aydOTm9FXxU+wDfnf428k+eRTEG/aD8=
+X-Received: by 2002:a17:90b:1988:b0:1ec:f52d:90d4 with SMTP id
+ mv8-20020a17090b198800b001ecf52d90d4mr1796737pjb.70.1655910220864; Wed, 22
+ Jun 2022 08:03:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 1/4] perf/x86/intel/lbr: use setup_clear_cpu_cap instead
- of clear_cpu_cap
-Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jane Malalane <jane.malalane@citrix.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "open list:CRYPTO API" <linux-crypto@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>
-References: <20220622144820.751402-1-mlevitsk@redhat.com>
- <20220622144820.751402-2-mlevitsk@redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20220622144820.751402-2-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a17:903:2308:b0:16a:1b3f:f74b with HTTP; Wed, 22 Jun 2022
+ 08:03:40 -0700 (PDT)
+Reply-To: sales0212@asonmedsystemsinc.com
+From:   Prasad Ronni <lerwickfinance7@gmail.com>
+Date:   Wed, 22 Jun 2022 16:03:40 +0100
+Message-ID: <CAFkto5vTxj70kORZJZdwOGowXjsZ399eo6DJj=8T==7paSuHTw@mail.gmail.com>
+Subject: Service Needed.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 6/22/22 07:48, Maxim Levitsky wrote:
-> clear_cpu_cap(&boot_cpu_data) is very similar to setup_clear_cpu_cap
-> except that the latter also sets a bit in 'cpu_caps_cleared' which
-> later clears the same cap in secondary cpus, which is likely
-> what is meant here.
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+-- 
+Hi,
 
-Seems like a:
+Are you currently open to work as our executive company representative
+on contractual basis working remotely? If yes, we will be happy to
+share more details. Looking forward to your response.
 
-Fixes: 47125db27e47 ("perf/x86/intel/lbr: Support Architectural LBR")
-
-would be in order.
-
-Kan, does this change look right to you?
-
->  arch/x86/events/intel/lbr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-> index 13179f31fe10fa..b08715172309a7 100644
-> --- a/arch/x86/events/intel/lbr.c
-> +++ b/arch/x86/events/intel/lbr.c
-> @@ -1860,7 +1860,7 @@ void __init intel_pmu_arch_lbr_init(void)
->  	return;
->  
->  clear_arch_lbr:
-> -	clear_cpu_cap(&boot_cpu_data, X86_FEATURE_ARCH_LBR);
-> +	setup_clear_cpu_cap(X86_FEATURE_ARCH_LBR);
->  }
->  
->  /**
-
+Regards,
