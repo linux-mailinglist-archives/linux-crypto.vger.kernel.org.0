@@ -2,114 +2,105 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C215579B4
-	for <lists+linux-crypto@lfdr.de>; Thu, 23 Jun 2022 14:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98449557A0F
+	for <lists+linux-crypto@lfdr.de>; Thu, 23 Jun 2022 14:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbiFWMCE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 23 Jun 2022 08:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
+        id S230459AbiFWMOq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 23 Jun 2022 08:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbiFWMBi (ORCPT
+        with ESMTP id S229916AbiFWMOq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 23 Jun 2022 08:01:38 -0400
-Received: from mail-oa1-x42.google.com (mail-oa1-x42.google.com [IPv6:2001:4860:4864:20::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BC34E3B8
-        for <linux-crypto@vger.kernel.org>; Thu, 23 Jun 2022 05:00:22 -0700 (PDT)
-Received: by mail-oa1-x42.google.com with SMTP id 586e51a60fabf-101ab23ff3fso22596376fac.1
-        for <linux-crypto@vger.kernel.org>; Thu, 23 Jun 2022 05:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=SH1826VGivRTcWTFt6CirTUpizldtIW6lapFTxm7Gbo=;
-        b=dL4ZdfjGobK7bZ5zNav1+xGQiGde1Zc7ClvHsT7kk6LqobgfylVSX6CBG5RjcoVDTa
-         P464n62qmhgQVmko817GDYihyl7pvjfwkgES8JkCRGmr9xxgu3PjHmBrdfIKpKF+gxtz
-         ck0sfdPmzNP6PJDK99aoAJqvIJ6MSx5TfjB1KlqaDZn92DOWiz08x3njQYk7p7AUH10T
-         y+GlFokIsHaKh5IwUNZgaGJCE9OJ9vSfBgmQkTnZzySftM6HqqxRqpOIYwT/wd75+23E
-         P9+fpjMOoHjPoNoGgly+tjBN6a3v4kxdZSCYsYXbKgVUjjGIp5B1Lh0sXido0MvDOb61
-         P1yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=SH1826VGivRTcWTFt6CirTUpizldtIW6lapFTxm7Gbo=;
-        b=sDAIPr5Os3AuVupVFmF7bukYqJOBC4X0ZWHP5PgnbxGYQ0gJLf2PEpQssecmq9TFcs
-         h86H4xqH6iWKU8o278zk7X/Lbo1ga113mY7RjzT2AL1qd9r5V8Kcta7s3nRsjvBZLSQt
-         wBKcP7Q7BXMXiW4IKbwWfY9wFzNnJdJdp3chQoaJfgk17fvCS/7vG2z5ELwf0L4kxbME
-         XKI/E+GdxnsGcOD9cKiPcCLxz3YSqHySEtK3POi3JuUm86ZOD6YWqeQX/HEWMlX8uaJl
-         Bt09sJrbnULK6FnS/gx5swKKs5JEpolCsc4AI8GtSKDcIn9/RjZgFJD6tQHK0l2SSuAa
-         Nf5Q==
-X-Gm-Message-State: AJIora9DXvavnGxf4b6vYZW5QPf6zKAZfcEXnRmTqtSdkwipB5s5Nbbv
-        cRhjskl9VAx5XkO7mQCybyHyBv7Z21xgoa27SJg=
-X-Google-Smtp-Source: AGRyM1u9XqAMSItZNhegX/ZymFvhNBQP3xenHiWf00X4SNsH0rLed72zRQSP+YVxHt9F6Yhn4fsa6RzBdFD/GHKyBzE=
-X-Received: by 2002:a05:6870:311:b0:f2:d46a:b370 with SMTP id
- m17-20020a056870031100b000f2d46ab370mr2282258oaf.169.1655985618110; Thu, 23
- Jun 2022 05:00:18 -0700 (PDT)
+        Thu, 23 Jun 2022 08:14:46 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046A219F;
+        Thu, 23 Jun 2022 05:14:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id AE185B821D5;
+        Thu, 23 Jun 2022 12:14:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A450EC3411B;
+        Thu, 23 Jun 2022 12:14:41 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZyceW3nV"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1655986479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E8jdJIRzA1iOORaTEf/RwVI5GsVVtwzLHx5t+phlsrg=;
+        b=ZyceW3nVnyup8sNSwO4OqvLCVU3YvTxHicYyytWmA57+rIrc3jQ1ZktF5uaSh9tZ1/+mfb
+        mff+BPY8/ZPdXjlOrwBFhagofjc7ATezWOtOQXbBmPa9b8/Pthj3Hvs6PWzCgNuod/draG
+        zN5IZI+vu7Jar0hI3M7VTEdx3DaYoCI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 93aa512b (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Thu, 23 Jun 2022 12:14:39 +0000 (UTC)
+Date:   Thu, 23 Jun 2022 14:14:36 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Gregory Erwin <gregerwin256@gmail.com>
+Cc:     Miaoqing Pan <miaoqing@codeaurora.org>,
+        Rui Salvaterra <rsalvaterra@gmail.com>,
+        ath9k-devel <ath9k-devel@qca.qualcomm.com>,
+        linux-crypto@vger.kernel.org, linux-wireless@vger.kernel.org
+Subject: Re: ath9k: hwrng blocks for several minutes when phy is un-associated
+Message-ID: <YrRZLPQHK0QbLTjr@zx2c4.com>
+References: <CAO+Okf6ZJC5-nTE_EJUGQtd8JiCkiEHytGgDsFGTEjs0c00giw@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a4a:e60e:0:0:0:0:0 with HTTP; Thu, 23 Jun 2022 05:00:17
- -0700 (PDT)
-Reply-To: ibnahmadmustafa.aseelfinance@gmail.com
-From:   "Ibn Ahmad Mustafa(ASEEL Islamic Finance)" <alexaziz900@gmail.com>
-Date:   Thu, 23 Jun 2022 13:00:17 +0100
-Message-ID: <CA+ZonYFVf4r4TP5OjTABRM+sUUb77Yi8rA2ZjaW7-M57GTtrGA@mail.gmail.com>
-Subject: LOAN AND INVESTMENT-ASEEL ISLAMIC FINANCE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.2 required=5.0 tests=BAYES_60,DEAR_SOMETHING,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:42 listed in]
-        [list.dnswl.org]
-        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
-        *      [score: 0.7928]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [alexaziz900[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [alexaziz900[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  2.0 DEAR_SOMETHING BODY: Contains 'Dear (something)'
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *******
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAO+Okf6ZJC5-nTE_EJUGQtd8JiCkiEHytGgDsFGTEjs0c00giw@mail.gmail.com>
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Sir/Madam
+Hi Gregory,
 
-I would like to introduce you to Aseel Islamic finance PJSC which is a
-private joint stock company that was
-established in 2006 and has built a leading market position for itself
-in the UAE's Islamic finance market which specializes in loan finance
-and investment activities in real estate, hospitality, industrial &
-sustainable technologies, strategic financial investments, specialized
-education, healthcare services, agriculture, manufacturing,
-mining,energy and additional environmentally sustainable projects.
+On Wed, Jun 22, 2022 at 10:08:15PM -0700, Gregory Erwin wrote:
+> Hello,
+> 
+> I bisected down to commit [fcd09c90c3c5] "ath9k: use hw_random API instead of
+> directly dumping into random.c'' while investigating a long delay when entering
+> suspend on kernels v5.18 onward. There are other reports of hangs or
+> unresponsiveness at https://bugs.archlinux.org/task/75138 with some more info.
+> 
+> AFAIKT, the issue is triggered by the ath9k hwrng when the interface is up,
+> but not associated with any AP. In this state, 'dd if=/dev/hwrng' will block
+> for up to 231 seconds before finally returning an input/output error. Similarly,
+> I get a kernel log message "hwrng: no data available" every 231 seconds.
+> 
+> The hwrng will unblock when attempting to connect to an SSID that doesn't exist,
+> but not when performing a scan, so I'm guessing AR_PHY_TST_ADC only produces new
+> data when the phy is transmitting.
+> 
+> Admittedly, I don't actually know if this blocking behavior is
+> expected or not, but it certainly seems undesirable.
 
-I would love to send you further details with your consent.
+Thanks for the report. I wish somebody from one of those bug reports
+would have emailed earlier.
 
-Regards.
+I don't have hardware to test this, but could you let me know if the
+below patch does something? I'm sort of guessing, but maybe this is
+right?
 
-Mr.Ahmad Ibn Mustafa
-International Business Coordinator
-Aseel Islamic Finance PJSC
-Telephone: 800-ASEEL(27335)
+Jason
+
+diff --git a/drivers/net/wireless/ath/ath9k/rng.c b/drivers/net/wireless/ath/ath9k/rng.c
+index cb5414265a9b..a6291f5f0d47 100644
+--- a/drivers/net/wireless/ath/ath9k/rng.c
++++ b/drivers/net/wireless/ath/ath9k/rng.c
+@@ -80,7 +80,7 @@ static int ath9k_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+ 			bytes_read += max & 3UL;
+ 			memzero_explicit(&word, sizeof(word));
+ 		}
+-		if (!wait || !max || likely(bytes_read) || fail_stats > 110)
++		if (!wait || !max || likely(bytes_read) || fail_stats > 110 || kthread_should_stop())
+ 			break;
+
+ 		msleep_interruptible(ath9k_rng_delay_get(++fail_stats));
+
