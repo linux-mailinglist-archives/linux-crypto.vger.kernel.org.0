@@ -2,114 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E356A5572E2
-	for <lists+linux-crypto@lfdr.de>; Thu, 23 Jun 2022 08:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CDB5572F4
+	for <lists+linux-crypto@lfdr.de>; Thu, 23 Jun 2022 08:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbiFWGKD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 23 Jun 2022 02:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        id S229526AbiFWGV3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 23 Jun 2022 02:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbiFWGKC (ORCPT
+        with ESMTP id S229453AbiFWGV3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 23 Jun 2022 02:10:02 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5783A63C3
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Jun 2022 23:10:01 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 73-20020a17090a0fcf00b001eaee69f600so1579263pjz.1
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Jun 2022 23:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e8tI85riZMOHfa3k8p/ytOZ+RJHDFY9LmShQDBd6b6I=;
-        b=SARoOkbEBf5QYfK+kRxLw37L+QQB/x0IGUpe+lXNKkPPiKNupFPO+530fzS1KWdgi6
-         TrCm+F6wWiCV0QkfuRhEmM/gmZ+WfjgE06mqgTlCMKSrwMTM9XSXGiqe9Pqi01eGNsob
-         RUHT3oXSWiMOJXbP9jYtrMglqweDdrOnyAeQSSSdaAbzmgF1l28jeGhPebgZk9W8GqmH
-         4sRga2f8V3IA+2Nrn9j4/kPc8watpE8yNcdGHRYCB8908vRO/7wABbP90AUXYPosfKId
-         Yr3p67UFSZjkXVcZdMPlkgQyOhs1bD0EH0AEuk8BuIG9v2dlEPBndM6TfKZ5qnaclGQ1
-         R6og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e8tI85riZMOHfa3k8p/ytOZ+RJHDFY9LmShQDBd6b6I=;
-        b=MwiWtARZnU1H6fsypMXnSGpfxo+Jat0iDJ6UnxD6PbnTlf5wwF+hA5f9HNgDQpiPpE
-         PYp+LTNvLSItBT1FHhZOp3stwS1ZWu5FS2+j0yL2sZv3RNSXoTv0oRqMHWwepeg0qCX2
-         2c/CsYb6Exwo7m+T2U3AWFk5N5+sDP8UNJ8X4FI+xQhX/L5tee6sEZCjkL8pC8W5AWJd
-         1KkXYiry2YLLd9W53NNn5xj4DMpQr8LBrBdDcXeAVLsmIJsSh5zfGJJ3cQU1UIBwg8zi
-         XzoukPdWqfGVNOqunbrU36zEdxhvAWa/C4bPyovHlMTRqWr2L6j8a4y8KWxNgRNXWR5o
-         Z3dg==
-X-Gm-Message-State: AJIora9zILQmpQkaGKDJ4jWvtSOpMiLE4EIDIcc2wEgPWoJQtHHNtonz
-        V7rQK0eDjyb7bQT5or3Ec+BePg==
-X-Google-Smtp-Source: AGRyM1tURR2mWC91RwhGJJ7NdxfnCWsglo8eyFMK8qSWXsfbR3txPvvVUsY0tq+OhaZBG3rVIzzzXA==
-X-Received: by 2002:a17:902:d2cb:b0:16a:2efb:d03e with SMTP id n11-20020a170902d2cb00b0016a2efbd03emr15555823plc.81.1655964600838;
-        Wed, 22 Jun 2022 23:10:00 -0700 (PDT)
-Received: from FVFDK26JP3YV.bytedance.net ([139.177.225.234])
-        by smtp.gmail.com with ESMTPSA id s3-20020a170903200300b0016a11750b50sm9782080pla.16.2022.06.22.23.09.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Jun 2022 23:10:00 -0700 (PDT)
-From:   Lei He <helei.sig11@bytedance.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com
-Cc:     mst@redhat.com, kbuild-all@lists.01.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        berrange@redhat.com, pizhenwei@bytedance.com,
-        lei he <helei.sig11@bytedance.com>
-Subject: [PATCH v2 0/4] virtio-crypto: support ECDSA algorithm
-Date:   Thu, 23 Jun 2022 14:09:47 +0800
-Message-Id: <20220623060951.77641-1-helei.sig11@bytedance.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 23 Jun 2022 02:21:29 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44954326EF;
+        Wed, 22 Jun 2022 23:21:26 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LT96G5lFRzSgy9;
+        Thu, 23 Jun 2022 14:17:58 +0800 (CST)
+Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 23 Jun 2022 14:21:19 +0800
+Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
+ (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 23 Jun
+ 2022 14:21:19 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>,
+        <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>,
+        <yekai13@huawei.com>
+Subject: [PATCH v4 0/3] crypto: hisilicon - supports device isolation feature
+Date:   Thu, 23 Jun 2022 14:14:49 +0800
+Message-ID: <20220623061452.40732-1-yekai13@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml100012.china.huawei.com (7.185.36.121)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: lei he <helei.sig11@bytedance.com>
+1、Add the uacce hardware error isolation interface. 
+2、Add related implementation in ACC driver to support uacce interface.
+   e.g. Defining the isolation strategy for ACC by uacce sysfs node, if
+   the AER error frequency exceeds the value of setting for a certain 
+   period of time. The device will not be available in user space. The
+   VF device use the PF device isolation strategy. as well as the 
+   isolation strategy should not be set during device use.
+   
+changes v1->v2:
+	1、deleted dev_to_uacce api.
+	2、add vfs node doc. 
+	3、move uacce->ref to driver.
+changes v2->v3:
+	1、deleted some redundant code.
+	2、use qm state instead of reference count.
+	3、add null pointer check.
+	4、isolate_strategy_read() instead of a copy.
+changes v3->v4:
+	modify a comment
 
-This patch supports the ECDSA algorithm for virtio-crypto.
+Kai Ye (3):
+  uacce: supports device isolation feature
+  Documentation: add a isolation strategy sysfs node for uacce
+  crypto: hisilicon/qm - defining the device isolation strategy
 
-V1 -> V2:
-- explicitly specified an appropriate base commit.
-- fixed the link error reported by kernel test robot <lkp@intl.com>.
-- removed irrelevant commits.
+ Documentation/ABI/testing/sysfs-driver-uacce |  18 ++
+ drivers/crypto/hisilicon/qm.c                | 177 +++++++++++++++++--
+ drivers/misc/uacce/uacce.c                   |  41 +++++
+ include/linux/hisi_acc_qm.h                  |   9 +
+ include/linux/uacce.h                        |  11 ++
+ 5 files changed, 244 insertions(+), 12 deletions(-)
 
-V1:
-- fixed the problem that the max_signature_size of ECDSA is
-incorrectly calculated.
-- make pkcs8_private_key_parser can identify ECDSA private keys.
-- implement ECDSA algorithm for virtio-crypto device
-
-
-lei he (4):
-  crypto: fix the calculation of max_size for ECDSA
-  crypto: pkcs8 parser support ECDSA private keys
-  crypto: remove unused field in pkcs8_parse_context
-  virtio-crypto: support ECDSA algorithm
-
- crypto/Kconfig                                |   1 +
- crypto/Makefile                               |   2 +
- crypto/akcipher.c                             |  10 +
- crypto/asymmetric_keys/pkcs8.asn1             |   2 +-
- crypto/asymmetric_keys/pkcs8_parser.c         |  46 +++-
- crypto/ecdsa.c                                |   3 +-
- crypto/ecdsa_helper.c                         |  45 +++
- drivers/crypto/virtio/Kconfig                 |   1 +
- .../virtio/virtio_crypto_akcipher_algs.c      | 259 ++++++++++++++++--
- include/crypto/internal/ecdsa.h               |  15 +
- include/linux/asn1_encoder.h                  |   2 +
- lib/asn1_encoder.c                            |   3 +-
- 12 files changed, 361 insertions(+), 28 deletions(-)
- create mode 100644 crypto/ecdsa_helper.c
- create mode 100644 include/crypto/internal/ecdsa.h
-
-
-base-commit: 018ab4fabddd94f1c96f3b59e180691b9e88d5d8
 -- 
-2.20.1
+2.33.0
 
