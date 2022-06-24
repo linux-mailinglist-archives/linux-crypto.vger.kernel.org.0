@@ -2,81 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489AB559644
-	for <lists+linux-crypto@lfdr.de>; Fri, 24 Jun 2022 11:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC635598B7
+	for <lists+linux-crypto@lfdr.de>; Fri, 24 Jun 2022 13:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbiFXJPf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 24 Jun 2022 05:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
+        id S231350AbiFXLoa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 24 Jun 2022 07:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbiFXJPa (ORCPT
+        with ESMTP id S231331AbiFXLo3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 24 Jun 2022 05:15:30 -0400
-Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12E156FBF;
-        Fri, 24 Jun 2022 02:15:28 -0700 (PDT)
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1o4fPO-00Ai5b-Dq; Fri, 24 Jun 2022 19:15:24 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 24 Jun 2022 17:15:22 +0800
-Date:   Fri, 24 Jun 2022 17:15:22 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yoan Picchi <yoan.picchi@arm.com>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        "David S . Miller" <davem@davemloft.net>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v3 0/2] crypto: qat - Remove x86 dependency on QAT drivers
-Message-ID: <YrWAqhQTqgoo/Oup@gondor.apana.org.au>
-References: <20220617095945.437601-1-yoan.picchi@arm.com>
+        Fri, 24 Jun 2022 07:44:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0C64EDEC;
+        Fri, 24 Jun 2022 04:44:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B754C6221A;
+        Fri, 24 Jun 2022 11:44:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A95C7C34114;
+        Fri, 24 Jun 2022 11:44:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1656071068;
+        bh=wuFcb8zHRqDd4Ot8oA4+RHa9LKDGhYTvTXxLoTJJzjY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gUfodt5d1PJr726uOh95E2mHi9RldLj005llgN4lHR09iIA2JJWy7To2jdB02Cqbr
+         nJCscFPYWI1O+PjHe1yvqonyPWexOxARneP8FzGuynes2W/GT8aSNJf4laMstmCWcv
+         E0umCEKb3FM48UTwBrLUBb7Rw/ozbUHr3XIkQb4s=
+Date:   Fri, 24 Jun 2022 08:44:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "yekai(A)" <yekai13@huawei.com>
+Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, zhangfei.gao@linaro.org,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH v4 2/3] Documentation: add a isolation strategy sysfs
+ node for uacce
+Message-ID: <YrVdXcO9VLe8J/FP@kroah.com>
+References: <20220623061452.40732-1-yekai13@huawei.com>
+ <20220623061452.40732-3-yekai13@huawei.com>
+ <YrQr/3URWsdowov9@kroah.com>
+ <f25514f8-2d34-5911-b29f-a520d1df3db4@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220617095945.437601-1-yoan.picchi@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <f25514f8-2d34-5911-b29f-a520d1df3db4@huawei.com>
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 17, 2022 at 09:59:43AM +0000, Yoan Picchi wrote:
-> The QAT acceleration card can be very helpfull for some tasks like dealing
-> with IPSEC but it is currently restricted to be used only on x86 machine.
-> Looking at the code we didn't see any reasons why those drivers might not
-> work on other architectures. We've successfully built all of them on x86,
-> arm64, arm32, mips64, powerpc64, riscv64 and sparc64.
+On Fri, Jun 24, 2022 at 11:25:10AM +0800, yekai(A) wrote:
 > 
-> We also have tested the driver with an Intel Corporation C62x Chipset
-> QuickAssist Technology (rev 04) PCIe card on an arm64 server. After the numa
-> patch, it works with the AF_ALG crypto userland interface, allowing us to
-> encrypt some data with cbc for instance. We've also successfully created some
-> VF, bound them to DPDK, and used the card this way, thus showing some real
-> life usecases of x86 do work on arm64 too.
 > 
-> Changelog v1 ... v2:
-> - Add COMPILE_TEST to Kconfig
+> On 2022/6/23 17:01, Greg KH wrote:
+> > On Thu, Jun 23, 2022 at 02:14:51PM +0800, Kai Ye wrote:
+> > > Update documentation describing sysfs node that could help to
+> > > configure isolation method command for users in th user space.
+> > > 
+> > > Signed-off-by: Kai Ye <yekai13@huawei.com>
+> > > ---
+> > >  Documentation/ABI/testing/sysfs-driver-uacce | 18 ++++++++++++++++++
+> > >  1 file changed, 18 insertions(+)
+> > > 
+> > > diff --git a/Documentation/ABI/testing/sysfs-driver-uacce b/Documentation/ABI/testing/sysfs-driver-uacce
+> > > index 08f2591138af..8784efa96e01 100644
+> > > --- a/Documentation/ABI/testing/sysfs-driver-uacce
+> > > +++ b/Documentation/ABI/testing/sysfs-driver-uacce
+> > > @@ -19,6 +19,24 @@ Contact:        linux-accelerators@lists.ozlabs.org
+> > >  Description:    Available instances left of the device
+> > >                  Return -ENODEV if uacce_ops get_available_instances is not provided
+> > > 
+> > > +What:           /sys/class/uacce/<dev_name>/isolate_strategy
+> > > +Date:           Jun 2022
+> > > +KernelVersion:  5.20
+> > > +Contact:        linux-accelerators@lists.ozlabs.org
+> > > +Description:    A sysfs node that used to configures the hardware error
+> > > +                isolation method command. The command can be parsed
+> > > +                in correct driver. e.g. If the device slot reset frequency
+> > > +                exceeds the preset value in a time window, the device will be
+> > > +                isolated.
+> > 
+> > What is the "command"?  What is being parsed?  This needs to be
+> > documented a lot more here, this is very vague and not obvious at all.
+> > 
+> > 
 > 
-> Changelog v2 ... v3:
-> - Add the Crypto tag to the commit header
-> 
-> Andre Przywara (1):
->   crypto: qat - replace get_current_node() with numa_node_id()
-> 
-> Yoan Picchi (1):
->   crypto: qat - Removes the x86 dependency on the QAT drivers
-> 
->  drivers/crypto/qat/Kconfig                     | 14 +++++++-------
->  drivers/crypto/qat/qat_common/adf_common_drv.h |  5 -----
->  drivers/crypto/qat/qat_common/qat_algs.c       |  4 ++--
->  drivers/crypto/qat/qat_common/qat_asym_algs.c  |  4 ++--
->  4 files changed, 11 insertions(+), 16 deletions(-)
+> This command is a string command issued by the user. After the command is
+> configured, the acc driver parses the command.
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I am sorry, but I do not understand what you mean here.  What exactly is
+a "command"?  What format is it in?  What are valid commands?  What are
+invalid commands?  Are these commands different for different devices?
+What do the commands do?  What are the return values for the commands?
+And so on.
+
+You are creating a new user/kernel API here and so you must define it
+very specifically.  You have not speficied anything for us to know how
+this works at all and so we can not accept this for that reason alone
+(nor should you want us to.)
+
+thanks,
+
+greg k-h
