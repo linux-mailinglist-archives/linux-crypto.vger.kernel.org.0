@@ -2,71 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FF35630AE
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Jul 2022 11:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70A25631AF
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Jul 2022 12:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233158AbiGAJt3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 1 Jul 2022 05:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
+        id S234820AbiGAKnF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 1 Jul 2022 06:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235558AbiGAJt1 (ORCPT
+        with ESMTP id S235453AbiGAKmq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 1 Jul 2022 05:49:27 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABBD76956
-        for <linux-crypto@vger.kernel.org>; Fri,  1 Jul 2022 02:49:25 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-f2a4c51c45so2816852fac.9
-        for <linux-crypto@vger.kernel.org>; Fri, 01 Jul 2022 02:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=DMyolhHXpmu1+9rKonQ8Ub5Er3bhcnEayHaPyRlkSA4=;
-        b=GBrFvYFYOVBzzpmDHs3IrrfJPWTh6RCiSsJBTWQSl2QmDgws/O5CzbbvaoYo7P/SJf
-         cyhOGlDu6Sy/aJd1T9ENNALBTKHhubukyjTytEz5ksj1SfTpIDkxMeNNkK0i66J2J7aD
-         T22Pj2T34mGGznldlkSe4GcLvzDzzbDCAUo7xC7XmHsgEQxx4Prha3Uyr4yPd9WzTZBj
-         US+cZB51ElKLZPX1ckN42uJz3Y2Q8FOvCJ/Eq7TyFFGPJ6Pi6rl84Q2WgBKtR3UVOJtR
-         jt03u3XwJDf3PfURRZlrovDUFv44xp0ZXH7T7lRQEM3b4E/TBU4sOFbPamIb3L9f9yf1
-         kSlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=DMyolhHXpmu1+9rKonQ8Ub5Er3bhcnEayHaPyRlkSA4=;
-        b=4PhFCQuukmn63EfnHMUlKjY7Xke8SnVaU1SRK3eMoscMnaCjE1Whgz8nUk2bMka6Y5
-         lcjp7a1b4yisuSh1yAU+RqC0bIOxFqfBKkcBQsHLpugrkvqqwZVbuBtxv0vPvyeHbXLT
-         DuFIt1CU4AJDVJPKZ1noYUUdQmB4ziJWNF/fCXAWKceEO0QN9AvAzguA9wlxPimaxrZd
-         D3gN65uQ4L2/GvN+zSV0yKmlQeXQIyj2Qp/BPqFkRtzNOr3kKAZ5AYDoHFtDFl3Ivq4h
-         y3xYsozLGJDKj/A+EXDIpjQNuaC/DUM9rVeu7VzxYHp3EKOyzaNTIic1aADD1tAoHMKX
-         4ASA==
-X-Gm-Message-State: AJIora+XPXAdV4oTfJtCWW+tqQFdGfE8uo5+wNkiQT/NOuyh+in5xr+P
-        5FzOYl9Gw6OzKpngHn+ulTKQ7hkTiFqQBonIGkU=
-X-Google-Smtp-Source: AGRyM1vUEnxfVBXnLthcFdYPBiJex2ydqSUkRs3JBYl50JOjTOlBaOXlFT8Lm5+/LueeNt5C1Zsv3fMm8ZXYb+a7VHM=
-X-Received: by 2002:a05:6870:8195:b0:101:9342:bf1a with SMTP id
- k21-20020a056870819500b001019342bf1amr7805666oae.149.1656668963662; Fri, 01
- Jul 2022 02:49:23 -0700 (PDT)
+        Fri, 1 Jul 2022 06:42:46 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0147BD1B;
+        Fri,  1 Jul 2022 03:42:45 -0700 (PDT)
+Received: from zn.tnic (p200300ea970ff648329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:970f:f648:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 856321EC059D;
+        Fri,  1 Jul 2022 12:42:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1656672159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SWhCxOJUAdsvqOpxyv8QTMa/YznelRxtMa+3KCBAmCU=;
+        b=VfMj79baSekma4xFxVrkmV7L+rj6Z2maopnfrFmPEjLleGOALxaW+uTtB/VaB/rc6JrFGe
+        QSa+TzpouUp17YdzBr1v5gYQ4aUh8yCBG2g5HBWefZ4qFd+8Jf7s7Vy21LRImaayFJasOj
+        mDBhXy2Dcy9SCUdJdWZpwx/+FjBmdwc=
+Date:   Fri, 1 Jul 2022 12:42:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
+        pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, michael.roth@amd.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        dgilbert@redhat.com, jarkko@kernel.org
+Subject: Re: [PATCH Part2 v6 02/49] iommu/amd: Introduce function to check
+ SEV-SNP support
+Message-ID: <Yr7Pm/E9WsAjirV0@zn.tnic>
+References: <cover.1655761627.git.ashish.kalra@amd.com>
+ <12df64394b1788156c8a3c2ee8dfd62b51ab3a81.1655761627.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6839:f85:0:0:0:0 with HTTP; Fri, 1 Jul 2022 02:49:23
- -0700 (PDT)
-Reply-To: fredrich.david.mail@gmail.com
-From:   Mr Fredrich David <randywoods212@gmail.com>
-Date:   Fri, 1 Jul 2022 09:49:23 +0000
-Message-ID: <CAAAmqEZoJXvR7bNFTw7wgM9EcEBmT+Vx+5RsO3evURK6PFAN0Q@mail.gmail.com>
-Subject: dcv3
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <12df64394b1788156c8a3c2ee8dfd62b51ab3a81.1655761627.git.ashish.kalra@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--In risposta alle tue email, ti scrivo per informarti che i progetti
-sono ora completati e sei stato approvato!
-Cordiali saluti,
-Signor Fredrich David
+On Mon, Jun 20, 2022 at 10:59:19PM +0000, Ashish Kalra wrote:
+> +bool iommu_sev_snp_supported(void)
+> +{
+> +	struct amd_iommu *iommu;
+> +
+> +	/*
+> +	 * The SEV-SNP support requires that IOMMU must be enabled, and is
+> +	 * not configured in the passthrough mode.
+> +	 */
+> +	if (no_iommu || iommu_default_passthrough()) {
+> +		pr_err("SEV-SNP: IOMMU is either disabled or configured in passthrough mode.\n");
+> +		return false;
+> +	}
+> +
+> +	/*
+> +	 * Iterate through all the IOMMUs and verify the SNPSup feature is
+> +	 * enabled.
+> +	 */
+> +	for_each_iommu(iommu) {
+> +		if (!iommu_feature(iommu, FEATURE_SNP)) {
+> +			pr_err("SNPSup is disabled (devid: %02x:%02x.%x)\n",
+> +			       PCI_BUS_NUM(iommu->devid), PCI_SLOT(iommu->devid),
+> +			       PCI_FUNC(iommu->devid));
+> +			return false;
+> +		}
+> +	}
+> +
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_sev_snp_supported);
+
+Why is this function exported?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
