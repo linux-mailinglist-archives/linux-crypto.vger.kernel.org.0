@@ -2,123 +2,89 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD285677C8
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jul 2022 21:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AC65678D3
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jul 2022 22:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbiGET2i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Jul 2022 15:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
+        id S231266AbiGEUwR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Jul 2022 16:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbiGET2h (ORCPT
+        with ESMTP id S229939AbiGEUwP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Jul 2022 15:28:37 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2FB12764;
-        Tue,  5 Jul 2022 12:28:36 -0700 (PDT)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 265IiAjw016083;
-        Tue, 5 Jul 2022 19:28:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=gVviuTdG2skSFcwi7x4b9X1/jBb6c9Z6Uai43/YmWr0=;
- b=LIFQm9jPtpEilL4mxtC9lklAOJuC5whBEe2bKBFgwxbO+CH9eetm52GGDjHQC5f3cnR9
- qdw1V1UrKmgujPrEtW3bngwhVe6mWPcJspB9bkXZFwggqdOhXZLMSn2AIUI/qTn/kYzp
- puy9Sf/FvckC8IxJGgPxqZvBGf8GYS1rmOLZGDU3jdJsZVr3c3jjh4b41dobNQjrhicT
- bx1QqF+vZv18fsCkQrq5mmj24B+uhRXXqzG0wGss7ECEF74vf8B+PcJyRQ6D5HPD9kiS
- WgHJ2CkmMwQOcbBA8y+AxT+dYH1SCuizAR/T4Yicla9/b9eCnCUu/ZDlR7/+XAvTF0+x Og== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3h4rpa4kww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jul 2022 19:28:36 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 265JLeiq031957;
-        Tue, 5 Jul 2022 19:28:33 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3h2dn8vduf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jul 2022 19:28:33 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 265JSUGZ22610354
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Jul 2022 19:28:30 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6044A42041;
-        Tue,  5 Jul 2022 19:28:30 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E61694203F;
-        Tue,  5 Jul 2022 19:28:29 +0000 (GMT)
-Received: from [9.171.76.195] (unknown [9.171.76.195])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Jul 2022 19:28:29 +0000 (GMT)
-Message-ID: <94129ae6-0055-4cc9-dee3-0558cf52b4cb@linux.ibm.com>
-Date:   Tue, 5 Jul 2022 21:28:29 +0200
+        Tue, 5 Jul 2022 16:52:15 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8972C12AB7
+        for <linux-crypto@vger.kernel.org>; Tue,  5 Jul 2022 13:52:13 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1o8pWW-0000tU-FA; Tue, 05 Jul 2022 22:51:56 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1o8pWR-004dB1-7r; Tue, 05 Jul 2022 22:51:54 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1o8pWU-003Drn-0L; Tue, 05 Jul 2022 22:51:54 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel@pengutronix.de
+Subject: [PATCH 1/7] crypto: atmel-aes: Drop if with an always false condition
+Date:   Tue,  5 Jul 2022 22:51:38 +0200
+Message-Id: <20220705205144.131702-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v1 1/1] s390/arch_random: Buffer true random data
-Content-Language: en-US
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Harald Freudenberger <freude@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Juergen Christ <jchrist@linux.ibm.com>,
-        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
-References: <20220705112712.4433-1-dengler@linux.ibm.com>
- <20220705112712.4433-2-dengler@linux.ibm.com> <YsQ6OOrOWPhdynoM@zx2c4.com>
- <9a0561c0-68f7-b630-4440-3ca32bf28dc2@linux.ibm.com>
- <YsRUowTs9n98p9EL@zx2c4.com>
- <aafbb400-d0cb-99de-8b10-3c39c7b9bae5@linux.ibm.com>
- <YsRoXObdpCNbtpHS@zx2c4.com>
- <30e681b2-a411-cdb1-4b46-243db25abeef@linux.ibm.com>
- <YsSAn2qXqlFkS5sH@zx2c4.com>
-From:   Holger Dengler <dengler@linux.ibm.com>
-In-Reply-To: <YsSAn2qXqlFkS5sH@zx2c4.com>
 Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=949; h=from:subject; bh=bvVGcxJkIlGRVNmIhFGFH6gXMQJmfXDlOVZ0OZksjRM=; b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBixKRGUTOHzCJtEaCXv0bWPCdHhqgHNqvqFTB5/8OL mxgzy2WJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYsSkRgAKCRDB/BR4rcrsCXdEB/ 46LKv+vBM92XIvMrZ6u7nsFkYjQuOXn1cMgd+NKXyV3JRf4k3gms1IEOSLDGucKKcq66W46CETUCa3 hZZefQszB4r4V+Ya5fPZEb3C4uenIt+qOsEngR38gA6ffF59FDm1p7VTqqOQJg4IuKFMNBzGVeqrR8 IHshp3++6QjUZ5upY8qHK1z29gZiqVhBtskjMWjPzWMS81z2XQDLgLsbBCGM+mEtrt4r2UoLlu4adq b4pGD28xOQpKzOheH6Ajx5haO53ZdrrqcD3IUarySCgECvkYHu/lNE62KWTcuObJBsZhnCHF1bnSSw j/RxK/c9BPN+uLmlRb9nXUg9iAV1xC
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: pFCU0pPFcIaH_bPkXrK51wFDHKSwB4t8
-X-Proofpoint-ORIG-GUID: pFCU0pPFcIaH_bPkXrK51wFDHKSwB4t8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-05_16,2022-06-28_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=847
- lowpriorityscore=0 malwarescore=0 spamscore=0 bulkscore=0 suspectscore=0
- impostorscore=0 clxscore=1015 adultscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2204290000 definitions=main-2207050083
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Jason,
+The remove callback is only called after probe completed successfully.
+In this case platform_set_drvdata() was called with a non-NULL argument
+and so aes_dd is never NULL.
 
-On 05/07/2022 20:19, Jason A. Donenfeld wrote:
-> Hey Holger,
-> 
-> On Tue, Jul 05, 2022 at 07:47:37PM +0200, Holger Dengler wrote:
->> A trng call runs for minimal ~20-190us for 32 bytes. 20us on newer
->> machine generations, 190us on older ones. These are not 100% exact
->> measurements, but the dimension should be correct.
-> 
-> Holy smokes. Yea, okay, I see what you're saying. So indeed it sounds
-> like the `!in_hardirq()` addition would be a good idea. Let's do that.
+This is a preparation for making platform remove callbacks return void.
 
-:) I'll come up with this in v2.
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/crypto/atmel-aes.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-For the long run, a re-worked API arch_get_random_seed_something() with an arch-dependant variable block length is worth to think about. It seems, that x86 and ppc delivers a long per trng instruction call, while on s390 it would make more sense to fill the block.rdseed in a single call.
+diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+index f72c6b3e4ad8..886bf258544c 100644
+--- a/drivers/crypto/atmel-aes.c
++++ b/drivers/crypto/atmel-aes.c
+@@ -2669,8 +2669,7 @@ static int atmel_aes_remove(struct platform_device *pdev)
+ 	struct atmel_aes_dev *aes_dd;
+ 
+ 	aes_dd = platform_get_drvdata(pdev);
+-	if (!aes_dd)
+-		return -ENODEV;
++
+ 	spin_lock(&atmel_aes.lock);
+ 	list_del(&aes_dd->list);
+ 	spin_unlock(&atmel_aes.lock);
 
+base-commit: f2906aa863381afb0015a9eb7fefad885d4e5a56
 -- 
-Mit freundlichen Grüßen / Kind regards
-Holger Dengler
---
-IBM Systems, Linux on IBM Z Development
-dengler@linux.ibm.com
+2.36.1
+
