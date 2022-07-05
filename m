@@ -2,88 +2,109 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E24E5678CD
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jul 2022 22:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4E35679CA
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Jul 2022 23:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbiGEUwF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Jul 2022 16:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
+        id S231313AbiGEV4k (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Jul 2022 17:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbiGEUwD (ORCPT
+        with ESMTP id S229452AbiGEV4k (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Jul 2022 16:52:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A22438D
-        for <linux-crypto@vger.kernel.org>; Tue,  5 Jul 2022 13:52:02 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1o8pWX-0000tc-MM; Tue, 05 Jul 2022 22:51:57 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1o8pWS-004dBN-I2; Tue, 05 Jul 2022 22:51:56 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1o8pWV-003Ds7-9v; Tue, 05 Jul 2022 22:51:55 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
+        Tue, 5 Jul 2022 17:56:40 -0400
+X-Greylist: delayed 541 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Jul 2022 14:56:39 PDT
+Received: from mail.mleia.com (mleia.com [178.79.152.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA021D;
+        Tue,  5 Jul 2022 14:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mleia.com; s=mail;
+        t=1657057657; bh=Nj8bf5uI6dLEDyt4JsseMDkg3U8ZxrrwBsjjIiK/16Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZNjXxGMHAIHa0LqTe04z3ilZZDpwp06hI6OFAyJKTSr0tHwEdbPBNVHTWF1908XnO
+         TUnU1eJjiHb29dTgTlphZBMOfBNKRcvTnNMmGtX6Ij/DJ85//jLmbOgdChUhNGMdur
+         WKTcVinigN5d5mKMMcHwkY3W1vajlsUv6URM3s5XCuWBlgOokABQaGRSGtOSegGIA+
+         pqU/+ySKFKmnXHCL0Z6du76ih2iUVnY7X2sDLfcq0S2uMS55zZ2E42hgMWufB6qGo8
+         7pmcfwoY007znr6ryCzLjjc4v/Ewb62MmhsBICE+lfE/APnQlZYr0FZHQveUJqJn14
+         PoRjVhMmSh2bw==
+Received: from mail.mleia.com (localhost [127.0.0.1])
+        by mail.mleia.com (Postfix) with ESMTP id 62FC93C428C;
+        Tue,  5 Jul 2022 21:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mleia.com; s=mail;
+        t=1657057657; bh=Nj8bf5uI6dLEDyt4JsseMDkg3U8ZxrrwBsjjIiK/16Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZNjXxGMHAIHa0LqTe04z3ilZZDpwp06hI6OFAyJKTSr0tHwEdbPBNVHTWF1908XnO
+         TUnU1eJjiHb29dTgTlphZBMOfBNKRcvTnNMmGtX6Ij/DJ85//jLmbOgdChUhNGMdur
+         WKTcVinigN5d5mKMMcHwkY3W1vajlsUv6URM3s5XCuWBlgOokABQaGRSGtOSegGIA+
+         pqU/+ySKFKmnXHCL0Z6du76ih2iUVnY7X2sDLfcq0S2uMS55zZ2E42hgMWufB6qGo8
+         7pmcfwoY007znr6ryCzLjjc4v/Ewb62MmhsBICE+lfE/APnQlZYr0FZHQveUJqJn14
+         PoRjVhMmSh2bw==
+Received: from [192.168.1.102] (88-112-131-206.elisa-laajakaista.fi [88.112.131.206])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mleia.com (Postfix) with ESMTPSA id E95463C414C;
+        Tue,  5 Jul 2022 21:47:36 +0000 (UTC)
+Message-ID: <aa7814a6-be62-efcb-8688-dbdfc6a396f0@mleia.com>
+Date:   Wed, 6 Jul 2022 00:47:35 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH 7/7] crypto: s5p-sss: Drop if with an always false
+ condition
+Content-Language: en-US
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
 Cc:     linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 7/7] crypto: s5p-sss: Drop if with an always false condition
-Date:   Tue,  5 Jul 2022 22:51:44 +0200
-Message-Id: <20220705205144.131702-7-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220705205144.131702-1-u.kleine-koenig@pengutronix.de>
 References: <20220705205144.131702-1-u.kleine-koenig@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=853; h=from:subject; bh=bogHrLWOhtcmBuEz8mG/TmgQiUKVPwTBmiYKM67IJrE=; b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBixKRao/uc3yXouIxVSkn1OfxwsSKdJUfg3aNxeLh6 rrS1RlOJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYsSkWgAKCRDB/BR4rcrsCRWhB/ 0W08RBg8aZIfa5KTf034XdzCyDxQb3pqB2m60hY9sY81yVZV7kmvz4+HSgkUwT+QShLOiyD2qXxrAO FTPY5m4pv5fsr/N45hUagVGz7NiwW9QXKKLUvOfJMrGLFK/BMsGkR5wCAl7pvW6L/5cSQ+5BIE16OG nytNang79k98Bu5Z/G9oRQeoGE+BFEQAfb3vxHY47IJWTGnbVbBszMqdga7+qa1Qvc/+BugEjiIIXF EEZMoIxOfO61SZgXLEDvk0REWxXBY/MW191m+32alh8pM2BlFSN/R5dKFzRnefUUPbe72FRYBC25Mv ClSiAqodJd/AXREJ5dhm6V2al6Qq9C
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+ <20220705205144.131702-7-u.kleine-koenig@pengutronix.de>
+From:   Vladimir Zapolskiy <vz@mleia.com>
+In-Reply-To: <20220705205144.131702-7-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
+X-CRM114-CacheID: sfid-20220705_214737_427206_4809590F 
+X-CRM114-Status: GOOD (  16.47  )
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The remove callback is only called after probe completed successfully.
-In this case platform_set_drvdata() was called with a non-NULL argument
-and so pdata is never NULL.
+On 7/5/22 23:51, Uwe Kleine-König wrote:
+> The remove callback is only called after probe completed successfully.
+> In this case platform_set_drvdata() was called with a non-NULL argument
+> and so pdata is never NULL.
+> 
+> This is a preparation for making platform remove callbacks return void.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>   drivers/crypto/s5p-sss.c | 3 ---
+>   1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
+> index 7717e9e5977b..b79e49aa724f 100644
+> --- a/drivers/crypto/s5p-sss.c
+> +++ b/drivers/crypto/s5p-sss.c
+> @@ -2321,9 +2321,6 @@ static int s5p_aes_remove(struct platform_device *pdev)
+>   	struct s5p_aes_dev *pdata = platform_get_drvdata(pdev);
+>   	int i;
+>   
+> -	if (!pdata)
+> -		return -ENODEV;
+> -
+>   	for (i = 0; i < ARRAY_SIZE(algs); i++)
+>   		crypto_unregister_skcipher(&algs[i]);
+>   
 
-This is a preparation for making platform remove callbacks return void.
+Acked-by: Vladimir Zapolskiy <vz@mleia.com>
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/crypto/s5p-sss.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
-index 7717e9e5977b..b79e49aa724f 100644
---- a/drivers/crypto/s5p-sss.c
-+++ b/drivers/crypto/s5p-sss.c
-@@ -2321,9 +2321,6 @@ static int s5p_aes_remove(struct platform_device *pdev)
- 	struct s5p_aes_dev *pdata = platform_get_drvdata(pdev);
- 	int i;
- 
--	if (!pdata)
--		return -ENODEV;
--
- 	for (i = 0; i < ARRAY_SIZE(algs); i++)
- 		crypto_unregister_skcipher(&algs[i]);
- 
--- 
-2.36.1
-
+--
+Best wishes,
+Vladimir
