@@ -2,52 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C92B456B638
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Jul 2022 12:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B29756B9BB
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Jul 2022 14:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237727AbiGHKCf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 8 Jul 2022 06:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
+        id S237680AbiGHMdj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 8 Jul 2022 08:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237206AbiGHKCc (ORCPT
+        with ESMTP id S237028AbiGHMdh (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 8 Jul 2022 06:02:32 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B898D83F18;
-        Fri,  8 Jul 2022 03:02:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 8 Jul 2022 08:33:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D95C193D7
+        for <linux-crypto@vger.kernel.org>; Fri,  8 Jul 2022 05:33:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657283615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xjr1wZ1WmGRVtITclqyW3FXiq+oTsrOWXuC7nwweUE4=;
+        b=N6icREeJwW1ycrDzqD2TtK/vCLVN9ybGHSnI+xIhAJRviMYUDSEYSGK05m/5Js1QfE3SY3
+        k/RUbIKeSyjkh1y8GqU6xITVN0g9ahAtZCLo+ktgB/pNswzzm2s0N//JaAzi+AtGv320wM
+        a7KtbAKWz24xaDxBgZf/aTyinHtayMw=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-620-Ui1gUz-nOSaDEuYv3OO54g-1; Fri, 08 Jul 2022 08:33:33 -0400
+X-MC-Unique: Ui1gUz-nOSaDEuYv3OO54g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3F618B80189;
-        Fri,  8 Jul 2022 10:02:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB020C341C8;
-        Fri,  8 Jul 2022 10:02:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1657274549;
-        bh=A1Pn7b+rfBQZeBp7e/jVDi7zX7D7xGFXanXeP0Lzrzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LaTsHNke8x16hs+3ttsYIHFYjSMjeskPKOFoDRHkDWd+INIVdaMxLwG4w+XAOQWz7
-         7vw1o4p43ZNErBCrCSXp+8p+5688GROJo/jHBa5BdVOiTGqx/oDTInPDL0N8gaFK0S
-         xRyqsTWsuspZWLupEiTcfaDDZ3lblYf23xN60wYc=
-Date:   Fri, 8 Jul 2022 12:02:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "yekai(A)" <yekai13@huawei.com>
-Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wangzhou1@hisilicon.com
-Subject: Re: [PATCH v5 2/3] Documentation: add a isolation strategy sysfs
- node for uacce
-Message-ID: <YsgAsjTJOZ8Fhu6A@kroah.com>
-References: <20220708070820.43958-1-yekai13@huawei.com>
- <20220708070820.43958-3-yekai13@huawei.com>
- <YsfdDgetpgMzteKt@kroah.com>
- <9eaebf54-5095-0b02-8a06-f7235e2ba793@huawei.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C513294EDF0;
+        Fri,  8 Jul 2022 12:33:33 +0000 (UTC)
+Received: from rules.brq.redhat.com (unknown [10.43.17.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 752BE18EB5;
+        Fri,  8 Jul 2022 12:33:32 +0000 (UTC)
+From:   Vladis Dronov <vdronov@redhat.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladis Dronov <vdronov@redhat.com>, Simo Sorce <simo@redhat.com>
+Subject: [PATCH v4] crypto: fips - make proc files report fips module name and version
+Date:   Fri,  8 Jul 2022 14:33:13 +0200
+Message-Id: <20220708123313.119812-1-vdronov@redhat.com>
+In-Reply-To: <20220620131618.952133-1-vdronov@redhat.com>
+References: <20220620131618.952133-1-vdronov@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9eaebf54-5095-0b02-8a06-f7235e2ba793@huawei.com>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,67 +63,113 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jul 08, 2022 at 05:38:17PM +0800, yekai(A) wrote:
-> 
-> 
-> On 2022/7/8 15:30, Greg KH wrote:
-> > On Fri, Jul 08, 2022 at 03:08:19PM +0800, Kai Ye wrote:
-> > > Update documentation describing sysfs node that could help to
-> > > configure isolation strategy for users in the user space. And
-> > > describing sysfs node that could read the device isolated state.
-> > > 
-> > > Signed-off-by: Kai Ye <yekai13@huawei.com>
-> > > ---
-> > >  Documentation/ABI/testing/sysfs-driver-uacce | 18 ++++++++++++++++++
-> > >  1 file changed, 18 insertions(+)
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-driver-uacce b/Documentation/ABI/testing/sysfs-driver-uacce
-> > > index 08f2591138af..a8056271a963 100644
-> > > --- a/Documentation/ABI/testing/sysfs-driver-uacce
-> > > +++ b/Documentation/ABI/testing/sysfs-driver-uacce
-> > > @@ -19,6 +19,24 @@ Contact:        linux-accelerators@lists.ozlabs.org
-> > >  Description:    Available instances left of the device
-> > >                  Return -ENODEV if uacce_ops get_available_instances is not provided
-> > > 
-> > > +What:           /sys/class/uacce/<dev_name>/isolate_strategy
-> > > +Date:           Jul 2022
-> > > +KernelVersion:  5.20
-> > > +Contact:        linux-accelerators@lists.ozlabs.org
-> > > +Description:    A sysfs node that used to configures the hardware error
-> > 
-> > This is not a "node" it is just a file.
-> > 
-> > 
-> > > +                isolation strategy. This strategy is a configured integer value.
-> > > +                The default is 0. The maximum value is 65535. This value
-> > > +                indicates the number of device slot resets per unit time
-> > > +                that your service can tolerate.
-> > 
-> > I do not understand this, sorry.  What do you mean by "that your service
-> > can tolerate"?
-> 
-> it means the user can tolerable reset frequency, because the reset will
-> interrupt services.
+FIPS 140-3 introduced a requirement for the FIPS module to return
+information about itself, specifically a name and a version. These
+values must match the values reported on FIPS certificates.
 
-I am sorry, I still do not understand.  Please try explaining this in
-more detail in the description.
+This patch adds two files to read a name and a version from:
 
-> > > +
-> > > +What:           /sys/class/uacce/<dev_name>/isolate
-> > > +Date:           Jul 2022
-> > > +KernelVersion:  5.20
-> > > +Contact:        linux-accelerators@lists.ozlabs.org
-> > > +Description:    A sysfs node that read the device isolated state. The value 0
-> > > +                means that the device is working. The value 1 means that the
-> > > +                device has been isolated.
-> > 
-> > So 1 means "not working"?  This seems odd, perhaps you can rephrase this
-> > a bit better?
-> 
-> 1 means the device is unavailable. 0 means the device is available.
+/proc/sys/crypto/fips_name
+/proc/sys/crypto/fips_version
 
-Then please say that :)
+v2: removed redundant parentheses in config entries.
+v3: move FIPS_MODULE_* defines to fips.c where they are used.
+v4: return utsrelease.h inclusion
 
-thanks,
+Signed-off-by: Simo Sorce <simo@redhat.com>
+Signed-off-by: Vladis Dronov <vdronov@redhat.com>
+---
+ crypto/Kconfig | 21 +++++++++++++++++++++
+ crypto/fips.c  | 35 ++++++++++++++++++++++++++++++-----
+ 2 files changed, 51 insertions(+), 5 deletions(-)
 
-greg k-h
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 1d44893a997b..3891c331f2e7 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -33,6 +33,27 @@ config CRYPTO_FIPS
+ 	  certification.  You should say no unless you know what
+ 	  this is.
+ 
++config CRYPTO_FIPS_NAME
++	string "FIPS Module Name"
++	default "Linux Kernel Cryptographic API"
++	depends on CRYPTO_FIPS
++	help
++	  This option sets the FIPS Module name reported by the Crypto API via
++	  the /proc/sys/crypto/fips_name file.
++
++config CRYPTO_FIPS_CUSTOM_VERSION
++	bool "Use Custom FIPS Module Version"
++	depends on CRYPTO_FIPS
++	default n
++
++config CRYPTO_FIPS_VERSION
++	string "FIPS Module Version"
++	default "(none)"
++	depends on CRYPTO_FIPS_CUSTOM_VERSION
++	help
++	  This option provides the ability to override the FIPS Module Version.
++	  By default the KERNELRELEASE value is used.
++
+ config CRYPTO_ALGAPI
+ 	tristate
+ 	select CRYPTO_ALGAPI2
+diff --git a/crypto/fips.c b/crypto/fips.c
+index 7b1d8caee669..b05d3c7b3ca5 100644
+--- a/crypto/fips.c
++++ b/crypto/fips.c
+@@ -12,6 +12,7 @@
+ #include <linux/kernel.h>
+ #include <linux/sysctl.h>
+ #include <linux/notifier.h>
++#include <generated/utsrelease.h>
+ 
+ int fips_enabled;
+ EXPORT_SYMBOL_GPL(fips_enabled);
+@@ -30,13 +31,37 @@ static int fips_enable(char *str)
+ 
+ __setup("fips=", fips_enable);
+ 
++#define FIPS_MODULE_NAME CONFIG_CRYPTO_FIPS_NAME
++#ifdef CONFIG_CRYPTO_FIPS_CUSTOM_VERSION
++#define FIPS_MODULE_VERSION CONFIG_CRYPTO_FIPS_VERSION
++#else
++#define FIPS_MODULE_VERSION UTS_RELEASE
++#endif
++
++static char fips_name[] = FIPS_MODULE_NAME;
++static char fips_version[] = FIPS_MODULE_VERSION;
++
+ static struct ctl_table crypto_sysctl_table[] = {
+ 	{
+-		.procname       = "fips_enabled",
+-		.data           = &fips_enabled,
+-		.maxlen         = sizeof(int),
+-		.mode           = 0444,
+-		.proc_handler   = proc_dointvec
++		.procname	= "fips_enabled",
++		.data		= &fips_enabled,
++		.maxlen		= sizeof(int),
++		.mode		= 0444,
++		.proc_handler	= proc_dointvec
++	},
++	{
++		.procname	= "fips_name",
++		.data		= &fips_name,
++		.maxlen		= 64,
++		.mode		= 0444,
++		.proc_handler	= proc_dostring
++	},
++	{
++		.procname	= "fips_version",
++		.data		= &fips_version,
++		.maxlen		= 64,
++		.mode		= 0444,
++		.proc_handler	= proc_dostring
+ 	},
+ 	{}
+ };
+-- 
+2.36.1
+
