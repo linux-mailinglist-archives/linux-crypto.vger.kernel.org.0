@@ -2,102 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB4D56B121
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Jul 2022 05:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4B656B341
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Jul 2022 09:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237119AbiGHDyQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Jul 2022 23:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        id S237434AbiGHHPR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 8 Jul 2022 03:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236471AbiGHDyQ (ORCPT
+        with ESMTP id S236525AbiGHHPM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Jul 2022 23:54:16 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C4C74DE2;
-        Thu,  7 Jul 2022 20:54:15 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id w185so18788492pfb.4;
-        Thu, 07 Jul 2022 20:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=boMoiQ7O+iidCb90Ajv0DmnlcZVRw9XoN19BAZFvz0Q=;
-        b=PAyzN5zd/pXMr0RfDgSRgyz4Ab0+ZK907q7JkXafq6rbA3DcUNwLv5MiOJ1OBvPZ+V
-         PVwOxqIDf+vtFY20qOvDzu8QOgWCau6I5AogopFe/fL+KRzzw7fPvgYyfQjaENFMCxhJ
-         xLnU5P3XiTqEpk0xes2ZN95I1wdpTFL/r5fwqOTpj1OW5kHdzSVneiInXKAqbFOLXcif
-         Rx0w5p3ICf4IeSQO/dC5l5RzTrNu45MfvHpOF+VXMXh30W4oBpxVxTb65yarIDtu2UYR
-         dg7BmRy3zDyStQBKIswemyXYyeh+2InZad8Uhd0gu8M0zAWb0SXaAkTX33OP42l7MT1W
-         zTyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=boMoiQ7O+iidCb90Ajv0DmnlcZVRw9XoN19BAZFvz0Q=;
-        b=2Zu7t1R6VC20tw2RcVnLF9f8RFw2Zp1a1lkqjl91oHj+jgUVFIZNd8XMZ9Fc+XG9ID
-         J6hhrQj8g02goKSYX5geY47T9w5LnNBjP2fKtKk5G8P3gE7P0MQoO81GzuAJrIHTDERr
-         cJ//YMgGDAA6ha00E7CqIZObSYq9q5Ex03DyaDiS6uACnKgDze+NQpUMoP3Y5a7qbjDh
-         w5VkoqkVCNWBKf9pNZS6tgl+zGNARbApmIGwqjD1QT6tvEfEDjWtTyNKokUgoz2tVQpo
-         F3KYfpsKX4oOwFoiTzHSRKSllKfdCQftsbvuXt0vgiFN7DQeMMRqjJXUu3LXv66TtHrD
-         WTNw==
-X-Gm-Message-State: AJIora9YIYQYSNki5BgHXVhS8KI7ivB5/PLseu8H4TeGul1DYxWEn0d5
-        HD/XJVrmqJqFFeJs7WM9U/A=
-X-Google-Smtp-Source: AGRyM1t23AvMiJ2iSX9LEY552bKPo4g7Ld4jiIqNqJH5gcXFwBw4gYJY+WMm0c7ZlvzZqAqDp1aeiQ==
-X-Received: by 2002:a63:6d5:0:b0:412:ac9d:814e with SMTP id 204-20020a6306d5000000b00412ac9d814emr1507543pgg.90.1657252454656;
-        Thu, 07 Jul 2022 20:54:14 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id a8-20020aa78e88000000b0052534ade61dsm27766700pfr.185.2022.07.07.20.54.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jul 2022 20:54:14 -0700 (PDT)
-Message-ID: <8d42d2f2-1da5-0f23-6e43-a505e9d9d41f@gmail.com>
-Date:   Thu, 7 Jul 2022 20:54:13 -0700
+        Fri, 8 Jul 2022 03:15:12 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7962C76E97;
+        Fri,  8 Jul 2022 00:15:11 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LfPb16tlWzTh9j;
+        Fri,  8 Jul 2022 15:11:25 +0800 (CST)
+Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 8 Jul 2022 15:15:01 +0800
+Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
+ (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 8 Jul
+ 2022 15:15:01 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH v5 0/3] crypto: hisilicon - supports device isolation feature
+Date:   Fri, 8 Jul 2022 15:08:17 +0800
+Message-ID: <20220708070820.43958-1-yekai13@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.1
-Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is
- obsolete
-Content-Language: en-US
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-embedded@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org
-Cc:     kernel@pengutronix.de
-References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml100012.china.huawei.com (7.185.36.121)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+1、Add the uacce hardware error isolation interface. Supports
+   configures the hardware error isolation frequency.
+2、Defining the isolation strategy for ACC by uacce sysfs node. If the 
+   number of hardware errors in a per hour exceeds the configured value,
+   the device will not be available in user space. The VF device use the
+   PF device isolation strategy.
+   
+changes v1->v2:
+	- deleted dev_to_uacce api.
+	- add vfs node doc. 
+	- move uacce->ref to driver.
+changes v2->v3:
+	- deleted some redundant code.
+	- use qm state instead of reference count.
+	- add null pointer check.
+	- isolate_strategy_read() instead of a copy.
+changes v3->v4:
+	- modify a comment
+changes v4->v5:
+	- use bool instead of atomic.
+	- isolation frequency instead of isolation command.
 
+ Documentation/ABI/testing/sysfs-driver-uacce |  18 ++
+ drivers/crypto/hisilicon/qm.c                | 163 +++++++++++++++++--
+ drivers/misc/uacce/uacce.c                   |  55 +++++++
+ include/linux/hisi_acc_qm.h                  |   9 +
+ include/linux/uacce.h                        |  11 ++
+ 5 files changed, 244 insertions(+), 12 deletions(-)
 
-On 9/20/2021 1:06 AM, Uwe Kleine-König wrote:
-> The mails I sent to Matt on September 14 and 20 both were refused by the
-> MTA responsible for selenic.com (i.e. waste.org) with:
-> 
-> 	554 5.7.1 <mpm@selenic.com>: Recipient address rejected: This identity is obsolete
-> 
-> Also the most recent commit that involved him (ignoring "Cc: Matt
-> Mackall <mpm@selenic.com>" footers) is commit 330e0a01d54c (MAINTAINERS:
-> Theodore Ts'o is taking over the random driver) where he was removed
-> from the entry for random number drivers in 2012.
-> 
-> So drop him completely from the list of maintainers.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-
-This has not been applied and we still have entries in MAINTAINERS that 
-are bouncing for mpm@selenic.com, can we apply this patch?
 -- 
-Florian
+2.33.0
+
