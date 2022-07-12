@@ -2,96 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46779571896
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Jul 2022 13:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1063657189A
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Jul 2022 13:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbiGLLce (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 12 Jul 2022 07:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
+        id S229896AbiGLLd2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 12 Jul 2022 07:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232599AbiGLLc2 (ORCPT
+        with ESMTP id S229450AbiGLLd1 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 12 Jul 2022 07:32:28 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3699C279;
-        Tue, 12 Jul 2022 04:32:25 -0700 (PDT)
+        Tue, 12 Jul 2022 07:33:27 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B80057258;
+        Tue, 12 Jul 2022 04:33:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657625545; x=1689161545;
+  t=1657625606; x=1689161606;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=eyKlkKRUb/bfXr6lL9b0D9L6TwSjNtrZFvzJIx/FLHQ=;
-  b=LHH9cG5RWNP18fgMxRmluBtHr/sBL+eEBZSxbJQnsjXx87HsNxfr0gmM
-   ZBf/VOKXYuUAvrR8EzBdQcZf68Pe0IYW1bHTXPRmq7tQmkX1l+DG3g6Dn
-   7xgJiw5SyyrlEctUUkFKJiya9m/tqCuEoVVBMta92WnCncb0t5y2U5qYy
-   0Ee4g8lvFjd+FPTDwVc4H6JDPrd8wUoWCrOEPb0Ljc+uF+FgL5SVYGZZo
-   A27n5mz5Zl2/wg6UAOF5ThnsbcSzvVtM5hrJE/BjGY7QHNX/k9Z4E7VD2
-   Vr9WhrNqlL8GbjWd5LRhY0Bm2cNcEkJ8t115aFQdq/0VWy/x+HKyQKlu0
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="283662020"
+  bh=9e2S1yxz21rcIUCI6zCHSIHuKntXwSgqdeovCsE0SB0=;
+  b=C7ILR7O82n1rZWSlT38JHHDjWMec1okenIQS6S5Xo+aXKC8NA+zXpFgN
+   VocUNJdtvxwBHH2IV733cBCii9qYk5WPbkXXSpotPZp+3TLmARD1VX9xN
+   E/6Kd8sLn8YLG3ao9oSWoN3Qf5unUQNCPYVx5KZjUE4SX4prCioa2iwmO
+   4KZw7uMk0tezd0MfplAbRvT9R2JX6VOiZasuH4XGTsHL6y58HM8llZcda
+   fhMvroHyCRfSspALDLA6SfJUFdSVA8uYYI0IbLidTl9M8Cv6WsnpIjCWO
+   O7qR0p1025evyKfT3M0tluuAT2CKYMfDa4RcEz9f0OGnUCE0PGFl5lJPU
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="310524582"
 X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; 
-   d="scan'208";a="283662020"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 04:32:24 -0700
+   d="scan'208";a="310524582"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 04:33:25 -0700
 X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; 
-   d="scan'208";a="622472632"
+   d="scan'208";a="684741482"
 Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.76])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 04:32:21 -0700
-Date:   Tue, 12 Jul 2022 12:32:14 +0100
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 04:33:23 -0700
+Date:   Tue, 12 Jul 2022 12:33:20 +0100
 From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     linux-doc@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Adam Guerin <adam.guerin@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vladis Dronov <vdronov@redhat.com>,
+Cc:     linux-doc@vger.kernel.org, Adam Guerin <adam.guerin@intel.com>,
         Tomasz Kowallik <tomaszx.kowalik@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next 1/3] Documentation: qat: Use code block for qat
- sysfs example
-Message-ID: <Ys1bvhGnpz+GiJCB@silpixa00400314>
+Subject: Re: [PATCH next 2/3] Documentation: qat: rewrite description
+Message-ID: <Ys1cAIxILX3nboqq@silpixa00400314>
 References: <20220712092954.142027-1-bagasdotme@gmail.com>
- <20220712092954.142027-2-bagasdotme@gmail.com>
+ <20220712092954.142027-3-bagasdotme@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220712092954.142027-2-bagasdotme@gmail.com>
+In-Reply-To: <20220712092954.142027-3-bagasdotme@gmail.com>
 Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
  Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 04:29:52PM +0700, Bagas Sanjaya wrote:
-> kernel test robot and Stephen Rothwell reported htmldocs warning:
+On Tue, Jul 12, 2022 at 04:29:53PM +0700, Bagas Sanjaya wrote:
+> The sysfs description contains redundancy on returned and allowed values
+> list, due to the described sysfs is read-write. Rewrite.
 > 
-> Documentation/ABI/testing/sysfs-driver-qat:24: WARNING: Unexpected indentation.
-> 
-> The warning isn't caused by Date: field pointed by the warning, but rather
-> by sysfs example that isn't in literal code block.
-> 
-> Add the code block marker.
-> 
-> Link: https://lore.kernel.org/linux-next/20220711204932.333379b4@canb.auug.org.au/
-> Link: https://lore.kernel.org/linux-doc/202207090803.TEGI95qw-lkp@intel.com/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Fixes: d4cfb144f60551 ("crypto: qat - expose device config through sysfs for 4xxx")
-> Cc: Wojciech Ziemba <wojciech.ziemba@intel.com>
 > Cc: Adam Guerin <adam.guerin@intel.com>
-> Cc: Fiona Trahe <fiona.trahe@intel.com>
-> Cc: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Vladis Dronov <vdronov@redhat.com>
 > Cc: Tomasz Kowallik <tomaszx.kowalik@intel.com>
+> Cc: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+> Cc: Wojciech Ziemba <wojciech.ziemba@intel.com>
+> Cc: Fiona Trahe <fiona.trahe@intel.com>
 > Cc: linux-crypto@vger.kernel.org
 > Cc: linux-kernel@vger.kernel.org
 > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
