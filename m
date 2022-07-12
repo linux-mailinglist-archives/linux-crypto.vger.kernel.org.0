@@ -2,52 +2,62 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBDA5726DF
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Jul 2022 22:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D12C5728D6
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Jul 2022 23:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbiGLUAg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 12 Jul 2022 16:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
+        id S233176AbiGLVy6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 12 Jul 2022 17:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbiGLUAg (ORCPT
+        with ESMTP id S231283AbiGLVyz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 12 Jul 2022 16:00:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4BE3C8D9
-        for <linux-crypto@vger.kernel.org>; Tue, 12 Jul 2022 13:00:35 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1oBM3Q-0006FU-SA; Tue, 12 Jul 2022 22:00:20 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1oBM3L-000ZR4-3x; Tue, 12 Jul 2022 22:00:15 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1oBM3K-004mxU-9S; Tue, 12 Jul 2022 22:00:14 +0200
-Date:   Tue, 12 Jul 2022 22:00:10 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, olivia@selenic.com,
-        paul.gortmaker@windriver.com, dwmw2@infradead.org,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH] MAINTAINERS: Change mentions of mpm to olivia
-Message-ID: <20220712200010.kbx24o2nxobrhmey@pengutronix.de>
-References: <20220712185419.45487-1-f.fainelli@gmail.com>
+        Tue, 12 Jul 2022 17:54:55 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A60045F63;
+        Tue, 12 Jul 2022 14:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657662894; x=1689198894;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HhwEjN2ERwxDUrhvzVEgnEFaPTQUKvOj+QMZ2916s+s=;
+  b=T2DAap0fgbVM9AmNpyc+PPHIy4YWOT1Y45FgeOJ9LnwwF55eQUWXkVkE
+   0KJAAONOg3JXgj7FpCJiuCgwGh8J94ZyO2DgcPjRskeXXLuZlblpwlpeC
+   Ze00uALAhaSXNIuZLVMx8hUvEgjwIqT2W1jW3Y9QKCP/dLQ0rdmtAokMA
+   KWzG96sY8JO4+JT9mL7biWi5ngyCRb8QaKv5OHR2qE826v7NxkKAlfp6A
+   rFaEEZTF3PLmr9aE8v2XjThs0GbukP2CeczHfHNOb8aQtVNn1rP8CDJ7O
+   6Noh1yOfSBysE/Aj8wSaoCKNluhDSPbeapxXi5ydepzu2httBaBpuHsEJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10406"; a="371363578"
+X-IronPort-AV: E=Sophos;i="5.92,266,1650956400"; 
+   d="scan'208";a="371363578"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 14:54:53 -0700
+X-IronPort-AV: E=Sophos;i="5.92,266,1650956400"; 
+   d="scan'208";a="772026699"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.76])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 14:54:51 -0700
+Date:   Tue, 12 Jul 2022 22:54:44 +0100
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     linux-doc@vger.kernel.org, Adam Guerin <adam.guerin@intel.com>,
+        Tomasz Kowallik <tomaszx.kowalik@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next 2/3] Documentation: qat: rewrite description
+Message-ID: <Ys3tpPBUS+ujnaoy@silpixa00400314>
+References: <20220712092954.142027-1-bagasdotme@gmail.com>
+ <20220712092954.142027-3-bagasdotme@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3ugdib3frsqf57yr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220712185419.45487-1-f.fainelli@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+In-Reply-To: <20220712092954.142027-3-bagasdotme@gmail.com>
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
+ Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,51 +65,40 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-
---3ugdib3frsqf57yr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 12, 2022 at 11:54:19AM -0700, Florian Fainelli wrote:
-> Following this mercurial changeset:
-> https://www.mercurial-scm.org/repo/hg-stable/rev/d4ba4d51f85f
->=20
-> update the MAINTAINERS entry to replace the now obsolete identity.
->=20
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Tue, Jul 12, 2022 at 04:29:53PM +0700, Bagas Sanjaya wrote:
+> The sysfs description contains redundancy on returned and allowed values
+> list, due to the described sysfs is read-write. Rewrite.
+> 
+> Cc: Adam Guerin <adam.guerin@intel.com>
+> Cc: Tomasz Kowallik <tomaszx.kowalik@intel.com>
+> Cc: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+> Cc: Wojciech Ziemba <wojciech.ziemba@intel.com>
+> Cc: Fiona Trahe <fiona.trahe@intel.com>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 > ---
-> This was first submitted by Uwe:
->=20
-> https://lore.kernel.org/lkml/20210920080635.253826-1-u.kleine-koenig@peng=
-utronix.de/
+>  Documentation/ABI/testing/sysfs-driver-qat | 34 +++++++---------------
+>  1 file changed, 11 insertions(+), 23 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-qat b/Documentation/ABI/testing/sysfs-driver-qat
+> index 43e081ec22cc4a..be6c200abd783c 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-qat
+> +++ b/Documentation/ABI/testing/sysfs-driver-qat
+> @@ -2,18 +2,14 @@ What:		/sys/bus/pci/devices/<BDF>/qat/state
+>  Date:		June 2022
+>  KernelVersion:	5.20
+>  Contact:	qat-linux@intel.com
+> -Description:	Reports the current state of the QAT device and allows to
+> -		change it.
+> +Description:	(RW) Reports the current state of the QAT device. Write to
+> +		the file to initalize and start the device or to stop it.
+                            ^^^^^^^^^
+Typo: initalize.
+It is possible just to say: "Write to the file to start or stop the
+device".
 
-My variant was to drop Matt/Olivia. Given that we didn't get any
-feedback from them, that's still what I would favour.
+Regards,
 
-Without any feedback (and committment?) from Olivia, I tend to nack this
-patch.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---3ugdib3frsqf57yr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmLN0scACgkQwfwUeK3K
-7AnREAf+PlSlT47//PJVYU31Gt4GNAV4v2o/8joQSsAof8dic1OI0hclbKS7IOGG
-w4DveYc5FjsI6/u0tO4+q2bdTS1Ehnj3L3RUmpOlsKJ386Pkv9ztnCn9fblY8b27
-fbZCpPmPAwveg4rXLfGeFVaQ6GiJpmggU0k9RC/7wBsu29P7RVir/R8gA7Nm+bj3
-B+3J1F/iwPCYufbmfpLLiGD+h5//FnkBjG/2eM6hcvLDf2pV9d86tXZkfH3JyUyc
-lG6+s5bSvISc5Gd5a/FDJreHAJqkBBrntK+odt17xlpYGUcu3Z5OWQXgW2EXZCSU
-OMRs+d1GEHHw1ftHLWcTVhV+eZ5xIA==
-=O8jQ
------END PGP SIGNATURE-----
-
---3ugdib3frsqf57yr--
+-- 
+Giovanni
