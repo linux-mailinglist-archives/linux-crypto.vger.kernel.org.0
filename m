@@ -2,78 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82581573B0D
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Jul 2022 18:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DF7573D28
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Jul 2022 21:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234634AbiGMQWC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 13 Jul 2022 12:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55956 "EHLO
+        id S231875AbiGMTd2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 13 Jul 2022 15:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbiGMQV7 (ORCPT
+        with ESMTP id S234491AbiGMTd2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 13 Jul 2022 12:21:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BB9183B6;
-        Wed, 13 Jul 2022 09:21:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BB8D06193B;
-        Wed, 13 Jul 2022 16:21:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 498E4C341C6;
-        Wed, 13 Jul 2022 16:21:57 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="l0DIH7fw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1657729315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LAW0ZSw1OlXVeHuT1rXQxx0CIa3pjnuyl8rUYru32Wk=;
-        b=l0DIH7fwFzHtsZWskoI9YiZ0pVLt9yhFZIbwLLQ/6QuTZ5gcIVJu115WiUbPvH8ISlVMSO
-        /twFsR8txdzVpL5PL8dhgHaxE2KzMIYZbBDXTRx2tLn9E7ZQYMMJn2evUiL1TW+auZuL8+
-        /SQt1RfVov2FkEfJ6B7vIU1anZEggio=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d8dbd479 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 13 Jul 2022 16:21:54 +0000 (UTC)
-Date:   Wed, 13 Jul 2022 18:21:48 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Vladimir Murzin <vladimir.murzin@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        ebiggers@google.com, tytso@mit.edu, torvalds@linux-foundation.org
-Subject: Re: [PATCH] random: cap jitter samples per bit to factor of HZ
-Message-ID: <Ys7xHMIF6OLkLbvv@zx2c4.com>
-References: <CAHmME9rrQVm72P6cLL4dUnSw+9nnXszDbQXRd3epRaQgKTy8BQ@mail.gmail.com>
- <20220713151115.1014188-1-Jason@zx2c4.com>
- <88d9e600-b687-7d09-53cb-727601612e21@arm.com>
+        Wed, 13 Jul 2022 15:33:28 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317B82DA9C
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Jul 2022 12:33:26 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id 189so11724500vsh.2
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Jul 2022 12:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CAIH/48VCAZZUEhRpfaRPTSaBdpuCbyHyIV69iiJf1M=;
+        b=aM1IhBunUxE23qoS04VXLKhmfEzv0G+rIPuL+tw7ecWQpkkV/VIRfagQrgSyOoTIAm
+         AZWPXQE2ns7ZNMtu2h9VrGRckGYmFXAYncydcobmDBiRLde8BCgwi2hlvMDHXzYgqMkQ
+         SeJxIk0u87w3y3HvNwB5qYF3cTerdoWv2b9mV8jFDizIJX8stbEHhwQnKSILH4q0Huup
+         hTOO9Jx4LSsJcLZc09WMxCsF4ciSzvQTXVpvt0KUlX7r0Y8qXhkOofhAjq9rhr7n0O3a
+         0Nz5Fyl2IiFFXOdqA4nMId1341Np8datpnUgsVwvaqGydn6uB0z1+35u/mxwEULjiUxM
+         xCNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=CAIH/48VCAZZUEhRpfaRPTSaBdpuCbyHyIV69iiJf1M=;
+        b=PxHsLnsaOueoWv+JMre92gzQ/4dp0GF3Mlyj2t2Hgvurv6Mar7Oi4yv8xJfYP+zHwf
+         qSExH7QUpOJtYeO40uaYIwvuERFQurAMHPy9ot6PQCS1cvwKcj1+Y3F6S7ZVLWOz8p4v
+         WAYpStoFrZjlc/gwQRXvGppAQCMGQ20Pa4Dgb6bj2OqRspW/I2XGlYGzGnw2swgle/ns
+         jenUKP96ORZERunNNJC4vQtxYndWt1DrNeSeAOaJA5hK0vPo0oa5d2e6wCZDyJaekI7T
+         a5Vq0zYJ+5uji6ryAi97TmmHN3z6ycMbZ+MPgDnyGBZEiA9BA+s1wpnftyDqtAysEvhk
+         fn0g==
+X-Gm-Message-State: AJIora9sFPtCdm1sInLHqgnmnsxM/DgKpCzC+0zf/klbmz2IpHuX9eL+
+        nt6Kn1lMqzDZ23x7A7ExhxDPQm5F5JodFrp8HPs=
+X-Google-Smtp-Source: AGRyM1sJxaHNFmNllzWTe6lcXJtKq+jpeM0H1VbICZMt0N2iL7xjj1CQ/iGumgoql0QuMbeebjAgPClviShoH8saaK0=
+X-Received: by 2002:a67:a449:0:b0:357:3407:9f60 with SMTP id
+ p9-20020a67a449000000b0035734079f60mr2391818vsh.17.1657740805145; Wed, 13 Jul
+ 2022 12:33:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <88d9e600-b687-7d09-53cb-727601612e21@arm.com>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a67:e05b:0:0:0:0:0 with HTTP; Wed, 13 Jul 2022 12:33:24
+ -0700 (PDT)
+Reply-To: pstefanopessina80@gmail.com
+From:   STEFANO PESSINA <awabuts49@gmail.com>
+Date:   Wed, 13 Jul 2022 22:33:24 +0300
+Message-ID: <CABqU-Kt960=z5WPCBXkW7U+2SM=criymhoesJ=oQD7uhrCaFLQ@mail.gmail.com>
+Subject: donation
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:e41 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4957]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [awabuts49[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [pstefanopessina80[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [awabuts49[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Vladmir,
+--=20
 
-On Wed, Jul 13, 2022 at 04:52:20PM +0100, Vladimir Murzin wrote:
-> On 7/13/22 16:11, Jason A. Donenfeld wrote:
-> > Vladimir - Can you let me know if this appears to fix the issue you're
-> > seeing? -Jason
-> 
-> Works for me, thanks! :) 
-> Tested-by: Vladimir Murzin <vladimir.murzin@arm.com>
-
-Thanks for testing. I'll push this out to Linus probably tomorrow.
-
-(Though I noticed that Linus is in the CC for this thread already, and
-he's been on a patch picking spree as of late, so in case he happens to
-be following along, fell free to pick away. Otherwise I'll send a pull
-not before long.)
-
-Jason
+Congratulations!
+The sum of =E2=82=AC1,500,000.00 has been donated to you by STEFANO PESSINA=
+.
+Kindly get back for more info via pstefanopessina80@gmail.com
