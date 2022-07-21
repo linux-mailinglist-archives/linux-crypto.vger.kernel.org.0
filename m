@@ -2,207 +2,113 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8050757CC79
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jul 2022 15:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE58757CC44
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jul 2022 15:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbiGUNr1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Jul 2022 09:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        id S230149AbiGUNnr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Jul 2022 09:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbiGUNrL (ORCPT
+        with ESMTP id S229897AbiGUNnB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Jul 2022 09:47:11 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6E9820D7;
-        Thu, 21 Jul 2022 06:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658411168; x=1689947168;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fQCPrJb9lHyi4oxZ+pNt0wwlX5RQtHlur9Kl1f9gxRE=;
-  b=eNS027HcYP3OjWp0qunzouJvNGwaiEzkIeFLFtyifGGK5UcWIAqXAatx
-   ABmpwPmk5xx9/Vju9lfohyiXX4BZ8asN2RoI0SjBttTx/UGoA7oO03Z6z
-   mgzIz1hMrJe6EYim76S2GjhyQ1hyGPToShoRNLhqMMJVdG03fmTSEydRQ
-   jEe7753UhvO95l7gHGxzHcukb9GrrcrS/uNMi7wApJnWHRi6NI5ihTmN1
-   weyNpD2KumcUxpgEGeFjwR/9a4Sp6CkDCl9wAFcOfIFz9RckkHKCRWtZs
-   PeIPcQ8tndUTKr4SsVrLvrPXXMg9aPUbkhWSSPlesfvCTiK+tenB5MECW
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10414"; a="267445062"
-X-IronPort-AV: E=Sophos;i="5.93,289,1654585200"; 
-   d="scan'208";a="267445062"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2022 06:46:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,289,1654585200"; 
-   d="scan'208";a="925655444"
-Received: from 984fee006c34.jf.intel.com ([10.165.126.83])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Jul 2022 06:46:08 -0700
-From:   Srinivas Kerekare <srinivas.kerekare@intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qat-linux@intel.com,
-        Srinivas Kerekare <srinivas.kerekare@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>
-Subject: [PATCH] crypto: qat - add check to validate firmware images
-Date:   Wed, 22 Jun 2022 14:01:55 -0700
-Message-Id: <20220622210155.69684-1-srinivas.kerekare@intel.com>
+        Thu, 21 Jul 2022 09:43:01 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9609A82FA4
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 06:42:56 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id t1so2842285lft.8
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 06:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OlrA4aslqLMnxqVvAtkDsO1/WINFttVW+0JawkwP3pw=;
+        b=qoM8TeC20pNuuY6iL7VUi3Voz9NpK162VWFoXK22FifWi0TXCN+eDbtHIWNh4t50y0
+         3CNg+vTQWZuzvUfut2sJMG3juX06w2Zlrluy+qD/eQ/bfCKyKZA0STao8frQOFzXavMy
+         Jy+KfaCoT2U4d8yg3THRU1oOc4WDkNmJx3tqNP7GRbp/cQkWpVEX1XiaJGNdLHecO3yp
+         YywMkNtwV/hrp5mFADrMhn9vQitPHFY/6CKBLrmqVY8X78ch6U+2pfSMsoSbmEAdfRnq
+         kU5JUqo+z5OtFBSoc7gSkMCoBYwMOE0SmHSMLpAfHqqu1HksB02JrUwxk/pBu+iddOEJ
+         B6dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OlrA4aslqLMnxqVvAtkDsO1/WINFttVW+0JawkwP3pw=;
+        b=1R7gwmowwUHVhX+cnMiR3PPs//rCIKwQNR5z2lVASYZrXVRbucPII6RjLwgwQSavoW
+         Zv2TX6MSqsUwEzwx6kgunt9tdD4LpdbMN72ZeOnj2jZtzQ5Wo2U05uq8ihdCSYabVeWr
+         qtMCw9+4VX23bKXYcAJWYRwVHdQVm5kLMIRczFjl3nXNLRRt8ag1aXFmprniBsEiT3TC
+         N/Lk4nPAmanCVOCiMWDLmRUjxOrtXi1q9oEsfshkjgMQqlZB1m26ALzE4wH4Zdw0HNQN
+         8Qg+5BBG/S2HlppVmeAMiz6B5omJJvsK8EZaSqPh9lgAwCWFyPPppkjBQQ9xhRoLxQzQ
+         RhsQ==
+X-Gm-Message-State: AJIora9HTkUSHxh5E03biQ9wHHJt2JTAFj+DvC9IBeJb7PPKoWfQyyQG
+        mos8ru0nfdiK3z5m0YcSW+fov9eV6jXmcg==
+X-Google-Smtp-Source: AGRyM1sEqvU9xBwqqi9i1CKGOI5WSuZpn9Pb60ReR+UoPT8YvLVKi/S8o42XRlDzwxHGYb7hduu83g==
+X-Received: by 2002:a05:6512:3984:b0:489:e65c:4627 with SMTP id j4-20020a056512398400b00489e65c4627mr23195394lfu.72.1658410974806;
+        Thu, 21 Jul 2022 06:42:54 -0700 (PDT)
+Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
+        by smtp.gmail.com with ESMTPSA id o23-20020ac24e97000000b004867a427026sm458568lfr.40.2022.07.21.06.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jul 2022 06:42:54 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     phone-devel@vger.kernel.org, Stefan Hansson <newbyte@disroot.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 00/15] Ux500 hash cleanup
+Date:   Thu, 21 Jul 2022 15:40:35 +0200
+Message-Id: <20220721134050.1047866-1-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DATE_IN_PAST_96_XX,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The function qat_uclo_check_image() validates the MMP and AE firmware
-images. If the QAT device supports firmware authentication (indicated
-by the handle to firmware loader), the input signed binary MMP and AE
-images are validated by parsing the following information:
-- Header length
-- Full size of the binary
-- Type of binary image (MMP or AE Firmware)
+This cleans up the Ux500 hash accelerator.
 
-Firmware binaries use RSA3K for signing and verification.
-The header length for the RSA3k is 0x384 bytes.
+This has been very sparingly maintained the last few years,
+but as it happens an active user appeared and sent me a
+bug report, so here is a series cleaning up the driver
+so we can maintain it going forward.
 
-All the size field values in the binary are quantified
-as DWORDS (1 DWORD = 4bytes).
+Most patches are modernizations, using new frameworks and
+helpers.
 
-On an invalid value the function prints an error message and returns
-with an error code "EINVAL".
+The expensive self tests are passing fine after this series.
 
-Signed-off-by: Srinivas Kerekare <srinivas.kerekare@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
----
- drivers/crypto/qat/qat_common/icp_qat_uclo.h |  3 +-
- drivers/crypto/qat/qat_common/qat_uclo.c     | 56 +++++++++++++++++++-
- 2 files changed, 57 insertions(+), 2 deletions(-)
+I think it is a bit too big to backport to stable :/
+But please put it in as non-urgent fix.
 
-diff --git a/drivers/crypto/qat/qat_common/icp_qat_uclo.h b/drivers/crypto/qat/qat_common/icp_qat_uclo.h
-index 4b36869bf460..69482abdb8b9 100644
---- a/drivers/crypto/qat/qat_common/icp_qat_uclo.h
-+++ b/drivers/crypto/qat/qat_common/icp_qat_uclo.h
-@@ -86,7 +86,8 @@
- 					ICP_QAT_CSS_FWSK_MODULUS_LEN(handle) + \
- 					ICP_QAT_CSS_FWSK_EXPONENT_LEN(handle) + \
- 					ICP_QAT_CSS_SIGNATURE_LEN(handle))
--#define ICP_QAT_CSS_MAX_IMAGE_LEN   0x40000
-+#define ICP_QAT_CSS_RSA4K_MAX_IMAGE_LEN    0x40000
-+#define ICP_QAT_CSS_RSA3K_MAX_IMAGE_LEN    0x30000
- 
- #define ICP_QAT_CTX_MODE(ae_mode) ((ae_mode) & 0xf)
- #define ICP_QAT_NN_MODE(ae_mode) (((ae_mode) >> 0x4) & 0xf)
-diff --git a/drivers/crypto/qat/qat_common/qat_uclo.c b/drivers/crypto/qat/qat_common/qat_uclo.c
-index 0fe5a474aa45..b7f7869ef8b2 100644
---- a/drivers/crypto/qat/qat_common/qat_uclo.c
-+++ b/drivers/crypto/qat/qat_common/qat_uclo.c
-@@ -1367,6 +1367,48 @@ static void qat_uclo_ummap_auth_fw(struct icp_qat_fw_loader_handle *handle,
- 	}
- }
- 
-+static int qat_uclo_check_image(struct icp_qat_fw_loader_handle *handle,
-+				char *image, unsigned int size,
-+				unsigned int fw_type)
-+{
-+	char *fw_type_name = fw_type ? "MMP" : "AE";
-+	unsigned int css_dword_size = sizeof(u32);
-+
-+	if (handle->chip_info->fw_auth) {
-+		struct icp_qat_css_hdr *css_hdr = (struct icp_qat_css_hdr *)image;
-+		unsigned int header_len = ICP_QAT_AE_IMG_OFFSET(handle);
-+
-+		if ((css_hdr->header_len * css_dword_size) != header_len)
-+			goto err;
-+		if ((css_hdr->size * css_dword_size) != size)
-+			goto err;
-+		if (fw_type != css_hdr->fw_type)
-+			goto err;
-+		if (size <= header_len)
-+			goto err;
-+		size -= header_len;
-+	}
-+
-+	if (fw_type == CSS_AE_FIRMWARE) {
-+		if (size < sizeof(struct icp_qat_simg_ae_mode *) +
-+		    ICP_QAT_SIMG_AE_INIT_SEQ_LEN)
-+			goto err;
-+		if (size > ICP_QAT_CSS_RSA4K_MAX_IMAGE_LEN)
-+			goto err;
-+	} else if (fw_type == CSS_MMP_FIRMWARE) {
-+		if (size > ICP_QAT_CSS_RSA3K_MAX_IMAGE_LEN)
-+			goto err;
-+	} else {
-+		pr_err("QAT: Unsupported firmware type\n");
-+		return -EINVAL;
-+	}
-+	return 0;
-+
-+err:
-+	pr_err("QAT: Invalid %s firmware image\n", fw_type_name);
-+	return -EINVAL;
-+}
-+
- static int qat_uclo_map_auth_fw(struct icp_qat_fw_loader_handle *handle,
- 				char *image, unsigned int size,
- 				struct icp_qat_fw_auth_desc **desc)
-@@ -1379,7 +1421,7 @@ static int qat_uclo_map_auth_fw(struct icp_qat_fw_loader_handle *handle,
- 	struct icp_qat_simg_ae_mode *simg_ae_mode;
- 	struct icp_firml_dram_desc img_desc;
- 
--	if (size > (ICP_QAT_AE_IMG_OFFSET(handle) + ICP_QAT_CSS_MAX_IMAGE_LEN)) {
-+	if (size > (ICP_QAT_AE_IMG_OFFSET(handle) + ICP_QAT_CSS_RSA4K_MAX_IMAGE_LEN)) {
- 		pr_err("QAT: error, input image size overflow %d\n", size);
- 		return -EINVAL;
- 	}
-@@ -1547,6 +1589,11 @@ int qat_uclo_wr_mimage(struct icp_qat_fw_loader_handle *handle,
- {
- 	struct icp_qat_fw_auth_desc *desc = NULL;
- 	int status = 0;
-+	int ret;
-+
-+	ret = qat_uclo_check_image(handle, addr_ptr, mem_size, CSS_MMP_FIRMWARE);
-+	if (ret)
-+		return ret;
- 
- 	if (handle->chip_info->fw_auth) {
- 		status = qat_uclo_map_auth_fw(handle, addr_ptr, mem_size, &desc);
-@@ -2018,8 +2065,15 @@ static int qat_uclo_wr_suof_img(struct icp_qat_fw_loader_handle *handle)
- 	struct icp_qat_fw_auth_desc *desc = NULL;
- 	struct icp_qat_suof_handle *sobj_handle = handle->sobj_handle;
- 	struct icp_qat_suof_img_hdr *simg_hdr = sobj_handle->img_table.simg_hdr;
-+	int ret;
- 
- 	for (i = 0; i < sobj_handle->img_table.num_simgs; i++) {
-+		ret = qat_uclo_check_image(handle, simg_hdr[i].simg_buf,
-+					   simg_hdr[i].simg_len,
-+					   CSS_AE_FIRMWARE);
-+		if (ret)
-+			return ret;
-+
- 		if (qat_uclo_map_auth_fw(handle,
- 					 (char *)simg_hdr[i].simg_buf,
- 					 (unsigned int)
+If this goes well the plan is to do the same for the crypto
+driver which has all the same problems.
+
+Linus Walleij (15):
+  crypto: ux500/hash: Pass ctx to hash_setconfiguration()
+  crypto: ux500/hash: Get rid of custom device list
+  crypto: ux500/hash: Pass context to zero message digest
+  crypto: ux500/hash: Drop custom state save/restore
+  crypto: ux500/hash: Drop bit index
+  crypto: ux500/hash: Break while/do instead of if/else
+  crypto: ux500/hash: Rename and switch type of member
+  crypto: ux500/hash: Stop saving/restoring compulsively
+  crypto: ux500/hash: Get rid of state from request context
+  crypto: ux500/hash: Implement .export and .import
+  crypto: ux500/hash: Drop custom uint64 type
+  crypto: ux500/hash: Convert to regmap MMIO
+  crypto: ux500/hash: Use AMBA core primecell IDs
+  crypto: ux500/hash: Implement runtime PM
+  crypto: ux500/hash: Drop regulator handling
+
+ drivers/crypto/ux500/Kconfig          |    1 +
+ drivers/crypto/ux500/hash/hash_alg.h  |  260 ++-----
+ drivers/crypto/ux500/hash/hash_core.c | 1028 ++++++++++---------------
+ 3 files changed, 479 insertions(+), 810 deletions(-)
+
 -- 
 2.36.1
-
---------------------------------------------------------------
-Intel Research and Development Ireland Limited
-Registered in Ireland
-Registered Office: Collinstown Industrial Park, Leixlip, County Kildare
-Registered Number: 308263
-
-
-This e-mail and any attachments may contain confidential material for the sole
-use of the intended recipient(s). Any review or distribution by others is
-strictly prohibited. If you are not the intended recipient, please contact the
-sender and delete all copies.
 
