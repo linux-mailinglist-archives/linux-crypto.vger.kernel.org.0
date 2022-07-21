@@ -2,167 +2,230 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C4457D192
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jul 2022 18:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE4B57D5BA
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jul 2022 23:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbiGUQcR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Jul 2022 12:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
+        id S233715AbiGUVPy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Jul 2022 17:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbiGUQcQ (ORCPT
+        with ESMTP id S233728AbiGUVPu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Jul 2022 12:32:16 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0949789A62
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 09:32:14 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id u13so3631028lfn.5
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 09:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+oK+pOh8MGs7bFdJqgWR+kgnOKb6pAhLXHsdjc9P39M=;
-        b=jeV22coreGgshD+gkAquxb7fsVo72DB+o/dKajf74blBq9YB1jI8G2Y2ZB46jiDhlh
-         OgKUwryyrOPuim6TUIMc1PaoRQm3dZ6VD3Zz3BekL80J9HFLZy9pGf2V9yMM1M2wV0Mm
-         kQ5/WBt8kFGAyKSjg99cd9dytVdNLTTbl9SFYJpWmUifgVJ60aocAV0zJYWNwA/+YBlt
-         NSK8G8hafDTjjC7VYw+bMzLf8C5Na5B0BnXQ23Gw140mJN5gCLCBGHARM/zpaBL6mxeJ
-         kuJkDnJ5QaYXGSqGRirp4uHlRtnbvqh8/f+FAqWyEQUAZx62bM/9OdyLltpBWfSz1LxU
-         V3sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+oK+pOh8MGs7bFdJqgWR+kgnOKb6pAhLXHsdjc9P39M=;
-        b=hgUjCMhKm847GYvTdMCQbYH6xtcJkADOww+FDak35e9CU+i3qU4FliIqLyr00BqDR3
-         Uf7CtFNsrQnLgzFu1IrwiVCozUlBH72aJRRBhQuCi7urpR27W7kdOXKOMa/nI5Xx354y
-         vqBOxgYimKZKyRwu7caYJPkfny3hQLdFgZvsDn/yzeH/Q8m5Vu18thcrrTdLFCJOCgT+
-         4QO626Qsx4UO+AOsGvTrRifX2jayopyuwly032IafcNAzx8xvS4QMRaJGWb2w5hpo0Ij
-         jxkG3G89kSgNe5NUM2436mLbgQNrn+E7cF04wckNyM38BQ2Y3MED36j5z88QCnS2aI5q
-         Fa1A==
-X-Gm-Message-State: AJIora+cOQw0EhixHBQ81VVx5zJ+30P0Z//6A/oMTrhgbwrYvnAxVFuK
-        1QklYqOC2AG1SSk9v9yjaKCO7u2sjT3VoA==
-X-Google-Smtp-Source: AGRyM1tnVCiYtipecpPF2+nlfxAx4GIakxxmeBxEAhUT2vxG/jCChsvmPA2jWxbrvW3SMCP0Uf4Ahw==
-X-Received: by 2002:a05:6512:2611:b0:478:da8f:e2d8 with SMTP id bt17-20020a056512261100b00478da8fe2d8mr21957614lfb.460.1658421132859;
-        Thu, 21 Jul 2022 09:32:12 -0700 (PDT)
-Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id b5-20020a056512070500b0047da6e495b1sm536580lfs.4.2022.07.21.09.32.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jul 2022 09:32:12 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     phone-devel@vger.kernel.org, Stefan Hansson <newbyte@disroot.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org,
-        Lionel Debieve <lionel.debieve@foss.st.com>
-Subject: [PATCH] dt-bindings: crypto: Add ST-Ericsson Ux500 CRYP
-Date:   Thu, 21 Jul 2022 18:30:10 +0200
-Message-Id: <20220721163010.1060062-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.36.1
+        Thu, 21 Jul 2022 17:15:50 -0400
+X-Greylist: delayed 1715 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Jul 2022 14:15:48 PDT
+Received: from luna (cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net [86.15.83.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE99968723
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 14:15:48 -0700 (PDT)
+Received: from ben by luna with local (Exim 4.96)
+        (envelope-from <ben@luna.fluff.org>)
+        id 1oEd4h-001rp7-00;
+        Thu, 21 Jul 2022 21:47:11 +0100
+From:   Ben Dooks <ben-linux@fluff.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        Ben Dooks <ben-linux@fluff.org>
+Subject: [PATCH] crypto: fix warnings from missing .note.GNU-stack
+Date:   Thu, 21 Jul 2022 21:47:09 +0100
+Message-Id: <20220721204709.445216-1-ben-linux@fluff.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,FSL_HELO_NON_FQDN_1,
+        HELO_NO_DOMAIN,KHOP_HELO_FCRDNS,RCVD_IN_SORBS_DUL,RDNS_DYNAMIC,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This adds device tree bindings for the Ux500 CRYP block.
+A lot of the assembly code in arch/arm/crypto is missing
+a .note.GNU-stack section which is making a numbe of warnings
+about implicit executable stack. This code does not look like
+it does not need an executable stack, so silence the warnings
+by adding a .section .note.GNU-stack to all these.
 
-This has been used for ages in the kernel device tree for
-Ux500 but was never documented, so fill in the gap.
+Since this is an empty section, it should be backwards compatible
+with older linkers.
 
-Cc: devicetree@vger.kernel.org
-Cc: Lionel Debieve <lionel.debieve@foss.st.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes the following warnings:
+
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/aes-cipher-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/aes-neonbs-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/sha1-armv4-large.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/sha1-armv7-neon.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/sha256-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/sha512-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/chacha-neon-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/aes-ce-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/sha1-ce-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/sha2-ce-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/ghash-ce-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+arm-linux-gnueabihf-ld: warning: arch/arm/crypto/crc32-ce-core.o: missing .note.GNU-stack section implies executable stack
+arm-linux-gnueabihf-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 ---
-The relationship to the existing STM32 CRYP block is pretty
-obvious when looking at the register map. If preferred, I
-can just extend the STM32 bindings with these extra
-(generic) properties and compatibles as well.
----
- .../crypto/stericsson,ux500-cryp.yaml         | 67 +++++++++++++++++++
- 1 file changed, 67 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml
+ arch/arm/crypto/aes-ce-core.S        | 2 ++
+ arch/arm/crypto/aes-cipher-core.S    | 2 ++
+ arch/arm/crypto/aes-neonbs-core.S    | 3 +++
+ arch/arm/crypto/chacha-neon-core.S   | 2 ++
+ arch/arm/crypto/chacha-scalar-core.S | 2 ++
+ arch/arm/crypto/crc32-ce-core.S      | 2 ++
+ arch/arm/crypto/ghash-ce-core.S      | 2 ++
+ arch/arm/crypto/sha1-armv4-large.S   | 1 +
+ arch/arm/crypto/sha1-armv7-neon.S    | 2 ++
+ arch/arm/crypto/sha1-ce-core.S       | 2 ++
+ arch/arm/crypto/sha2-ce-core.S       | 2 ++
+ arch/arm/crypto/sha256-armv4.pl      | 1 +
+ arch/arm/crypto/sha512-armv4.pl      | 1 +
+ 13 files changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml b/Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml
-new file mode 100644
-index 000000000000..9653776007a0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml
-@@ -0,0 +1,67 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/crypto/stericsson,ux500-cryp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm/crypto/aes-ce-core.S b/arch/arm/crypto/aes-ce-core.S
+index 312428d83eed..4e570c6df9bb 100644
+--- a/arch/arm/crypto/aes-ce-core.S
++++ b/arch/arm/crypto/aes-ce-core.S
+@@ -711,3 +711,5 @@ ENDPROC(ce_aes_invert)
+ 	.byte		 0x8,  0x9,  0xa,  0xb,  0xc,  0xd,  0xe,  0xf
+ 	.byte		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+ 	.byte		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 +
-+title: ST Microelectronics and ST-Ericsson Ux500 CRYP bindings
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/aes-cipher-core.S b/arch/arm/crypto/aes-cipher-core.S
+index 1da3f41359aa..11f10ee35487 100644
+--- a/arch/arm/crypto/aes-cipher-core.S
++++ b/arch/arm/crypto/aes-cipher-core.S
+@@ -199,3 +199,5 @@ ENDPROC(__aes_arm_encrypt)
+ ENTRY(__aes_arm_decrypt)
+ 	do_crypt	iround, crypto_it_tab, crypto_aes_inv_sbox, 0
+ ENDPROC(__aes_arm_decrypt)
 +
-+description: The Ux500 CRYP block is identical to the one found in
-+  STn8820 introduced in 2007. It seems to also be a related ancestor to the
-+  STM32 CRYP block.
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/aes-neonbs-core.S b/arch/arm/crypto/aes-neonbs-core.S
+index 7b61032f29fa..19197c0d635c 100644
+--- a/arch/arm/crypto/aes-neonbs-core.S
++++ b/arch/arm/crypto/aes-neonbs-core.S
+@@ -1041,3 +1041,6 @@ ENTRY(aesbs_xts_decrypt)
+ 	ldr		ip, [sp, #8]		// reorder final tweak?
+ 	__xts_crypt	aesbs_decrypt8, q0, q1, q6, q4, q2, q7, q3, q5
+ ENDPROC(aesbs_xts_decrypt)
 +
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
++.section .note.GNU-stack,"",%progbits
 +
-+properties:
-+  compatible:
-+    enum:
-+      - st,stn8820-cryp
-+      - stericsson,ux500-cryp
+diff --git a/arch/arm/crypto/chacha-neon-core.S b/arch/arm/crypto/chacha-neon-core.S
+index 13d12f672656..a90690d32ad8 100644
+--- a/arch/arm/crypto/chacha-neon-core.S
++++ b/arch/arm/crypto/chacha-neon-core.S
+@@ -641,3 +641,5 @@ ENDPROC(chacha_4block_xor_neon)
+ 	.byte		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f
+ 	.byte		0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17
+ 	.byte		0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f
 +
-+  reg:
-+    maxItems: 1
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/chacha-scalar-core.S b/arch/arm/crypto/chacha-scalar-core.S
+index 083fe1ab96d0..81f94876f418 100644
+--- a/arch/arm/crypto/chacha-scalar-core.S
++++ b/arch/arm/crypto/chacha-scalar-core.S
+@@ -441,3 +441,5 @@ ENTRY(hchacha_block_arm)
+ 1:	_chacha_permute	12
+ 	b		0b
+ ENDPROC(hchacha_block_arm)
 +
-+  clocks:
-+    maxItems: 1
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/crc32-ce-core.S b/arch/arm/crypto/crc32-ce-core.S
+index 3f13a76b9066..990c756c7487 100644
+--- a/arch/arm/crypto/crc32-ce-core.S
++++ b/arch/arm/crypto/crc32-ce-core.S
+@@ -304,3 +304,5 @@ ENDPROC(crc32_armv8_le)
+ ENTRY(crc32c_armv8_le)
+ 	__crc32		c
+ ENDPROC(crc32c_armv8_le)
 +
-+  interrupts:
-+    maxItems: 1
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/ghash-ce-core.S b/arch/arm/crypto/ghash-ce-core.S
+index 9f51e3fa4526..2f712b9d8b2b 100644
+--- a/arch/arm/crypto/ghash-ce-core.S
++++ b/arch/arm/crypto/ghash-ce-core.S
+@@ -337,3 +337,5 @@ ENTRY(pmull_ghash_update_p8)
+ 
+ 	ghash_update	p8
+ ENDPROC(pmull_ghash_update_p8)
 +
-+  resets:
-+    maxItems: 1
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/sha1-armv4-large.S b/arch/arm/crypto/sha1-armv4-large.S
+index 1c8b685149f2..4e40132382b5 100644
+--- a/arch/arm/crypto/sha1-armv4-large.S
++++ b/arch/arm/crypto/sha1-armv4-large.S
+@@ -505,3 +505,4 @@ ENTRY(sha1_block_data_order)
+ ENDPROC(sha1_block_data_order)
+ .asciz	"SHA1 block transform for ARMv4, CRYPTOGAMS by <appro@openssl.org>"
+ .align	2
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/sha1-armv7-neon.S b/arch/arm/crypto/sha1-armv7-neon.S
+index 28d816a6a530..a554b1bb4ceb 100644
+--- a/arch/arm/crypto/sha1-armv7-neon.S
++++ b/arch/arm/crypto/sha1-armv7-neon.S
+@@ -632,3 +632,5 @@ ENTRY(sha1_transform_neon)
+ .Ldo_nothing:
+   bx lr
+ ENDPROC(sha1_transform_neon)
 +
-+  dmas:
-+    items:
-+      - description: mem2cryp DMA channel
-+      - description: cryp2mem DMA channel
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/sha1-ce-core.S b/arch/arm/crypto/sha1-ce-core.S
+index 8a702e051738..73353804c33f 100644
+--- a/arch/arm/crypto/sha1-ce-core.S
++++ b/arch/arm/crypto/sha1-ce-core.S
+@@ -121,3 +121,5 @@ ENTRY(sha1_ce_transform)
+ 	vstr		dgbs, [r0, #16]
+ 	bx		lr
+ ENDPROC(sha1_ce_transform)
 +
-+  dma-names:
-+    items:
-+      - const: mem2cryp
-+      - const: cryp2mem
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/sha2-ce-core.S b/arch/arm/crypto/sha2-ce-core.S
+index b6369d2440a1..b5f20ab96690 100644
+--- a/arch/arm/crypto/sha2-ce-core.S
++++ b/arch/arm/crypto/sha2-ce-core.S
+@@ -121,3 +121,5 @@ ENTRY(sha2_ce_transform)
+ 	vst1.32		{dga-dgb}, [r0]
+ 	bx		lr
+ ENDPROC(sha2_ce_transform)
 +
-+  power-domains:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/reset/stericsson,db8500-prcc-reset.h>
-+    #include <dt-bindings/arm/ux500_pm_domains.h>
-+    cryp@a03cb000 {
-+      compatible = "stericsson,ux500-cryp";
-+      reg = <0xa03cb000 0x1000>;
-+      interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&prcc_pclk 6 2>;
-+      power-domains = <&pm_domains DOMAIN_VAPE>;
-+    };
++.section .note.GNU-stack,"",%progbits
+diff --git a/arch/arm/crypto/sha256-armv4.pl b/arch/arm/crypto/sha256-armv4.pl
+index f3a2b54efd4e..c12edbd99531 100644
+--- a/arch/arm/crypto/sha256-armv4.pl
++++ b/arch/arm/crypto/sha256-armv4.pl
+@@ -677,6 +677,7 @@ $code.=<<___;
+ #if __ARM_MAX_ARCH__>=7 && !defined(__KERNEL__)
+ .comm   OPENSSL_armcap_P,4,4
+ #endif
++.section .note.GNU-stack,"",%progbits
+ ___
+ 
+ open SELF,$0;
+diff --git a/arch/arm/crypto/sha512-armv4.pl b/arch/arm/crypto/sha512-armv4.pl
+index 2fc3516912fa..6411799b4d1d 100644
+--- a/arch/arm/crypto/sha512-armv4.pl
++++ b/arch/arm/crypto/sha512-armv4.pl
+@@ -639,6 +639,7 @@ $code.=<<___;
+ #if __ARM_MAX_ARCH__>=7 && !defined(__KERNEL__)
+ .comm	OPENSSL_armcap_P,4,4
+ #endif
++.section .note.GNU-stack,"",%progbits
+ ___
+ 
+ $code =~ s/\`([^\`]*)\`/eval $1/gem;
 -- 
-2.36.1
+2.35.1
 
