@@ -2,64 +2,64 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D33057CC73
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jul 2022 15:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C4457D192
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Jul 2022 18:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbiGUNpl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Jul 2022 09:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
+        id S231766AbiGUQcR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Jul 2022 12:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbiGUNow (ORCPT
+        with ESMTP id S230389AbiGUQcQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Jul 2022 09:44:52 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD74863CE
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 06:43:19 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id u19so2928030lfs.0
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 06:43:19 -0700 (PDT)
+        Thu, 21 Jul 2022 12:32:16 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0949789A62
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 09:32:14 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id u13so3631028lfn.5
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Jul 2022 09:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jqVIpScoCCWkDYabFnlwaaN9YoNnkMmK49AqBQlpN38=;
-        b=pwObx/GcQLid5/AwpUISVuaVTzteHWScJQUuM1WEjLsOkMMiz5TsxXhF85mQdwOvaX
-         nr7CMIWIZKl2bC1SuFVblpMBnCom3gKIMCVfHlQ3re2Hj18Tis/QKuXG+hce3EP9sx4n
-         9y8RNtaZgJZvAa9QKl16XEMt8XXTQ5DzYiG15FsO0c89UQK8gEuLzy0nhCkYhj9vpScZ
-         g9Ypm9Ao4X7LLNbUK8n0f8oQKcmMpgH6rDSGG3bWXDFcjVhLFDF5jmWCoaFPBFOQTrk8
-         5PvXeelLKuNOQWezzvFe9YMsq0WBtiCKOsz7E1RfVWaJcprSOEK4rZqqlf6GkhWLRWC5
-         fwjg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+oK+pOh8MGs7bFdJqgWR+kgnOKb6pAhLXHsdjc9P39M=;
+        b=jeV22coreGgshD+gkAquxb7fsVo72DB+o/dKajf74blBq9YB1jI8G2Y2ZB46jiDhlh
+         OgKUwryyrOPuim6TUIMc1PaoRQm3dZ6VD3Zz3BekL80J9HFLZy9pGf2V9yMM1M2wV0Mm
+         kQ5/WBt8kFGAyKSjg99cd9dytVdNLTTbl9SFYJpWmUifgVJ60aocAV0zJYWNwA/+YBlt
+         NSK8G8hafDTjjC7VYw+bMzLf8C5Na5B0BnXQ23Gw140mJN5gCLCBGHARM/zpaBL6mxeJ
+         kuJkDnJ5QaYXGSqGRirp4uHlRtnbvqh8/f+FAqWyEQUAZx62bM/9OdyLltpBWfSz1LxU
+         V3sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jqVIpScoCCWkDYabFnlwaaN9YoNnkMmK49AqBQlpN38=;
-        b=Gz91WicJbxJNSvPxKnXG0d9dJXigYsdcMzZvB6NbSoSl3ELBB2mMx1Jnj8hA+FE2Vd
-         8PT/YR/+ABOYVrRRR9Ab5anQ6CUcsEN+eNthtU4UVvfUY8cUQj5i8KMg4TDVC5BM/5NJ
-         8uiBYl3WaRM7YyT6mONc7PZCrLJ/BFJ7VdVI2S4Oycxysuig9qxM9QkthxfolzgEQ518
-         L/0zGNBe1Jq7Vr/mhr1V85FzxPNl2D3ptcABoORHYW14usBXICBpED5plTW1oI6+uPl6
-         TplHPJsLErZ4KwWK5NuSMiGtvK9dqHggAdvWsmNZXVLL8ezVaraQdB+Kl+YHf1qsJcnM
-         j03g==
-X-Gm-Message-State: AJIora9K1px962FKqRA+tCjgDHgCnzjN378zY84udmRzJRJGDb2BLpoQ
-        ouf9uT5pxNb6AsSgmlcsk6nMTkpEBX3XLQ==
-X-Google-Smtp-Source: AGRyM1vgzjJ0BItV7slTtOxAPzurr5dvcxKAOsX1nCxr/sj7eczTLe7+VgthdYOaNjtRyAVTn8MZng==
-X-Received: by 2002:a05:6512:3fa2:b0:48a:16df:266f with SMTP id x34-20020a0565123fa200b0048a16df266fmr18593242lfa.414.1658410995946;
-        Thu, 21 Jul 2022 06:43:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+oK+pOh8MGs7bFdJqgWR+kgnOKb6pAhLXHsdjc9P39M=;
+        b=hgUjCMhKm847GYvTdMCQbYH6xtcJkADOww+FDak35e9CU+i3qU4FliIqLyr00BqDR3
+         Uf7CtFNsrQnLgzFu1IrwiVCozUlBH72aJRRBhQuCi7urpR27W7kdOXKOMa/nI5Xx354y
+         vqBOxgYimKZKyRwu7caYJPkfny3hQLdFgZvsDn/yzeH/Q8m5Vu18thcrrTdLFCJOCgT+
+         4QO626Qsx4UO+AOsGvTrRifX2jayopyuwly032IafcNAzx8xvS4QMRaJGWb2w5hpo0Ij
+         jxkG3G89kSgNe5NUM2436mLbgQNrn+E7cF04wckNyM38BQ2Y3MED36j5z88QCnS2aI5q
+         Fa1A==
+X-Gm-Message-State: AJIora+cOQw0EhixHBQ81VVx5zJ+30P0Z//6A/oMTrhgbwrYvnAxVFuK
+        1QklYqOC2AG1SSk9v9yjaKCO7u2sjT3VoA==
+X-Google-Smtp-Source: AGRyM1tnVCiYtipecpPF2+nlfxAx4GIakxxmeBxEAhUT2vxG/jCChsvmPA2jWxbrvW3SMCP0Uf4Ahw==
+X-Received: by 2002:a05:6512:2611:b0:478:da8f:e2d8 with SMTP id bt17-20020a056512261100b00478da8fe2d8mr21957614lfb.460.1658421132859;
+        Thu, 21 Jul 2022 09:32:12 -0700 (PDT)
 Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id o23-20020ac24e97000000b004867a427026sm458568lfr.40.2022.07.21.06.43.15
+        by smtp.gmail.com with ESMTPSA id b5-20020a056512070500b0047da6e495b1sm536580lfs.4.2022.07.21.09.32.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jul 2022 06:43:15 -0700 (PDT)
+        Thu, 21 Jul 2022 09:32:12 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
 To:     linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>
 Cc:     phone-devel@vger.kernel.org, Stefan Hansson <newbyte@disroot.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 15/15] crypto: ux500/hash: Drop regulator handling
-Date:   Thu, 21 Jul 2022 15:40:50 +0200
-Message-Id: <20220721134050.1047866-16-linus.walleij@linaro.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org,
+        Lionel Debieve <lionel.debieve@foss.st.com>
+Subject: [PATCH] dt-bindings: crypto: Add ST-Ericsson Ux500 CRYP
+Date:   Thu, 21 Jul 2022 18:30:10 +0200
+Message-Id: <20220721163010.1060062-1-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220721134050.1047866-1-linus.walleij@linaro.org>
-References: <20220721134050.1047866-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,121 +72,97 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This "APE" voltage is not handled by a regulator but by the
-power domain, drop it.
+This adds device tree bindings for the Ux500 CRYP block.
 
+This has been used for ages in the kernel device tree for
+Ux500 but was never documented, so fill in the gap.
+
+Cc: devicetree@vger.kernel.org
+Cc: Lionel Debieve <lionel.debieve@foss.st.com>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/crypto/ux500/hash/hash_core.c | 35 +++------------------------
- 1 file changed, 4 insertions(+), 31 deletions(-)
+The relationship to the existing STM32 CRYP block is pretty
+obvious when looking at the register map. If preferred, I
+can just extend the STM32 bindings with these extra
+(generic) properties and compatibles as well.
+---
+ .../crypto/stericsson,ux500-cryp.yaml         | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml
 
-diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
-index 55d27af8c9de..35bda646f49c 100644
---- a/drivers/crypto/ux500/hash/hash_core.c
-+++ b/drivers/crypto/ux500/hash/hash_core.c
-@@ -27,8 +27,6 @@
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/crypto.h>
--
--#include <linux/regulator/consumer.h>
- #include <linux/dmaengine.h>
- #include <linux/bitops.h>
- 
-@@ -247,8 +245,7 @@ static int get_empty_message_digest(
-  * hash_disable_power - Request to disable power and clock.
-  * @device_data:	Structure for the hash device.
-  *
-- * This function request for disabling power (regulator) and clock,
-- * and could also save current hw state.
-+ * This function request for disabling the clock.
-  */
- static int hash_disable_power(struct hash_device_data *device_data)
- {
-@@ -260,9 +257,6 @@ static int hash_disable_power(struct hash_device_data *device_data)
- 		goto out;
- 
- 	clk_disable(device_data->clk);
--	ret = regulator_disable(device_data->regulator);
--	if (ret)
--		dev_err(dev, "%s: regulator_disable() failed!\n", __func__);
- 
- 	device_data->power_state = false;
- 
-@@ -276,8 +270,7 @@ static int hash_disable_power(struct hash_device_data *device_data)
-  * hash_enable_power - Request to enable power and clock.
-  * @device_data:		Structure for the hash device.
-  *
-- * This function request for enabling power (regulator) and clock,
-- * and could also restore a previously saved hw state.
-+ * This function request for enabling the clock.
-  */
- static int hash_enable_power(struct hash_device_data *device_data)
- {
-@@ -286,17 +279,9 @@ static int hash_enable_power(struct hash_device_data *device_data)
- 
- 	spin_lock(&device_data->power_state_lock);
- 	if (!device_data->power_state) {
--		ret = regulator_enable(device_data->regulator);
--		if (ret) {
--			dev_err(dev, "%s: regulator_enable() failed!\n",
--				__func__);
--			goto out;
--		}
- 		ret = clk_enable(device_data->clk);
- 		if (ret) {
- 			dev_err(dev, "%s: clk_enable() failed!\n", __func__);
--			ret = regulator_disable(
--					device_data->regulator);
- 			goto out;
- 		}
- 		device_data->power_state = true;
-@@ -1575,25 +1560,17 @@ static int ux500_hash_probe(struct platform_device *pdev)
- 	spin_lock_init(&device_data->ctx_lock);
- 	spin_lock_init(&device_data->power_state_lock);
- 
--	device_data->regulator = regulator_get(dev, "v-ape");
--	if (IS_ERR(device_data->regulator)) {
--		dev_err(dev, "%s: regulator_get() failed!\n", __func__);
--		ret = PTR_ERR(device_data->regulator);
--		device_data->regulator = NULL;
--		goto out;
--	}
--
- 	device_data->clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(device_data->clk)) {
- 		dev_err(dev, "%s: clk_get() failed!\n", __func__);
- 		ret = PTR_ERR(device_data->clk);
--		goto out_regulator;
-+		goto out;
- 	}
- 
- 	ret = clk_prepare(device_data->clk);
- 	if (ret) {
- 		dev_err(dev, "%s: clk_prepare() failed!\n", __func__);
--		goto out_regulator;
-+		goto out;
- 	}
- 
- 	/* Enable device power (and clock) */
-@@ -1637,9 +1614,6 @@ static int ux500_hash_probe(struct platform_device *pdev)
- out_clk_unprepare:
- 	clk_unprepare(device_data->clk);
- 
--out_regulator:
--	regulator_put(device_data->regulator);
--
- out:
- 	return ret;
- }
-@@ -1682,7 +1656,6 @@ static int ux500_hash_remove(struct platform_device *pdev)
- 			__func__);
- 
- 	clk_unprepare(device_data->clk);
--	regulator_put(device_data->regulator);
- 
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml b/Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml
+new file mode 100644
+index 000000000000..9653776007a0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/crypto/stericsson,ux500-cryp.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/crypto/stericsson,ux500-cryp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ST Microelectronics and ST-Ericsson Ux500 CRYP bindings
++
++description: The Ux500 CRYP block is identical to the one found in
++  STn8820 introduced in 2007. It seems to also be a related ancestor to the
++  STM32 CRYP block.
++
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
++
++properties:
++  compatible:
++    enum:
++      - st,stn8820-cryp
++      - stericsson,ux500-cryp
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  dmas:
++    items:
++      - description: mem2cryp DMA channel
++      - description: cryp2mem DMA channel
++
++  dma-names:
++    items:
++      - const: mem2cryp
++      - const: cryp2mem
++
++  power-domains:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/reset/stericsson,db8500-prcc-reset.h>
++    #include <dt-bindings/arm/ux500_pm_domains.h>
++    cryp@a03cb000 {
++      compatible = "stericsson,ux500-cryp";
++      reg = <0xa03cb000 0x1000>;
++      interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&prcc_pclk 6 2>;
++      power-domains = <&pm_domains DOMAIN_VAPE>;
++    };
 -- 
 2.36.1
 
