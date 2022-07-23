@@ -2,60 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C3757F06C
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 Jul 2022 18:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E61B57F20D
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 Jul 2022 01:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbiGWQWx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 23 Jul 2022 12:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        id S239031AbiGWXJn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 23 Jul 2022 19:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236274AbiGWQWu (ORCPT
+        with ESMTP id S239028AbiGWXJk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 23 Jul 2022 12:22:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A26140EC
-        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 09:22:49 -0700 (PDT)
+        Sat, 23 Jul 2022 19:09:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46201AF3C
+        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 16:09:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 65D80B80B8F
-        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 16:22:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21F2CC341C0;
-        Sat, 23 Jul 2022 16:22:46 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 945B9B80B90
+        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 23:09:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7D98C341C7
+        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 23:09:35 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="gHmbLuyU"
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="pLwg0Zaf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1658593363;
+        t=1658617774;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=seQzy75JrVdtoEI8fvcy884GFXRdPiCP5Hc5jYTFtuI=;
-        b=gHmbLuyUVCb9wJ95QS2XKCVpSB8fIVKBFTA4X9smqVFJpV2eWVlFuycoPRTw+I22vAlvFh
-        fOlarOHzITVHyQLQEpOSaUEMCXz0Lcde63tHT8q6UsPl7I8W4Xrv/SqJrDDnfl+bjCSIpW
-        nIuBCF/6Rwyl2LQb3Ede5uAAmRTvxYo=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 55564dd9 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sat, 23 Jul 2022 16:22:42 +0000 (UTC)
-Date:   Sat, 23 Jul 2022 18:22:39 +0200
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s4KBoN1ZUdGwpHnYrWsBwpp1y9kpoytnXm2lSIonA/g=;
+        b=pLwg0Zafk6EB1yS8Dblu4um2uva3ggxCBJreVBS8LM28W0Um5y8QCIMCZPE9hP1GU/Lwte
+        x9yVSCTk/+1glilntC8TvRYXk2+xb0q9PyQ9q00xZk4gtYam3UWTXu66c6mOkNCh7M91pA
+        Kf6IIHUgsqfSat2w/Zji5PU9rSg6zg4=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ec081d55 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+        for <linux-crypto@vger.kernel.org>;
+        Sat, 23 Jul 2022 23:09:34 +0000 (UTC)
+Date:   Sat, 23 Jul 2022 18:25:21 +0200
 From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     gibc-alpha@sourceware.org,
+To:     libc-alpha@sourceware.org,
         Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
         Florian Weimer <fweimer@redhat.com>,
         Yann Droneaud <ydroneaud@opteya.com>, jann@thejh.net,
         Michael@phoronix.com
 Cc:     linux-crypto@vger.kernel.org
 Subject: arc4random - are you sure we want these?
-Message-ID: <YtwgTySJyky0OcgG@zx2c4.com>
+Message-ID: <Ytwg8YEJn+76h5g9@zx2c4.com>
+References: <YtwgTySJyky0OcgG@zx2c4.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <YtwgTySJyky0OcgG@zx2c4.com>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
+
+[Resending to right address.]
 
 Hi glibc developers,
 
