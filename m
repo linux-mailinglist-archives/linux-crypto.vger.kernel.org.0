@@ -2,57 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ECC57F20C
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 Jul 2022 01:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D61F57F1FF
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 Jul 2022 00:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239029AbiGWXJh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 23 Jul 2022 19:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        id S234745AbiGWWyY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 23 Jul 2022 18:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239028AbiGWXJh (ORCPT
+        with ESMTP id S230234AbiGWWyY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 23 Jul 2022 19:09:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396EC1AF3B
-        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 16:09:36 -0700 (PDT)
+        Sat, 23 Jul 2022 18:54:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331BC11A10
+        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 15:54:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E1BDBB80923
-        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 23:09:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B38BC341CB
-        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 23:09:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AAB4360A10
+        for <linux-crypto@vger.kernel.org>; Sat, 23 Jul 2022 22:54:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06F28C341C7;
+        Sat, 23 Jul 2022 22:54:20 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=fail reason="key not found in DNS" (0-bit key) header.d=opensuse.org header.i=@opensuse.org header.b="e/0aeUqr"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensuse.org;
-        s=20210105; t=1658617772;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="fqbb6y3I"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1658616859;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HBlDwPkms0blEARPTlBdVEUCUmRBC2AdWFMDOvhbc98=;
-        b=e/0aeUqrJDTL/dxKxNsEdzzj/k9Yg0E//mQoHz3QzyKGiitDDuqUA5+crJmzrvrjLcFGe/
-        NE7oCYc54V1KN/jb7OesR/QhHnJ6cf2vd4mptronXabiOQY1/IV7lW6WW65L0aiVvhou0Z
-        Y3OAZmccWh0w0xYjLtDcmvZYiM6nvKk=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e9df0b8e (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
-        for <linux-crypto@vger.kernel.org>;
-        Sat, 23 Jul 2022 23:09:32 +0000 (UTC)
-MIME-Version: 1.0
-References: <YtwgTySJyky0OcgG@zx2c4.com> <Ytwg8YEJn+76h5g9@zx2c4.com>
-In-Reply-To: <Ytwg8YEJn+76h5g9@zx2c4.com>
-From:   =?UTF-8?Q?Cristian_Rodr=C3=ADguez?= <crrodriguez@opensuse.org>
-Date:   Sat, 23 Jul 2022 15:04:36 -0400
-Message-ID: <CAPBLoAdtEcpJg7sZQ7+z7HeCQzAs7Am7ep9GBFuBGxUeC3NyEw@mail.gmail.com>
-Subject: Re: arc4random - are you sure we want these?
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     libc-alpha@sourceware.org, linux-crypto@vger.kernel.org,
-        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Florian Weimer <fweimer@redhat.com>,
+        bh=PWMmAo22EYiZuPFYb8HVcCr9sF9ushmGCG7QgaQQovU=;
+        b=fqbb6y3Il5eGkcJz3f/k1LkhQnUlDhN8tIBE6szPUybV0RrCcejg2NoJGzKJR2Z9Jg9vMW
+        0cWPEnN5kk0CpzRMnuoARjs6lZOIVpeicHMMo/7dLzoD0VbEy7N56fBRzZOpiMIMgFTreC
+        0HLh4lwbrvsR4vL27Bx9xDH4Vo4XAzI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id dac4b17f (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Sat, 23 Jul 2022 22:54:19 +0000 (UTC)
+Date:   Sun, 24 Jul 2022 00:54:16 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>
+Cc:     libc-alpha@sourceware.org, Florian Weimer <fweimer@redhat.com>,
         Yann Droneaud <ydroneaud@opteya.com>, jann@thejh.net,
-        Michael@phoronix.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_INVALID,DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        Michael@phoronix.com, Paul Eggert <eggert@cs.ucla.edu>,
+        linux-crypto@vger.kernel.org
+Subject: Re: arc4random - are you sure we want these?
+Message-ID: <Ytx8GKSZfRt+ZrEO@zx2c4.com>
+References: <YtwgTySJyky0OcgG@zx2c4.com>
+ <Ytwg8YEJn+76h5g9@zx2c4.com>
+ <6bf352e9-1312-40de-4733-3219721b343c@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6bf352e9-1312-40de-4733-3219721b343c@linaro.org>
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,22 +63,98 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Jul 23, 2022 at 12:25 PM Jason A. Donenfeld via Libc-alpha
-<libc-alpha@sourceware.org> wrote:
+Hi Adhemerval,
 
-> For that reason, past discussion of having some random number generation
-> in userspace libcs has geared toward doing this in the vDSO, somehow,
-> where the kernel can be part and parcel of that effort.
+Thanks for your reply.
 
-On linux just making this interface call "something" from the VDSO that
+On Sat, Jul 23, 2022 at 02:39:29PM -0300, Adhemerval Zanella Netto wrote:
+> > Firstly, for what use cases does this actually help? As of recent
+> > changes to the Linux kernels -- now backported all the way to 4.9! --
+> > getrandom() and /dev/urandom are extremely fast and operate over per-cpu
+> > states locklessly. Sure you avoid a syscall by doing that in userspace,
+> > but does it really matter? Who exactly benefits from this?
+> 
+> Mainly performance, since glibc both export getrandom and getentropy. 
 
-- does not block.
-- cannot ever fail or if it does indeed need to bail out it kills the
-calling thread as last resort.
+Okay so your motivation is performance. But can you tell me what your
+performance goals actually are? All kernel.org stable kernels from 4.9
+and upwards now have really fast per-cpu lockless implementations of
+getrandom() and /dev/urandom. If your goal is performance, I would be
+very, very interested to find out a circumstance where this is
+insufficient.
 
-(if neither of those can be provided, we are back to square one)
+> There were some discussion on maillist and we also decided to explicit
+> state this is not a CSRNG on our documentation.
 
-Will be beyond awesome because it could be usable everywhere,
-including the dynamic linker, malloc or whatever else
-question is..is there any at least experimental patch  with a hope of
-beign accepted available ?
+Okay that's all the more reason why this is a completely garbage
+endeavor. Sorry for the strong language, but the last thing anybody
+needs is another PRNG that's "half way" between being good for crypto
+and not. If it's not good for crypto, people will use it anyway,
+especially since you're winking at them saying, "oh but actually
+chacha20 is fine technically so....", and then fast-forward a few years
+when you realize you can lean on your non-crypto commitment and make
+things different. Never underestimate the power of a poorly defined
+function definition. If your goal isn't to make a real CSPRNG, why make
+this kind of thing at all?
+
+And it's especially ridiculous since the OpenBSD arc4random *is* used
+for crypto. So now you've really muddied the waters. (And naturally the
+OpenBSD arc4random was done in conjunction with their kernel
+development, since the same people work on both, which isn't what's
+happened here.)
+
+So your "it's a CSPRNG wink wink but the documentation says not, so
+actually we're off the hook for doing this well" is a cop-out that will
+lead to trouble.
+
+Going back to my original point: what are the performance requirements
+that point toward a userspace RNG being required here? If it's not
+actually necessary, then let's not do this. If it is necessary for some
+legitimate widespread reason, then let's do this right, and actually
+make something you're comfortable calling cryptographically secure. And
+let's get this right from the beginning, so that the new interface
+doesn't come with all sorts of caveats, "this is safe for glibc ≥ 
+4.3.2.1 only", or whatever else.
+
+Again, I'm not adverse to the general concept. I just haven't seen
+anything really justifying adding the complexity for it. And then
+assuming that justification does exist somewhere, this approach doesn't
+seem to be a particularly well planned one. As soon as you find yourself
+reaching for the "documentation cop-out", something has gone amiss.
+
+> The vDSO approach would be good think and if even the kernel provides it
+> I think it would feasible to wire-up arc4random to use it if the  underlying
+> kernel supports it.
+
+So if you justify the performance requirement, wouldn't it make more
+sense to just back getrandom() itself with a vDSO call? So that way,
+kernels with that get bits faster (but by how much, really? c'mon...),
+and kernels without it have things as normal as possible.
+
+If your concern is instances in which getrandom() can fail, I'd like to
+here what those concerns are so that interface can be fixed and
+improved.
+
+> But in the end I think if we are clear about in on the documentation,
+> and provide alternative when the users are aware of the limitation, I do
+> not think it is bad decision.
+
+This really strikes me as an almost comically ominous expectation.
+Design interfaces that don't have dangerous pitfalls. While
+documentation might somehow technically absolve you of responsibility,
+it doesn't actually help make the ecosystem safer by providing optimal
+interfaces that don't have cop outs.
+
+Anyway, to reiterate:
+
+- Can you show me some concerning performance numbers on the current
+  batch of kernel.org stable kernels, and the use cases for which those
+  numbers are concerning, and how widespread you think those use cases
+  are?
+
+- If this really *is* necessary for some reason, can we do it well out
+  of the gate, with good coordination between kernel and userland,
+  instead of half-assing it initially and covering that up with a
+  documentation note?
+
+Jason
