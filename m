@@ -2,40 +2,40 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B73F5807F5
-	for <lists+linux-crypto@lfdr.de>; Tue, 26 Jul 2022 01:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655FD5807FA
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 Jul 2022 01:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236750AbiGYXGR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 25 Jul 2022 19:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        id S230432AbiGYXHF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 25 Jul 2022 19:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbiGYXGQ (ORCPT
+        with ESMTP id S230015AbiGYXHE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 25 Jul 2022 19:06:16 -0400
+        Mon, 25 Jul 2022 19:07:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9D213F23
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:06:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571D92559E
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:07:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8E816142E
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 23:06:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD52AC341C6
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 23:06:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E5DEC6142E
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 23:07:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09BE0C341C6
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 23:07:02 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=fail reason="key not found in DNS" (0-bit key) header.d=libc.org header.i=@libc.org header.b="NhjeFJF4"
+        dkim=fail reason="key not found in DNS" (0-bit key) header.d=libc.org header.i=@libc.org header.b="eNHmWvHY"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libc.org; s=20210105;
-        t=1658790372;
+        t=1658790421;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
         bh=SB4KTdSkXPi/bTr8S5rSUPOkMtDOp8QOMJ8QIRrQICw=;
-        b=NhjeFJF4B46cavCCuslhSwuS0htf+zuiox6jVZfkzsGEqSZ3uurYk0rjX4wspgPyLCeDpS
-        PDbEyTtG5GvM2M/8cLISmLh3dZ9GWW+MGXreYTHu1DSpec89X+tVeuGDwgOijTZhkVA6gk
-        bKqzrv6Sfy8KlqNMUfeYgon9H3laWgE=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f0920b05 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+        b=eNHmWvHYR43Q4gJ7GgYHhyrgTDeKTcl9bJ+Ap7t/gJdPqpI42LYNbXU462cjeSKrzVlJAO
+        TFgSBA8cXC7i5dK+ylESoYvPWTD9uZFIJysZe5hbkBeOG/b3aP/9clEUYUb63crOPmIpMd
+        +QhCK+y7bPMja4uikFpk1LKY8cJVj8Y=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d63679e4 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
         for <linux-crypto@vger.kernel.org>;
-        Mon, 25 Jul 2022 23:06:12 +0000 (UTC)
+        Mon, 25 Jul 2022 23:07:01 +0000 (UTC)
 Date:   Mon, 25 Jul 2022 13:44:30 -0400
 From:   Rich Felker <dalias@libc.org>
 To:     Florian Weimer <fweimer@redhat.com>
@@ -56,7 +56,7 @@ In-Reply-To: <878rohp2ll.fsf@oldenburg.str.redhat.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
         DKIM_INVALID,DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
