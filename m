@@ -2,98 +2,138 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5B958025E
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 18:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FC7580298
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 18:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235629AbiGYQCI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 25 Jul 2022 12:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
+        id S235572AbiGYQYM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 25 Jul 2022 12:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235509AbiGYQCI (ORCPT
+        with ESMTP id S234315AbiGYQYK (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 25 Jul 2022 12:02:08 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EC113F98
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 09:02:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 6FA41CE12E8
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:02:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65A4CC341CD
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:02:03 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=fail reason="key not found in DNS" (0-bit key) header.d=linaro.org header.i=@linaro.org header.b="pftI++pi"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=20210105;
-        t=1658764922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MQ1TuRAqAB9FQ9er/Dx0aITtQ81Ea93wYVpkDOTZzNs=;
-        b=pftI++pijUaz3/9YWuGkgwpYYOeteHlRB346U+zG71uBYambApj6yzZJRhpuU89mJczqlV
-        OR1kisX2aR0AF8M5Yeg3YVeWJB/mvOnsTIXB8M8VM5LSM3V5/8sQmY536Tle2Iezcq2Yns
-        mC0sR5utEwTMN2S+YiO8OVCxHvEzzW8=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ad1e6947 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
-        for <linux-crypto@vger.kernel.org>;
-        Mon, 25 Jul 2022 16:02:02 +0000 (UTC)
-Message-ID: <b33914f7-660a-e5c9-f77b-2f6227ea8ab8@linaro.org>
-Date:   Mon, 25 Jul 2022 12:59:39 -0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.0.3
-Subject: Re: arc4random - are you sure we want these?
-Content-Language: en-US
-To:     Rich Felker <dalias@libc.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, libc-alpha@sourceware.org,
-        Florian Weimer <fweimer@redhat.com>,
+        Mon, 25 Jul 2022 12:24:10 -0400
+X-Greylist: delayed 1033 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Jul 2022 09:24:08 PDT
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [216.12.86.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C8017A8C
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 09:24:07 -0700 (PDT)
+Date:   Mon, 25 Jul 2022 12:06:53 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Florian Weimer <fweimer@redhat.com>,
         Yann Droneaud <ydroneaud@opteya.com>, jann@thejh.net,
-        Michael@phoronix.com, Paul Eggert <eggert@cs.ucla.edu>,
-        linux-crypto@vger.kernel.org
-References: <YtwgTySJyky0OcgG@zx2c4.com> <Ytwg8YEJn+76h5g9@zx2c4.com>
- <6bf352e9-1312-40de-4733-3219721b343c@linaro.org>
- <20220725153303.GF7074@brightrain.aerifal.cx>
-From:   Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>
-Organization: Linaro
-In-Reply-To: <20220725153303.GF7074@brightrain.aerifal.cx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        "Jason A. Donenfeld via Libc-alpha" <libc-alpha@sourceware.org>,
+        linux-crypto@vger.kernel.org, Michael@phoronix.com
+Subject: Re: arc4random - are you sure we want these?
+Message-ID: <20220725160652.GG7074@brightrain.aerifal.cx>
+References: <YtwgTySJyky0OcgG@zx2c4.com>
+ <Ytwg8YEJn+76h5g9@zx2c4.com>
+ <87bktdsdrk.fsf@oldenburg.str.redhat.com>
+ <Yt54x7uWnsL3eZSx@zx2c4.com>
+ <87v8rlqscj.fsf@oldenburg.str.redhat.com>
+ <Yt6eHfnlEN8ViWrA@zx2c4.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Yt6eHfnlEN8ViWrA@zx2c4.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-
-
-On 25/07/22 12:33, Rich Felker wrote:
+On Mon, Jul 25, 2022 at 03:43:57PM +0200, Jason A. Donenfeld via Libc-alpha wrote:
+> Hi Florian,
 > 
-> If this is just a case of trying to be "cautious" about overpromising
-> things, the documentation needs fixed to specify that this is a
-> CSPRNG. I'm particularly worried about the wording "these still use a
-> Pseudo-Random generator and should not be used in cryptographic
-> contexts". *All* CSPRNGs are PRNGs. Being pseudo-random does not make
-> it not cryptographically safe. The safety depends on the original
-> source of the entropy and the practical irreversibility and other
-> cryptographic properties of the extension function. The fact that this
-> has been stated so poorly in the documentation really has me worried
-> that someone does not understand the issues. I haven't dug into the
-> list mails or actual code to determine to what extent that's the case,
-> but it's really, *really* worrying.
+> On Mon, Jul 25, 2022 at 02:39:24PM +0200, Florian Weimer wrote:
+> > Below you suggest to use GRND_INSECURE to avoid deadlocks during
+> > booting.  It's documented in the UAPI header as “Return
+> > non-cryptographic random bytes”.  I assume it's broadly equivalent to
+> > reading from /dev/urandom (which we need to support for backwards
+> > compatibility, and currently use to avoid blocking).  This means that we
+> > cannot really document the resulting bits as cryptographically strong
+> > from an application perspective because the kernel is not willing to
+> > make this commitment.
+> > Regarding the technical aspect, GRND_INSECURE is somewhat new-ish, but
+> > as I wrote above, it's UAPI documentation is a bit scary.  Maybe it
+> > would be possible to clarify this in the manual pages a bit?  I *assume*
+> > that if we are willing to read from /dev/urandom, we can use
+> > GRND_INSECURE right away to avoid that fallback path on sufficiently new
+> > kernels.  But it would be nice to have confirmation.
+> 
+> getrandom(GRND_INSECURE) is the same as getrandom(0), except before the
+> RNG is seeded, in which case the former will return ~garbage randomness
+> while the latter will block. The only current difference between
+> getrandom(GRND_INSECURE) and /dev/urandom is the latter will try for a
+> second to do the jitter entropy thing if the RNG isn't seeded yet.
+> 
+> I agree that the documentation around this is really bad. Actually, so
+> much of the documentation is out of date or confusing. Thanks for the
+> kick on this: I really do need to rewrite that / clean it up.
+> 
+> So with my random.c maintainer hat on: getrandom(GRND_INSECURE) will
+> return the same "quality" randomness as getrandom(0), except before
+> the RNG is initialized. I'll fix up the docs for that, but feel free to
+> refer to this statement ahead of that if you need.
+> 
+> Code-wise, the only relevant branch related to GRND_INSECURE is:
+> 
+> 	if (!crng_ready() && !(flags & GRND_INSECURE)) {
+> 		if (flags & GRND_NONBLOCK)
+> 			return -EAGAIN;
+> 		ret = wait_for_random_bytes();
+> 		if (unlikely(ret))
+> 			return ret;
+> 	}
+> 
+> That means: if it's not ready, and you didn't pass _INSECURE, and you
+> didn't pass _NONBLOCK, then wait for the RNG to be ready, and error out
+> if that's interrupted by a signal. Other than that one block, it
+> continues on to do the same thing as getrandom(0).
+> 
+> With that said, however, I think it'd be nice if you used only blocking
+> randomness, and shove the initialization problem at init systems and
+> bootloaders and such. In 5.20, for example, there'll be an x86 boot
+> protocol for GRUB and kexec and hypervisors and such to pass a seed, and
+> since a long time, there exists a device tree attribute for the same.
+> Proliferating "unsafe" /dev/urandom-style usage doesn't seem good for
+> the ecosystem at large. And I'm in general interest in seeing progress
+> on decades long initialization-time seeding concerns.
 
-That's the main drive to avoid calling CSPRNGs, since nor me or Florian
-is secure enough to certify current scheme can actually follow all the
-requirements.  It does follow OpenBSD strategy of a fast-key-erasure 
-random-number generators, although all strategies of key reseeding are
-basically heuristics.
+arc4random's contract is supposed to be that it always succeeds and
+always produces cryptographic output. It cannot use GRND_INSECURE or
+other insecure fallback methods to avoid blocking. It has to block.
+This function (inherently, in its contract) is not usable for early
+boot stuff where one is pretending to want actual cryptographic
+entropy but is just as happy getting some "high quality" non-CS stuff,
+and thereby would be just as happy with rand() or likely even with
+"42". Programs that will run in that context on Linux need to be
+explicitly aware of the messy "early boot" situation and figure out
+how they're going to handle it securely or if they even wanted CS
+randomness to begin with. Fortunately virtually nothing has to do
+that. On most (non-embedded) systems, init can just bring up a rw
+filesystem with saved entropy on it early and load that, then provide
+a fully-working environment to programs it invokes.
 
-If I understand Jason argument correctly, unless we have a kernel API
-which it actually handles the buffer (so it can reseed or clear when it
-seems fit), there is no point is proving a CSPRNGs in userspace, use
-getrandom instead.
+> > I had some patches with AT_RANDOM fallback, including overwriting
+> > AT_RANDOM with output from the seeded PRNG.  It's certainly messy.  I
+> > probably didn't bother to post these patches given how bizarre the whole
+> > thing was.  I did have fallback to CPU instructions, but that turned out
+> > to be unworkable due to bugs in suspend on AMD CPUs (kernel or firmware,
+> > unclear).
+> 
+> Yea, it's kind of tricky as other things might be using AT_RANDOM also
+> and then you have a whole race issue and domain separation and whatnot.
+> The thing in systemd isn't really good for crypto -- no forward secrecy
+> and such -- but it's ostensibly better than random().
 
+AT_RANDOM is unusable as a fallback here because it's equivalent to
+GRND_INSECURE. It's silently broken at early boot time. In musl we're
+likely going to end up using the legacy SYS_sysctl on pre-getrandom
+kernels even though it spammed syslog just because it seems to be the
+only way to get blocking secure entropy on those kernels.
 
+Rich
