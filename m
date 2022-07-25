@@ -2,41 +2,47 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8297580129
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 17:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D9558025F
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 18:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbiGYPJu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 25 Jul 2022 11:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S233374AbiGYQCJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 25 Jul 2022 12:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbiGYPJt (ORCPT
+        with ESMTP id S235717AbiGYQCJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 25 Jul 2022 11:09:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F3F12D16
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 08:09:48 -0700 (PDT)
+        Mon, 25 Jul 2022 12:02:09 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F286D13FB4
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 09:02:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EA13DB80DD9
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 15:09:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F6FC341C6
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 15:09:45 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B15A3B80FBD
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:02:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1EC0C341C8
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:02:04 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=fail reason="key not found in DNS" (0-bit key) header.d=libc.org header.i=@libc.org header.b="g3Wc9Oro"
+        dkim=fail reason="key not found in DNS" (0-bit key) header.d=libc.org header.i=@libc.org header.b="QyaHMRhQ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libc.org; s=20210105;
-        t=1658761783;
+        t=1658764924;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=2G53n7Ktyz6kfbdkBKhDUYHtHX7Slv7amsXeN/sQtH0=;
-        b=g3Wc9OroUarJIBAYUc0ueLkeBTdoroNZ5UKTTpyxqxmNFbQOu/QjNJd09ZSq0lZFEOpXt+
-        nLHRGHyzQ40sQ7BYOjphH0S2gPMevyzlWM51wQGnbXlCCXtEAypUmhbwxgSWTDk5EO6oJy
-        OZ2XUCyYBfmGtfSjc0xMxhq4tG5Mo30=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 443b10df (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+        b=QyaHMRhQbV2zZdHiU82u8B6VNOYAUcifeG1CBWPtt0J6fTVl/C6QrGIU2Mm/EOlbrfp+Wv
+        hk3ky2rQECjfNER4PC7aM8lDOaNKSWUhkva0ET8rnDlEOoJOsZhPirNOW97NTIKSnx+H+3
+        GRaWN3d6jQMkNORU/FRLc+oVKmHFHjI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 996733cc (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
         for <linux-crypto@vger.kernel.org>;
-        Mon, 25 Jul 2022 15:09:43 +0000 (UTC)
+        Mon, 25 Jul 2022 16:02:03 +0000 (UTC)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx. [216.12.86.13])
+        by gmr-mx.google.com with ESMTPS id k22-20020a056870959600b000e217d47668si1276348oao.5.2022.07.25.07.56.33
+        for <jason.donenfeld@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 Jul 2022 07:56:33 -0700 (PDT)
+Received-SPF: neutral (google.com: 216.12.86.13 is neither permitted nor denied by best guess record for domain of dalias@libc.org) client-ip=216.12.86.13;
 Date:   Mon, 25 Jul 2022 10:56:32 -0400
 From:   Rich Felker <dalias@libc.org>
 To:     Florian Weimer <fweimer@redhat.com>
@@ -57,7 +63,8 @@ In-Reply-To: <87bktdsdrk.fsf@oldenburg.str.redhat.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
