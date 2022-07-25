@@ -2,78 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC51580283
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 18:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAF858030F
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 18:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234778AbiGYQS0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 25 Jul 2022 12:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
+        id S236232AbiGYQpi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 25 Jul 2022 12:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbiGYQSZ (ORCPT
+        with ESMTP id S233196AbiGYQph (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 25 Jul 2022 12:18:25 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B9013FBB
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 09:18:24 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id a63so9425209vsa.3
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 09:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fc1J30D6r7mde3k9IPDDshDjtaUYY2uogkc3ovfvjEI=;
-        b=Em7SGbFTrxEKEJD5Uz4uAVwejPFY74whyLl7E1HJ5+9fxy6M/ETQh2HFiMLRsRrswQ
-         36OiQkohujGPUGp6h4+7NzJuLbPUS2jH6g/2TVclxJMlayAlO52P2DUCzCIn88AN6f37
-         /dRPiKC/RE7AjIrBlMAenspIM+O7uHu5ixVz6RtPAKepVPdAfSiVuCg8uO7LPGT/wxf8
-         HKk07pRdS6xsigeXbu0gWKF7JjJLSFXcmJ3xsOuNSbx9ylFJvppkUTFxrRGPagSzGJLF
-         +lorp8Booc5TWv8IFioHYi4we3UyYr0tS2MBGxAHRMZjrqOUi4fxaO7QY8MUJK06UcLX
-         I/Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fc1J30D6r7mde3k9IPDDshDjtaUYY2uogkc3ovfvjEI=;
-        b=OVnXBevLebRwkBC6G0xIYrya1B4LM/XB551FiAR+ezMdxFlJ1wedeCEopsu9asDj6X
-         8W23K2PIttRKx5JBPaACO3QUopg09SMlHIU3Om3o18shCp3DhHzGXqYN49MMacaHm83H
-         VILWRh87gIvo84GemMA+XFZxm1YEVFJHHNG+hBIob4mm2RGMm8Sz2TQddhTywit8WqRU
-         b9wFYvmEntLJvZaSTNJhLi/rfimEQlt8kd3axPoJMDvGETL3mIgGT9ZybZ5DEClKFYF2
-         ffuoMbD6lM/598qZXmONCXSa/arj8NCZQNCQdtLi7+OiNtmNoIUjLrS+wKrXCGv1rTga
-         1N3A==
-X-Gm-Message-State: AJIora/i5a8XT6XFyjxmAKSF37UL+NRCHSMPzJpNqeOVRmCEd+4R34SB
-        9FCOp3ML/Ut2izD8vKVVMGxIRHQ9EXJdAmegOIs=
-X-Google-Smtp-Source: AGRyM1ujBEbAUqh4MfaViAAlZ790Qj3W0JFGgnsUifxf2NkIa2OA015RvDJKJpEFMEIm/fZfW5cF/WloURQJPRQ67bE=
-X-Received: by 2002:a67:bc10:0:b0:358:5fbd:79e7 with SMTP id
- t16-20020a67bc10000000b003585fbd79e7mr1393764vsn.24.1658765903949; Mon, 25
- Jul 2022 09:18:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <YtwgTySJyky0OcgG@zx2c4.com> <Ytwg8YEJn+76h5g9@zx2c4.com>
- <6bf352e9-1312-40de-4733-3219721b343c@linaro.org> <20220725153303.GF7074@brightrain.aerifal.cx>
-In-Reply-To: <20220725153303.GF7074@brightrain.aerifal.cx>
-From:   Sandy Harris <sandyinchina@gmail.com>
-Date:   Tue, 26 Jul 2022 00:18:10 +0800
-Message-ID: <CACXcFm=N4ii8yW27TNrsC-XH21c5iPsQ85MMjWpq=3sHvgjKJg@mail.gmail.com>
-Subject: Re: arc4random - are you sure we want these?
+        Mon, 25 Jul 2022 12:45:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CABBE19
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 09:45:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6207C6131F
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:45:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75F85C341C8
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 16:45:35 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=fail reason="key not found in DNS" (0-bit key) header.d=redhat.com header.i=@redhat.com header.b="iJZqep+j"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com; s=20210105;
+        t=1658767533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wjN4RhMaNLyUnTuvipsdvB7P0NOG965onZEKEl/Hg5g=;
+        b=iJZqep+jD8VASIuB3Ith728NtMGbbbK3NQPPbs7SIpgAZyRbk7wKBW9GbJbHZDVtlU35n9
+        poTPKnmMWz4W/vFJqsyVhrXOOmiQ0ECB0sgWUdSePanJtk705rROChjmzd//p7WSDJf23B
+        tIVcmi//JVbep1G5rYAZvN/akGlggjA=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 46a90509 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+        for <linux-crypto@vger.kernel.org>;
+        Mon, 25 Jul 2022 16:45:33 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
 To:     Rich Felker <dalias@libc.org>
 Cc:     Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>, libc-alpha@sourceware.org,
-        Florian Weimer <fweimer@redhat.com>,
-        Yann Droneaud <ydroneaud@opteya.com>,
-        Jann Horn <jann@thejh.net>, Michael@phoronix.com,
-        Paul Eggert <eggert@cs.ucla.edu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Yann Droneaud <ydroneaud@opteya.com>, jann@thejh.net,
+        Michael@phoronix.com, Paul Eggert <eggert@cs.ucla.edu>,
+        linux-crypto@vger.kernel.org
+Subject: Re: arc4random - are you sure we want these?
+References: <YtwgTySJyky0OcgG@zx2c4.com> <Ytwg8YEJn+76h5g9@zx2c4.com>
+        <6bf352e9-1312-40de-4733-3219721b343c@linaro.org>
+        <20220725153303.GF7074@brightrain.aerifal.cx>
+Date:   Mon, 25 Jul 2022 18:40:54 +0200
+In-Reply-To: <20220725153303.GF7074@brightrain.aerifal.cx> (Rich Felker's
+        message of "Mon, 25 Jul 2022 11:33:04 -0400")
+Message-ID: <878rohp2ll.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Rich Felker <dalias@libc.org> wrote:
+* Rich Felker:
 
+> On Sat, Jul 23, 2022 at 02:39:29PM -0300, Adhemerval Zanella Netto via Libc-alpha wrote:
+>> On 23/07/22 13:25, Jason A. Donenfeld wrote:
+>> > Firstly, for what use cases does this actually help? As of recent
+>> > changes to the Linux kernels -- now backported all the way to 4.9! --
+>> > getrandom() and /dev/urandom are extremely fast and operate over per-cpu
+>> > states locklessly. Sure you avoid a syscall by doing that in userspace,
+>> > but does it really matter? Who exactly benefits from this?
+>> 
+>> Mainly performance, since glibc both export getrandom and getentropy. 
+>> There were some discussion on maillist and we also decided to explicit
+>> state this is not a CSRNG on our documentation.
+>
 > This is an extreme documentation/specification bug that *hurts*
 > portability and security. The core contract of the historical
 > arc4random function is that it *is* a CSPRNG. Having a function by
@@ -84,4 +90,26 @@ Rich Felker <dalias@libc.org> wrote:
 > CSPRNG, this absolutely needs to be fixed. Not doing so is
 > irresponsible and will set everyone back a long ways.
 
-Exactly!
+The core issue is that on some kernels/architectures, reading from
+/dev/urandom can degrade to GRND_INSECURE (approximately), and while the
+result is likely still unpredictable, not everyone would label that as a
+CSPRNG.
+
+If we document arc4random as a CSPRNG, this means that we would have to
+ditch the fallback code and abort the process if the getrandom system
+call is not available: when reading from /dev/urandom as a fallback, we
+have no way of knowing if we are in any of the impacted execution
+environments.  Based on your other comments, it seems that you are
+interested in such fallbacks, too, but I don't think you can actually
+have both (CSPRNG + fallback).
+
+And then there is the certification issue.  We really want applications
+that already use OpenSSL for other cryptography to use RAND_bytes
+instead of arc4random.  Likewise for GNUTLS and gnutls_rnd.  What should
+authors of those cryptographic libraries?  That's less clear, and really
+depends on the constraints they operate in (e.g., they may target only a
+subset of architectures and kernel versions).
+
+Thanks,
+Florian
+
