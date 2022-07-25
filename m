@@ -2,85 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85109580412
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 20:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A795806F3
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Jul 2022 23:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbiGYSgw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 25 Jul 2022 14:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
+        id S236996AbiGYVum (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 25 Jul 2022 17:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236042AbiGYSgv (ORCPT
+        with ESMTP id S237340AbiGYVuV (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 25 Jul 2022 14:36:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FD61263D;
-        Mon, 25 Jul 2022 11:36:50 -0700 (PDT)
+        Mon, 25 Jul 2022 17:50:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752FB26D4
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 14:50:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3695260B55;
-        Mon, 25 Jul 2022 18:36:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85D24C341D0;
-        Mon, 25 Jul 2022 18:36:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658774209;
-        bh=mA3aiYbCg1RFcIAqL21d0TvLx6LId+F1ynP5gxcWKis=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lHdt22eSL1YZ4JLiRkWotwA7r7sZ0hpDIDz0Y1NwZatcdfP29QNwKp5DpTpoxZQTd
-         G7Of5r/Qp/uE7sE+lkEn75j6EMZ8hYpLKL2MMAwj2XxkBBDU4+Fo7F38IbwkM945bh
-         ukzcyv/vHBxIquUbf1fPzAgRisukeG0ViNKKk0Ht7EU+oiBMqg6qpomZAtaQGNX3RX
-         HF6eKYkqObAG7dfXyx0GxpQta+DOIO7DeWV2kXKkyHjV0AEaChm5k2PaE/8dV8Z7CW
-         bQudPr3xB7LxxpV+hWCHBAlfAazhe5X3s3ehwg9NFo1Bfu2xxSSROZSHr8Cb/BzG5A
-         q1K+I5LGIdoww==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Jason A . Donenfeld " <Jason@zx2c4.com>
-Subject: [PATCH v3 3/3] crypto: lib - remove __HAVE_ARCH_CRYPTO_MEMNEQ
-Date:   Mon, 25 Jul 2022 11:36:36 -0700
-Message-Id: <20220725183636.97326-4-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <20220725183636.97326-1-ebiggers@kernel.org>
-References: <20220725183636.97326-1-ebiggers@kernel.org>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1015EB81134
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 21:50:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D5DC341D4
+        for <linux-crypto@vger.kernel.org>; Mon, 25 Jul 2022 21:50:10 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=fail reason="key not found in DNS" (0-bit key) header.d=opensuse.org header.i=@opensuse.org header.b="NWwLCWgD"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensuse.org;
+        s=20210105; t=1658785809;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9+idQqBWdX5mURxuBE4eJRKFRCSZyA5bMwG+uu+jVjQ=;
+        b=NWwLCWgDFfEUWkioLqbm9ZECVuyxCQq+mwopu1MRZGsy9KH50bPpuuCCQA0cexc3ePXnUz
+        pJIs1Ro3g7ShR5n8ZjBQXr7D88/3Pogxxf++jX/tr6t0SOIyzRiy0rDsdM4HCa9P6wy6rt
+        vuM8Aou/b2v2CfvsaMWi+asXYehu9CQ=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ba595037 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+        for <linux-crypto@vger.kernel.org>;
+        Mon, 25 Jul 2022 21:50:09 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <YtwgTySJyky0OcgG@zx2c4.com> <Ytwg8YEJn+76h5g9@zx2c4.com>
+ <6bf352e9-1312-40de-4733-3219721b343c@linaro.org> <20220725153303.GF7074@brightrain.aerifal.cx>
+ <878rohp2ll.fsf@oldenburg.str.redhat.com> <20220725174430.GI7074@brightrain.aerifal.cx>
+In-Reply-To: <20220725174430.GI7074@brightrain.aerifal.cx>
+From:   =?UTF-8?Q?Cristian_Rodr=C3=ADguez?= <crrodriguez@opensuse.org>
+Date:   Mon, 25 Jul 2022 14:33:05 -0400
+Message-ID: <CAPBLoAe89Pwt=F_jcZirVXQA7JtugV+5+BWHBt0RaZka1y0K=g@mail.gmail.com>
+Subject: Re: arc4random - are you sure we want these?
+To:     Rich Felker <dalias@libc.org>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Yann Droneaud <ydroneaud@opteya.com>, jann@thejh.net,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, libc-alpha@sourceware.org,
+        Michael@phoronix.com, linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_INVALID,DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Jul 25, 2022 at 1:44 PM Rich Felker <dalias@libc.org> wrote:
 
-No architecture actually defines this, so it's unneeded.
+> Then don't fallback to /dev/urandom.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- lib/crypto/memneq.c | 4 ----
- 1 file changed, 4 deletions(-)
+Those are my thoughts as well.. but __libc_fatal() if there is no
+usable getrandom syscall with the needed semantics, in short making
+this interface usable only when the kernel is.
 
-diff --git a/lib/crypto/memneq.c b/lib/crypto/memneq.c
-index d1e8c86fbb0fcf..243d8677cc515d 100644
---- a/lib/crypto/memneq.c
-+++ b/lib/crypto/memneq.c
-@@ -63,8 +63,6 @@
- #include <crypto/algapi.h>
- #include <linux/module.h>
- 
--#ifndef __HAVE_ARCH_CRYPTO_MEMNEQ
--
- /* Generic path for arbitrary size */
- static inline unsigned long
- __crypto_memneq_generic(const void *a, const void *b, size_t size)
-@@ -173,5 +171,3 @@ noinline unsigned long __crypto_memneq(const void *a, const void *b,
- 	}
- }
- EXPORT_SYMBOL(__crypto_memneq);
--
--#endif /* __HAVE_ARCH_CRYPTO_MEMNEQ */
--- 
-2.37.0
-
+This is quite drastic, but probably the only sane way to go.
