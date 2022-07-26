@@ -2,106 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3993C58146B
-	for <lists+linux-crypto@lfdr.de>; Tue, 26 Jul 2022 15:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E9A581533
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 Jul 2022 16:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238898AbiGZNqT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 26 Jul 2022 09:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
+        id S233471AbiGZO0R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 26 Jul 2022 10:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238987AbiGZNqR (ORCPT
+        with ESMTP id S233970AbiGZO0Q (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 26 Jul 2022 09:46:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7901E3C8;
-        Tue, 26 Jul 2022 06:46:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7CC9461573;
-        Tue, 26 Jul 2022 13:46:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E12F2C433C1;
-        Tue, 26 Jul 2022 13:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658843174;
-        bh=Y7KLQG1Vne9qbaDpnyRbyXPgoHLls22Lqjyu78AiFds=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mKAus1aMBcFKC1QfBsK9nYXKGl6o+XeGE084mU2hbR/my4L38CAUfBwTCdreg+fXW
-         n47lJQ765XNWbL4tWmaiRbhWxTJJUMKylpxu2VfKNGU6o/+QE3/d/+kf91hmPLkVMC
-         zCtRFQFlJluLh+6BlnI37aIyO/NFogK3zqtljdFvNA/DY2ktZlEK0ekea1aRM3wsXM
-         CbLMt8DkwhIF4luD4HkJVpbfM+1knZwfV4v/0UbHyb9+A3nlmQAixeojrzYWAVG16Y
-         qhq1iATYbL5S/dB4ayNiz1bsLR2Dn84DoFdRxCICbWfPxeZMKBKCrjALm/JhiFbVRX
-         r9l+zKX8dJ6oQ==
-Received: by mail-oi1-f177.google.com with SMTP id j70so17121162oih.10;
-        Tue, 26 Jul 2022 06:46:14 -0700 (PDT)
-X-Gm-Message-State: AJIora+1EVhEFoqKmrtXM3d89OG4FliYn1YpBCZLZER83g0GYORFYREO
-        /2gwPnIow7RZIQStIHtzCXkirA0eaz10IdYpllE=
-X-Google-Smtp-Source: AGRyM1s4JlvzcaEKbhVv3ydzTyV1gB2ZgcW9aOdi7nsPievmOmN9Hm+IOuIF6gLPYPCK/Z46Jbn56Y+DMgGAPywmwWE=
-X-Received: by 2002:a05:6808:300b:b0:337:b697:b077 with SMTP id
- ay11-20020a056808300b00b00337b697b077mr7822159oib.126.1658843174055; Tue, 26
- Jul 2022 06:46:14 -0700 (PDT)
+        Tue, 26 Jul 2022 10:26:16 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E451231
+        for <linux-crypto@vger.kernel.org>; Tue, 26 Jul 2022 07:26:15 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id q14so11326642iod.3
+        for <linux-crypto@vger.kernel.org>; Tue, 26 Jul 2022 07:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yVHkxq57TzEVqXp8kOXlD0/zRPCbREzhHv/ILW3eR1I=;
+        b=Ew7PlsT6zBaV5HgUxbUZBZH8ry6+tTVKlj5uQsyJntO+uyM2DkHAuFovHGc82DVAb7
+         URpU0MTKVIn7oPHypJLqDn2ZOQ9oUgfur9LLgWyPhD/rcJ49EDlGQxI/y3ChcNcp4Nnr
+         YvonrYdy6IN0lTS0GurTplPx2QUC63OUXYLEg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yVHkxq57TzEVqXp8kOXlD0/zRPCbREzhHv/ILW3eR1I=;
+        b=ZPDvoYQbF1f+ZXfVDyS6be70onM47lR5QGLwOtB27QXJkfFMlNxi/ML/I7Plht6AWn
+         vY4t0Lx1mQtIb288bYZvWJ39DiOKW5hKNg0gdXce2jwlq2VxwMR1EYJSI2+blE53wFgq
+         LpxiOkuh+hcJgN46LGBeao0iWR0TmLWxLnk7uDE5jXIHrpyttPTQjKb3GTiVUjgOMTbF
+         7IY+Th6d9fRvNYBe4kYN4TVDCGvqhQ1DQ3uWqzYdkaslxQa/tY5RDXe1n1IrO0cla1xM
+         yQOXHL3qTNa2zM1Ly7bak19KArhPmXcw/uoy4P2gRBEEq/Lgpd2DnTjleeS6BGbE9QxA
+         kB6w==
+X-Gm-Message-State: AJIora9r9COEsOBW5H2e2IwRYOc/FA4JifrjcnvPCR9Z/uZn0vQdz7mW
+        JFM0GUvTeQ1tJS1XiICSkR8Oem/0IO7VbEQI52xApg==
+X-Google-Smtp-Source: AGRyM1stn1GPr80VsNvqf5Z/Obbchm35wMPAa8vEbk5W2h8uyoEJWl35Q9ok5nuwpleuLtlODHHlCVZmfQnPDqmg6Cw=
+X-Received: by 2002:a05:6638:3f0e:b0:341:6c92:171d with SMTP id
+ ck14-20020a0566383f0e00b003416c92171dmr6974612jab.0.1658845574739; Tue, 26
+ Jul 2022 07:26:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220725183636.97326-1-ebiggers@kernel.org> <20220725183636.97326-3-ebiggers@kernel.org>
- <Yt8UnWCvoe8dKihc@zx2c4.com>
-In-Reply-To: <Yt8UnWCvoe8dKihc@zx2c4.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 26 Jul 2022 06:46:02 -0700
-X-Gmail-Original-Message-ID: <CAMj1kXEHM7=6K08uFHpEdYt_35J83hOkAKrq0rcsW0zYgG1f5Q@mail.gmail.com>
-Message-ID: <CAMj1kXEHM7=6K08uFHpEdYt_35J83hOkAKrq0rcsW0zYgG1f5Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] crypto: lib - move __crypto_xor into utils
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20220726090021.1529148-1-zhangxiaoxu5@huawei.com>
+In-Reply-To: <20220726090021.1529148-1-zhangxiaoxu5@huawei.com>
+From:   Ignat Korchagin <ignat@cloudflare.com>
+Date:   Tue, 26 Jul 2022 15:26:03 +0100
+Message-ID: <CALrw=nHzkwGx2kJeJ4LYe4ckPU=hDw=pqi7w_Z8UoyF6UD4d_w@mail.gmail.com>
+Subject: Re: [PATCH -next] crypto: testmgr - fix oob read when test RSA vectors
+To:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Cc:     linux-crypto <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>, errelln@fb.com,
+        alexandre.torgue@foss.st.com,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, 25 Jul 2022 at 15:09, Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+On Tue, Jul 26, 2022 at 9:01 AM Zhang Xiaoxu <zhangxiaoxu5@huawei.com> wrote:
 >
-> On Mon, Jul 25, 2022 at 11:36:35AM -0700, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> >
-> > CRYPTO_LIB_CHACHA depends on CRYPTO for __crypto_xor, defined in
-> > crypto/algapi.c.  This is a layering violation because the dependencies
-> > should only go in the other direction (crypto/ => lib/crypto/).  Also
-> > the correct dependency would be CRYPTO_ALGAPI, not CRYPTO.  Fix this by
-> > moving __crypto_xor into the utils module in lib/crypto/.
-> >
-> > Note that CRYPTO_LIB_CHACHA_GENERIC selected XOR_BLOCKS, which is
-> > unrelated and unnecessary.  It was perhaps thought that XOR_BLOCKS was
-> > needed for __crypto_xor, but that's not the case.
-> >
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> The definition of key before coefficient should not add comma.
+> Otherwise there will be OOB read happened as follow:
 >
-> Reviewed-by: Jason A. Donenfeld <Jason@zx2c4.com>
+>   BUG: KASAN: global-out-of-bounds in test_akcipher_one+0x1ae/0xb20
+>   Read of size 607 at addr ffffffff99f95ac0 by task cryptomgr_test/198
 >
-> With one small question:
+>   CPU: 5 PID: 198 Comm: cryptomgr_test Not tainted 5.19.0-rc7-next-20220722-00002-g4628e935ed92-dirty #1
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
+>   Call Trace:
+>    <TASK>
+>    dump_stack_lvl+0x34/0x44
+>    print_report.cold+0x59/0x682
+>    kasan_report+0xa3/0x120
+>    kasan_check_range+0x145/0x1a0
+>    memcpy+0x20/0x60
+>    test_akcipher_one+0x1ae/0xb20
+>    alg_test_akcipher+0x94/0xb0
+>    alg_test.part.0+0x467/0x510
+>    cryptomgr_test+0x36/0x60
+>    kthread+0x165/0x1a0
+>    ret_from_fork+0x1f/0x30
+>    </TASK>
 >
-> > --- /dev/null
-> > +++ b/lib/crypto/utils.c
-> > @@ -0,0 +1,88 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Crypto library utility functions
-> > + *
-> > + * Copyright (c) 2006 Herbert Xu <herbert@gondor.apana.org.au>
+> Remove the comma before coefficient.
+
+Thanks for the report, but it was already fixed in commit 9d2bb9a7
+("crypto: testmgr - some more fixes to RSA test vectors
+"), which is already on the latest linux-next.
+
+> Fixes: 79e6e2f3f3ff3 ("crypto: testmgr - populate RSA CRT parameters in RSA test vectors")
+> Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+> ---
+>  crypto/testmgr.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Didn't Ard basically write the crypto_xor function in its current form?
-> I seem to remember some pretty hardcore refactoring he did a while back.
+> diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+> index dee88510f58d..57da8c8b4574 100644
+> --- a/crypto/testmgr.h
+> +++ b/crypto/testmgr.h
+> @@ -273,7 +273,7 @@ static const struct akcipher_testvec rsa_tv_template[] = {
+>         "\x61\xAD\xBD\x3A\x8A\x7E\x99\x1C\x5C\x05\x56\xA9\x4C\x31\x46\xA7"
+>         "\xF9\x80\x3F\x8F\x6F\x8A\xE3\x42\xE9\x31\xFD\x8A\xE4\x7A\x22\x0D"
+>         "\x1B\x99\xA4\x95\x84\x98\x07\xFE\x39\xF9\x24\x5A\x98\x36\xDA\x3D"
+> -       "\x02\x41", /* coefficient - integer of 65 bytes */
+> +       "\x02\x41" /* coefficient - integer of 65 bytes */
+>         "\x00\xB0\x6C\x4F\xDA\xBB\x63\x01\x19\x8D\x26\x5B\xDB\xAE\x94\x23"
+>         "\xB3\x80\xF2\x71\xF7\x34\x53\x88\x50\x93\x07\x7F\xCD\x39\xE2\x11"
+>         "\x9F\xC9\x86\x32\x15\x4F\x58\x83\xB1\x67\xA9\x67\xBF\x40\x2B\x4E"
+> @@ -370,7 +370,7 @@ static const struct akcipher_testvec rsa_tv_template[] = {
+>         "\x6A\x37\x3B\x86\x6C\x51\x37\x5B\x1D\x79\xF2\xA3\x43\x10\xC6\xA7"
+>         "\x21\x79\x6D\xF9\xE9\x04\x6A\xE8\x32\xFF\xAE\xFD\x1C\x7B\x8C\x29"
+>         "\x13\xA3\x0C\xB2\xAD\xEC\x6C\x0F\x8D\x27\x12\x7B\x48\xB2\xDB\x31"
+> -       "\x02\x81\x81", /* coefficient - integer of 129 bytes */
+> +       "\x02\x81\x81" /* coefficient - integer of 129 bytes */
+>         "\x00\x8D\x1B\x05\xCA\x24\x1F\x0C\x53\x19\x52\x74\x63\x21\xFA\x78"
+>         "\x46\x79\xAF\x5C\xDE\x30\xA4\x6C\x20\x38\xE6\x97\x39\xB8\x7A\x70"
+>         "\x0D\x8B\x6C\x6D\x13\x74\xD5\x1C\xDE\xA9\xF4\x60\x37\xFE\x68\x77"
+> --
+> 2.31.1
 >
 
-Hi Jason,
-
-Thanks for pointing this out. When I made those changes, I don't think
-an authorship assertion for copyright purposes was appropriate for the
-entire .c file (the FSF have some guidelines for this IIRC). It would
-also be strange for me or Eric to suddenly introduce a (c) Linaro (or
-ARM, not sure who my employer was at the time) at this point, so I
-think we can just leave this as proposed by Eric.
+Regards,
+Ignat
