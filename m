@@ -2,104 +2,128 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC64258C92D
-	for <lists+linux-crypto@lfdr.de>; Mon,  8 Aug 2022 15:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3902858CE66
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Aug 2022 21:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243197AbiHHNNX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 8 Aug 2022 09:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        id S244307AbiHHTN4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 8 Aug 2022 15:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243224AbiHHNNU (ORCPT
+        with ESMTP id S244297AbiHHTNy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 8 Aug 2022 09:13:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462F82C8;
-        Mon,  8 Aug 2022 06:13:19 -0700 (PDT)
-Received: from zn.tnic (p200300ea971b98cb329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:971b:98cb:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 590671EC0324;
-        Mon,  8 Aug 2022 15:13:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1659964393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fMS7xVNFh3Y0DjyDY0WIgzKl0DxlBVb3xHKu0mYYgrw=;
-        b=AzKfFbWBrPNIIgSbaUIvdZnU1hPajXBtY+5GZoxuBRLQAknp8MtBF5WpaCsRBLmSl1TuLC
-        bmesbqCcUOLx5D1WJh4T1rV+uNWZLUSHHiU1rISjx4ARJRVahvtdvvUMnzwPVlaexl7vhZ
-        UPWiZatlfigojXzDUj8TrS+zwo0+vQc=
-Date:   Mon, 8 Aug 2022 15:13:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        michael.roth@amd.com, vbabka@suse.cz, kirill@shutemov.name,
-        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        dgilbert@redhat.com, jarkko@kernel.org
-Subject: Re: [PATCH Part2 v6 08/49] x86/traps: Define RMP violation #PF error
- code
-Message-ID: <YvEL5CxHXoE1fWU3@zn.tnic>
-References: <cover.1655761627.git.ashish.kalra@amd.com>
- <5328a76b3fab1f20b3ffc400ca2402bec19d9700.1655761627.git.ashish.kalra@amd.com>
+        Mon, 8 Aug 2022 15:13:54 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5706A1706C;
+        Mon,  8 Aug 2022 12:13:52 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 278JDbqa053362;
+        Mon, 8 Aug 2022 14:13:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1659986017;
+        bh=VaYzGM0wSLKYt3hbuBD2/xE/BVQiPQJv7qVXQ0swYNo=;
+        h=From:To:CC:Subject:Date;
+        b=s7Qd7XUrsuoZOQKqmTsOf0cNX4bet7KhJcKfZNRFBVLuawceavJRA5Hof0qVVpNui
+         oCjweZuhnNZ9BSqeiIsyoUA16sFrsXUPA9/iXRO9xO6MetI92Vb3115EStTvwIFCa4
+         lqCDLyZpg1RqJznQcWzqJSvkdTY0dHwkNwhIBoIk=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 278JDbuh016515
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 8 Aug 2022 14:13:37 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 8
+ Aug 2022 14:13:36 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 8 Aug 2022 14:13:36 -0500
+Received: from uda0500628.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 278JDaYN054740;
+        Mon, 8 Aug 2022 14:13:36 -0500
+From:   Daniel Parks <danielrparks@ti.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [RFC PATCH 0/6] Add SA2UL Public Key Accelerator driver
+Date:   Mon, 8 Aug 2022 14:12:49 -0500
+Message-ID: <cover.1659985696.git.danielrparks@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5328a76b3fab1f20b3ffc400ca2402bec19d9700.1655761627.git.ashish.kalra@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jun 20, 2022 at 11:03:27PM +0000, Ashish Kalra wrote:
-> @@ -12,15 +14,17 @@
->   *   bit 4 ==				1: fault was an instruction fetch
->   *   bit 5 ==				1: protection keys block access
->   *   bit 15 ==				1: SGX MMU page-fault
-> + *   bit 31 ==				1: fault was due to RMP violation
->   */
->  enum x86_pf_error_code {
-> -	X86_PF_PROT	=		1 << 0,
-> -	X86_PF_WRITE	=		1 << 1,
-> -	X86_PF_USER	=		1 << 2,
-> -	X86_PF_RSVD	=		1 << 3,
-> -	X86_PF_INSTR	=		1 << 4,
-> -	X86_PF_PK	=		1 << 5,
-> -	X86_PF_SGX	=		1 << 15,
-> +	X86_PF_PROT	=		BIT_ULL(0),
-> +	X86_PF_WRITE	=		BIT_ULL(1),
-> +	X86_PF_USER	=		BIT_ULL(2),
-> +	X86_PF_RSVD	=		BIT_ULL(3),
-> +	X86_PF_INSTR	=		BIT_ULL(4),
-> +	X86_PF_PK	=		BIT_ULL(5),
-> +	X86_PF_SGX	=		BIT_ULL(15),
-> +	X86_PF_RMP	=		BIT_ULL(31),
+The PKA is a subdevice of the SA2UL that provides hardware acceleration
+for asymmetric cryptography algorithms. RSA and Diffie-Hellman are
+enabled in this patch series.
 
-Yeah, I remember dhansen asked for those to use the BIT() macro but the
-_ULL is an overkill. Those PF flags are 32 and they fit in an unsigned
-int.
+Tested using these configurations:
+- CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=n
+- CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
 
-But we don't have BUT_UI() so I guess the next best thing - BIT() -
-which uses UL internally, should be good enough.
+These patches are RFC for now because we're waiting for legal to clear
+us to release the firmware.
 
-So pls use BIT() here - not BIT_ULL().
+The dts patches depend on [1] and [2], respectively, to apply without
+fuzz.
 
-Thx.
+[1]: https://www.spinics.net/lists/devicetree/msg523234.html
+[2]: https://www.spinics.net/lists/devicetree/msg523233.html
+
+Daniel Parks (6):
+  dt-bindings: crypto: ti,sa2ul: add pka subdevice
+  dt-bindings: crypto: add binding for eip29t2 public key accelerator
+    (PKA)
+  arm64: dts: ti: k3-am64-main: add SA2UL public key accelerator
+    subdevice
+  arm64: dts: ti: k3-j721e-main: add SA2UL public key accelerator
+    subdevice
+  crypto: sa2ul: turn on PKA engine
+  crypto: sa2ul_pka: Add SA2UL PKA driver
+
+ .../inside-secure,safexcel-eip29t2.yaml       |  49 ++
+ .../devicetree/bindings/crypto/ti,sa2ul.yaml  |   6 +
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi      |   8 +
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     |   7 +
+ drivers/crypto/Kconfig                        |   2 +
+ drivers/crypto/Makefile                       |   1 +
+ drivers/crypto/sa2ul.c                        |   2 +-
+ drivers/crypto/sa2ul_pka/Kconfig              |  26 +
+ drivers/crypto/sa2ul_pka/Makefile             |   3 +
+ drivers/crypto/sa2ul_pka/sa2ul_pka.h          | 135 +++++
+ drivers/crypto/sa2ul_pka/sa2ul_pka_base.c     | 564 ++++++++++++++++++
+ drivers/crypto/sa2ul_pka/sa2ul_pka_dh.c       | 150 +++++
+ drivers/crypto/sa2ul_pka/sa2ul_pka_op.c       | 205 +++++++
+ drivers/crypto/sa2ul_pka/sa2ul_pka_op.h       |  28 +
+ drivers/crypto/sa2ul_pka/sa2ul_pka_rsa.c      | 193 ++++++
+ drivers/crypto/sa2ul_pka/sa2ul_pka_sg.c       | 316 ++++++++++
+ 16 files changed, 1694 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/crypto/inside-secure,safexcel-eip29t2.yaml
+ create mode 100644 drivers/crypto/sa2ul_pka/Kconfig
+ create mode 100644 drivers/crypto/sa2ul_pka/Makefile
+ create mode 100644 drivers/crypto/sa2ul_pka/sa2ul_pka.h
+ create mode 100644 drivers/crypto/sa2ul_pka/sa2ul_pka_base.c
+ create mode 100644 drivers/crypto/sa2ul_pka/sa2ul_pka_dh.c
+ create mode 100644 drivers/crypto/sa2ul_pka/sa2ul_pka_op.c
+ create mode 100644 drivers/crypto/sa2ul_pka/sa2ul_pka_op.h
+ create mode 100644 drivers/crypto/sa2ul_pka/sa2ul_pka_rsa.c
+ create mode 100644 drivers/crypto/sa2ul_pka/sa2ul_pka_sg.c
 
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
