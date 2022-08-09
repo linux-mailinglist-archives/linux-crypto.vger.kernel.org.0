@@ -2,107 +2,131 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF10858E2D1
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Aug 2022 00:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF57358E364
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Aug 2022 00:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbiHIWQP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 9 Aug 2022 18:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S229450AbiHIWtc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 9 Aug 2022 18:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiHIWPJ (ORCPT
+        with ESMTP id S229436AbiHIWtb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 9 Aug 2022 18:15:09 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4E320192
-        for <linux-crypto@vger.kernel.org>; Tue,  9 Aug 2022 15:15:04 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id f11so12620297pgj.7
-        for <linux-crypto@vger.kernel.org>; Tue, 09 Aug 2022 15:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
-        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
-        b=QTP95oQi+RYhXbI8sz4RyTZp0RSE4jP48cyyUmWbTiK1ItvOHbADVtjkGHK/8zFbqv
-         EIzUG3d4HgG5eAQxnVHuBpH33ycuIiNpMEXk8S0LHARhhQGb6AufQVVn/40aQfLvP77W
-         778oK7qnpGZXO0Q2aGCYT4Mad4FGDHlh1br3s7D4D+9Vr7gPQrhXDR8bwR1fyz6kQ1n2
-         /mI7/+oIm6xqfpBjeRephfywWnzvzUcqvvdKwYuFsxmTm/GRVEQb9jKfBsLPvHEPeyBR
-         SLk52BQ10Zm7GZ4Mv5gugSKJZhGFXVOipaGDVsAOq6ABLyMrmGMv+5RYTjL3cqduwO+M
-         O1Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
-        b=whNmvGzoVcosIO0T0xuO73mbMtHsLDc2MctvIAQn2hu1Vo6vFM8ML4xz2aIKousupk
-         17gcFPqsZ2CBQjpfhs8VQeTeJk4djd2qCqyf5+/nzDA9SEezh+7/dodIgrCKU2eCgtj+
-         sE89t9kdMVLpKVSyXc+MeaKX9khnSkjJY5lrV7D1inBiTh1rItDzeu6aws2oXNSJSmUU
-         4q2cpH+JEOemQm8j/5SjD4ogWXDk+g0DUsswAa/kh3nxjsLR7YF3otwhHENeqPt/3gXp
-         ZtgD+jcbGuDBfdnrWPaKkmW7MPC1HNUe5T0O0yUWueM+Ml/kEdeyMpOwUkpJQu4vXrsi
-         ijrA==
-X-Gm-Message-State: ACgBeo2857ccp8Z1MMe13JdzNtnXR/sbd3j2LqzA1hVBZiUPCkkwM10i
-        RBxINCL2Xc8T3CTgbelSGJy5FB4nhU2C2u5fzuo=
-X-Google-Smtp-Source: AA6agR7pJ6r7fhR2kV9XLe+oV3h+/ej1weqLnpTQS1YP5ule1vsDwGSNCnOW6LlEIY2xTapZFY+hu5KXPqSjTYpoaJM=
-X-Received: by 2002:a63:4642:0:b0:41b:d353:c5c7 with SMTP id
- v2-20020a634642000000b0041bd353c5c7mr20359415pgk.568.1660083303718; Tue, 09
- Aug 2022 15:15:03 -0700 (PDT)
+        Tue, 9 Aug 2022 18:49:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F49165828;
+        Tue,  9 Aug 2022 15:49:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B8053B81912;
+        Tue,  9 Aug 2022 22:49:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF84BC433D6;
+        Tue,  9 Aug 2022 22:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660085367;
+        bh=uPhKhKjz4nLP7Bfa+GXJs+PEOTPR67p/T4XukYbqA4o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QRl+7reUPLya7J6GhrTYQqv9fhHRfcuM4mzrpHvWuSEjiEx8Vxyhf+Wm/SbZvHnEt
+         ecFi76RZXfgX1U6ynNeWnba3i79KvWpVipkw/jCbLWE1bylTYIWdjLsfTQ2z/mrfpx
+         U/7e0y1QDSXaw4iW/VrAqbHduMDS3AEl9PnQoLCXH4rIhymotXajdcHUcTw+p7kbIv
+         JIYnj+M1wtDIzVcacCzj4SAo119Bu4bh0MvlI3cLPm8FK7QAEVJK07/h315LWd3GFG
+         kMPeQoDQWfFSROc5uoJEhbHr7PpfOJTlHL4GoKBsPIZxUa5o0OwO5+Rc0iC6TQqfJ7
+         V55gPksXkWaQQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Jarkko Sakkinen <jarkko@profian.com>,
+        Harald Hoyer <harald@profian.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org (open list:AMD CRYPTOGRAPHIC COPROCESSOR
+        (CCP) DRIVER - SE...), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] crypto: ccp: Add a quirk to firmware update
+Date:   Wed, 10 Aug 2022 01:49:15 +0300
+Message-Id: <20220809224915.92111-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e8a6:b0:2d4:fb1c:cc5e with HTTP; Tue, 9 Aug 2022
- 15:15:03 -0700 (PDT)
-Reply-To: wijh555@gmail.com
-From:   "Dr. Ali Moses" <alimoses07@gmail.com>
-Date:   Tue, 9 Aug 2022 15:15:03 -0700
-Message-ID: <CADWzZe65tcOX2+bMZfMLLauGpHEQ9Cdv814nLU=uQvKzDFrEVg@mail.gmail.com>
-Subject: Good Day,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:532 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [alimoses07[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [wijh555[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [alimoses07[at]gmail.com]
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+From: Jarkko Sakkinen <jarkko@profian.com>
+
+A quirk for fixing the committed TCB version, when upgrading from a
+firmware version earlier than 1.50. This is a known issue, and the
+documented workaround is to load the firmware twice.
+
+Currently, this issue requires the  following workaround:
+
+sudo modprobe -r kvm_amd
+sudo modprobe -r ccp
+sudo modprobe ccp
+sudo modprobe kvm_amd
+
+Implement this workaround inside kernel by checking whether the API
+version is less than 1.50, and if so, download the firmware twice.
+This addresses the TCB version issue.
+
+Link: https://lore.kernel.org/all/de02389f-249d-f565-1136-4af3655fab2a@profian.com/
+Reported-by: Harald Hoyer <harald@profian.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@profian.com>
+---
+v2:
+- Updated the commit message and comments.
+  https://lore.kernel.org/all/0a3a790d-989f-2f76-f636-62fbd925a776@amd.com/
+ drivers/crypto/ccp/sev-dev.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 799b476fc3e8..f27f8bc966b1 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -742,6 +742,11 @@ static int sev_update_firmware(struct device *dev)
+ 	struct page *p;
+ 	u64 data_size;
+ 
++	if (!sev_version_greater_or_equal(0, 15)) {
++		dev_dbg(dev, "DOWNLOAD_FIRMWARE not supported\n");
++		return -1;
++	}
++
+ 	if (sev_get_firmware(dev, &firmware) == -ENOENT) {
+ 		dev_dbg(dev, "No SEV firmware file present\n");
+ 		return -1;
+@@ -774,6 +779,14 @@ static int sev_update_firmware(struct device *dev)
+ 	data->len = firmware->size;
+ 
+ 	ret = sev_do_cmd(SEV_CMD_DOWNLOAD_FIRMWARE, data, &error);
++
++	/*
++	 * A quirk for fixing the committed TCB version, when upgrading from
++	 * earlier firmware version than 1.50.
++	 */
++	if (!ret && !sev_version_greater_or_equal(1, 50))
++		ret = sev_do_cmd(SEV_CMD_DOWNLOAD_FIRMWARE, data, &error);
++
+ 	if (ret)
+ 		dev_dbg(dev, "Failed to update SEV firmware: %#x\n", error);
+ 	else
+@@ -1283,8 +1296,7 @@ void sev_pci_init(void)
+ 	if (sev_get_api_version())
+ 		goto err;
+ 
+-	if (sev_version_greater_or_equal(0, 15) &&
+-	    sev_update_firmware(sev->dev) == 0)
++	if (sev_update_firmware(sev->dev) == 0)
+ 		sev_get_api_version();
+ 
+ 	/* If an init_ex_path is provided rely on INIT_EX for PSP initialization
 -- 
-Hello,
-We the Board Directors believe you are in good health, doing great and
-with the hope that this mail will meet you in good condition, We are
-privileged and delighted to reach you via email" And we are urgently
-waiting to hear from you. and again your number is not connecting.
+2.37.1
 
-My regards,
-Dr. Ali Moses..
-
-Sincerely,
-Prof. Chin Guang
