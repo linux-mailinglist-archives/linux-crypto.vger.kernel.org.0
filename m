@@ -2,48 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7FB5903B9
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Aug 2022 18:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF8B59044D
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Aug 2022 18:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238116AbiHKQ0c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 11 Aug 2022 12:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
+        id S238500AbiHKQaC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 11 Aug 2022 12:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238217AbiHKQZt (ORCPT
+        with ESMTP id S238330AbiHKQ3I (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 11 Aug 2022 12:25:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E161698CBE;
-        Thu, 11 Aug 2022 09:07:07 -0700 (PDT)
+        Thu, 11 Aug 2022 12:29:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C6445F4D;
+        Thu, 11 Aug 2022 09:08:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 714EB613F8;
-        Thu, 11 Aug 2022 16:07:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0724C43159;
-        Thu, 11 Aug 2022 16:07:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0EB2961449;
+        Thu, 11 Aug 2022 16:08:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B333C433D6;
+        Thu, 11 Aug 2022 16:08:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660234026;
-        bh=QGv8WE+5Lz+BjZVqQOh0ydLKy1KHuQ2hueYGtuw92D8=;
+        s=k20201202; t=1660234137;
+        bh=uKwMLGgnt8uS0p5ebOQ23qe32Pedis/Xf8xFcNBy+Dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c8MFLQbqlxFP9TeUryZKEs/0W4sGCE6OEkQ6AIHSj+TZ0oOQqA6hJLjVQv1pmWt8L
-         1upcgtXmY4aAWDISiTCbj/CD1VuLvKFZ7bCso99soLAGhp2z+Uod/kjivi+8bg5x5l
-         RP4UxN2bEAqYpAqzmtO+uE9PFCuDh3pFfoKpYCSHHIxu3jcDIIksKf2zr6K262/gEo
-         9chxA7hwtmaRhLjFFjR+9SwPOOO6XfaDZKRzZGc8CnzaI1P8QrU184iSbhojxiBvF1
-         xbGRL9z7I0kwWcd4e5DD0M5L/cQtF01yPTiEPNHYabgaWBRRKbSXLmq92xpSUlE5Vt
-         Q7jF2gobYlnRQ==
+        b=IYM73saQCLgTZg+Wdfs+5Flx5PCPSXXAXTs29cIGD4phuY8U3mBHO+EnKZ4NMUThh
+         qopFMLjBbcWqaxRCvEFusNyCUIT3oqnJ9cGXJr1XMBQ0we7vke6yNR2gK4AUUU1LWI
+         ZMmwTAJ939MhjjdqAlxy6BTsq3nJzNetaSLPvI3y70qGLg4+PdKkpFwn9q3DjNvDBb
+         kADHjdrMIXpLZUpH0Hs1Ukfa95tolLZaFKiqurqzHkh4wZLusxQLUCkmjMvgjKDgKT
+         KSXBmvn3i5IJUZeoS7m+wpzlearPbLARywmZ/LcsMgiYnfZkW89Qr9Sv/pRcZg04bi
+         sp3LosHsePGEQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yuan Can <yuancan@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, gilad@benyossef.com,
-        davem@davemloft.net, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 32/46] crypto: ccree - Add missing clk_disable_unprepare() in cc_pm_resume()
-Date:   Thu, 11 Aug 2022 12:03:56 -0400
-Message-Id: <20220811160421.1539956-32-sashal@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Breno Leitao <leitao@debian.org>,
+        Sasha Levin <sashal@kernel.org>, nayna@linux.ibm.com,
+        pfsmorigo@gmail.com, mpe@ellerman.id.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.4 15/25] crypto: vmx - Fix warning on p8_ghash_alg
+Date:   Thu, 11 Aug 2022 12:08:10 -0400
+Message-Id: <20220811160826.1541971-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811160421.1539956-1-sashal@kernel.org>
-References: <20220811160421.1539956-1-sashal@kernel.org>
+In-Reply-To: <20220811160826.1541971-1-sashal@kernel.org>
+References: <20220811160826.1541971-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -58,40 +59,34 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Yuan Can <yuancan@huawei.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 30fb034361ff1b9bfc569b2d8d66b544ea3eb18f ]
+[ Upstream commit cc8166bfc829043020b5cc3b7cdba02a17d03b6d ]
 
-Add clk_disable_unprepare() on error path in cc_pm_resume().
+The compiler complains that p8_ghash_alg isn't declared which is
+because the header file aesp8-ppc.h isn't included in ghash.c.
+This patch fixes the warning.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yuan Can <yuancan@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Acked-by: Breno Leitao <leitao@debian.org>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccree/cc_pm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/crypto/vmx/ghash.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/ccree/cc_pm.c b/drivers/crypto/ccree/cc_pm.c
-index 3c65bf070c90..f712689bc98d 100644
---- a/drivers/crypto/ccree/cc_pm.c
-+++ b/drivers/crypto/ccree/cc_pm.c
-@@ -41,6 +41,7 @@ static int cc_pm_resume(struct device *dev)
- 	/* wait for Cryptocell reset completion */
- 	if (!cc_wait_for_reset_completion(drvdata)) {
- 		dev_err(dev, "Cryptocell reset not completed");
-+		clk_disable_unprepare(drvdata->clk);
- 		return -EBUSY;
- 	}
+diff --git a/drivers/crypto/vmx/ghash.c b/drivers/crypto/vmx/ghash.c
+index 14807ac2e3b9..e419be7381c9 100644
+--- a/drivers/crypto/vmx/ghash.c
++++ b/drivers/crypto/vmx/ghash.c
+@@ -23,6 +23,7 @@
+ #include <crypto/internal/hash.h>
+ #include <crypto/internal/simd.h>
+ #include <crypto/b128ops.h>
++#include "aesp8-ppc.h"
  
-@@ -48,6 +49,7 @@ static int cc_pm_resume(struct device *dev)
- 	rc = init_cc_regs(drvdata, false);
- 	if (rc) {
- 		dev_err(dev, "init_cc_regs (%x)\n", rc);
-+		clk_disable_unprepare(drvdata->clk);
- 		return rc;
- 	}
- 	/* check if tee fips error occurred during power down */
+ void gcm_init_p8(u128 htable[16], const u64 Xi[2]);
+ void gcm_gmult_p8(u64 Xi[2], const u128 htable[16]);
 -- 
 2.35.1
 
