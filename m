@@ -2,97 +2,81 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A76FA594354
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Aug 2022 00:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416AE5951C1
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Aug 2022 07:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347008AbiHOWJu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 Aug 2022 18:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S232689AbiHPFO5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 Aug 2022 01:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346748AbiHOWH7 (ORCPT
+        with ESMTP id S230349AbiHPFOi (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 Aug 2022 18:07:59 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118D3118471;
-        Mon, 15 Aug 2022 12:38:01 -0700 (PDT)
-Received: from dslb-188-096-143-237.188.096.pools.vodafone-ip.de ([188.96.143.237] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1oNfuP-000485-S1; Mon, 15 Aug 2022 21:37:57 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 2/2] hwrng: imx-rngc - use devres for hwrng registration
-Date:   Mon, 15 Aug 2022 21:37:43 +0200
-Message-Id: <20220815193743.105926-3-martin@kaiser.cx>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220815193743.105926-1-martin@kaiser.cx>
-References: <20220815193743.105926-1-martin@kaiser.cx>
+        Tue, 16 Aug 2022 01:14:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889421EB7DC
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Aug 2022 14:30:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4C841B811F9
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Aug 2022 21:30:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B79E0C433C1;
+        Mon, 15 Aug 2022 21:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660599014;
+        bh=feO2cxwFis6LOaZ6FmU3TAcTU6imAQByNOy/kl/1Ss0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ao+Fabt9/JBtI1L/NvKuJC1KAdr+9q2qZNH1Y6gbQI/uKbQDvFQbluCT+ZbMkLwHU
+         7Lj7AQaGuGbnukMBocd1aYhr9HPaz63Bo9lM219AvshUjjoi3E2M6UZIf48BtTiX3A
+         CI4+8wnTXSfpxkyjVAPH94tpay94PAqwLp8yonj5DuIWeclYXIpAqCZeSxKI7AqY3W
+         feJGmCdi1nZPZDXu0hHu321k/d3ob1XLDRWhcZeAhD+H+6xZIOWZPhkvXh5+7VFxvf
+         MaB8CZocsSnbyPNMQra/6URP4IsUBjrnBA1StKYFgbgz83nCa2wboiAV377Qlor21v
+         pKd02AJ5ajntQ==
+Date:   Mon, 15 Aug 2022 14:30:13 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Robert Elliott <elliott@hpe.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     tim.c.chen@linux.intel.com, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, toshi.kani@hpe.com, rwright@hpe.com
+Subject: Re: [PATCH] crypto: testmgr - don't generate WARN for missing modules
+Message-ID: <Yvq65Xd6GjeLdmO5@sol.localdomain>
+References: <20220813231443.2706-1-elliott@hpe.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220813231443.2706-1-elliott@hpe.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Replace hwrng_register with devm_hwrng_register and let devres unregister
-our hwrng when the device is removed.
+On Sat, Aug 13, 2022 at 06:14:43PM -0500, Robert Elliott wrote:
+> This userspace command:
+>     modprobe tcrypt
+> or
+>     modprobe tcrypt mode=0
+> 
+> runs all the tcrypt test cases numbered <200 (i.e., all the
+> test cases calling tcrypt_test() and returning return values).
+> 
+> Tests are sparsely numbered from 0 to 1000. For example:
+>     modprobe tcrypt mode=12
+> tests sha512, and
+>     modprobe tcrypt mode=152
+> tests rfc4543(gcm(aes))) - AES-GCM as GMAC
+> 
+> The test manager generates WARNING crashdumps every time it attempts
+> a test using an algorithm that is not available (not built-in to the
+> kernel or available as a module):
 
-It's possible to do this now that devres also handles clock
-disable+uprepare. When we had to disable+unprepare the clock ourselves,
-we had to unregister the hwrng before this and couldn't use devres.
+Note that this is only a problem because tcrypt calls alg_test() directly.  The
+normal way that alg_test() gets called is for the registration-time self-test.
+It's not clear to me why tcrypt calls alg_test() directly; the registration-time
+test should be enough.  Herbert, do you know?
 
-There's nothing left to do for imx_rngc_remove, this function can go.
-
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/char/hw_random/imx-rngc.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-index 23f490204341..97d8dc931ca6 100644
---- a/drivers/char/hw_random/imx-rngc.c
-+++ b/drivers/char/hw_random/imx-rngc.c
-@@ -292,7 +292,7 @@ static int imx_rngc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	ret = hwrng_register(&rngc->rng);
-+	ret = devm_hwrng_register(&pdev->dev, &rngc->rng);
- 	if (ret) {
- 		dev_err(&pdev->dev, "hwrng registration failed\n");
- 		return ret;
-@@ -305,15 +305,6 @@ static int imx_rngc_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int __exit imx_rngc_remove(struct platform_device *pdev)
--{
--	struct imx_rngc *rngc = platform_get_drvdata(pdev);
--
--	hwrng_unregister(&rngc->rng);
--
--	return 0;
--}
--
- static int __maybe_unused imx_rngc_suspend(struct device *dev)
- {
- 	struct imx_rngc *rngc = dev_get_drvdata(dev);
-@@ -346,7 +337,6 @@ static struct platform_driver imx_rngc_driver = {
- 		.pm = &imx_rngc_pm_ops,
- 		.of_match_table = imx_rngc_dt_ids,
- 	},
--	.remove = __exit_p(imx_rngc_remove),
- };
- 
- module_platform_driver_probe(imx_rngc_driver, imx_rngc_probe);
--- 
-2.30.2
-
+- Eric
