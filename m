@@ -2,61 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FC7595DF4
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Aug 2022 16:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631C6595DF7
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Aug 2022 16:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbiHPODa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Aug 2022 10:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
+        id S235851AbiHPODo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 Aug 2022 10:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235850AbiHPODY (ORCPT
+        with ESMTP id S235864AbiHPOD0 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Aug 2022 10:03:24 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F05A4F64B
-        for <linux-crypto@vger.kernel.org>; Tue, 16 Aug 2022 07:03:18 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id u3so15048382lfk.8
-        for <linux-crypto@vger.kernel.org>; Tue, 16 Aug 2022 07:03:18 -0700 (PDT)
+        Tue, 16 Aug 2022 10:03:26 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDCB57896
+        for <linux-crypto@vger.kernel.org>; Tue, 16 Aug 2022 07:03:21 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id l10so10618357lje.7
+        for <linux-crypto@vger.kernel.org>; Tue, 16 Aug 2022 07:03:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=3hdGrIQ299lWEia0LRNRsH0WiIkUXzcfHJxdjTksbeY=;
-        b=aDb6oRbTUav887/pixDHR2STjGNB7SH6U3SiRfOgf51fHKYFsirOyX31PcM9bao8ou
-         sXROU2ZUvor/CGrgjUELCeN/Wo4zI8vkmCQAZAgipVLuJDCeUWxbb24hnq7HvUxaOe84
-         epvMo3NNYFMIKeHha0M4SgKIkJxfcCLYgzIve5z2w3kWTVFX9yncHNI4OUI+G/L17eEy
-         a3yCKnPCjqUmtHMM10LVgJcOcCznfVimGo/Qj6UMCAsEYuSTi4VtRjdUMec5WHdM2Ten
-         b+1N1n/swhwGBDiD4T+VzPia5K9BOTQYV1g/yjQMNbgW3/QiQrfhXXg2sSlIHpHm2H7W
-         ffhQ==
+        bh=sctki4nak4ZBSfbhd2II7H8or4YuNVPYzsqrowWkZ4E=;
+        b=f5JUTuZhfEMvSB6ln1mYJLWrWHK3VNXsVun6B98tIgrH2UdZzjUi+CRmw9p5jq6zc/
+         mFvIn+abPhojCqvHi32zTMH0KPm3JmGkawcWmysalrSIO1hbTnhNuH/P4miE8KRVSssL
+         f3hxkeqUeuWO3Z88cNwG8dNoijjoBO/1KDWuMLSQaI8rvTJMaToyJTu9i8aEXofym1CN
+         eBXg3N+DocOztz6ZN0xxnRV9K2xjgeDtiVLFxUd87hiGdmjnvqfGexlZPoNWUzrMD9MO
+         6apqIHn/W8HIZzZU0ta4bqMPfeRq68RJtWoniERoNtkL4ah8wO3cVGlXZyj7zn8k267P
+         1g8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=3hdGrIQ299lWEia0LRNRsH0WiIkUXzcfHJxdjTksbeY=;
-        b=AZdJCA7OyY8XnZJ1zbX3HsrUKJLhx5ErPFTWugoYAJfpcSw/Dscg3USgtIhcCeJzXl
-         tHqActcSLMYxPEp9fTTxwK7m4rRrCA3Pimr62KC1McvXswl75HAd6NllHxfpF9EDPVUa
-         //XtVqY3/XARYZC8qfz2u/pQYASPQHR5qhe58ckOebEivQlqM0whcVzftBptjqgzZduY
-         AbLRgjBsnZgZUtT+pG8I+o/9Bt0ZMtOPK+9kjO+LQ0wdS73MICPUn9XX3J/FzIsRflOZ
-         kZfjHJXtJR+laesQWrgqxxGMum8N6ooko1pG3BxRALNAdO9tMezlOJyyLUIMFnF2tCRk
-         haEw==
-X-Gm-Message-State: ACgBeo0FTBBvO8560Lu3wB6xHoxKAMOe91HOs8bRFYuR4/eU2gCf+IhR
-        ENrKysZkSQU00WGZJTk0nyKTzXWMjJJ1xg==
-X-Google-Smtp-Source: AA6agR5pX4QOud24aTiuXTToEkBKj5LLVsmQBYveANhSWYtmdmsba+yHZBXgJ/qp9qWgiOWJVkJXdg==
-X-Received: by 2002:ac2:44af:0:b0:48a:f361:fe1d with SMTP id c15-20020ac244af000000b0048af361fe1dmr7601083lfm.190.1660658596764;
-        Tue, 16 Aug 2022 07:03:16 -0700 (PDT)
+        bh=sctki4nak4ZBSfbhd2II7H8or4YuNVPYzsqrowWkZ4E=;
+        b=5Qbpt1arkK99Ea0mz6DfJrAns5nLw1cvFPhc3PFY3DPpC7vEm542FsiujP1cIRonXd
+         7bs3vRFY3JylMwCnakBL3qmziDhvh+2BfLB0Zx9B31dncE1+AHuK47o3z9QjhdPIgt5i
+         a67lGMbSPy1w+5JTr0FkY5HvVK5cchqfyklBCY17oDeku9SPFindiSKCXZi8wWv4lXrU
+         x77R/mPEtB4JLiHtxNIBM97J9WbaPJciBC/PCR6IDti3nnPNdOA6YUfsIgag1n6TpFH7
+         yeYnAxRPxdJPK+4x9KMQleGpihgrtSD+86ql1QOP/6nq3FDC0Nb5cQLBR6M1F5aydX+x
+         u9bA==
+X-Gm-Message-State: ACgBeo1H/Jhw3hCgfskv7i74cF+vDIXZbIPmyk9Qe0QzbCQGcxrK91No
+        XRSQuEwl/0rLTP8CPEPIt03IXoFRXWjcVA==
+X-Google-Smtp-Source: AA6agR6o6w78tVBFUXeTZtdyBttUTprdNcoKY82rKt9uZTzM29vRMHra8jrDdhOnG2W8B51RL9YmlA==
+X-Received: by 2002:a2e:9147:0:b0:25e:5764:9c9f with SMTP id q7-20020a2e9147000000b0025e57649c9fmr6714667ljg.278.1660658598029;
+        Tue, 16 Aug 2022 07:03:18 -0700 (PDT)
 Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id r27-20020a2eb61b000000b0025e739cd9a7sm1747902ljn.101.2022.08.16.07.03.16
+        by smtp.gmail.com with ESMTPSA id r27-20020a2eb61b000000b0025e739cd9a7sm1747902ljn.101.2022.08.16.07.03.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Aug 2022 07:03:16 -0700 (PDT)
+        Tue, 16 Aug 2022 07:03:17 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
 To:     linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>
 Cc:     phone-devel@vger.kernel.org, Stefan Hansson <newbyte@disroot.org>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v3 04/16] crypto: ux500/hash: Drop custom state save/restore
-Date:   Tue, 16 Aug 2022 16:00:37 +0200
-Message-Id: <20220816140049.102306-5-linus.walleij@linaro.org>
+Subject: [PATCH v3 05/16] crypto: ux500/hash: Drop bit index
+Date:   Tue, 16 Aug 2022 16:00:38 +0200
+Message-Id: <20220816140049.102306-6-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20220816140049.102306-1-linus.walleij@linaro.org>
 References: <20220816140049.102306-1-linus.walleij@linaro.org>
@@ -72,9 +72,8 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Drop the code that is saving and restoring the device state
-as part of the PM operations: this is the job of .import and
-.export, do not try to work around the framework.
+This is some leftover code because the field is only referenced
+in a debug print and never assigned.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
@@ -83,157 +82,61 @@ ChangeLog v2->v3:
 ChangeLog v1->v2:
 - No changes
 ---
- drivers/crypto/ux500/hash/hash_core.c | 52 +++++----------------------
- 1 file changed, 8 insertions(+), 44 deletions(-)
+ drivers/crypto/ux500/hash/hash_alg.h  | 4 ----
+ drivers/crypto/ux500/hash/hash_core.c | 4 ++--
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/crypto/ux500/hash/hash_alg.h b/drivers/crypto/ux500/hash/hash_alg.h
+index 26e8b7949d7c..00730c0090ae 100644
+--- a/drivers/crypto/ux500/hash/hash_alg.h
++++ b/drivers/crypto/ux500/hash/hash_alg.h
+@@ -217,7 +217,6 @@ struct hash_register {
+  * @buffer:	Working buffer for messages going to the hardware.
+  * @length:	Length of the part of message hashed so far (floor(N/64) * 64).
+  * @index:	Valid number of bytes in buffer (N % 64).
+- * @bit_index:	Valid number of bits in buffer (N % 8).
+  *
+  * This structure is used between context switches, i.e. when ongoing jobs are
+  * interupted with new jobs. When this happens we need to store intermediate
+@@ -237,7 +236,6 @@ struct hash_state {
+ 	u32		buffer[HASH_BLOCK_SIZE / sizeof(u32)];
+ 	struct uint64	length;
+ 	u8		index;
+-	u8		bit_index;
+ };
+ 
+ /**
+@@ -358,7 +356,6 @@ struct hash_req_ctx {
+  * @power_state_lock:	Spinlock for power_state.
+  * @regulator:		Pointer to the device's power control.
+  * @clk:		Pointer to the device's clock control.
+- * @restore_dev_state:	TRUE = saved state, FALSE = no saved state.
+  * @dma:		Structure used for dma.
+  */
+ struct hash_device_data {
+@@ -372,7 +369,6 @@ struct hash_device_data {
+ 	spinlock_t		power_state_lock;
+ 	struct regulator	*regulator;
+ 	struct clk		*clk;
+-	bool			restore_dev_state;
+ 	struct hash_state	state; /* Used for saving and resuming state */
+ 	struct hash_dma		dma;
+ };
 diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
-index aa6bbae107cd..fbd6335f142b 100644
+index fbd6335f142b..65d328d438d2 100644
 --- a/drivers/crypto/ux500/hash/hash_core.c
 +++ b/drivers/crypto/ux500/hash/hash_core.c
-@@ -243,13 +243,11 @@ static int get_empty_message_digest(
- /**
-  * hash_disable_power - Request to disable power and clock.
-  * @device_data:	Structure for the hash device.
-- * @save_device_state:	If true, saves the current hw state.
-  *
-  * This function request for disabling power (regulator) and clock,
-  * and could also save current hw state.
-  */
--static int hash_disable_power(struct hash_device_data *device_data,
--			      bool save_device_state)
-+static int hash_disable_power(struct hash_device_data *device_data)
- {
- 	int ret = 0;
- 	struct device *dev = device_data->dev;
-@@ -258,12 +256,6 @@ static int hash_disable_power(struct hash_device_data *device_data,
- 	if (!device_data->power_state)
- 		goto out;
- 
--	if (save_device_state) {
--		hash_save_state(device_data,
--				&device_data->state);
--		device_data->restore_dev_state = true;
--	}
--
- 	clk_disable(device_data->clk);
- 	ret = regulator_disable(device_data->regulator);
- 	if (ret)
-@@ -280,13 +272,11 @@ static int hash_disable_power(struct hash_device_data *device_data,
- /**
-  * hash_enable_power - Request to enable power and clock.
-  * @device_data:		Structure for the hash device.
-- * @restore_device_state:	If true, restores a previous saved hw state.
-  *
-  * This function request for enabling power (regulator) and clock,
-  * and could also restore a previously saved hw state.
-  */
--static int hash_enable_power(struct hash_device_data *device_data,
--			     bool restore_device_state)
-+static int hash_enable_power(struct hash_device_data *device_data)
- {
- 	int ret = 0;
- 	struct device *dev = device_data->dev;
-@@ -309,12 +299,6 @@ static int hash_enable_power(struct hash_device_data *device_data,
- 		device_data->power_state = true;
+@@ -991,8 +991,8 @@ int hash_hw_update(struct ahash_request *req)
  	}
  
--	if (device_data->restore_dev_state) {
--		if (restore_device_state) {
--			device_data->restore_dev_state = false;
--			hash_resume_state(device_data, &device_data->state);
--		}
--	}
- out:
- 	spin_unlock(&device_data->power_state_lock);
+ 	req_ctx->state.index = index;
+-	dev_dbg(device_data->dev, "%s: indata length=%d, bin=%d\n",
+-		__func__, req_ctx->state.index, req_ctx->state.bit_index);
++	dev_dbg(device_data->dev, "%s: indata length=%d\n",
++		__func__, req_ctx->state.index);
  
-@@ -1597,7 +1581,7 @@ static int ux500_hash_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Enable device power (and clock) */
--	ret = hash_enable_power(device_data, false);
-+	ret = hash_enable_power(device_data);
- 	if (ret) {
- 		dev_err(dev, "%s: hash_enable_power() failed!\n", __func__);
- 		goto out_clk_unprepare;
-@@ -1625,7 +1609,7 @@ static int ux500_hash_probe(struct platform_device *pdev)
  	return 0;
- 
- out_power:
--	hash_disable_power(device_data, false);
-+	hash_disable_power(device_data);
- 
- out_clk_unprepare:
- 	clk_unprepare(device_data->clk);
-@@ -1666,7 +1650,7 @@ static int ux500_hash_remove(struct platform_device *pdev)
- 
- 	ahash_algs_unregister_all(device_data);
- 
--	if (hash_disable_power(device_data, false))
-+	if (hash_disable_power(device_data))
- 		dev_err(dev, "%s: hash_disable_power() failed\n",
- 			__func__);
- 
-@@ -1706,7 +1690,7 @@ static void ux500_hash_shutdown(struct platform_device *pdev)
- 
- 	ahash_algs_unregister_all(device_data);
- 
--	if (hash_disable_power(device_data, false))
-+	if (hash_disable_power(device_data))
- 		dev_err(&pdev->dev, "%s: hash_disable_power() failed\n",
- 			__func__);
  }
-@@ -1720,7 +1704,6 @@ static int ux500_hash_suspend(struct device *dev)
- {
- 	int ret;
- 	struct hash_device_data *device_data;
--	struct hash_ctx *temp_ctx = NULL;
- 
- 	device_data = dev_get_drvdata(dev);
- 	if (!device_data) {
-@@ -1728,18 +1711,7 @@ static int ux500_hash_suspend(struct device *dev)
- 		return -ENOMEM;
- 	}
- 
--	spin_lock(&device_data->ctx_lock);
--	if (!device_data->current_ctx)
--		device_data->current_ctx++;
--	spin_unlock(&device_data->ctx_lock);
--
--	if (device_data->current_ctx == ++temp_ctx) {
--		ret = hash_disable_power(device_data, false);
--
--	} else {
--		ret = hash_disable_power(device_data, true);
--	}
--
-+	ret = hash_disable_power(device_data);
- 	if (ret)
- 		dev_err(dev, "%s: hash_disable_power()\n", __func__);
- 
-@@ -1754,7 +1726,6 @@ static int ux500_hash_resume(struct device *dev)
- {
- 	int ret = 0;
- 	struct hash_device_data *device_data;
--	struct hash_ctx *temp_ctx = NULL;
- 
- 	device_data = dev_get_drvdata(dev);
- 	if (!device_data) {
-@@ -1762,14 +1733,7 @@ static int ux500_hash_resume(struct device *dev)
- 		return -ENOMEM;
- 	}
- 
--	spin_lock(&device_data->ctx_lock);
--	if (device_data->current_ctx == ++temp_ctx)
--		device_data->current_ctx = NULL;
--	spin_unlock(&device_data->ctx_lock);
--
--	if (device_data->current_ctx)
--		ret = hash_enable_power(device_data, true);
--
-+	ret = hash_enable_power(device_data);
- 	if (ret)
- 		dev_err(dev, "%s: hash_enable_power() failed!\n", __func__);
- 
 -- 
 2.37.2
 
