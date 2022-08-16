@@ -2,87 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBDA594F4E
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Aug 2022 06:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB34F595365
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Aug 2022 09:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbiHPEPy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 Aug 2022 00:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
+        id S231671AbiHPHHg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 Aug 2022 03:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbiHPENJ (ORCPT
+        with ESMTP id S231589AbiHPHHT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 Aug 2022 00:13:09 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05264363720
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Aug 2022 17:45:15 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-324ec5a9e97so113520127b3.7
-        for <linux-crypto@vger.kernel.org>; Mon, 15 Aug 2022 17:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc;
-        bh=CsC+j0kptQXyDU8jUOJJkLIgy9EO57j1cJI24xW/Lks=;
-        b=OolYPV5QGpkoYYSeVMpK+QPcz1RNdoXZNadw16lVGzL8eBCU/ZQOkmG+rXUMpxJsHU
-         nwsCWZPyEU1SjU2HNdCKU7zjfbMofUTuL0mx7XTtjqHiXFdNJbm5pWgIKdNeyU4X7+xQ
-         8qRGC7/rpsKWmFO7oQQjQanvjlJHtUWh3zxgUNOQrb3ucNFMS7Qi73hXOTKVBHbxt1Mt
-         syIsqWfhRmbVx9JltGt9qXunEv2RPZTL4zu/PpK4g87wK6hiMIgyEIn2zEYkV2FQlLzl
-         OPbkXcDwzmM0lhniKME3eRB9G8oBePqxCFiIxP0nQxFwuAqY4z2uRbDqJwgfIs9k2GTi
-         0woQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=CsC+j0kptQXyDU8jUOJJkLIgy9EO57j1cJI24xW/Lks=;
-        b=KFzF6TJWPAo3XVo37m7jfuquqxg4JZMDK4u6YAWlqnBXHI78F/SJninI8A5rae/Qqm
-         sXIPcKyjVAVrF7JB9MhZ7qqviMcovZ31DMBq+qxGLKDw7sAZyRkA8guRiwiWKk6UTdHl
-         lUfkPCsQ0IZxCL3wehg2h9eZoBw7VZn8Ahw0oCKIes6in9SPO5a8Pcilhz5zevRgnNl2
-         CJp8ka4g2U8NHE8PIvfUotvHLaHJXslx73aD07qmnm3l1QuO61akHvCN6T+yR7mCmGnq
-         qdAvW0Q+4BJJg0HX5xaTdt4MwoXLhTLwM6YfimzGjZ88tBoVTNzXzWs+b1t+6npq1gCE
-         lNbQ==
-X-Gm-Message-State: ACgBeo3c7AXZq+e1tdD1/sxrm1PFohJgpZ1Glp9aBGQF2T2EkMHTrp0z
-        gAyRXE4hcXdTo5dS+zRtdggH8D3m4wxlpoNn/Br7WyraxvP3VtEtNxQ=
-X-Google-Smtp-Source: AA6agR6kRvEAXTC6rICDz8fMwHaAkRYmZXp6g258G/rwJ2LrcSqP+nV4ayUvH8nROfQw/5ncS0ZSehVDX3KfNUBOR+I=
-X-Received: by 2002:a25:c709:0:b0:676:bf77:c838 with SMTP id
- w9-20020a25c709000000b00676bf77c838mr14066044ybe.430.1660610714036; Mon, 15
- Aug 2022 17:45:14 -0700 (PDT)
+        Tue, 16 Aug 2022 03:07:19 -0400
+Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09799FAB9
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Aug 2022 19:43:19 -0700 (PDT)
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1oNmXn-00BSZV-BK; Tue, 16 Aug 2022 12:43:04 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 16 Aug 2022 10:43:03 +0800
+Date:   Tue, 16 Aug 2022 10:43:03 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Robert Elliott <elliott@hpe.com>, tim.c.chen@linux.intel.com,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        toshi.kani@hpe.com, rwright@hpe.com,
+        Stephan Mueller <smueller@chronox.de>
+Subject: Re: [PATCH] crypto: testmgr - don't generate WARN for missing modules
+Message-ID: <YvsEN+6k4lTvXY7I@gondor.apana.org.au>
+References: <20220813231443.2706-1-elliott@hpe.com>
+ <Yvq65Xd6GjeLdmO5@sol.localdomain>
 MIME-Version: 1.0
-From:   Alec Ari <neotheuser@gmail.com>
-Date:   Mon, 15 Aug 2022 19:45:03 -0500
-Message-ID: <CAM5Ud7NMr_f_JYvvjj2wm2gobAkMr0fFuQWdBdcSe4W++EB8QQ@mail.gmail.com>
-Subject: [PATCH] crypto: Make FIPS_SIGNATURE_SELFTEST depend on CRYPTO_FIPS
-To:     linux-crypto@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yvq65Xd6GjeLdmO5@sol.localdomain>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Alec Ari <alec@onelabs.com>
-Date: Mon, 15 Aug 2022 19:13:12 -0500
-Subject: crypto: Make FIPS_SIGNATURE_SELFTEST depend on CRYPTO_FIPS
+On Mon, Aug 15, 2022 at 02:30:13PM -0700, Eric Biggers wrote:
+>
+> Note that this is only a problem because tcrypt calls alg_test() directly.  The
+> normal way that alg_test() gets called is for the registration-time self-test.
+> It's not clear to me why tcrypt calls alg_test() directly; the registration-time
+> test should be enough.  Herbert, do you know?
 
-Would running FIPS selftests be necessary if FIPS is disabled?
+The tcrypt code predates testmgr.  So at the beginning we only had
+the enumerative testing.  Registration-time testing was added later.
 
-Signed-off-by: Alec Ari <alec@onelabs.com>
----
- crypto/asymmetric_keys/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+We could remove the enumerative testing, but I think the FIPS people
+have grown rather attached to it because it ticks some sort of a box
+at boot-time.
 
-diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
-index 3df3fe4ed..562bbd774 100644
---- a/crypto/asymmetric_keys/Kconfig
-+++ b/crypto/asymmetric_keys/Kconfig
-@@ -81,6 +81,7 @@ config FIPS_SIGNATURE_SELFTEST
-          This option causes some selftests to be run on the signature
-          verification code, using some built in data.  This is required
-          for FIPS.
-+       depends on CRYPTO_FIPS
-        depends on KEYS
-        depends on ASYMMETRIC_KEY_TYPE
-        depends on PKCS7_MESSAGE_PARSER
+Stephane, would it be a problem for FIPS if we simply got rid of the
+enumerative testing in tcrypt and instead relied on registration-time
+testing?
+
+Cheers,
 -- 
-2.37.2
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
