@@ -2,113 +2,282 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B60A598656
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Aug 2022 16:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357CD598990
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Aug 2022 19:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245270AbiHROr2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Aug 2022 10:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
+        id S1345247AbiHRRA5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Aug 2022 13:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245520AbiHROrX (ORCPT
+        with ESMTP id S1345217AbiHRRAU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Aug 2022 10:47:23 -0400
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69885BBA43;
-        Thu, 18 Aug 2022 07:47:21 -0700 (PDT)
-Received: by mail-qk1-f171.google.com with SMTP id b9so1263559qka.2;
-        Thu, 18 Aug 2022 07:47:21 -0700 (PDT)
+        Thu, 18 Aug 2022 13:00:20 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B633BFC4A
+        for <linux-crypto@vger.kernel.org>; Thu, 18 Aug 2022 10:00:15 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id k6-20020a05600c1c8600b003a54ecc62f6so1251486wms.5
+        for <linux-crypto@vger.kernel.org>; Thu, 18 Aug 2022 10:00:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=JMKQ+xguX04WuDh2F6byjDdWILtlWwiHA3+aubyuFBw=;
+        b=BzGDrMRZSkJu5WR0ePGF5NdgBejLg9/C/g/W6CqAAVVGSYX3jNLphpz686FA7NMZQz
+         tqr2b0At1YnnsHg9S/oEYPv0S/y0eQCjXh7WNpEjTbgRrbDZHD9ievMawzW19ZPJGphF
+         y4aicF4oLkgMptVirZ+Iicz9wP5TxDwIwlEyD3Gs+ArWzHDMcQ5euYL4xZUZvhz37xIl
+         A2vgqF3sCUBBIGMyTSpUdCmJgrQkvbo/XLglHPXwRSDvPUZ12kabGNwp/Q4hFakQmyeF
+         ZOttxtwDowcw8jj5Bg1EFkOO5+bW3DOJF/tUCopXmD7fqWsBy8tLaZ5SmsVDLn1HZU8M
+         AfqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=gdljhD4izytPCTwhmdt8DBVVfc0NydPAltPgDipKvog=;
-        b=z21x2EFoAdNeIjrz68Au7PO2e9cPtW0hiwQpPagWD378YKOU24Kiv1WLGGLpLtisUR
-         qBk1cmhmh7sPvwMU6eHzIXmgq+kg2d4NgE7GPDq+clkNTZWsKVrEkvZHry8FMONDW8J9
-         4iyi6nFbvprD/o0eEeck5HAahW/0disiGm6noXG21VzPGXb/RMwxvQ7/uVMkG85ronW6
-         8XN593sIqFSPghnVuC1jOYMbZZrT5j9/A1BN7SBDsaej93rC4JGzkUNA0qsKEi6pxiij
-         YjLgrpuureSyFZwfk1xtddwhKp4WQvLJWgZc1C3Pikmm1CUdimKmpKPNKsCyl+whQ5nd
-         Lipg==
-X-Gm-Message-State: ACgBeo3Lvc0nxCHMN1kJlXgiwEYJAiFy5FrXDoCOIJu4RxxQJadrpjOJ
-        xCzgVISjm1KCKluhLunPMw==
-X-Google-Smtp-Source: AA6agR6os7Il7llhYeMa4bR2kBtfZkcv6PCsh86UdfBNsIhRKKgO+IREW4lBHpdZzuhJU3WR6VLMIQ==
-X-Received: by 2002:a05:620a:2286:b0:6bb:5fa4:58 with SMTP id o6-20020a05620a228600b006bb5fa40058mr2241995qkh.202.1660834040446;
-        Thu, 18 Aug 2022 07:47:20 -0700 (PDT)
-Received: from robh.at.kernel.org ([2607:fb90:25d2:ea0d:b91c:d10a:6423:3870])
-        by smtp.gmail.com with ESMTPSA id n1-20020ac86741000000b0031eebfcb369sm1049301qtp.97.2022.08.18.07.47.14
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=JMKQ+xguX04WuDh2F6byjDdWILtlWwiHA3+aubyuFBw=;
+        b=TEAQYcwC3FyenY5IS7wTEaNBO7oCDf+OCbAA1nvavodCnyy6ZwgXH5nQStj0la8uSE
+         lmiWibeDJAIYOmMiJP28LAfIRlddoyx+ZNpGQlpDNjJcn8bfvxyKq6R3lWlA069PYPNm
+         5OCA0CpMx9Xh6wc2g5aXevnlvYu7wyJVJH2iwM1XCrl/ESCP9KnRsKyasNdqUtS4agMP
+         th9Kh4+WNurF2axSvHYlpLm3svc1gxCOaGAX4C6l+N3+rPU3vO77THSdOhDGVo80bCft
+         lufky0KYGveSogPJPfMc0U31MwbD/95OjZYZ5rm5PnclhL9rZY8kMs9pyVWQyI9idZjY
+         N2yw==
+X-Gm-Message-State: ACgBeo3u+YRrYpL6AL9xKg3+q0cXdjd7LiJpLyNt9R4JwYh4RiF9xfEF
+        YzW34y/jdijLkgEqbVYOekjDgw==
+X-Google-Smtp-Source: AA6agR63SjBLpPG4dqxXE830PltqErc5iMRQx70WlwUYczxq3ExyPIs73bggjQHdMsafS+F/VErY/g==
+X-Received: by 2002:a05:600c:4f05:b0:3a5:ffec:b6b with SMTP id l5-20020a05600c4f0500b003a5ffec0b6bmr5558746wmq.199.1660842013158;
+        Thu, 18 Aug 2022 10:00:13 -0700 (PDT)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id be13-20020a05600c1e8d00b003a511e92abcsm2662169wmb.34.2022.08.18.10.00.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Aug 2022 07:47:20 -0700 (PDT)
-Received: (nullmailer pid 1843176 invoked by uid 1000);
-        Thu, 18 Aug 2022 14:47:13 -0000
-Date:   Thu, 18 Aug 2022 08:47:13 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH] MAINTAINERS: Update email of Neil Armstrong
-Message-ID: <20220818144713.GC1829017-robh@kernel.org>
-References: <20220816095617.948678-1-narmstrong@baylibre.com>
+        Thu, 18 Aug 2022 10:00:12 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <dima@arista.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        David Ahern <dsahern@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 00/31] net/tcp: Add TCP-AO support
+Date:   Thu, 18 Aug 2022 17:59:34 +0100
+Message-Id: <20220818170005.747015-1-dima@arista.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220816095617.948678-1-narmstrong@baylibre.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Aug 16, 2022 at 11:56:17AM +0200, Neil Armstrong wrote:
-> From: Neil Armstrong <neil.armstrong@linaro.org>
-> 
-> My professional e-mail will change and the BayLibre one will
-> bounce after mid-september of 2022.
-> 
-> This updates the MAINTAINERS file, the YAML bindings and adds an
-> entry in the .mailmap file.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  .mailmap                                      |  1 +
->  .../amlogic/amlogic,meson-gx-ao-secure.yaml   |  2 +-
->  .../display/amlogic,meson-dw-hdmi.yaml        |  2 +-
->  .../bindings/display/amlogic,meson-vpu.yaml   |  2 +-
->  .../display/bridge/analogix,anx7814.yaml      |  2 +-
->  .../bindings/display/bridge/ite,it66121.yaml  |  2 +-
->  .../display/panel/sgd,gktw70sdae4se.yaml      |  2 +-
->  .../bindings/i2c/amlogic,meson6-i2c.yaml      |  2 +-
->  .../mailbox/amlogic,meson-gxbb-mhu.yaml       |  2 +-
->  .../bindings/media/amlogic,axg-ge2d.yaml      |  2 +-
->  .../bindings/media/amlogic,gx-vdec.yaml       |  2 +-
->  .../media/amlogic,meson-gx-ao-cec.yaml        |  2 +-
->  .../devicetree/bindings/mfd/khadas,mcu.yaml   |  2 +-
->  .../bindings/net/amlogic,meson-dwmac.yaml     |  2 +-
->  .../bindings/phy/amlogic,axg-mipi-dphy.yaml   |  2 +-
->  .../phy/amlogic,meson-g12a-usb2-phy.yaml      |  2 +-
->  .../phy/amlogic,meson-g12a-usb3-pcie-phy.yaml |  2 +-
->  .../bindings/power/amlogic,meson-ee-pwrc.yaml |  2 +-
->  .../bindings/reset/amlogic,meson-reset.yaml   |  2 +-
->  .../bindings/rng/amlogic,meson-rng.yaml       |  2 +-
->  .../bindings/serial/amlogic,meson-uart.yaml   |  2 +-
->  .../bindings/soc/amlogic/amlogic,canvas.yaml  |  2 +-
->  .../bindings/spi/amlogic,meson-gx-spicc.yaml  |  2 +-
->  .../bindings/spi/amlogic,meson6-spifc.yaml    |  2 +-
->  .../usb/amlogic,meson-g12a-usb-ctrl.yaml      |  2 +-
->  .../watchdog/amlogic,meson-gxbb-wdt.yaml      |  2 +-
->  MAINTAINERS                                   | 20 +++++++++----------
->  27 files changed, 36 insertions(+), 35 deletions(-)
+This patchset implements the TCP-AO option as described in RFC5925. There
+is a request from industry to move away from TCP-MD5SIG and it seems the time
+is right to have a TCP-AO upstreamed. This TCP option is meant to replace
+the TCP MD5 option and address its shortcomings. Specifically, it provides
+more secure hashing, key rotation and support for long-lived connections
+(see the summary of TCP-AO advantages over TCP-MD5 in (1.3) of RFC5925).
+The patch series starts with six patches that are not specific to TCP-AO
+but implement a general crypto facility that we thought is useful
+to eliminate code duplication between TCP-MD5SIG and TCP-AO as well as other
+crypto users. These six patches are being submitted separately in
+a different patchset [1]. Including them here will show better the gain
+in code sharing. Next are 18 patches that implement the actual TCP-AO option,
+followed by patches implementing selftests.
 
-Applied, thanks!
+The patch set was written as a collaboration of three authors (in alphabetical
+order): Dmitry Safonov, Francesco Ruggeri and Salam Noureddine. Additional
+credits should be given to Prasad Koya, who was involved in early prototyping
+a few years back. There is also a separate submission done by Leonard Crestez
+whom we thank for his efforts getting an implementation of RFC5925 submitted
+for review upstream [2]. This is an independent implementation that makes
+different design decisions.
 
-Rob
+For example, we chose a similar design to the TCP-MD5SIG implementation and
+used setsockopt()s to program per-socket keys, avoiding the extra complexity
+of managing a centralized key database in the kernel. A centralized database
+in the kernel has dubious benefits since it doesn’t eliminate per-socket
+setsockopts needed to specify which sockets need TCP-AO and what are the
+currently preferred keys. It also complicates traffic key caching and
+preventing deletion of in-use keys.
+
+In this implementation, a centralized database of keys can be thought of
+as living in user space and user applications would have to program those
+keys on matching sockets. On the server side, the user application programs
+keys (MKTS in TCP-AO nomenclature) on the listening socket for all peers that
+are expected to connect. Prefix matching on the peer address is supported.
+When a peer issues a successful connect, all the MKTs matching the IP address
+of the peer are copied to the newly created socket. On the active side,
+when a connect() is issued all MKTs that do not match the peer are deleted
+from the socket since they will never match the peer. This implementation
+uses three setsockopt()s for adding, deleting and modifying keys on a socket.
+All three setsockopt()s have extensive sanity checks that prevent
+inconsistencies in the keys on a given socket. A getsockopt() is provided
+to get key information from any given socket.
+
+Few things to note about this implementation:
+- Traffic keys are cached for established connections avoiding the cost of
+  such calculation for each packet received or sent.
+- Great care has been taken to avoid deleting in-use MKTs
+  as required by the RFC.
+- Any crypto algorithm supported by the Linux kernel can be used
+  to calculate packet hashes.
+- Fastopen works with TCP-AO but hasn’t been tested extensively.
+- Tested for interop with other major networking vendors (on linux-4.19),
+  including testing for key rotation and long lived connections.
+
+There are a couple of limitations that we’re aware of, including (but not
+limited to) the following:
+- setsockopt(TCP_REPAIR) not supported yet
+- IPv4-mapped-IPv6 addresses not tested
+- static key not implemented yet
+- CONFIG_TCP_AO depends on CONFIG_TCP_MD5SIG
+- A small window for a race condition exists between accept and key
+  adding/deletion on a listening socket but can be easily overcome by using
+  the getsockopt() to make sure the right keys are there on a newly accepted
+  connection
+- Key matching by TCP port numbers, peer ranges, asterisks is unsupported
+  as it’s unlikely to be useful
+
+[1]: https://lore.kernel.org/all/20220726201600.1715505-1-dima@arista.com/
+[2]: https://lore.kernel.org/all/cover.1658815925.git.cdleonard@gmail.com/
+
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Bob Gilligan <gilligan@arista.com>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Francesco Ruggeri <fruggeri@arista.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc: Ivan Delalande <colona@arista.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Leonard Crestez <cdleonard@gmail.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Salam Noureddine <noureddine@arista.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Dmitry Safonov (31):
+  crypto: Introduce crypto_pool
+  crypto_pool: Add crypto_pool_reserve_scratch()
+  net/tcp: Separate tcp_md5sig_info allocation into tcp_md5sig_info_add()
+  net/tcp: Disable TCP-MD5 static key on tcp_md5sig_info destruction
+  net/tcp: Use crypto_pool for TCP-MD5
+  net/ipv6: sr: Switch to using crypto_pool
+  tcp: Add TCP-AO config and structures
+  net/tcp: Introduce TCP_AO setsockopt()s
+  net/tcp: Prevent TCP-MD5 with TCP-AO being set
+  net/tcp: Calculate TCP-AO traffic keys
+  net/tcp: Add TCP-AO sign to outgoing packets
+  net/tcp: Add tcp_parse_auth_options()
+  net/tcp: Add AO sign to RST packets
+  net/tcp: Add TCP-AO sign to twsk
+  net/tcp: Wire TCP-AO to request sockets
+  net/tcp: Sign SYN-ACK segments with TCP-AO
+  net/tcp: Verify inbound TCP-AO signed segments
+  net/tcp: Add TCP-AO segments counters
+  net/tcp: Add TCP-AO SNE support
+  net/tcp: Add tcp_hash_fail() ratelimited logs
+  net/tcp: Ignore specific ICMPs for TCP-AO connections
+  net/tcp: Add option for TCP-AO to (not) hash header
+  net/tcp: Add getsockopt(TCP_AO_GET)
+  net/tcp: Allow asynchronous delete for TCP-AO keys (MKTs)
+  selftests/net: Add TCP-AO library
+  selftests/net: Verify that TCP-AO complies with ignoring ICMPs
+  selftest/net: Add TCP-AO ICMPs accept test
+  selftest/tcp-ao: Add a test for MKT matching
+  selftest/tcp-ao: Add test for TCP-AO add setsockopt() command
+  selftests/tcp-ao: Add TCP-AO + TCP-MD5 + no sign listen socket tests
+  selftests/aolib: Add test/benchmark for removing MKTs
+
+ crypto/Kconfig                                |   12 +
+ crypto/Makefile                               |    1 +
+ crypto/crypto_pool.c                          |  323 +++
+ include/crypto/pool.h                         |   33 +
+ include/linux/sockptr.h                       |   23 +
+ include/linux/tcp.h                           |   24 +
+ include/net/dropreason.h                      |   25 +
+ include/net/seg6_hmac.h                       |    7 -
+ include/net/tcp.h                             |  193 +-
+ include/net/tcp_ao.h                          |  283 +++
+ include/uapi/linux/snmp.h                     |    5 +
+ include/uapi/linux/tcp.h                      |   62 +
+ net/ipv4/Kconfig                              |   15 +-
+ net/ipv4/Makefile                             |    1 +
+ net/ipv4/proc.c                               |    5 +
+ net/ipv4/tcp.c                                |  191 +-
+ net/ipv4/tcp_ao.c                             | 1939 +++++++++++++++++
+ net/ipv4/tcp_input.c                          |   94 +-
+ net/ipv4/tcp_ipv4.c                           |  385 +++-
+ net/ipv4/tcp_minisocks.c                      |   37 +-
+ net/ipv4/tcp_output.c                         |  188 +-
+ net/ipv6/Kconfig                              |    2 +-
+ net/ipv6/Makefile                             |    1 +
+ net/ipv6/seg6.c                               |    3 -
+ net/ipv6/seg6_hmac.c                          |  204 +-
+ net/ipv6/tcp_ao.c                             |  151 ++
+ net/ipv6/tcp_ipv6.c                           |  327 ++-
+ tools/testing/selftests/Makefile              |    1 +
+ tools/testing/selftests/net/tcp_ao/.gitignore |    2 +
+ tools/testing/selftests/net/tcp_ao/Makefile   |   50 +
+ .../selftests/net/tcp_ao/bench-lookups.c      |  403 ++++
+ .../selftests/net/tcp_ao/connect-deny.c       |  217 ++
+ tools/testing/selftests/net/tcp_ao/connect.c  |   81 +
+ .../selftests/net/tcp_ao/icmps-accept.c       |    1 +
+ .../selftests/net/tcp_ao/icmps-discard.c      |  447 ++++
+ .../testing/selftests/net/tcp_ao/lib/aolib.h  |  333 +++
+ .../selftests/net/tcp_ao/lib/netlink.c        |  341 +++
+ tools/testing/selftests/net/tcp_ao/lib/proc.c |  267 +++
+ .../testing/selftests/net/tcp_ao/lib/setup.c  |  297 +++
+ tools/testing/selftests/net/tcp_ao/lib/sock.c |  294 +++
+ .../testing/selftests/net/tcp_ao/lib/utils.c  |   30 +
+ .../selftests/net/tcp_ao/setsockopt-closed.c  |  191 ++
+ .../selftests/net/tcp_ao/unsigned-md5.c       |  483 ++++
+ 43 files changed, 7516 insertions(+), 456 deletions(-)
+ create mode 100644 crypto/crypto_pool.c
+ create mode 100644 include/crypto/pool.h
+ create mode 100644 include/net/tcp_ao.h
+ create mode 100644 net/ipv4/tcp_ao.c
+ create mode 100644 net/ipv6/tcp_ao.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/.gitignore
+ create mode 100644 tools/testing/selftests/net/tcp_ao/Makefile
+ create mode 100644 tools/testing/selftests/net/tcp_ao/bench-lookups.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/connect-deny.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/connect.c
+ create mode 120000 tools/testing/selftests/net/tcp_ao/icmps-accept.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/icmps-discard.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/lib/aolib.h
+ create mode 100644 tools/testing/selftests/net/tcp_ao/lib/netlink.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/lib/proc.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/lib/setup.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/lib/sock.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/lib/utils.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/setsockopt-closed.c
+ create mode 100644 tools/testing/selftests/net/tcp_ao/unsigned-md5.c
+
+
+base-commit: e34cfee65ec891a319ce79797dda18083af33a76
+-- 
+2.37.2
+
