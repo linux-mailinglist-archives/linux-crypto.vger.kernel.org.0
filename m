@@ -2,70 +2,113 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B236E598324
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Aug 2022 14:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B60A598656
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Aug 2022 16:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244655AbiHRM2c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 18 Aug 2022 08:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S245270AbiHROr2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 18 Aug 2022 10:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244673AbiHRM22 (ORCPT
+        with ESMTP id S245520AbiHROrX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 18 Aug 2022 08:28:28 -0400
-X-Greylist: delayed 1830 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 18 Aug 2022 05:28:17 PDT
-Received: from delivery.e-purifier.com (delivery.e-purifier.com [197.234.175.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CF29FC0;
-        Thu, 18 Aug 2022 05:28:16 -0700 (PDT)
-Authentication-Results: delivery.e-purifier.com;
-        spf=pass (e-purifier.com: domain of shandud@telkomsa.net designates 105.224.1.22 as permitted sender) smtp.mailfrom=shandud@telkomsa.net;
-Received: from zmmtaout1.telkomsa.net ([105.224.1.22])
-        by delivery.e-purifier.com  with ESMTP id 27IBuiqY021649-27IBuiqa021649
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Thu, 18 Aug 2022 13:56:45 +0200
-Received: from localhost (localhost [127.0.0.1])
-        by zmmtaout1.telkomsa.net (Postfix) with ESMTP id 8501C40C97;
-        Thu, 18 Aug 2022 13:56:41 +0200 (SAST)
-Received: from zmmtaout1.telkomsa.net ([127.0.0.1])
-        by localhost (zmmtaout1.telkomsa.net [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Uf5_VPouWiAE; Thu, 18 Aug 2022 13:56:40 +0200 (SAST)
-Received: from localhost (localhost [127.0.0.1])
-        by zmmtaout1.telkomsa.net (Postfix) with ESMTP id BCA1D43574;
-        Thu, 18 Aug 2022 13:56:39 +0200 (SAST)
-X-Virus-Scanned: amavisd-new at zmmtaout1.telkomsa.net
-Received: from zmmtaout1.telkomsa.net ([127.0.0.1])
-        by localhost (zmmtaout1.telkomsa.net [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id k99u89ZNWg6u; Thu, 18 Aug 2022 13:56:39 +0200 (SAST)
-Received: from zmstore6.telkomsa.net (unknown [105.224.1.35])
-        by zmmtaout1.telkomsa.net (Postfix) with ESMTP id 6B51140BF9;
-        Thu, 18 Aug 2022 13:56:19 +0200 (SAST)
-Date:   Thu, 18 Aug 2022 13:56:19 +0200 (SAST)
-From:   shandud@telkomsa.net
-Message-ID: <295667432.5597905.1660823779355.JavaMail.zimbra@telkomsa.net>
-Subject: Your Urgent Responds Is Highly Needed
+        Thu, 18 Aug 2022 10:47:23 -0400
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69885BBA43;
+        Thu, 18 Aug 2022 07:47:21 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id b9so1263559qka.2;
+        Thu, 18 Aug 2022 07:47:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=gdljhD4izytPCTwhmdt8DBVVfc0NydPAltPgDipKvog=;
+        b=z21x2EFoAdNeIjrz68Au7PO2e9cPtW0hiwQpPagWD378YKOU24Kiv1WLGGLpLtisUR
+         qBk1cmhmh7sPvwMU6eHzIXmgq+kg2d4NgE7GPDq+clkNTZWsKVrEkvZHry8FMONDW8J9
+         4iyi6nFbvprD/o0eEeck5HAahW/0disiGm6noXG21VzPGXb/RMwxvQ7/uVMkG85ronW6
+         8XN593sIqFSPghnVuC1jOYMbZZrT5j9/A1BN7SBDsaej93rC4JGzkUNA0qsKEi6pxiij
+         YjLgrpuureSyFZwfk1xtddwhKp4WQvLJWgZc1C3Pikmm1CUdimKmpKPNKsCyl+whQ5nd
+         Lipg==
+X-Gm-Message-State: ACgBeo3Lvc0nxCHMN1kJlXgiwEYJAiFy5FrXDoCOIJu4RxxQJadrpjOJ
+        xCzgVISjm1KCKluhLunPMw==
+X-Google-Smtp-Source: AA6agR6os7Il7llhYeMa4bR2kBtfZkcv6PCsh86UdfBNsIhRKKgO+IREW4lBHpdZzuhJU3WR6VLMIQ==
+X-Received: by 2002:a05:620a:2286:b0:6bb:5fa4:58 with SMTP id o6-20020a05620a228600b006bb5fa40058mr2241995qkh.202.1660834040446;
+        Thu, 18 Aug 2022 07:47:20 -0700 (PDT)
+Received: from robh.at.kernel.org ([2607:fb90:25d2:ea0d:b91c:d10a:6423:3870])
+        by smtp.gmail.com with ESMTPSA id n1-20020ac86741000000b0031eebfcb369sm1049301qtp.97.2022.08.18.07.47.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Aug 2022 07:47:20 -0700 (PDT)
+Received: (nullmailer pid 1843176 invoked by uid 1000);
+        Thu, 18 Aug 2022 14:47:13 -0000
+Date:   Thu, 18 Aug 2022 08:47:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, dri-devel@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH] MAINTAINERS: Update email of Neil Armstrong
+Message-ID: <20220818144713.GC1829017-robh@kernel.org>
+References: <20220816095617.948678-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [185.174.159.18]
-X-Mailer: Zimbra 8.8.15_GA_4372 (zclient/8.8.15_GA_4372)
-Thread-Index: 2k8tG4stwGUeSn2s1DC9XfsNTgJfbg==
-Thread-Topic: Your Urgent Responds Is Highly Needed
-X-FE-Last-Public-Client-IP: 105.224.1.22
-X-FE-Policy-ID: 5:3:2:SYSTEM
-X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_50,MISSING_HEADERS,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220816095617.948678-1-narmstrong@baylibre.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Good Day,
+On Tue, Aug 16, 2022 at 11:56:17AM +0200, Neil Armstrong wrote:
+> From: Neil Armstrong <neil.armstrong@linaro.org>
+> 
+> My professional e-mail will change and the BayLibre one will
+> bounce after mid-september of 2022.
+> 
+> This updates the MAINTAINERS file, the YAML bindings and adds an
+> entry in the .mailmap file.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  .mailmap                                      |  1 +
+>  .../amlogic/amlogic,meson-gx-ao-secure.yaml   |  2 +-
+>  .../display/amlogic,meson-dw-hdmi.yaml        |  2 +-
+>  .../bindings/display/amlogic,meson-vpu.yaml   |  2 +-
+>  .../display/bridge/analogix,anx7814.yaml      |  2 +-
+>  .../bindings/display/bridge/ite,it66121.yaml  |  2 +-
+>  .../display/panel/sgd,gktw70sdae4se.yaml      |  2 +-
+>  .../bindings/i2c/amlogic,meson6-i2c.yaml      |  2 +-
+>  .../mailbox/amlogic,meson-gxbb-mhu.yaml       |  2 +-
+>  .../bindings/media/amlogic,axg-ge2d.yaml      |  2 +-
+>  .../bindings/media/amlogic,gx-vdec.yaml       |  2 +-
+>  .../media/amlogic,meson-gx-ao-cec.yaml        |  2 +-
+>  .../devicetree/bindings/mfd/khadas,mcu.yaml   |  2 +-
+>  .../bindings/net/amlogic,meson-dwmac.yaml     |  2 +-
+>  .../bindings/phy/amlogic,axg-mipi-dphy.yaml   |  2 +-
+>  .../phy/amlogic,meson-g12a-usb2-phy.yaml      |  2 +-
+>  .../phy/amlogic,meson-g12a-usb3-pcie-phy.yaml |  2 +-
+>  .../bindings/power/amlogic,meson-ee-pwrc.yaml |  2 +-
+>  .../bindings/reset/amlogic,meson-reset.yaml   |  2 +-
+>  .../bindings/rng/amlogic,meson-rng.yaml       |  2 +-
+>  .../bindings/serial/amlogic,meson-uart.yaml   |  2 +-
+>  .../bindings/soc/amlogic/amlogic,canvas.yaml  |  2 +-
+>  .../bindings/spi/amlogic,meson-gx-spicc.yaml  |  2 +-
+>  .../bindings/spi/amlogic,meson6-spifc.yaml    |  2 +-
+>  .../usb/amlogic,meson-g12a-usb-ctrl.yaml      |  2 +-
+>  .../watchdog/amlogic,meson-gxbb-wdt.yaml      |  2 +-
+>  MAINTAINERS                                   | 20 +++++++++----------
+>  27 files changed, 36 insertions(+), 35 deletions(-)
 
-I hope my message meets you well! I'm contacting you regarding a proposal that has something in common with your profile on linkdin, kindly contact me as urgent as possible for more details on my private email here: nikkifenton79@gmail.com
+Applied, thanks!
 
-Regards,
-Nikki Fenton
-nikkifenton79@gmail.com
+Rob
