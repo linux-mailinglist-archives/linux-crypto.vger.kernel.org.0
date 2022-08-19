@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34279599AAE
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Aug 2022 13:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74D5599ACA
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Aug 2022 13:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348580AbiHSLEq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 Aug 2022 07:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
+        id S1348615AbiHSLEy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 Aug 2022 07:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348587AbiHSLES (ORCPT
+        with ESMTP id S1348361AbiHSLEW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 Aug 2022 07:04:18 -0400
+        Fri, 19 Aug 2022 07:04:22 -0400
 Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD71BD1C3;
-        Fri, 19 Aug 2022 04:04:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4791ABD43;
+        Fri, 19 Aug 2022 04:04:20 -0700 (PDT)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1oOznN-00Cpma-Ad; Fri, 19 Aug 2022 21:04:10 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 19 Aug 2022 19:04:09 +0800
-Date:   Fri, 19 Aug 2022 19:04:09 +0800
+        id 1oOznV-00Cpn4-DN; Fri, 19 Aug 2022 21:04:18 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 19 Aug 2022 19:04:17 +0800
+Date:   Fri, 19 Aug 2022 19:04:17 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     Yang Shen <shenyang39@huawei.com>
 Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org, wangzhou1@hisilicon.com,
         liulongfang@huawei.com
-Subject: Re: [PATCH] crypto: hisilicon/zip - optimization for performance
-Message-ID: <Yv9uKQn8dEvlCCmq@gondor.apana.org.au>
-References: <20220813095752.39941-1-shenyang39@huawei.com>
+Subject: Re: [RESEND PATCH] crypto: hisilicon/zip - some misc cleanup
+Message-ID: <Yv9uMRV3mGN3aSfX@gondor.apana.org.au>
+References: <20220813101939.58778-1-shenyang39@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220813095752.39941-1-shenyang39@huawei.com>
+In-Reply-To: <20220813101939.58778-1-shenyang39@huawei.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -41,14 +41,18 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Aug 13, 2022 at 05:57:52PM +0800, Yang Shen wrote:
-> 1.Remove some useless steps during doing requests.
-> 2.Adjust the possibility of branch prediction.
+On Sat, Aug 13, 2022 at 06:19:39PM +0800, Yang Shen wrote:
+> Some cleanup for code:
+> 1. Change names for easy to understand.
+> 2. Unify the variables type.
+> 3. Use the right return value.
 > 
 > Signed-off-by: Yang Shen <shenyang39@huawei.com>
 > ---
->  drivers/crypto/hisilicon/zip/zip_crypto.c | 27 +++++++++++------------
->  1 file changed, 13 insertions(+), 14 deletions(-)
+>  drivers/crypto/hisilicon/zip/zip.h        |  2 +-
+>  drivers/crypto/hisilicon/zip/zip_crypto.c | 30 +++++++++++------------
+>  drivers/crypto/hisilicon/zip/zip_main.c   | 10 +++++---
+>  3 files changed, 23 insertions(+), 19 deletions(-)
 
 Patch applied.  Thanks.
 -- 
