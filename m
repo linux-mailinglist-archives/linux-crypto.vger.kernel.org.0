@@ -2,264 +2,119 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F9A59AFA4
-	for <lists+linux-crypto@lfdr.de>; Sat, 20 Aug 2022 20:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3B259B2FA
+	for <lists+linux-crypto@lfdr.de>; Sun, 21 Aug 2022 11:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234960AbiHTSn2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 20 Aug 2022 14:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        id S230076AbiHUJoI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 21 Aug 2022 05:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbiHTSmu (ORCPT
+        with ESMTP id S229618AbiHUJoH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 20 Aug 2022 14:42:50 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEAC45991;
-        Sat, 20 Aug 2022 11:42:33 -0700 (PDT)
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27KI2I8t005057;
-        Sat, 20 Aug 2022 18:42:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pps0720;
- bh=9ioaJj/5Z6IG3s9q1ND45b62ISD+TqCAFCYtxOrOUR0=;
- b=LrNHRBqB5OiyKz+b8QYvibz+JkU8ZA5sx1rjPuQMPhQsx08vL3lTehOWF91aqaIXJ5ur
- hJb2XUv3ZMGljLSCwtziRut8A5maHFAHIPVEjJoYE7KgTGORDTBUWRIngWDnRiG9mS8+
- Mtyun82j0O0EJs36EH3rrDyyGQ01QyG6QIt3Ot93Z5I4SGBjcQZIbHwvq0z3cjxhLst5
- lozDNLSz+3bF5zrm+QFzhcczIb4HO0XP9+LtJTL5XtpASH5YSYN4cBVhC3LMFHZymjQ/
- 9RXYXlo83rdTiAU8fD8pwnVw2KRIpxGwgL9yQOJSzIB3Ydn9VXGOebAtUx1ZAnoWoLNB HQ== 
-Received: from p1lg14879.it.hpe.com (p1lg14879.it.hpe.com [16.230.97.200])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3j2wnn27kd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 20 Aug 2022 18:42:27 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 487BFD2EA;
-        Sat, 20 Aug 2022 18:42:26 +0000 (UTC)
-Received: from adevxp033-sys.us.rdlabs.hpecorp.net (unknown [16.231.227.36])
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id EE181803A87;
-        Sat, 20 Aug 2022 18:42:25 +0000 (UTC)
-From:   Robert Elliott <elliott@hpe.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Elliott <elliott@hpe.com>
-Subject: [PATCH v3 17/17] crypto: Kconfig - simplify compression/RNG entries
-Date:   Sat, 20 Aug 2022 13:41:51 -0500
-Message-Id: <20220820184151.1149247-18-elliott@hpe.com>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220820184151.1149247-1-elliott@hpe.com>
-References: <20220817232057.73643-1-elliott@hpe.com>
- <20220820184151.1149247-1-elliott@hpe.com>
-X-Proofpoint-GUID: cnBUflogor9OpgrwOBgU3IX0LfP9Cldy
-X-Proofpoint-ORIG-GUID: cnBUflogor9OpgrwOBgU3IX0LfP9Cldy
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sun, 21 Aug 2022 05:44:07 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A313C1F639
+        for <linux-crypto@vger.kernel.org>; Sun, 21 Aug 2022 02:44:06 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-333b049f231so222831327b3.1
+        for <linux-crypto@vger.kernel.org>; Sun, 21 Aug 2022 02:44:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=rfaarergVMrMl3NP6R0UIJ/QHp9PlmI7CbyryyVn/mY=;
+        b=WNuD54w44DxS1q3kAVQPvjMhgckkSdsAJJzgBEgvWP62ubjGTv+bvpHq6jfWJkgLH/
+         MIPgZv+WCdKnt8LOEFNQPyRU1vprRqwzVLxi7IAL7qeSvXsXTQQD+FAp2KAyaY3n3XZc
+         q07aJ5Iq7d1MyxAzuwZx9iFn6Mmj818n9awwKxelY1yjTsFepUpujUArk7niDGAdi4uO
+         WTDlNegSimUoJX0WbpDFZ9Pp33uLNJZcf7PSJfDmzSkjuGAhtGd3NG3F4AhhxKvlgJtw
+         LT4vhsAPVrxfFv9VEAbPtNIE1mRrnlNdaxY9rkdIbNRk9EIcOvHCAGYLotvoVgf9cCB8
+         QTFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=rfaarergVMrMl3NP6R0UIJ/QHp9PlmI7CbyryyVn/mY=;
+        b=MdcOfKXEd7nYPoiv0nuynjV32hMCPK2wYAVMMul89r7WzkjrllefiCPn3MkAFpr7ny
+         jv2eIlPd8H4DgLQGslu7DA7ntNfKeiXejBjmIXTCM6cGG+YZ0LrOInW+xkw9Uln1bB7d
+         7nSFBtV39B6ug+mjwX/AxlzYhzD3C7JN0ceAo4Adc4I+NAO5LHwKc5KzvDvno9kseFv4
+         KxddIRhdS07dymN1cFV8KtDSs8Umun9MJUGN9TdWKAgwhupc/29kS6UcziJpXoC9GvOz
+         eTJdzWQY9hvhO4St2L9A0PokEG9pVrSGLtadAlgflJ6XKtk0n0p19bH/6PMS0JKAecKy
+         LfYA==
+X-Gm-Message-State: ACgBeo1hmqEZgB0dxOJEGxolQd0c5Csc4lFGxz0XTGdJAZed8U4/+hhR
+        nsFG0T5K8psujNZRMuztIHgomi1cMGuaSoA3n46SHw==
+X-Google-Smtp-Source: AA6agR6EAI9iuAA6jEwlBFw2M1Gb42C8VCn2s3ZiokOlYtzeBCM/YYRmIwGo8+EMKwrNuc7/+QpMX8Gh1Rs7dQjn0fQ=
+X-Received: by 2002:a0d:cd43:0:b0:329:febf:8c25 with SMTP id
+ p64-20020a0dcd43000000b00329febf8c25mr14948896ywd.90.1661075045780; Sun, 21
+ Aug 2022 02:44:05 -0700 (PDT)
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-20_08,2022-08-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 mlxlogscore=959 spamscore=0 suspectscore=0
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2208200080
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220819060801.10443-1-jinpu.wang@ionos.com> <20220819060801.10443-13-jinpu.wang@ionos.com>
+In-Reply-To: <20220819060801.10443-13-jinpu.wang@ionos.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Sun, 21 Aug 2022 12:44:04 +0300
+Message-ID: <CAOtvUMdRvb_sQHW21MDXj3faUjOTTzCcwFDvnuCq7W_j0hyskg@mail.gmail.com>
+Subject: Re: [PATCH v1 12/19] crypto: ccree: Fix dma_map_sg error check
+To:     Jack Wang <jinpu.wang@ionos.com>
+Cc:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Shorten menu titles and make them consistent:
-- acronym
-- name
-- architecture features in parenthesis
-- no suffixes like "<something> algorithm", "support", or
-  "hardware acceleration", or "optimized"
+Hi Jack,
 
-Simplify help text descriptions, update references, and ensure that
-https references are still valid.
+On Fri, Aug 19, 2022 at 9:08 AM Jack Wang <jinpu.wang@ionos.com> wrote:
+>
+> dma_map_sg return 0 on error, and dma_map_error is not supposed to use
+> here.
+>
+> Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+>
+> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> ---
+>  drivers/crypto/ccree/cc_buffer_mgr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/crypto/ccree/cc_buffer_mgr.c b/drivers/crypto/ccree/=
+cc_buffer_mgr.c
+> index 6140e4927322..9efd88f871d1 100644
+> --- a/drivers/crypto/ccree/cc_buffer_mgr.c
+> +++ b/drivers/crypto/ccree/cc_buffer_mgr.c
+> @@ -274,7 +274,7 @@ static int cc_map_sg(struct device *dev, struct scatt=
+erlist *sg,
+>         }
+>
+>         ret =3D dma_map_sg(dev, sg, *nents, direction);
+> -       if (dma_mapping_error(dev, ret)) {
+> +       if (!ret) {
+>                 *nents =3D 0;
+>                 dev_err(dev, "dma_map_sg() sg buffer failed %d\n", ret);
+>                 return -ENOMEM;
+> --
+> 2.34.1
+>
 
-Signed-off-by: Robert Elliott <elliott@hpe.com>
----
- crypto/Kconfig | 82 ++++++++++++++++++++++++++++++--------------------
- 1 file changed, 50 insertions(+), 32 deletions(-)
+Good catch!
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index bee5753aa5bd..e93da749f31b 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1178,81 +1178,92 @@ config CRYPTO_CRC64_ROCKSOFT
- menu "Compression"
- 
- config CRYPTO_DEFLATE
--	tristate "Deflate compression algorithm"
-+	tristate "Deflate"
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_ACOMP2
- 	select ZLIB_INFLATE
- 	select ZLIB_DEFLATE
- 	help
--	  This is the Deflate algorithm (RFC1951), specified for use in
--	  IPSec with the IPCOMP protocol (RFC3173, RFC2394).
-+	  Deflate compression algorithm (RFC1951)
- 
--	  You will most probably want this if using IPSec.
-+	  Used by IPSec with the IPCOMP protocol (RFC3173, RFC2394)
- 
- config CRYPTO_LZO
--	tristate "LZO compression algorithm"
-+	tristate "LZO"
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_ACOMP2
- 	select LZO_COMPRESS
- 	select LZO_DECOMPRESS
- 	help
--	  This is the LZO algorithm.
-+	  LZO compression algorithm
-+
-+	  See https://www.oberhumer.com/opensource/lzo/ for further information.
- 
- config CRYPTO_842
--	tristate "842 compression algorithm"
-+	tristate "842"
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_ACOMP2
- 	select 842_COMPRESS
- 	select 842_DECOMPRESS
- 	help
--	  This is the 842 algorithm.
-+	  842 compression algorithm by IBM
-+
-+	  See https://github.com/plauth/lib842 for further information.
- 
- config CRYPTO_LZ4
--	tristate "LZ4 compression algorithm"
-+	tristate "LZ4"
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_ACOMP2
- 	select LZ4_COMPRESS
- 	select LZ4_DECOMPRESS
- 	help
--	  This is the LZ4 algorithm.
-+	  LZ4 compression algorithm
-+
-+	  See https://github.com/lz4/lz4 for further information.
- 
- config CRYPTO_LZ4HC
--	tristate "LZ4HC compression algorithm"
-+	tristate "LZ4HC"
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_ACOMP2
- 	select LZ4HC_COMPRESS
- 	select LZ4_DECOMPRESS
- 	help
--	  This is the LZ4 high compression mode algorithm.
-+	  LZ4 high compression mode algorithm
-+
-+	  See https://github.com/lz4/lz4 for further information.
- 
- config CRYPTO_ZSTD
--	tristate "Zstd compression algorithm"
-+	tristate "Zstd"
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_ACOMP2
- 	select ZSTD_COMPRESS
- 	select ZSTD_DECOMPRESS
- 	help
--	  This is the zstd algorithm.
-+	  zstd compression algorithm
-+
-+	  See https://github.com/facebook/zstd for further information.
- 
- endmenu
- 
- menu "Random number generation"
- 
- config CRYPTO_ANSI_CPRNG
--	tristate "Pseudo Random Number Generation for Cryptographic modules"
-+	tristate "ANSI PRNG (Pseudo Random Number Generator)"
- 	select CRYPTO_AES
- 	select CRYPTO_RNG
- 	help
--	  This option enables the generic pseudo random number generator
--	  for cryptographic modules.  Uses the Algorithm specified in
--	  ANSI X9.31 A.2.4. Note that this option must be enabled if
--	  CRYPTO_FIPS is selected
-+	  Pseudo RNG (random number generator) (ANSI X9.31 Appendix A.2.4)
-+
-+	  This uses the AES cipher algorithm.
-+
-+	  Note that this option must be enabled if CRYPTO_FIPS is selected
- 
- menuconfig CRYPTO_DRBG_MENU
--	tristate "NIST SP800-90A DRBG"
-+	tristate "NIST SP800-90A DRBG (Deterministic Random Bit Generator)"
- 	help
--	  NIST SP800-90A compliant DRBG. In the following submenu, one or
--	  more of the DRBG types must be selected.
-+	  DRBG (Deterministic Random Bit Generator) (NIST SP800-90A)
-+
-+	  In the following submenu, one or more of the DRBG types must be selected.
- 
- if CRYPTO_DRBG_MENU
- 
-@@ -1263,17 +1274,21 @@ config CRYPTO_DRBG_HMAC
- 	select CRYPTO_SHA512
- 
- config CRYPTO_DRBG_HASH
--	bool "Enable Hash DRBG"
-+	bool "Hash_DRBG"
- 	select CRYPTO_SHA256
- 	help
--	  Enable the Hash DRBG variant as defined in NIST SP800-90A.
-+	  Hash_DRBG variant as defined in NIST SP800-90A.
-+
-+	  This uses the SHA-1, SHA-256, SHA-384, or SHA-512 hash algorithms.
- 
- config CRYPTO_DRBG_CTR
--	bool "Enable CTR DRBG"
-+	bool "CTR_DRBG"
- 	select CRYPTO_AES
- 	select CRYPTO_CTR
- 	help
--	  Enable the CTR DRBG variant as defined in NIST SP800-90A.
-+	  CTR_DRBG variant as defined in NIST SP800-90A.
-+
-+	  This uses the AES cipher algorithm with the counter block mode.
- 
- config CRYPTO_DRBG
- 	tristate
-@@ -1284,14 +1299,17 @@ config CRYPTO_DRBG
- endif	# if CRYPTO_DRBG_MENU
- 
- config CRYPTO_JITTERENTROPY
--	tristate "Jitterentropy Non-Deterministic Random Number Generator"
-+	tristate "CPU Jitter Non-Deterministic RNG (Random Number Generator)"
- 	select CRYPTO_RNG
- 	help
--	  The Jitterentropy RNG is a noise that is intended
--	  to provide seed to another RNG. The RNG does not
--	  perform any cryptographic whitening of the generated
--	  random numbers. This Jitterentropy RNG registers with
--	  the kernel crypto API and can be used by any caller.
-+	  CPU Jitter RNG (Random Number Generator) from the Jitterentropy library
-+
-+	  A non-physical non-deterministic ("true") RNG (e.g., an entropy source
-+	  compliant with NIST SP800-90B) intended to provide a seed to a
-+	  deterministic RNG (e.g.  per NIST SP800-90C).
-+	  This RNG does not perform any cryptographic whitening of the generated
-+
-+	  See https://www.chronox.de/jent.html
- 
- config CRYPTO_KDF800108_CTR
- 	tristate
--- 
-2.37.1
+Thank you for the patch.
 
+Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+
+Gilad
+
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
