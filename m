@@ -2,72 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7A759F8FF
-	for <lists+linux-crypto@lfdr.de>; Wed, 24 Aug 2022 14:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B277759FA3D
+	for <lists+linux-crypto@lfdr.de>; Wed, 24 Aug 2022 14:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbiHXMGS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 24 Aug 2022 08:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
+        id S237414AbiHXMqt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 24 Aug 2022 08:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235620AbiHXMGR (ORCPT
+        with ESMTP id S234876AbiHXMqt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 24 Aug 2022 08:06:17 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B09CFD6
-        for <linux-crypto@vger.kernel.org>; Wed, 24 Aug 2022 05:06:16 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id bt10so10712463lfb.1
-        for <linux-crypto@vger.kernel.org>; Wed, 24 Aug 2022 05:06:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
-        bh=osSAgKM1j6DRNQcQXA842NXUQk2GubTJs0svjrfNTko=;
-        b=c9yAoLst9cTKYFTRnYdR7VGaJWBIp4ysInF1MbmMl629UKgtJj7ImzsDrzzoKwZcKa
-         DXu4iEgGOYgJZZO4/qHEb20kOwjOVKK8OV9PaARxgfXR7ERVoKBjaOyi2rnOmBbHu37f
-         yLrh6p+zA+0xvV/eldwVPTbG19EFmNfO4pBqIcRn4MbyEMlBomaMWLqHqez7Aaw4Gdvp
-         K/PPIzSdrAJQ440bRZJHOJEZOlIV4R0ZucAdQ4lP1aRtpJn/or7UCZFFeq0T43IEv+eR
-         Z1bs9x2weAYEuwxPFTaGU1J18L3SXeh7AIbkIDnhYKmJElxaP1BoGGp7zKqa/yqWscaG
-         tOug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=osSAgKM1j6DRNQcQXA842NXUQk2GubTJs0svjrfNTko=;
-        b=noYrL7jjI9VM/m21kI/Mk7Cqt4iT51kWnZ77npzzw05TyQi9auQp2lG+7rET1cJLoW
-         t9/WHLdCCiNK4daVIzR+szTe6dvmVoHj7Mp5hYYGNLs8HCGzZY7Ex6LyIjXXmm+9umS/
-         tCKF0/axZwObnNdewg0YNm+JgS6du3s6Kp020jP//i7T+xx6WLdacg2Rq8Jev9klWFBF
-         /blmaEKhM1yreKDXiRuq10XxlRqUQW/xC4PW5qrFDrWCVrHpnIGB3adCWQ5kQc9qm5r4
-         2aaM6u1e+m4y+i8kKgxIi191eXFv3Xb7CaV+QNf4MVFZCMlLP534RZUZHZUsi6JDWEWN
-         w1mQ==
-X-Gm-Message-State: ACgBeo3mhziTG0g0Ij6IEtYzfGhL5cmL1T5Njm+QHpw+AJ5pv2SenVkI
-        uf+oz/JnQQZ2aeujvqQDnbtyUU7XEEa6T62Cdw==
-X-Google-Smtp-Source: AA6agR5M8KAZhj2/LaJoCNoV6X46Ove82Er/Ka6TUOYblRS+EMXij8hku9KQfX3nMtFWw8GxqPTsQYc704VPN4te4u0=
-X-Received: by 2002:a05:6512:e91:b0:492:fa15:2d40 with SMTP id
- bi17-20020a0565120e9100b00492fa152d40mr2320040lfb.274.1661342774522; Wed, 24
- Aug 2022 05:06:14 -0700 (PDT)
+        Wed, 24 Aug 2022 08:46:49 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [185.16.172.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF18790C7E;
+        Wed, 24 Aug 2022 05:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=uSxtp6cCO/JPJLp/Y5uU09OcFls/853lMuOjjJI3vmg=; b=yBwxcpvlq6AVp6sl0roNiulO7G
+        9zTsPRWFSQ+hKKHxduJWNf8atR40bQyrZTzzrCvt6Qye61ELVuCs0qkUyrZzt56GKISn8w17anntT
+        a+w42OOTECaukHBlbqttIJOHfb31EAhQBOeGlj3tLbG4l9PdfauvpVUMldWG5tTU2Nzg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1oQpmC-00ERhp-AT; Wed, 24 Aug 2022 14:46:32 +0200
+Date:   Wed, 24 Aug 2022 14:46:32 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Leonard Crestez <cdleonard@gmail.com>
+Cc:     Dmitry Safonov <dima@arista.com>, David Ahern <dsahern@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH 00/31] net/tcp: Add TCP-AO support
+Message-ID: <YwYdqEFQuQjXxATb@lunn.ch>
+References: <20220818170005.747015-1-dima@arista.com>
+ <fc05893d-7733-1426-3b12-7ba60ef2698f@gmail.com>
+ <a83e24c9-ab25-6ca0-8b81-268f92791ae5@kernel.org>
+ <8097c38e-e88e-66ad-74d3-2f4a9e3734f4@arista.com>
+ <7ad5a9be-4ee9-bab2-4a70-b0f661f91beb@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ab3:2e5:0:b0:1d9:c407:50e8 with HTTP; Wed, 24 Aug 2022
- 05:06:13 -0700 (PDT)
-Reply-To: michellegoodman035@gmail.com
-From:   Michelle Goodman <michellegoodman035@gmail.com>
-Date:   Wed, 24 Aug 2022 12:06:13 +0000
-Message-ID: <CAPJ5U1_wKrKQmMA75SnMfrDTZWHomaNLk=tLLi5XxYAFqVDrSQ@mail.gmail.com>
-Subject: HALLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ad5a9be-4ee9-bab2-4a70-b0f661f91beb@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Antworten
+> I think it would make sense to push key validity times and the key selection
+> policy entirely in the kernel so that it can handle key rotation/expiration
+> by itself. This way userspace only has to configure the keys and doesn't
+> have to touch established connections at all.
 
-Vielen Dank.
-Michelle
+I know nothing aobut TCP-AO, nor much about kTLS. But doesn't kTLS
+have the same issue? Is there anything which can be learnt from kTLS?
+Maybe the same mechanisms can be used? No point inventing something
+new if you can copy/refactor working code?
+
+> My series has a "flags" field on the key struct where it can filter by IP,
+> prefix, ifindex and so on. It would be possible to add additional flags for
+> making the key only valid between certain times (by wall time).
+
+What out for wall clock time, it jumps around in funny ways. Plus the
+kernel has no idea what time zone the wall the wall clock is mounted
+on is in.
+
+    Andrew
