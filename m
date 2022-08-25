@@ -2,45 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD27C5A0BBD
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Aug 2022 10:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348B95A0BDA
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Aug 2022 10:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbiHYIlv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Aug 2022 04:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
+        id S233561AbiHYIuP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Aug 2022 04:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238113AbiHYIlo (ORCPT
+        with ESMTP id S232805AbiHYIuO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 25 Aug 2022 04:41:44 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C545C7EFD9;
-        Thu, 25 Aug 2022 01:41:42 -0700 (PDT)
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MCxH31bMLzGpqc;
-        Thu, 25 Aug 2022 16:39:59 +0800 (CST)
-Received: from dggphis33418.huawei.com (10.244.148.83) by
- kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 25 Aug 2022 16:41:39 +0800
-From:   Gaosheng Cui <cuigaosheng1@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <cuigaosheng1@huawei.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next 2/2] crypto: crc32c - add missing Kconfig option select
-Date:   Thu, 25 Aug 2022 16:41:38 +0800
-Message-ID: <20220825084138.1881954-3-cuigaosheng1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220825084138.1881954-1-cuigaosheng1@huawei.com>
+        Thu, 25 Aug 2022 04:50:14 -0400
+Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFD98F941;
+        Thu, 25 Aug 2022 01:50:12 -0700 (PDT)
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1oR8Yt-00Exl6-EM; Thu, 25 Aug 2022 18:50:04 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 25 Aug 2022 16:50:03 +0800
+Date:   Thu, 25 Aug 2022 16:50:03 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Gaosheng Cui <cuigaosheng1@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next 1/2] crypto: api - Fix IS_ERR() vs NULL check
+Message-ID: <Ywc3u9ObRCpxQsK0@gondor.apana.org.au>
 References: <20220825084138.1881954-1-cuigaosheng1@huawei.com>
+ <20220825084138.1881954-2-cuigaosheng1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.244.148.83]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220825084138.1881954-2-cuigaosheng1@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,30 +41,37 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The CRYPTO_CRC32C is using functions provided by CRYPTO_MANAGER,
-otherwise the following error will occur:
+On Thu, Aug 25, 2022 at 04:41:37PM +0800, Gaosheng Cui wrote:
+> The crypto_alloc_test_larval() will return null if manager is disabled,
+> it may not return error pointers, so using IS_ERR_OR_NULL()
+> to check the return value to fix this.
+> 
+> The __crypto_register_alg() will return null if manager is disabled,
+> it may not return error pointers, so using IS_ERR_OR_NULL()
+> to check the return value to fix this.
+> 
+> Fixes: cad439fc040e ("crypto: api - Do not create test larvals if manager is disabled")
+> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+> ---
+>  crypto/algapi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/crypto/algapi.c b/crypto/algapi.c
+> index 5c69ff8e8fa5..5a080b8aaa11 100644
+> --- a/crypto/algapi.c
+> +++ b/crypto/algapi.c
+> @@ -283,7 +283,7 @@ static struct crypto_larval *__crypto_register_alg(struct crypto_alg *alg)
+>  	}
+>  
+>  	larval = crypto_alloc_test_larval(alg);
+> -	if (IS_ERR(larval))
+> +	if (IS_ERR_OR_NULL(larval))
+>  		goto out;
 
-    EXT4-fs (mmcblk0): Cannot load crc32c driver.
+A NULL indicates success, why are you jumping to the error path?
 
-So select CRYPTO_MANAGER when enable CRYPTO_CRC32C.
-
-Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
----
- crypto/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index b1ccf873779d..7f124604323b 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -641,6 +641,7 @@ config CRYPTO_CRC32C
- 	tristate "CRC32c CRC algorithm"
- 	select CRYPTO_HASH
- 	select CRC32
-+	select CRYPTO_MANAGER
- 	help
- 	  Castagnoli, et al Cyclic Redundancy-Check Algorithm.  Used
- 	  by iSCSI for header and data digests and by others.
+Cheers,
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
