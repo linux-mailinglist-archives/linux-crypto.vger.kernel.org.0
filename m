@@ -2,36 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 348B95A0BDA
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Aug 2022 10:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC075A0BE2
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Aug 2022 10:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbiHYIuP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 25 Aug 2022 04:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
+        id S237202AbiHYIu6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 25 Aug 2022 04:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbiHYIuO (ORCPT
+        with ESMTP id S236548AbiHYIu4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 25 Aug 2022 04:50:14 -0400
+        Thu, 25 Aug 2022 04:50:56 -0400
 Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFD98F941;
-        Thu, 25 Aug 2022 01:50:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAE3A8306;
+        Thu, 25 Aug 2022 01:50:53 -0700 (PDT)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1oR8Yt-00Exl6-EM; Thu, 25 Aug 2022 18:50:04 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 25 Aug 2022 16:50:03 +0800
-Date:   Thu, 25 Aug 2022 16:50:03 +0800
+        id 1oR8Zc-00Exmc-5d; Thu, 25 Aug 2022 18:50:49 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 25 Aug 2022 16:50:48 +0800
+Date:   Thu, 25 Aug 2022 16:50:48 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     Gaosheng Cui <cuigaosheng1@huawei.com>
 Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next 1/2] crypto: api - Fix IS_ERR() vs NULL check
-Message-ID: <Ywc3u9ObRCpxQsK0@gondor.apana.org.au>
+Subject: Re: [PATCH -next 2/2] crypto: crc32c - add missing Kconfig option
+ select
+Message-ID: <Ywc36LxM2+0eqKu2@gondor.apana.org.au>
 References: <20220825084138.1881954-1-cuigaosheng1@huawei.com>
- <20220825084138.1881954-2-cuigaosheng1@huawei.com>
+ <20220825084138.1881954-3-cuigaosheng1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220825084138.1881954-2-cuigaosheng1@huawei.com>
+In-Reply-To: <20220825084138.1881954-3-cuigaosheng1@huawei.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
@@ -41,34 +42,33 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 04:41:37PM +0800, Gaosheng Cui wrote:
-> The crypto_alloc_test_larval() will return null if manager is disabled,
-> it may not return error pointers, so using IS_ERR_OR_NULL()
-> to check the return value to fix this.
+On Thu, Aug 25, 2022 at 04:41:38PM +0800, Gaosheng Cui wrote:
+> The CRYPTO_CRC32C is using functions provided by CRYPTO_MANAGER,
+> otherwise the following error will occur:
 > 
-> The __crypto_register_alg() will return null if manager is disabled,
-> it may not return error pointers, so using IS_ERR_OR_NULL()
-> to check the return value to fix this.
+>     EXT4-fs (mmcblk0): Cannot load crc32c driver.
 > 
-> Fixes: cad439fc040e ("crypto: api - Do not create test larvals if manager is disabled")
+> So select CRYPTO_MANAGER when enable CRYPTO_CRC32C.
+> 
 > Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
 > ---
->  crypto/algapi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  crypto/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/crypto/algapi.c b/crypto/algapi.c
-> index 5c69ff8e8fa5..5a080b8aaa11 100644
-> --- a/crypto/algapi.c
-> +++ b/crypto/algapi.c
-> @@ -283,7 +283,7 @@ static struct crypto_larval *__crypto_register_alg(struct crypto_alg *alg)
->  	}
->  
->  	larval = crypto_alloc_test_larval(alg);
-> -	if (IS_ERR(larval))
-> +	if (IS_ERR_OR_NULL(larval))
->  		goto out;
+> diff --git a/crypto/Kconfig b/crypto/Kconfig
+> index b1ccf873779d..7f124604323b 100644
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -641,6 +641,7 @@ config CRYPTO_CRC32C
+>  	tristate "CRC32c CRC algorithm"
+>  	select CRYPTO_HASH
+>  	select CRC32
+> +	select CRYPTO_MANAGER
+>  	help
+>  	  Castagnoli, et al Cyclic Redundancy-Check Algorithm.  Used
+>  	  by iSCSI for header and data digests and by others.
 
-A NULL indicates success, why are you jumping to the error path?
+Why exactly does it need CRYPTO_MANAGER?
 
 Cheers,
 -- 
