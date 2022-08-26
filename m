@@ -2,118 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A495A2055
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Aug 2022 07:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB93C5A206B
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Aug 2022 07:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbiHZFcH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 26 Aug 2022 01:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
+        id S241159AbiHZFpZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 26 Aug 2022 01:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244898AbiHZFcE (ORCPT
+        with ESMTP id S244907AbiHZFpY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 26 Aug 2022 01:32:04 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03975CEB32
-        for <linux-crypto@vger.kernel.org>; Thu, 25 Aug 2022 22:31:59 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id x14-20020a17090a8a8e00b001fb61a71d99so7070437pjn.2
-        for <linux-crypto@vger.kernel.org>; Thu, 25 Aug 2022 22:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc;
-        bh=oJblIJepf+htjTC3ekQFWoY3FZ9v/SVHSuA1T70fx5M=;
-        b=JUTs+sMad4ug1dMd0Q+ncUvVi+FHxDDF+97T6//YsrXS/6GBHoQXo1eUkIHGeSl382
-         6kp4eaU4XwVbhGvvpIP0p4h7/7CV+SpFY5gsEG8U0BIRg4agr5cFSgL7AZoxvapivSsc
-         GZSfj+TjLG8HNFc/BhhW1pvNY5hEbuR9MK/8c8f84/6QtXSyftRAAtVoPjhsvJtHLY3S
-         JDWgl4jdblSoBXsftfi8Q26mjM0UE/aSUzw2lfDv6aZxUQVW5SgejwCSgg7tTf9C2czN
-         emj/v5VzbUosr3/Vg3uUh+99G4wMwpVxfPpG2XvreaR+zvsDBNhHpkkJgqLCy6WQooP/
-         8s6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc;
-        bh=oJblIJepf+htjTC3ekQFWoY3FZ9v/SVHSuA1T70fx5M=;
-        b=AHD+Ef8s/GZK6GcQysURKEU4QFFgv7pe+TVghKGOUbQFRgBmOpz84KHncv8+t78pkG
-         KNJ5viHXkWtD7bwrUupyABir3ovI/3OVDlSKb4Rm5wSuhkw9xcVEwiG8rE2JiUi/Up2G
-         /IxycENhGtvmCjq9VXhx0oVDm4q3TIjua1LFwmMuQLE9xP3wBXb4D/30Bcyk4l+7ztb3
-         KLDiPR8BSGgGRaKnry+beJ+wmF1alYLNhBiedTLM9P6ip5ERA0ZJXvM8KgPqgnYueZjs
-         ABAQTAVklpeB1WrLYcMPwsC6G8DCaekIT1pEV/+kFUUEuwT+OcL9Ex9BStgY3Pr/8xnM
-         uCVQ==
-X-Gm-Message-State: ACgBeo3brroVgdJOtHcPwKh0VXwLy72aBjjJgtrKEawr77Upt9wWGcDg
-        n5mosKEiiOK4OUwzU9dGUU67BGWPBIo=
-X-Google-Smtp-Source: AA6agR4v3wEtAX8VmSFiLA5NzTgmevN8eWe+CCJFhkV9UIRcKL2kHYVgb+oToC9le5Fpiw3SzFokdA==
-X-Received: by 2002:a17:90b:198e:b0:1fb:fb8:1072 with SMTP id mv14-20020a17090b198e00b001fb0fb81072mr2670683pjb.51.1661491917978;
-        Thu, 25 Aug 2022 22:31:57 -0700 (PDT)
-Received: from localhost.localdomain ([182.213.254.91])
-        by smtp.gmail.com with ESMTPSA id i15-20020a170902c94f00b00172925f3c79sm545726pla.153.2022.08.25.22.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 22:31:56 -0700 (PDT)
-From:   Taehee Yoo <ap420073@gmail.com>
-To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com
-Cc:     elliott@hpe.com, ap420073@gmail.com
-Subject: [PATCH v2 3/3] crypto: tcrypt: add async speed test for aria cipher
-Date:   Fri, 26 Aug 2022 05:31:31 +0000
-Message-Id: <20220826053131.24792-4-ap420073@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220826053131.24792-1-ap420073@gmail.com>
-References: <20220826053131.24792-1-ap420073@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 26 Aug 2022 01:45:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB93AA8962;
+        Thu, 25 Aug 2022 22:45:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 26BA16195D;
+        Fri, 26 Aug 2022 05:45:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E1BC433C1;
+        Fri, 26 Aug 2022 05:45:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661492720;
+        bh=dvHGkLB4gEgzNYqdU8M9Nt8MYSoE1f2P6IGT8HDsfvo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OirB0Hf/pTYt+3QpWhoFleQ5R4EpQF2vuyC0ioyqByhMgAmF5ffJRfxQf6HRPMwYs
+         7Kir4WgSw++gRV/kd3zECCly0eivyiTIfhea08N3QnahGLMrHoMB12IrHvxyTUh6fG
+         +Rb7sU74/4R30+HbrhbJSbieTOlL5aFgfJmEznp+lL9VNtBrJAcswuQY5p2anGtkpa
+         T4q3PNG3SMCqRgWbufGT/++XlzbM2g/NRMskm/nc0ZDD3fG6H2WNNFFFzt3vNOG4RH
+         N5xhqsA1393sMjh9OqvjQZfEdQ7rr6hzBPVQfD+IinkpUpPKh8gwzdJUjI96/qMymz
+         +MKpNqHbqsQmA==
+Date:   Fri, 26 Aug 2022 08:45:13 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Denis Kenzior <denkenz@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] KEYS: asymmetric: Fix ECDSA use via keyctl uapi
+Message-ID: <Ywhd6emoKvWgeB9O@kernel.org>
+References: <20220824190409.4286-1-denkenz@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220824190409.4286-1-denkenz@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-In order to test for the performance of aria-avx implementation, it needs
-an async speed test.
-So, it adds async speed tests to the tcrypt.
+On Wed, Aug 24, 2022 at 02:04:09PM -0500, Denis Kenzior wrote:
+> When support for ECDSA keys was added, constraints for data & signature
+> sizes were never updated.  This makes it impossible to use such keys via
+> keyctl API from userspace; fix that.
 
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
----
+Instead of "fix that" just describe the change.
 
-v2:
- - No changes
+> Fixes: 299f561a6693 ("x509: Add support for parsing x509 certs with ECDSA keys")
+> Signed-off-by: Denis Kenzior <denkenz@gmail.com>
+> ---
+>  crypto/asymmetric_keys/public_key.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
+> index 2f8352e88860..eca5671ad3f2 100644
+> --- a/crypto/asymmetric_keys/public_key.c
+> +++ b/crypto/asymmetric_keys/public_key.c
+> @@ -186,8 +186,28 @@ static int software_key_query(const struct kernel_pkey_params *params,
+>  
+>  	len = crypto_akcipher_maxsize(tfm);
+>  	info->key_size = len * 8;
+> -	info->max_data_size = len;
+> -	info->max_sig_size = len;
+> +
+> +	if (strncmp(pkey->pkey_algo, "ecdsa", 5) == 0) {
+> +		/*
+> +		 * ECDSA key sizes are much smaller than RSA, and thus could
+> +		 * operate on (hashed) inputs that are larger than key size.
+> +		 * For example SHA384-hashed input used with secp256r1
+> +		 * based keys.  Set max_data_size to be at least as large as
+> +		 * the largest supported hash size (SHA512)
+> +		 */
+> +		info->max_data_size = 64;
+> +
+> +		/*
+> +		 * Verify takes ECDSA-Sig (described in RFC 5480) as input,
+> +		 * which is actually 2 'key_size'-bit integers encoded in
+> +		 * ASN.1.  Account for the ASN.1 encoding overhead here.
+> +		 */
+> +		info->max_sig_size = 2 * (len + 3) + 2;
+> +	} else {
+> +		info->max_data_size = len;
+> +		info->max_sig_size = len;
+> +	}
+> +
+>  	info->max_enc_size = len;
+>  	info->max_dec_size = len;
+>  	info->supported_ops = (KEYCTL_SUPPORTS_ENCRYPT |
+> -- 
+> 2.35.1
+> 
 
- crypto/tcrypt.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+The code change lgtm.
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 59eb8ec36664..f36d3bbf88f5 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -2648,6 +2648,13 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 				speed_template_16);
- 		break;
- 
-+	case 519:
-+		test_acipher_speed("ecb(aria)", ENCRYPT, sec, NULL, 0,
-+				   speed_template_16_24_32);
-+		test_acipher_speed("ecb(aria)", DECRYPT, sec, NULL, 0,
-+				   speed_template_16_24_32);
-+		break;
-+
- 	case 600:
- 		test_mb_skcipher_speed("ecb(aes)", ENCRYPT, sec, NULL, 0,
- 				       speed_template_16_24_32, num_mb);
-@@ -2859,6 +2866,12 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 		test_mb_skcipher_speed("ctr(blowfish)", DECRYPT, sec, NULL, 0,
- 				       speed_template_8_32, num_mb);
- 		break;
-+	case 610:
-+		test_mb_skcipher_speed("ecb(aria)", ENCRYPT, sec, NULL, 0,
-+				       speed_template_16_32, num_mb);
-+		test_mb_skcipher_speed("ecb(aria)", DECRYPT, sec, NULL, 0,
-+				       speed_template_16_32, num_mb);
-+		break;
- 
- 	case 1000:
- 		test_available();
--- 
-2.17.1
-
+BR, Jarkko
