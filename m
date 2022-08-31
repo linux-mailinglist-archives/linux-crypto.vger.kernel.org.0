@@ -2,72 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBBF5A8427
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Aug 2022 19:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ED35A85E3
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Aug 2022 20:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbiHaRUr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 31 Aug 2022 13:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S233077AbiHaSkT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 31 Aug 2022 14:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbiHaRUk (ORCPT
+        with ESMTP id S232636AbiHaSjj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 31 Aug 2022 13:20:40 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37ED9E2E5
-        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 10:20:33 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id r6so11499859qtx.6
-        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 10:20:33 -0700 (PDT)
+        Wed, 31 Aug 2022 14:39:39 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FA261DB0
+        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 11:37:21 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id m17-20020a7bce11000000b003a5bedec07bso92817wmc.0
+        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 11:37:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=SyLcqpHvP/Dxww6UQFwjysD5YzJ7EHxDql789Pl4OtM=;
-        b=oMRptfbELFmdJSHW/QEuPetgUH+I22kllPmA1kXOWeqSStrFRFXFib2/W7muRsBeQO
-         2W5/XdJfVvAlH1l2Nor64/fAgDI7iRqtEDE3hwJwiU3+o+1V4TV/9lyy/binjL6bpASS
-         LiMwkprEba6CnMn8fkgzv64joEXUiepbkP+mA=
+        d=cloudflare.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=Gu6lQeKRAmTnscQpGQRRWcZPQVAuazBQGzE1OcpBRZM=;
+        b=QGBW33llSjJF8ooJpWUjOHhRi3BuKrE1Iv15WhrM9uKzU1uoCRPJJG08GVSd6FUnVH
+         q+SbLLzsGLpr9JwDBImTM7lUZjoRsXN1DdLGdfVeKA+WmG5Qzbzs5cWDko9XYXuG38kJ
+         9T94rFRdOlyZwQ3Bxd5O7CNo6ugZBhwdIxPcI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=SyLcqpHvP/Dxww6UQFwjysD5YzJ7EHxDql789Pl4OtM=;
-        b=Y0EF7O+NCotwuD0ZX8sWUoG68m3OWxyQ0Obnchcq6+WXEZglutLPHiNoHafEskXT6R
-         VKMh9MCSlTSp0Z6sxvYT8MxBY+jL+yrpZZN0H90yKW/HL0LbaiBbEEBvz4o+63u/BF/e
-         oftndWugjGJ4AyJPJqX9cO6BgoXDEUEGQnKjxiQYoDy8EisObID2NgzjsNxDHkxsB+Md
-         iNX3sBxQ/BnhjLQxDGxFCWbZ5FfTWw4qstRHhN3/Yxg+skMQLcgClberWxZjTLdIZ7pQ
-         k/wB5I12gVPSnob1h6ObP+XTUPnnOaF+c16BEJSGyY1a9l0DOWB8lC7qf/Rq/Prg+bFT
-         KDRg==
-X-Gm-Message-State: ACgBeo0X7bf4RTDt9Sb817mWZDPoWe4gsc03eRij06cre21koB8/q9UU
-        /UHA+/UT4HYDIvEyg/GHpx8cMA==
-X-Google-Smtp-Source: AA6agR4eoaT/16y28TB6ngRKEE+OZTwubs2MSerIMlxt3+iIByxOF9msh/3cim4Zwc7JH0D5ekw66g==
-X-Received: by 2002:ac8:5983:0:b0:344:5dcb:3b6b with SMTP id e3-20020ac85983000000b003445dcb3b6bmr20544262qte.503.1661966432766;
-        Wed, 31 Aug 2022 10:20:32 -0700 (PDT)
-Received: from trappist.c.googlers.com.com (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id ge17-20020a05622a5c9100b003430589dd34sm8962611qtb.57.2022.08.31.10.20.31
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=Gu6lQeKRAmTnscQpGQRRWcZPQVAuazBQGzE1OcpBRZM=;
+        b=vvm2r9Gnu1C0vwz6vPEMKhTOBNpDCT4JEGPTopEYzpfusFdBJYhPNLFVtK/BSJWtYp
+         8SrrMky4BTDavS5Hu3aeKSikiCWoPdp4brfLiJR7y4ej9V4D4i037we08jklG+8mvjLp
+         snKz7xPez57RLMgyDeDuhhY9Hzr50/eCkyD7NPvjm5qBuzAEK+kEE4aUgUGXgBxbl2jH
+         1KbkXKyWaGwjbHM78ce0JL9QLs9Pq47WGhBredEWPinZy0zLex6mjU7NiNmYrxQVG4ct
+         nFaKMkuTbkL1CQUss16nc5wvgVxWPpP91gv2XSzdw2bpGfEoajfWTM6MFH1J9lTdwszC
+         zBdw==
+X-Gm-Message-State: ACgBeo1Vy8wfmPjufzJ7LzYlDj+7lpCG+oFOuiN9Op5p/aoyf8kxFGWC
+        A2wpNh2p+10KatAMc7MGPtQiQw==
+X-Google-Smtp-Source: AA6agR6Eh4OvFNAhBbA/UM8ALcaEKdHMqVAihlobnQhJ2iKaWIlMBNa7jC6NkLPiGd3AijvS6K8clA==
+X-Received: by 2002:a05:600c:1c23:b0:3a5:d936:e5bb with SMTP id j35-20020a05600c1c2300b003a5d936e5bbmr2658685wms.59.1661971040435;
+        Wed, 31 Aug 2022 11:37:20 -0700 (PDT)
+Received: from localhost.localdomain ([2.216.100.221])
+        by smtp.gmail.com with ESMTPSA id h21-20020a05600c351500b003a502c23f2asm3322991wmq.16.2022.08.31.11.37.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Aug 2022 10:20:32 -0700 (PDT)
-From:   Sven van Ashbrook <svenva@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Alex Levin <levinale@google.com>, Rajat Jain <rajatja@google.com>,
-        Andrey Pronin <apronin@google.com>,
-        Stephen Boyd <swboyd@google.com>,
-        Sven van Ashbrook <svenva@chromium.org>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Olivia Mackall <olivia@selenic.com>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v1 2/2] hwrng: core: fix potential suspend/resume race condition
-Date:   Wed, 31 Aug 2022 17:20:24 +0000
-Message-Id: <20220831172024.1613208-2-svenva@chromium.org>
-X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
-In-Reply-To: <20220831172024.1613208-1-svenva@chromium.org>
-References: <20220831172024.1613208-1-svenva@chromium.org>
+        Wed, 31 Aug 2022 11:37:20 -0700 (PDT)
+From:   Ignat Korchagin <ignat@cloudflare.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel-team@cloudflare.com, Ignat Korchagin <ignat@cloudflare.com>
+Subject: [PATCH v2] crypto: akcipher - default implementation for setting a private key
+Date:   Wed, 31 Aug 2022 19:37:06 +0100
+Message-Id: <20220831183706.1600-1-ignat@cloudflare.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,206 +66,62 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The hwrng fill function runs as a normal kthread. This thread
-doesn't get frozen by the PM, i.e. it will keep running during,
-or in, system suspend. It may call the client driver's
-data_present()/data_read() functions during, or in, suspend;
-which may generate errors or warnings. For example, if the
-client driver uses an i2c bus, the following warning may be
-intermittently generated:
+Changes from v1:
+  * removed the default implementation from set_pub_key: it is assumed that
+    an implementation must always have this callback defined as there are
+    no use case for an algorithm, which doesn't need a public key
 
-  i2c: Transfer while suspended
+Many akcipher implementations (like ECDSA) support only signature
+verifications, so they don't have all callbacks defined.
 
-Fix by converting the delay polled kthread into an ordered work
-queue running a single, self-rearming delayed_work. Make the
-workqueue WQ_FREEZABLE, so the PM will drain any work items
-before going into suspend. This prevents client drivers from
-being accessed during, or in, suspend.
+Commit 78a0324f4a53 ("crypto: akcipher - default implementations for
+request callbacks") introduced default callbacks for sign/verify
+operations, which just return an error code.
 
-Tested on a Chromebook containing an cr50 tpm over i2c. The test
-consists of 31000 suspend/resume cycles. Occasional
-"i2c: Transfer while suspended" warnings are seen. After applying
-this patch, these warnings disappear.
+However, these are not enough, because before calling sign the caller would
+likely call set_priv_key first on the instantiated transform (as the
+in-kernel testmgr does). This function does not have a default stub, so the
+kernel crashes, when trying to set a private key on an akcipher, which
+doesn't support signature generation.
 
-This patch also does not appear to cause any regressions on the
-ChromeOS test queues.
+I've noticed this, when trying to add a KAT vector for ECDSA signature to
+the testmgr.
 
-Signed-off-by: Sven van Ashbrook <svenva@chromium.org>
+With this patch the testmgr returns an error in dmesg (as it should)
+instead of crashing the kernel NULL ptr dereference.
+
+Fixes: 78a0324f4a53 ("crypto: akcipher - default implementations for request callbacks")
+Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
 ---
+ crypto/akcipher.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
- drivers/char/hw_random/core.c | 95 +++++++++++++++++++----------------
- 1 file changed, 51 insertions(+), 44 deletions(-)
+diff --git a/crypto/akcipher.c b/crypto/akcipher.c
+index f866085c8a4a..ab975a420e1e 100644
+--- a/crypto/akcipher.c
++++ b/crypto/akcipher.c
+@@ -120,6 +120,12 @@ static int akcipher_default_op(struct akcipher_request *req)
+ 	return -ENOSYS;
+ }
 
-diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-index 3675122c6cce..ee85ca97d215 100644
---- a/drivers/char/hw_random/core.c
-+++ b/drivers/char/hw_random/core.c
-@@ -17,7 +17,7 @@
- #include <linux/hw_random.h>
- #include <linux/random.h>
- #include <linux/kernel.h>
--#include <linux/kthread.h>
-+#include <linux/workqueue.h>
- #include <linux/sched/signal.h>
- #include <linux/miscdevice.h>
- #include <linux/module.h>
-@@ -28,14 +28,17 @@
- 
- #define RNG_MODULE_NAME		"hw_random"
- 
--static struct hwrng *current_rng;
- /* the current rng has been explicitly chosen by user via sysfs */
- static int cur_rng_set_by_user;
--static struct task_struct *hwrng_fill;
-+static struct workqueue_struct *hwrng_wq;
-+static struct delayed_work hwrng_fill_dwork;
-+static size_t entropy_credit;
-+/* Protects rng_list, current_rng, is_hwrng_wq_running */
-+static DEFINE_MUTEX(rng_mutex);
- /* list of registered rngs */
- static LIST_HEAD(rng_list);
--/* Protects rng_list and current_rng */
--static DEFINE_MUTEX(rng_mutex);
-+static struct hwrng *current_rng;
-+static bool is_hwrng_wq_running;
- /* Protects rng read functions, data_avail, rng_buffer and rng_fillbuf */
- static DEFINE_MUTEX(reading_mutex);
- static int data_avail;
-@@ -488,37 +491,29 @@ static int __init register_miscdev(void)
- 	return misc_register(&rng_miscdev);
- }
- 
--static int hwrng_fillfn(void *unused)
-+static void hwrng_fillfn(struct work_struct *unused)
- {
--	size_t entropy, entropy_credit = 0; /* in 1/1024 of a bit */
-+	unsigned short quality;
- 	unsigned long delay;
-+	struct hwrng *rng;
-+	size_t entropy; /* in 1/1024 of a bit */
- 	long rc;
- 
--	while (!kthread_should_stop()) {
--		unsigned short quality;
--		struct hwrng *rng;
--
--		rng = get_current_rng();
--		if (IS_ERR(rng) || !rng)
--			break;
--		mutex_lock(&reading_mutex);
--		rc = rng_get_data(rng, rng_fillbuf,
--				  rng_buffer_size(), 1);
--		if (current_quality != rng->quality)
--			rng->quality = current_quality; /* obsolete */
--		quality = rng->quality;
--		mutex_unlock(&reading_mutex);
--		put_rng(rng);
--
--		if (!quality)
--			break;
-+	rng = get_current_rng();
-+	if (IS_ERR(rng) || !rng)
-+		return;
-+	mutex_lock(&reading_mutex);
-+	rc = rng_get_data(rng, rng_fillbuf, rng_buffer_size(), 1);
-+	if (current_quality != rng->quality)
-+		rng->quality = current_quality; /* obsolete */
-+	quality = rng->quality;
-+	mutex_unlock(&reading_mutex);
-+	put_rng(rng);
- 
--		if (rc <= 0) {
--			pr_warn("hwrng: no data available\n");
--			msleep_interruptible(10000);
--			continue;
--		}
-+	if (!quality)
-+		return;
- 
-+	if (rc > 0) {
- 		/* If we cannot credit at least one bit of entropy,
- 		 * keep track of the remainder for the next iteration
- 		 */
-@@ -529,11 +524,11 @@ static int hwrng_fillfn(void *unused)
- 		/* Outside lock, sure, but y'know: randomness. */
- 		delay = add_hwgenerator_randomness((void *)rng_fillbuf, rc,
- 						   entropy >> 10);
--		if (delay > 0)
--			schedule_timeout_interruptible(delay);
-+	} else {
-+		pr_warn("hwrng: no data available\n");
-+		delay = 10 * HZ;
- 	}
--	hwrng_fill = NULL;
--	return 0;
-+	mod_delayed_work(hwrng_wq, &hwrng_fill_dwork, delay);
- }
- 
- static void hwrng_manage_rngd(struct hwrng *rng)
-@@ -541,14 +536,12 @@ static void hwrng_manage_rngd(struct hwrng *rng)
- 	if (WARN_ON(!mutex_is_locked(&rng_mutex)))
- 		return;
- 
--	if (rng->quality == 0 && hwrng_fill)
--		kthread_stop(hwrng_fill);
--	if (rng->quality > 0 && !hwrng_fill) {
--		hwrng_fill = kthread_run(hwrng_fillfn, NULL, "hwrng");
--		if (IS_ERR(hwrng_fill)) {
--			pr_err("hwrng_fill thread creation failed\n");
--			hwrng_fill = NULL;
--		}
-+	if (rng->quality == 0 && is_hwrng_wq_running) {
-+		cancel_delayed_work(&hwrng_fill_dwork);
-+		is_hwrng_wq_running = false;
-+	} else if (rng->quality > 0 && !is_hwrng_wq_running) {
-+		mod_delayed_work(hwrng_wq, &hwrng_fill_dwork, 0);
-+		is_hwrng_wq_running = true;
- 	}
- }
- 
-@@ -631,8 +624,7 @@ void hwrng_unregister(struct hwrng *rng)
- 	new_rng = get_current_rng_nolock();
- 	if (list_empty(&rng_list)) {
- 		mutex_unlock(&rng_mutex);
--		if (hwrng_fill)
--			kthread_stop(hwrng_fill);
-+		cancel_delayed_work_sync(&hwrng_fill_dwork);
- 	} else
- 		mutex_unlock(&rng_mutex);
- 
-@@ -703,17 +695,32 @@ static int __init hwrng_modinit(void)
- 		return -ENOMEM;
- 	}
- 
-+	/* ordered wq to mimic delay-polled kthread behaviour */
-+	hwrng_wq = alloc_ordered_workqueue("hwrng",
-+		WQ_FREEZABLE |	/* prevent work from running during suspend/resume */
-+		WQ_MEM_RECLAIM	/* client drivers may need memory reclaim */
-+	);
-+	if (!hwrng_wq) {
-+		kfree(rng_fillbuf);
-+		kfree(rng_buffer);
-+		return -ENOMEM;
-+	}
++static int akcipher_default_set_key(struct crypto_akcipher *tfm,
++				     const void *key, unsigned int keylen)
++{
++	return -ENOSYS;
++}
 +
- 	ret = register_miscdev();
- 	if (ret) {
-+		destroy_workqueue(hwrng_wq);
- 		kfree(rng_fillbuf);
- 		kfree(rng_buffer);
- 	}
- 
-+	INIT_DELAYED_WORK(&hwrng_fill_dwork, hwrng_fillfn);
-+
- 	return ret;
- }
- 
- static void __exit hwrng_modexit(void)
+ int crypto_register_akcipher(struct akcipher_alg *alg)
  {
-+	destroy_workqueue(hwrng_wq);
- 	mutex_lock(&rng_mutex);
- 	BUG_ON(current_rng);
- 	kfree(rng_buffer);
--- 
-2.37.2.672.g94769d06f0-goog
+ 	struct crypto_alg *base = &alg->base;
+@@ -132,6 +138,8 @@ int crypto_register_akcipher(struct akcipher_alg *alg)
+ 		alg->encrypt = akcipher_default_op;
+ 	if (!alg->decrypt)
+ 		alg->decrypt = akcipher_default_op;
++	if (!alg->set_priv_key)
++		alg->set_priv_key = akcipher_default_set_key;
+
+ 	akcipher_prepare_alg(alg);
+ 	return crypto_register_alg(base);
+--
+2.36.1
 
