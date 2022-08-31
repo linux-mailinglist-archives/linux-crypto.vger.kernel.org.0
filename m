@@ -2,185 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A185A8609
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Aug 2022 20:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1005A88FC
+	for <lists+linux-crypto@lfdr.de>; Thu,  1 Sep 2022 00:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbiHaSsU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 31 Aug 2022 14:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
+        id S231672AbiHaW11 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 31 Aug 2022 18:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbiHaSsT (ORCPT
+        with ESMTP id S231664AbiHaW10 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:48:19 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6F8543DC
-        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 11:48:16 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id s66so5291497vkb.4
-        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 11:48:16 -0700 (PDT)
+        Wed, 31 Aug 2022 18:27:26 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDCBF23FB
+        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 15:27:25 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q15so10415742pfn.11
+        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 15:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=dEU++UBToH866zrJEWnx3P4LrLN/LbOdcwtLNxqEBv8=;
-        b=U9ZebKNx1Snn9CscuSDhl5p+6YnZ1po5Ug1VuOaTebdwd2Tp0Ky9d5YyfV73lbMfsu
-         klznxiFzDFWfdcWTtHFNZ8VCCZW64v5k+4XeicE0IYnJyc5dawoFqjHC8yaRQSoSdiOv
-         I0zAhUk7IXlXYMO8n39DJhY1BOKnLiTLbLcjFcswCIl1ItmgOh65lrXWRK0LSTcm3xrh
-         7rXyHWFZgnvUU/dgiBactL0WsGoddNUOgExz4ILuuCn/5MLlTQjLhyc62Shbvb8kG307
-         CoMu9pBa3U5vAlrM74NYE/nwRie61x2184yMCnrhC+q2+gr04p1s0PZmFglsRPJpFLJw
-         aV8w==
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
+        bh=bHtvVuvZrK8uzIZMh2KLQe7LmhlFcgk20dbkjCziIhU=;
+        b=fL1jeVHd1g+xxVXfv2Af7UJs0xCM0kiccIefmL8uR9rDuKanoAy2wVVhT3lcH32+Ax
+         v8umklOvJkpiS7s/SY3t4Y86MLyeKrZYNVo8sfwJXu0RIi2hyk0SQyqX+tg48URUwjzk
+         6ajWmrn4QeKMegh17H/HSilL8w+poukJM5OEhj69Aj0SVGvImhIPtsfXMR0n5O3d4Qt2
+         bB/Av1lVNt0PeqiHmf9jUSDfjJohT55b+zuyYMG96u2dVQ1kzNtVlaVAfUs/i2XxqPMx
+         iy1vVISQA65e9xYTQ70giApplDGx6KLV+7vCwHhMvTLkQLRhSQjFFozdmf6+f5N21bYo
+         51cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=dEU++UBToH866zrJEWnx3P4LrLN/LbOdcwtLNxqEBv8=;
-        b=dDKoNIPPG55xXKHLS8z2ZroEORCRGUHdaDQ9pOb94PoxHrbDhSFVApHwN/d79oTQME
-         AmM19NoIAyKDnDv/NBQaAhM1rRuPnyFKCZf1KqaK0iaqBa8NewjbVbVk9wO0J4mgIrwt
-         tCUxKu4Fs7Pek7t8bAOsTD34AKQxVicQGk+aqV0YZwCBpL73pCfk/gUGAap4rNU+XK9A
-         vxUxAadhuIsaDyhqllh+aMLc8gw3zk9ToaBzF1jmc1mSz9gMlDaMHWY3Ciw3TwCUfk5J
-         ndyxSSpZJJFbHvjkKEDwhlnlccKyldQRsz28M11neS3ML/9Um8wom8mrtGjzDw7j3F21
-         ltkA==
-X-Gm-Message-State: ACgBeo0fbAoARTXoZjxIZBALU9F2eeBsyo8snzqpBmq9Vxt9kj9N7Fen
-        hCJ5jni4mlnAPPSu4BQuy4QfIhGqFQdur5hB0Y2f8Q==
-X-Google-Smtp-Source: AA6agR68Q5/Um9DP/1wUPBFcazbxzIYSZ5kyi8FKvBJcKGJb+rF5p9ThPfzNKgX5rtEjjZIhEC8egXy9zVolXnf3S5s=
-X-Received: by 2002:a1f:1f49:0:b0:394:5a44:9a98 with SMTP id
- f70-20020a1f1f49000000b003945a449a98mr5452642vkf.32.1661971695746; Wed, 31
- Aug 2022 11:48:15 -0700 (PDT)
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=bHtvVuvZrK8uzIZMh2KLQe7LmhlFcgk20dbkjCziIhU=;
+        b=bm0GnumWHLwG1QPfyX0fhR6oJTGfPrwT/wiIRwlWEKerd8eoSnO02ng2LHVVUbtyyO
+         OOSN2VartbCVC4EQQ4cSSBxybev/XFXdyN3TZg9HX82QQi+fGcGILA9Z1TTMG2NMUe1n
+         kr0+/ZgV9hzoH1Cl9jfE3wMa6Z4MhP+sCHWk75VE7RZkLfcjHe2QlswsH5WBBBZW/Dtm
+         GnddgXduGtfI5gsC+OT2TeYas66IKprH5qb5GmP1Ny/TkT0TEA2ZKWWfOZORIpeayrJD
+         aFWnQ+lFARghWkiXAk7IGjLgZS2Ww+vjN2GnGOjFzNQcncAxrbSGY60RxlzQPc8J0D2r
+         krTQ==
+X-Gm-Message-State: ACgBeo2pu0UBciYwe01CcyvMs1JIW/J2WyF2GU/7RyzjvDWb0/k3JHaf
+        lKSL9iNsD0maZaJaFSIdarEYqHLRy2ZpEbQEEWY=
+X-Google-Smtp-Source: AA6agR6dFIRZtYWeCjDQ+dKXt2+cRcoaSsnVvmlW7Egymhmnql+AqwhJ3qxbo1duK7wj3ZhVAGnSSMsDH/p4SQCSC44=
+X-Received: by 2002:a63:914c:0:b0:42b:a8fa:eb47 with SMTP id
+ l73-20020a63914c000000b0042ba8faeb47mr17575664pge.267.1661984845260; Wed, 31
+ Aug 2022 15:27:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220818170005.747015-1-dima@arista.com> <20220818170005.747015-9-dima@arista.com>
- <162ae93b-5589-fbde-c63b-749f21051784@gmail.com>
-In-Reply-To: <162ae93b-5589-fbde-c63b-749f21051784@gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-Date:   Wed, 31 Aug 2022 19:48:02 +0100
-Message-ID: <CAGrbwDTW4_uVD+YbsL=jnfTGKAaHGOmzNZmpkSRi4xotzyNASg@mail.gmail.com>
-Subject: Re: [PATCH 08/31] net/tcp: Introduce TCP_AO setsockopt()s
-To:     Leonard Crestez <cdleonard@gmail.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Bob Gilligan <gilligan@arista.com>,
-        David Ahern <dsahern@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Ivan Delalande <colona@arista.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
+Received: by 2002:a05:7022:252b:b0:43:8b67:16a0 with HTTP; Wed, 31 Aug 2022
+ 15:27:24 -0700 (PDT)
+Reply-To: Illuminatilord1945@gmail.com
+From:   Gomez Sanana <gomezsanana21@gmail.com>
+Date:   Wed, 31 Aug 2022 23:27:24 +0100
+Message-ID: <CAHa5-kS_EMTS62O8GE8Hx8uFK2r-OPn6sRKyX7pNAKRuj6SXVw@mail.gmail.com>
+Subject: WELCOME TO THE ILLUMINATI..
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FILL_THIS_FORM,
+        FILL_THIS_FORM_LONG,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:435 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5245]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [illuminatilord1945[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [gomezsanana21[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [gomezsanana21[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 FILL_THIS_FORM Fill in a form with personal information
+        *  2.0 FILL_THIS_FORM_LONG Fill in a form with personal information
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 8/23/22 15:45, Leonard Crestez wrote:
-> On 8/18/22 19:59, Dmitry Safonov wrote:
-[..]
->> +#define TCP_AO            38    /* (Add/Set MKT) */
->> +#define TCP_AO_DEL        39    /* (Delete MKT) */
->> +#define TCP_AO_MOD        40    /* (Modify MKT) */
->
-> The TCP_AO_MOD sockopt doesn't actually modify and MKT, it only controls
-> per-socket properties. It is equivalent to my TCP_AUTHOPT sockopt while
-> TCP_AO is equivalent to TCP_AUTHOPT_KEY. My equivalent of TCP_AO_DEL
-> sockopt is a flag inside tcp_authopt_key.
+-- 
+WELCOME TO THE WORLD OF THE ILLUMINATI...
 
-Fair point, the comment could be "Modify AO", rather than "Modify MKT".
-On the other side, this can later support more per-key changes than in
-the initial proposal: i.e., zero per-key counters. Password and rcv/snd
-ids can't change to follow RFC text, but non-essentials may.
-So, the comment to the command here is not really incorrect.
+Congratulations To You...
+You have been selected among those given the Opportunity of coming
+rich and famous by joining the Illuminati Society this week, Kindly
+get the below informations to the below Illuminati email.
 
->> +struct tcp_ao { /* setsockopt(TCP_AO) */
->> +    struct __kernel_sockaddr_storage tcpa_addr;
->> +    char    tcpa_alg_name[64];
->> +    __u16    tcpa_flags;
->
-> This field accept TCP_AO_CMDF_CURR and TCP_AO_CMDF_NEXT which means that
-> you are combining key addition with key selection. Not clear it
-> shouldn't just always be a separate sockopt?
+Full Names:
+Country:
+Age:
+Occupation:
+Monthly Income:
+Marital Status:
+Whatsapp Number
 
-I don't see any downside. A user can add a key and start using it immediately
-with one syscall instead of two. It's not necessary, one can do it in
-2 setsockopt()s if they want.
-
-[..]
-> I also have two fields called "recv_keyid" and "recv_rnextkeyid" which
-> inform userspace about what the remote is sending, I'm not seeing an
-> equivalent on your side.
-
-Sounds like a good candidate for getsockopt() for logs/debugging.
-
-> The specification around send_keyid in the RFC is conflicting:
-> * User must be able to control it
-
-I don't see where you read it, care to point it out?
-I see choosing the current_key by marking the preferred key during
-an establishment of a connection, but I don't see any "MUST control
-current_key". We allow changing current_key, but that's actually
-not something required by RFC, the only thing required is to respect
-rnext_key that's asked by peer.
-
-> * Implementation must respect rnextkeyid in incoming packet
->
-> I solved this apparent conflict by adding a
-> "TCP_AUTHOPT_FLAG_LOCK_KEYID" flag so that user can choose if it wants
-> to control the sending key or let it be controlled from the other side.
-
-That's exactly violating the above "Implementation must respect
-rnextkeyid in incoming packet". See RFC5925 (7.5.2.e).
-
-[..]
-> Only two algorithms are defined in RFC5926 and you have to treat one of
-> them as a special case. I remain convinced that generic support for
-> arbitrary algorithms is undesirable; it's better for the algorithm to be
-> specified as an enum.
-
-On contrary, I see that as a really big feature. RFC5926 was published in 2010,
-when sha1 was yet hard to break. These days sha1 is considered insecure.
-I.e., the first link from Google:
-
-> Starting with version 56, released this month, Google Chrome will mark all
-> SHA-1-signed HTTPS certificates as unsafe. Other major browser vendors
-> plan to do the same.
-> "Hopefully these new efforts of Google of making a real-world attack possible
-> will lead to vendors and infrastructure managers quickly removing SHA-1 from
-> their products and configurations as, despite it being a deprecated algorithm,
-> some vendors still sell products that do not support more modern hashing
-> algorithms or charge an extra cost to do so," [..]
-
-So, why limit a new TCP sign feature to already insecure algorithms?
-One can already use any crypto algorithms for example, in tunnels.
-And I don't see any benefit in defining new magic macros, only downside.
-
-I prefer UAPI that takes crypto algo name as a string, rather than new
-defined magic number from one of kernel headers.
-IOW,
-: strcpy(ao.tcpa_alg_name, "cmac(aes128)");
-: setsockopt(sk, IPPROTO_TCP, opt, &ao, sizeof(ao));
-is better than
-: ao.tcp_alg = TCP_AO_CMAC_MAGIC_DEFINE;
-: setsockopt(sk, IPPROTO_TCP, opt, &ao, sizeof(ao));
-
-Neither I see a point in more patches adding new
-#define TCP_AO_NEW_ALGO
-
-BTW, I had some patches to add testing in fcnal-test.sh and covered
-the following algorithms, that worked just fine (test changes not
-included in v1):
-hmac(sha1) cmac(aes128) hmac(rmd128) hmac(rmd160) hmac(sha512)
-hmac(sha384) hmac(sha256) hmac(md5) hmac(sha224) hmac(sha3-512)
-
-No point in artificially disabling them or introducing new magic #defines.
-
-Thanks,
-          Dmitry
+EMAIL: Illuminatilord1945@gmail.com
