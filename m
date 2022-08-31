@@ -2,69 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35E75A8422
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Aug 2022 19:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD195A8428
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Aug 2022 19:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbiHaRUK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 31 Aug 2022 13:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
+        id S232002AbiHaRUs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 31 Aug 2022 13:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbiHaRUH (ORCPT
+        with ESMTP id S232006AbiHaRUk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 31 Aug 2022 13:20:07 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E6C32DB1;
-        Wed, 31 Aug 2022 10:20:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EC849B82209;
-        Wed, 31 Aug 2022 17:20:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A52A2C433C1;
-        Wed, 31 Aug 2022 17:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661966404;
-        bh=PTI3pquDblLkkQUGtkNM6wHryacO2lN9/Uf5YsR7VMU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CYxp8Jp2aGnetKhdKSIS0sJhaWvqVjWXzuVPhAyO1AP4lXDzwD27l4xPPciGL/NTG
-         CLbJGrBpf4oWswvDUikdWyIyL1DhQD7j+GTqMvFDW48uuwOfawy+VgFv4sxhxQT9mF
-         002pqwo7KCd3HPWEsybImtUIThjzpOum+hs0l9lEDOsm5iNeK57byGt1jBU/NzszYF
-         yzL7Yp6SaYthLBvAgIlipWAfv1SDv9htyOwvuOT5GJDiG9VV7sd3ODVyT/wGw/DOGE
-         PS21JUNacoi2wyYxmPDEhJUmgh6tGo99sLucdfo8MgIar67bhWDbhYjre9mf6YedlG
-         ezTo/sUcz7m2w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8CFA1C4166F;
-        Wed, 31 Aug 2022 17:20:04 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Fixes for 6.0
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <Yw8iAwgcPuBpGiGM@gondor.apana.org.au>
-References: <20210929023843.GA28594@gondor.apana.org.au>
- <20211029041408.GA3192@gondor.apana.org.au>
- <20211112104815.GA14105@gondor.apana.org.au>
- <YcKz4wHYTe3qlW7L@gondor.apana.org.au>
- <YgMn+1qQPQId50hO@gondor.apana.org.au>
- <YjE5yThYIzih2kM6@gondor.apana.org.au>
- <YkUdKiJflWqxBmx5@gondor.apana.org.au>
- <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
- <Yqw7bf7ln6vtU/VH@gondor.apana.org.au>
- <Yr1XPJsAH2l1cx3A@gondor.apana.org.au> <Yw8iAwgcPuBpGiGM@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Yw8iAwgcPuBpGiGM@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git tags/v6.0-p2
-X-PR-Tracked-Commit-Id: 874b301985ef2f89b8b592ad255e03fb6fbfe605
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2361d3841fddffdd4b495a4510c507f0b8f17061
-Message-Id: <166196640456.5039.7025978141773120093.pr-tracker-bot@kernel.org>
-Date:   Wed, 31 Aug 2022 17:20:04 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Wed, 31 Aug 2022 13:20:40 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81301923F1
+        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 10:20:32 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id a22so8812443qtw.10
+        for <linux-crypto@vger.kernel.org>; Wed, 31 Aug 2022 10:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=/I4y0YK+VpCO/CUay/PbDqOuvxIs0Un9wpsU5e2kzjo=;
+        b=ZShm0/XYuJ91hTuGCSE3w0AVpgFGdvzLcvwXIRu+Tb8xKhCSTVabC6cTnh9/gWfCY7
+         0/Te+wkwE2YF56S4LiVAFOCTjFg+7p3QuQloQSa7fNkg5qJUQKx+FBg9K+sYFA07t775
+         AxA2rQs/gZxof3K0I3ZwbS7eMN9wuHBq9EfVY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=/I4y0YK+VpCO/CUay/PbDqOuvxIs0Un9wpsU5e2kzjo=;
+        b=mgs4faC26vjPqztcs9EK8EPA7NdD/FO2p9EQttoCzx5MtU9XjQJwnPMCIAc1sIQ+Ww
+         eCx1DgQ1nDOcU6rNnO7kyWBTFrLYixKTKBJI4S69NlZm47uQQZahxparPGuH3VsBmWMl
+         jGHvmHhkeXX23zPqd9jUutrj6PjloAgnLAIN/IxpFzbgutMxpHDTWnxKkuBxusmKPZ45
+         1e1dIdioXXcNk9kfE65MVb4DHzgr5EgvHjBnVVOllOV3feughcig+PqYqFer5EhYH1FB
+         1y70UWuN4GMRGBQorUJORBtg5hJno00gm8oM+64VO86MI5JS+lqbApIl7RiGtpzwO1+m
+         B/Dw==
+X-Gm-Message-State: ACgBeo2HxuNk/l+PPX4P8LpKIhWZx5w9urdYJZ5gWsiqXZD/M7RI15zI
+        ERhc6SmVsTMuOJh4TvCQYzbfTA==
+X-Google-Smtp-Source: AA6agR42Ox0JL/UqP+ixpBQ44ewts/NNWEdi9NCccq0XABy/HDBNzkv4LB2frYvPED+ZG48V/r7Srw==
+X-Received: by 2002:ac8:5e0a:0:b0:344:9b69:eef0 with SMTP id h10-20020ac85e0a000000b003449b69eef0mr20114102qtx.666.1661966430257;
+        Wed, 31 Aug 2022 10:20:30 -0700 (PDT)
+Received: from trappist.c.googlers.com.com (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id ge17-20020a05622a5c9100b003430589dd34sm8962611qtb.57.2022.08.31.10.20.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Aug 2022 10:20:29 -0700 (PDT)
+From:   Sven van Ashbrook <svenva@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Alex Levin <levinale@google.com>, Rajat Jain <rajatja@google.com>,
+        Andrey Pronin <apronin@google.com>,
+        Stephen Boyd <swboyd@google.com>,
+        Sven van Ashbrook <svenva@chromium.org>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Olivia Mackall <olivia@selenic.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Theodore Ts'o <tytso@mit.edu>, linux-crypto@vger.kernel.org
+Subject: [PATCH v1 1/2] random: make add_hwgenerator_randomness() more flexible
+Date:   Wed, 31 Aug 2022 17:20:23 +0000
+Message-Id: <20220831172024.1613208-1-svenva@chromium.org>
+X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,15 +75,107 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The pull request you sent on Wed, 31 Aug 2022 16:55:31 +0800:
+add_hwgenerator_randomness() currently blocks until more entropy
+is needed. But, the required delay function will depend on the
+the caller: e.g. freezable kthreads have their own freezable_XXX()
+APIs; and delayed_work might prefer to use mod_delayed_work().
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git tags/v6.0-p2
+To accommodate these requirements, remove the blocking wait, and
+let the function return the delay needed until more entropy is needed.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2361d3841fddffdd4b495a4510c507f0b8f17061
+Signed-off-by: Sven van Ashbrook <svenva@chromium.org>
+---
 
-Thank you!
+ drivers/char/hw_random/core.c |  7 +++++--
+ drivers/char/random.c         | 13 ++++++-------
+ include/linux/random.h        |  2 +-
+ 3 files changed, 12 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
+index 16f227b995e8..3675122c6cce 100644
+--- a/drivers/char/hw_random/core.c
++++ b/drivers/char/hw_random/core.c
+@@ -491,6 +491,7 @@ static int __init register_miscdev(void)
+ static int hwrng_fillfn(void *unused)
+ {
+ 	size_t entropy, entropy_credit = 0; /* in 1/1024 of a bit */
++	unsigned long delay;
+ 	long rc;
+ 
+ 	while (!kthread_should_stop()) {
+@@ -526,8 +527,10 @@ static int hwrng_fillfn(void *unused)
+ 			entropy_credit = entropy;
+ 
+ 		/* Outside lock, sure, but y'know: randomness. */
+-		add_hwgenerator_randomness((void *)rng_fillbuf, rc,
+-					   entropy >> 10);
++		delay = add_hwgenerator_randomness((void *)rng_fillbuf, rc,
++						   entropy >> 10);
++		if (delay > 0)
++			schedule_timeout_interruptible(delay);
+ 	}
+ 	hwrng_fill = NULL;
+ 	return 0;
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 79d7d4e4e582..7b6c27065cf9 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -686,7 +686,7 @@ static void __cold _credit_init_bits(size_t bits)
+  * the above entropy accumulation routines:
+  *
+  *	void add_device_randomness(const void *buf, size_t len);
+- *	void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy);
++ *	unsigned long add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy);
+  *	void add_bootloader_randomness(const void *buf, size_t len);
+  *	void add_vmfork_randomness(const void *unique_vm_id, size_t len);
+  *	void add_interrupt_randomness(int irq);
+@@ -702,8 +702,8 @@ static void __cold _credit_init_bits(size_t bits)
+  * available to them (particularly common in the embedded world).
+  *
+  * add_hwgenerator_randomness() is for true hardware RNGs, and will credit
+- * entropy as specified by the caller. If the entropy pool is full it will
+- * block until more entropy is needed.
++ * entropy as specified by the caller. Returns number time delay in jiffies
++ * until more entropy is needed.
+  *
+  * add_bootloader_randomness() is called by bootloader drivers, such as EFI
+  * and device tree, and credits its input depending on whether or not the
+@@ -857,10 +857,10 @@ EXPORT_SYMBOL(add_device_randomness);
+ 
+ /*
+  * Interface for in-kernel drivers of true hardware RNGs.
+- * Those devices may produce endless random bits and will be throttled
++ * Those devices may produce endless random bits and should be throttled
+  * when our pool is full.
+  */
+-void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy)
++unsigned long add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy)
+ {
+ 	mix_pool_bytes(buf, len);
+ 	credit_init_bits(entropy);
+@@ -869,8 +869,7 @@ void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy)
+ 	 * Throttle writing to once every CRNG_RESEED_INTERVAL, unless
+ 	 * we're not yet initialized.
+ 	 */
+-	if (!kthread_should_stop() && crng_ready())
+-		schedule_timeout_interruptible(CRNG_RESEED_INTERVAL);
++	return crng_ready() ? CRNG_RESEED_INTERVAL : 0;
+ }
+ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
+ 
+diff --git a/include/linux/random.h b/include/linux/random.h
+index 3fec206487f6..6608b0fb4402 100644
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -17,7 +17,7 @@ void __init add_bootloader_randomness(const void *buf, size_t len);
+ void add_input_randomness(unsigned int type, unsigned int code,
+ 			  unsigned int value) __latent_entropy;
+ void add_interrupt_randomness(int irq) __latent_entropy;
+-void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy);
++unsigned long add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy);
+ 
+ #if defined(LATENT_ENTROPY_PLUGIN) && !defined(__CHECKER__)
+ static inline void add_latent_entropy(void)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.37.2.672.g94769d06f0-goog
+
