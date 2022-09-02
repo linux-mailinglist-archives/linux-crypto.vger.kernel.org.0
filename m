@@ -2,116 +2,119 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0A45AA784
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Sep 2022 08:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBA45AA859
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Sep 2022 08:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234778AbiIBGCA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Sep 2022 02:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S235552AbiIBGwH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Sep 2022 02:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235316AbiIBGBm (ORCPT
+        with ESMTP id S235539AbiIBGwF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Sep 2022 02:01:42 -0400
-Received: from twspam01.aspeedtech.com (twspam01.aspeedtech.com [211.20.114.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DE4ABD7B;
-        Thu,  1 Sep 2022 23:01:41 -0700 (PDT)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 2825eWm7091015;
-        Fri, 2 Sep 2022 13:40:33 +0800 (GMT-8)
-        (envelope-from neal_liu@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.10) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 2 Sep
- 2022 14:00:16 +0800
-From:   Neal Liu <neal_liu@aspeedtech.com>
-To:     Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Joel Stanley" <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        "Chia-Wei Wang --cc=linux-kernel @ vger . kernel . org" 
-        <chiawei_wang@aspeedtech.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-aspeed@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: [PATCH v1 4/4] dt-bindings: bus: add documentation for Aspeed AHBC
-Date:   Fri, 2 Sep 2022 14:00:12 +0800
-Message-ID: <20220902060012.3758637-5-neal_liu@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220902060012.3758637-1-neal_liu@aspeedtech.com>
-References: <20220902060012.3758637-1-neal_liu@aspeedtech.com>
+        Fri, 2 Sep 2022 02:52:05 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F91FA1D3D;
+        Thu,  1 Sep 2022 23:52:03 -0700 (PDT)
+Received: from nazgul.tnic (dynamic-089-204-154-243.89.204.154.pool.telefonica.de [89.204.154.243])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 36E0E1EC068D;
+        Fri,  2 Sep 2022 08:51:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1662101517;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9kUEs2/T4DMChAR3xShTyboJxKta70IsCXwvaVK3RJY=;
+        b=YkYEER3f0hCMiu2oU1TYSJf3dywL4jvCMYwGQXlfBVN7MC+mkZWQP/M/Ng/Ihpcsob87+o
+        OTFSotKbnlSyf4Yepl+Yk9g2NYxVbVQp8sAg7K/BZSk4FZiAg31UuTN5gBp6/1ylaNkW0p
+        ZfisbV5h5VcrBtsUA117bTyfqibeZg4=
+Date:   Fri, 2 Sep 2022 08:52:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "slp@redhat.com" <slp@redhat.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "srinivas.pandruvada@linux.intel.com" 
+        <srinivas.pandruvada@linux.intel.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "dovmurik@linux.ibm.com" <dovmurik@linux.ibm.com>,
+        "tobin@ibm.com" <tobin@ibm.com>,
+        "Roth, Michael" <Michael.Roth@amd.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "marcorr@google.com" <marcorr@google.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "alpergun@google.com" <alpergun@google.com>,
+        "dgilbert@redhat.com" <dgilbert@redhat.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>
+Subject: Re: [PATCH Part2 v6 09/49] x86/fault: Add support to handle the RMP
+ fault for user address
+Message-ID: <YxGoBzOFT+sfwr4w@nazgul.tnic>
+References: <cover.1655761627.git.ashish.kalra@amd.com>
+ <0ecb0a4781be933fcadeb56a85070818ef3566e7.1655761627.git.ashish.kalra@amd.com>
+ <YvKRjxgipxLSNCLe@zn.tnic>
+ <SN6PR12MB2767322F8C573EDFA1C20AD78E659@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <YvN9bKQ0XtUVJE7z@zn.tnic>
+ <SN6PR12MB2767A87F12B8E704EB80CC458E659@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <SN6PR12MB27672B74D1A6A6E920F364A78E7B9@SN6PR12MB2767.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.10.10]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 2825eWm7091015
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SN6PR12MB27672B74D1A6A6E920F364A78E7B9@SN6PR12MB2767.namprd12.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add device tree binding documentation for the Aspeed
-Advanced High-Performance Bus (AHB) Controller.
+On Thu, Sep 01, 2022 at 08:32:35PM +0000, Kalra, Ashish wrote:
+> As I mentioned earlier, this is computing an index into a 4K page
+> within a hugepage mapping, therefore, though pte_index() works for 2M
+> pages, but pmd_index() will not work for 1G pages.
 
-Signed-off-by: Neal Liu <neal_liu@aspeedtech.com>
----
- .../bindings/bus/aspeed,ast2600-ahbc.yaml     | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/bus/aspeed,ast2600-ahbc.yaml
+Why not? What exactly do you need to get here?
 
-diff --git a/Documentation/devicetree/bindings/bus/aspeed,ast2600-ahbc.yaml b/Documentation/devicetree/bindings/bus/aspeed,ast2600-ahbc.yaml
-new file mode 100644
-index 000000000000..ca09eb531666
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/aspeed,ast2600-ahbc.yaml
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/aspeed,ast2600-ahbc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ASPEED Advanced High-Performance Bus Controller (AHBC) Device Tree Bindings
-+
-+maintainers:
-+  - Neal Liu <neal_liu@aspeedtech.com>
-+  - Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-+
-+description: |
-+  Advanced High-performance Bus Controller (AHBC) supports plenty of mechanisms
-+  including a priority arbiter, an address decoder and a data multiplexer
-+  to control the overall operations of Advanced Highperformance
-+  Bus (AHB). AHB is the main system bus for ARM CPU to communicate with the
-+  related peripherals.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - aspeed,ast2600-ahbc
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    ahbc: bus@1e600000 {
-+        compatible = "aspeed,ast2600-ahbc";
-+        reg = <0x1e600000 0x100>;
-+    };
+So the way I understand it is, you want to map the faulting address to a
+RMP entry. And that is either the 2M PMD entry when the page is a 1G one
+and the 4K PTE entry when the page is a 2M one?
+
+Why doesn't pmd_index() work?
+
+Also, why isn't the lookup function's signature:
+
+int snp_lookup_rmpentry(unsigned long address, int *level)
+
+and all that logic to do the conversion to a PFN also not in it?
+
+Thx.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
