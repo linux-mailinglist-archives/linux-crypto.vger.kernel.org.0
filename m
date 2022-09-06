@@ -2,102 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74165AE0B5
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 Sep 2022 09:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7785AE398
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 Sep 2022 10:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238278AbiIFHOa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 6 Sep 2022 03:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
+        id S233381AbiIFI6Y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 6 Sep 2022 04:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238788AbiIFHO2 (ORCPT
+        with ESMTP id S232511AbiIFI6X (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 6 Sep 2022 03:14:28 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2A9279
-        for <linux-crypto@vger.kernel.org>; Tue,  6 Sep 2022 00:14:22 -0700 (PDT)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MMGkZ4fYhzmV94;
-        Tue,  6 Sep 2022 15:10:46 +0800 (CST)
-Received: from [10.67.110.173] (10.67.110.173) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 6 Sep 2022 15:14:19 +0800
-Message-ID: <da20a9a4-4445-bb8e-b019-8116fcaee582@huawei.com>
-Date:   Tue, 6 Sep 2022 15:14:19 +0800
+        Tue, 6 Sep 2022 04:58:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A97124BC1;
+        Tue,  6 Sep 2022 01:58:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 87B6461470;
+        Tue,  6 Sep 2022 08:58:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FEA1C433D6;
+        Tue,  6 Sep 2022 08:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662454701;
+        bh=GKNX2gt6lOvmJQO/ERaU3bZz9S3yTumOoy5DxUyuK/A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pk6sYDdRlp77tXXTE5MtkGgok1ah8PYhtmwTHLFuIOnWdHmTmxq24rK1JGxKeIPe8
+         91ThLSb7kYrRZNIG6SUHXlBkirhoFS+TArF2VEdHCHsC3o3XM6QzdX5+MW1w0Lo4rN
+         QV3nAsXPbJz9KKxGOXCeiqtqQxZ3p+mEIbTeRJ37ocggO8NqCrDlxXZ7aP62GoQbDJ
+         gL1RybP4uxC6lpack7j0r7vM7m+wtgh6qyJ0dQl96yB5O1BgxLMssBJ/5gdT5xbA8l
+         w9LbnvS0G4HAQ4hR/i6D8JSTnx/xlVt7Fqe96m1IjUWovJT2Gry9wyveZGS+H13nc0
+         nt5bmsJOfW5dQ==
+Date:   Tue, 6 Sep 2022 11:58:17 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Pankaj Gupta <pankaj.gupta@nxp.com>
+Cc:     a.fatoum@pengutronix.de, Jason@zx2c4.com, jejb@linux.ibm.com,
+        zohar@linux.ibm.com, dhowells@redhat.com, sumit.garg@linaro.org,
+        david@sigma-star.at, michael@walle.cc, john.ernberg@actia.se,
+        jmorris@namei.org, serge@hallyn.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, j.luebbe@pengutronix.de, ebiggers@kernel.org,
+        richard@nod.at, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, sahil.malhotra@nxp.com,
+        kshitiz.varshney@nxp.com, horia.geanta@nxp.com, V.Sethi@nxp.com
+Subject: Re: [RFC PATCH HBK: 0/8] HW BOUND KEY as TRUSTED KEY
+Message-ID: <YxcLqepquOuOOjvq@kernel.org>
+References: <20220906065157.10662-1-pankaj.gupta@nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: Inquiry about the removal of flag O_NONBLOCK on /dev/random
-Content-Language: en-US
-From:   "Guozihua (Scott)" <guozihua@huawei.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-CC:     Eric Biggers <ebiggers@kernel.org>, <linux-crypto@vger.kernel.org>,
-        <luto@kernel.org>, <tytso@mit.edu>,
-        zhongguohua <zhongguohua1@huawei.com>
-References: <13e1fa9d-4df8-1a99-ca22-d9d655f2d023@huawei.com>
- <YtaPJPkewin5uWdn@zx2c4.com>
- <b9cb514c-30ed-0b8b-5d54-75001e07bd36@huawei.com>
- <YtjREZMzuppTJHeR@sol.localdomain>
- <a93995db-a738-8e4f-68f2-42d7efd3c77d@huawei.com>
- <Ytj3RnGtWqg18bxO@sol.localdomain> <YtksefZvcFiugeC1@zx2c4.com>
- <29c4a3ec-f23f-f17f-da49-7d79ad88e284@huawei.com>
- <Yt/LPr0uJVheDuuW@zx2c4.com>
- <4a794339-7aaa-8951-8d24-9bc8a79fa9f3@huawei.com>
- <761e849c-3b9d-418e-eb68-664f09b3c661@huawei.com>
-In-Reply-To: <761e849c-3b9d-418e-eb68-664f09b3c661@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.173]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500024.china.huawei.com (7.185.36.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220906065157.10662-1-pankaj.gupta@nxp.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2022/7/28 16:24, Guozihua (Scott) wrote:
-> On 2022/7/26 19:33, Guozihua (Scott) wrote:
->> On 2022/7/26 19:08, Jason A. Donenfeld wrote:
->>> Hi,
->>>
->>> On Tue, Jul 26, 2022 at 03:43:31PM +0800, Guozihua (Scott) wrote:
->>>> Thanks for all the comments on this inquiry. Does the community has any
->>>> channel to publishes changes like these? And will the man pages get
->>>> updated? If so, are there any time frame?
->>>
->>> I was under the impression you were ultimately okay with the status quo.
->>> Have I misunderstood you?
->>>
->>> Thanks,
->>> Jason
->>> .
->>
->> Hi Jason.
->>
->> To clarify, I does not have any issue with this change. I asked here 
->> only because I would like some background knowledge on this flag, to 
->> ensure I am on the same page as the community regarding this flag and 
->> the change. And it seems that I understands it correctly.
->>
->> However I do think it's a good idea to update the document soon to 
->> avoid any misunderstanding in the future.
->>
-> 
-> Our colleague suggests that we should inform users clearly about the 
-> change on the flag by returning -EINVAL when /dev/random gets this flag 
-> during boot process. Otherwise programs might silently block for a long 
-> time, causing other issues. Do you think this is a good way to prevent 
-> similar issues on this flag?
-> 
-Hi,
+On Tue, Sep 06, 2022 at 12:21:49PM +0530, Pankaj Gupta wrote:
+> Hardware Bound key(HBK), is never acessible as plain key outside of the
+                                    ~~~~~~~~~
+                                    accesible.
 
-Any comment on this?
+> hardware boundary. Thus, it is un-usable, even if somehow fetched
+> from kernel memory. It ensures run-time security.
 
--- 
-Best
-GUO Zihua
+Why is it called "HBK" here and "hw" in the context of keyctl?
+
+> This patchset adds generic support for classing the Hardware Bound Key,
+> based on:
+> 
+> - Newly added flag-'is_hbk', added to the tfm.
+> 
+>   Consumer of the kernel crypto api, after allocating
+>   the transformation, sets this flag based on the basis
+>   of the type of key consumer has.
+> 
+> - This helps to influence the core processing logic
+>   for the encapsulated algorithm.
+> 
+> - This flag is set by the consumer after allocating
+>   the tfm and before calling the function crypto_xxx_setkey().
+> 
+> First implementation is based on CAAM.
+
+CAAM is implementation of what exactly?
+
+I'm sorry but I don't know your definition of unusable.
+
+BR, Jarkko
