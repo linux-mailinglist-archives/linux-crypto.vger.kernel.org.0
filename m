@@ -2,92 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E785B04AA
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Sep 2022 15:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E94A5B06BC
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Sep 2022 16:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbiIGNFd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 7 Sep 2022 09:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
+        id S229626AbiIGOcC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 7 Sep 2022 10:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbiIGNFb (ORCPT
+        with ESMTP id S230243AbiIGObk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 7 Sep 2022 09:05:31 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E837924092;
-        Wed,  7 Sep 2022 06:05:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 95CC0B81CE1;
-        Wed,  7 Sep 2022 13:05:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5B0FC433C1;
-        Wed,  7 Sep 2022 13:05:26 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="B/bcq3Ru"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1662555925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=49NOxJ822bPKwRKlaVTKItq7gIJSVwe11b7c5oiqKNY=;
-        b=B/bcq3RufPZVcOE3bYtM1Cu6Nu2eQ1DnxseeoOi0D8PnXH5Pbmw0pbJ9vI9+wS4gdsAXVB
-        7Cv9pk/18GyUVNqpaZ1fQsU4EOkeNBzIMqEwjMNOQ+EHo8En3zs3r9u/JxtEXjiTbR+9wh
-        oYojDbW1tvT0lU1Z0FgcKe11XhiPqEQ=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 35c9180b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 7 Sep 2022 13:05:24 +0000 (UTC)
-Date:   Wed, 7 Sep 2022 15:05:20 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Dominik Brodowski <linux@dominikbrodowski.net>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] random / hw_random: core: start hwrng kthread also for
- untrusted sources
-Message-ID: <YxiXEJ6up6XEW8SM@zx2c4.com>
-References: <20220904080247.7890-1-linux@dominikbrodowski.net>
- <Yxg7WQ1UuskDrBVj@gondor.apana.org.au>
- <YxhAEmtVcdvIkX6Q@shine.dominikbrodowski.net>
+        Wed, 7 Sep 2022 10:31:40 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A7A205C0
+        for <linux-crypto@vger.kernel.org>; Wed,  7 Sep 2022 07:31:37 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id m1so19998771edb.7
+        for <linux-crypto@vger.kernel.org>; Wed, 07 Sep 2022 07:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date;
+        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
+        b=k+kTmF4dNKKC1tFdYzcwH7/l46epf5FbUFPW9fotRQ90/DS7R3h9yaNhOg0lTJdIKN
+         YHdSCTkM8Zkjp7Hn3R4P0XvsDr7GxfmeGBL++Unk5TJmx9qVPx583aTDfnV2PWRJleSF
+         V9CWF3CXrTGHaUKzdckweUxspufsytFwPi4BnYsAOc2hSOm8q6pA2t/VPIekeXstFpXE
+         htt2kpsyRtvUjut5U+QWEOTH3kFoTjQxxF4WczaCcSaHvXanBanYGkEYwnM/Vnd0ubg4
+         W8etIyyum3dHJgEwMgk9+gvP+Ht+yKtyVUWfAI5wHJqHC9VVX3XlSnd5oyt/DWf9M1PE
+         uqfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
+        b=xYvtSjId+UFLo7GFK2CsCDKkMCf+QqdPk+a6qtEAYdB95MXaRsilvO1X3U5pmO5six
+         5xIw31NRjoGTKRk4c5aMbwBIJjATg2I0V1v7Ll78O77wPuh8ht7omb8ad9Dlxx9Lhk1Q
+         X9SDLM5znn3Eyjfj5eoC72oCapTCobYsNLFi4CSsyPQPdRIjPOTDWlW9jfa0zNNRvii0
+         WqYmBP1u+v3dpzn9D+5tuccS37Q2EbVJKoesyACPftpWQs5pE5RCtkYzcwyCoFJcrtIO
+         +iGxfXHwlQ2tiF9AUoi/DsNidTkqj9abLQ9nFwAIRJvUHA9KXjbWANwdHD3pV/qIeZ7s
+         YPBw==
+X-Gm-Message-State: ACgBeo1ksKYSC4R8NLmYLyz1bIAIWJshwvM/YsQsMy7a+qINbzOoLxdG
+        Kbuem889aVdtPhHZEI0B0xSPqVJ5nsb12FZ9hl8=
+X-Google-Smtp-Source: AA6agR7oVOAvDjQn3BvyL8TRl7TU52ugVo1oxft3hLVGbPDpO77yZb9oqAmvuH8HvlLOfxUiSLCWLP4h3TKLUQD64AM=
+X-Received: by 2002:a05:6402:2937:b0:44e:b578:6fdd with SMTP id
+ ee55-20020a056402293700b0044eb5786fddmr3322109edb.159.1662561095860; Wed, 07
+ Sep 2022 07:31:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YxhAEmtVcdvIkX6Q@shine.dominikbrodowski.net>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a54:3fc4:0:0:0:0:0 with HTTP; Wed, 7 Sep 2022 07:31:34 -0700 (PDT)
+Reply-To: lumar.casey@outlook.com
+From:   LUMAR CASEY <miriankushrat@gmail.com>
+Date:   Wed, 7 Sep 2022 16:31:34 +0200
+Message-ID: <CAO4StN1ngaz5Z=OEaG_ttEwdR6_pWWO2Esip5rtKi-tOEu80oA@mail.gmail.com>
+Subject: ATTENTION/PROPOSAL
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM,UNDISC_MONEY,UPPERCASE_75_100 autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:541 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5035]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [miriankushrat[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 UPPERCASE_75_100 message body is 75-100% uppercase
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 07, 2022 at 08:54:10AM +0200, Dominik Brodowski wrote:
-> Am Wed, Sep 07, 2022 at 02:34:01PM +0800 schrieb Herbert Xu:
-> > Dominik Brodowski <linux@dominikbrodowski.net> wrote:
-> > >
-> > > diff --git a/drivers/char/random.c b/drivers/char/random.c
-> > > index 79d7d4e4e582..b360ed4ece03 100644
-> > > --- a/drivers/char/random.c
-> > > +++ b/drivers/char/random.c
-> > > @@ -867,9 +867,9 @@ void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy)
-> > > 
-> > >        /*
-> > >         * Throttle writing to once every CRNG_RESEED_INTERVAL, unless
-> > > -        * we're not yet initialized.
-> > > +        * we're not yet initialized or this source isn't trusted.
-> > >         */
-> > > -       if (!kthread_should_stop() && crng_ready())
-> > > +       if (!kthread_should_stop() && (crng_ready() || !entropy))
-> > >                schedule_timeout_interruptible(CRNG_RESEED_INTERVAL);
-> > > }
-> > > EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
-> > 
-> > Couldn't you split this bit out?
-> 
-> I could, but this would need to get merged before the patch to the hwrng
-> core gets applied. What do you (and Jason) prefer?
+ATTENTION
 
-Just split this out and send it to me, and I'll push it early in 6.1 so
-that it makes rc1, and then Herbert can apply the hwrng part separately
-whenever he sees fit.
+BUSINESS PARTNER,
 
-Jason
+I AM LUMAR CASEY WORKING WITH AN INSURANCE FINANCIAL INSTITUTE, WITH
+MY POSITION AND PRIVILEGES I WAS ABLE TO SOURCE OUT AN OVER DUE
+PAYMENT OF 12.8 MILLION POUNDS THAT IS NOW SECURED WITH A SHIPPING
+DIPLOMATIC OUTLET.
+
+I AM SEEKING YOUR PARTNERSHIP TO RECEIVE THIS CONSIGNMENT AS AS MY
+PARTNER TO INVEST THIS FUND INTO A PROSPEROUS INVESTMENT VENTURE IN
+YOUR COUNTRY.
+
+I AWAIT YOUR REPLY TO ENABLE US PROCEED WITH THIS BUSINESS PARTNERSHIP TOGETHER.
+
+REGARDS,
+
+LUMAR CASEY
