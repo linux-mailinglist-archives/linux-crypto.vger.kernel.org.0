@@ -2,469 +2,349 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5374F5B34A0
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Sep 2022 11:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0041F5B34B6
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Sep 2022 11:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbiIIJuY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 9 Sep 2022 05:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S230426AbiIIJ6x (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Sep 2022 05:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbiIIJuA (ORCPT
+        with ESMTP id S229707AbiIIJ6U (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 9 Sep 2022 05:50:00 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DEA45040;
-        Fri,  9 Sep 2022 02:49:56 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MPB3n6CHVznV5r;
-        Fri,  9 Sep 2022 17:47:17 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 9 Sep 2022 17:49:53 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 9 Sep 2022 17:49:53 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <liulongfang@huawei.com>,
-        Zhiqi Song <songzhiqi1@huawei.com>,
-        Wenkai Lin <linwenkai6@hisilicon.com>,
-        Weili Qian <qianweili@huawei.com>
-Subject: [PATCH 10/10] crypto: hisilicon - support get algs by the capability register
-Date:   Fri, 9 Sep 2022 17:47:04 +0800
-Message-ID: <20220909094704.32099-11-qianweili@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20220909094704.32099-1-qianweili@huawei.com>
-References: <20220909094704.32099-1-qianweili@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 9 Sep 2022 05:58:20 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB82128971
+        for <linux-crypto@vger.kernel.org>; Fri,  9 Sep 2022 02:58:18 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id m18-20020a056402511200b0044862412596so915199edd.3
+        for <linux-crypto@vger.kernel.org>; Fri, 09 Sep 2022 02:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date;
+        bh=D6OG8U2ohhx6yvxRPlrU4RT77Zc+3Pmhd2b2KcPfT9w=;
+        b=spZi2W4U/Rx+sTAsHn53CdqexM1clzV0ZHlZptJcpDDwp0KWal+DUcEHgRsDUwRam6
+         ATPzdiKsSAM2QrCTFeMI1kbXjVuY+gRlNIV/Y5pRusnWt+ze+ghyGWaw5JNiOJQdmD1x
+         VlvgoRCtpUd7TSVHO4wXsqpN6XdCoXWdsKvTmk4GhVw00DAWlub10ZVyVG10FntDWxEP
+         tnyo8oAVYlcCvFD7Vv69z4dS+JgwJHpUg2RtsIrgyP2XRf08bjVu/9lG0d/7gJn6y1Av
+         FkCrhzMBIPuYrDtLgFCzxL+wh/2AYPtd1IqJh49J3CZGmAbNvdleee8vB2Q8oucKbpHW
+         7e3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=D6OG8U2ohhx6yvxRPlrU4RT77Zc+3Pmhd2b2KcPfT9w=;
+        b=cfP6WldWAFgcVjvpeW7srKj10o9EnmS3cpIeK3bzSh6QldPYBrTm79P6pDB9czPYNs
+         Ck53qYXpA2oEORbUax/fZYYrn7wmzFImWZ9W4q22vkWkc8sdz3Hl3H5QHXsnHs2WD5vR
+         zRkp4lrMYffwcwl/GKufLDtYVcuAFUQJj1I1RJLVlogzPbRsJ77PreF9TOCeI0sMJ8Cx
+         kiVJ7LvbJhzTBuQqpUcsYY0KcZgAfH9ks0y2bh6hhnUwl9GBTqy47C9z2sSqW3IIe7j5
+         CHMbkcUwWHJGRQchM+RBXrMso6Q65fAeqimspjGPRafifgKEhUOmgSHnrUc9Srtfrehu
+         PYsQ==
+X-Gm-Message-State: ACgBeo2/M4HJD8Gfi/CsXFVXIFWJKcyUzdIrabFS88JYvYpRg40wrE/4
+        Ws51If7du+8CalOmo8l+XXLn2ARUHyE=
+X-Google-Smtp-Source: AA6agR5xUE32vDAhEEeGFXTiC3m3EpIsxNHrqIOoevdf2nuCsw9gz5fezE9V3Mg4YaFhFbtiJGeY/5vXOpE=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:eaa4:a143:fbdd:a2d1])
+ (user=glider job=sendgmr) by 2002:a05:6402:524b:b0:448:6824:8788 with SMTP id
+ t11-20020a056402524b00b0044868248788mr11090103edd.227.1662717496935; Fri, 09
+ Sep 2022 02:58:16 -0700 (PDT)
+Date:   Fri,  9 Sep 2022 11:58:10 +0200
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
+Message-ID: <20220909095811.2166073-1-glider@google.com>
+Subject: [PATCH -next 1/2] x86: crypto: kmsan: revert !KMSAN dependencies
+From:   Alexander Potapenko <glider@google.com>
+To:     glider@google.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Robert Elliott <elliott@hpe.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Zhiqi Song <songzhiqi1@huawei.com>
+This patch reverts "crypto: Kconfig: fix up for "crypto: kmsan: disable
+accelerated configs under KMSAN" used by Stephen Rothwell to cleanly
+merge KMSAN patches into linux-next.
 
-The value of qm algorithm can change dynamically according to the
-value of the capability register.
+Because now arch-specific crypto configs reside in a separate Kconfig
+file, we can disable them all by adding a single !KMSAN before including
+that file (done in the following patch).
 
-Add xxx_set_qm_algs() function to obtain the algs that the
-hardware device supported from the capability register and set
-them into usr mode attribute files.
+Among others, this patch reverts !KMSAN check for
+CONFIG_CRYPTO_AEGIS128_SIMD, which is ARM-only and is hence unnecessary,
+because KMSAN does not support ARM yet.
 
-Signed-off-by: Zhiqi Song <songzhiqi1@huawei.com>
-Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
-Signed-off-by: Weili Qian <qianweili@huawei.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Robert Elliott <elliott@hpe.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-next@vger.kernel.org
 ---
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 10 +--
- drivers/crypto/hisilicon/hpre/hpre_main.c   | 83 +++++++++++++++++++--
- drivers/crypto/hisilicon/qm.c               |  1 -
- drivers/crypto/hisilicon/sec2/sec_main.c    | 71 +++++++++++++++++-
- drivers/crypto/hisilicon/zip/zip_main.c     | 75 +++++++++++++++++--
- 5 files changed, 222 insertions(+), 18 deletions(-)
+ arch/x86/crypto/Kconfig | 29 -----------------------------
+ crypto/Kconfig          |  1 -
+ 2 files changed, 30 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index ac7fabf65865..ef02dadd6217 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -51,11 +51,11 @@ struct hpre_ctx;
- #define HPRE_ECC_HW256_KSZ_B	32
- #define HPRE_ECC_HW384_KSZ_B	48
- 
--/* capability register mask */
--#define HPRE_DRV_RSA_MASK_CAP          BIT(0)
--#define HPRE_DRV_DH_MASK_CAP           BIT(1)
--#define HPRE_DRV_ECDH_MASK_CAP         BIT(2)
--#define HPRE_DRV_X25519_MASK_CAP       BIT(5)
-+/* capability register mask of driver */
-+#define HPRE_DRV_RSA_MASK_CAP		BIT(0)
-+#define HPRE_DRV_DH_MASK_CAP		BIT(1)
-+#define HPRE_DRV_ECDH_MASK_CAP		BIT(2)
-+#define HPRE_DRV_X25519_MASK_CAP	BIT(5)
- 
- typedef void (*hpre_cb)(struct hpre_ctx *ctx, void *sqe);
- 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 407cdd9d8413..471e5ca720f5 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -118,6 +118,8 @@
- #define HPRE_DFX_COMMON2_LEN		0xE
- #define HPRE_DFX_CORE_LEN		0x43
- 
-+#define HPRE_DEV_ALG_MAX_LEN	256
-+
- static const char hpre_name[] = "hisi_hpre";
- static struct dentry *hpre_debugfs_root;
- static const struct pci_device_id hpre_dev_ids[] = {
-@@ -133,6 +135,38 @@ struct hpre_hw_error {
- 	const char *msg;
- };
- 
-+struct hpre_dev_alg {
-+	u32 alg_msk;
-+	const char *alg;
-+};
-+
-+static const struct hpre_dev_alg hpre_dev_algs[] = {
-+	{
-+		.alg_msk = BIT(0),
-+		.alg = "rsa\n"
-+	}, {
-+		.alg_msk = BIT(1),
-+		.alg = "dh\n"
-+	}, {
-+		.alg_msk = BIT(2),
-+		.alg = "ecdh\n"
-+	}, {
-+		.alg_msk = BIT(3),
-+		.alg = "ecdsa\n"
-+	}, {
-+		.alg_msk = BIT(4),
-+		.alg = "sm2\n"
-+	}, {
-+		.alg_msk = BIT(5),
-+		.alg = "x25519\n"
-+	}, {
-+		.alg_msk = BIT(6),
-+		.alg = "x448\n"
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
- static struct hisi_qm_list hpre_devices = {
- 	.register_to_crypto	= hpre_algs_register,
- 	.unregister_from_crypto	= hpre_algs_unregister,
-@@ -325,6 +359,35 @@ bool hpre_check_alg_support(struct hisi_qm *qm, u32 alg)
- 	return false;
- }
- 
-+static int hpre_set_qm_algs(struct hisi_qm *qm)
-+{
-+	struct device *dev = &qm->pdev->dev;
-+	char *algs, *ptr;
-+	u32 alg_msk;
-+	int i;
-+
-+	if (!qm->use_sva)
-+		return 0;
-+
-+	algs = devm_kzalloc(dev, HPRE_DEV_ALG_MAX_LEN * sizeof(char), GFP_KERNEL);
-+	if (!algs)
-+		return -ENOMEM;
-+
-+	alg_msk = hisi_qm_get_hw_info(qm, hpre_basic_info, HPRE_DEV_ALG_BITMAP_CAP, qm->cap_ver);
-+
-+	for (i = 0; i < ARRAY_SIZE(hpre_dev_algs); i++)
-+		if (alg_msk & hpre_dev_algs[i].alg_msk)
-+			strcat(algs, hpre_dev_algs[i].alg);
-+
-+	ptr = strrchr(algs, '\n');
-+	if (ptr)
-+		*ptr = '\0';
-+
-+	qm->uacce->algs = algs;
-+
-+	return 0;
-+}
-+
- static int hpre_diff_regs_show(struct seq_file *s, void *unused)
- {
- 	struct hisi_qm *qm = s->private;
-@@ -1073,15 +1136,13 @@ static void hpre_debugfs_exit(struct hisi_qm *qm)
- 
- static int hpre_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- {
-+	int ret;
-+
- 	if (pdev->revision == QM_HW_V1) {
- 		pci_warn(pdev, "HPRE version 1 is not supported!\n");
- 		return -EINVAL;
- 	}
- 
--	if (pdev->revision >= QM_HW_V3)
--		qm->algs = "rsa\ndh\necdh\nx25519\nx448\necdsa\nsm2";
--	else
--		qm->algs = "rsa\ndh";
- 	qm->mode = uacce_mode;
- 	qm->pdev = pdev;
- 	qm->ver = pdev->revision;
-@@ -1097,7 +1158,19 @@ static int hpre_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 		qm->qm_list = &hpre_devices;
- 	}
- 
--	return hisi_qm_init(qm);
-+	ret = hisi_qm_init(qm);
-+	if (ret) {
-+		pci_err(pdev, "Failed to init hpre qm configures!\n");
-+		return ret;
-+	}
-+
-+	ret = hpre_set_qm_algs(qm);
-+	if (ret) {
-+		pci_err(pdev, "Failed to set hpre algs!\n");
-+		hisi_qm_uninit(qm);
-+	}
-+
-+	return ret;
- }
- 
- static int hpre_show_last_regs_init(struct hisi_qm *qm)
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index e4a506d02d23..30fdf0673f00 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -3484,7 +3484,6 @@ static int qm_alloc_uacce(struct hisi_qm *qm)
- 
- 	uacce->is_vf = pdev->is_virtfn;
- 	uacce->priv = qm;
--	uacce->algs = qm->algs;
- 
- 	if (qm->ver == QM_HW_V1)
- 		uacce->api_ver = HISI_QM_API_VER_BASE;
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 84233a489c74..3705412bac5f 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -115,6 +115,14 @@
- 
- #define SEC_ALG_BITMAP_SHIFT		32
- 
-+#define SEC_CIPHER_BITMAP		(GENMASK_ULL(5, 0) | GENMASK_ULL(16, 12) | \
-+					GENMASK(24, 21))
-+#define SEC_DIGEST_BITMAP		(GENMASK_ULL(11, 8) | GENMASK_ULL(20, 19) | \
-+					GENMASK_ULL(42, 25))
-+#define SEC_AEAD_BITMAP			(GENMASK_ULL(7, 6) | GENMASK_ULL(18, 17) | \
-+					GENMASK_ULL(45, 43))
-+#define SEC_DEV_ALG_MAX_LEN		256
-+
- struct sec_hw_error {
- 	u32 int_msk;
- 	const char *msg;
-@@ -125,6 +133,11 @@ struct sec_dfx_item {
- 	u32 offset;
- };
- 
-+struct sec_dev_alg {
-+	u64 alg_msk;
-+	const char *algs;
-+};
-+
- static const char sec_name[] = "hisi_sec2";
- static struct dentry *sec_debugfs_root;
- 
-@@ -161,6 +174,18 @@ static const struct hisi_qm_cap_info sec_basic_info[] = {
- 	{SEC_CORE4_ALG_BITMAP_HIGH, 0x3170, 0, GENMASK(31, 0), 0x3FFF, 0x3FFF, 0x3FFF},
- };
- 
-+static const struct sec_dev_alg sec_dev_algs[] = { {
-+		.alg_msk = SEC_CIPHER_BITMAP,
-+		.algs = "cipher\n",
-+	}, {
-+		.alg_msk = SEC_DIGEST_BITMAP,
-+		.algs = "digest\n",
-+	}, {
-+		.alg_msk = SEC_AEAD_BITMAP,
-+		.algs = "aead\n",
-+	},
-+};
-+
- static const struct sec_hw_error sec_hw_errors[] = {
- 	{
- 		.int_msk = BIT(0),
-@@ -1052,11 +1077,41 @@ static int sec_pf_probe_init(struct sec_dev *sec)
- 	return ret;
- }
- 
-+static int sec_set_qm_algs(struct hisi_qm *qm)
-+{
-+	struct device *dev = &qm->pdev->dev;
-+	char *algs, *ptr;
-+	u64 alg_mask;
-+	int i;
-+
-+	if (!qm->use_sva)
-+		return 0;
-+
-+	algs = devm_kzalloc(dev, SEC_DEV_ALG_MAX_LEN * sizeof(char), GFP_KERNEL);
-+	if (!algs)
-+		return -ENOMEM;
-+
-+	alg_mask = sec_get_alg_bitmap(qm, SEC_DEV_ALG_BITMAP_HIGH, SEC_DEV_ALG_BITMAP_LOW);
-+
-+	for (i = 0; i < ARRAY_SIZE(sec_dev_algs); i++)
-+		if (alg_mask & sec_dev_algs[i].alg_msk)
-+			strcat(algs, sec_dev_algs[i].algs);
-+
-+	ptr = strrchr(algs, '\n');
-+	if (ptr)
-+		*ptr = '\0';
-+
-+	qm->uacce->algs = algs;
-+
-+	return 0;
-+}
-+
- static int sec_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- {
-+	int ret;
-+
- 	qm->pdev = pdev;
- 	qm->ver = pdev->revision;
--	qm->algs = "cipher\ndigest\naead";
- 	qm->mode = uacce_mode;
- 	qm->sqe_size = SEC_SQE_SIZE;
- 	qm->dev_name = sec_name;
-@@ -1079,7 +1134,19 @@ static int sec_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 		qm->qp_num = SEC_QUEUE_NUM_V1 - SEC_PF_DEF_Q_NUM;
- 	}
- 
--	return hisi_qm_init(qm);
-+	ret = hisi_qm_init(qm);
-+	if (ret) {
-+		pci_err(qm->pdev, "Failed to init sec qm configures!\n");
-+		return ret;
-+	}
-+
-+	ret = sec_set_qm_algs(qm);
-+	if (ret) {
-+		pci_err(qm->pdev, "Failed to set sec algs!\n");
-+		hisi_qm_uninit(qm);
-+	}
-+
-+	return ret;
- }
- 
- static void sec_qm_uninit(struct hisi_qm *qm)
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index a8aedddac67a..c863435e8c75 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -74,6 +74,12 @@
- #define HZIP_AXI_SHUTDOWN_ENABLE	BIT(14)
- #define HZIP_WR_PORT			BIT(11)
- 
-+#define HZIP_DEV_ALG_MAX_LEN		256
-+#define HZIP_ALG_ZLIB_BIT		GENMASK(1, 0)
-+#define HZIP_ALG_GZIP_BIT		GENMASK(3, 2)
-+#define HZIP_ALG_DEFLATE_BIT		GENMASK(5, 4)
-+#define HZIP_ALG_LZ77_BIT		GENMASK(7, 6)
-+
- #define HZIP_BUF_SIZE			22
- #define HZIP_SQE_MASK_OFFSET		64
- #define HZIP_SQE_MASK_LEN		48
-@@ -114,6 +120,26 @@ struct zip_dfx_item {
- 	u32 offset;
- };
- 
-+struct zip_dev_alg {
-+	u32 alg_msk;
-+	const char *algs;
-+};
-+
-+static const struct zip_dev_alg zip_dev_algs[] = { {
-+		.alg_msk = HZIP_ALG_ZLIB_BIT,
-+		.algs = "zlib\n",
-+	}, {
-+		.alg_msk = HZIP_ALG_GZIP_BIT,
-+		.algs = "gzip\n",
-+	}, {
-+		.alg_msk = HZIP_ALG_DEFLATE_BIT,
-+		.algs = "deflate\n",
-+	}, {
-+		.alg_msk = HZIP_ALG_LZ77_BIT,
-+		.algs = "lz77_zstd\n",
-+	},
-+};
-+
- static struct hisi_qm_list zip_devices = {
- 	.register_to_crypto	= hisi_zip_register_to_crypto,
- 	.unregister_from_crypto	= hisi_zip_unregister_from_crypto,
-@@ -388,6 +414,35 @@ bool hisi_zip_alg_support(struct hisi_qm *qm, u32 alg)
- 	return false;
- }
- 
-+static int hisi_zip_set_qm_algs(struct hisi_qm *qm)
-+{
-+	struct device *dev = &qm->pdev->dev;
-+	char *algs, *ptr;
-+	u32 alg_mask;
-+	int i;
-+
-+	if (!qm->use_sva)
-+		return 0;
-+
-+	algs = devm_kzalloc(dev, HZIP_DEV_ALG_MAX_LEN * sizeof(char), GFP_KERNEL);
-+	if (!algs)
-+		return -ENOMEM;
-+
-+	alg_mask = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_DEV_ALG_BITMAP, qm->cap_ver);
-+
-+	for (i = 0; i < ARRAY_SIZE(zip_dev_algs); i++)
-+		if (alg_mask & zip_dev_algs[i].alg_msk)
-+			strcat(algs, zip_dev_algs[i].algs);
-+
-+	ptr = strrchr(algs, '\n');
-+	if (ptr)
-+		*ptr = '\0';
-+
-+	qm->uacce->algs = algs;
-+
-+	return 0;
-+}
-+
- static void hisi_zip_open_sva_prefetch(struct hisi_qm *qm)
- {
- 	u32 val;
-@@ -1071,12 +1126,10 @@ static int hisi_zip_pf_probe_init(struct hisi_zip *hisi_zip)
- 
- static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- {
-+	int ret;
-+
- 	qm->pdev = pdev;
- 	qm->ver = pdev->revision;
--	if (pdev->revision >= QM_HW_V3)
--		qm->algs = "zlib\ngzip\ndeflate\nlz77_zstd";
--	else
--		qm->algs = "zlib\ngzip";
- 	qm->mode = uacce_mode;
- 	qm->sqe_size = HZIP_SQE_SIZE;
- 	qm->dev_name = hisi_zip_name;
-@@ -1100,7 +1153,19 @@ static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 		qm->qp_num = HZIP_QUEUE_NUM_V1 - HZIP_PF_DEF_Q_NUM;
- 	}
- 
--	return hisi_qm_init(qm);
-+	ret = hisi_qm_init(qm);
-+	if (ret) {
-+		pci_err(qm->pdev, "Failed to init zip qm configures!\n");
-+		return ret;
-+	}
-+
-+	ret = hisi_zip_set_qm_algs(qm);
-+	if (ret) {
-+		pci_err(qm->pdev, "Failed to set zip algs!\n");
-+		hisi_qm_uninit(qm);
-+	}
-+
-+	return ret;
- }
- 
- static void hisi_zip_qm_uninit(struct hisi_qm *qm)
+diff --git a/arch/x86/crypto/Kconfig b/arch/x86/crypto/Kconfig
+index 856f5d8ca65f5..9bb0f7939c6bc 100644
+--- a/arch/x86/crypto/Kconfig
++++ b/arch/x86/crypto/Kconfig
+@@ -5,7 +5,6 @@ menu "Accelerated Cryptographic Algorithms for CPU (x86)"
+ config CRYPTO_CURVE25519_X86
+ 	tristate "Public key crypto: Curve25519 (ADX)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_LIB_CURVE25519_GENERIC
+ 	select CRYPTO_ARCH_HAVE_LIB_CURVE25519
+ 	help
+@@ -17,7 +16,6 @@ config CRYPTO_CURVE25519_X86
+ config CRYPTO_AES_NI_INTEL
+ 	tristate "Ciphers: AES, modes: ECB, CBC, CTS, CTR, XTR, XTS, GCM (AES-NI)"
+ 	depends on X86
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_AEAD
+ 	select CRYPTO_LIB_AES
+ 	select CRYPTO_ALGAPI
+@@ -34,7 +32,6 @@ config CRYPTO_AES_NI_INTEL
+ config CRYPTO_BLOWFISH_X86_64
+ 	tristate "Ciphers: Blowfish, modes: ECB, CBC"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_BLOWFISH_COMMON
+ 	imply CRYPTO_CTR
+@@ -47,7 +44,6 @@ config CRYPTO_BLOWFISH_X86_64
+ config CRYPTO_CAMELLIA_X86_64
+ 	tristate "Ciphers: Camellia with modes: ECB, CBC"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	imply CRYPTO_CTR
+ 	help
+@@ -59,7 +55,6 @@ config CRYPTO_CAMELLIA_X86_64
+ config CRYPTO_CAMELLIA_AESNI_AVX_X86_64
+ 	tristate "Ciphers: Camellia with modes: ECB, CBC (AES-NI/AVX)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_CAMELLIA_X86_64
+ 	select CRYPTO_SIMD
+@@ -74,7 +69,6 @@ config CRYPTO_CAMELLIA_AESNI_AVX_X86_64
+ config CRYPTO_CAMELLIA_AESNI_AVX2_X86_64
+ 	tristate "Ciphers: Camellia with modes: ECB, CBC (AES-NI/AVX2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_CAMELLIA_AESNI_AVX_X86_64
+ 	help
+ 	  Length-preserving ciphers: Camellia with ECB and CBC modes
+@@ -86,7 +80,6 @@ config CRYPTO_CAMELLIA_AESNI_AVX2_X86_64
+ config CRYPTO_CAST5_AVX_X86_64
+ 	tristate "Ciphers: CAST5 with modes: ECB, CBC (AVX)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_CAST5
+ 	select CRYPTO_CAST_COMMON
+@@ -104,7 +97,6 @@ config CRYPTO_CAST5_AVX_X86_64
+ config CRYPTO_CAST6_AVX_X86_64
+ 	tristate "Ciphers: CAST6 with modes: ECB, CBC (AVX)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_CAST6
+ 	select CRYPTO_CAST_COMMON
+@@ -123,7 +115,6 @@ config CRYPTO_CAST6_AVX_X86_64
+ config CRYPTO_DES3_EDE_X86_64
+ 	tristate "Ciphers: Triple DES EDE with modes: ECB, CBC"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_LIB_DES
+ 	imply CRYPTO_CTR
+@@ -138,7 +129,6 @@ config CRYPTO_DES3_EDE_X86_64
+ config CRYPTO_SERPENT_SSE2_X86_64
+ 	tristate "Ciphers: Serpent with modes: ECB, CBC (SSE2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_SERPENT
+ 	select CRYPTO_SIMD
+@@ -155,7 +145,6 @@ config CRYPTO_SERPENT_SSE2_X86_64
+ config CRYPTO_SERPENT_SSE2_586
+ 	tristate "Ciphers: Serpent with modes: ECB, CBC (32-bit with SSE2)"
+ 	depends on X86 && !64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_SERPENT
+ 	select CRYPTO_SIMD
+@@ -172,7 +161,6 @@ config CRYPTO_SERPENT_SSE2_586
+ config CRYPTO_SERPENT_AVX_X86_64
+ 	tristate "Ciphers: Serpent with modes: ECB, CBC (AVX)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_SERPENT
+ 	select CRYPTO_SIMD
+@@ -190,7 +178,6 @@ config CRYPTO_SERPENT_AVX_X86_64
+ config CRYPTO_SERPENT_AVX2_X86_64
+ 	tristate "Ciphers: Serpent with modes: ECB, CBC (AVX2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SERPENT_AVX_X86_64
+ 	help
+ 	  Length-preserving ciphers: Serpent cipher algorithm
+@@ -258,7 +245,6 @@ config CRYPTO_TWOFISH_586
+ config CRYPTO_TWOFISH_X86_64
+ 	tristate "Ciphers: Twofish"
+ 	depends on (X86 || UML_X86) && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_ALGAPI
+ 	select CRYPTO_TWOFISH_COMMON
+ 	imply CRYPTO_CTR
+@@ -270,7 +256,6 @@ config CRYPTO_TWOFISH_X86_64
+ config CRYPTO_TWOFISH_X86_64_3WAY
+ 	tristate "Ciphers: Twofish with modes: ECB, CBC (3-way parallel)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_TWOFISH_COMMON
+ 	select CRYPTO_TWOFISH_X86_64
+@@ -286,7 +271,6 @@ config CRYPTO_TWOFISH_X86_64_3WAY
+ config CRYPTO_TWOFISH_AVX_X86_64
+ 	tristate "Ciphers: Twofish with modes: ECB, CBC (AVX)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_SIMD
+ 	select CRYPTO_TWOFISH_COMMON
+@@ -305,7 +289,6 @@ config CRYPTO_TWOFISH_AVX_X86_64
+ config CRYPTO_CHACHA20_X86_64
+ 	tristate "Ciphers: ChaCha20, XChaCha20, XChaCha12 (SSSE3/AVX2/AVX-512VL)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_LIB_CHACHA_GENERIC
+ 	select CRYPTO_ARCH_HAVE_LIB_CHACHA
+@@ -321,7 +304,6 @@ config CRYPTO_CHACHA20_X86_64
+ config CRYPTO_AEGIS128_AESNI_SSE2
+ 	tristate "AEAD ciphers: AEGIS-128 (AES-NI/SSE2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_AEAD
+ 	select CRYPTO_SIMD
+ 	help
+@@ -334,7 +316,6 @@ config CRYPTO_AEGIS128_AESNI_SSE2
+ config CRYPTO_NHPOLY1305_SSE2
+ 	tristate "Hash functions: NHPoly1305 (SSE2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_NHPOLY1305
+ 	help
+ 	  NHPoly1305 hash function for Adiantum
+@@ -345,7 +326,6 @@ config CRYPTO_NHPOLY1305_SSE2
+ config CRYPTO_NHPOLY1305_AVX2
+ 	tristate "Hash functions: NHPoly1305 (AVX2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_NHPOLY1305
+ 	help
+ 	  NHPoly1305 hash function for Adiantum
+@@ -356,7 +336,6 @@ config CRYPTO_NHPOLY1305_AVX2
+ config CRYPTO_BLAKE2S_X86
+ 	bool "Hash functions: BLAKE2s (SSSE3/AVX-512)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_LIB_BLAKE2S_GENERIC
+ 	select CRYPTO_ARCH_HAVE_LIB_BLAKE2S
+ 	help
+@@ -379,7 +358,6 @@ config CRYPTO_POLYVAL_CLMUL_NI
+ config CRYPTO_POLY1305_X86_64
+ 	tristate "Hash functions: Poly1305 (SSE2/AVX2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_LIB_POLY1305_GENERIC
+ 	select CRYPTO_ARCH_HAVE_LIB_POLY1305
+ 	help
+@@ -392,7 +370,6 @@ config CRYPTO_POLY1305_X86_64
+ config CRYPTO_SHA1_SSSE3
+ 	tristate "Hash functions: SHA-1 (SSSE3/AVX/AVX2/SHA-NI)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_HASH
+ 	help
+@@ -407,7 +384,6 @@ config CRYPTO_SHA1_SSSE3
+ config CRYPTO_SHA256_SSSE3
+ 	tristate "Hash functions: SHA-224 and SHA-256 (SSSE3/AVX/AVX2/SHA-NI)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SHA256
+ 	select CRYPTO_HASH
+ 	help
+@@ -422,7 +398,6 @@ config CRYPTO_SHA256_SSSE3
+ config CRYPTO_SHA512_SSSE3
+ 	tristate "Hash functions: SHA-384 and SHA-512 (SSSE3/AVX/AVX2)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_SHA512
+ 	select CRYPTO_HASH
+ 	help
+@@ -449,7 +424,6 @@ config CRYPTO_SM3_AVX_X86_64
+ config CRYPTO_GHASH_CLMUL_NI_INTEL
+ 	tristate "Hash functions: GHASH (CLMUL-NI)"
+ 	depends on X86 && 64BIT
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_CRYPTD
+ 	help
+ 	  GCM GHASH hash function (NIST SP800-38D)
+@@ -460,7 +434,6 @@ config CRYPTO_GHASH_CLMUL_NI_INTEL
+ config CRYPTO_CRC32C_INTEL
+ 	tristate "CRC32c (SSE4.2/PCLMULQDQ)"
+ 	depends on X86
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_HASH
+ 	help
+ 	  CRC32c CRC algorithm with the iSCSI polynomial (RFC 3385 and RFC 3720)
+@@ -472,7 +445,6 @@ config CRYPTO_CRC32C_INTEL
+ config CRYPTO_CRC32_PCLMUL
+ 	tristate "CRC32 (PCLMULQDQ)"
+ 	depends on X86
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_HASH
+ 	select CRC32
+ 	help
+@@ -484,7 +456,6 @@ config CRYPTO_CRC32_PCLMUL
+ config CRYPTO_CRCT10DIF_PCLMUL
+ 	tristate "CRCT10DIF (PCLMULQDQ)"
+ 	depends on X86 && 64BIT && CRC_T10DIF
+-	depends on !KMSAN # avoid false positives from assembly
+ 	select CRYPTO_HASH
+ 	help
+ 	  CRC16 CRC algorithm used for the T10 (SCSI) Data Integrity Field (DIF)
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 1dfe0583f302c..40423a14f86f5 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -796,7 +796,6 @@ config CRYPTO_AEGIS128
+ config CRYPTO_AEGIS128_SIMD
+ 	bool "AEGIS-128 (arm NEON, arm64 NEON)"
+ 	depends on CRYPTO_AEGIS128 && ((ARM || ARM64) && KERNEL_MODE_NEON)
+-	depends on !KMSAN # avoid false positives from assembly
+ 	default y
+ 	help
+ 	  AEGIS-128 AEAD algorithm
 -- 
-2.33.0
+2.37.2.789.g6183377224-goog
 
