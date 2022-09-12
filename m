@@ -2,105 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E205B5746
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Sep 2022 11:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA395B58FF
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Sep 2022 13:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbiILJig (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 12 Sep 2022 05:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
+        id S230002AbiILLKO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 12 Sep 2022 07:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbiILJig (ORCPT
+        with ESMTP id S229731AbiILLKN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 12 Sep 2022 05:38:36 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B6C33421
-        for <linux-crypto@vger.kernel.org>; Mon, 12 Sep 2022 02:38:34 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id e187so5620257ybh.10
-        for <linux-crypto@vger.kernel.org>; Mon, 12 Sep 2022 02:38:33 -0700 (PDT)
+        Mon, 12 Sep 2022 07:10:13 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB28F13D46
+        for <linux-crypto@vger.kernel.org>; Mon, 12 Sep 2022 04:10:12 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id z97so12170929ede.8
+        for <linux-crypto@vger.kernel.org>; Mon, 12 Sep 2022 04:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=L26glTbFhqAmwvfLLP9peidpMtq2KDp3MGd0AfFzlJ4=;
-        b=ZEpIn2HtG2HD8p3ywDU8Xj2OEJnAn2M5TVkMh4TkO+hrzK3FhHYhH9x2O0wh8RpBOt
-         0sWLkOzEeNirwPLV4SSN8SBzy1KG1Zs3miE8YEewo8J82BXQfmTpxftPjt7DvFBLFpku
-         IgYQambqUdcTaOkAjtffjNNjbK0r1IaBYcLmmCfifFLkRyzTVXBcDsrSftjxG1nFruhj
-         O9ii3s17UArG5vTchSscaMwN2ttpASZI5XAJhqZ5p51kBf8Memy0EI+IzCi+a0ERBYjv
-         fuwTcWTK46JGcU5NRJJTNXwwIGc2boLtrVokLltVT123B39AY2lsrAOQdLQxxp5zE53P
-         2LsA==
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date;
+        bh=mCOkIqCvt6ZSae/V88P0bDeKu0Tur05lOeHs9gogGPo=;
+        b=M4v9GARHbj0P65xwfiPzwUrylloYP0mvQc6VoX43SUEocbbMZzILVah4PuTfyEAZPg
+         hPGngTmScAc/iDEr5iz/Z/a/tkRPrk4a/BuzBhy+ldOf3y6KhG8IUo1O8Y/ksw+3OkoC
+         D/8Z84Hn0gor4vxKNSPXq2FkjOTH63kiZLWU4aFDI2wH3YBh/YDuhHV9PtSl/AdN0mIn
+         uCIugCq+UbgSsrjJYinVe5CRmb7CbAqQvnJJ6YoLdN0h8P9EFHBUyMKuLyHw2sqS5PKe
+         gnn725uTOKQIQv7j/GGdP2bGj0M+UN14BPOsKqJrMSSrTHNWhHmVOCWb9f58VTWAPs2V
+         H8PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=L26glTbFhqAmwvfLLP9peidpMtq2KDp3MGd0AfFzlJ4=;
-        b=MTixWCGCM2b4mNxefbg4LJMNWYyims73PSUL8NdV8mKwPOvSbZryqDPdxq9cttn6hp
-         M6LSHJIo+BMyDPYUVezhq5VUmgfNQiU0E52Iw/zESMo+wfaERijvaXefi1mKr67JlZM6
-         99vDMQ1zgVxlyIw/o5i3thv1S9lPK9Nm95D15sVxY/Rk6TPTzv2+zFNfAOk+QeP03bCm
-         zZjORx90Cg2KNFesNPyL+U7vTIrv+qtn2sPxd+X4YobYMAjEe0iDSGmXIiCMPkQrhYLw
-         MgGtNyAzD0sU4Ejgb8jkJhxPrklYBXqGFK/W6VS/jbtN37NdtokiMO3eAsMwBC5pzLet
-         9WkA==
-X-Gm-Message-State: ACgBeo3Hk/Woqn/rFL1qhJ0GQiDXLmYO9peysyzrgIK7ne8YSjw9EOJJ
-        GOcE1VMjRp5Ay73P4cCoV7kYEl02rY4xUqtJDI65Sw==
-X-Google-Smtp-Source: AA6agR44Kb/ZTH8MwLVWVX/wXVm1Xd2iJRoCm/rTR4YKiKsJi58ZRTRubmn0n8qiN/GfteNcMvUdlROvRXUBCjLgC1Q=
-X-Received: by 2002:a25:d784:0:b0:6aa:167e:90bb with SMTP id
- o126-20020a25d784000000b006aa167e90bbmr20854352ybg.549.1662975513102; Mon, 12
- Sep 2022 02:38:33 -0700 (PDT)
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=mCOkIqCvt6ZSae/V88P0bDeKu0Tur05lOeHs9gogGPo=;
+        b=pbAjWSawGOjsdjR8/6NnnLyO0fcA1iWtsFt5uDaqB575zBMnSKxVI16hOH1tFDfavJ
+         Wo5e9bZqTxywh0edy5a5ZwsubbNLIKrnziFXrIIBmqqbLPMwE1tkvg6rVfyA4XkNcj8L
+         QVZb79tcJ8K540gqtNqyi3fgqcFemLeGpvIqtXTiWx9LuXDGXL4nGsDI3/N5LKnTqpmw
+         yw6WDRDmKWvUJxE9DcAdSu5LnIeiSwZp52TdlwQpOsPTlSL1NTtPfwJBTI+dU5fi5Onu
+         HHbX/CLUFY/zVLLHSBIbrOeofe8hjpQJbobrjxBQUN9bxP5SSGTMofM0MiJ+BuYJTvd5
+         F7WA==
+X-Gm-Message-State: ACgBeo2vyBKZTv219nb8Pd7/iWkZIG2TTTIK8zbkQ5nxtfM01vD3U2V4
+        OQXS6/zPWHd2hPeS/Sa0hZOJDr/tpUoxZpJng5I=
+X-Google-Smtp-Source: AA6agR5sxVPLJOcpayBDd+7c2qba9x+vT0Y8mYbj4M5BKGoVmCwCsn8UnFWVMoigh9g6kJrI1hvNH9QsQp5ejnJgGeo=
+X-Received: by 2002:a05:6402:5179:b0:44e:d177:3a21 with SMTP id
+ d25-20020a056402517900b0044ed1773a21mr22275349ede.20.1662981011316; Mon, 12
+ Sep 2022 04:10:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220906202017.5093fd23@canb.auug.org.au> <YxfFzGObDWsylCK+@quark>
- <CAG_fn=UcWy+gbYLDM2WQZ=BZuVRML17KJ0L+=zsSg7+yDo4oGA@mail.gmail.com> <20220907134107.bcb8b9c22b9ae517e3b43711@linux-foundation.org>
-In-Reply-To: <20220907134107.bcb8b9c22b9ae517e3b43711@linux-foundation.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 12 Sep 2022 11:37:56 +0200
-Message-ID: <CAG_fn=V1utoSbPK6Jhnzyy3Fj47k1YS1DZc5M094Bp1GpP5kFQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the mm tree with the crypto tree
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Robert Elliott <elliott@hpe.com>
+Received: by 2002:a54:3e43:0:0:0:0:0 with HTTP; Mon, 12 Sep 2022 04:10:10
+ -0700 (PDT)
+Reply-To: boudelal90ahmed@gmail.com
+From:   Boudelal Ahmed <sir.david.blunti@gmail.com>
+Date:   Mon, 12 Sep 2022 12:10:10 +0100
+Message-ID: <CAOmfjEy3hc=k_KVo=7jJfkyTHxUUd+VJPSJOSAGSBHw2AacRVw@mail.gmail.com>
+Subject: Good decision
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 7, 2022 at 10:41 PM Andrew Morton <akpm@linux-foundation.org> w=
-rote:
->
-> On Wed, 7 Sep 2022 11:18:24 +0200 Alexander Potapenko <glider@google.com>=
- wrote:
->
-> > What's the best way to handle this? Send another patch series? Or
-> > maybe just an update for "crypto: kmsan: disable accelerated configs
-> > under KMSAN"?
->
-> I'd prefer the minimal update, please.
-
-As a heads-up, I mailed "x86: crypto: kmsan: revert !KMSAN
-dependencies" and "crypto: x86: kmsan: disable accelerated configs in
-KMSAN builds" last week. No rush though, guess you're busy with LPC
-this week.
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+It is my pleasure communicating with you today.  My name is Mr.
+Boudelal Ahmed, an Algeria man living in Istanbul, Turkey. Can we work
+together?
+Kind Regards,
+Boudelal Ahmed
+Tel+901711- 232810
+Tel.+90 532 291 33 25
