@@ -2,144 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5820A5B82CF
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 Sep 2022 10:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A085B82E6
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 Sep 2022 10:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbiINITC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 14 Sep 2022 04:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
+        id S230148AbiINI2T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 14 Sep 2022 04:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiINITB (ORCPT
+        with ESMTP id S229964AbiINI2R (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 14 Sep 2022 04:19:01 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEFA5757B
-        for <linux-crypto@vger.kernel.org>; Wed, 14 Sep 2022 01:19:00 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 198so16490243ybc.1
-        for <linux-crypto@vger.kernel.org>; Wed, 14 Sep 2022 01:19:00 -0700 (PDT)
+        Wed, 14 Sep 2022 04:28:17 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B586527C
+        for <linux-crypto@vger.kernel.org>; Wed, 14 Sep 2022 01:28:16 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a14so15183223ljj.8
+        for <linux-crypto@vger.kernel.org>; Wed, 14 Sep 2022 01:28:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=HuIXq0gxsLhtrekbIwvVhrdsOJWyOZiMwcr+S3al2lw=;
-        b=cAprc2ENkwAzsA1ScDy+/sr6d/3f9p0nPP8Mc6N0iDX/hEs+T1BUfS8BVAHrFx8MBJ
-         HgdkV+kfd0A7J7ZkjA4pAMF35RkIlAimda9FEzqjxzOjqbAqi6UcEzmg80AYkWzJLeXI
-         zCakpoSPHtw0VWKrXcAwGiT2kHvjFGxiv1LWCO1x3nMcoFAgS40VLpeBMd2E2Sq2drcS
-         dOMWDCuymV7EHVprME2crDl+J9zBU+jt+l8DKpJSeYYBkVBy0Hjq4GnKe8WMKbvghvh6
-         wixA88tuAYTRq3++zVPDafixpOW89tYSoKU9nEYwEn2VMSK/OfJ9UcfIWE7GZqM+8IAZ
-         WeeQ==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date;
+        bh=pkxNv55YcC3pLEICxq5urys55gAyEBXI4ELv7dNSxqs=;
+        b=BfsAFLjwRW7dm9/lY+7TZpO7KLJ6u9Cr4RSmyiXPAvAi4JUZrutpreac5O90PuaMlY
+         0y1C0Kvfa7MJ9uYswtCGuMXBzOW4QkviMm0jglbKqxePdGc5INfrD5c80dOI3jbzRKJN
+         RFavpxdeAIFgegZ0E973wYsSsM5p0u2ZjcJ5ktcNBF7WSKKE+GfgeAc+6kI+urUpP6Bb
+         MiB4zccrGzu4czUkhhVCGseOBrXaIjTYVcHLAH0/ZL0Jvol7Gbw0zlhHrJWGPFV8Kyqs
+         fyT3xx2V9heBKSdDUYsfZ5jJAr8txVbrwfll1YrPtpMnbHlqN4Bdx3mcYIieq7Ul+SbM
+         +Rhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=HuIXq0gxsLhtrekbIwvVhrdsOJWyOZiMwcr+S3al2lw=;
-        b=IuidrwXf5d+lxlYhib9jha40AcvIHQ8nyv7MnuBB1ffU20oBSab17C+p87DAk8r5Km
-         hPKGkqrNAChunax2uS5d7Pfyq6dNJtQuwxSAmgOKEF0E46g2Q9QdkQ/3PmhzH8AX3Vn1
-         h6i1HWDf/N+6BQUeV/YMq5WMk0R2JwCdU5hARrbZ1l2//fY23UdobrKZejmTKbSY8e9T
-         np6Y8rN8yu23fL/pSxQOJsvzVsmaDWyR7LtbCGtKWRSJxTWHdOvWocXeOC/3lOLIpkCZ
-         xcV5HcB6MIa/i2X0VtP5ATO/xHuSvOcPWrSPqg3uYsf2pr491+5l8lFeD3vkEEwMtUUI
-         36ow==
-X-Gm-Message-State: ACrzQf0bzz+Wjob5FXbraaCn9Oe2zFTv+c+ZC8f6xwwclJaAiv3j0WW3
-        iyk+dBytyFxOw4v4Lk/c6C/24uUH+RMQZ5KlKUA/2w==
-X-Google-Smtp-Source: AMsMyM4gAetVuxJCy5rc8GccIvL8xPemtsGubVjAx9z1OYMfS0WxwpXd1nfRIx3By7x7exkAz6pnQPQ/bPRykgvkaz0=
-X-Received: by 2002:a25:3f03:0:b0:6af:f33f:7711 with SMTP id
- m3-20020a253f03000000b006aff33f7711mr2350646yba.376.1663143538967; Wed, 14
- Sep 2022 01:18:58 -0700 (PDT)
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=pkxNv55YcC3pLEICxq5urys55gAyEBXI4ELv7dNSxqs=;
+        b=tfM2djIkQCzCKIoig7MjYZ5n+HuHTTyyKGhBpjI9ijlx9Jf+/ljdwKWxw+6WZIDnpr
+         XbS/y8pxFhmmWM10zDsNyffG/mOpvVtUO+JEVCYbDvLaDibl7hi7l+tJJZyo5Q8B+Vln
+         FwVxvbiF68zc7mOWFnjguOou0s0Tt9bNIcP/hCfKFm1/nTDWvzM7iac3Jy82KmBa+Lx0
+         lK9gP8U2rLd26AWWpG1weWdKUvlaGZ6QNPukol8lQjkqoscA2HRL7VuQr7ZGpDFtSfq/
+         Z1GMv7zWggdgH7R1BoXE5KwZ5tmvHwFtGRqj8yECeDkLoBrzhCT5PASglDkw8t9sqNXe
+         PZcg==
+X-Gm-Message-State: ACgBeo1qh6EvNJ/vP5yrlNxxaqokmWr4DITr0Zzzpiv3sR/6hWz9a5QC
+        FBwUsk+cwVVAtNgj649LDMEEAT8yguyQzZOpX5Q=
+X-Google-Smtp-Source: AA6agR7+JSNqk5SgfDV3K9a+RglA/vwbcg/Y2WgCK1wHGC0APxxJpk1stVR3QiVnO4sEXVjHaC6PatD5iNVvIwe5ZZs=
+X-Received: by 2002:a2e:844e:0:b0:26b:f5ee:b2bb with SMTP id
+ u14-20020a2e844e000000b0026bf5eeb2bbmr6003441ljh.403.1663144094523; Wed, 14
+ Sep 2022 01:28:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220909095811.2166073-1-glider@google.com> <20220913175210.50945edb0738bf95300dc500@linux-foundation.org>
-In-Reply-To: <20220913175210.50945edb0738bf95300dc500@linux-foundation.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 14 Sep 2022 10:18:22 +0200
-Message-ID: <CAG_fn=XsmcKNi1Sg-HgP9Hh98mf910o0Uo4fCpwijiS_3adgyQ@mail.gmail.com>
-Subject: Re: [PATCH -next 1/2] x86: crypto: kmsan: revert !KMSAN dependencies
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Robert Elliott <elliott@hpe.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-next <linux-next@vger.kernel.org>
+Received: by 2002:a05:6512:2391:0:0:0:0 with HTTP; Wed, 14 Sep 2022 01:28:13
+ -0700 (PDT)
+Reply-To: xiuying.qiang212@gmail.com
+From:   Xiuying Qiang <jerushakinya88@gmail.com>
+Date:   Wed, 14 Sep 2022 16:28:13 +0800
+Message-ID: <CACkApWdk9eXYaq8s7F5jpRH1nvp+TobRkyLQsR94uUXaUNqhow@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_Nazywam_si=C4=99?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: Yes, score=6.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:243 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [jerushakinya88[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [jerushakinya88[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [xiuying.qiang212[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  1.4 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 14, 2022 at 2:52 AM Andrew Morton <akpm@linux-foundation.org> w=
-rote:
->
-> On Fri,  9 Sep 2022 11:58:10 +0200 Alexander Potapenko <glider@google.com=
-> wrote:
->
-> > This patch reverts "crypto: Kconfig: fix up for "crypto: kmsan: disable
-> > accelerated configs under KMSAN" used by Stephen Rothwell to cleanly
-> > merge KMSAN patches into linux-next.
-> >
-> > Because now arch-specific crypto configs reside in a separate Kconfig
-> > file, we can disable them all by adding a single !KMSAN before includin=
-g
-> > that file (done in the following patch).
-> >
-> > Among others, this patch reverts !KMSAN check for
-> > CONFIG_CRYPTO_AEGIS128_SIMD, which is ARM-only and is hence unnecessary=
-,
-> > because KMSAN does not support ARM yet.
->
-> As I understand it, these patches are against linux-next and only
-> linux-next because they pertain to linux-next's resolution of conflicts
-> between the MM tree and the crypto tree?
-
-The thing is that this patch only makes sense with its counterpart
-that adds a !KMSAN condition on "source arch/x86/crypto/Kconfig", and
-the latter file is missing in the -mm tree.
-
-> I'm not sure how to handle that, even if anyone wants to.  How about
-> you send an update to
-> git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm's mm-unstable
-> branch so the code which is there makes sense?  Then we'll ask Stephen
-> to redo the crypto tree resolution?
-
-Because the crypto tree is moving code crypto/Kconfig to
-arch/x86/crypto/Kconfig, we'll still need to apply these two patches
-to the result of the crypto tree merge.
-
-I was going to send out the updated patch series anyway (there are
-minor improvements to the core which let us drop "kmsan: unpoison @tlb
-in arch_tlb_gather_mmu()", also there's a new test case).
-I could drop "crypto: kmsan: disable accelerated configs under KMSAN"
-from it, so that it would be possible to enable accelerated configs
-under KMSAN at the cost of false positives (which are only visible if
-one builds with KMSAN).
-Then, once arch/x86/crypto/Kconfig hits -mm, I can send the remaining
-patch that disables accelerated crypto under KMSAN:
-https://lore.kernel.org/all/20220909095811.2166073-2-glider@google.com/
-
-Or I could just send v7 patches against mm-unstable and ask Stephen to
-apply both https://lore.kernel.org/all/20220909095811.2166073-2-glider@goog=
-le.com/
-and https://lore.kernel.org/all/20220909095811.2166073-2-glider@google.com/
-at merge time.
-
-Which option is better?
-
-
---
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+--=20
+Nazywam si=C4=99 Qiang Xiuying, jestem starszym pracownikiem w publicznym
+banku w Wing Hang Bank w Hongkongu i mam 18 991 674 USD. =C5=BCe chc=C4=99
+wyjecha=C4=87 z kraju. Potrzebuj=C4=99 dobrego partnera, kogo=C5=9B, komu m=
+og=C4=99
+zaufa=C4=87. Jest wolny od ryzyka i legalny. Odpowiedz, aby uzyska=C4=87 wi=
+=C4=99cej
+informacji:
+Pan Qiang Xiuying
