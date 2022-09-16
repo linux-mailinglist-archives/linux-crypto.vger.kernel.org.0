@@ -2,54 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 880265BA51D
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Sep 2022 05:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD095BA6BA
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Sep 2022 08:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbiIPDZ1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Thu, 15 Sep 2022 23:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        id S229557AbiIPGYK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Sep 2022 02:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbiIPDZ0 (ORCPT
+        with ESMTP id S229462AbiIPGYJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Sep 2022 23:25:26 -0400
-X-Greylist: delayed 25287 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Sep 2022 20:25:10 PDT
-Received: from exmail.wanlianyida.cn (unknown [120.133.63.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129243E76B
-        for <linux-crypto@vger.kernel.org>; Thu, 15 Sep 2022 20:25:10 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by exmail.wanlianyida.cn (Postfix) with ESMTP id 503AA66F5A8F;
-        Fri, 16 Sep 2022 02:51:37 +0800 (CST)
-Received: from exmail.wanlianyida.cn ([127.0.0.1])
-        by localhost (exmail.wanlianyida.cn [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id d-mGMItwwRz3; Fri, 16 Sep 2022 02:51:37 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by exmail.wanlianyida.cn (Postfix) with ESMTP id CB7D166E2D3A;
-        Fri, 16 Sep 2022 02:48:33 +0800 (CST)
-X-Virus-Scanned: amavisd-new at exmail.wanlianyida.cn
-Received: from exmail.wanlianyida.cn ([127.0.0.1])
-        by localhost (exmail.wanlianyida.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EgwerdOybbSq; Fri, 16 Sep 2022 02:48:33 +0800 (CST)
-Received: from EC2AMAZ-CG75CFN.ec2.internal (ec2-34-227-106-19.compute-1.amazonaws.com [34.227.106.19])
-        by exmail.wanlianyida.cn (Postfix) with ESMTPSA id E328A66E7181;
-        Fri, 16 Sep 2022 02:38:54 +0800 (CST)
-Content-Type: text/plain; charset="iso-8859-1"
+        Fri, 16 Sep 2022 02:24:09 -0400
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D5774371;
+        Thu, 15 Sep 2022 23:24:08 -0700 (PDT)
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from owl.dominikbrodowski.net (owl.brodo.linta [10.2.0.111])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id A8E6C201373;
+        Fri, 16 Sep 2022 06:24:05 +0000 (UTC)
+Received: by owl.dominikbrodowski.net (Postfix, from userid 1000)
+        id E647F806E7; Fri, 16 Sep 2022 08:22:53 +0200 (CEST)
+Date:   Fri, 16 Sep 2022 08:22:53 +0200
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Sven van Ashbrook <svenva@chromium.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Olivia Mackall <olivia@selenic.com>,
+        Alex Levin <levinale@google.com>,
+        Andrey Pronin <apronin@google.com>,
+        Stephen Boyd <swboyd@google.com>,
+        Rajat Jain <rajatja@google.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Theodore Ts'o <tytso@mit.edu>, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] random: move add_hwgenerator_randomness()'s wait
+ outside function
+Message-ID: <YyQWPcxG1Xc1qRWE@owl.dominikbrodowski.net>
+References: <20220915002235.v2.1.I7c0a79e9b3c52584f5b637fde5f1d6f807605806@changeid>
+ <YyNIOg1mtnzQz1H7@zx2c4.com>
+ <CAG-rBijUSQ-kA0-pS=JCVX9ydeaSCd9Ub=yryGk4zsbcv3dTzQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Info++
-To:     Recipients <testuser@wanlianyida.cn>
-From:   "info" <testuser@wanlianyida.cn>
-Date:   Thu, 15 Sep 2022 18:38:53 +0000
-Reply-To: jess1011@zohomail.com
-Message-Id: <20220915183854.E328A66E7181@exmail.wanlianyida.cn>
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_99,BAYES_999,
-        RCVD_IN_MSPIKE_H2,RDNS_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG-rBijUSQ-kA0-pS=JCVX9ydeaSCd9Ub=yryGk4zsbcv3dTzQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-We are reaching you once again as regards the estate of Late George, you were made one of the beneficiaries of his estate. Do get back to me at your earliest convenience. Trustees
+Am Thu, Sep 15, 2022 at 02:54:24PM -0400 schrieb Sven van Ashbrook:
+> Dominik, Jason,
+> 
+> On Thu, Sep 15, 2022 at 11:44 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> >
+> > Isn't Dominik working on the same thing, but slightly different?
+> 
+> I don't believe Dominik is working on quite the same thing, but his
+> work will conflict with mine for sure:
+> https://lore.kernel.org/lkml/YxiXEJ6up6XEW8SM@zx2c4.com/T/
+> 
+> What are the odds that two people are making changes to the hwrng
+> kthread at the same time?
+> 
+> I see two possible ways forward:
+> 1. Dominik rebases his patch against mine (iff mine finds favour).
+> This may simplify his patch
+> quite a bit, because the delayed_work abstraction tends to have fewer
+> footguns than
+> kthread.
+> 
+> or
+> 
+> 2. I rebase against Dominik's.
+> 
+> Both are fine with me, just let me know what you think.
+
+Indeed, our patches address different issues. I'm fine with both approaches,
+i.e. my patches to be based on Sven's, or the other way round.
+
+Best,
+	Dominik
