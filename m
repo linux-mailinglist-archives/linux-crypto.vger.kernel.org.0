@@ -2,46 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7765BDF1B
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Sep 2022 10:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E6F5BDF22
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Sep 2022 10:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbiITIDQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Sep 2022 04:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
+        id S231263AbiITIDV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Sep 2022 04:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbiITIBv (ORCPT
+        with ESMTP id S230522AbiITIBy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Sep 2022 04:01:51 -0400
+        Tue, 20 Sep 2022 04:01:54 -0400
 Received: from us-smtp-delivery-115.mimecast.com (us-smtp-delivery-115.mimecast.com [170.10.129.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7146642C2
-        for <linux-crypto@vger.kernel.org>; Tue, 20 Sep 2022 01:01:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D68A642C8
+        for <linux-crypto@vger.kernel.org>; Tue, 20 Sep 2022 01:01:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxlinear.com;
-        s=selector; t=1663660909;
+        s=selector; t=1663660910;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UBElztSxJ1rdBS50z2Hh+xljndSP253b3OPRrTnscxQ=;
-        b=ByzcBrxRaf8bYEPI7zE7VITvzf/7AzLipeLGJfeP8P56neBdKN3xd38PtTRGqm6I/lBOuA
-        GHNvkGmgmm11Yc2gvvYDskTs1m+J2f0/FxgWt4EutXOznSD/XcN9vC95cMj8cO2u1r6vKD
-        bf5akZXfPfmksV0VFimHSiYQNHrXvthbcFnooEc/eGsPKW1AOWzKcJTFo3IVWyw0gg/NnD
-        9lMkdpLkJgvMglYCeG+PhIohgg0FTNZ4aWMf+nUk0453Hh1BSbWun4Dg3j+f4+n8X3x5o6
-        FcLfk+/J4Qpung2wifqhe3xBcaU69OUeqvnVI7FWx3T2kT4ovKI4BgtxBa987w==
+        bh=ouPEC3kvQ0ao0uh8YN4F3GFPf1No8spzAha5/ht5RO0=;
+        b=HGTNXCJK11DAo+e0DUnVri9yf1s6tjip0JyFT7ezYNqkCfQsr9P1hmsmJ119soMBDi7NQU
+        kbeFulUmlS5ZQqMKQNcLl0rxzfcvFC//Ld3iUh0nPFFa58kKitIOr6M4Rc+O922yq2sV0a
+        noa0EeV3F548Zytt1Ux+PCeahc5lx5DGWc7vqTgXbaHJ2EzVxg2fn/T6rxMVCIbQhzBAR2
+        8fPlYMLFqEzhe0byacCXeSqR/B1ObK+woQdgQqHcjZt8Fe6YaPkvb6vlXn+94HnHb8UJNm
+        uvryYkSDEknLgv1Bx5Fnw1srKfCJnOGSoMriKWbrqbICcRbrfsm/XKaKp9LmXA==
 Received: from mail.maxlinear.com (174-47-1-84.static.ctl.one [174.47.1.84])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- us-mta-235-nEWdcjjDOR-NiH6cM9J8hQ-3; Tue, 20 Sep 2022 04:01:48 -0400
-X-MC-Unique: nEWdcjjDOR-NiH6cM9J8hQ-3
+ us-mta-235-qkySXk_lNHylBziHljehCg-4; Tue, 20 Sep 2022 04:01:49 -0400
+X-MC-Unique: qkySXk_lNHylBziHljehCg-4
 Received: from sgsxdev002.isng.phoenix.local (10.226.81.112) by
  mail.maxlinear.com (10.23.38.119) with Microsoft SMTP Server id 15.1.2375.24;
- Tue, 20 Sep 2022 01:01:44 -0700
+ Tue, 20 Sep 2022 01:01:45 -0700
 From:   Peter Harliman Liem <pliem@maxlinear.com>
 To:     <atenart@kernel.org>, <herbert@gondor.apana.org.au>
 CC:     <linux-crypto@vger.kernel.org>, <linux-lgm-soc@maxlinear.com>,
         "Peter Harliman Liem" <pliem@maxlinear.com>
-Subject: [PATCH 2/3] crypto: inside-secure - Add fw_little_endian option
-Date:   Tue, 20 Sep 2022 16:01:38 +0800
-Message-ID: <29cf210c9adce088bc50248ad46255d883bd5edc.1663660578.git.pliem@maxlinear.com>
+Subject: [PATCH 3/3] crypto: inside-secure - Add MaxLinear platform
+Date:   Tue, 20 Sep 2022 16:01:39 +0800
+Message-ID: <ffd4efd6eb8bedd28908e6c123f66f6f0c3890ae.1663660578.git.pliem@maxlinear.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1663660578.git.pliem@maxlinear.com>
 References: <cover.1663660578.git.pliem@maxlinear.com>
@@ -59,61 +59,61 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This is to add fw_little_endian option, which can
-be used for platform which firmware is using little-endian
-(instead of big-endian).
+This is to add MaxLinear platform into compatible id.
+Firmware endianness option is added since MaxLinear
+firmware is in little endian format.
 
 Signed-off-by: Peter Harliman Liem <pliem@maxlinear.com>
 ---
- drivers/crypto/inside-secure/safexcel.c | 15 +++++++++++----
- drivers/crypto/inside-secure/safexcel.h |  1 +
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/crypto/inside-secure/safexcel.c | 9 +++++++++
+ drivers/crypto/inside-secure/safexcel.h | 3 ++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/insid=
 e-secure/safexcel.c
-index 02c103da09a9..955170d2dd7c 100644
+index 955170d2dd7c..4b7c18db290c 100644
 --- a/drivers/crypto/inside-secure/safexcel.c
 +++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -316,14 +316,21 @@ static void eip197_init_firmware(struct safexcel_cryp=
-to_priv *priv)
- static int eip197_write_firmware(struct safexcel_crypto_priv *priv,
- =09=09=09=09  const struct firmware *fw)
- {
--=09const __be32 *data =3D (const __be32 *)fw->data;
-+=09const u32 *data =3D (const u32 *)fw->data;
-+=09u32 val;
- =09int i;
-=20
- =09/* Write the firmware */
--=09for (i =3D 0; i < fw->size / sizeof(u32); i++)
--=09=09writel(be32_to_cpu(data[i]),
-+=09for (i =3D 0; i < fw->size / sizeof(u32); i++) {
-+=09=09if (priv->data->fw_little_endian)
-+=09=09=09val =3D le32_to_cpu(data[i]);
-+=09=09else
-+=09=09=09val =3D be32_to_cpu(data[i]);
-+
-+=09=09writel(val,
- =09=09       priv->base + EIP197_CLASSIFICATION_RAMS +
--=09=09       i * sizeof(__be32));
-+=09=09       i * sizeof(*data));
-+=09}
-=20
- =09/* Exclude final 2 NOPs from size */
- =09return i - EIP197_FW_TERMINAL_NOPS;
-diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/insid=
-e-secure/safexcel.h
-index 1b8ccb33202b..a89dd8dc1ddd 100644
---- a/drivers/crypto/inside-secure/safexcel.h
-+++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -735,6 +735,7 @@ enum safexcel_eip_version {
-=20
- struct safexcel_of_data {
- =09enum safexcel_eip_version version;
-+=09bool fw_little_endian;
+@@ -1830,6 +1830,11 @@ static const struct safexcel_of_data eip197d_mrvl_da=
+ta =3D {
+ =09.version =3D EIP197D_MRVL,
  };
 =20
- /* Priority we use for advertising our algorithms */
++static const struct safexcel_of_data eip197_mxl_data =3D {
++=09.version =3D EIP197_MXL,
++=09.fw_little_endian =3D true,
++};
++
+ static const struct of_device_id safexcel_of_match_table[] =3D {
+ =09{
+ =09=09.compatible =3D "inside-secure,safexcel-eip97ies",
+@@ -1843,6 +1848,10 @@ static const struct of_device_id safexcel_of_match_t=
+able[] =3D {
+ =09=09.compatible =3D "inside-secure,safexcel-eip197d",
+ =09=09.data =3D &eip197d_mrvl_data,
+ =09},
++=09{
++=09=09.compatible =3D "inside-secure,safexcel-eip197-mxl",
++=09=09.data =3D &eip197_mxl_data,
++=09},
+ =09/* For backward compatibility and intended for generic use */
+ =09{
+ =09=09.compatible =3D "inside-secure,safexcel-eip97",
+diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/insid=
+e-secure/safexcel.h
+index a89dd8dc1ddd..078dbfb2b094 100644
+--- a/drivers/crypto/inside-secure/safexcel.h
++++ b/drivers/crypto/inside-secure/safexcel.h
+@@ -730,7 +730,8 @@ enum safexcel_eip_version {
+ =09EIP97IES_MRVL,
+ =09EIP197B_MRVL,
+ =09EIP197D_MRVL,
+-=09EIP197_DEVBRD
++=09EIP197_DEVBRD,
++=09EIP197_MXL,
+ };
+=20
+ struct safexcel_of_data {
 --=20
 2.17.1
 
