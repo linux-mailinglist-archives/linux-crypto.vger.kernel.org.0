@@ -2,58 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA895BFA69
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Sep 2022 11:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171065BFB2E
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Sep 2022 11:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbiIUJOa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 21 Sep 2022 05:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
+        id S231442AbiIUJlR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 21 Sep 2022 05:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbiIUJOL (ORCPT
+        with ESMTP id S231428AbiIUJlQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 21 Sep 2022 05:14:11 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9288E452
-        for <linux-crypto@vger.kernel.org>; Wed, 21 Sep 2022 02:13:38 -0700 (PDT)
+        Wed, 21 Sep 2022 05:41:16 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10618E987
+        for <linux-crypto@vger.kernel.org>; Wed, 21 Sep 2022 02:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663751618; x=1695287618;
+  t=1663753275; x=1695289275;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=LTq3z5bw0idCyJW7ACZWXh0z/fEdKp/vHv4ZUPquF9c=;
-  b=HtoPDO2couy/5MdubfLpbqk2qiATiE7eVLkuj1japeUv855hINrokkLo
-   MXX+oWl+BkKsMGOtsoYy3EAeYuVSwr7oJEOmk4+qEC4qmQ7RiJzLWQLVK
-   G3qq/UV4w/Ju6jfTh/yUKbs5FVIQO7TTmG26BxPXdvMauiMSTxHcHB5Dp
-   sNdsCYF6kDbMkjj61Ti4d1tS2ok83BvPjfHuyKGWgg39TUnrLSb4YEEbm
-   hOOeAFRmenbxWEGWg+l/Ttv1JnVnfRlo5r/v1WIUr+DHv0a2BvfQVmfAL
-   bmZapZ2oUFaNnOvnrirsi1Lwfp1YJlZBGoKnM2lq9bLTLcY8SUMRNfc0e
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="282996122"
-X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; 
-   d="scan'208";a="282996122"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2022 02:13:38 -0700
+  bh=R2olj1wj/HFpAWz79tzLY/V0ghBPK0i2tWvQoopD9pw=;
+  b=iXI4bkIU5CqSkFw8xFUcJJrIQx1DgR9UxDSUJ5BlrYA4Y8RiVIdoCU/e
+   9gI35AuOQ8zY1tVgGLB7BdLjh29WvRE5MevQJsowWXYn505wgzbgpnm9M
+   /dyQ8xr6BJhIG/ARO6Tah9DRMpjTgwNyOthA55RcE6LJeOhRZK5S1dws0
+   h97ttrSVuUZ/8lXM6oIJrWpCQPIWti+wAqTGqSmHpt1enVBsqh/QaZqQp
+   vyHk5LVYRhaWQYKS6jaiEsUXJ2fKs2k1zFeL0by8U8LnvSA+NtSURalX6
+   HmRC5Kl7U5VRz3H/SPqkIGHhr4o2NoIokC5CXIT94pApF6ZW2bDmg1eOZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="280328545"
+X-IronPort-AV: E=Sophos;i="5.93,333,1654585200"; 
+   d="scan'208";a="280328545"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2022 02:41:15 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; 
-   d="scan'208";a="596899920"
+X-IronPort-AV: E=Sophos;i="5.93,333,1654585200"; 
+   d="scan'208";a="708372206"
 Received: from silpixa00400295.ir.intel.com ([10.237.213.194])
-  by orsmga006.jf.intel.com with ESMTP; 21 Sep 2022 02:13:36 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Sep 2022 02:41:14 -0700
 From:   Adam Guerin <adam.guerin@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         Adam Guerin <adam.guerin@intel.com>,
         Ciunas Bennett <ciunas.bennett@intel.com>,
         Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH v2] crypto: qat - add limit to linked list parsing
-Date:   Wed, 21 Sep 2022 10:09:24 +0100
-Message-Id: <20220921090923.213968-1-adam.guerin@intel.com>
+Subject: [RESEND] crypto: qat - add limit to linked list parsing
+Date:   Wed, 21 Sep 2022 10:38:30 +0100
+Message-Id: <20220921093830.214377-1-adam.guerin@intel.com>
 X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Organisation: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare, Ireland
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,8 +71,7 @@ Co-developed-by: Ciunas Bennett <ciunas.bennett@intel.com>
 Signed-off-by: Ciunas Bennett <ciunas.bennett@intel.com>
 Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 ---
-v2: improved patch based off feedback from ML
-drivers/crypto/qat/qat_common/adf_ctl_drv.c | 8 ++++++--
+ drivers/crypto/qat/qat_common/adf_ctl_drv.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/crypto/qat/qat_common/adf_ctl_drv.c b/drivers/crypto/qat/qat_common/adf_ctl_drv.c
@@ -111,8 +110,6 @@ index 508c18edd692..82b69e1f725b 100644
  			if (copy_from_user(&key_val, (void __user *)params_head,
  					   sizeof(key_val))) {
  				dev_err(&GET_DEV(accel_dev),
-
-base-commit: 8aee6d5494bfb2e535307eb3e80e38cc5cc1c7a6
 -- 
 2.37.3
 
