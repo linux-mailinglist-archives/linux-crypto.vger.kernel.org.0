@@ -2,80 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98835EAF45
-	for <lists+linux-crypto@lfdr.de>; Mon, 26 Sep 2022 20:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D555EB372
+	for <lists+linux-crypto@lfdr.de>; Mon, 26 Sep 2022 23:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbiIZSKO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 26 Sep 2022 14:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        id S229737AbiIZVp4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 26 Sep 2022 17:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbiIZSJt (ORCPT
+        with ESMTP id S229671AbiIZVpx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 26 Sep 2022 14:09:49 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7EADBF
-        for <linux-crypto@vger.kernel.org>; Mon, 26 Sep 2022 10:56:08 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-3450a7358baso76384537b3.13
-        for <linux-crypto@vger.kernel.org>; Mon, 26 Sep 2022 10:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date;
-        bh=C237qwozOvl8aPF+8xhmIlNpmWxUmRobeuzg2CJNr44=;
-        b=jK9TIq59DfZy+e0VB0TfKuF6yiZ8typeT26sk3FTsMZ/iq8EhrSI723dfVxB+IS2IA
-         FGPGJDkqOVxKxBHJC1VBzhUeu+zLbDhWuWo0oixyLYIr/JW5+EwtzK4JslCoAA/c+JGp
-         QYAorVZRxMQ4YN2daexX30OjoexEkxAijJA4wVvvyRgqsK52CypPdxcnHCJb9n14d2RK
-         GZEaxg/ak/CQSqqldtLuwIamnqd3u63D2B9Bq63AEKgMs6pAneJE6pB07x5WNeQd1/11
-         0xJe/HLoGdmc1IyGsZcXdrjmwFuJGuG2s+fBwFXoMvzfm0cMV/QwJOk3BK0TaqYNcVYF
-         Y3ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=C237qwozOvl8aPF+8xhmIlNpmWxUmRobeuzg2CJNr44=;
-        b=DuOVBAspNmw2BAviIQ+Spe9Zm55fCSsN5Wfn4VxpN8wwY/IfvYxohEntEEhUpg/eo5
-         fUbp5iaQin9A3L8Xkpi61F5naljMroLUMSqc0NQKlWXQV7L0f9ybtLLcAcvUx3qZxNr1
-         zQPruKN9apn7jiA31xIm5LAWoKp4roRPDknWT3J3V1q36vJGn+AKKr9u+HPaoSifibsd
-         lCfEoGYwO36MIdgZadQvI9OZkh3yV9HbB1n7JXiXFrWAfoRxJtLQRWYoe3PQWLwnbLwP
-         KA/q0dnx9B1c0tsby6KIOQE4Ep/o7F4J23rAACQ/sQ9gnuSxQ3sYgXDv16VukxcMlv6F
-         FV2g==
-X-Gm-Message-State: ACrzQf3gq4cYj/7RQjgSNnvbyaSK8VplD9BiHM5WSYCe3j3I2RDgCvQb
-        QCOFMPvg9yapfIuPnWA6wqZF629SCeZXYgvrzKQ=
-X-Google-Smtp-Source: AMsMyM5Wzb+D7h/EreAlhLLPx6MDCi30wWnhTJDrJZHV9AQPPKu7J6IrI5GX+FEg9+1OSeOnWC9bPco2G8YFUQrCjCY=
-X-Received: by 2002:a81:ecd:0:b0:345:6208:da9b with SMTP id
- 196-20020a810ecd000000b003456208da9bmr21131516ywo.3.1664214967814; Mon, 26
- Sep 2022 10:56:07 -0700 (PDT)
+        Mon, 26 Sep 2022 17:45:53 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25647A1D3D;
+        Mon, 26 Sep 2022 14:45:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 8BDB9CE13BB;
+        Mon, 26 Sep 2022 21:45:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C883C433D6;
+        Mon, 26 Sep 2022 21:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664228749;
+        bh=CjBZnKnRvKVBkZH0ayQHLmeuzpZ0FS7tRJi2S9thecw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=D/7/+gsOiT5VOoffv1GhrbJ7HbkA17xUM2kxSJnXb1lEuFbqh+dM17LX+PNbkYLQK
+         7+uPXMdl+E18Zq4WDFW0U0S+mAvzZcKhbgN1xwE3dDuTQC2WSnBG85mUQhC1dezQBI
+         BwRAxYGkSjcTqZ+6fPaNl0rxtxV0NBoqcZDCLIJYHhh5h9oFszjiTzgkct/2UryKqQ
+         Y0MbGJBLaROEDqiH6PfYt0IX8ZzH48NkXwCOpabGMHKI/fNqpr3I0OFibH2v3nIpIm
+         +HUFbnavzMNlnmqnN1dejk7Um3mWvgD0/Jul9qQjicl1AadckZtiSUP/6+jVgqhaJl
+         KYqKTnbt4OWTQ==
+Date:   Mon, 26 Sep 2022 16:45:45 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] crypto: talitos - Replace zero-length arrays with
+ DECLARE_FLEX_ARRAY() helper
+Message-ID: <YzIdiQLXup1qtf6l@work>
 MIME-Version: 1.0
-Received: by 2002:a05:7108:7150:0:0:0:0 with HTTP; Mon, 26 Sep 2022 10:56:07
- -0700 (PDT)
-Reply-To: pointerscott009@gmail.com
-From:   Abdulkareem Ademola <adeomoade123g@gmail.com>
-Date:   Mon, 26 Sep 2022 18:56:07 +0100
-Message-ID: <CALzsaxsQBTC+7XDzFanW-Ma1yKJ4NDGwPBKm=C5dyVACh9uJyA@mail.gmail.com>
-Subject: =?UTF-8?Q?Bussines_offer_Gesch=C3=A4ftsangebot=2E?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
+Zero-length arrays are deprecated and we are moving towards adopting
+C99 flexible-array members, instead. So, replace zero-length arrays
+declarations in anonymous union with the new DECLARE_FLEX_ARRAY()
+helper macro.
 
-Hello, Do you have a projects that need urgent loan??
-Granting out loans today in 10,000 / 500 Million to Interested
-Investors, Companies & Private Individuals.
-Revert back if you interested.
+This helper allows for flexible-array members in unions.
 
+Link: https://github.com/KSPP/linux/issues/193
+Link: https://github.com/KSPP/linux/issues/216
+Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/crypto/talitos.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hallo, haben Sie Projekte, die dringend einen Kredit ben=C3=B6tigen?
-Vergeben Sie heute Kredite in H=C3=B6he von 10.000 / 500 Millionen an
-interessierte Investoren, Unternehmen und Privatpersonen.
-Kommen Sie zur=C3=BCck, wenn Sie interessiert sind.
+diff --git a/drivers/crypto/talitos.h b/drivers/crypto/talitos.h
+index 32825119e880..1a93ee355929 100644
+--- a/drivers/crypto/talitos.h
++++ b/drivers/crypto/talitos.h
+@@ -65,8 +65,8 @@ struct talitos_edesc {
+ 	dma_addr_t dma_link_tbl;
+ 	struct talitos_desc desc;
+ 	union {
+-		struct talitos_ptr link_tbl[0];
+-		u8 buf[0];
++		DECLARE_FLEX_ARRAY(struct talitos_ptr, link_tbl);
++		DECLARE_FLEX_ARRAY(u8, buf);
+ 	};
+ };
+ 
+-- 
+2.34.1
+
