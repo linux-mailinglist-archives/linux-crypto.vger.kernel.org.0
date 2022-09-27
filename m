@@ -2,53 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A87305EBC47
-	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 09:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1345EBC57
+	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 09:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbiI0H53 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 27 Sep 2022 03:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        id S230192AbiI0H6J (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 27 Sep 2022 03:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbiI0H4Z (ORCPT
+        with ESMTP id S231490AbiI0H4w (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 27 Sep 2022 03:56:25 -0400
+        Tue, 27 Sep 2022 03:56:52 -0400
 Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E336AE208
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:55:58 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id z6so13717544wrq.1
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:55:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75CCAE211
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:55:59 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id l18so1693404wrw.9
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:55:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=ByxNWxvo3Qxto7Y23zUxo9nNTozJns03C6t8K9dbr0w=;
-        b=smDM3tVmVodbklwniS6svwjdSpY+WazEs7IMOFi/szLoLpZCBtsU0LaPuA4DGRTq2G
-         f7GR89ybjAYC3gqGtqbjvHzqPNO7mJfM9ElwTTrqXFaXCmNUBxGMNLKpsPjLJounan1n
-         oH2iHugPqHpLxlt9DWo84X6ZRu+8/hYjsfdDdmb0MAG2SN8KY9xFTiDvs6iXc4nsrOCj
-         qnlrbO409EbRm1Gs8D/bRvWAHq/4eg4ggxJ8YtxGTCGNW1Yk9f+uGh3oJykuhykyngGU
-         1/+WujnQ6e5920tsAFVNMCWlXIabCelZH9TYo4bTZ6qSRw2eRl/oh5K0CZFrUIl5hE0g
-         FP6A==
+        bh=0KerGvUzdejWLAwshDyy9ppWCWrJnFuYbHleK5z5lUU=;
+        b=tFZZkGLF12zpJ31kndQX4/eM+ARGjrnucK7XCQ8xEzjNs8rXqJXlW9DOiPgvta1cA0
+         Yy9+5gkNcMt20ahW61SdWn0goPxqolClL5ZlG+JTNs278lWWZq453BNrLGlUX/q/Z8mx
+         1LYi9+zNPagPwC71r/b8mMLvjoKFrQcG99vO5jCh+QgbOBn9ntWmGCYNEjZDvVCZmyj2
+         l4QUUuEbbcrs4NIHGKG9IwB9S9/nUTSwAzTFoPQYAZMneUoXm8ypujPZAKTJ7amhwD0e
+         P5wdhOt3nio9X2nmDhWLztkpWl5ax1AXyki3jhpErcshNVxIZXh2JEDgx4/mwoVzU/Ti
+         hBQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=ByxNWxvo3Qxto7Y23zUxo9nNTozJns03C6t8K9dbr0w=;
-        b=BlIWEBvwUk2UFFTFHWu/SfYW8cP/vbxptjqWX5Al5eLrgrURdNmRVf5PC2/TIeBozb
-         tUMUa5ttFUrL+v24+4RPwSPoVJ91EpKREEPZC5OlfRr1QR+rBBkg7+5aIXeMg/s5pmT9
-         m5W1iAheHIIA1xun/nlK6ts7OwYSvNdPA1nILVC8iHOZmrm/c114PB1MypUMueXnpq/1
-         2BJp3E7TTdQqbGafgbjkC0xnw/aGh+KGvPHc5PwPH5xZXCwAZ7HEJs4oSXsnZQ6jIuST
-         IyOeIZfe4uOYIH4x+0LKiK2lwJu7GmI//EBHTcf1JuLss6qo5nzztjarQ/4d7WjOGFbb
-         yfeA==
-X-Gm-Message-State: ACrzQf2HhJgHQ+R8CSWPgdgrY7EH9PHaY5T4D7etyzjwRe1K5US6jjkO
-        CUMnKWx9+pr8kNlFE6+IXoqPNg==
-X-Google-Smtp-Source: AMsMyM6O5wZXbjaZ9aq4z/59XpF6EWFYY42RyTPdnS8NuRkRp0uSP1jSqZUacleNqvVIk39tA6Mdcw==
-X-Received: by 2002:adf:df82:0:b0:228:e2cf:d20f with SMTP id z2-20020adfdf82000000b00228e2cfd20fmr16982503wrl.356.1664265358103;
-        Tue, 27 Sep 2022 00:55:58 -0700 (PDT)
+        bh=0KerGvUzdejWLAwshDyy9ppWCWrJnFuYbHleK5z5lUU=;
+        b=x3OB9aVTNDF88yEvVcR+vNhbtbB4funD7X+bstu6nDdZEHDRKApe7p1bGkp4Gr3218
+         ygGpTZPak2EfAb0WCpUxC13Ohru85dDSrwjPZ374soYFdRHk/bzNa+DRDTU/YVB+Cv4n
+         EYE7UU1UFYSOAgoQA5JKlvd31Uztlz9AqRr/WxwkJjatASUsaAO1YkdiTcHALapgwqjj
+         M5/6qvOpYah2XzCUdix7Pwh+QOnuR+6h2QT7y9hyQJoOElqKyoxRXQEfcZNeEfHbKiOQ
+         6pwUMg/BV97dJ/YMGSU+en3FU9KhR8aLycg372z/o3NoiHQWigF5EqEdVqeZRJJzMKWO
+         9QUg==
+X-Gm-Message-State: ACrzQf0VFAUQhGfsp5aoO0Ec6U2XbOujcvYUoVzuW2xRtHzoyFLIGMFK
+        mHK8DPN4svwqUzbO0EdX2ijIkQ==
+X-Google-Smtp-Source: AMsMyM7cTV+QeJCXQ/wabYGrCDeuge3SgCP1vYJoewZaxtGyOUU+Nm9KENJZ/QjBK8MeyIn1pqZGSQ==
+X-Received: by 2002:adf:9cd0:0:b0:22a:7cea:d3c3 with SMTP id h16-20020adf9cd0000000b0022a7cead3c3mr16728656wre.196.1664265359229;
+        Tue, 27 Sep 2022 00:55:59 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id x8-20020adfdcc8000000b0022afbd02c69sm1076654wrm.56.2022.09.27.00.55.56
+        by smtp.googlemail.com with ESMTPSA id x8-20020adfdcc8000000b0022afbd02c69sm1076654wrm.56.2022.09.27.00.55.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Sep 2022 00:55:57 -0700 (PDT)
+        Tue, 27 Sep 2022 00:55:58 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     heiko@sntech.de, ardb@kernel.org, davem@davemloft.net,
         herbert@gondor.apana.org.au, krzysztof.kozlowski+dt@linaro.org,
@@ -58,9 +58,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
         Corentin Labbe <clabbe@baylibre.com>,
         John Keeping <john@metanate.com>
-Subject: [PATCH v10 22/33] crypto: rockchip: use a rk_crypto_info variable instead of lot of indirection
-Date:   Tue, 27 Sep 2022 07:55:00 +0000
-Message-Id: <20220927075511.3147847-23-clabbe@baylibre.com>
+Subject: [PATCH v10 23/33] crypto: rockchip: use the rk_crypto_info given as parameter
+Date:   Tue, 27 Sep 2022 07:55:01 +0000
+Message-Id: <20220927075511.3147847-24-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220927075511.3147847-1-clabbe@baylibre.com>
 References: <20220927075511.3147847-1-clabbe@baylibre.com>
@@ -75,176 +75,36 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Instead of using lot of ctx->dev->xx indirections, use an intermediate
-variable for rk_crypto_info.
-This will help later, when 2 different rk_crypto_info would be used.
+Instead of using the crypto_info from TFM ctx, use the one given as parameter.
 
 Reviewed-by: John Keeping <john@metanate.com>
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/crypto/rockchip/rk3288_crypto_ahash.c | 23 +++++++-----
- .../crypto/rockchip/rk3288_crypto_skcipher.c  | 37 ++++++++++---------
- 2 files changed, 32 insertions(+), 28 deletions(-)
+ drivers/crypto/rockchip/rk3288_crypto_skcipher.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/rockchip/rk3288_crypto_ahash.c b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-index fae779d73c84..636dbcde0ca3 100644
---- a/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-+++ b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-@@ -226,9 +226,10 @@ static int rk_hash_prepare(struct crypto_engine *engine, void *breq)
- 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(areq);
- 	struct rk_ahash_rctx *rctx = ahash_request_ctx(areq);
- 	struct rk_ahash_ctx *tctx = crypto_ahash_ctx(tfm);
-+	struct rk_crypto_info *rkc = tctx->dev;
- 	int ret;
- 
--	ret = dma_map_sg(tctx->dev->dev, areq->src, sg_nents(areq->src), DMA_TO_DEVICE);
-+	ret = dma_map_sg(rkc->dev, areq->src, sg_nents(areq->src), DMA_TO_DEVICE);
- 	if (ret <= 0)
- 		return -EINVAL;
- 
-@@ -243,8 +244,9 @@ static int rk_hash_unprepare(struct crypto_engine *engine, void *breq)
- 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(areq);
- 	struct rk_ahash_rctx *rctx = ahash_request_ctx(areq);
- 	struct rk_ahash_ctx *tctx = crypto_ahash_ctx(tfm);
-+	struct rk_crypto_info *rkc = tctx->dev;
- 
--	dma_unmap_sg(tctx->dev->dev, areq->src, rctx->nrsg, DMA_TO_DEVICE);
-+	dma_unmap_sg(rkc->dev, areq->src, rctx->nrsg, DMA_TO_DEVICE);
- 	return 0;
- }
- 
-@@ -257,6 +259,7 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
- 	struct ahash_alg *alg = __crypto_ahash_alg(tfm->base.__crt_alg);
- 	struct rk_crypto_tmp *algt = container_of(alg, struct rk_crypto_tmp, alg.hash);
- 	struct scatterlist *sg = areq->src;
-+	struct rk_crypto_info *rkc = tctx->dev;
- 	int err = 0;
- 	int i;
- 	u32 v;
-@@ -283,13 +286,13 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
- 	rk_ahash_reg_init(areq);
- 
- 	while (sg) {
--		reinit_completion(&tctx->dev->complete);
--		tctx->dev->status = 0;
--		crypto_ahash_dma_start(tctx->dev, sg);
--		wait_for_completion_interruptible_timeout(&tctx->dev->complete,
-+		reinit_completion(&rkc->complete);
-+		rkc->status = 0;
-+		crypto_ahash_dma_start(rkc, sg);
-+		wait_for_completion_interruptible_timeout(&rkc->complete,
- 							  msecs_to_jiffies(2000));
--		if (!tctx->dev->status) {
--			dev_err(tctx->dev->dev, "DMA timeout\n");
-+		if (!rkc->status) {
-+			dev_err(rkc->dev, "DMA timeout\n");
- 			err = -EFAULT;
- 			goto theend;
- 		}
-@@ -306,10 +309,10 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
- 	 * efficiency, and make it response quickly when dma
- 	 * complete.
- 	 */
--	readl_poll_timeout(tctx->dev->reg + RK_CRYPTO_HASH_STS, v, v == 0, 10, 1000);
-+	readl_poll_timeout(rkc->reg + RK_CRYPTO_HASH_STS, v, v == 0, 10, 1000);
- 
- 	for (i = 0; i < crypto_ahash_digestsize(tfm) / 4; i++) {
--		v = readl(tctx->dev->reg + RK_CRYPTO_HASH_DOUT_0 + i * 4);
-+		v = readl(rkc->reg + RK_CRYPTO_HASH_DOUT_0 + i * 4);
- 		put_unaligned_le32(v, areq->result + i * 4);
- 	}
- 
 diff --git a/drivers/crypto/rockchip/rk3288_crypto_skcipher.c b/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
-index 3187869c4c68..6a1bea98fded 100644
+index 6a1bea98fded..cf0dfb6029d8 100644
 --- a/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
 +++ b/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
-@@ -303,6 +303,7 @@ static int rk_cipher_run(struct crypto_engine *engine, void *async_req)
- 	unsigned int todo;
- 	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
- 	struct rk_crypto_tmp *algt = container_of(alg, struct rk_crypto_tmp, alg.skcipher);
-+	struct rk_crypto_info *rkc = ctx->dev;
- 
- 	algt->stat_req++;
- 
-@@ -330,49 +331,49 @@ static int rk_cipher_run(struct crypto_engine *engine, void *async_req)
- 			scatterwalk_map_and_copy(biv, sgs, offset, ivsize, 0);
- 		}
- 		if (sgs == sgd) {
--			err = dma_map_sg(ctx->dev->dev, sgs, 1, DMA_BIDIRECTIONAL);
-+			err = dma_map_sg(rkc->dev, sgs, 1, DMA_BIDIRECTIONAL);
- 			if (err <= 0) {
- 				err = -EINVAL;
- 				goto theend_iv;
- 			}
- 		} else {
--			err = dma_map_sg(ctx->dev->dev, sgs, 1, DMA_TO_DEVICE);
-+			err = dma_map_sg(rkc->dev, sgs, 1, DMA_TO_DEVICE);
- 			if (err <= 0) {
- 				err = -EINVAL;
- 				goto theend_iv;
- 			}
--			err = dma_map_sg(ctx->dev->dev, sgd, 1, DMA_FROM_DEVICE);
-+			err = dma_map_sg(rkc->dev, sgd, 1, DMA_FROM_DEVICE);
- 			if (err <= 0) {
- 				err = -EINVAL;
- 				goto theend_sgs;
- 			}
- 		}
- 		err = 0;
--		rk_cipher_hw_init(ctx->dev, areq);
-+		rk_cipher_hw_init(rkc, areq);
- 		if (ivsize) {
- 			if (ivsize == DES_BLOCK_SIZE)
--				memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_IV_0, ivtouse, ivsize);
-+				memcpy_toio(rkc->reg + RK_CRYPTO_TDES_IV_0, ivtouse, ivsize);
- 			else
--				memcpy_toio(ctx->dev->reg + RK_CRYPTO_AES_IV_0, ivtouse, ivsize);
-+				memcpy_toio(rkc->reg + RK_CRYPTO_AES_IV_0, ivtouse, ivsize);
- 		}
--		reinit_completion(&ctx->dev->complete);
--		ctx->dev->status = 0;
-+		reinit_completion(&rkc->complete);
-+		rkc->status = 0;
- 
- 		todo = min(sg_dma_len(sgs), len);
- 		len -= todo;
--		crypto_dma_start(ctx->dev, sgs, sgd, todo / 4);
--		wait_for_completion_interruptible_timeout(&ctx->dev->complete,
-+		crypto_dma_start(rkc, sgs, sgd, todo / 4);
-+		wait_for_completion_interruptible_timeout(&rkc->complete,
- 							  msecs_to_jiffies(2000));
--		if (!ctx->dev->status) {
--			dev_err(ctx->dev->dev, "DMA timeout\n");
-+		if (!rkc->status) {
-+			dev_err(rkc->dev, "DMA timeout\n");
- 			err = -EFAULT;
- 			goto theend;
- 		}
- 		if (sgs == sgd) {
--			dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_BIDIRECTIONAL);
-+			dma_unmap_sg(rkc->dev, sgs, 1, DMA_BIDIRECTIONAL);
- 		} else {
--			dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_TO_DEVICE);
--			dma_unmap_sg(ctx->dev->dev, sgd, 1, DMA_FROM_DEVICE);
-+			dma_unmap_sg(rkc->dev, sgs, 1, DMA_TO_DEVICE);
-+			dma_unmap_sg(rkc->dev, sgd, 1, DMA_FROM_DEVICE);
- 		}
- 		if (rctx->mode & RK_CRYPTO_DEC) {
- 			memcpy(iv, biv, ivsize);
-@@ -405,10 +406,10 @@ static int rk_cipher_run(struct crypto_engine *engine, void *async_req)
- 
- theend_sgs:
- 	if (sgs == sgd) {
--		dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_BIDIRECTIONAL);
-+		dma_unmap_sg(rkc->dev, sgs, 1, DMA_BIDIRECTIONAL);
+@@ -254,7 +254,7 @@ static void rk_cipher_hw_init(struct rk_crypto_info *dev, struct skcipher_reques
+ 			     RK_CRYPTO_TDES_BYTESWAP_KEY |
+ 			     RK_CRYPTO_TDES_BYTESWAP_IV;
+ 		CRYPTO_WRITE(dev, RK_CRYPTO_TDES_CTRL, rctx->mode);
+-		memcpy_toio(ctx->dev->reg + RK_CRYPTO_TDES_KEY1_0, ctx->key, ctx->keylen);
++		memcpy_toio(dev->reg + RK_CRYPTO_TDES_KEY1_0, ctx->key, ctx->keylen);
+ 		conf_reg = RK_CRYPTO_DESSEL;
  	} else {
--		dma_unmap_sg(ctx->dev->dev, sgs, 1, DMA_TO_DEVICE);
--		dma_unmap_sg(ctx->dev->dev, sgd, 1, DMA_FROM_DEVICE);
-+		dma_unmap_sg(rkc->dev, sgs, 1, DMA_TO_DEVICE);
-+		dma_unmap_sg(rkc->dev, sgd, 1, DMA_FROM_DEVICE);
+ 		rctx->mode |= RK_CRYPTO_AES_FIFO_MODE |
+@@ -266,7 +266,7 @@ static void rk_cipher_hw_init(struct rk_crypto_info *dev, struct skcipher_reques
+ 		else if (ctx->keylen == AES_KEYSIZE_256)
+ 			rctx->mode |= RK_CRYPTO_AES_256BIT_key;
+ 		CRYPTO_WRITE(dev, RK_CRYPTO_AES_CTRL, rctx->mode);
+-		memcpy_toio(ctx->dev->reg + RK_CRYPTO_AES_KEY_0, ctx->key, ctx->keylen);
++		memcpy_toio(dev->reg + RK_CRYPTO_AES_KEY_0, ctx->key, ctx->keylen);
  	}
- theend_iv:
- 	return err;
+ 	conf_reg |= RK_CRYPTO_BYTESWAP_BTFIFO |
+ 		    RK_CRYPTO_BYTESWAP_BRFIFO;
 -- 
 2.35.1
 
