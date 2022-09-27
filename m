@@ -2,52 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6705EBCB9
-	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 10:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9628F5EBCBD
+	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 10:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbiI0IHk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 27 Sep 2022 04:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S231633AbiI0IH4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 27 Sep 2022 04:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbiI0IHX (ORCPT
+        with ESMTP id S231728AbiI0IHb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 27 Sep 2022 04:07:23 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B4FF34C6
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:01:52 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id i203-20020a1c3bd4000000b003b3df9a5ecbso8916919wma.1
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:01:52 -0700 (PDT)
+        Tue, 27 Sep 2022 04:07:31 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A3510F736
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:01:55 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id x18so13689998wrm.7
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=Lbh/c4vCkGtXonzdpXdp4XQ0sSxf7/y8kx7FY8V2Teo=;
-        b=BPWFqeFE/urWJLLIaffyOd62/9aionydmnuP+9XMmZJffpqDs6QmZ/24AkuJ3D7N84
-         ByyBfct8LiRIIoyZDV3HMUi2jYHyTutDESS42723sHZikNFRK4kLjyTW/USb2BUiQ62r
-         DZTlUdoqciHoSoHPfhYhnuY1IOWe2MO+E9yVo8TRCi7jNRkAgWWpDJ0pogSk9WnIPWa1
-         P0iLnnUs45yJhQOHL96REtFFMBQ1EkGWklMdv6M8YzSldMPZ6WWoUbFiM+BcJyE74VrK
-         qLR8yhFB4nqn/2R2RSy2y/GnCP3+Yl5J9YPCOuS85oryBpOs39PYU5ik7ebJy8oeIWOr
-         bd2Q==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=66ISj6OAwBdZy2WsaubsZZCEn9jiwURYi2fgqCIpC8s=;
+        b=1mqntLJxFl8NL2Eg+2hgPmHlQC9P332VFuEA4I5cg7lCW8RiNRotgeet1cvFVizxT7
+         Lnw2h3k1leHID1TT7fALHv5NVlS77N+oOVIooyILUJPpq0e4DpVxiq6RtylXUGaH4x3l
+         NH3CetRm4L+2bMxE67XiVAaclpmbFuYpubyXxywFvK5BqG8pgIeH6s7hmUVCZjj4jTpe
+         L5JnGg1/Bs+VKCl2gI44hO2/0TjpGO+rLt1XPBBgW0+M4u6R3ZMIU86Dp1l3yh6z6nPJ
+         lNKulyDwWNx275A3Vd0lLOz7B4837DbEsuozSM4/z4o0SvC9bxWE+iUbGu/xIlG8H0dO
+         Zy3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=Lbh/c4vCkGtXonzdpXdp4XQ0sSxf7/y8kx7FY8V2Teo=;
-        b=QMg5/+BHtT2hsy52DA4QhqW/ne1DZiOMIR39Jx+ezngkXF+wErk7PJPUBZk/QDxBc+
-         kGxj/ksadaqcIO8YBzWYAbjG8+uSOFpGxoZKZti9agL1VLAxFg4BClD1T3+0N3Bh7Y5H
-         ABDxrQ2oxE4clqKURSkm9yPifBDx0M18XdqSxGgzwwIKuxS1VmaiYgrZLEytcPzJ2lPN
-         Nj+w3CBXiBpcRPrsIIVB1OMQRi/MSZ47h2/u1CKcvfIq4JHLJGcPyuMTJFEgTp4CnScA
-         D0n0VEf3Z+cMNyueupG+h5PHQDRuknL+PWI4EsKdhAD6XmjdIpqYzlsEyQM+92WB2VXU
-         bamA==
-X-Gm-Message-State: ACrzQf0au5ID7TUwrvD6bVT1Z6sOOJusjTGK5dVYGO7w5UoBPnNbdBT1
-        ISFpquhagNhTM9c7MCceyMlnww==
-X-Google-Smtp-Source: AMsMyM4F+y88kC71sg139FfgxCHot0WplCztNaRCYtlq/L2u4WA2oLX8IoD9BEP1Q6eR5bWasJoqmg==
-X-Received: by 2002:a7b:ce08:0:b0:3b4:ff9b:3d89 with SMTP id m8-20020a7bce08000000b003b4ff9b3d89mr1639769wmc.31.1664265666615;
-        Tue, 27 Sep 2022 01:01:06 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=66ISj6OAwBdZy2WsaubsZZCEn9jiwURYi2fgqCIpC8s=;
+        b=ohz4x0z4UYD0PkldYid0s06YVRZJibgXhVFZTmlHZRaXXtGlJHh7JVmj+HREii31kq
+         EDQO2lOn/rdol408fyYZ2hVOP2r1fJNOO+af7AnDSafK+zpBmqDMNdeeV7fhXvkkjPrJ
+         PYsSQ7v53YsmXzLvOy5mTLFriCnEJ/v0AjTaWGkpuiBu6qYN0lZGDD/paDY+0MUSX4S7
+         ztl0ZAVYeCWPqH7a+I1tSJOdAdUWCFUl1/vu5T1xTmMBRTa3srkSn7XhiwD/Xe1wQ9OT
+         4Fk9mq3mkcsMh2C7nVUa7YaPECjoqaEdAiq/L0BstYIqujrGkusoAgEZbAvSc8vyRYFG
+         BDIw==
+X-Gm-Message-State: ACrzQf1IYoo5GCnrViR2ktobm9CyKtg0QDO4r5GqYq5s7JKc78cBIt+L
+        0GkYDdY/1bx9xlloTwdMfqlnzQ==
+X-Google-Smtp-Source: AMsMyM44jzPbkv/qWHVlKZx1LuvcjcsjkuXaATAdw37jBdECmPALd0aMe5J1f3w/V2LKB3PJT3Zdzg==
+X-Received: by 2002:a05:6000:1f9d:b0:22a:fc9b:435c with SMTP id bw29-20020a0560001f9d00b0022afc9b435cmr15644239wrb.667.1664265667657;
+        Tue, 27 Sep 2022 01:01:07 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id p4-20020a1c5444000000b003a5c7a942edsm13357199wmi.28.2022.09.27.01.01.05
+        by smtp.googlemail.com with ESMTPSA id p4-20020a1c5444000000b003a5c7a942edsm13357199wmi.28.2022.09.27.01.01.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Sep 2022 01:01:05 -0700 (PDT)
+        Tue, 27 Sep 2022 01:01:07 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     heiko@sntech.de, davem@davemloft.net, herbert@gondor.apana.org.au,
         krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org
@@ -55,61 +56,130 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT 0/5] crypto: rockchip: add crypto offloader V2
-Date:   Tue, 27 Sep 2022 08:00:43 +0000
-Message-Id: <20220927080048.3151911-1-clabbe@baylibre.com>
+Subject: [PATCH RFT 1/5] crypto: rockchip: move kconfig to its dedicated directory
+Date:   Tue, 27 Sep 2022 08:00:44 +0000
+Message-Id: <20220927080048.3151911-2-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220927080048.3151911-1-clabbe@baylibre.com>
+References: <20220927080048.3151911-1-clabbe@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello
+Move all rockchip kconfig in its own subdirectory.
 
-Rockchip rk3568 and rk3588 have a common crypto offloader IP different
-than rk3228 one.
-I started to work the driver for this IP on a rk3588 based board, but this SoC
-is still not upstream.
-So it is why I send this serie asking for test since I own no rk3568 and
-I need to be sure datasheet is right.
-
-Note: I keeped all rk3588 reference intentionaly, but probably it will need to
-be removed until this SoC was upstream.
-
-Regards
-
-Corentin Labbe (5):
-  crypto: rockchip: move kconfig to its dedicated directory
-  dt-bindings: crypto: add support for rockchip,crypto-rk3588
-  MAINTAINERS: add new dt-binding doc to the right entry
-  crypto: rockchip: support the new crypto IP for rk3568/rk3588
-  ARM64: dts: rk3568: add crypto node
-
- .../crypto/rockchip,rk3588-crypto.yaml        |  71 ++
- MAINTAINERS                                   |   1 +
- arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  14 +
- drivers/crypto/Kconfig                        |  32 +-
- drivers/crypto/Makefile                       |   2 +-
- drivers/crypto/rockchip/Kconfig               |  56 ++
- drivers/crypto/rockchip/Makefile              |   5 +
- drivers/crypto/rockchip/rk3588_crypto.c       | 646 ++++++++++++++++++
- drivers/crypto/rockchip/rk3588_crypto.h       | 221 ++++++
- drivers/crypto/rockchip/rk3588_crypto_ahash.c | 346 ++++++++++
- .../crypto/rockchip/rk3588_crypto_skcipher.c  | 340 +++++++++
- 11 files changed, 1703 insertions(+), 31 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/crypto/rockchip,rk3588-crypto.yaml
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/crypto/Kconfig          | 32 ++------------------------------
+ drivers/crypto/Makefile         |  2 +-
+ drivers/crypto/rockchip/Kconfig | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+), 31 deletions(-)
  create mode 100644 drivers/crypto/rockchip/Kconfig
- create mode 100644 drivers/crypto/rockchip/rk3588_crypto.c
- create mode 100644 drivers/crypto/rockchip/rk3588_crypto.h
- create mode 100644 drivers/crypto/rockchip/rk3588_crypto_ahash.c
- create mode 100644 drivers/crypto/rockchip/rk3588_crypto_skcipher.c
 
+diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+index 2947888d3b82..96c5b8060db0 100644
+--- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -646,6 +646,8 @@ config CRYPTO_DEV_QCOM_RNG
+ 	  To compile this driver as a module, choose M here. The
+ 	  module will be called qcom-rng. If unsure, say N.
+ 
++source "drivers/crypto/rockchip/Kconfig"
++
+ config CRYPTO_DEV_VMX
+ 	bool "Support for VMX cryptographic acceleration instructions"
+ 	depends on PPC64 && VSX
+@@ -666,36 +668,6 @@ config CRYPTO_DEV_IMGTEC_HASH
+ 	  hardware hash accelerator. Supporting MD5/SHA1/SHA224/SHA256
+ 	  hashing algorithms.
+ 
+-config CRYPTO_DEV_ROCKCHIP
+-	tristate "Rockchip's Cryptographic Engine driver"
+-	depends on OF && ARCH_ROCKCHIP
+-	depends on PM
+-	select CRYPTO_ECB
+-	select CRYPTO_CBC
+-	select CRYPTO_DES
+-	select CRYPTO_AES
+-	select CRYPTO_ENGINE
+-	select CRYPTO_LIB_DES
+-	select CRYPTO_MD5
+-	select CRYPTO_SHA1
+-	select CRYPTO_SHA256
+-	select CRYPTO_HASH
+-	select CRYPTO_SKCIPHER
+-
+-	help
+-	  This driver interfaces with the hardware crypto accelerator.
+-	  Supporting cbc/ecb chainmode, and aes/des/des3_ede cipher mode.
+-
+-config CRYPTO_DEV_ROCKCHIP_DEBUG
+-	bool "Enable Rockchip crypto stats"
+-	depends on CRYPTO_DEV_ROCKCHIP
+-	depends on DEBUG_FS
+-	help
+-	  Say y to enable Rockchip crypto debug stats.
+-	  This will create /sys/kernel/debug/rk3288_crypto/stats for displaying
+-	  the number of requests per algorithm and other internal stats.
+-
+-
+ config CRYPTO_DEV_ZYNQMP_AES
+ 	tristate "Support for Xilinx ZynqMP AES hw accelerator"
+ 	depends on ZYNQMP_FIRMWARE || COMPILE_TEST
+diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
+index 116de173a66c..7a9c627a09c6 100644
+--- a/drivers/crypto/Makefile
++++ b/drivers/crypto/Makefile
+@@ -36,7 +36,7 @@ obj-$(CONFIG_CRYPTO_DEV_PPC4XX) += amcc/
+ obj-$(CONFIG_CRYPTO_DEV_QAT) += qat/
+ obj-$(CONFIG_CRYPTO_DEV_QCE) += qce/
+ obj-$(CONFIG_CRYPTO_DEV_QCOM_RNG) += qcom-rng.o
+-obj-$(CONFIG_CRYPTO_DEV_ROCKCHIP) += rockchip/
++obj-y += rockchip/
+ obj-$(CONFIG_CRYPTO_DEV_S5P) += s5p-sss.o
+ obj-$(CONFIG_CRYPTO_DEV_SA2UL) += sa2ul.o
+ obj-$(CONFIG_CRYPTO_DEV_SAHARA) += sahara.o
+diff --git a/drivers/crypto/rockchip/Kconfig b/drivers/crypto/rockchip/Kconfig
+new file mode 100644
+index 000000000000..1010d897d9ef
+--- /dev/null
++++ b/drivers/crypto/rockchip/Kconfig
+@@ -0,0 +1,28 @@
++config CRYPTO_DEV_ROCKCHIP
++	tristate "Rockchip's Cryptographic Engine driver"
++	depends on OF && ARCH_ROCKCHIP
++	depends on PM
++	select CRYPTO_ECB
++	select CRYPTO_CBC
++	select CRYPTO_DES
++	select CRYPTO_AES
++	select CRYPTO_ENGINE
++	select CRYPTO_LIB_DES
++	select CRYPTO_MD5
++	select CRYPTO_SHA1
++	select CRYPTO_SHA256
++	select CRYPTO_HASH
++	select CRYPTO_SKCIPHER
++
++	help
++	  This driver interfaces with the hardware crypto accelerator.
++	  Supporting cbc/ecb chainmode, and aes/des/des3_ede cipher mode.
++
++config CRYPTO_DEV_ROCKCHIP_DEBUG
++	bool "Enable Rockchip crypto stats"
++	depends on CRYPTO_DEV_ROCKCHIP
++	depends on DEBUG_FS
++	help
++	  Say y to enable Rockchip crypto debug stats.
++	  This will create /sys/kernel/debug/rk3288_crypto/stats for displaying
++	  the number of requests per algorithm and other internal stats.
 -- 
 2.35.1
 
