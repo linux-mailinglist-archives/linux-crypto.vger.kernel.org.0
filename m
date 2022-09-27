@@ -2,66 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334185EBCC0
-	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 10:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986E35EBDD8
+	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 10:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbiI0IH6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 27 Sep 2022 04:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        id S231151AbiI0I4K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 27 Sep 2022 04:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbiI0IHb (ORCPT
+        with ESMTP id S231245AbiI0I4H (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 27 Sep 2022 04:07:31 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87641AF0ED
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:02:00 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id n10so13654140wrw.12
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:02:00 -0700 (PDT)
+        Tue, 27 Sep 2022 04:56:07 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90F120349
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:56:05 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id z13-20020a7bc7cd000000b003b5054c6f9bso8469334wmk.2
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 01:56:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=k3Uie5pxkgijukjmsxCrYCPs7jEPbo3aKWq5eUqCVmA=;
-        b=atrB2K6hZteWnvzbPkbVoOb6uaiXmiR3AyWDp/KoYcRjXAeCmkNgkEscK/WeMsu4B/
-         DbnQLJ7+Atl/C9djjI/Z4TBfY33e67mCqc7PoP65Ry1dATFWrYzhG16let04hYYRE1C4
-         552SG6rUw2D9uWXZSWWgkVMWsSciEpfO2yArasPWPYahvhA+IUHG2Ys2Sy2T/MM0VwzJ
-         1u8vTYqO56bCWIqp0vZSjtPUGicxle0VpFrkLicOXJKZoPr8j9aQBvkJod6gdLTLJjYB
-         Sdf6tyirbY/0u5uAqqPJp9tEY9/GS7ec4NTkyzr2mKUhrnTdMKOrkJIoTpTmsbQ0wfy9
-         i2YA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=bEQ+cO4PtSvPHzqNY25Rk57cl8sc42zs+u1n/Vf8KZg=;
+        b=XOIvxDxpY8g1tcDM9f3ZfJNAfiXKalsyBRMkO6YU1eeQ2kIfWL9DQ/j4zmvwazNZXd
+         UNhVd6jnOgv6MD0rqH548Mf7l5ZwaPA+gZcqeoo11t+0ZSW48HUgNQCUqLYNXP4D3ApU
+         rK5ZKovFnxJcUiwkzVx5J3oyBaGbsA/tY8pIDSvvHhtye8mlL0iQCBEocGUALy5WNhLF
+         81ZbVXHb6EHFRL6r56Xw204S7+CQghY04kYmyHf4Xku82mUumsYbb/Vgq75I3NSA7/D+
+         FFGBUbdvbGmUgZPuvD2FNKg2Z2sXHjsrYEmgiudPo0+Vp/mQU8D/Xs57iktslVuXYj/n
+         AmvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=k3Uie5pxkgijukjmsxCrYCPs7jEPbo3aKWq5eUqCVmA=;
-        b=4pkahvq0o0qpiVWRXthENB2PFH0liSFvd8H+0lkF7F7wUjkZBsRW1pXBCn2V6Wmh7y
-         9RzuCw0O2UPXcK0J6uPvNkawIQ42vkTY67e6jqW9cU47PU8151Res5vX0xbAhjqBC8m6
-         7jX3XUJfz0li4i8dL2oU5mc+oTy2H9tWz5fG8vEwrYjVWCIjDBbbEUwCc1CbcM19R7Xb
-         /M1Kcd8uf6ozuvsb2obIiiUn28B1VvoivRAugEdu8GjLpI8EHE00jrdD7WGcBe/QWgNL
-         mpz1HnECcXwF+7yp2Zq/cFlawItZUB5hcTaBPFkz7Xs0d29fzE5te6i3vFNAcgxDhLdb
-         lbUA==
-X-Gm-Message-State: ACrzQf27dE9GTBj2U0BGQCRJZ4gUnKbhFyCMypZeGuM+VEJRfigqwhpy
-        rCAFJe5q/Bpyuydg8VX61B/31Q==
-X-Google-Smtp-Source: AMsMyM7Nsk7GUy0Dn+s5dXjE9WoMQoVO5BreYgsM9yVfqjD93GEr6OzmJ9TbwoNWDiPStSCfSr/OMA==
-X-Received: by 2002:a5d:6484:0:b0:226:dd0e:b09c with SMTP id o4-20020a5d6484000000b00226dd0eb09cmr16103248wri.388.1664265671924;
-        Tue, 27 Sep 2022 01:01:11 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=bEQ+cO4PtSvPHzqNY25Rk57cl8sc42zs+u1n/Vf8KZg=;
+        b=NWce/Z73fbxQ/uDzUO01G9xAfzyXZgTD4tRT9zaFkw3vaTkLdhlbGnAmCko793WX5K
+         qNXqgAjzGMhh4NMBCzcvAzcSLNDfZ4QmmkjdPXG7zTL5KBfEhMF9vjDjG55WzfUWmQN2
+         OwleLlJ6KUzaB8pPI9SG1Vl1jZ/zOnqKQ4fFmM/eQunDXeVZ9XIlO4H5tbQguImPueyj
+         C5ISnexu8PySgB+FUInrHHFUtRRN7TPdE7iiwF1UWb5OVxF8lehDY25+fwX9ELBFqTQN
+         IiJapwuft22Xs39IUreP6xvLC8/GPl5IPB+nkzZEFdAFmoVOWEc+6m8nh5zcWXqrpMRa
+         LJ4w==
+X-Gm-Message-State: ACrzQf3QEL5N42g0D7jSJQVElKkmXgXpWs/zMgJRCOwYoRzxdhbvboD4
+        lEMrVAPgNhWXzoHkSfrzdljYMQ==
+X-Google-Smtp-Source: AMsMyM6dnWsD/C8sFek13thSn84HTvLHGHHhfLDclUX5OEqJ+U7Jyg5vYkgBcr7E1Hl6m25sd9Tbcw==
+X-Received: by 2002:a05:600c:310b:b0:3b4:c618:180d with SMTP id g11-20020a05600c310b00b003b4c618180dmr1773755wmo.25.1664268964293;
+        Tue, 27 Sep 2022 01:56:04 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id p4-20020a1c5444000000b003a5c7a942edsm13357199wmi.28.2022.09.27.01.01.10
+        by smtp.googlemail.com with ESMTPSA id t126-20020a1c4684000000b003b505d26776sm13183734wma.5.2022.09.27.01.56.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Sep 2022 01:01:11 -0700 (PDT)
+        Tue, 27 Sep 2022 01:56:03 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
-To:     heiko@sntech.de, davem@davemloft.net, herbert@gondor.apana.org.au,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT 5/5] ARM64: dts: rk3568: add crypto node
-Date:   Tue, 27 Sep 2022 08:00:48 +0000
-Message-Id: <20220927080048.3151911-6-clabbe@baylibre.com>
+To:     dan.carpenter@oracle.com, davem@davemloft.net,
+        herbert@gondor.apana.org.au, jernej.skrabec@gmail.com,
+        samuel@sholland.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-sunxi@googlegroups.com, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] crypto: allwinner: sun8i-ss: use dma_addr instead u32
+Date:   Tue, 27 Sep 2022 08:55:55 +0000
+Message-Id: <20220927085555.3196257-1-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220927080048.3151911-1-clabbe@baylibre.com>
-References: <20220927080048.3151911-1-clabbe@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,39 +70,28 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The rk3568 has a crypto IP handled by the rk3588 crypto driver so adds a
-node for it.
+The DMA address need to be stored in a dma_addr_t
 
+Fixes: 359e893e8af4 ("crypto: sun8i-ss - rework handling of IV")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3568.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-index ba67b58f05b7..62432297f234 100644
---- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-@@ -211,6 +211,20 @@ gmac0_mtl_tx_setup: tx-queues-config {
- 		};
- 	};
+diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
+index 910d6751644c..902f6be057ec 100644
+--- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
++++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
+@@ -124,7 +124,7 @@ static int sun8i_ss_setup_ivs(struct skcipher_request *areq)
+ 	unsigned int ivsize = crypto_skcipher_ivsize(tfm);
+ 	struct sun8i_ss_flow *sf = &ss->flows[rctx->flow];
+ 	int i = 0;
+-	u32 a;
++	dma_addr_t a;
+ 	int err;
  
-+	crypto: crypto@fe380000 {
-+		compatible = "rockchip,rk3568-crypto";
-+		reg = <0x0 0xfe380000 0x0 0x2000>;
-+		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru ACLK_CRYPTO_NS>, <&cru HCLK_CRYPTO_NS>,
-+			 <&cru CLK_CRYPTO_NS_CORE>, <&cru CLK_CRYPTO_NS_PKA>;
-+		clock-names = "aclk", "hclk", "sclk", "pka";
-+		resets = <&cru SRST_CRYPTO_NS_CORE>, <&cru SRST_A_CRYPTO_NS>,
-+			<&cru SRST_H_CRYPTO_NS>, <&cru SRST_CRYPTO_NS_RNG>,
-+			<&cru SRST_CRYPTO_NS_PKA>;
-+		reset-names = "core", "a", "h", "rng,", "pka";
-+		status = "okay";
-+	};
-+
- 	combphy0: phy@fe820000 {
- 		compatible = "rockchip,rk3568-naneng-combphy";
- 		reg = <0x0 0xfe820000 0x0 0x100>;
+ 	rctx->ivlen = ivsize;
 -- 
 2.35.1
 
