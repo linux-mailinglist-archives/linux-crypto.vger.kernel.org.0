@@ -2,53 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DC65EBCA0
-	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 10:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023A25EBC62
+	for <lists+linux-crypto@lfdr.de>; Tue, 27 Sep 2022 09:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbiI0IBp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 27 Sep 2022 04:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
+        id S231425AbiI0H61 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 27 Sep 2022 03:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbiI0IAn (ORCPT
+        with ESMTP id S231515AbiI0H5X (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 27 Sep 2022 04:00:43 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D911BB14E3
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:56:53 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id i203-20020a1c3bd4000000b003b3df9a5ecbso8909084wma.1
-        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:56:53 -0700 (PDT)
+        Tue, 27 Sep 2022 03:57:23 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FE9AE9F4
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:56:10 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id t4so5974803wmj.5
+        for <linux-crypto@vger.kernel.org>; Tue, 27 Sep 2022 00:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=/HcULCDUWUOb7zL9pkaT5teTJK7hgsOh6ToY9+UZMac=;
-        b=7lLd0LEwj1X7XZMWENgGR2iUtmd3mQmo2CkvfLT1Mil4cjHHSmbIOAFJ01jDjX5pC2
-         80mHdhoD/49EcCspvFrffQgX7nO5s1eAmwz/zW1oF1+4qCyv+rqFmnXWNwY+BO387Gf4
-         c5YqFAiAl06up8ol/ZCBtqk+LeuQ3I0nJhxgKA9WL53Bm9r0qMcc6CUHnK46ySVDGmh/
-         WGD1wirGtNiXPQZH5euvBPGCiNBqOgq2uzwBFySI5vjSCVy1mLRT3xrOu/h1BiImqXTf
-         YQluU1dzfcWu4077Henz279+fKNBb0/CL6eBoe/ZGy1dH9iJ722p5K8Gz95MwWulnpdv
-         qydA==
+        bh=z10vTtQ4qHSJZ9nRrmQY5lLp9Bvyc0G2kDbemdDveLc=;
+        b=SUtWt/yKk8dwQYXBM4pX0YSAMwhU0ggta2eQ2yzWE3hZuzbqcAra+8iI1B43bIaLde
+         2A5pKkjX7yk/Ek7bmehuqmQsmxxHC7tGVGUTB9P3weCNedcwxv2TbavFR7/94cJMiKBg
+         GDLHG/gw8KymsHp402S2SKJ57hI1Crk1V/vmJGaSqUcOMlE808U4gcA+45+bv29Mlo9v
+         cczjPNLpUfrYxoQcled6pr02jRD8OzLNZX4rqOuu+AKIEvyECAACnj7lKco/su8KTFtV
+         ICkdHA72mnoM156gkzmBCTRv/g55zJuHF437s8jfbVy+bPoJly6lTWmH2el8NhUSvFCT
+         o6yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=/HcULCDUWUOb7zL9pkaT5teTJK7hgsOh6ToY9+UZMac=;
-        b=3AFRNCejDBiAfx2DxU2enR/drdc3IwxJsljPem/YF8imW+MrOaiCjB8/UmOl7VTfA5
-         nAH1nX8GmtMhMSzH3mNi1fqKBleGsUeo6QSRr1g6yYDYKboUR8JAleWq3agpzhQod6ug
-         23u51oGNgp2eVF2D41P8mrGhRpUeaGO7k0uNDElC42vNvA/28X+NIRMr5eX/PeEBGi+L
-         rEAd1kE8r5KEmD61Fim2SsJqZ6bjH6237wBmi7ms1X/VxcG7zsj5g5SZWRGPLdz+l8v3
-         I+4TIDxsR9q91+h7TsQHOKHP+pakcizuuK3cbbRDx4R98j1anysZArH93jC6t2+NrEb6
-         jg+w==
-X-Gm-Message-State: ACrzQf0EffzAC6KfFbYA10AXlz1LGKb7ffEixzyVXN0Y+sY3xGtCiyUF
-        kfPgds/5uNq67wgIXE0qV4Qqtw==
-X-Google-Smtp-Source: AMsMyM4MKhcqcAW8tXr2t2zLzf0IU90hIT+K9JixREHhebzInhta7AbKkldKQKBi2KsiRvbjvtU36w==
-X-Received: by 2002:a7b:c051:0:b0:3a6:36fc:8429 with SMTP id u17-20020a7bc051000000b003a636fc8429mr1572126wmc.78.1664265368752;
-        Tue, 27 Sep 2022 00:56:08 -0700 (PDT)
+        bh=z10vTtQ4qHSJZ9nRrmQY5lLp9Bvyc0G2kDbemdDveLc=;
+        b=cr+pRUNjmJfT7fs2k3pFhfFBQ4sXARwhdYBVQ4DF/zGMw0gPXrOytluKpJXDJujpV7
+         MZMjaGy/UHFpX25jahGbMeNDoRwL1REL1JQBMh9zxhE6suTDK7KAGQ2ix29L4rocgA6F
+         5dstloTG6AuhqMVomUHvQwnIFHeFZCg7IQHQqdi4wLt1oMivIATdmZ+znpJ1q7XnmHcs
+         JeJCNGUzL1672g35wDXAudF48rTfxbWY154fQ0bEZrPidpnrLAcVbp6FEpfYr38YMTTC
+         iHlSL2vMNs/+8QWRFsbhaIpXs23/YCuP39hL0uHcS+/rOkUkKRWsBai4uDKUDJkhEySf
+         E27A==
+X-Gm-Message-State: ACrzQf2ygKT2czcp8j34aRoBmBwRfeVrQG2iyzgD4E1FQ93D0qfgTupM
+        wKfy1no9bRY6b5xT68RNOadqlA==
+X-Google-Smtp-Source: AMsMyM4BaygUsH/WyeQVQo3CW9varbVyVY8PtLnBUqF7L7qtyzWYzthtkrR1qRH4omU72F2l8jzJYA==
+X-Received: by 2002:a05:600c:1c03:b0:3b4:618b:5d14 with SMTP id j3-20020a05600c1c0300b003b4618b5d14mr1534048wms.59.1664265369832;
+        Tue, 27 Sep 2022 00:56:09 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id x8-20020adfdcc8000000b0022afbd02c69sm1076654wrm.56.2022.09.27.00.56.07
+        by smtp.googlemail.com with ESMTPSA id x8-20020adfdcc8000000b0022afbd02c69sm1076654wrm.56.2022.09.27.00.56.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Sep 2022 00:56:08 -0700 (PDT)
+        Tue, 27 Sep 2022 00:56:09 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     heiko@sntech.de, ardb@kernel.org, davem@davemloft.net,
         herbert@gondor.apana.org.au, krzysztof.kozlowski+dt@linaro.org,
@@ -57,59 +57,44 @@ Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v10 31/33] crypto: rockchip: rk_ahash_reg_init use crypto_info from parameter
-Date:   Tue, 27 Sep 2022 07:55:09 +0000
-Message-Id: <20220927075511.3147847-32-clabbe@baylibre.com>
+Subject: [PATCH v10 32/33] crypto: rockchip: permit to have more than one reset
+Date:   Tue, 27 Sep 2022 07:55:10 +0000
+Message-Id: <20220927075511.3147847-33-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220927075511.3147847-1-clabbe@baylibre.com>
 References: <20220927075511.3147847-1-clabbe@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-rk_ahash_reg_init() use crypto_info from TFM context, since we will
-remove it, let's take if from parameters.
+The RK3399 has 3 resets, so the driver to handle multiple resets.
+This is done by using devm_reset_control_array_get_exclusive().
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/crypto/rockchip/rk3288_crypto_ahash.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/crypto/rockchip/rk3288_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/rockchip/rk3288_crypto_ahash.c b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-index d1bf68cb390d..30f78256c955 100644
---- a/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-+++ b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-@@ -78,12 +78,10 @@ static int zero_message_process(struct ahash_request *req)
- 	return 0;
- }
- 
--static void rk_ahash_reg_init(struct ahash_request *req)
-+static void rk_ahash_reg_init(struct ahash_request *req,
-+			      struct rk_crypto_info *dev)
- {
- 	struct rk_ahash_rctx *rctx = ahash_request_ctx(req);
--	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
--	struct rk_ahash_ctx *tctx = crypto_ahash_ctx(tfm);
--	struct rk_crypto_info *dev = tctx->dev;
- 	int reg_status;
- 
- 	reg_status = CRYPTO_READ(dev, RK_CRYPTO_CTRL) |
-@@ -281,7 +279,7 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
- 		goto theend;
+diff --git a/drivers/crypto/rockchip/rk3288_crypto.c b/drivers/crypto/rockchip/rk3288_crypto.c
+index 232dc625d6e5..d96f375423d5 100644
+--- a/drivers/crypto/rockchip/rk3288_crypto.c
++++ b/drivers/crypto/rockchip/rk3288_crypto.c
+@@ -281,7 +281,7 @@ static int rk_crypto_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
--	rk_ahash_reg_init(areq);
-+	rk_ahash_reg_init(areq, rkc);
- 
- 	while (sg) {
- 		reinit_completion(&rkc->complete);
+-	crypto_info->rst = devm_reset_control_get(dev, "crypto-rst");
++	crypto_info->rst = devm_reset_control_array_get_exclusive(dev);
+ 	if (IS_ERR(crypto_info->rst)) {
+ 		err = PTR_ERR(crypto_info->rst);
+ 		goto err_crypto;
 -- 
 2.35.1
 
