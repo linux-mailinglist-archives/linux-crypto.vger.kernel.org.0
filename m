@@ -2,78 +2,58 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4230C5ED67A
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 Sep 2022 09:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5FA5ED6D8
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 Sep 2022 09:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbiI1Hk4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 28 Sep 2022 03:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        id S233875AbiI1HxQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 28 Sep 2022 03:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbiI1HkK (ORCPT
+        with ESMTP id S233752AbiI1Hwd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 28 Sep 2022 03:40:10 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913D31162C7;
-        Wed, 28 Sep 2022 00:38:21 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guanjun@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VQv.eer_1664350697;
-Received: from localhost(mailfrom:guanjun@linux.alibaba.com fp:SMTPD_---0VQv.eer_1664350697)
-          by smtp.aliyun-inc.com;
-          Wed, 28 Sep 2022 15:38:18 +0800
-From:   'Guanjun' <guanjun@linux.alibaba.com>
-To:     herbert@gondor.apana.org.au, elliott@hpe.com
-Cc:     zelin.deng@linux.alibaba.com, guanjun@linux.alibaba.com,
-        xuchun.shang@linux.alibaba.com, artie.ding@linux.alibaba.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 9/9] MAINTAINERS: Add Yitian Cryptography Complex (YCC) driver maintainer entry
-Date:   Wed, 28 Sep 2022 15:38:07 +0800
-Message-Id: <1664350687-47330-10-git-send-email-guanjun@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1664350687-47330-1-git-send-email-guanjun@linux.alibaba.com>
-References: <1664350687-47330-1-git-send-email-guanjun@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 28 Sep 2022 03:52:33 -0400
+Received: from fornost.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815DB1D13A0;
+        Wed, 28 Sep 2022 00:51:21 -0700 (PDT)
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1odRqZ-009Jqj-Dv; Wed, 28 Sep 2022 17:51:12 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 28 Sep 2022 15:51:11 +0800
+Date:   Wed, 28 Sep 2022 15:51:11 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ignat Korchagin <ignat@cloudflare.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lei he <helei.sig11@bytedance.com>, kernel-team@cloudflare.com
+Subject: Re: [PATCH 0/4] crypto: add ECDSA signature support to key retention
+ service
+Message-ID: <YzP87+27tWPGFCcQ@gondor.apana.org.au>
+References: <20220908200036.2034-1-ignat@cloudflare.com>
+ <Yy6wqqVpUCeQKrdh@gondor.apana.org.au>
+ <CALrw=nG3UUL9e37AnFq3Q25-ApW+EHAfWNJDw+pwE0vNLUtxrA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALrw=nG3UUL9e37AnFq3Q25-ApW+EHAfWNJDw+pwE0vNLUtxrA@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Zelin Deng <zelin.deng@linux.alibaba.com>
+On Tue, Sep 27, 2022 at 10:18:14PM +0100, Ignat Korchagin wrote:
+.
+> Should I resend patches 1-2 here and maybe 3-4 to the linux-keyrings
+> mailing list?
 
-I will continue to add new feature, optimize the performance,
-and handle the issues of Yitian Cryptography Complex (YCC) driver.
+I need acks to patches 3-4 because without a user we don't add
+new algorithms to the Crypto API.
 
-Guanjun and Xuchun Shang focus on various algorithms support, add them as
-co-maintainers.
-
-Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-Acked-by: Guanjun <guanjun@linux.alibaba.com>
-Acked-by: Xuchun Shang <xuchun.shang@linux.alibaba.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 56ff555..ffededc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -943,6 +943,14 @@ S:	Supported
- F:	drivers/crypto/ccp/sev*
- F:	include/uapi/linux/psp-sev.h
- 
-+ALIBABA YITIAN CRYPTOGRAPHY COMPLEX (YCC) ACCELERATOR DRIVER
-+M:	Zelin Deng <zelin.deng@linux.alibaba.com>
-+M:	Guanjun <guanjun@linux.alibaba.com>
-+M:	Xuchun Shang <xuchun.shang@linux.alibaba.com>
-+L:	ali-accel@list.alibaba-inc.com
-+S:	Supported
-+F:	drivers/crypto/ycc/
-+
- AMD DISPLAY CORE
- M:	Harry Wentland <harry.wentland@amd.com>
- M:	Leo Li <sunpeng.li@amd.com>
+Thanks,
 -- 
-1.8.3.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
