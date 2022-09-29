@@ -2,79 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9FF5EFFF3
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Sep 2022 00:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E7D5F0144
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Sep 2022 01:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbiI2WPj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 29 Sep 2022 18:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
+        id S229536AbiI2XRD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 29 Sep 2022 19:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbiI2WPi (ORCPT
+        with ESMTP id S229530AbiI2XRC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 29 Sep 2022 18:15:38 -0400
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3618AF50AF;
-        Thu, 29 Sep 2022 15:15:37 -0700 (PDT)
-Received: by mail-oi1-f181.google.com with SMTP id s125so3032069oie.4;
-        Thu, 29 Sep 2022 15:15:37 -0700 (PDT)
+        Thu, 29 Sep 2022 19:17:02 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE185153A50
+        for <linux-crypto@vger.kernel.org>; Thu, 29 Sep 2022 16:17:01 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id v1so2503295plo.9
+        for <linux-crypto@vger.kernel.org>; Thu, 29 Sep 2022 16:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date;
+        bh=qr160bjFvsMQlapQ9mf0vDQHXjbJ+J3zHuO0hmuVucE=;
+        b=d4Ie18zgl1mqAmp2j1hAyfVKBgVbpIgefckHSgmGuoTlpYi9pAFchCsngJZ2UfO00n
+         hMh2NA2ryxIHdC/EC+EoeWsV43vIAz6JXyihlFAnM0j/uK+r1l6lqKjvp9EsKDzK12FT
+         k3alvcJJAoe6VFnBSulMVZoVhpanGLeDsbM1udNdg4kDEKmvVOyR4DjCJaP5Itq86Alc
+         kVaaJ17guGDo0rQfDkzytj+3Lsv4bp4ANNrcFUp6XuSwXhqBFezzXNWQdjIjjgFP7toU
+         7VYBs0C2iYbdTSVTYdlFLSj75EznOICFNpK4A2EmgMKWG/u7+rZONyAgv+Cklp1xfxU5
+         tkSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=4BfKtAN74BiuLXzY75ghMuhJ1sBHsY4RPott4OBX9j8=;
-        b=Mm19t192ciYXmvGNJr/bx1kAXjYqPK65s9InjF2an94OQls3osMlRU2eB6BZQzUO5y
-         HAyBxQizcSxNntKAkGS3Sv8C8tyomDpp5z6PQGgCJHYN0wwYGeF0JQuXqvIYpiv20Y26
-         TOylEbQujFiCBvcxtxFTSWB0+bw33FyhfuSKpAdZKhPo/TqyJu60qA+wb/vg6gqCPGnf
-         P+mVh7o4/mcZULeG2/BLLeNxg86J5OiHQtbdfckDXsaQ9quUKsrX/SvNrz+fSNHW/dXC
-         cGIbAur4MooE47HR0Hy6J3TmJEfkWNcP/auZNiJ5qU9hCgXtgnDmlq+WazPOVq36Wyep
-         1EXQ==
-X-Gm-Message-State: ACrzQf2XeDr9nQq4cw7O3AYbtJYueP9RklhamU8zVIfI38PDmdt7fSjP
-        9HqtJrq0M38GEnLqrxQArA==
-X-Google-Smtp-Source: AMsMyM793Cd8u3q+sjWrpJjjLQ0fbvmUagt931/u0RIvCAWtOjG21n+skk3xFBtXE3Ry/fZOtKPL0Q==
-X-Received: by 2002:a05:6808:d46:b0:350:cba9:1981 with SMTP id w6-20020a0568080d4600b00350cba91981mr7922656oik.130.1664489736371;
-        Thu, 29 Sep 2022 15:15:36 -0700 (PDT)
-Received: from macbook.herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id x65-20020a9d37c7000000b0065bf42c967fsm210418otb.19.2022.09.29.15.15.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Sep 2022 15:15:35 -0700 (PDT)
-Received: (nullmailer pid 2863698 invoked by uid 1000);
-        Thu, 29 Sep 2022 22:15:35 -0000
-Date:   Thu, 29 Sep 2022 17:15:35 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        herbert@gondor.apana.org.au, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        heiko@sntech.de, davem@davemloft.net,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH RFT 2/5] dt-bindings: crypto: add support for
- rockchip,crypto-rk3588
-Message-ID: <166448973449.2863631.5987990052207072258.robh@kernel.org>
-References: <20220927080048.3151911-1-clabbe@baylibre.com>
- <20220927080048.3151911-3-clabbe@baylibre.com>
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=qr160bjFvsMQlapQ9mf0vDQHXjbJ+J3zHuO0hmuVucE=;
+        b=5C92ou4ihvxN2/MY3AFFIKkuJG/LGR6+Otyd2At5YGfe/H1f9EkmAPdxlbbvA9vieY
+         ssI0GwdigKY98Q9ucZGRn/E30hASK5W1CABZWmNvviJwfaPAvH8rfxBswwaakJxfl2cK
+         0VpRUJEXiXqWVk3jLFwF1YRE3IfiGj4UFRfZWl9ugxpWRvYu0gkedXM9uQqMkvUXgefr
+         hVZZbWTLgngPEe7MZ+rQbGWL6E+zvlNjaIrQUZidnYGL64Glh5PIYvDtasQAa7ISh8qA
+         +5ThzmHR+g8+K0QLNO45833Jc4jK+SHQiRIBBrY6Wey1Ec0FWCPdAJBwg41WHvZCvU2L
+         nJvQ==
+X-Gm-Message-State: ACrzQf3F1j1vP/tVdnE9oRcuvB1XWcvEDOArUgu4L7yle6jTbeR8zqiC
+        zVrtOoCQZxbnxztYuQajOtAnTnYrCBHqlF8Vhp8=
+X-Google-Smtp-Source: AMsMyM6aSytt2r4PJcZkxKipI5oKoaolyAPwGsC4bZPXUeWB2Xh3nCmEaqq0yhyhs9bXfE7XAcsz5j2/MfXEtooL4/I=
+X-Received: by 2002:a17:90b:4c50:b0:202:c7b1:b1f9 with SMTP id
+ np16-20020a17090b4c5000b00202c7b1b1f9mr19017414pjb.77.1664493421301; Thu, 29
+ Sep 2022 16:17:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220927080048.3151911-3-clabbe@baylibre.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Sender: laurahaver36@gmail.com
+Received: by 2002:a05:7300:d28:b0:6f:3883:cc14 with HTTP; Thu, 29 Sep 2022
+ 16:17:00 -0700 (PDT)
+From:   Maya Williamson <mayawillmson@gmail.com>
+Date:   Thu, 29 Sep 2022 23:17:00 +0000
+X-Google-Sender-Auth: 6TcW1VL3pzk-lsqROM4Z-sNl_HM
+Message-ID: <CAHco0c4=4dG9MHUug71sRixVFdj0-KtBuFB0iz3Y92PzgJLYzg@mail.gmail.com>
+Subject: gk
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 27 Sep 2022 08:00:45 +0000, Corentin Labbe wrote:
-> Add device tree binding documentation for the Rockchip cryptographic
-> offloader V2.
-> 
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> ---
->  .../crypto/rockchip,rk3588-crypto.yaml        | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/crypto/rockchip,rk3588-crypto.yaml
-> 
+-- 
+Mr,
+I want to speak with you.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I'm Maya.
+
+
+
+Maya
