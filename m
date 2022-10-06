@@ -2,276 +2,226 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 985715F712B
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Oct 2022 00:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3649F5F71DA
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Oct 2022 01:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbiJFWdF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 6 Oct 2022 18:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        id S232290AbiJFXhL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 6 Oct 2022 19:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231644AbiJFWcv (ORCPT
+        with ESMTP id S232217AbiJFXhF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 6 Oct 2022 18:32:51 -0400
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5360C183EE9;
-        Thu,  6 Oct 2022 15:32:40 -0700 (PDT)
-Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 296LnmM3028576;
-        Thu, 6 Oct 2022 22:32:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=ndNOQqnDYieYfKjG+Qoea1ejqGoDU1XlffrmRRYeio0=;
- b=H08juEmk79ucPnqWUTDRL+jxWw+p8pbC5dZoMApglOz3bRlvILd7PeL4f4a/gwy8HTIi
- EPzT2fnKFXl6lIsXBOwuZrVX55MRqk+DVXFawnMTI5wfckYwN0WhV+vd1Ek+4X5Gnc3T
- oV/dFApBfnOPvUU7//6JX62JqaTaB14zrzSgj3xwwezEjFDbyGSCPVEziTBtMoh4nTq2
- BP054m5ckuGHpoAHMWWjdx7dw9kR9SvMPLrepktm5E+6+tqPUswcRrmnAGXsD82f+ZqP
- FtWz3KHIvDBR/7dNYwuJ5+uDGYHLqndXJQTH5UuC36Objm7RJQVSzsF5QKIpB9WIIbSG wA== 
-Received: from p1lg14880.it.hpe.com (p1lg14880.it.hpe.com [16.230.97.201])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3k27950a2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Oct 2022 22:32:36 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Thu, 6 Oct 2022 19:37:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F03EEB7E1;
+        Thu,  6 Oct 2022 16:37:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by p1lg14880.it.hpe.com (Postfix) with ESMTPS id EA73D806B41;
-        Thu,  6 Oct 2022 22:32:30 +0000 (UTC)
-Received: from adevxp033-sys.us.rdlabs.hpecorp.net (unknown [16.231.227.36])
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id A2560807F19;
-        Thu,  6 Oct 2022 22:32:30 +0000 (UTC)
-From:   Robert Elliott <elliott@hpe.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tim.c.chen@linux.intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Elliott <elliott@hpe.com>
-Subject: [RFC PATCH 7/7] crypto: x86 - use common macro for FPU limit
-Date:   Thu,  6 Oct 2022 17:31:51 -0500
-Message-Id: <20221006223151.22159-8-elliott@hpe.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20221006223151.22159-1-elliott@hpe.com>
-References: <20221006223151.22159-1-elliott@hpe.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id B07B7B821EA;
+        Thu,  6 Oct 2022 23:37:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08300C433C1;
+        Thu,  6 Oct 2022 23:36:59 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="IOQ1bXhF"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1665099413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eDWvYu+uSvuLU1D2yrcps4Uxg3s4afpQR1DZP1HAENk=;
+        b=IOQ1bXhFd3q9+RqlaN9MoWoMb9hyeq0A9ZZHsjT7H7aJth5PyzgIFsO5RZ+IGkqpoVM4vs
+        G1fhQ2wIq1VD89DBIQN9w7YwWxcZC7kUxAooqITvAEdpg/3zs8L5I8+aGBoP4EPhTcYjjM
+        7a1SFu0rQgOf0f04kGQaSuHs/qYIRR4=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e1098d12 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 6 Oct 2022 23:36:53 +0000 (UTC)
+Received: by mail-vs1-f44.google.com with SMTP id h4so3494548vsr.11;
+        Thu, 06 Oct 2022 16:36:52 -0700 (PDT)
+X-Gm-Message-State: ACrzQf1TOlBL9WnO/NrZIZyjGBn5ukDeQw/0ECGPpkR+WaKxQK8erd/2
+        /cQN6L+VjtaxFvYQwZI/iE1XpRFjd/wCVAQO/xs=
+X-Google-Smtp-Source: AMsMyM5tvZWHSrcOLtkY/lX0Q7Qvr/oXlGj5vIRT4adjylKOfvaHnErU8AKkQNdqtGo/HZJDgntpViQRNpApZtsIptY=
+X-Received: by 2002:a05:6102:2908:b0:398:ac40:d352 with SMTP id
+ cz8-20020a056102290800b00398ac40d352mr1292105vsb.55.1665099409449; Thu, 06
+ Oct 2022 16:36:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: s2EqSClVPHeR83IWeMZ0ZM2Rxs6EgdAQ
-X-Proofpoint-GUID: s2EqSClVPHeR83IWeMZ0ZM2Rxs6EgdAQ
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-06_05,2022-10-06_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 spamscore=0 bulkscore=0
- clxscore=1015 priorityscore=1501 malwarescore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210060133
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ab0:6ed0:0:b0:3d9:6dfd:499 with HTTP; Thu, 6 Oct 2022
+ 16:36:48 -0700 (PDT)
+In-Reply-To: <6396875c-146a-acf5-dd9e-7f93ba1b4bc3@csgroup.eu>
+References: <20221006165346.73159-1-Jason@zx2c4.com> <20221006165346.73159-4-Jason@zx2c4.com>
+ <848ed24c-13ef-6c38-fd13-639b33809194@csgroup.eu> <CAHmME9raQ4E00r9r8NyWJ17iSXE_KniTG0onCNAfMmfcGar1eg@mail.gmail.com>
+ <f10fcfbf-2da6-cf2d-6027-fbf8b52803e9@csgroup.eu> <6396875c-146a-acf5-dd9e-7f93ba1b4bc3@csgroup.eu>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Thu, 6 Oct 2022 17:36:48 -0600
+X-Gmail-Original-Message-ID: <CAHmME9pE4saqnwxhsAwt-xegYGjsavPOGnHCbZhUXD7kaJ+GAA@mail.gmail.com>
+Message-ID: <CAHmME9pE4saqnwxhsAwt-xegYGjsavPOGnHCbZhUXD7kaJ+GAA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] treewide: use get_random_u32() when possible
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Airlie <airlied@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Graf <tgraf@suug.ch>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use a common macro name (FPU_BYTES) for the limit of the number of bytes
-processed within kernel_fpu_begin and kernel_fpu_end rather than
-using SZ_4K (which is a signed value), or a magic value of 4096U.
+On 10/6/22, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+>
+>
+> Le 06/10/2022 =C3=A0 19:31, Christophe Leroy a =C3=A9crit :
+>>
+>>
+>> Le 06/10/2022 =C3=A0 19:24, Jason A. Donenfeld a =C3=A9crit :
+>>> Hi Christophe,
+>>>
+>>> On Thu, Oct 6, 2022 at 11:21 AM Christophe Leroy
+>>> <christophe.leroy@csgroup.eu> wrote:
+>>>> Le 06/10/2022 =C3=A0 18:53, Jason A. Donenfeld a =C3=A9crit :
+>>>>> The prandom_u32() function has been a deprecated inline wrapper aroun=
+d
+>>>>> get_random_u32() for several releases now, and compiles down to the
+>>>>> exact same code. Replace the deprecated wrapper with a direct call to
+>>>>> the real function. The same also applies to get_random_int(), which i=
+s
+>>>>> just a wrapper around get_random_u32().
+>>>>>
+>>>>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>>>>> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk> # for sch_c=
+ake
+>>>>> Acked-by: Chuck Lever <chuck.lever@oracle.com> # for nfsd
+>>>>> Reviewed-by: Jan Kara <jack@suse.cz> # for ext4
+>>>>> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+>>>>> ---
+>>>>
+>>>>> diff --git a/arch/powerpc/kernel/process.c
+>>>>> b/arch/powerpc/kernel/process.c
+>>>>> index 0fbda89cd1bb..9c4c15afbbe8 100644
+>>>>> --- a/arch/powerpc/kernel/process.c
+>>>>> +++ b/arch/powerpc/kernel/process.c
+>>>>> @@ -2308,6 +2308,6 @@ void notrace __ppc64_runlatch_off(void)
+>>>>>    unsigned long arch_align_stack(unsigned long sp)
+>>>>>    {
+>>>>>        if (!(current->personality & ADDR_NO_RANDOMIZE) &&
+>>>>> randomize_va_space)
+>>>>> -             sp -=3D get_random_int() & ~PAGE_MASK;
+>>>>> +             sp -=3D get_random_u32() & ~PAGE_MASK;
+>>>>>        return sp & ~0xf;
+>>>>
+>>>> Isn't that a candidate for prandom_u32_max() ?
+>>>>
+>>>> Note that sp is deemed to be 16 bytes aligned at all time.
+>>>
+>>> Yes, probably. It seemed non-trivial to think about, so I didn't. But
+>>> let's see here... maybe it's not too bad:
+>>>
+>>> If PAGE_MASK is always ~(PAGE_SIZE-1), then ~PAGE_MASK is
+>>> (PAGE_SIZE-1), so prandom_u32_max(PAGE_SIZE) should yield the same
+>>> thing? Is that accurate? And holds across platforms (this comes up a
+>>> few places)? If so, I'll do that for a v4.
+>>>
+>>
+>> On powerpc it is always (from arch/powerpc/include/asm/page.h) :
+>>
+>> /*
+>>   * Subtle: (1 << PAGE_SHIFT) is an int, not an unsigned long. So if we
+>>   * assign PAGE_MASK to a larger type it gets extended the way we want
+>>   * (i.e. with 1s in the high bits)
+>>   */
+>> #define PAGE_MASK      (~((1 << PAGE_SHIFT) - 1))
+>>
+>> #define PAGE_SIZE        (1UL << PAGE_SHIFT)
+>>
+>>
+>> So it would work I guess.
+>
+> But taking into account that sp must remain 16 bytes aligned, would it
+> be better to do something like ?
+>
+> 	sp -=3D prandom_u32_max(PAGE_SIZE >> 4) << 4;
+>
+> 	return sp;
 
-Use unsigned int rather than size_t for some of the arguments to
-avoid typecasting for the min() macro.
+Does this assume that sp is already aligned at the beginning of the
+function? I'd assume from the function's name that this isn't the
+case?
 
-Signed-off-by: Robert Elliott <elliott@hpe.com>
----
- arch/x86/crypto/blake2s-glue.c         |  7 ++++---
- arch/x86/crypto/chacha_glue.c          |  4 +++-
- arch/x86/crypto/nhpoly1305-avx2-glue.c |  3 ++-
- arch/x86/crypto/nhpoly1305-sse2-glue.c |  4 +++-
- arch/x86/crypto/poly1305_glue.c        | 25 ++++++++++++++-----------
- arch/x86/crypto/polyval-clmulni_glue.c |  5 +++--
- 6 files changed, 29 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/crypto/blake2s-glue.c b/arch/x86/crypto/blake2s-glue.c
-index a88522e4d0f8..02b72d29dc9b 100644
---- a/arch/x86/crypto/blake2s-glue.c
-+++ b/arch/x86/crypto/blake2s-glue.c
-@@ -18,6 +18,8 @@
- #include <asm/processor.h>
- #include <asm/simd.h>
- 
-+#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
-+
- asmlinkage void blake2s_compress_ssse3(struct blake2s_state *state,
- 				       const u8 *block, const size_t nblocks,
- 				       const u32 inc);
-@@ -31,8 +33,7 @@ static __ro_after_init DEFINE_STATIC_KEY_FALSE(blake2s_use_avx512);
- void blake2s_compress(struct blake2s_state *state, const u8 *block,
- 		      size_t nblocks, const u32 inc)
- {
--	/* SIMD disables preemption, so relax after processing each page. */
--	BUILD_BUG_ON(SZ_4K / BLAKE2S_BLOCK_SIZE < 8);
-+	BUILD_BUG_ON(FPU_BYTES / BLAKE2S_BLOCK_SIZE < 8);
- 
- 	if (!static_branch_likely(&blake2s_use_ssse3) || !may_use_simd()) {
- 		blake2s_compress_generic(state, block, nblocks, inc);
-@@ -41,7 +42,7 @@ void blake2s_compress(struct blake2s_state *state, const u8 *block,
- 
- 	do {
- 		const size_t blocks = min_t(size_t, nblocks,
--					    SZ_4K / BLAKE2S_BLOCK_SIZE);
-+					    FPU_BYTES / BLAKE2S_BLOCK_SIZE);
- 
- 		kernel_fpu_begin();
- 		if (IS_ENABLED(CONFIG_AS_AVX512) &&
-diff --git a/arch/x86/crypto/chacha_glue.c b/arch/x86/crypto/chacha_glue.c
-index feb53e90f0e3..40ddd0ce50d6 100644
---- a/arch/x86/crypto/chacha_glue.c
-+++ b/arch/x86/crypto/chacha_glue.c
-@@ -18,6 +18,8 @@
- #include <asm/cpu_device_id.h>
- #include <asm/simd.h>
- 
-+#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
-+
- asmlinkage void chacha_block_xor_ssse3(u32 *state, u8 *dst, const u8 *src,
- 				       unsigned int len, int nrounds);
- asmlinkage void chacha_4block_xor_ssse3(u32 *state, u8 *dst, const u8 *src,
-@@ -150,7 +152,7 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
- 		return chacha_crypt_generic(state, dst, src, bytes, nrounds);
- 
- 	do {
--		unsigned int todo = min_t(unsigned int, bytes, SZ_4K);
-+		unsigned int todo = min(bytes, FPU_BYTES);
- 
- 		kernel_fpu_begin();
- 		chacha_dosimd(state, dst, src, todo, nrounds);
-diff --git a/arch/x86/crypto/nhpoly1305-avx2-glue.c b/arch/x86/crypto/nhpoly1305-avx2-glue.c
-index 68cf24213e1c..7e65ccd86f75 100644
---- a/arch/x86/crypto/nhpoly1305-avx2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-avx2-glue.c
-@@ -16,6 +16,7 @@
- #include <asm/cpu_device_id.h>
- #include <asm/simd.h>
- 
-+#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
- 
- asmlinkage void nh_avx2(const u32 *key, const u8 *message, size_t message_len,
- 			u8 hash[NH_HASH_BYTES]);
-@@ -34,7 +35,7 @@ static int nhpoly1305_avx2_update(struct shash_desc *desc,
- 		return crypto_nhpoly1305_update(desc, src, srclen);
- 
- 	do {
--		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
-+		unsigned int n = min(srclen, FPU_BYTES);
- 
- 		kernel_fpu_begin();
- 		crypto_nhpoly1305_update_helper(desc, src, n, _nh_avx2);
-diff --git a/arch/x86/crypto/nhpoly1305-sse2-glue.c b/arch/x86/crypto/nhpoly1305-sse2-glue.c
-index 75c324253b37..4f35b52e21f0 100644
---- a/arch/x86/crypto/nhpoly1305-sse2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-sse2-glue.c
-@@ -16,6 +16,8 @@
- #include <asm/cpu_device_id.h>
- #include <asm/simd.h>
- 
-+#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
-+
- asmlinkage void nh_sse2(const u32 *key, const u8 *message, size_t message_len,
- 			u8 hash[NH_HASH_BYTES]);
- 
-@@ -33,7 +35,7 @@ static int nhpoly1305_sse2_update(struct shash_desc *desc,
- 		return crypto_nhpoly1305_update(desc, src, srclen);
- 
- 	do {
--		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
-+		unsigned int n = min(srclen, FPU_BYTES);
- 
- 		kernel_fpu_begin();
- 		crypto_nhpoly1305_update_helper(desc, src, n, _nh_sse2);
-diff --git a/arch/x86/crypto/poly1305_glue.c b/arch/x86/crypto/poly1305_glue.c
-index 59d0b01b3389..c036315dbd39 100644
---- a/arch/x86/crypto/poly1305_glue.c
-+++ b/arch/x86/crypto/poly1305_glue.c
-@@ -18,20 +18,24 @@
- #include <asm/intel-family.h>
- #include <asm/simd.h>
- 
-+#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
-+
- asmlinkage void poly1305_init_x86_64(void *ctx,
- 				     const u8 key[POLY1305_BLOCK_SIZE]);
- asmlinkage void poly1305_blocks_x86_64(void *ctx, const u8 *inp,
--				       const size_t len, const u32 padbit);
-+				       const unsigned int len,
-+				       const u32 padbit);
- asmlinkage void poly1305_emit_x86_64(void *ctx, u8 mac[POLY1305_DIGEST_SIZE],
- 				     const u32 nonce[4]);
- asmlinkage void poly1305_emit_avx(void *ctx, u8 mac[POLY1305_DIGEST_SIZE],
- 				  const u32 nonce[4]);
--asmlinkage void poly1305_blocks_avx(void *ctx, const u8 *inp, const size_t len,
--				    const u32 padbit);
--asmlinkage void poly1305_blocks_avx2(void *ctx, const u8 *inp, const size_t len,
--				     const u32 padbit);
-+asmlinkage void poly1305_blocks_avx(void *ctx, const u8 *inp,
-+				    const unsigned int len, const u32 padbit);
-+asmlinkage void poly1305_blocks_avx2(void *ctx, const u8 *inp,
-+				     const unsigned int len, const u32 padbit);
- asmlinkage void poly1305_blocks_avx512(void *ctx, const u8 *inp,
--				       const size_t len, const u32 padbit);
-+				       const unsigned int len,
-+				       const u32 padbit);
- 
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(poly1305_use_avx);
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(poly1305_use_avx2);
-@@ -89,14 +93,13 @@ static void poly1305_simd_init(void *ctx, const u8 key[POLY1305_BLOCK_SIZE])
- 	poly1305_init_x86_64(ctx, key);
- }
- 
--static void poly1305_simd_blocks(void *ctx, const u8 *inp, size_t len,
-+static void poly1305_simd_blocks(void *ctx, const u8 *inp, unsigned int len,
- 				 const u32 padbit)
- {
- 	struct poly1305_arch_internal *state = ctx;
- 
--	/* SIMD disables preemption, so relax after processing each page. */
--	BUILD_BUG_ON(SZ_4K < POLY1305_BLOCK_SIZE ||
--		     SZ_4K % POLY1305_BLOCK_SIZE);
-+	BUILD_BUG_ON(FPU_BYTES < POLY1305_BLOCK_SIZE ||
-+		     FPU_BYTES % POLY1305_BLOCK_SIZE);
- 
- 	if (!static_branch_likely(&poly1305_use_avx) ||
- 	    (len < (POLY1305_BLOCK_SIZE * 18) && !state->is_base2_26) ||
-@@ -107,7 +110,7 @@ static void poly1305_simd_blocks(void *ctx, const u8 *inp, size_t len,
- 	}
- 
- 	do {
--		const size_t bytes = min_t(size_t, len, SZ_4K);
-+		const unsigned int bytes = min(len, FPU_BYTES);
- 
- 		kernel_fpu_begin();
- 		if (IS_ENABLED(CONFIG_AS_AVX512) && static_branch_likely(&poly1305_use_avx512))
-diff --git a/arch/x86/crypto/polyval-clmulni_glue.c b/arch/x86/crypto/polyval-clmulni_glue.c
-index b7664d018851..2502964afef6 100644
---- a/arch/x86/crypto/polyval-clmulni_glue.c
-+++ b/arch/x86/crypto/polyval-clmulni_glue.c
-@@ -29,6 +29,8 @@
- 
- #define NUM_KEY_POWERS	8
- 
-+#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
-+
- struct polyval_tfm_ctx {
- 	/*
- 	 * These powers must be in the order h^8, ..., h^1.
-@@ -123,8 +125,7 @@ static int polyval_x86_update(struct shash_desc *desc,
- 	}
- 
- 	while (srclen >= POLYVAL_BLOCK_SIZE) {
--		/* Allow rescheduling every 4K bytes. */
--		nblocks = min(srclen, 4096U) / POLYVAL_BLOCK_SIZE;
-+		nblocks = min(srclen, FPU_BYTES) / POLYVAL_BLOCK_SIZE;
- 		internal_polyval_update(tctx, src, nblocks, dctx->buffer);
- 		srclen -= nblocks * POLYVAL_BLOCK_SIZE;
- 		src += nblocks * POLYVAL_BLOCK_SIZE;
--- 
-2.37.3
-
+Jason
