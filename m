@@ -2,80 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3695FC84B
-	for <lists+linux-crypto@lfdr.de>; Wed, 12 Oct 2022 17:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F8A5FC91E
+	for <lists+linux-crypto@lfdr.de>; Wed, 12 Oct 2022 18:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbiJLPVa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Oct 2022 11:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        id S229958AbiJLQWk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 Oct 2022 12:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbiJLPV3 (ORCPT
+        with ESMTP id S230011AbiJLQWb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Oct 2022 11:21:29 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101F7DD886;
-        Wed, 12 Oct 2022 08:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1665588082;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=YIHasWTRuNMrnwJtbfmb3Tp7u61kv2WGbfpow4gG9/w=;
-    b=Ylm3PXFWtnzC6bE9VBzHCPvyvKoVszSqWNSamPecx4chnPt6Am6g61FBnKwW+3E5OX
-    scPD9Wjb3SnRygPoGAI0t1LoVF+Qw7sWHGkEIH5jjVqa3dv/m0aejlfrNVhENRd/D1fR
-    mNicX5uBKl0SHRoFRaQEW//7gsOUMPfI4zzo0P9CgosKMBCDTt2eyG6rT2lGWWNtK+i/
-    78fCz/MuYjtMnEggENzp0C4AeRBWrZBj5vEMvID5dFPrzyVz0TycnJUeVLUC/+OdQ38u
-    EBNzLPjrc/ObDbR0CwqkI3Y6Z1+1zHE/tN+zj7ve0rQTLb+W+NpvZORqfbPJrHCIhDXP
-    aOrw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaJfSfIdNJ"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 48.2.0 DYNA|AUTH)
-    with ESMTPSA id za5fe3y9CFLLGJi
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 12 Oct 2022 17:21:21 +0200 (CEST)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Frederick Lawler <fred@cloudflare.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net, hch@lst.de,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        kernel-team@cloudflare.com, Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [RFC PATCH 1/1] crypto: af_alg - Support symmetric encryption via keyring keys
-Date:   Wed, 12 Oct 2022 17:21:21 +0200
-Message-ID: <6063928.z1iD19Vvxs@tauon.chronox.de>
-In-Reply-To: <cc5c3efe-7dc3-65d6-d7d9-761bfc2c9711@cloudflare.com>
-References: <20221004212927.1539105-1-fred@cloudflare.com> <Y0X3L/jhinCqJXxj@sol.localdomain> <cc5c3efe-7dc3-65d6-d7d9-761bfc2c9711@cloudflare.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        Wed, 12 Oct 2022 12:22:31 -0400
+Received: from smtp.cesky-hosting.cz (smtp.cesky-hosting.cz [IPv6:2a00:1ed0:2:0:1:5bef:c8ee:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EEEF41BD;
+        Wed, 12 Oct 2022 09:22:20 -0700 (PDT)
+X-Virus-Scanned: Debian amavisd-new at smtp.cesky-hosting.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=elrest.cz;
+        s=rampa2-202208; t=1665591105;
+        bh=8s1G8rPHpjsGwXW21PDH+LArXdE+rGVYILQiiIoRimM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MO4Ux6aFNuqJav5oplzpooNe6j5JMfeKDGxAPDlfqb59IpGFsO+wgUNJMsA1MGClE
+         AqWUNlKNb5SbUr5n2TvVTwfLKrVTCU+C0IvoLlQD8WxcwblZiO9Bd+rCXi6JMku5Jf
+         BHFzbceVjSDjVc3RpbfU19xQGvHQvV8U94RwuQ4ZQZRmgmCIy8Cw2fpjV52/H0niP/
+         yEHorwV64O3T12duthfIIIadla5bWdlW9wh/+p0klTeiMTRJ3lOc3dQ5NAOmidmvNA
+         uaCc+rQRrIFIN7VemH61IctRJL52Kdoromccdo5YhdkH0S7fZ/BN8++WWDWNSh0xg/
+         71z9kN93tt9cw==
+Received: from localhost.localdomain (unknown [5.181.92.50])
+        (Authenticated sender: tomas.marek@elrest.cz)
+        by smtp.cesky-hosting.cz (Postfix) with ESMTPSA id 70E75E6A;
+        Wed, 12 Oct 2022 18:11:42 +0200 (CEST)
+From:   Tomas Marek <tomas.marek@elrest.cz>
+To:     mpm@selenic.com, herbert@gondor.apana.org.au
+Cc:     mcoquelin.stm32@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        alexandre.torgue@foss.st.com, oleg.karfich@wago.com,
+        Tomas Marek <tomas.marek@elrest.cz>
+Subject: [PATCH 0/2] hwrng: stm32 - improve performance
+Date:   Wed, 12 Oct 2022 18:09:22 +0200
+Message-Id: <20221012160924.12226-1-tomas.marek@elrest.cz>
+X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Mittwoch, 12. Oktober 2022, 16:49:56 CEST schrieb Frederick Lawler:
+Fix issues in the STM32 TRNG driver to improve performance.
 
-Hi Frederick,
+Tomas Marek (2):
+  hwrng: stm32 - fix number of returned bytes on read
+  hwrng: stm32 - fix read of the last word
 
-> I believe I've addressed most of the feedback. Starting with we agree
-> preferring key_serial_t. I changed to to use IS_REACHABLE(), and set
-> ALG_SET_KEY_BY_KEY_SERIAL to 10 leaving a comment about libkcapi
-> reserving values 7-9.
+ drivers/char/hw_random/stm32-rng.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-This reservation should not be observed. I provided patches for adding AF_ALG 
-interfaces for KPP and AKCIPHER some time ago which were rejected. Libkcapi 
-still contains the interface implementations but are not compiled by default. 
-
-As the patches are rejected, their values should not be considered as 
-relevant. Thus, I think your patch should not keep holes in the numbers.
-
-Ciao
-Stephan
-
+-- 
+2.17.1
 
