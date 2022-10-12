@@ -2,69 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC915FCDFD
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 00:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B60E5FCE11
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 00:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbiJLWBu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 12 Oct 2022 18:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
+        id S229735AbiJLWEb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 12 Oct 2022 18:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbiJLWAn (ORCPT
+        with ESMTP id S229816AbiJLWDo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 12 Oct 2022 18:00:43 -0400
+        Wed, 12 Oct 2022 18:03:44 -0400
 Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F58C7654B;
-        Wed, 12 Oct 2022 15:00:22 -0700 (PDT)
-Received: from pps.filterd (m0150245.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29CL88dt016394;
-        Wed, 12 Oct 2022 22:00:10 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1F912C8A3;
+        Wed, 12 Oct 2022 15:01:20 -0700 (PDT)
+Received: from pps.filterd (m0134423.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29CKwflC006339;
+        Wed, 12 Oct 2022 21:59:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pps0720;
- bh=cA+jiT1Ykbspsq4IfGAHBDwf5ujiMklaMuWz0ZTfqho=;
- b=JlnPlMbr7D+Jfwij5Q+naBSj+gztLGJQaolsbe0LmM+o9uGUjg4ry5uzr5m8YzyFwqCf
- qx07bS3/uudkyA1gfyVaZR9/evrdk/TEibHa9bHD7Oe/eyY3zxcOdxTqe7d1iFnfwxhf
- /KQJixQ7fDJY+XGT243GGKAMBGtI5DIaLFOF7sLcp63FNp24x1urqOoksGnmJKTMKlWa
- 2O1RNDHJk0hMqr+HwI2DfOpx+y5TgTjJrv8Wfgncvlqdu5AyKGWdH2eDULjQHS5ZaS2v
- GYt29VIX/q2dCrO0c8qRwNh9v6a7Tth+z53OmFhSzST/E5vzV8kdGrLcSk0EZTn72VQx 0g== 
-Received: from p1lg14878.it.hpe.com (p1lg14878.it.hpe.com [16.230.97.204])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3k657j8a7s-1
+ bh=pkIjY3xNYdD7u0iVrBec5NLvLKLYByXvLSfeEAPzOWA=;
+ b=H/+AVupIA0qT3WW+ZAU2dM2Gj2l3wqwR0WsAa/VfsVsS5iNMLJC7y8Ht8zY9f5OvhkBx
+ 2yLbpwmj37y7COimS4bcYZXap7tWfA+f9jfIliFcbQ+513C5zXVqoqpMPMUKpaQZdv18
+ hktdM2YGYo3tRFTVAi7YV1xAMWnSW89cLVpbAz4A923DrH/GUDNRl5Ld07SqTiP+PXvj
+ VO8N9e4AHFDwKfHaVK05G3rZ6EdQ3Am7Xvyz8NwOIvIN/3DX0mQtHBM0ONsISnk24f22
+ +trjHtXOEgf2mx27hfc02CqJehN6CTaOKRtBmoBwWIjCo4twBOe4dR3MxIan4xh9zojX PQ== 
+Received: from p1lg14880.it.hpe.com (p1lg14880.it.hpe.com [16.230.97.201])
+        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3k653c8da7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Oct 2022 22:00:10 +0000
+        Wed, 12 Oct 2022 21:59:50 +0000
 Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 90B3713970;
-        Wed, 12 Oct 2022 22:00:09 +0000 (UTC)
+        by p1lg14880.it.hpe.com (Postfix) with ESMTPS id 8611C806B5C;
+        Wed, 12 Oct 2022 21:59:49 +0000 (UTC)
 Received: from adevxp033-sys.us.rdlabs.hpecorp.net (unknown [16.231.227.36])
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id 1E63D807DA5;
-        Wed, 12 Oct 2022 22:00:09 +0000 (UTC)
+        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id 28602808ECE;
+        Wed, 12 Oct 2022 21:59:49 +0000 (UTC)
 From:   Robert Elliott <elliott@hpe.com>
 To:     herbert@gondor.apana.org.au, davem@davemloft.net,
         tim.c.chen@linux.intel.com, ap420073@gmail.com, ardb@kernel.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Robert Elliott <elliott@hpe.com>
-Subject: [PATCH v2 17/19] crypto: x86 - standardize suboptimal prints
-Date:   Wed, 12 Oct 2022 16:59:29 -0500
-Message-Id: <20221012215931.3896-18-elliott@hpe.com>
+Subject: [PATCH v2 04/19] crypto: x86/sha - limit FPU preemption
+Date:   Wed, 12 Oct 2022 16:59:16 -0500
+Message-Id: <20221012215931.3896-5-elliott@hpe.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221012215931.3896-1-elliott@hpe.com>
 References: <20221006223151.22159-1-elliott@hpe.com>
  <20221012215931.3896-1-elliott@hpe.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: XKLvG6nOYC17q4IoVPFq8vnXPAREF7v6
-X-Proofpoint-GUID: XKLvG6nOYC17q4IoVPFq8vnXPAREF7v6
+X-Proofpoint-GUID: Uwyq1NOSShnQQpJzF5T27vXCpBPm0wlx
+X-Proofpoint-ORIG-GUID: Uwyq1NOSShnQQpJzF5T27vXCpBPm0wlx
 X-HPE-SCL: -1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-12_11,2022-10-12_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 spamscore=0
- phishscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210120138
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 clxscore=1015 impostorscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 bulkscore=0 priorityscore=1501 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
+ definitions=main-2210120138
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -74,81 +74,214 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Reword prints that the module is not being loaded (although
-it otherwise qualifies) because performance would be suboptimal
-on the particular CPU model.
+As done by the ECB and CBC helpers in arch/x86/crypt/ecb_cbc_helpers.h,
+limit the number of bytes processed between kernel_fpu_begin() and
+kernel_fpu_end() calls.
 
-Although modules are not supposed to print unless they're loaded
-and active, this is an existing exception.
+Those functions call preempt_disable() and preempt_enable(), so
+the CPU core is unavailable for scheduling while running.
 
+This leads to "rcu_preempt detected expedited stalls" with stack dumps
+pointing to the optimized hash function if the module is loaded and
+used a lot:
+    rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: ...
+
+For example, that can occur during boot with the stack track pointing
+to the sha512-x86 function if the system set to use SHA-512 for
+module signing. The call trace includes:
+    module_sig_check
+    mod_verify_sig
+    pkcs7_verify
+    pkcs7_digest
+    sha512_finup
+    sha512_base_do_update
+
+Fixes: 66be89515888 ("crypto: sha1 - SSSE3 based SHA1 implementation for x86-64")
+Fixes: 8275d1aa6422 ("crypto: sha256 - Create module providing optimized SHA256 routines using SSSE3, AVX or AVX2 instructions.")
+Fixes: 87de4579f92d ("crypto: sha512 - Create module providing optimized SHA512 routines using SSSE3, AVX or AVX2 instructions.")
+Fixes: aa031b8f702e ("crypto: x86/sha512 - load based on CPU features")
+Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
+Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
 Signed-off-by: Robert Elliott <elliott@hpe.com>
 ---
- arch/x86/crypto/blowfish_glue.c     | 5 +----
- arch/x86/crypto/camellia_glue.c     | 5 +----
- arch/x86/crypto/des3_ede_glue.c     | 2 +-
- arch/x86/crypto/twofish_glue_3way.c | 5 +----
- 4 files changed, 4 insertions(+), 13 deletions(-)
+ arch/x86/crypto/sha1_ssse3_glue.c   | 32 ++++++++++++++++++++++++-----
+ arch/x86/crypto/sha256_ssse3_glue.c | 32 ++++++++++++++++++++++++-----
+ arch/x86/crypto/sha512_ssse3_glue.c | 32 ++++++++++++++++++++++++-----
+ 3 files changed, 81 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/crypto/blowfish_glue.c b/arch/x86/crypto/blowfish_glue.c
-index 27b7aed9a488..8d4ecf406dee 100644
---- a/arch/x86/crypto/blowfish_glue.c
-+++ b/arch/x86/crypto/blowfish_glue.c
-@@ -320,10 +320,7 @@ static int __init blowfish_init(void)
- 		return -ENODEV;
+diff --git a/arch/x86/crypto/sha1_ssse3_glue.c b/arch/x86/crypto/sha1_ssse3_glue.c
+index 44340a1139e0..a9f5779b41ca 100644
+--- a/arch/x86/crypto/sha1_ssse3_glue.c
++++ b/arch/x86/crypto/sha1_ssse3_glue.c
+@@ -26,6 +26,8 @@
+ #include <crypto/sha1_base.h>
+ #include <asm/simd.h>
  
- 	if (!force && is_blacklisted_cpu()) {
--		printk(KERN_INFO
--			"blowfish-x86_64: performance on this CPU "
--			"would be suboptimal: disabling "
--			"blowfish-x86_64.\n");
-+		pr_info("CPU-optimized crypto module not loaded, crypto optimization performance on this CPU would be suboptimal\n");
- 		return -ENODEV;
- 	}
++#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
++
+ static int sha1_update(struct shash_desc *desc, const u8 *data,
+ 			     unsigned int len, sha1_block_fn *sha1_xform)
+ {
+@@ -41,9 +43,18 @@ static int sha1_update(struct shash_desc *desc, const u8 *data,
+ 	 */
+ 	BUILD_BUG_ON(offsetof(struct sha1_state, state) != 0);
  
-diff --git a/arch/x86/crypto/camellia_glue.c b/arch/x86/crypto/camellia_glue.c
-index 94dd2973bb47..002a1e84b277 100644
---- a/arch/x86/crypto/camellia_glue.c
-+++ b/arch/x86/crypto/camellia_glue.c
-@@ -1394,10 +1394,7 @@ static int __init camellia_init(void)
- 		return -ENODEV;
+-	kernel_fpu_begin();
+-	sha1_base_do_update(desc, data, len, sha1_xform);
+-	kernel_fpu_end();
++	do {
++		unsigned int chunk = min(len, FPU_BYTES);
++
++		if (chunk) {
++			kernel_fpu_begin();
++			sha1_base_do_update(desc, data, chunk, sha1_xform);
++			kernel_fpu_end();
++		}
++
++		len -= chunk;
++		data += chunk;
++	} while (len);
  
- 	if (!force && is_blacklisted_cpu()) {
--		printk(KERN_INFO
--			"camellia-x86_64: performance on this CPU "
--			"would be suboptimal: disabling "
--			"camellia-x86_64.\n");
-+		pr_info("CPU-optimized crypto module not loaded, crypto optimization performance on this CPU would be suboptimal\n");
- 		return -ENODEV;
- 	}
+ 	return 0;
+ }
+@@ -54,9 +65,20 @@ static int sha1_finup(struct shash_desc *desc, const u8 *data,
+ 	if (!crypto_simd_usable())
+ 		return crypto_sha1_finup(desc, data, len, out);
  
-diff --git a/arch/x86/crypto/des3_ede_glue.c b/arch/x86/crypto/des3_ede_glue.c
-index 7b4dd02007ed..b38ad3ec38e2 100644
---- a/arch/x86/crypto/des3_ede_glue.c
-+++ b/arch/x86/crypto/des3_ede_glue.c
-@@ -371,7 +371,7 @@ static int __init des3_ede_x86_init(void)
- 		return -ENODEV;
++	do {
++		unsigned int chunk = min(len, FPU_BYTES);
++
++		if (chunk) {
++			kernel_fpu_begin();
++			sha1_base_do_update(desc, data, chunk, sha1_xform);
++			kernel_fpu_end();
++		}
++
++		len -= chunk;
++		data += chunk;
++	} while (len);
++
+ 	kernel_fpu_begin();
+-	if (len)
+-		sha1_base_do_update(desc, data, len, sha1_xform);
+ 	sha1_base_do_finalize(desc, sha1_xform);
+ 	kernel_fpu_end();
  
- 	if (!force && is_blacklisted_cpu()) {
--		pr_info("des3_ede-x86_64: performance on this CPU would be suboptimal: disabling des3_ede-x86_64.\n");
-+		pr_info("CPU-optimized crypto module not loaded, crypto optimization performance on this CPU would be suboptimal\n");
- 		return -ENODEV;
- 	}
+diff --git a/arch/x86/crypto/sha256_ssse3_glue.c b/arch/x86/crypto/sha256_ssse3_glue.c
+index 3a5f6be7dbba..322c8aa907af 100644
+--- a/arch/x86/crypto/sha256_ssse3_glue.c
++++ b/arch/x86/crypto/sha256_ssse3_glue.c
+@@ -40,6 +40,8 @@
+ #include <linux/string.h>
+ #include <asm/simd.h>
  
-diff --git a/arch/x86/crypto/twofish_glue_3way.c b/arch/x86/crypto/twofish_glue_3way.c
-index 2fde637b40c8..29c35d2aaeba 100644
---- a/arch/x86/crypto/twofish_glue_3way.c
-+++ b/arch/x86/crypto/twofish_glue_3way.c
-@@ -157,10 +157,7 @@ static int __init twofish_3way_init(void)
- 		return -ENODEV;
++#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
++
+ asmlinkage void sha256_transform_ssse3(struct sha256_state *state,
+ 				       const u8 *data, int blocks);
  
- 	if (!force && is_blacklisted_cpu()) {
--		printk(KERN_INFO
--			"twofish-x86_64-3way: performance on this CPU "
--			"would be suboptimal: disabling "
--			"twofish-x86_64-3way.\n");
-+		pr_info("CPU-optimized crypto module not loaded, crypto optimization performance on this CPU would be suboptimal\n");
- 		return -ENODEV;
- 	}
+@@ -58,9 +60,18 @@ static int _sha256_update(struct shash_desc *desc, const u8 *data,
+ 	 */
+ 	BUILD_BUG_ON(offsetof(struct sha256_state, state) != 0);
+ 
+-	kernel_fpu_begin();
+-	sha256_base_do_update(desc, data, len, sha256_xform);
+-	kernel_fpu_end();
++	do {
++		unsigned int chunk = min(len, FPU_BYTES);
++
++		if (chunk) {
++			kernel_fpu_begin();
++			sha256_base_do_update(desc, data, chunk, sha256_xform);
++			kernel_fpu_end();
++		}
++
++		len -= chunk;
++		data += chunk;
++	} while (len);
+ 
+ 	return 0;
+ }
+@@ -71,9 +82,20 @@ static int sha256_finup(struct shash_desc *desc, const u8 *data,
+ 	if (!crypto_simd_usable())
+ 		return crypto_sha256_finup(desc, data, len, out);
+ 
++	do {
++		unsigned int chunk = min(len, FPU_BYTES);
++
++		if (chunk) {
++			kernel_fpu_begin();
++			sha256_base_do_update(desc, data, chunk, sha256_xform);
++			kernel_fpu_end();
++		}
++
++		len -= chunk;
++		data += chunk;
++	} while (len);
++
+ 	kernel_fpu_begin();
+-	if (len)
+-		sha256_base_do_update(desc, data, len, sha256_xform);
+ 	sha256_base_do_finalize(desc, sha256_xform);
+ 	kernel_fpu_end();
+ 
+diff --git a/arch/x86/crypto/sha512_ssse3_glue.c b/arch/x86/crypto/sha512_ssse3_glue.c
+index 6d3b85e53d0e..fd5075a32613 100644
+--- a/arch/x86/crypto/sha512_ssse3_glue.c
++++ b/arch/x86/crypto/sha512_ssse3_glue.c
+@@ -39,6 +39,8 @@
+ #include <asm/cpu_device_id.h>
+ #include <asm/simd.h>
+ 
++#define FPU_BYTES 4096U /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
++
+ asmlinkage void sha512_transform_ssse3(struct sha512_state *state,
+ 				       const u8 *data, int blocks);
+ 
+@@ -57,9 +59,18 @@ static int sha512_update(struct shash_desc *desc, const u8 *data,
+ 	 */
+ 	BUILD_BUG_ON(offsetof(struct sha512_state, state) != 0);
+ 
+-	kernel_fpu_begin();
+-	sha512_base_do_update(desc, data, len, sha512_xform);
+-	kernel_fpu_end();
++	do {
++		unsigned int chunk = min(len, FPU_BYTES);
++
++		if (chunk) {
++			kernel_fpu_begin();
++			sha512_base_do_update(desc, data, chunk, sha512_xform);
++			kernel_fpu_end();
++		}
++
++		len -= chunk;
++		data += chunk;
++	} while (len);
+ 
+ 	return 0;
+ }
+@@ -70,9 +81,20 @@ static int sha512_finup(struct shash_desc *desc, const u8 *data,
+ 	if (!crypto_simd_usable())
+ 		return crypto_sha512_finup(desc, data, len, out);
+ 
++	do {
++		unsigned int chunk = min(len, FPU_BYTES);
++
++		if (chunk) {
++			kernel_fpu_begin();
++			sha512_base_do_update(desc, data, chunk, sha512_xform);
++			kernel_fpu_end();
++		}
++
++		len -= chunk;
++		data += chunk;
++	} while (len);
++
+ 	kernel_fpu_begin();
+-	if (len)
+-		sha512_base_do_update(desc, data, len, sha512_xform);
+ 	sha512_base_do_finalize(desc, sha512_xform);
+ 	kernel_fpu_end();
  
 -- 
 2.37.3
