@@ -2,93 +2,93 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6612F5FE25C
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 21:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DCC5FE22F
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 20:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbiJMTEl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Oct 2022 15:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
+        id S229894AbiJMS4W (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Oct 2022 14:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbiJMTEk (ORCPT
+        with ESMTP id S232199AbiJMSzz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Oct 2022 15:04:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68417CE35
-        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 12:04:34 -0700 (PDT)
+        Thu, 13 Oct 2022 14:55:55 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE32C18498C
+        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 11:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1665687873;
-        bh=/OLsTLvyk37g+YkYsghFpcKpXyORdMfDAZUeVD6XPzc=;
+        s=badeba3b8450; t=1665687218;
+        bh=veFDaEATWJ4AnenV1zmLa6aqCuAHUv38wf1pgfYgt2Y=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=NhJ0jjdRCEaRDZFoIa1g9g1rIBc1oqjXOBo1J9iBr3zGRuF1bUgGojyN/ZFMPRCJZ
-         pPX+zukumq6hUxoaOzEqhJOG1ugt2P163GPeL45E5iFn6ExebiOv3XdiMJ2rFbzULZ
-         mn2HUGA37vw8adsL17/tFEkumQ49qLZ173VMyDGE=
+        b=JH5i8rO5kvo3IlUR8MNDM42jRhmwc8onBOsCPWbK8YmUR+r7Rq9j/Bg/RuATGZkrX
+         OqvxoBc8PQrSI5A/L2WuThdBs7S/2NK8Jj63JG/ysvllmZfJeNgegGxB2JGbrrA+gl
+         yPg+f379u2qa8RhrAxzYnOylqXT0xnU9uDNlu4DQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from fedora.willemsstb.de ([94.31.86.22]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mqs0X-1pVsHU1vv7-00mq4S; Thu, 13
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MrhUK-1pWhlB2V1A-00nf17; Thu, 13
  Oct 2022 20:40:29 +0200
 From:   Markus Stockhausen <markus.stockhausen@gmx.de>
 To:     linux-crypto@vger.kernel.org
 Cc:     Markus Stockhausen <markus.stockhausen@gmx.de>
-Subject: [PATCH 1/6] crypto/realtek: header definitions
-Date:   Thu, 13 Oct 2022 20:40:21 +0200
-Message-Id: <20221013184026.63826-2-markus.stockhausen@gmx.de>
+Subject: [PATCH 2/6] crypto/realtek: core functions
+Date:   Thu, 13 Oct 2022 20:40:22 +0200
+Message-Id: <20221013184026.63826-3-markus.stockhausen@gmx.de>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221013184026.63826-1-markus.stockhausen@gmx.de>
 References: <20221013184026.63826-1-markus.stockhausen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8MbsVVoBhISzAM3fK0nI5/+o9PDk5Dw2EaUjxoFHmfJY1f2oBe/
- inYahfQ63XAoDjaWxmAEoReJntFVp9v5Q4Hm8WJZyXfgd0xUW3cJXg+FN14pyGHU6wsLEal
- JXdjTTb8iGEc+9QCqXEcQj0/X6095ktNTAvjr60k+UO9/cw4aAVuX66j658RsobzL9YqOx/
- rhTqgo2S1jjcMJoJ88QGg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hK/knx52R30=:85218GGRMbFZtx5m0AQFmV
- b+zOMOkHamxgWbvN9XH4lmHGCnJvVSIuhuKE+H6yvAcrh7XgzwVWezVC6xn1X7MTYQ0XDY0tf
- 17LrcborPEAL1fYQarWt1rjVeZBKAyb/CJwdiQiTl9jmYa2EDNqn4LvOC9AI1DVIWIgSRf0Rt
- I7tuGozaWpZ4dRysjByxkhSDr2dohyvD1r40hGHOVy2mTPvUxcfktnMsRvTncZgWu/R5IghaG
- aqAjdX4rH+gEzk6YEBTuOL5SlZktQM+DZLHQ6+sKd6V25VXwJ5IKVUeuiSxyFSpyRCwtWVrjn
- S7RrZOuqNTqABRAblTMzms4v2JZqHZJdOvNhBM+HDdTCtXI3BC2E8ifmEULtFd4cGfhZ5X+fS
- hAn2b95V14jSspHsWvLxKGved15crTg4biuVMXCX03jXCIMTDIvQbioUrQrTUPfeLwLdZMleK
- jiKaPIOO7VPBSb/pJQfMnqUB6lmKeUQ00H+VBjgX/g8sGCaaa40uXaDO2favzLe04jzYOuQ2O
- lCrBZqlWQgb/ouc0NoA0hbG+ff3IiS9OnJUZEcdyVkROCurWo91z1iFLKlYJD8ydwq2sO0Deu
- 4FSP4Kn2NUYSnfn4WY8kp6adbXO4kq5Y9hD9GFTvH5ZmsHemBH+aEqN1OBBVS2CqPJ8onsPhy
- D3qkTYK9jpNedJoYEX0CEJgi/gYwsc+Blnh2tnr5vmejlpfXlJn9GLQd4YDQYwGnVNKQqV99f
- eky9DNy3ac0uYpwPoEg8fdP8rcES6xfipw13v6ngLpEY2vb9JMTOlCItnzWFURKs+ExFKVyB4
- y+f8onVtmDyMzz6RL4aYeNSd350PiSU3mEwxExQELhQC4ID2WjmlKVmH4nqxeliPuY5fHeqh7
- zftF4Bhh251VMgAgWt7sJ3CV8CxlNAv1FmB6XG/8fK88mQWP0WAeHKOiwrNtgS4/D54JVAZUt
- 52pA0A5Kwson4AjZOi4Y1Sr/w9rE2yMyKxj7e5hR4saS7GNrM7nSO1AlLqWvlVi2L4RLQX22c
- vz45+Ky6MqNfVUOcn1qPVDO3q7FPUuea8SbCYRskkuOD9aSznYr/JVCGkq9qakBOtUrG368Gu
- P2/t1N2u5JmpGkoBm+nnpWhSLApXCQIMlnEe5XYMagz8eHauHdrsZ/sgXMTPcRVMkqpfhTDPR
- vnTzvw3JtDgPmNemYmMuAdV7sh9UyvlzIbn+56vv7G1vCvCqbjZI8UbFLk+gNJJ+Q97qQR0Dg
- tHv+fiMYa9DdHw6p5XfoIs+CLjxpTNakZq3jdXFD0yMEXabINhbWE9vYWdjEUiokCIgRMDe0X
- mF7qiDevEA7maq7FeuP/WSeu8DSAEbt886OQGRHZVEwnbULFUkX339fGd7/5hr4FvCSKYFJ8o
- 1kvlhhEelvNJxA29blc4XC48ptCek1Kd95QS54B4HpCBzv2Lg0xFwgDY1T5IP36iUzMX4j5LL
- i9tOx9xFfNmSQYZJ5teNoDByYoyqrJ6ii1d11SFVLVai5zIDxw09FBwl9FydA6B9K4fvrKMgW
- HUJ+57c3roP/fOnlivUMHbeD04pBz+hDuudSpW4sm39yu
+X-Provags-ID: V03:K1:PWlQtOQc+acxfJUkulB/yD6vOfmRBbs/bk8wtuKCCbBMbufB92D
+ /0m7zIr5uKFOcfVa04cfoRGxR8xvudG3m8ckYfoz0orsDTN9zhPSCHJLX3PoB/1toHaI6WE
+ UYSteyHjIVqy3zuliwYQ55yuXT+qHphrUxLi4XJvaL7Mlrkdddg5Xlo/HcxFQdvh6pUkAk6
+ ZMQaT42nwAt7ECpXfbFJA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:e3PDnHPJzx8=:PRuqdJKTJWg9L1lbDfrx5p
+ SH+7Lv2wY3lwaIGhzTt4THk+aAOaxf5JZAIDQGh/JVL9cRzcw2NjOLFWeR3PX5EnZz6EMd5yv
+ n1hik2I420MieORt3Ai58eXBfN7Be7udFuuNFgiYMNrtzp9kYW0uOCNognSj/Bdftc7jPdUtB
+ JOtuMH8Ro6FinsLoAzmYqr/lFdKzLQfRy9r7ZE3ZH4X4UzRfYV6uxBU22leh9UW+aQqxAqgGy
+ NN2l3cGJdc/iGtFPs05kVKxWyd495WF/jBN9GGXkkabb0e57SiYrK2o2hJ2PSy2xmzdVNacCJ
+ E0opjhBYSdDbWK+hps57Iqseu4AwcMcSeqwGUG+VleEURpTOzQbrC7WYYUhB7UsOfqGohSLLO
+ P1zUKooYuw5EdPnAktdDQk+/lMFwM3R9nR+LTmKALY3bSan/ijZLzkv+iUoBo0VbLxG27eQc3
+ YBUk5w3uXFjsCoXjsmSu9m9Kx2Rljqlq0HmGTkuekDexEu31PqVm7XbVdCpf0kNRaxfC8P5tx
+ TQg8cb5qQw8BgIs4luH+c8kzyXSrlAuVyT7+JqCwasCyyZTzHO9jspo3PGWQJ0/VXwA+657yb
+ ZQaBjnPj5dC12K0yhr3n/TMfBqg9zjoxgjj71fCRkD6OEsKq5cTjvLsL1kSQ8cmFYCiBw8G9h
+ 24IIObdwUZ7PJo6oTx8h4VU7JOS/349280tMGqSOkolj1efftlswpHhPVhKZE9sF9T/fqXLAa
+ Sx/kOp/yGzBrmgLILSDtp7Cr3t1gvQKaDI3vjq23O0ULcnaDdkkT2LfYQTYC9ClTWlpNw+jtb
+ xwDRM67yMn4m3MdysGtgUDydUS8OylL8FwiZ+UzIJENMC7FfPxJcujgyuzPAy6gnbHUHwRWH7
+ rbeD6DJd81I4CEgxTIFmLSJWMNTdT2d8YGVVPk+BUMIeQoc8MMGKRb65NoK4rmTWqoF+pUvC7
+ qa+OWJNmVOlkbFh3mewWXVeFKBjgWQNt25cfIDa4n0n6X/L+wl6pQwqlC6QOU5CYfsAtv1RrQ
+ E8Kjzna42X1QORMa26NTsOXO+hlgokamhiR5N6pmdhpA0e/iNsSB+swsKlBIChCA2/rH/gw0j
+ zT9hxn6wFjA0LphXLdav3+cCNBBfSN42L532h62AjI1QChS9amOo/3xBTeh8nWNByAPPjws9T
+ H83P4Axz63nFwX2yYIs1lwsy8594z8PJqfcJc9cM5bkFaR+xmAzVQWB8pBWxzftVLLAfXqLYG
+ kfk3S4g0NnVUB0gkPu20THpe6YiOzK7m5AjqhLbBi+UhKKq1PzluawiB6mBI306vdRXOp9CqL
+ +kOEWcrs/KrY2YL2Ogf7n662F66sXz6y47Nbcu5rOSoOevU6DtbtIqZUn7/RpNDgY5QkGWmeM
+ 0Vc0INaLVCssD7obMZti5XopeVtG06lz3munogIq+XurLl21mRFyqFxUODs6krHaARECCUQxZ
+ K7l9En4Bv8LKrjhR19OPL7IGuuc3gVv/4lPzfNHnrcZ1f65bvz3fLLIHBGy35eIAcI4xZ7HVd
+ Hmue4VM+RfDdepRPouEj9uGF8/+uS7OEZMyz+N0+qcjGV
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add header definitions for new Realtek crypto device.
+Add core functions for new Realtek crypto device.
 
 Signed-off-by: Markus Stockhausen <markus.stockhausen@gmx.de>
 =2D--
- drivers/crypto/realtek/realtek_crypto.h | 325 ++++++++++++++++++++++++
- 1 file changed, 325 insertions(+)
- create mode 100644 drivers/crypto/realtek/realtek_crypto.h
+ drivers/crypto/realtek/realtek_crypto.c | 472 ++++++++++++++++++++++++
+ 1 file changed, 472 insertions(+)
+ create mode 100644 drivers/crypto/realtek/realtek_crypto.c
 
-diff --git a/drivers/crypto/realtek/realtek_crypto.h b/drivers/crypto/real=
-tek/realtek_crypto.h
+diff --git a/drivers/crypto/realtek/realtek_crypto.c b/drivers/crypto/real=
+tek/realtek_crypto.c
 new file mode 100644
-index 000000000000..35d9de5eca7a
+index 000000000000..f22d117fd3c6
 =2D-- /dev/null
-+++ b/drivers/crypto/realtek/realtek_crypto.h
-@@ -0,0 +1,325 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
++++ b/drivers/crypto/realtek/realtek_crypto.c
+@@ -0,0 +1,472 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + * Crypto acceleration support for Realtek crypto engine. Based on ideas =
 from
@@ -97,364 +97,479 @@ from
 + * Copyright (c) 2022, Markus Stockhausen <markus.stockhausen@gmx.de>
 + */
 +
-+#ifndef __REALTEK_CRYPTO_H__
-+#define __REALTEK_CRYPTO_H__
++#include <crypto/internal/hash.h>
++#include <crypto/internal/skcipher.h>
++#include <linux/delay.h>
++#include <linux/dma-mapping.h>
++#include <linux/module.h>
++#include <linux/of_irq.h>
++#include <linux/platform_device.h>
 +
-+#include <linux/interrupt.h>
-+#include <crypto/aes.h>
-+#include <crypto/md5.h>
-+#include <crypto/hash.h>
-+#include <crypto/sha1.h>
-+#include <crypto/skcipher.h>
++#include "realtek_crypto.h"
 +
-+/*
-+ * The four engine registers for instrumentation of the hardware.
-+ */
-+#define RTCR_REG_SRC	0x0	/* Source descriptor starting address */
-+#define RTCR_REG_DST	0x4	/* Destination Descriptor starting address */
-+#define RTCR_REG_CMD	0x8	/* Command/Status Register */
-+#define RTCR_REG_CTR	0xC	/* Control Register */
-+/*
-+ * Engine Command/Status Register.
-+ */
-+#define RTCR_CMD_SDUEIP	BIT(15)	/* Src desc unavail error interrupt pendi=
-ng */
-+#define RTCR_CMD_SDLEIP	BIT(14)	/* Src desc length error interrupt pendin=
-g */
-+#define RTCR_CMD_DDUEIP	BIT(13)	/* Dst desc unavail error interrupt pendi=
-ng */
-+#define RTCR_CMD_DDOKIP	BIT(12)	/* Dst dsec ok interrupt pending */
-+#define	RTCR_CMD_DABFIP	BIT(11)	/* Data address buffer interrupt pending =
-*/
-+#define RTCR_CMD_POLL	BIT(1)	/* Descriptor polling. Set to kick engine */
-+#define RTCR_CMD_SRST	BIT(0)	/* Software reset, write 1 to reset */
-+/*
-+ * Engine Control Register
-+ */
-+#define RTCR_CTR_SDUEIE	BIT(15)	/* Src desc unavail error interrupt enabl=
-e */
-+#define RTCR_CTR_SDLEIE	BIT(14)	/* Src desc length error interrupt enable=
- */
-+#define RTCR_CTR_DDUEIE	BIT(13)	/* Dst desc unavail error interrupt enabl=
-e */
-+#define RTCR_CTR_DDOKIE	BIT(12)	/* Dst desc ok interrupt enable */
-+#define RTCR_CTR_DABFIE	BIT(11)	/* Data address buffer interrupt enable *=
-/
-+#define RTCR_CTR_LBKM	BIT(8)	/* Loopback mode enable */
-+#define RTCR_CTR_SAWB	BIT(7)	/* Source address write back =3D work inplac=
-e */
-+#define RTCR_CTR_CKE	BIT(6)	/* Clock enable */
-+#define RTCR_CTR_DDMMSK	0x38	/* Destination DMA max burst size mask */
-+#define RTCR_CTR_DDM16	0x00	/* Destination DMA max burst size 16 bytes */
-+#define RTCR_CTR_DDM32	0x08	/* Destination DMA max burst size 32 bytes */
-+#define RTCR_CTR_DDM64	0x10	/* Destination DMA max burst size 64 bytes */
-+#define RTCR_CTR_DDM128	0x18	/* Destination DMA max burst size 128 bytes =
-*/
-+#define RTCR_CTR_SDMMSK	0x07	/* Source DMA max burst size mask */
-+#define RTCR_CTR_SDM16	0x00	/* Source DMA max burst size 16 bytes */
-+#define RTCR_CTR_SDM32	0x01	/* Source DMA max burst size 32 bytes */
-+#define RTCR_CTR_SDM64	0x02	/* Source DMA max burst size 64 bytes */
-+#define RTCR_CTR_SDM128	0x03	/* Source DMA max burst size 128 bytes */
++inline int rtcr_inc_src_idx(int idx, int cnt)
++{
++	return (idx + cnt) & (RTCR_SRC_RING_SIZE - 1);
++}
 +
-+/*
-+ * Module settings and constants. Some of the limiter values have been ch=
-osen
-+ * based on testing (e.g. ring sizes). Others are based on real hardware
-+ * limits (e.g. scatter, request size, hash size).
-+ */
-+#define RTCR_SRC_RING_SIZE		64
-+#define RTCR_DST_RING_SIZE		16
-+#define RTCR_BUF_RING_SIZE		32768
-+#define RTCR_MAX_REQ_SIZE		8192
-+#define RTCR_MAX_SG			8
-+#define RTCR_MAX_SG_AHASH		(RTCR_MAX_SG - 1)
-+#define RTCR_MAX_SG_SKCIPHER		(RTCR_MAX_SG - 3)
-+#define RTCR_HASH_VECTOR_SIZE		SHA1_DIGEST_SIZE
++inline int rtcr_inc_dst_idx(int idx, int cnt)
++{
++	return (idx + cnt) & (RTCR_DST_RING_SIZE - 1);
++}
 +
-+#define RTCR_ALG_AHASH			0
-+#define RTCR_ALG_SKCIPHER		1
++inline int rtcr_inc_buf_idx(int idx, int cnt)
++{
++	return (idx + cnt) & (RTCR_BUF_RING_SIZE - 1);
++}
 +
-+#define RTCR_HASH_UPDATE		BIT(0)
-+#define RTCR_HASH_FINAL			BIT(1)
-+#define RTCR_HASH_BUF_SIZE		SHA1_BLOCK_SIZE
-+#define RTCR_HASH_PAD_SIZE		((SHA1_BLOCK_SIZE + 8) / sizeof(u64))
++inline int rtcr_space_plus_pad(int len)
++{
++	return (len + 31) & ~31;
++}
 +
-+#define RTCR_REQ_SG_MASK		0xff
-+#define RTCR_REQ_MD5			BIT(8)
-+#define RTCR_REQ_SHA1			BIT(9)
-+#define RTCR_REQ_FB_ACT			BIT(10)
-+#define RTCR_REQ_FB_RDY			BIT(11)
++int rtcr_alloc_ring(struct rtcr_crypto_dev *cdev, int srclen, int *srcidx=
+,
++		    int *dstidx, int buflen, char **buf)
++{
++	int srcfree, dstfree, buffree, bufidx;
++	int srcalloc =3D (srclen + 1) & ~1, bufalloc =3D 0;
++	int ret =3D -ENOSPC;
 +
-+/*
-+ * Crypto ring source data descripter. This data is fed into the engine. =
-It
-+ * takes all information about the input data and the type of cypher/hash
-+ * algorithm that we want to apply. Each request consists of several sour=
-ce
-+ * descriptors.
-+ */
-+struct rtcr_src_desc {
-+	u32		opmode;
-+	u32		len;
-+	u32		dummy;
-+	phys_addr_t	paddr;
++	spin_lock(&cdev->ringlock);
++
++	bufidx =3D cdev->cpu_buf_idx;
++	if (buflen > 0) {
++		bufalloc =3D rtcr_space_plus_pad(buflen);
++		if (bufidx + bufalloc > RTCR_BUF_RING_SIZE) {
++			if (unlikely(cdev->cpu_buf_idx > bufidx)) {
++				dev_err(cdev->dev, "buffer ring full\n");
++				goto err_nospace;
++			}
++			/* end of buffer is free but too small, skip it */
++			bufidx =3D 0;
++		}
++	}
++
++	srcfree =3D rtcr_inc_src_idx(cdev->pp_src_idx - cdev->cpu_src_idx, -1);
++	dstfree =3D rtcr_inc_dst_idx(cdev->pp_dst_idx - cdev->cpu_dst_idx, -1);
++	buffree =3D rtcr_inc_buf_idx(cdev->pp_buf_idx - bufidx, -1);
++
++	if (unlikely(srcfree < srcalloc)) {
++		dev_err(cdev->dev, "source ring full\n");
++		goto err_nospace;
++	}
++	if (unlikely(dstfree < 1)) {
++		dev_err(cdev->dev, "destination ring full\n");
++		goto err_nospace;
++	}
++	if (unlikely(buffree < bufalloc)) {
++		dev_err(cdev->dev, "buffer ring full\n");
++		goto err_nospace;
++	}
++
++	*srcidx =3D cdev->cpu_src_idx;
++	cdev->cpu_src_idx =3D rtcr_inc_src_idx(cdev->cpu_src_idx, srcalloc);
++
++	*dstidx =3D cdev->cpu_dst_idx;
++	cdev->cpu_dst_idx =3D rtcr_inc_dst_idx(cdev->cpu_dst_idx, 1);
++
++	ret =3D 0;
++	cdev->wbk_ring[*dstidx].len =3D buflen;
++	if (buflen > 0) {
++		*buf =3D &cdev->buf_ring[bufidx];
++		cdev->wbk_ring[*dstidx].src =3D *buf;
++		cdev->cpu_buf_idx =3D rtcr_inc_buf_idx(bufidx, bufalloc);
++	}
++
++err_nospace:
++	spin_unlock(&cdev->ringlock);
++
++	return ret;
++}
++
++static inline void rtcr_ack_irq(struct rtcr_crypto_dev *cdev)
++{
++	int v =3D ioread32(cdev->base + RTCR_REG_CMD);
++
++	if (unlikely((v !=3D RTCR_CMD_DDOKIP) && v))
++		dev_err(cdev->dev, "unexpected IRQ result 0x%08x\n", v);
++	v =3D RTCR_CMD_SDUEIP | RTCR_CMD_SDLEIP | RTCR_CMD_DDUEIP |
++	     RTCR_CMD_DDOKIP | RTCR_CMD_DABFIP;
++
++	iowrite32(v, cdev->base + RTCR_REG_CMD);
++}
++
++static void rtcr_done_task(unsigned long data)
++{
++	struct rtcr_crypto_dev *cdev =3D (struct rtcr_crypto_dev *)data;
++	int stop_src_idx, stop_dst_idx, idx, len;
++	struct scatterlist *sg;
++	unsigned long flags;
++
++	spin_lock_irqsave(&cdev->asiclock, flags);
++	stop_src_idx =3D cdev->asic_src_idx;
++	stop_dst_idx =3D cdev->asic_dst_idx;
++	spin_unlock_irqrestore(&cdev->asiclock, flags);
++
++	idx =3D cdev->pp_dst_idx;
++
++	while (idx !=3D stop_dst_idx) {
++		len =3D cdev->wbk_ring[idx].len;
++		switch (len) {
++		case RTCR_WB_LEN_SG_DIRECT:
++			/* already written to the destination by the engine */
++			break;
++		case RTCR_WB_LEN_HASH:
++			/* write back hash from destination ring */
++			memcpy(cdev->wbk_ring[idx].dst,
++			       cdev->dst_ring[idx].vector,
++			       RTCR_HASH_VECTOR_SIZE);
++			break;
++		default:
++			/* write back data from buffer */
++			sg =3D (struct scatterlist *)cdev->wbk_ring[idx].dst;
++			sg_pcopy_from_buffer(sg, sg_nents(sg),
++					     cdev->wbk_ring[idx].src,
++					     len, cdev->wbk_ring[idx].off);
++			len =3D rtcr_space_plus_pad(len);
++			cdev->pp_buf_idx =3D ((char *)cdev->wbk_ring[idx].src - cdev->buf_ring=
+) + len;
++		}
++
++		cdev->wbk_ring[idx].len =3D RTCR_WB_LEN_DONE;
++		idx =3D rtcr_inc_dst_idx(idx, 1);
++	}
++
++	wake_up_all(&cdev->done_queue);
++	cdev->pp_src_idx =3D stop_src_idx;
++	cdev->pp_dst_idx =3D stop_dst_idx;
++}
++
++static irqreturn_t rtcr_handle_irq(int irq, void *dev_id)
++{
++	struct rtcr_crypto_dev *cdev =3D dev_id;
++	u32 p;
++
++	spin_lock(&cdev->asiclock);
++
++	rtcr_ack_irq(cdev);
++	cdev->busy =3D false;
++
++	p =3D (u32)phys_to_virt((u32)ioread32(cdev->base + RTCR_REG_SRC));
++	cdev->asic_src_idx =3D (p - (u32)cdev->src_ring) / RTCR_SRC_DESC_SIZE;
++
++	p =3D (u32)phys_to_virt((u32)ioread32(cdev->base + RTCR_REG_DST));
++	cdev->asic_dst_idx =3D (p - (u32)cdev->dst_ring) / RTCR_DST_DESC_SIZE;
++
++	tasklet_schedule(&cdev->done_task);
++	spin_unlock(&cdev->asiclock);
++
++	return IRQ_HANDLED;
++}
++
++void rtcr_add_src_ahash_to_ring(struct rtcr_crypto_dev *cdev, int idx,
++				int opmode, int totallen)
++{
++	struct rtcr_src_desc *src =3D &cdev->src_ring[idx];
++
++	src->len =3D totallen;
++	src->opmode =3D opmode | RTCR_SRC_OP_FS |
++		      RTCR_SRC_OP_DUMMY_LEN | RTCR_SRC_OP_OWN_ASIC |
++		      RTCR_SRC_OP_CALC_EOR(idx);
++
++	dma_sync_single_for_device(cdev->dev, virt_to_phys(src),
++				   RTCR_SRC_DESC_SIZE,
++				   DMA_TO_DEVICE);
++}
++
++void rtcr_add_src_skcipher_to_ring(struct rtcr_crypto_dev *cdev, int idx,
++				   int opmode, int totallen,
++				   struct rtcr_skcipher_ctx *sctx)
++{
++	struct rtcr_src_desc *src =3D &cdev->src_ring[idx];
++
++	src->len =3D totallen;
++	if (opmode & RTCR_SRC_OP_KAM_ENC)
++		src->paddr =3D virt_to_phys(sctx->key_enc);
++	else
++		src->paddr =3D virt_to_phys(sctx->key_dec);
++
++	src->opmode =3D RTCR_SRC_OP_FS | RTCR_SRC_OP_OWN_ASIC |
++		      RTCR_SRC_OP_MS_CRYPTO | RTCR_SRC_OP_CRYPT_ECB |
++		      RTCR_SRC_OP_CALC_EOR(idx) | opmode | sctx->keylen;
++
++	dma_sync_single_for_device(cdev->dev, virt_to_phys(src),
++				   RTCR_SRC_DESC_SIZE,
++				   DMA_TO_DEVICE);
++}
++
++void rtcr_add_src_to_ring(struct rtcr_crypto_dev *cdev, int idx, void *va=
+ddr,
++			  int blocklen, int totallen)
++{
++	struct rtcr_src_desc *src =3D &cdev->src_ring[idx];
++
++	src->len =3D totallen;
++	src->paddr =3D virt_to_phys(vaddr);
++	src->opmode =3D RTCR_SRC_OP_OWN_ASIC | RTCR_SRC_OP_CALC_EOR(idx) | block=
+len;
++
++	dma_sync_single_for_device(cdev->dev, virt_to_phys(src),
++				   RTCR_SRC_DESC_SIZE,
++				   DMA_BIDIRECTIONAL);
++}
++
++inline void rtcr_add_src_pad_to_ring(struct rtcr_crypto_dev *cdev, int id=
+x, int len)
++{
++	/* align 16 byte source descriptors with 32 byte cache lines */
++	if (!(idx & 1))
++		rtcr_add_src_to_ring(cdev, idx + 1, NULL, 0, len);
++}
++
++void rtcr_add_dst_to_ring(struct rtcr_crypto_dev *cdev, int idx, void *re=
+qdst,
++			  int reqlen, void *wbkdst, int wbkoff)
++{
++	struct rtcr_dst_desc *dst =3D &cdev->dst_ring[idx];
++	struct rtcr_wbk_desc *wbk =3D &cdev->wbk_ring[idx];
++
++	dst->paddr =3D virt_to_phys(reqdst);
++	dst->opmode =3D RTCR_DST_OP_OWN_ASIC | RTCR_DST_OP_CALC_EOR(idx) | reqle=
+n;
++
++	wbk->dst =3D wbkdst;
++	wbk->off =3D wbkoff;
++
++	dma_sync_single_for_device(cdev->dev, virt_to_phys(dst),
++				   RTCR_DST_DESC_SIZE,
++				   DMA_BIDIRECTIONAL);
++}
++
++inline int rtcr_wait_for_request(struct rtcr_crypto_dev *cdev, int idx)
++{
++	int *len =3D &cdev->wbk_ring[idx].len;
++
++	wait_event(cdev->done_queue, *len =3D=3D RTCR_WB_LEN_DONE);
++	return 0;
++}
++
++void rtcr_kick_engine(struct rtcr_crypto_dev *cdev)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&cdev->asiclock, flags);
++
++	if (!cdev->busy) {
++		cdev->busy =3D true;
++		/* engine needs up to 5us to reset poll bit */
++		iowrite32(RTCR_CMD_POLL, cdev->base + RTCR_REG_CMD);
++	}
++
++	spin_unlock_irqrestore(&cdev->asiclock, flags);
++}
++
++static struct rtcr_alg_template *rtcr_algs[] =3D {
++	&rtcr_ahash_md5,
++	&rtcr_ahash_sha1,
++	&rtcr_skcipher_ecb_aes,
++	&rtcr_skcipher_cbc_aes,
++	&rtcr_skcipher_ctr_aes,
 +};
 +
-+#define RTCR_SRC_DESC_SIZE		(sizeof(struct rtcr_src_desc))
-+/*
-+ * Owner: This flag identifies the owner of the block. When we send the
-+ * descripter to the ring set this flag to 1. Once the crypto engine has
-+ * finished processing this will be reset to 0.
-+ */
-+#define RTCR_SRC_OP_OWN_ASIC		BIT(31)
-+#define RTCR_SRC_OP_OWN_CPU		0
-+/*
-+ * End of ring: Setting this flag to 1 tells the crypto engine that this =
-is
-+ * the last descriptor of the whole ring (not the request). If set the en=
-gine
-+ * will not increase the processing pointer afterwards but will jump back=
- to
-+ * the first descriptor address it was initialized with.
-+ */
-+#define	RTCR_SRC_OP_EOR			BIT(30)
-+#define RTCR_SRC_OP_CALC_EOR(idx)	((idx =3D=3D RTCR_SRC_RING_SIZE - 1) ? =
-\
-+					RTCR_SRC_OP_EOR : 0)
-+/*
-+ * First segment: If set to 1 this is the first descriptor of a request. =
-All
-+ * descriptors that follow will have this flag set to 0 belong to the sam=
-e
-+ * request.
-+ */
-+#define RTCR_SRC_OP_FS			BIT(29)
-+/*
-+ * Mode select: Set to 00b for crypto only, set to 01b for hash only, 10b=
- for
-+ * hash then crypto or 11b for crypto then hash.
-+ */
-+#define RTCR_SRC_OP_MS_CRYPTO		0
-+#define RTCR_SRC_OP_MS_HASH		BIT(26)
-+#define RTCR_SRC_OP_MS_HASH_CRYPTO	BIT(27)
-+#define RTCR_SRC_OP_MS_CRYPTO_HASH	GENMASK(27, 26)
-+/*
-+ * Key application management: Only relevant for cipher (AES/3DES/DES) mo=
-de. If
-+ * using AES or DES it has to be set to 0 (000b) for decryption and 7 (11=
-1b) for
-+ * encryption. For 3DES it has to be set to 2 (010b =3D decrypt, encrypt,=
- decrypt)
-+ * for decryption and 5 (101b =3D encrypt, decrypt, encrypt) for encrypti=
-on.
-+ */
-+#define RTCR_SRC_OP_KAM_DEC		0
-+#define RTCR_SRC_OP_KAM_ENC		GENMASK(25, 23)
-+#define RTCR_SRC_OP_KAM_3DES_DEC	BIT(24)
-+#define RTCR_SRC_OP_KAM_3DES_ENC	(BIT(23) | BIT(25))
-+/*
-+ * AES/3DES/DES mode & key length: Upper two bits for AES mode. If set to=
- values
-+ * other than 0 we want to encrypt/decrypt with AES. The values are 01b f=
-or 128
-+ * bit key length, 10b for 192 bit key length and 11b for 256 bit key len=
-gth.
-+ * If AES is disabled (upper two bits 00b) then the lowest bit determines=
- if we
-+ * want to use 3DES (1) or DES (0).
-+ */
-+#define RTCR_SRC_OP_CIPHER_FROM_KEY(k)	((k - 8) << 18)
-+#define RTCR_SRC_OP_CIPHER_AES_128	BIT(21)
-+#define RTCR_SRC_OP_CIPHER_AES_192	BIT(22)
-+#define RTCR_SRC_OP_CIPHER_AES_256	GENMASK(22, 21)
-+#define RTCR_SRC_OP_CIPHER_3DES		BIT(20)
-+#define RTCR_SRC_OP_CIPHER_DES		0
-+#define RTCR_SRC_OP_CIPHER_MASK		GENMASK(22, 20)
-+/*
-+ * Cipher block mode: Determines the block mode of a cipher request. Set =
-to 00b
-+ * for ECB, 01b for CTR and 10b for CTR.
-+ */
-+#define RTCR_SRC_OP_CRYPT_ECB		0
-+#define RTCR_SRC_OP_CRYPT_CTR		BIT(18)
-+#define RTCR_SRC_OP_CRYPT_CBC		BIT(19)
-+/*
-+ * Hash mode: Set to 1 for MD5 or 0 for SHA1 calculation.
-+ */
-+#define RTCR_SRC_OP_HASH_MD5		BIT(16)
-+#define	RTCR_SRC_OP_HASH_SHA1		0
++static void rtcr_unregister_algorithms(int end)
++{
++	int i;
 +
-+#define RTCR_SRC_OP_DUMMY_LEN		128
++	for (i =3D 0; i < end; i++) {
++		if (rtcr_algs[i]->type =3D=3D RTCR_ALG_SKCIPHER)
++			crypto_unregister_skcipher(&rtcr_algs[i]->alg.skcipher);
++		else
++			crypto_unregister_ahash(&rtcr_algs[i]->alg.ahash);
++	}
++}
 +
-+/*
-+ * Crypto ring destination data descriptor. Data inside will be fed to th=
-e
-+ * engine and if we process a hash request we get the resulting hash from=
- here.
-+ * Each request consists of exactly one destination descriptor.
-+ */
-+struct rtcr_dst_desc {
-+	u32		opmode;
-+	phys_addr_t	paddr;
-+	u32		dummy;
-+	u32		vector[RTCR_HASH_VECTOR_SIZE / sizeof(u32)];
-+};
++static int rtcr_register_algorithms(struct rtcr_crypto_dev *cdev)
++{
++	int i, ret =3D 0;
 +
-+#define RTCR_DST_DESC_SIZE		(sizeof(struct rtcr_dst_desc))
-+/*
-+ * Owner: This flag identifies the owner of the block. When we send the
-+ * descripter to the ring set this flag to 1. Once the crypto engine has
-+ * finished processing this will be reset to 0.
-+ */
-+#define RTCR_DST_OP_OWN_ASIC		BIT(31)
-+#define RTCR_DST_OP_OWN_CPU		0
-+/*
-+ * End of ring: Setting this flag to 1 tells the crypto engine that this =
-is
-+ * the last descriptor of the whole ring (not the request). If set the en=
-gine
-+ * will not increase the processing pointer afterwards but will jump back=
- to
-+ * the first descriptor address it was initialized with.
-+ */
-+#define	RTCR_DST_OP_EOR			BIT(30)
-+#define RTCR_DST_OP_CALC_EOR(idx)	((idx =3D=3D RTCR_DST_RING_SIZE - 1) ? =
-\
-+					RTCR_DST_OP_EOR : 0)
++	for (i =3D 0; i < ARRAY_SIZE(rtcr_algs); i++) {
++		rtcr_algs[i]->cdev =3D cdev;
++		if (rtcr_algs[i]->type =3D=3D RTCR_ALG_SKCIPHER)
++			ret =3D crypto_register_skcipher(&rtcr_algs[i]->alg.skcipher);
++		else {
++			rtcr_algs[i]->alg.ahash.halg.statesize =3D
++				max(sizeof(struct rtcr_ahash_req),
++				offsetof(struct rtcr_ahash_req, vector) +
++				sizeof(union rtcr_fallback_state));
++			ret =3D crypto_register_ahash(&rtcr_algs[i]->alg.ahash);
++		}
++		if (ret)
++			goto err_cipher_algs;
++	}
 +
-+/*
-+ * Writeback descriptor. This descriptor maintains additional data per re=
-quest
-+ * about writebac. E.g. the hash result or a cipher that was written to t=
-he
-+ * internal buffer only. Remember the post processing information here.
-+ */
-+struct rtcr_wbk_desc {
-+	void				*dst;
-+	void				*src;
-+	int				off;
-+	int				len;
-+};
-+/*
-+ * To keep the size of the descriptor a power of 2 (cache line aligned) t=
-he
-+ * length field can denote special writeback requests that need another t=
-ype of
-+ * postprocessing.
-+ */
-+#define RTCR_WB_LEN_DONE		(0)
-+#define RTCR_WB_LEN_HASH		(-1)
-+#define RTCR_WB_LEN_SG_DIRECT		(-2)
++	return 0;
 +
-+struct rtcr_crypto_dev {
-+	char				buf_ring[RTCR_BUF_RING_SIZE];
-+	struct rtcr_src_desc		src_ring[RTCR_SRC_RING_SIZE];
-+	struct rtcr_dst_desc		dst_ring[RTCR_DST_RING_SIZE];
-+	struct rtcr_wbk_desc		wbk_ring[RTCR_DST_RING_SIZE];
++err_cipher_algs:
++	rtcr_unregister_algorithms(i);
 +
-+	/* modified under ring lock */
-+	int				cpu_src_idx;
-+	int				cpu_dst_idx;
-+	int				cpu_buf_idx;
++	return ret;
++}
 +
-+	/* modified in (serialized) tasklet */
-+	int				pp_src_idx;
-+	int				pp_dst_idx;
-+	int				pp_buf_idx;
++static void rtcr_init_engine(struct rtcr_crypto_dev *cdev)
++{
++	int v;
 +
-+	/* modified under asic lock */
-+	int				asic_dst_idx;
-+	int				asic_src_idx;
-+	bool				busy;
++	v =3D ioread32(cdev->base + RTCR_REG_CMD);
++	v |=3D RTCR_CMD_SRST;
++	iowrite32(v, cdev->base + RTCR_REG_CMD);
 +
-+	int				irq;
-+	spinlock_t			asiclock;
-+	spinlock_t			ringlock;
-+	struct tasklet_struct		done_task;
-+	wait_queue_head_t		done_queue;
++	usleep_range(10000, 20000);
 +
-+	void __iomem			*base;
++	iowrite32(RTCR_CTR_CKE | RTCR_CTR_SDM16 | RTCR_CTR_DDM16 |
++		  RTCR_CTR_SDUEIE | RTCR_CTR_SDLEIE | RTCR_CTR_DDUEIE |
++		  RTCR_CTR_DDOKIE | RTCR_CTR_DABFIE, cdev->base + RTCR_REG_CTR);
 +
-+	struct platform_device		*pdev;
-+	struct device			*dev;
-+};
++	rtcr_ack_irq(cdev);
++	usleep_range(10000, 20000);
++}
 +
-+struct rtcr_alg_template {
++static void rtcr_exit_engine(struct rtcr_crypto_dev *cdev)
++{
++	iowrite32(0, cdev->base + RTCR_REG_CTR);
++}
++
++static void rtcr_init_rings(struct rtcr_crypto_dev *cdev)
++{
++	phys_addr_t src =3D virt_to_phys(cdev->src_ring);
++	phys_addr_t dst =3D virt_to_phys(cdev->dst_ring);
++
++	iowrite32(src, cdev->base + RTCR_REG_SRC);
++	iowrite32(dst, cdev->base + RTCR_REG_DST);
++
++	cdev->asic_dst_idx =3D cdev->asic_src_idx =3D 0;
++	cdev->cpu_src_idx =3D cdev->cpu_dst_idx =3D cdev->cpu_buf_idx =3D 0;
++	cdev->pp_src_idx =3D cdev->pp_dst_idx =3D cdev->pp_buf_idx =3D 0;
++}
++
++static int rtcr_crypto_probe(struct platform_device *pdev)
++{
++	struct device *dev =3D &pdev->dev;
 +	struct rtcr_crypto_dev *cdev;
-+	int type;
-+	int opmode;
-+	union {
-+		struct skcipher_alg skcipher;
-+		struct ahash_alg ahash;
-+	} alg;
-+};
++	unsigned long flags =3D 0;
++	struct resource *res;
++	void __iomem *base;
++	int irq, ret;
 +
-+struct rtcr_ahash_ctx {
-+	struct rtcr_crypto_dev	*cdev;
-+	struct crypto_ahash	*fback;
-+	int			opmode;
-+};
-+
-+struct rtcr_ahash_req {
-+	int state;
-+	/* Data from here is lost if fallback switch happens */
-+	u32 vector[RTCR_HASH_VECTOR_SIZE];
-+	u64 totallen;
-+	char buf[RTCR_HASH_BUF_SIZE];
-+	int buflen;
-+};
-+
-+union rtcr_fallback_state {
-+	struct md5_state md5;
-+	struct sha1_state sha1;
-+};
-+
-+struct rtcr_skcipher_ctx {
-+	struct rtcr_crypto_dev	*cdev;
-+	int			opmode;
-+	int			keylen;
-+	u32			key_enc[AES_KEYSIZE_256 / sizeof(u32)];
-+	u32			key_dec[AES_KEYSIZE_256 / sizeof(u32)];
-+};
-+
-+extern struct rtcr_alg_template rtcr_ahash_md5;
-+extern struct rtcr_alg_template rtcr_ahash_sha1;
-+extern struct rtcr_alg_template rtcr_skcipher_ecb_aes;
-+extern struct rtcr_alg_template rtcr_skcipher_cbc_aes;
-+extern struct rtcr_alg_template rtcr_skcipher_ctr_aes;
-+
-+extern void rtcr_lock_ring(struct rtcr_crypto_dev *cdev);
-+extern void rtcr_unlock_ring(struct rtcr_crypto_dev *cdev);
-+
-+extern int rtcr_alloc_ring(struct rtcr_crypto_dev *cdev, int srclen,
-+			   int *srcidx, int *dstidx, int buflen, char **buf);
-+extern void rtcr_add_src_ahash_to_ring(struct rtcr_crypto_dev *cdev, int =
-idx,
-+				       int opmode, int totallen);
-+extern void rtcr_add_src_pad_to_ring(struct rtcr_crypto_dev *cdev,
-+				     int idx, int len);
-+extern void rtcr_add_src_skcipher_to_ring(struct rtcr_crypto_dev *cdev, i=
-nt idx,
-+					  int opmode, int totallen,
-+					  struct rtcr_skcipher_ctx *sctx);
-+extern void rtcr_add_src_to_ring(struct rtcr_crypto_dev *cdev, int idx,
-+				 void *vaddr, int blocklen, int totallen);
-+extern void rtcr_add_wbk_to_ring(struct rtcr_crypto_dev *cdev, int idx,
-+				 void *dst, int off);
-+extern void rtcr_add_dst_to_ring(struct rtcr_crypto_dev *cdev, int idx,
-+				 void *reqdst, int reqlen, void *wbkdst,
-+				 int wbkoff);
-+
-+extern void rtcr_kick_engine(struct rtcr_crypto_dev *cdev);
-+
-+extern void rtcr_prepare_request(struct rtcr_crypto_dev *cdev);
-+extern void rtcr_finish_request(struct rtcr_crypto_dev *cdev, int opmode,
-+				int totallen);
-+extern int rtcr_wait_for_request(struct rtcr_crypto_dev *cdev, int idx);
-+
-+extern inline int rtcr_inc_src_idx(int idx, int cnt);
-+extern inline int rtcr_inc_dst_idx(int idx, int cnt);
++#ifdef CONFIG_MIPS
++	if ((cpu_dcache_line_size() !=3D 16) && (cpu_dcache_line_size() !=3D 32)=
+) {
++		dev_err(dev, "cache line size not 16 or 32 bytes\n");
++		ret =3D -EINVAL;
++		goto err_map;
++	}
 +#endif
++
++	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(dev, "no IO address given\n");
++		ret =3D -ENODEV;
++		goto err_map;
++	}
++
++	base =3D devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR_OR_NULL(base)) {
++		dev_err(dev, "failed to map IO address\n");
++		ret =3D -EINVAL;
++		goto err_map;
++	}
++
++	cdev =3D devm_kzalloc(dev, sizeof(*cdev), GFP_KERNEL);
++	if (!cdev) {
++		dev_err(dev, "failed to allocate device memory\n");
++		ret =3D -ENOMEM;
++		goto err_mem;
++	}
++
++	irq =3D irq_of_parse_and_map(pdev->dev.of_node, 0);
++	if (!irq) {
++		dev_err(dev, "failed to determine device interrupt\n");
++		ret =3D -EINVAL;
++		goto err_of_irq;
++	}
++
++	if (devm_request_irq(dev, irq, rtcr_handle_irq, flags, "realtek-crypto",=
+ cdev)) {
++		dev_err(dev, "failed to request device interrupt\n");
++		ret =3D -ENXIO;
++		goto err_request_irq;
++	}
++
++	platform_set_drvdata(pdev, cdev);
++	cdev->base =3D base;
++	cdev->dev =3D dev;
++	cdev->irq =3D irq;
++	cdev->pdev =3D pdev;
++
++	dma_map_single(dev, (void *)empty_zero_page, PAGE_SIZE, DMA_TO_DEVICE);
++
++	init_waitqueue_head(&cdev->done_queue);
++	tasklet_init(&cdev->done_task, rtcr_done_task, (unsigned long)cdev);
++	spin_lock_init(&cdev->ringlock);
++	spin_lock_init(&cdev->asiclock);
++
++	/* Init engine first as it resets the ring pointers */
++	rtcr_init_engine(cdev);
++	rtcr_init_rings(cdev);
++	rtcr_register_algorithms(cdev);
++
++	dev_info(dev, "%d KB buffer, max %d requests of up to %d bytes\n",
++		 RTCR_BUF_RING_SIZE / 1024, RTCR_DST_RING_SIZE,
++		 RTCR_MAX_REQ_SIZE);
++	dev_info(dev, "ready for AES/SHA1/MD5 crypto acceleration\n");
++
++	return 0;
++
++err_request_irq:
++	irq_dispose_mapping(irq);
++err_of_irq:
++	kfree(cdev);
++err_mem:
++	iounmap(base);
++err_map:
++	return ret;
++}
++
++static int rtcr_crypto_remove(struct platform_device *pdev)
++{
++	struct rtcr_crypto_dev *cdev =3D platform_get_drvdata(pdev);
++
++	rtcr_exit_engine(cdev);
++	rtcr_unregister_algorithms(ARRAY_SIZE(rtcr_algs));
++	tasklet_kill(&cdev->done_task);
++	return 0;
++}
++
++static const struct of_device_id rtcr_id_table[] =3D {
++	{ .compatible =3D "realtek,realtek-crypto" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, rtcr_id_table);
++
++static struct platform_driver rtcr_driver =3D {
++	.probe		=3D rtcr_crypto_probe,
++	.remove		=3D rtcr_crypto_remove,
++	.driver		=3D {
++		.name	=3D "realtek-crypto",
++		.of_match_table	=3D rtcr_id_table,
++	},
++};
++
++module_platform_driver(rtcr_driver);
++
++MODULE_AUTHOR("Markus Stockhausen <markus.stockhausen@gmx.de>");
++MODULE_DESCRIPTION("Support for Realtek's cryptographic engine");
++MODULE_LICENSE("GPL");
 =2D-
 2.37.3
 
