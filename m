@@ -2,147 +2,144 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E662D5FE230
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 20:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A975FE228
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 20:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbiJMS4a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Oct 2022 14:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
+        id S232237AbiJMSzc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Oct 2022 14:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbiJMSz7 (ORCPT
+        with ESMTP id S231774AbiJMSzJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Oct 2022 14:55:59 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452391849AC
-        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 11:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1665687218;
-        bh=+JkfL4QqEFJ8WgRQicVqobBgwB9oGVGhbb7eNfPAgYA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=J8BacS7EUKiJDLAYRXY8YLAKnBir7evSjM492PS6oyFgnPujquD05wVRnUKMxXHWi
-         80XpcwJlGMDoC5VaZHoon3dFx2nG1LDorakow9S0XVRTXCiv+P9fQHYCW26rMRoBa9
-         73o5jjevWBgUEFsDKBqKPIZ6baDwb1VApEn+cn/4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from fedora.willemsstb.de ([94.31.86.22]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAfYm-1opfuQ1LWS-00B0M1; Thu, 13
- Oct 2022 20:40:30 +0200
-From:   Markus Stockhausen <markus.stockhausen@gmx.de>
-To:     linux-crypto@vger.kernel.org
-Cc:     Markus Stockhausen <markus.stockhausen@gmx.de>
-Subject: [PATCH 6/6] crypto/realtek: add devicetree documentation
-Date:   Thu, 13 Oct 2022 20:40:26 +0200
-Message-Id: <20221013184026.63826-7-markus.stockhausen@gmx.de>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20221013184026.63826-1-markus.stockhausen@gmx.de>
-References: <20221013184026.63826-1-markus.stockhausen@gmx.de>
+        Thu, 13 Oct 2022 14:55:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA263911E
+        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 11:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665687129;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8VBqJ4dzJjbnYynK7jkYTYjysfbRi2UUuxGT40j6Ev4=;
+        b=AuWNxO4PnXHsFJWtebkFuicen9P3MwQlkPgSSGsAxzGCjQpvRj0g3rO9BccYv2eaKuA6y/
+        wdIQBYw/XtGrjvGV6ymfC/WfTg0dIuJMFktaQfwgsGMquNWXXR0dCb4QSyZke3PcpzH5/G
+        JTdckCKNO/SG5hLB3VzbTnZK0HQoBxk=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-6-JdztKqGoN6eGBqAqvsVUoA-1; Thu, 13 Oct 2022 14:40:56 -0400
+X-MC-Unique: JdztKqGoN6eGBqAqvsVUoA-1
+Received: by mail-oi1-f197.google.com with SMTP id o12-20020a056808124c00b00353f308fb4bso1103227oiv.22
+        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 11:40:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8VBqJ4dzJjbnYynK7jkYTYjysfbRi2UUuxGT40j6Ev4=;
+        b=uJlezDXID0I5Jj5xjHeSk1LbsHEox9E0nGFE70RPzUVmKOrnTkgxY7bb7VtK0mLjFx
+         s3/kBzokei976iRIvSpOScltwZ/CeYy2uxVl9lYo6wifBlYaZJCvOvoyGnwS3rKHFRto
+         +YFf0I4q9InE6CzEgUVkRfvvpBs1GnI8taHR5MZQ26rFmQfkWqxOtjNZgi05huNz8E+v
+         py5IKvcRejyQ7RmHQGHvUUTck/eL+iCnA7mCEgUdW3KPSsb4EiOtCSfiMBByGK3KUD0M
+         KKBlcLxg5Kmkhyv6avz6ukVXwkDwUwJMsmj5W8gqCM+xuvVo75Cd8j2NW5w68gGi7wCA
+         YR3A==
+X-Gm-Message-State: ACrzQf2SkP6/lCoGbA8A8z+fSO9H1ZyQh9gewX8YRmuEBvTTWfrO4XlW
+        ZBhBxBqgjnu3iDSl2w0yFU8KsgODVtkPFvfyptaRT+ru1GVQDdpXM6xUnMCKHAtVaTVJR7NEhJE
+        IeWA9PpFmB93Unrq1n2quP5gw
+X-Received: by 2002:a05:6830:3152:b0:661:ceb9:9272 with SMTP id c18-20020a056830315200b00661ceb99272mr667820ots.149.1665686455879;
+        Thu, 13 Oct 2022 11:40:55 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4nJIAmq9Hq+46Kh8sn9us3gulZMoSvouw/Iy6ORtvgE9Z/MyjjjsC/KzgV7OOt2CYFqnSHDA==
+X-Received: by 2002:a05:6830:3152:b0:661:ceb9:9272 with SMTP id c18-20020a056830315200b00661ceb99272mr667806ots.149.1665686455653;
+        Thu, 13 Oct 2022 11:40:55 -0700 (PDT)
+Received: from localhost.localdomain ([2804:1b3:a801:9473:d360:c737:7c9c:d52b])
+        by smtp.gmail.com with ESMTPSA id v13-20020a05683024ad00b006618ad77a63sm244521ots.74.2022.10.13.11.40.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Oct 2022 11:40:55 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Leonardo Bras <leobras@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Wang Yufen <wangyufen@huawei.com>, mtosatti@redhat.com
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 1/4] sched/isolation: Fix style issues reported by checkpatch
+Date:   Thu, 13 Oct 2022 15:40:26 -0300
+Message-Id: <20221013184028.129486-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20221013184028.129486-1-leobras@redhat.com>
+References: <20221013184028.129486-1-leobras@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:O4TFgX83LNUyGW2NkrZGyHBDDjfd5OBqwAmP4/DK2K7BhgDB2SG
- RwJbI/9gLa3dmmE5X0q09gN/nHQ8u05c8iTFn6mcIlfsFsa8x99SmKEy+S65iuRB++HIagi
- LesSSpIs67JJcGoaaSwn6Z6NHJrZ1Ymq/RsT12Uze+dth9kPNOM7Znd0RT1jsiLjqQK3caK
- 3qTbYaNmadsaV6KOnDqeA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eWkWF4HUf1E=:m8UlQC4LeziGWduFXwDnYQ
- ssynfpKJs88vnp8yBfuOPl8hpkm0r+6QZ6HBAA+OpkoeSH83GCcuAvyHUo1oD78c/j/4Kt4co
- k58t4RIKhloLvGhcckYXmLB+MSCeNwdLlf2Vp/qGH153hsUcZNRjv4EMMNEzkfwxiqzVbVhtQ
- I0XFIo5D4NkJKUMqSJMOfOrjA7gCfXikLRYVD9FTIaujZBopTfKVHIPl+prIUdJzpSh4yVxba
- 7KwLigh74D6jFUtCxq/3sBoljS/0pU6jqEJPq1nN7GM0EG3/ZlKltiIZ+HsZOaQ5DcXl/ifNL
- N1hjp5zdQPPEM9M5UxaiNjJSnrwUUjOqi2q+gBfiWcm+v4kxk55k5yRt4w1NNE9oWXC7Dt5B/
- 7LdF5BTE2dLx2ihfeBnc0em9uGZfqdxCGf77BXKBETrBIcDzxlKa59pX/AA276iRU8h5QK18X
- O/HMnR+kXyCoNmgxfZJofYVqt0DemuslW2+lWakz2gEIAQKvlJD74Wvmf7yKEilNz3lxC1oKp
- 1hvpkodD3nsKYy+ShJt6TNULeLkEPxa2KjqgMWsjbZbYaF2tnzeYVXFLAdBMNlqbhYy0Pd46U
- gfc0chRlNLw6ateqJp8rQ9KpyKuphbvO5DG//WruxQ4nUSihw6lG0ZfNqS772qvzomfMy7V20
- 4hK5a4jOxTgGdusPRkknlhIPdaZgP7uZmkGzd7AuVS/KxNPBbDVsdJrk0IGnNCdwd+NFGRKm7
- yorCUbqqTncqqijbEIAlBm17TBhldbGRoeI7VzoOVJ9UReO8KRcFkA8mdyWNkkbcyjq/Eqouc
- rLIYko57LFfHKQrtlmkmRqPr/rvjPnaph2jYAJJ0z2bHnu2ET1HZeVfjM01jJcnPie69BNmY5
- dSEyKSRIplnhw408CN9siAzjmoHkFnpPp6ihUgqApFBOCAtYb03d5WMKncftusqe6RN6msBO4
- WL3S/CGhL+GIALio2PFKRqNOy5IikCV4X43VTzTQ7jXgH8wfP5AtTgspvcxOYobGN3TYqHi3w
- /VPefSlNbsHqP+TBnczc6bIOyV2WTke0pjjFU9FEj+kLgXrvj6MAQLTo2Dnt5XGer2/1U3eOy
- rAHX/zl0ZhVS9vxsKVfbMtHsSXt8wSwTePry9t9BcMHItDwSjw8Ha72yKV1YF83rsTphqDEI0
- GEVKtI8bJhY97DB9WlOjMMToWvmE2fAA5DW+scy79sT4j9jGSkOWKb2Hu39uVbQ5peIcG/S8Z
- HdjxWQkGYINhkQw5o/i8B3xDD+oXL9QpRxpekOgtnL4MV5EoFUOKKBrAd+TWrhO6cqzXT751P
- c19FgLncYA/4NF8ch5qcxYa66JW/UNdCajZrr1OIUGyFKwyhCmJ6E6tsCyn2TR9CBj/eU33rw
- 9asZec4ph2Y0aNeAzxCcaXKpm5M9eFSs5dKNtlE7kCkvJvy0Q3OUzHvxkPEbrkhwnUksZrjo0
- 2JsKBNrtuk2Z/2M6yfPncbQvnovAsFPnoon28qBY+nZwnbrah4wYC5JWAYBk/dObfT9Ub53Tx
- wIgz9ZBfE2jAoDV+QdGp10Nj+32JDoLXjzZKvdZY+pA+d
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add devicetree documentation of new Realtek crypto device.
+scripts/checkpatch.pl warns about:
+- extern prototypes should be avoided in .h files
+- Missing or malformed SPDX-License-Identifier tag in line 1
 
-Signed-off-by: Markus Stockhausen <markus.stockhausen@gmx.de>
-=2D--
- .../crypto/realtek,realtek-crypto.yaml        | 51 +++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/crypto/realtek,realt=
-ek-crypto.yaml
+Fix those issues to avoid extra noise.
 
-diff --git a/Documentation/devicetree/bindings/crypto/realtek,realtek-cryp=
-to.yaml b/Documentation/devicetree/bindings/crypto/realtek,realtek-crypto.=
-yaml
-new file mode 100644
-index 000000000000..443195e2d850
-=2D-- /dev/null
-+++ b/Documentation/devicetree/bindings/crypto/realtek,realtek-crypto.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/crypto/realtek,realtek-crypto.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Realtek crypto engine bindings
-+
-+maintainers:
-+  - Markus Stockhausen <markus.stockhausen@gmx.de>
-+
-+description: |
-+  The Realtek crypto engine provides hardware accelerated AES, SHA1 & MD5
-+  algorithms. It is included in SoCs of the RTL838x series, such as RTL83=
-80,
-+  RTL8381, RTL8382, as well as SoCs from the RTL930x series, such as RTL9=
-301,
-+  RTL9302 and RTL9303.
-+
-+properties:
-+  compatible:
-+    const: realtek,realtek-crypto
-+
-+  reg:
-+    minItems: 1
-+    maxItems: 1
-+
-+  interrupt-parent:
-+    minItems: 1
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 1
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupt-parent
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    crypto0: crypto@c000 {
-+      compatible =3D "realtek,realtek-crypto";
-+      reg =3D <0xc000 0x10>;
-+      interrupt-parent =3D <&intc>;
-+      interrupts =3D <22 3>;
-+    };
-+
-+...
-=2D-
-2.37.3
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+---
+ include/linux/sched/isolation.h | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+index 8c15abd67aed9..762701f295d1c 100644
+--- a/include/linux/sched/isolation.h
++++ b/include/linux/sched/isolation.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef _LINUX_SCHED_ISOLATION_H
+ #define _LINUX_SCHED_ISOLATION_H
+ 
+@@ -20,12 +21,12 @@ enum hk_type {
+ 
+ #ifdef CONFIG_CPU_ISOLATION
+ DECLARE_STATIC_KEY_FALSE(housekeeping_overridden);
+-extern int housekeeping_any_cpu(enum hk_type type);
+-extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
+-extern bool housekeeping_enabled(enum hk_type type);
+-extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
+-extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
+-extern void __init housekeeping_init(void);
++int housekeeping_any_cpu(enum hk_type type);
++const struct cpumask *housekeeping_cpumask(enum hk_type type);
++bool housekeeping_enabled(enum hk_type type);
++void housekeeping_affine(struct task_struct *t, enum hk_type type);
++bool housekeeping_test_cpu(int cpu, enum hk_type type);
++void __init housekeeping_init(void);
+ 
+ #else
+ 
+-- 
+2.38.0
 
