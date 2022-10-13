@@ -2,138 +2,135 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA71C5FE229
-	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 20:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0E55FE25B
+	for <lists+linux-crypto@lfdr.de>; Thu, 13 Oct 2022 21:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbiJMSze (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 13 Oct 2022 14:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
+        id S229625AbiJMTEf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 13 Oct 2022 15:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbiJMSzL (ORCPT
+        with ESMTP id S229498AbiJMTEe (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 13 Oct 2022 14:55:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3913342AE8
-        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 11:53:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1665687069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8pkajZPOZxDkGw1RxC1xTCn1Bly76di5EaF0TtIpiUE=;
-        b=FT/U4atbl2SjlTNnzGd66W/q+Lri2Kv+zprL4BB0cOVC+BcROzCSVjjSc5LK0WeB/CHDpE
-        6cOVo89l8V7Fisvy9KJ06GvTVbGd42emfUlmrpkQHv6EgO91juqXPGCGqbdJjS8tI9kl2I
-        mPYNYq9Q+62mCItEqbL4VZDdeJVzCVU=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-350-PS79rkjDPQ6JG5fxCyt4Og-1; Thu, 13 Oct 2022 14:40:50 -0400
-X-MC-Unique: PS79rkjDPQ6JG5fxCyt4Og-1
-Received: by mail-ot1-f71.google.com with SMTP id q6-20020a9d6306000000b0065757df1611so357488otk.19
-        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 11:40:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8pkajZPOZxDkGw1RxC1xTCn1Bly76di5EaF0TtIpiUE=;
-        b=Usq4XwUTecft+Tn8VxPj+AuxpbUafA/LiZCcwzAowvGBDkTYyRtbfFmUJN4tgDtGcl
-         e8y16is+eVTulF5euFzX5vuGnzQ1uaD1SJBDGdDZ0UeXLnlm3UXshQUdIB+OzCZXwxrN
-         654caBdInI74eHY0KA4U2BmP/1uk1f7x5emvlWA02h+xTrcCd4pjYaCyAb+jTvXOjIzM
-         zks/sUoZuxFvS3L79guPHKBcq9Zbg0Zb+j+q61Z0KzhuwwMTU54cV35ptDxaOfy6Yla/
-         rUm41Xq7uTBEflSuCRHicPPavSnMPE75z1jbuZ1pEg+g0VF/RH0sEdgx5dU1+h/B/PeD
-         uenw==
-X-Gm-Message-State: ACrzQf1orb1jOEy7yhn0d9J5X4XSE+cdRUYtCjRWUUl4dY45jdISEjtZ
-        nTJmmB78rg1OLJFTq74YfvOd6LgdpaeXp+0q+at0b6EUQ/pjLGJXN3RlDHpxiJJ3FboySUKCemE
-        zDHTLR4eO+jJjXGRtJeV+i99V
-X-Received: by 2002:a05:6830:2647:b0:659:edd8:3fcd with SMTP id f7-20020a056830264700b00659edd83fcdmr681881otu.344.1665686449486;
-        Thu, 13 Oct 2022 11:40:49 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5zsqe12qXgtGqOG3X4aAkxg5HN1AkA2/2fmrv6WsfdypDLxNxz0oYk6/aTlQR85OUwZLjPpA==
-X-Received: by 2002:a05:6830:2647:b0:659:edd8:3fcd with SMTP id f7-20020a056830264700b00659edd83fcdmr681866otu.344.1665686449258;
-        Thu, 13 Oct 2022 11:40:49 -0700 (PDT)
-Received: from localhost.localdomain ([2804:1b3:a801:9473:d360:c737:7c9c:d52b])
-        by smtp.gmail.com with ESMTPSA id v13-20020a05683024ad00b006618ad77a63sm244521ots.74.2022.10.13.11.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Oct 2022 11:40:48 -0700 (PDT)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leonardo Bras <leobras@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Wang Yufen <wangyufen@huawei.com>, mtosatti@redhat.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2 0/4] CPU isolation improvements
-Date:   Thu, 13 Oct 2022 15:40:25 -0300
-Message-Id: <20221013184028.129486-1-leobras@redhat.com>
-X-Mailer: git-send-email 2.38.0
+        Thu, 13 Oct 2022 15:04:34 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149376C972
+        for <linux-crypto@vger.kernel.org>; Thu, 13 Oct 2022 12:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1665687871;
+        bh=Y2JBzG+FoZxfNRR8+s09rv4jB/A3dAvwAkDsLeqOgms=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=N042xNcqcURMvpl+e+I4jmAAiL8TZJYLiN46FowFgJ3vd9rlVlyCU/W8nSljiXyz1
+         Z0K6nt93HXqPgOV20G44ZGOwC0xNO4llP/3+rBdq6tqRinVdo/A+esiTXiDwHOiImW
+         iaZ5pRRAqC/h3CZH0pbxEIwA2UpguTzvWfohNWMI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from fedora.willemsstb.de ([94.31.86.22]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiPl-1oZNyd0li9-00U2dk; Thu, 13
+ Oct 2022 20:40:30 +0200
+From:   Markus Stockhausen <markus.stockhausen@gmx.de>
+To:     linux-crypto@vger.kernel.org
+Cc:     Markus Stockhausen <markus.stockhausen@gmx.de>
+Subject: [PATCH 5/6] crypto/realtek: enable module
+Date:   Thu, 13 Oct 2022 20:40:25 +0200
+Message-Id: <20221013184026.63826-6-markus.stockhausen@gmx.de>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20221013184026.63826-1-markus.stockhausen@gmx.de>
+References: <20221013184026.63826-1-markus.stockhausen@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:StCpxZYBVEfcY9BedQFryRbvxqHbML0ZqYphr9M5/UK1E50rbrG
+ HyOB8B8PSV4u1BRFNpW+TsrkZFXrsuKkt2Dqv6NVbwMw8AKQQ4MWhEeLlvZfawwAhYBhxDw
+ 5zrlr6etniPwOQJRIDh9l9ikB7xbD3DuWEGnZ057iYU5MHD5rJQyRzsuBlbund4nqY04uV9
+ IZj3EtMhYgKocChgdUXIQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9pCr4hhvU0k=:S0Bu+Lb6qUsxUtwYH3DM7+
+ V3wUwMi5wo0pTJ2XyotqxxO7Pta8nJS2DwnZpRTWI21kmc4dH3c7bk5H/qCSK9a/KaQr1NUe1
+ +I5iFvuYhCJMOci1khp35DgAsmWuyE6H5C9NHPA0XdCm4eSRd4iqjNjfENwyyiBeSGW9wwPIL
+ nCDfQlgpTBD7+W1PZClmKIC9UFPUb4moq6JeMpfTbX8/+/ItIkcQ2yMOuXGiYUgv9fBgNboZe
+ IAHBaInzhMldX2guUFhZTyLhIYRZkpeHyT/HYUE2UYnoO07bkfyQBkBL4xiIznZ1hKzqRKNxN
+ DwAMmzDNW1j91UI509wB3g6yW+PkfjohAIhwAZigH1KHCwVzrdRwWBO1gkQ5K0uA86/03/AOZ
+ oynLuZ6EMFncJNn8EBtaeIqPI6aTbZNmqlxFqTevV45DCLOg+kYfkXNSlPHbsC8UyO1TfvF2/
+ 8P1zFOiDYGGKpSwKGF9RjZMK+yn5lUViRR374sDi+uCZHMZISZqjqr7FfM01v2nkpSdBDCEoj
+ B8RmL55+lN3Vz7ZukmtLvD+/lWi76fA8Vn3TkJNwny0h+Jk1SD2Ioz9azOqxMvkqLzI2GH02+
+ 3F6Oix2sgeTumKmhHF6s1OeqqGC3bUCMp2ggpbG2v9IVTgTaoigyaX7bRE8rjSjmO0vuavhcj
+ DTS+9L1Uczm/rJJ19wV029GWIiikwBwiiwsCOqr+8JVRnv35YnQJbU0CgHyErn/jrpATzcKEV
+ AfDmQMbrCOGHRbiYlblyE9qchaQCG5AFpgMfEodqmW0XHFp3SDPUeonI+UbZPwizBchcQr5rh
+ QAFmkLy8ZBdx+NH/E/HAavNuew/RZzjbZMwDCO1diGfLGsoU9M9Ig9maO7I8VDho6cpesmGe0
+ HlhzA3aBcdEN1zW/P/jCZCIqIEBNrocgaTEVRQoOvVtMPg1qMOA4Qcl6H/RyoLSyeAeh7rH/u
+ eD+jo6ISl2bE40Yoe7hsXBEc2WgKdrskB5iY4B5T0x2uMPnmfHz7Y9b3+giLA8Qjmq0iiSjzN
+ MW0cii+jMqExAb8DKspsxaPiWc5dM/PKhPMMZmuG6J1uvmBkbkGSwFskbVCA5TKhWpfP99jS8
+ VRIpvWncJYjUSgwNPz+YJcyjkJYdGxxUP6ceG+ImnEMNY8ZO+4TEka8VwgawFp1VdT8r8ol9t
+ GQ2pEI0/3URaMYMCXDH8/sxIy2p3xkAYfoh7AwO7bEQ8kQk91I4m6YercyldCUDPAWE3gnwCi
+ 9TTVW07/Qg5Z0kqwul24RfrB32JTAANE3mBs4bRX2y3JuIy15J2wL9vko8Gppc6P9eYEWzvCe
+ WQAxF5nFSW8LFExKYTWIbmNH6pasJurVbej66exkdsWyL09+7gMfV4j6lxdJ784CfoypGTazN
+ Az8fIFHkhoPAySUemMlAGZFJkmk5b58cDPAK0p57dts96rN/8lgEpcMZJ9oBctjdKjiSMIXnI
+ 8Luerj0+8eAXT3WCXUh48bsEVqH9VpjrerZLCagExu/38f3+jhmHlYNfPumO8cC8vMlqBZoZe
+ GLNTP6F+WCblHh5RqFzrWIg0VXsvfepA3Gsr5XHR81uk8
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Patch 1 removes some noise from isolation.c
+Add new Realtek crypto device to the kernel configuration.
 
-Patch 2 adds some information about the housekeeping flags and a short
-description on what to expect from the HK functions. I would really like 
-some feedback on this one, since I got all that from the flags usage, and 
-maybe I am misreading stuff.
+Signed-off-by: Markus Stockhausen <markus.stockhausen@gmx.de>
+=2D--
+ drivers/crypto/Kconfig          | 13 +++++++++++++
+ drivers/crypto/Makefile         |  1 +
+ drivers/crypto/realtek/Makefile |  5 +++++
+ 3 files changed, 19 insertions(+)
+ create mode 100644 drivers/crypto/realtek/Makefile
 
-In patch 3, I am suggesting making isolcpus have both the _DOMAIN flag and 
-the _WQ flag, so the _DOMAIN flag is not responsible for isolating cpus on 
-workqueue operations anymore. This will avoid AND'ing both those bitmaps 
-every time we need to check for Workqueue isolation, simplifying code and 
-avoiding cpumask allocation in most cases. 
+diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+index 55e75fbb658e..990a74f7ad97 100644
+=2D-- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -666,6 +666,19 @@ config CRYPTO_DEV_IMGTEC_HASH
+ 	  hardware hash accelerator. Supporting MD5/SHA1/SHA224/SHA256
+ 	  hashing algorithms.
 
-Maybe I am missing something in this move, so please provide feedback.
-
-In patch 4 I use the results from patch 3 and I disallow pcrypt to schedule 
-work in cpus that are not enabled for workqueue housekeeping, meaning there 
-will be less work done in those isolated cpus.
-
-Best regards,
-Leo
-
-Leonardo Bras (4):
-  sched/isolation: Fix style issues reported by checkpatch
-  sched/isolation: Improve documentation
-  sched/isolation: Add HK_TYPE_WQ to isolcpus=domain
-  crypto/pcrypt: Do not use isolated CPUs for callback
-
- crypto/pcrypt.c                 |  9 +++++---
- drivers/pci/pci-driver.c        | 13 +----------
- include/linux/sched/isolation.h | 38 ++++++++++++++++++++-------------
- kernel/sched/isolation.c        |  4 ++--
- kernel/workqueue.c              |  1 -
- net/core/net-sysfs.c            |  1 -
- 6 files changed, 32 insertions(+), 34 deletions(-)
-
--- 
-2.38.0
++config CRYPTO_DEV_REALTEK
++	tristate "Realtek's Cryptographic Engine driver"
++	depends on OF && MIPS && CPU_BIG_ENDIAN
++	select CRYPTO_MD5
++	select CRYPTO_SHA1
++	select CRYPTO_AES
++	help
++	  This driver adds support for the Realtek crypto engine. It provides
++	  hardware accelerated AES, SHA1 & MD5 algorithms. It is included in
++	  SoCs of the RTL838x series, such as RTL8380, RTL8381, RTL8382, as
++	  well as SoCs from the RTL930x series, such as RTL9301, RTL9302 and
++	  RTL9303.
++
+ config CRYPTO_DEV_ROCKCHIP
+ 	tristate "Rockchip's Cryptographic Engine driver"
+ 	depends on OF && ARCH_ROCKCHIP
+diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
+index 116de173a66c..df4b4b7d7302 100644
+=2D-- a/drivers/crypto/Makefile
++++ b/drivers/crypto/Makefile
+@@ -36,6 +36,7 @@ obj-$(CONFIG_CRYPTO_DEV_PPC4XX) +=3D amcc/
+ obj-$(CONFIG_CRYPTO_DEV_QAT) +=3D qat/
+ obj-$(CONFIG_CRYPTO_DEV_QCE) +=3D qce/
+ obj-$(CONFIG_CRYPTO_DEV_QCOM_RNG) +=3D qcom-rng.o
++obj-$(CONFIG_CRYPTO_DEV_REALTEK) +=3D realtek/
+ obj-$(CONFIG_CRYPTO_DEV_ROCKCHIP) +=3D rockchip/
+ obj-$(CONFIG_CRYPTO_DEV_S5P) +=3D s5p-sss.o
+ obj-$(CONFIG_CRYPTO_DEV_SA2UL) +=3D sa2ul.o
+diff --git a/drivers/crypto/realtek/Makefile b/drivers/crypto/realtek/Make=
+file
+new file mode 100644
+index 000000000000..8d973bf1d520
+=2D-- /dev/null
++++ b/drivers/crypto/realtek/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-$(CONFIG_CRYPTO_DEV_REALTEK) +=3D rtl_crypto.o
++rtl_crypto-objs :=3D realtek_crypto.o \
++		  realtek_crypto_skcipher.o \
++		  realtek_crypto_ahash.o
+=2D-
+2.37.3
 
