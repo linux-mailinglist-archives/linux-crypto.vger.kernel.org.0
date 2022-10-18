@@ -2,57 +2,50 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B99D601F38
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Oct 2022 02:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A785601FEB
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Oct 2022 02:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbiJRAQz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 17 Oct 2022 20:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
+        id S230090AbiJRAxJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 17 Oct 2022 20:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbiJRAPF (ORCPT
+        with ESMTP id S229900AbiJRAxJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 17 Oct 2022 20:15:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB75F895E2;
-        Mon, 17 Oct 2022 17:12:43 -0700 (PDT)
+        Mon, 17 Oct 2022 20:53:09 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E099B816B6;
+        Mon, 17 Oct 2022 17:52:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 344DBB81C13;
-        Tue, 18 Oct 2022 00:12:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94169C433D6;
-        Tue, 18 Oct 2022 00:12:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 60096B80DAC;
+        Tue, 18 Oct 2022 00:52:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7D01C433C1;
+        Tue, 18 Oct 2022 00:52:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666051939;
-        bh=gnitjREAosEnc2q8OgrCTjC9y263oqZqF5PO1jPmfAk=;
+        s=k20201202; t=1666054366;
+        bh=uxY/367ILC9MijFRSeHxRt+n73GNDXQPlO80EctYxss=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q7i2DxbdEcxbhfpzWd7/PqUCedMhspOijxzXuQatS+gez7pf5cjxzCH9olhYsFZAQ
-         MK2bKDWrhOMTg7eqhAuu8rFjt9KYv93+6ZjGJkYMuLI9nbF72Yv1Luia0qrfJysCsF
-         mnxq5Ywwdt2Kbh25Brw2hdqK+i9N1RjnS+XpsTodn0KG6f1pzwaeJzNN4eG7LHT207
-         kOGNJDpnF1RQ9ywEXzh5XN5Kb72mJZLCMwfE8RAFNDQoN4MnKMMiHOQf9SFxaImpQ6
-         ZIymM2Xvkh/ew0lhZZBsxlGpQeYbbshRgyemsr+ycWZbpbH8XBCFWAOc5dbcOcZXuj
-         YRew0JcmpZM9w==
-Date:   Mon, 17 Oct 2022 17:12:16 -0700
+        b=kF4b9k+Mcf6aXpz1PsDID2GTUSxrQRRM8AWedfKXS8oxhNkqV8+uw+gZtNT8uHraO
+         XLXGdljsHj/psr7KaN/AJcGD1tUu+UPhzuFvaF48thXts3ZA0b8o46p0pBTPYmd+w2
+         W+IIxWVUq10RZ/t+9FbOg2vuG1ZeuldZCftPTHYGljPoFdtCCt4bQ7dZ7vCF2c7y2+
+         Ici8JFR3U1QZ2QAyLMaCCWVLi1nVo3MvHSMU7k4Fi7K1BtZBLDkCK6JixE0v3p8mrB
+         KlieMCL+ETjbB9LKMpeIbgM9jBtfvtsyMsUUaoq6AsaZ77v6CqreajiIVj1TtOaX9Y
+         JRjtvjFMfV7kA==
+Date:   Mon, 17 Oct 2022 17:52:44 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     Bruno Goncalves <bgoncalv@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: x86/polyval - Fix crashes when keys are not
- 16-byte aligned
-Message-ID: <Y03vYKwgdK34Hyfh@sol.localdomain>
-References: <20221017222620.715153-1-nhuck@google.com>
- <Y03fBQPM7h7+cfGK@sol.localdomain>
- <CAJkfWY5CXFQfSkM=U6u_DdLjDyLDoubqy2FeSZg5k7GBkOTnsQ@mail.gmail.com>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot+104c2a89561289cec13e@syzkaller.appspotmail.com
+Subject: Re: [PATCH] fscrypt: fix keyring memory leak on mount failure
+Message-ID: <Y0343O5W7ehNUDP8@sol.localdomain>
+References: <0000000000009aad5e05eac85f36@google.com>
+ <20221011213838.209879-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJkfWY5CXFQfSkM=U6u_DdLjDyLDoubqy2FeSZg5k7GBkOTnsQ@mail.gmail.com>
+In-Reply-To: <20221011213838.209879-1-ebiggers@kernel.org>
 X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,52 +55,24 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Oct 17, 2022 at 04:38:25PM -0700, Nathan Huckleberry wrote:
-> On Mon, Oct 17, 2022 at 4:02 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Mon, Oct 17, 2022 at 03:26:20PM -0700, Nathan Huckleberry wrote:
-> > > The key_powers array is not guaranteed to be 16-byte aligned, so using
-> > > movaps to operate on key_powers is not allowed.
-> > >
-> > > Switch movaps to movups.
-> > >
-> > > Fixes: 34f7f6c30112 ("crypto: x86/polyval - Add PCLMULQDQ accelerated implementation of POLYVAL")
-> > > Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
-> > > Signed-off-by: Nathan Huckleberry <nhuck@google.com>
-> > > ---
-> > >  arch/x86/crypto/polyval-clmulni_asm.S | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/x86/crypto/polyval-clmulni_asm.S b/arch/x86/crypto/polyval-clmulni_asm.S
-> > > index a6ebe4e7dd2b..32b98cb53ddf 100644
-> > > --- a/arch/x86/crypto/polyval-clmulni_asm.S
-> > > +++ b/arch/x86/crypto/polyval-clmulni_asm.S
-> > > @@ -234,7 +234,7 @@
-> > >
-> > >       movups (MSG), %xmm0
-> > >       pxor SUM, %xmm0
-> > > -     movaps (KEY_POWERS), %xmm1
-> > > +     movups (KEY_POWERS), %xmm1
-> > >       schoolbook1_noload
-> > >       dec BLOCKS_LEFT
-> > >       addq $16, MSG
-> >
-> > I thought that crypto_tfm::__crt_ctx is guaranteed to be 16-byte aligned,
-> > and that the x86 AES code relies on that property.
-> >
-> > But now I see that actually the x86 AES code manually aligns the context.
-> > See aes_ctx() in arch/x86/crypto/aesni-intel_glue.c.
-> >
-> > Did you consider doing the same for polyval?
+On Tue, Oct 11, 2022 at 02:38:38PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> I'll submit a v2 aligning the tfm_ctx. I think that makes more sense
-> than working on unaligned keys.
+> Commit d7e7b9af104c ("fscrypt: stop using keyrings subsystem for
+> fscrypt_master_key") moved the keyring destruction from __put_super() to
+> generic_shutdown_super() so that the filesystem's block device(s) are
+> still available.  Unfortunately, this causes a memory leak in the case
+> where a mount is attempted with the test_dummy_encryption mount option,
+> but the mount fails after the option has already been processed.
 > 
-> Is there a need to do the same changes on arm64? The keys are also
-> unaligned there.
+> To fix this, attempt the keyring destruction in both places.
 > 
+> Reported-by: syzbot+104c2a89561289cec13e@syzkaller.appspotmail.com
+> Fixes: d7e7b9af104c ("fscrypt: stop using keyrings subsystem for fscrypt_master_key")
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-arm64 defines ARCH_DMA_MINALIGN to 128, so I don't think the same issue applies
-there.  Also the instructions used don't assume aligned addresses.
+Applied to fscrypt.git#for-stable for 6.1.
+
+As usual, I'd greatly appreciate reviews though...
 
 - Eric
