@@ -2,102 +2,99 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297D9603B60
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Oct 2022 10:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700C5603B9F
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Oct 2022 10:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbiJSIWh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Oct 2022 04:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
+        id S229999AbiJSIhX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 19 Oct 2022 04:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbiJSIWK (ORCPT
+        with ESMTP id S229592AbiJSIhW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Oct 2022 04:22:10 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12B97C748
-        for <linux-crypto@vger.kernel.org>; Wed, 19 Oct 2022 01:22:02 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d24so16240157pls.4
-        for <linux-crypto@vger.kernel.org>; Wed, 19 Oct 2022 01:22:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jCJsXsDD/iNK9yC84Ot8gXJYydwvdgJYruOO+RMKvrI=;
-        b=BFSR4WVhAXfB1vlb0cUgghmsCkWBRhqgD6lVihreVgg0Ur6b0TysDdmKzJ/V3RZItP
-         2VGwR/gxZPw5eLhG8UVwdrJPN6JvFW2EWGOOWUQwOOt69EkBSKMg/n+eTYeb/Xaftcpx
-         0MRaeDjikhPvT4P85syFkT0PMsbBDuZLIsslwR9vIKR4pV3R266ZjiVeWWuCwDgrs1TY
-         4fz6nx1kqNJL7lUmzZQzpfyxZ8gnv+qKMZxQyNMeqp02ONzGdf0nrvrzyyeSCnSzq5th
-         njgOftXzyJ3pTWAFyAn364PX+ZVbZ/jg9uM7kvCsABV/zdARBWrjAbQUN/V6lHZpCCBO
-         Tkcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCJsXsDD/iNK9yC84Ot8gXJYydwvdgJYruOO+RMKvrI=;
-        b=eCqksPHSEuNdkEkK8MUwrnFEcnOH3Twr9aGMQKtl03TXr42UhKWsfuUL2wze5ycZgh
-         oeDc8xyV6nRHWcFJmygV0sD1PzDmfne6Clh3zt0LOJOniM1pUnZEXYmXFivUfYwabk8i
-         57uNtjZEU+3ejz0EL70IAGwtfkGyZeM0tjf+U6+JJsuuNIbrB7uMUWN9KX9ApF+dBnZD
-         Q5cY77O+Lx8vDS8vV+jMo+8x9VrP1M6y4LnCww8EVom/ANT47JQqcj+v5pFffSid8w6c
-         euhgip1sFQX7zoVKLpJnXIDmz027slzHqY+arG0kVEGET1BqGYs5VI60m1aBqmI3I7B4
-         eeGQ==
-X-Gm-Message-State: ACrzQf1xsneBI4BfTcsEtOU9olmXJWMxW5mhdmtBu/cJm/Ovl7w8akS7
-        fBlUkOuMasYwH/Q98jdbteqNY1YQFOhOLgcVbJtv+kHgfTWESg==
-X-Google-Smtp-Source: AMsMyM4lpOr7xF2OuedJ06jrmINiWWb6Iolu3B6EalrgIgAhqCKEx0lTHc5iycAzzdfgxucK3mfdcaeahaKaDKVmug4=
-X-Received: by 2002:a17:902:7b95:b0:178:ab50:76b5 with SMTP id
- w21-20020a1709027b9500b00178ab5076b5mr7288103pll.161.1666167400757; Wed, 19
- Oct 2022 01:16:40 -0700 (PDT)
+        Wed, 19 Oct 2022 04:37:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8975FF70;
+        Wed, 19 Oct 2022 01:37:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 51CC72036B;
+        Wed, 19 Oct 2022 08:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1666168638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=OnRTNV6BJLlEJNjkgcYAe4uit2FAkqV3YDM031DnAjE=;
+        b=qdw21VjJrnUFHHve/t0gJpZJrl62EO2IZSnjlOAoITfWFEkT0wpCEuSbRCqVZ9vmZXb3y0
+        x56RQLq+J70YeXXpA2v3tuQvylQx6txaPSegsN6SboM3fwSfttzOd3H3X09O/LZoBJ58oN
+        fr2xkdlVhofeo9oW/ZbtnBd/fRUkTzo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1666168638;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=OnRTNV6BJLlEJNjkgcYAe4uit2FAkqV3YDM031DnAjE=;
+        b=xKJYrZFcwpB00oIPj6Yk7HYJL59Obnxgk8Jw2A58hltPHw4q8T0IssWxG+RVIqTyR21Eho
+        IFV7pgcjnpXexVCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 408DD13345;
+        Wed, 19 Oct 2022 08:37:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Api1Dz63T2M/ZQAAMHmgww
+        (envelope-from <nstange@suse.de>); Wed, 19 Oct 2022 08:37:18 +0000
+From:   Nicolai Stange <nstange@suse.de>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Martin Doucha <mdoucha@suse.cz>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
+Subject: [PATCH 0/5] padata: fix liftime issues after ->serial() has completed
+Date:   Wed, 19 Oct 2022 10:37:03 +0200
+Message-Id: <20221019083708.27138-1-nstange@suse.de>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Received: by 2002:a17:902:d2cc:b0:185:457a:9333 with HTTP; Wed, 19 Oct 2022
- 01:16:40 -0700 (PDT)
-Reply-To: abdwabbom447@gmail.com
-From:   Maddah Hussain <aloyikechukwu03@gmail.com>
-Date:   Wed, 19 Oct 2022 09:16:40 +0100
-Message-ID: <CAJLuiHSMgW28O7MG91mcZnZdzMzbkJKGna5G_xdHGbYkJx4tKw@mail.gmail.com>
-Subject: Get Back to me (URGENT)
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:62b listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [abdwabbom447[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [aloyikechukwu03[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [aloyikechukwu03[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
+Hi all,
 
-Maddah Hussain
+this series is supposed to fix some lifetime issues all related to the fact that
+once the last ->serial() has been invoked, the padata user (i.e. pcrypt) is well
+with its right to tear down the associated padata_shell or parallel_data
+instance respectively.
+
+Only the first one, addressed by patch [2/5], has actually been observed, namely
+on a (downstream) RT kernel under a very specific workload involving LTP's
+pcrypt_aead01. On non-RT, I've been unable to reproduce.
+
+The remainder of this series, 3-5/5, fixes two more, somewhat related, but
+purely theoretical issues I spotted when scratching my head about possible
+reasons for the original Oops.
+
+Thanks!
+
+Nicolai
+
+Nicolai Stange (5):
+  padata: introduce internal padata_get/put_pd() helpers
+  padata: make padata_free_shell() to respect pd's ->refcnt
+  padata: grab parallel_data refcnt for reorder
+  padata: split out dequeue operation from padata_find_next()
+  padata: avoid potential UAFs to the padata_shell from padata_reorder()
+
+ kernel/padata.c | 129 +++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 96 insertions(+), 33 deletions(-)
+
+-- 
+2.37.3
+
