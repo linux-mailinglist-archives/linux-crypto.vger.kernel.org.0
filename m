@@ -2,37 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4676607573
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Oct 2022 12:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20826075DF
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Oct 2022 13:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbiJUKxR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 Oct 2022 06:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S230208AbiJULPq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 Oct 2022 07:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbiJUKxQ (ORCPT
+        with ESMTP id S230273AbiJULPW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 Oct 2022 06:53:16 -0400
+        Fri, 21 Oct 2022 07:15:22 -0400
 Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7569624C104;
-        Fri, 21 Oct 2022 03:53:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E043FF33;
+        Fri, 21 Oct 2022 04:14:24 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1olpdj-004cxK-0C; Fri, 21 Oct 2022 18:53:12 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Oct 2022 18:53:11 +0800
-Date:   Fri, 21 Oct 2022 18:53:11 +0800
+        id 1olpy3-004dKY-9b; Fri, 21 Oct 2022 19:14:12 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Oct 2022 19:14:11 +0800
+Date:   Fri, 21 Oct 2022 19:14:11 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH v2 1/3] crypto: hisilicon/qm - increase the memory of
- local variables
-Message-ID: <Y1J6F2ZEyRC19xy7@gondor.apana.org.au>
-References: <20221014100319.5259-1-yekai13@huawei.com>
- <20221014100319.5259-2-yekai13@huawei.com>
+To:     'Guanjun' <guanjun@linux.alibaba.com>
+Cc:     elliott@hpe.com, zelin.deng@linux.alibaba.com,
+        xuchun.shang@linux.alibaba.com, artie.ding@linux.alibaba.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] crypto/ycc: Add YCC (Yitian Cryptography Complex)
+ accelerator driver
+Message-ID: <Y1J/A//it5SeNKeL@gondor.apana.org.au>
+References: <1664350687-47330-1-git-send-email-guanjun@linux.alibaba.com>
+ <1664350687-47330-2-git-send-email-guanjun@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221014100319.5259-2-yekai13@huawei.com>
+In-Reply-To: <1664350687-47330-2-git-send-email-guanjun@linux.alibaba.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -41,34 +42,21 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 10:03:17AM +0000, Kai Ye wrote:
-> Increase the buffer to prevent stack overflow by fuzz test.
-> 
-> Signed-off-by: Kai Ye <yekai13@huawei.com>
-> ---
->  drivers/crypto/hisilicon/qm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-> index e3edb176d976..5d79e9f0e7e1 100644
-> --- a/drivers/crypto/hisilicon/qm.c
-> +++ b/drivers/crypto/hisilicon/qm.c
-> @@ -250,7 +250,6 @@
->  #define QM_QOS_MIN_CIR_B		100
->  #define QM_QOS_MAX_CIR_U		6
->  #define QM_QOS_MAX_CIR_S		11
-> -#define QM_QOS_VAL_MAX_LEN		32
->  #define QM_DFX_BASE		0x0100000
->  #define QM_DFX_STATE1		0x0104000
->  #define QM_DFX_STATE2		0x01040C8
-> @@ -4612,7 +4611,7 @@ static ssize_t qm_get_qos_value(struct hisi_qm *qm, const char *buf,
->  			       unsigned int *fun_index)
->  {
->  	char tbuf_bdf[QM_DBG_READ_LEN] = {0};
-> -	char val_buf[QM_QOS_VAL_MAX_LEN] = {0};
-> +	char val_buf[QM_DBG_READ_LEN] = {0};
+On Wed, Sep 28, 2022 at 03:37:59PM +0800, 'Guanjun' wrote:
+>
+> diff --git a/drivers/crypto/ycc/Makefile b/drivers/crypto/ycc/Makefile
+> new file mode 100644
+> index 00000000..7065273
+> --- /dev/null
+> +++ b/drivers/crypto/ycc/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +obj-(CONFIG_CRYPTO_DEV_YCC) += ycc.o
+> +ycc-objs := ycc_drv.o ycc_isr.o
 
-Please document how this value was derived in the patch log.
+This doesn't even compile.  When I fixed that it generates loads
+of warnings with sparse turned on.  Please fix them all before you
+resubmit.
 
 Thanks,
 -- 
