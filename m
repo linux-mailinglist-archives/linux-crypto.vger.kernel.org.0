@@ -2,151 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6189C607047
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Oct 2022 08:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178DF607591
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Oct 2022 13:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbiJUGov (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 Oct 2022 02:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S229734AbiJULA4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 Oct 2022 07:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbiJUGou (ORCPT
+        with ESMTP id S229695AbiJULAz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 Oct 2022 02:44:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05AC357ED;
-        Thu, 20 Oct 2022 23:44:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C6E861B39;
-        Fri, 21 Oct 2022 06:44:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBC4FC433D7;
-        Fri, 21 Oct 2022 06:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666334687;
-        bh=dg+igT/kH5vNLile/55ugMghQ6bHOl5tdBoCQSBXYac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AGeMyJeg87UlxSe5k2XIw2g27XDq3ZEoGhJylOgn/Pc+deCE0ymZDPF3pyhTXbf62
-         BkfHG3/Jo3vHInZD0+8lFJ/J32KahCu6OAm/wJgPFxd9F/HemwazCjH13UA8hJ60mM
-         b7/YE//cHLp3hSWuNDGNIrsZr73GEPOrbsw5jMJf/PXtSzJrG6IggCpuVSgIjAuv7T
-         mkRnUX2cWBckGEDpW/KQuEh4jbsZI+7HVNHZJlkU6jCmsTyk4td814k6t0S+O3WWSh
-         8xaaW5CBclarLFx8oWJMBlgIHD63a03DVy9s1ojqs8YIrBNztmRJ02YHmW3QFs0F8Q
-         AkwK4fKzudFJw==
-Date:   Fri, 21 Oct 2022 08:44:44 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Adam Borowski <kilobyte@angband.pl>
-Cc:     linux-kernel@lists.debian.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Dan Scally <djrscally@gmail.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, Khalil Blaiech <kblaiech@nvidia.com>,
-        Asmaa Mnebhi <asmaa@nvidia.com>, linux-i2c@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>
-Subject: Re: [PATCH 0/6] a pile of randconfig fixes
-Message-ID: <Y1I/3KPxSI1voRHh@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>, linux-kernel@lists.debian.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>, Dan Scally <djrscally@gmail.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, Khalil Blaiech <kblaiech@nvidia.com>,
-        Asmaa Mnebhi <asmaa@nvidia.com>, linux-i2c@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Brent Lu <brent.lu@intel.com>
-References: <20221020221749.33746-1-kilobyte@angband.pl>
+        Fri, 21 Oct 2022 07:00:55 -0400
+X-Greylist: delayed 4381 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Oct 2022 04:00:52 PDT
+Received: from cp70.redewt.net (cp70.redewt.net [185.240.248.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5359222F07
+        for <linux-crypto@vger.kernel.org>; Fri, 21 Oct 2022 04:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=my-algarve-property.com; s=default; h=Content-Type:MIME-Version:Message-ID:
+        Reply-To:From:Date:Subject:To:Sender:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=mlDQ5fqM9YSap1dDs4yCzZ0JgGFjiBLeojST3tQ4IcA=; b=HIDQimO1M4J7Uck126fdUj559F
+        eA4Unt5mT3OSuldpxdNI+rsj+qnIs48IGQuCcJ6yWd7KG/aEuCDAHwzOTk7IMcgEgOREfB0nEzUyu
+        AKPkpqcxAMbk2d7ZvS4AIeV9ibn0OMss1DGrxTkF7GbCIpywr2k7uwqEYjDik7qF54CqN8ai4DXJc
+        my2CWOadjG7HlfSRqJ8cPzcNDfCJKda5WBJ9Mt7bMRsVyNm1GpmJGcG74deox/1+INBKx3r3IlqOz
+        vdjO80jVogQckmvtGqac9R9qNoeFYcn7qIrgxbF6+DJ877QCARU7hN0+0T0nBecZXvxzgkZZyzOe4
+        /MYDxH5w==;
+Received: from myalgarveprop by cp70.redewt.net with local (Exim 4.95)
+        (envelope-from <geral@my-algarve-property.com>)
+        id 1olod1-0003jj-3K
+        for linux-crypto@vger.kernel.org;
+        Fri, 21 Oct 2022 10:47:47 +0100
+To:     linux-crypto@vger.kernel.org
+Subject: Copy of: anal_sex_pic_gallery xsg.page.link/aKV4#
+X-PHP-Script: my-algarve-property.com/index.php for 178.45.119.121, 178.45.119.121
+X-PHP-Filename: /home/myalgarveprop/public_html/index.php REMOTE_ADDR: 178.45.119.121
+Date:   Fri, 21 Oct 2022 10:47:47 +0100
+From:   My Algarve Property <geral@my-algarve-property.com>
+Reply-To: "best_porn_and_sex vbf.page.link/oUjU#Avaib" 
+          <linux-crypto@vger.kernel.org>
+Message-ID: <1f56647092fe6a6367983683f36a9bc2@my-algarve-property.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ASNnxeSggHlth0r3"
-Content-Disposition: inline
-In-Reply-To: <20221020221749.33746-1-kilobyte@angband.pl>
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cp70.redewt.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [1538 990] / [47 12]
+X-AntiAbuse: Sender Address Domain - my-algarve-property.com
+X-Get-Message-Sender-Via: cp70.redewt.net: authenticated_id: myalgarveprop/from_h
+X-Authenticated-Sender: cp70.redewt.net: geral@my-algarve-property.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_60,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SHORT_SHORTNER,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+This is a copy of the following message you sent to Geral MyAlgarveProperty via My Algarve Property
 
---ASNnxeSggHlth0r3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is an enquiry email via https://my-algarve-property.com/ from:
+best_porn_and_sex
+ vbf.page.link/oUjU#
+Avaib <linux-crypto@vger.kernel.org>
 
+free_sex_flicks
+ nhg.page.link/dPJK#
 
-> I've been doing randconfig build tests for quite a while, here's a pile of
-> fixes.  I'm not sure what's the best way to submit these: do you folks
-> prefer a series like this, or a number of individual submissions?
-
-You sent the one for i2c-mlxbf seperately, which I applied now.
-
-
---ASNnxeSggHlth0r3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmNSP9wACgkQFA3kzBSg
-KbbjSg//Qpjk7lLoKdOzvsdmL0Mq2o5hT22qP9eF8TiQ3pE1B3B9C9AsdWQ7FjOB
-ClXU5SlQmHPj//fgEfmr9Vj2bKBssiA4QkjiF/fcjthcBqG2j3tLeQPRmFr6qcd7
-a873ogKipCuWcb7wHngTM9a7820xTtzm6AUCGCfWQHKiXjdCWsSdBoSEyHDocLiz
-CVpTOsOeH+pC5Sa1WwXdONrrOMoA1Cttpxu8Y/ZCLzyqQ4M+WL5j17g/jMihywZ3
-hg4uduAbJ9Oq2gWXAi8JvnNLPYE5RdYjk3d0j4jFxyxSD8DeIOjp1tw/UT6VSoWK
-n+ygnkytK+33BTuEoIKKEfl3O5XTYtERfroHf3trO+xaIMKqa06p3+qPM5+2Rnqx
-cZ9cfqYqw+vCs/zkbtzWArA81N4O/QBDhNe4ktHyFkChCAN8dJSf0Yx5QM1oY50f
-Vkj0kWe6nA34LURe2MazhrLSQP7ht/8WkC1l1efH+2gHOdNBmxsr3fqOvYznCziB
-BWT40k8BRRdByRFICeSeS001FW+AUlbpE8q637iYCR8sGyqxJmCCb541W35o2gdT
-5ciiIlzkqA3NudtWem09SR8UuBv9wXaiLx8qQXd72b/Na86U8dT3Bc8DKthJFWn6
-59ubRiZuumctWs6sE7kZ9aPXpPpci4isfJAhNOCtgJ7+pC+g65E=
-=s3Uy
------END PGP SIGNATURE-----
-
---ASNnxeSggHlth0r3--
