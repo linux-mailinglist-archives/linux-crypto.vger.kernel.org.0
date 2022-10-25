@@ -2,106 +2,126 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D12C60C7AE
-	for <lists+linux-crypto@lfdr.de>; Tue, 25 Oct 2022 11:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4889A60C91D
+	for <lists+linux-crypto@lfdr.de>; Tue, 25 Oct 2022 11:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbiJYJO2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Oct 2022 05:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
+        id S230463AbiJYJ7P (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 25 Oct 2022 05:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbiJYJNn (ORCPT
+        with ESMTP id S232005AbiJYJ6i (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Oct 2022 05:13:43 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D13176B88;
-        Tue, 25 Oct 2022 02:07:19 -0700 (PDT)
-Received: from zn.tnic (p200300ea9733e753329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:9733:e753:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 560641EC0138;
-        Tue, 25 Oct 2022 11:07:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1666688828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=RpZt/ekhm97/GCrxTm62WjrwmkfB+Hl6PYEoWkmLcSs=;
-        b=cJSawZk/4f1kVEpXP4DnaqZQDZCWU4J9ov+SV+016eVWeC8LfSqUNPn/mqfTwrdFMdHY41
-        NVlCjUdHw55zGKATrjh+CCmZY5qM1WeQeEJ6UX55CYy5aACwbF6dxJ+yRGmqVH6e82zKve
-        d1WhLf8YwB22RIEdI4LVqnlyjQjqDRQ=
-Date:   Tue, 25 Oct 2022 11:07:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        michael.roth@amd.com, vbabka@suse.cz, kirill@shutemov.name,
-        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        dgilbert@redhat.com, jarkko@kernel.org
-Subject: Re: [PATCH Part2 v6 12/49] crypto: ccp: Add support to initialize
- the AMD-SP for SEV-SNP
-Message-ID: <Y1enOIfS3nnlcyyc@zn.tnic>
-References: <cover.1655761627.git.ashish.kalra@amd.com>
- <87a0481526e66ddd5f6192cbb43a50708aee2883.1655761627.git.ashish.kalra@amd.com>
- <Yzh558vy+rJfsBBq@zn.tnic>
- <f997dd38-a615-e343-44cd-a7aeb9447a1e@amd.com>
- <d3ab29c8-8f22-28eb-dfe3-6100a8f16e4b@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d3ab29c8-8f22-28eb-dfe3-6100a8f16e4b@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 25 Oct 2022 05:58:38 -0400
+Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FF918B771;
+        Tue, 25 Oct 2022 02:53:39 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guanjun@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VT2gD3N_1666691616;
+Received: from localhost(mailfrom:guanjun@linux.alibaba.com fp:SMTPD_---0VT2gD3N_1666691616)
+          by smtp.aliyun-inc.com;
+          Tue, 25 Oct 2022 17:53:37 +0800
+From:   'Guanjun' <guanjun@linux.alibaba.com>
+To:     herbert@gondor.apana.org.au, elliott@hpe.com
+Cc:     zelin.deng@linux.alibaba.com, artie.ding@linux.alibaba.com,
+        guanjun@linux.alibaba.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xuchun.shang@linux.alibaba.com
+Subject: [PATCH v3 0/9] Drivers for Alibaba YCC (Yitian Cryptography Complex) cryptographic accelerator
+Date:   Tue, 25 Oct 2022 17:53:27 +0800
+Message-Id: <1666691616-69983-1-git-send-email-guanjun@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 01:48:48PM -0500, Kalra, Ashish wrote:
-> I see that other drivers are also using the same convention:
+From: Guanjun <guanjun@linux.alibaba.com>
 
-It is only convention. Look at the .rst output:
+Hi,
 
-0 if the SEV successfully processed the command
--``ENODEV``    if the SEV device is not available
--``ENOTSUPP``  if the SEV does not support SEV
--``ETIMEDOUT`` if the SEV command timed out
--``EIO``       if the SEV returned a non-zero return code
+This patch series aims to add drivers for Alibaba YCC (Yitian Cryptography Complex)
+cryptographic accelerator. Enables the on-chip cryptographic accelerator of
+Alibaba Yitian SoCs which is based on ARMv9 architecture.
 
-vs
+It includes PCIe enabling, skcipher, aead, rsa, sm2 support.
 
-0 if the SEV successfully processed the command
-``-ENODEV``    if the SEV device is not available
-``-ENOTSUPP``  if the SEV does not support SEV
-``-ETIMEDOUT`` if the SEV command timed out
-``-EIO``       if the SEV returned a non-zero return code
+Additionally, this patchset has rebase Linux upstream tree and ensure no compile
+warnings. -- As Herbert's comments said in v2.
 
-so in the html output of this, the minus sign will be displayed either
-with text font or with monospaced font as part of the error type.
+Please help to review.
 
-I wanna say the second is better as the '-' is part of the error code
-but won't waste too much time debating this. :)
+Thanks,
+Guanjun.
 
-Btw
+Change log:
+v2 -> v3:
+ - [01/09] Fix the lost "$" in Makefile
+ - [08/09] Fix compile warnings when both CONFIG_CRYPTO_SM2 and CONFIG_CRYPTO_DEV_YCC are enabled
 
-$ ./scripts/kernel-doc include/linux/psp-sev.h
+v1 RESEND -> v2:
+ - [01/09] Remove char device that is not used now.
 
-complains a lot. Might wanna fix those up when bored or someone else
-who's reading this and feels bored too. :-)
+v1 -> v1 RESEND:
+  - [01/09] Adjust the Kconfig entry in alphabetical order
+  - [05/09][07/09][08/09] Adjust the format of algorithm names
 
-Thx.
+v2: https://lore.kernel.org/all/1664350687-47330-1-git-send-email-guanjun@linux.alibaba.com/
+v1: https://lore.kernel.org/all/1661334621-44413-1-git-send-email-guanjun@linux.alibaba.com/
+v1 RESEND: https://lore.kernel.org/all/1662435353-114812-1-git-send-email-guanjun@linux.alibaba.com/
+
+
+Guanjun (3):
+  crypto/ycc: Add skcipher algorithm support
+  crypto/ycc: Add aead algorithm support
+  crypto/ycc: Add rsa algorithm support
+
+Xuchun Shang (1):
+  crypto/ycc: Add sm2 algorithm support
+
+Zelin Deng (5):
+  crypto/ycc: Add YCC (Yitian Cryptography Complex) accelerator driver
+  crypto/ycc: Add ycc ring configuration
+  crypto/ycc: Add irq support for ycc kernel rings
+  crypto/ycc: Add device error handling support for ycc hw errors
+  MAINTAINERS: Add Yitian Cryptography Complex (YCC) driver maintainer
+    entry
+
+ MAINTAINERS                            |   8 +
+ drivers/crypto/Kconfig                 |   2 +
+ drivers/crypto/Makefile                |   1 +
+ drivers/crypto/ycc/Kconfig             |  18 +
+ drivers/crypto/ycc/Makefile            |   7 +
+ drivers/crypto/ycc/sm2signature_asn1.c |  38 ++
+ drivers/crypto/ycc/sm2signature_asn1.h |  13 +
+ drivers/crypto/ycc/ycc_aead.c          | 646 ++++++++++++++++++++++
+ drivers/crypto/ycc/ycc_algs.h          | 176 ++++++
+ drivers/crypto/ycc/ycc_dev.h           | 157 ++++++
+ drivers/crypto/ycc/ycc_drv.c           | 567 ++++++++++++++++++++
+ drivers/crypto/ycc/ycc_isr.c           | 279 ++++++++++
+ drivers/crypto/ycc/ycc_isr.h           |  12 +
+ drivers/crypto/ycc/ycc_pke.c           | 946 +++++++++++++++++++++++++++++++++
+ drivers/crypto/ycc/ycc_ring.c          | 652 +++++++++++++++++++++++
+ drivers/crypto/ycc/ycc_ring.h          | 168 ++++++
+ drivers/crypto/ycc/ycc_ske.c           | 925 ++++++++++++++++++++++++++++++++
+ 17 files changed, 4615 insertions(+)
+ create mode 100644 drivers/crypto/ycc/Kconfig
+ create mode 100644 drivers/crypto/ycc/Makefile
+ create mode 100644 drivers/crypto/ycc/sm2signature_asn1.c
+ create mode 100644 drivers/crypto/ycc/sm2signature_asn1.h
+ create mode 100644 drivers/crypto/ycc/ycc_aead.c
+ create mode 100644 drivers/crypto/ycc/ycc_algs.h
+ create mode 100644 drivers/crypto/ycc/ycc_dev.h
+ create mode 100644 drivers/crypto/ycc/ycc_drv.c
+ create mode 100644 drivers/crypto/ycc/ycc_isr.c
+ create mode 100644 drivers/crypto/ycc/ycc_isr.h
+ create mode 100644 drivers/crypto/ycc/ycc_pke.c
+ create mode 100644 drivers/crypto/ycc/ycc_ring.c
+ create mode 100644 drivers/crypto/ycc/ycc_ring.h
+ create mode 100644 drivers/crypto/ycc/ycc_ske.c
 
 -- 
-Regards/Gruss,
-    Boris.
+1.8.3.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
