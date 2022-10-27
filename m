@@ -2,54 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5028C610350
-	for <lists+linux-crypto@lfdr.de>; Thu, 27 Oct 2022 22:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2C661036E
+	for <lists+linux-crypto@lfdr.de>; Thu, 27 Oct 2022 22:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbiJ0Utu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 27 Oct 2022 16:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        id S237231AbiJ0Uwh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 27 Oct 2022 16:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237121AbiJ0UsO (ORCPT
+        with ESMTP id S237223AbiJ0Uv4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 27 Oct 2022 16:48:14 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A363DCA
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Oct 2022 13:44:38 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id bs21so4168227wrb.4
-        for <linux-crypto@vger.kernel.org>; Thu, 27 Oct 2022 13:44:38 -0700 (PDT)
+        Thu, 27 Oct 2022 16:51:56 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08173923F4
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Oct 2022 13:45:25 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 14-20020a05600c228e00b003cf4eaef74eso2532556wmf.0
+        for <linux-crypto@vger.kernel.org>; Thu, 27 Oct 2022 13:45:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kP+SAh+F64ZkLFr52URQ+wzrGshBfXjUpIMRDp+w/YQ=;
-        b=cjMFkXCN4OjefEPDADI83YvwiOmM1qytWHgGNelAN009vdYvGIkY/Q7uaAdtyFEzE8
-         paYJTrR5gn0aUFKNDEsNIy1KbtVTChRSbBHjTOeXWj+IpauZaycnbpOJCwPuf9+wUxZm
-         4NCYOREUuXnpfaOQX+letnek2oWN4OUe8Oq3uOhM7HE+m41ri79jqVH+JP/E1BtUkC/9
-         H52jpASiiO4tr7hNkSVdD+AIl3AKLW0JkY7anJ7C6kT2AbDyUeX2cmMhHr9OIO9K1N+/
-         vjsHW0ebaiPJa90XBql9eGGp0iVpEMGL94eO3d+xKkk+fn9mB7LBpji+Ex5hF4WBt6q5
-         B1cw==
+        bh=lp2VxXZrnF/kw40YEQ4TVBQpSqwfLCviQOCTAxoI/HQ=;
+        b=TY/MbBMiIMB3eZjGCYvQoY0BlWIrl7u4BfmqoJbw+su0aVxHFBVYk/5H9FIbQy9oeU
+         grras9Br2xg6oTogFbxkBxqLVTH7zvbLMYu3TG5B81UhKzOCGuaESe9nI0LiH3ZhtDb5
+         43+luKtGhD9QZFBRfzQqOIKc2b6ThuwrvI9whwmFNvaeO2QDyYX+prsMSZ/U7LENOFW2
+         k7V9Bf27h/lhdxtCrWCKw8HGQ47d7C2AYzLE2uoXqOhns826Q+RLH0wtTnkzV7kNOU42
+         P8OqTay2Y353lxY2KLQefhf6ROz0jWlzxnQ38kdHs3PxxoXkqhaERpf5bhTxZU9fThZP
+         m44Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kP+SAh+F64ZkLFr52URQ+wzrGshBfXjUpIMRDp+w/YQ=;
-        b=c+ke6Gu1FyPd0hoUk9ANSg/N+v5iTewDwlLl0Rcf3ggRhQZxCPgnqyj8wEbe/11cwu
-         I62GflglUnBlvs7YvBKXMvoIoeNpb5ykz44ZTgfAQ9lY34V2DNtyClHBLjTh5urripuz
-         kd9EfUc3677asbkSMBwpJkXKMOVt2E/uFV4E3iNjKYIhIHIz2D6Pz6Wt9g4kKdO0SbLN
-         nKzF8/AzOvuzY2fnZXoWRAYBkBibqiGpqE40rptQcefkVp6gGeQ6XyLwcO6T+gnvRBF9
-         oUxlrWYRPd+YbYlmQDFO2bDlPEsL83F9oqPYuz/x0A78ZH8ggFgoKE1Aip4Ntcy7sFXq
-         c/UQ==
-X-Gm-Message-State: ACrzQf1J6Vl914j7VA68H2QraeoRkOgPHgNvA4koQot1vCv/AINvKb2f
-        pc9hUVHLU9jc5XWJrUdr+pPq9w==
-X-Google-Smtp-Source: AMsMyM5vCqk71RZPJ/r8tzBefdkb+G+uw3UohC97chYG1D+N0POj8bODmJ3NxPNdNtv2JPvA2He2eg==
-X-Received: by 2002:a5d:590d:0:b0:236:4ddd:1869 with SMTP id v13-20020a5d590d000000b002364ddd1869mr23913510wrd.709.1666903477662;
-        Thu, 27 Oct 2022 13:44:37 -0700 (PDT)
+        bh=lp2VxXZrnF/kw40YEQ4TVBQpSqwfLCviQOCTAxoI/HQ=;
+        b=4X39WGGVcpzLf7vpVy7mgNPehGxUW+GILAkCZGYbwPnMumBGEA4/2h8OltD/4zbWzQ
+         abooXtu4OFjNTM+vERs9VV3G90zruhDecRiFhXWj5VlUWEHdGlRFw9LA6I6Uzr1Oc+h8
+         9eafG9cyqWZMrz3aPxlNpLQP9nR7DID+zWF4yQJ55ketpIpW51WyYL5zhA1IN6hHJ8ym
+         xIObYH6FCMp/SBt1IKQ8nJQgydDq1gWHChxNif1FGoOpDHmnYx/7y2c4iL/jucFd8NKW
+         PbULzERCaKP1hfLIYBGf9S/EEq7nGkMTRh2VeWJcBUBI2c45Ix6Vv8aPwqmbWDhbgySF
+         aRUg==
+X-Gm-Message-State: ACrzQf1IzKbQnG2FVlgE/JcXRIs+eFrANUBjgt3NSABLF+xXYkbw/g48
+        I/7R116aJQxipYQ7uvnhry3qtg==
+X-Google-Smtp-Source: AMsMyM4WOMAC/5xDPJPc5+fsnhnpk/mcZMNbCH7XTeLgtC4oI/4jA2tl34CfUIiOLYHbsSFmUQkhHw==
+X-Received: by 2002:a1c:7215:0:b0:3c7:130c:a77f with SMTP id n21-20020a1c7215000000b003c7130ca77fmr7446309wmc.151.1666903479106;
+        Thu, 27 Oct 2022 13:44:39 -0700 (PDT)
 Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id n3-20020a5d6b83000000b00236644228besm1968739wrx.40.2022.10.27.13.44.36
+        by smtp.gmail.com with ESMTPSA id n3-20020a5d6b83000000b00236644228besm1968739wrx.40.2022.10.27.13.44.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Oct 2022 13:44:37 -0700 (PDT)
+        Thu, 27 Oct 2022 13:44:38 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org, David Ahern <dsahern@kernel.org>,
         Eric Dumazet <edumazet@google.com>
@@ -72,9 +72,9 @@ Cc:     Dmitry Safonov <dima@arista.com>,
         Salam Noureddine <noureddine@arista.com>,
         Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
         linux-crypto@vger.kernel.org
-Subject: [PATCH v3 28/36] selftest/net: Add TCP-AO ICMPs accept test
-Date:   Thu, 27 Oct 2022 21:43:39 +0100
-Message-Id: <20221027204347.529913-29-dima@arista.com>
+Subject: [PATCH v3 29/36] selftest/tcp-ao: Add a test for MKT matching
+Date:   Thu, 27 Oct 2022 21:43:40 +0100
+Message-Id: <20221027204347.529913-30-dima@arista.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221027204347.529913-1-dima@arista.com>
 References: <20221027204347.529913-1-dima@arista.com>
@@ -90,137 +90,251 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Reverse to icmps-discard test: the server accepts ICMPs, using
-TCP_AO_CMDF_ACCEPT_ICMP and it is expected to fail under ICMP
-flood from client. Test that the default pre-TCP-AO behaviour functions
-when TCP_AO_CMDF_ACCEPT_ICMP is set.
-
-Expected output for ipv4 version (in case it receives ICMP_PROT_UNREACH):
-> # ./icmps-accept_ipv4
-> 1..3
-> # 3209[lib/setup.c:166] rand seed 1642623870
-> TAP version 13
-> # 3209[lib/proc.c:207]    Snmp6             Ip6InReceives: 0 => 1
-> # 3209[lib/proc.c:207]    Snmp6             Ip6InNoRoutes: 0 => 1
-> # 3209[lib/proc.c:207]    Snmp6               Ip6InOctets: 0 => 76
-> # 3209[lib/proc.c:207]    Snmp6            Ip6InNoECTPkts: 0 => 1
-> # 3209[lib/proc.c:207]      Tcp                    InSegs: 3 => 23
-> # 3209[lib/proc.c:207]      Tcp                   OutSegs: 2 => 22
-> # 3209[lib/proc.c:207]  IcmpMsg                   InType3: 0 => 4
-> # 3209[lib/proc.c:207]     Icmp                    InMsgs: 0 => 4
-> # 3209[lib/proc.c:207]     Icmp            InDestUnreachs: 0 => 4
-> # 3209[lib/proc.c:207]       Ip                InReceives: 3 => 27
-> # 3209[lib/proc.c:207]       Ip                InDelivers: 3 => 27
-> # 3209[lib/proc.c:207]       Ip               OutRequests: 2 => 22
-> # 3209[lib/proc.c:207]    IpExt                  InOctets: 288 => 3420
-> # 3209[lib/proc.c:207]    IpExt                 OutOctets: 124 => 3244
-> # 3209[lib/proc.c:207]    IpExt               InNoECTPkts: 3 => 25
-> # 3209[lib/proc.c:207]   TcpExt               TCPPureAcks: 1 => 2
-> # 3209[lib/proc.c:207]   TcpExt           TCPOrigDataSent: 0 => 20
-> # 3209[lib/proc.c:207]   TcpExt              TCPDelivered: 0 => 19
-> # 3209[lib/proc.c:207]   TcpExt                 TCPAOGood: 3 => 23
-> ok 1 InDestUnreachs delivered 4
-> ok 2 server failed with -92: Protocol not available
-> ok 3 TCPAODroppedIcmps counter didn't change: 0 >= 0
-> # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-Expected output for ipv6 version (in case it receives ADM_PROHIBITED):
-> # ./icmps-accept_ipv6
-> 1..3
-> # 3277[lib/setup.c:166] rand seed 1642624035
-> TAP version 13
-> # 3277[lib/proc.c:207]    Snmp6             Ip6InReceives: 6 => 31
-> # 3277[lib/proc.c:207]    Snmp6             Ip6InDelivers: 4 => 29
-> # 3277[lib/proc.c:207]    Snmp6            Ip6OutRequests: 4 => 24
-> # 3277[lib/proc.c:207]    Snmp6               Ip6InOctets: 592 => 4492
-> # 3277[lib/proc.c:207]    Snmp6              Ip6OutOctets: 332 => 3852
-> # 3277[lib/proc.c:207]    Snmp6            Ip6InNoECTPkts: 6 => 31
-> # 3277[lib/proc.c:207]    Snmp6               Icmp6InMsgs: 1 => 6
-> # 3277[lib/proc.c:207]    Snmp6       Icmp6InDestUnreachs: 0 => 5
-> # 3277[lib/proc.c:207]    Snmp6              Icmp6InType1: 0 => 5
-> # 3277[lib/proc.c:207]      Tcp                    InSegs: 3 => 23
-> # 3277[lib/proc.c:207]      Tcp                   OutSegs: 2 => 22
-> # 3277[lib/proc.c:207]   TcpExt               TCPPureAcks: 1 => 2
-> # 3277[lib/proc.c:207]   TcpExt           TCPOrigDataSent: 0 => 20
-> # 3277[lib/proc.c:207]   TcpExt              TCPDelivered: 0 => 19
-> # 3277[lib/proc.c:207]   TcpExt                 TCPAOGood: 3 => 23
-> ok 1 Icmp6InDestUnreachs delivered 5
-> ok 2 server failed with -13: Permission denied
-> ok 3 TCPAODroppedIcmps counter didn't change: 0 >= 0
-> # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-With some luck the server may fail with ECONNREFUSED (depending on what
-icmp packet was delivered firstly).
-For the kernel error handlers see: tab_unreach[] and icmp_err_convert[].
+Add TCP-AO tests on connect()/accept() pair.
+SNMP counters exposed by kernel are very useful here to verify the
+expected behavior of TCP-AO.
 
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- tools/testing/selftests/net/tcp_ao/Makefile     |  4 +++-
- .../testing/selftests/net/tcp_ao/icmps-accept.c |  1 +
- .../selftests/net/tcp_ao/icmps-discard.c        | 17 +++++++++++++++--
- 3 files changed, 19 insertions(+), 3 deletions(-)
- create mode 120000 tools/testing/selftests/net/tcp_ao/icmps-accept.c
+ tools/testing/selftests/net/tcp_ao/Makefile   |   2 +-
+ .../selftests/net/tcp_ao/connect-deny.c       | 217 ++++++++++++++++++
+ 2 files changed, 218 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/net/tcp_ao/connect-deny.c
 
 diff --git a/tools/testing/selftests/net/tcp_ao/Makefile b/tools/testing/selftests/net/tcp_ao/Makefile
-index 9acfd782c20f..a178bde0af08 100644
+index a178bde0af08..5064e34ebe38 100644
 --- a/tools/testing/selftests/net/tcp_ao/Makefile
 +++ b/tools/testing/selftests/net/tcp_ao/Makefile
 @@ -1,5 +1,5 @@
  # SPDX-License-Identifier: GPL-2.0
--TEST_BOTH_AF := connect icmps-discard
-+TEST_BOTH_AF := connect icmps-discard icmps-accept
+-TEST_BOTH_AF := connect icmps-discard icmps-accept
++TEST_BOTH_AF := connect icmps-discard icmps-accept connect-deny
  
  TEST_IPV4_PROGS := $(TEST_BOTH_AF:%=%_ipv4)
  TEST_IPV6_PROGS := $(TEST_BOTH_AF:%=%_ipv6)
-@@ -43,3 +43,5 @@ $(OUTPUT)/%_ipv4: %.c
- $(OUTPUT)/%_ipv6: %.c
- 	$(LINK.c) -DIPV6_TEST $^ $(LDLIBS) -o $@
- 
-+$(OUTPUT)/icmps-accept_ipv4: CFLAGS+= -DTEST_ICMPS_ACCEPT
-+$(OUTPUT)/icmps-accept_ipv6: CFLAGS+= -DTEST_ICMPS_ACCEPT
-diff --git a/tools/testing/selftests/net/tcp_ao/icmps-accept.c b/tools/testing/selftests/net/tcp_ao/icmps-accept.c
-new file mode 120000
-index 000000000000..0a5bb85eb260
+diff --git a/tools/testing/selftests/net/tcp_ao/connect-deny.c b/tools/testing/selftests/net/tcp_ao/connect-deny.c
+new file mode 100644
+index 000000000000..8f1b067e611f
 --- /dev/null
-+++ b/tools/testing/selftests/net/tcp_ao/icmps-accept.c
-@@ -0,0 +1 @@
-+icmps-discard.c
-\ No newline at end of file
-diff --git a/tools/testing/selftests/net/tcp_ao/icmps-discard.c b/tools/testing/selftests/net/tcp_ao/icmps-discard.c
-index 07eba1308b4e..d90017dfc20d 100644
---- a/tools/testing/selftests/net/tcp_ao/icmps-discard.c
-+++ b/tools/testing/selftests/net/tcp_ao/icmps-discard.c
-@@ -43,8 +43,17 @@ const int sk_ip_level	= SOL_IP;
- const int sk_recverr	= IP_RECVERR;
- #endif
- 
--#define test_icmps_fail test_fail
--#define test_icmps_ok test_ok
-+/*
-+ * Server is expected to fail with hard error if
-+ * TCP_AO_CMDF_ACCEPT_ICMP is set
-+ */
-+#ifdef TEST_ICMPS_ACCEPT
-+# define test_icmps_fail test_ok
-+# define test_icmps_ok test_fail
-+#else
-+# define test_icmps_fail test_fail
-+# define test_icmps_ok test_ok
-+#endif
- 
- static void serve_interfered(int sk)
- {
-@@ -98,6 +107,10 @@ static void *server_fn(void *arg)
- 
- 	lsk = test_listen_socket(this_ip_addr, test_server_port, 1);
- 
-+#ifdef TEST_ICMPS_ACCEPT
-+	flags = TCP_AO_CMDF_ACCEPT_ICMP;
-+#endif
++++ b/tools/testing/selftests/net/tcp_ao/connect-deny.c
+@@ -0,0 +1,217 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Author: Dmitry Safonov <dima@arista.com> */
++#include <inttypes.h>
++#include "aolib.h"
 +
- 	if (test_set_ao(lsk, "password", flags, this_ip_dest, -1, 100, 100))
- 		test_error("setsockopt(TCP_AO)");
- 	synchronize_threads();
++typedef uint8_t fault_t;
++#define F_TIMEOUT	1
++#define F_KEYREJECT	2
++
++#define fault(type)	(inj == type)
++
++static void try_accept(const char *tst_name, unsigned int port, const char *pwd,
++		       union tcp_addr addr, uint8_t prefix,
++		       uint8_t sndid, uint8_t rcvid, const char *cnt_name,
++		       fault_t inj)
++{
++	uint64_t before_cnt, after_cnt;
++	int lsk, err, sk = 0;
++	time_t timeout;
++
++	lsk = test_listen_socket(this_ip_addr, port, 1);
++
++	if (pwd && test_set_ao(lsk, pwd, 0, addr, prefix, sndid, rcvid))
++		test_error("setsockopt(TCP_AO)");
++
++	if (cnt_name)
++		before_cnt = netstat_get_one(cnt_name, NULL);
++
++	synchronize_threads(); /* preparations done */
++
++	timeout = fault(F_TIMEOUT) ? TEST_RETRANSMIT_SEC : TEST_TIMEOUT_SEC;
++	err = test_wait_fd(lsk, timeout, 0);
++	if (err < 0)
++		test_error("test_wait_fd()");
++	else if (!err) {
++		if (!fault(F_TIMEOUT))
++			test_fail("timeouted for accept()");
++	} else {
++		if (fault(F_TIMEOUT))
++			test_fail("ready to accept");
++
++		sk = accept(lsk, NULL, NULL);
++		if (sk < 0) {
++			test_error("accept()");
++		} else {
++			if (fault(F_TIMEOUT))
++				test_fail("%s: accepted", tst_name);
++		}
++	}
++
++	close(lsk);
++
++	if (!cnt_name)
++		goto out;
++
++	after_cnt = netstat_get_one(cnt_name, NULL);
++
++	if (after_cnt <= before_cnt) {
++		test_fail("%s: %s counter did not increase: %zu <= %zu",
++				tst_name, cnt_name, after_cnt, before_cnt);
++	} else {
++		test_ok("%s: counter %s increased %zu => %zu",
++			tst_name, cnt_name, before_cnt, after_cnt);
++	}
++
++out:
++	synchronize_threads(); /* close() */
++	if (sk > 0)
++		close(sk);
++}
++
++static void *server_fn(void *arg)
++{
++	union tcp_addr wrong_addr, network_addr;
++	unsigned int port = test_server_port;
++
++	if (inet_pton(TEST_FAMILY, TEST_WRONG_IP, &wrong_addr) != 1)
++		test_error("Can't convert ip address %s", TEST_WRONG_IP);
++
++	try_accept("Non-AO server + AO client", port++, NULL,
++		this_ip_dest, -1, 100, 100, "TCPAOKeyNotFound", F_TIMEOUT);
++
++	try_accept("AO server + Non-AO client", port++, "password",
++		this_ip_dest, -1, 100, 100, "TCPAORequired", F_TIMEOUT);
++
++	try_accept("Wrong password", port++, "password2",
++		this_ip_dest, -1, 100, 100, "TCPAOBad", F_TIMEOUT);
++
++	try_accept("Wrong rcv id", port++, "password",
++		this_ip_dest, -1, 100, 101, "TCPAOKeyNotFound", F_TIMEOUT);
++
++	try_accept("Wrong snd id", port++, "password",
++		this_ip_dest, -1, 101, 100, "TCPAOGood", F_TIMEOUT);
++
++	try_accept("Server: Wrong addr", port++, "password",
++		wrong_addr, -1, 100, 100, "TCPAOKeyNotFound", F_TIMEOUT);
++
++	try_accept("Client: Wrong addr", port++, NULL,
++		this_ip_dest, -1, 100, 100, NULL, F_TIMEOUT);
++
++	try_accept("rcv id != snd id", port++, "password",
++		this_ip_dest, -1, 200, 100, "TCPAOGood", 0);
++
++	if (inet_pton(TEST_FAMILY, TEST_NETWORK, &network_addr) != 1)
++		test_error("Can't convert ip address %s", TEST_NETWORK);
++
++	try_accept("Server: prefix match", port++, "password",
++		network_addr, 16, 100, 100, "TCPAOGood", 0);
++
++	try_accept("Client: prefix match", port++, "password",
++		this_ip_dest, -1, 100, 100, "TCPAOGood", 0);
++
++	/* client exits */
++	synchronize_threads();
++	return NULL;
++}
++
++static void try_connect(const char *tst_name, unsigned int port,
++			const char *pwd, union tcp_addr addr, uint8_t prefix,
++			uint8_t sndid, uint8_t rcvid, fault_t inj)
++{
++	time_t timeout;
++	int sk, ret;
++
++	sk = socket(test_family, SOCK_STREAM, IPPROTO_TCP);
++	if (sk < 0)
++		test_error("socket()");
++
++	if (pwd && test_set_ao(sk, pwd, 0, addr, prefix, sndid, rcvid))
++		test_error("setsockopt(TCP_AO)");
++
++	synchronize_threads(); /* preparations done */
++
++	timeout = fault(F_TIMEOUT) ? TEST_RETRANSMIT_SEC : TEST_TIMEOUT_SEC;
++	ret = _test_connect_socket(sk, this_ip_dest, port, timeout);
++
++	if (ret < 0) {
++		if (fault(F_KEYREJECT) && ret == -EKEYREJECTED) {
++			test_ok("%s: connect() was prevented", tst_name);
++			goto out;
++		} else if (ret == -ECONNREFUSED &&
++				(fault(F_TIMEOUT) || fault(F_KEYREJECT))) {
++			test_ok("%s: refused to connect", tst_name);
++			goto out;
++		} else {
++			test_error("%s: connect() returned %d", tst_name, ret);
++		}
++	}
++
++	if (ret == 0) {
++		if (fault(F_TIMEOUT))
++			test_ok("%s", tst_name);
++		else
++			test_fail("%s: failed to connect()", tst_name);
++	} else {
++		if (fault(F_TIMEOUT) || fault(F_KEYREJECT))
++			test_fail("%s: connected", tst_name);
++		else
++			test_ok("%s: connected", tst_name);
++	}
++
++out:
++	synchronize_threads(); /* close() */
++
++	if (ret > 0)
++		close(sk);
++}
++
++static void *client_fn(void *arg)
++{
++	union tcp_addr wrong_addr, network_addr;
++	unsigned int port = test_server_port;
++
++	if (inet_pton(TEST_FAMILY, TEST_WRONG_IP, &wrong_addr) != 1)
++		test_error("Can't convert ip address %s", TEST_WRONG_IP);
++
++	try_connect("Non-AO server + AO client", port++, "password",
++			this_ip_dest, -1, 100, 100, F_TIMEOUT);
++
++	try_connect("AO server + Non-AO client", port++, NULL,
++			this_ip_dest, -1, 100, 100, F_TIMEOUT);
++
++	try_connect("Wrong password", port++, "password",
++			this_ip_dest, -1, 100, 100, F_TIMEOUT);
++
++	try_connect("Wrong rcv id", port++, "password",
++			this_ip_dest, -1, 100, 100, F_TIMEOUT);
++
++	try_connect("Wrong snd id", port++, "password",
++			this_ip_dest, -1, 100, 100, F_TIMEOUT);
++
++	try_connect("Server: Wrong addr", port++, "password",
++			this_ip_dest, -1, 100, 100, F_TIMEOUT);
++
++	try_connect("Client: Wrong addr", port++, "password",
++			wrong_addr, -1, 100, 100, F_KEYREJECT);
++
++	try_connect("rcv id != snd id", port++, "password",
++			this_ip_dest, -1, 100, 200, 0);
++
++	if (inet_pton(TEST_FAMILY, TEST_NETWORK, &network_addr) != 1)
++		test_error("Can't convert ip address %s", TEST_NETWORK);
++
++	try_connect("Server: prefix match", port++, "password",
++			this_ip_dest, -1, 100, 100, 0);
++
++	try_connect("Client: prefix match", port++, "password",
++			network_addr, 16, 100, 100, 0);
++
++	return NULL;
++}
++
++int main(int argc, char *argv[])
++{
++	test_init(19, server_fn, client_fn);
++	return 0;
++}
 -- 
 2.38.1
 
