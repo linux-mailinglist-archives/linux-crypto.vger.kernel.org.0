@@ -2,323 +2,87 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82752612207
-	for <lists+linux-crypto@lfdr.de>; Sat, 29 Oct 2022 11:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF6E61227F
+	for <lists+linux-crypto@lfdr.de>; Sat, 29 Oct 2022 13:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbiJ2JyC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 29 Oct 2022 05:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
+        id S229714AbiJ2LlK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 29 Oct 2022 07:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbiJ2JyA (ORCPT
+        with ESMTP id S229720AbiJ2LlJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 29 Oct 2022 05:54:00 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D43C43AC7;
-        Sat, 29 Oct 2022 02:53:58 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MzvmM0xTPzpW3R;
-        Sat, 29 Oct 2022 17:50:27 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 29 Oct 2022 17:53:56 +0800
-Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
- (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 29 Oct
- 2022 17:53:55 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yekai13@huawei.com>
-Subject: [PATCH 3/3] crypto: hisilicon/qm - the command dump process is modified
-Date:   Sat, 29 Oct 2022 09:48:01 +0000
-Message-ID: <20221029094801.43843-4-yekai13@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20221029094801.43843-1-yekai13@huawei.com>
-References: <20221029094801.43843-1-yekai13@huawei.com>
+        Sat, 29 Oct 2022 07:41:09 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFDF691A9
+        for <linux-crypto@vger.kernel.org>; Sat, 29 Oct 2022 04:40:59 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-59-tdaEMazbNHyIPPice42m6A-1; Sat, 29 Oct 2022 12:40:56 +0100
+X-MC-Unique: tdaEMazbNHyIPPice42m6A-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 29 Oct
+ 2022 12:40:56 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.042; Sat, 29 Oct 2022 12:40:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>,
+        =?utf-8?B?SG9yaWEgR2VhbnTEgw==?= <horia.geanta@nxp.com>
+CC:     Pankaj Gupta <pankaj.gupta@nxp.com>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH] crypto/caam: Avoid GCC constprop bug warning
+Thread-Topic: [PATCH] crypto/caam: Avoid GCC constprop bug warning
+Thread-Index: AQHY6xELipAvmJyFFEuIWausI26LLa4lP1gQ
+Date:   Sat, 29 Oct 2022 11:40:55 +0000
+Message-ID: <560dd92c1f764005b519b038ae82d053@AcuMS.aculab.com>
+References: <20221028210527.never.934-kees@kernel.org>
+In-Reply-To: <20221028210527.never.934-kees@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Reduce the function complexity by use the function table in the
-process of dumping queue. The function input parameters are
-unified. And maintainability is enhanced.
-
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/debugfs.c | 140 ++++++++++++++++++++---------
- 1 file changed, 99 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/debugfs.c b/drivers/crypto/hisilicon/debugfs.c
-index 17befc09b0d4..9f1bfabd7ae2 100644
---- a/drivers/crypto/hisilicon/debugfs.c
-+++ b/drivers/crypto/hisilicon/debugfs.c
-@@ -36,6 +36,12 @@ struct qm_dfx_item {
- 	u32 offset;
- };
- 
-+struct qm_cmd_dump_item {
-+	const char *cmd;
-+	char *info_name;
-+	int (*dump_fn)(struct hisi_qm *qm, char *cmd, char *info_name);
-+};
-+
- static struct qm_dfx_item qm_dfx_files[] = {
- 	{"err_irq", offsetof(struct qm_dfx, err_irq_cnt)},
- 	{"aeq_irq", offsetof(struct qm_dfx, aeq_irq_cnt)},
-@@ -128,7 +134,7 @@ static void dump_show(struct hisi_qm *qm, void *info,
- 	}
- }
- 
--static int qm_sqc_dump(struct hisi_qm *qm, const char *s)
-+static int qm_sqc_dump(struct hisi_qm *qm, char *s, char *name)
- {
- 	struct device *dev = &qm->pdev->dev;
- 	struct qm_sqc *sqc, *sqc_curr;
-@@ -169,14 +175,14 @@ static int qm_sqc_dump(struct hisi_qm *qm, const char *s)
- 		goto free_ctx;
- 	}
- 
--	dump_show(qm, sqc, sizeof(*sqc), "SQC");
-+	dump_show(qm, sqc, sizeof(*sqc), name);
- 
- free_ctx:
- 	hisi_qm_ctx_free(qm, sizeof(*sqc), sqc, &sqc_dma);
- 	return 0;
- }
- 
--static int qm_cqc_dump(struct hisi_qm *qm, const char *s)
-+static int qm_cqc_dump(struct hisi_qm *qm, char *s, char *name)
- {
- 	struct device *dev = &qm->pdev->dev;
- 	struct qm_cqc *cqc, *cqc_curr;
-@@ -217,31 +223,46 @@ static int qm_cqc_dump(struct hisi_qm *qm, const char *s)
- 		goto free_ctx;
- 	}
- 
--	dump_show(qm, cqc, sizeof(*cqc), "CQC");
-+	dump_show(qm, cqc, sizeof(*cqc), name);
- 
- free_ctx:
- 	hisi_qm_ctx_free(qm, sizeof(*cqc), cqc, &cqc_dma);
- 	return 0;
- }
- 
--static int qm_eqc_aeqc_dump(struct hisi_qm *qm, char *s, size_t size,
--			    int cmd, char *name)
-+static int qm_eqc_aeqc_dump(struct hisi_qm *qm, char *s, char *name)
- {
- 	struct device *dev = &qm->pdev->dev;
- 	dma_addr_t xeqc_dma;
-+	size_t size;
- 	void *xeqc;
- 	int ret;
-+	u8 cmd;
- 
- 	if (strsep(&s, " ")) {
- 		dev_err(dev, "Please do not input extra characters!\n");
- 		return -EINVAL;
- 	}
- 
-+	if (!strcmp(name, "EQC")) {
-+		cmd = QM_MB_CMD_EQC;
-+		size = sizeof(struct qm_eqc);
-+	} else {
-+		cmd = QM_MB_CMD_AEQC;
-+		size = sizeof(struct qm_aeqc);
-+	}
-+
- 	xeqc = hisi_qm_ctx_alloc(qm, size, &xeqc_dma);
- 	if (IS_ERR(xeqc))
- 		return PTR_ERR(xeqc);
- 
--	ret = hisi_qm_mb(qm, cmd, xeqc_dma, 0, 1);
-+	/* Mailbox and reset cannot be operated at the same time */
-+	if (test_and_set_bit(QM_RESETTING, &qm->misc_ctl)) {
-+		ret = -EBUSY;
-+	} else {
-+		ret = hisi_qm_mb(qm, cmd, xeqc_dma, 0, 1);
-+		clear_bit(QM_RESETTING, &qm->misc_ctl);
-+	}
- 	if (ret)
- 		goto err_free_ctx;
- 
-@@ -292,7 +313,7 @@ static int q_dump_param_parse(struct hisi_qm *qm, char *s,
- 	return 0;
- }
- 
--static int qm_sq_dump(struct hisi_qm *qm, char *s)
-+static int qm_sq_dump(struct hisi_qm *qm, char *s, char *name)
- {
- 	u16 sq_depth = qm->qp_array->cq_depth;
- 	void *sqe, *sqe_curr;
-@@ -314,14 +335,14 @@ static int qm_sq_dump(struct hisi_qm *qm, char *s)
- 	memset(sqe_curr + qm->debug.sqe_mask_offset, QM_SQE_ADDR_MASK,
- 	       qm->debug.sqe_mask_len);
- 
--	dump_show(qm, sqe_curr, qm->sqe_size, "SQE");
-+	dump_show(qm, sqe_curr, qm->sqe_size, name);
- 
- 	kfree(sqe);
- 
- 	return 0;
- }
- 
--static int qm_cq_dump(struct hisi_qm *qm, char *s)
-+static int qm_cq_dump(struct hisi_qm *qm, char *s, char *name)
- {
- 	struct qm_cqe *cqe_curr;
- 	struct hisi_qp *qp;
-@@ -334,15 +355,16 @@ static int qm_cq_dump(struct hisi_qm *qm, char *s)
- 
- 	qp = &qm->qp_array[qp_id];
- 	cqe_curr = qp->cqe + cqe_id;
--	dump_show(qm, cqe_curr, sizeof(struct qm_cqe), "CQE");
-+	dump_show(qm, cqe_curr, sizeof(struct qm_cqe), name);
- 
- 	return 0;
- }
- 
--static int qm_eq_aeq_dump(struct hisi_qm *qm, const char *s,
--			  size_t size, char *name)
-+static int qm_eq_aeq_dump(struct hisi_qm *qm, char *s, char *name)
- {
- 	struct device *dev = &qm->pdev->dev;
-+	u16 xeq_depth;
-+	size_t size;
- 	void *xeqe;
- 	u32 xeqe_id;
- 	int ret;
-@@ -354,11 +376,18 @@ static int qm_eq_aeq_dump(struct hisi_qm *qm, const char *s,
- 	if (ret)
- 		return -EINVAL;
- 
--	if (!strcmp(name, "EQE") && xeqe_id >= qm->eq_depth) {
--		dev_err(dev, "Please input eqe num (0-%u)", qm->eq_depth - 1);
--		return -EINVAL;
--	} else if (!strcmp(name, "AEQE") && xeqe_id >= qm->aeq_depth) {
--		dev_err(dev, "Please input aeqe num (0-%u)", qm->eq_depth - 1);
-+	if (!strcmp(name, "EQE")) {
-+		xeq_depth = qm->eq_depth;
-+		size = sizeof(struct qm_eqe);
-+	}
-+
-+	if (!strcmp(name, "AEQE")) {
-+		xeq_depth = qm->aeq_depth;
-+		size = sizeof(struct qm_aeqe);
-+	}
-+
-+	if (xeqe_id >= xeq_depth) {
-+		dev_err(dev, "Please input eqe or aeqe num (0-%u)", xeq_depth - 1);
- 		return -EINVAL;
- 	}
- 
-@@ -402,11 +431,47 @@ static int qm_dbg_help(struct hisi_qm *qm, char *s)
- 	return 0;
- }
- 
-+static const struct qm_cmd_dump_item qm_cmd_dump_table[] = {
-+	{
-+		.cmd = "sqc",
-+		.info_name = "SQC",
-+		.dump_fn = qm_sqc_dump,
-+	}, {
-+		.cmd = "cqc",
-+		.info_name = "CQC",
-+		.dump_fn = qm_cqc_dump,
-+	}, {
-+		.cmd = "eqc",
-+		.info_name = "EQC",
-+		.dump_fn = qm_eqc_aeqc_dump,
-+	}, {
-+		.cmd = "aeqc",
-+		.info_name = "AEQC",
-+		.dump_fn = qm_eqc_aeqc_dump,
-+	}, {
-+		.cmd = "sq",
-+		.info_name = "SQE",
-+		.dump_fn = qm_sq_dump,
-+	}, {
-+		.cmd = "cq",
-+		.info_name = "CQE",
-+		.dump_fn = qm_cq_dump,
-+	}, {
-+		.cmd = "eq",
-+		.info_name = "EQE",
-+		.dump_fn = qm_eq_aeq_dump,
-+	}, {
-+		.cmd = "aeq",
-+		.info_name = "AEQE",
-+		.dump_fn = qm_eq_aeq_dump,
-+	},
-+};
-+
- static int qm_cmd_write_dump(struct hisi_qm *qm, const char *cmd_buf)
- {
- 	struct device *dev = &qm->pdev->dev;
- 	char *presult, *s, *s_tmp;
--	int ret;
-+	int table_size, i, ret;
- 
- 	s = kstrdup(cmd_buf, GFP_KERNEL);
- 	if (!s)
-@@ -419,31 +484,24 @@ static int qm_cmd_write_dump(struct hisi_qm *qm, const char *cmd_buf)
- 		goto err_buffer_free;
- 	}
- 
--	if (!strcmp(presult, "sqc"))
--		ret = qm_sqc_dump(qm, s);
--	else if (!strcmp(presult, "cqc"))
--		ret = qm_cqc_dump(qm, s);
--	else if (!strcmp(presult, "eqc"))
--		ret = qm_eqc_aeqc_dump(qm, s, sizeof(struct qm_eqc),
--				       QM_MB_CMD_EQC, "EQC");
--	else if (!strcmp(presult, "aeqc"))
--		ret = qm_eqc_aeqc_dump(qm, s, sizeof(struct qm_aeqc),
--				       QM_MB_CMD_AEQC, "AEQC");
--	else if (!strcmp(presult, "sq"))
--		ret = qm_sq_dump(qm, s);
--	else if (!strcmp(presult, "cq"))
--		ret = qm_cq_dump(qm, s);
--	else if (!strcmp(presult, "eq"))
--		ret = qm_eq_aeq_dump(qm, s, sizeof(struct qm_eqe), "EQE");
--	else if (!strcmp(presult, "aeq"))
--		ret = qm_eq_aeq_dump(qm, s, sizeof(struct qm_aeqe), "AEQE");
--	else if (!strcmp(presult, "help"))
-+	if (!strcmp(presult, "help")) {
- 		ret = qm_dbg_help(qm, s);
--	else
--		ret = -EINVAL;
-+		goto err_buffer_free;
-+	}
- 
--	if (ret)
-+	table_size = ARRAY_SIZE(qm_cmd_dump_table);
-+	for (i = 0; i < table_size; i++) {
-+		if (!strcmp(presult, qm_cmd_dump_table[i].cmd)) {
-+			ret = qm_cmd_dump_table[i].dump_fn(qm, s,
-+				qm_cmd_dump_table[i].info_name);
-+			break;
-+		}
-+	}
-+
-+	if (i == table_size) {
- 		dev_info(dev, "Please echo help\n");
-+		ret = -EINVAL;
-+	}
- 
- err_buffer_free:
- 	kfree(s_tmp);
--- 
-2.17.1
+RnJvbTogS2VlcyBDb29rDQo+IFNlbnQ6IDI4IE9jdG9iZXIgMjAyMiAyMjowNg0KPiANCj4gR0ND
+IDEyIGFwcGVhcnMgdG8gcGVyZm9ybSBjb25zdGFudCBwcm9wYWdhdGlvbiBpbmNvbXBsZXRlbHko
+PykgYW5kIGNhbg0KPiBubyBsb25nZXIgbm90aWNlIHRoYXQgImxlbiIgaXMgYWx3YXlzIDAgd2hl
+biAiZGF0YSIgaXMgTlVMTC4gRXhwYW5kIHRoZQ0KPiBjaGVjayB0byBhdm9pZCB3YXJuaW5ncyBh
+Ym91dCBtZW1jcHkoKSBoYXZpbmcgYSBOVUxMIGFyZ3VtZW50Og0KLi4uDQo+IA0KPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9jcnlwdG8vY2FhbS9kZXNjX2NvbnN0ci5oIGIvZHJpdmVycy9jcnlwdG8v
+Y2FhbS9kZXNjX2NvbnN0ci5oDQo+IGluZGV4IDYyY2U2NDIxYmIzZi4uZGRiYmE4YjAwYWI3IDEw
+MDY0NA0KPiAtLS0gYS9kcml2ZXJzL2NyeXB0by9jYWFtL2Rlc2NfY29uc3RyLmgNCj4gKysrIGIv
+ZHJpdmVycy9jcnlwdG8vY2FhbS9kZXNjX2NvbnN0ci5oDQo+IEBAIC0xNjMsNyArMTYzLDcgQEAg
+c3RhdGljIGlubGluZSB2b2lkIGFwcGVuZF9kYXRhKHUzMiAqIGNvbnN0IGRlc2MsIGNvbnN0IHZv
+aWQgKmRhdGEsIGludCBsZW4pDQo+ICB7DQo+ICAJdTMyICpvZmZzZXQgPSBkZXNjX2VuZChkZXNj
+KTsNCj4gDQo+IC0JaWYgKGxlbikgLyogYXZvaWQgc3BhcnNlIHdhcm5pbmc6IG1lbWNweSB3aXRo
+IGJ5dGUgY291bnQgb2YgMCAqLw0KPiArCWlmIChkYXRhICYmIGxlbikgLyogYXZvaWQgc3BhcnNl
+IHdhcm5pbmc6IG1lbWNweSB3aXRoIGJ5dGUgY291bnQgb2YgMCAqLw0KPiAgCQltZW1jcHkob2Zm
+c2V0LCBkYXRhLCBsZW4pOw0KDQpJJ2QgZ3Vlc3Mgbm9uLWNvbnN0YW50IHplcm8gbGVuZ3RocyBh
+cmUgdW5saWtlbHk/DQpTbyBob3cgYWJvdXQ6DQoJLyogQXZvaWQgY2FsbGluZyBtZW1jcHkoKSB3
+aGVuIHRoZXJlIGlzIG5ldmVyIGEgYnVmZmVyICovDQoJaWYgKCFfX2J1aWx0aW5fY29uc3RhbnQo
+bGVuKSB8fCBsZW4pDQoJCW1lbWNweShvZmZzZXQsIGRhdGEsIGxlbik7DQoNClRoZW4gdGhlIHRl
+c3Qgc2hvdWxkIG5ldmVyIGFjdHVhbGx5IGVuZCB1cCBpbiB0aGUgb2JqZWN0IGNvZGUuDQoNCglE
+YXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
+bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
+NzM4NiAoV2FsZXMpDQo=
 
