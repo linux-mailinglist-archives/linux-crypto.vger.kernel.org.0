@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB03614919
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Nov 2022 12:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2663B614957
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Nov 2022 12:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbiKALcj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 1 Nov 2022 07:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
+        id S231304AbiKALgR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 1 Nov 2022 07:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbiKALb0 (ORCPT
+        with ESMTP id S231187AbiKALfo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 1 Nov 2022 07:31:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789D41AF1C;
-        Tue,  1 Nov 2022 04:29:57 -0700 (PDT)
+        Tue, 1 Nov 2022 07:35:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718EF1CFE7;
+        Tue,  1 Nov 2022 04:31:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C0B29B81CC4;
-        Tue,  1 Nov 2022 11:29:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47F98C4314A;
-        Tue,  1 Nov 2022 11:29:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E65826152E;
+        Tue,  1 Nov 2022 11:30:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B433C433D6;
+        Tue,  1 Nov 2022 11:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667302194;
-        bh=fqCQqSR8ab59nXjlma9DCDL6bufX4YL6UejIkg+oPH4=;
+        s=k20201202; t=1667302242;
+        bh=e/ERjoiqj9SBS9S9TNQSyDwu7c7I9CjXS4MtNJSj+9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GMqBJsSy7DZS+I8GfhUToeecqcG2DwqqWyCZZDBOkl1PUoiunPfM1tYxl/TSxde6C
-         5RsdGHDcMR0TLLvpoUSm0IdnzjO0NzDD82tjwT//dp7wuzrUXdP8/aCHngIwlzigKp
-         hLvLJbJToahllUN9MCModQm6PFlf86EvPJuA8kd7DvFt5HOQzSpOe4q9LCSexJ8P4I
-         LWXKoKVm6fSShriQfB/WFXlsDnowPl5gO64dN/h3y3JgiY+01gSTAlkRCa8jDGJ2dZ
-         c1fJJcta4r294HjoISGpV3iDRwuIkMLWm1xcnIP1NDua+vHeb4XfR3MfXflNJfEO+4
-         5P+9p7vl7smQw==
+        b=Gz18uaHutI6kJ/ywPdf17cezw4CiHZ6QmXPCEuuhE8QuEi/BVcaaecRhZDsSVCJ/p
+         YqB0DgsrcZlx+umAGxdHVvLyYXxjl4P7CgGgUp/D0eYhAcqFbCQ3JkjPj1ayvkXGJP
+         1k8Ni/zcfzR25YiQbhZ2Zd7x1zAYFFcXyt9W/7v2G2MqyyQVJ42vbuDVkAljA3c9hM
+         we+QoRiSVpUhx2J0ewh9VRhicRc04l7vu2B66BJqgP6y/XtE/1gPTv9MWyVw6KMIZH
+         ueBfRXK1VQpWcJmWAlgMZ8vA25J9CLNV1km0Eod1cTSXJWFj8H7aCQezF0BnVDJ7Ci
+         jTExIuqtUOGqw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
@@ -41,12 +41,12 @@ Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
         rjui@broadcom.com, sbranden@broadcom.com,
         linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 14/19] hwrng: bcm2835 - use hwrng_msleep() instead of cpu_relax()
-Date:   Tue,  1 Nov 2022 07:29:14 -0400
-Message-Id: <20221101112919.799868-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 10/14] hwrng: bcm2835 - use hwrng_msleep() instead of cpu_relax()
+Date:   Tue,  1 Nov 2022 07:30:06 -0400
+Message-Id: <20221101113012.800271-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221101112919.799868-1-sashal@kernel.org>
-References: <20221101112919.799868-1-sashal@kernel.org>
+In-Reply-To: <20221101113012.800271-1-sashal@kernel.org>
+References: <20221101113012.800271-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -95,10 +95,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
-index e7dd457e9b22..e98fcac578d6 100644
+index 1a7c43b43c6b..8e10a4d753f7 100644
 --- a/drivers/char/hw_random/bcm2835-rng.c
 +++ b/drivers/char/hw_random/bcm2835-rng.c
-@@ -71,7 +71,7 @@ static int bcm2835_rng_read(struct hwrng *rng, void *buf, size_t max,
+@@ -69,7 +69,7 @@ static int bcm2835_rng_read(struct hwrng *rng, void *buf, size_t max,
  	while ((rng_readl(priv, RNG_STATUS) >> 24) == 0) {
  		if (!wait)
  			return 0;
