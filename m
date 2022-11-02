@@ -2,116 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DC16161BC
-	for <lists+linux-crypto@lfdr.de>; Wed,  2 Nov 2022 12:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6DD616316
+	for <lists+linux-crypto@lfdr.de>; Wed,  2 Nov 2022 13:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbiKBL1h (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 2 Nov 2022 07:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
+        id S231201AbiKBMyA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 2 Nov 2022 08:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbiKBL1g (ORCPT
+        with ESMTP id S229598AbiKBMx6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 2 Nov 2022 07:27:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA399248DC;
-        Wed,  2 Nov 2022 04:27:35 -0700 (PDT)
-Received: from zn.tnic (p200300ea9733e741329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:9733:e741:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3F6BC1EC059D;
-        Wed,  2 Nov 2022 12:27:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1667388454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=yICoADaQMVMzDnnLd9qSZOhWGA6H9/WvnEz/OK5eX7Q=;
-        b=S1atLxaEuLaJ/+CK/dqlknDpST2LhW/3u+eYKdl6ClrAKnMqw61jNH8w4PO0e02jNHS0kC
-        shBVTW4qpXJJb1k4DRNQ3FgDYM6DOQm9H+b1PuFSSlhAjdFm16bl5Ochou662KZCkO3wp4
-        04JhwBQACZ1QdCH14YrOC+MY7cKm4Hg=
-Date:   Wed, 2 Nov 2022 12:27:33 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "slp@redhat.com" <slp@redhat.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "srinivas.pandruvada@linux.intel.com" 
-        <srinivas.pandruvada@linux.intel.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "dovmurik@linux.ibm.com" <dovmurik@linux.ibm.com>,
-        "tobin@ibm.com" <tobin@ibm.com>,
-        "Roth, Michael" <Michael.Roth@amd.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "marcorr@google.com" <marcorr@google.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "alpergun@google.com" <alpergun@google.com>,
-        "dgilbert@redhat.com" <dgilbert@redhat.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>
-Subject: Re: [PATCH Part2 v6 07/49] x86/sev: Invalid pages from direct map
- when adding it to RMP table
-Message-ID: <Y2JUJfKLS/ghCP0R@zn.tnic>
-References: <cover.1655761627.git.ashish.kalra@amd.com>
- <243778c282cd55a554af9c11d2ecd3ff9ea6820f.1655761627.git.ashish.kalra@amd.com>
- <YuFvbm/Zck9Tr5pq@zn.tnic>
- <SN6PR12MB27676E6CEDF242F2D33CA2AB8E9A9@SN6PR12MB2767.namprd12.prod.outlook.com>
- <Yuu3ZK+/hL+saV27@zn.tnic>
- <6e9f3d48-1777-6710-cb1d-3f2f38c0328e@amd.com>
+        Wed, 2 Nov 2022 08:53:58 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081C825C76
+        for <linux-crypto@vger.kernel.org>; Wed,  2 Nov 2022 05:53:58 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id h193so7464255pgc.10
+        for <linux-crypto@vger.kernel.org>; Wed, 02 Nov 2022 05:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sz/uTvOc0gNmc74MGKA7yKeLqyFqD/joiI1SxwVZLms=;
+        b=QPdi/N4K5dyZqaYEUPuN9znsrKWsfwh430NiiDRtLqBi68OaRPBOl96baYFkKsMkW1
+         MIV+la4+jbn7eO2JQcTLj1zwSYJb4vcWrd3nicT4aGNBMWvfnXdFlfpuri9yfU6ubTIx
+         LV6UoHd+XtwFQ26ci3dm7rIF/3I6LSKXypVlaASscdUXkVE5BCs3xch9xcwYBpWGNGQy
+         eTqjccvNYTtd8MenSpHX38ShXMZdSnl0juF/vyuZft+SjjOuxKZF6703U6qQiMfYyAiY
+         PZy0PyXYm20turCTicXMm7npZ1kg4dbru1HZomSQvnn0QRKDA3AhYFwCzuxwXSMwrIA0
+         ucPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sz/uTvOc0gNmc74MGKA7yKeLqyFqD/joiI1SxwVZLms=;
+        b=pzFXZiYGSsOXj5AFaTPcSpmP1DSIoBFoZXggOJFH0vSGz32748tzP9JtspD7zdQ9JP
+         kdgwnW9IFYQkxFziVzm1l8vLGDluGzU67AIp8gp0Ki8SlqkxyMev44hj6hYSBjkGJJIQ
+         Dj6N0LLZAsTXHyMRLqKMm/Ja+4iFg7KZB3vSq6ftL603jZ/1ssVdTRk2W+asgq8fujeA
+         gJyq56pkT50u/7y6Cx4mHPlqhwbnz91zK6X6hqy4vDAMRe4owXcKBFXoONYivljFhksz
+         HSbPQ33fEisB8oc/k04BgAdJ4CNNsnu6kHQvGPnuFglJvvvDkCrg+AlfMbNgLxqnwBuv
+         jRlQ==
+X-Gm-Message-State: ACrzQf0EHQn3Q44OxBgbDYiOe4n5VIqZfsbqcEfJU4xQeOlyPlRltNbN
+        egTH/f2iNNH+2tx0PZR7WdjZZdrtRD6tAOOljXA=
+X-Google-Smtp-Source: AMsMyM61U4kP/AwEmx8Ns6pmnpFl496NGTJPCi6lwLLzFsCz6P1xbep001BwiJUJhMONLwJUM07ev4VRsIE6EmmBRTg=
+X-Received: by 2002:a63:1058:0:b0:44f:a1cb:7eec with SMTP id
+ 24-20020a631058000000b0044fa1cb7eecmr22145975pgq.117.1667393637418; Wed, 02
+ Nov 2022 05:53:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6e9f3d48-1777-6710-cb1d-3f2f38c0328e@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7022:662c:b0:46:197b:656c with HTTP; Wed, 2 Nov 2022
+ 05:53:56 -0700 (PDT)
+Reply-To: rihabmanyang1993@gmail.com
+From:   Rihab Manyang <omardiakhate751@gmail.com>
+Date:   Wed, 2 Nov 2022 12:53:56 +0000
+Message-ID: <CAAs2n97EyR3k29iVguxQoczvTjWeSjC00wTF0g+BD9inBzwh1Q@mail.gmail.com>
+Subject: HI DEAR..
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:529 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [omardiakhate751[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [rihabmanyang1993[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [omardiakhate751[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Nov 01, 2022 at 10:12:35PM -0500, Kalra, Ashish wrote:
-> Following up on this, now, set_memory_present() is a static interface,
-> so will need do add a new external API like set_memory_p() similar
-> to set_memory_np().
-
-It is called set_memory_p() now and you can "un-static" it. :)
-
-> So currently there is no interface defined for changing the attribute of a
-> range to present or restoring the range in the direct map.
-
-No?
-
-static int set_memory_p(unsigned long *addr, int numpages)
-{
-        return change_page_attr_set(addr, numpages, __pgprot(_PAGE_PRESENT), 0);
-}
-
-:-)
-
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+My name is Rihab Manyang,i am here to search for a business partner and
+friend who will help me to invest my fund in his country.
