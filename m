@@ -2,72 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E539617590
-	for <lists+linux-crypto@lfdr.de>; Thu,  3 Nov 2022 05:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED476176B3
+	for <lists+linux-crypto@lfdr.de>; Thu,  3 Nov 2022 07:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbiKCEaB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 3 Nov 2022 00:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
+        id S229699AbiKCGXP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 3 Nov 2022 02:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbiKCE3E (ORCPT
+        with ESMTP id S229531AbiKCGXP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 3 Nov 2022 00:29:04 -0400
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E24617A8E;
-        Wed,  2 Nov 2022 21:28:35 -0700 (PDT)
-Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A33VbuI014797;
-        Thu, 3 Nov 2022 04:28:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=G7u1zUhzEy2Z3v9+f98yVaQ73+U2QkY+yVwx1BjgOZE=;
- b=HLKouWUMYSWw7quRf3qPuFiXZblLqMTPqpxKEJhH0YseFfrq34bXknRLDWqsk2YFuB+M
- r3shCI+TQ9I7+vybntd4lkHcUHwctFcTE52WoI6ijEdXqtWLuiQo+S4Z1zC/q5lo6MtL
- 2aMmzVdHPLqV1i39WWg1306vsR1DnRkjLSzu6y2v9v2LISIEYRy5qGBKnZZLRSryqnVj
- tz1k9pOQMgJkVmhp2ftwtindcywpbrb1BvZd5pB0eRI3CiZVOhw186Ika4TBA8lh3dho
- rq8yEmuyC/BtmT3tFb+qJpOdU0kKcQ0vOCeUNdleUbnofc9pfesaCptRk+KyPvgGgXf2 EQ== 
-Received: from p1lg14881.it.hpe.com (p1lg14881.it.hpe.com [16.230.97.202])
-        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3km5tn8a1a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Nov 2022 04:28:28 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 055FD80472B;
-        Thu,  3 Nov 2022 04:28:28 +0000 (UTC)
-Received: from adevxp033-sys.us.rdlabs.hpecorp.net (unknown [16.231.227.36])
-        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 85C0D808EB8;
-        Thu,  3 Nov 2022 04:28:27 +0000 (UTC)
-From:   Robert Elliott <elliott@hpe.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tim.c.chen@linux.intel.com, ap420073@gmail.com, ardb@kernel.org,
-        Jason@zx2c4.com, David.Laight@ACULAB.COM, ebiggers@kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Robert Elliott <elliott@hpe.com>
-Subject: [PATCH v3 17/17] crypto: x86/nhpoly1305, poly1305 - load based on CPU features
-Date:   Wed,  2 Nov 2022 23:27:40 -0500
-Message-Id: <20221103042740.6556-18-elliott@hpe.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20221103042740.6556-1-elliott@hpe.com>
-References: <20221012215931.3896-1-elliott@hpe.com>
- <20221103042740.6556-1-elliott@hpe.com>
+        Thu, 3 Nov 2022 02:23:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D78BC31;
+        Wed,  2 Nov 2022 23:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=wWklh3V04M7tRN5I4El4kisW58/wtA96fy+VCrOUxBg=; b=BWCQyjGl9in3cyS9TZ/MJrSuc3
+        3BvAw0RvXXckw2UNM2jkZr7cupD+lmvsDdE7Wf6lgez5WQ+DDzUuaVKP/8jE93/kD4zN68pzCLKFh
+        XZoIoh53y7Sr4+DdyN8mtPkTMNZAdl/4o1kqIQAyz2wYjqmsP04LbHxmwiD1WohnxF8pQYVu/Xbah
+        ZGMlFV7wUVuAnbbKiAry0pBUSpNsxBhV7Hpm7j6CuFq7Akb941E6BYwjfwQeW5YOeMVjYxLJcyOYi
+        04qd1bHuwot5iBGcL0yt7X4sBB8tHDTVkpUKxhOF0mI/itU8qUMvsAZ/V7p99ZQBUpboAJKlmXaQz
+        GeJBZ59Q==;
+Received: from [2601:1c2:d80:3110:e65e:37ff:febd:ee53]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oqTdA-00GHXh-L0; Thu, 03 Nov 2022 06:23:12 +0000
+Message-ID: <ccefc0b7-528d-32a5-328c-e166b4821f76@infradead.org>
+Date:   Wed, 2 Nov 2022 23:23:10 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: LvU7jicmIURC_DCUpBkpWM2HsYBXp38r
-X-Proofpoint-ORIG-GUID: LvU7jicmIURC_DCUpBkpWM2HsYBXp38r
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-02_15,2022-11-02_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 phishscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211030031
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH] virt: sev-guest: fix kconfig warnings
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>, stable@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-crypto@vger.kernel.org
+References: <20220828195234.6604-1-rdunlap@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220828195234.6604-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,111 +57,48 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Like commit aa031b8f702e ("crypto: x86/sha512 - load based on CPU
-features"), add module aliases for x86-optimized crypto modules:
-    nhpoly1305, poly1305
-based on CPU feature bits so udev gets a chance to load them later
-in the boot process when the filesystems are all running.
+ping. I have verified (on linux-next-20221103) that this
+patch is still needed.
+Thanks.
 
-Signed-off-by: Robert Elliott <elliott@hpe.com>
----
- arch/x86/crypto/nhpoly1305-avx2-glue.c | 10 ++++++++++
- arch/x86/crypto/nhpoly1305-sse2-glue.c | 10 ++++++++++
- arch/x86/crypto/poly1305_glue.c        | 12 ++++++++++++
- 3 files changed, 32 insertions(+)
+On 8/28/22 12:52, Randy Dunlap wrote:
+> Fix the SEV_GUEST Kconfig block to eliminate kconfig unmet
+> dependency warnings:
+> 
+> WARNING: unmet direct dependencies detected for CRYPTO_GCM
+>   Depends on [n]: CRYPTO [=n]
+>   Selected by [y]:
+>   - SEV_GUEST [=y] && VIRT_DRIVERS [=y] && AMD_MEM_ENCRYPT [=y]
+> 
+> WARNING: unmet direct dependencies detected for CRYPTO_AEAD2
+>   Depends on [n]: CRYPTO [=n]
+>   Selected by [y]:
+>   - SEV_GUEST [=y] && VIRT_DRIVERS [=y] && AMD_MEM_ENCRYPT [=y]
+> 
+> Fixes: fce96cf04430 ("virt: Add SEV-SNP guest driver")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: stable@vger.kernel.org
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Paul Gazzillo <paul@pgazz.com>
+> Cc: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: linux-crypto@vger.kernel.org
+> ---
+>  drivers/virt/coco/sev-guest/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- a/drivers/virt/coco/sev-guest/Kconfig
+> +++ b/drivers/virt/coco/sev-guest/Kconfig
+> @@ -2,6 +2,7 @@ config SEV_GUEST
+>  	tristate "AMD SEV Guest driver"
+>  	default m
+>  	depends on AMD_MEM_ENCRYPT
+> +	select CRYPTO
+>  	select CRYPTO_AEAD2
+>  	select CRYPTO_GCM
+>  	help
 
-diff --git a/arch/x86/crypto/nhpoly1305-avx2-glue.c b/arch/x86/crypto/nhpoly1305-avx2-glue.c
-index f7dc9c563bb5..15f98b53bfda 100644
---- a/arch/x86/crypto/nhpoly1305-avx2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-avx2-glue.c
-@@ -11,6 +11,7 @@
- #include <crypto/nhpoly1305.h>
- #include <linux/module.h>
- #include <linux/sizes.h>
-+#include <asm/cpu_device_id.h>
- #include <asm/simd.h>
- 
- /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
-@@ -60,8 +61,17 @@ static struct shash_alg nhpoly1305_alg = {
- 	.descsize		= sizeof(struct nhpoly1305_state),
- };
- 
-+static const struct x86_cpu_id module_cpu_ids[] = {
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX2, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, module_cpu_ids);
-+
- static int __init nhpoly1305_mod_init(void)
- {
-+	if (!x86_match_cpu(module_cpu_ids))
-+		return -ENODEV;
-+
- 	if (!boot_cpu_has(X86_FEATURE_AVX2) ||
- 	    !boot_cpu_has(X86_FEATURE_OSXSAVE))
- 		return -ENODEV;
-diff --git a/arch/x86/crypto/nhpoly1305-sse2-glue.c b/arch/x86/crypto/nhpoly1305-sse2-glue.c
-index daffcc7019ad..533db3e0e06f 100644
---- a/arch/x86/crypto/nhpoly1305-sse2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-sse2-glue.c
-@@ -11,6 +11,7 @@
- #include <crypto/nhpoly1305.h>
- #include <linux/module.h>
- #include <linux/sizes.h>
-+#include <asm/cpu_device_id.h>
- #include <asm/simd.h>
- 
- /* avoid kernel_fpu_begin/end scheduler/rcu stalls */
-@@ -60,8 +61,17 @@ static struct shash_alg nhpoly1305_alg = {
- 	.descsize		= sizeof(struct nhpoly1305_state),
- };
- 
-+static const struct x86_cpu_id module_cpu_ids[] = {
-+	X86_MATCH_FEATURE(X86_FEATURE_XMM2, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, module_cpu_ids);
-+
- static int __init nhpoly1305_mod_init(void)
- {
-+	if (!x86_match_cpu(module_cpu_ids))
-+		return -ENODEV;
-+
- 	if (!boot_cpu_has(X86_FEATURE_XMM2))
- 		return -ENODEV;
- 
-diff --git a/arch/x86/crypto/poly1305_glue.c b/arch/x86/crypto/poly1305_glue.c
-index 16831c036d71..2ff4358e4b3f 100644
---- a/arch/x86/crypto/poly1305_glue.c
-+++ b/arch/x86/crypto/poly1305_glue.c
-@@ -12,6 +12,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/sizes.h>
-+#include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/simd.h>
- 
-@@ -268,8 +269,19 @@ static struct shash_alg alg = {
- 	},
- };
- 
-+static const struct x86_cpu_id module_cpu_ids[] = {
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX2, NULL),
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX, NULL),
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX512F, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, module_cpu_ids);
-+
- static int __init poly1305_simd_mod_init(void)
- {
-+	if (!x86_match_cpu(module_cpu_ids))
-+		return -ENODEV;
-+
- 	if (boot_cpu_has(X86_FEATURE_AVX) &&
- 	    cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM, NULL))
- 		static_branch_enable(&poly1305_use_avx);
 -- 
-2.37.3
-
+~Randy
