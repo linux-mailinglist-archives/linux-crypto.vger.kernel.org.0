@@ -2,65 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B017761D95C
-	for <lists+linux-crypto@lfdr.de>; Sat,  5 Nov 2022 11:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A95A61DA46
+	for <lists+linux-crypto@lfdr.de>; Sat,  5 Nov 2022 13:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbiKEKSv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 5 Nov 2022 06:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
+        id S229913AbiKEMkA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 5 Nov 2022 08:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbiKEKSu (ORCPT
+        with ESMTP id S229953AbiKEMjt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 5 Nov 2022 06:18:50 -0400
-Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944B3E9F;
-        Sat,  5 Nov 2022 03:18:49 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1orGFc-00APzR-O6; Sat, 05 Nov 2022 18:18:46 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 05 Nov 2022 18:18:45 +0800
-Date:   Sat, 5 Nov 2022 18:18:45 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH v2 1/4] crypto: hisilicon/qm - modify the process of regs
- dfx
-Message-ID: <Y2Y4hWc+cUJ4VZgy@gondor.apana.org.au>
-References: <20221105095357.21199-1-yekai13@huawei.com>
- <20221105095357.21199-2-yekai13@huawei.com>
+        Sat, 5 Nov 2022 08:39:49 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F21C1A83F
+        for <linux-crypto@vger.kernel.org>; Sat,  5 Nov 2022 05:39:48 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id v4-20020a17090a088400b00212cb0ed97eso6660953pjc.5
+        for <linux-crypto@vger.kernel.org>; Sat, 05 Nov 2022 05:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
+        b=mu8m7znM9duu/MEuox3wxE9uI+enJzfHDrHCiCJ0dxXEnbtqlugP30RV4pUA4LaD8D
+         DTqzL6R3iJdygnN0tebcl2jKMC1xnk2qmH9yHj5ZpYJsig0zgAkFbQEJMtQOsyMS9E9+
+         9mZsd+BXbCYizoNZILloIeJgVKBYQDDlfcxWmhtehgP0gShVz6QbysTuA73O0zNW89oN
+         M95vp9qd39mlLDduLYXTQkqHXtcuCB6sr4c0ysKpoCTw5s/vT8zmw06SHC/DLusZ9o66
+         sNkDbmLIhAcJBtA+VmbRSjB+l+4rXBDt3pKOG75zF9L+vjSBjo5n2zZjo+rRsufLH5jZ
+         6xmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
+        b=1uaQcylv/iDZ1afv8q2BgRIZH4VFwps7PjKfrQqELSM4ctqgCbcC+RwTpAO8LJTP7c
+         vkYLhmPBqiydvHMHua8LqDvGEfOdVkn2Px5QSNNMXADlM+ayHKaQymCIVa/Ex0UO+g+q
+         29ft+Zu+n8JbbVsWQi75Pvyjo7XoEkwf4ZX4fqrPhbpUr2Epil+07Bhm0sOMdQTbzkz1
+         /hV3HmxaT6xqi9nGnr1Via3h23eH0ErZdJ51kAgT3tRtKxsCdxbnPQHkK93Loc45CiaZ
+         Faf1zAiEc7zRs7c1RuKaT+4IIwW4VZ3eZPfxhBgtMFVVBExrRrjkaL7759w7dOZLczWh
+         WylQ==
+X-Gm-Message-State: ACrzQf2gZZbtYgp++3EyYWHxoLbErLnKUdfNv6tEBVosRp3gb0gcOu9g
+        drc+A1We6/4B9tr0hplA95IgCcyUULTkYKw7IFI=
+X-Google-Smtp-Source: AMsMyM5GFe2gsiMaHXHXvp99K7JeNN2UuK6dELDyLpsoJjIUkQcn4q3aD74FbKEapmwctM2YF8x1D4LMLHeg4fM3LVk=
+X-Received: by 2002:a17:90b:4ac3:b0:213:3918:f276 with SMTP id
+ mh3-20020a17090b4ac300b002133918f276mr57022678pjb.19.1667651987563; Sat, 05
+ Nov 2022 05:39:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221105095357.21199-2-yekai13@huawei.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7301:2e91:b0:83:922d:c616 with HTTP; Sat, 5 Nov 2022
+ 05:39:47 -0700 (PDT)
+Reply-To: stefanopessia755@hotmail.com
+From:   Stefano Pessina <wamathaibenard@gmail.com>
+Date:   Sat, 5 Nov 2022 15:39:47 +0300
+Message-ID: <CAN7bvZKO8GxFn7CG_EtS_Of+AZ+KsuqTkq40Mq-yJDNrEHyakg@mail.gmail.com>
+Subject: Geldspende
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Nov 05, 2022 at 09:53:54AM +0000, Kai Ye wrote:
->
-> +static void dfx_regs_uninit(struct hisi_qm *qm,
-> +		struct dfx_diff_registers *dregs, int reg_len)
-> +{
-> +	int i;
-> +
-> +	/* Setting the pointer is NULL to prevent double free */
-> +	for (i = 0; i < reg_len; i++) {
-> +		kfree(dregs[i].regs);
-> +		dregs[i].regs = NULL;
-> +	}
-> +	kfree(dregs);
-> +	dregs = NULL;
-> +}
-
-The line that I complained about is still here.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+--=20
+Die Summe von 500.000,00 =E2=82=AC wurde Ihnen von STEFANO PESSINA gespende=
+t.
+Bitte kontaktieren Sie uns f=C3=BCr weitere Informationen =C3=BCber
+stefanopessia755@hotmail.com
