@@ -2,40 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 825EB61E096
-	for <lists+linux-crypto@lfdr.de>; Sun,  6 Nov 2022 08:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E47761E094
+	for <lists+linux-crypto@lfdr.de>; Sun,  6 Nov 2022 08:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbiKFHIm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 6 Nov 2022 02:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S229562AbiKFHFe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 6 Nov 2022 02:05:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiKFHIl (ORCPT
+        with ESMTP id S229551AbiKFHFd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 6 Nov 2022 02:08:41 -0500
+        Sun, 6 Nov 2022 02:05:33 -0500
+X-Greylist: delayed 147 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Nov 2022 00:05:32 PDT
 Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4ACB1FE
-        for <linux-crypto@vger.kernel.org>; Sun,  6 Nov 2022 00:08:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED64A45A
+        for <linux-crypto@vger.kernel.org>; Sun,  6 Nov 2022 00:05:32 -0700 (PDT)
+X-isilmar-external: YES
 X-isilmar-external: YES
 X-isilmar-external: YES
 X-isilmar-external: YES
 Received: from owl.dominikbrodowski.net (owl.brodo.linta [10.2.0.111])
-        by isilmar-4.linta.de (Postfix) with ESMTPSA id 4F2A02000AF;
-        Sun,  6 Nov 2022 07:03:03 +0000 (UTC)
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id 5F2272000B1;
+        Sun,  6 Nov 2022 07:05:30 +0000 (UTC)
 Received: by owl.dominikbrodowski.net (Postfix, from userid 1000)
-        id BE8B88082C; Sun,  6 Nov 2022 08:02:56 +0100 (CET)
-Date:   Sun, 6 Nov 2022 08:02:56 +0100
+        id 8B69D8010D; Sun,  6 Nov 2022 08:05:25 +0100 (CET)
+Date:   Sun, 6 Nov 2022 08:05:25 +0100
 From:   Dominik Brodowski <linux@dominikbrodowski.net>
 To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2] hw_random: use add_hwgenerator_randomness() for early
- entropy
-Message-ID: <Y2dcIKWOmczDCGLG@owl.dominikbrodowski.net>
-References: <CAHmME9r=xGdYa1n16TTgdfvzLkc==hGr+1v3eZmyzpEX+437uw@mail.gmail.com>
- <20221106015042.98538-1-Jason@zx2c4.com>
+Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] hw_random: treat default_quality as a maximum and
+ default to 1024
+Message-ID: <Y2dctc4A0ccl3Hwp@owl.dominikbrodowski.net>
+References: <20221104154230.52836-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221106015042.98538-1-Jason@zx2c4.com>
+In-Reply-To: <20221104154230.52836-1-Jason@zx2c4.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -44,36 +46,38 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Sun, Nov 06, 2022 at 02:50:42AM +0100 schrieb Jason A. Donenfeld:
-> Rather than calling add_device_randomness(), the add_early_randomness()
-> function should use add_hwgenerator_randomness(), so that the early
-> entropy can be potentially credited, which allows for the RNG to
-> initialize earlier without having to wait for the kthread to come up.
+Am Fri, Nov 04, 2022 at 04:42:30PM +0100 schrieb Jason A. Donenfeld:
+> Most hw_random devices return entropy which is assumed to be of full
+> quality, but driver authors don't bother setting the quality knob. Some
+> hw_random devices return less than full quality entropy, and then driver
+> authors set the quality knob. Therefore, the entropy crediting should be
+> opt-out rather than opt-in per-driver, to reflect the actual reality on
+> the ground.
+> 
+> For example, the two Raspberry Pi RNG drivers produce full entropy
+> randomness, and both EDK2 and U-Boot's drivers for these treat them as
+> such. The result is that EFI then uses these numbers and passes the to
+> Linux, and Linux credits them as boot, thereby initializing the RNG.
+> Yet, in Linux, the quality knob was never set to anything, and so on the
+> chance that Linux is booted without EFI, nothing is ever credited.
+> That's annoying.
+> 
+> The same pattern appears to repeat itself throughout various drivers. In
+> fact, very very few drivers have bothered setting quality=1024.
+> 
+> So let's invert this logic. A hw_random struct's quality knob now
+> controls the maximum quality a driver can produce, or 0 to specify 1024.
+> Then, the module-wide switch called "default_quality" is changed to
+> represent the maximum quality of any driver. By default it's 1024, and
+> the quality of any particular driver is then given by:
+> 
+>     min(default_quality, rng->quality ?: 1024);
+> 
+> This way, the user can still turn this off for weird reasons, yet we get
+> proper crediting for relevant RNGs.
 
-We're already at device_initcall() level here, so that shouldn't be much of
-an additional delay.
-
-> Since we don't want to sleep from add_early_randomness(), we also
-> refactor the API a bit so that hw_random/core.c can do the sleep, this
-> time using the correct function, hwrng_msleep, rather than having
-> random.c awkwardly do it.
-
-Isn't this something you were quite hesistant about just recently[*]?
-
-| I was thinking the other day that under certain circumstances, it
-| would be nice if random.c could ask hwrng for more bytes NOW, rather
-| than waiting. With the code as it is currently, this could be
-| accomplished by having a completion event or something similar to
-| that. With your proposed change, now it's left up to the hwrng
-| interface to handle.
-| 
-| That's not the end of the world, but it does mean we'd have to come up
-| with a patch down the line that exports a hwrng function saying, "stop
-| the delays and schedule the worker NOW". Now impossible, just more
-| complex, as now the state flow is split across two places. Wondering
-| if you have any thoughts about this.
+Hm. Wouldn't we need to verify that 1024 is appropriate for all drivers
+where the quality currently is not set?
 
 Thanks,
 	Dominik
-
-[*] https://lore.kernel.org/lkml/CAHmME9rhunb05DEnc=UfGr8k9_LBi1NW2Hi0OsRbGwcCN2NzjQ@mail.gmail.com/
