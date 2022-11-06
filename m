@@ -2,122 +2,159 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F26861E095
-	for <lists+linux-crypto@lfdr.de>; Sun,  6 Nov 2022 08:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7C261E29C
+	for <lists+linux-crypto@lfdr.de>; Sun,  6 Nov 2022 15:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbiKFHHz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 6 Nov 2022 02:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
+        id S230003AbiKFOhm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 6 Nov 2022 09:37:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiKFHHz (ORCPT
+        with ESMTP id S229820AbiKFOhl (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 6 Nov 2022 02:07:55 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B8CA45B
-        for <linux-crypto@vger.kernel.org>; Sun,  6 Nov 2022 00:07:54 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id q1-20020a17090a750100b002139ec1e999so7820602pjk.1
-        for <linux-crypto@vger.kernel.org>; Sun, 06 Nov 2022 00:07:54 -0700 (PDT)
+        Sun, 6 Nov 2022 09:37:41 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA98DEB8
+        for <linux-crypto@vger.kernel.org>; Sun,  6 Nov 2022 06:37:39 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id 4so8991753pli.0
+        for <linux-crypto@vger.kernel.org>; Sun, 06 Nov 2022 06:37:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=bVkLXQ1cCayBCnyAoyJS146/l6MYB41B6g+/2g6m45Y=;
-        b=W1rex48tOXFJlDXelohwJ3CrgXZTwZKjXU93uTaMyLyQlgyDF1J7exvqLrl2tptKl6
-         X+CH5T5OUEwCT7SWY2cY7Mp/bo/TkrO0utOkh92QbNYtqYa73yNgPnOohPjCZo8zP0xe
-         5cnvGfo4XoXoRODl7QetWUM30EyvlPAaqniCo07RWUXQV3v1oVxENXFTZqHdRioXo0z+
-         yokr6neZ5liNv2TzxR47OSupEpR/S0y60SwOhN+1tcQxiWI0mb/9DR0baSB+GbVN/q3z
-         6yUVpb1cb8E3FgVtslMyNKd23fdWLwRyzcbPgN25S/+6C1Ia8OI43xw0gcF2S0N+HlMJ
-         7uVw==
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0wNxCSGpYtc+UynGtWraZm3CyyjI4HiR4ahTJTEodmI=;
+        b=DGYx7QnaztFK1tq/eTHUjDo9EDJ1h4L1o1VSkxbkjfXVns91IU3ukjsayNqZ3MW2gx
+         03yEjGSrbJCWaj+zrxMvZv59cbX3I3ABN7rN3hUVhNxISUNfJj1eMbM528fo4vq801Is
+         z0d/MF7rxhlq5MBBTN2cPVMpCKsiw4GBYQuZ7I5h65pf/1/cLE6d3mdFursOZSZbilNT
+         jVA/bDrg5yuQuOD48Og0C2jGztUwuPyRtDCsliQEofxSVeZMgvFFxEFVyKNJR25hmU6o
+         KJedxaKX2eaA6NNoEklJ7CGPCnKHGlnVmxIAm3FjtFJSnWQBabP6rVZ6uSVEFjQXiReM
+         rwrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bVkLXQ1cCayBCnyAoyJS146/l6MYB41B6g+/2g6m45Y=;
-        b=ZvXpo+vsD+kwUSDRcy2OnCpv5IUYBqu8s5x/PyzRfTRMWHxvAsIe+P03VnGqbtiuV2
-         1rBl1xwT3dTYT7TBIEZEfI2SbVaTdawzL9H2Jn67iCJ+uJlrgg77rKugCiH+rCvzLLqh
-         VfOp2qc3ZPwKFF8Iz3US+8rlOZdhdBMp34V3sDrTVmiaqoJIuXkHALvzffcunp4RQiMy
-         duZUFsKca7glpwOB5xL7uEBaf9906Ppk/wbMrxNPDOAcyX6O4FpWFwUn/aLTihyjMz96
-         UNYodC6pUp+eSXzG6v/uL2hDh3Z2V+ZMR46wF4rKcTUM9SalEqoXOl8zPvSdhbCY/0Wo
-         8udA==
-X-Gm-Message-State: ACrzQf1qpUbE7zGCwbeJ9HaTTdQIT0cDjqupzXi1tgJ6SmlETCdsUcTS
-        DI9kUXiIrbQPrpnWl3/5dDs=
-X-Google-Smtp-Source: AMsMyM6BfVE2vzoA3yGePEOJ4m5EPFFlgbWK2YN88DWF9Ua9MdA8TptZNq0zGMwmXEBrzFYV6wjRrw==
-X-Received: by 2002:a17:902:dac5:b0:186:a687:e082 with SMTP id q5-20020a170902dac500b00186a687e082mr45126315plx.84.1667718473560;
-        Sun, 06 Nov 2022 00:07:53 -0700 (PDT)
-Received: from ?IPV6:2606:4700:110:8d19:ef92:9207:5a0d:60e7? ([2a09:bac1:3f60:98::16:12e])
-        by smtp.gmail.com with ESMTPSA id q18-20020a17090311d200b00179f370dbe7sm2591563plh.287.2022.11.06.00.07.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Nov 2022 00:07:52 -0700 (PDT)
-Message-ID: <1f78f88c-470e-6b1b-e441-907114f3271a@gmail.com>
-Date:   Sun, 6 Nov 2022 16:07:47 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH v2 3/3] crypto: aria: implement aria-avx512
-To:     Dave Hansen <dave.hansen@intel.com>,
-        "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>
-References: <20221105082021.17997-1-ap420073@gmail.com>
- <20221105082021.17997-4-ap420073@gmail.com>
- <MW5PR84MB1842E11FD1CF7B44703A42B0AB3A9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
- <d438e0d8-7469-7584-405b-76006372c2d4@intel.com>
-Content-Language: en-US
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0wNxCSGpYtc+UynGtWraZm3CyyjI4HiR4ahTJTEodmI=;
+        b=e0Y2bpDQ26zvC/Vv9p9OB91p0OOyCFrUXKQxhjw/IBWWQtxprHpCE4LoRQ55mfuLnq
+         /xy6I8Qv4tL+98muiV7KXgxWKfF/E7OWSa2E5kRD9nagcVwnzqth4t0M96wJcjdatUku
+         kXEBPTXsU8+OQn4zNg/GD6OnHEi4/tNTUKGJ59we+mlhzx/yUFS5rniklzlw0pEn8qM+
+         gi/3auv4PrSMDZklpP/NRMrXGKsA32RFNp/3NVAXKjGga0k/EUCoeqSpvRtrsRGKHbgv
+         EkuYAuZw0UIeDhhJG0BBNnl5utLXBjSP170sWX4lnTR9+KCx6ucNL8sYTcex+sVyryaB
+         iHtg==
+X-Gm-Message-State: ACrzQf0xXaTBPEZU6TNm/3E3k5vA12AoQukNp8Ux2NryVdmASf26Vf9C
+        +7p5lr0GWuWGmQR7o0163fEw+weBCgLFEQbt
+X-Google-Smtp-Source: AMsMyM75eJShcwwTWOsy6wNhQv8mmHa8fSch7Is5FgS06zYg2+zPcDnn8OqY5P/eGDvZZ83gTusJCg==
+X-Received: by 2002:a17:903:1245:b0:178:9234:3768 with SMTP id u5-20020a170903124500b0017892343768mr46111066plh.146.1667745458766;
+        Sun, 06 Nov 2022 06:37:38 -0800 (PST)
+Received: from localhost.localdomain ([182.213.254.91])
+        by smtp.gmail.com with ESMTPSA id k26-20020aa7973a000000b0056da2ad6503sm2696580pfg.39.2022.11.06.06.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Nov 2022 06:37:38 -0800 (PST)
 From:   Taehee Yoo <ap420073@gmail.com>
-In-Reply-To: <d438e0d8-7469-7584-405b-76006372c2d4@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        kirill.shutemov@linux.intel.com, richard@nod.at,
+        viro@zeniv.linux.org.uk,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@kernel.org,
+        elliott@hpe.com, x86@kernel.org, jussi.kivilinna@iki.fi
+Cc:     ap420073@gmail.com
+Subject: [PATCH v3 0/4] crypto: aria: implement aria-avx2 and aria-avx512
+Date:   Sun,  6 Nov 2022 14:36:23 +0000
+Message-Id: <20221106143627.30920-1-ap420073@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Elliott and Dave,
-Thanks a lot for the reviews!
+This patchset is to implement aria-avx2 and aria-avx512.
+There are some differences between aria-avx, aria-avx2, and aria-avx512,
+but they are not core logic(s-box, diffusion layer).
 
-On 11/6/22 02:31, Dave Hansen wrote:
- > On 11/5/22 09:20, Elliott, Robert (Servers) wrote:
- >> --- a/arch/x86/crypto/aesni-intel_glue.c
- >> +++ b/arch/x86/crypto/aesni-intel_glue.c
- >> @@ -288,6 +288,10 @@ static int aes_set_key_common(struct crypto_tfm 
-*tfm, void *raw_ctx,
- >>          struct crypto_aes_ctx *ctx = aes_ctx(raw_ctx);
- >>          int err;
- >>
- >> +       BUILD_BUG_ON(offsetof(struct crypto_aes_ctx, key_enc) != 0);
- >> +       BUILD_BUG_ON(offsetof(struct crypto_aes_ctx, key_dec) != 240);
- >> +       BUILD_BUG_ON(offsetof(struct crypto_aes_ctx, key_length) != 
-480);
- >
- > We have a nice fancy way of doing these.  See things like
- > CPU_ENTRY_AREA_entry_stack or TSS_sp0.  It's all put together from
- > arch/x86/kernel/asm-offsets.c and gets plopped in
- > include/generated/asm-offsets.h.
- >
- > This is vastly preferred to hard-coded magic number offsets, even if
- > they do have a BUILD_BUG_ON() somewhere.
+ARIA-AVX2
+It supports 32way parallel processing using 256bit registers.
+Like ARIA-AVX, it supports both AES-NI based s-box layer algorithm and
+GFNI based s-box layer algorithm.
+These algorithms are the same as ARIA-AVX except that AES-NI doesn't
+support 256bit registers, so it is used twice.
 
-I will define ARIA_CTX_xxx with asm-offsets.c.
-Then, the assembly code can use the correct offset of enc_key, dec_key, 
-and the rounds in the struct aria_ctx.
-Due to we can sure the offsets are correct, BUILD_BUG_ON() will become 
-unnecessary.
+ARIA-AVX512
+It supports 64way parallel processing using 512bit registers.
+It supports only GFNI based s-box layer algorithm.
 
-I will send the v3 patch.
+Benchmarks with i3-12100
+commands: modprobe tcrypt mode=610 num_mb=8192
 
-Thanks a lot!
-Taehee Yoo
+ARIA-AVX512(128bit and 256bit)
+    testing speed of multibuffer ecb(aria) (ecb-aria-avx512) encryption
+tcrypt: 1 operation in 1504 cycles (1024 bytes)
+tcrypt: 1 operation in 4595 cycles (4096 bytes)
+tcrypt: 1 operation in 1763 cycles (1024 bytes)
+tcrypt: 1 operation in 5540 cycles (4096 bytes)
+    testing speed of multibuffer ecb(aria) (ecb-aria-avx512) decryption
+tcrypt: 1 operation in 1502 cycles (1024 bytes)
+tcrypt: 1 operation in 4615 cycles (4096 bytes)
+tcrypt: 1 operation in 1759 cycles (1024 bytes)
+tcrypt: 1 operation in 5554 cycles (4096 bytes)
+
+ARIA-AVX2 with GFNI(128bit and 256bit)
+    testing speed of multibuffer ecb(aria) (ecb-aria-avx2) encryption
+tcrypt: 1 operation in 2003 cycles (1024 bytes)
+tcrypt: 1 operation in 5867 cycles (4096 bytes)
+tcrypt: 1 operation in 2358 cycles (1024 bytes)
+tcrypt: 1 operation in 7295 cycles (4096 bytes)
+    testing speed of multibuffer ecb(aria) (ecb-aria-avx2) decryption
+tcrypt: 1 operation in 2004 cycles (1024 bytes)
+tcrypt: 1 operation in 5956 cycles (4096 bytes)
+tcrypt: 1 operation in 2409 cycles (1024 bytes)
+tcrypt: 1 operation in 7564 cycles (4096 bytes)
+
+ARIA-AVX with GFNI(128bit and 256bit)
+    testing speed of multibuffer ecb(aria) (ecb-aria-avx) encryption
+tcrypt: 1 operation in 2761 cycles (1024 bytes)
+tcrypt: 1 operation in 9390 cycles (4096 bytes)
+tcrypt: 1 operation in 3401 cycles (1024 bytes)
+tcrypt: 1 operation in 11876 cycles (4096 bytes)
+    testing speed of multibuffer ecb(aria) (ecb-aria-avx) decryption
+tcrypt: 1 operation in 2735 cycles (1024 bytes)
+tcrypt: 1 operation in 9424 cycles (4096 bytes)
+tcrypt: 1 operation in 3369 cycles (1024 bytes)
+tcrypt: 1 operation in 11954 cycles (4096 bytes)
+
+v3:
+ - Use ARIA_CTX_enc_key, ARIA_CTX_dec_key, and ARIA_CTX_rounds defines.
+
+v2:
+ - Add new "add keystream array into struct aria_ctx" patch.
+ - Use keystream array in the aria_ctx instead of stack memory
+
+Taehee Yoo (4):
+  crypto: aria: add keystream array into struct aria_ctx
+  crypto: aria: do not use magic number offsets of aria_ctx
+  crypto: aria: implement aria-avx2
+  crypto: aria: implement aria-avx512
+
+ arch/x86/crypto/Kconfig                   |   38 +
+ arch/x86/crypto/Makefile                  |    6 +
+ arch/x86/crypto/aria-aesni-avx-asm_64.S   |   26 +-
+ arch/x86/crypto/aria-aesni-avx2-asm_64.S  | 1432 +++++++++++++++++++++
+ arch/x86/crypto/aria-avx.h                |   41 +-
+ arch/x86/crypto/aria-gfni-avx512-asm_64.S | 1019 +++++++++++++++
+ arch/x86/crypto/aria_aesni_avx2_glue.c    |  236 ++++
+ arch/x86/crypto/aria_aesni_avx_glue.c     |   30 +-
+ arch/x86/crypto/aria_gfni_avx512_glue.c   |  232 ++++
+ arch/x86/kernel/asm-offsets.c             |   11 +
+ include/crypto/aria.h                     |   24 +
+ 11 files changed, 3065 insertions(+), 30 deletions(-)
+ create mode 100644 arch/x86/crypto/aria-aesni-avx2-asm_64.S
+ create mode 100644 arch/x86/crypto/aria-gfni-avx512-asm_64.S
+ create mode 100644 arch/x86/crypto/aria_aesni_avx2_glue.c
+ create mode 100644 arch/x86/crypto/aria_gfni_avx512_glue.c
+
+-- 
+2.17.1
+
