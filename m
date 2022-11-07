@@ -2,63 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC5261EF81
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Nov 2022 10:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F48A61EED9
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Nov 2022 10:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbiKGJr1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 7 Nov 2022 04:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S231203AbiKGJZV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Nov 2022 04:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231810AbiKGJrX (ORCPT
+        with ESMTP id S231558AbiKGJZH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 7 Nov 2022 04:47:23 -0500
-X-Greylist: delayed 1800 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 07 Nov 2022 01:47:23 PST
-Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CB61836B
-        for <linux-crypto@vger.kernel.org>; Mon,  7 Nov 2022 01:47:23 -0800 (PST)
-Received: by mail.lokoho.com (Postfix, from userid 1001)
-        id EA731824C5; Mon,  7 Nov 2022 09:10:44 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
-        t=1667812244; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
-        h=Date:From:To:Subject:From;
-        b=FZ9g5MxrIuL5CEAfiVQ3bMhk7+LvAh5LpKK2MyrjMcE3y5Fku0hX2fqR5UK8jgtBD
-         hGRJd8l1UEfJ4UxgI+shM920hExnW5W7pJTd9Nfqx5XWmNSmSdkCWDcCN3+JVJlxbP
-         S6Cwdl48L8Peavw9I5hRGSxnYP3lPSA4lPDhiGtk70XTLph6WJlIQ6MHe4oaTmnwQz
-         6ZrBxSzzhRPCS2T5y2BgNPMLymuzkC/2Eq5b5Kuc4iZMIGbvih7JQtKILkJMxTrn44
-         99PeTN/Nkwn4sZJ1UTd5pQoNeE3j/c6xGhzw9mAANnPKA2XnsjkDfvg3SR07L7kOno
-         ijUy7j9q6Anyg==
-Received: by mail.lokoho.com for <linux-crypto@vger.kernel.org>; Mon,  7 Nov 2022 09:10:44 GMT
-Message-ID: <20221107074500-0.1.23.5lk2.0.8gpo5ee9ih@lokoho.com>
-Date:   Mon,  7 Nov 2022 09:10:44 GMT
-From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
-To:     <linux-crypto@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.lokoho.com
+        Mon, 7 Nov 2022 04:25:07 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E562418B19
+        for <linux-crypto@vger.kernel.org>; Mon,  7 Nov 2022 01:24:31 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id z14so15210856wrn.7
+        for <linux-crypto@vger.kernel.org>; Mon, 07 Nov 2022 01:24:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+354V4bqL0Q80jmGbwChiKqgB2s0lMwmgUyfQySGfaA=;
+        b=E71QyXbP3nAgn6MM5N2pgIc3hT3H/iHfIUAU8Ieoh/Ek99yAgL4c+CSCtxXlJFsxi2
+         oQKXQt5hRIoFkHwXg4zDilcpzkUaNn5sHtJF+RXJMDmKJ8GvRHLOYuf7jOjKILE7JLXz
+         vkf3yrbpQNlPbK3hzs4yvXiGrtLXR4GhK1keNClzSJ68zTACMW9QOlIo3dJBkpqfZkNY
+         rYqrcRMkTZr95zGNnMJDUjRbaAgqaqQQ7jKZjfPJlegxtwOWJfPsjbJQDHCwR7WObvjg
+         sOXt/xfP3F5lmklHbFiX99USOs+IweJ5rmmNJ3FmYYsx54KH9yB5mizRKoMTndNF34LK
+         R5sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+354V4bqL0Q80jmGbwChiKqgB2s0lMwmgUyfQySGfaA=;
+        b=Z7WmjBzPSy+xkcimdy+5U3zWWE7zyn+YTdtcCQ2f2QrlzjnUwtHAmuHGVxWSer+KDs
+         R3wz5Yc+HYRf/IGcLQiE3YsQi2uvUrUKGRmrCo8o1pIUDKEUty4deIdE4ZtexhFXTac5
+         Cu0nAhKnRzVZo73Ga+dTXmer5A5HdAUq6QBB5OQra+TgVMKKW8yK+UNbFeR8LCd+MVCZ
+         Tm8u/sgSBE/bJNsozhMfy18irDtSI+mzYQd+k+TnSJl5qIJ0kqvwKFkIeATRqMJXDTXm
+         RVUpYLSqhFf9jLRiegadisZSEAD3HiyVdjxTCDULliJJHx5gYxpxVYdSwmsOSUcIEUiV
+         jrwg==
+X-Gm-Message-State: ACrzQf0Xm54/Tu57lQcyJ9nvClNW37Bjrt6LUzYvjhiqAX2ZxDbXvt1H
+        jigE7g+UBzBB6bGUD17PajHcyzHqWyRUTbtv
+X-Google-Smtp-Source: AMsMyM76jUbfY3U9anmFeQe0yqiI0jfkssTVhjiLNVk0IeFJjugyoiEQh76BCcrNqUAVsVF7XkG27Q==
+X-Received: by 2002:adf:ed89:0:b0:236:8ef6:472d with SMTP id c9-20020adfed89000000b002368ef6472dmr28532719wro.61.1667813070284;
+        Mon, 07 Nov 2022 01:24:30 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:4a02:2aff:fe07:1efc])
+        by smtp.googlemail.com with ESMTPSA id bw14-20020a0560001f8e00b00240dcd4d1cesm2268916wrb.105.2022.11.07.01.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Nov 2022 01:24:29 -0800 (PST)
+Date:   Mon, 7 Nov 2022 10:24:24 +0100
+From:   Corentin LABBE <clabbe@baylibre.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net, heiko@sntech.de,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH -next v2] crypto: rockchip: Remove surplus dev_err() when
+ using platform_get_irq()
+Message-ID: <Y2jOyPoor1hJ7xoV@Red>
+References: <20221104074527.37353-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221104074527.37353-1-yang.lee@linux.alibaba.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Le Fri, Nov 04, 2022 at 03:45:27PM +0800, Yang Li a écrit :
+> There is no need to call the dev_err() function directly to print a
+> custom message when handling an error from either the platform_get_irq()
+> or platform_get_irq_byname() functions as both are going to display an
+> appropriate error message in case of a failure.
+> 
+> ./drivers/crypto/rockchip/rk3288_crypto.c:351:2-9: line 351 is
+> redundant because platform_get_irq() already prints an error
+> 
+> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=2677
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+> 
+> change in v2:
+> --According to Corentin's suggestion, make the subject started by "crypto: rockchip:".
+> 
+>  drivers/crypto/rockchip/rk3288_crypto.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Hello
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+Acked-by: Corentin Labbe <clabbe@baylibre.com>
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
-
-
-Pozdrawiam
-Adam Charachuta
+Thanks
