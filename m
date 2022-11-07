@@ -2,82 +2,104 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA3C61EB36
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Nov 2022 07:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C5661EC3A
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Nov 2022 08:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbiKGGxd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 7 Nov 2022 01:53:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S231201AbiKGHjc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 7 Nov 2022 02:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbiKGGxc (ORCPT
+        with ESMTP id S231152AbiKGHjb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 7 Nov 2022 01:53:32 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A9263F6;
-        Sun,  6 Nov 2022 22:53:30 -0800 (PST)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N5MPt2yrczRp42;
-        Mon,  7 Nov 2022 14:53:22 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 14:53:28 +0800
-Received: from [10.67.103.212] (10.67.103.212) by
- dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 14:53:28 +0800
-Subject: Re: [PATCH v2 1/4] crypto: hisilicon/qm - modify the process of regs
- dfx
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-References: <20221105095357.21199-1-yekai13@huawei.com>
- <20221105095357.21199-2-yekai13@huawei.com>
- <Y2Y4hWc+cUJ4VZgy@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>
-From:   "yekai (A)" <yekai13@huawei.com>
-Message-ID: <45cf9fba-fae6-8279-bfac-f70110df42dc@huawei.com>
-Date:   Mon, 7 Nov 2022 14:53:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 7 Nov 2022 02:39:31 -0500
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9417CFF
+        for <linux-crypto@vger.kernel.org>; Sun,  6 Nov 2022 23:39:30 -0800 (PST)
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from owl.dominikbrodowski.net (owl.brodo.linta [10.2.0.111])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id D3B212014B3;
+        Mon,  7 Nov 2022 07:39:28 +0000 (UTC)
+Received: by owl.dominikbrodowski.net (Postfix, from userid 1000)
+        id 6542D806D2; Mon,  7 Nov 2022 08:35:02 +0100 (CET)
+Date:   Mon, 7 Nov 2022 08:35:02 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] hw_random: treat default_quality as a maximum and
+ default to 1024
+Message-ID: <Y2i1JgQJQot6W1PD@owl.dominikbrodowski.net>
+References: <20221104154230.52836-1-Jason@zx2c4.com>
+ <Y2dctc4A0ccl3Hwp@owl.dominikbrodowski.net>
+ <Y2fHbAxGY/VKLzbC@zx2c4.com>
 MIME-Version: 1.0
-In-Reply-To: <Y2Y4hWc+cUJ4VZgy@gondor.apana.org.au>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.212]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y2fHbAxGY/VKLzbC@zx2c4.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Hi Jason,
 
+Am Sun, Nov 06, 2022 at 03:40:44PM +0100 schrieb Jason A. Donenfeld:
+> On Sun, Nov 06, 2022 at 08:05:25AM +0100, Dominik Brodowski wrote:
+> > Am Fri, Nov 04, 2022 at 04:42:30PM +0100 schrieb Jason A. Donenfeld:
+> > > Most hw_random devices return entropy which is assumed to be of full
+> > > quality, but driver authors don't bother setting the quality knob. Some
+> > > hw_random devices return less than full quality entropy, and then driver
+> > > authors set the quality knob. Therefore, the entropy crediting should be
+> > > opt-out rather than opt-in per-driver, to reflect the actual reality on
+> > > the ground.
+> > > 
+> > > For example, the two Raspberry Pi RNG drivers produce full entropy
+> > > randomness, and both EDK2 and U-Boot's drivers for these treat them as
+> > > such. The result is that EFI then uses these numbers and passes the to
+> > > Linux, and Linux credits them as boot, thereby initializing the RNG.
+> > > Yet, in Linux, the quality knob was never set to anything, and so on the
+> > > chance that Linux is booted without EFI, nothing is ever credited.
+> > > That's annoying.
+> > > 
+> > > The same pattern appears to repeat itself throughout various drivers. In
+> > > fact, very very few drivers have bothered setting quality=1024.
+> > > 
+> > > So let's invert this logic. A hw_random struct's quality knob now
+> > > controls the maximum quality a driver can produce, or 0 to specify 1024.
+> > > Then, the module-wide switch called "default_quality" is changed to
+> > > represent the maximum quality of any driver. By default it's 1024, and
+> > > the quality of any particular driver is then given by:
+> > > 
+> > >     min(default_quality, rng->quality ?: 1024);
+> > > 
+> > > This way, the user can still turn this off for weird reasons, yet we get
+> > > proper crediting for relevant RNGs.
+> > 
+> > Hm. Wouldn't we need to verify that 1024 is appropriate for all drivers
+> > where the quality currently is not set?
+> 
+> No, certainly not, and I think this sort of thought belies a really
+> backwards attitude. Hardware RNGs are assumed to produce good
+> randomness. Some manufacturers provide a caveat, "actually, we're giving
+> raw entropy with only N bits quality", but for the ones who don't, the
+> overarching assumption is that the bits are fully entropic.
 
-On 2022/11/5 18:18, Herbert Xu wrote:
-> On Sat, Nov 05, 2022 at 09:53:54AM +0000, Kai Ye wrote:
->> +static void dfx_regs_uninit(struct hisi_qm *qm,
->> +		struct dfx_diff_registers *dregs, int reg_len)
->> +{
->> +	int i;
->> +
->> +	/* Setting the pointer is NULL to prevent double free */
->> +	for (i = 0; i < reg_len; i++) {
->> +		kfree(dregs[i].regs);
->> +		dregs[i].regs = NULL;
->> +	}
->> +	kfree(dregs);
->> +	dregs = NULL;
->> +}
-> The line that I complained about is still here.
->
-> Cheers,
+My point is not about the 1024 as an exact value, it's more about "do the
+driver and the hardware really provide _something_ sensible or not". In the
+past, the default mode as to feed the output of hw_rng devies to some
+userspace daemon, which then tried to verify that the device works as
+expected, and then feeded the data back to the crng core. This userspace
+indirection is largely removed already (in particular by a patch of mine
+which starts up the hwrng kernel thread also for devices with quality==0)
+once the crng is fully initialized, on the rationale that even bad quality
+data will do no harm. Yet, we may need to be a tad more careful whether or
+not to trust devices for the initial seeding of the crng.
 
-ok
-
-thanks
-kai
+Thanks,
+	Dominik
