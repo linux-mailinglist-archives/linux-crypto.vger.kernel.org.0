@@ -2,98 +2,106 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D87620DFC
-	for <lists+linux-crypto@lfdr.de>; Tue,  8 Nov 2022 12:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D69B620ECB
+	for <lists+linux-crypto@lfdr.de>; Tue,  8 Nov 2022 12:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233808AbiKHLAw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 8 Nov 2022 06:00:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
+        id S233453AbiKHLXx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 8 Nov 2022 06:23:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233479AbiKHLAu (ORCPT
+        with ESMTP id S233703AbiKHLXc (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 8 Nov 2022 06:00:50 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74166450B3
-        for <linux-crypto@vger.kernel.org>; Tue,  8 Nov 2022 03:00:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2CD73B81A02
-        for <linux-crypto@vger.kernel.org>; Tue,  8 Nov 2022 11:00:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C647C433C1;
-        Tue,  8 Nov 2022 11:00:46 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="nmdTB7BR"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1667905243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WxOm/dhL4xutU/zruQMKmmZqLcH+m6nTHTBLvZpELdk=;
-        b=nmdTB7BR3b4Ot5fy5nST3ZHs8aC1QDFXxu+Mo24H/UnwEQrdxwiLSj4nJkm+PVMy8iEG1V
-        PhQFyVdwdoM6z1oZ4nHpR6YEWAutZrsvA9Dn06Z0B5dVLCAL4kjnMZRLg5A/0F8iQXTUgW
-        DyVpN9onC42n73IkMXFSrG3hYBA8120=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 31a43900 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 8 Nov 2022 11:00:43 +0000 (UTC)
-Date:   Tue, 8 Nov 2022 12:00:40 +0100
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: Re: [PATCH v3] hw_random: use add_hwgenerator_randomness() for early
- entropy
-Message-ID: <Y2o22ODqUZNO4NsR@zx2c4.com>
-References: <Y2fJy1akGIdQdH95@zx2c4.com>
- <20221106150243.150437-1-Jason@zx2c4.com>
- <1839f462-dccb-b926-1acd-f1bb5f5776ba@collabora.com>
+        Tue, 8 Nov 2022 06:23:32 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B48C4AF07
+        for <linux-crypto@vger.kernel.org>; Tue,  8 Nov 2022 03:23:24 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id s10so9327463ioa.5
+        for <linux-crypto@vger.kernel.org>; Tue, 08 Nov 2022 03:23:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
+        b=SKxoMXk71fzsH4RiXsi+C/6DrTYSmJg4y1x26aHehdukMfOTxbvTz1RDZUF5ezzzn/
+         SQHYV4p3Y0wU6zNmLXlSGC0M0pB4u1QXpkiFBqj96YkCT31bBeSPHVyC9vbsQojRcKKa
+         SwDbPs5WKRvZ1NoWEDhTso55tNTqvUdAli9jMSpajt514Wj81lAxmYoGpi6DQ4M8d/YW
+         uNuOs+TGP30ZU5GtAl8fFqJCJVBKD4dazlRxiLu29LiZYp1FL2RFvwqDLOuunnObSg9E
+         p/NuCd3UGlvOiIG98Srp88iAS0c7bT56QT5PdmY+ak3wAUeTvaY55MnBzDy9nfsyKYCp
+         Znkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
+        b=3kK6EhkfaQSy1RjUu3VJo1aUwMe8wr6cGsRLTpd1yddhphK91NpPdKerC/Ldvlp/lA
+         8cYYpPg/T3cbWy/hRxUxNKggDHyfgagmsPeYV1SVEnxmMvkrger+x2Zq0a+8XvkTGb3h
+         0bYcMfiR/iRbRlQdJnPMwDYxagFRTbyMid6NYwbPtUbI22hUL3aFVrom/7Twu+fVDNDH
+         Zum4+ACJ6VGlkZOf7WHUDtL92oYh2iKPkJIljtFFqxO3Hq/ZCQ5wCplHGOvcXdEIOCYd
+         urJFVBCIrvw5NDJvRu90tgSrAQMjg2TKRo1ibJcRchH2wQT/0+GwsfoYjJA0SSZmRa7c
+         dh/g==
+X-Gm-Message-State: ACrzQf2QHL5dgokARtWWXcqRBnylAblFafQl27YkWKYbtVl0C+PKBToG
+        OlMjYHMSzxO3ciDktS21afs9eRXkrCwXiMdrZDk=
+X-Google-Smtp-Source: AMsMyM7+myFlW6XFCXeSKLT27SlDPwGDh9RuXs3znV2KSQYgkg4ZcNfREnZlVBvtvS1gzBfTPQfDB8rVRvELVHxJ/ls=
+X-Received: by 2002:a05:6638:2:b0:363:8330:d75 with SMTP id
+ z2-20020a056638000200b0036383300d75mr32884715jao.33.1667906603907; Tue, 08
+ Nov 2022 03:23:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1839f462-dccb-b926-1acd-f1bb5f5776ba@collabora.com>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:6638:1921:0:0:0:0 with HTTP; Tue, 8 Nov 2022 03:23:23
+ -0800 (PST)
+Reply-To: mrinvest1010@gmail.com
+From:   "K. A. Mr. Kairi" <ctocik10@gmail.com>
+Date:   Tue, 8 Nov 2022 03:23:23 -0800
+Message-ID: <CAEbPynvgXcwj+VPyZrCxfVHXTsPyXOo7WiLoVkUCLehN3kB_iQ@mail.gmail.com>
+Subject: Re: My Response..
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:d29 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5001]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mrinvest1010[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [ctocik10[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [ctocik10[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Nov 08, 2022 at 11:53:23AM +0100, AngeloGioacchino Del Regno wrote:
-> Il 06/11/22 16:02, Jason A. Donenfeld ha scritto:
-> > Rather than calling add_device_randomness(), the add_early_randomness()
-> > function should use add_hwgenerator_randomness(), so that the early
-> > entropy can be potentially credited, which allows for the RNG to
-> > initialize earlier without having to wait for the kthread to come up.
-> > 
-> > This requires some minor API refactoring, by adding a `sleep_after`
-> > parameter to add_hwgenerator_randomness(), so that we don't hit a
-> > blocking sleep from add_early_randomness().
-> > 
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> > Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-> > ---
-> > Herbert - it might be easiest for me to take this patch if you want? Or
-> > if this will interfere with what you have going on, you can take it. Let
-> > me know what you feel like. -Jason
-> > 
-> >   drivers/char/hw_random/core.c |  8 +++++---
-> >   drivers/char/random.c         | 12 ++++++------
-> >   include/linux/random.h        |  2 +-
-> >   3 files changed, 12 insertions(+), 10 deletions(-)
-> > 
-> 
-> Hello,
-> 
-> I tried booting next-20221108 on Acer Tomato Chromebook (MediaTek MT8195) but
-> this commit is producing a kernel panic.
+-- 
+Dear
 
+How are you, I have a serious client, whom will be interested to
+invest in your country, I got your Details through the Investment
+Network and world Global Business directory.
 
-Thanks for the report. I see exactly what the problem is, and I'll send
-a v+1 right away.
+Let me know if you are interested for more details.....
 
-Jason
+Sincerely,
+Mr. Kairi Andrew
