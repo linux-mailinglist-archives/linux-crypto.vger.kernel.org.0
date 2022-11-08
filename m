@@ -2,106 +2,162 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D69B620ECB
-	for <lists+linux-crypto@lfdr.de>; Tue,  8 Nov 2022 12:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EF7620EFA
+	for <lists+linux-crypto@lfdr.de>; Tue,  8 Nov 2022 12:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233453AbiKHLXx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 8 Nov 2022 06:23:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
+        id S233856AbiKHLZ0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 8 Nov 2022 06:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbiKHLXc (ORCPT
+        with ESMTP id S234100AbiKHLY4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 8 Nov 2022 06:23:32 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B48C4AF07
-        for <linux-crypto@vger.kernel.org>; Tue,  8 Nov 2022 03:23:24 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id s10so9327463ioa.5
-        for <linux-crypto@vger.kernel.org>; Tue, 08 Nov 2022 03:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
-        b=SKxoMXk71fzsH4RiXsi+C/6DrTYSmJg4y1x26aHehdukMfOTxbvTz1RDZUF5ezzzn/
-         SQHYV4p3Y0wU6zNmLXlSGC0M0pB4u1QXpkiFBqj96YkCT31bBeSPHVyC9vbsQojRcKKa
-         SwDbPs5WKRvZ1NoWEDhTso55tNTqvUdAli9jMSpajt514Wj81lAxmYoGpi6DQ4M8d/YW
-         uNuOs+TGP30ZU5GtAl8fFqJCJVBKD4dazlRxiLu29LiZYp1FL2RFvwqDLOuunnObSg9E
-         p/NuCd3UGlvOiIG98Srp88iAS0c7bT56QT5PdmY+ak3wAUeTvaY55MnBzDy9nfsyKYCp
-         Znkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5B7dfi7xVJ3OslQ0ALi00lhJojz9IHhiYsVHA/RHqOE=;
-        b=3kK6EhkfaQSy1RjUu3VJo1aUwMe8wr6cGsRLTpd1yddhphK91NpPdKerC/Ldvlp/lA
-         8cYYpPg/T3cbWy/hRxUxNKggDHyfgagmsPeYV1SVEnxmMvkrger+x2Zq0a+8XvkTGb3h
-         0bYcMfiR/iRbRlQdJnPMwDYxagFRTbyMid6NYwbPtUbI22hUL3aFVrom/7Twu+fVDNDH
-         Zum4+ACJ6VGlkZOf7WHUDtL92oYh2iKPkJIljtFFqxO3Hq/ZCQ5wCplHGOvcXdEIOCYd
-         urJFVBCIrvw5NDJvRu90tgSrAQMjg2TKRo1ibJcRchH2wQT/0+GwsfoYjJA0SSZmRa7c
-         dh/g==
-X-Gm-Message-State: ACrzQf2QHL5dgokARtWWXcqRBnylAblFafQl27YkWKYbtVl0C+PKBToG
-        OlMjYHMSzxO3ciDktS21afs9eRXkrCwXiMdrZDk=
-X-Google-Smtp-Source: AMsMyM7+myFlW6XFCXeSKLT27SlDPwGDh9RuXs3znV2KSQYgkg4ZcNfREnZlVBvtvS1gzBfTPQfDB8rVRvELVHxJ/ls=
-X-Received: by 2002:a05:6638:2:b0:363:8330:d75 with SMTP id
- z2-20020a056638000200b0036383300d75mr32884715jao.33.1667906603907; Tue, 08
- Nov 2022 03:23:23 -0800 (PST)
+        Tue, 8 Nov 2022 06:24:56 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4884C259
+        for <linux-crypto@vger.kernel.org>; Tue,  8 Nov 2022 03:24:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 46F1B6151B
+        for <linux-crypto@vger.kernel.org>; Tue,  8 Nov 2022 11:24:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29320C433D7;
+        Tue,  8 Nov 2022 11:24:50 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Jb88upNS"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1667906687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eGOEvnfEDBwMlLvalqFBh9kapf8egqFgB8q1TSu5lwk=;
+        b=Jb88upNSeYcKCTiCEi2rnBSZ7BG0fOKUobYolQVK0w8kLCXBOz23EFeeACXGJKir49GwnC
+        xscFs+ukCe7fjp3QCUjKA3v5uKIVf1MseE2A5xe+8cWzgxtalSa5G1ozewilIBJ2CrDzKH
+        hodMgS7ui+r97z3Hkxaccie/LNYwbb4=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 61d0a669 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 8 Nov 2022 11:24:47 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [PATCH v4] hw_random: use add_hwgenerator_randomness() for early entropy
+Date:   Tue,  8 Nov 2022 12:24:13 +0100
+Message-Id: <20221108112413.199669-1-Jason@zx2c4.com>
+In-Reply-To: <Y2o22ODqUZNO4NsR@zx2c4.com>
+References: <Y2o22ODqUZNO4NsR@zx2c4.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:1921:0:0:0:0 with HTTP; Tue, 8 Nov 2022 03:23:23
- -0800 (PST)
-Reply-To: mrinvest1010@gmail.com
-From:   "K. A. Mr. Kairi" <ctocik10@gmail.com>
-Date:   Tue, 8 Nov 2022 03:23:23 -0800
-Message-ID: <CAEbPynvgXcwj+VPyZrCxfVHXTsPyXOo7WiLoVkUCLehN3kB_iQ@mail.gmail.com>
-Subject: Re: My Response..
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:d29 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5001]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mrinvest1010[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [ctocik10[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [ctocik10[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Rather than calling add_device_randomness(), the add_early_randomness()
+function should use add_hwgenerator_randomness(), so that the early
+entropy can be potentially credited, which allows for the RNG to
+initialize earlier without having to wait for the kthread to come up.
+
+This requires some minor API refactoring, by adding a `sleep_after`
+parameter to add_hwgenerator_randomness(), so that we don't hit a
+blocking sleep from add_early_randomness().
+
+Reviewed-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Changes v3->v4:
+- Check `sleep_after` argument before calling `kthread_should_stop()` to
+  avoid crash when not called from a kthread.
+
+ drivers/char/hw_random/core.c |  8 +++++---
+ drivers/char/random.c         | 12 ++++++------
+ include/linux/random.h        |  2 +-
+ 3 files changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
+index cc002b0c2f0c..63a0a8e4505d 100644
+--- a/drivers/char/hw_random/core.c
++++ b/drivers/char/hw_random/core.c
+@@ -69,8 +69,10 @@ static void add_early_randomness(struct hwrng *rng)
+ 	mutex_lock(&reading_mutex);
+ 	bytes_read = rng_get_data(rng, rng_fillbuf, 32, 0);
+ 	mutex_unlock(&reading_mutex);
+-	if (bytes_read > 0)
+-		add_device_randomness(rng_fillbuf, bytes_read);
++	if (bytes_read > 0) {
++		size_t entropy = bytes_read * 8 * rng->quality / 1024;
++		add_hwgenerator_randomness(rng_fillbuf, bytes_read, entropy, false);
++	}
+ }
+ 
+ static inline void cleanup_rng(struct kref *kref)
+@@ -528,7 +530,7 @@ static int hwrng_fillfn(void *unused)
+ 
+ 		/* Outside lock, sure, but y'know: randomness. */
+ 		add_hwgenerator_randomness((void *)rng_fillbuf, rc,
+-					   entropy >> 10);
++					   entropy >> 10, true);
+ 	}
+ 	hwrng_fill = NULL;
+ 	return 0;
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 4591d55cb135..6b7aca683b81 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -711,7 +711,7 @@ static void __cold _credit_init_bits(size_t bits)
+  * the above entropy accumulation routines:
+  *
+  *	void add_device_randomness(const void *buf, size_t len);
+- *	void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy);
++ *	void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy, bool sleep_after);
+  *	void add_bootloader_randomness(const void *buf, size_t len);
+  *	void add_vmfork_randomness(const void *unique_vm_id, size_t len);
+  *	void add_interrupt_randomness(int irq);
+@@ -891,11 +891,11 @@ void add_device_randomness(const void *buf, size_t len)
+ EXPORT_SYMBOL(add_device_randomness);
+ 
+ /*
+- * Interface for in-kernel drivers of true hardware RNGs.
+- * Those devices may produce endless random bits and will be throttled
+- * when our pool is full.
++ * Interface for in-kernel drivers of true hardware RNGs. Those devices
++ * may produce endless random bits, so this function will sleep for
++ * some amount of time after, if the sleep_after parameter is true.
+  */
+-void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy)
++void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy, bool sleep_after)
+ {
+ 	mix_pool_bytes(buf, len);
+ 	credit_init_bits(entropy);
+@@ -904,7 +904,7 @@ void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy)
+ 	 * Throttle writing to once every reseed interval, unless we're not yet
+ 	 * initialized or no entropy is credited.
+ 	 */
+-	if (!kthread_should_stop() && (crng_ready() || !entropy))
++	if (sleep_after && !kthread_should_stop() && (crng_ready() || !entropy))
+ 		schedule_timeout_interruptible(crng_reseed_interval());
+ }
+ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
+diff --git a/include/linux/random.h b/include/linux/random.h
+index 2bdd3add3400..728b29ade208 100644
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -17,7 +17,7 @@ void __init add_bootloader_randomness(const void *buf, size_t len);
+ void add_input_randomness(unsigned int type, unsigned int code,
+ 			  unsigned int value) __latent_entropy;
+ void add_interrupt_randomness(int irq) __latent_entropy;
+-void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy);
++void add_hwgenerator_randomness(const void *buf, size_t len, size_t entropy, bool sleep_after);
+ 
+ #if defined(LATENT_ENTROPY_PLUGIN) && !defined(__CHECKER__)
+ static inline void add_latent_entropy(void)
 -- 
-Dear
+2.38.1
 
-How are you, I have a serious client, whom will be interested to
-invest in your country, I got your Details through the Investment
-Network and world Global Business directory.
-
-Let me know if you are interested for more details.....
-
-Sincerely,
-Mr. Kairi Andrew
