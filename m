@@ -2,98 +2,209 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B846216B3
-	for <lists+linux-crypto@lfdr.de>; Tue,  8 Nov 2022 15:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D61CA621A2E
+	for <lists+linux-crypto@lfdr.de>; Tue,  8 Nov 2022 18:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbiKHObv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 8 Nov 2022 09:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
+        id S234163AbiKHRMi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 8 Nov 2022 12:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234245AbiKHObF (ORCPT
+        with ESMTP id S234092AbiKHRMh (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 8 Nov 2022 09:31:05 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B2BDFBA
-        for <linux-crypto@vger.kernel.org>; Tue,  8 Nov 2022 06:31:04 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id b29so13930176pfp.13
-        for <linux-crypto@vger.kernel.org>; Tue, 08 Nov 2022 06:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=plCZMl07mNxOy4FwEnJyPWecERqsJQyrHYHIsHPByWrtU1k24II845ABLvzsZ/utuV
-         xrfZ6D/e/ZRoyRjpbZ5oMDY9h9ndbu6gtWFiQs/CjHcVVSqci/vjYPMMyy1pnVJ69u5N
-         OM2Kwkcs/9db1KNzWi4t4Kki8xmdjDy37F969+9phg4q7Iutyq/zyteGqROU9T6wdO4n
-         lS/c2RFkn8H1h3UlswE5jNY6oMt5wQG8oq965L41J8fDh6fe1zek7KZifUk151Do70De
-         k9oKwcRkEhDvguAg4zcTYagV5rrGsvTLwyNtdWlzI5EY/CPrjAga8S7nNTzf3DHImH9S
-         a/jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=Wx0D6p8BZkqRUxd692NXYxKQ1tJd6tOiQE5XaAOmGePT/j3NKXqmJUPWrmtTXaLh1I
-         9BZgf7F3X6jsPNtT40vTajMTS5KBxLetz2cXtb2mx3lV4tb82f2dJBk4187VtCzZ9s9k
-         GKkUsdsGPdVKC2wuG2qmO9eTw9k7Fy6oM5F+g626psWeIaoQ+Qao5UC+QJ6DJKYsyN27
-         u3cewyBVyMM2DsD2jxqxbbeq1AN87kGo6MM+qoMq8RjCIIaFHLFNJ3G43lrPYeXZD9Gi
-         81lEf6TK6zvXmB9rCLNFLESeMkI+kYDhcFSUuiN0NUFxqqof4Ky02u0dxmn+BuSeXmEq
-         Y/oA==
-X-Gm-Message-State: ACrzQf2yInllp7svSu9L6KlR6dIE/uFcA3Z3xt6uRtQZWA14vOeErwLU
-        8duOVl3O8xeAzOrQ3AaJ5X4X6hzVj+3hAZ11JPw=
-X-Google-Smtp-Source: AMsMyM5cpw1VKvG8gEasOMmG4UhkblJY7gBReqfbYX80x9OXEWSZokzXOm90JDY4L5h3JbfU+3ckCU+QNWhG8SGrNVo=
-X-Received: by 2002:a05:6a00:1da6:b0:56c:318a:f8ab with SMTP id
- z38-20020a056a001da600b0056c318af8abmr56843835pfw.82.1667917864342; Tue, 08
- Nov 2022 06:31:04 -0800 (PST)
+        Tue, 8 Nov 2022 12:12:37 -0500
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FAE6150;
+        Tue,  8 Nov 2022 09:12:36 -0800 (PST)
+Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A8G8RNs027183;
+        Tue, 8 Nov 2022 17:12:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pps0720;
+ bh=VjubFiu5aPbODdko/+L31vULKVmssheVVXHeLJmJsLk=;
+ b=OB9OB7kpfjjUa+lXycFchl5sA5QyzoDtobPHoFKG1XZkgdWrOopMNOI4G86nbTu6oqDR
+ 5iX2KSyJZTWle2ZkLM53np4Iv/6JmL7Ra2RMDSiRSX4UoDtWFZI1Q5/8Fw/GyU3/h+Zz
+ YfsYK5DCQ8+v6DS5mXp7IN45fAn1gzGbCB5i8ZIVYuatcMYDFJqS18WB72DgW1Afr36k
+ eseJ4TSq/QH6C32YX3pWDaWroBIqeZG+WxmPQNm32tdfx2hnboGXdygDxgAbmCSXOxmk
+ gmLlPsKetcU5h15VGyad+rV/UVdxBzeIyA90eLxcFnRinWbaFnfUBwSfCJ+QokC3k2MF pw== 
+Received: from p1lg14878.it.hpe.com (p1lg14878.it.hpe.com [16.230.97.204])
+        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3kqtbygk46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Nov 2022 17:12:25 +0000
+Received: from p1wg14925.americas.hpqcorp.net (unknown [10.119.18.114])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id CE803D254;
+        Tue,  8 Nov 2022 17:12:23 +0000 (UTC)
+Received: from p1wg14926.americas.hpqcorp.net (10.119.18.115) by
+ p1wg14925.americas.hpqcorp.net (10.119.18.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Tue, 8 Nov 2022 05:12:22 -1200
+Received: from P1WG14918.americas.hpqcorp.net (16.230.19.121) by
+ p1wg14926.americas.hpqcorp.net (10.119.18.115) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15
+ via Frontend Transport; Tue, 8 Nov 2022 05:12:22 -1200
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (192.58.206.38)
+ by edge.it.hpe.com (16.230.19.121) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Tue, 8 Nov 2022 17:12:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ph3c0okCN5LLhKUWNyYxY/DKKjZFreC4Dvywj9rKEm6R0WxneaUAa+sS9EccF18NlC3gnQUzXA/5O58Z61q37gwwWgXjzZq/KNmwSHF4FE8wsvN/mjzLhtNXETNIoW+VJtqH6+0bDD/pmwqOY/h3ILNMJN+whUF/6eF7xA8oOkSoDa8vXxQ4fLY/iAlO/yjwjhHV/LKE10LFuQwkRoOZz8JvnIYLubD50HQatqtxDGIGdYHsLBAMxJuTaOox9Sr6B1PAmzuWPEA+zxiopdSJ2unypcIHWZs+yMmNXFMbgRuEbuPewG3OuLStRq77roBXDR9A2fPELvgpCdLOMSIi/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VjubFiu5aPbODdko/+L31vULKVmssheVVXHeLJmJsLk=;
+ b=YnHMO1SmNkv8f4XzIBJ7U7UiGN4GnBnB80NyIepkFnusYNa/8ldKJNojBZN0mITDvwQX8sjOZxCRz8bOYQfg6+H2O7jp+YEjPlfPgcYcYipQMEeeKYpUu4fJj+nHp7CGF5yVdH8vC1wyPSiEIrZGhbuihu8rJHH6OxjU/OAcxzrLbSx64N0uMpVVeH96BC5D16EAwOp45KjXEpXpE2YCdhEYaKcJbovEE286/DYJ0cBd2gmli/ioX7J2ywy1pCbf7w4mDR+8SY+TCRxcMQjVMuPLx+Db1Y+Va1u/EotRp9d96jmSHi/pSqLc93pPRos5KTyZYdtGMW/CVMp9pakG1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1c4::18)
+ by MW4PR84MB1682.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1a5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.27; Tue, 8 Nov
+ 2022 17:12:21 +0000
+Received: from MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::e739:d90:9fca:8e22]) by MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::e739:d90:9fca:8e22%7]) with mapi id 15.20.5791.026; Tue, 8 Nov 2022
+ 17:12:21 +0000
+From:   "Elliott, Robert (Servers)" <elliott@hpe.com>
+To:     Nicolai Stange <nstange@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Vladis Dronov <vdronov@redhat.com>,
+        Stephan Mueller <smueller@chronox.de>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/4] crypto: xts - restrict key lengths to approved values
+ in FIPS mode
+Thread-Topic: [PATCH 1/4] crypto: xts - restrict key lengths to approved
+ values in FIPS mode
+Thread-Index: AQHY831ixjJdferq10idPflaF1LnHq41P+BA
+Date:   Tue, 8 Nov 2022 17:12:21 +0000
+Message-ID: <MW5PR84MB1842A19B7BDA70A7C81AFB98AB3F9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+References: <20221108142025.13461-1-nstange@suse.de>
+ <20221108142025.13461-2-nstange@suse.de>
+In-Reply-To: <20221108142025.13461-2-nstange@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW5PR84MB1842:EE_|MW4PR84MB1682:EE_
+x-ms-office365-filtering-correlation-id: d2e9dc3b-b611-477e-4e19-08dac1ac65bc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hywChcCQZ6q2Vom0rG66cqpuV3c5KV4CY7H4sQYsP1PGeKUQoIR5/4FOBFbXy40R7FQL/5queFkJ850F2SX9Jv5PHgHcPv1+VMJ25OAhBeRc0xplgIG5/wvI7cgk/0IhMdnoKMef9gorSDZ7L8N6r4kELtGZBptu4PpC0tM+V3pSOaDehB1XsuXmX2zKaIAgbMTOVsqilMW0yFSKAOf2T2sJIoSTFRhcDXM8ccEWc4ToZHsiQFLZ5j9YgH6jPfLEUC/mNGf9gVRdciY4hS9B+glxp6umkjUMGPjj4x+oWT3vk2T2pUqSn1QM//ABsFfY60e48pAdzovIjyhspzwW070+cQalsNiaYzTBPO1oGc3Riug3yKyOW00P68EwetLmB3HtxRvMA59KbvtLkZmwxHEms3Y20Edze8j7zmpUr81/M0LhrSnBPzUopNSg3SxofehlqEeDXslXpF5ZQO7IpkkgNykMherIrmsybuQhn4E9MT24j4F880eMnzso2E+ZVjS+a/GGEDMzf8SxZ3MZtUkjBRbJPK6/79bkCecF/BnKqhoHXlrJNJlchKTRcYdUa7VTrA+GkCZLdCJGc9UQ10O3WC4kM25V2+Dzl9zAKh2uxHXCrc8WZ8WwQOicFGqQBVf9cFZjKOB9+HXjT2Xz12qAkSik3zwXa6HeZQqfMt+F/Ikk4TRG8ulCwXoH+Kqy9UeR6NSC1/OuHql0tmka6DucAmmaTNLOj0qu81CUIfa7O+Ic4jEeUBFZFwoz9wjfgtSZ5L5Q5FBsiV34bjS1Iw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(346002)(376002)(136003)(39860400002)(366004)(396003)(451199015)(38100700002)(86362001)(38070700005)(82960400001)(55016003)(33656002)(71200400001)(478600001)(2906002)(7696005)(66556008)(66446008)(8936002)(64756008)(66476007)(4326008)(66946007)(76116006)(52536014)(110136005)(5660300002)(41300700001)(54906003)(186003)(6506007)(122000001)(316002)(8676002)(26005)(83380400001)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UalDIT0dujtjLjg3+wufsxPoCNW8lBJvEKJBGPehRNYo+YjGsF5xYwKclFnP?=
+ =?us-ascii?Q?/CPbjHzH90bsY8uQrBCOi3h9Vps00ivx9kkU7q9sPUfH6NaRl8TEj4CMoiwu?=
+ =?us-ascii?Q?3tHXMkuaA8WnVr+Jr1Q6foMWVix8ADJpHl8V87oI1eVSffJulwEgHrV5gxlN?=
+ =?us-ascii?Q?SvcWvsPnOX8bic10huRHd9pe1c8GQxPX8Is6EVMaukIpJJv/O8/RX9mWSzhO?=
+ =?us-ascii?Q?AGf47WxZV25tpOmMqH8wFG7iT6STlqj9fbtNcg5arxTb3QGiyInNDS3yaet3?=
+ =?us-ascii?Q?I0S4Co3pfdrZpv0ueT9MDh+uHfecKzNqT0VprNZlH9ttwAp2itom/zVXgL+b?=
+ =?us-ascii?Q?2cGM8yo3yWOhIs+2iRaSwk6Fso+xQ8XrZGhNYWfCVYetUJRJ8/sPtbby7ljy?=
+ =?us-ascii?Q?hbziLSUfq8ELh+hRhunJYcL2+RlqO2jfETPbifnNLUzi5PePRTX3Ph8RG5nb?=
+ =?us-ascii?Q?OFmXd5plONmv2KofwCXhRitMOhLgLShb4JGm8sqRmCuG2LbCtPJw4uHxZsmj?=
+ =?us-ascii?Q?KVbaEg4z8xB6maWRJknnjq9/+z0U2zdVdNrTu3EjcvOCHfhNI/FjAD/6YdJm?=
+ =?us-ascii?Q?W1TcYOQ06IYSR6vjh8VvR6vOEw/vO/WaxrBkAFM6PyC+3PtmEPX1SE7rLQ1s?=
+ =?us-ascii?Q?MqJSsA96Q+EZwwhhawx1Y4W4He1gLlAwFHgo5bOF0UfU6eyfl8tcJ/rH/yiu?=
+ =?us-ascii?Q?lD6BF9ogahOwON2SPPNeUAPrIilISmePds4Q3WsFAQo+B01l0oE1fz8ZvFB7?=
+ =?us-ascii?Q?fHiCjsl862I/IycDwYI3MLQQiMwfIiKSBt7pP5uoL5tvTKbizVfe+Uydk9Em?=
+ =?us-ascii?Q?9I0jd4st2xmqNBL7eUakbbisHW23xUYqit+yh4r7jUAL48KqD7rcaDaRMxDj?=
+ =?us-ascii?Q?DkuIqffAh0Vn2nShauC/aPimfzh6Ott/I0l2g6Ov6WdvIDMYEBBRCPGkDKTH?=
+ =?us-ascii?Q?4qVrsLdf4fr7dhA3/HvNdc2N3QWxc4dcdWyatl9yJSJ5fOHBqXPqVVUH9fuD?=
+ =?us-ascii?Q?6h53gytSTi3TWyJQlBN643R7ZrelX7dMWUrCf+ISRcNewVC/17G9bTJRXILT?=
+ =?us-ascii?Q?iCq+854HV6S8gKUNsFj2XHEamXmG1W4NMAt2bZpPscnqV3lscprhuEFZb+74?=
+ =?us-ascii?Q?hnRKVt/mCcH/nRNb2T97R4uo9u21alc7nP+jnrPLiKlbeQeBMLm7GmpjG6G3?=
+ =?us-ascii?Q?Gj5BCtBfC5R2RYCAyQVdHXAFfhv8xtqUvGrCQmxJ6I8wdxSE8NOew7NS7VdA?=
+ =?us-ascii?Q?eCU1TiYRIfkp8etzhISvT6rVf6JCH8pLyeBaETLb2jz3P7OnorXFVPYrQopD?=
+ =?us-ascii?Q?TqzBckTiZVpfg84zU2kpgVm5gv3O9BDH5uOy6d+aMezzjfblo4r5uhi/6Yh5?=
+ =?us-ascii?Q?QQmq7wAIZretrWsgkH8aS1EbGw0A2ixvvo5bbynFFfiiEFx1eJlLkuMcJN7t?=
+ =?us-ascii?Q?nGRr7lN4abzqtbIN0nEKbTXw4f0E1WhOvWR9B0O+FYI8Uigs/vD0/LmSV8TV?=
+ =?us-ascii?Q?hfFQPurXzyZfJ/RoxDyOUxIXEJuT/kpbbVD6Az4fICo+JjvfLctLF1G9pDwy?=
+ =?us-ascii?Q?ByU4QykZcMAg6tOoFMA=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: by 2002:ac4:c8c2:0:b0:56a:d900:eb11 with HTTP; Tue, 8 Nov 2022
- 06:31:03 -0800 (PST)
-Reply-To: mr.abraham022@gmail.com
-From:   "Mr.Abraham" <davidbraddy01@gmail.com>
-Date:   Tue, 8 Nov 2022 14:31:03 +0000
-Message-ID: <CAHGOU4PvdrNhE2KifzdPkFxZTCG5gy+23qf130PwnSmJcLRSew@mail.gmail.com>
-Subject: Greeting
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:435 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4558]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mr.abraham022[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [davidbraddy01[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [davidbraddy01[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2e9dc3b-b611-477e-4e19-08dac1ac65bc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2022 17:12:21.1096
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m4yzOJEMy2/pEUjz82BMEcls9GLQeONsxadCaaP/yP7Aq/3/hQRwEMCmaND3aS++
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR84MB1682
+X-OriginatorOrg: hpe.com
+X-Proofpoint-GUID: W_NBAQvxgF5zG1N925ZLM3Qnn5EPJn5k
+X-Proofpoint-ORIG-GUID: W_NBAQvxgF5zG1N925ZLM3Qnn5EPJn5k
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-07_11,2022-11-08_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 adultscore=0 suspectscore=0 bulkscore=0 mlxlogscore=722
+ phishscore=0 clxscore=1011 impostorscore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211080107
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-My Greeting, Did you receive the letter i sent to you. Please answer me.
-Regard, Mr.Abraham
+
+
+> diff --git a/include/crypto/xts.h b/include/crypto/xts.h
+...
+> @@ -35,6 +35,13 @@ static inline int xts_verify_key(struct crypto_skciphe=
+r
+> *tfm,
+>  	if (keylen % 2)
+>  		return -EINVAL;
+>=20
+> +	/*
+> +	 * In FIPS mode only a combined key length of either 256 or
+> +	 * 512 bits is allowed, c.f. FIPS 140-3 IG C.I.
+> +	 */
+> +	if (fips_enabled && keylen !=3D 32 && keylen !=3D 64)
+> +		return -EINVAL;
+> +
+>  	/* ensure that the AES and tweak key are not identical */
+>  	if ((fips_enabled || (crypto_skcipher_get_flags(tfm) &
+>  			      CRYPTO_TFM_REQ_FORBID_WEAK_KEYS)) &&
+> --
+> 2.38.0
+
+arch/s390/crypto/aes_s390.c has similar lines:
+
+static int xts_aes_set_key(struct crypto_skcipher *tfm, const u8 *in_key,
+                           unsigned int key_len)
+{
+        struct s390_xts_ctx *xts_ctx =3D crypto_skcipher_ctx(tfm);
+        unsigned long fc;
+        int err;
+
+        err =3D xts_fallback_setkey(tfm, in_key, key_len);
+        if (err)
+                return err;
+
+        /* In fips mode only 128 bit or 256 bit keys are valid */
+        if (fips_enabled && key_len !=3D 32 && key_len !=3D 64)
+                return -EINVAL;
+
+
+xts_fallback_setkey will now enforce that rule when setting up the
+fallback algorithm keys, which makes the xts_aes_set_key check
+unreachable.
+
+If that fallback setup were not present, then a call to xts_verify_key
+might be preferable to enforce any other rules like the WEAK_KEYS
+rule.
+
