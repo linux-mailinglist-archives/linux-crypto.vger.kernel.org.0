@@ -2,101 +2,77 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E490E623D32
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Nov 2022 09:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB338623E05
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Nov 2022 09:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbiKJIPM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Nov 2022 03:15:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        id S231923AbiKJIx3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Nov 2022 03:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbiKJIPJ (ORCPT
+        with ESMTP id S232724AbiKJIxZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Nov 2022 03:15:09 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C211AF24
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 00:15:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9F299B820F4
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 08:15:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F12AC433C1
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 08:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668068106;
-        bh=1wrT0gidSrDF4d1H3dgpVP/jA8cCHSsxQKy1HF5H8Lc=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=n8+lYgwRrXgnsJDueBtOX6bBXDAyeiw4maHXOzNICPBu0tFDBNTiWlAO0XkLpiDaO
-         mcJTCA8A1Np+8JOFwsWIAQHPjqPb9YIwXE1sOchFJAwEiXBvoZaGI4wBsCxtvJePx/
-         M/XMIVY/8cSC15EkC0Pjbl4s3/rcVMgvXXJmw9VHghBPKjcK2ohCRYgdXW3HhfFolL
-         oWiTLjomZIZDW5kjKIrYLZwIQ47ERdVArPlfrhBcklQfLRZXq01P3CRU2rCa8OsR2I
-         c9JuaEUNDIo2Msq4IDbtfbrnLpzKjbVqWGxCsRxAvRzT99MbqjTZO/HEnG5WDTHhey
-         RG5EiGMdwBqxA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v2 6/6] crypto: compile out test-related algboss code when tests disabled
-Date:   Thu, 10 Nov 2022 00:13:46 -0800
-Message-Id: <20221110081346.336046-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221110081346.336046-1-ebiggers@kernel.org>
-References: <20221110081346.336046-1-ebiggers@kernel.org>
+        Thu, 10 Nov 2022 03:53:25 -0500
+Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BCA2EF17;
+        Thu, 10 Nov 2022 00:53:20 -0800 (PST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1ot3J3-00CUP3-Vh; Thu, 10 Nov 2022 16:53:07 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 10 Nov 2022 16:53:05 +0800
+Date:   Thu, 10 Nov 2022 16:53:05 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     liulongfang <liulongfang@huawei.com>
+Cc:     wangzhou1@hisilicon.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto/hisilicon: Add null judgment to the callback
+ interface
+Message-ID: <Y2y78USk4bXRrRun@gondor.apana.org.au>
+References: <Y1tTLAEi7ukUCCmB@gondor.apana.org.au>
+ <a1229856-fbe4-9ae7-5789-332ed0af87eb@huawei.com>
+ <Y2TWpyynYMyStKRX@gondor.apana.org.au>
+ <d914a099-06ef-acfe-f394-f4790a821598@huawei.com>
+ <Y2oodE+5us++mbSl@gondor.apana.org.au>
+ <df561fbe-12eb-25b0-2173-a7ffb3bfd53a@huawei.com>
+ <Y2twbHyQkTMoTz+O@gondor.apana.org.au>
+ <32686c5b-04b2-7103-bf2e-113db2315ef4@huawei.com>
+ <Y2xt7/6WGN+uthpL@gondor.apana.org.au>
+ <40a0e7aa-362a-0de7-76c0-77381c07f254@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40a0e7aa-362a-0de7-76c0-77381c07f254@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Nov 10, 2022 at 12:11:15PM +0800, liulongfang wrote:
+>
+> When using crypto's skcipher series interfaces for encryption and decryption
+> services, User can use synchronous mode(by adjusting some skcipher interfaces,
+> here is to remove skcipher_request_set_callback()) or asynchronous mode,
+> but when using synchronous mode and the current asynchronous mode is loaded
+> it will cause a calltrace.
+> 
+> The current problem is that the interface of skcipher does not restrict users
+> to call functions in this way for encryption services.
+> 
+> If the current driver doesn't handle this, there is a possibility that some users
+> deliberately create this kind of problem to cause the kernel to crash.
 
-When CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is set, the code in algboss.c
-that handles CRYPTO_MSG_ALG_REGISTER is unnecessary, so make it be
-compiled out.
+It sounds like your code is misusing the skcipher API.  By default
+skcipher is always async.  You must always set a callback.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- crypto/algboss.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+The only way to legally use skcipher without setting a callback
+is by allocating it with crypto_alloc_sync_skcipher.  In which case
+unless your driver incorrectly declares itself as sync instead of
+async, then it will never be used by such a user.
 
-diff --git a/crypto/algboss.c b/crypto/algboss.c
-index 13d37320a66eb..f3c6c9fe133d5 100644
---- a/crypto/algboss.c
-+++ b/crypto/algboss.c
-@@ -171,15 +171,17 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
- 	return NOTIFY_OK;
- }
- 
-+#ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
-+static int cryptomgr_schedule_test(struct crypto_alg *alg)
-+{
-+	return NOTIFY_DONE;
-+}
-+#else
- static int cryptomgr_test(void *data)
- {
- 	struct crypto_test_param *param = data;
- 	u32 type = param->type;
--	int err = 0;
--
--#ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
--	goto skiptest;
--#endif
-+	int err;
- 
- 	err = alg_test(param->driver, param->alg, type, CRYPTO_ALG_TESTED);
- 
-@@ -218,6 +220,7 @@ static int cryptomgr_schedule_test(struct crypto_alg *alg)
- err:
- 	return NOTIFY_OK;
- }
-+#endif /* !CONFIG_CRYPTO_MANAGER_DISABLE_TESTS */
- 
- static int cryptomgr_notify(struct notifier_block *this, unsigned long msg,
- 			    void *data)
+Cheers,
 -- 
-2.38.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
