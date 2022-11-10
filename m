@@ -2,41 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D457623D2F
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Nov 2022 09:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7560F623D33
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Nov 2022 09:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbiKJIPL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 10 Nov 2022 03:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
+        id S232490AbiKJIPN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 10 Nov 2022 03:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbiKJIPJ (ORCPT
+        with ESMTP id S232515AbiKJIPK (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 10 Nov 2022 03:15:09 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D338B1E2
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 00:15:06 -0800 (PST)
+        Thu, 10 Nov 2022 03:15:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B37E1838F
+        for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 00:15:08 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A91F61D9D
+        by ams.source.kernel.org (Postfix) with ESMTPS id E4E77B82089
         for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 08:15:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61799C433B5
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E4DC43470
         for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 08:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1668068105;
-        bh=HoxPqfrM4U0nnbyfWtIiSeiwkxTify/Y80YuyaZDqeE=;
+        bh=Zhs1hHWFhtMYTkWMZA8EQ/jCnYrhMwzyYJR3kWdmiyo=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=J09cRuLAL87uENV0P0sR5eHimXYb6NpomHCi5fqoPrcKsUITPQrVkMkB6LyYsaPcm
-         hVRw/T4DyRr/6nHUqHveSFDlrVSc/rql3JShWZ9MrcITd+gua0A0F9qo0ItyB9VQKh
-         LD+XSjA/1cLwSg1vWQCF05Ge8BUiTn6ID6VOdjiN24yLbs61btDvEwzrX5yg+MdLI/
-         ywqPkh+Os/mzwrPttnmfjwLz30I/hhfNgx9HWXLfgRW7JuW9lJczCD46WskTOQAmwF
-         Zxu3pppYhA4iMU2UZIgjIwIJJxKcWk5SOalkDUnprWoMLfVEaRHfGWyBiGMvcpkS1H
-         GD3LYhA6eYMiw==
+        b=GHvCXqz9myQ8xxgnkYs7PzrDFIeIzGD6JjiF5ALsN5Vu75UkVtPmlMhgA1uHnAcCq
+         69tkSe7JaOhWHchNrO1/oj2EpPMW4/5i85H+rQhuzV94vmboNNhS6JPtGPnDoYaBgN
+         wGGyskI6mrmAQf0qWFkK9SG417PR+7/V8KyZCU/4DzuHfLelW27rr6PM3+yEz5RkqC
+         P2uCRNtr/BkpNEsoz0XMO0rsp2JXb5c3PLd+DX7ZcTf88E/0Jp0JjSwSeW5qZZ7pSF
+         3rWFA7yPsDdKhe/JzD+jcDBgV0q3xQmvSv+EZsf4FdxdVb+VOfGqzCMTqtaUz64jEV
+         3IaLoYvqU5Srg==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v2 2/6] crypto: optimize registration of internal algorithms
-Date:   Thu, 10 Nov 2022 00:13:42 -0800
-Message-Id: <20221110081346.336046-3-ebiggers@kernel.org>
+Subject: [PATCH v2 3/6] crypto: compile out crypto_boot_test_finished when tests disabled
+Date:   Thu, 10 Nov 2022 00:13:43 -0800
+Message-Id: <20221110081346.336046-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221110081346.336046-1-ebiggers@kernel.org>
 References: <20221110081346.336046-1-ebiggers@kernel.org>
@@ -53,72 +53,104 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Since algboss always skips testing of algorithms with the
-CRYPTO_ALG_INTERNAL flag, there is no need to go through the dance of
-creating the test kthread, which creates a lot of overhead.  Instead, we
-can just directly finish the algorithm registration, like is now done
-when self-tests are disabled entirely.
+The crypto_boot_test_finished static key is unnecessary when self-tests
+are disabled in the kconfig, so optimize it out accordingly, along with
+the entirety of crypto_start_tests().  This mainly avoids the overhead
+of an unnecessary static_branch_enable() on every boot.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/algapi.c  |  3 ++-
- crypto/algboss.c | 13 +------------
- 2 files changed, 3 insertions(+), 13 deletions(-)
+ crypto/algapi.c   | 10 ++++++++--
+ crypto/api.c      |  8 +++++---
+ crypto/internal.h | 13 ++++++++++++-
+ 3 files changed, 25 insertions(+), 6 deletions(-)
 
 diff --git a/crypto/algapi.c b/crypto/algapi.c
-index 8bbbd5dbbe157..a8fa7c3f51be9 100644
+index a8fa7c3f51be9..fbb4a88251bc8 100644
 --- a/crypto/algapi.c
 +++ b/crypto/algapi.c
-@@ -276,7 +276,8 @@ static struct crypto_larval *crypto_alloc_test_larval(struct crypto_alg *alg)
- 	struct crypto_larval *larval;
+@@ -451,7 +451,7 @@ int crypto_register_alg(struct crypto_alg *alg)
+ 	down_write(&crypto_alg_sem);
+ 	larval = __crypto_register_alg(alg, &algs_to_put);
+ 	if (!IS_ERR_OR_NULL(larval))
+-		larval->test_started = static_key_enabled(&crypto_boot_test_finished);
++		larval->test_started = crypto_boot_test_finished();
+ 	up_write(&crypto_alg_sem);
  
- 	if (!IS_ENABLED(CONFIG_CRYPTO_MANAGER) ||
--	    IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS))
-+	    IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS) ||
-+	    (alg->cra_flags & CRYPTO_ALG_INTERNAL))
- 		return NULL; /* No self-test needed */
- 
- 	larval = crypto_larval_alloc(alg->cra_name,
-diff --git a/crypto/algboss.c b/crypto/algboss.c
-index eb5fe84efb83e..13d37320a66eb 100644
---- a/crypto/algboss.c
-+++ b/crypto/algboss.c
-@@ -181,12 +181,8 @@ static int cryptomgr_test(void *data)
- 	goto skiptest;
+ 	if (IS_ERR(larval))
+@@ -1246,6 +1246,11 @@ void crypto_stats_skcipher_decrypt(unsigned int cryptlen, int ret,
+ EXPORT_SYMBOL_GPL(crypto_stats_skcipher_decrypt);
  #endif
  
--	if (type & CRYPTO_ALG_TESTED)
--		goto skiptest;
--
- 	err = alg_test(param->driver, param->alg, type, CRYPTO_ALG_TESTED);
- 
--skiptest:
- 	crypto_alg_tested(param->driver, err);
- 
- 	kfree(param);
-@@ -197,7 +193,6 @@ static int cryptomgr_schedule_test(struct crypto_alg *alg)
++#ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
++static void __init crypto_start_tests(void)
++{
++}
++#else
+ static void __init crypto_start_tests(void)
  {
- 	struct task_struct *thread;
- 	struct crypto_test_param *param;
--	u32 type;
+ 	for (;;) {
+@@ -1281,8 +1286,9 @@ static void __init crypto_start_tests(void)
+ 		crypto_wait_for_test(larval);
+ 	}
  
- 	if (!try_module_get(THIS_MODULE))
- 		goto err;
-@@ -208,13 +203,7 @@ static int cryptomgr_schedule_test(struct crypto_alg *alg)
+-	static_branch_enable(&crypto_boot_test_finished);
++	static_branch_enable(&__crypto_boot_test_finished);
+ }
++#endif /* !CONFIG_CRYPTO_MANAGER_DISABLE_TESTS */
  
- 	memcpy(param->driver, alg->cra_driver_name, sizeof(param->driver));
- 	memcpy(param->alg, alg->cra_name, sizeof(param->alg));
--	type = alg->cra_flags;
--
--	/* Do not test internal algorithms. */
--	if (type & CRYPTO_ALG_INTERNAL)
--		type |= CRYPTO_ALG_TESTED;
--
--	param->type = type;
-+	param->type = alg->cra_flags;
+ static int __init crypto_algapi_init(void)
+ {
+diff --git a/crypto/api.c b/crypto/api.c
+index 64f2d365a8e94..3f002fe0336fc 100644
+--- a/crypto/api.c
++++ b/crypto/api.c
+@@ -31,8 +31,10 @@ EXPORT_SYMBOL_GPL(crypto_alg_sem);
+ BLOCKING_NOTIFIER_HEAD(crypto_chain);
+ EXPORT_SYMBOL_GPL(crypto_chain);
  
- 	thread = kthread_run(cryptomgr_test, param, "cryptomgr_test");
- 	if (IS_ERR(thread))
+-DEFINE_STATIC_KEY_FALSE(crypto_boot_test_finished);
+-EXPORT_SYMBOL_GPL(crypto_boot_test_finished);
++#ifndef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
++DEFINE_STATIC_KEY_FALSE(__crypto_boot_test_finished);
++EXPORT_SYMBOL_GPL(__crypto_boot_test_finished);
++#endif
+ 
+ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg);
+ 
+@@ -205,7 +207,7 @@ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg)
+ 	struct crypto_larval *larval = (void *)alg;
+ 	long timeout;
+ 
+-	if (!static_branch_likely(&crypto_boot_test_finished))
++	if (!crypto_boot_test_finished())
+ 		crypto_start_test(larval);
+ 
+ 	timeout = wait_for_completion_killable_timeout(
+diff --git a/crypto/internal.h b/crypto/internal.h
+index c08385571853e..a3bc1fbcefde7 100644
+--- a/crypto/internal.h
++++ b/crypto/internal.h
+@@ -47,7 +47,18 @@ extern struct list_head crypto_alg_list;
+ extern struct rw_semaphore crypto_alg_sem;
+ extern struct blocking_notifier_head crypto_chain;
+ 
+-DECLARE_STATIC_KEY_FALSE(crypto_boot_test_finished);
++#ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
++static inline bool crypto_boot_test_finished(void)
++{
++	return true;
++}
++#else
++DECLARE_STATIC_KEY_FALSE(__crypto_boot_test_finished);
++static inline bool crypto_boot_test_finished(void)
++{
++	return static_branch_likely(&__crypto_boot_test_finished);
++}
++#endif
+ 
+ #ifdef CONFIG_PROC_FS
+ void __init crypto_init_proc(void);
 -- 
 2.38.1
 
