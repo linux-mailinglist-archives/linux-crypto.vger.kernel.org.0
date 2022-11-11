@@ -2,93 +2,115 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C629A62570B
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Nov 2022 10:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4EA62579C
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Nov 2022 11:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbiKKJmG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Nov 2022 04:42:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56732 "EHLO
+        id S233461AbiKKKFy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Nov 2022 05:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbiKKJmG (ORCPT
+        with ESMTP id S233455AbiKKKFr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Nov 2022 04:42:06 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832FE69DC8
-        for <linux-crypto@vger.kernel.org>; Fri, 11 Nov 2022 01:42:05 -0800 (PST)
-Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N7ttP146jzbnfX
-        for <linux-crypto@vger.kernel.org>; Fri, 11 Nov 2022 17:38:21 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 17:42:03 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 17:42:03 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <qianweili@huawei.com>, <wangzhou1@hisilicon.com>,
-        <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <wangxiongfeng2@huawei.com>,
-        <yangyingliang@huawei.com>
-Subject: [PATCH] crypto: hisilicon/qm - add missing pci_dev_put() in q_num_set()
-Date:   Fri, 11 Nov 2022 18:00:36 +0800
-Message-ID: <20221111100036.129685-1-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 11 Nov 2022 05:05:47 -0500
+Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E4F2494D
+        for <linux-crypto@vger.kernel.org>; Fri, 11 Nov 2022 02:05:44 -0800 (PST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1otQur-00CyaP-7f; Fri, 11 Nov 2022 18:05:42 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Nov 2022 18:05:41 +0800
+Date:   Fri, 11 Nov 2022 18:05:41 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Taehee Yoo <ap420073@gmail.com>
+Cc:     linux-crypto@vger.kernel.org, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com,
+        kirill.shutemov@linux.intel.com, richard@nod.at,
+        viro@zeniv.linux.org.uk,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@kernel.org,
+        elliott@hpe.com, x86@kernel.org, jussi.kivilinna@iki.fi,
+        Kees Cook <keescook@chromium.org>
+Subject: crypto: skcipher - Allow sync algorithms with large request contexts
+Message-ID: <Y24edaOFBxluH8Ck@gondor.apana.org.au>
+References: <20221106143627.30920-1-ap420073@gmail.com>
+ <20221106143627.30920-2-ap420073@gmail.com>
+ <Y2jGTvgHnu4QZV+D@gondor.apana.org.au>
+ <51ed3735-24f0-eef0-0ca6-908c4581d143@gmail.com>
+ <Y24c9WcEpvibbRqo@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y24c9WcEpvibbRqo@gondor.apana.org.au>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-pci_get_device() will increase the reference count for the returned
-pci_dev. We need to use pci_dev_put() to decrease the reference count
-before q_num_set() returns.
+On Fri, Nov 11, 2022 at 05:59:17PM +0800, Herbert Xu wrote:
+>
+> cryptd is buggy as it tries to use sync_skcipher without going
+> through the proper sync_skcipher interface.  In fact it doesn't
+> even need sync_skcipher since it's already a proper skcipher and
+> can easily access the request context instead of using something
+> off the stack.
+> 
+> Fixes: 36b3875a97b8 ("crypto: cryptd - Remove VLA usage of skcipher")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- include/linux/hisi_acc_qm.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+This won't be enough to allow a sync skcipher that uses more
+than 384 bytes of request context though as they will still
+show up when you allocate a sync_skcipher.  So we also need
+this and then you can just set REQSIZE_LARGE on your algorithm
+and it will work correctly.
 
-diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index e230c7c46110..c3618255b150 100644
---- a/include/linux/hisi_acc_qm.h
-+++ b/include/linux/hisi_acc_qm.h
-@@ -384,14 +384,14 @@ struct hisi_qp {
- static inline int q_num_set(const char *val, const struct kernel_param *kp,
- 			    unsigned int device)
- {
--	struct pci_dev *pdev = pci_get_device(PCI_VENDOR_ID_HUAWEI,
--					      device, NULL);
-+	struct pci_dev *pdev;
- 	u32 n, q_num;
- 	int ret;
+---8<---
+Some sync algorithms may require a large amount of temporary
+space during its operations.  There is no reason why they should
+be limited just because some legacy users want to place all
+temporary data on the stack.
+
+Such algorithms can now set a flag to indicate that they need
+extra request context, which will cause them to be invisible
+to users that go through the sync_skcipher interface.
+
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/skcipher.c b/crypto/skcipher.c
+index 418211180cee..0ecab31cfe79 100644
+--- a/crypto/skcipher.c
++++ b/crypto/skcipher.c
+@@ -763,7 +763,7 @@ struct crypto_sync_skcipher *crypto_alloc_sync_skcipher(
+ 	struct crypto_skcipher *tfm;
  
- 	if (!val)
- 		return -EINVAL;
+ 	/* Only sync algorithms allowed. */
+-	mask |= CRYPTO_ALG_ASYNC;
++	mask |= CRYPTO_ALG_ASYNC | CRYPTO_ALG_SKCIPHER_REQSIZE_LARGE;
  
-+	pdev = pci_get_device(PCI_VENDOR_ID_HUAWEI, device, NULL);
- 	if (!pdev) {
- 		q_num = min_t(u32, QM_QNUM_V1, QM_QNUM_V2);
- 		pr_info("No device found currently, suppose queue number is %u\n",
-@@ -401,6 +401,8 @@ static inline int q_num_set(const char *val, const struct kernel_param *kp,
- 			q_num = QM_QNUM_V1;
- 		else
- 			q_num = QM_QNUM_V2;
+ 	tfm = crypto_alloc_tfm(alg_name, &crypto_skcipher_type, type, mask);
+ 
+diff --git a/include/crypto/internal/skcipher.h b/include/crypto/internal/skcipher.h
+index a2339f80a615..2a97540156bb 100644
+--- a/include/crypto/internal/skcipher.h
++++ b/include/crypto/internal/skcipher.h
+@@ -14,6 +14,14 @@
+ #include <linux/list.h>
+ #include <linux/types.h>
+ 
++/*
++ * Set this if your algorithm is sync but needs a reqsize larger
++ * than MAX_SYNC_SKCIPHER_REQSIZE.
++ *
++ * Reuse bit that is specific to hash algorithms.
++ */
++#define CRYPTO_ALG_SKCIPHER_REQSIZE_LARGE CRYPTO_ALG_OPTIONAL_KEY
 +
-+		pci_dev_put(pdev);
- 	}
+ struct aead_request;
+ struct rtattr;
  
- 	ret = kstrtou32(val, 10, &n);
 -- 
-2.20.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
