@@ -2,205 +2,181 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C21625400
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Nov 2022 07:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF91762577F
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Nov 2022 10:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbiKKGpL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Nov 2022 01:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
+        id S233376AbiKKJ7c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Nov 2022 04:59:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233087AbiKKGpJ (ORCPT
+        with ESMTP id S233239AbiKKJ70 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Nov 2022 01:45:09 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AE8725D7
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 22:45:07 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id h193so3692215pgc.10
-        for <linux-crypto@vger.kernel.org>; Thu, 10 Nov 2022 22:45:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VB9aQQVhkngMF6yPb3IGC/N/KLSjVlwZg6ggvs61LyA=;
-        b=mxQqK5C9GZ13tBDmw9e8RpoNkPLy2Bi+XN+Uqs7cI/giF5bgNh+r/K/f6zxA85Pzug
-         C9tt5t4ApUuP0EQSrwcZT8mndjN4C5TOkF4mu8XhaOHvSUnw+akg3gttseJDct+D3pPw
-         FvL1nWJ+CEa4Q/IWQG8zImy+uSbITEtcLZ4ql2tSXTEDiNLzT5HRBtJpcj5QKEiq6Wd1
-         qJwzSIJxVitY0ZWI0V5hc0XUCM9vjscIxI/cxGopRWN/z5JlRgQLvkDtNheaGa+VN2wv
-         lwSrx+vEY2yYKaq4sQEEZOZwtJ+Rm84O2Vs9fh/ZJpD0hLnUV//nVNP2vasd3auVyk6e
-         ifag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VB9aQQVhkngMF6yPb3IGC/N/KLSjVlwZg6ggvs61LyA=;
-        b=YAb7ZlF/kcHnG4xh+FLYh+Ht/IW3aM35LB+k04wfYQvnQll7ypjWJpEt7hv74RxcTO
-         21FxruAPDIGWsMJiMfbfPV8Ih5Ejlc6/fk1xMtmzN0oPOP4ymBAWm89MrYqvsSmBiosA
-         eJvyelKnXY0hAsxdP4prbCIuZ7oeM50pPDHwS9IUIz7ayqFeiWIeKYe1EIlPCPNA2XLb
-         E4FEjUNcIHCxrzFLDt1BAliUmV6Z3DqTNCOZmOimWwspWbSiOhGvtHd3Hi/6vJZUjWku
-         UlULPq4IPC9rT0lqT8OmDjCwB/R6b8HReCowvoL+x0KklvUeUk3enYq2WR9zWlqbgijF
-         WC3Q==
-X-Gm-Message-State: ANoB5pmkvmvwc/wVbxjkuf/rfRqJ5VhBYTPmB0Fc6FQmYlCc3WpdK5Tk
-        byZgnALrDfC/qZOcsUM6eRA=
-X-Google-Smtp-Source: AA0mqf7gvrnE24zrK5fpos3fNuNSKAtlbCVfc+cenESGr23AJwaKNhMceNJwW5wPWexJfs+uyQODmA==
-X-Received: by 2002:a63:4f25:0:b0:460:633b:5702 with SMTP id d37-20020a634f25000000b00460633b5702mr541469pgb.9.1668149106487;
-        Thu, 10 Nov 2022 22:45:06 -0800 (PST)
-Received: from [192.168.0.48] ([222.117.241.38])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001869f2120a5sm856676plh.34.2022.11.10.22.45.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Nov 2022 22:45:05 -0800 (PST)
-Message-ID: <318ca852-4962-be3a-fd60-499bbc4a0546@gmail.com>
-Date:   Fri, 11 Nov 2022 15:45:00 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.3.0
-Subject: Re: [PATCH v3 2/4] crypto: aria: do not use magic number offsets of
- aria_ctx
-To:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "richard@nod.at" <richard@nod.at>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "jpoimboe@kernel.org" <jpoimboe@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>
+        Fri, 11 Nov 2022 04:59:26 -0500
+Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1E3B872
+        for <linux-crypto@vger.kernel.org>; Fri, 11 Nov 2022 01:59:24 -0800 (PST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1otQof-00CyUS-Hz; Fri, 11 Nov 2022 17:59:18 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Nov 2022 17:59:17 +0800
+Date:   Fri, 11 Nov 2022 17:59:17 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Taehee Yoo <ap420073@gmail.com>
+Cc:     linux-crypto@vger.kernel.org, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com,
+        kirill.shutemov@linux.intel.com, richard@nod.at,
+        viro@zeniv.linux.org.uk,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@kernel.org,
+        elliott@hpe.com, x86@kernel.org, jussi.kivilinna@iki.fi,
+        Kees Cook <keescook@chromium.org>
+Subject: crypto: cryptd - Use request context instead of stack for sub-request
+Message-ID: <Y24c9WcEpvibbRqo@gondor.apana.org.au>
 References: <20221106143627.30920-1-ap420073@gmail.com>
- <20221106143627.30920-3-ap420073@gmail.com>
- <MW5PR84MB18422C6DB5DDFAE158BAF459AB019@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-From:   Taehee Yoo <ap420073@gmail.com>
-In-Reply-To: <MW5PR84MB18422C6DB5DDFAE158BAF459AB019@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+ <20221106143627.30920-2-ap420073@gmail.com>
+ <Y2jGTvgHnu4QZV+D@gondor.apana.org.au>
+ <51ed3735-24f0-eef0-0ca6-908c4581d143@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51ed3735-24f0-eef0-0ca6-908c4581d143@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Elliott,
-Thank you so much for your review!
+On Wed, Nov 09, 2022 at 10:16:58PM +0900, Taehee Yoo wrote:
+>
+> I have encountered kernel panic(stack-out-of-bounds) while using the reqctx
+> instead of the tfm.
+> 
+> cryptd is used when simd drivers are used.
+> cryptd_skcipher_encrypt() internally doesn't allocate a request ctx of a
+> child, instead, it uses stack memory with SYNC_SKCIPHER_REQUEST_ON_STACK.
+> It retains only 384 bytes for child request ctx even if a child set a large
+> reqsize value with crypto_skcipher_set_reqsize().
+> aria-avx2 needs 512 bytes and aria-avx512 needs 1024 bytes.
+> So, stack-out-of-bounds occurs.
 
-On 2022. 11. 10. 오후 12:55, Elliott, Robert (Servers) wrote:
- >
- >
- >> -----Original Message-----
- >> From: Taehee Yoo <ap420073@gmail.com>
- >> Sent: Sunday, November 6, 2022 8:36 AM
- >> To: linux-crypto@vger.kernel.org; herbert@gondor.apana.org.au;
- >> davem@davemloft.net; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de;
- >> dave.hansen@linux.intel.com; hpa@zytor.com;
- >> kirill.shutemov@linux.intel.com; richard@nod.at; 
-viro@zeniv.linux.org.uk;
- >> sathyanarayanan.kuppuswamy@linux.intel.com; jpoimboe@kernel.org; 
-Elliott,
- >> Robert (Servers) <elliott@hpe.com>; x86@kernel.org; 
-jussi.kivilinna@iki.fi
- >> Cc: ap420073@gmail.com
- >> Subject: [PATCH v3 2/4] crypto: aria: do not use magic number offsets of
- >> aria_ctx
- >>
- >> aria-avx assembly code accesses members of aria_ctx with magic number
- >> offset. If the shape of struct aria_ctx is changed carelessly,
- >> aria-avx will not work.
- >> So, we need to ensure accessing members of aria_ctx with correct
- >> offset values, not with magic numbers.
- >>
- >> It adds ARIA_CTX_enc_key, ARIA_CTX_dec_key, and ARIA_CTX_rounds in the
- >> asm-offsets.c So, correct offset definitions will be generated.
- >> aria-avx assembly code can access members of aria_ctx safely with
- >> these definitions.
- >>
- >> diff --git a/arch/x86/crypto/aria-aesni-avx-asm_64.S
- > ...
- >>
- >>   #include <linux/linkage.h>
- >>   #include <asm/frame.h>
- >> -
- >> -/* struct aria_ctx: */
- >> -#define enc_key 0
- >> -#define dec_key 272
- >> -#define rounds 544
- >
- > That structure also has a key_length field after the rounds field.
- > aria_set_key() sets it, but no function ever seems to use it.
- > Perhaps that field should be removed?
+OK this is not supposed to happen.
 
-Okay, I will remove that fields in a separate patch.
+---8<---
+cryptd is buggy as it tries to use sync_skcipher without going
+through the proper sync_skcipher interface.  In fact it doesn't
+even need sync_skcipher since it's already a proper skcipher and
+can easily access the request context instead of using something
+off the stack.
 
- >
- >> +#include <asm/asm-offsets.h>
- >
- > That makes the offsets flexible, which is good.
- >
- > The assembly code also implicitly assumes the size of each of those 
-fields
- > (e.g., enc_key is 272 bytes, dec_key is 272 bytes, and rounds is 4 
-bytes).
- > A BUILD_BUG_ON confirming those assumptions might be worthwhile.
+Fixes: 36b3875a97b8 ("crypto: cryptd - Remove VLA usage of skcipher")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-You're right,
-I didn't consider the size of the fields.
-I will contain BUILD_BUG_ON() to check the size.
-
- >
- >> diff --git a/arch/x86/kernel/asm-offsets.c 
-b/arch/x86/kernel/asm-offsets.c
- >> index cb50589a7102..32192a91c65b 100644
- >> --- a/arch/x86/kernel/asm-offsets.c
- >> +++ b/arch/x86/kernel/asm-offsets.c
- >> @@ -7,6 +7,7 @@
- >>   #define COMPILE_OFFSETS
- >>
- >>   #include <linux/crypto.h>
- >> +#include <crypto/aria.h>
- >
- > Is it safe to include .h files for a large number of crypto modules
- > in one C file? It seems like they could easily include naming conflicts.
- >
- > However, this set does seem to compile cleanly:
- >
-
-Thanks for this check.
-Sorry, I'm not sure about the side effects of a large number of header 
-in .c file.
-
- > +// no .h for aegis, but ctx is simple
- > +#include <crypto/aes.h>
- > +#include <crypto/aria.h>
- > +#include <crypto/blake2s.h>
- > +#include <crypto/blowfish.h>
- > +// no .h for camellia in crypto; it is in arch/x86/crypto
- > +#include <crypto/cast5.h>
- > +#include <crypto/cast6.h>
- > +#include <crypto/chacha.h>
- > +// no .h for crc32c, crc32, crct10dif, but no ctx structure to worry 
-about
- > +#include <crypto/curve25519.h>
- > +#include <crypto/des.h>
- > +#include <crypto/ghash.h>
- > +#include <crypto/nhpoly1305.h>
- > +#include <crypto/poly1305.h>
- > +#include <crypto/polyval.h>
- > +#include <crypto/serpent.h>
- > +#include <crypto/sha1.h>
- > +#include <crypto/sha2.h>
- > +#include <crypto/sm3.h>
- > +#include <crypto/twofish.h>
- >
-
-Thanks a lot!
-Taehee Yoo
+diff --git a/crypto/cryptd.c b/crypto/cryptd.c
+index 668095eca0fa..ca3a40fc7da9 100644
+--- a/crypto/cryptd.c
++++ b/crypto/cryptd.c
+@@ -68,11 +68,12 @@ struct aead_instance_ctx {
+ 
+ struct cryptd_skcipher_ctx {
+ 	refcount_t refcnt;
+-	struct crypto_sync_skcipher *child;
++	struct crypto_skcipher *child;
+ };
+ 
+ struct cryptd_skcipher_request_ctx {
+ 	crypto_completion_t complete;
++	struct skcipher_request req;
+ };
+ 
+ struct cryptd_hash_ctx {
+@@ -227,13 +228,13 @@ static int cryptd_skcipher_setkey(struct crypto_skcipher *parent,
+ 				  const u8 *key, unsigned int keylen)
+ {
+ 	struct cryptd_skcipher_ctx *ctx = crypto_skcipher_ctx(parent);
+-	struct crypto_sync_skcipher *child = ctx->child;
++	struct crypto_skcipher *child = ctx->child;
+ 
+-	crypto_sync_skcipher_clear_flags(child, CRYPTO_TFM_REQ_MASK);
+-	crypto_sync_skcipher_set_flags(child,
+-				       crypto_skcipher_get_flags(parent) &
+-					 CRYPTO_TFM_REQ_MASK);
+-	return crypto_sync_skcipher_setkey(child, key, keylen);
++	crypto_skcipher_clear_flags(child, CRYPTO_TFM_REQ_MASK);
++	crypto_skcipher_set_flags(child,
++				  crypto_skcipher_get_flags(parent) &
++				  CRYPTO_TFM_REQ_MASK);
++	return crypto_skcipher_setkey(child, key, keylen);
+ }
+ 
+ static void cryptd_skcipher_complete(struct skcipher_request *req, int err)
+@@ -258,13 +259,13 @@ static void cryptd_skcipher_encrypt(struct crypto_async_request *base,
+ 	struct cryptd_skcipher_request_ctx *rctx = skcipher_request_ctx(req);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct cryptd_skcipher_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	struct crypto_sync_skcipher *child = ctx->child;
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(subreq, child);
++	struct skcipher_request *subreq = &rctx->req;
++	struct crypto_skcipher *child = ctx->child;
+ 
+ 	if (unlikely(err == -EINPROGRESS))
+ 		goto out;
+ 
+-	skcipher_request_set_sync_tfm(subreq, child);
++	skcipher_request_set_tfm(subreq, child);
+ 	skcipher_request_set_callback(subreq, CRYPTO_TFM_REQ_MAY_SLEEP,
+ 				      NULL, NULL);
+ 	skcipher_request_set_crypt(subreq, req->src, req->dst, req->cryptlen,
+@@ -286,13 +287,13 @@ static void cryptd_skcipher_decrypt(struct crypto_async_request *base,
+ 	struct cryptd_skcipher_request_ctx *rctx = skcipher_request_ctx(req);
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	struct cryptd_skcipher_ctx *ctx = crypto_skcipher_ctx(tfm);
+-	struct crypto_sync_skcipher *child = ctx->child;
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(subreq, child);
++	struct skcipher_request *subreq = &rctx->req;
++	struct crypto_skcipher *child = ctx->child;
+ 
+ 	if (unlikely(err == -EINPROGRESS))
+ 		goto out;
+ 
+-	skcipher_request_set_sync_tfm(subreq, child);
++	skcipher_request_set_tfm(subreq, child);
+ 	skcipher_request_set_callback(subreq, CRYPTO_TFM_REQ_MAY_SLEEP,
+ 				      NULL, NULL);
+ 	skcipher_request_set_crypt(subreq, req->src, req->dst, req->cryptlen,
+@@ -343,9 +344,10 @@ static int cryptd_skcipher_init_tfm(struct crypto_skcipher *tfm)
+ 	if (IS_ERR(cipher))
+ 		return PTR_ERR(cipher);
+ 
+-	ctx->child = (struct crypto_sync_skcipher *)cipher;
++	ctx->child = cipher;
+ 	crypto_skcipher_set_reqsize(
+-		tfm, sizeof(struct cryptd_skcipher_request_ctx));
++		tfm, sizeof(struct cryptd_skcipher_request_ctx) +
++		     crypto_skcipher_reqsize(cipher));
+ 	return 0;
+ }
+ 
+@@ -353,7 +355,7 @@ static void cryptd_skcipher_exit_tfm(struct crypto_skcipher *tfm)
+ {
+ 	struct cryptd_skcipher_ctx *ctx = crypto_skcipher_ctx(tfm);
+ 
+-	crypto_free_sync_skcipher(ctx->child);
++	crypto_free_skcipher(ctx->child);
+ }
+ 
+ static void cryptd_skcipher_free(struct skcipher_instance *inst)
+@@ -931,7 +933,7 @@ struct crypto_skcipher *cryptd_skcipher_child(struct cryptd_skcipher *tfm)
+ {
+ 	struct cryptd_skcipher_ctx *ctx = crypto_skcipher_ctx(&tfm->base);
+ 
+-	return &ctx->child->base;
++	return ctx->child;
+ }
+ EXPORT_SYMBOL_GPL(cryptd_skcipher_child);
+ 
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
