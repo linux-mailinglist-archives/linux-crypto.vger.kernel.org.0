@@ -2,100 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C39A626643
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Nov 2022 02:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89B062666E
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Nov 2022 03:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbiKLBwC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 11 Nov 2022 20:52:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
+        id S234318AbiKLCTK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 11 Nov 2022 21:19:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbiKLBwB (ORCPT
+        with ESMTP id S233445AbiKLCTJ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 11 Nov 2022 20:52:01 -0500
+        Fri, 11 Nov 2022 21:19:09 -0500
 Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2DD6A747;
-        Fri, 11 Nov 2022 17:51:59 -0800 (PST)
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N8JQF5WYdzJnfp;
-        Sat, 12 Nov 2022 09:48:53 +0800 (CST)
-Received: from kwepemm600005.china.huawei.com (7.193.23.191) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58B52F390;
+        Fri, 11 Nov 2022 18:19:06 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N8K1X6qsXzJnfs;
+        Sat, 12 Nov 2022 10:16:00 +0800 (CST)
+Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 12 Nov 2022 09:51:56 +0800
-Received: from [10.67.103.158] (10.67.103.158) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 12 Nov 2022 09:51:56 +0800
-Subject: Re: [PATCH] crypto/hisilicon: Add null judgment to the callback
- interface
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <wangzhou1@hisilicon.com>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <Y1tTLAEi7ukUCCmB@gondor.apana.org.au>
- <a1229856-fbe4-9ae7-5789-332ed0af87eb@huawei.com>
- <Y2TWpyynYMyStKRX@gondor.apana.org.au>
- <d914a099-06ef-acfe-f394-f4790a821598@huawei.com>
- <Y2oodE+5us++mbSl@gondor.apana.org.au>
- <df561fbe-12eb-25b0-2173-a7ffb3bfd53a@huawei.com>
- <Y2twbHyQkTMoTz+O@gondor.apana.org.au>
- <32686c5b-04b2-7103-bf2e-113db2315ef4@huawei.com>
- <Y2xt7/6WGN+uthpL@gondor.apana.org.au>
- <40a0e7aa-362a-0de7-76c0-77381c07f254@huawei.com>
- <Y2y78USk4bXRrRun@gondor.apana.org.au>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <54c1aa3a-9e51-a90f-416a-dc65a70a1b8a@huawei.com>
-Date:   Sat, 12 Nov 2022 09:51:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ 15.1.2375.31; Sat, 12 Nov 2022 10:19:05 +0800
+Received: from huawei.com (10.67.165.24) by dggpeml100012.china.huawei.com
+ (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 12 Nov
+ 2022 10:19:04 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yekai13@huawei.com>
+Subject: [PATCH v3 0/4] crypto: hisilicon/qm - reconstruct and optimize the debugfs code
+Date:   Sat, 12 Nov 2022 02:12:49 +0000
+Message-ID: <20221112021253.34862-1-yekai13@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <Y2y78USk4bXRrRun@gondor.apana.org.au>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.158]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600005.china.huawei.com (7.193.23.191)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml100012.china.huawei.com (7.185.36.121)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2022/11/10 16:53, Herbert Xu wrote:
-> On Thu, Nov 10, 2022 at 12:11:15PM +0800, liulongfang wrote:
->>
->> When using crypto's skcipher series interfaces for encryption and decryption
->> services, User can use synchronous mode(by adjusting some skcipher interfaces,
->> here is to remove skcipher_request_set_callback()) or asynchronous mode,
->> but when using synchronous mode and the current asynchronous mode is loaded
->> it will cause a calltrace.
->>
->> The current problem is that the interface of skcipher does not restrict users
->> to call functions in this way for encryption services.
->>
->> If the current driver doesn't handle this, there is a possibility that some users
->> deliberately create this kind of problem to cause the kernel to crash.
-> 
-> It sounds like your code is misusing the skcipher API.  By default
-> skcipher is always async.  You must always set a callback.
-> 
-> The only way to legally use skcipher without setting a callback
-> is by allocating it with crypto_alloc_sync_skcipher.  In which case
+Split a debugfs.c from qm to reduce the qm code complexity. And optimize the
+process of the command dumping. Some optimizations on command dumping in
+debugfs.c file code.
 
-OK! I found in Documentation/crypto/architecture.rst the description
-that async mode must provide a callback function.
+changes v1->v2:
+	- delete a redundant line.
+changes v2->v3:
+	- adjusting the patch sequence. modify a comment.
 
-However, what is confusing is that this document does not describe
-the synchronization mode so clearly.
+Kai Ye (4):
+  crypto: hisilicon/qm - delete redundant null assignment operations
+  crypto: hisilicon/qm - modify the process of regs dfx
+  crypto: hisilicon/qm - split a debugfs.c from qm
+  crypto: hisilicon/qm - the command dump process is modified
 
-> unless your driver incorrectly declares itself as sync instead of
-> async, then it will never be used by such a user.
-> 
-> Cheers,
-> 
-Thanks,
-Longfang.
+ drivers/crypto/hisilicon/Makefile         |    2 +-
+ drivers/crypto/hisilicon/debugfs.c        | 1147 +++++++++++++++++
+ drivers/crypto/hisilicon/hpre/hpre_main.c |    7 +-
+ drivers/crypto/hisilicon/qm.c             | 1360 ++-------------------
+ drivers/crypto/hisilicon/qm_common.h      |   87 ++
+ drivers/crypto/hisilicon/sec2/sec_main.c  |    7 +-
+ drivers/crypto/hisilicon/zip/zip_main.c   |    7 +-
+ include/linux/hisi_acc_qm.h               |    8 +-
+ 8 files changed, 1356 insertions(+), 1269 deletions(-)
+ create mode 100644 drivers/crypto/hisilicon/debugfs.c
+ create mode 100644 drivers/crypto/hisilicon/qm_common.h
+
+-- 
+2.17.1
 
