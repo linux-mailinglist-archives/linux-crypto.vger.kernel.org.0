@@ -2,41 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96B56273BF
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Nov 2022 01:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB8C6273BE
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Nov 2022 01:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235508AbiKNANQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 13 Nov 2022 19:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        id S235484AbiKNANP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 13 Nov 2022 19:13:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235485AbiKNANO (ORCPT
+        with ESMTP id S235508AbiKNANN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 13 Nov 2022 19:13:14 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3D663BF
-        for <linux-crypto@vger.kernel.org>; Sun, 13 Nov 2022 16:13:14 -0800 (PST)
+        Sun, 13 Nov 2022 19:13:13 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949F510043
+        for <linux-crypto@vger.kernel.org>; Sun, 13 Nov 2022 16:13:12 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B7044B80C69
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3066660DF1
         for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:13:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50D3DC433B5
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 830EAC43144
         for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1668384791;
-        bh=BfFXqC1bkD9LGgv1kUjTDncw5VucjsU3M+CVl04dWmA=;
+        bh=8zY/anngcz+FEltTmxAC07IEno7jSt5nwm0l9nQ8Qow=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=UFbIKq9O0XZco3CXRhm7Y/M/+Gyr2wLUISthCmYP8e0gKYEAolbhw6alnuL6D5zOK
-         f80wh1kgB0NMdLw9rE5aFdqsKaKcGxHd8NuD9Cjj9DBRMt3WXBrFwwzLSNalzkHGQM
-         22iYeeVAgIpWZkjxC0ojfnBjYTiTezdYSCId0IiWFtVnfIi8JsVKweeFq/zVWUCpBP
-         IFMfaH4s+uw8EjyLdmSE/Z1WoSqCRDzH55lAbF2uctbegmogFTf0xq/QAD4d3TXiM3
-         7dykYx+RXt794CZS8G4d7B3ACKAFLv/KOp+mfOvAYgcVtsP0Rp2BoTtA3PS81JCQL4
-         codFeK7rpASXA==
+        b=dJlFiRCRVv+8kykLfUj74x9Yhj/6WJCesgiguer8ifRGQxNJ14QgGVWRhzT1wU4fI
+         7bH+F1j+gE4Ig6nDCIHqUJiHsbFJrTYY2CKD9zzAug4/szgarIq6UxnD1a4HiUia9U
+         xdQgL61lT5xUnDw8j61Ml+6ir4xoq1WNn5pjlI/nNNm+oDixBkwL+h8Nikmime5Kyx
+         byO8/wxU2RdHIc9t67L65PVy9oUxI2VUHLyXu2jHOfyKa470J76m7IN2wjwzWvUEvR
+         K0095vepOGMhwaqsmI7oOJCRCf63xvmeNrgNKV0z+vYOtQ+3bNf1CJRRR+xma88KMe
+         MIbPNli78Y6IA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v3 4/6] crypto: skip kdf_sp800108 self-test when tests disabled
-Date:   Sun, 13 Nov 2022 16:12:36 -0800
-Message-Id: <20221114001238.163209-5-ebiggers@kernel.org>
+Subject: [PATCH v3 5/6] crypto: silence noisy kdf_sp800108 self-test
+Date:   Sun, 13 Nov 2022 16:12:37 -0800
+Message-Id: <20221114001238.163209-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221114001238.163209-1-ebiggers@kernel.org>
 References: <20221114001238.163209-1-ebiggers@kernel.org>
@@ -53,34 +53,28 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make kdf_sp800108 honor the CONFIG_CRYPTO_MANAGER_DISABLE_TESTS kconfig
-option, so that it doesn't always waste time running its self-test.
+Make the kdf_sp800108 self-test only print a message on success when
+fips_enabled, so that it's consistent with testmgr.c and doesn't spam
+the kernel log with a message that isn't really important.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/kdf_sp800108.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ crypto/kdf_sp800108.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/crypto/kdf_sp800108.c b/crypto/kdf_sp800108.c
-index 58edf7797abfb..c6e3ad82d5f7a 100644
+index c6e3ad82d5f7a..c3f9938e1ad27 100644
 --- a/crypto/kdf_sp800108.c
 +++ b/crypto/kdf_sp800108.c
-@@ -125,9 +125,13 @@ static const struct kdf_testvec kdf_ctr_hmac_sha256_tv_template[] = {
+@@ -140,7 +140,7 @@ static int __init crypto_kdf108_init(void)
+ 		WARN(1,
+ 		     "alg: self-tests for CTR-KDF (hmac(sha256)) failed (rc=%d)\n",
+ 		     ret);
+-	} else {
++	} else if (fips_enabled) {
+ 		pr_info("alg: self-tests for CTR-KDF (hmac(sha256)) passed\n");
+ 	}
  
- static int __init crypto_kdf108_init(void)
- {
--	int ret = kdf_test(&kdf_ctr_hmac_sha256_tv_template[0], "hmac(sha256)",
--			   crypto_kdf108_setkey, crypto_kdf108_ctr_generate);
-+	int ret;
- 
-+	if (IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS))
-+		return 0;
-+
-+	ret = kdf_test(&kdf_ctr_hmac_sha256_tv_template[0], "hmac(sha256)",
-+		       crypto_kdf108_setkey, crypto_kdf108_ctr_generate);
- 	if (ret) {
- 		if (fips_enabled)
- 			panic("alg: self-tests for CTR-KDF (hmac(sha256)) failed (rc=%d)\n",
 -- 
 2.38.1
 
