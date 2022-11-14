@@ -2,41 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB8C6273BE
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Nov 2022 01:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7446273BC
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Nov 2022 01:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbiKNANP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 13 Nov 2022 19:13:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
+        id S234264AbiKNANO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 13 Nov 2022 19:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235508AbiKNANN (ORCPT
+        with ESMTP id S235440AbiKNANN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sun, 13 Nov 2022 19:13:13 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949F510043
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62434FD23
         for <linux-crypto@vger.kernel.org>; Sun, 13 Nov 2022 16:13:12 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3066660DF1
-        for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:13:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 830EAC43144
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F38FD60D58
+        for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:13:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BC1C43145
         for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1668384791;
-        bh=8zY/anngcz+FEltTmxAC07IEno7jSt5nwm0l9nQ8Qow=;
+        bh=ykc/Tpewh187QScIg9JszYEHkkg51goq0FijE0cae0Y=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=dJlFiRCRVv+8kykLfUj74x9Yhj/6WJCesgiguer8ifRGQxNJ14QgGVWRhzT1wU4fI
-         7bH+F1j+gE4Ig6nDCIHqUJiHsbFJrTYY2CKD9zzAug4/szgarIq6UxnD1a4HiUia9U
-         xdQgL61lT5xUnDw8j61Ml+6ir4xoq1WNn5pjlI/nNNm+oDixBkwL+h8Nikmime5Kyx
-         byO8/wxU2RdHIc9t67L65PVy9oUxI2VUHLyXu2jHOfyKa470J76m7IN2wjwzWvUEvR
-         K0095vepOGMhwaqsmI7oOJCRCf63xvmeNrgNKV0z+vYOtQ+3bNf1CJRRR+xma88KMe
-         MIbPNli78Y6IA==
+        b=pXM2fPALHnDWt3PrLHONDuqNrVAmzO2iyUfQckdgnWxZQO+A+9OoImrzDuxKKLUd4
+         d+Lr9Nsrz7fLghEI+B2+9Pmt1ObuCVZeNKSWf9Sr5+TI6oS7Eno6N1mGyZlHjyQrqI
+         G5nKXEY9s46tRsqbYtyXhXgH46S1kKQ5cwoAH1DGPma38wLlhj4pEGh09HbLFgYxvo
+         f7hleFWpcrVXtTQKrgYj8+zqL9tcFtkjkU69cRt82Xr0DoARk+TslihI1mF0+fHbcW
+         JCNmQ09GbwcCbRgH80XAYA1zFODFtk5EfxhzP5MkWGN9zmPfGdoIbNgscG0eO4PknH
+         +WK9CAQOiFvBQ==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v3 5/6] crypto: silence noisy kdf_sp800108 self-test
-Date:   Sun, 13 Nov 2022 16:12:37 -0800
-Message-Id: <20221114001238.163209-6-ebiggers@kernel.org>
+Subject: [PATCH v3 6/6] crypto: compile out test-related algboss code when tests disabled
+Date:   Sun, 13 Nov 2022 16:12:38 -0800
+Message-Id: <20221114001238.163209-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221114001238.163209-1-ebiggers@kernel.org>
 References: <20221114001238.163209-1-ebiggers@kernel.org>
@@ -53,27 +53,41 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make the kdf_sp800108 self-test only print a message on success when
-fips_enabled, so that it's consistent with testmgr.c and doesn't spam
-the kernel log with a message that isn't really important.
+When CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is set, the code in algboss.c
+that handles CRYPTO_MSG_ALG_REGISTER is unnecessary, so make it be
+compiled out.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/kdf_sp800108.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ crypto/algboss.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/crypto/kdf_sp800108.c b/crypto/kdf_sp800108.c
-index c6e3ad82d5f7a..c3f9938e1ad27 100644
---- a/crypto/kdf_sp800108.c
-+++ b/crypto/kdf_sp800108.c
-@@ -140,7 +140,7 @@ static int __init crypto_kdf108_init(void)
- 		WARN(1,
- 		     "alg: self-tests for CTR-KDF (hmac(sha256)) failed (rc=%d)\n",
- 		     ret);
--	} else {
-+	} else if (fips_enabled) {
- 		pr_info("alg: self-tests for CTR-KDF (hmac(sha256)) passed\n");
- 	}
+diff --git a/crypto/algboss.c b/crypto/algboss.c
+index 13d37320a66eb..0de1e66979498 100644
+--- a/crypto/algboss.c
++++ b/crypto/algboss.c
+@@ -175,11 +175,7 @@ static int cryptomgr_test(void *data)
+ {
+ 	struct crypto_test_param *param = data;
+ 	u32 type = param->type;
+-	int err = 0;
+-
+-#ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
+-	goto skiptest;
+-#endif
++	int err;
+ 
+ 	err = alg_test(param->driver, param->alg, type, CRYPTO_ALG_TESTED);
+ 
+@@ -194,6 +190,9 @@ static int cryptomgr_schedule_test(struct crypto_alg *alg)
+ 	struct task_struct *thread;
+ 	struct crypto_test_param *param;
+ 
++	if (IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS))
++		return NOTIFY_DONE;
++
+ 	if (!try_module_get(THIS_MODULE))
+ 		goto err;
  
 -- 
 2.38.1
