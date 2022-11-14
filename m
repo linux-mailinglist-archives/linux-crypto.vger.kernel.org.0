@@ -2,93 +2,180 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7446273BC
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Nov 2022 01:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A096277C5
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Nov 2022 09:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234264AbiKNANO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 13 Nov 2022 19:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
+        id S236540AbiKNIdV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 14 Nov 2022 03:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbiKNANN (ORCPT
+        with ESMTP id S236525AbiKNIdQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 13 Nov 2022 19:13:13 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62434FD23
-        for <linux-crypto@vger.kernel.org>; Sun, 13 Nov 2022 16:13:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F38FD60D58
-        for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:13:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BC1C43145
-        for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668384791;
-        bh=ykc/Tpewh187QScIg9JszYEHkkg51goq0FijE0cae0Y=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=pXM2fPALHnDWt3PrLHONDuqNrVAmzO2iyUfQckdgnWxZQO+A+9OoImrzDuxKKLUd4
-         d+Lr9Nsrz7fLghEI+B2+9Pmt1ObuCVZeNKSWf9Sr5+TI6oS7Eno6N1mGyZlHjyQrqI
-         G5nKXEY9s46tRsqbYtyXhXgH46S1kKQ5cwoAH1DGPma38wLlhj4pEGh09HbLFgYxvo
-         f7hleFWpcrVXtTQKrgYj8+zqL9tcFtkjkU69cRt82Xr0DoARk+TslihI1mF0+fHbcW
-         JCNmQ09GbwcCbRgH80XAYA1zFODFtk5EfxhzP5MkWGN9zmPfGdoIbNgscG0eO4PknH
-         +WK9CAQOiFvBQ==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Subject: [PATCH v3 6/6] crypto: compile out test-related algboss code when tests disabled
-Date:   Sun, 13 Nov 2022 16:12:38 -0800
-Message-Id: <20221114001238.163209-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221114001238.163209-1-ebiggers@kernel.org>
-References: <20221114001238.163209-1-ebiggers@kernel.org>
+        Mon, 14 Nov 2022 03:33:16 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573E61BEBE
+        for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:33:07 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id z24so12190007ljn.4
+        for <linux-crypto@vger.kernel.org>; Mon, 14 Nov 2022 00:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=u4bDIlpTMPNGhynOcw3dA0OXLyN02s1nEchOu0DS5J4=;
+        b=cKL+VMp7JYBOJDsXi2zWFzzuvxIRq6KN5BeLldK5pSjqmW+Mr0ZuLxe8CbMfF9qRx0
+         4S+if7cpuxuEqV+HI4E+f08PEoqQ6JoQvpWpwtX+Gy4u9AyW9aZBE5W1L/rPv8ZyIHrp
+         YcV6ap7JFGezi8Pcl53a6xQPj9FZ121WA1n+yus4daq+Qy+xcfaPLmLSrrWcepi/pxBD
+         5I+re7wsa7djS6AF9ykaIyiaVn6EDJ4dW4hyOaYh0UbwlPpE6e8Lz5zMNHi/TL6qVkAQ
+         yejXtcjFwp3NQWPa9Itcom21obdQKC7T0UVYSwUnrSwyJoFtitHt+COSA1cCVY6EXdmb
+         o+Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u4bDIlpTMPNGhynOcw3dA0OXLyN02s1nEchOu0DS5J4=;
+        b=0VaWBaJ2KFi/gC/e5JVwwKRBZPg2CBmtlu2ppb3q7OuN7UQJzNztyFppM7bCOgkrF6
+         V/34FFH/9gL7mIcVbLDAUGpFvu6sCqu5NFpjDvjK538Bi9S3PPv6Icv24mP2ANs6lKVM
+         jHdx7RbYHRXwF4GRnTdlFgFdi24mmmIEEPoaeCIYO2qITLBvAabhcFochmp3Fas6ti8O
+         CZzy5GKJUllKZkMpQc/FgJ9kK4Ai6KgYuay6neq9caYu0F7IU9aJtv+RKYZckOzGVhTO
+         pKQ4MRLvGB/Pin/j5IsYz1dQbOlqv11rmAVnjZMMLVuMh9+n+qy/CIt+M2bdD0vtGAtv
+         p9ig==
+X-Gm-Message-State: ANoB5pntpJzBi69MqTB3hzwP9wqrL9kyTuCLoerBqlukHN4VADV278/m
+        iUX+CEX9rIou4YZAl0bfyL0K8A==
+X-Google-Smtp-Source: AA0mqf4ngqj7E8JmFa45kHUi8W4+1dhE6cLcGtbN0dmhmpoukxzKn/FMfzXF2XA/hYFyX4MSqsl0JQ==
+X-Received: by 2002:a2e:9ec8:0:b0:26e:9936:6153 with SMTP id h8-20020a2e9ec8000000b0026e99366153mr3847754ljk.278.1668414785727;
+        Mon, 14 Nov 2022 00:33:05 -0800 (PST)
+Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+        by smtp.gmail.com with ESMTPSA id f31-20020a0565123b1f00b004b3b7557893sm1726968lfv.259.2022.11.14.00.33.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Nov 2022 00:33:05 -0800 (PST)
+Message-ID: <e59bd325-0982-3a20-ed09-d75747c7e659@linaro.org>
+Date:   Mon, 14 Nov 2022 09:33:04 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v1 1/3] dt-bindings: RNG: Add Rockchip RNG bindings
+Content-Language: en-US
+To:     Aurelien Jarno <aurelien@aurel32.net>,
+        Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lin Jinhan <troy.lin@rock-chips.com>
+Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20221112141059.3802506-1-aurelien@aurel32.net>
+ <20221112141059.3802506-2-aurelien@aurel32.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221112141059.3802506-2-aurelien@aurel32.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 12/11/2022 15:10, Aurelien Jarno wrote:
+> Add the RNG bindings for the RK3568 SoC from Rockchip
+> 
+> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+> ---
+>  .../devicetree/bindings/rng/rockchip-rng.yaml | 62 +++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rng/rockchip-rng.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/rng/rockchip-rng.yaml b/Documentation/devicetree/bindings/rng/rockchip-rng.yaml
+> new file mode 100644
+> index 000000000000..87d80e8ff7f2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rng/rockchip-rng.yaml
 
-When CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is set, the code in algboss.c
-that handles CRYPTO_MSG_ALG_REGISTER is unnecessary, so make it be
-compiled out.
+Filename matching compatible, so "rockchip,rk3568-rng.yaml"
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- crypto/algboss.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rng/rockchip,rk-rng.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Rockchip TRNG bindings
 
-diff --git a/crypto/algboss.c b/crypto/algboss.c
-index 13d37320a66eb..0de1e66979498 100644
---- a/crypto/algboss.c
-+++ b/crypto/algboss.c
-@@ -175,11 +175,7 @@ static int cryptomgr_test(void *data)
- {
- 	struct crypto_test_param *param = data;
- 	u32 type = param->type;
--	int err = 0;
--
--#ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
--	goto skiptest;
--#endif
-+	int err;
- 
- 	err = alg_test(param->driver, param->alg, type, CRYPTO_ALG_TESTED);
- 
-@@ -194,6 +190,9 @@ static int cryptomgr_schedule_test(struct crypto_alg *alg)
- 	struct task_struct *thread;
- 	struct crypto_test_param *param;
- 
-+	if (IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS))
-+		return NOTIFY_DONE;
-+
- 	if (!try_module_get(THIS_MODULE))
- 		goto err;
- 
--- 
-2.38.1
+Drop "bindings"
+
+> +
+> +description:
+> +  This driver interface with the True Random Number Generator present in some
+
+Drop "This driver interface" and make it a proper sentence. Bindings are
+not about drivers.
+
+
+> +  Rockchip SoCs.
+> +
+> +maintainers:
+> +  - Aurelien Jarno <aurelien@aurel32.net>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+
+It's not a oneOf. Drop.
+
+> +      - const: rockchip,rk3568-rng
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 2
+
+Drop minItems.
+
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: clk
+> +      - const: hclk
+
+You need to explain what are these in clocks. Also you need better
+names. A clock name "clk" is useless.
+
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    items:
+> +      - const: reset
+
+Drop reset-names entirely, not useful.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - reset-names
+
+Best regards,
+Krzysztof
 
