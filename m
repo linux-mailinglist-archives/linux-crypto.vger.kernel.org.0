@@ -2,73 +2,61 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3405D62C680
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Nov 2022 18:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 801C662C73E
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Nov 2022 19:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbiKPRjn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Nov 2022 12:39:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S233512AbiKPSII (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Nov 2022 13:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbiKPRji (ORCPT
+        with ESMTP id S229489AbiKPSII (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Nov 2022 12:39:38 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E6D57B4F;
-        Wed, 16 Nov 2022 09:39:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7D2AAB81E2F;
-        Wed, 16 Nov 2022 17:39:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D31CEC433D6;
-        Wed, 16 Nov 2022 17:39:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668620373;
-        bh=CVMO7EESKWqmZ5u5VxTbvd5Ym1EchEZNsxXXHvZVU6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=blV9DDcMNIR9TBx6F7nH2uj5mYsXlHXL3v6wCd4zREAUW7ujcITrHeemY1ZYpZaBm
-         mjsxHpYj7SmpsdOu380aSCIUHsaJ3iBGI99+8+/uGinFHg6qQyak+U+phYMj0C4VfD
-         7f6T/K5I63PTJWWhUa6m8TqnFpJBQ6ZVFCGY9J/V2ARAZYkSKleoSBPmEsVxBt73vN
-         +vN3FRMeftv9nGmPZ9IeQOaVIgKe8xc77rZmiS9UhlnLY4d3XGWGPTRuPUp4CBSjLE
-         xtA2ucZqfDce1D3LQh0hNY9whkgWQm+2UrhjGLzeSFB5rNpG8NxLjXjKa9TJyyFJEH
-         KwbYOZxVPcH4w==
-Date:   Wed, 16 Nov 2022 09:39:31 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH] crypto: algapi - fix be32_to_cpu macro call in
- crypto_inc()
-Message-ID: <Y3UgUwwV4qZMrzar@sol.localdomain>
-References: <1668606771-5382-1-git-send-email-khoroshilov@ispras.ru>
+        Wed, 16 Nov 2022 13:08:08 -0500
+X-Greylist: delayed 504 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 16 Nov 2022 10:08:06 PST
+Received: from gardel.0pointer.net (gardel.0pointer.net [85.214.157.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A2FEE1D;
+        Wed, 16 Nov 2022 10:08:06 -0800 (PST)
+Received: from gardel-login.0pointer.net (gardel-mail [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id EFB82E8019B;
+        Wed, 16 Nov 2022 18:59:38 +0100 (CET)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 72FBE1600BB; Wed, 16 Nov 2022 18:59:38 +0100 (CET)
+Date:   Wed, 16 Nov 2022 18:59:38 +0100
+From:   Lennart Poettering <lennart@poettering.net>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-efi@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH RFC v1 0/6] Use EFI variables for random seed
+Message-ID: <Y3UlCjbhXwZG0dEH@gardel-login>
+References: <20221116161642.1670235-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1668606771-5382-1-git-send-email-khoroshilov@ispras.ru>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221116161642.1670235-1-Jason@zx2c4.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 04:52:51PM +0300, Alexey Khoroshilov wrote:
-> be32_to_cpu() macro in some cases may be expanded to an expression
-> that evaluates its arguments multiple times. 
+On Mi, 16.11.22 17:16, Jason A. Donenfeld (Jason@zx2c4.com) wrote:
 
-When is that, exactly?
+> Commit messages are rather sparse at the moment. I'll fill those out for
+> the next non-RFC patchset if this idea isn't immediately demolished.
+>
+> The biggest consideration is wear leveling on the EFI variable flash
+> chips. However, EFI *already* winds up writing to non-volatile memory on
+> every single boot anyway, so maybe it's not actually a big deal?
 
-If that's true, then lots of other places in the kernel would need to be fixed
-too.  Try running:
+So as mentioned elsewhere: This might (probably more than) double the
+wear on the flash chips, since firmware is unlikely to batch these
+writes with the monotonic counter write.
 
-	git grep -E '[bl]e(16|32|64)_to_cpu\([^)]+\+\+\)'
+I have no idea how realistic these issues are, there's a lot of
+handwaving involved, but to sidestep the issue I put sd-boot's seed in
+a file on disk (which should not have issues that much with wear)
+instead of efi vars.
 
-If true, then it would be much better to fix the macros.
-
-But more likely is that there isn't actually any problem.
-
-- Eric
+Lennart
