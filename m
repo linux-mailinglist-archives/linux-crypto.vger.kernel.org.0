@@ -2,84 +2,103 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1F7630027
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 23:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDBB630089
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 23:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbiKRWdQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Nov 2022 17:33:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        id S231909AbiKRWrP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Nov 2022 17:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbiKRWdP (ORCPT
+        with ESMTP id S232246AbiKRWqt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Nov 2022 17:33:15 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F349A9ACA2
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 14:33:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9472F627A9
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 22:33:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A41DDC433C1;
-        Fri, 18 Nov 2022 22:33:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668810793;
-        bh=Qn+bhuDN4Uq8dMdeJ49qjwh7QjWi1Pb6Ow16TnENIWA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bpbVUy562ncoA0HYnNrkzFAXqmO1O2ZdgN+kbR68FqT/zXa2/ZmYb/rVaLBQazQs/
-         VgBAISIoPdSvt9JkDstJt3HHXV4jXMwC8NtxnMzIzAOdoO7Qgg9PzVS7gNGhjoiIuw
-         XR/8cMtIYY7Sw8g1+8gmEYZYVNjUwh5TyU8R4AmpQKjSZSdE8zcYkAcDBRRGxWKGC0
-         v3XqIaTT9xCgv705L+OFHRBvh/Fd2LLbHopZDKEJr+gVcFoXyNDe1Kqxph+2eHbvlO
-         8aMF39mCgq173Fne5KXHYKqTeU1DLiZ+1ot26LQ3rXwydu7xArgGIFSxVK0r47lRK9
-         p/Jxzvto51wTA==
-Date:   Fri, 18 Nov 2022 14:33:11 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 08/12] crypto: x86/sm4 - fix crash with CFI enabled
-Message-ID: <Y3gIJ0G5pMsQG/gF@sol.localdomain>
-References: <20221118194421.160414-1-ebiggers@kernel.org>
- <20221118194421.160414-9-ebiggers@kernel.org>
- <Y3fmskgfAb/xxzpS@sol.localdomain>
- <CABCJKudPXbDx2MSURDxGanTLhBkJjpMx=G=2RPDi6+96LGxcvw@mail.gmail.com>
- <CABCJKueoEkn7rWnDs7hb0nm84kKyyQuj5EVS_MtFNcfdT0D-EA@mail.gmail.com>
- <CABCJKuf4YeN++wYDrmwQyvzjfwWqjuctsezYQO9yOe2h9-TPrQ@mail.gmail.com>
+        Fri, 18 Nov 2022 17:46:49 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6987B7386
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 14:46:36 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1owA7f-0007Pg-QR; Fri, 18 Nov 2022 23:46:11 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1owA7d-005887-1k; Fri, 18 Nov 2022 23:46:09 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1owA7d-00HavH-8I; Fri, 18 Nov 2022 23:46:09 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Grant Likely <grant.likely@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     linux-i2c@vger.kernel.org, kernel@pengutronix.de,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 006/606] crypto: atmel-ecc - Convert to i2c's .probe_new()
+Date:   Fri, 18 Nov 2022 23:35:40 +0100
+Message-Id: <20221118224540.619276-7-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
+References: <20221118224540.619276-1-uwe@kleine-koenig.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKuf4YeN++wYDrmwQyvzjfwWqjuctsezYQO9yOe2h9-TPrQ@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 02:01:40PM -0800, Sami Tolvanen wrote:
-> On Fri, Nov 18, 2022 at 12:53 PM Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > On Fri, Nov 18, 2022 at 12:27 PM Sami Tolvanen <samitolvanen@google.com> wrote:
-> > >
-> > > On Fri, Nov 18, 2022 at 12:10 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> > > > Sami, is it expected that a CFI check isn't being generated for the indirect
-> > > > call to 'func' in sm4_avx_cbc_decrypt()?  I'm using LLVM commit 4a7be42d922af0.
-> > >
-> > > If the compiler emits an indirect call, it should also emit a CFI
-> > > check. What's the assembly code it generates here?
-> >
-> > With CONFIG_RETPOLINE, the check is emitted as expected, but I can
-> > reproduce this issue without retpolines. It looks like the cfi-type
-> > attribute is dropped from the machine instruction in one of the X86
-> > specific passes. I'll take a look.
-> 
-> This should now be fixed in ToT LLVM after commit 7c96f61aaa4c. Thanks
-> for spotting the issue!
-> 
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Thanks, it seems to work now.  (If I revert my sm4 fix, I get a CFI failure as
-expected.)
+.probe_new() doesn't get the i2c_device_id * parameter, so determine
+that explicitly in the probe function.
 
-- Eric
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/crypto/atmel-ecc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
+index 82bf15d49561..53100fb9b07b 100644
+--- a/drivers/crypto/atmel-ecc.c
++++ b/drivers/crypto/atmel-ecc.c
+@@ -311,9 +311,9 @@ static struct kpp_alg atmel_ecdh_nist_p256 = {
+ 	},
+ };
+ 
+-static int atmel_ecc_probe(struct i2c_client *client,
+-			   const struct i2c_device_id *id)
++static int atmel_ecc_probe(struct i2c_client *client)
+ {
++	const struct i2c_device_id *id = i2c_client_get_device_id(client);
+ 	struct atmel_i2c_client_priv *i2c_priv;
+ 	int ret;
+ 
+@@ -390,7 +390,7 @@ static struct i2c_driver atmel_ecc_driver = {
+ 		.name	= "atmel-ecc",
+ 		.of_match_table = of_match_ptr(atmel_ecc_dt_ids),
+ 	},
+-	.probe		= atmel_ecc_probe,
++	.probe_new	= atmel_ecc_probe,
+ 	.remove		= atmel_ecc_remove,
+ 	.id_table	= atmel_ecc_id,
+ };
+-- 
+2.38.1
+
