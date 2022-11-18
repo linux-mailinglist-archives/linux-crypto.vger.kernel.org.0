@@ -2,44 +2,47 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E63562FE2F
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 20:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC79F62FE32
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 20:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235364AbiKRTqa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Nov 2022 14:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S240445AbiKRTqd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Nov 2022 14:46:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235446AbiKRTq2 (ORCPT
+        with ESMTP id S235483AbiKRTq3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Nov 2022 14:46:28 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DC88CFF9
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 11:46:24 -0800 (PST)
+        Fri, 18 Nov 2022 14:46:29 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54AD8D482
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 11:46:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8515862762
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 19:46:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC4AAC433C1;
-        Fri, 18 Nov 2022 19:46:23 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7824AB824F8
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 19:46:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14DC5C433D6;
+        Fri, 18 Nov 2022 19:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668800783;
-        bh=pRruGOUsFyZsKb+BNIESqnaa7mp7RB+efAYZD68W7hA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=X1SQLTidNZJv2ERVwOZ8JKwakO4kxNgRU71p2Fe2+P3djxyakCkM/Wi4HaXbXoHER
-         sxveURIIPxqJ0E+Eujq9mnedZ05QweQuUwdH0H2CUfi/Xry9yu+ycXq7xv5yLe+8af
-         7Yga+eDdR/P8Hjq7wkEKRn23XPgK/+EZuDFDeIHsDexPXTEfwugR2qTZLaQrMYeXPo
-         jfXUwuACTlzY2WgubcjUpgYjVXMKgXgpHz+mhl9em4S0I44np3QvwP0Msvh2UG3TkN
-         v/azqurLBkhMD3LTugIf42yuaxOFHztwu9BugZBTmhovZ7W9OmzY4IkjY+bAlyMszA
-         gL2pCJIoeisuw==
+        s=k20201202; t=1668800784;
+        bh=pld3XDt3BvGRUOAeWpGABORV9PhFrHCg0jaaS0wG4JY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ctclds9W9ZQRSH26nNSD/4Ztv5PPT1NqhIwr7+W5kWizkj4yfFlpOdLRj/psyZVSt
+         k+EdrCpXYDx6ZsoGWYiZJJPYkPTNlE8vpZnWLQNDKu9N4cYokXEmJpJYqIhQBthvpp
+         a1qZb2p+czXkPd4h+pRTXsJ1nwPkPFoR5NTZngEaM0IfsQho2kDdlLWgFUO8OegUFo
+         NAg6JV8PTfqFhiqQS7xMNHdoPfrl7OG/PZle6XjzX6pNk1vEL5a7QaxnwJa71XrrEn
+         709qI+aFBuclXf9C3g/x11nAaBanv8tiJU5QQh+mWfWSmNJKqzNhqJNbFS1KBS0VQ4
+         S5N9IJkjWE/BA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: [PATCH v2 00/12] crypto: CFI fixes
-Date:   Fri, 18 Nov 2022 11:44:09 -0800
-Message-Id: <20221118194421.160414-1-ebiggers@kernel.org>
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH v2 01/12] crypto: x86/aegis128 - fix possible crash with CFI enabled
+Date:   Fri, 18 Nov 2022 11:44:10 -0800
+Message-Id: <20221118194421.160414-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221118194421.160414-1-ebiggers@kernel.org>
+References: <20221118194421.160414-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -51,63 +54,72 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This series fixes some crashes when CONFIG_CFI_CLANG (Control Flow
-Integrity) is enabled, with the new CFI implementation that was merged
-in 6.1 and is supported on x86.  Some of them were unconditional
-crashes, while others depended on whether the compiler optimized out the
-indirect calls or not.  This series also simplifies some code that was
-intended to work around limitations of the old CFI implementation and is
-unnecessary for the new CFI implementation.
+From: Eric Biggers <ebiggers@google.com>
 
-Changed in v2:
-  - Added patch "crypto: x86/sm4 - fix crash with CFI enabled"
-  - Restored accidentally-deleted include of <asm/assembler.h>
-  - Tweaked some commit messages and added Reviewed-by and Acked-by tags
+crypto_aegis128_aesni_enc(), crypto_aegis128_aesni_enc_tail(),
+crypto_aegis128_aesni_dec(), and crypto_aegis128_aesni_dec_tail() are
+called via indirect function calls.  Therefore they need to use
+SYM_TYPED_FUNC_START instead of SYM_FUNC_START to cause their type
+hashes to be emitted when the kernel is built with CONFIG_CFI_CLANG=y.
+Otherwise, the code crashes with a CFI failure (if the compiler didn't
+happen to optimize out the indirect calls).
 
-Eric Biggers (12):
-  crypto: x86/aegis128 - fix possible crash with CFI enabled
-  crypto: x86/aria - fix crash with CFI enabled
-  crypto: x86/nhpoly1305 - eliminate unnecessary CFI wrappers
-  crypto: x86/sha1 - fix possible crash with CFI enabled
-  crypto: x86/sha256 - fix possible crash with CFI enabled
-  crypto: x86/sha512 - fix possible crash with CFI enabled
-  crypto: x86/sm3 - fix possible crash with CFI enabled
-  crypto: x86/sm4 - fix crash with CFI enabled
-  crypto: arm64/nhpoly1305 - eliminate unnecessary CFI wrapper
-  crypto: arm64/sm3 - fix possible crash with CFI enabled
-  crypto: arm/nhpoly1305 - eliminate unnecessary CFI wrapper
-  Revert "crypto: shash - avoid comparing pointers to exported functions
-    under CFI"
+Fixes: ccace936eec7 ("x86: Add types to indirectly called assembly functions")
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ arch/x86/crypto/aegis128-aesni-asm.S | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
- arch/arm/crypto/nh-neon-core.S           |  2 +-
- arch/arm/crypto/nhpoly1305-neon-glue.c   | 11 ++---------
- arch/arm64/crypto/nh-neon-core.S         |  5 +++--
- arch/arm64/crypto/nhpoly1305-neon-glue.c | 11 ++---------
- arch/arm64/crypto/sm3-neon-core.S        |  3 ++-
- arch/x86/crypto/aegis128-aesni-asm.S     |  9 +++++----
- arch/x86/crypto/aria-aesni-avx-asm_64.S  | 13 +++++++------
- arch/x86/crypto/nh-avx2-x86_64.S         |  5 +++--
- arch/x86/crypto/nh-sse2-x86_64.S         |  5 +++--
- arch/x86/crypto/nhpoly1305-avx2-glue.c   | 11 ++---------
- arch/x86/crypto/nhpoly1305-sse2-glue.c   | 11 ++---------
- arch/x86/crypto/sha1_ni_asm.S            |  3 ++-
- arch/x86/crypto/sha1_ssse3_asm.S         |  3 ++-
- arch/x86/crypto/sha256-avx-asm.S         |  3 ++-
- arch/x86/crypto/sha256-avx2-asm.S        |  3 ++-
- arch/x86/crypto/sha256-ssse3-asm.S       |  3 ++-
- arch/x86/crypto/sha256_ni_asm.S          |  3 ++-
- arch/x86/crypto/sha512-avx-asm.S         |  3 ++-
- arch/x86/crypto/sha512-avx2-asm.S        |  3 ++-
- arch/x86/crypto/sha512-ssse3-asm.S       |  3 ++-
- arch/x86/crypto/sm3-avx-asm_64.S         |  3 ++-
- arch/x86/crypto/sm4-aesni-avx-asm_64.S   |  7 ++++---
- arch/x86/crypto/sm4-aesni-avx2-asm_64.S  |  7 ++++---
- crypto/shash.c                           | 18 +++---------------
- include/crypto/internal/hash.h           |  8 +++++++-
- 25 files changed, 70 insertions(+), 86 deletions(-)
-
-
-base-commit: 75df46b598b5b46b0857ee7d2410deaf215e23d1
+diff --git a/arch/x86/crypto/aegis128-aesni-asm.S b/arch/x86/crypto/aegis128-aesni-asm.S
+index b48ddebb47489..cdf3215ec272c 100644
+--- a/arch/x86/crypto/aegis128-aesni-asm.S
++++ b/arch/x86/crypto/aegis128-aesni-asm.S
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/linkage.h>
++#include <linux/cfi_types.h>
+ #include <asm/frame.h>
+ 
+ #define STATE0	%xmm0
+@@ -402,7 +403,7 @@ SYM_FUNC_END(crypto_aegis128_aesni_ad)
+  * void crypto_aegis128_aesni_enc(void *state, unsigned int length,
+  *                                const void *src, void *dst);
+  */
+-SYM_FUNC_START(crypto_aegis128_aesni_enc)
++SYM_TYPED_FUNC_START(crypto_aegis128_aesni_enc)
+ 	FRAME_BEGIN
+ 
+ 	cmp $0x10, LEN
+@@ -499,7 +500,7 @@ SYM_FUNC_END(crypto_aegis128_aesni_enc)
+  * void crypto_aegis128_aesni_enc_tail(void *state, unsigned int length,
+  *                                     const void *src, void *dst);
+  */
+-SYM_FUNC_START(crypto_aegis128_aesni_enc_tail)
++SYM_TYPED_FUNC_START(crypto_aegis128_aesni_enc_tail)
+ 	FRAME_BEGIN
+ 
+ 	/* load the state: */
+@@ -556,7 +557,7 @@ SYM_FUNC_END(crypto_aegis128_aesni_enc_tail)
+  * void crypto_aegis128_aesni_dec(void *state, unsigned int length,
+  *                                const void *src, void *dst);
+  */
+-SYM_FUNC_START(crypto_aegis128_aesni_dec)
++SYM_TYPED_FUNC_START(crypto_aegis128_aesni_dec)
+ 	FRAME_BEGIN
+ 
+ 	cmp $0x10, LEN
+@@ -653,7 +654,7 @@ SYM_FUNC_END(crypto_aegis128_aesni_dec)
+  * void crypto_aegis128_aesni_dec_tail(void *state, unsigned int length,
+  *                                     const void *src, void *dst);
+  */
+-SYM_FUNC_START(crypto_aegis128_aesni_dec_tail)
++SYM_TYPED_FUNC_START(crypto_aegis128_aesni_dec_tail)
+ 	FRAME_BEGIN
+ 
+ 	/* load the state: */
 -- 
 2.38.1
 
