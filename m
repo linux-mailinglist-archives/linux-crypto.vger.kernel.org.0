@@ -2,254 +2,114 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2C062FBB2
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 18:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C3662FCF8
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 19:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241961AbiKRRcP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Nov 2022 12:32:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
+        id S235500AbiKRStj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Nov 2022 13:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242530AbiKRRcL (ORCPT
+        with ESMTP id S235374AbiKRSti (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Nov 2022 12:32:11 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A32186EC;
-        Fri, 18 Nov 2022 09:32:10 -0800 (PST)
+        Fri, 18 Nov 2022 13:49:38 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAE56A684
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 10:49:37 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 6253FCE221A;
-        Fri, 18 Nov 2022 17:32:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5560BC433C1;
-        Fri, 18 Nov 2022 17:32:05 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Ck10xJJF"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1668792724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GyKOGkofkPCvMPD0/UwJzzsEw9ZOaxhI19IJoJsqMz4=;
-        b=Ck10xJJFyJtJu2syfKbZVRObrnnQWQQl4uCW82Ixw9QTcO0pvDWSSDNrWQpF28KzVirC8E
-        94cCuokeZvQBA8UdWGqX3ec1roFifnyxFkjv+f9eQTeKIdo8EsDKQCId6MnKR5czXDdwCh
-        O2e9onhFhYQMa1O39oHan0T3zGUDSvY=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 70c6e225 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 18 Nov 2022 17:32:04 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Carlos O'Donell <carlos@redhat.com>
-Subject: [PATCH v4 3/3] x86: vdso: Wire up getrandom() vDSO implementation
-Date:   Fri, 18 Nov 2022 18:28:39 +0100
-Message-Id: <20221118172839.2653829-4-Jason@zx2c4.com>
-In-Reply-To: <20221118172839.2653829-1-Jason@zx2c4.com>
-References: <20221118172839.2653829-1-Jason@zx2c4.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9672EB824F8
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 18:49:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D46BC433D6;
+        Fri, 18 Nov 2022 18:49:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668797374;
+        bh=Q96OIlQHZc6beG3N9u+m/eFfBbPlUi1pB02JIeAD/dI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oafyf24NKJ43CU+tXfOrvCLNSwWbfipVIkoTIZFwuegSdVr5tiZZCtutZYpbuaM4W
+         ucmJB75jqHW80dfc58NH4haoK7VVvm9BE9qEkeNjoMxQb7htVQQ/LpPukJSW2Y0XSg
+         PPtCNWUzTtlzdJFgtP4eiEkzR+yxb0hEU1uBBNBsbV95EmrYU4ONEydT+2zYQ9Othq
+         YqMX0N8TzA3+mgA2i49cW+X72DMUzzCpGdDiQOKDx/rN+3eVRSwRTTF1swztwRXeYv
+         9dS7F0YMUIbg2el/OtSC+DXX3tcMUnaL0CnuG8tQwXmepdnxbmbIsf+Kvio0r5uq2y
+         1APAWfJpUFuhQ==
+Date:   Fri, 18 Nov 2022 10:49:32 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Elliott, Robert (Servers)" <elliott@hpe.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH 0/11] crypto: CFI fixes
+Message-ID: <Y3fTvOKW1txyDOJE@sol.localdomain>
+References: <20221118090220.398819-1-ebiggers@kernel.org>
+ <MW5PR84MB18424C160896BF9081E8CFCAAB099@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR84MB18424C160896BF9081E8CFCAAB099@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hook up the generic vDSO implementation to the x86 vDSO data page. Since
-the existing vDSO infrastructure is heavily based on the timekeeping
-functionality, which works over arrays of bases, a new macro is
-introduced for vvars that are not arrays.
+On Fri, Nov 18, 2022 at 03:43:55PM +0000, Elliott, Robert (Servers) wrote:
+> 
+> > -----Original Message-----
+> > From: Eric Biggers <ebiggers@kernel.org>
+> > Sent: Friday, November 18, 2022 3:02 AM
+> > To: linux-crypto@vger.kernel.org
+> > Cc: x86@kernel.org; linux-arm-kernel@lists.infradead.org; Sami Tolvanen
+> > <samitolvanen@google.com>
+> > Subject: [PATCH 0/11] crypto: CFI fixes
+> > 
+> > This series fixes some crashes when CONFIG_CFI_CLANG (Control Flow
+> > Integrity) is enabled, with the new CFI implementation that was merged
+> > in 6.1 and is supported on x86.  Some of them were unconditional
+> > crashes, while others depended on whether the compiler optimized out the
+> > indirect calls or not.  This series also simplifies some code that was
+> > intended to work around limitations of the old CFI implementation and is
+> > unnecessary for the new CFI implementation.
+> 
+> Some of the x86 modules EXPORT their asm functions. Does that leave them
+> at risk of being called indirectly?
+> 
+> arch/x86/crypto/camellia-aesni-avx-asm_64.S:SYM_FUNC_START(camellia_ecb_dec_16way)
+> arch/x86/crypto/camellia-aesni-avx-asm_64.S:SYM_FUNC_START(camellia_ecb_enc_16way)
+> arch/x86/crypto/camellia-aesni-avx-asm_64.S:SYM_FUNC_START(camellia_cbc_dec_16way)
+> arch/x86/crypto/camellia_aesni_avx_glue.c:asmlinkage void camellia_ecb_enc_16way(const void *ctx, u8 *dst, const u8 *src);
+> arch/x86/crypto/camellia_aesni_avx_glue.c:EXPORT_SYMBOL_GPL(camellia_ecb_enc_16way);
+> arch/x86/crypto/camellia_aesni_avx_glue.c:asmlinkage void camellia_ecb_dec_16way(const void *ctx, u8 *dst, const u8 *src);
+> arch/x86/crypto/camellia_aesni_avx_glue.c:EXPORT_SYMBOL_GPL(camellia_ecb_dec_16way);
+> arch/x86/crypto/camellia_aesni_avx_glue.c:asmlinkage void camellia_cbc_dec_16way(const void *ctx, u8 *dst, const u8 *src);
+> arch/x86/crypto/camellia_aesni_avx_glue.c:EXPORT_SYMBOL_GPL(camellia_cbc_dec_16way);
+> 
+> arch/x86/crypto/twofish-x86_64-asm_64-3way.S:SYM_FUNC_START(__twofish_enc_blk_3way)
+> arch/x86/crypto/twofish.h:asmlinkage void __twofish_enc_blk_3way(const void *ctx, u8 *dst, const u8 *src,
+> arch/x86/crypto/twofish_glue_3way.c:EXPORT_SYMBOL_GPL(__twofish_enc_blk_3way);
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/x86/Kconfig                      |  1 +
- arch/x86/entry/vdso/Makefile          |  3 ++-
- arch/x86/entry/vdso/vdso.lds.S        |  2 ++
- arch/x86/entry/vdso/vgetrandom.c      | 16 ++++++++++++
- arch/x86/include/asm/vdso/getrandom.h | 37 +++++++++++++++++++++++++++
- arch/x86/include/asm/vdso/vsyscall.h  |  2 ++
- arch/x86/include/asm/vvar.h           | 16 ++++++++++++
- 7 files changed, 76 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/entry/vdso/vgetrandom.c
- create mode 100644 arch/x86/include/asm/vdso/getrandom.h
+No, that doesn't matter at all.  Whether a symbol is exported or not just has to
+do with how the code is divided into modules.  It doesn't have anything to do
+with indirect calls.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 67745ceab0db..210318da7505 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -269,6 +269,7 @@ config X86
- 	select HAVE_UNSTABLE_SCHED_CLOCK
- 	select HAVE_USER_RETURN_NOTIFIER
- 	select HAVE_GENERIC_VDSO
-+	select HAVE_VDSO_GETRANDOM
- 	select HOTPLUG_SMT			if SMP
- 	select IRQ_FORCED_THREADING
- 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 3e88b9df8c8f..adc3792dbbac 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -27,7 +27,7 @@ VDSO32-$(CONFIG_X86_32)		:= y
- VDSO32-$(CONFIG_IA32_EMULATION)	:= y
- 
- # files to link into the vdso
--vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o
-+vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o vgetrandom.o
- vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
- vobjs32-y += vdso32/vclock_gettime.o
- vobjs-$(CONFIG_X86_SGX)	+= vsgx.o
-@@ -104,6 +104,7 @@ CFLAGS_REMOVE_vclock_gettime.o = -pg
- CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
- CFLAGS_REMOVE_vgetcpu.o = -pg
- CFLAGS_REMOVE_vsgx.o = -pg
-+CFLAGS_REMOVE_vgetrandom.o = -pg
- 
- #
- # X32 processes use x32 vDSO to access 64bit kernel data.
-diff --git a/arch/x86/entry/vdso/vdso.lds.S b/arch/x86/entry/vdso/vdso.lds.S
-index 4bf48462fca7..1919cc39277e 100644
---- a/arch/x86/entry/vdso/vdso.lds.S
-+++ b/arch/x86/entry/vdso/vdso.lds.S
-@@ -28,6 +28,8 @@ VERSION {
- 		clock_getres;
- 		__vdso_clock_getres;
- 		__vdso_sgx_enter_enclave;
-+		getrandom;
-+		__vdso_getrandom;
- 	local: *;
- 	};
- }
-diff --git a/arch/x86/entry/vdso/vgetrandom.c b/arch/x86/entry/vdso/vgetrandom.c
-new file mode 100644
-index 000000000000..0a0c0ad93cd0
---- /dev/null
-+++ b/arch/x86/entry/vdso/vgetrandom.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-+ */
-+#include <linux/kernel.h>
-+#include <linux/types.h>
-+
-+#include "../../../../lib/vdso/getrandom.c"
-+
-+ssize_t __vdso_getrandom(void *buffer, size_t len, unsigned int flags, void *state)
-+{
-+	return __cvdso_getrandom(buffer, len, flags, state);
-+}
-+
-+ssize_t getrandom(void *, size_t, unsigned int, void *)
-+	__attribute__((weak, alias("__vdso_getrandom")));
-diff --git a/arch/x86/include/asm/vdso/getrandom.h b/arch/x86/include/asm/vdso/getrandom.h
-new file mode 100644
-index 000000000000..c414043e975d
---- /dev/null
-+++ b/arch/x86/include/asm/vdso/getrandom.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-+ */
-+#ifndef __ASM_VDSO_GETRANDOM_H
-+#define __ASM_VDSO_GETRANDOM_H
-+
-+#ifndef __ASSEMBLY__
-+
-+#include <asm/unistd.h>
-+#include <asm/vvar.h>
-+
-+static __always_inline ssize_t
-+getrandom_syscall(void *buffer, size_t len, unsigned int flags)
-+{
-+	long ret;
-+
-+	asm ("syscall" : "=a" (ret) :
-+	     "0" (__NR_getrandom), "D" (buffer), "S" (len), "d" (flags) :
-+	     "rcx", "r11", "memory");
-+
-+	return ret;
-+}
-+
-+#define __vdso_rng_data (VVAR(_vdso_rng_data))
-+
-+static __always_inline const struct vdso_rng_data *__arch_get_vdso_rng_data(void)
-+{
-+	if (__vdso_data->clock_mode == VDSO_CLOCKMODE_TIMENS)
-+		return (void *)&__vdso_rng_data +
-+		       ((void *)&__timens_vdso_data - (void *)&__vdso_data);
-+	return &__vdso_rng_data;
-+}
-+
-+#endif /* !__ASSEMBLY__ */
-+
-+#endif /* __ASM_VDSO_GETRANDOM_H */
-diff --git a/arch/x86/include/asm/vdso/vsyscall.h b/arch/x86/include/asm/vdso/vsyscall.h
-index be199a9b2676..71c56586a22f 100644
---- a/arch/x86/include/asm/vdso/vsyscall.h
-+++ b/arch/x86/include/asm/vdso/vsyscall.h
-@@ -11,6 +11,8 @@
- #include <asm/vvar.h>
- 
- DEFINE_VVAR(struct vdso_data, _vdso_data);
-+DEFINE_VVAR_SINGLE(struct vdso_rng_data, _vdso_rng_data);
-+
- /*
-  * Update the vDSO data page to keep in sync with kernel timekeeping.
-  */
-diff --git a/arch/x86/include/asm/vvar.h b/arch/x86/include/asm/vvar.h
-index 183e98e49ab9..9d9af37f7cab 100644
---- a/arch/x86/include/asm/vvar.h
-+++ b/arch/x86/include/asm/vvar.h
-@@ -26,6 +26,8 @@
-  */
- #define DECLARE_VVAR(offset, type, name) \
- 	EMIT_VVAR(name, offset)
-+#define DECLARE_VVAR_SINGLE(offset, type, name) \
-+	EMIT_VVAR(name, offset)
- 
- #else
- 
-@@ -37,6 +39,10 @@ extern char __vvar_page;
- 	extern type timens_ ## name[CS_BASES]				\
- 	__attribute__((visibility("hidden")));				\
- 
-+#define DECLARE_VVAR_SINGLE(offset, type, name)				\
-+	extern type vvar_ ## name					\
-+	__attribute__((visibility("hidden")));				\
-+
- #define VVAR(name) (vvar_ ## name)
- #define TIMENS(name) (timens_ ## name)
- 
-@@ -44,12 +50,22 @@ extern char __vvar_page;
- 	type name[CS_BASES]						\
- 	__attribute__((section(".vvar_" #name), aligned(16))) __visible
- 
-+#define DEFINE_VVAR_SINGLE(type, name)					\
-+	type name							\
-+	__attribute__((section(".vvar_" #name), aligned(16))) __visible
-+
- #endif
- 
- /* DECLARE_VVAR(offset, type, name) */
- 
- DECLARE_VVAR(128, struct vdso_data, _vdso_data)
- 
-+#if !defined(_SINGLE_DATA)
-+#define _SINGLE_DATA
-+DECLARE_VVAR_SINGLE(640, struct vdso_rng_data, _vdso_rng_data)
-+#endif
-+
- #undef DECLARE_VVAR
-+#undef DECLARE_VVAR_SINGLE
- 
- #endif
--- 
-2.38.1
+> A few of the x86 asm functions used by C code are not referenced with
+> asmlinkage like all the others. They're not EXPORTed, though, so whether
+> they're indirectly used can be determined.
+> 
+> u32 crc32_pclmul_le_16(unsigned char const *buffer, size_t len, u32 crc32);
+> 
+> void clmul_ghash_mul(char *dst, const u128 *shash);
+> 
+> void clmul_ghash_update(char *dst, const char *src, unsigned int srclen,
+>                         const u128 *shash);
 
+No, the above functions are only called directly.
+
+I did do another search and found that some of the sm4 functions are called
+indirectly, though, so I'll send out an updated patchset that fixes those too.
+
+- Eric
