@@ -2,48 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 445C462F071
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 10:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AB062F07A
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 10:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241709AbiKRJEW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Nov 2022 04:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
+        id S241700AbiKRJGD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Nov 2022 04:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241426AbiKRJEQ (ORCPT
+        with ESMTP id S231534AbiKRJGC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Nov 2022 04:04:16 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BA182BFA
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 01:04:11 -0800 (PST)
+        Fri, 18 Nov 2022 04:06:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EC313D4F
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 01:06:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 10514623B1
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 09:04:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B7DCC43141;
-        Fri, 18 Nov 2022 09:04:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 52DE9623B2
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 09:06:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA63C433C1;
+        Fri, 18 Nov 2022 09:06:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668762250;
-        bh=dN9lqJsqSknnJEVWfdbcH4PBv1COtt2elsbRPuqKWpA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=liqNp19oNyCipr9vwmUXYl94kRjIRI2R4Ks7FBDJWaZW/5/EuRAhr/i12ZO3dqwJP
-         sIqNH+Jm/2M9dp86/CFzURzWn2glS35cKQ90JbEiRXZMJTCuw0I530QCO8Ky/pLakU
-         7PwI6ceXuN1oko89Q51kX8xlOEHPjAWuCrwXNpwKbkPJgppTkcii8c6fzUwxrE50SL
-         4rlviybpw4WjTC11URRRuqmpOza2fS6yhoHkrimgQPFWhu8jVzuWuUD5F1G/NIr9sn
-         b93AtG0dxbXnWmfEoxmRkT4wW7raI2Wcmz1wMFy8WG+BQpTJpHTq1hVIFMbypx0MST
-         U6EzSEKEO/KtA==
+        s=k20201202; t=1668762360;
+        bh=AmskJwnFjVeOdt9cZPfGQ0GR5lO8GyHsCR8+zJUUzik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FSx3eVetBK2yfWCWPAEzS369Scr3LHzew8d3Yqvn+m25lfub2EMW/CEAt3kAyCJgp
+         QUZUSmElrpjBJuHQ25uneJjwRUU8AHksBUxPiypR/+2c9duOe13KCip3KZpvKqWtNY
+         Xu9b5dd3Qgh9rrPCbdWIIEOsEjC2vUTcFQg7ppVU/kvVKkEJGXmVp8+Kpu73Tgs4rE
+         W6P9UGrg26co1ifjrrTVcjv5+YMG9OaRB8vpiobRl36kqLaN5NilTn0sjZncUqvQyH
+         6tMwZQ1ho096WXL3ksHzoPnV07yK5FRPx9wopZCrzxp9kfBQGVCNbg3TyuTlbcXmvw
+         X0Nzd3DZJ4zTA==
+Date:   Fri, 18 Nov 2022 01:05:58 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org
-Cc:     x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: [PATCH 11/11] Revert "crypto: shash - avoid comparing pointers to exported functions under CFI"
-Date:   Fri, 18 Nov 2022 01:02:20 -0800
-Message-Id: <20221118090220.398819-12-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221118090220.398819-1-ebiggers@kernel.org>
-References: <20221118090220.398819-1-ebiggers@kernel.org>
+To:     Taehee Yoo <ap420073@gmail.com>
+Cc:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        kirill.shutemov@linux.intel.com, richard@nod.at,
+        viro@zeniv.linux.org.uk,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@kernel.org,
+        elliott@hpe.com, x86@kernel.org, jussi.kivilinna@iki.fi
+Subject: Re: [PATCH v5 3/4] crypto: aria: implement aria-avx2
+Message-ID: <Y3dK9hHXZSgpVdV1@sol.localdomain>
+References: <20221118072252.10770-1-ap420073@gmail.com>
+ <20221118072252.10770-4-ap420073@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221118072252.10770-4-ap420073@gmail.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,72 +59,11 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Fri, Nov 18, 2022 at 07:22:51AM +0000, Taehee Yoo wrote:
+> +SYM_FUNC_START(aria_aesni_avx2_encrypt_32way)
 
-This reverts commit 22ca9f4aaf431a9413dcc115dd590123307f274f because CFI
-no longer breaks cross-module function address equality, so
-crypto_shash_alg_has_setkey() can now be an inline function like before.
+Please use SYM_TYPED_FUNC_START (and include <linux/cfi_types.h>) for all
+assembly functions that are called via indirect function calls.  Otherwise the
+code will crash when built with CONFIG_CFI_CLANG=y.
 
-This commit should not be backported to kernels that don't have the new
-CFI implementation.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- crypto/shash.c                 | 18 +++---------------
- include/crypto/internal/hash.h |  8 +++++++-
- 2 files changed, 10 insertions(+), 16 deletions(-)
-
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 4c88e63b3350f..0f85431588267 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -20,24 +20,12 @@
- 
- static const struct crypto_type crypto_shash_type;
- 
--static int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
--			   unsigned int keylen)
-+int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
-+		    unsigned int keylen)
- {
- 	return -ENOSYS;
- }
--
--/*
-- * Check whether an shash algorithm has a setkey function.
-- *
-- * For CFI compatibility, this must not be an inline function.  This is because
-- * when CFI is enabled, modules won't get the same address for shash_no_setkey
-- * (if it were exported, which inlining would require) as the core kernel will.
-- */
--bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
--{
--	return alg->setkey != shash_no_setkey;
--}
--EXPORT_SYMBOL_GPL(crypto_shash_alg_has_setkey);
-+EXPORT_SYMBOL_GPL(shash_no_setkey);
- 
- static int shash_setkey_unaligned(struct crypto_shash *tfm, const u8 *key,
- 				  unsigned int keylen)
-diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index 25806141db591..0a288dddcf5be 100644
---- a/include/crypto/internal/hash.h
-+++ b/include/crypto/internal/hash.h
-@@ -75,7 +75,13 @@ void crypto_unregister_ahashes(struct ahash_alg *algs, int count);
- int ahash_register_instance(struct crypto_template *tmpl,
- 			    struct ahash_instance *inst);
- 
--bool crypto_shash_alg_has_setkey(struct shash_alg *alg);
-+int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
-+		    unsigned int keylen);
-+
-+static inline bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
-+{
-+	return alg->setkey != shash_no_setkey;
-+}
- 
- static inline bool crypto_shash_alg_needs_key(struct shash_alg *alg)
- {
--- 
-2.38.1
-
+- Eric
