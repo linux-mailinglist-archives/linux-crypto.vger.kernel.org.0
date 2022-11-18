@@ -2,44 +2,44 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E08362FE31
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 20:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A33262FE38
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 20:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235453AbiKRTqc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Nov 2022 14:46:32 -0500
+        id S235379AbiKRTqi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Nov 2022 14:46:38 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbiKRTq3 (ORCPT
+        with ESMTP id S235521AbiKRTqa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Nov 2022 14:46:29 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31788CF0D
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 11:46:25 -0800 (PST)
+        Fri, 18 Nov 2022 14:46:30 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F4B8D4A8
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 11:46:27 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B5956276D
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 19:46:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B23D2C43140;
-        Fri, 18 Nov 2022 19:46:24 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6C1E9B82504
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 19:46:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B446C43145;
+        Fri, 18 Nov 2022 19:46:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668800784;
-        bh=EjO3B77EIOTiWRygSBkRyIXiyATPysPcP7wmb2ToCDs=;
+        s=k20201202; t=1668800785;
+        bh=SJD1vbe3TbIhw+mwTcm5uBRYSsM1TzGphUBe1liqWrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VHXo4sVaL3o8Zv5oH/58o8qIXTUaVmfy/xvsdGatFdPmp72sZHeiCQamxe+6zQLsv
-         OrtAe1wOfSxzp+zI/VCoo9wVEipbCdEj5JmFl965KkqVSp35U4Se/YvdlPGFpqfpfO
-         29qfQnUPE6rtrRt3x6LORz70j1MH2sk7M1heQar6wUhUoRsIdcorRcrZYafkhOU46f
-         aFzNTyKA2fJNvXLm+ETMq9XrfxIpnJh4iIS5V7uncd4KkSvJ+sZGsV3d//tn8BUU0/
-         SxmOROrRMkYf7tWReVw+SrizAR1o/plLqnHF/tF5BQ5HPjG/S4N6dJacB4XgPnGus0
-         lgPGT5ayQVuiw==
+        b=XVl2DMLVSs2HOx7cBmnsYJTM66kDDvXWPb6kNYxobQXvoNILZHP5QWdeeXp/xZX69
+         smMIgUE6p983K51FzNpAq24zTzSx+yVw1MMZc39NtTKCIdUkOb8MwdpH8QddBd+UCK
+         aL7sM1o8a+PKgpxaxhSHsy/mIk8NQMdKyKLTVewufHX178cAhJ6ny04svwuucxOph/
+         uWYJncSByfA3ZtSqI5L5308goQSDGqKieLiK0bRgUj8RU+nUeRK5IyvyoOQE0IwGhx
+         GOtXnFByE0zD+Qwmp24fzNwaP90B6VIDExux0LOgPgYRJq8KqBFsYtsg/TygwvGxA8
+         uOz10di6uwVgA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     x86@kernel.org, linux-arm-kernel@lists.infradead.org,
         Sami Tolvanen <samitolvanen@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH v2 03/12] crypto: x86/nhpoly1305 - eliminate unnecessary CFI wrappers
-Date:   Fri, 18 Nov 2022 11:44:12 -0800
-Message-Id: <20221118194421.160414-4-ebiggers@kernel.org>
+Subject: [PATCH v2 04/12] crypto: x86/sha1 - fix possible crash with CFI enabled
+Date:   Fri, 18 Nov 2022 11:44:13 -0800
+Message-Id: <20221118194421.160414-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221118194421.160414-1-ebiggers@kernel.org>
 References: <20221118194421.160414-1-ebiggers@kernel.org>
@@ -56,129 +56,65 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Since the CFI implementation now supports indirect calls to assembly
-functions, take advantage of that rather than use wrapper functions.
+sha1_transform_ssse3(), sha1_transform_avx(), and sha1_ni_transform()
+(but not sha1_transform_avx2()) are called via indirect function calls.
+Therefore they need to use SYM_TYPED_FUNC_START instead of
+SYM_FUNC_START to cause their type hashes to be emitted when the kernel
+is built with CONFIG_CFI_CLANG=y.  Otherwise, the code crashes with a
+CFI failure (if the compiler didn't happen to optimize out the indirect
+calls).
 
+Fixes: ccace936eec7 ("x86: Add types to indirectly called assembly functions")
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/nh-avx2-x86_64.S       |  5 +++--
- arch/x86/crypto/nh-sse2-x86_64.S       |  5 +++--
- arch/x86/crypto/nhpoly1305-avx2-glue.c | 11 ++---------
- arch/x86/crypto/nhpoly1305-sse2-glue.c | 11 ++---------
- 4 files changed, 10 insertions(+), 22 deletions(-)
+ arch/x86/crypto/sha1_ni_asm.S    | 3 ++-
+ arch/x86/crypto/sha1_ssse3_asm.S | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/crypto/nh-avx2-x86_64.S b/arch/x86/crypto/nh-avx2-x86_64.S
-index 6a0b15e7196a8..ef73a3ab87263 100644
---- a/arch/x86/crypto/nh-avx2-x86_64.S
-+++ b/arch/x86/crypto/nh-avx2-x86_64.S
-@@ -8,6 +8,7 @@
+diff --git a/arch/x86/crypto/sha1_ni_asm.S b/arch/x86/crypto/sha1_ni_asm.S
+index 2f94ec0e763bf..3cae5a1bb3d6e 100644
+--- a/arch/x86/crypto/sha1_ni_asm.S
++++ b/arch/x86/crypto/sha1_ni_asm.S
+@@ -54,6 +54,7 @@
   */
  
  #include <linux/linkage.h>
 +#include <linux/cfi_types.h>
  
- #define		PASS0_SUMS	%ymm0
- #define		PASS1_SUMS	%ymm1
-@@ -65,11 +66,11 @@
- 
- /*
-  * void nh_avx2(const u32 *key, const u8 *message, size_t message_len,
-- *		u8 hash[NH_HASH_BYTES])
-+ *		__le64 hash[NH_NUM_PASSES])
-  *
-  * It's guaranteed that message_len % 16 == 0.
+ #define DIGEST_PTR	%rdi	/* 1st arg */
+ #define DATA_PTR	%rsi	/* 2nd arg */
+@@ -93,7 +94,7 @@
   */
--SYM_FUNC_START(nh_avx2)
-+SYM_TYPED_FUNC_START(nh_avx2)
- 
- 	vmovdqu		0x00(KEY), K0
- 	vmovdqu		0x10(KEY), K1
-diff --git a/arch/x86/crypto/nh-sse2-x86_64.S b/arch/x86/crypto/nh-sse2-x86_64.S
-index 34c567bbcb4fa..75fb994b6d177 100644
---- a/arch/x86/crypto/nh-sse2-x86_64.S
-+++ b/arch/x86/crypto/nh-sse2-x86_64.S
-@@ -8,6 +8,7 @@
+ .text
+ .align 32
+-SYM_FUNC_START(sha1_ni_transform)
++SYM_TYPED_FUNC_START(sha1_ni_transform)
+ 	push		%rbp
+ 	mov		%rsp, %rbp
+ 	sub		$FRAME_SIZE, %rsp
+diff --git a/arch/x86/crypto/sha1_ssse3_asm.S b/arch/x86/crypto/sha1_ssse3_asm.S
+index 263f916362e02..f54988c80eb40 100644
+--- a/arch/x86/crypto/sha1_ssse3_asm.S
++++ b/arch/x86/crypto/sha1_ssse3_asm.S
+@@ -25,6 +25,7 @@
   */
  
  #include <linux/linkage.h>
 +#include <linux/cfi_types.h>
  
- #define		PASS0_SUMS	%xmm0
- #define		PASS1_SUMS	%xmm1
-@@ -67,11 +68,11 @@
- 
- /*
-  * void nh_sse2(const u32 *key, const u8 *message, size_t message_len,
-- *		u8 hash[NH_HASH_BYTES])
-+ *		__le64 hash[NH_NUM_PASSES])
-  *
-  * It's guaranteed that message_len % 16 == 0.
+ #define CTX	%rdi	// arg1
+ #define BUF	%rsi	// arg2
+@@ -67,7 +68,7 @@
+  * param: function's name
   */
--SYM_FUNC_START(nh_sse2)
-+SYM_TYPED_FUNC_START(nh_sse2)
+ .macro SHA1_VECTOR_ASM  name
+-	SYM_FUNC_START(\name)
++	SYM_TYPED_FUNC_START(\name)
  
- 	movdqu		0x00(KEY), K0
- 	movdqu		0x10(KEY), K1
-diff --git a/arch/x86/crypto/nhpoly1305-avx2-glue.c b/arch/x86/crypto/nhpoly1305-avx2-glue.c
-index 8ea5ab0f1ca74..46b036204ed91 100644
---- a/arch/x86/crypto/nhpoly1305-avx2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-avx2-glue.c
-@@ -14,14 +14,7 @@
- #include <asm/simd.h>
- 
- asmlinkage void nh_avx2(const u32 *key, const u8 *message, size_t message_len,
--			u8 hash[NH_HASH_BYTES]);
--
--/* wrapper to avoid indirect call to assembly, which doesn't work with CFI */
--static void _nh_avx2(const u32 *key, const u8 *message, size_t message_len,
--		     __le64 hash[NH_NUM_PASSES])
--{
--	nh_avx2(key, message, message_len, (u8 *)hash);
--}
-+			__le64 hash[NH_NUM_PASSES]);
- 
- static int nhpoly1305_avx2_update(struct shash_desc *desc,
- 				  const u8 *src, unsigned int srclen)
-@@ -33,7 +26,7 @@ static int nhpoly1305_avx2_update(struct shash_desc *desc,
- 		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
- 
- 		kernel_fpu_begin();
--		crypto_nhpoly1305_update_helper(desc, src, n, _nh_avx2);
-+		crypto_nhpoly1305_update_helper(desc, src, n, nh_avx2);
- 		kernel_fpu_end();
- 		src += n;
- 		srclen -= n;
-diff --git a/arch/x86/crypto/nhpoly1305-sse2-glue.c b/arch/x86/crypto/nhpoly1305-sse2-glue.c
-index 2b353d42ed13f..4a4970d751076 100644
---- a/arch/x86/crypto/nhpoly1305-sse2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-sse2-glue.c
-@@ -14,14 +14,7 @@
- #include <asm/simd.h>
- 
- asmlinkage void nh_sse2(const u32 *key, const u8 *message, size_t message_len,
--			u8 hash[NH_HASH_BYTES]);
--
--/* wrapper to avoid indirect call to assembly, which doesn't work with CFI */
--static void _nh_sse2(const u32 *key, const u8 *message, size_t message_len,
--		     __le64 hash[NH_NUM_PASSES])
--{
--	nh_sse2(key, message, message_len, (u8 *)hash);
--}
-+			__le64 hash[NH_NUM_PASSES]);
- 
- static int nhpoly1305_sse2_update(struct shash_desc *desc,
- 				  const u8 *src, unsigned int srclen)
-@@ -33,7 +26,7 @@ static int nhpoly1305_sse2_update(struct shash_desc *desc,
- 		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
- 
- 		kernel_fpu_begin();
--		crypto_nhpoly1305_update_helper(desc, src, n, _nh_sse2);
-+		crypto_nhpoly1305_update_helper(desc, src, n, nh_sse2);
- 		kernel_fpu_end();
- 		src += n;
- 		srclen -= n;
+ 	push	%rbx
+ 	push	%r12
 -- 
 2.38.1
 
