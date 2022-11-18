@@ -2,102 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106AF630085
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 23:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635E463082D
+	for <lists+linux-crypto@lfdr.de>; Sat, 19 Nov 2022 01:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232641AbiKRWrO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Nov 2022 17:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S234404AbiKSA6v (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Nov 2022 19:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbiKRWqt (ORCPT
+        with ESMTP id S234686AbiKSA4h (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Nov 2022 17:46:49 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E89DB5C7F
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 14:46:36 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1owA7f-0007Pv-QE; Fri, 18 Nov 2022 23:46:11 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1owA7d-00588C-BZ; Fri, 18 Nov 2022 23:46:10 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1owA7d-00HavL-E2; Fri, 18 Nov 2022 23:46:09 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Grant Likely <grant.likely@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     linux-i2c@vger.kernel.org, kernel@pengutronix.de,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 007/606] crypto: atmel-sha204a - Convert to i2c's .probe_new()
-Date:   Fri, 18 Nov 2022 23:35:41 +0100
-Message-Id: <20221118224540.619276-8-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
-References: <20221118224540.619276-1-uwe@kleine-koenig.org>
+        Fri, 18 Nov 2022 19:56:37 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C1213B33E;
+        Fri, 18 Nov 2022 15:55:28 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D61F614FB;
+        Fri, 18 Nov 2022 23:55:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FDF0C433D6;
+        Fri, 18 Nov 2022 23:55:09 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="BUBW6s5H"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1668815706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R01k3COoUWqwZPp44f3ibDLlpDtWB8ifsqMAbjnVS7w=;
+        b=BUBW6s5H2iPdiVuOv32UIdmPGYE9iLtyMIjzmgUjx1IG+b8OqGccu1v5s/5K5426Jv8Q5U
+        DH85hHqOPyT/htMIliRmk72NFgbThjAj5B2NNyuFB070P7FZNo6mQvLkgIRi9Mgug3HTAy
+        V/8hwbP2IdJER09B+N4I1FZL6K2db0k=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a537b333 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 18 Nov 2022 23:55:05 +0000 (UTC)
+Date:   Sat, 19 Nov 2022 00:55:02 +0100
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+        Carlos O'Donell <carlos@redhat.com>
+Subject: Re: [PATCH v4 2/3] random: introduce generic vDSO getrandom()
+ implementation
+Message-ID: <Y3gbVorxZyb4SBJa@zx2c4.com>
+References: <20221118172839.2653829-1-Jason@zx2c4.com>
+ <20221118172839.2653829-3-Jason@zx2c4.com>
+ <ecfd265b-49e7-79b2-1818-e08a2c652db0@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ecfd265b-49e7-79b2-1818-e08a2c652db0@csgroup.eu>
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Hi Christophe,
 
-.probe_new() doesn't get the i2c_device_id * parameter, so determine
-that explicitly in the probe function.
+On Fri, Nov 18, 2022 at 07:34:26PM +0000, Christophe Leroy wrote:
+> > +static __always_inline ssize_t
+> > +__cvdso_getrandom(void *buffer, size_t len, unsigned int flags, void *opaque_state)
+> > +{
+> > +	struct vgetrandom_state *state = opaque_state;
+> > +	const struct vdso_rng_data *rng_info = __arch_get_vdso_rng_data();
+> 
+> In order to ease wiring up to powerpc, can it be done the same way as 
+> commit e876f0b69dc9 ("lib/vdso: Allow architectures to provide the vdso 
+> data pointer")
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/crypto/atmel-sha204a.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+It is already. At least I think it is, unless I'm missing a subtle
+distinction? The call to __arch_get_vdso_rng_data() goes to
+arch-specific code, implemented in the 3/3 of this patch set for x86
+inside of arch/x86/include/asm/vdso/getrandom.h. On powerpc, you'd make
+a powerpc-specific __arch_get_vdso_rng_data() instead of
+arch/powerpc/include/asm/vdso/getrandom.h.
 
-diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index a84b657598c6..13d5299175a9 100644
---- a/drivers/crypto/atmel-sha204a.c
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -91,9 +91,9 @@ static int atmel_sha204a_rng_read(struct hwrng *rng, void *data, size_t max,
- 	return max;
- }
- 
--static int atmel_sha204a_probe(struct i2c_client *client,
--			       const struct i2c_device_id *id)
-+static int atmel_sha204a_probe(struct i2c_client *client)
- {
-+	const struct i2c_device_id *id = i2c_client_get_device_id(client);
- 	struct atmel_i2c_client_priv *i2c_priv;
- 	int ret;
- 
-@@ -143,7 +143,7 @@ static const struct i2c_device_id atmel_sha204a_id[] = {
- MODULE_DEVICE_TABLE(i2c, atmel_sha204a_id);
- 
- static struct i2c_driver atmel_sha204a_driver = {
--	.probe			= atmel_sha204a_probe,
-+	.probe_new		= atmel_sha204a_probe,
- 	.remove			= atmel_sha204a_remove,
- 	.id_table		= atmel_sha204a_id,
- 
--- 
-2.38.1
+Or maybe I'm not reading that commit right? The commit message says
+something about __arch_get_vdso_rng_data() being problematic because of
+clobbering a register, but then the same commit still seems to call
+__arch_get_vdso_rng_data()? Is this one of those things where what you'd
+prefer is that I define an inline function, __cvdso_get_vdso_rng_data(),
+that by default calls __arch_get_vdso_rng_data(), but can be overridden
+on powerpc to do some other type of magic? But
+__arch_get_vdso_rng_data() is already an overiddable inline, so what
+would the difference be?
 
+Sorry if I'm a bit slow here to grok what's up.
+
+Jason
