@@ -2,43 +2,43 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7E862F06D
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 10:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFEA62F06B
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Nov 2022 10:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241668AbiKRJET (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Nov 2022 04:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
+        id S241719AbiKRJER (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Nov 2022 04:04:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241436AbiKRJEM (ORCPT
+        with ESMTP id S241455AbiKRJEM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 18 Nov 2022 04:04:12 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEECA82BC5
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDDA7EC8F
         for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 01:04:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6890F623C0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 431F1623BD
         for <linux-crypto@vger.kernel.org>; Fri, 18 Nov 2022 09:04:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7AB4C43147;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC565C43146;
         Fri, 18 Nov 2022 09:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668762248;
-        bh=mJsH5L9LpAZtcysiSyHXhJEv09v85eGVUHWCSa6xvLc=;
+        s=k20201202; t=1668762249;
+        bh=cvZrVNyaorZiFckp5I/DQO2Na69JdiQKH9GTwngz5kw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sA1CiL1XzosLH61OUxoCSm3C1QMDTQZshxtbEDoz3+1vk8+AzfNScnLOcD23KoKI9
-         jwlUpcSmq8gdvTeTi9a6KxA/zMHVR3e4RquZ9PE1RaEpFHgAUvc2m6EFgsPERAmdME
-         UUptYxUzbVxH0ID07b45ZnAGqEDvd1I+M4yKsuYMENsd0epuuXT148thCyt73NrWYn
-         xqzYILvnzM0Nmng7KEa9BQfRu4POghIeyzzA0WBgxIMFnosIuCMgJviO9KeD0nUCeM
-         2hvBJ2oddwzRv6RciknvcNnRF0+VttvJ9EzVg9iqfeBJY/+30QevbwQ8x47FO9JG2G
-         o+jSLeehssCSA==
+        b=Txbmq1+8Os6ha8bRpkOEpMYl4yfovwRGORc/Q36bVbY0f/kt0jgLZs757o5lelPUR
+         M4/GAy/RPij5/oInIsOl55+yuMlU2sQFJ05AcXKY4PudJAEycWR9iXNmcx1h5h3YNR
+         209MaRi+OoMvgNO4JI6rRGhf58knvpGrLNL6l5Kryv6wNaau6jo0dH5ItNYO++N6F1
+         PgC/p10LMij1YENAKkUG7CjntqP+312yJl+rZHiDardnnksxhPWLC1/rZoymXxqI5v
+         dJORoyoJ2st87QAEJ/29Yi/9ygXONH/V34yN4BAKpsyZDJUpXzhspBzN7sSC19jbu0
+         KFZ777WpuVDDw==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     x86@kernel.org, linux-arm-kernel@lists.infradead.org,
         Sami Tolvanen <samitolvanen@google.com>
-Subject: [PATCH 05/11] crypto: x86/sha256 - fix possible crash with CFI enabled
-Date:   Fri, 18 Nov 2022 01:02:14 -0800
-Message-Id: <20221118090220.398819-6-ebiggers@kernel.org>
+Subject: [PATCH 06/11] crypto: x86/sha512 - fix possible crash with CFI enabled
+Date:   Fri, 18 Nov 2022 01:02:15 -0800
+Message-Id: <20221118090220.398819-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221118090220.398819-1-ebiggers@kernel.org>
 References: <20221118090220.398819-1-ebiggers@kernel.org>
@@ -55,107 +55,84 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-sha256_transform_ssse3(), sha256_transform_avx(),
-sha256_transform_rorx(), and sha256_transform_ni() are called via
-indirect function calls.  These functions need to use
-SYM_TYPED_FUNC_START instead of SYM_FUNC_START to cause type hashes to
-be emitted when the kernel is built with CONFIG_CFI_CLANG=y.  Otherwise,
-the code crashes with a CFI failure (if the compiler didn't happen to
-optimize out the indirect calls).
+sha512_transform_rorx(), sha512_transform_ssse3(), and
+sha512_transform_avx() are called via indirect function calls.  These
+functions need to use SYM_TYPED_FUNC_START instead of SYM_FUNC_START to
+cause type hashes to be emitted when the kernel is built with
+CONFIG_CFI_CLANG=y.  Otherwise, the code crashes with a CFI failure (if
+the compiler didn't happen to optimize out the indirect calls).
 
 Fixes: 3c516f89e17e ("x86: Add support for CONFIG_CFI_CLANG")
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/sha256-avx-asm.S   | 3 ++-
- arch/x86/crypto/sha256-avx2-asm.S  | 3 ++-
- arch/x86/crypto/sha256-ssse3-asm.S | 3 ++-
- arch/x86/crypto/sha256_ni_asm.S    | 3 ++-
- 4 files changed, 8 insertions(+), 4 deletions(-)
+ arch/x86/crypto/sha512-avx-asm.S   | 3 ++-
+ arch/x86/crypto/sha512-avx2-asm.S  | 3 ++-
+ arch/x86/crypto/sha512-ssse3-asm.S | 3 ++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/crypto/sha256-avx-asm.S b/arch/x86/crypto/sha256-avx-asm.S
-index 3baa1ec390974..06ea30c20828d 100644
---- a/arch/x86/crypto/sha256-avx-asm.S
-+++ b/arch/x86/crypto/sha256-avx-asm.S
+diff --git a/arch/x86/crypto/sha512-avx-asm.S b/arch/x86/crypto/sha512-avx-asm.S
+index 1fefe6dd3a9e2..b0984f19fdb40 100644
+--- a/arch/x86/crypto/sha512-avx-asm.S
++++ b/arch/x86/crypto/sha512-avx-asm.S
 @@ -48,6 +48,7 @@
  ########################################################################
  
  #include <linux/linkage.h>
 +#include <linux/cfi_types.h>
  
- ## assume buffers not aligned
- #define    VMOVDQ vmovdqu
-@@ -346,7 +347,7 @@ a = TMP_
- ## arg 3 : Num blocks
- ########################################################################
  .text
--SYM_FUNC_START(sha256_transform_avx)
-+SYM_TYPED_FUNC_START(sha256_transform_avx)
- .align 32
- 	pushq   %rbx
- 	pushq   %r12
-diff --git a/arch/x86/crypto/sha256-avx2-asm.S b/arch/x86/crypto/sha256-avx2-asm.S
-index 9bcdbc47b8b4b..2d2be531a11ed 100644
---- a/arch/x86/crypto/sha256-avx2-asm.S
-+++ b/arch/x86/crypto/sha256-avx2-asm.S
-@@ -49,6 +49,7 @@
+ 
+@@ -273,7 +274,7 @@ frame_size = frame_WK + WK_SIZE
+ # of SHA512 message blocks.
+ # "blocks" is the message length in SHA512 blocks
+ ########################################################################
+-SYM_FUNC_START(sha512_transform_avx)
++SYM_TYPED_FUNC_START(sha512_transform_avx)
+ 	test msglen, msglen
+ 	je nowork
+ 
+diff --git a/arch/x86/crypto/sha512-avx2-asm.S b/arch/x86/crypto/sha512-avx2-asm.S
+index 5cdaab7d69015..b1ca99055ef99 100644
+--- a/arch/x86/crypto/sha512-avx2-asm.S
++++ b/arch/x86/crypto/sha512-avx2-asm.S
+@@ -50,6 +50,7 @@
  ########################################################################
  
  #include <linux/linkage.h>
 +#include <linux/cfi_types.h>
  
- ## assume buffers not aligned
- #define	VMOVDQ vmovdqu
-@@ -523,7 +524,7 @@ STACK_SIZE	= _CTX      + _CTX_SIZE
- ## arg 3 : Num blocks
- ########################################################################
  .text
--SYM_FUNC_START(sha256_transform_rorx)
-+SYM_TYPED_FUNC_START(sha256_transform_rorx)
- .align 32
- 	pushq	%rbx
- 	pushq	%r12
-diff --git a/arch/x86/crypto/sha256-ssse3-asm.S b/arch/x86/crypto/sha256-ssse3-asm.S
-index c4a5db612c327..7db28839108dd 100644
---- a/arch/x86/crypto/sha256-ssse3-asm.S
-+++ b/arch/x86/crypto/sha256-ssse3-asm.S
-@@ -47,6 +47,7 @@
+ 
+@@ -565,7 +566,7 @@ frame_size = frame_CTX + CTX_SIZE
+ # of SHA512 message blocks.
+ # "blocks" is the message length in SHA512 blocks
+ ########################################################################
+-SYM_FUNC_START(sha512_transform_rorx)
++SYM_TYPED_FUNC_START(sha512_transform_rorx)
+ 	# Save GPRs
+ 	push	%rbx
+ 	push	%r12
+diff --git a/arch/x86/crypto/sha512-ssse3-asm.S b/arch/x86/crypto/sha512-ssse3-asm.S
+index b84c22e06c5f7..c06afb5270e5f 100644
+--- a/arch/x86/crypto/sha512-ssse3-asm.S
++++ b/arch/x86/crypto/sha512-ssse3-asm.S
+@@ -48,6 +48,7 @@
  ########################################################################
  
  #include <linux/linkage.h>
 +#include <linux/cfi_types.h>
  
- ## assume buffers not aligned
- #define    MOVDQ movdqu
-@@ -355,7 +356,7 @@ a = TMP_
- ## arg 3 : Num blocks
+ .text
+ 
+@@ -274,7 +275,7 @@ frame_size = frame_WK + WK_SIZE
+ # of SHA512 message blocks.
+ # "blocks" is the message length in SHA512 blocks.
  ########################################################################
- .text
--SYM_FUNC_START(sha256_transform_ssse3)
-+SYM_TYPED_FUNC_START(sha256_transform_ssse3)
- .align 32
- 	pushq   %rbx
- 	pushq   %r12
-diff --git a/arch/x86/crypto/sha256_ni_asm.S b/arch/x86/crypto/sha256_ni_asm.S
-index 94d50dd27cb53..47f93937f798a 100644
---- a/arch/x86/crypto/sha256_ni_asm.S
-+++ b/arch/x86/crypto/sha256_ni_asm.S
-@@ -54,6 +54,7 @@
-  */
+-SYM_FUNC_START(sha512_transform_ssse3)
++SYM_TYPED_FUNC_START(sha512_transform_ssse3)
  
- #include <linux/linkage.h>
-+#include <linux/cfi_types.h>
- 
- #define DIGEST_PTR	%rdi	/* 1st arg */
- #define DATA_PTR	%rsi	/* 2nd arg */
-@@ -97,7 +98,7 @@
- 
- .text
- .align 32
--SYM_FUNC_START(sha256_ni_transform)
-+SYM_TYPED_FUNC_START(sha256_ni_transform)
- 
- 	shl		$6, NUM_BLKS		/*  convert to bytes */
- 	jz		.Ldone_hash
+ 	test msglen, msglen
+ 	je nowork
 -- 
 2.38.1
 
