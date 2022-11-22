@@ -2,28 +2,28 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B336349F8
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Nov 2022 23:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA49634A27
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Nov 2022 23:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234753AbiKVW0W (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 22 Nov 2022 17:26:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        id S234919AbiKVWgn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 22 Nov 2022 17:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233459AbiKVW0U (ORCPT
+        with ESMTP id S234552AbiKVWgl (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 22 Nov 2022 17:26:20 -0500
-Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E34979E2B
-        for <linux-crypto@vger.kernel.org>; Tue, 22 Nov 2022 14:26:19 -0800 (PST)
+        Tue, 22 Nov 2022 17:36:41 -0500
+Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C5BC900F
+        for <linux-crypto@vger.kernel.org>; Tue, 22 Nov 2022 14:36:40 -0800 (PST)
 Received: from [192.168.1.18] ([86.243.100.34])
         by smtp.orange.fr with ESMTPA
-        id xbiZoVuRqzQOKxbiZoPBam; Tue, 22 Nov 2022 23:26:18 +0100
+        id xbsaozAnSpJKlxbsaorx22; Tue, 22 Nov 2022 23:36:38 +0100
 X-ME-Helo: [192.168.1.18]
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 22 Nov 2022 23:26:18 +0100
+X-ME-Date: Tue, 22 Nov 2022 23:36:38 +0100
 X-ME-IP: 86.243.100.34
-Message-ID: <a3c848f9-d825-f9ff-eb6e-a3575d9871ff@wanadoo.fr>
-Date:   Tue, 22 Nov 2022 23:26:14 +0100
+Message-ID: <a83e5419-c19f-764f-9860-08385d7dd757@wanadoo.fr>
+Date:   Tue, 22 Nov 2022 23:36:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.2
@@ -42,8 +42,8 @@ In-Reply-To: <CAFBinCAEwYaEvmGjen_LPO52BcyUFD2EKtzzzfZ1rMuVuihEqA@mail.gmail.com
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,25 +63,7 @@ Le 22/11/2022 à 23:02, Martin Blumenstingl a écrit :
 > ..and it even fixes a missing devm_kcalloc error check
 > 
 > Personally I prefer this approach over a patch that was sent earlier today: [0]
-
-Funny.
-A file untouched for about 18 months and 2 patches around the same line, 
-... the same day!
-
 > Corentin, Christophe, what do you think?
-
-Obviously, mine is better :)
-
-More seriously, I think it is mostly a mater of taste and that both are 
-fine. Neither one will make a real difference IRL.
-
-I guess that memory allocation failure in probe are unlikely and saving 
-64 bytes (40 for devm_ + 2 x 4 = 48, rounded to 64 bytes) won't make any 
-real difference.
-
-Up to you.
-
-CJ
 > 
 > 
 > Best regards,
@@ -91,3 +73,26 @@ CJ
 > [0] https://lore.kernel.org/linux-crypto/0df30bbf-3b7e-ed20-e316-41192bf3cc2b@linaro.org/T/#m6a45b44206c282f106d379b01d19027823c5d79b
 > 
 
+Unrelated, but I think that meson_irq_handler() needs a small ajustement 
+to avoid printing a spurious message if readl() returns 0.
+
+Maybe something like that?:
+
+
+@@ -33,9 +33,10 @@ static irqreturn_t meson_irq_handler(int irq, void *data)
+  				writel_relaxed(0xF, mc->base + ((0x4 + flow) << 2));
+  				mc->chanlist[flow].status = 1;
+  				complete(&mc->chanlist[flow].complete);
+-				return IRQ_HANDLED;
++			} else {
++				dev_err(mc->dev, "%s %d Got irq for flow %d but ctrl is empty\n", 
+__func__, irq, flow);
+  			}
+-			dev_err(mc->dev, "%s %d Got irq for flow %d but ctrl is empty\n", 
+__func__, irq, flow);
++			return IRQ_HANDLED;
+  		}
+  	}
+
+
+CJ
