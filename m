@@ -2,116 +2,84 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 911026355C8
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Nov 2022 10:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79976635AD3
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Nov 2022 11:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237524AbiKWJXN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Nov 2022 04:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S236707AbiKWK5k (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Nov 2022 05:57:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237533AbiKWJWZ (ORCPT
+        with ESMTP id S237481AbiKWK5J (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Nov 2022 04:22:25 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AF910B40D
-        for <linux-crypto@vger.kernel.org>; Wed, 23 Nov 2022 01:22:01 -0800 (PST)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NHFxN5wXjzmW6g;
-        Wed, 23 Nov 2022 17:21:28 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 17:22:00 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 17:21:59 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
-        <mpm@selenic.com>, <mb@bu3sch.de>
-CC:     <linux-crypto@vger.kernel.org>, <yangyingliang@huawei.com>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] hwrng: amd - Fix PCI device refcount leak
-Date:   Wed, 23 Nov 2022 17:39:49 +0800
-Message-ID: <20221123093949.115579-1-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 23 Nov 2022 05:57:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9A11EC67
+        for <linux-crypto@vger.kernel.org>; Wed, 23 Nov 2022 02:47:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669200428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=crFkgffTIUwQTCrTlA+F1BqRlUTl8wnT00TJycfR8vo=;
+        b=JXOpiBivjk16IbPqHnMxlJE0nFiz2DqCQM28QKHhPIFcQ1CcIFZ/Z5w9Xj2ZWZ3ObVbKp8
+        ESmxjmF8Tps8mUOcmJgw8IevmW/zcSxzL+rzrjvSIH6tmo/JUlhtI54RTeMVhScwpfF3vB
+        hxpHhPeEufPZb/AfVgr0uL99rw3l5n8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-538-Twyqpe7lN0qoapwfzN6ZKg-1; Wed, 23 Nov 2022 05:47:04 -0500
+X-MC-Unique: Twyqpe7lN0qoapwfzN6ZKg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E2F3C8027FE;
+        Wed, 23 Nov 2022 10:47:03 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.2.16.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D952A7AE5;
+        Wed, 23 Nov 2022 10:47:01 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        tglx@linutronix.de, linux-crypto@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+        Carlos O'Donell <carlos@redhat.com>
+Subject: Re: [PATCH v6 1/3] random: add vgetrandom_alloc() syscall
+References: <20221121152909.3414096-1-Jason@zx2c4.com>
+        <20221121152909.3414096-2-Jason@zx2c4.com>
+Date:   Wed, 23 Nov 2022 11:46:58 +0100
+In-Reply-To: <20221121152909.3414096-2-Jason@zx2c4.com> (Jason A. Donenfeld's
+        message of "Mon, 21 Nov 2022 16:29:07 +0100")
+Message-ID: <87v8n6lzh9.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-for_each_pci_dev() is implemented by pci_get_device(). The comment of
-pci_get_device() says that it will increase the reference count for the
-returned pci_dev and also decrease the reference count for the input
-pci_dev @from if it is not NULL.
+* Jason A. Donenfeld:
 
-If we break for_each_pci_dev() loop with pdev not NULL, we need to call
-pci_dev_put() to decrease the reference count. Add the missing
-pci_dev_put() for the normal and error path.
+> + * The vgetrandom() function in userspace requires an opaque state, which this
+> + * function provides to userspace, by mapping a certain number of special pages
+> + * into the calling process. It takes a hint as to the number of opaque states
+> + * desired, and returns the number of opaque states actually allocated, the
+> + * size of each one in bytes, and the address of the first state.
+> + */
+> +SYSCALL_DEFINE3(vgetrandom_alloc, unsigned long __user *, num,
+> +		unsigned long __user *, size_per_each, unsigned int, flags)
 
-Fixes: 96d63c0297cc ("[PATCH] Add AMD HW RNG driver")
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/char/hw_random/amd-rng.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+I think you should make this __u64, so that you get a consistent
+userspace interface on all architectures, without the need for compat
+system calls.
 
-diff --git a/drivers/char/hw_random/amd-rng.c b/drivers/char/hw_random/amd-rng.c
-index c22d4184bb61..46e997366b15 100644
---- a/drivers/char/hw_random/amd-rng.c
-+++ b/drivers/char/hw_random/amd-rng.c
-@@ -143,15 +143,19 @@ static int __init amd_rng_mod_init(void)
- found:
- 	err = pci_read_config_dword(pdev, 0x58, &pmbase);
- 	if (err)
--		return err;
-+		goto put_dev;
- 
- 	pmbase &= 0x0000FF00;
--	if (pmbase == 0)
--		return -EIO;
-+	if (pmbase == 0) {
-+		err = -EIO;
-+		goto put_dev;
-+	}
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
--	if (!priv)
--		return -ENOMEM;
-+	if (!priv) {
-+		err = -ENOMEM;
-+		goto put_dev;
-+	}
- 
- 	if (!request_region(pmbase + PMBASE_OFFSET, PMBASE_SIZE, DRV_NAME)) {
- 		dev_err(&pdev->dev, DRV_NAME " region 0x%x already in use!\n",
-@@ -185,6 +189,8 @@ static int __init amd_rng_mod_init(void)
- 	release_region(pmbase + PMBASE_OFFSET, PMBASE_SIZE);
- out:
- 	kfree(priv);
-+put_dev:
-+	pci_dev_put(pdev);
- 	return err;
- }
- 
-@@ -201,6 +207,8 @@ static void __exit amd_rng_mod_exit(void)
- 	release_region(priv->pmbase + PMBASE_OFFSET, PMBASE_SIZE);
- 
- 	kfree(priv);
-+
-+	pci_dev_put(priv->pcidev);
- }
- 
- module_init(amd_rng_mod_init);
--- 
-2.20.1
+Thanks,
+Florian
 
