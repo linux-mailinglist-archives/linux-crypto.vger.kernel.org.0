@@ -2,170 +2,262 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0982863B665
-	for <lists+linux-crypto@lfdr.de>; Tue, 29 Nov 2022 01:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A1A63B68A
+	for <lists+linux-crypto@lfdr.de>; Tue, 29 Nov 2022 01:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbiK2AKS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 28 Nov 2022 19:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        id S234796AbiK2AX1 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 28 Nov 2022 19:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233440AbiK2AKN (ORCPT
+        with ESMTP id S234445AbiK2AXZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 28 Nov 2022 19:10:13 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEA8C6B;
-        Mon, 28 Nov 2022 16:10:09 -0800 (PST)
+        Mon, 28 Nov 2022 19:23:25 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8F312622;
+        Mon, 28 Nov 2022 16:23:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669680609; x=1701216609;
-  h=message-id:date:subject:to:cc:references:from:
+  t=1669681403; x=1701217403;
+  h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=kP5O5mO/tlGJUo9cqF/lFq+Ja8amYbotb9KjtGajGBE=;
-  b=Pq8TvaEXEze9BxE01mteV3JnObYS2iGUG1z7Am9hbRSv6xL0z+P03O9+
-   3MEcT/AH5/Vb2qfpgkmYNkw3ejUd8U8o8NCg6hBmQZ2s/7Dhccm1okyAV
-   A4QlMA9a2xq4Ozqz3DbDgx11uUg5w5NNMwTjd6zsH5A0bbSkcz5sehR1R
-   er0lwtYpOWebvdR9sGbcxbiV2taTFgoTXpZEDypwezjt+euSEBoseDQHK
-   5Zzxvf+/ZcuTt0SIkoutSNrbbdTkO4seWniGjKUi6F8vAusJFFJM5sNdy
-   053mkMJLvIGBGKKHkiRfK2ztWtd069ERbH5yDx7kb8upYO65j3JR4H8wZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="316814646"
+  bh=adgph9FGjB5AAXiW/gMYXQh1ad20wFfn0cd9JqvvYkY=;
+  b=mh/bvqyCov8RsaNtb4tC2cObeqS0e+qxQ4hwKcf1vJdA8O7aykoja41g
+   3xHy5cFVDyV0Q7k3dM+SH6NquWvT+xYRlWs/iavfAnk+VgCaVXQoQUkP9
+   EZo9NpGFiaLFxdaFxq1e41/I8EWr8KRrMk2zK3PvnQDVJAo86yAhc7xRh
+   hN6ZtIqgJXBdOWau+JJN4NXIhmn/Dy3H88Rc/NkHWmr4TzIrFYclFPL/E
+   xqhBdb6a3Vo95vDHL9VbimfDbHn8JeNcyUQIbQnnjw60QlCPOqmeAPe9+
+   EmUqeZVFc6Jm/YyO7RUJwymOAa4tVrzU0nDPeP2RQ0Gj7obrVWH99mBTw
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="312606372"
 X-IronPort-AV: E=Sophos;i="5.96,201,1665471600"; 
-   d="scan'208";a="316814646"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2022 16:10:08 -0800
+   d="scan'208";a="312606372"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2022 16:23:22 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="637408042"
+X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="712168094"
 X-IronPort-AV: E=Sophos;i="5.96,201,1665471600"; 
-   d="scan'208";a="637408042"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP; 28 Nov 2022 16:10:08 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+   d="scan'208";a="712168094"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga004.fm.intel.com with ESMTP; 28 Nov 2022 16:23:21 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Mon, 28 Nov 2022 16:23:21 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Mon, 28 Nov 2022 16:23:21 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
  fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Mon, 28 Nov 2022 16:10:07 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Mon, 28 Nov 2022 16:10:07 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ 15.1.2507.16 via Frontend Transport; Mon, 28 Nov 2022 16:23:21 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.177)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Mon, 28 Nov 2022 16:10:07 -0800
+ 15.1.2507.16; Mon, 28 Nov 2022 16:23:20 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EI39terbWCPlzaM4obAoDrdkdWurUAgxY9HnrXWAgko37clfCPSUJJuVxJjSknm9kkmJ2GavCMqhgQ3Zv8JTISu9c0KDUFJMw0MA8tX+eWgtOMfMHt1kQF1vtP1hy9ada/SLqPSYZsB+MAVmoTNBP+5N86uMX7H2nNv7AsHWmssGEHE1aDe4D31qYtyDjQ4RUJLam589hiGCIaBQ6C3/3C1OwdQ6CHq+hyGK7JHtu0l6wiv/XepbCDcEytNGIt3+Ka1nSHQBilWEW3pIYnGVH1Pck5loSP96S9q6jB1TrfmdvUY5RR1tTwm+0aGgxaX6QRm/jYjFFvX2f8qSoCz2tg==
+ b=SZ/wHFbmPn/vf4sXMK9IDVGJNSWwEclMpyrHw6GJFXNQVU00Fsyl9SrJMc/QcIqzd3w7+03bHemo11k0e7ZWXcZS8Ix2fAHP7QLPxZKHSr/mHI3ZrVgH1EvXlnMir/2Fefk6QwfYhv2RNCc3fuslK5CXLGKFwhWn38KGW9gXNDcdP53WnlWuNMkWHN3x0q09lEr+J+PZbQMNl8evGFvveDfG60LL5C3J5sPCecyWjuJQL+S4BYacLwUW3ucwETluROpW75BigTC8N1tEyIZ3908UUGE7UxY/h7dSGcZYhHh1lxiWN42yFWIm0f+kCeAr9nHNFvHkZeGED2cYaMIbNQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xayloidaq0ydo/kvdeYeKIIFEyf2TATkjpecmc3hS3Y=;
- b=DTAv7N6uO/1ew+LC2xBoxt1dBXKDwUNXP7PH/ajhOy3CgKDiH+IRUyC4Ed695G5Ltd0lnON1TYb1HfgobX8w8lqh7NNKy1zvk8Jh9X+F2G3/arhYn9+fNyuaOZVLt6BSnBaMMPUboQJ+yUGZGlyA4yG9d3ijQN3+9z90pCrKjZHDK/LZS4ZEN9AwNLZOoAkqINT8E0bKadD0QIslQj+BH1Q7Ca+CWJL8ThN9MyJb0FGPmVlyGIWgg01AQ0cQd8+38oETyx08t3TiIMsnqOjnTqMwXmO05CMcex8Sy6FoXqkeMZComVeMr7QcnIxOSXGeaIj6If4JXeeBFfu4cSh/dA==
+ bh=adgph9FGjB5AAXiW/gMYXQh1ad20wFfn0cd9JqvvYkY=;
+ b=XoEHDWUcuZRVjh+U/BLHpA0YYpmb3QVY612JaXf+Jy4WfiuT4v7lRFSgze+soC0Y7h17wPGVku7TH4JmiHwkv1IieUpSOTFYdJLBAs9CmjgU46+/BXjjhbuV2r1+3ZtvXgVTzGsXndSyyplCZhphZgzE14q2jOB0dPelUr4Tg/a79XD+7mcfdlt24fGMk2Ar3K1vFqwUqP7QlP7Qm7tfeGEL13mFAYJPp3sF4p8CGXwwDB/DkzP5+M0BQ3vEeUKWx1ji2cIPRhEMsvvwyY4LX8/vXO8+XK8/jESLCc0qU0Hcd8c7YsV8IEM3E0+Ew2K742JLx/qiichN1EJBLaaFxw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW3PR11MB4764.namprd11.prod.outlook.com (2603:10b6:303:5a::16)
- by IA0PR11MB7378.namprd11.prod.outlook.com (2603:10b6:208:432::8) with
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by SJ1PR11MB6201.namprd11.prod.outlook.com (2603:10b6:a03:45c::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.21; Tue, 29 Nov
- 2022 00:10:05 +0000
-Received: from MW3PR11MB4764.namprd11.prod.outlook.com
- ([fe80::d585:716:9c72:fbab]) by MW3PR11MB4764.namprd11.prod.outlook.com
- ([fe80::d585:716:9c72:fbab%6]) with mapi id 15.20.5857.023; Tue, 29 Nov 2022
- 00:10:05 +0000
-Message-ID: <7fe25f71-9c14-0eb9-3d54-5d03ab837d53@intel.com>
-Date:   Mon, 28 Nov 2022 16:10:03 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH] MAINTAINERS: Update maintainer list for chelsio drivers
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.23; Tue, 29 Nov
+ 2022 00:23:17 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::3862:3b51:be36:e6f3]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::3862:3b51:be36:e6f3%6]) with mapi id 15.20.5857.023; Tue, 29 Nov 2022
+ 00:23:16 +0000
+From:   "Keller, Jacob E" <jacob.e.keller@intel.com>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Jiri Pirko <jiri@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Jakub Kicinski" <kuba@kernel.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Boris Brezillon" <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        "Dimitris Michailidis" <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        "Linu Cherian" <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        "Jerin Jacob" <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        "Subbaraya Sundeep" <sbhatta@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "Saeed Mahameed" <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Ido Schimmel" <idosch@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        "drivers@pensando.io" <drivers@pensando.io>,
+        Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Vadim Fedorenko <vadfed@fb.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        "Shalom Toledo" <shalomt@mellanox.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "oss-drivers@corigine.com" <oss-drivers@corigine.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hao Chen <chenhao288@hisilicon.com>,
+        "Guangbin Huang" <huangguangbin2@huawei.com>,
+        Minghao Chi <chi.minghao@zte.com.cn>,
+        Shijith Thotton <sthotton@marvell.com>
+Subject: RE: [PATCH net-next v5 2/4] net: devlink: remove
+ devlink_info_driver_name_put()
+Thread-Topic: [PATCH net-next v5 2/4] net: devlink: remove
+ devlink_info_driver_name_put()
+Thread-Index: AQHZA4aDtuA/HeJz8UWj3YH70WnD9q5VCi+g
+Date:   Tue, 29 Nov 2022 00:23:16 +0000
+Message-ID: <CO1PR11MB5089EEF30335EC3CEDA8FCB7D6129@CO1PR11MB5089.namprd11.prod.outlook.com>
+References: <20221129000550.3833570-1-mailhol.vincent@wanadoo.fr>
+ <20221129000550.3833570-3-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20221129000550.3833570-3-mailhol.vincent@wanadoo.fr>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Ayush Sawal <ayush.sawal@chelsio.com>, <kuba@kernel.org>,
-        <davem@davemloft.net>, <herbert@gondor.apana.org.au>
-CC:     <netdev@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <fmdefrancesco@gmail.com>
-References: <20221128231348.8225-1-ayush.sawal@chelsio.com>
-From:   Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
-In-Reply-To: <20221128231348.8225-1-ayush.sawal@chelsio.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0161.namprd03.prod.outlook.com
- (2603:10b6:a03:338::16) To MW3PR11MB4764.namprd11.prod.outlook.com
- (2603:10b6:303:5a::16)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CO1PR11MB5089:EE_|SJ1PR11MB6201:EE_
+x-ms-office365-filtering-correlation-id: b9b2067e-431e-4bfe-7417-08dad19fe921
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TN7h3/seavlLdJwIt+k1G9yt2o7n9sTCOSx6rTviKNfIMULtx6UPKd17Ah5R7PXYAO+do0MPYjp6BKnp66ady0NrVotVvV7FwKK1mh6l38bnwmVU+wnmRQOl5M/ynzoYqANaZdvJqxe4MRBgNRRj63B8C0wTT/JTr1qaOIofa8iD13irkXKNNEqabaVWXImeOR+iESBFLH9FElBmVDUSBRTnpnUSIcW2D/wfU3HvLeie0N17ciz9YNsIbqCwaG/dxt+vitUmKhPEr9cXow7xyuLMah6HdU8b8LcT7fQlpHymUEZanLkbeQ7O//PbfgoveSxiOgAEIIg2K5PEgtx55Mii44GKCn4MTWN5XuqSHnlms8adv2/iaEWSzEBqui5FVfKhyNQU1+NZgRMLjNNhvGxgebL8q9MhawUPq4Qlbngt872DXmLEiBaR9JSCPTgTXAdFo22DmoKrfCqB6KaobbIvu7q8AO7ePab56kSCmrLpHcCe8ruEJrBDe45d2gVVVK0trW9yTz3+1PvoSq513KGQTVEJlUoichsvKT+ytrIZ5dhjPhtXmeEfrfkXCaUvBPREqJbhoHbXC7B5qtjjrXWaIhdSeEF9dvKAfC4BGIoqN4PW/IW6XqsAb9emLaJ8uLVF6iR4r4qKQqbUqEFzL+8wvJMwCveHqUXn0dkn3k0CxmLvG+yuCyRDrgxSNyPe
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(376002)(396003)(39860400002)(346002)(136003)(451199015)(110136005)(8936002)(52536014)(71200400001)(33656002)(5660300002)(76116006)(186003)(54906003)(66556008)(8676002)(64756008)(66946007)(41300700001)(4326008)(66476007)(316002)(38100700002)(83380400001)(55016003)(38070700005)(122000001)(82960400001)(26005)(9686003)(86362001)(478600001)(66446008)(7696005)(6506007)(53546011)(7406005)(7416002)(2906002)(7366002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sQlJVbSoTGdLU0MZhUX9/x9IXHzc4q1ToIPRADf8/eiFPkF7hBS2VZZ0vqVH?=
+ =?us-ascii?Q?SCbD25H1WfV+Gc5A/yKb7wkVPLBFpd2PCzQ3UImX57Nw9PuWUYmNur9qTEV1?=
+ =?us-ascii?Q?54ruSOrvl/WMEVIgyQni/7yN4Dpxalf7NJn4PtH8Au7emy0ppMJ5WBiaKKpW?=
+ =?us-ascii?Q?assas1S0qKIDxSD2YqKm/SqYtXG+2q4qiVUPRzSv9blm/QXbik+lW9W8A9ZO?=
+ =?us-ascii?Q?4ysh0Oz7YHl0hOP94hDNOxgNfeAa9rjOnlo/87Xo7+LIr8si7xq022i08cJ7?=
+ =?us-ascii?Q?crZZEVCzChkZ9uUOb/Qw0GAsjFqbVASrBbkHhWk/NFyzxuyb3a3v7NnjUyat?=
+ =?us-ascii?Q?42Tn4nDM0Q+2ei6L69R9ZzFONaw2ByIJC0HIa/3AKL62XblKrriaHAfjTZwV?=
+ =?us-ascii?Q?GRdK0LC0EVPq/QBWCmc4bUZeBL82YNEpTN8OPT2nhyd+RlYlHZMpOSnIBfFN?=
+ =?us-ascii?Q?sxFLW3wIrCzzI32G/1paKAq9mwlvqsTDDdJCVi/444zo5gbDKORneKd5niOI?=
+ =?us-ascii?Q?8g5iHLFtHZU6TrlkAYItdKZ0qWIndif3JPiFc1AZBPSILusSCX10upB7oiP5?=
+ =?us-ascii?Q?iak8rDqW9V67e2FRyhE3kQ9MkYDonOdxiNs8oJtYkJbs+IjC1uhVOicXfZDK?=
+ =?us-ascii?Q?MQ7UsemCXOXdshckYoCNTp9DuR3E9E6uKDH8j0r/rSa3UQ6NvPQbqrvz1T8B?=
+ =?us-ascii?Q?VK8V711aKPAbCEAc7pNm5lCnWfACa0x6Vx/y+e0Dwj0eBN1LWNvz0a1LgDBg?=
+ =?us-ascii?Q?fUqJCTQlkuu17Vzm1IbeK//+topsFh2TmwNviLJ5dONQT/SUtgMdskElEj/J?=
+ =?us-ascii?Q?2EKkDMNU+G02DeJ1/OXw3tXz4q/Yc26HUXmgnJzenGvnhkM5OuUOGNDFgFGQ?=
+ =?us-ascii?Q?K520ajTppfbvu9DIrbkNGBfYqsidFu9nUy9zEQeIj+4gWyEYGXjZ9VI200eg?=
+ =?us-ascii?Q?PF+HgsFgpbRlBUVsAlz3LAmjy1BAJDBNfeaVXzdRSzi9XQVfZUcaTzCcic9z?=
+ =?us-ascii?Q?ObSPzhA0qNasEw4u8/nsF98ULBtD+sxAW5zq10QRGx7qlQtyUva1nFLAO0Kp?=
+ =?us-ascii?Q?8rJZgroWjp1SVi8WSVNDlHCpekwcz8q1m+bgdn5Dz9PycuVQkcC6UE1wK43u?=
+ =?us-ascii?Q?dfHXUxhNQlLx+22ZjNx9g4myhre5l9GNucrSu7ObDhLrXMkb/VjIIq6QdD4a?=
+ =?us-ascii?Q?EFaPX7FtbXRZcMLNUTveixKdUlZahbnT31H/Lgrbs0H5Io+zpYTMzJYlmaaC?=
+ =?us-ascii?Q?tvcdm9fRlS/9Am/WkLSKgwdYzvB5xnXtheLFeu7I2E/1WailadSFEWlXMSk8?=
+ =?us-ascii?Q?WZCnWyRz5mwVpfFCi8jEQ7EbqjjV/b+GDh1qk43VEGJfyilZfpADmnR/eVI7?=
+ =?us-ascii?Q?rhntXZSTK0qIVRGk0JhWTNCebAE/qSK3XLRrJyfaNU70LuWzTmYwM8gBMBcd?=
+ =?us-ascii?Q?kFjiia8wGFIfRhAaLay2314pKw0p3xa1gVGK0UeNjZrCzKOkkMs2II332+pw?=
+ =?us-ascii?Q?xzXB2AbFFTBAf9UCn/Bf8OF93lAVzDCMCkWH4EcMlZswUVn8R+zjWeLXRnpP?=
+ =?us-ascii?Q?raMQhRMROUQdnWeGhVecGYYasCQmrelJ+LK+iaBI?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR11MB4764:EE_|IA0PR11MB7378:EE_
-X-MS-Office365-Filtering-Correlation-Id: bcfe0ec1-667f-4ddd-cbad-08dad19e1172
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o9K1Xna3A+a8S9tYfUGmdQ9SJSlUsB7oYpMyDO1NyZisHJtcOGlXvi053P3SFqPPZ66TEEOx1FPiaEhLASiBF9bRTwlN+MZweV1UvY6XolHYmOBEQnvETp1eTk+plQzgYmm3kxM0dKjKU+PnD1myPz2PVXJSDif7DaNpGorgTr7xFDF9xNi0Pnwk5hePD8wpN3/ByxI2FHZ7F05RwN5Kcd/JdOO6JWg8Zoy6L5BqxRw1u5rOiW4wo6Is90sL6KmLWdCxnYo7SWhzRiZCPjzMR5IvmgG03IQLTMQak+pO7ooU0/Mvy+A+x7p2jWN2YkVXxRrjuo8KAW7t247tqGDBWQ6MJukigQlKsbLRVnmM1FjTM7SoqPCD8COYJgnkz2Fg39jKyeewMbgWjtVWGjldjTe/kqCkuDlrGVZ4ajGJsH31xk3Mq3AAYDtS1K/L00ADZp8A1j/SyU9I8OK53Iy9xi8o/CxrKz4fCF7MxjeMBbBkw0BbAPZ/uEqveWiAguaal5S+kocUSiTQmAJZkez+z9i5GiVzyo1jxsoP+tXd2UIwZ/77+5eW8/Aj9Uqf+fzioQeujeCe2mR+Jh/deWI/CFte0rqnMk/Vk/TBuT3iUP6pHFTRNuiwvv2rpNx/YPEy+c9+kYCD5ivitUpaaNc1IypTSJ2ZhtqOCvarSvvQfYYSaurCYXf+YGoF7XGOZgcLdtLPeQUsCXxReokwbwMDEYMdAGScjtUMkwJi/vDOvOY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4764.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(136003)(396003)(366004)(39860400002)(376002)(451199015)(15650500001)(31686004)(2906002)(44832011)(4744005)(316002)(5660300002)(36756003)(66946007)(66476007)(41300700001)(8936002)(66556008)(8676002)(4326008)(86362001)(6512007)(6486002)(478600001)(31696002)(6506007)(26005)(53546011)(186003)(2616005)(82960400001)(83380400001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SThoOXNwSlhmazhHbDZ2d0pTRityQkVRWllEekFqV2FmaTB4K2tqMDgvbzJC?=
- =?utf-8?B?QnZxeEdvWTZwS3hhZHh6L0lKME9MWm45bWlIQStlYmxkR2REdm5XNUJTN05l?=
- =?utf-8?B?bkRGNUtIR3h6ZmhvQVlxZ05qMXNydm5Hdk1PTW8zZFJZYUIwamdUVngvWHFE?=
- =?utf-8?B?RmNXWTBDUEtCeWdKQmJLNnk4VEZ0dUFiQlZ0TndJSnZtVEMrVktrQXlSY2g4?=
- =?utf-8?B?Q3FNU3czVHRCRDNtMlJBR0x1eXkrcXh4RFY5TWVtUXFGa29ha0I3T2p6UVpj?=
- =?utf-8?B?T2Y5THlYUUN6WjJKTUM3eUZkYW40TWdkWmRQdWpGVFZLWWc0TDBOekoxSjBj?=
- =?utf-8?B?aWNRcG4veDVWT3JMdlc0eFEzNWtHcDV4Z0ZaMUptdC9iOExuZGhFUTFKWEcy?=
- =?utf-8?B?TDBzdDl5dHBKai9NRk5iaFRiT3Z3MnFCOGVteGV1V3pKZC9DU3I4MkF1c3Vy?=
- =?utf-8?B?TzRTNjFXZFRDYWs4VGVoaVhSQlo0NUxadHExT2NxY2wzSDVwSXU3TW5iaHJQ?=
- =?utf-8?B?b2NRdkJNZ2tYVWh2c2tGMkN5cnZEZVF1Ty9Na2Q0RFZCNXFtaXZxbmtmY2V5?=
- =?utf-8?B?WnJIbzNJTy9lN2lvbC9mMCttQlRhOEthTWNsdTIwMTJ6K0V4S0tNUUFRN0I4?=
- =?utf-8?B?U1Q3dWhtRVJTalBnWTdKS3kyNVFnd2lxdjdzZVVkUE1mOHJQQzNOYzk4SzZw?=
- =?utf-8?B?MlhPaVFTSzVaM1prNUtkTjZkRG5rUjJOT2RQak5aWnVZYVpNay9aWGFDZTg1?=
- =?utf-8?B?b1NCbGZNb0ZIK2ZaRGFJVG5Oc3FHTlF3dE1mVm9vV1RDc05RNFJZcTh5K204?=
- =?utf-8?B?dDdmWUdLWVdQTEJrdjV1a3d2Z3FpQVpOa0l4Z0hyZW5Cc1VERzBabFd3THRo?=
- =?utf-8?B?b0xXMWN3eFBWcGNvTTlVa0h6WkpXeE16RXFMb3VGUU85dDR6SkVoby94SXlF?=
- =?utf-8?B?U0RxU3J3c3dsckpKSk1nNnNjellRandNNHVMNzY2MHFpKzRqVlRMTWduR09z?=
- =?utf-8?B?YjB0MllGYXpTMjUwanF0MHFCL0dCaU1wbFdhTTlVN3l1UG0xT1BhazNoZ043?=
- =?utf-8?B?d2p5aGgrNG1JRTMxOVU2ZVM0bExSZFduYzhpb3diUHorMnpXaEVMR1ZIUmN1?=
- =?utf-8?B?MStPdWp6Yy82SHNTU1ovMC82VXpwUGtkNTBocXdmU2tKcSszNHFpR0xMWWJm?=
- =?utf-8?B?N1Y2S21iem44WmJHMnd5VDJMU0tHTlgvZjBwSkQxSytrcFZUdzZEaFZFdnlE?=
- =?utf-8?B?WGZBa0ZrOXdZWHk0c251aURtd0ZUZ2Z0SHJXeUE0NXpWU3FqR1pOSUNRYUhy?=
- =?utf-8?B?ZHRmZFVodzRYZGd4UURBeXZTckdEMVE1aG5admRld3BPSXdnQ0g1VEZoUExQ?=
- =?utf-8?B?azI2MXZuMy9LaXZORkZWM0xKdzhxV1VHR3FzSVhmN3RyYmk5bVV2cTVSZDVS?=
- =?utf-8?B?Wi9LZmk1UkxpZGo2S0wyR0VzNnpzS1I1VHQ4LzZkdktORGh6U0lnOFNFditX?=
- =?utf-8?B?RmNJVEI4bk4xVVhOQkd4RTFSVWdadFJVS1dUTi9lRHZqVmoyN1F5RXptRlp1?=
- =?utf-8?B?b1B6d0lhNnFvUk0zZjZFdFN1eDltaUpER2Z0S2NnK052OHBrNUNHUm0vVjBt?=
- =?utf-8?B?UVZWblVBOVN4NUtOUlFmaUpVblZxU2JSOE9lcHM5dHBLVVRyRkFGV3cxTzRT?=
- =?utf-8?B?TVhZbHpxckdIbmZsY1h5bGFxN1ZHWGhQTlYwMC9rdFdFT00yY29aQURQdUFm?=
- =?utf-8?B?NkNNUTRaZGhWQ2pWUll4ZFdORkFlL1FXVzNiMk9SWEZ3M2Rtd2lBSXRCNmIw?=
- =?utf-8?B?Sk1KMTFndlEwdEczR3pKQkE1Z2RFRTh1SUIydm0zRVczR0tKQkdLSjliYVdK?=
- =?utf-8?B?SndmQWdxL0xFTG1hYVBOcGFBeUloaVFKaHRGamtqaGlZbW93eHptcjB3N2JG?=
- =?utf-8?B?dmxkbVBQOFRjZmlWSWJRUElORWFOa1RZa21hUkZRMVpNVDFSWVpoZG13Ynlk?=
- =?utf-8?B?NDI2SEpBYnJQdmYvLzdWUnlzSENPM2p5OFNRSlUrUTdqYXpRRDNlL05UYVcz?=
- =?utf-8?B?a0lHd1pEOExpN3lQc09XeHdkNHNoNENPTDg5SzVIbU8razhFdmkwK2w5Rnlr?=
- =?utf-8?B?d3F1UFhBeVNma0xudGVsK3FmMkxEc3NMMG9qYXRFWXBuVzJxc0lhRUtZdnFt?=
- =?utf-8?Q?fWZdlqpb873+rvKvgItNjW0=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bcfe0ec1-667f-4ddd-cbad-08dad19e1172
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4764.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2022 00:10:05.5682
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9b2067e-431e-4bfe-7417-08dad19fe921
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2022 00:23:16.7479
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LISc7nXoA+tJJPR5muh6QNxbxdBbKQL+eASttAr/OobE3/VrLdbKfGiB01Z7MxAz7L3A9FbgT41CY7ocLgutFyn8ox2/uvevNjLnsj9CICPG6ywGLKfD+jNJ0QM0O1Td
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7378
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: us+OvaXSu42W24wfvyN/eb1wH2oaMU2d3s+uee8P/liUhGbspdnwhw801rfv7vJbZ7HofMHGExlAlREfyw/KUxzZhU22m0EDgZAMYxXcZuM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6201
 X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 11/28/2022 3:13 PM, Ayush Sawal wrote:
-> This updates the maintainers for chelsio inline crypto drivers and
-> chelsio crypto drivers.
-> 
-> Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
-> ---
->   MAINTAINERS | 4 ----
->   1 file changed, 4 deletions(-)
-> 
 
-Acked-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+
+> -----Original Message-----
+> From: Vincent Mailhol <vincent.mailhol@gmail.com> On Behalf Of Vincent
+> Mailhol
+> Sent: Monday, November 28, 2022 4:06 PM
+> To: Jiri Pirko <jiri@nvidia.com>; netdev@vger.kernel.org; Jakub Kicinski
+> <kuba@kernel.org>
+> Cc: David S . Miller <davem@davemloft.net>; Eric Dumazet
+> <edumazet@google.com>; Paolo Abeni <pabeni@redhat.com>; linux-
+> kernel@vger.kernel.org; Boris Brezillon <bbrezillon@kernel.org>; Arnaud E=
+balard
+> <arno@natisbad.org>; Srujana Challa <schalla@marvell.com>; Kurt Kanzenbac=
+h
+> <kurt@linutronix.de>; Andrew Lunn <andrew@lunn.ch>; Florian Fainelli
+> <f.fainelli@gmail.com>; Vladimir Oltean <olteanv@gmail.com>; Michael Chan
+> <michael.chan@broadcom.com>; Ioana Ciornei <ioana.ciornei@nxp.com>;
+> Dimitris Michailidis <dmichail@fungible.com>; Yisen Zhuang
+> <yisen.zhuang@huawei.com>; Salil Mehta <salil.mehta@huawei.com>;
+> Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>; Sunil Goutham <sgoutham@marvell.com>; Linu
+> Cherian <lcherian@marvell.com>; Geetha sowjanya <gakula@marvell.com>;
+> Jerin Jacob <jerinj@marvell.com>; hariprasad <hkelam@marvell.com>;
+> Subbaraya Sundeep <sbhatta@marvell.com>; Taras Chornyi
+> <tchornyi@marvell.com>; Saeed Mahameed <saeedm@nvidia.com>; Leon
+> Romanovsky <leon@kernel.org>; Ido Schimmel <idosch@nvidia.com>; Petr
+> Machata <petrm@nvidia.com>; Simon Horman <simon.horman@corigine.com>;
+> Shannon Nelson <snelson@pensando.io>; drivers@pensando.io; Ariel Elior
+> <aelior@marvell.com>; Manish Chopra <manishc@marvell.com>; Jonathan
+> Lemon <jonathan.lemon@gmail.com>; Vadim Fedorenko <vadfed@fb.com>;
+> Richard Cochran <richardcochran@gmail.com>; Vadim Pasternak
+> <vadimp@mellanox.com>; Shalom Toledo <shalomt@mellanox.com>; linux-
+> crypto@vger.kernel.org; intel-wired-lan@lists.osuosl.org; linux-
+> rdma@vger.kernel.org; oss-drivers@corigine.com; Jiri Pirko
+> <jiri@mellanox.com>; Herbert Xu <herbert@gondor.apana.org.au>; Hao Chen
+> <chenhao288@hisilicon.com>; Guangbin Huang
+> <huangguangbin2@huawei.com>; Minghao Chi <chi.minghao@zte.com.cn>;
+> Shijith Thotton <sthotton@marvell.com>; Vincent Mailhol
+> <mailhol.vincent@wanadoo.fr>
+> Subject: [PATCH net-next v5 2/4] net: devlink: remove
+> devlink_info_driver_name_put()
+>=20
+> Now that the core sets the driver name attribute, drivers are not
+> supposed to call devlink_info_driver_name_put() anymore. Remove it.
+>=20
+
+You could combine this patch with the previous one so that in the event of =
+a cherry-pick its not possible to have this function while the core inserts=
+ the driver name automatically.
+
+I think that also makes it very clear that there are no remaining in-tree d=
+rivers still calling the function.
+
+I don't have a strong preference if we prefer it being separated.
+
+Thanks,
+Jake
+
