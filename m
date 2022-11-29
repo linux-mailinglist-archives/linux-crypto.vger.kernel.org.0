@@ -2,47 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8781D63C5BA
-	for <lists+linux-crypto@lfdr.de>; Tue, 29 Nov 2022 17:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6055A63C5BE
+	for <lists+linux-crypto@lfdr.de>; Tue, 29 Nov 2022 17:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbiK2Qyr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 29 Nov 2022 11:54:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
+        id S236304AbiK2QzK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 29 Nov 2022 11:55:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236382AbiK2QyQ (ORCPT
+        with ESMTP id S236296AbiK2Qyp (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 29 Nov 2022 11:54:16 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3106F6CA27
-        for <linux-crypto@vger.kernel.org>; Tue, 29 Nov 2022 08:49:35 -0800 (PST)
+        Tue, 29 Nov 2022 11:54:45 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BB06D97F
+        for <linux-crypto@vger.kernel.org>; Tue, 29 Nov 2022 08:49:50 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C081CB816D8
-        for <linux-crypto@vger.kernel.org>; Tue, 29 Nov 2022 16:49:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7D1C433C1;
-        Tue, 29 Nov 2022 16:49:00 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7D254B816E6
+        for <linux-crypto@vger.kernel.org>; Tue, 29 Nov 2022 16:49:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE550C433D6;
+        Tue, 29 Nov 2022 16:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669740542;
-        bh=6iD2n0KHW8TQQqOuIVsk1zfdUPSdWiqEGvFsqtmVE7E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Sb0ipLDfk5kQdcsM4wmUtcFLzK9m5epoz0HSqko75uYGTRi/YEMHMnXkyeYFLY2gS
-         NJaChgtn2o+bHU88vvQHL+V3u6Ve4tBKw7BU+nw9A13eSuPjbdufdR4teE4dR7n5yp
-         kyAkORy5dQLn0TvfBQ2WHY0oXng+jSpSpUvdEsGzyk9EARTD+MMV8PFA6sl9j9CzX2
-         sIBImN5RFFDpxfJMXxDLH9FMXTmVKSe9GkNecUlDjLmk9GvcG0eFTDY8X2mjJGWbn1
-         WByvWJQjRWyr8264yzVjFC+yvqBfMKCwG5DSsX4KImP6XX+ngJclihUyI5H7/wAyU0
-         lffTmWo17Ebyg==
+        s=k20201202; t=1669740544;
+        bh=oQMUkxvrTm4OuRm3HK0ePgwoHaMfWUymrN1oCIlb2jY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FOaN4rh6k1CDY798/SmgJ3l2/m7HPaFp/qv8aBLDD6vr0oQWND7XoyXHiiQc69gf/
+         s84kJUofyLit14gtkj/xwbOKD8yPEVmiizdzN6FvGNZ9bRrW1ONBqutLsMMhpGZEHE
+         dWnks2Bef8fCUisMmTrp9OTsLEgsQVRthPe0WaIdpWCBMuQAbbw2+OBo3X/7GW/9em
+         /gyuCVc4/EbZPnwOrdhKw/gEJFIx9I1ZjxA+rOJampNW8kWSTQs4eGOqRJXds5V35j
+         TCFmp/GENg1lj6ZZ7AQ7aLFUMkjFMM0kBRRCAJhru8lllyqahCbHNJd8++z3+/M+hP
+         8BCc8ePvuNZ0Q==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, herbert@gondor.apana.org.au,
         keescook@chromium.org, ebiggers@kernel.org,
         Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 0/4] crypto: arm64 - use frame_push/pop macros
-Date:   Tue, 29 Nov 2022 17:48:48 +0100
-Message-Id: <20221129164852.2051561-1-ardb@kernel.org>
+Subject: [PATCH 1/4] crypto: arm64/aes-neonbs - use frame_push/pop consistently
+Date:   Tue, 29 Nov 2022 17:48:49 +0100
+Message-Id: <20221129164852.2051561-2-ardb@kernel.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221129164852.2051561-1-ardb@kernel.org>
+References: <20221129164852.2051561-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=996; i=ardb@kernel.org; h=from:subject; bh=6iD2n0KHW8TQQqOuIVsk1zfdUPSdWiqEGvFsqtmVE7E=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBjhjftS+8JXLMKyuRpTCfIGjThLbU/Fr25SDCzLPjb sI+y5HKJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCY4Y37QAKCRDDTyI5ktmPJC2yC/ 0SkhQTbDeLV3Zu+PlBiBC/3qMF18khEHhIjEXVgxeLzRsbg81e9xXmU5HVpGFwRIUbBH/vLQA1tU+F LDDr4tWv4FuaeH19RyaTNVvJI7ROFNVZAlufP+q4a2KQE9tCU7Cs0wagwH+jzgvi3Q0Ek5KJanCjsC wn13aSffEZVy60nWmHfbw56eYtI3Ew9KcdBikphpU6Ql3Y97R3S3D5viWEpGcmzYRoXYWi8XhCn3z3 Klw2guXz/r9VsV+5enE8ZLLz6k63xHI0duOkWvNvNzqYnrY73zrgxTokI1TQB6My9D5e9OXivKA6Z5 pKWkPCgpqMhE03I5R0QjsXn+f9zf73T6y3Pi037OTCV7Rb0vd0ij1Ufbk7W6U65hmibKuML6zt9Dqy aJIPSzGBZ2h1mdZB/9WyF+N35loclzGyARQ8BrX27vy3wC3y2RcPHXMJyG/F14pIeioYQ+vLRXOgXF tXG5Jeug5ZrB1k7hq+KmU9PDm/98Ex9bh5PnY0uGFeilE=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1902; i=ardb@kernel.org; h=from:subject; bh=oQMUkxvrTm4OuRm3HK0ePgwoHaMfWUymrN1oCIlb2jY=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBjhjfuqjkvuSq8aMyx5h/TfQRJuuGKk2UmquyRiuAo IQMNdYOJAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCY4Y37gAKCRDDTyI5ktmPJCvUC/ 0cb3km+z0Qvj0HffLq7ioFO7uB1DlYHHBcKY0MSdqexVFyd/wnPKH3lP5Xm/6TPob7nz3YhGVM3oGd f1YRC65DV10O6BqjDtU+9X70RCJlA5aDglTMNgsoyGOL2EWUYgzBwap4i/+glRcC2xIHGAa/SGPvjF cDpLlm1QA0fNT7Sn6DcdtIS0shkTqBOjOQ+hIeyFrFZ3XXDP0EYFcAtj+TM6hbt4JXDay+m3MstQ0Q H72d51ysDC6A42vZWQD/ewsslJKXUCSJK60sd0eZesp97adxC9tt2y3rsE62FF4iOzeGU+WZo5tJWx LUabmAs/MWahWrIcLzytk1y+TlaE1NJdszRpM0J8MeHKYXkR+O0RDadHz+vVVG1tpRyRb5ZWJCkVNY h+lwfZssKwuK9Z1x8Mo7dmnqwYtbm3WvXmrCgRSY4ACC+deBa0k03V4llx+CNfBsp7EzYCBGOPV/+s RCUp3jUwvUQxbBfnGPIVoBrxujYF+DD2qo+DcskkBp1DM=
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,26 +56,76 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-We have a pair of macros on arm64 that can be used in asm code to set up
-and tear down the stack frame when implementing a non-leaf function.
+Use the frame_push and frame_pop macros consistently to create the stack
+frame, so that we will get PAC and/or shadow call stack handling as well
+when enabled.
 
-We will be adding support for shadow call stack and pointer
-authentication to those macros, so that the code in question is less
-likely to be abused for someone's ROP/JOP enjoyment. So let's fix the
-existing crypto code to use those macros where they should be used.
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/arm64/crypto/aes-neonbs-core.S | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-Ard Biesheuvel (4):
-  crypto: arm64/aes-neonbs - use frame_push/pop consistently
-  crypto: arm64/aes-modes - use frame_push/pop macros consistently
-  crypto: arm64/crct10dif - use frame_push/pop macros consistently
-  crypto: arm64/ghash-ce - use frame_push/pop macros consistently
-
- arch/arm64/crypto/aes-modes.S         | 34 +++++++-------------
- arch/arm64/crypto/aes-neonbs-core.S   | 16 ++++-----
- arch/arm64/crypto/crct10dif-ce-core.S |  5 ++-
- arch/arm64/crypto/ghash-ce-core.S     |  8 ++---
- 4 files changed, 24 insertions(+), 39 deletions(-)
-
+diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
+index 66eb3f076fa7a6cf..e4da53b3f189e2bd 100644
+--- a/arch/arm64/crypto/aes-neonbs-core.S
++++ b/arch/arm64/crypto/aes-neonbs-core.S
+@@ -772,7 +772,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
+ 	eor		v6.16b, v6.16b, v31.16b
+ 	eor		v7.16b, v7.16b, v16.16b
+ 
+-	stp		q16, q17, [sp, #16]
++	stp		q16, q17, [x6]
+ 
+ 	mov		bskey, x2
+ 	mov		rounds, x3
+@@ -780,8 +780,8 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
+ SYM_FUNC_END(__xts_crypt8)
+ 
+ 	.macro		__xts_crypt, do8, o0, o1, o2, o3, o4, o5, o6, o7
+-	stp		x29, x30, [sp, #-48]!
+-	mov		x29, sp
++	frame_push	0, 32
++	add		x6, sp, #.Lframe_local_offset
+ 
+ 	ld1		{v25.16b}, [x5]
+ 
+@@ -793,7 +793,7 @@ SYM_FUNC_END(__xts_crypt8)
+ 	eor		v18.16b, \o2\().16b, v27.16b
+ 	eor		v19.16b, \o3\().16b, v28.16b
+ 
+-	ldp		q24, q25, [sp, #16]
++	ldp		q24, q25, [x6]
+ 
+ 	eor		v20.16b, \o4\().16b, v29.16b
+ 	eor		v21.16b, \o5\().16b, v30.16b
+@@ -807,7 +807,7 @@ SYM_FUNC_END(__xts_crypt8)
+ 	b.gt		0b
+ 
+ 	st1		{v25.16b}, [x5]
+-	ldp		x29, x30, [sp], #48
++	frame_pop
+ 	ret
+ 	.endm
+ 
+@@ -832,9 +832,7 @@ SYM_FUNC_END(aesbs_xts_decrypt)
+ 	 *		     int rounds, int blocks, u8 iv[])
+ 	 */
+ SYM_FUNC_START(aesbs_ctr_encrypt)
+-	stp		x29, x30, [sp, #-16]!
+-	mov		x29, sp
+-
++	frame_push	0
+ 	ldp		x7, x8, [x5]
+ 	ld1		{v0.16b}, [x5]
+ CPU_LE(	rev		x7, x7		)
+@@ -874,6 +872,6 @@ CPU_LE(	rev		x8, x8		)
+ 	b.gt		0b
+ 
+ 	st1		{v0.16b}, [x5]
+-	ldp		x29, x30, [sp], #16
++	frame_pop
+ 	ret
+ SYM_FUNC_END(aesbs_ctr_encrypt)
 -- 
 2.35.1
 
