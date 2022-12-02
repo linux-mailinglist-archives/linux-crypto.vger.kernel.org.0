@@ -2,98 +2,73 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A63640659
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Dec 2022 13:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0CC64076F
+	for <lists+linux-crypto@lfdr.de>; Fri,  2 Dec 2022 14:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbiLBMFo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Dec 2022 07:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S233651AbiLBNFO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 2 Dec 2022 08:05:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbiLBMFn (ORCPT
+        with ESMTP id S233659AbiLBNFM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Dec 2022 07:05:43 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9697EBDCC9
-        for <linux-crypto@vger.kernel.org>; Fri,  2 Dec 2022 04:05:41 -0800 (PST)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1p14nO-0006vf-Jk; Fri, 02 Dec 2022 13:05:34 +0100
-Message-ID: <94f5f20b-f7c9-b9b5-1b49-3c4366b47370@pengutronix.de>
-Date:   Fri, 2 Dec 2022 13:05:31 +0100
+        Fri, 2 Dec 2022 08:05:12 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CB5D757B
+        for <linux-crypto@vger.kernel.org>; Fri,  2 Dec 2022 05:05:11 -0800 (PST)
+Received: from dggpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NNtST4Tc8zRpFJ;
+        Fri,  2 Dec 2022 21:04:25 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 2 Dec 2022 21:05:08 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
+        <mpm@selenic.com>, <mb@bu3sch.de>, <dilinger@queued.net>
+CC:     <linux-crypto@vger.kernel.org>, <yangyingliang@huawei.com>,
+        <wangxiongfeng2@huawei.com>
+Subject: [PATCH v2 0/2] hwrng: Fix PCI device refcount leak
+Date:   Fri, 2 Dec 2022 21:22:32 +0800
+Message-ID: <20221202132234.60631-1-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v3] crypto: caam: blob_gen.c: warn if key is insecure
-Content-Language: en-US
-To:     Nikolaus Voss <nikolaus.voss@haag-streit.com>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Gstir <david@sigma-star.at>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Nikolaus Voss <nv@vosn.de>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20221121141929.2E36427E9@mail.steuer-voss.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <20221121141929.2E36427E9@mail.steuer-voss.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi,
+for_each_pci_dev() is implemented by pci_get_device(). The comment of
+pci_get_device() says that it will increase the reference count for the
+returned pci_dev and also decrease the reference count for the input
+pci_dev @from if it is not NULL.
 
-On 21.11.22 15:12, Nikolaus Voss wrote:
-> +	ctrlpriv = dev_get_drvdata(jrdev->parent);
-> +	moo = FIELD_GET(CSTA_MOO, ioread32(&ctrlpriv->ctrl->perfmon.status));
+If we break for_each_pci_dev() loop with pdev not NULL, we need to call
+pci_dev_put() to decrease the reference count. Add the missing
+pci_dev_put() for amd-hwrng and geode-hwrng.
 
-Sorry for not having spotted this the first time, but ioread32 is not
-completely correct here as the CAAM may be big endian while the CPU is
-little endian.
 
-You should be using rd_reg32 here.
+ChangeLog:
+v1 -> v2:
+  1. fix error in amd_rng_mod_exit()
+  2. also add refcount leak fix for geode-hwrng
 
-Cheers,
-Ahmad
+Xiongfeng Wang (2):
+  hwrng: amd - Fix PCI device refcount leak
+  hwrng: geode - Fix PCI device refcount leak
 
-> +	if (moo != CSTA_MOO_SECURE && moo != CSTA_MOO_TRUSTED)
-> +		dev_warn(jrdev,
-> +			 "using insecure test key, enable HAB to use unique device key!\n");
-> +
->  	/*
->  	 * A data blob is encrypted using a blob key (BK); a random number.
->  	 * The BK is used as an AES-CCM key. The initial block (B0) and the
-> diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
-> index 66d6dad841bb2..66928f8a0c4b1 100644
-> --- a/drivers/crypto/caam/regs.h
-> +++ b/drivers/crypto/caam/regs.h
-> @@ -426,6 +426,9 @@ struct caam_perfmon {
->  	u32 rsvd2;
->  #define CSTA_PLEND		BIT(10)
->  #define CSTA_ALT_PLEND		BIT(18)
-> +#define CSTA_MOO		GENMASK(9, 8)
-> +#define CSTA_MOO_SECURE	1
-> +#define CSTA_MOO_TRUSTED	2
->  	u32 status;		/* CSTA - CAAM Status */
->  	u64 rsvd3;
->  
+ drivers/char/hw_random/amd-rng.c   | 18 ++++++++++-----
+ drivers/char/hw_random/geode-rng.c | 36 +++++++++++++++++++++++-------
+ 2 files changed, 41 insertions(+), 13 deletions(-)
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.20.1
 
