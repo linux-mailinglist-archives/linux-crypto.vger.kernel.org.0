@@ -2,108 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A56764296C
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 Dec 2022 14:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B451642D88
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 Dec 2022 17:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbiLENa0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 5 Dec 2022 08:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S232506AbiLEQtz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 5 Dec 2022 11:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232248AbiLENaZ (ORCPT
+        with ESMTP id S231146AbiLEQti (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 5 Dec 2022 08:30:25 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44331CB10;
-        Mon,  5 Dec 2022 05:30:22 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3058961087;
-        Mon,  5 Dec 2022 13:30:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A809C433C1;
-        Mon,  5 Dec 2022 13:30:20 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZHV2azxK"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1670247018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=77miVuUVU22opWZzTtZsOCj5BnnAupU555MsmQ4hl2o=;
-        b=ZHV2azxKBleZixdMsY3L6P7O6rjWGg/LZL3gSZLqZGPG5YIwdQKHZWN7dR36amXBb5CEHm
-        Vt0EYxfpl8P+3ki5UFRU3RBGw0U7lNkkhW7xbBznehCiIVl/Lh8eTsGiW/u07+ZiLTqUIF
-        zv3kThwvJt/l/BZyuHsKPi3OhdKVJ5g=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5dae6f5e (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 5 Dec 2022 13:30:18 +0000 (UTC)
-Date:   Mon, 5 Dec 2022 14:30:17 +0100
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Aurelien Jarno <aurelien@aurel32.net>
-Cc:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lin Jinhan <troy.lin@rock-chips.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] hwrng: add Rockchip SoC hwrng driver
-Message-ID: <Y43yaS1ybCCG6szm@zx2c4.com>
-References: <20221128184718.1963353-1-aurelien@aurel32.net>
- <20221128184718.1963353-3-aurelien@aurel32.net>
- <Y43uiVo41vljLsZM@zx2c4.com>
+        Mon, 5 Dec 2022 11:49:38 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0C920F7F
+        for <linux-crypto@vger.kernel.org>; Mon,  5 Dec 2022 08:48:54 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id a7-20020a056830008700b0066c82848060so7603741oto.4
+        for <linux-crypto@vger.kernel.org>; Mon, 05 Dec 2022 08:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=EvWmzEra/azIE+dhpMGnktmqmSoesb8PSCiM/05QKkVO5anMKEbRHSG7nojCSOyYWk
+         9IDI1UgS5rC+uB5j5uOW4no2X6seMos8u1Uby8q6RKzl1vCALcAn7vpiT6rpclAi8Jt0
+         gPKoEl0xikkT9S+7dg4LTBa5X4VHIsnKU2e6OrEO/j4h9xN1NPllzu29Dg0k3gFH+bOt
+         HMDW+rYw/YqhqvZ6y4oXgIeqTNVodnF9zHtiwgFo2Y0tEc6ReoK23o3+Epe6dWg/8ai1
+         Z4r7fWQ42rAk0Fys+lVH3VBvE+2FTvVvceopyfVxKS8DxJV3KaRTE9M5zTY24mYt1gIO
+         /rEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=PC+HAGvV2/BbHAVWhefgblSoxizNw2zWtSVfCDX+iVLRvEgVV8tCrf7UspxKCuYJRx
+         7pVqNtXGaxMu36euCcYkPpYqAXnq7a/xw11BQ8X5CEIEMdTpqjXSaLSFDWlsa9H8QPfE
+         KiZpS+5M333IqY/5+U7ROG0h8VbsHdxN3OiAUBc3o0NnBYu9QTYnfKN9C6IFjxmBANoC
+         r/79eImjIfjjuHYhvIRZGZEx8Tjrps64awuMRY2Vun/Jjf8wSDBuhwkVTZ0xYRnsSPwk
+         nZqz/Yr1afhW4PjX7aQ93YgyGCv3bttF7YWaGCWUqbinyTbnNpJg0HOPcucf5e6jm/P4
+         N5Yw==
+X-Gm-Message-State: ANoB5pl6GeGBKavrJv2EqXA3WbkEbQi0KSd0TetPpGy7qnB9CX0HPQbB
+        arKpETkK2RiGU9a73ykR701Ykr2c8iZVYOtUIkI=
+X-Google-Smtp-Source: AA0mqf6rJpockmAlPLGWb5IdXxyZXi5oeB/VlA7nQtTh5mH5GBjbP93nFRUHbmrw3A3v2AKvxeLYo6EVgAyGoUC2980=
+X-Received: by 2002:a05:6830:61ce:b0:66b:e4e2:8d25 with SMTP id
+ cc14-20020a05683061ce00b0066be4e28d25mr41635604otb.152.1670258933537; Mon, 05
+ Dec 2022 08:48:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Y43uiVo41vljLsZM@zx2c4.com>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:6358:7211:b0:dd:1fa2:ef73 with HTTP; Mon, 5 Dec 2022
+ 08:48:53 -0800 (PST)
+Reply-To: plml47@hotmail.com
+From:   Philip Manul <lometogo1999@gmail.com>
+Date:   Mon, 5 Dec 2022 08:48:53 -0800
+Message-ID: <CAFtqZGFXDNDSmyfAW1goTwuOjaKBWi=RMxR7avPMnWxdOUFKOg@mail.gmail.com>
+Subject: REP:
+To:     in <in@proposal.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Dec 05, 2022 at 02:13:45PM +0100, Jason A. Donenfeld wrote:
-> If your intention is "90%", this should be 921 or 922, because the
-> quality knob is out of 1024, not 1000.
-> 
-> Herbert - this seems like a fairly common pitfall I've seen all over the
-> place. It might be worth making a mental memo to reject or ask questions
-> about numbers that seem "too round", when you look at these sorts of
-> patches.
-
-Or alternatively we could introduce a cheesy macro like:
-
-   #define HWRNG_PERCENTAGE(p) ((p) * 1024 / 100)
-
-and then enforce that everyone use that. But that's a bit wacky too, in
-the sense of - why is anybody using a non-obvious percentage in the first
-place. Like if you see "512" (or better, "1024 / 2"), okay fine, it's a
-device that guarantees 50%, which seems like a common enough physical
-thing. But if we see "HWRNG_PERCENTAGE(90)", the first question is why?
-What causes that?  Seems very weird. And it's probably wrong.
-
-But if it *is* right, that deserves a big comment with explanation,
-where the calculation for that "921" literal can be explained in full,
-or, better, evaluated as a constant expression in terms of hardware
-constants -- something like
-HW_CLOCKRATE/FROBNICATOR_INTENSITY*1024/TURBOENCABULATION_MODE_WEIGHT,
-and then it all makes sense.
-
-So maybe rather than a macro or accepting barebones "921" values, if the
-value isn't 1024 (0), then it needs a comment + an expression computing
-the value.
-
-Seem reasonable?
-
-Jason
+--=20
+Guten tag,
+Mein Name ist Philip Manul. Ich bin von Beruf Rechtsanwalt. Ich habe
+einen verstorbenen Kunden, der zuf=C3=A4llig denselben Namen mit Ihnen
+teilt. Ich habe alle Papierdokumente in meinem Besitz. Ihr Verwandter,
+mein verstorbener Kunde, hat hier in meinem Land einen nicht
+beanspruchten Fonds zur=C3=BCckgelassen. Ich warte auf Ihre Antwort zum
+Verfahren.
+Philip Manul.
