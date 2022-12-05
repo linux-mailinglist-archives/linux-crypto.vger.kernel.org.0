@@ -2,64 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE396430A1
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 Dec 2022 19:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E59A6430BE
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 Dec 2022 19:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbiLESlH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 5 Dec 2022 13:41:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
+        id S231497AbiLESsP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 5 Dec 2022 13:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbiLESkf (ORCPT
+        with ESMTP id S231687AbiLESsK (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 5 Dec 2022 13:40:35 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2FC209B0;
-        Mon,  5 Dec 2022 10:38:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E9EE60025;
-        Mon,  5 Dec 2022 18:38:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F52C433C1;
-        Mon,  5 Dec 2022 18:38:21 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="i/q4yG4T"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1670265498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+uBKJVNJYw3pTg89I4Wru5rBtHkt0SHV5a0kfWhJUMs=;
-        b=i/q4yG4TRgcAfsp7bhNnqZhFDbgcrF2khLVdsny531uYWtiAIhVlrF0tPkXFrjyvCvWcFp
-        RHvI2Qg7ASdNESHkEkaGsMx8gD9/hevhpNpAtWT2ChagkR35gDzAMEPdaeGR36DoJLiKeU
-        RVcP4QY26axwZe0XMMLJEUYhhAzf1Ho=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id bb930d2a (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 5 Dec 2022 18:38:18 +0000 (UTC)
-Date:   Mon, 5 Dec 2022 19:38:16 +0100
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        tglx@linutronix.de, linux-crypto@vger.kernel.org,
-        linux-api@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Carlos O'Donell <carlos@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v11 1/4] random: add vgetrandom_alloc() syscall
-Message-ID: <Y446mGVCvJX+5mGd@zx2c4.com>
-References: <20221205020046.1876356-1-Jason@zx2c4.com>
- <20221205020046.1876356-2-Jason@zx2c4.com>
- <87cz8xr96o.fsf@oldenburg.str.redhat.com>
+        Mon, 5 Dec 2022 13:48:10 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5E4B84F
+        for <linux-crypto@vger.kernel.org>; Mon,  5 Dec 2022 10:48:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1670266081; bh=6jtH4f4Ooe980NRSIA0tlF1i/AESWVKDiXTi4gEhZto=;
+        h=X-UI-Sender-Class:Subject:From:To:Date:In-Reply-To:References;
+        b=Atlzg2dSIPWW4iBmOANk//MYKabDr4c1csj+R9rZZ4bv3GP9KVI2yN3GxEHSCbUIR
+         WBUifroEY6k7kQ/x8bW9DN0sMxjPi5OwYuVu+8e6hvgaMgU8vhoEgTq2cmdT4ZXtcC
+         dNlUi5J4L/xGZo93dNr/nwVBB22wKbTQZjFOGKgiXc7qCTl1m1zN4Ud3oG7tD9N7Th
+         j/ny+6j/yPyDzSbaUEy7JG5zeu7RkZie6LknheMEGool3FMW3cb4pkomD6WaBsnVIn
+         Wm6i9XBs7APmHRokCS/fEFtln/U9huu8Qyi2nk/P38wkdCdqucvDfNgAFenj20NS9v
+         9brq2rR3PwqxQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.0.2.15] ([94.31.87.22]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M72oH-1p33zr3aqF-008ZFa; Mon, 05
+ Dec 2022 19:48:00 +0100
+Message-ID: <fe7800282ff11f7822778eb9109864f1f3b144f2.camel@gmx.de>
+Subject: Re: [PATCH 0/6] crypto/realtek: add new driver
+From:   Markus Stockhausen <markus.stockhausen@gmx.de>
+To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au
+Date:   Mon, 05 Dec 2022 19:47:59 +0100
+In-Reply-To: <20221013184026.63826-1-markus.stockhausen@gmx.de>
+References: <20221013184026.63826-1-markus.stockhausen@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.1 (3.46.1-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87cz8xr96o.fsf@oldenburg.str.redhat.com>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Provags-ID: V03:K1:2zWWRvoIMwXqRhFtJLggEvKd91LsRvgAmzQ5oFRijFVCfIL6RVC
+ q61a8yP/0yvEQ/jFpJQ6EeS0nz9qyG1rFExFO9Op5zN0x0fbfGX3qdwvVAbMIiTjIG19LLu
+ EfE6T14C6fYUkuxvxLG1gxUeWnPsjsSaofnc2oJYP4B52uVUolu0U2AXnGLL3hF3AqorQ8r
+ Pv8INgktvtNnD+EIAJR0w==
+UI-OutboundReport: notjunk:1;M01:P0:TX605Fm81n0=;yYO2EUD8ded7d0A4k+ZEWwpePG6
+ 3MZIVA25bRAZLfHdiPOva/WI6fruWmOp0RIRvr0lUDoNQTCJKNGQGtcCmR4Daba78oKxgnjDp
+ K8VLhpEpD6aZ5XKckqVTrdU3J9JbJ1kGLmS1Wy2RhI9afL56ZOxzSmTMX/4AT/t/9p8rguJGV
+ Bb3j+gOE8Grh3nPU1GfDBvDsSKPttDluXXMNNjNq4AG/XUZOuls+Rr0WQkDcEqvdbdVFYDdYT
+ sYwnw9uqXH6Rt9AecRxwuPZIVzJfYwV0GLiqj7+gTTzNOR4DUP71P7hKpNeiCRld7jZ48+iqX
+ RQ+C9HxNIPnc/WHe9g68pxjcxFlWpdecwGPyq04IdS7iphjN/06eaWHa6V7osnnIn6/i1lVUx
+ 5Jlr3CYgmj/DK0UU5LZXcXFa2bgf33lhXwwdLxoLmtyFHFuYspfkhKKR3qRqVfshJu4bRV9Y0
+ FteCQpSmSnZeZ/t7xeY9KNo6zBmV/MI1M0tM3DCqESTz0UQbgP3jzkoplLB/1MIxJV5Mgb7qK
+ H6LV6gytYS14m8ZAXcwStegz5TDTwfh7Y2N7605+1NUcAWt6DyJT5GUYt7o4DXZmY84d7/ELq
+ Dgrlglvkg5gGpw/AsT2vGv0cnBUjX3kglCwkFx7adYMGBYBT0EJRvTgT6HBjtHjlKbLcs8g3O
+ swJXrnkRA5nAcOdnVqZ9eQgnU32Up9rjYB6U76ctc1gaIv6AOYc9w9B8Tc88dOYsiHv/Mghws
+ jeTpLjYDcma9yD9lrO+/7vsd06xY53eNpTkWFEvuruNabGYDJpdVcDk66/mKazHMrxf461Q3O
+ ncugDYyf0zw8W3UrBAvmN+zFYRdGy+E0bkpQDpZFOii81AdK2ypKOEqqFF4g/nOvOo51ROtW9
+ 4k6yH9YoGv79ACW6FBarRMee8eSBahZ2HbnQOE6nB+vr12PX+gDNigUyi+uWNPvoNhGzYIFwS
+ jbKsfg==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,18 +68,70 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Dec 05, 2022 at 07:34:39PM +0100, Florian Weimer wrote:
-> > + *   - Passing the first state to munmap(2), as described above.
-> > + * All other uses are undefined behavior, which is subject to change or removal
-> 
-> Suggest: “Passing the first state *and total length* to munmap(2)”
+Am Donnerstag, dem 13.10.2022 um 20:40 +0200 schrieb Markus
+Stockhausen:
 
-Will do.
+> This driver adds support for the Realtek crypto engine. It provides
+> hardware
+> accelerated AES, SHA1 & MD5 algorithms. It is included in SoCs of the
+> RTL838x
+> series, such as RTL8380, RTL8381, RTL8382, as well as SoCs from the
+> RTL930x
+> series, such as RTL9301, RTL9302 and RTL9303. Some little endian and
+> ARM based
+> Realtek SoCs seem to have this engine too. Nevertheless this patch
+> was only
+> developed and verified on MIPS big endian devices.
+>=20
+> Module has been successfully tested with
+> - lots of module loads/unloads with crypto manager extra tests
+> enabled.
+> - openssl devcrypto benchmarking
+> - tcrypt.ko benchmarking
+>=20
+> ...
+>=20
+> Markus Stockhausen (6)
+> =C2=A0 crypto/realtek: header definitions
+> =C2=A0 crypto/realtek: core functions
+> =C2=A0 crypto/realtek: hash algorithms
+> =C2=A0 crypto/realtek: skcipher algorithms
+> =C2=A0 crypto/realtek: enable module
+> =C2=A0 crypto/realtek: add devicetree documentation
+>=20
+> /devicetree/bindings/crypto/realtek,realtek-crypto.yaml|=C2=A0=C2=A0 51 +
+> drivers/crypto/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
+=C2=A0 13
+> drivers/crypto/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0=C2=A0 1
+> drivers/crypto/realtek/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 5
+> drivers/crypto/realtek/realtek_crypto.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 472
+> ++++++++++
+> drivers/crypto/realtek/realtek_crypto.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 325 +++++=
++
+> drivers/crypto/realtek/realtek_crypto_ahash.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 406
+> ++++++++
+> drivers/crypto/realtek/realtek_crypto_skcipher.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0 361 +++++++
+> 8 files changed, 1634 insertions(+)
 
-> Rest of the documentation looks good to me.  It addresses my concerns
-> about future evolution of this interface.
+Hi (Herbert),
 
-Great! So hopefully the api is more or less settled now, and we can turn
-attention to the glibc part.
+as I got neither positive nor negative feedback after your last
+question I just want to ask if there is any work for me to do on this
+series?
 
-Jason
+Thanks in advance.
+
+Markus
+
+
