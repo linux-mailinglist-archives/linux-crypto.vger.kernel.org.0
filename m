@@ -2,92 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3376420A1
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 Dec 2022 00:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803416420C4
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 Dec 2022 01:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbiLDXw3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 4 Dec 2022 18:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        id S231138AbiLEAfR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 4 Dec 2022 19:35:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbiLDXw3 (ORCPT
+        with ESMTP id S231142AbiLEAfP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 4 Dec 2022 18:52:29 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF0B12AF4;
-        Sun,  4 Dec 2022 15:52:28 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4NQNlH0g92z4x1H;
-        Mon,  5 Dec 2022 10:52:27 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1670197947;
-        bh=DT7W5IgwDWV6hM6pj/xWqOLA5IrhhVNwym6MmH4hJX0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AleDbY0CMfFUM5aIqeKthFCwYsOwsPbAc2F4+4JpekaVi6SRp4+sco1VoQbcngrRo
-         lIC671ZBHnqu/P6RoW49TTI0fFd7j60FmiLT03S+AJJq0e+Rvf0UdmSVzmsA4Uw2br
-         gZBq33uiAojBxv/9RpulT5sP8rcGumQARbFcRuV9ZfuSSipcKdl7KQU+ID+DGQDy1k
-         Gut83pLTuhf2z8jJerVJK7XP+SLDM4djUyVZo+LJt/FBHHPXi9k5+I0Q7UaP4Jm9bJ
-         2KLNU106o0uej0RFDJYGkecRtOGBftf+cgoHbBmPoSIe1GLB8E6lrX5pdZunKCp36R
-         VWRxXTqrsRijw==
-Date:   Mon, 5 Dec 2022 10:52:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the crypto tree
-Message-ID: <20221205105225.502d2278@canb.auug.org.au>
-In-Reply-To: <20221205104857.2dab1586@canb.auug.org.au>
-References: <20221205104857.2dab1586@canb.auug.org.au>
+        Sun, 4 Dec 2022 19:35:15 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4325ADF03;
+        Sun,  4 Dec 2022 16:35:13 -0800 (PST)
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2B4LOElN031367;
+        Mon, 5 Dec 2022 00:35:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Ww2kztcN/J/ICRB7ps8+D5a4H/sLs5jeOgAdPXpmvsg=;
+ b=gWoq2HYBaKpoQD9P7DxNjjU6AB4Z+dbylX0Zvli4CX8D6516u23kS/Ld9ZsOd3I3y0S+
+ WqCCbgCZtee3zUXK/UwiEpBcUUGqYUAqPhQOXE0s+cnfM4tABTdhPm7PUYpRFjpMaviG
+ 9z6wZQ0fiW7DVrFdRxfLAbQBLsFiddxh0I8InNyUo/LrvicEfAjDb0iWkXA7hlS3CbPG
+ e5XI19LqDOzfQPpD0TlhYAvg6DgFcpRfjOgdL4BipbrOAxD7AXkjniIdv0npW6SZxTII
+ 6sA8KfgHcWx/9IjN9cxKFtBrZsBcB2xzWn+PKp3x+xPmoqXbvFqMyyZGDwmQIS3OANW/ DA== 
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3m8gd0u98q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Dec 2022 00:35:05 +0000
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2B50LA4S010889;
+        Mon, 5 Dec 2022 00:35:04 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([9.208.129.114])
+        by ppma02wdc.us.ibm.com with ESMTP id 3m7x39j8s6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Dec 2022 00:35:04 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2B50Z2AW16908872
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 5 Dec 2022 00:35:02 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A23865804E;
+        Mon,  5 Dec 2022 00:35:02 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E85258055;
+        Mon,  5 Dec 2022 00:35:02 +0000 (GMT)
+Received: from ltcden12-lp3.aus.stglabs.ibm.com (unknown [9.40.195.53])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  5 Dec 2022 00:35:02 +0000 (GMT)
+From:   Danny Tsen <dtsen@linux.ibm.com>
+To:     linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, leitao@debian.org,
+        nayna@linux.ibm.com, appro@cryptogams.org,
+        linux-kernel@vger.kernel.org, ltcgcw@linux.vnet.ibm.com,
+        dtsen@linux.ibm.com
+Subject: [PATCH v2 0/6] crypto: Accelerated AES/GCM stitched implementation
+Date:   Sun,  4 Dec 2022 19:34:52 -0500
+Message-Id: <20221205003458.4182-1-dtsen@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3O6KPx5Zsaa1u95P3VOcixO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TPuqeMhfML8WLHhkff2iLGRNSqRTA_fI
+X-Proofpoint-ORIG-GUID: TPuqeMhfML8WLHhkff2iLGRNSqRTA_fI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-04_16,2022-12-01_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 mlxlogscore=582
+ bulkscore=0 spamscore=0 adultscore=0 priorityscore=1501 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2212050001
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---Sig_/3O6KPx5Zsaa1u95P3VOcixO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patch series enable an accelerated AES/GCM stitched implementation for
+Power10+ CPU(ppc64le).  This module supports AEAD algorithm.  The stitched
+implementation provides 3.5X+ better performance than the baseline.
 
-Hi all,
+This patch has been tested with the kernel crypto module tcrypt.ko and has
+passed the selftest.  The patch is also tested with
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled
 
-On Mon, 5 Dec 2022 10:48:57 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> It could be (easily) argued that arch/powerpc/include/asm/cache.h should
-> include linus/types.h, but it is also unusual to include an asm/... file
-> before all the linux/... files.
+Danny Tsen (6):
+  Patch1: Update Kconfig and Makefile.
+  Patch2: Glue code for AES/GCM stitched implementation.
+  Patch3: An accelerated AES/GCM stitched implementation.
+  Patch4: Supporting functions for AES.
+  Patch5: Supporting functions for ghash.
+  Patch6: A perl script to process PowerPC assembler source.
 
-Or maybe you should have included linux/cache.h instead of asm/cache.h?
+ arch/powerpc/crypto/Kconfig            |   11 +
+ arch/powerpc/crypto/Makefile           |   10 +
+ arch/powerpc/crypto/aesp8-ppc.pl       | 3846 ++++++++++++++++++++++++
+ arch/powerpc/crypto/ghashp8-ppc.pl     |  370 +++
+ arch/powerpc/crypto/p10-aes-gcm-glue.c |  345 +++
+ arch/powerpc/crypto/p10_aes_gcm.S      | 1519 ++++++++++
+ arch/powerpc/crypto/ppc-xlate.pl       |  229 ++
+ 7 files changed, 6330 insertions(+)
+ create mode 100644 arch/powerpc/crypto/aesp8-ppc.pl
+ create mode 100644 arch/powerpc/crypto/ghashp8-ppc.pl
+ create mode 100644 arch/powerpc/crypto/p10-aes-gcm-glue.c
+ create mode 100644 arch/powerpc/crypto/p10_aes_gcm.S
+ create mode 100644 arch/powerpc/crypto/ppc-xlate.pl
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+2.31.1
 
---Sig_/3O6KPx5Zsaa1u95P3VOcixO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmONMroACgkQAVBC80lX
-0Gz+UggAi8mAW4yDJzKsYQ0UKBCAnWxolGt7tWnVF38OLG7ZWrvmxmU/sTTWA1DL
-QguCLzbg/NoN6tncqpL50+iYrC5R5IeF+Q2Od/mjCrgQNTGrs0GLWrJxQ3QEAqyS
-7ibxucFAhEbg2q4xycf6zC0E7iZ+KpK6T2fALNQ8+x8cdZVsJijAUdamRsbF5+5w
-Y52lcQW60AFKpLaUFtvyhnjZ0991pUF/pFzQu5Cegzt0f2mAKNwgtlAlLGOyaXAA
-4pDycUrNmu1fFmH33KsiYDRZ1XCm/3Cknn3qeDVt5vliszRLXb/IkO4EWcdlCvWK
-/HeB6U1H2cZQR6m37aoy9isMEpTT/Q==
-=GEsa
------END PGP SIGNATURE-----
-
---Sig_/3O6KPx5Zsaa1u95P3VOcixO--
