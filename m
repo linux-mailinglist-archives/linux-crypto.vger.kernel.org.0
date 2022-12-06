@@ -2,75 +2,111 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4985D64457D
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 Dec 2022 15:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474A46445ED
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 Dec 2022 15:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbiLFOVK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 6 Dec 2022 09:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
+        id S234618AbiLFOoZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 6 Dec 2022 09:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234968AbiLFOU5 (ORCPT
+        with ESMTP id S234139AbiLFOoY (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 6 Dec 2022 09:20:57 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C25C2DA93
-        for <linux-crypto@vger.kernel.org>; Tue,  6 Dec 2022 06:20:57 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id c66so14181326edf.5
-        for <linux-crypto@vger.kernel.org>; Tue, 06 Dec 2022 06:20:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7NgRHXVnEISkXMqWfVgd9bPaNDbTrsT8BuxpGskPtjc=;
-        b=UMQuNG/hsmEQ4ehAxyFfV1fe/IuuT2UQ3/WgWb0a1csSPsvCA3S7niqW1YcdmJjapg
-         nH+wvWsnK7SF8cN0OnBo01bnKhSCXpr8ZYTp3wb/k8Jn2Q65AoqAmrllz9RGDng63LOB
-         NybftSpKOQCxcmAYfFtfpCxju4jSrJTpxQY13Vhnvdny4jN1SnzcpRmsj3t13le1aAS7
-         clcTkX8y/C8liuOn31Uo+HbNOXI8xBFQR6/B9Q0jmqlWkYIyXvrbHB4y+fwzs6jk6nd4
-         v0HJhsoaUeMWHr+QaOWhFuQY0JWqQj2izwQQJn/STOUxVXi5jfaTIL3Q6kIxVIXBO04j
-         hJYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7NgRHXVnEISkXMqWfVgd9bPaNDbTrsT8BuxpGskPtjc=;
-        b=Hok2KCa1WJDk5ArUYtfupi9uywKr1JUqpb3MPXoHRP17c65Dkr/atTc4LDzmlwFnkw
-         xsM7SXi+afsd1/vmIVmKCB+m8hw3iSSNJfKUZ7TugLZXfrOM64jDcswnPI8a5OIsJMz/
-         7tlTppAOPPVAi8NHJKRNvAS5ZOjm8w+QavvCWPCZPRxOryoZXyp0R0NPvX1ziJte0+Og
-         rGQx0ZD8Khj8uxn+dvLlXlCfOfZmxMTVHCdtAPC1XolFsVDXmGeyOodiBJ6KtKZXCqH0
-         ho+OIE3wf+U9tzGDGPOlCyoumXu8mnz4SPO6FaAdwnQFnEbLKKH87vdvKgrEHiopLe9Q
-         h2AQ==
-X-Gm-Message-State: ANoB5plMHMX8+OXXobnj8JVUFeORgyNPGuIrm6ltNf6VINxIUGXzzcz6
-        KW0uMT1PzRGL2BcqRv3eld/TLYh+CDqOyIZP7vE=
-X-Google-Smtp-Source: AA0mqf5l1RO+xonuyXisJSDMG2JyNTWiGD378XozzhYa5eT52tHsaSSJdPKcHP0IGSQ+dyYLxvZbP5cun0jmTOE42aU=
-X-Received: by 2002:a05:6402:361:b0:46c:25ea:731 with SMTP id
- s1-20020a056402036100b0046c25ea0731mr16813909edw.194.1670336455465; Tue, 06
- Dec 2022 06:20:55 -0800 (PST)
+        Tue, 6 Dec 2022 09:44:24 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5351C23399
+        for <linux-crypto@vger.kernel.org>; Tue,  6 Dec 2022 06:44:21 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-281-LsLMPZAZOU6vU66casKxsQ-1; Tue, 06 Dec 2022 14:44:18 +0000
+X-MC-Unique: LsLMPZAZOU6vU66casKxsQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 6 Dec
+ 2022 14:44:17 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.044; Tue, 6 Dec 2022 14:44:17 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Lafreniere' <peter@n8pjl.ca>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+CC:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 10/24] crypto: x86/poly - limit FPU preemption
+Thread-Topic: [PATCH v4 10/24] crypto: x86/poly - limit FPU preemption
+Thread-Index: AQHZCXuUthnlIbrum024abYi187HBa5g7Jiw
+Date:   Tue, 6 Dec 2022 14:44:17 +0000
+Message-ID: <4f72e36f960347b29d1d6b3e59cdb8a2@AcuMS.aculab.com>
+References: <20221103042740.6556-1-elliott@hpe.com>
+ <20221116041342.3841-1-elliott@hpe.com>
+ <20221116041342.3841-11-elliott@hpe.com> <Y3TF7/+DejcnN0eV@zx2c4.com>
+ <Y4B/kjS0lgzdUJHG@gondor.apana.org.au>
+ <MW5PR84MB1842C2D1EA00D5EF65784E25AB179@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+ <Y4nEcV4w3eOEFYze@gondor.apana.org.au>
+ <MW5PR84MB184215302DC8E824812D6B13AB179@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+ <Y47El6TRitHm7Xz9@gondor.apana.org.au>
+ <5TnEjVPNm7Eyw-GH7C0LeJJvgRSpOLb2NUshnG407s3TGTXL1lq4RpsoAMTpVGKWk7tVxDI5f2G9aH6lDbATR6QqXXkE7q54o7TUzO91ibI=@n8pjl.ca>
+In-Reply-To: <5TnEjVPNm7Eyw-GH7C0LeJJvgRSpOLb2NUshnG407s3TGTXL1lq4RpsoAMTpVGKWk7tVxDI5f2G9aH6lDbATR6QqXXkE7q54o7TUzO91ibI=@n8pjl.ca>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Received: by 2002:a05:6408:159f:b0:1c7:bee6:1bfa with HTTP; Tue, 6 Dec 2022
- 06:20:54 -0800 (PST)
-Reply-To: halabighina00@gmail.com
-From:   Ghina Halabi <yayradede@gmail.com>
-Date:   Tue, 6 Dec 2022 14:20:54 +0000
-Message-ID: <CAJ3hp9XBee=oj7ORQMJh1joQXhg1YhQzZxF_JciG-7Hm2Hxzqw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Hello good day,I am happy to be together with you, My name is Ghina
-Halabi, I am a military nurse working with  Israeli defense force.
-Please don't let my profession, race or nationality enter your mind,
-there is something very important which I would like us to discuss.Can
-we talk about friendship and partnership? please if you really want to
-have a good and prosperous communication with me please kindly respond
-to me positively.
+RnJvbTogUGV0ZXIgTGFmcmVuaWVyZQ0KPiBTZW50OiAwNiBEZWNlbWJlciAyMDIyIDE0OjA0DQo+
+DQo+ID4gPiA+IEJUVywganVzdCBhIG1pbm9yIG5pdCBidXQgeW91IGNhbiBkZWxldGUgdGhlIGNv
+bmRfcmVzY2hlZCgpIGNhbGwNCj4gPiA+ID4gYmVjYXVzZSBrZXJuZWxfZnB1X2VuZCgpL3ByZWVt
+cHRfZW5hYmxlKCkgd2lsbCBkbyBpdCBhbnl3YXkuDQo+ID4gPg0KPiA+ID4gVGhhdCBoYXBwZW5z
+IHVuZGVyDQo+ID4gPiBDT05GSUdfUFJFRU1QVElPTj15DQo+ID4gPiAoZnJvbSBpbmNsdWRlL0xp
+bnV4L3ByZWVtcHQuaCBhbmQgYXJjaC94ODYvaW5jbHVkZS9hc20vcHJlZW1wdC5oKQ0KPiA+ID4N
+Cj4gPiA+IElzIGNhbGxpbmcgY29uZF9yZXNjaGVkKCkgc3RpbGwgaGVscGZ1bCBpZiB0aGF0IGlz
+IG5vdCB0aGUgY29uZmlndXJhdGlvbj8NCj4gPg0KPiA+DQo+ID4gUGVyaGFwcywgYnV0IHRoZW4g
+YWdhaW4gcGVyaGFwcyBpZiBwcmVlbXB0aW9uIGlzIG9mZiwgbWF5YmUgd2UNCj4gPiBzaG91bGRu
+J3QgZXZlbiBib3RoZXIgd2l0aCB0aGUgNEsgc3BsaXQuIFdlcmUgdGhlIGluaXRpYWwNCj4gPiB3
+YXJuaW5ncyB3aXRoIG9yIHdpdGhvdXQgcHJlZW1wdGlvbj8NCj4gPg0KPiA+IFBlcnNvbmFsbHkg
+SSBkb24ndCByZWFsbHkgY2FyZSBzaW5jZSBJIGFsd2F5cyB1c2UgcHJlZW1wdGlvbi4NCj4gPg0K
+PiA+IFRoZSBQUkVFTVBUIEtjb25maWdzIGRvIHByb3ZpZGUgYSBiaXQgb2YgbnVhbmNlIHdpdGgg
+dGhlIHNwbGl0DQo+ID4gYmV0d2VlbiBQUkVFTVBUX05PTkUgdnMuIFBSRUVNUFRfVk9MVU5UQVJZ
+LiBCdXQgcGVyaGFwcyB0aGF0IGlzDQo+ID4ganVzdCBvdmVya2lsbCBmb3Igb3VyIHNpdHVhdGlv
+bi4NCj4gDQo+IEkgd2FzIHRoaW5raW5nIGFib3V0IHRoaXMgYSBmZXcgZGF5cyBhZ28sIGFuZCBt
+eSAywqIgaXMgdGhhdCBpdCdzDQo+IHByb2JhYmx5IGJlc3QgdG8gbm90IHByZWVtcHQgdGhlIGtl
+cm5lbCBpbiB0aGUgbWlkZGxlIG9mIGEgY3J5cHRvDQo+IG9wZXJhdGlvbiB1bmRlciBQUkVFTVBU
+X1ZPTFVOVEFSWS4gV2UncmUgYWxyZWFkeSBub3QgcHJlZW1wdGluZyBkdXJpbmcNCj4gdGhlc2Ug
+b3BlcmF0aW9ucywgYW5kIHRoZXJlIGhhdmVuJ3QgYmVlbiBjb21wbGFpbnRzIG9mIGV4Y2Vzc2l2
+ZSBsYXRlbmN5DQo+IGJlY2F1c2Ugb2YgdGhlc2UgY3J5cHRvIG9wZXJhdGlvbnMuDQouLi4NCg0K
+UHJvYmFibHkgYmVjYXVzZSB0aGUgcGVvcGxlIHdobyBoYXZlIGJlZW4gc3VmZmVyaW5nIGZyb20g
+KGFuZA0KbG9va2luZyBmb3IpIGxhdGVuY3kgaXNzdWVzIGFyZW4ndCBydW5uaW5nIGNyeXB0byB0
+ZXN0cy4NCg0KSSd2ZSBmb3VuZCBzb21lIHRlcnJpYmxlIHByZS1lbXB0aW9uIGxhdGVuY3kgaXNz
+dWVzIHRyeWluZw0KdG8gZ2V0IFJUIHByb2Nlc3NlcyBzY2hlZHVsZWQgaW4gYSBzZW5zaWJsZSB0
+aW1lZnJhbWUuDQpJIHdvdWxkbid0IHdvcnJ5IGFib3V0IDEwMHVzIC0gSSdtIGRvaW5nIGF1ZGlv
+IHByb2Nlc3NpbmcNCmV2ZXJ5IDEwbXMsIGJ1dCBhbnl0aGluZyBtdWNoIGxvbmdlciBjYXVzZXMg
+cHJvYmxlbXMgd2hlbg0KdHJ5aW5nIHRvIHVzZSA5MCslIG9mIHRoZSBjcHUgdGltZSBmb3IgbG90
+cyBvZiBhdWRpbyBjaGFubmVscy4NCg0KSSBkaWRuJ3QgdHJ5IGEgQ09ORklHX1JUIGtlcm5lbCwg
+dGhlIGFwcGxpY2F0aW9uIG5lZWRzIHRvIHJ1bg0Kb24gYSBzdGFuZGFyZCAnZGlzdHJvJyBrZXJu
+ZWwuIEluIGFueSBjYXNlIEkgc3VzcGVjdCBhbGwgdGhlDQpleHRyYSBwcm9jZXNzZXMgc3dpdGNo
+ZXMgKGV0YykgdGhlIFJUIGtlcm5lbCBhZGRzIHdpbGwgY29tcGxldGVseQ0Ka2lsbCBwZXJmb3Jt
+YW5jZS4NCg0KSSB3b25kZXIgaG93IG11Y2ggaXQgd291bGQgY29zdCB0byBtZWFzdXJlIHRoZSB0
+aW1lIHNwZW50IHdpdGgNCnByZS1lbXB0IGRpc2FibGVkIChhbmQgbm90IGNoZWNrZWQpIGFuZCB0
+byB0cmFjZSBsb25nIGludGVydmFscy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
+cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
+MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+
