@@ -2,134 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69565645813
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Dec 2022 11:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE636458A8
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Dec 2022 12:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbiLGKj5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 7 Dec 2022 05:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
+        id S229515AbiLGLMJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 7 Dec 2022 06:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbiLGKjz (ORCPT
+        with ESMTP id S229778AbiLGLLZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 7 Dec 2022 05:39:55 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E7EB96
-        for <linux-crypto@vger.kernel.org>; Wed,  7 Dec 2022 02:39:54 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 25C5A612B7
-        for <linux-crypto@vger.kernel.org>; Wed,  7 Dec 2022 10:39:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39E7AC433D7;
-        Wed,  7 Dec 2022 10:39:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670409593;
-        bh=36YqQnOtNbUcTuWjMaDed0znfLGCdnAv3m9xyuWbSXQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CpOntchcb/BjKuYFzbkI72PcqkLOWGTs7yWmlHb9uwAyP5eAuhImrbOILLECobrnf
-         kmAaRTu0MPFpgM81RRY4onOsdSOVYph+clKOcWO1giiRWif17+6TMGUukd07+5ag/6
-         Zeg1an9p1WXRLlscvhS1a8X7CLgFX2xeWpV+KN7Dy0ysW0pYkT6Gi1CE+jbKUczirk
-         8xWGhn93hGxziAGpKT4ggR9FTIAktPKG+is4liHzCe2eE/PLlUSTB79iOX0nEeNWOg
-         Ik7/bigwdF4IvVc8Ho7PRz2A6/5mgvkVbAUgLYtrRckNh2F0Y4ZPZFbNVlE4b1Gp/z
-         Caq8pnfQnfW9A==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk
-Cc:     linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 2/2] ARM: permit non-nested kernel mode NEON in softirq context
-Date:   Wed,  7 Dec 2022 11:39:36 +0100
-Message-Id: <20221207103936.2198407-3-ardb@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221207103936.2198407-1-ardb@kernel.org>
-References: <20221207103936.2198407-1-ardb@kernel.org>
+        Wed, 7 Dec 2022 06:11:25 -0500
+X-Greylist: delayed 935 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 07 Dec 2022 03:10:55 PST
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B3D22BE9;
+        Wed,  7 Dec 2022 03:10:54 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4NRvBy3lkhz9yF8q;
+        Wed,  7 Dec 2022 18:48:10 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwAnDvrycJBjWe_HAA--.20736S2;
+        Wed, 07 Dec 2022 11:54:53 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     dhowells@redhat.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        ebiggers@kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH] public_key: Add a comment to public_key_signature struct definition
+Date:   Wed,  7 Dec 2022 11:54:30 +0100
+Message-Id: <20221207105430.248613-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2672; i=ardb@kernel.org; h=from:subject; bh=36YqQnOtNbUcTuWjMaDed0znfLGCdnAv3m9xyuWbSXQ=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBjkG1nbMBKGcpxvDP1xaATdLbbvNcgx0uP63Vp8/Kd oyMBLy+JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCY5BtZwAKCRDDTyI5ktmPJFr7C/ 4zG0d1Qfu4iWKy50r3Mru2HgU59zvrANrytytJUxsNJGc3Y7Cuc17Qd++YkZRhLSRWJrDAw4MBjty4 w/yZeVXQc6FB042MvUV4+n5MZQdeLH2KUqOZmNbhQdmGz18gma779rpMkeTaPOmBB4EYtiab6tuL0T VUbR2GAWQoS+WEnE5vgoa5ERpuVqo4U2DmDVwzFH0aZDtD7cuNoQc7wDdGgkhZdIn4C4UHfzlx8Ml2 sBvGdpbfMo3h46cHDbIqAcybT1TiL4FSkDFgU0ILnATv09/5MVyDAcd46BxQCj6kJshIAFBE9af8v/ h2JuUPqF+pVOSDTHh98E7IJMCC2lriAKAnWoUETboNJfltSSIuU3e+X07Dxl9bl6qpE18NcQFt7v1W 4bHaigetdBQ6YqElgqx7PI2r8qB+d6pbgJKCqDs535Eh0YNH/I1QtnWXGLAAFQMG1W/vD0V2BWSIKm 84CXN0WRxWxqB4lWgV2+Tw4IZA78xHUguyiFrl9pJCjl8=
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwAnDvrycJBjWe_HAA--.20736S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4xJw4DCw4rKr4rXF13urg_yoW8GF4UpF
+        s3Gr1rKryjgrn3AFs7C3WfC34rGa1UCr17Ww4DZ3y3uanxXw1kCw4Ika13W3Z5XrWkXay7
+        ArZFgw1Yvw15Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgATBF1jj4Jj+AACs-
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-We currently only permit kernel mode NEON in process context, to avoid
-the need to preserve/restore the NEON register file when taking an
-exception while running in the kernel.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Like we did on arm64, we can relax this restriction substantially, by
-permitting kernel mode NEON from softirq context, while ensuring that
-softirq processing is disabled when the NEON is being used in task
-context. This guarantees that only NEON context belonging to user space
-needs to be preserved and restored, which is already taken care of.
+public_key_verify_signature() calls sg_set_buf() to set the signature and
+digest for the signature verification.
 
-This is especially relevant for network encryption, where incoming
-frames are typically handled in softirq context, and deferring software
-decryption to a kernel thread or falling back to C code are both
-undesirable from a performance PoV.
+As sg_set_buf() requires the buffer to be in physically contiguous memory,
+see commit ac4e97abce9b8 ("scatterlist: sg_set_buf() argument must be in
+linear mapping"), mention that in a comment for the signature and digest
+fields of the public_key_signature structure.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/linux-integrity/Y4pIpxbjBdajymBJ@sol.localdomain/
+Suggested-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- arch/arm/include/asm/simd.h |  8 ++++++++
- arch/arm/vfp/vfpmodule.c    | 13 ++++++-------
- 2 files changed, 14 insertions(+), 7 deletions(-)
+ include/crypto/public_key.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/include/asm/simd.h b/arch/arm/include/asm/simd.h
-new file mode 100644
-index 0000000000000000..82191dbd7e78a036
---- /dev/null
-+++ b/arch/arm/include/asm/simd.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#include <linux/hardirq.h>
-+
-+static __must_check inline bool may_use_simd(void)
-+{
-+	return IS_ENABLED(CONFIG_KERNEL_MODE_NEON) && !in_hardirq();
-+}
-diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
-index 8f5bc672b4aac04a..4e1a786df76df157 100644
---- a/arch/arm/vfp/vfpmodule.c
-+++ b/arch/arm/vfp/vfpmodule.c
-@@ -723,12 +723,12 @@ void kernel_neon_begin(void)
- 	local_bh_disable();
- 
- 	/*
--	 * Kernel mode NEON is only allowed outside of interrupt context
--	 * with preemption disabled. This will make sure that the kernel
--	 * mode NEON register contents never need to be preserved.
-+	 * Kernel mode NEON is only allowed outside of hardirq context with
-+	 * preemption and softirq processing disabled. This will make sure that
-+	 * the kernel mode NEON register contents never need to be preserved.
- 	 */
--	BUG_ON(in_interrupt());
--	cpu = get_cpu();
-+	BUG_ON(in_hardirq());
-+	cpu = __smp_processor_id();
- 
- 	fpexc = fmrx(FPEXC) | FPEXC_EN;
- 	fmxr(FPEXC, fpexc);
-@@ -744,7 +744,6 @@ void kernel_neon_begin(void)
- 		vfp_save_state(vfp_current_hw_state[cpu], fpexc);
- #endif
- 	vfp_current_hw_state[cpu] = NULL;
--	local_bh_enable();
- }
- EXPORT_SYMBOL(kernel_neon_begin);
- 
-@@ -752,7 +751,7 @@ void kernel_neon_end(void)
- {
- 	/* Disable the NEON/VFP unit. */
- 	fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
--	put_cpu();
-+	local_bh_enable();
- }
- EXPORT_SYMBOL(kernel_neon_end);
- 
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 68f7aa2a7e55..6d623e063034 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -37,8 +37,8 @@ extern void public_key_free(struct public_key *key);
+  */
+ struct public_key_signature {
+ 	struct asymmetric_key_id *auth_ids[3];
+-	u8 *s;			/* Signature */
+-	u8 *digest;
++	u8 *s;			/* Signature (in physically contiguous mem) */
++	u8 *digest;		/* Digest (in physically contiguous mem) */
+ 	u32 s_size;		/* Number of bytes in signature */
+ 	u32 digest_size;	/* Number of bytes in digest */
+ 	const char *pkey_algo;
 -- 
-2.35.1
+2.25.1
 
