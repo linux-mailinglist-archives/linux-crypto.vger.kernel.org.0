@@ -2,59 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3332E6538EC
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Dec 2022 23:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9036A6538FF
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Dec 2022 23:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbiLUWng (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 21 Dec 2022 17:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
+        id S230014AbiLUWuR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 21 Dec 2022 17:50:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbiLUWnI (ORCPT
+        with ESMTP id S229789AbiLUWuQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 21 Dec 2022 17:43:08 -0500
+        Wed, 21 Dec 2022 17:50:16 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEEE24097
-        for <linux-crypto@vger.kernel.org>; Wed, 21 Dec 2022 14:42:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B907422533
+        for <linux-crypto@vger.kernel.org>; Wed, 21 Dec 2022 14:49:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1671662542;
+        s=mimecast20190719; t=1671662968;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mv0JdiEUm8fY4r7rY54vtlemTUttCXqsgsmptQYzLmc=;
-        b=XMvPRkschODKbo9XNSiYPwAWu24KeDatRB/jKOS2IfW6l7GXtpjrRKafzGFEP18S3qWJmP
-        O8ZbzD9v17kw5ZllBDMqwZ25+Y+hX6PT+Gnn750eibPfk+SVOSvWM7Qa67d+qfLXIp4+/j
-        ZhD+G/MR4hTG9WpKbHswbOsPl2wh1Zo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-116-fKIoZ0QBPd-fRFtYSUZekg-1; Wed, 21 Dec 2022 17:42:17 -0500
-X-MC-Unique: fKIoZ0QBPd-fRFtYSUZekg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4522A858F0E;
-        Wed, 21 Dec 2022 22:42:17 +0000 (UTC)
-Received: from rules.brq.redhat.com (ovpn-208-11.brq.redhat.com [10.40.208.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 409A040C2004;
-        Wed, 21 Dec 2022 22:42:14 +0000 (UTC)
-From:   Vladis Dronov <vdronov@redhat.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     nstange@suse.de, elliott@hpe.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, smueller@chronox.de,
-        vdronov@redhat.com
-Subject: [PATCH 6/6] crypto: testmgr - allow ecdsa-nist-p256 and -p384 in FIPS mode
-Date:   Wed, 21 Dec 2022 23:41:11 +0100
-Message-Id: <20221221224111.19254-7-vdronov@redhat.com>
-In-Reply-To: <20221221224111.19254-1-vdronov@redhat.com>
-References: <20221221224111.19254-1-vdronov@redhat.com>
+        bh=x93bjXectChC3bGAT4/VH1LjHa7gigd0V1M4FXwPnRI=;
+        b=cnxpnRcmDS1JACA1fozeKyTEv8PFtNVJhufoT0mv6y34sZ+9zaI3G7Odrj37OF59zaXh8i
+        nOsxIGlZRDztnZ3Kmh5uuYaHlCXChDf7n1Y5vAPs2ZAcY/5xktS1/k12IURU8cS5mrWkcW
+        BIHBQ37Hbdi7UDgN49AZ9uNokn5IR7Q=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-662-2TLA8J-BNyq_xqqZH_TX0Q-1; Wed, 21 Dec 2022 17:49:26 -0500
+X-MC-Unique: 2TLA8J-BNyq_xqqZH_TX0Q-1
+Received: by mail-qk1-f197.google.com with SMTP id q20-20020a05620a0d9400b006fcaa1eac9bso74720qkl.23
+        for <linux-crypto@vger.kernel.org>; Wed, 21 Dec 2022 14:49:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x93bjXectChC3bGAT4/VH1LjHa7gigd0V1M4FXwPnRI=;
+        b=seylw4AYwdM5nyAFztRdanqjaVabqZWJkpPtxFcWljkjEb1iazoKcW8Vny9G8mWUxY
+         vP+IEBUjDJUT51C+1sziruVsN5RYSEpDSmH4D5/Xkn3tPfV7+MMF7I+ZY2OuZAnZnBWj
+         w/pfAx04bFS4QLNhT6lZaiZbaqtoNalXX2sMrR2Y2ns2aRyfhvAgAv8VEPC4vL7b8pIU
+         VMNcr/xOAeA74pwogGkRuv9WUn5OcYgn/bwWoDACRX7k+4gioJyNoLtCN0CuZ8kYolf3
+         jwN41RuqReM3rKzwcgIi/Fg9ukP6/3V7udWtRXFd7NvuoSSHsQQ1He5Q2O7tc7rQn3R8
+         pnPA==
+X-Gm-Message-State: AFqh2koxKe3g/Zuu6R1kdvus6zRKnHFix32ODB29Ev9akS969bvtA40i
+        wqn4bn8k84gJW74yY2iINKx9oB1aozG1U8WcdnIkRgfl2ff9di86RIpuai0y5zhC+3kbaJDiqS8
+        5YmymZ9WaEXLXGpcw8w5xH1J4o2DFq4kLzZRKMUch
+X-Received: by 2002:a05:622a:393:b0:3a5:2615:5698 with SMTP id j19-20020a05622a039300b003a526155698mr99038qtx.275.1671662966351;
+        Wed, 21 Dec 2022 14:49:26 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXvEPBejw7tWeGEe7bWZix+g9hgQv/lB8tzg4S51hWHYQa7o6wf0ARWSUUJkWnHcidWVtWU3DGHKPaaKlTrl0S4=
+X-Received: by 2002:a05:622a:393:b0:3a5:2615:5698 with SMTP id
+ j19-20020a05622a039300b003a526155698mr99033qtx.275.1671662966140; Wed, 21 Dec
+ 2022 14:49:26 -0800 (PST)
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+References: <20221108142025.13461-1-nstange@suse.de> <20221221152400.8515-1-vdronov@redhat.com>
+ <Y6NwqFQqlszdheYZ@sol.localdomain>
+In-Reply-To: <Y6NwqFQqlszdheYZ@sol.localdomain>
+From:   Vladis Dronov <vdronov@redhat.com>
+Date:   Wed, 21 Dec 2022 23:49:15 +0100
+Message-ID: <CAMusb+ScLnBVJxZt8BkAKxDjEvqh85VZRhbhf=Q2zu0KRi2tbQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Trivial set of FIPS 140-3 related changes
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     nstange@suse.de, davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        smueller@chronox.de
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,37 +75,37 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Nicolai Stange <nstange@suse.de>
+Hi,
 
-The kernel provides implementations of the NIST ECDSA signature
-verification primitives. For key sizes of 256 and 384 bits respectively
-they are approved and can be enabled in FIPS mode. Do so.
+On Wed, Dec 21, 2022 at 9:56 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, Dec 21, 2022 at 04:24:00PM +0100, Vladis Dronov wrote:
+> > Hi Nicolai, Robert, Herbert, all,
+> >
+> > I would like to revive this older upstream email thread. I would like
+> > to address notes from reviewers (namely, Robert) by additional patches
+> > so the whole patchset can be accepted. This should ease our future
+> > kernel work re: FIPS.
+> >
+> > The below 2 patches address (I hope) both notes Robert and Herbert have
+> > provided (thanks!). I hope the whole patchset can be accepted then.
+> >
+> > Logically my 2 patches should follow [PATCH 1/4] and be patches 2 and 3.
+> > Herbert is it possible to reorder them when accepting?
+> >
+> > Thank you! and
+> >
+> > Best regards,
+> > Vladis
+>
+> Please just resend the whole series, with the --base option to git format-patch
+> used, so that reviewers don't have to try to piece it together.
 
-Signed-off-by: Nicolai Stange <nstange@suse.de>
-Signed-off-by: Vladis Dronov <vdronov@redhat.com>
----
- crypto/testmgr.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thank you, Eric, the patchset was resend with a proper ordering:
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index a223cf5f3626..795c4858c741 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -5034,12 +5034,14 @@ static const struct alg_test_desc alg_test_descs[] = {
- 	}, {
- 		.alg = "ecdsa-nist-p256",
- 		.test = alg_test_akcipher,
-+		.fips_allowed = 1,
- 		.suite = {
- 			.akcipher = __VECS(ecdsa_nist_p256_tv_template)
- 		}
- 	}, {
- 		.alg = "ecdsa-nist-p384",
- 		.test = alg_test_akcipher,
-+		.fips_allowed = 1,
- 		.suite = {
- 			.akcipher = __VECS(ecdsa_nist_p384_tv_template)
- 		}
--- 
-2.38.1
+https://lore.kernel.org/linux-crypto/20221221224111.19254-1-vdronov@redhat.com/T/#t
+with a subject: [PATCH 0/6] Trivial set of FIPS 140-3 related changes
+
+Best regards,
+Vladis
 
