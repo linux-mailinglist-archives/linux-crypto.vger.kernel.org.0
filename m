@@ -2,361 +2,255 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3BC6536B1
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Dec 2022 19:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0010D6536CA
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Dec 2022 20:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbiLUS4U (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 21 Dec 2022 13:56:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
+        id S234296AbiLUTDg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 21 Dec 2022 14:03:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbiLUS4T (ORCPT
+        with ESMTP id S229620AbiLUTDf (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 21 Dec 2022 13:56:19 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED8B647C;
-        Wed, 21 Dec 2022 10:56:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 9B687CE186C;
-        Wed, 21 Dec 2022 18:56:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8206C433D2;
-        Wed, 21 Dec 2022 18:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671648973;
-        bh=I1Wb/JVkjLx/D5Iu41GpT9ftH9FUtw4RpMRFSFdWNlw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fIb6DQ6RJ1UC2WtFiKNrTv9lAD0Rcc9MVYxpARnYwPdZgkqp4Jo5UQGQvg+AflMhq
-         2E7xushjeWlgp95ABFMa9NcijYUi0MA0rGUHcFEAJQF4LNfHEZKKgFm4S0APVM67c+
-         nmzgFENQuVEYLjpziZ5elMLRNEEgJ0eWwBpIVh5ZjN2YdZzJoQ+Mo7CiM/JVFN5IAX
-         bUIiLBt1qb+PMbQip0YBLH0Fdyh9y5z81aSYWtqn8D8fP459cxS6lXIXQnWldCsLb0
-         C5guTRv8LwAK59TTD5RYCNTj7ID7cKP4SkahD/KhFIiFIGbrZoE0V2E+T0d6cE8fHM
-         Er4vY9I2UI6NA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 56D7D5C0989; Wed, 21 Dec 2022 10:56:13 -0800 (PST)
-Date:   Wed, 21 Dec 2022 10:56:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Robert Elliott <elliott@hpe.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, linux-crypto@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] rcu: genericize RCU stall suppression functions
-Message-ID: <20221221185613.GB4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221219202910.3063036-1-elliott@hpe.com>
- <20221219202910.3063036-2-elliott@hpe.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221219202910.3063036-2-elliott@hpe.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 21 Dec 2022 14:03:35 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A0223BD0;
+        Wed, 21 Dec 2022 11:03:33 -0800 (PST)
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BLIrMu2013873;
+        Wed, 21 Dec 2022 19:01:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=6Nz8pF7gXI0gvupMhFpBmhUvXlXnNi1ResNt+nevO6g=;
+ b=dJlEqbKm92T8Y4uVHRnF16BT0TwlDYKD4f4/rh7dC2lzemrfuyshBZ5gkUvb8iQTYxZf
+ YWOzPFUVmeq9lY6CBnbcBjLESIVWGHGV72f+i0rTRzuUrz/q8V72EpoCEpjH8/lMO2Gp
+ 1PAn9h6gJGJuZpddaIrwbv2YLL0bMOmtfoiQWbib37WauL1gePFxVY6K+PA0zW9iGl6h
+ pS5np00etQ7KJ/4sMK3LSksGU8vgniEFB/edm3d9DRm91i4dNSjLo/HF5PIwSC4d1ofZ
+ HhWbR9OxXjRqha0qNfgUfU3g4tuGVM2eZsnA0Ffxk2H2zJOhHcSBFh5hLC8VeR/ooY9v kw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mm7tr0596-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Dec 2022 19:01:51 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BLIrXnh015265;
+        Wed, 21 Dec 2022 19:01:50 GMT
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mm7tr058x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Dec 2022 19:01:50 +0000
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BLIaQTL032666;
+        Wed, 21 Dec 2022 19:01:49 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([9.208.130.100])
+        by ppma01dal.us.ibm.com (PPS) with ESMTPS id 3mh7004621-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Dec 2022 19:01:49 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2BLJ1mRG61079990
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Dec 2022 19:01:48 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0E3CB58060;
+        Wed, 21 Dec 2022 19:01:48 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 84F9C5803F;
+        Wed, 21 Dec 2022 19:01:46 +0000 (GMT)
+Received: from sig-9-65-212-99.ibm.com (unknown [9.65.212.99])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Dec 2022 19:01:46 +0000 (GMT)
+Message-ID: <0fb737ab42ef093f7031a80c8a73f582b1d5c1ae.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 00/10] Add CA enforcement keyring restrictions
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>, Coiby Xu <coxu@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "pvorel@suse.cz" <pvorel@suse.cz>,
+        "noodles@fb.com" <noodles@fb.com>, "tiwai@suse.de" <tiwai@suse.de>,
+        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>,
+        Elaine Palmer <erpalmer@linux.vnet.ibm.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Date:   Wed, 21 Dec 2022 14:01:46 -0500
+In-Reply-To: <0DAFCFC7-29EB-4481-8FF7-616336383378@oracle.com>
+References: <20221214003401.4086781-1-eric.snowberg@oracle.com>
+         <b8e54d077da633132eb6da03ea536face095a425.camel@linux.ibm.com>
+         <4CE6F17D-9D87-4024-9E1A-FDFE7C29D5FC@oracle.com>
+         <1c51910a35a1d113256494827fd66ccc7473632e.camel@linux.ibm.com>
+         <17855993-519C-4DAC-B62F-9DB473CF249B@oracle.com>
+         <7df94da37c100c160436892a6996ba30e3fd6dc8.camel@linux.ibm.com>
+         <21E52C3E-0778-4908-AF44-F65D57BEC4E0@oracle.com>
+         <20221216140648.h32gn5qf3igorpzi@Rk>
+         <2d75dfd105f8558ecd1074d64e4252ddd63b698b.camel@linux.ibm.com>
+         <0DAFCFC7-29EB-4481-8FF7-616336383378@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7SxveNIS44uCRAj57-0T7fEWi0FnOrdX
+X-Proofpoint-ORIG-GUID: sMeiCweWgXfOVBJ_1YVXO9jf1A1xcUkF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-21_11,2022-12-21_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ mlxscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ spamscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2212210157
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Dec 19, 2022 at 02:29:08PM -0600, Robert Elliott wrote:
-> Convert the functions that temporarily suppress RCU CPU
-> stall reporting:
-> 	rcu_sysrq_start()
-> 	rcu_sysrq_end()
+On Wed, 2022-12-21 at 18:27 +0000, Eric Snowberg wrote:
 > 
-> to more generic functions that may be called by functions
-> other than the SysRq handler:
-> 	rcu_suppress_start()
-> 	rcu_suppress_end()
+> > On Dec 18, 2022, at 5:21 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > 
+> > On Fri, 2022-12-16 at 22:06 +0800, Coiby Xu wrote:
+> >> Hi Eric and Mimi,
+> >> 
+> >> On Thu, Dec 15, 2022 at 09:45:37PM +0000, Eric Snowberg wrote:
+> >>> 
+> >>> 
+> >>>>>>>>> A CA cert shall be defined as any X509 certificate that contains the
+> >>>>>>>>> keyCertSign key usage and has the CA bit set to true.
+> >>>>>>>> 
+> >>>>>>>> Hi Eric,
+> >>>>>>>> 
+> >>>>>>>> Allowing CA certificates with the digitalSignature key usage flag
+> >>>>>>>> enabled defeats the purpose of the new Kconfig.  Please update the
+> >>>>>>>> above definition to exclude the digitalSignature key usage flag and
+> >>>>>>>> modify the code accordingly.
+> >>>>>>> 
+> >>>>>>> Within v2, the request was made to allow Intermediate CA certificates to be
+> >>>>>>> loaded directly.  The Intermediate CA referenced was the one used by kernel.org.
+> >>>>>>> This Intermediate CA contains both digitalSignature and keyCertSign.  If the code
+> >>>>>>> is changed to exclude this certificate, now the root CA has to be loaded again.  Is that
+> >>>>>>> the intent?
+> >>>>>> 
+> >>>>>> That definitely was not the intent.  Nor would it address the issue of
+> >>>>>> a particular intermediate CA certificate having both keyCertSign and
+> >>>>>> digitalSignature.
+> >>>>> 
+> >>>>> Sorry, I’m not following.  Why is it an issue that an intermediate CA certificate contains
+> >>>>> both keyCertSign and digitalSignature? Why would we want to exclude an Intermediate
+> >>>>> CA cert like the one used on kernel.org?
+> >>>> 
+> >>>> I must be missing something.  Isn't the purpose of "keyUsage" to
+> >>>> minimize how a certificate may be used?   Why would we want the same
+> >>>> certificate to be used for both certificate signing and code signing?
+> >>> 
+> >>> Every 3rd party intermediate CA I have looked at so far contains both set. Most have CRLSign set.
+> >>> Typically the root CA contains keyCertSign and CRLSign, but some also have digitalSignature
+> >>> set.  Finding a 3rd party Intermediate CA without digitalSignature set is probably going to be
+> >>> challenging and will severely limit usage.
+> >> 
+> >> How about allowing both keyCertSign and digitalSignature asserted but
+> >> issuing a warning for this case?
+> >> 
+> >> Here's my rationale for this proposal.
+> >> 
+> >> I assume we should conform to some X.509 specifications. So I checked
+> >> "RFC 5280: Internet X.509 Public Key Infrastructure Certificate and
+> >> Certificate Revocation List (CRL) Profile" [1] and ITU-T X.509 (2012-10)
+> >> [2].
+> >> 
+> >> [1] states in 4.2.1.3. Key Usage,
+> >>    "If the keyUsage extension is present, then the subject public key
+> >>    MUST NOT be used to verify signatures on certificates or CRLs unless
+> >>    the corresponding keyCertSign or cRLSign bit is set.  If the subject
+> >>    public key is only to be used for verifying signatures on
+> >>    certificates and/or CRLs, then the digitalSignature and
+> >>    nonRepudiation bits SHOULD NOT be set.  However, the digitalSignature
+> >>    and/or nonRepudiation bits MAY be set in addition to the keyCertSign
+> >>    and/or cRLSign bits if the subject public key is to be used to verify
+> >>    signatures on certificates and/or CRLs as well as other objects."
+> >> 
+> >> and [2] states in 8.2.2.3 Key usage extension that,
+> >>   "More than one bit may be set in an instance of the keyUsage extension.
+> >>   The setting of multiple bits shall not change the meaning of each
+> >>   individual bit but shall indicate that the certificate may be used for
+> >>   all of the purposes indicated by the set bits. There may be risks
+> >>   incurred when setting multiple bits. A review of those risks is
+> >>   documented in Annex I."
+> >> 
+> >> I interpret the above texts as we should allow both keyCertSign and
+> >> digitalSignature. However [2] warns about the risks of setting multiple
+> >> bits. Quoting Annex I,
+> >> 
+> >>   "Combining the contentCommitment bit in the keyUsage certificate
+> >>   extension with other keyUsage bits may have security implications
+> >>   depending on the security environment in which the certificate is to be
+> >>   used. If the subject's environment can be fully controlled and trusted,
+> >>   then there are no specific security implications. For example, in cases
+> >>   where the subject is fully confident about exactly which data is signed
+> >>   or cases where the subject is fully confident about the security
+> >>   characteristics of the authentication protocol being used. If the
+> >>   subject's environment is not fully controlled or not fully trusted, then
+> >>   unintentional signing of commitments is possible. Examples include the
+> >>   use of badly formed authentication exchanges and the use of a rogue
+> >>   software component. If untrusted environments are used by a subject,
+> >>   these security implications can be limited through use of the following
+> >>   measures:   
+> >>    – to not combine the contentCommitment key usage setting in
+> >>      certificates with any other key usage setting and to use the
+> >>      corresponding private key only with this certificate;   
+> >> 
+> >>    – to limit the use of private keys associated with certificates that
+> >>      have the contentCommitment key usage bit set, to environments which
+> >>      are considered adequately controlled and trustworthy"
+> >> 
+> >> So maybe it's useful to add a warning if both keyCertSign and
+> >> digitalSignature are asserted.
+> > 
+> > Coiby, thank you for adding these details.  I was hoping others would
+> > chime in as well.  I agree at minimum there should be a warning.
 > 
-> Covert the underlying variable:
-> 	rcu_cpu_stall_suppress
+> A warning could be added.
 > 
-> to an atomic variable so multiple threads can manipulate it at the
-> same time, incrementing it in start() and decrementing in end().
+> > Perhaps instead of making INTEGRITY_CA_MACHINE_KEYRING dependent on
+> > INTEGRITY_MACHINE_KEYRING, make them a Kconfig "choice" to support the
+> > more restrictive certificate use case requirements:  all certificates,
+> > CA certificate signing and digital signature, only CA certificate
+> > signing.
 > 
-> Expose that in sysfs in a read-only
-> 	/sys/module/rcupdate/parameters/rcu_cpu_stall_suppress_dyn
+> As could support for additional restrictions.
 > 
-> Keep
-> 	/sys/module/rcupdate/parameters/rcu_cpu_stall_suppress
-> as writeable by userspace, but OR that into the equations rather than
-> directly manipulate the atomic value.
-> 
-> Signed-off-by: Robert Elliott <elliott@hpe.com>
+> Would these additions be required within this series? What is missing from this 
+> discussion is why would these additions be necessary?  Why should the kernel 
+> enforce a restriction that is beyond the scope of the X.509 spec?  If a warning was 
+> to be added, what would be the justification for adding this additional code?  From 
+> my research every single 3rd party code signing intermediate CA would be flagged 
+> with the warning.  Isn’t this just going to cause confusion?  Or is there a benefit that 
+> I am missing that needs to be stated?
 
-I really like the idea of making the suppressing and unsuppressing of
-RCU CPU stall warnings SMP-safe, thank you!  Yes, as far as I know,
-there have been no problems due to this, but accidents waiting to happen
-and all that.
+You're focusing on third party kernel modules and forgetting about the
+simple use case of allowing an end user (or business) to sign their own
+code.  True they could use the less restrictive CA certificates, but it
+is unnecessary.
 
-Some comments and questions below.
+-- 
+thanks,
 
-> ---
->  .../RCU/Design/Requirements/Requirements.rst  |  6 +++---
->  Documentation/RCU/stallwarn.rst               | 19 +++++++++++++++----
->  arch/parisc/kernel/process.c                  |  2 +-
->  drivers/tty/sysrq.c                           |  4 ++--
->  include/linux/rcupdate.h                      |  8 ++++----
->  kernel/rcu/rcu.h                              | 11 ++++++-----
->  kernel/rcu/tree_stall.h                       | 18 ++++++++++--------
->  kernel/rcu/update.c                           | 11 ++++++++++-
->  8 files changed, 51 insertions(+), 28 deletions(-)
-> 
-> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> index 49387d823619..5083490bb6fc 100644
-> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> @@ -1639,9 +1639,9 @@ against mishaps and misuse:
->     ``rcupdate.rcu_cpu_stall_suppress`` to suppress the splats. This
->     kernel parameter may also be set via ``sysfs``. Furthermore, RCU CPU
->     stall warnings are counter-productive during sysrq dumps and during
-> -   panics. RCU therefore supplies the rcu_sysrq_start() and
-> -   rcu_sysrq_end() API members to be called before and after long
-> -   sysrq dumps. RCU also supplies the rcu_panic() notifier that is
-> +   panics. RCU therefore supplies the rcu_suppress_start() and
-> +   rcu_suppress_end() API members to be called before and after long
-> +   CPU usage. RCU also supplies the rcu_panic() notifier that is
->     automatically invoked at the beginning of a panic to suppress further
->     RCU CPU stall warnings.
->  
-> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-> index e38c587067fc..9e6fba72f56d 100644
-> --- a/Documentation/RCU/stallwarn.rst
-> +++ b/Documentation/RCU/stallwarn.rst
-> @@ -135,13 +135,24 @@ see include/trace/events/rcu.h.
->  Fine-Tuning the RCU CPU Stall Detector
->  ======================================
->  
-> -The rcuupdate.rcu_cpu_stall_suppress module parameter disables RCU's
-> -CPU stall detector, which detects conditions that unduly delay RCU grace
-> -periods.  This module parameter enables CPU stall detection by default,
-> -but may be overridden via boot-time parameter or at runtime via sysfs.
-> +RCU's CPU stall detector detects conditions that unduly delay RCU grace
-> +periods.  CPU stall detection is enabled by default, but may be overridden
-> +via boot-time parameter or at runtime via sysfs (accessible via
-> +/sys/module/rcupdate/parameters).
-> +
-> +The rcupdate.rcu_cpu_stall_suppress module parameter disables RCU's
-> +CPU stall detector.
-> +
-> +/sys/module/rcu_cpu_stall_suppress_dyn reports an internal semaphore
+Mimi
 
-Actually an atomically updated variable as opposed to a semaphore,
-correct?  Replacing "an internal semaphore" with something like "a
-variable" would be fine from my viewpoint.
 
-> +used by the RCU's CPU stall detector. Functions holding a CPU for a
-> +long time (e.g., sysrq printouts) increment this value before use
-> +and decrement it when done, so the value reports the number of
-> +functions currently disabling stalls.
-> +
->  The stall detector's idea of what constitutes "unduly delayed" is
->  controlled by a set of kernel configuration variables and cpp macros:
->  
-> +
->  CONFIG_RCU_CPU_STALL_TIMEOUT
->  ----------------------------
 
-And thank you for updating the documentation!
 
-> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-> index c4f8374c7018..038378fe7bfa 100644
-> --- a/arch/parisc/kernel/process.c
-> +++ b/arch/parisc/kernel/process.c
-> @@ -126,7 +126,7 @@ void machine_power_off(void)
->  	       "Please power this system off now.");
->  
->  	/* prevent soft lockup/stalled CPU messages for endless loop. */
-> -	rcu_sysrq_start();
-> +	rcu_suppress_start();
->  	lockup_detector_soft_poweroff();
->  	for (;;);
->  }
-> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-> index d2b2720db6ca..81ab63a473a7 100644
-> --- a/drivers/tty/sysrq.c
-> +++ b/drivers/tty/sysrq.c
-> @@ -579,7 +579,7 @@ void __handle_sysrq(int key, bool check_mask)
->  	orig_suppress_printk = suppress_printk;
->  	suppress_printk = 0;
->  
-> -	rcu_sysrq_start();
-> +	rcu_suppress_start();
->  	rcu_read_lock();
->  	/*
->  	 * Raise the apparent loglevel to maximum so that the sysrq header
-> @@ -623,7 +623,7 @@ void __handle_sysrq(int key, bool check_mask)
->  		console_loglevel = orig_log_level;
->  	}
->  	rcu_read_unlock();
-> -	rcu_sysrq_end();
-> +	rcu_suppress_end();
->  
->  	suppress_printk = orig_suppress_printk;
->  }
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 03abf883a281..c0d8a4aae7ff 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -131,11 +131,11 @@ static inline void rcu_init_tasks_generic(void) { }
->  #endif
->  
->  #ifdef CONFIG_RCU_STALL_COMMON
-> -void rcu_sysrq_start(void);
-> -void rcu_sysrq_end(void);
-> +void rcu_suppress_start(void);
-> +void rcu_suppress_end(void);
->  #else /* #ifdef CONFIG_RCU_STALL_COMMON */
-> -static inline void rcu_sysrq_start(void) { }
-> -static inline void rcu_sysrq_end(void) { }
-> +static inline void rcu_suppress_start(void) { }
-> +static inline void rcu_suppress_end(void) { }
->  #endif /* #else #ifdef CONFIG_RCU_STALL_COMMON */
->  
->  #if defined(CONFIG_NO_HZ_FULL) && (!defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK))
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index c5aa934de59b..a658955a1174 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -224,24 +224,25 @@ extern int rcu_cpu_stall_ftrace_dump;
->  extern int rcu_cpu_stall_suppress;
->  extern int rcu_cpu_stall_timeout;
->  extern int rcu_exp_cpu_stall_timeout;
-> +extern atomic_t rcu_cpu_stall_suppress_dyn;
->  int rcu_jiffies_till_stall_check(void);
->  int rcu_exp_jiffies_till_stall_check(void);
->  
->  static inline bool rcu_stall_is_suppressed(void)
->  {
-> -	return rcu_stall_is_suppressed_at_boot() || rcu_cpu_stall_suppress;
-> +	return rcu_stall_is_suppressed_at_boot() ||
-> +	       rcu_cpu_stall_suppress ||
-> +	       atomic_read(&rcu_cpu_stall_suppress_dyn);
->  }
->  
->  #define rcu_ftrace_dump_stall_suppress() \
->  do { \
-> -	if (!rcu_cpu_stall_suppress) \
-> -		rcu_cpu_stall_suppress = 3; \
 
-One thing we are losing here is the ability to see what is suppressing
-the current stall, for example, from a crash dump.  Maybe that is OK,
-as I haven't needed to debug that sort of thing.
-
-Thoughts from those who have had this debugging experience?
-
-> +	atomic_inc(&rcu_cpu_stall_suppress_dyn); \
->  } while (0)
->  
->  #define rcu_ftrace_dump_stall_unsuppress() \
->  do { \
-> -	if (rcu_cpu_stall_suppress == 3) \
-> -		rcu_cpu_stall_suppress = 0; \
-> +	atomic_dec(&rcu_cpu_stall_suppress_dyn); \
->  } while (0)
->  
->  #else /* #endif #ifdef CONFIG_RCU_STALL_COMMON */
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 5653560573e2..260748bc5bc8 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -103,23 +103,25 @@ bool rcu_gp_might_be_stalled(void)
->  	return !time_before(j, READ_ONCE(rcu_state.gp_start) + d);
->  }
->  
-> -/* Don't do RCU CPU stall warnings during long sysrq printouts. */
-> -void rcu_sysrq_start(void)
-> +/* Don't do RCU CPU stall warnings during functions holding the CPU
-> + * for a long period of time such as long sysrq printouts.
-> + */
-> +void rcu_suppress_start(void)
->  {
-> -	if (!rcu_cpu_stall_suppress)
-> -		rcu_cpu_stall_suppress = 2;
-
-And the same point here.
-
-> +	atomic_inc(&rcu_cpu_stall_suppress_dyn);
->  }
-> +EXPORT_SYMBOL_GPL(rcu_suppress_start);
-
-If this is being exported to modules, the question of who suppressed
-the CPU stalls might at some point become more urgent.
-
-If the problem was reproducible, I would simply attach a BPF program to
-rcu_suppress_start() and rcu_suppress_end() counting the stack traces of
-all callers to these functions.  This might or might not make everyone
-happy, though.
-
-> -void rcu_sysrq_end(void)
-> +void rcu_suppress_end(void)
->  {
-> -	if (rcu_cpu_stall_suppress == 2)
-> -		rcu_cpu_stall_suppress = 0;
-> +	atomic_dec(&rcu_cpu_stall_suppress_dyn);
->  }
-> +EXPORT_SYMBOL_GPL(rcu_suppress_end);
->  
->  /* Don't print RCU CPU stall warnings during a kernel panic. */
->  static int rcu_panic(struct notifier_block *this, unsigned long ev, void *ptr)
->  {
-> -	rcu_cpu_stall_suppress = 1;
-> +	atomic_inc(&rcu_cpu_stall_suppress_dyn);
->  	return NOTIFY_DONE;
->  }
->  
-> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> index f5e6a2f95a2a..ceee9d777384 100644
-> --- a/kernel/rcu/update.c
-> +++ b/kernel/rcu/update.c
-> @@ -501,11 +501,18 @@ EXPORT_SYMBOL_GPL(rcutorture_sched_setaffinity);
->  #ifdef CONFIG_RCU_STALL_COMMON
->  int rcu_cpu_stall_ftrace_dump __read_mostly;
->  module_param(rcu_cpu_stall_ftrace_dump, int, 0644);
-> -int rcu_cpu_stall_suppress __read_mostly; // !0 = suppress stall warnings.
-> +
-> +int rcu_cpu_stall_suppress __read_mostly; // !0 = suppress stall warnings from sysfs
->  EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress);
->  module_param(rcu_cpu_stall_suppress, int, 0644);
-> +
-> +atomic_t rcu_cpu_stall_suppress_dyn __read_mostly; // !0 = suppress stall warnings from functions
-> +EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress_dyn);
-> +module_param_named(rcu_cpu_stall_suppress_dyn, rcu_cpu_stall_suppress_dyn.counter, int, 0444);
-
-I am not seeing a valid use case for specifying an initial
-value on the kernel command line.  Or does this somehow prevent
-rcupdate.rcu_cpu_stall_suppress_dyn from being specified on the kernel
-command line?
-
-If something like rcupdate.rcu_cpu_stall_suppress_dyn=3 can be specified
-(incorrectly, in my current view) on the kernel command line, maybe
-something as shown below would help?
-
-> +
->  int rcu_cpu_stall_timeout __read_mostly = CONFIG_RCU_CPU_STALL_TIMEOUT;
->  module_param(rcu_cpu_stall_timeout, int, 0644);
-> +
->  int rcu_exp_cpu_stall_timeout __read_mostly = CONFIG_RCU_EXP_CPU_STALL_TIMEOUT;
->  module_param(rcu_exp_cpu_stall_timeout, int, 0644);
->  #endif /* #ifdef CONFIG_RCU_STALL_COMMON */
-> @@ -616,6 +623,8 @@ void __init rcupdate_announce_bootup_oddness(void)
->  		pr_info("\tAll grace periods are expedited (rcu_expedited).\n");
->  	if (rcu_cpu_stall_suppress)
->  		pr_info("\tRCU CPU stall warnings suppressed (rcu_cpu_stall_suppress).\n");
-> +	if (atomic_read(&rcu_cpu_stall_suppress_dyn))
-> +		pr_info("\tDynamic RCU CPU stall warnings suppressed (rcu_cpu_stall_suppress_dyn).\n");
-
-Should this instead be a WARN_ON() placed somewhere so that it won't
-mess up the printing of the other parameters?
-
-Or maybe have this code set it to back to zero, with the message
-indicating that this is being done?
-
->  	if (rcu_cpu_stall_timeout != CONFIG_RCU_CPU_STALL_TIMEOUT)
->  		pr_info("\tRCU CPU stall warnings timeout set to %d (rcu_cpu_stall_timeout).\n", rcu_cpu_stall_timeout);
->  	rcu_tasks_bootup_oddness();
-> -- 
-> 2.38.1
-> 
