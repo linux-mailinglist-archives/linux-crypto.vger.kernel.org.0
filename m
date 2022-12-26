@@ -2,85 +2,97 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A93655437
-	for <lists+linux-crypto@lfdr.de>; Fri, 23 Dec 2022 21:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701C765623E
+	for <lists+linux-crypto@lfdr.de>; Mon, 26 Dec 2022 12:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbiLWUda (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 23 Dec 2022 15:33:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
+        id S229533AbiLZLrN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 26 Dec 2022 06:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbiLWUd2 (ORCPT
+        with ESMTP id S229450AbiLZLrM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 23 Dec 2022 15:33:28 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CA82AE2;
-        Fri, 23 Dec 2022 12:33:25 -0800 (PST)
-Received: from zn.tnic (p5de8e9fe.dip0.t-ipconnect.de [93.232.233.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DFA6F1EC0354;
-        Fri, 23 Dec 2022 21:33:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1671827604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=g4fBVP6B/mhnkNFZJu0f1SRCvVq/AKhj/YqOZGGwvF4=;
-        b=I0K8TNt9L5H36UG2Ocm1J86itUmusbOXaZu7dcVD7JxZjkP1Z93AmpVNurMCJo8yU4QCvP
-        95+QMVqRxViDu7ciW5TGuylqPeWaN8xy+KVf6aD0dL/YBbv5voXiSDo7cuAP69uOmYnTQ8
-        xIBA3VHkmNwK4R3zzoNGHGU9/4yTrwY=
-Date:   Fri, 23 Dec 2022 21:33:16 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
-        pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, vbabka@suse.cz,
-        kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        alpergun@google.com, dgilbert@redhat.com, jarkko@kernel.org,
-        ashish.kalra@amd.com, harald@profian.com
-Subject: Re: [PATCH RFC v7 00/64] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <Y6YQjJyoxKC5hfij@zn.tnic>
-References: <20221214194056.161492-1-michael.roth@amd.com>
+        Mon, 26 Dec 2022 06:47:12 -0500
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8251A2FB
+        for <linux-crypto@vger.kernel.org>; Mon, 26 Dec 2022 03:47:11 -0800 (PST)
+Received: by mail-vk1-xa2b.google.com with SMTP id 6so4892261vkz.0
+        for <linux-crypto@vger.kernel.org>; Mon, 26 Dec 2022 03:47:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FocuR5aXn3z28LzYD0rCmA/t4By4lcIW0G986gs+i74=;
+        b=HIvJNviIlXD0ZOi1qksjfEyv3svlIuyNU2fwNW+lt86FCV+oASVt+lap9uMnO4G2oY
+         Ffe2Z62yaaeQ54WLtd4Ixck9dNCTOCk5JLczlp/51gvpxgBY+miksTMK11g0XJvy32/8
+         oh2YwvBDt0Ao+3adktzcvEjrE1ICk8IxiPzWmz8MJ62Q9sAXh3ic0Os8RVyYElTqDLVS
+         SnZNnMCHN1CBaVQ1TyoGNORYMqTfx7VblTPxipkq4j9sqym/YGW/bImTArQCxxmj0CMm
+         LEaNiUIpz3AscEq3oXOFL2y8M7vUlSs5j4b8crIZuNLYl4ksjZZ8FpxjG+lOBvHhz64v
+         un0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FocuR5aXn3z28LzYD0rCmA/t4By4lcIW0G986gs+i74=;
+        b=cUE/2XNK5tr8zgVr1sWM7wE1XWsShM8mqHAH6sH+Ka91k93p1w10+11kWGg2uxHLsu
+         k7kxNDb7CwATEHL769b+dnwn6O5laV/fUWWOvGY4fOpicTxGzNYyzCPSGXtaYltYSzVG
+         +lumgOoO197PH3Bpg5cKPyZWrP8TQep6C7Zi6S9CtOFn/Su20xGXf89e2T9k3o0ypZIt
+         YCh5NmmgYutoe5x2phCYQToLNcJ0hF7RPtfJtV20lP9G1Q/dhdDXG4o1jdidRqe9wY7N
+         lrxAjf1a173QK6tbAtcVy3lfietqR/U6zvGKtdrW1bTUxO/u4RSz9ZdoCnRSiu4ya5hJ
+         3gEQ==
+X-Gm-Message-State: AFqh2krUNiWQkwPbYdIpjMqSyGeLNcKs23p1EjbIaRzAgJXOKqPdZMcu
+        FxyeBKBCaXEWsbwyeNlYsaKnUCOUMKClGAcTatE=
+X-Google-Smtp-Source: AMrXdXs6JAJfGLHPBTV2OjKVl1pH2qn9oXdrv97h/zGspK40334Yg+/LaPgwlmJRU38BNELIrkbBBFSnaSE6p3s4c0Y=
+X-Received: by 2002:ac5:c5a1:0:b0:3d0:6083:f515 with SMTP id
+ f1-20020ac5c5a1000000b003d06083f515mr1843232vkl.6.1672055230143; Mon, 26 Dec
+ 2022 03:47:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20221214194056.161492-1-michael.roth@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ab0:718f:0:0:0:0:0 with HTTP; Mon, 26 Dec 2022 03:47:09
+ -0800 (PST)
+Reply-To: khalil588577@gmail.com
+From:   Abdul Latif <tahreem.hassan1960@gmail.com>
+Date:   Mon, 26 Dec 2022 11:47:09 +0000
+Message-ID: <CAGwT3UW9_akXjY9CqJe8hLzZjdzYKdPKPRY6cWyjs0FPHgKKZw@mail.gmail.com>
+Subject: GET BACK TO ME
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,UNDISC_FREEM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:a2b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4980]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [khalil588577[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [tahreem.hassan1960[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [tahreem.hassan1960[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 01:39:52PM -0600, Michael Roth wrote:
-> This patchset is based on top of the following patchset:
-> 
->   "[PATCH v10 0/9] KVM: mm: fd-based approach for supporting KVM"
->   https://lore.kernel.org/lkml/20221202061347.1070246-1-chao.p.peng@linux.intel.com/T/#me1dd3a4c295758b4e4ac8ff600f2db055bc5f987
-
-Well, not quite.
-
-There's also this thing which is stuck in there:
-
-https://lore.kernel.org/r/20221205232341.4131240-1-vannapurve@google.com
-
-and I would appreciate reading that in the 0th message so that I don't
-scratch my head over why don't those patches apply and what else is
-missing...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+I am Mr.Abdul Latif i have something to discuss with you
