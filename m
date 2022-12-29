@@ -2,42 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 841306591A4
-	for <lists+linux-crypto@lfdr.de>; Thu, 29 Dec 2022 21:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF946591A9
+	for <lists+linux-crypto@lfdr.de>; Thu, 29 Dec 2022 21:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbiL2Uj2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 29 Dec 2022 15:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        id S234085AbiL2Uja (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 29 Dec 2022 15:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234101AbiL2Uil (ORCPT
+        with ESMTP id S234120AbiL2Uis (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 29 Dec 2022 15:38:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B341706C
-        for <linux-crypto@vger.kernel.org>; Thu, 29 Dec 2022 12:37:54 -0800 (PST)
+        Thu, 29 Dec 2022 15:38:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEF8167ED
+        for <linux-crypto@vger.kernel.org>; Thu, 29 Dec 2022 12:37:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672346273;
+        s=mimecast20190719; t=1672346275;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tKf9f+QOlMAS3BoVwJkZB8zyX8Ws7eszIN1kwxfiCPs=;
-        b=TDYnL3b83fEAZqvmHCnDcqSoa5FbE/beweeax9M2DQwsV+RJLBnyHd+2HEHnVqqBwu55oM
-        73P6+n5HILbEPZ1VPbUgd7NIZJOE3m2rWqJvsLWbL2qOm8Ais7dOFKgDRtSI/Nq6nH3cPT
-        le2tVpgpL1SaTsxKeYI6+AghQIjBHzY=
+        bh=HocLF/KBTVlQUJt7QQMW7FIy1E4x5xixVjqadrM9WOY=;
+        b=iaO9kE1mf0wDTaOV7g59V6ev9vpMlXAHzgvtkDMC1/wvfIC/2O8JbtDETKW3z6XzTUFOKi
+        1pQGdffP1W92bcCk1MuiCR25GLT/SH5jJS5JUlIiTD7IBaJj9x7BIcp4bdn18sg4jGAMNt
+        hUJ5ViohABVPs6xCxz2P8lh+NBj/980=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-132-aH7VcIvzNtyy6aed1DiV1A-1; Thu, 29 Dec 2022 15:37:48 -0500
-X-MC-Unique: aH7VcIvzNtyy6aed1DiV1A-1
+ us-mta-649-3X_ffHm3OjeLDsUUQMHdMQ-1; Thu, 29 Dec 2022 15:37:51 -0500
+X-MC-Unique: 3X_ffHm3OjeLDsUUQMHdMQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 05F741C0513D;
-        Thu, 29 Dec 2022 20:37:48 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96D6229ABA00;
+        Thu, 29 Dec 2022 20:37:50 +0000 (UTC)
 Received: from rules.brq.redhat.com (ovpn-208-2.brq.redhat.com [10.40.208.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D6BC3112132D;
-        Thu, 29 Dec 2022 20:37:45 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 61AE1112132C;
+        Thu, 29 Dec 2022 20:37:48 +0000 (UTC)
 From:   Vladis Dronov <vdronov@redhat.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>
@@ -46,9 +46,9 @@ Cc:     Nicolai Stange <nstange@suse.de>, Elliott Robert <elliott@hpe.com>,
         Eric Biggers <ebiggers@google.com>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Vladis Dronov <vdronov@redhat.com>
-Subject: [PATCH v2 3/6] crypto: xts - drop redundant xts key check
-Date:   Thu, 29 Dec 2022 21:37:05 +0100
-Message-Id: <20221229203708.13628-4-vdronov@redhat.com>
+Subject: [PATCH v2 4/6] crypto: testmgr - disallow plain cbcmac(aes) in FIPS mode
+Date:   Thu, 29 Dec 2022 21:37:06 +0100
+Message-Id: <20221229203708.13628-5-vdronov@redhat.com>
 In-Reply-To: <20221229203708.13628-1-vdronov@redhat.com>
 References: <20221229203708.13628-1-vdronov@redhat.com>
 MIME-Version: 1.0
@@ -57,7 +57,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,40 +65,34 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-xts_fallback_setkey() in xts_aes_set_key() will now enforce key size
-rule in FIPS mode when setting up the fallback algorithm keys, which
-makes the check in xts_aes_set_key() redundant or unreachable. So just
-drop this check.
+From: Nicolai Stange <nstange@suse.de>
 
-xts_fallback_setkey() now makes a key size check in xts_verify_key():
+cbcmac(aes) may be used only as part of the ccm(aes) construction in FIPS
+mode. Since commit d6097b8d5d55 ("crypto: api - allow algs only in specific
+constructions in FIPS mode") there's support for using spawns which by
+itself are marked as non-approved from approved template instantiations.
+So simply mark plain cbcmac(aes) as non-approved in testmgr to block any
+attempts of direct instantiations in FIPS mode.
 
-xts_fallback_setkey()
-  crypto_skcipher_setkey() [ skcipher_setkey_unaligned() ]
-    cipher->setkey() { .setkey = xts_setkey }
-      xts_setkey()
-        xts_verify_key()
-
+Signed-off-by: Nicolai Stange <nstange@suse.de>
 Signed-off-by: Vladis Dronov <vdronov@redhat.com>
 Reviewed-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/s390/crypto/aes_s390.c | 4 ----
- 1 file changed, 4 deletions(-)
+ crypto/testmgr.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/s390/crypto/aes_s390.c b/arch/s390/crypto/aes_s390.c
-index 526c3f40f6a2..c773820e4af9 100644
---- a/arch/s390/crypto/aes_s390.c
-+++ b/arch/s390/crypto/aes_s390.c
-@@ -398,10 +398,6 @@ static int xts_aes_set_key(struct crypto_skcipher *tfm, const u8 *in_key,
- 	if (err)
- 		return err;
- 
--	/* In fips mode only 128 bit or 256 bit keys are valid */
--	if (fips_enabled && key_len != 32 && key_len != 64)
--		return -EINVAL;
--
- 	/* Pick the correct function code based on the key length */
- 	fc = (key_len == 32) ? CPACF_KM_XTS_128 :
- 	     (key_len == 64) ? CPACF_KM_XTS_256 : 0;
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 4476ac97baa5..562463a77a76 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -4501,7 +4501,6 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 	}, {
+ #endif
+ 		.alg = "cbcmac(aes)",
+-		.fips_allowed = 1,
+ 		.test = alg_test_hash,
+ 		.suite = {
+ 			.hash = __VECS(aes_cbcmac_tv_template)
 -- 
 2.38.1
 
