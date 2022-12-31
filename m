@@ -2,96 +2,121 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9251265A5C0
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Dec 2022 17:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C5565A750
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Dec 2022 23:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbiLaQov (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 31 Dec 2022 11:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        id S232233AbiLaWCK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 31 Dec 2022 17:02:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiLaQou (ORCPT
+        with ESMTP id S229823AbiLaWB5 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 31 Dec 2022 11:44:50 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354E165AC
-        for <linux-crypto@vger.kernel.org>; Sat, 31 Dec 2022 08:44:49 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-7-Ol7Icuy6OlKckfPU2enxww-1; Sat, 31 Dec 2022 16:44:46 +0000
-X-MC-Unique: Ol7Icuy6OlKckfPU2enxww-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 31 Dec
- 2022 16:44:45 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.044; Sat, 31 Dec 2022 16:44:45 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Herbert Xu' <herbert@gondor.apana.org.au>,
-        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Anders Roxell <anders.roxell@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        =?utf-8?B?SG9yaWEgR2VhbnTEgw==?= <horia.geanta@nxp.com>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "kernel test robot" <lkp@intel.com>
-Subject: RE: [PATCH] crypto: caam - Avoid GCC memset bug warning
-Thread-Topic: [PATCH] crypto: caam - Avoid GCC memset bug warning
-Thread-Index: AQHZGye3tmYlgJJWpEm0756mILvCfK6INU/Q
-Date:   Sat, 31 Dec 2022 16:44:45 +0000
-Message-ID: <f3e9add2210a46af99cf0fc79121c7db@AcuMS.aculab.com>
-References: <20221222162513.4021928-1-u.kleine-koenig@pengutronix.de>
- <Y6VK4IJkHiawAbJz@gondor.apana.org.au>
- <20221223174719.4n6pmwio4zycj2qm@pengutronix.de>
- <Y6wCbyttJ+WVzmZX@gondor.apana.org.au>
- <20221228113035.ups6echnsmo4flnz@pengutronix.de>
- <Y6zx9H7pZZ6VTzUd@gondor.apana.org.au>
-In-Reply-To: <Y6zx9H7pZZ6VTzUd@gondor.apana.org.au>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 31 Dec 2022 17:01:57 -0500
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927B55F84;
+        Sat, 31 Dec 2022 14:01:53 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7B5BA5C00AB;
+        Sat, 31 Dec 2022 17:01:49 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sat, 31 Dec 2022 17:01:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1672524109; x=1672610509; bh=uEGwd78iouIBfqIK3t/RRS7S+
+        +4GQDRNvKIt4E61Pgc=; b=T7zIRNB7y343XX5YH2dmlezUMp+hc2shyHwqMfd6S
+        1lRhKykBUE5ynNXNfY5JEe56s6/drHw+pGSUWkE30nl/ZE7BjxuTi5voaPkt70CJ
+        ytfzZVNPmpj8xqNPeUrAjULzx5LYcCaT9cheOg9D9dRMRjb7aHF6rHFSxiVIJ4uO
+        PcRgBeEwpo4KeKwZyM1KWq7cRPAt5KxcPw8WkILDzgbEss7HBo++dng4FFxEgBiH
+        2UBozlU6oBiaCg0r4gk57NeugKJh39z5y2IOMZCF9saG6WRfLCLNpmCMorA5G4tj
+        re2w/xl9lN8pfGajmfyomJtp9GpbsWu3Ksqgr/vMKTCNQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1672524109; x=1672610509; bh=uEGwd78iouIBfqIK3t/RRS7S++4GQDRNvKI
+        t4E61Pgc=; b=G7lOHcQgKBoGMWpvwy6cOD6JEJzXzdc26/du93Hn6fwYmzDaDlr
+        QPjwWVFCfcp8vmAiEjaOzQzVEms/AVZKoHZMM9q4sTRBQ3LaFHgQBdj/9CumLqdK
+        uYkPcmFH1xVWJygQww7+4smC3sAohtXsoVjhj0HPo0G4G+ti88CXmWNV72OIq3bq
+        er2bcNVxlWhNbGiwvclg0eD/rZItnLeqlk0A5nQ4Lozr5apJjgzLaf94cKhbQuZZ
+        pLyKfNMHofkpryOUCxQt97KxY8wg8cmkvZr/X+RmhEJCrQQZIqILYFYDNzKOhRvb
+        fI/EUNWStiEPWV7unPNGqe/1ZbB1L6jALkg==
+X-ME-Sender: <xms:S7GwY6FQd6hZJEG4YIRcIq-0J7QcwvL0LZI70BYVYc3sxQ5CaG67yA>
+    <xme:S7GwY7UWoCcAeDdOarYJoHUhTzBufT8U8e9bojz6NlbeU6DrQDZ3kELA9yWsF_5sX
+    GXokwZPxn3ATtiNlw>
+X-ME-Received: <xmr:S7GwY0KhzI81Va4aLI6SCksAv4w2zCruZVNDjyS8wGmNIMaxrAtvTtE7KgRV9sLctzbxhNXDCDUtxg0Y3iGqdWyEwT5uH4I7CIPYKjetMZDxlmvcBf1_u_7pMwhDY75qamkWpA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrieekgdduheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
+    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
+    grthhtvghrnhepkeehffethedtteffgfefteetjedvfeelueevudffgfeutdejvdehledv
+    vdffhfevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+    rdhorhhg
+X-ME-Proxy: <xmx:S7GwY0FhvTw1JxpLhzraacJm7Uby1ptVkwc_xqWU9fHGEpq9z-zbhw>
+    <xmx:S7GwYwWTMkRDvIzRhCJu-8q8ysKNwu74KYpBwJQrYIhJGIqbLazqiQ>
+    <xmx:S7GwY3OzIdkhZUpR--lWaCybgzz0u19jz3uHkb0XbYVgW8hzb72-mQ>
+    <xmx:TbGwY8mHggTyKBxh-0GO0wvPyIIv5VTAA1jdtcrZpLAzkGYZQShSQQ>
+Feedback-ID: i0ad843c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 31 Dec 2022 17:01:46 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH v2 0/3] crypto: Allwinner D1 crypto support
+Date:   Sat, 31 Dec 2022 16:01:42 -0600
+Message-Id: <20221231220146.646-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.37.4
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-RnJvbTogSGVyYmVydCBYdQ0KPiBTZW50OiAyOSBEZWNlbWJlciAyMDIyIDAxOjQ5DQo+IA0KPiBP
-biBXZWQsIERlYyAyOCwgMjAyMiBhdCAxMjozMDozNVBNICswMTAwLCBVd2UgS2xlaW5lLUvDg8K2
-bmlnIHdyb3RlOg0KPiA+DQo+ID4gPiAtCWlmIChsZW4pIC8qIGF2b2lkIHNwYXJzZSB3YXJuaW5n
-OiBtZW1jcHkgd2l0aCBieXRlIGNvdW50IG9mIDAgKi8NCj4gPiA+ICsJLyogQXZvaWQgZ2NjIHdh
-cm5pbmc6IG1lbWNweSB3aXRoIGRhdGEgPT0gTlVMTCAqLw0KPiA+ID4gKwlpZiAoIUlTX0VOQUJM
-RUQoQ09ORklHX0NSWVBUT19ERVZfRlNMX0NBQU1fREVCVUcpIHx8IGRhdGEpDQo+ID4NCj4gPiBJ
-IGp1c3QgdHJpZWQ6IEZvciBtZSBhIHBsYWluDQo+ID4NCj4gPiAJaWYgKGRhdGEpDQo+ID4NCj4g
-PiBpcyBhbHNvIGVub3VnaCB0byBtYWtlIGJvdGggZ2NjIGFuZCBzcGFyc2UgaGFwcHkuDQo+IA0K
-PiBPZiBjb3Vyc2UgaXQgaXMuICBUaGUgcG9pbnQgb2YgdGhlIGV4dHJhIGNvbmRpdGlvbiBpcyB0
-byByZW1vdmUNCj4gdGhlIHVubmVjZXNzYXJ5IGNoZWNrIG9uIGRhdGEgdW5sZXNzIHdlIGFyZSBp
-biBkZWJ1Z2dpbmcgbW9kZQ0KPiAoYXMgaXQgaXMgb25seSBuZWVkZWQgaW4gZGVidWdnaW5nIG1v
-ZGUgdG8gd29yayBhcm91bmQgdGhlIGJ1Z2d5DQo+IGNvbXBpbGVyKS4NCg0KSUlSQyB0aGUgJ3By
-b2JsZW1hdGljJyBjYXNlIGlzIG9uZSB3aGVyZSAnbGVuJyBhbmQgJ2RhdGEnDQphcmUgYWN0dWFs
-bHkgY29tcGlsZS10aW1lIHplcm9zIC0gaW4gd2hpY2ggY2FzZSB5b3UgZG9uJ3QNCndhbnQgdG8g
-Y2FsbCBtZW1jcHkoKSBhdCBhbGwuDQpJbiBhbGwgb3RoZXIgY2FzZXMgSSB0aGluayB0aGVyZSBp
-cyBzb21ldGhpbmcgdG8gY29weSBzbyB5b3UNCmRvbid0IHJlYWxseSB3YW50IHRoZSBjaGVjayAo
-b3IgdGhlIG9uZSBpbiBtZW1jcHkoKSB3aWxsIGRvKS4NCg0KV2hldGhlciAoYnVpbHRpbl9jb25z
-dGFudF9wKGRhdGEpICYmICFkYXRhKSBpcyBnb29kIGVub3VnaCBpcw0KYW5vdGhlciBtYXR0ZXIu
-DQpJdCBtaWdodCBuZWVkIHRoZSAoc2l6ZW9mICooMSA/ICh2b2lkICopKGRhdGEpIDogKGludCAq
-KTApID09IDEpDQp0ZXN0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2Vz
-aWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVL
-DQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+This series finishes adding crypto support for the Allwinner D1 SoC. The
+driver patch from v1 was merged, but not the binding[1]. This turned out
+to be a good thing, because I later found that the TRNG needed another
+clock reference in the devicetree. That is fixed in v2. I include the DT
+update here too, since the SoC DT has been on the list for a while[2].
+
+[1]: https://lore.kernel.org/all/20211119051026.13049-1-samuel@sholland.org/T/
+[2]: https://lore.kernel.org/lkml/20221208090237.20572-1-samuel@sholland.org/
+
+Changes in v2:
+ - Add TRNG clock
+
+Samuel Holland (3):
+  dt-bindings: crypto: sun8i-ce: Add compatible for D1
+  crypto: sun8i-ce - Add TRNG clock to the D1 variant
+  riscv: dts: allwinner: d1: Add crypto engine node
+
+ .../bindings/crypto/allwinner,sun8i-ce.yaml   | 33 ++++++++++++++-----
+ .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    | 12 +++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c |  1 +
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  |  2 +-
+ 4 files changed, 39 insertions(+), 9 deletions(-)
+
+-- 
+2.37.4
 
