@@ -2,131 +2,171 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9DA65C69D
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Jan 2023 19:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7773D65C6C2
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Jan 2023 19:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbjACSpw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 3 Jan 2023 13:45:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S230334AbjACSwN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Jan 2023 13:52:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238534AbjACSpA (ORCPT
+        with ESMTP id S238705AbjACSvt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 3 Jan 2023 13:45:00 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB2E1403C
-        for <linux-crypto@vger.kernel.org>; Tue,  3 Jan 2023 10:43:12 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id g10so9745802wmo.1
-        for <linux-crypto@vger.kernel.org>; Tue, 03 Jan 2023 10:43:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mCJ7npxHWqpq76xLkWO4j8PK4QmIgUKzcUbzkkrjhHk=;
-        b=CZ5qHYLwlLPQI0PG3wJmLeJmMjKX0fENp37n8nEwoXnjIKGMPeZs6j6FtyOBT6Yp5J
-         7KgQcqLS3n/tSclWR5Iew/zedibQuNm8CFGB1BLQ/G35Vkng58i/RBKR6P04gmY9bDBU
-         OAbSlnzVH2PjtmHk9m5csZGnCiVfOu9zyD68rt6hrYFzWAaBG1CKSLsxPlvVFk83Exft
-         G9mrsd04Tnt7S3nYb5O1wCqG68BANgvT1EoiN1b/BXRpP5KIB1jmA5SQWCGKTy5rAvbJ
-         HU0a6kiFN1iXZGm2yo/+yeunkHFQxgsBMKPs5l+9vqAzTGamfTJ72LYB/QUwHuMii40r
-         LfSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mCJ7npxHWqpq76xLkWO4j8PK4QmIgUKzcUbzkkrjhHk=;
-        b=Z/3lHL29W6hgxBOj30/BY1EFLynv4ISDnOCWuGHhTwhY/VKOMmCJtrevCJY9z3WLBe
-         CzhM776CDYlk62M+WsdElSkDn0qvvD/vCuIt/54tVgRgmvy24L91Fc3YfF2vlGkk2zp8
-         k3p6akm2FQ0T88Lf9PCZatCAtgVGTiXvBI8CkVgyRHlV16/2QWi42Sdqvbgte1LzXHTU
-         85DtsOxbTmK767eMggAh2HIoQnLugP/e25vpEbo8VIcVhn78xng0kR/ZGkOeXNnnoeGC
-         lxM69iBearmjDNNAhbX/xLUnw3W9N/A0kTdaNKEKh05HqdX7kLifR4k+Fgmg8CRSY34u
-         wrVQ==
-X-Gm-Message-State: AFqh2kpChsru8pSxZg4mQGlgIXbc3Q8QULY+Bg/j9B08D8cIn03VcNTw
-        qmmDLw4P4UdaC0qKe5/fTyjchw==
-X-Google-Smtp-Source: AMrXdXtbXCx4js4WZ3kq1vAN/GqYO0G3aTLNuJAMOuTxxZEl1HjjPQFV849khE0HGIATJQTU13cCKw==
-X-Received: by 2002:a05:600c:4d21:b0:3d2:2a72:2573 with SMTP id u33-20020a05600c4d2100b003d22a722573mr32110883wmp.11.1672771390924;
-        Tue, 03 Jan 2023 10:43:10 -0800 (PST)
-Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id i18-20020a5d5232000000b0028e55b44a99sm13811578wra.17.2023.01.03.10.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Jan 2023 10:43:10 -0800 (PST)
-From:   Dmitry Safonov <dima@arista.com>
-To:     linux-kernel@vger.kernel.org, David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Dmitry Safonov <dima@arista.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Bob Gilligan <gilligan@arista.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        netdev@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: [PATCH v2 5/5] crypto/Documentation: Add crypto_pool kernel API
-Date:   Tue,  3 Jan 2023 18:42:57 +0000
-Message-Id: <20230103184257.118069-6-dima@arista.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230103184257.118069-1-dima@arista.com>
-References: <20230103184257.118069-1-dima@arista.com>
+        Tue, 3 Jan 2023 13:51:49 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E5512AB4;
+        Tue,  3 Jan 2023 10:51:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 441BF614D8;
+        Tue,  3 Jan 2023 18:51:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E000DC433EF;
+        Tue,  3 Jan 2023 18:51:45 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="bHHodc0f"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1672771903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yIp6kO5eIHdv4v3c2ecLfUgKivnf2+mEm8o0l2hkbzo=;
+        b=bHHodc0fH+H7OOTTkxPAWw94TxrIyjgw8ZAmtm3SM0EYAXHTAqUINBwNVpDp+Ep30VQN7N
+        ngeXJ0no/zVq7bgjckhK5fPEXBM3HxDC/3PeTN5YrBYhgdotA9NzKVzvi5PfzmDmYoEQJd
+        Ss6rEgGplCLChsIP0gx+7BeqKr6GAKg=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ea8cdcd1 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 3 Jan 2023 18:51:42 +0000 (UTC)
+Date:   Tue, 3 Jan 2023 19:51:38 +0100
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        tglx@linutronix.de, linux-crypto@vger.kernel.org,
+        linux-api@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+        Carlos O'Donell <carlos@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
+        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v14 2/7] mm: add VM_DROPPABLE for designating always
+ lazily freeable mappings
+Message-ID: <Y7R5OokY7P+H2vuD@zx2c4.com>
+References: <20230101162910.710293-1-Jason@zx2c4.com>
+ <20230101162910.710293-3-Jason@zx2c4.com>
+ <Y7QIg/hAIk7eZE42@gmail.com>
+ <Y7RDQLEvlLM0o4cp@zx2c4.com>
+ <Y7Rw1plb/pqPiWgg@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Y7Rw1plb/pqPiWgg@gmail.com>
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- Documentation/crypto/crypto_pool.rst | 33 ++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
- create mode 100644 Documentation/crypto/crypto_pool.rst
+On Tue, Jan 03, 2023 at 07:15:50PM +0100, Ingo Molnar wrote:
+> Frankly, I don't appreciate your condescending discussion style that 
+> borders on the toxic, and to save time I'm nacking this technical approach 
+> until both the patch-set and your reaction to constructive review feedback 
+> improves:
+> 
+>     NAcked-by: Ingo Molnar <mingo@kernel.org>
 
-diff --git a/Documentation/crypto/crypto_pool.rst b/Documentation/crypto/crypto_pool.rst
-new file mode 100644
-index 000000000000..4b8443171421
---- /dev/null
-+++ b/Documentation/crypto/crypto_pool.rst
-@@ -0,0 +1,33 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Per-CPU pool of crypto requests
-+=============
-+
-+Overview
-+--------
-+The crypto pool API manages pre-allocated per-CPU pool of crypto requests,
-+providing ability to use async crypto requests on fast paths, potentially
-+on atomic contexts. The allocation and initialization of the requests should
-+be done before their usage as it's slow-path and may sleep.
-+
-+Order of operations
-+-------------------
-+You are required to allocate a new pool prior using it and manage its lifetime.
-+You can allocate a per-CPU pool of ahash requests by ``crypto_pool_alloc_ahash()``.
-+It will give you a pool id that you can use further on fast-path for hashing.
-+You can increase the reference counter for an allocated pool via
-+``crypto_pool_add()``. Decrease the reference counter by ``crypto_pool_release()``.
-+When the refcounter hits zero, the pool is scheduled for destruction and you
-+can't use the corresponding crypto pool id anymore.
-+Note that ``crypto_pool_add()`` and ``crypto_pool_release()`` must be called
-+only for an already existing pool and can be called in atomic contexts.
-+
-+``crypto_pool_get()`` disables bh and returns you back ``struct crypto_pool *``,
-+which is a generic type for different crypto requests and has ``scratch`` area
-+that can be used as a temporary buffer for your operation.
-+
-+``crypto_pool_put()`` enables bh back once you've done with your crypto
-+operation.
-+
-+If you need to pre-allocate a bigger per-CPU ``scratch`` area for you requests,
-+you can use ``crypto_pool_reserve_scratch()``.
--- 
-2.39.0
+Your initial email to me did not strike me as constructive at all. All I
+gotta say is that you really seem to live up to your reputation here...
 
+But trying to steer things back to the technical realm:
+
+> For a single architecture: x86.
+> 
+> And it's only 19 lines because x86 already happens to have a bunch of 
+> complexity implemented, such as a safe instruction decoder that allows the 
+> skipping of an instruction - which relies on thousands of lines of 
+> complexity.
+> 
+> On an architecture where this isn't present, it would have to be 
+> implemented to support the instruction-skipping aspect of VM_DROPPABLE.
+
+My assumption is actually the opposite: that x86 (CISC) is basically the
+most complex, and that the RISC architectures will all be a good deal
+more trivial -- e.g. just adding 4 to IP on some. It looks like some
+architectures also already have mature decoders where required.
+
+> Even on x86, it's not common today for the software-decoder to be used in 
+> unprivileged code - primary use was debugging & instrumentation code. So 
+> your patches bring this piece of complexity to a much larger scope of 
+> untrusted user-space functionality.
+
+As far as I can tell, this decoder *is* used with userspace already.
+It's used by SEV and by UMIP, in a totally userspace accessible way. Am
+I misunderstanding its use there? It looks to me like that operates on
+untrusted code.
+
+*However* - if your big objection to this patch is that the instruction
+skipping is problematic, we could actually punt that part. The result
+will be that userspace just retries the memory write and the fault
+happens again, and eventually it succeeds. From a perspective of
+vgetrandom(), that's perhaps worse -- with this v14 patchset, it'll
+immediately fallback to the syscall under memory pressure -- but you
+could argue that nobody really cares about performance at that point
+anyway, and so just retrying the fault until it succeeds is a less
+complex behavior that would be just fine.
+
+Let me know if you think that'd be an acceptable compromise, and I'll
+roll it into v15. As a preview, it pretty much amounts to dropping 3/7
+and editing the commit message in this 2/7 patch.
+
+> I did not suggest to swap it: my suggestion is to just pin these vDSO data 
+> pages. The per thread memory overhead is infinitesimal on the vast majority 
+> of the target systems, and the complexity trade-off you are proposing is 
+> poorly reasoned IMO.
+> 
+> I think my core point that it would be much simpler to simply pin those 
+> pages and not introduce rarely-excercised 'discardable memory' semantics in 
+> Linux is a fair one - so it's straightforward to lift this NAK.
+
+Okay so this is where I think we're really not lined up and is a large
+part of why I wondered whether you'd read the commit messages before
+dismissing this. This VM_DROPPABLE mapping comes as a result of a
+vgetrandom_alloc() syscall, which (g)libc makes at some point, and then
+the result of that is passed to the vDSO getrandom() function. The
+memory in vgetrandom_alloc() is then carved up, one per thread, with
+(g)libc's various internal pthread creation/exit functions.
+
+So that means this isn't a thing that's trivially limited to just one
+per thread. Userspace can call vgetrandom_alloc() all it wants.
+
+Thus, I'm having a hard time seeing how relaxing rlimits here as you
+suggested doesn't amount to an rlimit backdoor. I'm also not seeing
+other fancy options for "pinning pages" as you mentioned in this email.
+Something about having the kernel allocate them on clone()? That seems
+terrible and complex. And if you do want this all to go through mlock(),
+somehow, there's still the fork() inheritabiity issue. (This was all
+discussed on the thread a few versions ago that surfaced these issues,
+by the way.)
+
+So I'm not really seeing any good alternatives, no matter how hard I
+squint at your suggestions. Maybe you can elaborate a bit?
+Alternatively, perhaps the compromise I suggested above where we ditch
+the instruction decoder stuff is actually fine with you?
+
+> rarely-excercised 'discardable memory' semantics in 
+> Linux is a fair one - so it's straightforward to lift this NAK.
+
+I still don't think calling this "rarely-exercised" is true. Desktop
+machines regularly OOM with lots of Chrome tabs, and this is
+functionality that'll be in glibc, so it'll be exercised quite often.
+Even on servers, many operators work with the philosophy that unused RAM
+is wasted RAM, and so servers are run pretty close to capacity. Not to
+mention Android, where lots of handsets have way too little RAM.
+Swapping and memory pressure and so forth is very real. So claiming that
+this is somehow obscure or rarely used or what have you isn't very
+accurate. These are code paths that will certainly get exercised.
+
+Jason
