@@ -2,113 +2,108 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD62E65CD35
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jan 2023 07:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE84B65CDD2
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jan 2023 08:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbjADGkg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Jan 2023 01:40:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S233767AbjADHrF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Jan 2023 02:47:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233470AbjADGkM (ORCPT
+        with ESMTP id S233721AbjADHqt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Jan 2023 01:40:12 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA4718694
-        for <linux-crypto@vger.kernel.org>; Tue,  3 Jan 2023 22:40:09 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id r18so21596881pgr.12
-        for <linux-crypto@vger.kernel.org>; Tue, 03 Jan 2023 22:40:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Sm2IrX2as+k9LNhXBii+2EPLTtwp8Q7bZRIteVKR48Y=;
-        b=lxucC7WdJqs/f6vnO0xyjDIiYvkO1zIUbY5dvzc1gS3dAy3OfQQYNJY3qgkIp4IvGC
-         Oi3Qiq2J4RL2YPCvlge/HIY6+nyJiUXFhgSIFyzAmwWVXagd97/PUtXlb5jfygBt6BRf
-         fwWN260uJVbK/yc9R8WuWezkJeUQdhpjES8XGIHyH3AdF/AFkNlz+YfQuZN2gO1EmOPc
-         8KKIj6/qhE8i3Fe0WWEG9u5kvwBFlkiVo2YRHtZuVzM09AJ0QQD44w0muYyCcKVpzTF1
-         KpA5Z3tjS1NOBVAYcaIMzzN2x6CIMAwuhChhhugpiMtk+ck5Mr24ICxbQ/8nSTPVum7J
-         QJOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sm2IrX2as+k9LNhXBii+2EPLTtwp8Q7bZRIteVKR48Y=;
-        b=X6XKYTKDngfA05397IoNW5yxKHmAgvWTxJ3dQ18BPQxJohUH7xWTN1KTqzWylG6TwC
-         BZUOsL9NuttKeztPznPlmfjDOP8cSXjjUDVero6bAbZX6vF88B0jPZ/MwKjYEYXr8b3x
-         4zWmH8szmPb/RWkP9AuIbrWdwL+I6NvuwkvfezIFnmhtZzdAP68B9OAWjoigAmjLnGRR
-         ub+1TgrrrtNaATMc2hzJU+Mya4pTQjLyri7n4uSkUAC9videkX0U/IdZ/K/8Zbdc8QGr
-         0SUKOdbClfZAQgzoQbca18vw0/A+QaTCpvgbitAeJpu2avAtJcSbsOdjQdbKvFHpm7Tr
-         rdtg==
-X-Gm-Message-State: AFqh2kqwSntOx7vH+/WCnBll1N98IzVXmJHInocxmnN7SSw37GdYH9C1
-        LSJCgCANUuMTK98Dy78isSrFf2Bh6O+AlBh6Ux0=
-X-Google-Smtp-Source: AMrXdXtzEgdGNYXviASYnSqNJC0ZiQxlpsBhKtwlV/fC9EHlEQAD4b0ufCVYBzwI8FMubEJLf3ti+D5YEYUYV8QjtJ4=
-X-Received: by 2002:a62:1d07:0:b0:582:e7c:f6f3 with SMTP id
- d7-20020a621d07000000b005820e7cf6f3mr1157112pfd.8.1672814408803; Tue, 03 Jan
- 2023 22:40:08 -0800 (PST)
+        Wed, 4 Jan 2023 02:46:49 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F5CE36
+        for <linux-crypto@vger.kernel.org>; Tue,  3 Jan 2023 23:46:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6CEEAB81203
+        for <linux-crypto@vger.kernel.org>; Wed,  4 Jan 2023 07:46:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 169F2C433D2;
+        Wed,  4 Jan 2023 07:46:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672818406;
+        bh=eZ4F0Vs4hiX60OmPCpMb00jhDPIHpJ7/GIt2QNFF9nQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BUXr8OEbEKq7c3348o7O/SgXTSn5m+j9xtbWZa059jYhiq/xl3AiGATLVCi77VRuO
+         028FVZwEbHRimvUih8PW/BS+optm0pOUIp+Yipskim9+ssENT42AoLEiVY/5rQbl3t
+         AuJ8L4z0s2AmeCnulYve/umAE37gbLd29NuwQGT3uxkrsMru6eRonAlLNVSVszdoia
+         162a54dgdrYbAejmgoJLhycGUK5wFTOKDN9IWKfvn96vIhpdf3AWRLTzxQjjEkuILV
+         AxhriNVud/4RAWCNdLZpNNR3qAGFG+9R3caQC33x4wt+ub0yRdJAAZ4W4ekd3F4pab
+         GTZGjZ+wfxGng==
+Date:   Tue, 3 Jan 2023 23:46:44 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Subject: Re: xor_blocks() assumptions
+Message-ID: <Y7Uu5GkxfrejPJXL@sol.localdomain>
+References: <Y7NizHFsWfMW/cC2@sol.localdomain>
+ <CGME20230103111359eucas1p137cb823bdc80d790544de20c3835faf2@eucas1p1.samsung.com>
+ <dleftjbknfoopx.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Reply-To: mrs.maryander1947@gmail.com
-Sender: mrs.janeval197@gmail.com
-Received: by 2002:a05:7300:7652:b0:94:fcda:856a with HTTP; Tue, 3 Jan 2023
- 22:40:08 -0800 (PST)
-From:   "Mrs. Mary Anderson" <amrsmary16@gmail.com>
-Date:   Wed, 4 Jan 2023 06:40:08 +0000
-X-Google-Sender-Auth: jTqv_0vHyo2y0EStaK-jLA4ClSk
-Message-ID: <CAL+V8fx8n5YVCBnyPw3TzcFWBtXqZO5w+9A_JwP7BB54jJSoEA@mail.gmail.com>
-Subject: Dear Beloved,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:534 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5899]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [mrs.janeval197[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mrs.maryander1947[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [amrsmary16[at]gmail.com]
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  1.7 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dleftjbknfoopx.fsf%l.stelmach@samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello,
+On Tue, Jan 03, 2023 at 12:13:30PM +0100, Lukasz Stelmach wrote:
+> > It also would be worth considering just optimizing crypto_xor() by
+> > unrolling the word-at-a-time loop to 4x or so.
+> 
+> If I understand correctly the generic 8regs and 32regs implementations
+> in include/asm-generic/xor.h are what you mean. Using xor_blocks() in
+> crypto_xor() could enable them for free on architectures lacking SIMD or
+> vector instructions.
 
-Dear Beloved,
+I actually meant exactly what I said -- unrolling the word-at-a-time loop in
+crypto_xor().  Not using xor_blocks().  Something like this:
 
-I am Mrs. Mary Anderson, It is understandable that you may be a bit
-apprehensive because you do not know me, I found your email address
-from a Human resources database and decided to contact you. I would
-love to employ you into my charity work, I am ready to donate some
-money to you to carry on the Charity work in your country. Please
-reply so that i will give you further details and tell you about
-myself.
+diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
+index 61b327206b557..c0b90f14cae18 100644
+--- a/include/crypto/algapi.h
++++ b/include/crypto/algapi.h
+@@ -167,7 +167,18 @@ static inline void crypto_xor(u8 *dst, const u8 *src, unsigned int size)
+ 		unsigned long *s = (unsigned long *)src;
+ 		unsigned long l;
+ 
+-		while (size > 0) {
++		while (size >= 4 * sizeof(unsigned long)) {
++			l = get_unaligned(d) ^ get_unaligned(s++);
++			put_unaligned(l, d++);
++			l = get_unaligned(d) ^ get_unaligned(s++);
++			put_unaligned(l, d++);
++			l = get_unaligned(d) ^ get_unaligned(s++);
++			put_unaligned(l, d++);
++			l = get_unaligned(d) ^ get_unaligned(s++);
++			put_unaligned(l, d++);
++			size -= 4 * sizeof(unsigned long);
++		}
++		if (size > 0) {
+ 			l = get_unaligned(d) ^ get_unaligned(s++);
+ 			put_unaligned(l, d++);
+ 			size -= sizeof(unsigned long);
 
-Yours Sincerely
-Mrs. Mary Anderson
+Actually, the compiler might unroll the loop automatically anyway, so even the
+above change might not even be necessary.  The point is, I expect that a proper
+scalar implementation will perform well for pretty much anything other than
+large input sizes.
+
+It's only large input sizes where xor_blocks() might be worth it, considering
+the significant overhead of the indirect call in xor_blocks() as well as
+entering an SIMD code section.  (Note that indirect calls are very expensive
+these days, due to the speculative execution mitigations.)
+
+Of course, the real question is what real-world scenario are you actually trying
+to optimize for...
+
+- Eric
