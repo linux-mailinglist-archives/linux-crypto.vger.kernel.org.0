@@ -2,149 +2,144 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CF365E01C
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jan 2023 23:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F4565E317
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Jan 2023 03:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240609AbjADWis (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 4 Jan 2023 17:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
+        id S229496AbjAEC5t (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 4 Jan 2023 21:57:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbjADWiq (ORCPT
+        with ESMTP id S229583AbjAEC5s (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 4 Jan 2023 17:38:46 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3FC1EC79;
-        Wed,  4 Jan 2023 14:38:45 -0800 (PST)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 304ME1CI018620;
-        Wed, 4 Jan 2023 22:38:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=dnzle0EcHMmwGRtnVfx0mWs2UVkVr780qRGnF49Zxbw=;
- b=PqUzd7tArfL9HGT34lPsW6zlrVMMIK535/wJOQoVQZ0gW1WTH0F34zg8wHIkJ0T+78zI
- 9SyDP/o+2ZSjXkXAwWoQm4LWk8v8NBwrycMasue3XpHOqx9HtkSfcE9Qv2iEj09hOeK5
- ZIG+dkVdQSWcxT0MMKKcPZ/lD4VaGFMdEskERUchWy1oyuzogVTUrXMvvyKx+0sLfvK5
- Lyozi++13HBffdqTXnsN4UG1Az1KEBfTh+bBtkC1a+5gwyTw/TK8Stih7oG/fuFEq5r/
- LZZsu2j9NXhehyg7bXZRWmK7dT2D7I3TZuQwtkvszafXOvb6uyHsp8HXBpLCWIz4ENGV Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mwj2hgkfd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Jan 2023 22:38:16 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 304MZFBa004552;
-        Wed, 4 Jan 2023 22:38:15 GMT
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mwj2hgker-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Jan 2023 22:38:15 +0000
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 304MW0JQ019440;
-        Wed, 4 Jan 2023 22:38:15 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([9.208.130.100])
-        by ppma02wdc.us.ibm.com (PPS) with ESMTPS id 3mtcq7tgas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Jan 2023 22:38:15 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 304McERA2622200
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Jan 2023 22:38:14 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5B3A58066;
-        Wed,  4 Jan 2023 22:38:13 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B763A58062;
-        Wed,  4 Jan 2023 22:38:11 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.185.16])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  4 Jan 2023 22:38:11 +0000 (GMT)
-Message-ID: <1738bcddc690825f634bfe41ca1df778a1a50b0a.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 03/10] KEYS: X.509: Parse Basic Constraints for CA
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "pvorel@suse.cz" <pvorel@suse.cz>,
-        "noodles@fb.com" <noodles@fb.com>, "tiwai@suse.de" <tiwai@suse.de>,
-        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        Elaine Palmer <erpalmer@linux.vnet.ibm.com>,
-        Coiby Xu <coxu@redhat.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Date:   Wed, 04 Jan 2023 17:38:07 -0500
-In-Reply-To: <5F14DD59-7139-427E-A263-D5DED6EB57F8@oracle.com>
-References: <20221214003401.4086781-1-eric.snowberg@oracle.com>
-         <20221214003401.4086781-4-eric.snowberg@oracle.com>
-         <b0f29738b919e2705d770017f2f1eb0542c2fad4.camel@linux.ibm.com>
-         <Y7VxDloaHyF8cX5j@kernel.org>
-         <5F14DD59-7139-427E-A263-D5DED6EB57F8@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qxLcN76R_0JpWidhJf1J_gZEXtL92O2g
-X-Proofpoint-GUID: shNbEMAaO2O3rlpd5WibO3G1L5cR6plP
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 4 Jan 2023 21:57:48 -0500
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2046.outbound.protection.outlook.com [40.107.95.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846109FFF;
+        Wed,  4 Jan 2023 18:57:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MZ0473NoSMcF/Ot3LDjBuRTNTSoz9k6iW59pB7UkZM+Wokcc7sowYhKgrsO5M/coeY6T9pvAI71Vo/WE4ejH1RypbdVz1oTeWFzyNx9UgtVDAELXdNM+Er0btwccYz6CAU4cDdT9HduOmeWto+nlXDUK3BQb43U/Dg/l+y8VKE1gR8XJwAdh9kCWUu6+HyV8WSxYMxkergpkqpMuxbvpASr74G2A8DqvHt/4b66D3kXp+gDtdPJEr4aAFNf0ECfcioiWVdnEJq78opk4XuF0DxKHSxm5pqj7mmurr4+JPPkbhrgOrPGgDKcz6nWU4Yr17xoT1bmbqeDs+Xy7mI1Drw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aZ0jdtHwJSHbE9jSpxVyqhT4QNBcf5BOOOCjmUqTdE0=;
+ b=ZW/+oThn0ghtefp8U8HJR7h9MRyiXCDaESzHsGM9rFdZXeUdF5XpZGkFUx3vqLuAJ60h6MpJ+a/3dFBlFdK6PKbIFdco3TudojuvPOb3B33iewTxBX/oWC098RH/J+iMS2r8LTKrvBrBdZxh9glEdybVXZm9abO/8u5Bs2sIvr25qdD5w55Wsu1Q9LI1WybzJm83tXEPqjSNl/5DC6DZgprQMSpcGeKTYU4nxi0nYE+PwLwcE1WPiBdzVCL6/OpZbyLlvaWZ5t0C5fno1KoRl0yDIAudMMadYU68ogwz5MszlHmoWZE0Ep+EdZhnzz4jtwlANcpEBTM75M/LvBelng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aZ0jdtHwJSHbE9jSpxVyqhT4QNBcf5BOOOCjmUqTdE0=;
+ b=sbrDVcZrzvcpCJ0W7zwFan5oIB2qNFqk/eS2IpN3bSN72CYl82E8qcMf7w7WgjO+pVoSHAXvTBM/IhH7oL5AItM1r5uNopfkCs3yjKx8pq7XrTn75GsvQUcbowkYpMRauN8x4Kqj0wZmg17Cmg01tJHqNuKupa826molrE/06II=
+Received: from DS7PR03CA0043.namprd03.prod.outlook.com (2603:10b6:5:3b5::18)
+ by BL1PR12MB5254.namprd12.prod.outlook.com (2603:10b6:208:31e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Thu, 5 Jan
+ 2023 02:57:45 +0000
+Received: from DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:3b5:cafe::3c) by DS7PR03CA0043.outlook.office365.com
+ (2603:10b6:5:3b5::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.14 via Frontend
+ Transport; Thu, 5 Jan 2023 02:57:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT051.mail.protection.outlook.com (10.13.172.243) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5966.17 via Frontend Transport; Thu, 5 Jan 2023 02:57:44 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Wed, 4 Jan
+ 2023 20:57:43 -0600
+Date:   Wed, 4 Jan 2023 11:21:05 -0600
+From:   Michael Roth <michael.roth@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
+        <linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <jroedel@suse.de>,
+        <thomas.lendacky@amd.com>, <hpa@zytor.com>, <ardb@kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <wanpengli@tencent.com>, <jmattson@google.com>, <luto@kernel.org>,
+        <dave.hansen@linux.intel.com>, <slp@redhat.com>,
+        <pgonda@google.com>, <peterz@infradead.org>,
+        <srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
+        <dovmurik@linux.ibm.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
+        <kirill@shutemov.name>, <ak@linux.intel.com>,
+        <tony.luck@intel.com>, <marcorr@google.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <alpergun@google.com>, <dgilbert@redhat.com>, <jarkko@kernel.org>,
+        <ashish.kalra@amd.com>, <harald@profian.com>
+Subject: Re: [PATCH RFC v7 00/64] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Message-ID: <20230104172105.tke5opbywcgq2fzl@amd.com>
+References: <20221214194056.161492-1-michael.roth@amd.com>
+ <Y6YQjJyoxKC5hfij@zn.tnic>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-04_07,2023-01-04_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxlogscore=999 mlxscore=0 clxscore=1015 malwarescore=0 phishscore=0
- suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301040183
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <Y6YQjJyoxKC5hfij@zn.tnic>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT051:EE_|BL1PR12MB5254:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b619d84-6b30-48c5-3c31-08daeec89e46
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i+z/KMhgVixZBfoza7xmaFkmxv+brd7sfz+zOGvtVrg0n7BZftSSj1tTKBPEVgEwBC8s4Erm8wE+uQFtMdzjaDb23WXvj4f5ssKWkv7UijHqAXlEe61OsYz8/YiaqAtNOzsgD4Zyjemc4JScxi0I93LRLk1gQkWnsCrHrL7gSMEoRjbTcktq55v+uJku3AM4/yeiCrmNjYp1iE1e5lS8QsBRBOu+sk3wTT5Pd9xDzbJm/pvdN1nsXHWOYbEKQKcykRrNzd6zOumAUMkbN0dnCySQcq51lU1QN0bo+VG8ikZvSlGL56WANt3ScvNO2wmHdnUG6MQEgz3Ih2wi0mYxkyx0qUZrTC65NmBvMgZYyUZYmHLKUW9LQ6g6YV3i5EjWXt/ElBa9lMvtHa/V7pMZ2MwPwRLLx7uxGUUjCfBfTmZpjMjvGAsU3bM9u5DZ97lEawT9ygUHK7M0vwlIUW4AIgGWrCfx5I9MIAXBeXNOIEkY8ThAd17GrwlRmf5Jd39Sk25UEvat3jKuMQDNHzhDAeKYptZcYQE0nJ3Y5JZpQiMSSZlpGe1Ls761TlphkcGWvnBnVgvOF/gXohWufnXBN0AY97XbEW1gwyOzjaHy1m6OzFGuSTp7i6Mh4kl6v2ZWBL2vpEgRJJTJzUOX1ASpgMw6rDcPQUtbLgueynjLPPR6sHmsCPrA1THdcTr4Twk2r9nQFniK8P2Eahdxi8HM1qN5cOrr8z+ph+P1xTqlv8DjZlHaeeheq0gpDb6tKhvAPPPR796MZnoynnnerYoEc/iNS4Bv5yt3Q5bKmrqo6BCthB1AqWaVL3eWkY/739ao
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(376002)(39860400002)(346002)(396003)(136003)(451199015)(46966006)(36840700001)(40470700004)(70586007)(44832011)(5660300002)(7416002)(7406005)(316002)(2906002)(41300700001)(54906003)(6916009)(8676002)(4326008)(8936002)(70206006)(2616005)(36860700001)(82310400005)(6666004)(45080400002)(36756003)(478600001)(186003)(26005)(47076005)(426003)(966005)(1076003)(16526019)(83380400001)(336012)(82740400003)(40480700001)(86362001)(81166007)(40460700003)(356005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2023 02:57:44.1838
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b619d84-6b30-48c5-3c31-08daeec89e46
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5254
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, 2023-01-04 at 20:14 +0000, Eric Snowberg wrote:
-> 
-> > On Jan 4, 2023, at 5:29 AM, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+On Fri, Dec 23, 2022 at 09:33:16PM +0100, Borislav Petkov wrote:
+> On Wed, Dec 14, 2022 at 01:39:52PM -0600, Michael Roth wrote:
+> > This patchset is based on top of the following patchset:
 > > 
-> > On Thu, Dec 15, 2022 at 06:10:04AM -0500, Mimi Zohar wrote:
-> >>> diff --git a/crypto/asymmetric_keys/x509_parser.h b/crypto/asymmetric_keys/x509_parser.h
-> >>> index a299c9c56f40..7c5c0ad1c22e 100644
-> >>> --- a/crypto/asymmetric_keys/x509_parser.h
-> >>> +++ b/crypto/asymmetric_keys/x509_parser.h
-> >>> @@ -38,6 +38,7 @@ struct x509_certificate {
-> >>> 	bool		self_signed;		/* T if self-signed (check unsupported_sig too) */
-> >>> 	bool		unsupported_sig;	/* T if signature uses unsupported crypto */
-> >>> 	bool		blacklisted;
-> >>> +	bool		root_ca;		/* T if basic constraints CA is set */
-> >>> }; 
-> >> 
-> >> The variable "root_ca" should probably be renamed to just "ca", right?
-> > 
-> > Perhaps is_ca?
+> >   "[PATCH v10 0/9] KVM: mm: fd-based approach for supporting KVM"
+> >   https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2F20221202061347.1070246-1-chao.p.peng%40linux.intel.com%2FT%2F%23me1dd3a4c295758b4e4ac8ff600f2db055bc5f987&data=05%7C01%7Cmichael.roth%40amd.com%7Ce778b913794d41ca7a1b08dae524f21c%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C638074244202143178%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=rhjtuPIYWrTN%2FtPHOb2HM5GGZ5cgHRCGVoqu8N1f7XY%3D&reserved=0
 > 
-> I am open to renaming this, but need an agreement on whether the “is_” should be used or not:
+> Well, not quite.
 > 
-> https://lore.kernel.org/lkml/b28ea211d88e968a5487b20477236e9b507755f4.camel@linux.ibm.com/
+> There's also this thing which is stuck in there:
+> 
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20221205232341.4131240-1-vannapurve%40google.com&data=05%7C01%7Cmichael.roth%40amd.com%7Ce778b913794d41ca7a1b08dae524f21c%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C638074244202143178%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=L20ayS1IDUCuOjrs2HzVApzf5%2BmW48PhcsnZprn1RIM%3D&reserved=0
+> 
+> and I would appreciate reading that in the 0th message so that I don't
+> scratch my head over why don't those patches apply and what else is
+> missing...
 
-Examples of both functions and variables exist that are prefixed with
-"is_".   One is a question; the other a statement.   Naming the
-variable "is_ca" and using it like "if (cert->is_ca)" does make sense.
+That's correct, sorry for the confusion. With UPM v9 those tests were included
+on top so when I ported to v10 I failed to recall it was now a separate
+patchset I'd added on top.
 
--- 
-thanks,
+-Mike
 
-Mimi
-
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&data=05%7C01%7Cmichael.roth%40amd.com%7Ce778b913794d41ca7a1b08dae524f21c%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C638074244202143178%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=q4TNZvaptVOEPnx%2B6FJpg64v%2BUya14kO6PX1U422JXE%3D&reserved=0
