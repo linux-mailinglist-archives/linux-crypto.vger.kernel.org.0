@@ -2,83 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3200660B0F
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 Jan 2023 01:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28545660B3D
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 Jan 2023 02:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236642AbjAGAr7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 6 Jan 2023 19:47:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
+        id S236733AbjAGBFQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 6 Jan 2023 20:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236749AbjAGAr4 (ORCPT
+        with ESMTP id S230201AbjAGBFP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 6 Jan 2023 19:47:56 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5895677D3A;
-        Fri,  6 Jan 2023 16:47:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1F40FB81F44;
-        Sat,  7 Jan 2023 00:47:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E251C433D2;
-        Sat,  7 Jan 2023 00:47:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1673052472;
-        bh=nNZcUm2y6TRRNHYmy0+qpiZspVpC072+41FVY/tKC7Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cYJQWGa79RwekO/UXP3plTpopDgQkWdLf6BXafu/pwqkk5wJUE5Ko9BxRcaL9EGsd
-         RgCymAUjIHT7QHTNtJi76uZnX5KfDvIpquWglGa1n4ieQS7jsOvCYRLwoZp0/RNOLO
-         swWhSpCpNMdYsYpmttFF0E39evxAgC35q3cy5O9s=
-Date:   Fri, 6 Jan 2023 16:47:51 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>, <arnd@arndb.de>,
-        <richard@nod.at>, <krzysztof.kozlowski+dt@linaro.org>,
-        <herbert@gondor.apana.org.au>, <robh+dt@kernel.org>,
-        <claudiu.beznea@microchip.com>, <broonie@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <pratyush@kernel.org>, <michael@walle.cc>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2] MAINTAINERS: Update email of Tudor Ambarus
-Message-Id: <20230106164751.7ddaf5c54e0a764344806848@linux-foundation.org>
-In-Reply-To: <f653b23f-cf25-61ec-60d4-91dd7823edd2@microchip.com>
-References: <20221226144043.367706-1-tudor.ambarus@linaro.org>
-        <feb09bac-0ea4-9154-362b-6d81cba352a8@linaro.org>
-        <678ad800-7a3b-e2bf-6428-f06d696d8edb@linaro.org>
-        <20230106165506.0a34fa78@xps-13>
-        <f653b23f-cf25-61ec-60d4-91dd7823edd2@microchip.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 6 Jan 2023 20:05:15 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B898463C
+        for <linux-crypto@vger.kernel.org>; Fri,  6 Jan 2023 17:05:15 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id r11so2453934oie.13
+        for <linux-crypto@vger.kernel.org>; Fri, 06 Jan 2023 17:05:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C56Q+YV0i1VwzqpPgsaApjf/2tDIDNvnJyLhwVpmM08=;
+        b=dhbWfKx3+tphoLft8yp93ilp6qmQ6eNIla9WQDBjDjjJDK76Tt20R+zw4O2llYy6sF
+         aVP5vHT4rRfSggNhYCNDqqx6Gqfm5sqtCtZeIQNNnGngvqWWiuIteVRKCa3Onn/JMwiU
+         3U+ego9jAnKNvpPpQLDY4IGc9+xu5EiuaY2ByClw5z3c7ZzrZfDohZeWmgsIhQCqGdLb
+         enZeVVAL1YvJTh98QAJWW+gNLc3w8gOlMx7EHMI9W8YW86tbddd3R7pMzvlyzJ3yn/oZ
+         kqDsRiBdZ3KacTEaWPkj20wTWsrTHo+aa1UjB1prz5y9+maRvd0fXgf/0jAiUhIpwF9V
+         7v6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C56Q+YV0i1VwzqpPgsaApjf/2tDIDNvnJyLhwVpmM08=;
+        b=Ad91GSbJHWcO9DJKAF/BDLMbzFI7nKK/wtXz1W3v5+TB0ZvLYBTYJdeIHkk9Jm06tS
+         zQeo802LpFXTRD3OitMk8je4UliCQYKkGLJbQu/YLYDkuxTq+O2ErEYMCfv033PvytY5
+         SC97H4+GIi/tjJ+5F2MZ1Z5M2awbj8PWbqY0Z+YDFwxPwO3hCHTHv3m9E8tKDpMCIZUn
+         +mNpu9mwJUQ4XuUUsbUalkM2xIkxNM2KE65fM926UwMBMl8FGRwm8Q2TaLRhzWyo2Nk6
+         LV+MRc0wbpzDEHfFPnuxhnZK9sI2Dox6oAGxucSJ3V1XSdPJqU6XrBW67Rz79Pxx9vOk
+         gk8A==
+X-Gm-Message-State: AFqh2kpr4VJZ41Nf5Wj/Ne/fdbmbM5S/f7Okf0stOtDk9deIW7/n2YYx
+        Tt+assLK9ujCSHZgA+mHU9Wmhw36vWqNAg/o+1s=
+X-Google-Smtp-Source: AMrXdXvn2i6HaIrfxddXHKW8uWfQuesdmK+R5uaTXFkKyLxV5lBf/AzsFhSKu18KoIrf3P17GGps6b+Anq4ODv4dN14=
+X-Received: by 2002:aca:1b0a:0:b0:354:7fcd:4e27 with SMTP id
+ b10-20020aca1b0a000000b003547fcd4e27mr2936736oib.239.1673053514472; Fri, 06
+ Jan 2023 17:05:14 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a05:6808:2387:0:0:0:0 with HTTP; Fri, 6 Jan 2023 17:05:14
+ -0800 (PST)
+Reply-To: jamesaissy13@gmail.com
+From:   James AISSY <samueltia200@gmail.com>
+Date:   Fri, 6 Jan 2023 17:05:14 -0800
+Message-ID: <CAOD2y7m3GtkyXk8hC+jFv8Y+=dwA8sv5hep4ho_YLE7RWk+hVg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 6 Jan 2023 16:59:52 +0100 Nicolas Ferre <nicolas.ferre@microchip.com> wrote:
+Hello My Dear,
 
-> > Are MAINTAINERS changes accepted through fixes PR? I see a number of
-> > experienced people in Cc:, I would like to hear from you folks, because
-> > I never had to do that before. If yes, then I'll do it right away,
-> > otherwise I'll apply to mtd/next. I'm all ears :)
-> 
-> I remember a conversation that stated that MAINTAINERS changes must land 
-> in Linus' tree the quickest, because it'll just avoid confusion and 
-> bouncing emails.
+I hope this message finds you in good Health.
 
-Yes, I always merge MAINTAINERS fixes asap.
+My name is Mr. James AISSY. I am looking for a partner who is willing to
+team up with me for potential investment opportunities. I shall provide the
+FUND for the investment, and upon your acknowledgment of receiving this
+Message I will therefore enlighten you with the Full Details of my
+investment proposal.
 
-Probably these fixes should be backported into -stable kernels also -
-we don't want incorrect email addresses in *any* kernel.  But I don't
-do that.
+I'm awaiting your Response.
+
+My regards,
+Mr. James AISSY.
