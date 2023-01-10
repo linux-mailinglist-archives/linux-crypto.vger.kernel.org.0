@@ -2,78 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3473663F9A
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Jan 2023 12:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06266664257
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Jan 2023 14:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238154AbjAJL5w (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Jan 2023 06:57:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        id S238290AbjAJNvX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Jan 2023 08:51:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238153AbjAJL5j (ORCPT
+        with ESMTP id S238366AbjAJNvD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Jan 2023 06:57:39 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B65193E4;
-        Tue, 10 Jan 2023 03:57:28 -0800 (PST)
-Received: from dggpeml100012.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Nrq1g3dLTzqV4X;
-        Tue, 10 Jan 2023 19:52:39 +0800 (CST)
-Received: from [10.67.103.212] (10.67.103.212) by
- dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Tue, 10 Jan 2023 19:57:25 +0800
-Subject: Re: [PATCH v10 3/3] crypto: hisilicon/qm - define the device
- isolation strategy
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-References: <20221119074817.12063-1-yekai13@huawei.com>
- <20221119074817.12063-4-yekai13@huawei.com>
- <Y5V1zaurC8TuuA6l@gondor.apana.org.au>
-CC:     <gregkh@linuxfoundation.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wangzhou1@hisilicon.com>,
-        <liulongfang@huawei.com>
-From:   "yekai (A)" <yekai13@huawei.com>
-Message-ID: <03da282d-7654-4469-ca33-54eaa81b23d9@huawei.com>
-Date:   Tue, 10 Jan 2023 19:57:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 10 Jan 2023 08:51:03 -0500
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBCA6267;
+        Tue, 10 Jan 2023 05:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1673358659;
+  x=1704894659;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=fcYKp/hSCbvm2T2T8NQjOikt8LYmhEuOniPEBy7bp60=;
+  b=Jl3nETbG0uNtdqXoqPCJ4qE5e0P4P0dCxVEi8NQqpOPTQL4V5lKjZ7zo
+   PLFMx0TWDNWjpuyM8K0JAY5tAq58MUbXoqLbu1omxV/3qfg9K2ts2kvpr
+   zkP/E8ITUdHhVamHEvFR4GzKvNaSJbYrmXYQE1rZVqF9CS4u9rhimq/Mz
+   3UmYoDQHzn0s1cdKQGC6i/Mj+qVHN50jJGn8g0NIcfdSGt/uWWszK1/fR
+   sEO2kl9Ccku+IcRA5BXCHTDu+GbFJihhfcWE6JqwlvRfbY7cVUT2t17VY
+   7e5AOncNAtdku5keXf0yn3k92am04GlEwIipa1JhOm4PdxCRMzsmoIAXj
+   g==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <jesper.nilsson@axis.com>, <lars.persson@axis.com>
+CC:     <kernel@axis.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 00/12] crypto: axis - make tests pass
+Date:   Tue, 10 Jan 2023 14:50:30 +0100
+Message-ID: <20230110135042.2940847-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <Y5V1zaurC8TuuA6l@gondor.apana.org.au>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.212]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+This series fixes some problems in the ARTPEC-6 crypto driver.  After this
+series both the self tests and several dozen rounds of the random tests enabled
+with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS pass.  There are also a couple of fixes
+for problems seen when using this driver along with CIFS.
 
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-On 2022/12/11 14:16, Herbert Xu wrote:
-> On Sat, Nov 19, 2022 at 07:48:17AM +0000, Kai Ye wrote:
->> Define the device isolation strategy by the device driver. The
->> user configures a hardware error threshold value by uacce interface.
->> If the number of hardware errors exceeds the value of setting error
->> threshold in one hour. The device will not be available in user space.
->> The VF device use the PF device isolation strategy. All the hardware
->> errors are processed by PF driver.
->>
->> Signed-off-by: Kai Ye <yekai13@huawei.com>
->> ---
->>  drivers/crypto/hisilicon/qm.c | 169 +++++++++++++++++++++++++++++++---
->>  include/linux/hisi_acc_qm.h   |  15 +++
->>  2 files changed, 169 insertions(+), 15 deletions(-)
-> Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Lars Persson (1):
+  crypto: axis - do not DMA to ahash_request.result
 
-Hi Greg KH
+Vincent Whitchurch (11):
+  crypto: axis - do not DMA to IV
+  crypto: axis - fix CTR output IV
+  crypto: axis - fix in-place CBC output IV
+  crypto: axis - validate AEAD authsize
+  crypto: axis - reject invalid sizes
+  crypto: axis - fix XTS blocksize
+  crypto: axis - add skcipher fallback
+  crypto: axis - add fallback for AEAD
+  crypto: axis - fix XTS unaligned block size handling
+  crypto: axis - handle zero cryptlen
+  crypto: axis - allow small size for AEAD
 
-Could you help me to apply this patchset v10?
+ drivers/crypto/Kconfig               |   4 +
+ drivers/crypto/axis/artpec6_crypto.c | 288 ++++++++++++++++++++++-----
+ 2 files changed, 239 insertions(+), 53 deletions(-)
 
-thanks
-Kai
+-- 
+2.34.1
+
