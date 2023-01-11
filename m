@@ -2,102 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A63D66551F
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jan 2023 08:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AC2665AFB
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jan 2023 13:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbjAKH10 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Jan 2023 02:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        id S239005AbjAKMFM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Jan 2023 07:05:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231644AbjAKH1Z (ORCPT
+        with ESMTP id S238497AbjAKMEP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Jan 2023 02:27:25 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26569103;
-        Tue, 10 Jan 2023 23:27:24 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9364C61A36;
-        Wed, 11 Jan 2023 07:27:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71144C433EF;
-        Wed, 11 Jan 2023 07:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673422043;
-        bh=UNsE1Sfj5VIoaJ3hwnzx1FJI4j5UgDzN3GkA3q+AUVs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dxD1oUY/RiJXEOCbw6ek4gNpqHM0mBLH6ylbuGTsQAmrEb31BsclPpX+2w001z2pN
-         wUn2V4BtVR/nBTABTB5MnBq06fXVLWWfWRrD0RIISkXhqA5EOFB1nTdr5j5bRpUP3f
-         ZxIKCi4iBi5pmrl0OWhPYkSqWrgS8L44gJpC1UDmdu4s/T6YO1bkVqdB2GTAK1Bcod
-         VSVPPxRe8wziAVI8YJRZZtr6lhVzI7fDpKtki8x8Swdnsl3VwZimXrvodTZCDZlrM9
-         NHE74X7+o/MQvCYmP1ytwFRCo8LJMBdxHdGiwm1G9qPq8jL925wbDD5CKFYMhW4uaX
-         0kJUFhw7jl+Qw==
-Date:   Tue, 10 Jan 2023 23:27:20 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, tglx@linutronix.de,
-        linux-crypto@vger.kernel.org, linux-api@vger.kernel.org,
-        x86@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Carlos O'Donell <carlos@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
-        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
-        mlichvar@redhat.com
-Subject: Re: [PATCH v14 2/7] mm: add VM_DROPPABLE for designating always
- lazily freeable mappings
-Message-ID: <Y75k2KaDz2WdcXLk@sol.localdomain>
-References: <20230101162910.710293-1-Jason@zx2c4.com>
- <20230101162910.710293-3-Jason@zx2c4.com>
- <Y7QIg/hAIk7eZE42@gmail.com>
- <CALCETrWdw5kxrtr4M7AkKYDOJEE1cU1wENWgmgOxn0rEJz4y3w@mail.gmail.com>
- <CAHk-=wg_6Uhkjy12Vq_hN6rQqGRP2nE15rkgiAo6Qay5aOeigg@mail.gmail.com>
- <Y7SDgtXayQCy6xT6@zx2c4.com>
- <CAHk-=whQdWFw+0eGttxsWBHZg1+uh=0MhxXYtvJGX4t9P1MgNw@mail.gmail.com>
- <874jt0kndq.fsf@oldenburg.str.redhat.com>
- <CAHk-=wg7vMC2VmSBdVw7EKV+7UDiftQEg3L+3Rc0rcjjfsvs5A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg7vMC2VmSBdVw7EKV+7UDiftQEg3L+3Rc0rcjjfsvs5A@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 11 Jan 2023 07:04:15 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331EDE09D;
+        Wed, 11 Jan 2023 04:02:20 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id b4so2467779edf.0;
+        Wed, 11 Jan 2023 04:02:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KSuqfITy3pm9CBhTZW7epwEnvbhgxRePj6Bs2ANFDpM=;
+        b=N1zS2hQ1HfEy0d09EjJCAjf3Vqojk+cS720EpMWNIeTlJ2I80nW2qQf8Zy+ZypDx0v
+         XLZVBsknEaUA0QubwMJwF8m8lmHgHJoQaZ3PxBPlNxMOc9RfduDJk36yPddNk2nrGU9f
+         /dJPghA+Ozl7657uwIVw7oTQm71EA1jsa4Y0c8LCobifFCens8JZzuat5iqaDnz97KlH
+         wGBFFGgI/mL07XvMLUELztxBEZ7iWGc4Ep2XSU6Vm4nqr7DcdydTtu9+0BKix56JCn6Y
+         9hRSn337QSa097wypWNnESgiPJkv7BfH1PjGJJj0PcWb0RhzjCspRwjITeojGLQmxjyf
+         LvUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KSuqfITy3pm9CBhTZW7epwEnvbhgxRePj6Bs2ANFDpM=;
+        b=kAGMX2ianm7ukDxWdpbyMnzgv3TVoBB+HpoPaCd8ufxP2h5sBkoYIGrcO2MjFK8xTM
+         1EMSYR8x0iSMx3Xa21jPS1jpf1TKQOwBRDe1zO8poc4PIWgJ4aOg080D1rOwzqBUryIe
+         OiI26VMKih5hT2X2ULZdH1+5yb+c2ApQCxoZhP4FHHswELxvVKSi2MkX1N1io9ZEl1Xq
+         loQ3s8xAZLvfsSKanyltOnOyNypJmpxwIt5dJBAnglgXa93PePCVvhXfaxL5v76YUEQZ
+         Le5nlvE+WSNdkVmtLfIVPe1MEbwfrHK43033BPUASahsxMdjG3Xf75BJuhcGcH5jJGPz
+         Jbww==
+X-Gm-Message-State: AFqh2kpJkunSmgX2AKKTVJp/8OPsaibrBjHhOa4olrFPlR+WR54KYG2m
+        ZrDkEmx5USXZ6ygrrknRS+BNVOE5QJE=
+X-Google-Smtp-Source: AMrXdXuNHA9Xyr1zGaRBGq3GFbifwPFLIhsMvnW3acesULec+F01SyfhE+HE+O82bqgEsIdqJF6mTA==
+X-Received: by 2002:a05:6402:34f:b0:461:7c4e:c437 with SMTP id r15-20020a056402034f00b004617c4ec437mr66195299edw.1.1673438538628;
+        Wed, 11 Jan 2023 04:02:18 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:2a40:1104:a47e:7f3e:6b25:bafb])
+        by smtp.gmail.com with ESMTPSA id p9-20020aa7d309000000b0046776f98d0csm6002410edq.79.2023.01.11.04.02.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jan 2023 04:02:18 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Weili Qian <qianweili@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] crypto: hisilicon - remove redundant config PCI dependency for some CRYPTO_DEV_HISI configs
+Date:   Wed, 11 Jan 2023 13:02:03 +0100
+Message-Id: <20230111120203.822-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 08:28:58AM -0600, Linus Torvalds wrote:
-> On Mon, Jan 9, 2023 at 4:34 AM Florian Weimer <fweimer@redhat.com> wrote:
-> >
-> > We did these changes on the glibc side because Jason sounded very
-> > confident that he's able to deliver vDSO acceleration for getrandom.  If
-> > that fails to materialize, we'll just have to add back userspace
-> > buffering in glibc.
-> 
-> My whole argument has been that user-space buffering is the sane thing
-> to do. Most definitely for something like glibc.
-> 
-> The number of people who go "oh, no, my buffer or randomness could be
-> exposed by insert-odd-situation-here" is approximately zero, and then
-> the onus should be on *them* to do something special.
-> 
-> Because *they* are special. Precious little snowflake special.
-> 
->              Linus
+While reviewing dependencies in some Kconfig files, I noticed the redundant
+dependency "depends on PCI && PCI_MSI". The config PCI_MSI has always,
+since its introduction, been dependent on the config PCI. So, it is
+sufficient to just depend on PCI_MSI, and know that the dependency on PCI
+is implicitly implied.
 
-How would userspace decide when to reseed its CRNGs, then?
+Reduce the dependencies of configs CRYPTO_DEV_HISI_SEC2,
+CRYPTO_DEV_HISI_QM, CRYPTO_DEV_HISI_ZIP and CRYPTO_DEV_HISI_HPRE.
 
-IMO, the main benefit of the VDSO getrandom over a traditional userspace CRNG is
-that it makes reseeds of the kernel's CRNG take effect immediately.  See the
-cover letter, where Jason explains this.
+No functional change and effective change of Kconfig dependendencies.
 
-It's definitely important to make the memory used by userspace CRNGs have
-appropriate semantics, but my understanding is that's not the main point.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ drivers/crypto/hisilicon/Kconfig | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-- Eric
+diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
+index 743ce4fc3158..4137a8bf131f 100644
+--- a/drivers/crypto/hisilicon/Kconfig
++++ b/drivers/crypto/hisilicon/Kconfig
+@@ -27,7 +27,7 @@ config CRYPTO_DEV_HISI_SEC2
+ 	select CRYPTO_SHA256
+ 	select CRYPTO_SHA512
+ 	select CRYPTO_SM4_GENERIC
+-	depends on PCI && PCI_MSI
++	depends on PCI_MSI
+ 	depends on UACCE || UACCE=n
+ 	depends on ARM64 || (COMPILE_TEST && 64BIT)
+ 	depends on ACPI
+@@ -42,7 +42,7 @@ config CRYPTO_DEV_HISI_SEC2
+ config CRYPTO_DEV_HISI_QM
+ 	tristate
+ 	depends on ARM64 || COMPILE_TEST
+-	depends on PCI && PCI_MSI
++	depends on PCI_MSI
+ 	depends on UACCE || UACCE=n
+ 	depends on ACPI
+ 	help
+@@ -51,7 +51,7 @@ config CRYPTO_DEV_HISI_QM
+ 
+ config CRYPTO_DEV_HISI_ZIP
+ 	tristate "Support for HiSilicon ZIP accelerator"
+-	depends on PCI && PCI_MSI
++	depends on PCI_MSI
+ 	depends on ARM64 || (COMPILE_TEST && 64BIT)
+ 	depends on !CPU_BIG_ENDIAN || COMPILE_TEST
+ 	depends on UACCE || UACCE=n
+@@ -62,7 +62,7 @@ config CRYPTO_DEV_HISI_ZIP
+ 
+ config CRYPTO_DEV_HISI_HPRE
+ 	tristate "Support for HISI HPRE accelerator"
+-	depends on PCI && PCI_MSI
++	depends on PCI_MSI
+ 	depends on UACCE || UACCE=n
+ 	depends on ARM64 || (COMPILE_TEST && 64BIT)
+ 	depends on ACPI
+-- 
+2.17.1
+
