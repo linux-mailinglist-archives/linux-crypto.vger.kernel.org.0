@@ -2,52 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 019F8666A68
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Jan 2023 05:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0CB666C14
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Jan 2023 09:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236578AbjALEik convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 11 Jan 2023 23:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
+        id S239720AbjALIHm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 12 Jan 2023 03:07:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236609AbjALEie (ORCPT
+        with ESMTP id S239731AbjALIHM (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Jan 2023 23:38:34 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9311B1C0;
-        Wed, 11 Jan 2023 20:38:33 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id D8FD124E071;
-        Thu, 12 Jan 2023 12:38:31 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 12 Jan
- 2023 12:38:31 +0800
-Received: from ubuntu.localdomain (202.188.176.82) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 12 Jan
- 2023 12:38:27 +0800
-From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
-To:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Conor Dooley <conor.dooley@microchip.com>
-CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-Subject: [PATCH v4 3/3] riscv: dts: starfive: Add TRNG node for VisionFive 2
-Date:   Thu, 12 Jan 2023 12:38:12 +0800
-Message-ID: <20230112043812.150393-4-jiajie.ho@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230112043812.150393-1-jiajie.ho@starfivetech.com>
-References: <20230112043812.150393-1-jiajie.ho@starfivetech.com>
+        Thu, 12 Jan 2023 03:07:12 -0500
+Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCBDFCFC;
+        Thu, 12 Jan 2023 00:06:34 -0800 (PST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1pFsax-00GhtF-Vu; Thu, 12 Jan 2023 16:05:57 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 12 Jan 2023 16:05:55 +0800
+Date:   Thu, 12 Jan 2023 16:05:55 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Robert Elliott <elliott@hpe.com>
+Cc:     davem@davemloft.net, Jason@zx2c4.com, ardb@kernel.org,
+        ap420073@gmail.com, David.Laight@aculab.com, ebiggers@kernel.org,
+        tim.c.chen@linux.intel.com, peter@n8pjl.ca, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/13] crypto: x86/sha - yield FPU context during long
+ loops
+Message-ID: <Y7+/Yy7+mLEyqeiK@gondor.apana.org.au>
+References: <20221219220223.3982176-1-elliott@hpe.com>
+ <20221219220223.3982176-4-elliott@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221219220223.3982176-4-elliott@hpe.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,35 +45,20 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Adding StarFive TRNG controller node to VisionFive 2 SoC.
+On Mon, Dec 19, 2022 at 04:02:13PM -0600, Robert Elliott wrote:
+>
+> @@ -41,9 +41,7 @@ static int sha1_update(struct shash_desc *desc, const u8 *data,
 
-Co-developed-by: Jenny Zhang <jenny.zhang@starfivetech.com>
-Signed-off-by: Jenny Zhang <jenny.zhang@starfivetech.com>
-Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
----
- arch/riscv/boot/dts/starfive/jh7110.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+I just realised a show-stopper with this patch-set.  We don't
+have a desc->flags field that tells us whether we can sleep or
+not.
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index 4ac159d79d66..3c29e0bc6246 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -455,5 +455,15 @@ uart5: serial@12020000 {
- 			reg-shift = <2>;
- 			status = "disabled";
- 		};
-+
-+		rng: rng@1600c000 {
-+			compatible = "starfive,jh7110-trng";
-+			reg = <0x0 0x1600C000 0x0 0x4000>;
-+			clocks = <&stgcrg JH7110_STGCLK_SEC_HCLK>,
-+				 <&stgcrg JH7110_STGCLK_SEC_MISCAHB>;
-+			clock-names = "hclk", "ahb";
-+			resets = <&stgcrg JH7110_STGRST_SEC_TOP_HRESETN>;
-+			interrupts = <30>;
-+		};
- 	};
- };
+I'm currently doing a patch-set for per-request keys and I will
+add a flags field to shash_desc so we could use that for your
+patch-set too.
+
+Thanks,
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
