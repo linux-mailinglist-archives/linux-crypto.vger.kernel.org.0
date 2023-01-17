@@ -2,89 +2,125 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4321466D3F9
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jan 2023 02:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A6366D522
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jan 2023 04:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235181AbjAQBzu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Mon, 16 Jan 2023 20:55:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
+        id S235348AbjAQDr5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 16 Jan 2023 22:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbjAQBzg (ORCPT
+        with ESMTP id S235121AbjAQDr4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 16 Jan 2023 20:55:36 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B4F29E11;
-        Mon, 16 Jan 2023 17:55:28 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id A294F24DBCE;
-        Tue, 17 Jan 2023 09:55:26 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 17 Jan
- 2023 09:55:26 +0800
-Received: from ubuntu.localdomain (202.190.108.220) by EXMBX068.cuchost.com
- (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 17 Jan
- 2023 09:55:22 +0800
-From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
-To:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Conor Dooley <conor.dooley@microchip.com>
-CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-Subject: [PATCH v5 3/3] riscv: dts: starfive: Add TRNG node for VisionFive 2
-Date:   Tue, 17 Jan 2023 09:54:45 +0800
-Message-ID: <20230117015445.32500-4-jiajie.ho@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230117015445.32500-1-jiajie.ho@starfivetech.com>
-References: <20230117015445.32500-1-jiajie.ho@starfivetech.com>
+        Mon, 16 Jan 2023 22:47:56 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C701922DC5;
+        Mon, 16 Jan 2023 19:47:54 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Nwvx00xGvz4xG5;
+        Tue, 17 Jan 2023 14:47:48 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1673927268;
+        bh=pdT0tLO8GhTYnyOobd7AHS4rLZhzpys/XxIhDrVwTQE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cEF0eu2Lw5aegSx7hGanxUhFFwulU0oLGRKzDX7StCDPirx2Abu/ytDSH084deiY7
+         0z/FDrubl8A/sJMWjvQUUlgCAdTrcAzoOKiE8PY3dHCZLToxTdMAOkXNvsVi3kQYa2
+         Z7+lGjW01f/8Kvfy3lOv3AQhHhxO6Qxb4iO8z1JGBtr2g6azOGXgZOqgseK6bzFVqP
+         CV/C27yiGepyyLOvIuMHs/EhD+MgBM/DYHhse/55OFeSJ38FLztC92pSOp6zCGXTFL
+         RF435i6MR6FINTJcMmn8kgsbx8nHJId1zOfw44IdKlanWq8Jd9SDDPrScs/UJrJBLz
+         6WmWN7eIklSfg==
+Date:   Tue, 17 Jan 2023 14:47:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Danny Tsen <dtsen@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the crypto tree
+Message-ID: <20230117144747.37115c52@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.190.108.220]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX068.cuchost.com
- (172.16.6.68)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/U3=+W9+taE+jWVag5qZssFt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Adding StarFive TRNG controller node to VisionFive 2 SoC.
+--Sig_/U3=+W9+taE+jWVag5qZssFt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Co-developed-by: Jenny Zhang <jenny.zhang@starfivetech.com>
-Signed-off-by: Jenny Zhang <jenny.zhang@starfivetech.com>
-Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
+Hi all,
+
+After merging the crypto tree, today's linux-next build (powerpc
+pseries_le_defconfig) failed like this:
+
+arch/powerpc/crypto/p10_aes_gcm.o: warning: objtool: .text+0x884: unannotat=
+ed intra-function call
+arch/powerpc/crypto/aesp8-ppc.o: warning: objtool: aes_p8_set_encrypt_key+0=
+x44: unannotated intra-function call
+ld: arch/powerpc/crypto/p10_aes_gcm.o: ABI version 1 is not compatible with=
+ ABI version 2 output
+ld: failed to merge target specific data of file arch/powerpc/crypto/p10_ae=
+s_gcm.o
+
+Caused by commit
+
+  ca68a96c37eb ("crypto: p10-aes-gcm - An accelerated AES/GCM stitched impl=
+ementation")
+
+I have applied the following hack for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 17 Jan 2023 14:41:10 +1100
+Subject: [PATCH] crypto: p10-aes-gcm - only ABIv1 code has been implemented
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- arch/riscv/boot/dts/starfive/jh7110.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/powerpc/crypto/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index 4ac159d79d66..3c29e0bc6246 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -455,5 +455,15 @@ uart5: serial@12020000 {
- 			reg-shift = <2>;
- 			status = "disabled";
- 		};
-+
-+		rng: rng@1600c000 {
-+			compatible = "starfive,jh7110-trng";
-+			reg = <0x0 0x1600C000 0x0 0x4000>;
-+			clocks = <&stgcrg JH7110_STGCLK_SEC_HCLK>,
-+				 <&stgcrg JH7110_STGCLK_SEC_MISCAHB>;
-+			clock-names = "hclk", "ahb";
-+			resets = <&stgcrg JH7110_STGRST_SEC_TOP_HRESETN>;
-+			interrupts = <30>;
-+		};
- 	};
- };
--- 
-2.25.1
+diff --git a/arch/powerpc/crypto/Kconfig b/arch/powerpc/crypto/Kconfig
+index db7d99383993..36928ad14a6b 100644
+--- a/arch/powerpc/crypto/Kconfig
++++ b/arch/powerpc/crypto/Kconfig
+@@ -97,6 +97,7 @@ config CRYPTO_AES_PPC_SPE
+ config CRYPTO_P10_AES_GCM
+ 	tristate "Stitched AES/GCM acceleration support on P10+ CPU (PPC)"
+ 	depends on PPC64
++	depends on PPC64_ELF_ABI_V1
+ 	select CRYPTO_LIB_AES
+ 	select CRYPTO_ALGAPI
+ 	select CRYPTO_AEAD
+--=20
+2.35.1
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/U3=+W9+taE+jWVag5qZssFt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPGGmMACgkQAVBC80lX
+0GzXFQf+IuQ0OoBK3RJPXB4MBEqFCXGFIsjgycvkBpeMhsPwrlTGzgd+Gk2oNnjn
+1VSGXyhT+Qy0mk5iSu7ZHteVWK2oM88re9zAzQoo0FkkNhBDi+6PITfoEjeqAifA
+OmVS1AOcz7XOuIVwGs5JosHJ3UGv8kvWiWjJaI6u1WYqpZF2gRfsNu2SnylW4Xs6
+8PMa66m4u9QaV3E8lav7d11I0gA88FIk2EE27vbIBboh0pvYY9j/VsEJ09YjplXX
+m2EjXwo54fIsP8/6Kunp4cOyd8DKJzwP3RundKYzZDPp5P8UBX9ems5nY7TyfstD
+HKhHguDvaYEwFPhNxs1u7LZUIcjpsg==
+=rAi6
+-----END PGP SIGNATURE-----
+
+--Sig_/U3=+W9+taE+jWVag5qZssFt--
