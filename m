@@ -2,110 +2,104 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBAA66D38C
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jan 2023 01:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D9F66D3F4
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jan 2023 02:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbjAQACi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 16 Jan 2023 19:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        id S233856AbjAQBzI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Mon, 16 Jan 2023 20:55:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233886AbjAQACg (ORCPT
+        with ESMTP id S233599AbjAQBzG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 16 Jan 2023 19:02:36 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833D42333C;
-        Mon, 16 Jan 2023 16:02:34 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Nwpx052cYz4xGq;
-        Tue, 17 Jan 2023 11:02:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1673913749;
-        bh=AHJpO7amNWKomHiN8ExtLZ0DIxReCogY/rawVa+qcZo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kanlpUU+tMqS3D8SIfj/4PMMkPSofmjlWwpc9p/QLjUbIzBZlg2BzQ8GFyWvrAh2Q
-         1m+EdcJZti83thAfeYD5gKeSczIa9+NmrGyolJsmQy1v4Znaie6Ol2V0Zc2hZNznct
-         aln5qBzhMRNKikKKh3PacYRk0jBa7MrTOUE+Xd9C/dV41aYIdoYuwl8Kst1DOuKR7j
-         rkqvX3me1Xee3qi2uI3z2K2BSdXsO5VaM+Q0IVey8wnF5NOF0PsdUV88x/Hi76Z7NK
-         eYdck0bYeZXVZD6p7vvu0rNJ5Qzk+T4hadxWmIZR7YEcal7ppnftccFz8/d+D2OWIi
-         N1T/ecSgtIsUQ==
-Date:   Tue, 17 Jan 2023 11:02:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Danny Tsen <dtsen@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH] crypto: p10-aes-gcm - Use _GLOBAL instead of .global
-Message-ID: <20230117110227.39fbadcc@canb.auug.org.au>
-In-Reply-To: <Y8UWHwTkKIkQn1t0@gondor.apana.org.au>
-References: <20230116112939.0820ff24@canb.auug.org.au>
-        <Y8UWHwTkKIkQn1t0@gondor.apana.org.au>
+        Mon, 16 Jan 2023 20:55:06 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88A9274B9;
+        Mon, 16 Jan 2023 17:55:03 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id ED3CB24E00A;
+        Tue, 17 Jan 2023 09:54:55 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 17 Jan
+ 2023 09:54:56 +0800
+Received: from ubuntu.localdomain (202.190.108.220) by EXMBX068.cuchost.com
+ (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 17 Jan
+ 2023 09:54:49 +0800
+From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
+To:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Conor Dooley <conor.dooley@microchip.com>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+Subject: [PATCH v5 0/3] hwrng: starfive: Add driver for TRNG module
+Date:   Tue, 17 Jan 2023 09:54:42 +0800
+Message-ID: <20230117015445.32500-1-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sQaKN0CTQtCVdeLquIPP2Qc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [202.190.108.220]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX068.cuchost.com
+ (172.16.6.68)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---Sig_/sQaKN0CTQtCVdeLquIPP2Qc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patch series adds kernel support for StarFive JH7110 hardware
+random number generator. First 2 patches add binding docs and device
+driver for this module. Patch 3 adds devicetree entry for VisionFive 2
+SoC.
 
-Hi Herbert,
+Patch 3 needs to be applied on top of:
+https://patchwork.kernel.org/project/linux-riscv/patch/20221220011247.35560-7-hal.feng@starfivetech.com/
 
-On Mon, 16 Jan 2023 17:17:19 +0800 Herbert Xu <herbert@gondor.apana.org.au>=
- wrote:
->
-> On Mon, Jan 16, 2023 at 11:29:39AM +1100, Stephen Rothwell wrote:
-> >=20
-> > After merging the crypto tree, today's linux-next build (powerpc
-> > ppc64_defconfig) failed like this:
-> >=20
-> > ERROR: modpost: ".aes_p10_gcm_decrypt" [arch/powerpc/crypto/p10-aes-gcm=
--crypto.ko] undefined!
-> > ERROR: modpost: ".aes_p10_gcm_encrypt" [arch/powerpc/crypto/p10-aes-gcm=
--crypto.ko] undefined!
-> >=20
-> > Caused by commits
-> >=20
-> >   cc40379b6e19 ("crypto: p10-aes-gcm - Glue code for AES/GCM stitched i=
-mplementation")
-> >   ca68a96c37eb ("crypto: p10-aes-gcm - An accelerated AES/GCM stitched =
-implementation") =20
->=20
-> Does this patch help?
+Patch 3 also depends on additional clock and reset patches for stg
+domain that are yet to be submitted to mailing list.
 
-Yes, that fixes the PowerPC build, thanks.
+Changes v4->v5:
+- Updated status in MAINTAINERS. (Conor)
+- Specified targeted device in Kconfig title and descriptions. (Conor)
+- Removed unnecessary goto label in patch 2. (Conor)
+- Enable runtime PM before registering hwrng in patch 2. (Conor)
 
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # build test only
+Changes v3->v4:
+- Moved init_completion before IRQ registration to be prepared for
+  spurious interrupts. (Herbert)
+- Added locks to guard concurrent write to the same register. (Herbert)
 
-I have added the patch to linux-next for today.
---=20
-Cheers,
-Stephen Rothwell
+Changes v2->v3:
+- Use constant usecs and convert to jiffies. (Herbert)
+- Removed sleep in irq handler. (Herbert)
+- Limited wait time to 40us if wait == 0 for trng read. (Herbert)
 
---Sig_/sQaKN0CTQtCVdeLquIPP2Qc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes v1->v2:
+- Updated of_match_ptr and added pm_sleep_ptr. (Krzysztof)
+- Dropped "status" in dts as module is always on. (Krzysztof)
 
------BEGIN PGP SIGNATURE-----
+Jia Jie Ho (3):
+  dt-bindings: rng: Add StarFive TRNG module
+  hwrng: starfive - Add TRNG driver for StarFive SoC
+  riscv: dts: starfive: Add TRNG node for VisionFive 2
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPF5ZMACgkQAVBC80lX
-0GyGrAf/X1lj8waHr3CwumTQIs/llcerw3VhsR5qFiRnoksQLbnErRNtIM2NXHL4
-eWMKduSb4fO6FHjscsnD5/YOyIoGnrGvQXXI5kTQpmlY3+EDwDu4nlgNv/UuQAaM
-XqyBRggufJonBPoTZi8b3vyy0uXH3d1DPACm9Pjufi3ZgUGTzQGz3RgHc52Pr7I6
-fH+5zyuab5s88J8WJdKaTnCyao2KpKZ48jGcfkAdaLf1+gq2grP7kN7Ch3XWkjiV
-AXPKeiVqpCd0oHLHHKkjFCZxSIZYlJMld9ijLx0Xi74Wz0TZjiQTigxUJFlK3xPF
-A+biR6AfJr1K0dAsBLwQU8p7HvXrBw==
-=mHah
------END PGP SIGNATURE-----
+ .../bindings/rng/starfive,jh7110-trng.yaml    |  55 +++
+ MAINTAINERS                                   |   6 +
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  10 +
+ drivers/char/hw_random/Kconfig                |  11 +
+ drivers/char/hw_random/Makefile               |   1 +
+ drivers/char/hw_random/jh7110-trng.c          | 393 ++++++++++++++++++
+ 6 files changed, 476 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/starfive,jh7110-trng.yaml
+ create mode 100644 drivers/char/hw_random/jh7110-trng.c
 
---Sig_/sQaKN0CTQtCVdeLquIPP2Qc--
+-- 
+2.25.1
+
