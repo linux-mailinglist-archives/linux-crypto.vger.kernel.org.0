@@ -2,112 +2,137 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F68674AE9
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Jan 2023 05:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A96674CD9
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Jan 2023 06:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjATElZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Jan 2023 23:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
+        id S230212AbjATFxw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Jan 2023 00:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjATElA (ORCPT
+        with ESMTP id S231138AbjATFxr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 19 Jan 2023 23:41:00 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A38C925B;
-        Thu, 19 Jan 2023 20:36:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674189412; x=1705725412;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=l+mSYcjCs3VtHdH4MTzk9fTsaIZXQ5VDUn8clsV5ONw=;
-  b=ExGc6r8lcPmyAr9i6HsLJwR9RyNE0MBELu9oDTcIb2RXZjEXmPNTz/m/
-   HamP6H5+K+m3RFRETzVH+tFgcyqV8ypWVgJpdK8YkoMYpSePWN/BHu9ZY
-   ClNO6cDmsOi5IRtzM1qCoCeONgH7biho6X57mJiItFxRP/ij+erRddUAt
-   HRwjXb8fWhbaHA57g3hKGJr6mlbb9h1oc5I01EbfWEF2eq/BRZpNv+YLO
-   DjiLW39IiC6FcMfQVkyCO4iI5zRZBIgD62CLQ6RUkW3iqG2zBJ8FGDhxA
-   59qI63V2jy1J7LYZfWpcthYdyWv4PWDpVmnYHRc9J9PIi1XbpUL1Mk9n9
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="411726038"
-X-IronPort-AV: E=Sophos;i="5.97,230,1669104000"; 
-   d="scan'208";a="411726038"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2023 19:07:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="692719398"
-X-IronPort-AV: E=Sophos;i="5.97,230,1669104000"; 
-   d="scan'208";a="692719398"
-Received: from lkp-server01.sh.intel.com (HELO 5646d64e7320) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 19 Jan 2023 19:07:37 -0800
-Received: from kbuild by 5646d64e7320 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pIhke-00027Z-13;
-        Fri, 20 Jan 2023 03:07:36 +0000
-Date:   Fri, 20 Jan 2023 11:07:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Babis Chalios <bchalios@amazon.es>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, amit@kernel.org, graf@amazon.de,
-        Jason@zx2c4.com, xmarcalx@amazon.co.uk
-Subject: Re: [PATCH 2/2] virtio-rng: add sysfs entries for leak detection
-Message-ID: <202301201004.z1gRttwb-lkp@intel.com>
-References: <20230119184349.74072-3-bchalios@amazon.es>
+        Fri, 20 Jan 2023 00:53:47 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DFB4ABC1
+        for <linux-crypto@vger.kernel.org>; Thu, 19 Jan 2023 21:53:29 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id ABCD4B82162
+        for <linux-crypto@vger.kernel.org>; Thu, 19 Jan 2023 09:50:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B6FEC433D2
+        for <linux-crypto@vger.kernel.org>; Thu, 19 Jan 2023 09:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674121839;
+        bh=cwfGxQaG+URthgCetdxt06MgdLxrxjNtdHKT4FtVIT0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hlQ5sHkwGpxp76mYavwbSbYa0wcZbK2DMUE47wRwDl/FwveFfL7GhDWBh+juEyKdE
+         YNGFq7w8PRa9YiUFqQd+XUf58+ANaqIR8cnEBW1d3FW1lxUtgoHrhZ3MmwAvwhSLTF
+         8KJ6qs59cI2oeFred6/nvib95qF/W32v1dinVLQg+AzreS47BSLv+GHptzfzdul+BU
+         Pw08LDBaECNWVY4FHWrw1mMmJdeZZvw8W3Zax/rFRfCKhmeg9VcEx4yC2sCGAUpf0z
+         vynXFwz9ekxQGNT7qX5Knm9sfqi+OKzkYNHfSHbykDAaZ6rcxQudNQyuOYVRP5xZpV
+         HCcoXthi3A3Jw==
+Received: by mail-lf1-f45.google.com with SMTP id bf43so2421846lfb.6
+        for <linux-crypto@vger.kernel.org>; Thu, 19 Jan 2023 01:50:39 -0800 (PST)
+X-Gm-Message-State: AFqh2krrPK2HYpDxnuGlBL0l1Lv8XP3YRpnEdnf4KNQgoOJrYxINElIM
+        EFvenZJ+ViaRXkXSwPKG5oMLIpUqIRbaLL6kvdA=
+X-Google-Smtp-Source: AMrXdXt4IT8RfX3IWSdEFxQCEdVF49MM0CHnPNl2cpxloyFDP06h895QQvcsL/4qkvjTzMhfNkh9aoiLIw2R2xTcFTY=
+X-Received: by 2002:ac2:4ade:0:b0:4d0:7b7:65dc with SMTP id
+ m30-20020ac24ade000000b004d007b765dcmr457752lfp.122.1674121837337; Thu, 19
+ Jan 2023 01:50:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230119184349.74072-3-bchalios@amazon.es>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <Y8kInrsuWybCTgK0@gondor.apana.org.au>
+In-Reply-To: <Y8kInrsuWybCTgK0@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 19 Jan 2023 10:50:26 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGPqHsHSkj+hV_AcwPZxmWMi_=sVBHQWckUPomh6D7uGg@mail.gmail.com>
+Message-ID: <CAMj1kXGPqHsHSkj+hV_AcwPZxmWMi_=sVBHQWckUPomh6D7uGg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: xts - Handle EBUSY correctly
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Babis,
+On Thu, 19 Jan 2023 at 10:08, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> As it is xts only handles the special return value of EINPROGERSS,
 
-Thank you for the patch! Perhaps something to improve:
+EINPROGRESS
 
-[auto build test WARNING on char-misc/char-misc-testing]
-[also build test WARNING on char-misc/char-misc-next char-misc/char-misc-linus linus/master v6.2-rc4 next-20230119]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> which means that in all other cases it will free data related to the
+> request.
+>
+> However, as the caller of xts may specify MAY_BACKLOG, we also need
+> to expect EBUSY and treat it in the same way.  Otherwise backlogged
+> requests will trigger a use-after-free.
+>
+> Fixes: 8083b1bf8163 ("crypto: xts - add support for ciphertext stealing")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+>
+> diff --git a/crypto/xts.c b/crypto/xts.c
+> index 63c85b9e64e0..de6cbcf69bbd 100644
+> --- a/crypto/xts.c
+> +++ b/crypto/xts.c
+> @@ -203,12 +203,12 @@ static void xts_encrypt_done(struct crypto_async_request *areq, int err)
+>         if (!err) {
+>                 struct xts_request_ctx *rctx = skcipher_request_ctx(req);
+>
+> -               rctx->subreq.base.flags &= ~CRYPTO_TFM_REQ_MAY_SLEEP;
+> +               rctx->subreq.base.flags &= CRYPTO_TFM_REQ_MAY_BACKLOG;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Babis-Chalios/virtio-rng-implement-entropy-leak-feature/20230120-024631
-patch link:    https://lore.kernel.org/r/20230119184349.74072-3-bchalios%40amazon.es
-patch subject: [PATCH 2/2] virtio-rng: add sysfs entries for leak detection
-config: x86_64-randconfig-s021 (https://download.01.org/0day-ci/archive/20230120/202301201004.z1gRttwb-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/2a801d93b8225555e4cb293a173e2053870cb2d1
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Babis-Chalios/virtio-rng-implement-entropy-leak-feature/20230120-024631
-        git checkout 2a801d93b8225555e4cb293a173e2053870cb2d1
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/char/hw_random/
+I don't get this bit. We used to preserve CRYPTO_TFM_REQ_MAY_BACKLOG
+before (along with all other flags except MAY_SLEEP), but now, we
+*only* preserve CRYPTO_TFM_REQ_MAY_BACKLOG.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
+So how is this related? Why are we clearing
+CRYPTO_TFM_REQ_FORBID_WEAK_KEYS here for instance?
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/char/hw_random/virtio-rng.c:61:9: sparse: sparse: symbol 'virtrng_sysfs_read' was not declared. Should it be static?
->> drivers/char/hw_random/virtio-rng.c:76:5: sparse: sparse: symbol 'virtrng_sysfs_mmap' was not declared. Should it be static?
-   drivers/char/hw_random/virtio-rng.c:106:5: sparse: sparse: symbol 'add_fill_on_leak_request' was not declared. Should it be static?
-   drivers/char/hw_random/virtio-rng.c:120:5: sparse: sparse: symbol 'virtrng_fill_on_leak' was not declared. Should it be static?
-   drivers/char/hw_random/virtio-rng.c:141:5: sparse: sparse: symbol 'add_copy_on_leak_request' was not declared. Should it be static?
-   drivers/char/hw_random/virtio-rng.c:160:5: sparse: sparse: symbol 'virtrng_copy_on_leak' was not declared. Should it be static?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+>                 err = xts_xor_tweak_post(req, true);
+>
+>                 if (!err && unlikely(req->cryptlen % XTS_BLOCK_SIZE)) {
+>                         err = xts_cts_final(req, crypto_skcipher_encrypt);
+> -                       if (err == -EINPROGRESS)
+> +                       if (err == -EINPROGRESS || err == -EBUSY)
+
+Apologies for the noob questions about this aspect of the crypto API,
+but I suppose this means that, if CRYPTO_TFM_REQ_MAY_BACKLOG was
+specified, it is up to the skcipher implementation to queue up the
+request and return -EBUSY, as opposed to starting the request
+asynchronously and returning -EINPROGRESS?
+
+So why the distinction? If the skcipher signals that the request is
+accepted and will complete asynchronously, couldn't it use EINPROGRESS
+for both cases? Or is the EBUSY interpreted differently by the caller,
+for providing back pressure to the source?
+
+>                                 return;
+>                 }
+>         }
+> @@ -223,12 +223,12 @@ static void xts_decrypt_done(struct crypto_async_request *areq, int err)
+>         if (!err) {
+>                 struct xts_request_ctx *rctx = skcipher_request_ctx(req);
+>
+> -               rctx->subreq.base.flags &= ~CRYPTO_TFM_REQ_MAY_SLEEP;
+> +               rctx->subreq.base.flags &= CRYPTO_TFM_REQ_MAY_BACKLOG;
+>                 err = xts_xor_tweak_post(req, false);
+>
+>                 if (!err && unlikely(req->cryptlen % XTS_BLOCK_SIZE)) {
+>                         err = xts_cts_final(req, crypto_skcipher_decrypt);
+> -                       if (err == -EINPROGRESS)
+> +                       if (err == -EINPROGRESS || err == -EBUSY)
+>                                 return;
+>                 }
+>         }
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
