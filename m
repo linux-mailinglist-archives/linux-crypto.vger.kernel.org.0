@@ -2,119 +2,131 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BFB67655F
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Jan 2023 10:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C2B676813
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Jan 2023 19:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjAUJN0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 21 Jan 2023 04:13:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        id S229604AbjAUSkw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 21 Jan 2023 13:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjAUJNZ (ORCPT
+        with ESMTP id S229597AbjAUSkw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 21 Jan 2023 04:13:25 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CE14DCCE
-        for <linux-crypto@vger.kernel.org>; Sat, 21 Jan 2023 01:13:23 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id br9so11321991lfb.4
-        for <linux-crypto@vger.kernel.org>; Sat, 21 Jan 2023 01:13:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7YJocFL0Vh33YfDbBzUiOd7tRE+2JSe+jC95CTt2zVw=;
-        b=TDOmuHvjOyELL5WwHWiK+R5pGijVyWK8WFE5jeHayWs2D97jKTaffbJLMUuufCqknN
-         9sadaxcKf+75+jgcanVeJ66Ns5jl9UPNi3GDdduQ3QoAL+cO5uqy6S3mqP+ApV8/rLJ1
-         nZxfQAogX/mlqi0qsPtwCov4yL0BYNlFUwEiJzRvdihctcvsnSDQkkmZV2q2rQLDvSrV
-         JIt0tieB4/io27upA9FIQRkcSup6vAHgS5rP83gA5HU9kf6bwvdS8NGOIw27rL329/yV
-         g4jf3ID+8KQVVLG56IO2kmbFfADyuKL1kSZW7boVpuAkuiVJi7h1N+oshaLTgbFEsbvD
-         X2fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7YJocFL0Vh33YfDbBzUiOd7tRE+2JSe+jC95CTt2zVw=;
-        b=ccuJuga3KNPLTRcH7FF6T1YfimsQ6HttLbSxozYtLEYOt2tAnC1Fm0qFQagEKDkmOx
-         2RZl/mEyh+Cjld/LmF+FVZt1ZgBuoafQH4sMphIQZd64yQa1IyTiVse8s9RMacM30amp
-         1z7CtJyGXfMgHZ+O5iTx6opAFwhkvpcCu7GFQHAoxX77HKuq422D64aBy8raDVpTuawg
-         RrEtWKlCHaHpbAkOO/PlohWwdtOpkS1nacyD39PwxGZUaX+1c8jRDpadaVFzPLCtXGOv
-         B7XyDUpaNpxOmMZG0Iba3ORw6TuZ/rA2xnxMMHMoAAjr8i/pr4J3LjwjAKYEEHuo8OiM
-         0NFg==
-X-Gm-Message-State: AFqh2krwOczA4BJPqvqcUiu3yBH0v1+AyW//Pi2B6oHV23/bAl+ZXX0E
-        tNB2JSd38AdBPTmodSwJt9oh5r78LPNvBUj4ZDc=
-X-Google-Smtp-Source: AMrXdXvypGDL0L++f33hhoBL1mdOUwirBc8qFLHSJR5A+w+9ghwmub+EmD+wBSlL6axE3sGQNVpw5d4d3ZxUx8L88oA=
-X-Received: by 2002:a19:6a04:0:b0:4cc:8bf1:f9d with SMTP id
- u4-20020a196a04000000b004cc8bf10f9dmr875538lfu.509.1674292401352; Sat, 21 Jan
- 2023 01:13:21 -0800 (PST)
-MIME-Version: 1.0
-Sender: joseyao0638@gmail.com
-Received: by 2002:a05:6504:3157:0:0:0:0 with HTTP; Sat, 21 Jan 2023 01:13:20
- -0800 (PST)
-From:   Sandrina Omaru <sandrina.omaru2022@gmail.com>
-Date:   Sat, 21 Jan 2023 10:13:20 +0100
-X-Google-Sender-Auth: Vbv3SckrF0XKnx8g8WSf_RSfd2Q
-Message-ID: <CAJwRcBENhsHuBwX+hqSTwhh7Q4b-3V9MYsY75hyGeEsLaCvCxA@mail.gmail.com>
-Subject: Autorius Sandrina Omaru
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,MIXED_ES,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+        Sat, 21 Jan 2023 13:40:52 -0500
+X-Greylist: delayed 300 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 21 Jan 2023 10:40:49 PST
+Received: from aib29gb126.yyz1.oracleemaildelivery.com (aib29gb126.yyz1.oracleemaildelivery.com [192.29.72.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ED71F5D7
+        for <linux-crypto@vger.kernel.org>; Sat, 21 Jan 2023 10:40:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-2023;
+ d=n8pjl.ca;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=pMLAganrqKYVk/bJ7q4cPgOGRtJfyiwG8ewCGGAqW+k=;
+ b=eXJzK8g88EsmV7Met9X6SQMnawctdjuFDospxM3giSvhjbdaYKMMMncYs0b6yDEpM3LRrvquBEOr
+   wEBJ9aCaNcMtjfpAMJ27fGrK7CyUDF02knOH8y4yhAJILSuYEKYpqRUg+x+30GlnLpqfgR78YZvL
+   DkkF+gApxpMwVOGSm2s3ovyt8zlfMIt9Rlm2zIRy8jppfpVolHRbSxdD7Ek0RQJa/Asmk9ccBi3O
+   eKYPKCs3ujA/Z0SA/eZ3bhBauRYZSQAYoGJIpFnsdwr3Vj64dwWLceGEcyGeLbtEu4HE57ssEzJC
+   F0qbcj0uIk8Vgw7IukZMfwVL/UslbsvctdtqrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-yyz-20200204;
+ d=yyz1.rp.oracleemaildelivery.com;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=pMLAganrqKYVk/bJ7q4cPgOGRtJfyiwG8ewCGGAqW+k=;
+ b=H/Xws22KdvF7dhUE5ndJEt0qpxAo3WhXyb1c2CGmuODY/RyL30tlIVTSlNi6kaCHSgwkt0gGsiBO
+   9moMPxJzCOHPDP5JPPkgWiLm9zaD0aTosUnepXo+4sWYGlHf4xfJQtfk1iTZmEeDiyUAZfjso5pf
+   29ZYbNFMVgBJpgu1m+64+R3Hxw0Dk3l60NHlIcsGrJycMsvjirKKqGEdaaURE/St/vxf1vPybT4f
+   Qod8r+5qAv4Wf/MWEBFHrhkO6+obVy1nHCURqsF9ODowyW4yZgM1yc//R7+NUuqrK+ejXZ7+I4/c
+   4MxkMcVaKeh7N8Cgl71eOBIMhWsKFG/9NrJ2CQ==
+Received: by omta-ad1-fd3-101-ca-toronto-1.omtaad1.vcndpyyz.oraclevcn.com
+ (Oracle Communications Messaging Server 8.1.0.1.20230118 64bit (built Jan 18
+ 2023))
+ with ESMTPS id <0ROU00C9AMBOTZ30@omta-ad1-fd3-101-ca-toronto-1.omtaad1.vcndpyyz.oraclevcn.com> for
+ linux-crypto@vger.kernel.org; Sat, 21 Jan 2023 18:35:48 +0000 (GMT)
+From:   Peter Lafreniere <peter@n8pjl.ca>
+To:     linux-crypto@vger.kernel.org
+Cc:     Peter Lafreniere <peter@n8pjl.ca>, ardb@kernel.org,
+        linux-kernel@vger.kernel.org, conor.dooley@microchip.com,
+        x86@kernel.org
+Subject: [PATCH RESEND] crypto: x86 - exit fpu context earlier in ECB/CBC macros
+Date:   Sat, 21 Jan 2023 13:34:50 -0500
+Message-id: <20230121183450.14570-1-peter@n8pjl.ca>
+X-Mailer: git-send-email 2.39.1
+MIME-version: 1.0
+Content-transfer-encoding: 8bit
+Reporting-Meta: AAHti/A/VBUEry6Wh9cg4KLobGKhnYtxA2zEdZswC1iVMoZYeOrD2P26pp6VvkhJ
+ hDYDYUod6foXe7OH+gHF77bs70d6kWYZ9KHoYpCrg1j78tVkpFvfuL6ftU6vdV5p
+ V7Qf6FdAGuJ/9nARyw+W3Rqj05rbaynaRZ6mCj2HL5jxTz4evBd8VGtCAU57sQ8L
+ OXdUY1xkR9qwLlyqHriQu+80xTnNSNgMAT0w/HnEkpNoct/x9ErQauXMQf/Qe+67
+ cej150OXP7XFjq7mBav6hyVPlJqUOtm7p7mNZi7tQ5/9bObybZT7kn27wQ/svUG4
+ g1WEP9i95QdDj3e2QpW3evATKW9FMcJevxl0lk/K9pehOCv9CE/Gq2ZmPgtglLLg
+ L0pKlsLiPvgEOc96pc2tVltzx1QbLFa3gqa3QsiopcQ8JTGeaUeX5fxJ1ZAw6Mfi
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Autorius Sandrina Omaru
-Abid=C5=BEanas. Dramblio kaulo krantas,
-Vakar=C5=B3 Afrika .
+Currently the ecb/cbc macros hold fpu context unnecessarily when using
+scalar cipher routines (e.g. when handling odd sizes of blocks per walk).
 
-Labas, brangioji
+Change the macros to drop fpu context as soon as the fpu is out of use.
 
-Sveikinu jus su pagarba ir nuolankumu ir pra=C5=A1au, kad gal=C4=97tum=C4=
-=97te
-para=C5=A1yti =C5=A1ias eilutes. Tikiuosi, kad sugai=C5=A1ite dal=C4=AF sav=
-o brangi=C5=B3
-minu=C4=8Di=C5=B3 supratingai skaitydami =C5=A1=C4=AF kreipim=C4=85si. Turi=
-u prisipa=C5=BEinti, kad
-ra=C5=A1au jums =C5=A1=C4=AF el. lai=C5=A1k=C4=85 su did=C5=BEiule viltimi,=
- d=C5=BEiaugsmu ir jauduliu, o
-tai, tik=C4=97damas ir tikiu, tikrai turi b=C5=ABti geros sveikatos.
+No performance impact found (on Intel Haswell).
 
-A=C5=A1 esu panel=C4=97 Sandrina Omaru, velionio pono Williamso Omaru dukra=
-.
-Prie=C5=A1 mirt=C4=AF t=C4=97vas man paskambino ir pasak=C4=97, kad =C4=AFn=
-e=C5=A1=C4=97 tris milijonus
-=C5=A1e=C5=A1is =C5=A1imtus t=C5=ABkstan=C4=8Di=C5=B3 eur=C5=B3 (3 600 000 =
-EUR) priva=C4=8Diame banke =C4=8Dia,
-Abid=C5=BEane, Dramblio Kaulo Krante.
+Signed-off-by: Peter Lafreniere <peter@n8pjl.ca>
+---
+ arch/x86/crypto/ecb_cbc_helpers.h | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-Jis man pasak=C4=97, kad pinigus =C4=AFne=C5=A1=C4=97 mano vardu, taip pat =
-dav=C4=97 visus
-reikalingus teisinius dokumentus d=C4=97l =C5=A1io ind=C4=97lio banke. A=C5=
-=A1 esu
-student=C4=97 ir tikrai ne=C5=BEinau, k=C4=85 daryti. Dabar noriu, kad s=C4=
-=85=C5=BEiningas ir
-dievobaimingas u=C5=BEsienio partneris kreipt=C5=B3si su jo pagalba. Po san=
-dorio
-a=C5=A1 liksiu j=C5=ABs=C5=B3 =C5=A1alyje tol, kol man bus patogu gr=C4=AF=
-=C5=BEti namo, jei
-papra=C5=A1ysiu. Taip yra tod=C4=97l, kad d=C4=97l tebesit=C4=99sian=C4=8Di=
-os politin=C4=97s kriz=C4=97s
-=C4=8Dia, Dramblio Kaulo Krante, patyriau daug nes=C4=97kmi=C5=B3.
+diff --git a/arch/x86/crypto/ecb_cbc_helpers.h b/arch/x86/crypto/ecb_cbc_helpers.h
+index eaa15c7b29d6..11955bd01af1 100644
+--- a/arch/x86/crypto/ecb_cbc_helpers.h
++++ b/arch/x86/crypto/ecb_cbc_helpers.h
+@@ -13,13 +13,14 @@
+ 
+ #define ECB_WALK_START(req, bsize, fpu_blocks) do {			\
+ 	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));	\
++	const int __fpu_blocks = (fpu_blocks);				\
+ 	const int __bsize = (bsize);					\
+ 	struct skcipher_walk walk;					\
+ 	int err = skcipher_walk_virt(&walk, (req), false);		\
+ 	while (walk.nbytes > 0) {					\
+ 		unsigned int nbytes = walk.nbytes;			\
+-		bool do_fpu = (fpu_blocks) != -1 &&			\
+-			      nbytes >= (fpu_blocks) * __bsize;		\
++		bool do_fpu = __fpu_blocks != -1 &&			\
++			      nbytes >= __fpu_blocks * __bsize;		\
+ 		const u8 *src = walk.src.virt.addr;			\
+ 		u8 *dst = walk.dst.virt.addr;				\
+ 		u8 __maybe_unused buf[(bsize)];				\
+@@ -35,7 +36,12 @@
+ } while (0)
+ 
+ #define ECB_BLOCK(blocks, func) do {					\
+-	while (nbytes >= (blocks) * __bsize) {				\
++	const int __blocks = (blocks);					\
++	if (do_fpu && __blocks < __fpu_blocks) {			\
++		kernel_fpu_end();					\
++		do_fpu = false;						\
++	}								\
++	while (nbytes >= __blocks * __bsize) {				\
+ 		(func)(ctx, dst, src);					\
+ 		ECB_WALK_ADVANCE(blocks);				\
+ 	}								\
+@@ -53,7 +59,12 @@
+ } while (0)
+ 
+ #define CBC_DEC_BLOCK(blocks, func) do {				\
+-	while (nbytes >= (blocks) * __bsize) {				\
++	const int __blocks = (blocks);					\
++	if (do_fpu && __blocks <  __fpu_blocks) {			\
++		kernel_fpu_end();					\
++		do_fpu = false;						\
++	}								\
++	while (nbytes >= __blocks * __bsize) {				\
+ 		const u8 *__iv = src + ((blocks) - 1) * __bsize;	\
+ 		if (dst == src)						\
+ 			__iv = memcpy(buf, __iv, __bsize);		\
+-- 
+2.39.0
 
-Apsvarstykite tai ir kuo grei=C4=8Diau susisiekite su manimi. A=C5=A1
-nedelsdamas patvirtinsiu j=C5=ABs=C5=B3 pasirengim=C4=85, atsi=C5=B3siu jum=
-s savo
-nuotrauk=C4=85 ir taip pat informuosiu apie i=C5=A1samesn=C4=99 informacij=
-=C4=85 =C5=A1iuo
-klausimu.
-
-
-Su pagarba,
-
-Sandrina Omaru
