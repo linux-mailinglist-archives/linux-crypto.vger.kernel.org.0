@@ -2,67 +2,78 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F09B067A69D
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Jan 2023 00:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC88367A785
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Jan 2023 01:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbjAXXDu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 24 Jan 2023 18:03:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S234160AbjAYAX2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 24 Jan 2023 19:23:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233603AbjAXXDr (ORCPT
+        with ESMTP id S234087AbjAYAXX (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 24 Jan 2023 18:03:47 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5EE49548;
-        Tue, 24 Jan 2023 15:03:45 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7F9A7B81717;
-        Tue, 24 Jan 2023 23:03:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93AC5C433EF;
-        Tue, 24 Jan 2023 23:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674601423;
-        bh=FInAJGM6hitQqEWREbqfiZT6RW4VKmJRYiGIyELSJQc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VDav27OxxZTsAQgsUUqCRxbi02UJHTXeQ4BNvRR2EVcVurslbfZQ1hQbAIbZQ0Dfe
-         d2YSKzxKcs/H8PX8n256ShJsj1Yt/HpEuQvjdnXNW7LxK4qClB/5cWjD9N85pUzOHq
-         f9gUdwmJmO9TH4Nu6ulKdR7s5iitURCwPLteuRHaK6g42tTBOlrwyVzrc/b54PXQrm
-         FbSFiUK1nyUKX9eWCnkged8yubqQAufRoj0a6bqC3EvH/1rfsEWHb0Tb9HTxrVTird
-         q9ZhjkXbmN7rMAWQP3zs8stWUwCCsCvl/nEQ1sr2UBHleUHB7lQ7F6o7uEEzUcCbTU
-         KQ4JYbXPqsgEQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     SeongJae Park <sj@kernel.org>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] Docs: Add missing SPDX license identifiers of
-Date:   Tue, 24 Jan 2023 23:03:40 +0000
-Message-Id: <20230124230340.113608-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <87a627ftuf.fsf@meer.lwn.net>
-References: 
+        Tue, 24 Jan 2023 19:23:23 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B7A4B89E
+        for <linux-crypto@vger.kernel.org>; Tue, 24 Jan 2023 16:23:21 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id kt14so43551219ejc.3
+        for <linux-crypto@vger.kernel.org>; Tue, 24 Jan 2023 16:23:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IhJRzXVyFbYsW9+EPTTFmUQre+ecqTHVuxtlkf1ZhBo=;
+        b=KCLc7tjuPxwl5JW8yMLr1Wn5U5TnOHXpJR9NXS35wGwpcxF92n6GwN6d2xeH3QzBrU
+         4WAG5bmWef/Pu9BseaRWJIdThGWZUghD1/mykmTHdHyUNMMUPv5yKRdM2LqG/f5iCYtm
+         6HCjTLZJF3O29/qVTTMGYJymLcJEvX0M0G8iT0jKLteUVJGi06JmvEXGBsp3olwYz95A
+         D7gOtlA4y4SqhHcejKrZK41ioSnnOL/8y4AjT0QJ851q9johTHIgv30clTX1wW5iBTgm
+         PRHADWXI1A4mEBUAfuQ8hWdCO5tIm1Rx0SZ1Bq5vTPcQ1WsljCaAYNtJJ5AWQazQ+r5c
+         q4fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IhJRzXVyFbYsW9+EPTTFmUQre+ecqTHVuxtlkf1ZhBo=;
+        b=bE69IFtnBgE7CrIynUdqw8DBrZ8E6VjrKXNWjdCbI7xBqn9ovDj4C/sV50ZNZRklhX
+         pWS00IcEYgV8zp/dgR8PV7w4Ihedp8qnA3c7EwwaS9Ruu2Ov5p2uhVurjfMx9qdmjuyp
+         Nj6kXYQwZnNBsm6U6V1hTReRwdKdbdyc/bfXUWaLYPewAoJ5MMvN+j26qThhebivLpEo
+         kor+1VGJVIQXUGa2lKVtzdJZfX9pVlqByfB0Idbvc1tqV8uCVuRYjD4bR4/Y8keXgiFf
+         alCfxIyMpxFUb8ktDggOo9680mV+COVbVv+4SzS96ebNO/i0dF2kBBxPbL+38qn7RIJA
+         QgLA==
+X-Gm-Message-State: AFqh2kpqhgl/GVS1KC924n50hK8muwIc9qS7HX3NgO5eKFfEEMpHP4TC
+        RjgYodNheFmfQTwfXfFnYtLkVA==
+X-Google-Smtp-Source: AMrXdXvS1BAG+73sw122jBVVgFvXv4BoWPsK0NmBVj0lSa1oJW1cWbomQQG6e+x6UomqF0DgG/FF/Q==
+X-Received: by 2002:a17:907:9252:b0:86e:d832:2f60 with SMTP id kb18-20020a170907925200b0086ed8322f60mr27013282ejb.48.1674606199621;
+        Tue, 24 Jan 2023 16:23:19 -0800 (PST)
+Received: from fedora.local (c-05d8225c.014-348-6c756e10.bbcust.telenor.se. [92.34.216.5])
+        by smtp.gmail.com with ESMTPSA id if10-20020a170906df4a00b00738795e7d9bsm1584606ejc.2.2023.01.24.16.23.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Jan 2023 16:23:19 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 25 Jan 2023 01:23:06 +0100
+Subject: [PATCH v3 1/6] dt-bindings: crypto: Let STM32 define Ux500 HASH
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20221227-ux500-stm32-hash-v3-1-32ee12cd6f06@linaro.org>
+References: <20221227-ux500-stm32-hash-v3-0-32ee12cd6f06@linaro.org>
+In-Reply-To: <20221227-ux500-stm32-hash-v3-0-32ee12cd6f06@linaro.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Lionel Debieve <lionel.debieve@foss.st.com>
+Cc:     linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.11.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,43 +81,84 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, 24 Jan 2023 15:31:04 -0700 Jonathan Corbet <corbet@lwn.net> wrote:
+This adds device tree bindings for the Ux500 HASH block
+as a compatible in the STM32 HASH bindings.
 
-> SeongJae Park <sj@kernel.org> writes:
-> 
-> > Some subsystem documents are missing SPDX license identifiers on index
-> > files.  This patchset adds those.
-> >
-> > Changes from v1
-> > (https://lore.kernel.org/lkml/20230114194741.115855-2-sj@kernel.org/)
-> > - Separate from index file content changes
-> > - Separate patch for each subsystem doc (Alex Deucher)
-> > - Use MIT license for gpu (Alex Deucher)
-> >
-> > SeongJae Park (8):
-> >   Docs/crypto/index: Add missing SPDX License Identifier
-> >   Docs/driver-api/index: Add missing SPDX License Identifier
-> >   Docs/gpu/index: Add missing SPDX License Identifier
-> >   Docs/hwmon/index: Add missing SPDX License Identifier
-> >   Docs/input/index: Add missing SPDX License Identifier
-> >   Docs/mm/index: Add missing SPDX License Identifier
-> >   Docs/scheduler/index: Add missing SPDX License Identifier
-> >   Docs/sound/index: Add missing SPDX License Identifier
-> 
-> So I've applied patches 2 (since I wrote the initial file) and 8 (with
-> Takashi's ack).  The others are also fine, I think, but I hesitate to
-> apply license texts to files without knowing that they match the
-> author's intent.  I hate to say it, but I think the best approach is to
-> send each of the remaining patches to the appropriate maintainers for
-> the subsystem involved.
+The Ux500 HASH binding has been used for ages in the kernel
+device tree for Ux500 but was never documented, so fill in
+the gap by making it a sibling of the STM32 HASH block,
+which is what it is.
 
-That makes 100% sense, thank you, Jon!
+The relationship to the existing STM32 HASH block is pretty
+obvious when looking at the register map, and I have written
+patches to reuse the STM32 HASH driver on the Ux500.
 
+The main difference from the outside is that the Ux500 HASH
+lacks the interrupt line, so some special if-clauses are
+needed to accomodate this in the binding.
 
-Thanks,
-SJ
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ChangeLog v2->v3:
+- Pick up Rob's review tag.
+ChangeLog v1->v2:
+- Use an else construction instead of if/if not.
+---
+ .../devicetree/bindings/crypto/st,stm32-hash.yaml  | 23 +++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-> 
-> Thanks,
-> 
-> jon
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+index 4ccb335e8063..b767ec72a999 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+@@ -6,12 +6,18 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: STMicroelectronics STM32 HASH
+ 
++description: The STM32 HASH block is built on the HASH block found in
++  the STn8820 SoC introduced in 2007, and subsequently used in the U8500
++  SoC in 2010.
++
+ maintainers:
+   - Lionel Debieve <lionel.debieve@foss.st.com>
+ 
+ properties:
+   compatible:
+     enum:
++      - st,stn8820-hash
++      - stericsson,ux500-hash
+       - st,stm32f456-hash
+       - st,stm32f756-hash
+ 
+@@ -41,11 +47,26 @@ properties:
+     maximum: 2
+     default: 0
+ 
++  power-domains:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+   - clocks
+-  - interrupts
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          items:
++            const: stericsson,ux500-hash
++    then:
++      properties:
++        interrupts: false
++    else:
++      required:
++        - interrupts
+ 
+ additionalProperties: false
+ 
+
+-- 
+2.39.0
