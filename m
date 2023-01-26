@@ -2,98 +2,113 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F8067D4C5
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Jan 2023 19:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FAC67D524
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Jan 2023 20:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjAZS6O (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 26 Jan 2023 13:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
+        id S232456AbjAZTMl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 26 Jan 2023 14:12:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjAZS6N (ORCPT
+        with ESMTP id S232315AbjAZTMk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 26 Jan 2023 13:58:13 -0500
-X-Greylist: delayed 606 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Jan 2023 10:58:13 PST
-Received: from sp12.canonet.ne.jp (sp12.canonet.ne.jp [210.134.168.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17B031F5E1
-        for <linux-crypto@vger.kernel.org>; Thu, 26 Jan 2023 10:58:13 -0800 (PST)
-Received: from csp12.canonet.ne.jp (unknown [172.21.160.132])
-        by sp12.canonet.ne.jp (Postfix) with ESMTP id CF0831E07C2;
-        Fri, 27 Jan 2023 03:48:06 +0900 (JST)
-Received: from echeck12.canonet.ne.jp ([172.21.160.122])
-        by csp2 with ESMTP
-        id L7I6pL7e2yh2rL7I6plIMR; Fri, 27 Jan 2023 03:48:06 +0900
-X-CNT-CMCheck-Reason: "undefined", "v=2.4 cv=HvXIp2fS c=1 sm=1 tr=0
- ts=63d2cae6 cx=g_jp:t_eml p=jICtXCb1Bd4A:10 p=QA8zHFxAwLBQ4A9MkZgA:9
- p=WKcvGfCz9DfGexK3dBCb:22 a=5J8QHEf9WaWkijFsPIoXCQ==:117
- a=yr9NA9NbXb0B05yJHQEWeQ==:17 a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10
- a=RvmDmJFTN0MA:10 a=x7bEGLp0ZPQA:10 a=CjuIK1q_8ugA:10 a=0iaRBTTaEecA:10
- a=xo5jKAKm-U-Zyk2_beg_:22"
-X-CNT-CMCheck-Score: 100.00
-Received: from echeck12.canonet.ne.jp (localhost [127.0.0.1])
-        by esets.canonet.ne.jp (Postfix) with ESMTP id 804891C01EE;
-        Fri, 27 Jan 2023 03:48:06 +0900 (JST)
-X-Virus-Scanner: This message was checked by ESET Mail Security
-        for Linux/BSD. For more information on ESET Mail Security,
-        please, visit our website: http://www.eset.com/.
-Received: from smtp12.canonet.ne.jp (unknown [172.21.160.102])
-        by echeck12.canonet.ne.jp (Postfix) with ESMTP id 5575C1C0251;
-        Fri, 27 Jan 2023 03:48:06 +0900 (JST)
-Received: from daime.co.jp (webmail.canonet.ne.jp [210.134.169.250])
-        by smtp12.canonet.ne.jp (Postfix) with ESMTPA id 956A315F962;
-        Fri, 27 Jan 2023 03:48:05 +0900 (JST)
+        Thu, 26 Jan 2023 14:12:40 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAAF558C;
+        Thu, 26 Jan 2023 11:12:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674760359; x=1706296359;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Trd6VrHdwLqP3BKT7sgNfrHrXj7Zj8mqjVHKY0jO6r4=;
+  b=IrNEGle95rQdcDETi1c+1OPA4Cc0fH1cAGrASetx3BLZRQjP0WAjWUHD
+   /5llyqrlxj+FvztZgsTEdAw86L1GSv6B9+rmquoXocbYmnpCOHmjSZxKi
+   R6CKC3PC4DjhmiV6M/4XQDXZhtywfV4s5MmORm+mDxwTlhj5GEuIax4AG
+   jAdEwaRq/7hv3TphBhuGHIhUuTIYZPmdHkwFf5yj+no4xqdzqL3az8E8z
+   0Nk9SZqwwwcXroxvpJnP/x/0SUUAkbzz2MqdIlB8NWMWQhCh3q+1ZNVuA
+   hkyeRs+DgbZlgMk2+1n/B/pZaEzDY5vLwem7Sz05jP8kBO+ol7vkWfkgw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="389268106"
+X-IronPort-AV: E=Sophos;i="5.97,249,1669104000"; 
+   d="scan'208";a="389268106"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 11:12:37 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="662976851"
+X-IronPort-AV: E=Sophos;i="5.97,249,1669104000"; 
+   d="scan'208";a="662976851"
+Received: from ernestom-mobl.amr.corp.intel.com (HELO [10.212.255.13]) ([10.212.255.13])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 11:12:36 -0800
+Message-ID: <e37a17c4-8611-6d1d-85ad-fcd04ff285e1@intel.com>
+Date:   Thu, 26 Jan 2023 11:12:36 -0800
 MIME-Version: 1.0
-Message-ID: <20230126184805.00004D30.0557@daime.co.jp>
-Date:   Fri, 27 Jan 2023 03:48:05 +0900
-From:   "Mrs Alice Walton" <daime@daime.co.jp>
-To:     <INQUIRY@daime.co.jp>
-Reply-To: <alicewaltton1@gmail.com>
-Subject: INQUIRY
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] x86: enable Data Operand Independent Timing Mode
+Content-Language: en-US
+To:     Jann Horn <jannh@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Roxana Bradescu <roxabee@chromium.org>,
+        Adam Langley <agl@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>
+References: <20230125012801.362496-1-ebiggers@kernel.org>
+ <14506678-918f-81e1-2c26-2b347ff50701@intel.com>
+ <CAG48ez1NaWarARJj5SBdKKTYFO2MbX7xO75Rk0Q2iK8LX4BwFA@mail.gmail.com>
+ <394c92e2-a9aa-37e1-7a34-d7569ac844fd@intel.com>
+ <CAG48ez0ZK3pMqkto4DTZPNyddYcv8jPHQDNhYoFEPvSRLf80fQ@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <CAG48ez0ZK3pMqkto4DTZPNyddYcv8jPHQDNhYoFEPvSRLf80fQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-ORGANIZATION: Mrs Alice Walton
-X-MAILER: Active! mail
-X-EsetResult: clean, %VIRUSNAME%
-X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1674758886;VERSION=7944;MC=2736029532;TRN=0;CRV=0;IPC=210.134.169.250;SP=4;SIPS=1;PI=5;F=0
-X-I-ESET-AS: RN=0;RNP=
-X-ESET-Antispam: OK
-X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        LOCALPART_IN_SUBJECT,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_MR_MRS,UNRESOLVED_TEMPLATE,
-        XPRIO_SHORT_SUBJ autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5003]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [210.134.168.89 listed in bl.score.senderscore.com]
-        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
-        *      [210.134.168.89 listed in wl.mailspike.net]
-        *  1.1 LOCALPART_IN_SUBJECT Local part of To: address appears in
-        *      Subject
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [alicewaltton1[at]gmail.com]
-        *  1.3 UNRESOLVED_TEMPLATE Headers contain an unresolved template
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 T_HK_NAME_MR_MRS No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  1.0 XPRIO_SHORT_SUBJ Has X Priority header + short subject
-X-Spam-Level: *******
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+On 1/26/23 09:52, Jann Horn wrote:
+>> Maybe I'm totally missing something, but I thought the scope here was
+>> the "non-data operand independent timing behavior for the listed
+>> instructions" referenced here:
+>>
+>>> https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/best-practices/data-operand-independent-timing-isa-guidance.html
+>> where the "listed instructions" is this list:
+>>
+>>> https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/resources/data-operand-independent-timing-instructions.html
+>> For example, that includes XOR with the 0x31 and 0x81 opcodes which
+>> there are plenty of in the kernel.
+> That list says at the top: "The table below lists instructions that
+> have data-independent timing."
 
-Greetings,
+So, first of all, apologies for the documentation.  It needs some work,
+and I see where the confusion is coming from.
 
-I trust you are well. I sent you an email yesterday, I just want to confirm if you received it.
-Please let me know as soon as possible,
+But, I did just confirm with the folks that wrote it. The "listed
+instructions" *ARE* within the scope of being affected by the DOITM=0/1
+setting.
 
-Regard
-Mrs Alice Walton
+Instead of saying:
 
+	The table below lists instructions that have data-independent
+	timing.
 
+I think it should probably say something like:
+
+	The table below lists instructions that have data-independent
+	timing when DOITM is enabled.
+
+	(Modulo the MXCSR interactions for now)
+
+Somebody from Intel please thwack me over the head if I'm managing to
+get this wrong (wouldn't be the first time).
