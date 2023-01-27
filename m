@@ -2,50 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE8967DD88
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Jan 2023 07:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D591267DF1D
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Jan 2023 09:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbjA0GkV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Jan 2023 01:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S232375AbjA0I2p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 Jan 2023 03:28:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231795AbjA0GkS (ORCPT
+        with ESMTP id S229964AbjA0I2o (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Jan 2023 01:40:18 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A966A302;
-        Thu, 26 Jan 2023 22:40:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=qlUJ3CMMUxoxYqDl8JIHZ9anTd1fSJcrpcu8FtmDAao=; b=BIx0ATmWfrFZDlC/MziOy4jRkb
-        FDNiawwI+Awc7ZFj7lXnT9GZ4iSBRQumccLjJKEuSBQVTU4s5eAtJKyh86WD7pSXg+vaOcvN0i7U+
-        kBFcyMc8E+XmcAHDC0ijljCS6pXLKAkBM0PdkxqUicckxX7ZxtrGduirPksWcHDPW1d3JCjGlHDJP
-        L6gNh/lsrGyLFJmKrzwJRAC/ByISF2X02Xnsr53Pjo46lKCXDWXu8LC9oafwrpmHFWbIL+1GSXidO
-        U7GgoyyqwSVlnkCS/pOo4Ocq8pzwnAitMKlX/lBEC0nDX/1P0S/8W3qPBgd++H2sEP+IB6s66wCo/
-        4/GkDRmg==;
-Received: from [2601:1c2:d80:3110::9307] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pLIPD-00DM0u-SQ; Fri, 27 Jan 2023 06:40:11 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        linux-crypto@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-Subject: [PATCH 05/35] Documentation: core-api: correct spelling
-Date:   Thu, 26 Jan 2023 22:39:35 -0800
-Message-Id: <20230127064005.1558-6-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230127064005.1558-1-rdunlap@infradead.org>
-References: <20230127064005.1558-1-rdunlap@infradead.org>
+        Fri, 27 Jan 2023 03:28:44 -0500
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860552D44;
+        Fri, 27 Jan 2023 00:28:42 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4P39WC0sLYz9xyNp;
+        Fri, 27 Jan 2023 16:20:39 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwD3xl0Ti9Nj7gjNAA--.18823S2;
+        Fri, 27 Jan 2023 09:28:15 +0100 (CET)
+Message-ID: <d2a54ddec403cad12c003132542070bf781d5e26.camel@huaweicloud.com>
+Subject: Re: [PATCH v5 2/2] KEYS: asymmetric: Copy sig and digest in
+ public_key_verify_signature()
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     dhowells@redhat.com
+Cc:     Eric Biggers <ebiggers@kernel.org>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Fri, 27 Jan 2023 09:27:58 +0100
+In-Reply-To: <Y64XB0yi24yjeBDw@sol.localdomain>
+References: <20221227142740.2807136-1-roberto.sassu@huaweicloud.com>
+         <20221227142740.2807136-3-roberto.sassu@huaweicloud.com>
+         <Y64XB0yi24yjeBDw@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwD3xl0Ti9Nj7gjNAA--.18823S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr15ur18uw4DGFyfGryfJFb_yoW8XFy5pF
+        W3G3W5GF1jqryxCFsIv3yFva4rG3ykJr13Xw43X3s5Zr18urs8Wr1IqF4fWFyDAry8KFWF
+        yFW5Xr1qgw1YkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAKBF1jj4goZAABs7
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,42 +68,40 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Correct spelling problems for Documentation/core-api/ as reported
-by codespell.
+On Thu, 2022-12-29 at 14:39 -0800, Eric Biggers wrote:
+> On Tue, Dec 27, 2022 at 03:27:40PM +0100, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > 
+> > Commit ac4e97abce9b8 ("scatterlist: sg_set_buf() argument must be in linear
+> > mapping") checks that both the signature and the digest reside in the
+> > linear mapping area.
+> > 
+> > However, more recently commit ba14a194a434c ("fork: Add generic vmalloced
+> > stack support") made it possible to move the stack in the vmalloc area,
+> > which is not contiguous, and thus not suitable for sg_set_buf() which needs
+> > adjacent pages.
+> > 
+> > Always make a copy of the signature and digest in the same buffer used to
+> > store the key and its parameters, and pass them to sg_init_one(). Prefer it
+> > to conditionally doing the copy if necessary, to keep the code simple. The
+> > buffer allocated with kmalloc() is in the linear mapping area.
+> > 
+> > Cc: stable@vger.kernel.org # 4.9.x
+> > Fixes: ba14a194a434 ("fork: Add generic vmalloced stack support")
+> > Link: https://lore.kernel.org/linux-integrity/Y4pIpxbjBdajymBJ@sol.localdomain/
+> > Suggested-by: Eric Biggers <ebiggers@kernel.org>
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > ---
+> >  crypto/asymmetric_keys/public_key.c | 38 ++++++++++++++++-------------
+> >  1 file changed, 21 insertions(+), 17 deletions(-)
+> 
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vladimir Oltean <olteanv@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
----
- Documentation/core-api/packing.rst |    2 +-
- Documentation/core-api/padata.rst  |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Hi David
 
-diff -- a/Documentation/core-api/packing.rst b/Documentation/core-api/packing.rst
---- a/Documentation/core-api/packing.rst
-+++ b/Documentation/core-api/packing.rst
-@@ -161,6 +161,6 @@ xxx_packing() that calls it using the pr
- 
- The packing() function returns an int-encoded error code, which protects the
- programmer against incorrect API use.  The errors are not expected to occur
--durring runtime, therefore it is reasonable for xxx_packing() to return void
-+during runtime, therefore it is reasonable for xxx_packing() to return void
- and simply swallow those errors. Optionally it can dump stack or print the
- error description.
-diff -- a/Documentation/core-api/padata.rst b/Documentation/core-api/padata.rst
---- a/Documentation/core-api/padata.rst
-+++ b/Documentation/core-api/padata.rst
-@@ -42,7 +42,7 @@ padata_shells associated with it, each a
- Modifying cpumasks
- ------------------
- 
--The CPUs used to run jobs can be changed in two ways, programatically with
-+The CPUs used to run jobs can be changed in two ways, programmatically with
- padata_set_cpumask() or via sysfs.  The former is defined::
- 
-     int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
+could you please take this patch in your repo, if it is ok?
+
+Thanks
+
+Roberto
+
