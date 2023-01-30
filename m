@@ -2,107 +2,108 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65448680684
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jan 2023 08:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60E4680688
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jan 2023 08:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbjA3Hdm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Jan 2023 02:33:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        id S232549AbjA3Hey (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Jan 2023 02:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbjA3Hdk (ORCPT
+        with ESMTP id S229675AbjA3Hev (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Jan 2023 02:33:40 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670EC23840;
-        Sun, 29 Jan 2023 23:33:36 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id m2so28611097ejb.8;
-        Sun, 29 Jan 2023 23:33:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GqQ934JWSGPRtN10m9jH2L8S8kM1Q6Pi2aTaTuPesk0=;
-        b=YYeZg554V3NqyL6dwLyNgBhyrgk8MXV//FB3Kjsbx7B6ok8MBRkxBJgTnoY84SDvMG
-         9y4kbKdrVw10Ek6MBlXG2FnFUWfkHZxiMsrLlpNpO64T7GE1VrWoLiKqArDq6vkrLqHx
-         DtV3UwSIHrErWaZPQJiVZhT77bj+T5StutazyD+gddecuyPMbD8Yt01C/iW8K221K0S6
-         795FAvGnUDpAa7DhZ/EOWhzg3EWf/oudStUxvtAP4oPgtf2vSQLM8QFH/Rp7CHu2lMaL
-         75b/qvQ37/NxV4N4MgFce2c5bqvxCm8iPyTZxfkScbG98GbdUAGgvjsTmnOIDa2DNL/C
-         JW1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GqQ934JWSGPRtN10m9jH2L8S8kM1Q6Pi2aTaTuPesk0=;
-        b=5MY4sXvQJJYhwVjCUAIOzLjJjFb4l3+hpTKCst/fPyxiJViy78pHi7TlHDrSgHf4BH
-         VQb+CSnsILLKBdYnDsfuF5qCt9ilKDyQb9mkL2NQLkSYDMEmCHRfnfOY5fblBZHR8Wvf
-         HthjQrZABRJnARv8QjoTN9n/6nA5e5tNV8jIjWg3bnAf3kVOxycE423SzE01uri4ESXW
-         iCHVZWdKHJeVJ3I9nKQJviLLvfLIsUsS2ZqEiC0+VIi5H6p/7m4w8TexNLzlhsMm3P5G
-         kv1wt/EwcIyDCZWgh3ZAm8KuidVXj1ARhiqeYfI46SR3/W/5xiQkvryP/Ae5UJtFNUOo
-         URJg==
-X-Gm-Message-State: AO0yUKVfv8LgKMLsK2hhkj6SDtsc7PyQEHFGevN/eyMQIAVd0B//PXHz
-        YCzHFNmvo3wLJLiDnrwNaF0=
-X-Google-Smtp-Source: AK7set92Dsb90ymDMZDctLBT9JmHOpG2cC7hczPLPI0Y8mfE06+zWE+OVpzP7XOjN8ZrcC2TYTiLFg==
-X-Received: by 2002:a17:907:6f1b:b0:887:2320:57e5 with SMTP id sy27-20020a1709076f1b00b00887232057e5mr4870130ejc.46.1675064014778;
-        Sun, 29 Jan 2023 23:33:34 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:2a40:1104:893:4a0f:7898:3492])
-        by smtp.gmail.com with ESMTPSA id z2-20020a170906714200b00888161349desm1505532ejj.182.2023.01.29.23.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Jan 2023 23:33:34 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jenny Zhang <jenny.zhang@starfivetech.com>,
-        Jia Jie Ho <jiajie.ho@starfivetech.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        linux-crypto@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: repair file entry for STARFIVE TRNG DRIVER
-Date:   Mon, 30 Jan 2023 08:31:09 +0100
-Message-Id: <20230130073109.32025-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 30 Jan 2023 02:34:51 -0500
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8F8193D7;
+        Sun, 29 Jan 2023 23:34:48 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VaP80-u_1675064083;
+Received: from 30.240.100.113(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0VaP80-u_1675064083)
+          by smtp.aliyun-inc.com;
+          Mon, 30 Jan 2023 15:34:44 +0800
+Message-ID: <c7dbadbf-dade-fb1e-bda3-d23d567c620f@linux.alibaba.com>
+Date:   Mon, 30 Jan 2023 15:34:42 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.1
+Subject: Re: [PATCH] crypto: arm64/sm4 - Fix possible crash in GCM cryption
+Content-Language: en-US
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>
+References: <20230118141928.48136-1-tianjia.zhang@linux.alibaba.com>
+ <Y8gIC8Yn/E8Kwtf0@gondor.apana.org.au>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <Y8gIC8Yn/E8Kwtf0@gondor.apana.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Commit c388f458bc34 ("hwrng: starfive - Add TRNG driver for StarFive SoC")
-adds the STARFIVE TRNG DRIVER section to MAINTAINERS, but refers to the
-non-existing file drivers/char/hw_random/starfive-trng.c rather than to the
-actually added file drivers/char/hw_random/jh7110-trng.c in this commit.
+Hi Herbert,
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-broken reference.
+On 1/18/23 10:54 PM, Herbert Xu wrote:
+> On Wed, Jan 18, 2023 at 10:19:28PM +0800, Tianjia Zhang wrote:
+>> When the cryption total length is zero, GCM cryption call
+>> skcipher_walk_done() will cause an unexpected crash, so skip calling
+>> this function to avoid possible crash when the GCM cryption length
+>> is equal to zero.
+>>
+>> Fixes: ae1b83c7d572 ("crypto: arm64/sm4 - add CE implementation for GCM mode")
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> ---
+>>   arch/arm64/crypto/sm4-ce-gcm-glue.c | 12 +++++++-----
+>>   1 file changed, 7 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/arm64/crypto/sm4-ce-gcm-glue.c b/arch/arm64/crypto/sm4-ce-gcm-glue.c
+>> index c450a2025ca9..9b63bcf9aa85 100644
+>> --- a/arch/arm64/crypto/sm4-ce-gcm-glue.c
+>> +++ b/arch/arm64/crypto/sm4-ce-gcm-glue.c
+>> @@ -178,11 +178,13 @@ static int gcm_crypt(struct aead_request *req, struct skcipher_walk *walk,
+>>   
+>>   		kernel_neon_end();
+>>   
+>> -		err = skcipher_walk_done(walk, tail);
+>> -		if (err)
+>> -			return err;
+>> -		if (walk->nbytes)
+>> -			kernel_neon_begin();
+>> +		if (walk->nbytes) {
+> 
+> Please do
+> 		if (!walk->nbytes)
+> 			break;
 
-Repair this file entry in STARFIVE TRNG DRIVER.
+Thanks for the suggestion, a new patch has been sent.
 
-Fixes: c388f458bc34 ("hwrng: starfive - Add TRNG driver for StarFive SoC")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Jia Jie, please ack this patch.
+> 
+> As an additional improvement, the tail calculation can be removed
+> entirely because you already set the chunksize so the walker should
+> only be feeding you multiples of chunksize except at the end.
+> 
+> Cheers
+I printed the walk->nbytes of each iteration of the walker, it is not
+always multiples of chunksize except at the end when the algorithm test
+manager is turned on.
 
-Herbert, please pick this minor fix patch on top of the commit above. Thanks.
+For example, during a GCM encryption process, I get data like this:
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+     total = 4014, nbytes = 2078, tail = 14
+     total = 1950, nbytes = 16, tail = 0
+     total = 1934, nbytes = 311, tail = 7
+     total = 1630, nbytes = 16, tail = 0
+     total = 1614, nbytes = 16, tail = 0
+     total = 1598, nbytes = 1598, tail = 14
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b615c8418e80..7d87a78446cd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19845,7 +19845,7 @@ STARFIVE TRNG DRIVER
- M:	Jia Jie Ho <jiajie.ho@starfivetech.com>
- S:	Supported
- F:	Documentation/devicetree/bindings/rng/starfive*
--F:	drivers/char/hw_random/starfive-trng.c
-+F:	drivers/char/hw_random/jh7110-trng.c
- 
- STATIC BRANCH/CALL
- M:	Peter Zijlstra <peterz@infradead.org>
--- 
-2.17.1
+Is my understanding wrong?
 
+Best regards,
+Tianjia
