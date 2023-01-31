@@ -2,26 +2,26 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 603446825FC
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 09:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C836825FD
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 09:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbjAaIB5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 31 Jan 2023 03:01:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
+        id S230255AbjAaICE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 31 Jan 2023 03:02:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbjAaIBz (ORCPT
+        with ESMTP id S229651AbjAaIB5 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 31 Jan 2023 03:01:55 -0500
+        Tue, 31 Jan 2023 03:01:57 -0500
 Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF8140BF5
-        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 00:01:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F68A41B6D
+        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 00:01:56 -0800 (PST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1pMlaR-005veW-Oc; Tue, 31 Jan 2023 16:01:52 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 31 Jan 2023 16:01:51 +0800
+        id 1pMlaT-005vfG-RY; Tue, 31 Jan 2023 16:01:54 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 31 Jan 2023 16:01:53 +0800
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Tue, 31 Jan 2023 16:01:51 +0800
-Subject: [PATCH 4/32] crypto: aead - Use crypto_request_complete
+Date:   Tue, 31 Jan 2023 16:01:53 +0800
+Subject: [PATCH 5/32] crypto: akcipher - Use crypto_request_complete
 References: <Y9jKmRsdHsIwfFLo@gondor.apana.org.au>
 To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Tudor Ambarus <tudor.ambarus@microchip.com>,
@@ -44,7 +44,7 @@ To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         qat-linux@intel.com, Thara Gopinath <thara.gopinath@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Vladimir Zapolskiy <vz@mleia.com>
-Message-Id: <E1pMlaR-005veW-Oc@formenos.hmeau.com>
+Message-Id: <E1pMlaT-005vfG-RY@formenos.hmeau.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,19 +59,19 @@ completion function directly.
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- include/crypto/internal/aead.h |    2 +-
+ include/crypto/internal/akcipher.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/crypto/internal/aead.h b/include/crypto/internal/aead.h
-index cd8cb1e921b7..28a95eb3182d 100644
---- a/include/crypto/internal/aead.h
-+++ b/include/crypto/internal/aead.h
-@@ -82,7 +82,7 @@ static inline void *aead_request_ctx_dma(struct aead_request *req)
- 
- static inline void aead_request_complete(struct aead_request *req, int err)
+diff --git a/include/crypto/internal/akcipher.h b/include/crypto/internal/akcipher.h
+index aaf1092b93b8..a0fba4b2eccf 100644
+--- a/include/crypto/internal/akcipher.h
++++ b/include/crypto/internal/akcipher.h
+@@ -69,7 +69,7 @@ static inline void *akcipher_tfm_ctx_dma(struct crypto_akcipher *tfm)
+ static inline void akcipher_request_complete(struct akcipher_request *req,
+ 					     int err)
  {
 -	req->base.complete(&req->base, err);
 +	crypto_request_complete(&req->base, err);
  }
  
- static inline u32 aead_request_flags(struct aead_request *req)
+ static inline const char *akcipher_alg_name(struct crypto_akcipher *tfm)
