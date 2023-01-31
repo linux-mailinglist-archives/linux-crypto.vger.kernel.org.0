@@ -2,19 +2,19 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13572682A5A
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 11:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD5068261B
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 09:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbjAaKWV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 31 Jan 2023 05:22:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S230078AbjAaIDo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 31 Jan 2023 03:03:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjAaKWU (ORCPT
+        with ESMTP id S230399AbjAaIDE (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 31 Jan 2023 05:22:20 -0500
+        Tue, 31 Jan 2023 03:03:04 -0500
 Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FAA3E099
-        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 02:22:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D3CC9
+        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 00:02:51 -0800 (PST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
         id 1pMlbM-005vur-QD; Tue, 31 Jan 2023 16:02:49 +0800
@@ -46,7 +46,7 @@ To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Vladimir Zapolskiy <vz@mleia.com>
 Message-Id: <E1pMlbM-005vur-QD@formenos.hmeau.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
