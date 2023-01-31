@@ -2,26 +2,26 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD5068261B
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 09:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0648682A59
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 11:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjAaIDo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 31 Jan 2023 03:03:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S230271AbjAaKWW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 31 Jan 2023 05:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbjAaIDE (ORCPT
+        with ESMTP id S231295AbjAaKWU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 31 Jan 2023 03:03:04 -0500
+        Tue, 31 Jan 2023 05:22:20 -0500
 Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D3CC9
-        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 00:02:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA6118AB4
+        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 02:22:17 -0800 (PST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1pMlbM-005vur-QD; Tue, 31 Jan 2023 16:02:49 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 31 Jan 2023 16:02:48 +0800
+        id 1pMlbO-005vvP-V3; Tue, 31 Jan 2023 16:02:52 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 31 Jan 2023 16:02:50 +0800
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Tue, 31 Jan 2023 16:02:48 +0800
-Subject: [PATCH 31/32] crypto: sahara - Use request_complete helpers
+Date:   Tue, 31 Jan 2023 16:02:50 +0800
+Subject: [PATCH 32/32] crypto: talitos - Use request_complete helpers
 References: <Y9jKmRsdHsIwfFLo@gondor.apana.org.au>
 To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Tudor Ambarus <tudor.ambarus@microchip.com>,
@@ -44,7 +44,7 @@ To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         qat-linux@intel.com, Thara Gopinath <thara.gopinath@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Vladimir Zapolskiy <vz@mleia.com>
-Message-Id: <E1pMlbM-005vur-QD@formenos.hmeau.com>
+Message-Id: <E1pMlbO-005vvP-V3@formenos.hmeau.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,28 +59,28 @@ function directly.
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- drivers/crypto/sahara.c |    4 ++--
+ drivers/crypto/talitos.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/sahara.c b/drivers/crypto/sahara.c
-index 7ab20fb95166..dd4c703cd855 100644
---- a/drivers/crypto/sahara.c
-+++ b/drivers/crypto/sahara.c
-@@ -1049,7 +1049,7 @@ static int sahara_queue_manage(void *data)
- 		spin_unlock_bh(&dev->queue_spinlock);
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index d62ec68e3183..bb27f011cf31 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -1560,7 +1560,7 @@ static void skcipher_done(struct device *dev,
  
- 		if (backlog)
--			backlog->complete(backlog, -EINPROGRESS);
-+			crypto_request_complete(backlog, -EINPROGRESS);
+ 	kfree(edesc);
  
- 		if (async_req) {
- 			if (crypto_tfm_alg_type(async_req->tfm) ==
-@@ -1065,7 +1065,7 @@ static int sahara_queue_manage(void *data)
- 				ret = sahara_aes_process(req);
- 			}
+-	areq->base.complete(&areq->base, err);
++	skcipher_request_complete(areq, err);
+ }
  
--			async_req->complete(async_req, ret);
-+			crypto_request_complete(async_req, ret);
+ static int common_nonsnoop(struct talitos_edesc *edesc,
+@@ -1759,7 +1759,7 @@ static void ahash_done(struct device *dev,
  
- 			continue;
- 		}
+ 	kfree(edesc);
+ 
+-	areq->base.complete(&areq->base, err);
++	ahash_request_complete(areq, err);
+ }
+ 
+ /*
