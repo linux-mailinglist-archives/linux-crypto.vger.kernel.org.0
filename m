@@ -2,26 +2,26 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB45682615
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 09:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C91682616
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Jan 2023 09:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjAaIDk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 31 Jan 2023 03:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        id S229972AbjAaIDl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 31 Jan 2023 03:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbjAaIC4 (ORCPT
+        with ESMTP id S231290AbjAaIC5 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 31 Jan 2023 03:02:56 -0500
+        Tue, 31 Jan 2023 03:02:57 -0500
 Received: from formenos.hmeau.com (helcar.hmeau.com [216.24.177.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8AD46097
-        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 00:02:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11402460B2
+        for <linux-crypto@vger.kernel.org>; Tue, 31 Jan 2023 00:02:41 -0800 (PST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1pMlb9-005vsN-Vt; Tue, 31 Jan 2023 16:02:37 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 31 Jan 2023 16:02:35 +0800
+        id 1pMlbC-005vsq-3j; Tue, 31 Jan 2023 16:02:39 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 31 Jan 2023 16:02:38 +0800
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Tue, 31 Jan 2023 16:02:35 +0800
-Subject: [PATCH 25/32] crypto: octeontx - Use request_complete helpers
+Date:   Tue, 31 Jan 2023 16:02:38 +0800
+Subject: [PATCH 26/32] crypto: octeontx2 - Use request_complete helpers
 References: <Y9jKmRsdHsIwfFLo@gondor.apana.org.au>
 To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Tudor Ambarus <tudor.ambarus@microchip.com>,
@@ -44,7 +44,7 @@ To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         qat-linux@intel.com, Thara Gopinath <thara.gopinath@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Vladimir Zapolskiy <vz@mleia.com>
-Message-Id: <E1pMlb9-005vsN-Vt@formenos.hmeau.com>
+Message-Id: <E1pMlbC-005vsq-3j@formenos.hmeau.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,25 +59,25 @@ function directly.
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- drivers/crypto/marvell/octeontx/otx_cptvf_algs.c |    4 ++--
+ drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/marvell/octeontx/otx_cptvf_algs.c b/drivers/crypto/marvell/octeontx/otx_cptvf_algs.c
-index 83493dd0416f..1c2c870e887a 100644
---- a/drivers/crypto/marvell/octeontx/otx_cptvf_algs.c
-+++ b/drivers/crypto/marvell/octeontx/otx_cptvf_algs.c
-@@ -138,7 +138,7 @@ static void otx_cpt_aead_callback(int status, void *arg1, void *arg2)
- 
- complete:
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
+index 443202caa140..e27ddd3c4e55 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
+@@ -120,7 +120,7 @@ static void otx2_cpt_aead_callback(int status, void *arg1, void *arg2)
+ 		otx2_cpt_info_destroy(pdev, inst_info);
+ 	}
  	if (areq)
 -		areq->complete(areq, status);
 +		crypto_request_complete(areq, status);
  }
  
  static void output_iv_copyback(struct crypto_async_request *areq)
-@@ -188,7 +188,7 @@ static void otx_cpt_skcipher_callback(int status, void *arg1, void *arg2)
- 			pdev = cpt_info->pdev;
- 			do_request_cleanup(pdev, cpt_info);
+@@ -170,7 +170,7 @@ static void otx2_cpt_skcipher_callback(int status, void *arg1, void *arg2)
+ 			pdev = inst_info->pdev;
+ 			otx2_cpt_info_destroy(pdev, inst_info);
  		}
 -		areq->complete(areq, status);
 +		crypto_request_complete(areq, status);
