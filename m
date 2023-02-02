@@ -2,208 +2,195 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5576B687C09
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Feb 2023 12:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C009D687F24
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Feb 2023 14:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjBBLRR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Feb 2023 06:17:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
+        id S231339AbjBBNur (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Feb 2023 08:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjBBLRQ (ORCPT
+        with ESMTP id S231216AbjBBNuq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Feb 2023 06:17:16 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522DF8B363;
-        Thu,  2 Feb 2023 03:16:43 -0800 (PST)
-Received: from zn.tnic (p5de8e9fe.dip0.t-ipconnect.de [93.232.233.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 40F4B1EC069A;
-        Thu,  2 Feb 2023 12:16:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1675336591;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uvIi+Jx60bAKZN/jWrmPW8ftCneMWCqwRu7t5YqCP6A=;
-        b=VnhgzffYvCsw8bh+fg0k2U0T6Z3TNXxqbpnwhrQo53m3rVqxJxfuRf2qalw08ZdGttXzmS
-        eidLqdR/beaGLg4/8THaXR8t9Ifu0BDQnyxlBIx/42WtxL3O6a7xqtaAHrhg5gC6cc/Ozy
-        V2Iyhp9ReyT77PiDvfz2bpjHqKwMYsU=
-Date:   Thu, 2 Feb 2023 12:16:27 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
-        pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, vbabka@suse.cz,
-        kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        alpergun@google.com, dgilbert@redhat.com, jarkko@kernel.org,
-        ashish.kalra@amd.com, harald@profian.com,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH RFC v7 14/64] x86/sev: Add the host SEV-SNP
- initialization support
-Message-ID: <Y9ubi0i4Z750gdMm@zn.tnic>
-References: <20221214194056.161492-1-michael.roth@amd.com>
- <20221214194056.161492-15-michael.roth@amd.com>
+        Thu, 2 Feb 2023 08:50:46 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665E96ACB9
+        for <linux-crypto@vger.kernel.org>; Thu,  2 Feb 2023 05:50:42 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id fi26so2055236edb.7
+        for <linux-crypto@vger.kernel.org>; Thu, 02 Feb 2023 05:50:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wyyxA354CEcCAn/p3vZ7ZVyh41xSHBm4ydIo5hp9G4g=;
+        b=cv5okb1osUNexr4VjqsMCz8/gJdDVLeHDUScMHepVFbRBR4MxuU7AkbKXCLEjswF3J
+         31MySBezZ/dPtOH6zztc7S7SUnwth72Q1vSKcHCnaKQhDY1A07Gz0HhKHjsfnzg9EbCC
+         CJxhwkLMi0ZASuOlyoShK4Qj3oGPHfy/7NMjgNaoZMPm7mc55dmSzc6exR2iuE4fyanq
+         GGlY52jN3nv7RDDRamsvnscF90M7bFv3WAvo4TTr1CyrMz172Sr50fyF6AvfArcmN840
+         LB/cXNy4nC8qOPOrXFOglaDm/Z/caHaZ1pzbxWL9wWqMQgpbe0NtwoLqrDLNjReZZhze
+         QPFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wyyxA354CEcCAn/p3vZ7ZVyh41xSHBm4ydIo5hp9G4g=;
+        b=TolOxFOBySoUBb8ZRnicqsO5e3vyT8vSyg0AmHe7kl/WBWAub7PaA+Wsk+v+gDj/1h
+         //hei+VvcGl82mHtanpcMLWeyzp7Z4jyuLNy9AHkWbkfoycEmrdT9wEwR3qSWTR3MDt8
+         kZUa9PuadD+aBe19xLjM//fVTEsbwr3f2ankXLINVhRrra+yNm7PCME8WVre0Nsxne+o
+         v8y0VqzvhThOunucau/xfow/r6wEPSYsy4AYcLnQjq+j6TPTqN0/en0SrxuGOxSYCoZQ
+         f8CBJVZ8BlsjLx5KVEtTbcEwyHEz9P3FMg6PX8Uo7TYDlk3ytiFWOw5mIr2oPrLSx2r3
+         1vKw==
+X-Gm-Message-State: AO0yUKVG3EBG9ixiub56o8J7eSsUraet/KHBi/O4jlzmoAq6BMa7DMs+
+        ckTPmUf9pV3U/VGdDY5DemOr3w==
+X-Google-Smtp-Source: AK7set/mvZ5AxdAWrhmEnkpf8fVqafZHU30S13S5Gq5U1Kgj5yA+ZToYpSB7XpWIaXsoRsLhHerymA==
+X-Received: by 2002:a05:6402:5511:b0:490:ff75:7aa with SMTP id fi17-20020a056402551100b00490ff7507aamr7145346edb.1.1675345840954;
+        Thu, 02 Feb 2023 05:50:40 -0800 (PST)
+Received: from localhost.localdomain (88-112-131-206.elisa-laajakaista.fi. [88.112.131.206])
+        by smtp.gmail.com with ESMTPSA id r23-20020aa7c157000000b0049e1f167956sm7596332edp.9.2023.02.02.05.50.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 05:50:40 -0800 (PST)
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v8 0/9] crypto: qcom-qce: Add YAML bindings & support for newer SoCs
+Date:   Thu,  2 Feb 2023 15:50:27 +0200
+Message-Id: <20230202135036.2635376-1-vladimir.zapolskiy@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20221214194056.161492-15-michael.roth@amd.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 01:40:06PM -0600, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> The memory integrity guarantees of SEV-SNP are enforced through a new
-> structure called the Reverse Map Table (RMP). The RMP is a single data
-> structure shared across the system that contains one entry for every 4K
-> page of DRAM that may be used by SEV-SNP VMs. The goal of RMP is to
-> track the owner of each page of memory. Pages of memory can be owned by
-> the hypervisor, owned by a specific VM or owned by the AMD-SP. See APM2
-> section 15.36.3 for more detail on RMP.
-> 
-> The RMP table is used to enforce access control to memory. The table itself
-> is not directly writable by the software. New CPU instructions (RMPUPDATE,
-> PVALIDATE, RMPADJUST) are used to manipulate the RMP entries.
-> 
-> Based on the platform configuration, the BIOS reserves the memory used
-> for the RMP table. The start and end address of the RMP table must be
-> queried by reading the RMP_BASE and RMP_END MSRs. If the RMP_BASE and
-> RMP_END are not set then disable the SEV-SNP feature.
-> 
-> The SEV-SNP feature is enabled only after the RMP table is successfully
-> initialized.
-> 
-> Also set SYSCFG.MFMD when enabling SNP as SEV-SNP FW >= 1.51 requires
-> that SYSCFG.MFMD must be se
+The series contains Qualcomm Crypto Engine dts and driver changes,
+which modify a set of accepted compatible property values, this is
+needed to provide a unified and fine-grained support of the driver
+on old and new platforms. In addition due to QCE IP changes on new
+Qualcomm platforms, it is reflected in updates to valid device tree
+properties, namely added iommu, interconnects and optional clocks.
 
-			   set.
-> 
-> RMP table entry format is non-architectural and it can vary by processor
-> and is defined by the PPR. Restrict SNP support on the known CPU model
-> and family for which the RMP table entry format is currently defined for.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-b: Ashish Kalra <ashish.kalra@amd.com>
-	     ^^
+Changes since v7:
+=================
+- v7 can be found here: https://lore.kernel.org/linux-arm-msm/20220920114051.1116441-1-bhupesh.sharma@linaro.org
+- Added a change by Neil Armstrong to document clocks and clock-names
+  properties as optional,
+- At the moment do not add Bhupesh as a new QCE driver maintainer,
+- Minor updates to device tree binding documentation and qce driver,
+  in particular added more compatibles and fixed lesser issues.
 
-Somebody ate a 'y' here. :)
+Changes since v6:
+=================
+- v6 can be seen here: https://lore.kernel.org/linux-arm-msm/30756e6f-952f-ccf2-b493-e515ba4f0a64@linaro.org/
+- As per Krzysztof's suggestion on v6, clubbed the crypto driver and
+  dt-bindings changes together. Now the overall v5 patchset into 3
+  separate patchsets, one each for the following areas to allow easier
+  review and handling from the maintainer:
+	arm-msm, crypto and dma
 
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  arch/x86/include/asm/disabled-features.h |   8 +-
->  arch/x86/include/asm/msr-index.h         |  11 +-
->  arch/x86/kernel/sev.c                    | 180 +++++++++++++++++++++++
->  3 files changed, 197 insertions(+), 2 deletions(-)
+Changes since v5:
+=================
+- v5 can be seen here: https://lore.kernel.org/lkml/20211110105922.217895-1-bhupesh.sharma@linaro.org/
+- As per Bjorn's suggestion on irc, broke down the patchset into 4
+  separate patchsets, one each for the following areas to allow easier
+  review and handling from the maintainer:
+	arm-msm, crypto, dma and devicetree
+- Addressed Rob's, Vladimir's and Bjorn's review comments received on
+  v5.
+- Added Tested-by from Jordan received on the v5.
 
-...
+Changes since v4:
+=================
+- v4 for sm8250 can be seen here: https://lore.kernel.org/linux-arm-msm/20211013105541.68045-1-bhupesh.sharma@linaro.org/
+- v1 for sm8150 qce enablement can be seen here: https://lore.kernel.org/linux-arm-msm/20211013165823.88123-1-bhupesh.sharma@linaro.org/
+- Merged the sm8150 and sm8250 enablement patches in the same patchset,
+  as per suggestions from Bjorn.
+- Dropped a couple of patches from v4, as these have been picked by
+  Bjorn already via his tree.
+- Addressed review comments from Vladimir, Thara and Rob.
+- Collect Reviewed-by from Rob and Thara on some of the patches from the
+  v4 patchset.
 
-> +static __init int __snp_rmptable_init(void)
+Changes since v3:
+=================
+- v3 can be seen here: https://lore.kernel.org/linux-arm-msm/20210519143700.27392-1-bhupesh.sharma@linaro.org/
+- Dropped a couple of patches from v3, on basis of the review comments:
+   ~ [PATCH 13/17] crypto: qce: core: Make clocks optional
+   ~ [PATCH 15/17] crypto: qce: Convert the device found dev_dbg() to dev_info()
+- Addressed review comments from Thara, Rob and Stephan Gerhold.
+- Collect Reviewed-by from Rob and Thara on some of the patches from the
+  v3 patchset.
 
-Why is this one carved out of snp_rmptable_init() ?
+Changes since v2:
+=================
+- v2 can be seen here: https://lore.kernel.org/dmaengine/20210505213731.538612-1-bhupesh.sharma@linaro.org/
+- Drop a couple of patches from v1, which tried to address the defered
+  probing of qce driver in case bam dma driver is not yet probed.
+  Replace it instead with a single (simpler) patch [PATCH 16/17].
+- Convert bam dma and qce crypto dt-bindings to YAML.
+- Addressed review comments from Thara, Bjorn, Vinod and Rob.
 
-> +{
-> +	u64 rmp_base, sz;
-> +	void *start;
-> +	u64 val;
-> +
-> +	if (!get_rmptable_info(&rmp_base, &sz))
-> +		return 1;
-> +
-> +	start = memremap(rmp_base, sz, MEMREMAP_WB);
-> +	if (!start) {
-> +		pr_err("Failed to map RMP table addr 0x%llx size 0x%llx\n", rmp_base, sz);
-> +		return 1;
-> +	}
-> +
-> +	/*
-> +	 * Check if SEV-SNP is already enabled, this can happen in case of
-> +	 * kexec boot.
-> +	 */
-> +	rdmsrl(MSR_AMD64_SYSCFG, val);
-> +	if (val & MSR_AMD64_SYSCFG_SNP_EN)
-> +		goto skip_enable;
-> +
-> +	/* Initialize the RMP table to zero */
+Changes since v1:
+=================
+- v1 can be seen here: https://lore.kernel.org/linux-arm-msm/20210310052503.3618486-1-bhupesh.sharma@linaro.org/
+- v1 did not work well as reported earlier by Dmitry, so v2 contains the following
+  changes/fixes:
+  ~ Enable the interconnect path b/w BAM DMA and main memory first
+    before trying to access the BAM DMA registers.
+  ~ Enable the interconnect path b/w qce crytpo and main memory first
+    before trying to access the qce crypto registers.
+  ~ Make sure to document the required and optional properties for both
+    BAM DMA and qce crypto drivers.
+  ~ Add a few debug related print messages in case the qce crypto driver
+    passes or fails to probe.
+  ~ Convert the qce crypto driver probe to a defered one in case the BAM DMA
+    or the interconnect driver(s) (needed on specific Qualcomm parts) are not
+    yet probed.
 
-Useless comment.
+Qualcomm crypto engine (qce) is available on several Snapdragon SoCs.
+The qce block supports hardware accelerated algorithms for encryption
+and authentication. It also provides support for aes, des, 3des
+encryption algorithms and sha1, sha256, hmac(sha1), hmac(sha256)
+authentication algorithms.
 
-> +	memset(start, 0, sz);
-> +
-> +	/* Flush the caches to ensure that data is written before SNP is enabled. */
-> +	wbinvd_on_all_cpus();
-> +
-> +	/* MFDM must be enabled on all the CPUs prior to enabling SNP. */
-> +	on_each_cpu(mfd_enable, NULL, 1);
-> +
-> +	/* Enable SNP on all CPUs. */
-> +	on_each_cpu(snp_enable, NULL, 1);
+Bhupesh Sharma (6):
+  dt-bindings: qcom-qce: Convert bindings to yaml
+  MAINTAINERS: Add qcom-qce dt-binding file to QUALCOMM CRYPTO DRIVERS section
+  dt-bindings: qcom-qce: Add 'interconnects' and 'interconnect-names'
+  dt-bindings: qcom-qce: Add 'iommus' to optional properties
+  dt-bindings: qcom-qce: Add new SoC compatible strings for qcom-qce
+  crypto: qce: core: Add new compatibles for qce crypto driver
 
-What happens if someone boots the machine with maxcpus=N, where N is
-less than all CPUs on the machine? The hotplug notifier should handle it
-but have you checked that it works fine?
+Neil Armstrong (1):
+  dt-bindings: qcom-qce: document clocks and clock-names as optional
 
-> +skip_enable:
-> +	rmptable_start = (unsigned long)start;
-> +	rmptable_end = rmptable_start + sz - 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init snp_rmptable_init(void)
-> +{
-> +	int family, model;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return 0;
-> +
-> +	family = boot_cpu_data.x86;
-> +	model  = boot_cpu_data.x86_model;
+Thara Gopinath (2):
+  crypto: qce: core: Add support to initialize interconnect path
+  crypto: qce: core: Make clocks optional
 
-Looks useless - just use boot_cpu_data directly below.
-
-> +
-> +	/*
-> +	 * RMP table entry format is not architectural and it can vary by processor and
-> +	 * is defined by the per-processor PPR. Restrict SNP support on the known CPU
-> +	 * model and family for which the RMP table entry format is currently defined for.
-> +	 */
-> +	if (family != 0x19 || model > 0xaf)
-> +		goto nosnp;
-> +
-> +	if (amd_iommu_snp_enable())
-> +		goto nosnp;
-> +
-> +	if (__snp_rmptable_init())
-> +		goto nosnp;
-> +
-> +	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "x86/rmptable_init:online", __snp_enable, NULL);
-> +
-> +	return 0;
-> +
-> +nosnp:
-> +	setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
-> +	return -ENOSYS;
-> +}
-
-Thx.
+ .../devicetree/bindings/crypto/qcom-qce.txt   | 25 -----
+ .../devicetree/bindings/crypto/qcom-qce.yaml  | 98 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ drivers/crypto/qce/core.c                     | 34 ++++++-
+ drivers/crypto/qce/core.h                     |  1 +
+ 5 files changed, 130 insertions(+), 29 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.txt
+ create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
 
 -- 
-Regards/Gruss,
-    Boris.
+2.33.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
