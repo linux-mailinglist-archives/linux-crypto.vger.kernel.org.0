@@ -2,167 +2,117 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5C9688258
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Feb 2023 16:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 174B46883EB
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Feb 2023 17:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbjBBPbZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Feb 2023 10:31:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
+        id S231688AbjBBQQb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Feb 2023 11:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbjBBPbR (ORCPT
+        with ESMTP id S231546AbjBBQQa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Feb 2023 10:31:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396E03ABB;
-        Thu,  2 Feb 2023 07:30:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=LNTskqo5roGsovH+JFQKAebOFNRW3Kky7MgwbIWmzaM=; b=SutQsn5HCDPd7RqYYJOqaRBAAw
-        ghza+gVMb7VvZ8S5mXEBYv9fP8q8Y9wXALUK5q0pzocuZuyXrPepuT1+wCOd/OzB+ntZth6DaMT6B
-        S8zOdGU0FmbWx9fMkVMCos7RUSpLps4sna/LO0IsKeshnyabCK7cNceYm4e+4Fmn11Z+jL+MTpNzN
-        I6xv1Uhkv4ss9oJhXYo64MzEkqJxVqSn1hWToVBJlsAr9MjKCkQ2hdLEGzmvnX+l4DLFC6cT1hP4d
-        2/1/3QPc9YolaFPwoZcHS+Sn+GoiEBzfYylecr9r98dtv7EMTfckM+5a0Ow5UAFEBYeCLaBAG2mQU
-        PcOP0H6w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pNbW4-00DV2e-2G; Thu, 02 Feb 2023 15:28:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4121B302E1F;
-        Thu,  2 Feb 2023 16:28:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id AB09623F326C1; Thu,  2 Feb 2023 16:28:40 +0100 (CET)
-Message-ID: <20230202152655.805747571@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 02 Feb 2023 15:50:40 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     torvalds@linux-foundation.org
-Cc:     corbet@lwn.net, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, mark.rutland@arm.com,
-        catalin.marinas@arm.com, dennis@kernel.org, tj@kernel.org,
-        cl@linux.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-        svens@linux.ibm.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, joro@8bytes.org, suravee.suthikulpanit@amd.com,
-        robin.murphy@arm.com, dwmw2@infradead.org,
-        baolu.lu@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>, davem@davemloft.net,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v2 10/10] s390/cpum_sf: Convert to cmpxchg128()
-References: <20230202145030.223740842@infradead.org>
+        Thu, 2 Feb 2023 11:16:30 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3740469522
+        for <linux-crypto@vger.kernel.org>; Thu,  2 Feb 2023 08:16:29 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id qw12so7473228ejc.2
+        for <linux-crypto@vger.kernel.org>; Thu, 02 Feb 2023 08:16:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s/TwqFRK5J7OU2Udmc50EVMhDx9RBIMJL0vHwyknTSs=;
+        b=XWQQBGJxyxq3gaYJAuz0o/leYgJ4JpCq+TyHU9q4BBpPQX45LzNb1Ml1GimJSuoVpI
+         SbPl2XiNcbFxp7QeOBrZrQByNcgU+UeOnw1pkQ5Ht8X8G4DelE/JzYiPjOWx+LnhUV9M
+         To5UtT37HaaSR+WgkRqh70/vhEHuq8VzCG3Ft3BK2R33jY9GuYnAXGZXnwA1c4TJ3NMa
+         j1nRjvp1R0c7gaHEkixz172ke4zI9R6TzjVJVSFVuQeobOpzy4w31e622IPX0s3Us8SW
+         stJb+1Qm4Do7ZbfaDeua++SXx+66L/qT0evP5+uhDp0PKX6TrMEUtltMN+0e5QWh3BLr
+         fxHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s/TwqFRK5J7OU2Udmc50EVMhDx9RBIMJL0vHwyknTSs=;
+        b=UGOgqRQHi9o0RQDUMAyA74Py1+mFPqpl/+fdWynfLL8p4FOPDULZ+nDj61iRQBO6MA
+         wdeU0pogP7AMSHIJctfXgC8CfnqQe72ng5p1p0O41ioxlMegowHI/Q941JPz2THwm+3c
+         ctYXrvKiqBJdX0DGKPL4BLiv5vjCTHWlaEJyXQR8abPdsOspqCU4pP7CDlNsU+KfDMpi
+         ikkLDhgDF8JpivJlz2xcanxiZTGbnyTfPmCP/ZDo6337TUQ0CSMNoFjLksutJ7REE1Fj
+         oZaAfcxUDBTbo7sBtjcU04GykFNT9UqjF5noxKNOZyfN2uOlev1YJ3D9JQLhD60Je2MX
+         gqPg==
+X-Gm-Message-State: AO0yUKUbmDoMYo5n4kYV69Vvf31S6uqH94ncgGBVqldziTjqAZuiOdua
+        wYKN0bEpi7UBFCsZFKkeHmWyyPF9ReRZaSUXMjWPKA==
+X-Google-Smtp-Source: AK7set+1Utb1hKncVan/1yoYW6OY9gZkOOpnIvO/wnMteRFA+qaLiCYslLcGmMcw4tzIYelPbMiWlQ==
+X-Received: by 2002:a17:906:535e:b0:88a:4655:b089 with SMTP id j30-20020a170906535e00b0088a4655b089mr6700089ejo.6.1675354587736;
+        Thu, 02 Feb 2023 08:16:27 -0800 (PST)
+Received: from [192.168.1.102] (88-112-131-206.elisa-laajakaista.fi. [88.112.131.206])
+        by smtp.gmail.com with ESMTPSA id 1-20020a17090600c100b0088b24b3aff8sm5151933eji.183.2023.02.02.08.16.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Feb 2023 08:16:27 -0800 (PST)
+Message-ID: <61eb2a01-762e-b83b-16b7-2c9b178407da@linaro.org>
+Date:   Thu, 2 Feb 2023 18:16:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH v8 5/9] dt-bindings: qcom-qce: document clocks and
+ clock-names as optional
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+References: <20230202135036.2635376-1-vladimir.zapolskiy@linaro.org>
+ <20230202135036.2635376-6-vladimir.zapolskiy@linaro.org>
+ <32c23da1-45f0-82a4-362d-ae5c06660e20@linaro.org>
+ <36b6f8f2-c438-f5e6-b48f-326e8b709de8@linaro.org>
+ <a2e4dff0-af8f-dccb-9074-8244b054c448@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+In-Reply-To: <a2e4dff0-af8f-dccb-9074-8244b054c448@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Now that there is a cross arch u128 and cmpxchg128(), use those
-instead of the custom CDSG helper.
+On 2/2/23 16:21, Neil Armstrong wrote:
+> On 02/02/2023 15:04, Vladimir Zapolskiy wrote:
+>> Hi Krzysztof,
+>>
+>> On 2/2/23 15:53, Krzysztof Kozlowski wrote:
+>>> On 02/02/2023 14:50, Vladimir Zapolskiy wrote:
+>>>> From: Neil Armstrong <neil.armstrong@linaro.org>
+>>>>
+>>>> On certain Snapdragon processors, the crypto engine clocks are enabled by
+>>>> default by security firmware.
+>>>
+>>> Then probably we should not require them only on these variants.
+>>
+>> I don't have the exact list of the affected SoCs, I believe Neil can provide
+>> such a list, if you find it crucial.
+> 
+> It's the case for SM8350, SM8450 & SM8550.
+> 
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/s390/include/asm/cpu_mf.h  |    2 +-
- arch/s390/kernel/perf_cpum_sf.c |   22 ++++++----------------
- 2 files changed, 7 insertions(+), 17 deletions(-)
+On SM8250 there is no QCE clocks also, so I'll add it to the list, and I hope
+that now the list is complete.
 
---- a/arch/s390/include/asm/cpu_mf.h
-+++ b/arch/s390/include/asm/cpu_mf.h
-@@ -141,7 +141,7 @@ union hws_trailer_header {
- 		unsigned int dsdes:16;	/* 48-63: size of diagnostic SDE */
- 		unsigned long long overflow; /* 64 - Overflow Count   */
- 	};
--	__uint128_t val;
-+	u128 val;
- };
- 
- struct hws_trailer_entry {
---- a/arch/s390/kernel/perf_cpum_sf.c
-+++ b/arch/s390/kernel/perf_cpum_sf.c
-@@ -1228,16 +1228,6 @@ static void hw_collect_samples(struct pe
- 	}
- }
- 
--static inline __uint128_t __cdsg(__uint128_t *ptr, __uint128_t old, __uint128_t new)
--{
--	asm volatile(
--		"	cdsg	%[old],%[new],%[ptr]\n"
--		: [old] "+d" (old), [ptr] "+QS" (*ptr)
--		: [new] "d" (new)
--		: "memory", "cc");
--	return old;
--}
--
- /* hw_perf_event_update() - Process sampling buffer
-  * @event:	The perf event
-  * @flush_all:	Flag to also flush partially filled sample-data-blocks
-@@ -1307,14 +1297,14 @@ static void hw_perf_event_update(struct
- 
- 		/* Reset trailer (using compare-double-and-swap) */
- 		/* READ_ONCE() 16 byte header */
--		prev.val = __cdsg(&te->header.val, 0, 0);
-+		prev.val = cmpxchg128(&te->header.val, 0, 0);
- 		do {
- 			old.val = prev.val;
- 			new.val = prev.val;
- 			new.f = 0;
- 			new.a = 1;
- 			new.overflow = 0;
--			prev.val = __cdsg(&te->header.val, old.val, new.val);
-+			prev.val = cmpxchg128(&te->header.val, old.val, new.val);
- 		} while (prev.val != old.val);
- 
- 		/* Advance to next sample-data-block */
-@@ -1496,7 +1486,7 @@ static bool aux_set_alert(struct aux_buf
- 
- 	te = aux_sdb_trailer(aux, alert_index);
- 	/* READ_ONCE() 16 byte header */
--	prev.val = __cdsg(&te->header.val, 0, 0);
-+	prev.val = cmpxchg128(&te->header.val, 0, 0);
- 	do {
- 		old.val = prev.val;
- 		new.val = prev.val;
-@@ -1511,7 +1501,7 @@ static bool aux_set_alert(struct aux_buf
- 		}
- 		new.a = 1;
- 		new.overflow = 0;
--		prev.val = __cdsg(&te->header.val, old.val, new.val);
-+		prev.val = cmpxchg128(&te->header.val, old.val, new.val);
- 	} while (prev.val != old.val);
- 	return true;
- }
-@@ -1575,7 +1565,7 @@ static bool aux_reset_buffer(struct aux_
- 	for (i = 0; i < range_scan; i++, idx++) {
- 		te = aux_sdb_trailer(aux, idx);
- 		/* READ_ONCE() 16 byte header */
--		prev.val = __cdsg(&te->header.val, 0, 0);
-+		prev.val = cmpxchg128(&te->header.val, 0, 0);
- 		do {
- 			old.val = prev.val;
- 			new.val = prev.val;
-@@ -1586,7 +1576,7 @@ static bool aux_reset_buffer(struct aux_
- 				new.a = 1;
- 			else
- 				new.a = 0;
--			prev.val = __cdsg(&te->header.val, old.val, new.val);
-+			prev.val = cmpxchg128(&te->header.val, old.val, new.val);
- 		} while (prev.val != old.val);
- 		*overflow += orig_overflow;
- 	}
+It could be that the relevant platforms are the ones with 'qcom,no-clock-support'
+property of QCE in the downstream.
 
-
+-- 
+Best wishes,
+Vladimir
