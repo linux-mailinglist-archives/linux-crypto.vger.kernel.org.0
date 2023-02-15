@@ -2,29 +2,29 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11F06978EE
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Feb 2023 10:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8107B6978F0
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Feb 2023 10:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbjBOJ0O (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 15 Feb 2023 04:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
+        id S234000AbjBOJ0Q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 15 Feb 2023 04:26:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233930AbjBOJZ5 (ORCPT
+        with ESMTP id S233947AbjBOJZ7 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 15 Feb 2023 04:25:57 -0500
+        Wed, 15 Feb 2023 04:25:59 -0500
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10863757D
-        for <linux-crypto@vger.kernel.org>; Wed, 15 Feb 2023 01:25:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AA03754E
+        for <linux-crypto@vger.kernel.org>; Wed, 15 Feb 2023 01:25:31 -0800 (PST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1pSE2W-00BVm0-2d; Wed, 15 Feb 2023 17:25:25 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 15 Feb 2023 17:25:24 +0800
+        id 1pSE2Y-00BVmY-4s; Wed, 15 Feb 2023 17:25:27 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 15 Feb 2023 17:25:26 +0800
 From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Wed, 15 Feb 2023 17:25:24 +0800
-Subject: [PATCH 9/10] crypto: api - Move MODULE_ALIAS_CRYPTO to algapi.h
+Date:   Wed, 15 Feb 2023 17:25:26 +0800
+Subject: [PATCH 10/10] crypto: api - Check CRYPTO_USER instead of NET for report
 References: <Y+ykvcAIAH5Rsn7C@gondor.apana.org.au>
 To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Message-Id: <E1pSE2W-00BVm0-2d@formenos.hmeau.com>
+Message-Id: <E1pSE2Y-00BVmY-4s@formenos.hmeau.com>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP
         autolearn=no autolearn_force=no version=3.4.6
@@ -35,61 +35,356 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This is part of the low-level API and should not be exposed to
-top-level Crypto API users.
+The report function is currently conditionalised on CONFIG_NET.
+As it's only used by CONFIG_CRYPTO_USER, conditionalising on that
+instead of CONFIG_NET makes more sense.
+
+This gets rid of a rarely used code-path.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
 
- include/crypto/algapi.h |   13 +++++++++++++
- include/linux/crypto.h  |   13 -------------
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ crypto/acompress.c |   11 ++++-------
+ crypto/aead.c      |   11 ++++-------
+ crypto/ahash.c     |   11 ++++-------
+ crypto/akcipher.c  |   11 ++++-------
+ crypto/kpp.c       |   11 ++++-------
+ crypto/rng.c       |   11 ++++-------
+ crypto/scompress.c |   11 ++++-------
+ crypto/shash.c     |   11 ++++-------
+ crypto/skcipher.c  |   11 ++++-------
+ 9 files changed, 36 insertions(+), 63 deletions(-)
 
-diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
-index dcc1fd4ef1b4..e28957993b56 100644
---- a/include/crypto/algapi.h
-+++ b/include/crypto/algapi.h
-@@ -34,6 +34,19 @@
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index 022839ab457a..d17c1ef779de 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -33,7 +33,8 @@ static inline struct acomp_alg *crypto_acomp_alg(struct crypto_acomp *tfm)
+ 	return __crypto_acomp_alg(crypto_acomp_tfm(tfm)->__crt_alg);
+ }
  
- #define CRYPTO_DMA_PADDING ((CRYPTO_DMA_ALIGN - 1) & ~(CRYPTO_MINALIGN - 1))
+-#ifdef CONFIG_NET
++static int crypto_acomp_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_acomp_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_acomp racomp;
+@@ -44,12 +45,6 @@ static int crypto_acomp_report(struct sk_buff *skb, struct crypto_alg *alg)
  
-+/*
-+ * Autoloaded crypto modules should only use a prefixed name to avoid allowing
-+ * arbitrary modules to be loaded. Loading from userspace may still need the
-+ * unprefixed names, so retains those aliases as well.
-+ * This uses __MODULE_INFO directly instead of MODULE_ALIAS because pre-4.3
-+ * gcc (e.g. avr32 toolchain) uses __LINE__ for uniqueness, and this macro
-+ * expands twice on the same line. Instead, use a separate base name for the
-+ * alias.
-+ */
-+#define MODULE_ALIAS_CRYPTO(name)	\
-+		__MODULE_INFO(alias, alias_userspace, name);	\
-+		__MODULE_INFO(alias, alias_crypto, "crypto-" name)
-+
- struct crypto_aead;
- struct crypto_instance;
- struct module;
-diff --git a/include/linux/crypto.h b/include/linux/crypto.h
-index c26e59bb7bca..d57597ebef6e 100644
---- a/include/linux/crypto.h
-+++ b/include/linux/crypto.h
-@@ -20,19 +20,6 @@
- #include <linux/slab.h>
- #include <linux/completion.h>
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_ACOMP, sizeof(racomp), &racomp);
+ }
+-#else
+-static int crypto_acomp_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
  
--/*
-- * Autoloaded crypto modules should only use a prefixed name to avoid allowing
-- * arbitrary modules to be loaded. Loading from userspace may still need the
-- * unprefixed names, so retains those aliases as well.
-- * This uses __MODULE_INFO directly instead of MODULE_ALIAS because pre-4.3
-- * gcc (e.g. avr32 toolchain) uses __LINE__ for uniqueness, and this macro
-- * expands twice on the same line. Instead, use a separate base name for the
-- * alias.
-- */
--#define MODULE_ALIAS_CRYPTO(name)	\
--		__MODULE_INFO(alias, alias_userspace, name);	\
--		__MODULE_INFO(alias, alias_crypto, "crypto-" name)
--
- /*
-  * Algorithm masks and types.
-  */
+ static void crypto_acomp_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -131,7 +126,9 @@ static const struct crypto_type crypto_acomp_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_acomp_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_acomp_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_acomp_report_stat,
+ #endif
+diff --git a/crypto/aead.c b/crypto/aead.c
+index a36c3417ff6c..83d103addb62 100644
+--- a/crypto/aead.c
++++ b/crypto/aead.c
+@@ -177,7 +177,8 @@ static int crypto_aead_init_tfm(struct crypto_tfm *tfm)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_NET
++static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_aead raead;
+@@ -194,12 +195,6 @@ static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_AEAD, sizeof(raead), &raead);
+ }
+-#else
+-static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static void crypto_aead_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -251,7 +246,9 @@ static const struct crypto_type crypto_aead_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_aead_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_aead_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_aead_report_stat,
+ #endif
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index 3030caf8b1af..b1a9d7919157 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -469,7 +469,8 @@ static void crypto_ahash_free_instance(struct crypto_instance *inst)
+ 	ahash->free(ahash);
+ }
+ 
+-#ifdef CONFIG_NET
++static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_hash rhash;
+@@ -483,12 +484,6 @@ static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_HASH, sizeof(rhash), &rhash);
+ }
+-#else
+-static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static void crypto_ahash_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -517,7 +512,9 @@ static const struct crypto_type crypto_ahash_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_ahash_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_ahash_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_ahash_report_stat,
+ #endif
+diff --git a/crypto/akcipher.c b/crypto/akcipher.c
+index d298baf9f312..a5aac25aa6f0 100644
+--- a/crypto/akcipher.c
++++ b/crypto/akcipher.c
+@@ -17,7 +17,8 @@
+ 
+ #include "internal.h"
+ 
+-#ifdef CONFIG_NET
++static int crypto_akcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_akcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_akcipher rakcipher;
+@@ -29,12 +30,6 @@ static int crypto_akcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_AKCIPHER,
+ 		       sizeof(rakcipher), &rakcipher);
+ }
+-#else
+-static int crypto_akcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static void crypto_akcipher_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -107,7 +102,9 @@ static const struct crypto_type crypto_akcipher_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_akcipher_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_akcipher_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_akcipher_report_stat,
+ #endif
+diff --git a/crypto/kpp.c b/crypto/kpp.c
+index 8dd2289469a6..12ebaf668c10 100644
+--- a/crypto/kpp.c
++++ b/crypto/kpp.c
+@@ -17,7 +17,8 @@
+ 
+ #include "internal.h"
+ 
+-#ifdef CONFIG_NET
++static int crypto_kpp_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_kpp_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_kpp rkpp;
+@@ -28,12 +29,6 @@ static int crypto_kpp_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_KPP, sizeof(rkpp), &rkpp);
+ }
+-#else
+-static int crypto_kpp_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static void crypto_kpp_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -103,7 +98,9 @@ static const struct crypto_type crypto_kpp_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_kpp_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_kpp_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_kpp_report_stat,
+ #endif
+diff --git a/crypto/rng.c b/crypto/rng.c
+index de2b24dd88d4..5c4507769676 100644
+--- a/crypto/rng.c
++++ b/crypto/rng.c
+@@ -69,7 +69,8 @@ static unsigned int seedsize(struct crypto_alg *alg)
+ 	return ralg->seedsize;
+ }
+ 
+-#ifdef CONFIG_NET
++static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_rng rrng;
+@@ -82,12 +83,6 @@ static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_RNG, sizeof(rrng), &rrng);
+ }
+-#else
+-static int crypto_rng_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static void crypto_rng_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -125,7 +120,9 @@ static const struct crypto_type crypto_rng_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_rng_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_rng_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_rng_report_stat,
+ #endif
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index 214283f7730a..7e26a37b8eff 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -37,7 +37,8 @@ static const struct crypto_type crypto_scomp_type;
+ static int scomp_scratch_users;
+ static DEFINE_MUTEX(scomp_lock);
+ 
+-#ifdef CONFIG_NET
++static int crypto_scomp_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_scomp_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_comp rscomp;
+@@ -49,12 +50,6 @@ static int crypto_scomp_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_COMPRESS,
+ 		       sizeof(rscomp), &rscomp);
+ }
+-#else
+-static int crypto_scomp_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static void crypto_scomp_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -246,7 +241,9 @@ static const struct crypto_type crypto_scomp_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_scomp_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_scomp_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_acomp_report_stat,
+ #endif
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 3ccacdbee73f..9b9e7b4ac804 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -490,7 +490,8 @@ static void crypto_shash_free_instance(struct crypto_instance *inst)
+ 	shash->free(shash);
+ }
+ 
+-#ifdef CONFIG_NET
++static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct crypto_report_hash rhash;
+@@ -505,12 +506,6 @@ static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_HASH, sizeof(rhash), &rhash);
+ }
+-#else
+-static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static void crypto_shash_show(struct seq_file *m, struct crypto_alg *alg)
+ 	__maybe_unused;
+@@ -538,7 +533,9 @@ static const struct crypto_type crypto_shash_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_shash_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_shash_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_shash_report_stat,
+ #endif
+diff --git a/crypto/skcipher.c b/crypto/skcipher.c
+index e8314722223d..d2f0b067715c 100644
+--- a/crypto/skcipher.c
++++ b/crypto/skcipher.c
+@@ -727,7 +727,8 @@ static void crypto_skcipher_show(struct seq_file *m, struct crypto_alg *alg)
+ 	seq_printf(m, "walksize     : %u\n", skcipher->walksize);
+ }
+ 
+-#ifdef CONFIG_NET
++static int crypto_skcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
++	__maybe_unused;
+ static int crypto_skcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
+ {
+ 	struct skcipher_alg *skcipher = __crypto_skcipher_alg(alg);
+@@ -746,12 +747,6 @@ static int crypto_skcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
+ 	return nla_put(skb, CRYPTOCFGA_REPORT_BLKCIPHER,
+ 		       sizeof(rblkcipher), &rblkcipher);
+ }
+-#else
+-static int crypto_skcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+ 
+ static int crypto_skcipher_report_stat(struct sk_buff *skb,
+ 				       struct crypto_alg *alg) __maybe_unused;
+@@ -784,7 +779,9 @@ static const struct crypto_type crypto_skcipher_type = {
+ #ifdef CONFIG_PROC_FS
+ 	.show = crypto_skcipher_show,
+ #endif
++#ifdef CONFIG_CRYPTO_USER
+ 	.report = crypto_skcipher_report,
++#endif
+ #ifdef CONFIG_CRYPTO_STATS
+ 	.report_stat = crypto_skcipher_report_stat,
+ #endif
