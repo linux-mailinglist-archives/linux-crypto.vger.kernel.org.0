@@ -2,100 +2,197 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D23D9697A7B
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Feb 2023 12:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05502697D5E
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Feb 2023 14:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbjBOLN4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 15 Feb 2023 06:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        id S231531AbjBON3i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 15 Feb 2023 08:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbjBOLNU (ORCPT
+        with ESMTP id S232333AbjBON31 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 15 Feb 2023 06:13:20 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6AF367DE;
-        Wed, 15 Feb 2023 03:13:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676459599; x=1707995599;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=e16pSdQgmFTyQTyCvFDV4lMnQOhE7jy+vLaJeDYlLbo=;
-  b=Dfu6Atn5qBmZxAWNy+sqLP/r44d5htxDqMEeWlB8I3D5MdXXvw7A4060
-   6T36snurDdxiYlHfyuoYpD2BUjwWWD7mFs9DIZSIHtNdQTdPbYZ9jYq9m
-   5T4QBoGLfINHxC5m3bB3sYOh8UywMsGBEKQgUH6i4/WNw389a7OLp6XyA
-   iXHvUNBjZo/VH9YiqXhp7RLrbyZnXSMdXU0qrMVyZqoMAnW7uQgi6buys
-   xZ52pWLQx3DHfFjNqdTE/bxcc/dmZIYAgsmjgj4a+DZEEXGSrAQCqQa3W
-   XdHh1VXFstGwuqs9SPbkJHP6+ZNdfgAsIZljYenGDO+B8iyG5TU/L6CkK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="330033485"
-X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
-   d="scan'208";a="330033485"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2023 03:13:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="619390996"
-X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
-   d="scan'208";a="619390996"
-Received: from mylly.fi.intel.com (HELO [10.237.72.51]) ([10.237.72.51])
-  by orsmga003.jf.intel.com with ESMTP; 15 Feb 2023 03:13:11 -0800
-Message-ID: <72567585-0091-7bf4-35b3-ce3f94936bcc@linux.intel.com>
-Date:   Wed, 15 Feb 2023 13:13:10 +0200
+        Wed, 15 Feb 2023 08:29:27 -0500
+Received: from fudo.makrotopia.org (fudo.makrotopia.org [IPv6:2a07:2ec0:3002::71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6004939B9F;
+        Wed, 15 Feb 2023 05:29:10 -0800 (PST)
+Received: from local
+        by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1pSHq4-0005qU-1f;
+        Wed, 15 Feb 2023 14:28:48 +0100
+Date:   Wed, 15 Feb 2023 13:27:11 +0000
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Mingming Su <Mingming.Su@mediatek.com>,
+        linux-crypto@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] hwrng: add driver for MediaTek TRNG SMC
+Message-ID: <89865515728cb937b6591160ad9c30b4bcc8dd41.1676467500.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.7.1
-Subject: Re: [PATCH 2/6] crypto: ccp: Add a header for multiple drivers to use
- `__psp_pa`
-To:     =?UTF-8?B?SmFuIETEhWJyb8Wb?= <jsd@semihalf.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Grzegorz Bernacki <gjb@semihalf.com>,
-        Thomas Rijo-john <Rijo-john.Thomas@amd.com>,
-        Lendacky Thomas <Thomas.Lendacky@amd.com>,
-        herbert@gondor.apana.org.au,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>, kvm@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-References: <20230209223811.4993-1-mario.limonciello@amd.com>
- <20230209223811.4993-3-mario.limonciello@amd.com>
- <CAOtMz3OfGFsiThY7hQYG2oh1=HKg7N56cuA28e+dhB4EtZsz=Q@mail.gmail.com>
-Content-Language: en-US
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <CAOtMz3OfGFsiThY7hQYG2oh1=HKg7N56cuA28e+dhB4EtZsz=Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 2/14/23 10:40, Jan Dąbroś wrote:
->> The TEE subdriver for CCP, the amdtee driver and the i2c-designware-amdpsp
->> drivers all include `psp-sev.h` even though they don't use SEV
->> functionality.
->>
->> Move the definition of `__psp_pa` into a common header to be included
->> by all of these drivers.
->>
->> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> 
-> Reviewed-by: Jan Dabros <jsd@semihalf.com>
+Add driver providing kernel-side support for the Random Number
+Generator hardware found on Mediatek SoCs which have a driver in ARM
+TrustedFirmware-A allowing Linux to read random numbers using a
+non-standard vendor-defined Secure Monitor Call.
 
-For the drivers/i2c/busses/i2c-designware-amdpsp.c:
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ MAINTAINERS                         |  1 +
+ drivers/char/hw_random/Kconfig      | 16 +++++++
+ drivers/char/hw_random/Makefile     |  1 +
+ drivers/char/hw_random/mtk-rng-v2.c | 74 +++++++++++++++++++++++++++++
+ 4 files changed, 92 insertions(+)
+ create mode 100644 drivers/char/hw_random/mtk-rng-v2.c
 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index be167c695c64..90d82aba6d73 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13148,6 +13148,7 @@ F:	drivers/leds/leds-mt6323.c
+ MEDIATEK RANDOM NUMBER GENERATOR SUPPORT
+ M:	Sean Wang <sean.wang@mediatek.com>
+ S:	Maintained
++F:	drivers/char/hw_random/mtk-rng-v2.c
+ F:	drivers/char/hw_random/mtk-rng.c
+ 
+ MEDIATEK SMI DRIVER
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 4fdf07ae3c54..7c900185486d 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -439,6 +439,22 @@ config HW_RANDOM_MTK
+ 
+ 	  If unsure, say Y.
+ 
++config HW_RANDOM_MTK_V2
++	tristate "Mediatek Random Number Generator support (v2/SMC)"
++	depends on HW_RANDOM
++	depends on (ARM64 && ARCH_MEDIATEK) || COMPILE_TEST
++	default y
++	help
++	  This driver provides kernel-side support for the Random Number
++	  Generator hardware found on Mediatek SoCs which have a driver
++	  in ARM TrustedFirmware-A allowing Linux to read using a non-
++	  standard vendor-defined Secure Monitor Call.
++
++	  To compile this driver as a module, choose M here. the
++	  module will be called mtk-rng-v2.
++
++	  If unsure, say Y.
++
+ config HW_RANDOM_S390
+ 	tristate "S390 True Random Number Generator support"
+ 	depends on S390
+diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+index 09bde4a0f971..ba319c509e86 100644
+--- a/drivers/char/hw_random/Makefile
++++ b/drivers/char/hw_random/Makefile
+@@ -38,6 +38,7 @@ obj-$(CONFIG_HW_RANDOM_PIC32) += pic32-rng.o
+ obj-$(CONFIG_HW_RANDOM_MESON) += meson-rng.o
+ obj-$(CONFIG_HW_RANDOM_CAVIUM) += cavium-rng.o cavium-rng-vf.o
+ obj-$(CONFIG_HW_RANDOM_MTK)	+= mtk-rng.o
++obj-$(CONFIG_HW_RANDOM_MTK_V2)	+= mtk-rng-v2.o
+ obj-$(CONFIG_HW_RANDOM_S390) += s390-trng.o
+ obj-$(CONFIG_HW_RANDOM_KEYSTONE) += ks-sa-rng.o
+ obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
+diff --git a/drivers/char/hw_random/mtk-rng-v2.c b/drivers/char/hw_random/mtk-rng-v2.c
+new file mode 100644
+index 000000000000..6e61f4361d9e
+--- /dev/null
++++ b/drivers/char/hw_random/mtk-rng-v2.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Driver for Mediatek Hardware Random Number Generator (v2/SMCC)
++ *
++ * Copyright (C) 2023 Daniel Golle <daniel@makrotopia.org>
++ * based on patch from Mingming Su <Mingming.Su@mediatek.com>
++ */
++#define MTK_RNG_DEV KBUILD_MODNAME
++
++#include <linux/arm-smccc.h>
++#include <linux/err.h>
++#include <linux/hw_random.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/soc/mediatek/mtk_sip_svc.h>
++
++#define MTK_SIP_KERNEL_GET_RND		MTK_SIP_SMC_CMD(0x550)
++
++static int mtk_rng_v2_read(struct hwrng *rng, void *buf, size_t max, bool wait)
++{
++	struct arm_smccc_res res;
++	int retval = 0;
++
++	while (max >= sizeof(u32)) {
++		arm_smccc_smc(MTK_SIP_KERNEL_GET_RND, 0, 0, 0, 0, 0, 0, 0,
++			      &res);
++		if (res.a0)
++			break;
++
++		*(u32 *)buf = res.a1;
++		retval += sizeof(u32);
++		buf += sizeof(u32);
++		max -= sizeof(u32);
++	}
++
++	return retval || !wait ? retval : -EIO;
++}
++
++static int mtk_rng_v2_probe(struct platform_device *pdev)
++{
++	struct hwrng *trng;
++
++	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
++	if (!trng)
++		return -ENOMEM;
++
++	trng->name = pdev->name;
++	trng->read = mtk_rng_v2_read;
++	trng->quality = 900;
++
++	return devm_hwrng_register(&pdev->dev, trng);
++}
++
++static const struct of_device_id mtk_rng_v2_match[] = {
++	{ .compatible = "mediatek,mt7981-rng" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, mtk_rng_v2_match);
++
++static struct platform_driver mtk_rng_v2_driver = {
++	.probe          = mtk_rng_v2_probe,
++	.driver = {
++		.name = KBUILD_MODNAME,
++		.of_match_table = mtk_rng_v2_match,
++	},
++};
++module_platform_driver(mtk_rng_v2_driver);
++
++MODULE_DESCRIPTION("Mediatek Random Number Generator Driver (v2/SMC)");
++MODULE_AUTHOR("Daniel Golle <daniel@makrotopia.org>");
++MODULE_LICENSE("GPL");
+
+base-commit: 9d9019bcea1aac7eed64a1a4966282b6b7b141c8
+-- 
+2.39.1
+
