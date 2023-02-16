@@ -2,109 +2,107 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BBC699575
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Feb 2023 14:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 999EE6995BE
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Feb 2023 14:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbjBPNPL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Feb 2023 08:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
+        id S229726AbjBPN1a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Feb 2023 08:27:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjBPNO4 (ORCPT
+        with ESMTP id S229504AbjBPN13 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Feb 2023 08:14:56 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C01D53554
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Feb 2023 05:14:48 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id u27so1863166ljo.12
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Feb 2023 05:14:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1676553287;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Yd9lAcpRbHxF9RdOizjwYgJ/PMIKmYOw1xnRDHR/30=;
-        b=l8znhmby9Ou/ayAkmoZRFWINUtrj5JOzTE+qO0v5ncxadXQX+sRPJZrSwlx3b9U5LQ
-         JGD2YxEHCWY+a0/6/phBWXfrkWKf0XbXbw4h29RYUa4t4IdwHYfGLpyeTJA7CR47BslD
-         cxLmBpcfUz9asR25xyvhwK6VnwQBtE0Ok6Yt4LImw2GJ4/SyihNAphmibYOApmhEtRyP
-         I2Ch19kzlsNWNOQI3RtkzC5dBxIzV7h8EOAdkYVzdB6uMIFSg+7QGPc1aP2AO2kgHP4C
-         wdqkUeuwRINLInCO8XvY3HH9l4NCTnS/Jx+nu0L/xcUgB1OoRod5bB8EyJc4dzQY7wD7
-         YK9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1676553287;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Yd9lAcpRbHxF9RdOizjwYgJ/PMIKmYOw1xnRDHR/30=;
-        b=yQPvtYzVd5mA7bAYgTJXg8eN0VroG4qSCyL4SNqF5nZvGJyViQJ5UbSyrYh87ta1W7
-         TFTV/5mwG8ANoqlpTD8RwoKcwyf8nUTfd7nN8PhJDKM6V6nqNo6bKkEfbHqMNd92WRDS
-         63/2bBk16PJeQaynnqqwpT4hfdHo0g/QJ9hXUU8HJNB2uaxhEJs29pfjd6SV7wuQY7J6
-         ph36d4TnRMT56WTqQqh3NClGS+9CFVUAQ25Cx+4rJvDKQbi2XX0SM06sfm9C8JSLwB0X
-         ARNdKD210/L+Ig1DGVpu8okesYo3eatQWatwHWgYHeuqXR7tTLZTfVBXgvv33c+kgv87
-         CJNg==
-X-Gm-Message-State: AO0yUKXQvbQ00P5ZPxnglXlJHtQ/12dhEU4Abt+51LFwHtWqk+4XNTEv
-        pPVNoOlpon0fxKbCVP+VFY8glQ==
-X-Google-Smtp-Source: AK7set8AC3akpCxImrycnKhop5QhurFRa136ZAhMWjejhNcYZ5p0qpTdFdN7gvG0ODXMGfP1qhBIoQ==
-X-Received: by 2002:a2e:9913:0:b0:293:4eac:734a with SMTP id v19-20020a2e9913000000b002934eac734amr1593461lji.0.1676553286845;
-        Thu, 16 Feb 2023 05:14:46 -0800 (PST)
-Received: from localhost.localdomain (88-112-131-206.elisa-laajakaista.fi. [88.112.131.206])
-        by smtp.gmail.com with ESMTPSA id j8-20020a2e8248000000b00293500280e5sm194345ljh.111.2023.02.16.05.14.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Feb 2023 05:14:46 -0800 (PST)
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thara Gopinath <thara.gopinath@gmail.com>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v10 10/10] crypto: qce: core: Add a QCE IP family compatible 'qcom,qce'
-Date:   Thu, 16 Feb 2023 15:14:30 +0200
-Message-Id: <20230216131430.3107308-11-vladimir.zapolskiy@linaro.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230216131430.3107308-1-vladimir.zapolskiy@linaro.org>
-References: <20230216131430.3107308-1-vladimir.zapolskiy@linaro.org>
+        Thu, 16 Feb 2023 08:27:29 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41AF3C78A;
+        Thu, 16 Feb 2023 05:27:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676554049; x=1708090049;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CEM0w1UDoLyzR0b0tmmtouGGH6aqxvMrAbjlA9AnySA=;
+  b=iJfs44Ye4o+O8VUdW5fIpfQBthmqpePGTYW0v0UwCoY+V1qFL3UvcEmb
+   72wCgFNpQ23CfrefdbPYrD5xuKeQAnCYUw1410QowJQtlEKSJAVHIIkDv
+   rMgTErmJA64eVkh8O+sGeo6nEWxTSNg1kz2HoZ4RbnxYDdLTpRWsSxR3Z
+   rrSWjbRCg1uy0BqCYPnY45FGHkkFWWZLOIdpNSiP0llqpcoyMKB0ve83M
+   LAm7i+ga4jz5PBHZm9uFb/QDJ1DeJXdUoHK6fKgCLQyXjpv4Yh/lhOn85
+   LWAM593Z5Qr4+SnbSy38G6JnYBT/KqOaaJ6HI0BigGog7CW9AtbTbLYUw
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="329434353"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="329434353"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 05:27:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="663453310"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="663453310"
+Received: from mylly.fi.intel.com (HELO [10.237.72.67]) ([10.237.72.67])
+  by orsmga007.jf.intel.com with ESMTP; 16 Feb 2023 05:27:24 -0800
+Message-ID: <703033aa-1293-307d-42a2-9734a51c7190@linux.intel.com>
+Date:   Thu, 16 Feb 2023 15:27:23 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.7.2
+Subject: Re: [PATCH 6/6] i2c: designware: Use PCI PSP driver for communication
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        =?UTF-8?B?SmFuIETEhWJyb8Wb?= <jsd@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>,
+        Thomas Rijo-john <Rijo-john.Thomas@amd.com>,
+        Lendacky Thomas <Thomas.Lendacky@amd.com>,
+        herbert@gondor.apana.org.au,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230209223811.4993-1-mario.limonciello@amd.com>
+ <20230209223811.4993-7-mario.limonciello@amd.com>
+Content-Language: en-US
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <20230209223811.4993-7-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The added 'qcom,qce' compatible value will serve as a sole QCE IP family
-compatible, since a particular QCE IP version is discoverablem thus, if
-it'd be needed to differentiate various IP versions, it can be obtained
-in runtime.
+On 2/10/23 00:38, Mario Limonciello wrote:
+> Currently the PSP semaphore communication base address is discovered
+> by using an MSR that is not architecturally guaranteed for future
+> platforms.  Also the mailbox that is utilized for communication with
+> the PSP may have other consumers in the kernel, so it's better to
+> make all communication go through a single driver.
+> 
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>   drivers/i2c/busses/Kconfig                  |   2 +-
+>   drivers/i2c/busses/i2c-designware-amdpsp.c  | 141 +-------------------
+>   drivers/i2c/busses/i2c-designware-core.h    |   1 -
+>   drivers/i2c/busses/i2c-designware-platdrv.c |   1 -
+>   include/linux/psp-platform-access.h         |   1 +
+>   5 files changed, 9 insertions(+), 137 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index a7bfddf08fa7b..9e2202ca73ec7 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -566,9 +566,9 @@ config I2C_DESIGNWARE_PLATFORM
+>   
+>   config I2C_DESIGNWARE_AMDPSP
+>   	bool "AMD PSP I2C semaphore support"
+> -	depends on X86_MSR
+>   	depends on ACPI
+>   	depends on I2C_DESIGNWARE_PLATFORM
+> +	depends on CRYPTO_DEV_SP_PSP && !(I2C_DESIGNWARE_PLATFORM=y && CRYPTO_DEV_CCP_DD=m)
+>   	help
 
-Two IP version based compatibles are left untouched to preserve backward
-DTB ABI compatibility.
+Would this look better if split? I.e.
 
-Signed-off-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
----
- drivers/crypto/qce/core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-index 5bb2128c95ca..fce49c0dee3e 100644
---- a/drivers/crypto/qce/core.c
-+++ b/drivers/crypto/qce/core.c
-@@ -293,6 +293,7 @@ static int qce_crypto_remove(struct platform_device *pdev)
- static const struct of_device_id qce_crypto_of_match[] = {
- 	{ .compatible = "qcom,crypto-v5.1", },
- 	{ .compatible = "qcom,crypto-v5.4", },
-+	{ .compatible = "qcom,qce", },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
--- 
-2.33.0
+	depends on CRYPTO_DEV_SP_PSP
+	depends on !(I2C_DESIGNWARE_PLATFORM=y && CRYPTO_DEV_CCP_DD=m)
 
