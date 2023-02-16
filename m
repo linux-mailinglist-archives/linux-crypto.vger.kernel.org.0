@@ -2,76 +2,57 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5866698C49
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Feb 2023 06:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A413698C70
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Feb 2023 06:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjBPFqi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Feb 2023 00:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        id S229608AbjBPF4o (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 16 Feb 2023 00:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjBPFqh (ORCPT
+        with ESMTP id S229460AbjBPF4o (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Feb 2023 00:46:37 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75F827988
-        for <linux-crypto@vger.kernel.org>; Wed, 15 Feb 2023 21:46:36 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 711BE61E8B
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Feb 2023 05:46:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5A1AC433D2;
-        Thu, 16 Feb 2023 05:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676526395;
-        bh=Ipreet7Db5wkpsS22erbXlndQs99gj0Cjz6jAFaxKqQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=APsuhBLxZoOCKvH0NBlt45S+DiT6gDmUcfd9sOdHCSOPDBeqWZpbyTOSK5Uog+72b
-         jsUVO6Jc7/GK8zBUDETs/TXXl4jpYoN1afq4YDlqLXz8+vKZbAHXWBgLHCWFTGol+1
-         j75q/kYy/4R1IAUH/OuVcnQDAcor+/rp025ZtrlzxSYQbgyKLfMC8FkJy37Thdxom0
-         BBwH9h7oo/ufRNE+b6y9nsJg9vFHVFoA5nnSoPblpn3+NOZr9lUVVrIqU2OnGZUf+B
-         v7+YngK9woKwJ0cPVS2mBxMlQyR6OEjFs8FRr1913fGFm2uByQ74Nr7CdnGFl02Fe6
-         pIy72ryAYzIHA==
-Date:   Wed, 15 Feb 2023 21:46:34 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
+        Thu, 16 Feb 2023 00:56:44 -0500
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476A52ED77
+        for <linux-crypto@vger.kernel.org>; Wed, 15 Feb 2023 21:56:42 -0800 (PST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1pSXG1-00BrZt-Cn; Thu, 16 Feb 2023 13:56:38 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Feb 2023 13:56:37 +0800
+Date:   Thu, 16 Feb 2023 13:56:37 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Subject: Re: [PATCH 8/10] crypto: rng - Count error stats differently
-Message-ID: <Y+3DOhaA7F4/nUwT@sol.localdomain>
+Message-ID: <Y+3FlS3c/MOEogt+@gondor.apana.org.au>
 References: <Y+ykvcAIAH5Rsn7C@gondor.apana.org.au>
  <E1pSE2T-00BVlo-VL@formenos.hmeau.com>
+ <Y+3DOhaA7F4/nUwT@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <E1pSE2T-00BVlo-VL@formenos.hmeau.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y+3DOhaA7F4/nUwT@sol.localdomain>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Feb 15, 2023 at 05:25:21PM +0800, Herbert Xu wrote:
->  /**
->   * struct rng_alg - random number generator definition
->   *
-> @@ -30,6 +46,7 @@ struct crypto_rng;
->   *		size of the seed is defined with @seedsize .
->   * @set_ent:	Set entropy that would otherwise be obtained from
->   *		entropy source.  Internal use only.
-> + * @stat:	Statistics for rng algorithm
->   * @seedsize:	The seed size required for a random number generator
->   *		initialization defined with this variable. Some
->   *		random number generators does not require a seed
-> @@ -39,6 +56,8 @@ struct crypto_rng;
->   * @base:	Common crypto API algorithm data structure.
->   */
->  struct rng_alg {
-> +	struct crypto_alg base;
-> +
+On Wed, Feb 15, 2023 at 09:46:34PM -0800, Eric Biggers wrote:
+>
+> Please keep field comments in the same order as the fields themselves.
 
-Please keep field comments in the same order as the fields themselves.
+Is that a requirement of kdoc? Because we may need to rearrange
+the fields from time to time in order to minimise unnecessary
+padding and moving comments around at the same time woulds seem
+to create unnecessary churn.
 
-- Eric
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
