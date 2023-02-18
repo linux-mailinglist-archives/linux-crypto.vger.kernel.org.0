@@ -2,60 +2,60 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FBF69BBFE
-	for <lists+linux-crypto@lfdr.de>; Sat, 18 Feb 2023 21:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 787DF69BBFF
+	for <lists+linux-crypto@lfdr.de>; Sat, 18 Feb 2023 21:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjBRU7e (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 18 Feb 2023 15:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        id S229669AbjBRU7f (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 18 Feb 2023 15:59:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjBRU7c (ORCPT
+        with ESMTP id S229478AbjBRU7d (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 18 Feb 2023 15:59:32 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6CC1554E
-        for <linux-crypto@vger.kernel.org>; Sat, 18 Feb 2023 12:59:31 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id ez14so5103000edb.1
-        for <linux-crypto@vger.kernel.org>; Sat, 18 Feb 2023 12:59:31 -0800 (PST)
+        Sat, 18 Feb 2023 15:59:33 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868C714EA9
+        for <linux-crypto@vger.kernel.org>; Sat, 18 Feb 2023 12:59:32 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id t19so4722633edi.13
+        for <linux-crypto@vger.kernel.org>; Sat, 18 Feb 2023 12:59:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:references:cc:to:from
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=P1ozOXB1+zZ3Q23vSw9o85yMZkUJu05HyoWaZK330OQ=;
-        b=o1OS4IpOoma7JtDQozUijuo160vnNSserkItANHAXJnEY+bNqmKGz1eWB0sLn6uT8p
-         lkm+b74YtqgbYPPRES3X43AXUvPDfTJ8sU1mfOFlkQQu22lsMtzyrV+E0ilJjzJJt2S0
-         onorIRtTdKV/pq8s96rhJj6p5iSKFNKvKGSesT+OKQRPDiz0oBf8c8977UZ1nzRPU4Af
-         J1b0WlvwWsi6P1Zlvov0tTeZQcj4COZ/gROZorWOtbyUYXSJw0pehhCwCxcYufTKvU38
-         /HbMHlygJxeMKx+j1kLSUdtfOwUPPzwvt6le/1yc0QB+kVc4jv2SOmRNKI88/KrdelqK
-         S5JQ==
+        bh=5/WDNEbgisYy7HKbKtg3x5sM5lSnk3f53fWjIWsdioM=;
+        b=Y5gt30hgLmyK/3disDGoNv7X5srdEOUlDiSjD/3a48VwOFAiYNikZNzBVmseWIQhc8
+         wmvRaOKgWbilnzKnxSlytLpkd6KzKJsiKCs5+q7xHD+eKN8kEQisu/hE0KiDbbqM0cFb
+         n8vcdXIsovnFq0a8/68NvPOMDA39RCIuJfGy4fvcKRKD5zFwvtQmFoB4LT/zV8KB1qFH
+         flHf1ONOnMquhWR1LE+59FNbM1msej2cg85DdtkUbl4LBz7z73l521/1eoGY0jjpxAId
+         +swPpoZFN9EnsJt2paeQsP7Ufukg4c+eKVMcz+ZDSjakeyNohtIZcc9p2MhAW6l67PEh
+         X9rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:references:cc:to:from
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1ozOXB1+zZ3Q23vSw9o85yMZkUJu05HyoWaZK330OQ=;
-        b=JKYUsONQLb7kPAoD0bc/15nFo4J6y0/9VmkGU8hfUL9rgS2AiN91MJh05UQtW0ZQ4E
-         0d/gzYIWdLSIR5ufYyYpb3v+Y9qGUlBuzlWBpqWrH+kSupHAEntb3z3hun+ugF6X9V3U
-         KCQmU8l/62W0ImH217Lq0zHRi0Ti+RzC/O6hFyXibSv4Y0ldpWk5Hq67tpLz4Uc80Se2
-         RU/KtWIpvnmjSxK21DLOOQAFQeZEF13WcmQ6lwXu2mb7VI8TRyw0PdwhHEsZw/11EI40
-         5dib3RctwibypFYucG30hs0Ep2nraLmL+z9ApLHSUNnMdMXyx0A1p3BzFFuebZolsIws
-         3eDQ==
-X-Gm-Message-State: AO0yUKUtaIhNJ4n8z5LRLK9o4jAOFqQ36hmg/hb4oRrW7bzB4fHsPmGB
-        lZBCHlZJ89V6r9alBvy6txg=
-X-Google-Smtp-Source: AK7set+s82dof//uh76YWzHccMEghPUnl8N5ozBosD4OqaybacZZ7orcJqlrbF76QDPG5PD31rxn3Q==
-X-Received: by 2002:a17:906:3b91:b0:8b1:3824:1f58 with SMTP id u17-20020a1709063b9100b008b138241f58mr4478036ejf.21.1676753969676;
-        Sat, 18 Feb 2023 12:59:29 -0800 (PST)
+        bh=5/WDNEbgisYy7HKbKtg3x5sM5lSnk3f53fWjIWsdioM=;
+        b=wAKuOdEmhHGMfJHqsfzKxTqPogg9OSM86kgy5JxxJ3pPiAxQlWcjOdFaJLK56cNcHE
+         9u257otqG+0Z9JlGWH7KdwtfHRczfVgOczW8ZlmCPGQnkqPkTMX7CRoBsjuLeymgS12Y
+         oWukwkE5C+1oSth7INqag01TYRvfKF80Mcrmmem6uSTbWShbltfaMaY1EGaea7Qm5DGT
+         ooDc/n4BXiDaZ89xGm3Jvu0YIQOT8gC9A51M7WgCY+7n/hCDUk1WeZeuEquOr5J/hqUd
+         ySvIU+zYJf7nLzDpkBqzfTqF0zbNXoqwC53b8JALO/tGQPOwPpzT8niVDmzgYO4r1ARe
+         8blQ==
+X-Gm-Message-State: AO0yUKXGgbOSGR1vKP6xCog9hDe/xPlc28YqOiQTS96FUddhTIv67mop
+        oOSgl9DufBvkFoVxiTtaWhE=
+X-Google-Smtp-Source: AK7set+1fXie4wFZicnTmT6HJm5KRsiKzoOl5iHtScvxq3/fscAEsLtL00IXPlWW+dYOolN6W6DI8w==
+X-Received: by 2002:a17:906:aad6:b0:8b1:3b95:cf3f with SMTP id kt22-20020a170906aad600b008b13b95cf3fmr4095079ejb.70.1676753971103;
+        Sat, 18 Feb 2023 12:59:31 -0800 (PST)
 Received: from ?IPV6:2a01:c22:7b82:af00:2955:cfd1:cf55:9ea? (dynamic-2a01-0c22-7b82-af00-2955-cfd1-cf55-09ea.c22.pool.telefonica.de. [2a01:c22:7b82:af00:2955:cfd1:cf55:9ea])
-        by smtp.googlemail.com with ESMTPSA id q11-20020a50c34b000000b004ad601533a3sm3695961edb.55.2023.02.18.12.59.28
+        by smtp.googlemail.com with ESMTPSA id s21-20020a1709060c1500b00887f6c39ac0sm3762386ejf.98.2023.02.18.12.59.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Feb 2023 12:59:29 -0800 (PST)
-Message-ID: <4dafc70f-be7f-bfdc-8845-bd97b27d1c4c@gmail.com>
-Date:   Sat, 18 Feb 2023 21:58:07 +0100
+        Sat, 18 Feb 2023 12:59:30 -0800 (PST)
+Message-ID: <db2112cf-ff3e-e2e6-9eca-1b5956d921fd@gmail.com>
+Date:   Sat, 18 Feb 2023 21:59:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: [PATCH 4/5] hwrng: meson: use struct hw_random priv data
+Subject: [PATCH 5/5] hwrng: meson: remove struct meson_rng_data
 Content-Language: en-US
 From:   Heiner Kallweit <hkallweit1@gmail.com>
 To:     Olivia Mackall <olivia@selenic.com>,
@@ -82,66 +82,61 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Use the priv data member of struct hwrng to make the iomem base address
-available in meson_rng_read(). This allows for removing struct
-meson_rng_data completely in the next step.
-__force is used to silence sparse warnings.
+Because no other members of struct meson_rng_data are left,
+we can remove it completely.
 
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 ---
- drivers/char/hw_random/meson-rng.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/char/hw_random/meson-rng.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/char/hw_random/meson-rng.c b/drivers/char/hw_random/meson-rng.c
-index a4eb8e35f..bf7a6e594 100644
+index bf7a6e594..633d98b48 100644
 --- a/drivers/char/hw_random/meson-rng.c
 +++ b/drivers/char/hw_random/meson-rng.c
-@@ -17,16 +17,14 @@
+@@ -16,10 +16,6 @@
+ 
  #define RNG_DATA 0x00
  
- struct meson_rng_data {
--	void __iomem *base;
- 	struct hwrng rng;
- };
- 
+-struct meson_rng_data {
+-	struct hwrng rng;
+-};
+-
  static int meson_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
  {
--	struct meson_rng_data *data =
--			container_of(rng, struct meson_rng_data, rng);
-+	void __iomem *base = (__force void __iomem *)rng->priv;
- 
--	*(u32 *)buf = readl_relaxed(data->base + RNG_DATA);
-+	*(u32 *)buf = readl_relaxed(base + RNG_DATA);
- 
- 	return sizeof(u32);
- }
-@@ -36,14 +34,15 @@ static int meson_rng_probe(struct platform_device *pdev)
+ 	void __iomem *base = (__force void __iomem *)rng->priv;
+@@ -32,12 +28,12 @@ static int meson_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+ static int meson_rng_probe(struct platform_device *pdev)
+ {
  	struct device *dev = &pdev->dev;
- 	struct meson_rng_data *data;
+-	struct meson_rng_data *data;
  	struct clk *core_clk;
-+	void __iomem *base;
+ 	void __iomem *base;
++	struct hwrng *rng;
  
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
+-	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+-	if (!data)
++	rng = devm_kzalloc(dev, sizeof(*rng), GFP_KERNEL);
++	if (!rng)
  		return -ENOMEM;
  
--	data->base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(data->base))
--		return PTR_ERR(data->base);
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+@@ -49,11 +45,11 @@ static int meson_rng_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, PTR_ERR(core_clk),
+ 				     "Failed to get core clock\n");
  
- 	core_clk = devm_clk_get_optional_enabled(dev, "core");
- 	if (IS_ERR(core_clk))
-@@ -52,6 +51,7 @@ static int meson_rng_probe(struct platform_device *pdev)
+-	data->rng.name = pdev->name;
+-	data->rng.read = meson_rng_read;
+-	data->rng.priv = (__force unsigned long)base;
++	rng->name = pdev->name;
++	rng->read = meson_rng_read;
++	rng->priv = (__force unsigned long)base;
  
- 	data->rng.name = pdev->name;
- 	data->rng.read = meson_rng_read;
-+	data->rng.priv = (__force unsigned long)base;
- 
- 	return devm_hwrng_register(dev, &data->rng);
+-	return devm_hwrng_register(dev, &data->rng);
++	return devm_hwrng_register(dev, rng);
  }
+ 
+ static const struct of_device_id meson_rng_of_match[] = {
 -- 
 2.39.2
 
