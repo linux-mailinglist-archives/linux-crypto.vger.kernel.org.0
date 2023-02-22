@@ -2,54 +2,54 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F75969F9F1
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Feb 2023 18:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D8469F9F5
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Feb 2023 18:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbjBVRW7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 22 Feb 2023 12:22:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        id S232733AbjBVRXH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 22 Feb 2023 12:23:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbjBVRWy (ORCPT
+        with ESMTP id S232667AbjBVRW4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 22 Feb 2023 12:22:54 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E4B40F6
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Feb 2023 09:22:52 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id t11so50273lfr.1
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Feb 2023 09:22:51 -0800 (PST)
+        Wed, 22 Feb 2023 12:22:56 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62F81BD8
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Feb 2023 09:22:53 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id z5so8617099ljc.8
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Feb 2023 09:22:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1677086570;
+        d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/cQTcEdA6/1Tvp2AynCxy/uYQRIV6AL4re0IqB5Qt5w=;
-        b=fHuuyouzTvGCL0sWP47s89a0eK5uxjT/81Lp7+j0Bqslh/YSxDXoB8XEDpmyvIch8c
-         V+/4PKq/0aACOzIYjBB0cpfHZnOvtoTXF8gKDJIMJ9ENo2TO8xY1aavA4CCxvTTJoxVj
-         V1DwYI1G1hyy1wWaQZ7EpZEBbtoJUaUIbTn2lBPlpmJO9DlP8qwQliMJAl+nwEkci3nI
-         tUng7XNoV8BFJS3VJdg18TguACaihRglbMNRruaGqc/Pgcw/M266oifMqoyVTQQzf8qQ
-         UTZtUtz5N0LPjraSMSRG5+SAyxENnu+/TdpargPXiO+HXSQrKngdRGBb9YR2mMh7IZkV
-         GqZw==
+        bh=+zPdqAVNJI8VFw+E8thVrlhFODN9g8GlhI24Q34QDNM=;
+        b=F6NRcVNCEQdpHj0xn9o3B59THa3C2w5KIWBO4IwiQXZvqbmLJxSDZGxTKRQMNBRoe7
+         GBQTmDVD2qhrRPCMp/3K8WrysytiyPToPMGf2tUTa6gPF1MtecU49cJ5kulB7/BP5cSF
+         gu9vlHKt/rmrIm+QzxVJnI5pjNg/mC/LFAHDdBlzh7zFZy5qhOH8KiugatNFAeYu3XWH
+         8itr2yVBLcvl4kJc+K+zL12MnRNqNvVFxYWjvLfrTa2H4832vdfArdS6b/nUhvb4NYQD
+         5Hk+/bHJ/LlV0xEMr77VXaXWpV/Qq5QTd2FCzGxlipPdUpNdqlZ7RluEAJGv7KYk8IRG
+         bUkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677086570;
+        d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/cQTcEdA6/1Tvp2AynCxy/uYQRIV6AL4re0IqB5Qt5w=;
-        b=68cCqI0kQnZzLiyZ+AWyHrAe6xUSH2VKivRoWNT/Nu9eON0cVwOCiHAhhTImQCD3Mj
-         v5yXDTtFE4PMVjSzSMD3TuEdMKOBRKFuzf5In0+IXh6v4vKvlvGQ6F6hTMRsE8b4K5mB
-         bEX00MljSwBYbrl6WDKfRDcAPVzCSQZQ0Q56yFBuSCMlpbqfTWZKi4YeiKSbr6izXEse
-         lyNEvj0GMPSS9synNVL5OQvp/BbGdddncC6UJGJ+gloUpSZk48LQgBsKP9GBlI4JXh0G
-         zoyR6ycGZEt4keBEsQdvzxMjWQ4m6Mk2rvtVt+y+SLhvqtzs3Ivy7OatMfwLa+NfjJg2
-         M1CA==
-X-Gm-Message-State: AO0yUKWOtS8yG/xG3Q0MJkFCMyGt9/5WfvI4oUBuJ9TAAGVBaUzQaSs0
-        SRTIwONFdmcS/CacXnXt4dsr1A==
-X-Google-Smtp-Source: AK7set9cQxIEC+FQ+YBVsN0qLM18D1ZUsClXkUtfswdmz9265xp3gXUVKlEVwex4GmbRawJ0r8uTfA==
-X-Received: by 2002:ac2:5106:0:b0:4cc:96f8:f9c2 with SMTP id q6-20020ac25106000000b004cc96f8f9c2mr3194374lfb.2.1677086570194;
-        Wed, 22 Feb 2023 09:22:50 -0800 (PST)
+        bh=+zPdqAVNJI8VFw+E8thVrlhFODN9g8GlhI24Q34QDNM=;
+        b=Dt7dnjOmjx4ClnDVeKrqvX5FKAqoDic0fTDLYCWZIddb5m0hrD79ij4eVW+PeMUFZk
+         D4gdbxkcdLTTXS90s+AtesEyK45JqfRM2mnOmvOadAjMwLBj3HV6GAX5XA/BUIMiyDbp
+         oxt2Jem/yK/34z3XIbwlQaM9j3AnRMu8QkBzAuxfyHK5yzcTVfx8d+m0UDHPch2Tb2c5
+         S3CL1rwgiNr6dRWBRFz4X3EmJsXwRNaLSNwil/IN/yZ07Ka5Ih1StNt4worbxBG7RgM6
+         wpBmnWhADyDTvF1vIiajpOD7LuzwBsrZYyFDquOOXLxE9rZWsqmTbwnz1jwRcm3zfKyI
+         U54g==
+X-Gm-Message-State: AO0yUKWLK319etpdn2eWX3TgbbfDfwxSe0TWoCaWC/LXrnglNKcUjGdH
+        r0z9I9mqfaQ3H/a9FRaEbsW6OA==
+X-Google-Smtp-Source: AK7set+dySSsvAUYZ+NCjmcRgJDbatvPF1pZQ+8JGZ/LM9IEJ0mMTBryhF62Lye5uGvasxQ0OjDt9w==
+X-Received: by 2002:a05:651c:554:b0:293:2c7e:bf53 with SMTP id q20-20020a05651c055400b002932c7ebf53mr4847659ljp.0.1677086571881;
+        Wed, 22 Feb 2023 09:22:51 -0800 (PST)
 Received: from localhost.localdomain (88-112-131-206.elisa-laajakaista.fi. [88.112.131.206])
-        by smtp.gmail.com with ESMTPSA id r3-20020a2e80c3000000b0029358afcc9esm805233ljg.34.2023.02.22.09.22.48
+        by smtp.gmail.com with ESMTPSA id r3-20020a2e80c3000000b0029358afcc9esm805233ljg.34.2023.02.22.09.22.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 09:22:49 -0800 (PST)
+        Wed, 22 Feb 2023 09:22:51 -0800 (PST)
 From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -63,9 +63,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-crypto@vger.kernel.org, Rob Herring <robh@kernel.org>,
         Jordan Crouse <jorcrous@amazon.com>
-Subject: [PATCH v11 03/10] dt-bindings: qcom-qce: Add 'interconnects' and 'interconnect-names'
-Date:   Wed, 22 Feb 2023 19:22:33 +0200
-Message-Id: <20230222172240.3235972-4-vladimir.zapolskiy@linaro.org>
+Subject: [PATCH v11 04/10] dt-bindings: qcom-qce: Add 'iommus' to optional properties
+Date:   Wed, 22 Feb 2023 19:22:34 +0200
+Message-Id: <20230222172240.3235972-5-vladimir.zapolskiy@linaro.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20230222172240.3235972-1-vladimir.zapolskiy@linaro.org>
 References: <20230222172240.3235972-1-vladimir.zapolskiy@linaro.org>
@@ -83,40 +83,46 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 
-Add 'interconnects' and 'interconnect-names' as optional properties
-to the device-tree binding documentation for Qualcomm crypto IP.
+Add the missing optional property - 'iommus' to the
+device-tree binding documentation for qcom-qce crypto IP.
 
-These properties describe the interconnect path between crypto and main
-memory and the interconnect type respectively.
+This property describes the phandle(s) to apps_smmu node with sid mask.
 
 Cc: Bjorn Andersson <andersson@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Tested-by: Jordan Crouse <jorcrous@amazon.com>
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 Signed-off-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 ---
- Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-index 8df47e8513b8..94f96ebc5dac 100644
+index 94f96ebc5dac..4e00e7925fed 100644
 --- a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
 +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-@@ -32,6 +32,14 @@ properties:
+@@ -32,6 +32,12 @@ properties:
        - const: bus
        - const: core
  
-+  interconnects:
-+    maxItems: 1
++  iommus:
++    minItems: 1
++    maxItems: 8
 +    description:
-+      Interconnect path between qce crypto and main memory.
++      phandle to apps_smmu node with sid mask.
 +
-+  interconnect-names:
-+    const: memory
-+
-   dmas:
-     items:
-       - description: DMA specifiers for rx dma channel.
+   interconnects:
+     maxItems: 1
+     description:
+@@ -72,4 +78,8 @@ examples:
+         clock-names = "iface", "bus", "core";
+         dmas = <&cryptobam 2>, <&cryptobam 3>;
+         dma-names = "rx", "tx";
++        iommus = <&apps_smmu 0x584 0x0011>,
++                 <&apps_smmu 0x586 0x0011>,
++                 <&apps_smmu 0x594 0x0011>,
++                 <&apps_smmu 0x596 0x0011>;
+     };
 -- 
 2.33.0
 
