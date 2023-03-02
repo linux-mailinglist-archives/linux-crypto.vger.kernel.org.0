@@ -2,318 +2,252 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 601746A843C
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Mar 2023 15:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538A76A8753
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Mar 2023 17:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjCBOeF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Mar 2023 09:34:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S230052AbjCBQrs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Mar 2023 11:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjCBOeD (ORCPT
+        with ESMTP id S230057AbjCBQri (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Mar 2023 09:34:03 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2061.outbound.protection.outlook.com [40.107.223.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D6F113F0;
-        Thu,  2 Mar 2023 06:33:53 -0800 (PST)
+        Thu, 2 Mar 2023 11:47:38 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB6E5650F;
+        Thu,  2 Mar 2023 08:47:30 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 322FCWUq005684;
+        Thu, 2 Mar 2023 16:46:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2022-7-12;
+ bh=b69PoULkFOQ2xhN5a0O35QRgDeSDedJTt3nH58xgAF0=;
+ b=sghgpMS7MDLvxAuaG3u9zimvisFi2guexMCFpcbfzhlyTtljHMV5670tGa1DjgAsi/pF
+ yWiaTiFz8++yGecdlihqN16vWw3P+dyHDLOvZUcEz4OTw2+6mPsSSyjJcm6TZX210vUZ
+ eQT9Pn1uC2NDpzbhr9K+ugMBNbHLPMBdKyc83dbbW7f9L0hpHy3gIAaEXw1OQ6u29Uab
+ G4m7z0OvKFVT72NHhsbcGgbwmjgDvHaCiQll6CncTAdBPfNI3HSjLKXtGjbzQbl5DTp1
+ L1O8W6OFFks/1Adh6uWak3N0mqFCUyezXO7J33nFS0EqK0QX67bARV0eu446ftPFf2KB fg== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nyb9amd6r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Mar 2023 16:46:51 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 322FWT1V002175;
+        Thu, 2 Mar 2023 16:46:50 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ny8sa1vy4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Mar 2023 16:46:50 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hXeykdkIJGEouaZijTDIxlOCaWi02jO3+vOprGrKFWgHwmTmgWJzQI1eVCPScY9vRJdbf/JX+NSPozRIAqt0iM/MuxhnZWJCxlAOoV8Et5+4rthxfKofvOK/uSFYcw/HUndPeDUTeEyq9fiB/wEL0oc+yPIAdo6J7dc2A0075mY8qEgeKIrxDgIWjqrNri7ODe4Z5uJo8Ol/6BhM+mun0ANf8UTDDGTXHkQTNZUIwo9SHDUwGSjuDe/jDxNC2zIcsV6L6t+V/bcKwd9NLtN6ZaKPTbBjpmMiXsAResuGJhq2jA0hpvP95zzTxDfsidTK5me2i5rKRyp3WTq2ZUqMjw==
+ b=ebVEuZb3Nh3mFWZe3VKPCUHW0pF3DTOIFCOd8S1YjARmESEBOPRwKsS4mb1dxvGMsLj+yfHZuHq9Y3JTmOWVxWY2j97kZ/YTFpRNqyS5s+YMr5cyXmF4QCj7hZcuIW0ZsffATjg44+/q9x/BRDQsCsVt1eFSKekkIpLqb4WYV/aMULqGlWA/7rVEmPLcFFvCuwoMQpdun6NynYEJJ5H9huLKKFTMtaVV5O9P8GHuEY0zUEosHPP0NNJ1o0gYNdC09va9r+B89ZcWgT8dBKDn0Dmh7QteZxJ7l4GEi6AfMNOfGXevPYXwvDeq0tii4i/eao6sMB7mpoCD8wc9gIJwCw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OhxYtfk898Bw3+aVUXTCf2OdlDb6gKnOXAQznqyznsA=;
- b=XDJUB4teSFUtX+JRN/gJ713TWQxNqxeZtF4drDQfuM+WmJak1MHK8MJMDZsX4qI1NrTZJxdukIyG5+jAPvwauslw/dUgr732Q3G3hGKtEqClzBMxvs15czGjlKrRXTa8e+7XKfVlhRHlBPQiirFETAITbpgH6ZAwFkN4DghiU2lq3VdnYhkkfB0h6MHB+lsCZ/w6ayzB3QRK1Glzf9tjuWrhGxEWrQFxGX00NxRdXZRmTStzDe6sJxpE+pFaU4f6v/NAkx/0mcoibI65vLx0aToRQ6YejZSN+ic5YnNsR+DgjIom2HJVYqKC1SdwYl9IdTTkklgF9fTvGRQl9Y3s6A==
+ bh=b69PoULkFOQ2xhN5a0O35QRgDeSDedJTt3nH58xgAF0=;
+ b=O9+Mg8jwqsWLCn9EfLHcOyDcqXVPjAYxR7UIhUJCRQGT8lHPykJbIG0ZB48Ojofmey8ooX05gLfuOSEJnhUoxJZIAYWhJ2w1iiMSL//h/p+UAbMSaLlNqrCw/H/IPGwVyJI0Sx34tHxC4jTYo/4X4g0fyHc3G1sUmA2ZRoy+KIqBUW1mt3bDJoiewlAzuxgdkieXPz+tQBpuN1V2QcRQBGKRIFJZ5BcSNG0Pv1Q1x9mYNiyi+x0YQ20OxmwMO32mmvQmbK2UkjtC+uPg9nKqBp0Evwhhe1lrA5QU1fYSsJ/JcsA4egmI1hIVgFpaZj+UyYTOVr+pmQanoJpduwXBdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OhxYtfk898Bw3+aVUXTCf2OdlDb6gKnOXAQznqyznsA=;
- b=N11GL9dwK0b+DoAXbgXmbJE61dJM9EtuwvjmFZYVwidKMkj3d1mtG8J6lJXIeS8sZPRmrwnMTMhWwHZniPtVg8MXKBm/qAm5M/VJI6iuYXbwqwey/OPbkQgiOJgAODsROZlf6PXvvPl507fR5/S4Cpa9lfHOGWqS1ULoVmpV+iQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by PH7PR12MB5950.namprd12.prod.outlook.com (2603:10b6:510:1d9::9) with
+ bh=b69PoULkFOQ2xhN5a0O35QRgDeSDedJTt3nH58xgAF0=;
+ b=MsU9Rs9MBPZEyV4+dX+39tvmiJlCeTNXF7zYRs7P8J0pi5Ii6Dmg+QV8GCHbnrl8Wa80XTa4VYrZO/0ZuWzS2p9N1QJJqULyk+X5zlltizjs3PpzMd9y+QOJiBgLyd00rutsdE8CbBx8Sn2s1cQnkfufaFh5LwUT7rfkadA5f5E=
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
+ by DS7PR10MB5150.namprd10.prod.outlook.com (2603:10b6:5:3a1::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.17; Thu, 2 Mar
- 2023 14:33:50 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::6cc0:9c7a:bd00:441c]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::6cc0:9c7a:bd00:441c%6]) with mapi id 15.20.6156.019; Thu, 2 Mar 2023
- 14:33:50 +0000
-Message-ID: <36734887-6474-b43e-51ae-34f37e6670a5@amd.com>
-Date:   Thu, 2 Mar 2023 08:33:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH RFC v8 52/56] ccp: Add support to decrypt the page
-To:     Dov Murik <dovmurik@linux.ibm.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, hpa@zytor.com, ardb@kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        tobin@ibm.com, bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
-        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
-        nikunj.dadhania@amd.com, Brijesh Singh <brijesh.singh@amd.com>
-References: <20230220183847.59159-1-michael.roth@amd.com>
- <20230220183847.59159-53-michael.roth@amd.com>
- <20230301232045.0000502e@intel.com>
- <e63ba525-644d-1a8c-afe7-2ced4a8fbb93@linux.ibm.com>
-Content-Language: en-US
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <e63ba525-644d-1a8c-afe7-2ced4a8fbb93@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0140.namprd13.prod.outlook.com
- (2603:10b6:806:27::25) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.19; Thu, 2 Mar
+ 2023 16:46:47 +0000
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::a326:1794:402f:1adb]) by CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::a326:1794:402f:1adb%3]) with mapi id 15.20.6156.019; Thu, 2 Mar 2023
+ 16:46:47 +0000
+From:   Eric Snowberg <eric.snowberg@oracle.com>
+To:     jarkko@kernel.org, zohar@linux.ibm.com, dhowells@redhat.com,
+        dwmw2@infradead.org
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, pvorel@suse.cz, eric.snowberg@oracle.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        erpalmer@linux.vnet.ibm.com, coxu@redhat.com,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH v5 0/6] Add CA enforcement keyring restrictions
+Date:   Thu,  2 Mar 2023 11:46:46 -0500
+Message-Id: <20230302164652.83571-1-eric.snowberg@oracle.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR08CA0049.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::26) To CH2PR10MB4150.namprd10.prod.outlook.com
+ (2603:10b6:610:ac::13)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|PH7PR12MB5950:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e7b8e88-1850-4096-458a-08db1b2b2374
+X-MS-TrafficTypeDiagnostic: CH2PR10MB4150:EE_|DS7PR10MB5150:EE_
+X-MS-Office365-Filtering-Correlation-Id: 109bb9f7-49de-4270-af6f-08db1b3db6b2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uA+/72okoEL5qucqdx4hP6AZAk4HYe9V8UOJnNN6I8oxN931qsXWtzrTsTRxQkFgyMRQ0po7AtEay2ne9gbb7LPxyDljRtXRd+MuV+Br4jkmx3Al9HakKxjnZKPyOp9X03YXZZO4mXTTYnYZU0FtuizrAY7cvmzD8v4sKFkZ8raWTKIKQaZ5ERqVI+hHNJjyLqO+69Q+6pTVtju2DX/ZCGh1djq1l6/Drvq2GPT33E98wZD/4v0jkXOfSE42M/c9yVp8kPJ1OtbfIJ40xpcXOIJq+23x8j0uG8YeNZeoyCtO0KtLWLHgpjSRqVP8wlR13xmQ+A1DwiOG3sJXLP+ytHxc/mvxnOHWAgnx6d8cjxYlFPXYMCPQDC1jQkDvD95X5XJYZLuJY34YpH4KR7aY/OuBdvpgivwZFM3VPW7arYvkmykrqQYAOx/8yRao7n47D8Co7fCRyjjXkG3KD81D/HKR4E3wRTApYf84IeDeR3lEvAE4Sj0Up/8P/G2vdGTmrpogXhR7B0WbhGoh+c1N9CMsEBaMVj78LS1yK4zYlih1x8h8sc4p8giv+O0Bx8MiS0uirz69qDi0HB+3vzkomAR0ZQr+dSS+edpM9tTySHkjPfzFwGDrls8iMMgaNeIJii0SehfbpgagrcFSkXlzqKI27fow7xiL7hz6S0XxOgSI9bGzDYgCS72FsiLD/aFAH3hCp0fp4HgGK7372qUW6ILOBdcIloAkLDTox8jE4u04+EJU72OYPpVLWZO0B7C4U1r5GbqMmcs699xXypD87A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(366004)(136003)(396003)(346002)(39860400002)(451199018)(31686004)(36756003)(478600001)(83380400001)(110136005)(6636002)(316002)(4326008)(38100700002)(8676002)(66476007)(7406005)(41300700001)(2616005)(186003)(6506007)(5660300002)(53546011)(6666004)(26005)(6486002)(6512007)(31696002)(8936002)(66556008)(66946007)(7416002)(86362001)(2906002)(43740500002)(45980500001)(134885004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: tglan04l1QMq9imzz3Ae692N9Xf02NxJPwe0f1BqqcTZTR2eFrPZalgC098QcF1A16I8phrc/jAAzZ5PlSua+pzyei2FWQ9/NJbu8rIK52zbxrkvSU6wGsvLMY1WaX/TlPkI1FJrFokSkImYsw61FYJibIWZLaAQ64UuqlGT4zzJOuaO/9EgGktRKVQhxfvWQkWLCKFff/RaR4c3o4S5ZrleUWd7YAEo/vre3ddenr2zIOQbT17AH/01gar4pK6KyOn3dnmMkSHPrXZdc68/7XBSSx2U2AmOTuQgIvx1hubSvIrnIm402QYaZ6cEgJrGfu0opr0/jI4XIl1IpsiezNLSWoRY469seWAJthtDQ0EXwDVeAt6Gd707/yiz02Acdm61B8y2EZNIQyoXs8Y3Z06XlQNnkxZclO59YfimvASkjPQGbXiIZ9D/dYTGCcsbXxG4d7AF8QTWmOp/hrXXS0jZzaP2o+atYIr4bnC3A9Lgg0bz390qoTY/Hy7Xq/z+6o1x33OgyV0Ezy/UI9s1oHkgua/zbluhgDAiRa4h1Zg0fjeqXfizODuTvvVJn2NGw45SOHnjTflMmMZX+RQCnhTX/hF2+Jy5uL3Cs4VDYY7bRvEbQsugBbfTvRfTkdL8aqBDksMEFEmHaI81lR1NDg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39860400002)(396003)(136003)(346002)(376002)(366004)(451199018)(36756003)(86362001)(8676002)(41300700001)(66556008)(66476007)(5660300002)(7416002)(8936002)(4326008)(2906002)(44832011)(38100700002)(6486002)(316002)(478600001)(66946007)(83380400001)(6512007)(1076003)(6506007)(2616005)(186003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TFdNR2JzSWRZZVZwUUVBQWVXY3dqbXRNS1FlWjR2eEh2bzlaRWxXNXlPdlpo?=
- =?utf-8?B?WWdOT3BZVm4zYjRsdHRHWk8yQXM1RGpheGVnZ0VGME1sZ3MzNHpPWENTTFVm?=
- =?utf-8?B?Ry9KdzFJdDY2RG8zODhHV3MxMnhlbUxTS3NhdGkxeGNOc2RjVkJEUEYxcnpL?=
- =?utf-8?B?RXdyb0lGYVVFanRuSE9ISWcrNXRmVUhRc2ZSQ2lUb01IbTZQakhORVBCWkdS?=
- =?utf-8?B?SU1nc3RLZklJQ1NjSmtWZUNGclBMd2NUdjU0SXBFdURZSVdhRTJCN1lsSHNZ?=
- =?utf-8?B?QmtxVWhhcmVqbFFFbXBzNlNPQnhxdnU2LzNQQTExVTh3ZVo4ZkZYTC9kK1Fi?=
- =?utf-8?B?R1JFazg1QlY4WW8wNGd5bVFCRmkwdExjV0h5SE9xaXNpZzNydkxUZ1NqMHpB?=
- =?utf-8?B?RGxCclB3dlMwbmZDZ3hCa3NpTVZuOVFZNVdpK1ZUd1VPVEgwNE4zRlZCTzVu?=
- =?utf-8?B?bVJwWDd1TVdab3B6THR3bk5YSWZUSFc2MVJKd1ZnU2tCeEIrTUoxeWlram41?=
- =?utf-8?B?REpueS9xK1I4RWhHeWlXN0JwaGtVc2FJMnZDbkdTRERXVFY5Q0ljQnFtUGkx?=
- =?utf-8?B?Wm9MOFNpd0tRSmFLTmpmK05VVVVrYTlpUGdhL1o2NVBEenhiWG5sZGNmQzlt?=
- =?utf-8?B?cWhIY3VXNXVLMExhVXJJclRkVUJCODFmcVNTUkxDTzJ6c3BPdVAvdzNWWEJn?=
- =?utf-8?B?aCswb2FyaG1ORThBV0s3YklOSXYyOVJDOEVPRC9pRVQyTVR5c0tYcEVmWVE0?=
- =?utf-8?B?ZVQ4VXdZRTRxVGVqVzJ4NmtqOHY2c2w0NG1JbE1VdCtDaEVNS3BFKzlVUTJr?=
- =?utf-8?B?enR4TmVseFVlRC8vQmRpQ2FGNWhORi9paUFFaVBHSmw2N25rUzNuQUF3WHJ0?=
- =?utf-8?B?MDI3ZFlvb2xCSHRTZlNHVTdxdTJXSVpXeDJPaVBxZEVMa0NFT0EzSk03NFRr?=
- =?utf-8?B?SjZzYmRsSERzN0dpUTBnM0hMTHFPdHFhdU4wVFZGWGp6OHpBRjRweWpLMVJo?=
- =?utf-8?B?empCMmtkRERTK05BcnFCaVNzZEhxVEhCU1ozVzZkQUczNkdOSVFUYWRZWmdi?=
- =?utf-8?B?OThnanFoV0EycFE1N1hDQWM4Z1M3cEI1SFVjUnFmeGh6Q1dvSXI1dVI3ZTQ1?=
- =?utf-8?B?NnFVeDlhM3JkRHJZYjhMb1hXUEVHaTdGQ0FPN01uRzNRcy9oOUIwaE5hNzJh?=
- =?utf-8?B?MUUwTy8wZWdDalJMMTZNaGNmRFZ3UU1DTDdUM2V4Y3JNV3N2RmVVY3Byck5w?=
- =?utf-8?B?Yjk2TTRYN3N0MkI1TFBKTzJqbzhvc3BENkIycEZ5T1hLMmZrT0NVcFZNYUtJ?=
- =?utf-8?B?QUM1TnF2UFJGV1c2TUZxMTJMY1lqdTZZK3dOc2tNTWhlQXJIaXhqb3oySDVX?=
- =?utf-8?B?U21yS2lHM2R4TDBzQThOaDc1TXUrNEZVMzBjNmZRaDNhWVM1RGc3MWRtQUdB?=
- =?utf-8?B?cUhETXlDSnFpdktOZW1IWmJsQ3lUbmFPcWptTmI0K0tTdStxeWRwVGE4Nm8r?=
- =?utf-8?B?SUxwRG14L29rQnRhS0NWZ2Vsa2d6VVBhd3doeEd2U1FWV1hCaVFvcStZZUpm?=
- =?utf-8?B?SzJCaUVhZ1pyU0IzTUNEemlBVEszZlJ3ODBYRkZpcE5iZzExWk42UTlvNmpI?=
- =?utf-8?B?ZDJvU2d5NFZTU3dMa1BOcWkyVzloSC9Oc2lZWnFlcG9GVGY0Y1Iyc0pJODg5?=
- =?utf-8?B?NGtzVWNmck1MOUxzR3JRbmdBdTVONUpZcFpwWXFOZE53NHp6c0RkVE1FNmp3?=
- =?utf-8?B?ODRDam1yK3lVZDcvMmFSMStjNGVmQjF6aUZCM1B5NldQMm5KZG5jd3o2WkRp?=
- =?utf-8?B?bHlGT2tDQ0g3aFNkVy8ycm9zVVp1ZXdXTHdsc0M0ZllCcUpoZ3J1a2Z6Uy8v?=
- =?utf-8?B?ZHZJY1NjRTlQb0hqYUlvbWRHVlN5VyszckE2ejhBM2Z5blRrZGZtNnROWWdE?=
- =?utf-8?B?azVTSVM1eTZ3NXFYaFBWZTU4NjlVNVE2U1IrK3JzOGVUbDVKcDNFckx0SWJ6?=
- =?utf-8?B?ZDgwYVVibkxJYmlWMzZPZGkvNmpZTmFmVEhYZHRBVURBaGVlSTJteCtZZysx?=
- =?utf-8?B?bXVobFdoSFBxaE93Wjg1MTRzbGNLSFlpYklwWGp5NU52SW01cU91aHVuL3p1?=
- =?utf-8?Q?iLW14x/NlvXH0FAMEvUWOSdTc?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e7b8e88-1850-4096-458a-08db1b2b2374
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8zj2x0Kcda0W5UdZmYYi4VS52K6o4i2Bnuqexa5Ie3JRKHla8CeyrkLxQsdU?=
+ =?us-ascii?Q?z6FSry4o/XjwIi+VJtpKv+KStxxaMy5U2HKSKtPcuOrTxtVB5HNW+8PR5X5x?=
+ =?us-ascii?Q?gC9ODkn72jOWYqFd25gY5+MamJ4+6dOo/3T++tr2MYAxKsVK/cvdZLyJfjks?=
+ =?us-ascii?Q?sqOsqQiCRI/vi72a6Vbk9lcGczpTlEhRgpVEkkCTF7xTTatdrghUpzu+K6gH?=
+ =?us-ascii?Q?DhzJtg5n3LXmCxB7oji3dH8LI7H/b7FqtIAopQLINoT3i7EQY4vx61bYv8gj?=
+ =?us-ascii?Q?P6E7hnVQQ37ApQx4R7HGNEtsvLOVdJPRMW3+Q5n2ukAbTbNeguG2Vq3vKgHs?=
+ =?us-ascii?Q?Jv5SG5mf2i+ohlX++GSTfXm09FlkfcfysxUofGabCfi9mN7JFHk6ymPJ2YM3?=
+ =?us-ascii?Q?TusrrSDPXqv9Yb6H04uK97YtP6ENWiY8fWkAXSAlVh6ejuuHjwfKd1j9E+gQ?=
+ =?us-ascii?Q?Ygq6xVqhuwjJiCdcApMTrdhjtGSyd/KZFCyu3Ma9a6eSeqLR3KPy62OG63V+?=
+ =?us-ascii?Q?FHBWh/nhKmjrssZOkU2pJm4jiGRx06aBi+IkfJGbwkd6KqTKf4+4yL2xTnso?=
+ =?us-ascii?Q?n5Z2TF0dYpKI2Von6xHc+ZVXAQg6bD78fFtzexPd/cPlX1mQ0pmTjCZDIWM1?=
+ =?us-ascii?Q?8lxGIUFAWUHE+dBiAPaS19nR03VuGdZufm7wuB6XR/kvRm+3TnI5SRXidNhx?=
+ =?us-ascii?Q?YQZOU86tx0fpqfurNtAnC++QZZwzdvxwLS5WpBBCSubXZZPZJeew6qNuISYc?=
+ =?us-ascii?Q?ul5UBy1j2K0ENPtI9tvsFejOw5+kZ1FJb5BVzgfqCKz506mXWZsG3XnENMGy?=
+ =?us-ascii?Q?TDaTRTD/KoI4YHxksms656iXyB8xItTqjPFDgcH51Js5fvClDJFiCtFDpKyz?=
+ =?us-ascii?Q?pZ04wSGZkkewkL2H7kJBELpQwD2yITEOIUPyyWF/kYfqLoAs0WkF2wmK5GWV?=
+ =?us-ascii?Q?mRPx/zakM2BitTjUfAE2sV4ADlPqmkEsyyjbkycWHfuwpfBAbKGRY64Nv0YR?=
+ =?us-ascii?Q?7i9ToWfHq/xKiru5ADm4QxgV1KA3gA/ZvuW+7nobxdnMeprVjlSNj7U0UYg4?=
+ =?us-ascii?Q?52+rnsKMXzoYksCeXtw1A7MMzWHY95giurIKMAp719ie4SZrOjzV39ai6OEH?=
+ =?us-ascii?Q?mbwCegTZMHGfNlMJ3QZjCyDZ6wgvZ6a3/aTcRfFmHO+UwOxfyCOwUDM0zKR0?=
+ =?us-ascii?Q?LVVPkoiWmihar6KmXJgnnBrg2o4mcLKV47rpaJ+CdZmKNkQJWeEoEa4ndWm2?=
+ =?us-ascii?Q?JNqynh3/SJ59eDoFSjU7rbptk13L6Rg/nq3kJZ05QNE0abgDgRxLfC6aDUx1?=
+ =?us-ascii?Q?40PkkZeg9O0hUq0T8rEjfdNpstSJr+8ro87rw6ybfSY1L3jJyQWNsmnmg6x8?=
+ =?us-ascii?Q?BccNCznWHGxE306QeIqO9Am4fkoKsCt7QCSfqUz22RwrdpH8DOd4TbCKDWzp?=
+ =?us-ascii?Q?1VOuhl+otpLWbhuBwOdaap0foi1Maf2SAufLD/1cGiqfgecoghHd0vsgF0K+?=
+ =?us-ascii?Q?3M83jWQWFgmOqA0xx1q3AycowzYcubKzcVbmzltltdV6j0giplGvIHLtHpTs?=
+ =?us-ascii?Q?79szYu65JuSUi6l4JCeZaS6e8ZQvsXauv6Qjf/b/mWGviGP2tsJbpwySyrkB?=
+ =?us-ascii?Q?vzgril5b7rQkjHr8N0D3iRA=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?Bagqvo+Lg+L8kSJ60aZ8LDHMduCxpl1v9ktUW6Wciej37cMqRkJdLcbhaV7f?=
+ =?us-ascii?Q?bpEsNDXfYmvBE1Y6/flS5fobX60aFINnRsPA6c9eLvPBjqqT8ntAxLUOmeXY?=
+ =?us-ascii?Q?CO+qJF6h9+FX49Kxn7dsQgP6cgbeE+LjT6Ta08y8bLQPmSyDUHMPtrdXp1+a?=
+ =?us-ascii?Q?NZvwxqeqy/h8lXRO+zYPGKzerfi87EuPvfctt/vchCLyUMWAiakX45xqhWrX?=
+ =?us-ascii?Q?CnBDv6mfTumYDCTVK49+JKKFALjeqwRV2cWvW3LZqXSJJWDHGZwPoM2nUhoq?=
+ =?us-ascii?Q?v3QjQT86YydwTnh0Q/PMiitrEiAbQtW/lIiGXiHZiGf6lgoPmun4bQM+1pyj?=
+ =?us-ascii?Q?YNf4zewFl89IUDsWeFqKqOHqwpx6da5C+2w87F7ssG+IYgBEmlwVHdutLbcr?=
+ =?us-ascii?Q?TzM6/Xg8NY3b+8stXC86VG+FGiQzusgw95RYUofnyIAnPEi2iAreIeJjJN2J?=
+ =?us-ascii?Q?VzmlL7DklyKgNiEs09OjvxAhrZxXqjYhioqmO7tFwHFvsBJjUwNFRrAeMaXj?=
+ =?us-ascii?Q?mY7j3mdkCWF3pb8pWZPLepMnh2SGEz9cY/bje5rmuxESURZTrUHuCi1ceW5U?=
+ =?us-ascii?Q?3vQ/lpHzvhCi9tJG/vxDJqA9s2XAFM+ITxO026tC39Zo2uU9GW/O12+0Mama?=
+ =?us-ascii?Q?JY3lzuOf0BI3/FJWFU73Q8f2D60Zd69y0FXb0Kw7va3Pv0JAYLNBNvqGe9Yy?=
+ =?us-ascii?Q?47s3X9QDz0gJi5vCG7nmbITJhyH73W9pplfVsaNEoIrnUr3+vzXDCd9dYhpj?=
+ =?us-ascii?Q?cYP5bwLMVF1CfWayvIZf7u3wDvQ3m94y5Pl9mWWyPCc6u5tzm+hqh+usImwN?=
+ =?us-ascii?Q?lJnkAr0HB4IsUE0b4qWqC4g5xCA2KVUwZMAT1kI7jCixGOhkRspBB1GtZhfA?=
+ =?us-ascii?Q?LhxAUbAEGsh7gRKJboqT3CgQ7qcIv9Vo/qda2Ypt3xfkMXIZhBG689V+0bEX?=
+ =?us-ascii?Q?stjS+YFRqVxw4eOK8woga8iEypC/0ECNnyGCPDmUs9vBDPcjwyASPTu/7Yy8?=
+ =?us-ascii?Q?ri4JGnSfuNEG0uqNYwiFaUZ7uTgmQ+nNMJyBOvYtPrxQj/nP0TsgnUyqcG3l?=
+ =?us-ascii?Q?JTa8i43m93O4gVZSxqViIzelZs9ZrD6BFeYcKOinbzn4ExRaCsJ56qWVYTo9?=
+ =?us-ascii?Q?tw8q3LvmGwTgIWxoHBH/B7WtBAHxE6kVio8OJ8jiKqoqqGcfdVNgLts=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 109bb9f7-49de-4270-af6f-08db1b3db6b2
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2023 14:33:49.9030
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2023 16:46:47.7187
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nocqHLz3Y1ivMdgnqmFuJqOpbbpAd+ERVINXx0n5mY/qzK7VhpIwqlP2knap6OjIPlJITq8UQuaHfdSakmOSuw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5950
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: bE+MJ6MtQcq0sVJrP5KSqklB/xXoxEty1nlTzQdNSMerLpxVGV+/JM6YIgihPLPukau7gS2rB1HUP1yI+pcS4XPhWCBn+23Kv7abOHIJUmc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5150
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-02_10,2023-03-02_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=982 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2303020146
+X-Proofpoint-GUID: DzxRYldGYFSVbyE3vI4ft4b4kUeWXwUK
+X-Proofpoint-ORIG-GUID: DzxRYldGYFSVbyE3vI4ft4b4kUeWXwUK
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 3/1/23 23:59, Dov Murik wrote:
-> Hi Mike, Zhi,
-> 
-> On 01/03/2023 23:20, Zhi Wang wrote:
->> On Mon, 20 Feb 2023 12:38:43 -0600
->> Michael Roth <michael.roth@amd.com> wrote:
->>
->>> From: Brijesh Singh <brijesh.singh@amd.com>
->>>
->>> Add support to decrypt guest encrypted memory. These API interfaces can
->>> be used for example to dump VMCBs on SNP guest exit.
->>>
->>
->> What kinds of check will be applied from firmware when VMM decrypts this
->> page? I suppose there has to be kinda mechanism to prevent VMM to decrypt
->> any page in the guest. It would be nice to have some introduction about
->> it in the comments.
->>
-> 
-> The SNP ABI spec says (section 8.27.2 SNP_DBG_DECRYPT):
-> 
->    The firmware checks that the guest's policy allows debugging. If not,
->    the firmware returns POLICY_FAILURE.
-> 
-> and in the Guest Policy (section 4.3):
-> 
->    Bit 19 - DEBUG
->    0: Debugging is disallowed.
->    1: Debugging is allowed.
-> 
-> In the kernel, that firmware error code is defined as
-> SEV_RET_POLICY_FAILURE.
-> 
-> 
->>> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
->>> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
->>> [mdr: minor commit fixups]
->>> Signed-off-by: Michael Roth <michael.roth@amd.com>
->>> ---
->>>   drivers/crypto/ccp/sev-dev.c | 32 ++++++++++++++++++++++++++++++++
->>>   include/linux/psp-sev.h      | 22 ++++++++++++++++++++--
->>>   2 files changed, 52 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
->>> index e65563bc8298..bf5167b2acfc 100644
->>> --- a/drivers/crypto/ccp/sev-dev.c
->>> +++ b/drivers/crypto/ccp/sev-dev.c
->>> @@ -2017,6 +2017,38 @@ int sev_guest_df_flush(int *error)
->>>   }
->>>   EXPORT_SYMBOL_GPL(sev_guest_df_flush);
->>>   
->>> +int snp_guest_dbg_decrypt_page(u64 gctx_pfn, u64 src_pfn, u64 dst_pfn, int *error)
->>> +{
->>> +	struct sev_data_snp_dbg data = {0};
->>> +	struct sev_device *sev;
->>> +	int ret;
->>> +
->>> +	if (!psp_master || !psp_master->sev_data)
->>> +		return -ENODEV;
->>> +
->>> +	sev = psp_master->sev_data;
->>> +
->>> +	if (!sev->snp_initialized)
->>> +		return -EINVAL;
->>> +
->>> +	data.gctx_paddr = sme_me_mask | (gctx_pfn << PAGE_SHIFT);
->>> +	data.src_addr = sme_me_mask | (src_pfn << PAGE_SHIFT);
->>> +	data.dst_addr = sme_me_mask | (dst_pfn << PAGE_SHIFT);
-> 
-> I guess this works, but I wonder why we need to turn on sme_me_mask on
-> teh dst_addr.  I thought that the firmware decrypts the guest page
-> (src_addr) to a plaintext page.  Couldn't find this requirement in the
-> SNP spec.
+Prior to the introduction of the machine keyring, most distros simply 
+allowed all keys contained within the platform keyring to be used
+for both kernel and module verification.  This was done by an out of
+tree patch.  Some distros took it even further and loaded all these keys
+into the secondary trusted keyring.  This also allowed the system owner 
+to add their own key for IMA usage.
 
-This sme_me_mask tells the firmware how to access the host memory (similar 
-to how DMA uses sme_me_mask when supplying addresses to devices under 
-SME). This needs to match the pagetable mapping being used by the host, 
-otherwise the contents will appears as ciphertext to the host if they are 
-not in sync. Since the default pagetable mapping is encrypted, the 
-sme_me_mask bit must be provided on the destination address. So it is not 
-a spec requirement, but an SME implementation requirement.
+Each distro contains similar documentation on how to sign kernel modules
+and enroll the key into the MOK.  The process is fairly straightforward.
+With the introduction of the machine keyring, the process remains
+basically the same, without the need for any out of tree patches.
 
-Thanks,
-Tom
+The machine keyring allowed distros to eliminate the out of tree patches
+for kernel module signing.  However, it falls short in allowing the end 
+user to add their own keys for IMA. Currently, the machine keyring can not 
+be used as another trust anchor for adding keys to the ima keyring, since 
+CA enforcement does not currently exist.  This would expand the current 
+integrity gap. The IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY 
+Kconfig states that keys may be added to the ima keyrings if the key is 
+validly signed by a CA cert in the system built-in or secondary trusted 
+keyring.  Currently, there is not code that enforces the contents of a
+CA cert.
 
-> 
-> 
->>> +
->>> +	/* The destination page must be in the firmware state. */
->>> +	if (rmp_mark_pages_firmware(data.dst_addr, 1, false))
->>> +		return -EIO;
->>> +
->>> +	ret = sev_do_cmd(SEV_CMD_SNP_DBG_DECRYPT, &data, error);
->>> +
->>> +	/* Restore the page state */
->>> +	if (snp_reclaim_pages(data.dst_addr, 1, false))
->>> +		ret = -EIO;
->>> +
->>> +	return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(snp_guest_dbg_decrypt_page);
->>> +
->>>   int snp_guest_ext_guest_request(struct sev_data_snp_guest_request *data,
->>>   				unsigned long vaddr, unsigned long *npages, unsigned long *fw_err)
->>>   {
->>> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
->>> index 81bafc049eca..92116e2b74fd 100644
->>> --- a/include/linux/psp-sev.h
->>> +++ b/include/linux/psp-sev.h
->>> @@ -710,7 +710,6 @@ struct sev_data_snp_dbg {
->>>   	u64 gctx_paddr;				/* In */
->>>   	u64 src_addr;				/* In */
->>>   	u64 dst_addr;				/* In */
->>> -	u32 len;				/* In */
->>>   } __packed;
-> 
-> The comment above this ^^^ struct still lists the 'len' field, and also
-> calls the first field 'handle' instead of 'gctx_paddr'.
-> 
-> Also - why is this change happening in this patch? Why was the incorrect
-> 'len' field added in the first place in "[PATCH RFC v8 20/56]
-> crypto:ccp: Define the SEV-SNP commands" ? (the comment fixes should
-> probably go there too).
-> 
-> 
-> 
->>>   
->>>   /**
->>> @@ -913,13 +912,27 @@ int sev_guest_decommission(struct sev_data_decommission *data, int *error);
->>>    * @error: SEV command return code
->>>    *
->>>    * Returns:
->>> + * 0 if the sev successfully processed the command
->>> + * -%ENODEV    if the sev device is not available
->>> + * -%ENOTSUPP  if the sev does not support SEV
->>> + * -%ETIMEDOUT if the sev command timed out
->>> + * -%EIO       if the sev returned a non-zero return code
->>> + */
-> 
-> I think that if the word 'sev' would be 'SEV' in this comment, the diff
-> will be a bit less misleading (basically this patch should not introduce
-> changes to sev_do_cmd).
-> 
-> -Dov
-> 
->>> +int sev_do_cmd(int cmd, void *data, int *psp_ret);
->>> +
->>> +/**
->>> + * snp_guest_dbg_decrypt_page - perform SEV SNP_DBG_DECRYPT command
->>> + *
->>> + * @sev_ret: sev command return code
->>> + *
->>> + * Returns:
->>>    * 0 if the SEV successfully processed the command
->>>    * -%ENODEV    if the SEV device is not available
->>>    * -%ENOTSUPP  if the SEV does not support SEV
->>>    * -%ETIMEDOUT if the SEV command timed out
->>>    * -%EIO       if the SEV returned a non-zero return code
->>>    */
->>> -int sev_do_cmd(int cmd, void *data, int *psp_ret);
->>> +int snp_guest_dbg_decrypt_page(u64 gctx_pfn, u64 src_pfn, u64 dst_pfn, int *error);
->>>   
->>>   void *psp_copy_user_blob(u64 uaddr, u32 len);
->>>   void *snp_alloc_firmware_page(gfp_t mask);
->>> @@ -987,6 +1000,11 @@ static inline void *psp_copy_user_blob(u64 __user uaddr, u32 len) { return ERR_P
->>>   
->>>   void snp_mark_pages_offline(unsigned long pfn, unsigned int npages) {}
->>>   
->>> +static inline int snp_guest_dbg_decrypt_page(u64 gctx_pfn, u64 src_pfn, u64 dst_pfn, int *error)
->>> +{
->>> +	return -ENODEV;
->>> +}
->>> +
->>>   static inline void *snp_alloc_firmware_page(gfp_t mask)
->>>   {
->>>   	return NULL;
->>
+This series introduces a way to do CA enforcement with the machine
+keyring.  It introduces three different ways to configure the machine
+keyring.  New Kconfig options are added to control the types of keys
+that may be added to it.  The default option allows all MOK keys into the
+machine keyring.  When CONFIG_INTEGRITY_CA_MACHINE_KEYRING is selected,
+the X.509 CA bit must be true and the key usage must contain keyCertSign; 
+any other usage field may also be set.  When
+CONFIG_INTEGRITY_CA_MACHINE_KEYRING_MAX is also selected, the X.509 CA
+bit must be true and the key usage must contain keyCertSign. With this
+option digitialSignature usage may not be set.  If a key doesn't pass 
+the CA restriction check, instead of going into the machine keyring, it 
+is added to the platform keyring.  With the ability to configure the
+machine keyring with CA restrictions, code that prevented the machine
+keyring from being enabled with
+IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY has been removed.
+
+Changelog:
+v5:
+- Removed the Kconfig _MIN Kconfig option and split it into different
+  entries.
+- Added requested commit message changes
+
+v4:
+- Removed all code that validated the certificate chain back to the root
+  CA. Now the only restriction is what is initially placed in the
+  machine keyring.
+- Check and store if the X.509 usage contains digitalSignature
+- New Kconfig menu item with none, min and max CA restriction on the 
+  machine keyring
+
+v3:
+- Allow Intermediate CA certs to be enrolled through the MOK. The
+  Intermediate CA cert must contain keyCertSign key usage and have the 
+  CA bit set to true. This was done by removing the self signed
+  requirement.
+
+Eric Snowberg (6):
+  KEYS: Create static version of public_key_verify_signature
+  KEYS: Add missing function documentation
+  KEYS: X.509: Parse Basic Constraints for CA
+  KEYS: X.509: Parse Key Usage
+  KEYS: CA link restriction
+  integrity: machine keyring CA configuration
+
+ certs/system_keyring.c                    | 14 +++++--
+ crypto/asymmetric_keys/restrict.c         | 40 ++++++++++++++++++
+ crypto/asymmetric_keys/x509_cert_parser.c | 50 +++++++++++++++++++++++
+ include/crypto/public_key.h               | 28 +++++++++++++
+ security/integrity/Kconfig                | 23 ++++++++++-
+ security/integrity/digsig.c               |  8 +++-
+ 6 files changed, 157 insertions(+), 6 deletions(-)
+
+
+base-commit: c9c3395d5e3dcc6daee66c6908354d47bf98cb0c
+-- 
+2.27.0
+
