@@ -2,97 +2,220 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 063A66A8F00
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Mar 2023 02:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18536A8FE7
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Mar 2023 04:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjCCBzN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 2 Mar 2023 20:55:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
+        id S229498AbjCCDcr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 2 Mar 2023 22:32:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjCCBy6 (ORCPT
+        with ESMTP id S229445AbjCCDcr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 2 Mar 2023 20:54:58 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ACC211F3
-        for <linux-crypto@vger.kernel.org>; Thu,  2 Mar 2023 17:53:59 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-536be69eadfso17271917b3.1
-        for <linux-crypto@vger.kernel.org>; Thu, 02 Mar 2023 17:53:59 -0800 (PST)
+        Thu, 2 Mar 2023 22:32:47 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56ED3E08D
+        for <linux-crypto@vger.kernel.org>; Thu,  2 Mar 2023 19:32:45 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id ay18so778782pfb.2
+        for <linux-crypto@vger.kernel.org>; Thu, 02 Mar 2023 19:32:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677808439;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2YxWgvIJdD6AE8Ce+eEDzrC0gSnd+arQ9utE5ORXuyI=;
-        b=ROCCEQa7kpCGplRxxd+TpKCz4GWvlgZ00szyZII4+P46zWJKrFrlLzYWu/nfZyiLRp
-         o5NIZvKAr8//25S0cH+8DlIeiAXMEIW/Sd0uiAB9FeygLZh/ise59k5sZOu/q/mNrsvE
-         QvF980fkZgp6n+nOGwwkAwxazNe/u1YangYISZ28+mbFRJ6+7xAQH6pr+lThLgzT3Ozw
-         zxSOOLbIGIjWk8lI4CJrPEVS5gyybvgl+YHXdAQo0int72cJobIABu1mCGjP8xY1Tngy
-         xD4DpsxzujwBqBKgn8+47Z5b9kNU8cIB6RpW6up7pc+vqY4nkC0nxNCQFM93E3noMJC8
-         MSYw==
+        d=chromium.org; s=google; t=1677814365;
+        h=to:references:message-id:cc:date:in-reply-to:from:subject
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lemNha6CdZ03DdpY+DGIXxDoAzjAR/JIIRXioSxiGsY=;
+        b=nPmT3nZCj8Ifn2vQPaoKgqZzHSFQzBpt3Y0naZPvrxsnd4IFQkNEtxStcDwHXC/UKA
+         VP2wySlPhbG0fTgOAM+EUnU7of9TZ6elMhaEpp5H9B/zkqYTR4Dxn859YjamZh8zTlLg
+         HbBxm4GJW8xcBohqHiv5cj66bNfgyL6KgTbNg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677808439;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2YxWgvIJdD6AE8Ce+eEDzrC0gSnd+arQ9utE5ORXuyI=;
-        b=OxKk1TuNus7dPKCYmpitpbXdYA/xCv95JsmVQ3mFUoZFvTcqTpfuDA9sU2LcefM/2c
-         Bom0utX9+gX7YN5jSoqRG6qQV2iU+HjJdOv/ZTpoesLVM6c1AFm0yVy6jBwD/XggqQvp
-         rCd7G1Tk1sNbQSckbL01pyPVWivPdZmWLKDyFpRGl9evhbmAYUD+XPX6cD/FOXet+jQd
-         o8U24LwqbaITNaDwGCsavBZTc/3PhLkrl0ckcAvq3O7ZEV/SMfNiiP87lnvgarLfdK7X
-         5WxjLOvEWSDMWAt2lvH+d5QGQydio1Lt5sYMA07nDqHPaCllZWiQgd6ZJTbIoq4PcPx9
-         KixA==
-X-Gm-Message-State: AO0yUKXYpC/+lN87aHG2Dq6nJvLVbxT9f1v1Pkbk4ZUZMxrxtAr2To0g
-        usbMmGlgKhAqRvK1ghWmO8rzhkg/QjA8Ts0J/6BokGmVhQU=
-X-Google-Smtp-Source: AK7set91BvVFYXxC2sroF6S+n26ny3rGGxpt0P8Yhi381MyNQkNw8Ry6M8JSN9d9oDIISmoHv3kH6WCIqxRAEF0mlA8=
-X-Received: by 2002:a81:b664:0:b0:52e:c77d:3739 with SMTP id
- h36-20020a81b664000000b0052ec77d3739mr7525343ywk.9.1677808438904; Thu, 02 Mar
- 2023 17:53:58 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:7010:44cc:b0:305:7c10:3783 with HTTP; Thu, 2 Mar 2023
- 17:53:58 -0800 (PST)
-Reply-To: elvismorgan261@gmail.com
-From:   Elvis Morgan <tinaevan009@gmail.com>
-Date:   Fri, 3 Mar 2023 01:53:58 +0000
-Message-ID: <CAGMdNs16cTyJiMm5T08jP_K2PwJ-CBtiMPKRSALXWpLJTwpiWw@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:112a listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5843]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [tinaevan009[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [tinaevan009[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [elvismorgan261[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+        d=1e100.net; s=20210112; t=1677814365;
+        h=to:references:message-id:cc:date:in-reply-to:from:subject
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lemNha6CdZ03DdpY+DGIXxDoAzjAR/JIIRXioSxiGsY=;
+        b=WqRc4PKoHjt5TAI7XwwZNO/Vjc6loAChYPVGcjV42OCo9smC5zcG/cvZOslcPd6dXH
+         smbvFXD+mau6nhvtSJWtX6AmVcbBbYg/Y0DR5diDwjZPujba01UWgbBt/M1sVL7l+7ps
+         tKbZGyQ8m57+NnS6oOrKizJhNdAxmQ/rD84lGyPlRdprRVJQZ6FTeqWqJuz32C+dwaTE
+         aBesBk3IrZ6xDiasrkhhlXlZV10D4/DFT2a6DGpsNs58PPAxgEy+ZqyY0SfahZ8bYr6k
+         qiStGqHh2pA9FYIBQE/hc12sdVOtWsiVoyRt+wpuKt2t27Sojn6p7279DZsy8IToJujy
+         S/BA==
+X-Gm-Message-State: AO0yUKXKVD6AfRVIvx3/Tz+WtnbZJEIWvYChm525GWaGwyZcdsdDY4VA
+        pQvq1AOiUXybHlCHwzLb9kHhxg==
+X-Google-Smtp-Source: AK7set/YExY2J9v1FwHxhkrx+vpSlKbYcmsaKdoSGDfyWSmgRomqp7Dmt2eZvX56Dfa+ysW+AOAu0g==
+X-Received: by 2002:a62:6185:0:b0:5a9:d4fa:d3c7 with SMTP id v127-20020a626185000000b005a9d4fad3c7mr762211pfb.7.1677814364987;
+        Thu, 02 Mar 2023 19:32:44 -0800 (PST)
+Received: from smtpclient.apple ([2601:200:c001:9ec0:45cf:6564:e2d8:9372])
+        by smtp.gmail.com with ESMTPSA id z23-20020aa785d7000000b005d6cb790c35sm421449pfn.119.2023.03.02.19.32.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 Mar 2023 19:32:44 -0800 (PST)
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_2F6FE8AF-033C-4E1C-86E1-66A770DB9386";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.2\))
+Subject: Re: [PATCH] x86: enable Data Operand Independent Timing Mode
+From:   Roxana Bradescu <roxabee@chromium.org>
+In-Reply-To: <fbf8d93e-2426-67f7-33c6-fe7d1a1a15b2@intel.com>
+Date:   Thu, 2 Mar 2023 19:32:41 -0800
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adam Langley <agl@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Pawan Kumar Gupta <pawan.kumar.gupta@intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>
+Message-Id: <29D41476-1617-4F6C-9046-82FBE70E01C9@chromium.org>
+References: <20230125012801.362496-1-ebiggers@kernel.org>
+ <fbf8d93e-2426-67f7-33c6-fe7d1a1a15b2@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.2)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-How are you?
+
+--Apple-Mail=_2F6FE8AF-033C-4E1C-86E1-66A770DB9386
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+
+
+> On Feb 3, 2023, at 10:25 AM, Dave Hansen <dave.hansen@intel.com> =
+wrote:
+>=20
+> BTW, I'm basically moving forward assuming that we're going to apply
+> this patch in _some_ form.  I'm going to make some changes, but I'll
+> discuss them in this thread to make sure we're all on the same page =
+first.
+
+Just checking in on the changes mentioned here.
+
+> On 1/24/23 17:28, Eric Biggers wrote:
+>> +Affected CPUs
+>> +-------------
+>> +
+>> +This vulnerability affects Intel Core family processors based on the =
+Ice Lake
+>> +and later microarchitectures, and Intel Atom family processors based =
+on the
+>> +Gracemont and later microarchitectures.  For more information, see =
+Intel's
+>> +documentation [1]_.
+>=20
+> I had a hard time following the docs in this area.
+>=20
+> But I'm not sure this statement is correct.  The docs actually say:
+>=20
+> 	For Intel=C2=AE Core=E2=84=A2 family processors based on =
+microarchitectures
+> 	before Ice Lake and Intel Atom=C2=AE family processors based on
+> 	microarchitectures before Gracemont that do not enumerate
+> 	IA32_UARCH_MISC_CTL, developers may assume that the instructions
+> 	listed here operate as if DOITM is enabled.
+
+Have we been able to clarify if this assumption is guaranteed?
+
+>=20
+> A processor needs to be before "Ice Lake" and friends *AND* not
+> enumerate IA32_UARCH_MISC_CTL to be unaffected.
+>=20
+> There's also another tweak that's needed because:
+>=20
+> 	Processors that do not enumerate IA32_ARCH_CAPABILITIES[DOITM]
+> 	when the latest microcode is applied do not need to set
+> 	IA32_UARCH_MISC_CTL [DOITM] in order to have the behavior
+> 	described in this document...
+>=20
+> First, we need to mention the "latest microcode" thing in the kernel
+> docs.  I also _think_ the whole "microarchitectures before" stuff is
+> rather irrelevant and we can simplify this down to:
+>=20
+> 	This vulnerability affects all Intel processors that support
+> 	MSR_IA32_ARCH_CAPABILITIES and set =
+MSR_IA32_ARCH_CAPABILITIES[DOITM]
+> 	when the latest microcode is applied.
+>=20
+
+Certainly a lot cleaner. Would be great if the Intel docs reflected =
+this.
+
+=E2=80=94
+Regards, Roxana
+
+
+> Which reminds me.  This:
+>=20
+>> +void update_doitm_msr(void)
+>> +{
+>> +	u64 msr;
+>> +
+>> +	if (doitm_off)
+>> +		return;
+>> +
+>> +	rdmsrl(MSR_IA32_UARCH_MISC_CTL, msr);
+>> +	wrmsrl(MSR_IA32_UARCH_MISC_CTL, msr | UARCH_MISC_DOITM);
+>> +}
+>=20
+> should probably be:
+>=20
+> void update_doitm_msr(void)
+> {
+> 	u64 msr;
+>=20
+> 	/*
+> 	 * All processors that enumerate support for DOIT
+> 	 * are affected *and* have the mitigation available.
+> 	 */
+> 	if (!boot_cpu_has_bug(X86_BUG_DODT))
+> 		return;
+>=20
+> 	rdmsrl(MSR_IA32_UARCH_MISC_CTL, msr);
+> 	if (doitm_off)
+> 		msr &=3D ~UARCH_MISC_DOITM;
+> 	else
+> 		msr |=3D UARCH_MISC_DOITM;
+> 	wrmsrl(MSR_IA32_UARCH_MISC_CTL, msr);
+> }
+>=20
+> in case the CPU isn't actually coming out of reset, like if kexec() =
+left
+> DOITM=3D1.
+>=20
+
+
+--Apple-Mail=_2F6FE8AF-033C-4E1C-86E1-66A770DB9386
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEgZzAKV63cJrecgABXEIiv89pXdUFAmQBalkACgkQXEIiv89p
+XdVLvA//fTFy+1BHiMaqGNYoPma392WQGm3Y/qzx/bVE9r1fwhMrqk/yZ2GPw+L0
+C8JprobKgy9/4xHx5AEaw9zASJVg7beTfsyqZ8bqpx5uA4Ct2G/nzljOl/NEWXFE
+pGRCzeluyG17qBrARsQXM6/sXhHHSPeFTgl80DkW+CJgy9PjjPxvp2oURyOx8bLr
+Y1bgyFMHJhHuMpXHNyneqSMnngSFybB084YcYkLhsLmL7YMT1IEOYdEkPWB+F/ta
+9KYI7HMA1PKRsFtSDmGahujFLXT3QrQ8UpODp1+leUxEjwDe5F6crZmWbzTMu0xj
+jqUgTbG2QHcD895trUSBU499PIeCOU4CUJoCBFoXe0O/5oa911teyfwjTHxRXAri
+42KX1nlh6nwfDrKHVEuJXxn03MyzSXpxTQtzM7MKrejXcZTuH0HOjB0kCpo9sSR7
+774y2nFhSRTxpl6eldK4Gq5wy7dszfsHe9PV0n1+AwqO3x8Azj1MO5tfAld0Y/y9
+fpL7XHrS4sEc6rnR9USkYy2P5kaPx7v3WxtRuc57beGAo3xwqUOKmQ6SglOQI8u3
+51TWfAhmzZBSVa4S7NiAeGCvKLSX0IoAuExNbWq5oOQCQ0EAkMSv+LendkwIFIaB
+P/deUgANTrk5/kCM69USslq7H0HAxH+ltu3cyawgirILwS5NICk=
+=8hd8
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_2F6FE8AF-033C-4E1C-86E1-66A770DB9386--
