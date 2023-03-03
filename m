@@ -2,189 +2,686 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC166AA0C6
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Mar 2023 21:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B986AA435
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Mar 2023 23:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbjCCU74 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 3 Mar 2023 15:59:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
+        id S233741AbjCCWXU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 3 Mar 2023 17:23:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbjCCU7z (ORCPT
+        with ESMTP id S232115AbjCCWXF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 3 Mar 2023 15:59:55 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2068.outbound.protection.outlook.com [40.107.220.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10106222F0;
-        Fri,  3 Mar 2023 12:59:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jea1/JECABcPh2/Cnw1FCCmfEhpUz0RZ/zSu/Atn22AQmZNmtBNnpDPJ9SQ61zb9opJR+jbtFY0N7W/F0e9AlSepHbW3YTL3cSYHaPfEwLWiAPl2ErDboSMUX/lXnzHDGcJI9ujX9q3eTUIZFdjuYbmKowtJCf688Q06MQlUsF3j/Mct7KhW0RiJhh4Vd62S4NmzYHNBXv9mCMRSdfycYM84V23hKLkZrUhBYonRnjrNH+btgIXWrhVjsV9hHvstT9bZPEW1XYXD05IEhNcCWsGkPmDbiSPqCTFJS3m5qPSyRN7f3z6ecs8jwB/Ee9Dia5eR4wsmr5q3qqMWsAJxww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QMB2weuNZVO4byKx3oCeXhnfAYsUp+k9XCyVjJtku5I=;
- b=Ie6eRRWe06Hkf9YH+ockKeiaDsTEqUI+FzfmDNp43yNX4SceEKFDM2x6YxJrjmc3IavHStlxrIqGUlRHtgOu4963okYzh2NIGDehoRFqHuF7t0wCKcBzu/hO8A+ZukrjJm5aoh6Ng0SHmTQiogIVuZUhvqG5ryrEPvDNvDYqauTo61EmOUGyxHPuq+cjvCp8LZYBN8WCcCmCZ3Q00KsQd6D3ytGE6slQK1RXbk3VsPXMcUQRmtdhxtOvGvdBKwQhfeeysfaDOtqe+um1shBLbppH07ewSfDx2DvCJhaCZRB+MhyiS+AwDxqVS4YZANwyoJ36EKY7lzzMBeBNTJBuoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMB2weuNZVO4byKx3oCeXhnfAYsUp+k9XCyVjJtku5I=;
- b=aRdl2SW5ZsJcr1awVUwlm+eH+ci0/y7yurDZ11B6uJhzxX3HvxdRwLiniX59GUODZ0qD75SOU6jkFIuopQcXS1cN5L7JJxPC7fTndxlbLwgi1OMpigHJii/99/XnpEBXXRfIiv41aStffWW89jS3wweluY9uQ1Gsk8LCTOXjFg4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by MW4PR12MB5628.namprd12.prod.outlook.com (2603:10b6:303:185::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.22; Fri, 3 Mar
- 2023 20:59:01 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::6cc0:9c7a:bd00:441c]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::6cc0:9c7a:bd00:441c%6]) with mapi id 15.20.6156.022; Fri, 3 Mar 2023
- 20:59:01 +0000
-Message-ID: <9b4b0c6a-3cca-593b-bbda-b138e93de513@amd.com>
-Date:   Fri, 3 Mar 2023 14:58:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v3 0/9] Export platform features from ccp driver
-Content-Language: en-US
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        =?UTF-8?B?SmFuIETEhWJyb8Wb?= <jsd@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, Rijo-john.Thomas@amd.com,
-        herbert@gondor.apana.org.au,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-References: <20230303165050.2918-1-mario.limonciello@amd.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20230303165050.2918-1-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR07CA0045.namprd07.prod.outlook.com
- (2603:10b6:5:74::22) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        Fri, 3 Mar 2023 17:23:05 -0500
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20716A047;
+        Fri,  3 Mar 2023 14:15:37 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id d12so2666008uak.10;
+        Fri, 03 Mar 2023 14:15:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677881671;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rFg6pSfino77uF+HXmnoihrZxJlMZzrsrBXsKobvwe8=;
+        b=dIk1p1rFvAif7oQViWcf9jgTzblN1JXu8sDsuK+ey9ezh4N/q/LbhOlGgRYUG8B7V2
+         4S9GplSaLm6sF0xZsC5aH8vVyOwjJfOMXz5jC8SsOlH28ETvFAThLV5zxT7Lq596Ma5q
+         /QJVfrSw/lRK/264DzsWQmKJgz1yg80UmaeQ7RW1vm9uvrIFhPqrjdkbq3RQUN0DF2+v
+         iQjqVDpkClQdfLzUZa8Uz1DsviO6R21ly0q92wlXkcaNlsWZnSrqn8AibL/bbT081oR4
+         dicPTjCcpvNG0kwnk7+OvcuWgdXZU1/LsZKCtERl4kSLth6qb435biTiHz8zhHylf/Ex
+         yWKw==
+X-Gm-Message-State: AO0yUKXYtFHCOURwpGC1ryq0jtAlgCOGhaHblIclzw5o0czdASBMTfUV
+        Ca2xFwkkbR1jkBoMVn/RiJcwL7BH00Kc
+X-Google-Smtp-Source: AK7set/TFn6+sHFO6iJCrVn9rkV/klD75YUW0HXM8c9ScE+df0qdv/4xZOSEsBrdkimegwYlR5lx1Q==
+X-Received: by 2002:a05:6122:d9a:b0:401:32f5:a867 with SMTP id bc26-20020a0561220d9a00b0040132f5a867mr1716236vkb.2.1677879747018;
+        Fri, 03 Mar 2023 13:42:27 -0800 (PST)
+Received: from robh_at_kernel.org (adsl-72-50-1-86.prtc.net. [72.50.1.86])
+        by smtp.gmail.com with ESMTPSA id q141-20020a1fa793000000b004123f2e187csm432069vke.5.2023.03.03.13.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Mar 2023 13:42:26 -0800 (PST)
+Received: (nullmailer pid 49481 invoked by uid 1000);
+        Fri, 03 Mar 2023 21:42:23 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-media@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-riscv@lists.infradead.org,
+        linux-spi@vger.kernel.org
+Subject: [PATCH] dt-bindings: yamllint: Require a space after a comment '#'
+Date:   Fri,  3 Mar 2023 15:42:23 -0600
+Message-Id: <20230303214223.49451-1-robh@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|MW4PR12MB5628:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed43a90c-1cd2-4611-925e-08db1c2a1d33
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3sNmnXZosuHaMyCfI4hiPA+DrLq2adDm5AEq9L7Qvg/8Q21CLTK+shFRxyjNESQJING/DRdknYMlhslhefCfFYOxRaMA7u6hmp63d9Q0r0/M26RHFNTT6MFXdg1M5jFQ+XaoF6ufZlXciXg9wQWKepy/eU1fSKnpckdsTyl0y/sV5CLiqVR/BP7f9cv/ZP+/VK7jPTYi5XCQ/l4xdfbClb9vTPlt2yoTnXnnz4YkQmITqcNULMFBbNDTCr7sGIbsTvkTR+xOPP/ntjs3Z2eLx2VNiGcHZ/z5J0QqAsoH07ppdHo0eL/HbPb4KCQG4Vak6T1qaAAGQtrrNTLouRnAf9U7BMlEgTwCpz2p11YqrcgyJrurb2MV5chycd1h4do0Gb1IlXEY0VQAdGieFP9VHtdAlBnIBjFUYS2lwoYMvFYv5vHuPkV/Uyl04VMEHHXrV6PUzAtLnFOq+AoDQlFJEjihAjsEiIoJ3nF5g5FAcJf9RtQdLzmGXbYVDSSGLbjLccXNI5ClGQR5SydlnYiq3gUNlqxXyrKtOxbe9S47oAIJvMQQ5Vg8ax8diZE3KWu2gSoMQMlUkyEn1GcIF1vE3syzi6sX7prgkMcS7puo4BWFo5UHVjOs21VWJ49KSTfIdmL9OIfIY3KesHlNWqXZp0W/TcW2ZSav3h7n5OzysVTXahyf8wYDxc/ORU8U2rbqla8V1bo7MTwDR4z6Q4Wb8GtsGYa+qhM3eNpguuqKgbEdV6811N1pR6rPoHqQpX+6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(136003)(39860400002)(376002)(366004)(346002)(451199018)(6506007)(26005)(110136005)(186003)(6512007)(921005)(53546011)(54906003)(316002)(5660300002)(478600001)(36756003)(7416002)(6486002)(2906002)(6666004)(31696002)(86362001)(8936002)(8676002)(83380400001)(31686004)(4326008)(66556008)(66476007)(66946007)(41300700001)(38100700002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S3FOcXRPR0pZbU1ZZ0FkWTMvbjc1TWUzT2hicHBoVGZ0bjZSdHI2clBwOEps?=
- =?utf-8?B?RTlkSmJXcmFDUXFTeEZBcWxlWXdQLzNleHpSOTd6VlhZamRoTkFQZlhGczBw?=
- =?utf-8?B?TUNGZWFnUGxhNHVhVHQwZDlWditrN2tRWW5nSzR6QXlQSG9xY0RsZU04bmti?=
- =?utf-8?B?K0w2NVdUYVlvV3MvTVcxVFFwemp2Z0xoRjJ3OHk5N0JIdW1FajE5enpER3hh?=
- =?utf-8?B?bk0xb0xlb0lrN3NBUDI2MWFQYUZkcXY0MUxublVJNFJFYlN3YTh0QURwYWE4?=
- =?utf-8?B?cUk1NUNFWTZEVkRyMDlWS2kwck5GQjdvR1V1enV4cGo0b25YRklQTUhGUXJi?=
- =?utf-8?B?YnI2M3QyQ0k4WTVUNGZqVHNGdjU4QmczZVk0VS92Q3hVNWpQSjNMeEtpOGtn?=
- =?utf-8?B?WVdaY24yakQ5YWpqbmV6RldUYWRkM1hodHYwZnRUYXFJRS95aFFrejc4UFNj?=
- =?utf-8?B?Y3NucS9DQkpTemYvQ0UyZUtzMldNUm5oaEd2WFB1cGhjQ3F5b2tnbHdyLzBG?=
- =?utf-8?B?MzQxMVgrQlF2dkxiV2h4bCs1Mkc3NkNjYWNzRllhL295YVkyRDhoanBOaG5m?=
- =?utf-8?B?MFk1cktPdTNsNjZnUUlIYXVqWVdGeHFXd2dtaEFheGh5Q05pNXVwdE40bjk4?=
- =?utf-8?B?TWlHOVBjVno1Mk93cUtXZ3ZQWjhOcHNmZFJkQldZNVpUVjhnL1FEMlRONngz?=
- =?utf-8?B?TEpEcm5OMUh5VGtvUDVGWDJWUUZvWTZ3N0I2M3lMelZEaDZ6VjJKRWtWSVg1?=
- =?utf-8?B?ZDgxMTBJWnZpb25PL2puZUZpZEpSZmRDZG9ieTdTZlhraWJUWk1vSmdrRnEr?=
- =?utf-8?B?bC9XTDQxamhFQ0xOV0YvZG5WQTFnQ0IwZ3RQMk0xTmZuOXgyVUl5a1JnalIr?=
- =?utf-8?B?dkZRd2ZMMzcwc21ORGFuMHEwR1RwaEE1M1AxT1BwZk04RlRBbnBxd3Q2RWVJ?=
- =?utf-8?B?NWtVQ2lEaWxDZDVtbFNBR0xNUVZCWTdhcnp5MlpvaThOdGluTmhuajN3ZDkv?=
- =?utf-8?B?OGR3NUpoUXN1TXdmd0lPb05MUDhSU2pETjVpYkVrNUczbU1nUXJuRGp4WUs5?=
- =?utf-8?B?aEdUemtXM0xDWTJnZnNxUkdvZjJGcmNjZjBwVXVmOUZjcmd4ampGUzVTZ3cw?=
- =?utf-8?B?dkRMaFVFMldGTHllZXd3TS9nbUNJd3crVnZCcm0wdDNyalNaVUhQZHJoT05l?=
- =?utf-8?B?R1ZWZUpLSGV1RktIUWlMVDhibGN0a3lSK0wzRVZHKzdzUi84VkdTQnRqWURH?=
- =?utf-8?B?eXZwMzVjOEFnV20xSXZCRGRNM0dhVjkzVkF1NHgzbWJWRjUwMGlEOTdLbk9H?=
- =?utf-8?B?Z3MrY0xoYnI5cjZRYTRJay9lNEI1a3JyNlN5SEFUakRNbmF0Rm81THRTQ0pj?=
- =?utf-8?B?OTdUUnczR1JBQ205MXJNRHlvRzZleXl3VDk4WUpicUlOTmRBS1NYNHRnTXZX?=
- =?utf-8?B?UUNtZ3NTblRPNnBvbHkxalFtYWl4NXkvWUt5RjlWVm5wanE5Q3YybTlSMmMv?=
- =?utf-8?B?NDBtZnR5T3JiV1JTMHRGNldXZVc0b0MzeUNGUEZBWHJkS0FnN2MxUFoyM0xq?=
- =?utf-8?B?R0hCdTdidGFDV1NBSGdHSDZiUE5DZVlsb1ZtSVpFOXdvd3hucU51WWoyRWN5?=
- =?utf-8?B?Y09qc0M0OWYxVWFlMEFaRjhJekpTZnpFRDZSNVVtSzZkVklIWkptbGZEaW42?=
- =?utf-8?B?M01WM0NaL2tlZ3pha3RYZjc3SXhpY3E2MlJvd0ZVcVhxOGEwQTlVOUkwZUN3?=
- =?utf-8?B?dE9KUmUxdjk2ZFNJWDhURWxpeFliYWZJdlBDclJBTXF0REVSTTM5em1UKzJG?=
- =?utf-8?B?Yis1MURJVXd4QjdXVEg5dGFvaWFsZEZ2S1B4YkdFVmNXeFppbktHYlBuRXd3?=
- =?utf-8?B?T1dLQ0M3RTIvWGU3dkF6cUNHTHJMNU93TCtNTzd1UHJvOWxlTlNmb2NFdlNU?=
- =?utf-8?B?VEZCRjdoenJPMG15SXA3eTh1Zml3Rk44eUZXTXVFRlJFWnFNTW5KUVRlajJF?=
- =?utf-8?B?Yy9JVXQ3cmQ1dm52SHN0WDkyL05leXJKOTRrZEZBQlFScnpQY24ySUhUazRB?=
- =?utf-8?B?Z0ZRQ2JLVHQ3SnVSMXVQYWZmd00xT3c3Y1NhM0ZaVkNRNm05VWtqTW4rZjZ6?=
- =?utf-8?Q?vumFQPHcBGAUsX9QozPG6UaHa?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed43a90c-1cd2-4611-925e-08db1c2a1d33
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2023 20:59:00.9379
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pmwBKhXSfnz9FZ1NZNCdWFNizBY+Rw3ejOry0mUdNST2KYovOzWR8LvYEvqdSCX/zjQobYFAq4WT7Zz3E5G0pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5628
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 3/3/23 10:50, Mario Limonciello wrote:
-> The i2c-designware-amdpsp driver communicates with a platform
-> features mailbox provided by the PSP.  The address used for
-> communication is discovered via a non-architecturally
-> guaranteed mechanism.
-> 
-> To better scale, export a feature for communication with platform
-> features directly from the ccp driver.
-> 
+Enable yamllint to check the prefered commenting style of requiring a
+space after a comment character '#'. Fix the cases in the tree which
+have a warning with this enabled. Most cases just need a space after the
+'#'. A couple of cases with comments which were not intended to be
+comments are revealed. Those were in ti,sa2ul.yaml, ti,cal.yaml, and
+brcm,bcmgenet.yaml.
 
-If there is agreement with Jan and Grzegorz for patches 7-9, I'm ok with 
-the rest.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Sean Paul <sean@poorly.run>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>
+Cc: linux-clk@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: freedreno@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-phy@lists.infradead.org
+Cc: linux-gpio@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-spi@vger.kernel.org
+---
+ Documentation/devicetree/bindings/.yamllint   |  2 +-
+ .../bindings/clock/qcom,a53pll.yaml           |  4 ++--
+ .../devicetree/bindings/crypto/ti,sa2ul.yaml  |  4 ++--
+ .../bindings/display/msm/qcom,mdp5.yaml       |  2 +-
+ .../interrupt-controller/arm,gic.yaml         |  4 ++--
+ .../loongson,pch-msi.yaml                     |  2 +-
+ .../bindings/media/renesas,vin.yaml           |  4 ++--
+ .../devicetree/bindings/media/ti,cal.yaml     |  4 ++--
+ .../bindings/net/brcm,bcmgenet.yaml           |  2 --
+ .../bindings/net/cortina,gemini-ethernet.yaml |  6 ++---
+ .../devicetree/bindings/net/mdio-gpio.yaml    |  4 ++--
+ .../phy/marvell,armada-cp110-utmi-phy.yaml    |  2 +-
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |  2 +-
+ .../phy/qcom,sc7180-qmp-usb3-dp-phy.yaml      |  2 +-
+ .../bindings/pinctrl/pinctrl-mt8192.yaml      |  2 +-
+ .../regulator/nxp,pca9450-regulator.yaml      |  8 +++----
+ .../regulator/rohm,bd71828-regulator.yaml     | 20 ++++++++--------
+ .../regulator/rohm,bd71837-regulator.yaml     |  6 ++---
+ .../regulator/rohm,bd71847-regulator.yaml     |  6 ++---
+ .../bindings/soc/renesas/renesas.yaml         |  2 +-
+ .../devicetree/bindings/soc/ti/ti,pruss.yaml  |  2 +-
+ .../bindings/sound/amlogic,axg-tdm-iface.yaml |  2 +-
+ .../bindings/sound/qcom,lpass-rx-macro.yaml   |  4 ++--
+ .../bindings/sound/qcom,lpass-tx-macro.yaml   |  4 ++--
+ .../bindings/sound/qcom,lpass-va-macro.yaml   |  4 ++--
+ .../sound/qcom,q6dsp-lpass-ports.yaml         |  2 +-
+ .../bindings/sound/simple-card.yaml           | 24 +++++++++----------
+ .../bindings/spi/microchip,mpfs-spi.yaml      |  2 +-
+ 28 files changed, 65 insertions(+), 67 deletions(-)
 
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+diff --git a/Documentation/devicetree/bindings/.yamllint b/Documentation/devicetree/bindings/.yamllint
+index 214abd3ec440..4abe9f0a1d46 100644
+--- a/Documentation/devicetree/bindings/.yamllint
++++ b/Documentation/devicetree/bindings/.yamllint
+@@ -19,7 +19,7 @@ rules:
+   colons: {max-spaces-before: 0, max-spaces-after: 1}
+   commas: {min-spaces-after: 1, max-spaces-after: 1}
+   comments:
+-    require-starting-space: false
++    require-starting-space: true
+     min-spaces-from-content: 1
+   comments-indentation: disable
+   document-start:
+diff --git a/Documentation/devicetree/bindings/clock/qcom,a53pll.yaml b/Documentation/devicetree/bindings/clock/qcom,a53pll.yaml
+index 525ebaa93c85..64bfd0f5d4d0 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,a53pll.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,a53pll.yaml
+@@ -45,14 +45,14 @@ required:
+ additionalProperties: false
+ 
+ examples:
+-  #Example 1 - A53 PLL found on MSM8916 devices
++  # Example 1 - A53 PLL found on MSM8916 devices
+   - |
+     a53pll: clock@b016000 {
+         compatible = "qcom,msm8916-a53pll";
+         reg = <0xb016000 0x40>;
+         #clock-cells = <0>;
+     };
+-  #Example 2 - A53 PLL found on IPQ6018 devices
++  # Example 2 - A53 PLL found on IPQ6018 devices
+   - |
+     a53pll_ipq: clock-controller@b116000 {
+         compatible = "qcom,ipq6018-a53pll";
+diff --git a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+index 0c15fefb6671..77ec8bc70bf7 100644
+--- a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
++++ b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+@@ -26,8 +26,8 @@ properties:
+   dmas:
+     items:
+       - description: TX DMA Channel
+-      - description: RX DMA Channel #1
+-      - description: RX DMA Channel #2
++      - description: 'RX DMA Channel #1'
++      - description: 'RX DMA Channel #2'
+ 
+   dma-names:
+     items:
+diff --git a/Documentation/devicetree/bindings/display/msm/qcom,mdp5.yaml b/Documentation/devicetree/bindings/display/msm/qcom,mdp5.yaml
+index ef461ad6ce4a..a763cf8da122 100644
+--- a/Documentation/devicetree/bindings/display/msm/qcom,mdp5.yaml
++++ b/Documentation/devicetree/bindings/display/msm/qcom,mdp5.yaml
+@@ -61,7 +61,7 @@ properties:
+           - const: lut
+           - const: tbu
+           - const: tbu_rt
+-        #MSM8996 has additional iommu clock
++        # MSM8996 has additional iommu clock
+       - items:
+           - const: iface
+           - const: bus
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml b/Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml
+index 220256907461..a2846e493497 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml
+@@ -133,8 +133,8 @@ properties:
+       - items: # for "arm,cortex-a9-gic"
+           - const: PERIPHCLK
+           - const: PERIPHCLKEN
+-      - const: clk # for "arm,gic-400" and "nvidia,tegra210"
+-      - const: gclk #for "arm,pl390"
++      - const: clk  # for "arm,gic-400" and "nvidia,tegra210"
++      - const: gclk # for "arm,pl390"
+ 
+   power-domains:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
+index 1f6fd73d4624..31e6bfbc3fd3 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
+@@ -46,7 +46,7 @@ required:
+   - loongson,msi-base-vec
+   - loongson,msi-num-vecs
+ 
+-additionalProperties: true #fixme
++additionalProperties: true # fixme
+ 
+ examples:
+   - |
+diff --git a/Documentation/devicetree/bindings/media/renesas,vin.yaml b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+index c0442e79cbb4..ffa7a6c4f212 100644
+--- a/Documentation/devicetree/bindings/media/renesas,vin.yaml
++++ b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+@@ -69,7 +69,7 @@ properties:
+   resets:
+     maxItems: 1
+ 
+-  #The per-board settings for Gen2 and RZ/G1 platforms:
++  # The per-board settings for Gen2 and RZ/G1 platforms:
+   port:
+     $ref: /schemas/graph.yaml#/$defs/port-base
+     unevaluatedProperties: false
+@@ -108,7 +108,7 @@ properties:
+ 
+           data-active: true
+ 
+-  #The per-board settings for Gen3 and RZ/G2 platforms:
++  # The per-board settings for Gen3 and RZ/G2 platforms:
+   renesas,id:
+     description: VIN channel number
+     $ref: /schemas/types.yaml#/definitions/uint32
+diff --git a/Documentation/devicetree/bindings/media/ti,cal.yaml b/Documentation/devicetree/bindings/media/ti,cal.yaml
+index f8e4d260d10a..26b3fedef355 100644
+--- a/Documentation/devicetree/bindings/media/ti,cal.yaml
++++ b/Documentation/devicetree/bindings/media/ti,cal.yaml
+@@ -75,7 +75,7 @@ properties:
+       port@0:
+         $ref: /schemas/graph.yaml#/$defs/port-base
+         unevaluatedProperties: false
+-        description: CSI2 Port #0
++        description: 'CSI2 Port #0'
+ 
+         properties:
+           endpoint:
+@@ -93,7 +93,7 @@ properties:
+       port@1:
+         $ref: /schemas/graph.yaml#/$defs/port-base
+         unevaluatedProperties: false
+-        description: CSI2 Port #1
++        description: 'CSI2 Port #1'
+ 
+         properties:
+           endpoint:
+diff --git a/Documentation/devicetree/bindings/net/brcm,bcmgenet.yaml b/Documentation/devicetree/bindings/net/brcm,bcmgenet.yaml
+index c99034f053e8..0e5e5db32faf 100644
+--- a/Documentation/devicetree/bindings/net/brcm,bcmgenet.yaml
++++ b/Documentation/devicetree/bindings/net/brcm,bcmgenet.yaml
+@@ -73,8 +73,6 @@ allOf:
+ unevaluatedProperties: false
+ 
+ examples:
+-  #include <dt-bindings/interrupt-controller/arm-gic.h>
+-
+   - |
+     ethernet@f0b60000 {
+         phy-mode = "internal";
+diff --git a/Documentation/devicetree/bindings/net/cortina,gemini-ethernet.yaml b/Documentation/devicetree/bindings/net/cortina,gemini-ethernet.yaml
+index 253b5d1407ee..44fd23a5fa2b 100644
+--- a/Documentation/devicetree/bindings/net/cortina,gemini-ethernet.yaml
++++ b/Documentation/devicetree/bindings/net/cortina,gemini-ethernet.yaml
+@@ -31,9 +31,9 @@ properties:
+ 
+   ranges: true
+ 
+-#The subnodes represents the two ethernet ports in this device.
+-#They are not independent of each other since they share resources
+-#in the parent node, and are thus children.
++# The subnodes represents the two ethernet ports in this device.
++# They are not independent of each other since they share resources
++# in the parent node, and are thus children.
+ patternProperties:
+   "^ethernet-port@[0-9]+$":
+     type: object
+diff --git a/Documentation/devicetree/bindings/net/mdio-gpio.yaml b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
+index 1d83b8dcce2c..137657341802 100644
+--- a/Documentation/devicetree/bindings/net/mdio-gpio.yaml
++++ b/Documentation/devicetree/bindings/net/mdio-gpio.yaml
+@@ -33,8 +33,8 @@ properties:
+       - description: MDIO
+       - description: MDO
+ 
+-#Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
+-#node.
++# Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
++# node.
+ additionalProperties:
+   type: object
+ 
+diff --git a/Documentation/devicetree/bindings/phy/marvell,armada-cp110-utmi-phy.yaml b/Documentation/devicetree/bindings/phy/marvell,armada-cp110-utmi-phy.yaml
+index 30f3b5f32a95..43416c216190 100644
+--- a/Documentation/devicetree/bindings/phy/marvell,armada-cp110-utmi-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/marvell,armada-cp110-utmi-phy.yaml
+@@ -41,7 +41,7 @@ properties:
+       Phandle to the system controller node
+     $ref: /schemas/types.yaml#/definitions/phandle
+ 
+-#Required child nodes:
++# Required child nodes:
+ 
+ patternProperties:
+   "^usb-phy@[0|1]$":
+diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+index 5b4c915cc9e5..24a3dbde223b 100644
+--- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
++++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+@@ -55,7 +55,7 @@ properties:
+     description: number of clock cells for ck_usbo_48m consumer
+     const: 0
+ 
+-#Required child nodes:
++# Required child nodes:
+ 
+ patternProperties:
+   "^usb-phy@[0|1]$":
+diff --git a/Documentation/devicetree/bindings/phy/qcom,sc7180-qmp-usb3-dp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc7180-qmp-usb3-dp-phy.yaml
+index 2e19a434c669..0ef2c9b9d466 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,sc7180-qmp-usb3-dp-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,sc7180-qmp-usb3-dp-phy.yaml
+@@ -83,7 +83,7 @@ properties:
+     description:
+       Phandle to a regulator supply to any specific refclk pll block.
+ 
+-#Required nodes:
++# Required nodes:
+ patternProperties:
+   "^usb3-phy@[0-9a-f]+$":
+     type: object
+diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+index e0e943e5b874..a09ebbfec574 100644
+--- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+@@ -51,7 +51,7 @@ properties:
+     description: The interrupt outputs to sysirq.
+     maxItems: 1
+ 
+-#PIN CONFIGURATION NODES
++# PIN CONFIGURATION NODES
+ patternProperties:
+   '-pins$':
+     type: object
+diff --git a/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
+index 835b53302db8..6b53dc87694e 100644
+--- a/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
+@@ -17,10 +17,10 @@ description: |
+   Datasheet is available at
+   https://www.nxp.com/docs/en/data-sheet/PCA9450DS.pdf
+ 
+-#The valid names for PCA9450 regulator nodes are:
+-#BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6,
+-#LDO1, LDO2, LDO3, LDO4, LDO5
+-#Note: Buck3 removed on PCA9450B and connect with Buck1 on PCA9450C.
++# The valid names for PCA9450 regulator nodes are:
++# BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6,
++# LDO1, LDO2, LDO3, LDO4, LDO5
++# Note: Buck3 removed on PCA9450B and connect with Buck1 on PCA9450C.
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71828-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71828-regulator.yaml
+index 3cbe3b76ccee..bbf38d5cd06d 100644
+--- a/Documentation/devicetree/bindings/regulator/rohm,bd71828-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/rohm,bd71828-regulator.yaml
+@@ -82,20 +82,20 @@ patternProperties:
+ 
+         # Supported default DVS states:
+         #     buck       |    run     |   idle    | suspend  | lpsr
+-        #--------------------------------------------------------------
++        # --------------------------------------------------------------
+         # 1, 2, 6, and 7 | supported  | supported | supported (*)
+-        #--------------------------------------------------------------
++        # --------------------------------------------------------------
+         # 3, 4, and 5    |                    supported (**)
+-        #--------------------------------------------------------------
++        # --------------------------------------------------------------
+         #
+-        #(*)  LPSR and SUSPEND states use same voltage but both states have own
+-        #     enable /
+-        #     disable settings. Voltage 0 can be specified for a state to make
+-        #     regulator disabled on that state.
++        # (*)  LPSR and SUSPEND states use same voltage but both states have own
++        #      enable /
++        #      disable settings. Voltage 0 can be specified for a state to make
++        #      regulator disabled on that state.
+         #
+-        #(**) All states use same voltage but have own enable / disable
+-        #     settings. Voltage 0 can be specified for a state to make
+-        #     regulator disabled on that state.
++        # (**) All states use same voltage but have own enable / disable
++        #      settings. Voltage 0 can be specified for a state to make
++        #      regulator disabled on that state.
+ 
+     required:
+       - regulator-name
+diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
+index ab842817d847..abf1fbdf3850 100644
+--- a/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
+@@ -23,9 +23,9 @@ description: |
+   if they are disabled at startup the voltage monitoring for LDO5/LDO6 will
+   cause PMIC to reset.
+ 
+-#The valid names for BD71837 regulator nodes are:
+-#BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6, BUCK7, BUCK8
+-#LDO1, LDO2, LDO3, LDO4, LDO5, LDO6, LDO7
++# The valid names for BD71837 regulator nodes are:
++# BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6, BUCK7, BUCK8
++# LDO1, LDO2, LDO3, LDO4, LDO5, LDO6, LDO7
+ 
+ patternProperties:
+   "^LDO[1-7]$":
+diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
+index 65fc3d15f693..34ce781954b6 100644
+--- a/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
+@@ -22,9 +22,9 @@ description: |
+   not be disabled by driver at startup. If BUCK5 is disabled at startup the
+   voltage monitoring for LDO5/LDO6 can cause PMIC to reset.
+ 
+-#The valid names for BD71847 regulator nodes are:
+-#BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6
+-#LDO1, LDO2, LDO3, LDO4, LDO5, LDO6
++# The valid names for BD71847 regulator nodes are:
++# BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6
++# LDO1, LDO2, LDO3, LDO4, LDO5, LDO6
+ 
+ patternProperties:
+   "^LDO[1-6]$":
+diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+index 2789022b52eb..3a618b4c8ab7 100644
+--- a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
++++ b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+@@ -111,7 +111,7 @@ properties:
+       - description: RZ/G1C (R8A77470)
+         items:
+           - enum:
+-              - iwave,g23s #iWave Systems RZ/G1C Single Board Computer (iW-RainboW-G23S)
++              - iwave,g23s # iWave Systems RZ/G1C Single Board Computer (iW-RainboW-G23S)
+           - const: renesas,r8a77470
+ 
+       - description: RZ/G2M (R8A774A1)
+diff --git a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+index 847873289f25..c697691f1fd4 100644
+--- a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
++++ b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+@@ -313,7 +313,7 @@ additionalProperties: false
+ # Due to inability of correctly verifying sub-nodes with an @address through
+ # the "required" list, the required sub-nodes below are commented out for now.
+ 
+-#required:
++# required:
+ # - memories
+ # - interrupt-controller
+ # - pru
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
+index 320f0002649d..45955d8a26d1 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
+@@ -24,7 +24,7 @@ properties:
+     items:
+       - description: Bit clock
+       - description: Sample clock
+-      - description: Master clock #optional
++      - description: Master clock # optional
+ 
+   clock-names:
+     minItems: 2
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+index 79c6f8da1319..e6fcf542cf87 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+@@ -34,13 +34,13 @@ properties:
+ 
+   clock-names:
+     oneOf:
+-      - items:   #for ADSP based platforms
++      - items:   # for ADSP based platforms
+           - const: mclk
+           - const: npl
+           - const: macro
+           - const: dcodec
+           - const: fsgen
+-      - items:   #for ADSP bypass based platforms
++      - items:   # for ADSP bypass based platforms
+           - const: mclk
+           - const: npl
+           - const: fsgen
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+index da5f70910da5..6c8751497d36 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+@@ -36,13 +36,13 @@ properties:
+ 
+   clock-names:
+     oneOf:
+-      - items:   #for ADSP based platforms
++      - items:   # for ADSP based platforms
+           - const: mclk
+           - const: npl
+           - const: macro
+           - const: dcodec
+           - const: fsgen
+-      - items:   #for ADSP bypass based platforms
++      - items:   # for ADSP bypass based platforms
+           - const: mclk
+           - const: npl
+           - const: fsgen
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+index 0a3c688ef1ec..61cdfc265b0f 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+@@ -34,11 +34,11 @@ properties:
+ 
+   clock-names:
+     oneOf:
+-      - items:   #for ADSP based platforms
++      - items:   # for ADSP based platforms
+           - const: mclk
+           - const: macro
+           - const: dcodec
+-      - items:   #for ADSP bypass based platforms
++      - items:   # for ADSP bypass based platforms
+           - const: mclk
+ 
+   clock-output-names:
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+index d06f188030a3..044e77718a1b 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+@@ -26,7 +26,7 @@ properties:
+   '#size-cells':
+     const: 0
+ 
+-#Digital Audio Interfaces
++# Digital Audio Interfaces
+ patternProperties:
+   '^dai@[0-9]+$':
+     type: object
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/Documentation/devicetree/bindings/sound/simple-card.yaml
+index f0d81bfe2598..806e2fff165f 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.yaml
++++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
+@@ -262,9 +262,9 @@ required:
+ additionalProperties: false
+ 
+ examples:
+-#--------------------
++# --------------------
+ # single DAI link
+-#--------------------
++# --------------------
+   - |
+     sound {
+         compatible = "simple-audio-card";
+@@ -291,9 +291,9 @@ examples:
+         };
+     };
+ 
+-#--------------------
++# --------------------
+ # Multi DAI links
+-#--------------------
++# --------------------
+   - |
+     sound {
+         compatible = "simple-audio-card";
+@@ -334,10 +334,10 @@ examples:
+         };
+     };
+ 
+-#--------------------
++# --------------------
+ # route audio from IMX6 SSI2 through TLV320DAC3100 codec
+ # through TPA6130A2 amplifier to headphones:
+-#--------------------
++# --------------------
+   - |
+     sound {
+         compatible = "simple-audio-card";
+@@ -359,9 +359,9 @@ examples:
+         };
+     };
+ 
+-#--------------------
++# --------------------
+ # Sampling Rate Conversion
+-#--------------------
++# --------------------
+   - |
+     sound {
+         compatible = "simple-audio-card";
+@@ -387,9 +387,9 @@ examples:
+         };
+     };
+ 
+-#--------------------
++# --------------------
+ # 2 CPU 1 Codec (Mixing)
+-#--------------------
++# --------------------
+   - |
+     sound {
+         compatible = "simple-audio-card";
+@@ -424,7 +424,7 @@ examples:
+         };
+     };
+ 
+-#--------------------
++# --------------------
+ # Multi DAI links with DPCM:
+ #
+ # CPU0 ------ ak4613
+@@ -433,7 +433,7 @@ examples:
+ # CPU3 --/                /* DPCM 5ch/6ch */
+ # CPU4 --/                /* DPCM 7ch/8ch */
+ # CPU5 ------ PCM3168A-c
+-#--------------------
++# --------------------
+   - |
+     sound {
+         compatible = "simple-audio-card";
+diff --git a/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml b/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
+index 1051690e3753..74a817cc7d94 100644
+--- a/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
+@@ -22,7 +22,7 @@ properties:
+       - items:
+           - const: microchip,mpfs-qspi
+           - const: microchip,coreqspi-rtl-v2
+-      - const: microchip,coreqspi-rtl-v2 #FPGA QSPI
++      - const: microchip,coreqspi-rtl-v2 # FPGA QSPI
+       - const: microchip,mpfs-spi
+ 
+   reg:
+-- 
+2.39.2
 
-> v2->v3:
->   * Split new ACPI ID to own patch
->   * Squash doorbell offsets into doorbell patch
->   * Fix all feedback from v2 (see individual patches for details)
-> Mario Limonciello (9):
->    crypto: ccp: Drop TEE support for IRQ handler
->    crypto: ccp: Add a header for multiple drivers to use `__psp_pa`
->    crypto: ccp: Move some PSP mailbox bit definitions into common header
->    crypto: ccp: Add support for an interface for platform features
->    crypto: ccp: Enable platform access interface on client PSP parts
->    i2c: designware: Use PCI PSP driver for communication
->    crypto: ccp: Add support for ringing a platform doorbell
->    i2c: designware: Add doorbell support for Skyrim
->    i2c: designware: Add support for AMDI0020 ACPI ID
-> 
->   arch/x86/kvm/svm/sev.c                      |   1 +
->   drivers/crypto/ccp/Makefile                 |   3 +-
->   drivers/crypto/ccp/platform-access.c        | 218 ++++++++++++++++++++
->   drivers/crypto/ccp/platform-access.h        |  35 ++++
->   drivers/crypto/ccp/psp-dev.c                |  32 +--
->   drivers/crypto/ccp/psp-dev.h                |  11 +-
->   drivers/crypto/ccp/sev-dev.c                |  16 +-
->   drivers/crypto/ccp/sev-dev.h                |   2 +-
->   drivers/crypto/ccp/sp-dev.h                 |  10 +
->   drivers/crypto/ccp/sp-pci.c                 |   9 +
->   drivers/crypto/ccp/tee-dev.c                |  17 +-
->   drivers/i2c/busses/Kconfig                  |   2 +-
->   drivers/i2c/busses/i2c-designware-amdpsp.c  | 179 +++-------------
->   drivers/i2c/busses/i2c-designware-core.h    |   1 -
->   drivers/i2c/busses/i2c-designware-platdrv.c |   2 +-
->   drivers/tee/amdtee/call.c                   |   2 +-
->   drivers/tee/amdtee/shm_pool.c               |   2 +-
->   include/linux/psp-platform-access.h         |  65 ++++++
->   include/linux/psp-sev.h                     |   8 -
->   include/linux/psp.h                         |  29 +++
->   20 files changed, 438 insertions(+), 206 deletions(-)
->   create mode 100644 drivers/crypto/ccp/platform-access.c
->   create mode 100644 drivers/crypto/ccp/platform-access.h
->   create mode 100644 include/linux/psp-platform-access.h
->   create mode 100644 include/linux/psp.h
-> 
