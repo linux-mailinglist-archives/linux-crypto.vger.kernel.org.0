@@ -2,42 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E31096B3DB2
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Mar 2023 12:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315B16B3DB6
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Mar 2023 12:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjCJL1p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 10 Mar 2023 06:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        id S229758AbjCJL24 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 10 Mar 2023 06:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbjCJL1Z (ORCPT
+        with ESMTP id S230103AbjCJL2j (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 10 Mar 2023 06:27:25 -0500
+        Fri, 10 Mar 2023 06:28:39 -0500
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479ACD58B1
-        for <linux-crypto@vger.kernel.org>; Fri, 10 Mar 2023 03:27:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A1396FFE4;
+        Fri, 10 Mar 2023 03:28:30 -0800 (PST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1paate-002Xw7-Tc; Fri, 10 Mar 2023 19:26:51 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 10 Mar 2023 19:26:50 +0800
-Date:   Fri, 10 Mar 2023 19:26:50 +0800
+        id 1paaur-002XzN-EU; Fri, 10 Mar 2023 19:28:06 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 10 Mar 2023 19:28:05 +0800
+Date:   Fri, 10 Mar 2023 19:28:05 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Olivia Mackall <olivia@selenic.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>
-Subject: Re: [PATCH 0/5] hwrng: meson: simplify driver
-Message-ID: <ZAsT+mlr4ij69RNs@gondor.apana.org.au>
-References: <26216f60-d9b9-f40c-2c2a-95b3fde6c3bc@gmail.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, joel@jms.id.au, andrew@aj.id.au,
+        neal_liu@aspeedtech.com, linux-aspeed@lists.ozlabs.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] crypto: Use devm_platform_ioremap_resource()
+Message-ID: <ZAsURY/nI6LywTuh@gondor.apana.org.au>
+References: <20230220123921.7191-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <26216f60-d9b9-f40c-2c2a-95b3fde6c3bc@gmail.com>
+In-Reply-To: <20230220123921.7191-1-yang.lee@linux.alibaba.com>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
@@ -48,23 +43,17 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Feb 18, 2023 at 09:54:25PM +0100, Heiner Kallweit wrote:
-> This series simplifies the driver. No functional change intended.
+On Mon, Feb 20, 2023 at 08:39:21PM +0800, Yang Li wrote:
+> Convert platform_get_resource(), devm_ioremap_resource() to a single
+> call to Use devm_platform_ioremap_resource(), as this is exactly
+> what this function does.
 > 
-> Heiner Kallweit (5):
->   hwrng: meson: remove unused member of struct meson_rng_data
->   hwrng: meson: use devm_clk_get_optional_enabled
->   hwrng: meson: remove not needed call to platform_set_drvdata
->   hwrng: meson: use struct hw_random priv data
->   hwrng: meson: remove struct meson_rng_data
-> 
->  drivers/char/hw_random/meson-rng.c | 59 +++++++++---------------------
->  1 file changed, 17 insertions(+), 42 deletions(-)
-> 
-> -- 
-> 2.39.2
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  drivers/crypto/aspeed/aspeed-acry.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
 
-Patches 1-3 applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
