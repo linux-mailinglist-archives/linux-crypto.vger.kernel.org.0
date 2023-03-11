@@ -2,75 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F6A6B5A21
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Mar 2023 10:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366336B5DC8
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Mar 2023 17:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjCKJmE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 11 Mar 2023 04:42:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
+        id S230218AbjCKQWS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 11 Mar 2023 11:22:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjCKJmD (ORCPT
+        with ESMTP id S230140AbjCKQWR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 11 Mar 2023 04:42:03 -0500
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547601981
-        for <linux-crypto@vger.kernel.org>; Sat, 11 Mar 2023 01:42:02 -0800 (PST)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1pavjg-002y9Z-IU; Sat, 11 Mar 2023 17:41:57 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 11 Mar 2023 17:41:56 +0800
-Date:   Sat, 11 Mar 2023 17:41:56 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, ebiggers@kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Subject: Re: [PATCH v2] crypto: lib - implement library version of AES in CFB
- mode
-Message-ID: <ZAxM5NLU6a2SUDuh@gondor.apana.org.au>
-References: <ZAw2eHDQELdiVXcZ@gondor.apana.org.au>
- <CAMj1kXGC81=z_h-gcdQ0OoNA01kSAJz58QNiB1ixCPFA0_YnUw@mail.gmail.com>
- <ZAw5Ffv7X2mNmbG8@gondor.apana.org.au>
- <CAMj1kXEr8W1NP0Xcny7ed1xb7ofb7Y6R57TPNe6=jAASDzHzKw@mail.gmail.com>
- <ZAxAK2rlOsQjlgB9@gondor.apana.org.au>
- <CAMj1kXG_27v0YXoO_8Avjcz=YtYhCfX_6pcXowk0fy5cYR6gVw@mail.gmail.com>
- <ZAxDOhfuSTsgncMU@gondor.apana.org.au>
- <CAMj1kXHdNZ-=3-VuerRVWiRYixFf8KoeFk54Gz=09aV9Wwtdsg@mail.gmail.com>
- <ZAxIKu3t4NJEGz6I@gondor.apana.org.au>
- <CAMj1kXF6_JFMFTqzmXWxM=zJ7HmDqnivAKjUT=pN-34werkd5g@mail.gmail.com>
+        Sat, 11 Mar 2023 11:22:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C68103387
+        for <linux-crypto@vger.kernel.org>; Sat, 11 Mar 2023 08:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678551688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cjwbbGdNjwEE3PeL3PIWv9RC3eljWWjNEdskHWmi30k=;
+        b=aNwibVdXNCRFSC7X2kVFOh4B5zt1GySMyjFmZWxgNTumAiFgKf8/2R0koQNn5/wkn0Z2gR
+        /OkFD1egiGftiU/V/Wi9CMq63nssGCgXYg9hbk1eLuPor4lI5QdA4uNWkIZLVDPxdkhPH8
+        tfZ/oB/zwjkDcojAyrX2LdMXbmf67ns=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-451-4VfkA-yFPByxkYaMXbhynQ-1; Sat, 11 Mar 2023 11:21:27 -0500
+X-MC-Unique: 4VfkA-yFPByxkYaMXbhynQ-1
+Received: by mail-ed1-f72.google.com with SMTP id p36-20020a056402502400b004bb926a3d54so11463474eda.2
+        for <linux-crypto@vger.kernel.org>; Sat, 11 Mar 2023 08:21:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678551686;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cjwbbGdNjwEE3PeL3PIWv9RC3eljWWjNEdskHWmi30k=;
+        b=golScBm+SoU6PanhN3eM5y/ONTVpnWHa0GQ+Tszd8ktQKIjzSPA+HD6gNn8TEwqbMt
+         QCyTVaM++R908cMmM/g9HPkHLYN3Mj+VaXLgtZiUwsmA70HY9Zn0bGT2rHYoi5gCr4ci
+         W1m4yAbvIq6KbPNHdlnDBUWo9DmoP/QTG49HOjsW6mQCe8hmNie/cx2gorixH4MGcvxD
+         vQ4vNTTLsB8V1F6OGmdN0maYkDZJeYcRHBkwDpGHdmk/jl0VwF0IirSsW0xPOxXhuWPC
+         3y4CeJmXltCzXd1zBxoO7Nxc8YWNQkNnJwHVU+fcFevX6Zrl6kVCNDVwl4eHGE25Y9JP
+         tuqg==
+X-Gm-Message-State: AO0yUKUlWknPKTNL9BKI18gJF55Kvbfo+mptUjwb5veF3Ln9rcNT5X7j
+        zNh0JLxFNcvFrG/IL1nVZTNTT1f7bBcITAyhoUlP1+jrpLMQdjvkZH9Y2uZ4w6zeNgz0kRTnN+1
+        q6BzIa0jv4uo9oYP3nWpLBEvako+Ipi8t
+X-Received: by 2002:a05:6402:150d:b0:4fb:5291:13bb with SMTP id f13-20020a056402150d00b004fb529113bbmr272701edw.39.1678551685712;
+        Sat, 11 Mar 2023 08:21:25 -0800 (PST)
+X-Google-Smtp-Source: AK7set+353apJunFwL0exwW9m3vOvXI2eTOsxeZ6GDq6KD1VsnKPnSsMdD1l5MIgjMWO71bawAu0ew==
+X-Received: by 2002:a05:6402:150d:b0:4fb:5291:13bb with SMTP id f13-20020a056402150d00b004fb529113bbmr272676edw.39.1678551685047;
+        Sat, 11 Mar 2023 08:21:25 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k15-20020a50ce4f000000b004d8287c775fsm1369950edj.8.2023.03.11.08.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Mar 2023 08:21:23 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A653F9E2872; Sat, 11 Mar 2023 17:21:21 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        Mathew McBride <matt@traverse.com.au>,
+        linux-crypto@vger.kernel.org
+Subject: Re: Hitting BUG_ON in crypto_unregister_alg() on reboot with
+ caamalg_qi2 driver
+In-Reply-To: <ZAw16S7OQyYCAK90@gondor.apana.org.au>
+References: <87r0tyq8ph.fsf@toke.dk> <ZAqwTqw3lR+dnImO@gondor.apana.org.au>
+ <87ilf8rakq.fsf@toke.dk> <ZAw16S7OQyYCAK90@gondor.apana.org.au>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 11 Mar 2023 17:21:21 +0100
+Message-ID: <87h6urqmwu.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXF6_JFMFTqzmXWxM=zJ7HmDqnivAKjUT=pN-34werkd5g@mail.gmail.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sat, Mar 11, 2023 at 10:25:48AM +0100, Ard Biesheuvel wrote:
+Herbert Xu <herbert@gondor.apana.org.au> writes:
+
+> On Fri, Mar 10, 2023 at 02:37:57PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>>
+>> Also, absent of a fixed driver (which doesn't sound like it's a trivial
+>> fix?), how do I prevent the system from crashing on shutdown? The
+>> BUG_ON() seems a bit heavy-handed, could it be replaced with a WARN_ON?
 >
-> So what use case is the driver for this sync skcipher change? And how
+> Yes I think that's probably OK.  Could you please send a patch?
 
-The main reason I wanted to do this is because I'd like to get
-rid of crypto_cipher.  I'm planning on replacing the underlying
-simple ciphers with their ECB equivalent.
+Sure, can do! :)
 
-> will this work with existing templates? Do they all have to implement
-> two flavors now?
+-Toke
 
-Let's say we're calling this vkcipher.  Because the existing
-skcipher templates should continue to work with an underlying
-vkcipher algorithm, I won't be adding any vkcipher template
-unless there is a specific use-case, such as CFB here.
-
-But I will do the common ones like CBC/CTR.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
