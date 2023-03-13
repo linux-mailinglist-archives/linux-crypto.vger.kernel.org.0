@@ -2,99 +2,135 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D7D6B75DC
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Mar 2023 12:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2BC6B76A7
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Mar 2023 12:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbjCMLWC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 13 Mar 2023 07:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        id S230019AbjCMLwW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 13 Mar 2023 07:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjCMLWB (ORCPT
+        with ESMTP id S231268AbjCMLwT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 13 Mar 2023 07:22:01 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E007EFB
-        for <linux-crypto@vger.kernel.org>; Mon, 13 Mar 2023 04:21:58 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id bf15so4844983iob.7
-        for <linux-crypto@vger.kernel.org>; Mon, 13 Mar 2023 04:21:58 -0700 (PDT)
+        Mon, 13 Mar 2023 07:52:19 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1182B5FA43
+        for <linux-crypto@vger.kernel.org>; Mon, 13 Mar 2023 04:52:10 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id j19-20020a05600c191300b003eb3e1eb0caso10732328wmq.1
+        for <linux-crypto@vger.kernel.org>; Mon, 13 Mar 2023 04:52:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678706518;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bgEHIWNKONA4yueZUvZBaRo0OnzFlmsySmjtgcP7fj8=;
-        b=on0sDzimDSQlGXIZ/8+guhRf/+GSlepvyPH0BRiKeA6MqOqZxRP6rPamUMrlVsXTvL
-         YhBPZKNUnmfDfM7jlvqfoBPCdj6d/XClM7fGjwCgG6LZa+/q8n+XXGwfctckO/5pz2Q5
-         mSgZseVkbo1wZp6yYNW8Pt0d1EtHdwcL+zm/ZpX+gE1ERgSvqI9Et78twuuxpoKdlOMB
-         HH5joTIelDSlYvQBjWXVwEDM+eTtULRlIgZXhG3qRk8DyB5Y+7aZEfjJOyxxwCa40CbV
-         kBWeyugk6jEx6mnEYncMTQe6+mremyYNF2mxoAd5voxxpgeMuA3goaKpDxLTStrSz4TM
-         rXxA==
+        d=linaro.org; s=google; t=1678708328;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o5gykfX2bmfwMlcyaSUJHUuynXbdEn2Jn2hMntaBdA8=;
+        b=jTPVoMmYB82d+INXPTCISg1Ni/0nJkR1rU6+eaE7FcvtlCNWJT/Mlsc+FjBMCr1Vlt
+         3bs1xgcdwKd1WYS4l/cW0AxBXFRi/mXoDN5xEzUNIsIOrOlAdBvBm5NP6JBMC/1akx7G
+         KSbPa+1uzWgMjNjo4rArzyeAZSjJ2YWXbB16br78OsG6ycjc6z/4245XPpkKPSsXeD+G
+         DWfluqUrOriW991v1pUiTdBN3QQ6/P/ixTJ8cU23wnjIVcLQCQmXuahDekfNMWYLbS9b
+         UlWL+0S7YYUY5AokG9VIrL1D4vdiuTAkN+XDgPj0uPIjUj5w2Rl4zHVRZ+k+tuzFFT0o
+         3kgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678706518;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20210112; t=1678708328;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bgEHIWNKONA4yueZUvZBaRo0OnzFlmsySmjtgcP7fj8=;
-        b=1x91b2ieAvlqJEK9spR5SuP2c9otRMzWS5t7AhnDMyv4EX+qdsk+h6I5x0m6HICWPx
-         9P9s2Iek+//DP1xD+bBzjtrzufeUhE4HfnIXp3RFuw+wM58ix9iEePdguG4VzR0dxbfu
-         wbOmP9bLQbxJhPTxsEHS9Gbcb94DxY0IBdg8sy7yXygWYdeibFhU9BP2P+O9110eboW6
-         ckJoa4UejPxnNhptFXUNwsRT8+b0Lh9Xf7Li5urpRz6DlQ0W1q1dkvVJEuk7bmHeucr4
-         UrU2HllujK3nz4KcQ1/czeAaAsoS7wkVrr34Xi4+1OQGC58lXM8U2CkzHEv/R97ghKPX
-         NM6Q==
-X-Gm-Message-State: AO0yUKW0PybeObs+5zfGoMGWTUbZI9QwCKyjDAKw/HT5yI1zjYQNlNjD
-        jIp6+GQtWFYMV1qzLdf5I2hugZzVDOZ0l41gThM=
-X-Google-Smtp-Source: AK7set9hvxR1dKb80l8ZCcLTVcEDb6U1Y8/kUDZ5KhEM7XEAQx6gdp4zd6edHTvOMVJ6t7MHP/r+8pc/3SS0NUBn+lk=
-X-Received: by 2002:a5e:c10f:0:b0:74c:7caf:8edb with SMTP id
- v15-20020a5ec10f000000b0074c7caf8edbmr15347730iol.4.1678706518139; Mon, 13
- Mar 2023 04:21:58 -0700 (PDT)
+        bh=o5gykfX2bmfwMlcyaSUJHUuynXbdEn2Jn2hMntaBdA8=;
+        b=kOojAES2s02ra2OKp+8OF6yTbYvGtnBQ8ZAVNcu9gj4xR+VGvUNRXCJJV4RHHCFiGt
+         E4ZtVnLFGBh5MTZ9nvbESz6xoT9OlKRG96xVeAxOb7zXWD/PDrDwEF0U52WFiKfm5PjU
+         YZEvfzERg/E91Pbr3P1+ZZ88IQjSnaPzfuDTJJjEEZAZMZATBq8hjjdl7JgyKwBR1QjT
+         tehsdwPwcVscLMqwvHYqwuthsD9L77Y37akp0XzmxmDj+FVECZup8TWpTnJ5AOEdyZzE
+         qo8YOnPB03Q2xjdeQKuDMPCaaNGubYlfiF122jK4LbMg4mgKWKgtVL+wI4gyhaa1gs4t
+         Dwiw==
+X-Gm-Message-State: AO0yUKUN3+3+n7DoA4vi9iqier+AYvBuorSR9fW0HY/9AJVuvZu8+E7H
+        LnmfZfrXOvBM9iRRJk9ilAzhJw==
+X-Google-Smtp-Source: AK7set9uAdyrBT0fMJ/+4ExIf42UZdHhoPSYbzui/SAELuql13PVvWwSgyB6mJmYoXS75woY9Wll/w==
+X-Received: by 2002:a05:600c:c10:b0:3eb:248f:a13e with SMTP id fm16-20020a05600c0c1000b003eb248fa13emr10803608wmb.22.1678708328527;
+        Mon, 13 Mar 2023 04:52:08 -0700 (PDT)
+Received: from localhost.localdomain ([94.52.112.99])
+        by smtp.gmail.com with ESMTPSA id u15-20020a05600c440f00b003e21dcccf9fsm8801090wmn.16.2023.03.13.04.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Mar 2023 04:52:08 -0700 (PDT)
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: [RFC PATCH v3 0/7] Add dedicated Qcom ICE driver
+Date:   Mon, 13 Mar 2023 13:51:55 +0200
+Message-Id: <20230313115202.3960700-1-abel.vesa@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Received: by 2002:a02:aa8f:0:b0:39e:a318:1e0a with HTTP; Mon, 13 Mar 2023
- 04:21:57 -0700 (PDT)
-Reply-To: elvismorgan261@gmail.com
-From:   Elvis Morgan <bhufhi586@gmail.com>
-Date:   Mon, 13 Mar 2023 11:21:57 +0000
-Message-ID: <CAG=zD6YTdwc9HkS95k9oE8CpuEJeM95nYqeWNPW_gU9nTnOW9A@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:d41 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4997]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [bhufhi586[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [bhufhi586[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [elvismorgan261[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---=20
-Jak se m=C3=A1te?
+As both SDCC and UFS drivers use the ICE with duplicated implementation,
+while none of the currently supported platforms make use concomitantly
+of the same ICE IP block instance, the new SM8550 allows both UFS and
+SDCC to do so. In order to support such scenario, there is a need for
+a unified implementation and a devicetree node to be shared between
+both types of storage devices. So lets drop the duplicate implementation
+of the ICE from both SDCC and UFS and make it a dedicated (soc) driver.
+Also, switch all UFS and SDCC devicetree nodes to use the new ICE
+approach.
+
+See each individual patch for changelogs.
+
+The v2 is here:
+https://lore.kernel.org/all/20230308155838.1094920-1-abel.vesa@linaro.org/
+
+Abel Vesa (7):
+  dt-bindings: crypto: Add Qualcomm Inline Crypto Engine
+  dt-bindings: mmc: sdhci-msm: Add ICE phandle and drop core clock
+  dt-bindings: ufs: qcom: Add ICE phandle and drop core clock
+  soc: qcom: Make the Qualcomm UFS/SDCC ICE a dedicated driver
+  scsi: ufs: ufs-qcom: Switch to the new ICE API
+  mmc: sdhci-msm: Switch to the new ICE API
+  arm64: dts: qcom: sm8550: Add the Inline Crypto Engine node
+
+ .../crypto/qcom,inline-crypto-engine.yaml     |  42 +++
+ .../devicetree/bindings/mmc/sdhci-msm.yaml    |   4 +
+ .../devicetree/bindings/ufs/qcom,ufs.yaml     |   4 +
+ arch/arm64/boot/dts/qcom/sm8550.dtsi          |  10 +
+ drivers/mmc/host/Kconfig                      |   2 +-
+ drivers/mmc/host/sdhci-msm.c                  | 215 ++---------
+ drivers/soc/qcom/Kconfig                      |   4 +
+ drivers/soc/qcom/Makefile                     |   1 +
+ drivers/soc/qcom/ice.c                        | 347 ++++++++++++++++++
+ drivers/ufs/host/Kconfig                      |   2 +-
+ drivers/ufs/host/Makefile                     |   1 -
+ drivers/ufs/host/ufs-qcom-ice.c               | 244 ------------
+ drivers/ufs/host/ufs-qcom.c                   |  83 ++++-
+ drivers/ufs/host/ufs-qcom.h                   |  32 +-
+ include/soc/qcom/ice.h                        |  39 ++
+ 15 files changed, 575 insertions(+), 455 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml
+ create mode 100644 drivers/soc/qcom/ice.c
+ delete mode 100644 drivers/ufs/host/ufs-qcom-ice.c
+ create mode 100644 include/soc/qcom/ice.h
+
+-- 
+2.34.1
+
