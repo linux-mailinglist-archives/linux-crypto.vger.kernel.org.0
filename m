@@ -2,70 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 425796BDF9E
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Mar 2023 04:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03246BE166
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Mar 2023 07:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjCQDaX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 16 Mar 2023 23:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
+        id S230081AbjCQGlO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 17 Mar 2023 02:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjCQDaS (ORCPT
+        with ESMTP id S230080AbjCQGlN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 16 Mar 2023 23:30:18 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE20E9744;
-        Thu, 16 Mar 2023 20:30:16 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1pd0mm-005att-HO; Fri, 17 Mar 2023 11:29:45 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 17 Mar 2023 11:29:44 +0800
-Date:   Fri, 17 Mar 2023 11:29:44 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     davem@davemloft.net, ebiederm@xmission.com,
-        linux-crypto@vger.kernel.org, keescook@chromium.org,
-        yzaikin@google.com, j.granados@samsung.com,
-        patches@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: simplify one-level sysctl registration for
- crypto_sysctl_table
-Message-ID: <ZBPeqNByhWkpkDv/@gondor.apana.org.au>
-References: <20230310232150.3957148-1-mcgrof@kernel.org>
+        Fri, 17 Mar 2023 02:41:13 -0400
+Received: from sragenkab.go.id (mail.sragenkab.go.id [103.172.109.4])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id E97103C25
+        for <linux-crypto@vger.kernel.org>; Thu, 16 Mar 2023 23:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sragenkab.go.id;
+         h=mime-version:content-type:content-transfer-encoding:date:from
+        :to:subject:reply-to:message-id; q=dns/txt; s=dkim1; bh=QGcIAmD5
+        O/Y9qXzDV8MxyimbsW3+rMaQ/kz75GzBHbk=; b=p/miNgKQAf7xCBPUG8t0BbnI
+        IZW35EP+2wk02y2H8tcy3mfv2WbweyzcEUVVgpWnT6dFjXieV5yCFADsgTs9IwNS
+        Y5Z3o++6m6WARyw2ae//WDAQ+e8L0qocGsDCumcuUtd45B3C3EjMUfQNAdDQe5dR
+        b5B8RWW3BUJmg3EQbLK2Xq5HTuF3LeHkhQ6Aok2Kiz8UxVrwStTCnXobo1AMKA/D
+        QfiqMt7TYZy3YyxCQYk9fq1teP7Q2kVzMZwGosMuguf1uToLbzJvUrtXU+fkl/O3
+        w4SaeMFPLR1W/aBOpmgW0lCeAdN4jhjl21RKHlxJ2nr8P01b15E3JC/5ZKf09A==
+Received: (qmail 63112 invoked from network); 14 Mar 2023 19:47:31 -0000
+Received: from localhost (HELO mail2.sragenkab.go.id) (127.0.0.1)
+  by localhost with SMTP; 14 Mar 2023 19:47:31 -0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230310232150.3957148-1-mcgrof@kernel.org>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 14 Mar 2023 12:47:30 -0700
+From:   Ibrahim Tafa <jurnalsukowati@sragenkab.go.id>
+To:     undisclosed-recipients:;
+Subject: <LOAN OPPORTUNITY AT LOW-INTEREST RATE>
+Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
+Mail-Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
+Message-ID: <cc4faf182781624d4d98c2ccb2b89f05@sragenkab.go.id>
+X-Sender: jurnalsukowati@sragenkab.go.id
+User-Agent: Roundcube Webmail/0.8.1
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,SUBJ_ALL_CAPS,UNDISC_MONEY,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 03:21:50PM -0800, Luis Chamberlain wrote:
-> There is no need to declare an extra tables to just create directory,
-> this can be easily be done with a prefix path with register_sysctl().
-> 
-> Simplify this registration.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
-> 
-> If not clear, see this new doc:
-> 
-> https://lore.kernel.org/all/20230310223947.3917711-1-mcgrof@kernel.org/T/#u     
-> 
-> But the skinny is we can deprecate long term APIs from sysctl that
-> uses recursion.
-> 
->  crypto/fips.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
 
-Patch applied.  Thanks.
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Greetings,
+   I am contacting you based on the Investment/Loan opportunity for 
+companies in need of financing a project/business, We have developed a 
+new method of financing that doesn't take long to receive financing from 
+our clients.
+    If you are looking for funds to finance your project/Business or if 
+you are willing to work as our agent in your country to find clients in 
+need of financing and earn commissions, then get back to me for more 
+details.
+
+Regards,
+Ibrahim Tafa
+ABIENCE INVESTMENT GROUP FZE, United Arab Emirates
