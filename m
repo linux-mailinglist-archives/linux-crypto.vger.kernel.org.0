@@ -2,89 +2,110 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAB36BAC51
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Mar 2023 10:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C2B6BAED7
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Mar 2023 12:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbjCOJkx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 15 Mar 2023 05:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
+        id S231549AbjCOLKD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 15 Mar 2023 07:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232078AbjCOJkt (ORCPT
+        with ESMTP id S231497AbjCOLJQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 15 Mar 2023 05:40:49 -0400
-X-Greylist: delayed 1344 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Mar 2023 02:40:48 PDT
-Received: from mail.docworker.pl (mail.docworker.pl [94.177.230.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D1C2659C
-        for <linux-crypto@vger.kernel.org>; Wed, 15 Mar 2023 02:40:48 -0700 (PDT)
-Received: by mail.docworker.pl (Postfix, from userid 1002)
-        id B40D1856E6; Wed, 15 Mar 2023 10:16:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=docworker.pl; s=mail;
-        t=1678871836; bh=F9Uuk9o83BVy7SpscM/nJos6FHfnp2pKrNUqPErj3yg=;
-        h=Date:From:To:Subject:From;
-        b=kq7ciYw1S9DOkrIrW4JzRUbJ2DqCbtaoFF23tr/vgNxnOrVbpbq70oOZXmsX9KL0l
-         4/3J49GZy17dSd/u2cEi/XxyTUbcUkKwV41fLmjT2JSTDaKe9Y9qHlwkwzn6+ykEFF
-         3NRXG2rUw6e7dgQJMgc5ruE4jxTsScZUdOhwHSKKhR0LJLWJg1w/sqLtUXGvHUPP0z
-         N639RX687M3OcMrlzwEA1PNWGFU/tDOpHUMDiEq7W6Ea53Y0XiSmed7PrOp8wNhZkY
-         SFH5Hxg3zV/p4u0sMr3NDDCYYCGzsbU1hwl7CYAAJS0cMqQGcl0F4Q1xbDrgq9nQWc
-         pn/LmxqCLP5mg==
-Received: by mail.docworker.pl for <linux-crypto@vger.kernel.org>; Wed, 15 Mar 2023 09:16:08 GMT
-Message-ID: <20230315084500-0.1.g.1mwr.0.1xqx0zosg0@docworker.pl>
-Date:   Wed, 15 Mar 2023 09:16:08 GMT
-From:   =?UTF-8?Q? "Mi=C5=82osz_G=C3=B3recki" ?= 
-        <milosz.gorecki@docworker.pl>
-To:     <linux-crypto@vger.kernel.org>
-Subject: Zapytanie ofertowe 
-X-Mailer: mail.docworker.pl
+        Wed, 15 Mar 2023 07:09:16 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE99B89F0A
+        for <linux-crypto@vger.kernel.org>; Wed, 15 Mar 2023 04:07:22 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id v17-20020a9d6051000000b0069a413e9cf6so664439otj.3
+        for <linux-crypto@vger.kernel.org>; Wed, 15 Mar 2023 04:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1678878440;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KGQqOqOpjdPwjfp6rUoV/LSKKOdR5bXz0gLa5D6q8M8=;
+        b=NfU7ky0pTFamou9nX5SukTXVqMgHMpQu1Jw6n3AOGGC9ReTsLdtSd+npjiEEiKVXHx
+         bciOtd+pkbi2iCQ3iWqUqEP/hWpz/XjEAbpWRolzlrt+rl9AAkoZo+X+zTKhus7f29q3
+         KZdTPof8WLcw7dnfhlLhKASbTkRUvHbWF02MxNSd0HFRUfbreGLXap6iH8Xnir3SubMo
+         aK54nvkmHUkWlAAuMFXCAX2AzL5sZdq2DF8prOd5pM9LySPxK4wSy9FcSCwOqjOzYowi
+         Rdqmvgv/HsV+BF9TnYz3nKBjYt4K/WuTcXbqQSaB3cXofTxl16A5JLveCIoG2OultmUW
+         JxqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678878440;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KGQqOqOpjdPwjfp6rUoV/LSKKOdR5bXz0gLa5D6q8M8=;
+        b=0YtBfBTnhZZ12mhiLASrYLUl88hVHyQ0wGMDnQrH//NR/xkU/Dd4BJc0GAmnCjomev
+         fUVQZDrNt/bglXClso+0YbWsqfbVeKueValepsQuOwPrwqVGzV+BUpmFkormqfzODU3/
+         7v8EHf90v5fdhn5BfbnxmkGZ4wfN6KSzikeY1JhDbJLrgObGW3F/4c/eZdUQ99H0jDCz
+         18g5RNb8z+pmKVCPX3XBuhzLGINKz5iv/jj7VgOXr5YJFjJ+LF0u2ZKRRBTiv6GRt3b7
+         p/9tKUBfil0eXaEInE9B59PYD0UCsQFRU2xwe0FGrQz0oI+rTKXpCYZ3pVMBOXX7DHoe
+         SThg==
+X-Gm-Message-State: AO0yUKX5hxo0WjLL712GwBUlR6Vp6BYs4OKZXE+iysusZZUl8HXqwPwb
+        MDWcRRBhCkwlvWx9xGGCXodNkFz3wTgivhaWUNKOuhFP2nVDAa87wng=
+X-Google-Smtp-Source: AK7set8BdBU6LkFTYjo2gFwe8AD34oucPZCJv8AcMgIr6Hd4YxH72eziFJ4BgYbENfIqkU5Lst49d6+S/14XW/3W/KA=
+X-Received: by 2002:a9d:173:0:b0:698:6b65:f563 with SMTP id
+ 106-20020a9d0173000000b006986b65f563mr1418002otu.4.1678878440457; Wed, 15 Mar
+ 2023 04:07:20 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230310211954.2490-1-mario.limonciello@amd.com> <20230310211954.2490-8-mario.limonciello@amd.com>
+In-Reply-To: <20230310211954.2490-8-mario.limonciello@amd.com>
+From:   Grzegorz Bernacki <gjb@semihalf.com>
+Date:   Wed, 15 Mar 2023 12:07:09 +0100
+Message-ID: <CAA2Cew7p7iu=J_4pFjWCHFZuGva0tkdmmdy2QmBdK_fXVxm07g@mail.gmail.com>
+Subject: Re: [PATCH v4 7/8] crypto: ccp: Add support for ringing a platform doorbell
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     =?UTF-8?B?SmFuIETEhWJyb8Wb?= <jsd@semihalf.com>,
+        Rijo-john.Thomas@amd.com, Thomas.Lendacky@amd.com,
+        herbert@gondor.apana.org.au, John Allen <john.allen@amd.com>,
+        Felix.Held@amd.com, "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: docworker.pl]
-        *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: docworker.pl]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [94.177.230.24 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: docworker.pl]
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.2468]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-X-Spam-Level: *****
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Szanowni Pa=C5=84stwo,
+Hi Mario,
+[...]
+> +int psp_ring_platform_doorbell(int msg)
+> +{
+> +       struct psp_device *psp = psp_get_master_device();
+> +       struct psp_platform_access_device *pa_dev;
+> +       u32 __iomem *button, *cmd;
+> +       int ret, val;
+> +
+> +       if (!psp || !psp->platform_access_data)
+> +               return -ENODEV;
+> +
+> +       pa_dev = psp->platform_access_data;
+> +       button = psp->io_regs + pa_dev->vdata->doorbell_button_reg;
+> +       cmd = psp->io_regs + pa_dev->vdata->doorbell_cmd_reg;
+> +
+> +       mutex_lock(&pa_dev->doorbell_mutex);
+> +
+> +       if (check_doorbell(button)) {
+> +               dev_dbg(psp->dev, "doorbell is not ready\n");
 
-Od blisko 8 lat skutecznie wspieramy naszych partner=C3=B3w w pozyskiwani=
-u klient=C3=B3w. =C5=9Awiadczymy us=C5=82ug=C4=99 generowania lead=C3=B3w=
- z kilkoma unikalnymi cechami jak gwarancja realnego uruchomienia rozm=C3=
-=B3w lub wymiana kontaktu. Nadmieni=C4=99 tak=C5=BCe, i=C5=BC kontakty pr=
-zekazywane s=C4=85 na wy=C5=82=C4=85czno=C5=9B=C4=87.
+Can you change dev_dbg()  to dev_err() when there is an error in all
+cases in that function?
+[...]
 
-Je=C5=9Bli w chwili obecnej poszukujecie Pa=C5=84stwo nowych zapyta=C5=84=
- i lead=C3=B3w sprzeda=C5=BCowych prosz=C4=99 o kontakt lub wskazanie ter=
-minu rozmowy.
+> +
+> +       val = FIELD_GET(PSP_CMDRESP_STS, ioread32(cmd));
+> +       if (val) {
+> +               ret = -EIO;
+> +               goto unlock;
+> +       }
 
+Are you sure that PSP_CMDRESP_STS should be zero? My tests failed due
+to the fact the val is 1 and moreover I don't see that check in the
+original Jan's patch.
+Can you also add here dev_err()?
 
-Pozdrawiam serdecznie
-Mi=C5=82osz G=C3=B3recki
+thanks,
+grzegorz
