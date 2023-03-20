@@ -2,46 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3211B6C2158
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Mar 2023 20:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B886C21A2
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Mar 2023 20:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjCTT20 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 20 Mar 2023 15:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
+        id S229910AbjCTTgJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 20 Mar 2023 15:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjCTT2I (ORCPT
+        with ESMTP id S229992AbjCTTfd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 20 Mar 2023 15:28:08 -0400
+        Mon, 20 Mar 2023 15:35:33 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D80E4D290;
-        Mon, 20 Mar 2023 12:20:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03C40144A0;
+        Mon, 20 Mar 2023 12:30:20 -0700 (PDT)
 Received: from vm02.corp.microsoft.com (unknown [167.220.197.27])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 514A420FAEEE;
-        Mon, 20 Mar 2023 12:20:15 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 514A420FAEEE
+        by linux.microsoft.com (Postfix) with ESMTPSA id 15EF420FB1B2;
+        Mon, 20 Mar 2023 12:20:28 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 15EF420FB1B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1679340017;
-        bh=A8MP232mgpqFknsi5z1EHp/um0O9piNlnFXZ1XPwixI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fvw2Zl5oKSgTwYWfPzF5A6yUj+hii+FAxGG5HK+xZinQlv3/sUBicgu5/GwvdEeSp
-         9JyslSRpSMuSmdlgKJEDGFESJRgdJe+C2h5CMsnPqK6zLy7FfAARcIXbFDsi+/XzYy
-         pdy+rrTQqfnTu9YVtkEOjoS9Um63p6tB3Cu5kr68=
+        s=default; t=1679340030;
+        bh=JLW993L7KNZ43aI6v0ynXV6I6nnprRROSEVuJCp8QVo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jZdE92xkSlNsSdtRY8SG1L72AfSgg+/UasdFbiQcPghgRMaTIcGcQI7O/GdJjG+2g
+         aWqacbBFkt1YwcRsXRt//5OyRFmExbllwk6D5Dauo/wgqJENztvMcvlC21wtD1AULa
+         6T9tnRofIADsnQym6v0uN3sS6lgk2IRXtyo1dh+M=
 From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        "Brijesh Singh" <brijesh.singh@amd.com>,
         "Tom Lendacky" <thomas.lendacky@amd.com>,
         "Kalra, Ashish" <ashish.kalra@amd.com>,
-        linux-crypto@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Len Brown" <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org
-Subject: [PATCH v3 0/8] Support ACPI PSP on Hyper-V
-Date:   Mon, 20 Mar 2023 19:19:48 +0000
-Message-Id: <20230320191956.1354602-1-jpiotrowski@linux.microsoft.com>
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v3 5/8] crypto: cpp - Bind to psp platform device on x86
+Date:   Mon, 20 Mar 2023 19:19:53 +0000
+Message-Id: <20230320191956.1354602-6-jpiotrowski@linux.microsoft.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230320191956.1354602-1-jpiotrowski@linux.microsoft.com>
+References: <20230320191956.1354602-1-jpiotrowski@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -54,60 +50,69 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch series introduces support for discovering AMD's PSP from an ACPI
-table and extends the CCP driver to allow binding to that device on x86. This
-method of PSP discovery is used on Hyper-V when SNP isolation support is
-exposed to the guest. There is no ACPI node associated with this PSP, so after
-parsing the ASPT it is registered with the system as a platform_device.
+The PSP in Hyper-V VMs is exposed through the ASP ACPI table and is
+represented as a platform_device. Allow the ccp driver to bind to it by
+adding an id_table and initing the platform_driver also on x86. At this
+point probe is called for the psp device but init fails due to missing
+driver data.
 
-I thought about putting psp.c in arch/x86/coco, but that directory is meant for
-the (confidential) guest side of CoCo, not the supporting host side code.
-It was kept in arch/x86/kernel because configuring the irq for the PSP through
-the ACPI interface requires poking at bits from the architectural vector
-domain.
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+---
+ drivers/crypto/ccp/sp-dev.c      | 7 +++++++
+ drivers/crypto/ccp/sp-platform.c | 7 +++++++
+ 2 files changed, 14 insertions(+)
 
-This series is a prerequisite for nested SNP-host support on Hyper-V but is
-independent of the SNP-host support patch set. Hyper-V only supports nested
-SEV-SNP (not SEV or SEV-ES) so the PSP only supports a subset of the full PSP
-command set. Without SNP-host support (which is not upstream yet), the only
-PSP command that will succeed is SEV_PLATFORM_STATUS.
-
-Changes since v2:
-* Added links to ASPT spec and ACPICA commit
-* Added acked-by Tom to all commits
-Changes since v1:
-* move platform_device_add_data() call to commit that introduces psp device
-* change psp dependency from CONFIG_AMD_MEM_ENCRYPT to CONFIG_KVM_AMD_SEV
-* add blank lines, s/plat/platform/, remove variable initializers before first
-  use, remove masking/shifting where not needed
-* dynamically allocate sev_vdata/psp_vdata structs instead of overwriting static
-  variables
-
-Jeremi Piotrowski (8):
-  include/acpi: add definition of ASPT table
-  ACPI: ASPT: Add helper to parse table
-  x86/psp: Register PSP platform device when ASP table is present
-  x86/psp: Add IRQ support
-  crypto: cpp - Bind to psp platform device on x86
-  crypto: ccp - Add vdata for platform device
-  crypto: ccp - Skip DMA coherency check for platform psp
-  crypto: ccp - Allow platform device to be psp master device
-
- arch/x86/kernel/Makefile          |   1 +
- arch/x86/kernel/psp.c             | 219 ++++++++++++++++++++++++++++++
- drivers/acpi/Makefile             |   1 +
- drivers/acpi/aspt.c               | 104 ++++++++++++++
- drivers/crypto/ccp/sp-dev.c       |  65 +++++++++
- drivers/crypto/ccp/sp-dev.h       |   4 +
- drivers/crypto/ccp/sp-pci.c       |  48 -------
- drivers/crypto/ccp/sp-platform.c  |  76 ++++++++++-
- include/acpi/actbl1.h             |  46 +++++++
- include/linux/platform_data/psp.h |  32 +++++
- 10 files changed, 547 insertions(+), 49 deletions(-)
- create mode 100644 arch/x86/kernel/psp.c
- create mode 100644 drivers/acpi/aspt.c
- create mode 100644 include/linux/platform_data/psp.h
-
+diff --git a/drivers/crypto/ccp/sp-dev.c b/drivers/crypto/ccp/sp-dev.c
+index 7eb3e4668286..4c9f442b8a11 100644
+--- a/drivers/crypto/ccp/sp-dev.c
++++ b/drivers/crypto/ccp/sp-dev.c
+@@ -259,6 +259,12 @@ static int __init sp_mod_init(void)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = sp_platform_init();
++	if (ret) {
++		sp_pci_exit();
++		return ret;
++	}
++
+ #ifdef CONFIG_CRYPTO_DEV_SP_PSP
+ 	psp_pci_init();
+ #endif
+@@ -286,6 +292,7 @@ static void __exit sp_mod_exit(void)
+ #ifdef CONFIG_CRYPTO_DEV_SP_PSP
+ 	psp_pci_exit();
+ #endif
++	sp_platform_exit();
+ 
+ 	sp_pci_exit();
+ #endif
+diff --git a/drivers/crypto/ccp/sp-platform.c b/drivers/crypto/ccp/sp-platform.c
+index 7d79a8744f9a..5dcc834deb72 100644
+--- a/drivers/crypto/ccp/sp-platform.c
++++ b/drivers/crypto/ccp/sp-platform.c
+@@ -56,6 +56,12 @@ static const struct of_device_id sp_of_match[] = {
+ MODULE_DEVICE_TABLE(of, sp_of_match);
+ #endif
+ 
++static const struct platform_device_id sp_platform_match[] = {
++	{ "psp" },
++	{ },
++};
++MODULE_DEVICE_TABLE(platform, sp_platform_match);
++
+ static struct sp_dev_vdata *sp_get_of_version(struct platform_device *pdev)
+ {
+ #ifdef CONFIG_OF
+@@ -212,6 +218,7 @@ static int sp_platform_resume(struct platform_device *pdev)
+ #endif
+ 
+ static struct platform_driver sp_platform_driver = {
++	.id_table = sp_platform_match,
+ 	.driver = {
+ 		.name = "ccp",
+ #ifdef CONFIG_ACPI
 -- 
 2.34.1
 
