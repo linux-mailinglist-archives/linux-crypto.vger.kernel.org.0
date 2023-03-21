@@ -2,153 +2,101 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA926C3CA4
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Mar 2023 22:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 904446C3CB7
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Mar 2023 22:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbjCUV2j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Mar 2023 17:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        id S229527AbjCUVbn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Mar 2023 17:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjCUV2i (ORCPT
+        with ESMTP id S229453AbjCUVbm (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Mar 2023 17:28:38 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2054.outbound.protection.outlook.com [40.107.94.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7255419685;
-        Tue, 21 Mar 2023 14:28:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IOdbV/cYGl7qa2Qe15S4i/AzTcQz8xoSEtbT1vs3KR2oFU9ZU1DnUUvcfanjCJdwd5N9dWlvau+jki5iwLuEiUI+Rmd4EATZwSo+o8mnb3HWUY/9v9FdxzFd+NPiLUiOwEkhgJgxjUZ2CDRJFqvudkbT2bN0bMkoTKplSSdj2LGqwWBBjj4VFdRHo74xBrkisz2xzDgumXxCm8mUo90fajbmVkGP1f9ml95OzJWaRSYq0YKM3PJPJZd8xly6zmaJVm9iYTYmx4BU0iunFflGRXUyY/IljxX7864UyIYBa/NLqHvDB5VKJb/yunmM42yCjVDfsv52ACEt0FmbA8eXaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sCigtSDtZohjkmbdS3ZrmX7ohprOND7zAuWWtRdSoa4=;
- b=WPee5tg7eG4cSJMWQw51BfiCczqt1gA5RaEnzwETipWFQqd8cOgEZJ02t4W7zkc3qKVlrKH37KpefJjwTHsh+HZ2ARp09lpn4wCBhmHNwBbmtkB8hxJN8YZRBCXC1kwcuiogium2izSGvTfGzV21d/RSUInnfLiTT+EURnbp4DE1YiQyds/JUP9cOMuOFs3EZfbhRdjHRoG/DE4UK4mF5/50+vl6N8IcmIq+OZM+/3TsfNuSuiL0P70j4arVUDu7bdcJNTeH/znWWpV8KHcYUUf/w8y4vj+5C7Bg56G/1yWcLUanT+osju+Gg8FPt9GRQ2Vu9dtb4wd3NGVeTkPvsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sCigtSDtZohjkmbdS3ZrmX7ohprOND7zAuWWtRdSoa4=;
- b=sotLhk0KmChq0Cb+xYunR+0DuSQqsxe6UsqSTFtHUdodHRfMiexQQsC/zi8ZQr1nq0Ok1G+SSjAn4BpWCNEhwTUnXqakyMWiY5CloE8OMRKOeRrORzZlPTKVnykpZMAr4W/ugOWk2Kw64tsEYH/Pinh13l/TM5FkGbO3MNysNRM=
-Received: from BN9PR03CA0118.namprd03.prod.outlook.com (2603:10b6:408:fd::33)
- by MN0PR12MB6029.namprd12.prod.outlook.com (2603:10b6:208:3cf::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Tue, 21 Mar
- 2023 21:28:34 +0000
-Received: from BL02EPF00010207.namprd05.prod.outlook.com
- (2603:10b6:408:fd:cafe::48) by BN9PR03CA0118.outlook.office365.com
- (2603:10b6:408:fd::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37 via Frontend
- Transport; Tue, 21 Mar 2023 21:28:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF00010207.mail.protection.outlook.com (10.167.241.197) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6178.30 via Frontend Transport; Tue, 21 Mar 2023 21:28:34 +0000
-Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 21 Mar
- 2023 16:28:33 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Mark Hasemeyer <markhas@chromium.org>,
-        Grzegorz Bernacki <gjb@semihalf.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        "Tom Lendacky" <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-CC:     <jsd@semihalf.com>, Held Felix <Felix.Held@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 1/3] crypto: ccp: Bump up doorbell debug messages to error
-Date:   Tue, 21 Mar 2023 16:28:19 -0500
-Message-ID: <20230321212822.5714-2-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230321212822.5714-1-mario.limonciello@amd.com>
-References: <20230321212822.5714-1-mario.limonciello@amd.com>
+        Tue, 21 Mar 2023 17:31:42 -0400
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AABF979;
+        Tue, 21 Mar 2023 14:31:41 -0700 (PDT)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1755e639b65so17660957fac.3;
+        Tue, 21 Mar 2023 14:31:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679434301;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r6EMbcpDu9bwoFOMVQ7b9hqITsnjtD+Slk1Wg1A5A4k=;
+        b=p8u9unjItuOVdKQYs+FDNRz0bRKC780dwnsG0F3HDz5Tng1JDgWv6WlIMuFYL56xkH
+         xqYakR57+4wrJOyRuSqRjfsVMfIWJcESw2lGCwW54RnxUBRx3CG7GkTE+2/Oowqbp1cq
+         5ohb+e6wed2mVIidEEMAtY0GmVGBNhG60SAnnOcW6v3FD04tuyN5H2fq3YN9wocVSRhu
+         64pgsDR2R7HZHyyz14tEY5SkW3t67NRR4y0aFP/ncpjcipvN2pNoSAHltgEEAEz45DzR
+         5uOoYibwn+48Y5hCtBrGjgUnVzGdc9YtJ50eCz2kZkO1jJnhjcsziVbpT9BZ8xhakxeG
+         o7iQ==
+X-Gm-Message-State: AO0yUKUCykFukhmjrjzvYU0zmtS28CTkyuDILRbL1SQgSNVi6aZRHBjg
+        qLNQuynF2BCBMicIILZWzQ==
+X-Google-Smtp-Source: AK7set+uBxVWDvvha2L0vKeucagDGgBaYKqeww399SevYlJwvqqx22YAAJzLiI5Pc2uOUFu/Sq7KQw==
+X-Received: by 2002:a05:6871:72c:b0:177:c2bd:3f70 with SMTP id f44-20020a056871072c00b00177c2bd3f70mr266082oap.54.1679434301131;
+        Tue, 21 Mar 2023 14:31:41 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id vd21-20020a0568708f9500b0017ae1aede32sm4539991oab.46.2023.03.21.14.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Mar 2023 14:31:40 -0700 (PDT)
+Received: (nullmailer pid 1647773 invoked by uid 1000);
+        Tue, 21 Mar 2023 21:31:39 -0000
+Date:   Tue, 21 Mar 2023 16:31:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     devicetree@vger.kernel.org, agross@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        andersson@kernel.org, bhupesh.linux@gmail.com,
+        linux-crypto@vger.kernel.org, krzysztof.kozlowski@linaro.org,
+        konrad.dybcio@linaro.org, vladimir.zapolskiy@linaro.org
+Subject: Re: [PATCH 1/1] dt-bindings: qcom-qce: Add compatibles for SM6115
+ and QCS2290
+Message-ID: <20230321213139.GA1646917-robh@kernel.org>
+References: <20230320073816.3012198-1-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF00010207:EE_|MN0PR12MB6029:EE_
-X-MS-Office365-Filtering-Correlation-Id: 103748a6-bc07-4521-1c14-08db2a5339c8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qcjiw9L2YgUGNLpuugVQbBkj5lMMHknjmUETCWQc/lBSOW4deKrqc1CSr+ywoY+R0Z13z+p+frwT5IOiQEKjjUZJ9u0fawqQeh26xkH+cURLvau9842vI/qTutfOH2yZb1Q6RWhNgviDoWPD5XcPuaQ8GxQ1UFxln9NfABFkioRb2Ks7ew3iocih6Dh5Fw1UA1Zoe6Nq+YIBHKzhQPxW2IZOErHERE4r8qvQlZB/UF8EnKqOD1or1avAGZsKnC6X8MRVsa9Qww+Fe21bGTbIjSVw71tRI8SEwJ5uqtBkz7+5rUy/jDqMxvQMISsfAtiVyCbXg3mAsL6NS2rrEhJS9aZWzdIiNfhvLi4u4LZnYaPyOo+YBkJBLPx7RNpxI78qMZOw8A1JbSuBKkcLRVwjdqK1Jfn4kdSQeVi2gpl4IfD2IHR0quEr5V70epLdexdJKMcc3DBh193fx0SBfuIH2aiJwUS/xvn5GH1ZZnXKJpXJ6q5AfImca9ciXFMoY3RwjK15heNrlt4TWNpEY35kh6EaCMe41//EpviJD4U84oQ4Z9qRB/HqQ29dCUYMG8eMD5/NSpM22UKza74GoWUlmNzGD3H/mZAaNvqaJQlowKzMUl2jh5rjjhPm3qnx6PEy+TRKJvEPGLyS8cPZQYySa2WuDSRhfPHWbB/TqBIkgZckAJ+YnC/gUZXt2EQ+cUye2VT5jc6jkg0mCQ58+LFU28ZmTCTcBC5WVGIFDbi1FdM=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(376002)(136003)(39860400002)(451199018)(40470700004)(46966006)(36840700001)(7696005)(40480700001)(6666004)(44832011)(336012)(41300700001)(8936002)(47076005)(36860700001)(5660300002)(40460700003)(426003)(2906002)(16526019)(186003)(82310400005)(82740400003)(356005)(81166007)(6636002)(110136005)(316002)(478600001)(2616005)(1076003)(54906003)(4326008)(26005)(86362001)(36756003)(83380400001)(70206006)(70586007)(8676002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2023 21:28:34.2656
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 103748a6-bc07-4521-1c14-08db2a5339c8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF00010207.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6029
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230320073816.3012198-1-bhupesh.sharma@linaro.org>
+X-Spam-Status: No, score=0.7 required=5.0 tests=FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This is helpful not just for debugging problems, but also for investigating
-captured logs later on.
+On Mon, Mar 20, 2023 at 01:08:16PM +0530, Bhupesh Sharma wrote:
+> Crypto Engine block on Qualcomm SoCs SM6115 and QCS2290
+> do not require clocks strictly, so add compatibles for these
+> SoCs, indicating that they are similar to the flavour
+> found on SM8150.
+> 
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> index e375bd981300..e6840d124af3 100644
+> --- a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> @@ -35,10 +35,12 @@ properties:
+>  
+>        - items:
+>            - enum:
+> +              - qcom,sm6115-qce
+>                - qcom,sm8250-qce
+>                - qcom,sm8350-qce
+>                - qcom,sm8450-qce
+>                - qcom,sm8550-qce
+> +              - qcom,qcs2290-qce
 
-Suggested-by: Grzegorz Bernacki <gjb@semihalf.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/crypto/ccp/platform-access.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+'q' goes before 's'
 
-diff --git a/drivers/crypto/ccp/platform-access.c b/drivers/crypto/ccp/platform-access.c
-index b51fb1196932..b9f94e1aeb78 100644
---- a/drivers/crypto/ccp/platform-access.c
-+++ b/drivers/crypto/ccp/platform-access.c
-@@ -157,19 +157,19 @@ int psp_ring_platform_doorbell(int msg)
- 	mutex_lock(&pa_dev->doorbell_mutex);
- 
- 	if (check_doorbell(button)) {
--		dev_dbg(psp->dev, "doorbell is not ready\n");
-+		dev_err(psp->dev, "doorbell is not ready\n");
- 		ret = -EBUSY;
- 		goto unlock;
- 	}
- 
- 	if (check_recovery(cmd)) {
--		dev_dbg(psp->dev, "doorbell command in recovery\n");
-+		dev_err(psp->dev, "doorbell command in recovery\n");
- 		ret = -EBUSY;
- 		goto unlock;
- 	}
- 
- 	if (wait_cmd(cmd)) {
--		dev_dbg(psp->dev, "doorbell command not done processing\n");
-+		dev_err(psp->dev, "doorbell command not done processing\n");
- 		ret = -EBUSY;
- 		goto unlock;
- 	}
-@@ -184,6 +184,7 @@ int psp_ring_platform_doorbell(int msg)
- 
- 	val = FIELD_GET(PSP_CMDRESP_STS, ioread32(cmd));
- 	if (val) {
-+		dev_err(psp->dev, "doorbell response invalid: 0x%x\n", val);
- 		ret = -EIO;
- 		goto unlock;
- 	}
--- 
-2.34.1
-
+>            - const: qcom,sm8150-qce
+>            - const: qcom,qce
+>  
+> -- 
+> 2.38.1
+> 
