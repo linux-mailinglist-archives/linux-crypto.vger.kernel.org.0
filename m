@@ -2,129 +2,256 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7D16C29E8
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Mar 2023 06:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD376C2A1A
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Mar 2023 06:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjCUFfr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 21 Mar 2023 01:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        id S229809AbjCUF6h (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 21 Mar 2023 01:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbjCUFfk (ORCPT
+        with ESMTP id S229579AbjCUF6g (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 21 Mar 2023 01:35:40 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2086.outbound.protection.outlook.com [40.107.92.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0767A21A06;
-        Mon, 20 Mar 2023 22:35:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z3Biw+m8L7s7gdYnt3KyNiqwpV6B1d+YgECNydeKDcb/qSqvsry0eZ4zwRS2e9NrC8i5S/wBREDvxvTROK61ryLoiNhkHMxdfdlZ/jzhNAZx05IKPqSLsuDafdUqZFrakRg9Ms1sv3XIuTtOa4r4t4pKUc38aeKZblF76qpkj5RjfpeUQSGLa6OTQEHaZn1WYYJGlLGSEyfafl1WegWpBItmOcuHWVBo123F17vKfVKUsopAZxdAUjCZjEgulr3dXUH30wU5aq2+/0U+qzFOJ+badvyMvDYc2vS42YlGzTlN/howLTczU6nwqLlfOThbgrx8XZddie5Tf4HdZzdd3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VkAUfB5JznI08JeLH9v2EaBLlRCni90g6ZC+gwzzi/0=;
- b=mtuWRIcjzbfi54t85fH5rXPxH+rU0IUzGO/z2CDtG6LkxRF0ayGNxkVg+klQHwnZj3YzxQzcdEBjq3V22Y3XJQlvuuQjvGHvoNrRXKZrNFnbf/079pMZbKdKGA+SLoHndb57LCLrC+uIuO8L4H5jG2eUpmW3ycevV+ihtmsFLALYf3d5lU864bDoyS+0tnIo1Kv1IlDjlixEgPYvihTGjn8MFmCZ+AUY2p0wvbfCbzkEzcSspsbMfh523m+J+C6+dDdBKmI6DxuHoAHenzs3griDr3crhlwQjAC4fsVdlR4iR7o3FE0jGWjuPXPLLFYlPnUUBXYnmiw/pGMU2MhRjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VkAUfB5JznI08JeLH9v2EaBLlRCni90g6ZC+gwzzi/0=;
- b=yA1hTnTfGjk55cZlR7YVfgOzPJO0FIJ47/YmIfCBP5wr6ssdQRyBbUIKqmv08iiTJZMdx4Big3fSJj7Qo4SDtcFa8yhByjyalPRdOjgIC5AtjIrYst+MVb48LGyIooGm2/P1N01Y3c/RvDrYX35TzoZiAWvWsxgUr8H8OzZE370=
-Received: from DS7PR06CA0020.namprd06.prod.outlook.com (2603:10b6:8:2a::21) by
- MW6PR12MB8997.namprd12.prod.outlook.com (2603:10b6:303:23e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Tue, 21 Mar
- 2023 05:35:36 +0000
-Received: from DS1PEPF0000E649.namprd02.prod.outlook.com
- (2603:10b6:8:2a:cafe::ca) by DS7PR06CA0020.outlook.office365.com
- (2603:10b6:8:2a::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37 via Frontend
- Transport; Tue, 21 Mar 2023 05:35:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF0000E649.mail.protection.outlook.com (10.167.18.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6178.30 via Frontend Transport; Tue, 21 Mar 2023 05:35:34 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 21 Mar
- 2023 00:35:33 -0500
-Received: from xhdharshah40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Tue, 21 Mar 2023 00:35:31 -0500
-From:   Harsha Harsha <harsha.harsha@amd.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <michals@xilinx.com>
-CC:     <saratcha@xilinx.com>, <git@amd.com>,
-        Harsha Harsha <harsha.harsha@amd.com>
-Subject: [PATCH V2 4/4] MAINTAINERS: Add maintainer for Xilinx ZynqMP RSA driver
-Date:   Tue, 21 Mar 2023 11:04:46 +0530
-Message-ID: <20230321053446.4303-5-harsha.harsha@amd.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20230321053446.4303-1-harsha.harsha@amd.com>
-References: <20230321053446.4303-1-harsha.harsha@amd.com>
+        Tue, 21 Mar 2023 01:58:36 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B1719C7B;
+        Mon, 20 Mar 2023 22:58:34 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id gp15-20020a17090adf0f00b0023d1bbd9f9eso19127452pjb.0;
+        Mon, 20 Mar 2023 22:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679378314;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IYxpXAP3Qj4XTQVGxwubY62608RIpaMdDRQuTEZG/7I=;
+        b=C3bCMTMJtg07k0iGiCNW8mWUJq6oNQ2v7wb2CB1ifFJWuqJW52nmku229LbCM1n0jv
+         S4zV5lc4HyFwbYMBXs7t5Sy3hR9KCqpPQ/rLcrt/mm3Hxmyzazreyz/BuO+NdauAe4KU
+         EhRGJQOhqf1rm6aoR52Q2xHeDQt4X38DieGzSjxK4PWzo1RkDpyN83dzfjfbDV0wDgr+
+         vimX932KglU5qNs+eonV13JbsUZi4U2ndlEiWSwDpnfCdByJ5ZDB6gNzEncdSikqBxRW
+         OOsaWPSQN3HnseL1Ox/1NJfLbUJ6DXnCfEoqLPvMHzO+l+ekS6ISm3mkftAt3UPNBxyu
+         0lSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679378314;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IYxpXAP3Qj4XTQVGxwubY62608RIpaMdDRQuTEZG/7I=;
+        b=ztRV8FnoZR1VN3IXNnDLi3BVd5udbIL+RnnyqW2A2tAINJ/VNRMi2ay1sRGbFSM+xs
+         Y0vOCPTw+jX5mJzjpFmoewyqgvWab+s2mfzWOZpBx9odivnJGky5vYJyqVu+9+NyCmNG
+         uDpe+YIbrmZrMM1+CXS7k8Huy0BTtrYaWtHIsTToXt9KWtwiT7w3qoqslz228VuvSJx2
+         RqIQNAjmERTNkvLopvA4ZsDgqErhsIsL6m3l3KDR2uTOtjSmUeAKztU+lxHQqrXGAp+z
+         n5ujfYsachMH2baIh/r96Ed7CEt05K7DLIyNRtvWBdBBvcv7JMesT/q66R5iKMj3spsB
+         6YBA==
+X-Gm-Message-State: AO0yUKXwMjhnRq6wHXi6IaCyvhhFTEsnNf9JmQBA819L4E/XFW64Fbl1
+        GemGpJ92vV7BEefsM5zvN5xH4PxuO6t7G9NMeGc=
+X-Google-Smtp-Source: AK7set8oqkKf73lv4AMrasm0StsbRGWWZNbidFz7IWqXOj+c/WxbF2TB2OBckkwG3lXcXxqXTVJ+yg==
+X-Received: by 2002:a05:6a20:8b1d:b0:cc:f47b:9a with SMTP id l29-20020a056a208b1d00b000ccf47b009amr1173232pzh.1.1679378313665;
+        Mon, 20 Mar 2023 22:58:33 -0700 (PDT)
+Received: from d.home.yangfl.dn42 ([104.28.245.205])
+        by smtp.gmail.com with ESMTPSA id j13-20020aa78dcd000000b0062809b2cb05sm1745467pfr.155.2023.03.20.22.58.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Mar 2023 22:58:33 -0700 (PDT)
+From:   David Yang <mmyangfl@gmail.com>
+Cc:     David Yang <mmyangfl@gmail.com>, Weili Qian <qianweili@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: hisilicon/trng - add support for HiSTB TRNG
+Date:   Tue, 21 Mar 2023 13:58:20 +0800
+Message-Id: <20230321055822.1611239-1-mmyangfl@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0000E649:EE_|MW6PR12MB8997:EE_
-X-MS-Office365-Filtering-Correlation-Id: b09f8b0c-16f1-49ea-c821-08db29ce182a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l2mLbsUkc6XLqjrMkg0ONwQHJPRgcof9FuKZyU08dwGAaRQcqyn3VbX35/AzjWG71kBt36JhN+GukyhZdqKnKn8giXgCiW3lBVYo11xarTJQLJqjOeKhXdeHlQ3IyXvJub6zCguZhNWoxGfJ0OhQnHMPCIXGZ3lAi/dxFxEaXdai3wkkIXA8S+DaZ0GM6IWQgguXG4gYnNKP/mKst3/dkYEERL5aoGizLepdtXrezgDug1xAE+Ar13APlK6F9OzLlnieXC9vncgqbL1NyG/IWJbooysUo2PATX7SdVC2FEil8RtMZ8cY9yVPcmRLqB2vGYUkH94aIEu4jrBbPdbo1NDsGjkiijXI9pUtUuql02rO+MXaQx3xmieYcpjiRcN8RVsNrq36/Z7FtXP3Gl00H4hCyBWqbVD5JjAMCuy8LQcT9vzDEMG9ky14Tn/HXSu1TU+/p/+mOw2kYmc/BPcu8rxkrOfoya3+vd8VOheTj5sLjRpotaO+Gud6WgT5oq/ZskI+fZsdZ9xULKKrU6GlSNgXWnFcd6HruEjSXsCm4booaxgtTXXLZuZuWwb3ORSGJaYMKcMD1fwFSS+eAABSxpupODsnZ3Z3Zbk4RkgrMhjSB9OhsOlXO6+8fH2b0gJLSWy9PFOvwaJUpAf9qIdlkRtMlE7vrdd3TwvqqQb8uGDvtcmCdiqGtZAen7aAPi1q9p1popOkWtxHyx9P3Gv5lSXZa4DTaBgog+EQ5qVkuBhUNUI3S5DoIDdJKvWTJU/f
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(376002)(396003)(346002)(136003)(451199018)(46966006)(36840700001)(40470700004)(44832011)(4744005)(8936002)(5660300002)(41300700001)(36860700001)(4326008)(40480700001)(356005)(86362001)(82310400005)(36756003)(40460700003)(82740400003)(81166007)(2906002)(1076003)(478600001)(47076005)(6666004)(426003)(186003)(966005)(26005)(8676002)(336012)(70206006)(70586007)(110136005)(2616005)(54906003)(316002)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2023 05:35:34.7734
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b09f8b0c-16f1-49ea-c821-08db29ce182a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF0000E649.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8997
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-This patch adds an entry for ZynqMP RSA driver in the list of
-Maintainers.
+HiSTB TRNG are found on some HiSilicon STB SoCs.
 
-Signed-off-by: Harsha Harsha <harsha.harsha@amd.com>
+Signed-off-by: David Yang <mmyangfl@gmail.com>
 ---
- MAINTAINERS | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/crypto/hisilicon/Kconfig         |   7 ++
+ drivers/crypto/hisilicon/Makefile        |   2 +-
+ drivers/crypto/hisilicon/trng/Makefile   |   3 +
+ drivers/crypto/hisilicon/trng/trng-stb.c | 128 +++++++++++++++++++++++
+ 4 files changed, 139 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/crypto/hisilicon/trng/trng-stb.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7c90bc235a0a..85714c5ac916 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22913,6 +22913,11 @@ T:	git https://github.com/Xilinx/linux-xlnx.git
- F:	Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
- F:	drivers/phy/xilinx/phy-zynqmp.c
- 
-+XILINX RSA DRIVER
-+M:	Harsha <harsha.harsha@amd.com>
-+S:	Maintained
-+F:	drivers/crypto/xilinx/xilinx-rsa.c
+diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
+index 4137a8bf1..e8690c223 100644
+--- a/drivers/crypto/hisilicon/Kconfig
++++ b/drivers/crypto/hisilicon/Kconfig
+@@ -82,3 +82,10 @@ config CRYPTO_DEV_HISI_TRNG
+ 	select CRYPTO_RNG
+ 	help
+ 	  Support for HiSilicon TRNG Driver.
 +
- XILINX ZYNQMP SHA3 DRIVER
- M:	Harsha <harsha.harsha@xilinx.com>
- S:	Maintained
++config CRYPTO_DEV_HISTB_TRNG
++	tristate "Support for HiSTB TRNG Driver"
++	depends on ARCH_HISI || COMPILE_TEST
++	select HW_RANDOM
++	help
++	  Support for HiSTB TRNG Driver.
+diff --git a/drivers/crypto/hisilicon/Makefile b/drivers/crypto/hisilicon/Makefile
+index 8595a5a5d..fc51e0ede 100644
+--- a/drivers/crypto/hisilicon/Makefile
++++ b/drivers/crypto/hisilicon/Makefile
+@@ -5,4 +5,4 @@ obj-$(CONFIG_CRYPTO_DEV_HISI_SEC2) += sec2/
+ obj-$(CONFIG_CRYPTO_DEV_HISI_QM) += hisi_qm.o
+ hisi_qm-objs = qm.o sgl.o debugfs.o
+ obj-$(CONFIG_CRYPTO_DEV_HISI_ZIP) += zip/
+-obj-$(CONFIG_CRYPTO_DEV_HISI_TRNG) += trng/
++obj-y += trng/
+diff --git a/drivers/crypto/hisilicon/trng/Makefile b/drivers/crypto/hisilicon/trng/Makefile
+index d909079f3..cf20b057c 100644
+--- a/drivers/crypto/hisilicon/trng/Makefile
++++ b/drivers/crypto/hisilicon/trng/Makefile
+@@ -1,2 +1,5 @@
+ obj-$(CONFIG_CRYPTO_DEV_HISI_TRNG) += hisi-trng-v2.o
+ hisi-trng-v2-objs = trng.o
++
++obj-$(CONFIG_CRYPTO_DEV_HISTB_TRNG) += histb-trng.o
++histb-trng-objs += trng-stb.o
+diff --git a/drivers/crypto/hisilicon/trng/trng-stb.c b/drivers/crypto/hisilicon/trng/trng-stb.c
+new file mode 100644
+index 000000000..e083f7b4c
+--- /dev/null
++++ b/drivers/crypto/hisilicon/trng/trng-stb.c
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++/*
++ * Device driver for True RNG in HiSTB SoCs
++ *
++ * Copyright (c) 2023 David Yang
++ */
++
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/hw_random.h>
++#include <linux/io.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++
++#define HISTB_TRNG_CTRL		0x0
++#define HISTB_TRNG_NUMBER	0x4
++#define HISTB_TRNG_STAT		0x8
++
++#define SLEEP_US		10
++#define TIMEOUT_US		10000
++
++static int histb_trng_wait(struct hwrng *rng)
++{
++	void __iomem *base = (void __iomem *) rng->priv;
++	u32 val;
++
++	return readl_relaxed_poll_timeout(base + HISTB_TRNG_STAT,
++					  val, val & 0x7, SLEEP_US, TIMEOUT_US);
++}
++
++static int histb_trng_init(struct hwrng *rng)
++{
++	void __iomem *base = (void __iomem *) rng->priv;
++	u32 val;
++
++	val = readl_relaxed(base + HISTB_TRNG_CTRL);
++
++	/* select rng source 2 */
++	val &= ~0x3;
++	val |= 2;
++	/* post_process_depth */
++	val &= ~(0xf << 8);
++	val |= 9 << 8;
++
++	val |= BIT(7);  /* post_process_enable */
++	val |= BIT(5);  /* drop_enable */
++
++	writel_relaxed(val, base + HISTB_TRNG_CTRL);
++
++	/* is device up? */
++	if (histb_trng_wait(rng)) {
++		pr_err("failed to init rng device\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int histb_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	void __iomem *base = (void __iomem *) rng->priv;
++	size_t i;
++	int ret;
++
++	for (i = 0; i < max; i += sizeof(u32)) {
++		ret = histb_trng_wait(rng);
++		if (ret) {
++			pr_err("failed to generate random number, generated %d\n", i);
++			return i ? i : ret;
++		}
++
++		*((u32 *) data + i) = readl_relaxed(base + HISTB_TRNG_NUMBER);
++	}
++
++	return i;
++}
++
++static int histb_trng_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct hwrng *rng;
++	struct resource *res;
++	int ret;
++
++	rng = devm_kzalloc(dev, sizeof(*rng), GFP_KERNEL);
++	if (!rng)
++		return -ENOMEM;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -ENODEV;
++
++	rng->priv = (unsigned long) devm_ioremap(dev, res->start, resource_size(res));
++	if (!rng->priv)
++		return -ENOMEM;
++
++	rng->name = KBUILD_MODNAME;
++	rng->init = histb_trng_init;
++	rng->read = histb_trng_read;
++
++	ret = devm_hwrng_register(dev, rng);
++	if (ret) {
++		dev_err(dev, "failed to register %s (%d)\n", rng->name, ret);
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, rng);
++	return 0;
++}
++
++static const struct of_device_id histb_trng_of_match[] = {
++	{ .compatible = "hisilicon,histb-trng", },
++	{ }
++};
++
++static struct platform_driver histb_trng_driver = {
++	.probe = histb_trng_probe,
++	.driver = {
++		.name = "histb-trng",
++		.of_match_table = of_match_ptr(histb_trng_of_match),
++	},
++};
++
++module_platform_driver(histb_trng_driver);
++
++MODULE_DESCRIPTION("HiSTB True RNG");
++MODULE_LICENSE("Dual MIT/GPL");
 -- 
-2.36.1
+2.39.2
 
