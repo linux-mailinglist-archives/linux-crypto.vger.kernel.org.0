@@ -2,247 +2,229 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A124D6D6596
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Apr 2023 16:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A186D6B6E
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Apr 2023 20:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjDDOk7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 4 Apr 2023 10:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S235916AbjDDSUv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Apr 2023 14:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjDDOk5 (ORCPT
+        with ESMTP id S235121AbjDDSUu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 4 Apr 2023 10:40:57 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803443AB5;
-        Tue,  4 Apr 2023 07:40:53 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2a5f619b4e2so760481fa.0;
-        Tue, 04 Apr 2023 07:40:53 -0700 (PDT)
+        Tue, 4 Apr 2023 14:20:50 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ACE44B9
+        for <linux-crypto@vger.kernel.org>; Tue,  4 Apr 2023 11:20:48 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id x37so20209400pga.1
+        for <linux-crypto@vger.kernel.org>; Tue, 04 Apr 2023 11:20:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680619252;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8jMFTqZ3iX4TYtwGxvCBQk3Ib7hvU7vvi0bgFu56EK0=;
-        b=AqFcW0+z2nqWIvV59SVfS9ovPz0wpK2NVEr/92uv+2oNKtQqs0gM/H2+VYxlIo6YCr
-         eD55r5NM39gud2Bz0x2CVKXX13ykMnkdqi+WwOXPr/tfqFyAbPK525CHZAJIHrXY53Ia
-         fmt6XU4HZiphjGhVWXAO88HzQSDHCJwiWkb1bKbJUt3aalNhPv6t5mnKFv4YP/ovYrSO
-         hP/i6xLR0H0NikKmLnUvedmvf+aRZKUcPUYzcaGhE6RkmsNzBNUaaYgQuXurUewfKcDj
-         /blybMBPkXprc32WMhNsW+JdCZEkNHKFGzrqwx0XQsdCsK5KLMiiqnFlmSi21btzyxfu
-         ddXw==
+        d=ventanamicro.com; s=google; t=1680632448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a8QsXaZPHEAsPoW0flCc0TOSQrLjDGzZjDEO/EvIfsw=;
+        b=mpiCxWKuWoSzlX40nQKfKAaOH87Uuf9nu3eXg7EdGg557PNonvadIn6JVXiN/uM9Wy
+         phW/msttEsKDnZh1vVFo1bN9XZtZKEUa4wk/18xxEDCarICge5UwlYnQAxJzm03rXFSI
+         DJBprbDLPojSOI3lW4sui5GKgMuD72aL4oaagoTPk8faAqerVaiDZ6mu538E2hh9oqF7
+         0oK8ht9mRNdYe4sIkdaSTzl6G8Fs9E31epNQi3UPNlN8wJObdPa2hsumipAUSGbg3eKo
+         jvrjjdXwkTaMmkoq5VnpbS/FL/eFSGqJVfftsC93axZyll8/J5G4pPsWk+JEQJidr9Ym
+         fv7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680619252;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8jMFTqZ3iX4TYtwGxvCBQk3Ib7hvU7vvi0bgFu56EK0=;
-        b=Th9YS3j9uJdSMf8fHrKMWxDn9oO/4qYZignQPSo09xd/fJP11Q7B0lKAEJDP2W4rTF
-         Wz7IEZPE//r8Oe7Qg679ZWMCqKyBWuVCu/GnLXRHwYydTKMn/kAXcoCdM7pDewgaciPp
-         /q8rfwZSzh/UOXWIn8+UskB2xVTxsdbdQNvlLcjQZYMeFs9tSDrUiyfNfx9j68ejjwNp
-         v1wHzdsfN1FTh27/rPDlxoRJy+W5qtn0Rj1WlBCDhNSuTKak9Tm+poHdMlk3IFg0Y2y4
-         nLEhFS5zRiha7vuKeOtoRuUtrDtfdlr12qZyKkki/x7bWzGX6G/v05gDpiumPJr9RcV2
-         0FIA==
-X-Gm-Message-State: AAQBX9c3YEMqFpv5gfniDZrgAvHTd06ktOkGrK/rWQ7/1dVdEaQfcro2
-        BLH1fjRc5EwAleLMqM2covs=
-X-Google-Smtp-Source: AKy350b1m3A3BFbhnjEWAZBZaO+cl87OMMz86TJAKmwKy4zTQ86+WUTaHK3S2APiVUkq35oqpY+1rQ==
-X-Received: by 2002:a2e:bd84:0:b0:2a6:1dbf:5d3e with SMTP id o4-20020a2ebd84000000b002a61dbf5d3emr1026319ljq.0.1680619251465;
-        Tue, 04 Apr 2023 07:40:51 -0700 (PDT)
-Received: from localhost (88-115-161-74.elisa-laajakaista.fi. [88.115.161.74])
-        by smtp.gmail.com with ESMTPSA id a7-20020a05651c010700b0029c13f4d519sm2369013ljb.119.2023.04.04.07.40.50
+        d=1e100.net; s=20210112; t=1680632448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a8QsXaZPHEAsPoW0flCc0TOSQrLjDGzZjDEO/EvIfsw=;
+        b=eGf8YPwIg2FoJO4AAIsn6EeXL4gv7DWmrXVep9AZd4DhzB5g31V81xum3sluOJSKqs
+         HbdNnhm13dLC/VzdrMGg3klvlpGK7aXqa/U77faG2v9AZuKHi+0vBGUj7mqa3YuC0wZ5
+         5KoaRguKXZHHYhV/mYrsLmrpUTrIeMJbGd5JHNMTjqO2E+mquDpuILtHuYaSmRHQf37Z
+         qZOe7JsfwJ7OPf72Zhc2cEdEsREcKlI/E2DmGyTofeQsWYgRGGnie6I19OZrQkasI1lp
+         N2FBRYtJg9HD3I262zSZSZKLQ4beLfYmHKfA9aYRwf3Q2XAPL0k1aPtuaR7eIBWNYXwv
+         YKWA==
+X-Gm-Message-State: AAQBX9dT8Cxidz1D7UJxtiktBKpHS/6uAzEJ2JTcW5r0omMqlXwwOdpF
+        XacL4Dqg32+03s9wpKhF5XtHyw==
+X-Google-Smtp-Source: AKy350ZueCB8uPytSB434Qm4r5EaO+Vwyt0FglDeSJ0S0BeLW50LyieSkwwAgxgd1F0EJCZ+ZvbMfw==
+X-Received: by 2002:a62:1d41:0:b0:62a:4503:53b8 with SMTP id d62-20020a621d41000000b0062a450353b8mr3341665pfd.1.1680632447664;
+        Tue, 04 Apr 2023 11:20:47 -0700 (PDT)
+Received: from localhost.localdomain ([106.51.184.50])
+        by smtp.gmail.com with ESMTPSA id o12-20020a056a001bcc00b0062dcf5c01f9sm9018524pfw.36.2023.04.04.11.20.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Apr 2023 07:40:51 -0700 (PDT)
-Date:   Tue, 4 Apr 2023 17:40:48 +0300
-From:   Zhi Wang <zhi.wang.linux@gmail.com>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
-        <linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
-        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <jroedel@suse.de>,
-        <thomas.lendacky@amd.com>, <hpa@zytor.com>, <ardb@kernel.org>,
-        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
-        <jmattson@google.com>, <luto@kernel.org>,
-        <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-        <pgonda@google.com>, <peterz@infradead.org>,
-        <srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-        <dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>,
-        <vbabka@suse.cz>, <kirill@shutemov.name>, <ak@linux.intel.com>,
-        <tony.luck@intel.com>, <marcorr@google.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <alpergun@google.com>, <dgilbert@redhat.com>, <jarkko@kernel.org>,
-        <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-        Vishal Annapurve <vannapurve@google.com>
-Subject: Re: [PATCH RFC v8 04/56] KVM: Add HVA range operator
-Message-ID: <20230404174048.00005ef9.zhi.wang.linux@gmail.com>
-In-Reply-To: <20230327003444.lqfrididd4gavomb@amd.com>
-References: <20230220183847.59159-1-michael.roth@amd.com>
-        <20230220183847.59159-5-michael.roth@amd.com>
-        <20230220233709.00006dfc@gmail.com>
-        <20230327003444.lqfrididd4gavomb@amd.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 04 Apr 2023 11:20:47 -0700 (PDT)
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-crypto@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        llvm@lists.linux.dev
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Weili Qian <qianweili@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Marc Zyngier <maz@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sunil V L <sunilvl@ventanamicro.com>
+Subject: [PATCH V4 00/23] Add basic ACPI support for RISC-V
+Date:   Tue,  4 Apr 2023 23:50:14 +0530
+Message-Id: <20230404182037.863533-1-sunilvl@ventanamicro.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, 26 Mar 2023 19:34:44 -0500
-Michael Roth <michael.roth@amd.com> wrote:
+This patch series enables the basic ACPI infrastructure for RISC-V.
+Supporting external interrupt controllers is in progress and hence it is
+tested using poll based HVC SBI console and RAM disk.
 
-> On Mon, Feb 20, 2023 at 11:37:09PM +0200, Zhi Wang wrote:
-> > On Mon, 20 Feb 2023 12:37:55 -0600
-> > Michael Roth <michael.roth@amd.com> wrote:
-> > 
-> > > From: Vishal Annapurve <vannapurve@google.com>
-> > > 
-> > > Introduce HVA range operator so that other KVM subsystems
-> > > can operate on HVA range.
-> > > 
-> > > Signed-off-by: Vishal Annapurve <vannapurve@google.com>
-> > > [mdr: minor checkpatch alignment fixups]
-> > > Signed-off-by: Michael Roth <michael.roth@amd.com>
-> > > ---
-> > >  include/linux/kvm_host.h |  6 +++++
-> > >  virt/kvm/kvm_main.c      | 48 ++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 54 insertions(+)
-> > > 
-> > > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > > index 4d542060cd93..c615650ed256 100644
-> > > --- a/include/linux/kvm_host.h
-> > > +++ b/include/linux/kvm_host.h
-> > > @@ -1402,6 +1402,12 @@ void kvm_mmu_invalidate_begin(struct kvm *kvm);
-> > >  void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end);
-> > >  void kvm_mmu_invalidate_end(struct kvm *kvm);
-> > >  
-> > > +typedef int (*kvm_hva_range_op_t)(struct kvm *kvm,
-> > > +				struct kvm_gfn_range *range, void *data);
-> > > +
-> > > +int kvm_vm_do_hva_range_op(struct kvm *kvm, unsigned long hva_start,
-> > > +			   unsigned long hva_end, kvm_hva_range_op_t handler, void *data);
-> > > +
-> > >  long kvm_arch_dev_ioctl(struct file *filp,
-> > >  			unsigned int ioctl, unsigned long arg);
-> > >  long kvm_arch_vcpu_ioctl(struct file *filp,
-> > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > > index f7e00593cc5d..4ccd655dd5af 100644
-> > > --- a/virt/kvm/kvm_main.c
-> > > +++ b/virt/kvm/kvm_main.c
-> > > @@ -642,6 +642,54 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
-> > >  	return (int)ret;
-> > >  }
-> > >  
-> > 
-> > Below function seems a reduced duplicate of __kvm_handle_hva_range()
-> > in virt/kvm/kvm_main.c. It would be nice to factor __kvm_handle_hva_range().
-> 
-> A few differences make it difficult to refactor this clearly:
-> 
->   - This handler is mainly used for loading initial contents into guest
->     image before booting and doesn't rely on the MMU lock being held. It
->     also *can't* be called with MMU lock held because it suffers from the
->     same issue with mem_attr_update() hook where it needs to take a
->     mutex as part of unmapping from directmap when transitioning page to
->     private state in RMP table
->   - This handler wants to return an error code, as opposed to existing
->     handlers which return a true/false values which are passed along to
->     MMU notifier call-site and handled differently.
->   - This handler wants to terminate iterating through memslots as soon
->     as it encounters the first failure, whereas the existing handlers
->     expect to be called for each slot regardless of return value.
-> 
-> So it's a pretty different use-case that adds enough complexity to
-> __kvm_handle_hva_range() that it might need be worth refactoring it,
-> since it complicates some bits that are closely tied to dealing with
-> invalidations where the extra complexity probably needs to be
-> well-warranted.
-> 
-> I took a stab at it here for reference, but even with what seems to be
-> the minimal set of changes it doesn't save on any code and ultimately I
-> think it makes it harder to make sense of what going on:
-> 
->   https://github.com/mdroth/linux/commit/976c5fb708f7babe899fd80e27e19f8ba3f6818d
-> 
-> Is there a better approach?
-> 
+The first patch in this series is one of the patch from Jisheng's
+series [1] which is not merged yet. This patch is required to support
+ACPI since efi_init() which gets called before sbi_init() can enable
+static branches and hits a panic.
 
-Those requirements looks pretty suitable for kvm_handle_hva_range(). Guess
-we just need to extend the iterator a little bit.
+Patch 2 and 3 are ACPICA patches which are merged now into acpica
+but not yet pulled into the linux sources. They exist in this patch set
+as reference. This series can be merged only after those ACPICA patches
+are pulled into linux.
 
-My ideas:
+Below are two ECRs approved by ASWG.
+RINTC - https://drive.google.com/file/d/1R6k4MshhN3WTT-hwqAquu5nX6xSEqK2l/view
+RHCT - https://drive.google.com/file/d/1nP3nFiH4jkPMp6COOxP6123DCZKR-tia/view
 
-1) Add a lock flag in struct kvm_hva_range to indicate if kvm_lock is required
-or not during the iteration. Check the flag with if (!locked && hva_range.need_lock). Then the unlock part can be left un-touched.
 
-2) Add an error code in struct kvm_gfn_range, the handler can set it so that __kvm_handle_hva_range() can check gfn_range.err after ret|= handler(xxx);
-If the err is set, bail out.
+Based-on: 20230328035223.1480939-1-apatel@ventanamicro.com
+(https://lore.kernel.org/lkml/20230328035223.1480939-1-apatel@ventanamicro.com/)
 
-3) Return the gfn_range.err to the caller. The caller can decide how to convert
-it (to boolean or keep it)
+[1] https://lore.kernel.org/all/20220821140918.3613-1-jszhang@kernel.org/
 
-4) Set hva_range.need_lock in the existing and the new caller.
+Changes since V3:
+	1) Added two more driver patches to workaround allmodconfig build failure.
+	2) Separated removal of riscv_of_processor_hartid() to a different patch.
+	3) Addressed Conor's feedback.
+	4) Rebased to v6.3-rc5 and added latest tags
 
-How about this?
+Changes since V2:
+	1) Dropped ACPI_PROCESSOR patch.
+	2) Added new patch to print debug info of RISC-V INTC in MADT
+	3) Addressed other comments from Drew.
+	4) Rebased and updated tags
 
-> Thanks,
-> 
-> -Mike
-> 
-> > 
-> > > +int kvm_vm_do_hva_range_op(struct kvm *kvm, unsigned long hva_start,
-> > > +			   unsigned long hva_end, kvm_hva_range_op_t handler, void *data)
-> > > +{
-> > > +	int ret = 0;
-> > > +	struct kvm_gfn_range gfn_range;
-> > > +	struct kvm_memory_slot *slot;
-> > > +	struct kvm_memslots *slots;
-> > > +	int i, idx;
-> > > +
-> > > +	if (WARN_ON_ONCE(hva_end <= hva_start))
-> > > +		return -EINVAL;
-> > > +
-> > > +	idx = srcu_read_lock(&kvm->srcu);
-> > > +
-> > > +	for (i = 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
-> > > +		struct interval_tree_node *node;
-> > > +
-> > > +		slots = __kvm_memslots(kvm, i);
-> > > +		kvm_for_each_memslot_in_hva_range(node, slots,
-> > > +						  hva_start, hva_end - 1) {
-> > > +			unsigned long start, end;
-> > > +
-> > > +			slot = container_of(node, struct kvm_memory_slot,
-> > > +					    hva_node[slots->node_idx]);
-> > > +			start = max(hva_start, slot->userspace_addr);
-> > > +			end = min(hva_end, slot->userspace_addr +
-> > > +						  (slot->npages << PAGE_SHIFT));
-> > > +
-> > > +			/*
-> > > +			 * {gfn(page) | page intersects with [hva_start, hva_end)} =
-> > > +			 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
-> > > +			 */
-> > > +			gfn_range.start = hva_to_gfn_memslot(start, slot);
-> > > +			gfn_range.end = hva_to_gfn_memslot(end + PAGE_SIZE - 1, slot);
-> > > +			gfn_range.slot = slot;
-> > > +
-> > > +			ret = handler(kvm, &gfn_range, data);
-> > > +			if (ret)
-> > > +				goto e_ret;
-> > > +		}
-> > > +	}
-> > > +
-> > > +e_ret:
-> > > +	srcu_read_unlock(&kvm->srcu, idx);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
-> > >  						unsigned long start,
-> > >  						unsigned long end,
-> > 
+Changes since V1:
+	1) Dropped PCI changes and instead added dummy interfaces just to enable
+	   building ACPI core when CONFIG_PCI is enabled. Actual PCI changes will
+	   be added in future along with external interrupt controller support
+	   in ACPI.
+	2) Squashed couple of patches so that new code added gets built in each
+	   commit.
+	3) Fixed the missing wake_cpu code in timer refactor patch as pointed by
+	   Conor
+	4) Fixed an issue with SMP disabled.
+	5) Addressed other comments from Conor.
+	6) Updated documentation patch as per feedback from Sanjaya.
+	7) Fixed W=1 and checkpatch --strict issues.
+	8) Added ACK/RB tags
+
+These changes are available at
+https://github.com/vlsunil/linux/commits/acpi_b1_us_review_ipi17_V4
+
+Testing:
+1) Build latest Qemu 
+
+2) Build EDK2 as per instructions in
+https://github.com/vlsunil/riscv-uefi-edk2-docs/wiki/RISC-V-Qemu-Virt-support
+
+3) Build Linux after enabling SBI HVC and SBI earlycon
+CONFIG_RISCV_SBI_V01=y
+CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+CONFIG_HVC_RISCV_SBI=y
+
+4) Build buildroot.
+
+Run with below command.
+qemu-system-riscv64   -nographic \
+-drive file=Build/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT.fd,if=pflash,format=raw,unit=1 \
+-machine virt -smp 16 -m 2G \
+-kernel arch/riscv/boot/Image \
+-initrd buildroot/output/images/rootfs.cpio \
+-append "root=/dev/ram ro console=hvc0 earlycon=sbi"
+
+
+Jisheng Zhang (1):
+  riscv: move sbi_init() earlier before jump_label_init()
+
+Sunil V L (22):
+  ACPICA: MADT: Add RISC-V INTC interrupt controller
+  ACPICA: Add structure definitions for RISC-V RHCT
+  ACPI: tables: Print RINTC information when MADT is parsed
+  ACPI: OSL: Make should_use_kmap() 0 for RISC-V
+  RISC-V: Add support to build the ACPI core
+  ACPI: processor_core: RISC-V: Enable mapping processor to the hartid
+  RISC-V: ACPI: Cache and retrieve the RINTC structure
+  drivers/acpi: RISC-V: Add RHCT related code
+  RISC-V: smpboot: Create wrapper smp_setup()
+  RISC-V: smpboot: Add ACPI support in smp_setup()
+  RISC-V: cpufeature: Avoid calling riscv_of_processor_hartid()
+  RISC-V: cpufeature: Add ACPI support in riscv_fill_hwcap()
+  RISC-V: cpu: Enable cpuinfo for ACPI systems
+  irqchip/riscv-intc: Add ACPI support
+  clocksource/timer-riscv: Refactor riscv_timer_init_dt()
+  clocksource/timer-riscv: Add ACPI support
+  RISC-V: time.c: Add ACPI support for time_init()
+  RISC-V: Add ACPI initialization in setup_arch()
+  RISC-V: Enable ACPI in defconfig
+  MAINTAINERS: Add entry for drivers/acpi/riscv
+  platform/surface: Disable for RISC-V
+  crypto: hisilicon/qm: Workaround to enable build with RISC-V clang
+
+ .../admin-guide/kernel-parameters.txt         |   8 +-
+ MAINTAINERS                                   |   8 +
+ arch/riscv/Kconfig                            |   5 +
+ arch/riscv/configs/defconfig                  |   1 +
+ arch/riscv/include/asm/acenv.h                |  11 +
+ arch/riscv/include/asm/acpi.h                 |  77 +++++
+ arch/riscv/include/asm/cpu.h                  |   8 +
+ arch/riscv/kernel/Makefile                    |   2 +
+ arch/riscv/kernel/acpi.c                      | 266 ++++++++++++++++++
+ arch/riscv/kernel/cpu.c                       |  30 +-
+ arch/riscv/kernel/cpufeature.c                |  44 ++-
+ arch/riscv/kernel/setup.c                     |  27 +-
+ arch/riscv/kernel/smpboot.c                   |  77 ++++-
+ arch/riscv/kernel/time.c                      |  25 +-
+ drivers/acpi/Makefile                         |   2 +
+ drivers/acpi/osl.c                            |   2 +-
+ drivers/acpi/processor_core.c                 |  29 ++
+ drivers/acpi/riscv/Makefile                   |   2 +
+ drivers/acpi/riscv/rhct.c                     |  83 ++++++
+ drivers/acpi/tables.c                         |  10 +
+ drivers/clocksource/timer-riscv.c             |  92 +++---
+ drivers/crypto/hisilicon/qm.c                 |  13 +-
+ drivers/irqchip/irq-riscv-intc.c              |  74 ++++-
+ drivers/platform/surface/aggregator/Kconfig   |   2 +-
+ include/acpi/actbl2.h                         |  69 ++++-
+ 25 files changed, 867 insertions(+), 100 deletions(-)
+ create mode 100644 arch/riscv/include/asm/acenv.h
+ create mode 100644 arch/riscv/include/asm/acpi.h
+ create mode 100644 arch/riscv/include/asm/cpu.h
+ create mode 100644 arch/riscv/kernel/acpi.c
+ create mode 100644 drivers/acpi/riscv/Makefile
+ create mode 100644 drivers/acpi/riscv/rhct.c
+
+-- 
+2.34.1
 
