@@ -2,56 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D8B6D51F6
-	for <lists+linux-crypto@lfdr.de>; Mon,  3 Apr 2023 22:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35656D5817
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Apr 2023 07:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbjDCUGk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 3 Apr 2023 16:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
+        id S233262AbjDDFmB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 4 Apr 2023 01:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbjDCUGN (ORCPT
+        with ESMTP id S233294AbjDDFmA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 3 Apr 2023 16:06:13 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B88422A
-        for <linux-crypto@vger.kernel.org>; Mon,  3 Apr 2023 13:05:47 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id d11-20020a05600c3acb00b003ef6e6754c5so15121652wms.5
-        for <linux-crypto@vger.kernel.org>; Mon, 03 Apr 2023 13:05:47 -0700 (PDT)
+        Tue, 4 Apr 2023 01:42:00 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E731FD8
+        for <linux-crypto@vger.kernel.org>; Mon,  3 Apr 2023 22:41:58 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h8so125933247ede.8
+        for <linux-crypto@vger.kernel.org>; Mon, 03 Apr 2023 22:41:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680552347;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w63VFmiH16vEozVIfZE6H9nBGMybmPlflk/SwWYJdEs=;
-        b=ppnPwRSMi6a1hCFhUQXBVflFookWwsw9uTun/lpkSAcq6yLR/Fb2hvwh8x/GIq9qBL
-         17vol2Dz/nicpTPjY+sdd3nIFHterpRb2a7Q5fMPnmTvZGn+Tkv6EBthAlzegwvheSy/
-         FL9INnwMzqwpHYcVHj3YUX9WDlfcaETfKUPhnYfJA6sGAY8WoyH5eZf22JI6qRFY3M82
-         HKM2kqSM63vVhLTcB56NfZx3WFybrWaMZg8asc79hkfg0AKALFocn9yEYiym5gwuMGfT
-         rokW46x6mOGHjnQSh5OBZ7J8LXIhpmKFAoIDJtRcw70xaLej5NdKFQRN6n41WZ+UfJoX
-         tFXg==
+        d=linaro.org; s=google; t=1680586917;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vkLggO8KDDtQGSO4O++zqyqlroGLRt9bsTLK9+jSmi4=;
+        b=PeMTuTOEu4F6ccICdsCs1oZoXTmsSvgH4YGAk/wgwuHsIb6xd112MpRWI2IvOINQ28
+         zqVwSxy2xnNtWBZ8mhTaSe8fsSWVm8g2tnDCY1PAsgCHj15PSiCx/9iu+ssXAhpm9aXq
+         KBgsTq/OQARkYgvmvMn9P9xol46hFYOkJgjzqfusG3L6Atztgmhqw0fzxQQtX+3wIm4g
+         bkvaFkzgNQGpjUs5Z2UPeKQVzpPrB476NmKvVmpLK2k3vvJ5VcgOCc57RqyX+jIxhKTF
+         4N0+a+5P/aDUNB1c9y7FANMFybV/7xw8QTZvM2STYwxluSKFXZP8OU4ju7PdFoz8n5U5
+         ZsSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680552347;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w63VFmiH16vEozVIfZE6H9nBGMybmPlflk/SwWYJdEs=;
-        b=bVWgcBg28yw7wEMYoDsnR6ClMjMDIBRKFE63HtKgvP6RmMm13oyZ1m+mUiCz8J8i/Z
-         oGYEXQOaieHJiF3Uzc/QdiKv3TYECnOZmEqRALeFDqVcVoz0MCLBEcBNY41c8c7Br/IY
-         hOB7PTTBou+d/9qVWx1YgkU7CDe3RIAhVuICdn4HJFLaQj9k1pIvFXtPM20jhePc1Ghp
-         ixuf4jT4jP6Hq2GYjt2P86ytU6c2UqgXMA8U9PPIAT3RudIYCujCp4nJv3M+3FZq93Va
-         Ew/bGOvh/koH1frkv+cjypiQcNVgpGj5ReWpMMfDFUA3nssVv7A3M3RBtpTNy+Dw8maS
-         5fMg==
-X-Gm-Message-State: AAQBX9dIrcK1lE+hlkgeZecQmFMsWTWfp9QUrXPsKhtUFNpdNjrFs7Yy
-        cPP94VciAPskH/XRgdCYJuaY1A==
-X-Google-Smtp-Source: AKy350YX1qUZV5PNkMcHPes5bv/LBKFgFxiLlw1bxdFmas+muyBCDQI5VLAThWKSecWRbxT/ec3Bxg==
-X-Received: by 2002:a1c:e916:0:b0:3e2:2467:d3f5 with SMTP id q22-20020a1ce916000000b003e22467d3f5mr403869wmc.25.1680552347094;
-        Mon, 03 Apr 2023 13:05:47 -0700 (PDT)
-Received: from localhost.localdomain ([94.52.112.99])
-        by smtp.gmail.com with ESMTPSA id iv19-20020a05600c549300b003ef69873cf1sm20798037wmb.40.2023.04.03.13.05.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 13:05:46 -0700 (PDT)
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        d=1e100.net; s=20210112; t=1680586917;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vkLggO8KDDtQGSO4O++zqyqlroGLRt9bsTLK9+jSmi4=;
+        b=cyiLHlbB+GejgdBMaphUmBdzUvsvOLPzZBWamqVq10P+WOM9p/2MlsnPX+wZA/QuZ7
+         5JOk0Fze2Iv343ANnI5NxRxaDfAQGuCpl4EYvz44l0n9slQD3tzk5FDoiPqB+GXqhiSL
+         rFwbFgSnaFIgeZYkr9HH55b6bazqXT8zsNtUtOLCacF/lJoigF9/lGjOUrLnjn+mI3AB
+         Br7q9IbaR6GLnzvhvzNfbFv1Z1KDuJ8CbMMfk9oEWm8czsLAj8GrWV3Jrlc1F+67WaJO
+         XbQ5UI4Qb2aqxA2GTQU+QQx+H4urw1t33H3dQZb2Hs1kT3vArbREJhVdO2HyL1qOMA6g
+         OJsg==
+X-Gm-Message-State: AAQBX9eJksmEKo+o0HXxsT3lxFxJc0gV6V03ayimwziRoMwGz7hpUtnK
+        V+6mP7WciOryrL3IhQeuw6eD4g==
+X-Google-Smtp-Source: AKy350alQEuK+jaEwiAUarG9JUGGPd9TSw6AtgvsRBzfuLEAJRvSOasjLJIY0F94lySGnxGRn2gWtg==
+X-Received: by 2002:a17:906:33c9:b0:92b:f118:ef32 with SMTP id w9-20020a17090633c900b0092bf118ef32mr1177803eja.48.1680586917048;
+        Mon, 03 Apr 2023 22:41:57 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:233a:5c18:b527:381e? ([2a02:810d:15c0:828:233a:5c18:b527:381e])
+        by smtp.gmail.com with ESMTPSA id ga3-20020a170906b84300b0092595899cfcsm5442421ejb.53.2023.04.03.22.41.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Apr 2023 22:41:56 -0700 (PDT)
+Message-ID: <9fc90c8b-9234-84fa-7dab-fee9de2b9813@linaro.org>
+Date:   Tue, 4 Apr 2023 07:41:55 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v5 2/6] dt-bindings: ufs: qcom: Add ICE phandle
+Content-Language: en-US
+To:     Abel Vesa <abel.vesa@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Andy Gross <agross@kernel.org>,
@@ -71,73 +78,40 @@ Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
         linux-scsi@vger.kernel.org
-Subject: [PATCH v5 6/6] arm64: dts: qcom: sm8550: Add the Inline Crypto Engine node
-Date:   Mon,  3 Apr 2023 23:05:30 +0300
-Message-Id: <20230403200530.2103099-7-abel.vesa@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230403200530.2103099-1-abel.vesa@linaro.org>
 References: <20230403200530.2103099-1-abel.vesa@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+ <20230403200530.2103099-3-abel.vesa@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230403200530.2103099-3-abel.vesa@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add support for UFS ICE by adding the qcom,ice property and the
-ICE dedicated devicetree node. While at it, add the reg-name property
-to the UFS HC node to be in line with older platforms.
+On 03/04/2023 22:05, Abel Vesa wrote:
+> Starting with SM8550, the ICE will have its own devicetree node
+> so add the qcom,ice property to reference it.
+> 
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+> 
+> The v4 is here:
+> https://lore.kernel.org/all/20230327134734.3256974-4-abel.vesa@linaro.org/
+> 
+> Changes since v4:
+>  * Added check for sm8550 compatible w.r.t. qcom,ice in order to enforce
+>    it while making sure none of the other platforms are allowed to use it
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
+Why?
 
-The v4 is here:
-https://lore.kernel.org/all/20230327134734.3256974-8-abel.vesa@linaro.org/
+Also, this does not solve my previous question still.
 
-Changes since v4:
- * none
-
-Changes since v3:
- * none
-
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index c6613654942a..dcfbbf33663a 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -1889,6 +1889,7 @@ ufs_mem_hc: ufs@1d84000 {
- 			compatible = "qcom,sm8550-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
- 			reg = <0x0 0x01d84000 0x0 0x3000>;
-+			reg-names = "std";
- 			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
- 			phys = <&ufs_mem_phy>;
- 			phy-names = "ufsphy";
-@@ -1932,9 +1933,18 @@ ufs_mem_hc: ufs@1d84000 {
- 				<0 0>,
- 				<0 0>,
- 				<0 0>;
-+			qcom,ice = <&ice>;
-+
- 			status = "disabled";
- 		};
- 
-+		ice: crypto@1d88000 {
-+			compatible = "qcom,sm8550-inline-crypto-engine",
-+				     "qcom,inline-crypto-engine";
-+			reg = <0 0x01d88000 0 0x8000>;
-+			clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
-+		};
-+
- 		tcsr_mutex: hwlock@1f40000 {
- 			compatible = "qcom,tcsr-mutex";
- 			reg = <0 0x01f40000 0 0x20000>;
--- 
-2.34.1
+Best regards,
+Krzysztof
 
