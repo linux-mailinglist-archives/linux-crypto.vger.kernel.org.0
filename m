@@ -2,130 +2,91 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 812376DAC6E
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Apr 2023 13:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38376DAE36
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Apr 2023 15:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239494AbjDGL5Y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 7 Apr 2023 07:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S231825AbjDGNsD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 7 Apr 2023 09:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbjDGL5W (ORCPT
+        with ESMTP id S230346AbjDGNrs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 7 Apr 2023 07:57:22 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89D27ECB
-        for <linux-crypto@vger.kernel.org>; Fri,  7 Apr 2023 04:57:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1680868629; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=XPS8UOxETiOHvAvEbSCQi6N0fBnVwD8Ix0dFxdbZn64B7tHFtzZenvSnlRuqXXZ6u3
-    TRG842e2zXTThnHMr36gKHJancBQy/DFLwnaUe1NVmy8hTG7/+Nqx3amCxV+keKdkMRG
-    qzH7dptcqPJtGjd3xH6EkdBDPd4utkjovedrBWjGJUzp0Za9daZSv7ytqy4+dAs0WUKD
-    VZ/ByQXxTYeS3odxuSKYH7DvTuWWTG0AFTP8ecFJluK7USva/nFN69cbkOhqQ2F4yIaR
-    Ro3dQFaxwq7hN9rWWffZCGfENcKaJ74TKx0m1KYa8yM9MrdCpKiL5ZdijLsDGNHQav3s
-    IVyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1680868629;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=jdYIpL6o+B2SLMNN2b58O3v+wE1l0DQzhYjlggOhFDc=;
-    b=A/BhJuo4I9NF2j0WfBBqet63+ojj3mI/dJn3BpNYJCEjwtQ3h0p2KzHqQy5dD3zpjH
-    zM/es5kYGJr9I5WaynIWOZSqmO+tjl3jm6aTRIleuBd5W3ehR+lxquz0FtOKhMJhS/c5
-    2UkP/QBuLYuefirwnpCEKW7YZKc4qtAojphgotZe5hV4yU9BNWw05mYpaFfZHrKLZnhi
-    tyRkj4lrNPkf8HMhRf6Tz+3jJ2/SmheUSft5sfWhdU09SIqNVbUm/twN6aDIhtcjp6UC
-    XzGYBDV39qdT6An1a3aHBd9LmEvbCVINaZwhv19BrqhA29OlFzwooD5WWNSJHGdRXqMv
-    81nA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1680868629;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=jdYIpL6o+B2SLMNN2b58O3v+wE1l0DQzhYjlggOhFDc=;
-    b=eqtlaZO7soVhyi2g/D5TTt8zxdU+HHc66kl2ApBPT7H1YjNtyZ49kBdpLTnK/kpqlA
-    m3KxGA7TYNtEb/Fvv7VFrSTo6RSBWubzh8/nFaf6f+BKjWcU8EciLp81Ix30Cq6rk0XL
-    TrdK+8j2DgHJtR5fhkc3kAA0ac998g8JeBCL+QzItVmbJglta+2qmFOG8q3/+HUwcgkE
-    wNNxOm26hWVhJlK2o6m2JpJlGxA92775QxwoyAGYlqfAu46TEW6ZZ7n0jJU7ugafbgNZ
-    8xv+s24dmrDlmzjFE9YUFV+lHyx/DuPfRd5vGA+MjLVuMNZ6/DPuayWhheGTwPVU0eYT
-    cSaQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1680868629;
-    s=strato-dkim-0003; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=jdYIpL6o+B2SLMNN2b58O3v+wE1l0DQzhYjlggOhFDc=;
-    b=o0zhn+kqdgB2q86d5uIiZr+cMcep11AV7Lt1H8dod62BcfZ72lDeeDRvTSUatbSWg2
-    YY2F8Peh85uIdIIjEKBw==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9y2gdNk2TvDz0d0u0OAA="
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 49.4.0 AUTH)
-    with ESMTPSA id ta02b6z37Bv8FUV
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 7 Apr 2023 13:57:08 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au
-Cc:     Vladis Dronov <vdronov@redhat.com>,
-        Marcelo Cerri <marcelo.cerri@canonical.com>
-Subject: [PATCH 2/2] crypto: jitter - add interface for gathering of raw entropy
-Date:   Fri, 07 Apr 2023 13:56:15 +0200
-Message-ID: <4482779.LvFx2qVVIh@positron.chronox.de>
-In-Reply-To: <2684670.mvXUDI8C0e@positron.chronox.de>
-References: <2684670.mvXUDI8C0e@positron.chronox.de>
+        Fri, 7 Apr 2023 09:47:48 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364A8B744
+        for <linux-crypto@vger.kernel.org>; Fri,  7 Apr 2023 06:46:11 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-930e691e34eso166306266b.0
+        for <linux-crypto@vger.kernel.org>; Fri, 07 Apr 2023 06:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680875150;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yp5m0Gs2+7L1T7k0BOgEaesPaUmP03C3lD6UUC3EEfI=;
+        b=Q8cKW1Y9yPr2fpOL+h62V4+4LKKzKurXsFkFP8HTS2ZsTk9QbnScMQLueaGMd7uxZX
+         YyGeO6gYuhxM6rR/qSd0ky8WzO4rKTu9/9GfMP+ymDyx4DYYHEsSR7+F6n0q1DbLETJQ
+         Jt2ABT8Dw/7A33eJt7UZSOdw35bxMH1hYkzCVFewZ53L5myO44Ju9OrNH6hfYM9UUF+T
+         9m+/zQXxoXAPESyq24BEBOh2tjmnLglWDM1YkGWRwmpjFRRYMMY1GV28mQHARPO8UTTw
+         bVg9Pf+cquhScTcOKyWUSiuTVy1i16oake/nYxX+a2qGw7/ytbvucNpn0uvrZMJT6jat
+         xczw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680875150;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yp5m0Gs2+7L1T7k0BOgEaesPaUmP03C3lD6UUC3EEfI=;
+        b=2vg2Ima1EBJy3dwJfwickiKKXOEneNn5GrbGE6vP3AFD+dh2JQR+URfcUbtVdP973R
+         IlsBeXvsH/vpAqjb/Jhg7v9kNxfV3spfCZwC2nw1p44/QosTpr9dH6G9/fHCvAU7Wm6p
+         wj1DHz5htmjwZt7SW1j9PkasoFMx+vG0PUkNQcEm1ykIdCaSfnnd1z/WirGPgwIJoUy8
+         sgwtEZc84Cd48Cd7h+b0x73w553F8OJUd76LesrnD9TfwpMDZzkWdlzxNwAodMuB1o+6
+         ozQq4R2oEFAQWQ7TmokKrELiPCIpPqc+GkRnxxUjvUvBb5VTIvrtRP1vtwQ72nKspTsi
+         d3mQ==
+X-Gm-Message-State: AAQBX9fp55lJg/1k4mba3Zj37BRCGqO15kkkz2FRuyHzKxliayL2esDV
+        hUdqL+5m3cBqIjAZAgtEJ604iw==
+X-Google-Smtp-Source: AKy350YfI24zrr3k/owoorldtK4j2Zc1yFlw5O+l6gy+yzp0dsAPQIPRc+pCkj0U+Y3iqphLdUBj2g==
+X-Received: by 2002:a50:fb85:0:b0:502:3376:786d with SMTP id e5-20020a50fb85000000b005023376786dmr1810673edq.6.1680875150253;
+        Fri, 07 Apr 2023 06:45:50 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:b20f:8824:c926:8299? ([2a02:810d:15c0:828:b20f:8824:c926:8299])
+        by smtp.gmail.com with ESMTPSA id v7-20020a50a447000000b00504832f2489sm47159edb.78.2023.04.07.06.45.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Apr 2023 06:45:48 -0700 (PDT)
+Message-ID: <9a4aa196-3110-9c62-6e30-a8bfa2a9327c@linaro.org>
+Date:   Fri, 7 Apr 2023 15:45:47 +0200
 MIME-Version: 1.0
-Autocrypt: addr=smueller@chronox.de;
- keydata=
- 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
- kBFBHm+xdudNab2U0OpfqrWerOw3WcGd2
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_NONE autolearn=unavailable autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v6 2/6] dt-bindings: ufs: qcom: Add ICE phandle
+Content-Language: en-US
+To:     Abel Vesa <abel.vesa@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+References: <20230407105029.2274111-1-abel.vesa@linaro.org>
+ <20230407105029.2274111-3-abel.vesa@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230407105029.2274111-3-abel.vesa@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,453 +94,73 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The test interface allows a privileged process to capture the raw
-unconditioned noise that is collected by the Jitter RNG for statistical
-analysis. Such testing allows the analysis how much entropy
-the Jitter RNG noise source provides on a given platform. The obtained
-data is the time stamp sampled by the Jitter RNG. Considering that
-the Jitter RNG inserts the delta of this time stamp compared to the
-immediately preceding time stamp, the obtained data needs to be
-post-processed accordingly to obtain the data the Jitter RNG inserts
-into its entropy pool.
+On 07/04/2023 12:50, Abel Vesa wrote:
+> Starting with SM8550, the ICE will have its own devicetree node
+> so add the qcom,ice property to reference it.
+> 
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+> 
+> The v5 is here:
+> https://lore.kernel.org/all/20230403200530.2103099-3-abel.vesa@linaro.org/
+> 
+> Changes since v5:
+>  * dropped the sm8550 specific subschema and replaced it with one that
+>    mutually excludes the qcom,ice vs both the ICE specific reg range
+>    and the ICE clock
+> 
+> Changes since v4:
+>  * Added check for sm8550 compatible w.r.t. qcom,ice in order to enforce
+>    it while making sure none of the other platforms are allowed to use it
+> 
+> Changes since v3:
+>  * dropped the "and drop core clock" part from subject line
+> 
+> Changes since v2:
+>  * dropped all changes except the qcom,ice property
+> 
+> 
+>  .../devicetree/bindings/ufs/qcom,ufs.yaml     | 26 +++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
+> index c5a06c048389..71aa79eac6b4 100644
+> --- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
+> +++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
+> @@ -70,6 +70,10 @@ properties:
+>    power-domains:
+>      maxItems: 1
+>  
+> +  qcom,ice:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: phandle to the Inline Crypto Engine node
+> +
+>    reg:
+>      minItems: 1
+>      maxItems: 2
+> @@ -187,6 +191,28 @@ allOf:
+>  
+>      # TODO: define clock bindings for qcom,msm8994-ufshc
+>  
+> +  - if:
+> +      properties:
+> +        qcom,ice:
+> +          minItems: 1
 
-The raw entropy collection is provided to obtain the raw unmodified
-time stamps that are about to be added to the Jitter RNG entropy pool
-and are credited with entropy. Thus, this patch adds an interface
-which renders the Jitter RNG insecure. This patch is NOT INTENDED
-FOR PRODUCTION SYSTEMS, but solely for development/test systems to
-verify the available entropy rate.
+Drop minItems
 
-Access to the data is given through the jent_raw_hires debugfs file.
-The data buffer should be multiples of sizeof(u32) to fill the entire
-buffer. Using the option jitterentropy_testing.boot_raw_hires_test=1
-the raw noise of the first 1000 entropy events since boot can be
-sampled.
+> +          maxItems: 1
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 1
 
-This test interface allows generating the data required for
-analysis whether the Jitter RNG is in compliance with SP800-90B
-sections 3.1.3 and 3.1.4.
+Drop minItems
 
-If the test interface is not compiled, its code is a noop which has no
-impact on the performance.
-
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
----
- crypto/Kconfig                 |  20 +++
- crypto/Makefile                |   1 +
- crypto/jitterentropy-kcapi.c   |   9 +-
- crypto/jitterentropy-testing.c | 294 +++++++++++++++++++++++++++++++++
- crypto/jitterentropy.h         |  10 ++
- 5 files changed, 333 insertions(+), 1 deletion(-)
- create mode 100644 crypto/jitterentropy-testing.c
-
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 113dee4b167b..9b39730bfa73 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1288,6 +1288,26 @@ config CRYPTO_JITTERENTROPY
- 
- 	  See https://www.chronox.de/jent.html
- 
-+config CRYPTO_JITTERENTROPY_TESTINTERFACE
-+	bool "CPU Jitter RNG Test Interface"
-+	depends on CRYPTO_JITTERENTROPY
-+	help
-+	  The test interface allows a privileged process to capture
-+	  the raw unconditioned high resolution time stamp noise that
-+	  is collected by the Jitter RNG for statistical analysis. As
-+	  this data is used at the same time to generate random bits,
-+	  the Jitter RNG operates in an insecure mode as long as the
-+	  recording is enabled. This interface therefore is only
-+	  intended for testing purposes and is not suitable for
-+	  production systems.
-+
-+	  The raw noise data can be obtained using the jent_raw_hires
-+	  debugfs file. Using the option
-+	  jitterentropy_testing.boot_raw_hires_test=1 the raw noise of
-+	  the first 1000 entropy events since boot can be sampled.
-+
-+	  If unsure, select N.
-+
- config CRYPTO_KDF800108_CTR
- 	tristate
- 	select CRYPTO_HMAC
-diff --git a/crypto/Makefile b/crypto/Makefile
-index d0126c915834..45dae478af2b 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -171,6 +171,7 @@ CFLAGS_jitterentropy.o = -O0
- KASAN_SANITIZE_jitterentropy.o = n
- UBSAN_SANITIZE_jitterentropy.o = n
- jitterentropy_rng-y := jitterentropy.o jitterentropy-kcapi.o
-+obj-$(CONFIG_CRYPTO_JITTERENTROPY_TESTINTERFACE) += jitterentropy-testing.o
- obj-$(CONFIG_CRYPTO_TEST) += tcrypt.o
- obj-$(CONFIG_CRYPTO_GHASH) += ghash-generic.o
- obj-$(CONFIG_CRYPTO_POLYVAL) += polyval-generic.o
-diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
-index 228b10cab55f..419d4da16b9d 100644
---- a/crypto/jitterentropy-kcapi.c
-+++ b/crypto/jitterentropy-kcapi.c
-@@ -88,6 +88,7 @@ void jent_get_nstime(__u64 *out)
- 		tmp = ktime_get_ns();
- 
- 	*out = tmp;
-+	jent_raw_hires_entropy_store(tmp);
- }
- 
- int jent_hash_time(void *hash_state, __u64 time, u8 *addtl,
-@@ -319,9 +320,13 @@ static int __init jent_mod_init(void)
- 	struct crypto_shash *tfm;
- 	int ret = 0;
- 
-+	jent_testing_init();
-+
- 	tfm = crypto_alloc_shash(JENT_CONDITIONING_HASH, 0, 0);
--	if (IS_ERR(tfm))
-+	if (IS_ERR(tfm)) {
-+		jent_testing_exit();
- 		return PTR_ERR(tfm);
-+	}
- 
- 	desc->tfm = tfm;
- 	crypto_shash_init(desc);
-@@ -333,6 +338,7 @@ static int __init jent_mod_init(void)
- 		if (fips_enabled)
- 			panic("jitterentropy: Initialization failed with host not compliant with requirements: %d\n", ret);
- 
-+		jent_testing_exit();
- 		pr_info("jitterentropy: Initialization failed with host not compliant with requirements: %d\n", ret);
- 		return -EFAULT;
- 	}
-@@ -341,6 +347,7 @@ static int __init jent_mod_init(void)
- 
- static void __exit jent_mod_exit(void)
- {
-+	jent_testing_exit();
- 	crypto_unregister_rng(&jent_alg);
- }
- 
-diff --git a/crypto/jitterentropy-testing.c b/crypto/jitterentropy-testing.c
-new file mode 100644
-index 000000000000..4313abece3f4
---- /dev/null
-+++ b/crypto/jitterentropy-testing.c
-@@ -0,0 +1,294 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Test interface for Jitter RNG.
-+ *
-+ * Copyright (C) 2023, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+#include <linux/debugfs.h>
-+#include <linux/module.h>
-+#include <linux/uaccess.h>
-+
-+#include "jitterentropy.h"
-+
-+#define JENT_TEST_RINGBUFFER_SIZE	(1<<10)
-+#define JENT_TEST_RINGBUFFER_MASK	(JENT_TEST_RINGBUFFER_SIZE - 1)
-+
-+struct jent_testing {
-+	u32 jent_testing_rb[JENT_TEST_RINGBUFFER_SIZE];
-+	u32 rb_reader;
-+	atomic_t rb_writer;
-+	atomic_t jent_testing_enabled;
-+	spinlock_t lock;
-+	wait_queue_head_t read_wait;
-+};
-+
-+static struct dentry *jent_raw_debugfs_root = NULL;
-+
-+/*************************** Generic Data Handling ****************************/
-+
-+/*
-+ * boot variable:
-+ * 0 ==> No boot test, gathering of runtime data allowed
-+ * 1 ==> Boot test enabled and ready for collecting data, gathering runtime
-+ *	 data is disabled
-+ * 2 ==> Boot test completed and disabled, gathering of runtime data is
-+ *	 disabled
-+ */
-+
-+static void jent_testing_reset(struct jent_testing *data)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+	data->rb_reader = 0;
-+	atomic_set(&data->rb_writer, 0);
-+	spin_unlock_irqrestore(&data->lock, flags);
-+}
-+
-+static void jent_testing_data_init(struct jent_testing *data, u32 boot)
-+{
-+	/*
-+	 * The boot time testing implies we have a running test. If the
-+	 * caller wants to clear it, he has to unset the boot_test flag
-+	 * at runtime via sysfs to enable regular runtime testing
-+	 */
-+	if (boot)
-+		return;
-+
-+	jent_testing_reset(data);
-+	atomic_set(&data->jent_testing_enabled, 1);
-+	pr_warn("Enabling data collection\n");
-+}
-+
-+static void jent_testing_fini(struct jent_testing *data, u32 boot)
-+{
-+	/* If we have boot data, we do not reset yet to allow data to be read */
-+	if (boot)
-+		return;
-+
-+	atomic_set(&data->jent_testing_enabled, 0);
-+	jent_testing_reset(data);
-+	pr_warn("Disabling data collection\n");
-+}
-+
-+static bool jent_testing_store(struct jent_testing *data, u32 value,
-+			       u32 *boot)
-+{
-+	unsigned long flags;
-+
-+	if (!atomic_read(&data->jent_testing_enabled) && (*boot != 1))
-+		return false;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	/*
-+	 * Disable entropy testing for boot time testing after ring buffer
-+	 * is filled.
-+	 */
-+	if (*boot) {
-+		if (((u32)atomic_read(&data->rb_writer)) >
-+		     JENT_TEST_RINGBUFFER_SIZE) {
-+			*boot = 2;
-+			pr_warn_once("One time data collection test disabled\n");
-+			spin_unlock_irqrestore(&data->lock, flags);
-+			return false;
-+		}
-+
-+		if (atomic_read(&data->rb_writer) == 1)
-+			pr_warn("One time data collection test enabled\n");
-+	}
-+
-+	data->jent_testing_rb[((u32)atomic_read(&data->rb_writer)) &
-+			      JENT_TEST_RINGBUFFER_MASK] = value;
-+	atomic_inc(&data->rb_writer);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	if (wq_has_sleeper(&data->read_wait))
-+		wake_up_interruptible(&data->read_wait);
-+
-+	return true;
-+}
-+
-+static bool jent_testing_have_data(struct jent_testing *data)
-+{
-+	return ((((u32)atomic_read(&data->rb_writer)) &
-+		 JENT_TEST_RINGBUFFER_MASK) !=
-+		 (data->rb_reader & JENT_TEST_RINGBUFFER_MASK));
-+}
-+
-+static int jent_testing_reader(struct jent_testing *data, u32 *boot,
-+			       u8 *outbuf, u32 outbuflen)
-+{
-+	unsigned long flags;
-+	int collected_data = 0;
-+
-+	jent_testing_data_init(data, *boot);
-+
-+	while (outbuflen) {
-+		u32 writer = (u32)atomic_read(&data->rb_writer);
-+
-+		spin_lock_irqsave(&data->lock, flags);
-+
-+		/* We have no data or reached the writer. */
-+		if (!writer || (writer == data->rb_reader)) {
-+
-+			spin_unlock_irqrestore(&data->lock, flags);
-+
-+			/*
-+			 * Now we gathered all boot data, enable regular data
-+			 * collection.
-+			 */
-+			if (*boot) {
-+				*boot = 0;
-+				goto out;
-+			}
-+
-+			wait_event_interruptible(data->read_wait,
-+						 jent_testing_have_data(data));
-+			if (signal_pending(current)) {
-+				collected_data = -ERESTARTSYS;
-+				goto out;
-+			}
-+
-+			continue;
-+		}
-+
-+		/* We copy out word-wise */
-+		if (outbuflen < sizeof(u32)) {
-+			spin_unlock_irqrestore(&data->lock, flags);
-+			goto out;
-+		}
-+
-+		memcpy(outbuf, &data->jent_testing_rb[data->rb_reader],
-+		       sizeof(u32));
-+		data->rb_reader++;
-+
-+		spin_unlock_irqrestore(&data->lock, flags);
-+
-+		outbuf += sizeof(u32);
-+		outbuflen -= sizeof(u32);
-+		collected_data += sizeof(u32);
-+	}
-+
-+out:
-+	jent_testing_fini(data, *boot);
-+	return collected_data;
-+}
-+
-+static int jent_testing_extract_user(struct file *file, char __user *buf,
-+				     size_t nbytes, loff_t *ppos,
-+				     int (*reader)(u8 *outbuf, u32 outbuflen))
-+{
-+	u8 *tmp, *tmp_aligned;
-+	int ret = 0, large_request = (nbytes > 256);
-+
-+	if (!nbytes)
-+		return 0;
-+
-+	/*
-+	 * The intention of this interface is for collecting at least
-+	 * 1000 samples due to the SP800-90B requirements. So, we make no
-+	 * effort in avoiding allocating more memory that actually needed
-+	 * by the user. Hence, we allocate sufficient memory to always hold
-+	 * that amount of data.
-+	 */
-+	tmp = kmalloc(JENT_TEST_RINGBUFFER_SIZE + sizeof(u32), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	tmp_aligned = PTR_ALIGN(tmp, sizeof(u32));
-+
-+	while (nbytes) {
-+		int i;
-+
-+		if (large_request && need_resched()) {
-+			if (signal_pending(current)) {
-+				if (ret == 0)
-+					ret = -ERESTARTSYS;
-+				break;
-+			}
-+			schedule();
-+		}
-+
-+		i = min_t(int, nbytes, JENT_TEST_RINGBUFFER_SIZE);
-+		i = reader(tmp_aligned, i);
-+		if (i <= 0) {
-+			if (i < 0)
-+				ret = i;
-+			break;
-+		}
-+		if (copy_to_user(buf, tmp_aligned, i)) {
-+			ret = -EFAULT;
-+			break;
-+		}
-+
-+		nbytes -= i;
-+		buf += i;
-+		ret += i;
-+	}
-+
-+	kfree_sensitive(tmp);
-+
-+	if (ret > 0)
-+		*ppos += ret;
-+
-+	return ret;
-+}
-+
-+/************** Raw High-Resolution Timer Entropy Data Handling **************/
-+
-+static u32 boot_raw_hires_test = 0;
-+module_param(boot_raw_hires_test, uint, 0644);
-+MODULE_PARM_DESC(boot_raw_hires_test,
-+		 "Enable gathering boot time high resolution timer entropy of the first IRQ entropy events");
-+
-+static struct jent_testing jent_raw_hires = {
-+	.rb_reader = 0,
-+	.rb_writer = ATOMIC_INIT(0),
-+	.lock      = __SPIN_LOCK_UNLOCKED(jent_raw_hires.lock),
-+	.read_wait = __WAIT_QUEUE_HEAD_INITIALIZER(jent_raw_hires.read_wait)
-+};
-+
-+int jent_raw_hires_entropy_store(__u32 value)
-+{
-+	return jent_testing_store(&jent_raw_hires, value, &boot_raw_hires_test);
-+}
-+EXPORT_SYMBOL(jent_raw_hires_entropy_store);
-+
-+static int jent_raw_hires_entropy_reader(u8 *outbuf, u32 outbuflen)
-+{
-+	return jent_testing_reader(&jent_raw_hires, &boot_raw_hires_test,
-+				   outbuf, outbuflen);
-+}
-+
-+static ssize_t jent_raw_hires_read(struct file *file, char __user *to,
-+				   size_t count, loff_t *ppos)
-+{
-+	return jent_testing_extract_user(file, to, count, ppos,
-+					 jent_raw_hires_entropy_reader);
-+}
-+
-+static const struct file_operations jent_raw_hires_fops = {
-+	.owner = THIS_MODULE,
-+	.read = jent_raw_hires_read,
-+};
-+
-+/******************************* Initialization *******************************/
-+
-+void jent_testing_init(void)
-+{
-+	jent_raw_debugfs_root = debugfs_create_dir(KBUILD_MODNAME, NULL);
-+
-+	debugfs_create_file_unsafe("jent_raw_hires", 0400,
-+				   jent_raw_debugfs_root, NULL,
-+				   &jent_raw_hires_fops);
-+}
-+EXPORT_SYMBOL(jent_testing_init);
-+
-+void jent_testing_exit(void)
-+{
-+	debugfs_remove_recursive(jent_raw_debugfs_root);
-+}
-+EXPORT_SYMBOL(jent_testing_exit);
-diff --git a/crypto/jitterentropy.h b/crypto/jitterentropy.h
-index b3890ff26a02..4c92176ea2b1 100644
---- a/crypto/jitterentropy.h
-+++ b/crypto/jitterentropy.h
-@@ -17,3 +17,13 @@ extern struct rand_data *jent_entropy_collector_alloc(unsigned int osr,
- 						      unsigned int flags,
- 						      void *hash_state);
- extern void jent_entropy_collector_free(struct rand_data *entropy_collector);
-+
-+#ifdef CONFIG_CRYPTO_JITTERENTROPY_TESTINTERFACE
-+int jent_raw_hires_entropy_store(__u32 value);
-+void jent_testing_init(void);
-+void jent_testing_exit(void);
-+#else /* CONFIG_CRYPTO_JITTERENTROPY_TESTINTERFACE */
-+static inline int jent_raw_hires_entropy_store(__u32 value) { return 0; }
-+static inline void jent_testing_init(void) { }
-+static inline void jent_testing_exit(void) { }
-+#endif /* CONFIG_CRYPTO_JITTERENTROPY_TESTINTERFACE */
--- 
-2.40.0
-
-
-
+> +          maxItems: 1
+> +        clocks:
+> +          minItems: 8
+> +          maxItems: 8
+Best regards,
+Krzysztof
 
