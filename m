@@ -2,103 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6FE6DBC16
-	for <lists+linux-crypto@lfdr.de>; Sat,  8 Apr 2023 18:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656D26DBD44
+	for <lists+linux-crypto@lfdr.de>; Sat,  8 Apr 2023 23:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjDHQGs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 8 Apr 2023 12:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
+        id S229494AbjDHVky (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 8 Apr 2023 17:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjDHQGr (ORCPT
+        with ESMTP id S229445AbjDHVku (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 8 Apr 2023 12:06:47 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66439745;
-        Sat,  8 Apr 2023 09:06:43 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6343fe70a2aso104764b3a.0;
-        Sat, 08 Apr 2023 09:06:43 -0700 (PDT)
+        Sat, 8 Apr 2023 17:40:50 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C594C17
+        for <linux-crypto@vger.kernel.org>; Sat,  8 Apr 2023 14:40:48 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id w21so1440295wra.4
+        for <linux-crypto@vger.kernel.org>; Sat, 08 Apr 2023 14:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680970003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xz6YJvnk1QAZeeNU3EF1FtxUPt7rc/kW8KB3lvnh+Xk=;
-        b=oTUd60ZAmAVPUZRMtW+NY8eqzrFIMcGJFkRKESVUwGP6d0g8i+UQkybG7NuhyRDM6w
-         VvuNRvflyumFas+D37eKR20una8ysfTED6S9r24xuQb1FEZ36QkQaQlisFgXfaemLKnE
-         AGJqewynIEZ6Bc2RJIXmMK5tTC8ZpPJD2HOFBw1YgXrQ3jrqnKLVUoKXUL60kR2RWBcb
-         Q99aV+Ps08zm/lSR9DbdufNOIfob+Cg+mNY+ARs0aIz6fcviM9wTCLZhg6ZsOEo6h14a
-         q8JOk314G97U3MV+n/UUe5qbQbRvAu4zlyoAnBbZFRe2tXUXQCYrjfE7F3XfGe4SKlr4
-         11NA==
+        d=linaro.org; s=google; t=1680990047; x=1683582047;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1r1SnOX6wBN2nHGoU3kualPj54nGeQSAaKXS+XIlZkY=;
+        b=bBHCoWqCZjmRMr/6jc1rmR8Zb3K5vch/8ZNshCg45bdBET0jkywDKUWqGOJiRN2Z8B
+         X4s3n6cRGmlKcNQfE65/c9k15VqfINbbSEi+w0fFsPOyau57izi4gZHjRELdirmkOcqS
+         b/MGT5prRycMjYmnmUm7uXaNiYZUaBUvMf+bJOPztSwftxdAjr4yS7ae5FoEKcxn8qc/
+         JDrouNcvioskloCtX1qRiDEb+JKBUDRk1sivUHgDEKNzmWDVHl8/ojePIAmAktLC/62R
+         6QoHzgqQnSMuVxwyHSG/qNDjTiR1QKk75H+ztg+h4NggiFsBGTBDJA56pE5roG/+1uw2
+         CWLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680970003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xz6YJvnk1QAZeeNU3EF1FtxUPt7rc/kW8KB3lvnh+Xk=;
-        b=vWKF8rVh2AG8bIhQnP4fxfwE1yHonBjdUYCKQcWF5ZM2keSCXKhz8nrBC800GtU0x1
-         sP2NaRE18Ti6WwdrI7uIwYarxAh5M49QuhoPBxe2vtxvGmZuvxzgHR2n/3Rct+zbLeT5
-         AtKxwjnQ9VctOhLev73mACie4DeN08WM3wo7CDwpHoo/3yVjNZt+MpLotdzQxXhdqxuq
-         9QSMfVycSB0ABVkKZPMKr/uS7JKHpkk+CvnULzeMSHGiiraGewyMQWIGoT3NbAqfutcx
-         Qo6xcEGC830SCXvy9DvqaNwPk2g0qPlsTut62KIN/Ru3H79GnhH+MNxz+4AcRkypqlEe
-         uZ8w==
-X-Gm-Message-State: AAQBX9eovOshg/Yr32V8kKAn6pSKKzmCqU3bX5AondP7V/+gZXbq7uYz
-        VKmxDbPBlrnTntRnEO+j9fuQMUz4O2gUfHAcH8uTZvpqkl7U+mfA
-X-Google-Smtp-Source: AKy350bGYz8K7w7t+fCh0R8EQfFoXCTx8a2Agw8MEoIx9217PAmDo+/aDO/w81mSAp69SlaB6NLqPeYQIXDFAgbdCTA=
-X-Received: by 2002:a05:6a00:1994:b0:631:9e50:1490 with SMTP id
- d20-20020a056a00199400b006319e501490mr1419323pfl.2.1680970003237; Sat, 08 Apr
- 2023 09:06:43 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680990047; x=1683582047;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1r1SnOX6wBN2nHGoU3kualPj54nGeQSAaKXS+XIlZkY=;
+        b=l69FjgYsuEJ97KzAIc2rtcQ0HVrgv/Efep7/Dj1YvkgxpzIGpOqItW+Dqt3xLPdOvB
+         H/Y/y1rO+sp/8yERAgdILIpLueFfeGLauz9xKC0qsROfm0bV94jczNY01TjziJWSuR6O
+         FmjjqeBsOUbfWbxJ0XLI7Pnv3droephKzRyA9Kjs92pldkTBW8iQRQsjVSOtb4FfArOf
+         RX4YcOSYc3C6QY0zBjeYzH9w3kzXSOLxgfUQ+I54nFsNv9Ur47wjylUNM50E4aPyx1ld
+         G6reMslYioXLLYBOx8ZwU/fEobOYYosEJeMCZGcOAegQMbQdszKzaVUnCHWQQbLUnlJQ
+         cmuw==
+X-Gm-Message-State: AAQBX9cx5IkqOV5pGPKxQcbYjhLbMORGCeRfIMm+updFoUY0Qn7CDpR9
+        j3szD5D87MwEnnkrplUiO6ivOQ==
+X-Google-Smtp-Source: AKy350YFShjn4hELK46QnNTz06X559nncDEtCLRY2NKWt5Icc+qKjSwPyUFsi9Ob6YNkuINvGr+6TQ==
+X-Received: by 2002:a5d:50d0:0:b0:2ce:ae4c:c429 with SMTP id f16-20020a5d50d0000000b002ceae4cc429mr3829849wrt.4.1680990046639;
+        Sat, 08 Apr 2023 14:40:46 -0700 (PDT)
+Received: from localhost.localdomain ([188.25.26.161])
+        by smtp.gmail.com with ESMTPSA id s6-20020a5d4ec6000000b002efb6e0c495sm3061377wrv.91.2023.04.08.14.40.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Apr 2023 14:40:46 -0700 (PDT)
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH v7 0/3] Add dedicated Qcom ICE driver
+Date:   Sun,  9 Apr 2023 00:40:38 +0300
+Message-Id: <20230408214041.533749-1-abel.vesa@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230401164448.1393336-1-mmyangfl@gmail.com> <ZC6Ibor2aGR8D8fR@gondor.apana.org.au>
-In-Reply-To: <ZC6Ibor2aGR8D8fR@gondor.apana.org.au>
-From:   Yangfl <mmyangfl@gmail.com>
-Date:   Sun, 9 Apr 2023 00:06:06 +0800
-Message-ID: <CAAXyoMMBWnqQGVWVOsEaKviukQJK1iyx+OAez0AQfKPL5b_UvQ@mail.gmail.com>
-Subject: Re: [PATCH v5] crypto: hisilicon/trng - add support for HiSTB TRNG
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, Weili Qian <qianweili@huawei.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Herbert Xu <herbert@gondor.apana.org.au> =E4=BA=8E2023=E5=B9=B44=E6=9C=886=
-=E6=97=A5=E5=91=A8=E5=9B=9B 16:53=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sun, Apr 02, 2023 at 12:44:40AM +0800, David Yang wrote:
-> > HiSTB TRNG are found on some HiSilicon STB SoCs.
-> >
-> > Signed-off-by: David Yang <mmyangfl@gmail.com>
-> > ---
-> > v2: fix typo
-> > v3: add option for post process depth, adjust timeout
-> > v4: do not case to __iomem, as requested
-> > v5: do not use rng->priv at all
-> >  drivers/crypto/hisilicon/Kconfig         |   7 +
-> >  drivers/crypto/hisilicon/Makefile        |   2 +-
-> >  drivers/crypto/hisilicon/trng/Makefile   |   3 +
-> >  drivers/crypto/hisilicon/trng/trng-stb.c | 176 +++++++++++++++++++++++
-> >  4 files changed, 187 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/crypto/hisilicon/trng/trng-stb.c
->
-> Patch applied.  Thanks.
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+As both SDCC and UFS drivers use the ICE with duplicated implementation,
+while none of the currently supported platforms make use concomitantly
+of the same ICE IP block instance, the new SM8550 allows both UFS and
+SDCC to do so. In order to support such scenario, there is a need for
+a unified implementation and a devicetree node to be shared between
+both types of storage devices. So lets drop the duplicate implementation
+of the ICE from both SDCC and UFS and make it a dedicated (soc) driver.
 
-Thanks for merging this patch. But after considering your former reply
-about drivers/char/hw_random , I'm thinking if that is a better place
-for this driver. If that is the case I'd like to post a new version of
-patch.
+The v6 is here:
+https://lore.kernel.org/all/20230407105029.2274111-1-abel.vesa@linaro.org/
 
-Sorry for late reply.
+Changes since v6:
+ * Dropped the patches 1, 3 and 6 as they are already in Bjorn's tree.
+ * Dropped the minItems for both the qcom,ice and the reg in the
+   qcom,ice compatile subschema, in the ufs schema file,
+   like Krzysztof suggested
+
+Changes since v5:
+ * See each individual patch for changelogs.
+
+Changes since v4:
+ * dropped the SDHCI dt-bindings patch as it will be added along
+   with the first use of qcom,ice property from an SDHCI DT node
+
+
+Abel Vesa (3):
+  dt-bindings: ufs: qcom: Add ICE phandle
+  scsi: ufs: ufs-qcom: Switch to the new ICE API
+  mmc: sdhci-msm: Switch to the new ICE API
+
+ .../devicetree/bindings/ufs/qcom,ufs.yaml     |  24 ++
+ drivers/mmc/host/Kconfig                      |   2 +-
+ drivers/mmc/host/sdhci-msm.c                  | 223 ++++------------
+ drivers/ufs/host/Kconfig                      |   2 +-
+ drivers/ufs/host/Makefile                     |   4 +-
+ drivers/ufs/host/ufs-qcom-ice.c               | 244 ------------------
+ drivers/ufs/host/ufs-qcom.c                   |  99 ++++++-
+ drivers/ufs/host/ufs-qcom.h                   |  32 +--
+ 8 files changed, 176 insertions(+), 454 deletions(-)
+ delete mode 100644 drivers/ufs/host/ufs-qcom-ice.c
+
+-- 
+2.34.1
+
