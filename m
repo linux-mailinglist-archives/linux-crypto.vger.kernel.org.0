@@ -2,103 +2,92 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4116E1F31
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Apr 2023 11:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FFC6E208C
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Apr 2023 12:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjDNJW6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 14 Apr 2023 05:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
+        id S229632AbjDNKSC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 Apr 2023 06:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjDNJW6 (ORCPT
+        with ESMTP id S229734AbjDNKSC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 Apr 2023 05:22:58 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB8259FF;
-        Fri, 14 Apr 2023 02:22:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681464177; x=1713000177;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ebf6LIMNhryNaqylHZcAfkVO+1R1IJ4F5ZzDNTo8xYQ=;
-  b=HrHMRY4j9e1cKrQNxS66sFiWyIVFyuMTmr4u/MZtJmUd89uUBfkRmhv7
-   V6JbU+Ze709gQlxLY8mhz0ZVzF1Viig4DxdN4ejBT9nEXx0deAkhK7dpj
-   EDxiVLMQhFexKS/czkpIL0rp9b6Lp3ImGjbRP6RSygknWwcEPj7hidSKs
-   GDs2gyQxJUNy7NuwiLie642Pvo6gHyYnUhyhVvVSUOKuKNFZ1SrZaVxRY
-   5/ybwUuPUYSmJrbzC25GoLeNuMhJzNzao6/dBJZdJODxECXw6KwCbd9Og
-   bR37GMPswdryEfNqj4G8swZvoiw1qGetQVkWgf8afbZDMYohsxT8cpsaZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="346255518"
-X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
-   d="scan'208";a="346255518"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2023 02:22:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="935944807"
-X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
-   d="scan'208";a="935944807"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144]) ([10.99.16.144])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2023 02:22:53 -0700
-Message-ID: <8978fc5c-73fc-c654-dce2-d3b22511da64@linux.intel.com>
-Date:   Fri, 14 Apr 2023 11:22:51 +0200
+        Fri, 14 Apr 2023 06:18:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D4990
+        for <linux-crypto@vger.kernel.org>; Fri, 14 Apr 2023 03:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681467436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HGlU0PvOV1zf33jFs6Isk0h8BFNeNak/ejipOrEy1sk=;
+        b=BpyinE9LU5QpFZ6u3I30F5MBsHXCbX9IUx+uxNS9IIZf0QARmTULz4WBRggS4p32v1KpJ7
+        sY0cSZPVPyl5J5wB+DneidXgDTATpFUQO1le1Pf2BhbMqe79/bW4CMi8YSfWBe4N5gSA2C
+        4vbUZvNUwyVdaYJMpnu8AwazSNguLK8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-589-n6LkH29JOM-7W2ZSpQRXPA-1; Fri, 14 Apr 2023 06:17:12 -0400
+X-MC-Unique: n6LkH29JOM-7W2ZSpQRXPA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9011A811E7C;
+        Fri, 14 Apr 2023 10:17:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A7327492C14;
+        Fri, 14 Apr 2023 10:17:10 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <ZDkUSESImVSUX0RW@gondor.apana.org.au>
+References: <ZDkUSESImVSUX0RW@gondor.apana.org.au> <ZDi1qjVpcpr2BZfN@gondor.apana.org.au> <48886D84-1A04-4B07-A666-BB56684E759F@oracle.com> <380323.1681314997@warthog.procyon.org.uk> <1078650.1681394138@warthog.procyon.org.uk> <1235770.1681462057@warthog.procyon.org.uk>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     dhowells@redhat.com, Chuck Lever III <chuck.lever@oracle.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: Re: Did the in-kernel Camellia or CMAC crypto implementation break?
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH] firmware_loader: rework crypto dependencies
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Tianfei zhang <tianfei.zhang@intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-References: <20230414080329.76176-1-arnd@kernel.org>
-From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20230414080329.76176-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1239034.1681467430.1@warthog.procyon.org.uk>
+Date:   Fri, 14 Apr 2023 11:17:10 +0100
+Message-ID: <1239035.1681467430@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 4/14/2023 10:03 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The crypto dependencies for the firmwware loader are incomplete,
-> in particular a built-in FW_LOADER fails to link against a modular
-> crypto hash driver:
-> 
-> ld.lld: error: undefined symbol: crypto_alloc_shash
-> ld.lld: error: undefined symbol: crypto_shash_digest
-> ld.lld: error: undefined symbol: crypto_destroy_tfm
->>>> referenced by main.c
->>>>                drivers/base/firmware_loader/main.o:(fw_log_firmware_info) in archive vmlinux.a
-> 
-> Rework this to use the usual 'select' from the driver module,
-> to respect the built-in vs module dependencies, and add a
-> more verbose crypto dependency to the debug option to prevent
-> configurations that lead to a link failure.
-> 
-> Fixes: 02fe26f25325 ("firmware_loader: Add debug message with checksum for FW file")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Tested on a few hundred randconfig builds
-> ---
+Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-When I thought I've tested all combinations... ;)
+> > Actually, I was wondering about that.  I see that all the testing data
+> > seems to be statically loaded in testmgr.[ch], even if the algorithms to
+> > be tested are resident in modules that aren't loaded yet (so it's kind of
+> > test "on demand").  I guess it can't be split up amongst the algorithm
+> > modules as some of the tests require stuff from multiple modules (eg. aes
+> > + cbs + cts).
+> 
+> Yes I've been meaning to split this up so they're colocated with
+> the generic implementation.
 
-Thanks!
+Might be easier if I wait to see how you do that.
 
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> Unless this code has at least two users it's probably not worth
+> it (but there are exceptions, e.g. we did a one-user algorithm
+> for dm-crypt).
+
+There would be just two users at the moment: sunrpc/nfs and rxrpc/afs.  I
+don't know if cifs or ceph could make use of it.
+
+David
+
