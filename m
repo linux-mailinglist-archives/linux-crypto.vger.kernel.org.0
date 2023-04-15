@@ -2,82 +2,88 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8CA6E307A
-	for <lists+linux-crypto@lfdr.de>; Sat, 15 Apr 2023 12:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167AA6E320A
+	for <lists+linux-crypto@lfdr.de>; Sat, 15 Apr 2023 17:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbjDOKMG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 15 Apr 2023 06:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S229989AbjDOPHs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 15 Apr 2023 11:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbjDOKMD (ORCPT
+        with ESMTP id S229535AbjDOPHs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 15 Apr 2023 06:12:03 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10307358C;
-        Sat, 15 Apr 2023 03:12:02 -0700 (PDT)
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Pz8CV3xsRz17SYK;
-        Sat, 15 Apr 2023 18:08:22 +0800 (CST)
-Received: from cgs.huawei.com (10.244.148.83) by
- kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Sat, 15 Apr 2023 18:12:00 +0800
-From:   Gaosheng Cui <cuigaosheng1@huawei.com>
-To:     <stable@vger.kernel.org>, <cuigaosheng1@huawei.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <gregkh@linuxfoundation.org>, <linux-crypto@vger.kernel.org>
-Subject: [PATCH 5.10 4/4] crypto: api - Fix boot-up crash when crypto manager is disabled
-Date:   Sat, 15 Apr 2023 18:11:58 +0800
-Message-ID: <20230415101158.1648486-5-cuigaosheng1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230415101158.1648486-1-cuigaosheng1@huawei.com>
+        Sat, 15 Apr 2023 11:07:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AA340D6;
+        Sat, 15 Apr 2023 08:07:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B2F2160F91;
+        Sat, 15 Apr 2023 15:07:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C094AC433D2;
+        Sat, 15 Apr 2023 15:07:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1681571266;
+        bh=Fl/gTvlCoViEMPTAMS2nrZbrWPrbjIjS7GU06V6dev8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u9u+LEf76lHNymV/w4KL2lcwmfO18+8hx/35jXjq5vY+5OqkKYq7qQyQ7OK6kltOk
+         OEwl6XVgEm58klJCMyABK+dUGW7ow1oXcuGHCDzx5aHkAuYphcQ4wtmKMnzWjPvnQU
+         ysl3e5T/LBKNLMp5jSduI7KLdCBgVdh2prgkTRc8=
+Date:   Sat, 15 Apr 2023 17:07:43 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Gaosheng Cui <cuigaosheng1@huawei.com>
+Cc:     stable@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 5.10 1/4] crypto: api - Fix built-in testing dependency
+ failures
+Message-ID: <2023041513-sloppily-external-4c18@gregkh>
 References: <20230415101158.1648486-1-cuigaosheng1@huawei.com>
+ <20230415101158.1648486-2-cuigaosheng1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.244.148.83]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230415101158.1648486-2-cuigaosheng1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+On Sat, Apr 15, 2023 at 06:11:55PM +0800, Gaosheng Cui wrote:
+> From: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> When complex algorithms that depend on other algorithms are built
+> into the kernel, the order of registration must be done such that
+> the underlying algorithms are ready before the ones on top are
+> registered.  As otherwise they would fail during the self-test
+> which is required during registration.
+> 
+> In the past we have used subsystem initialisation ordering to
+> guarantee this.  The number of such precedence levels are limited
+> and they may cause ripple effects in other subsystems.
+> 
+> This patch solves this problem by delaying all self-tests during
+> boot-up for built-in algorithms.  They will be tested either when
+> something else in the kernel requests for them, or when we have
+> finished registering all built-in algorithms, whichever comes
+> earlier.
+> 
+> Reported-by: Vladis Dronov <vdronov@redhat.com>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+> ---
+>  crypto/algapi.c   | 73 +++++++++++++++++++++++++++++++++--------------
+>  crypto/api.c      | 52 +++++++++++++++++++++++++++++----
+>  crypto/internal.h | 10 +++++++
+>  3 files changed, 108 insertions(+), 27 deletions(-)
 
-When the crypto manager is disabled, we need to explicitly set
-the crypto algorithms' tested status so that they can be used.
+What is the git commit id of this, and the other 3 patches, in Linus's
+tree?  That is required to have here, as you know.
 
-Fixes: cad439fc040e ("crypto: api - Do not create test larvals if...")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: Ido Schimmel <idosch@idosch.org>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Tested-by: Ido Schimmel <idosch@nvidia.com>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
----
- crypto/algapi.c | 2 ++
- 1 file changed, 2 insertions(+)
+thanks,
 
-diff --git a/crypto/algapi.c b/crypto/algapi.c
-index f6481cb79946..0d0c3e937e36 100644
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -284,6 +284,8 @@ static struct crypto_larval *__crypto_register_alg(struct crypto_alg *alg)
- 
- 	if (larval)
- 		list_add(&larval->alg.cra_list, &crypto_alg_list);
-+	else
-+		alg->cra_flags |= CRYPTO_ALG_TESTED;
- 
- 	crypto_stats_init(alg);
- 
--- 
-2.25.1
-
+greg k-h
