@@ -2,90 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E686E51D7
-	for <lists+linux-crypto@lfdr.de>; Mon, 17 Apr 2023 22:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E28D6E58B2
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Apr 2023 07:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbjDQU0X (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 17 Apr 2023 16:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S229847AbjDRFnI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Apr 2023 01:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjDQU0X (ORCPT
+        with ESMTP id S230239AbjDRFnH (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 17 Apr 2023 16:26:23 -0400
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74B355B5
-        for <linux-crypto@vger.kernel.org>; Mon, 17 Apr 2023 13:26:00 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id oVPSpee2zSbkVoVPTp9Pz8; Mon, 17 Apr 2023 22:25:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orange.fr;
-        s=t20230301; t=1681763116;
-        bh=3onsbqZgKfvrXgPm/nW/ZF4q8OzaHmYxJu4RGrC1D6U=;
-        h=From:To:Cc:Subject:Date;
-        b=ZYJegovxU/r5wUZqc2AuOcLGEoKUXh8XzjZN4HvUyxJJ4fd6Mo0DqAD5RiL4ThcHe
-         l0pvp/0p8CBXDXEypDegzNS+/+Gi0TT5KQ+Gibg9vtvmnUxcdX+dR6846L+Vt9f+Ub
-         7e1xkbitW9ZhgbZQNrK5wXfkImsHx7p6Zt6229Vt0bJel826+2haY12YdBeX2bJjaV
-         zPW4YxdGdepDialzEASqca1Fp2ngjd7dYIBy3wonShZ0dnO39VhZWATr2G3vdYhoxf
-         8WP7Eo+OfkhbZEN6SFuST7GuVxuH0/r79URE/7CfyJnYvAKGZ6unibwMYWwduZr8Vj
-         zoZz0/c8mFf4g==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 17 Apr 2023 22:25:16 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev
-Subject: [PATCH] crypto: sun8i-ss - Fix a test in sun8i_ss_setup_ivs()
-Date:   Mon, 17 Apr 2023 22:25:09 +0200
-Message-Id: <bedaeefc8e2099ab255e7542e7d671889678de86.1681763086.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Tue, 18 Apr 2023 01:43:07 -0400
+X-Greylist: delayed 11809 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Apr 2023 22:43:04 PDT
+Received: from mail.peterfykh.hu (mail.peterfykh.hu [84.206.67.96])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339445596;
+        Mon, 17 Apr 2023 22:43:04 -0700 (PDT)
+Received: from mail.peterfykh.hu (localhost [127.0.0.1])
+        by mail.peterfykh.hu (Postfix) with ESMTP id DB0CF1176;
+        Tue, 18 Apr 2023 01:57:29 +0200 (CEST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 Apr 2023 01:57:29 +0200
+From:   MK <sebeszet@peterfykh.hu>
+To:     undisclosed-recipients:;
+Subject: Hello sunshine, how are you?
+Reply-To: marion.K08@bahnhof.se
+Mail-Reply-To: marion.K08@bahnhof.se
+Message-ID: <1f6f6c4f3f86accca3582632cef775c1@peterfykh.hu>
+X-Sender: sebeszet@peterfykh.hu
+User-Agent: Roundcube Webmail/1.2.3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peterfykh.hu; s=mail; t=1681775869; bh=EK7FNzGPLm9pid/gmdFBrbarvHS9H0a48U7GgrEq6Uo=; h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Subject:Reply-To:Message-ID; b=CVLRuItAtARzJYZsYFVJ9jq0AV+f0LVOTr1LiBfM2mUbFqL0fEYyIFjsJazWgOth28Viw67yQhjUe+RTozKUFGO4LNDibuksaJNTUPvEd3hheYLEvnmbwKojuyRtCClRykCjdN20IB62P4v3ZkK0xvDOiQYItoV4oQjhhpVWycQ=
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-SS_ENCRYPTION is (0 << 7 = 0), so the test can never be true.
-Use a direct comparison to SS_ENCRYPTION instead.
+I am sorry to bother you and intrude your privacy. I am single,
+  lonely and in need of a caring, loving and romantic companion.
 
-The same king of test is already done the same way in sun8i_ss_run_task().
+I am a secret admirer and would like to explore the opportunity to
+learn more about each other. I know it is strange to contact you
+this way and I hope you can forgive me. I am a shy person and
+this is the only way I know I could get your attention. I just want
+to know what you think and my intention is not to offend you.
+I hope we can be friends if that is what you want, although I wish
+to be more than just a friend. I know you have a few questions to
+ask and I hope I can satisfy some of your curiosity with a few
+answers.
 
-Fixes: 359e893e8af4 ("crypto: sun8i-ss - rework handling of IV")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Untested
----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I believe in the saying that 'to the world you are just one person,
+but to someone special you are the world'. All I want is love,
+romantic care and attention from a special companion which I am
+hoping would be you.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-index 83c6dfad77e1..16966cc94e24 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-@@ -151,7 +151,7 @@ static int sun8i_ss_setup_ivs(struct skcipher_request *areq)
- 		}
- 		rctx->p_iv[i] = a;
- 		/* we need to setup all others IVs only in the decrypt way */
--		if (rctx->op_dir & SS_ENCRYPTION)
-+		if (rctx->op_dir == SS_ENCRYPTION)
- 			return 0;
- 		todo = min(len, sg_dma_len(sg));
- 		len -= todo;
--- 
-2.34.1
+I hope this message will be the beginning of a long term
+communication between us, simply send a reply to this message, it
+will make me happy.
 
+
+Hugs and kisses,
+
+Marion.
