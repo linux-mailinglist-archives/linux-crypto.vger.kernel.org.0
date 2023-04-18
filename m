@@ -2,33 +2,33 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E32A06E6371
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Apr 2023 14:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A566E62FA
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Apr 2023 14:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbjDRMkh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Apr 2023 08:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S231598AbjDRMhC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Apr 2023 08:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjDRMkh (ORCPT
+        with ESMTP id S231738AbjDRMhB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Apr 2023 08:40:37 -0400
+        Tue, 18 Apr 2023 08:37:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E0713C15;
-        Tue, 18 Apr 2023 05:40:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B46312CB0;
+        Tue, 18 Apr 2023 05:37:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F65963307;
-        Tue, 18 Apr 2023 12:40:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F811C433EF;
-        Tue, 18 Apr 2023 12:40:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 132C863293;
+        Tue, 18 Apr 2023 12:37:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0167EC433D2;
+        Tue, 18 Apr 2023 12:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1681821634;
+        s=korg; t=1681821419;
         bh=VCwMMj2q4qUoHuODRqKDgoLte/T7yupow6Vv8LVr/gY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4xh4h+eCEXXX9Ut5/f/cU8rxt/OtwjyHQ3nlpmLoC9P8b6BZ3lBDHL5QWU+gGJQX
-         Mbo54vDNHCjUkL7y819xbfFN3VyQcKbqgSaBTTiou+f4x97NCz608EZTbcAoh0l5qU
-         mQNzZPT3VsW8HcYnR1kxQgKaxT1OSQ74TE7F6tuM=
+        b=FytK8itgNs8sWjbg3UmWLfjnoZcpF1fUjFGX/0c4bLU7u1tU3kIyK9gnocRVOBDWo
+         Q7n2TNqOLEQe4VQgPIOm/Rh2+yYG0eUwksb5i7Pwku/QieFbWC1bQt13FE4O/kiF5k
+         u5/XwYiwhclY6eYcbWYfD2PJw40aLMzWXYd826q8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -39,12 +39,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
         kexec@lists.infradead.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 45/91] verify_pefile: relax wrapper length check
-Date:   Tue, 18 Apr 2023 14:21:49 +0200
-Message-Id: <20230418120307.142778932@linuxfoundation.org>
+Subject: [PATCH 5.10 091/124] verify_pefile: relax wrapper length check
+Date:   Tue, 18 Apr 2023 14:21:50 +0200
+Message-Id: <20230418120313.157770104@linuxfoundation.org>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230418120305.520719816@linuxfoundation.org>
-References: <20230418120305.520719816@linuxfoundation.org>
+In-Reply-To: <20230418120309.539243408@linuxfoundation.org>
+References: <20230418120309.539243408@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
