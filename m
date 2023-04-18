@@ -2,75 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D726E58DC
-	for <lists+linux-crypto@lfdr.de>; Tue, 18 Apr 2023 07:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5912F6E5D52
+	for <lists+linux-crypto@lfdr.de>; Tue, 18 Apr 2023 11:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbjDRF7R (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 18 Apr 2023 01:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
+        id S231231AbjDRJ2N (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 18 Apr 2023 05:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbjDRF7O (ORCPT
+        with ESMTP id S230208AbjDRJ2M (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 18 Apr 2023 01:59:14 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4B159DC
-        for <linux-crypto@vger.kernel.org>; Mon, 17 Apr 2023 22:59:12 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2a8aea2a654so18528561fa.1
-        for <linux-crypto@vger.kernel.org>; Mon, 17 Apr 2023 22:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681797551; x=1684389551;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dQlu0Oc2Q0nPMBCNq5iTPUZpwrRZlsMdPt2zjra8+VI=;
-        b=B/lJxYxd9QgPHdTz8Y94+SQwigHwPQz1MSY0HBGE49jeKpZvQ5ridodaJ1/hg5dYTg
-         xfm1UctNbPOooHeryL4EpFSpzLbpfIM/1AP6IiE/eAQ2XC+jiAPE4sjVq/0OLp+s5H64
-         OPszLw7mQaJ1PqKU00ScUiZOb3Ks0WeXpBGa5YCNLjOyLXsRt33eVOV3J7/7jSzM1Fi3
-         /RpCf1VKsRTVD/tqHSDxBWAwYQ/D3zBjMwphUFrVmu8iFcvUlk1YDipJso9tURLsGQAs
-         Kxkqmj8wx1BzA1Zw3ty0py3y/B5zl4OJTEDWjPXGFVRp+Onsg5ZfmKZ52/USaH6DILFS
-         M1fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681797551; x=1684389551;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dQlu0Oc2Q0nPMBCNq5iTPUZpwrRZlsMdPt2zjra8+VI=;
-        b=RA5sMPJKmsBE0ITAUlj60RG/SUclaF3CblBcSci/VGOXoin3f1drFT2uuE2RU2IHF7
-         tf45wt9Pr2pjYcshvaq94ji14fJg5v6D+318MJEYIDy9VuAuIlA5bec3cLABfgIkpmIN
-         vzU02Uyz/NF1GivanZEKqJ+or3qky0eg/7D3CISfpr4miJXpXNyHzgZnirsEwXF5Dh5U
-         vmRC21WNnUGpj4KsKfPllq69MjBZYS+cQt4hP1j2us+NITgClWHv8K/+/18dou6SNB9N
-         7HhosgZqGoucOYhnM0+Y3o76XgtuL2zzbZa4MTDEpg4SmWYY3pcm8ATn5fE62AAuqulb
-         lQvQ==
-X-Gm-Message-State: AAQBX9c1AXxoHOiO0wU/JxnEbn93l30JlSsg8Tbjup/BFqybNNEB6uaH
-        dOV9eFx50gItInfsObSBYTp4mimdOPYq9kX6Lqc=
-X-Google-Smtp-Source: AKy350YRsUSKQ0+i58Lzun7WtY7IrRwSkm+DWIi2JdfS71rVYYWUT2OQ/a/Q5PRWIBazn3AQLm2dWBYGVxBajLvvRoE=
-X-Received: by 2002:a05:6512:96b:b0:4e8:4b7a:6b73 with SMTP id
- v11-20020a056512096b00b004e84b7a6b73mr2935594lft.4.1681797550844; Mon, 17 Apr
- 2023 22:59:10 -0700 (PDT)
+        Tue, 18 Apr 2023 05:28:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1683E170E;
+        Tue, 18 Apr 2023 02:28:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A4B98623D5;
+        Tue, 18 Apr 2023 09:28:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B476EC433EF;
+        Tue, 18 Apr 2023 09:28:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1681810090;
+        bh=LplBaAfiQN63yKSqWMsQVi8bs1BiaFM52dC7sMKWPZ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SHbE3VNR/WwjzDYQNg2o/1AmILBYDwf4FE0A0zBuEzDtaU/vG43snOtOnptRO7hKv
+         3jKr4VxEDAaltjV1qkHWmgtva3kkxtGsofA14eMM9OolRbtm6saofpjHuHx02NvbKy
+         aSV29vf9iGR2aS8bJ/Wyje+U1N0RAuOjdcP2AD5c=
+Date:   Tue, 18 Apr 2023 11:28:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     cuigaosheng <cuigaosheng1@huawei.com>
+Cc:     stable@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 5.10 1/4] crypto: api - Fix built-in testing dependency
+ failures
+Message-ID: <2023041809-silicon-backspace-327d@gregkh>
+References: <20230415101158.1648486-1-cuigaosheng1@huawei.com>
+ <20230415101158.1648486-2-cuigaosheng1@huawei.com>
+ <2023041513-sloppily-external-4c18@gregkh>
+ <3f6315cc-4684-2121-3556-0ace47c29b35@huawei.com>
 MIME-Version: 1.0
-Received: by 2002:ab2:2681:0:b0:1b6:840f:9075 with HTTP; Mon, 17 Apr 2023
- 22:59:10 -0700 (PDT)
-Reply-To: mariamkouame.info@myself.com
-From:   Mariam Kouame <mariamkouame1992@gmail.com>
-Date:   Mon, 17 Apr 2023 22:59:10 -0700
-Message-ID: <CADUz=agNY633M0qMXMnAP3Ms7-3rKuWtAZGCOQZKeYpCdBxT_w@mail.gmail.com>
-Subject: from mariam kouame
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f6315cc-4684-2121-3556-0ace47c29b35@huawei.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear,
+On Sun, Apr 16, 2023 at 03:22:18PM +0800, cuigaosheng wrote:
+> On 2023/4/15 23:07, Greg KH wrote:
+> > On Sat, Apr 15, 2023 at 06:11:55PM +0800, Gaosheng Cui wrote:
+> > > From: Herbert Xu <herbert@gondor.apana.org.au>
+> > > 
+> > > When complex algorithms that depend on other algorithms are built
+> > > into the kernel, the order of registration must be done such that
+> > > the underlying algorithms are ready before the ones on top are
+> > > registered.  As otherwise they would fail during the self-test
+> > > which is required during registration.
+> > > 
+> > > In the past we have used subsystem initialisation ordering to
+> > > guarantee this.  The number of such precedence levels are limited
+> > > and they may cause ripple effects in other subsystems.
+> > > 
+> > > This patch solves this problem by delaying all self-tests during
+> > > boot-up for built-in algorithms.  They will be tested either when
+> > > something else in the kernel requests for them, or when we have
+> > > finished registering all built-in algorithms, whichever comes
+> > > earlier.
+> > > 
+> > > Reported-by: Vladis Dronov <vdronov@redhat.com>
+> > > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> > > Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+> > > ---
+> > >   crypto/algapi.c   | 73 +++++++++++++++++++++++++++++++++--------------
+> > >   crypto/api.c      | 52 +++++++++++++++++++++++++++++----
+> > >   crypto/internal.h | 10 +++++++
+> > >   3 files changed, 108 insertions(+), 27 deletions(-)
+> > What is the git commit id of this, and the other 3 patches, in Linus's
+> > tree?  That is required to have here, as you know.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > .
+> 
+> Thanks for taking time to review these patch.
+> 
+> These patches are in Linus's tree, reference as follows:
+>   Reference 1: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=adad556efcdd42a1d9e060cbe5f6161cccf1fa28
+>   Reference 2: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cad439fc040efe5f4381e3a7d583c5c200dbc186
+>   Reference 3: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e42dff467ee688fe6b5a083f1837d06e3b27d8c0
+>   Reference 4: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=beaaaa37c664e9afdf2913aee19185d8e3793b50
 
-Please grant me permission to share a very crucial discussion with
-you. I am looking forward to hearing from you at your earliest
-convenience.
+Please resend the patches with the git commit id in the changelog
+somewhere, as is normally done (there are thousands of examples on the
+mailing list.)
 
-Mrs. Mariam Kouame
+Also be sure that you are also backporting the patches to newer kernel
+releases so that someone does not upgrade and have a regression (i.e. if
+a patch is also needed in 5.15.y send a backport for that too.)
+
+Thanks,
+
+greg k-h
