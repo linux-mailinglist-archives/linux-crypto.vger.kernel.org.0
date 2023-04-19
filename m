@@ -2,146 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 877086E83FF
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Apr 2023 23:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40CD6EA293
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Apr 2023 06:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjDSV4c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 19 Apr 2023 17:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        id S232757AbjDUEFb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 Apr 2023 00:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjDSV4b (ORCPT
+        with ESMTP id S230144AbjDUEFa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 19 Apr 2023 17:56:31 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8797340FE
-        for <linux-crypto@vger.kernel.org>; Wed, 19 Apr 2023 14:56:30 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-51efefe7814so253541a12.3
-        for <linux-crypto@vger.kernel.org>; Wed, 19 Apr 2023 14:56:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681941390; x=1684533390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OLFmQtDzjn4fYBCM5a8di1qRrzs1inEcdVm3lZ+12QM=;
-        b=Q0LakSBjf0+GBzOMLbAb3DpXco7mN4HHs+Qs/Nvg+jLZjcJ1Ie+a7eCijmH4a8EEbS
-         33LOFnttp72BosihncMJLawycgMQDlKvNydTZiCFj83K0yz6dglI2Uk8Soum3R0B6cDL
-         7kT2rgDuuy2BSkC721XmaGpdyGoniKYYFQdeipvyAeUW+DwbeNi0QdvuxXFIXA6hz82o
-         Mt7lompywH7ief7lBe9GAKR27XOorkb+5Hy+igyRHThnYXros/YOxszVOWr9mPsuL9+d
-         F2Hbq9EBe7DKdB01RQkTOyfNw68JW+Iaoe0HAhw9Mon/+ggI56OS0ryOXqmr4x8rNAHr
-         QsPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681941390; x=1684533390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OLFmQtDzjn4fYBCM5a8di1qRrzs1inEcdVm3lZ+12QM=;
-        b=jWp7ra0laP8jORGYQIKpEIXRSAPubmQzvWeCfA/exZRese2RCPNwOrpNn4o/ObO3Xv
-         5MO6OXvP7Iy/csqyGawA5Z6sdd2uRF46wqXCiRzQyoVhYlnFW43lqkw4Js5OVyqqC7iT
-         pSOvP5hfTuZDivko7X7iX3AOfETdFAL1n/BIkjDYmjvl5OSSAUvIQshdEwe2RL9Dt9/1
-         B+A0wzLIHb5XqNMRxxlKNEvkxU5dmQoeI6GcjIGc2xVqmVTljiRUbY2o5ei6vb1N3Rha
-         C7gih9t32he/bX+0u6YdhqWh/2nqu89n8x0betc2iHQc8bnc/whWMaYWpttImeU6zHQJ
-         BmUA==
-X-Gm-Message-State: AAQBX9dCCrw0wA+4U/f2gYcJL5aYMdxzeOx+CaOsjLDyK2J0Vr+8CPry
-        UUZ1GlleCoRW8Q5L8x+aZ7Nsl0yYLVP/OR0dcOS42jhKfHRgFdtmwAFexA==
-X-Google-Smtp-Source: AKy350ZzIjgiQTad0i+K7AT2aLRAa2MzlG+eA4IP23ChGDk1CoGmo4OGkFCXhCcBg96+koUcNJCu5vVd0OB81LDKpxI=
-X-Received: by 2002:a17:90a:4142:b0:247:19c5:aa3d with SMTP id
- m2-20020a17090a414200b0024719c5aa3dmr3916943pjg.36.1681941389816; Wed, 19 Apr
- 2023 14:56:29 -0700 (PDT)
+        Fri, 21 Apr 2023 00:05:30 -0400
+Received: from mx1.bulutepostam.com (mx1.bulutepostam.com [95.217.25.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E5344A0;
+        Thu, 20 Apr 2023 21:05:27 -0700 (PDT)
+Date:   Thu, 20 Apr 2023 01:42:48 +0300 (TRT)
+From:   MK <zibel.koc@hisarhospital.com>
+Reply-To: MK <marion.k07081@gmail.com>
+Message-ID: <400187858.5363902.1681944168236.JavaMail.zimbra@hisarhospital.com>
+Subject: Hello sunshine, how are you?
 MIME-Version: 1.0
-References: <202304081828.zjGcFUyE-lkp@intel.com> <ZD+0DJq1NHmMSSja@gondor.apana.org.au>
- <ZD+1BQd8Phqk3lzv@gondor.apana.org.au> <ZD+1phnERT6EkIUe@gondor.apana.org.au>
-In-Reply-To: <ZD+1phnERT6EkIUe@gondor.apana.org.au>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 19 Apr 2023 14:56:17 -0700
-Message-ID: <CAKwvOdmxK8jKK3aW7xViDyjA=NtmcvXsv=OPNRFC0FTrnVCS4A@mail.gmail.com>
-Subject: Re: [PATCH] crypto: arm/sha512-neon - Fix clang function cast warnings
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     kernel test robot <lkp@intel.com>,
-        Robert Elliott <elliott@hpe.com>, llvm@lists.linux.dev,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Thread-Index: xzEDSzG9J8z7bidkk2N0lDO9pqJDaQ==
+Thread-Topic: Hello sunshine, how are you?
+X-FEAS-Client-IP: 10.34.37.30
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=hisarhospital.com; s=e948eec2-1790-11eb-ab59-4e91913d126c; c=relaxed/relaxed;
+ h=date:from:reply-to:message-id:subject:mime-version:content-type;
+ bh=Bo1svp3IpcnzzRBOA3XuS0KEAWebltEu5dzkGD/6mbE=;
+ b=ohqWPRT+W+DJRPGE2efANgAJbga5MIaWgwSb3Le72LGeT6NTmKUHszZHY/BQzoMHIUv/GubEexgi
+        ad3ODmVLHnDxpZhF99MNZhrkL3bhD/PLiCVPv/H+18GltV7iNE4Wja7UyxxRsGxUCpZ4ZAZPPU0s
+        eijNeS0iz0FRq37dSAwcfYXCvusJ6mUOyRFF+oq2eRZwJs+TOttin9UDLKQSL2ebbgev2T0FWTzN
+        eaaHPefqN3XsSvloNOfimmE4l/2s8U7zj3BUCuZgsK1lwUlt3FFTBryxBuaX85rBPCrTEYNyhOD+
+        tS6/BaWE+G/i+bIqIiAf7R/DY1duDNG8w8keLA==
+X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,MISSING_HEADERS,
+        REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 2:35=E2=80=AFAM Herbert Xu <herbert@gondor.apana.or=
-g.au> wrote:
->
-> Instead of casting the function which upsets clang for some reason,
-> change the assembly function siganture instead.
+I sent an email to you yesterday but since I did not get a response,
+I thought probably you did not receive it so I decided to send it 
+again and hopefully I will get a response this time around.
 
-Same comments as sha1 and sha256.  Looks like more casts to remove:
+I am a secret admirer and would like to explore the opportunity to 
+learn more about each other. I know it is strange to contact you 
+this way and I hope you can forgive me. I am a shy person and 
+this is the only way I know I could get your attention. I just want 
+to know what you think and my intention is not to offend you.
+I hope we can be friends if that is what you want, although I wish 
+to be more than just a friend. I know you have a few questions to 
+ask and I hope I can satisfy some of your curiosity with a few 
+answers.
 
-arch/arm/crypto/sha512-glue.c
-34:             (sha512_block_fn *)sha512_block_data_order);
-40:             (sha512_block_fn *)sha512_block_data_order);
-48:             (sha512_block_fn *)sha512_block_data_order);
+I believe in the saying that &#039;to the world you are just one person, 
+but to someone special you are the world&#039;. All I want is love, 
+romantic care and attention from a special companion which I am
+hoping would be you.
 
-
-
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/oe-kbuild-all/202304081828.zjGcFUyE-lkp@int=
-el.com/
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
->
-> diff --git a/arch/arm/crypto/sha512-neon-glue.c b/arch/arm/crypto/sha512-=
-neon-glue.c
-> index c879ad32db51..c6e58fe475ac 100644
-> --- a/arch/arm/crypto/sha512-neon-glue.c
-> +++ b/arch/arm/crypto/sha512-neon-glue.c
-> @@ -20,8 +20,8 @@
->  MODULE_ALIAS_CRYPTO("sha384-neon");
->  MODULE_ALIAS_CRYPTO("sha512-neon");
->
-> -asmlinkage void sha512_block_data_order_neon(u64 *state, u8 const *src,
-> -                                            int blocks);
-> +asmlinkage void sha512_block_data_order_neon(struct sha512_state *state,
-> +                                            const u8 *src, int blocks);
->
->  static int sha512_neon_update(struct shash_desc *desc, const u8 *data,
->                               unsigned int len)
-> @@ -33,8 +33,7 @@ static int sha512_neon_update(struct shash_desc *desc, =
-const u8 *data,
->                 return sha512_arm_update(desc, data, len);
->
->         kernel_neon_begin();
-> -       sha512_base_do_update(desc, data, len,
-> -               (sha512_block_fn *)sha512_block_data_order_neon);
-> +       sha512_base_do_update(desc, data, len, sha512_block_data_order_ne=
-on);
->         kernel_neon_end();
->
->         return 0;
-> @@ -49,9 +48,8 @@ static int sha512_neon_finup(struct shash_desc *desc, c=
-onst u8 *data,
->         kernel_neon_begin();
->         if (len)
->                 sha512_base_do_update(desc, data, len,
-> -                       (sha512_block_fn *)sha512_block_data_order_neon);
-> -       sha512_base_do_finalize(desc,
-> -               (sha512_block_fn *)sha512_block_data_order_neon);
-> +                                     sha512_block_data_order_neon);
-> +       sha512_base_do_finalize(desc, sha512_block_data_order_neon);
->         kernel_neon_end();
->
->         return sha512_base_finish(desc, out);
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
->
+I hope this message will be the beginning of a long term 
+communication between us, simply send a reply to this message, it 
+will make me happy.
 
 
---=20
-Thanks,
-~Nick Desaulniers
+Hugs and kisses,
+
+Marion.
