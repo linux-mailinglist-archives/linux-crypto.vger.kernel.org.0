@@ -2,75 +2,102 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B40CD6EA293
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Apr 2023 06:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F306E8EB6
+	for <lists+linux-crypto@lfdr.de>; Thu, 20 Apr 2023 11:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbjDUEFb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 21 Apr 2023 00:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
+        id S234155AbjDTJ4K (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 20 Apr 2023 05:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbjDUEFa (ORCPT
+        with ESMTP id S234197AbjDTJ4G (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 21 Apr 2023 00:05:30 -0400
-Received: from mx1.bulutepostam.com (mx1.bulutepostam.com [95.217.25.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E5344A0;
-        Thu, 20 Apr 2023 21:05:27 -0700 (PDT)
-Date:   Thu, 20 Apr 2023 01:42:48 +0300 (TRT)
-From:   MK <zibel.koc@hisarhospital.com>
-Reply-To: MK <marion.k07081@gmail.com>
-Message-ID: <400187858.5363902.1681944168236.JavaMail.zimbra@hisarhospital.com>
-Subject: Hello sunshine, how are you?
+        Thu, 20 Apr 2023 05:56:06 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AB8110
+        for <linux-crypto@vger.kernel.org>; Thu, 20 Apr 2023 02:56:03 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1ppR18-000Y4B-At; Thu, 20 Apr 2023 17:55:56 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 20 Apr 2023 17:55:55 +0800
+Date:   Thu, 20 Apr 2023 17:55:55 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Cc:     linux-crypto@vger.kernel.org, Vladis Dronov <vdronov@redhat.com>,
+        Marcelo Cerri <marcelo.cerri@canonical.com>
+Subject: Re: [PATCH v2 1/2] crypto: jitter - replace LFSR with SHA3-256
+Message-ID: <ZEEMK/zlZdz2t7CA@gondor.apana.org.au>
+References: <2684670.mvXUDI8C0e@positron.chronox.de>
+ <4825604.31r3eYUQgx@positron.chronox.de>
+ <2283439.ElGaqSPkdT@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Thread-Index: xzEDSzG9J8z7bidkk2N0lDO9pqJDaQ==
-Thread-Topic: Hello sunshine, how are you?
-X-FEAS-Client-IP: 10.34.37.30
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=hisarhospital.com; s=e948eec2-1790-11eb-ab59-4e91913d126c; c=relaxed/relaxed;
- h=date:from:reply-to:message-id:subject:mime-version:content-type;
- bh=Bo1svp3IpcnzzRBOA3XuS0KEAWebltEu5dzkGD/6mbE=;
- b=ohqWPRT+W+DJRPGE2efANgAJbga5MIaWgwSb3Le72LGeT6NTmKUHszZHY/BQzoMHIUv/GubEexgi
-        ad3ODmVLHnDxpZhF99MNZhrkL3bhD/PLiCVPv/H+18GltV7iNE4Wja7UyxxRsGxUCpZ4ZAZPPU0s
-        eijNeS0iz0FRq37dSAwcfYXCvusJ6mUOyRFF+oq2eRZwJs+TOttin9UDLKQSL2ebbgev2T0FWTzN
-        eaaHPefqN3XsSvloNOfimmE4l/2s8U7zj3BUCuZgsK1lwUlt3FFTBryxBuaX85rBPCrTEYNyhOD+
-        tS6/BaWE+G/i+bIqIiAf7R/DY1duDNG8w8keLA==
-X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,MISSING_HEADERS,
-        REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2283439.ElGaqSPkdT@positron.chronox.de>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-I sent an email to you yesterday but since I did not get a response,
-I thought probably you did not receive it so I decided to send it 
-again and hopefully I will get a response this time around.
+On Mon, Apr 10, 2023 at 10:55:13PM +0200, Stephan Müller wrote:
+>
+> +static int jent_kcapi_init(struct crypto_tfm *tfm)
+> +{
+> +	struct jitterentropy *rng = crypto_tfm_ctx(tfm);
+> +	struct crypto_shash *hash;
+> +	struct shash_desc *sdesc;
+> +	int size, ret = 0;
+> +
+> +	/*
+> +	 * Use SHA3-256 as conditioner. We allocate only the generic
+> +	 * implementation as we are not interested in high-performance. The
+> +	 * execution time of the SHA3 operation is measured and adds to the
+> +	 * Jitter RNG's unpredictable behavior. If we have a slower hash
+> +	 * implementation, the execution timing variations are larger. When
+> +	 * using a fast implementation, we would need to call it more often
+> +	 * as its variations are lower.
+> +	 */
+> +	hash = crypto_alloc_shash(JENT_CONDITIONING_HASH, 0, 0);
+> +	if (IS_ERR(hash)) {
+> +		pr_err("Cannot allocate conditioning digest\n");
+> +		return PTR_ERR(hash);
+> +	}
+> +	rng->tfm = hash;
+> +
+> +	size = sizeof(struct shash_desc) + crypto_shash_descsize(hash);
+> +	sdesc = kmalloc(size, GFP_KERNEL);
+> +	if (!sdesc) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	sdesc->tfm = hash;
+> +	crypto_shash_init(sdesc);
+> +	rng->sdesc = sdesc;
+> +
+> +	rng->entropy_collector = jent_entropy_collector_alloc(1, 0, sdesc);
+> +	if (!rng->entropy_collector)
+> +		ret = -ENOMEM;
 
-I am a secret admirer and would like to explore the opportunity to 
-learn more about each other. I know it is strange to contact you 
-this way and I hope you can forgive me. I am a shy person and 
-this is the only way I know I could get your attention. I just want 
-to know what you think and my intention is not to offend you.
-I hope we can be friends if that is what you want, although I wish 
-to be more than just a friend. I know you have a few questions to 
-ask and I hope I can satisfy some of your curiosity with a few 
-answers.
+Is this supposed to fail or not?
 
-I believe in the saying that &#039;to the world you are just one person, 
-but to someone special you are the world&#039;. All I want is love, 
-romantic care and attention from a special companion which I am
-hoping would be you.
+> +
+> +	spin_lock_init(&rng->jent_lock);
+> +	return 0;
+> +
+> +err:
+> +	jent_kcapi_cleanup(tfm);
+> +	return ret;
+> +}
+> +
 
-I hope this message will be the beginning of a long term 
-communication between us, simply send a reply to this message, it 
-will make me happy.
-
-
-Hugs and kisses,
-
-Marion.
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
