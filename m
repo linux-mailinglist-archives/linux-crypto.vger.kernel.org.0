@@ -1,85 +1,133 @@
 Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CD46EA206
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Apr 2023 04:52:44 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id C13A66EA38D
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Apr 2023 08:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbjDUCwk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 20 Apr 2023 22:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
+        id S230155AbjDUGLe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 21 Apr 2023 02:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbjDUCvw (ORCPT
+        with ESMTP id S233213AbjDUGLb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 20 Apr 2023 22:51:52 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8437AB7;
-        Thu, 20 Apr 2023 19:51:28 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1a6862e47b1so19837785ad.0;
-        Thu, 20 Apr 2023 19:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682045488; x=1684637488;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sUw0DkZoq2nQ/bLNbKEG/cpbsutsaVMiCTIAKGrHlvQ=;
-        b=fVspGee2WguejmyW9SsJEePERYXvLnqkuEJr6C3DOdX9+QMwzZgHjx45Tnd08CWhEv
-         96/NJgI1wU4AZjV16sLDqCDuoewN0EZ4u/eznQMLu8vqcywZYQBrtiwri5P+JxzYSAmm
-         Ulbq145l6+P+dzYJ8T9UBS7ZKcLuiUYQIJ+bjmgOqjwZL3KXz0l1NdjfuyZsVrp3/mUc
-         uz2pe37gx+xMom5o4Ffo6xjNyVFQkODv98yxJS7VH80xPFWWR8x1U9gPKhzcMJLIhU4Z
-         4VRcQKegQexAg/0aqGIXZEaalQPyXpSPRyfwa+wSOVV9x5KHQpZnqrOs+ZmR7CcN/Fxd
-         LAGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682045488; x=1684637488;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=sUw0DkZoq2nQ/bLNbKEG/cpbsutsaVMiCTIAKGrHlvQ=;
-        b=j726AK/0utIZPY3jyFCfeLH+hU9in4EgeS4n+sbBPAGtZhL5g4fAQrl4ND3iLusI3Z
-         JlBkLd0EonfY5dnBtFJr5cmzhD1d/sLm33COtzy7tIdw/UeaTzxiZT1GlmquyRUtEcp6
-         r39DbU4dFhb1RAoavxgnqkkdY03de1ncZg68QA4PC/u7nYp0Uibg34g3ROOgNU2eNkGQ
-         Ga0NIriP69osRC9Hg9J4/R8zYaIcr6cbD73txez2iqj+SNW/wL0djb+7r/S8SKpl85+b
-         z5BFjQphe75XsZSEhyUm/6hRhA2AgADLr/h9TdF7DgWyw55WVqaB80IWPpMjWQP5PMhy
-         AvjQ==
-X-Gm-Message-State: AAQBX9eOyDRQ2TgWOSTFWF3eJsEL5zhj/oK8lSZnsrkfZYWtrnO8TAHP
-        vcFa4J1w+1BLSFnj69ZvPG0=
-X-Google-Smtp-Source: AKy350bfg5iycY16+iUpXfteBKP3Fc4xgEaxKW4EkKpcbiPL/UBLjhv/N76nHHTmaju/3YT2t1S9qg==
-X-Received: by 2002:a17:902:e751:b0:1a9:433e:41d5 with SMTP id p17-20020a170902e75100b001a9433e41d5mr1550826plf.56.1682045487627;
-        Thu, 20 Apr 2023 19:51:27 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id hi17-20020a17090b30d100b002471deb13fcsm3676695pjb.6.2023.04.20.19.51.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 19:51:27 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-From:   Tejun Heo <tj@kernel.org>
-To:     jiangshanlai@gmail.com
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        Tejun Heo <tj@kernel.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Shijith Thotton <sthotton@marvell.com>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Minghao Chi <chi.minghao@zte.com.cn>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 20/22] crypto: octeontx2: Use alloc_ordered_workqueue() to create ordered workqueues
-Date:   Thu, 20 Apr 2023 16:50:44 -1000
-Message-Id: <20230421025046.4008499-21-tj@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230421025046.4008499-1-tj@kernel.org>
-References: <20230421025046.4008499-1-tj@kernel.org>
+        Fri, 21 Apr 2023 02:11:31 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D962111
+        for <linux-crypto@vger.kernel.org>; Thu, 20 Apr 2023 23:10:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1682057363; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=iHtKW3lWTECEGEvXCnPZ6rbA6YEJja9sdI6+a0aewS7EzcttaQDiLRkj3PKGFPoLHh
+    oWrF6ZHdHTgz56oDYcQKHz/b9tzq2JkOf+g3nKjU1kh16Qpo++44Dk21MLgEdfV64dw9
+    5/YF6Tz0FYjsW3biqvyQV1SW92oPr1qHh396jUpSRT60jZ515xixijId01o0C3MVOMKR
+    gooUGRjIeigwqDXCuqcSLIdCRhAw7zZSbmx8xq4S1kymPTacABt+S43X8/NoxHakDnOf
+    bzLAGtMYGp3sd1tdlTGk0/UmagJmLU/m7Tibw58alHRD+v/1Q5UqnGtsVoS08x5SbIyO
+    jSwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1682057363;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=AYdqUTVg07JzH3M+rkQ0c2tb1ZzKKUteItTGXwK8d1o=;
+    b=kU1jI105wEuPwYj0B11xj41hHeSg3WVsF3GizFidq7YFrfh+NoXdN3pQ4Ni90QcWY5
+    UF1InSb1GdONBpzth6w8g1ZEe78dK6Dri2mWuNpR63e+elQUyaO1kfNJplmfJxSqvSs2
+    C+FA9kypRN9hXONBgiapPbZWGpjAUsW4GGxCy1OTTD/g8cFxDqJnPodCDpd/1StZlUE7
+    B8aMYo9zDKPzQR4DYlh3U8TlDbdBpyWGuiVABLfaPFyE1pA7GfBH+/O9ewFaImzWjsiY
+    C/nt3eoZett8b6YDrOaWYnYnOCRCo0eJA9sUl5aPVBOQYDXoiEadqGb9e5WS3dPoEYQz
+    XJNg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1682057363;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=AYdqUTVg07JzH3M+rkQ0c2tb1ZzKKUteItTGXwK8d1o=;
+    b=sRS1c0IrfSgC6lhO3++mPYY3VXXECye8/Vkw7/pv8ifqlqNCMm+SRY8Zt6txrDhJKA
+    mGy62Z/ZoNPIH6BR7b0DRTgmd2qc5ag3NcB1kj+l54+UyyVd7ix3N3wt9pQ+7WNzSHnc
+    I35rr4J1p+5r8m3IRbxTYHw9NqY6XvJi72RAZbyoaElB4X0D5A+xxFOPC7sfQDHj0di6
+    SB+XguVwr3kA5f6IV3fgNj5b1mv1QkFzw67h/b/fg6jggsQ7ti47kzEwvovb2ECGONup
+    vHCl2Rx6F7JdOeKefNmHwRRt3/GjB5Zn6C7Mahk9gZ/6cgyXaL5wwyhjxUyp5kVYFeAO
+    T8hw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1682057363;
+    s=strato-dkim-0003; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=AYdqUTVg07JzH3M+rkQ0c2tb1ZzKKUteItTGXwK8d1o=;
+    b=vVsC4XBWwWshcUpUqXwfqALcVtVp7+yoFYfLveDbH6l6JMm9RTOH7ljTLktibCsXGD
+    5/8F+AZ6qaTcNPhC9RBg==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9y2gdNk2TvDz1d0q2fA=="
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 49.4.0 AUTH)
+    with ESMTPSA id ta02b6z3L69NCIJ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 21 Apr 2023 08:09:23 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au
+Cc:     Vladis Dronov <vdronov@redhat.com>,
+        Marcelo Cerri <marcelo.cerri@canonical.com>
+Subject: [PATCH v3 0/2] crypto: jitter - SHA-3 conditioner and test interface
+Date:   Fri, 21 Apr 2023 08:07:39 +0200
+Message-ID: <2687238.mvXUDI8C0e@positron.chronox.de>
+In-Reply-To: <4825604.31r3eYUQgx@positron.chronox.de>
+References: <2684670.mvXUDI8C0e@positron.chronox.de>
+ <4825604.31r3eYUQgx@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Autocrypt: addr=smueller@chronox.de;
+ keydata=
+ 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
+ kBFBHm+xdudNab2U0OpfqrWerOw3WcGd2
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,124 +135,51 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-BACKGROUND
-==========
+The patch set replaces the LFSR conditioning function of the Jitter RNG
+with SHA-3 256. This change requires also a new test interface to
+analyze the raw unconditioned noise data.
 
-When multiple work items are queued to a workqueue, their execution order
-doesn't match the queueing order. They may get executed in any order and
-simultaneously. When fully serialized execution - one by one in the queueing
-order - is needed, an ordered workqueue should be used which can be created
-with alloc_ordered_workqueue().
+Albeit the test interface can be used directly with dd, a small helper
+tool is provided at [1] which can be used to perform the collection
+of raw entropy. The analysis of the data can be done with your favorite
+tool. Or you may use the helper in [2] which uses the NIST SP800-90B
+tool for entropy rate measurement.
 
-However, alloc_ordered_workqueue() was a later addition. Before it, an
-ordered workqueue could be obtained by creating an UNBOUND workqueue with
-@max_active==1. This originally was an implementation side-effect which was
-broken by 4c16bd327c74 ("workqueue: restore WQ_UNBOUND/max_active==1 to be
-ordered"). Because there were users that depended on the ordered execution,
-5c0338c68706 ("workqueue: restore WQ_UNBOUND/max_active==1 to be ordered")
-made workqueue allocation path to implicitly promote UNBOUND workqueues w/
-@max_active==1 to ordered workqueues.
+[1] https://github.com/smuellerDD/jitterentropy-library/tree/master/tests/raw-entropy/recording_runtime_kernelspace
 
-While this has worked okay, overloading the UNBOUND allocation interface
-this way creates other issues. It's difficult to tell whether a given
-workqueue actually needs to be ordered and users that legitimately want a
-min concurrency level wq unexpectedly gets an ordered one instead. With
-planned UNBOUND workqueue updates to improve execution locality and more
-prevalence of chiplet designs which can benefit from such improvements, this
-isn't a state we wanna be in forever.
+[2] https://github.com/smuellerDD/jitterentropy-library/tree/master/tests/raw-entropy/validation-runtime-kernel
 
-This patch series audits all callsites that create an UNBOUND workqueue w/
-@max_active==1 and converts them to alloc_ordered_workqueue() as necessary.
+Changes v3:
 
-WHAT TO LOOK FOR
-================
+- fix jent_kcapi_init: error code for jent_entropy_collector_alloc now
+  properly cleans up the state
 
-The conversions are from
+- fix jent_kcapi_init: initialize lock at the beginning as it is used in
+  error code path function jent_kcapi_cleanup
 
-  alloc_workqueue(WQ_UNBOUND | flags, 1, args..)
+- editorial change: update description in MODULE_PARM_DESC in patch 0002
 
-to
+Changes v2:
 
-  alloc_ordered_workqueue(flags, args...)
+- fix use-after-free by switching shash_desc_zero and crypto_free_shash
+  in jent_mod_init reported by kernel-test-robot
 
-which don't cause any functional changes. If you know that fully ordered
-execution is not ncessary, please let me know. I'll drop the conversion and
-instead add a comment noting the fact to reduce confusion while conversion
-is in progress.
+Stephan Mueller (2):
+  crypto: jitter - replace LFSR with SHA3-256
+  crypto: jitter - add interface for gathering of raw entropy
 
-If you aren't fully sure, it's completely fine to let the conversion
-through. The behavior will stay exactly the same and we can always
-reconsider later.
+ crypto/Kconfig                 |  21 +++
+ crypto/Makefile                |   1 +
+ crypto/jitterentropy-kcapi.c   | 190 ++++++++++++++++++---
+ crypto/jitterentropy-testing.c | 294 +++++++++++++++++++++++++++++++++
+ crypto/jitterentropy.c         | 145 ++++++----------
+ crypto/jitterentropy.h         |  20 ++-
+ 6 files changed, 551 insertions(+), 120 deletions(-)
+ create mode 100644 crypto/jitterentropy-testing.c
 
-As there are follow-up workqueue core changes, I'd really appreciate if the
-patch can be routed through the workqueue tree w/ your acks. Thanks.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Boris Brezillon <bbrezillon@kernel.org>
-Cc: Arnaud Ebalard <arno@natisbad.org>
-Cc: Srujana Challa <schalla@marvell.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Shijith Thotton <sthotton@marvell.com>
-Cc: Vladis Dronov <vdronov@redhat.com>
-Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: Alexander Lobakin <alobakin@pm.me>
-Cc: Minghao Chi <chi.minghao@zte.com.cn>
-Cc: ye xingchen <ye.xingchen@zte.com.cn>
-Cc: linux-crypto@vger.kernel.org
----
- drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c | 12 ++++++------
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c |  6 +++---
- 2 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-index ddf6e913c1c4..30e6acfc93d9 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-@@ -357,9 +357,9 @@ static int cptpf_vfpf_mbox_init(struct otx2_cptpf_dev *cptpf, int num_vfs)
- 	u64 vfpf_mbox_base;
- 	int err, i;
- 
--	cptpf->vfpf_mbox_wq = alloc_workqueue("cpt_vfpf_mailbox",
--					      WQ_UNBOUND | WQ_HIGHPRI |
--					      WQ_MEM_RECLAIM, 1);
-+	cptpf->vfpf_mbox_wq =
-+		alloc_ordered_workqueue("cpt_vfpf_mailbox",
-+					WQ_HIGHPRI | WQ_MEM_RECLAIM);
- 	if (!cptpf->vfpf_mbox_wq)
- 		return -ENOMEM;
- 
-@@ -453,9 +453,9 @@ static int cptpf_afpf_mbox_init(struct otx2_cptpf_dev *cptpf)
- 	resource_size_t offset;
- 	int err;
- 
--	cptpf->afpf_mbox_wq = alloc_workqueue("cpt_afpf_mailbox",
--					      WQ_UNBOUND | WQ_HIGHPRI |
--					      WQ_MEM_RECLAIM, 1);
-+	cptpf->afpf_mbox_wq =
-+		alloc_ordered_workqueue("cpt_afpf_mailbox",
-+					WQ_HIGHPRI | WQ_MEM_RECLAIM);
- 	if (!cptpf->afpf_mbox_wq)
- 		return -ENOMEM;
- 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-index 392e9fee05e8..6023a7adb70c 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-@@ -75,9 +75,9 @@ static int cptvf_pfvf_mbox_init(struct otx2_cptvf_dev *cptvf)
- 	resource_size_t offset, size;
- 	int ret;
- 
--	cptvf->pfvf_mbox_wq = alloc_workqueue("cpt_pfvf_mailbox",
--					      WQ_UNBOUND | WQ_HIGHPRI |
--					      WQ_MEM_RECLAIM, 1);
-+	cptvf->pfvf_mbox_wq =
-+		alloc_ordered_workqueue("cpt_pfvf_mailbox",
-+					WQ_HIGHPRI | WQ_MEM_RECLAIM);
- 	if (!cptvf->pfvf_mbox_wq)
- 		return -ENOMEM;
- 
 -- 
 2.40.0
+
+
+
 
