@@ -2,64 +2,52 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FC96EEB6A
-	for <lists+linux-crypto@lfdr.de>; Wed, 26 Apr 2023 02:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234F26EEEA4
+	for <lists+linux-crypto@lfdr.de>; Wed, 26 Apr 2023 08:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238347AbjDZA2k (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 25 Apr 2023 20:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46068 "EHLO
+        id S239361AbjDZG66 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Wed, 26 Apr 2023 02:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236412AbjDZA2j (ORCPT
+        with ESMTP id S230129AbjDZG65 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 25 Apr 2023 20:28:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6030B230;
-        Tue, 25 Apr 2023 17:28:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3EDBB62E30;
-        Wed, 26 Apr 2023 00:28:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F893C433EF;
-        Wed, 26 Apr 2023 00:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682468917;
-        bh=iMl460FsgYxZKT/bQSFPVazG4qV4WaEXmxAruggaakM=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=d8vDDZ0ajEMjXZMUFXVAYmyz4oFcDQJUqol7jKydYsCl2JBZLozmT9N6HldYyGlIz
-         u822996qteuHXf1cc1aTmhqrESTwpEbKZdbq28VHp58jEV8CoepVHHE6rfM3tf2jCv
-         RiMgCFRMyUEuSvdl4qn20Yc7UKZKI9hPm5+3Dy/oHBMlLarVuSL8akAFRVIWJQfRVN
-         aE4bW2Z+I8f56WEvbummC7E3BQV5NTqaAF/vL2S5jkMYrLJrCyeVSGvJdaKR9VKJ9i
-         n9eNFZma0kTGD5/39ZobrfqGiXl+C3UmFnNTypskWeJ7xW+VAf96J2D7mKT50N1rNm
-         4Sfv/WPsnWctw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 26 Apr 2023 03:28:30 +0300
-Message-Id: <CS69GBAMXJ1X.1T8NO0CZUBXLG@suppilovahvero>
-Cc:     <linux-kernel@vger.kernel.org>, <keyrings@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        "Roberto Sassu" <roberto.sassu@huawei.com>
-Subject: Re: [RFC][PATCH 3/6] verification: Introduce verify_umd_signature()
- and verify_umd_message_sig()
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Roberto Sassu" <roberto.sassu@huaweicloud.com>,
-        <dhowells@redhat.com>, <dwmw2@infradead.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <rostedt@goodmis.org>,
-        <mhiramat@kernel.org>, <mykolal@fb.com>, <shuah@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230425173557.724688-1-roberto.sassu@huaweicloud.com>
- <20230425173557.724688-4-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20230425173557.724688-4-roberto.sassu@huaweicloud.com>
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Wed, 26 Apr 2023 02:58:57 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868A81FE9;
+        Tue, 25 Apr 2023 23:58:55 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 5D68E7FD6;
+        Wed, 26 Apr 2023 14:58:54 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 26 Apr
+ 2023 14:58:54 +0800
+Received: from ubuntu.localdomain (202.188.176.82) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 26 Apr
+ 2023 14:58:51 +0800
+From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Emil Renner Berthing <kernel@esmil.dk>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+Subject: [PATCH v6 0/4] crypto: starfive - Add drivers for crypto engine
+Date:   Wed, 26 Apr 2023 14:58:44 +0800
+Message-ID: <20230426065848.842221-1-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,19 +55,77 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue Apr 25, 2023 at 8:35 PM EEST, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Introduce verify_umd_signature() and verify_umd_message_sig(), to verify
-> UMD-parsed signatures from detached data. It aims to be used by kernel
-> subsystems wishing to verify the authenticity of system data, with
-> system-defined keyrings as trust anchor.
+This patch series adds kernel driver support for StarFive JH7110 crypto
+engine. The first patch adds Documentations for the device and Patch 2
+adds device probe and DMA init for the module. Patch 3 adds crypto and
+DMA dts node for VisionFive 2 board. Patch 4 adds hash/hmac support to
+the module.
 
-UMD is not generic knowledge. It is a term coined up in this patch set
-so please open code it to each patch.
+Patch 3 needs to be applied on top of:
+https://lore.kernel.org/lkml/20230424135409.6648-3-xingyu.wu@starfivetech.com/
 
-One discussion points should be what these handlers should be called.
-Right now the patch set is misleads the reader to think as this was
-some kind of "official" term and set to stone.
+Patch 4 needs to be applied on top of:
+https://lore.kernel.org/linux-crypto/ZEEOXIHwqKblKfBJ@gondor.apana.org.au/T/#u
 
-BR, Jarkko
+Changes v5->v6
+- Remove set_crypt in export as request will have been created by
+  init/updated calls (Herbert)
+- Use new helper to set statesize of crypto_ahash (Herbert)
+- Use crypto_ahash_blocksize instead of crypto_ahash_tfm (Herbert)
+- Switch to init_tfm/exit_tfm instead of cra_init/cra_exit (Herbert)
+
+Changes v4->v5
+- Schedule tasklet from IRQ handler instead of using completion to sync
+  events (Herbert)
+
+Changes v3->v4:
+- Use fallback for non-aligned cases as hardware doesn't support
+  hashing piece-meal (Herbert)
+- Use ahash_request_set_* helpers to update members of ahash_request
+  (Herbert)
+- Set callbacks for async fallback (Herbert)
+- Remove completion variable and use dma_callback to do the rest of
+  processing instead. (Herbert)
+
+Changes v2->v3:
+- Only implement digest and use fallback for other ops (Herbert)
+- Use interrupt instead of polling for hash complete (Herbert)
+- Remove manual data copy from out-of-bound memory location as it will
+  be handled by DMA API. (Christoph & Herbert)
+
+Changes v1->v2:
+- Fixed yaml filename and format (Krzysztof)
+- Removed unnecessary property names in yaml (Krzysztof)
+- Moved of_device_id table close to usage (Krzysztof)
+- Use dev_err_probe for error returns (Krzysztof)
+- Dropped redundant readl and writel wrappers (Krzysztof)
+- Updated commit signed offs (Conor)
+- Dropped redundant node in dts, module set to on in dtsi (Conor)
+
+Jia Jie Ho (4):
+  dt-bindings: crypto: Add StarFive crypto module
+  crypto: starfive - Add crypto engine support
+  riscv: dts: starfive: Add crypto and DMA node for VisionFive 2
+  crypto: starfive - Add hash and HMAC support
+
+ .../crypto/starfive,jh7110-crypto.yaml        |  70 ++
+ MAINTAINERS                                   |   7 +
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  28 +
+ drivers/crypto/Kconfig                        |   1 +
+ drivers/crypto/Makefile                       |   1 +
+ drivers/crypto/starfive/Kconfig               |  21 +
+ drivers/crypto/starfive/Makefile              |   4 +
+ drivers/crypto/starfive/jh7110-cryp.c         | 237 +++++
+ drivers/crypto/starfive/jh7110-cryp.h         | 127 +++
+ drivers/crypto/starfive/jh7110-hash.c         | 896 ++++++++++++++++++
+ 10 files changed, 1392 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+ create mode 100644 drivers/crypto/starfive/Kconfig
+ create mode 100644 drivers/crypto/starfive/Makefile
+ create mode 100644 drivers/crypto/starfive/jh7110-cryp.c
+ create mode 100644 drivers/crypto/starfive/jh7110-cryp.h
+ create mode 100644 drivers/crypto/starfive/jh7110-hash.c
+
+-- 
+2.25.1
+
