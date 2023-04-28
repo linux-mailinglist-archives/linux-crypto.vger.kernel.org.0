@@ -2,84 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96B36F14F1
-	for <lists+linux-crypto@lfdr.de>; Fri, 28 Apr 2023 12:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B65D6F1658
+	for <lists+linux-crypto@lfdr.de>; Fri, 28 Apr 2023 13:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjD1KFq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 28 Apr 2023 06:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48128 "EHLO
+        id S229712AbjD1LEi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 28 Apr 2023 07:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjD1KFp (ORCPT
+        with ESMTP id S1345519AbjD1LEg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 28 Apr 2023 06:05:45 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A685D10B;
-        Fri, 28 Apr 2023 03:05:43 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1psKyw-003E2t-5P; Fri, 28 Apr 2023 18:05:40 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 28 Apr 2023 18:05:39 +0800
-Date:   Fri, 28 Apr 2023 18:05:39 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Olivier Bacon <olivierb89@gmail.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Olivier Bacon <obacon@genetec.com>,
-        Sylvain Ouellet <souellet@genetec.com>
-Subject: Re: [PATCH] crypto: engine - fix crypto_queue backlog handling
-Message-ID: <ZEuac5MjDVWidTBX@gondor.apana.org.au>
-References: <20230420150035.19369-1-obacon@genetec.com>
+        Fri, 28 Apr 2023 07:04:36 -0400
+Received: from mail.nsr.re.kr (unknown [210.104.33.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055373581
+        for <linux-crypto@vger.kernel.org>; Fri, 28 Apr 2023 04:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; s=LIY0OQ3MUMW6182UNI14; d=nsr.re.kr; t=1682679713; c=relaxed/relaxed; h=date:from:message-id:mime-version:subject:to; bh=fduGQRlBa9QiqU0Mjp18cRW/tGgDG1Os2W0gWXXl1nE=; b=FWQuRLqjduo0M+/PuSrMOa0aLSgI2mzB6UbP/qA2kWfbgJ20DHfmDkNWeHdVSjgHpA30/fHlP3UQ3DtK0l5/t/8p4206Tw2Pg0z9noGKBegth/Slrfremvg41vjpL4QmuihuFXFXRAQjSuJU2tvDYCnN7Je53gLnugs7fhOzdQ5BWuv0Hn+NBAwh+6LwG+AA4QrabTenN0UbsT3dOrla1dfScH8HMZinrUmEvhfk75sAur/KMrUHaHfufzie0d2Oiy0Z/iM343budOeMU9O1hXm1ruuZU0hlnYmhus57u7eRDoPamgAQEEMPPJczQry59ze0PTWrcwQd2Jt2gScEwA==
+Received: from 210.104.33.70 (nsr.re.kr)
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
+        by mail.nsr.re.kr with SMTP; Fri, 28 Apr 2023 19:59:31 +0900
+Received: from 192.168.155.188 ([192.168.155.188])
+          by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 623;
+          Fri, 28 Apr 2023 20:01:09 +0900 (KST)
+From:   Dongsoo Lee <letrhee@nsr.re.kr>
+To:     linux-crypto@vger.kernel.org
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <abc@test.nsr.re.kr>,
+        Dongsoo Lee <letrhee@gmail.com>,
+        Dongsoo Lee <letrhee@nsr.re.kr>
+Subject: [PATCH 0/3] crypto: LEA block cipher implementation
+Date:   Fri, 28 Apr 2023 20:00:55 +0900
+Message-Id: <20230428110058.1516119-1-letrhee@nsr.re.kr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230420150035.19369-1-obacon@genetec.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 11:00:35AM -0400, Olivier Bacon wrote:
-> CRYPTO_TFM_REQ_MAY_BACKLOG tells the crypto driver that it should
-> internally backlog requests until the crypto hw's queue becomes
-> full. At that point, crypto_engine backlogs the request and returns
-> -EBUSY. Calling driver such as dm-crypt then waits until the
-> complete() function is called with a status of -EINPROGRESS before
-> sending a new request.
-> 
-> The problem lies in the call to complete() with a value of -EINPROGRESS
-> that is made when a backlog item is present on the queue. The call is
-> done before the successful execution of the crypto request. In the case
-> that do_one_request() returns < 0 and the retry support is available,
-> the request is put back in the queue. This leads upper drivers to send
-> a new request even if the queue is still full.
-> 
-> The problem can be reproduced by doing a large dd into a crypto
-> dm-crypt device. This is pretty easy to see when using
-> Freescale CAAM crypto driver and SWIOTLB dma. Since the actual amount
-> of requests that can be hold in the queue is unlimited we get IOs error
-> and dma allocation.
-> 
-> The fix is to call complete with a value of -EINPROGRESS only if
-> the request is not enqueued back in crypto_queue. This is done
-> by calling complete() later in the code. In order to delay the decision,
-> crypto_queue is modified to correctly set the backlog pointer
-> when a request is enqueued back.
-> 
-> Fixes: 6a89f492f8e5 ("crypto: engine - support for parallel requests based on retry mechanism")
-> Co-developed-by: Sylvain Ouellet <souellet@genetec.com>
-> Signed-off-by: Sylvain Ouellet <souellet@genetec.com>
-> Signed-off-by: Olivier Bacon <obacon@genetec.com>
-> ---
->  crypto/algapi.c        | 3 +++
->  crypto/crypto_engine.c | 6 +++---
->  2 files changed, 6 insertions(+), 3 deletions(-)
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+This submission contains a generic C implementation of the LEA block
+cipher and its optimized implementation within ECB, CBC, CTR, and XTR
+cipher modes of operation for the x86_64 environment.
+
+The LEA algorithm is a symmetric key cipher that processes data blocks
+of 128bits and has three different key lengths, each with a different
+number of rounds:
+
+- LEA-128: 128-bit key, 24 rounds,
+- LEA-192: 192-bit key, 28 rounds, and
+- LEA-256: 256-bit key, 32 rounds.
+
+The round function of LEA consists of 32-bit ARX(modular Addition,
+bitwise Rotation, and bitwise XOR) operations. See [1, 2] for details.
+
+The LEA is a Korean national standard block cipher, described in
+"KS X 3246" and is also included in the international standard,
+"ISO/IEC 29192-2:2019 standard (Information security - Lightweight
+cryptography - Part 2: Block ciphers)".
+
+It is one of the approved block ciphers for the current Korean
+Cryptographic Module Validation Program (KCMVP).
+
+The Korean e-government framework contains various cryptographic
+applications, and KCMVP-validated cryptographic module should be used
+according to the government requirements. The ARIA block cipher, which
+is already included in Linux kernel, has been widely used as a symmetric
+key cipher. However, the adoption of LEA increase rapidly for new
+applications.
+
+By adding LEA to the Linux kernel, Dedicated device drivers that require
+LEA encryption can be provided without additional crypto implementation.
+An example of an immediately applicable use case is disk encryption
+using cryptsetup.
+
+The submitted implementation includes a generic C implementation that
+uses 32-bit ARX operations, and an optimized implementation for the
+x86_64 environment.
+
+The implementation same as submitted generic C implementation is
+distributed through the Korea Internet & Security Agency (KISA),
+could be found [3].
+
+For the x86_64 environment, we use SSE2/MOVBE/AVX2 instructions. Since
+LEA use four 32-bit unsigned integers for 128-bit block, the SSE2 and
+AVX2 implementations encrypts four and eight blocks at a time for
+optimization, repectively.
+Our submission provides a optimized implementation of 4/8 block ECB, CBC
+decryption, CTR, and XTS cipher operation modes on x86_64 CPUs
+supporting AVX2. The MOVBE instruction is used for optimizing the CTR
+mode.
+
+The implementation has been tested with kernel module tcrypt.ko and has
+passed the selftest using test vectors for KCMVP[4]. The path also test
+with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
+
+- [1] https://en.wikipedia.org/wiki/LEA_(cipher)
+- [2] https://seed.kisa.or.kr/kisa/algorithm/EgovLeaInfo.do
+- [3] https://seed.kisa.or.kr/kisa/Board/20/detailView.do
+- [4] https://seed.kisa.or.kr/kisa/kcmvp/EgovVerification.do
+
+Dongsoo Lee (3):
+      crypto: LEA block cipher implementation
+      crypto: add LEA testmgr tests
+      crypto: LEA block cipher AVX2 optimization
+
+ arch/x86/crypto/Kconfig               |   22 +
+ arch/x86/crypto/Makefile              |    3 +
+ arch/x86/crypto/lea_avx2_glue.c       | 1112 +++++++++++++++++++++++++
+ arch/x86/crypto/lea_avx2_x86_64-asm.S |  778 ++++++++++++++++++
+ crypto/Kconfig                        |   12 +
+ crypto/Makefile                       |    1 +
+ crypto/lea_generic.c                  |  915 +++++++++++++++++++++
+ crypto/tcrypt.c                       |   73 ++
+ crypto/testmgr.c                      |   32 +
+ crypto/testmgr.h                      | 1211 ++++++++++++++++++++++++++++
+ include/crypto/lea.h                  |   39 +
+ 11 files changed, 4198 insertions(+)
+
