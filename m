@@ -2,179 +2,137 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFB56F6461
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 May 2023 07:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40576F65CF
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 May 2023 09:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjEDF3X (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 May 2023 01:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S230059AbjEDHeW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Thu, 4 May 2023 03:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjEDF3W (ORCPT
+        with ESMTP id S229816AbjEDHeU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 May 2023 01:29:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4091BD1
-        for <linux-crypto@vger.kernel.org>; Wed,  3 May 2023 22:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683178117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rknz9rWFTYmTSoqDehsopyM4J34RAfhCmfEUYFTI4vk=;
-        b=WZNgzGYeZe/7zITAlKDYXrgpM/wWNcG/AzyB/vIpWnnlZXRC8yMsMnvd3zsVyd6OGvb+c8
-        Dh+RL+SnHKrcVL+mKQu4446LH8iR+2VRuq9jDIZgJA0YOLLEsKftTkNuliCJHivh7aWvvb
-        qgCjMhE2r2ybJpT6SxWKdY/83T4ZyO4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-548-PGlj7Q1HPpexzE8FCaETAA-1; Thu, 04 May 2023 01:28:36 -0400
-X-MC-Unique: PGlj7Q1HPpexzE8FCaETAA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f1745d08b5so70515e9.1
-        for <linux-crypto@vger.kernel.org>; Wed, 03 May 2023 22:28:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683178115; x=1685770115;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rknz9rWFTYmTSoqDehsopyM4J34RAfhCmfEUYFTI4vk=;
-        b=Eqd7XwtFwroVYZ9T4z0Iji5UH0oMP/V8zU+nSDey5FYks8/EYOJDyoT7vF/iivHLVP
-         uIq3RD9o33XtNzGKdbdrUp7V84X6MToSXOu+bPt9kBianYKLHHvDGDJYySYUFk+RpKu6
-         +giZIathZE9jSuL6XJF9B3o5U3/f+uD8YDQRfb6H+GEQpZfm5+xhm//FO7prU0++jEU3
-         ImTyYec6G1AQ8CXZEYmGgbfJP+QYxql66GAGH33BrOGNb+Mn0WYf12b8A3LS47oG/8WL
-         3qzf2LlI8LXi3AKrrD00SREdb7+YUGcbSPvmUt4QFBmLJdXW6VpxPojvfm9zdG0GqrAG
-         D7Rw==
-X-Gm-Message-State: AC+VfDy7GBJkBzunbFshKWICI6PtU09i/73U1KLT+9deULYyIRmgvw/P
-        0Jcof6BNJqG8VDOu1dX6M8xRAqQbB39FI5Qc3AJ+p5Z//scCJEWZMfvJsWe3yPKlHfmVbWloGgI
-        nbsydJ0x8aznF36rmVtQ5Alc+
-X-Received: by 2002:a7b:ce8b:0:b0:3f1:6faa:d94c with SMTP id q11-20020a7bce8b000000b003f16faad94cmr16392048wmj.16.1683178115460;
-        Wed, 03 May 2023 22:28:35 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6POiYPPqmIlSPfpvcMsDXK5aF0I0YO5IEpOhc6/XuSAbh//EpUFBgAgN7y/MN/MRyTPhiCQA==
-X-Received: by 2002:a7b:ce8b:0:b0:3f1:6faa:d94c with SMTP id q11-20020a7bce8b000000b003f16faad94cmr16392033wmj.16.1683178115152;
-        Wed, 03 May 2023 22:28:35 -0700 (PDT)
-Received: from redhat.com ([31.187.78.120])
-        by smtp.gmail.com with ESMTPSA id x16-20020a05600c21d000b003f318be9442sm3682466wmj.40.2023.05.03.22.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 22:28:34 -0700 (PDT)
-Date:   Thu, 4 May 2023 01:28:30 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+726dc8c62c3536431ceb@syzkaller.appspotmail.com>,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, olivia@selenic.com,
-        syzkaller-bugs@googlegroups.com, Jason Wang <jasowang@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Rusty Russell <rusty@rustcorp.com.au>
-Subject: Re: [v2 PATCH] hwrng: virtio - Fix race on data_avail and actual data
-Message-ID: <20230504012732-mutt-send-email-mst@kernel.org>
-References: <00000000000050327205f9d993b2@google.com>
- <CACT4Y+awU85RHZjf3+_85AvJOHghoOhH3c9E-70p+a=FrRDYkg@mail.gmail.com>
- <ZFI9bHr1o2Cvdebp@gondor.apana.org.au>
- <20230503073220-mutt-send-email-mst@kernel.org>
- <ZFMtpC18ykLd/jf2@gondor.apana.org.au>
+        Thu, 4 May 2023 03:34:20 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945BB1990;
+        Thu,  4 May 2023 00:34:14 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 16A2624E1FE;
+        Thu,  4 May 2023 15:34:08 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 4 May
+ 2023 15:34:07 +0800
+Received: from ubuntu.localdomain (161.142.156.10) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 4 May
+ 2023 15:34:02 +0800
+From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Conor Dooley <conor@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+Subject: [PATCH v7 0/4] crypto: starfive - Add drivers for crypto engine
+Date:   Thu, 4 May 2023 15:33:56 +0800
+Message-ID: <20230504073400.1170979-1-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZFMtpC18ykLd/jf2@gondor.apana.org.au>
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [161.142.156.10]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, May 04, 2023 at 11:59:32AM +0800, Herbert Xu wrote:
-> On Wed, May 03, 2023 at 07:37:00AM -0400, Michael S. Tsirkin wrote:
-> >
-> > On the surface of it, it looks like you removed this store
-> > which isn't described in the commit log.
-> > I do not, offhand, remember why we stored 0 in data_idx here
-> > when we also zero it in request_entropy.
-> > It was added with
-> 
-> Yes I removed because it's redundant.  But you're right I'll add
-> a note about it in the log:
-> 
-> ---8<---
-> The virtio rng device kicks off a new entropy request whenever the
-> data available reaches zero.  When a new request occurs at the end
-> of a read operation, that is, when the result of that request is
-> only needed by the next reader, then there is a race between the
-> writing of the new data and the next reader.
-> 
-> This is because there is no synchronisation whatsoever between the
-> writer and the reader.
-> 
-> Fix this by writing data_avail with smp_store_release and reading
-> it with smp_load_acquire when we first enter read.  The subsequent
-> reads are safe because they're either protected by the first load
-> acquire, or by the completion mechanism.
-> 
-> Also remove the redundant zeroing of data_idx in random_recv_done
-> (data_idx must already be zero at this point) and data_avail in
-> request_entropy (ditto).
-> 
-> Reported-by: syzbot+726dc8c62c3536431ceb@syzkaller.appspotmail.com
-> Fixes: f7f510ec1957 ("virtio: An entropy device, as suggested by hpa.")
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+This patch series adds kernel driver support for StarFive JH7110 crypto
+engine. The first patch adds Documentations for the device and Patch 2
+adds device probe and DMA init for the module. Patch 3 adds crypto and
+DMA dts node for VisionFive 2 board. Patch 4 adds hash/hmac support to
+the module.
 
+Patch 3 needs to be applied on top of:
+https://lore.kernel.org/lkml/20230424135409.6648-3-xingyu.wu@starfivetech.com/
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Patch 4 needs to be applied on top of:
+https://lore.kernel.org/linux-crypto/ZEEOXIHwqKblKfBJ@gondor.apana.org.au/T/#u
 
-feel free ro merge, thanks!
+Changes v6->v7
+- Remove NULL assignment as struct is kzalloc()-ed (Christophe)
+- Do clk_disable_unprepare and assert reset if probe failed (Christophe)
+- Remove unnecessary null pointer check (Christophe)
+- Update module name in Kconfig description (Christophe)
 
-> 
-> diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-> index f7690e0f92ed..e41a84e6b4b5 100644
-> --- a/drivers/char/hw_random/virtio-rng.c
-> +++ b/drivers/char/hw_random/virtio-rng.c
-> @@ -4,6 +4,7 @@
->   *  Copyright (C) 2007, 2008 Rusty Russell IBM Corporation
->   */
->  
-> +#include <asm/barrier.h>
->  #include <linux/err.h>
->  #include <linux/hw_random.h>
->  #include <linux/scatterlist.h>
-> @@ -37,13 +38,13 @@ struct virtrng_info {
->  static void random_recv_done(struct virtqueue *vq)
->  {
->  	struct virtrng_info *vi = vq->vdev->priv;
-> +	unsigned int len;
->  
->  	/* We can get spurious callbacks, e.g. shared IRQs + virtio_pci. */
-> -	if (!virtqueue_get_buf(vi->vq, &vi->data_avail))
-> +	if (!virtqueue_get_buf(vi->vq, &len))
->  		return;
->  
-> -	vi->data_idx = 0;
-> -
-> +	smp_store_release(&vi->data_avail, len);
->  	complete(&vi->have_data);
->  }
->  
-> @@ -52,7 +53,6 @@ static void request_entropy(struct virtrng_info *vi)
->  	struct scatterlist sg;
->  
->  	reinit_completion(&vi->have_data);
-> -	vi->data_avail = 0;
->  	vi->data_idx = 0;
->  
->  	sg_init_one(&sg, vi->data, sizeof(vi->data));
-> @@ -88,7 +88,7 @@ static int virtio_read(struct hwrng *rng, void *buf, size_t size, bool wait)
->  	read = 0;
->  
->  	/* copy available data */
-> -	if (vi->data_avail) {
-> +	if (smp_load_acquire(&vi->data_avail)) {
->  		chunk = copy_data(vi, buf, size);
->  		size -= chunk;
->  		read += chunk;
-> -- 
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Changes v5->v6
+- Remove set_crypt in export as request will have been created by
+  init/updated calls (Herbert)
+- Use new helper to set statesize of crypto_ahash (Herbert)
+- Use crypto_ahash_blocksize instead of crypto_ahash_tfm (Herbert)
+- Switch to init_tfm/exit_tfm instead of cra_init/cra_exit (Herbert)
+
+Changes v4->v5
+- Schedule tasklet from IRQ handler instead of using completion to sync
+  events (Herbert)
+
+Changes v3->v4:
+- Use fallback for non-aligned cases as hardware doesn't support
+  hashing piece-meal (Herbert)
+- Use ahash_request_set_* helpers to update members of ahash_request
+  (Herbert)
+- Set callbacks for async fallback (Herbert)
+- Remove completion variable and use dma_callback to do the rest of
+  processing instead. (Herbert)
+
+Changes v2->v3:
+- Only implement digest and use fallback for other ops (Herbert)
+- Use interrupt instead of polling for hash complete (Herbert)
+- Remove manual data copy from out-of-bound memory location as it will
+  be handled by DMA API. (Christoph & Herbert)
+
+Changes v1->v2:
+- Fixed yaml filename and format (Krzysztof)
+- Removed unnecessary property names in yaml (Krzysztof)
+- Moved of_device_id table close to usage (Krzysztof)
+- Use dev_err_probe for error returns (Krzysztof)
+- Dropped redundant readl and writel wrappers (Krzysztof)
+- Updated commit signed offs (Conor)
+- Dropped redundant node in dts, module set to on in dtsi (Conor)
+
+Jia Jie Ho (4):
+  dt-bindings: crypto: Add StarFive crypto module
+  crypto: starfive - Add crypto engine support
+  riscv: dts: starfive: Add crypto and DMA node for VisionFive 2
+  crypto: starfive - Add hash and HMAC support
+
+ .../crypto/starfive,jh7110-crypto.yaml        |  70 ++
+ MAINTAINERS                                   |   7 +
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  28 +
+ drivers/crypto/Kconfig                        |   1 +
+ drivers/crypto/Makefile                       |   1 +
+ drivers/crypto/starfive/Kconfig               |  21 +
+ drivers/crypto/starfive/Makefile              |   4 +
+ drivers/crypto/starfive/jh7110-cryp.c         | 240 +++++
+ drivers/crypto/starfive/jh7110-cryp.h         | 127 +++
+ drivers/crypto/starfive/jh7110-hash.c         | 892 ++++++++++++++++++
+ 10 files changed, 1391 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+ create mode 100644 drivers/crypto/starfive/Kconfig
+ create mode 100644 drivers/crypto/starfive/Makefile
+ create mode 100644 drivers/crypto/starfive/jh7110-cryp.c
+ create mode 100644 drivers/crypto/starfive/jh7110-cryp.h
+ create mode 100644 drivers/crypto/starfive/jh7110-hash.c
+
+-- 
+2.25.1
 
