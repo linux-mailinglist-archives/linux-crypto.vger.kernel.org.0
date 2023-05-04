@@ -2,78 +2,69 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCE86F5802
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 May 2023 14:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DA56F63C7
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 May 2023 05:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjECMe4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 3 May 2023 08:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
+        id S229620AbjEDD4c (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 3 May 2023 23:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjECMez (ORCPT
+        with ESMTP id S229900AbjEDD4J (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 3 May 2023 08:34:55 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E91A49CD
-        for <linux-crypto@vger.kernel.org>; Wed,  3 May 2023 05:34:52 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-32a249b416fso40740455ab.1
-        for <linux-crypto@vger.kernel.org>; Wed, 03 May 2023 05:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683117291; x=1685709291;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+HNHYwnLEvnLgSMzznBh/gGVID9t8HFwI7dBcOQwExQ=;
-        b=hiEZlbuOI1SysK4yUcS6UrhgbN2Ni6BlqSH+MycJ2aPGDfY+EeOGnGmbAw7SgPU/df
-         NSp8UxJlglAeP0Ph5foU+08siq40PMvRYD2beT3Z/kuSO2Jcg6frnRa8saHsviqpCSyC
-         iRQftc4PQom0WAqoeDF7saFAIf4fiTU1Kj6w0gLTneSgXK9S//zqEWHQ49SwWXHkg5N7
-         9ih6ghzE3sIzu3X2gYJrGmhh12cjMol9UIjq2RV5zhrbBoalg3j0YyV3Z91QTILZz/Xq
-         jkCSEOCuF9kipwezPZ4idAnyPHyprsOyxolNANZqY7Gt2Pqu7C3uWNp8Py0a2UxIJ69t
-         faBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683117291; x=1685709291;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+HNHYwnLEvnLgSMzznBh/gGVID9t8HFwI7dBcOQwExQ=;
-        b=USL9GU2KnShNTh7qwcBSKQxAXPSqmHLpBOda+hEkI0sqLrnHjgdsQRRxazkTN73oSv
-         0PgMMIX2CtkU7nFVyTdXvXY4tjV3O1f2x4aX1b1HNDQjtCylqm/ZfNeAAXtG5Lc5R5gO
-         MaSCAFd5nrkwrrhB9VaO9iHmrt1WJQ2I7BNEdRFPoIAhUNFSZV2fNGfvh91K5y7ABOsq
-         QygFjDwu2ejJr6kyZWF/aafQ6Dfiv093JVZQLbvTDUl3XBQjl9UEbZw0qRk1A0wiWqoi
-         IefrM7/5hfhs2nxGBUDHgnBHS1WzuFQ5EZ7eKlEWEZe7OrwKO9/dn7ZDNE42v6H5bV5h
-         vkjw==
-X-Gm-Message-State: AC+VfDyhYTZazQojeKyxUUS2TsmmViuxcHgJRec4wgPtBkLdcJu7esCk
-        u1/UFNEVCt7Ny3lJgWhyY2HVjIDSe3HarT7BElM=
-X-Google-Smtp-Source: ACHHUZ6mmO8v0BOkCbLAjMVgRyjf4t+2ANzH0i9Q/ZMgvuJG34EtR37SVlMt/ib4hohvNPi1LY5cIF91HSQCsEGa8pg=
-X-Received: by 2002:a92:3205:0:b0:331:96b:2162 with SMTP id
- z5-20020a923205000000b00331096b2162mr5098959ile.13.1683117291152; Wed, 03 May
- 2023 05:34:51 -0700 (PDT)
+        Wed, 3 May 2023 23:56:09 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090921BEB;
+        Wed,  3 May 2023 20:56:04 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1puQ4E-0051rZ-Dx; Thu, 04 May 2023 11:55:44 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 May 2023 11:55:43 +0800
+Date:   Thu, 4 May 2023 11:55:43 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+726dc8c62c3536431ceb@syzkaller.appspotmail.com>,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, olivia@selenic.com,
+        syzkaller-bugs@googlegroups.com, Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [PATCH] hwrng: virtio - Fix race on data_avail and actual data
+Message-ID: <ZFMsvxW+pEZA2EZ7@gondor.apana.org.au>
+References: <00000000000050327205f9d993b2@google.com>
+ <CACT4Y+awU85RHZjf3+_85AvJOHghoOhH3c9E-70p+a=FrRDYkg@mail.gmail.com>
+ <ZFI9bHr1o2Cvdebp@gondor.apana.org.au>
+ <ede92183-bef3-78a7-abae-335c6c5cca1e@linaro.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:1301:b0:40a:f22a:44ce with HTTP; Wed, 3 May 2023
- 05:34:50 -0700 (PDT)
-Reply-To: wormer.amos@aol.com
-From:   Wormer Amos <revsistergracewilliams02@gmail.com>
-Date:   Wed, 3 May 2023 13:34:50 +0100
-Message-ID: <CALq9C432wiKLAkg9Jwv9cQ1RTFtPeE9y2KOQYa2SO2pa1hw-Zw@mail.gmail.com>
-Subject: Partnership
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ede92183-bef3-78a7-abae-335c6c5cca1e@linaro.org>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Greeting. please i want to know if you're ready for business investment
-project in
-your country because i
-need a serious partnership with good background, kindly reply
-me to discuss details immediately. i will appreciate you to contact me
-on this email below.
+On Wed, May 03, 2023 at 12:19:30PM +0100, Tudor Ambarus wrote:
+>
+> > Reported-by: syzbot+726dc8c62c3536431ceb@syzkaller.appspotmail.com
+> 
+> Link: https://syzkaller.appspot.com/bug?extid=726dc8c62c3536431ceb
+> 
+> Please add the dashboard link if applying as searching for the syzbot ID
+> rarely gives meaningful results.
 
-Thanks and awaiting for your quick response,
+The syzbot ID is already present in the in the Reported-by tag.
+There is no reason to clutter up the commit message with redundant
+information.
 
-Amos!
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
