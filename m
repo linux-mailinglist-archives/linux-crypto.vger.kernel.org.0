@@ -2,109 +2,79 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC156F670F
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 May 2023 10:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B596F6756
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 May 2023 10:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjEDIOe (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 4 May 2023 04:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
+        id S229795AbjEDI2B (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 4 May 2023 04:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjEDINN (ORCPT
+        with ESMTP id S229872AbjEDI1c (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 4 May 2023 04:13:13 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCB749E7
-        for <linux-crypto@vger.kernel.org>; Thu,  4 May 2023 01:10:47 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-305f0491e62so70094f8f.3
-        for <linux-crypto@vger.kernel.org>; Thu, 04 May 2023 01:10:47 -0700 (PDT)
+        Thu, 4 May 2023 04:27:32 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621866585
+        for <linux-crypto@vger.kernel.org>; Thu,  4 May 2023 01:20:22 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-331333e6bf1so433275ab.3
+        for <linux-crypto@vger.kernel.org>; Thu, 04 May 2023 01:20:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1683187846; x=1685779846;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AEAJhREXxkwkAjTPpZvPokj/zHXMm768UtibcSphYNk=;
-        b=SqjBG+zFd6XMBtMilb+Gwi0u9nafhh3KXuO7ISOJsarAR/zv3ZYByiPrpVWhyGkKJZ
-         hi95G8ZlaqOmjvUdp4f1BlxiVU9IOaatTlFylzbSLkfttqsrO04KDuqTgNLvYh8KDtXy
-         bPmUlusPuEe2Qw8R4wE+ZaUtSzamBmkZk7kJ9FE/ER4mCOyDBqR1tNmoBgo/MayBtL2b
-         gIQ2XDKgI0h6vSybtZiCjR7DIYy/BxxyhpBbepBq3iHyvF2eemvNxEB6CCzrcqZUWyLG
-         CErKlb0ZcvsftbOrOOQq+mZ7g45h6gFdKhycA57YnpFjs2D7TQfuJg7eJw/I6u/fwMY3
-         oM6Q==
+        d=gmail.com; s=20221208; t=1683188421; x=1685780421;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=21T2ruoV7Hb2byNjXRrKdStLSJ9N1tOpZrLYkVqWI4g=;
+        b=FaiP5wWrywwzd4YeEUl3otRuGeCL+KX1UqNXOUpjk62xfANA7AwY3AXuR3buegRZez
+         NWA1qu+zD7SViq4F12zZkKX/NQpDUrBZb2BjHhBwsgt5ZmXgDqTOAZJPYWdBXRTKTAAT
+         NApnbdLhOeB1whsfHdXGqN+ewe31/qsVcfu0l3LNAOBjzQra+cvCqJ0G6FdYS+f58Hy/
+         axWZu/IY5olm+h3+WCuQDAZHwxjEYbpmmq8fTyDHlMwzRfMmm1E2usLotv+ukOGIxyBT
+         j22wy6QJRoli3rhhpU4Jn5z1M5gJYZ5lnViIp9z7+KTyQq9Yth2jljRX+ApJb3NDxjIp
+         4lOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683187846; x=1685779846;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1683188421; x=1685780421;
+        h=to:subject:message-id:date:from:sender:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AEAJhREXxkwkAjTPpZvPokj/zHXMm768UtibcSphYNk=;
-        b=HrchVzq7JrO9BXshI8eyccl0Igd/Bmu69gTUYw0cRhyai07HjhSvIKpr46m5I8W6ku
-         HoVWtVnQKp4jBCZNNJ8kfKVjMDhg0QPU3qct1eWyFm9BhUfGhVEhLp/m5OGxYg4JlX9L
-         IWO8rzuFIMICmimsnOpvsSN4H9UWWmkfHUhrTXkv+LT0X3aKajK3CY7d9/FH0WbwPtL8
-         KF2nFSyYh7Zhu7fV2NORzKDjDhVe4hu/cgfCpwGKn1ENQWMvobM7yf1ACW/Mj9l1dODQ
-         vREH4kWEag/P4hosinUpWuV2G7Ct010j9brDcZfCJca6uD5aZYxtbjKlwGtydZTVdbiI
-         HUIg==
-X-Gm-Message-State: AC+VfDwFcss0P53N7xAKhKZgae8Zjvsall9m+ez+Ie0kIt+2Z/ewTkRx
-        JQXpF+QEq35wBfX+zeu9EI3NAQ==
-X-Google-Smtp-Source: ACHHUZ5sn6tdEm0Ok1suzCgkzUiI4xCKFXzlcJ/N/zGU0MzqTZuwH6EMDL6/PxsXnxR2Harp3+n45w==
-X-Received: by 2002:a5d:4904:0:b0:306:2d36:c6d4 with SMTP id x4-20020a5d4904000000b003062d36c6d4mr1929128wrq.31.1683187845788;
-        Thu, 04 May 2023 01:10:45 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.230])
-        by smtp.gmail.com with ESMTPSA id p17-20020a056000019100b002fda1b12a0bsm36135718wrx.2.2023.05.04.01.10.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 May 2023 01:10:45 -0700 (PDT)
-Message-ID: <41ddc20d-8675-d8bc-18c6-2a26f0d6b104@linaro.org>
-Date:   Thu, 4 May 2023 09:10:43 +0100
+        bh=21T2ruoV7Hb2byNjXRrKdStLSJ9N1tOpZrLYkVqWI4g=;
+        b=MO8PWxoI5cVvX01bqOK1sh1dgPAkKEfZBvZ06PMDGQcgwHlOJ5mpeclsh9A2qQ2obO
+         Arw0FmDqcjxlS8/QOgdp/oozrKEJst5+UpEekEhlx1uUtkooGdsTbGC480z+MBcD4Afk
+         9VOrVDPfoIwWuKYlpsnYTYx0LcksVaVIX4a9uxz2cPG+nGhv1uTu5e3jWAc5CdW7XABO
+         0cN/XVOlDLY3VBf0BvZ3tuneM8ji6g72//p+NY8ofwdfEm/HeQ9vgwgbn7tQNMXeue6x
+         TUkCsz21KZn/SpzOQz9SjV8Pa7a//05jq40AqUKNJVhJrHl79x+5iaPkmeck9ZdRuVPu
+         IWmQ==
+X-Gm-Message-State: AC+VfDzxJ8dEIzUiDB4X8rNruGF8H2TB1vR4kveHJq/BNtdLa0jVwkqO
+        1ZadSYpglrpZ2GKhCb48wUXPWHwFLOv16nx//bI=
+X-Google-Smtp-Source: ACHHUZ5HKde+k5Dt5RvV3e1wq9ZPnlQ6YWoAEdv4RoJgrhSmMVe4HVPcUmyFescZWoI4m3ihPXHXjx68xfYYcChBWNE=
+X-Received: by 2002:a92:c102:0:b0:331:122c:2788 with SMTP id
+ p2-20020a92c102000000b00331122c2788mr6986198ile.20.1683188421229; Thu, 04 May
+ 2023 01:20:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH] hwrng: virtio - Fix race on data_avail and actual data
-Content-Language: en-US
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+726dc8c62c3536431ceb@syzkaller.appspotmail.com>,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, olivia@selenic.com,
-        syzkaller-bugs@googlegroups.com, Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Rusty Russell <rusty@rustcorp.com.au>
-References: <00000000000050327205f9d993b2@google.com>
- <CACT4Y+awU85RHZjf3+_85AvJOHghoOhH3c9E-70p+a=FrRDYkg@mail.gmail.com>
- <ZFI9bHr1o2Cvdebp@gondor.apana.org.au>
- <ede92183-bef3-78a7-abae-335c6c5cca1e@linaro.org>
- <ZFMsvxW+pEZA2EZ7@gondor.apana.org.au>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <ZFMsvxW+pEZA2EZ7@gondor.apana.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Sender: 53e59t26@gmail.com
+Received: by 2002:a92:d442:0:b0:326:4581:50a0 with HTTP; Thu, 4 May 2023
+ 01:20:20 -0700 (PDT)
+From:   Mrs Suzara Maling Wan <mrssuzaramailingwan12@gmail.com>
+Date:   Thu, 4 May 2023 09:20:20 +0100
+X-Google-Sender-Auth: l4AwGH5tKNtofM7Bte52UV44Yg8
+Message-ID: <CANcxMs54ifN5KO5MdqbRXR4BftwbEcSFx2H8dBb+9pDTi42Axg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+I am Mrs Suzara Maling Wan, I have a desire to build an orphanage home
+in your country and also support the poor and less privilege in your
+society, I want you to handle this project on my behalf, I have $4.5
+Million Dollars with Ecobank to execute this project .
 
+If you are in a good position to handle this project, reply for
+further details of the project
 
-On 5/4/23 04:55, Herbert Xu wrote:
-> On Wed, May 03, 2023 at 12:19:30PM +0100, Tudor Ambarus wrote:
->>
->>> Reported-by: syzbot+726dc8c62c3536431ceb@syzkaller.appspotmail.com
->>
->> Link: https://syzkaller.appspot.com/bug?extid=726dc8c62c3536431ceb
->>
->> Please add the dashboard link if applying as searching for the syzbot ID
->> rarely gives meaningful results.
-> 
-> The syzbot ID is already present in the in the Reported-by tag.
-> There is no reason to clutter up the commit message with redundant
-> information.
-> 
-
-As you prefer. Theodore Ts'o encourages to add a dashboard link, here's
-his reasoning:
-https://github.com/google/syzkaller/issues/3393#issuecomment-1347476434
-
-Cheers,
-ta
+Regards
+Mrs Suzara Maling Wan
