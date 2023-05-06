@@ -2,103 +2,71 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFE56F989D
-	for <lists+linux-crypto@lfdr.de>; Sun,  7 May 2023 15:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B426F98E7
+	for <lists+linux-crypto@lfdr.de>; Sun,  7 May 2023 16:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjEGNUF (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 7 May 2023 09:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
+        id S231442AbjEGOUG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-crypto@lfdr.de>); Sun, 7 May 2023 10:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjEGNUE (ORCPT
+        with ESMTP id S229446AbjEGOUF (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 7 May 2023 09:20:04 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B3517DDB;
-        Sun,  7 May 2023 06:20:01 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1pveIl-006CHt-F5; Sun, 07 May 2023 21:19:49 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 07 May 2023 21:19:48 +0800
-Date:   Sun, 7 May 2023 21:19:48 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 6.4
-Message-ID: <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
-References: <YgMn+1qQPQId50hO@gondor.apana.org.au>
- <YjE5yThYIzih2kM6@gondor.apana.org.au>
- <YkUdKiJflWqxBmx5@gondor.apana.org.au>
- <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
- <Yqw7bf7ln6vtU/VH@gondor.apana.org.au>
- <Yr1XPJsAH2l1cx3A@gondor.apana.org.au>
- <Y0zcWCmNmdXnX8RP@gondor.apana.org.au>
- <Y1thZ/+Gh/ONyf7x@gondor.apana.org.au>
- <Y7fmtJHWT1Zx+A1j@gondor.apana.org.au>
- <ZARrt99wJb7IhoY4@gondor.apana.org.au>
+        Sun, 7 May 2023 10:20:05 -0400
+Received: from mail.bpip.go.id (unknown [103.166.134.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C69A4C3E;
+        Sun,  7 May 2023 07:20:01 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.bpip.go.id (Postfix) with ESMTP id 9C32BC0E615;
+        Sun,  7 May 2023 08:39:41 +0700 (WIB)
+Received: from mail.bpip.go.id ([127.0.0.1])
+        by localhost (mail.bpip.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id EMAJhw2w0KZN; Sun,  7 May 2023 08:39:41 +0700 (WIB)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.bpip.go.id (Postfix) with ESMTP id 4D53AB4E83A;
+        Sat,  6 May 2023 21:19:49 +0700 (WIB)
+X-Amavis-Modified: Mail body modified (using disclaimer) - mail.bpip.go.id
+X-Virus-Scanned: amavisd-new at bpip.go.id
+Received: from mail.bpip.go.id ([127.0.0.1])
+        by localhost (mail.bpip.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id NOD4xabUwidS; Sat,  6 May 2023 21:19:49 +0700 (WIB)
+Received: from [103.167.91.37] (unknown [103.167.91.37])
+        by mail.bpip.go.id (Postfix) with ESMTPSA id 7A172BCC753;
+        Sat,  6 May 2023 08:34:27 +0700 (WIB)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZARrt99wJb7IhoY4@gondor.apana.org.au>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Letzte Erinnerung
+To:     Recipients <persuratan@bpip.go.id>
+From:   "Qatar Foundation" <persuratan@bpip.go.id>
+Date:   Fri, 05 May 2023 18:34:23 -0700
+Reply-To: qf.qatarcares.org@gmail.com
+Message-Id: <20230506013427.7A172BCC753@mail.bpip.go.id>
+X-Spam-Status: Yes, score=6.0 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,NIXSPAM_IXHASH,RCVD_IN_SBL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
-X-Spam-Level: **
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [103.167.91.37 listed in zen.spamhaus.org]
+        *  3.0 NIXSPAM_IXHASH http://www.nixspam.org/
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Linus:
+Sehr geehrter Begünstigter,
 
-The following changes since commit 482c84e906e535072c55395acabd3a58e9443d12:
+Sie wurden ausgewählt,  (995.000,00 €) von Katar Foundation zu erhalten, antworten Sie bitte mit Ihrem vollständigen Namen und Ihrer Adresse, um weitere Informationen zu erhalten. E-mail:qf.qatarcares.org@gmail.com
 
-  i2c: designware: Add doorbell support for Mendocino (2023-04-20 18:20:05 +0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.4-p2 
-
-for you to fetch changes up to b8969a1b69672b163d057e7745ebc915df689211:
-
-  crypto: api - Fix CRYPTO_USER checks for report function (2023-05-02 18:22:24 +0800)
-
-----------------------------------------------------------------
-This push fixes the following problems:
-
-- A long-standing bug in crypto_engine.
-- A buggy but harmless check in the sun8i-ss driver. 
-- A regression in the CRYPTO_USER interface.
-----------------------------------------------------------------
-
-Christophe JAILLET (1):
-      crypto: sun8i-ss - Fix a test in sun8i_ss_setup_ivs()
-
-Olivier Bacon (1):
-      crypto: engine - fix crypto_queue backlog handling
-
-Ondrej Mosnacek (1):
-      crypto: api - Fix CRYPTO_USER checks for report function
-
- crypto/acompress.c                                  | 2 +-
- crypto/aead.c                                       | 2 +-
- crypto/ahash.c                                      | 2 +-
- crypto/akcipher.c                                   | 2 +-
- crypto/algapi.c                                     | 3 +++
- crypto/crypto_engine.c                              | 6 +++---
- crypto/kpp.c                                        | 2 +-
- crypto/rng.c                                        | 2 +-
- crypto/scompress.c                                  | 2 +-
- crypto/shash.c                                      | 2 +-
- crypto/skcipher.c                                   | 2 +-
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 2 +-
- 12 files changed, 16 insertions(+), 13 deletions(-)
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Mit Freundlichen Grüßen,
+Herr Rashid Al-Naimi.
+Chief Executive Officer der Qatar Foundation Endowment.
+(null)
