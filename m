@@ -2,104 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9175B6F99AF
-	for <lists+linux-crypto@lfdr.de>; Sun,  7 May 2023 18:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE306F9ACB
+	for <lists+linux-crypto@lfdr.de>; Sun,  7 May 2023 20:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbjEGQXz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 7 May 2023 12:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
+        id S231791AbjEGSMH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 7 May 2023 14:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjEGQXy (ORCPT
+        with ESMTP id S231685AbjEGSMG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 7 May 2023 12:23:54 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D1812082
-        for <linux-crypto@vger.kernel.org>; Sun,  7 May 2023 09:23:53 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6435bbedb4fso4041009b3a.3
-        for <linux-crypto@vger.kernel.org>; Sun, 07 May 2023 09:23:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683476633; x=1686068633;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a0ecg5KC5wMELpv5KoMWwexl88AAqVKm+usrtL33ouU=;
-        b=nry2MxpqBNiHfLtOOQ5hx6+ss2tM2Jdlensu6w0hzRdrPnnA85J15fInuhpnMheR/C
-         OMIJm4dv91V96Bh7zXvNpkQWjVhNC2KeT89nZzmmnVJiA5N5OSKbbJXCG57prA3rx1XE
-         HNC01BH+CnXS9iLHNc2dOH3itKXVyDCe8k1hWzSW/PU4C6nLgIKbFwuCnMiNOYwVoXJ2
-         xw6xYKNKvd2CSmtIhVT4AXvSORbdz+0ZYbk9jJUcPkZTVF1oWboX71spyYIWYHp+KXnd
-         jzAHI1ZBlpipr0vDjCB++zSrKlcNpheK5BhqVuYDeHcYqGjqi529dIzVAz4glo/SzA8B
-         tO3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683476633; x=1686068633;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a0ecg5KC5wMELpv5KoMWwexl88AAqVKm+usrtL33ouU=;
-        b=J3fQlHwxAoMzjHydOaAiZlVgmMcnfzP6GKjRGt+hDlVcO1on5VSZlgPh63xVcHQyP/
-         oJcpSvJ2nNWSA2HEW0/CsKxf5KAg4sFRm464bmr5G7frg9JrWSfjzQVJP5KyV8V0aitt
-         Yr3QblEIF7m93nwNifKenxKKzJQa5zuaKv8XQndXxtXcGp2xz1noidkCnTNbYi0Bhng7
-         Pqj3FHfafQxXtRKrd2vy54Grd3oWpR84jYZlKoFOi3l4hPmiznpOYfRxD/reLwTABK55
-         BaTSR4fGTSWYqmxl4QiLV/N74xziC/OE69vB324o83js58hG5p+04A0EjhLOQxmsnH57
-         Hl1A==
-X-Gm-Message-State: AC+VfDwzGaPDW198zZtES1ncAGvTU9NNntiCGkCPWjCWG5tcC+iTE1tP
-        uR3r+mG5TP3FaZrVrV/W6d99T9Q+8t0DijQ1Lxc=
-X-Google-Smtp-Source: ACHHUZ4Wcky+qSKBD/eTWBNYYB8JhtePcodBVRJrMXZTZBeL3GyDOE2g/Iosh/58iQDLt2vEBB7PRlffuQDT5goyvBw=
-X-Received: by 2002:a05:6a00:2e05:b0:63e:6b8a:7975 with SMTP id
- fc5-20020a056a002e0500b0063e6b8a7975mr9152032pfb.9.1683476632252; Sun, 07 May
- 2023 09:23:52 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:7300:23c7:b0:c2:f214:9a9f with HTTP; Sun, 7 May 2023
- 09:23:51 -0700 (PDT)
-Reply-To: wormer.amos@aol.com
-From:   Wormer Amos <amic22799@gmail.com>
-Date:   Sun, 7 May 2023 17:23:51 +0100
-Message-ID: <CAD5jw6pjcE+OvqbT+h_RBEiPtfqUN1M6zbyAZUg9D-RBJgZazg@mail.gmail.com>
-Subject: FROM AMOS,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        Sun, 7 May 2023 14:12:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EB340C1;
+        Sun,  7 May 2023 11:12:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B227761234;
+        Sun,  7 May 2023 18:12:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1E4BAC433D2;
+        Sun,  7 May 2023 18:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683483125;
+        bh=hV5wKgT1Grye95s2Xy/mi+6KaUCW4PA6/wlQyfFwJQA=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=U0d3Dll7eyj9jIy48UTUokVr9BqAq7JnEJ9K0AJkU/Ip4GziEnW8CaeIneEqd+UDp
+         /7JDbymCN8Xjsz5/SGs/wetx+tG2L1g6mt7CPhqXkXsgDwkbDH7KzjCe6pgGijGx+V
+         Wq/hY3aQXmXXF8o7zgor4xs3XAZwRqQ243jcVXuBMTko1hhfGGG3/AkWL37v1PrnQ4
+         EH07RxUheV4iJOBQDpRNn7IR2h2RwegADze01OC9a0SFK27PBTU2i1TA3IFMT1Bzd+
+         KKZc5XZ9G+U98Gk5xHAd4QVqVZLRZ3mETyzvA9h1tT6bi5bPmEpQAuitaSJW8HggSX
+         RNv9fSw1Iw1DQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0ADC0C395FD;
+        Sun,  7 May 2023 18:12:05 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto Fixes for 6.4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
+References: <YgMn+1qQPQId50hO@gondor.apana.org.au>
+ <YjE5yThYIzih2kM6@gondor.apana.org.au>
+ <YkUdKiJflWqxBmx5@gondor.apana.org.au>
+ <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
+ <Yqw7bf7ln6vtU/VH@gondor.apana.org.au>
+ <Yr1XPJsAH2l1cx3A@gondor.apana.org.au>
+ <Y0zcWCmNmdXnX8RP@gondor.apana.org.au>
+ <Y1thZ/+Gh/ONyf7x@gondor.apana.org.au>
+ <Y7fmtJHWT1Zx+A1j@gondor.apana.org.au>
+ <ZARrt99wJb7IhoY4@gondor.apana.org.au> <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.4-p2
+X-PR-Tracked-Commit-Id: b8969a1b69672b163d057e7745ebc915df689211
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6f69c981811c8b019d7882839e31c34ea8330860
+Message-Id: <168348312503.16669.16856484399666238691.pr-tracker-bot@kernel.org>
+Date:   Sun, 07 May 2023 18:12:05 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:42f listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [amic22799[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [amic22799[at]gmail.com]
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.8 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Whats up. please i want to know if you're ready for business investment
-project in
-your country because i
-need a serious partnership with good background, kindly reply
-me to discuss details immediately. i will appreciate you to contact me
-on this email below.
+The pull request you sent on Sun, 7 May 2023 21:19:48 +0800:
 
-Thanks and awaiting for your quick response,
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.4-p2
 
-Wormer!!
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6f69c981811c8b019d7882839e31c34ea8330860
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
