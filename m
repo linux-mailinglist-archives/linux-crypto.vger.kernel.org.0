@@ -2,93 +2,66 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E35B7005C6
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 May 2023 12:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5E4700641
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 May 2023 13:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240529AbjELKk7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 12 May 2023 06:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
+        id S240956AbjELLE2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 12 May 2023 07:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240605AbjELKk6 (ORCPT
+        with ESMTP id S240091AbjELLE0 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 12 May 2023 06:40:58 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1011FD6;
-        Fri, 12 May 2023 03:40:56 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 34CAekj4037117;
-        Fri, 12 May 2023 05:40:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1683888046;
-        bh=8SxkRosU+5sptrW+a2kD7cwTFrcO+YdyW+ZrnrbVrDI=;
-        h=From:To:CC:Subject:Date;
-        b=A+Vu2BrTl8l2vnucAi5N560zj9QTiMDqJbfIDyorzpwb/7FslxbkQYL1UIj3DTU3s
-         sM0YSVASdrA/F7ER6T5SV0olR6d4PUp6MFKFq9VuE/RX8s/kDOl5ERojLqbeEkzkqY
-         BkhIzdDjRAQYfSbAFzUPsKCvjBwiseXtsoa3yE+w=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 34CAekT8014448
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 May 2023 05:40:46 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 12
- May 2023 05:40:46 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 12 May 2023 05:40:45 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 34CAejHN011203;
-        Fri, 12 May 2023 05:40:45 -0500
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <kristo@kernel.org>, <kamlesh@ti.com>, <u-kumar1@ti.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <j-choudhary@ti.com>
-Subject: [PATCH] crypto: sa2ul: change unsafe data size limit to 255 bytes
-Date:   Fri, 12 May 2023 16:10:44 +0530
-Message-ID: <20230512104044.163279-1-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 May 2023 07:04:26 -0400
+X-Greylist: delayed 252 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 12 May 2023 04:04:20 PDT
+Received: from cavan.codon.org.uk (irc.codon.org.uk [IPv6:2a00:1098:84:22e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB995BB7;
+        Fri, 12 May 2023 04:04:19 -0700 (PDT)
+Received: by cavan.codon.org.uk (Postfix, from userid 1000)
+        id 3B95440A6F; Fri, 12 May 2023 11:47:53 +0100 (BST)
+Date:   Fri, 12 May 2023 11:47:53 +0100
+From:   Matthew Garrett <mjg59@srcf.ucam.org>
+To:     Ross Philipson <ross.philipson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org,
+        kexec@lists.infradead.org, linux-efi@vger.kernel.org,
+        dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, ardb@kernel.org,
+        James.Bottomley@hansenpartnership.com, luto@amacapital.net,
+        nivedita@alum.mit.edu, kanth.ghatraju@oracle.com,
+        trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH v6 02/14] Documentation/x86: Secure Launch kernel
+ documentation
+Message-ID: <20230512104753.GA14461@srcf.ucam.org>
+References: <20230504145023.835096-1-ross.philipson@oracle.com>
+ <20230504145023.835096-3-ross.philipson@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230504145023.835096-3-ross.philipson@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,KHOP_HELO_FCRDNS,SPF_HELO_NEUTRAL,
+        SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Tero Kristo <t-kristo@ti.com>
+On Thu, May 04, 2023 at 02:50:11PM +0000, Ross Philipson wrote:
+> +Secure Launch does not interoperate with KASLR. If possible, the MLE should be
+> +built with KASLR disabled::
 
-256 bytes is quite often used in performance benchmarks and this size
-appears to be also working just fine, so mark it as safe so that we do
-not fallback to software implementation for this packet size. Otherwise
-there is a strange bump up in crypto performance at 256 byte packet size.
+Why does Secure Launch not interoperate with KASLR?
 
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
----
- drivers/crypto/sa2ul.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Re: IOMMUs
 
-diff --git a/drivers/crypto/sa2ul.h b/drivers/crypto/sa2ul.h
-index 92bf97232a29..12c17a68d350 100644
---- a/drivers/crypto/sa2ul.h
-+++ b/drivers/crypto/sa2ul.h
-@@ -170,7 +170,7 @@ struct sa_tfm_ctx;
-  * the following range, so avoid using it.
-  */
- #define SA_UNSAFE_DATA_SZ_MIN	240
--#define SA_UNSAFE_DATA_SZ_MAX	256
-+#define SA_UNSAFE_DATA_SZ_MAX	255
- 
- struct sa_match_data;
- 
--- 
-2.25.1
+> +It is recommended that no other command line options should be set to override
+> +the defaults above.
+
+What happens if they are? Does doing so change the security posture of 
+the system? If so, will the measurements be different in a way that 
+demonstrates the system is in an insecure state?
 
