@@ -2,282 +2,232 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9CF702314
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 May 2023 06:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0320270237B
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 May 2023 07:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjEOE4r (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 15 May 2023 00:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S235025AbjEOFtl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 15 May 2023 01:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjEOE4q (ORCPT
+        with ESMTP id S229436AbjEOFtk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 15 May 2023 00:56:46 -0400
-X-Greylist: delayed 1333 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 14 May 2023 21:56:41 PDT
-Received: from a27-52.smtp-out.us-west-2.amazonses.com (a27-52.smtp-out.us-west-2.amazonses.com [54.240.27.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B381EE73
-        for <linux-crypto@vger.kernel.org>; Sun, 14 May 2023 21:56:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=s25kmyuhzvo7troimxqpmtptpemzlc6l; d=exabit.dev; t=1684125268;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-        bh=r6c3/lQyX/E8+aAyavuFwemjmoLaGwLDqBf2HVjnXqo=;
-        b=MKJCR5w8HKas5WBydD7nJeZUfb/O8YliJD8Owi57XZ6qjNWXFQf6zYXtS2vWrnVH
-        O2uKeEXSJtzqiILyoxtWFWT767w0QQAtmTXrpSozIELgQ2ARYGzuK7Shz/jyncOLYEL
-        mX3bM9SAAndF5wU7Jl4bhIJfudmEuwklUYnpKkLXEZ2ysSRut10TD18GXa99uRq2jxH
-        FwaIFVGJ4qDnTzYG6EcshHEqCit0tTblkgqPa3iHEGYSt79QqHVHl37mvP9OCCr9I31
-        +ag3ehjRKpaOlW8eqFagSq6IAdfleNHQijsP2JGQz3m1+T8ea1TeCa3bCvymLHLUALz
-        SVpwYyfEGg==
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1684125268;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID;
-        bh=r6c3/lQyX/E8+aAyavuFwemjmoLaGwLDqBf2HVjnXqo=;
-        b=eYPk2n3tIFvCGvVeDC0uJb7+4G0iJo+BgAwof++3SLKsZXYYtWWreorFg/Ma+w3E
-        /sLa1yoxtAdOZmEPtw5y5zGMoY1wcoeqmLYuMTzkdHXbmAkFDXCytQr1/1+3jHAQlBE
-        E+WUKQ0ibt0zrpSzeuwkky/0cv+6yFUfB18OtoP0=
-From:   FUJITA Tomonori <tomo@exabit.dev>
-To:     rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Cc:     FUJITA Tomonori <fujita.tomonori@gmail.com>
-Subject: [PATCH 2/2] rust: add socket support
-Date:   Mon, 15 May 2023 04:34:28 +0000
-Message-ID: <010101881db03866-754b644c-682c-44be-8d8e-8376d34c77b3-000000@us-west-2.amazonses.com>
+        Mon, 15 May 2023 01:49:40 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5BD1BF8
+        for <linux-crypto@vger.kernel.org>; Sun, 14 May 2023 22:49:38 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1aad55244b7so93699465ad.2
+        for <linux-crypto@vger.kernel.org>; Sun, 14 May 2023 22:49:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1684129778; x=1686721778;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TZ99alEe0A23tymHcdv/vfT8nEQiGh2D6cQUBbX+NYU=;
+        b=YC+K75o6oTdqYCv/UpwXe9gABJK307bP4yAL6WMj+c0OGsLbwkOJ/0OoSCS/Hfnwsu
+         GE65E5xvfgH6srsEB4tPrXUaOlutSgYPtnJ9OnZa6Sfly4dUMHmFpX5971LIfNSqGIdP
+         Nv2gRNBDawMmNUWqOTu0rbCvluknVfp9eY5z9QAJU2PYdGv+chHD3N6e9l7aDmV5kzWK
+         lSJdnZNxeGgWdSd74Lab4pJ/OB2qUQOL81v5QcFRSIwoBmezMntHOYaPBw740unBgypm
+         Fdcxp34uF51fGVRKTaWQuNCk7Asr2mpnyQ189by4GCzwMaNY9+Mm6vBizXEnrYzhR8lK
+         UKUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684129778; x=1686721778;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TZ99alEe0A23tymHcdv/vfT8nEQiGh2D6cQUBbX+NYU=;
+        b=bAcIn/r3Rnbx9Y7ogC2E432WSXevTO9YLnpzubRcw9kmrNcNWcNYDkOJzETfkwvcGz
+         NftiE4z5aGdTeXKHZaLa34OCAup48GpvyinHzGkQ4BJcmpTX1XHGpFKyeSTfmN7Rzd/Q
+         vzDo55a7mpezGqro3XT/4eXjlV3ee9phImHcN4DJ+6eRiAASUBaAOTEWr9haT5XOEeJ8
+         8Qs8sfRib+mRexxRD4uTVhS86qwqjxz3NaxCaL/aA1I0zFvFVl/5UQUBDWQ4mgC3nndY
+         XczpWlXxO0K79PoZGUpru7n8YUVeOOwHBqtGv3BpCGS74BBlobTKWdDh5KEpzPe0sCd8
+         sQ5w==
+X-Gm-Message-State: AC+VfDy0vgkAVLyibYgpZqpedRLk81WWZ71iJGkrhCmGNETDZn9qwBVa
+        76pvfcTdOV3Qb+8vEkh5LazJDA==
+X-Google-Smtp-Source: ACHHUZ66EM/Ffo2wiDqrucRe8wNpu1TreTFryx+X27BDltpTe5DxTsemz+afopAg9iZvWFHQw1Mb4A==
+X-Received: by 2002:a17:902:e9d5:b0:1ac:b52e:f3e5 with SMTP id 21-20020a170902e9d500b001acb52ef3e5mr18553911plk.43.1684129777671;
+        Sun, 14 May 2023 22:49:37 -0700 (PDT)
+Received: from localhost.localdomain ([106.51.191.118])
+        by smtp.gmail.com with ESMTPSA id f10-20020a17090274ca00b001ab28f620d0sm12423277plt.290.2023.05.14.22.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 May 2023 22:49:37 -0700 (PDT)
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-crypto@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        llvm@lists.linux.dev
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Weili Qian <qianweili@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH V6 00/21] Add basic ACPI support for RISC-V
+Date:   Mon, 15 May 2023 11:19:07 +0530
+Message-Id: <20230515054928.2079268-1-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230515043353.2324288-1-tomo@exabit.dev>
-References: <20230515043353.2324288-1-tomo@exabit.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Feedback-ID: 1.us-west-2.j0GTvY5MHQQ5Spu+i4ZGzzYI1gDE7m7iuMEacWMZbe8=:AmazonSES
-X-SES-Outgoing: 2023.05.15-54.240.27.52
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: FUJITA Tomonori <fujita.tomonori@gmail.com>
+This patch series enables the basic ACPI infrastructure for RISC-V.
+Supporting external interrupt controllers is in progress and hence it is
+tested using poll based HVC SBI console and RAM disk.
 
-minimum abstraction for networking.
+The first patch in this series is one of the patch from Jisheng's
+series [1] which is not merged yet. This patch is required to support
+ACPI since efi_init() which gets called before sbi_init() can enable
+static branches and hits a panic.
 
-Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
----
- rust/bindings/bindings_helper.h |   3 +
- rust/kernel/lib.rs              |   2 +
- rust/kernel/net.rs              | 174 ++++++++++++++++++++++++++++++++
- 3 files changed, 179 insertions(+)
- create mode 100644 rust/kernel/net.rs
+Below are two ECRs approved by ASWG.
+RINTC - https://drive.google.com/file/d/1R6k4MshhN3WTT-hwqAquu5nX6xSEqK2l/view
+RHCT - https://drive.google.com/file/d/1nP3nFiH4jkPMp6COOxP6123DCZKR-tia/view
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 65683b9aa45d..7cbb5dd96bf6 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -7,8 +7,11 @@
-  */
- 
- #include <crypto/hash.h>
-+#include <linux/net.h>
- #include <linux/slab.h>
- #include <linux/refcount.h>
-+#include <linux/socket.h>
-+#include <linux/tcp.h>
- #include <linux/wait.h>
- #include <linux/sched.h>
- 
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index 753fd62b84f1..42dbef3d9e88 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -40,6 +40,8 @@ pub mod crypto;
- pub mod error;
- pub mod init;
- pub mod ioctl;
-+#[cfg(CONFIG_NET)]
-+pub mod net;
- pub mod prelude;
- pub mod print;
- mod static_assert;
-diff --git a/rust/kernel/net.rs b/rust/kernel/net.rs
-new file mode 100644
-index 000000000000..204b5222abdc
---- /dev/null
-+++ b/rust/kernel/net.rs
-@@ -0,0 +1,174 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Networking.
-+//!
-+//! C headers: [`include/linux/net.h`](../../../../include/linux/net.h),
-+//! [`include/linux/socket.h`](../../../../include/linux/socket.h),
-+
-+use crate::{
-+    bindings,
-+    error::{to_result, Result},
-+};
-+use alloc::vec::Vec;
-+
-+/// Represents `struct socket *`.
-+///
-+/// # Invariants
-+///
-+/// The pointer is valid.
-+pub struct Socket {
-+    pub(crate) sock: *mut bindings::socket,
-+}
-+
-+impl Drop for Socket {
-+    fn drop(&mut self) {
-+        // SAFETY: The type invariant guarantees that the pointer is valid.
-+        unsafe { bindings::sock_release(self.sock) }
-+    }
-+}
-+
-+/// Address families. Defines AF_* here.
-+pub enum Family {
-+    /// Internet IP Protocol.
-+    Ip = bindings::AF_INET as isize,
-+}
-+
-+/// Communication type.
-+pub enum SocketType {
-+    /// Stream (connection).
-+    Stream = bindings::sock_type_SOCK_STREAM as isize,
-+}
-+
-+/// Protocols.
-+pub enum Protocol {
-+    /// Transmission Control Protocol.
-+    Tcp = bindings::IPPROTO_TCP as isize,
-+}
-+
-+impl Socket {
-+    /// Creates a [`Socket`] object.
-+    pub fn new(family: Family, sf: SocketType, proto: Protocol) -> Result<Self> {
-+        let mut sock = core::ptr::null_mut();
-+
-+        // SAFETY: FFI call.
-+        to_result(unsafe {
-+            bindings::sock_create_kern(
-+                &mut bindings::init_net,
-+                family as _,
-+                sf as _,
-+                proto as _,
-+                &mut sock,
-+            )
-+        })
-+        .map(|_| Socket { sock })
-+    }
-+
-+    /// Moves a socket to listening state.
-+    pub fn listen(&mut self, backlog: i32) -> Result {
-+        // SAFETY: The type invariant guarantees that the pointer is valid.
-+        to_result(unsafe { bindings::kernel_listen(self.sock, backlog) })
-+    }
-+
-+    /// Binds an address to a socket.
-+    pub fn bind(&mut self, addr: &SocketAddr) -> Result {
-+        let (addr, addrlen) = match addr {
-+            SocketAddr::V4(addr) => (
-+                addr as *const _ as _,
-+                core::mem::size_of::<bindings::sockaddr>() as i32,
-+            ),
-+        };
-+        // SAFETY: The type invariant guarantees that the pointer is valid.
-+        to_result(unsafe { bindings::kernel_bind(self.sock, addr, addrlen) })
-+    }
-+
-+    /// Accepts a connection
-+    pub fn accept(&mut self) -> Result<Self> {
-+        let mut client = core::ptr::null_mut();
-+        // SAFETY: The type invariant guarantees that the pointer is valid.
-+        to_result(unsafe { bindings::kernel_accept(self.sock, &mut client, 0) })
-+            .map(|_| Socket { sock: client })
-+    }
-+
-+    /// Receives a message from a socket.
-+    pub fn recvmsg(&mut self, bufs: &mut [&mut [u8]], flags: i32) -> Result<usize> {
-+        let mut msg = bindings::msghdr::default();
-+        let mut kvec = Vec::try_with_capacity(bufs.len())?;
-+        let mut len = 0;
-+        for i in 0..bufs.len() {
-+            len += bufs[i].len();
-+            kvec.try_push(bindings::kvec {
-+                iov_base: bufs[i].as_mut_ptr().cast(),
-+                iov_len: bufs[i].len(),
-+            })?;
-+        }
-+        // SAFETY: The type invariant guarantees that the pointer is valid.
-+        let r = unsafe {
-+            bindings::kernel_recvmsg(
-+                self.sock,
-+                &mut msg,
-+                kvec.as_mut_ptr(),
-+                bufs.len(),
-+                len,
-+                flags,
-+            )
-+        };
-+        to_result(r).map(|_| r as usize)
-+    }
-+
-+    /// Sends a message through a socket.
-+    pub fn sendmsg(&mut self, bufs: &[&[u8]]) -> Result<usize> {
-+        let mut msg = bindings::msghdr::default();
-+        let mut kvec = Vec::try_with_capacity(bufs.len())?;
-+        let mut len = 0;
-+        for i in 0..bufs.len() {
-+            len += bufs[i].len();
-+            kvec.try_push(bindings::kvec {
-+                iov_base: bufs[i].as_ptr() as *mut u8 as _,
-+                iov_len: bufs[i].len(),
-+            })?;
-+        }
-+        // SAFETY: The type invariant guarantees that the pointer is valid.
-+        let r = unsafe {
-+            bindings::kernel_sendmsg(self.sock, &mut msg, kvec.as_mut_ptr(), bufs.len(), len)
-+        };
-+        to_result(r).map(|_| r as usize)
-+    }
-+}
-+
-+/// A socket address.
-+pub enum SocketAddr {
-+    /// An IPv4 socket address.
-+    V4(SocketAddrV4),
-+}
-+
-+/// Represents `struct in_addr`.
-+#[repr(transparent)]
-+pub struct Ipv4Addr(bindings::in_addr);
-+
-+impl Ipv4Addr {
-+    /// Creates a new IPv4 address from four eight-bit octets.
-+    pub const fn new(a: u8, b: u8, c: u8, d: u8) -> Self {
-+        Self(bindings::in_addr {
-+            s_addr: u32::from_be_bytes([a, b, c, d]).to_be(),
-+        })
-+    }
-+}
-+
-+/// Prepresents `struct sockaddr_in`.
-+#[repr(transparent)]
-+pub struct SocketAddrV4(bindings::sockaddr_in);
-+
-+impl SocketAddrV4 {
-+    /// Creates a new IPv4 socket address.
-+    pub const fn new(addr: Ipv4Addr, port: u16) -> Self {
-+        Self(bindings::sockaddr_in {
-+            sin_family: Family::Ip as _,
-+            sin_port: port.to_be(),
-+            sin_addr: addr.0,
-+            __pad: [0; 8],
-+        })
-+    }
-+}
-+
-+/// Waits for a full request
-+pub const MSG_WAITALL: i32 = bindings::MSG_WAITALL as i32;
+
+Changes since V5:
+	1) Reordered commits in the series to avoid intermediate build failure reported by Conor.
+	2) Updated hisilicon driver patch as per feedback from Herbert Xu.
+	3) Rebased to 6.4-rc2
+
+Changes since V4:
+	1) Rebased with 6.4-rc1 which has ACPICA patches now.
+	2) Split cpufeature.c patch into two by adding patch 2/7 from Conor's series [2]
+	3) Updated caching RINTC logic to avoid global.
+	4) Added driver patches to enable allmodconfig build at the start of the series.
+	5) Updated tags
+
+Changes since V3:
+	1) Added two more driver patches to workaround allmodconfig build failure.
+	2) Separated removal of riscv_of_processor_hartid() to a different patch.
+	3) Addressed Conor's feedback.
+	4) Rebased to v6.3-rc5 and added latest tags
+
+Changes since V2:
+	1) Dropped ACPI_PROCESSOR patch.
+	2) Added new patch to print debug info of RISC-V INTC in MADT
+	3) Addressed other comments from Drew.
+	4) Rebased and updated tags
+
+Changes since V1:
+	1) Dropped PCI changes and instead added dummy interfaces just to enable
+	   building ACPI core when CONFIG_PCI is enabled. Actual PCI changes will
+	   be added in future along with external interrupt controller support
+	   in ACPI.
+	2) Squashed couple of patches so that new code added gets built in each
+	   commit.
+	3) Fixed the missing wake_cpu code in timer refactor patch as pointed by
+	   Conor
+	4) Fixed an issue with SMP disabled.
+	5) Addressed other comments from Conor.
+	6) Updated documentation patch as per feedback from Sanjaya.
+	7) Fixed W=1 and checkpatch --strict issues.
+	8) Added ACK/RB tags
+
+[1] https://lore.kernel.org/all/20220821140918.3613-1-jszhang@kernel.org/
+[2] https://lore.kernel.org/linux-riscv/20230504-divisive-unsavory-5a2ff0c3c2d1@spud/
+
+These changes are available at
+https://github.com/vlsunil/linux/commits/acpi_b1_us_review_v6
+
+Testing:
+1) Build latest Qemu 
+
+2) Build EDK2 as per instructions in
+https://github.com/vlsunil/riscv-uefi-edk2-docs/wiki/RISC-V-Qemu-Virt-support
+
+3) Build Linux after enabling SBI HVC and SBI earlycon
+CONFIG_RISCV_SBI_V01=y
+CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+CONFIG_HVC_RISCV_SBI=y
+
+4) Build buildroot.
+
+Run with below command.
+qemu-system-riscv64   -nographic \
+-drive file=Build/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT.fd,if=pflash,format=raw,unit=1 \
+-machine virt -smp 16 -m 2G \
+-kernel arch/riscv/boot/Image \
+-initrd buildroot/output/images/rootfs.cpio \
+-append "root=/dev/ram ro console=hvc0 earlycon=sbi"
+
+
+Jisheng Zhang (1):
+  riscv: move sbi_init() earlier before jump_label_init()
+
+Sunil V L (20):
+  platform/surface: Disable for RISC-V
+  crypto: hisilicon/qm: Fix to enable build with RISC-V clang
+  ACPI: tables: Print RINTC information when MADT is parsed
+  ACPI: OSL: Make should_use_kmap() 0 for RISC-V
+  RISC-V: Add support to build the ACPI core
+  ACPI: processor_core: RISC-V: Enable mapping processor to the hartid
+  RISC-V: Add ACPI initialization in setup_arch()
+  RISC-V: ACPI: Cache and retrieve the RINTC structure
+  drivers/acpi: RISC-V: Add RHCT related code
+  RISC-V: smpboot: Create wrapper setup_smp()
+  RISC-V: smpboot: Add ACPI support in setup_smp()
+  RISC-V: only iterate over possible CPUs in ISA string parser
+  RISC-V: cpufeature: Add ACPI support in riscv_fill_hwcap()
+  RISC-V: cpu: Enable cpuinfo for ACPI systems
+  irqchip/riscv-intc: Add ACPI support
+  clocksource/timer-riscv: Refactor riscv_timer_init_dt()
+  clocksource/timer-riscv: Add ACPI support
+  RISC-V: time.c: Add ACPI support for time_init()
+  RISC-V: Enable ACPI in defconfig
+  MAINTAINERS: Add entry for drivers/acpi/riscv
+
+ .../admin-guide/kernel-parameters.txt         |   8 +-
+ MAINTAINERS                                   |   7 +
+ arch/riscv/Kconfig                            |   5 +
+ arch/riscv/configs/defconfig                  |   1 +
+ arch/riscv/include/asm/acenv.h                |  11 +
+ arch/riscv/include/asm/acpi.h                 |  84 ++++++
+ arch/riscv/include/asm/cpu.h                  |   8 +
+ arch/riscv/kernel/Makefile                    |   1 +
+ arch/riscv/kernel/acpi.c                      | 251 ++++++++++++++++++
+ arch/riscv/kernel/cpu.c                       |  30 ++-
+ arch/riscv/kernel/cpufeature.c                |  42 ++-
+ arch/riscv/kernel/setup.c                     |  11 +-
+ arch/riscv/kernel/smpboot.c                   |  77 +++++-
+ arch/riscv/kernel/time.c                      |  25 +-
+ drivers/acpi/Makefile                         |   2 +
+ drivers/acpi/osl.c                            |   2 +-
+ drivers/acpi/processor_core.c                 |  29 ++
+ drivers/acpi/riscv/Makefile                   |   2 +
+ drivers/acpi/riscv/rhct.c                     |  83 ++++++
+ drivers/acpi/tables.c                         |  10 +
+ drivers/clocksource/timer-riscv.c             |  92 ++++---
+ drivers/crypto/hisilicon/qm.c                 |   5 +
+ drivers/irqchip/irq-riscv-intc.c              |  70 +++--
+ drivers/platform/surface/aggregator/Kconfig   |   2 +-
+ 24 files changed, 772 insertions(+), 86 deletions(-)
+ create mode 100644 arch/riscv/include/asm/acenv.h
+ create mode 100644 arch/riscv/include/asm/acpi.h
+ create mode 100644 arch/riscv/include/asm/cpu.h
+ create mode 100644 arch/riscv/kernel/acpi.c
+ create mode 100644 drivers/acpi/riscv/Makefile
+ create mode 100644 drivers/acpi/riscv/rhct.c
+
 -- 
 2.34.1
 
