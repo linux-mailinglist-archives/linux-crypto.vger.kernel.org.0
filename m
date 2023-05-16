@@ -2,130 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAAD7047D7
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 May 2023 10:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BE9704D66
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 May 2023 14:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjEPIbS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 16 May 2023 04:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        id S233032AbjEPMH3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 16 May 2023 08:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjEPIbR (ORCPT
+        with ESMTP id S233048AbjEPMH2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 16 May 2023 04:31:17 -0400
-X-Greylist: delayed 355 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 16 May 2023 01:31:15 PDT
-Received: from a27-22.smtp-out.us-west-2.amazonses.com (a27-22.smtp-out.us-west-2.amazonses.com [54.240.27.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A5B188;
-        Tue, 16 May 2023 01:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=s25kmyuhzvo7troimxqpmtptpemzlc6l; d=exabit.dev; t=1684225520;
-        h=Date:Message-Id:To:Cc:Subject:From:In-Reply-To:References:Mime-Version:Content-Type:Content-Transfer-Encoding;
-        bh=GScpAXv+J3eSM6qFgW9uds9TDleKdfcZkU54I1b2MRI=;
-        b=Y8G2vfQC3vwxxj6j4GwDb2AvnBwuAhbIXYMXBUinIRvi7RDzmhp6LNLO6fKYRJkD
-        lvnoSRy++FdjiK7WmboaZz3KIsmmtHCcFkWQMb6gR81gguLjzvEDRPh3Rd/QWJ3oryD
-        vqffG4sn6O0C6WCw4NTLqVMeUx7b/yAZKYsz7Jel9MHxCLB7IJfxZDJt849xpt3O+xR
-        lnZQ/Kp9wVfLkhqgV529PZunpOf9qjaZCKZ+CAgvOQ2giF0uxsIHHxzlWOQxzwA068N
-        uLfRH4mFBP6AX9AczUeYTIddfcTIgiezZoB6DDAFFiDSN3SO7j6NNOCIhDVZaYkVMpR
-        4O6peZXobA==
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1684225520;
-        h=Date:Message-Id:To:Cc:Subject:From:In-Reply-To:References:Mime-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=GScpAXv+J3eSM6qFgW9uds9TDleKdfcZkU54I1b2MRI=;
-        b=QF1W1RKbg7VbNHjsIPVKDaZMjOrcbd3oJrHgEXH9XligsGLyX3vbv0MOgV9r9TWa
-        vqFQqnM9GxCrLUobdPlSNl58NYltNrjnktWYlOUxHNGb7f63IGABFnRtFC0K1eKwtIU
-        OCqiiGYtzeMH8NkHxfFNiqFHaDIC8XK+Ieqt3NAc=
-Date:   Tue, 16 May 2023 08:25:19 +0000
-Message-ID: <0101018823a9f0f2-a4620a25-6974-4464-a7ed-c997e9579243-000000@us-west-2.amazonses.com>
-To:     ebiggers@kernel.org
-Cc:     tomo@exabit.dev, rust-for-linux@vger.kernel.org,
-        netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
-        fujita.tomonori@gmail.com
-Subject: Re: [PATCH 1/2] rust: add synchronous message digest support
-From:   FUJITA Tomonori <tomo@exabit.dev>
-In-Reply-To: <20230516055219.GC2704@sol.localdomain>
+        Tue, 16 May 2023 08:07:28 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5C63A87;
+        Tue, 16 May 2023 05:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=nFSjVGlQ0NaiRcQejVvCxxu5us/QrO5JhwIcwtv8Br8=; b=AHguV97S1IjUyMBo14THbXFyfE
+        FaD9/bZSH59kp+oTFIRX8k4AETTYAcaxXVqPS2DNtlRsChUFZN3OOWxTKNFXpx0wkgyXH3rWTOcop
+        NOef6ehjBdUhbZuLVIYxfhW3NoeOpFbru+KduR310kwFqmBszNKGWUaOSNTbW619lq2I=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1pytSY-00D0qm-0v; Tue, 16 May 2023 14:07:18 +0200
+Date:   Tue, 16 May 2023 14:07:18 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     FUJITA Tomonori <tomo@exabit.dev>
+Cc:     rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, fujita.tomonori@gmail.com
+Subject: Re: [PATCH 2/2] rust: add socket support
+Message-ID: <01b36031-944b-4bf3-b089-f90bb421457c@lunn.ch>
 References: <20230515043353.2324288-1-tomo@exabit.dev>
-        <010101881db037b4-c8c941a9-c482-4759-9c07-b8bf645d96ed-000000@us-west-2.amazonses.com>
-        <20230516055219.GC2704@sol.localdomain>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Feedback-ID: 1.us-west-2.j0GTvY5MHQQ5Spu+i4ZGzzYI1gDE7m7iuMEacWMZbe8=:AmazonSES
-X-SES-Outgoing: 2023.05.16-54.240.27.22
+ <010101881db03866-754b644c-682c-44be-8d8e-8376d34c77b3-000000@us-west-2.amazonses.com>
+ <f22b24f8-f599-4eec-9535-bcca71138057@lunn.ch>
+ <010101882315a489-908f5965-2e67-497f-97f8-5c91bc928673-000000@us-west-2.amazonses.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <010101882315a489-908f5965-2e67-497f-97f8-5c91bc928673-000000@us-west-2.amazonses.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi,
-
-On Mon, 15 May 2023 22:52:19 -0700
-Eric Biggers <ebiggers@kernel.org> wrote:
-
->> +#include <crypto/hash.h>
->>  #include <linux/bug.h>
->>  #include <linux/build_bug.h>
->>  #include <linux/err.h>
->> @@ -27,6 +28,29 @@
->>  #include <linux/sched/signal.h>
->>  #include <linux/wait.h>
->>  
->> +void rust_helper_crypto_free_shash(struct crypto_shash *tfm)
->> +{
->> +	crypto_free_shash(tfm);
->> +}
->> +EXPORT_SYMBOL_GPL(rust_helper_crypto_free_shash);
+On Tue, May 16, 2023 at 05:43:21AM +0000, FUJITA Tomonori wrote:
+> On Mon, 15 May 2023 16:14:56 +0200
+> Andrew Lunn <andrew@lunn.ch> wrote:
 > 
-> Shouldn't this code be compiled only when the crypto API is available?
-
-Oops, I'll add #ifdef CONFIG_CRYPTO
-
-
->> +impl<'a> ShashDesc<'a> {
->> +    /// Creates a [`ShashDesc`] object for a request data structure for message digest.
->> +    pub fn new(tfm: &'a Shash) -> Result<Self> {
->> +        // SAFETY: The type invariant guarantees that the pointer is valid.
->> +        let size = core::mem::size_of::<bindings::shash_desc>()
->> +            + unsafe { bindings::crypto_shash_descsize(tfm.0) } as usize;
->> +        let layout = Layout::from_size_align(size, 2)?;
->> +        let ptr = unsafe { alloc(layout) } as *mut bindings::shash_desc;
->> +        let mut desc = ShashDesc { ptr, tfm, size };
->> +        // SAFETY: The `desc.tfm` is non-null and valid for the lifetime of this object.
->> +        unsafe { (*desc.ptr).tfm = desc.tfm.0 };
->> +        Ok(desc)
->> +    }
->> +
->> +    /// (Re)initializes message digest.
->> +    pub fn init(&mut self) -> Result {
->> +        // SAFETY: The type invariant guarantees that the pointer is valid.
->> +        to_result(unsafe { bindings::crypto_shash_init(self.ptr) })
->> +    }
->> +
->> +    /// Adds data to message digest for processing.
->> +    pub fn update(&mut self, data: &[u8]) -> Result {
->> +        // SAFETY: The type invariant guarantees that the pointer is valid.
->> +        to_result(unsafe {
->> +            bindings::crypto_shash_update(self.ptr, data.as_ptr(), data.len() as u32)
->> +        })
->> +    }
->> +
->> +    /// Calculates message digest.
->> +    pub fn finalize(&mut self, output: &mut [u8]) -> Result {
->> +        // SAFETY: The type invariant guarantees that the pointer is valid.
->> +        to_result(unsafe { bindings::crypto_shash_final(self.ptr, output.as_mut_ptr()) })
->> +    }
+> > On Mon, May 15, 2023 at 04:34:28AM +0000, FUJITA Tomonori wrote:
+> >> From: FUJITA Tomonori <fujita.tomonori@gmail.com>
+> >> 
+> >> minimum abstraction for networking.
+> > 
+> >> Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+> >> ---
+> >>  rust/bindings/bindings_helper.h |   3 +
+> >>  rust/kernel/lib.rs              |   2 +
+> >>  rust/kernel/net.rs              | 174 ++++++++++++++++++++++++++++++++
+> > 
+> > The full networking API is huge. So trying to put it all into net.rs
+> > is unlikely to work in the long run. Maybe it would be better to name
+> > this file based on the tiny little bit of the network API you are
+> > writing an abstraction for?
 > 
-> This doesn't enforce that init() is called before update() or finalize().  I
-> think that needs to be checked in the Rust code, since the C code doesn't have
-> defined behavior in that case.
+> Yeah, in the long run. I tried the simplest but if the maintainers
+> prefer that approach as the first step, I'll update the patch. how
+> about rust/net/socket.rs ?
 
-Surely, Rust side should handle the case.
+That is better. But probably Eric or one of the other core maintainers
+should comment. I also put kern into the name to try to make it clear
+that this is not the BSD Socket kAPI, but the kernel internal API for
+sockets. I don't know how important this distinction is.
 
-If the new() function internally calls init() before returning, it
-works? The new() returns an initialized ShaDesc object.
-
-
-Thanks for reviewing!
+	 Andrew
