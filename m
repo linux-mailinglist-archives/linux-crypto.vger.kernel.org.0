@@ -2,96 +2,65 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 977EF70914C
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 May 2023 10:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097867091E5
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 May 2023 10:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbjESIEb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 May 2023 04:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
+        id S231187AbjESIox (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 May 2023 04:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjESIEa (ORCPT
+        with ESMTP id S231201AbjESIow (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 May 2023 04:04:30 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F9D1716;
-        Fri, 19 May 2023 01:03:52 -0700 (PDT)
-Received: from [192.168.1.141] ([37.4.248.58]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1N8GEY-1qDJBS1EiO-014Ene; Fri, 19 May 2023 10:03:06 +0200
-Message-ID: <47df90f9-0348-6333-757e-ddfeb6b8fbad@i2se.com>
-Date:   Fri, 19 May 2023 10:03:04 +0200
+        Fri, 19 May 2023 04:44:52 -0400
+X-Greylist: delayed 2273 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 May 2023 01:44:49 PDT
+Received: from mail.corrib.pl (mail.corrib.pl [185.58.226.145])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D436D10D9
+        for <linux-crypto@vger.kernel.org>; Fri, 19 May 2023 01:44:49 -0700 (PDT)
+Received: by mail.corrib.pl (Postfix, from userid 1001)
+        id 99FB5A4232; Fri, 19 May 2023 09:06:17 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=corrib.pl; s=mail;
+        t=1684483577; bh=85MOfYTjIHwki6Ys5IeFKzEzX5V7umZoL3TytLG0W/k=;
+        h=Date:From:To:Subject:From;
+        b=l834QgQoGvAhqK7862q8RMvBtfMkEXIpQluhM/eO2urXDExM/AEt7hkEljCZZ6rq1
+         vL7ZD/isxA0NC55mrdY+Jp9HDx7KqHJ3eg9a5pmRhMKyhbdnFjGfRdg0AkrPTsWQqT
+         w3FXLeb0FE6aqOKT7u1VDBwwV7BatzmSpqts7gfxqjKbKlf/3N4QdJZOWRyVvTAp+j
+         vH1mzEJDODVg0k3WrEjiaqq0ekyC7KAfM2f74lHmSLVw+94pBd/aZ0TR+AHE1E1aVC
+         /XQnPeE+XEtL2rOphMbylq9O5v5hbWBNkQOViVgoHk1XlvhCLB7VvRcFnSFya98Nm7
+         ZacGfu4ISQx6Q==
+Received: by mail.corrib.pl for <linux-crypto@vger.kernel.org>; Fri, 19 May 2023 08:06:12 GMT
+Message-ID: <20230519074500-0.1.7b.of7d.0.98y3a0e4x6@corrib.pl>
+Date:   Fri, 19 May 2023 08:06:12 GMT
+From:   "Szczepan Andryszczuk" <szczepan.andryszczuk@corrib.pl>
+To:     <linux-crypto@vger.kernel.org>
+Subject: Faktoring
+X-Mailer: mail.corrib.pl
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH V3 0/6] ARM: dts: imx6ull: Fix dtbs_check warnings
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>,
-        linux-imx@nxp.com, "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-References: <20230414091947.7831-1-stefan.wahren@i2se.com>
-Content-Language: en-US
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-In-Reply-To: <20230414091947.7831-1-stefan.wahren@i2se.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:o50LvgBs3SXoordAvhv+x1aO0U3G28hVUe8aqojg5w5tK7KhXtv
- mpB4Dy+8i1KKdQGAU6+aziMNlZV9e5ZXvm73FD/3yzmCiq4c9ZX8NXbRYKqsOYQbugoqAXd
- ols6QeeZ5lr6tlqVAeKtNF5v9kvCgsCtDQPT6FUt3IWw2jTBjwiaRgB0LeCJSHLSbYwqlum
- x9br5GUoK5g13+DDhXaeQ==
-UI-OutboundReport: notjunk:1;M01:P0:9tNi0MwuB1k=;dPML9IMKGd20U4dSjP9SPuVIi3h
- 9ScdMdp4KMiWhozhbzxUmG0PkdOdPlixH2yUKYLbKUbEM4jNFD8hqg+60GApmnr8w8POfOn9a
- YtpAZ13gha8PKCD4ZY0S7LgSdl+R4jyRySCKwhqF6B+TBw5hKh6CcIxLznyqQErNSxfDiBZZi
- ZHsJFVdRtjefVjLYEURXmOzQBkrvVqE3AtO/bAvugZOxs+QgPMNUFzuOwbLsSfDN7Uj2019dD
- Wk3fdvoWrxlqcV+MWQ1aYSxUzr60YkapFWlmFfnvZ5/2KK+KcHM5Wl/vvyJbenHTttGSnfmEi
- C7WhmJ17mEalJ6ci27arr2dKwUKpZRaRDaGt5I7ZeE4BC8/W+wkJdFZ23Bvjh2qNR8XAtSyzn
- Z9yaj2Ta9Qt4GgeHQ7wljUx8yYZW9IcvrNS9PCeBE7viVc9yxXY3Mi3/d8DQD9jUS5jFT1LRL
- zjGp04cemydApzFHWf1UUCjYKdnKaR6fkxRjOD1b5NB4mvpTW8ORUYiw9x8FY9D5xCEYWPjWO
- 5yd1tyHZm42tZYa0IM8ZjcFnDb22UW3oTWpLd0RWaucrF/WwjAaWFUULkhcLrmfNP+SKAhQPM
- QKca0ZlhF8PQOsilbJR1MGFEYhIqKkvNe8ntlo0rb3YdCJeusKylauh9bxSHyOUTHWcXzoDdR
- DpCkvL+dzMJSKwG2VD4rpeiinQs4VVGaxElRfdxo9A==
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi,
+Dzie=C5=84 dobry,
 
-Am 14.04.23 um 11:19 schrieb Stefan Wahren:
-> This series tries to address some dtbs_check warnings on i.MX6ULL.
-> 
-> Changes in V3:
-> - add Krzysztof's Reviewed-Bys
-> - fix indentation in Patch 6 found by Krzysztof Kozlowski
-> 
-> Changes in V2:
-> - new patch to fix fsl-imx-uart warnings
-> - fixed GPC typo found by Fabio Estevam
-> - keep enum in bindings as suggested by Krzysztof Kozlowski
-> - make imx6ul GPT compatible to imx6sx
-> 
-> Stefan Wahren (6):
->    dt-bindings: serial: fsl-imx-uart: add missing properties
->    dt-bindings: crypto: fsl-dcp: add imx6sl and imx6ull compatible
->    dt-bindings: imx-thermal: add imx6sll and imx6ul compatible
->    dt-bindings: imxgpt: add imx6ul compatible
->    ARM: dts: imx: Adjust dma-apbh node name
->    ARM: dts: imx6ul: Add clock and PGC node to GPC
-> 
+rozwa=C5=BCali Pa=C5=84stwo wyb=C3=B3r finansowania, kt=C3=B3re spe=C5=82=
+ni potrzeby firmy, zapewniaj=C4=85c natychmiastowy dost=C4=99p do got=C3=B3=
+wki, bez zb=C4=99dnych przestoj=C3=B3w?=20
 
-currently patch 3, 5 and 6 has been applied. Should i resend the rest of 
-the series?
+Przygotowali=C5=9Bmy rozwi=C4=85zania faktoringowe dopasowane do Pa=C5=84=
+stwa bran=C5=BCy i wielko=C5=9Bci firmy, dzi=C4=99ki kt=C3=B3rym, nie mus=
+z=C4=85 Pa=C5=84stwo martwi=C4=87 si=C4=99 o niewyp=C5=82acalno=C5=9B=C4=87=
+ kontrahent=C3=B3w, poniewa=C5=BC transakcje s=C4=85 zabezpieczone i posi=
+adaj=C4=85 gwarancj=C4=99 sp=C5=82aty.=20
+
+Chc=C4=85 Pa=C5=84stwo przeanalizowa=C4=87 dost=C4=99pne opcje?
+
+
+Pozdrawiam
+Szczepan Andryszczuk
