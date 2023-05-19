@@ -2,194 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C615709564
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 May 2023 12:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA15709622
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 May 2023 13:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjESKvq (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 19 May 2023 06:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
+        id S231712AbjESLR7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 19 May 2023 07:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbjESKvo (ORCPT
+        with ESMTP id S231656AbjESLRr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 19 May 2023 06:51:44 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF41E6E
-        for <linux-crypto@vger.kernel.org>; Fri, 19 May 2023 03:51:43 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f00d41df22so839775e87.1
-        for <linux-crypto@vger.kernel.org>; Fri, 19 May 2023 03:51:42 -0700 (PDT)
+        Fri, 19 May 2023 07:17:47 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36886E50
+        for <linux-crypto@vger.kernel.org>; Fri, 19 May 2023 04:17:44 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-969f90d71d4so480047966b.3
+        for <linux-crypto@vger.kernel.org>; Fri, 19 May 2023 04:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684493501; x=1687085501;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ScXDhSxUJlLB8bM84R+68wogc+rqJq5r2RRK+MTJ+NU=;
-        b=Z8ePaJEEAJ1d44ZWVMtQaPnFFAAFJjtgE1a4DYu9XXZwR/vsW6KMijy2rX9+CINVC/
-         ceIA7VXMB/WVy6vD884addB3TzMt4cxituZuJCkc/KqE5fiOnDs0FM4IGC+K+Nu2q6FR
-         u65no+7ysyDVzWxMUy+Jf3ldBI5UpD7AbzgtfKb6aqJGLwr228gaV7fqymN9Dyze6Vmt
-         8FXQnnTfiAdQrM+RHzqdJiSImgqgy8pTTwBHmQxwrVkggZy7DDMtPuw9aHpOKpX/Vgtj
-         XdTbfPPt4rM23XoQmPVT4m50LDhcEBJ0ekUL7KhZorE6qDxtIzm7nzME6gg14mqpR4hx
-         FNxw==
+        d=gmail.com; s=20221208; t=1684495062; x=1687087062;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YmxaI1amCfTksu6ynk2557PwK0HJxrBQmYIx/Pz5hBs=;
+        b=JSg3rdU6W2mjqmEc+mB2A7cFmRegMCR83SHfOjxmRVbwY2A7mgymSN+oh42ISHBfwO
+         GhYoUeZQdTAgrrktfs4VHXg5wvlxv+psdIxXqG71lRhZUTeGY0gkCC1W0WGnQ2KuhHot
+         +NPDFYfn4R+L8OP+VhWdlcDsDSc9o5ruZin0Jy7jEd2WIJigUk3W15VR/5RcuFsK0DW/
+         FpfL86ckeVx6y5Gc/4Q2cQwsXt6HqauHnQBLsDdwzZSaOMbN/NAWKn10V/OC4oS8nobW
+         BkYyI389vonSGsu8g2o2QiZVmSCS1RCYF7e1+Ah3/AvqFMUnq3kHlvS8oKVbVQM9I4Wp
+         NQBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684493501; x=1687085501;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1684495062; x=1687087062;
+        h=to:subject:message-id:date:from:reply-to:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ScXDhSxUJlLB8bM84R+68wogc+rqJq5r2RRK+MTJ+NU=;
-        b=lJlBDesu0nbaj+4HjhvuntmmFEoDrQP5VD9C07bXtjBM6WLaYrpHVK19eS38Gl10Kd
-         ALjs/Cj+TfFObUBGyUEKc0GcZot1m/7Fn/nWd90SnQ9MEvC73fzsfddcB4MOg6kgdeOX
-         GTSnyjvofVcY7AMxk25dL3kQZX7HrI7QBez/fyVbiKSD8a0aQZizc+V6xj+MeFmGugzr
-         YroKvsBjAn1HVU7AjW94kU7BtlDz6d9ZJRU+rlkjMDZXVQDiN8N4b8P6Oq+oNN2RB9/T
-         6hR9B0fdD05q/Xjs9FmEFrJOd8bHbgYN3TgYhE+dXl2tc1j2aPbp8Y1pFIqhNQpHLQjH
-         mX7Q==
-X-Gm-Message-State: AC+VfDy5PuyzhLAopGpR8I0lbR6pLHcjqnWTxwtUp9U6YPZdd+rB9WF8
-        Lvs22ofwR7wh/w1s67nFRW4ojQ==
-X-Google-Smtp-Source: ACHHUZ7fNE8pZaCdlzbVuTf+/ffBSjRXKTAUPOZ+CEDWu2vtGLTvWrFE8NaZsL+Pk6K2CYcvA2il9g==
-X-Received: by 2002:a05:6512:68f:b0:4eb:4157:5704 with SMTP id t15-20020a056512068f00b004eb41575704mr884889lfe.29.1684493501227;
-        Fri, 19 May 2023 03:51:41 -0700 (PDT)
-Received: from [192.168.1.101] (abxi58.neoplus.adsl.tpnet.pl. [83.9.2.58])
-        by smtp.gmail.com with ESMTPSA id e5-20020a056512090500b004f38411f148sm560865lft.84.2023.05.19.03.51.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 May 2023 03:51:40 -0700 (PDT)
-Message-ID: <875dec34-35da-e427-ae32-598958762dd2@linaro.org>
-Date:   Fri, 19 May 2023 12:51:39 +0200
+        bh=YmxaI1amCfTksu6ynk2557PwK0HJxrBQmYIx/Pz5hBs=;
+        b=K9QkKKVfv9xcJJWksJfcfv66O+6z98MQaT3RNM2FOl7WOIw+YlT+jUObC+GOHNbCSo
+         sxez9QYZUloSsLGJDKY4yWeCLoVbD9ZhUeXbFErk/Pijypf5yMd2sjUoMNc/tABRivEQ
+         qTHDDzbaGasHCC15arefdKjphJx3FKUsRJri7lX8Iial3pXDPqwIBxsldAqaxj/9K3c/
+         K/ki+1sXYGBnhOp/JAD7+2V9c15YuL9ZSWXoRc+QalzVrIxoijAFUtp4cnhtOf5W5DWX
+         BzBPfReHeg+HSQwk+IaIkRHpSYTGaaWetCqN7k8qdx9LJsvO0TxvBcaoKxf1EmBZvVBg
+         TZlA==
+X-Gm-Message-State: AC+VfDyjO8UkcH5zt2TZFg5o/24CS3u/0Po1lmLNHo3JiqbS6nfaWEgL
+        b7BNZxRYaKbZuiwm6SideOeRYPNpLFKA20uBHsc=
+X-Google-Smtp-Source: ACHHUZ4GcdKjctEWmkMJD/Q5ZDCusH7zrjV+w4c4EgP8GDbM+BMa7NNuPpP4cOMUW2oAUk/kOHHzW6hqw5zKR98kQX0=
+X-Received: by 2002:a17:907:1b12:b0:8b8:c06e:52d8 with SMTP id
+ mp18-20020a1709071b1200b008b8c06e52d8mr1298232ejc.36.1684495062361; Fri, 19
+ May 2023 04:17:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v6 07/11] arm64: dts: qcom: sm6115: Add Crypto Engine
- support
-Content-Language: en-US
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, andersson@kernel.org,
-        bhupesh.linux@gmail.com, krzysztof.kozlowski@linaro.org,
-        robh+dt@kernel.org, vladimir.zapolskiy@linaro.org,
-        rfoss@kernel.org, neil.armstrong@linaro.org, djakov@kernel.org
-References: <20230405072836.1690248-1-bhupesh.sharma@linaro.org>
- <20230405072836.1690248-8-bhupesh.sharma@linaro.org>
- <ZGdLCdSof027mk5u@gerhold.net>
- <CAH=2Ntx4H+hOzYLWqiogdBGE+rQ2XayrweE_P8T8gVE0zbwzeg@mail.gmail.com>
- <8c754bc2-abb3-faaa-0ab5-2c1991dfc2a6@linaro.org>
- <CAH=2NtyUNJFMbrhvP9BjmzdsLj9kvSYUH_ueAPUan9GRKaq2Xw@mail.gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CAH=2NtyUNJFMbrhvP9BjmzdsLj9kvSYUH_ueAPUan9GRKaq2Xw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Received: by 2002:a17:907:7dab:b0:94f:7d03:8e8b with HTTP; Fri, 19 May 2023
+ 04:17:41 -0700 (PDT)
+Reply-To: ninacoulibaly03@myself.com
+From:   nina coulibaly <ninacoulibaly199@gmail.com>
+Date:   Fri, 19 May 2023 04:17:41 -0700
+Message-ID: <CAM7Z2JAd00KW6b=O8M27vwRnsJ1w3AmDO5tP+gSmzkaHvk6=CA@mail.gmail.com>
+Subject: from nina coulibaly
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Dear,
 
+Please grant me permission to share a very crucial discussion with
+you. I am looking forward to hearing from you at your earliest
+convenience.
 
-On 19.05.2023 12:49, Bhupesh Sharma wrote:
-> On Fri, 19 May 2023 at 16:12, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> On 19.05.2023 12:22, Bhupesh Sharma wrote:
->>> Hi Stephan,
->>>
->>> On Fri, 19 May 2023 at 15:40, Stephan Gerhold <stephan@gerhold.net> wrote:
->>>>
->>>> Hi Bhupesh,
->>>>
->>>> Not sure if this is the latest version of this series since it's pretty
->>>> old but I didn't find a new one. Just came here because you mentioned
->>>> RB1/RB2 [1] in my bam_dma patch and they don't have any BAM defined
->>>> upstream yet.
->>>>
->>>> [1]: https://lore.kernel.org/linux-arm-msm/CAH=2Ntw0BZH=RGp14mYLhX7D6jV5O5eDKRQbby=uCy85xMDU_g@mail.gmail.com/
->>>>
->>>> On Wed, Apr 05, 2023 at 12:58:32PM +0530, Bhupesh Sharma wrote:
->>>>> Add crypto engine (CE) and CE BAM related nodes and definitions to
->>>>> 'sm6115.dtsi'.
->>>>>
->>>>> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
->>>>> ---
->>>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 22 ++++++++++++++++++++++
->>>>>  1 file changed, 22 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>>> index 2a51c938bbcb..ebac026b4cc7 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>>> @@ -650,6 +650,28 @@ usb_hsphy: phy@1613000 {
->>>>>                       status = "disabled";
->>>>>               };
->>>>>
->>>>> +             cryptobam: dma-controller@1b04000 {
->>>>> +                     compatible = "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
->>>>> +                     reg = <0x0 0x01b04000 0x0 0x24000>;
->>>>> +                     interrupts = <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>;
->>>>> +                     #dma-cells = <1>;
->>>>> +                     qcom,ee = <0>;
->>>>> +                     qcom,controlled-remotely;
->>>>> +                     num-channels = <8>;
->>>>> +                     qcom,num-ees = <2>;
->>>>> +                     iommus = <&apps_smmu 0x94 0x11>,
->>>>> +                              <&apps_smmu 0x96 0x11>;
->>>>> +             };
->>>>> +
->>>>> +             crypto: crypto@1b3a000 {
->>>>> +                     compatible = "qcom,sm6115-qce", "qcom,sm8150-qce", "qcom,qce";
->>>>> +                     reg = <0x0 0x01b3a000 0x0 0x6000>;
->>>>> +                     dmas = <&cryptobam 6>, <&cryptobam 7>;
->>>>> +                     dma-names = "rx", "tx";
->>>>> +                     iommus = <&apps_smmu 0x94 0x11>,
->>>>> +                              <&apps_smmu 0x96 0x11>;
->>>>
->>>> Shouldn't you have clocks = <&rpmcc RPM_SMD_CE1_CLK> here to make sure
->>>> the clock for the crypto engine is on? Your binding patch (PATCH 06/11)
->>>> says "Crypto Engine block on Qualcomm SoCs SM6115 and QCM2290 do not
->>>> require clocks strictly" but doesn't say why.
->>>>
->>>> Make sure you don't rely on having rpmcc keep unused clocks on
->>>> permanently. This is the case at the moment, but we would like to change
->>>> this [2]. Adding new users that rely on this broken behavior would just
->>>> make this effort even more complicated.
->>>>
->>>> If you also add the clock to the cryptobam then you should be able to
->>>> see the advantage of my bam_dma patch [3]. It allows you to drop
->>>> "num-channels" and "qcom,num-ees" from the cryptobam in your changes
->>>> above because it can then be read directly from the BAM registers.
->>>
->>> Thanks for pointing this out. Actually that's why I was using your
->>> patch while testing with RB1/RB2 :)
->>>
->>> Yes, so the background is that I am preparing a new version of this
->>> crypto enablement patchset.
->>> Also your assumption about the clocks being turned on by the firmware
->>> is true for RB1/RB2 devices, so enabling them via Linux is optional as
->>> per Qualcomm enggs.
->> This is not necessarily true. Currently it's kept always-on on
->> by clk_smd_rpm_handoff, but that's a hack from 10 years ago when smd
->> was still new.
->>
->>>
->>> So, I am testing the new patchset right now with 'clock' entries
->>> provided in the .dtsi and see if that causes any issue / improvement
->>> (etc.)
->> It won't change since it's on anyway, but that won't be a given for long.
-> 
-> Right, so that's what I observe: RPM_SMD_CE1_CLK is always on by the
-> time crypto _probe gets called.
-> So, IMO let's not mix this patchset with the other fix which probably
-> will fix the 10-year old clk_smd_rpm handoff keeping
-> these clocks on.
-> 
-> Probably that should be a separate changeset - requiring very thorough
-> checks to make sure that we don't break
-> working platforms.
-It's not about mixing patchsets, the nodes should reflect all the clock/
-power-domain/regulator/pinctrl/etc. dependencies from their introduction.
-Remember, dt describes the hardware, not the software or firmware.
-
-That - among other things - ensures backwards compatibility can be
-preserved.
-> 
-> Thanks.
+Mrs. Nina Coulibal
