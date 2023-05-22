@@ -2,76 +2,134 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E06A070B7F8
-	for <lists+linux-crypto@lfdr.de>; Mon, 22 May 2023 10:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D0370B813
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 May 2023 10:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjEVIq4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 22 May 2023 04:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
+        id S232550AbjEVIxm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 22 May 2023 04:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjEVIq4 (ORCPT
+        with ESMTP id S232539AbjEVIxb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 22 May 2023 04:46:56 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DE4A8
-        for <linux-crypto@vger.kernel.org>; Mon, 22 May 2023 01:46:55 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-4394217a8cbso292315137.1
-        for <linux-crypto@vger.kernel.org>; Mon, 22 May 2023 01:46:55 -0700 (PDT)
+        Mon, 22 May 2023 04:53:31 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DFFFD
+        for <linux-crypto@vger.kernel.org>; Mon, 22 May 2023 01:53:28 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1ae4baa77b2so40816785ad.2
+        for <linux-crypto@vger.kernel.org>; Mon, 22 May 2023 01:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684745214; x=1687337214;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vrsFs7FLoRT0zD1iaY/s2AiDiUEaUePPr9gNb73ZaTo=;
-        b=er9XeIfmysrF+fB9XNxdd6WMCVq6gh68b4gkC0vpk6k0rcFkTLS5QcHn0Jdn49E7Ya
-         LRMcwfy9lSrWahPJzo7gsSO3/kN3WvSJRGJw597Rztncp3Hpk0aZ/0IyyI+T0bki+IAo
-         wTY1pRuU63DvpZ0Fs81lPibY45S62yI+y+WHruWW4ous/DUzTLOWlrgbHcYVA3+id1z1
-         ZIkY4yFLoPIT7iyFl1ve9pG3Om8oCmpvreBgpCVfQyUJpsHM5t2N9OPCIDgmFlt3ESW/
-         sJafpiRK1EBPB8aO1OPtIRHak+ScpwkB8CEg9DVopm5DTY7aaVtGTd90JPpnBVSprGii
-         wBCA==
+        d=linaro.org; s=google; t=1684745608; x=1687337608;
+        h=content-transfer-encoding:in-reply-to:references:subject:to:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yy4zVkssg8FiC+/RzC34Xwny+YRkysiolleunptsSl0=;
+        b=goP3fJOI9f2dj4q3zt7G8HUTP5BfxehAiYHW67aGWbby0GWZt7LwqnVO81ZhudtxKe
+         Hy1dBAmCCH05/+ctPzMqLgdiQq7GrwpQa9tvF1tkmESm/5p2HmwiCsjGcxd2ge80lvgu
+         03iGnj8GIx1OP0L3y78MVRzwyF4RuHUryJhcHtwg5/XatOvxlUOZ5+3s9hM81lTsqn15
+         +IH4niDECGBfRR30MOy3+8ozs5b0vu0tr/ftUTe+LqaVHS2W3bA5u4qP/kmPe/akcx9s
+         yiym+TXWcg7362wL1g3pJ7C98VTesi1nk7YvuxSfHQsUPguAZg2iAW5QjzK368ffmXVy
+         HfQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684745214; x=1687337214;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vrsFs7FLoRT0zD1iaY/s2AiDiUEaUePPr9gNb73ZaTo=;
-        b=Kmi5KsuYtzQzxrtfCU7LEblhBKeMsdSR6RxFq3yX9kIdYGuoYVWZOnLobgayGXqSs0
-         PGMXpLvI+4dbMtnMz+BR37A+aO1lscrJ3msckB3auy5u1oMB8c+4VS4sheAFu+SwY6rx
-         MmGZk+7YzNHvlrpVhFgG893NYkZYXIbwaqAgrLqTChfCwbYgZ2wg03aRTXFYCKpamTt6
-         7ampWlLIidL5fdIN4P4XRYfp7htpjGMM0lNWWMU1uGIK1uTBoe808SLk7cCLvE4CLJEV
-         33TyqQTgZTudV9Y5fpDSSx/3KundU7UER33XD6calnlZLZYCGZL6iWFU0FtnF1VFuBbX
-         iQIg==
-X-Gm-Message-State: AC+VfDwMoItP9Fbal5OGLVCZnb8dl4rEgWdgMGle/wV6gBE/qnc2ZPmS
-        sSexpp27BG4cAv5Uj1aWlstMWj8X2+X62JrEPvM=
-X-Google-Smtp-Source: ACHHUZ67BzLSmcG8KeBlR1kqDTdtccATGYlaXapXMjwM9CO6WY4y4lYjHp854Pk93TuOzhQzNdc7Wt0YJj7ofPEcLBc=
-X-Received: by 2002:a05:6102:49c:b0:436:3474:6ce4 with SMTP id
- n28-20020a056102049c00b0043634746ce4mr1939898vsa.7.1684745214448; Mon, 22 May
- 2023 01:46:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684745608; x=1687337608;
+        h=content-transfer-encoding:in-reply-to:references:subject:to:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yy4zVkssg8FiC+/RzC34Xwny+YRkysiolleunptsSl0=;
+        b=aNI5O3G0jW9vZ+Ul/vankJc6BUvMHarfj/UsbTnF8YIpcmlobMt31l0OGqd2DW9ySr
+         mKdcThDhkMISlPTAWa3HAsNtQ/7hf1CCeC4Pi0OV3TfkaA7lZ7Vht8/11t9p8iYr/MRp
+         Ey743DqNPo7lswfviEm02TAnIVrGtE89MVGukEVSwnHI2bu4v0W1lk8jWgDw0XrQCH0G
+         sCzW/gu+zYs/o26GuR49XcAPFu/bUSYCgxsGlMb3aYC6aIfcPnaz93Tf8JjiAabKAILt
+         T+WGuvdJX/D94PIcVvGxttfjzG1qodm0t+cOUj4kqke7mBUvmVVgRSkemJenUAMdSG0t
+         b3rA==
+X-Gm-Message-State: AC+VfDxPV0Nbf87CBXas6Nd+kcpqpNr99e6WjNr//oBkVAi8HP1kEJFb
+        jpZ7dExKUmo3R96B0AmBrOQayA==
+X-Google-Smtp-Source: ACHHUZ4DcbvSTtZeRWniTVD7cIXlVTqrwop9sJluPZE1NASnzxNdtPS/2/7r53dSGhstBwpZYfU6/w==
+X-Received: by 2002:a17:902:ecc1:b0:1ad:f7d9:1ae0 with SMTP id a1-20020a170902ecc100b001adf7d91ae0mr11742345plh.38.1684745608044;
+        Mon, 22 May 2023 01:53:28 -0700 (PDT)
+Received: from ?IPV6:2401:4900:1c60:d309:883d:817e:8e91:be39? ([2401:4900:1c60:d309:883d:817e:8e91:be39])
+        by smtp.gmail.com with ESMTPSA id jc1-20020a17090325c100b001a1b66af22fsm4344017plb.62.2023.05.22.01.53.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 May 2023 01:53:27 -0700 (PDT)
+Message-ID: <93db4ee5-4fb8-f159-0cf4-ec1669c36dd1@linaro.org>
+Date:   Mon, 22 May 2023 14:23:19 +0530
 MIME-Version: 1.0
-Received: by 2002:a59:b925:0:b0:3d6:920e:48bd with HTTP; Mon, 22 May 2023
- 01:46:54 -0700 (PDT)
-Reply-To: choipark90@yahoo.com
-From:   choi park <fi654827@gmail.com>
-Date:   Mon, 22 May 2023 09:46:54 +0100
-Message-ID: <CABQ7ishZmo0R=4yLuBCJv3An9HQiFNMut=aonXrg8V7XDeTvjA@mail.gmail.com>
-Subject: investment partners
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+From:   bhupesh.sharma@linaro.org
+To:     Anusha Rao <quic_anusha@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        thara.gopinath@gmail.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, quic_srichara@quicinc.com,
+        quic_gokulsri@quicinc.com, quic_sjaganat@quicinc.com,
+        quic_kathirav@quicinc.com, quic_arajkuma@quicinc.com,
+        quic_poovendh@quicinc.com
+Subject: Re: [PATCH V3 4/4] arm64: dts: qcom: ipq9574: Enable crypto nodes
+References: <20230518141105.24741-1-quic_anusha@quicinc.com>
+ <20230518141105.24741-5-quic_anusha@quicinc.com>
+In-Reply-To: <20230518141105.24741-5-quic_anusha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
--- 
-Hello my friend how are you doing with your daily activities  I hope
-all is well, well I got your contact as I am searching for a reliable
-reputable person that can be trusted as my that client  Mrs Ma-Ri  Kim
-from  Hong Kong   Directed  me to get her someone that she will trust
-to invest part of her money outside Hong Kong   for her under aged
-child  if you are interested let me know I hoping to hear from you
-Mr Choi Park
+On 5/18/23 7:41 PM, Anusha Rao <quic_anusha@quicinc.com> wrote:
+> Enable crypto support for ipq9574.
+> 
+> Signed-off-by: Anusha Rao <quic_anusha@quicinc.com>
+> ---
+>   Changes in V3:
+> 	- No change.
+> 
+>   arch/arm64/boot/dts/qcom/ipq9574.dtsi | 20 ++++++++++++++++++++
+>   1 file changed, 20 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> index fea15f3cf910..6e52d35a6a15 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> @@ -123,6 +123,26 @@
+>   			clock-names = "core";
+>   		};
+>   
+> +		cryptobam: dma-controller@704000 {
+> +			compatible = "qcom,bam-v1.7.0";
+
+Please confirm if this is "qcom,bam-v1.7.4" or "qcom,bam-v1.7.0". If "qcom,bam-v1.7.4" please use the newer compatible format.
+
+Thanks,
+Bhupesh
+
+> +			reg = <0x00704000 0x20000>;
+> +			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>;
+> +			#dma-cells = <1>;
+> +			qcom,ee = <1>;
+> +			qcom,controlled-remotely;
+> +		};
+> +
+> +		crypto: crypto@73a000 {
+> +			compatible = "qcom,ipq9574-qce", "qcom,ipq4019-qce", "qcom,qce";
+> +			reg = <0x0073a000 0x6000>;
+> +			clocks = <&gcc GCC_CRYPTO_AHB_CLK>,
+> +				 <&gcc GCC_CRYPTO_AXI_CLK>,
+> +				 <&gcc GCC_CRYPTO_CLK>;
+> +			clock-names = "iface", "bus", "core";
+> +			dmas = <&cryptobam 2>, <&cryptobam 3>;
+> +			dma-names = "rx", "tx";
+> +		};
+> +
+>   		tlmm: pinctrl@1000000 {
+>   			compatible = "qcom,ipq9574-tlmm";
+>   			reg = <0x01000000 0x300000>;
+> 
