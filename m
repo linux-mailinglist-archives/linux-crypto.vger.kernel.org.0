@@ -2,44 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7C670D6AF
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 May 2023 10:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D6770D79A
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 May 2023 10:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbjEWIHZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 May 2023 04:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        id S235556AbjEWIfg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 May 2023 04:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235741AbjEWIHU (ORCPT
+        with ESMTP id S236217AbjEWIfA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 May 2023 04:07:20 -0400
-Received: from mail.mahavavy.com (mail.mahavavy.com [92.222.170.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6691A1
-        for <linux-crypto@vger.kernel.org>; Tue, 23 May 2023 01:06:53 -0700 (PDT)
-Received: by mail.mahavavy.com (Postfix, from userid 1002)
-        id 29FF822207; Tue, 23 May 2023 08:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mahavavy.com; s=mail;
-        t=1684829166; bh=IfqQW79nVX/qUpmHcJiWDpV9BQnOf/s+Zcq9ON74QJY=;
-        h=Date:From:To:Subject:From;
-        b=DPgYNt03SByCpRQ4ggvuKZ/plpVKiFoWoZ0jqtgW8Z6tgRGLRHui0vQSEEv2xoSpE
-         e4Pm8UbDyugeclQX8R6BAn2H3wU9Wo/An0+OT1uj3G8wcOQ5gS4TdLMv20eem+yuVE
-         V2aZoMyCYfc8kfREJJvwqh7QqEgI0W2gWe3bmBNEBTvdGVVpenbxK52UVq03oJukWi
-         tvULVahcDKZfNeYytPoPPbaOUnk/cZ2+gXQDmB32/dYEreWeVv+TUvI1j4Bp5jpNpX
-         8HCylyr77jPcpGGRKq94BJprhzKKE8lGw3KVmQLjg0ydVGuRX/0IJF19fasQazmJ6N
-         Wk5wvTkFmxeoA==
-Received: by mail.mahavavy.com for <linux-crypto@vger.kernel.org>; Tue, 23 May 2023 08:05:51 GMT
-Message-ID: <20230523064501-0.1.2o.5201.0.8pellxdr3p@mahavavy.com>
-Date:   Tue, 23 May 2023 08:05:51 GMT
-From:   =?UTF-8?Q? "Kristi=C3=A1n_Plet=C3=A1nek" ?= 
-        <kristian.pletanek@mahavavy.com>
-To:     <linux-crypto@vger.kernel.org>
-Subject: =?UTF-8?Q?Tlakov=C4=9B_lit=C3=BD?=
-X-Mailer: mail.mahavavy.com
+        Tue, 23 May 2023 04:35:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314FA10EF;
+        Tue, 23 May 2023 01:33:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8C2B5601C6;
+        Tue, 23 May 2023 08:33:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE65AC4339B;
+        Tue, 23 May 2023 08:33:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684830800;
+        bh=MnGHsJX536Td4nzr8n47Z1xXn9aYKRj+yG30BHNM0pE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VjlerZ6DwRlft+MW5AKa+6QzLwoGVwrBuYKV+9G06XcHljxy7GOaXAbhHxd9ty586
+         UWdkKzXGJtP3kRTiZHA09Hl2Pl0CNxAEpvuTodMwV/nnbjo2sWcEn+ndrB3DH/CISL
+         cbVi/qZnNhjVc/KZgj9Azp3zgVlNZ+MUjvA22O5mbEPUi1vVVMnr0hjai3o7mATxzU
+         Tzc2RVu1t0N9TguAkJhw9vR6d9p2E+HZjl85aDIVRq6XwxHCF6ramLRYPb64N7GQol
+         qj9Ri9a+fbbIWlle9CCv5FzqeUWcqSCPNk7HEyFIdhmKOUcnbA9a7DbJJvvrZYpVHO
+         R/I8YD1ENffig==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: marvell/cesa - Fix type mismatch warning
+Date:   Tue, 23 May 2023 10:33:04 +0200
+Message-Id: <20230523083313.899332-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIXED_ES,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,23 +56,42 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+From: Arnd Bergmann <arnd@arndb.de>
 
-zaji=C5=A1=C5=A5ujeme technologii tlakov=C3=A9ho lit=C3=AD hlin=C3=ADku.
+Commit df8fc4e934c1 ("kbuild: Enable -fstrict-flex-arrays=3") uncovered
+a type mismatch in cesa 3des support that leads to a memcpy beyond the
+end of a structure:
 
-M=C3=A1me v=C3=BDrobn=C3=AD z=C3=A1vody v Polsku, =C5=A0v=C3=A9dsku a =C4=
-=8C=C3=ADn=C4=9B se schopnost=C3=AD flexibiln=C4=9B p=C5=99esouvat v=C3=BD=
-robu mezi lokalitami.
+In function 'fortify_memcpy_chk',
+    inlined from 'mv_cesa_des3_ede_setkey' at drivers/crypto/marvell/cesa/cipher.c:307:2:
+include/linux/fortify-string.h:583:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+  583 |                         __write_overflow_field(p_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Na=C5=A1e lic=C3=AD bu=C5=88ky jsou v=C4=9Bt=C5=A1inou automatick=C3=A9 n=
-ebo poloautomatick=C3=A9, co=C5=BE umo=C5=BE=C5=88uje v=C3=BDrobu velk=C3=
-=BDch v=C3=BDrobn=C3=ADch s=C3=A9ri=C3=AD s vysokou flexibilitou detail=C5=
-=AF.
-=20
-Poskytujeme podporu v ka=C5=BEd=C3=A9 f=C3=A1zi v=C3=BDvoje projektu, vyv=
-=C3=ADj=C3=ADme strukturu detailu.
+This is probably harmless as the actual data that is copied has the correct
+type, but clearly worth fixing nonetheless.
 
-Cht=C4=9Bli byste mluvit o spolupr=C3=A1ci v t=C3=A9to oblasti?
+Fixes: 4ada48397823 ("crypto: marvell/cesa - add Triple-DES support")
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Gustavo A. R. Silva" <gustavoars@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/crypto/marvell/cesa/cipher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Pozdravy
-Kristi=C3=A1n Plet=C3=A1nek
+diff --git a/drivers/crypto/marvell/cesa/cipher.c b/drivers/crypto/marvell/cesa/cipher.c
+index c6f2fa753b7c..0f37dfd42d85 100644
+--- a/drivers/crypto/marvell/cesa/cipher.c
++++ b/drivers/crypto/marvell/cesa/cipher.c
+@@ -297,7 +297,7 @@ static int mv_cesa_des_setkey(struct crypto_skcipher *cipher, const u8 *key,
+ static int mv_cesa_des3_ede_setkey(struct crypto_skcipher *cipher,
+ 				   const u8 *key, unsigned int len)
+ {
+-	struct mv_cesa_des_ctx *ctx = crypto_skcipher_ctx(cipher);
++	struct mv_cesa_des3_ctx *ctx = crypto_skcipher_ctx(cipher);
+ 	int err;
+ 
+ 	err = verify_skcipher_des3_key(cipher, key);
+-- 
+2.39.2
+
