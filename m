@@ -2,91 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A34A470D517
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 May 2023 09:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7C670D6AF
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 May 2023 10:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbjEWHeH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 23 May 2023 03:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
+        id S235402AbjEWIHZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 23 May 2023 04:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbjEWHdm (ORCPT
+        with ESMTP id S235741AbjEWIHU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 23 May 2023 03:33:42 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE58210E6;
-        Tue, 23 May 2023 00:32:43 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 74BAE7FE0;
-        Tue, 23 May 2023 15:31:21 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 23 May
- 2023 15:31:21 +0800
-Received: from [192.168.155.209] (202.188.176.82) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 23 May
- 2023 15:31:18 +0800
-Message-ID: <33a663b7-a353-69b9-7fed-b7758cadb12b@starfivetech.com>
-Date:   Tue, 23 May 2023 15:31:13 +0800
+        Tue, 23 May 2023 04:07:20 -0400
+Received: from mail.mahavavy.com (mail.mahavavy.com [92.222.170.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6691A1
+        for <linux-crypto@vger.kernel.org>; Tue, 23 May 2023 01:06:53 -0700 (PDT)
+Received: by mail.mahavavy.com (Postfix, from userid 1002)
+        id 29FF822207; Tue, 23 May 2023 08:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mahavavy.com; s=mail;
+        t=1684829166; bh=IfqQW79nVX/qUpmHcJiWDpV9BQnOf/s+Zcq9ON74QJY=;
+        h=Date:From:To:Subject:From;
+        b=DPgYNt03SByCpRQ4ggvuKZ/plpVKiFoWoZ0jqtgW8Z6tgRGLRHui0vQSEEv2xoSpE
+         e4Pm8UbDyugeclQX8R6BAn2H3wU9Wo/An0+OT1uj3G8wcOQ5gS4TdLMv20eem+yuVE
+         V2aZoMyCYfc8kfREJJvwqh7QqEgI0W2gWe3bmBNEBTvdGVVpenbxK52UVq03oJukWi
+         tvULVahcDKZfNeYytPoPPbaOUnk/cZ2+gXQDmB32/dYEreWeVv+TUvI1j4Bp5jpNpX
+         8HCylyr77jPcpGGRKq94BJprhzKKE8lGw3KVmQLjg0ydVGuRX/0IJF19fasQazmJ6N
+         Wk5wvTkFmxeoA==
+Received: by mail.mahavavy.com for <linux-crypto@vger.kernel.org>; Tue, 23 May 2023 08:05:51 GMT
+Message-ID: <20230523064501-0.1.2o.5201.0.8pellxdr3p@mahavavy.com>
+Date:   Tue, 23 May 2023 08:05:51 GMT
+From:   =?UTF-8?Q? "Kristi=C3=A1n_Plet=C3=A1nek" ?= 
+        <kristian.pletanek@mahavavy.com>
+To:     <linux-crypto@vger.kernel.org>
+Subject: =?UTF-8?Q?Tlakov=C4=9B_lit=C3=BD?=
+X-Mailer: mail.mahavavy.com
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH] crypto: starfive - Depend on AMBA_PL08X instead of
- selecting it
-Content-Language: en-US
-To:     Conor Dooley <conor.dooley@microchip.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20230522105257.562cb1ec@canb.auug.org.au>
- <ZGr6aB9uJVnyfJQ9@gondor.apana.org.au>
- <20230523103637.20175fbc@canb.auug.org.au>
- <ZGwmAp5RPqAjVMCg@gondor.apana.org.au>
- <20230523-pelvis-unwritten-bedc9c75d899@wendy>
-From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
-In-Reply-To: <20230523-pelvis-unwritten-bedc9c75d899@wendy>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIXED_ES,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 23/5/2023 2:56 pm, Conor Dooley wrote:
-> On Tue, May 23, 2023 at 10:33:38AM +0800, Herbert Xu wrote:
->> On Tue, May 23, 2023 at 10:36:37AM +1000, Stephen Rothwell wrote:
->> > 
->> > That did not fix it :-(
->> 
->> OK, this patch should fix it:
->> 
->> ---8<---
->> A platform option like AMBA should never be selected by a driver.
->> Use a dependency instead.
-> 
-> Randy submitted a patch to change the driver to not conflict with
-> the arch symbols:
-> https://lore.kernel.org/all/20230523000606.9405-1-rdunlap@infradead.org/
-> 
-> The corresponding change here makes sense to me,
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> @StarFive folks, you will need to go and submit a patch for
-> arch/riscv/Kconfig.socs that selects ARM_AMBA for your platform.
-> 
+Dobr=C3=A9 r=C3=A1no,
 
-Sure, I'll submit a patch for this.
+zaji=C5=A1=C5=A5ujeme technologii tlakov=C3=A9ho lit=C3=AD hlin=C3=ADku.
 
-Thanks
-Jia Jie
+M=C3=A1me v=C3=BDrobn=C3=AD z=C3=A1vody v Polsku, =C5=A0v=C3=A9dsku a =C4=
+=8C=C3=ADn=C4=9B se schopnost=C3=AD flexibiln=C4=9B p=C5=99esouvat v=C3=BD=
+robu mezi lokalitami.
 
+Na=C5=A1e lic=C3=AD bu=C5=88ky jsou v=C4=9Bt=C5=A1inou automatick=C3=A9 n=
+ebo poloautomatick=C3=A9, co=C5=BE umo=C5=BE=C5=88uje v=C3=BDrobu velk=C3=
+=BDch v=C3=BDrobn=C3=ADch s=C3=A9ri=C3=AD s vysokou flexibilitou detail=C5=
+=AF.
+=20
+Poskytujeme podporu v ka=C5=BEd=C3=A9 f=C3=A1zi v=C3=BDvoje projektu, vyv=
+=C3=ADj=C3=ADme strukturu detailu.
+
+Cht=C4=9Bli byste mluvit o spolupr=C3=A1ci v t=C3=A9to oblasti?
+
+Pozdravy
+Kristi=C3=A1n Plet=C3=A1nek
