@@ -2,66 +2,74 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97327163B6
-	for <lists+linux-crypto@lfdr.de>; Tue, 30 May 2023 16:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458657163EE
+	for <lists+linux-crypto@lfdr.de>; Tue, 30 May 2023 16:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbjE3OUS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 30 May 2023 10:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
+        id S230101AbjE3OZd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 30 May 2023 10:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232931AbjE3OTH (ORCPT
+        with ESMTP id S232341AbjE3OYo (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 30 May 2023 10:19:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35ACE132
-        for <linux-crypto@vger.kernel.org>; Tue, 30 May 2023 07:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685456277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NBXOPllhnShhjBRylpaDepFHduJQFj0kF52MtSgNo3M=;
-        b=dw2gWkT2I3uiW8WBQR+VJzE0DdacOQAyTNJ+7oeP/Mkdh7hiHeAP+5aoR26XeNAugufkKa
-        Nz/2l8/yfv3hOSK8kIqPXIXiY1/vIDT3lsyVtLGyXlvW81epmCPSbEB1parGD590Iwn4SS
-        010N14dm9t3gkA4j518WR609Fx4aw84=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-454-lYgHP-yeNMaEfEacsos-nA-1; Tue, 30 May 2023 10:17:52 -0400
-X-MC-Unique: lYgHP-yeNMaEfEacsos-nA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D6652185A797;
-        Tue, 30 May 2023 14:17:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.182])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DB6E140E956;
-        Tue, 30 May 2023 14:17:47 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-crypto@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 10/10] crypto: af_alg/hash: Support MSG_SPLICE_PAGES
-Date:   Tue, 30 May 2023 15:16:34 +0100
-Message-ID: <20230530141635.136968-11-dhowells@redhat.com>
-In-Reply-To: <20230530141635.136968-1-dhowells@redhat.com>
-References: <20230530141635.136968-1-dhowells@redhat.com>
+        Tue, 30 May 2023 10:24:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B2D1B8;
+        Tue, 30 May 2023 07:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NWEmuGkLTCUa79jBEH3/UxEeJ1XI0nknDfWdtfSsgPs=; b=Ct+KeY0bR7Fd2pFV938dRGSXTb
+        +T51wSDRsfKeMuSei4YQEsU4Xi76eoiaYVk/lttEnZJBJ2NUxa0nAwt21F7XjN8xiXMXaKvYxsPjv
+        1JwrujAB4owDEhg+CCV3cNBdBGPbJO1CWCIJ3zo7ADAp/AyyICHpHTcJDGSsXcUaQJ2nQQY3rFLU9
+        SCt5AhrjoGTUAJR4EssZvVmoJZxXtj67WW2fm46MJfmTOgqrwkt1CaD0nt4+OU3de5LcfLLr02uIQ
+        paqW6ykLF99/+KF3EKEe2ruu40MWJIAj+6KGzGVrsLeK2a2sThWNiV/lisP1NFlavwALCeW8DS4eD
+        ytHa5ABQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1q40FD-006M99-Vy; Tue, 30 May 2023 14:22:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E4605300233;
+        Tue, 30 May 2023 16:22:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A11CD2414735F; Tue, 30 May 2023 16:22:32 +0200 (CEST)
+Date:   Tue, 30 May 2023 16:22:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     torvalds@linux-foundation.org
+Cc:     corbet@lwn.net, will@kernel.org, boqun.feng@gmail.com,
+        mark.rutland@arm.com, catalin.marinas@arm.com, dennis@kernel.org,
+        tj@kernel.org, cl@linux.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, joro@8bytes.org, suravee.suthikulpanit@amd.com,
+        robin.murphy@arm.com, dwmw2@infradead.org,
+        baolu.lu@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>, davem@davemloft.net,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+        linux-crypto@vger.kernel.org, sfr@canb.auug.org.au,
+        mpe@ellerman.id.au, James.Bottomley@hansenpartnership.com,
+        deller@gmx.de, linux-parisc@vger.kernel.org
+Subject: Re: [PATCH v3 08/11] slub: Replace cmpxchg_double()
+Message-ID: <20230530142232.GA200270@hirez.programming.kicks-ass.net>
+References: <20230515075659.118447996@infradead.org>
+ <20230515080554.453785148@infradead.org>
+ <20230524093246.GP83892@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230524093246.GP83892@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,201 +77,87 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Make AF_ALG sendmsg() support MSG_SPLICE_PAGES in the hashing code.  This
-causes pages to be spliced from the source iterator if possible.
+On Wed, May 24, 2023 at 11:32:47AM +0200, Peter Zijlstra wrote:
+> On Mon, May 15, 2023 at 09:57:07AM +0200, Peter Zijlstra wrote:
+> 
+> > @@ -3008,6 +3029,22 @@ static inline bool pfmemalloc_match(stru
+> >  }
+> >  
+> >  #ifndef CONFIG_SLUB_TINY
+> > +static inline bool
+> > +__update_cpu_freelist_fast(struct kmem_cache *s,
+> > +			   void *freelist_old, void *freelist_new,
+> > +			   unsigned long tid)
+> > +{
+> > +#ifdef system_has_freelist_aba
+> > +	freelist_aba_t old = { .freelist = freelist_old, .counter = tid };
+> > +	freelist_aba_t new = { .freelist = freelist_new, .counter = next_tid(tid) };
+> > +
+> > +	return this_cpu_cmpxchg_freelist(s->cpu_slab->freelist_tid.full,
+> > +					 old.full, new.full) == old.full;
+> > +#else
+> > +	return false;
+> > +#endif
+> > +}
+> > +
+> >  /*
+> >   * Check the slab->freelist and either transfer the freelist to the
+> >   * per cpu freelist or deactivate the slab.
+> > @@ -3359,11 +3396,7 @@ static __always_inline void *__slab_allo
+> >  		 * against code executing on this cpu *not* from access by
+> >  		 * other cpus.
+> >  		 */
+> > -		if (unlikely(!this_cpu_cmpxchg_double(
+> > -				s->cpu_slab->freelist, s->cpu_slab->tid,
+> > -				object, tid,
+> > -				next_object, next_tid(tid)))) {
+> > -
+> > +		if (unlikely(!__update_cpu_freelist_fast(s, object, next_object, tid))) {
+> >  			note_cmpxchg_failure("slab_alloc", s, tid);
+> >  			goto redo;
+> >  		}
+> > @@ -3736,11 +3769,7 @@ static __always_inline void do_slab_free
+> >  
+> >  		set_freepointer(s, tail_obj, freelist);
+> >  
+> > -		if (unlikely(!this_cpu_cmpxchg_double(
+> > -				s->cpu_slab->freelist, s->cpu_slab->tid,
+> > -				freelist, tid,
+> > -				head, next_tid(tid)))) {
+> > -
+> > +		if (unlikely(!__update_cpu_freelist_fast(s, freelist, head, tid))) {
+> >  			note_cmpxchg_failure("slab_free", s, tid);
+> >  			goto redo;
+> >  		}
+> 
+> This isn't right; the this_cpu_cmpxchg_double() was unconditional and
+> relied on the local_irq_save() fallback when no native cmpxchg128 is
+> present.
 
-This allows ->sendpage() to be replaced by something that can handle
-multiple multipage folios in a single transaction.
+This means this_cpu_cmpxchg128 is expected to be present on all 64bit
+archs, except Mark just found out that HPPA doens't support __int128
+until gcc-11.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Herbert Xu <herbert@gondor.apana.org.au>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-crypto@vger.kernel.org
-cc: netdev@vger.kernel.org
----
+(I've been building using gcc-12.2)
 
-Notes:
-    ver #2)
-     - Fixed some checkpatch warnings.
+And because the cmpxchg128 fallback relies on '==' we can't trivally
+fudge that with a struct type either :/ Now, afaict it all magically
+works if I use:
 
- crypto/af_alg.c     |  11 +++--
- crypto/algif_hash.c | 104 ++++++++++++++++++++++++++++----------------
- 2 files changed, 74 insertions(+), 41 deletions(-)
+#ifdef __SIZEOF_INT128__
+typedef __s128 s128
+typedef __u128 u128
+#else
+#if defined(CONFIG_PARISC) && defined(CONFIG_64BIT)
+typedef long double u128;
+#endif
+#endif
 
-diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-index e2fc9051ba39..b78a399d0e19 100644
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -542,9 +542,14 @@ void af_alg_free_sg(struct af_alg_sgl *sgl)
- {
- 	int i;
- 
--	if (sgl->need_unpin)
--		for (i = 0; i < sgl->sgt.nents; i++)
--			unpin_user_page(sg_page(&sgl->sgt.sgl[i]));
-+	if (sgl->sgt.sgl) {
-+		if (sgl->need_unpin)
-+			for (i = 0; i < sgl->sgt.nents; i++)
-+				unpin_user_page(sg_page(&sgl->sgt.sgl[i]));
-+		if (sgl->sgt.sgl != sgl->sgl)
-+			kvfree(sgl->sgt.sgl);
-+		sgl->sgt.sgl = NULL;
-+	}
- }
- EXPORT_SYMBOL_GPL(af_alg_free_sg);
- 
-diff --git a/crypto/algif_hash.c b/crypto/algif_hash.c
-index 16c69c4b9c62..2f7a98b0eae3 100644
---- a/crypto/algif_hash.c
-+++ b/crypto/algif_hash.c
-@@ -63,78 +63,106 @@ static void hash_free_result(struct sock *sk, struct hash_ctx *ctx)
- static int hash_sendmsg(struct socket *sock, struct msghdr *msg,
- 			size_t ignored)
- {
--	int limit = ALG_MAX_PAGES * PAGE_SIZE;
- 	struct sock *sk = sock->sk;
- 	struct alg_sock *ask = alg_sk(sk);
- 	struct hash_ctx *ctx = ask->private;
--	long copied = 0;
-+	ssize_t copied = 0;
-+	size_t len, max_pages = ALG_MAX_PAGES, npages;
-+	bool continuing = ctx->more, need_init = false;
- 	int err;
- 
--	if (limit > sk->sk_sndbuf)
--		limit = sk->sk_sndbuf;
-+	/* Don't limit to ALG_MAX_PAGES if the pages are all already pinned. */
-+	if (!user_backed_iter(&msg->msg_iter))
-+		max_pages = INT_MAX;
-+	else
-+		max_pages = min_t(size_t, max_pages,
-+				  DIV_ROUND_UP(sk->sk_sndbuf, PAGE_SIZE));
- 
- 	lock_sock(sk);
--	if (!ctx->more) {
-+	if (!continuing) {
- 		if ((msg->msg_flags & MSG_MORE))
- 			hash_free_result(sk, ctx);
--
--		err = crypto_wait_req(crypto_ahash_init(&ctx->req), &ctx->wait);
--		if (err)
--			goto unlock;
-+		need_init = true;
- 	}
- 
- 	ctx->more = false;
- 
- 	while (msg_data_left(msg)) {
--		int len = msg_data_left(msg);
--
--		if (len > limit)
--			len = limit;
--
- 		ctx->sgl.sgt.sgl = ctx->sgl.sgl;
- 		ctx->sgl.sgt.nents = 0;
- 		ctx->sgl.sgt.orig_nents = 0;
- 
--		len = extract_iter_to_sg(&msg->msg_iter, len, &ctx->sgl.sgt,
--					 ALG_MAX_PAGES, 0);
--		if (len < 0) {
--			err = copied ? 0 : len;
--			goto unlock;
-+		err = -EIO;
-+		npages = iov_iter_npages(&msg->msg_iter, max_pages);
-+		if (npages == 0)
-+			goto unlock_free;
-+
-+		if (npages > ARRAY_SIZE(ctx->sgl.sgl)) {
-+			err = -ENOMEM;
-+			ctx->sgl.sgt.sgl =
-+				kvmalloc(array_size(npages,
-+						    sizeof(*ctx->sgl.sgt.sgl)),
-+					 GFP_KERNEL);
-+			if (!ctx->sgl.sgt.sgl)
-+				goto unlock_free;
- 		}
--		sg_mark_end(ctx->sgl.sgt.sgl + ctx->sgl.sgt.nents);
-+		sg_init_table(ctx->sgl.sgl, npages);
- 
- 		ctx->sgl.need_unpin = iov_iter_extract_will_pin(&msg->msg_iter);
- 
--		ahash_request_set_crypt(&ctx->req, ctx->sgl.sgt.sgl, NULL, len);
-+		err = extract_iter_to_sg(&msg->msg_iter, LONG_MAX,
-+					 &ctx->sgl.sgt, npages, 0);
-+		if (err < 0)
-+			goto unlock_free;
-+		len = err;
-+		sg_mark_end(ctx->sgl.sgt.sgl + ctx->sgl.sgt.nents - 1);
- 
--		err = crypto_wait_req(crypto_ahash_update(&ctx->req),
--				      &ctx->wait);
--		af_alg_free_sg(&ctx->sgl);
--		if (err) {
--			iov_iter_revert(&msg->msg_iter, len);
--			goto unlock;
-+		if (!msg_data_left(msg)) {
-+			err = hash_alloc_result(sk, ctx);
-+			if (err)
-+				goto unlock_free;
- 		}
- 
--		copied += len;
--	}
-+		ahash_request_set_crypt(&ctx->req, ctx->sgl.sgt.sgl,
-+					ctx->result, len);
- 
--	err = 0;
-+		if (!msg_data_left(msg) && !continuing &&
-+		    !(msg->msg_flags & MSG_MORE)) {
-+			err = crypto_ahash_digest(&ctx->req);
-+		} else {
-+			if (need_init) {
-+				err = crypto_wait_req(
-+					crypto_ahash_init(&ctx->req),
-+					&ctx->wait);
-+				if (err)
-+					goto unlock_free;
-+				need_init = false;
-+			}
-+
-+			if (msg_data_left(msg) || (msg->msg_flags & MSG_MORE))
-+				err = crypto_ahash_update(&ctx->req);
-+			else
-+				err = crypto_ahash_finup(&ctx->req);
-+			continuing = true;
-+		}
- 
--	ctx->more = msg->msg_flags & MSG_MORE;
--	if (!ctx->more) {
--		err = hash_alloc_result(sk, ctx);
-+		err = crypto_wait_req(err, &ctx->wait);
- 		if (err)
--			goto unlock;
-+			goto unlock_free;
- 
--		ahash_request_set_crypt(&ctx->req, NULL, ctx->result, 0);
--		err = crypto_wait_req(crypto_ahash_final(&ctx->req),
--				      &ctx->wait);
-+		copied += len;
-+		af_alg_free_sg(&ctx->sgl);
- 	}
- 
-+	ctx->more = msg->msg_flags & MSG_MORE;
-+	err = 0;
- unlock:
- 	release_sock(sk);
-+	return copied ?: err;
- 
--	return err ?: copied;
-+unlock_free:
-+	af_alg_free_sg(&ctx->sgl);
-+	goto unlock;
- }
- 
- static ssize_t hash_sendpage(struct socket *sock, struct page *page,
+but that is *super* gross.
 
+The alternative is raising the minimum GCC for PARISC to gcc-11..
+
+Yet another alternative is using a struct type and an equality function,
+just for this.
+
+Anybody?
