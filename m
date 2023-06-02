@@ -2,123 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1CD71FC0C
-	for <lists+linux-crypto@lfdr.de>; Fri,  2 Jun 2023 10:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F7D720F74
+	for <lists+linux-crypto@lfdr.de>; Sat,  3 Jun 2023 12:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbjFBI2t (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 2 Jun 2023 04:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
+        id S235667AbjFCKlB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 3 Jun 2023 06:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234277AbjFBI21 (ORCPT
+        with ESMTP id S235929AbjFCKkz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 2 Jun 2023 04:28:27 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C57310F8
-        for <linux-crypto@vger.kernel.org>; Fri,  2 Jun 2023 01:27:40 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51491b87565so2630972a12.1
-        for <linux-crypto@vger.kernel.org>; Fri, 02 Jun 2023 01:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685694436; x=1688286436;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rqiBV30sd6pVAOr/JC2i8NEvFQRhidh6InexBKyx7mo=;
-        b=rIl0eivXD4yxDCT/YgMEsx+zB95XosuikN/Qy10i57lfY0bUaZOBftlmQqO+cFMD0D
-         HZAAhd0VW/ieFo5zYGo6vv2v0zUDlZ52siklLw4uV81kybENAfWJX5R3rwrvf1buexm1
-         yEMYUIUSzh/qNzwQBiwrUVRoKsvabnkfIAmeTWvOidfzk0NWYH9cT8KdwNTwXDRoHenP
-         EInC+vD5ibY9evurg3TMnF2a3tcxmfxxjvXFWOSqpjcgLZIxu/CI4Luehlm1nqH4vHwD
-         X0FqymZc2B+ehA1Y5i2CI/W5+vwNvIxBm+FpLQN812zDX0RThsO/Sk+wpIPeOHKFX7Xs
-         uPSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685694436; x=1688286436;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqiBV30sd6pVAOr/JC2i8NEvFQRhidh6InexBKyx7mo=;
-        b=P9f1r8IamGNPL9JuEnLB5EM/fT3p709UA3EA66hfKkBKhIDHgdEeL0+PQCweo4v0iS
-         RRZDigdCcnvKwSzRRaHa1bILHuQKHkeefEYod3cqRirW1WbGL5kfKA0poF7FbUgsjvuQ
-         AKcEh4YszICNHqK2KPPcxCfsXgt+fPdsLbNv+P6zM3PqrLmEVKaKkx/CtysSIwx4zAyv
-         Jzw/5eV2+cbKf8sj4GMpclxDEKGfn8R4c+cnIlNnog5X+Jo/vkyyga+H770zYeVjCh8P
-         7gPHsp5oUZUCUVQ5ZTK/SqXstSlNrES3CqIpeYiJ44Qkd6RqGM0bEZ40m1oSJ1yoA/Cw
-         yi6w==
-X-Gm-Message-State: AC+VfDyoR021hifHTB3wa+Tr9ATaBVDfPA9BlciwPlVc51Lon4P/HrtN
-        kshCVoFRx27eur+7K15lWZb82w==
-X-Google-Smtp-Source: ACHHUZ7QkKl0T36/hmXWtoKKBK/0HSPptyUZfw8AKnhu87xXvJCANWT/QJH7XR+fLH3RF42PD2as2Q==
-X-Received: by 2002:a05:6402:2cd:b0:506:976e:5242 with SMTP id b13-20020a05640202cd00b00506976e5242mr1511546edx.25.1685694436433;
-        Fri, 02 Jun 2023 01:27:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.199.204])
-        by smtp.gmail.com with ESMTPSA id x26-20020aa7cd9a000000b005149461b1e0sm414404edv.25.2023.06.02.01.27.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jun 2023 01:27:15 -0700 (PDT)
-Message-ID: <1d6f70ab-e971-4a83-a9b3-e049b38c29a0@linaro.org>
-Date:   Fri, 2 Jun 2023 10:27:12 +0200
+        Sat, 3 Jun 2023 06:40:55 -0400
+X-Greylist: delayed 4231 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 03 Jun 2023 03:40:27 PDT
+Received: from mail.webtopbits.pl (mail.webtopbits.pl [195.231.64.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698BB10DD
+        for <linux-crypto@vger.kernel.org>; Sat,  3 Jun 2023 03:40:26 -0700 (PDT)
+Received: by mail.webtopbits.pl (Postfix, from userid 1001)
+        id 21F7EA38CE; Fri,  2 Jun 2023 09:51:02 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=webtopbits.pl;
+        s=mail; t=1685695873;
+        bh=Eh8ECMiYd4baGAwPAzhz8mhJACXX7NSRkYjh+plaY18=;
+        h=Date:From:To:Subject:From;
+        b=gR2OBBz7fSHnfc9W5rCdzF0HBT1DfbNS39bPDRLlnRG5TQNif4gw7/k8w39UTZiuW
+         YbYZ5ZjhpsB+HtR+V6RrlMygCGq+tq0k9O7fyWoD1Frj8id6sk/AMc7QAJ1joTXn44
+         HWFIdqnM9skyJuy34RK/H5FV/Up5S28IWbq7ujEo6CN8a7O5/fqu3fWEzViIyDm+oN
+         jrPLi4VvI6tzYNEgiQHeXyQEnjNMIvE9zRsCxNyOgvOVbE2FftLkykPRD39INwGmVT
+         +naWhDZurlQLFYxQ1dbW3ZUVPKCvXEyjWei56/szspf/C6onQpBig8Ml4DTeto17p8
+         VOxvb5O/DT8UA==
+Received: by mail.webtopbits.pl for <linux-crypto@vger.kernel.org>; Fri,  2 Jun 2023 08:50:56 GMT
+Message-ID: <20230602085530-0.1.8w.5ksm.0.9jrn89xh2j@webtopbits.pl>
+Date:   Fri,  2 Jun 2023 08:50:56 GMT
+From:   "Kamil Durjasz" <kamil.durjasz@webtopbits.pl>
+To:     <linux-crypto@vger.kernel.org>
+Subject: =?UTF-8?Q?Wy=C5=BCsza_konwersja_w_e-sklepie_?=
+X-Mailer: mail.webtopbits.pl
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH v1 1/7] dt-bindings: mmc: fsl-imx-esdhc: Add imx6ul
- support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Abel Vesa <abelvesa@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     kernel@pengutronix.de, Peng Fan <peng.fan@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Anson Huang <Anson.Huang@nxp.com>, Marek Vasut <marex@denx.de>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-References: <20230601101451.357662-1-o.rempel@pengutronix.de>
- <20230601101451.357662-2-o.rempel@pengutronix.de>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230601101451.357662-2-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On 01/06/2023 12:14, Oleksij Rempel wrote:
-> Add the 'fsl,imx6ul-usdhc' value to the compatible properties list in
-> the fsl-imx-esdhc.yaml file. This is required to match the compatible
-> strings present in the 'mmc@2190000' node of 'imx6ul-prti6g.dtb'. This
-> commit addresses the following dtbs_check warning:
->   imx6ul-prti6g.dtb: mmc@2190000: compatible: 'oneOf' conditional failed,
->     one must be fixed: ['fsl,imx6ul-usdhc', 'fsl,imx6sx-usdhc'] is too long
->     'fsl,imx6ul-usdhc' is not one of ['fsl,imx25-esdhc', 'fsl,imx35-esdhc',
->     'fsl,imx51-esdhc', 'fsl,imx53-esdhc', 'fsl,imx6q-usdhc',
->     'fsl,imx6sl-usdhc', 'fsl,imx6sx-usdhc', 'fsl,imx7d-usdhc',
->     'fsl,imx7ulp-usdhc', 'fsl,imx8mm-usdhc', 'fsl,imxrt1050-usdhc',
->     'nxp,s32g2-usdhc']
->   From schema: Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+Dzie=C5=84 dobry,
 
-Except what Conor wrote, please don't wrap that much the error log - it
-is unreadable. Trim it, remove unneeded parts and keep some decent
-one/two lines even if it exceeds the commit msg. This applies to other
-patches as well.
+w jaki spos=C3=B3b docieraj=C4=85 Pa=C5=84stwo do odbiorc=C3=B3w?
 
-Best regards,
-Krzysztof
+Tworzymy pot=C4=99=C5=BCne narz=C4=99dzia sprzeda=C5=BCy, kt=C3=B3re pozw=
+alaj=C4=85 kompleksowo rozwi=C4=85za=C4=87 problemy potencjalnych klient=C3=
+=B3w i skutecznie wp=C5=82yn=C4=85=C4=87 na ich decyzje zakupowe.=20
 
+Skupiamy si=C4=99 na Pa=C5=84stwa potrzebach zwi=C4=85zanych z obs=C5=82u=
+g=C4=85 sklepu, oczekiwaniach i planach sprzeda=C5=BCowych. Szczeg=C3=B3=C5=
+=82owo dopasowujemy grafik=C4=99, funkcjonalno=C5=9Bci, struktur=C4=99 i =
+mikrointerakcje do Pa=C5=84stwa grupy docelowej, co przek=C5=82ada si=C4=99=
+ na oczekiwane rezultaty.
+
+Ch=C4=99tnie przedstawi=C4=99 dotychczasowe realizacje, aby mogli Pa=C5=84=
+stwo przekona=C4=87 si=C4=99 o naszych mo=C5=BCliwo=C5=9Bciach. Mog=C4=99=
+ si=C4=99 skontaktowa=C4=87?
+
+
+Pozdrawiam
+Kamil Durjasz
