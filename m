@@ -2,111 +2,139 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E61724237
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 Jun 2023 14:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62B97243DA
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 Jun 2023 15:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237330AbjFFMeE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 6 Jun 2023 08:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S238068AbjFFNKu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 6 Jun 2023 09:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235379AbjFFMeD (ORCPT
+        with ESMTP id S238081AbjFFNKs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 6 Jun 2023 08:34:03 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77BE10CE;
-        Tue,  6 Jun 2023 05:34:01 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-64d57cd373fso5110302b3a.1;
-        Tue, 06 Jun 2023 05:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686054841; x=1688646841;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eRUTvlQ9KEniKQ8vRqNFUfZRFkIjKMOzAlmDrlMZ5v0=;
-        b=Rk2ocRKPQ0Z6dfFpIz1iFKMoEgtVAMLUrdBKEiFLE+SaUU/ricpKqKQilB0Kvz2wcW
-         aATW//4JrJZCXwA7rSsfUzoWJV6DUM+odhM/vmzOtjB8kEKqQAAKyIPLKxKo+67SHc7f
-         /3r4IcELSpiZ+KJ2x7eXT5Drm67C8W5qApa7Lr4ibMlyC4e5jcFRwD+weGxk4+cEfjMT
-         mdMz9tQCdKcyEjpR3ngBzFPfJUFoGW9ynJvugyyblTHurl5dtSEH0ni2cBa34q2FoGwg
-         oVocUZ59ETEOaykaASWff8h32EFQma7BIuMEuE+GBnlWDPgfSaMV/qwiMFwna7WRSNGV
-         7xUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686054841; x=1688646841;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eRUTvlQ9KEniKQ8vRqNFUfZRFkIjKMOzAlmDrlMZ5v0=;
-        b=TJnjpwvpBXHMeIniD2XMubgp3ghebvRFChgXLZRwAmTFoVyR7emY5lqLFW3POQB1wr
-         wUEpSl6HrqYITXx0zbJSKJDOcBV7U4v/LOQUmq5jf12Fd9ZP9C5j0wRJji6FJEMusp3o
-         BRAEjYHg/rTCXuBlncQR5cMXOkRZW6YQ9D0p0DzfTTqhp3j4nFYnsB7GmRNM0zgfhLzK
-         BEw+2s4JQpdfzuo41BsgTiwcRJqeDC6MOCvQ8thJOhyFYwDjiD9fMp8Wju2Oz73ZUbZT
-         pfostElCAgdQI+QxrXkSU94kWJ7nI70p4eBzZbOFnYrr+1R8ENJe4TZ7WIWRa8b3NRX+
-         CUHA==
-X-Gm-Message-State: AC+VfDzD5L6JWhqLF1zOETN1q1JgvTdfM69QU9aLpi9s7HSr97XJeeTp
-        lAFiXbBbXQzcUSo45LzJDQU=
-X-Google-Smtp-Source: ACHHUZ5DtzhlqP8U69iBQgMy9/z7sBQOl1f0YIjZJ3lS7fn5INdkh8N6aS2aBv9fRQ+tRvweNVT8gA==
-X-Received: by 2002:a05:6a20:5486:b0:10b:60c1:2999 with SMTP id i6-20020a056a20548600b0010b60c12999mr2671662pzk.22.1686054841216;
-        Tue, 06 Jun 2023 05:34:01 -0700 (PDT)
-Received: from debian.me (subs02-180-214-232-93.three.co.id. [180.214.232.93])
-        by smtp.gmail.com with ESMTPSA id j13-20020aa783cd000000b0064f7c56d8b7sm6780033pfn.219.2023.06.06.05.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 05:34:00 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 2417D106A3A; Tue,  6 Jun 2023 19:33:58 +0700 (WIB)
-Date:   Tue, 6 Jun 2023 19:33:58 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Franziska Naepelt <franziska.naepelt@googlemail.com>,
-        linux-crypto@vger.kernel.org
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-kernel@vger.kernel.org,
-        Franziska Naepelt <franziska.naepelt@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Subject: Re: [PATCH] crypto: crct10dif_common Add SPDX-License-Identifier tag
-Message-ID: <ZH8ntoGLJHQpZriL@debian.me>
-References: <20230606110322.96290-1-franziska.naepelt@gmail.com>
+        Tue, 6 Jun 2023 09:10:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9E5172B
+        for <linux-crypto@vger.kernel.org>; Tue,  6 Jun 2023 06:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1686056951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xU6E2fjjhcVwKorersDkYRkNjPEQVcB/v3lc/5jlH4Q=;
+        b=eq63PwoJkDHngCBkU0HdNd+ubLNblS0MPBb++auwlgg9ITZye8gPL8mLE8tBsIQJrCP1/5
+        PRDbJ95sKPqHUwEI5IyjjZZMiGlUNC4+n3VL0zYiBqx189Zi8dC6y6GeqLzVk1ygVZq8xr
+        5MycMWieSH1maLIf5Q3nyQHeIXyWta0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-648-zAky1qSONByxa_4w_IiLQw-1; Tue, 06 Jun 2023 09:09:05 -0400
+X-MC-Unique: zAky1qSONByxa_4w_IiLQw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C5BED8039B6;
+        Tue,  6 Jun 2023 13:09:04 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DCF64022C5;
+        Tue,  6 Jun 2023 13:09:02 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-crypto@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 00/10] crypto, splice, net: Make AF_ALG handle sendmsg(MSG_SPLICE_PAGES)
+Date:   Tue,  6 Jun 2023 14:08:46 +0100
+Message-ID: <20230606130856.1970660-1-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="y436K2REpvrPvhl3"
-Content-Disposition: inline
-In-Reply-To: <20230606110322.96290-1-franziska.naepelt@gmail.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Here are patches to make AF_ALG handle the MSG_SPLICE_PAGES internal
+sendmsg flag.  MSG_SPLICE_PAGES is an internal hint that tells the protocol
+that it should splice the pages supplied if it can.  The sendpage functions
+are then turned into wrappers around that.
 
---y436K2REpvrPvhl3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This set consists of the following parts:
 
-On Tue, Jun 06, 2023 at 01:03:22PM +0200, Franziska Naepelt wrote:
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Cryptographic API.
->   *
+ (1) Move netfs_extract_iter_to_sg() to somewhere more general and rename
+     it to drop the "netfs" prefix.  We use this to extract directly from
+     an iterator into a scatterlist.
 
-Shouldn't the license boilerplate text be also removed (and thus
-completing SPDX conversion)?
+ (2) Make AF_ALG use iov_iter_extract_pages().  This has the additional
+     effect of pinning pages obtained from userspace rather than taking
+     refs on them.  Pages from kernel-backed iterators would not be pinned,
+     but AF_ALG isn't really meant for use by kernel services.
 
-Thanks.
+ (3) Change AF_ALG still further to use extract_iter_to_sg().
 
---=20
-An old man doll... just what I always wanted! - Clara
+ (4) Make af_alg_sendmsg() support MSG_SPLICE_PAGES support and make
+     af_alg_sendpage() just a wrapper around sendmsg().  This has to take
+     refs on the pages pinned for the moment.
 
---y436K2REpvrPvhl3
-Content-Type: application/pgp-signature; name="signature.asc"
+ (5) Make hash_sendmsg() support MSG_SPLICE_PAGES by simply ignoring it.
+     hash_sendpage() is left untouched to be removed later, after the
+     splice core has been changed to call sendmsg().
 
------BEGIN PGP SIGNATURE-----
+I've pushed the patches here also:
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZH8ntQAKCRD2uYlJVVFO
-o6o9AQD1I9VD3LgPujQdO/Hk4zkpdA8SceQt72CP499hZpGoJwD/VyXeR65pDVF6
-SKpHInKN7YC8lnpxeV7drBALrK+xuAo=
-=fMjS
------END PGP SIGNATURE-----
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=sendpage-2-alg
 
---y436K2REpvrPvhl3--
+David
+
+ver #3)
+ - Rebase and deal with fs/cifs/ moving.
+ - Reimpose the ALG_MAX_PAGES limit in hash_sendmsg() for kernel iters.
+ - Remove BVEC iter restriction when using MSG_SPLICE_PAGES.
+
+ver #2)
+ - Put the "netfs_" prefix removal first to shorten lines and avoid
+   checkpatch 80-char warnings.
+ - Fix a couple of spelling mistakes.
+ - Wrap some lines at 80 chars.
+
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=51c78a4d532efe9543a4df019ff405f05c6157f6 # part 1
+Link: https://lore.kernel.org/r/20230526143104.882842-1-dhowells@redhat.com/ # v1
+Link: https://lore.kernel.org/r/20230530141635.136968-1-dhowells@redhat.com/ # v2
+
+David Howells (10):
+  Drop the netfs_ prefix from netfs_extract_iter_to_sg()
+  Fix a couple of spelling mistakes
+  Wrap lines at 80
+  Move netfs_extract_iter_to_sg() to lib/scatterlist.c
+  crypto: af_alg: Pin pages rather than ref'ing if appropriate
+  crypto: af_alg: Use extract_iter_to_sg() to create scatterlists
+  crypto: af_alg: Indent the loop in af_alg_sendmsg()
+  crypto: af_alg: Support MSG_SPLICE_PAGES
+  crypto: af_alg: Convert af_alg_sendpage() to use MSG_SPLICE_PAGES
+  crypto: af_alg/hash: Support MSG_SPLICE_PAGES
+
+ crypto/af_alg.c           | 181 +++++++++++--------------
+ crypto/algif_aead.c       |  38 +++---
+ crypto/algif_hash.c       | 110 ++++++++++------
+ crypto/algif_skcipher.c   |  10 +-
+ fs/netfs/iterator.c       | 266 -------------------------------------
+ fs/smb/client/smb2ops.c   |   4 +-
+ fs/smb/client/smbdirect.c |   2 +-
+ include/crypto/if_alg.h   |   7 +-
+ include/linux/netfs.h     |   4 -
+ include/linux/uio.h       |   5 +
+ lib/scatterlist.c         | 269 ++++++++++++++++++++++++++++++++++++++
+ 11 files changed, 451 insertions(+), 445 deletions(-)
+
