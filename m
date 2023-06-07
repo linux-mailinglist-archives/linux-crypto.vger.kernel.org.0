@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDEF725828
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Jun 2023 10:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECB7725874
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Jun 2023 10:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239278AbjFGImh (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 7 Jun 2023 04:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
+        id S234352AbjFGIs5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 7 Jun 2023 04:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239359AbjFGImR (ORCPT
+        with ESMTP id S235583AbjFGIs4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 7 Jun 2023 04:42:17 -0400
+        Wed, 7 Jun 2023 04:48:56 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7941BD8;
-        Wed,  7 Jun 2023 01:42:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6E318F;
+        Wed,  7 Jun 2023 01:48:53 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1q6ojm-00078n-U3; Wed, 07 Jun 2023 16:41:51 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 07 Jun 2023 16:41:50 +0800
-Date:   Wed, 7 Jun 2023 16:41:50 +0800
+        id 1q6oq8-0007Kf-9L; Wed, 07 Jun 2023 16:48:25 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 07 Jun 2023 16:48:24 +0800
+Date:   Wed, 7 Jun 2023 16:48:24 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     David Howells <dhowells@redhat.com>
 Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
@@ -31,15 +31,15 @@ Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Matthew Wilcox <willy@infradead.org>,
         Jens Axboe <axboe@kernel.dk>, linux-crypto@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 09/10] crypto: af_alg: Convert
- af_alg_sendpage() to use MSG_SPLICE_PAGES
-Message-ID: <ZIBCzl7Je0JiPL7c@gondor.apana.org.au>
+Subject: Re: [PATCH net-next v3 10/10] crypto: af_alg/hash: Support
+ MSG_SPLICE_PAGES
+Message-ID: <ZIBEWBPDdkCtx8XM@gondor.apana.org.au>
 References: <20230606130856.1970660-1-dhowells@redhat.com>
- <20230606130856.1970660-10-dhowells@redhat.com>
+ <20230606130856.1970660-11-dhowells@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230606130856.1970660-10-dhowells@redhat.com>
+In-Reply-To: <20230606130856.1970660-11-dhowells@redhat.com>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
@@ -51,9 +51,9 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jun 06, 2023 at 02:08:55PM +0100, David Howells wrote:
-> Convert af_alg_sendpage() to use sendmsg() with MSG_SPLICE_PAGES rather
-> than directly splicing in the pages itself.
+On Tue, Jun 06, 2023 at 02:08:56PM +0100, David Howells wrote:
+> Make AF_ALG sendmsg() support MSG_SPLICE_PAGES in the hashing code.  This
+> causes pages to be spliced from the source iterator if possible.
 > 
 > This allows ->sendpage() to be replaced by something that can handle
 > multiple multipage folios in a single transaction.
@@ -69,8 +69,14 @@ On Tue, Jun 06, 2023 at 02:08:55PM +0100, David Howells wrote:
 > cc: linux-crypto@vger.kernel.org
 > cc: netdev@vger.kernel.org
 > ---
->  crypto/af_alg.c | 52 ++++++++-----------------------------------------
->  1 file changed, 8 insertions(+), 44 deletions(-)
+> 
+> Notes:
+>     ver #2)
+>      - Fixed some checkpatch warnings.
+> 
+>  crypto/af_alg.c     |  11 +++--
+>  crypto/algif_hash.c | 100 +++++++++++++++++++++++++++-----------------
+>  2 files changed, 70 insertions(+), 41 deletions(-)
 
 Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 -- 
