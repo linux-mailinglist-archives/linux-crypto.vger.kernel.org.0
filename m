@@ -2,380 +2,325 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 311F07262F6
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Jun 2023 16:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA9D72674A
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Jun 2023 19:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241110AbjFGOib (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 7 Jun 2023 10:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        id S229927AbjFGR3a (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 7 Jun 2023 13:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234655AbjFGOia (ORCPT
+        with ESMTP id S229893AbjFGR33 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 7 Jun 2023 10:38:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CDD19BB
-        for <linux-crypto@vger.kernel.org>; Wed,  7 Jun 2023 07:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1686148664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ow0OOCSmuKBnWHD28hFOgV3rmZNu8Nj1owILnvPVmGw=;
-        b=N3LISDUuKjgv1on5PtSHVBiLEvqGEVHkrbGyuQpNlZlqbePJpEpO6tD7CDp6MpKAcKPLcR
-        ULj+4do/flm6TkaRMZBuNz/2IiPPd8XYWnfwkjLoGueqUVcZkCPbRPw6PvbpB5T0m33Rhl
-        Hl8kLDHYZ7tw+jmWoDZiCC399ycTCl0=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-7otc7PLHPG2wfMMuGdMyfQ-1; Wed, 07 Jun 2023 10:10:46 -0400
-X-MC-Unique: 7otc7PLHPG2wfMMuGdMyfQ-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-3f7c87cf3ffso82650561cf.2
-        for <linux-crypto@vger.kernel.org>; Wed, 07 Jun 2023 07:10:46 -0700 (PDT)
+        Wed, 7 Jun 2023 13:29:29 -0400
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB21D128;
+        Wed,  7 Jun 2023 10:29:27 -0700 (PDT)
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-33d37cc9d12so5140785ab.2;
+        Wed, 07 Jun 2023 10:29:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686147046; x=1688739046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ow0OOCSmuKBnWHD28hFOgV3rmZNu8Nj1owILnvPVmGw=;
-        b=hQLkEeMS3/whaEqCOVeN6L2GWOFat6buqesRnaipu0c557hD+sCXFR6Y95P9XHr09p
-         BJ8Hs2AbWBWStmYMu+eIjMtknMJjUcUSI21IRRK+BSHTsFgxf+reylT4pciK5+1Z1q8E
-         vnpXZAGqGYQ/6xdzlnYJdFb3SBqZ0W1k42llT/uXLZHlcDKMUbLPBDGMr3aJ1D8ZNl1B
-         /ylUKbThYwR1UGVV/xUoVLlkMCbILZVHcFFHHkXhLWjggDRxRrTk+7hz9cbLQOWowFYe
-         9t3OCA48CDzp5zGTRWfns5v7pH9fT7CPfmvgox2oPYXz3C7lc8Bldb+gvCq3c6YZ7g6b
-         MpSQ==
-X-Gm-Message-State: AC+VfDyjEE/ZHIrTuwvUXmpAsdepkBL/8NyReqSuMRARU6DSXsBrQvX4
-        EWNBgmIV6t/iNrEh+iQeApbH/T8a0SIa7TUKpfbS/4EfFIkvtTDQfWvhif5Od0SY62O2O7O9oIA
-        0kMADoFr9A9CKG1xgGCanb/tSIfjkiwTBXWtHNud5
-X-Received: by 2002:ac8:5951:0:b0:3ef:5d8c:20d8 with SMTP id 17-20020ac85951000000b003ef5d8c20d8mr4175382qtz.6.1686147045681;
-        Wed, 07 Jun 2023 07:10:45 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5c9VmPsD06888SrAxT7ZB2dNw1yvccd+FEZBd9FI9C9+C0xX8kOrIwO6A3sOilCG+T4V7/HXM5Del8P9wW8+c=
-X-Received: by 2002:ac8:5951:0:b0:3ef:5d8c:20d8 with SMTP id
- 17-20020ac85951000000b003ef5d8c20d8mr4175338qtz.6.1686147045262; Wed, 07 Jun
- 2023 07:10:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230607053940.39078-10-bagasdotme@gmail.com> <20230607053940.39078-11-bagasdotme@gmail.com>
-In-Reply-To: <20230607053940.39078-11-bagasdotme@gmail.com>
-From:   Richard Fontana <rfontana@redhat.com>
-Date:   Wed, 7 Jun 2023 10:10:34 -0400
-Message-ID: <CAC1cPGxD6xOLksyMHCcreFyEv5Yoo50LY=xM9BmOEP=oECoNww@mail.gmail.com>
-Subject: Re: [PATCH 1/8] crypto: Convert dual BSD 3-Clause/GPL 2.0 boilerplate
- to SPDX identifier
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        d=1e100.net; s=20221208; t=1686158967; x=1688750967;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7FMI01c5/aTH2JgiQO7wvRsXSjI5A4s+waPLwXYaaxM=;
+        b=ZwwJjIgQRTDqIgYZKOXkD8xh3Qra8npOmzExCeIy+uX/o9w+vXZjchSuhopZF1BUmj
+         ztCBrS3pYl9wHqjJXTrncJdBAUeEx0sEkzRyBZwifQAcNfsxUpXp39hd6hd7ZWLEHpTO
+         G9DpFJdPAUExjeQxidVjJXh1BeRCLw799wZNFghXEr9l1urTnmJsE1srwCi8v9iJvQyw
+         K1oQg504J/lpd8j0mIwWkbhZ2y3gnO3Hexj38LybCb2Yxxvw38MxR67DD+VS1+E1jMOv
+         okthc8dIKW/xmBORy8Zx0rPQFt2zTIyRCKQo991KGNHyjd02IC7KlvRpD9GX+uPnt+qG
+         wH+g==
+X-Gm-Message-State: AC+VfDyW9sZxS1l6D7CK3NjV9CUviRfulmdL1pkz4di6hvwaEDgMu6RR
+        mZUOu4ZSkguwev5QJDwzd0R7bA55nw==
+X-Google-Smtp-Source: ACHHUZ77+W7soNQkGWjIjKnRjXMpaSZyuPS4OksoJhSoV4je30sSUD5pjYDbOiotx2/eCZ5YGzFcQQ==
+X-Received: by 2002:a92:dd08:0:b0:33a:bb61:6f26 with SMTP id n8-20020a92dd08000000b0033abb616f26mr6038616ilm.31.1686158966966;
+        Wed, 07 Jun 2023 10:29:26 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id t9-20020a02c489000000b00411b4acc990sm3599292jam.7.2023.06.07.10.29.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jun 2023 10:29:26 -0700 (PDT)
+Received: (nullmailer pid 3602660 invoked by uid 1000);
+        Wed, 07 Jun 2023 17:29:24 -0000
+Date:   Wed, 7 Jun 2023 11:29:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     David Yang <mmyangfl@gmail.com>
+Cc:     linux-crypto@vger.kernel.org, Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Weili Qian <qianweili@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Franziska Naepelt <franziska.naepelt@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux SPDX Licenses <linux-spdx@vger.kernel.org>,
-        Linux Kernel Janitors <kernel-janitors@vger.kernel.org>,
-        Linux Crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Alexander Kjeldaas <astor@fast.no>,
-        Herbert Valerio Riedel <hvr@hvrlab.org>,
-        Kyle McMartin <kyle@debian.org>,
-        "Adam J . Richter" <adam@yggdrasil.com>,
-        Dr Brian Gladman <brg@gladman.me.uk>,
-        Stephan Mueller <smueller@chronox.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Jia Jie Ho <jiajie.ho@starfivetech.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Jenny Zhang <jenny.zhang@starfivetech.com>,
+        William Zhang <william.zhang@broadcom.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] hwrng: histb - Move driver to
+ drivers/char/hw_random/histb-rng.c
+Message-ID: <20230607172924.GA3597743-robh@kernel.org>
+References: <20230421165700.1481002-1-mmyangfl@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230421165700.1481002-1-mmyangfl@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jun 7, 2023 at 1:42=E2=80=AFAM Bagas Sanjaya <bagasdotme@gmail.com>=
- wrote:
->
-> Replace license boilerplate for dual BSD-3-Clause/GPL 2.0 (only or
-> later) with corresponding SPDX license identifier.
-
-This is at least the fourth or fifth time (I'm losing track) where you
-have incorrectly assumed a particular non-GPL license text matches a
-particular SPDX identifier without (apparently) checking.
-
-Bagas, I urge that you learn more about the nature of SPDX identifiers
-before submitting any further patches at least involving replacement
-of non-GPL notices with SPDX identifiers. For this unprecedented
-license notice replacement initiative to have any legitimacy it must
-attempt to apply SPDX identifiers correctly.
-
-> diff --git a/crypto/aes_generic.c b/crypto/aes_generic.c
-> index 666474b81c6aa5..2e042bd306f9c5 100644
-> --- a/crypto/aes_generic.c
-> +++ b/crypto/aes_generic.c
-> @@ -1,3 +1,4 @@
-> +// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0-or-later
+On Sat, Apr 22, 2023 at 12:56:49AM +0800, David Yang wrote:
+> Move to drivers/char/hw_random since histb-(t)rng does not provide
+> cryptography pseudo rng.
+> 
+> histb-rng is pretty like hisi-rng, but after investigation, we confirm
+> there is no RNG_PHY_SEED register on histb-rng so a separate driver is
+> needed.
+> 
+> Still we rename relevant function names to match those in hisi-rng.
+> 
+> Link: https://lore.kernel.org/r/20230401164448.1393336-1-mmyangfl@gmail.com
+> Signed-off-by: David Yang <mmyangfl@gmail.com>
+> ---
+> v2: drop the dependency on HW_RANDOM
+>  drivers/char/hw_random/Kconfig                | 11 +++
+>  drivers/char/hw_random/Makefile               |  1 +
+>  .../trng-stb.c => char/hw_random/histb-rng.c} | 83 +++++++++----------
+>  drivers/crypto/hisilicon/Kconfig              |  7 --
+>  drivers/crypto/hisilicon/Makefile             |  2 +-
+>  drivers/crypto/hisilicon/trng/Makefile        |  3 -
+>  6 files changed, 53 insertions(+), 54 deletions(-)
+>  rename drivers/{crypto/hisilicon/trng/trng-stb.c => char/hw_random/histb-rng.c} (53%)
+> 
+> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+> index 4fdf07ae3c54..c92f146ee89a 100644
+> --- a/drivers/char/hw_random/Kconfig
+> +++ b/drivers/char/hw_random/Kconfig
+> @@ -335,6 +335,17 @@ config HW_RANDOM_HISI
+>  
+>  	  If unsure, say Y.
+>  
+> +config HW_RANDOM_HISTB
+> +	tristate "Hisilicon STB Random Number Generator support"
+> +	depends on ARCH_HISI || COMPILE_TEST
+> +	default ARCH_HISI
+> +	help
+> +	  This driver provides kernel-side support for the Random Number
+> +	  Generator hardware found on Hisilicon Hi37xx SoC.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called histb-rng.
+> +
+>  config HW_RANDOM_ST
+>  	tristate "ST Microelectronics HW Random Number Generator support"
+>  	depends on HW_RANDOM && ARCH_STI
+> diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+> index 09bde4a0f971..32549a1186dc 100644
+> --- a/drivers/char/hw_random/Makefile
+> +++ b/drivers/char/hw_random/Makefile
+> @@ -29,6 +29,7 @@ obj-$(CONFIG_HW_RANDOM_NOMADIK) += nomadik-rng.o
+>  obj-$(CONFIG_HW_RANDOM_PSERIES) += pseries-rng.o
+>  obj-$(CONFIG_HW_RANDOM_POWERNV) += powernv-rng.o
+>  obj-$(CONFIG_HW_RANDOM_HISI)	+= hisi-rng.o
+> +obj-$(CONFIG_HW_RANDOM_HISTB) += histb-rng.o
+>  obj-$(CONFIG_HW_RANDOM_BCM2835) += bcm2835-rng.o
+>  obj-$(CONFIG_HW_RANDOM_IPROC_RNG200) += iproc-rng200.o
+>  obj-$(CONFIG_HW_RANDOM_ST) += st-rng.o
+> diff --git a/drivers/crypto/hisilicon/trng/trng-stb.c b/drivers/char/hw_random/histb-rng.c
+> similarity index 53%
+> rename from drivers/crypto/hisilicon/trng/trng-stb.c
+> rename to drivers/char/hw_random/histb-rng.c
+> index 29200a7d3d81..f652e1135e4b 100644
+> --- a/drivers/crypto/hisilicon/trng/trng-stb.c
+> +++ b/drivers/char/hw_random/histb-rng.c
+> @@ -1,31 +1,27 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 >  /*
->   * Cryptographic API.
->   *
-> @@ -11,39 +12,9 @@
->   *  Kyle McMartin <kyle@debian.org>
->   *  Adam J. Richter <adam@yggdrasil.com> (conversion to 2.5 API).
->   *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
+> - * Device driver for True RNG in HiSTB SoCs
 > - *
->   * ---------------------------------------------------------------------=
-------
->   * Copyright (c) 2002, Dr Brian Gladman <brg@gladman.me.uk>, Worcester, =
-UK.
->   * All rights reserved.
-> - *
-> - * LICENSE TERMS
-> - *
-> - * The free distribution and use of this software in both source and bin=
-ary
-> - * form is allowed (with or without changes) provided that:
-> - *
-> - *   1. distributions of this source code include the above copyright
-> - *      notice, this list of conditions and the following disclaimer;
-> - *
-> - *   2. distributions in binary form include the above copyright
-> - *      notice, this list of conditions and the following disclaimer
-> - *      in the documentation and/or other associated materials;
-> - *
-> - *   3. the copyright holder's name is not used to endorse products
-> - *      built using this software without specific written permission.
-> - *
-> - * ALTERNATIVELY, provided that this notice is retained in full, this pr=
-oduct
-> - * may be distributed under the terms of the GNU General Public License =
-(GPL),
-> - * in which case the provisions of the GPL apply INSTEAD OF those given =
-above.
-> - *
-> - * DISCLAIMER
-> - *
-> - * This software is provided 'as is' with no explicit or implied warrant=
-ies
-> - * in respect of its properties, including, but not limited to, correctn=
-ess
-> - * and/or fitness for purpose.
->   * ---------------------------------------------------------------------=
-------
-
-This is not BSD-3-Clause as defined by SPDX. It may be a match to
-`Brian-Gladman-3-Clause` but I haven't checked closely.
-
-> diff --git a/crypto/algif_rng.c b/crypto/algif_rng.c
-> index 407408c437308f..4d4b9e60f72c19 100644
-> --- a/crypto/algif_rng.c
-> +++ b/crypto/algif_rng.c
-> @@ -1,41 +1,10 @@
-> +// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0-only
->  /*
->   * algif_rng: User-space interface for random number generators
->   *
->   * This file provides the user-space API for random number generators.
->   *
->   * Copyright (C) 2014, Stephan Mueller <smueller@chronox.de>
-> - *
-> - * Redistribution and use in source and binary forms, with or without
-> - * modification, are permitted provided that the following conditions
-> - * are met:
-> - * 1. Redistributions of source code must retain the above copyright
-> - *    notice, and the entire permission notice in its entirety,
-> - *    including the disclaimer of warranties.
-> - * 2. Redistributions in binary form must reproduce the above copyright
-> - *    notice, this list of conditions and the following disclaimer in th=
-e
-> - *    documentation and/or other materials provided with the distributio=
-n.
-> - * 3. The name of the author may not be used to endorse or promote
-> - *    products derived from this software without specific prior
-> - *    written permission.
-> - *
-> - * ALTERNATIVELY, this product may be distributed under the terms of
-> - * the GNU General Public License, in which case the provisions of the G=
-PL2
-> - * are required INSTEAD OF the above restrictions.  (This clause is
-> - * necessary due to a potential bad interaction between the GPL and
-> - * the restrictions contained in a BSD-style copyright.)
-> - *
-> - * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
-> - * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-> - * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
-> - * WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
-> - * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-> - * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-> - * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-> - * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-> - * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-> - * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-> - * USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
-> - * DAMAGE.
+>   * Copyright (c) 2023 David Yang
 >   */
+>  
+> -#include <crypto/internal/rng.h>
+> -#include <linux/device.h>
+>  #include <linux/err.h>
+>  #include <linux/hw_random.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/kernel.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+> -#include <linux/mutex.h>
+> -#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+>  
+> -#define HISTB_TRNG_CTRL		0x0
+> +#define RNG_CTRL		0x0
+>  #define  RNG_SOURCE			GENMASK(1, 0)
+>  #define  DROP_ENABLE			BIT(5)
+>  #define  POST_PROCESS_ENABLE		BIT(7)
+>  #define  POST_PROCESS_DEPTH		GENMASK(15, 8)
+> -#define HISTB_TRNG_NUMBER	0x4
+> -#define HISTB_TRNG_STAT		0x8
+> +#define RNG_NUMBER		0x4
+> +#define RNG_STAT		0x8
+>  #define  DATA_COUNT			GENMASK(2, 0)	/* max 4 */
+>  
+> -struct histb_trng_priv {
+> +struct histb_rng_priv {
+>  	struct hwrng rng;
+>  	void __iomem *base;
+>  };
+> @@ -35,19 +31,19 @@ struct histb_trng_priv {
+>   * depth = 1 -> ~1ms
+>   * depth = 255 -> ~16ms
+>   */
+> -static int histb_trng_wait(void __iomem *base)
+> +static int histb_rng_wait(void __iomem *base)
+>  {
+>  	u32 val;
+>  
+> -	return readl_relaxed_poll_timeout(base + HISTB_TRNG_STAT, val,
+> +	return readl_relaxed_poll_timeout(base + RNG_STAT, val,
+>  					  val & DATA_COUNT, 1000, 30 * 1000);
+>  }
+>  
+> -static void histb_trng_init(void __iomem *base, unsigned int depth)
+> +static void histb_rng_init(void __iomem *base, unsigned int depth)
+>  {
+>  	u32 val;
+>  
+> -	val = readl_relaxed(base + HISTB_TRNG_CTRL);
+> +	val = readl_relaxed(base + RNG_CTRL);
+>  
+>  	val &= ~RNG_SOURCE;
+>  	val |= 2;
+> @@ -58,72 +54,72 @@ static void histb_trng_init(void __iomem *base, unsigned int depth)
+>  	val |= POST_PROCESS_ENABLE;
+>  	val |= DROP_ENABLE;
+>  
+> -	writel_relaxed(val, base + HISTB_TRNG_CTRL);
+> +	writel_relaxed(val, base + RNG_CTRL);
+>  }
+>  
+> -static int histb_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+> +static int histb_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+>  {
+> -	struct histb_trng_priv *priv = container_of(rng, typeof(*priv), rng);
+> +	struct histb_rng_priv *priv = container_of(rng, typeof(*priv), rng);
+>  	void __iomem *base = priv->base;
+>  
+>  	for (int i = 0; i < max; i += sizeof(u32)) {
+> -		if (!(readl_relaxed(base + HISTB_TRNG_STAT) & DATA_COUNT)) {
+> +		if (!(readl_relaxed(base + RNG_STAT) & DATA_COUNT)) {
+>  			if (!wait)
+>  				return i;
+> -			if (histb_trng_wait(base)) {
+> +			if (histb_rng_wait(base)) {
+>  				pr_err("failed to generate random number, generated %d\n",
+>  				       i);
+>  				return i ? i : -ETIMEDOUT;
+>  			}
+>  		}
+> -		*(u32 *) (data + i) = readl_relaxed(base + HISTB_TRNG_NUMBER);
+> +		*(u32 *) (data + i) = readl_relaxed(base + RNG_NUMBER);
+>  	}
+>  
+>  	return max;
+>  }
+>  
+> -static unsigned int histb_trng_get_depth(void __iomem *base)
+> +static unsigned int histb_rng_get_depth(void __iomem *base)
+>  {
+> -	return (readl_relaxed(base + HISTB_TRNG_CTRL) & POST_PROCESS_DEPTH) >> 8;
+> +	return (readl_relaxed(base + RNG_CTRL) & POST_PROCESS_DEPTH) >> 8;
+>  }
+>  
+>  static ssize_t
+>  depth_show(struct device *dev, struct device_attribute *attr, char *buf)
+>  {
+> -	struct histb_trng_priv *priv = dev_get_drvdata(dev);
+> +	struct histb_rng_priv *priv = dev_get_drvdata(dev);
+>  	void __iomem *base = priv->base;
+>  
+> -	return sprintf(buf, "%d\n", histb_trng_get_depth(base));
+> +	return sprintf(buf, "%d\n", histb_rng_get_depth(base));
+>  }
+>  
+>  static ssize_t
+>  depth_store(struct device *dev, struct device_attribute *attr,
+>  	    const char *buf, size_t count)
+>  {
+> -	struct histb_trng_priv *priv = dev_get_drvdata(dev);
+> +	struct histb_rng_priv *priv = dev_get_drvdata(dev);
+>  	void __iomem *base = priv->base;
+>  	unsigned int depth;
+>  
+>  	if (kstrtouint(buf, 0, &depth))
+>  		return -ERANGE;
+>  
+> -	histb_trng_init(base, depth);
+> +	histb_rng_init(base, depth);
+>  	return count;
+>  }
+>  
+>  static DEVICE_ATTR_RW(depth);
+>  
+> -static struct attribute *histb_trng_attrs[] = {
+> +static struct attribute *histb_rng_attrs[] = {
+>  	&dev_attr_depth.attr,
+>  	NULL,
+>  };
+>  
+> -ATTRIBUTE_GROUPS(histb_trng);
+> +ATTRIBUTE_GROUPS(histb_rng);
+>  
+> -static int histb_trng_probe(struct platform_device *pdev)
+> +static int histb_rng_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> -	struct histb_trng_priv *priv;
+> +	struct histb_rng_priv *priv;
+>  	void __iomem *base;
+>  	int ret;
+>  
+> @@ -133,17 +129,17 @@ static int histb_trng_probe(struct platform_device *pdev)
+>  
+>  	base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base))
+> -		return -ENOMEM;
+> +		return PTR_ERR(base);
+>  
+> -	histb_trng_init(base, 144);
+> -	if (histb_trng_wait(base)) {
+> +	histb_rng_init(base, 144);
+> +	if (histb_rng_wait(base)) {
+>  		dev_err(dev, "cannot bring up device\n");
+>  		return -ENODEV;
+>  	}
+>  
+>  	priv->base = base;
+>  	priv->rng.name = pdev->name;
+> -	priv->rng.read = histb_trng_read;
+> +	priv->rng.read = histb_rng_read;
+>  	ret = devm_hwrng_register(dev, &priv->rng);
+>  	if (ret) {
+>  		dev_err(dev, "failed to register hwrng: %d\n", ret);
+> @@ -155,22 +151,23 @@ static int histb_trng_probe(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static const struct of_device_id histb_trng_of_match[] = {
+> -	{ .compatible = "hisilicon,histb-trng", },
+> +static const struct of_device_id histb_rng_of_match[] = {
+> +	{ .compatible = "hisilicon,histb-rng", },
 
-The BSD portion of this license notice is not a match to BSD-3-Clause
-(see my comment on another patch which I think had the same license
-text).
+You can't just change compatible strings as they are an ABI. Seems this 
+is a newly added driver though, so I guess it's okay. However, neither 
+string was documented with a DT schema and that must be fixed.
 
-
-
-
->  #include <linux/capability.h>
-> diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
-> index 7d1463a1562acb..78230ce74fc840 100644
-> --- a/crypto/jitterentropy-kcapi.c
-> +++ b/crypto/jitterentropy-kcapi.c
-> @@ -1,40 +1,10 @@
-> +// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0-only
->  /*
->   * Non-physical true random number generator based on timing jitter --
->   * Linux Kernel Crypto API specific code
->   *
->   * Copyright Stephan Mueller <smueller@chronox.de>, 2015 - 2023
->   *
-> - * Redistribution and use in source and binary forms, with or without
-> - * modification, are permitted provided that the following conditions
-> - * are met:
-> - * 1. Redistributions of source code must retain the above copyright
-> - *    notice, and the entire permission notice in its entirety,
-> - *    including the disclaimer of warranties.
-> - * 2. Redistributions in binary form must reproduce the above copyright
-> - *    notice, this list of conditions and the following disclaimer in th=
-e
-> - *    documentation and/or other materials provided with the distributio=
-n.
-> - * 3. The name of the author may not be used to endorse or promote
-> - *    products derived from this software without specific prior
-> - *    written permission.
-> - *
-> - * ALTERNATIVELY, this product may be distributed under the terms of
-> - * the GNU General Public License, in which case the provisions of the G=
-PL2 are
-> - * required INSTEAD OF the above restrictions.  (This clause is
-> - * necessary due to a potential bad interaction between the GPL and
-> - * the restrictions contained in a BSD-style copyright.)
-> - *
-> - * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
-> - * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-> - * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
-> - * WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
-> - * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-> - * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-> - * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-> - * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-> - * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-> - * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-> - * USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
-> - * DAMAGE.
-
-Also not a match to BSD-3-Clause.
-
-
->  #include <crypto/hash.h>
-> diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
-> index c7d7f2caa7793b..c8437bd20dc903 100644
-> --- a/crypto/jitterentropy.c
-> +++ b/crypto/jitterentropy.c
-> @@ -1,3 +1,4 @@
-> +// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0-only
->  /*
->   * Non-physical true random number generator based on timing jitter --
->   * Jitter RNG standalone code.
-> @@ -9,40 +10,6 @@
->   *
->   * See https://www.chronox.de/jent.html
->   *
-> - * License
-> - * =3D=3D=3D=3D=3D=3D=3D
-> - *
-> - * Redistribution and use in source and binary forms, with or without
-> - * modification, are permitted provided that the following conditions
-> - * are met:
-> - * 1. Redistributions of source code must retain the above copyright
-> - *    notice, and the entire permission notice in its entirety,
-> - *    including the disclaimer of warranties.
-> - * 2. Redistributions in binary form must reproduce the above copyright
-> - *    notice, this list of conditions and the following disclaimer in th=
-e
-> - *    documentation and/or other materials provided with the distributio=
-n.
-> - * 3. The name of the author may not be used to endorse or promote
-> - *    products derived from this software without specific prior
-> - *    written permission.
-> - *
-> - * ALTERNATIVELY, this product may be distributed under the terms of
-> - * the GNU General Public License, in which case the provisions of the G=
-PL2 are
-> - * required INSTEAD OF the above restrictions.  (This clause is
-> - * necessary due to a potential bad interaction between the GPL and
-> - * the restrictions contained in a BSD-style copyright.)
-> - *
-> - * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
-> - * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-> - * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
-> - * WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
-> - * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-> - * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-> - * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-> - * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-> - * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-> - * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-> - * USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
-> - * DAMAGE.
-
-Also not a match to BSD-3-Clause.
-
-
-> diff --git a/crypto/keywrap.c b/crypto/keywrap.c
-> index 054d9a216fc9f3..8c51235a91a9ae 100644
-> --- a/crypto/keywrap.c
-> +++ b/crypto/keywrap.c
-> @@ -1,39 +1,9 @@
-> +// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0-only
->  /*
->   * Key Wrapping: RFC3394 / NIST SP800-38F
->   *
->   * Copyright (C) 2015, Stephan Mueller <smueller@chronox.de>
->   *
-> - * Redistribution and use in source and binary forms, with or without
-> - * modification, are permitted provided that the following conditions
-> - * are met:
-> - * 1. Redistributions of source code must retain the above copyright
-> - *    notice, and the entire permission notice in its entirety,
-> - *    including the disclaimer of warranties.
-> - * 2. Redistributions in binary form must reproduce the above copyright
-> - *    notice, this list of conditions and the following disclaimer in th=
-e
-> - *    documentation and/or other materials provided with the distributio=
-n.
-> - * 3. The name of the author may not be used to endorse or promote
-> - *    products derived from this software without specific prior
-> - *    written permission.
-> - *
-> - * ALTERNATIVELY, this product may be distributed under the terms of
-> - * the GNU General Public License, in which case the provisions of the G=
-PL2
-> - * are required INSTEAD OF the above restrictions.  (This clause is
-> - * necessary due to a potential bad interaction between the GPL and
-> - * the restrictions contained in a BSD-style copyright.)
-> - *
-> - * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
-> - * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-> - * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
-> - * WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
-> - * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-> - * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-> - * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-> - * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-> - * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-> - * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-> - * USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
-> - * DAMAGE.
-
-Also not a match to BSD-3-Clause.
-
-Richard
-
+Rob
