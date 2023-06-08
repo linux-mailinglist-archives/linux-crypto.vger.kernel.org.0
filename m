@@ -2,140 +2,168 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1C07287DB
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jun 2023 21:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B994727F53
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jun 2023 13:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236605AbjFHTNf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Jun 2023 15:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
+        id S236119AbjFHLq3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Jun 2023 07:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236602AbjFHTNA (ORCPT
+        with ESMTP id S236256AbjFHLqV (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Jun 2023 15:13:00 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2059.outbound.protection.outlook.com [40.107.237.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1531230FB;
-        Thu,  8 Jun 2023 12:12:42 -0700 (PDT)
+        Thu, 8 Jun 2023 07:46:21 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2050.outbound.protection.outlook.com [40.107.104.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC6B30DE;
+        Thu,  8 Jun 2023 04:45:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RiPk2GmgDOBzjHdjRzH3PRQV5xI7/tGU4D5crJUWUH5/gyAyaKklaPhOc/md0q3/G+LgSF6DWDfVqaHcjSZaCa91pwBOmXCQ340XrPTeTWfV6nLDBWzZmQ9m1MvZjEBIavZgnv7S3bDlZFKZZOmqC/OCRb5070VQ7yCj74Ts8ICrGWx1b6Wsckd+AjVgNWl8ziLDe+DHvItpbaCILIUOew6/ETRmv8/8ac3xIq+AvLXXJCPFU7/rlz3WSpDcNB0yZ0Ud3+PIoMzHSepUUGhVShwYinIxU367nNAAUmpFSA5ldpYDBGEcgc5G9pE2J/079NVybaJvMIET7E7imEAIBw==
+ b=h3P7Y1yg36ZSgJdfYZdwiOTg3R0Q22VJItDpi3vflq9t52XW4kPYEXDdm9323Fjo67jhXx450ObgBZ6eCiqP4pBQX+Y5sCaiG5TAQDgzJJzfGRIjQm9lEqeiYZXm43RuuS+xxW0tPfEILPGEyr3cmMCAreW1QxBEJ64+We6us9Qbb1a/WETaIwcI4NpQRknKpqzjVou4uElUwfaHKCyFRx4bpf92RlU6DaASRpw2za+O3Uh/hzKJS/6meZBYrmpJG85/efD8CdnViKJPQIHjoNIxJTH7fJyjfpwlkMYbDTkxe3DEAyW180cm5QcmNkR0UehkBb2le9u+H47Hdyxdbg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a73otbbPyEuAM4HluaeLP7RTDTRMl+tnfUEHKBvkGr0=;
- b=O0q9EQHN5URw5EPfVgy1W3b83bA5vzv3pINOY7zy0V6ElIrWAYVj2itb9yqDqbKcw5oZiRRyECPcHQsZvu6RxvptNHgqf+Ap5LvshortzfPqXXG59BZy6DVxDZWN/aUrWhRopr1+iYLm2jYE8T6zYJc4AXyO4SN7zLjCNRUCA3P68wIP5TqPHumAGWLERk5vd1Sw4zpP9/7lvm/G2LypDFf42kl38yPnG6pTI9EFh0Eo9h17ALvr9oWUccgp5zHmIssbfMluKXW1vAwhS40yQltWAIT4pfxz47mzwnzIVw6J136ZW22C5a/k74pXrLhlXettA/cGvnMvz0VpGWaoDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=U2qHo+bus1O0l9OmFE4oXkw4hnr1W96fQ09JgsR+pY4=;
+ b=oStII9DW7VU0TX1eC0yCgMTl9oIwtPOpVen+kMRRQzq7HNFdShQIFJpNVVRgQgKTTXxwxAJBqop3Y1hAuCFFpvAOMn8R9tAYrAWlQrD6zKBHwP2gvu8fnsLN5fptMFOhJBLjDcgBnVWUxRrQEu/igbjcC5UU+z+7VOW3AtthJ44La0U2Xl/Hw+PWsn99ievRWf8vIPPzjjlsgDAYDN2gU2CdbzyD3yebvkVn0ugU85FV+5GtcQOMqNqNuUQsudEZsYW8ond1oXPT1AWcNkwkyeflmnaGJFBqaoaBRNnfQkQFIr52WRfHdR50uoE1BDSRgGxAQUtJwxS7yDt2GLVkvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a73otbbPyEuAM4HluaeLP7RTDTRMl+tnfUEHKBvkGr0=;
- b=U2LzrB5WN/RGGf+iZEfJofIwF8YSEj94hPEr76fd467e1MhSUKcl0a+IuCbHsrbgfUAlLNURj7z1pIZJvtnj5gdRQeu0fX2f+Yadf2+/yfYREQUmdeXgt67zk+M7owD0IM0SRjeJktcb0ghLxL84o4bhcw0kc7BCfXBL8J7JE6Y=
-Received: from MW4PR04CA0252.namprd04.prod.outlook.com (2603:10b6:303:88::17)
- by PH7PR12MB6717.namprd12.prod.outlook.com (2603:10b6:510:1b0::20) with
+ bh=U2qHo+bus1O0l9OmFE4oXkw4hnr1W96fQ09JgsR+pY4=;
+ b=rRrDquVKqodVCWRhWGAmzw/GEl1sVZTiQIbW+PyRV2n5fnSjk0we4cubQjvstd23OFZJo5kyJGpmILhw7T9/yPynjVcFZMtqwkbg2SPer73sMFLcOrV2dwGUG6U6l6xMQ97iKhdHWBlfLTvxLC9myx6AgMjTkC75+vcVXN5kY3Y=
+Received: from DU2PR04MB8630.eurprd04.prod.outlook.com (2603:10a6:10:2dd::15)
+ by DB8PR04MB6858.eurprd04.prod.outlook.com (2603:10a6:10:113::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.36; Thu, 8 Jun
- 2023 19:12:34 +0000
-Received: from CO1PEPF000044FC.namprd21.prod.outlook.com
- (2603:10b6:303:88:cafe::f2) by MW4PR04CA0252.outlook.office365.com
- (2603:10b6:303:88::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.25 via Frontend
- Transport; Thu, 8 Jun 2023 19:12:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FC.mail.protection.outlook.com (10.167.241.202) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6500.0 via Frontend Transport; Thu, 8 Jun 2023 19:12:34 +0000
-Received: from SITE-L-T34-2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 8 Jun
- 2023 14:12:29 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH v4 11/11] crypto: ccp: Add Mario to MAINTAINERS
-Date:   Thu, 8 Jun 2023 06:17:57 -0500
-Message-ID: <20230608111757.32054-12-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230608111757.32054-1-mario.limonciello@amd.com>
-References: <20230608111757.32054-1-mario.limonciello@amd.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.39; Thu, 8 Jun
+ 2023 11:45:47 +0000
+Received: from DU2PR04MB8630.eurprd04.prod.outlook.com
+ ([fe80::413f:a9d5:4c09:9dad]) by DU2PR04MB8630.eurprd04.prod.outlook.com
+ ([fe80::413f:a9d5:4c09:9dad%3]) with mapi id 15.20.6455.037; Thu, 8 Jun 2023
+ 11:45:47 +0000
+From:   Pankaj Gupta <pankaj.gupta@nxp.com>
+To:     Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: RE: [PATCH 0/5] Remove CRYPTO_ALG_ALLOCATES_MEMORY flag
+Thread-Topic: [PATCH 0/5] Remove CRYPTO_ALG_ALLOCATES_MEMORY flag
+Thread-Index: AQHZjYwfsEMWykr3yU+l+9icR15kza+A27Sw
+Date:   Thu, 8 Jun 2023 11:45:46 +0000
+Message-ID: <DU2PR04MB8630C01C9CEC0BE738F5E4689550A@DU2PR04MB8630.eurprd04.prod.outlook.com>
+References: <20230523153421.1528359-1-meenakshi.aggarwal@nxp.com>
+In-Reply-To: <20230523153421.1528359-1-meenakshi.aggarwal@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR04MB8630:EE_|DB8PR04MB6858:EE_
+x-ms-office365-filtering-correlation-id: a2c7dcb8-b483-40e0-9c79-08db6815e649
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SeSEzoF/5Gdg5DvV5TcRBwQnWA3bjqu2JqY2lDl6F27pDrPh2pHMl6LXnYkmqaJcPbj7UVsd87DlHfkaTog4yyDXJEXv1XoatjzyGRUhqWuNPCxaS5QV/JpOi//PY3VnTBhyW+hObZvHAPdL+nWO2rn9tpLFP4GVfiTtDnfAtZ9U8GQIt8fmx9X//ovMmXn8qpZeHjp0sItbrZLd5lMwsuo5vdhoKawRiF0kQ/04QyXG6IwZrvqQdu8oqKN8jhZWJ+XwSUQhybTbAfcJ77BtwZSDAlY4xF1SyXxsDffHBCJ7TpyteNnrjgCRbj/NnJf360EGva2tlFgMECL9nL2/bsYmv8GgilzHb4JY8+PRXEGA5Qlbkx5y1B7xUDqmtF4O7rqBxV0GB+xn4U5kkYFoLJqppgxqFtisMEKF9Zc+RhvXE1+IH4WUZhyxkdSIcf6A/Yextec5xbN803WFnJptsSb5RYXAftw5oJiEWVDgcd+Wcbm/92Tp1cHOv3200ow0j8d6+RrqlR+uscIFKwU1VzAes3ucJ87LJtiJUQzqSbgGpu9dmBIXlQVE9EMgTByjedeu0Kxhj0+VRwJDBEOt0X0SHLpSl7BltCExKxXu/GYrI70FEXq2iI89sHuYDn9z
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8630.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(136003)(396003)(376002)(346002)(451199021)(71200400001)(7696005)(2906002)(66446008)(64756008)(76116006)(66946007)(66476007)(122000001)(66556008)(110136005)(38100700002)(38070700005)(8936002)(86362001)(8676002)(44832011)(52536014)(5660300002)(41300700001)(6636002)(316002)(33656002)(55016003)(478600001)(53546011)(26005)(6506007)(55236004)(9686003)(186003)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qYW7dsy7Vl5jy5MwVwopgKJCXUW6/sXXkrjIdg0q7ASDxaC5jeRMaz8F33w3?=
+ =?us-ascii?Q?q4JN9hpDi+52jYVa7iEwQyYttAzaOlTjzpxnZUuV8jPrOixg3ojawCna97WQ?=
+ =?us-ascii?Q?0M/h2RANpavQ4NCquX/qOgKZvr7aYQUvep1N9g1Vw5tZbhNOs/UVCIYynpjE?=
+ =?us-ascii?Q?rA/398lUNVndjEAs2gGfWb3BLd5hGTfhpNuiAznf9XrSJRa3yHpUW2o31z0w?=
+ =?us-ascii?Q?D560wY8pvVNQJf2bMOIbtmc+eHourrFFW4FZyn5lB35UIIJttIq4SbFMKSPa?=
+ =?us-ascii?Q?LQF4z489v++yBkj/U3wqnPRIt9N4tzD5rEZ5pGNL3T8F9PHQxNWo2ub4+bEi?=
+ =?us-ascii?Q?3UUlpLPzJ3aKX7R9W0tloo+curpsktJUiDZD2O/PHKzOMUSVVz/6R7S6VhF0?=
+ =?us-ascii?Q?aOd+AbV195DhMsUKMTmEVewQK5m2xtPXkeoAozTpT3v4Uy9RDkxL2QcFBeFl?=
+ =?us-ascii?Q?o9+RZ7IUJSaLVL/plyAK5Hj/e8P+OXmSqhVNB2rAtT2koWLOKC4F/a9ReOyh?=
+ =?us-ascii?Q?9K/PK2pbkcf1vAWdBZ+VYyUknpX/OObfv1eqSuGWlUrFwQil6l2JqAGZnwzX?=
+ =?us-ascii?Q?bzvfRNwHhEIe2tNKpRQ5kusP++uuCiEqwDs5983/CpLEec02wwF2yByqVnza?=
+ =?us-ascii?Q?tZpYt/LED2U1ZYyH8LGHf4kstAEdrzYoO7Tdk8Oa1GpGgZl/wiU9CmKuAa8m?=
+ =?us-ascii?Q?+vD0yQEwfvJHIQPF8M5aiZg4W4acsf9CDtYF4WpPmPWlgGvwMUjdFiCuC7Hw?=
+ =?us-ascii?Q?EkcVadkjDgyvBRI8GQa5EH1rmG23k5thYuDLNc9H/25quPlnfep8xRgbK6Uf?=
+ =?us-ascii?Q?af7iq/LNn4IVYEymKs6h48krciEaxpn+7Lei1wi8Fzk2reU+1Vj7+xXeK7mD?=
+ =?us-ascii?Q?0djTS6zDs6GqNw2wDoJt7mL5xryxen3Q1mz/85aNjg7oEW6KLClkTlncjOhS?=
+ =?us-ascii?Q?UBvYVH9QI9ckgV8MlxEry0AiORCRnU8lS2HBX+geyIM808PKPwcolqs8TQ/5?=
+ =?us-ascii?Q?Cr7TjOzs3oZWSh0SZ1LjWnC4HaCIaDm0rKTyOtYY+E0QMBKr7EkV/vEUoITA?=
+ =?us-ascii?Q?jxApgczp56medl8CbURiemRqPsEiz7s8gCLUbtIZ9SyB3L3zF7/vTL/3ef20?=
+ =?us-ascii?Q?oa2QtZnV5O87DV9VfUCVLpN6RsIoXFkz7Hi+TveVM9eunKvfPgkhMdQIx8RD?=
+ =?us-ascii?Q?fDGDtH1Mo78nK/Bu1Du0Z64D04ZLp01YV8b36kKzPvZIpyuy8lq9zwwsgalH?=
+ =?us-ascii?Q?3o+YzCE1HB9A7PIBldA08ALsl8MfBMq6N35D9Jgeo8RlInyOi136fDm79i3A?=
+ =?us-ascii?Q?P584H7EGUxX8UGn34f2KK0OlHeSti5MFhp0+sJq1ur6EY6xvpzVB4Vy4x3nz?=
+ =?us-ascii?Q?6iZXnRxdvK3fPtLSAdl1fBHmVm3f71Q4iFB0Pzq6lJlrarNQMXYxZNfsALbl?=
+ =?us-ascii?Q?SHvfpt4BE1jBmKWme6ELHss3AfnKi+tGzxxONKmAYm71kafhsgmPJEhGuqZd?=
+ =?us-ascii?Q?KVGLE1BTsLujp7u32Ay0PW6zA/EShVOq1817+gqpCmPA4u0eBK26/uknaQYB?=
+ =?us-ascii?Q?85gPfAkfn2FpMEFq31YtIYwEacPswYGgbJeA463A?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FC:EE_|PH7PR12MB6717:EE_
-X-MS-Office365-Filtering-Correlation-Id: fe523062-cdd1-434f-5c7c-08db68545097
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pEGkCpPRbh3V2CpGR19CaFOFNd13/J5Vk47aV/fh7v8i6TCaO65tY8PMpINjPDNPdiPf4Jxz+FMFX/eGd7ISu3QbOMrboSggiSffd62OVzZaG8MbeonUZAhJHR911EbJiLFoCVEsK7y6j6Ec+VivUFCPh0xNt1K75vkIYPwVN/HJ0gKQluKIDKam+frZzwhR+FG6k97BCi54M4Zi3LLixLMPB6dYU+iB8YbgUGYhzgYYzg19cKYvNnQJcKDRTxsaUnTQqEq0Sq/YHvIe9DXPPQ3+hZN7M5tr+iSiIpNEGE3mPwtGs59lT4aH043yvv0G/mYJUye4qWv5/w4E8fzyQ8d3pU+WPt4T4unUYchQ3i+w+kEtpjJCwNWpFYI2xnozev9MGx435Q8MHcyJ7JpFYYcQPudrT23nHAGIpZEvl5OmJdntou+p1mqFSwawKYt6CqND+/+HN+g0i08huXIf5kQIw6YHvO6RMX+GeG2idHv/7G+n5mYK/ztxve5gRlhLLH0fNl566LI7YMytQ5X70tW7KO/6VnxEWMH/jjQCRxIJQZ3sMPullUxnX41JdzJUNgwqTOWgDztHaH6cV/bJ2l4DXEHZDjRqfKnpGVCruOT09ZAOME7Ia7xIHEHmjFXDB8Q5V+mcN/zpTz4zmYEBwOWE7MqanqqmhKTyeoB5hgJqle9tuTMjOtqssI+Vw7s04A5K+efnmLCXi3lIi5pT+rdui+zNAUl2OZoUJTiDA9On0arQXmphaYqXgmqEToJG1rpA0N9IAuyVFU9CVlzcUw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(376002)(396003)(136003)(451199021)(46966006)(36840700001)(40470700004)(110136005)(186003)(54906003)(70586007)(70206006)(81166007)(4326008)(356005)(6666004)(82310400005)(336012)(47076005)(426003)(478600001)(83380400001)(36860700001)(82740400003)(7696005)(2616005)(26005)(4744005)(2906002)(1076003)(40460700003)(36756003)(316002)(44832011)(41300700001)(40480700001)(8676002)(86362001)(5660300002)(16526019)(8936002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2023 19:12:34.0289
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8630.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2c7dcb8-b483-40e0-9c79-08db6815e649
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2023 11:45:46.9652
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe523062-cdd1-434f-5c7c-08db68545097
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FC.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6717
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3RJ016S3UwWG63S1zXltTFlVFxP5En6a3GIswqFgksCcdjF+O5MALu6FA2qooxOnRF8Y6g4ygKID2yKOfE6PsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6858
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-I will maintain the platform access interface and dynamic boost
-control support.
+Reviewed-By: Pankaj Gupta <pankaj.gupta@nxp.com>
 
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-v3->v4:
- * Add reference to new tools/crypto/ccp/dbc.c
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f2e19f576fec..709ebc2ebbe2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -988,6 +988,18 @@ S:	Supported
- F:	drivers/crypto/ccp/sev*
- F:	include/uapi/linux/psp-sev.h
- 
-+AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER - DBC SUPPORT
-+M:	Mario Limonciello <mario.limonciello@amd.com>
-+L:	linux-crypto@vger.kernel.org
-+S:	Supported
-+F:	drivers/crypto/ccp/dbc.c
-+F:	drivers/crypto/ccp/dbc.h
-+F:	drivers/crypto/ccp/platform-access.c
-+F:	drivers/crypto/ccp/platform-access.h
-+F:	include/uapi/linux/psp-dbc.h
-+F:	tools/crypto/ccp/*.c
-+F:	tools/crypto/ccp/*.py
-+
- AMD DISPLAY CORE
- M:	Harry Wentland <harry.wentland@amd.com>
- M:	Leo Li <sunpeng.li@amd.com>
--- 
-2.34.1
+> -----Original Message-----
+> From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+> Sent: Tuesday, May 23, 2023 9:04 PM
+> To: Horia Geanta <horia.geanta@nxp.com>; Varun Sethi <V.Sethi@nxp.com>;
+> Pankaj Gupta <pankaj.gupta@nxp.com>; Gaurav Jain <gaurav.jain@nxp.com>;
+> herbert@gondor.apana.org.au; davem@davemloft.net; linux-
+> crypto@vger.kernel.org; linux-kernel@vger.kernel.org; Iuliana Prodan
+> <iuliana.prodan@nxp.com>
+> Cc: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+> Subject: [PATCH 0/5] Remove CRYPTO_ALG_ALLOCATES_MEMORY flag
+>=20
+> From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+>=20
+> This series includes patches to remove CRYPTO_ALG_ALLOCATES_MEMORY
+> flag and allocate the required memory within the crypto request object.
+>=20
+> CRYPTO_ALG_ALLOCATES_MEMORY flag is limited only to dm-crypt use-cases,
+> which seems to be 4 entries maximum.
+> Therefore in reqsize we allocate memory for maximum 4 entries for src and=
+ 1
+> for IV, and the same for dst, both aligned.
+> If the driver needs more than the 4 entries maximum, the memory is
+> dynamically allocated, at runtime.
+>=20
+> Meenakshi Aggarwal (5):
+>   crypto:caam - avoid allocating memory at crypto request runtime for
+>     skcipher
+>   crypto:caam - avoid allocating memory at crypto request runtime for
+>     aead
+>   crypto: caam - avoid allocating memory at crypto request runtime for
+>     hash
+>   crypto: caam/qi - avoid allocating memory at crypto request runtime
+>   crypto: caam/qi2 - avoid allocating memory at crypto request runtime
+>=20
+>  drivers/crypto/caam/caamalg.c     | 138 +++++++---
+>  drivers/crypto/caam/caamalg_qi.c  | 131 +++++++---
+> drivers/crypto/caam/caamalg_qi2.c | 421 ++++++++++++++++++++----------
+>  drivers/crypto/caam/caamalg_qi2.h |   6 +
+>  drivers/crypto/caam/caamhash.c    |  77 ++++--
+>  5 files changed, 542 insertions(+), 231 deletions(-)
+>=20
+> --
+> 2.25.1
 
