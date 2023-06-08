@@ -2,129 +2,138 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32102727FF4
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jun 2023 14:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6DE728012
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jun 2023 14:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjFHM1C (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Jun 2023 08:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
+        id S235905AbjFHMcc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Jun 2023 08:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236612AbjFHM05 (ORCPT
+        with ESMTP id S235761AbjFHMcb (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Jun 2023 08:26:57 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1322D56
-        for <linux-crypto@vger.kernel.org>; Thu,  8 Jun 2023 05:26:43 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-75d4094f9baso46907085a.1
-        for <linux-crypto@vger.kernel.org>; Thu, 08 Jun 2023 05:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686227203; x=1688819203;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y2URvdto5eovnOZ9veTkEuCq8gCsNpoi88vZrtanDiw=;
-        b=P/sKsm00oCtSlg5BXT6cslQ9CkH2LUVwC33SEH5eaq+tPc09ea4oqveEm/sVlHSgvb
-         AtQsTygYyVDO5d5b2Se9XP6rDfsYZwan+gh7Qyesd+W7wAxKNBftOxVdemDJmNjwidK/
-         Cn/wlJOYxJabkznkDAZ+Xavsm5UcsiEQvpKLFtRBut2TMiEEm0aiacv06rmo3yBEKpn2
-         4dBxfdm10qUhztEEhpzIdb4hdzjVlv8brHeG3HYLcwgnzaNMLNDzQt9vbnjmBQfd0XTM
-         zBp6+zE6GyR7wrdvdnA26ISqKvyEc/fZc7OtSBu6C3MrzESSirku9lbJiJkIyHjxruIQ
-         Mhyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686227203; x=1688819203;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y2URvdto5eovnOZ9veTkEuCq8gCsNpoi88vZrtanDiw=;
-        b=PS7dNXMLXjEENzcDHcAIBoUWumtNPEuau+VHW3E3ZLR6udznUiEOtjJzA7g4kUwPL3
-         NzMVdm5OakVbwvdMG9MZvjlyyuCjFmZJLsxN0Szowxwhf20L+klfpk6dtkMOUhgVEQR7
-         eyMAXXuvTa2JWHjkFPvsQuAduqEKOGxo4P/rjS6jzi5Kc7uBrX4CMj9cZCmtgtcalx/6
-         p0XsnpnWW5z1Zr8lrsh9ZhrB/lzy2112EaR7r0skdEvVBWJR3xzbHIwDhUZIiuil7DNU
-         Gl3K6IQFwgfefXlMNRMk3r217zmukXIkotl4QeB+5bvLIZD015B3bTsLK0xOa1RwPJkk
-         gdXA==
-X-Gm-Message-State: AC+VfDwYik27yyE/lsRpIy07foGiDTYPp1iZ8PBcAHkOrZAU8qMI8t4X
-        e0n4fbBk6+A4taB1kNOdkGRTQa2RkpFxL1VLXY+vIsDjr5eIow==
-X-Google-Smtp-Source: ACHHUZ56CXoUQUcvzxm94pRLtum4/Tr+9T8qQhRCOVBk7qCpI3tDEmZf8YfJhgvLj3Yl6bmBElZ55sgX6f729xWZwXA=
-X-Received: by 2002:ad4:5de7:0:b0:62b:4e7e:8aba with SMTP id
- jn7-20020ad45de7000000b0062b4e7e8abamr1232957qvb.60.1686226812125; Thu, 08
- Jun 2023 05:20:12 -0700 (PDT)
+        Thu, 8 Jun 2023 08:32:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AAAE43;
+        Thu,  8 Jun 2023 05:32:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A54E61846;
+        Thu,  8 Jun 2023 12:32:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C42B0C433D2;
+        Thu,  8 Jun 2023 12:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686227549;
+        bh=r/4PkU/68uF7lKPzBCrmdgapCjizIDkg+xcFVkYgySA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bdFjKVnf5dbKmuzzaVnJeFbvAsXl9DObq6ABi1c57cMksyu32dwik3M6M90T2kncE
+         tavsbDVCuezHRFk0z4j7xUCi633VEdKXpErlip+5IvoyrYcqsqggbeEsdMrfCGrNZQ
+         IDUxuIR3vs6Id91ldSrCfohV/CPHbTyef74JXnDxjAZQeAV8cJBzyzxhI0d1zxylK0
+         gH8M6961qZzW5QmfZm/iy5WQGr0yhaOiLlOMlrCkFi/uaxlY/9MNpZQtgMGNNWAlDL
+         R3CDp3jghBlBF654pxVl2etHgbuFxYIHq9rt7kNa7QmyxoWnOUKQpoTYKT+Q8o6GeJ
+         6vTFRmrwQAKAA==
+Date:   Thu, 8 Jun 2023 18:02:25 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org, agross@kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        andersson@kernel.org, bhupesh.linux@gmail.com,
+        krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
+        konrad.dybcio@linaro.org, vladimir.zapolskiy@linaro.org,
+        rfoss@kernel.org, neil.armstrong@linaro.org, djakov@kernel.org,
+        stephan@gerhold.net, Rob Herring <robh@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: Re: [PATCH v8 01/11] dt-bindings: dma: Add support for SM6115 and
+ QCM2290 SoCs
+Message-ID: <ZIHKWYMs1e/rOez0@matsya>
+References: <20230526192210.3146896-1-bhupesh.sharma@linaro.org>
+ <20230526192210.3146896-2-bhupesh.sharma@linaro.org>
+ <CAH=2Ntx+4F+ZP_Y+=e4p9rdTRQV8FHaepJCyqVFtWUPjDehoNg@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a0c:f5ce:0:b0:61a:6ff1:329c with HTTP; Thu, 8 Jun 2023
- 05:20:11 -0700 (PDT)
-Reply-To: markusblocher3@gmail.com
-From:   Markus Christoph Bloche <ahmadtijjani3737@gmail.com>
-Date:   Thu, 8 Jun 2023 13:20:11 +0100
-Message-ID: <CAEHyr=3GFftQi8sd7C38Thnrk-hs_qqH0j1t=3zeW3w+NuoiPA@mail.gmail.com>
-Subject: SPENDENANGEBOT VON 1,000,000.00 AN SIE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH=2Ntx+4F+ZP_Y+=e4p9rdTRQV8FHaepJCyqVFtWUPjDehoNg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-HALLO HALLO,,
+On 29-05-23, 11:43, Bhupesh Sharma wrote:
+> Hi Vinod,
+> 
+> > On Sat, 27 May 2023 at 00:52, Bhupesh Sharma <bhupesh.sharma@linaro.org> wrote:
+> >
+> > Add new compatible for BAM DMA engine version v1.7.4 which is
+> > found on Qualcomm SM6115 and QCM2290 SoCs. Since its very similar
+> > to v1.7.0 used on SM8150 like SoCs, mark the comptible scheme
+> > accordingly.
+> >
+> > While at it, also update qcom,bam-dma bindings to add comments
+> > which describe the BAM DMA versions used in SM8150 and SM8250 SoCs.
+> > This provides an easy reference for identifying the actual BAM DMA
+> > version available on Qualcomm SoCs.
+> >
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > Tested-by: Anders Roxell <anders.roxell@linaro.org>
+> > Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >  .../devicetree/bindings/dma/qcom,bam-dma.yaml | 20 ++++++++++++-------
+> >  1 file changed, 13 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+> > index f1ddcf672261..c663b6102f50 100644
+> > --- a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+> > +++ b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+> > @@ -15,13 +15,19 @@ allOf:
+> >
+> >  properties:
+> >    compatible:
+> > -    enum:
+> > -        # APQ8064, IPQ8064 and MSM8960
+> > -      - qcom,bam-v1.3.0
+> > -        # MSM8974, APQ8074 and APQ8084
+> > -      - qcom,bam-v1.4.0
+> > -        # MSM8916 and SDM845
+> > -      - qcom,bam-v1.7.0
+> > +    oneOf:
+> > +      - enum:
+> > +          # APQ8064, IPQ8064 and MSM8960
+> > +          - qcom,bam-v1.3.0
+> > +          # MSM8974, APQ8074 and APQ8084
+> > +          - qcom,bam-v1.4.0
+> > +          # MSM8916, SDM630
+> > +          - qcom,bam-v1.7.0
+> > +      - items:
+> > +          - enum:
+> > +              # SDM845, SM6115, SM8150, SM8250 and QCM2290
+> > +              - qcom,bam-v1.7.4
+> > +          - const: qcom,bam-v1.7.0
+> >
+> >    clocks:
+> >      maxItems: 1
+> > --
+> > 2.38.1
+> 
+> Bjorn has applied the dts patches from this series to his tree.
+> As suggested by him, can you please pick patches [PATCH 1/11] and
+> [PATCH 2/11] from this series via the 'dmaengine' tree.
 
-   ich bin Markus Christoph Bloche,
-Vorstandsvorsitzender/CEO/Gesch=C3=A4ftsf=C3=BChrer,
-Dottikon ES Holding AG. Ein Schweizer Gesch=C3=A4ftsmann, Investor und
-Pr=C3=A4sident/CEO/Gesch=C3=A4ftsf=C3=BChrer, Dottikon ES Holding AG. Ich b=
-in dabei
-Das Ruder von 9 Unternehmen, deren Vorsitzender ich bin
-Evide AG, Chairman, Chief Executive Officer und MD bei Dottikon Es
-Holding AG, Pr=C3=A4sident und Chief Executive Officer von Dottikon Exclusi=
-ve
-Synthesis AG, Hairman f=C3=BCr Frugan Holding AG,
-Vorstandsvorsitzender der agrocult AG und Vorstandsvorsitzender der
-Cultivport AG (beide sind
-Tochtergesellschaften der Frugan Holding AG) und Pr=C3=A4sident der Evolma
-Holding AG.
-Ich habe promoviert und mache derzeit einen Bachelor-Abschluss
-von der Eidgen=C3=B6ssischen Technischen Hochschule. Ich habe beschlossen, =
-aufzugeben
-Jedes Jahr spende ich 25 Prozent meines Privatverm=C3=B6gens f=C3=BCr wohlt=
-=C3=A4tige
-Zwecke und an die Armen
-seit dem Ausbruch der globalen Pandemie, die viele zu Verlusten gef=C3=BChr=
-t hat
-ihren Job und viele L=C3=A4nder versuchen immer noch, sich zu erholen. Ich
-und meine Familie
-Ich habe zugestimmt, 25 % meines Privatverm=C3=B6gens an Einzelpersonen aus=
-zugeben
-Jahr 2023 aus dem Gewinn meines Unternehmens, um zur Reduzierung des
-Hochs beizutragen
-Armutsquote, die durch diese globale Pandemie und die anhaltende verursacht=
- wird
-Krieg zwischen Russland und der Ukraine, der viele L=C3=A4nder betroffen
-hat. Also habe ich
-beschlossen, 1.000.000,00 Euro an Sie zu spenden. Kontaktieren Sie
-mich noch heute auf meinem
-Pers=C3=B6nliche E-Mail: markusblocher3@gmail.com. mit Ihrem
-Spendencode: EGIP/EWU2023/28392.
-Sie k=C3=B6nnen auch =C3=BCber den folgenden Link mehr =C3=BCber mich lesen=
-:
-https://en.wikipedia.org/wiki/Markus_Blocher.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Dies ist noch einmal Ihr Spendencode: EGIP/EWU2023/28392.
-Bitte antworten Sie mit dem SPENDENCODE auf meine pers=C3=B6nliche E-Mail:
-markusblocher3@gmail.com.
-  Wir hoffen, Sie und Ihre Familie mit dieser Spende gl=C3=BCcklich zu mach=
-en.
-Um zu best=C3=A4tigen und sicherzustellen, dass dies 100 % legitim und echt
-ist. Besuchen Sie mich bitte
-Verifizierte Google-Seite zur Best=C3=A4tigung und um mehr =C3=BCber mich z=
-u erfahren:
-https://www.bloomberg.com/profile/person/6131291?leadSource=3Duverify%20wal=
-l,
-Mit freundlichen Gr=C3=BC=C3=9Fen.
-Markus Christoph Blocher, Pr=C3=A4sident/CEO/Gesch=C3=A4ftsf=C3=BChrer, Dot=
-tikon ES
-Holding AG.
+I dont have this series in my inbox or dmaengine pw
+
+> Seems some Cc fields got messed up while sending the patchset, so
+> Cc'ing the dmaengine list again.
+
+not just list but mine too..
+
+Please rebase and resend
+
+-- 
+~Vinod
