@@ -2,174 +2,175 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFF6727282
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jun 2023 00:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AA17276B9
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jun 2023 07:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbjFGW4p (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 7 Jun 2023 18:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S234379AbjFHFcl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 8 Jun 2023 01:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233180AbjFGW4S (ORCPT
+        with ESMTP id S233578AbjFHFck (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 7 Jun 2023 18:56:18 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF772705
-        for <linux-crypto@vger.kernel.org>; Wed,  7 Jun 2023 15:56:14 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5149c76f4dbso2563741a12.1
-        for <linux-crypto@vger.kernel.org>; Wed, 07 Jun 2023 15:56:14 -0700 (PDT)
+        Thu, 8 Jun 2023 01:32:40 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530DBE7;
+        Wed,  7 Jun 2023 22:32:39 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-62613b2c8b7so2337856d6.1;
+        Wed, 07 Jun 2023 22:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686178573; x=1688770573;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
-        b=Vs2O3FJiGjOSsYkVdVVwQ8usUW0Na2c1JkRxzODLflg+DQkLHMSvDUTON1eOgoDd5p
-         icZX7jz85gtt675JIQoCg2qYDeGvdgrlIlnYsBqJCXY6A+wwUH4Pzx63GHJ70nVIOHpq
-         q8q4NwQWw9O7Ka1WcBWhtc95lIatv8n89RH1nSmTaJwpto6eirRVCg2zeJDk+R5CA+KG
-         ThXmo+FVEx7rMo/R9HxHw2025VcLT8t8EGl5ZKxML6giyeJpWVWuCmdmhwVTBmwvl+lO
-         4Pyzwb5XpDz845p07KZNMlaubUmeRc4L02Q7u93h4SKEXfacqvhkSvKzrJS0PjXfy7pG
-         yWrw==
+        d=gmail.com; s=20221208; t=1686202358; x=1688794358;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N2OFGIuk/0ZguBRl1X7uFzHckLFOr1kSCfMjfwMf9W8=;
+        b=qoMp/yLodDw9nsr5LnE3tGWU+9Ws4ygi8TqVxIQNvl+GqplEj1rOIc5FnXwIxpXe5a
+         Xnj0rcPNBL31fnBJMMrevabN48jCejuB3ZvcNSbKSwUj5Rb+0qNm3uA6kyumcmt/nmR/
+         FTQXOjY8D+AZMdKSTbNTky6c+WLOwS7p7c2qHCi35VOP08346/q4wNZN759uDU+v/b6k
+         AgPwu/1nsYifZ0BoEStSMX/DGeyze0Q4lUri1uQrmeHbRn70/Bugyo3vOoSapzI5k2pW
+         pvWyj0E8SGNaVFw73Yq/3MovmTa6g2zhjGwx1mv6A1RUda3C8NhV/OP0vlPOrBaFsp+v
+         esfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686178573; x=1688770573;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
-        b=ADY75kkklFyjpYQDUw6LtTsZU6xo/50QMJLPqDFnWE2GytYOxuXVjCad4R0s+S9iYu
-         iElDmEBzeaKDUda37u2DfyfZybaKDIoDVdGznoEtKzKGBPOeGn+VM8o0P/e6kZGQJpOQ
-         VKV7elJYxX1EENJhSUACjqiRjtXf/p/Q7QTPTRJU9ADuWQgVDqZBeE2+HKDcTXSJ7wwx
-         6+5eJEW0hSl9jZFyWEfZHCJd9nHmXP9F8fphDBDOXw1WzZRwNVIsK0ExJk3qunAehfWz
-         5ZNjmyY9cmtdsQpAEVeqQPf1U96BYncXBtIxJrlBh3tRnYHIZxyXomzBlY8eAKK4tPN9
-         cGYg==
-X-Gm-Message-State: AC+VfDzMRRHD2C3IL146scJcubtqkyb/znJywKG2yuA1Tuy5Ij0o/ar4
-        imygi1spSW4lw2Y6gtAgT/SEgXUdNXxCc6OBuBPDhyfqyyF/lg==
-X-Google-Smtp-Source: ACHHUZ5lc5uNG0II8N/7owu97MNYayebO2FU5BOHITGRdvZTCXANx0Yi1fv5Th/dfzvi0zTuZAaSCLE67mXxoPl8ud4=
-X-Received: by 2002:a17:907:8a08:b0:973:ad8f:ef9b with SMTP id
- sc8-20020a1709078a0800b00973ad8fef9bmr8009971ejc.5.1686178552696; Wed, 07 Jun
- 2023 15:55:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686202358; x=1688794358;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N2OFGIuk/0ZguBRl1X7uFzHckLFOr1kSCfMjfwMf9W8=;
+        b=Xf1MB6RSUuk7J8W1oevmPq38pGfVEt7/jGesxchPxJLoVOmBwd84go9l7xySfyrWFy
+         zIz67G0KG4g407bHXmTRp2HcjyqmflcNdqowZnXX7uUu3ZOOKbgbI/XrhXRA2iaUbTJW
+         n1JipwwoHUH9dkmNnmpZHFRFyCUIkXC0hJuYouZvFnIDY9zusIbw4VTx8C1qRtCGjfFj
+         n6viYbDdDblQHne2qXbQ6kq4qtQatC2MbJ7mRiFZ9HPhGDmzKbj3RItbcAllIsyRI+sm
+         CK/liznCjxfC/lJPNvRZo2ROiK+wWxmvTrjkmhikJdurmICC1aqDxk0OOUIj45xXvYlE
+         pkVg==
+X-Gm-Message-State: AC+VfDx2OH+3CzJDEnVAamCNcBrzIVfa44BAWyTUoQkNRL5UQlbj7oji
+        i1ZgE9wHRlFZ9/PiPvWzC9U=
+X-Google-Smtp-Source: ACHHUZ6Yd0uD+lPMu+WRO51kABisCs6xCdPxgBV7w0346Y5pSLhMQVaHAoCNGlfubwmhDgLj+1l3cA==
+X-Received: by 2002:a05:6214:230b:b0:62a:d642:df29 with SMTP id gc11-20020a056214230b00b0062ad642df29mr595195qvb.39.1686202358371;
+        Wed, 07 Jun 2023 22:32:38 -0700 (PDT)
+Received: from debian.me (subs03-180-214-233-10.three.co.id. [180.214.233.10])
+        by smtp.gmail.com with ESMTPSA id x17-20020a170902ea9100b0019c13d032d8sm436511plb.253.2023.06.07.22.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jun 2023 22:32:37 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 946451069EA; Thu,  8 Jun 2023 12:32:34 +0700 (WIB)
+Date:   Thu, 8 Jun 2023 12:32:34 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Richard Fontana <rfontana@redhat.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Franziska Naepelt <franziska.naepelt@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux SPDX Licenses <linux-spdx@vger.kernel.org>,
+        Linux Kernel Janitors <kernel-janitors@vger.kernel.org>,
+        Linux Crypto <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH 8/8] crypto: cts: Convert MIT boilerplate to
+ corresponding SPDX license identifier
+Message-ID: <ZIFn8mNXVcI0SGTR@debian.me>
+References: <20230607053940.39078-10-bagasdotme@gmail.com>
+ <20230607053940.39078-18-bagasdotme@gmail.com>
+ <CAC1cPGx-mD0DAEanCFtoxoGRyHkcu-GTTNX=ePzjhb8XM+73mg@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a54:2409:0:b0:217:72a9:f646 with HTTP; Wed, 7 Jun 2023
- 15:55:52 -0700 (PDT)
-Reply-To: unitednationcompensationcoordinatortreasury@hotmail.com
-From:   "UNITED NATION DEPUTY SECRETARY-GENERAL (U.N)" 
-        <successikolo@gmail.com>
-Date:   Wed, 7 Jun 2023 15:55:52 -0700
-Message-ID: <CADFNGJ8EwbrtVXBod+yuxOPvcNStu1uNZVywED0Ra-jpG92ATw@mail.gmail.com>
-Subject: CONTACT DHL OFFICE IMMEDIATELY FOR YOUR ATM MASTER CARD 1.5 MILLION,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FILL_THIS_FORM,FORM_FRAUD_5,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        LOTS_OF_MONEY,MONEY_FORM,MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_FILL_THIS_FORM_LOAN,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:52c listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [successikolo[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  0.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  0.0 FILL_THIS_FORM Fill in a form with personal information
-        *  0.0 T_FILL_THIS_FORM_LOAN Answer loan question(s)
-        *  0.0 MONEY_FORM Lots of money if you fill out a form
-        *  1.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 ADVANCE_FEE_3_NEW_FRM_MNY Advance Fee fraud form and lots of
-        *      money
-        *  0.2 MONEY_FRAUD_5 Lots of money and many fraud phrases
-        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
-X-Spam-Level: ******
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xrhHIH4HO9EIBTVB"
+Content-Disposition: inline
+In-Reply-To: <CAC1cPGx-mD0DAEanCFtoxoGRyHkcu-GTTNX=ePzjhb8XM+73mg@mail.gmail.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-UNITED NATION DEPUTY SECRETARY-GENERAL.
 
-This is to official inform you that we have been having meetings for
-the past three (3) weeks which ended two days ago with MR. JIM YONG
-KIM the world bank president and other seven continent presidents on
-the congress we treated on solution to scam victim problems.
+--xrhHIH4HO9EIBTVB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- Note: we have decided to contact you following the reports we
-received from anti-fraud international monitoring group your
-name/email has been submitted to us therefore the united nations have
-agreed to compensate you with the sum of (USD$ 1.5 Million) this
-compensation is also including international business that failed you
-in the past due to government problems etc.
+On Wed, Jun 07, 2023 at 09:47:33AM -0400, Richard Fontana wrote:
+> On Wed, Jun 7, 2023 at 1:41=E2=80=AFAM Bagas Sanjaya <bagasdotme@gmail.co=
+m> wrote:
+> >
+> > License boilerplate in CTS mode implementation (crypto/cts.c) looks like
+> > MIT license with advertising clause. Replace it with correspondig
+> > SPDX tag.
+> >
+> > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> > ---
+> >  crypto/cts.c | 24 +-----------------------
+> >  1 file changed, 1 insertion(+), 23 deletions(-)
+> >
+> > diff --git a/crypto/cts.c b/crypto/cts.c
+> > index 8f604f6554b1c3..9ec7e9787c0f6a 100644
+> > --- a/crypto/cts.c
+> > +++ b/crypto/cts.c
+> > @@ -1,3 +1,4 @@
+> > +// SPDX-License-Identifier: MIT
+> >  /*
+> >   * CTS: Cipher Text Stealing mode
+> >   *
+> > @@ -5,29 +6,6 @@
+> >   * The Regents of the University of Michigan
+> >   * ALL RIGHTS RESERVED
+> >   *
+> > - * Permission is granted to use, copy, create derivative works
+> > - * and redistribute this software and such derivative works
+> > - * for any purpose, so long as the name of The University of
+> > - * Michigan is not used in any advertising or publicity
+> > - * pertaining to the use of distribution of this software
+> > - * without specific, written prior authorization.  If the
+> > - * above copyright notice or any other identification of the
+> > - * University of Michigan is included in any copy of any
+> > - * portion of this software, then the disclaimer below must
+> > - * also be included.
+> > - *
+> > - * THIS SOFTWARE IS PROVIDED AS IS, WITHOUT REPRESENTATION
+> > - * FROM THE UNIVERSITY OF MICHIGAN AS TO ITS FITNESS FOR ANY
+> > - * PURPOSE, AND WITHOUT WARRANTY BY THE UNIVERSITY OF
+> > - * MICHIGAN OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+> > - * WITHOUT LIMITATION THE IMPLIED WARRANTIES OF
+> > - * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+> > - * REGENTS OF THE UNIVERSITY OF MICHIGAN SHALL NOT BE LIABLE
+> > - * FOR ANY DAMAGES, INCLUDING SPECIAL, INDIRECT, INCIDENTAL, OR
+> > - * CONSEQUENTIAL DAMAGES, WITH RESPECT TO ANY CLAIM ARISING
+> > - * OUT OF OR IN CONNECTION WITH THE USE OF THE SOFTWARE, EVEN
+> > - * IF IT HAS BEEN OR IS HEREAFTER ADVISED OF THE POSSIBILITY OF
+> > - * SUCH DAMAGES.
+> >   */
+>=20
+> This is not the MIT license (as defined by SPDX) - there may not be an
+> SPDX identifier covering this license text.
+>=20
+> This is at least the second time in your recent patches where you have
+> assumed that a non-GPL license corresponds to a particular SPDX
+> identifier without (apparently) checking.
+>=20
 
- We have arranged your payment through our ATM Master Card and
-deposited it in DHL Office to deliver it to you which is the latest
-instruction from the World Bank president MR. JIM YONG KIM, For your
-information=E2=80=99s, the delivery charges already paid by U.N treasury, t=
-he
-only money you will send to DHL office south Korea is
-($500). for security keeping fee, U.N coordinator already paid for
-others charges fees for delivery except the security keeping fee, the
-director of DHL refused to collect the security keeping fee from U.N
-coordinator, the Director of DHL office said that they don=E2=80=99t know
-exactly time you will contact them to reconfirm your details to avoid
-counting demur-rage that is why they refused collecting the ($500) .
-for security keeping fee.
+I was thought of interpolating license tags (heuristic matching) in
+cases like this. In this case, the UoMi license was adapted from
+(and roughly resembled) MIT (hence I thought of MIT variant).
 
- Therefore be advice to contact DHL Office agent south Korea. Rev:John
-Lee Tae-seok
-who is in position to deliver your ATM
-Master Card to your location address, contact DHL Office immediately
-with the bellow email & phone number as listed below.
+Greg, is Richard's comment right? If so, I'll drop this patch.
 
- Contact name: John Lee Tae-seok
+Thanks!
 
- Email:( dhlgeneralheadquartersrepublic@gmail.com )
+--=20
+An old man doll... just what I always wanted! - Clara
 
- Do not hesitate to Contact Rev: John Lee Tae-seok, as soon as you
+--xrhHIH4HO9EIBTVB
+Content-Type: application/pgp-signature; name="signature.asc"
 
- read this message. Email:( dhlgeneralheadquartersrepublic@gmail.com )
+-----BEGIN PGP SIGNATURE-----
 
- Make sure you reconfirmed DHL Office your details ASAP as stated
-below to avoid wrong delivery.
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZIFn7gAKCRD2uYlJVVFO
+ozfFAP9sWM4qlwFNu6r3na/bKCKHiwWU8alebLt42wOABFakzAEAjD3+2XFkgSTV
+d+qCr/jsqoR+CBbah4h4y+5xdfInHQM=
+=6Bvf
+-----END PGP SIGNATURE-----
 
- Your full name..........
-
- Home address:.........
-
- Your country...........
-
- Your city..............
-
- Telephone......
-
- Occupation:.......
-
- Age:=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6..
-
- Let us know as soon as possible you receive your ATM MasterCard
-for proper verification.
-
- Regards,
-
- Mrs Vivian kakadu.
-
- DEPUTY SECRETARY-GENERAL (U.N)
+--xrhHIH4HO9EIBTVB--
