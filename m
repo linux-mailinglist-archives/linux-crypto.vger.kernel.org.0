@@ -2,447 +2,258 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF3D72A08F
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 Jun 2023 18:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2640072A0DA
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Jun 2023 19:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjFIQsu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 9 Jun 2023 12:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        id S229604AbjFIRGb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Jun 2023 13:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjFIQsp (ORCPT
+        with ESMTP id S229454AbjFIRGa (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 9 Jun 2023 12:48:45 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7633A88
-        for <linux-crypto@vger.kernel.org>; Fri,  9 Jun 2023 09:48:42 -0700 (PDT)
+        Fri, 9 Jun 2023 13:06:30 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5965B1BD
+        for <linux-crypto@vger.kernel.org>; Fri,  9 Jun 2023 10:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686329322; x=1717865322;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rAzGqJmUdmzJqq8gQp7Xyec7dSCYmZKjqDWGvK/1jLg=;
-  b=fEr2n4ElQiNflbUYcW2s5RImt0ysdIXDH/Qq61r2qLtK4JTYyzQ/SBgt
-   BRBF3FODMBjapbYSr7lLm1DXU8R6tz32pYas6flLH2gXvARTmq+Vlxyyy
-   XDPYq3Gv/dilMmcnGeO1ftQWNIQOrRze2Ho4gfH3XUoaJB6xYWwrP/pU+
-   GSbBIL1OoJK/BhU1++qNLfJHK+ee/JNBx4XUVOj2v3cJjdBEGNHynjQCA
-   Skzn2b2n45en4//nT0Rv9uPzaMkCc5lbcA1b3UYJg/iCEbW/N93V5RauE
-   sGJzLkLMH5tu/Dmytag6aQ/axCLt4Jb1NquUQ9jnT7OlBDyDna2UGG6BZ
+  t=1686330389; x=1717866389;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3F4+6JlUaJXswln0W5Wql+Q+Rmx1OYen8cLhRB8PThw=;
+  b=TtcBAkeAUR0a3r4ydRWZXkyrC0EQYXgi4OjQv59X5TFeBpZKR46SxHt7
+   fzudnZtVYUjvrMIRyFiOGGZLoHb0snDi+K2qGOzXkNjTiFXFM1Xm96Kgb
+   a+3yqOCe5p4cLJ8lbJm+dBwgpxmbPBdL2b9bGQLFz2NMkkwwoNeANpRPv
+   dOknALei8RfQzMpzUB+mrJNrDZ0gYR6DCUuNPPsXAtL1YcY2SmferMhfi
+   kz4xnHXLnL0EL7maUkEzLXSzZgMqxO32jTAm+DTg/iXqv9DHcPNwUzsWz
+   iweqI+KK+q2jUExvsOMIDnhcOGYTSRQG1eH2vEXCyGbPyRz9AOMlAkD3y
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10736"; a="337999103"
+X-IronPort-AV: E=McAfee;i="6600,9927,10736"; a="347290718"
 X-IronPort-AV: E=Sophos;i="6.00,229,1681196400"; 
-   d="scan'208";a="337999103"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2023 09:48:34 -0700
+   d="scan'208";a="347290718"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2023 10:06:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10736"; a="957214199"
+X-IronPort-AV: E=McAfee;i="6600,9927,10736"; a="834697438"
 X-IronPort-AV: E=Sophos;i="6.00,229,1681196400"; 
-   d="scan'208";a="957214199"
-Received: from silpixa00400295.ir.intel.com ([10.237.213.194])
-  by fmsmga006.fm.intel.com with ESMTP; 09 Jun 2023 09:48:32 -0700
-From:   Adam Guerin <adam.guerin@intel.com>
+   d="scan'208";a="834697438"
+Received: from sdpcloudhostegs034.jf.intel.com ([10.165.126.39])
+  by orsmga004.jf.intel.com with ESMTP; 09 Jun 2023 10:06:28 -0700
+From:   Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        Adam Guerin <adam.guerin@intel.com>,
+        Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
         Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 4/4] crypto: qat - extend configuration for 4xxx
-Date:   Fri,  9 Jun 2023 17:38:22 +0100
-Message-Id: <20230609163821.6533-5-adam.guerin@intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230609163821.6533-1-adam.guerin@intel.com>
-References: <20230609163821.6533-1-adam.guerin@intel.com>
+Subject: [PATCH] crypto: qat - expose pm_idle_enabled through sysfs
+Date:   Fri,  9 Jun 2023 19:06:14 +0200
+Message-Id: <20230609170614.28237-1-lucas.segarra.fernandez@intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Organisation: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare, Ireland
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-A QAT GEN4 device can be currently configured for crypto (sym;asym) or
-compression (dc).
+Expose 'pm_idle_enabled' sysfs attribute. This attribute controls how
+idle conditions are handled. If it is set to 1 (idle support enabled)
+when the device detects an idle condition, the driver will transition
+the device to the 'MIN' power configuration.
 
-This patch extends the configuration to support more variations of these
-services, download the correct FW images on the device and report the
-correct capabilities on the device based on the configured service.
+In order to set the value of this attribute for a device, the device
+must be in the 'down' state.
 
-The device can now be configured with the following services:
-"sym", "asym", "dc", "sym;asym", "asym;sym", "sym;dc", "dc;sym",
-"asym;dc", "dc;asym".
+This only applies to qat_4xxx generation.
 
-With this change, the configuration "sym", "asym", "sym;dc", "dc;sym",
-"asym;dc", "dc;asym" will be accessible only via userspace, i.e. the driver
-for those configurations will not register into the crypto framework.
-Support for such configurations in kernel will be enabled in a later
-patch.
-
-The pairs "sym;asym" and "asym;sym" result in identical device config.
-As do "sym;dc", "dc;sym", and "asym;dc", "dc;asym".
-
-Signed-off-by: Adam Guerin <adam.guerin@intel.com>
+Signed-off-by: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
 Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- Documentation/ABI/testing/sysfs-driver-qat    |  11 ++
- .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     | 127 +++++++++++++++---
- drivers/crypto/intel/qat/qat_4xxx/adf_drv.c   |  33 +++++
- .../intel/qat/qat_common/adf_cfg_strings.h    |   7 +
- .../crypto/intel/qat/qat_common/adf_sysfs.c   |   7 +
- 5 files changed, 163 insertions(+), 22 deletions(-)
+ Documentation/ABI/testing/sysfs-driver-qat    | 35 ++++++++++++
+ .../intel/qat/qat_common/adf_cfg_strings.h    |  1 +
+ .../crypto/intel/qat/qat_common/adf_gen4_pm.c | 12 ++++-
+ .../crypto/intel/qat/qat_common/adf_gen4_pm.h |  1 +
+ .../crypto/intel/qat/qat_common/adf_sysfs.c   | 53 +++++++++++++++++++
+ 5 files changed, 101 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/ABI/testing/sysfs-driver-qat b/Documentation/ABI/testing/sysfs-driver-qat
-index 087842b1969e..e6d427c41bee 100644
+index 087842b1969e..ed4b7b2d1b6c 100644
 --- a/Documentation/ABI/testing/sysfs-driver-qat
 +++ b/Documentation/ABI/testing/sysfs-driver-qat
-@@ -27,7 +27,18 @@ Description:	(RW) Reports the current configuration of the QAT device.
+@@ -47,3 +47,38 @@ Description:	(RW) Reports the current configuration of the QAT device.
+ 			dc
  
- 		* sym;asym: the device is configured for running crypto
- 		  services
-+		* asym;sym: identical to sym;asym
- 		* dc: the device is configured for running compression services
-+		* sym: the device is configured for running symmetric crypto
-+		  services
-+		* asym: the device is configured for running asymmetric crypto
-+		  services
-+		* asym;dc: the device is configured for running asymmetric
-+		  crypto services and compression services
-+		* dc;asym: identical to asym;dc
-+		* sym;dc: the device is configured for running symmetric crypto
-+		  services and compression services
-+		* dc;sym: identical to sym;dc
- 
- 		It is possible to set the configuration only if the device
- 		is in the `down` state (see /sys/bus/pci/devices/<BDF>/qat/state)
-diff --git a/drivers/crypto/intel/qat/qat_4xxx/adf_4xxx_hw_data.c b/drivers/crypto/intel/qat/qat_4xxx/adf_4xxx_hw_data.c
-index bd55c938f7eb..831d460bc503 100644
---- a/drivers/crypto/intel/qat/qat_4xxx/adf_4xxx_hw_data.c
-+++ b/drivers/crypto/intel/qat/qat_4xxx/adf_4xxx_hw_data.c
-@@ -50,10 +50,38 @@ static const struct adf_fw_config adf_fw_dc_config[] = {
- 	{0x100, ADF_FW_ADMIN_OBJ},
- };
- 
-+static const struct adf_fw_config adf_fw_sym_config[] = {
-+	{0xF0, ADF_FW_SYM_OBJ},
-+	{0xF, ADF_FW_SYM_OBJ},
-+	{0x100, ADF_FW_ADMIN_OBJ},
-+};
+ 		This attribute is only available for qat_4xxx devices.
 +
-+static const struct adf_fw_config adf_fw_asym_config[] = {
-+	{0xF0, ADF_FW_ASYM_OBJ},
-+	{0xF, ADF_FW_ASYM_OBJ},
-+	{0x100, ADF_FW_ADMIN_OBJ},
-+};
++What:		/sys/bus/pci/devices/<BDF>/qat/pm_idle_enabled
++Date:		June 2023
++KernelVersion:	6.5
++Contact:	qat-linux@intel.com
++Description:	(RW) This configuration option provides a way to force the device into remaining in
++		the MAX power state.
++		If idle support is enabled the device will transition to the `MIN` power state when
++		idle, otherwise will stay in the MAX power state.
++		Write to the file to enable or disable idle support.
 +
-+static const struct adf_fw_config adf_fw_asym_dc_config[] = {
-+	{0xF0, ADF_FW_ASYM_OBJ},
-+	{0xF, ADF_FW_DC_OBJ},
-+	{0x100, ADF_FW_ADMIN_OBJ},
-+};
++		The values are:
 +
-+static const struct adf_fw_config adf_fw_sym_dc_config[] = {
-+	{0xF0, ADF_FW_SYM_OBJ},
-+	{0xF, ADF_FW_DC_OBJ},
-+	{0x100, ADF_FW_ADMIN_OBJ},
-+};
++		* 0: idle support is disabled
++		* 1: idle support is enabled
 +
- static_assert(ARRAY_SIZE(adf_fw_cy_config) == ARRAY_SIZE(adf_fw_dc_config));
-+static_assert(ARRAY_SIZE(adf_fw_cy_config) == ARRAY_SIZE(adf_fw_sym_config));
-+static_assert(ARRAY_SIZE(adf_fw_cy_config) == ARRAY_SIZE(adf_fw_asym_config));
-+static_assert(ARRAY_SIZE(adf_fw_cy_config) == ARRAY_SIZE(adf_fw_asym_dc_config));
-+static_assert(ARRAY_SIZE(adf_fw_cy_config) == ARRAY_SIZE(adf_fw_sym_dc_config));
++		Default value is 1.
++
++		It is possible to set the pm_idle_enabled value only if the device
++		is in the `down` state (see /sys/bus/pci/devices/<BDF>/qat/state)
++
++		The following example shows how to change the pm_idle_enabled of
++		a device::
++
++			# cat /sys/bus/pci/devices/<BDF>/qat/state
++			up
++			# cat /sys/bus/pci/devices/<BDF>/qat/pm_idle_enabled
++			1
++			# echo down > /sys/bus/pci/devices/<BDF>/qat/state
++			# echo 0 > /sys/bus/pci/devices/<BDF>/qat/pm_idle_enabled
++			# echo up > /sys/bus/pci/devices/<BDF>/qat/state
++			# cat /sys/bus/pci/devices/<BDF>/qat/pm_idle_enabled
++			0
++
++		This attribute is only available for qat_4xxx devices.
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h b/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h
+index 5d8c3bdb258c..96d0db41f1e2 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h
++++ b/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h
+@@ -26,6 +26,7 @@
+ #define ADF_CFG_DC "dc"
+ #define ADF_CFG_CY "sym;asym"
+ #define ADF_SERVICES_ENABLED "ServicesEnabled"
++#define ADF_PM_IDLE_SUPPORT "PmIdleSupport"
+ #define ADF_ETRMGR_COALESCING_ENABLED "InterruptCoalescingEnabled"
+ #define ADF_ETRMGR_COALESCING_ENABLED_FORMAT \
+ 	ADF_ETRMGR_BANK "%d" ADF_ETRMGR_COALESCING_ENABLED
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c
+index 7037c0892a8a..34c6cd8e27c0 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c
+@@ -23,15 +23,25 @@ struct adf_gen4_pm_data {
  
- /* Worker thread to service arbiter mappings */
--static const u32 thrd_to_arb_map_cy[ADF_4XXX_MAX_ACCELENGINES] = {
-+static const u32 default_thrd_to_arb_map[ADF_4XXX_MAX_ACCELENGINES] = {
- 	0x5555555, 0x5555555, 0x5555555, 0x5555555,
- 	0xAAAAAAA, 0xAAAAAAA, 0xAAAAAAA, 0xAAAAAAA,
- 	0x0
-@@ -73,12 +101,26 @@ static struct adf_hw_device_class adf_4xxx_class = {
- 
- enum dev_services {
- 	SVC_CY = 0,
-+	SVC_CY2,
- 	SVC_DC,
-+	SVC_SYM,
-+	SVC_ASYM,
-+	SVC_DC_ASYM,
-+	SVC_ASYM_DC,
-+	SVC_DC_SYM,
-+	SVC_SYM_DC,
- };
- 
- static const char *const dev_cfg_services[] = {
- 	[SVC_CY] = ADF_CFG_CY,
-+	[SVC_CY2] = ADF_CFG_ASYM_SYM,
- 	[SVC_DC] = ADF_CFG_DC,
-+	[SVC_SYM] = ADF_CFG_SYM,
-+	[SVC_ASYM] = ADF_CFG_ASYM,
-+	[SVC_DC_ASYM] = ADF_CFG_DC_ASYM,
-+	[SVC_ASYM_DC] = ADF_CFG_ASYM_DC,
-+	[SVC_DC_SYM] = ADF_CFG_DC_SYM,
-+	[SVC_SYM_DC] = ADF_CFG_SYM_DC,
- };
- 
- static int get_service_enabled(struct adf_accel_dev *accel_dev)
-@@ -168,45 +210,50 @@ static void set_msix_default_rttable(struct adf_accel_dev *accel_dev)
- static u32 get_accel_cap(struct adf_accel_dev *accel_dev)
+ static int send_host_msg(struct adf_accel_dev *accel_dev)
  {
- 	struct pci_dev *pdev = accel_dev->accel_pci_dev.pci_dev;
--	u32 capabilities_cy, capabilities_dc;
-+	u32 capabilities_sym, capabilities_asym, capabilities_dc;
- 	u32 fusectl1;
++	char pm_idle_support_cfg[ADF_CFG_MAX_VAL_LEN_IN_BYTES] = {};
+ 	void __iomem *pmisc = adf_get_pmisc_base(accel_dev);
++	bool pm_idle_support;
+ 	u32 msg;
++	int ret;
  
- 	/* Read accelerator capabilities mask */
- 	pci_read_config_dword(pdev, ADF_4XXX_FUSECTL1_OFFSET, &fusectl1);
+ 	msg = ADF_CSR_RD(pmisc, ADF_GEN4_PM_HOST_MSG);
+ 	if (msg & ADF_GEN4_PM_MSG_PENDING)
+ 		return -EBUSY;
  
--	capabilities_cy = ICP_ACCEL_CAPABILITIES_CRYPTO_SYMMETRIC |
--			  ICP_ACCEL_CAPABILITIES_CRYPTO_ASYMMETRIC |
-+	capabilities_sym = ICP_ACCEL_CAPABILITIES_CRYPTO_SYMMETRIC |
- 			  ICP_ACCEL_CAPABILITIES_CIPHER |
- 			  ICP_ACCEL_CAPABILITIES_AUTHENTICATION |
- 			  ICP_ACCEL_CAPABILITIES_SHA3 |
- 			  ICP_ACCEL_CAPABILITIES_SHA3_EXT |
- 			  ICP_ACCEL_CAPABILITIES_HKDF |
--			  ICP_ACCEL_CAPABILITIES_ECEDMONT |
- 			  ICP_ACCEL_CAPABILITIES_CHACHA_POLY |
- 			  ICP_ACCEL_CAPABILITIES_AESGCM_SPC |
- 			  ICP_ACCEL_CAPABILITIES_AES_V2;
- 
- 	/* A set bit in fusectl1 means the feature is OFF in this SKU */
- 	if (fusectl1 & ICP_ACCEL_4XXX_MASK_CIPHER_SLICE) {
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_CRYPTO_SYMMETRIC;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_HKDF;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_CRYPTO_SYMMETRIC;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_HKDF;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
- 	}
++	adf_cfg_get_param_value(accel_dev, ADF_GENERAL_SEC,
++				ADF_PM_IDLE_SUPPORT, pm_idle_support_cfg);
++	ret = kstrtobool(pm_idle_support_cfg, &pm_idle_support);
++	if (ret)
++		pm_idle_support = true;
 +
- 	if (fusectl1 & ICP_ACCEL_4XXX_MASK_UCS_SLICE) {
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_CHACHA_POLY;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_AESGCM_SPC;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_AES_V2;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_CHACHA_POLY;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_AESGCM_SPC;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_AES_V2;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
- 	}
-+
- 	if (fusectl1 & ICP_ACCEL_4XXX_MASK_AUTH_SLICE) {
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_AUTHENTICATION;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_SHA3;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_SHA3_EXT;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_AUTHENTICATION;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_SHA3;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_SHA3_EXT;
-+		capabilities_sym &= ~ICP_ACCEL_CAPABILITIES_CIPHER;
- 	}
-+
-+	capabilities_asym = ICP_ACCEL_CAPABILITIES_CRYPTO_ASYMMETRIC |
-+			  ICP_ACCEL_CAPABILITIES_CIPHER |
-+			  ICP_ACCEL_CAPABILITIES_ECEDMONT;
-+
- 	if (fusectl1 & ICP_ACCEL_4XXX_MASK_PKE_SLICE) {
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_CRYPTO_ASYMMETRIC;
--		capabilities_cy &= ~ICP_ACCEL_CAPABILITIES_ECEDMONT;
-+		capabilities_asym &= ~ICP_ACCEL_CAPABILITIES_CRYPTO_ASYMMETRIC;
-+		capabilities_asym &= ~ICP_ACCEL_CAPABILITIES_ECEDMONT;
- 	}
+ 	/* Send HOST_MSG */
+-	msg = FIELD_PREP(ADF_GEN4_PM_MSG_PAYLOAD_BIT_MASK, PM_SET_MIN);
++	msg = FIELD_PREP(ADF_GEN4_PM_MSG_PAYLOAD_BIT_MASK,
++			 pm_idle_support ? PM_SET_MIN : PM_NO_CHANGE);
+ 	msg |= ADF_GEN4_PM_MSG_PENDING;
+ 	ADF_CSR_WR(pmisc, ADF_GEN4_PM_HOST_MSG, msg);
  
- 	capabilities_dc = ICP_ACCEL_CAPABILITIES_COMPRESSION |
-@@ -223,9 +270,20 @@ static u32 get_accel_cap(struct adf_accel_dev *accel_dev)
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h
+index f8f8a9ee29e5..dd112923e006 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h
++++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h
+@@ -37,6 +37,7 @@
  
- 	switch (get_service_enabled(accel_dev)) {
- 	case SVC_CY:
--		return capabilities_cy;
-+	case SVC_CY2:
-+		return capabilities_sym | capabilities_asym;
- 	case SVC_DC:
- 		return capabilities_dc;
-+	case SVC_SYM:
-+		return capabilities_sym;
-+	case SVC_ASYM:
-+		return capabilities_asym;
-+	case SVC_ASYM_DC:
-+	case SVC_DC_ASYM:
-+		return capabilities_asym | capabilities_dc;
-+	case SVC_SYM_DC:
-+	case SVC_DC_SYM:
-+		return capabilities_sym | capabilities_dc;
- 	default:
- 		return 0;
- 	}
-@@ -239,12 +297,10 @@ static enum dev_sku_info get_sku(struct adf_hw_device_data *self)
- static const u32 *adf_get_arbiter_mapping(struct adf_accel_dev *accel_dev)
- {
- 	switch (get_service_enabled(accel_dev)) {
--	case SVC_CY:
--		return thrd_to_arb_map_cy;
- 	case SVC_DC:
- 		return thrd_to_arb_map_dc;
- 	default:
--		return NULL;
-+		return default_thrd_to_arb_map;
- 	}
+ #define ADF_GEN4_PM_DEFAULT_IDLE_FILTER		(0x0)
+ #define ADF_GEN4_PM_MAX_IDLE_FILTER		(0x7)
++#define ADF_GEN4_PM_DEFAULT_IDLE_SUPPORT	(0x1)
+ 
+ int adf_gen4_enable_pm(struct adf_accel_dev *accel_dev);
+ bool adf_gen4_handle_pm_interrupt(struct adf_accel_dev *accel_dev);
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_sysfs.c b/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
+index 3eb6611ab1b1..9515da11deb7 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
+@@ -145,12 +145,65 @@ static ssize_t cfg_services_store(struct device *dev, struct device_attribute *a
+ 	return count;
  }
  
-@@ -326,11 +382,26 @@ static const char *uof_get_name(struct adf_accel_dev *accel_dev, u32 obj_num,
- 
- 	switch (get_service_enabled(accel_dev)) {
- 	case SVC_CY:
-+	case SVC_CY2:
- 		id = adf_fw_cy_config[obj_num].obj;
- 		break;
- 	case SVC_DC:
- 		id = adf_fw_dc_config[obj_num].obj;
- 		break;
-+	case SVC_SYM:
-+		id = adf_fw_sym_config[obj_num].obj;
-+		break;
-+	case SVC_ASYM:
-+		id =  adf_fw_asym_config[obj_num].obj;
-+		break;
-+	case SVC_ASYM_DC:
-+	case SVC_DC_ASYM:
-+		id = adf_fw_asym_dc_config[obj_num].obj;
-+		break;
-+	case SVC_SYM_DC:
-+	case SVC_DC_SYM:
-+		id = adf_fw_sym_dc_config[obj_num].obj;
-+		break;
- 	default:
- 		id = -EINVAL;
- 		break;
-@@ -363,6 +434,18 @@ static u32 uof_get_ae_mask(struct adf_accel_dev *accel_dev, u32 obj_num)
- 		return adf_fw_cy_config[obj_num].ae_mask;
- 	case SVC_DC:
- 		return adf_fw_dc_config[obj_num].ae_mask;
-+	case SVC_CY2:
-+		return adf_fw_cy_config[obj_num].ae_mask;
-+	case SVC_SYM:
-+		return adf_fw_sym_config[obj_num].ae_mask;
-+	case SVC_ASYM:
-+		return adf_fw_asym_config[obj_num].ae_mask;
-+	case SVC_ASYM_DC:
-+	case SVC_DC_ASYM:
-+		return adf_fw_asym_dc_config[obj_num].ae_mask;
-+	case SVC_SYM_DC:
-+	case SVC_DC_SYM:
-+		return adf_fw_sym_dc_config[obj_num].ae_mask;
- 	default:
- 		return 0;
- 	}
-diff --git a/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c b/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c
-index 3ecc19087780..1a15600361d0 100644
---- a/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c
-+++ b/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c
-@@ -25,11 +25,25 @@ MODULE_DEVICE_TABLE(pci, adf_pci_tbl);
- enum configs {
- 	DEV_CFG_CY = 0,
- 	DEV_CFG_DC,
-+	DEV_CFG_SYM,
-+	DEV_CFG_ASYM,
-+	DEV_CFG_ASYM_SYM,
-+	DEV_CFG_ASYM_DC,
-+	DEV_CFG_DC_ASYM,
-+	DEV_CFG_SYM_DC,
-+	DEV_CFG_DC_SYM,
- };
- 
- static const char * const services_operations[] = {
- 	ADF_CFG_CY,
- 	ADF_CFG_DC,
-+	ADF_CFG_SYM,
-+	ADF_CFG_ASYM,
-+	ADF_CFG_ASYM_SYM,
-+	ADF_CFG_ASYM_DC,
-+	ADF_CFG_DC_ASYM,
-+	ADF_CFG_SYM_DC,
-+	ADF_CFG_DC_SYM,
- };
- 
- static void adf_cleanup_accel(struct adf_accel_dev *accel_dev)
-@@ -242,6 +256,21 @@ static int adf_comp_dev_config(struct adf_accel_dev *accel_dev)
- 	return ret;
- }
- 
-+static int adf_no_dev_config(struct adf_accel_dev *accel_dev)
++static ssize_t pm_idle_enabled_show(struct device *dev, struct device_attribute *attr,
++				    char *buf)
 +{
-+	unsigned long val;
++	char pm_idle_enabled[ADF_CFG_MAX_VAL_LEN_IN_BYTES] = {};
++	struct adf_accel_dev *accel_dev;
 +	int ret;
 +
-+	val = 0;
-+	ret = adf_cfg_add_key_value_param(accel_dev, ADF_KERNEL_SEC, ADF_NUM_DC,
-+					  &val, ADF_DEC);
++	accel_dev = adf_devmgr_pci_to_accel_dev(to_pci_dev(dev));
++	if (!accel_dev)
++		return -EINVAL;
++
++	ret = adf_cfg_get_param_value(accel_dev, ADF_GENERAL_SEC,
++				      ADF_PM_IDLE_SUPPORT, pm_idle_enabled);
++	if (ret)
++		return sysfs_emit(buf, "1\n");
++
++	return sysfs_emit(buf, "%s\n", pm_idle_enabled);
++}
++
++static ssize_t pm_idle_enabled_store(struct device *dev, struct device_attribute *attr,
++				     const char *buf, size_t count)
++{
++	unsigned long pm_idle_enabled_cfg_val;
++	struct adf_accel_dev *accel_dev;
++	bool pm_idle_enabled;
++	int ret;
++
++	ret = kstrtobool(buf, &pm_idle_enabled);
 +	if (ret)
 +		return ret;
 +
-+	return adf_cfg_add_key_value_param(accel_dev, ADF_KERNEL_SEC, ADF_NUM_CY,
-+					  &val, ADF_DEC);
-+}
++	pm_idle_enabled_cfg_val = pm_idle_enabled;
++	accel_dev = adf_devmgr_pci_to_accel_dev(to_pci_dev(dev));
++	if (!accel_dev)
++		return -EINVAL;
 +
- int adf_gen4_dev_config(struct adf_accel_dev *accel_dev)
- {
- 	char services[ADF_CFG_MAX_VAL_LEN_IN_BYTES] = {0};
-@@ -266,11 +295,15 @@ int adf_gen4_dev_config(struct adf_accel_dev *accel_dev)
++	if (adf_dev_started(accel_dev)) {
++		dev_info(dev, "Device qat_dev%d must be down to set pm_idle_enabled.\n",
++			 accel_dev->accel_id);
++		return -EINVAL;
++	}
++
++	ret = adf_cfg_add_key_value_param(accel_dev, ADF_GENERAL_SEC,
++					  ADF_PM_IDLE_SUPPORT, &pm_idle_enabled_cfg_val,
++					  ADF_DEC);
++	if (ret)
++		return ret;
++
++	return count;
++}
++static DEVICE_ATTR_RW(pm_idle_enabled);
++
+ static DEVICE_ATTR_RW(state);
+ static DEVICE_ATTR_RW(cfg_services);
  
- 	switch (ret) {
- 	case DEV_CFG_CY:
-+	case DEV_CFG_ASYM_SYM:
- 		ret = adf_crypto_dev_config(accel_dev);
- 		break;
- 	case DEV_CFG_DC:
- 		ret = adf_comp_dev_config(accel_dev);
- 		break;
-+	default:
-+		ret = adf_no_dev_config(accel_dev);
-+		break;
- 	}
- 
- 	if (ret)
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h b/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h
-index 5d8c3bdb258c..b6a9abe6d98c 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h
-+++ b/drivers/crypto/intel/qat/qat_common/adf_cfg_strings.h
-@@ -25,6 +25,13 @@
- #define ADF_DC "Dc"
- #define ADF_CFG_DC "dc"
- #define ADF_CFG_CY "sym;asym"
-+#define ADF_CFG_SYM "sym"
-+#define ADF_CFG_ASYM "asym"
-+#define ADF_CFG_ASYM_SYM "asym;sym"
-+#define ADF_CFG_ASYM_DC "asym;dc"
-+#define ADF_CFG_DC_ASYM "dc;asym"
-+#define ADF_CFG_SYM_DC "sym;dc"
-+#define ADF_CFG_DC_SYM "dc;sym"
- #define ADF_SERVICES_ENABLED "ServicesEnabled"
- #define ADF_ETRMGR_COALESCING_ENABLED "InterruptCoalescingEnabled"
- #define ADF_ETRMGR_COALESCING_ENABLED_FORMAT \
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_sysfs.c b/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
-index 3eb6611ab1b1..b2ec92322dd8 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
-+++ b/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
-@@ -78,6 +78,13 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
- static const char * const services_operations[] = {
- 	ADF_CFG_CY,
- 	ADF_CFG_DC,
-+	ADF_CFG_SYM,
-+	ADF_CFG_ASYM,
-+	ADF_CFG_ASYM_SYM,
-+	ADF_CFG_ASYM_DC,
-+	ADF_CFG_DC_ASYM,
-+	ADF_CFG_SYM_DC,
-+	ADF_CFG_DC_SYM,
+ static struct attribute *qat_attrs[] = {
+ 	&dev_attr_state.attr,
+ 	&dev_attr_cfg_services.attr,
++	&dev_attr_pm_idle_enabled.attr,
+ 	NULL,
  };
  
- static ssize_t cfg_services_show(struct device *dev, struct device_attribute *attr,
+
+base-commit: 6b5755b35497de5e8ed17772f7b0dd1bbe19cbee
 -- 
-2.40.1
+2.39.2
 
