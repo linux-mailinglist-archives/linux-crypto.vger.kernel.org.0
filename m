@@ -2,106 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA6A728194
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jun 2023 15:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A7D729221
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Jun 2023 10:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbjFHNk0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 8 Jun 2023 09:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
+        id S239668AbjFIIDd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 9 Jun 2023 04:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236123AbjFHNkZ (ORCPT
+        with ESMTP id S239891AbjFIIDG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 8 Jun 2023 09:40:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154BA1BE4;
-        Thu,  8 Jun 2023 06:40:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 9 Jun 2023 04:03:06 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819A24EF9
+        for <linux-crypto@vger.kernel.org>; Fri,  9 Jun 2023 01:01:30 -0700 (PDT)
+Received: from localhost (mdns.lwn.net [45.79.72.68])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A4FA64DB6;
-        Thu,  8 Jun 2023 13:40:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AACC1C4339B;
-        Thu,  8 Jun 2023 13:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686231623;
-        bh=bCCtO5GAnRN8vuPTl3yHQSzQO24lOgmzrklyKcrCYls=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Gjibf96VfNysk//y1AuyPVxS+sbIqPDhGaMJCDj/TxRAk1hfCQZyD9sxRV8uo0gF9
-         1Rkg6QadOHLy+ohDcHHAieiZTpbPngIdJF4YAB/7Yq+H3hEWxEXgb7/kN60xkpFTOM
-         oiPVjLUgKZQJUH0CIT1moWIZfEI7TrwOsB4sEp4wULUeTRUXynxVi6FvSXbJ1ONmRh
-         KT0fkMfNUHv3SWSLlV/o8HB2u+m7lMoNTzIZd7mA8v0XKmxmn4Z7OI00tZcoOIsdNr
-         eJ5U754Wki5m8iH7hSa0zwhEIZ/p+yFzGXGLoY3cALeRU/jWMmblni2ZuP5yMvhxoy
-         OXw+Z/Kwy5oIA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8DB35E87232;
-        Thu,  8 Jun 2023 13:40:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by ms.lwn.net (Postfix) with ESMTPSA id 29336218;
+        Fri,  9 Jun 2023 08:00:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 29336218
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1686297611; bh=U4BRNmt6l052hCM0CBa4piomvb9Y+0lGhrlp2V3ok00=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=VOut7YpNUdMs2OEeayHc+qtj/McBHpGkosGZVry9ZCIdJCSmRbJEC1MKioVpu5QqE
+         F2eDiWhWTnx0T1xIODukZrrVGYuYBqkWUzIFTUeqtWxf3RolB9144MA5UB/+fdKvHw
+         wA5niA02LG88RUGRxqa3ApNp1Ewkhg6Qc7NHuRP17qN27+8V75bGilMqYYHuFp4OWZ
+         CgXnXVmXIBJBPDLDxZ3EaIlsE2LApDytaIvGFncNlE0RJ3m/0viYhZBcYXyVMs45Zt
+         +lWE1Hyg1jORXOxFWsoNO3mnnxtJ/8emT3Xf1qUZ0tAuHuAoGExBNOPhz/0aHLJkwA
+         KMuGYFCr/RHrQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Baruch Siach <baruch@tkos.co.il>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-crypto@vger.kernel.org, Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH] docs: crypto: async-tx-api: fix typo in struct name
+In-Reply-To: <2ef9dfaa33c1eff019e6fe43fe738700c2230b3d.1685342291.git.baruch@tkos.co.il>
+References: <2ef9dfaa33c1eff019e6fe43fe738700c2230b3d.1685342291.git.baruch@tkos.co.il>
+Date:   Fri, 09 Jun 2023 02:00:06 -0600
+Message-ID: <87jzwdoyk9.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 00/10] crypto, splice,
- net: Make AF_ALG handle sendmsg(MSG_SPLICE_PAGES)
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168623162357.14295.11722855983065901274.git-patchwork-notify@kernel.org>
-Date:   Thu, 08 Jun 2023 13:40:23 +0000
-References: <20230606130856.1970660-1-dhowells@redhat.com>
-In-Reply-To: <20230606130856.1970660-1-dhowells@redhat.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     netdev@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
-        dsahern@kernel.org, willy@infradead.org, axboe@kernel.dk,
-        linux-crypto@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello:
+Baruch Siach <baruch@tkos.co.il> writes:
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+> Add missing underscore.
+>
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  Documentation/crypto/async-tx-api.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/crypto/async-tx-api.rst b/Documentation/crypto/async-tx-api.rst
+> index bfc773991bdc..27c146b54d71 100644
+> --- a/Documentation/crypto/async-tx-api.rst
+> +++ b/Documentation/crypto/async-tx-api.rst
+> @@ -66,7 +66,7 @@ features surfaced as a result:
+>  ::
+>  
+>    struct dma_async_tx_descriptor *
+> -  async_<operation>(<op specific parameters>, struct async_submit ctl *submit)
+> +  async_<operation>(<op specific parameters>, struct async_submit_ctl *submit)
 
-On Tue,  6 Jun 2023 14:08:46 +0100 you wrote:
-> Here are patches to make AF_ALG handle the MSG_SPLICE_PAGES internal
-> sendmsg flag.  MSG_SPLICE_PAGES is an internal hint that tells the protocol
-> that it should splice the pages supplied if it can.  The sendpage functions
-> are then turned into wrappers around that.
-> 
-> This set consists of the following parts:
-> 
-> [...]
+Applied, thanks.
 
-Here is the summary with links:
-  - [net-next,v3,01/10] Drop the netfs_ prefix from netfs_extract_iter_to_sg()
-    https://git.kernel.org/netdev/net-next/c/0d7aeb68700f
-  - [net-next,v3,02/10] Fix a couple of spelling mistakes
-    https://git.kernel.org/netdev/net-next/c/3b9e9f72badf
-  - [net-next,v3,03/10] Wrap lines at 80
-    https://git.kernel.org/netdev/net-next/c/936dc763c52e
-  - [net-next,v3,04/10] Move netfs_extract_iter_to_sg() to lib/scatterlist.c
-    https://git.kernel.org/netdev/net-next/c/f5f82cd18732
-  - [net-next,v3,05/10] crypto: af_alg: Pin pages rather than ref'ing if appropriate
-    https://git.kernel.org/netdev/net-next/c/f9e7a5fa51fb
-  - [net-next,v3,06/10] crypto: af_alg: Use extract_iter_to_sg() to create scatterlists
-    https://git.kernel.org/netdev/net-next/c/c1abe6f570af
-  - [net-next,v3,07/10] crypto: af_alg: Indent the loop in af_alg_sendmsg()
-    https://git.kernel.org/netdev/net-next/c/73d7409cfdad
-  - [net-next,v3,08/10] crypto: af_alg: Support MSG_SPLICE_PAGES
-    https://git.kernel.org/netdev/net-next/c/bf63e250c4b1
-  - [net-next,v3,09/10] crypto: af_alg: Convert af_alg_sendpage() to use MSG_SPLICE_PAGES
-    https://git.kernel.org/netdev/net-next/c/fb800fa4c1f5
-  - [net-next,v3,10/10] crypto: af_alg/hash: Support MSG_SPLICE_PAGES
-    https://git.kernel.org/netdev/net-next/c/c662b043cdca
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+jon
