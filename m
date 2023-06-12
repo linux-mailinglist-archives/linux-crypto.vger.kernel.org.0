@@ -2,873 +2,196 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE6372BB5C
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jun 2023 10:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66D772BDC6
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jun 2023 11:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbjFLIyX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-crypto@lfdr.de>); Mon, 12 Jun 2023 04:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
+        id S235000AbjFLJ5U (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 12 Jun 2023 05:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbjFLIxl (ORCPT
+        with ESMTP id S235329AbjFLJzO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 12 Jun 2023 04:53:41 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2141C3A94;
-        Mon, 12 Jun 2023 01:52:41 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 577B624E271;
-        Mon, 12 Jun 2023 16:52:40 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 12 Jun
- 2023 16:52:40 +0800
-Received: from ubuntu.localdomain (202.188.176.82) by EXMBX068.cuchost.com
- (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 12 Jun
- 2023 16:52:37 +0800
-From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-Subject: [PATCH v3 2/2] crypto: starfive - Add RSA algo support
-Date:   Mon, 12 Jun 2023 16:52:30 +0800
-Message-ID: <20230612085230.193507-3-jiajie.ho@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230612085230.193507-1-jiajie.ho@starfivetech.com>
-References: <20230612085230.193507-1-jiajie.ho@starfivetech.com>
+        Mon, 12 Jun 2023 05:55:14 -0400
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0654D1739
+        for <linux-crypto@vger.kernel.org>; Mon, 12 Jun 2023 02:40:53 -0700 (PDT)
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-77a13410773so529055339f.3
+        for <linux-crypto@vger.kernel.org>; Mon, 12 Jun 2023 02:40:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686562852; x=1689154852;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GeDlNqlqujyIZPYPMyB8rAGwsdFvFmX14tVYLhI79Ew=;
+        b=i1NCfsjUmn2X56E1sIE6Dp/CIx7DJ7hj1EN/vhNfXGwionKtfiJX09Asihbzsn+Ujm
+         7B15CFl5M43a9Aefb76USkVX/g1rNC6vfD2EswZOVDhurknIVT08wmWgepFPWtL4fk4s
+         rr/yUzOtGZxtovYfyQ2F3kQcGo8q78CkC/3bUWwUEEhTThY6wXVVWKkit7CbBL3HqINR
+         4TGaE3yADio9Hrgl+IyqvvEnH6n5TC02CUiNpZjB4h9YpW5v6jxDXubeuWCYnwXscEWZ
+         eJOz7dBdJe06i4jSouGpjaJFSxuQEyxCqQwQk+KE2kuvCZSFSyMIo9Iwg1/YndD7Mu1T
+         lK1Q==
+X-Gm-Message-State: AC+VfDwxmsaIyqqrsrUFllOi38B8AgC05YCwTEwAZV803Pt9U9A8W05k
+        GXTSmbxw6zXtrI4TtkRyS6SVA/j8wOmlcXeyNMxwxxgQQVMK
+X-Google-Smtp-Source: ACHHUZ5wOKfbH2v0C1wBmVKZfkRjEmJ4VBrUIwZS1RnykohbboUyLC7lPr2hYqhhFeeJx4MDRg81OHJN6ls4oI6ON2i0Zwz8YCg+
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX068.cuchost.com
- (172.16.6.68)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a6b:5b13:0:b0:770:16ed:c4e5 with SMTP id
+ v19-20020a6b5b13000000b0077016edc4e5mr3571910ioh.3.1686562852393; Mon, 12 Jun
+ 2023 02:40:52 -0700 (PDT)
+Date:   Mon, 12 Jun 2023 02:40:52 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b55d8805fdeb8385@google.com>
+Subject: [syzbot] [crypto?] general protection fault in shash_async_export
+From:   syzbot <syzbot+472626bb5e7c59fb768f@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Adding RSA enc/dec and sign/verify feature for StarFive cryptographic
-module. The module only supports mod sizes up to 2048, therefore
-calculations more than that will use fallback algo.
+Hello,
 
-Co-developed-by: Huan Feng <huan.feng@starfivetech.com>
-Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
+syzbot found the following issue on:
+
+HEAD commit:    37ff78e977f1 mlxsw: spectrum_nve_vxlan: Fix unsupported fl..
+git tree:       net-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15a22943280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=526f919910d4a671
+dashboard link: https://syzkaller.appspot.com/bug?extid=472626bb5e7c59fb768f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133e0463280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1543e995280000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/41e829152d3c/disk-37ff78e9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a594b97acb02/vmlinux-37ff78e9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b41140b53372/bzImage-37ff78e9.xz
+
+The issue was bisected to:
+
+commit c662b043cdca89bf0f03fc37251000ac69a3a548
+Author: David Howells <dhowells@redhat.com>
+Date:   Tue Jun 6 13:08:56 2023 +0000
+
+    crypto: af_alg/hash: Support MSG_SPLICE_PAGES
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15c78453280000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17c78453280000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13c78453280000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+472626bb5e7c59fb768f@syzkaller.appspotmail.com
+Fixes: c662b043cdca ("crypto: af_alg/hash: Support MSG_SPLICE_PAGES")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+CPU: 1 PID: 5002 Comm: syz-executor421 Not tainted 6.4.0-rc5-syzkaller-00859-g37ff78e977f1 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
+RIP: 0010:crypto_shash_alg include/crypto/hash.h:827 [inline]
+RIP: 0010:crypto_shash_export include/crypto/hash.h:956 [inline]
+RIP: 0010:shash_async_export+0x47/0xa0 crypto/shash.c:389
+Code: 00 fc ff df 4c 89 e2 48 c1 ea 03 80 3c 02 00 75 4e 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 50 48 8d 7b 20 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 40 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d
+RSP: 0018:ffffc900038afd20 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000004 RSI: ffffffff83df0723 RDI: 0000000000000020
+RBP: 0000000000000010 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 000000000000064d R12: ffff8880766612f8
+R13: 0000000000000001 R14: ffff888077e0aa00 R15: ffff88802927ea48
+FS:  00005555557db300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f069bf4bfd8 CR3: 00000000773e6000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ crypto_ahash_export include/crypto/hash.h:523 [inline]
+ hash_accept+0x229/0x670 crypto/algif_hash.c:286
+ hash_accept_nokey+0x67/0x90 crypto/algif_hash.c:416
+ do_accept+0x380/0x510 net/socket.c:1883
+ __sys_accept4_file net/socket.c:1924 [inline]
+ __sys_accept4+0x9a/0x120 net/socket.c:1954
+ __do_sys_accept net/socket.c:1971 [inline]
+ __se_sys_accept net/socket.c:1968 [inline]
+ __x64_sys_accept+0x75/0xb0 net/socket.c:1968
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f069bf04c39
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc03b39588 EFLAGS: 00000246 ORIG_RAX: 000000000000002b
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f069bf04c39
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00007f069bec8de0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f069bec8e70
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:crypto_shash_alg include/crypto/hash.h:827 [inline]
+RIP: 0010:crypto_shash_export include/crypto/hash.h:956 [inline]
+RIP: 0010:shash_async_export+0x47/0xa0 crypto/shash.c:389
+Code: 00 fc ff df 4c 89 e2 48 c1 ea 03 80 3c 02 00 75 4e 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 50 48 8d 7b 20 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 40 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d
+RSP: 0018:ffffc900038afd20 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000004 RSI: ffffffff83df0723 RDI: 0000000000000020
+RBP: 0000000000000010 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 000000000000064d R12: ffff8880766612f8
+R13: 0000000000000001 R14: ffff888077e0aa00 R15: ffff88802927ea48
+FS:  00005555557db300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000558cc7d83000 CR3: 00000000773e6000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 3 bytes skipped:
+   0:	df 4c 89 e2          	fisttps -0x1e(%rcx,%rcx,4)
+   4:	48 c1 ea 03          	shr    $0x3,%rdx
+   8:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   c:	75 4e                	jne    0x5c
+   e:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  15:	fc ff df
+  18:	48 8b 5b 50          	mov    0x50(%rbx),%rbx
+  1c:	48 8d 7b 20          	lea    0x20(%rbx),%rdi
+  20:	48 89 fa             	mov    %rdi,%rdx
+  23:	48 c1 ea 03          	shr    $0x3,%rdx
+* 27:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2b:	75 40                	jne    0x6d
+  2d:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  34:	fc ff df
+  37:	48 8b 5b 20          	mov    0x20(%rbx),%rbx
+  3b:	48                   	rex.W
+  3c:	8d                   	.byte 0x8d
+
+
 ---
- drivers/crypto/starfive/Kconfig       |   1 +
- drivers/crypto/starfive/Makefile      |   2 +-
- drivers/crypto/starfive/jh7110-cryp.c |  20 +-
- drivers/crypto/starfive/jh7110-cryp.h |  45 ++
- drivers/crypto/starfive/jh7110-rsa.c  | 617 ++++++++++++++++++++++++++
- 5 files changed, 683 insertions(+), 2 deletions(-)
- create mode 100644 drivers/crypto/starfive/jh7110-rsa.c
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/crypto/starfive/Kconfig b/drivers/crypto/starfive/Kconfig
-index 59002abcc0ad..df745fcb09df 100644
---- a/drivers/crypto/starfive/Kconfig
-+++ b/drivers/crypto/starfive/Kconfig
-@@ -11,6 +11,7 @@ config CRYPTO_DEV_JH7110
- 	select CRYPTO_SHA256
- 	select CRYPTO_SHA512
- 	select CRYPTO_SM3_GENERIC
-+	select CRYPTO_RSA
- 	help
- 	  Support for StarFive JH7110 crypto hardware acceleration engine.
- 	  This module provides acceleration for public key algo,
-diff --git a/drivers/crypto/starfive/Makefile b/drivers/crypto/starfive/Makefile
-index 2af49062e36d..98b01d2f1ccf 100644
---- a/drivers/crypto/starfive/Makefile
-+++ b/drivers/crypto/starfive/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_CRYPTO_DEV_JH7110) += jh7110-crypto.o
--jh7110-crypto-objs := jh7110-cryp.o jh7110-hash.o
-+jh7110-crypto-objs := jh7110-cryp.o jh7110-hash.o jh7110-rsa.o
-diff --git a/drivers/crypto/starfive/jh7110-cryp.c b/drivers/crypto/starfive/jh7110-cryp.c
-index 279b19f51cb4..cc43556b6c80 100644
---- a/drivers/crypto/starfive/jh7110-cryp.c
-+++ b/drivers/crypto/starfive/jh7110-cryp.c
-@@ -86,10 +86,19 @@ static irqreturn_t starfive_cryp_irq(int irq, void *priv)
- 
- 	status = readl(cryp->base + STARFIVE_IE_FLAG_OFFSET);
- 	if (status & STARFIVE_IE_FLAG_HASH_DONE) {
--		writel(STARFIVE_IE_MASK_HASH_DONE, cryp->base + STARFIVE_IE_MASK_OFFSET);
-+		status = readl(cryp->base + STARFIVE_IE_MASK_OFFSET);
-+		status |= STARFIVE_IE_MASK_HASH_DONE;
-+		writel(status, cryp->base + STARFIVE_IE_MASK_OFFSET);
- 		tasklet_schedule(&cryp->hash_done);
- 	}
- 
-+	if (status & STARFIVE_IE_FLAG_PKA_DONE) {
-+		status = readl(cryp->base + STARFIVE_IE_MASK_OFFSET);
-+		status |= STARFIVE_IE_MASK_PKA_DONE;
-+		writel(status, cryp->base + STARFIVE_IE_MASK_OFFSET);
-+		complete(&cryp->pka_done);
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -132,6 +141,8 @@ static int starfive_cryp_probe(struct platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, PTR_ERR(cryp->rst),
- 				     "Error getting hardware reset line\n");
- 
-+	init_completion(&cryp->pka_done);
-+
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0)
- 		return irq;
-@@ -173,8 +184,14 @@ static int starfive_cryp_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_algs_hash;
- 
-+	ret = starfive_rsa_register_algs();
-+	if (ret)
-+		goto err_algs_rsa;
-+
- 	return 0;
- 
-+err_algs_rsa:
-+	starfive_hash_unregister_algs();
- err_algs_hash:
- 	crypto_engine_stop(cryp->engine);
- err_engine_start:
-@@ -200,6 +217,7 @@ static int starfive_cryp_remove(struct platform_device *pdev)
- 	struct starfive_cryp_dev *cryp = platform_get_drvdata(pdev);
- 
- 	starfive_hash_unregister_algs();
-+	starfive_rsa_unregister_algs();
- 
- 	tasklet_kill(&cryp->hash_done);
- 
-diff --git a/drivers/crypto/starfive/jh7110-cryp.h b/drivers/crypto/starfive/jh7110-cryp.h
-index 021d6e24bc86..0cdcffc0d7d4 100644
---- a/drivers/crypto/starfive/jh7110-cryp.h
-+++ b/drivers/crypto/starfive/jh7110-cryp.h
-@@ -18,7 +18,9 @@
- #define STARFIVE_DMA_OUT_LEN_OFFSET		0x14
- 
- #define STARFIVE_IE_MASK_HASH_DONE		0x4
-+#define STARFIVE_IE_MASK_PKA_DONE		0x8
- #define STARFIVE_IE_FLAG_HASH_DONE		0x4
-+#define STARFIVE_IE_FLAG_PKA_DONE		0x8
- 
- #define STARFIVE_MSG_BUFFER_SIZE		SZ_16K
- #define MAX_KEY_SIZE				SHA512_BLOCK_SIZE
-@@ -54,6 +56,39 @@ union starfive_hash_csr {
- 	};
- };
- 
-+union starfive_pka_cacr {
-+	u32 v;
-+	struct {
-+		u32 start			:1;
-+		u32 reset			:1;
-+		u32 ie				:1;
-+		u32 rsvd_0			:1;
-+		u32 fifo_mode			:1;
-+		u32 not_r2			:1;
-+		u32 ecc_sub			:1;
-+		u32 pre_expf			:1;
-+		u32 cmd				:4;
-+		u32 rsvd_1			:1;
-+		u32 ctrl_dummy			:1;
-+		u32 ctrl_false			:1;
-+		u32 cln_done			:1;
-+		u32 opsize			:6;
-+		u32 rsvd_2			:2;
-+		u32 exposize			:6;
-+		u32 rsvd_3			:1;
-+		u32 bigendian			:1;
-+	};
-+};
-+
-+struct starfive_rsa_key {
-+	u8	*n;
-+	u8	*e;
-+	u8	*d;
-+	int	e_bitlen;
-+	int	d_bitlen;
-+	int	bitlen;
-+	size_t	key_sz;
-+};
- 
- union starfive_alg_cr {
- 	u32 v;
-@@ -78,6 +113,8 @@ struct starfive_cryp_ctx {
- 	u8					key[MAX_KEY_SIZE];
- 	int					keylen;
- 	bool					is_hmac;
-+	struct starfive_rsa_key			rsa_key;
-+	struct crypto_akcipher			*akcipher_fbk;
- 	struct crypto_ahash			*ahash_fbk;
- };
- 
-@@ -98,6 +135,7 @@ struct starfive_cryp_dev {
- 	struct dma_slave_config			cfg_out;
- 	struct crypto_engine			*engine;
- 	struct tasklet_struct			hash_done;
-+	struct completion			pka_done;
- 	int					err;
- 	union starfive_alg_cr			alg_cr;
- 	union {
-@@ -108,14 +146,18 @@ struct starfive_cryp_dev {
- struct starfive_cryp_request_ctx {
- 	union {
- 		union starfive_hash_csr		hash;
-+		union starfive_pka_cacr		pka;
- 	} csr;
- 
- 	struct scatterlist			*in_sg;
-+	struct scatterlist			*out_sg;
- 	struct ahash_request			ahash_fbk_req;
- 	size_t					total;
-+	size_t					nents;
- 	unsigned int				blksize;
- 	unsigned int				digsize;
- 	unsigned long				in_sg_len;
-+	u8 rsa_data[] __aligned(sizeof(u32));
- };
- 
- struct starfive_cryp_dev *starfive_cryp_find_dev(struct starfive_cryp_ctx *ctx);
-@@ -123,5 +165,8 @@ struct starfive_cryp_dev *starfive_cryp_find_dev(struct starfive_cryp_ctx *ctx);
- int starfive_hash_register_algs(void);
- void starfive_hash_unregister_algs(void);
- 
-+int starfive_rsa_register_algs(void);
-+void starfive_rsa_unregister_algs(void);
-+
- void starfive_hash_done_task(unsigned long param);
- #endif
-diff --git a/drivers/crypto/starfive/jh7110-rsa.c b/drivers/crypto/starfive/jh7110-rsa.c
-new file mode 100644
-index 000000000000..f31bbd825f88
---- /dev/null
-+++ b/drivers/crypto/starfive/jh7110-rsa.c
-@@ -0,0 +1,617 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * StarFive Public Key Algo acceleration driver
-+ *
-+ * Copyright (c) 2022 StarFive Technology
-+ */
-+
-+#include <linux/crypto.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/dma-direct.h>
-+#include <linux/interrupt.h>
-+#include <linux/iopoll.h>
-+#include <linux/io.h>
-+#include <linux/mod_devicetable.h>
-+#include <crypto/akcipher.h>
-+#include <crypto/algapi.h>
-+#include <crypto/internal/akcipher.h>
-+#include <crypto/internal/rsa.h>
-+#include <crypto/scatterwalk.h>
-+
-+#include "jh7110-cryp.h"
-+
-+#define STARFIVE_PKA_REGS_OFFSET	0x400
-+#define STARFIVE_PKA_CACR_OFFSET	(STARFIVE_PKA_REGS_OFFSET + 0x0)
-+#define STARFIVE_PKA_CASR_OFFSET	(STARFIVE_PKA_REGS_OFFSET + 0x4)
-+#define STARFIVE_PKA_CAAR_OFFSET	(STARFIVE_PKA_REGS_OFFSET + 0x8)
-+#define STARFIVE_PKA_CAER_OFFSET	(STARFIVE_PKA_REGS_OFFSET + 0x108)
-+#define STARFIVE_PKA_CANR_OFFSET	(STARFIVE_PKA_REGS_OFFSET + 0x208)
-+
-+// R^2 mod N and N0'
-+#define CRYPTO_CMD_PRE			0x0
-+// A * R mod N   ==> A
-+#define CRYPTO_CMD_ARN			0x5
-+// A * E * R mod N ==> A
-+#define CRYPTO_CMD_AERN			0x6
-+// A * A * R mod N ==> A
-+#define CRYPTO_CMD_AARN			0x7
-+
-+#define STARFIVE_RSA_MAX_KEYSZ		256
-+#define STARFIVE_RSA_RESET		0x2
-+
-+static inline int starfive_pka_wait_done(struct starfive_cryp_ctx *ctx)
-+{
-+	struct starfive_cryp_dev *cryp = ctx->cryp;
-+
-+	return wait_for_completion_timeout(&cryp->pka_done,
-+					   usecs_to_jiffies(100000));
-+}
-+
-+static inline void starfive_pka_irq_mask_clear(struct starfive_cryp_ctx *ctx)
-+{
-+	struct starfive_cryp_dev *cryp = ctx->cryp;
-+	u32 stat;
-+
-+	stat = readl(cryp->base + STARFIVE_IE_MASK_OFFSET);
-+	stat &= ~STARFIVE_IE_MASK_PKA_DONE;
-+	writel(stat, cryp->base + STARFIVE_IE_MASK_OFFSET);
-+
-+	reinit_completion(&cryp->pka_done);
-+}
-+
-+static void starfive_rsa_free_key(struct starfive_rsa_key *key)
-+{
-+	if (key->d)
-+		kfree_sensitive(key->d);
-+	if (key->e)
-+		kfree_sensitive(key->e);
-+	if (key->n)
-+		kfree_sensitive(key->n);
-+	memset(key, 0, sizeof(*key));
-+}
-+
-+static unsigned int starfive_rsa_get_nbit(u8 *pa, u32 snum, int key_sz)
-+{
-+	u32 i;
-+	u8 value;
-+
-+	i = snum >> 3;
-+
-+	value = pa[key_sz - i - 1];
-+	value >>= snum & 0x7;
-+	value &= 0x1;
-+
-+	return value;
-+}
-+
-+static int starfive_rsa_montgomery_form(struct starfive_cryp_ctx *ctx,
-+					u32 *out, u32 *in, u8 mont,
-+					u32 *mod, int bit_len)
-+{
-+	struct starfive_cryp_dev *cryp = ctx->cryp;
-+	struct starfive_cryp_request_ctx *rctx = ctx->rctx;
-+	int count = rctx->total / sizeof(u32) - 1;
-+	int loop;
-+	u32 temp;
-+	u8 opsize;
-+
-+	opsize = (bit_len - 1) >> 5;
-+	rctx->csr.pka.v = 0;
-+
-+	writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+	for (loop = 0; loop <= opsize; loop++)
-+		writel(mod[opsize - loop], cryp->base + STARFIVE_PKA_CANR_OFFSET + loop * 4);
-+
-+	if (mont) {
-+		rctx->csr.pka.v = 0;
-+		rctx->csr.pka.cln_done = 1;
-+		rctx->csr.pka.opsize = opsize;
-+		rctx->csr.pka.exposize = opsize;
-+		rctx->csr.pka.cmd = CRYPTO_CMD_PRE;
-+		rctx->csr.pka.start = 1;
-+		rctx->csr.pka.not_r2 = 1;
-+		rctx->csr.pka.ie = 1;
-+
-+		starfive_pka_irq_mask_clear(ctx);
-+		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+		if (!starfive_pka_wait_done(ctx))
-+			return -ETIMEDOUT;
-+
-+		for (loop = 0; loop <= opsize; loop++)
-+			writel(in[opsize - loop], cryp->base + STARFIVE_PKA_CAAR_OFFSET + loop * 4);
-+
-+		writel(0x1000000, cryp->base + STARFIVE_PKA_CAER_OFFSET);
-+
-+		for (loop = 1; loop <= opsize; loop++)
-+			writel(0, cryp->base + STARFIVE_PKA_CAER_OFFSET + loop * 4);
-+
-+		rctx->csr.pka.v = 0;
-+		rctx->csr.pka.cln_done = 1;
-+		rctx->csr.pka.opsize = opsize;
-+		rctx->csr.pka.exposize = opsize;
-+		rctx->csr.pka.cmd = CRYPTO_CMD_AERN;
-+		rctx->csr.pka.start = 1;
-+		rctx->csr.pka.ie = 1;
-+
-+		starfive_pka_irq_mask_clear(ctx);
-+		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+		if (!starfive_pka_wait_done(ctx))
-+			return -ETIMEDOUT;
-+	} else {
-+		rctx->csr.pka.v = 0;
-+		rctx->csr.pka.cln_done = 1;
-+		rctx->csr.pka.opsize = opsize;
-+		rctx->csr.pka.exposize = opsize;
-+		rctx->csr.pka.cmd = CRYPTO_CMD_PRE;
-+		rctx->csr.pka.start = 1;
-+		rctx->csr.pka.pre_expf = 1;
-+		rctx->csr.pka.ie = 1;
-+
-+		starfive_pka_irq_mask_clear(ctx);
-+		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+		if (!starfive_pka_wait_done(ctx))
-+			return -ETIMEDOUT;
-+
-+		for (loop = 0; loop <= count; loop++)
-+			writel(in[count - loop], cryp->base + STARFIVE_PKA_CAER_OFFSET + loop * 4);
-+
-+		/*pad with 0 up to opsize*/
-+		for (loop = count + 1; loop <= opsize; loop++)
-+			writel(0, cryp->base + STARFIVE_PKA_CAER_OFFSET + loop * 4);
-+
-+		rctx->csr.pka.v = 0;
-+		rctx->csr.pka.cln_done = 1;
-+		rctx->csr.pka.opsize = opsize;
-+		rctx->csr.pka.exposize = opsize;
-+		rctx->csr.pka.cmd = CRYPTO_CMD_ARN;
-+		rctx->csr.pka.start = 1;
-+		rctx->csr.pka.ie = 1;
-+
-+		starfive_pka_irq_mask_clear(ctx);
-+		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+		if (!starfive_pka_wait_done(ctx))
-+			return -ETIMEDOUT;
-+	}
-+
-+	for (loop = 0; loop <= opsize; loop++) {
-+		temp = readl(cryp->base + STARFIVE_PKA_CAAR_OFFSET + 0x4 * loop);
-+		out[opsize - loop] = temp;
-+	}
-+
-+	return 0;
-+}
-+
-+static int starfive_rsa_cpu_start(struct starfive_cryp_ctx *ctx, u32 *result,
-+				  u8 *de, u32 *n, int key_sz)
-+{
-+	struct starfive_cryp_dev *cryp = ctx->cryp;
-+	struct starfive_cryp_request_ctx *rctx = ctx->rctx;
-+	struct starfive_rsa_key *key = &ctx->rsa_key;
-+	u32 temp;
-+	int ret = 0;
-+	int opsize, mlen, loop;
-+	unsigned int *mta;
-+
-+	opsize = (key_sz - 1) >> 2;
-+
-+	mta = kmalloc(key_sz, GFP_KERNEL);
-+	if (!mta)
-+		return -ENOMEM;
-+
-+	ret = starfive_rsa_montgomery_form(ctx, mta, (u32 *)rctx->rsa_data,
-+					   0, n, key_sz << 3);
-+	if (ret) {
-+		dev_err_probe(cryp->dev, ret, "Conversion to Montgomery failed");
-+		goto rsa_err;
-+	}
-+
-+	for (loop = 0; loop <= opsize; loop++)
-+		writel(mta[opsize - loop],
-+		       cryp->base + STARFIVE_PKA_CAER_OFFSET + loop * 4);
-+
-+	for (loop = key->bitlen - 1; loop > 0; loop--) {
-+		mlen = starfive_rsa_get_nbit(de, loop - 1, key_sz);
-+
-+		rctx->csr.pka.v = 0;
-+		rctx->csr.pka.cln_done = 1;
-+		rctx->csr.pka.opsize = opsize;
-+		rctx->csr.pka.exposize = opsize;
-+		rctx->csr.pka.cmd = CRYPTO_CMD_AARN;
-+		rctx->csr.pka.start = 1;
-+		rctx->csr.pka.ie = 1;
-+
-+		starfive_pka_irq_mask_clear(ctx);
-+		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+		ret = -ETIMEDOUT;
-+		if (!starfive_pka_wait_done(ctx))
-+			goto rsa_err;
-+
-+		if (mlen) {
-+			rctx->csr.pka.v = 0;
-+			rctx->csr.pka.cln_done = 1;
-+			rctx->csr.pka.opsize = opsize;
-+			rctx->csr.pka.exposize = opsize;
-+			rctx->csr.pka.cmd = CRYPTO_CMD_AERN;
-+			rctx->csr.pka.start = 1;
-+			rctx->csr.pka.ie = 1;
-+
-+			starfive_pka_irq_mask_clear(ctx);
-+			writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+			if (!starfive_pka_wait_done(ctx))
-+				goto rsa_err;
-+		}
-+	}
-+
-+	for (loop = 0; loop <= opsize; loop++) {
-+		temp = readl(cryp->base + STARFIVE_PKA_CAAR_OFFSET + 0x4 * loop);
-+		result[opsize - loop] = temp;
-+	}
-+
-+	ret = starfive_rsa_montgomery_form(ctx, result, result, 1, n, key_sz << 3);
-+	if (ret)
-+		dev_err_probe(cryp->dev, ret, "Conversion from Montgomery failed");
-+rsa_err:
-+	kfree(mta);
-+	return ret;
-+}
-+
-+static int starfive_rsa_start(struct starfive_cryp_ctx *ctx, u8 *result,
-+			      u8 *de, u8 *n, int key_sz)
-+{
-+	return starfive_rsa_cpu_start(ctx, (u32 *)result, de, (u32 *)n, key_sz);
-+}
-+
-+static int starfive_rsa_enc_core(struct starfive_cryp_ctx *ctx, int enc)
-+{
-+	struct starfive_cryp_dev *cryp = ctx->cryp;
-+	struct starfive_cryp_request_ctx *rctx = ctx->rctx;
-+	struct starfive_rsa_key *key = &ctx->rsa_key;
-+	int ret = 0;
-+
-+	writel(STARFIVE_RSA_RESET, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+
-+	rctx->total = sg_copy_to_buffer(rctx->in_sg, rctx->nents,
-+					rctx->rsa_data, rctx->total);
-+
-+	if (enc) {
-+		key->bitlen = key->e_bitlen;
-+		ret = starfive_rsa_start(ctx, rctx->rsa_data, key->e,
-+					 key->n, key->key_sz);
-+	} else {
-+		key->bitlen = key->d_bitlen;
-+		ret = starfive_rsa_start(ctx, rctx->rsa_data, key->d,
-+					 key->n, key->key_sz);
-+	}
-+
-+	if (ret)
-+		goto err_rsa_crypt;
-+
-+	sg_copy_buffer(rctx->out_sg, sg_nents(rctx->out_sg),
-+		       rctx->rsa_data, key->key_sz, 0, 0);
-+
-+err_rsa_crypt:
-+	writel(STARFIVE_RSA_RESET, cryp->base + STARFIVE_PKA_CACR_OFFSET);
-+	kfree(rctx->rsa_data);
-+	return ret;
-+}
-+
-+static int starfive_rsa_enc(struct akcipher_request *req)
-+{
-+	struct crypto_akcipher *tfm = crypto_akcipher_reqtfm(req);
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+	struct starfive_cryp_dev *cryp = ctx->cryp;
-+	struct starfive_rsa_key *key = &ctx->rsa_key;
-+	struct starfive_cryp_request_ctx *rctx = akcipher_request_ctx(req);
-+	int ret;
-+
-+	if (!key->key_sz) {
-+		akcipher_request_set_tfm(req, ctx->akcipher_fbk);
-+		ret = crypto_akcipher_encrypt(req);
-+		akcipher_request_set_tfm(req, tfm);
-+		return ret;
-+	}
-+
-+	if (unlikely(!key->n || !key->e))
-+		return -EINVAL;
-+
-+	if (req->dst_len < key->key_sz)
-+		return dev_err_probe(cryp->dev, -EOVERFLOW,
-+				     "Output buffer length less than parameter n\n");
-+
-+	rctx->in_sg = req->src;
-+	rctx->out_sg = req->dst;
-+	rctx->total = req->src_len;
-+	rctx->nents = sg_nents(rctx->in_sg);
-+	ctx->rctx = rctx;
-+
-+	return starfive_rsa_enc_core(ctx, 1);
-+}
-+
-+static int starfive_rsa_dec(struct akcipher_request *req)
-+{
-+	struct crypto_akcipher *tfm = crypto_akcipher_reqtfm(req);
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+	struct starfive_cryp_dev *cryp = ctx->cryp;
-+	struct starfive_rsa_key *key = &ctx->rsa_key;
-+	struct starfive_cryp_request_ctx *rctx = akcipher_request_ctx(req);
-+	int ret;
-+
-+	if (!key->key_sz) {
-+		akcipher_request_set_tfm(req, ctx->akcipher_fbk);
-+		ret = crypto_akcipher_decrypt(req);
-+		akcipher_request_set_tfm(req, tfm);
-+		return ret;
-+	}
-+
-+	if (unlikely(!key->n || !key->d))
-+		return -EINVAL;
-+
-+	if (req->dst_len < key->key_sz)
-+		return dev_err_probe(cryp->dev, -EOVERFLOW,
-+				     "Output buffer length less than parameter n\n");
-+
-+	rctx->in_sg = req->src;
-+	rctx->out_sg = req->dst;
-+	ctx->rctx = rctx;
-+	rctx->total = req->src_len;
-+
-+	return starfive_rsa_enc_core(ctx, 0);
-+}
-+
-+static int starfive_rsa_set_n(struct starfive_rsa_key *rsa_key,
-+			      const char *value, size_t vlen)
-+{
-+	const char *ptr = value;
-+	unsigned int bitslen;
-+	int ret;
-+
-+	while (!*ptr && vlen) {
-+		ptr++;
-+		vlen--;
-+	}
-+	rsa_key->key_sz = vlen;
-+	bitslen = rsa_key->key_sz << 3;
-+
-+	/* check valid key size */
-+	if (bitslen & 0x1f)
-+		return -EINVAL;
-+
-+	ret = -ENOMEM;
-+	rsa_key->n = kmemdup(ptr, rsa_key->key_sz, GFP_KERNEL);
-+	if (!rsa_key->n)
-+		goto err;
-+
-+	return 0;
-+ err:
-+	rsa_key->key_sz = 0;
-+	rsa_key->n = NULL;
-+	starfive_rsa_free_key(rsa_key);
-+	return ret;
-+}
-+
-+static int starfive_rsa_set_e(struct starfive_rsa_key *rsa_key,
-+			      const char *value, size_t vlen)
-+{
-+	const char *ptr = value;
-+	unsigned char pt;
-+	int loop;
-+
-+	while (!*ptr && vlen) {
-+		ptr++;
-+		vlen--;
-+	}
-+	pt = *ptr;
-+
-+	if (!rsa_key->key_sz || !vlen || vlen > rsa_key->key_sz) {
-+		rsa_key->e = NULL;
-+		return -EINVAL;
-+	}
-+
-+	rsa_key->e = kzalloc(rsa_key->key_sz, GFP_KERNEL);
-+	if (!rsa_key->e)
-+		return -ENOMEM;
-+
-+	for (loop = 8; loop > 0; loop--) {
-+		if (pt >> (loop - 1))
-+			break;
-+	}
-+
-+	rsa_key->e_bitlen = (vlen - 1) * 8 + loop;
-+
-+	memcpy(rsa_key->e + (rsa_key->key_sz - vlen), ptr, vlen);
-+
-+	return 0;
-+}
-+
-+static int starfive_rsa_set_d(struct starfive_rsa_key *rsa_key,
-+			      const char *value, size_t vlen)
-+{
-+	const char *ptr = value;
-+	unsigned char pt;
-+	int loop;
-+	int ret;
-+
-+	while (!*ptr && vlen) {
-+		ptr++;
-+		vlen--;
-+	}
-+	pt = *ptr;
-+
-+	ret = -EINVAL;
-+	if (!rsa_key->key_sz || !vlen || vlen > rsa_key->key_sz)
-+		goto err;
-+
-+	ret = -ENOMEM;
-+	rsa_key->d = kzalloc(rsa_key->key_sz, GFP_KERNEL);
-+	if (!rsa_key->d)
-+		goto err;
-+
-+	for (loop = 8; loop > 0; loop--) {
-+		if (pt >> (loop - 1))
-+			break;
-+	}
-+
-+	rsa_key->d_bitlen = (vlen - 1) * 8 + loop;
-+
-+	memcpy(rsa_key->d + (rsa_key->key_sz - vlen), ptr, vlen);
-+
-+	return 0;
-+ err:
-+	rsa_key->d = NULL;
-+	return ret;
-+}
-+
-+static int starfive_rsa_setkey(struct crypto_akcipher *tfm, const void *key,
-+			       unsigned int keylen, bool private)
-+{
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+	struct rsa_key raw_key = {NULL};
-+	struct starfive_rsa_key *rsa_key = &ctx->rsa_key;
-+	int ret;
-+
-+	if (private)
-+		ret = rsa_parse_priv_key(&raw_key, key, keylen);
-+	else
-+		ret = rsa_parse_pub_key(&raw_key, key, keylen);
-+	if (ret < 0)
-+		goto err;
-+
-+	starfive_rsa_free_key(rsa_key);
-+
-+	/* Use fallback for mod > 256 + 1 byte prefix */
-+	if (raw_key.n_sz > STARFIVE_RSA_MAX_KEYSZ + 1)
-+		return 0;
-+
-+	ret = starfive_rsa_set_n(rsa_key, raw_key.n, raw_key.n_sz);
-+	if (ret)
-+		return ret;
-+
-+	ret = starfive_rsa_set_e(rsa_key, raw_key.e, raw_key.e_sz);
-+	if (ret)
-+		goto err;
-+
-+	if (private) {
-+		ret = starfive_rsa_set_d(rsa_key, raw_key.d, raw_key.d_sz);
-+		if (ret)
-+			goto err;
-+	}
-+
-+	if (!rsa_key->n || !rsa_key->e) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	if (private && !rsa_key->d) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	return 0;
-+ err:
-+	starfive_rsa_free_key(rsa_key);
-+	return ret;
-+}
-+
-+static int starfive_rsa_set_pub_key(struct crypto_akcipher *tfm, const void *key,
-+				    unsigned int keylen)
-+{
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+	int ret;
-+
-+	ret = crypto_akcipher_set_pub_key(ctx->akcipher_fbk, key, keylen);
-+	if (ret)
-+		return ret;
-+
-+	return starfive_rsa_setkey(tfm, key, keylen, false);
-+}
-+
-+static int starfive_rsa_set_priv_key(struct crypto_akcipher *tfm, const void *key,
-+				     unsigned int keylen)
-+{
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+	int ret;
-+
-+	ret = crypto_akcipher_set_priv_key(ctx->akcipher_fbk, key, keylen);
-+	if (ret)
-+		return ret;
-+
-+	return starfive_rsa_setkey(tfm, key, keylen, true);
-+}
-+
-+static unsigned int starfive_rsa_max_size(struct crypto_akcipher *tfm)
-+{
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+
-+	if (ctx->rsa_key.key_sz)
-+		return ctx->rsa_key.key_sz;
-+
-+	return crypto_akcipher_maxsize(ctx->akcipher_fbk);
-+}
-+
-+static int starfive_rsa_init_tfm(struct crypto_akcipher *tfm)
-+{
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+
-+	ctx->akcipher_fbk = crypto_alloc_akcipher("rsa-generic", 0, 0);
-+	if (IS_ERR(ctx->akcipher_fbk))
-+		return PTR_ERR(ctx->akcipher_fbk);
-+
-+	ctx->cryp = starfive_cryp_find_dev(ctx);
-+	if (!ctx->cryp) {
-+		crypto_free_akcipher(ctx->akcipher_fbk);
-+		return -ENODEV;
-+	}
-+
-+	akcipher_set_reqsize(tfm, sizeof(struct starfive_cryp_request_ctx) +
-+			     sizeof(struct crypto_akcipher) + 32);
-+
-+	return 0;
-+}
-+
-+static void starfive_rsa_exit_tfm(struct crypto_akcipher *tfm)
-+{
-+	struct starfive_cryp_ctx *ctx = akcipher_tfm_ctx(tfm);
-+	struct starfive_rsa_key *key = (struct starfive_rsa_key *)&ctx->rsa_key;
-+
-+	crypto_free_akcipher(ctx->akcipher_fbk);
-+	starfive_rsa_free_key(key);
-+}
-+
-+static struct akcipher_alg starfive_rsa = {
-+	.encrypt = starfive_rsa_enc,
-+	.decrypt = starfive_rsa_dec,
-+	.sign = starfive_rsa_dec,
-+	.verify = starfive_rsa_enc,
-+	.set_pub_key = starfive_rsa_set_pub_key,
-+	.set_priv_key = starfive_rsa_set_priv_key,
-+	.max_size = starfive_rsa_max_size,
-+	.init = starfive_rsa_init_tfm,
-+	.exit = starfive_rsa_exit_tfm,
-+	.base = {
-+		.cra_name = "rsa",
-+		.cra_driver_name = "starfive-rsa",
-+		.cra_flags = CRYPTO_ALG_TYPE_AKCIPHER |
-+			     CRYPTO_ALG_NEED_FALLBACK,
-+		.cra_priority = 3000,
-+		.cra_module = THIS_MODULE,
-+		.cra_ctxsize = sizeof(struct starfive_cryp_ctx),
-+	},
-+};
-+
-+int starfive_rsa_register_algs(void)
-+{
-+	return crypto_register_akcipher(&starfive_rsa);
-+}
-+
-+void starfive_rsa_unregister_algs(void)
-+{
-+	crypto_unregister_akcipher(&starfive_rsa);
-+}
--- 
-2.34.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
