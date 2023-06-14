@@ -2,44 +2,53 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D749172F78D
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 Jun 2023 10:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039B372F9C0
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 Jun 2023 11:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237322AbjFNIPz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 14 Jun 2023 04:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
+        id S234949AbjFNJu5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 14 Jun 2023 05:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242635AbjFNIPx (ORCPT
+        with ESMTP id S232233AbjFNJtl (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 14 Jun 2023 04:15:53 -0400
-Received: from mail.ettrick.pl (mail.ettrick.pl [141.94.21.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C8ADF
-        for <linux-crypto@vger.kernel.org>; Wed, 14 Jun 2023 01:15:51 -0700 (PDT)
-Received: by mail.ettrick.pl (Postfix, from userid 1002)
-        id 60238A7701; Wed, 14 Jun 2023 08:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ettrick.pl; s=mail;
-        t=1686730324; bh=ZOVeXw1jXE9TbyZP9aLdRwM96AORcRfum8b+rry5JMw=;
-        h=Date:From:To:Subject:From;
-        b=Hf11EabYbDjZoYdHQVtpvcpGiAGJp7wkZV3/mm4G2KWs1sp4Cqaqe7H2g6ExU3lOf
-         TDFvFIBG3GyOQaE44Zem+7K3tYSkQLfLx5JpGbVuAZNSTzM26lfaxhHW637J6WON21
-         Im9Q39MbJa2lWqerZ2Fa2BjkMa/3bI66VxdobiYcMAN2aYeYCSE5kpZgwQyEB2w+0y
-         s3/dJRnWnPXHU01u+YM910gL3Q+oE5lxX/fxDRX6CwIZkr9mcMrKfMme7gFceztosy
-         dUPW3pr7GqNH9szRdnu+8+kjmyurPAKyMkM4DGJLc/nK5e9tff+4bZGsNz9BnXXXL0
-         cz3DkzewQLtAg==
-Received: by mail.ettrick.pl for <linux-crypto@vger.kernel.org>; Wed, 14 Jun 2023 08:10:39 GMT
-Message-ID: <20230614064500-0.1.b7.4hjl8.0.n8obp5rfep@ettrick.pl>
-Date:   Wed, 14 Jun 2023 08:10:39 GMT
-From:   "Norbert Karecki" <norbert.karecki@ettrick.pl>
-To:     <linux-crypto@vger.kernel.org>
-Subject: Fotowoltaika- propozycja instalacji
-X-Mailer: mail.ettrick.pl
+        Wed, 14 Jun 2023 05:49:41 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A84A2940;
+        Wed, 14 Jun 2023 02:49:15 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1q9N7b-002omX-Tc; Wed, 14 Jun 2023 17:49:01 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 14 Jun 2023 17:48:59 +0800
+Date:   Wed, 14 Jun 2023 17:48:59 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "meenakshi.aggarwal@nxp.com" <meenakshi.aggarwal@nxp.com>,
+        "horia.geanta@nxp.com" <horia.geanta@nxp.com>,
+        "V.sethi@nxp.com" <V.sethi@nxp.com>,
+        "pankaj.gupta@nxp.com" <pankaj.gupta@nxp.com>,
+        "gaurav.jain@nxp.com" <gaurav.jain@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iuliana.prodan@nxp.com" <iuliana.prodan@nxp.com>,
+        lucas.segarra.fernandez@intel.com
+Subject: Re: [PATCH 0/5] Remove CRYPTO_ALG_ALLOCATES_MEMORY flag
+Message-ID: <ZImNC6KUNHquVAnZ@gondor.apana.org.au>
+References: <20230523153421.1528359-1-meenakshi.aggarwal@nxp.com>
+ <20230523165503.GA864814@google.com>
+ <ZHh0DF4meU2ze+g7@gondor.apana.org.au>
+ <ZHh/zqNu7XzwJTl5@gcabiddu-mobl1.ger.corp.intel.com>
+ <ZILvtASXQKLG43y9@gondor.apana.org.au>
+ <ZIQ3OKYyOcwRIOLR@gcabiddu-mobl1.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_ABUSE_SURBL,URIBL_BLOCKED,
-        URIBL_CSS_A autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZIQ3OKYyOcwRIOLR@gcabiddu-mobl1.ger.corp.intel.com>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,23 +56,15 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dzie=C5=84 dobry,
-=20
-Czy rozwa=C5=BCali Pa=C5=84stwo monta=C5=BC systemu fotowoltaicznego?
-=20
-Instalacja fotowoltaiczna jest najlepszym sposobem na obni=C5=BCenie wyso=
-ko=C5=9Bci rachunk=C3=B3w za pr=C4=85d (pozostaj=C4=85 tylko op=C5=82aty =
-sta=C5=82e) i zabezpieczenie si=C4=99 przed rosn=C4=85cymi cenami energii=
- elektrycznej. Jest to w pe=C5=82ni odnawialne i bezemisyjne =C5=BAr=C3=B3=
-d=C5=82o energii, dzi=C4=99ki czemu przyczyniamy si=C4=99 do ochrony =C5=9B=
-rodowiska naturalnego.
-=20
-Dzia=C5=82amy od wielu lat na rynku energetycznym. Przygotujemy projekt, =
-wycen=C4=99 oraz kompleksowo wykonamy i zg=C5=82osimy realizacj=C4=99 do =
-zak=C5=82adu energetycznego.=20
-=20
-Czy chc=C4=85 Pa=C5=84stwo pozna=C4=87 nasz=C4=85 propozycj=C4=99? =20
+On Sat, Jun 10, 2023 at 09:41:28AM +0100, Giovanni Cabiddu wrote:
+>
+> If you all agree, I can send a patch to remove CRYPTO_ALG_ALLOCATES_MEMORY
+> from dm-integrity and update the documentation in crypto.h.
 
+Yes please.
 
-Pozdrawiam,
-Norbert Karecki
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
