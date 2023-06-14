@@ -2,112 +2,120 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9DA73060E
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 Jun 2023 19:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE502730641
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 Jun 2023 19:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbjFNR1E (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 14 Jun 2023 13:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
+        id S233341AbjFNRrL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 14 Jun 2023 13:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjFNR1D (ORCPT
+        with ESMTP id S235725AbjFNRqx (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 14 Jun 2023 13:27:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05B1CE;
-        Wed, 14 Jun 2023 10:27:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C4C164519;
-        Wed, 14 Jun 2023 17:27:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A045C433C8;
-        Wed, 14 Jun 2023 17:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686763621;
-        bh=tHs6KrXSqtk9yeuEJiqSNT/vtZdNW3ETcAB6guHg7WU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mYYtwnOitRVyLFNh5M+PzFRqn+W1WiWFify2Bm0q+klywjo1ZFBW6Rzv91a9b2xv9
-         rlmQvj3DhWSHfcZq040Krh0vzIeY2uFb5jonCb3/UFdQvwC6dfOTkkbgRIT60snI8z
-         SZ1p7+iSvoWiZRAyRwPhHi6kPtqcIQmbb413RZN2CE+lX04WLEW+nklEUiFtYyvuvR
-         F2wHUo+9ikx0en4SqiYGrYL1ZcK/1L/x+WicI+1vMAwrR1q2Heck+KVYZW+na+My20
-         8F1CzM+nV8RnYYGN5umL57RdQ1HUorbFVxXQdl2TWVWNjmqW3u6M3+Wp+H9I6y8H0B
-         fFG9yoEAkLpPA==
-Date:   Wed, 14 Jun 2023 18:26:56 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        Wed, 14 Jun 2023 13:46:53 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361C71720
+        for <linux-crypto@vger.kernel.org>; Wed, 14 Jun 2023 10:46:52 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3f8c5d0b19dso10504975e9.1
+        for <linux-crypto@vger.kernel.org>; Wed, 14 Jun 2023 10:46:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1686764810; x=1689356810;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lzvZItVXWj7Fm3dpt0cy7Q1fFjOE2nErFj2dQ042GeY=;
+        b=hmsYpe5ougKzE7tgwwFGqBa1AOzW8K6nhqS+tC9vYUxsKM+47j2X7imD+RxXv1SLF4
+         J1LynbR1DYW5St42KMIqbxHKt33vNT9EFHG1h8nJAJZ2EFdZ/ThE7qvdSklbUX6RgeST
+         dRODVPz0wMP2thPYEo6iPxpUfwyWyV+GQLNTscXHwPWWKjZvqDZTewq/GiBoCcu4oGgm
+         pQM//vXikTp14Vebbl3xOv0zDd1pBZhNW4bxiMaXF/DBhmjbaliwTkPvshHJs8bE9RG+
+         YkCTMTmljrWU9t1CKUeOe1a1KUEeBCxlOYIgFUhdyjmmKvD3oMNkuEAdawaVO5KbZdyy
+         L/Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686764810; x=1689356810;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lzvZItVXWj7Fm3dpt0cy7Q1fFjOE2nErFj2dQ042GeY=;
+        b=cjjcrHCNa0ws0wexmWlvmZQctEN939MIo9fYIimginp0ftLtuc6qKp+rqEEB0RpSkq
+         cxSBCF+3vEaB7JdSeBR6ur5/h6qQ3SQe4xEBkKl1xem/M7e89Axkn3bRqtg0o1ximRPn
+         JkkhVtCNB6GRvTvYzyMEEm0Pfs/0l+vYM/QgdvoOJN6j2z9Gfl5EyHrckeiGS+MEBHHE
+         GpLasA/x/uX5vF0hd0vfcUup0xBRJM6sEhOq60d48yBsw0+8sa5M5KjxrgcPKWGmCiKM
+         lEP42+ADDAVZDQaP6X0LrnIBMIznmEUY8PvgTkUa+JpqnClBu8gY3YAcsP6o6LoQky/e
+         sDnA==
+X-Gm-Message-State: AC+VfDyHJ8NtXGseeCtUJcbNCCZbpeydih2+aC8Lj3rhzahaqRvIcS0H
+        CNHhHjUyW7Au+KHqaAoUfMhi3ac5USmOdOmv5TI=
+X-Google-Smtp-Source: ACHHUZ4hja7oRvWwXVXRpEQrYEDib7oARRRdvU+GnBSdcfg64rhKwiAWYejr1P6GOrV9050gfRUVmw==
+X-Received: by 2002:a5d:68c4:0:b0:30f:c601:63d9 with SMTP id p4-20020a5d68c4000000b0030fc60163d9mr6644634wrw.65.1686764810661;
+        Wed, 14 Jun 2023 10:46:50 -0700 (PDT)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id m4-20020a056000180400b0030633152664sm18738740wrh.87.2023.06.14.10.46.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jun 2023 10:46:50 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: crypto: fsl,sec-v4.0-mon: Add
- "linux,keycodes" and deprecate "linux,keycode"
-Message-ID: <20230614-glutton-crispy-0d9588a97a1c@spud>
-References: <20230613201231.2826352-1-robh@kernel.org>
- <20230613201231.2826352-2-robh@kernel.org>
- <20230613-sculptor-prepaid-9dc5afcc2dcc@spud>
- <CAL_JsqJFT630XJ8xOrz47w5bMbGv12koCHc1NdhQQANdTrE4ow@mail.gmail.com>
+Cc:     Dmitry Safonov <dima@arista.com>,
+        Bob Gilligan <gilligan@arista.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH-next 0/3] crypto: cmac - clone fixes
+Date:   Wed, 14 Jun 2023 18:46:40 +0100
+Message-Id: <20230614174643.3836590-1-dima@arista.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VXxm4yyUB67FoBNX"
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJFT630XJ8xOrz47w5bMbGv12koCHc1NdhQQANdTrE4ow@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Make cipher cloning possible in atomic contexts + prevent use-after-free
+on the crypto algorithm.
+Those seems to be all pitfalls I found while adapting TCP-AO patches to
+use crypto clone-tfm and dropping per-CPU requests allocations.
 
---VXxm4yyUB67FoBNX
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: Bob Gilligan <gilligan@arista.com>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Francesco Ruggeri <fruggeri05@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Salam Noureddine <noureddine@arista.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 08:53:20AM -0600, Rob Herring wrote:
-> On Tue, Jun 13, 2023 at 3:11=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Tue, Jun 13, 2023 at 02:12:30PM -0600, Rob Herring wrote:
-> > > The "linux,keycode" property is non-standard. Add the common property
-> > > "linux,keycodes" and mark "linux,keycode" deprecated so that the mist=
-ake
-> > > is not propagated.
-> >
-> > This is actually used in the driver for this device, should the driver
-> > not also be updated to use the corrected property?
->=20
-> Yes, but that doesn't have to be in sync with the binding change. I
-> mainly want to add this so it doesn't get propagated to new users
-> rather than move this case off of linux,keycode. Also, the input
-> subsystem should probably have a common function to read
-> linux,keycodes as right now every driver does it.
+Thanks,
+            Dmitry
 
-Perhaps one of the nxp folk in the audience should have a crack at that
-so.
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Dmitry Safonov (3):
+  crypto: api - Remove crypto_init_ops()
+  crypto: api - Provide gfp mask for tfm allocation
+  crypto: cipher - On clone do crypto_mod_get()
 
-Cheers,
-Conor.
+ crypto/algapi.c         |  2 +-
+ crypto/api.c            | 20 +++-----------------
+ crypto/cipher.c         |  9 +++++++--
+ crypto/internal.h       |  2 +-
+ include/crypto/algapi.h |  1 -
+ 5 files changed, 12 insertions(+), 22 deletions(-)
 
---VXxm4yyUB67FoBNX
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+base-commit: b16049b21162bb649cdd8519642a35972b7910fe
+-- 
+2.40.0
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZIn4YAAKCRB4tDGHoIJi
-0mYJAP9NnubJj0eeMfBXxo/XcEhHExe5uV2X4Jg0JhiJjuCw3QEAkatNfHZgwayd
-i52+9Wk5qljnuBEjJBHurt08neXyqAk=
-=Ke7L
------END PGP SIGNATURE-----
-
---VXxm4yyUB67FoBNX--
