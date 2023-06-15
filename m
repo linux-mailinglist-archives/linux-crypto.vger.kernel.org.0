@@ -2,148 +2,134 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAE37312EE
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jun 2023 11:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139D473135F
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jun 2023 11:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240530AbjFOJBZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 15 Jun 2023 05:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        id S240422AbjFOJRV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 15 Jun 2023 05:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241071AbjFOJBY (ORCPT
+        with ESMTP id S238942AbjFOJRU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Jun 2023 05:01:24 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC6A1FCC;
-        Thu, 15 Jun 2023 02:01:21 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1q9iqZ-003Fs9-GC; Thu, 15 Jun 2023 17:00:52 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 15 Jun 2023 17:00:51 +0800
-Date:   Thu, 15 Jun 2023 17:00:51 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org, Bob Gilligan <gilligan@arista.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        linux-crypto@vger.kernel.org
-Subject: [v2 PATCH] crypto: api - Add __crypto_alloc_tfmgfp
-Message-ID: <ZIrTQ1tN5LMuRB/5@gondor.apana.org.au>
-References: <20230614174643.3836590-1-dima@arista.com>
- <20230614174643.3836590-3-dima@arista.com>
+        Thu, 15 Jun 2023 05:17:20 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B61FFF
+        for <linux-crypto@vger.kernel.org>; Thu, 15 Jun 2023 02:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686820635; x=1718356635;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+102agyAT071SQItX3BAM1KckZ5MVn/E/jFwivIKVAA=;
+  b=Voy/csoX3eHS6fxOr77ZBzSVygCjeTemkv5yr0Zwlx+0ST3HpGa6OU2N
+   /Bmr0cjcf/N5/bGOdAWEnaWQ4v2Ek4m0o3kI3Ji9nFd2zbnG3cn54avEb
+   3CYSQ5kQKLT5EkzqphP2scPAjDoX8exK16gThVmz3aWM3qtWtbQzUgoVT
+   jP8mgmlUIi5E5YySiMlO51YVYNSGx8yBXXAQpjxbfYwZEMKiLC3jxupHL
+   jggcVyRx5WANYt7G4rl8FfNeTic93hAiKN0VPH5g/J2a/BjcuCFGUq1Qt
+   je+ooykLmGop97KgI5SSnp1kJUhafQbMVIeFpO3HARPyuoEU2/h96FxQr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10741"; a="356350644"
+X-IronPort-AV: E=Sophos;i="6.00,244,1681196400"; 
+   d="scan'208";a="356350644"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2023 02:17:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10741"; a="782456103"
+X-IronPort-AV: E=Sophos;i="6.00,244,1681196400"; 
+   d="scan'208";a="782456103"
+Received: from r031s002_zp31l10c01.gv.intel.com (HELO localhost.localdomain) ([10.219.171.29])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Jun 2023 02:17:14 -0700
+From:   Damian Muszynski <damian.muszynski@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Damian Muszynski <damian.muszynski@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 0/4] crypto: qat - add heartbeat feature
+Date:   Thu, 15 Jun 2023 11:04:33 +0200
+Message-Id: <20230615090437.436796-1-damian.muszynski@intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230614174643.3836590-3-dima@arista.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 06:46:42PM +0100, Dmitry Safonov wrote:
-> Use it straight away in crypto_clone_cipher(), as that is not meant to
-> sleep.
-> 
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> ---
->  crypto/algapi.c   | 2 +-
->  crypto/api.c      | 6 +++---
->  crypto/cipher.c   | 2 +-
->  crypto/internal.h | 2 +-
->  4 files changed, 6 insertions(+), 6 deletions(-)
+This set introduces support for the QAT heartbeat feature. It allows
+detection whenever device firmware or acceleration unit will hang.
+We're adding this feature to allow our clients having a tool with
+they could verify if all of the Quick Assist hardware resources are
+healthy and operational.
 
-Good catch.  Though I'd rather add the gfp argument to a separate
-function because I'm in the process of replacing ciphers with
-something that uses the new crypto_types API.
+QAT device firmware periodically writes counters to a specified physical
+memory location. A pair of counters per thread is incremented at
+the start and end of the main processing loop within the firmware.
+Checking for Heartbeat consists of checking the validity of the pair
+of counter values for each thread. Stagnant counters indicate
+a firmware hang.
 
-Once that happens ciphers will switch over to the normal cloning
-call and this can be removed.
+The first patch removes historical and never used HB definitions.
+Patch no. 2 is implementing the hardware clock frequency measuring
+interface.
+The third introduces the main heartbeat implementation with the debugfs
+interface.
+The last patch implements an algorithm that allows the code to detect
+which version of heartbeat API is used at the currently loaded firmware.
 
----8<---
-Use it straight away in crypto_clone_cipher(), as that is not meant to
-sleep.
+Signed-off-by: Damian Muszynski <damian.muszynski@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Fixes: 51d8d6d0f4be ("crypto: cipher - Add crypto_clone_cipher")
-Signed-off-by: Dmitry Safonov <dima@arista.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Damian Muszynski (4):
+  crypto: qat - drop obsolete heartbeat interface
+  crypto: qat - add measure clock frequency
+  crypto: qat - add heartbeat feature
+  crypto: qat - add heartbeat counters check
 
-diff --git a/crypto/api.c b/crypto/api.c
-index d375e8cd770d..9007b33e1108 100644
---- a/crypto/api.c
-+++ b/crypto/api.c
-@@ -395,15 +395,15 @@ void crypto_shoot_alg(struct crypto_alg *alg)
- }
- EXPORT_SYMBOL_GPL(crypto_shoot_alg);
- 
--struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
--				      u32 mask)
-+struct crypto_tfm *__crypto_alloc_tfmgfp(struct crypto_alg *alg, u32 type,
-+					 u32 mask, gfp_t gfp)
- {
- 	struct crypto_tfm *tfm = NULL;
- 	unsigned int tfm_size;
- 	int err = -ENOMEM;
- 
- 	tfm_size = sizeof(*tfm) + crypto_ctxsize(alg, type, mask);
--	tfm = kzalloc(tfm_size, GFP_KERNEL);
-+	tfm = kzalloc(tfm_size, gfp);
- 	if (tfm == NULL)
- 		goto out_err;
- 
-@@ -430,6 +430,13 @@ struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
- out:
- 	return tfm;
- }
-+EXPORT_SYMBOL_GPL(__crypto_alloc_tfmgfp);
-+
-+struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
-+				      u32 mask)
-+{
-+	return __crypto_alloc_tfmgfp(alg, type, mask, GFP_KERNEL);
-+}
- EXPORT_SYMBOL_GPL(__crypto_alloc_tfm);
- 
- /*
-diff --git a/crypto/cipher.c b/crypto/cipher.c
-index d39ef5f72ab8..a5a88038f0d6 100644
---- a/crypto/cipher.c
-+++ b/crypto/cipher.c
-@@ -101,8 +101,8 @@ struct crypto_cipher *crypto_clone_cipher(struct crypto_cipher *cipher)
- 	if (alg->cra_init)
- 		return ERR_PTR(-ENOSYS);
- 
--	ntfm = __crypto_alloc_tfm(alg, CRYPTO_ALG_TYPE_CIPHER,
--				  CRYPTO_ALG_TYPE_MASK);
-+	ntfm = __crypto_alloc_tfmgfp(alg, CRYPTO_ALG_TYPE_CIPHER,
-+				     CRYPTO_ALG_TYPE_MASK, GFP_ATOMIC);
- 	if (IS_ERR(ntfm))
- 		return ERR_CAST(ntfm);
- 
-diff --git a/crypto/internal.h b/crypto/internal.h
-index 024c2c795f59..12c50b7e7d87 100644
---- a/crypto/internal.h
-+++ b/crypto/internal.h
-@@ -118,6 +118,8 @@ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
- 			  struct crypto_alg *nalg);
- void crypto_remove_final(struct list_head *list);
- void crypto_shoot_alg(struct crypto_alg *alg);
-+struct crypto_tfm *__crypto_alloc_tfmgfp(struct crypto_alg *alg, u32 type,
-+					 u32 mask, gfp_t gfp);
- struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
- 				      u32 mask);
- void *crypto_create_tfm_node(struct crypto_alg *alg,
+ Documentation/ABI/testing/debugfs-driver-qat  |  51 +++
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     |  11 +
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.h     |   4 +
+ drivers/crypto/intel/qat/qat_4xxx/adf_drv.c   |   3 +
+ .../intel/qat/qat_c3xxx/adf_c3xxx_hw_data.c   |  28 ++
+ .../intel/qat/qat_c3xxx/adf_c3xxx_hw_data.h   |   7 +
+ .../intel/qat/qat_c62x/adf_c62x_hw_data.c     |  28 ++
+ .../intel/qat/qat_c62x/adf_c62x_hw_data.h     |   7 +
+ drivers/crypto/intel/qat/qat_common/Makefile  |   3 +
+ .../intel/qat/qat_common/adf_accel_devices.h  |  10 +
+ .../crypto/intel/qat/qat_common/adf_admin.c   |  31 ++
+ .../intel/qat/qat_common/adf_cfg_strings.h    |   2 +
+ .../crypto/intel/qat/qat_common/adf_clock.c   | 127 +++++++
+ .../crypto/intel/qat/qat_common/adf_clock.h   |  14 +
+ .../intel/qat/qat_common/adf_common_drv.h     |   2 +
+ .../crypto/intel/qat/qat_common/adf_dbgfs.c   |   9 +-
+ .../intel/qat/qat_common/adf_gen2_config.c    |   7 +
+ .../intel/qat/qat_common/adf_gen2_hw_data.h   |   3 +
+ .../intel/qat/qat_common/adf_gen4_hw_data.h   |   3 +
+ .../intel/qat/qat_common/adf_heartbeat.c      | 327 ++++++++++++++++++
+ .../intel/qat/qat_common/adf_heartbeat.h      |  79 +++++
+ .../qat/qat_common/adf_heartbeat_dbgfs.c      | 194 +++++++++++
+ .../qat/qat_common/adf_heartbeat_dbgfs.h      |  12 +
+ .../crypto/intel/qat/qat_common/adf_init.c    |  15 +
+ .../qat/qat_common/icp_qat_fw_init_admin.h    |  20 +-
+ .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.c   |  13 +
+ .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.h   |   5 +
+ 27 files changed, 998 insertions(+), 17 deletions(-)
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_clock.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_clock.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat_dbgfs.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat_dbgfs.h
+
+
+base-commit: 926f061ec16ed195331e950755fd74c897aefef3
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.40.1
+
