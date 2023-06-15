@@ -2,69 +2,132 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D498C7318BE
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jun 2023 14:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2738731827
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jun 2023 14:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344910AbjFOMQp (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 15 Jun 2023 08:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
+        id S231163AbjFOMIu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 15 Jun 2023 08:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344849AbjFOMP7 (ORCPT
+        with ESMTP id S239056AbjFOMIs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 15 Jun 2023 08:15:59 -0400
-Received: from mail.sitirkam.com (mail.aurorateknoglobal.com [103.126.10.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF782967;
-        Thu, 15 Jun 2023 05:15:15 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.sitirkam.com (Postfix) with ESMTP id CBFD64E7BE89;
-        Thu, 15 Jun 2023 08:32:09 +0700 (WIB)
-Received: from mail.sitirkam.com ([127.0.0.1])
-        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 9PEOXuiK4TdS; Thu, 15 Jun 2023 08:32:09 +0700 (WIB)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.sitirkam.com (Postfix) with ESMTP id AAB384E7BAAC;
-        Thu, 15 Jun 2023 08:32:00 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.sitirkam.com AAB384E7BAAC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sitirkam.com;
-        s=B8AB377C-ED3B-11EA-8736-9248CAEF674E; t=1686792720;
-        bh=q7vDHy+gLAr4GKZUDI+hjt8I93kvW09nNmGJORUTyfg=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=N3NjQucfB1d8dBLppq5WOh9bTmxlsSrZrD1Gp71hr+LTWwbArUSVM7dMpgM62Owhl
-         W7LBChAaU70l8BlUjF4S2JZZJFtwsCOBwua8836eYRoa8Lqqpa2Hw04ZGd/1B/v+a5
-         fzJQU7cq6lc5swJnNLTYAWsmOIHSXKVid9vWBYGNfM538yXPWLew+hTSVQtaFH/o0M
-         nMiRwINVYUTxeSu7wJyzj0uVbDnMICisnE5XL3+d5nhoQOYiunftxFKReM8NRDd5sG
-         yowX8M3Y2OHoU/sj3hD5ZHU9YTzZ6ncO5H4tm5/qRcWb21gS098lmuJcQk7NSpD31f
-         UgRlXu+cxXLwQ==
-X-Virus-Scanned: amavisd-new at mail.sitirkam.com
-Received: from mail.sitirkam.com ([127.0.0.1])
-        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id g4cxxQwKGqiU; Thu, 15 Jun 2023 08:32:00 +0700 (WIB)
-Received: from [185.169.4.111] (unknown [185.169.4.111])
-        by mail.sitirkam.com (Postfix) with ESMTPSA id 30EFE4E7BABB;
-        Thu, 15 Jun 2023 08:31:54 +0700 (WIB)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 15 Jun 2023 08:08:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A731D1B2
+        for <linux-crypto@vger.kernel.org>; Thu, 15 Jun 2023 05:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1686830879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BvRHsFB/oRi8HTtrrWbsQwfbB532rVXuG7TnMUDF+bc=;
+        b=ggkLwQPfJgNW3BV3KycExd8v2lhKIS/U3SY8aL7cq4OhiNaOAg9RQB+deZNajiVyHPUX59
+        56vfwWG7/qCPwJ19jj3JeS5QUf2hwKGyWFSHWrYMP+8B1YfgqHSL0RR8vtR6YOjQogLEVX
+        SDvELaEqQbS/OgkUn25TZ4QZA20VFnA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-45-z09Qo7_-MFOSQSQDj1rioA-1; Thu, 15 Jun 2023 08:07:57 -0400
+X-MC-Unique: z09Qo7_-MFOSQSQDj1rioA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3D503101CC8D;
+        Thu, 15 Jun 2023 12:07:52 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 161092026D49;
+        Thu, 15 Jun 2023 12:07:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <000000000000b2585a05fdeb8379@google.com>
+References: <000000000000b2585a05fdeb8379@google.com>
+To:     syzbot <syzbot+6efc50cc1f8d718d6cb7@syzkaller.appspotmail.com>
+Cc:     dhowells@redhat.com, davem@davemloft.net,
+        herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [crypto?] KASAN: slab-out-of-bounds Read in extract_iter_to_sg
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <89570.1686830867.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <admin@sitirkam.com>
-From:   "Maria-Elisabeth Schaeffler" <admin@sitirkam.com>
-Date:   Wed, 14 Jun 2023 18:34:01 -0700
-Reply-To: schaefflermariaelisabeth1941@gmail.com
-Message-Id: <20230615013155.30EFE4E7BABB@mail.sitirkam.com>
-X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Date:   Thu, 15 Jun 2023 13:07:47 +0100
+Message-ID: <89571.1686830867@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Your email account has been selected for a donation of =E2=82=AC1,700,000. =
-Please contact me for more information.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.g=
+it main
 
-Mrs Maria Elisabeth Schaeffler
-CEO SCHAEFFLER.
+diff --git a/fs/splice.c b/fs/splice.c
+index 67ddaac1f5c5..17d692449e83 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -886,7 +886,6 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe,=
+ struct file *out,
+ 			}
+ =
+
+ 			seg =3D min_t(size_t, remain, buf->len);
+-			seg =3D min_t(size_t, seg, PAGE_SIZE);
+ =
+
+ 			ret =3D pipe_buf_confirm(pipe, buf);
+ 			if (unlikely(ret)) {
+@@ -897,10 +896,9 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe=
+, struct file *out,
+ =
+
+ 			bvec_set_page(&bvec[bc++], buf->page, seg, buf->offset);
+ 			remain -=3D seg;
+-			if (seg >=3D buf->len)
+-				tail++;
+-			if (bc >=3D ARRAY_SIZE(bvec))
++			if (remain =3D=3D 0 || bc >=3D ARRAY_SIZE(bvec))
+ 				break;
++			tail++;
+ 		}
+ =
+
+ 		if (!bc)
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 457598dfa128..6e70839257f7 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -1041,7 +1041,8 @@ static int __ip_append_data(struct sock *sk,
+ 	} else if ((flags & MSG_SPLICE_PAGES) && length) {
+ 		if (inet->hdrincl)
+ 			return -EPERM;
+-		if (rt->dst.dev->features & NETIF_F_SG)
++		if (rt->dst.dev->features & NETIF_F_SG &&
++		    getfrag =3D=3D ip_generic_getfrag)
+ 			/* We need an empty buffer to attach stuff to */
+ 			paged =3D true;
+ 		else
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index c06ff7519f19..1e8c90e97608 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1593,7 +1593,8 @@ static int __ip6_append_data(struct sock *sk,
+ 	} else if ((flags & MSG_SPLICE_PAGES) && length) {
+ 		if (inet_sk(sk)->hdrincl)
+ 			return -EPERM;
+-		if (rt->dst.dev->features & NETIF_F_SG)
++		if (rt->dst.dev->features & NETIF_F_SG &&
++		    getfrag =3D=3D ip_generic_getfrag)
+ 			/* We need an empty buffer to attach stuff to */
+ 			paged =3D true;
+ 		else
+
