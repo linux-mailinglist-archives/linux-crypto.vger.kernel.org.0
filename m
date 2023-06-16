@@ -2,37 +2,34 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21F1733115
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jun 2023 14:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15866733143
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jun 2023 14:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344540AbjFPMXK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Jun 2023 08:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S229653AbjFPMdA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Jun 2023 08:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344622AbjFPMXI (ORCPT
+        with ESMTP id S229558AbjFPMc7 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Jun 2023 08:23:08 -0400
+        Fri, 16 Jun 2023 08:32:59 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0414730F2
-        for <linux-crypto@vger.kernel.org>; Fri, 16 Jun 2023 05:23:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F03C268A
+        for <linux-crypto@vger.kernel.org>; Fri, 16 Jun 2023 05:32:58 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qA8Ti-003oWp-Qm; Fri, 16 Jun 2023 20:22:59 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Jun 2023 20:22:58 +0800
-Date:   Fri, 16 Jun 2023 20:22:58 +0800
+        id 1qA8dJ-003ouA-AA; Fri, 16 Jun 2023 20:32:54 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Jun 2023 20:32:53 +0800
+Date:   Fri, 16 Jun 2023 20:32:53 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Damian Muszynski <damian.muszynski@intel.com>
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: Re: [PATCH] crypto: qat - add internal timer for qat 4xxx
-Message-ID: <ZIxUIjwZMHrZiDg6@gondor.apana.org.au>
-References: <20230601091340.12626-1-damian.muszynski@intel.com>
- <ZILrxDmxkHyIZ1Sw@gondor.apana.org.au>
- <ZIMVSDWXOcS6/Whg@dmuszyns-mobl.ger.corp.intel.com>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com
+Subject: Re: [RESEND 0/2] crypto: qat - unmap buffers before free
+Message-ID: <ZIxWdfxPGoyoFMTb@gondor.apana.org.au>
+References: <20230605210607.7185-1-giovanni.cabiddu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZIMVSDWXOcS6/Whg@dmuszyns-mobl.ger.corp.intel.com>
+In-Reply-To: <20230605210607.7185-1-giovanni.cabiddu@intel.com>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
@@ -44,16 +41,26 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 09, 2023 at 02:04:24PM +0200, Damian Muszynski wrote:
->
-> We considered the usage of delayed work when implementing this, but it will 
-> break functionality. Apart from scheduling the work queue, timer_handler() is 
-> incrementing a counter which keeps track of how many times the timer was scheduled.
+On Mon, Jun 05, 2023 at 10:06:05PM +0100, Giovanni Cabiddu wrote:
+> The callbacks functions for RSA and DH free the memory allocated for the
+> source and destination buffers before unmapping it.
+> This sequence is not correct.
+> 
+> Change the cleanup sequence to unmap the buffers before freeing them.
+> 
+> Resending adding Reviewed-by Andy got from an internal review.
+> 
+> Hareshx Sankar Raj (2):
+>   crypto: qat - unmap buffer before free for DH
+>   crypto: qat - unmap buffers before free for RSA
+> 
+>  .../crypto/intel/qat/qat_common/qat_asym_algs.c    | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> -- 
+> 2.40.1
 
-Please be more specific.  I don't understand why the counter can't
-be incremented in the delayed work instead of the timer.
-
-Cheers,
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
