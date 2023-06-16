@@ -2,47 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4D7732F48
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jun 2023 12:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8581732F53
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jun 2023 13:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345105AbjFPK6m (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Jun 2023 06:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        id S1344612AbjFPLB7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Jun 2023 07:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345562AbjFPK6V (ORCPT
+        with ESMTP id S1344586AbjFPLBk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Jun 2023 06:58:21 -0400
+        Fri, 16 Jun 2023 07:01:40 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A2B59F9;
-        Fri, 16 Jun 2023 03:51:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06727282;
+        Fri, 16 Jun 2023 03:55:27 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qA6vL-003mQV-Ij; Fri, 16 Jun 2023 18:43:24 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Jun 2023 18:43:23 +0800
-Date:   Fri, 16 Jun 2023 18:43:23 +0800
+        id 1qA76k-003mcA-3A; Fri, 16 Jun 2023 18:55:11 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Jun 2023 18:55:10 +0800
+Date:   Fri, 16 Jun 2023 18:55:10 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     netdev@vger.kernel.org,
-        syzbot+13a08c0bf4d212766c3c@syzkaller.appspotmail.com,
-        syzbot+14234ccf6d0ef629ec1a@syzkaller.appspotmail.com,
-        syzbot+4e2e47f32607d0f72d43@syzkaller.appspotmail.com,
-        syzbot+472626bb5e7c59fb768f@syzkaller.appspotmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] crypto: af_alg/hash: Fix recvmsg() after
- sendmsg(MSG_MORE)
-Message-ID: <ZIw8y2w+A+t5u+IJ@gondor.apana.org.au>
-References: <ZIw4+Go7ZIth+CsY@gondor.apana.org.au>
- <1679829.1686785273@warthog.procyon.org.uk>
- <426353.1686911878@warthog.procyon.org.uk>
+To:     Tom Zanussi <tom.zanussi@linux.intel.com>
+Cc:     davem@davemloft.net, fenghua.yu@intel.com, vkoul@kernel.org,
+        dave.jiang@intel.com, tony.luck@intel.com,
+        wajdi.k.feghali@intel.com, james.guilford@intel.com,
+        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
+        giovanni.cabiddu@intel.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v6 13/15] crypto: iaa - Add support for
+ deflate-iaa-canned compression algorithm
+Message-ID: <ZIw/jtxdg6O1O0j3@gondor.apana.org.au>
+References: <20230605201536.738396-1-tom.zanussi@linux.intel.com>
+ <20230605201536.738396-14-tom.zanussi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <426353.1686911878@warthog.procyon.org.uk>
+In-Reply-To: <20230605201536.738396-14-tom.zanussi@linux.intel.com>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
@@ -54,21 +48,24 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 16, 2023 at 11:37:58AM +0100, David Howells wrote:
-> Can you have a look at:
+On Mon, Jun 05, 2023 at 03:15:34PM -0500, Tom Zanussi wrote:
+> Add support for a 'canned' compression mode using the IAA compression
+> mode in-kernel API.
 > 
-> 	https://lore.kernel.org/r/415439.1686877276@warthog.procyon.org.uk/
-> 
-> I'm proposing that as an alternative to this patch.
+> The IAA 'canned' compression mode is added alongside the existing
+> 'fixed' compression mode and a crypto algorithm named
+> 'deflate-iaa-canned' is registered using it.
 
-It'd be easier to comment on it if you sent it by email.
+So you said that canned is not compatible with the generic deflate
+algorithm.  Does that mean that there is no way for it to decompress
+something compressed by the generic deflate algorithm, and vice versa
+its compressed output cannot be decompressed by generic deflate?
 
-Anyway, why did you remove the condition on hash_free_result?
-We free the result if it's not needed, not to clear the previous
-hash.  So by doing it uncondtionally you will simply end up
-freeing and reallocating the result for no good reason.
+We don't add an algorithm to the Crypto API if the only implementation
+is by hardware.  IOW if you are adding a new algorithm, then a
+software version must be the first patch.
 
-Cheers,
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
