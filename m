@@ -2,45 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60650732EA4
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jun 2023 12:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319C0732F4D
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jun 2023 12:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344913AbjFPKeB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 16 Jun 2023 06:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        id S1345607AbjFPK7M (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 16 Jun 2023 06:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344993AbjFPKdO (ORCPT
+        with ESMTP id S1345512AbjFPK6i (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 16 Jun 2023 06:33:14 -0400
+        Fri, 16 Jun 2023 06:58:38 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1888059C1;
-        Fri, 16 Jun 2023 03:28:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E855786AA;
+        Fri, 16 Jun 2023 03:51:47 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qA6fY-003lEH-TO; Fri, 16 Jun 2023 18:27:05 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Jun 2023 18:27:04 +0800
-Date:   Fri, 16 Jun 2023 18:27:04 +0800
+        id 1qA6gR-003lHK-Cz; Fri, 16 Jun 2023 18:28:00 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Jun 2023 18:27:59 +0800
+Date:   Fri, 16 Jun 2023 18:27:59 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     David Howells <dhowells@redhat.com>
 Cc:     netdev@vger.kernel.org,
-        syzbot+13a08c0bf4d212766c3c@syzkaller.appspotmail.com,
-        syzbot+14234ccf6d0ef629ec1a@syzkaller.appspotmail.com,
-        syzbot+4e2e47f32607d0f72d43@syzkaller.appspotmail.com,
-        syzbot+472626bb5e7c59fb768f@syzkaller.appspotmail.com,
+        syzbot+6efc50cc1f8d718d6cb7@syzkaller.appspotmail.com,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Matthew Wilcox <willy@infradead.org>,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] crypto: af_alg/hash: Fix recvmsg() after
- sendmsg(MSG_MORE)
-Message-ID: <ZIw4+Go7ZIth+CsY@gondor.apana.org.au>
-References: <1679829.1686785273@warthog.procyon.org.uk>
+Subject: Re: [PATCH net-next] crypto: Fix af_alg_sendmsg(MSG_SPLICE_PAGES)
+ sglist limit
+Message-ID: <ZIw5L081E2GjdLrQ@gondor.apana.org.au>
+References: <322883.1686863334@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1679829.1686785273@warthog.procyon.org.uk>
+In-Reply-To: <322883.1686863334@warthog.procyon.org.uk>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
@@ -52,39 +49,31 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Jun 15, 2023 at 12:27:53AM +0100, David Howells wrote:
->     
-> If an AF_ALG socket bound to a hashing algorithm is sent a zero-length
-> message with MSG_MORE set and then recvmsg() is called without first
-> sending another message without MSG_MORE set to end the operation, an oops
-> will occur because the crypto context and result doesn't now get set up in
-> advance because hash_sendmsg() now defers that as long as possible in the
-> hope that it can use crypto_ahash_digest() - and then because the message
-> is zero-length, it the data wrangling loop is skipped.
+On Thu, Jun 15, 2023 at 10:08:54PM +0100, David Howells wrote:
+> When af_alg_sendmsg() calls extract_iter_to_sg(), it passes MAX_SGL_ENTS as
+> the maximum number of elements that may be written to, but some of the
+> elements may already have been used (as recorded in sgl->cur), so
+> extract_iter_to_sg() may end up overrunning the scatterlist.
 > 
-> Fix this by always making a pass of the loop, even in the case that no data
-> is provided to the sendmsg().
+> Fix this to limit the number of elements to "MAX_SGL_ENTS - sgl->cur".
 > 
-> Fix also extract_iter_to_sg() to handle a zero-length iterator by returning
-> 0 immediately.
+> Note: It probably makes sense in future to alter the behaviour of
+> extract_iter_to_sg() to stop if "sgtable->nents >= sg_max" instead, but
+> this is a smaller fix for now.
 > 
-> Whilst we're at it, remove the code to create a kvmalloc'd scatterlist if
-> we get more than ALG_MAX_PAGES - this shouldn't happen.
+> The bug causes errors looking something like:
 > 
-> Fixes: c662b043cdca ("crypto: af_alg/hash: Support MSG_SPLICE_PAGES")
-> Reported-by: syzbot+13a08c0bf4d212766c3c@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/000000000000b928f705fdeb873a@google.com/
-> Reported-by: syzbot+14234ccf6d0ef629ec1a@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/000000000000c047db05fdeb8790@google.com/
-> Reported-by: syzbot+4e2e47f32607d0f72d43@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/000000000000bcca3205fdeb87fb@google.com/
-> Reported-by: syzbot+472626bb5e7c59fb768f@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/000000000000b55d8805fdeb8385@google.com/
+> BUG: KASAN: slab-out-of-bounds in sg_assign_page include/linux/scatterlist.h:109 [inline]
+> BUG: KASAN: slab-out-of-bounds in sg_set_page include/linux/scatterlist.h:139 [inline]
+> BUG: KASAN: slab-out-of-bounds in extract_bvec_to_sg lib/scatterlist.c:1183 [inline]
+> BUG: KASAN: slab-out-of-bounds in extract_iter_to_sg lib/scatterlist.c:1352 [inline]
+> BUG: KASAN: slab-out-of-bounds in extract_iter_to_sg+0x17a6/0x1960 lib/scatterlist.c:1339
+> 
+> Fixes: bf63e250c4b1 ("crypto: af_alg: Support MSG_SPLICE_PAGES")
+> Reported-by: syzbot+6efc50cc1f8d718d6cb7@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/r/000000000000b2585a05fdeb8379@google.com/
 > Signed-off-by: David Howells <dhowells@redhat.com>
-> Tested-by: syzbot+13a08c0bf4d212766c3c@syzkaller.appspotmail.com
-> Tested-by: syzbot+14234ccf6d0ef629ec1a@syzkaller.appspotmail.com
-> Tested-by: syzbot+4e2e47f32607d0f72d43@syzkaller.appspotmail.com
-> Tested-by: syzbot+472626bb5e7c59fb768f@syzkaller.appspotmail.com
+> Tested-by: syzbot+6efc50cc1f8d718d6cb7@syzkaller.appspotmail.com
 > cc: Herbert Xu <herbert@gondor.apana.org.au>
 > cc: "David S. Miller" <davem@davemloft.net>
 > cc: Eric Dumazet <edumazet@google.com>
@@ -95,9 +84,8 @@ On Thu, Jun 15, 2023 at 12:27:53AM +0100, David Howells wrote:
 > cc: linux-crypto@vger.kernel.org
 > cc: netdev@vger.kernel.org
 > ---
->  crypto/algif_hash.c |   21 +++++----------------
->  lib/scatterlist.c   |    2 +-
->  2 files changed, 6 insertions(+), 17 deletions(-)
+>  crypto/af_alg.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 
