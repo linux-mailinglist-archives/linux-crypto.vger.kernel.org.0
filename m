@@ -2,90 +2,171 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4F2734D7F
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jun 2023 10:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E712E73566B
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jun 2023 14:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbjFSIXM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 19 Jun 2023 04:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        id S229861AbjFSMGa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 19 Jun 2023 08:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjFSIXL (ORCPT
+        with ESMTP id S229618AbjFSMG2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 19 Jun 2023 04:23:11 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F4C197
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jun 2023 01:23:09 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-39e9d1bf835so2030517b6e.2
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jun 2023 01:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687162989; x=1689754989;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rJ/7Kbo9gs7zs3QTF5nFKkJrBjocKGAtdax9LA/wsFg=;
-        b=NLf6vD/d4D6D+lJPXzleg9rbn2gKSMoq11CpAwhYkVIks3leekaXGsKXSdUAm4yZ1C
-         +4YF4j6TuM18yPbH9DNO/VR5i2ViUuQiSi+YkFSky4Q25QePCkbRnJh99uhVGwMwv+8D
-         GV9a1riDUUpNw0T0yAFuFDCuAu1/Hz9gD3U092Z1A3KLI+gYBs3KWHeuOFKmCk1s6O1R
-         Ll6p3AQWfan4weJOR8lP1xiPKCM/eW53tKENszJdhypPVMv/eaUIzy/GKGWuaPNs7hd6
-         P28/JvevALvVKLvH4tBTtIx2dMTLpT3QFNNOh9+IA2d5q+MhVmgOh9NcGIUFKBYu+P3M
-         xUmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687162989; x=1689754989;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rJ/7Kbo9gs7zs3QTF5nFKkJrBjocKGAtdax9LA/wsFg=;
-        b=Dn/ZRoX2OGo9GG3L8b/m0P/pCgdkQWuMl0sWOuFCvYMqcFb8Eu/nz3NkUht+kV+ab6
-         +DV8Rmh6S6KiIra0radZIB1T3S68fzhWLL/sWcpDLXqPWc7tENf9jjCJ6/WZr5fYh8kk
-         dLCz/Gi1YaMq2PkI/qUhX2SdhjuEuP66PGrAbBiIw53sn0U40ysoAmfpwcB4WaDhCC7O
-         s6kD0yg/1kn0EsC35o6lezLNaYJf18KB5kvBNyvAeCZB1Z2agt8vSJukkIh7q5Bt8c1t
-         8Usb1NNX2e+HqmEskVAI9BccuwCS5j2gMk4pyELlNHhB3MpDRRoYYbIQm9iHmTy26+dw
-         VvQg==
-X-Gm-Message-State: AC+VfDxikhnf3kgBdxh4PGc59huyI6XHDBqqKVbibDJNCyhQsDzxrDXB
-        3be1QB8xAQRkV8BIHNwjS2sNgPkx3/K7gbXmsdU=
-X-Google-Smtp-Source: ACHHUZ7xXWI1tUNtP/JB2dF1+YgJ9pCGhDZ2nbjCMGY6bBUrWZGi7lemw+OtzL1PNiza9ybvjNZEOwjbA7YROhNuljY=
-X-Received: by 2002:a05:6808:179f:b0:39e:df4f:e68f with SMTP id
- bg31-20020a056808179f00b0039edf4fe68fmr1411558oib.6.1687162988421; Mon, 19
- Jun 2023 01:23:08 -0700 (PDT)
+        Mon, 19 Jun 2023 08:06:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AD4124
+        for <linux-crypto@vger.kernel.org>; Mon, 19 Jun 2023 05:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687176341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=flv0m9IzvhIUpKnDIyrInh56vnSxXK9hbzXv0isFig8=;
+        b=hC2C5nBakueuwY1QWXcT03aewJ0kre+KdAcn2rpTR7C6XQKZD65MSUmGLFFMe/OpS1TLla
+        XRwkx+CrKFlxlYtg2vFvzxEp4v4qiyD7VkODqdzoNYgFU6dm43SXJIxH/r8C2jqMAa4tAE
+        BMy7XAAAF8LCuMQnwxIcRTcngf7tZ0c=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-98-6kJ1RmfDPwCBOHGN8dJYCQ-1; Mon, 19 Jun 2023 08:05:40 -0400
+X-MC-Unique: 6kJ1RmfDPwCBOHGN8dJYCQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7FC9A1C06EC1;
+        Mon, 19 Jun 2023 12:05:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 88C75C1603B;
+        Mon, 19 Jun 2023 12:05:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <648f36d02fe6e_33cfbc2944f@willemb.c.googlers.com.notmuch>
+References: <648f36d02fe6e_33cfbc2944f@willemb.c.googlers.com.notmuch> <20230617121146.716077-1-dhowells@redhat.com> <20230617121146.716077-18-dhowells@redhat.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
+        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
+        tipc-discussion@lists.sourceforge.net,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH net-next v2 17/17] net: Kill MSG_SENDPAGE_NOTLAST
 MIME-Version: 1.0
-Received: by 2002:a05:6a20:7a03:b0:11f:4412:fc6f with HTTP; Mon, 19 Jun 2023
- 01:23:07 -0700 (PDT)
-From:   loan offer <skyexpressccourier@gmail.com>
-Date:   Sun, 18 Jun 2023 20:23:07 -1200
-Message-ID: <CAPmwR52j7zm-Awe-ot5fGOpMsqBUBT3=-J55ZhyWw_ET0GurJw@mail.gmail.com>
-Subject: Greetings From Saudi Arabia
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.6 required=5.0 tests=BAYES_50,DEAR_SOMETHING,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FREEMAIL_REPLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <784657.1687176327.1@warthog.procyon.org.uk>
+Date:   Mon, 19 Jun 2023 13:05:27 +0100
+Message-ID: <784658.1687176327@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dear Sir,
+Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 
-Need funding for your project or your business ? We are looking for
-foreign direct investment partners in any of the sectors stated below and we are
-willing to provide financing for up to US$ ten Billion to corporate
-bodies, companies, industries and entrepreneurs with profitable
-business ideas and investment projects that can generate the required
-ROI, so you can draw from this opportunity. We are currently providing
-funds in any of the sectors stated below. Energy & Power,
-construction, Agriculture, Acquisitions, Healthcare or Hospital, Real
-Estate, Oil & Gas, IT, technology, transport, mining,marine
-transportation and manufacturing, Education, hotels, etc. We are
-willing to finance your projects. We have developed a new funding
-method that does not take longer to receive funding from our
-customers. If you are seriously pursuing Foreign Direct Investment or
-Joint Venture for your projects in any of the sectors above or are you
-seeking a Loan to expand your Business or seeking funds to finance
-your business or project ? We are willing to fund your business and we
-would like you to provide us with your comprehensive business plan for
-our team of investment experts to review. Kindly contact me with below
-email: yousefahmedalgosaibi@consultant.com
+> Is it intentional to add MSG_MORE here in this patch?
+> 
+> I do see that patch 3 removes this branch:
 
-Regards
-Mr. Yousef Ahmed
+Yeah.  I think I may have tcp_bpf a bit wrong with regard to handling
+MSG_MORE.
+
+How about the attached version of tcp_bpf_push()?
+
+I wonder if it's save to move the setting of MSG_SENDPAGE_NOPOLICY out of the
+loop as I've done here.  The caller holds the socket lock.
+
+Also, I'm not sure whether to take account of apply/apply_bytes when setting
+MSG_MORE mid-message, or whether to just go on whether we've reached
+sge->length yet.  (I'm not sure exactly how tcp_bpf works).
+
+David
+---
+
+static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+			int flags, bool uncharge)
+{
+	bool apply = apply_bytes;
+	struct scatterlist *sge;
+	struct page *page;
+	int size, ret = 0;
+	u32 off;
+
+	flags |= MSG_SPLICE_PAGES;
+	if (tls_sw_has_ctx_tx(sk))
+		msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
+
+	while (1) {
+		struct msghdr msghdr = {};
+		struct bio_vec bvec;
+
+		sge = sk_msg_elem(msg, msg->sg.start);
+		size = (apply && apply_bytes < sge->length) ?
+			apply_bytes : sge->length;
+		off  = sge->offset;
+		page = sg_page(sge);
+
+		tcp_rate_check_app_limited(sk);
+retry:
+		msghdr.msg_flags = flags;
+
+		/* Determine if we need to set MSG_MORE. */
+		if (!(msghdr.msg_flags & MSG_MORE)) {
+			if (apply && size < apply_bytes)
+				msghdr.msg_flags |= MSG_MORE;
+			else if (!apply && size < sge->length &&
+				 msg->sg.start != msg->sg.end)
+				msghdr.msg_flags |= MSG_MORE;
+		}
+
+		bvec_set_page(&bvec, page, size, off);
+		iov_iter_bvec(&msghdr.msg_iter, ITER_SOURCE, &bvec, 1, size);
+		ret = tcp_sendmsg_locked(sk, &msghdr, size);
+		if (ret <= 0)
+			return ret;
+
+		if (apply)
+			apply_bytes -= ret;
+		msg->sg.size -= ret;
+		sge->offset += ret;
+		sge->length -= ret;
+		if (uncharge)
+			sk_mem_uncharge(sk, ret);
+		if (ret != size) {
+			size -= ret;
+			off  += ret;
+			goto retry;
+		}
+		if (!sge->length) {
+			put_page(page);
+			sk_msg_iter_next(msg, start);
+			sg_init_table(sge, 1);
+			if (msg->sg.start == msg->sg.end)
+				break;
+		}
+		if (apply && !apply_bytes)
+			break;
+	}
+
+	return 0;
+}
+
