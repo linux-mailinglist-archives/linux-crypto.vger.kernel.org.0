@@ -2,94 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6749735CCF
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jun 2023 19:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00444735D84
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jun 2023 20:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbjFSRMi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 19 Jun 2023 13:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        id S231466AbjFSSjb (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 19 Jun 2023 14:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbjFSRMi (ORCPT
+        with ESMTP id S229771AbjFSSja (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 19 Jun 2023 13:12:38 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E9F124
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jun 2023 10:12:37 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4f87592eccfso1054851e87.2
-        for <linux-crypto@vger.kernel.org>; Mon, 19 Jun 2023 10:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687194755; x=1689786755;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vQAUOrPXn6hnyW1xGNKR90NL5F/m065xQVWM8YyKMeE=;
-        b=AoevGuGQDz2HpIbVq0HvNaChcf04+3QxXQWiH/NxuzOnO6vsRcFanPjRVZ6hChoRgF
-         8BjOB7c6ELCac0+GsyQjGRt6axNk8HDSQO14Ib/9f4k+i3KDdHJZH4r+qRXMer+WRwmw
-         N4Pr0/3SsRfraQF19opzy0LcEm2NwTSTmnfzmaik3reTc6032ddjipifckLIaCVULrVK
-         2mqoMUXW99BUn+DsdMB1lLhwo3xOzMnz87wAZlBl+ok3Tkm6JCAbcaOJ/T6uj0lB1mUN
-         j90MBkGw2+LNRZ/g1M0HBujJl2fcMAr9knikZEZrJcSo5a/N8YLTZl3i/9O5/vkM0dRu
-         mnmg==
+        Mon, 19 Jun 2023 14:39:30 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6367D18C
+        for <linux-crypto@vger.kernel.org>; Mon, 19 Jun 2023 11:39:29 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-77e45f12b5bso38131239f.0
+        for <linux-crypto@vger.kernel.org>; Mon, 19 Jun 2023 11:39:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687194755; x=1689786755;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vQAUOrPXn6hnyW1xGNKR90NL5F/m065xQVWM8YyKMeE=;
-        b=YBPdjCHs3rS81M+kv6nCoac5qfjYYUtn4taNnCmHguSFZxCNt8yld176cpNWXRu1mU
-         U8mpWYooTj4JxXZkac4P9ed1lU4Npdkx/WlJjtXcgvoWVGPSuAqC1se0dWEgQi5PGUAo
-         UKAoyGV+/MSLyChysDmNhdWLHkGtlPxJJalMNrmTPr6+YLUdldz0c0t4bduOm2CAGjJs
-         yEe5dRQWVpdqlP7dMCNS1lHJlFcl3xKPk66cdHeKmexsJjymWWnnti2ny8fm2Xx9J23E
-         3Edf+WBy7UWmXK61Vd6VyY8S5BNWSW2wQD4f3+SmybwUJz3o/N6YnbhHhlSbE3Ivuo2R
-         fNAw==
-X-Gm-Message-State: AC+VfDwNkg0quYaiDzv/wc/0eYJPU7OSSe3+GzLowRS4xZXixyQLLRUD
-        5h2v+LOh4XeiW9iRwrckKB3iSw+6PyY8uvTKvdw=
-X-Google-Smtp-Source: ACHHUZ7gplRm8NLFL1CVHe3fAW2eWNwAFjuYEOEHEMvPdAnKJFFe8iSA5bnSJ0L4gIuFJpQS2byg4MGQBOJWgxHAwr0=
-X-Received: by 2002:a05:6512:1c5:b0:4f1:3eea:eaf9 with SMTP id
- f5-20020a05651201c500b004f13eeaeaf9mr6235527lfp.24.1687194755016; Mon, 19 Jun
- 2023 10:12:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687199968; x=1689791968;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yovt+NBs+zN88mKTFmMiBGRNaqNl1IAEsWQ9bmrlOts=;
+        b=OqmjTEIWxneoIuK16ehNhdwfYFU8FhA8Kn842A0s/2qWEHHAj74++mKSqSbTs+vnHd
+         jyf21nCceSTv/0YfmKOMu4S0QJPn7sgkYkhl9GQtjT+1+yVC6NMCsff+cXROzI6yHqDw
+         xQWFHIrW+sdaIBg0RoFsO0vNPo+IrT4HVI/Ifwq4gtbJKW/0P9VNEPXlj8zPagFs/1oE
+         0mXsdG21i+W+Mf4adwp6UuMps712LfgOpAQpJkXXnh7joUbx1lvBOZVlGKbER45Ys3u0
+         e6CR9ltzaxybwoTEIEBTSpe5TSlaxGNTdKmtQ/fJevqgpiUH5Vg8nMXmtb+6QVeJvrXU
+         mpoA==
+X-Gm-Message-State: AC+VfDwwqTFPSALSMChQ25PJeNToAgYZH2f1e7533hUjA0b+fre/2PXi
+        t09XcjG5umDWVtlQEH5ZgJ0CzlT09Am7nsaSakKTXjpSxNjO
+X-Google-Smtp-Source: ACHHUZ6Zu1qOfU3n1nK17F8mRHVcVw++7U+FWtv+g1pIs1eCeFRAessPwU2LszmlMeaaiY97WhjTMdQEA9nxqde2iw2xAZuCWbTM
 MIME-Version: 1.0
-Received: by 2002:a54:3650:0:b0:21d:fa84:1814 with HTTP; Mon, 19 Jun 2023
- 10:12:34 -0700 (PDT)
-From:   Lending-club Corp <noahlin39@gmail.com>
-Date:   Mon, 19 Jun 2023 10:12:34 -0700
-Message-ID: <CAKLJvuZneTsLwsmG-ERJAV6gdqw+w-qA=Hv_n3u3vnp6xpkkOQ@mail.gmail.com>
-Subject: RE:
-To:     undisclosed-recipients:;
+X-Received: by 2002:a6b:3b8b:0:b0:777:b0ee:a512 with SMTP id
+ i133-20020a6b3b8b000000b00777b0eea512mr3574163ioa.2.1687199968282; Mon, 19
+ Jun 2023 11:39:28 -0700 (PDT)
+Date:   Mon, 19 Jun 2023 11:39:28 -0700
+In-Reply-To: <000000000000ada87505fe7cf809@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c6527105fe7fdab8@google.com>
+Subject: Re: [syzbot] [crypto?] general protection fault in shash_ahash_update
+From:   syzbot <syzbot+88f4b1e6cf88da11f5cd@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ***
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Investor,
+syzbot has bisected this issue to:
 
-Greetings,
+commit c662b043cdca89bf0f03fc37251000ac69a3a548
+Author: David Howells <dhowells@redhat.com>
+Date:   Tue Jun 6 13:08:56 2023 +0000
 
-My name is Tom Casey, I'm a Financial Lender. I offer personal Loans,
-Real Estate, Business Loans, Bridge Loans, Commercial loans to
-individuals/companies who can utilize it well and make good returns
-within the maximum time duration of 10 years and amortized over 30
-years at 5% interest rate.
+    crypto: af_alg/hash: Support MSG_SPLICE_PAGES
 
-Minimum Financing: $20,000.00
-Maximum Financing: $50,000,000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a7cbcf280000
+start commit:   9a94d764e9bc Merge tag 'mlx5-updates-2023-06-16' of git://..
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a7cbcf280000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a7cbcf280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4a7d74e6a7c3211
+dashboard link: https://syzkaller.appspot.com/bug?extid=88f4b1e6cf88da11f5cd
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1152c4ff280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1307cbcf280000
 
-If interested in my service you email the executive summary with your
-business plan.
+Reported-by: syzbot+88f4b1e6cf88da11f5cd@syzkaller.appspotmail.com
+Fixes: c662b043cdca ("crypto: af_alg/hash: Support MSG_SPLICE_PAGES")
 
-Below:
-
-Name: Johannes Willem
-Email: jeswillem01@proton.me
-Direct Line: (810)243-4877
-
-Kindest regards,
-
-Tom Casey (Mr.)
-Chief Financial Officer
-Lending-club Corp
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
