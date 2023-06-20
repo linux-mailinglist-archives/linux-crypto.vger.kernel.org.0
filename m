@@ -2,213 +2,169 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E92E736F9A
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jun 2023 17:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7349D736FDC
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jun 2023 17:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbjFTPAU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 20 Jun 2023 11:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
+        id S233575AbjFTPKP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 20 Jun 2023 11:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233620AbjFTPAH (ORCPT
+        with ESMTP id S233523AbjFTPKO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 20 Jun 2023 11:00:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B05E1FFB
-        for <linux-crypto@vger.kernel.org>; Tue, 20 Jun 2023 07:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1687273091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=096kfvQCNbO3jjvPJlb61wpL4gpNse4m8jbz5dQcH+U=;
-        b=jJTRucX8EYRuvzYvlFnem3NIEIUK/eLoDELWDCnFK11LqFdhFZVjQIwjWsaYqIHH/d9LjC
-        9gzW0uOn7fUMyXJa+ujb8XAsy7GJwd365VOj1CyiR1M8czKxiMY1D6MburLrgBCRtYNK0/
-        32xVe/ZdG9eFt/WqT7tiLxDmXAM8Ljg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-246-cetdja7_MNaYUIl_PdTHIQ-1; Tue, 20 Jun 2023 10:58:01 -0400
-X-MC-Unique: cetdja7_MNaYUIl_PdTHIQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D63E710665CD;
-        Tue, 20 Jun 2023 14:54:49 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D321E40C6CD2;
-        Tue, 20 Jun 2023 14:54:46 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
-        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
-        tipc-discussion@lists.sourceforge.net,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH net-next v3 18/18] net: Kill MSG_SENDPAGE_NOTLAST
-Date:   Tue, 20 Jun 2023 15:53:37 +0100
-Message-ID: <20230620145338.1300897-19-dhowells@redhat.com>
-In-Reply-To: <20230620145338.1300897-1-dhowells@redhat.com>
-References: <20230620145338.1300897-1-dhowells@redhat.com>
+        Tue, 20 Jun 2023 11:10:14 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98021C0
+        for <linux-crypto@vger.kernel.org>; Tue, 20 Jun 2023 08:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687273813; x=1718809813;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=j08z8zVwrhAFO7ed1IYfjNkOWIePRBoEFVYD/zy3vwQ=;
+  b=d2M78aCjha8HtGw7rmHozJuCmE8jMWUZVOIkyWf3isRpyTr1e/DEs/dH
+   vufvbTeBl0HnCAvx+HAeJ8pSjiJK7xBho8g4ksolm0T/8sTr0SbFFkaKI
+   8ZcKF4ZCHvpcLGLKcUTgdxDS+oRRNydz+UyVvL+x/dT9r78m/CqQTzMYb
+   q6Z8ude8o9aQbeAS9rM+dicLQRCMMkkdKYLUsbkXUxNwS1CcjgtrQS+ja
+   2rEYhwq47J93OaSsZR7bWbNa/nYP316K0W2HYXRADtlY5L9/0juRFMR84
+   szLVmuVGwtgP435tfdvtcIwO+k/JVPyD1zseL94M/IobfXvq2S+QWc/6b
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="359892657"
+X-IronPort-AV: E=Sophos;i="6.00,257,1681196400"; 
+   d="scan'208";a="359892657"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2023 08:10:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="803999179"
+X-IronPort-AV: E=Sophos;i="6.00,257,1681196400"; 
+   d="scan'208";a="803999179"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by FMSMGA003.fm.intel.com with ESMTP; 20 Jun 2023 08:10:12 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 20 Jun 2023 08:10:12 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Tue, 20 Jun 2023 08:10:12 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Tue, 20 Jun 2023 08:09:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gxD1dtAgJMoKZLUFT1rcJLH7VOyBSWK50C6NR6d1OlVYlomoQU8HP+oPAhfYhc25fKMv4Qys4c+j6rvIKJUdr8loomnqy1CZRYQ/M4AyqEGxXZ2oPfPjXeM6PcNN1uiv4mV4fNNO8SF7zjROBrGIHTXDb8uvsqfQq3p7CHn0UlnO4ted2uoe8LZTZtUNu8RadAU6vxtxEIkruK7EectZgjJtTffjpYrMpuARszIPpOsluO+AlrEIczK3PacYHOIaZsnTZYL+wtxcfkdqe+attoCYMSPzLQBNiLpuIeTjnlf7vN7npS/bu5SPJwMCa7HJvgIHcsGyfiR5f7xn+lZUIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IltJCkiUpV9tyqtSXVT9KFlrlbpNEpklb+GBZXRTq7I=;
+ b=KMJkpB3BYo+5iTZm1WNqH3c5/pICLQgx8VlkcUgfFUGgzILFZlgBq4RzZkvMHkUZZ0YJHWZq6I/xVOpbuvZ5uOuPc0WhLbnWHlmJGx/WyCmHs8IukA+cbRuTZf9GA+D122HwRxSlhiC+ZhEp2lMtNa8wKAz8gV8lYJDHrXj/RPXsWdJYVc9Ii4uktZcHlhLHSbb6RApFOXdwACwYfb+AaJcEXQW+oIvvhr3C6z0mGPf2gBOXKsQ6bLNCCEw81xptd5oUt6gmSIXHxEr7H2+PIFNZoc+rjbTb3Kybbf2tPFo05v4j+mMLc3kSgLOZ0HiMVPN4m2zz2BUQkXMIVjmcfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3734.namprd11.prod.outlook.com (2603:10b6:a03:fe::29)
+ by BL3PR11MB6459.namprd11.prod.outlook.com (2603:10b6:208:3be::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.37; Tue, 20 Jun
+ 2023 15:09:52 +0000
+Received: from BYAPR11MB3734.namprd11.prod.outlook.com
+ ([fe80::13c9:30fe:b45f:6bcb]) by BYAPR11MB3734.namprd11.prod.outlook.com
+ ([fe80::13c9:30fe:b45f:6bcb%4]) with mapi id 15.20.6500.036; Tue, 20 Jun 2023
+ 15:09:52 +0000
+Date:   Tue, 20 Jun 2023 17:09:39 +0200
+From:   Damian Muszynski <damian.muszynski@intel.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <qat-linux@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: Re: [PATCH] crypto: qat - add internal timer for qat 4xxx
+Message-ID: <ZJHBM1RZb3eXv/UO@dmuszyns-mobl.ger.corp.intel.com>
+References: <20230601091340.12626-1-damian.muszynski@intel.com>
+ <ZILrxDmxkHyIZ1Sw@gondor.apana.org.au>
+ <ZIMVSDWXOcS6/Whg@dmuszyns-mobl.ger.corp.intel.com>
+ <ZIxUIjwZMHrZiDg6@gondor.apana.org.au>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZIxUIjwZMHrZiDg6@gondor.apana.org.au>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173,
+ 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
+X-ClientProxiedBy: FR2P281CA0114.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9d::6) To BYAPR11MB3734.namprd11.prod.outlook.com
+ (2603:10b6:a03:fe::29)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3734:EE_|BL3PR11MB6459:EE_
+X-MS-Office365-Filtering-Correlation-Id: af335740-5668-4a34-f8fc-08db71a06599
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Id4hQKOT2y+7DyVoaPlK6WxxvPMHsayuwMGk5EXwS3QqipKU/8aO0vqtHt/VMW10fhLrWDblMULRGLexFRl+Hruuvc5XJV09m7bXfRlnpQ01/6wlcsM8AMxM9QmAGXb1CqLuVwAW8epWo8FLiX8BkkTFaG5+JhIQoddejEzY0eyCRL97MzdlORpzJmQgyOVf5DuEtFE1DPgXS5AbFY+CaBPSTRP/SFhCLzWgSOsACq1txHKAUD+xAAYgw3FnvdiOX02XFZBXrOTk1sG4zQkfCJUDsZ+pFDATMOIHjUVPBMZDoPBMlVNxbfvJBxjQ18aThYQfjxp6iVUpeCT+xSVdLdAsYbwn7SQllihUx18Sd3lifNZMUqCr3B24dzUTFTKCruIJXOQ70O/z9TeIoOhVlRBBSYv5aVJojJbKc3dihD9ND8psL72w3R7CV3/N64w1Ru5tenLVhBnjpfE/CB1Gmg6OOwiQoGi7whlI0c1vMAGc2QbRH21CieohOkQ+SL91l5EZFf9QHVkdi6MGG4m2ZP0E8gZ6fB+BqwrYc7+9Ba2IuTW2hWff2c2Qf15Zw5g9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(366004)(346002)(39860400002)(396003)(376002)(451199021)(36916002)(6486002)(6666004)(478600001)(186003)(107886003)(6512007)(6506007)(26005)(53546011)(38100700002)(86362001)(82960400001)(8936002)(8676002)(5660300002)(316002)(4326008)(4744005)(2906002)(6916009)(66476007)(66556008)(66946007)(44832011)(41300700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IXFeFo7L3yOj9ybwMLY2+gWRwVGwVINFIaq3rLA/NSS7jrNNMy8ykMaKaf1F?=
+ =?us-ascii?Q?VEsQwx87o9DSRvwbU3tzY7WBwHLTVmNmGfEAQF/m0Bw6XsXYlT9IGpD42lqz?=
+ =?us-ascii?Q?pAzA3retxLuMvfWCZ9ZJDSJTN+YqOzgF/tRfc+eSOU5GCe+xwR/+HxpJj+09?=
+ =?us-ascii?Q?/vgjG+Qhu5tMgCu29HQtsqIfoo2stze4lU1slgnb5ZdiEKuPtuWkq4Jt9idw?=
+ =?us-ascii?Q?JVJ2A9K+ibGYk/dg26UlCtCf2vFZw6Pqz7D6/AYfaquyOYN5COCUj4/fbhTv?=
+ =?us-ascii?Q?TZg5h3fDFRca3gqIXGzvPPGXbVhLssA04AgvWBvmwko/KYRonMN673qyDnYn?=
+ =?us-ascii?Q?2T5uylZ6DnnJnY+8UkukuW2Xzuh+OdfZ/UYIGtlfLCsRWjrDQhRypa0LTxqc?=
+ =?us-ascii?Q?Lr9BP4HrYs05sncFNUcjpWiUmW3/u5qzz4OIXkY6mRiMTRwOA1Idl2QSGGuf?=
+ =?us-ascii?Q?qDRvh/xcFkxg6MKXXxNL7Nrdak0X0CO2h+fu1jEvNVYfVA0LgTbf7i4bMF7n?=
+ =?us-ascii?Q?oxQqI/QlydBRYhYFEWs3Nd+rp43P5MyLXP2nneP2YSUgXH32QP322e6lxqWS?=
+ =?us-ascii?Q?/OZl9iDo92TLFiiQS9UhCNvuNwHkB2/k7Xz1lByirVWaH46H9M3BoFeABM8c?=
+ =?us-ascii?Q?TAtTsQgVaQHWojhXyFPeIE5yyZE3z1e7oxMjt7AgUw9LCnB8Ad/PdVlaKX9l?=
+ =?us-ascii?Q?z7AJkP405RLmafXTF0S9x2LIfVdWji2BoFf4mjE9mhVcJwKWKtlsNPMG7fVu?=
+ =?us-ascii?Q?77vjil9IBvOfPUyD7N7EnxQ2zhDIm0xWST0qQf7SQKPQmbgZZWyIqf3NsBFk?=
+ =?us-ascii?Q?07CFnMcphw02YPp8wMhYBTYl6p0E8FHXot5lZzg7yYyTPAl0Mrh3OrSDelk2?=
+ =?us-ascii?Q?xqAIQqIQpsiZzzizQVTQ7ma4T+AjLxdgvg0fh6mQEkq2PyL6+3DeAlHxBDXe?=
+ =?us-ascii?Q?MhpwzHVUAOloBoMcKfVj8u3pVHAYBRgDe6uHTwC9ZaukItC5tc08LgM6HxBz?=
+ =?us-ascii?Q?maol2NxMGKhhyts6rX9Iz1PCRcJM7KEpZySwQiL6+tOlmOAX16YdX12GPDrA?=
+ =?us-ascii?Q?SI/+ZHhiKRZhCjybShomc7yObkQiHDixrPBStocXfQA3kTv5kmvm86Z+de19?=
+ =?us-ascii?Q?c7zdO8+KaimbC9d73LTXNbBR7TI1deG3p8usnf9o8oXPjkQNBQPdmv30qXeE?=
+ =?us-ascii?Q?C7HsOdb26UzS1Ffc2nAhXwSv0AJxAtHUMUD0hgPtQaodEIGpY22MR1z+vHpb?=
+ =?us-ascii?Q?eBl4JNbOF3CILd6EJGLMifca4eB9Ij3nnE9ctdPghOKjN5U2AodmdnmWu8Jr?=
+ =?us-ascii?Q?i/pRKvWr4H9cBr1WceZflqIbuTyc1n6nlU2gvPdFQpV8EXYskQjuHfg4SGZI?=
+ =?us-ascii?Q?gcwVHCa+HDG9twC44swJ1DUN15oIXlcXMpTzPzdNw5mXLXzS1XJYkkMqI3nD?=
+ =?us-ascii?Q?D/s+10GN4j0mrx4jmbgKvphD96KLVsrJx7vZBpWjYz1jbNT55qYyoKZQdfWn?=
+ =?us-ascii?Q?5D1CDLYjxkxm773H4n4i75vmI6KUfLnFI2CAKeCxhi/duWquyru4C1gM1eOZ?=
+ =?us-ascii?Q?fydErltIjwleXsGvPIs/Us+TIgavn+1QF6HlkgpP2QVBmtTE15EiBN0Hluvs?=
+ =?us-ascii?Q?mA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: af335740-5668-4a34-f8fc-08db71a06599
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3734.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jun 2023 15:09:52.0370
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9CHQ+FKKpZNxy/ssonkEVUfeqHQPBnXYQSMyCL95FuBuGPOKkfdau0QrC+P43OcmEE+DNNgxJ5fqtcXDmHUMGKOdI/aQiL9xovoO3IzSQ+0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6459
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Now that ->sendpage() has been removed, MSG_SENDPAGE_NOTLAST can be cleaned
-up.  Things were converted to use MSG_MORE instead, but the protocol
-sendpage stubs still convert MSG_SENDPAGE_NOTLAST to MSG_MORE, which is now
-unnecessary.
+On 2023-06-16 at 20:22:58 +0800, Herbert Xu wrote:
+> On Fri, Jun 09, 2023 at 02:04:24PM +0200, Damian Muszynski wrote:
+> >
+> > We considered the usage of delayed work when implementing this, but it will 
+> > break functionality. Apart from scheduling the work queue, timer_handler() is 
+> > incrementing a counter which keeps track of how many times the timer was scheduled.
+> 
+> Please be more specific.  I don't understand why the counter can't
+> be incremented in the delayed work instead of the timer.
+> 
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: bpf@vger.kernel.org
-cc: dccp@vger.kernel.org
-cc: linux-afs@lists.infradead.org
-cc: linux-arm-msm@vger.kernel.org
-cc: linux-can@vger.kernel.org
-cc: linux-crypto@vger.kernel.org
-cc: linux-doc@vger.kernel.org
-cc: linux-hams@vger.kernel.org
-cc: linux-perf-users@vger.kernel.org
-cc: linux-rdma@vger.kernel.org
-cc: linux-sctp@vger.kernel.org
-cc: linux-wpan@vger.kernel.org
-cc: linux-x25@vger.kernel.org
-cc: mptcp@lists.linux.dev
-cc: netdev@vger.kernel.org
-cc: rds-devel@oss.oracle.com
-cc: tipc-discussion@lists.sourceforge.net
-cc: virtualization@lists.linux-foundation.org
----
+We found a solution with which we can be sure about accuracy and replace 
+the timer with delayed work as you suggested. An reworked patch is included 
+with a new version of the heartbeat patchset as the feature development is now 
+finished and this patch is a prerequisite for it. 
 
-Notes:
-    ver #3)
-     - tcp_bpf is now handled by an earlier patch.
-
- include/linux/socket.h                         | 4 +---
- net/tls/tls_device.c                           | 3 +--
- net/tls/tls_main.c                             | 2 +-
- net/tls/tls_sw.c                               | 2 +-
- tools/perf/trace/beauty/include/linux/socket.h | 1 -
- tools/perf/trace/beauty/msg_flags.c            | 3 ---
- 6 files changed, 4 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/socket.h b/include/linux/socket.h
-index 58204700018a..39b74d83c7c4 100644
---- a/include/linux/socket.h
-+++ b/include/linux/socket.h
-@@ -319,7 +319,6 @@ struct ucred {
- #define MSG_MORE	0x8000	/* Sender will send more */
- #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
- #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
- #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
- #define MSG_EOF         MSG_FIN
- #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
-@@ -341,8 +340,7 @@ struct ucred {
- 
- /* Flags to be cleared on entry by sendmsg and sendmmsg syscalls */
- #define MSG_INTERNAL_SENDMSG_FLAGS \
--	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_NOTLAST | \
--	 MSG_SENDPAGE_DECRYPTED)
-+	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_DECRYPTED)
- 
- /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
- #define SOL_IP		0
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index 840ee06f1708..2021fe557e50 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -441,8 +441,7 @@ static int tls_push_data(struct sock *sk,
- 	long timeo;
- 
- 	if (flags &
--	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SENDPAGE_NOTLAST |
--	      MSG_SPLICE_PAGES))
-+	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SPLICE_PAGES))
- 		return -EOPNOTSUPP;
- 
- 	if (unlikely(sk->sk_err))
-diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-index d5ed4d47b16e..b6896126bb92 100644
---- a/net/tls/tls_main.c
-+++ b/net/tls/tls_main.c
-@@ -127,7 +127,7 @@ int tls_push_sg(struct sock *sk,
- {
- 	struct bio_vec bvec;
- 	struct msghdr msg = {
--		.msg_flags = MSG_SENDPAGE_NOTLAST | MSG_SPLICE_PAGES | flags,
-+		.msg_flags = MSG_SPLICE_PAGES | flags,
- 	};
- 	int ret = 0;
- 	struct page *p;
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index 9b3aa89a4292..53f944e6d8ef 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -1194,7 +1194,7 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 
- 	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
- 			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES |
--			       MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
-+			       MSG_SENDPAGE_NOPOLICY))
- 		return -EOPNOTSUPP;
- 
- 	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
-diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
-index 13c3a237b9c9..3bef212a24d7 100644
---- a/tools/perf/trace/beauty/include/linux/socket.h
-+++ b/tools/perf/trace/beauty/include/linux/socket.h
-@@ -318,7 +318,6 @@ struct ucred {
- #define MSG_MORE	0x8000	/* Sender will send more */
- #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
- #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
- #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
- #define MSG_EOF         MSG_FIN
- #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
-diff --git a/tools/perf/trace/beauty/msg_flags.c b/tools/perf/trace/beauty/msg_flags.c
-index ea68db08b8e7..b5b580e5a77e 100644
---- a/tools/perf/trace/beauty/msg_flags.c
-+++ b/tools/perf/trace/beauty/msg_flags.c
-@@ -8,9 +8,6 @@
- #ifndef MSG_WAITFORONE
- #define MSG_WAITFORONE		   0x10000
- #endif
--#ifndef MSG_SENDPAGE_NOTLAST
--#define MSG_SENDPAGE_NOTLAST	   0x20000
--#endif
- #ifndef MSG_FASTOPEN
- #define MSG_FASTOPEN		0x20000000
- #endif
-
+Best Regards,
+Damian Muszynski
