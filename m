@@ -2,118 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33787737E67
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jun 2023 11:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C014E73807E
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jun 2023 13:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjFUJQi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 21 Jun 2023 05:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        id S232020AbjFUJht (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 21 Jun 2023 05:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbjFUJQd (ORCPT
+        with ESMTP id S231964AbjFUJgt (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 21 Jun 2023 05:16:33 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0EAE4D;
-        Wed, 21 Jun 2023 02:16:31 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 081071EC0645;
-        Wed, 21 Jun 2023 11:16:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1687338990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fI4K8Q/io77w6bwiDKBNg2gNYXZ0qce2M/7aadNkERY=;
-        b=NC0f3uCJoMjFh+SJvvtI3/CBfXtdZh/LTG3aydeR6bHNDvjpjK2qxl0y5xh018/+U0lwk7
-        KrGI4WRKca2Ddy0sPzDbxqYrUJGl7uCjwzi3qu3fKIDLi1nN7TavH15xKnm0eD61+boalt
-        phPsKYwSqvyik7xgwVGdhJKqljnc25w=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZIP4NY-AI2Be; Wed, 21 Jun 2023 09:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1687338987; bh=fI4K8Q/io77w6bwiDKBNg2gNYXZ0qce2M/7aadNkERY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DnzWgH4s65gVXoHcEoH/FiuLI57PSlNdcO7BHD7AiqDg5Ne41G5S2z1A0ESKW8KhC
-         zjmGH4F+ox7qQyiCy85AzymObJcixiAKYc0XFgafArcY2zjxCKLvbZuMnR5kVmC0zQ
-         NWqOSWnId4cJu4keK0mECeYvsv5on253FZhdyb4GWCPSj03g/7ZAGz5OMbNfXON4Bc
-         paruBiy4iZDLq7cq596SzlYmtR9dYUnAn0B1/22qVcE7HPsDh5NGWHJaL9EktazY1j
-         fz1JHeZgvQXkyk7GGknnpiVxx7UT3Bfvc66dLJWlHFAaB7Nsdg3lzF8akjfcoOxNIj
-         aNk9j0WNmHS7S1fjPAQc3OZW2ytSJ0xKg+MV5jgGfkqSry9i9hx9ey74YEU2iFy6vz
-         yXfgSbuvaS7UYJBRet6JMh1+39qO+W9OAbjuCQXqE7iSOrFQQMx33c//qXH+hCNktH
-         ePeyqdfqFPWn1kDKDTUrcR1i5EHYAIpb2JTObPZb297GlpSaEJ5AYvyqIg+0Ue5dw2
-         GH4KZg77UvBgfivI9IHcoPpR0Lfq8DnZUpBh/vjXJtrIK8LJV1F7P66BBDUGKEIAxF
-         P0VQmhCRtJp/sBPXl+8iD3aY3JkXZe60cyGczseLAg8argYAuhqcz0eFa5Wazx/Ds1
-         ZHO3DK95miUU+DmSiGNfPScg=
-Received: from zn.tnic (p200300EA971DC592329c23FfFea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:971d:c592:329c:23ff:fea6:a903])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 08FF640E0145;
-        Wed, 21 Jun 2023 09:15:46 +0000 (UTC)
-Date:   Wed, 21 Jun 2023 11:15:41 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
-        nikunj.dadhania@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH RFC v9 07/51] x86/sev: Add the host SEV-SNP
- initialization support
-Message-ID: <20230621091541.GEZJK/veTnfhOnX8ci@fat_crate.local>
-References: <20230612042559.375660-1-michael.roth@amd.com>
- <20230612042559.375660-8-michael.roth@amd.com>
- <12f95b38-427c-6810-373a-ba2062c43882@intel.com>
+        Wed, 21 Jun 2023 05:36:49 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAF4A4
+        for <linux-crypto@vger.kernel.org>; Wed, 21 Jun 2023 02:35:33 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qBuCp-0006Qb-Su; Wed, 21 Jun 2023 11:32:52 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qBuCl-00906Q-Nl; Wed, 21 Jun 2023 11:32:47 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qBuCk-000KKp-Oq; Wed, 21 Jun 2023 11:32:46 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Abel Vesa <abelvesa@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        Peng Fan <peng.fan@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Marek Vasut <marex@denx.de>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org
+Subject: [PATCH v1 0/7] Add support for various features to i.MX6 bindings
+Date:   Wed, 21 Jun 2023 11:32:40 +0200
+Message-Id: <20230621093245.78130-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <12f95b38-427c-6810-373a-ba2062c43882@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-crypto@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 08:34:02AM -0700, Dave Hansen wrote:
-> On 6/11/23 21:25, Michael Roth wrote:
-> > +	/*
-> > +	 * Calculate the amount the memory that must be reserved by the BIOS to
-> > +	 * address the whole RAM, including the bookkeeping area. The RMP itself
-> > +	 * must also be covered.
-> > +	 */
-> > +	max_rmp_pfn = max_pfn;
-> > +	if (PHYS_PFN(rmp_end) > max_pfn)
-> > +		max_rmp_pfn = PHYS_PFN(rmp_end);
-> 
-> Could you say a little here about how this deals with memory hotplug?
+changes v2:
+- fix warning samples in the commit messages
+- drop patches which needs more work
+- address requested changes 
 
-Does SNP hw even support memory hotplug?
+This patch series is aimed at addressing several dtbs_check warnings by
+introducing additional support in the device tree bindings for i.MX6
+series SoCs. The warnings surfaced while validating some i.MX6 boards.
+The issues were predominantly around unrecognized compatibility strings
+and missing properties in the device trees.
 
-I think in order to support that, you'd need some special dance because
-of the RMP table etc...
+Oleksij Rempel (5):
+  dt-bindings: mmc: fsl-imx-esdhc: Add imx6ul support
+  dt-bindings: timer: gpt: Add i.MX6UL support
+  dt-bindings: timer: gpt: Support 3rd clock for i.MX6DL
+  dt-bindings: clock: imx6ul: Support optional enet*_ref_pad clocks
+  dt-bindings: input: touchscreen: edt-ft5x06: Add 'threshold' property
+
+ Documentation/devicetree/bindings/clock/imx6ul-clock.yaml  | 6 ++++++
+ .../devicetree/bindings/input/touchscreen/edt-ft5x06.yaml  | 6 ++++++
+ Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml   | 1 +
+ Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml    | 7 +++++++
+ 4 files changed, 20 insertions(+)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.39.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
