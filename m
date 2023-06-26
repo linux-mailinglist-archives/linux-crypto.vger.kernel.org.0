@@ -2,189 +2,148 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6F473DAA6
-	for <lists+linux-crypto@lfdr.de>; Mon, 26 Jun 2023 11:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EC673DB22
+	for <lists+linux-crypto@lfdr.de>; Mon, 26 Jun 2023 11:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjFZJAU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 26 Jun 2023 05:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
+        id S229548AbjFZJUN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 26 Jun 2023 05:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjFZI77 (ORCPT
+        with ESMTP id S229748AbjFZJTT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 26 Jun 2023 04:59:59 -0400
-Received: from mail.nsr.re.kr (unknown [210.104.33.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A59D4EC4
-        for <linux-crypto@vger.kernel.org>; Mon, 26 Jun 2023 01:55:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; s=LIY0OQ3MUMW6182UNI14; d=nsr.re.kr; t=1687769580; c=relaxed/relaxed; h=date:from:message-id:mime-version:subject:to; bh=zuuP2jIe0pZPqoUtxjvL55N6OHfrTkFefMjYKKtwGHs=; b=P/GTSFUjdhT93uRcZ7N5Mf9yKfeZyDvDZoOOoVztHt5bqdnITZyXFbaflivWQnF6QIFzDHXsavJ57MQJugO8IeZvpobCKYgiY/URyNXHEgHYBxiQ/8itIaoISKY3S3T7bYfv5SniSzspsJJMMucbCQFHnUuPMr3v60zCz+RHEyDK5v/GSWyjmZmD3NvtmYCLj0+5RMq2j2NngJIfjanZrGScZux3Hp21GZiTgGHvcDa/bZC6o3A7beodxPw3bVl2zLLK6zK9IgVFWX3UFoBIKB9kDtf8pxZxlMBmNMMsy+ss2owpZBwdPGHct1Z9vWN8NXNjMNo4Zi6JfG6OJk44Ig==
-Received: from 210.104.33.70 (nsr.re.kr)
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
-        by mail.nsr.re.kr with SMTP; Mon, 26 Jun 2023 17:45:39 +0900
-Received: from 192.168.155.188 ([192.168.155.188])
-          by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 334;
-          Mon, 26 Jun 2023 17:47:46 +0900 (KST)
-From:   Dongsoo Lee <letrhee@nsr.re.kr>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Mon, 26 Jun 2023 05:19:19 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2128.outbound.protection.outlook.com [40.107.215.128])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9250610DF;
+        Mon, 26 Jun 2023 02:16:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gLJcOVYFLU/QqPHLCT2XB/a68Ggkom99mKSiTEmOdthcnH3M1Cln1f83DXQCQbnNWivr+i4DXGoQpziduu7uKVZrlJBRNKwy8CmEXMOYiPm+57LFPXaOtwvx5hF6pvun+ixETMeS+1qdYqIMLWceeWgxyJMgOeJ2hcU8oENDs5r62CpUnpKbnv3sECUAEkq98GrsC9LP3ti+lFO5kCFn4AbDRnVHdR0Fph0FkgHgjjdEp6yHVC5LInU+KZ4pR92A8gXbgxGyT+NqQYz7jVMnu/4aVz30uoFLKr2SQiQsi3Qi4KHELZv5yoqTNN/VgNeIudX0cXxRMbZ04mN3coB3GQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gjV+lzXivtdH8yLp+NP91bwF+0ubG0YmUx0vLqlWAmk=;
+ b=ZxngXOi5FHwdZgxHRbf3UxBl2hn4BZ36YjHThaiSC6NEP5H1xphgwvFAPXMSukbxgTPN/sr1yY81ivR5wbqHo+Xem/L+3AMneBzbe9LXuSjfl1TOm5edyEMnHcg3kgB7kGx/Dqs3NyDeMcIKRF8ISY2Xp/DcEkNlggEZJIzYbcozy26Xm45LfZ4Mt2ZqLKqar9W/oqz+xRY00D9/pBt3dM5WhtmwV9nvr1CQLiFI1OWDS446AYr9Xe/qDnw+F5o8eF68Tdz6d9rIN6jXcV0hnvY+X3dBWcvoWjBcmcIxEC6MTx/aaoW/IwnlRDgk0CK2+qyT4VxeaQVIK/ph8CstLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gjV+lzXivtdH8yLp+NP91bwF+0ubG0YmUx0vLqlWAmk=;
+ b=e9Ze8YbXULeUS5oo/ON8SS9/SAfomKFWqZW8+9Dh3mg8hHO6/3puyJ5AJb4kELE25Tzi68DtuLYbcUVHHPZVxAIgVdukTNRyZcaGj3OHovDTuXMzTtACOySrq81HCJbiyqnjqdKj0l6ZphqfXeFdkHhSKnkorJOW+iGdby08P4Whr52PQNf6cjRTWMwNiuzQEi1rXP+gz2HvfT+9+nafTh4/Yqeg1sIcou84qyznnvzo3MiKRIeR3KshEY2nq3JLBOK1BKkE5xQf8JTtSFqoz3QLfQRofI/gYIjGrcFx9xv00jBCTLtTYVxEr3RRNGyrBPMrDP8Kxdd5qMyv1HqFLQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5936.apcprd06.prod.outlook.com (2603:1096:301:11d::13)
+ by TYZPR06MB5177.apcprd06.prod.outlook.com (2603:1096:400:202::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.26; Mon, 26 Jun
+ 2023 09:16:02 +0000
+Received: from PUZPR06MB5936.apcprd06.prod.outlook.com
+ ([fe80::adc0:c22:ffae:227b]) by PUZPR06MB5936.apcprd06.prod.outlook.com
+ ([fe80::adc0:c22:ffae:227b%6]) with mapi id 15.20.6500.045; Mon, 26 Jun 2023
+ 09:16:02 +0000
+From:   You Kangren <youkangren@vivo.com>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongsoo Lee <letrhee@nsr.re.kr>
-Subject: [PATCH v3 4/4] fscrypt: Add LEA-256-XTS, LEA-256-CTS support
-Date:   Mon, 26 Jun 2023 17:47:03 +0900
-Message-Id: <20230626084703.907331-5-letrhee@nsr.re.kr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230626084703.907331-1-letrhee@nsr.re.kr>
-References: <20230626084703.907331-1-letrhee@nsr.re.kr>
-MIME-Version: 1.0
+        You Kangren <youkangren@vivo.com>,
+        Adam Guerin <adam.guerin@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Damian Muszynski <damian.muszynski@intel.com>,
+        Srinivas Kerekare <srinivas.kerekare@intel.com>,
+        qat-linux@intel.com (open list:QAT DRIVER),
+        linux-crypto@vger.kernel.org (open list:CRYPTO API),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH] crypto: qat - Replace the if statement with min()
+Date:   Mon, 26 Jun 2023 17:15:40 +0800
+Message-Id: <20230626091541.1064-1-youkangren@vivo.com>
+X-Mailer: git-send-email 2.39.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: TYAPR03CA0015.apcprd03.prod.outlook.com
+ (2603:1096:404:14::27) To PUZPR06MB5936.apcprd06.prod.outlook.com
+ (2603:1096:301:11d::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5936:EE_|TYZPR06MB5177:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3cb65a52-35af-4e07-c34a-08db7625f5c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SNvTEgsYZh2e+8QiozfhOpiQtuFHEUHdMwqCbMaRtsotcHFqmhxd4JWtlEtYvx4HONhy9Nfrg1JovReOoSS+cBN12uusbxrUAZy9hJK/4pDGPkPT/yqJIx4Cd5XqSthStzxQeF550hfuEyBFILcTwajwqiz5d/9cOdqdooBMsIOLHoSie48Vc+RfVii755uTuZtMX34ZJ4KdPHp+V0PJfPENrQHcaj7qBYgBX/ovWAsXgPo2JRxZWmNAiqI8RscPq0HoHOkmSzzaMzWoUAEO72Nuuv+V91NaBEkYxmk2c2DZARNm3yQeiFn2RofAekSY5cobjaMMqEBA6AgN3VGj3B86XnquuDewP+x7l7dVp5AR4v52WA4ViZMGhv+ZIylVP1xvVIaz70FM6g7jxAVrUdbcr3KoU00MoOD/DsZxLKQYBfD7M3I7+ENL33u86J05deG15gnsBjftPXrVlh+shSRZliGCx6ESOB9VAa9LVryk/vHKLzGJU2l7Y4WiEtvVqoY/CobUcn7CpdJrA+MrHJKJFQVCEJf4481UQQV22nGM7dLkfaO9WZCTFKG0ADSCQvPjqBnS9mTAeZ8ifLjDqs5NdGIAyDiRXX/vfmobyiVNUzq8sojmF38vF22B1Qjw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5936.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(376002)(136003)(346002)(39850400004)(451199021)(52116002)(6666004)(6486002)(110136005)(478600001)(107886003)(26005)(2906002)(6512007)(186003)(1076003)(4744005)(6506007)(66476007)(4326008)(66556008)(66946007)(7416002)(316002)(8676002)(41300700001)(5660300002)(38350700002)(8936002)(38100700002)(921005)(36756003)(86362001)(83380400001)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F5PjN3DQNeAZ97wZf19ZjI3XrbOc3szmg/bE80he9sYDu+19sJyGHeEl76vi?=
+ =?us-ascii?Q?z9UVjr+Lj6qshLrSoKGAclS+rqmn8aQOVuLRptW/jt7nRy6XL6og0XZR+2Qb?=
+ =?us-ascii?Q?QOSxSrS+6tCFytUHN3UyPNgnGGoNzrqb0RRD4iCE5a8sDBWusVuIBKIe8di1?=
+ =?us-ascii?Q?zPkTvYPrNdNn9lHmFO9r8ce4i4LuW4vreW/evCHgURlT891l3hOT0XrBEcWA?=
+ =?us-ascii?Q?o6LP1Fu642s5ZuYwfH6Z9VEgvYuP1Yt0hnmmGYVLRxFduweVRvG8OtZHs89T?=
+ =?us-ascii?Q?Fq7t65kO5w84cQapAQ8nIEbKi3W9y/E1g/37jTKanc3IQ6Oz8iJy3zBbNaQt?=
+ =?us-ascii?Q?D0R5p+05WFwhAXJaU5+lBduTzpkMTFV2eendEqgDlNufr2XP9xrsTMFD3fMb?=
+ =?us-ascii?Q?w6f0FkDyxk8uGDXhoSHIozj8eDLGwB8RLBllgFgkQnZymviz5QjIv462v7u5?=
+ =?us-ascii?Q?x7eQLV4RPt+10hQR0SFrEwaQvLv3MVTGOVHPSjc0fhcOsxtARKLjDIkQOEci?=
+ =?us-ascii?Q?aaePJU2f1K9Occqqbq6gIF1kieYUanyZMSo3vI5Bdu6/+FEhh1fA5oNRPc+h?=
+ =?us-ascii?Q?b0bVbYycHGPuEeiL1UTQLiGZj//ZOtOInGGID9c60Hm74nhX4PYZ45iK3Ivc?=
+ =?us-ascii?Q?B8oTpnsxghwoFUg7nTwS9C4NQ4JUaUcFDzC4dLjk7L4+2otbmfjPT4vATX4i?=
+ =?us-ascii?Q?ammFO84UklbQKfcHWE74YjvAJ+w13ndR/GEAwvOupzY5m06r7aNmPB1gu2ww?=
+ =?us-ascii?Q?ibaIenwyodqudBaWTREbfsWSWhT6dZEpkAsUl0K6i43BEYU0s8ZvM2SK+nd8?=
+ =?us-ascii?Q?NUnR1SnBkXEBvkEbrpzbqaQb8H5quga5SnY2jok98txVHQjYcvLF+7ae6TLg?=
+ =?us-ascii?Q?c7FYKuxULugOVimy9WThxvIYTPdSvICEw3QaeiH9tFxVarHoxWzJMU2hzJ9a?=
+ =?us-ascii?Q?m2XU52Rx3B6/z88/kuGpw4e6JCIQhLOq0civTplXVD8zAr5KF8V/grZNt7uG?=
+ =?us-ascii?Q?MZVKE9G3DHLBiqEJKqT9bwSCF/ETyhp+krDlC8qYVyAMc5OMud+Qelmilfi0?=
+ =?us-ascii?Q?bLc3GMaypSBv5Htsc2qofJ7AKHZoFpLn1AVgeZSduSYcYsI0gkehx+Uncc/r?=
+ =?us-ascii?Q?079JYEmCqSj7D6kI1PuHGOBrLvQlTjVGfu3bAFY8pyvYogUUdguiyqWfkLlY?=
+ =?us-ascii?Q?Jw1svCuf/YtzJi2ZTDqsgB15NWnmRj/hs1H1oFr5iwKJZIl6va6ecZrJqFKQ?=
+ =?us-ascii?Q?7qnIsg2u4c8QjCMIf2b1svIPxlEgWZrSyI3YvBLv0PaO+E26E+d+1KeP6uFq?=
+ =?us-ascii?Q?/cow52vfLMaUZapJs2tAUluw8USiRwXDBXS68taMeE1rqrWYHp0ygAq0AUuQ?=
+ =?us-ascii?Q?Vw6ZtxzA2L48vNKiX8KV3FheDPIQPR2osXyz3YI8dXNkPHyvh2pdjXA6/WVq?=
+ =?us-ascii?Q?ObqTArFDxoFx4AtqV5qzTSdKhuABq4TpEXR5xnXECHigGAazMUO6ysKMyS9s?=
+ =?us-ascii?Q?zWOle3+dRWsnhgBUzKj+fQiwHOl1wCwvsVkZ+4Phgc6lCsfh/blvnVTsgiKm?=
+ =?us-ascii?Q?vWTmkld4xsXyw0l8aXa09jM4fx6EIrToLM9zOPE/?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cb65a52-35af-4e07-c34a-08db7625f5c6
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5936.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2023 09:16:01.5044
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1TrDCQtUQNrX0Trp+zpN7SwnTxgX6sQvpn7xSibOBD1ZZOFcUvQ50R+idmwPcgKMeGjOuOTSO7GCVRiFBWhaig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5177
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add LEA-256-XTS, LEA-256-CTS fscrypt support.
+replace the if statement with min() to make the code clean
 
-LEA is a South Korean 128-bit block cipher (with 128/192/256-bit keys)
-included in the ISO/IEC 29192-2:2019 standard (Information security -
-Lightweight cryptography - Part 2: Block ciphers). It shows fast
-performance and, when SIMD instructions are available, it performs even
-faster. Particularly, it outperforms AES when the dedicated crypto
-instructions for AES are unavailable, regardless of the presence of SIMD
-instructions. However, it is not recommended to use LEA unless there is
-a clear reason (such as the absence of dedicated crypto instructions for
-AES or a mandatory requirement) to do so. Also, to enable LEA support,
-it needs to be enabled in the kernel crypto API.
-
-Signed-off-by: Dongsoo Lee <letrhee@nsr.re.kr>
+Signed-off-by: You Kangren <youkangren@vivo.com>
 ---
- Documentation/filesystems/fscrypt.rst | 12 ++++++++++++
- fs/crypto/fscrypt_private.h           |  2 +-
- fs/crypto/keysetup.c                  | 15 +++++++++++++++
- fs/crypto/policy.c                    |  4 ++++
- include/uapi/linux/fscrypt.h          |  4 +++-
- tools/include/uapi/linux/fscrypt.h    |  4 +++-
- 6 files changed, 38 insertions(+), 3 deletions(-)
+ drivers/crypto/intel/qat/qat_common/qat_uclo.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index eccd327e6df5..60fb82c3382e 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -339,6 +339,7 @@ Currently, the following pairs of encryption modes are supported:
- - Adiantum for both contents and filenames
- - AES-256-XTS for contents and AES-256-HCTR2 for filenames (v2 policies only)
- - SM4-XTS for contents and SM4-CTS-CBC for filenames (v2 policies only)
-+- LEA-256-XTS for contents and LEA-256-CTS-CBC for filenames (v2 policies only)
+diff --git a/drivers/crypto/intel/qat/qat_common/qat_uclo.c b/drivers/crypto/intel/qat/qat_common/qat_uclo.c
+index ce837bcc1cab..56a1947c64ab 100644
+--- a/drivers/crypto/intel/qat/qat_common/qat_uclo.c
++++ b/drivers/crypto/intel/qat/qat_common/qat_uclo.c
+@@ -1986,10 +1986,7 @@ static void qat_uclo_wr_uimage_raw_page(struct icp_qat_fw_loader_handle *handle,
+ 	uw_relative_addr = 0;
+ 	words_num = encap_page->micro_words_num;
+ 	while (words_num) {
+-		if (words_num < UWORD_CPYBUF_SIZE)
+-			cpylen = words_num;
+-		else
+-			cpylen = UWORD_CPYBUF_SIZE;
++		cpylen = min(words_num, UWORD_CPYBUF_SIZE);
  
- If unsure, you should use the (AES-256-XTS, AES-256-CTS-CBC) pair.
- 
-@@ -376,6 +377,17 @@ size.  It may be useful in cases where its use is mandated.
- Otherwise, it should not be used.  For SM4 support to be available, it
- also needs to be enabled in the kernel crypto API.
- 
-+LEA is a South Korean 128-bit block cipher (with 128/192/256-bit keys)
-+included in the ISO/IEC 29192-2:2019 standard (Information security -
-+Lightweight cryptography - Part 2: Block ciphers). It shows fast
-+performance and, when SIMD instructions are available, it performs even
-+faster. Particularly, it outperforms AES when the dedicated crypto
-+instructions for AES are unavailable, regardless of the presence of SIMD
-+instructions. However, it is not recommended to use LEA unless there is
-+a clear reason (such as the absence of dedicated crypto instructions for
-+AES or a mandatory requirement) to do so. Also, to enable LEA support,
-+it needs to be enabled in the kernel crypto API.
-+
- New encryption modes can be added relatively easily, without changes
- to individual filesystems.  However, authenticated encryption (AE)
- modes are not currently supported because of the difficulty of dealing
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 7ab5a7b7eef8..400238057219 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -31,7 +31,7 @@
- #define FSCRYPT_CONTEXT_V2	2
- 
- /* Keep this in sync with include/uapi/linux/fscrypt.h */
--#define FSCRYPT_MODE_MAX	FSCRYPT_MODE_AES_256_HCTR2
-+#define FSCRYPT_MODE_MAX	FSCRYPT_MODE_LEA_256_CTS
- 
- struct fscrypt_context_v1 {
- 	u8 version; /* FSCRYPT_CONTEXT_V1 */
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 361f41ef46c7..fa82579e56eb 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -74,6 +74,21 @@ struct fscrypt_mode fscrypt_modes[] = {
- 		.security_strength = 32,
- 		.ivsize = 32,
- 	},
-+	[FSCRYPT_MODE_LEA_256_XTS] = {
-+		.friendly_name = "LEA-256-XTS",
-+		.cipher_str = "xts(lea)",
-+		.keysize = 64,
-+		.security_strength = 32,
-+		.ivsize = 16,
-+		.blk_crypto_mode = BLK_ENCRYPTION_MODE_LEA_256_XTS,
-+	},
-+	[FSCRYPT_MODE_LEA_256_CTS] = {
-+		.friendly_name = "LEA-256-CTS-CBC",
-+		.cipher_str = "cts(cbc(lea))",
-+		.keysize = 32,
-+		.security_strength = 32,
-+		.ivsize = 16,
-+	},
- };
- 
- static DEFINE_MUTEX(fscrypt_mode_key_setup_mutex);
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index f4456ecb3f87..9d1e80c43c6d 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -94,6 +94,10 @@ static bool fscrypt_valid_enc_modes_v2(u32 contents_mode, u32 filenames_mode)
- 	    filenames_mode == FSCRYPT_MODE_SM4_CTS)
- 		return true;
- 
-+	if (contents_mode == FSCRYPT_MODE_LEA_256_XTS &&
-+	    filenames_mode == FSCRYPT_MODE_LEA_256_CTS)
-+		return true;
-+
- 	return fscrypt_valid_enc_modes_v1(contents_mode, filenames_mode);
- }
- 
-diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
-index fd1fb0d5389d..df3c8af98210 100644
---- a/include/uapi/linux/fscrypt.h
-+++ b/include/uapi/linux/fscrypt.h
-@@ -30,7 +30,9 @@
- #define FSCRYPT_MODE_SM4_CTS			8
- #define FSCRYPT_MODE_ADIANTUM			9
- #define FSCRYPT_MODE_AES_256_HCTR2		10
--/* If adding a mode number > 10, update FSCRYPT_MODE_MAX in fscrypt_private.h */
-+#define FSCRYPT_MODE_LEA_256_XTS		11
-+#define FSCRYPT_MODE_LEA_256_CTS		12
-+/* If adding a mode number > 12, update FSCRYPT_MODE_MAX in fscrypt_private.h */
- 
- /*
-  * Legacy policy version; ad-hoc KDF and no key verification.
-diff --git a/tools/include/uapi/linux/fscrypt.h b/tools/include/uapi/linux/fscrypt.h
-index fd1fb0d5389d..df3c8af98210 100644
---- a/tools/include/uapi/linux/fscrypt.h
-+++ b/tools/include/uapi/linux/fscrypt.h
-@@ -30,7 +30,9 @@
- #define FSCRYPT_MODE_SM4_CTS			8
- #define FSCRYPT_MODE_ADIANTUM			9
- #define FSCRYPT_MODE_AES_256_HCTR2		10
--/* If adding a mode number > 10, update FSCRYPT_MODE_MAX in fscrypt_private.h */
-+#define FSCRYPT_MODE_LEA_256_XTS		11
-+#define FSCRYPT_MODE_LEA_256_CTS		12
-+/* If adding a mode number > 12, update FSCRYPT_MODE_MAX in fscrypt_private.h */
- 
- /*
-  * Legacy policy version; ad-hoc KDF and no key verification.
+ 		/* load the buffer */
+ 		for (i = 0; i < cpylen; i++)
 -- 
-2.34.1
+2.39.0
+
