@@ -2,81 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C70FA740C67
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 Jun 2023 11:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A99D740F28
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 Jun 2023 12:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237083AbjF1JI3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 28 Jun 2023 05:08:29 -0400
-Received: from dfw.source.kernel.org ([139.178.84.217]:34600 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234200AbjF1JEt (ORCPT
-        <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 28 Jun 2023 05:04:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BEA926130E;
-        Wed, 28 Jun 2023 06:38:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFBDEC433C8;
-        Wed, 28 Jun 2023 06:38:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687934312;
-        bh=hIaK5MMZGhPP0WIwXVhK5SME6ZluWkRCOQFxos9q7yo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I8ua108wM9nVnxl66nOGDyuQnEeDyCv1Lt9xUx3PvvrSFEyRKVVsoCEhtZe5OkjJj
-         K8PV1w6/2hv7iFGo9RIXX4tJ65+EOyV/k1I5pDcWGlCR1xSfvx++iL7DcAu4Lww9wl
-         4UMPqtN8Mfr+9RAAJ72Oen2S6f9NBtKagv3+F/GbYc9NyuyXDkH8j8pSKsxtmZ53ug
-         cYMwpr9SeoYocFqOd3gccdDDwqFMy4UbNYX88v1uFnfJehK0wgikDju1OEy//LzXLo
-         IpAyRn0Fnyz3YMYboSJJ92ReN/WU6M2Vw8rpeN/oYMZxWucdGEe1xctpK6zN+2bG+5
-         aXhcdu7sDEPbg==
-Date:   Tue, 27 Jun 2023 23:38:30 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Dongsoo Lee <letrhee@nsr.re.kr>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        id S230163AbjF1Krx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 28 Jun 2023 06:47:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49263 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230480AbjF1Kqt (ORCPT <rfc822;linux-crypto@vger.kernel.org>);
+        Wed, 28 Jun 2023 06:46:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687949209; x=1719485209;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=V6BRz1ccabVF0NLRCSxDQU25VaPJciuHd5oFM5K9ktA=;
+  b=XFlw/I3vJqq/L+yW2CdONaTIJRL9uUJKU4gAjcJZok/fXEhh6ACRuUWX
+   qv8mCb7Onrwue4y05uB5G0JcnUfnRGDj4P6nU8WHcT6K6qOZEf8mk6mvk
+   10SDVpMen9gZjWhN6opvNECTB44xnLs8Uajb7nGTUGLGlSJrSaF+yAbkp
+   p+mNeuXXrt/PdKqB1pydVYAvzZ81RH8jm1nLUKMRSxR0At4H673D095WD
+   AezuNFf9YVM91BHpd4kWJz2pbdOrWprgtCYX0F+M350qtAKtYF4NvFGyq
+   pRj/ea+I5tHBtvMu4H9USZeHcJ4aewkGsbyyBwcuyvdna9MDXAgq2Xoax
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10754"; a="427817225"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="427817225"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2023 03:46:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10754"; a="752194298"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="752194298"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 28 Jun 2023 03:46:45 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qEShA-000Z0B-1L;
+        Wed, 28 Jun 2023 13:46:44 +0300
+Date:   Wed, 28 Jun 2023 13:46:44 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     You Kangren <youkangren@vivo.com>
+Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] fscrypt: Add LEA-256-XTS, LEA-256-CTS support
-Message-ID: <20230628063830.GA7920@sol.localdomain>
-References: <20230626084703.907331-1-letrhee@nsr.re.kr>
- <20230626084703.907331-5-letrhee@nsr.re.kr>
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Damian Muszynski <damian.muszynski@intel.com>,
+        Srinivas Kerekare <srinivas.kerekare@intel.com>,
+        "open list:QAT DRIVER" <qat-linux@intel.com>,
+        "open list:CRYPTO API" <linux-crypto@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH v2] crypto: qat - Replace the if statement with min()
+Message-ID: <ZJwPlLC7/sJP8U7u@smile.fi.intel.com>
+References: <20230627071726.20578-1-youkangren@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230626084703.907331-5-letrhee@nsr.re.kr>
+In-Reply-To: <20230627071726.20578-1-youkangren@vivo.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 05:47:03PM +0900, Dongsoo Lee wrote:
-> when SIMD instructions are available, it performs even faster.
+On Tue, Jun 27, 2023 at 03:17:24PM +0800, You Kangren wrote:
+> Replace the if statement with min_t() to simplify the code
 
-This will only be true once there is actually an applicable implementation of
-LEA-XTS and LEA-CTS using SIMD instructions included in the kernel.
+...
 
-Perhaps it is your plan to go through and accelerate LEA-XTS and LEA-CTS for the
-common CPU architectures.  However, it is not included in this patchset yet, so
-it should not be claimed in the documentation yet.
+> -		if (words_num < UWORD_CPYBUF_SIZE)
+> -			cpylen = words_num;
+> -		else
+> -			cpylen = UWORD_CPYBUF_SIZE;
+> +		cpylen = min_t(unsigned int, words_num, UWORD_CPYBUF_SIZE);
 
-> Particularly, it outperforms AES when the dedicated crypto
-> +instructions for AES are unavailable, regardless of the presence of SIMD
-> +instructions. However, it is not recommended to use LEA unless there is
-> +a clear reason (such as the absence of dedicated crypto instructions for
-> +AES or a mandatory requirement) to do so. Also, to enable LEA support,
-> +it needs to be enabled in the kernel crypto API.
+min_t() can be dangerous some times.
 
-I think I'd prefer that you omit the mention of the "absence of dedicated crypto
-instructions" use case for now.  fscrypt already supports another algorithm that
-fulfills exactly that use case (Adiantum), and that algorithm already has
-optimized implementations for arm32, arm64, and x86_64.  LEA does not have that
-yet.  So it does not really bring anything new to the table.  I'm also unsure it
-would be appropriate to recommend a "lightweight" cipher at this point...
+To make it robust I would suggest to use min() and mark UWORD_CPYBUF_SIZE
+with U suffix to make the type the same.
 
-That would leave "mandatory requirement" as the rationale, at least for now,
-similar to SM4.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-- Eric
+
