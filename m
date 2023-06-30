@@ -2,99 +2,152 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9701E743F33
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jun 2023 17:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380E474410A
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jun 2023 19:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbjF3PvM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 30 Jun 2023 11:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        id S229476AbjF3RUU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 30 Jun 2023 13:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjF3PvL (ORCPT
+        with ESMTP id S229957AbjF3RUT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 30 Jun 2023 11:51:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9458F35A5
-        for <linux-crypto@vger.kernel.org>; Fri, 30 Jun 2023 08:51:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B81B61775
-        for <linux-crypto@vger.kernel.org>; Fri, 30 Jun 2023 15:51:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89D8EC433D9;
-        Fri, 30 Jun 2023 15:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688140269;
-        bh=o+HQ6sKOLOmf9NJpSPsWFmx92fmjlFfWr9D3EoklLi8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jHffzW9mVEhnx1vyn2AqZf5LL+zIBS/Fs/Cilynv8kMBaoJPC/L0mO8gkSH4wa9C7
-         TzFQ6M8ouxTdZyX2eL8agbFrKVKOHxkraVuVKUg8wZMUVKEzQ6TJvZzRfTLad3abQZ
-         /EkJu5MoHfqasGxByyrNqF/w249qqWuCvlokWkPAZ64NAxx70LWWY3qyj2MnkvRSSS
-         n7cm1F2X+mKVMIhYwXA11c0RjkrAdVhShvzs4hbpz4ijrugYfSkSIArFTV8Riv2GC/
-         of8L/DUGLlrJlfnbWetYpiCIvF/9yS7p0s+6SyAptGHRbz3euuE6hc23utAsaA0s/i
-         IoDByBRQ7H5vg==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4f004cc54f4so3302924e87.3;
-        Fri, 30 Jun 2023 08:51:09 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYlpwkV1iabXoTBm7GPqhGbZWRgRXNt1O3ruzhsCm2vrTjJCC1c
-        o42AZ2lvp/Gu3At9whENjnhDX4xRxZSVjQLsRl0=
-X-Google-Smtp-Source: APBJJlHeM6BWV3muIjxnacs7zjjB0XKOeozxgRkAM5i8VKs9paqzZF7WBIi4waH6K6drUKfYMfm79y4EELrsxUS4wqA=
-X-Received: by 2002:a05:6512:3da5:b0:4f8:6e6e:3f42 with SMTP id
- k37-20020a0565123da500b004f86e6e3f42mr4240856lfv.14.1688140267474; Fri, 30
- Jun 2023 08:51:07 -0700 (PDT)
+        Fri, 30 Jun 2023 13:20:19 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E2D3A87
+        for <linux-crypto@vger.kernel.org>; Fri, 30 Jun 2023 10:20:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688145618; x=1719681618;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=XTZPnJjdnjXw8FHJZXlEOmJsQjEUds0KqC5D3/sYiKM=;
+  b=fy2X9TKC2kfwNzCgsodD6ettLTM8Wea1CXUCuXWWPEdxblLrYyNb84ZV
+   Z9h7P8D4dROYY/YDxJKP4dlwxIyw8BLki8nzOqvoctDZBe6jrWBrJNlxW
+   G8+L1nAa2jUfQctVt3+UY3M7mwyVptqSCfElDduE/f3ZGQ4ILxd6wtvKy
+   +YDLmnr7xNiRLXCoJlMEi3M8DWgwXmBqkN3y7f4x0XteyxjsEWNG8iZNh
+   gej8cNF4yrWGNwkFpod3NPdtcoSYPZXRHco57u+xFgi0bV4AqSxWsfIBV
+   TRUOEXYmZIRcP8PHhZBxygB7KiINbX2RaVBWuyV7izQlQXFLWes7Rp9BN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="359922819"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="359922819"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2023 10:20:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="721038628"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="721038628"
+Received: from r031s002_zp31l10c01.gv.intel.com (HELO localhost.localdomain) ([10.219.171.29])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2023 10:20:17 -0700
+From:   Damian Muszynski <damian.muszynski@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Damian Muszynski <damian.muszynski@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: [PATCH v4 0/5] crypto: qat - add heartbeat feature
+Date:   Fri, 30 Jun 2023 19:03:53 +0200
+Message-Id: <20230630170356.177654-1-damian.muszynski@intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <0000000000008a7ae505aef61db1@google.com> <20200911170150.GA889@sol.localdomain>
- <c16e9ab9-13e0-b911-e33a-c9ae81e93a8d@I-love.SAKURA.ne.jp>
- <CAMj1kXFqYozjJ+qPeSApESb0Cb6CUaGXBrs5LP81ERRvb3+TAw@mail.gmail.com>
- <59e1d5c0-aedb-7b5b-f37f-0c20185d7e9b@I-love.SAKURA.ne.jp>
- <CAMj1kXGHRUUFYL09Lm-mO6MfGc19rC=-7mSJ1eDTcbw7QuEkaw@mail.gmail.com>
- <CAG_fn=X+eU=-WLXASidBCHWS3L7RvtN=mx3Bj8GD9GcA=Htf2w@mail.gmail.com>
- <CAMj1kXFrsc7bsjo2i0=9AqVNSCvXEnYAukzoXeaYEH9EpNviBA@mail.gmail.com>
- <CAG_fn=VFa2yeiZmdyuVRmZYtWn6Tkox8UVrOrCv4tEec3BFYbQ@mail.gmail.com>
- <CAMj1kXEdwjN7Q8tKVxHz98zQ4EsWVSdLZ5tQaV-nXxc9hwRYjQ@mail.gmail.com>
- <CAG_fn=UWZWc+FZ_shCr+T9Y3gV9Bue-ZFHKJj78YXBq3JfnUKA@mail.gmail.com>
- <CAMj1kXE_PjQT6+A9a0Y=ZfbOr_H+umYSqHuRrM6AT_gFJxxP1w@mail.gmail.com> <20230630082733.4250175b@kernel.org>
-In-Reply-To: <20230630082733.4250175b@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 30 Jun 2023 17:50:55 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE9a399_CiXNHMqpNk+Fz=4YPd0s-5B0gU66wYbEhiiZQ@mail.gmail.com>
-Message-ID: <CAMj1kXE9a399_CiXNHMqpNk+Fz=4YPd0s-5B0gU66wYbEhiiZQ@mail.gmail.com>
-Subject: Re: [PATCH] net: tls: enable __GFP_ZERO upon tls_init()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+828dfc12440b4f6f305d@syzkaller.appspotmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Aviad Yehezkel <aviadye@nvidia.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 30 Jun 2023 at 17:27, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Fri, 30 Jun 2023 17:16:06 +0200 Ard Biesheuvel wrote:
-> > Note that this is the *input* scatterlist containing the AAD
-> > (additional authenticated data) and the crypto input, and so there is
-> > definitely a bug here that shouldn't be papered over by zero'ing the
-> > allocation.
->
-> Noob question, it's not the tag / AAD, right? We definitely don't init
-> that..
+This set introduces support for the QAT heartbeat feature. It allows
+detection whenever device firmware or acceleration unit will hang.
+We're adding this feature to allow our clients having a tool with
+they could verify if all of the Quick Assist hardware resources are
+healthy and operational.
 
-assoclen + cryptlen does not cover the tag on encryption, so it would
-be omitted here regardless of whether it was covered in the input
-scatterlist or not.
+QAT device firmware periodically writes counters to a specified physical
+memory location. A pair of counters per thread is incremented at
+the start and end of the main processing loop within the firmware.
+Checking for Heartbeat consists of checking the validity of the pair
+of counter values for each thread. Stagnant counters indicate
+a firmware hang.
+
+The first patch adds timestamp synchronization to the firmware.
+The second patch removes historical and never used HB definitions.
+Patch no. 3 is implementing the hardware clock frequency measuring
+interface.
+The fourth introduces the main heartbeat implementation with the debugfs
+interface.
+The last patch implements an algorithm that allows the code to detect
+which version of heartbeat API is used at the currently loaded firmware.
+
+Changes since v3:
+- improved comment in measure_clock() as suggested by Andy Shevchenko
+- changed release date and version for 6.6 in interface documentation
+
+Changes since v2:
+- fixed build error on a few of architectures - reduced unnecessary
+  64bit division.
+
+Changes since v1:
+- fixed build errors on a few of architectures - replaced macro
+  DIV_ROUND_CLOSEST with DIV_ROUND_CLOSEST_ULL
+- included prerequisite patch "add internal timer for qat 4xxx" which initially
+  was sent separately as this patchset was still in development.
+  - timer patch reworked to use delayed work as suggested by Herbert Xu
+
+Damian Muszynski (5):
+  crypto: qat - add internal timer for qat 4xxx
+  crypto: qat - drop obsolete heartbeat interface
+  crypto: qat - add measure clock frequency
+  crypto: qat - add heartbeat feature
+  crypto: qat - add heartbeat counters check
+
+ Documentation/ABI/testing/debugfs-driver-qat  |  51 +++
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     |  14 +
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.h     |   4 +
+ drivers/crypto/intel/qat/qat_4xxx/adf_drv.c   |   3 +
+ .../intel/qat/qat_c3xxx/adf_c3xxx_hw_data.c   |  28 ++
+ .../intel/qat/qat_c3xxx/adf_c3xxx_hw_data.h   |   7 +
+ .../intel/qat/qat_c62x/adf_c62x_hw_data.c     |  28 ++
+ .../intel/qat/qat_c62x/adf_c62x_hw_data.h     |   7 +
+ drivers/crypto/intel/qat/qat_common/Makefile  |   4 +
+ .../intel/qat/qat_common/adf_accel_devices.h  |  13 +
+ .../crypto/intel/qat/qat_common/adf_admin.c   |  43 +++
+ .../intel/qat/qat_common/adf_cfg_strings.h    |   2 +
+ .../crypto/intel/qat/qat_common/adf_clock.c   | 131 +++++++
+ .../crypto/intel/qat/qat_common/adf_clock.h   |  14 +
+ .../intel/qat/qat_common/adf_common_drv.h     |   5 +
+ .../crypto/intel/qat/qat_common/adf_dbgfs.c   |   9 +-
+ .../intel/qat/qat_common/adf_gen2_config.c    |   7 +
+ .../intel/qat/qat_common/adf_gen2_hw_data.h   |   3 +
+ .../intel/qat/qat_common/adf_gen4_hw_data.h   |   3 +
+ .../intel/qat/qat_common/adf_gen4_timer.c     |  70 ++++
+ .../intel/qat/qat_common/adf_gen4_timer.h     |  21 ++
+ .../intel/qat/qat_common/adf_heartbeat.c      | 336 ++++++++++++++++++
+ .../intel/qat/qat_common/adf_heartbeat.h      |  79 ++++
+ .../qat/qat_common/adf_heartbeat_dbgfs.c      | 194 ++++++++++
+ .../qat/qat_common/adf_heartbeat_dbgfs.h      |  12 +
+ .../crypto/intel/qat/qat_common/adf_init.c    |  28 ++
+ drivers/crypto/intel/qat/qat_common/adf_isr.c |   6 +
+ .../qat/qat_common/icp_qat_fw_init_admin.h    |  23 +-
+ .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.c   |  13 +
+ .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.h   |   5 +
+ 30 files changed, 1147 insertions(+), 16 deletions(-)
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_clock.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_clock.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_timer.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_timer.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat_dbgfs.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_heartbeat_dbgfs.h
+
+
+base-commit: 67b9bc0df80cfa241fe7a9c2b857c3e3efde982a
+-- 
+2.40.1
+
