@@ -2,100 +2,72 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E68AF7440F1
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jun 2023 19:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8487442EE
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jun 2023 21:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbjF3ROE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 30 Jun 2023 13:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
+        id S232125AbjF3TuO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 30 Jun 2023 15:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjF3ROD (ORCPT
+        with ESMTP id S230364AbjF3TuN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 30 Jun 2023 13:14:03 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11D7DF
-        for <linux-crypto@vger.kernel.org>; Fri, 30 Jun 2023 10:14:01 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-82-24.bstnma.fios.verizon.net [173.48.82.24])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35UHDgXR012238
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jun 2023 13:13:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1688145225; bh=eRkiqUCEclG9KgZecVs1P0Wzt0tTZDVD/MSUDf9IzBY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=dFFHXNePbIQJpb2yYz32mHlzqBti0NQXFuVoitWpMlKrj4nhtfFzhBy+z18UrGMh+
-         BStLvAxp8o+GwVDvCHXuVglZ47YUrqk3SZzk/Lrxt0tYZWYfrQ35XkufbYrRUDV+oF
-         Ra4R/quxfVZ13jfAa30FiJTgSUcWVcll2SeaWiY8KOZn1ojO67BGq74sPTxrTHDmfp
-         UqkvcoyjO/ckIP7HgvV+4M0X9Eipk36ne6EZnRSAaRKArqrLwDDTPoDZsn5GPxVBFd
-         N9DYdrTU0R7XmPjr8CyiZ5ia0CKsverjzw/CPat5gsmuf/YDcAgWTctNV/h1ZHI/AX
-         I85PBlKTpPrlA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 36D6715C027F; Fri, 30 Jun 2023 13:13:42 -0400 (EDT)
-Date:   Fri, 30 Jun 2023 13:13:42 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     syzbot <syzbot+94a8c779c6b238870393@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [syzbot] [ext4?] general protection fault in
- ext4_put_io_end_defer
-Message-ID: <20230630171342.GC591635@mit.edu>
-References: <0000000000002a0b1305feeae5db@google.com>
- <20230629035714.GJ8954@mit.edu>
- <20230630074111.GB36542@sol.localdomain>
- <20230630074614.GC36542@sol.localdomain>
+        Fri, 30 Jun 2023 15:50:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB47F19A9;
+        Fri, 30 Jun 2023 12:50:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 78B286179C;
+        Fri, 30 Jun 2023 19:50:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8295EC433C0;
+        Fri, 30 Jun 2023 19:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1688154611;
+        bh=RjHGfeGug/am7KllmZcNTHDBJHShpxNwhkWbu6BH2v0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JYevyD02g6Ftcod4VsIaeKkyzHK3p5fB47QQEQo+KavRrD04fHATBcrvo1SGTpJ2+
+         3FFCi1tF6ENa7og7CwQO/imnFT/ZARBAU4/I7zbDGN13yFCrB2V+jTftgvZaMBVUCJ
+         3Nx8d5zHbmnNDkiw5dZxiEqgoC6X9lh7/HgdcBHM=
+Date:   Fri, 30 Jun 2023 21:50:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        FUJITA Tomonori <fujita.tomonori@gmail.com>,
+        rust-for-linux@vger.kernel.org, Gary Guo <gary@garyguo.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 1/2] rust: add synchronous message digest support
+Message-ID: <2023063045-slightly-scribe-6d09@gregkh>
+References: <20230615142311.4055228-1-fujita.tomonori@gmail.com>
+ <20230615142311.4055228-2-fujita.tomonori@gmail.com>
+ <udHI3v-OLUqHQt3fwnH71QuRJjzGxexw2rkIYEfnsChCmrLoJTIL_GL1wLCARf-UotY51jkPT6tC8nVDvjf8LkY2zvddpgeRQ5owysZwJos=@proton.me>
+ <20230622.111419.241422502377572827.ubuntu@gmail.com>
+ <0a9af5fa-4df2-11da-b3cb-0a6b1d27fdc2@proton.me>
+ <o6lMzg30KAx1IKuGUzjTWb8ciTkkb_vbseDHu2u5nqLeijQ0vX1QgDOij0HGjQkW4NhJcOMoXHvMCstcByEzjq_CjMuN61l1rUo9DaIf97Y=@proton.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230630074614.GC36542@sol.localdomain>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <o6lMzg30KAx1IKuGUzjTWb8ciTkkb_vbseDHu2u5nqLeijQ0vX1QgDOij0HGjQkW4NhJcOMoXHvMCstcByEzjq_CjMuN61l1rUo9DaIf97Y=@proton.me>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jun 30, 2023 at 12:46:14AM -0700, Eric Biggers wrote:
-> > AF_ALG has existed since 2010.  My understanding that its original purpose was
-> > to expose hardware crypto accelerators to userspace.  Unfortunately, support for
-> > exposing *any* crypto algorithm was included as well, which IMO was a mistake.
-
-+1000....
-
-> > There are quite a few different userspace programs that use AF_ALG purely to get
-> > at the CPU-based algorithm implementations, without any sort of intention to use
-> > hardware crypto accelerator.  Probably because it seemed "easy".  Or "better"
-> > because everything in the kernel is better, right?
-
-Do we know if any to standard crypto libraries are using AF_ALG?  All
-aside from whether it's a good idea for userspace programs to be using
-kernel code because "everything is better in the kernel", I'm
-wondering how solicitous we should be for programs who are very likely
-rolling their own crypto, as opposed to using crypto library that has
-been written and vetted and tested for vulnerability by experts...
-
-> > It's controlled by the CONFIG_CRYPTO_USER_API_* options, with the hash support
-> > in particular controlled by CONFIG_CRYPTO_USER_API_HASH.  Though good luck
-> > disabling it on most systems, as systemd depends on it...
-> > 
+On Fri, Jun 30, 2023 at 02:48:37PM +0000, Benno Lossin wrote:
+> We came up with the following solutions, but could not come to a consensus on any
+> particular one, could you please assist us in making this decision?
 > 
-> Actually it turns out systemd has finally seen the light:
-> https://github.com/systemd/systemd/commit/2c3794f4228162c9bfd9e10886590d9f5b1920d7
+> 2. panic
 
-Aside from those PCI-attached crypto accelerators where you have to go
-through the kernel (although my experience has been that most of the
-time, the overhead for key scheduling, etc., is such that unless
-you're doing bulk crypto on large chunks of data, using external
-crypto hardware acclerators no longer makes sense 99.99% of the time
-in the 21st century), I wonder if we should consider having the kernel
-print a warning, "WARNING: [comm] is using AF_ALG; please consider
-using a real crypto library instead of rolling your own crypto".
+Never an option in kernel code, sorry, please don't even suggest it.
 
-(Only half kidding.)
+thanks,
 
-					- Ted
+greg k-h
