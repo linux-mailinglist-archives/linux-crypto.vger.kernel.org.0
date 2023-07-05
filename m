@@ -2,24 +2,24 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F09747E54
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Jul 2023 09:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC6C747F67
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Jul 2023 10:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbjGEHdj (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 5 Jul 2023 03:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
+        id S232058AbjGEIUn (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 5 Jul 2023 04:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbjGEHdg (ORCPT
+        with ESMTP id S232477AbjGEIUW (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 5 Jul 2023 03:33:36 -0400
+        Wed, 5 Jul 2023 04:20:22 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2420C10FB;
-        Wed,  5 Jul 2023 00:33:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41AE1BFA;
+        Wed,  5 Jul 2023 01:19:36 -0700 (PDT)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qGx0n-000X7d-6C; Wed, 05 Jul 2023 17:33:18 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 05 Jul 2023 15:33:10 +0800
-Date:   Wed, 5 Jul 2023 15:33:10 +0800
+        id 1qGxiz-000XLY-PM; Wed, 05 Jul 2023 18:18:58 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 05 Jul 2023 16:18:50 +0800
+Date:   Wed, 5 Jul 2023 16:18:50 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
 To:     David Howells <dhowells@redhat.com>
 Cc:     netdev@vger.kernel.org,
@@ -31,7 +31,7 @@ Cc:     netdev@vger.kernel.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH net] crypto: af_alg: Fix merging of written data into
  spliced pages
-Message-ID: <ZKUctqIKfJ31FtOr@gondor.apana.org.au>
+Message-ID: <ZKUnarcNYL1pJjAj@gondor.apana.org.au>
 References: <1585899.1688486184@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -78,9 +78,7 @@ On Tue, Jul 04, 2023 at 04:56:24PM +0100, David Howells wrote:
 >  crypto/af_alg.c |    7 ++++---
 >  1 file changed, 4 insertions(+), 3 deletions(-)
 
-Thanks for fixing this David!
-
-I'll push it out soon.
+Patch appiled.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
