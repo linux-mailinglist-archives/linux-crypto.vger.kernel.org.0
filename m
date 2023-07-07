@@ -2,126 +2,192 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 870E174AEB4
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jul 2023 12:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A7874AFA6
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jul 2023 13:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbjGGK0g (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 7 Jul 2023 06:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
+        id S231594AbjGGLYv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 7 Jul 2023 07:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjGGK0f (ORCPT
+        with ESMTP id S229458AbjGGLYu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 7 Jul 2023 06:26:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A3A10B
-        for <linux-crypto@vger.kernel.org>; Fri,  7 Jul 2023 03:25:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688725546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W30LF+UUNQf/l3DDH3XM8S2gxHzsMwoz+QRpsFhgavc=;
-        b=NLAteJ6+DPYbeIg45PD8C9+roeg5Zhw01HafaQZLiY6Y89gvzHqVQIoUIusBubnixXmBPa
-        fWouF7rQQoScrhsgyVeUjkyTQ6qB+vA2vEJ6eO1+frHzygMPIUYiiIyzKcw7KPaO+fghSj
-        //zXCt6/iUD2vUvfe31Myox5UIpNJlM=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-339-i2fdoA9LMW-JqUOpFFu_ZA-1; Fri, 07 Jul 2023 06:25:43 -0400
-X-MC-Unique: i2fdoA9LMW-JqUOpFFu_ZA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 7 Jul 2023 07:24:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80D91FF7;
+        Fri,  7 Jul 2023 04:24:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7597D3C025AD;
-        Fri,  7 Jul 2023 10:25:42 +0000 (UTC)
-Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5A3F52166B25;
-        Fri,  7 Jul 2023 10:25:42 +0000 (UTC)
-Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
-        id 3D2B830C0457; Fri,  7 Jul 2023 10:25:42 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id 378983FB76;
-        Fri,  7 Jul 2023 12:25:42 +0200 (CEST)
-Date:   Fri, 7 Jul 2023 12:25:42 +0200 (CEST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        herbert@gondor.apana.org.au, horia.geanta@nxp.com,
-        pankaj.gupta@nxp.com, gaurav.jain@nxp.com, heinzm@redhat.com,
-        snitzer@kernel.org, linux-kernel@vger.kernel.org,
-        qat-linux@intel.com, iuliana.prodan@nxp.com, dm-devel@redhat.com,
-        meenakshi.aggarwal@nxp.com, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, agk@redhat.com, V.Sethi@nxp.com
-Subject: Re: [dm-devel] [PATCH 1/3] dm integrity: do not filter algos with
- CRYPTO_ALG_ALLOCATES_MEMORY
-In-Reply-To: <20230705201205.GA866@sol.localdomain>
-Message-ID: <6388bd2-8342-d08-5b4b-7a37e8f8b323@redhat.com>
-References: <20230705164009.58351-1-giovanni.cabiddu@intel.com> <20230705164009.58351-2-giovanni.cabiddu@intel.com> <20230705201205.GA866@sol.localdomain>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BCE761947;
+        Fri,  7 Jul 2023 11:24:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5956EC433C7;
+        Fri,  7 Jul 2023 11:24:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1688729088;
+        bh=LOgGo2S8J0W/3urW+Ti0fTdtCUZF8vgQbegkxehA2Nw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V6pm8aS+Hqo30H+UfcDWPK9FUel6+CEaeLnbsqjg5FNFn7kS9vpsV/yUffNtNtN4r
+         eYj8wPa9jFaESU9qYfLPXkEq1P+y26NKM033eo6Tum/YGx4QnFqAodrRTvrUgwxjd+
+         Hb0ygjCLtz/yNG4DLd9KU6K45+rum5O927EybD2I=
+Date:   Fri, 7 Jul 2023 11:37:39 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc:     Oleksii_Moisieiev@epam.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        alexandre.torgue@foss.st.com, vkoul@kernel.org, jic23@kernel.org,
+        olivier.moysan@foss.st.com, arnaud.pouliquen@foss.st.com,
+        mchehab@kernel.org, fabrice.gasnier@foss.st.com,
+        andi.shyti@kernel.org, ulf.hansson@linaro.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, hugues.fruchet@foss.st.com,
+        lee@kernel.org, will@kernel.org, catalin.marinas@arm.com,
+        arnd@kernel.org, richardcochran@gmail.com,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 05/10] firewall: introduce stm32_firewall framework
+Message-ID: <2023070748-false-enroll-e5dc@gregkh>
+References: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
+ <20230705172759.1610753-6-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230705172759.1610753-6-gatien.chevallier@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi
-
-If you allocate memory in crypto processing in dm-integrity, you risk the 
-low-memory deadlock when swapping to dm-integrity.
-
-I.e. the machine runs out of memory, it needs to swap out pages to free 
-some memory, the swap-out bio goes to dm-integrity and dm-integrity calls 
-the crypto API and tries to allocate more memory => deadlock.
-
-
-
-On Wed, 5 Jul 2023, Eric Biggers wrote:
-
-> On Wed, Jul 05, 2023 at 05:40:07PM +0100, Giovanni Cabiddu wrote:
-> > The flag CRYPTO_ALG_ALLOCATES_MEMORY indicates that an algorithm might
-> > allocate memory in the datapath and therefore sleep.
-> > Dm-integrity is filtering out implementations of skcipher algorithms
-> > that have this flag set. However, in the same function it does
-> > allocations with GFP_KERNEL.
-
-It's OK to use GFP_KERNEL in the device mapper target constructor (because 
-at this point there is no I/O going to the device). But it's not OK to use 
-it for individual bio processing.
-
-> Which function is the above referring to?  The actual encryption/decryption
-> happens in crypt_journal(), and I don't see any memory allocations there.
+On Wed, Jul 05, 2023 at 07:27:54PM +0200, Gatien Chevallier wrote:
+> Introduce a firewall framework that offers to firewall consumers different
+> firewall services such as the ability to check their access rights against
+> their firewall controller(s).
 > 
-> > As dm-integrity is re-entrant and capable of handling sleeps that could
-> > occur during allocations with GFP_KERNEL, then it is also capable of
-> > using skcipher algorithm implementations that have
-> > CRYPTO_ALG_ALLOCATES_MEMORY set.
-> > 
-> > Remove the filtering of skcipher implementations with the flag
-> > CRYPTO_ALG_ALLOCATES_MEMORY set.
-> 
-> What about the use of CRYPTO_ALG_ALLOCATES_MEMORY in get_mac()?
-> 
-> > 
-> > Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
-> > Link: https://lore.kernel.org/linux-crypto/ZILvtASXQKLG43y9@gondor.apana.org.au/
-> > Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> > Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
-> 
-> This needs:
-> 
->     Fixes: a7a10bce8a04 ("dm integrity: don't use drivers that have CRYPTO_ALG_ALLOCATES_MEMORY")
->     Cc: stable@vger.kernel.org
-> 
-> But, are you 100% sure the explanation in commit a7a10bce8a04 was incorrect?
-> 
-> - Eric
+> The firewall framework offers a generic API that is defined in firewall
+> controllers drivers to best fit the specificity of each firewall.
 
-Mikulas
+But you aren't defining a "generic" api here, you are defining a
+specific one for your specific hardware.
 
+Or am I missing something?
+
+> 
+> There are various types of firewalls:
+> -Peripheral firewalls that filter accesses to peripherals
+> -Memory firewalls that filter accesses to memories or memory regions
+> -Resource firewalls that filter accesses to internal resources such as
+> reset and clock controllers
+> 
+> A firewall controller must be probed at arch_initcall level and register
+> to the framework so that consumers can use their services.
+
+Why must it happen at arch_initcall?  So it can never be a module?  That
+feels wrong.
+
+> 
+> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+> ---
+>  MAINTAINERS                               |   5 +
+>  arch/arm64/Kconfig.platforms              |   1 +
+>  drivers/bus/Kconfig                       |  10 +
+>  drivers/bus/Makefile                      |   1 +
+>  drivers/bus/stm32_firewall.c              | 252 ++++++++++++++++++++++
+>  drivers/bus/stm32_firewall.h              |  83 +++++++
+>  include/linux/bus/stm32_firewall_device.h | 134 ++++++++++++
+>  7 files changed, 486 insertions(+)
+>  create mode 100644 drivers/bus/stm32_firewall.c
+>  create mode 100644 drivers/bus/stm32_firewall.h
+>  create mode 100644 include/linux/bus/stm32_firewall_device.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 41385f01fa98..fabf95ba9b86 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -20123,6 +20123,11 @@ T:	git git://linuxtv.org/media_tree.git
+>  F:	Documentation/devicetree/bindings/media/i2c/st,st-mipid02.yaml
+>  F:	drivers/media/i2c/st-mipid02.c
+>  
+> +ST STM32 FIREWALL
+> +M:	Gatien Chevallier <gatien.chevallier@foss.st.com>
+> +S:	Maintained
+> +F:	drivers/bus/stm32_firewall.c
+> +
+>  ST STM32 I2C/SMBUS DRIVER
+>  M:	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+>  M:	Alain Volmat <alain.volmat@foss.st.com>
+> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+> index 6069120199bb..5a46e90f1e4e 100644
+> --- a/arch/arm64/Kconfig.platforms
+> +++ b/arch/arm64/Kconfig.platforms
+> @@ -293,6 +293,7 @@ config ARCH_STM32
+>  	select ARM_SMC_MBOX
+>  	select ARM_SCMI_PROTOCOL
+>  	select COMMON_CLK_SCMI
+> +	select STM32_FIREWALL
+>  	help
+>  	  This enables support for ARMv8 based STMicroelectronics
+>  	  STM32 family, including:
+> diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
+> index fcfa280df98a..4d54a7ea52b2 100644
+> --- a/drivers/bus/Kconfig
+> +++ b/drivers/bus/Kconfig
+> @@ -163,6 +163,16 @@ config QCOM_SSC_BLOCK_BUS
+>  	  i2c/spi/uart controllers, a hexagon core, and a clock controller
+>  	  which provides clocks for the above.
+>  
+> +config STM32_FIREWALL
+> +	bool "STM32 Firewall framework"
+> +	depends on ARCH_STM32
+
+Why this dependency?
+
+> +	default MACH_STM32MP157 || MACH_STM32MP13 || MACH_STM32MP25
+> +	help
+> +	  Say y to enable firewall framework and its services. Firewall
+> +	  controllers will be able to register to the framework. Firewall
+> +	  controllers must be initialized and register to the firewall framework
+> +	  at arch_initcall level.
+
+This needs better wording saying it is only for stm32 devices.
+
+> +
+>  config SUN50I_DE2_BUS
+>  	bool "Allwinner A64 DE2 Bus Driver"
+>  	  default ARM64
+> diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
+> index d90eed189a65..fc0511450ec2 100644
+> --- a/drivers/bus/Makefile
+> +++ b/drivers/bus/Makefile
+> @@ -26,6 +26,7 @@ obj-$(CONFIG_OMAP_INTERCONNECT)	+= omap_l3_smx.o omap_l3_noc.o
+>  obj-$(CONFIG_OMAP_OCP2SCP)	+= omap-ocp2scp.o
+>  obj-$(CONFIG_QCOM_EBI2)		+= qcom-ebi2.o
+>  obj-$(CONFIG_QCOM_SSC_BLOCK_BUS)	+= qcom-ssc-block-bus.o
+> +obj-$(CONFIG_STM32_FIREWALL)	+= stm32_firewall.o
+>  obj-$(CONFIG_SUN50I_DE2_BUS)	+= sun50i-de2.o
+>  obj-$(CONFIG_SUNXI_RSB)		+= sunxi-rsb.o
+>  obj-$(CONFIG_OF)		+= simple-pm-bus.o
+> diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
+> new file mode 100644
+> index 000000000000..510db5bc6eaf
+> --- /dev/null
+> +++ b/drivers/bus/stm32_firewall.c
+> @@ -0,0 +1,252 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+
+Are you _SURE_ this needs to be "or later"?  Sorry, I have to ask.
+
+thanks,
+
+greg k-h
