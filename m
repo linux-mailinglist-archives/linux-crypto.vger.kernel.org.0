@@ -2,147 +2,115 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1591474C3CC
-	for <lists+linux-crypto@lfdr.de>; Sun,  9 Jul 2023 13:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AB774C642
+	for <lists+linux-crypto@lfdr.de>; Sun,  9 Jul 2023 17:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbjGILg0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 9 Jul 2023 07:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
+        id S231175AbjGIPnE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 9 Jul 2023 11:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233023AbjGILgY (ORCPT
+        with ESMTP id S229579AbjGIPnC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 9 Jul 2023 07:36:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384081B1;
-        Sun,  9 Jul 2023 04:36:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB7BC60BC4;
-        Sun,  9 Jul 2023 11:36:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B45D5C433C8;
-        Sun,  9 Jul 2023 11:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1688902581;
-        bh=Oc4BTr5K3vTeSxq00miA1QYT23jOa88djcW0k/clk4w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zhOyoyY4MmR/El7qcYGwUpmLRiMdnGtEqXkSJqb1c0nBYOMky1sRfSfwakhHN5/I3
-         sw4igGBV5BD30gtUlb+4JOfal1Z5fofM0tg7WwCDlvD0LSa2DbSYjOT9xtRf9RDXtv
-         0ptRZN0hzrkoRpWZlackinnpFF4XsM7LO4zQvueY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.3 400/431] crypto: nx - fix build warnings when DEBUG_FS is not enabled
-Date:   Sun,  9 Jul 2023 13:15:48 +0200
-Message-ID: <20230709111500.558618696@linuxfoundation.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230709111451.101012554@linuxfoundation.org>
-References: <20230709111451.101012554@linuxfoundation.org>
-User-Agent: quilt/0.67
+        Sun, 9 Jul 2023 11:43:02 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C720D9;
+        Sun,  9 Jul 2023 08:42:55 -0700 (PDT)
+Received: from i53875a50.versanet.de ([83.135.90.80] helo=phil.fritz.box)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qIWYf-0002yG-Td; Sun, 09 Jul 2023 17:42:45 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com
+Cc:     aou@eecs.berkeley.edu, heiko@sntech.de,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu, ebiggers@kernel.org,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: [PATCH v6 0/3] Implement GCM ghash using Zbc and Zbkb extensions
+Date:   Sun,  9 Jul 2023 17:42:40 +0200
+Message-Id: <20230709154243.1582671-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Heiko Stuebner <heiko.stuebner@vrull.eu>
 
-[ Upstream commit b04b076fb56560b39d695ac3744db457e12278fd ]
+This was originally part of my vector crypto series, but was part
+of a separate openssl merge request implementing GCM ghash as using
+non-vector extensions.
 
-Fix build warnings when DEBUG_FS is not enabled by using an empty
-do-while loop instead of a value:
+As that pull-request
+    https://github.com/openssl/openssl/pull/20078
+got merged recently into openssl, we could also check if this could
+go into the kernel as well and provide a base for further accelerated
+cryptographic support.
 
-In file included from ../drivers/crypto/nx/nx.c:27:
-../drivers/crypto/nx/nx.c: In function 'nx_register_algs':
-../drivers/crypto/nx/nx.h:173:33: warning: statement with no effect [-Wunused-value]
-  173 | #define NX_DEBUGFS_INIT(drv)    (0)
-../drivers/crypto/nx/nx.c:573:9: note: in expansion of macro 'NX_DEBUGFS_INIT'
-  573 |         NX_DEBUGFS_INIT(&nx_driver);
-../drivers/crypto/nx/nx.c: In function 'nx_remove':
-../drivers/crypto/nx/nx.h:174:33: warning: statement with no effect [-Wunused-value]
-  174 | #define NX_DEBUGFS_FINI(drv)    (0)
-../drivers/crypto/nx/nx.c:793:17: note: in expansion of macro 'NX_DEBUGFS_FINI'
-  793 |                 NX_DEBUGFS_FINI(&nx_driver);
+changes in v6:
+- rebase on top of riscv/for-next
+- rebase on top of Samuel Ortiz Arch-random series
+  https://lore.kernel.org/r/20230709115549.2666557-1-sameo@rivosinc.com
+  as it has the nicer Zbc + Zbkb integration for extensions and hwprobe
+- update perl code with better licensing text (Eric)
+  This was also merged into the original openSSL sources
+- add SPDX license identifier (Eric)
+- drop unneeded fallback element in the private struct (Herbert)
 
-Also, there is no need to build nx_debugfs.o when DEBUG_FS is not
-enabled, so change the Makefile to accommodate that.
+Changes in v5:
+- rebased on top of 6.4-based riscv/next
+- code from openssl is now dual-licensed under Apache + BSD
+  see https://github.com/openssl/openssl/pull/20649
+- separate init functions instead of creating them with macros (Nathan)
 
-Fixes: ae0222b7289d ("powerpc/crypto: nx driver code supporting nx encryption")
-Fixes: aef7b31c8833 ("powerpc/crypto: Build files for the nx device driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Breno Leitão <leitao@debian.org>
-Cc: Nayna Jain <nayna@linux.ibm.com>
-Cc: Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/crypto/nx/Makefile | 2 +-
- drivers/crypto/nx/nx.h     | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Changes in v4:
+- rebase on top of riscv/for-next
+- split out the scalar crypto implementation from the vector series
+- refresh code from openSSL to match exactly
+- Remove RFC label, as Zbc and Zbkb are ratified and
+  the cryptographic code was merged into openSSL
 
-diff --git a/drivers/crypto/nx/Makefile b/drivers/crypto/nx/Makefile
-index d00181a26dd65..483cef62acee8 100644
---- a/drivers/crypto/nx/Makefile
-+++ b/drivers/crypto/nx/Makefile
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_CRYPTO_DEV_NX_ENCRYPT) += nx-crypto.o
- nx-crypto-objs := nx.o \
--		  nx_debugfs.o \
- 		  nx-aes-cbc.o \
- 		  nx-aes-ecb.o \
- 		  nx-aes-gcm.o \
-@@ -11,6 +10,7 @@ nx-crypto-objs := nx.o \
- 		  nx-sha256.o \
- 		  nx-sha512.o
- 
-+nx-crypto-$(CONFIG_DEBUG_FS) += nx_debugfs.o
- obj-$(CONFIG_CRYPTO_DEV_NX_COMPRESS_PSERIES) += nx-compress-pseries.o nx-compress.o
- obj-$(CONFIG_CRYPTO_DEV_NX_COMPRESS_POWERNV) += nx-compress-powernv.o nx-compress.o
- nx-compress-objs := nx-842.o
-diff --git a/drivers/crypto/nx/nx.h b/drivers/crypto/nx/nx.h
-index c6233173c612e..2697baebb6a35 100644
---- a/drivers/crypto/nx/nx.h
-+++ b/drivers/crypto/nx/nx.h
-@@ -170,8 +170,8 @@ struct nx_sg *nx_walk_and_build(struct nx_sg *, unsigned int,
- void nx_debugfs_init(struct nx_crypto_driver *);
- void nx_debugfs_fini(struct nx_crypto_driver *);
- #else
--#define NX_DEBUGFS_INIT(drv)	(0)
--#define NX_DEBUGFS_FINI(drv)	(0)
-+#define NX_DEBUGFS_INIT(drv)	do {} while (0)
-+#define NX_DEBUGFS_FINI(drv)	do {} while (0)
- #endif
- 
- #define NX_PAGE_NUM(x)		((u64)(x) & 0xfffffffffffff000ULL)
+changes in v3:
+- rebase on top of 6.3-rc2
+- rebase on top of vector-v14 patchset
+- add the missing Co-developed-by mentions to showcase
+  the people that did the actual openSSL crypto code
+
+changes in v2:
+- rebased on 6.2 + zbb series, so don't include already
+  applied changes anymore
+- refresh code picked from openssl as that side matures
+- more algorithms (SHA512, AES, SM3, SM4)
+
+Heiko Stuebner (3):
+  RISC-V: expose Zbc as Kconfig option
+  RISC-V: hook new crypto subdir into build-system
+  RISC-V: crypto: add accelerated GCM GHASH implementation
+
+ arch/riscv/Kbuild                      |   1 +
+ arch/riscv/Kconfig                     |  23 ++
+ arch/riscv/crypto/Kconfig              |  18 ++
+ arch/riscv/crypto/Makefile             |  18 ++
+ arch/riscv/crypto/ghash-riscv64-glue.c | 291 +++++++++++++++++
+ arch/riscv/crypto/ghash-riscv64-zbc.pl | 430 +++++++++++++++++++++++++
+ arch/riscv/crypto/riscv.pm             | 261 +++++++++++++++
+ crypto/Kconfig                         |   3 +
+ 8 files changed, 1045 insertions(+)
+ create mode 100644 arch/riscv/crypto/Kconfig
+ create mode 100644 arch/riscv/crypto/Makefile
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zbc.pl
+ create mode 100644 arch/riscv/crypto/riscv.pm
+
 -- 
 2.39.2
-
-
 
