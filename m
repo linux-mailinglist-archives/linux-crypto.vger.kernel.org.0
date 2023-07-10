@@ -2,91 +2,149 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A9A74DF3F
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 Jul 2023 22:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A160F74E20C
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jul 2023 01:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjGJU3j (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 10 Jul 2023 16:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
+        id S230119AbjGJXKm (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 10 Jul 2023 19:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbjGJU3g (ORCPT
+        with ESMTP id S230335AbjGJXKk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 10 Jul 2023 16:29:36 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E2D1AB;
-        Mon, 10 Jul 2023 13:29:32 -0700 (PDT)
-Received: from 250.57.4.146.static.wline.lns.sme.cust.swisscom.ch ([146.4.57.250] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1qIxVh-0002mg-Uz; Mon, 10 Jul 2023 22:29:29 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     aric.pzqi@ingenic.com, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 7/7] hwrng: ingenic - switch to device managed registration
-Date:   Mon, 10 Jul 2023 22:27:33 +0200
-Message-Id: <20230710202733.116133-8-martin@kaiser.cx>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230710202733.116133-1-martin@kaiser.cx>
-References: <20230710202733.116133-1-martin@kaiser.cx>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 10 Jul 2023 19:10:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424801BF;
+        Mon, 10 Jul 2023 16:10:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BEFFD61259;
+        Mon, 10 Jul 2023 23:10:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70293C433C7;
+        Mon, 10 Jul 2023 23:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689030636;
+        bh=8sYs0oJhv8C3D6vbycCvzDy7MRStcTggwjlS91xXHfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WHrn6dUce/0SK5OppFPh4z+NfBA+J0JIjZ/a2s+It0xqanPkCN8NuiniAGWFsszDJ
+         jtp/Q82CXOn1h9afl1tYGna68+t7niowebCXAzXv7MJOw0DJFNgNPoouunw8lgS3rm
+         dxM5adaMzmaJAN+sjZjwEdS2Vsrl++UxM5CCHCGelwrJKhKTIDa0Lk8yZgSOhTKZIK
+         cCiX/34FaI1ktsRhy3TKVyHjPUtX9vE11DnIZ8TierCkdhmVRraHl6Z9QIDitYnirI
+         o837NZHFKr95lwIIdH25p/CPnQWTzqqFyh9wQgRAHQtlkrt6jMKZ0IiB1Uf9RLOQEQ
+         8ExLKoTg/AzCA==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 11 Jul 2023 02:10:31 +0300
+Message-Id: <CTYVE0G0D53P.Y8A7V3C9BW9O@suppilovahvero>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Dan Carpenter" <dan.carpenter@linaro.org>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>
+Cc:     "David Howells" <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] KEYS: asymmetric: Fix error codes
+X-Mailer: aerc 0.14.0
+References: <c5e34c6a-da1e-4585-98c4-14701b0e093e@moroto.mountain>
+In-Reply-To: <c5e34c6a-da1e-4585-98c4-14701b0e093e@moroto.mountain>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Call devm_hwrng_register for device managed registration of the
-ingenic-trng driver. ingenic_trng_remove can then be deleted.
+On Mon Jul 3, 2023 at 5:18 PM EEST, Dan Carpenter wrote:
+> These error paths should return the appropriate error codes instead of
+> returning success.
+>
+> Fixes: 63ba4d67594a ("KEYS: asymmetric: Use new crypto interface without =
+scatterlists")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>  crypto/asymmetric_keys/public_key.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+>
+> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys=
+/public_key.c
+> index e787598cb3f7..773e159dbbcb 100644
+> --- a/crypto/asymmetric_keys/public_key.c
+> +++ b/crypto/asymmetric_keys/public_key.c
+> @@ -185,8 +185,10 @@ static int software_key_query(const struct kernel_pk=
+ey_params *params,
+> =20
+>  	if (issig) {
+>  		sig =3D crypto_alloc_sig(alg_name, 0, 0);
+> -		if (IS_ERR(sig))
+> +		if (IS_ERR(sig)) {
+> +			ret =3D PTR_ERR(sig);
+>  			goto error_free_key;
+> +		}
+> =20
+>  		if (pkey->key_is_private)
+>  			ret =3D crypto_sig_set_privkey(sig, key, pkey->keylen);
+> @@ -208,8 +210,10 @@ static int software_key_query(const struct kernel_pk=
+ey_params *params,
+>  		}
+>  	} else {
+>  		tfm =3D crypto_alloc_akcipher(alg_name, 0, 0);
+> -		if (IS_ERR(tfm))
+> +		if (IS_ERR(tfm)) {
+> +			ret =3D PTR_ERR(tfm);
+>  			goto error_free_key;
+> +		}
+> =20
+>  		if (pkey->key_is_private)
+>  			ret =3D crypto_akcipher_set_priv_key(tfm, key, pkey->keylen);
+> @@ -300,8 +304,10 @@ static int software_key_eds_op(struct kernel_pkey_pa=
+rams *params,
+> =20
+>  	if (issig) {
+>  		sig =3D crypto_alloc_sig(alg_name, 0, 0);
+> -		if (IS_ERR(sig))
+> +		if (IS_ERR(sig)) {
+> +			ret =3D PTR_ERR(sig);
+>  			goto error_free_key;
+> +		}
+> =20
+>  		if (pkey->key_is_private)
+>  			ret =3D crypto_sig_set_privkey(sig, key, pkey->keylen);
+> @@ -313,8 +319,10 @@ static int software_key_eds_op(struct kernel_pkey_pa=
+rams *params,
+>  		ksz =3D crypto_sig_maxsize(sig);
+>  	} else {
+>  		tfm =3D crypto_alloc_akcipher(alg_name, 0, 0);
+> -		if (IS_ERR(tfm))
+> +		if (IS_ERR(tfm)) {
+> +			ret =3D PTR_ERR(tfm);
+>  			goto error_free_key;
+> +		}
+> =20
+>  		if (pkey->key_is_private)
+>  			ret =3D crypto_akcipher_set_priv_key(tfm, key, pkey->keylen);
+> @@ -411,8 +419,10 @@ int public_key_verify_signature(const struct public_=
+key *pkey,
+> =20
+>  	key =3D kmalloc(pkey->keylen + sizeof(u32) * 2 + pkey->paramlen,
+>  		      GFP_KERNEL);
+> -	if (!key)
+> +	if (!key) {
+> +		ret =3D -ENOMEM;
+>  		goto error_free_tfm;
+> +	}
+> =20
+>  	memcpy(key, pkey->key, pkey->keylen);
+>  	ptr =3D key + pkey->keylen;
+> --=20
+> 2.39.2
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/char/hw_random/ingenic-trng.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+I'll pick this as I'm late with 6.5 PR.
 
-diff --git a/drivers/char/hw_random/ingenic-trng.c b/drivers/char/hw_random/ingenic-trng.c
-index 9c54721f8399..3967a8dbe967 100644
---- a/drivers/char/hw_random/ingenic-trng.c
-+++ b/drivers/char/hw_random/ingenic-trng.c
-@@ -98,7 +98,7 @@ static int ingenic_trng_probe(struct platform_device *pdev)
- 	trng->rng.cleanup = ingenic_trng_cleanup;
- 	trng->rng.read = ingenic_trng_read;
- 
--	ret = hwrng_register(&trng->rng);
-+	ret = devm_hwrng_register(&pdev->dev, &trng->rng);
- 	if (ret)
- 		return dev_err_probe(&pdev->dev, ret, "Failed to register hwrng\n");
- 
-@@ -108,15 +108,6 @@ static int ingenic_trng_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int ingenic_trng_remove(struct platform_device *pdev)
--{
--	struct ingenic_trng *trng = platform_get_drvdata(pdev);
--
--	hwrng_unregister(&trng->rng);
--
--	return 0;
--}
--
- static const struct of_device_id ingenic_trng_of_match[] = {
- 	{ .compatible = "ingenic,x1830-dtrng" },
- 	{ /* sentinel */ }
-@@ -125,7 +116,6 @@ MODULE_DEVICE_TABLE(of, ingenic_trng_of_match);
- 
- static struct platform_driver ingenic_trng_driver = {
- 	.probe		= ingenic_trng_probe,
--	.remove		= ingenic_trng_remove,
- 	.driver		= {
- 		.name	= "ingenic-trng",
- 		.of_match_table = ingenic_trng_of_match,
--- 
-2.30.2
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
+BR, Jarkko
