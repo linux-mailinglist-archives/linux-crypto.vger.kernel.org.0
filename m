@@ -2,98 +2,145 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D1674E943
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jul 2023 10:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF9674F3C9
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Jul 2023 17:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjGKIkY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 11 Jul 2023 04:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S233119AbjGKPjT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 11 Jul 2023 11:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjGKIkX (ORCPT
+        with ESMTP id S233034AbjGKPjA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 11 Jul 2023 04:40:23 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96955C0
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jul 2023 01:40:20 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-307d20548adso5470979f8f.0
-        for <linux-crypto@vger.kernel.org>; Tue, 11 Jul 2023 01:40:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689064818; x=1691656818;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jO3p2R6PvDXWlq4WPv9Xl22zgwoTKhJNavHiIsEtFtA=;
-        b=Ae20dguLWTcUcArQpBwy+8UhyKeU1IHItg1B/5XQWMwITlVy/68fHyrFMly/KqdLp3
-         xTUbzyjr6im01vIGo0taf8ujfJfq1q8qHFhlbAXlUTWZ7l/NTnwo45FKLpaa0pudmDUp
-         rh9hZNFCMhST68TuTm4JcScGSf2IbgLWj/HUgOJo+w3Jqm4+IwMrjyo1xcQS4pMEhJSd
-         ndg6tFlmvM3I3nXWfgCLnvSyq8sp+j2J9MX1Baysgrvqfwd3U6C+cEA3tQlHWsXM3N1K
-         DJaX2RZSVZS9nxKzsQ1kRzd9j1gpmCZ5PMEHrU7565JU9HtFmDgTr0KXruYjx0H+WUwl
-         QKpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689064818; x=1691656818;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jO3p2R6PvDXWlq4WPv9Xl22zgwoTKhJNavHiIsEtFtA=;
-        b=hJ6zJZ/HUMmuB1vPqdzUwEepTLMlPNC+fqtABaMCghBN8A4aw51ZWz3hiTj5MNtOXE
-         wEv+hEfxYtKdKwk22KxqZ3Om0/ECRQiaTlI78RXoxjCCcM5t4zcP2LwO57iw8uCPNvhP
-         vGRkgez8A06WckWlyQJGEIK5nxsXyyYlhU5aoKue1R702k5WBiEZ43ZkxJ8wK7qnVU5u
-         2hT0aLZc9XjuxoCsVU3dF+5TYeO/jbMGyBe0WMmd818QX1TLSLi3646/lghcNiJZOhWm
-         RT2LGz6/vRE+qj+peNoRejEWNo82JofszgEtsEh67EGBevmGmvMPF4EH5uFZpjJxjW6M
-         Lepg==
-X-Gm-Message-State: ABy/qLZY6W0DR5GcU2KTLhPfjRzKJvqtMUfI6LTB5t1E2ws2myxqOaPV
-        FGXxMhLWeCYKjjpwkpIkE6WJqg==
-X-Google-Smtp-Source: APBJJlHFGlltvFFqYky0ftaQRRy3ncLK1TPRpiIYcTCCuWWaBIxh3CsVAwMtRs+v+r5eDRDETT+ilQ==
-X-Received: by 2002:a05:6000:104c:b0:313:e55f:b78c with SMTP id c12-20020a056000104c00b00313e55fb78cmr12965313wrx.21.1689064818638;
-        Tue, 11 Jul 2023 01:40:18 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id q10-20020adfdfca000000b003144b95e1ecsm1589896wrn.93.2023.07.11.01.40.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 01:40:16 -0700 (PDT)
-Date:   Tue, 11 Jul 2023 11:40:12 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] KEYS: asymmetric: Fix error codes
-Message-ID: <15340a35-2400-43dd-9f50-fcbcb3c4986d@kadam.mountain>
-References: <c5e34c6a-da1e-4585-98c4-14701b0e093e@moroto.mountain>
- <CTYVE0G0D53P.Y8A7V3C9BW9O@suppilovahvero>
- <CTYVFFFI0SE9.2QXXQPRJW3AA3@suppilovahvero>
+        Tue, 11 Jul 2023 11:39:00 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA95310D4;
+        Tue, 11 Jul 2023 08:38:01 -0700 (PDT)
+Received: from i53875a50.versanet.de ([83.135.90.80] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qJFQw-0000g0-J0; Tue, 11 Jul 2023 17:37:46 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com
+Cc:     aou@eecs.berkeley.edu, heiko@sntech.de,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu, ebiggers@kernel.org,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: [PATCH v4 00/12] RISC-V: support some cryptography accelerations
+Date:   Tue, 11 Jul 2023 17:37:31 +0200
+Message-Id: <20230711153743.1970625-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CTYVFFFI0SE9.2QXXQPRJW3AA3@suppilovahvero>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 02:12:22AM +0300, Jarkko Sakkinen wrote:
-> > > Fixes: 63ba4d67594a ("KEYS: asymmetric: Use new crypto interface without scatterlists")
+From: Heiko Stuebner <heiko.stuebner@vrull.eu>
 
-[ snip ]
+This series provides cryptographic implementations using the vector
+crypto extensions.
 
-> >
-> > I'll pick this as I'm late with 6.5 PR.
-> >
-> > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> Causes merge conflicts with my tree:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/
+v13 of the vector patchset dropped the patches for in-kernel usage of
+vector instructions, I picked the ones from v12 over into this series
+for now.
 
-Your master branch doesn't include the "Use new crypto interface" commit
-so it doesn't have the bug.
+My basic goal was to not re-invent cryptographic code, so the heavy
+lifting is done by those perl-asm scripts used in openssl and the perl
+code used here-in stems from code that is targetted at openssl [0] and is
+unmodified from there to limit needed review effort.
 
-(I'm just testing against linux-next and I don't know how the crypto
-trees work).
+With a matching qemu (there are patches for vector-crypto flying around)
+the in-kernel crypto-selftests (also the extended ones) are very happy
+so far.
 
-regards,
-dan carpenter
+
+changes in v4:
+- split off from scalar crypto patches but base on top of them
+- adapt to pending openssl code [0] using the now frozen vector crypto
+  extensions - with all its changes
+  [0] https://github.com/openssl/openssl/pull/20149
+
+changes in v3:
+- rebase on top of 6.3-rc2
+- rebase on top of vector-v14 patchset
+- add the missing Co-developed-by mentions to showcase
+  the people that did the actual openSSL crypto code
+
+changes in v2:
+- rebased on 6.2 + zbb series, so don't include already
+  applied changes anymore
+- refresh code picked from openssl as that side matures
+- more algorithms (SHA512, AES, SM3, SM4)
+
+Greentime Hu (2):
+  riscv: Add support for kernel mode vector
+  riscv: Add vector extension XOR implementation
+
+Heiko Stuebner (10):
+  RISC-V: add helper function to read the vector VLEN
+  RISC-V: add vector crypto extension detection
+  RISC-V: crypto: update perl include with helpers for vector (crypto)
+    instructions
+  RISC-V: crypto: add Zvbb+Zvbc accelerated GCM GHASH implementation
+  RISC-V: crypto: add Zvkg accelerated GCM GHASH implementation
+  RISC-V: crypto: add a vector-crypto-accelerated SHA256 implementation
+  RISC-V: crypto: add a vector-crypto-accelerated SHA512 implementation
+  RISC-V: crypto: add Zvkned accelerated AES encryption implementation
+  RISC-V: crypto: add Zvksed accelerated SM4 encryption implementation
+  RISC-V: crypto: add Zvksh accelerated SM3 hash implementation
+
+ arch/riscv/crypto/Kconfig                     |  68 ++-
+ arch/riscv/crypto/Makefile                    |  44 +-
+ arch/riscv/crypto/aes-riscv-glue.c            | 168 ++++++
+ arch/riscv/crypto/aes-riscv64-zvkned.pl       | 530 ++++++++++++++++++
+ arch/riscv/crypto/ghash-riscv64-glue.c        | 245 ++++++++
+ arch/riscv/crypto/ghash-riscv64-zvbb-zvbc.pl  | 380 +++++++++++++
+ arch/riscv/crypto/ghash-riscv64-zvkg.pl       | 168 ++++++
+ arch/riscv/crypto/riscv.pm                    | 433 +++++++++++++-
+ arch/riscv/crypto/sha256-riscv64-glue.c       | 115 ++++
+ .../crypto/sha256-riscv64-zvbb-zvknha.pl      | 314 +++++++++++
+ arch/riscv/crypto/sha512-riscv64-glue.c       | 106 ++++
+ .../crypto/sha512-riscv64-zvbb-zvknhb.pl      | 377 +++++++++++++
+ arch/riscv/crypto/sm3-riscv64-glue.c          | 112 ++++
+ arch/riscv/crypto/sm3-riscv64-zvksh.pl        | 225 ++++++++
+ arch/riscv/crypto/sm4-riscv64-glue.c          | 162 ++++++
+ arch/riscv/crypto/sm4-riscv64-zvksed.pl       | 300 ++++++++++
+ arch/riscv/include/asm/hwcap.h                |   9 +
+ arch/riscv/include/asm/vector.h               |  28 +
+ arch/riscv/include/asm/xor.h                  |  82 +++
+ arch/riscv/kernel/Makefile                    |   1 +
+ arch/riscv/kernel/cpu.c                       |   8 +
+ arch/riscv/kernel/cpufeature.c                |  50 ++
+ arch/riscv/kernel/kernel_mode_vector.c        | 132 +++++
+ arch/riscv/lib/Makefile                       |   1 +
+ arch/riscv/lib/xor.S                          |  81 +++
+ 25 files changed, 4136 insertions(+), 3 deletions(-)
+ create mode 100644 arch/riscv/crypto/aes-riscv-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.pl
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zvbb-zvbc.pl
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.pl
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-zvbb-zvknha.pl
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-zvbb-zvknhb.pl
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh.pl
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed.pl
+ create mode 100644 arch/riscv/include/asm/xor.h
+ create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
+ create mode 100644 arch/riscv/lib/xor.S
+
+-- 
+2.39.2
+
