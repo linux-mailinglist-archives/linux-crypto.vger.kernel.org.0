@@ -2,114 +2,115 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC9175362F
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jul 2023 11:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3AE753697
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Jul 2023 11:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbjGNJOB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 14 Jul 2023 05:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        id S235907AbjGNJcE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 14 Jul 2023 05:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234819AbjGNJN7 (ORCPT
+        with ESMTP id S235640AbjGNJbs (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:13:59 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61ADE2D47;
-        Fri, 14 Jul 2023 02:13:57 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36E9DdBm028503;
-        Fri, 14 Jul 2023 04:13:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689326019;
-        bh=mKtCUPgaud8pjCzNSvAn4kZizjOxNjiafARqukJWj+8=;
-        h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=wU8Iqipd8rz5A6Oh2r/fpzTsUZhuw6/l9SXit/XsUAyw+B3CmKzj32OHZuP6GGwZQ
-         1NXKAFjgsWI8GaOiAQrHTF1bz/JEK3QiFsCJS55C4ebbrQorB8SluVnvcd2YQafTFW
-         OGU8we2N+yKHQAGB0Wf7vlLWXPTIejKNUqWCAwbI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36E9DdKP097414
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 14 Jul 2023 04:13:39 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 14
- Jul 2023 04:13:38 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 14 Jul 2023 04:13:38 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36E9DcdL015114;
-        Fri, 14 Jul 2023 04:13:38 -0500
-From:   Kamlesh Gurudasani <kamlesh@ti.com>
-Date:   Fri, 14 Jul 2023 14:42:42 +0530
-Subject: [PATCH v5 2/2] arm64: dts: ti: k3-am62-main: Remove power-domains
- from crypto node
+        Fri, 14 Jul 2023 05:31:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEEB30C8;
+        Fri, 14 Jul 2023 02:31:24 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36E2vWVm019143;
+        Fri, 14 Jul 2023 09:30:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=jqB/M0SvgpNVOytyj0EUvs9YFMXWLmfEWxnrFzJvpLs=;
+ b=n5ASPxrsmJQ9SIisE9iziWHllKOPNGzXXQ/Z/t9KpSnkZaMXK4mPjQB3+gTE8XPo1F4I
+ /irHA6QaO7x3AHm1S/8FDGSIU210LzFKF/xvpWxrA5Rp1HaeFctDqyiSSUXRvUs/DQWU
+ RalRen8VR2fCDODlfvZiA3T63s495unCQofE5rXlQUdn5xKBDxGbsRYX673rgfdmN9Tv
+ R+hz1hiRiEFr3Gp06cH09Fh5bEokiTf3WnQPv7byirkGItuoAp1SVerpxOmvsGFeRTyx
+ t1l+pm/TFWKCJMo/Qt1QUXtfHFMa7ZoEZt9O5hsutNEGzu32Apezdh941wXB4JYGhwAz QQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtpub9bwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 09:30:57 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36E9UtM4027790
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 09:30:56 GMT
+Received: from anusha-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 14 Jul 2023 02:30:50 -0700
+From:   Anusha Rao <quic_anusha@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <thara.gopinath@gmail.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <robh+dt@kernel.org>,
+        <bhupesh.sharma@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <quic_saahtoma@quicinc.com>, <quic_anusha@quicinc.com>
+Subject: [PATCH V4] dt-bindings: crypto: qcom-qce: add SoC compatible string for ipq9574
+Date:   Fri, 14 Jul 2023 15:00:32 +0530
+Message-ID: <20230714093032.22400-1-quic_anusha@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230614-sa3ul-v5-2-29dd2366fba3@ti.com>
-References: <20230614-sa3ul-v5-0-29dd2366fba3@ti.com>
-In-Reply-To: <20230614-sa3ul-v5-0-29dd2366fba3@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        "Tero Kristo" <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Tero Kristo" <t-kristo@ti.com>, Keerthy <j-keerthy@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, <linux-crypto@vger.kernel.org>,
-        Kamlesh Gurudasani <kamlesh@ti.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689326014; l=1080;
- i=kamlesh@ti.com; s=20230614; h=from:subject:message-id;
- bh=twkydDeRPS5AYQfyYZRmDOCh79DoQ65SqFyXWQK4qeQ=;
- b=AJ+VVQIeJ4KLEgtk9OggCVRkJHfne+ozX+EGKZP58f9RMR7lSGudpeCVhbp6M52B+CA0hqKDl
- kBA1p40Gac7AmpUAewZ8Ge9HYWANvn+FDOYtlz26ZCQXkdTb2N9cPbx
-X-Developer-Key: i=kamlesh@ti.com; a=ed25519;
- pk=db9XKPVWDGJVqj2jDqgnPQd6uQf3GZ3oaQa4bq1odGo=
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,TVD_SUBJ_WIPE_DEBT,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: za5omIAvPWGg_SjU_bW2tmONizKv29Q4
+X-Proofpoint-GUID: za5omIAvPWGg_SjU_bW2tmONizKv29Q4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-14_04,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 mlxlogscore=817 bulkscore=0 phishscore=0
+ suspectscore=0 adultscore=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307140086
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Only SYSFW has control of SA3UL power.
-From SYSFW 08.04.00.002, for security reasons, device ID for power
-management of SA3UL has been removed.
+Document the compatible string for ipq9574.
 
-"power-domains" property in crypto node tries to access
-the SA3UL, for which it gets NACK and hence, SA3UL driver doesn't
-probe properly.
-
-Fixes: 8af893654c02 ("arm64: dts: ti: k3-am62-main: Enable crypto accelerator")
-
-Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Signed-off-by: Anusha Rao <quic_anusha@quicinc.com>
 ---
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+NOTE: This change was added as part of the series below
+https://lore.kernel.org/linux-arm-msm/20230526161129.1454-1-quic_anusha@quicinc.com/
+Since the dts change is picked, this patch is required
+to resolve CHECK_DTBS issue
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-index b3e4857bbbe4..18a6e9ffaf58 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -174,7 +174,6 @@ k3_reset: reset-controller {
- 	crypto: crypto@40900000 {
- 		compatible = "ti,am62-sa3ul";
- 		reg = <0x00 0x40900000 0x00 0x1200>;
--		power-domains = <&k3_pds 70 TI_SCI_PD_SHARED>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
- 		ranges = <0x00 0x40900000 0x00 0x40900000 0x00 0x30000>;
+ Changes in V4:
+        - Updated subject prefix to include subsystem crypto.
+        - Picked up Acked-by tag.
+        - Picked up Reviewed-by tag.
 
+ Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+index bb828068c3b8..8e665d910e6e 100644
+--- a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
++++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+@@ -34,6 +34,7 @@ properties:
+           - enum:
+               - qcom,ipq6018-qce
+               - qcom,ipq8074-qce
++              - qcom,ipq9574-qce
+               - qcom,msm8996-qce
+               - qcom,qcm2290-qce
+               - qcom,sdm845-qce
+
+base-commit: 40b055fe7f276cf2c1da47316c52f2ff9255a68a
 -- 
-2.34.1
+2.17.1
 
