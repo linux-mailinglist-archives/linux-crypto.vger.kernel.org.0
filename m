@@ -2,35 +2,39 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49093766A29
-	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jul 2023 12:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11533766A3D
+	for <lists+linux-crypto@lfdr.de>; Fri, 28 Jul 2023 12:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbjG1KX0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 28 Jul 2023 06:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        id S235845AbjG1KYG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 28 Jul 2023 06:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235885AbjG1KXJ (ORCPT
+        with ESMTP id S235180AbjG1KXy (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:23:09 -0400
+        Fri, 28 Jul 2023 06:23:54 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD96F3A81;
-        Fri, 28 Jul 2023 03:23:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C098448A;
+        Fri, 28 Jul 2023 03:23:42 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qPKcc-0011sJ-4x; Fri, 28 Jul 2023 18:22:59 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 28 Jul 2023 18:22:58 +0800
-Date:   Fri, 28 Jul 2023 18:22:58 +0800
+        id 1qPKd4-0011sb-Qv; Fri, 28 Jul 2023 18:23:27 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 28 Jul 2023 18:23:26 +0800
+Date:   Fri, 28 Jul 2023 18:23:26 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] hwrng: cn10k - trivial cleanups
-Message-ID: <ZMOXAuksGr6p7iA7@gondor.apana.org.au>
-References: <20230721085444.496863-1-martin@kaiser.cx>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 1/2] crypto: caam - Use struct_size()
+Message-ID: <ZMOXHoGUZjxfAHxj@gondor.apana.org.au>
+References: <0fc02b533bd3c3422bec5856bc65bbb66ebf7b58.1690037578.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230721085444.496863-1-martin@kaiser.cx>
+In-Reply-To: <0fc02b533bd3c3422bec5856bc65bbb66ebf7b58.1690037578.git.christophe.jaillet@wanadoo.fr>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
@@ -42,15 +46,16 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:54:42AM +0200, Martin Kaiser wrote:
-> Two trivial cleanups of the cn10k driver. Compile tested only.
+On Sat, Jul 22, 2023 at 04:53:58PM +0200, Christophe JAILLET wrote:
+> Use struct_size() instead of hand-writing it, when allocating a structure
+> with a flex array.
 > 
-> Martin Kaiser (2):
->   hwrng: cn10k - delete empty remove function
->   hwrng: cn10k - use dev_err_probe
+> This is less verbose, more robust and more informative.
 > 
->  drivers/char/hw_random/cn10k-rng.c | 18 ++++--------------
->  1 file changed, 4 insertions(+), 14 deletions(-)
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/crypto/caam/caamhash.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
 All applied.  Thanks.
 -- 
