@@ -2,54 +2,63 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C852768736
-	for <lists+linux-crypto@lfdr.de>; Sun, 30 Jul 2023 20:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F79768754
+	for <lists+linux-crypto@lfdr.de>; Sun, 30 Jul 2023 21:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjG3S4i (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 30 Jul 2023 14:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        id S229995AbjG3TP6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 30 Jul 2023 15:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbjG3S4f (ORCPT
+        with ESMTP id S229487AbjG3TP6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 30 Jul 2023 14:56:35 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EBA10F4;
-        Sun, 30 Jul 2023 11:56:31 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36UIuIPV124841;
-        Sun, 30 Jul 2023 13:56:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690743378;
-        bh=QIhD7sfTz8wkc0F5WKpsPx6OL2wDF4T4HH6zMbWh9IM=;
-        h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=gXHbdvD7bpRovl9UQUOV/CTtwSKKqjy8GDm0egUJDLOoa+CmoIb+8ILFpA6hUzDHH
-         yf1oCe0cGDHdEXwVaLD6bO3l8D4rojfFDYmxZyImkQIVLMH931gpjCch/JmcjbSahK
-         vSQEQVvBnL0ttje1rrrrvt90rStX3PI5e5qyx8AQ=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36UIuIPW062757
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 30 Jul 2023 13:56:18 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 30
- Jul 2023 13:56:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 30 Jul 2023 13:56:18 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36UIuHnp000723;
-        Sun, 30 Jul 2023 13:56:18 -0500
-From:   Kamlesh Gurudasani <kamlesh@ti.com>
-Date:   Mon, 31 Jul 2023 00:25:58 +0530
-Subject: [PATCH 5/5] arm64: defconfig: enable MCRC module
+        Sun, 30 Jul 2023 15:15:58 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63811709
+        for <linux-crypto@vger.kernel.org>; Sun, 30 Jul 2023 12:15:53 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-991da766865so603876866b.0
+        for <linux-crypto@vger.kernel.org>; Sun, 30 Jul 2023 12:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690744552; x=1691349352;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bAdDlvNo2vLdfcsDPkJen+iBi4ac4UvVpMaDLLPdBg4=;
+        b=N5KWFa365inzuu97p0Hlj4dphVbT6YW8++Knq7ZXcnWyZzQQI5zb708SBazsItYwTs
+         LXpt7ztZ1aU1ZYgnlHORxIJ8YVy9nKS+bjQsRcX4reXTAQGSCXnclXT9VFAd3a6UH14t
+         HL95/2YSY2m1L2Ai/bIqbP1xOcNFuOE9GMQwCTQFzBGZyAuopL7u6JT/NThigc7Gxjtc
+         IKUI6CkPg4A/5q7P7+xlMFFENsOAN67u6q2p+qrm8Fo/Wj56snPiESkmXcmSqlqSQhn6
+         RY479HdpB9pYphd0gpJei6BfxDeJxAET4ScdRVFDEwVG9znT8Qig5RlX4ac11nnRglvr
+         EtqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690744552; x=1691349352;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bAdDlvNo2vLdfcsDPkJen+iBi4ac4UvVpMaDLLPdBg4=;
+        b=O3x7vd0tow0fOO9gZCJF7T3aie/rh7zUbQPpC1E9zC+Q9qW2EZzV984s9qxzwBdyJ0
+         ydqXvNruOZmp2GvFa3cBbdVkUV16AAUeg5PVxVvKm7/Jw4ueFLXs/qmy5Yn8ZGvQmtqQ
+         YXaBs+AGWui0385AvWD1i3BLwQ0BvK8XcnYhb5+hC22ELRhq5ySQwpKbgJ9iLozOKp6h
+         Oo5IWREQZg3nDmnsbHXazA9ui3h5M/i6aMAPYCPnGxkYee3MJTBE+p2q7QvaKeb7t6oQ
+         Sze7Fx5HiqL6spBW6cEyk3ZNeOUzdSNgj/bxDjTGmN3+MPs2HtlgMhEf1M2ksnRAejff
+         YofQ==
+X-Gm-Message-State: ABy/qLZoD/dNZ56DQGmMGwMZ/AEUXpJWGgZM2sXX7z1C56AE2Hnc1pKe
+        UDcHrgSdUqJ5cKUqoSVXzXiH1w==
+X-Google-Smtp-Source: APBJJlENFI8r0s0dm1vmxCNCtoyiiHZ+kTqoFDnQ/fMkWAclhRP5VUEXkQcU3Cpdq2nz8a5eXAyvtA==
+X-Received: by 2002:a17:907:2712:b0:97e:aace:b6bc with SMTP id w18-20020a170907271200b0097eaaceb6bcmr4961797ejk.53.1690744551930;
+        Sun, 30 Jul 2023 12:15:51 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id dk8-20020a170906f0c800b00992f2befcbcsm5006941ejb.180.2023.07.30.12.15.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 12:15:51 -0700 (PDT)
+Message-ID: <8ea4f777-5645-96ae-164f-ff9f7b736eda@linaro.org>
+Date:   Sun, 30 Jul 2023 21:15:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230719-mcrc-upstream-v1-5-dc8798a24c47@ti.com>
-References: <20230719-mcrc-upstream-v1-0-dc8798a24c47@ti.com>
-In-Reply-To: <20230719-mcrc-upstream-v1-0-dc8798a24c47@ti.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH 2/5] dt-bindings: crypto: Add binding for TI MCRC64 driver
+Content-Language: en-US
+To:     Kamlesh Gurudasani <kamlesh@ti.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -58,61 +67,109 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
         Tero Kristo <kristo@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Kamlesh Gurudasani <kamlesh@ti.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690743369; l=1038;
- i=kamlesh@ti.com; s=20230614; h=from:subject:message-id;
- bh=B/LYMZyNFUhmrn+0NIyBgEnkmpVKRdPppDNTxGti9FY=;
- b=nd4TJ9Aa/rHKor2pA8acRFQp/tZj1y4RrTygD0I52I+xYjhW+Mg8zY79UfYQCHL1v+088LkZF
- XT4YuDkj/yTArbElttir8e59Mp6/bcBmSt1tg5x5ELPwlOYvk/U6fjd
-X-Developer-Key: i=kamlesh@ti.com; a=ed25519;
- pk=db9XKPVWDGJVqj2jDqgnPQd6uQf3GZ3oaQa4bq1odGo=
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230719-mcrc-upstream-v1-0-dc8798a24c47@ti.com>
+ <20230719-mcrc-upstream-v1-2-dc8798a24c47@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230719-mcrc-upstream-v1-2-dc8798a24c47@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-K3 devices include MCRC engine for crc64 calculation.
-Enable module to be built for K3 devices.
+On 30/07/2023 20:55, Kamlesh Gurudasani wrote:
+> Add binding for Texas Instruments MCRC64 driver
 
-Also enable algif_hash module, which is needed to access MCRC module
-from userspace.
+A nit, subject: drop second/last, redundant "binding for". The
+"dt-bindings" prefix is already stating that these are bindings.
 
-Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
----
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Here and subject: drop driver. Bindings are for hardware.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 6cbf6eb59378..6006983b313e 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1505,6 +1505,7 @@ CONFIG_CRYPTO_TEST=m
- CONFIG_CRYPTO_ECHAINIV=y
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_ANSI_CPRNG=y
-+CONFIG_CRYPTO_USER_API_HASH=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_CHACHA20_NEON=m
- CONFIG_CRYPTO_GHASH_ARM64_CE=y
-@@ -1528,6 +1529,7 @@ CONFIG_CRYPTO_DEV_HISI_ZIP=m
- CONFIG_CRYPTO_DEV_HISI_HPRE=m
- CONFIG_CRYPTO_DEV_HISI_TRNG=m
- CONFIG_CRYPTO_DEV_SA2UL=m
-+CONFIG_CRYPTO_DEV_TI_MCRC64=m
- CONFIG_DMA_RESTRICTED_POOL=y
- CONFIG_CMA_SIZE_MBYTES=32
- CONFIG_PRINTK_TIME=y
+Neither commit nor bindings in description: field explain what is this
+hardware.
 
--- 
-2.34.1
+> 
+> Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/ti,mcrc64.yaml | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  MAINTAINERS                                             |  5 +++++
+>  2 files changed, 47 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/ti,mcrc64.yaml b/Documentation/devicetree/bindings/crypto/ti,mcrc64.yaml
+> new file mode 100644
+> index 000000000000..1d1e3f87638c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/ti,mcrc64.yaml
+> @@ -0,0 +1,42 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/ti,mcrc64.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments MCRC64 bindings
+
+Drop bindings. If you tested your code, you would see a warning, so:
+
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
+
+> +
+> +maintainers:
+> +  - Kamlesh Gurudasani <kamlesh@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,mcrc64
+
+What's this? Part of SoC? Then the compatible is not correct.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - power-domains
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mcrc64: mcrc64@30300000 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+> +      compatible = "ti,mcrc64";
+> +      reg = <0x00 0x30300000 0x00 0x1000>;
+> +      clocks = <&k3_clks 116 0>;
+> +      power-domains = <&k3_pds 116 TI_SCI_PD_EXCLUSIVE>;
+> +      };
+
+Indentation is messed up.
+> 
+
+Best regards,
+Krzysztof
 
