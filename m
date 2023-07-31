@@ -2,69 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8A9769142
-	for <lists+linux-crypto@lfdr.de>; Mon, 31 Jul 2023 11:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B077690A9
+	for <lists+linux-crypto@lfdr.de>; Mon, 31 Jul 2023 10:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjGaJP5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 31 Jul 2023 05:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44736 "EHLO
+        id S231941AbjGaIrN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 31 Jul 2023 04:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbjGaJP4 (ORCPT
+        with ESMTP id S229646AbjGaIqj (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:15:56 -0400
-X-Greylist: delayed 1220 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 02:15:55 PDT
-Received: from mail.cothiafon.pl (mail.cothiafon.pl [217.61.106.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA2D10B
-        for <linux-crypto@vger.kernel.org>; Mon, 31 Jul 2023 02:15:55 -0700 (PDT)
-Received: by mail.cothiafon.pl (Postfix, from userid 1002)
-        id 74EC28319D; Mon, 31 Jul 2023 10:36:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cothiafon.pl; s=mail;
-        t=1690792588; bh=dwoca0X6C9VXklO/zRgFQCPapTk5LFz4tKaENdvy6Po=;
-        h=Date:From:To:Subject:From;
-        b=cLyO+/f7tj1MquxAybKAxjf+xrXl0ps6ENnStMPbPYmeU+m3ottObpbgpNg8VccNv
-         attrOYi4QBmbJU94/6gmpcRvGKzd65ARu7ZsX/ovqW9Lk6wJT2rNfBV7DH2Jln3BST
-         mexs8nmoMZW9De9mc+XZuBR54W497q/wlXQdkDWTGFjy9hLlisy7NyJEAdE4w8Azxr
-         +/pTPR6gFP7J1ESHVdZMrm/WwGy7anlIQt5mtnj0VDJOYFE9qw7k5Lpi0jo4KQZnrW
-         PcRY8v66NUvqma5ldFOzI4FDiVRKRoJfiXADyMROOChR4CxUUWTFAXAdmBxmikNwNW
-         CHiwdbkuxkQDg==
-Received: by mail.cothiafon.pl for <linux-crypto@vger.kernel.org>; Mon, 31 Jul 2023 08:35:48 GMT
-Message-ID: <20230731095940-0.1.28.omxw.0.a1kiky6j6o@cothiafon.pl>
-Date:   Mon, 31 Jul 2023 08:35:48 GMT
-From:   =?UTF-8?Q? "Rados=C5=82aw_Grabowski" ?= 
-        <radoslaw.grabowski@cothiafon.pl>
-To:     <linux-crypto@vger.kernel.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.cothiafon.pl
+        Mon, 31 Jul 2023 04:46:39 -0400
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DE92110
+        for <linux-crypto@vger.kernel.org>; Mon, 31 Jul 2023 01:45:22 -0700 (PDT)
+X-ASG-Debug-ID: 1690793117-086e23186a033b0001-Xm9f1P
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id ajcNKjYAUBEvU9rJ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 31 Jul 2023 16:45:17 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 31 Jul
+ 2023 16:45:17 +0800
+Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 31 Jul
+ 2023 16:45:16 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+From:   LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
+To:     <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
+        <jiajie.ho@starfivetech.com>, <conor.dooley@microchip.com>,
+        <martin@kaiser.cx>, <mmyangfl@gmail.com>,
+        <jenny.zhang@starfivetech.com>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>
+CC:     <leoliu@zhaoxin.com>, <CobeChen@zhaoxin.com>,
+        <YunShen@zhaoxin.com>, <TonyWWang@zhaoxin.com>,
+        leoliu-oc <leoliu-oc@zhaoxin.com>
+Subject: [PATCH v2 0/2] Add Zhaoxin HW RNG support
+Date:   Mon, 31 Jul 2023 16:45:13 +0800
+X-ASG-Orig-Subj: [PATCH v2 0/2] Add Zhaoxin HW RNG support
+Message-ID: <20230731084515.2057375-1-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.32.64.1]
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1690793117
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 811
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112114
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dzie=C5=84 dobry,
+From: leoliu-oc <leoliu-oc@zhaoxin.com>
 
-chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
-, je=C5=9Bli chodzi o system monitoringu GPS.
+Implemented Zhaoxin rng driver to add support for Zhaoxin HW RNG.
+Both Zhaoxin-rng and via-rng rely on the XSTORE feature,
+but the actual implementation is different. So add Vendor ID/Family
+restrictions in via-rng module.
 
-Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
-e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
-a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
+v1->v2:
+    * Modify via-rng in a separate patch.
+    * Fix some formatting issues.
 
-Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
-dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
-szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
-mne znaczenie.
+leoliu-oc (2):
+  hwrng: via-rng: convert to x86_cpu_id probing
+  hwrng: add Zhaoxin HW RNG driver
 
-Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
-b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
+ drivers/char/hw_random/Kconfig       | 13 +++++
+ drivers/char/hw_random/Makefile      |  1 +
+ drivers/char/hw_random/via-rng.c     | 15 +++--
+ drivers/char/hw_random/zhaoxin-rng.c | 87 ++++++++++++++++++++++++++++
+ 4 files changed, 108 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/char/hw_random/zhaoxin-rng.c
 
+-- 
+2.34.1
 
-Pozdrawiam
-Rados=C5=82aw Grabowski
