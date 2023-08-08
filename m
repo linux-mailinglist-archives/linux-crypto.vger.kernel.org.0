@@ -2,38 +2,38 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EB0773C87
-	for <lists+linux-crypto@lfdr.de>; Tue,  8 Aug 2023 18:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA48773E66
+	for <lists+linux-crypto@lfdr.de>; Tue,  8 Aug 2023 18:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbjHHQHa (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 8 Aug 2023 12:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S231428AbjHHQaD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 8 Aug 2023 12:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjHHQFt (ORCPT
+        with ESMTP id S232760AbjHHQ2r (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:05:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBB06EB4;
-        Tue,  8 Aug 2023 08:45:38 -0700 (PDT)
+        Tue, 8 Aug 2023 12:28:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4CB12532;
+        Tue,  8 Aug 2023 08:51:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B3AE4624E0;
-        Tue,  8 Aug 2023 12:09:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B62AC433C8;
-        Tue,  8 Aug 2023 12:09:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C0E5462529;
+        Tue,  8 Aug 2023 12:11:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BA43C433C8;
+        Tue,  8 Aug 2023 12:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691496591;
-        bh=FzbOxvvcT3an8By+bOHp6cyHrQ87WItM2HAHMx6IoRw=;
+        s=k20201202; t=1691496690;
+        bh=96VTB/JKve/lcwcYA/LVnZ1+6F4oYEZrmgfcvmfSTM0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ehP1b2bkLNUXjEjaxc9cidCuqOTS3i+S6muIu9INtZkx1y6sVWTjl+QavfkjrEYVq
-         HA6is88xBCIS1czwcdQ+k7n+w+COyEE9KFtUe+p6tQ9OlbvvyOIrpKF1Npq1iUW1oJ
-         IHgeXhk2p9BCrmqZ3zE9bGlGaiZ+J03Fpuzg020HdHm5xiFJ+snsH1+9mibbag9LH/
-         CpHIP06gSzr4sQe0q+NcdTRHhnr7IImA0JB0r5B3Q+ZsrqRGpdaRVl9vek6EKhKqk5
-         VMEbDlcA+pd3x2ty5TfxfyTituVj7OChW4msMrBtf46iHAGvON4mgI96DdF9XWS2ed
-         eH8f0o+EU3Jzg==
-Date:   Tue, 8 Aug 2023 13:09:45 +0100
+        b=PGRUeMhvgx8j7ItBIo8IDG4iysdY+5QTLi8NJackenmM6S0mnqJu5JtIThopDGbS0
+         r601kiz6J//C6Zi8CsMcMnJCbEavL+yZ5PBI9K4+xg15YJGdJavbEuCNXaYLZ7GdDX
+         TBlUksujh06CbwXRUkCowZ1SQyOeMlYHh+SAdeQ3baLFpAsSAn9jw7kf5EpIHvPIME
+         CBVgZxbLbKA36f+/wAn5DgbaSO5NL8oNQyz0RJ+XS0zuCK27qLKnv+JFAqJb2j8aOg
+         F52ZqLau9HBXQH76LcOoZh/e8s/tL/8N8wEouLdPicbQ6toqSuOP/NauDtkoEvqR8d
+         KZxwvJP8bsRqQ==
+Date:   Tue, 8 Aug 2023 13:11:24 +0100
 From:   Conor Dooley <conor@kernel.org>
 To:     Alexey Romanov <avromanov@sberdevices.ru>
 Cc:     narmstrong@baylibre.com, neil.armstrong@linaro.org,
@@ -48,14 +48,15 @@ Cc:     narmstrong@baylibre.com, neil.armstrong@linaro.org,
         kernel@sberdevices.ru
 Subject: Re: [PATCH v2 2/3] dt-bindings: rng: meson: add meson-rng-s4
  compatible
-Message-ID: <20230808-calcium-smasher-5f6c410fb226@spud>
+Message-ID: <20230808-diabetes-ultimate-f3f4afc53d6d@spud>
 References: <20230807130611.63914-1-avromanov@sberdevices.ru>
  <20230807130611.63914-3-avromanov@sberdevices.ru>
+ <20230808-calcium-smasher-5f6c410fb226@spud>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1ZSDXZ0SsvgeKJ0O"
+        protocol="application/pgp-signature"; boundary="0Io72FXexd1hCxZL"
 Content-Disposition: inline
-In-Reply-To: <20230807130611.63914-3-avromanov@sberdevices.ru>
+In-Reply-To: <20230808-calcium-smasher-5f6c410fb226@spud>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,51 +68,32 @@ List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
 
---1ZSDXZ0SsvgeKJ0O
+--0Io72FXexd1hCxZL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 07, 2023 at 04:06:10PM +0300, Alexey Romanov wrote:
-> Now the driver has a separate algo for S4 SoC.
+On Tue, Aug 08, 2023 at 01:09:45PM +0100, Conor Dooley wrote:
+> On Mon, Aug 07, 2023 at 04:06:10PM +0300, Alexey Romanov wrote:
+> > Now the driver has a separate algo for S4 SoC.
+> >=20
+> > Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
 >=20
-> Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Actually, one comment, please, for bindings, write commit messages that
+relate to the hardware rather than drivers. The bindings describe the
+hardware, after all.
 
-Thanks,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml=
- b/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml
-> index 457a6e43d810..afa52af442a7 100644
-> --- a/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml
-> +++ b/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml
-> @@ -14,6 +14,7 @@ properties:
->    compatible:
->      enum:
->        - amlogic,meson-rng
-> +      - amlogic,meson-s4-rng
-> =20
->    reg:
->      maxItems: 1
-> --=20
-> 2.38.1
->=20
-
---1ZSDXZ0SsvgeKJ0O
+--0Io72FXexd1hCxZL
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNIwiAAKCRB4tDGHoIJi
-0pUgAP9HDWOZ1G7GCTkcQUybdiI2/jI/AvEAXJI563GCRiQ3ygEAooo5442ZSKKj
-zRJUywsZ62WcXhxLA1v+F2JzZdeAtAM=
-=yk/+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNIw6wAKCRB4tDGHoIJi
+0ufhAQDEwiUsmmmJ5vqZLwTZzcnnxminVSw73imTDPpTMWNkXwEAmLS4+h8XAIUR
+6XGM49WckQHg/4mRuvhymrjQWwbtgAQ=
+=X56w
 -----END PGP SIGNATURE-----
 
---1ZSDXZ0SsvgeKJ0O--
+--0Io72FXexd1hCxZL--
