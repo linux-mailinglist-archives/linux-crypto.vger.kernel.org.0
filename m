@@ -2,66 +2,147 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4322D775529
-	for <lists+linux-crypto@lfdr.de>; Wed,  9 Aug 2023 10:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F385C775B44
+	for <lists+linux-crypto@lfdr.de>; Wed,  9 Aug 2023 13:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbjHII0t (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 9 Aug 2023 04:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        id S233410AbjHILQC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 9 Aug 2023 07:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjHII0t (ORCPT
+        with ESMTP id S233407AbjHILQC (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 9 Aug 2023 04:26:49 -0400
-X-Greylist: delayed 401 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Aug 2023 01:26:48 PDT
-Received: from mail.profitpathwaygo.com (mail.profitpathwaygo.com [141.94.21.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D5B10FF
-        for <linux-crypto@vger.kernel.org>; Wed,  9 Aug 2023 01:26:48 -0700 (PDT)
-Received: by mail.profitpathwaygo.com (Postfix, from userid 1002)
-        id 80B514E363; Wed,  9 Aug 2023 08:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=profitpathwaygo.com;
-        s=mail; t=1691569113;
-        bh=qp3Ofokho6Ql+WtI8ZPVilyHYhskXL7fod7u9CWs8W4=;
-        h=Date:From:To:Subject:From;
-        b=PMRay9L2wq9G9ZtVtRZdNn5MbUR+6K4jtAMcn31JMiG08koNZBCKXwwu8Dv+cXYEL
-         UdrQA6wLbSdXHZl8hhpf7TBPMwO8K2ONR7Z02cNejrV6mysv0Kxmh80YmbseJP/6++
-         tReWcsYL46O30UQIg9piSlugtjCP3Vq2P3NiuEGufYRzQFGTOrS5zKKlqfRarmbWKv
-         ELlO8+A73JsUNHUFYSJDLbIxcdWnQ3FZtsnRS4B8vXlOfF5Jw7iMXsuXYNxOT5y6fp
-         VEHpgwJUwSBu0Kwqh+XNVwIjORyXVlprZ4lkJ5FQx/RwnK7Ouh+yAN40DYHfZv8ErL
-         QxiI/3esuwIgw==
-Received: by mail.profitpathwaygo.com for <linux-crypto@vger.kernel.org>; Wed,  9 Aug 2023 08:16:11 GMT
-Message-ID: <20230809064500-0.1.10.4szd.0.bhvrvo26jl@profitpathwaygo.com>
-Date:   Wed,  9 Aug 2023 08:16:11 GMT
-From:   "Adam Charachuta" <adam.charachuta@profitpathwaygo.com>
-To:     <linux-crypto@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania_?=
-X-Mailer: mail.profitpathwaygo.com
+        Wed, 9 Aug 2023 07:16:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E181B10F3;
+        Wed,  9 Aug 2023 04:16:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D8526283A;
+        Wed,  9 Aug 2023 11:16:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66084C433C7;
+        Wed,  9 Aug 2023 11:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691579760;
+        bh=96sKNmtnIIK64djcwh9/3Dm4kxWk2IB64DUJ1ZVgN8g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LcnHYKgGL2rJmh849MfWLBdVcUihFAkjlY0x3q5OQnBZa1JcomKpuRnki694FaAV2
+         E69NtBqiMO5ImoMRwHsTzmvL5yGA/ULsolZtlkDbTiRrq/IyF4qV/o8f4hmzwXJwJz
+         +a+IBxKjmbDkNP3FnCEA1tIIZmssDYaMuW8Up1Ls=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Randy Dunlap <rdunlap@infradead.org>,
+        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 077/323] crypto: nx - fix build warnings when DEBUG_FS is not enabled
+Date:   Wed,  9 Aug 2023 12:38:35 +0200
+Message-ID: <20230809103701.669183900@linuxfoundation.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230809103658.104386911@linuxfoundation.org>
+References: <20230809103658.104386911@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dzie=C5=84 dobry,
+From: Randy Dunlap <rdunlap@infradead.org>
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+[ Upstream commit b04b076fb56560b39d695ac3744db457e12278fd ]
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+Fix build warnings when DEBUG_FS is not enabled by using an empty
+do-while loop instead of a value:
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+In file included from ../drivers/crypto/nx/nx.c:27:
+../drivers/crypto/nx/nx.c: In function 'nx_register_algs':
+../drivers/crypto/nx/nx.h:173:33: warning: statement with no effect [-Wunused-value]
+  173 | #define NX_DEBUGFS_INIT(drv)    (0)
+../drivers/crypto/nx/nx.c:573:9: note: in expansion of macro 'NX_DEBUGFS_INIT'
+  573 |         NX_DEBUGFS_INIT(&nx_driver);
+../drivers/crypto/nx/nx.c: In function 'nx_remove':
+../drivers/crypto/nx/nx.h:174:33: warning: statement with no effect [-Wunused-value]
+  174 | #define NX_DEBUGFS_FINI(drv)    (0)
+../drivers/crypto/nx/nx.c:793:17: note: in expansion of macro 'NX_DEBUGFS_FINI'
+  793 |                 NX_DEBUGFS_FINI(&nx_driver);
+
+Also, there is no need to build nx_debugfs.o when DEBUG_FS is not
+enabled, so change the Makefile to accommodate that.
+
+Fixes: ae0222b7289d ("powerpc/crypto: nx driver code supporting nx encryption")
+Fixes: aef7b31c8833 ("powerpc/crypto: Build files for the nx device driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Breno Leitão <leitao@debian.org>
+Cc: Nayna Jain <nayna@linux.ibm.com>
+Cc: Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/crypto/nx/Makefile | 2 +-
+ drivers/crypto/nx/nx.h     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/nx/Makefile b/drivers/crypto/nx/Makefile
+index 015155da59c29..76139865d7fa1 100644
+--- a/drivers/crypto/nx/Makefile
++++ b/drivers/crypto/nx/Makefile
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_CRYPTO_DEV_NX_ENCRYPT) += nx-crypto.o
+ nx-crypto-objs := nx.o \
+-		  nx_debugfs.o \
+ 		  nx-aes-cbc.o \
+ 		  nx-aes-ecb.o \
+ 		  nx-aes-gcm.o \
+@@ -11,6 +10,7 @@ nx-crypto-objs := nx.o \
+ 		  nx-sha256.o \
+ 		  nx-sha512.o
+ 
++nx-crypto-$(CONFIG_DEBUG_FS) += nx_debugfs.o
+ obj-$(CONFIG_CRYPTO_DEV_NX_COMPRESS_PSERIES) += nx-compress-pseries.o nx-compress.o
+ obj-$(CONFIG_CRYPTO_DEV_NX_COMPRESS_POWERNV) += nx-compress-powernv.o nx-compress.o
+ nx-compress-objs := nx-842.o
+diff --git a/drivers/crypto/nx/nx.h b/drivers/crypto/nx/nx.h
+index c3e54af18645c..ebad937a9545c 100644
+--- a/drivers/crypto/nx/nx.h
++++ b/drivers/crypto/nx/nx.h
+@@ -180,8 +180,8 @@ struct nx_sg *nx_walk_and_build(struct nx_sg *, unsigned int,
+ int nx_debugfs_init(struct nx_crypto_driver *);
+ void nx_debugfs_fini(struct nx_crypto_driver *);
+ #else
+-#define NX_DEBUGFS_INIT(drv)	(0)
+-#define NX_DEBUGFS_FINI(drv)	(0)
++#define NX_DEBUGFS_INIT(drv)	do {} while (0)
++#define NX_DEBUGFS_FINI(drv)	do {} while (0)
+ #endif
+ 
+ #define NX_PAGE_NUM(x)		((u64)(x) & 0xfffffffffffff000ULL)
+-- 
+2.39.2
 
 
-Pozdrawiam serdecznie
-Adam Charachuta
+
