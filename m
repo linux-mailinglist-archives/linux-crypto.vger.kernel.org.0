@@ -2,59 +2,43 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF62F775F8D
-	for <lists+linux-crypto@lfdr.de>; Wed,  9 Aug 2023 14:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6954E776065
+	for <lists+linux-crypto@lfdr.de>; Wed,  9 Aug 2023 15:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbjHIMqc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 9 Aug 2023 08:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
+        id S232102AbjHINQU (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 9 Aug 2023 09:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjHIMqc (ORCPT
+        with ESMTP id S232820AbjHINQT (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:46:32 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83F2F19A1;
-        Wed,  9 Aug 2023 05:46:31 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1112)
-        id D6FD120FC3FE; Wed,  9 Aug 2023 05:46:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D6FD120FC3FE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1691585190;
-        bh=G0gxRN5QnxTLEOIdIvEe864KwskWfmwxWJZYwvjDSlo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JvqfUwlrN8SFoQZfvoGT5ol8Tmiz9HmGGUsXNPJy28y9tdBKDtRIpIkaO0RTgvnGy
-         me82/2JlMkKOJ8nouwy+b6PR8sxGfLnSMkNPCxFctzUFbnJb3MMLT5naT+6xEjxA9q
-         sQa3F9+OJGboaWVu/aYlKhbXeWKFEEG9axlkdoYo=
-Date:   Wed, 9 Aug 2023 05:46:30 -0700
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
-        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
-        nikunj.dadhania@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com
-Subject: Re: [PATCH RFC v9 19/51] x86/sev: Introduce snp leaked pages list
-Message-ID: <20230809124630.GA11150@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20230612042559.375660-1-michael.roth@amd.com>
- <20230612042559.375660-20-michael.roth@amd.com>
+        Wed, 9 Aug 2023 09:16:19 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B1D210B
+        for <linux-crypto@vger.kernel.org>; Wed,  9 Aug 2023 06:16:18 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLVK51mXRzZfqR;
+        Wed,  9 Aug 2023 20:50:33 +0800 (CST)
+Received: from hulk-vt.huawei.com (10.67.174.118) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 9 Aug 2023 20:51:44 +0800
+From:   Lu Jialin <lujialin4@huawei.com>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+CC:     Lu Jialin <lujialin4@huawei.com>, <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto:padata: Fix return err for PADATA_RESET
+Date:   Wed, 9 Aug 2023 12:50:48 +0000
+Message-ID: <20230809125048.503619-1-lujialin4@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230612042559.375660-20-michael.roth@amd.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.118]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,93 +46,65 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Jun 11, 2023 at 11:25:27PM -0500, Michael Roth wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> Pages are unsafe to be released back to the page-allocator, if they
-> have been transitioned to firmware/guest state and can't be reclaimed
-> or transitioned back to hypervisor/shared state. In this case add
-> them to an internal leaked pages list to ensure that they are not freed
-> or touched/accessed to cause fatal page faults.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> [mdr: relocate to arch/x86/coco/sev/host.c]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  arch/x86/coco/sev/host.c        | 28 ++++++++++++++++++++++++++++
->  arch/x86/include/asm/sev-host.h |  3 +++
->  2 files changed, 31 insertions(+)
-> 
-> diff --git a/arch/x86/coco/sev/host.c b/arch/x86/coco/sev/host.c
-> index cd3b4c6a25bc..373e91f5a337 100644
-> --- a/arch/x86/coco/sev/host.c
-> +++ b/arch/x86/coco/sev/host.c
-> @@ -64,6 +64,12 @@ struct rmpentry {
->  static unsigned long rmptable_start __ro_after_init;
->  static unsigned long rmptable_end __ro_after_init;
->  
-> +/* list of pages which are leaked and cannot be reclaimed */
-> +static LIST_HEAD(snp_leaked_pages_list);
-> +static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
-> +
-> +static atomic_long_t snp_nr_leaked_pages = ATOMIC_LONG_INIT(0);
-> +
->  #undef pr_fmt
->  #define pr_fmt(fmt)	"SEV-SNP: " fmt
->  
-> @@ -494,3 +500,25 @@ int rmp_make_shared(u64 pfn, enum pg_level level)
->  	return rmpupdate(pfn, &val);
->  }
->  EXPORT_SYMBOL_GPL(rmp_make_shared);
-> +
-> +void snp_leak_pages(unsigned long pfn, unsigned int npages)
-> +{
-> +	struct page *page = pfn_to_page(pfn);
-> +
-> +	WARN(1, "psc failed, pfn 0x%lx pages %d (marked offline)\n", pfn, npages);
-> +
-> +	spin_lock(&snp_leaked_pages_list_lock);
-> +	while (npages--) {
-> +		/*
-> +		 * Reuse the page's buddy list for chaining into the leaked
-> +		 * pages list. This page should not be on a free list currently
-> +		 * and is also unsafe to be added to a free list.
-> +		 */
-> +		list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
-> +		sev_dump_rmpentry(pfn);
-> +		pfn++;
-> +	}
-> +	spin_unlock(&snp_leaked_pages_list_lock);
-> +	atomic_long_inc(&snp_nr_leaked_pages);
-> +}
-> +EXPORT_SYMBOL_GPL(snp_leak_pages);
-> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
-> index 753e80d16433..bab3b226777a 100644
-> --- a/arch/x86/include/asm/sev-host.h
-> +++ b/arch/x86/include/asm/sev-host.h
-> @@ -19,6 +19,8 @@ void sev_dump_rmpentry(u64 pfn);
->  int psmash(u64 pfn);
->  int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable);
->  int rmp_make_shared(u64 pfn, enum pg_level level);
-> +void snp_leak_pages(unsigned long pfn, unsigned int npages);
-> +
->  #else
->  static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return 0; }
->  static inline void sev_dump_rmpentry(u64 pfn) {}
-> @@ -29,6 +31,7 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int as
->  	return -ENODEV;
->  }
->  static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENODEV; }
-> +void snp_leak_pages(unsigned long pfn, unsigned int npages) {}
+We found a hungtask bug in test_aead_vec_cfg as follows:
 
-This needs to be 'static inline' or the build fails with multiple definition errors.
-I'm building a guest kernel with CONFIG_KVM_AMD_SEV disabled.
+INFO: task cryptomgr_test:391009 blocked for more than 120 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Call trace:
+ __switch_to+0x98/0xe0
+ __schedule+0x6c4/0xf40
+ schedule+0xd8/0x1b4
+ schedule_timeout+0x474/0x560
+ wait_for_common+0x368/0x4e0
+ wait_for_completion+0x20/0x30
+ test_aead_vec_cfg+0xab4/0xd50
+ test_aead+0x144/0x1f0
+ alg_test_aead+0xd8/0x1e0
+ alg_test+0x634/0x890
+ cryptomgr_test+0x40/0x70
+ kthread+0x1e0/0x220
+ ret_from_fork+0x10/0x18
+Kernel panic - not syncing: hung_task: blocked tasks
 
-Jeremi
+For padata_do_parallel, when the return err is 0 or -EBUSY, it will call
+wait_for_completion(&wait->completion) in test_aead_vec_cfg. In normal
+case, aead_request_complete() will be called in pcrypt_aead_serial and the
+return err is 0 for padata_do_parallel. But, when pinst->flags is
+PADATA_RESET, the return err is -EBUSY for padata_do_parallel, and it
+won't call aead_request_complete(). Therefore, test_aead_vec_cfg will
+hung at wait_for_completion(&wait->completion), which will cause
+hungtask.
 
->  #endif
->  
->  #endif
-> -- 
-> 2.25.1
-> 
+The problem comes as following:
+(padata_do_parallel)                 |
+    rcu_read_lock_bh();              |
+    err = -EINVAL;                   |   (padata_replace)
+                                     |     pinst->flags |= PADATA_RESET;
+    err = -EBUSY                     |
+    if (pinst->flags & PADATA_RESET) |
+        rcu_read_unlock_bh()         |
+        return err                   |
+
+In order to resolve the problem, change the return err to -EINVAL when
+pinst->flags is set PADATA_RESET.
+
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+---
+ kernel/padata.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 222d60195de6..cc326ffb209a 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -202,7 +202,6 @@ int padata_do_parallel(struct padata_shell *ps,
+ 		*cb_cpu = cpu;
+ 	}
+ 
+-	err =  -EBUSY;
+ 	if ((pinst->flags & PADATA_RESET))
+ 		goto out;
+ 
+-- 
+2.34.1
+
