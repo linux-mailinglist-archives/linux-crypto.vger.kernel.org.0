@@ -2,108 +2,123 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF41A77DA7B
-	for <lists+linux-crypto@lfdr.de>; Wed, 16 Aug 2023 08:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8765377DBF1
+	for <lists+linux-crypto@lfdr.de>; Wed, 16 Aug 2023 10:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241972AbjHPG3m (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 16 Aug 2023 02:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        id S242806AbjHPIR3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 16 Aug 2023 04:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242166AbjHPG3X (ORCPT
+        with ESMTP id S242824AbjHPIRQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 16 Aug 2023 02:29:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72396269E
-        for <linux-crypto@vger.kernel.org>; Tue, 15 Aug 2023 23:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692167324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xf2jX+s4LT2hMC1l0XKqus0E14EqqgU5ODjY9R1wft0=;
-        b=OhKO+ZR174IJZEeY99pkD2KGl11c1sDLshK7SsxSPbsqdvluExcvJbvmHfhi47CH/fxXl4
-        kdcXGEYZk1ixBTbi6kJqifEDDoS3S7pwXsWetgvMLApQLUJIvAyuylFW6OiLfbE6kK+/Hm
-        2KtIcEcROAt7Q0HEigV5p617P/EWcTY=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-638-xwc_uWr_PPmAiN6i23u-IA-1; Wed, 16 Aug 2023 02:28:41 -0400
-X-MC-Unique: xwc_uWr_PPmAiN6i23u-IA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 23A831C0724E;
-        Wed, 16 Aug 2023 06:28:41 +0000 (UTC)
-Received: from kaapi.redhat.com (unknown [10.74.17.125])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B8067401E6A;
-        Wed, 16 Aug 2023 06:28:38 +0000 (UTC)
-From:   Prasad Pandit <ppandit@redhat.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
+        Wed, 16 Aug 2023 04:17:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E872EE
+        for <linux-crypto@vger.kernel.org>; Wed, 16 Aug 2023 01:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692173835; x=1723709835;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GjmPOJXGEExKiJaF36kU9IFiFGVAdr/o6q5VqRn0LVY=;
+  b=JFKDS1+26GdUPYxeJaGEua8W9QERXQdb60YvYNeNq5di9I4S2gjZB/8g
+   FWKVkGvjCqTc54RhLJfr4mibk2vjMCKEMe24BfKztyeIP+a1wdj1Q0kdK
+   TnOtZ50IfKacOrXn3Y7wieS1dl2wwWiWuZSk7w0K4ke3htkSxx6yq3H/V
+   R0eZUzWdwfpgzxbhut3h5A2ufv5dW1mReyj6pJ8piKfmy4r2oIIEG6mct
+   xNVw8Dd4SshF8RxvS88MstTpbqJ7dw+sYHpK2wi9Vj0FhHlx7kus6+Z8a
+   Rs1Cs1x3arlZKbwxXZomI23c4rZwO92orQA9d2EHIdukEjfr1+kwQQogj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="372472638"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="372472638"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 01:16:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="737209515"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="737209515"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Aug 2023 01:16:35 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWBgn-00007z-2Y;
+        Wed, 16 Aug 2023 08:15:47 +0000
+Date:   Wed, 16 Aug 2023 16:13:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Prasad Pandit <ppandit@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-crypto@vger.kernel.org,
         P J P <pjp@fedoraproject.org>
-Subject: [PATCH] crypto: use SRCARCH to source arch Kconfigs
-Date:   Wed, 16 Aug 2023 12:01:07 +0530
-Message-ID: <20230816063107.11215-1-ppandit@redhat.com>
+Subject: Re: [PATCH] crypto: use SRCARCH to source arch Kconfigs
+Message-ID: <202308161653.3g2hn5Wr-lkp@intel.com>
+References: <20230816063107.11215-1-ppandit@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816063107.11215-1-ppandit@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: P J P <pjp@fedoraproject.org>
+Hi Prasad,
 
-Use $(SRCARCH) variable to source architecture specific crypto
-Kconfig file. It helps to avoid multiple if ARCH conditionals.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
----
- crypto/Kconfig | 25 +------------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
+[auto build test ERROR on herbert-cryptodev-2.6/master]
+[also build test ERROR on herbert-crypto-2.6/master linus/master v6.5-rc6 next-20230815]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 650b1b3620d8..0ac776d3168b 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1421,30 +1421,7 @@ config CRYPTO_HASH_INFO
- 	bool
- 
- if !KMSAN # avoid false positives from assembly
--if ARM
--source "arch/arm/crypto/Kconfig"
--endif
--if ARM64
--source "arch/arm64/crypto/Kconfig"
--endif
--if LOONGARCH
--source "arch/loongarch/crypto/Kconfig"
--endif
--if MIPS
--source "arch/mips/crypto/Kconfig"
--endif
--if PPC
--source "arch/powerpc/crypto/Kconfig"
--endif
--if S390
--source "arch/s390/crypto/Kconfig"
--endif
--if SPARC
--source "arch/sparc/crypto/Kconfig"
--endif
--if X86
--source "arch/x86/crypto/Kconfig"
--endif
-+source "arch/$(SRCARCH)/crypto/Kconfig"
- endif
- 
- source "drivers/crypto/Kconfig"
+url:    https://github.com/intel-lab-lkp/linux/commits/Prasad-Pandit/crypto-use-SRCARCH-to-source-arch-Kconfigs/20230816-143209
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20230816063107.11215-1-ppandit%40redhat.com
+patch subject: [PATCH] crypto: use SRCARCH to source arch Kconfigs
+config: arc-randconfig-r035-20230816 (attached as .config)
+compiler: arc-elf-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230816/202308161653.3g2hn5Wr-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308161653.3g2hn5Wr-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> crypto/Kconfig:1424: can't open file "arch/arc/crypto/Kconfig"
+   make[3]: *** [scripts/kconfig/Makefile:77: oldconfig] Error 1 shuffle=2853089106
+   make[2]: *** [Makefile:693: oldconfig] Error 2 shuffle=2853089106
+   make[1]: *** [Makefile:234: __sub-make] Error 2 shuffle=2853089106
+   make[1]: Target 'oldconfig' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2 shuffle=2853089106
+   make: Target 'oldconfig' not remade because of errors.
+--
+>> crypto/Kconfig:1424: can't open file "arch/arc/crypto/Kconfig"
+   make[3]: *** [scripts/kconfig/Makefile:77: olddefconfig] Error 1 shuffle=2853089106
+   make[2]: *** [Makefile:693: olddefconfig] Error 2 shuffle=2853089106
+   make[1]: *** [Makefile:234: __sub-make] Error 2 shuffle=2853089106
+   make[1]: Target 'olddefconfig' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2 shuffle=2853089106
+   make: Target 'olddefconfig' not remade because of errors.
+
+
+vim +1424 crypto/Kconfig
+
+  1419	
+  1420	config CRYPTO_HASH_INFO
+  1421		bool
+  1422	
+  1423	if !KMSAN # avoid false positives from assembly
+> 1424	source "arch/$(SRCARCH)/crypto/Kconfig"
+  1425	endif
+  1426	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
