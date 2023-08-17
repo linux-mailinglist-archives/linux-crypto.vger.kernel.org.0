@@ -2,79 +2,80 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEDE77EFBE
-	for <lists+linux-crypto@lfdr.de>; Thu, 17 Aug 2023 06:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F91177F812
+	for <lists+linux-crypto@lfdr.de>; Thu, 17 Aug 2023 15:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347980AbjHQELA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 17 Aug 2023 00:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        id S237072AbjHQNtB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 17 Aug 2023 09:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347975AbjHQEKd (ORCPT
+        with ESMTP id S1351591AbjHQNs6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 17 Aug 2023 00:10:33 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44032D5D
-        for <linux-crypto@vger.kernel.org>; Wed, 16 Aug 2023 21:10:31 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a7aedc57ffso5623450b6e.2
-        for <linux-crypto@vger.kernel.org>; Wed, 16 Aug 2023 21:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692245431; x=1692850231;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gb4qAVlMN/V48c3tDnit9Qdh+68rSKImmu7s/ky4OWc=;
-        b=QZVr/KEqicRI/6SEayyUCINnGyTCaHQNpUidP/rTVfZpzY4WuOMnHGcHVPKXN4Avtd
-         v2Heqe2gzJDKdah5q8+CrUXrM0gbgquO1BMb3sXLowyrDdQb9bNyqDLhualr7G4ZOsjc
-         6dUMsjpMSnM3V0bOiyUgHeHbgMhaGR1qwXpEmWCTeVOu5foSWdJkBMiICSSlknsgKzjT
-         i11BLhBsjTOusIbMPFfUUNx099LKBDik3WnhGcmkMQAQmXKOjBWOmvzPmwLBcnW2Z4pK
-         qSIRe1U1PMqbITVS5d7PRt3HFk6Ih8+6SeqgL9N+S7PfD0F8hRDBVXMKeDOVoJMboMd2
-         Seug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692245431; x=1692850231;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gb4qAVlMN/V48c3tDnit9Qdh+68rSKImmu7s/ky4OWc=;
-        b=SQKui2M2HoNSXGn/x2iR7GcZ3mOKF4dB+0jKemLeSesgpLS1bupFEp5KQ0ZmvFGpux
-         2Jgv+AoxolkZvCkP9A1JOsqLIkFzl2r5OpfIGvE8Whns5+pH/DAtQP7hV6kZGen4puv7
-         g9iYPiK7Xb3eBlgjqUtbNhg/tG2G2AgPBQeTkx7ZOvabzxFjS1Mv55h1Fo3YVKhVzT0p
-         KLfKjSVvaqbDLk+lrMPVEeGS5iqzwDWReTQisHd+BKK5hln+uVTqSILO/XC9AumWIISe
-         5QJzNMdabV0qvGc0iVaVGL6jRoEzkfZjgLZ5YHEiz9BqwrmUXhlx5e3I1lpya3roTRaR
-         WznQ==
-X-Gm-Message-State: AOJu0YzY7N+RjwvlRcNeH9ZmK2R72sANKmMeJKYGLZp/xNXXP/YAEEjZ
-        4Ud78Y9Im6iOAxmCzPyPqWR5NBg20tXP8aE9EKA=
-X-Google-Smtp-Source: AGHT+IE+EUtZMOEKAqBMqqYWqu/RGZn+LQHYrEoeh4RZ4kAZ5+7Cge6AatfGuElbDFAwVCFeG3d4+yjCF93CGJg6ub4=
-X-Received: by 2002:a05:6808:211d:b0:3a7:500a:a481 with SMTP id
- r29-20020a056808211d00b003a7500aa481mr5048636oiw.3.1692245430889; Wed, 16 Aug
- 2023 21:10:30 -0700 (PDT)
+        Thu, 17 Aug 2023 09:48:58 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE53210D
+        for <linux-crypto@vger.kernel.org>; Thu, 17 Aug 2023 06:48:57 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RRRC93sytz1GDJw;
+        Thu, 17 Aug 2023 21:47:33 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 17 Aug
+ 2023 21:48:55 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <ayush.sawal@chelsio.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <yuehaibing@huawei.com>
+CC:     <linux-crypto@vger.kernel.org>
+Subject: [PATCH -next] crypto: chelsio - Remove unused declarations
+Date:   Thu, 17 Aug 2023 21:48:54 +0800
+Message-ID: <20230817134854.18772-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Received: by 2002:a05:6358:d099:b0:133:91d:bed5 with HTTP; Wed, 16 Aug 2023
- 21:10:30 -0700 (PDT)
-Reply-To: privateemail01112@gmail.com
-From:   KEIN BRIGGS <privateemailjsuee@gmail.com>
-Date:   Wed, 16 Aug 2023 21:10:30 -0700
-Message-ID: <CAGgyiOpF7Zv46NvVHY4rvTo1qBA_8ijKgS9y7fMp4AZEZxHXwQ@mail.gmail.com>
-Subject: Your attention please!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Your attention please!
+These declarations are not implemented now, remove them.
 
-My efforts to reaching you many times always not through.
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ drivers/crypto/chelsio/chcr_core.h   | 1 -
+ drivers/crypto/chelsio/chcr_crypto.h | 1 -
+ 2 files changed, 2 deletions(-)
 
-Please may you kindly let me know if you are still using this email
-address as my previous messages to you were not responded to.
+diff --git a/drivers/crypto/chelsio/chcr_core.h b/drivers/crypto/chelsio/chcr_core.h
+index f7c8bb95a71b..5e9d568131fe 100644
+--- a/drivers/crypto/chelsio/chcr_core.h
++++ b/drivers/crypto/chelsio/chcr_core.h
+@@ -133,7 +133,6 @@ int start_crypto(void);
+ int stop_crypto(void);
+ int chcr_uld_rx_handler(void *handle, const __be64 *rsp,
+ 			const struct pkt_gl *pgl);
+-int chcr_uld_tx_handler(struct sk_buff *skb, struct net_device *dev);
+ int chcr_handle_resp(struct crypto_async_request *req, unsigned char *input,
+ 		     int err);
+ #endif /* __CHCR_CORE_H__ */
+diff --git a/drivers/crypto/chelsio/chcr_crypto.h b/drivers/crypto/chelsio/chcr_crypto.h
+index 7f88ddb08631..1d693b8436e6 100644
+--- a/drivers/crypto/chelsio/chcr_crypto.h
++++ b/drivers/crypto/chelsio/chcr_crypto.h
+@@ -344,7 +344,6 @@ void chcr_add_cipher_dst_ent(struct skcipher_request *req,
+ 			     struct cpl_rx_phys_dsgl *phys_cpl,
+ 			     struct  cipher_wr_param *wrparam,
+ 			     unsigned short qid);
+-int sg_nents_len_skip(struct scatterlist *sg, u64 len, u64 skip);
+ void chcr_add_hash_src_ent(struct ahash_request *req, struct ulptx_sgl *ulptx,
+ 			   struct hash_wr_param *param);
+ int chcr_hash_dma_map(struct device *dev, struct ahash_request *req);
+-- 
+2.34.1
 
-I await hearing from you once more if my previous messages were not received.
-Reach me via my email: privateemail01112@gmail.com
-
-My regards,
-Kein Briggs.
