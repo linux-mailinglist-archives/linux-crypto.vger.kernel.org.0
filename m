@@ -2,57 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE5C780879
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Aug 2023 11:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2157809E8
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Aug 2023 12:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359130AbjHRJbf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Aug 2023 05:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
+        id S1358435AbjHRKVW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Aug 2023 06:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359241AbjHRJbS (ORCPT
+        with ESMTP id S1359836AbjHRKVU (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:31:18 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987B44208
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 02:31:11 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qWvom-005FTK-77; Fri, 18 Aug 2023 17:30:57 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Aug 2023 17:30:56 +0800
-Date:   Fri, 18 Aug 2023 17:30:56 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     giovanni.cabiddu@intel.com, davem@davemloft.net,
-        qat-linux@intel.com, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH -next] crypto: qat - Remove unused function declarations
-Message-ID: <ZN86UAizHKheD7v/@gondor.apana.org.au>
-References: <20230809031614.9704-1-yuehaibing@huawei.com>
+        Fri, 18 Aug 2023 06:21:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07CD35A6
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 03:21:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D50B64472
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 10:21:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 978C5C433C8
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 10:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692354075;
+        bh=sTfpJjtKSzrc3H24A3dr7dX0JUdWaJKKPjcvYeQPeVE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=b6TEmC9nU9KtWrQpiFYEZiu5asijyFNInlg/oPsN6s1Zx25Txwy9R4c44Szx7QHjd
+         xITveB48YBmQW+K/HFv7Ff6O8lAXT4MDC9YBt1wrTxcnfwLLnS3CoRtP2dbwF8ZIuC
+         3jDyFQa4gmptHlcQdHzLPd3VN0ecq5Cj1x9P5XXF8YkYhOGgNnaF2gCe8a8Br1Olhu
+         uN+DgDomFjxkwdywhVEzgpX0NLaGm/TibDQv6H2xlrGIr3rgrFFFlIYZt5/7N1vp/b
+         S4UZssQqpCUyluJmAlq/R5V0qdpcQhqZUgOfdKK4VqGWOMhiAG+d4vKyIrIYbYdLfF
+         NX7uCYnhTfc9g==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-4ff8a1746e0so1072016e87.0
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 03:21:15 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyDKj0o6GZc6NIUpGc5wllJKveiOhvQMICCrvuJW7MdmytYEsxy
+        ua+JKaWH4rV4qs2+itCjeI74NZoxzAugKx5Cm+A=
+X-Google-Smtp-Source: AGHT+IEUbCkv2iXXSLDStJv0iB5oF01KuyRXpCD0HWUtJBizHkcftZwDUi9HHbk4HB7m3mRRmwDupuD9VWcdXIsdW7k=
+X-Received: by 2002:a05:6512:39c3:b0:4fe:c98:789a with SMTP id
+ k3-20020a05651239c300b004fe0c98789amr1816856lfu.37.1692354073626; Fri, 18 Aug
+ 2023 03:21:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809031614.9704-1-yuehaibing@huawei.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,TVD_RCVD_IP,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+References: <20230811140749.5202-1-qianweili@huawei.com> <20230811140749.5202-2-qianweili@huawei.com>
+ <ZN8oEpUBq87m+r++@gondor.apana.org.au>
+In-Reply-To: <ZN8oEpUBq87m+r++@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 18 Aug 2023 12:21:02 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGNesF91=LScsDSgMx7LwQXOuMjLy7RN5SPLjO3ab7SHA@mail.gmail.com>
+Message-ID: <CAMj1kXGNesF91=LScsDSgMx7LwQXOuMjLy7RN5SPLjO3ab7SHA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] crypto: hisilicon/qm - obtain the mailbox
+ configuration at one time
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Weili Qian <qianweili@huawei.com>, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
+        shenyang39@huawei.com, liulongfang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 11:16:14AM +0800, Yue Haibing wrote:
-> Commit d8cba25d2c68 ("crypto: qat - Intel(R) QAT driver framework")
-> declared but never implemented these functions.
-> 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> ---
->  drivers/crypto/intel/qat/qat_common/adf_common_drv.h | 8 --------
->  1 file changed, 8 deletions(-)
+On Fri, 18 Aug 2023 at 10:13, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Fri, Aug 11, 2023 at 10:07:43PM +0800, Weili Qian wrote:
+> > The malibox needs to be triggered by a 128bit atomic operation. The
+> > reason is that one QM hardware entity in one accelerator servers QM
+> > mailbox MMIO interfaces in related PF and VFs. A mutex cannot lock
+> > mailbox processes in different functions. When multiple functions access
+> > the mailbox simultaneously, if the generic IO interface readq/writeq
+> > is used to access the mailbox, the data read from mailbox or written to
+> > mailbox is unpredictable. Therefore, the generic IO interface is changed
+> > to a 128bit atomic operation.
+> >
+> > Signed-off-by: Weili Qian <qianweili@huawei.com>
+> > ---
+> >  drivers/crypto/hisilicon/qm.c | 160 ++++++++++++++++++++++------------
+> >  include/linux/hisi_acc_qm.h   |   1 -
+> >  2 files changed, 105 insertions(+), 56 deletions(-)
+> >  mode change 100644 => 100755 drivers/crypto/hisilicon/qm.c
+>
+> ...
+>
+> > -     qm_mb_write(qm, mailbox);
+> > +#if IS_ENABLED(CONFIG_ARM64)
+> > +     asm volatile("ldp %0, %1, %3\n"
+> > +                  "stp %0, %1, %2\n"
+> > +                  "dmb oshst\n"
+> > +                  : "=&r" (tmp0),
+> > +                    "=&r" (tmp1),
+> > +                    "+Q" (*((char *)dst))
+> > +                  : "Q" (*((char __iomem *)fun_base))
+> > +                  : "memory");
+> > +#endif
+>
+> You should add a generic 128-bite write primitive for arm64 instead
+> of doing it in raw assembly in the driver.
+>
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+IIRC there have been other cases (ThunderX?) where 128 bit MMIO
+accessors were needed for some peripheral, but common arm64 helpers
+were rejected on the basis that this atomic behavior is not
+architectural.
+
+Obviously, using inline asm in the driver is not the right way either,
+so perhaps we should consider introducing some common infrastructure
+anyway, including some expectation management about their guarantees.
