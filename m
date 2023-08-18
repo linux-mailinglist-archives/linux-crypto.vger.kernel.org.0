@@ -2,58 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D78EE78076B
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Aug 2023 10:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CDA7806F0
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Aug 2023 10:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239804AbjHRIqo (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 18 Aug 2023 04:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
+        id S1358463AbjHRINf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 18 Aug 2023 04:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358790AbjHRIqY (ORCPT
+        with ESMTP id S1358483AbjHRIN2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:46:24 -0400
-X-Greylist: delayed 2238 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Aug 2023 01:46:23 PDT
-Received: from mail.leachkin.pl (mail.leachkin.pl [217.61.97.203])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6978A3A94
-        for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 01:46:23 -0700 (PDT)
-Received: by mail.leachkin.pl (Postfix, from userid 1001)
-        id 582A584617; Fri, 18 Aug 2023 09:06:45 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=leachkin.pl; s=mail;
-        t=1692346046; bh=elHzctRz/z3PfTIhGYJKd0TeBTmca98Y+JNgX4gfsPI=;
-        h=Date:From:To:Subject:From;
-        b=PYWB7KdDN/AFtrlYZ/MBcNv0QK6/MwOUpo+AqmX0tu8pTi+zKpPMXGMjpoJJ43mqD
-         b7vuWppp7+FnMgFUJpA8ud2HEnz9vNqhcfRA2u4yW3KZOH4l2cbA+HBNoYnShRENc1
-         lvqSFwilvONJNqABztHyyfvBIWrHlws+lAZOaa2geIrSc86S1KwHVver7NBmyb3Hqo
-         uwoUGiYC44DUrdrIPeeEIGiWZc/UGvISe5c/jfc8E5AWWFO1KW+oQcTZOceL8JINSU
-         XNpkmidOtDxtewSH5tMXlyGhH+j7F2AG/DZ/k9HFM2YLuhRaA429l3fIBMMQW42BfS
-         dYvwYOTtXCq4g==
-Received: by mail.leachkin.pl for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 08:06:01 GMT
-Message-ID: <20230818074501-0.1.4u.cs7x.0.o7jsp246pg@leachkin.pl>
-Date:   Fri, 18 Aug 2023 08:06:01 GMT
-From:   "Jakub Lemczak" <jakub.lemczak@leachkin.pl>
-To:     <linux-crypto@vger.kernel.org>
-Subject: =?UTF-8?Q?Pytanie_o_samoch=C3=B3d?=
-X-Mailer: mail.leachkin.pl
+        Fri, 18 Aug 2023 04:13:28 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70332D73
+        for <linux-crypto@vger.kernel.org>; Fri, 18 Aug 2023 01:13:25 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qWubR-005E3K-Ce; Fri, 18 Aug 2023 16:13:06 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Aug 2023 16:13:06 +0800
+Date:   Fri, 18 Aug 2023 16:13:06 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Weili Qian <qianweili@huawei.com>, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, shenyang39@huawei.com,
+        liulongfang@huawei.com
+Subject: Re: [PATCH v2 1/7] crypto: hisilicon/qm - obtain the mailbox
+ configuration at one time
+Message-ID: <ZN8oEpUBq87m+r++@gondor.apana.org.au>
+References: <20230811140749.5202-1-qianweili@huawei.com>
+ <20230811140749.5202-2-qianweili@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811140749.5202-2-qianweili@huawei.com>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,TVD_RCVD_IP,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Fri, Aug 11, 2023 at 10:07:43PM +0800, Weili Qian wrote:
+> The malibox needs to be triggered by a 128bit atomic operation. The
+> reason is that one QM hardware entity in one accelerator servers QM
+> mailbox MMIO interfaces in related PF and VFs. A mutex cannot lock
+> mailbox processes in different functions. When multiple functions access
+> the mailbox simultaneously, if the generic IO interface readq/writeq
+> is used to access the mailbox, the data read from mailbox or written to
+> mailbox is unpredictable. Therefore, the generic IO interface is changed
+> to a 128bit atomic operation.
+> 
+> Signed-off-by: Weili Qian <qianweili@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/qm.c | 160 ++++++++++++++++++++++------------
+>  include/linux/hisi_acc_qm.h   |   1 -
+>  2 files changed, 105 insertions(+), 56 deletions(-)
+>  mode change 100644 => 100755 drivers/crypto/hisilicon/qm.c
 
-Czy interesuje Pa=C5=84stwa rozwi=C4=85zanie umo=C5=BCliwiaj=C4=85ce moni=
-torowanie samochod=C3=B3w firmowych oraz optymalizacj=C4=99 koszt=C3=B3w =
-ich utrzymania?=20
+...
 
+> -	qm_mb_write(qm, mailbox);
+> +#if IS_ENABLED(CONFIG_ARM64)
+> +	asm volatile("ldp %0, %1, %3\n"
+> +		     "stp %0, %1, %2\n"
+> +		     "dmb oshst\n"
+> +		     : "=&r" (tmp0),
+> +		       "=&r" (tmp1),
+> +		       "+Q" (*((char *)dst))
+> +		     : "Q" (*((char __iomem *)fun_base))
+> +		     : "memory");
+> +#endif
 
-Pozdrawiam,
-Jakub Lemczak
+You should add a generic 128-bite write primitive for arm64 instead
+of doing it in raw assembly in the driver.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
