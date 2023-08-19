@@ -2,141 +2,95 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5F17817CC
-	for <lists+linux-crypto@lfdr.de>; Sat, 19 Aug 2023 09:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6641978180B
+	for <lists+linux-crypto@lfdr.de>; Sat, 19 Aug 2023 09:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343769AbjHSHDT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 19 Aug 2023 03:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S245598AbjHSHeB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sat, 19 Aug 2023 03:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343765AbjHSHDA (ORCPT
+        with ESMTP id S237395AbjHSHde (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 19 Aug 2023 03:03:00 -0400
-Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7040F4223
-        for <linux-crypto@vger.kernel.org>; Sat, 19 Aug 2023 00:02:57 -0700 (PDT)
-Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-58cf42a32b9so18017577b3.2
-        for <linux-crypto@vger.kernel.org>; Sat, 19 Aug 2023 00:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692428576; x=1693033376;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9kydyMnwD//o0quRqImkimRYfrWW9k+FT8t/oHoxyE8=;
-        b=MUn6TsJ49QsJA4igR3yMrdu/XsOuj8hKh7h6eVdj/4Q6ak4DnVptLCIKMxoaE1lx82
-         BxwzjkQUKGArD5gK4285su7I1sDB3qAK0HSAdokXHiNeRenFsT5dKLZZVD83rG1rnoeS
-         VdXWoxIFxTFlZ65TKthmVXAt9fOId6PSQJki87wVoyeAFbKQrlj5j4smx8DIxP/w0ZWJ
-         TRln+T7V97cC+Lha+e87zGu5qdfzMw4YK01R7iyxmdvnMREZiOau3xyPwKBLzOkfFV8d
-         16kMFJpKMWwV0JdyrqeYRq0aUvKFPGskV1RZVJY1R5FX4jJ5AOT83v5lCI7JlEhO9IN8
-         hMmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692428576; x=1693033376;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9kydyMnwD//o0quRqImkimRYfrWW9k+FT8t/oHoxyE8=;
-        b=lS6WoHSZG6FnIwCTpTLuMaUB+PAXHazgzYu8beo+rY2J4mfsb40KZMTRZfeDm7j77f
-         SP/LFfsEDf81WV0PFY9z9N+IYNNeAh2eVG6lwTyd5Cmuy3tBmflh38kFuzLCO/PBeVLe
-         vAFC+lfZaeDWMj6aLUiAnzYB9sY8COKAhf1TOXq9cf1QCqmrtqS5rLNP93d1CqHTcS4u
-         vetiSrB9b4auI4dyDU8G7MCVqULATT7YuyGW6q7x41WZ7vgOtF04NKwAMDC+ThjeU5gx
-         i+n+nKt22gFtoanW6IMEBdXB+TP72C9f6TowAskUAazrDq7Rl6OG0dBoiE0LEL9VyBk+
-         GjNQ==
-X-Gm-Message-State: AOJu0Yzyh21j/prYeuWra208qff65Y39EcCP+fT0nb2V8r9NceDlIw/T
-        lyryQ5Y73TY1OqzhatxkQKwcmaOLOTwtd6nJzwM=
-X-Google-Smtp-Source: AGHT+IHBFHux9W7amy752XAKQ4G+pXj9K8KLABgekYkKVjTaNiUovhqWPJjy5q7mdLIzANUAVG24gzrYlmHT6Kjn7Kk=
-X-Received: by 2002:a81:8782:0:b0:589:a9fc:ffcd with SMTP id
- x124-20020a818782000000b00589a9fcffcdmr1407212ywf.20.1692428576106; Sat, 19
- Aug 2023 00:02:56 -0700 (PDT)
+        Sat, 19 Aug 2023 03:33:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3E73AB5
+        for <linux-crypto@vger.kernel.org>; Sat, 19 Aug 2023 00:33:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC39F61682
+        for <linux-crypto@vger.kernel.org>; Sat, 19 Aug 2023 07:33:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31117C433C9
+        for <linux-crypto@vger.kernel.org>; Sat, 19 Aug 2023 07:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692430412;
+        bh=C2ISKbuy+APNa+67gwVD5tyGJ+Fj+Wf7MsY/5Je97Nw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rUAt8wIYKy7fAau1Ji6eXUQZZkUGrXVU8Q95PiHyfA4bQY2pDSeTVpur7/BipJvji
+         SJbxkv5CiiDMwYJCgCIWs34YlK2FlaA+QdRoU35kJ8ydPBj7ZlkB5u2fC+AnLtC4JS
+         j0OCMhtY9BL+oszj/uIH4Ap8HyNRbVsb4FtMNGTEBCyslFB+dNb4aKPjd34i5EEDC+
+         iDdbWqjLMHC+n39/7i65PjErfgPjo/PkE4EAt2Jw4ViI7vTmCgPnROz3WYFF+gJlx4
+         sa+ZMJzU6T+anNko75bcpLVCKe541Br9duL5Y2ibD5lscC3kCAMzYgsCtfPaXc0ELp
+         T06OVgfvfKvdg==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2b9db1de50cso24865521fa.3
+        for <linux-crypto@vger.kernel.org>; Sat, 19 Aug 2023 00:33:32 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzyEa1OI5mSQZa8koQXGVg04RPvtYHbzMTkAddzvZLsKRCsdSgt
+        E86g1QDgj0VqTlJ2yMioPxwkdX+nrHgdwNxj8Wc=
+X-Google-Smtp-Source: AGHT+IH62t8nSPugzcJ+dStjLTWhbVFvRQERnk4abU3J0RO9J5knX8IZMd++FPFknWzgJ0RW0g+y2jYEr1baM4AbDLw=
+X-Received: by 2002:a2e:3210:0:b0:2b6:c081:6323 with SMTP id
+ y16-20020a2e3210000000b002b6c0816323mr861036ljy.50.1692430410114; Sat, 19 Aug
+ 2023 00:33:30 -0700 (PDT)
 MIME-Version: 1.0
-Reply-To: razumkoykhailo@gmail.com
-Sender: mrtombaba@gmail.com
-Received: by 2002:a05:7000:5395:b0:4f4:2174:eed4 with HTTP; Sat, 19 Aug 2023
- 00:02:55 -0700 (PDT)
-From:   "Mr.Razum Khailo" <razumkoykhailo@gmail.com>
-Date:   Sat, 19 Aug 2023 00:02:55 -0700
-X-Google-Sender-Auth: TD1SbUwALQWUaG93zNo0ky4SaO8
-Message-ID: <CADXgghn2t3mU_VvtZDjHwnbadg2QnVcJ30yFd0kN8SL6NDhY1g@mail.gmail.com>
-Subject: Greetings from Ukraine,
-To:     undisclosed-recipients:;
+References: <20230811140749.5202-1-qianweili@huawei.com> <20230811140749.5202-2-qianweili@huawei.com>
+ <ZN8oEpUBq87m+r++@gondor.apana.org.au> <CAMj1kXGNesF91=LScsDSgMx7LwQXOuMjLy7RN5SPLjO3ab7SHA@mail.gmail.com>
+ <ZOBBH/XS7Fe0yApm@gondor.apana.org.au>
+In-Reply-To: <ZOBBH/XS7Fe0yApm@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 19 Aug 2023 09:33:18 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHd6svuQ-JSVmUZK=xUPR4fC4BCoUjMhFKfg2KBZcavrw@mail.gmail.com>
+Message-ID: <CAMj1kXHd6svuQ-JSVmUZK=xUPR4fC4BCoUjMhFKfg2KBZcavrw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] crypto: hisilicon/qm - obtain the mailbox
+ configuration at one time
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Weili Qian <qianweili@huawei.com>, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
+        shenyang39@huawei.com, liulongfang@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,LOTS_OF_MONEY,
-        MILLION_USD,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_HK_NAME_FM_MR_MRS,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2607:f8b0:4864:20:0:0:0:1142 listed in]
-        [list.dnswl.org]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [razumkoykhailo[at]gmail.com]
-        *  2.0 MILLION_USD BODY: Talks about millions of dollars
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  2.4 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *****
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-R3JlZXRpbmdzwqBmcm9twqBVa3JhaW5lLA0KDQpNci7CoFJhenVta292wqBNeWtoYWlsbyzCoGFu
-wqBlbnRyZXByZW5ldXLCoGJ1c2luZXNzbWFuwqBmcm9twqBPZGVzc2ENClVrcmFpbmUuwqBXaXRo
-aW7CoGHCoHllYXLCoHBsdXPCoHNvbWXCoG1vbnRoc8Kgbm93LMKgbW9yZcKgdGhhbsKgOC4ywqBt
-aWxsaW9uDQpwZW9wbGXCoGFyb3VuZMKgdGhlwqBjaXRpZXPCoG9mwqBtecKgY291bnRyecKgVWty
-YWluZcKgaGF2ZcKgYmVlbsKgZXZhY3VhdGVkwqB0bw0KYcKgc2FmZcKgbG9jYXRpb27CoGFuZMKg
-b3V0wqBvZsKgdGhlwqBjb3VudHJ5LMKgbW9zdMKgZXNwZWNpYWxsecKgY2hpbGRyZW7CoHdpdGgN
-CnRoZWlywqBwYXJlbnRzLMKgbnVyc2luZ8KgbW90aGVyc8KgYW5kwqBwcmVnbmFudMKgd29tZW4s
-wqBhbmTCoHRob3NlwqB3aG/CoGhhdmUNCmJlZW7CoHNlcmlvdXNsecKgd291bmRlZMKgYW5kwqBu
-ZWVkwqB1cmdlbnTCoG1lZGljYWzCoGF0dGVudGlvbi7CoEnCoHdhc8KgYW1vbmcNCnRob3NlwqB0
-aGF0wqB3ZXJlwqBhYmxlwqB0b8KgZXZhY3VhdGXCoHRvwqBvdXLCoG5laWdoYm91cmluZ8KgY291
-bnRyaWVzwqBhbmTCoEnigJltDQpub3fCoGluwqB0aGXCoHJlZnVnZWXCoGNhbXDCoG9mwqBUZXLC
-oEFwZWzCoEdyb25pbmdlbsKgaW7CoHRoZcKgTmV0aGVybGFuZHMuDQoNCknCoG5lZWTCoGHCoGZv
-cmVpZ27CoHBhcnRuZXLCoHRvwqBlbmFibGXCoG1lwqB0b8KgdHJhbnNwb3J0wqBtecKgaW52ZXN0
-bWVudA0KY2FwaXRhbMKgYW5kwqB0aGVuwqByZWxvY2F0ZcKgd2l0aMKgbXnCoGZhbWlseSzCoGhv
-bmVzdGx5wqBpwqB3aXNowqBJwqB3aWxsDQpkaXNjdXNzwqBtb3JlwqBhbmTCoGdldMKgYWxvbmcu
-wqBJwqBuZWVkwqBhwqBwYXJ0bmVywqBiZWNhdXNlwqBtecKgaW52ZXN0bWVudA0KY2FwaXRhbMKg
-aXPCoGluwqBtecKgaW50ZXJuYXRpb25hbMKgYWNjb3VudC7CoEnigJltwqBpbnRlcmVzdGVkwqBp
-bsKgYnV5aW5nDQpwcm9wZXJ0aWVzLMKgaG91c2VzLMKgYnVpbGRpbmfCoHJlYWzCoGVzdGF0ZXMs
-wqBtecKgY2FwaXRhbMKgZm9ywqBpbnZlc3RtZW50DQppc8KgKCQzMMKgTWlsbGlvbsKgVVNEKcKg
-LsKgVGhlwqBmaW5hbmNpYWzCoGluc3RpdHV0aW9uc8KgaW7CoG15wqBjb3VudHJ5DQpVa3JhaW5l
-wqBhcmXCoGFsbMKgc2hvdMKgZG93bsKgZHVlwqB0b8KgdGhlwqBjcmlzaXPCoG9mwqB0aGlzwqB3
-YXLCoG9uwqBVa3JhaW5lDQpzb2lswqBiecKgdGhlwqBSdXNzaWFuwqBmb3JjZXMuwqBNZWFud2hp
-bGUswqBpZsKgdGhlcmXCoGlzwqBhbnnCoHByb2ZpdGFibGUNCmludmVzdG1lbnTCoHRoYXTCoHlv
-dcKgaGF2ZcKgc2/CoG11Y2jCoGV4cGVyaWVuY2XCoGluwqB5b3VywqBjb3VudHJ5LMKgdGhlbsKg
-d2UNCmNhbsKgam9pbsKgdG9nZXRoZXLCoGFzwqBwYXJ0bmVyc8Kgc2luY2XCoEnigJltwqBhwqBm
-b3JlaWduZXIuDQoNCknCoGNhbWXCoGFjcm9zc8KgeW91csKgZS1tYWlswqBjb250YWN0wqB0aHJv
-dWdowqBwcml2YXRlwqBzZWFyY2jCoHdoaWxlwqBpbsKgbmVlZA0Kb2bCoHlvdXLCoGFzc2lzdGFu
-Y2XCoGFuZMKgScKgZGVjaWRlZMKgdG/CoGNvbnRhY3TCoHlvdcKgZGlyZWN0bHnCoHRvwqBhc2vC
-oHlvdcKgaWYNCnlvdcKga25vd8KgYW55wqBsdWNyYXRpdmXCoGJ1c2luZXNzwqBpbnZlc3RtZW50
-wqBpbsKgeW91csKgY291bnRyecKgacKgY2FuDQppbnZlc3TCoG15wqBtb25lecKgc2luY2XCoG15
-wqBjb3VudHJ5wqBVa3JhaW5lwqBzZWN1cml0ecKgYW5kwqBlY29ub21pYw0KaW5kZXBlbmRlbnTC
-oGhhc8KgbG9zdMKgdG/CoHRoZcKgZ3JlYXRlc3TCoGxvd2VywqBsZXZlbCzCoGFuZMKgb3VywqBj
-dWx0dXJlwqBoYXMNCmxvc3TCoGluY2x1ZGluZ8Kgb3VywqBoYXBwaW5lc3PCoGhhc8KgYmVlbsKg
-dGFrZW7CoGF3YXnCoGZyb23CoHVzLsKgT3VywqBjb3VudHJ5DQpoYXPCoGJlZW7CoG9uwqBmaXJl
-wqBmb3LCoG1vcmXCoHRoYW7CoGHCoHllYXLCoG5vdy4NCg0KSWbCoHlvdcKgYXJlwqBjYXBhYmxl
-wqBvZsKgaGFuZGxpbmfCoHRoaXPCoGJ1c2luZXNzwqBwYXJ0bmVyc2hpcCzCoGNvbnRhY3TCoG1l
-DQpmb3LCoG1vcmXCoGRldGFpbHMswqBJwqB3aWxswqBhcHByZWNpYXRlwqBpdMKgaWbCoHlvdcKg
-Y2FuwqBjb250YWN0wqBtZQ0KaW1tZWRpYXRlbHkuwqBZb3XCoG1hecKgYXPCoHdlbGzCoHRlbGzC
-oG1lwqBhwqBsaXR0bGXCoG1vcmXCoGFib3V0wqB5b3Vyc2VsZi4NCkNvbnRhY3TCoG1lwqB1cmdl
-bnRsecKgdG/CoGVuYWJsZcKgdXPCoHRvwqBwcm9jZWVkwqB3aXRowqB0aGXCoGJ1c2luZXNzLsKg
-ScKgd2lsbA0KYmXCoHdhaXRpbmfCoGZvcsKgeW91csKgcmVzcG9uc2UuwqBNecKgc2luY2VyZcKg
-YXBvbG9naWVzwqBmb3LCoHRoZQ0KaW5jb252ZW5pZW5jZS4NCg0KDQpUaGFua8KgeW91IQ0KDQpN
-ci4gUmF6dW1rb3bCoE15a2hhaWxvLg0K
+On Sat, 19 Aug 2023 at 06:12, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Fri, Aug 18, 2023 at 12:21:02PM +0200, Ard Biesheuvel wrote:
+> >
+> > IIRC there have been other cases (ThunderX?) where 128 bit MMIO
+> > accessors were needed for some peripheral, but common arm64 helpers
+> > were rejected on the basis that this atomic behavior is not
+> > architectural.
+> >
+> > Obviously, using inline asm in the driver is not the right way either,
+> > so perhaps we should consider introducing some common infrastructure
+> > anyway, including some expectation management about their guarantees.
+>
+> The ones in
+>
+>         drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+>
+> look better.  So perhaps copy them into hisilicon?
+>
+
+No, that otx2_write128() routine looks buggy, actually, The ! at the
+end means writeback, and so the register holding addr will be
+modified, which is not reflect in the asm constraints. It also lacks a
+barrier.
+
+The generic version just ORs the low and high qwords together, so it
+obviously only exists for compile coverage (and the generic atomic add
+is clearly broken too)
