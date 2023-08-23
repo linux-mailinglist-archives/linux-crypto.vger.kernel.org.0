@@ -2,113 +2,70 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0BF78520F
-	for <lists+linux-crypto@lfdr.de>; Wed, 23 Aug 2023 09:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924A078539B
+	for <lists+linux-crypto@lfdr.de>; Wed, 23 Aug 2023 11:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbjHWHzY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 23 Aug 2023 03:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        id S230503AbjHWJPB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 23 Aug 2023 05:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbjHWHzX (ORCPT
+        with ESMTP id S235386AbjHWJJg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 23 Aug 2023 03:55:23 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671CBCE6
-        for <linux-crypto@vger.kernel.org>; Wed, 23 Aug 2023 00:55:21 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe5c0e587eso49966815e9.0
-        for <linux-crypto@vger.kernel.org>; Wed, 23 Aug 2023 00:55:21 -0700 (PDT)
+        Wed, 23 Aug 2023 05:09:36 -0400
+Received: from smtp-fw-9103.amazon.com (smtp-fw-9103.amazon.com [207.171.188.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2827423A;
+        Wed, 23 Aug 2023 02:02:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692777320; x=1693382120;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LRneTZRUa8cNy0srxSHuZvRzwItRI2yXoW2UtKvjV84=;
-        b=zMi9Kg6JnKkiOCApN1UHZOgHFh2i6WbZwKiWfNMJhTP0YcLnPhqjYtGoHsa2KL9uCl
-         ll1PppstbMvSt6v+N12uykxm05dWXOvpbJyTeWdZbscJ6r/Yto28AY9VO4WuVDmQFy/g
-         hji+USfZejzfd3XLL4J8I+izrbgywVakeg++lhsfF157OFcA6OExoaoXSQu2nd4BK3LG
-         CkVMSVA0Qa0r1FifISz8+3bi7xcWNIImgvxtjTTvr+MHDHpJykdDs2yskkvi9VnFEduN
-         WF4ib2gwSBm9gL5ba8mPo2KB7yIvhk5uJXyV/k5cdqVJSSixxhd8qom0/WtP6fM3Nf++
-         lmNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692777320; x=1693382120;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LRneTZRUa8cNy0srxSHuZvRzwItRI2yXoW2UtKvjV84=;
-        b=lrUvgraHXNGS1P+Zh85ksCwUz+I+UMfmomQ5a/otulouZDiLCzUkbGVtjq5+DKgseg
-         6KYYAm3XAkYtHpvCs0zpJK5fP5b3R5nS0fo1orr+DaxSPFB/C/+iT3ZEY/Og+PS3HlTS
-         ipkBCokl8AokUrYGnzd9Xf16DCpyGXXWM99xpNfa1BbgcxbQLREXo35z3B/uJ+cZCe0m
-         xueqnyLT5gnQNZ6vgD7GicAMEjv9jphQnMk11YihOSZBkwgFtEBfQYBnzyzQs7hZLaEh
-         tLUse8PqrwCzCofGjOCAu5WwYgAFnfKAwDA89diS1CcRWcYAtbf60oETNWePUbWF3tp0
-         MYSw==
-X-Gm-Message-State: AOJu0Yy6/vXTi35Rdui59IJ+TANsQ4ev53ABKB0YE6YLwn9fJ+6RpaHV
-        2/1oeUlco6zS5uUzZuU44MFTIg==
-X-Google-Smtp-Source: AGHT+IFzUCxBjFJpacEZ0cCouJ1S4MFuI4b7FnwIj+Snn5zburmfTxe9ZoVlX4tYEuogvDUfQBBXWw==
-X-Received: by 2002:a05:600c:22d4:b0:3fc:f9c:a3ed with SMTP id 20-20020a05600c22d400b003fc0f9ca3edmr9798385wmg.22.1692777319859;
-        Wed, 23 Aug 2023 00:55:19 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:cad:2140:c457:5132:4849:b9d9? ([2a01:e0a:cad:2140:c457:5132:4849:b9d9])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d4204000000b0031c5dda3aedsm5749631wrq.95.2023.08.23.00.55.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 00:55:19 -0700 (PDT)
-Message-ID: <dd3d28f1-ff5e-49e6-a9f7-0ec9265017cc@linaro.org>
-Date:   Wed, 23 Aug 2023 09:55:17 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: qcom,prng: document SM8550
-Content-Language: en-US, fr
-To:     Om Prakash Singh <quic_omprsing@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
+  d=amazon.es; i=@amazon.es; q=dns/txt; s=amazon201209;
+  t=1692781353; x=1724317353;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AwpaYCib8MlS9D8QHLxoHGJ4Ok7wJP8PXV9mzZNz5cU=;
+  b=t2e9wHgKsqWdnnWgWRUYiKc3pw7qzvqeaK6E6mrmgKWGIAbAYSKVa0yv
+   gWbmoJtqjAYyq525f1KTXNaHxTQrQN3DzKnSOEiFXnjJAmmyLgCks5rdK
+   X0eF1Gr9EKGr6ErfPRM/u1j8YE4bisGaNCp6N1/tKT/eHdQZxkVeS2tqv
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.01,195,1684800000"; 
+   d="scan'208";a="1150066203"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 09:01:23 +0000
+Received: from EX19D017EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com (Postfix) with ESMTPS id E9BB4A3D10;
+        Wed, 23 Aug 2023 09:01:19 +0000 (UTC)
+Received: from EX19D037EUB003.ant.amazon.com (10.252.61.119) by
+ EX19D017EUA001.ant.amazon.com (10.252.50.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 23 Aug 2023 09:01:19 +0000
+Received: from f4d4887fdcfb.ant.amazon.com (10.1.212.9) by
+ EX19D037EUB003.ant.amazon.com (10.252.61.119) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 23 Aug 2023 09:01:13 +0000
+From:   Babis Chalios <bchalios@amazon.es>
+To:     Olivia Mackall <olivia@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230822-topic-sm8550-rng-v1-0-8e10055165d1@linaro.org>
- <20230822-topic-sm8550-rng-v1-1-8e10055165d1@linaro.org>
- <8479869b-9984-41e3-9812-c7f5727cfd2c@linaro.org>
- <b73106c5-74e4-479d-8733-b99454768c15@quicinc.com>
- <26bae022-c114-4871-8715-73d7e8aeaa52@linaro.org>
- <f61ef601-1561-45d7-8f4a-947458472668@quicinc.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <f61ef601-1561-45d7-8f4a-947458472668@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Theodore Ts'o <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Jason Wang" <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>
+CC:     <bchalios@amazon.es>, <graf@amazon.de>, <xmarcalx@amazon.co.uk>,
+        <aams@amazon.de>, <dwmw@amazon.co.uk>, <gregkh@linuxfoundation.org>
+Subject: [RFC PATCH 0/2] Propagating reseed notifications to user space
+Date:   Wed, 23 Aug 2023 11:01:04 +0200
+Message-ID: <20230823090107.65749-1-bchalios@amazon.es>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-Originating-IP: [10.1.212.9]
+X-ClientProxiedBy: EX19D040UWA004.ant.amazon.com (10.13.139.93) To
+ EX19D037EUB003.ant.amazon.com (10.252.61.119)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_PERMERROR,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,44 +73,105 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi,
+User space often implements PRNGs that use /dev/random as entropy
+source. We can not expect that this randomness sources stay completely
+unknown forever. For various reasons, the originating PRNG seed may
+become known at which point the PRNG becomes insecure for further random
+number generation. Events that can lead to that are for example fast
+computers reversing the PRNG function using a number of inputs or
+Virtual Machine clones which carry seed values into their clones.
 
-On 23/08/2023 02:10, Om Prakash Singh wrote:
-> 
-> 
-> On 8/22/2023 9:34 PM, Konrad Dybcio wrote:
->> On 22.08.2023 16:54, Om Prakash Singh wrote:
->>> PRNG Block on most of newer target from Qualcomm have some configuration where clock is configured by security firmware.
->>>
->>> Adding separate compatible string for each platform is overhead.
->>>
->>> We need to introduce common compatible string that can be used for all platforms with same configuration.
->>>
->>> I would suggest to use "qcom,rng-ee" for newer platform, dropping "p" also signifies it is not a Pseudo Random Number Generator.
->> Please reply inline and don't top-post.
->>
->>
->> Is this what you're trying to say?
->>
->> 1. sort out the clock requirements for designs where Linux manages it
->>     vs where the FW does so >
->> 2. introduce a new compatible for SoCs implementing a TRNG
->>
->> 3. for SoCs in 2., register the TRNG as a hwrng device
-> 
-> Yes to all
+During LPC 2022 Jason, Alex, Michael and me brainstormed on how to
+atomically expose a notification to user space that it should reseed.
+Atomicity is key for the VM clone case. This patchset implements a
+potential path to do so.
 
-I can send a proposal, but that means writing a new driver for this compatible in drivers/char/hw_random/ right ?
+This patchset introduces an epoch value as the means of communicating to
+the guest the need to reseed. The epoch is a 32bit value with the
+following form:
 
-Neil
+              RNG epoch
+*-------------*---------------------*
+| notifier id | epoch counter value |
+*-------------*---------------------*
+     8 bits           24 bits
 
-> 
->>
->>
->> ?
->>
->> Konrad
-> 
-> Thanks,
-> Om
+Changes in this value signal moments in time that PRNGs need to be
+re-seeded. As a result, the intended use of the epoch from user space
+PRNGs is to cache the epoch value every time they reseed using kernel
+entropy, then control that its value hasn't changed before giving out
+random numbers. If the value has changed the PRNG needs to reseed before
+producing any more random bits.
+
+The API for getting hold of this value is offered through
+/dev/(u)random. We introduce a new ioctl for these devices, which
+creates an anonymous file descriptor. User processes can call the
+ioctl() to get the anon fd and then mmap it to a single page. That page
+contains the value of the epoch at offset 0.
+
+Naturally, random.c is the component that maintains the RNG epoch.
+During initialization it allocates a single global page which holds the
+epoch value. Moreover, it exposes an API to kernel subsystems
+(notifiers) which can report events that require PRNG reseeding.
+Notifiers register with random.c and receive an 8-bit notifier id (up to
+256 subscribers should be enough) and a pointer to the epoch. Notifying,
+then, is equivalent to writing in the epoch address a new epoch value.
+
+Notifiers write epoch values that include the notifier ID on the higher
+8 bits and increasing counter values on the 24 remaining bits. This
+guarantees that two notifiers cannot ever write the same epoch value,
+since notificator IDs are unique.
+
+The first patch of this series implements the epoch mechanism. It adds
+the logic in the random.c to maintain the epoch page and expose the
+user space facing API. It also adds the internal API that allows kernel
+systems to register as notifiers.
+
+Based on this API, we can implement notifiers. As example notifier, this
+patch set only contains a virtio-rng backend. If we agree on this path
+forward, the natural next notifier would be an in-kernel timer with a
+user settable frequency that allows the kernel to notify all its user
+space applications to reseed regularly.
+
+Michael sent out a proposal for an extension to virtio-rng [1] which we
+can use to turn virtio-rng devices to RNG epoch notifiers. Briefly, the
+proposal defines the concept of "entropy leaks", i.e. events in time
+that cause entropy to decrease, such as VM snapshots. A virtio-rng
+driver can program the device to perform a number of operations on guest
+memory when entropy leaks happen. The proposal defines two possible
+operations:
+
+* "fill-on-leak": Fill a buffer with random bytes
+* "copy-on-leak": Copy a source buffer in a destination buffer
+
+The second patch implements the entropy leak reporting feature of
+virtio-rng and registers virtio-rng devices as epoch notifiers with
+random.c. It ensures that one copy-on-leak operation is always in-flight
+to increase the epoch value when a VM snapshot occurs. The intention is
+that the VMM will perform these operations before resuming vCPUs, so
+that user space processes will observe the changes in the epoch value
+atomically. Additionally, it always keeps a fill-on-leak command in the
+queue, so that we can get some fresh entropy when VM snapshots occur.
+
+This is an RFC, so that we can discuss whether the proposed ABI works.
+Also, I'd like to hear people's opinion on the internal registration
+API, 8/24 split etc. If we decide that this approach works, I 'm happy
+to add documentation for it, with examples on how user space can make
+use of it. 
+
+[1] https://lore.kernel.org/virtio-dev/20221121162756.350032-1-mst@redhat.com/
+
+Babis Chalios (2):
+  random: emit reseed notifications for PRNGs
+  virtio-rng: implement entropy leak feature
+
+ drivers/char/hw_random/virtio-rng.c | 189 +++++++++++++++++++++++++++-
+ drivers/char/random.c               | 147 ++++++++++++++++++++++
+ include/linux/random.h              |  28 +++++
+ include/uapi/linux/random.h         |  11 ++
+ include/uapi/linux/virtio_rng.h     |   3 +
+ 5 files changed, 373 insertions(+), 5 deletions(-)
+
+-- 
+2.40.1
 
