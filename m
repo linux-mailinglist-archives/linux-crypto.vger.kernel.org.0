@@ -2,35 +2,47 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F36D78855D
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Aug 2023 13:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577ED78855F
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Aug 2023 13:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjHYLHA (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 25 Aug 2023 07:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S242781AbjHYLIE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 25 Aug 2023 07:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242766AbjHYLGi (ORCPT
+        with ESMTP id S243158AbjHYLHg (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:06:38 -0400
+        Fri, 25 Aug 2023 07:07:36 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ACB19BA
-        for <linux-crypto@vger.kernel.org>; Fri, 25 Aug 2023 04:06:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE2A1BC9;
+        Fri, 25 Aug 2023 04:07:34 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qZUdr-007id5-5B; Fri, 25 Aug 2023 19:06:16 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Aug 2023 19:06:16 +0800
-Date:   Fri, 25 Aug 2023 19:06:16 +0800
+        id 1qZUew-007idD-NO; Fri, 25 Aug 2023 19:07:23 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Aug 2023 19:07:23 +0800
+Date:   Fri, 25 Aug 2023 19:07:23 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     ayush.sawal@chelsio.com, davem@davemloft.net,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH -next] crypto: chelsio - Remove unused declarations
-Message-ID: <ZOiLKFJOZVcsHjV3@gondor.apana.org.au>
-References: <20230817134854.18772-1-yuehaibing@huawei.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?77+8T20=?= Prakash Singh <quic_omprsing@quicinc.com>
+Subject: Re: [PATCH v2 1/7] Revert "dt-bindings: crypto: qcom,prng: Add
+ SM8450"
+Message-ID: <ZOiLa3yMHfrIQgmN@gondor.apana.org.au>
+References: <20230824-topic-sm8550-rng-v2-0-dfcafbb16a3e@linaro.org>
+ <20230824-topic-sm8550-rng-v2-1-dfcafbb16a3e@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230817134854.18772-1-yuehaibing@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230824-topic-sm8550-rng-v2-1-dfcafbb16a3e@linaro.org>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP
         autolearn=no autolearn_force=no version=3.4.6
@@ -41,14 +53,19 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 09:48:54PM +0800, Yue Haibing wrote:
-> These declarations are not implemented now, remove them.
+On Thu, Aug 24, 2023 at 01:33:20PM +0200, Neil Armstrong wrote:
+> This reverts commit b9296bb41275 ("dt-bindings: crypto: qcom,prng: Add SM8450"),
+> since the RNG HW on the SM8450 SoC is in fact a True Random Number Generator,
+> a more appropriate compatible should be instead as reported at [1].
 > 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> [1] https://lore.kernel.org/all/20230818161720.3644424-1-quic_omprsing@quicinc.com/
+> 
+> Suggested-by: ￼Om Prakash Singh <quic_omprsing@quicinc.com>
+> Suggested-by: ￼Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 > ---
->  drivers/crypto/chelsio/chcr_core.h   | 1 -
->  drivers/crypto/chelsio/chcr_crypto.h | 1 -
->  2 files changed, 2 deletions(-)
+>  .../devicetree/bindings/crypto/qcom,prng.yaml      | 24 +++++-----------------
+>  1 file changed, 5 insertions(+), 19 deletions(-)
 
 Patch applied.  Thanks.
 -- 
