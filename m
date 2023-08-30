@@ -2,175 +2,86 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A073C78DC2A
-	for <lists+linux-crypto@lfdr.de>; Wed, 30 Aug 2023 20:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC5478DC3D
+	for <lists+linux-crypto@lfdr.de>; Wed, 30 Aug 2023 20:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242666AbjH3Snw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 30 Aug 2023 14:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        id S239588AbjH3SoE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 30 Aug 2023 14:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243839AbjH3Lv5 (ORCPT
+        with ESMTP id S244287AbjH3Mwz (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:51:57 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9D91BB;
-        Wed, 30 Aug 2023 04:51:54 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37UBpTFM070701;
-        Wed, 30 Aug 2023 06:51:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693396289;
-        bh=gMOLJwOXNOhAvc5RONqLHk+5pNmuIPJLrheBybFhFIM=;
-        h=From:To:CC:Subject:In-Reply-To:References:Date;
-        b=iZqM6Avd9IBWZ1sRwAwnWV7xvEp6l2RFaarlcGUGTGoUuD2R8oD8W1qWYspEBT/8o
-         UMo1JNGZBYTuKp4LTxK/cSBoU+w8HQQNiqvGnjsiZWI9NGrE9owat7bpjmvT/zRSxQ
-         u4eKafROn3/BP2QFwvW6kCqFHJmSQyxdjHqJmYqw=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37UBpTkf050947
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Aug 2023 06:51:29 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 30
- Aug 2023 06:51:28 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 30 Aug 2023 06:51:29 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37UBpS8Q000383;
-        Wed, 30 Aug 2023 06:51:28 -0500
-From:   Kamlesh Gurudasani <kamlesh@ti.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH v2 0/6] Add support for
- Texas Instruments MCRC64 engine
-In-Reply-To: <20230822051710.GC1661@sol.localdomain>
-References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
- <20230812030116.GF971@sol.localdomain>
- <87h6owen39.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
- <20230822051710.GC1661@sol.localdomain>
-Date:   Wed, 30 Aug 2023 17:21:27 +0530
-Message-ID: <87zg28d9z4.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+        Wed, 30 Aug 2023 08:52:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E79D132
+        for <linux-crypto@vger.kernel.org>; Wed, 30 Aug 2023 05:52:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B08B261479
+        for <linux-crypto@vger.kernel.org>; Wed, 30 Aug 2023 12:52:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D7C0C433D9
+        for <linux-crypto@vger.kernel.org>; Wed, 30 Aug 2023 12:52:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693399972;
+        bh=r0d5HhBS0S3imax1Mb7Wzse8YCCdAYUTOBQu6FlLm3k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IwetfIFZcQMzDMebnNaOEuFzEIme+xMjQ8lLYnXWDe2TeKnHG72g/m+DC5v8mvRsA
+         aaG3GWp4nRm/UxMH5MawHtlUz62s8ycJTMPUaLYGN+1St7Bx7+BYL5X3Ty08SexqVP
+         wisT3KWiOT+3coLTXnJyw80o+uYhlNiYJrXj7Q7AdL7iZMcTQQGrcTRQqjb0fqfReX
+         fJ/Rs93bGjjt3ecWx6cwlWEl3WzIyMit1PsJPRLqxaSFWDNb0hyJsUCCtsxu9pEkBY
+         Es520U8ipnkH97YSeMTD+AOZmgl+hS3o9x70VnqIyNZiNSLdW3qPvRz3hnsbBt7svn
+         vPq1+vkSEwxYg==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50078eba7afso8938280e87.0
+        for <linux-crypto@vger.kernel.org>; Wed, 30 Aug 2023 05:52:51 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzRlC5XZyODYMWT76N7wFcjc8NxEuw4iPtvo3uWNs6mcR+u9NXI
+        UtgVMJhjmIb4Dl7C9CIoD3Xm3vl8K0hbMj8KqOI=
+X-Google-Smtp-Source: AGHT+IELHrqTpwFaHbd02+Ymu5wcV/HmP4Uq0DScl7iRG9QgQeXEO8/BqdKVdFwR0yRET/bin5j1XsOwG5PT4sL1iOI=
+X-Received: by 2002:a05:6512:31c7:b0:4fb:8eec:ce49 with SMTP id
+ j7-20020a05651231c700b004fb8eecce49mr1767895lfe.31.1693399970058; Wed, 30 Aug
+ 2023 05:52:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAHk-=wgaY2+_KyqVpRS+MrO6Y7bXQp69odTu7JT3XSpdUsgS=g@mail.gmail.com>
+ <ZO8HcBirOZnX9iRs@gondor.apana.org.au> <ZO8ULhlJSrJ0Mcsx@gondor.apana.org.au>
+In-Reply-To: <ZO8ULhlJSrJ0Mcsx@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 30 Aug 2023 14:52:39 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFUDP=GsuHOe9bAgv7J=ynrOsNbxdzj2fq9KGkTY7dTOw@mail.gmail.com>
+Message-ID: <CAMj1kXFUDP=GsuHOe9bAgv7J=ynrOsNbxdzj2fq9KGkTY7dTOw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] crypto: Remove zlib-deflate
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, kees@kernel.org,
+        enlin.mu@unisoc.com, ebiggers@google.com, gpiccoli@igalia.com,
+        willy@infradead.org, yunlong.xing@unisoc.com,
+        yuxiaozhang@google.com,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        qat-linux@intel.com,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Yang Shen <shenyang39@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
-
-> On Fri, Aug 18, 2023 at 02:36:34PM +0530, Kamlesh Gurudasani wrote:
->> Hi Eric,
->> 
->> We are more interested in offload than performance, with splice system
->> call and DMA mode in driver(will be implemented after this series gets
->> merged), good amount of cpu cycles will be saved.
+On Wed, 30 Aug 2023 at 12:04, Herbert Xu <herbert@gondor.apana.org.au> wrote:
 >
-> So it's for power usage, then?  Or freeing up CPU for other tasks?
-It is for freeing CPU for other tasks
-
+> On Wed, Aug 30, 2023 at 05:10:08PM +0800, Herbert Xu wrote:
+> >
+> > Later on someone added "zlib-deflate" to the Crypto API which does
+> > emit the zlib header/trailer.  It appears to be completely unused
+> > and it was only added because certain hardware happened be able to
+> > emit the same header/trailer.  We should remove zlib-defalte
+> > and all the driver implementations of it from the Crypto API.
 >
->> There is one more mode(auto mode) in mcrc64 which helps to verify crc64
->> values against pre calculated crc64, saving the efforts of comparing in
->> userspace.
+> This patch series removes all implementations of zlib-deflate from
+> the Crypto API because they have no users in the kernel.
 >
-> Is there any path forward to actually support this?
->
->> 
->> Current generic implementation of crc64-iso(part of this series)
->> gives 173 Mb/s of speed as opposed to mcrc64 which gives speed of 812
->> Mb/s when tested with tcrypt.
->
-> This doesn't answer my question, which to reiterate was:
->
->     How does performance compare to a properly optimized software CRC
->     implementation on your platform, i.e. an implementation using carryless
->     multiplication instructions (e.g. ARMv8 CE) if available on your platform,
->     otherwise an implementation using the slice-by-8 or slice-by-16 method?
->
-> The implementation you tested was slice-by-1.  Compared to that, it's common for
-> slice-by-8 to speed up CRCs by about 4 times and for folding with carryless
-> multiplication to speed up CRCs by 10-30 times, sometimes limited only by memory
-> bandwidth.  I don't know what specific results you would get on your specific
-> CPU and for this specific CRC, and you could certainly see something different
-> if you e.g. have some low-end embedded CPU.  But those are the typical results
-> I've seen for other CRCs on different CPUs.  So, a software implementation may
-> be more attractive than you realize.  It could very well be the case that a
-> PMULL based CRC implementation actually ends up with less CPU load than your
-> "hardware offload", when taking into syscall, algif_hash, and driver overhead...
->
-> - Eric
-Hi Eric, thanks for your detailed and valuable inputs.
 
-As per your suggestion, we did some profiling. 
-
-Use case is to calculate crc32/crc64 for file input from user space.
-
-Instead of directly implementing PMULL based CRC64, we made first comparison between 
-Case 1.
-CRC32 (splice() + kernel space SW driver) 
-https://gist.github.com/ti-kamlesh/5be75dbde292e122135ddf795fad9f21
-
-Case 2.
-CRC32(mmap() + userspace armv8 crc32 instruction implementation)
-(tried read() as well to get contents of file, but that lost to mmap() so not mentioning number here)
-https://gist.github.com/ti-kamlesh/002df094dd522422c6cb62069e15c40d
-
-Case 3.
-CRC64 (splice() + MCRC64 HW)
-https://gist.github.com/ti-kamlesh/98b1fc36c9a7c3defcc2dced4136b8a0
-
-
-Overall, overhead of userspace + af_alg + driver in (Case 1) and
-( Case 3) is ~0.025s, which is constant for any file size.
-This is calculated using real time to calculate crc  -
-driver time (time spend inside init() + update() +final()) = overhead ~0.025s    
-
-
-
-+-------------------+-----------------------------+-----------------------+------------------------+------------------------+
-|                   |                             |                       |                        |                        |
-| File size         | 120mb(ideal size for us)    | 20mb                  | 15mb                   | 5mb                    |
-+===================+=============================+=======================+========================+========================+
-|                   |                             |                       |                        |                        |
-| CRC32 (Case 1)    | Driver time 0.155s          | Driver time 0.0325s   | Driver time 0.019s     | Driver time 0.0062s    |
-|                   |    real time 0.18s          |    real time 0.06s    |    real time 0.04s     |    real time 0.03s     |
-|                   |    overhead 0.025s          |    overhead 0.025s    |    overhead 0.021s     |    overhead ~0.023s    |
-+-------------------+-----------------------------+-----------------------+------------------------+------------------------+
-|                   |                             |                       |                        |                        |
-| CRC32 (Case 2)    | Real time 0.30s             | Real time 0.05s       | Real time 0.04s        | Real time 0.02s        |
-+-------------------+-----------------------------+-----------------------+------------------------+------------------------+
-|                   |                             |                       |                        |                        |
-| CRC64 (Case 3)    | Driver time   0.385s        | Driver time 0.0665s   | Driver time 0.0515s    | Driver time 0.019s     |
-|                   |    real time 0.41s          |    real time 0.09s    |    real time 0.08s     |    real time 0.04s     |
-|                   |    overhead 0.025s          |    overhead 0.025s    |    overhead ~0.025s    |    overhead ~0.021s    |
-+-------------------+-----------------------------+-----------------------+------------------------+------------------------+
-
-Here, if we consider similar numbers for crc64 PMULL implementation as
-crc32 (case 2) , we save good number of cpu cycles using mcrc64
-in case of files bigger than 5-10mb as most of the time is being spent in HW offload.
-
-Regards,
-Kamlesh
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
