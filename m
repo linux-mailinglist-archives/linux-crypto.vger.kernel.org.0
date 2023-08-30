@@ -2,77 +2,76 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA0D78DC27
-	for <lists+linux-crypto@lfdr.de>; Wed, 30 Aug 2023 20:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B042A78DC44
+	for <lists+linux-crypto@lfdr.de>; Wed, 30 Aug 2023 20:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237551AbjH3Snt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 30 Aug 2023 14:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
+        id S239896AbjH3SoI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 30 Aug 2023 14:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344005AbjH3R4a (ORCPT
+        with ESMTP id S1344090AbjH3SGG (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 30 Aug 2023 13:56:30 -0400
+        Wed, 30 Aug 2023 14:06:06 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DB7193
-        for <linux-crypto@vger.kernel.org>; Wed, 30 Aug 2023 10:56:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2206D193
+        for <linux-crypto@vger.kernel.org>; Wed, 30 Aug 2023 11:06:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1693418158; x=1694022958; i=wahrenst@gmx.net;
- bh=PDL/l6os/JL0sjb08BLPOhoDi81r8MbjrMxF1r4+zKc=;
+ s=s31663417; t=1693418741; x=1694023541; i=wahrenst@gmx.net;
+ bh=hUJK6TjJ0vj8QdMJxqA1jtzz55PeEmDdA/O7liJq+70=;
  h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=a7xkZz+88sO8XUH+zwOtFQnWE5Vzy6UUEYG4KxQorWp5Ce8jyLaobLukTrEgDg2fWsBXvqI
- w6H5q6v44pSqTQclvzwgyJ92fJxNBI4h8cQ9l/Y9ZwIzCTt9OR3dbVP6aq7TvJs9pEOjFNvQD
- ud5H0oh/uGryjkZgYgB3ErbbRSlbds4kxPDMqtbU5zR+LW+6Dj6ViQtVExxutLUH2AbXamfFi
- RHweFp8W9aMzNLz7K2DN8dKY7IaE4eBIFdyakKMKbCtn8QPbXnM65gKntIgmbOP7IhweKQI7x
- rxGRlq8Nxiup6vHpmfZM963VDngfjg6yVbhePGoo+0Pu5lRNvqlw==
+ b=ZyI+CCuv01/YtAieMwnS1nkRA1ijrAtXIL7c6tfxCcQmR+2RPXwJ0mCRJ47vl52EpC803Uk
+ I0NSZUlp0GXSBP7U6rj2bqYXnc9z2qS/LCXKjooQ5/qB0SQ6FbtCJOuUd8YiMn96pGD+FZ9UL
+ noXgQreY2zdF7Lpmc000asT5QjMAa5d0JUICE6X/2wUAH+Et0nb8qHuL9q4c8Gvt8M6TG7jJW
+ SdcTfI0sgw1Sq04ZoVFr3RJ6J5Bzs2siA/APgRSfRO3lCLMjBbyviOJNqIyPbT7ZuyA7MJ0nz
+ ZH9+ykgXsKJdvSM+QZ12eJg0joeEAAZReCiPe/XCqOCZs6oiDNSQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N1Obh-1pYlEb2RZL-012mvp; Wed, 30
- Aug 2023 19:55:58 +0200
-Message-ID: <4dfdadf0-a985-78d9-91b6-065c52d23b34@gmx.net>
-Date:   Wed, 30 Aug 2023 19:55:55 +0200
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MhD2O-1q5wdK3RTu-00eOOs; Wed, 30
+ Aug 2023 20:05:40 +0200
+Message-ID: <317b15be-3bae-5938-8c27-8a44f79b94d3@gmx.net>
+Date:   Wed, 30 Aug 2023 20:05:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: bcm2835-rng: Performance regression since 96cb9d055445
-To:     Thorsten Leemhuis <regressions@leemhuis.info>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-crypto@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrei Coardos <aboutphysycs@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Phil Elwell <phil@raspberrypi.com>
-References: <bc97ece5-44a3-4c4e-77da-2db3eb66b128@gmx.net>
- <ZOiP2H_6pfhKN3fj@zx2c4.com> <20e3c73c-7736-b010-516a-6618c88d8dad@gmx.net>
- <2a0fd8ef-8b43-b769-b4aa-c27405ead5e7@leemhuis.info>
+Subject: Re: [PATCH] hwrng: bcm2835: Fix hwrng throughput regression
 Content-Language: en-US
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Olivia Mackall <olivia@selenic.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Mark Brown <broonie@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Phil Elwell <phil@raspberrypi.com>
+References: <20230826112828.58046-1-wahrenst@gmx.net>
+ <ZOnxaXtXeL1FFyIj@zx2c4.com> <56b5000c-89d9-865e-035c-5baf730a5304@gmx.net>
+ <ZOoe0lOR9zpcAw5I@zx2c4.com>
 From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <2a0fd8ef-8b43-b769-b4aa-c27405ead5e7@leemhuis.info>
+In-Reply-To: <ZOoe0lOR9zpcAw5I@zx2c4.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:icfQAfi9b0eHQhciAtcWG0+l9pF6iiPLg8NGGjLdmTQ+ggLB8aL
- +SBshbE1lC1N17cvq3uhkqDNO/jLRIvCmOArNjIjO4N3xHfZy/LJi9y57aZpznOFoiVO99n
- wZN8+EE+fCTkmDLkqF1X4QnG8HZuwtuOFV9uPqs/T0jP6Q7965Jfq9de/tEYcnTyo/t5mDv
- 6x7J04nOIXlNi08bAoflA==
-UI-OutboundReport: notjunk:1;M01:P0:Y3tVSRMS7Yo=;FxST7o+5hk3nkqWN640sb+3bcWf
- eMkJHYvw4ZSnEx4KnGJjvLExCnlBv7TbITKiwf4tfV+OlXl1vzhLo6WULMYmzgYoZK4YLkmcg
- +5SLpbWEM93Ix1F9sBMYn6ix6fb/WfIlZKdpatc1f9GjhnSPr7hNrs71juUyyK77JbBjJ3er2
- sznUJ1Q6nR/SuaM5lfJQbGssOaYTg+EpQmvX9APAUc6aeCGRTdvCZcVkeaFPiBqTc4MSLGpvc
- 9fSkzM8cXM99nYHaCrYxpjQ0BDuY6LhdD0qq6hn+LvwgOSdBmoZfwEdMvdjtS8UBE5kyPS+gI
- qCLOqQIl1NfAM8hmU2OL+O4muu/Uxb0LGRt731iE+8djAOU6+JBYCWBb345bv+Mro6H/d5cEP
- W/sgZQ9K9DgEzCdw1QuYmb247MIwWrwsuuR9sH0ujk8yBL5CeQKCmYeX/FGScpax8HC++F8JM
- DzyBA788bCEkGdn1VAlpUq35+fiGJaewTpVCx/OebNZ8H6lUVY1TfTAbaE1ZDDbL5ahEx4J1d
- IKxvxmWlhqDDvZXZLx/Lrk/x+pfTEfX46k6XcPp5QtX3s7uEO8MPvjUBaOu776OUmEdkZFgi6
- cc9kL0p3DFBkXHDGq46kKE4xwmjdxvmU8KHJW0zD2m7p6DfJ7YTefBSdZLVB78rJ5LHMuRxtC
- Sf69M5jzQw3iokr4u+msDTA4FQpHQf5nvEwr06+X9WAFLepzB9TFZCeuwjWZZT/Gcq+3Af08p
- O5yK8V2VYfRMTgRbMY89Tv/jh6gcsAc4mS/lGb5vceeHVEz83j/iUvWkxlRxyEWq4iYbR1hST
- vtwAayX6fIEOHoz5MRgUHD0kKq4/tFFuU9A/12C4gvKrcyccQ/I1xmD/YS3kCwH71+08em5VH
- XiqFGZt4D5rboJTauTB91GaeKzTf/QE9Dsw3th+5DpKUp7KhK5JDQJbsujU5qpQGEH/0N1zSp
- 5aPwINfLYrqUgmHdR6xciW1qh4I=
+X-Provags-ID: V03:K1:KySIrYtZy2TEw8CmXZ1rN39I4k69ce7J/mjoTvxOoc3ffOwK32N
+ 0784xsT+Pw8fnjbfehB2pPcduVBVWgZAooqa0DIIK1Sxb75hC8Ry3Lct3SuIt6xzMVOcT9l
+ TKTREIK93B8LGKa+8929pynNskuUTfmdi70WQy+kUOEPB4IUBNsK0W4WWq1GFOq2n1oJcnv
+ SX5ATGOardcBNMhLYKwfg==
+UI-OutboundReport: notjunk:1;M01:P0:vIMjQkB7YLU=;Lh48n2EZHAXZKby8aXayx+oAJ5M
+ eQQmhCOwW1lqid5O3sreWfeRet5+Uu+iqQEBfpnHMEuveDxu0EmRk+pS+A4YMkIdoJLGV2yPt
+ 9CS+E6XdoVsKVTeuga+H+I8tPWdwgRaEmyVFGRHcgBX1D4uz8Y7tWbZ2+tkqrjn+4kthif8Ob
+ O/0hq5BkvXPgncfjBziwR/XOXGeFqM/rX+BPcofyCAFJ6Ko1DBYyemnSGBOTVeugN21VHFeDz
+ BA8DmpzMKmxmJZWG82+FC7uWFEJ2WIUJCtjQEZjcEiUckq+6pxiXVvT0jCUepD8JJlsw6j8hf
+ Tup3DVCKJZnj2wQNqmRsSmmwdj+AALac2/s4mzXrh4MNv/XyBvrAKCwjcoaIKsTz8vlKHe9Ws
+ T3jwUI0whMDmBUXN5jNiiqWvB/b2keA77xhxXgrZqgfCEtw0AjSWQ9DZRqWb+Nzgs6CHjl9QX
+ Ko2waYS4EJYWxubrBEk0nTIoDpehhe10dQxUZR+/GBv/zJiSLQF9AsMJqHIb5VkYfl4U5gWuQ
+ EBDatTIs5h5ye936SeB5YqlqXOWbYpycJmk4eCG1CdLlsveNCAHCHJdLHaAZc1lN0JCEOU3mH
+ xp7ngvdjG44AyyYkc8QLtUvNIO0MeBxnCM8QWTPvd+kxi8PjnCEM5+Dg3q3hQ71tuqZwfglbb
+ GyNHmM+cGDXqahgX+6HKw6LSx7jRmwIOAFex6Xzo8P2W6Wab0Aw/7znSqUkRPqqS/mMNi9P5Z
+ Ksz2CEv77pPvcbrvGuPJbLRLQqDsH0V+tK81PwfhnMZ8iOUWtD5hCl7rgFEzbOHqvFtXa87/F
+ MYvQDL/Lcpgks+ooSMvQSU1liNgV5mxTPs0Y450JA8YWXSvNc54XBGZ1duwn/u2hrRqjRdxVR
+ a8yC6FlLGLcrN2BvtVXnd1ymiQ2jaax7knG0uUquMpy6HGAVBo4Yzsl08C0MLHtjWXDzW7Wn6
+ X2uEsPT2c0vnsVkxX4GFFgAPvqs=
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -83,61 +82,76 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi,
+Hi Jason,
 
-Am 30.08.23 um 12:38 schrieb Thorsten Leemhuis:
-> /me gets the impression he has to chime in here
->
-> On 25.08.23 14:14, Stefan Wahren wrote:
->> Am 25.08.23 um 13:26 schrieb Jason A. Donenfeld:
->>> On Fri, Aug 25, 2023 at 01:14:55PM +0200, Stefan Wahren wrote:
->>>> i didn't find the time to fix the performance regression in bcm2835-r=
-ng
->>>> which affects Raspberry Pi 0 - 3, so report it at least. AFAIK the fi=
-rst
->>>> report about this issue was here [1] and identified the offending
->>>> commit:
->>>>
->>>> 96cb9d055445 ("hwrng: bcm2835 - use hwrng_msleep() instead of
->>>>  =C2=A0=C2=A0 cpu_relax()")
->>>>
->>>> #regzbot introduced: 96cb9d055445
->>>>
->>>> I was able to reproduce this issue with a Raspberry Pi 3 B+ on Linux
->>>> 6.5-rc6 (arm64/defconfig).
->>>>
->>>> Before:
->>>> time sudo dd if=3D/dev/hwrng of=3D/dev/urandom count=3D1 bs=3D4096 st=
-atus=3Dnone
->>>>
->>>> real=C2=A0=C2=A0=C2=A0 3m29,002s
->>>> user=C2=A0=C2=A0=C2=A0 0m0,018s
->>>> sys=C2=A0=C2=A0=C2=A0 0m0,054s
->>> That's not surprising. But also, does it matter? That script has
->>> *always* been wrong. Writing to /dev/urandom like that has *never*
->>> ensured that those bytes are taken into account immediately after. It'=
-s
->>> just not how that interface works. So any assumptions based on that ar=
+Am 26.08.23 um 17:48 schrieb Jason A. Donenfeld:
+> On Sat, Aug 26, 2023 at 04:01:58PM +0200, Stefan Wahren wrote:
+>> Hi Jason,
+>>
+>> Am 26.08.23 um 14:34 schrieb Jason A. Donenfeld:
+>>> On Sat, Aug 26, 2023 at 01:28:28PM +0200, Stefan Wahren wrote:
+>>>> The recent RCU stall fix caused a massive throughput regression of th=
 e
->>> bogus, and that line effectively does nothing.
->>>
->>> Fortunately, however, the kernel itself incorporates hwrng output into
->>> the rng pool, so you don't need to think about doing it yourself.
->>>
->>> So go ahead and remove that line from your script.
->> Thanks for your explanation. Unfortunately this isn't my script.
-> And I assume it's in the standard install of the RpiOS or similarly
-> widespread?
-the repo / script is specific for Raspberry Pi / Debian.
->
->> I'm
->> just a former BCM2835 maintainer and interested that more user stick to
->> the mainline kernel instead of the vendor ones. I will try to report th=
-e
->> script owner.
-> thx
+>>>> hwrng on Raspberry Pi 0 - 3. So try to restore a similiar throughput
+>>>> as before the RCU stall fix.
+>>>>
+>>>> Some performance measurements on Raspberry Pi 3B+ (arm64/defconfig):
+>>>>
+>>>> sudo dd if=3D/dev/hwrng of=3D/dev/null count=3D1 bs=3D10000
+>>>>
+>>>> cpu_relax              ~138025 Bytes / sec
+>>>> hwrng_msleep(1000)         ~13 Bytes / sec
+>>>> usleep_range(100,200)   ~92141 Bytes / sec
+>>>>
+>>>> Fixes: 96cb9d055445 ("hwrng: bcm2835 - use hwrng_msleep() instead of =
+cpu_relax()")
+>>>> Link: https://lore.kernel.org/linux-arm-kernel/bc97ece5-44a3-4c4e-77d=
+a-2db3eb66b128@gmx.net/
+>>>> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+>>>> ---
+>>>>    drivers/char/hw_random/bcm2835-rng.c | 3 ++-
+>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_r=
+andom/bcm2835-rng.c
+>>>> index e98fcac578d6..3f1b6aaa98ee 100644
+>>>> --- a/drivers/char/hw_random/bcm2835-rng.c
+>>>> +++ b/drivers/char/hw_random/bcm2835-rng.c
+>>>> @@ -14,6 +14,7 @@
+>>>>    #include <linux/printk.h>
+>>>>    #include <linux/clk.h>
+>>>>    #include <linux/reset.h>
+>>>> +#include <linux/delay.h>
+>>>>
+>>>>    #define RNG_CTRL	0x0
+>>>>    #define RNG_STATUS	0x4
+>>>> @@ -71,7 +72,7 @@ static int bcm2835_rng_read(struct hwrng *rng, void=
+ *buf, size_t max,
+>>>>    	while ((rng_readl(priv, RNG_STATUS) >> 24) =3D=3D 0) {
+>>>>    		if (!wait)
+>>>>    			return 0;
+>>>> -		hwrng_msleep(rng, 1000);
+>>>> +		usleep_range(100, 200);
+>>> I think we still need to use the hwrng_msleep function so that the sle=
+ep
+>>> remains cancelable. Maybe just change the 1000 to 100?
+>> i found that other hwrng driver like iproc-rng200 (Raspberry Pi 4) also
+>> use usleep_range().
+>>
+>> Nevertheless here are more numbers:
+>>
+>> usleep_range(200,400) : 47776 bytes / sec
+>> hwrng_msleep(20) : 715 bytes / sec
+>>
+>> Changing to 100 ms won't be a real gain.
+> I'm fine with whatever number you want there. Maybe we need a
+> hwrng_usleep_range() that takes into account rng->dying like
+> hwrng_msleep() does? (And iproc-rng200 should probably use that too?)
+the idea of this patch was to fix the performance regression in upcoming
+mainline and backport the fix to Linux 6.1 LTS. After that i'm fine with
+the introduction of hwrng_usleep_range().
 
-I made a pull request [1] in order to avoid longer discussions and today
-it has been merged :)
+Best regards
 
-[1] - https://github.com/RPi-Distro/raspberrypi-sys-mods/pull/77
+> Jason
+
