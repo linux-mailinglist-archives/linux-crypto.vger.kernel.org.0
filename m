@@ -2,69 +2,115 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 339847926F3
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Sep 2023 18:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AEB792714
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Sep 2023 18:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245214AbjIEQUd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Sep 2023 12:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
+        id S242262AbjIEQUs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Sep 2023 12:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353795AbjIEISF (ORCPT
+        with ESMTP id S1353827AbjIEIT3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:18:05 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C3E1AE;
-        Tue,  5 Sep 2023 01:17:59 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qdRFi-00AtI6-RA; Tue, 05 Sep 2023 16:17:39 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 Sep 2023 16:17:40 +0800
-Date:   Tue, 5 Sep 2023 16:17:40 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Longfang Liu <liulongfang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: hisilicon/hpre - Fix a erroneous check after
- snprintf()
-Message-ID: <ZPbkJOPsx4as96D/@gondor.apana.org.au>
-References: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
- <ZPaSCOX1F9b36rxV@gondor.apana.org.au>
- <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
+        Tue, 5 Sep 2023 04:19:29 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451BBCDE
+        for <linux-crypto@vger.kernel.org>; Tue,  5 Sep 2023 01:19:25 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a7e68f4214so1777706b6e.1
+        for <linux-crypto@vger.kernel.org>; Tue, 05 Sep 2023 01:19:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693901964; x=1694506764; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CvUmRYKO5rN5JiKdYLn9/Xxm/soJiVGtQm650JnL3Yc=;
+        b=Rsh1U5LWkGLD60egT4xH0OkFTYAdhZ9PEm8UjiAWZ2Ip5vQRRw1xGx18MGa89HvYT6
+         DHnioG41PeB3MkB8Ft4Wrqqp2kjHic/Vkr/qunTIeMzVwVxM8xASTQz27lIUkjehlemV
+         8hhlmR9WWRNLvf+5DEaOSg8zVsJ6dc1e3o0hPmiekrNR95zn5u2OlTodDzhAW5FoXvst
+         vtI6oie/Go2kADRNvERCwQ/tj5WyItWCvOqaItC7RUWSKHX1Jy68bxHNnuEfs4fh7/gu
+         3DkWJuriwsFIhQtQN+dSHz9r/brcNOoN1uxEnXTsFI93qPjm9f/GoLz132bzGfSth5g7
+         +kXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693901964; x=1694506764;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CvUmRYKO5rN5JiKdYLn9/Xxm/soJiVGtQm650JnL3Yc=;
+        b=k/d0I7FlblAtjNrjkTTc3rmenYnGaGvcCYcAqN734RstdArxFNFBwAftDM03bDa6rh
+         PmhS4boOdTKSAa1dnOE2GIOzeY2mQ1C2pA4Gfq7K9zKp/WgBZUoC2155XoN+DKtuw/bv
+         +uXcPJtKqrYKZmWl/fee1N8nLwl7zPTU/jhVsIQNlZ1P3zfrgO707/yrJNqDAhYmpPZX
+         W7ndKY+y1IpYAHEAEUqxDc2CRi2Zuptv6ZplubFZM+axlRsmSGiqCtABD5hFREZw1PpL
+         5iOcTbXrErFWdnECUBdWPpXPFHGolmn51iEj+l2fDPEMtv74dAFWMzwa+02cNU1E6Em6
+         NywQ==
+X-Gm-Message-State: AOJu0YwLNCgdJbyO6Hz0NKlJssjkrTI6Cr/ufNsbD7ykg5qC2rQ+Y64n
+        ZK4/CuWUG6N+oNNP4QzhwO3vHdbfFf7jJ9BJjOYh009ShFmB1Q==
+X-Google-Smtp-Source: AGHT+IERAX8PQb3+O/VRt2IpdT+B8+AIRhc7TR9qfBXEywqtD/tUeMqNmseulSPs3fS452xIhVN8tbhQYqX1LXl34po=
+X-Received: by 2002:a0c:aa1b:0:b0:653:5736:c0b4 with SMTP id
+ d27-20020a0caa1b000000b006535736c0b4mr10412089qvb.54.1693901943569; Tue, 05
+ Sep 2023 01:19:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP autolearn=no
+Received: by 2002:a0c:de0e:0:b0:634:8588:8dcb with HTTP; Tue, 5 Sep 2023
+ 01:19:02 -0700 (PDT)
+Reply-To: wuwumoneytransfer5000@hotmail.com
+From:   "(IMF) SCAM VICTIMS" <smmab4668@gmail.com>
+Date:   Tue, 5 Sep 2023 01:19:02 -0700
+Message-ID: <CAPvhgiGb_xchv+cBfjtNXZbs3T38s2BJRqmONSNBDUeOvUkr=Q@mail.gmail.com>
+Subject: Betrugsopfer
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
-X-Spam-Level: **
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 07:27:47AM +0200, Marion & Christophe JAILLET wrote:
->
-> Some debugfs dir of file way be left around. Is it what your are talking
-> about?
+Sehr geehrter E-Mail-Besitzer,
 
-Yes all allocated resources should be freed on the error path.
 
-> > The other snprintf in the same file also looks suspect.
-> 
-> It looks correct to me.
-> 
-> And HPRE_DBGFS_VAL_MAX_LEN being 20, it doesn't really matter. The string
-> can't be truncated with just a "%u\n".
 
-Well if you're going to go with that line of reasoning then this
-case ("cluster%d") can't overflow either, no?
+Der Internationale W=C3=A4hrungsfonds (IWF) entsch=C3=A4digt alle Betrugsop=
+fer
+und Ihre E-Mail-Adresse wurde auf der Liste der Betrugsopfer gefunden.
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Dieses Western Union-B=C3=BCro wurde vom IWF beauftragt Ihnen Ihre
+Verg=C3=BCtung per Western Union Money Transfer zu =C3=BCberweisen.
+
+Wir haben uns jedoch entschieden Ihre eigene Zahlung =C3=BCber Geldtransfer
+der Westunion in H=C3=B6he von =E2=82=AC5,000, pro Tag vorzunehmen bis die
+Gesamtsumme von =E2=82=AC1,500.000.00, vollst=C3=A4ndig an Sie =C3=BCberwie=
+sen wurde.
+
+Wir k=C3=B6nnen die Zahlung m=C3=B6glicherweise nicht nur mit Ihrer
+E-Mail-Adresse senden daher ben=C3=B6tigen wir Ihre Informationen dar=C3=BC=
+ber
+wohin wir das Geld an Sie senden wie z. B.:
+
+
+Name des Adressaten ________________
+
+Adresse________________
+
+Land__________________
+
+Telefonnummer________________
+
+Angeh=C3=A4ngte Kopie Ihres Ausweises______________
+
+Das Alter ________________________
+
+
+Wir beginnen mit der =C3=9Cbertragung sobald wir Ihre Informationen
+erhalten haben: Kontakt E-Mail: ( wuwumoneytransfer5000@hotmail.com)
+
+
+Getreu,
+
+
+Herr Anthony Duru,
+
+Direktor von Geldtransfer der Westunion
