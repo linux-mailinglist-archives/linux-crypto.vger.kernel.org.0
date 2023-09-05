@@ -2,108 +2,257 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7947927CA
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Sep 2023 18:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD70A792773
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Sep 2023 18:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241390AbjIEQUy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 5 Sep 2023 12:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
+        id S237229AbjIEQU2 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 5 Sep 2023 12:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351851AbjIEF17 (ORCPT
+        with ESMTP id S1353500AbjIEGZA (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 5 Sep 2023 01:27:59 -0400
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1D7CCB
-        for <linux-crypto@vger.kernel.org>; Mon,  4 Sep 2023 22:27:54 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id dObLqMhXKyoREdObLqvYW2; Tue, 05 Sep 2023 07:27:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693891673;
-        bh=fc7UsU95zQsQlPFIsQq5CGy7XFtuPx0VRlseRiLjyWk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=ZTcnkZLbqoSNSU+t4WKF6rZhBLRXayHen8UVP/HiXefCK2r6YV2YaoOmDVbiwhmi/
-         pL6EerMqzvKPsvFYnyE3OEq9EyLixV+EVphMNpQOsnac3otc+xHZNGnbFfxUNhah+3
-         J93Lq8s3m1aUPdyxBe/9y+YKerdABdST93g9BUSI84g4yuPnlBTOYPcCkZRemh8XTA
-         D23SnaLJZwrNquo6rv9ksE/7Lq3vpEiWtOSCr3hgl70d7MsqmOo9+Z+RbVXdEApWNO
-         ip5dyaxPioGlQzSZVOEZgbA+x1Es2Xpul8Ht3Ym5mcN/Yi6qxYpQbVzz+z7PYqaMuU
-         UZECZHO8vvAjg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 05 Sep 2023 07:27:53 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
-Date:   Tue, 5 Sep 2023 07:27:47 +0200
+        Tue, 5 Sep 2023 02:25:00 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98532191;
+        Mon,  4 Sep 2023 23:24:56 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3855cT5H009665;
+        Tue, 5 Sep 2023 06:24:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=qcppdkim1;
+ bh=c6ECpVVK5qywycohjmt3kLr/2QZmBVFxLnwbKYNE4Zo=;
+ b=K9tLp4KWatMBXgFh8BFCxpnJhzsFw0E1ost31M9hvMHdX/0aB/5RWEJLcnwIkRIMBGkp
+ 9E8FUNtf1fPmG4txwMcY2Bg2cI0VEHHVueLus6G6TnvvlGnxIkJw9RDibOKftFBiIftN
+ ayJqzeTM2vp0gdqEw5nQXXpzlg6D8UxccDW4aVM0sgUcXQUNUzWHbMNjP+Plmg3ULJz7
+ MfDXLoDTQATNf0nCRojSOTpIOr7YRVrSaFYm7/ntdYA0imrFi/t1SgmX10g1ZbAwrgGe
+ 12FCfz8zeiKLhIfokQRiw5kgKKerRxaW5Q2EJZuZ22sBjtIooaACe+vgDgKqPDsoC0Ac kA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swvj608d1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 06:24:42 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3856Ofpv011789
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Sep 2023 06:24:42 GMT
+Received: from hu-omprsing-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 4 Sep 2023 23:24:37 -0700
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+To:     <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: [PATCH V2] crypto: qcom-rng - Add hw_random interface support
+Date:   Tue, 5 Sep 2023 11:54:20 +0530
+Message-ID: <20230905062420.3983268-1-quic_omprsing@quicinc.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230901131502.1549809-1-quic_omprsing@quicinc.com>
+References: <20230901131502.1549809-1-quic_omprsing@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] crypto: hisilicon/hpre - Fix a erroneous check after
- snprintf()
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Longfang Liu <liulongfang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org
-References: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
- <ZPaSCOX1F9b36rxV@gondor.apana.org.au>
-Content-Language: fr, en-US
-From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <ZPaSCOX1F9b36rxV@gondor.apana.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 1anFxD2FxaIld0AMAjiBjX3oidMaBB0A
+X-Proofpoint-ORIG-GUID: 1anFxD2FxaIld0AMAjiBjX3oidMaBB0A
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_04,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ impostorscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309050057
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Add hw_random interface support in qcom-rng driver as new IP block
+in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
+to generate true random number.
 
-Le 05/09/2023 à 04:27, Herbert Xu a écrit :
-> On Mon, Sep 04, 2023 at 10:17:29PM +0200, Christophe JAILLET wrote:
->> This error handling looks really strange.
->> Check if the string has been truncated instead.
->>
->> Fixes: 02ab994635eb ("crypto: hisilicon - Fixed some tiny bugs of HPRE")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/crypto/hisilicon/hpre/hpre_main.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
->> index 39297ce70f44..db44d889438a 100644
->> --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
->> +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
->> @@ -1033,7 +1033,7 @@ static int hpre_cluster_debugfs_init(struct hisi_qm *qm)
->>   
->>   	for (i = 0; i < clusters_num; i++) {
->>   		ret = snprintf(buf, HPRE_DBGFS_VAL_MAX_LEN, "cluster%d", i);
->> -		if (ret < 0)
->> +		if (ret >= HPRE_DBGFS_VAL_MAX_LEN)
->>   			return -EINVAL;
->>   		tmp_d = debugfs_create_dir(buf, qm->debug.debug_root);
-> Who is going to free the allocated memory in case of error?
+Keeping current rng_alg interface as well for random number generation
+using Kernel Crypto API.
 
-Not sure to understand.
+Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+---
 
-The memory is allocated with devm_kzalloc(), so it will be freed by the 
-framework.
+Changes in V2:
+- Address review comment from Bjorn and Krzysztof
 
-Some debugfs dir of file way be left around. Is it what your are talking 
-about?
+This patch is depends on [1]
+[1] https://lore.kernel.org/lkml/20230824-topic-sm8550-rng-v2-4-dfcafbb16a3e@linaro.org/
 
->
-> The other snprintf in the same file also looks suspect.
+ drivers/crypto/qcom-rng.c | 65 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 58 insertions(+), 7 deletions(-)
 
-It looks correct to me.
+diff --git a/drivers/crypto/qcom-rng.c b/drivers/crypto/qcom-rng.c
+index fb54b8cfc35f..e5a574a3cc59 100644
+--- a/drivers/crypto/qcom-rng.c
++++ b/drivers/crypto/qcom-rng.c
+@@ -7,6 +7,7 @@
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/crypto.h>
++#include <linux/hw_random.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+ #include <linux/kernel.h>
+@@ -32,13 +33,18 @@ struct qcom_rng {
+ 	struct mutex lock;
+ 	void __iomem *base;
+ 	struct clk *clk;
+-	unsigned int skip_init;
++	struct qcom_rng_of_data *of_data;
+ };
+ 
+ struct qcom_rng_ctx {
+ 	struct qcom_rng *rng;
+ };
+ 
++struct qcom_rng_of_data {
++	bool skip_init;
++	bool hwrng_support;
++};
++
+ static struct qcom_rng *qcom_rng_dev;
+ 
+ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+@@ -70,7 +76,7 @@ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+ 		}
+ 	} while (currsize < max);
+ 
+-	return 0;
++	return currsize;
+ }
+ 
+ static int qcom_rng_generate(struct crypto_rng *tfm,
+@@ -92,6 +98,9 @@ static int qcom_rng_generate(struct crypto_rng *tfm,
+ 	mutex_unlock(&rng->lock);
+ 	clk_disable_unprepare(rng->clk);
+ 
++	if (ret == dlen)
++		ret = 0;
++
+ 	return ret;
+ }
+ 
+@@ -101,6 +110,13 @@ static int qcom_rng_seed(struct crypto_rng *tfm, const u8 *seed,
+ 	return 0;
+ }
+ 
++static int qcom_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	struct qcom_rng *qrng = (struct qcom_rng *)rng->priv;
++
++	return qcom_rng_read(qrng, data, max);
++}
++
+ static int qcom_rng_enable(struct qcom_rng *rng)
+ {
+ 	u32 val;
+@@ -136,7 +152,7 @@ static int qcom_rng_init(struct crypto_tfm *tfm)
+ 
+ 	ctx->rng = qcom_rng_dev;
+ 
+-	if (!ctx->rng->skip_init)
++	if (!ctx->rng->of_data->skip_init)
+ 		return qcom_rng_enable(ctx->rng);
+ 
+ 	return 0;
+@@ -157,6 +173,12 @@ static struct rng_alg qcom_rng_alg = {
+ 	}
+ };
+ 
++static struct hwrng qcom_hwrng = {
++	.name = "qcom-hwrng",
++	.read = qcom_hwrng_read,
++	.quality = 1024,
++};
++
+ static int qcom_rng_probe(struct platform_device *pdev)
+ {
+ 	struct qcom_rng *rng;
+@@ -177,15 +199,29 @@ static int qcom_rng_probe(struct platform_device *pdev)
+ 	if (IS_ERR(rng->clk))
+ 		return PTR_ERR(rng->clk);
+ 
+-	rng->skip_init = (unsigned long)device_get_match_data(&pdev->dev);
++	rng->of_data = (struct qcom_rng_of_data *)of_device_get_match_data(&pdev->dev);
+ 
+ 	qcom_rng_dev = rng;
+ 	ret = crypto_register_rng(&qcom_rng_alg);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Register crypto rng failed: %d\n", ret);
+ 		qcom_rng_dev = NULL;
++		return ret;
++	}
++
++	if (rng->of_data->hwrng_support) {
++		qcom_hwrng.priv = (unsigned long)qcom_rng_dev;
++		ret = devm_hwrng_register(&pdev->dev, &qcom_hwrng);
++		if (ret) {
++			dev_err(&pdev->dev, "Register hwrng failed: %d\n", ret);
++			qcom_rng_dev = NULL;
++			goto fail;
++		}
+ 	}
+ 
++	return ret;
++fail:
++	crypto_unregister_rng(&qcom_rng_alg);
+ 	return ret;
+ }
+ 
+@@ -198,6 +234,21 @@ static int qcom_rng_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++struct qcom_rng_of_data qcom_prng_of_data = {
++	.skip_init = false,
++	.hwrng_support = false,
++};
++
++struct qcom_rng_of_data qcom_prng_ee_of_data = {
++	.skip_init = true,
++	.hwrng_support = false,
++};
++
++struct qcom_rng_of_data qcom_trng_of_data = {
++	.skip_init = true,
++	.hwrng_support = true,
++};
++
+ static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
+ 	{ .id = "QCOM8160", .driver_data = 1 },
+ 	{}
+@@ -205,9 +256,9 @@ static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, qcom_rng_acpi_match);
+ 
+ static const struct of_device_id __maybe_unused qcom_rng_of_match[] = {
+-	{ .compatible = "qcom,prng", .data = (void *)0},
+-	{ .compatible = "qcom,prng-ee", .data = (void *)1},
+-	{ .compatible = "qcom,trng", .data = (void *)1},
++	{ .compatible = "qcom,prng", .data = &qcom_prng_of_data },
++	{ .compatible = "qcom,prng-ee", .data = &qcom_prng_ee_of_data },
++	{ .compatible = "qcom,trng", .data = &qcom_trng_of_data },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, qcom_rng_of_match);
+-- 
+2.25.1
 
-And HPRE_DBGFS_VAL_MAX_LEN being 20, it doesn't really matter. The 
-string can't be truncated with just a "%u\n".
-
-CJ
-
->
-> Thanks,
