@@ -2,100 +2,83 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F49797583
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 Sep 2023 17:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02DE79777F
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Sep 2023 18:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbjIGPrf (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 7 Sep 2023 11:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        id S239034AbjIGQ0z (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 7 Sep 2023 12:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343509AbjIGPf1 (ORCPT
+        with ESMTP id S239214AbjIGQ0Q (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:35:27 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7A4199
-        for <linux-crypto@vger.kernel.org>; Thu,  7 Sep 2023 08:34:58 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso18598491fa.0
-        for <linux-crypto@vger.kernel.org>; Thu, 07 Sep 2023 08:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694100874; x=1694705674; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JnMGoGgKemb+DDrSQzPTABi+a718THu1rk85qOkvFQg=;
-        b=KZvML9EI4cmssrKbZTMiSwslTIFSGNg2WzfmYWQn3hTFuMMqGYWSYQncfn59e6yx2u
-         VwMq4H42H7gza7HGMGHeQOViFNOx2T3yUk8qJVGI/p1gPsnott7XPs9Opdk9MhtZyJpW
-         y5BroRrAoE2LL2/Bb9FSgIURKETSzn31XQ5U9aZ4zyTgSA90yfyqPSHGFbcAztT0TOAg
-         JSXa4gorKepiB6Hgae4cb7gAk/JaYahVera7mN6YMAcXbmTWtfgflY/oQfqAD8sRg1Ga
-         g624rIWobsMGFn4Z4ICs6HjoWWEJYJToDEqHk0c5b+BCuGoL4WP1zr2Ton23MGv/u1BO
-         kvAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100874; x=1694705674;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JnMGoGgKemb+DDrSQzPTABi+a718THu1rk85qOkvFQg=;
-        b=DWjV8INS05YAIX8bCksnii+UA56aiZBvYhUBoOs0KQp+fk5fxP1l6vBIBt39ozfkzP
-         9oTTHzU6DDdnvjAX2dU4vuBC3AtS2urDGOxruRXyl5ihicGJa9RmEUaE9YVeRsLL5G1P
-         LHXIeZ0LV4tP2eiPIKfMFSGOcbgb2bsyfukPxPTL86Lzl6vjWbOOSaER1FF1LUTBbyrn
-         sbdWjE8hQgd6ZJj9UIn1NRfVioYYCzOCCkzi5iWfdf5i/NAgZvjNlZBLzXilWkf23Lgt
-         ezaXBxRdBz+ZEeTFB0pLsS0TAszK5z6qE0fpC/KirJrct4vgWJUePDHckBP5HPURL6bP
-         W1cg==
-X-Gm-Message-State: AOJu0Yy6qx6rR0GADzzSpx/ub+9eELmaX017quf1pqv9jZu1FAN294fE
-        Cxkm/T6sZZVlieH/i9DyA7fkN0evWCjDVxIDbtw=
-X-Google-Smtp-Source: AGHT+IGyPStu/4bGX3A398E8xixDQaUmGkOmIW0jf0T9gkQFvDYPcLVleJrm+vURQhH+rA2UwXThOQ==
-X-Received: by 2002:a05:600c:2246:b0:401:c297:affb with SMTP id a6-20020a05600c224600b00401c297affbmr4284944wmm.37.1694085336903;
-        Thu, 07 Sep 2023 04:15:36 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id y10-20020a05600c364a00b00401b242e2e6sm2208451wmq.47.2023.09.07.04.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 04:15:36 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 14:15:33 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Longfang Liu <liulongfang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: hisilicon/hpre - Fix a erroneous check after
- snprintf()
-Message-ID: <71bf9b84-462f-405e-91aa-fb21fc6ffbd5@moroto.mountain>
-References: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
- <ZPaSCOX1F9b36rxV@gondor.apana.org.au>
- <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
+        Thu, 7 Sep 2023 12:26:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C17335A5;
+        Thu,  7 Sep 2023 09:22:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2F7DC116A4;
+        Thu,  7 Sep 2023 10:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694081733;
+        bh=/VfQ9uuSzbzc4g98IJPGGzTV1REpCA2gHNPbmygK8ls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NdzIeIqYkCsiJSwOwR3HGZR9/Tc7MYl5Slfv8MFZWTLsENNWNTriMgcPA2uBqyDM8
+         sRfGAGr/I9mTGarQ/uxSM/Iy8+Qiq+/0HB7FSr5YzNXePpp2hGuSZEVyiC5NVoOL2x
+         xR1WETO0xZhHoxiabbPGgoq+k+CO/jq8EzJks+js=
+Date:   Thu, 7 Sep 2023 11:15:30 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com
+Subject: Re: Bug in rsa-pkcs1pad in 6.1 and 5.15
+Message-ID: <2023090724-campfire-unstirred-a36e@gregkh>
+References: <ZPcFyp4jdE3uSeqW@gcabiddu-mobl1.ger.corp.intel.com>
+ <ZPhAyty1r8ASyr+F@gondor.apana.org.au>
+ <ZPiNIBvrpVz61doJ@gcabiddu-mobl1.ger.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZPiNIBvrpVz61doJ@gcabiddu-mobl1.ger.corp.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 07:27:47AM +0200, Marion & Christophe JAILLET wrote:
+On Wed, Sep 06, 2023 at 03:30:56PM +0100, Giovanni Cabiddu wrote:
+> On Wed, Sep 06, 2023 at 05:05:14PM +0800, Herbert Xu wrote:
+> > On Tue, Sep 05, 2023 at 11:41:14AM +0100, Giovanni Cabiddu wrote:
+> > >
+> > > Options:
+> > >   1. Cherry-pick 5b11d1a360ea ("crypto: rsa-pkcs1pad - Use helper to set
+> > >      reqsize") to both 6.1.x and 5.15.x trees.
+> > >   2. Revert upstream commit 80e62ad58db0 ("crypto: qat - Use helper
+> > >      to set reqsize").
+> > >      In 6.1 revert da1729e6619c414f34ce679247721603ebb957dc
+> > >      In 5.15 revert 3894f5880f968f81c6f3ed37d96bdea01441a8b7
+> > > 
+> > > Option #1 is preferred as the same problem might be impacting other
+> > > akcipher implementations besides QAT. Option #2 is just specific to the
+> > > QAT driver.
+> > > 
+> > > @Herbert, can you have a quick look in case I missed something? I tried
+> > > both options in 6.1.51 and they appear to resolve the problem.
 > > 
-> > The other snprintf in the same file also looks suspect.
+> > Yes I think backporting the rsa-pkcs1pad would be the best way
+> > forward.
+> Thanks Herbert.
 > 
-> It looks correct to me.
+> Adding stable to the TO list. Would it be possible to cherry-pick the
+> following upstream commit
 > 
-> And HPRE_DBGFS_VAL_MAX_LEN being 20, it doesn't really matter. The string
-> can't be truncated with just a "%u\n".
+>     5b11d1a360ea ("crypto: rsa-pkcs1pad - Use helper to set reqsize")
 > 
+> to both the 6.1.x and 5.15.x trees?
 
-drivers/crypto/hisilicon/hpre/hpre_main.c
-   884          ret = snprintf(tbuf, HPRE_DBGFS_VAL_MAX_LEN, "%u\n", val);
-   885          return simple_read_from_buffer(buf, count, pos, tbuf, ret);
+Now queued up, thanks.
 
-You can't pass the return value from snprintf() to simple_read_from_buffer().
-Otherwise the snprintf() checking turned a sprintf() write overflow into
-a read overflow, which is less bad but not ideal.  It needs to be
-scnprintf().
-
-regards,
-dan carpenter
-
+greg k-h
