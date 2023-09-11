@@ -2,84 +2,56 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC0279BD45
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 02:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D198879B95C
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 02:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239159AbjIKVub (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 Sep 2023 17:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        id S1353841AbjIKVvC (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 Sep 2023 17:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236297AbjIKKLu (ORCPT
+        with ESMTP id S236331AbjIKKVI (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:11:50 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A315E5F;
-        Mon, 11 Sep 2023 03:11:46 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id D08AB12000B;
-        Mon, 11 Sep 2023 13:11:44 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D08AB12000B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1694427104;
-        bh=HYf8McE/KgI584XKTUFEDPyTBWG+zEFIbhzlJzNcCy8=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=v0tywm2JIPy+EBcifQD3Y3fOPnMctuB/aWu0AxdYkxB4xbiCMf71+hkUYQgE3ZQZQ
-         lKnlVI3tRmeVCqJ+qjfdIHvw/Dk1qa+CzCfZZ5ZgMWYMfMuwWgDGG2PmiE4rKJ7tN1
-         cTI/mm2aebxherGFmqirEzpJ9VnE9kVBHIQEbUm3jb6Rv27HR+OSvsdXFdbkHoPMYo
-         cslJFMnGGQToMHsq52TwBbqqtjfx5DFp4Pg4IVS1MDnvQqy8ZpT3oHA5TBgSDxX5vU
-         l3yC2lGxtDqc7zzlKmIywFMH3TZxhtSj2se9HqrHO8yVJa8YdUmf7Z1tB7iKii46dK
-         81Catdd4NF3Qg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 11 Sep 2023 13:11:44 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 11 Sep 2023 13:11:43 +0300
-From:   Alexey Romanov <avromanov@salutedevices.com>
-To:     <narmstrong@baylibre.com>, <neil.armstrong@linaro.org>,
-        <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <conor@kernel.org>, <khilman@baylibre.com>,
-        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
-        <f.fainelli@gmail.com>, <hkallweit1@gmail.com>, <lists@kaiser.cx>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <kernel@sberdevices.ru>,
-        Alexey Romanov <avromanov@sberdevices.ru>
-Subject: [PATCH v3 3/3] arch/arm64: dts: meson-s4: add hwrng node
-Date:   Mon, 11 Sep 2023 13:11:29 +0300
-Message-ID: <20230911101129.10604-4-avromanov@salutedevices.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230911101129.10604-1-avromanov@salutedevices.com>
-References: <20230911101129.10604-1-avromanov@salutedevices.com>
+        Mon, 11 Sep 2023 06:21:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FBF1AB
+        for <linux-crypto@vger.kernel.org>; Mon, 11 Sep 2023 03:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694427664; x=1725963664;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=n8wGxZcmekuam0JKzoclvPpBUQS2/bzCrgVumMImKN8=;
+  b=JjVNXY2WYPFv4fNEOJR5xQqGkOEnmHoo31jbvDqolurzzvxsEcc4XPpu
+   vEgtksv14BrMPNUGl8V1s7y2F1MJFPnLS6Km8CQov63ItX+ljAoNhFH1k
+   0O3Qq6l70aTnW7/OCcB1awZFl87+ZEFXglY92DMcdPpea6oUvb2AWHrFe
+   O9iDZw+Dfy2RY95LbEh97emOZ02ZWvs4htLZRzIrppCjWSrYImFystz3e
+   3s0pBy/vDP+V4OZru01+izj09BioJm25SjqiGYFRg2/quV3FMDBjREumC
+   xEErIN5gfkN1WHaAbRPQKKgx5Pc1tA2r1VQiNktodJ2GjKR5pQ694dJs/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="409013495"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="409013495"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:21:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="772533446"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="772533446"
+Received: from r007s007_zp31l10c01.deacluster.intel.com (HELO fedora.deacluster.intel.com) ([10.219.171.169])
+  by orsmga008.jf.intel.com with ESMTP; 11 Sep 2023 03:21:03 -0700
+From:   Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
+Subject: [PATCH v4 0/2] Add debugfs pm_status for qat driver
+Date:   Mon, 11 Sep 2023 12:19:37 +0200
+Message-ID: <20230911101939.86140-1-lucas.segarra.fernandez@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179766 [Sep 11 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/11 06:02:00 #21866861
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,32 +59,47 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-From: Alexey Romanov <avromanov@sberdevices.ru>
+Add debugfs pm_status.
 
-Using this node, we can obtain random numbers via
-hardware random number generator.
+Expose power management info by providing the "pm_status" file under
+debugfs.
 
-Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
 ---
- arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+v3 -> v4:
+- init variable `len` at adf_gen4_print_pm_status()
+---
+v2 -> v3:
+- Move debugfs Power Management GEN4 specific logic to adf_gen4_pm_debugfs.c,
+this fixes error building with CONFIG_DEBUG_FS=n
+- increase doc's Date and KernelVersion
+---
+v1 -> v2:
+- Add constant ICP_QAT_NUMBER_OF_PM_EVENTS, rather than ARRAY_SIZE_OF_FIELD()
+---
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-index f24460186d3d..b3a1ecf36467 100644
---- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-@@ -133,6 +133,11 @@ reset: reset-controller@2000 {
- 				reg = <0x0 0x2000 0x0 0x98>;
- 				#reset-cells = <1>;
- 			};
-+
-+			hwrng: rng@440788 {
-+				compatible = "amlogic,meson-s4-rng";
-+				reg = <0x0 0x440788 0x0 0x0c>;
-+			};
- 		};
- 	};
- };
+Lucas Segarra Fernandez (2):
+  crypto: qat - refactor included headers
+  crypto: qat - add pm_status debugfs file
+
+ Documentation/ABI/testing/debugfs-driver-qat  |   9 +
+ drivers/crypto/intel/qat/qat_common/Makefile  |   2 +
+ .../intel/qat/qat_common/adf_accel_devices.h  |  13 +
+ .../crypto/intel/qat/qat_common/adf_admin.c   |  26 ++
+ .../intel/qat/qat_common/adf_common_drv.h     |   1 +
+ .../crypto/intel/qat/qat_common/adf_dbgfs.c   |   3 +
+ .../crypto/intel/qat/qat_common/adf_gen4_pm.c |  27 +-
+ .../crypto/intel/qat/qat_common/adf_gen4_pm.h |  50 +++-
+ .../qat/qat_common/adf_gen4_pm_debugfs.c      | 255 ++++++++++++++++++
+ .../intel/qat/qat_common/adf_pm_dbgfs.c       |  46 ++++
+ .../intel/qat/qat_common/adf_pm_dbgfs.h       |  12 +
+ .../qat/qat_common/icp_qat_fw_init_admin.h    |  35 +++
+ 12 files changed, 473 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_pm_debugfs.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs.h
+
+
+base-commit: cf5974bfe9f69a06423f914f675ce3354ff8863c
 -- 
-2.25.1
+2.41.0
 
