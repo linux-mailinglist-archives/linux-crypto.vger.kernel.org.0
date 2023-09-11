@@ -2,111 +2,112 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8328879BF6E
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 02:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B51379BE1F
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 02:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353858AbjIKVvM (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 Sep 2023 17:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
+        id S1353895AbjIKVvY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 Sep 2023 17:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236332AbjIKKVP (ORCPT
+        with ESMTP id S237128AbjIKMCq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:21:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3254D1AB
-        for <linux-crypto@vger.kernel.org>; Mon, 11 Sep 2023 03:21:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694427671; x=1725963671;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YoXWuaYmchbnKqdrpSHoQ3RHqPs7CPqcnrm4OomnS60=;
-  b=Zp5shK161JNN0yLV9x6CeoKBakRTmekHQRhw7ZySFhS9e0d3Kj0clkb7
-   82Y3OivnJqDiF1AU2tLigbLqCHWJyY65TULgxPdhx8pKgGMLiMpKLi70S
-   9wyJvxaw+7Om8txzoQzsgC3UCXNGMBQ3HrmIHxdNnWwwwJesQxew29c/m
-   z3LTxUyoU95uUo1ZkL5TyAQvLjdq96j5vzxK6ACQXYE9JdLTrJMyXaC/7
-   1NbSvPGOqTXybeLJsGG9X8/hTrmJlCLcohUlr303QhO2jmTEPoQ04vN7W
-   Lo2gY/fp17pBCRakKVFke/6OnrBWNYpbczTaJIZoWj0be3knkz0vmyPLP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="409013526"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="409013526"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:21:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="772533462"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="772533462"
-Received: from r007s007_zp31l10c01.deacluster.intel.com (HELO fedora.deacluster.intel.com) ([10.219.171.169])
-  by orsmga008.jf.intel.com with ESMTP; 11 Sep 2023 03:21:09 -0700
-From:   Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v4 1/2] crypto: qat - refactor included headers
-Date:   Mon, 11 Sep 2023 12:19:38 +0200
-Message-ID: <20230911101939.86140-2-lucas.segarra.fernandez@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230911101939.86140-1-lucas.segarra.fernandez@intel.com>
-References: <20230911101939.86140-1-lucas.segarra.fernandez@intel.com>
+        Mon, 11 Sep 2023 08:02:46 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76FDE40;
+        Mon, 11 Sep 2023 05:02:41 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38B9SvEt023313;
+        Mon, 11 Sep 2023 14:02:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=kCtv8Hd
+        DjZHtcN9R01PgZlyN6/QzJlIsRAMn5cNBsy4=; b=N6Kjrg2v7QKJFbS2Uu1pgex
+        B+xDdWiPhcm876982Sxp0Tj0kD/48VgVDQbjoqtHuYibxqo3sz3IPGUflA5VQCrY
+        o8qq2ef8MBJv2KPCQCPY20gHrPmwUnfT7QQg2Mi6/Er/HEhfU2jQKe4NlsSSh934
+        jIiRUjzRdnWxA1r0uh074FjQ3t17Wvue6s0tERl62Po3KWZduF2nf082gCUKjPBL
+        gfon7G5VD/VsZvE+ei2diluVt7qAeFivlV9k8nNYNySrOmjoQB2G2KsRe5A+yF6P
+        ZXMz1hlqxJ+4NyXpCFt3hspyBAwFa9KVXeww1aWtNRwLJe/D8TfZB2wUQ/OI58g=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t0g21yvxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 14:02:11 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F17DF100061;
+        Mon, 11 Sep 2023 14:02:07 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E15A5252247;
+        Mon, 11 Sep 2023 14:02:07 +0200 (CEST)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Sep
+ 2023 14:02:07 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v2 00/10] hwrng: stm32: support STM32MP13x platforms
+Date:   Mon, 11 Sep 2023 14:01:53 +0200
+Message-ID: <20230911120203.774632-1-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Include missing headers for GENMASK(), kstrtobool() and types.
+The STM32MP13x platforms have a RNG hardware block that supports
+customization, a conditional reset sequences that allows to
+recover from certain situations and a configuration locking
+mechanism.
 
-Add forward declaration for struct adf_accel_dev. Remove unneeded
-include.
+This series adds support for the mentionned features. Note that
+the hardware RNG can and should be managed in the secure world
+for this platform, hence the rng not being default enabled on
+the STM32MP135F-DK board.
 
-This change doesn't introduce any function change.
+Changes in V2:
+	- Use pm_ptr() and add __maybe_unused on PM API
+	- Correct bug using WARN_ON
 
-Signed-off-by: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c | 3 +++
- drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h | 4 +++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Gatien Chevallier (10):
+  dt-bindings: rng: introduce new compatible for STM32MP13x
+  hwrng: stm32 - use devm_platform_get_and_ioremap_resource() API
+  hwrng: stm32 - implement STM32MP13x support
+  hwrng: stm32 - implement error concealment
+  hwrng: stm32 - rework error handling in stm32_rng_read()
+  hwrng: stm32 - restrain RNG noise source clock
+  dt-bindings: rng: add st,rng-lock-conf
+  hwrng: stm32 - support RNG configuration locking mechanism
+  hwrng: stm32 - rework power management sequences
+  ARM: dts: stm32: add RNG node for STM32MP13x platforms
 
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c
-index 34c6cd8e27c0..3bde8759c2a2 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c
-+++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.c
-@@ -2,6 +2,9 @@
- /* Copyright(c) 2022 Intel Corporation */
- #include <linux/bitfield.h>
- #include <linux/iopoll.h>
-+#include <linux/kstrtox.h>
-+#include <linux/types.h>
-+
- #include "adf_accel_devices.h"
- #include "adf_common_drv.h"
- #include "adf_gen4_pm.h"
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h
-index c2768762cca3..39d37b352b45 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h
-+++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_pm.h
-@@ -3,7 +3,9 @@
- #ifndef ADF_GEN4_PM_H
- #define ADF_GEN4_PM_H
- 
--#include "adf_accel_devices.h"
-+#include <linux/bits.h>
-+
-+struct adf_accel_dev;
- 
- /* Power management registers */
- #define ADF_GEN4_PM_HOST_MSG (0x50A01C)
+ .../devicetree/bindings/rng/st,stm32-rng.yaml |  18 +-
+ arch/arm/boot/dts/st/stm32mp131.dtsi          |   8 +
+ drivers/char/hw_random/stm32-rng.c            | 511 +++++++++++++++---
+ 3 files changed, 453 insertions(+), 84 deletions(-)
+
 -- 
-2.41.0
+2.25.1
 
