@@ -2,117 +2,143 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C49B79AD72
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 01:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC0B79B1B3
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 01:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353873AbjIKVvV (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 Sep 2023 17:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        id S1353621AbjIKVuw (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 Sep 2023 17:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237663AbjIKNG6 (ORCPT
+        with ESMTP id S238486AbjIKN5h (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:06:58 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C413DE6
-        for <linux-crypto@vger.kernel.org>; Mon, 11 Sep 2023 06:06:52 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fb71ded6dso860291b3a.0
-        for <linux-crypto@vger.kernel.org>; Mon, 11 Sep 2023 06:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1694437612; x=1695042412; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UC0qFPbWeIAnNY2crnDoiyfH4L4DNcPUzmyIOiPmNaw=;
-        b=Nc6pxsYSDhU2XR53fLm2q5bivwl1huFVoTDg52/c4uVC1Q4RiQ9q9g2QPkMnMqN1GQ
-         GEfauhXqPUBDQrQ7zcalT/yhOgzL0HpEKL9zCTmpcfSuu/mP/88A2Y+RUrkrAIJKwBc4
-         NdR2ope/qfoBVlSMEoY1fdLB6yMzojnmYkS6EVoWtMlj3v6aghj8Rz3ZUWCtI/yVuVvi
-         BjkLg7tWsdLgdn/dNFG2F/WTdDXNneYDwtjYBl28sHRtlEGrN+1J/w+dAkLMwUVPOG2W
-         oWFcmsPw0V6g9Jg2VMirRPPxKVtm+ieF5yM5hy9zQB6QQ6quIRxLhND/+xRnaX7QaIJm
-         cPOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694437612; x=1695042412;
-        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UC0qFPbWeIAnNY2crnDoiyfH4L4DNcPUzmyIOiPmNaw=;
-        b=AzDAkWa/WGjKdU5Ih/icBBug4eMW/Lqi54sFNmATSZRDzovJJ1fvtYgXS78LT5J7H6
-         PDOyTOr+QdvWmonUoMoB5rz553CbftoVez3Cqr81sf6GH28hyX1TQLJZ+0fE8qgLesZo
-         CjSY1/9aG+ugmJwN4JQiasb+HqjvXXEZaalL2vOkQ1mz9PZ5AxkV81F9Uu80YxjAEogB
-         aBCseh0g/Q6msGkr8hPovwizFXM5QydZoTxn2kCsPgc3c0qW1r73aV8ubVdIm6HucpyA
-         zBYqHuEW/6vL916pxlRJ7yXw7HgL+vlsKaurFi+6mf6qcIuzyRMQxsW6+C+T4uJYmt37
-         g/fg==
-X-Gm-Message-State: AOJu0Yz2n0qrSN8Lf/4r/3j+FTGPKUuuqLS4ZKMRx0HvpNeXBP4TfN8M
-        jpUclwhgzOIaMPFZ8sZj/FhUHw==
-X-Google-Smtp-Source: AGHT+IHHHsd8mK5/qRvQGb/rxDKfPMV90hFOs3PpoPszjaiqIs9Gy83oAs6eYTFLtxvjaV6gsb9LYA==
-X-Received: by 2002:a05:6a00:22c2:b0:68e:2c3a:8775 with SMTP id f2-20020a056a0022c200b0068e2c3a8775mr9544336pfj.33.1694437612188;
-        Mon, 11 Sep 2023 06:06:52 -0700 (PDT)
-Received: from ?IPv6:2402:7500:4dc:9c7e:4872:7ce3:318e:18f5? ([2402:7500:4dc:9c7e:4872:7ce3:318e:18f5])
-        by smtp.gmail.com with ESMTPSA id s21-20020a62e715000000b0068991abe1desm5787400pfh.176.2023.09.11.06.06.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Sep 2023 06:06:51 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH v4 10/12] RISC-V: crypto: add Zvkned accelerated AES
- encryption implementation
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20230721054036.GD847@sol.localdomain>
-Date:   Mon, 11 Sep 2023 21:06:47 +0800
-Cc:     Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        christoph.muellner@vrull.eu,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>
-Reply-To: 20230721054036.GD847@sol.localdomain
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CCA32056-CCE2-4FB5-8CFC-62444CDDA89F@sifive.com>
-References: <20230711153743.1970625-1-heiko@sntech.de>
- <20230711153743.1970625-11-heiko@sntech.de>
- <20230721054036.GD847@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 09:57:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A569FCD7;
+        Mon, 11 Sep 2023 06:57:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3DCBC433C7;
+        Mon, 11 Sep 2023 13:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694440653;
+        bh=CU1g8Lrs6EaUNCYAPQHJ7zHQs/cwzFvskhy2PCvPc98=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=R1YVtmnarCG1NzXEslc0QO12B4eWDiAycYzExvbrbPxKyFvPCCAgDkzl19UqGyjTZ
+         ioVI+/Q03ulHEgj5lZm9pLsIsD1nRv6cYBQPB07OFx8uR6KdPYVDBXIr9tgDskC3nS
+         77p3jjpI5betd/rMrMr4de6hAKZuPQ7GDclEBTm8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev,
+        =?UTF-8?q?Ondrej=20Mosn=C3=A1=C4=8Dek?= <omosnacek@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.vnet.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-s390@vger.kernel.org, regressions@lists.linux.dev,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.5 110/739] crypto: af_alg - Fix missing initialisation affecting gcm-aes-s390
+Date:   Mon, 11 Sep 2023 15:38:29 +0200
+Message-ID: <20230911134654.173764504@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911134650.921299741@linuxfoundation.org>
+References: <20230911134650.921299741@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Jul 21, 2023, at 13:40, Eric Biggers <ebiggers@kernel.org> wrote:
+6.5-stable review patch.  If anyone has any objections, please let me know.
 
-> I'm looking forward to having direct support for these AES modes, =
-especially the
-> modes needed for storage encryption: XTS, and CBC or CTS!  None of =
-these AES
-> modes is actually implemented in this patch yet, though, so they can't =
-be
-> claimed in the kconfig help text yet.  This patch is just a starting =
-point, as
-> it just adds support for the bare AES block cipher ("aes" in the =
-crypto API).
->=20
-> (BTW, I'm much more interested in, say, AES-XTS support than SM4 =
-support, which
-> this patchset does include.  SM4 is a "national pride cipher" which is =
-somewhat
-> of a niche thing.  I suppose there are already people pushing it for =
-RISC-V
-> though, as they are everywhere else, so that's to be expected...)
->=20
+------------------
 
-We have further optimization for RISC-V platform in OpenSSL PR[1]. It =
-will include
-AES with CBC, CTR, and XTS mode. Comparing to the generic AES =
-implementation,
-the specialized AES-XTS one have about 3X performance improvement using
-OpenSSL benchmark tool. If OpenSSL accepts that PR, we will create the
-corresponding patch for Linux kernel.
+From: David Howells <dhowells@redhat.com>
 
-[1]
-https://github.com/openssl/openssl/pull/21923
+[ Upstream commit 6a4b8aa0a916b39a39175584c07222434fa6c6ef ]
 
--Jerry
+Fix af_alg_alloc_areq() to initialise areq->first_rsgl.sgl.sgt.sgl to point
+to the scatterlist array in areq->first_rsgl.sgl.sgl.
+
+Without this, the gcm-aes-s390 driver will oops when it tries to do
+gcm_walk_start() on req->dst because req->dst is set to the value of
+areq->first_rsgl.sgl.sgl by _aead_recvmsg() calling
+aead_request_set_crypt().
+
+The problem comes if an empty ciphertext is passed: the loop in
+af_alg_get_rsgl() just passes straight out and doesn't set areq->first_rsgl
+up.
+
+This isn't a problem on x86_64 using gcmaes_crypt_by_sg() because, as far
+as I can tell, that ignores req->dst and only uses req->src[*].
+
+[*] Is this a bug in aesni-intel_glue.c?
+
+The s390x oops looks something like:
+
+ Unable to handle kernel pointer dereference in virtual kernel address space
+ Failing address: 0000000a00000000 TEID: 0000000a00000803
+ Fault in home space mode while using kernel ASCE.
+ AS:00000000a43a0007 R3:0000000000000024
+ Oops: 003b ilc:2 [#1] SMP
+ ...
+ Call Trace:
+  [<000003ff7fc3d47e>] gcm_walk_start+0x16/0x28 [aes_s390]
+  [<00000000a2a342f2>] crypto_aead_decrypt+0x9a/0xb8
+  [<00000000a2a60888>] aead_recvmsg+0x478/0x698
+  [<00000000a2e519a0>] sock_recvmsg+0x70/0xb0
+  [<00000000a2e51a56>] sock_read_iter+0x76/0xa0
+  [<00000000a273e066>] vfs_read+0x26e/0x2a8
+  [<00000000a273e8c4>] ksys_read+0xbc/0x100
+  [<00000000a311d808>] __do_syscall+0x1d0/0x1f8
+  [<00000000a312ff30>] system_call+0x70/0x98
+ Last Breaking-Event-Address:
+  [<000003ff7fc3e6b4>] gcm_aes_crypt+0x104/0xa68 [aes_s390]
+
+Fixes: c1abe6f570af ("crypto: af_alg: Use extract_iter_to_sg() to create scatterlists")
+Reported-by: Ondrej Mosnáček <omosnacek@gmail.com>
+Link: https://lore.kernel.org/r/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+cc: Sven Schnelle <svens@linux.ibm.com>
+cc: Harald Freudenberger <freude@linux.vnet.ibm.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: linux-crypto@vger.kernel.org
+cc: linux-s390@vger.kernel.org
+cc: regressions@lists.linux.dev
+Tested-by: Sven Schnelle <svens@linux.ibm.com>
+Tested-by: Ondrej Mosnáček <omosnacek@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ crypto/af_alg.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index 10efb56d8b481..ad02ca0a8cdde 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -1192,6 +1192,7 @@ struct af_alg_async_req *af_alg_alloc_areq(struct sock *sk,
+ 
+ 	areq->areqlen = areqlen;
+ 	areq->sk = sk;
++	areq->first_rsgl.sgl.sgt.sgl = areq->first_rsgl.sgl.sgl;
+ 	areq->last_rsgl = NULL;
+ 	INIT_LIST_HEAD(&areq->rsgl_list);
+ 	areq->tsgl = NULL;
+-- 
+2.40.1
+
+
+
