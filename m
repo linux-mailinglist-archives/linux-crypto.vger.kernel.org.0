@@ -2,46 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B68AA79BE6A
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 02:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A6E79BC61
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Sep 2023 02:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237354AbjIKVuc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 11 Sep 2023 17:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
+        id S1353850AbjIKVvI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 11 Sep 2023 17:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237129AbjIKMCr (ORCPT
+        with ESMTP id S237131AbjIKMDl (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:02:47 -0400
+        Mon, 11 Sep 2023 08:03:41 -0400
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA49E4B;
-        Mon, 11 Sep 2023 05:02:42 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38B9StXH029009;
-        Mon, 11 Sep 2023 14:02:11 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DBCCEB;
+        Mon, 11 Sep 2023 05:03:35 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38B9StBF013569;
+        Mon, 11 Sep 2023 14:03:21 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=cNbDhJfganlNu9SpBlUNKaMvCAIqSTwJFs77mpVa7aw=; b=u1
-        SJ7h4AEidz35lvkx7MEVwjix1Kawljp2uFmP3Kz122K1NaZfTo99uTZqS4DZIz49
-        a8eR4cU3/zLaVJqare3/c98IHtIZDH/jOr4QRoqy7144gVbAzA6eJnciMd+RmIEh
-        DGNCc305PCgSI1Q100HkUV+I+zqtRmS3/ERkVseh+f1sVUu/EU5nVjXxWLr8trcS
-        sO9bsUbK9NSNSUbmEU4fPqGkZ4BlPqQtRls3CahZ03YhPjROOkC2FeCy3GMbeDbD
-        A+jRgOdQkxWd5aHIwS7LmbbDEsNU9bGd9c4ZPqA/vU+0ezdv6q+ojOqyTw7DQeYc
-        ZOPCG9/5OwQuB8H7R1Bg==
+        :mime-version:content-type:content-transfer-encoding; s=
+        selector1; bh=5eotLIVG1/ksJkXMN8rGNoGTy8xSu69V4NtaWZNrFaI=; b=5h
+        feEYhr55tTjO5dwKJzDTBKJpMN7PBC7tZtwKh2cdH3Wh77UHAVveyPMT8AaQnwl1
+        avgmT0A3conNqOIUx+NETXuyJ3WUO7xUlQ2pBR+jGybpcSO4XAnKjx2+xebjpTji
+        KQncPvYzyRfYw94B7nwH6J9KoUZIGUaruCQDQWk/rOlbXGmv57GqLnbNOXO1JIym
+        J5lG21J/PWLwfD4gOLB6cMuo7/cxM1/HeRqZGiLtXiSe+1TOvUVRWpoMsBq69Hb8
+        hphkTsNixf4EHtcOD3Kob1KbRRN8m2eW6/ejmFoagXhxfaFJ4KSTzFXx5LWeQRwL
+        F9ZkjGSLn2nz5duJPknA==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t0e4fr62k-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t207nrqks-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 14:02:11 +0200 (MEST)
+        Mon, 11 Sep 2023 14:03:21 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6D6E3100064;
-        Mon, 11 Sep 2023 14:02:10 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4024610005A;
+        Mon, 11 Sep 2023 14:03:21 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 61F1125224B;
-        Mon, 11 Sep 2023 14:02:10 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3482E237D89;
+        Mon, 11 Sep 2023 14:03:21 +0200 (CEST)
 Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Sep
- 2023 14:02:10 +0200
+ 2023 14:03:20 +0200
 From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
 To:     Olivia Mackall <olivia@selenic.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
@@ -55,15 +55,15 @@ CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Gatien Chevallier <gatien.chevallier@foss.st.com>
-Subject: [PATCH v2 03/10] hwrng: stm32 - implement STM32MP13x support
-Date:   Mon, 11 Sep 2023 14:01:56 +0200
-Message-ID: <20230911120203.774632-4-gatien.chevallier@foss.st.com>
+Subject: [PATCH v2 04/10] hwrng: stm32 - implement error concealment
+Date:   Mon, 11 Sep 2023 14:01:57 +0200
+Message-ID: <20230911120203.774632-5-gatien.chevallier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230911120203.774632-1-gatien.chevallier@foss.st.com>
 References: <20230911120203.774632-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 X-Originating-IP: [10.201.20.32]
 X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
  (10.75.129.69)
@@ -79,304 +79,153 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-The RNG present on STM32MP13x platforms introduces a customizable
-configuration and the conditional reset.
-
-STM32 RNG configuration should best fit the requirements of the
-platform. Therefore, put a platform-specific RNG configuration
-field in the platform data. Default RNG configuration for STM32MP13
-is the NIST certified configuration [1].
-
-While there, fix and the RNG init sequence to support all RNG
-versions.
-
-[1] https://csrc.nist.gov/projects/cryptographic-module-validation-program/entropy-validations/certificate/53
+The RNG driver should be capable of recovering from an error. Implement
+an error concealment API. This avoids irrecoverable RNG state.
 
 Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
 ---
- drivers/char/hw_random/stm32-rng.c | 222 ++++++++++++++++++++---------
- 1 file changed, 158 insertions(+), 64 deletions(-)
+ drivers/char/hw_random/stm32-rng.c | 114 ++++++++++++++++++++++++++++-
+ 1 file changed, 110 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index d64d25d0fee8..54bd5807bbac 100644
+index 54bd5807bbac..adefe8edfd07 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
-@@ -17,22 +17,43 @@
- #include <linux/reset.h>
- #include <linux/slab.h>
+@@ -29,10 +29,12 @@
+ #define RNG_CR_ENTROPY_SRC_MASK	(RNG_CR_CONFIG1 | RNG_CR_NISTC | RNG_CR_CONFIG2 | RNG_CR_CONFIG3)
+ #define RNG_CR_CONFIG_MASK	(RNG_CR_ENTROPY_SRC_MASK | RNG_CR_CED)
  
--#define RNG_CR 0x00
--#define RNG_CR_RNGEN BIT(2)
--#define RNG_CR_CED BIT(5)
--
--#define RNG_SR 0x04
--#define RNG_SR_SEIS BIT(6)
--#define RNG_SR_CEIS BIT(5)
--#define RNG_SR_DRDY BIT(0)
--
--#define RNG_DR 0x08
-+#define RNG_CR			0x00
-+#define RNG_CR_RNGEN		BIT(2)
-+#define RNG_CR_CED		BIT(5)
-+#define RNG_CR_CONFIG1		GENMASK(11, 8)
-+#define RNG_CR_NISTC		BIT(12)
-+#define RNG_CR_CONFIG2		GENMASK(15, 13)
-+#define RNG_CR_CONFIG3		GENMASK(25, 20)
-+#define RNG_CR_CONDRST		BIT(30)
-+#define RNG_CR_CONFLOCK		BIT(31)
-+#define RNG_CR_ENTROPY_SRC_MASK	(RNG_CR_CONFIG1 | RNG_CR_NISTC | RNG_CR_CONFIG2 | RNG_CR_CONFIG3)
-+#define RNG_CR_CONFIG_MASK	(RNG_CR_ENTROPY_SRC_MASK | RNG_CR_CED)
-+
-+#define RNG_SR		0x04
-+#define RNG_SR_SEIS	BIT(6)
-+#define RNG_SR_CEIS	BIT(5)
-+#define RNG_SR_DRDY	BIT(0)
-+
-+#define RNG_DR			0x08
-+
-+#define RNG_NSCR		0x0C
-+#define RNG_NSCR_MASK		GENMASK(17, 0)
-+
-+#define RNG_HTCR		0x10
-+
-+struct stm32_rng_data {
-+	u32	cr;
-+	u32	nscr;
-+	u32	htcr;
-+	bool	has_cond_reset;
-+};
+-#define RNG_SR		0x04
+-#define RNG_SR_SEIS	BIT(6)
+-#define RNG_SR_CEIS	BIT(5)
+-#define RNG_SR_DRDY	BIT(0)
++#define RNG_SR			0x04
++#define RNG_SR_DRDY		BIT(0)
++#define RNG_SR_CECS		BIT(1)
++#define RNG_SR_SECS		BIT(2)
++#define RNG_SR_CEIS		BIT(5)
++#define RNG_SR_SEIS		BIT(6)
  
- struct stm32_rng_private {
- 	struct hwrng rng;
- 	void __iomem *base;
- 	struct clk *clk;
- 	struct reset_control *rst;
-+	const struct stm32_rng_data *data;
+ #define RNG_DR			0x08
+ 
+@@ -57,6 +59,107 @@ struct stm32_rng_private {
  	bool ced;
  };
  
-@@ -87,32 +108,145 @@ static int stm32_rng_init(struct hwrng *rng)
- 	struct stm32_rng_private *priv =
- 	    container_of(rng, struct stm32_rng_private, rng);
- 	int err;
-+	u32 reg;
- 
- 	err = clk_prepare_enable(priv->clk);
- 	if (err)
- 		return err;
- 
--	if (priv->ced)
--		writel_relaxed(RNG_CR_RNGEN, priv->base + RNG_CR);
--	else
--		writel_relaxed(RNG_CR_RNGEN | RNG_CR_CED,
--			       priv->base + RNG_CR);
--
- 	/* clear error indicators */
- 	writel_relaxed(0, priv->base + RNG_SR);
- 
-+	reg = readl_relaxed(priv->base + RNG_CR);
++/*
++ * Extracts from the STM32 RNG specification when RNG supports CONDRST.
++ *
++ * When a noise source (or seed) error occurs, the RNG stops generating
++ * random numbers and sets to “1” both SEIS and SECS bits to indicate
++ * that a seed error occurred. (...)
++ *
++ * 1. Software reset by writing CONDRST at 1 and at 0 (see bitfield
++ * description for details). This step is needed only if SECS is set.
++ * Indeed, when SEIS is set and SECS is cleared it means RNG performed
++ * the reset automatically (auto-reset).
++ * 2. If SECS was set in step 1 (no auto-reset) wait for CONDRST
++ * to be cleared in the RNG_CR register, then confirm that SEIS is
++ * cleared in the RNG_SR register. Otherwise just clear SEIS bit in
++ * the RNG_SR register.
++ * 3. If SECS was set in step 1 (no auto-reset) wait for SECS to be
++ * cleared by RNG. The random number generation is now back to normal.
++ */
++static int stm32_rng_conceal_seed_error_cond_reset(struct stm32_rng_private *priv)
++{
++	struct device *dev = (struct device *)priv->rng.priv;
++	u32 sr = readl_relaxed(priv->base + RNG_SR);
++	u32 cr = readl_relaxed(priv->base + RNG_CR);
++	int err;
 +
-+	/*
-+	 * Keep default RNG configuration if none was specified.
-+	 * 0 is an invalid value as it disables all entropy sources.
-+	 */
-+	if (priv->data->has_cond_reset && priv->data->cr) {
-+		reg &= ~RNG_CR_CONFIG_MASK;
-+		reg |= RNG_CR_CONDRST | (priv->data->cr & RNG_CR_ENTROPY_SRC_MASK);
-+		if (priv->ced)
-+			reg &= ~RNG_CR_CED;
-+		else
-+			reg |= RNG_CR_CED;
-+		writel_relaxed(reg, priv->base + RNG_CR);
-+
-+		/* Health tests and noise control registers */
-+		writel_relaxed(priv->data->htcr, priv->base + RNG_HTCR);
-+		writel_relaxed(priv->data->nscr & RNG_NSCR_MASK, priv->base + RNG_NSCR);
-+
-+		reg &= ~RNG_CR_CONDRST;
-+		reg |= RNG_CR_RNGEN;
-+		writel_relaxed(reg, priv->base + RNG_CR);
-+
-+		err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_CR, reg,
-+							(!(reg & RNG_CR_CONDRST)),
-+							10, 50000);
-+		if (err) {
-+			dev_err((struct device *)priv->rng.priv,
-+				"%s: timeout %x!\n", __func__, reg);
-+			return -EINVAL;
-+		}
++	if (sr & RNG_SR_SECS) {
++		/* Conceal by resetting the subsystem (step 1.) */
++		writel_relaxed(cr | RNG_CR_CONDRST, priv->base + RNG_CR);
++		writel_relaxed(cr & ~RNG_CR_CONDRST, priv->base + RNG_CR);
 +	} else {
-+		/* Handle all RNG versions by checking if conditional reset should be set */
-+		if (priv->data->has_cond_reset)
-+			reg |= RNG_CR_CONDRST;
-+
-+		if (priv->ced)
-+			reg &= ~RNG_CR_CED;
-+		else
-+			reg |= RNG_CR_CED;
-+
-+		writel_relaxed(reg, priv->base + RNG_CR);
-+
-+		if (priv->data->has_cond_reset)
-+			reg &= ~RNG_CR_CONDRST;
-+
-+		reg |= RNG_CR_RNGEN;
-+
-+		writel_relaxed(reg, priv->base + RNG_CR);
++		/* RNG auto-reset (step 2.) */
++		writel_relaxed(sr & ~RNG_SR_SEIS, priv->base + RNG_SR);
++		goto end;
 +	}
 +
-+	err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_SR, reg,
-+						reg & RNG_SR_DRDY,
-+						10, 100000);
-+	if (err | (reg & ~RNG_SR_DRDY)) {
-+		clk_disable_unprepare(priv->clk);
-+		dev_err((struct device *)priv->rng.priv,
-+			"%s: timeout:%x SR: %x!\n", __func__, err, reg);
++	err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_CR, cr, !(cr & RNG_CR_CONDRST), 10,
++						100000);
++	if (err) {
++		dev_err(dev, "%s: timeout %x\n", __func__, sr);
++		return err;
++	}
++
++	/* Check SEIS is cleared (step 2.) */
++	if (readl_relaxed(priv->base + RNG_SR) & RNG_SR_SEIS)
 +		return -EINVAL;
++
++	err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_SR, sr, !(sr & RNG_SR_SECS), 10,
++						100000);
++	if (err) {
++		dev_err(dev, "%s: timeout %x\n", __func__, sr);
++		return err;
 +	}
 +
- 	return 0;
- }
- 
--static void stm32_rng_cleanup(struct hwrng *rng)
-+static int stm32_rng_remove(struct platform_device *ofdev)
- {
--	struct stm32_rng_private *priv =
--	    container_of(rng, struct stm32_rng_private, rng);
-+	pm_runtime_disable(&ofdev->dev);
++end:
++	return 0;
++}
++
++/*
++ * Extracts from the STM32 RNG specification, when CONDRST is not supported
++ *
++ * When a noise source (or seed) error occurs, the RNG stops generating
++ * random numbers and sets to “1” both SEIS and SECS bits to indicate
++ * that a seed error occurred. (...)
++ *
++ * The following sequence shall be used to fully recover from a seed
++ * error after the RNG initialization:
++ * 1. Clear the SEIS bit by writing it to “0”.
++ * 2. Read out 12 words from the RNG_DR register, and discard each of
++ * them in order to clean the pipeline.
++ * 3. Confirm that SEIS is still cleared. Random number generation is
++ * back to normal.
++ */
++static int stm32_rng_conceal_seed_error_sw_reset(struct stm32_rng_private *priv)
++{
++	unsigned int i = 0;
++	u32 sr = readl_relaxed(priv->base + RNG_SR);
++
++	writel_relaxed(sr & ~RNG_SR_SEIS, priv->base + RNG_SR);
++
++	for (i = 12; i != 0; i--)
++		(void)readl_relaxed(priv->base + RNG_DR);
++
++	if (readl_relaxed(priv->base + RNG_SR) & RNG_SR_SEIS)
++		return -EINVAL;
 +
 +	return 0;
 +}
 +
-+#ifdef CONFIG_PM
-+static int stm32_rng_runtime_suspend(struct device *dev)
++static int stm32_rng_conceal_seed_error(struct hwrng *rng)
 +{
-+	u32 reg;
-+	struct stm32_rng_private *priv = dev_get_drvdata(dev);
- 
--	writel_relaxed(0, priv->base + RNG_CR);
-+	reg = readl_relaxed(priv->base + RNG_CR);
-+	reg &= ~RNG_CR_RNGEN;
-+	writel_relaxed(reg, priv->base + RNG_CR);
- 	clk_disable_unprepare(priv->clk);
++	struct stm32_rng_private *priv = container_of(rng, struct stm32_rng_private, rng);
 +
-+	return 0;
- }
- 
-+static int stm32_rng_runtime_resume(struct device *dev)
-+{
-+	u32 reg;
-+	struct stm32_rng_private *priv = dev_get_drvdata(dev);
++	dev_dbg((struct device *)priv->rng.priv, "Concealing seed error\n");
 +
-+	clk_prepare_enable(priv->clk);
-+	reg = readl_relaxed(priv->base + RNG_CR);
-+	reg |= RNG_CR_RNGEN;
-+	writel_relaxed(reg, priv->base + RNG_CR);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops stm32_rng_pm_ops = {
-+	SET_RUNTIME_PM_OPS(stm32_rng_runtime_suspend,
-+			   stm32_rng_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
++	if (priv->data->has_cond_reset)
++		return stm32_rng_conceal_seed_error_cond_reset(priv);
++	else
++		return stm32_rng_conceal_seed_error_sw_reset(priv);
 +};
 +
-+static const struct stm32_rng_data stm32mp13_rng_data = {
-+	.has_cond_reset = true,
-+	.cr = 0x00F00D00,
-+	.nscr = 0x2B5BB,
-+	.htcr = 0x969D,
-+};
 +
-+static const struct stm32_rng_data stm32_rng_data = {
-+	.has_cond_reset = false,
-+};
-+
-+static const struct of_device_id stm32_rng_match[] = {
-+	{
-+		.compatible = "st,stm32mp13-rng",
-+		.data = &stm32mp13_rng_data,
-+	},
-+	{
-+		.compatible = "st,stm32-rng",
-+		.data = &stm32_rng_data,
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, stm32_rng_match);
-+
- static int stm32_rng_probe(struct platform_device *ofdev)
+ static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
  {
- 	struct device *dev = &ofdev->dev;
-@@ -141,13 +275,14 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	struct stm32_rng_private *priv =
+@@ -66,6 +169,9 @@ static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
  
- 	priv->ced = of_property_read_bool(np, "clock-error-detect");
+ 	pm_runtime_get_sync((struct device *) priv->rng.priv);
  
-+	priv->data = of_device_get_match_data(dev);
-+	if (!priv->data)
-+		return -ENODEV;
++	if (readl_relaxed(priv->base + RNG_SR) & RNG_SR_SEIS)
++		stm32_rng_conceal_seed_error(rng);
 +
- 	dev_set_drvdata(dev, priv);
- 
- 	priv->rng.name = dev_driver_string(dev);
--#ifndef CONFIG_PM
- 	priv->rng.init = stm32_rng_init;
--	priv->rng.cleanup = stm32_rng_cleanup;
--#endif
- 	priv->rng.read = stm32_rng_read;
- 	priv->rng.priv = (unsigned long) dev;
- 	priv->rng.quality = 900;
-@@ -159,47 +294,6 @@ static int stm32_rng_probe(struct platform_device *ofdev)
- 	return devm_hwrng_register(dev, &priv->rng);
- }
- 
--static int stm32_rng_remove(struct platform_device *ofdev)
--{
--	pm_runtime_disable(&ofdev->dev);
--
--	return 0;
--}
--
--#ifdef CONFIG_PM
--static int stm32_rng_runtime_suspend(struct device *dev)
--{
--	struct stm32_rng_private *priv = dev_get_drvdata(dev);
--
--	stm32_rng_cleanup(&priv->rng);
--
--	return 0;
--}
--
--static int stm32_rng_runtime_resume(struct device *dev)
--{
--	struct stm32_rng_private *priv = dev_get_drvdata(dev);
--
--	return stm32_rng_init(&priv->rng);
--}
--#endif
--
--static const struct dev_pm_ops stm32_rng_pm_ops = {
--	SET_RUNTIME_PM_OPS(stm32_rng_runtime_suspend,
--			   stm32_rng_runtime_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
--				pm_runtime_force_resume)
--};
--
--
--static const struct of_device_id stm32_rng_match[] = {
--	{
--		.compatible = "st,stm32-rng",
--	},
--	{},
--};
--MODULE_DEVICE_TABLE(of, stm32_rng_match);
--
- static struct platform_driver stm32_rng_driver = {
- 	.driver = {
- 		.name = "stm32-rng",
+ 	while (max >= sizeof(u32)) {
+ 		sr = readl_relaxed(priv->base + RNG_SR);
+ 		/* Manage timeout which is based on timer and take */
 -- 
 2.25.1
 
