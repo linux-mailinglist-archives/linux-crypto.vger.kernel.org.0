@@ -2,119 +2,82 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADE57A04EE
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Sep 2023 15:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01427A086C
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Sep 2023 17:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238471AbjINNF4 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 14 Sep 2023 09:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
+        id S233654AbjINPE0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 14 Sep 2023 11:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238606AbjINNF4 (ORCPT
+        with ESMTP id S231339AbjINPEZ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:05:56 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A461FD5;
-        Thu, 14 Sep 2023 06:05:52 -0700 (PDT)
+        Thu, 14 Sep 2023 11:04:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74884A8
+        for <linux-crypto@vger.kernel.org>; Thu, 14 Sep 2023 08:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694696752; x=1726232752;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bFjx+SY72hetzAF5+8Myb01ScB2LpuX1/USvMPO9Sl4=;
-  b=Y1xi+n5Wb2ufcedJPeclNkM7ac+Ljjr0yxRRat3B+49KxtOCF3MKIySM
-   vNF2rUljQLUUlL47LoGdEY0cEET7eCTxKGqvYirFmAVEpQHTSEDRzjGTK
-   QtboLG9llfOD68PROg4wjkiHOn4OV0vyFCizDOo9oX0ibu286+yquULIU
-   auaAmP206HAJCO5Vl8VKPeIdfCqAdGDOxf2Px8CXlF3lI93U8d43y8LaX
-   VjfZGoiqIpGv2/7GYbYfFqF93MHoHrt7E1ZXFV/le9QXkJk2DYBO7HlVc
-   5X3Fjrpx/ZAE2ff0bkshvWveDoBgB/LKjxUtNecsX8dtrmv0pSAWseeop
-   Q==;
-X-CSE-ConnectionGUID: FF6xf1diS2Ob62pF01zcqQ==
-X-CSE-MsgGUID: ADYnQ6GcSYyCRIyV8oyr1A==
-X-ThreatScanner-Verdict: Negative
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694703861; x=1726239861;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=d3b+C/s+RnudP39Pmx4QBFz10hc7w8wC3jmwFuFaDvE=;
+  b=VIaO/4zlE1ODUa6XK1Eh8Ss5bG+5hDIdfT05tw8MvYXYLaeTHPGb4KA1
+   CYT66dXcZmTahU7RARnBcwtkYkJInqlTBrzYksOo8hj8HEY5wsW8Q0vf1
+   iBXxFFuf4D85RZbeNJqf+bA5wcNnt3yL/7L1fYpki4V0ihOqYq/xKuCwh
+   EffEHTGYK89mSpJwpQ6ChIGuNHUehwJx+LEyutPrFheqLKsDd6g7NtoRY
+   9wBUNu7DBTuP7zL1kfiAW9YM/wVXnBIWSzyjyDZU8dDaAfRKCH9OFx2/7
+   qJXUqmwGHxGKHhm8hyNu8lk3R+BwMrt9Rmen/NlZNmYYbto22XhKKqpit
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="381679542"
 X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="asc'?scan'208";a="4664425"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 06:05:51 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 14 Sep 2023 06:05:50 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 14 Sep 2023 06:05:47 -0700
-Date:   Thu, 14 Sep 2023 14:05:31 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Samuel Neves <sneves@dei.uc.pt>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/6] RISC-V BLAKE2s Vector implementation
-Message-ID: <20230914-float-uneven-7cd1a18b3978@wendy>
-References: <20230912115728.172982-1-bjorn@kernel.org>
- <20230914-roaming-plunging-948c78d9831c@wendy>
- <87pm2kap1p.fsf@all.your.base.are.belong.to.us>
+   d="scan'208";a="381679542"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 07:34:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="810089372"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="810089372"
+Received: from silpixa00400295.ir.intel.com ([10.237.213.194])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Sep 2023 07:34:52 -0700
+From:   Adam Guerin <adam.guerin@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Adam Guerin <adam.guerin@intel.com>
+Subject: [PATCH 0/2] enable dc chaining service
+Date:   Thu, 14 Sep 2023 15:14:11 +0100
+Message-Id: <20230914141413.466155-1-adam.guerin@intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4Z89i+AmwxS2DNN/"
-Content-Disposition: inline
-In-Reply-To: <87pm2kap1p.fsf@all.your.base.are.belong.to.us>
+Organisation: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare, Ireland
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
---4Z89i+AmwxS2DNN/
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This set adds a new configuration option for QAT GEN4 devices allowing the
+device to now be configured for chained compression operations in userspace.
+Refactoring data structures relating to device configuration to avoid
+duplication.
 
-On Thu, Sep 14, 2023 at 02:59:30PM +0200, Bj=F6rn T=F6pel wrote:
-> Conor Dooley <conor.dooley@microchip.com> writes:
->=20
-> > On Tue, Sep 12, 2023 at 01:57:22PM +0200, Bj=F6rn T=F6pel wrote:
-> >> From: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
-> >>=20
-> >> Hi,
-> >>=20
-> >> This is Andy's kernel mode vector V2 series [1], with my BLAKE2s
-> >> AVX-512-to-RISC-V translation patch appended.
-> >>=20
-> >> I've tagged it as RFC, since Andy's series is still not in-tree yet.
-> >>=20
-> >> It's a first step towards a Vector aided Wireguard! ;-)
-> >
-> > This has the same problems as Andy's stuff & doesn't build properly for=
- the
-> > automation. What is the plan between yourself and Andy for submitting a
-> > version of the in-kernel vector support that passes build testing?
->=20
-> I'll synch up with Andy! I'm not even sure the blake2s patch should part
-> of the "in-kernel vector" series at all.
+Adam Guerin (1):
+  crypto: qat - enable dc chaining service
 
-The in-kernel vector stuff should come with a user, otherwise it's dead
-code :)
+Giovanni Cabiddu (1):
+  crypto: qat - consolidate services structure
 
---4Z89i+AmwxS2DNN/
-Content-Type: application/pgp-signature; name="signature.asc"
+ Documentation/ABI/testing/sysfs-driver-qat    |  2 +
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     | 56 ++++++++++---------
+ drivers/crypto/intel/qat/qat_4xxx/adf_drv.c   | 34 ++---------
+ .../crypto/intel/qat/qat_common/adf_admin.c   | 39 +++++++++++--
+ .../intel/qat/qat_common/adf_cfg_services.h   | 34 +++++++++++
+ .../intel/qat/qat_common/adf_cfg_strings.h    |  1 +
+ .../crypto/intel/qat/qat_common/adf_sysfs.c   | 17 +-----
+ .../qat/qat_common/icp_qat_fw_init_admin.h    |  1 +
+ 8 files changed, 113 insertions(+), 71 deletions(-)
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_cfg_services.h
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQMFGwAKCRB4tDGHoIJi
-0nmFAQDHF1wBd2jJ7LQfLaP8C74vxNiAF9XKvsbMGR3MThqnJgD+JLe5EToa4Wse
-m9FpUzukIIhTCC5Xsq+aCiT+wUzQcAA=
-=2kdw
------END PGP SIGNATURE-----
+base-commit: ed12943d6c00be183e876059089792b94f9d3790
+-- 
+2.40.1
 
---4Z89i+AmwxS2DNN/--
