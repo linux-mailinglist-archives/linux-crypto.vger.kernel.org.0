@@ -2,34 +2,34 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268217A71F2
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 Sep 2023 07:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D2A7A71F5
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 Sep 2023 07:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbjITFXz (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 20 Sep 2023 01:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        id S232807AbjITFYJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 20 Sep 2023 01:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbjITFXe (ORCPT
+        with ESMTP id S232854AbjITFXu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 20 Sep 2023 01:23:34 -0400
+        Wed, 20 Sep 2023 01:23:50 -0400
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDC8170A
-        for <linux-crypto@vger.kernel.org>; Tue, 19 Sep 2023 22:22:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32571997
+        for <linux-crypto@vger.kernel.org>; Tue, 19 Sep 2023 22:22:49 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qipfW-00GD5w-Sh; Wed, 20 Sep 2023 13:22:35 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 20 Sep 2023 13:22:37 +0800
-Date:   Wed, 20 Sep 2023 13:22:37 +0800
+        id 1qipfg-00GD68-Lp; Wed, 20 Sep 2023 13:22:45 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 20 Sep 2023 13:22:47 +0800
+Date:   Wed, 20 Sep 2023 13:22:47 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     Adam Guerin <adam.guerin@intel.com>
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com
-Subject: Re: [PATCH 0/5] crypto: qat - state change fixes
-Message-ID: <ZQqBnSWxblA1ib/s@gondor.apana.org.au>
-References: <20230914095658.27166-1-giovanni.cabiddu@intel.com>
+Subject: Re: [PATCH 0/2] enable dc chaining service
+Message-ID: <ZQqBp/UqjpiDoSfw@gondor.apana.org.au>
+References: <20230914141413.466155-1-adam.guerin@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914095658.27166-1-giovanni.cabiddu@intel.com>
+In-Reply-To: <20230914141413.466155-1-adam.guerin@intel.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -38,35 +38,33 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:55:44AM +0100, Giovanni Cabiddu wrote:
-> This set combines a set of fixes in the QAT driver related to the core
-> state machines and the change in state that can be triggered through
-> sysfs.
+On Thu, Sep 14, 2023 at 03:14:11PM +0100, Adam Guerin wrote:
+> This set adds a new configuration option for QAT GEN4 devices allowing the
+> device to now be configured for chained compression operations in userspace.
+> Refactoring data structures relating to device configuration to avoid
+> duplication.
 > 
-> Here is a summary of the changes:
-> * Patch #1 resolves a bug that prevents resources to be freed up.
-> * Patch #2 is a simple cleanup.
-> * Patch #3 fix the behaviour of the command `up` triggered through a
->   write to  /sys/bus/pci/devices/<BDF>/qat/state.
-> * Patches #4 and #5 fix a corner case in the un-registration of
->   algorithms in the state machines.
+> Adam Guerin (1):
+>   crypto: qat - enable dc chaining service
 > 
-> Giovanni Cabiddu (5):
->   crypto: qat - fix state machines cleanup paths
->   crypto: qat - do not shadow error code
->   crypto: qat - ignore subsequent state up commands
->   crypto: qat - fix unregistration of crypto algorithms
->   crypto: qat - fix unregistration of compression algorithms
+> Giovanni Cabiddu (1):
+>   crypto: qat - consolidate services structure
 > 
->  .../intel/qat/qat_common/adf_common_drv.h       |  2 ++
->  drivers/crypto/intel/qat/qat_common/adf_init.c  | 17 ++++++++---------
->  drivers/crypto/intel/qat/qat_common/adf_sysfs.c | 15 ++++++++++++---
->  3 files changed, 22 insertions(+), 12 deletions(-)
+>  Documentation/ABI/testing/sysfs-driver-qat    |  2 +
+>  .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     | 56 ++++++++++---------
+>  drivers/crypto/intel/qat/qat_4xxx/adf_drv.c   | 34 ++---------
+>  .../crypto/intel/qat/qat_common/adf_admin.c   | 39 +++++++++++--
+>  .../intel/qat/qat_common/adf_cfg_services.h   | 34 +++++++++++
+>  .../intel/qat/qat_common/adf_cfg_strings.h    |  1 +
+>  .../crypto/intel/qat/qat_common/adf_sysfs.c   | 17 +-----
+>  .../qat/qat_common/icp_qat_fw_init_admin.h    |  1 +
+>  8 files changed, 113 insertions(+), 71 deletions(-)
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_cfg_services.h
 > 
 > 
-> base-commit: be369945f2f612c40f771fe265db1ca658cdc0d1
+> base-commit: ed12943d6c00be183e876059089792b94f9d3790
 > -- 
-> 2.41.0
+> 2.40.1
 
 All applied.  Thanks.
 -- 
