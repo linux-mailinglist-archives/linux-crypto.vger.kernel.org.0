@@ -2,70 +2,75 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99567A9B96
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 21:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ECF7A9DAC
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 21:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbjIUTCr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Sep 2023 15:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        id S229874AbjIUTo5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Sep 2023 15:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjIUTCP (ORCPT
+        with ESMTP id S231262AbjIUTo3 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:02:15 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD3D5B425
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Sep 2023 10:50:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695297007; cv=none;
+        Thu, 21 Sep 2023 15:44:29 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.160])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CD7269D
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Sep 2023 10:50:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695297004; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=oQr4UuGd8BWqie7aw+GNiHbred43iPOwCGt6lC3y+Uv6pekcKnCHtN3gai5ngtkmB1
-    k7VinWdJ2S+nMQYUd0hXefffhBnR1xc1IFPgHAsrNKPqwWpTmGhgcFjwDABh1oURFPEK
-    QEHvJWLUCkYyoc5aVYjE7mckpQm+JTQhj92ZerxxMnVvIjzJxLICzWzpTk3/fSibM2so
-    s7gr8TRJ+ZJeszb0/PUNhkXHe/g0T545lTE6ndcm7PzwyqOpgOkQ+mZ0AytbQ6YXHEc9
-    wtYivvXUEtBGnJOHQfPV7N/fCjoEnB/sKvF3AqbcrqQi5MVwqBbwAaRKEVLCknnjIH2h
-    uIjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695297007;
+    b=cKq8zdRzfLELdyAHh3cFw+gXdBWVBfyVBQxmWbloiAT9G32KO9ClTSXlPBV6dBZsNZ
+    Ra+Jh1G6Urrnc0Al4SIenMjkGeASbFFuCVgo5hPTg5s5dvAoJnwTTz9V0SeRWbmaAynN
+    qrRIZ9tcBMTOpy84GxS5VrPAF6nVw1pNeWtAdX1PvTRzCML4mPUTvOyM3MgzLre0cZON
+    7GWY7+SeSECuU3fujVugpejmyEdXIEYEnw9k6xv2lvEiqesUAi5v9O95Sb8QN7V+JNGO
+    qUBsDzPAEmVlRc+frC9PqcSgQQQRVIagOHMxCabUWmmtw2QxEApkNrkMQCO5SG49+MEL
+    18BQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695297004;
     s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=Y7oc1e7VzpHy9j44QZCh3LbJh161ylUkNpGdYaBapss=;
-    b=AUUVAP0Ji6Wmk36qO49B6ZWzE2Y7w3ifY3U09c6L3XAg00xQbeVnRm/jAnhg6WWnd/
-    7ypeBfsHIrF9/a3Njt+jsqjgxuBYF9EnErgJ5zzXGPg30VDQTW/WmhY+7nX1YXvlBbvC
-    n9CnSedP+YMLCyt/DkzYu0SthUdPyJV70yYjeQZkkXdl90pAKZGpsoBHjYHAp4RiSpOq
-    C3c/LrzigseRWVdfFzodcHgpdKRoV1lKFEVYMPsMFYC4/X44RKucknttTo9w8m/t0PLc
-    sqoDaMCgfjJaKA82gvKNHGsMU6uHeLC6Slx/QUl7rT4UHCnJOfvcdwwQ6H5i461Bk8eC
-    lPcg==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=Ka8P0tZszT1efAJLSIadVgwgNlSa3VyJ55rFxWkc4L8=;
+    b=lsWPvWtz/hfrXXeEW/pTQlyFW77TvA2aNTjWOHQScNiVm7yfk/X7V1WRdIybpp+SuM
+    i0G325BMmFyHyyA6Nv/NL7ouB0nmkGuU7S+/N5KDibLN67vdawhmkYUc/bWnrymNJOAL
+    rU4i5ESduPzY23s3v16bwEnOLdVh/uh+xCqHurq3W3TI1oqt+nlgdo+kxndq7hQu3YzW
+    1IDAfnVOyfLujtUHdW2XFK4elzjlSY/FnFErznsiPqjwIIn/Qph4li5z1d9AHL8gIwZK
+    7zRKKvDy/rFc4N2KVsyRjv2dO3p3eL8CMAJcW6MbMlElY6C6hyQHXYZLNidhPt2G6fmg
+    GY7w==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695297007;
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695297004;
     s=strato-dkim-0002; d=chronox.de;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=Y7oc1e7VzpHy9j44QZCh3LbJh161ylUkNpGdYaBapss=;
-    b=aZO01IRqzXib+u2Nn0p9e4A/CquGMGFm/XQ/jM2YNjyU9YUnlZISGdP+VkfywHEVTa
-    BM6FG4r1+ZIxNU1TJ/BvD+671/DynQoCpEGc60dNhFUyuEW8JefyjBpJiUQLJPEqwUSZ
-    Xzbc/txS8XCu/6+lHD4ADfuj4Jqgi2mMX/9YdSlsb31+fBZGQWWf5XCubLzIaoJVod2B
-    OHwxtA2hKdYEOEo3Sg1hNAqHIieYjlc5qXHVUjdsG9hao3SKHi2oPE5bxOXrf1nfpMGW
-    uPtVVVNJZJV+MCn40YrwMtopgqQ7n8RQ56ie47JeOxDcIZajqNWEDTfbVzLuizqTXni6
-    Sc7Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695297007;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=Ka8P0tZszT1efAJLSIadVgwgNlSa3VyJ55rFxWkc4L8=;
+    b=QJgeOH4Pcfpc3LLUM5ZROjfYm7Xg+uIjFhq8RNY8/sytyLcKbyNYU7LtkuEPhFj+1s
+    PF1EXBUWVqjpbATQC6R1EWopQtU6MDdOg4AG5X9gSO23TT7oGw47CVj+yY45K4L9S8Vb
+    Ni25ff2ZIWb00BnSI4+ji023xDI4Kgyt0N3svpAQvMKVesS14wuFJ257Y4/blA4kETbn
+    vEi+HNIjuJHOMU1S9MEy/LZv2ufZUVgq2K8bxQH5xmUM/nqTRcpz/bC/iGPn9LbKFZxv
+    iVUkJOJskwHRa2r6VQXwbMdqY/tC6nyKD10YZbnU6YgTbsPXfOSnPLJw7UQI66QytWie
+    DCyQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695297004;
     s=strato-dkim-0003; d=chronox.de;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=Y7oc1e7VzpHy9j44QZCh3LbJh161ylUkNpGdYaBapss=;
-    b=eEYRuey8CZxpxBjICEPezGtRxXlqxdOUQDoWLc27yotnaRqC9pKWo/PcjOwZQiqJ4a
-    PtZ8Ly823xV7bm29WGBA==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=Ka8P0tZszT1efAJLSIadVgwgNlSa3VyJ55rFxWkc4L8=;
+    b=Bqe8nUTiljFZJ28nxJgEz8hONIVCTVspzqz60Hq91tXDmhAAwftdW7y0sZf7YtVJh3
+    LAVm8OPfoQPNcJbqJ3Aw==
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9yGwdNoa/n6V4wJnv+Q=="
 Received: from positron.chronox.de
     by smtp.strato.de (RZmta 49.8.2 AUTH)
-    with ESMTPSA id u045efz8LBo68te
+    with ESMTPSA id u045efz8LBo28tb
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Thu, 21 Sep 2023 13:50:06 +0200 (CEST)
+    Thu, 21 Sep 2023 13:50:02 +0200 (CEST)
 From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To:     herbert@gondor.apana.org.au
 Cc:     linux-crypto@vger.kernel.org, "Ospan, Abylay" <aospan@amazon.com>
-Subject: [PATCH 0/3] crypto: jitter - Offer compile-time options
-Date:   Thu, 21 Sep 2023 13:47:32 +0200
-Message-ID: <2700818.mvXUDI8C0e@positron.chronox.de>
+Subject: [PATCH 2/3] crypto: jitter - Allow configuration of memory size
+Date:   Thu, 21 Sep 2023 13:48:33 +0200
+Message-ID: <4514361.LvFx2qVVIh@positron.chronox.de>
+In-Reply-To: <2700818.mvXUDI8C0e@positron.chronox.de>
+References: <2700818.mvXUDI8C0e@positron.chronox.de>
 MIME-Version: 1.0
 Autocrypt: addr=smueller@chronox.de;
  keydata=
@@ -119,43 +124,175 @@ Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi,
+The memory size consumed by the Jitter RNG is one contributing factor in
+the amount of entropy that is gathered. As the amount of entropy
+directly correlates with the distance of the memory from the CPU, the
+caches that are possibly present on a given system have an impact on the
+collected entropy.
 
-the following patchset offers a set of compile-time options to
-accommodate different hardware with different entropy rates implied
-in their timers. This allows configuring the Jitter RNG in systems
-which exhibits insufficient entropy with the default parameters. The
-default parameters defined by the patches, however, are identical to
-the existing code and thus do not alter the Jitter RNG behavior.
+Thus, the kernel compile time should offer a means to configure the
+amount of memory used by the Jitter RNG. Although this option could be
+turned into a runtime option (e.g. a kernel command line option), it
+should remain a compile time option as otherwise adminsitrators who may
+not have performed an entropy assessment may select a value that is
+inappropriate.
 
-The first patch sets the state by allowing the configuration of
-different oversampling rates. The second patch allows the configuration
-of different memory sizes and the third allows the configuration
-of differnet oversampling rates.
+The default value selected by the configuration is identical to the
+current Jitter RNG value. Thus, the patch should not lead to any change
+in the Jitter RNG behavior.
 
-The update of the power up test with the first patch also addresses
-reports that the Jitter RNG did not initialize due to it detected
-insufficient entropy.
+To accommodate larger memory buffers, kvzalloc / kvfree is used.
 
-Stephan Mueller (3):
-  crypto: jitter - add RCT/APT support for different OSRs
-  crypto: jitter - Allow configuration of memory size
-  crypto: jitter - Allow configuration of oversampling rate
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ crypto/Kconfig               | 43 ++++++++++++++++++++++++++++++++++++
+ crypto/jitterentropy-kcapi.c | 11 +++++++++
+ crypto/jitterentropy.c       | 16 ++++++++------
+ crypto/jitterentropy.h       |  2 ++
+ 4 files changed, 65 insertions(+), 7 deletions(-)
 
- crypto/Kconfig               |  60 +++++++++
- crypto/jitterentropy-kcapi.c |  17 ++-
- crypto/jitterentropy.c       | 249 ++++++++++++++++++-----------------
- crypto/jitterentropy.h       |   5 +-
- 4 files changed, 207 insertions(+), 124 deletions(-)
-
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 650b1b3620d8..00c827d9f0d2 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1296,6 +1296,49 @@ config CRYPTO_JITTERENTROPY
+ 
+ 	  See https://www.chronox.de/jent.html
+ 
++choice
++	prompt "CPU Jitter RNG Memory Size"
++	default CRYPTO_JITTERENTROPY_MEMSIZE_2
++	depends on CRYPTO_JITTERENTROPY
++	help
++	  The Jitter RNG measures the execution time of memory accesses.
++	  Multiple consecutive memory accesses are performed. If the memory
++	  size fits into a cache (e.g. L1), only the memory access timing
++	  to that cache is measured. The closer the cache is to the CPU
++	  the less variations are measured and thus the less entropy is
++	  obtained. Thus, if the memory size fits into the L1 cache, the
++	  obtained entropy is less than if the memory size fits within
++	  L1 + L2, which in turn is less if the memory fits into
++	  L1 + L2 + L3. Thus, by selecting a different memory size,
++	  the entropy rate produced by the Jitter RNG can be modified.
++
++	config CRYPTO_JITTERENTROPY_MEMSIZE_2
++		bool "2048 Bytes (default)"
++
++	config CRYPTO_JITTERENTROPY_MEMSIZE_128
++		bool "128 kBytes"
++
++	config CRYPTO_JITTERENTROPY_MEMSIZE_1024
++		bool "1024 kBytes"
++
++	config CRYPTO_JITTERENTROPY_MEMSIZE_8192
++		bool "8192 kBytes"
++endchoice
++
++config CRYPTO_JITTERENTROPY_MEMORY_BLOCKS
++	int
++	default 64 if CRYPTO_JITTERENTROPY_MEMSIZE_2
++	default 512 if CRYPTO_JITTERENTROPY_MEMSIZE_128
++	default 1024 if CRYPTO_JITTERENTROPY_MEMSIZE_1024
++	default 4096 if CRYPTO_JITTERENTROPY_MEMSIZE_8192
++
++config CRYPTO_JITTERENTROPY_MEMORY_BLOCKSIZE
++	int
++	default 32 if CRYPTO_JITTERENTROPY_MEMSIZE_2
++	default 256 if CRYPTO_JITTERENTROPY_MEMSIZE_128
++	default 1024 if CRYPTO_JITTERENTROPY_MEMSIZE_1024
++	default 2048 if CRYPTO_JITTERENTROPY_MEMSIZE_8192
++
+ config CRYPTO_JITTERENTROPY_TESTINTERFACE
+ 	bool "CPU Jitter RNG Test Interface"
+ 	depends on CRYPTO_JITTERENTROPY
+diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
+index 1de730f94683..a8e7bbd28c6e 100644
+--- a/crypto/jitterentropy-kcapi.c
++++ b/crypto/jitterentropy-kcapi.c
+@@ -54,6 +54,17 @@
+  * Helper function
+  ***************************************************************************/
+ 
++void *jent_kvzalloc(unsigned int len)
++{
++	return kvzalloc(len, GFP_KERNEL);
++}
++
++void jent_kvzfree(void *ptr, unsigned int len)
++{
++	memzero_explicit(ptr, len);
++	kvfree(ptr);
++}
++
+ void *jent_zalloc(unsigned int len)
+ {
+ 	return kzalloc(len, GFP_KERNEL);
+diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
+index c99734af82b8..f224ceb1e2e3 100644
+--- a/crypto/jitterentropy.c
++++ b/crypto/jitterentropy.c
+@@ -75,10 +75,10 @@ struct rand_data {
+ 
+ 	unsigned int flags;		/* Flags used to initialize */
+ 	unsigned int osr;		/* Oversample rate */
+-#define JENT_MEMORY_BLOCKS 64
+-#define JENT_MEMORY_BLOCKSIZE 32
+ #define JENT_MEMORY_ACCESSLOOPS 128
+-#define JENT_MEMORY_SIZE (JENT_MEMORY_BLOCKS*JENT_MEMORY_BLOCKSIZE)
++#define JENT_MEMORY_SIZE						\
++	(CONFIG_CRYPTO_JITTERENTROPY_MEMORY_BLOCKS *			\
++	 CONFIG_CRYPTO_JITTERENTROPY_MEMORY_BLOCKSIZE)
+ 	unsigned char *mem;	/* Memory access location with size of
+ 				 * memblocks * memblocksize */
+ 	unsigned int memlocation; /* Pointer to byte in *mem */
+@@ -650,13 +650,15 @@ struct rand_data *jent_entropy_collector_alloc(unsigned int osr,
+ 		/* Allocate memory for adding variations based on memory
+ 		 * access
+ 		 */
+-		entropy_collector->mem = jent_zalloc(JENT_MEMORY_SIZE);
++		entropy_collector->mem = jent_kvzalloc(JENT_MEMORY_SIZE);
+ 		if (!entropy_collector->mem) {
+ 			jent_zfree(entropy_collector);
+ 			return NULL;
+ 		}
+-		entropy_collector->memblocksize = JENT_MEMORY_BLOCKSIZE;
+-		entropy_collector->memblocks = JENT_MEMORY_BLOCKS;
++		entropy_collector->memblocksize =
++			CONFIG_CRYPTO_JITTERENTROPY_MEMORY_BLOCKSIZE;
++		entropy_collector->memblocks =
++			CONFIG_CRYPTO_JITTERENTROPY_MEMORY_BLOCKS;
+ 		entropy_collector->memaccessloops = JENT_MEMORY_ACCESSLOOPS;
+ 	}
+ 
+@@ -679,7 +681,7 @@ struct rand_data *jent_entropy_collector_alloc(unsigned int osr,
+ 
+ void jent_entropy_collector_free(struct rand_data *entropy_collector)
+ {
+-	jent_zfree(entropy_collector->mem);
++	jent_kvzfree(entropy_collector->mem, JENT_MEMORY_SIZE);
+ 	entropy_collector->mem = NULL;
+ 	jent_zfree(entropy_collector);
+ }
+diff --git a/crypto/jitterentropy.h b/crypto/jitterentropy.h
+index 626c6228b7e2..e31661ee00d3 100644
+--- a/crypto/jitterentropy.h
++++ b/crypto/jitterentropy.h
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ 
++extern void *jent_kvzalloc(unsigned int len);
++extern void jent_kvzfree(void *ptr, unsigned int len);
+ extern void *jent_zalloc(unsigned int len);
+ extern void jent_zfree(void *ptr);
+ extern void jent_get_nstime(__u64 *out);
 -- 
 2.42.0
 
