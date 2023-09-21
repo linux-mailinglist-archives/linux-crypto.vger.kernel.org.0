@@ -2,110 +2,116 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334657A9625
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 19:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1AD7A9957
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 20:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbjIUQ7L (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Sep 2023 12:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        id S229698AbjIUSNi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Sep 2023 14:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjIUQ67 (ORCPT
+        with ESMTP id S229661AbjIUSMd (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Sep 2023 12:58:59 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9618F1FD6
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Sep 2023 09:58:17 -0700 (PDT)
-Received: from letrec.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38LDUd3N002197
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 09:30:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1695303042; bh=+fubNItGMi3oNUPA7yH/IACt2nk/RkasGX86cZmJsJg=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=YyZ1ZhLgEOUZxK6QlhDrqHdh84oveJlq+86w5zpiCsCKuDaVztlQM9apfRvVa/rnu
-         St0dYrJWO8wpt3Zx9d2Wth7vYbcOVIUpA6KznBvzWx4OW7pi0iD6OvZ2q9rVd9HNs2
-         UgptpPOfLzcjDMNX7myTklC/qr9LrgC2L7U2Uuw5ANaf81pL1la09HzKe5QvczYi8V
-         y9fmTzAKu04qfSQLNBHrURNpExaNew9U7HoU2Blt1IpI2CmfrLnSuEAvxvbLZoA4c1
-         tfp3EzPd17QDVry4+sy4uZe//4dr1voWcuF5Hmb6gKS3i/1KuIZAfR1z76vmXoLeuN
-         b4X7CdL7gClAA==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 6C9A08C02C7; Thu, 21 Sep 2023 09:30:39 -0400 (EDT)
-Date:   Thu, 21 Sep 2023 09:30:39 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC] Should writes to /dev/urandom immediately affect reads?
-Message-ID: <ZQxFfwsr726KlHP6@mit.edu>
-References: <20230920060615.GA2739@sol.localdomain>
- <CAHk-=wja26UmHQCu48n_HN5t5w3fa6ocm5d_VrJe6-RhCU_x9A@mail.gmail.com>
- <20230920193203.GA914@sol.localdomain>
- <CAHk-=wicaC9BhbgufM_Ym6bkjrRcB7ZXSK00fYEmiAcFmwN3Kg@mail.gmail.com>
- <20230920202126.GC914@sol.localdomain>
- <CAHk-=wgu4a=ckih8+JgfwYPZcp-uvc1Nh2LTGBSzSVKMYRk+-w@mail.gmail.com>
- <20230920204524.GD914@sol.localdomain>
- <CAHk-=wjx__9L2Ej0DBWGgyjxEKkdKJW=zDvjEhLTBsBgd8MdOA@mail.gmail.com>
+        Thu, 21 Sep 2023 14:12:33 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06E34F3BA;
+        Thu, 21 Sep 2023 10:25:21 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38L4vGtU026792;
+        Thu, 21 Sep 2023 10:03:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        selector1; bh=G8EhQbj3Y2d5kGyFRRSXdWRplKfMjsPAQezvHj9+23E=; b=rH
+        a1C5nvWfNOPrGnUiaRi50KTde4ThwBtPwprZMx55tno1+JuLXC4/1WCXcJlxpRUN
+        yVKe9VHYXkkDgV6xXpCeTgj382vkWJ0JiMoy3hNs5lcEkHtV5rsYFegkJYWdW279
+        OjrZDFqSQIu3kshgGby5PrRvNYQybJYOjJMCWamG47KZTNRVvmO8irvIIgO1XqH6
+        fr2anSrhQcNUn++egadKQaG3OcrFJsVC6jYWs5o7c4m/INIrfCO1rDj/1GaYRw/L
+        /J7PDuFTTKG7CT11HCK7VYjCDxaXX+NdNLOOpzpMV/iw/pnQXJtt7CpLO1DeBODp
+        SILNQFknpYRVxvDYl7JA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t53px31ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Sep 2023 10:03:11 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9A5FF100057;
+        Thu, 21 Sep 2023 10:03:09 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 93095211F0D;
+        Thu, 21 Sep 2023 10:03:09 +0200 (CEST)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
+ 2023 10:03:09 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v3 2/9] hwrng: stm32 - use devm_platform_get_and_ioremap_resource() API
+Date:   Thu, 21 Sep 2023 10:02:54 +0200
+Message-ID: <20230921080301.253563-3-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
+References: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjx__9L2Ej0DBWGgyjxEKkdKJW=zDvjEhLTBsBgd8MdOA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-21_06,2023-09-20_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 01:48:55PM -0700, Linus Torvalds wrote:
-> On Wed, 20 Sept 2023 at 13:45, Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > See my first email where I explained the problems with the current behavior.
-> > Especially the third paragraph.
-> 
-> I really don't think that's the obvious way at all. Anybody who treats
-> a seed file that way just doesn't care, and whipped up a (bad) shell
-> script randomly.
+Use devm_platform_get_and_ioremap_resource() to get and ioremap a
+resource.
 
-The shell script (and documentation in the kernel man pages suggesting
-the shell script) is basically historical, and obsolete.  It was
-needed back when we weren't as aggressively seeding the RNG at boot
-time, before we unified /dev/urandom and /dev/random.  These days, I
-really don't think it matters all that much.
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
+ drivers/char/hw_random/stm32-rng.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-The main threat we've historically been concerned is badly designed
-IOT devices (remember, the 'S' in IOT stands for security) which
-generates a long-term cryptographic key within milliseconds of the
-initial power-on, which led to such hillarious results as all HP
-Printers publically on the Internet having one of 256 possible private
-keys.  In those sorts of situations, there *was* no seed file, and
-even if there were, it would be identical across all of the IOT's
-initially imaged root file system.
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index efb6a9f9a11b..d64d25d0fee8 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -118,18 +118,13 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	struct device *dev = &ofdev->dev;
+ 	struct device_node *np = ofdev->dev.of_node;
+ 	struct stm32_rng_private *priv;
+-	struct resource res;
+-	int err;
++	struct resource *res;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(struct stm32_rng_private), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	err = of_address_to_resource(np, 0, &res);
+-	if (err)
+-		return err;
+-
+-	priv->base = devm_ioremap_resource(dev, &res);
++	priv->base = devm_platform_get_and_ioremap_resource(ofdev, 0, &res);
+ 	if (IS_ERR(priv->base))
+ 		return PTR_ERR(priv->base);
+ 
+-- 
+2.25.1
 
-I do have one slight concern about unconditionally reseeding whenever
-there is a write to /dev/[u]random, whih is in the purely hypothetical
-scenario mostly of interest to academics writing crypto papers, where
-we assume the attacker has stolen the full internal state of the RNG,
-if the attacker is constantly writing a small amount of known data to
-/dev/random, and monitoring its output, it would be disabling the
-"catastrophic reseed" part of the design, and so it might make it
-easier for the attacker to maintain accurate knowledge of the internal
-state of the RNG over long period of time.  So a perfectionist would
-probably put a timeout where writing to /dev/urandom would result in a
-reseed every N minutes or some such.
-
-But honestly?  I'm not convinced it's worth it; devices/systems where
-this matter are probably not getting security updates *anyway*, so the
-much simpler way the NSA/KGB/MSS would attack the device is paying a
-few thousand dollars for a zero-day, and breaking kernel security
-that way.
-
-Cheers,
-
-						- Ted
