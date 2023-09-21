@@ -2,76 +2,124 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BCA7A9E3E
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 21:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99567A9B96
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 21:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjIUT7Q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Sep 2023 15:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47526 "EHLO
+        id S230249AbjIUTCr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Sep 2023 15:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbjIUT6w (ORCPT
+        with ESMTP id S230466AbjIUTCP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:58:52 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D35943C82;
-        Thu, 21 Sep 2023 10:23:08 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38L4qLBW018603;
-        Thu, 21 Sep 2023 10:05:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=iPObt+GKMgkLrcVfFX3vthY4eXePMRKgPaSzycZVy2A=; b=Zp
-        OOKEAgcsjAc+0NG7soHae7N4URDA19f14Ad1NUd9+gjTTf59izMLRsRWSFwPg3e5
-        4dVz09xVyT9jEIiJriAZHgvSEk6WSGSkffxdzfyx3MRKxgxsUndMhLOuiBo0Xzqu
-        PCJKmBNHcpTmLcQD5le4PFbe0ava4Lctg2+ifPkwO79jQoSViLDMqOcEwUPnCBtY
-        jJS+7a4zODG+sA/r1ex5/WzioXiSbZq28cVwzd7oTs4pihXR8SE37CCoP+kGHNUx
-        r2dIjatxpCT4JazK/SQvhdpfYQDltfEudDvpItn0QD/Nnawf4RQjBgrSn7CJ9Gb9
-        IwnUsw2S3Io52kIXaU2w==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t7ybkm0ds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 10:05:35 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AADEB100057;
-        Thu, 21 Sep 2023 10:05:34 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A147D21863C;
-        Thu, 21 Sep 2023 10:05:34 +0200 (CEST)
-Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
- 2023 10:05:34 +0200
-From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
-To:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Gatien Chevallier <gatien.chevallier@foss.st.com>
-Subject: [PATCH v3 8/9] hwrng: stm32 - rework power management sequences
-Date:   Thu, 21 Sep 2023 10:03:00 +0200
-Message-ID: <20230921080301.253563-9-gatien.chevallier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
-References: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
+        Thu, 21 Sep 2023 15:02:15 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD3D5B425
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Sep 2023 10:50:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695297007; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=oQr4UuGd8BWqie7aw+GNiHbred43iPOwCGt6lC3y+Uv6pekcKnCHtN3gai5ngtkmB1
+    k7VinWdJ2S+nMQYUd0hXefffhBnR1xc1IFPgHAsrNKPqwWpTmGhgcFjwDABh1oURFPEK
+    QEHvJWLUCkYyoc5aVYjE7mckpQm+JTQhj92ZerxxMnVvIjzJxLICzWzpTk3/fSibM2so
+    s7gr8TRJ+ZJeszb0/PUNhkXHe/g0T545lTE6ndcm7PzwyqOpgOkQ+mZ0AytbQ6YXHEc9
+    wtYivvXUEtBGnJOHQfPV7N/fCjoEnB/sKvF3AqbcrqQi5MVwqBbwAaRKEVLCknnjIH2h
+    uIjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695297007;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Y7oc1e7VzpHy9j44QZCh3LbJh161ylUkNpGdYaBapss=;
+    b=AUUVAP0Ji6Wmk36qO49B6ZWzE2Y7w3ifY3U09c6L3XAg00xQbeVnRm/jAnhg6WWnd/
+    7ypeBfsHIrF9/a3Njt+jsqjgxuBYF9EnErgJ5zzXGPg30VDQTW/WmhY+7nX1YXvlBbvC
+    n9CnSedP+YMLCyt/DkzYu0SthUdPyJV70yYjeQZkkXdl90pAKZGpsoBHjYHAp4RiSpOq
+    C3c/LrzigseRWVdfFzodcHgpdKRoV1lKFEVYMPsMFYC4/X44RKucknttTo9w8m/t0PLc
+    sqoDaMCgfjJaKA82gvKNHGsMU6uHeLC6Slx/QUl7rT4UHCnJOfvcdwwQ6H5i461Bk8eC
+    lPcg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695297007;
+    s=strato-dkim-0002; d=chronox.de;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Y7oc1e7VzpHy9j44QZCh3LbJh161ylUkNpGdYaBapss=;
+    b=aZO01IRqzXib+u2Nn0p9e4A/CquGMGFm/XQ/jM2YNjyU9YUnlZISGdP+VkfywHEVTa
+    BM6FG4r1+ZIxNU1TJ/BvD+671/DynQoCpEGc60dNhFUyuEW8JefyjBpJiUQLJPEqwUSZ
+    Xzbc/txS8XCu/6+lHD4ADfuj4Jqgi2mMX/9YdSlsb31+fBZGQWWf5XCubLzIaoJVod2B
+    OHwxtA2hKdYEOEo3Sg1hNAqHIieYjlc5qXHVUjdsG9hao3SKHi2oPE5bxOXrf1nfpMGW
+    uPtVVVNJZJV+MCn40YrwMtopgqQ7n8RQ56ie47JeOxDcIZajqNWEDTfbVzLuizqTXni6
+    Sc7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695297007;
+    s=strato-dkim-0003; d=chronox.de;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Y7oc1e7VzpHy9j44QZCh3LbJh161ylUkNpGdYaBapss=;
+    b=eEYRuey8CZxpxBjICEPezGtRxXlqxdOUQDoWLc27yotnaRqC9pKWo/PcjOwZQiqJ4a
+    PtZ8Ly823xV7bm29WGBA==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9yGwdNoa/n6V4wJnv+Q=="
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 49.8.2 AUTH)
+    with ESMTPSA id u045efz8LBo68te
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 21 Sep 2023 13:50:06 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, "Ospan, Abylay" <aospan@amazon.com>
+Subject: [PATCH 0/3] crypto: jitter - Offer compile-time options
+Date:   Thu, 21 Sep 2023 13:47:32 +0200
+Message-ID: <2700818.mvXUDI8C0e@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-21_06,2023-09-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+Autocrypt: addr=smueller@chronox.de;
+ keydata=
+ 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
+ kBFBHm+xdudNab2U0OpfqrWerOw3WcGd2
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,184 +127,38 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Implement stm32_rng_suspend()/stm32_rng_resume() low-power APIs
-called when the hardware block context will be lost.
+Hi,
 
-There is no need to save the RNG_CR register in
-stm32_rng_runtime_suspend() as the context is not lost. Therefore,
-only enable/disable the RNG in the runtime sequences.
+the following patchset offers a set of compile-time options to
+accommodate different hardware with different entropy rates implied
+in their timers. This allows configuring the Jitter RNG in systems
+which exhibits insufficient entropy with the default parameters. The
+default parameters defined by the patches, however, are identical to
+the existing code and thus do not alter the Jitter RNG behavior.
 
-Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
----
+The first patch sets the state by allowing the configuration of
+different oversampling rates. The second patch allows the configuration
+of different memory sizes and the third allows the configuration
+of differnet oversampling rates.
 
-Changes in V2:
-	- Use pm_ptr() and add __maybe_unused to the pm API
+The update of the power up test with the first patch also addresses
+reports that the Jitter RNG did not initialize due to it detected
+insufficient entropy.
 
-Changes in V3:
-	- Fix stm32_rng_pm_ops declaration
+Stephan Mueller (3):
+  crypto: jitter - add RCT/APT support for different OSRs
+  crypto: jitter - Allow configuration of memory size
+  crypto: jitter - Allow configuration of oversampling rate
 
- drivers/char/hw_random/stm32-rng.c | 108 ++++++++++++++++++++++++++---
- 1 file changed, 97 insertions(+), 11 deletions(-)
+ crypto/Kconfig               |  60 +++++++++
+ crypto/jitterentropy-kcapi.c |  17 ++-
+ crypto/jitterentropy.c       | 249 ++++++++++++++++++-----------------
+ crypto/jitterentropy.h       |   5 +-
+ 4 files changed, 207 insertions(+), 124 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 4a602d666dad..41e1dbea5d2e 100644
---- a/drivers/char/hw_random/stm32-rng.c
-+++ b/drivers/char/hw_random/stm32-rng.c
-@@ -55,11 +55,25 @@ struct stm32_rng_data {
- 	bool	has_cond_reset;
- };
- 
-+/**
-+ * struct stm32_rng_config - RNG configuration data
-+ *
-+ * @cr:			RNG configuration. 0 means default hardware RNG configuration
-+ * @nscr:		Noise sources control configuration.
-+ * @htcr:		Health tests configuration.
-+ */
-+struct stm32_rng_config {
-+	u32 cr;
-+	u32 nscr;
-+	u32 htcr;
-+};
-+
- struct stm32_rng_private {
- 	struct hwrng rng;
- 	void __iomem *base;
- 	struct clk *clk;
- 	struct reset_control *rst;
-+	struct stm32_rng_config pm_conf;
- 	const struct stm32_rng_data *data;
- 	bool ced;
- 	bool lock_conf;
-@@ -355,11 +369,10 @@ static int stm32_rng_remove(struct platform_device *ofdev)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
--static int stm32_rng_runtime_suspend(struct device *dev)
-+static int __maybe_unused stm32_rng_runtime_suspend(struct device *dev)
- {
--	u32 reg;
- 	struct stm32_rng_private *priv = dev_get_drvdata(dev);
-+	u32 reg;
- 
- 	reg = readl_relaxed(priv->base + RNG_CR);
- 	reg &= ~RNG_CR_RNGEN;
-@@ -369,25 +382,98 @@ static int stm32_rng_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int stm32_rng_runtime_resume(struct device *dev)
-+static int __maybe_unused stm32_rng_suspend(struct device *dev)
-+{
-+	struct stm32_rng_private *priv = dev_get_drvdata(dev);
-+
-+	if (priv->data->has_cond_reset) {
-+		priv->pm_conf.nscr = readl_relaxed(priv->base + RNG_NSCR);
-+		priv->pm_conf.htcr = readl_relaxed(priv->base + RNG_HTCR);
-+	}
-+
-+	/* Do not save that RNG is enabled as it will be handled at resume */
-+	priv->pm_conf.cr = readl_relaxed(priv->base + RNG_CR) & ~RNG_CR_RNGEN;
-+
-+	writel_relaxed(priv->pm_conf.cr, priv->base + RNG_CR);
-+
-+	clk_disable_unprepare(priv->clk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused stm32_rng_runtime_resume(struct device *dev)
- {
--	u32 reg;
- 	struct stm32_rng_private *priv = dev_get_drvdata(dev);
-+	int err;
-+	u32 reg;
-+
-+	err = clk_prepare_enable(priv->clk);
-+	if (err)
-+		return err;
-+
-+	/* Clean error indications */
-+	writel_relaxed(0, priv->base + RNG_SR);
- 
--	clk_prepare_enable(priv->clk);
- 	reg = readl_relaxed(priv->base + RNG_CR);
- 	reg |= RNG_CR_RNGEN;
- 	writel_relaxed(reg, priv->base + RNG_CR);
- 
- 	return 0;
- }
--#endif
- 
--static const struct dev_pm_ops stm32_rng_pm_ops = {
-+static int __maybe_unused stm32_rng_resume(struct device *dev)
-+{
-+	struct stm32_rng_private *priv = dev_get_drvdata(dev);
-+	int err;
-+	u32 reg;
-+
-+	err = clk_prepare_enable(priv->clk);
-+	if (err)
-+		return err;
-+
-+	/* Clean error indications */
-+	writel_relaxed(0, priv->base + RNG_SR);
-+
-+	if (priv->data->has_cond_reset) {
-+		/*
-+		 * Correct configuration in bits [29:4] must be set in the same
-+		 * access that set RNG_CR_CONDRST bit. Else config setting is
-+		 * not taken into account. CONFIGLOCK bit must also be unset but
-+		 * it is not handled at the moment.
-+		 */
-+		writel_relaxed(priv->pm_conf.cr | RNG_CR_CONDRST, priv->base + RNG_CR);
-+
-+		writel_relaxed(priv->pm_conf.nscr, priv->base + RNG_NSCR);
-+		writel_relaxed(priv->pm_conf.htcr, priv->base + RNG_HTCR);
-+
-+		reg = readl_relaxed(priv->base + RNG_CR);
-+		reg |= RNG_CR_RNGEN;
-+		reg &= ~RNG_CR_CONDRST;
-+		writel_relaxed(reg, priv->base + RNG_CR);
-+
-+		err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_CR, reg,
-+							reg & ~RNG_CR_CONDRST, 10, 100000);
-+
-+		if (err) {
-+			clk_disable_unprepare(priv->clk);
-+			dev_err((struct device *)priv->rng.priv,
-+				"%s: timeout:%x CR: %x!\n", __func__, err, reg);
-+			return -EINVAL;
-+		}
-+	} else {
-+		reg = priv->pm_conf.cr;
-+		reg |= RNG_CR_RNGEN;
-+		writel_relaxed(reg, priv->base + RNG_CR);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops __maybe_unused stm32_rng_pm_ops = {
- 	SET_RUNTIME_PM_OPS(stm32_rng_runtime_suspend,
- 			   stm32_rng_runtime_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
--				pm_runtime_force_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(stm32_rng_suspend,
-+				stm32_rng_resume)
- };
- 
- static const struct stm32_rng_data stm32mp13_rng_data = {
-@@ -467,7 +553,7 @@ static int stm32_rng_probe(struct platform_device *ofdev)
- static struct platform_driver stm32_rng_driver = {
- 	.driver = {
- 		.name = "stm32-rng",
--		.pm = &stm32_rng_pm_ops,
-+		.pm = pm_ptr(&stm32_rng_pm_ops),
- 		.of_match_table = stm32_rng_match,
- 	},
- 	.probe = stm32_rng_probe,
 -- 
-2.25.1
+2.42.0
+
+
+
 
