@@ -2,193 +2,147 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2FC7AA059
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 22:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944BA7AA25F
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Sep 2023 23:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbjIUUgJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 21 Sep 2023 16:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
+        id S232667AbjIUVQH (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 21 Sep 2023 17:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbjIUUfo (ORCPT
+        with ESMTP id S233228AbjIUVP2 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:35:44 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0981897CA;
-        Thu, 21 Sep 2023 10:39:55 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38L4wDok003244;
-        Thu, 21 Sep 2023 10:04:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=DHZkvrsPbLKzcjpy5QIekMLzqwjqX3hQlQ5u65J1ZwU=; b=Ik
-        g2/FyoE5S5MEoPdNYpIF5+vmkH15Wdb3gtypBiinkrzSiBkDWvX7BxnONn2BPMbM
-        mqWmn2wo/AvPB70B7Iec6tRF5UYZgXKylJXKOC3v/a4hJqQZkzqNR2eiCP7DnE2m
-        1Xfa2yEOi0nlvEd7RwDH5srHh8p/pG3TqZbOUZ/TtH5URbfVPH+u/V6TuPKm/Vlp
-        tjW1NTD2VCE+6t7xhmsa8jW/4vSEqHkols1FX8+Oj6dXl8U8gPYne7yeju9ekHxp
-        WvjaWzgxZHzrbRoRPxoU8NYJ0E5h1bWJ2bvGzeTRP2H4S22C7jW2L0ks93iZ9SyR
-        SzsqOYJsnh3Zl+ZBnXcw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t5nx0sbap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Sep 2023 10:04:23 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 40D86100058;
-        Thu, 21 Sep 2023 10:04:22 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 37D8C21863D;
-        Thu, 21 Sep 2023 10:04:22 +0200 (CEST)
-Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Sep
- 2023 10:04:21 +0200
-From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
-To:     Olivia Mackall <olivia@selenic.com>,
+        Thu, 21 Sep 2023 17:15:28 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on0614.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0e::614])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75061713;
+        Thu, 21 Sep 2023 10:06:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NXvsGFIDhJiTgxsX0PpE8J/lhq1tyHC41fb19oDJjj4qm2zFfyMuUNBNTDYa0GKfQSK/Ydd0PExXjMlIZxceIQ8Me8Q7tvzs6tHgTqmLLG72PSwG2KIWAxWh2ivJnDlGqwl+v9sa4ip/ErwXuWU2FWtooHm9OYRKG8QqobRhm/C97c5dHl4v1f9V0jSUPqqOyBFVau+Am3doenfWiZiGPY1arAo8y2NAIPPaONz6uLyd9JFly0GSG9Q4uCeEKcjtwTpl2WvGcjMnIUj3ECv93pfmyPk8+zjeBYmHo2kCwoubo+kkojLmU5YiRoTMxQa6iWYwnNhzgQiWlEXERNidXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=44kUePCEurOOgwMYy/g7ZeaiQvugDdzWMXCOBAU9FXc=;
+ b=gzFSPMxTYrIHUzLhKDOO9nHDJV2idBfSIEl0LmMH1ans48GpQMZ7bEIbDY92HHGoVGldGvCJhy9Po3F/HMZtcpX0/zH5toG0aoBrSb7G/uPmskiqz/rbFysZeIvFUkwGBJyL3oWJlMXEVQxs/bHeyeU6fQDMTtkrpcxQtTtW+nSrtT8H5Nq4OLCSF5mEdmWEOV5uYAQb1OgBND+iSerQ9W0LkKDrncbjXwOEMM+7LxY++Li+BsDtHPSf5N3DSeJaQnAefJ6HcDAufNSTYdY6ItXA3pdFj4dgVxyG1I+k98fmmU0OGcB1YrGNnR9N2dFqypqyknhghbjE5/+d6IoHQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=44kUePCEurOOgwMYy/g7ZeaiQvugDdzWMXCOBAU9FXc=;
+ b=KhD1rXPWKK+Ru+lheGKutFuCSmkgvKPy/d4OtGol7qgt/y6xTzYGTSZyOAkf8Kkv2Kt8gvq5TNnfU8gIFP0qXcvLSRwnEDrQcfECrNgGX/4aw8WPT4Kb+86lrV8ZPH0qlhmRvdEwH5Ep05OOrfsgGOdni7OwgX3zIKl/fwLm1HQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6004.eurprd04.prod.outlook.com (2603:10a6:208:11a::11)
+ by DB9PR04MB9776.eurprd04.prod.outlook.com (2603:10a6:10:4f0::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 21 Sep
+ 2023 12:43:01 +0000
+Received: from AM0PR04MB6004.eurprd04.prod.outlook.com
+ ([fe80::86b7:e0cc:dd24:12c0]) by AM0PR04MB6004.eurprd04.prod.outlook.com
+ ([fe80::86b7:e0cc:dd24:12c0%7]) with mapi id 15.20.6813.017; Thu, 21 Sep 2023
+ 12:43:01 +0000
+From:   Gaurav Jain <gaurav.jain@nxp.com>
+To:     Horia Geanta <horia.geanta@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Gatien Chevallier <gatien.chevallier@foss.st.com>
-Subject: [PATCH v3 5/9] hwrng: stm32 - rework error handling in stm32_rng_read()
-Date:   Thu, 21 Sep 2023 10:02:57 +0200
-Message-ID: <20230921080301.253563-6-gatien.chevallier@foss.st.com>
+        "David S . Miller" <davem@davemloft.net>,
+        Aisheng Dong <aisheng.dong@nxp.com>
+Cc:     Silvano Di Ninno <silvano.dininno@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, Gaurav Jain <gaurav.jain@nxp.com>
+Subject: [PATCH] crypto: caam/jr - fix Chacha20 + Poly1305 self test failure
+Date:   Thu, 21 Sep 2023 18:12:37 +0530
+Message-Id: <20230921124237.2364827-1-gaurav.jain@nxp.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
-References: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
-MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-21_06,2023-09-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SG2PR01CA0176.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::32) To AM0PR04MB6004.eurprd04.prod.outlook.com
+ (2603:10a6:208:11a::11)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6004:EE_|DB9PR04MB9776:EE_
+X-MS-Office365-Filtering-Correlation-Id: dc573aea-51c0-4f49-264d-08dbbaa049e0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CdHgm64dgOns7JEY14Sbpn7OjUzCciwH/Q+DkU2sZLrNDpCpHxcdWYjTCkYVJGMMrLTYEfAo/BbbVPQCm2pU0wpfksS4MYUAA37m0oVM49jlkr16aLgGT6KI+HzdNNINUYXdPIalfGHOSD44xvRZdKmIZ5eZJxM1rKKBBS04lHuR2HZ95jCPa9AuxtkZI8o0SyOFZ+PAr3itko997Emu+57KjRHIouFB/Csr6XtayaRL3z4JYGFtViXk0s6/xPa/KjcM0DNX31de0HxR0OhvzFSh0N5JtEO67fANKWi12+wWXJzVAKJPrlSLmwe2Phxcid2w3Hi2RgJdDPDap0QocF9e3aJGVAFsYRGESVgHAQsBW7ALj6vBC5xBzajPYU/qXF5WgBJOHJhB4lvPDI8+812zsbp5NzhO5OGWXDbzJKjIcwMBdq0NRVxEZXWkvdWCV4ubCfFdIPjfRMItDOVcnEXqb9HA6l/hnMYC6/Z8XSuFHWH/1gIa8Ong/Jir4TJwAtr86PIlPXhAY/mVvusjgI1QyNguS1z2nna985NTTKXmD155fYNq3UrZ9tW7mF23xrLQE93wP/Y0eCQ5iGYBE4k22Z3kxUs6vI5NKIs0DD9aAYAnwosr0l6oGEtEg06B
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6004.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(366004)(376002)(1800799009)(186009)(451199024)(52116002)(6512007)(6486002)(6506007)(6666004)(83380400001)(38100700002)(86362001)(38350700002)(36756003)(2616005)(1076003)(26005)(4744005)(110136005)(66476007)(6636002)(54906003)(316002)(66556008)(66946007)(41300700001)(2906002)(44832011)(5660300002)(8936002)(8676002)(4326008)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pxGTBpdEb9uwCgiKKmXtgcx2Cx5oS8NqQp8uEX0jWDsKKgUN42HymCmjxuBG?=
+ =?us-ascii?Q?ZBvd5S90DVUOwndCOFaYgWY0yNqcY0IPzrLxmq6Sixfu+Qz0Vfg9StGdD8Mk?=
+ =?us-ascii?Q?xvUaKfI/L6Hw9ZYvbhU0X161A2xcT9MHWkGDKST6Xx73JoSZHqWkwEVHaoXI?=
+ =?us-ascii?Q?A0ghS8Jl/wNWM2iYl+Eb3K/+Cy3k0Trqn9e+NLLq/st43JyUi+uOc/voz4WD?=
+ =?us-ascii?Q?/FrqI7vdZCmktf5rxHjdBtTSvg+JZ/r0DvcOw3qbbHPZLfhlX5+/3noHG+AS?=
+ =?us-ascii?Q?S/diyIWv9v7lVNb0Br6fYg741pHbFuvf2oXY/0/L+k4pgv1LKAbCjsiwUy+J?=
+ =?us-ascii?Q?B27TJHirfFPaSVBvTj+WuXI0NKukfz+VThdpZLYN/dYxrKsKMmIlbM/JzA51?=
+ =?us-ascii?Q?+nFbM5Fff3VXEYC/KYbMr8p9kA1Yg4t0QwgZtkkfMXBwG7bmugDzs0GYzMHj?=
+ =?us-ascii?Q?I/U1vK7T9uU6rcD7ETBKsYT1V3jQU4dIIseE6i0A/xX7sCvGbOpdaazNNcx8?=
+ =?us-ascii?Q?tthdd6GpSu0a0nSk8UFVymZUfuMwAHowPCMqMkHueM1NyNX/z79LR66618AX?=
+ =?us-ascii?Q?LRhjLINX17tXFm31xwuTOJRQROQXoFfk344XFlXCibqZHfHXzlFjqTJ1aQEl?=
+ =?us-ascii?Q?AkLOIBGCCrWe/ZGHsbpVCczrpW5O3R7G47KdkMe2qxx654/Of9Kw9dsluMzH?=
+ =?us-ascii?Q?BsaIPUuLVeHFeoPUYIE0sRTMUErycAfz9a8Db9uqcsQRiQ5uemDFXUe/ZCOj?=
+ =?us-ascii?Q?ZmOxzrZyoaiEtv4l4+wEBrtJILCF3E91+4eZGasssi+IrknmO6L3l8gsEnlx?=
+ =?us-ascii?Q?4qNCmN1djmsUJ0d5+E716/VxASe1fvh0fWRkwwGtUKQCPH3s44U00P2V/J55?=
+ =?us-ascii?Q?d+e7ZQz/MX2CAcreJ48bXEQiNg9CJVVAKgHJ+oV00NjTQq8C5W7BYH9UO7X3?=
+ =?us-ascii?Q?oDL9To95vQ8y0QK2i8Yxt4KWFsSuE2iWLXjgXjjaubtfAlZHuKLDesHLys89?=
+ =?us-ascii?Q?UVru4oIJXDiyPikfCPnCeTMDEwGvUx8cz6i9RIIPZFT9QFvRlqUDrAgZ1R2D?=
+ =?us-ascii?Q?6ichxdTf2ZqjcVzt2/Mb5wIG5yFQPTBuHEBKfuXcc9xibX7EC7bAhcWP7S4b?=
+ =?us-ascii?Q?RddqycQ4yQ29tqRKCXhXDE4Vm3eX4wrYbH5H7wmg+WaqhpEUKfbtKGCidXwX?=
+ =?us-ascii?Q?OsGnhgcXaszyYsx47utfGYRpchyzHJaG5wudm1pjwBjkfmd18nLQIKjgmOc/?=
+ =?us-ascii?Q?+lCm+y8jrYTIxr2xr1SNzFBk1Ypqnpu5VBXYoNbBB1QoX3lUboCorHGsO+Kb?=
+ =?us-ascii?Q?IyjAizvZ4jKBoOFMLduHNx6VGGZ1RcLIAq2KZFh4KzPW1xV0EIyXtFoHA8Vc?=
+ =?us-ascii?Q?WY3ERmvZWUjGV0DnvB+z0dkyR7xSINl3t0WlaqPVp3hPJKbILVC/bAG1/XT7?=
+ =?us-ascii?Q?1adNANtcAvbJ1gDhQoPVwBkfEkaj2w9IVgrl3ItSxYxhTlcqOOMuDf1g3F2I?=
+ =?us-ascii?Q?qTy4Z+Z5cqwSbf913+rP8G++23fNi915bCMPwtXFV/FQ7gCOnijcVJH20+A5?=
+ =?us-ascii?Q?wYKqEKJhNhNNzS2TDg0g4W1h/mRe7MvPBTvBC8QH?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc573aea-51c0-4f49-264d-08dbbaa049e0
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6004.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 12:43:01.2249
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lBHjn0K46FW4BlUJfgD6ZcfY9lbsi7I9mIs7mzf2L8lJmJdKSWudoFWSZ4y/HZVCm068x8+qdOdXoc3Q8BtKAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9776
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_PERMERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Try to conceal seed errors when possible. If, despite the error
-concealing tries, a seed error is still present, then return an error.
+key buffer is not copied in chachapoly_setkey function,
+results in wrong output for encryption/decryption operation.
 
-A clock error does not compromise the hardware block and data can
-still be read from RNG_DR. Just warn that the RNG clock is too slow
-and clear RNG_SR.
+fix this by memcpy the key in caam_ctx key arrary
 
-Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Fixes: d6bbd4eea243 ("crypto: caam/jr - add support for Chacha20 + Poly1305")
+Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
 ---
+ drivers/crypto/caam/caamalg.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Changes in V2:
-	- Use WARN_ONCE instead of WARN_ON as it was buggy
-
- drivers/char/hw_random/stm32-rng.c | 53 +++++++++++++++++++++++-------
- 1 file changed, 41 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index adefe8edfd07..9dac177d5286 100644
---- a/drivers/char/hw_random/stm32-rng.c
-+++ b/drivers/char/hw_random/stm32-rng.c
-@@ -43,6 +43,8 @@
+diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+index eba2d750c3b0..066f08a3a040 100644
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -575,7 +575,8 @@ static int chachapoly_setkey(struct crypto_aead *aead, const u8 *key,
+ 	if (keylen != CHACHA_KEY_SIZE + saltlen)
+ 		return -EINVAL;
  
- #define RNG_HTCR		0x10
+-	ctx->cdata.key_virt = key;
++	memcpy(ctx->key, key, keylen);
++	ctx->cdata.key_virt = ctx->key;
+ 	ctx->cdata.keylen = keylen - saltlen;
  
-+#define RNG_NB_RECOVER_TRIES	3
-+
- struct stm32_rng_data {
- 	u32	cr;
- 	u32	nscr;
-@@ -162,10 +164,10 @@ static int stm32_rng_conceal_seed_error(struct hwrng *rng)
- 
- static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
- {
--	struct stm32_rng_private *priv =
--	    container_of(rng, struct stm32_rng_private, rng);
-+	struct stm32_rng_private *priv = container_of(rng, struct stm32_rng_private, rng);
-+	unsigned int i = 0;
-+	int retval = 0, err = 0;
- 	u32 sr;
--	int retval = 0;
- 
- 	pm_runtime_get_sync((struct device *) priv->rng.priv);
- 
-@@ -174,30 +176,57 @@ static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
- 
- 	while (max >= sizeof(u32)) {
- 		sr = readl_relaxed(priv->base + RNG_SR);
--		/* Manage timeout which is based on timer and take */
--		/* care of initial delay time when enabling rng	*/
-+		/*
-+		 * Manage timeout which is based on timer and take
-+		 * care of initial delay time when enabling the RNG.
-+		 */
- 		if (!sr && wait) {
--			int err;
--
- 			err = readl_relaxed_poll_timeout_atomic(priv->base
- 								   + RNG_SR,
- 								   sr, sr,
- 								   10, 50000);
--			if (err)
-+			if (err) {
- 				dev_err((struct device *)priv->rng.priv,
- 					"%s: timeout %x!\n", __func__, sr);
-+				break;
-+			}
-+		} else if (!sr) {
-+			/* The FIFO is being filled up */
-+			break;
- 		}
- 
--		/* If error detected or data not ready... */
- 		if (sr != RNG_SR_DRDY) {
--			if (WARN_ONCE(sr & (RNG_SR_SEIS | RNG_SR_CEIS),
--					"bad RNG status - %x\n", sr))
-+			if (sr & RNG_SR_SEIS) {
-+				err = stm32_rng_conceal_seed_error(rng);
-+				i++;
-+				if (err && i > RNG_NB_RECOVER_TRIES) {
-+					dev_err((struct device *)priv->rng.priv,
-+						"Couldn't recover from seed error\n");
-+					return -ENOTRECOVERABLE;
-+				}
-+
-+				continue;
-+			}
-+
-+			if (WARN_ONCE((sr & RNG_SR_CEIS), "RNG clock too slow - %x\n", sr))
- 				writel_relaxed(0, priv->base + RNG_SR);
--			break;
- 		}
- 
-+		/* Late seed error case: DR being 0 is an error status */
- 		*(u32 *)data = readl_relaxed(priv->base + RNG_DR);
-+		if (!*(u32 *)data) {
-+			err = stm32_rng_conceal_seed_error(rng);
-+			i++;
-+			if (err && i > RNG_NB_RECOVER_TRIES) {
-+				dev_err((struct device *)priv->rng.priv,
-+					"Couldn't recover from seed error");
-+				return -ENOTRECOVERABLE;
-+			}
-+
-+			continue;
-+		}
- 
-+		i = 0;
- 		retval += sizeof(u32);
- 		data += sizeof(u32);
- 		max -= sizeof(u32);
+ 	return chachapoly_set_sh_desc(aead);
 -- 
 2.25.1
 
