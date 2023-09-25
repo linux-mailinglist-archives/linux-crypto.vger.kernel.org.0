@@ -2,131 +2,100 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D81E7ADB06
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Sep 2023 17:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CA77ADB70
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Sep 2023 17:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbjIYPLX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 25 Sep 2023 11:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S232187AbjIYPby (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 25 Sep 2023 11:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232556AbjIYPLW (ORCPT
+        with ESMTP id S232086AbjIYPby (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:11:22 -0400
-Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD279103
-        for <linux-crypto@vger.kernel.org>; Mon, 25 Sep 2023 08:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1695654676; x=1727190676;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version:subject;
-  bh=laqhfkaMk1emxqXbBHQuPhdUTmHi74kih73ISull9rM=;
-  b=lp0LVMA7SrRDlBUjaPA/Y4gHJMUulj/OMT7YXdvyiTYWIpt43DqSUnxB
-   OE01raI6tc+bWwNvCERDUCvGQ1b9xI3wVsIm0jPFB84oJkpgJla/mgSeF
-   F5WbhTE4X5MTbt795SSeSbu5DC1FWrao1QAuBtlNlw3XU0/x+AR70OpnY
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.03,175,1694736000"; 
-   d="scan'208";a="585505402"
-Subject: RE: [PATCH 0/3] crypto: jitter - Offer compile-time options
-Thread-Topic: [PATCH 0/3] crypto: jitter - Offer compile-time options
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 15:11:14 +0000
-Received: from EX19MTAUEA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com (Postfix) with ESMTPS id C052E8A5A3;
-        Mon, 25 Sep 2023 15:11:12 +0000 (UTC)
-Received: from EX19D030UEC002.ant.amazon.com (10.252.137.180) by
- EX19MTAUEA002.ant.amazon.com (10.252.134.9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 25 Sep 2023 15:11:12 +0000
-Received: from EX19D030UEC003.ant.amazon.com (10.252.137.182) by
- EX19D030UEC002.ant.amazon.com (10.252.137.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 25 Sep 2023 15:11:12 +0000
-Received: from EX19D030UEC003.ant.amazon.com ([fe80::6222:63e7:9834:7b89]) by
- EX19D030UEC003.ant.amazon.com ([fe80::6222:63e7:9834:7b89%3]) with mapi id
- 15.02.1118.037; Mon, 25 Sep 2023 15:11:12 +0000
-From:   "Ospan, Abylay" <aospan@amazon.com>
-To:     =?iso-8859-1?Q?Stephan_M=FCller?= <smueller@chronox.de>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-Thread-Index: AQHZ7IHXOjhrYWJJlUG53kdcMUz5/7Arpuvg
-Date:   Mon, 25 Sep 2023 15:11:11 +0000
-Message-ID: <79fe855f99e44c97b6ac3348faac05d3@amazon.com>
-References: <2700818.mvXUDI8C0e@positron.chronox.de>
-In-Reply-To: <2700818.mvXUDI8C0e@positron.chronox.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.106.239.32]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 25 Sep 2023 11:31:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468B395;
+        Mon, 25 Sep 2023 08:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695655908; x=1727191908;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ohmo0uphE7YPdh5WwFbU8+KeksI6x6RafAzGQ1Oq1QM=;
+  b=IgLsAW7H7m+4ZZPxHo+meX4GcowK2hqx+zUQUBzafrgVRxlMpceTQKfS
+   KR3Dp/Upc5lpjdOpu5hdg/GGR6IOOJCpg81MZ7qEJYMUfq30ZWoThyK8O
+   /gjpbOwou0gptwdfI1zRu/V04KJMqOACd2lyVluw3D7gTfXqpI//pxbcl
+   zv5DPbKmSMCtbS9BZ2hfxpATwqKt0zU8XYAqz2oDUaxR7dPP3rANNUE0p
+   NVzWTCt6s0WNv2BWH7SfKiB7RRyQG5aOVRZ/QY9N3bnb3UvpSon0Q0LZP
+   oaZ14f7fU586so4YHrDB33cP93p2Wm68Lo9YTi+0cYjnYMw+p1lfN4Qr9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="361533581"
+X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
+   d="scan'208";a="361533581"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:31:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="725023003"
+X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
+   d="scan'208";a="725023003"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.173])
+  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2023 08:31:45 -0700
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@kernel.org, x86@kernel.org, chang.seok.bae@intel.com
+Subject: [PATCH 0/3] crypto: x86/aesni - Improve XTS data type
+Date:   Mon, 25 Sep 2023 08:17:49 -0700
+Message-Id: <20230925151752.162449-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hi Stephan,
+The field within the struct aesni_xts_ctx is currently defined as a
+byte array, sized to match the struct crypto_aes_ctx. However, it
+actually represents the struct data type.
 
-We ran tests with your patches on our bare metal platform (AMD Epyc CPU) an=
-d saw an improvement in boot time entropy after analyzing the collected jit=
-ter deltas.
-Patches looks good to me.
-Thanks for your work!
+To accurately redefine the data type, some adjustments have to be made
+to the address alignment code. It involved refactoring the common
+alignment code initially, followed by updating the structure's
+definition. Finally, the XTS alignment is now performed early in the
+process, rather than at every access point.
 
-Acked-by: Abylay Ospan <aospan@amazon.com>
+This change was suggested during Eric's review of another series
+intended to enable an alternative AES implementation [1][2]. I viewed
+it as an enhancement to the mainline, independent of the series.
 
------Original Message-----
-From: Stephan M=FCller <smueller@chronox.de>=20
-Sent: Thursday, September 21, 2023 7:48 AM
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org; Ospan, Abylay <aospan@amazon.com>
-Subject: [EXTERNAL] [PATCH 0/3] crypto: jitter - Offer compile-time options
+I have divided these changes into incremental pieces, making them
+considerably more reviewable and maintainable.
 
-CAUTION: This email originated from outside of the organization. Do not cli=
-ck links or open attachments unless you can confirm the sender and know the=
- content is safe.
+The series is based on the cryptodev's master branch:
 
+    git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
 
+Thanks,
+Chang
 
-Hi,
+[1] https://lore.kernel.org/all/ZFWQ4sZEVu%2FLHq+Q@gmail.com/
+[2] https://lore.kernel.org/all/20230526065414.GB875@sol.localdomain/
 
-the following patchset offers a set of compile-time options to accommodate =
-different hardware with different entropy rates implied in their timers. Th=
-is allows configuring the Jitter RNG in systems which exhibits insufficient=
- entropy with the default parameters. The default parameters defined by the=
- patches, however, are identical to the existing code and thus do not alter=
- the Jitter RNG behavior.
+Chang S. Bae (3):
+  crypto: x86/aesni - Refactor the common address alignment code
+  crypto: x86/aesni - Correct the data type in struct aesni_xts_ctx
+  crypto: x86/aesni - Perform address alignment early for XTS mode
 
-The first patch sets the state by allowing the configuration of different o=
-versampling rates. The second patch allows the configuration of different m=
-emory sizes and the third allows the configuration of differnet oversamplin=
-g rates.
-
-The update of the power up test with the first patch also addresses reports=
- that the Jitter RNG did not initialize due to it detected insufficient ent=
-ropy.
-
-Stephan Mueller (3):
-  crypto: jitter - add RCT/APT support for different OSRs
-  crypto: jitter - Allow configuration of memory size
-  crypto: jitter - Allow configuration of oversampling rate
-
- crypto/Kconfig               |  60 +++++++++
- crypto/jitterentropy-kcapi.c |  17 ++-
- crypto/jitterentropy.c       | 249 ++++++++++++++++++-----------------
- crypto/jitterentropy.h       |   5 +-
- 4 files changed, 207 insertions(+), 124 deletions(-)
-
---
-2.42.0
+ arch/x86/crypto/aesni-intel_glue.c | 52 ++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 27 deletions(-)
 
 
-
+base-commit: 1c43c0f1f84aa59dfc98ce66f0a67b2922aa7f9d
+-- 
+2.34.1
 
