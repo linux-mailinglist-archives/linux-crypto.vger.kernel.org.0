@@ -2,436 +2,290 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB677B33AE
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 Sep 2023 15:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D4E7B3506
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Sep 2023 16:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233383AbjI2Ndk (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 29 Sep 2023 09:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52908 "EHLO
+        id S233478AbjI2ObQ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 29 Sep 2023 10:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbjI2Ndi (ORCPT
+        with ESMTP id S233449AbjI2ObO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:33:38 -0400
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8EB1B3;
-        Fri, 29 Sep 2023 06:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1695994415; x=1727530415;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HlrtmjAYtMpD45GTi8Unvnne1C2hagAVywVHoYiGXmw=;
-  b=dgMVf7+Nka1DVmNNV/vgGfGGkNF5x1TXtLvqE8YtOkQDVeq02nQCV/N1
-   6NOIxxQktdbgsX3k/zURPImah0BSe21yb7nA7M5VeOnJY0e2xw/ffLCuT
-   N4bvRO8CpiiYvv+l3/l0pPx7oaQmi26fP9qrTdqNaJ6wmGWIn56g/qmDx
-   0=;
-X-IronPort-AV: E=Sophos;i="6.03,187,1694736000"; 
-   d="scan'208";a="32474738"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 13:33:32 +0000
-Received: from EX19MTAUWA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com (Postfix) with ESMTPS id 16639803BA;
-        Fri, 29 Sep 2023 13:33:32 +0000 (UTC)
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 29 Sep 2023 13:33:29 +0000
-Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
- EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 29 Sep 2023 13:33:27 +0000
-From:   Alexander Graf <graf@amazon.com>
-To:     <linux-crypto@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        "Petre Eftime" <petre.eftime@gmail.com>,
-        Erdem Meydanlli <meydanli@amazon.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v2 2/2] hwrng: Add support for Nitro Secure Module
-Date:   Fri, 29 Sep 2023 13:33:20 +0000
-Message-ID: <20230929133320.74848-3-graf@amazon.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230929133320.74848-1-graf@amazon.com>
-References: <20230929133320.74848-1-graf@amazon.com>
+        Fri, 29 Sep 2023 10:31:14 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFC31B1;
+        Fri, 29 Sep 2023 07:31:11 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38TADgu8015718;
+        Fri, 29 Sep 2023 16:30:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=hYwTDtC
+        Zh1H/z/TlkRBSOYHWh+TCR2sItpKqNC62VaE=; b=6zyhpw8WVZEvMMJDQeHz4RT
+        0uZAiQj3Uuw7AgbSMXkmcc8KSbKnjesfzoQUYuH57bHpcwiW4Zb2Z7Lyzk27IF4U
+        itxICPcv6g2fdyqKvs4SqC5qCalx37GiayMKSxiczPeH9tkMnLm6RJ82PnbCR77A
+        VTugngKCZmuzkS5AO3P/XStF0vtEg8NBcsnatifU5CkvYtlwBIhjJM6Cnf3P9MgN
+        S3JUq1szpA1aW+CaavJXgognjuYwoZM4g5/PnD8zK6KbtAA+TCcFHKa/LEzmkpDP
+        jDssKhMHigao/Bm66txRN9oog/m3TtfB6JamhdjbL+M7IJ6O1UbdGJkuFMsmDGg=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t9qbxbecf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 16:30:36 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 27369100057;
+        Fri, 29 Sep 2023 16:30:34 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BDFF625AF10;
+        Fri, 29 Sep 2023 16:30:34 +0200 (CEST)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 29 Sep
+ 2023 16:30:34 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>,
+        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
+        <peng.fan@oss.nxp.com>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v5 00/11] Introduce STM32 Firewall framework
+Date:   Fri, 29 Sep 2023 16:28:41 +0200
+Message-ID: <20230929142852.578394-1-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D040UWA001.ant.amazon.com (10.13.139.22) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_13,2023-09-28_03,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-When running Linux inside a Nitro Enclave, the Nitro Secure Module
-provides a virtio message that can be used to receive entropy. This
-patch adds support to read that entropy on demand and expose it through
-the hwrng device.
+Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
+platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
+register to the framework to offer firewall services such as access
+granting.
 
-Originally-by: Petre Eftime <petre.eftime@gmail.com>
-Signed-off-by: Alexander Graf <graf@amazon.com>
+This series of patches is a new approach on the previous STM32 system
+bus, history is available here:
+https://lore.kernel.org/lkml/20230127164040.1047583/
 
----
+The need for such framework arises from the fact that there are now
+multiple hardware firewalls implemented across multiple products.
+Drivers are shared between different products, using the same code.
+When it comes to firewalls, the purpose mostly stays the same: Protect
+hardware resources. But the implementation differs, and there are
+multiple types of firewalls: peripheral, memory, ... 
 
-v1 -> v2:
+Some hardware firewall controllers such as the RIFSC implemented on
+STM32MP2x platforms may require to take ownership of a resource before
+being able to use it, hence the requirement for firewall services to
+take/release the ownership of such resources.
 
-  - Remove boilerplate
----
- MAINTAINERS                      |   1 +
- drivers/char/hw_random/Kconfig   |  12 ++
- drivers/char/hw_random/Makefile  |   1 +
- drivers/char/hw_random/nsm-rng.c | 272 +++++++++++++++++++++++++++++++
- 4 files changed, 286 insertions(+)
- create mode 100644 drivers/char/hw_random/nsm-rng.c
+On the other hand, hardware firewall configurations are becoming
+more and more complex. These mecanisms prevent platform crashes
+or other firewall-related incoveniences by denying access to some
+resources.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d54bf3ea2b9d..da9697639968 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15104,6 +15104,7 @@ L:	linux-kernel@vger.kernel.org
- L:	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>
- S:	Supported
- W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
-+F:	drivers/char/hw_random/nsm-rng.c
- F:	drivers/misc/nsm.c
- F:	include/linux/nsm.h
- F:	include/uapi/linux/nsm.h
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 8de74dcfa18c..5d06e24cfdde 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -573,6 +573,18 @@ config HW_RANDOM_JH7110
- 	  To compile this driver as a module, choose M here.
- 	  The module will be called jh7110-trng.
- 
-+config HW_RANDOM_NSM
-+	tristate "Nitro (Enclaves) Security Module support"
-+	depends on NSM
-+	help
-+	  This driver provides support for the Nitro Security Module
-+	  in AWS EC2 Nitro based Enclaves. The driver enables support
-+	  for reading RNG data as well as a generic communication
-+	  mechanism with the hypervisor.
-+
-+	  To compile this driver as a module, choose M here.
-+	  The module will be called nsm_rng.
-+
- endif # HW_RANDOM
- 
- config UML_RANDOM
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 32549a1186dc..7e33d1ed40f8 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -49,3 +49,4 @@ obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
- obj-$(CONFIG_HW_RANDOM_CN10K) += cn10k-rng.o
- obj-$(CONFIG_HW_RANDOM_POLARFIRE_SOC) += mpfs-rng.o
- obj-$(CONFIG_HW_RANDOM_JH7110) += jh7110-trng.o
-+obj-$(CONFIG_HW_RANDOM_NSM) += nsm-rng.o
-diff --git a/drivers/char/hw_random/nsm-rng.c b/drivers/char/hw_random/nsm-rng.c
-new file mode 100644
-index 000000000000..7e6576d536e6
---- /dev/null
-+++ b/drivers/char/hw_random/nsm-rng.c
-@@ -0,0 +1,272 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Amazon Nitro Secure Module HWRNG driver.
-+ *
-+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-+ */
-+
-+#include <linux/nsm.h>
-+#include <linux/hw_random.h>
-+#include <linux/module.h>
-+#include <linux/string.h>
-+#include <linux/virtio_ids.h>
-+
-+struct nsm_rng_info {
-+	struct hwrng hwrng;
-+	struct virtio_device *vdev;
-+};
-+
-+#define CBOR_TYPE_MASK  0xE0
-+#define CBOR_TYPE_MAP 0xA0
-+#define CBOR_TYPE_TEXT 0x60
-+#define CBOR_TYPE_ARRAY 0x40
-+#define CBOR_HEADER_SIZE_SHORT 1
-+
-+#define CBOR_SHORT_SIZE_MAX_VALUE 23
-+#define CBOR_LONG_SIZE_U8  24
-+#define CBOR_LONG_SIZE_U16 25
-+#define CBOR_LONG_SIZE_U32 26
-+#define CBOR_LONG_SIZE_U64 27
-+
-+#define CBOR_HEADER_SIZE_U8  (CBOR_HEADER_SIZE_SHORT + sizeof(u8))
-+#define CBOR_HEADER_SIZE_U16 (CBOR_HEADER_SIZE_SHORT + sizeof(u16))
-+#define CBOR_HEADER_SIZE_U32 (CBOR_HEADER_SIZE_SHORT + sizeof(u32))
-+#define CBOR_HEADER_SIZE_U64 (CBOR_HEADER_SIZE_SHORT + sizeof(u64))
-+
-+static bool cbor_object_is_array(const u8 *cbor_object, size_t cbor_object_size)
-+{
-+	if (cbor_object_size == 0 || cbor_object == NULL)
-+		return false;
-+
-+	return (cbor_object[0] & CBOR_TYPE_MASK) == CBOR_TYPE_ARRAY;
-+}
-+
-+static int cbor_object_get_array(u8 *cbor_object, size_t cbor_object_size, u8 **cbor_array)
-+{
-+	u8 cbor_short_size;
-+	u64 array_len;
-+	u64 array_offset;
-+
-+	if (!cbor_object_is_array(cbor_object, cbor_object_size))
-+		return -EFAULT;
-+
-+	if (cbor_array == NULL)
-+		return -EFAULT;
-+
-+	cbor_short_size = (cbor_object[0] & 0x1F);
-+
-+	/* Decoding byte array length */
-+	/* In short field encoding, the object header is 1 byte long and
-+	 * contains the type on the 3 MSB and the length on the LSB.
-+	 * If the length in the LSB is larger than 23, then the object
-+	 * uses long field encoding, and will contain the length over the
-+	 * next bytes in the object, depending on the value:
-+	 * 24 is u8, 25 is u16, 26 is u32 and 27 is u64.
-+	 */
-+	if (cbor_short_size <= CBOR_SHORT_SIZE_MAX_VALUE) {
-+		/* short encoding */
-+		array_len = cbor_short_size;
-+		array_offset = CBOR_HEADER_SIZE_SHORT;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U8) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U8)
-+			return -EFAULT;
-+		/* 1 byte */
-+		array_len = cbor_object[1];
-+		array_offset = CBOR_HEADER_SIZE_U8;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U16) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U16)
-+			return -EFAULT;
-+		/* 2 bytes */
-+		array_len = cbor_object[1] << 8 | cbor_object[2];
-+		array_offset = CBOR_HEADER_SIZE_U16;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U32) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U32)
-+			return -EFAULT;
-+		/* 4 bytes */
-+		array_len = cbor_object[1] << 24 |
-+			cbor_object[2] << 16 |
-+			cbor_object[3] << 8  |
-+			cbor_object[4];
-+		array_offset = CBOR_HEADER_SIZE_U32;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U64) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U64)
-+			return -EFAULT;
-+		/* 8 bytes */
-+		array_len = (u64) cbor_object[1] << 56 |
-+			  (u64) cbor_object[2] << 48 |
-+			  (u64) cbor_object[3] << 40 |
-+			  (u64) cbor_object[4] << 32 |
-+			  (u64) cbor_object[5] << 24 |
-+			  (u64) cbor_object[6] << 16 |
-+			  (u64) cbor_object[7] << 8  |
-+			  (u64) cbor_object[8];
-+		array_offset = CBOR_HEADER_SIZE_U64;
-+	}
-+
-+	if (cbor_object_size < array_offset)
-+		return -EFAULT;
-+
-+	if (cbor_object_size - array_offset < array_len)
-+		return -EFAULT;
-+
-+	if (array_len > INT_MAX)
-+		return -EFAULT;
-+
-+	*cbor_array = cbor_object + array_offset;
-+	return array_len;
-+}
-+
-+static int nsm_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-+{
-+	struct nsm_rng_info *nsm_rng_info = (struct nsm_rng_info *)rng;
-+	struct nsm_kernel_message message = {};
-+	int rc = 0;
-+	u8 *resp_ptr = NULL;
-+	u64 resp_len = 0;
-+	u8 *rand_data = NULL;
-+	/*
-+	 * 69                          # text(9)
-+	 *     47657452616E646F6D      # "GetRandom"
-+	 */
-+	const u8 request[] = { CBOR_TYPE_TEXT + strlen("GetRandom"),
-+			       'G', 'e', 't', 'R', 'a', 'n', 'd', 'o', 'm' };
-+	/*
-+	 * A1                          # map(1)
-+	 *     69                      # text(9) - Name of field
-+	 *         47657452616E646F6D  # "GetRandom"
-+	 * A1                          # map(1) - The field itself
-+	 *     66                      # text(6)
-+	 *         72616E646F6D        # "random"
-+	 *	# The rest of the response should be a byte array
-+	 */
-+	const u8 response[] = { CBOR_TYPE_MAP + 1,
-+				CBOR_TYPE_TEXT + strlen("GetRandom"),
-+				'G', 'e', 't', 'R', 'a', 'n', 'd', 'o', 'm',
-+				CBOR_TYPE_MAP + 1,
-+				CBOR_TYPE_TEXT + strlen("random"),
-+				'r', 'a', 'n', 'd', 'o', 'm' };
-+
-+	/* NSM always needs to wait for a response */
-+	if (!wait)
-+		return 0;
-+
-+	/* Set request message */
-+	message.request.iov_len = sizeof(request);
-+	message.request.iov_base = kmalloc(message.request.iov_len, GFP_KERNEL);
-+	if (message.request.iov_base == NULL)
-+		goto out;
-+	memcpy(message.request.iov_base, request, sizeof(request));
-+
-+	/* Allocate space for response */
-+	message.response.iov_len = NSM_RESPONSE_MAX_SIZE;
-+	message.response.iov_base = kmalloc(message.response.iov_len, GFP_KERNEL);
-+	if (message.response.iov_base == NULL)
-+		goto out;
-+
-+	/* Send/receive message */
-+	rc = nsm_communicate_with_device(nsm_rng_info->vdev, &message);
-+	if (rc != 0)
-+		goto out;
-+
-+	resp_ptr = (u8 *) message.response.iov_base;
-+	resp_len = message.response.iov_len;
-+
-+	if (resp_len < sizeof(response) + 1) {
-+		pr_err("NSM RNG: Received short response from NSM: Possible error message or invalid response");
-+		rc = -EFAULT;
-+		goto out;
-+	}
-+
-+	if (memcmp(resp_ptr, response, sizeof(response)) != 0) {
-+		pr_err("NSM RNG: Invalid response header: Possible error message or invalid response");
-+		rc = -EFAULT;
-+		goto out;
-+	}
-+
-+	resp_ptr += sizeof(response);
-+	resp_len -= sizeof(response);
-+
-+	if (!cbor_object_is_array(resp_ptr, resp_len)) {
-+		/* not a byte array */
-+		pr_err("NSM RNG: Invalid response type: Expecting a byte array response");
-+		rc = -EFAULT;
-+		goto out;
-+	}
-+
-+	rc = cbor_object_get_array(resp_ptr, resp_len, &rand_data);
-+	if (rc < 0) {
-+		pr_err("NSM RNG: Invalid CBOR encoding\n");
-+		goto out;
-+	}
-+
-+	max = max > INT_MAX ? INT_MAX : max;
-+	rc = rc > max ? max : rc;
-+	memcpy(data, rand_data, rc);
-+
-+	pr_debug("NSM RNG: returning rand bytes = %d\n", rc);
-+out:
-+	kfree(message.request.iov_base);
-+	kfree(message.response.iov_base);
-+	return rc;
-+}
-+
-+static struct nsm_rng_info nsm_rng_info = {
-+	.hwrng = {
-+		.read = nsm_rng_read,
-+		.name = "nsm-hwrng",
-+		.quality = 1000,
-+	},
-+};
-+
-+static int nsm_rng_probe(struct virtio_device *vdev)
-+{
-+	int rc;
-+
-+	if (nsm_rng_info.vdev)
-+		return -EEXIST;
-+
-+	nsm_rng_info.vdev = vdev;
-+	rc = devm_hwrng_register(&vdev->dev, &nsm_rng_info.hwrng);
-+
-+	if (rc) {
-+		pr_err("NSM RNG initialization error: %d.\n", rc);
-+		return rc;
-+	}
-+
-+	return 0;
-+}
-+
-+static void nsm_rng_remove(struct virtio_device *vdev)
-+{
-+	hwrng_unregister(&nsm_rng_info.hwrng);
-+	nsm_rng_info.vdev = NULL;
-+}
-+
-+struct nsm_hwrng nsm_hwrng = {
-+	.probe = nsm_rng_probe,
-+	.remove = nsm_rng_remove,
-+};
-+
-+static int __init nsm_rng_init(void)
-+{
-+	return nsm_register_hwrng(&nsm_hwrng);
-+}
-+
-+static void __exit nsm_rng_exit(void)
-+{
-+	nsm_unregister_hwrng(&nsm_hwrng);
-+}
-+
-+module_init(nsm_rng_init);
-+module_exit(nsm_rng_exit);
-+
-+#ifdef MODULE
-+static const struct virtio_device_id nsm_id_table[] = {
-+	{ VIRTIO_ID_NITRO_SEC_MOD, VIRTIO_DEV_ANY_ID },
-+	{ 0 },
-+};
-+#endif
-+
-+MODULE_DEVICE_TABLE(virtio, nsm_id_table);
-+MODULE_DESCRIPTION("Virtio NSM RNG driver");
-+MODULE_LICENSE("GPL");
+The stm32 firewall framework offers an API that is defined in
+firewall controllers drivers to best fit the specificity of each
+firewall.
+
+For every peripherals protected by either the ETZPC or the RIFSC, the
+firewall framework checks the firewall controlelr registers to see if
+the peripheral's access is granted to the Linux kernel. If not, the
+peripheral is configured as secure, the node is marked populated,
+so that the driver is not probed for that device.
+
+The firewall framework relies on the access-controller device tree
+binding. It is used by peripherals to reference a domain access
+controller. In this case a firewall controller. The bus uses the ID
+referenced by the access-controller property to know where to look
+in the firewall to get the security configuration for the peripheral.
+This allows a device tree description rather than a hardcoded peripheral
+table in the bus driver.
+
+The STM32 ETZPC device is responsible for filtering accesses based on
+security level, or co-processor isolation for any resource connected
+to it.
+
+The RIFSC is responsible for filtering accesses based on Compartment
+ID / security level / privilege level for any resource connected to
+it.
+
+STM32MP13/15/25 SoC device tree files are updated in this series to
+implement this mecanism.
+
+Changes in V5:
+	- Integrate and rework the "feature-domains" binding patch in
+	  this patchset. The binding is renamed to "access-controller"
+	- Rename every feature-domain* reference to access-control*
+	  ones
+	- Correct loop bug and missing select STM32_FIREWALL in 32-bit
+	  platform Kconfig
+	
+
+Changes in V4:
+	- Fix typo in commit message and YAML check errors in
+	  "dt-bindings: Document common device controller bindings"
+	  Note: This patch should be ignored as stated in the cover
+	  letter. I've done this to avoid errors on this series of
+	  patch
+	- Correct code syntax/style issues reported by Simon Horman
+	- Added Jonathan's tag for IIO on the treewide patch
+
+Changes in V3:
+
+	Change incorrect ordering for bindings commits leading
+	to an error while running
+	"make DT_CHECKER_FLAGS=-m dt_binding_check"
+
+Changes in V2:
+
+	generic:
+		- Add fw_devlink dependency for "feature-domains"
+		  property.
+
+	bindings:
+		- Corrected YAMLS errors highlighted by Rob's robot
+		- Firewall controllers YAMLs no longer define the
+		  maxItems for the "feature-domains" property
+		- Renamed st,stm32-rifsc.yaml to
+		  st,stm32mp25-rifsc.yaml
+		- Fix examples in YAML files
+		- Change feature-domains maxItems to 2 in firewall
+		  consumer files as there should not be more than
+		  2 entries for now
+		- Declare "feature-domain-names" as an optional
+		  property for firewall controllers child nodes.
+		- Add missing "feature-domains" property declaration
+		  in bosch,m_can.yaml and st,stm32-cryp.yaml files
+
+	firewall framework:
+		- Support multiple entries for "feature-domains"
+		  property
+		- Better handle the device-tree parsing using
+		  phandle+args APIs
+		- Remove "resource firewall" type
+		- Add a field for the name of the firewall entry
+		- Fix licenses
+	
+	RIFSC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	ETZPC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	Device trees:
+		- Fix rifsc node name
+		- Move the "ranges" property under the
+		  "feature-domains" one
+
+Gatien Chevallier (10):
+  dt-bindings: treewide: add access-controller description
+  dt-bindings: bus: document RIFSC
+  dt-bindings: bus: document ETZPC
+  firewall: introduce stm32_firewall framework
+  of: property: fw_devlink: Add support for "access-controller"
+  bus: rifsc: introduce RIFSC firewall controller driver
+  arm64: dts: st: add RIFSC as an access controller for STM32MP25x
+    boards
+  bus: etzpc: introduce ETZPC firewall controller driver
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x boards
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x boards
+
+Oleksii Moisieiev (1):
+  dt-bindings: document generic access controller
+
+ .../access-controllers/access-controller.yaml |   90 +
+ .../bindings/bus/st,stm32-etzpc.yaml          |   96 +
+ .../bindings/bus/st,stm32mp25-rifsc.yaml      |  105 +
+ .../bindings/crypto/st,stm32-cryp.yaml        |    4 +
+ .../bindings/crypto/st,stm32-hash.yaml        |    4 +
+ .../devicetree/bindings/dma/st,stm32-dma.yaml |    4 +
+ .../bindings/dma/st,stm32-dmamux.yaml         |    4 +
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |    4 +
+ .../bindings/iio/adc/st,stm32-adc.yaml        |    4 +
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |    4 +
+ .../bindings/iio/dac/st,stm32-dac.yaml        |    4 +
+ .../bindings/media/cec/st,stm32-cec.yaml      |    4 +
+ .../bindings/media/st,stm32-dcmi.yaml         |    4 +
+ .../memory-controllers/st,stm32-fmc2-ebi.yaml |    4 +
+ .../bindings/mfd/st,stm32-lptimer.yaml        |    4 +
+ .../bindings/mfd/st,stm32-timers.yaml         |    4 +
+ .../devicetree/bindings/mmc/arm,pl18x.yaml    |    4 +
+ .../bindings/net/can/bosch,m_can.yaml         |    4 +
+ .../devicetree/bindings/net/stm32-dwmac.yaml  |    4 +
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |    4 +
+ .../bindings/regulator/st,stm32-vrefbuf.yaml  |    4 +
+ .../devicetree/bindings/rng/st,stm32-rng.yaml |    4 +
+ .../bindings/serial/st,stm32-uart.yaml        |    4 +
+ .../bindings/sound/st,stm32-i2s.yaml          |    4 +
+ .../bindings/sound/st,stm32-sai.yaml          |    4 +
+ .../bindings/sound/st,stm32-spdifrx.yaml      |    4 +
+ .../bindings/spi/st,stm32-qspi.yaml           |    4 +
+ .../devicetree/bindings/spi/st,stm32-spi.yaml |    4 +
+ .../devicetree/bindings/usb/dwc2.yaml         |    4 +
+ MAINTAINERS                                   |    7 +
+ arch/arm/boot/dts/st/stm32mp131.dtsi          | 1026 +++---
+ arch/arm/boot/dts/st/stm32mp133.dtsi          |   51 +-
+ arch/arm/boot/dts/st/stm32mp13xc.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp13xf.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp151.dtsi          | 2757 +++++++++--------
+ arch/arm/boot/dts/st/stm32mp153.dtsi          |   52 +-
+ arch/arm/boot/dts/st/stm32mp15xc.dtsi         |   19 +-
+ arch/arm/mach-stm32/Kconfig                   |    1 +
+ arch/arm64/Kconfig.platforms                  |    1 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |    7 +-
+ drivers/bus/Kconfig                           |    9 +
+ drivers/bus/Makefile                          |    1 +
+ drivers/bus/stm32_etzpc.c                     |  141 +
+ drivers/bus/stm32_firewall.c                  |  294 ++
+ drivers/bus/stm32_firewall.h                  |   83 +
+ drivers/bus/stm32_rifsc.c                     |  252 ++
+ drivers/of/property.c                         |    2 +
+ include/linux/bus/stm32_firewall_device.h     |  141 +
+ 48 files changed, 3358 insertions(+), 1919 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controller.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+ create mode 100644 drivers/bus/stm32_etzpc.c
+ create mode 100644 drivers/bus/stm32_firewall.c
+ create mode 100644 drivers/bus/stm32_firewall.h
+ create mode 100644 drivers/bus/stm32_rifsc.c
+ create mode 100644 include/linux/bus/stm32_firewall_device.h
+
 -- 
-2.40.1
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+2.25.1
 
