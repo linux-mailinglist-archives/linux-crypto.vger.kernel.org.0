@@ -2,169 +2,113 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 354817B5F7F
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Oct 2023 05:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6073C7B60A4
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Oct 2023 08:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjJCDpL (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 2 Oct 2023 23:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
+        id S230213AbjJCGIK (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 3 Oct 2023 02:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbjJCDo5 (ORCPT
+        with ESMTP id S229547AbjJCGIK (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 2 Oct 2023 23:44:57 -0400
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDB8DA
-        for <linux-crypto@vger.kernel.org>; Mon,  2 Oct 2023 20:44:53 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qnWL2-002wUd-BJ; Tue, 03 Oct 2023 11:44:49 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 03 Oct 2023 11:44:52 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 16/16] crypto: skcipher - Remove obsolete skcipher_alg helpers
-Date:   Tue,  3 Oct 2023 11:43:33 +0800
-Message-Id: <20231003034333.1441826-17-herbert@gondor.apana.org.au>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231003034333.1441826-1-herbert@gondor.apana.org.au>
-References: <20231003034333.1441826-1-herbert@gondor.apana.org.au>
+        Tue, 3 Oct 2023 02:08:10 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520ABB7;
+        Mon,  2 Oct 2023 23:08:07 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39367fQY111012;
+        Tue, 3 Oct 2023 01:07:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696313261;
+        bh=8nHXIz83JEIbMHbNl4Btub6SQ0/ni/ZIwsC2FHxJX6Q=;
+        h=From:To:CC:Subject:In-Reply-To:References:Date;
+        b=KPmkj9WCNcya62CDRzjUVxY4xqNJavEtHWYOmAYryzGsYCRtBEcaIsgec20Th59y8
+         29iId9xbdoEKqS7a0WxpijUilcfV/NLexAYsizKm+gzspJjKwqcyI66sRpWY9W5W9Z
+         QnQtI30rjGiL6z+9O/FAkIJt1Y/Iy+4cr/WlynKI=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39367fmU010004
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Oct 2023 01:07:41 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
+ Oct 2023 01:07:41 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 3 Oct 2023 01:07:41 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39367epB042204;
+        Tue, 3 Oct 2023 01:07:41 -0500
+From:   Kamlesh Gurudasani <kamlesh@ti.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH v2 0/6] Add support for
+ Texas Instruments MCRC64 engine
+In-Reply-To: <87a5thgwt6.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
+ <20230812030116.GF971@sol.localdomain>
+ <87h6owen39.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+ <20230822051710.GC1661@sol.localdomain>
+ <87zg28d9z4.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+ <87a5thgwt6.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+Date:   Tue, 3 Oct 2023 11:37:40 +0530
+Message-ID: <87wmw4fdcj.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-As skcipher spawn users can no longer assume the spawn is of type
-struct skcipher_alg, these helpers are no longer used.  Remove them.
+Kamlesh Gurudasani <kamlesh@ti.com> writes:
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
----
- include/crypto/internal/skcipher.h | 42 ------------------------------
- include/crypto/skcipher.h          | 25 +-----------------
- 2 files changed, 1 insertion(+), 66 deletions(-)
+>>
+>> Here, if we consider similar numbers for crc64 PMULL implementation as
+>> crc32 (case 2) , we save good number of cpu cycles using mcrc64
+>> in case of files bigger than 5-10mb as most of the time is being spent in HW offload.
+>>
+>> Regards,
+>> Kamlesh
+>
+> Hi Eric,
+>
+> Please let me know if above numbers make sense to you and I should send
+> next revision.
 
-diff --git a/include/crypto/internal/skcipher.h b/include/crypto/internal/skcipher.h
-index c767b5cfbd9c..7ae42afdcf3e 100644
---- a/include/crypto/internal/skcipher.h
-+++ b/include/crypto/internal/skcipher.h
-@@ -148,12 +148,6 @@ static inline void crypto_drop_lskcipher(struct crypto_lskcipher_spawn *spawn)
- 	crypto_drop_spawn(&spawn->base);
- }
- 
--static inline struct skcipher_alg *crypto_skcipher_spawn_alg(
--	struct crypto_skcipher_spawn *spawn)
--{
--	return container_of(spawn->base.alg, struct skcipher_alg, base);
--}
--
- static inline struct lskcipher_alg *crypto_lskcipher_spawn_alg(
- 	struct crypto_lskcipher_spawn *spawn)
- {
-@@ -166,12 +160,6 @@ static inline struct skcipher_alg_common *crypto_spawn_skcipher_alg_common(
- 	return container_of(spawn->base.alg, struct skcipher_alg_common, base);
- }
- 
--static inline struct skcipher_alg *crypto_spawn_skcipher_alg(
--	struct crypto_skcipher_spawn *spawn)
--{
--	return crypto_skcipher_spawn_alg(spawn);
--}
--
- static inline struct lskcipher_alg *crypto_spawn_lskcipher_alg(
- 	struct crypto_lskcipher_spawn *spawn)
- {
-@@ -269,36 +257,6 @@ static inline u32 skcipher_request_flags(struct skcipher_request *req)
- 	return req->base.flags;
- }
- 
--static inline unsigned int crypto_skcipher_alg_min_keysize(
--	struct skcipher_alg *alg)
--{
--	return alg->min_keysize;
--}
--
--static inline unsigned int crypto_skcipher_alg_max_keysize(
--	struct skcipher_alg *alg)
--{
--	return alg->max_keysize;
--}
--
--static inline unsigned int crypto_skcipher_alg_walksize(
--	struct skcipher_alg *alg)
--{
--	return alg->walksize;
--}
--
--static inline unsigned int crypto_lskcipher_alg_min_keysize(
--	struct lskcipher_alg *alg)
--{
--	return alg->co.min_keysize;
--}
--
--static inline unsigned int crypto_lskcipher_alg_max_keysize(
--	struct lskcipher_alg *alg)
--{
--	return alg->co.max_keysize;
--}
--
- /* Helpers for simple block cipher modes of operation */
- struct skcipher_ctx_simple {
- 	struct crypto_cipher *cipher;	/* underlying block cipher */
-diff --git a/include/crypto/skcipher.h b/include/crypto/skcipher.h
-index a648ef5ce897..ea18af48346b 100644
---- a/include/crypto/skcipher.h
-+++ b/include/crypto/skcipher.h
-@@ -395,17 +395,6 @@ static inline struct lskcipher_alg *crypto_lskcipher_alg(
- 			    struct lskcipher_alg, co.base);
- }
- 
--static inline unsigned int crypto_skcipher_alg_ivsize(struct skcipher_alg *alg)
--{
--	return alg->ivsize;
--}
--
--static inline unsigned int crypto_lskcipher_alg_ivsize(
--	struct lskcipher_alg *alg)
--{
--	return alg->co.ivsize;
--}
--
- /**
-  * crypto_skcipher_ivsize() - obtain IV size
-  * @tfm: cipher handle
-@@ -473,18 +462,6 @@ static inline unsigned int crypto_lskcipher_blocksize(
- 	return crypto_tfm_alg_blocksize(crypto_lskcipher_tfm(tfm));
- }
- 
--static inline unsigned int crypto_skcipher_alg_chunksize(
--	struct skcipher_alg *alg)
--{
--	return alg->chunksize;
--}
--
--static inline unsigned int crypto_lskcipher_alg_chunksize(
--	struct lskcipher_alg *alg)
--{
--	return alg->co.chunksize;
--}
--
- /**
-  * crypto_skcipher_chunksize() - obtain chunk size
-  * @tfm: cipher handle
-@@ -516,7 +493,7 @@ static inline unsigned int crypto_skcipher_chunksize(
- static inline unsigned int crypto_lskcipher_chunksize(
- 	struct crypto_lskcipher *tfm)
- {
--	return crypto_lskcipher_alg_chunksize(crypto_lskcipher_alg(tfm));
-+	return crypto_lskcipher_alg(tfm)->co.chunksize;
- }
- 
- static inline unsigned int crypto_sync_skcipher_blocksize(
--- 
-2.39.2
+Hi Eric,
 
+I understand that there is no in-kernel user for crc64-iso3309 and this
+is new algorithm that we are trying to add in linux kernel.
+
+As per your suggestion we did the calculations and it turns out to be we
+are saving good number of cpu cycles with HW offload.
+
+Also, there are some automotive customers who have a safety
+requirement to offload any parameters that are in Linux to ensure FFI.
+
+Let me know if you are willing to accept this driver, so that I can put
+efforts to send next revision.
+
+Regards,
+Kamlesh
