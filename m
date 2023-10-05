@@ -2,130 +2,68 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7007BA397
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Oct 2023 17:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184A97BA817
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Oct 2023 19:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236198AbjJEP6C (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Oct 2023 11:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S231875AbjJERaW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Oct 2023 13:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbjJEP4q (ORCPT
+        with ESMTP id S230266AbjJER33 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:56:46 -0400
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5782E9ED4;
-        Thu,  5 Oct 2023 07:04:49 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 7B1A62800BBF3;
-        Thu,  5 Oct 2023 16:04:47 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 662DD4DD3BE; Thu,  5 Oct 2023 16:04:47 +0200 (CEST)
-Date:   Thu, 5 Oct 2023 16:04:47 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linux-pci@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kvm@vger.kernel.org,
-        linuxarm@huawei.com, David Box <david.e.box@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Li, Ming" <ming4.li@intel.com>, Zhi Wang <zhi.a.wang@intel.com>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Wilfred Mallawa <wilfred.mallawa@wdc.com>,
-        Alexey Kardashevskiy <aik@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Graf <graf@amazon.com>
-Subject: Re: [PATCH 09/12] PCI/CMA: Validate Subject Alternative Name in
- certificates
-Message-ID: <20231005140447.GA23472@wunner.de>
-References: <cover.1695921656.git.lukas@wunner.de>
- <bc1efd945f5d76587787f8351199e1ea45eaf2ef.1695921657.git.lukas@wunner.de>
- <20231003160455.00001a4f@Huawei.com>
+        Thu, 5 Oct 2023 13:29:29 -0400
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E0D173D;
+        Thu,  5 Oct 2023 10:27:07 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qoFfg-003i8O-OE; Thu, 05 Oct 2023 12:09:09 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 05 Oct 2023 12:09:12 +0800
+Date:   Thu, 5 Oct 2023 12:09:12 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     andrew@aj.id.au, davem@davemloft.net, joel@jms.id.au,
+        john.allen@amd.com, neal_liu@aspeedtech.com,
+        thomas.lendacky@amd.com, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: Move akcipher_request_cast helper to crypto
+ header
+Message-ID: <ZR426DOX/NPqp5WM@gondor.apana.org.au>
+References: <20231001201357.2052949-1-clabbe@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231003160455.00001a4f@Huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231001201357.2052949-1-clabbe@baylibre.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 04:04:55PM +0100, Jonathan Cameron wrote:
-> On Thu, 28 Sep 2023 19:32:39 +0200 Lukas Wunner <lukas@wunner.de> wrote:
-> > PCIe r6.1 sec 6.31.3 stipulates requirements for X.509 Leaf Certificates
-> > presented by devices, in particular the presence of a Subject Alternative
-> > Name extension with a name that encodes the Vendor ID, Device ID, Device
-> > Serial Number, etc.
-> 
-> Lets you do any of
-> * What you have here
-> * Reference Integrity Manifest, e.g. see Trusted Computing Group
-> * A pointer to a location where such a Reference Integrity Manifest can be
->   obtained.
-> 
-> So this text feels a little strong though I'm fine with only support the
-> Subject Alternative Name bit for now. Whoever has one of the other options
-> can add that support :)
+On Sun, Oct 01, 2023 at 08:13:57PM +0000, Corentin Labbe wrote:
+>
+> diff --git a/include/crypto/akcipher.h b/include/crypto/akcipher.h
+> index 670508f1dca1..4b6e610db18d 100644
+> --- a/include/crypto/akcipher.h
+> +++ b/include/crypto/akcipher.h
+> @@ -498,4 +498,11 @@ static inline int crypto_akcipher_set_priv_key(struct crypto_akcipher *tfm,
+>  
+>  	return alg->set_priv_key(tfm, key, keylen);
+>  }
+> +
+> +static inline struct akcipher_request *
+> +	akcipher_request_cast(struct crypto_async_request *req)
+> +{
+> +	return container_of(req, struct akcipher_request, base);
+> +}
 
-I intend to amend the commit message as follows.  If anyone believes
-this is inaccurate, please let me know:
-
-    Side note:  Instead of a Subject Alternative Name, Leaf Certificates may
-    include "a Reference Integrity Manifest, e.g., see Trusted Computing
-    Group" or "a pointer to a location where such a Reference Integrity
-    Manifest can be obtained" (PCIe r6.1 sec 6.31.3).
-
-    A Reference Integrity Manifest contains "golden" measurements which can
-    be compared to actual measurements retrieved from a device.  It serves a
-    different purpose than the Subject Alternative Name, hence it is unclear
-    why the spec says only either of them is necessary.  It is also unclear
-    how a Reference Integrity Manifest shall be encoded into a certificate.
-
-    Ignore the Reference Integrity Manifest requirement until this confusion
-    is resolved by a spec update.
-
-
-> I haven't looked asn.1 recently enough to have any confidence on
-> a review of that bit...
-> So, for everything except the asn.1
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-In case it raises the confidence in that portion of the patch,
-I have tested it successfully not just with certificates containing
-a single CMA otherName, but also:
-
-- a single otherName with a different OID
-- multiple otherNames with a mix of CMA and other OIDs
-- multiple otherNames plus additional unrelated dNSNames
-- no Subject Alternative Name
-
-Getting the IMPLICIT annotations right was a bit nontrivial.
-It turned out that the existing crypto/asymmetric_keys/x509_akid.asn1
-got that wrong as well, so I fixed it up as a byproduct of this series:
-
-https://git.kernel.org/herbert/cryptodev-2.6/c/a1e452026e6d
-
-The debug experience made me appreciate the kernel's ASN.1 compiler
-and parser though:  Their code is surprisingly small, the generated
-output of the compiler is quite readable and the split architecture
-with a compiler+parser feels much safer than what openssl does.
+Please move this to include/crypto/internal/akcipher.h.
 
 Thanks,
-
-Lukas
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
