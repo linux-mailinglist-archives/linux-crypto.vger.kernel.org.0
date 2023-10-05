@@ -2,39 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 184A97BA817
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Oct 2023 19:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C027BA815
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Oct 2023 19:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbjJERaW (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Oct 2023 13:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        id S230163AbjJERaP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Oct 2023 13:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjJER33 (ORCPT
+        with ESMTP id S230228AbjJER33 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 5 Oct 2023 13:29:29 -0400
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E0D173D;
-        Thu,  5 Oct 2023 10:27:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE031728;
+        Thu,  5 Oct 2023 10:27:05 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qoFfg-003i8O-OE; Thu, 05 Oct 2023 12:09:09 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 05 Oct 2023 12:09:12 +0800
-Date:   Thu, 5 Oct 2023 12:09:12 +0800
+        id 1qoLWt-003l7m-Lk; Thu, 05 Oct 2023 18:24:28 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 05 Oct 2023 18:24:31 +0800
+Date:   Thu, 5 Oct 2023 18:24:31 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     andrew@aj.id.au, davem@davemloft.net, joel@jms.id.au,
-        john.allen@amd.com, neal_liu@aspeedtech.com,
-        thomas.lendacky@amd.com, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: Move akcipher_request_cast helper to crypto
- header
-Message-ID: <ZR426DOX/NPqp5WM@gondor.apana.org.au>
-References: <20231001201357.2052949-1-clabbe@baylibre.com>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@denx.de>
+Subject: Re: [PATCH v2 1/3] dt-bindings: crypto: fsl-imx-sahara: Shorten the
+ title
+Message-ID: <ZR6O38TdNNA+BrMN@gondor.apana.org.au>
+References: <20230925111220.924090-1-festevam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231001201357.2052949-1-clabbe@baylibre.com>
+In-Reply-To: <20230925111220.924090-1-festevam@gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -43,26 +41,25 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 08:13:57PM +0000, Corentin Labbe wrote:
->
-> diff --git a/include/crypto/akcipher.h b/include/crypto/akcipher.h
-> index 670508f1dca1..4b6e610db18d 100644
-> --- a/include/crypto/akcipher.h
-> +++ b/include/crypto/akcipher.h
-> @@ -498,4 +498,11 @@ static inline int crypto_akcipher_set_priv_key(struct crypto_akcipher *tfm,
->  
->  	return alg->set_priv_key(tfm, key, keylen);
->  }
-> +
-> +static inline struct akcipher_request *
-> +	akcipher_request_cast(struct crypto_async_request *req)
-> +{
-> +	return container_of(req, struct akcipher_request, base);
-> +}
+On Mon, Sep 25, 2023 at 08:12:18AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
+> 
+> In the title, there is no need to mention "included in some i.MX chips"
+> as it is too vague.
+> 
+> Remove it to make it simpler.
+> 
+> While at it, also remove the extra space in the first reg entry.
+> 
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
+> ---
+> Changes since v1:
+> - Squash the removal of leading space. (Krzysztof)
+> 
+>  Documentation/devicetree/bindings/crypto/fsl-imx-sahara.yaml | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Please move this to include/crypto/internal/akcipher.h.
-
-Thanks,
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
