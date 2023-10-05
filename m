@@ -2,122 +2,130 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CB07B9DB4
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Oct 2023 15:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7007BA397
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Oct 2023 17:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjJENyR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 5 Oct 2023 09:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S236198AbjJEP6C (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 5 Oct 2023 11:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbjJENsE (ORCPT
+        with ESMTP id S234417AbjJEP4q (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Thu, 5 Oct 2023 09:48:04 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037EB25727
-        for <linux-crypto@vger.kernel.org>; Thu,  5 Oct 2023 04:55:18 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3231d6504e1so849883f8f.2
-        for <linux-crypto@vger.kernel.org>; Thu, 05 Oct 2023 04:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696506916; x=1697111716; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DwO6Ki+5EpybdSIGbdkuxTHSu7uLfu1Vp4xVkRO0nX8=;
-        b=xxr/5SMDtw4SxP3bh5Jg/52g+fiBFWQpsKenqLYIPo7K4xO51jwsYcV5eqpB9ztdH4
-         AR3aLeTRlxg2XqbrmevdoghFNYfppAr6DskcT5x3cO2SSeM/j4rZmDMDotEmqAgiO6FW
-         3+VdG2NNPVcPRzT58QuL3lghwEAI0dH9Oq126nfvtOGh6pDhlnKXaaOpMPbawLWUlPex
-         sBfZRW3pAJQ23QrnkyBJnzpzW0W+45iey7pYPWBpc7GClUxDdaj+dz8A3AeU9JTJUKvc
-         lkBzLOA8dyGqvSKWVlubzBqmiv//0+p/lgLMcSFRITEgEjAsM2QnQAgeW1TfWG5iq7RB
-         4g+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696506916; x=1697111716;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DwO6Ki+5EpybdSIGbdkuxTHSu7uLfu1Vp4xVkRO0nX8=;
-        b=ShBoQ77mbe5NaD+QBptPJ0kCwRtmaEmRuV0k2z10EQt0NIzwWFdDsRDNhNuC9ZOmuG
-         jtfVVmwzsDEJZFDOIZJiLzaNM7VXiVNmM0DFmusLgbea6xXuHlH/nnNm2573U4qXyqo0
-         BUDMAmMYn2VNiZK7l0/TFKQjFm4JyrKq2VZnGXgBLccjdE7rriI3/IM0h8Z2SdmY/0wz
-         zdelv3J9D7kUfrF1maabcRTl8JfR/R2Wg4O02zcaAu/8IBU2xhh1ZC35QLGnJrNpPAMZ
-         mVKchC68CPzYIpWDvJUDYg0Y1E8YEGfaZoG5DrrsMPQERMbsS1fmdbYJEuYK1zpwBgXd
-         zjRw==
-X-Gm-Message-State: AOJu0Ywa7ME3lM8aVl0zAzgNE+mhY8x7oXcpb6F02JsQ4GLcAMnS0noY
-        cP4vaGHBf5zcCakkm98Miab7OnygwbeB+W4Gmno=
-X-Google-Smtp-Source: AGHT+IE6gikIk7V7xjRWnBzcsbAAOyul6lA7rACnTXDyQtKqBijrIo6HND/+JmQ3DZeeRxt4XtPNZQ==
-X-Received: by 2002:a5d:5502:0:b0:317:5182:7b55 with SMTP id b2-20020a5d5502000000b0031751827b55mr4482480wrv.42.1696506916209;
-        Thu, 05 Oct 2023 04:55:16 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o17-20020a5d6851000000b0031fe0576460sm1639989wrw.11.2023.10.05.04.55.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 04:55:15 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 14:55:11 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     smueller@chronox.de
-Cc:     linux-crypto@vger.kernel.org
-Subject: [bug report] crypto: jitter - add RCT/APT support for different OSRs
-Message-ID: <9a6fbd96-53a3-48d4-978d-b21510f655a8@moroto.mountain>
+        Thu, 5 Oct 2023 11:56:46 -0400
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5782E9ED4;
+        Thu,  5 Oct 2023 07:04:49 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 7B1A62800BBF3;
+        Thu,  5 Oct 2023 16:04:47 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 662DD4DD3BE; Thu,  5 Oct 2023 16:04:47 +0200 (CEST)
+Date:   Thu, 5 Oct 2023 16:04:47 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-pci@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, kvm@vger.kernel.org,
+        linuxarm@huawei.com, David Box <david.e.box@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Li, Ming" <ming4.li@intel.com>, Zhi Wang <zhi.a.wang@intel.com>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Wilfred Mallawa <wilfred.mallawa@wdc.com>,
+        Alexey Kardashevskiy <aik@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Graf <graf@amazon.com>
+Subject: Re: [PATCH 09/12] PCI/CMA: Validate Subject Alternative Name in
+ certificates
+Message-ID: <20231005140447.GA23472@wunner.de>
+References: <cover.1695921656.git.lukas@wunner.de>
+ <bc1efd945f5d76587787f8351199e1ea45eaf2ef.1695921657.git.lukas@wunner.de>
+ <20231003160455.00001a4f@Huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231003160455.00001a4f@Huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Hello Stephan Müller,
+On Tue, Oct 03, 2023 at 04:04:55PM +0100, Jonathan Cameron wrote:
+> On Thu, 28 Sep 2023 19:32:39 +0200 Lukas Wunner <lukas@wunner.de> wrote:
+> > PCIe r6.1 sec 6.31.3 stipulates requirements for X.509 Leaf Certificates
+> > presented by devices, in particular the presence of a Subject Alternative
+> > Name extension with a name that encodes the Vendor ID, Device ID, Device
+> > Serial Number, etc.
+> 
+> Lets you do any of
+> * What you have here
+> * Reference Integrity Manifest, e.g. see Trusted Computing Group
+> * A pointer to a location where such a Reference Integrity Manifest can be
+>   obtained.
+> 
+> So this text feels a little strong though I'm fine with only support the
+> Subject Alternative Name bit for now. Whoever has one of the other options
+> can add that support :)
 
-The patch 04597c8dd6c4: "crypto: jitter - add RCT/APT support for
-different OSRs" from Sep 21, 2023 (linux-next), leads to the
-following Smatch static checker warning:
+I intend to amend the commit message as follows.  If anyone believes
+this is inaccurate, please let me know:
 
-	crypto/jitterentropy.c:615 jent_read_entropy()
-	warn: sleeping in atomic context
+    Side note:  Instead of a Subject Alternative Name, Leaf Certificates may
+    include "a Reference Integrity Manifest, e.g., see Trusted Computing
+    Group" or "a pointer to a location where such a Reference Integrity
+    Manifest can be obtained" (PCIe r6.1 sec 6.31.3).
 
-crypto/jitterentropy.c
-    601                 if (jent_permanent_health_failure(ec)) {
-    602                         /*
-    603                          * At this point, the Jitter RNG instance is considered
-    604                          * as a failed instance. There is no rerun of the
-    605                          * startup test any more, because the caller
-    606                          * is assumed to not further use this instance.
-    607                          */
-    608                         return -3;
-    609                 } else if (jent_health_failure(ec)) {
-    610                         /*
-    611                          * Perform startup health tests and return permanent
-    612                          * error if it fails.
-    613                          */
-    614                         if (jent_entropy_init(ec->osr, ec->flags,
---> 615                                               ec->hash_state))
+    A Reference Integrity Manifest contains "golden" measurements which can
+    be compared to actual measurements retrieved from a device.  It serves a
+    different purpose than the Subject Alternative Name, hence it is unclear
+    why the spec says only either of them is necessary.  It is also unclear
+    how a Reference Integrity Manifest shall be encoded into a certificate.
 
-jent_entropy_init() does a sleeping allocation.  The caller,
-jent_kcapi_random(), is holding spin_lock(&rng->jent_lock); and so
-we're not allowed to sleep.
+    Ignore the Reference Integrity Manifest requirement until this confusion
+    is resolved by a spec update.
 
-    616                                 return -3;
-    617 
-    618                         return -2;
-    619                 }
-    620 
-    621                 if ((DATA_SIZE_BITS / 8) < len)
-    622                         tocopy = (DATA_SIZE_BITS / 8);
-    623                 else
-    624                         tocopy = len;
-    625                 if (jent_read_random_block(ec->hash_state, p, tocopy))
-    626                         return -1;
-    627 
-    628                 len -= tocopy;
-    629                 p += tocopy;
-    630         }
-    631 
-    632         return 0;
-    633 }
 
-regards,
-dan carpenter
+> I haven't looked asn.1 recently enough to have any confidence on
+> a review of that bit...
+> So, for everything except the asn.1
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+In case it raises the confidence in that portion of the patch,
+I have tested it successfully not just with certificates containing
+a single CMA otherName, but also:
+
+- a single otherName with a different OID
+- multiple otherNames with a mix of CMA and other OIDs
+- multiple otherNames plus additional unrelated dNSNames
+- no Subject Alternative Name
+
+Getting the IMPLICIT annotations right was a bit nontrivial.
+It turned out that the existing crypto/asymmetric_keys/x509_akid.asn1
+got that wrong as well, so I fixed it up as a byproduct of this series:
+
+https://git.kernel.org/herbert/cryptodev-2.6/c/a1e452026e6d
+
+The debug experience made me appreciate the kernel's ASN.1 compiler
+and parser though:  Their code is surprisingly small, the generated
+output of the compiler is quite readable and the split architecture
+with a compiler+parser feels much safer than what openssl does.
+
+Thanks,
+
+Lukas
