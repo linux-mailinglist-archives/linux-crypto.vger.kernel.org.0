@@ -2,43 +2,42 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD117BD4BD
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Oct 2023 09:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A127BD501
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Oct 2023 10:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345451AbjJIHyJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 9 Oct 2023 03:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S234377AbjJIITl (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 9 Oct 2023 04:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234372AbjJIHyI (ORCPT
+        with ESMTP id S232666AbjJIITk (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:54:08 -0400
+        Mon, 9 Oct 2023 04:19:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC751AB
-        for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 00:54:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B27CC433C8
-        for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 07:54:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF438F
+        for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 01:19:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDB1AC433C7
+        for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 08:19:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696838046;
-        bh=DtOdqHJM2o4D/hsHI+LBPTBTuQoe17srScWir4PTaGE=;
+        s=k20201202; t=1696839577;
+        bh=6K/98GWXvqvYq13t70RfzRM2WPYM3viasqCT7Cjb1IA=;
         h=From:To:Subject:Date:From;
-        b=FSz+m9kTVgXbRhuhE0J8bvlr7P1QS/WqpP0XiwyBivBFewHMViDxO7P6TijG792zh
-         jwvnFABFpm92noaK6zeZBxELJaY4F8x03z8a81glCohLYb5W6wNdmJYZSrK+0TaT3P
-         9DPp/WYvm8S3Xi47Cgyln6D1m0xYvOvRixhzcMvYXfoOfbRyBTm/r+od2XTqLyHKCu
-         Sj3dxeBq/n3LZEq13dIDjAtp+WLDOyIY5SKygL6+Nl2PNU+Tjc+k8/hOhfrYBFvGnT
-         jNXgYoaoXaDHXRM0V+tczBe1wEoamlCIdtvolufTH0uuxqUI0/KRQNF+opUw5IacxC
-         VgH2DM2r4jixA==
+        b=MpJPA+LR1x8FOJoREZkAY/aqckYWbE/i5QH2wUhRFtYsxqk0hxbmayS4khAc72sSn
+         LYTqhFEiZzHchS02Lpw3D762TIMgqr00LRsnRDROVPMqvRaaFBR0vsSWgJpQwzbT11
+         xzSMi71k/NlDOgoqeDcAh7DE5Yj5nfMPqvYbswTEYa6+n61mqKI3iOwJwFNtyV4Jra
+         duYGFiItMxKoAJUyMsI4B/b6Wh00job30rltMFgWA+AXdfj6cjO11W0u1jJkJn0373
+         IVr6lzrBPK/0aAmolVcDLt81ad0ItLdmvpU42OXItwmjGc1dTuc+VcE/xIESM5xtgX
+         XadnZ+nCUraLQ==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH] crypto: arm64/sha2-ce - implement ->digest for sha256
-Date:   Mon,  9 Oct 2023 00:53:27 -0700
-Message-ID: <20231009075327.446840-1-ebiggers@kernel.org>
+Subject: [PATCH] crypto: x86/sha256 - implement ->digest for sha256
+Date:   Mon,  9 Oct 2023 01:19:00 -0700
+Message-ID: <20231009081900.503086-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -47,72 +46,162 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Implement a ->digest function for sha256-ce.  This improves the
-performance of crypto_shash_digest() with this algorithm by reducing the
-number of indirect calls that are made.  This only adds ~112 bytes of
-code, mostly for the inlined init, as the finup function is tail-called.
+Implement a ->digest function for sha256-ssse3, sha256-avx, sha256-avx2,
+and sha256-ni.  This improves the performance of crypto_shash_digest()
+with these algorithms by reducing the number of indirect calls that are
+made.
 
 For now, don't bother with this for sha224, since sha224 is rarely used.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/arm64/crypto/sha2-ce-glue.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/x86/crypto/sha256_ssse3_glue.c | 32 +++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/arch/arm64/crypto/sha2-ce-glue.c b/arch/arm64/crypto/sha2-ce-glue.c
-index c57a6119fefc5..f2f118b0e1c1f 100644
---- a/arch/arm64/crypto/sha2-ce-glue.c
-+++ b/arch/arm64/crypto/sha2-ce-glue.c
-@@ -109,20 +109,27 @@ static int sha256_ce_final(struct shash_desc *desc, u8 *out)
- 	if (!crypto_simd_usable()) {
- 		sha256_base_do_finalize(desc, __sha256_block_data_order);
- 		return sha256_base_finish(desc, out);
- 	}
- 
- 	sctx->finalize = 0;
- 	sha256_base_do_finalize(desc, __sha2_ce_transform);
- 	return sha256_base_finish(desc, out);
+diff --git a/arch/x86/crypto/sha256_ssse3_glue.c b/arch/x86/crypto/sha256_ssse3_glue.c
+index d25235f0ccafc..4c0383a90e114 100644
+--- a/arch/x86/crypto/sha256_ssse3_glue.c
++++ b/arch/x86/crypto/sha256_ssse3_glue.c
+@@ -100,26 +100,34 @@ static int sha256_ssse3_finup(struct shash_desc *desc, const u8 *data,
+ {
+ 	return sha256_finup(desc, data, len, out, sha256_transform_ssse3);
  }
  
-+static int sha256_ce_digest(struct shash_desc *desc, const u8 *data,
-+			    unsigned int len, u8 *out)
+ /* Add padding and return the message digest. */
+ static int sha256_ssse3_final(struct shash_desc *desc, u8 *out)
+ {
+ 	return sha256_ssse3_finup(desc, NULL, 0, out);
+ }
+ 
++static int sha256_ssse3_digest(struct shash_desc *desc, const u8 *data,
++	      unsigned int len, u8 *out)
 +{
-+	sha256_base_init(desc);
-+	return sha256_ce_finup(desc, data, len, out);
++	return sha256_base_init(desc) ?:
++	       sha256_ssse3_finup(desc, data, len, out);
 +}
 +
- static int sha256_ce_export(struct shash_desc *desc, void *out)
- {
- 	struct sha256_ce_state *sctx = shash_desc_ctx(desc);
- 
- 	memcpy(out, &sctx->sst, sizeof(struct sha256_state));
- 	return 0;
- }
- 
- static int sha256_ce_import(struct shash_desc *desc, const void *in)
- {
-@@ -148,20 +155,21 @@ static struct shash_alg algs[] = { {
- 		.cra_driver_name	= "sha224-ce",
- 		.cra_priority		= 200,
- 		.cra_blocksize		= SHA256_BLOCK_SIZE,
- 		.cra_module		= THIS_MODULE,
+ static struct shash_alg sha256_ssse3_algs[] = { {
+ 	.digestsize	=	SHA256_DIGEST_SIZE,
+ 	.init		=	sha256_base_init,
+ 	.update		=	sha256_ssse3_update,
+ 	.final		=	sha256_ssse3_final,
+ 	.finup		=	sha256_ssse3_finup,
++	.digest		=	sha256_ssse3_digest,
+ 	.descsize	=	sizeof(struct sha256_state),
+ 	.base		=	{
+ 		.cra_name	=	"sha256",
+ 		.cra_driver_name =	"sha256-ssse3",
+ 		.cra_priority	=	150,
+ 		.cra_blocksize	=	SHA256_BLOCK_SIZE,
+ 		.cra_module	=	THIS_MODULE,
  	}
  }, {
- 	.init			= sha256_base_init,
- 	.update			= sha256_ce_update,
- 	.final			= sha256_ce_final,
- 	.finup			= sha256_ce_finup,
-+	.digest			= sha256_ce_digest,
- 	.export			= sha256_ce_export,
- 	.import			= sha256_ce_import,
- 	.descsize		= sizeof(struct sha256_ce_state),
- 	.statesize		= sizeof(struct sha256_state),
- 	.digestsize		= SHA256_DIGEST_SIZE,
- 	.base			= {
- 		.cra_name		= "sha256",
- 		.cra_driver_name	= "sha256-ce",
- 		.cra_priority		= 200,
- 		.cra_blocksize		= SHA256_BLOCK_SIZE,
+ 	.digestsize	=	SHA224_DIGEST_SIZE,
+@@ -165,26 +173,34 @@ static int sha256_avx_finup(struct shash_desc *desc, const u8 *data,
+ 		      unsigned int len, u8 *out)
+ {
+ 	return sha256_finup(desc, data, len, out, sha256_transform_avx);
+ }
+ 
+ static int sha256_avx_final(struct shash_desc *desc, u8 *out)
+ {
+ 	return sha256_avx_finup(desc, NULL, 0, out);
+ }
+ 
++static int sha256_avx_digest(struct shash_desc *desc, const u8 *data,
++		      unsigned int len, u8 *out)
++{
++	return sha256_base_init(desc) ?:
++	       sha256_avx_finup(desc, data, len, out);
++}
++
+ static struct shash_alg sha256_avx_algs[] = { {
+ 	.digestsize	=	SHA256_DIGEST_SIZE,
+ 	.init		=	sha256_base_init,
+ 	.update		=	sha256_avx_update,
+ 	.final		=	sha256_avx_final,
+ 	.finup		=	sha256_avx_finup,
++	.digest		=	sha256_avx_digest,
+ 	.descsize	=	sizeof(struct sha256_state),
+ 	.base		=	{
+ 		.cra_name	=	"sha256",
+ 		.cra_driver_name =	"sha256-avx",
+ 		.cra_priority	=	160,
+ 		.cra_blocksize	=	SHA256_BLOCK_SIZE,
+ 		.cra_module	=	THIS_MODULE,
+ 	}
+ }, {
+ 	.digestsize	=	SHA224_DIGEST_SIZE,
+@@ -241,26 +257,34 @@ static int sha256_avx2_finup(struct shash_desc *desc, const u8 *data,
+ 		      unsigned int len, u8 *out)
+ {
+ 	return sha256_finup(desc, data, len, out, sha256_transform_rorx);
+ }
+ 
+ static int sha256_avx2_final(struct shash_desc *desc, u8 *out)
+ {
+ 	return sha256_avx2_finup(desc, NULL, 0, out);
+ }
+ 
++static int sha256_avx2_digest(struct shash_desc *desc, const u8 *data,
++		      unsigned int len, u8 *out)
++{
++	return sha256_base_init(desc) ?:
++	       sha256_avx2_finup(desc, data, len, out);
++}
++
+ static struct shash_alg sha256_avx2_algs[] = { {
+ 	.digestsize	=	SHA256_DIGEST_SIZE,
+ 	.init		=	sha256_base_init,
+ 	.update		=	sha256_avx2_update,
+ 	.final		=	sha256_avx2_final,
+ 	.finup		=	sha256_avx2_finup,
++	.digest		=	sha256_avx2_digest,
+ 	.descsize	=	sizeof(struct sha256_state),
+ 	.base		=	{
+ 		.cra_name	=	"sha256",
+ 		.cra_driver_name =	"sha256-avx2",
+ 		.cra_priority	=	170,
+ 		.cra_blocksize	=	SHA256_BLOCK_SIZE,
+ 		.cra_module	=	THIS_MODULE,
+ 	}
+ }, {
+ 	.digestsize	=	SHA224_DIGEST_SIZE,
+@@ -316,26 +340,34 @@ static int sha256_ni_finup(struct shash_desc *desc, const u8 *data,
+ 		      unsigned int len, u8 *out)
+ {
+ 	return sha256_finup(desc, data, len, out, sha256_ni_transform);
+ }
+ 
+ static int sha256_ni_final(struct shash_desc *desc, u8 *out)
+ {
+ 	return sha256_ni_finup(desc, NULL, 0, out);
+ }
+ 
++static int sha256_ni_digest(struct shash_desc *desc, const u8 *data,
++		      unsigned int len, u8 *out)
++{
++	return sha256_base_init(desc) ?:
++	       sha256_ni_finup(desc, data, len, out);
++}
++
+ static struct shash_alg sha256_ni_algs[] = { {
+ 	.digestsize	=	SHA256_DIGEST_SIZE,
+ 	.init		=	sha256_base_init,
+ 	.update		=	sha256_ni_update,
+ 	.final		=	sha256_ni_final,
+ 	.finup		=	sha256_ni_finup,
++	.digest		=	sha256_ni_digest,
+ 	.descsize	=	sizeof(struct sha256_state),
+ 	.base		=	{
+ 		.cra_name	=	"sha256",
+ 		.cra_driver_name =	"sha256-ni",
+ 		.cra_priority	=	250,
+ 		.cra_blocksize	=	SHA256_BLOCK_SIZE,
+ 		.cra_module	=	THIS_MODULE,
+ 	}
+ }, {
+ 	.digestsize	=	SHA224_DIGEST_SIZE,
 
 base-commit: 8468516f9f93a41dc65158b6428a1a1039c68f20
 -- 
