@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4450E7BD45E
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Oct 2023 09:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFC87BD460
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Oct 2023 09:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345410AbjJIHc7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S1345414AbjJIHc7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Mon, 9 Oct 2023 03:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345404AbjJIHc6 (ORCPT
+        with ESMTP id S1345374AbjJIHc6 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Mon, 9 Oct 2023 03:32:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131C9AB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B123C5
         for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 00:32:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A88DBC433C9
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB434C433CA
         for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 07:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1696836776;
-        bh=366zidm3mI4N6QjzW8Mm0yy828Fc1fuBFssIf3ZfewI=;
+        bh=kEoFp/FJCQU3tv7T+Sz+gSZdAkoL7AjRu/2pmjuhGNY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=GSkrcuvI9bJINX0ihHArxm0wOswmAmVMJF2P28wMo0KO/rSn06i+tx/828uF3t5lS
-         AcxyTbT79CiqlOYBgoRnwrTR0EXqZ8svpayCdQ2kxJjx8kFHbaZPc1VNv0fDWejs6o
-         HziMwwKhPz4jc1RevYIHtgXQmj53hQBFmdqeMy7TFF2YawVLyY9GwheBZ+G23fggXn
-         /Fz1AmE55w7pCKR/B8XNZShuUKJeEeJwT2vimp6L/wFTG8gqn+EEmwZg/CSxodW2GC
-         tvr33COZaxhNrwb1iaQBlfBCGT4Ltz6AdAKBR6rTLza/Y1wi+eJZZGYbGdUBilFgAq
-         7MjKhetJ3/0Gw==
+        b=F+aamyx8PvoAbfxAiwJozZjCVHt7zRjUzjzpQjDrrAKsZcFzSBm6DI0RTR4jkhwNG
+         lreLIL9rec0xeKZnfrvuxKP0EPGcij4pV6R+2E8HUyhQ0OnueQKCqb3a6gTCbGRclF
+         Pvx4uWJIUp+Ek3jRdoq5Z+otwO8jcarz52oSTw28TLuYPMS7vjr9BWoEOXrlHb6svj
+         dewmj63AmqsEJAK30DlEA6kULF8sjpiJQccTFEqag+3ofRV/e8DRvW7KNyAhb0v3KM
+         UVkCg0yE1O7gQRW8PWjH2qKt0YKgC8HggxDgSNWJ2Qu5bRAljrMX3DKRdHYqX/dHI1
+         UcI3MrAm6ig1w==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 1/2] crypto: shash - optimize the default digest and finup
-Date:   Mon,  9 Oct 2023 00:32:13 -0700
-Message-ID: <20231009073214.423279-2-ebiggers@kernel.org>
+Subject: [PATCH 2/2] crypto: shash - fold shash_digest_unaligned() into crypto_shash_digest()
+Date:   Mon,  9 Oct 2023 00:32:14 -0700
+Message-ID: <20231009073214.423279-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231009073214.423279-1-ebiggers@kernel.org>
 References: <20231009073214.423279-1-ebiggers@kernel.org>
@@ -49,117 +49,74 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-For an shash algorithm that doesn't implement ->digest, currently
-crypto_shash_digest() with aligned input makes 5 indirect calls: 1 to
-shash_digest_unaligned(), 1 to ->init, 2 to ->update ('alignmask + 1'
-bytes, then the rest), then 1 to ->final.  This is true even if the
-algorithm implements ->finup.  This is caused by an unnecessary fallback
-to code meant to handle unaligned inputs.  In fact,
-crypto_shash_digest() already does the needed alignment check earlier.
-Therefore, optimize the number of indirect calls for aligned inputs to 3
-when the algorithm implements ->finup.  It remains at 5 when the
-algorithm implements neither ->finup nor ->digest.
-
-Similarly, for an shash algorithm that doesn't implement ->finup,
-currently crypto_shash_finup() with aligned input makes 4 indirect
-calls: 1 to shash_finup_unaligned(), 2 to ->update, and
-1 to ->final.  Optimize this to 3 calls.
+Fold shash_digest_unaligned() into its only remaining caller.  Also,
+avoid a redundant check of CRYPTO_TFM_NEED_KEY by replacing the call to
+crypto_shash_init() with shash->init(desc).  Finally, replace
+shash_update_unaligned() + shash_final_unaligned() with
+shash_finup_unaligned() which does exactly that.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/shash.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ crypto/shash.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
 diff --git a/crypto/shash.c b/crypto/shash.c
-index 1fadb6b59bdcc..d99dc2f94c65f 100644
+index d99dc2f94c65f..15fee57cca8ef 100644
 --- a/crypto/shash.c
 +++ b/crypto/shash.c
-@@ -184,20 +184,29 @@ int crypto_shash_final(struct shash_desc *desc, u8 *out)
+@@ -218,28 +218,20 @@ int crypto_shash_finup(struct shash_desc *desc, const u8 *data,
+ 	if (((unsigned long)data | (unsigned long)out) & alignmask)
+ 		err = shash_finup_unaligned(desc, data, len, out);
+ 	else
+ 		err = shash->finup(desc, data, len, out);
+ 
+ 
+ 	return crypto_shash_errstat(shash, err);
  }
- EXPORT_SYMBOL_GPL(crypto_shash_final);
- 
- static int shash_finup_unaligned(struct shash_desc *desc, const u8 *data,
- 				 unsigned int len, u8 *out)
- {
- 	return shash_update_unaligned(desc, data, len) ?:
- 	       shash_final_unaligned(desc, out);
- }
- 
-+static int shash_default_finup(struct shash_desc *desc, const u8 *data,
-+			       unsigned int len, u8 *out)
-+{
-+	struct shash_alg *shash = crypto_shash_alg(desc->tfm);
-+
-+	return shash->update(desc, data, len) ?:
-+	       shash->final(desc, out);
-+}
-+
- int crypto_shash_finup(struct shash_desc *desc, const u8 *data,
- 		       unsigned int len, u8 *out)
- {
- 	struct crypto_shash *tfm = desc->tfm;
- 	struct shash_alg *shash = crypto_shash_alg(tfm);
- 	unsigned long alignmask = crypto_shash_alignmask(tfm);
- 	int err;
- 
- 	if (IS_ENABLED(CONFIG_CRYPTO_STATS)) {
- 		struct crypto_istat_hash *istat = shash_get_stat(shash);
-@@ -217,20 +226,29 @@ int crypto_shash_finup(struct shash_desc *desc, const u8 *data,
  EXPORT_SYMBOL_GPL(crypto_shash_finup);
  
- static int shash_digest_unaligned(struct shash_desc *desc, const u8 *data,
- 				  unsigned int len, u8 *out)
+-static int shash_digest_unaligned(struct shash_desc *desc, const u8 *data,
+-				  unsigned int len, u8 *out)
+-{
+-	return crypto_shash_init(desc) ?:
+-	       shash_update_unaligned(desc, data, len) ?:
+-	       shash_final_unaligned(desc, out);
+-}
+-
+ static int shash_default_digest(struct shash_desc *desc, const u8 *data,
+ 				unsigned int len, u8 *out)
  {
- 	return crypto_shash_init(desc) ?:
- 	       shash_update_unaligned(desc, data, len) ?:
- 	       shash_final_unaligned(desc, out);
+ 	struct shash_alg *shash = crypto_shash_alg(desc->tfm);
+ 
+ 	return shash->init(desc) ?:
+ 	       shash->finup(desc, data, len, out);
  }
  
-+static int shash_default_digest(struct shash_desc *desc, const u8 *data,
-+				unsigned int len, u8 *out)
-+{
-+	struct shash_alg *shash = crypto_shash_alg(desc->tfm);
-+
-+	return shash->init(desc) ?:
-+	       shash->finup(desc, data, len, out);
-+}
-+
  int crypto_shash_digest(struct shash_desc *desc, const u8 *data,
- 			unsigned int len, u8 *out)
- {
- 	struct crypto_shash *tfm = desc->tfm;
- 	struct shash_alg *shash = crypto_shash_alg(tfm);
- 	unsigned long alignmask = crypto_shash_alignmask(tfm);
- 	int err;
- 
+@@ -253,21 +245,22 @@ int crypto_shash_digest(struct shash_desc *desc, const u8 *data,
  	if (IS_ENABLED(CONFIG_CRYPTO_STATS)) {
  		struct crypto_istat_hash *istat = shash_get_stat(shash);
-@@ -649,23 +667,23 @@ static int shash_prepare_alg(struct shash_alg *alg)
- 		return -EINVAL;
  
- 	err = hash_prepare_alg(&alg->halg);
- 	if (err)
- 		return err;
- 
- 	base->cra_type = &crypto_shash_type;
- 	base->cra_flags |= CRYPTO_ALG_TYPE_SHASH;
- 
- 	if (!alg->finup)
--		alg->finup = shash_finup_unaligned;
-+		alg->finup = shash_default_finup;
- 	if (!alg->digest)
--		alg->digest = shash_digest_unaligned;
-+		alg->digest = shash_default_digest;
- 	if (!alg->export) {
- 		alg->export = shash_default_export;
- 		alg->import = shash_default_import;
- 		alg->halg.statesize = alg->descsize;
+ 		atomic64_inc(&istat->hash_cnt);
+ 		atomic64_add(len, &istat->hash_tlen);
  	}
- 	if (!alg->setkey)
- 		alg->setkey = shash_no_setkey;
  
- 	return 0;
+ 	if (crypto_shash_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
+ 		err = -ENOKEY;
+ 	else if (((unsigned long)data | (unsigned long)out) & alignmask)
+-		err = shash_digest_unaligned(desc, data, len, out);
++		err = shash->init(desc) ?:
++		      shash_finup_unaligned(desc, data, len, out);
+ 	else
+ 		err = shash->digest(desc, data, len, out);
+ 
+ 	return crypto_shash_errstat(shash, err);
  }
+ EXPORT_SYMBOL_GPL(crypto_shash_digest);
+ 
+ int crypto_shash_tfm_digest(struct crypto_shash *tfm, const u8 *data,
+ 			    unsigned int len, u8 *out)
+ {
 -- 
 2.42.0
 
