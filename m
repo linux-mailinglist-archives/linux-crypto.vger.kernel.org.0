@@ -2,229 +2,297 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 260657BFBD5
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Oct 2023 14:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE187BFC12
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Oct 2023 15:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbjJJMxi (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Oct 2023 08:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
+        id S232192AbjJJM7g (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Oct 2023 08:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbjJJMxg (ORCPT
+        with ESMTP id S232110AbjJJM7b (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:53:36 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2077.outbound.protection.outlook.com [40.107.237.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8CAB4;
-        Tue, 10 Oct 2023 05:53:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fWOiiDDp6Ha+YttfnflYBO20krMzHolBKZOHLgUmXxyDRvCep5Ek6nQhPuZ9UMaHx+dyVdq+uYAx54WHkAXFwZmjFf26OpgGTXTO+b7abLRt28TiIqKJVqc5Kej+cyPAJBwJHu1oZreNfMrakwWFSfvz/bgcpV6TtZmEfs8rjaB3LiwBiPh6yhDY/IAiJNtmbr627AFcW/zibViQfWQJhqaIyQuMA7IbA1PnCRIyAkhUBhjtafU3S7jyBtu/uY5iR4AdHg6hGlgP/Y3VE3a90Zi/C8YwXie39wJDLo7CqqVRUvZK2UT43qgYb8+kV4/C4/DlaZjnTb/aGZ5UCS/BHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=feQBOLwSu+tjrOw9JyUuvSfWWF55ZRNCgjceaK/xEHs=;
- b=Ox7T/GgB23YTe9aMzGv9S9IMArkP+zEPlMW5j7RPaysE/L9HcKhoFhdDlW4Cjs8FP6BWZLHdywkSM1ZBDKXmTvoyZOdWQkZIZWZn0AShWzuPkJ83gN+jg6UREJZL1RY6AZz5W00Nj8d5gCJYwvOlARWZ3IFu92f/2YwF+GtaVOLN8xGI7ELoe9f38oV7D3sKi8if2Fr1nD7mKFCwYp9o3NfUvXeVsF8YmmXTMSgu+Eykmf3R3bZp3BjAFii96nUkv9+FqQUXbhoB6qsOuUFuZvP3JxPsUA0/2poECsJRDj8jdUE99p0285JuRBPdosnnZklKp/dUDce8FV1T3jK3ZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=feQBOLwSu+tjrOw9JyUuvSfWWF55ZRNCgjceaK/xEHs=;
- b=0l0f6o0Wko1U7FJ8FcJu63WpR0ZH3wyu6UGEbhosWfyY5JyViAX2YuYvB0ISruQnZ6yOQMy9td2bnhAaVs/UD8UmlInHZmxJbdXCpygox+giNEuJEC6/ll4LPLv5rL0BcXA+IcQpU8sY1jx826JGxR3zPl/j9U+AFCol4fkZ5fs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
- by DM4PR12MB5389.namprd12.prod.outlook.com (2603:10b6:5:39e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 12:53:31 +0000
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a]) by CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::16da:8b28:d454:ad5a%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 12:53:31 +0000
-Message-ID: <2a21b730-9ad4-4585-b636-9aa139266f94@amd.com>
-Date:   Tue, 10 Oct 2023 23:53:16 +1100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/12] PCI device authentication
-Content-Language: en-US
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linux-pci@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kvm@vger.kernel.org,
-        linuxarm@huawei.com, David Box <david.e.box@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Li, Ming" <ming4.li@intel.com>, Zhi Wang <zhi.a.wang@intel.com>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Wilfred Mallawa <wilfred.mallawa@wdc.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Graf <graf@amazon.com>
-References: <cover.1695921656.git.lukas@wunner.de>
- <652030759e42d_ae7e72946@dwillia2-xfh.jf.intel.com.notmuch>
- <20231007100433.GA7596@wunner.de> <20231009123335.00006d3d@Huawei.com>
- <20231009134950.GA7097@wunner.de>
- <b003c0ca-b5c7-4082-a391-aeb04ccc33ca@amd.com>
- <20231010081913.GA24050@wunner.de>
-From:   Alexey Kardashevskiy <aik@amd.com>
-In-Reply-To: <20231010081913.GA24050@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0176.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:3c4::12) To CH3PR12MB9194.namprd12.prod.outlook.com
- (2603:10b6:610:19f::7)
+        Tue, 10 Oct 2023 08:59:31 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42768AC;
+        Tue, 10 Oct 2023 05:59:29 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39A8Ll47012942;
+        Tue, 10 Oct 2023 14:58:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=McU8TFE
+        IZ+S2rlO5bzzEQ3oyUtZZAZ4HlIsAryT/jcI=; b=BEezo6eAC7VQfos5WepkiXV
+        cgy20U2w0o50zse659NHEzz/MM8ylMMEGdtPNjXojTapb5ZN65ec6d+zSCymKBzc
+        NjIii1ssg/HMg4/v5OXP2al0N/li1LQqBs7DKkFO9G5m0Uh7KzXDU3PpeoWO8rW5
+        rRuAWV3CSV03Tq6MX6J17U5aAG7ZgaEiJePP0HtXMT0Es76/EEW+KUOAllBWD6OK
+        cPOgFE5KAjFjv6tP164z8KaT3g1TD5Qa26sGZI/zmwK/5kvo2W58RDFfOHz7y+Q7
+        biHSCQtGu2WFCuEZv7BGvc0rgQ9VG07/KQhvseByiqJFb4IUELDqcFJpJNxNvIQ=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhk3j04b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 14:58:49 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 30BEF100058;
+        Tue, 10 Oct 2023 14:58:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0840E2309E2;
+        Tue, 10 Oct 2023 14:58:48 +0200 (CEST)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 10 Oct
+ 2023 14:58:47 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>,
+        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
+        <peng.fan@oss.nxp.com>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v6 00/11] Introduce STM32 Firewall framework
+Date:   Tue, 10 Oct 2023 14:57:08 +0200
+Message-ID: <20231010125719.784627-1-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|DM4PR12MB5389:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8f27cbf-815c-4f94-3790-08dbc98fe7da
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G946Cg5LwMHJbtVSq922vA1lLi74SL0eMxvcOJ88g3k1WsdYOc++PoN39x6Me/7u33DDQv5P6P8QjNrti8kEz9ubPUVCa8174s/J+wrWBz9wE2PUcspNdNx4oj8np19bCyvzMEDYAIjN2Ffd5sAR0tVvMksjFemmb/L1vm+Xxtljy+Y59BE0Ed3gc9tN0kFdV4WxUlXKjYCtltZ7rXWln+hhysyDHS/b00PEAhVJQVIBhsMn82WtgviOLFITLW/qmvp+UpkgPSUZFd2dgt0JedplRi+SRf5XFOfVI2XF4OcdBs2saSZDptv5zur9byHwuQ2RyhGR6magH0uTSER2xoeCNklUNwY7/yd/XIRsACa8E0YRz9QC6bx4pRnKg4KaA+8PKad6gBBTFYLv26frnS4rymQR3tm7cXOv28F/ovdBFKoimycPJn0RZkUKUUrhyRTV7fySVNpklCW9ME6SS/YwpErgIK5KMnrofPHsqRxw8N1NWUxg1lU2qJFNDBlWiXu17r3z8jhny/evMmlvcZQHMNRHjZtbAn0kCbKJ47TMJTzOcrwbUeUno8J2KWVfpy1SDTyghwcH8tkEURL+N6VS5peGZRbRSzRdWrsItkv1EhiqOXR1DavAENHmbkAJF5GSnfcH5QzCZIMKKAMjPA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(366004)(39860400002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(31686004)(53546011)(6512007)(36756003)(31696002)(38100700002)(26005)(2906002)(7416002)(83380400001)(6486002)(6666004)(2616005)(6506007)(478600001)(316002)(4326008)(6916009)(8936002)(8676002)(41300700001)(5660300002)(66556008)(66946007)(54906003)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QVl3ZzRQOUVLckljbyt6T2xiNzZuelB2Vm9nZDhIekg5YkZTeGdYUkZidFBV?=
- =?utf-8?B?TC9oVXFZOTdIZUttSUhBdnRwb2NOZldRRTV2UWhRcWk5MGNreEJlbGVjOWFm?=
- =?utf-8?B?UUNKRkNvWERDSDcrMFdIM3NnSkNzaGhQZ3JNMTJESjlCQ01DNllZRmVPVUxX?=
- =?utf-8?B?YjhsZ3Jib0IwUkw0UmtTSWlTV3ZvNVU1dHVWMWxBUGZMNEFjQ2VRam9jdk1H?=
- =?utf-8?B?YVlQK1hKU0JJTVMxemNEWUJIcDhEU1g5MTlLUkhmOWtjUzlIa3JyMzg2WDRZ?=
- =?utf-8?B?SkVsL2p0VEIwbE05STV5UHh6UXVLbENxbVFrWG5pTS91dUl2eGN5Tms1YzVn?=
- =?utf-8?B?UlQ3ZmZqVnBxSzdzTU1KSDlrd2JpYktkUUNRQWhaQi95dXF2MUN6VXNOQndh?=
- =?utf-8?B?QTlIZ1RvRjYzNDl6bGpETi94cE0rYjRBdkxubllLcm50L2tlSkJtbndMU09M?=
- =?utf-8?B?cXJaR0MxU3BzWkQ4czZEM3JYQ2NQdzI5c0FCOWxFQjNlajhzTVlJcjBGSGMy?=
- =?utf-8?B?Mk1zS0JTaXNsUEFhckMvQlk1djhIbW1rNStBNGdCT1hyTEdRZEQxU245LzhS?=
- =?utf-8?B?QmZDcklpWlBybEVvb05NODc4bzR2UEM3R3JoZ3NrdU1rT1ZGN25BWEdRODhX?=
- =?utf-8?B?aDVpbTNQYjYybjIyWm9jdi9vY0VaQUNCSk9sNHhLRjlMZFlYNWZHekNYa3Uz?=
- =?utf-8?B?VkpRVjVEeVBrL1J1YTZFVk5GTGhoNk1DYmhDN3VZNUhzLzh1NFJVdTUwR2lr?=
- =?utf-8?B?SzNCeFpveHR6UmRXT3JSYUtlMlA4dDloM0ZOZjRJcDAvbS83VFN3VTJpWVoy?=
- =?utf-8?B?bzNJUDh0SkF2RS8rM0xjR1dCamdvcFZpVmRUQmdwR3R3WFRCZG0zZmh0RXkv?=
- =?utf-8?B?c0lMUjh1WnVHZWh0b0hrNFI3U0lweW83dTlpVCtaaVJSYlArSVdkRE4xYzcr?=
- =?utf-8?B?bG9WbkxjbXFwU2VSVEg0L2ZnT080R2Z3dGdmK1VkM0NEVENkOGFKRnNZNHA5?=
- =?utf-8?B?bEoweGszQ2ZaYXprcE1GOWRzQ3QzMmlXTEdjVjM3U203WU43bjBVaTRtVHdq?=
- =?utf-8?B?djlQUUdqY1Zlc0dXVGRwb0JkSUQzS3VhcDg4R1JlNlloTzFrYUlXY1NlbEpx?=
- =?utf-8?B?YnZTMGR3QUhFaHBCQmx3U2crUG9pZUVHa29zRHVZQVBLdDNHMHR3eW1LSEpX?=
- =?utf-8?B?aHJxT25QcEtlVytuMTFKUURRVWFhNm5nUy9XclJUMzVLWFIvcDVieUtBajhm?=
- =?utf-8?B?NUgzVnR0NWZZOXUzdkJjT0VyMmt0R3ZsUStNM1diY29ha01sRGhBMUdVaC9q?=
- =?utf-8?B?RTRXU3pUb1VZOVBlMFIwYWZjVHlDTm8wRjR5OExrMFZ3SFlhQTZ5dmNWdlE5?=
- =?utf-8?B?Sk5vR2R1N1Mvd2NwT0ZtNTVsYXNJSVpvaEVMRUlpQ2RJZ29rNVJBNFo2bHV6?=
- =?utf-8?B?WGszcUhlWk9xaXJTcnY2ditSM1RoSDhhVjYrb1VMVXZ5dlcweWxyTk1GU2Vq?=
- =?utf-8?B?c3djMUd3dDFwa0RwM0hvWUFpU3ZieGJtNCtoRVlqK2tyMmNpQ1pDVEEwcTJL?=
- =?utf-8?B?dW9EaEJQOHlWeXV6bmVVeTI0SWhhTmlETy9JVEtjY0srRGJ2VWxrd0dqRnBq?=
- =?utf-8?B?V2h6Q2doUVFZMG1lZ0xHNjd6Zjd3ZmFtNW12OHJJNkpyS210MDdOK3p5ZFdu?=
- =?utf-8?B?K3FNMFRsTG9jUzdvYWltODVlVkxSNTZkTkp0UlFLWWxVK3ZsclM0L3JqNFY5?=
- =?utf-8?B?UGVzWnAvN21NU3hicU0xc3NhNDVldi8yTWg1bktPYzdFbG1GK2U2OXdYdFhy?=
- =?utf-8?B?YWE3UjljUXhhRVRnblFBK2Q4U2xpWHJRdlUreG50UExhZkR2RUhhOFV6SDNS?=
- =?utf-8?B?azhmTlF1WTA3eWEwYlVCa3FYTjZOcUt1RnE5RGhUSWpQMDUzemloM04yS1dh?=
- =?utf-8?B?YmlTc0lDRjdLZ0FldUgrRUZ1YUtRRGM4aDBicE9PTW5pSm41eGk4d21YYlN2?=
- =?utf-8?B?OUhJbUtWTVEra3h1Z0VGdmJud2NNRklKc0prWUdrY3Fmak52eVgrVUtaTVFi?=
- =?utf-8?B?TExPQ0dCNEpuVnNyMzNRem81dEN3M0NGZWxoMWJCaGxid2VaaHR3RWxPUWo0?=
- =?utf-8?Q?VVFLH+6MBev54jtI/mC7EtIv4?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8f27cbf-815c-4f94-3790-08dbc98fe7da
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 12:53:31.1923
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rtHXf5Cd4YHKeT0xfncnVvUbN794KB74B3cSCz822Iqxm+GEN7apIMcc2ZFLHnOdsE07O687c2QCFx2GV3sb7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5389
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_08,2023-10-10_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
+Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
+platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
+register to the framework to offer firewall services such as access
+granting.
 
-On 10/10/23 19:19, Lukas Wunner wrote:
-> On Tue, Oct 10, 2023 at 03:07:41PM +1100, Alexey Kardashevskiy wrote:
->> On 10/10/23 00:49, Lukas Wunner wrote:
->>> PCI Firmware Spec would seem to be appropriate.  However this can't
->>> be solved by the kernel community.
->>
->> How so? It is up to the user to decide whether it is SPDM/CMA in the kernel
->> or   the firmware + coco, both are quite possible (it is IDE which is not
->> possible without the firmware on AMD but we are not there yet).
-> 
-> The user can control ownership of CMA-SPDM e.g. through a BIOS knob.
-> And that BIOS knob then influences the outcome of the _OSC negotiation
-> between platform and OS.
-> 
-> 
->> But the way SPDM is done now is that if the user (as myself) wants to let
->> the firmware run SPDM - the only choice is disabling CONFIG_CMA completely
->> as CMA is not a (un)loadable module or built-in (with some "blacklist"
->> parameters), and does not provide a sysfs knob to control its tentacles.
-> 
-> The problem is every single vendor thinks they can come up with
-> their own idea of who owns the SPDM session:
-> 
-> I've looked at the Nvidia driver and they've hacked libspdm into it,
-> so their idea is that the device driver owns the SPDM session.
- >
-> AMD wants the host to proxy DOE but not own the SPDM session.
- >
-> We have *standards* for a reason.  So that products are interoperable.
+This series of patches is a new approach on the previous STM32 system
+bus, history is available here:
+https://lore.kernel.org/lkml/20230127164040.1047583/
 
-There is no "standard PCI ethernet device", somehow we survive ;)
+The need for such framework arises from the fact that there are now
+multiple hardware firewalls implemented across multiple products.
+Drivers are shared between different products, using the same code.
+When it comes to firewalls, the purpose mostly stays the same: Protect
+hardware resources. But the implementation differs, and there are
+multiple types of firewalls: peripheral, memory, ... 
 
-> If the kernel tries to accommodate to every vendor's idea of SPDM ownership
-> we'll end up with an unmaintainable mess of quirks, plus sysfs knobs
-> which were once intended as a stopgap but can never be removed because
-> they're userspace ABI.
+Some hardware firewall controllers such as the RIFSC implemented on
+STM32MP2x platforms may require to take ownership of a resource before
+being able to use it, hence the requirement for firewall services to
+take/release the ownership of such resources.
 
-The host kernel needs to accommodate the idea that it is not trusted, 
-and neither is the BIOS.
+On the other hand, hardware firewall configurations are becoming
+more and more complex. These mecanisms prevent platform crashes
+or other firewall-related incoveniences by denying access to some
+resources.
 
-> This needs to be solved in the *specification*.
- >
-> And the existing solution for who owns a particular PCI feature is _OSC.
-> Hence this needs to be taken up with the Firmware Working Group at the
-> PCISIG.
+The stm32 firewall framework offers an API that is defined in
+firewall controllers drivers to best fit the specificity of each
+firewall.
 
-I do like the general idea of specifying things, etc but this place does 
-not sound right. The firmware you are talking about has full access to 
-PCI, the PSP firmware does not have any (besides the IDE keys 
-programming), is there any example of such firmware in the PCI Firmware 
-spec? From the BIOS standpoint, the host OS owns DOE and whatever is 
-sent over it (on AMD SEV TIO). The host OS chooses not to compose these 
-SPDM packets itself (while it could) in order to be able to run guests 
-without having them to trust the host OS.
+For every peripherals protected by either the ETZPC or the RIFSC, the
+firewall framework checks the firewall controlelr registers to see if
+the peripheral's access is granted to the Linux kernel. If not, the
+peripheral is configured as secure, the node is marked populated,
+so that the driver is not probed for that device.
 
->> Note, this PSP firmware is not BIOS (which runs on the same core and has
->> same access to PCI as the host OS), it is a separate platform processor
->> which only programs IDE keys to the PCI RC (via some some internal bus
->> mechanism) but does not do anything on the bus itself and relies on the host
->> OS proxying DOE, and there is no APCI between the core and the psp.
-> 
-> Somewhat tangentially, would it be possible in your architecture
-> that the host or guest asks PSP to program IDE keys into the Root Port?
+The firewall framework relies on the access-controller device tree
+binding. It is used by peripherals to reference a domain access
+controller. In this case a firewall controller. The bus uses the ID
+referenced by the access-controller property to know where to look
+in the firewall to get the security configuration for the peripheral.
+This allows a device tree description rather than a hardcoded peripheral
+table in the bus driver.
 
-Sure it is possible to implement. But this does not help our primary use 
-case which is confidential VMs where the host OS is not trusted with the 
-keys.
+The STM32 ETZPC device is responsible for filtering accesses based on
+security level, or co-processor isolation for any resource connected
+to it.
 
-> Or alternatively, access the key registers directly without PSP involvement?
+The RIFSC is responsible for filtering accesses based on Compartment
+ID / security level / privilege level for any resource connected to
+it.
 
-No afaik, for the reason above.
+STM32MP13/15/25 SoC device tree files are updated in this series to
+implement this mecanism.
 
+Changes in V6:
+	- Rename access-controller to access-controllers
+	- Remove access-controller-provider
+	- Update device trees and other bindings accordingly
+	- Rework ETZPC/RIFSC bindings to define what access-controllers
+	  cells contain inside #access-controller-cells
+	- Some other minor fixes
 
-> 
-> Thanks,
-> 
-> Lukas
+Changes in V5:
+	- Integrate and rework the "feature-domains" binding patch in
+	  this patchset. The binding is renamed to "access-controller"
+	- Rename every feature-domain* reference to access-control*
+	  ones
+	- Correct loop bug and missing select STM32_FIREWALL in 32-bit
+	  platform Kconfig
+	
+
+Changes in V4:
+	- Fix typo in commit message and YAML check errors in
+	  "dt-bindings: Document common device controller bindings"
+	  Note: This patch should be ignored as stated in the cover
+	  letter. I've done this to avoid errors on this series of
+	  patch
+	- Correct code syntax/style issues reported by Simon Horman
+	- Added Jonathan's tag for IIO on the treewide patch
+
+Changes in V3:
+
+	Change incorrect ordering for bindings commits leading
+	to an error while running
+	"make DT_CHECKER_FLAGS=-m dt_binding_check"
+
+Changes in V2:
+
+	generic:
+		- Add fw_devlink dependency for "feature-domains"
+		  property.
+
+	bindings:
+		- Corrected YAMLS errors highlighted by Rob's robot
+		- Firewall controllers YAMLs no longer define the
+		  maxItems for the "feature-domains" property
+		- Renamed st,stm32-rifsc.yaml to
+		  st,stm32mp25-rifsc.yaml
+		- Fix examples in YAML files
+		- Change feature-domains maxItems to 2 in firewall
+		  consumer files as there should not be more than
+		  2 entries for now
+		- Declare "feature-domain-names" as an optional
+		  property for firewall controllers child nodes.
+		- Add missing "feature-domains" property declaration
+		  in bosch,m_can.yaml and st,stm32-cryp.yaml files
+
+	firewall framework:
+		- Support multiple entries for "feature-domains"
+		  property
+		- Better handle the device-tree parsing using
+		  phandle+args APIs
+		- Remove "resource firewall" type
+		- Add a field for the name of the firewall entry
+		- Fix licenses
+	
+	RIFSC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	ETZPC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	Device trees:
+		- Fix rifsc node name
+		- Move the "ranges" property under the
+		  "feature-domains" one
+Gatien Chevallier (10):
+  dt-bindings: treewide: add access-controllers description
+  dt-bindings: bus: document RIFSC
+  dt-bindings: bus: document ETZPC
+  firewall: introduce stm32_firewall framework
+  of: property: fw_devlink: Add support for "access-controller"
+  bus: rifsc: introduce RIFSC firewall controller driver
+  arm64: dts: st: add RIFSC as an access controller for STM32MP25x
+    boards
+  bus: etzpc: introduce ETZPC firewall controller driver
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x boards
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x boards
+
+Oleksii Moisieiev (1):
+  dt-bindings: document generic access controllers
+
+ .../access-controllers.yaml                   |   84 +
+ .../bindings/bus/st,stm32-etzpc.yaml          |   87 +
+ .../bindings/bus/st,stm32mp25-rifsc.yaml      |   96 +
+ .../bindings/crypto/st,stm32-cryp.yaml        |    4 +
+ .../bindings/crypto/st,stm32-hash.yaml        |    4 +
+ .../devicetree/bindings/dma/st,stm32-dma.yaml |    4 +
+ .../bindings/dma/st,stm32-dmamux.yaml         |    4 +
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |    4 +
+ .../bindings/iio/adc/st,stm32-adc.yaml        |    4 +
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |    4 +
+ .../bindings/iio/dac/st,stm32-dac.yaml        |    4 +
+ .../bindings/media/cec/st,stm32-cec.yaml      |    4 +
+ .../bindings/media/st,stm32-dcmi.yaml         |    4 +
+ .../memory-controllers/st,stm32-fmc2-ebi.yaml |    4 +
+ .../bindings/mfd/st,stm32-lptimer.yaml        |    4 +
+ .../bindings/mfd/st,stm32-timers.yaml         |    4 +
+ .../devicetree/bindings/mmc/arm,pl18x.yaml    |    4 +
+ .../bindings/net/can/bosch,m_can.yaml         |    4 +
+ .../devicetree/bindings/net/stm32-dwmac.yaml  |    4 +
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |    4 +
+ .../bindings/regulator/st,stm32-vrefbuf.yaml  |    4 +
+ .../devicetree/bindings/rng/st,stm32-rng.yaml |    4 +
+ .../bindings/serial/st,stm32-uart.yaml        |    4 +
+ .../bindings/sound/st,stm32-i2s.yaml          |    4 +
+ .../bindings/sound/st,stm32-sai.yaml          |    4 +
+ .../bindings/sound/st,stm32-spdifrx.yaml      |    4 +
+ .../bindings/spi/st,stm32-qspi.yaml           |    4 +
+ .../devicetree/bindings/spi/st,stm32-spi.yaml |    4 +
+ .../devicetree/bindings/usb/dwc2.yaml         |    4 +
+ MAINTAINERS                                   |    7 +
+ arch/arm/boot/dts/st/stm32mp131.dtsi          | 1025 +++---
+ arch/arm/boot/dts/st/stm32mp133.dtsi          |   51 +-
+ arch/arm/boot/dts/st/stm32mp13xc.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp13xf.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp151.dtsi          | 2756 +++++++++--------
+ arch/arm/boot/dts/st/stm32mp153.dtsi          |   52 +-
+ arch/arm/boot/dts/st/stm32mp15xc.dtsi         |   19 +-
+ arch/arm/mach-stm32/Kconfig                   |    1 +
+ arch/arm64/Kconfig.platforms                  |    1 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |    6 +-
+ drivers/bus/Kconfig                           |    9 +
+ drivers/bus/Makefile                          |    1 +
+ drivers/bus/stm32_etzpc.c                     |  141 +
+ drivers/bus/stm32_firewall.c                  |  294 ++
+ drivers/bus/stm32_firewall.h                  |   83 +
+ drivers/bus/stm32_rifsc.c                     |  252 ++
+ drivers/of/property.c                         |    2 +
+ include/linux/bus/stm32_firewall_device.h     |  141 +
+ 48 files changed, 3331 insertions(+), 1919 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+ create mode 100644 drivers/bus/stm32_etzpc.c
+ create mode 100644 drivers/bus/stm32_firewall.c
+ create mode 100644 drivers/bus/stm32_firewall.h
+ create mode 100644 drivers/bus/stm32_rifsc.c
+ create mode 100644 include/linux/bus/stm32_firewall_device.h
 
 -- 
-Alexey
-
+2.35.3
 
