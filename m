@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6684E7BF33E
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Oct 2023 08:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B687BF340
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Oct 2023 08:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442233AbjJJGmv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Tue, 10 Oct 2023 02:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
+        id S1442241AbjJJGmx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Tue, 10 Oct 2023 02:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442156AbjJJGmu (ORCPT
+        with ESMTP id S1442260AbjJJGmu (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Tue, 10 Oct 2023 02:42:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB63AA3
-        for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 23:42:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B00BC433CB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A005E97
+        for <linux-crypto@vger.kernel.org>; Mon,  9 Oct 2023 23:42:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB280C433CC
         for <linux-crypto@vger.kernel.org>; Tue, 10 Oct 2023 06:42:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1696920168;
-        bh=iWuYXfnhEc+bf87cxTXTdxAIlzAFplm3u0hm6+aFeX8=;
+        bh=xA6xEHEpi4PkMd4hcqKI5rOcbnJVAifbAg3rvW4GN2s=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=msyg7l28tWbeu6V7vEH7A79uDrzP5SeDGWMUQoO9pv/fMr51Sj1tdblNPBPV6f/+r
-         e+66XMX1vmTZqyyiCgjuAtuijm8XVII7NKvQDwBMNoxXnRbQw157FtL3NNfPF78/sR
-         GfDzKU2SJeTP44qyjGulPNIVn4WxZ1PWUl+1lq+LZLCfUPur54ARa8v22GolPMPlhq
-         gxDBRRy2Y/MgPAiLZCAbIY3ybftxmVM4R+nWRz7/583esOiB+pkL/vVTe9SHhFlUxB
-         rEbAID1pOzRJpt9xgLqNr9boxt1E/a5kKzA2Dk7ZN6CRF+2cJgkYxhGE0/IQOmyPAh
-         Ajgyw5sBAVt/w==
+        b=XyNcSB/8DH3GrGUcI/cbWZ2MXmlP1hmpv+X18fHFMgc4czxed+EX4DfldVDcAaHDv
+         msnGd+8S1aktMZ122+OrdO/95Q5+hp12mBZ+RAallDrzC5hWywn72Ltyq/xhz0W8fY
+         XQmqckexnXIKGuvNw5nkt5+GiEQNyWCcEpT2a1lfo4Lod0PzbuTonagXNgeirRTayd
+         azcNDBBQrFk53gEXSU0WloawCASjSVrhgWqQjkpmrhgkyzA12XbAp/pLR7eLFFLJus
+         2YOeSCPTNjre5o5a/TcF/FxIJvx/T0YOG8g+UvcQaBTvpKXiakgGJBbxzOs+hVaONu
+         ZZj5o88BTW9hg==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 4/5] crypto: arm64/sha256 - clean up backwards function names
-Date:   Mon,  9 Oct 2023 23:41:26 -0700
-Message-ID: <20231010064127.323261-5-ebiggers@kernel.org>
+Subject: [PATCH 5/5] crypto: arm64/sha512 - clean up backwards function names
+Date:   Mon,  9 Oct 2023 23:41:27 -0700
+Message-ID: <20231010064127.323261-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231010064127.323261-1-ebiggers@kernel.org>
 References: <20231010064127.323261-1-ebiggers@kernel.org>
@@ -51,98 +51,51 @@ From: Eric Biggers <ebiggers@google.com>
 
 In the Linux kernel, a function whose name has two leading underscores
 is conventionally called by the same-named function without leading
-underscores -- not the other way around.  __sha256_block_data_order()
-and __sha256_block_neon() got this backwards.  Fix this, albeit without
-changing the names in the perlasm since that is OpenSSL code.  No change
-in behavior.
+underscores -- not the other way around.  __sha512_block_data_order()
+got this backwards.  Fix this, albeit without changing the name in the
+perlasm since that is OpenSSL code.  No change in behavior.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/arm64/crypto/sha256-glue.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ arch/arm64/crypto/sha512-glue.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/crypto/sha256-glue.c b/arch/arm64/crypto/sha256-glue.c
-index 9b5c86e07a9af..35356987cc1e0 100644
---- a/arch/arm64/crypto/sha256-glue.c
-+++ b/arch/arm64/crypto/sha256-glue.c
-@@ -27,8 +27,8 @@ asmlinkage void sha256_block_data_order(u32 *digest, const void *data,
+diff --git a/arch/arm64/crypto/sha512-glue.c b/arch/arm64/crypto/sha512-glue.c
+index 2acff1c7df5d7..62f129dea83d8 100644
+--- a/arch/arm64/crypto/sha512-glue.c
++++ b/arch/arm64/crypto/sha512-glue.c
+@@ -23,8 +23,8 @@ asmlinkage void sha512_block_data_order(u64 *digest, const void *data,
  					unsigned int num_blks);
- EXPORT_SYMBOL(sha256_block_data_order);
+ EXPORT_SYMBOL(sha512_block_data_order);
  
--static void __sha256_block_data_order(struct sha256_state *sst, u8 const *src,
+-static void __sha512_block_data_order(struct sha512_state *sst, u8 const *src,
 -				      int blocks)
-+static void sha256_arm64_transform(struct sha256_state *sst, u8 const *src,
++static void sha512_arm64_transform(struct sha512_state *sst, u8 const *src,
 +				   int blocks)
  {
- 	sha256_block_data_order(sst->state, src, blocks);
+ 	sha512_block_data_order(sst->state, src, blocks);
  }
-@@ -36,8 +36,8 @@ static void __sha256_block_data_order(struct sha256_state *sst, u8 const *src,
- asmlinkage void sha256_block_neon(u32 *digest, const void *data,
- 				  unsigned int num_blks);
- 
--static void __sha256_block_neon(struct sha256_state *sst, u8 const *src,
--				int blocks)
-+static void sha256_neon_transform(struct sha256_state *sst, u8 const *src,
-+				  int blocks)
+@@ -32,17 +32,15 @@ static void __sha512_block_data_order(struct sha512_state *sst, u8 const *src,
+ static int sha512_update(struct shash_desc *desc, const u8 *data,
+ 			 unsigned int len)
  {
- 	sha256_block_neon(sst->state, src, blocks);
- }
-@@ -45,17 +45,15 @@ static void __sha256_block_neon(struct sha256_state *sst, u8 const *src,
- static int crypto_sha256_arm64_update(struct shash_desc *desc, const u8 *data,
- 				      unsigned int len)
- {
--	return sha256_base_do_update(desc, data, len,
--				     __sha256_block_data_order);
-+	return sha256_base_do_update(desc, data, len, sha256_arm64_transform);
+-	return sha512_base_do_update(desc, data, len,
+-				     __sha512_block_data_order);
++	return sha512_base_do_update(desc, data, len, sha512_arm64_transform);
  }
  
- static int crypto_sha256_arm64_finup(struct shash_desc *desc, const u8 *data,
- 				     unsigned int len, u8 *out)
+ static int sha512_finup(struct shash_desc *desc, const u8 *data,
+ 			unsigned int len, u8 *out)
  {
  	if (len)
--		sha256_base_do_update(desc, data, len,
--				      __sha256_block_data_order);
--	sha256_base_do_finalize(desc, __sha256_block_data_order);
-+		sha256_base_do_update(desc, data, len, sha256_arm64_transform);
-+	sha256_base_do_finalize(desc, sha256_arm64_transform);
+-		sha512_base_do_update(desc, data, len,
+-				      __sha512_block_data_order);
+-	sha512_base_do_finalize(desc, __sha512_block_data_order);
++		sha512_base_do_update(desc, data, len, sha512_arm64_transform);
++	sha512_base_do_finalize(desc, sha512_arm64_transform);
  
- 	return sha256_base_finish(desc, out);
+ 	return sha512_base_finish(desc, out);
  }
-@@ -98,7 +96,7 @@ static int sha256_update_neon(struct shash_desc *desc, const u8 *data,
- 
- 	if (!crypto_simd_usable())
- 		return sha256_base_do_update(desc, data, len,
--				__sha256_block_data_order);
-+				sha256_arm64_transform);
- 
- 	while (len > 0) {
- 		unsigned int chunk = len;
-@@ -114,7 +112,7 @@ static int sha256_update_neon(struct shash_desc *desc, const u8 *data,
- 				sctx->count % SHA256_BLOCK_SIZE;
- 
- 		kernel_neon_begin();
--		sha256_base_do_update(desc, data, chunk, __sha256_block_neon);
-+		sha256_base_do_update(desc, data, chunk, sha256_neon_transform);
- 		kernel_neon_end();
- 		data += chunk;
- 		len -= chunk;
-@@ -128,13 +126,13 @@ static int sha256_finup_neon(struct shash_desc *desc, const u8 *data,
- 	if (!crypto_simd_usable()) {
- 		if (len)
- 			sha256_base_do_update(desc, data, len,
--				__sha256_block_data_order);
--		sha256_base_do_finalize(desc, __sha256_block_data_order);
-+				sha256_arm64_transform);
-+		sha256_base_do_finalize(desc, sha256_arm64_transform);
- 	} else {
- 		if (len)
- 			sha256_update_neon(desc, data, len);
- 		kernel_neon_begin();
--		sha256_base_do_finalize(desc, __sha256_block_neon);
-+		sha256_base_do_finalize(desc, sha256_neon_transform);
- 		kernel_neon_end();
- 	}
- 	return sha256_base_finish(desc, out);
 -- 
 2.42.0
 
