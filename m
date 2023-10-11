@@ -2,115 +2,136 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 125C87C5361
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Oct 2023 14:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B3B7C540B
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Oct 2023 14:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346207AbjJKMP0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Oct 2023 08:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
+        id S232105AbjJKMgE (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Oct 2023 08:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234945AbjJKMPN (ORCPT
+        with ESMTP id S231860AbjJKMgD (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:15:13 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845565256;
-        Wed, 11 Oct 2023 05:14:24 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 8391932009F9;
-        Wed, 11 Oct 2023 08:12:58 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 11 Oct 2023 08:12:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697026378; x=1697112778; bh=RM
-        gJN57kN3GhsZBL75M3QGGQOq+DMKk5oTpXvzw/avU=; b=VfCUeyfiXfj5EkKkhH
-        AMqqLCLe2/A7V3TE8d1EVlU15ekS4/l8TYV2BceoWP4ffSt72NweGXPCim4G4BC0
-        Ar8VJ+ZjCXjkeYqwVf7Dv6NUeaU3pGd/LLmZd58Z3cIeJZfNhqveMDcjt4yTBvLk
-        ZqEC8sjT1MkcW/hy9ofqagRNewL4xZf1Fp4c3AmjPDg2Uxk/CcXzDFOuRHy9TN27
-        4vLLHw0D+r/ab0Buehk50cablqiLLcAZopCVDE+C3cm2///A77Qcu1gEfRyJ4RwB
-        dgmZtcHYJs8RGbxkj3UO9arjkxHE2i6Gr2yKN6q/i03PKo/+Vp4vTezkmPlVKWBk
-        GquQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1697026378; x=1697112778; bh=RMgJN57kN3Ghs
-        ZBL75M3QGGQOq+DMKk5oTpXvzw/avU=; b=nzWM+L3JNCPexk2qqO8p6bv2qA90m
-        xV63FwH6T/7kI3d7HKmQ2S6oKd/z9hT3oDkCJqxcCKR8C+aUstSTIRzKGk2Jr+Vd
-        Bc5BzItXiLoxdmU4ghNvdKhVtSt40+uqwbdLI8QQ92XFnkym56cg7T+j+nfQphHP
-        rDa8syLnpnTwa79/X20hWrutsAE1FLycDUAWG83LKcTyWnPwG9szdBFjaGcSGb1K
-        pOPqwZBSsObRGPuqQibePPWxH414dFOoZOdAUEg9ANfvTdT3kGR7M3gPzczrRArO
-        KAVje4Co0NGYXXQEURIK+/rOH2ZuDCS+p9eJzzCQy0ux411JKjml9zHuw==
-X-ME-Sender: <xms:SJEmZdlxqhGkqQYayD1v4S4BnehdhZShScc_fwO1JJOAK7OUv8u96A>
-    <xme:SJEmZY2L3REWvQMKMxd7XM09x0_4pmc-cOrWxWbLYZi40OUqGtWnB-uIUcvr1yn0H
-    XrKVmFiYqv63xnydz0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheekgdegjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:SZEmZTpxEYpQK3aVjCurn2HV0LFNlE3bwL7D8hDC13Qc9ytogoP1QA>
-    <xmx:SZEmZdm9gmf4cyAiwaLrDf9v_gLsZrQGisVPQPQAW0N2QYeeOgg7bA>
-    <xmx:SZEmZb2Pi_cTh8jIj0VLK0y8cRG3NEY9wkGQdMHAv6WezlD0uIKIEg>
-    <xmx:SpEmZUu5J6M3uPJOXqgJwAj2_dTmCDIcL-2COR4LOOWybd3Di2MwAw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E1BF3B60089; Wed, 11 Oct 2023 08:12:56 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Wed, 11 Oct 2023 08:36:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAAC91
+        for <linux-crypto@vger.kernel.org>; Wed, 11 Oct 2023 05:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697027761; x=1728563761;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=m17LJAMyehFHIPf3/6Mgus+HYyeus7wd+kt7HUS2AXs=;
+  b=aQAgSvCePr2pVRp0fktj4ftIK7efmMK0FhMCTQOpyLlGXN54mdDiCSX/
+   dIU5jgRDKOEnjsl+Tk+nizT3dcZxxhTvNUFo/G8EbQy8fUdogY55ycLts
+   4r1UsW5WmWE8Kyq10gGyVbx6yImJdxS8OQrmY/dp8DVm5PfwzQolJNl2o
+   cfnMRc/t4Mgg2PsUCNCzaRLTHDzZDskjb9xguFnGUria77Rmivmdb755e
+   KoSLmJhbTZygyJIBSG06dRZQY791alyagb79FKidTYYbqrGP3ZE0Tqaws
+   fqTLqQUQ5vCdBgGuDdlnASrQZddntDLnS1H7YuTJ/yvq0eDOBgQv13p0D
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="374992807"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="374992807"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 05:36:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870124619"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="870124619"
+Received: from r031s002_zp31l10c01.deacluster.intel.com (HELO localhost.localdomain) ([10.219.171.29])
+  by fmsmga002.fm.intel.com with ESMTP; 11 Oct 2023 05:35:59 -0700
+From:   Damian Muszynski <damian.muszynski@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        Damian Muszynski <damian.muszynski@intel.com>
+Subject: [PATCH 00/11] crypto: qat - add rate limiting feature to qat_4xxx
+Date:   Wed, 11 Oct 2023 14:14:58 +0200
+Message-ID: <20231011121934.45255-1-damian.muszynski@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Message-Id: <939cf309-b7e4-461a-93e6-dd6212887d08@app.fastmail.com>
-In-Reply-To: <fd43fb0d-5d52-423d-bb1d-bc10e64ea3ee@app.fastmail.com>
-References: <20231010213420.93725-1-graf@amazon.com>
- <fd43fb0d-5d52-423d-bb1d-bc10e64ea3ee@app.fastmail.com>
-Date:   Wed, 11 Oct 2023 14:12:36 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Alexander Graf" <graf@amazon.com>, linux-kernel@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "Olivia Mackall" <olivia@selenic.com>,
-        "Petre Eftime" <petre.eftime@gmail.com>,
-        "Erdem Meydanlli" <meydanli@amazon.nl>,
-        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Jason Wang" <jasowang@redhat.com>,
-        "Xuan Zhuo" <xuanzhuo@linux.alibaba.com>,
-        "Christophe JAILLET" <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH v6] misc: Add Nitro Secure Module driver
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Wed, Oct 11, 2023, at 13:31, Arnd Bergmann wrote:
+This set introduces the rate limiting feature to the Intel QAT accelerator.
+The Rate Limiting allows control of the rate of the requests that can be
+submitted on a ring pair (RP). This allows sharing a QAT device among
+multiple users while ensuring a guaranteed throughput.
 
->> +/* Maximum length output data */
->> +struct nsm_data_resp {
->> +	__u32 len;
->> +	__u8  data[NSM_RESPONSE_MAX_SIZE];
->> +};
->
-> You have endian-conversion for some of the data fields
-> but not the 'len field here, I guess these should be
-> __le32 instead of __u32, with the appropriate le32_to_cpu()
-> and cpu_to_le32() conversion when passing the native
-> u32 word from userspace.
+The first six commits address minor reworks and additions necessary
+for the feature's implementation.
+The subsequent patch introduces a mechanism for retrieving firmware
+feature capabilities.
+Patch nr 8 implements the core of the rate limiting.
+The final three commits add the required sysfs interface
+for configuring this newly introduced feature.
 
-Ignore this one, I misread how the length field is used, this
-is obviously not fixed endian as it is only used for
-communicating with the kernel's virtio code, not the device.
+Ciunas Bennett (3):
+  crypto: qat - add rate limiting sysfs interface
+  crypto: qat - add rp2svc sysfs attribute
+  crypto: qat - add num_rps sysfs attribute
 
-     Arnd
+Damian Muszynski (4):
+  units: Add BYTES_PER_*BIT
+  crypto: qat - add bits.h to icp_qat_hw.h
+  crypto: qat - add retrieval of fw capabilities
+  crypto: qat - add rate limiting feature to qat_4xxx
+
+Giovanni Cabiddu (4):
+  crypto: qat - refactor fw config related functions
+  crypto: qat - use masks for AE groups
+  crypto: qat - fix ring to service map for QAT GEN4
+  crypto: qat - move admin api
+
+ Documentation/ABI/testing/sysfs-driver-qat    |   46 +
+ Documentation/ABI/testing/sysfs-driver-qat_rl |  227 ++++
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     |  190 ++-
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.h     |   13 +-
+ .../intel/qat/qat_c3xxx/adf_c3xxx_hw_data.c   |    1 +
+ .../intel/qat/qat_c62x/adf_c62x_hw_data.c     |    1 +
+ drivers/crypto/intel/qat/qat_common/Makefile  |    3 +
+ .../intel/qat/qat_common/adf_accel_devices.h  |   11 +
+ .../crypto/intel/qat/qat_common/adf_admin.c   |   73 +
+ .../crypto/intel/qat/qat_common/adf_admin.h   |   27 +
+ .../crypto/intel/qat/qat_common/adf_clock.c   |    1 +
+ .../intel/qat/qat_common/adf_cnv_dbgfs.c      |    1 +
+ .../intel/qat/qat_common/adf_common_drv.h     |   10 -
+ .../intel/qat/qat_common/adf_fw_counters.c    |    1 +
+ .../intel/qat/qat_common/adf_gen4_hw_data.h   |    7 +
+ .../crypto/intel/qat/qat_common/adf_gen4_pm.c |    1 +
+ .../qat/qat_common/adf_gen4_pm_debugfs.c      |    1 +
+ .../intel/qat/qat_common/adf_gen4_timer.c     |    1 +
+ .../intel/qat/qat_common/adf_heartbeat.c      |    1 +
+ .../qat/qat_common/adf_heartbeat_dbgfs.c      |    1 +
+ .../crypto/intel/qat/qat_common/adf_init.c    |   12 +
+ drivers/crypto/intel/qat/qat_common/adf_rl.c  | 1186 +++++++++++++++++
+ drivers/crypto/intel/qat/qat_common/adf_rl.h  |  176 +++
+ .../intel/qat/qat_common/adf_rl_admin.c       |   98 ++
+ .../intel/qat/qat_common/adf_rl_admin.h       |   18 +
+ .../crypto/intel/qat/qat_common/adf_sysfs.c   |   80 ++
+ .../intel/qat/qat_common/adf_sysfs_rl.c       |  451 +++++++
+ .../intel/qat/qat_common/adf_sysfs_rl.h       |   11 +
+ .../qat/qat_common/icp_qat_fw_init_admin.h    |   41 +
+ .../crypto/intel/qat/qat_common/icp_qat_hw.h  |    2 +
+ .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.c   |    1 +
+ include/linux/units.h                         |    4 +
+ 32 files changed, 2624 insertions(+), 73 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-qat_rl
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_admin.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl_admin.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl_admin.h
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_rl.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_rl.h
+
+-- 
+2.41.0
+
