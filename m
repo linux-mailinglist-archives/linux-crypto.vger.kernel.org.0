@@ -2,152 +2,171 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B75A57C53CD
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Oct 2023 14:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E717C5884
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Oct 2023 17:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbjJKMZ7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 11 Oct 2023 08:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
+        id S232739AbjJKPuT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 11 Oct 2023 11:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235117AbjJKMZq (ORCPT
+        with ESMTP id S232741AbjJKPuS (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:25:46 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6AB114;
-        Wed, 11 Oct 2023 05:25:12 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id BAD4C3200AB2;
-        Wed, 11 Oct 2023 08:25:10 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 11 Oct 2023 08:25:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697027110; x=1697113510; bh=Pd
-        51UpbLBT1+psPf2hnTIMJii3++EO4IjWT1009ZizA=; b=ej8XsMTNC0PzZr0SLt
-        Vxa8LG+z1KAY34ZtDIIgqluCZbO8g7xLh/cPaOaGM0fFh/piB7NQVz+et6hYqsdl
-        4iWTa1AKKbTDe01R7M8Kypyp0+6mSsCxwuoUQJPlpmfEWVKD83fpArYYgcAP3QCf
-        K8EvCp37GG8ObTHtjPXXrI5ie7XtSX+zdUQ+kzstQ+ECrRPHadQa3FpZ+snhyQkQ
-        HhhHzIHRevNtIOR+1ufeHTNEPJReDdw58m75O4RZGNHB/rfR/uK0rIQOiRYjmoOL
-        1CvrXi8rLBewAYr+5Wwzndwv9HYIqkhvztkp5klwTm4B1DAgVjN6XZyqk9EssiZT
-        dpXA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1697027110; x=1697113510; bh=Pd51UpbLBT1+p
-        sPf2hnTIMJii3++EO4IjWT1009ZizA=; b=rFhfZzkPaTpgzosrMFMaXjj6yP0Xp
-        gz1X7dE7GSFTfIKHP6yg89i0A/UBCVx1T8Xa+aQXBn3qKbhRKcV18VAqy0uEqWzr
-        35rma5PX6e437BWoUD3xHEF3arcEAWtLG0Nk92DWqEqLwoTNiyWTTISXxEwwEUoy
-        /4O8vfF+lhBio/GYIcOYQ+qrcUy9OP5b0qFJu+qWizNgDUngNwBlxy/ZJjrNU/ay
-        wSEameGH5UgHcwevlY3nLUgtbCmhEwgezEE/UQG0bxbgKbXZ90etB0H9d/Yx7dgl
-        9+aYUuBbxqBF0X7DWiZymjbaOl6jcSAVgUfMjmIlX/onu4xX/fjNHKsSw==
-X-ME-Sender: <xms:JZQmZbww_AU8iViRbjSlI9CQXj0z2Fkiov0K5SQutqwSCwLdHV88lA>
-    <xme:JZQmZTTEb12Nwen7gNUd7wm58Yr2zMPw5ipSntCUldo8KIyRnTmcI-bPq9h9gZqAd
-    BKsQhAKwdRxzeFLf4Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheekgdeglecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:JZQmZVWaLSLvCDgX_0mdA2y4083oXu9QtuLYfHkucaoMvbmfoRAR8Q>
-    <xmx:JZQmZViAUseJdxTh9_3yzxIwWwZG3VdQ-18HlJr_wxCUHaJVYdGJrw>
-    <xmx:JZQmZdB509oyX1gMGWaE2gKlIx_jvMAhGt_46MMHrEiGtzxYizKA4w>
-    <xmx:JpQmZSKpal6eQjoZbmJkF0D7vZl5-dmDm-7wlopeqNpVivZtOuYndA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 8CE30B6008F; Wed, 11 Oct 2023 08:25:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Wed, 11 Oct 2023 11:50:18 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2049.outbound.protection.outlook.com [40.107.101.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6757BB6;
+        Wed, 11 Oct 2023 08:50:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O69YaPBvV60YFCESJLdIL8jxxgGY8OMuVhZVL4KkGW1ijjrNeIUue1b/Kux24VSykYcM5VpoDr9LkdeJjFIKXbomwP0e+SReraVFeHMxASrzxlRZHhgI9WUst3c/Pe/Dc+lqiaHvmuvBlgfdwI+GWuF53I+IAgGVr+gJm+ZCrCBhLbMBwe7Z4EFdtsiYuToJpfyT5H1a9RlJ6JpYzzesxxffA0kPaSvUDVRWVxQGXa1+96AWpMEYu7JhaOrb8zbMyS92uPcJHn28BcytS+64FWdQmoU1zI1C7v53NOiOV/xsnhq3Oda4EVwreYR4wD/xAuzAm1QnibbiC9WEXBD5Zw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PZ59gngvREtsZTWRR6ZSib2E21HJZqjt/625xefBwss=;
+ b=QL3SUqR4usYl85vJtoe+1ZjX2s8chTzaUzT5mzu2yMEzYbt1AtWPrvpT5jmaoDGmuBf8hlwCw7KhUrT9+lUlc0LwKmJ/OXZXHa3bxUSSuXj54x0uZXYDCzymCEGSujvtSWlyMxrRC+OXOgP1RvV0JkmvURdYIsXeHzshQcl1h0KHVDPDd4wRtFRc4d7k+XqOYTMaV9KA3K/EL2ZdiX8c3IMdd1+ec9Uh/1mRlpeZrf3Qp49JPOoKENloP4hWuc+RV6nwM62JggUO4hFOJfNe4MPmON37UXybkia+CxdLyTe3D3BWMqfR572Yhj/cttzv1zt4fzIoW1QrDiytnR5CKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PZ59gngvREtsZTWRR6ZSib2E21HJZqjt/625xefBwss=;
+ b=oEyX/aw3cN71ZbraJXaORYabdeUTw8dCYnhMkdMIbgcv1ArrSE2O/CHbLzHlujUVQffWKU8nCISFM6IyoGnkG7UxwQM3yv3Q3P5EOi2y+haYQOPE6qMQhODzNl5MI03RA9xZPD/pSF2IpqKKYTYC5cCOeyIKf1a5ih6ZJaK2maI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by DM4PR12MB5820.namprd12.prod.outlook.com (2603:10b6:8:64::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.38; Wed, 11 Oct 2023 15:50:13 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::3e65:d396:58fb:27d4]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::3e65:d396:58fb:27d4%3]) with mapi id 15.20.6863.032; Wed, 11 Oct 2023
+ 15:50:13 +0000
+Message-ID: <3d46425a-15bc-422d-ad92-30bf077aaf4c@amd.com>
+Date:   Wed, 11 Oct 2023 10:50:10 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crypto: ccp - Dump SEV command buffer registers on SEV
+ command error
+Content-Language: en-US
+To:     John Allen <john.allen@amd.com>, linux-crypto@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
+        herbert@gondor.apana.org.au
+References: <20231010204432.899126-1-john.allen@amd.com>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20231010204432.899126-1-john.allen@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR05CA0091.namprd05.prod.outlook.com
+ (2603:10b6:8:56::12) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-Message-Id: <2339287b-8b17-413b-aa86-f618ea7fc3fa@app.fastmail.com>
-In-Reply-To: <2023101001-ocelot-veteran-10db@gregkh>
-References: <20231009212053.2007-1-graf@amazon.com>
- <20231009212053.2007-2-graf@amazon.com>
- <2023101010-overwrite-parakeet-91d5@gregkh>
- <0ee221bc-ea99-4724-9ebd-436e91417e4b@amazon.com>
- <2023101009-accustom-manifesto-8bdb@gregkh>
- <b3a8c722-c0e2-4c8c-aef0-29af0a93572d@amazon.com>
- <2023101001-ocelot-veteran-10db@gregkh>
-Date:   Wed, 11 Oct 2023 14:24:48 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Alexander Graf" <graf@amazon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "Olivia Mackall" <olivia@selenic.com>,
-        "Petre Eftime" <petre.eftime@gmail.com>,
-        "Erdem Meydanlli" <meydanli@amazon.nl>,
-        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Jason Wang" <jasowang@redhat.com>,
-        "Xuan Zhuo" <xuanzhuo@linux.alibaba.com>,
-        "Kyunghwan Kwon" <k@mononn.com>
-Subject: Re: [PATCH v4 1/2] Import CBOR library
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DM4PR12MB5820:EE_
+X-MS-Office365-Filtering-Correlation-Id: c526a0b1-e767-4d67-b073-08dbca71c1ad
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /nLpSaiQvf+UO38Z3MPX+1XsD1yIj4vmKHLdIC8jgqD2ucn6JNdAv5iyzCDeyAJgNdIN0BkObvYZ0bTWjRNH0E9y/kAGXbsvUuHxAnfPcyqWN0fP/bvCtbXgyYkIF1//0l/wjo8Vnlv3Ru+x1TKIZamtEokJ/zszEtJIC24/st5vV+2Q2XV7C/gMV+Rl7RnTXz3LGE8NEPHyuQK5qs6HPtM6VQMEJXzqza6UfUgWX2ByhA8rNkRefExj0VG6NMS8fIhU9PJHWe9raALIemavlf0vHveCgv/WBR+N3VkzRFnN9TFkP3hIa7BaxWJrkfnfdfXPDUe/KTg9WmnJ7Y8mmbNH3NzwsXQF6Sy9NjPxeeqoOjTl3zQTuhRQAUfyTDwjw0glA+2a1T1Uncma8Gf52pt+dm+zJkGTq1lwmgR0mja0bTTv4iaB9BXxY8APPcvEO4co3SAg9lOdD27hpK16JcDzdVT4oYQCat7M4zMqUq4vfkKz3sSaxt2ttPZqsTJtict+hSUh+9KzYP0Rm+HMn2E2dKmSjWnCGNBCsr3lRDM+fQehjaPGsoU/cQvU5Vne4kHtg99HwxvWQ/1aCf/onE/7KWYHk3sv2dLag+X2TfuMidQuRQxpf18RxyLp9VCqNgXNXZJiGqYItgdCc4A7hg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(26005)(6512007)(6486002)(478600001)(2616005)(53546011)(66476007)(316002)(66556008)(66946007)(8676002)(8936002)(6506007)(4326008)(44832011)(41300700001)(31686004)(83380400001)(5660300002)(2906002)(38100700002)(31696002)(86362001)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGMxZjVMK2trTnhjaXlqeXVLaTdkemdNTXUrZnlzR3REakFITUdKR0ZrbE8r?=
+ =?utf-8?B?c3R3dTR2eU10TTNrbThqMWpvTHlGbVVZR3BCQkFaYW8wTTBLQmwzaWI4Vktt?=
+ =?utf-8?B?OUpjYm8rRWFwbzl4Wm9jdkRIeUNJYjFIZ1RtM1Z4OFUxTzIwdTd0UlYwbnhL?=
+ =?utf-8?B?M3YxdGFvd3Q4QmV3dHEvOXZRMERUVUViTHZMWEthSlVFb1dSckhURTV0bXBL?=
+ =?utf-8?B?cTd4WXcvWGYxbmhSRnd5RWxxYi93T0JjemN5M1N5VlY4cGF3STNwSHJPOEFx?=
+ =?utf-8?B?WHFhV004a3lob2cyZ2ZCamtkcEZmd093a1dhYVUvcFV3NFdxazJhR3Vpc0NK?=
+ =?utf-8?B?U1RvTWdsYmJQU3hnQTVHTXVUeVhXSEtlMmhoc1VmL1lTdlprcUJydjN5U2pS?=
+ =?utf-8?B?Yk5sTmdla2E0Z1lpTHp5TEVySGxjVXlna2NRZXR5Qm9zbFZ1QUlvVVhzLzRB?=
+ =?utf-8?B?SzZHUFZWWHMrWXpWcFY2ZWVOS01JbjRVODcyZU1iSTUrUmhvbzZuS3BMejZm?=
+ =?utf-8?B?SGRia0xoOTg4ZC80UmVyb0VqR21EM3oyMHQ0VE5VdFRhd3FORmhkUzQ5UnMw?=
+ =?utf-8?B?OFhJdjQ3YmFLbXhxdWRpa01QL1dnTGdtc3g2dmgzMmdMVW54WFJBalVmYXlS?=
+ =?utf-8?B?c0xxVGcvM09UNjQ4S3ZldSt6ZXQrQjNiSjJyU2tTUWVZRXJNM3o2TzYzV3U5?=
+ =?utf-8?B?Uk5qR3Uvd0dCMS9yK2FzdFpIK1pSOTNmaGp3MEk3eGlpakNoZk5wWWNlVkEv?=
+ =?utf-8?B?SlNPTnFBc1NnbzR1c1B0SmRkTlpIRDUyM2pTTUh0VXlJcG92Rm5pSzRCejhR?=
+ =?utf-8?B?cFM2ZnhDYjVrK3oyZXdxOWJJS0ZRRU8zMFpwTDdKeFUyNitldEdyVENrVTBY?=
+ =?utf-8?B?NVJYOEgrcE4wQmlLSUQ4eVhvS0g3Wm01S21DVFFSSExGU0N0MzA5bnBKQUtF?=
+ =?utf-8?B?ZFdudFloODl1VkYrTFhMRmxDWk5LM2VZUUdZaWtuV0g0dVVPYlJWZ3JORGJl?=
+ =?utf-8?B?NUd3RTNXUHBDaXUzdHN4U3ppUjd1UzhDcm5MU29XWkNtZzlPditXZUFQRGwx?=
+ =?utf-8?B?WE5UajFBZnZacGw0MFRMUjFGdXAvYUFCcFhLL0RtYk5iT1ZIaTFxL0VBZUF3?=
+ =?utf-8?B?cTVKS0wzQVVxVXVEOXZoeS9NbSs2Y2EweGNCMVFRWGtrZE9UdE1vT0ZBM2pW?=
+ =?utf-8?B?d3JQeTdMUWMydXk1ckNXaHI0Tkg0OXFBK0lTUENCWkVSNDJEMDVnMjVnTkFz?=
+ =?utf-8?B?K1lGM1hlcng1bHoxWDAyaStZTDNsTmZzaHJqOG5WMCs4SHE0dnNpb1k4cGY2?=
+ =?utf-8?B?dElhNE9jSkR1Y3d0SmZ4ajl5K0tzL21QOElqa1FaZ2VkS2NBUXhEOXhwaEgx?=
+ =?utf-8?B?aW9iWmo0L1dxRVFjd0JTbGxYZGFHWjltM2JHQk9oZGRyTFZEL0pUSk1PL0FR?=
+ =?utf-8?B?czNaL21iZmU5Vm1ya1pMZ1RUa3F0STlRaTJ0WVdqYi9WOHJ4SEpEeE55enZs?=
+ =?utf-8?B?QWF1T0dsdkhlV0JQSmU3cmM2VExxaDl6Rk9WcGlMdzR0K3hXTFJYbTVJNmpj?=
+ =?utf-8?B?QXlGcjdEbFZUNnVVR2lGVy84YnM0Z1lPZjVnVDF2czNGbUdLckVtRmVsZjJG?=
+ =?utf-8?B?TXhDck4zSHZVd2NvelJwT3ROQ2pBb1RBdUgwWUsrMlNieXlxbmtWVDJEckts?=
+ =?utf-8?B?STRObkI2M0dvNk4xK2wrVmJiV21QR0EzMjZCNW4rWGhIeHA5ZWc3L0hkK05O?=
+ =?utf-8?B?VXJsa3lSM0xmSTU0NFJmM1BiYTQ5YkNvWDgxSWRxN0k0TXIxVjQxUFNJUEt6?=
+ =?utf-8?B?M3V3REE5a2JtMnp4SUhIM3JJRm42UUxSQ1FvazkzdkpNQk5rc1U3enZXT0xP?=
+ =?utf-8?B?akxnSk5LUGhNTFI1K0JkTjM3QkY2eXU5aWMzNW83cjRiVWF5enJtc0NNei9B?=
+ =?utf-8?B?aEhwb1cwdmM2RHdFYVdJbHhDeVdZUlBlNkpjSkVQUVorN0xoYy8xLzhtOWNi?=
+ =?utf-8?B?N0NRZi9CbUYyR0sybU9ZR081VDhTSFBWcll1enduMVRyRjhSZ05EaG5HSU0w?=
+ =?utf-8?B?QmM0U05uWVZ5Z0VOSW5wVUoxak4zS0FFNkdueVVjaERNRkNCNDdJZ2FqTVB4?=
+ =?utf-8?Q?iYSWPBDb77vACMG0pv03QSf/F?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c526a0b1-e767-4d67-b073-08dbca71c1ad
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 15:50:13.4484
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zlfiHBp0Zq9a7Dwu4Yet+vR2f/d9CiQMUjzbmNZm3/3RpkCuF8evSaZ7dMyZTeON79NehZBI4UGQG0KaP6ZKoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5820
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Tue, Oct 10, 2023, at 10:27, Greg Kroah-Hartman wrote:
-> On Tue, Oct 10, 2023 at 10:08:43AM +0200, Alexander Graf wrote:
->> On 10.10.23 10:03, Greg Kroah-Hartman wrote:
->>
->> > > Out of these, the NSM communication protocol uses all except Semantic tags
->> > > and Floats. The CBOR library that this patch imports does not have special
->> > > handling for Semantic tags, which leaves only floats which are already
->> > > #ifdef'ed out. That means there is not much to trim.
->> > > 
->> > > What you see here is what's needed to parse CBOR in kernel - if that's what
->> > > we want to do. I'm happy to rip it out again and make it a pure user space
->> > > problem to do CBOR :).
->> > Yes, why are we parsing this in the kernel?  What could go wrong with
->> > adding yet-another-parser in privileged context?  :)
->> > 
->> > Why does this have to be in the kernel, the data sent/recieved is over
->> > virtio, so why does the kernel have to parse it?  I couldn't figure that
->> > out from the driver, yet the driver seems to have a lot of hard-coded
->> > parsing logic in it to assume specific message formats?
->> 
->> 
->> The parsing doesn't have to be in kernel and it probably shouldn't be
->> either. V3 of the patch was punting all the parsing to user space, at which
->> point you and Arnd said I should give it a try to do the protocol parsing in
->> kernel space instead. That's why the parser is here.
->
-> Arnd said that, not me :)
->
->> If we conclude that all this in-kernel parsing is not worth it, I'm very
->> happy to just go back to the the v3 ioctl interface and post v5 with hwrng
->> merged into misc, but remove all CBOR logic again :)
->
-> I think the less parsers we have in the kernel, the safer we are for
-> obvious reasons.  Unless you have a parser for this in rust?  :)
->
-> I don't really know, having a generic interface is good, but at the
-> expense of this api is probably not good.  individual ioctls might be
-> better if there are not going to be any other drivers for this type of
-> thing?
+On 10/10/2023 15:44, John Allen wrote:
+> PSP firmware may report additional error information in the SEV command
+> buffer registers in situations where an error occurs as the result of an
+> SEV command.  In this case, check if the command buffer registers have been
+> modified and if so, dump the contents.
+> 
+> Signed-off-by: John Allen <john.allen@amd.com>
 
-I was definitely expecting something simpler than what was possible
-in the v4 patch. I had another look now, and it's clear that the
-ioctl interface is still not great because the variable data structures
-shine through for some of the calls, and even to get to this point,
-a whole lot of complexity is required underneath.
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 
-To get anything better, one would probably have to redesign the entire
-interface stack (hypervisor, kernel and userland) to use regular
-fixed data structures, and this seems unlikely to happen.
+> ---
+>   drivers/crypto/ccp/sev-dev.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index f97166fba9d9..fcaccd0b5a65 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -309,6 +309,7 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+>   {
+>   	struct psp_device *psp = psp_master;
+>   	struct sev_device *sev;
+> +	unsigned int cmdbuff_hi, cmdbuff_lo;
+>   	unsigned int phys_lsb, phys_msb;
+>   	unsigned int reg, ret = 0;
+>   	int buf_len;
+> @@ -371,6 +372,19 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+>   	if (FIELD_GET(PSP_CMDRESP_STS, reg)) {
+>   		dev_dbg(sev->dev, "sev command %#x failed (%#010lx)\n",
+>   			cmd, FIELD_GET(PSP_CMDRESP_STS, reg));
+> +
+> +		/*
+> +		 * PSP firmware may report additional error information in the
+> +		 * command buffer registers on error. Print contents of command
+> +		 * buffer registers if they changed.
+> +		 */
+> +		cmdbuff_hi = ioread32(sev->io_regs + sev->vdata->cmdbuff_addr_hi_reg);
+> +		cmdbuff_lo = ioread32(sev->io_regs + sev->vdata->cmdbuff_addr_lo_reg);
+> +		if (cmdbuff_hi != phys_msb || cmdbuff_lo != phys_lsb) {
+> +			dev_dbg(sev->dev, "Additional error information reported in cmdbuff:");
+> +			dev_dbg(sev->dev, "  cmdbuff hi: %#010x\n", cmdbuff_hi);
+> +			dev_dbg(sev->dev, "  cmdbuff lo: %#010x\n", cmdbuff_lo);
+> +		}
+>   		ret = -EIO;
+>   	} else {
+>   		ret = sev_write_init_ex_file_if_required(cmd);
 
-     Arnd
