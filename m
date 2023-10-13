@@ -2,107 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DF97C7E8D
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Oct 2023 09:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F187C80B5
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Oct 2023 10:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbjJMH2V (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 13 Oct 2023 03:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
+        id S230327AbjJMItv (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 13 Oct 2023 04:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJMH2S (ORCPT
+        with ESMTP id S230215AbjJMItr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:28:18 -0400
-Received: from correo1.cdmx.gob.mx (mtax.cdmx.gob.mx [189.240.235.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCADB8
-        for <linux-crypto@vger.kernel.org>; Fri, 13 Oct 2023 00:28:17 -0700 (PDT)
-Received: from cdmx.gob.mx ([10.250.108.150])
-        by correo1.cdmx.gob.mx  with ESMTP id 39D7QrYo004490-39D7QrYq004490
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 13 Oct 2023 01:26:53 -0600
-Received: from cdmx.gob.mx (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTPS id 6AC6E244B44;
-        Thu, 12 Oct 2023 17:08:23 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTP id 439AD244A92;
-        Thu, 12 Oct 2023 17:08:23 -0500 (CDT)
-DKIM-Filter: OpenDKIM Filter v2.9.2 cdmx.gob.mx 439AD244A92
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=cdmx.gob.mx; s=DKIM1; c=relaxed/relaxed;
- h=content-type:mime-version:subject:to:from:date:reply-to:message-id;
- bh=3C/cVVxnWbozysuhp1hvIHlg0SjJpX0BJETV6jAw8yo=;
- b=Bidsnn0VeTM0q1/gbUbj4P46r9TkNXM429tkjannfZY1AMEg7y/5+dMi0CiAFuaNEhJKOQLNXnfS
-        fu4IMVs/FQCFrCQFVk3YTUIb/wJuTM/XzN2b7LMeld56j2vkY1OEVFHie2bxiZyd96roBSxAIUuR
-        /cFn2Q2wHUrQBpP6sLLMaDL26ar1xTIf58gbGuEMBhjdaSDypCRNvzReh6jfgiA9/1nZyrKBtVdv
-        yqTjHntJFREJ3+1Dij37IZPk54+Bv4Bg2TfYjNQLpTL3Zf9hpw21r3zTm27wJbVPIUiLW01nqr4i
-        av2baQLGVnGz+oKcyFOiQX5QSKungngoo2FtNw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cdmx.gob.mx;
-        s=2020J4N146MXCTY; t=1697148503;
-        bh=kS09FHKmYcQrq1+u+YmVkBlkv2rKURC+px+V9m3NuXA=;
-        h=Content-Type:MIME-Version:Subject:To:From:Date:Reply-To:
-         Message-Id;
-        b=dKWik7SOrBni+g2IuHj6q5xhBz8wtBLlk6M5wZGvBTBIb8BBX39zW0xkQExNPY8r3
-         Q7YGyGQFD91R/Z5Vo3GckkdHUByKXu/EgOrSZR5lgsWOUYfzU+NqIKqsKV4X3mfRxH
-         0DbWtCezfqXhtRfepJ/AcxMIYBXBVGOcgvM+bT1k=
-X-Virus-Scanned: amavisd-new at cdmx.gob.mx
-Received: from cdmx.gob.mx ([127.0.0.1])
-        by localhost (cdmx.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id aK_vdcdganpA; Thu, 12 Oct 2023 17:08:23 -0500 (CDT)
-Received: from [192.168.8.123] (unknown [179.61.245.12])
-        by cdmx.gob.mx (Postfix) with ESMTPSA id CB901245116;
-        Thu, 12 Oct 2023 17:08:05 -0500 (CDT)
-Content-Type: multipart/alternative; boundary="===============1807493697=="
+        Fri, 13 Oct 2023 04:49:47 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5985EEA
+        for <linux-crypto@vger.kernel.org>; Fri, 13 Oct 2023 01:49:42 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-388-sTSYr53zPc6DLKLlrA2nDg-1; Fri, 13 Oct 2023 04:49:37 -0400
+X-MC-Unique: sTSYr53zPc6DLKLlrA2nDg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D00F8185A7B3;
+        Fri, 13 Oct 2023 08:49:36 +0000 (UTC)
+Received: from hog (unknown [10.45.224.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 21D5540C6F79;
+        Fri, 13 Oct 2023 08:49:32 +0000 (UTC)
+Date:   Fri, 13 Oct 2023 10:49:31 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     syzbot <syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com>
+Cc:     aviadye@mellanox.com, borisp@mellanox.com, bp@alien8.de,
+        daniel@iogearbox.net, davem@davemloft.net, ebiggers@kernel.org,
+        herbert@gondor.apana.org.au, hpa@zytor.com,
+        john.fastabend@gmail.com, kuba@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liujian56@huawei.com, mingo@redhat.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vfedorenko@novek.ru, x86@kernel.org
+Subject: Re: [syzbot] [net] [crypto] general protection fault in
+ scatterwalk_copychunks (4)
+Message-ID: <ZSkEm99MvaKOc_Ju@hog>
+References: <00000000000006e7be05bda1c084@google.com>
+ <0000000000004b2b3d06078b94b0@google.com>
 MIME-Version: 1.0
-Subject: $4.8 million dollars.
-To:     Recipients <ctrinidad@cdmx.gob.mx>
-From:   "Mr. Dennis Banfield" <ctrinidad@cdmx.gob.mx>
-Date:   Thu, 12 Oct 2023 16:08:28 -0700
-Reply-To: dbanfielddonation@gmail.com
-Message-Id: <20231012220805.CB901245116@cdmx.gob.mx>
-X-Spam-Status: Yes, score=6.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        HK_NAME_MR_MRS,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_DOLLARS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5039]
-        *  0.1 SUBJ_DOLLARS Subject starts with dollar amount
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  1.0 HK_NAME_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  2.5 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: ******
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0000000000004b2b3d06078b94b0@google.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-You will not see this in a MIME-aware mail reader.
---===============1807493697==
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
+2023-10-12, 14:25:30 -0700, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit cfaa80c91f6f99b9342b6557f0f0e1143e434066
+> Author: Liu Jian <liujian56@huawei.com>
+> Date:   Sat Sep 9 08:14:34 2023 +0000
+> 
+>     net/tls: do not free tls_rec on async operation in bpf_exec_tx_verdict()
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17338965680000
+> start commit:   bd6c11bc43c4 Merge tag 'net-next-6.6' of git://git.kernel...
+> git tree:       net-next
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
+> dashboard link: https://syzkaller.appspot.com/bug?extid=66e3ea42c4b176748b9c
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10160198680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15feabc0680000
 
-I have a donation of $4,800,000.00 dollars for you, I won the UK lottery Po=
-werball jackpot and I donated a part of it to charities. kindly contact me =
-for your donation via (dbanfielddonation@gmail.com) for your claim.
---===============1807493697==
-Content-Type: text/plain; charset=utf-8
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
+Yes, looks like it.
 
-I have a donation of $4,800,000.00 dollars for you, I won the UK lottery =
-Powerball jackpot and I donated a part of it to charities. kindly contact=
- me for your donation via (dbanfielddonation@gmail.com)) for your claim.
+> If the result looks correct, please mark the issue as fixed by replying with:
 
---===============1807493697==--
+#syz fix: net/tls: do not free tls_rec on async operation in bpf_exec_tx_verdict()
+
+-- 
+Sabrina
+
