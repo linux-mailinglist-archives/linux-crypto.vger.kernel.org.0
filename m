@@ -2,35 +2,37 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D697C834B
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Oct 2023 12:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A0C7C8350
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Oct 2023 12:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbjJMKiu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 13 Oct 2023 06:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        id S229903AbjJMKjG (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 13 Oct 2023 06:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjJMKiu (ORCPT
+        with ESMTP id S230357AbjJMKi7 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:38:50 -0400
+        Fri, 13 Oct 2023 06:38:59 -0400
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7642AD;
-        Fri, 13 Oct 2023 03:38:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD15C2
+        for <linux-crypto@vger.kernel.org>; Fri, 13 Oct 2023 03:38:56 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qrFZ0-006jdD-9C; Fri, 13 Oct 2023 18:38:39 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 13 Oct 2023 18:38:43 +0800
-Date:   Fri, 13 Oct 2023 18:38:43 +0800
+        id 1qrFZD-006jdY-AI; Fri, 13 Oct 2023 18:38:52 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 13 Oct 2023 18:38:56 +0800
+Date:   Fri, 13 Oct 2023 18:38:56 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Olivia Mackall <olivia@selenic.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwrng: n2: Use device_get_match_data()
-Message-ID: <ZSkeM+0EXBHsrgYx@gondor.apana.org.au>
-References: <20231006214340.338620-1-robh@kernel.org>
+To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Cc:     linux-crypto@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        "Ospan, Abylay" <aospan@amazon.com>
+Subject: Re: [PATCH] crypto: jitter - reuse allocated entropy collector
+Message-ID: <ZSkeQN1BpELwkE2E@gondor.apana.org.au>
+References: <2701954.mvXUDI8C0e@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231006214340.338620-1-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2701954.mvXUDI8C0e@positron.chronox.de>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -40,15 +42,35 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 04:43:40PM -0500, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
+On Sat, Oct 07, 2023 at 09:10:43AM +0200, Stephan Müller wrote:
+> In case a health test error occurs during runtime, the power-up health
+> tests are rerun to verify that the noise source is still good and
+> that the reported health test error was an outlier. For performing this
+> power-up health test, the already existing entropy collector instance
+> is used instead of allocating a new one. This change has the following
+> implications:
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> * The noise that is collected as part of the newly run health tests is
+>   inserted into the entropy collector and thus stirs the existing
+>   data present in there further. Thus, the entropy collected during
+>   the health test is not wasted. This is also allowed by SP800-90B.
+> 
+> * The power-on health test is not affected by the state of the entropy
+>   collector, because it resets the APT / RCT state. The remainder of
+>   the state is unrelated to the health test as it is only applied to
+>   newly obtained time stamps.
+> 
+> This change also fixes a bug report about an allocation while in an
+> atomic lock (the lock is taken in jent_kcapi_random, jent_read_entropy
+> is called and this can call jent_entropy_init).
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Signed-off-by: Stephan Mueller <smueller@chronox.de>
 > ---
->  drivers/char/hw_random/n2-drv.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
+>  crypto/jitterentropy-kcapi.c |  2 +-
+>  crypto/jitterentropy.c       | 36 ++++++++++++++++++++++++++----------
+>  crypto/jitterentropy.h       |  2 +-
+>  3 files changed, 28 insertions(+), 12 deletions(-)
 
 Patch applied.  Thanks.
 -- 
