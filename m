@@ -2,155 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8EC7C972D
-	for <lists+linux-crypto@lfdr.de>; Sun, 15 Oct 2023 01:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9D67C9B12
+	for <lists+linux-crypto@lfdr.de>; Sun, 15 Oct 2023 21:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjJNXDO (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 14 Oct 2023 19:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
+        id S230236AbjJOTj5 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 15 Oct 2023 15:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjJNXDN (ORCPT
+        with ESMTP id S229559AbjJOTj4 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 14 Oct 2023 19:03:13 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E156B7
-        for <linux-crypto@vger.kernel.org>; Sat, 14 Oct 2023 16:03:10 -0700 (PDT)
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A5D393F546
-        for <linux-crypto@vger.kernel.org>; Sat, 14 Oct 2023 23:03:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697324588;
-        bh=g4FZTSl0d4ZJADlSvm57nChfceUNZzU0dP0RCDb94EA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=g6IRxgfbQK3zPzzy8ZM4tHFvebXOwaBBDqrCHAP8FETXV8N5PYtQnfnUnd73aglwL
-         TWqJQdwOTz/GxjVnyhDLFzdzb1xzHsCRf6Xl7ditzx8UtVUodBqrc8+T4tEzoLv4Hk
-         Ws222R8dpFMHhuwYg5F/YUIkK79LVkHIUu4qrexu3la1tBia9q6MpWTXS6mrN8HnRr
-         9whh4Ejmic4GTBd8aUeabjzSv5skocfNijJUebWkDlHpWJW91rVV12T3oMMpecgm2e
-         L5deCUhkzrGSCPw1odN9ECRzVmxemqw89iBScgnizuylz3Mv9opmTIkBjwPMwQ3GsK
-         HPEsLKx39u5Ow==
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32da47641b5so480104f8f.0
-        for <linux-crypto@vger.kernel.org>; Sat, 14 Oct 2023 16:03:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697324588; x=1697929388;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g4FZTSl0d4ZJADlSvm57nChfceUNZzU0dP0RCDb94EA=;
-        b=XGzN0dKOU0jsbLCI2X01GOBN2Y8qOpvWThFPkqYXPM3Uw/z1rULwTMTN/XViQOnMDh
-         wkbBiPnAkBp24JFZduKIvFV3CIZny3gLN9m2222Yhsgh+Z+bTgxW6KRBkGKMh07pFa9r
-         2lEuEykQgHLFZItuNKFVDKo4ToadXTsUj2qNXsRHZRQLZHSPexXMZiC5dlqYc1My0swt
-         +aengFNx+ZeqDIqvMsBmq6taMYqHSCTm8IP2bahsxWzw16Y4NhALN1jfxlREpZfkNm9/
-         P0XhTIJSYj7FZYwqlV7S8d/xkZa2KTSiilp6zLu9zD35qIGBUD99Exs5tYKTkrV0STFa
-         gvXw==
-X-Gm-Message-State: AOJu0Yzwn4uyGkdM9tnJIsMnO8HuzihqLL6gkBLcnqc01YplHLsvGK2L
-        aRRQoO0o1QWTfrcuhtBVDU12sP4R2jo1sexjSWDO0ba0LUOxm0B7hrbaJBzwXbzfSvjIGi3gMYb
-        RLhf0nwAOXZIvGcBdV4EKyO/XJq8pv0NXhWtJ1Rg5Kj9fM1WR2tPJya0/6g==
-X-Received: by 2002:a05:6000:1b07:b0:321:6450:62ea with SMTP id f7-20020a0560001b0700b00321645062eamr26180425wrz.36.1697324588153;
-        Sat, 14 Oct 2023 16:03:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEJOb0XCESRaZNsKxGDIHX5HswxMXGFvre7WUTS/9leErz6A4oyrNkphQTIFfBH43Pd5OvGYb6ogvO9KIDWmeU=
-X-Received: by 2002:a05:6000:1b07:b0:321:6450:62ea with SMTP id
- f7-20020a0560001b0700b00321645062eamr26180409wrz.36.1697324587746; Sat, 14
- Oct 2023 16:03:07 -0700 (PDT)
+        Sun, 15 Oct 2023 15:39:56 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7351B7;
+        Sun, 15 Oct 2023 12:39:54 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39FJVW2O008852;
+        Sun, 15 Oct 2023 19:39:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=qY5smuiGl5lC2VMUh/40TPR7PQajpU0c5/Ii9PEv0tg=;
+ b=AX0y1ZczOzn2RfVPOtk83hDICttjSufiHTNQvzaKlVDqR2GFjFFFdtl0HuKXyvjcwi2X
+ odqqHzuIKjJqSAe5BxwGN12V2AW59C/MG1xHeH+ScraMHGmBtb2x5vId1F/xBPxQn2pZ
+ efD7lh4Yx9O5TrzZx8hJ4BlYmvsIZUeWz6fvWCvex5+cvtc4Os+nOhTbkAJxlYuC/e5z
+ dwXFGuoQiK4/HjfXFfhD2TJ1Q+UNMLKIgS9u4w910awgesNK9NHtzHf4621VTTzYFE2+
+ 2Qx2vxo3WUqty8dGWnLl+USKD97wb5w3Rww33Kbo5i7cZ1e5ekTqowiX7RCuQkLOucX4 eg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tqm61ag1a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 15 Oct 2023 19:39:37 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39FJdPN7023961
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 15 Oct 2023 19:39:25 GMT
+Received: from hu-omprsing-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Sun, 15 Oct 2023 12:39:20 -0700
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+To:     <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: [PATCH V1 0/4] Enable TRNG for SA8775P and SC7280
+Date:   Mon, 16 Oct 2023 01:08:57 +0530
+Message-ID: <20231015193901.2344590-1-quic_omprsing@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231008040140.1647892-1-dimitri.ledkov@canonical.com>
- <ZSkeWHdOAOfjtpwJ@gondor.apana.org.au> <2e52c8b4-e70a-453f-853a-1962c8167dfa@gmail.com>
-In-Reply-To: <2e52c8b4-e70a-453f-853a-1962c8167dfa@gmail.com>
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Date:   Sun, 15 Oct 2023 00:02:32 +0100
-Message-ID: <CADWks+ZV=BNzEUUgw4YuE_1cr7O7puunBy5FJf-_jyWJyPz=sg@mail.gmail.com>
-Subject: Re: [PATCH] crypto: remove md4 driver
-To:     Denis Kenzior <denkenz@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        James Prestwood <prestwoj@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FkSCI09k6GnwgfR4mx60Z2d5hUT0_nl9
+X-Proofpoint-GUID: FkSCI09k6GnwgfR4mx60Z2d5hUT0_nl9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-15_06,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 phishscore=0 mlxscore=0 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0 spamscore=0
+ mlxlogscore=493 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310150179
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 15:37, Denis Kenzior <denkenz@gmail.com> wrote:
->
-> Hi Herbert,
->
-> On 10/13/23 05:39, Herbert Xu wrote:
-> > On Sun, Oct 08, 2023 at 05:01:39AM +0100, Dimitri John Ledkov wrote:
-> >> No internal users left and cryptographically insecure. Users should
-> >> upgrade to something else, e.g. sha256 blake3.
-> >>
-> >> Some drivers have their own full or partial md4 implementation without
-> >> using crypto/md4.
-> >>
-> >> Userspace code search indicates a few copies of hash_info.h
-> >> https://codesearch.debian.net/search?q=HASH_ALGO_MD4&literal=1 without
-> >> need for MD4.
-> >>
-> >> Preserve uapi hash algorithm indexes and array length, but rename the
-> >> MD4 enum.
-> >>
-> >> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-> >> ---
-> >>   crypto/Kconfig                 |   6 -
-> >>   crypto/Makefile                |   1 -
-> >>   crypto/hash_info.c             |   4 +-
-> >>   crypto/md4.c                   | 241 ---------------------------------
-> >>   crypto/tcrypt.c                |  12 --
-> >>   crypto/testmgr.c               |   6 -
-> >>   crypto/testmgr.h               |  42 ------
-> >>   include/uapi/linux/hash_info.h |   2 +-
-> >>   8 files changed, 3 insertions(+), 311 deletions(-)
-> >>   delete mode 100644 crypto/md4.c
-> >
-> > Patch applied.  Thanks.
->
-> Does this patch break userspace?
->
-> Here's a thread regarding MD4 the last time its removal was attempted:
-> https://lore.kernel.org/linux-crypto/20210818144617.110061-1-ardb@kernel.org/
->
-> Please note that iwd does use MD4 hashes here:
-> https://git.kernel.org/pub/scm/libs/ell/ell.git/tree/ell/checksum.c#n63
->
-> https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/src/eap-mschapv2.c#n165
->
+Add device-tree nodes to enable TRNG for SA8775P and SC7280
 
-Thank you for this reference. The WiFI eap mschapv2 based
-authentication indeed relies on MD4. The IWD code uses kernel as a
-basically impromptu userspace library to gain access to MD4, which
-sounds like a poor way of doing this. In comparison NetworkManager
-uses userspace crypto libraries to compute that.
+*** BLURB HERE ***
 
-Note that iwd has an alternative code path of using md4 hashed
-password, meaning it does still work on kernels without MD4.
+Om Prakash Singh (4):
+  dt-bindings: crypto: qcom,prng: document SA8775P
+  dt-bindings: crypto: qcom,prng: document SC7280
+  arm64: dts: qcom: sa8775p: add TRNG node
+  arm64: dts: qcom: sc7280: add TRNG node
 
-It worries me a lot that this is still in active use.
-
-MS-CHAPv2 has been completely broken since 2012 with a cloud service
-at the time offered to automatically crack any communication. It is
-insecure, does not provide any confidentiality, and worse off allows
-to steal & reuse credentials to later impersonate the original user.
-It is worse than unencrypted WiFi in that sense. Even Windows 11 since
-at least 22H2 release prohibits such connections.  I will propose
-patches to IWD to stop using the md5 crypto kernel interface. As much
-as it is convenient, users of insecure & obsolete cryptography must
-not hold up removal of such methods from the kernel.
+ Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 2 ++
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi                   | 5 +++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi                    | 5 +++++
+ 3 files changed, 12 insertions(+)
 
 -- 
-okurrr,
+2.25.1
 
-Dimitri
