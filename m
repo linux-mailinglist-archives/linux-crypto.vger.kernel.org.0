@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D8D7CEF6B
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AB37CEF68
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbjJSFyg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Oct 2023 01:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
+        id S232777AbjJSFye (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Oct 2023 01:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232683AbjJSFyR (ORCPT
+        with ESMTP id S232670AbjJSFyR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 19 Oct 2023 01:54:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C97AB6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978C1124
         for <linux-crypto@vger.kernel.org>; Wed, 18 Oct 2023 22:54:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D13CC433CC
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A203C433C9
         for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697694855;
-        bh=rDKS+YvCLRvkbTwqkwMcOAISlL7GPSBnvGKjtB0WB6E=;
+        bh=nrvdUnNzBcEYHOgVy+o433Wmsw1Eb+ZN29j5yZ8/iW0=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fUh0PtvtFDXqoxVBd27XQlUtMdOsxPo50Wqb9jbwAFfXp3PDPpeJPA92LFsKLlT+y
-         f0aNzXuG9fhBT5aB6D0tEvWwpPQC44S8F7s49BZmRAyaOCjRIEtJK0eL9Q2e6lUWpj
-         RxUzE8vCM7d4mJu/ntxTLSzesnHdrlb66Nb+5KYh6Uq+YylgDVhncY1vM/7f+lJMdU
-         Rsc0uKg4kkfgiuo7lyRcHZHGTh5b+duFLnLGYYE7RjnEBfAnXpIBfNF3KV42sQ/6SW
-         WGuWqLWKdNYybwEJnH21kLB0WZ5oBJ1QNGmRwj42D7dvs5RqoNBX20EohFaJt4D77z
-         HTLHFTur3SAew==
+        b=UcujRJ/ZzXStpBtb+1q8h6Z+lV26x/5L/eylyo7ppBI/IsGKUpKZ3CGIhnSJ8PQUF
+         mLA1X0BT/VaiuoXvXDn1koLOFXQ76XJiP+fjS7u8eXh4WdiT4NReVhKgI//eUwr5wy
+         PodKm46iaE16TmlGWzqKX6m8QIVykug0pIex6NSFnE29NqCm3bbd6OxWPZriOqwCeb
+         +aI8M7DhUtxEjfYUy5oAAoIzI4+nBotm5VCQEiFHINflz34/rnAr320sb7rAcyakBR
+         msCjlQ5Fe8x3CzTOFwZpyl9mcoReWINIkLSoXdEa2iT+dbQhNdGTunfCLzQgnbAWia
+         CrijRO/Xw2IlQ==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 14/17] crypto: testmgr - stop checking crypto_shash_alignmask
-Date:   Wed, 18 Oct 2023 22:53:40 -0700
-Message-ID: <20231019055343.588846-15-ebiggers@kernel.org>
+Subject: [PATCH 15/17] crypto: adiantum - stop using alignmask of shash_alg
+Date:   Wed, 18 Oct 2023 22:53:41 -0700
+Message-ID: <20231019055343.588846-16-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231019055343.588846-1-ebiggers@kernel.org>
 References: <20231019055343.588846-1-ebiggers@kernel.org>
@@ -49,71 +49,42 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 From: Eric Biggers <ebiggers@google.com>
 
 Now that the shash algorithm type does not support nonzero alignmasks,
-crypto_shash_alignmask() always returns 0 and will be removed.  In
-preparation for this, stop checking crypto_shash_alignmask() in testmgr.
+shash_alg::base.cra_alignmask is always 0, so OR-ing it into another
+value is a no-op.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/testmgr.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ crypto/adiantum.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 54135c7610f06..48a0929c7a158 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -1268,50 +1268,49 @@ static inline int check_shash_op(const char *op, int err,
+diff --git a/crypto/adiantum.c b/crypto/adiantum.c
+index 51703746d91e2..064a0a57c77c1 100644
+--- a/crypto/adiantum.c
++++ b/crypto/adiantum.c
+@@ -554,22 +554,21 @@ static int adiantum_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 		goto err_free_inst;
+ 	if (snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
+ 		     "adiantum(%s,%s,%s)",
+ 		     streamcipher_alg->base.cra_driver_name,
+ 		     blockcipher_alg->cra_driver_name,
+ 		     hash_alg->base.cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
+ 		goto err_free_inst;
  
- /* Test one hash test vector in one configuration, using the shash API */
- static int test_shash_vec_cfg(const struct hash_testvec *vec,
- 			      const char *vec_name,
- 			      const struct testvec_config *cfg,
- 			      struct shash_desc *desc,
- 			      struct test_sglist *tsgl,
- 			      u8 *hashstate)
- {
- 	struct crypto_shash *tfm = desc->tfm;
--	const unsigned int alignmask = crypto_shash_alignmask(tfm);
- 	const unsigned int digestsize = crypto_shash_digestsize(tfm);
- 	const unsigned int statesize = crypto_shash_statesize(tfm);
- 	const char *driver = crypto_shash_driver_name(tfm);
- 	const struct test_sg_division *divs[XBUFSIZE];
- 	unsigned int i;
- 	u8 result[HASH_MAX_DIGESTSIZE + TESTMGR_POISON_LEN];
- 	int err;
+ 	inst->alg.base.cra_blocksize = BLOCKCIPHER_BLOCK_SIZE;
+ 	inst->alg.base.cra_ctxsize = sizeof(struct adiantum_tfm_ctx);
+-	inst->alg.base.cra_alignmask = streamcipher_alg->base.cra_alignmask |
+-				       hash_alg->base.cra_alignmask;
++	inst->alg.base.cra_alignmask = streamcipher_alg->base.cra_alignmask;
+ 	/*
+ 	 * The block cipher is only invoked once per message, so for long
+ 	 * messages (e.g. sectors for disk encryption) its performance doesn't
+ 	 * matter as much as that of the stream cipher and hash function.  Thus,
+ 	 * weigh the block cipher's ->cra_priority less.
+ 	 */
+ 	inst->alg.base.cra_priority = (4 * streamcipher_alg->base.cra_priority +
+ 				       2 * hash_alg->base.cra_priority +
+ 				       blockcipher_alg->cra_priority) / 7;
  
- 	/* Set the key, if specified */
- 	if (vec->ksize) {
- 		err = do_setkey(crypto_shash_setkey, tfm, vec->key, vec->ksize,
--				cfg, alignmask);
-+				cfg, 0);
- 		if (err) {
- 			if (err == vec->setkey_error)
- 				return 0;
- 			pr_err("alg: shash: %s setkey failed on test vector %s; expected_error=%d, actual_error=%d, flags=%#x\n",
- 			       driver, vec_name, vec->setkey_error, err,
- 			       crypto_shash_get_flags(tfm));
- 			return err;
- 		}
- 		if (vec->setkey_error) {
- 			pr_err("alg: shash: %s setkey unexpectedly succeeded on test vector %s; expected_error=%d\n",
- 			       driver, vec_name, vec->setkey_error);
- 			return -EINVAL;
- 		}
- 	}
- 
- 	/* Build the scatterlist for the source data */
--	err = build_hash_sglist(tsgl, vec, cfg, alignmask, divs);
-+	err = build_hash_sglist(tsgl, vec, cfg, 0, divs);
- 	if (err) {
- 		pr_err("alg: shash: %s: error preparing scatterlist for test vector %s, cfg=\"%s\"\n",
- 		       driver, vec_name, cfg->name);
- 		return err;
- 	}
- 
- 	/* Do the actual hashing */
- 
- 	testmgr_poison(desc->__ctx, crypto_shash_descsize(tfm));
- 	testmgr_poison(result, digestsize + TESTMGR_POISON_LEN);
 -- 
 2.42.0
 
