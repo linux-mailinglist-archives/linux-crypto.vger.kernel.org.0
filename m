@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C30AC7CEF67
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560897CEF6A
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbjJSFyd (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Oct 2023 01:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
+        id S231705AbjJSFyg (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Oct 2023 01:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbjJSFyR (ORCPT
+        with ESMTP id S232678AbjJSFyR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 19 Oct 2023 01:54:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6542113
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D589C112
         for <linux-crypto@vger.kernel.org>; Wed, 18 Oct 2023 22:54:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A033C433C8
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A79B5C433CA
         for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697694854;
-        bh=QYH+cVmF4mkZ3rx5Xu98l2QE4+ZE4e0GOXnEh69pB8M=;
+        bh=Q/ICmAR+hC7qnlX/jlK/bjhFFZtdntEIDOUu3Skh/nU=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=HR+1imBnJ/f0YwgnGNZomXZKAinNPw1MxD7OMlSJbQHsjBrhpjZCkl97MCsFcytQ1
-         tKXnvvqtN4IId2VN9xNoNDevCWwuXMPg7rOP2DLNO1XBnV6CofKc7JQeGJfdywniw3
-         KBMi1X80sYEJWzZyd1oWnzlhEwILQqflMGpdZzvggIRuhE1cXyThaICwZBdUGIy0zk
-         KjiGDUdrCdvnVkVDSR6o3/KA0xovuEykyJZ9fhx3sl6kdh+FBJQZNWY7G/L+xLNrUG
-         NMr3J6Wx3K6nUwTwElx0kdkGc6NjWzAjys5S/h0KMlBlLiZlYbyt2PHm1E3tUevise
-         H2X2n6eG9wOaw==
+        b=hH5m5fcIkTYfxyF6ttq+Qul7pZaUHgFgd+6wJnpSmN8SvYF5TwNG8skmiUUeZXhVg
+         qBPQrCw3ivkgiG2KiF3r/bwl5JsnGi8EIdkjD68zRt6ptkr/s9uIyTGyLBGvDq9OvN
+         pm8llPdsfDVqYsUFVkOvHKR1TnaBbu0rj49OAiX3qzJR5L8UZFee6Vt2jsJ1NqCc31
+         vffCckOeMbwq/RsDxq6Y/ixeP/EXrnOCEzuC0w2dQyQvH6FtXZ2Mvjm1aEZQ6g/n3m
+         qj9zVOKd/EAV70AZpUA0gPjk9Ft1seBh9BTzZGEjkVD6OQAoyO+hX75zKcF+PKyqr8
+         IsJ1NtAyPC7tA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 10/17] crypto: xcbc - remove unnecessary alignment logic
-Date:   Wed, 18 Oct 2023 22:53:36 -0700
-Message-ID: <20231019055343.588846-11-ebiggers@kernel.org>
+Subject: [PATCH 11/17] crypto: shash - remove support for nonzero alignmask
+Date:   Wed, 18 Oct 2023 22:53:37 -0700
+Message-ID: <20231019055343.588846-12-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231019055343.588846-1-ebiggers@kernel.org>
 References: <20231019055343.588846-1-ebiggers@kernel.org>
@@ -39,8 +39,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -49,232 +48,328 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The xcbc template is setting its alignmask to that of its underlying
-'cipher'.  Yet, it doesn't care itself about how its inputs and outputs
-are aligned, which is ostensibly the point of the alignmask.  Instead,
-xcbc actually just uses its alignmask itself to runtime-align certain
-fields in its tfm and desc contexts appropriately for its underlying
-cipher.  That is almost entirely pointless too, though, since xcbc is
-already using the cipher API functions that handle alignment themselves,
-and few ciphers set a nonzero alignmask anyway.  Also, even without
-runtime alignment, an alignment of at least 4 bytes can be guaranteed.
+Currently, the shash API checks the alignment of all message, key, and
+digest buffers against the algorithm's declared alignmask, and for any
+unaligned buffers it falls back to manually aligned temporary buffers.
 
-Thus, at best this code is optimizing for the rare case of ciphers that
-set an alignmask >= 7, at the cost of hurting the common cases.
+This is virtually useless, however.  In the case of the message buffer,
+cryptographic hash functions internally operate on fixed-size blocks, so
+implementations end up needing to deal with byte-aligned data anyway
+because the length(s) passed to ->update might not be divisible by the
+block size.  Word-alignment of the message can theoretically be helpful
+for CRCs, like what was being done in crc32c-sparc64.  But in practice
+it's better for the algorithms to use unaligned accesses or align the
+message themselves.  A similar argument applies to the key and digest.
 
-Therefore, this patch removes the manual alignment code from xcbc and
-makes it stop setting an alignmask.
+In any case, no shash algorithms actually set a nonzero alignmask
+anymore.  Therefore, remove support for it from shash.  The benefit is
+that all the code to handle "misaligned" buffers in the shash API goes
+away, reducing the overhead of the shash API.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/xcbc.c | 32 ++++++++++----------------------
- 1 file changed, 10 insertions(+), 22 deletions(-)
+ crypto/shash.c | 128 ++++---------------------------------------------
+ 1 file changed, 8 insertions(+), 120 deletions(-)
 
-diff --git a/crypto/xcbc.c b/crypto/xcbc.c
-index 6074c5c1da492..a9e8ee9c1949c 100644
---- a/crypto/xcbc.c
-+++ b/crypto/xcbc.c
-@@ -20,85 +20,82 @@ static u_int32_t ks[12] = {0x01010101, 0x01010101, 0x01010101, 0x01010101,
-  * +------------------------
-  * | <parent tfm>
-  * +------------------------
-  * | xcbc_tfm_ctx
-  * +------------------------
-  * | consts (block size * 2)
-  * +------------------------
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 52420c41db44a..409b33f9c97cc 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -3,264 +3,151 @@
+  * Synchronous Cryptographic Hash operations.
+  *
+  * Copyright (c) 2008 Herbert Xu <herbert@gondor.apana.org.au>
   */
- struct xcbc_tfm_ctx {
- 	struct crypto_cipher *child;
--	u8 ctx[];
-+	u8 consts[];
- };
  
- /*
-  * +------------------------
-  * | <shash desc>
-  * +------------------------
-  * | xcbc_desc_ctx
-  * +------------------------
-  * | odds (block size)
-  * +------------------------
-  * | prev (block size)
-  * +------------------------
-  */
- struct xcbc_desc_ctx {
- 	unsigned int len;
--	u8 ctx[];
-+	u8 odds[];
- };
+ #include <crypto/scatterwalk.h>
+ #include <linux/cryptouser.h>
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/slab.h>
+ #include <linux/seq_file.h>
+ #include <linux/string.h>
+ #include <net/netlink.h>
  
- #define XCBC_BLOCKSIZE	16
+ #include "hash.h"
  
- static int crypto_xcbc_digest_setkey(struct crypto_shash *parent,
- 				     const u8 *inkey, unsigned int keylen)
+-#define MAX_SHASH_ALIGNMASK 63
+-
+ static const struct crypto_type crypto_shash_type;
+ 
+ static inline struct crypto_istat_hash *shash_get_stat(struct shash_alg *alg)
  {
--	unsigned long alignmask = crypto_shash_alignmask(parent);
- 	struct xcbc_tfm_ctx *ctx = crypto_shash_ctx(parent);
--	u8 *consts = PTR_ALIGN(&ctx->ctx[0], alignmask + 1);
-+	u8 *consts = ctx->consts;
- 	int err = 0;
- 	u8 key1[XCBC_BLOCKSIZE];
- 	int bs = sizeof(key1);
- 
- 	if ((err = crypto_cipher_setkey(ctx->child, inkey, keylen)))
- 		return err;
- 
- 	crypto_cipher_encrypt_one(ctx->child, consts, (u8 *)ks + bs);
- 	crypto_cipher_encrypt_one(ctx->child, consts + bs, (u8 *)ks + bs * 2);
- 	crypto_cipher_encrypt_one(ctx->child, key1, (u8 *)ks);
- 
- 	return crypto_cipher_setkey(ctx->child, key1, bs);
- 
+ 	return hash_get_stat(&alg->halg);
  }
  
- static int crypto_xcbc_digest_init(struct shash_desc *pdesc)
+ static inline int crypto_shash_errstat(struct shash_alg *alg, int err)
  {
--	unsigned long alignmask = crypto_shash_alignmask(pdesc->tfm);
- 	struct xcbc_desc_ctx *ctx = shash_desc_ctx(pdesc);
- 	int bs = crypto_shash_blocksize(pdesc->tfm);
--	u8 *prev = PTR_ALIGN(&ctx->ctx[0], alignmask + 1) + bs;
-+	u8 *prev = &ctx->odds[bs];
- 
- 	ctx->len = 0;
- 	memset(prev, 0, bs);
- 
- 	return 0;
+ 	return crypto_hash_errstat(&alg->halg, err);
  }
  
- static int crypto_xcbc_digest_update(struct shash_desc *pdesc, const u8 *p,
- 				     unsigned int len)
+ int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
+ 		    unsigned int keylen)
  {
- 	struct crypto_shash *parent = pdesc->tfm;
--	unsigned long alignmask = crypto_shash_alignmask(parent);
- 	struct xcbc_tfm_ctx *tctx = crypto_shash_ctx(parent);
- 	struct xcbc_desc_ctx *ctx = shash_desc_ctx(pdesc);
- 	struct crypto_cipher *tfm = tctx->child;
- 	int bs = crypto_shash_blocksize(parent);
--	u8 *odds = PTR_ALIGN(&ctx->ctx[0], alignmask + 1);
-+	u8 *odds = ctx->odds;
- 	u8 *prev = odds + bs;
+ 	return -ENOSYS;
+ }
+ EXPORT_SYMBOL_GPL(shash_no_setkey);
  
- 	/* checking the data can fill the block */
- 	if ((ctx->len + len) <= bs) {
- 		memcpy(odds + ctx->len, p, len);
- 		ctx->len += len;
- 		return 0;
- 	}
- 
- 	/* filling odds with new data and encrypting it */
-@@ -125,46 +122,44 @@ static int crypto_xcbc_digest_update(struct shash_desc *pdesc, const u8 *p,
- 		memcpy(odds, p, len);
- 		ctx->len = len;
- 	}
- 
- 	return 0;
+-static int shash_setkey_unaligned(struct crypto_shash *tfm, const u8 *key,
+-				  unsigned int keylen)
+-{
+-	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
+-	unsigned long absize;
+-	u8 *buffer, *alignbuffer;
+-	int err;
+-
+-	absize = keylen + (alignmask & ~(crypto_tfm_ctx_alignment() - 1));
+-	buffer = kmalloc(absize, GFP_ATOMIC);
+-	if (!buffer)
+-		return -ENOMEM;
+-
+-	alignbuffer = (u8 *)ALIGN((unsigned long)buffer, alignmask + 1);
+-	memcpy(alignbuffer, key, keylen);
+-	err = shash->setkey(tfm, alignbuffer, keylen);
+-	kfree_sensitive(buffer);
+-	return err;
+-}
+-
+ static void shash_set_needkey(struct crypto_shash *tfm, struct shash_alg *alg)
+ {
+ 	if (crypto_shash_alg_needs_key(alg))
+ 		crypto_shash_set_flags(tfm, CRYPTO_TFM_NEED_KEY);
  }
  
- static int crypto_xcbc_digest_final(struct shash_desc *pdesc, u8 *out)
+ int crypto_shash_setkey(struct crypto_shash *tfm, const u8 *key,
+ 			unsigned int keylen)
  {
- 	struct crypto_shash *parent = pdesc->tfm;
--	unsigned long alignmask = crypto_shash_alignmask(parent);
- 	struct xcbc_tfm_ctx *tctx = crypto_shash_ctx(parent);
- 	struct xcbc_desc_ctx *ctx = shash_desc_ctx(pdesc);
- 	struct crypto_cipher *tfm = tctx->child;
- 	int bs = crypto_shash_blocksize(parent);
--	u8 *consts = PTR_ALIGN(&tctx->ctx[0], alignmask + 1);
--	u8 *odds = PTR_ALIGN(&ctx->ctx[0], alignmask + 1);
-+	u8 *odds = ctx->odds;
- 	u8 *prev = odds + bs;
- 	unsigned int offset = 0;
- 
- 	if (ctx->len != bs) {
- 		unsigned int rlen;
- 		u8 *p = odds + ctx->len;
- 
- 		*p = 0x80;
- 		p++;
- 
- 		rlen = bs - ctx->len -1;
- 		if (rlen)
- 			memset(p, 0, rlen);
- 
- 		offset += bs;
- 	}
- 
- 	crypto_xor(prev, odds, bs);
--	crypto_xor(prev, consts + offset, bs);
-+	crypto_xor(prev, &tctx->consts[offset], bs);
- 
- 	crypto_cipher_encrypt_one(tfm, out, prev);
- 
- 	return 0;
- }
- 
- static int xcbc_init_tfm(struct crypto_tfm *tfm)
- {
- 	struct crypto_cipher *cipher;
- 	struct crypto_instance *inst = (void *)tfm->__crt_alg;
-@@ -184,21 +179,20 @@ static void xcbc_exit_tfm(struct crypto_tfm *tfm)
- {
- 	struct xcbc_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
- 	crypto_free_cipher(ctx->child);
- }
- 
- static int xcbc_create(struct crypto_template *tmpl, struct rtattr **tb)
- {
- 	struct shash_instance *inst;
- 	struct crypto_cipher_spawn *spawn;
- 	struct crypto_alg *alg;
--	unsigned long alignmask;
- 	u32 mask;
+ 	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
  	int err;
  
- 	err = crypto_check_attr_type(tb, CRYPTO_ALG_TYPE_SHASH, &mask);
+-	if ((unsigned long)key & alignmask)
+-		err = shash_setkey_unaligned(tfm, key, keylen);
+-	else
+-		err = shash->setkey(tfm, key, keylen);
+-
++	err = shash->setkey(tfm, key, keylen);
+ 	if (unlikely(err)) {
+ 		shash_set_needkey(tfm, shash);
+ 		return err;
+ 	}
+ 
+ 	crypto_shash_clear_flags(tfm, CRYPTO_TFM_NEED_KEY);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(crypto_shash_setkey);
+ 
+-static int shash_update_unaligned(struct shash_desc *desc, const u8 *data,
+-				  unsigned int len)
+-{
+-	struct crypto_shash *tfm = desc->tfm;
+-	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
+-	unsigned int unaligned_len = alignmask + 1 -
+-				     ((unsigned long)data & alignmask);
+-	/*
+-	 * We cannot count on __aligned() working for large values:
+-	 * https://patchwork.kernel.org/patch/9507697/
+-	 */
+-	u8 ubuf[MAX_SHASH_ALIGNMASK * 2];
+-	u8 *buf = PTR_ALIGN(&ubuf[0], alignmask + 1);
+-	int err;
+-
+-	if (WARN_ON(buf + unaligned_len > ubuf + sizeof(ubuf)))
+-		return -EINVAL;
+-
+-	if (unaligned_len > len)
+-		unaligned_len = len;
+-
+-	memcpy(buf, data, unaligned_len);
+-	err = shash->update(desc, buf, unaligned_len);
+-	memset(buf, 0, unaligned_len);
+-
+-	return err ?:
+-	       shash->update(desc, data + unaligned_len, len - unaligned_len);
+-}
+-
+ int crypto_shash_update(struct shash_desc *desc, const u8 *data,
+ 			unsigned int len)
+ {
+-	struct crypto_shash *tfm = desc->tfm;
+-	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
++	struct shash_alg *shash = crypto_shash_alg(desc->tfm);
+ 	int err;
+ 
+ 	if (IS_ENABLED(CONFIG_CRYPTO_STATS))
+ 		atomic64_add(len, &shash_get_stat(shash)->hash_tlen);
+ 
+-	if ((unsigned long)data & alignmask)
+-		err = shash_update_unaligned(desc, data, len);
+-	else
+-		err = shash->update(desc, data, len);
++	err = shash->update(desc, data, len);
+ 
+ 	return crypto_shash_errstat(shash, err);
+ }
+ EXPORT_SYMBOL_GPL(crypto_shash_update);
+ 
+-static int shash_final_unaligned(struct shash_desc *desc, u8 *out)
+-{
+-	struct crypto_shash *tfm = desc->tfm;
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
+-	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned int ds = crypto_shash_digestsize(tfm);
+-	/*
+-	 * We cannot count on __aligned() working for large values:
+-	 * https://patchwork.kernel.org/patch/9507697/
+-	 */
+-	u8 ubuf[MAX_SHASH_ALIGNMASK + HASH_MAX_DIGESTSIZE];
+-	u8 *buf = PTR_ALIGN(&ubuf[0], alignmask + 1);
+-	int err;
+-
+-	if (WARN_ON(buf + ds > ubuf + sizeof(ubuf)))
+-		return -EINVAL;
+-
+-	err = shash->final(desc, buf);
+-	if (err)
+-		goto out;
+-
+-	memcpy(out, buf, ds);
+-
+-out:
+-	memset(buf, 0, ds);
+-	return err;
+-}
+-
+ int crypto_shash_final(struct shash_desc *desc, u8 *out)
+ {
+-	struct crypto_shash *tfm = desc->tfm;
+-	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
++	struct shash_alg *shash = crypto_shash_alg(desc->tfm);
+ 	int err;
+ 
+ 	if (IS_ENABLED(CONFIG_CRYPTO_STATS))
+ 		atomic64_inc(&shash_get_stat(shash)->hash_cnt);
+ 
+-	if ((unsigned long)out & alignmask)
+-		err = shash_final_unaligned(desc, out);
+-	else
+-		err = shash->final(desc, out);
++	err = shash->final(desc, out);
+ 
+ 	return crypto_shash_errstat(shash, err);
+ }
+ EXPORT_SYMBOL_GPL(crypto_shash_final);
+ 
+-static int shash_finup_unaligned(struct shash_desc *desc, const u8 *data,
+-				 unsigned int len, u8 *out)
+-{
+-	return shash_update_unaligned(desc, data, len) ?:
+-	       shash_final_unaligned(desc, out);
+-}
+-
+ static int shash_default_finup(struct shash_desc *desc, const u8 *data,
+ 			       unsigned int len, u8 *out)
+ {
+ 	struct shash_alg *shash = crypto_shash_alg(desc->tfm);
+ 
+ 	return shash->update(desc, data, len) ?:
+ 	       shash->final(desc, out);
+ }
+ 
+ int crypto_shash_finup(struct shash_desc *desc, const u8 *data,
+ 		       unsigned int len, u8 *out)
+ {
+ 	struct crypto_shash *tfm = desc->tfm;
+ 	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
+ 	int err;
+ 
+ 	if (IS_ENABLED(CONFIG_CRYPTO_STATS)) {
+ 		struct crypto_istat_hash *istat = shash_get_stat(shash);
+ 
+ 		atomic64_inc(&istat->hash_cnt);
+ 		atomic64_add(len, &istat->hash_tlen);
+ 	}
+ 
+-	if (((unsigned long)data | (unsigned long)out) & alignmask)
+-		err = shash_finup_unaligned(desc, data, len, out);
+-	else
+-		err = shash->finup(desc, data, len, out);
+-
++	err = shash->finup(desc, data, len, out);
+ 
+ 	return crypto_shash_errstat(shash, err);
+ }
+ EXPORT_SYMBOL_GPL(crypto_shash_finup);
+ 
+ static int shash_default_digest(struct shash_desc *desc, const u8 *data,
+ 				unsigned int len, u8 *out)
+ {
+ 	struct shash_alg *shash = crypto_shash_alg(desc->tfm);
+ 
+ 	return shash->init(desc) ?:
+ 	       shash->finup(desc, data, len, out);
+ }
+ 
+ int crypto_shash_digest(struct shash_desc *desc, const u8 *data,
+ 			unsigned int len, u8 *out)
+ {
+ 	struct crypto_shash *tfm = desc->tfm;
+ 	struct shash_alg *shash = crypto_shash_alg(tfm);
+-	unsigned long alignmask = crypto_shash_alignmask(tfm);
+ 	int err;
+ 
+ 	if (IS_ENABLED(CONFIG_CRYPTO_STATS)) {
+ 		struct crypto_istat_hash *istat = shash_get_stat(shash);
+ 
+ 		atomic64_inc(&istat->hash_cnt);
+ 		atomic64_add(len, &istat->hash_tlen);
+ 	}
+ 
+ 	if (crypto_shash_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
+ 		err = -ENOKEY;
+-	else if (((unsigned long)data | (unsigned long)out) & alignmask)
+-		err = shash->init(desc) ?:
+-		      shash_finup_unaligned(desc, data, len, out);
+ 	else
+ 		err = shash->digest(desc, data, len, out);
+ 
+ 	return crypto_shash_errstat(shash, err);
+ }
+ EXPORT_SYMBOL_GPL(crypto_shash_digest);
+ 
+ int crypto_shash_tfm_digest(struct crypto_shash *tfm, const u8 *data,
+ 			    unsigned int len, u8 *out)
+ {
+@@ -663,21 +550,22 @@ int hash_prepare_alg(struct hash_alg_common *alg)
+ }
+ 
+ static int shash_prepare_alg(struct shash_alg *alg)
+ {
+ 	struct crypto_alg *base = &alg->halg.base;
+ 	int err;
+ 
+ 	if (alg->descsize > HASH_MAX_DESCSIZE)
+ 		return -EINVAL;
+ 
+-	if (base->cra_alignmask > MAX_SHASH_ALIGNMASK)
++	/* alignmask is not useful for shash, so it is not supported. */
++	if (base->cra_alignmask)
+ 		return -EINVAL;
+ 
+ 	if ((alg->export && !alg->import) || (alg->import && !alg->export))
+ 		return -EINVAL;
+ 
+ 	err = hash_prepare_alg(&alg->halg);
  	if (err)
  		return err;
  
- 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
- 	if (!inst)
- 		return -ENOMEM;
-@@ -211,35 +205,29 @@ static int xcbc_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	alg = crypto_spawn_cipher_alg(spawn);
- 
- 	err = -EINVAL;
- 	if (alg->cra_blocksize != XCBC_BLOCKSIZE)
- 		goto err_free_inst;
- 
- 	err = crypto_inst_setname(shash_crypto_instance(inst), tmpl->name, alg);
- 	if (err)
- 		goto err_free_inst;
- 
--	alignmask = alg->cra_alignmask | 3;
--	inst->alg.base.cra_alignmask = alignmask;
- 	inst->alg.base.cra_priority = alg->cra_priority;
- 	inst->alg.base.cra_blocksize = alg->cra_blocksize;
-+	inst->alg.base.cra_ctxsize = sizeof(struct xcbc_tfm_ctx) +
-+				     alg->cra_blocksize * 2;
- 
- 	inst->alg.digestsize = alg->cra_blocksize;
--	inst->alg.descsize = ALIGN(sizeof(struct xcbc_desc_ctx),
--				   crypto_tfm_ctx_alignment()) +
--			     (alignmask &
--			      ~(crypto_tfm_ctx_alignment() - 1)) +
-+	inst->alg.descsize = sizeof(struct xcbc_desc_ctx) +
- 			     alg->cra_blocksize * 2;
- 
--	inst->alg.base.cra_ctxsize = ALIGN(sizeof(struct xcbc_tfm_ctx),
--					   alignmask + 1) +
--				     alg->cra_blocksize * 2;
- 	inst->alg.base.cra_init = xcbc_init_tfm;
- 	inst->alg.base.cra_exit = xcbc_exit_tfm;
- 
- 	inst->alg.init = crypto_xcbc_digest_init;
- 	inst->alg.update = crypto_xcbc_digest_update;
- 	inst->alg.final = crypto_xcbc_digest_final;
- 	inst->alg.setkey = crypto_xcbc_digest_setkey;
- 
- 	inst->free = shash_free_singlespawn_instance;
- 
+ 	base->cra_type = &crypto_shash_type;
 -- 
 2.42.0
 
