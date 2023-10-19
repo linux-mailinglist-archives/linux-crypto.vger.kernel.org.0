@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F017CEF62
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218787CEF63
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbjJSFyS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Oct 2023 01:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
+        id S232712AbjJSFyZ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Oct 2023 01:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232638AbjJSFyQ (ORCPT
+        with ESMTP id S232650AbjJSFyQ (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 19 Oct 2023 01:54:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6156811D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C789121
         for <linux-crypto@vger.kernel.org>; Wed, 18 Oct 2023 22:54:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E46EEC433C7
-        for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DD3FC433D9
+        for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697694854;
-        bh=j82LtqYf1qqTubk8yZYGD7oFCwPaQRV4h4D9NiVEthc=;
+        bh=6+5sfw+Im75F6oUY/EK7cod3GRqwQ5kxKGclEU/TThw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=PDOrKfes+20uuQZciieRY9PLBClcbLWX2KedBROqnAvNhqMMuKprX1y8B/zTR2glJ
-         B6w3n7h5Ssy3u/o97lbp1XIl8/6SudCeJ8bY0jNPUS3xMURd8PmYfEjfhGE9wXpj4k
-         DIu6BV26J6WgG3h2JVG40lsbsmVsn6CpfTbNUGEJryiVxAK6EupCftswC6TCFEvmrZ
-         4Q7doVaMsTpnHXsaAT52e8MDthTYrgzEfxBbsca6Axu29dcXxJ65bGDCnpR3Hc0kKT
-         lsK4Axf1SUOTmHtoc6+SZyPL9WR+UzV2UxcmLVSoJ9PcHq1LUYRDQZYZIYwNixDHCz
-         Su1J7uzC+19CA==
+        b=Pmgum+MM4XSJl+eBIpJ7y1BfVja+ZInJOoAR6Pd4mlsIDuND0+EA6tw1gXsijeh2g
+         BskO5EhD/jaI+8xp+QGIwnOCXSFV10VPdUSLZcwVC7zJTtTaSOcNMhqePxdtBe85MR
+         +mSpyGl5l9QPNSLBQx6WzvlggtPDFCUfccwFIXoCSfYSiIqD6jBYqU8BMorxIYroqe
+         d5YZ++zoqBGNYc5SCkaiyUfvsmMc8poSA/uiwd215WosF8sCkF9HfcNYH98DAA98A1
+         NRGOMFddLLeCPKWx6up37s6lzuS+eZeQKYyLfdy8txl9uSSO5ame6E9M2SKaPqMrxJ
+         gzCtyAzjbTMwQ==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 07/17] crypto: cmac - remove unnecessary alignment logic
-Date:   Wed, 18 Oct 2023 22:53:33 -0700
-Message-ID: <20231019055343.588846-8-ebiggers@kernel.org>
+Subject: [PATCH 08/17] crypto: hmac - remove unnecessary alignment logic
+Date:   Wed, 18 Oct 2023 22:53:34 -0700
+Message-ID: <20231019055343.588846-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231019055343.588846-1-ebiggers@kernel.org>
 References: <20231019055343.588846-1-ebiggers@kernel.org>
@@ -49,240 +49,233 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The cmac template is setting its alignmask to that of its underlying
-'cipher'.  Yet, it doesn't care itself about how its inputs and outputs
-are aligned, which is ostensibly the point of the alignmask.  Instead,
-cmac actually just uses its alignmask itself to runtime-align certain
-fields in its tfm and desc contexts appropriately for its underlying
-cipher.  That is almost entirely pointless too, though, since cmac is
-already using the cipher API functions that handle alignment themselves,
-and few ciphers set a nonzero alignmask anyway.  Also, even without
-runtime alignment, an alignment of at least 4 bytes can be guaranteed.
+The hmac template is setting its alignmask to that of its underlying
+unkeyed hash algorithm, and it is aligning the ipad and opad fields in
+its tfm context to that alignment.  However, hmac does not actually need
+any sort of alignment itself, which makes this pointless except to keep
+the pads aligned to what the underlying algorithm prefers.  But very few
+shash algorithms actually set an alignmask, and it is being removed from
+those remaining ones; also, after setkey, the pads are only passed to
+crypto_shash_import and crypto_shash_export which ignore the alignmask.
 
-Thus, at best this code is optimizing for the rare case of ciphers that
-set an alignmask >= 7, at the cost of hurting the common cases.
-
-Therefore, this patch removes the manual alignment code from cmac and
-makes it stop setting an alignmask.
+Therefore, make the hmac template stop setting an alignmask and simply
+use natural alignment for ipad and opad.  Note, this change also moves
+the pads from the beginning of the tfm context to the end, which makes
+much more sense; the variable-length fields should be at the end.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/cmac.c | 39 +++++++++++----------------------------
- 1 file changed, 11 insertions(+), 28 deletions(-)
+ crypto/hmac.c | 56 ++++++++++++++++++++-------------------------------
+ 1 file changed, 22 insertions(+), 34 deletions(-)
 
-diff --git a/crypto/cmac.c b/crypto/cmac.c
-index fce6b0f58e88e..c7aa3665b076e 100644
---- a/crypto/cmac.c
-+++ b/crypto/cmac.c
-@@ -21,47 +21,45 @@
-  * +------------------------
-  * | <parent tfm>
-  * +------------------------
-  * | cmac_tfm_ctx
-  * +------------------------
-  * | consts (block size * 2)
-  * +------------------------
-  */
- struct cmac_tfm_ctx {
- 	struct crypto_cipher *child;
--	u8 ctx[];
-+	__be64 consts[];
+diff --git a/crypto/hmac.c b/crypto/hmac.c
+index ea93f4c55f251..7cec25ff98891 100644
+--- a/crypto/hmac.c
++++ b/crypto/hmac.c
+@@ -17,45 +17,34 @@
+ #include <linux/err.h>
+ #include <linux/fips.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/scatterlist.h>
+ #include <linux/string.h>
+ 
+ struct hmac_ctx {
+ 	struct crypto_shash *hash;
++	/* Contains 'u8 ipad[statesize];', then 'u8 opad[statesize];' */
++	u8 pads[];
  };
  
- /*
-  * +------------------------
-  * | <shash desc>
-  * +------------------------
-  * | cmac_desc_ctx
-  * +------------------------
-  * | odds (block size)
-  * +------------------------
-  * | prev (block size)
-  * +------------------------
-  */
- struct cmac_desc_ctx {
- 	unsigned int len;
--	u8 ctx[];
-+	u8 odds[];
- };
- 
- static int crypto_cmac_digest_setkey(struct crypto_shash *parent,
- 				     const u8 *inkey, unsigned int keylen)
+-static inline void *align_ptr(void *p, unsigned int align)
+-{
+-	return (void *)ALIGN((unsigned long)p, align);
+-}
+-
+-static inline struct hmac_ctx *hmac_ctx(struct crypto_shash *tfm)
+-{
+-	return align_ptr(crypto_shash_ctx_aligned(tfm) +
+-			 crypto_shash_statesize(tfm) * 2,
+-			 crypto_tfm_ctx_alignment());
+-}
+-
+ static int hmac_setkey(struct crypto_shash *parent,
+ 		       const u8 *inkey, unsigned int keylen)
  {
--	unsigned long alignmask = crypto_shash_alignmask(parent);
- 	struct cmac_tfm_ctx *ctx = crypto_shash_ctx(parent);
- 	unsigned int bs = crypto_shash_blocksize(parent);
--	__be64 *consts = PTR_ALIGN((void *)ctx->ctx,
--				   (alignmask | (__alignof__(__be64) - 1)) + 1);
-+	__be64 *consts = ctx->consts;
- 	u64 _const[2];
- 	int i, err = 0;
- 	u8 msb_mask, gfmask;
+ 	int bs = crypto_shash_blocksize(parent);
+ 	int ds = crypto_shash_digestsize(parent);
+ 	int ss = crypto_shash_statesize(parent);
+-	char *ipad = crypto_shash_ctx_aligned(parent);
+-	char *opad = ipad + ss;
+-	struct hmac_ctx *ctx = align_ptr(opad + ss,
+-					 crypto_tfm_ctx_alignment());
+-	struct crypto_shash *hash = ctx->hash;
++	struct hmac_ctx *tctx = crypto_shash_ctx(parent);
++	struct crypto_shash *hash = tctx->hash;
++	u8 *ipad = &tctx->pads[0];
++	u8 *opad = &tctx->pads[ss];
+ 	SHASH_DESC_ON_STACK(shash, hash);
+ 	unsigned int i;
  
- 	err = crypto_cipher_setkey(ctx->child, inkey, keylen);
- 	if (err)
- 		return err;
+ 	if (fips_enabled && (keylen < 112 / 8))
+ 		return -EINVAL;
  
- 	/* encrypt the zero block */
- 	memset(consts, 0, bs);
-@@ -97,41 +95,39 @@ static int crypto_cmac_digest_setkey(struct crypto_shash *parent,
- 		}
+ 	shash->tfm = hash;
  
- 		break;
- 	}
+ 	if (keylen > bs) {
+ 		int err;
+@@ -87,105 +76,109 @@ static int hmac_setkey(struct crypto_shash *parent,
+ static int hmac_export(struct shash_desc *pdesc, void *out)
+ {
+ 	struct shash_desc *desc = shash_desc_ctx(pdesc);
  
- 	return 0;
+ 	return crypto_shash_export(desc, out);
  }
  
- static int crypto_cmac_digest_init(struct shash_desc *pdesc)
+ static int hmac_import(struct shash_desc *pdesc, const void *in)
  {
--	unsigned long alignmask = crypto_shash_alignmask(pdesc->tfm);
- 	struct cmac_desc_ctx *ctx = shash_desc_ctx(pdesc);
- 	int bs = crypto_shash_blocksize(pdesc->tfm);
--	u8 *prev = PTR_ALIGN((void *)ctx->ctx, alignmask + 1) + bs;
-+	u8 *prev = &ctx->odds[bs];
+ 	struct shash_desc *desc = shash_desc_ctx(pdesc);
+-	struct hmac_ctx *ctx = hmac_ctx(pdesc->tfm);
++	const struct hmac_ctx *tctx = crypto_shash_ctx(pdesc->tfm);
  
- 	ctx->len = 0;
- 	memset(prev, 0, bs);
+-	desc->tfm = ctx->hash;
++	desc->tfm = tctx->hash;
  
- 	return 0;
+ 	return crypto_shash_import(desc, in);
  }
  
- static int crypto_cmac_digest_update(struct shash_desc *pdesc, const u8 *p,
- 				     unsigned int len)
+ static int hmac_init(struct shash_desc *pdesc)
+ {
+-	return hmac_import(pdesc, crypto_shash_ctx_aligned(pdesc->tfm));
++	const struct hmac_ctx *tctx = crypto_shash_ctx(pdesc->tfm);
++
++	return hmac_import(pdesc, &tctx->pads[0]);
+ }
+ 
+ static int hmac_update(struct shash_desc *pdesc,
+ 		       const u8 *data, unsigned int nbytes)
+ {
+ 	struct shash_desc *desc = shash_desc_ctx(pdesc);
+ 
+ 	return crypto_shash_update(desc, data, nbytes);
+ }
+ 
+ static int hmac_final(struct shash_desc *pdesc, u8 *out)
  {
  	struct crypto_shash *parent = pdesc->tfm;
--	unsigned long alignmask = crypto_shash_alignmask(parent);
- 	struct cmac_tfm_ctx *tctx = crypto_shash_ctx(parent);
- 	struct cmac_desc_ctx *ctx = shash_desc_ctx(pdesc);
- 	struct crypto_cipher *tfm = tctx->child;
- 	int bs = crypto_shash_blocksize(parent);
--	u8 *odds = PTR_ALIGN((void *)ctx->ctx, alignmask + 1);
-+	u8 *odds = ctx->odds;
- 	u8 *prev = odds + bs;
+ 	int ds = crypto_shash_digestsize(parent);
+ 	int ss = crypto_shash_statesize(parent);
+-	char *opad = crypto_shash_ctx_aligned(parent) + ss;
++	const struct hmac_ctx *tctx = crypto_shash_ctx(parent);
++	const u8 *opad = &tctx->pads[ss];
+ 	struct shash_desc *desc = shash_desc_ctx(pdesc);
  
- 	/* checking the data can fill the block */
- 	if ((ctx->len + len) <= bs) {
- 		memcpy(odds + ctx->len, p, len);
- 		ctx->len += len;
- 		return 0;
- 	}
- 
- 	/* filling odds with new data and encrypting it */
-@@ -158,47 +154,44 @@ static int crypto_cmac_digest_update(struct shash_desc *pdesc, const u8 *p,
- 		memcpy(odds, p, len);
- 		ctx->len = len;
- 	}
- 
- 	return 0;
+ 	return crypto_shash_final(desc, out) ?:
+ 	       crypto_shash_import(desc, opad) ?:
+ 	       crypto_shash_finup(desc, out, ds, out);
  }
  
- static int crypto_cmac_digest_final(struct shash_desc *pdesc, u8 *out)
+ static int hmac_finup(struct shash_desc *pdesc, const u8 *data,
+ 		      unsigned int nbytes, u8 *out)
  {
+ 
  	struct crypto_shash *parent = pdesc->tfm;
--	unsigned long alignmask = crypto_shash_alignmask(parent);
- 	struct cmac_tfm_ctx *tctx = crypto_shash_ctx(parent);
- 	struct cmac_desc_ctx *ctx = shash_desc_ctx(pdesc);
- 	struct crypto_cipher *tfm = tctx->child;
- 	int bs = crypto_shash_blocksize(parent);
--	u8 *consts = PTR_ALIGN((void *)tctx->ctx,
--			       (alignmask | (__alignof__(__be64) - 1)) + 1);
--	u8 *odds = PTR_ALIGN((void *)ctx->ctx, alignmask + 1);
-+	u8 *odds = ctx->odds;
- 	u8 *prev = odds + bs;
- 	unsigned int offset = 0;
+ 	int ds = crypto_shash_digestsize(parent);
+ 	int ss = crypto_shash_statesize(parent);
+-	char *opad = crypto_shash_ctx_aligned(parent) + ss;
++	const struct hmac_ctx *tctx = crypto_shash_ctx(parent);
++	const u8 *opad = &tctx->pads[ss];
+ 	struct shash_desc *desc = shash_desc_ctx(pdesc);
  
- 	if (ctx->len != bs) {
- 		unsigned int rlen;
- 		u8 *p = odds + ctx->len;
+ 	return crypto_shash_finup(desc, data, nbytes, out) ?:
+ 	       crypto_shash_import(desc, opad) ?:
+ 	       crypto_shash_finup(desc, out, ds, out);
+ }
  
- 		*p = 0x80;
- 		p++;
+ static int hmac_init_tfm(struct crypto_shash *parent)
+ {
+ 	struct crypto_shash *hash;
+ 	struct shash_instance *inst = shash_alg_instance(parent);
+ 	struct crypto_shash_spawn *spawn = shash_instance_ctx(inst);
+-	struct hmac_ctx *ctx = hmac_ctx(parent);
++	struct hmac_ctx *tctx = crypto_shash_ctx(parent);
  
- 		rlen = bs - ctx->len - 1;
- 		if (rlen)
- 			memset(p, 0, rlen);
+ 	hash = crypto_spawn_shash(spawn);
+ 	if (IS_ERR(hash))
+ 		return PTR_ERR(hash);
  
- 		offset += bs;
- 	}
+ 	parent->descsize = sizeof(struct shash_desc) +
+ 			   crypto_shash_descsize(hash);
  
- 	crypto_xor(prev, odds, bs);
--	crypto_xor(prev, consts + offset, bs);
-+	crypto_xor(prev, (const u8 *)tctx->consts + offset, bs);
- 
- 	crypto_cipher_encrypt_one(tfm, out, prev);
- 
+-	ctx->hash = hash;
++	tctx->hash = hash;
  	return 0;
  }
  
- static int cmac_init_tfm(struct crypto_shash *tfm)
+ static int hmac_clone_tfm(struct crypto_shash *dst, struct crypto_shash *src)
  {
- 	struct shash_instance *inst = shash_alg_instance(tfm);
- 	struct cmac_tfm_ctx *ctx = crypto_shash_ctx(tfm);
-@@ -234,21 +227,20 @@ static void cmac_exit_tfm(struct crypto_shash *tfm)
- {
- 	struct cmac_tfm_ctx *ctx = crypto_shash_ctx(tfm);
- 	crypto_free_cipher(ctx->child);
+-	struct hmac_ctx *sctx = hmac_ctx(src);
+-	struct hmac_ctx *dctx = hmac_ctx(dst);
++	struct hmac_ctx *sctx = crypto_shash_ctx(src);
++	struct hmac_ctx *dctx = crypto_shash_ctx(dst);
+ 	struct crypto_shash *hash;
+ 
+ 	hash = crypto_clone_shash(sctx->hash);
+ 	if (IS_ERR(hash))
+ 		return PTR_ERR(hash);
+ 
+ 	dctx->hash = hash;
+ 	return 0;
  }
  
- static int cmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+ static void hmac_exit_tfm(struct crypto_shash *parent)
+ {
+-	struct hmac_ctx *ctx = hmac_ctx(parent);
++	struct hmac_ctx *tctx = crypto_shash_ctx(parent);
+ 
+-	crypto_free_shash(ctx->hash);
++	crypto_free_shash(tctx->hash);
+ }
+ 
+ static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
  {
  	struct shash_instance *inst;
- 	struct crypto_cipher_spawn *spawn;
+ 	struct crypto_shash_spawn *spawn;
  	struct crypto_alg *alg;
--	unsigned long alignmask;
+ 	struct shash_alg *salg;
  	u32 mask;
  	int err;
- 
- 	err = crypto_check_attr_type(tb, CRYPTO_ALG_TYPE_SHASH, &mask);
- 	if (err)
- 		return err;
- 
- 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
- 	if (!inst)
- 		return -ENOMEM;
-@@ -266,37 +258,28 @@ static int cmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- 		break;
- 	default:
- 		err = -EINVAL;
+@@ -218,29 +211,24 @@ static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	if (ds > alg->cra_blocksize ||
+ 	    ss < alg->cra_blocksize)
  		goto err_free_inst;
- 	}
  
  	err = crypto_inst_setname(shash_crypto_instance(inst), tmpl->name, alg);
  	if (err)
  		goto err_free_inst;
  
--	alignmask = alg->cra_alignmask;
--	inst->alg.base.cra_alignmask = alignmask;
  	inst->alg.base.cra_priority = alg->cra_priority;
  	inst->alg.base.cra_blocksize = alg->cra_blocksize;
-+	inst->alg.base.cra_ctxsize = sizeof(struct cmac_tfm_ctx) +
-+				     alg->cra_blocksize * 2;
+-	inst->alg.base.cra_alignmask = alg->cra_alignmask;
++	inst->alg.base.cra_ctxsize = sizeof(struct hmac_ctx) + (ss * 2);
  
- 	inst->alg.digestsize = alg->cra_blocksize;
--	inst->alg.descsize =
--		ALIGN(sizeof(struct cmac_desc_ctx), crypto_tfm_ctx_alignment())
--		+ (alignmask & ~(crypto_tfm_ctx_alignment() - 1))
--		+ alg->cra_blocksize * 2;
+-	ss = ALIGN(ss, alg->cra_alignmask + 1);
+ 	inst->alg.digestsize = ds;
+ 	inst->alg.statesize = ss;
 -
--	inst->alg.base.cra_ctxsize =
--		ALIGN(sizeof(struct cmac_tfm_ctx), crypto_tfm_ctx_alignment())
--		+ ((alignmask | (__alignof__(__be64) - 1)) &
--		   ~(crypto_tfm_ctx_alignment() - 1))
--		+ alg->cra_blocksize * 2;
+-	inst->alg.base.cra_ctxsize = sizeof(struct hmac_ctx) +
+-				     ALIGN(ss * 2, crypto_tfm_ctx_alignment());
 -
-+	inst->alg.descsize = sizeof(struct cmac_desc_ctx) +
-+			     alg->cra_blocksize * 2;
- 	inst->alg.init = crypto_cmac_digest_init;
- 	inst->alg.update = crypto_cmac_digest_update;
- 	inst->alg.final = crypto_cmac_digest_final;
- 	inst->alg.setkey = crypto_cmac_digest_setkey;
- 	inst->alg.init_tfm = cmac_init_tfm;
- 	inst->alg.clone_tfm = cmac_clone_tfm;
- 	inst->alg.exit_tfm = cmac_exit_tfm;
- 
- 	inst->free = shash_free_singlespawn_instance;
- 
+ 	inst->alg.init = hmac_init;
+ 	inst->alg.update = hmac_update;
+ 	inst->alg.final = hmac_final;
+ 	inst->alg.finup = hmac_finup;
+ 	inst->alg.export = hmac_export;
+ 	inst->alg.import = hmac_import;
+ 	inst->alg.setkey = hmac_setkey;
+ 	inst->alg.init_tfm = hmac_init_tfm;
+ 	inst->alg.clone_tfm = hmac_clone_tfm;
+ 	inst->alg.exit_tfm = hmac_exit_tfm;
 -- 
 2.42.0
 
