@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4014E7CEF5E
+	by mail.lfdr.de (Postfix) with ESMTP id C4FF57CEF5F
 	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbjJSFyR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S232123AbjJSFyR (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 19 Oct 2023 01:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbjJSFyP (ORCPT
+        with ESMTP id S232583AbjJSFyP (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 19 Oct 2023 01:54:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA317116
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E875111B
         for <linux-crypto@vger.kernel.org>; Wed, 18 Oct 2023 22:54:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B6A2C433CB
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88D89C433CC
         for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697694853;
-        bh=OwOWNeLfTUGViMlwD4hC/ObiKumOEI6sEF7PWE5f/Gc=;
+        bh=/jzM6v2stiOvtt+IkxG/WMBv2h4LRliFs5rirhlpdJY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=iGCjWIvRk1sEFa6VFFJ0Rh0237kxRVi6SPJcsdC7uXvLMjPdpnEdr6Abll8MkszyA
-         8ysTFroaWbkxK1p/OwI4aqH2Uoh6Q9gdARhoh4ytm/vgffvPRIYPJbduw1JhXF0kMH
-         trl0TbB8dwyxjfc1NWwKn0A1IlpguPklgTCjv9wGuQ/0sf5rxqKPRqPXnL7wU8uajH
-         rhsU6RDZ1c7vRSi366+wAYRJBW4sMZPMpGMQpaol5cEBxM7R295XLQ/8z6RWJkVpN1
-         2Wv2V4pLGhvjZIK7fCqnBzELnhtjvi3q+v+W36RlbLXN+75nyVTjlFw5Zw+nxhqZPl
-         3W+TJ9xHm86Ow==
+        b=qKU3FgssrmOlztJEIqXsTjp/Zal42NBzK1VFPd0J5q6DBiGZcj4LuCsm4StrvTp3G
+         mZheuaK89/gXMIwqU4MKWyIkS5VYKU2FpRvGQAhDXZ2CGuwCwjRKZ+sh3615wGBfvL
+         8+5LJn0nk82wu8aT41NX9Ljkri0zKiQH73yzVZ63LQcJBRQhTuDx9B4q+zyeH59QdI
+         NTE7YY0PFy7Ij9+3YAlIn0LCqCZM/I75CtsBdGTs+aD7D/nJETjO/T4NaZnoA0SvhV
+         NZ7hwXa3/M0IouDKCioPVeMNvtFSU9j0fgbipdwKC24mbsU7VH8HDvW4MiOzTHNv9L
+         7+cmyLgCfSIgw==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 04/17] crypto: mips/crc32 - remove redundant setting of alignmask to 0
-Date:   Wed, 18 Oct 2023 22:53:30 -0700
-Message-ID: <20231019055343.588846-5-ebiggers@kernel.org>
+Subject: [PATCH 05/17] crypto: loongarch/crc32 - remove redundant setting of alignmask to 0
+Date:   Wed, 18 Oct 2023 22:53:31 -0700
+Message-ID: <20231019055343.588846-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231019055343.588846-1-ebiggers@kernel.org>
 References: <20231019055343.588846-1-ebiggers@kernel.org>
@@ -54,21 +54,21 @@ change in behavior.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/mips/crypto/crc32-mips.c | 2 --
+ arch/loongarch/crypto/crc32-loongarch.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/arch/mips/crypto/crc32-mips.c b/arch/mips/crypto/crc32-mips.c
-index 3e4f5ba104f89..ec6d58008f8e1 100644
---- a/arch/mips/crypto/crc32-mips.c
-+++ b/arch/mips/crypto/crc32-mips.c
-@@ -283,21 +283,20 @@ static struct shash_alg crc32_alg = {
+diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
+index 1f2a2c3839bcb..a49e507af38c0 100644
+--- a/arch/loongarch/crypto/crc32-loongarch.c
++++ b/arch/loongarch/crypto/crc32-loongarch.c
+@@ -232,21 +232,20 @@ static struct shash_alg crc32_alg = {
  	.final			=	chksum_final,
  	.finup			=	chksum_finup,
  	.digest			=	chksum_digest,
  	.descsize		=	sizeof(struct chksum_desc_ctx),
  	.base			=	{
  		.cra_name		=	"crc32",
- 		.cra_driver_name	=	"crc32-mips-hw",
+ 		.cra_driver_name	=	"crc32-loongarch",
  		.cra_priority		=	300,
  		.cra_flags		=	CRYPTO_ALG_OPTIONAL_KEY,
  		.cra_blocksize		=	CHKSUM_BLOCK_SIZE,
@@ -83,21 +83,21 @@ index 3e4f5ba104f89..ec6d58008f8e1 100644
  	.digestsize		=	CHKSUM_DIGEST_SIZE,
  	.setkey			=	chksum_setkey,
  	.init			=	chksum_init,
-@@ -305,21 +304,20 @@ static struct shash_alg crc32c_alg = {
+@@ -254,21 +253,20 @@ static struct shash_alg crc32c_alg = {
  	.final			=	chksumc_final,
  	.finup			=	chksumc_finup,
  	.digest			=	chksumc_digest,
  	.descsize		=	sizeof(struct chksum_desc_ctx),
  	.base			=	{
  		.cra_name		=	"crc32c",
- 		.cra_driver_name	=	"crc32c-mips-hw",
+ 		.cra_driver_name	=	"crc32c-loongarch",
  		.cra_priority		=	300,
  		.cra_flags		=	CRYPTO_ALG_OPTIONAL_KEY,
  		.cra_blocksize		=	CHKSUM_BLOCK_SIZE,
 -		.cra_alignmask		=	0,
  		.cra_ctxsize		=	sizeof(struct chksum_ctx),
  		.cra_module		=	THIS_MODULE,
- 		.cra_init		=	chksum_cra_init,
+ 		.cra_init		=	chksumc_cra_init,
  	}
  };
  
