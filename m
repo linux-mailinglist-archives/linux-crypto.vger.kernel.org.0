@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 013457CEF5B
+	by mail.lfdr.de (Postfix) with ESMTP id 73FB07CEF5C
 	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjJSFyP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        id S230304AbjJSFyP (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
         Thu, 19 Oct 2023 01:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjJSFyO (ORCPT
+        with ESMTP id S231284AbjJSFyO (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 19 Oct 2023 01:54:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB29FE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B48B112
         for <linux-crypto@vger.kernel.org>; Wed, 18 Oct 2023 22:54:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4A4BC433C9
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2156C433C8
         for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697694852;
-        bh=GdWvwxtyPRuZpFGX2Ept5lwoZL6uqZnLAjrR6ZlAoHQ=;
+        s=k20201202; t=1697694853;
+        bh=p+BNwiGefb1vbbfgRqLq1+GHJYCnXtut4Dm0CzVglTQ=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=hHx70JNvyiSRekfPyCK10QDoaEgC8JbeeeiC7agLALKoqGSyPfGFMJWUExTrcFn9N
-         i48omFfyrtTu37AJidLPdYPMx5JGeGvH0u+ZUOOS9qXmvrx87GUxRmQLLeICtl0T67
-         AkXt9FY4cZBt9h3DAtIEydd52pS2H1vCHTs/omVJsvOeTSIhrCumz7yFAto8JEZDAQ
-         yE+Hj6FKb1tFm3PKucr4qWn015dylcDqWXgUR/0j+TKkvLyA4VOY6Q40+rsy8SmE+R
-         BD9ERX1MXhe0YO9cNTvBrw2WP/L7pNf1bt6CfoQHESDSmqldvzQZ/kAAjCmCfwoFj/
-         9jlx3TMgXDArA==
+        b=FpqtD48Fc2My4dKG7uV4nKnblrLFdMleA8QstkQo7sTzXsBMO0WWFUoFfi/FAuiHI
+         h8ga3bQU8tOZzUe7ZgMeGwdk2ADJpa7d91fzpfanns4PXO6b1GgX/jYA5HX82ULb2T
+         F5Onn/jqm7+dRXpn+BPzNYPVIBnr46ef/zbMhXxH2CMiR7YRX2QyY6qgx33ZMCaJqC
+         82lhxkR8aTA3oifj0DoyJwuZDV1pqp7f93WUAergcQj+Y/YiVL/qGbYLWI3VvKBl0v
+         jbPhaiBx0iFT23Ly0OLxME7vIrB7fTzlte3Zbs8ynYEt76pWp36Eubp0cZvZRH9t9w
+         TxlO0+4sLsQ7g==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 01/17] crypto: sparc/crc32c - stop using the shash alignmask
-Date:   Wed, 18 Oct 2023 22:53:27 -0700
-Message-ID: <20231019055343.588846-2-ebiggers@kernel.org>
+Subject: [PATCH 02/17] crypto: stm32 - remove unnecessary alignmask
+Date:   Wed, 18 Oct 2023 22:53:28 -0700
+Message-ID: <20231019055343.588846-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231019055343.588846-1-ebiggers@kernel.org>
 References: <20231019055343.588846-1-ebiggers@kernel.org>
@@ -48,185 +48,67 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-As far as I can tell, "crc32c-sparc64" is the only "shash" algorithm in
-the kernel that sets a nonzero alignmask and actually relies on it to
-get the crypto API to align the inputs and outputs.  This capability is
-not really useful, though.  To unblock removing the support for
-alignmask from shash_alg, this patch updates crc32c-sparc64 to no longer
-use the alignmask.  This means doing 8-byte alignment of the data when
-doing an update, using get_unaligned_le32() when setting a non-default
-initial CRC, and using put_unaligned_le32() to output the final CRC.
-
-Partially tested with:
-
-    export ARCH=sparc64 CROSS_COMPILE=sparc64-linux-gnu-
-    make sparc64_defconfig
-    echo CONFIG_CRYPTO_CRC32C_SPARC64=y >> .config
-    echo '# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set' >> .config
-    echo CONFIG_DEBUG_KERNEL=y >> .config
-    echo CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y >> .config
-    make olddefconfig
-    make -j$(getconf _NPROCESSORS_ONLN)
-    qemu-system-sparc64 -kernel arch/sparc/boot/image  -nographic
-
-However, qemu doesn't actually support the sparc CRC32C instructions, so
-for the test I temporarily replaced crc32c_sparc64() with __crc32c_le()
-and made sparc64_has_crc32c_opcode() always return true.  So essentially
-I tested the glue code, not the actual SPARC part which is unchanged.
+The stm32 crc32 algorithms set a nonzero alignmask, but they don't seem
+to actually need it.  Their ->update function already has code that
+handles aligning the data to the same alignment that the alignmask
+specifies, their ->setkey function already uses get_unaligned_le32(),
+and their ->final function already uses put_unaligned_le32().
+Therefore, stop setting the alignmask.  This will allow these algorithms
+to keep being registered after alignmask support is removed from shash.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/sparc/crypto/crc32c_glue.c | 45 ++++++++++++++++++---------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+ drivers/crypto/stm32/stm32-crc32.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/sparc/crypto/crc32c_glue.c b/arch/sparc/crypto/crc32c_glue.c
-index 82efb7f81c288..688db0dcb97d9 100644
---- a/arch/sparc/crypto/crc32c_glue.c
-+++ b/arch/sparc/crypto/crc32c_glue.c
-@@ -13,97 +13,101 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/string.h>
- #include <linux/kernel.h>
- #include <linux/crc32.h>
- 
- #include <crypto/internal/hash.h>
- 
- #include <asm/pstate.h>
- #include <asm/elf.h>
-+#include <asm/unaligned.h>
- 
- #include "opcodes.h"
- 
- /*
-  * Setting the seed allows arbitrary accumulators and flexible XOR policy
-  * If your algorithm starts with ~0, then XOR with ~0 before you set
-  * the seed.
-  */
- static int crc32c_sparc64_setkey(struct crypto_shash *hash, const u8 *key,
- 				 unsigned int keylen)
- {
- 	u32 *mctx = crypto_shash_ctx(hash);
- 
- 	if (keylen != sizeof(u32))
- 		return -EINVAL;
--	*mctx = le32_to_cpup((__le32 *)key);
-+	*mctx = get_unaligned_le32(key);
- 	return 0;
- }
- 
- static int crc32c_sparc64_init(struct shash_desc *desc)
- {
- 	u32 *mctx = crypto_shash_ctx(desc->tfm);
- 	u32 *crcp = shash_desc_ctx(desc);
- 
- 	*crcp = *mctx;
- 
- 	return 0;
- }
- 
- extern void crc32c_sparc64(u32 *crcp, const u64 *data, unsigned int len);
- 
--static void crc32c_compute(u32 *crcp, const u64 *data, unsigned int len)
-+static u32 crc32c_compute(u32 crc, const u8 *data, unsigned int len)
- {
--	unsigned int asm_len;
--
--	asm_len = len & ~7U;
--	if (asm_len) {
--		crc32c_sparc64(crcp, data, asm_len);
--		data += asm_len / 8;
--		len -= asm_len;
-+	unsigned int n = -(uintptr_t)data & 7;
-+
-+	if (n) {
-+		/* Data isn't 8-byte aligned.  Align it. */
-+		n = min(n, len);
-+		crc = __crc32c_le(crc, data, n);
-+		data += n;
-+		len -= n;
-+	}
-+	n = len & ~7U;
-+	if (n) {
-+		crc32c_sparc64(&crc, (const u64 *)data, n);
-+		data += n;
-+		len -= n;
- 	}
- 	if (len)
--		*crcp = __crc32c_le(*crcp, (const unsigned char *) data, len);
-+		crc = __crc32c_le(crc, data, len);
-+	return crc;
- }
- 
- static int crc32c_sparc64_update(struct shash_desc *desc, const u8 *data,
- 				 unsigned int len)
- {
- 	u32 *crcp = shash_desc_ctx(desc);
- 
--	crc32c_compute(crcp, (const u64 *) data, len);
--
-+	*crcp = crc32c_compute(*crcp, data, len);
- 	return 0;
- }
- 
--static int __crc32c_sparc64_finup(u32 *crcp, const u8 *data, unsigned int len,
--				  u8 *out)
-+static int __crc32c_sparc64_finup(const u32 *crcp, const u8 *data,
-+				  unsigned int len, u8 *out)
- {
--	u32 tmp = *crcp;
--
--	crc32c_compute(&tmp, (const u64 *) data, len);
--
--	*(__le32 *) out = ~cpu_to_le32(tmp);
-+	put_unaligned_le32(~crc32c_compute(*crcp, data, len), out);
- 	return 0;
- }
- 
- static int crc32c_sparc64_finup(struct shash_desc *desc, const u8 *data,
- 				unsigned int len, u8 *out)
- {
- 	return __crc32c_sparc64_finup(shash_desc_ctx(desc), data, len, out);
- }
- 
- static int crc32c_sparc64_final(struct shash_desc *desc, u8 *out)
- {
- 	u32 *crcp = shash_desc_ctx(desc);
- 
--	*(__le32 *) out = ~cpu_to_le32p(crcp);
-+	put_unaligned_le32(~*crcp, out);
- 	return 0;
- }
- 
- static int crc32c_sparc64_digest(struct shash_desc *desc, const u8 *data,
- 				 unsigned int len, u8 *out)
- {
- 	return __crc32c_sparc64_finup(crypto_shash_ctx(desc->tfm), data, len,
- 				      out);
- }
- 
-@@ -128,21 +132,20 @@ static struct shash_alg alg = {
- 	.digest			=	crc32c_sparc64_digest,
- 	.descsize		=	sizeof(u32),
- 	.digestsize		=	CHKSUM_DIGEST_SIZE,
- 	.base			=	{
- 		.cra_name		=	"crc32c",
- 		.cra_driver_name	=	"crc32c-sparc64",
- 		.cra_priority		=	SPARC_CR_OPCODE_PRIORITY,
- 		.cra_flags		=	CRYPTO_ALG_OPTIONAL_KEY,
- 		.cra_blocksize		=	CHKSUM_BLOCK_SIZE,
- 		.cra_ctxsize		=	sizeof(u32),
--		.cra_alignmask		=	7,
- 		.cra_module		=	THIS_MODULE,
- 		.cra_init		=	crc32c_sparc64_cra_init,
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 90a920e7f6642..fa4fec31fcfc4 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -276,21 +276,20 @@ static struct shash_alg algs[] = {
+ 		.finup          = stm32_crc_finup,
+ 		.digest         = stm32_crc_digest,
+ 		.descsize       = sizeof(struct stm32_crc_desc_ctx),
+ 		.digestsize     = CHKSUM_DIGEST_SIZE,
+ 		.base           = {
+ 			.cra_name               = "crc32",
+ 			.cra_driver_name        = "stm32-crc32-crc32",
+ 			.cra_priority           = 200,
+ 			.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
+ 			.cra_blocksize          = CHKSUM_BLOCK_SIZE,
+-			.cra_alignmask          = 3,
+ 			.cra_ctxsize            = sizeof(struct stm32_crc_ctx),
+ 			.cra_module             = THIS_MODULE,
+ 			.cra_init               = stm32_crc32_cra_init,
+ 		}
+ 	},
+ 	/* CRC-32Castagnoli */
+ 	{
+ 		.setkey         = stm32_crc_setkey,
+ 		.init           = stm32_crc_init,
+ 		.update         = stm32_crc_update,
+@@ -298,21 +297,20 @@ static struct shash_alg algs[] = {
+ 		.finup          = stm32_crc_finup,
+ 		.digest         = stm32_crc_digest,
+ 		.descsize       = sizeof(struct stm32_crc_desc_ctx),
+ 		.digestsize     = CHKSUM_DIGEST_SIZE,
+ 		.base           = {
+ 			.cra_name               = "crc32c",
+ 			.cra_driver_name        = "stm32-crc32-crc32c",
+ 			.cra_priority           = 200,
+ 			.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
+ 			.cra_blocksize          = CHKSUM_BLOCK_SIZE,
+-			.cra_alignmask          = 3,
+ 			.cra_ctxsize            = sizeof(struct stm32_crc_ctx),
+ 			.cra_module             = THIS_MODULE,
+ 			.cra_init               = stm32_crc32c_cra_init,
+ 		}
  	}
  };
  
- static bool __init sparc64_has_crc32c_opcode(void)
+ static int stm32_crc_probe(struct platform_device *pdev)
  {
- 	unsigned long cfr;
- 
- 	if (!(sparc64_elf_hwcap & HWCAP_SPARC_CRYPTO))
+ 	struct device *dev = &pdev->dev;
 -- 
 2.42.0
 
