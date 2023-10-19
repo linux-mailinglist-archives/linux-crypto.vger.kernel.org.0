@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811357CEF64
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3147CEF65
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Oct 2023 07:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbjJSFy0 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Thu, 19 Oct 2023 01:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S232740AbjJSFyc (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Thu, 19 Oct 2023 01:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbjJSFyR (ORCPT
+        with ESMTP id S232658AbjJSFyR (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Thu, 19 Oct 2023 01:54:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E97A11B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C75B116
         for <linux-crypto@vger.kernel.org>; Wed, 18 Oct 2023 22:54:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C1EC433CB
-        for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F614C43391
+        for <linux-crypto@vger.kernel.org>; Thu, 19 Oct 2023 05:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697694854;
-        bh=WZ1hRhoDd4lCMgZ0YancZdiBlLpsjneFbre+ZmH4G/E=;
+        s=k20201202; t=1697694855;
+        bh=TuzF4+jIfBft5VqDo/fE9UfXx0/TR1AztgYN6AHx+OQ=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=vKNjDSUqoOZWhVRnRj3JK3CAdtOS5Gf6iV7Q7ROCEkQjis7RCZdyMrbcqn89/h9A8
-         bT174ZX6KLxPwh7olqAiv/J3eN/w2aGUIZH1BuqF96dpH2TXx8pM+twzH5D7bXjIrR
-         HsB0ujykcUfMCqaSlAwhKtByS2u2ffwjFKrUZEMArMUZ8Rqm7IEnbGinPsrtXVOSHH
-         AiA1ohW//vX1YL929f7345oNb++UQYTmpSwIw8h1fna5wxvNqfKA5qDRxcC11u7dzT
-         mx4pEUusOVNPFjffLf2LEgoAN4lN+eTprkPb+cRpS31vDi3/X9tvYEf+nUGXP64HGU
-         uEpdHPuYGSrVg==
+        b=vGp0ylWCyNJcdylXwU1quTIfNQxtwNGHr6tFRyQ6H43DQ/GkmQEitHntKQ435Lyu0
+         Vt7tX4v7jv/p1h9ZIEiPsWgHFxI0q7c7of5tyLuHm4ZIAL3nSRL3T3UQEQd4aSfiuR
+         aBI20FfnnbPLvERWMMbFD1ehxikbsl88ZbXd3CNm7atBO7Gc3A4VPWGfeuzZEh6RSb
+         HbdIJuMJzfyVze0qz5RJ5wTtb/Xh0GJVgPpsq8uoXYBY/VEaAy4PIMU0G8nSa6NupA
+         SyMiteaoTlBEJWUiy/PYe39DjG4UK5ScdkeQk2B4XnZOGRYNP5Dlj3JC9u50Pke+/3
+         4mq/LGD8dXTBQ==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 12/17] libceph: stop checking crypto_shash_alignmask
-Date:   Wed, 18 Oct 2023 22:53:38 -0700
-Message-ID: <20231019055343.588846-13-ebiggers@kernel.org>
+Subject: [PATCH 13/17] crypto: drbg - stop checking crypto_shash_alignmask
+Date:   Wed, 18 Oct 2023 22:53:39 -0700
+Message-ID: <20231019055343.588846-14-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231019055343.588846-1-ebiggers@kernel.org>
 References: <20231019055343.588846-1-ebiggers@kernel.org>
@@ -50,64 +50,40 @@ From: Eric Biggers <ebiggers@google.com>
 
 Now that the shash algorithm type does not support nonzero alignmasks,
 crypto_shash_alignmask() always returns 0 and will be removed.  In
-preparation for this, stop checking crypto_shash_alignmask() in
-net/ceph/messenger_v2.c.
+preparation for this, stop checking crypto_shash_alignmask() in drbg.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- net/ceph/messenger_v2.c | 4 ----
- 1 file changed, 4 deletions(-)
+ crypto/drbg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
-index d09a39ff2cf04..f8ec60e1aba3a 100644
---- a/net/ceph/messenger_v2.c
-+++ b/net/ceph/messenger_v2.c
-@@ -726,22 +726,20 @@ static int setup_crypto(struct ceph_connection *con,
- 	noio_flag = memalloc_noio_save();
- 	con->v2.hmac_tfm = crypto_alloc_shash("hmac(sha256)", 0, 0);
- 	memalloc_noio_restore(noio_flag);
- 	if (IS_ERR(con->v2.hmac_tfm)) {
- 		ret = PTR_ERR(con->v2.hmac_tfm);
- 		con->v2.hmac_tfm = NULL;
- 		pr_err("failed to allocate hmac tfm context: %d\n", ret);
- 		return ret;
+diff --git a/crypto/drbg.c b/crypto/drbg.c
+index ff4ebbc68efab..e01f8c7769d03 100644
+--- a/crypto/drbg.c
++++ b/crypto/drbg.c
+@@ -1691,21 +1691,21 @@ static int drbg_init_hash_kernel(struct drbg_state *drbg)
+ 	sdesc = kzalloc(sizeof(struct shash_desc) + crypto_shash_descsize(tfm),
+ 			GFP_KERNEL);
+ 	if (!sdesc) {
+ 		crypto_free_shash(tfm);
+ 		return -ENOMEM;
  	}
  
--	WARN_ON((unsigned long)session_key &
--		crypto_shash_alignmask(con->v2.hmac_tfm));
- 	ret = crypto_shash_setkey(con->v2.hmac_tfm, session_key,
- 				  session_key_len);
- 	if (ret) {
- 		pr_err("failed to set hmac key: %d\n", ret);
- 		return ret;
+ 	sdesc->shash.tfm = tfm;
+ 	drbg->priv_data = sdesc;
+ 
+-	return crypto_shash_alignmask(tfm);
++	return 0;
+ }
+ 
+ static int drbg_fini_hash_kernel(struct drbg_state *drbg)
+ {
+ 	struct sdesc *sdesc = drbg->priv_data;
+ 	if (sdesc) {
+ 		crypto_free_shash(sdesc->shash.tfm);
+ 		kfree_sensitive(sdesc);
  	}
- 
- 	if (con->v2.con_mode == CEPH_CON_MODE_CRC) {
- 		WARN_ON(con_secret_len);
- 		return 0;  /* auth_x, plain mode */
-@@ -809,22 +807,20 @@ static int hmac_sha256(struct ceph_connection *con, const struct kvec *kvecs,
- 		memset(hmac, 0, SHA256_DIGEST_SIZE);
- 		return 0;  /* auth_none */
- 	}
- 
- 	desc->tfm = con->v2.hmac_tfm;
- 	ret = crypto_shash_init(desc);
- 	if (ret)
- 		goto out;
- 
- 	for (i = 0; i < kvec_cnt; i++) {
--		WARN_ON((unsigned long)kvecs[i].iov_base &
--			crypto_shash_alignmask(con->v2.hmac_tfm));
- 		ret = crypto_shash_update(desc, kvecs[i].iov_base,
- 					  kvecs[i].iov_len);
- 		if (ret)
- 			goto out;
- 	}
- 
- 	ret = crypto_shash_final(desc, hmac);
- 
- out:
- 	shash_desc_zero(desc);
+ 	drbg->priv_data = NULL;
 -- 
 2.42.0
 
