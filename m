@@ -2,49 +2,48 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254F87D0A0F
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59C87D0A12
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376578AbjJTH53 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 03:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
+        id S1376518AbjJTH5b (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 03:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376497AbjJTH5A (ORCPT
+        with ESMTP id S1376517AbjJTH5A (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 20 Oct 2023 03:57:00 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6B9D46
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE1610C9
         for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:46 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN3-0003Mu-3l; Fri, 20 Oct 2023 09:56:37 +0200
+        id 1qtkN2-0003N1-PL; Fri, 20 Oct 2023 09:56:36 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN2-002yVV-5W; Fri, 20 Oct 2023 09:56:36 +0200
+        id 1qtkN2-002yVY-CL; Fri, 20 Oct 2023 09:56:36 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN1-002OJh-So; Fri, 20 Oct 2023 09:56:35 +0200
+        id 1qtkN2-002OJl-3N; Fri, 20 Oct 2023 09:56:36 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
 Cc:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Prabhjot Khurana <prabhjot.khurana@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
+        Declan Murphy <declan.murphy@intel.com>,
         linux-crypto@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 24/42] crypto: intel/keembay-ocs-ecc - Convert to platform remove callback returning void
-Date:   Fri, 20 Oct 2023 09:55:46 +0200
-Message-ID: <20231020075521.2121571-68-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 25/42] crypto: intel/keembay-ocs-hcu - Convert to platform remove callback returning void
+Date:   Fri, 20 Oct 2023 09:55:47 +0200
+Message-ID: <20231020075521.2121571-69-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 References: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1977; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=5gQx1ZgYhOtO1HCzwRB6ysrkrDC4Kp1bds3Fg2Zwn/E=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKFEqIrecwxCmDD5/MZRXVrNEOkFqbO6sujG Q5grOwuyR+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIyhQAKCRCPgPtYfRL+ TrVFB/9dJjTivaXF4uL1LNFMM6GURMZeoHZ2xf2cKA5LHQfjrLBfAytwaoFsg8LN7KfnnP0vnDB EDdofShIZ6Y4lwmopF9OUNYV1V+lpdeNBo8f3uIWfR25SFfBxcZGfK29kkwpABxmcNQLfFYgUnX d1iv72yaqK6FopSthwXZHNf0sJWPysFGZynS9lpNnM5jdXnhxirhgVxZI64ShczYUfsPUqYW7X9 /87BfEWYDKIr6UYpFYccXzZmHUiL7UetYP2NBVrs3OXjcWCRJkhzQEJf9EX4U+5Fz0txxoWKjmk d4IjrSua/SRsu55hNE6KzPc43nHCTBs2RLS/oGTJYKL14gRE
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2078; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=AtYRt9Lgbk2X8ie83TNT0+RrJhu72yEL46Pi6Bon1Gk=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKG1TpZh51pkvN52fSb+bnVcCtm2Ll7MgvTK S2shPXXA72JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIyhgAKCRCPgPtYfRL+ TvUfB/43IsQ4yCezOIUofXy78bcHjR2igQAcvtoHBD3Obw6YIlQia6bt2SkEjMwLif6/oIajPxi d/l6zbJovLTVocvPuzYWbeGYIVZRJg/OE6bcnoA3TCc9OV8lYfXnl0kpORzRaRmbDRI5wKFCiFl 0Ve9C5seKsFFPKb7CLw34LYqM/8bKztY/VM25zSCj1suZmk24OCySDFlmdHF883kb67TbA0IOSD svcIjqV7ZfPPBlYl84PgJ38IOr3hrvchd5WweyjkpDaTsm+nl1ZrqdijnbIbm79OscVNjiPytdJ CI9ex/i0hVozzJK7vkZ9PaPL9p3C5wrSdlQHW/12mM4w6o9e
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -75,40 +74,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/crypto/intel/keembay/keembay-ocs-ecc.c | 6 ++----
+ drivers/crypto/intel/keembay/keembay-ocs-hcu-core.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/intel/keembay/keembay-ocs-ecc.c b/drivers/crypto/intel/keembay/keembay-ocs-ecc.c
-index fb95deed9057..5e24f2d8affc 100644
---- a/drivers/crypto/intel/keembay/keembay-ocs-ecc.c
-+++ b/drivers/crypto/intel/keembay/keembay-ocs-ecc.c
-@@ -964,7 +964,7 @@ static int kmb_ocs_ecc_probe(struct platform_device *pdev)
- 	return rc;
- }
+diff --git a/drivers/crypto/intel/keembay/keembay-ocs-hcu-core.c b/drivers/crypto/intel/keembay/keembay-ocs-hcu-core.c
+index 8a39f959bb53..c2dfca73fe4e 100644
+--- a/drivers/crypto/intel/keembay/keembay-ocs-hcu-core.c
++++ b/drivers/crypto/intel/keembay/keembay-ocs-hcu-core.c
+@@ -1151,7 +1151,7 @@ static const struct of_device_id kmb_ocs_hcu_of_match[] = {
+ 	{}
+ };
  
--static int kmb_ocs_ecc_remove(struct platform_device *pdev)
-+static void kmb_ocs_ecc_remove(struct platform_device *pdev)
+-static int kmb_ocs_hcu_remove(struct platform_device *pdev)
++static void kmb_ocs_hcu_remove(struct platform_device *pdev)
  {
- 	struct ocs_ecc_dev *ecc_dev;
+ 	struct ocs_hcu_dev *hcu_dev = platform_get_drvdata(pdev);
  
-@@ -978,8 +978,6 @@ static int kmb_ocs_ecc_remove(struct platform_device *pdev)
- 	spin_unlock(&ocs_ecc.lock);
- 
- 	crypto_engine_exit(ecc_dev->engine);
+@@ -1162,8 +1162,6 @@ static int kmb_ocs_hcu_remove(struct platform_device *pdev)
+ 	spin_lock_bh(&ocs_hcu.lock);
+ 	list_del(&hcu_dev->list);
+ 	spin_unlock_bh(&ocs_hcu.lock);
 -
 -	return 0;
  }
  
- /* Device tree driver match. */
-@@ -993,7 +991,7 @@ static const struct of_device_id kmb_ocs_ecc_of_match[] = {
+ static int kmb_ocs_hcu_probe(struct platform_device *pdev)
+@@ -1244,7 +1242,7 @@ static int kmb_ocs_hcu_probe(struct platform_device *pdev)
  /* The OCS driver is a platform device. */
- static struct platform_driver kmb_ocs_ecc_driver = {
- 	.probe = kmb_ocs_ecc_probe,
--	.remove = kmb_ocs_ecc_remove,
-+	.remove_new = kmb_ocs_ecc_remove,
+ static struct platform_driver kmb_ocs_hcu_driver = {
+ 	.probe = kmb_ocs_hcu_probe,
+-	.remove = kmb_ocs_hcu_remove,
++	.remove_new = kmb_ocs_hcu_remove,
  	.driver = {
  			.name = DRV_NAME,
- 			.of_match_table = kmb_ocs_ecc_of_match,
+ 			.of_match_table = kmb_ocs_hcu_of_match,
 -- 
 2.42.0
 
