@@ -2,41 +2,41 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 516507D0D43
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 12:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77EF7D0D47
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 12:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376745AbjJTKfS (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 06:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
+        id S1376910AbjJTKfT (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 06:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376863AbjJTKfN (ORCPT
+        with ESMTP id S1376881AbjJTKfN (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 20 Oct 2023 06:35:13 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FE5D5A
-        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 03:35:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA765D5F
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 03:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697798107; x=1729334107;
+  t=1697798108; x=1729334108;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0GMLd/lmqXdPf5KoxBNLckO0+PXv+KR3+m9ztwXmUGI=;
-  b=eB1BQDsi+U+NDdHQgoDvBT2/EiB4QQsHy66wpbhusvfQ0XBrNSWjvMrW
-   COcevhIB/sTMXhC+ieeoS9EwcB9kexBeUVFddagzNhd0UfWAOwtRA7wF8
-   ZZz54NdGNOKHe0lW3YiKf+BY1peGc6MkJTESjM5tVAo66oDDbn+cZbW0b
-   PYPcHtZ+PXwK4oBTjMgZk5QMTGreGmYIfgLXBq9DN87P6jgyo+EswMdVZ
-   cC4sgXyFuQ8tg4rR11E1y+rb8TFReJEaBsJPJTSGrWxUUdtElxEPxvuLQ
-   83434McSZYXq06jaAUTMRFjsFgJnjUl0A5TjfJDZ1oRQP8bPWA/kBrHfa
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383686713"
+  bh=MLQg4DmJSGx+dGiUYR+M9dU3ue1hf93ug5L+Or0WW2Y=;
+  b=bIUzBuzNCkDqW9X5xyDLf/SoFVGNfOhriRvw8opYDxjt6JHeS5HDSVPK
+   uKr9Dt+zKqYObTCTIRn9RqMoYDCEVyvSyzJf/WhE1zinQbxtEdMPGO7vx
+   YEfau4+cWO+I6Jat7GI39LMT191LojS4t1S3tADKD4Vw4j0txA8mu/U1+
+   ANtEJc37mmM0dLyhJhrJIOsUfcFC62HQaVDzBmADO45DVi6bQ+OZanLgV
+   1szDNAP4qQciHP1/nsGQFmA4Yw1tf8VUBab7eoGn26Lw8jZPEqtc/gTfK
+   hUXu6PcOUOZlPx6vKlfK/nFH+O6T/yfjEM/PIQ7sYchEWmVNbdKVk+1Yz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="383686715"
 X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="383686713"
+   d="scan'208";a="383686715"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 03:35:03 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="792369937"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="792369941"
 X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="792369937"
+   d="scan'208";a="792369941"
 Received: from fl31ca105gs0706.deacluster.intel.com (HELO fl31ca105gs0706..) ([10.45.133.167])
   by orsmga001.jf.intel.com with ESMTP; 20 Oct 2023 03:35:02 -0700
 From:   Shashank Gupta <shashank.gupta@intel.com>
@@ -45,9 +45,9 @@ Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
         Shashank Gupta <shashank.gupta@intel.com>,
         Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
         Tero Kristo <tero.kristo@linux.intel.com>
-Subject: [PATCH 7/9] crypto: qat - add handling of errors from ERRSOU3 for QAT GEN4
-Date:   Fri, 20 Oct 2023 11:32:51 +0100
-Message-ID: <20231020103431.230671-8-shashank.gupta@intel.com>
+Subject: [PATCH 8/9] crypto: qat - add error counters
+Date:   Fri, 20 Oct 2023 11:32:52 +0100
+Message-ID: <20231020103431.230671-9-shashank.gupta@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231020103431.230671-1-shashank.gupta@intel.com>
 References: <20231020103431.230671-1-shashank.gupta@intel.com>
@@ -64,589 +64,327 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Add logic to detect, report and handle uncorrectable errors reported
-through the ERRSOU3 register in QAT GEN4 devices.
+Introduce ras counters interface for counting QAT specific device
+errors and expose them through the newly created qat_ras sysfs
+group attribute.
+
+This adds the following attributes:
+
+- errors_correctable: number of correctable errors
+- errors_nonfatal: number of uncorrectable non fatal errors
+- errors_fatal: number of uncorrectable fatal errors
+- reset_error_counters: resets all counters
+
+These counters are initialized during device bring up and cleared
+during device shutdown and are applicable only to QAT GEN4 devices.
 
 Signed-off-by: Shashank Gupta <shashank.gupta@intel.com>
 Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Reviewed-by: Tero Kristo <tero.kristo@linux.intel.com>
 ---
- .../intel/qat/qat_common/adf_gen4_ras.c       | 256 ++++++++++++++++++
- .../intel/qat/qat_common/adf_gen4_ras.h       | 218 +++++++++++++++
- 2 files changed, 474 insertions(+)
+ .../ABI/testing/sysfs-driver-qat_ras          |  42 +++++++
+ drivers/crypto/intel/qat/qat_4xxx/adf_drv.c   |   1 +
+ drivers/crypto/intel/qat/qat_common/Makefile  |   1 +
+ .../intel/qat/qat_common/adf_accel_devices.h  |  14 +++
+ .../crypto/intel/qat/qat_common/adf_init.c    |   3 +
+ .../qat/qat_common/adf_sysfs_ras_counters.c   | 112 ++++++++++++++++++
+ .../qat/qat_common/adf_sysfs_ras_counters.h   |  28 +++++
+ 7 files changed, 201 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-qat_ras
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.h
 
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.c b/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.c
-index 285b755e13be..8ba9c9bdb89b 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.c
-+++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.c
-@@ -19,6 +19,14 @@ static void enable_errsou_reporting(void __iomem *csr)
- 	ADF_CSR_WR(csr, ADF_GEN4_ERRMSK2,
- 		   ADF_GEN4_ERRSOU2_PM_INT_BIT |
- 		   ADF_GEN4_ERRSOU2_CPP_CFC_ATT_INT_BITMASK);
-+
-+	/*
-+	 * Enable uncorrectable error reporting in ERRSOU3
-+	 * but disable RLT error interrupt and VFLR notify interrupt by default
-+	 */
-+	ADF_CSR_WR(csr, ADF_GEN4_ERRMSK3,
-+		   ADF_GEN4_ERRSOU3_RLTERROR_BIT |
-+		   ADF_GEN4_ERRSOU3_VFLRNOTIFY_BIT);
- }
- 
- static void disable_errsou_reporting(void __iomem *csr)
-@@ -35,6 +43,9 @@ static void disable_errsou_reporting(void __iomem *csr)
- 	val = ADF_CSR_RD(csr, ADF_GEN4_ERRMSK2);
- 	val |= ADF_GEN4_ERRSOU2_DIS_BITMASK;
- 	ADF_CSR_WR(csr, ADF_GEN4_ERRMSK2, val);
-+
-+	/* Disable uncorrectable error reporting in ERRSOU3 */
-+	ADF_CSR_WR(csr, ADF_GEN4_ERRMSK3, ADF_GEN4_ERRSOU3_BITMASK);
- }
- 
- static void enable_ae_error_reporting(struct adf_accel_dev *accel_dev,
-@@ -82,6 +93,8 @@ static void disable_cpp_error_reporting(void __iomem *csr)
- 
- static void enable_ti_ri_error_reporting(void __iomem *csr)
- {
-+	u32 reg;
-+
- 	/* Enable RI Memory error reporting */
- 	ADF_CSR_WR(csr, ADF_GEN4_RI_MEM_PAR_ERR_EN0,
- 		   ADF_GEN4_RIMEM_PARERR_STS_FATAL_BITMASK |
-@@ -96,10 +109,26 @@ static void enable_ti_ri_error_reporting(void __iomem *csr)
- 	ADF_CSR_WR(csr, ADF_GEN4_TI_PUSHFUB_PAR_ERR_MASK, 0);
- 	ADF_CSR_WR(csr, ADF_GEN4_TI_CD_PAR_ERR_MASK, 0);
- 	ADF_CSR_WR(csr, ADF_GEN4_TI_TRNSB_PAR_ERR_MASK, 0);
-+
-+	/* Enable error handling in RI, TI CPP interface control registers */
-+	ADF_CSR_WR(csr, ADF_GEN4_RICPPINTCTL, ADF_GEN4_RICPPINTCTL_BITMASK);
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_TICPPINTCTL, ADF_GEN4_TICPPINTCTL_BITMASK);
-+
-+	/*
-+	 * Enable error detection and reporting in TIMISCSTS
-+	 * with bits 1, 2 and 30 value preserved
-+	 */
-+	reg = ADF_CSR_RD(csr, ADF_GEN4_TIMISCCTL);
-+	reg &= ADF_GEN4_TIMSCCTL_RELAY_BITMASK;
-+	reg |= ADF_GEN4_TIMISCCTL_BIT;
-+	ADF_CSR_WR(csr, ADF_GEN4_TIMISCCTL, reg);
- }
- 
- static void disable_ti_ri_error_reporting(void __iomem *csr)
- {
-+	u32 reg;
-+
- 	/* Disable RI Memory error reporting */
- 	ADF_CSR_WR(csr, ADF_GEN4_RI_MEM_PAR_ERR_EN0, 0);
- 
-@@ -117,6 +146,19 @@ static void disable_ti_ri_error_reporting(void __iomem *csr)
- 		   ADF_GEN4_TI_CD_PAR_STS_BITMASK);
- 	ADF_CSR_WR(csr, ADF_GEN4_TI_TRNSB_PAR_ERR_MASK,
- 		   ADF_GEN4_TI_TRNSB_PAR_STS_BITMASK);
-+
-+	/* Disable error handling in RI, TI CPP interface control registers */
-+	ADF_CSR_WR(csr, ADF_GEN4_RICPPINTCTL, 0);
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_TICPPINTCTL, 0);
-+
-+	/*
-+	 * Disable error detection and reporting in TIMISCSTS
-+	 * with bits 1, 2 and 30 value preserved
-+	 */
-+	reg = ADF_CSR_RD(csr, ADF_GEN4_TIMISCCTL);
-+	reg &= ADF_GEN4_TIMSCCTL_RELAY_BITMASK;
-+	ADF_CSR_WR(csr, ADF_GEN4_TIMISCCTL, reg);
- }
- 
- static void enable_rf_error_reporting(struct adf_accel_dev *accel_dev,
-@@ -251,8 +293,32 @@ static void disable_ssm_error_reporting(struct adf_accel_dev *accel_dev,
- 			   err_mask->parerr_wat_wcp_mask);
- }
- 
-+static void enable_aram_error_reporting(void __iomem *csr)
-+{
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMCERRUERR_EN,
-+		   ADF_GEN4_REG_ARAMCERRUERR_EN_BITMASK);
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMCERR,
-+		   ADF_GEN4_REG_ARAMCERR_EN_BITMASK);
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMUERR,
-+		   ADF_GEN4_REG_ARAMUERR_EN_BITMASK);
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_CPPMEMTGTERR,
-+		   ADF_GEN4_REG_CPPMEMTGTERR_EN_BITMASK);
-+}
-+
-+static void disable_aram_error_reporting(void __iomem *csr)
-+{
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMCERRUERR_EN, 0);
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMCERR, 0);
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMUERR, 0);
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_CPPMEMTGTERR, 0);
-+}
-+
- static void adf_gen4_enable_ras(struct adf_accel_dev *accel_dev)
- {
-+	void __iomem *aram_csr = adf_get_aram_base(accel_dev);
- 	void __iomem *csr = adf_get_pmisc_base(accel_dev);
- 
- 	enable_errsou_reporting(csr);
-@@ -261,10 +327,12 @@ static void adf_gen4_enable_ras(struct adf_accel_dev *accel_dev)
- 	enable_ti_ri_error_reporting(csr);
- 	enable_rf_error_reporting(accel_dev, csr);
- 	enable_ssm_error_reporting(accel_dev, csr);
-+	enable_aram_error_reporting(aram_csr);
- }
- 
- static void adf_gen4_disable_ras(struct adf_accel_dev *accel_dev)
- {
-+	void __iomem *aram_csr = adf_get_aram_base(accel_dev);
- 	void __iomem *csr = adf_get_pmisc_base(accel_dev);
- 
- 	disable_errsou_reporting(csr);
-@@ -273,6 +341,7 @@ static void adf_gen4_disable_ras(struct adf_accel_dev *accel_dev)
- 	disable_ti_ri_error_reporting(csr);
- 	disable_rf_error_reporting(accel_dev, csr);
- 	disable_ssm_error_reporting(accel_dev, csr);
-+	disable_aram_error_reporting(aram_csr);
- }
- 
- static void adf_gen4_process_errsou0(struct adf_accel_dev *accel_dev,
-@@ -1122,9 +1191,190 @@ static void adf_gen4_process_errsou2(struct adf_accel_dev *accel_dev,
- 	*reset_required |= adf_handle_cpp_cfc_err(accel_dev, csr, errsou);
- }
- 
-+static bool adf_handle_timiscsts(struct adf_accel_dev *accel_dev,
-+				 void __iomem *csr, u32 errsou)
-+{
-+	u32 timiscsts;
-+
-+	if (!(errsou & ADF_GEN4_ERRSOU3_TIMISCSTS_BIT))
-+		return false;
-+
-+	timiscsts = ADF_CSR_RD(csr, ADF_GEN4_TIMISCSTS);
-+
-+	dev_err(&GET_DEV(accel_dev),
-+		"Fatal error in Transmit Interface: 0x%x\n", timiscsts);
-+
-+	return true;
-+}
-+
-+static bool adf_handle_ricppintsts(struct adf_accel_dev *accel_dev,
-+				   void __iomem *csr, u32 errsou)
-+{
-+	u32 ricppintsts;
-+
-+	if (!(errsou & ADF_GEN4_ERRSOU3_RICPPINTSTS_BITMASK))
-+		return false;
-+
-+	ricppintsts = ADF_CSR_RD(csr, ADF_GEN4_RICPPINTSTS);
-+	ricppintsts &= ADF_GEN4_RICPPINTSTS_BITMASK;
-+
-+	dev_err(&GET_DEV(accel_dev),
-+		"RI CPP Uncorrectable Error: 0x%x\n", ricppintsts);
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_RICPPINTSTS, ricppintsts);
-+
-+	return false;
-+}
-+
-+static bool adf_handle_ticppintsts(struct adf_accel_dev *accel_dev,
-+				   void __iomem *csr, u32 errsou)
-+{
-+	u32 ticppintsts;
-+
-+	if (!(errsou & ADF_GEN4_ERRSOU3_TICPPINTSTS_BITMASK))
-+		return false;
-+
-+	ticppintsts = ADF_CSR_RD(csr, ADF_GEN4_TICPPINTSTS);
-+	ticppintsts &= ADF_GEN4_TICPPINTSTS_BITMASK;
-+
-+	dev_err(&GET_DEV(accel_dev),
-+		"TI CPP Uncorrectable Error: 0x%x\n", ticppintsts);
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_TICPPINTSTS, ticppintsts);
-+
-+	return false;
-+}
-+
-+static bool adf_handle_aramcerr(struct adf_accel_dev *accel_dev,
-+				void __iomem *csr, u32 errsou)
-+{
-+	u32 aram_cerr;
-+
-+	if (!(errsou & ADF_GEN4_ERRSOU3_REG_ARAMCERR_BIT))
-+		return false;
-+
-+	aram_cerr = ADF_CSR_RD(csr, ADF_GEN4_REG_ARAMCERR);
-+	aram_cerr &= ADF_GEN4_REG_ARAMCERR_BIT;
-+
-+	dev_warn(&GET_DEV(accel_dev),
-+		 "ARAM correctable error : 0x%x\n", aram_cerr);
-+
-+	aram_cerr |= ADF_GEN4_REG_ARAMCERR_EN_BITMASK;
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMCERR, aram_cerr);
-+
-+	return false;
-+}
-+
-+static bool adf_handle_aramuerr(struct adf_accel_dev *accel_dev,
-+				void __iomem *csr, u32 errsou)
-+{
-+	bool reset_required = false;
-+	u32 aramuerr;
-+
-+	if (!(errsou & ADF_GEN4_ERRSOU3_REG_ARAMUERR_BIT))
-+		return false;
-+
-+	aramuerr = ADF_CSR_RD(csr, ADF_GEN4_REG_ARAMUERR);
-+	aramuerr &= ADF_GEN4_REG_ARAMUERR_ERROR_BIT |
-+		    ADF_GEN4_REG_ARAMUERR_MULTI_ERRORS_BIT;
-+
-+	if (!aramuerr)
-+		return false;
-+
-+	if (aramuerr & ADF_GEN4_REG_ARAMUERR_MULTI_ERRORS_BIT) {
-+		dev_err(&GET_DEV(accel_dev),
-+			"ARAM multiple uncorrectable errors: 0x%x\n", aramuerr);
-+
-+		reset_required = true;
-+	} else {
-+		dev_err(&GET_DEV(accel_dev),
-+			"ARAM uncorrectable error: 0x%x\n", aramuerr);
-+	}
-+
-+	aramuerr |= ADF_GEN4_REG_ARAMUERR_EN_BITMASK;
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_ARAMUERR, aramuerr);
-+
-+	return reset_required;
-+}
-+
-+static bool adf_handle_reg_cppmemtgterr(struct adf_accel_dev *accel_dev,
-+					void __iomem *csr, u32 errsou)
-+{
-+	bool reset_required = false;
-+	u32 cppmemtgterr;
-+
-+	if (!(errsou & ADF_GEN4_ERRSOU3_REG_ARAMUERR_BIT))
-+		return false;
-+
-+	cppmemtgterr = ADF_CSR_RD(csr, ADF_GEN4_REG_CPPMEMTGTERR);
-+	cppmemtgterr &= ADF_GEN4_REG_CPPMEMTGTERR_BITMASK |
-+			ADF_GEN4_REG_CPPMEMTGTERR_MULTI_ERRORS_BIT;
-+	if (!cppmemtgterr)
-+		return false;
-+
-+	if (cppmemtgterr & ADF_GEN4_REG_CPPMEMTGTERR_MULTI_ERRORS_BIT) {
-+		dev_err(&GET_DEV(accel_dev),
-+			"Misc memory target multiple uncorrectable errors: 0x%x\n",
-+			cppmemtgterr);
-+
-+		reset_required = true;
-+	} else {
-+		dev_err(&GET_DEV(accel_dev),
-+			"Misc memory target uncorrectable error: 0x%x\n", cppmemtgterr);
-+	}
-+
-+	cppmemtgterr |= ADF_GEN4_REG_CPPMEMTGTERR_EN_BITMASK;
-+
-+	ADF_CSR_WR(csr, ADF_GEN4_REG_CPPMEMTGTERR, cppmemtgterr);
-+
-+	return reset_required;
-+}
-+
-+static bool adf_handle_atufaultstatus(struct adf_accel_dev *accel_dev,
-+				      void __iomem *csr, u32 errsou)
-+{
-+	u32 i;
-+	u32 max_rp_num = GET_HW_DATA(accel_dev)->num_banks;
-+
-+	if (!(errsou & ADF_GEN4_ERRSOU3_ATUFAULTSTATUS_BIT))
-+		return false;
-+
-+	for (i = 0; i < max_rp_num; i++) {
-+		u32 atufaultstatus = ADF_CSR_RD(csr, ADF_GEN4_ATUFAULTSTATUS(i));
-+
-+		atufaultstatus &= ADF_GEN4_ATUFAULTSTATUS_BIT;
-+
-+		if (atufaultstatus) {
-+			dev_err(&GET_DEV(accel_dev),
-+				"Ring Pair (%u) ATU detected fault: 0x%x\n", i,
-+				atufaultstatus);
-+
-+			ADF_CSR_WR(csr, ADF_GEN4_ATUFAULTSTATUS(i), atufaultstatus);
-+		}
-+	}
-+
-+	return false;
-+}
-+
-+static void adf_gen4_process_errsou3(struct adf_accel_dev *accel_dev,
-+				     void __iomem *csr, void __iomem *aram_csr,
-+				     u32 errsou, bool *reset_required)
-+{
-+	*reset_required |= adf_handle_timiscsts(accel_dev, csr, errsou);
-+	*reset_required |= adf_handle_ricppintsts(accel_dev, csr, errsou);
-+	*reset_required |= adf_handle_ticppintsts(accel_dev, csr, errsou);
-+	*reset_required |= adf_handle_aramcerr(accel_dev, aram_csr, errsou);
-+	*reset_required |= adf_handle_aramuerr(accel_dev, aram_csr, errsou);
-+	*reset_required |= adf_handle_reg_cppmemtgterr(accel_dev, aram_csr, errsou);
-+	*reset_required |= adf_handle_atufaultstatus(accel_dev, csr, errsou);
-+}
-+
- static bool adf_gen4_handle_interrupt(struct adf_accel_dev *accel_dev,
- 				      bool *reset_required)
- {
-+	void __iomem *aram_csr = adf_get_aram_base(accel_dev);
- 	void __iomem *csr = adf_get_pmisc_base(accel_dev);
- 	u32 errsou = ADF_CSR_RD(csr, ADF_GEN4_ERRSOU0);
- 	bool handled = false;
-@@ -1148,6 +1398,12 @@ static bool adf_gen4_handle_interrupt(struct adf_accel_dev *accel_dev,
- 		handled = true;
+diff --git a/Documentation/ABI/testing/sysfs-driver-qat_ras b/Documentation/ABI/testing/sysfs-driver-qat_ras
+new file mode 100644
+index 000000000000..bbdbe7aabe58
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-driver-qat_ras
+@@ -0,0 +1,42 @@
++What:		/sys/bus/pci/devices/<BDF>/qat_ras/errors_correctable
++Date:		January 2024
++KernelVersion:	6.7
++Contact:	qat-linux@intel.com
++Description:	(RO) Reports the number of correctable errors detected by the device.
++
++		This attribute is only available for qat_4xxx devices.
++
++What:		/sys/bus/pci/devices/<BDF>/qat_ras/errors_nonfatal
++Date:		January 2024
++KernelVersion:	6.7
++Contact:	qat-linux@intel.com
++Description:	(RO) Reports the number of non fatal errors detected by the device.
++
++		This attribute is only available for qat_4xxx devices.
++
++What:		/sys/bus/pci/devices/<BDF>/qat_ras/errors_fatal
++Date:		January 2024
++KernelVersion:	6.7
++Contact:	qat-linux@intel.com
++Description:	(RO) Reports the number of fatal errors detected by the device.
++
++		This attribute is only available for qat_4xxx devices.
++
++What:		/sys/bus/pci/devices/<BDF>/qat_ras/reset_error_counters
++Date:		January 2024
++KernelVersion:	6.7
++Contact:	qat-linux@intel.com
++Description:	(WO) Write to resets all error counters of a device.
++
++		The following example reports how to reset the counters::
++
++			# echo 1 > /sys/bus/pci/devices/<BDF>/qat_ras/reset_error_counters
++			# cat /sys/bus/pci/devices/<BDF>/qat_ras/errors_correctable
++			0
++			# cat /sys/bus/pci/devices/<BDF>/qat_ras/errors_nonfatal
++			0
++			# cat /sys/bus/pci/devices/<BDF>/qat_ras/errors_fatal
++			0
++
++		This attribute is only available for qat_4xxx devices.
++
+diff --git a/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c b/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c
+index 2ccd1223f1ef..8f483d1197dd 100644
+--- a/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c
++++ b/drivers/crypto/intel/qat/qat_4xxx/adf_drv.c
+@@ -418,6 +418,7 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto out_err;
  	}
  
-+	errsou = ADF_CSR_RD(csr, ADF_GEN4_ERRSOU3);
-+	if (errsou & ADF_GEN4_ERRSOU3_BITMASK) {
-+		adf_gen4_process_errsou3(accel_dev, csr, aram_csr, errsou, reset_required);
-+		handled = true;
-+	}
++	accel_dev->ras_errors.enabled = true;
+ 	adf_dbgfs_init(accel_dev);
+ 
+ 	ret = adf_dev_up(accel_dev, true);
+diff --git a/drivers/crypto/intel/qat/qat_common/Makefile b/drivers/crypto/intel/qat/qat_common/Makefile
+index 151fd3c01f62..58f3c181b2ce 100644
+--- a/drivers/crypto/intel/qat/qat_common/Makefile
++++ b/drivers/crypto/intel/qat/qat_common/Makefile
+@@ -12,6 +12,7 @@ intel_qat-objs := adf_cfg.o \
+ 	adf_admin.o \
+ 	adf_hw_arbiter.o \
+ 	adf_sysfs.o \
++	adf_sysfs_ras_counters.o \
+ 	adf_gen2_hw_data.o \
+ 	adf_gen2_config.o \
+ 	adf_gen4_hw_data.o \
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_accel_devices.h b/drivers/crypto/intel/qat/qat_common/adf_accel_devices.h
+index 65d52a07e435..197e10eb5534 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_accel_devices.h
++++ b/drivers/crypto/intel/qat/qat_common/adf_accel_devices.h
+@@ -7,6 +7,7 @@
+ #include <linux/list.h>
+ #include <linux/io.h>
+ #include <linux/ratelimit.h>
++#include <linux/types.h>
+ #include "adf_cfg_common.h"
+ #include "adf_pfvf_msg.h"
+ 
+@@ -81,6 +82,18 @@ enum dev_sku_info {
+ 	DEV_SKU_UNKNOWN,
+ };
+ 
++enum ras_errors {
++	ADF_RAS_CORR,
++	ADF_RAS_UNCORR,
++	ADF_RAS_FATAL,
++	ADF_RAS_ERRORS,
++};
 +
- 	return handled;
++struct adf_error_counters {
++	atomic_t counter[ADF_RAS_ERRORS];
++	bool enabled;
++};
++
+ static inline const char *get_sku_info(enum dev_sku_info info)
+ {
+ 	switch (info) {
+@@ -360,6 +373,7 @@ struct adf_accel_dev {
+ 			u8 pf_compat_ver;
+ 		} vf;
+ 	};
++	struct adf_error_counters ras_errors;
+ 	struct mutex state_lock; /* protect state of the device */
+ 	bool is_vf;
+ 	u32 accel_id;
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_init.c b/drivers/crypto/intel/qat/qat_common/adf_init.c
+index b3cf0720cf9a..00a32efdfc59 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_init.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_init.c
+@@ -9,6 +9,7 @@
+ #include "adf_common_drv.h"
+ #include "adf_dbgfs.h"
+ #include "adf_heartbeat.h"
++#include "adf_sysfs_ras_counters.h"
+ 
+ static LIST_HEAD(service_table);
+ static DEFINE_MUTEX(service_lock);
+@@ -242,6 +243,7 @@ static int adf_dev_start(struct adf_accel_dev *accel_dev)
+ 	set_bit(ADF_STATUS_COMP_ALGS_REGISTERED, &accel_dev->status);
+ 
+ 	adf_dbgfs_add(accel_dev);
++	adf_sysfs_start_ras(accel_dev);
+ 
+ 	return 0;
  }
+@@ -268,6 +270,7 @@ static void adf_dev_stop(struct adf_accel_dev *accel_dev)
+ 		return;
  
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.h b/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.h
-index e3583c3ed827..53352083cd12 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.h
-+++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_ras.h
-@@ -599,6 +599,224 @@ struct adf_ras_ops;
+ 	adf_dbgfs_rm(accel_dev);
++	adf_sysfs_stop_ras(accel_dev);
  
- #define ADF_GEN4_DCPR_SLICES_NUM			3
- 
-+/*
-+ * ERRSOU3 bit masks
-+ * BIT(0) - indicates error Response Order Overflow and/or BME error
-+ * BIT(1) - indicates RI push/pull error
-+ * BIT(2) - indicates TI push/pull error
-+ * BIT(3) - indicates ARAM correctable error
-+ * BIT(4) - indicates ARAM uncorrectable error
-+ * BIT(5) - indicates TI pull parity error
-+ * BIT(6) - indicates RI push parity error
-+ * BIT(7) - indicates VFLR interrupt
-+ * BIT(8) - indicates ring pair interrupts for ATU detected fault
-+ * BIT(9) - indicates error when accessing RLT block
-+ */
-+#define ADF_GEN4_ERRSOU3_TIMISCSTS_BIT			BIT(0)
-+#define ADF_GEN4_ERRSOU3_RICPPINTSTS_BITMASK		(BIT(1) | BIT(6))
-+#define ADF_GEN4_ERRSOU3_TICPPINTSTS_BITMASK		(BIT(2) | BIT(5))
-+#define ADF_GEN4_ERRSOU3_REG_ARAMCERR_BIT		BIT(3)
-+#define ADF_GEN4_ERRSOU3_REG_ARAMUERR_BIT		BIT(4)
-+#define ADF_GEN4_ERRSOU3_VFLRNOTIFY_BIT			BIT(7)
-+#define ADF_GEN4_ERRSOU3_ATUFAULTSTATUS_BIT		BIT(8)
-+#define ADF_GEN4_ERRSOU3_RLTERROR_BIT			BIT(9)
+ 	clear_bit(ADF_STATUS_STARTING, &accel_dev->status);
+ 	clear_bit(ADF_STATUS_STARTED, &accel_dev->status);
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.c b/drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.c
+new file mode 100644
+index 000000000000..cffe2d722995
+--- /dev/null
++++ b/drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.c
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright(c) 2023 Intel Corporation */
 +
-+#define ADF_GEN4_ERRSOU3_BITMASK ( \
-+	(ADF_GEN4_ERRSOU3_TIMISCSTS_BIT) | \
-+	(ADF_GEN4_ERRSOU3_RICPPINTSTS_BITMASK) | \
-+	(ADF_GEN4_ERRSOU3_TICPPINTSTS_BITMASK) | \
-+	(ADF_GEN4_ERRSOU3_REG_ARAMCERR_BIT) | \
-+	(ADF_GEN4_ERRSOU3_REG_ARAMUERR_BIT) | \
-+	(ADF_GEN4_ERRSOU3_VFLRNOTIFY_BIT) | \
-+	(ADF_GEN4_ERRSOU3_ATUFAULTSTATUS_BIT) | \
-+	(ADF_GEN4_ERRSOU3_RLTERROR_BIT))
++#include <linux/sysfs.h>
++#include <linux/pci.h>
++#include <linux/string.h>
 +
-+/* TI Misc status register */
-+#define ADF_GEN4_TIMISCSTS				0x50054C
++#include "adf_common_drv.h"
++#include "adf_sysfs_ras_counters.h"
 +
-+/* TI Misc error reporting mask */
-+#define ADF_GEN4_TIMISCCTL				0x500548
++static ssize_t errors_correctable_show(struct device *dev,
++				       struct device_attribute *dev_attr,
++				       char *buf)
++{
++	struct adf_accel_dev *accel_dev;
++	unsigned long counter;
 +
-+/*
-+ * TI Misc error reporting control mask
-+ * BIT(0) - Enables error detection and logging in TIMISCSTS register
-+ * BIT(1) - It has effect only when SRIOV enabled, this bit is 0 by default
-+ * BIT(2) - Enables the D-F-x counter within the dispatch arbiter
-+ *	    to start based on the command triggered from
-+ * BIT(30) - Disables VFLR functionality
-+ *	     By setting this bit will revert to CPM1.x functionality
-+ * bits 1, 2 and 30 value should be preserved and not meant to be changed
-+ * within RAS.
-+ */
-+#define ADF_GEN4_TIMISCCTL_BIT				BIT(0)
-+#define ADF_GEN4_TIMSCCTL_RELAY_BITMASK (BIT(1) | BIT(2) | BIT(30))
++	accel_dev = adf_devmgr_pci_to_accel_dev(to_pci_dev(dev));
++	if (!accel_dev)
++		return -EINVAL;
 +
-+/* RI CPP interface status register */
-+#define ADF_GEN4_RICPPINTSTS				0x41A330
++	counter = ADF_RAS_ERR_CTR_READ(accel_dev->ras_errors, ADF_RAS_CORR);
++	return scnprintf(buf, PAGE_SIZE, "%ld\n", counter);
++}
 +
-+/*
-+ * Uncorrectable error mask in RICPPINTSTS register
-+ * BIT(0) - RI asserted the CPP error signal during a push
-+ * BIT(1) - RI detected the CPP error signal asserted during a pull
-+ * BIT(2) - RI detected a push data parity error
-+ * BIT(3) - RI detected a push valid parity error
-+ */
-+#define ADF_GEN4_RICPPINTSTS_BITMASK \
-+	(BIT(0) | BIT(1) | BIT(2) | BIT(3))
++static ssize_t errors_nonfatal_show(struct device *dev,
++				    struct device_attribute *dev_attr,
++				    char *buf)
++{
++	struct adf_accel_dev *accel_dev;
++	unsigned long counter;
 +
-+/* RI CPP interface status register control */
-+#define ADF_GEN4_RICPPINTCTL				0x41A32C
++	accel_dev = adf_devmgr_pci_to_accel_dev(to_pci_dev(dev));
++	if (!accel_dev)
++		return -EINVAL;
 +
-+/*
-+ * Control bit mask for RICPPINTCTL register
-+ * BIT(0) - value of 1 enables error detection and reporting
-+ *	    on the RI CPP Push interface
-+ * BIT(1) - value of 1 enables error detection and reporting
-+ *	    on the RI CPP Pull interface
-+ * BIT(2) - value of 1 enables error detection and reporting
-+ *	    on the RI Parity
-+ * BIT(3) - value of 1 enable checking parity on CPP
-+ * BIT(4) - value of 1 enables the stop feature of the stop and stream
-+ *	    for all RI CPP Command RFs
-+ */
-+#define ADF_GEN4_RICPPINTCTL_BITMASK \
-+	(BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(4))
++	counter = ADF_RAS_ERR_CTR_READ(accel_dev->ras_errors, ADF_RAS_UNCORR);
++	return scnprintf(buf, PAGE_SIZE, "%ld\n", counter);
++}
 +
-+/* Push ID of the command which triggered the transaction error on RI */
-+#define ADF_GEN4_RIERRPUSHID				0x41A334
++static ssize_t errors_fatal_show(struct device *dev,
++				 struct device_attribute *dev_attr,
++				 char *buf)
++{
++	struct adf_accel_dev *accel_dev;
++	unsigned long counter;
 +
-+/* Pull ID of the command which triggered the transaction error on RI */
-+#define ADF_GEN4_RIERRPULLID				0x41A338
++	accel_dev = adf_devmgr_pci_to_accel_dev(to_pci_dev(dev));
++	if (!accel_dev)
++		return -EINVAL;
 +
-+/* TI CPP interface status register */
-+#define ADF_GEN4_TICPPINTSTS				0x50053C
++	counter = ADF_RAS_ERR_CTR_READ(accel_dev->ras_errors, ADF_RAS_FATAL);
++	return scnprintf(buf, PAGE_SIZE, "%ld\n", counter);
++}
 +
-+/*
-+ * Uncorrectable error mask in TICPPINTSTS register
-+ * BIT(0) - value of 1 indicates that the TI asserted
-+ *	    the CPP error signal during a push
-+ * BIT(1) - value of 1 indicates that the TI detected
-+ *	    the CPP error signal asserted during a pull
-+ * BIT(2) - value of 1 indicates that the TI detected
-+ *	    a pull data parity error
-+ */
-+#define ADF_GEN4_TICPPINTSTS_BITMASK \
-+	(BIT(0) | BIT(1) | BIT(2))
++static ssize_t reset_error_counters_store(struct device *dev,
++					  struct device_attribute *dev_attr,
++					  const char *buf, size_t count)
++{
++	struct adf_accel_dev *accel_dev;
 +
-+/* TI CPP interface status register control */
-+#define ADF_GEN4_TICPPINTCTL				0x500538
++	if (buf[0] != '1' || count != 2)
++		return -EINVAL;
 +
-+/*
-+ * Control bit mask for TICPPINTCTL register
-+ * BIT(0) - value of 1 enables error detection and reporting on
-+ *	    the TI CPP Push interface
-+ * BIT(1) - value of 1 enables error detection and reporting on
-+ *	    the TI CPP Push interface
-+ * BIT(2) - value of 1 enables parity error detection and logging on
-+ *	    the TI CPP Pull interface
-+ * BIT(3) - value of 1 enables CPP CMD and Pull Data parity checking
-+ * BIT(4) - value of 1 enables TI stop part of stop and scream mode on
-+ *	    CPP/RF Parity error
-+ */
-+#define ADF_GEN4_TICPPINTCTL_BITMASK \
-+	(BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(4))
++	accel_dev = adf_devmgr_pci_to_accel_dev(to_pci_dev(dev));
++	if (!accel_dev)
++		return -EINVAL;
 +
-+/* Push ID of the command which triggered the transaction error on TI */
-+#define ADF_GEN4_TIERRPUSHID				0x500540
++	ADF_RAS_ERR_CTR_CLEAR(accel_dev->ras_errors);
 +
-+/* Pull ID of the command which triggered the transaction error on TI */
-+#define ADF_GEN4_TIERRPULLID				0x500544
++	return count;
++}
 +
-+/* Correctable error in ARAM agent register */
-+#define ADF_GEN4_REG_ARAMCERR				0x1700
++static DEVICE_ATTR_RO(errors_correctable);
++static DEVICE_ATTR_RO(errors_nonfatal);
++static DEVICE_ATTR_RO(errors_fatal);
++static DEVICE_ATTR_WO(reset_error_counters);
 +
-+#define ADF_GEN4_REG_ARAMCERR_BIT			BIT(0)
++static struct attribute *qat_ras_attrs[] = {
++	&dev_attr_errors_correctable.attr,
++	&dev_attr_errors_nonfatal.attr,
++	&dev_attr_errors_fatal.attr,
++	&dev_attr_reset_error_counters.attr,
++	NULL,
++};
 +
-+/*
-+ * Correctable error enablement in ARAM bit mask
-+ * BIT(3) - enable ARAM RAM to fix and log correctable error
-+ * BIT(26) - enables ARAM agent to generate interrupt for correctable error
-+ */
-+#define ADF_GEN4_REG_ARAMCERR_EN_BITMASK		(BIT(3) | BIT(26))
++static struct attribute_group qat_ras_group = {
++	.attrs = qat_ras_attrs,
++	.name = "qat_ras",
++};
 +
-+/* Correctable error address in ARAM agent register */
-+#define ADF_GEN4_REG_ARAMCERRAD				0x1708
++void adf_sysfs_start_ras(struct adf_accel_dev *accel_dev)
++{
++	if (!accel_dev->ras_errors.enabled)
++		return;
 +
-+/* Uncorrectable error in ARAM agent register */
-+#define ADF_GEN4_REG_ARAMUERR				0x1704
++	ADF_RAS_ERR_CTR_CLEAR(accel_dev->ras_errors);
 +
-+/*
-+ * ARAM error bit mask
-+ * BIT(0) - indicates error logged in ARAMCERR or ARAMUCERR
-+ * BIT(18) - indicates uncorrectable multiple errors in ARAM agent
-+ */
-+#define ADF_GEN4_REG_ARAMUERR_ERROR_BIT			BIT(0)
-+#define ADF_GEN4_REG_ARAMUERR_MULTI_ERRORS_BIT		BIT(18)
++	if (device_add_group(&GET_DEV(accel_dev), &qat_ras_group))
++		dev_err(&GET_DEV(accel_dev),
++			"Failed to create qat_ras attribute group.\n");
++}
 +
-+/*
-+ * Uncorrectable error enablement in ARAM bit mask
-+ * BIT(3) - enable ARAM RAM to fix and log uncorrectable error
-+ * BIT(19) - enables ARAM agent to generate interrupt for uncorrectable error
-+ */
-+#define ADF_GEN4_REG_ARAMUERR_EN_BITMASK		(BIT(3) | BIT(19))
++void adf_sysfs_stop_ras(struct adf_accel_dev *accel_dev)
++{
++	if (!accel_dev->ras_errors.enabled)
++		return;
 +
-+/* Unorrectable error address in ARAM agent register */
-+#define ADF_GEN4_REG_ARAMUERRAD				0x170C
++	device_remove_group(&GET_DEV(accel_dev), &qat_ras_group);
 +
-+/* Uncorrectable error transaction push/pull ID registers*/
-+#define ADF_GEN4_REG_ERRPPID_LO				0x1714
-+#define ADF_GEN4_REG_ERRPPID_HI				0x1718
++	ADF_RAS_ERR_CTR_CLEAR(accel_dev->ras_errors);
++}
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.h b/drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.h
+new file mode 100644
+index 000000000000..1d53234a5ff9
+--- /dev/null
++++ b/drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* Copyright(c) 2023 Intel Corporation */
 +
-+/* ARAM ECC block error enablement */
-+#define ADF_GEN4_REG_ARAMCERRUERR_EN			0x1808
++#ifndef ADF_RAS_H
++#define ADF_RAS_H
 +
-+/*
-+ * ARAM ECC block error control bit masks
-+ * BIT(0) - enable ARAM CD ECC block error detecting
-+ * BIT(1) - enable ARAM pull request ECC error detecting
-+ * BIT(2) - enable ARAM command dispatch ECC error detecting
-+ * BIT(3) - enable ARAM read datapath push ECC error detecting
-+ * BIT(4) - enable ARAM read datapath pull ECC error detecting
-+ * BIT(5) - enable ARAM RMW ECC error detecting
-+ * BIT(6) - enable ARAM write datapath RMW ECC error detecting
-+ * BIT(7) - enable ARAM write datapath ECC error detecting
-+ */
-+#define ADF_GEN4_REG_ARAMCERRUERR_EN_BITMASK \
-+	(BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(4) | \
-+	 BIT(5) | BIT(6) | BIT(7))
++#include <linux/bitops.h>
++#include <linux/atomic.h>
 +
-+/* ARAM misc memory target error registers*/
-+#define ADF_GEN4_REG_CPPMEMTGTERR			0x1710
++struct adf_accel_dev;
 +
-+/*
-+ * ARAM misc memory target error bit masks
-+ * BIT(0) - indicates an error in ARAM target memory
-+ * BIT(1) - indicates multiple errors in ARAM target memory
-+ * BIT(4) - indicates pull error in ARAM target memory
-+ * BIT(5) - indicates parity pull error in ARAM target memory
-+ * BIT(6) - indicates push error in ARAM target memory
-+ */
-+#define ADF_GEN4_REG_CPPMEMTGTERR_BITMASK \
-+	(BIT(0) | BIT(4) | BIT(5) | BIT(6))
++void adf_sysfs_start_ras(struct adf_accel_dev *accel_dev);
++void adf_sysfs_stop_ras(struct adf_accel_dev *accel_dev);
 +
-+#define ADF_GEN4_REG_CPPMEMTGTERR_MULTI_ERRORS_BIT	BIT(1)
++#define ADF_RAS_ERR_CTR_READ(ras_errors, ERR) \
++	atomic_read(&(ras_errors).counter[ERR])
 +
-+/*
-+ * ARAM misc memory target error enablement mask
-+ * BIT(2) - enables CPP memory to detect and log push/pull data error
-+ * BIT(7) - enables push/pull error to generate interrupts to RI
-+ * BIT(8) - enables ARAM to check parity on pull data and CPP command buses
-+ * BIT(9) - enables ARAM to autopush to AE when push/parity error is detected
-+ *	    on lookaside DT
-+ */
-+#define ADF_GEN4_REG_CPPMEMTGTERR_EN_BITMASK \
-+	(BIT(2) | BIT(7) | BIT(8) | BIT(9))
++#define ADF_RAS_ERR_CTR_CLEAR(ras_errors) \
++	do { \
++		for (int err = 0; err < ADF_RAS_ERRORS; ++err) \
++			atomic_set(&(ras_errors).counter[err], 0); \
++	} while (0)
 +
-+/* ATU fault status register */
-+#define ADF_GEN4_ATUFAULTSTATUS(i)			(0x506000 + ((i) * 0x4))
++#define ADF_RAS_ERR_CTR_INC(ras_errors, ERR) \
++	atomic_inc(&(ras_errors).counter[ERR])
 +
-+#define ADF_GEN4_ATUFAULTSTATUS_BIT			BIT(0)
++#endif /* ADF_RAS_H */
 +
- /* Command Parity error detected on IOSFP Command to QAT */
- #define ADF_GEN4_RIMISCSTS_BIT				BIT(0)
- 
 -- 
 2.41.0
 
