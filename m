@@ -2,48 +2,47 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 313BC7D0A0E
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9747D09E4
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376525AbjJTH52 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 03:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        id S1376474AbjJTH4o (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 03:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376522AbjJTH5D (ORCPT
+        with ESMTP id S1376466AbjJTH4l (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:57:03 -0400
+        Fri, 20 Oct 2023 03:56:41 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30ECE10CB
-        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886A2D6C
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:38 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN0-0003Iu-Iy; Fri, 20 Oct 2023 09:56:34 +0200
+        id 1qtkN0-0003JE-PO; Fri, 20 Oct 2023 09:56:34 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkMz-002yUq-WF; Fri, 20 Oct 2023 09:56:34 +0200
+        id 1qtkN0-002yUt-68; Fri, 20 Oct 2023 09:56:34 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkMz-002OJ3-ND; Fri, 20 Oct 2023 09:56:33 +0200
+        id 1qtkMz-002OJ7-TP; Fri, 20 Oct 2023 09:56:33 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>, linux-crypto@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH 14/42] crypto: ccp/sp - Convert to platform remove callback returning void
-Date:   Fri, 20 Oct 2023 09:55:36 +0200
-Message-ID: <20231020075521.2121571-58-u.kleine-koenig@pengutronix.de>
+Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH 15/42] crypto: ccree/cc - Convert to platform remove callback returning void
+Date:   Fri, 20 Oct 2023 09:55:37 +0200
+Message-ID: <20231020075521.2121571-59-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 References: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1836; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=ayTLlCQMdSbgn6KWLbeMyIN0n7ue0X/qH6AAgjCJYhw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjJ6lDm4n7DEbQO3+piwGfVbcBzo0wfVIOPux 5A+K6wYVD+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIyegAKCRCPgPtYfRL+ Ti6bB/sEthwblxvCnI4YseV4DMqxpzm4x+F9pcQjlVtV6lsHjYoUtG0BWXRsoQVbCShaASO52SF Lb774dxmCCXd4akQGqXyTD6PjMBcEM9urEVUBvXl5+xm7DaQwbKplGbUkVvgKJP7oxf1/hdpw8P WmLfIkjxsT+pdJgpm7+xJy/VabUVl3Y2kY0EV+8Qu/ALKmMxP2HhDpWc5us8rUIT5l2eZgx/YW3 0FZVivNZYgsL9mOGXDCkz11qAGk+N3dgm/xkvo+FdK/A8MgP0wXEn6vHnzfpl8TR2sQqwxaIZ9E Y4cSdY0nExL7GZnqe3uj6+TlMnbHIU8xujA1JWYYXMWCWuPm
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1782; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=lejF1Bxw1Ws8DzMMotjuzFXNNQJMw121/Q+2EpVjQDA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjJ7c43IbLjB7MZVAgapLEjLoYXSb8lH1ygZ2 dmMW5485+aJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIyewAKCRCPgPtYfRL+ Th1fB/wP9wWwCDsZVZAMTEXbbeZcUaxJYrdczFR5AxprEOdCbCEDWymqEBWZ4uGJsWs6GnQgZCH 8pSFKr/6O7p93H+KimqGqNFqPs/vBxDSS0JFsb9tfgfgwkTWKuL9n+GUZS6QcCQgfaWAGoz2lYg TI5kxCh37weuY4PbpemdiJFg3NE2vKdTia2d45TBNdIaGDmT3GlPDqzKno66g5YhCdSN3GKoPRD 3PJ/67vSQQPiT+FXstIY1OGQTSV9oe561SavpSNKXyFC1DvVLJhxB2u2JlciBU5k6thFvX9toSn NxCYPqvSAYT/ElGx04VqVs3UvSOycdmON4cgJLj9Ins7u9fc
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -74,40 +73,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/crypto/ccp/sp-platform.c | 6 ++----
+ drivers/crypto/ccree/cc_driver.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/ccp/sp-platform.c b/drivers/crypto/ccp/sp-platform.c
-index 7d79a8744f9a..473301237760 100644
---- a/drivers/crypto/ccp/sp-platform.c
-+++ b/drivers/crypto/ccp/sp-platform.c
-@@ -180,7 +180,7 @@ static int sp_platform_probe(struct platform_device *pdev)
- 	return ret;
+diff --git a/drivers/crypto/ccree/cc_driver.c b/drivers/crypto/ccree/cc_driver.c
+index 0f0694037dd7..9177b54bb0f5 100644
+--- a/drivers/crypto/ccree/cc_driver.c
++++ b/drivers/crypto/ccree/cc_driver.c
+@@ -623,7 +623,7 @@ static int ccree_probe(struct platform_device *plat_dev)
+ 	return 0;
  }
  
--static int sp_platform_remove(struct platform_device *pdev)
-+static void sp_platform_remove(struct platform_device *pdev)
+-static int ccree_remove(struct platform_device *plat_dev)
++static void ccree_remove(struct platform_device *plat_dev)
  {
- 	struct device *dev = &pdev->dev;
- 	struct sp_device *sp = dev_get_drvdata(dev);
-@@ -188,8 +188,6 @@ static int sp_platform_remove(struct platform_device *pdev)
- 	sp_destroy(sp);
+ 	struct device *dev = &plat_dev->dev;
  
- 	dev_notice(dev, "disabled\n");
+@@ -632,8 +632,6 @@ static int ccree_remove(struct platform_device *plat_dev)
+ 	cleanup_cc_resources(plat_dev);
+ 
+ 	dev_info(dev, "ARM ccree device terminated\n");
 -
 -	return 0;
  }
  
- #ifdef CONFIG_PM
-@@ -222,7 +220,7 @@ static struct platform_driver sp_platform_driver = {
+ static struct platform_driver ccree_driver = {
+@@ -645,7 +643,7 @@ static struct platform_driver ccree_driver = {
  #endif
  	},
- 	.probe = sp_platform_probe,
--	.remove = sp_platform_remove,
-+	.remove_new = sp_platform_remove,
- #ifdef CONFIG_PM
- 	.suspend = sp_platform_suspend,
- 	.resume = sp_platform_resume,
+ 	.probe = ccree_probe,
+-	.remove = ccree_remove,
++	.remove_new = ccree_remove,
+ };
+ 
+ static int __init ccree_init(void)
 -- 
 2.42.0
 
