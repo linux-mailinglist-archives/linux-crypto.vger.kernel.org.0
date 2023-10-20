@@ -2,47 +2,49 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E24D47D09F2
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D11D7D0A00
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376476AbjJTH4v (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 03:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
+        id S1376505AbjJTH5Q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 03:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376483AbjJTH4m (ORCPT
+        with ESMTP id S1376483AbjJTH44 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:56:42 -0400
+        Fri, 20 Oct 2023 03:56:56 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A093D115
-        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC41D76
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:44 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN1-0003Lm-TP; Fri, 20 Oct 2023 09:56:35 +0200
+        id 1qtkN2-0003M4-Ai; Fri, 20 Oct 2023 09:56:36 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN1-002yVH-GX; Fri, 20 Oct 2023 09:56:35 +0200
+        id 1qtkN1-002yVL-N0; Fri, 20 Oct 2023 09:56:35 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN1-002OJV-7V; Fri, 20 Oct 2023 09:56:35 +0200
+        id 1qtkN1-002OJZ-Dq; Fri, 20 Oct 2023 09:56:35 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
-Cc:     Antoine Tenart <atenart@kernel.org>, linux-crypto@vger.kernel.org,
+Cc:     Linus Walleij <linusw@kernel.org>, Imre Kaloz <kaloz@openwrt.org>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 21/42] crypto: inside-secure/safexcel - Convert to platform remove callback returning void
-Date:   Fri, 20 Oct 2023 09:55:43 +0200
-Message-ID: <20231020075521.2121571-65-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 22/42] crypto: intel/ixp4xx-crypto - Convert to platform remove callback returning void
+Date:   Fri, 20 Oct 2023 09:55:44 +0200
+Message-ID: <20231020075521.2121571-66-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 References: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1990; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=kCiuHZVacrweSH3xcJRi29kZifyuONrttcMgh3aOsKE=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKCgS/5r2l6PZCfzMfnrVkqyEDWL6eP4CyZ5 ZCzhJ4UorCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIyggAKCRCPgPtYfRL+ Tp6MCAC37DMAx/xOb9sIzzeKkIztY5w2201ihTSVZTFv5G888xllwboRoeMgXkHfiD/be/9qu2p dMVu2Jyr0otiaAOGwgoYia/tbUMypHSJ85/fU2QZW3xNVfFyjB427kkfvMzfekLBjmd6P8BX26A iG6ZOAvR509TkWzmIfHAC+JyTE4vJQAnN/LZBECP2NHg8tivbxMZweilmOAce1VQfpuLnZ68MOt FouuaLW77aSzCFNj6NkptjDnbSmUWwQbT4MTBhdmPGmYbL+fIg2o7FKalAlJ4hSiIL7TnPbeGFs unjqenQkHqRsw0D5NmliZw6lWyYgBaH1/TZ1ICfrC5ySgSPx
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1997; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=Uxql2rquVCiZ+9UkmiKbwvFNTTiK1gqP8jH4odY841c=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKDeLUK/o9XlJoJpAG5kRilLG3GuxV1kSDdC 6zYuGrKmQ2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIygwAKCRCPgPtYfRL+ TkvtB/9XPdFWoz/axur5iZKozp63mwB7w6Po/JMSx8oPgw3CJZm66EESprwsMEnpWdB+hNt2InB TBPakAVhB6fdBeYyr2Vv2Q1LyBSWHJwOVEZyr5+MWtu3rTgr5R7aJFHJIEYWoWQg8AazGgOxiNe ePbA2s/9o8y4OiZ+yjn5QJD99IJ5t2sCVAPSd8Or78Q/OXsXlmevwyxb3ZKk9PwkG9oZ/aUUZbu Lb3KT9YOZKf/Td+5jlJZsi9V0sdldwC18eLX2oVCIktR5MqU324ofFkUN8SI07asRo7q0bNwg6j /UO0s0GupRCuM1QrqIqT+z4ZAbLs1ZGPQrFIzsuHZ3moa2nh
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -73,40 +75,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/crypto/inside-secure/safexcel.c | 6 ++----
+ drivers/crypto/intel/ixp4xx/ixp4xx_crypto.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index 9ff02b5abc4a..76da14af74b5 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -1801,7 +1801,7 @@ static int safexcel_probe(struct platform_device *pdev)
- 	return ret;
+diff --git a/drivers/crypto/intel/ixp4xx/ixp4xx_crypto.c b/drivers/crypto/intel/ixp4xx/ixp4xx_crypto.c
+index 4a18095ae5d8..f8a77bff8844 100644
+--- a/drivers/crypto/intel/ixp4xx/ixp4xx_crypto.c
++++ b/drivers/crypto/intel/ixp4xx/ixp4xx_crypto.c
+@@ -1563,7 +1563,7 @@ static int ixp_crypto_probe(struct platform_device *_pdev)
+ 	return 0;
  }
  
--static int safexcel_remove(struct platform_device *pdev)
-+static void safexcel_remove(struct platform_device *pdev)
+-static int ixp_crypto_remove(struct platform_device *pdev)
++static void ixp_crypto_remove(struct platform_device *pdev)
  {
- 	struct safexcel_crypto_priv *priv = platform_get_drvdata(pdev);
+ 	int num = ARRAY_SIZE(ixp4xx_algos);
  	int i;
-@@ -1816,8 +1816,6 @@ static int safexcel_remove(struct platform_device *pdev)
- 		irq_set_affinity_hint(priv->ring[i].irq, NULL);
- 		destroy_workqueue(priv->ring[i].workqueue);
+@@ -1578,8 +1578,6 @@ static int ixp_crypto_remove(struct platform_device *pdev)
+ 			crypto_unregister_skcipher(&ixp4xx_algos[i].crypto);
  	}
+ 	release_ixp_crypto(&pdev->dev);
 -
 -	return 0;
  }
+ static const struct of_device_id ixp4xx_crypto_of_match[] = {
+ 	{
+@@ -1590,7 +1588,7 @@ static const struct of_device_id ixp4xx_crypto_of_match[] = {
  
- static const struct safexcel_priv_data eip97ies_mrvl_data = {
-@@ -1874,7 +1872,7 @@ MODULE_DEVICE_TABLE(of, safexcel_of_match_table);
- 
- static struct platform_driver  crypto_safexcel = {
- 	.probe		= safexcel_probe,
--	.remove		= safexcel_remove,
-+	.remove_new	= safexcel_remove,
- 	.driver		= {
- 		.name	= "crypto-safexcel",
- 		.of_match_table = safexcel_of_match_table,
+ static struct platform_driver ixp_crypto_driver = {
+ 	.probe = ixp_crypto_probe,
+-	.remove = ixp_crypto_remove,
++	.remove_new = ixp_crypto_remove,
+ 	.driver = {
+ 		.name = "ixp4xx_crypto",
+ 		.of_match_table = ixp4xx_crypto_of_match,
 -- 
 2.42.0
 
