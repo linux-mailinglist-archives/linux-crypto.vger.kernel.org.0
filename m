@@ -2,49 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EB67D0A07
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D517D0A05
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376484AbjJTH5T (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 03:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
+        id S1376481AbjJTH5S (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 03:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376507AbjJTH45 (ORCPT
+        with ESMTP id S1376508AbjJTH45 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Fri, 20 Oct 2023 03:56:57 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0702AD7E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066CED7A
         for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:44 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN6-0003ca-Al; Fri, 20 Oct 2023 09:56:40 +0200
+        id 1qtkN6-0003dM-Mo; Fri, 20 Oct 2023 09:56:40 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN4-002yWC-JT; Fri, 20 Oct 2023 09:56:38 +0200
+        id 1qtkN4-002yWG-Pg; Fri, 20 Oct 2023 09:56:38 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN4-002OKU-AK; Fri, 20 Oct 2023 09:56:38 +0200
+        id 1qtkN4-002OKX-Ga; Fri, 20 Oct 2023 09:56:38 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH 35/42] crypto: s5p-sss - Convert to platform remove callback returning void
-Date:   Fri, 20 Oct 2023 09:55:57 +0200
-Message-ID: <20231020075521.2121571-79-u.kleine-koenig@pengutronix.de>
+Cc:     linux-crypto@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH 36/42] crypto: sa2ul - Convert to platform remove callback returning void
+Date:   Fri, 20 Oct 2023 09:55:58 +0200
+Message-ID: <20231020075521.2121571-80-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 References: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1699; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=S6+msUyByijcNmR/6dbk6gp1vCoevLnu2n8OjF7qHUs=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKSyP7JzLsaTpPyE7o+SWp4NkvNMIemA+r3f Oye6U4jJcmJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIykgAKCRCPgPtYfRL+ TkQsB/45KMnx8+zk/dnRPDl1weTLeVz43FDYP8zbYjWn9Qk+Dt1WUDYhvmdm0hPX7PdBB4E7Ok4 J1rKXX89/U9xLDL1oU65+o5Pb8ZhlSDI/4kBSlKYZq806wM1NHBGRJcphoHGKqLf27JQTSAPmAq KjvU3HaitTZq3BTa98wNp3v6t8O2EK+8sHo13ATua4cT4BGKIZyV/CoXMD467nSqmA2bU3j6pyW 47qqG0Ckp/CuNfXBFLR4xHZlkfSb0DiNYkS/C1AjVBClNI1It1dQHiphjFskspkj06zgnUGo+w5 zLJXFjBZucs+HkJtFv3e6r9tFjmkxSmNnGY/+FFHIbFaiV9c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1686; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=Aq3je/SuIFI0BUC/13Ds8/g4ZpAP1by27NY2YIFlN6Q=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKTXY1jCFSa5bsS59e3knZYxtJ8qeIoRr195 BTcqfhshoCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIykwAKCRCPgPtYfRL+ TjZsB/0QSrCYq9FWZarcHBDbAOZtbTKic7kNHj+liJ0TKBXoRj5HG4iHG9drMQvZB8LuXHrLhwF MZMGNJACtpBacQjQiAmr+awzGeEI+0xVZvNy//zFVgQaF1Id/raxyrzFInAuMFI5MZPCntZ2YjK vmR7Sf91+cbSw/BIoUJcEG5ev6ZXAWgk4ViS9WgOF9bXlxJyPPkb7A2l9PYsAWNNI9q3zqTHeIh oqca3DTdtH3NvrQgdw3PzCGvCDzLTK1VTCzmvcoJVBvsxzO2oX32zY4X/+fLV7LLrIxW28Ini/e wGdjxmV1AW2nEHNenxei7HzYJM5CrGXvFa71yM3vej7vYtAq
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -75,37 +72,37 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/crypto/s5p-sss.c | 6 ++----
+ drivers/crypto/sa2ul.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
-index fe8cf9ba8005..9c02046971e3 100644
---- a/drivers/crypto/s5p-sss.c
-+++ b/drivers/crypto/s5p-sss.c
-@@ -2315,7 +2315,7 @@ static int s5p_aes_probe(struct platform_device *pdev)
- 	return err;
+diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
+index 6238d34f8db2..6846a8429574 100644
+--- a/drivers/crypto/sa2ul.c
++++ b/drivers/crypto/sa2ul.c
+@@ -2468,7 +2468,7 @@ static int sa_ul_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int s5p_aes_remove(struct platform_device *pdev)
-+static void s5p_aes_remove(struct platform_device *pdev)
+-static int sa_ul_remove(struct platform_device *pdev)
++static void sa_ul_remove(struct platform_device *pdev)
  {
- 	struct s5p_aes_dev *pdata = platform_get_drvdata(pdev);
- 	int i;
-@@ -2337,13 +2337,11 @@ static int s5p_aes_remove(struct platform_device *pdev)
+ 	struct sa_crypto_data *dev_data = platform_get_drvdata(pdev);
  
- 	clk_disable_unprepare(pdata->clk);
- 	s5p_dev = NULL;
+@@ -2486,13 +2486,11 @@ static int sa_ul_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
 -
 -	return 0;
  }
  
- static struct platform_driver s5p_aes_crypto = {
- 	.probe	= s5p_aes_probe,
--	.remove	= s5p_aes_remove,
-+	.remove_new = s5p_aes_remove,
- 	.driver	= {
- 		.name	= "s5p-secss",
- 		.of_match_table = s5p_sss_dt_match,
+ static struct platform_driver sa_ul_driver = {
+ 	.probe = sa_ul_probe,
+-	.remove = sa_ul_remove,
++	.remove_new = sa_ul_remove,
+ 	.driver = {
+ 		   .name = "saul-crypto",
+ 		   .of_match_table = of_match,
 -- 
 2.42.0
 
