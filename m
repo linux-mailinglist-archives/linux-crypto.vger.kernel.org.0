@@ -2,53 +2,46 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A907D0A17
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9567D0A0B
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376535AbjJTH5y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 03:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
+        id S1376514AbjJTH5Y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 03:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376533AbjJTH5O (ORCPT
+        with ESMTP id S1376511AbjJTH45 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:57:14 -0400
+        Fri, 20 Oct 2023 03:56:57 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A997C10CF
-        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87BC10C1
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:45 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN7-0003hX-Bo; Fri, 20 Oct 2023 09:56:41 +0200
+        id 1qtkN7-0003iY-FY; Fri, 20 Oct 2023 09:56:41 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN5-002yWQ-Gz; Fri, 20 Oct 2023 09:56:39 +0200
+        id 1qtkN5-002yWT-NK; Fri, 20 Oct 2023 09:56:39 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN5-002OKk-7g; Fri, 20 Oct 2023 09:56:39 +0200
+        id 1qtkN5-002OKo-E6; Fri, 20 Oct 2023 09:56:39 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        nicolas.toromanoff@foss.st.com,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Rob Herring <robh@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: [PATCH 39/42] crypto: stm32/cryp - Convert to platform remove callback returning void
-Date:   Fri, 20 Oct 2023 09:56:01 +0200
-Message-ID: <20231020075521.2121571-83-u.kleine-koenig@pengutronix.de>
+Cc:     linux-crypto@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH 40/42] crypto: talitos - Convert to platform remove callback returning void
+Date:   Fri, 20 Oct 2023 09:56:02 +0200
+Message-ID: <20231020075521.2121571-84-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 References: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2723; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=7A/4jfO5f6HPiPMVJM3k1eEGID7WdOBM8OghW+7z3ug=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKWxBuHKyc8wcbd1mj6AxMptWcoLzYBnaw3U wg+jgwX8VSJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIylgAKCRCPgPtYfRL+ ThDwB/wK8d5usctRxniPVmWkOoFU/WfE+6gfYDF2lBAw5FKmcp0+xjRl5hPzamdDONa7wNHQggs vmLCxzAf9nSCzPtI4JlodbrDMzqLrJR2JHHxzh3pqh14ouxm6RsYMgUCK10LH07JW3eOtS3ZYNB MLRUbqq6zG2PI6MN8U4St7jnLxOJZ0Ry/idbzvxTD/Kq539lV98YNQYccHGjZziD5AQzMc9qosN X5tWmf9gRPJaaV2j5UoywSLzRCV3qveCSRxgZUIhdVgM/otC56pBRcSlxeWcyOqGREb7SYQOiKR UO+vpVfxREop/84pttO44tEJO6MF72B7eK4uFbPwzb7EXo9i
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1884; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=R/W5Ggr2lsK+y2USJhl+aFdinr2wIRMDyAi6MKUWmjU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjKXAedL836rvPh9UPV637nn8dO4yPShep9bx I/sr6xTOi2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIylwAKCRCPgPtYfRL+ TgB/B/973+eh4pE50jmCU9dWenziAGPSvskOHrb3+I1m/olsqMJghDjWMrfKbgRCM63CLu5yDbf LmIeH8v9b94L6nirYBIdcXuYOPTAzK3aQdnfKB+Qxv/alp1k3M2TBOChjhWqibqy5NVYn9/v76M xXpKl8fsFXQGGaxxAJgFg7nvi/bfK+/JRJRGdCtHGDd1E+QkTeCTrgljIILUe3BB17MMPmHYr8l UcFqq8pKghT2cTDfv3cqcmvrjRs3f/U6QxIA6m7HvP4o/am+mf1zXnrWfeSAMVkBdpvTW1HUhVm aTNsNjVJanmBZbLs4iDV9MXdDC6Owhoqu6xL9Ip2cDw+skQO
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -66,77 +59,53 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 The .remove() callback for a platform driver returns an int which makes
 many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is (mostly) ignored
-and this typically results in resource leaks. To improve here there is a
-quest to make the remove callback return void. In the first step of this
-quest all drivers are converted to .remove_new() which already returns
-void.
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-The driver adapted here suffered from this wrong assumption and had
-several error paths resulting in resource leaks.
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-The check for cryp being non-NULL is harmless. This can never happen as
-.remove() is only called after .probe() completed successfully and in
-that case drvdata was set to a non-NULL value. So this check can just be
-dropped.
-
-If pm_runtime_get() fails, the other resources held by the device must
-still be freed. Only clk_disable_unprepare() should be skipped as the
-pm_runtime_get() failed to call clk_prepare_enable().
-
-After these changes the remove function returns zero unconditionally and
-can trivially be converted to the prototype required for .remove_new().
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/crypto/stm32/stm32-cryp.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/crypto/talitos.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index f095f0065428..c3cbc2673338 100644
---- a/drivers/crypto/stm32/stm32-cryp.c
-+++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -2084,17 +2084,12 @@ static int stm32_cryp_probe(struct platform_device *pdev)
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index 4ca4fbd227bc..e603c0f2abca 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -3136,7 +3136,7 @@ static int hw_supports(struct device *dev, __be32 desc_hdr_template)
  	return ret;
  }
  
--static int stm32_cryp_remove(struct platform_device *pdev)
-+static void stm32_cryp_remove(struct platform_device *pdev)
+-static int talitos_remove(struct platform_device *ofdev)
++static void talitos_remove(struct platform_device *ofdev)
  {
- 	struct stm32_cryp *cryp = platform_get_drvdata(pdev);
- 	int ret;
- 
--	if (!cryp)
--		return -ENODEV;
--
--	ret = pm_runtime_resume_and_get(cryp->dev);
--	if (ret < 0)
--		return ret;
-+	ret = pm_runtime_get_sync(cryp->dev);
- 
- 	if (cryp->caps->aeads_support)
- 		crypto_engine_unregister_aeads(aead_algs, ARRAY_SIZE(aead_algs));
-@@ -2109,9 +2104,8 @@ static int stm32_cryp_remove(struct platform_device *pdev)
- 	pm_runtime_disable(cryp->dev);
- 	pm_runtime_put_noidle(cryp->dev);
- 
--	clk_disable_unprepare(cryp->clk);
+ 	struct device *dev = &ofdev->dev;
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+@@ -3170,8 +3170,6 @@ static int talitos_remove(struct platform_device *ofdev)
+ 	tasklet_kill(&priv->done_task[0]);
+ 	if (priv->irq[1])
+ 		tasklet_kill(&priv->done_task[1]);
 -
 -	return 0;
-+	if (ret >= 0)
-+		clk_disable_unprepare(cryp->clk);
  }
  
- #ifdef CONFIG_PM
-@@ -2148,7 +2142,7 @@ static const struct dev_pm_ops stm32_cryp_pm_ops = {
+ static struct talitos_crypto_alg *talitos_alg_alloc(struct device *dev,
+@@ -3559,7 +3557,7 @@ static struct platform_driver talitos_driver = {
+ 		.of_match_table = talitos_match,
+ 	},
+ 	.probe = talitos_probe,
+-	.remove = talitos_remove,
++	.remove_new = talitos_remove,
+ };
  
- static struct platform_driver stm32_cryp_driver = {
- 	.probe  = stm32_cryp_probe,
--	.remove = stm32_cryp_remove,
-+	.remove_new = stm32_cryp_remove,
- 	.driver = {
- 		.name           = DRIVER_NAME,
- 		.pm		= &stm32_cryp_pm_ops,
+ module_platform_driver(talitos_driver);
 -- 
 2.42.0
 
