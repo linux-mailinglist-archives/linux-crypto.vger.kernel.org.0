@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98117D0A0D
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096757D0A02
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376524AbjJTH50 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 03:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
+        id S1376506AbjJTH5Q (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 03:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376512AbjJTH45 (ORCPT
+        with ESMTP id S1376467AbjJTH44 (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:56:57 -0400
+        Fri, 20 Oct 2023 03:56:56 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA91810C4
-        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDDBD78
+        for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:44 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkMz-0003Fk-50; Fri, 20 Oct 2023 09:56:33 +0200
+        id 1qtkMz-0003Fl-51; Fri, 20 Oct 2023 09:56:33 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkMx-002yU5-5J; Fri, 20 Oct 2023 09:56:31 +0200
+        id 1qtkMx-002yU8-CR; Fri, 20 Oct 2023 09:56:31 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkMw-002OI8-Rp; Fri, 20 Oct 2023 09:56:30 +0200
+        id 1qtkMx-002OIB-2m; Fri, 20 Oct 2023 09:56:31 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
@@ -36,19 +36,19 @@ Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
         Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         Samuel Holland <samuel@sholland.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh@kernel.org>, linux-crypto@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-crypto@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
         kernel@pengutronix.de
-Subject: [PATCH 01/42] crypto: sun4i-ss - Convert to platform remove callback returning void
-Date:   Fri, 20 Oct 2023 09:55:23 +0200
-Message-ID: <20231020075521.2121571-45-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 02/42] crypto: sun8i-ce - Convert to platform remove callback returning void
+Date:   Fri, 20 Oct 2023 09:55:24 +0200
+Message-ID: <20231020075521.2121571-46-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 References: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1967; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=nKuAGPRd9IDUbakhgUR3zbuRL2Z/mtNzL+fNYFvWL9k=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjJrlbN4nED8DFSFDKbmQXmsN+TM2rd5sYfHK WeADCwuNFmJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIyawAKCRCPgPtYfRL+ TmmmB/9jC9OJ+rT8evX3EHMDJpBwLkmbXx6vbWLHsN0wI4ujr01XuAPKgrsxG09TJvDL7RYhplc 2VxahrX9osG1xEz69gqjU7a5osP2kMW5SrWBWSSRvKB+YtS22IYtY2aQQ9/pjAJbbB1KImf8h8N zON3DmYGo5lK/Yy6L4bPTzFR3PHGoyRDBCKwVEUr4yRYEpWk3G/FwYb9rvIEwuD+8ldfGwTwsFU 6LDiVFajjzfYOvJHRT90/gXAoptvTr16+FmVqofraAd6mScuZOp9GRNgkFmzqEYLKjsKmrhTDeo CJLmt6LC1DpEbGGf/T78qZ+dPgBJ+9yL0ct+p6Py66YTkFBv
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1980; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=Nebr98eqKliQQ56zYutJMWfjNsqSFr+3DgpmezAGlLM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjJsLYW/WVE4mQ+vP/7oGaDrKl3iOmW1VL2xM DRAxq7RrkSJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIybAAKCRCPgPtYfRL+ Tu8EB/9GcPBQm9ZA0Z6VwcX8Yih8NfcDa3cOoRj+2aPbM4aEgU3HfMq6TuH6eFMe7zGBCnZtPkM urQuwMQz4csmb8FTp/BxM1fbD9Z1JkrcPH3P7vUvxxJY31wpSKG6N4m4yD9miNkjWtQdRPjaxH4 E7+9vAuY8XnSrtr9YlKqgDULr+uNuj3CEdMdAqiXf/4VTaShVT6Sgr/JtxPjGkgVaL0YyRIgYe5 QlgfthIKrwvI/oDbzMFsbC5qfh4FvanHlyONzr7xuRqi0keJRDtMsfgzBZ9SoS9nzyewTljcBvz gYGNIk1TwSVmqRrfcBYkY8JkDEgGnGly266gKziD0XVpYglU
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -79,39 +79,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c | 5 ++---
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-index 3bcfcfc37084..ba80878e2df5 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-@@ -509,7 +509,7 @@ static int sun4i_ss_probe(struct platform_device *pdev)
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+index d4ccd5254280..1741758e03eb 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+@@ -1071,7 +1071,7 @@ static int sun8i_ce_probe(struct platform_device *pdev)
  	return err;
  }
  
--static int sun4i_ss_remove(struct platform_device *pdev)
-+static void sun4i_ss_remove(struct platform_device *pdev)
+-static int sun8i_ce_remove(struct platform_device *pdev)
++static void sun8i_ce_remove(struct platform_device *pdev)
  {
- 	int i;
- 	struct sun4i_ss_ctx *ss = platform_get_drvdata(pdev);
-@@ -529,7 +529,6 @@ static int sun4i_ss_remove(struct platform_device *pdev)
- 	}
+ 	struct sun8i_ce_dev *ce = platform_get_drvdata(pdev);
  
- 	sun4i_ss_pm_exit(ss);
+@@ -1088,7 +1088,6 @@ static int sun8i_ce_remove(struct platform_device *pdev)
+ 	sun8i_ce_free_chanlist(ce, MAXFLOW - 1);
+ 
+ 	sun8i_ce_pm_exit(ce);
 -	return 0;
  }
  
- static const struct of_device_id a20ss_crypto_of_match_table[] = {
-@@ -545,7 +544,7 @@ MODULE_DEVICE_TABLE(of, a20ss_crypto_of_match_table);
+ static const struct of_device_id sun8i_ce_crypto_of_match_table[] = {
+@@ -1110,7 +1109,7 @@ MODULE_DEVICE_TABLE(of, sun8i_ce_crypto_of_match_table);
  
- static struct platform_driver sun4i_ss_driver = {
- 	.probe          = sun4i_ss_probe,
--	.remove         = sun4i_ss_remove,
-+	.remove_new     = sun4i_ss_remove,
- 	.driver         = {
- 		.name           = "sun4i-ss",
- 		.pm		= &sun4i_ss_pm_ops,
+ static struct platform_driver sun8i_ce_driver = {
+ 	.probe		 = sun8i_ce_probe,
+-	.remove		 = sun8i_ce_remove,
++	.remove_new	 = sun8i_ce_remove,
+ 	.driver		 = {
+ 		.name		= "sun8i-ce",
+ 		.pm		= &sun8i_ce_pm_ops,
 -- 
 2.42.0
 
