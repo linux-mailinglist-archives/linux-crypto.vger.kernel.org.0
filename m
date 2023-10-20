@@ -2,32 +2,32 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0447D0A16
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB827D0A18
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Oct 2023 09:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376537AbjJTH5x (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 20 Oct 2023 03:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
+        id S1376533AbjJTH5y (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 20 Oct 2023 03:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376535AbjJTH5O (ORCPT
+        with ESMTP id S1376536AbjJTH5P (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:57:14 -0400
+        Fri, 20 Oct 2023 03:57:15 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1551B10D8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767EE10D9
         for <linux-crypto@vger.kernel.org>; Fri, 20 Oct 2023 00:56:51 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkN1-0003GA-QE; Fri, 20 Oct 2023 09:56:35 +0200
+        id 1qtkN1-0003GE-QF; Fri, 20 Oct 2023 09:56:35 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkMy-002yUK-8R; Fri, 20 Oct 2023 09:56:32 +0200
+        id 1qtkMy-002yUN-Gw; Fri, 20 Oct 2023 09:56:32 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qtkMx-002OIS-V6; Fri, 20 Oct 2023 09:56:31 +0200
+        id 1qtkMy-002OIb-7Y; Fri, 20 Oct 2023 09:56:32 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
@@ -36,15 +36,15 @@ Cc:     Neal Liu <neal_liu@aspeedtech.com>, Joel Stanley <joel@jms.id.au>,
         Andrew Jeffery <andrew@codeconstruct.com.au>,
         linux-aspeed@lists.ozlabs.org, linux-crypto@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: [PATCH 06/42] crypto: aspeed-acry - Convert to platform remove callback returning void
-Date:   Fri, 20 Oct 2023 09:55:28 +0200
-Message-ID: <20231020075521.2121571-50-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 07/42] crypto: aspeed-hace - Convert to platform remove callback returning void
+Date:   Fri, 20 Oct 2023 09:55:29 +0200
+Message-ID: <20231020075521.2121571-51-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 References: <20231020075521.2121571-44-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1920; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=54Ov1wDXU3uWdC2nv6ZV9WOkI/eETqggVxDYU5WHQUI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjJwuPF2/dtX0EWI11lNIxKHUdyZpTjmxblJa OoyE3K9YGuJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIycAAKCRCPgPtYfRL+ TjFXB/9s890zmNZddoqEknLAT6f8vBqFGRsKwmrh8nmgWbqnCPGyjgBSCQXmGlBcjCpXpffTGIB G6nzkPrlnNgJrDyfIkwvE9/f+o3UDW+6ZG24Hb3R6EMx/VB/hqd01NIHL62KOB+HIWIMPa8p7gA xcsvni3f0bUqL0julx0F3hYyX1UNBT8n4usY8wrC/TCL7tzwVmIO0mnkvIvwGTvn0N3FySsu2wZ HSg2Zy4X4kMmuhpSh3Yxw2W9wR9SaG3z8hMgG1FOrydkC4FZ34TNKBL3U34qrpRUn8TvjCIecYb aWZ5/CBuh521VBdzssPXGoI9nox8jac2KYnnyL3E9fo7o9or
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1955; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=0YO0s5LXreauqMFpfEjyAZpLsQgNKr0gbAnyprV3vAo=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlMjJy3jnWIJF75wjEniVJf9lztk78hAUfW7ZhN wOsZS/iKt2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZTIycgAKCRCPgPtYfRL+ Ttg/CACG4iqbhG0quRs93JEgKLuQwHqCW3hwSPjBvbphXpp5VtHjN27w/YXL5Np2WoPUPNrVgmw hWLzG5LoZss8FnMu+acBo3Oii3QiqUEkSKilvJntZ0/QawkFoila0LMskRLAuP4yR7IdWqwBm4Y oILFwfy3jJOBMv6pHH4aF0H+4DBYRFYehXHwDtL9Z9bHNqn80SCQKYYhNYpH/FS8zqTrMfeIrPz KEQAkkcx7HcdAsnMF7LRMeoHVp2gEoxl0cD4T1+7J+mu6+yuIVgBC0KzFPtUBqqxNIUlWvovSwe HkQCQbp21lnyB0DNzw5OSg5BQ1vlwbBDeVRzsbUABsSTx5Bj
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -75,39 +75,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/crypto/aspeed/aspeed-acry.c | 6 ++----
+ drivers/crypto/aspeed/aspeed-hace.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/aspeed/aspeed-acry.c b/drivers/crypto/aspeed/aspeed-acry.c
-index 247c568aa8df..b4613bd4ad96 100644
---- a/drivers/crypto/aspeed/aspeed-acry.c
-+++ b/drivers/crypto/aspeed/aspeed-acry.c
-@@ -794,7 +794,7 @@ static int aspeed_acry_probe(struct platform_device *pdev)
+diff --git a/drivers/crypto/aspeed/aspeed-hace.c b/drivers/crypto/aspeed/aspeed-hace.c
+index d9da04fb816e..062f2a66dd23 100644
+--- a/drivers/crypto/aspeed/aspeed-hace.c
++++ b/drivers/crypto/aspeed/aspeed-hace.c
+@@ -245,7 +245,7 @@ static int aspeed_hace_probe(struct platform_device *pdev)
  	return rc;
  }
  
--static int aspeed_acry_remove(struct platform_device *pdev)
-+static void aspeed_acry_remove(struct platform_device *pdev)
+-static int aspeed_hace_remove(struct platform_device *pdev)
++static void aspeed_hace_remove(struct platform_device *pdev)
  {
- 	struct aspeed_acry_dev *acry_dev = platform_get_drvdata(pdev);
+ 	struct aspeed_hace_dev *hace_dev = platform_get_drvdata(pdev);
+ 	struct aspeed_engine_crypto *crypto_engine = &hace_dev->crypto_engine;
+@@ -260,15 +260,13 @@ static int aspeed_hace_remove(struct platform_device *pdev)
+ 	tasklet_kill(&crypto_engine->done_task);
  
-@@ -802,15 +802,13 @@ static int aspeed_acry_remove(struct platform_device *pdev)
- 	crypto_engine_exit(acry_dev->crypt_engine_rsa);
- 	tasklet_kill(&acry_dev->done_task);
- 	clk_disable_unprepare(acry_dev->clk);
+ 	clk_disable_unprepare(hace_dev->clk);
 -
 -	return 0;
  }
  
- MODULE_DEVICE_TABLE(of, aspeed_acry_of_matches);
+ MODULE_DEVICE_TABLE(of, aspeed_hace_of_matches);
  
- static struct platform_driver aspeed_acry_driver = {
- 	.probe		= aspeed_acry_probe,
--	.remove		= aspeed_acry_remove,
-+	.remove_new	= aspeed_acry_remove,
- 	.driver		= {
+ static struct platform_driver aspeed_hace_driver = {
+ 	.probe		= aspeed_hace_probe,
+-	.remove		= aspeed_hace_remove,
++	.remove_new	= aspeed_hace_remove,
+ 	.driver         = {
  		.name   = KBUILD_MODNAME,
- 		.of_match_table = aspeed_acry_of_matches,
+ 		.of_match_table = aspeed_hace_of_matches,
 -- 
 2.42.0
 
