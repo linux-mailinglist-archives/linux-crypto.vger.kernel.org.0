@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E807D21EE
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229667D21E1
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbjJVI2A (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Oct 2023 04:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
+        id S231649AbjJVITI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Oct 2023 04:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbjJVISw (ORCPT
+        with ESMTP id S231678AbjJVISw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sun, 22 Oct 2023 04:18:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EE8E8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00AD13E
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FF4DC43391
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53E5AC433CB
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697962728;
-        bh=Td3d6l7m3zuj0gnpYJn8/IDiT4PZWc87JUJezkxaNcs=;
+        bh=TVqrhoCS2w7qxwVjScgFIrOOQ/TNDwB8i4iW4nh1QUE=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=XB9h154IBaHTACJrYblyznomhCcrG4h+OTpFJv4n5i+HUk8Bg7Ri3JwtIQijdvQGr
-         0h5EZqK5xbelAlqY+pRTL8ZAm+L+/fuBhQFzRpEEFGVrHD4Vrqm2u4Yzoq/JgDpK73
-         8r2m8LHJdTK5/Q/pEiw198jnbRZNFhsreEMlhbIPSv1wMsTyfP/3GlxW/7HI+PBnPW
-         ttjCdBqimyEGkhhO7dmOoukbPqvQ2KC+iIm7fPDjP7uQXd7Y3k5Og5SQVHtnLgpfvD
-         KwQVlETplnTs3y+x67d2zvhdyXf+MWJ0KFDKJawXew5w89fMseuo5S1gbIgX+JaDIF
-         +6bNdEfZJOVVA==
+        b=OjC1btectAeIxjsAkUzgd4EchM0EWoMwYfu5Vo1zOW+NdbeaI3NRpLMnuKfEccuvk
+         mFQ1QXiAJP4fQeMUgkBzgU9Zw2cmN5kYfUCEeWDvSJdDLyq6tAS5PqPl6auUQZsFuu
+         dmB5nXMAuckUHZgmJ/LqfqdKW589gvTz9z/6LW3aM4M66BaWelJ+H3Dfc/AS0thK2o
+         3P067pgZA2sVg2ScqEmI6A1FHBtfmSSPDKnH8i5BPmz/9SpxKk6VNwXOK7FWabvL2w
+         rk5xv9ASY9iQEmz7mhLCKogXPdTiQ6yUED0ubes8vSvifxbUEgtqTrmf5oSuZCyCRa
+         IMUUv6jYwpt9Q==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 21/30] crypto: chacha20poly1305 - stop using alignmask of ahash
-Date:   Sun, 22 Oct 2023 01:10:51 -0700
-Message-ID: <20231022081100.123613-22-ebiggers@kernel.org>
+Subject: [PATCH 22/30] crypto: gcm - stop using alignmask of ahash
+Date:   Sun, 22 Oct 2023 01:10:52 -0700
+Message-ID: <20231022081100.123613-23-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022081100.123613-1-ebiggers@kernel.org>
 References: <20231022081100.123613-1-ebiggers@kernel.org>
@@ -50,41 +50,41 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 From: Eric Biggers <ebiggers@google.com>
 
 Now that the alignmask for ahash and shash algorithms is always 0,
-simplify chachapoly_create() accordingly.
+simplify crypto_gcm_create_common() accordingly.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/chacha20poly1305.c | 3 +--
+ crypto/gcm.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/crypto/chacha20poly1305.c b/crypto/chacha20poly1305.c
-index 0e2e208d98f94..9e4651330852b 100644
---- a/crypto/chacha20poly1305.c
-+++ b/crypto/chacha20poly1305.c
-@@ -603,22 +603,21 @@ static int chachapoly_create(struct crypto_template *tmpl, struct rtattr **tb,
- 		     poly->base.cra_name) >= CRYPTO_MAX_ALG_NAME)
- 		goto err_free_inst;
+diff --git a/crypto/gcm.c b/crypto/gcm.c
+index 91ce6e0e2afc1..84f7c23d14e48 100644
+--- a/crypto/gcm.c
++++ b/crypto/gcm.c
+@@ -622,22 +622,21 @@ static int crypto_gcm_create_common(struct crypto_template *tmpl,
+ 
  	if (snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
- 		     "%s(%s,%s)", name, chacha->base.cra_driver_name,
- 		     poly->base.cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
+ 		     "gcm_base(%s,%s)", ctr->base.cra_driver_name,
+ 		     ghash->base.cra_driver_name) >=
+ 	    CRYPTO_MAX_ALG_NAME)
  		goto err_free_inst;
  
- 	inst->alg.base.cra_priority = (chacha->base.cra_priority +
- 				       poly->base.cra_priority) / 2;
+ 	inst->alg.base.cra_priority = (ghash->base.cra_priority +
+ 				       ctr->base.cra_priority) / 2;
  	inst->alg.base.cra_blocksize = 1;
--	inst->alg.base.cra_alignmask = chacha->base.cra_alignmask |
--				       poly->base.cra_alignmask;
-+	inst->alg.base.cra_alignmask = chacha->base.cra_alignmask;
- 	inst->alg.base.cra_ctxsize = sizeof(struct chachapoly_ctx) +
- 				     ctx->saltlen;
- 	inst->alg.ivsize = ivsize;
- 	inst->alg.chunksize = chacha->chunksize;
- 	inst->alg.maxauthsize = POLY1305_DIGEST_SIZE;
- 	inst->alg.init = chachapoly_init;
- 	inst->alg.exit = chachapoly_exit;
- 	inst->alg.encrypt = chachapoly_encrypt;
- 	inst->alg.decrypt = chachapoly_decrypt;
- 	inst->alg.setkey = chachapoly_setkey;
+-	inst->alg.base.cra_alignmask = ghash->base.cra_alignmask |
+-				       ctr->base.cra_alignmask;
++	inst->alg.base.cra_alignmask = ctr->base.cra_alignmask;
+ 	inst->alg.base.cra_ctxsize = sizeof(struct crypto_gcm_ctx);
+ 	inst->alg.ivsize = GCM_AES_IV_SIZE;
+ 	inst->alg.chunksize = ctr->chunksize;
+ 	inst->alg.maxauthsize = 16;
+ 	inst->alg.init = crypto_gcm_init_tfm;
+ 	inst->alg.exit = crypto_gcm_exit_tfm;
+ 	inst->alg.setkey = crypto_gcm_setkey;
+ 	inst->alg.setauthsize = crypto_gcm_setauthsize;
+ 	inst->alg.encrypt = crypto_gcm_encrypt;
+ 	inst->alg.decrypt = crypto_gcm_decrypt;
 -- 
 2.42.0
 
