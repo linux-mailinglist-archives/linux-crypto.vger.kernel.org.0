@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D9B7D21CE
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C807D21D0
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbjJVISr (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Oct 2023 04:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
+        id S231351AbjJVISs (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Oct 2023 04:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjJVISq (ORCPT
+        with ESMTP id S231356AbjJVISq (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sun, 22 Oct 2023 04:18:46 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E723DDD
-        for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B765C433CA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B94CF
+        for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF3CAC433CC
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697962724;
-        bh=msjZIYn/hX0AcK2md0eJkbgBzivbOxW2vCmrp//6yVA=;
+        bh=Xxrz1naAot6FqR/QVk1c1Y/+JuFedk9AZ4iYx6yrmC4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Z8BCVoRday9FjHk1k0s5ldMfDwu3DKckpz2564exbH12ao85uliBuG76roawa8Yi9
-         TVJ1I1tTqnYy1CNisDWFHL47ogVGgJJrr01HaA/r6hmOr6bLpm0S6kqIpeYLp2AkvH
-         kmbnM0t96CFr9hGnX+CBut/xSkqa9228/vZoIrZXFs8UVmhl9vPHESZQTDLqEigfWT
-         VOeyyq0/nWN/TIIIBhqMnklm/ykT0SLDxVDhmgeQp9+tHfVew5e/Affps5kg04HiDg
-         2KKlvVH/bor66/kxRMw7wu4y8DRMqg/LLr6iMtrGXxpqSk+iQA+Bb6tNsk1kXfstZU
-         AynWC+cyNBkZw==
+        b=ospeMnJxYdMITQ6sRmkoqkaRkYQ+AZUGlYevXnqodQVbfWvC1TMrJ5wJgqoUu4AXe
+         OXGuFQX5PJ4CSF3Bkxn6I486sBMqzfq7CUybSt2ESJToQgaoBo/gLEmSaqfOqMKrZG
+         LpUbnzVIWFeWt39mMq4XVwZGsivaCHOkGnMpnHN+VPMsJBJlSt4fcVMsAMEaxoYMOJ
+         TSaVlk2EcIbxEcZvEH3oGQcjqZ1HQRiWXiQ03HsXwEW2bebmsN85YnyIADDXs+syyV
+         LMwODyUfa3aQ3jWeIVU7y8RoY3QEKVVXOm3UBfGG7anJxvVGe+uC2nsrP+KdQsqntG
+         i+RsW2po/pqaA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 04/30] crypto: sun8i-ss - remove unnecessary alignmask for ahashes
-Date:   Sun, 22 Oct 2023 01:10:34 -0700
-Message-ID: <20231022081100.123613-5-ebiggers@kernel.org>
+Subject: [PATCH 05/30] crypto: atmel - remove unnecessary alignmask for ahashes
+Date:   Sun, 22 Oct 2023 01:10:35 -0700
+Message-ID: <20231022081100.123613-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022081100.123613-1-ebiggers@kernel.org>
 References: <20231022081100.123613-1-ebiggers@kernel.org>
@@ -56,130 +56,51 @@ for ahash rarely actually need it.  When they do, it's easily fixable,
 especially considering that these buffers cannot be used for DMA.
 
 In preparation for removing alignmask support from ahash, this patch
-makes the sun8i-ss driver no longer use it.  This driver didn't actually
-rely on it; it only writes to the result buffer in sun8i_ss_hash_run(),
-simply using memcpy().  And sun8i_ss_hmac_setkey() does not assume any
-alignment for the key buffer.
+makes the atmel driver no longer use it.  This driver didn't actually
+rely on it; it only writes to the result buffer in
+atmel_sha_copy_ready_hash(), simply using memcpy().  And this driver
+didn't set an alignmask for any keyed hash algorithms, so the key buffer
+need not be considered.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/crypto/atmel-sha.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index 4a9587285c04f..2532d2abc4f7e 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -315,21 +315,20 @@ static struct sun8i_ss_alg_template ss_algs[] = {
- 		.import = sun8i_ss_hash_import,
- 		.init_tfm = sun8i_ss_hash_init_tfm,
- 		.exit_tfm = sun8i_ss_hash_exit_tfm,
- 		.halg = {
- 			.digestsize = MD5_DIGEST_SIZE,
- 			.statesize = sizeof(struct md5_state),
- 			.base = {
- 				.cra_name = "md5",
- 				.cra_driver_name = "md5-sun8i-ss",
- 				.cra_priority = 300,
--				.cra_alignmask = 3,
- 				.cra_flags = CRYPTO_ALG_TYPE_AHASH |
- 					CRYPTO_ALG_ASYNC |
- 					CRYPTO_ALG_NEED_FALLBACK,
- 				.cra_blocksize = MD5_HMAC_BLOCK_SIZE,
- 				.cra_ctxsize = sizeof(struct sun8i_ss_hash_tfm_ctx),
- 				.cra_module = THIS_MODULE,
- 			}
- 		}
- 	},
- 	.alg.hash.op = {
-@@ -348,21 +347,20 @@ static struct sun8i_ss_alg_template ss_algs[] = {
- 		.import = sun8i_ss_hash_import,
- 		.init_tfm = sun8i_ss_hash_init_tfm,
- 		.exit_tfm = sun8i_ss_hash_exit_tfm,
- 		.halg = {
- 			.digestsize = SHA1_DIGEST_SIZE,
- 			.statesize = sizeof(struct sha1_state),
- 			.base = {
- 				.cra_name = "sha1",
- 				.cra_driver_name = "sha1-sun8i-ss",
- 				.cra_priority = 300,
--				.cra_alignmask = 3,
- 				.cra_flags = CRYPTO_ALG_TYPE_AHASH |
- 					CRYPTO_ALG_ASYNC |
- 					CRYPTO_ALG_NEED_FALLBACK,
- 				.cra_blocksize = SHA1_BLOCK_SIZE,
- 				.cra_ctxsize = sizeof(struct sun8i_ss_hash_tfm_ctx),
- 				.cra_module = THIS_MODULE,
- 			}
- 		}
- 	},
- 	.alg.hash.op = {
-@@ -381,21 +379,20 @@ static struct sun8i_ss_alg_template ss_algs[] = {
- 		.import = sun8i_ss_hash_import,
- 		.init_tfm = sun8i_ss_hash_init_tfm,
- 		.exit_tfm = sun8i_ss_hash_exit_tfm,
- 		.halg = {
- 			.digestsize = SHA224_DIGEST_SIZE,
- 			.statesize = sizeof(struct sha256_state),
- 			.base = {
- 				.cra_name = "sha224",
- 				.cra_driver_name = "sha224-sun8i-ss",
- 				.cra_priority = 300,
--				.cra_alignmask = 3,
- 				.cra_flags = CRYPTO_ALG_TYPE_AHASH |
- 					CRYPTO_ALG_ASYNC |
- 					CRYPTO_ALG_NEED_FALLBACK,
- 				.cra_blocksize = SHA224_BLOCK_SIZE,
- 				.cra_ctxsize = sizeof(struct sun8i_ss_hash_tfm_ctx),
- 				.cra_module = THIS_MODULE,
- 			}
- 		}
- 	},
- 	.alg.hash.op = {
-@@ -414,21 +411,20 @@ static struct sun8i_ss_alg_template ss_algs[] = {
- 		.import = sun8i_ss_hash_import,
- 		.init_tfm = sun8i_ss_hash_init_tfm,
- 		.exit_tfm = sun8i_ss_hash_exit_tfm,
- 		.halg = {
- 			.digestsize = SHA256_DIGEST_SIZE,
- 			.statesize = sizeof(struct sha256_state),
- 			.base = {
- 				.cra_name = "sha256",
- 				.cra_driver_name = "sha256-sun8i-ss",
- 				.cra_priority = 300,
--				.cra_alignmask = 3,
- 				.cra_flags = CRYPTO_ALG_TYPE_AHASH |
- 					CRYPTO_ALG_ASYNC |
- 					CRYPTO_ALG_NEED_FALLBACK,
- 				.cra_blocksize = SHA256_BLOCK_SIZE,
- 				.cra_ctxsize = sizeof(struct sun8i_ss_hash_tfm_ctx),
- 				.cra_module = THIS_MODULE,
- 			}
- 		}
- 	},
- 	.alg.hash.op = {
-@@ -448,21 +444,20 @@ static struct sun8i_ss_alg_template ss_algs[] = {
- 		.init_tfm = sun8i_ss_hash_init_tfm,
- 		.exit_tfm = sun8i_ss_hash_exit_tfm,
- 		.setkey = sun8i_ss_hmac_setkey,
- 		.halg = {
- 			.digestsize = SHA1_DIGEST_SIZE,
- 			.statesize = sizeof(struct sha1_state),
- 			.base = {
- 				.cra_name = "hmac(sha1)",
- 				.cra_driver_name = "hmac-sha1-sun8i-ss",
- 				.cra_priority = 300,
--				.cra_alignmask = 3,
- 				.cra_flags = CRYPTO_ALG_TYPE_AHASH |
- 					CRYPTO_ALG_ASYNC |
- 					CRYPTO_ALG_NEED_FALLBACK,
- 				.cra_blocksize = SHA1_BLOCK_SIZE,
- 				.cra_ctxsize = sizeof(struct sun8i_ss_hash_tfm_ctx),
- 				.cra_module = THIS_MODULE,
- 			}
- 		}
- 	},
- 	.alg.hash.op = {
+diff --git a/drivers/crypto/atmel-sha.c b/drivers/crypto/atmel-sha.c
+index 3622120add625..6cd3fc493027a 100644
+--- a/drivers/crypto/atmel-sha.c
++++ b/drivers/crypto/atmel-sha.c
+@@ -1293,29 +1293,27 @@ static struct ahash_alg sha_224_alg = {
+ 	.halg.base.cra_blocksize	= SHA224_BLOCK_SIZE,
+ 
+ 	.halg.digestsize = SHA224_DIGEST_SIZE,
+ };
+ 
+ static struct ahash_alg sha_384_512_algs[] = {
+ {
+ 	.halg.base.cra_name		= "sha384",
+ 	.halg.base.cra_driver_name	= "atmel-sha384",
+ 	.halg.base.cra_blocksize	= SHA384_BLOCK_SIZE,
+-	.halg.base.cra_alignmask	= 0x3,
+ 
+ 	.halg.digestsize = SHA384_DIGEST_SIZE,
+ },
+ {
+ 	.halg.base.cra_name		= "sha512",
+ 	.halg.base.cra_driver_name	= "atmel-sha512",
+ 	.halg.base.cra_blocksize	= SHA512_BLOCK_SIZE,
+-	.halg.base.cra_alignmask	= 0x3,
+ 
+ 	.halg.digestsize = SHA512_DIGEST_SIZE,
+ },
+ };
+ 
+ static void atmel_sha_queue_task(unsigned long data)
+ {
+ 	struct atmel_sha_dev *dd = (struct atmel_sha_dev *)data;
+ 
+ 	atmel_sha_handle_queue(dd, NULL);
 -- 
 2.42.0
 
