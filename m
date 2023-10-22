@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FE67D21DE
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE687D21DF
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjJVITD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Oct 2023 04:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        id S231785AbjJVITI (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Oct 2023 04:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjJVISw (ORCPT
+        with ESMTP id S231649AbjJVISw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sun, 22 Oct 2023 04:18:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C9F124
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9720119
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76AFEC43395
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9F0AC43397
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697962727;
-        bh=ADeN/ZcvSOtk0xzds/Rjes9cMXM9bWKAFg7ZICtWoM8=;
+        bh=zfSB2jxlCfaaPSwCofpCsy6YtucmgVuL9a+n18n5RTE=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=hZmDwLHuWTchSz0dU+RKvEja8fZQDN4a+LyPmzn2k3XsRsNqzC5CTgJTknvsuImlw
-         D/hG2I2XOmmbSaxaLQZ6/FrE7ckPtknEG3+u+UrLCknJJA0OPVtKg49Irqh1dHw1Ts
-         YSZ2RhBB6Cqm9suQtKiihL5GkztkD9iztjMkOg7MDHIlpa3pHs8Vc7yTrPv2bJLLfz
-         F0gcitYXOQkcfy244Str7LnQ3sLH5LYOEMwFelPEwZMLp2L+cr5AqmKtoybKuVtRhX
-         intThyYDDXyYoGkd8apaTXgrrC9j9d6tV16tdczDq0vqGGe03IMneTLxl+LxSkJ5Nk
-         M/0d8ejQ4dy2A==
+        b=PBV1rRpG0UIUCqZ2R/Rp5Q25boqNg37IrijTsyUbbDPQIct1wAoZA9Ud6YM7zYcyj
+         YGi/7Woe3l5K9paFSi60xuLijLAjHIoF3zoTlZYbJWmfZHcbjGH/MxdcgwXULkTyG2
+         umPqFDDu1hK0yKtkp9dLVgVbFwImofCafY0hittihPV5wB7kMlYbtNzPebMi2IQ806
+         fMxmNM+I619XUnAtJ21du8kUBw77eP7vqn9AXV1BjvHYHMse28I8YgOoxLnla5ex5n
+         tScj1xfur8DV/24+hJqYF8kKnviFu79JIOILGM+VsT7fTDcxTAnDH8UzDTAaIXJtVP
+         H7OqKxkHOocqA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 18/30] net: ipv4: stop checking crypto_ahash_alignmask
-Date:   Sun, 22 Oct 2023 01:10:48 -0700
-Message-ID: <20231022081100.123613-19-ebiggers@kernel.org>
+Subject: [PATCH 19/30] net: ipv6: stop checking crypto_ahash_alignmask
+Date:   Sun, 22 Oct 2023 01:10:49 -0700
+Message-ID: <20231022081100.123613-20-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022081100.123613-1-ebiggers@kernel.org>
 References: <20231022081100.123613-1-ebiggers@kernel.org>
@@ -51,18 +51,18 @@ From: Eric Biggers <ebiggers@google.com>
 
 Now that the alignmask for ahash and shash algorithms is always 0,
 crypto_ahash_alignmask() always returns 0 and will be removed.  In
-preparation for this, stop checking crypto_ahash_alignmask() in ah4.c.
+preparation for this, stop checking crypto_ahash_alignmask() in ah6.c.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- net/ipv4/ah4.c | 17 +++++++----------
+ net/ipv6/ah6.c | 17 +++++++----------
  1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/net/ipv4/ah4.c b/net/ipv4/ah4.c
-index bc0f968c5d5b4..a2e6e1fdf82be 100644
---- a/net/ipv4/ah4.c
-+++ b/net/ipv4/ah4.c
-@@ -20,43 +20,40 @@ struct ah_skb_cb {
+diff --git a/net/ipv6/ah6.c b/net/ipv6/ah6.c
+index 56f9282ec5df4..2016e90e6e1d2 100644
+--- a/net/ipv6/ah6.c
++++ b/net/ipv6/ah6.c
+@@ -44,23 +44,21 @@ struct ah_skb_cb {
  	void *tmp;
  };
  
@@ -87,8 +87,13 @@ index bc0f968c5d5b4..a2e6e1fdf82be 100644
  
  	return kmalloc(len, GFP_ATOMIC);
  }
+@@ -68,24 +66,23 @@ static void *ah_alloc_tmp(struct crypto_ahash *ahash, int nfrags,
+ static inline struct tmp_ext *ah_tmp_ext(void *base)
+ {
+ 	return base + IPV6HDR_BASELEN;
+ }
  
- static inline u8 *ah_tmp_auth(void *tmp, unsigned int offset)
+ static inline u8 *ah_tmp_auth(u8 *tmp, unsigned int offset)
  {
  	return tmp + offset;
  }
@@ -109,63 +114,63 @@ index bc0f968c5d5b4..a2e6e1fdf82be 100644
  	req = (void *)PTR_ALIGN(icv + crypto_ahash_digestsize(ahash),
  				crypto_tfm_ctx_alignment());
  
-@@ -122,21 +119,21 @@ static void ah_output_done(void *data, int err)
- 	u8 *icv;
- 	struct iphdr *iph;
- 	struct sk_buff *skb = data;
- 	struct xfrm_state *x = skb_dst(skb)->xfrm;
- 	struct ah_data *ahp = x->data;
- 	struct iphdr *top_iph = ip_hdr(skb);
+@@ -292,21 +289,21 @@ static void ah6_output_done(void *data, int err)
+ 	struct ipv6hdr *top_iph = ipv6_hdr(skb);
  	struct ip_auth_hdr *ah = ip_auth_hdr(skb);
- 	int ihl = ip_hdrlen(skb);
+ 	struct tmp_ext *iph_ext;
  
- 	iph = AH_SKB_CB(skb)->tmp;
--	icv = ah_tmp_icv(ahp->ahash, iph, ihl);
-+	icv = ah_tmp_icv(iph, ihl);
+ 	extlen = skb_network_header_len(skb) - sizeof(struct ipv6hdr);
+ 	if (extlen)
+ 		extlen += sizeof(*iph_ext);
+ 
+ 	iph_base = AH_SKB_CB(skb)->tmp;
+ 	iph_ext = ah_tmp_ext(iph_base);
+-	icv = ah_tmp_icv(ahp->ahash, iph_ext, extlen);
++	icv = ah_tmp_icv(iph_ext, extlen);
+ 
  	memcpy(ah->auth_data, icv, ahp->icv_trunc_len);
+ 	memcpy(top_iph, iph_base, IPV6HDR_BASELEN);
  
- 	top_iph->tos = iph->tos;
- 	top_iph->ttl = iph->ttl;
- 	top_iph->frag_off = iph->frag_off;
- 	if (top_iph->ihl != 5) {
- 		top_iph->daddr = iph->daddr;
- 		memcpy(top_iph+1, iph+1, top_iph->ihl*4 - sizeof(struct iphdr));
- 	}
- 
-@@ -175,21 +172,21 @@ static int ah_output(struct xfrm_state *x, struct sk_buff *skb)
- 
- 	if (x->props.flags & XFRM_STATE_ESN) {
- 		sglists = 1;
+ 	if (extlen) {
+ #if IS_ENABLED(CONFIG_IPV6_MIP6)
+ 		memcpy(&top_iph->saddr, iph_ext, extlen);
+ #else
+ 		memcpy(&top_iph->daddr, iph_ext, extlen);
+ #endif
+@@ -355,21 +352,21 @@ static int ah6_output(struct xfrm_state *x, struct sk_buff *skb)
  		seqhi_len = sizeof(*seqhi);
  	}
  	err = -ENOMEM;
- 	iph = ah_alloc_tmp(ahash, nfrags + sglists, ihl + seqhi_len);
- 	if (!iph)
+ 	iph_base = ah_alloc_tmp(ahash, nfrags + sglists, IPV6HDR_BASELEN +
+ 				extlen + seqhi_len);
+ 	if (!iph_base)
  		goto out;
- 	seqhi = (__be32 *)((char *)iph + ihl);
+ 
+ 	iph_ext = ah_tmp_ext(iph_base);
+ 	seqhi = (__be32 *)((char *)iph_ext + extlen);
 -	icv = ah_tmp_icv(ahash, seqhi, seqhi_len);
 +	icv = ah_tmp_icv(seqhi, seqhi_len);
  	req = ah_tmp_req(ahash, icv);
  	sg = ah_req_sg(ahash, req);
  	seqhisg = sg + nfrags;
  
+ 	ah = ip_auth_hdr(skb);
  	memset(ah->auth_data, 0, ahp->icv_trunc_len);
  
- 	top_iph = ip_hdr(skb);
+ 	top_iph = ipv6_hdr(skb);
+ 	top_iph->payload_len = htons(skb->len - sizeof(*top_iph));
  
- 	iph->tos = top_iph->tos;
- 	iph->ttl = top_iph->ttl;
-@@ -272,21 +269,21 @@ static void ah_input_done(void *data, int err)
+@@ -461,21 +458,21 @@ static void ah6_input_done(void *data, int err)
  	struct ah_data *ahp = x->data;
  	struct ip_auth_hdr *ah = ip_auth_hdr(skb);
- 	int ihl = ip_hdrlen(skb);
- 	int ah_hlen = (ah->hdrlen + 2) << 2;
+ 	int hdr_len = skb_network_header_len(skb);
+ 	int ah_hlen = ipv6_authlen(ah);
  
  	if (err)
  		goto out;
  
  	work_iph = AH_SKB_CB(skb)->tmp;
- 	auth_data = ah_tmp_auth(work_iph, ihl);
+ 	auth_data = ah_tmp_auth(work_iph, hdr_len);
 -	icv = ah_tmp_icv(ahp->ahash, auth_data, ahp->icv_trunc_len);
 +	icv = ah_tmp_icv(auth_data, ahp->icv_trunc_len);
  
@@ -176,31 +181,31 @@ index bc0f968c5d5b4..a2e6e1fdf82be 100644
  	err = ah->nexthdr;
  
  	skb->network_header += ah_hlen;
- 	memcpy(skb_network_header(skb), work_iph, ihl);
- 	__skb_pull(skb, ah_hlen + ihl);
-@@ -367,21 +364,21 @@ static int ah_input(struct xfrm_state *x, struct sk_buff *skb)
+ 	memcpy(skb_network_header(skb), work_iph, hdr_len);
+ 	__skb_pull(skb, ah_hlen + hdr_len);
+@@ -569,21 +566,21 @@ static int ah6_input(struct xfrm_state *x, struct sk_buff *skb)
  
- 	work_iph = ah_alloc_tmp(ahash, nfrags + sglists, ihl +
+ 	work_iph = ah_alloc_tmp(ahash, nfrags + sglists, hdr_len +
  				ahp->icv_trunc_len + seqhi_len);
  	if (!work_iph) {
  		err = -ENOMEM;
  		goto out;
  	}
  
- 	seqhi = (__be32 *)((char *)work_iph + ihl);
- 	auth_data = ah_tmp_auth(seqhi, seqhi_len);
--	icv = ah_tmp_icv(ahash, auth_data, ahp->icv_trunc_len);
-+	icv = ah_tmp_icv(auth_data, ahp->icv_trunc_len);
+ 	auth_data = ah_tmp_auth((u8 *)work_iph, hdr_len);
+ 	seqhi = (__be32 *)(auth_data + ahp->icv_trunc_len);
+-	icv = ah_tmp_icv(ahash, seqhi, seqhi_len);
++	icv = ah_tmp_icv(seqhi, seqhi_len);
  	req = ah_tmp_req(ahash, icv);
  	sg = ah_req_sg(ahash, req);
  	seqhisg = sg + nfrags;
  
- 	memcpy(work_iph, iph, ihl);
+ 	memcpy(work_iph, ip6h, hdr_len);
  	memcpy(auth_data, ah->auth_data, ahp->icv_trunc_len);
  	memset(ah->auth_data, 0, ahp->icv_trunc_len);
  
- 	iph->ttl = 0;
- 	iph->tos = 0;
+ 	err = ipv6_clear_mutable_options(ip6h, hdr_len, XFRM_POLICY_IN);
+ 	if (err)
 -- 
 2.42.0
 
