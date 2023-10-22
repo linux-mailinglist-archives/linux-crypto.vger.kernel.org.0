@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2867D21E0
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0BD7D21E3
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjJVITJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Oct 2023 04:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        id S231853AbjJVITN (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Oct 2023 04:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbjJVISw (ORCPT
+        with ESMTP id S231696AbjJVISw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sun, 22 Oct 2023 04:18:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0261A3
-        for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88496C433CA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572E2D52
+        for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD22FC433D9
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697962728;
-        bh=G3cmf2bNwDRiorWVX3Gfw9Cf5KsHz9Me8snVNz2tvck=;
+        bh=Jyn1t2greDYzdz7O1r+I/8upwMzEU2EOZa2ql2m36SU=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=SsGmdPrzzxa2KkLJXa0WkXD9qOJeOAygHy+rvtFOsIe0rKzSUG1dHv846XAB87PQR
-         21wZt9cxbBIUIvVp+URF2qfUWWBEigSm2FCA6Y6THeDBCbLRjrDX9YCXQt9a1SW1+Y
-         cHnaCW7GC+SXCDMZkvp9m+IUvZBqKK8SK5QkKMugGAgdqOLV1Plbp2cnUzn4mnNcJF
-         7G8QpnQFHN5l6kfVTKFdzzwC2qsbwAJx+sDh26BGsDkHQtclGfqQzuaTNp2A7YyqCX
-         xjPnhw8MWXnm13c+IGkbWK2+bfwJktTLNjyPzHWeR4/n33J8G0qh71sGifLu8FgBEw
-         +FJrFKuYVX27w==
+        b=cO6D7C3jr/jsnZEnRO3A2HnkD0kHQT928PblRT4aqi7RsMdAwxsEg5wi2rp74RJjr
+         8rNiVqDNHG7Qjy6YRCkZ4RoqFy34vNiCdSxBIcTObYr8ssUoRI6qada44djgDS3fqG
+         GWKTBLqi3aW47+u1IpOblRtEQPgX0CyvtepsBZ8lkqnTL39FrAYkX8G80gtBf0NaoT
+         0y6eElC/oz/hC4nbKvj8lZuxmLM8cpJtnRHbkXqBfYvNOH5guTtexoK1PMYtKGAzAF
+         KSueuPBAiqBNpNHfMKH2OCzaHInMC7kMQrHlEkpeG6EvLWNrdTmboAYGtsLD+Io+ci
+         XgyD6hrFBAqLw==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 23/30] crypto: ahash - remove crypto_ahash_alignmask
-Date:   Sun, 22 Oct 2023 01:10:53 -0700
-Message-ID: <20231022081100.123613-24-ebiggers@kernel.org>
+Subject: [PATCH 24/30] crypto: ahash - remove struct ahash_request_priv
+Date:   Sun, 22 Oct 2023 01:10:54 -0700
+Message-ID: <20231022081100.123613-25-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022081100.123613-1-ebiggers@kernel.org>
 References: <20231022081100.123613-1-ebiggers@kernel.org>
@@ -49,46 +49,46 @@ X-Mailing-List: linux-crypto@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-crypto_ahash_alignmask() no longer has any callers, and it always
-returns 0 now that neither ahash nor shash algorithms support nonzero
-alignmasks anymore.  Therefore, remove it.
+struct ahash_request_priv is unused, so remove it.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/crypto/hash.h | 6 ------
- 1 file changed, 6 deletions(-)
+ crypto/ahash.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index d3a380ae894ad..b00a4a36a8ec3 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -335,26 +335,20 @@ int crypto_has_ahash(const char *alg_name, u32 type, u32 mask);
- static inline const char *crypto_ahash_alg_name(struct crypto_ahash *tfm)
- {
- 	return crypto_tfm_alg_name(crypto_ahash_tfm(tfm));
- }
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index 744fd3b8ea258..556c950100936 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -18,28 +18,20 @@
+ #include <linux/seq_file.h>
+ #include <linux/string.h>
+ #include <net/netlink.h>
  
- static inline const char *crypto_ahash_driver_name(struct crypto_ahash *tfm)
- {
- 	return crypto_tfm_alg_driver_name(crypto_ahash_tfm(tfm));
- }
+ #include "hash.h"
  
--static inline unsigned int crypto_ahash_alignmask(
--	struct crypto_ahash *tfm)
--{
--	return crypto_tfm_alg_alignmask(crypto_ahash_tfm(tfm));
--}
+ #define CRYPTO_ALG_TYPE_AHASH_MASK	0x0000000e
+ 
+ static const struct crypto_type crypto_ahash_type;
+ 
+-struct ahash_request_priv {
+-	crypto_completion_t complete;
+-	void *data;
+-	u8 *result;
+-	u32 flags;
+-	void *ubuf[] CRYPTO_MINALIGN_ATTR;
+-};
 -
- /**
-  * crypto_ahash_blocksize() - obtain block size for cipher
-  * @tfm: cipher handle
-  *
-  * The block size for the message digest cipher referenced with the cipher
-  * handle is returned.
-  *
-  * Return: block size of cipher
-  */
- static inline unsigned int crypto_ahash_blocksize(struct crypto_ahash *tfm)
+ static int hash_walk_next(struct crypto_hash_walk *walk)
+ {
+ 	unsigned int offset = walk->offset;
+ 	unsigned int nbytes = min(walk->entrylen,
+ 				  ((unsigned int)(PAGE_SIZE)) - offset);
+ 
+ 	walk->data = kmap_local_page(walk->pg);
+ 	walk->data += offset;
+ 	walk->entrylen -= nbytes;
+ 	return nbytes;
 -- 
 2.42.0
 
