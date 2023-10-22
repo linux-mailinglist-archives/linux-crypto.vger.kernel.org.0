@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE867D21D9
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FE67D21DE
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbjJVIS7 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Oct 2023 04:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
+        id S231631AbjJVITD (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Oct 2023 04:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbjJVISt (ORCPT
+        with ESMTP id S231445AbjJVISw (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 22 Oct 2023 04:18:49 -0400
+        Sun, 22 Oct 2023 04:18:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA8AF4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C9F124
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41E47C433D9
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76AFEC43395
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697962727;
-        bh=rj/ALPreHUuVA2MtLaC3G7UlQAWXRyVrXCMUiaGremU=;
+        bh=ADeN/ZcvSOtk0xzds/Rjes9cMXM9bWKAFg7ZICtWoM8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=qRzbTJSQqIpLo4BesaG3aAHqb7rc5MRbNBHwrzobBNBC/e5HiLZMAYJs3h9u6RIb+
-         z8T/FHBPVNUKBoeVpbifnBBdBNzIbOAlObPbLW2D07DvScSHuB/+X0JGByflD9gxKi
-         PnX/JRDB56qHUHy+/tkkag0XXiPfW/IJH1nU8gKFotPOxYvl9Zj4gA30hw13AjvDf4
-         1ewfR8irfAZqbA6dpVl/pvjEKuaq790EzykgI1WJmFojpps9V363CpnxkDqStUYEP6
-         6XWrCwjU0hdwX3h6PzcX4gkDcnxDB8mUcpg1AkSB4uOihm00RsbLQ7g1T7KuU0MjpQ
-         lTvfwCq2n1owg==
+        b=hZmDwLHuWTchSz0dU+RKvEja8fZQDN4a+LyPmzn2k3XsRsNqzC5CTgJTknvsuImlw
+         D/hG2I2XOmmbSaxaLQZ6/FrE7ckPtknEG3+u+UrLCknJJA0OPVtKg49Irqh1dHw1Ts
+         YSZ2RhBB6Cqm9suQtKiihL5GkztkD9iztjMkOg7MDHIlpa3pHs8Vc7yTrPv2bJLLfz
+         F0gcitYXOQkcfy244Str7LnQ3sLH5LYOEMwFelPEwZMLp2L+cr5AqmKtoybKuVtRhX
+         intThyYDDXyYoGkd8apaTXgrrC9j9d6tV16tdczDq0vqGGe03IMneTLxl+LxSkJ5Nk
+         M/0d8ejQ4dy2A==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 17/30] crypto: testmgr - stop checking crypto_ahash_alignmask
-Date:   Sun, 22 Oct 2023 01:10:47 -0700
-Message-ID: <20231022081100.123613-18-ebiggers@kernel.org>
+Subject: [PATCH 18/30] net: ipv4: stop checking crypto_ahash_alignmask
+Date:   Sun, 22 Oct 2023 01:10:48 -0700
+Message-ID: <20231022081100.123613-19-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022081100.123613-1-ebiggers@kernel.org>
 References: <20231022081100.123613-1-ebiggers@kernel.org>
@@ -51,113 +51,156 @@ From: Eric Biggers <ebiggers@google.com>
 
 Now that the alignmask for ahash and shash algorithms is always 0,
 crypto_ahash_alignmask() always returns 0 and will be removed.  In
-preparation for this, stop checking crypto_ahash_alignmask() in testmgr.
-
-As a result of this change,
-test_sg_division::offset_relative_to_alignmask and
-testvec_config::key_offset_relative_to_alignmask no longer have any
-effect on ahash (or shash) algorithms.  Therefore, also stop setting
-these flags in default_hash_testvec_configs[].
+preparation for this, stop checking crypto_ahash_alignmask() in ah4.c.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/testmgr.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ net/ipv4/ah4.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 48a0929c7a158..335449a27f757 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -401,31 +401,29 @@ static const struct testvec_config default_hash_testvec_configs[] = {
- 	}, {
- 		.name = "digest aligned buffer",
- 		.src_divs = { { .proportion_of_total = 10000 } },
- 		.finalization_type = FINALIZATION_TYPE_DIGEST,
- 	}, {
- 		.name = "init+update+final misaligned buffer",
- 		.src_divs = { { .proportion_of_total = 10000, .offset = 1 } },
- 		.finalization_type = FINALIZATION_TYPE_FINAL,
- 		.key_offset = 1,
- 	}, {
--		.name = "digest buffer aligned only to alignmask",
-+		.name = "digest misaligned buffer",
- 		.src_divs = {
- 			{
- 				.proportion_of_total = 10000,
- 				.offset = 1,
--				.offset_relative_to_alignmask = true,
- 			},
- 		},
- 		.finalization_type = FINALIZATION_TYPE_DIGEST,
- 		.key_offset = 1,
--		.key_offset_relative_to_alignmask = true,
- 	}, {
- 		.name = "init+update+update+final two even splits",
- 		.src_divs = {
- 			{ .proportion_of_total = 5000 },
- 			{
- 				.proportion_of_total = 5000,
- 				.flush_type = FLUSH_TYPE_FLUSH,
- 			},
- 		},
- 		.finalization_type = FINALIZATION_TYPE_FINAL,
-@@ -1451,54 +1449,53 @@ static int check_nonfinal_ahash_op(const char *op, int err,
+diff --git a/net/ipv4/ah4.c b/net/ipv4/ah4.c
+index bc0f968c5d5b4..a2e6e1fdf82be 100644
+--- a/net/ipv4/ah4.c
++++ b/net/ipv4/ah4.c
+@@ -20,43 +20,40 @@ struct ah_skb_cb {
+ 	void *tmp;
+ };
  
- /* Test one hash test vector in one configuration, using the ahash API */
- static int test_ahash_vec_cfg(const struct hash_testvec *vec,
- 			      const char *vec_name,
- 			      const struct testvec_config *cfg,
- 			      struct ahash_request *req,
- 			      struct test_sglist *tsgl,
- 			      u8 *hashstate)
+ #define AH_SKB_CB(__skb) ((struct ah_skb_cb *)&((__skb)->cb[0]))
+ 
+ static void *ah_alloc_tmp(struct crypto_ahash *ahash, int nfrags,
+ 			  unsigned int size)
  {
- 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
--	const unsigned int alignmask = crypto_ahash_alignmask(tfm);
- 	const unsigned int digestsize = crypto_ahash_digestsize(tfm);
- 	const unsigned int statesize = crypto_ahash_statesize(tfm);
- 	const char *driver = crypto_ahash_driver_name(tfm);
- 	const u32 req_flags = CRYPTO_TFM_REQ_MAY_BACKLOG | cfg->req_flags;
- 	const struct test_sg_division *divs[XBUFSIZE];
- 	DECLARE_CRYPTO_WAIT(wait);
- 	unsigned int i;
- 	struct scatterlist *pending_sgl;
- 	unsigned int pending_len;
- 	u8 result[HASH_MAX_DIGESTSIZE + TESTMGR_POISON_LEN];
- 	int err;
+ 	unsigned int len;
  
- 	/* Set the key, if specified */
- 	if (vec->ksize) {
- 		err = do_setkey(crypto_ahash_setkey, tfm, vec->key, vec->ksize,
--				cfg, alignmask);
-+				cfg, 0);
- 		if (err) {
- 			if (err == vec->setkey_error)
- 				return 0;
- 			pr_err("alg: ahash: %s setkey failed on test vector %s; expected_error=%d, actual_error=%d, flags=%#x\n",
- 			       driver, vec_name, vec->setkey_error, err,
- 			       crypto_ahash_get_flags(tfm));
- 			return err;
- 		}
- 		if (vec->setkey_error) {
- 			pr_err("alg: ahash: %s setkey unexpectedly succeeded on test vector %s; expected_error=%d\n",
- 			       driver, vec_name, vec->setkey_error);
- 			return -EINVAL;
- 		}
+-	len = size + crypto_ahash_digestsize(ahash) +
+-	      (crypto_ahash_alignmask(ahash) &
+-	       ~(crypto_tfm_ctx_alignment() - 1));
++	len = size + crypto_ahash_digestsize(ahash);
+ 
+ 	len = ALIGN(len, crypto_tfm_ctx_alignment());
+ 
+ 	len += sizeof(struct ahash_request) + crypto_ahash_reqsize(ahash);
+ 	len = ALIGN(len, __alignof__(struct scatterlist));
+ 
+ 	len += sizeof(struct scatterlist) * nfrags;
+ 
+ 	return kmalloc(len, GFP_ATOMIC);
+ }
+ 
+ static inline u8 *ah_tmp_auth(void *tmp, unsigned int offset)
+ {
+ 	return tmp + offset;
+ }
+ 
+-static inline u8 *ah_tmp_icv(struct crypto_ahash *ahash, void *tmp,
+-			     unsigned int offset)
++static inline u8 *ah_tmp_icv(void *tmp, unsigned int offset)
+ {
+-	return PTR_ALIGN((u8 *)tmp + offset, crypto_ahash_alignmask(ahash) + 1);
++	return tmp + offset;
+ }
+ 
+ static inline struct ahash_request *ah_tmp_req(struct crypto_ahash *ahash,
+ 					       u8 *icv)
+ {
+ 	struct ahash_request *req;
+ 
+ 	req = (void *)PTR_ALIGN(icv + crypto_ahash_digestsize(ahash),
+ 				crypto_tfm_ctx_alignment());
+ 
+@@ -122,21 +119,21 @@ static void ah_output_done(void *data, int err)
+ 	u8 *icv;
+ 	struct iphdr *iph;
+ 	struct sk_buff *skb = data;
+ 	struct xfrm_state *x = skb_dst(skb)->xfrm;
+ 	struct ah_data *ahp = x->data;
+ 	struct iphdr *top_iph = ip_hdr(skb);
+ 	struct ip_auth_hdr *ah = ip_auth_hdr(skb);
+ 	int ihl = ip_hdrlen(skb);
+ 
+ 	iph = AH_SKB_CB(skb)->tmp;
+-	icv = ah_tmp_icv(ahp->ahash, iph, ihl);
++	icv = ah_tmp_icv(iph, ihl);
+ 	memcpy(ah->auth_data, icv, ahp->icv_trunc_len);
+ 
+ 	top_iph->tos = iph->tos;
+ 	top_iph->ttl = iph->ttl;
+ 	top_iph->frag_off = iph->frag_off;
+ 	if (top_iph->ihl != 5) {
+ 		top_iph->daddr = iph->daddr;
+ 		memcpy(top_iph+1, iph+1, top_iph->ihl*4 - sizeof(struct iphdr));
  	}
  
- 	/* Build the scatterlist for the source data */
--	err = build_hash_sglist(tsgl, vec, cfg, alignmask, divs);
-+	err = build_hash_sglist(tsgl, vec, cfg, 0, divs);
- 	if (err) {
- 		pr_err("alg: ahash: %s: error preparing scatterlist for test vector %s, cfg=\"%s\"\n",
- 		       driver, vec_name, cfg->name);
- 		return err;
+@@ -175,21 +172,21 @@ static int ah_output(struct xfrm_state *x, struct sk_buff *skb)
+ 
+ 	if (x->props.flags & XFRM_STATE_ESN) {
+ 		sglists = 1;
+ 		seqhi_len = sizeof(*seqhi);
+ 	}
+ 	err = -ENOMEM;
+ 	iph = ah_alloc_tmp(ahash, nfrags + sglists, ihl + seqhi_len);
+ 	if (!iph)
+ 		goto out;
+ 	seqhi = (__be32 *)((char *)iph + ihl);
+-	icv = ah_tmp_icv(ahash, seqhi, seqhi_len);
++	icv = ah_tmp_icv(seqhi, seqhi_len);
+ 	req = ah_tmp_req(ahash, icv);
+ 	sg = ah_req_sg(ahash, req);
+ 	seqhisg = sg + nfrags;
+ 
+ 	memset(ah->auth_data, 0, ahp->icv_trunc_len);
+ 
+ 	top_iph = ip_hdr(skb);
+ 
+ 	iph->tos = top_iph->tos;
+ 	iph->ttl = top_iph->ttl;
+@@ -272,21 +269,21 @@ static void ah_input_done(void *data, int err)
+ 	struct ah_data *ahp = x->data;
+ 	struct ip_auth_hdr *ah = ip_auth_hdr(skb);
+ 	int ihl = ip_hdrlen(skb);
+ 	int ah_hlen = (ah->hdrlen + 2) << 2;
+ 
+ 	if (err)
+ 		goto out;
+ 
+ 	work_iph = AH_SKB_CB(skb)->tmp;
+ 	auth_data = ah_tmp_auth(work_iph, ihl);
+-	icv = ah_tmp_icv(ahp->ahash, auth_data, ahp->icv_trunc_len);
++	icv = ah_tmp_icv(auth_data, ahp->icv_trunc_len);
+ 
+ 	err = crypto_memneq(icv, auth_data, ahp->icv_trunc_len) ? -EBADMSG : 0;
+ 	if (err)
+ 		goto out;
+ 
+ 	err = ah->nexthdr;
+ 
+ 	skb->network_header += ah_hlen;
+ 	memcpy(skb_network_header(skb), work_iph, ihl);
+ 	__skb_pull(skb, ah_hlen + ihl);
+@@ -367,21 +364,21 @@ static int ah_input(struct xfrm_state *x, struct sk_buff *skb)
+ 
+ 	work_iph = ah_alloc_tmp(ahash, nfrags + sglists, ihl +
+ 				ahp->icv_trunc_len + seqhi_len);
+ 	if (!work_iph) {
+ 		err = -ENOMEM;
+ 		goto out;
  	}
  
- 	/* Do the actual hashing */
+ 	seqhi = (__be32 *)((char *)work_iph + ihl);
+ 	auth_data = ah_tmp_auth(seqhi, seqhi_len);
+-	icv = ah_tmp_icv(ahash, auth_data, ahp->icv_trunc_len);
++	icv = ah_tmp_icv(auth_data, ahp->icv_trunc_len);
+ 	req = ah_tmp_req(ahash, icv);
+ 	sg = ah_req_sg(ahash, req);
+ 	seqhisg = sg + nfrags;
  
- 	testmgr_poison(req->__ctx, crypto_ahash_reqsize(tfm));
- 	testmgr_poison(result, digestsize + TESTMGR_POISON_LEN);
+ 	memcpy(work_iph, iph, ihl);
+ 	memcpy(auth_data, ah->auth_data, ahp->icv_trunc_len);
+ 	memset(ah->auth_data, 0, ahp->icv_trunc_len);
+ 
+ 	iph->ttl = 0;
+ 	iph->tos = 0;
 -- 
 2.42.0
 
