@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEFC7D21D2
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40007D21D4
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbjJVISu (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Oct 2023 04:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        id S231719AbjJVISx (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Oct 2023 04:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjJVISr (ORCPT
+        with ESMTP id S231461AbjJVISr (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
         Sun, 22 Oct 2023 04:18:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8611F93
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93EBD6
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22633C433C9
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 563EBC433C8
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697962725;
-        bh=fOXBC+AS9/ID2WA3s2FG5UUqbbs3rkcny53YOaMWtOA=;
+        bh=nsEGWgLIg9i79Cc2Ebg5dQoQdi0mU0M4U4wWady7BaU=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=WiC6aYXMgJIj8Z2d6SBHUkWIQWvzz6O2DUqwhudo0SqDitty5uLrFXNCPYQSD51nJ
-         HOt6CT4PEJ811F+cIDYWDv4Jp0jC1L9LVZYnozZnQ7zyuyiuBMFEI78kb0rJ16zDoU
-         TnH6WannUE57Gy4kHVXvSgXK2USwTla+tYlAH/QTsaRe/6UrsGvheZ3QKGObP6rjOV
-         FgvJafsmjrC53dtkDaGlYY0Cnak0oM2Tja3+zB7s1b65X49dloMx2GoFwTkWgonOgR
-         DwKtM3yOSpB/EUyJcW8lMm2sgGVNHvztKZXJrSF84cDyKr7xL/3EbJCg4PhCa3bRQe
-         sKFDac5d+Tdow==
+        b=ZqexhcWw1lK/dgjHYUsfAu3X6h4l0HQFqh9bncy/NxyPq3+6srOTlc7fVYrk73o2A
+         jSNgu3wdVYZ7Sl08pD9qmmgX/aA7cKxol9+8519whluBhgsTvzkt/BDSI6BuxNPkth
+         dMXK1H4blvzy4n4OSAn+Q3legvna3OuyRPclOweKXw1rUZBkP618/u7Fth5F92F7MS
+         fH5ribo8AJvuYhq5KBNcyKA30LvvzMWgpNbC2Dg6t0wroNuW+wcZHhWhfGghMPr/2R
+         azDmFrC6Q6v/qQ6tgAkIFSUS69356FjbcXg6IwPvBkv9gnH6Td/JPQH0nvj7zPWEqi
+         HpTz22UDdN5+w==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 07/30] crypto: mxs-dcp - remove unnecessary alignmask for ahashes
-Date:   Sun, 22 Oct 2023 01:10:37 -0700
-Message-ID: <20231022081100.123613-8-ebiggers@kernel.org>
+Subject: [PATCH 08/30] crypto: s5p-sss - remove unnecessary alignmask for ahashes
+Date:   Sun, 22 Oct 2023 01:10:38 -0700
+Message-ID: <20231022081100.123613-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022081100.123613-1-ebiggers@kernel.org>
 References: <20231022081100.123613-1-ebiggers@kernel.org>
@@ -56,64 +56,111 @@ for ahash rarely actually need it.  When they do, it's easily fixable,
 especially considering that these buffers cannot be used for DMA.
 
 In preparation for removing alignmask support from ahash, this patch
-makes the mxs-dcp driver no longer use it.  This driver didn't actually
-rely on it; it only writes to the result buffer in dcp_sha_req_to_buf(),
-using a bytewise copy.  And this driver only supports unkeyed hash
-algorithms, so the key buffer need not be considered.
+makes the s5p-sss driver no longer use it.  This driver didn't actually
+rely on it; it only writes to the result buffer in
+s5p_hash_copy_result(), simply using memcpy().  And this driver only
+supports unkeyed hash algorithms, so the key buffer need not be
+considered.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- drivers/crypto/mxs-dcp.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/crypto/s5p-sss.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
-index f6b7bce0e6568..5c91b49b0fc71 100644
---- a/drivers/crypto/mxs-dcp.c
-+++ b/drivers/crypto/mxs-dcp.c
-@@ -901,21 +901,20 @@ static struct ahash_alg dcp_sha1_alg = {
- 	.digest	= dcp_sha_digest,
- 	.import = dcp_sha_import,
- 	.export = dcp_sha_export,
- 	.halg	= {
- 		.digestsize	= SHA1_DIGEST_SIZE,
- 		.statesize	= sizeof(struct dcp_export_state),
- 		.base		= {
- 			.cra_name		= "sha1",
- 			.cra_driver_name	= "sha1-dcp",
- 			.cra_priority		= 400,
--			.cra_alignmask		= 63,
- 			.cra_flags		= CRYPTO_ALG_ASYNC,
- 			.cra_blocksize		= SHA1_BLOCK_SIZE,
- 			.cra_ctxsize		= sizeof(struct dcp_async_ctx),
- 			.cra_module		= THIS_MODULE,
- 			.cra_init		= dcp_sha_cra_init,
- 			.cra_exit		= dcp_sha_cra_exit,
- 		},
- 	},
+diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
+index fe8cf9ba8005c..43b840c7b743f 100644
+--- a/drivers/crypto/s5p-sss.c
++++ b/drivers/crypto/s5p-sss.c
+@@ -217,23 +217,20 @@
+ #define HASH_FLAGS_FINAL	1
+ #define HASH_FLAGS_DMA_ACTIVE	2
+ #define HASH_FLAGS_OUTPUT_READY	3
+ #define HASH_FLAGS_DMA_READY	4
+ #define HASH_FLAGS_SGS_COPIED	5
+ #define HASH_FLAGS_SGS_ALLOCED	6
+ 
+ /* HASH HW constants */
+ #define BUFLEN			HASH_BLOCK_SIZE
+ 
+-#define SSS_HASH_DMA_LEN_ALIGN	8
+-#define SSS_HASH_DMA_ALIGN_MASK	(SSS_HASH_DMA_LEN_ALIGN - 1)
+-
+ #define SSS_HASH_QUEUE_LENGTH	10
+ 
+ /**
+  * struct samsung_aes_variant - platform specific SSS driver data
+  * @aes_offset: AES register offset from SSS module's base.
+  * @hash_offset: HASH register offset from SSS module's base.
+  * @clk_names: names of clocks needed to run SSS IP
+  *
+  * Specifies platform specific configuration of SSS module.
+  * Note: A structure for driver specific platform data is used for future
+@@ -1739,21 +1736,20 @@ static struct ahash_alg algs_sha1_md5_sha256[] = {
+ 	.halg.digestsize	= SHA1_DIGEST_SIZE,
+ 	.halg.base	= {
+ 		.cra_name		= "sha1",
+ 		.cra_driver_name	= "exynos-sha1",
+ 		.cra_priority		= 100,
+ 		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
+ 					  CRYPTO_ALG_ASYNC |
+ 					  CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= HASH_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct s5p_hash_ctx),
+-		.cra_alignmask		= SSS_HASH_DMA_ALIGN_MASK,
+ 		.cra_module		= THIS_MODULE,
+ 		.cra_init		= s5p_hash_cra_init,
+ 		.cra_exit		= s5p_hash_cra_exit,
+ 	}
+ },
+ {
+ 	.init		= s5p_hash_init,
+ 	.update		= s5p_hash_update,
+ 	.final		= s5p_hash_final,
+ 	.finup		= s5p_hash_finup,
+@@ -1764,21 +1760,20 @@ static struct ahash_alg algs_sha1_md5_sha256[] = {
+ 	.halg.digestsize	= MD5_DIGEST_SIZE,
+ 	.halg.base	= {
+ 		.cra_name		= "md5",
+ 		.cra_driver_name	= "exynos-md5",
+ 		.cra_priority		= 100,
+ 		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
+ 					  CRYPTO_ALG_ASYNC |
+ 					  CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= HASH_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct s5p_hash_ctx),
+-		.cra_alignmask		= SSS_HASH_DMA_ALIGN_MASK,
+ 		.cra_module		= THIS_MODULE,
+ 		.cra_init		= s5p_hash_cra_init,
+ 		.cra_exit		= s5p_hash_cra_exit,
+ 	}
+ },
+ {
+ 	.init		= s5p_hash_init,
+ 	.update		= s5p_hash_update,
+ 	.final		= s5p_hash_final,
+ 	.finup		= s5p_hash_finup,
+@@ -1789,21 +1784,20 @@ static struct ahash_alg algs_sha1_md5_sha256[] = {
+ 	.halg.digestsize	= SHA256_DIGEST_SIZE,
+ 	.halg.base	= {
+ 		.cra_name		= "sha256",
+ 		.cra_driver_name	= "exynos-sha256",
+ 		.cra_priority		= 100,
+ 		.cra_flags		= CRYPTO_ALG_KERN_DRIVER_ONLY |
+ 					  CRYPTO_ALG_ASYNC |
+ 					  CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_blocksize		= HASH_BLOCK_SIZE,
+ 		.cra_ctxsize		= sizeof(struct s5p_hash_ctx),
+-		.cra_alignmask		= SSS_HASH_DMA_ALIGN_MASK,
+ 		.cra_module		= THIS_MODULE,
+ 		.cra_init		= s5p_hash_cra_init,
+ 		.cra_exit		= s5p_hash_cra_exit,
+ 	}
+ }
+ 
  };
  
-@@ -928,21 +927,20 @@ static struct ahash_alg dcp_sha256_alg = {
- 	.digest	= dcp_sha_digest,
- 	.import = dcp_sha_import,
- 	.export = dcp_sha_export,
- 	.halg	= {
- 		.digestsize	= SHA256_DIGEST_SIZE,
- 		.statesize	= sizeof(struct dcp_export_state),
- 		.base		= {
- 			.cra_name		= "sha256",
- 			.cra_driver_name	= "sha256-dcp",
- 			.cra_priority		= 400,
--			.cra_alignmask		= 63,
- 			.cra_flags		= CRYPTO_ALG_ASYNC,
- 			.cra_blocksize		= SHA256_BLOCK_SIZE,
- 			.cra_ctxsize		= sizeof(struct dcp_async_ctx),
- 			.cra_module		= THIS_MODULE,
- 			.cra_init		= dcp_sha_cra_init,
- 			.cra_exit		= dcp_sha_cra_exit,
- 		},
- 	},
- };
- 
+ static void s5p_set_aes(struct s5p_aes_dev *dev,
+ 			const u8 *key, const u8 *iv, const u8 *ctr,
 -- 
 2.42.0
 
