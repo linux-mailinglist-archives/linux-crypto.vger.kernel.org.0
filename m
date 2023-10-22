@@ -2,36 +2,36 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3B87D21D8
-	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4717D21DB
+	for <lists+linux-crypto@lfdr.de>; Sun, 22 Oct 2023 10:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbjJVIS6 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sun, 22 Oct 2023 04:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
+        id S231616AbjJVITB (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Sun, 22 Oct 2023 04:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbjJVISt (ORCPT
+        with ESMTP id S231631AbjJVISv (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sun, 22 Oct 2023 04:18:49 -0400
+        Sun, 22 Oct 2023 04:18:51 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5A693
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA80D6
         for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 01:18:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE60AC433CB
-        for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E216C433CC
+        for <linux-crypto@vger.kernel.org>; Sun, 22 Oct 2023 08:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697962726;
-        bh=o1ecA8M9LopLjtfKIXqmw72nJfQRspU8YS31eZy7Elg=;
+        s=k20201202; t=1697962727;
+        bh=lPPbYdbgfbrKCmPW4nPEZ82xkcPLGV4O1S80gtxQjyY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=aOvCasG01WZc7tw/m8wDVs+zroQJln7q5z2DgCGb+Vy9kdTBmY9n4W3QSEzvTMH3g
-         qymKZNOBzyWOJGPMHnKuvPTgE16+PAjhOpb0Czv/rBOEA0Pjw5gg3Xo5QYTgmTQJb0
-         qjCxtpk5OEHOj4ncH/Ccr299vLcK35c8C7si+fVHqgdH8/axRXoaaYZaZA+OlKaHm4
-         LJz7KC85Ihrt3ya4JW4KaO2Tci7xJ1R8sY/k2k97HBxNiV0gmqnknYwMd3K5ATGn0l
-         BZmY9al6540kolMiqfzVp/vAfOE5BE45XyRjmXtDu8oOK7a1EQBxdQRr+QKaQ88WVF
-         9Fk0XU5PNStwg==
+        b=Sd7ohR2WSW6S7WS3R0eCP+i7ycUf40DYiIVa+XPL0RZyFhRr5eleXwQpXyLtetlp1
+         yOu6AANCTGrtZigsB/nwrx+G79dXoPONxbXZwzalf+oghh+clBNeYWQS9FpTcxc6/I
+         7D8n9c40RZDh9FWOh7Rfph0vVT4UcxfrzFJjr+dPm1RtE2a517NSuLvnPqxNy/mLfa
+         4/RN+ouXC6eAeBrr4dpp3mWAErv/+HpeX19KZ9ihHGqdME2PXBPl+C5NQxodmbtNFC
+         UP2LFEnEwVImn+YfvpKqlfYN8xEZMUbobGLxjXKxIBqNu97sZjpn+X3F6JySXaI1HM
+         IBuOqJa+FcZdA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-crypto@vger.kernel.org
-Subject: [PATCH 15/30] crypto: authenc - stop using alignmask of ahash
-Date:   Sun, 22 Oct 2023 01:10:45 -0700
-Message-ID: <20231022081100.123613-16-ebiggers@kernel.org>
+Subject: [PATCH 16/30] crypto: authencesn - stop using alignmask of ahash
+Date:   Sun, 22 Oct 2023 01:10:46 -0700
+Message-ID: <20231022081100.123613-17-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022081100.123613-1-ebiggers@kernel.org>
 References: <20231022081100.123613-1-ebiggers@kernel.org>
@@ -54,85 +54,141 @@ simplify the code in authenc accordingly.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/authenc.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ crypto/authencesn.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/crypto/authenc.c b/crypto/authenc.c
-index fa896ab143bdf..3aaf3ab4e360f 100644
---- a/crypto/authenc.c
-+++ b/crypto/authenc.c
-@@ -134,23 +134,20 @@ static int crypto_authenc_genicv(struct aead_request *req, unsigned int flags)
- 	struct crypto_aead *authenc = crypto_aead_reqtfm(req);
- 	struct aead_instance *inst = aead_alg_instance(authenc);
- 	struct crypto_authenc_ctx *ctx = crypto_aead_ctx(authenc);
- 	struct authenc_instance_ctx *ictx = aead_instance_ctx(inst);
+diff --git a/crypto/authencesn.c b/crypto/authencesn.c
+index 60e9568f023f6..2cc933e2f7901 100644
+--- a/crypto/authencesn.c
++++ b/crypto/authencesn.c
+@@ -80,25 +80,22 @@ static int crypto_authenc_esn_setkey(struct crypto_aead *authenc_esn, const u8 *
+ 	err = crypto_skcipher_setkey(enc, keys.enckey, keys.enckeylen);
+ out:
+ 	memzero_explicit(&keys, sizeof(keys));
+ 	return err;
+ }
+ 
+ static int crypto_authenc_esn_genicv_tail(struct aead_request *req,
+ 					  unsigned int flags)
+ {
+ 	struct crypto_aead *authenc_esn = crypto_aead_reqtfm(req);
+-	struct crypto_authenc_esn_ctx *ctx = crypto_aead_ctx(authenc_esn);
+ 	struct authenc_esn_request_ctx *areq_ctx = aead_request_ctx(req);
+-	struct crypto_ahash *auth = ctx->auth;
+-	u8 *hash = PTR_ALIGN((u8 *)areq_ctx->tail,
+-			     crypto_ahash_alignmask(auth) + 1);
++	u8 *hash = areq_ctx->tail;
+ 	unsigned int authsize = crypto_aead_authsize(authenc_esn);
+ 	unsigned int assoclen = req->assoclen;
+ 	unsigned int cryptlen = req->cryptlen;
+ 	struct scatterlist *dst = req->dst;
+ 	u32 tmp[2];
+ 
+ 	/* Move high-order bits of sequence number back. */
+ 	scatterwalk_map_and_copy(tmp, dst, 4, 4, 0);
+ 	scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 0);
+ 	scatterwalk_map_and_copy(tmp, dst, 0, 8, 1);
+@@ -115,22 +112,21 @@ static void authenc_esn_geniv_ahash_done(void *data, int err)
+ 	aead_request_complete(req, err);
+ }
+ 
+ static int crypto_authenc_esn_genicv(struct aead_request *req,
+ 				     unsigned int flags)
+ {
+ 	struct crypto_aead *authenc_esn = crypto_aead_reqtfm(req);
+ 	struct authenc_esn_request_ctx *areq_ctx = aead_request_ctx(req);
+ 	struct crypto_authenc_esn_ctx *ctx = crypto_aead_ctx(authenc_esn);
  	struct crypto_ahash *auth = ctx->auth;
- 	struct authenc_request_ctx *areq_ctx = aead_request_ctx(req);
- 	struct ahash_request *ahreq = (void *)(areq_ctx->tail + ictx->reqoff);
- 	u8 *hash = areq_ctx->tail;
+-	u8 *hash = PTR_ALIGN((u8 *)areq_ctx->tail,
+-			     crypto_ahash_alignmask(auth) + 1);
++	u8 *hash = areq_ctx->tail;
+ 	struct ahash_request *ahreq = (void *)(areq_ctx->tail + ctx->reqoff);
+ 	unsigned int authsize = crypto_aead_authsize(authenc_esn);
+ 	unsigned int assoclen = req->assoclen;
+ 	unsigned int cryptlen = req->cryptlen;
+ 	struct scatterlist *dst = req->dst;
+ 	u32 tmp[2];
+ 
+ 	if (!authsize)
+ 		return 0;
+ 
+@@ -217,22 +213,21 @@ static int crypto_authenc_esn_encrypt(struct aead_request *req)
+ static int crypto_authenc_esn_decrypt_tail(struct aead_request *req,
+ 					   unsigned int flags)
+ {
+ 	struct crypto_aead *authenc_esn = crypto_aead_reqtfm(req);
+ 	unsigned int authsize = crypto_aead_authsize(authenc_esn);
+ 	struct authenc_esn_request_ctx *areq_ctx = aead_request_ctx(req);
+ 	struct crypto_authenc_esn_ctx *ctx = crypto_aead_ctx(authenc_esn);
+ 	struct skcipher_request *skreq = (void *)(areq_ctx->tail +
+ 						  ctx->reqoff);
+ 	struct crypto_ahash *auth = ctx->auth;
+-	u8 *ohash = PTR_ALIGN((u8 *)areq_ctx->tail,
+-			      crypto_ahash_alignmask(auth) + 1);
++	u8 *ohash = areq_ctx->tail;
+ 	unsigned int cryptlen = req->cryptlen - authsize;
+ 	unsigned int assoclen = req->assoclen;
+ 	struct scatterlist *dst = req->dst;
+ 	u8 *ihash = ohash + crypto_ahash_digestsize(auth);
+ 	u32 tmp[2];
+ 
+ 	if (!authsize)
+ 		goto decrypt;
+ 
+ 	/* Move high-order bits of sequence number back. */
+@@ -265,22 +260,21 @@ static void authenc_esn_verify_ahash_done(void *data, int err)
+ }
+ 
+ static int crypto_authenc_esn_decrypt(struct aead_request *req)
+ {
+ 	struct crypto_aead *authenc_esn = crypto_aead_reqtfm(req);
+ 	struct authenc_esn_request_ctx *areq_ctx = aead_request_ctx(req);
+ 	struct crypto_authenc_esn_ctx *ctx = crypto_aead_ctx(authenc_esn);
+ 	struct ahash_request *ahreq = (void *)(areq_ctx->tail + ctx->reqoff);
+ 	unsigned int authsize = crypto_aead_authsize(authenc_esn);
+ 	struct crypto_ahash *auth = ctx->auth;
+-	u8 *ohash = PTR_ALIGN((u8 *)areq_ctx->tail,
+-			      crypto_ahash_alignmask(auth) + 1);
++	u8 *ohash = areq_ctx->tail;
+ 	unsigned int assoclen = req->assoclen;
+ 	unsigned int cryptlen = req->cryptlen;
+ 	u8 *ihash = ohash + crypto_ahash_digestsize(auth);
+ 	struct scatterlist *dst = req->dst;
+ 	u32 tmp[2];
  	int err;
  
--	hash = (u8 *)ALIGN((unsigned long)hash + crypto_ahash_alignmask(auth),
--			   crypto_ahash_alignmask(auth) + 1);
--
- 	ahash_request_set_tfm(ahreq, auth);
- 	ahash_request_set_crypt(ahreq, req->dst, hash,
- 				req->assoclen + req->cryptlen);
- 	ahash_request_set_callback(ahreq, flags,
- 				   authenc_geniv_ahash_done, req);
+ 	cryptlen -= authsize;
  
- 	err = crypto_ahash_digest(ahreq);
- 	if (err)
- 		return err;
+ 	if (req->src != dst) {
+@@ -337,22 +331,21 @@ static int crypto_authenc_esn_init_tfm(struct crypto_aead *tfm)
  
-@@ -279,23 +276,20 @@ static int crypto_authenc_decrypt(struct aead_request *req)
- 	unsigned int authsize = crypto_aead_authsize(authenc);
- 	struct aead_instance *inst = aead_alg_instance(authenc);
- 	struct crypto_authenc_ctx *ctx = crypto_aead_ctx(authenc);
- 	struct authenc_instance_ctx *ictx = aead_instance_ctx(inst);
- 	struct crypto_ahash *auth = ctx->auth;
- 	struct authenc_request_ctx *areq_ctx = aead_request_ctx(req);
- 	struct ahash_request *ahreq = (void *)(areq_ctx->tail + ictx->reqoff);
- 	u8 *hash = areq_ctx->tail;
- 	int err;
+ 	null = crypto_get_default_null_skcipher();
+ 	err = PTR_ERR(null);
+ 	if (IS_ERR(null))
+ 		goto err_free_skcipher;
  
--	hash = (u8 *)ALIGN((unsigned long)hash + crypto_ahash_alignmask(auth),
--			   crypto_ahash_alignmask(auth) + 1);
--
- 	ahash_request_set_tfm(ahreq, auth);
- 	ahash_request_set_crypt(ahreq, req->src, hash,
- 				req->assoclen + req->cryptlen - authsize);
- 	ahash_request_set_callback(ahreq, aead_request_flags(req),
- 				   authenc_verify_ahash_done, req);
+ 	ctx->auth = auth;
+ 	ctx->enc = enc;
+ 	ctx->null = null;
  
- 	err = crypto_ahash_digest(ahreq);
- 	if (err)
- 		return err;
+-	ctx->reqoff = ALIGN(2 * crypto_ahash_digestsize(auth),
+-			    crypto_ahash_alignmask(auth) + 1);
++	ctx->reqoff = 2 * crypto_ahash_digestsize(auth);
  
-@@ -393,40 +387,38 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
- 		goto err_free_inst;
- 	auth = crypto_spawn_ahash_alg(&ctx->auth);
- 	auth_base = &auth->base;
- 
- 	err = crypto_grab_skcipher(&ctx->enc, aead_crypto_instance(inst),
- 				   crypto_attr_alg_name(tb[2]), 0, mask);
- 	if (err)
- 		goto err_free_inst;
- 	enc = crypto_spawn_skcipher_alg_common(&ctx->enc);
- 
--	ctx->reqoff = ALIGN(2 * auth->digestsize + auth_base->cra_alignmask,
--			    auth_base->cra_alignmask + 1);
-+	ctx->reqoff = 2 * auth->digestsize;
- 
- 	err = -ENAMETOOLONG;
- 	if (snprintf(inst->alg.base.cra_name, CRYPTO_MAX_ALG_NAME,
- 		     "authenc(%s,%s)", auth_base->cra_name,
- 		     enc->base.cra_name) >=
- 	    CRYPTO_MAX_ALG_NAME)
+ 	crypto_aead_set_reqsize(
+ 		tfm,
+ 		sizeof(struct authenc_esn_request_ctx) +
+ 		ctx->reqoff +
+ 		max_t(unsigned int,
+ 		      crypto_ahash_reqsize(auth) +
+ 		      sizeof(struct ahash_request),
+ 		      sizeof(struct skcipher_request) +
+ 		      crypto_skcipher_reqsize(enc)));
+@@ -424,22 +417,21 @@ static int crypto_authenc_esn_create(struct crypto_template *tmpl,
  		goto err_free_inst;
  
  	if (snprintf(inst->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
- 		     "authenc(%s,%s)", auth_base->cra_driver_name,
+ 		     "authencesn(%s,%s)", auth_base->cra_driver_name,
  		     enc->base.cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
  		goto err_free_inst;
  
@@ -142,16 +198,16 @@ index fa896ab143bdf..3aaf3ab4e360f 100644
 -	inst->alg.base.cra_alignmask = auth_base->cra_alignmask |
 -				       enc->base.cra_alignmask;
 +	inst->alg.base.cra_alignmask = enc->base.cra_alignmask;
- 	inst->alg.base.cra_ctxsize = sizeof(struct crypto_authenc_ctx);
+ 	inst->alg.base.cra_ctxsize = sizeof(struct crypto_authenc_esn_ctx);
  
  	inst->alg.ivsize = enc->ivsize;
  	inst->alg.chunksize = enc->chunksize;
  	inst->alg.maxauthsize = auth->digestsize;
  
- 	inst->alg.init = crypto_authenc_init_tfm;
- 	inst->alg.exit = crypto_authenc_exit_tfm;
+ 	inst->alg.init = crypto_authenc_esn_init_tfm;
+ 	inst->alg.exit = crypto_authenc_esn_exit_tfm;
  
- 	inst->alg.setkey = crypto_authenc_setkey;
+ 	inst->alg.setkey = crypto_authenc_esn_setkey;
 -- 
 2.42.0
 
