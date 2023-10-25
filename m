@@ -2,70 +2,67 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B99AD7D693A
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Oct 2023 12:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941027D6C84
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Oct 2023 14:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbjJYKnX (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Wed, 25 Oct 2023 06:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        id S234920AbjJYM6V (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Wed, 25 Oct 2023 08:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343522AbjJYKmy (ORCPT
+        with ESMTP id S229583AbjJYM6U (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:42:54 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD6F10FD;
-        Wed, 25 Oct 2023 03:42:18 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507a62d4788so8673363e87.0;
-        Wed, 25 Oct 2023 03:42:18 -0700 (PDT)
+        Wed, 25 Oct 2023 08:58:20 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EF88F;
+        Wed, 25 Oct 2023 05:58:18 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6bee11456baso4687075b3a.1;
+        Wed, 25 Oct 2023 05:58:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698230536; x=1698835336; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=USY4fw267Go83RxyHyFwK1+6pc6Q77CrkKJFbgSONJU=;
-        b=ShlEeboAgNI0keEKRxCp1TNhPFyAOyjzExRBcVJ4Z3oV86IulG0uOM0dL4VVVXzabv
-         A8bFrjCSoJ90aAMkJ0MW2GsAHvMMmYoFZaCM6+9Xnx3gRSGRnwZ+ajEaa9b2R3rkxE7i
-         PRDe1CslYMWmm81JE1cauzr3omMjBBCLXznW78hFyBz93gQ85N0cy6iUMYqgsg4X84qS
-         LbLgaFwuRApfltyVOjoauHhfgq7f8athyNYeWOVKsHTrWsDFk1UTfub7s5fKBjuI6XeB
-         qkL6knTUYxqbiJkugTeJGWSUe2YAe8A9B2VuC2wDi0zQDacWZZe+/srh/PgI48Q1KqOQ
-         SYnQ==
+        d=gmail.com; s=20230601; t=1698238698; x=1698843498; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mKssY7Y5qZz0OjqP1oL2c2x0KaPXiTplfs3rAHRoWHo=;
+        b=aKlyC7l0aeU1CzVhbaLifyAmyWafC0vrRpl50KSlZ+3AuJoOtwfG7i75cWu4+JA1el
+         +05p9yu818kP1XxGsynmic5BdJU/yv48eu5ajmCLaWWDhr+pEaSVBK2MHcas0Zjavd0+
+         cfPSafc5SwrsTtXcN5VN4UT/nchAKb33qWSHqQn/aNIVeOkXTnsMdxLZtl+NTvd75/ns
+         zcC2Q16itKDBr0JfgE3aWk5TqZrtFS1DPxBj+0OgJy0hK+YoNCi6d+cCEF+QQbyvUWnN
+         Fa4CQCE0ppnkPwbGKkQ8itmVLTxTyN6E/hZHp/SoGdcfRIFVCI8E6+PAWhi6OPZrWoF8
+         GXWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698230536; x=1698835336;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=USY4fw267Go83RxyHyFwK1+6pc6Q77CrkKJFbgSONJU=;
-        b=r+foBiem2wNeURN/xnH8D5gGVbw36TmTzWbyyjN34e08LsnbiWYsdEHlWxGZR+Ck8w
-         oTw8Gz0TMaFkBzpzRVMbW5eFpCt6b4aBqldzT8mDBrcyBWuFQJ5cErPD076xk4NPj/4E
-         gUGNwwvBJFJoXiJ/xOkMUB1qJzANrqvS4LzOuRtwpNgk69zySKTuUeRS6PiE964SPCVd
-         G1m8Wqc6vqJz9meb6ortXTkdbT7xIVvMbFSBSpyFqHQOe9qCUDL/tcCxXm1L5JW2BXek
-         dLmtNvAbr5WvJWpRDySrdF8AbKcy5pHHplSJ6Ecjeg9jtWKNRAUUXSY0KpgfvxCzte/z
-         UJvg==
-X-Gm-Message-State: AOJu0YyCQpp8kydZquV+WIK1ebNkY/ayhRFew93lF1taZEQUOb3/nDch
-        rQkUW/AZE/qvgcclheuNlwU=
-X-Google-Smtp-Source: AGHT+IH+mKnvmoscLzowQ7hAev3IlVRR9DHwfFnnTp13am39rRDQgcxMoWLTpMzT+6bZeJXrYawGfA==
-X-Received: by 2002:a19:5212:0:b0:505:6e21:32e1 with SMTP id m18-20020a195212000000b005056e2132e1mr10207820lfb.10.1698230536071;
-        Wed, 25 Oct 2023 03:42:16 -0700 (PDT)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:2cbd:f9ec:f035:ebea])
-        by smtp.gmail.com with ESMTPSA id t12-20020a05640203cc00b0053e67bcb3e7sm9179868edw.82.2023.10.25.03.42.14
+        d=1e100.net; s=20230601; t=1698238698; x=1698843498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mKssY7Y5qZz0OjqP1oL2c2x0KaPXiTplfs3rAHRoWHo=;
+        b=HHLCuTrJkaM+9/DLKU8F1iIj+8wtnb4jqxRz+IHv4BiCXhOJdycM1o0RI8evtITUXy
+         XcvWZs8squkQ1zZYHFCtVe0nG2vWPk0MyEeMzKSjSeG+hvcflwWsFQUTF71CUOh1kXou
+         B5TkvXasUN0nwpkmjF9pfDeJETDCKZugXcOaFY7N4M5HZVEAgkA7W9I1DFBGzKrPXmes
+         jYLyoGZlsi+fTRoVoJP3LAjZBwhGY5YSkvjG2/gU99FawHkNlCYEZYrWgBgwm21qTv/d
+         8UZmz4Y8kQzfypuLLxPKuMBGjcNz7roOKSZk889CqUwWiyQ7R6qEOoyNKaia8qGba0l6
+         /abQ==
+X-Gm-Message-State: AOJu0YyoHFSjlWruMS01e2wqOs4qALbpY6zLLr2vQjg6RZS20P1PLbZ0
+        uU50WtgENkNMkMGo4C0VybHw/bvP3h5rZKD+
+X-Google-Smtp-Source: AGHT+IF7u5zOkI2ZSeBYv1Vmh8U1NKHmyEJN2pzxKcBcv2+dRSJ2rJqN/f/ETo8o4HFp2LeHuAeU0A==
+X-Received: by 2002:a05:6a21:1c82:b0:172:f4e:5104 with SMTP id sf2-20020a056a211c8200b001720f4e5104mr4521846pzb.20.1698238697699;
+        Wed, 25 Oct 2023 05:58:17 -0700 (PDT)
+Received: from sagar-virtual-machine.localdomain ([103.70.144.216])
+        by smtp.gmail.com with ESMTPSA id a3-20020a655c83000000b005b3cc663c8csm7402302pgt.21.2023.10.25.05.58.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 03:42:15 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] docs: module-signing: adjust guide after sha1 and sha224 support is gone
-Date:   Wed, 25 Oct 2023 12:42:12 +0200
-Message-Id: <20231025104212.12738-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Wed, 25 Oct 2023 05:58:17 -0700 (PDT)
+From:   Sagar Vashnav <sagarvashnav72427@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sagarvashnav72427@gmail.com
+Subject: [PATCH] lib/crypto/aesgcm.c:add kernel docs for aesgcm_mac
+Date:   Wed, 25 Oct 2023 08:57:07 -0400
+Message-Id: <20231025125708.20645-1-sagarvashnav72427@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,41 +70,38 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Commit 16ab7cb5825f ("crypto: pkcs7 - remove sha1 support") and commit
-fc3225fd6f1e ("module: Do not offer sha224 for built-in module signing")
-removes sha1 and sha224 support for kernel module signing.
+Add kernel documentation for the aesgcm_mac.
+This function generates the authentication tag using the AES-GCM algorithm.
 
-Adjust the module-signing admin guide documentation to those changes.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Sagar Vashnav <sagarvashnav72427@gmail.com>
 ---
- Documentation/admin-guide/module-signing.rst | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ lib/crypto/aesgcm.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index 2898b2703297..e3ea1def4c0c 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -30,8 +30,8 @@ This facility uses X.509 ITU-T standard certificates to encode the public keys
- involved.  The signatures are not themselves encoded in any industrial standard
- type.  The facility currently only supports the RSA public key encryption
- standard (though it is pluggable and permits others to be used).  The possible
--hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, and
--SHA-512 (the algorithm is selected by data in the signature).
-+hash algorithms that can be used are SHA-256, SHA-384, and SHA-512 (the
-+algorithm is selected by data in the signature).
+diff --git a/lib/crypto/aesgcm.c b/lib/crypto/aesgcm.c
+index c632d6e17..eb55cc57a 100644
+--- a/lib/crypto/aesgcm.c
++++ b/lib/crypto/aesgcm.c
+@@ -73,6 +73,19 @@ static void aesgcm_ghash(be128 *ghash, const be128 *key, const void *src,
+ 	}
+ }
  
- 
- ==========================
-@@ -81,8 +81,6 @@ This has a number of options available:
-      sign the modules with:
- 
-         =============================== ==========================================
--	``CONFIG_MODULE_SIG_SHA1``	:menuselection:`Sign modules with SHA-1`
--	``CONFIG_MODULE_SIG_SHA224``	:menuselection:`Sign modules with SHA-224`
- 	``CONFIG_MODULE_SIG_SHA256``	:menuselection:`Sign modules with SHA-256`
- 	``CONFIG_MODULE_SIG_SHA384``	:menuselection:`Sign modules with SHA-384`
- 	``CONFIG_MODULE_SIG_SHA512``	:menuselection:`Sign modules with SHA-512`
++/**
++ * aesgcm_mac - Generates the authentication tag using AES-GCM algorithm.
++ * @ctx: The data structure that will hold the AES-GCM key schedule
++ * @src: The input source data.
++ * @src_len: Length of the source data.
++ * @assoc: Points to the associated data.
++ * @assoc_len: Length of the associated data values.
++ * @ctr: Points to the counter value.
++ * @authtag: The output buffer for the authentication tag.
++ *
++ * It takes in the AES-GCM context, source data, associated data, counter value,
++ * and an output buffer for the authentication tag.
++ */
+ static void aesgcm_mac(const struct aesgcm_ctx *ctx, const u8 *src, int src_len,
+ 		       const u8 *assoc, int assoc_len, __be32 *ctr, u8 *authtag)
+ {
 -- 
-2.17.1
+2.34.1
 
