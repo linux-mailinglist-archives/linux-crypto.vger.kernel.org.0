@@ -2,35 +2,35 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7CC7D95A6
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Oct 2023 12:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737537D95AB
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Oct 2023 12:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345549AbjJ0Ky3 (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Fri, 27 Oct 2023 06:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        id S1345648AbjJ0Kyt (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Fri, 27 Oct 2023 06:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345691AbjJ0Ky1 (ORCPT
+        with ESMTP id S1345649AbjJ0Kys (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:54:27 -0400
+        Fri, 27 Oct 2023 06:54:48 -0400
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D743B9C
-        for <linux-crypto@vger.kernel.org>; Fri, 27 Oct 2023 03:54:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0846C9C
+        for <linux-crypto@vger.kernel.org>; Fri, 27 Oct 2023 03:54:46 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qwKTr-00BeYm-Tj; Fri, 27 Oct 2023 18:54:20 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Oct 2023 18:54:26 +0800
-Date:   Fri, 27 Oct 2023 18:54:26 +0800
+        id 1qwKUD-00Bead-Iy; Fri, 27 Oct 2023 18:54:42 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Oct 2023 18:54:47 +0800
+Date:   Fri, 27 Oct 2023 18:54:47 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Shashank Gupta <shashank.gupta@intel.com>
+To:     Damian Muszynski <damian.muszynski@intel.com>
 Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com
-Subject: Re: [PATCH 0/9] add ras error detection and reporting for GEN4
- devices
-Message-ID: <ZTuW4nKoYQ6pKK76@gondor.apana.org.au>
-References: <20231020103431.230671-1-shashank.gupta@intel.com>
+Subject: Re: [PATCH v2 00/11] crypto: qat - add rate limiting feature to
+ qat_4xxx
+Message-ID: <ZTuW9021lj8iut8j@gondor.apana.org.au>
+References: <20231020134931.7530-1-damian.muszynski@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231020103431.230671-1-shashank.gupta@intel.com>
+In-Reply-To: <20231020134931.7530-1-damian.muszynski@intel.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
@@ -40,51 +40,97 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 11:32:44AM +0100, Shashank Gupta wrote:
-> This set introduces the required infrastructure to detect, report, and count errors in the QAT drivers and enables the reporting of errors in QAT GEN4 devices.
-> In particular, it enables the reporting of correctable, nonfatal, and fatal errors.
-> In addition, exposes the number of occurrences of each type of error through sysfs.
+On Fri, Oct 20, 2023 at 03:49:20PM +0200, Damian Muszynski wrote:
+> This set enables hardware rate limiting capabilities on QAT 4xxx
+> accelerators. Rate Limiting allows to control the rate of the requests
+> that can be submitted to a ring pair (RP). This allows sharing
+> a QAT device among multiple users while ensuring guaranteed throughput.
 > 
-> The first patch adds the common infrastructures for error reporting for all generations of QAT.
-> Patches from 2 to 5 and 7 enable the reporting of errors flagged through the register ERRSOUx for GEN4 devices.
-> ERRSOUx error reporting for GEN4 devices.
-> Patch 6 adds a helper to retrieve the base address of the aram bar.
-> Patch 8 introduces the ras counter interface for counting QAT-specific errors, and exposes such counters through sysfs.
-> Patch 9 adds logic to count correctable, nonfatal, and fatal errors for GEN4 devices.
+> The driver provides a mechanism that allows users to set policies, through
+> a sysfs interface, that are then programmed to the device. The device is
+> then enforcing the policies.
 > 
-> Shashank Gupta (9):
->   crypto: qat - add infrastructure for error reporting
->   crypto: qat - add reporting of correctable errors for QAT GEN4
->   crypto: qat - add reporting of errors from ERRSOU1 for QAT GEN4
->   crypto: qat - add handling of errors from ERRSOU2 for QAT GEN4
->   crypto: qat - add handling of compression related errors for QAT GEN4
->   crypto: qat - add adf_get_aram_base() helper function
->   crypto: qat - add handling of errors from ERRSOU3 for QAT GEN4
->   crypto: qat - add error counters
->   crypto: qat - count QAT GEN4 errors
+> The first six commits are refactoring and additions in preparation for
+>   the feature.
+> Patch #6 introduces a mechanism for retrieving firmware feature
+>   capabilities.
+> Patch #8 implements the core of the rate limiting feature by providing
+>   mechanisms to set rate limiting policies (aka SLAs).
+> The final three commits add the required sysfs interface that allow
+>   users to configure SLAs.
 > 
->  .../ABI/testing/sysfs-driver-qat_ras          |   42 +
->  .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     |   13 +
->  .../intel/qat/qat_4xxx/adf_4xxx_hw_data.h     |   17 +
->  drivers/crypto/intel/qat/qat_4xxx/adf_drv.c   |    1 +
->  drivers/crypto/intel/qat/qat_common/Makefile  |    2 +
->  .../intel/qat/qat_common/adf_accel_devices.h  |   34 +
->  .../intel/qat/qat_common/adf_common_drv.h     |   10 +
->  .../intel/qat/qat_common/adf_gen4_ras.c       | 1566 +++++++++++++++++
->  .../intel/qat/qat_common/adf_gen4_ras.h       |  825 +++++++++
->  .../crypto/intel/qat/qat_common/adf_init.c    |    9 +
->  drivers/crypto/intel/qat/qat_common/adf_isr.c |   18 +
->  .../qat/qat_common/adf_sysfs_ras_counters.c   |  112 ++
->  .../qat/qat_common/adf_sysfs_ras_counters.h   |   28 +
->  13 files changed, 2677 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-qat_ras
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_ras.c
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_ras.h
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.c
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_ras_counters.h
+> Changes since v1:
+> - Removed unnecessary check
+> - Simplified a few error paths
+> - Reduced a few local variables
+> - Fixed repeated error message
+> - Moved mutex lock above sla_id existence check.
+> - Added Reviewed-by tag from Tero Kristo received from an internal review
+>   of the set.
 > 
+> Ciunas Bennett (3):
+>   crypto: qat - add rate limiting sysfs interface
+>   crypto: qat - add rp2svc sysfs attribute
+>   crypto: qat - add num_rps sysfs attribute
+> 
+> Damian Muszynski (4):
+>   units: Add BYTES_PER_*BIT
+>   crypto: qat - add bits.h to icp_qat_hw.h
+>   crypto: qat - add retrieval of fw capabilities
+>   crypto: qat - add rate limiting feature to qat_4xxx
+> 
+> Giovanni Cabiddu (4):
+>   crypto: qat - refactor fw config related functions
+>   crypto: qat - use masks for AE groups
+>   crypto: qat - fix ring to service map for QAT GEN4
+>   crypto: qat - move admin api
+> 
+>  Documentation/ABI/testing/sysfs-driver-qat    |   46 +
+>  Documentation/ABI/testing/sysfs-driver-qat_rl |  227 ++++
+>  .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     |  190 ++-
+>  .../intel/qat/qat_4xxx/adf_4xxx_hw_data.h     |   13 +-
+>  .../intel/qat/qat_c3xxx/adf_c3xxx_hw_data.c   |    1 +
+>  .../intel/qat/qat_c62x/adf_c62x_hw_data.c     |    1 +
+>  drivers/crypto/intel/qat/qat_common/Makefile  |    3 +
+>  .../intel/qat/qat_common/adf_accel_devices.h  |   11 +
+>  .../crypto/intel/qat/qat_common/adf_admin.c   |   71 +
+>  .../crypto/intel/qat/qat_common/adf_admin.h   |   27 +
+>  .../crypto/intel/qat/qat_common/adf_clock.c   |    1 +
+>  .../intel/qat/qat_common/adf_cnv_dbgfs.c      |    1 +
+>  .../intel/qat/qat_common/adf_common_drv.h     |   10 -
+>  .../intel/qat/qat_common/adf_fw_counters.c    |    1 +
+>  .../intel/qat/qat_common/adf_gen4_hw_data.h   |    7 +
+>  .../crypto/intel/qat/qat_common/adf_gen4_pm.c |    1 +
+>  .../qat/qat_common/adf_gen4_pm_debugfs.c      |    1 +
+>  .../intel/qat/qat_common/adf_gen4_timer.c     |    1 +
+>  .../intel/qat/qat_common/adf_heartbeat.c      |    1 +
+>  .../qat/qat_common/adf_heartbeat_dbgfs.c      |    1 +
+>  .../crypto/intel/qat/qat_common/adf_init.c    |   13 +
+>  drivers/crypto/intel/qat/qat_common/adf_rl.c  | 1169 +++++++++++++++++
+>  drivers/crypto/intel/qat/qat_common/adf_rl.h  |  176 +++
+>  .../intel/qat/qat_common/adf_rl_admin.c       |   97 ++
+>  .../intel/qat/qat_common/adf_rl_admin.h       |   18 +
+>  .../crypto/intel/qat/qat_common/adf_sysfs.c   |   80 ++
+>  .../intel/qat/qat_common/adf_sysfs_rl.c       |  451 +++++++
+>  .../intel/qat/qat_common/adf_sysfs_rl.h       |   11 +
+>  .../qat/qat_common/icp_qat_fw_init_admin.h    |   41 +
+>  .../crypto/intel/qat/qat_common/icp_qat_hw.h  |    2 +
+>  .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.c   |    1 +
+>  include/linux/units.h                         |    4 +
+>  32 files changed, 2605 insertions(+), 73 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-qat_rl
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_admin.h
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl.c
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl.h
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl_admin.c
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_rl_admin.h
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_rl.c
+>  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_rl.h
+> 
+> 
+> base-commit: 1bb03421eab67940b6509fe0869ff43df5fbe3e6
 > -- 
-> 2.41.0
+> 2.34.1
 
 All applied.  Thanks.
 -- 
