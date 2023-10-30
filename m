@@ -2,85 +2,85 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F08157DB7E1
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Oct 2023 11:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADB57DB827
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Oct 2023 11:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbjJ3KWy (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Mon, 30 Oct 2023 06:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        id S232504AbjJ3KeY (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Oct 2023 06:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232922AbjJ3KWn (ORCPT
+        with ESMTP id S233399AbjJ3KeB (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:22:43 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.161])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DFA6A67
-        for <linux-crypto@vger.kernel.org>; Mon, 30 Oct 2023 03:19:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1698661160; cv=none;
+        Mon, 30 Oct 2023 06:34:01 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B464DF5
+        for <linux-crypto@vger.kernel.org>; Mon, 30 Oct 2023 03:23:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1698661431; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=d4CbDmW0lzFZGzkJb9PH0ojbkA0f2VawzUJDlauAvni4yvhNc9DOTv+wVacGgeG8W/
-    MgvHfmhLC5vgIyjDyubcB9dor0zShPpPJ7fIQpd0RjAFjTi5ko0smu+dMbBJdaRH86Gl
-    VTZMmILuoHtAKo7177spVaPnqlXyRbLdWYNx8tsI+K8x6RMpGsGNSCr6FjnTKtypB/yg
-    qFzo8EoNA8dzOMC+gBpHQWLmJYbO+lHo5LELn1Y+szh9EQn8L2BOa4NioZAWzyF+rRGK
-    Nh+OHcgxLz5t0+4nKuMcXkbM+ylBQFpoDZkerSQiicKB4mmoV4YmYbzUsqKfrWksYHHJ
-    LGnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698661160;
+    b=OYveJeGr3RNT499TRmN+g8UPPI8wXtE9UlzNQ3/e7Rz8BdZ50r/TERSC4fHvmwAg91
+    HiUHnlaB1yPPEmdstr4knjxj0aIRjX9E8BT0XpenLcTvznW5p2dFo8pWsgWRjOn/D0l1
+    WBGJSk5SyR+jyCBqT3QbthcjKziXSs9oRETz3bIqr7xvfqSGtm1EU9Sp0l2xxD4ECZEw
+    KfI2u/gv9Wfhc6Z0cF1ndg8JFCVuQefdn4YdW/aRBkd94jNpw231U2qH4q1N8vxbaVm0
+    2otahnLz26yY/OVkkXxv5vwNq+gi4UFSCmyiwmMkyIl9oWoRpCe8Y4hR64KvDl4KA/GL
+    kEUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698661431;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=jk9VHVG1Y85+swsU8ss+ygDPPDTaFf9QKwd7qXdBves=;
-    b=SNmfnrjkqxsqWvAPWo8fuO4LRlWjfICoU9nFD+aAHdqHZxJSfdVDs/tFNW7Br/sW4h
-    pqnWqni7+wj8JxMacGC4O8HNHo9b2yJWrjD2a4BefHLp/RxLYRbCC9O42BXlPd18BBTk
-    h71dwWXdbE8FgRspDx1OqSgj+wgsM1334tZ8RskW5Bd+mErColZCxdgjnwbdFMRYIuWz
-    JeZcUveSsn4olEUtDD02CC0n8iIWGk/5FENx1VVfA2jwjOHtrpB3okKFFo29M19Tb+xP
-    esmhCOWpDQWQ3GZ0ENOaAs6ZDfseBiwMrAt4keZAmFjGqPY7mZXgy0A7KSui0uivndeO
-    RwSg==
+    bh=Is4ojSgv4+/AkEpUYaQLScwdT0YQ0luLjdPNWA9pmk4=;
+    b=mKIv/NBfuAsFOEqVF3pAcU92xIYWJ6eJxW8gdFLTlfnSWDR/ATHMVBx9JXd28P5vkn
+    hxNd7/EY1A9xoIGw7UZx4NiTF8d4e93rzsIF9Wu9lZWyoUbPaM5GwuL0ZRdFwc0XbI9A
+    I5LFSOYCuxdy2xxx02Vdxbw8FGlDljRf0DuPT+K+QdZp8JKtyHgbXRGNJvDVFzHmSTdf
+    3+uzegsk+o5ZiNcoICYvZ4YNVV36q6FJjVxOjqNQb32MazjS/ZcuidfwWVKmOF06zRpo
+    9PFQ64DQmGBJ3egY9rJq15u7ALLicyRuTQYfBcbWqDN6aHePiTvbi96otxwVayFtJpmj
+    YPWg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698661160;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698661431;
     s=strato-dkim-0002; d=chronox.de;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=jk9VHVG1Y85+swsU8ss+ygDPPDTaFf9QKwd7qXdBves=;
-    b=Z5a0uy8cmCwMtg0A6VcwfGhHSQBKUzcpzwweimmh6I3WvpbZDW20cKttQXkkEuJWRt
-    JroPhd/QTjKdU129GpiJ3JqRk0K+AVr/hH9ZsWVDunzPqikZSqGDKWCGEZCiSMn6M17N
-    KmYfTJrye9I5oq+/xjpwA7OnAgbszrFbI8EhzaVVXOr1qe0V4ivqyJVQ/syt6b3PFyFL
-    7vXNds1Vm7UrchuWUoKrJMxRUAoK/ldB/a1mFX6XO6aar7y+0cWGPY3Xl13Q3ZQqXixn
-    OLplRHyp0giP/0AmAStXqwbyr8l6PWzKCx6nzloPMN+JLOtnwgA+nTMGyIGhvq4WlyaJ
-    j9pA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698661160;
+    bh=Is4ojSgv4+/AkEpUYaQLScwdT0YQ0luLjdPNWA9pmk4=;
+    b=J8gpWczp4C/WTKP9oImFoca1P33GTm+6lY3UuERoIDozFQ5NijQ6N1EjK1LJkIx0EH
+    GhIJWd+5pH507Lcumjgaop9wt0ccbaGrSzP4wZTEr5gPsUqd6uGl28aE7BxwiQ+eJr8Z
+    +hdqT8+RQjoOGQ+nQOF9c0468tTDZe4mYbBrxOiOBJgjts97XSsBK0Ot9kAgfwnFJKnY
+    biYAzs8FW0nABmf9mXyg9cz2H8sKLDWAUDTdyQJSQKJ1JvHogev9+4c/dGMWiLFW4qpm
+    KY8Yl7v1bpguGL84Jt3YQTxnhSSSCwR0Z3boLEHWn08/odi9op7DTeZ0xEkNlEz+FPU2
+    4SqA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698661431;
     s=strato-dkim-0003; d=chronox.de;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=jk9VHVG1Y85+swsU8ss+ygDPPDTaFf9QKwd7qXdBves=;
-    b=B57cX/UMpWnZ/25gaPZQHfZejXbhVTSYM7IFJVghMrlklbCnl0E+uBVEa446PEs8c3
-    hNfvD63oJdSbq5dGAhCA==
+    bh=Is4ojSgv4+/AkEpUYaQLScwdT0YQ0luLjdPNWA9pmk4=;
+    b=7c2ELGgCqjWSYYNL1Y2+FW6P6MhCUOa8GPPiZqwc65ZMdGn4UVHC2s/yIPBLmrRh1O
+    K/PE1nmJGjsy/lQ5+fAw==
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9yWsdNeEDyFXR1lg3JD8="
 Received: from tauon.chronox.de
     by smtp.strato.de (RZmta 49.9.1 AUTH)
-    with ESMTPSA id 6b1cadz9UAJITbU
+    with ESMTPSA id 6b1cadz9UANnTda
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Mon, 30 Oct 2023 11:19:18 +0100 (CET)
+    Mon, 30 Oct 2023 11:23:49 +0100 (CET)
 From:   Stephan Mueller <smueller@chronox.de>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
         Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 Cc:     simo@redhat.com, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] crypto: drbg - ensure most preferred type is FIPS health
- checked
-Date:   Mon, 30 Oct 2023 11:19:17 +0100
-Message-ID: <2739240.yfhAjsIXQE@tauon.chronox.de>
-In-Reply-To: <20231029204823.663930-1-dimitri.ledkov@canonical.com>
+Subject: Re: [PATCH 2/4] crypto: drbg - update FIPS CTR self-checks to aes256
+Date:   Mon, 30 Oct 2023 11:23:49 +0100
+Message-ID: <6413919.eMfrkXpHmx@tauon.chronox.de>
+In-Reply-To: <20231029204823.663930-2-dimitri.ledkov@canonical.com>
 References: <20231029204823.663930-1-dimitri.ledkov@canonical.com>
+ <20231029204823.663930-2-dimitri.ledkov@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,28 +88,57 @@ Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Am Sonntag, 29. Oktober 2023, 21:48:20 CET schrieb Dimitri John Ledkov:
+Am Sonntag, 29. Oktober 2023, 21:48:21 CET schrieb Dimitri John Ledkov:
 
 Hi Dimitri,
 
-> drbg supports multiple types of drbg, and multiple parameters of
-> each. Health check sanity only checks one drbg of a single type. One
-> can enable all three types of drbg. And instead of checking the most
-> preferred algorithm (last one wins), it is currently checking first
-> one instead.
-
-The purpose of the sanity check is to make sure the various thresholds are 
-effective. For this, you need "a" DRBG, no matter which one.
+> When originally drbg was introduced FIPS self-checks for all types but
+> CTR were using the most preferred parameters for each type of
+> DRBG. Update CTR self-check to use aes256.
 > 
-> Update ifdef to ensure that healthcheck prefers HMAC, over HASH, over
-> CTR, last one wins, like all other code and functions.
+> Fixes: 541af946fe ("crypto: drbg - SP800-90A Deterministic Random Bit
+> Generator") Signed-off-by: Dimitri John Ledkov
+> <dimitri.ledkov@canonical.com>
 
-I can see that this patch makes the code more consistent with the rest. Yet, I 
-would doubt the "Fixes" indicator below is needed, though.
+
+
+> ---
+>  crypto/drbg.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/crypto/drbg.c b/crypto/drbg.c
+> index 2cce18dcfc..b120e2866b 100644
+> --- a/crypto/drbg.c
+> +++ b/crypto/drbg.c
+> @@ -1478,8 +1478,8 @@ static int drbg_generate(struct drbg_state *drbg,
+>  			err = alg_test("drbg_pr_hmac_sha256",
+>  				       "drbg_pr_hmac_sha256", 0, 0);
+>  		else if (drbg->core->flags & DRBG_CTR)
+> -			err = alg_test("drbg_pr_ctr_aes128",
+> -				       "drbg_pr_ctr_aes128", 0, 0);
+> +			err = alg_test("drbg_pr_ctr_aes256",
+> +				       "drbg_pr_ctr_aes256", 0, 0);
+>  		else
+>  			err = alg_test("drbg_pr_sha256",
+>  				       "drbg_pr_sha256", 0, 0);
+> @@ -2017,7 +2017,7 @@ static inline int __init drbg_healthcheck_sanity(void)
+> return 0;
+> 
+>  #ifdef CONFIG_CRYPTO_DRBG_CTR
+> -	drbg_convert_tfm_core("drbg_nopr_ctr_aes128", &coreref, &pr);
+> +	drbg_convert_tfm_core("drbg_nopr_ctr_aes256", &coreref, &pr);
+>  #endif
+>  #ifdef CONFIG_CRYPTO_DRBG_HASH
+>  	drbg_convert_tfm_core("drbg_nopr_sha256", &coreref, &pr);
+
+I am not sure again whether this warrants a "Fixes" tag, because the first 
+modification is in a commented-out code section and the latter again intends 
+to test the DRBG thresholds and thus just needs "a" DRBG.
 
 Anyhow:
 
 Reviewed-by: Stephan Mueller <smueller@chronox.de>
+
 
 Ciao
 Stephan
