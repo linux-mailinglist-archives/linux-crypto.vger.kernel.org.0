@@ -2,95 +2,98 @@ Return-Path: <linux-crypto-owner@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 747167E0DE7
-	for <lists+linux-crypto@lfdr.de>; Sat,  4 Nov 2023 05:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D1E7DB5A1
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Oct 2023 10:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbjKDE6V (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
-        Sat, 4 Nov 2023 00:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
+        id S232209AbjJ3JDJ (ORCPT <rfc822;lists+linux-crypto@lfdr.de>);
+        Mon, 30 Oct 2023 05:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbjKDE6U (ORCPT
+        with ESMTP id S232299AbjJ3JDI (ORCPT
         <rfc822;linux-crypto@vger.kernel.org>);
-        Sat, 4 Nov 2023 00:58:20 -0400
-X-Greylist: delayed 4281 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Nov 2023 21:58:12 PDT
-Received: from mail.profitpathwaygo.com (mail.profitpathwaygo.com [141.94.21.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA01AD52
-        for <linux-crypto@vger.kernel.org>; Fri,  3 Nov 2023 21:58:12 -0700 (PDT)
-Received: by mail.profitpathwaygo.com (Postfix, from userid 1002)
-        id 592A04DDE8; Mon, 30 Oct 2023 08:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=profitpathwaygo.com;
-        s=mail; t=1698654712;
-        bh=qp3Ofokho6Ql+WtI8ZPVilyHYhskXL7fod7u9CWs8W4=;
-        h=Date:From:To:Subject:From;
-        b=HaGQuZDrGKh/pyaTjasN3ym0U/Jk9GJ0hclMtqBM9BZxPjFQboXDASBLgtKC6x8uQ
-         /Bt8ghlVf8k374VzS+dHiLLgUxoLNKYBiCDBJ6KnyWh22pUmuJ5n1uGgwbCUnVaudw
-         9dKe4kfzj2A2hA2UI4n0CbnqurUwB2di05SVRlBAYxCCxEss8H6asNXM3rlBrPZKdi
-         ZBO8NmAR0vATMjE4IG2C+2pOfZuSjUH9LXByWVCQX7G+xSq7XMSUn2uSnsaJQxH3nN
-         b5i0LuJTQeIXxr7ENHRdgMZJtUWDtebNfnEv3kba+f4GtCL8lOCRBs57G8Vzq9GZDq
-         ABr/OEch0u/Vw==
-Received: by mail.profitpathwaygo.com for <linux-crypto@vger.kernel.org>; Mon, 30 Oct 2023 08:30:28 GMT
-Message-ID: <20231030074500-0.1.2s.1548l.0.jdu3idjega@profitpathwaygo.com>
-Date:   Mon, 30 Oct 2023 08:30:28 GMT
-From:   "Adam Charachuta" <adam.charachuta@profitpathwaygo.com>
-To:     <linux-crypto@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania_?=
-X-Mailer: mail.profitpathwaygo.com
+        Mon, 30 Oct 2023 05:03:08 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FF0A7
+        for <linux-crypto@vger.kernel.org>; Mon, 30 Oct 2023 02:03:06 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507cee17b00so6047454e87.2
+        for <linux-crypto@vger.kernel.org>; Mon, 30 Oct 2023 02:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698656584; x=1699261384; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SRyapUQYnfbbBHiYxr7bXEhk97MYCElvMWksTuUpiBI=;
+        b=wZpWhut9utHVScFz/2KXaGxrA3XNOs9Qf5RZgAX2Rn03OVYaYlNvuUvz/wab1szK+r
+         w2PxM9812INZI7RV3kQiuCU9gxYdcIUkxrppT3xvwt4F4FL0mDGWwNvHOliYKeWzQOd9
+         NN/9gyTb69pP4Dr58hHrXUCZ3j+GbSxUWwQdWUfmckd2JzTWdQbQtK/tdJB400+ypX6F
+         +yPt7dK4IauGe9E43jz1puvLIREpChgIeGlyoTJ1sK4T4Vyi5/w2TNPf5X9fxXcfqOhq
+         bFQV9c25kEf71kBsC4QKDQ2WuXXbG4oWtzO4AMeeHYCj0sqgKst652HYXQJ0Wph1Lba0
+         YIDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698656584; x=1699261384;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SRyapUQYnfbbBHiYxr7bXEhk97MYCElvMWksTuUpiBI=;
+        b=nJiK4ltBbTWg6uObfzfT8AuiMHeCW3o8mKmq8WVeiiFb725UpJkTVW8hV0C99a33lM
+         JCnDggQk8DXe81QfU4pejdDZooG2m8WELQB3qte4rXZ826vMflezj9BTD/bUDVwsa3Qp
+         4DMjbbYPGihA0Hsh0QOrt2mW/KwqUPF1t18CpXPEFoVVdRp4cNrF8GDkNyEUqqkNVj4V
+         xqsVxE4M2Xkl29pbdiPlNLQmaHP4OtTre+1z1MZ9meS7mDHqTPH7L0V/jmXAUEiDHvOu
+         GIzhNTl2jLs3kU/5+SZK0ukkiGDrY8AuFJK2zapA7OU+BIKIQTBoKerkkcykNUE0ypv6
+         qDHg==
+X-Gm-Message-State: AOJu0YxQ6IU/IVt/n7s/sPRPm7MbcHp6lRtMAhzLCpwKKLB03zq9JkwN
+        sQ3o8Qq5QJ1HgviYwusi8/b/zg==
+X-Google-Smtp-Source: AGHT+IGE99OWNt/zT9E56xEJH4FurSF3jhY8kWnknrKbKIipicriA4DVeO6VjLRCYnBV4zz2JQX+Fg==
+X-Received: by 2002:ac2:43c9:0:b0:508:e4b1:a785 with SMTP id u9-20020ac243c9000000b00508e4b1a785mr4581566lfl.62.1698656583893;
+        Mon, 30 Oct 2023 02:03:03 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id l12-20020adfe9cc000000b003232380ffd7sm7758694wrn.102.2023.10.30.02.03.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 02:03:03 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 12:02:59 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Mahmoud Adam <mngyadam@amazon.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stephan Mueller <smueller@chronox.de>,
+        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] crypto: rsa - add a check for allocation failure
+Message-ID: <d870c278-3f0e-4386-a58d-c9e2c97a7c6c@moroto.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: profitpathwaygo.com]
-        *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: profitpathwaygo.com]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [141.94.21.238 listed in bl.score.senderscore.com]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [141.94.21.238 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: profitpathwaygo.com]
-        * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
-        *      [score: 0.0101]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-crypto.vger.kernel.org>
 X-Mailing-List: linux-crypto@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Static checkers insist that the mpi_alloc() allocation can fail so add
+a check to prevent a NULL dereference.  Small allocations like this
+can't actually fail in current kernels, but adding a check is very
+simple and makes the static checkers happy.
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Fixes: 6637e11e4ad2 ("crypto: rsa - allow only odd e and restrict value in FIPS mode")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ crypto/rsa.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+diff --git a/crypto/rsa.c b/crypto/rsa.c
+index c79613cdce6e..b9cd11fb7d36 100644
+--- a/crypto/rsa.c
++++ b/crypto/rsa.c
+@@ -220,6 +220,8 @@ static int rsa_check_exponent_fips(MPI e)
+ 	}
+ 
+ 	e_max = mpi_alloc(0);
++	if (!e_max)
++		return -ENOMEM;
+ 	mpi_set_bit(e_max, 256);
+ 
+ 	if (mpi_cmp(e, e_max) >= 0) {
+-- 
+2.42.0
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
-
-
-Pozdrawiam serdecznie
-Adam Charachuta
