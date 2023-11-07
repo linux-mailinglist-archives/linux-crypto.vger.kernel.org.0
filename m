@@ -1,37 +1,37 @@
-Return-Path: <linux-crypto+bounces-15-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEE757E462F
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Nov 2023 17:38:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6A927E4630
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Nov 2023 17:38:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9C20281149
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Nov 2023 16:38:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D66E01C20B9E
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Nov 2023 16:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB11328C2
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Nov 2023 16:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D36328D8
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Nov 2023 16:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OssHrQqm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e/qtbT9C"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9730315AB
-	for <linux-crypto@vger.kernel.org>; Tue,  7 Nov 2023 15:52:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7460AC433C9;
-	Tue,  7 Nov 2023 15:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE92315AC
+	for <linux-crypto@vger.kernel.org>; Tue,  7 Nov 2023 15:53:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABFCCC433C7;
+	Tue,  7 Nov 2023 15:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699372374;
-	bh=PsjWDKrvCnrYkyQWoxTiJemIijmjf0M5UJ0Pzvb3jBg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OssHrQqmgyI6F0q7ncw3ivdswPlnhRVCx9OG3i7W4/uKSjI9Igftf3OFpbeOKJBOn
-	 /LbKaObMCs3IDAxMednkOw8OWVCe45VU+/ju5olqKPTyGzVHQhLlkJjIh9iXCcaiSP
-	 YG4lQtdIcXXaEBX+tRF5qe+o0+n4hPLEhAZIx3IRIEb0tnEnmzWLzXNI2HXK5UZx7d
-	 GSm5mnsR4vTn9HEN4aA+rc+x3pTgffTO1YwPB2u6b6nr0SZrZCxjFxD5orlHcA6p/n
-	 qqRsRCmQbkuX8UU/zmPAFygC9ZLBBZ3BRez39MhyjelDz1hxnh8BKe4jPcuj+UkrQL
-	 WNul4jN1BNUXg==
+	s=k20201202; t=1699372426;
+	bh=t5ELZNCIML39X1OpTlA9h4f70gLhWrjCCSxwMpd/wkU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=e/qtbT9CzY2GUCmqLufaJ+PAFG2wfvLPdmrCSbCRlLedM/U7trT9uSuVnspsD662F
+	 8cWIqitqiobbmwfvhG2WGbO/HKiyEpG1nCYl6S7BeAt2fpVRR/bWzXLH4IkuZYXjhS
+	 4ihfFffMXzKZBkrvDFsNpXcxRv8oWfYCECmY8z+r1wNlhIyIU7v+0WHGjWUTmWdr+a
+	 LoFPP7CUHiRK3HxZjEcx0pInZ/SUn7mehct5QHm6V+kLWqi+9Tf54mHUCXv3eKLf19
+	 +k9uDe3BlkNI9M+W7lsDQU/12UvFiHyAb1yceRk5y1beoSz1URH6I97vpVRWDgu0Nm
+	 nxBKi2ob1D0Ag==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -43,12 +43,10 @@ Cc: Lu Jialin <lujialin4@huawei.com>,
 	davem@davemloft.net,
 	daniel.m.jordan@oracle.com,
 	linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 02/16] crypto: pcrypt - Fix hungtask for PADATA_RESET
-Date: Tue,  7 Nov 2023 10:52:21 -0500
-Message-ID: <20231107155249.3768098-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 01/12] crypto: pcrypt - Fix hungtask for PADATA_RESET
+Date: Tue,  7 Nov 2023 10:53:19 -0500
+Message-ID: <20231107155343.3768464-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107155249.3768098-1-sashal@kernel.org>
-References: <20231107155249.3768098-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -57,7 +55,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.199
+X-stable-base: Linux 5.4.259
 Content-Transfer-Encoding: 8bit
 
 From: Lu Jialin <lujialin4@huawei.com>
@@ -124,10 +122,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
-index 9d10b846ccf73..005a36cb21bc4 100644
+index 276d2fd9e911c..63e64164900e8 100644
 --- a/crypto/pcrypt.c
 +++ b/crypto/pcrypt.c
-@@ -117,6 +117,8 @@ static int pcrypt_aead_encrypt(struct aead_request *req)
+@@ -118,6 +118,8 @@ static int pcrypt_aead_encrypt(struct aead_request *req)
  	err = padata_do_parallel(ictx->psenc, padata, &ctx->cb_cpu);
  	if (!err)
  		return -EINPROGRESS;
@@ -136,7 +134,7 @@ index 9d10b846ccf73..005a36cb21bc4 100644
  
  	return err;
  }
-@@ -164,6 +166,8 @@ static int pcrypt_aead_decrypt(struct aead_request *req)
+@@ -165,6 +167,8 @@ static int pcrypt_aead_decrypt(struct aead_request *req)
  	err = padata_do_parallel(ictx->psdec, padata, &ctx->cb_cpu);
  	if (!err)
  		return -EINPROGRESS;
@@ -146,10 +144,10 @@ index 9d10b846ccf73..005a36cb21bc4 100644
  	return err;
  }
 diff --git a/kernel/padata.c b/kernel/padata.c
-index 11ca3ebd8b123..ece4a2b77d32b 100644
+index 92a4867e8adc7..a544da60014c0 100644
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -207,7 +207,7 @@ int padata_do_parallel(struct padata_shell *ps,
+@@ -130,7 +130,7 @@ int padata_do_parallel(struct padata_shell *ps,
  		*cb_cpu = cpu;
  	}
  
