@@ -1,142 +1,103 @@
-Return-Path: <linux-crypto+bounces-69-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-65-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD357E7A32
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 09:35:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A787E789C
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 05:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A7C3B20981
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 08:35:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFC53281486
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 04:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7539B1170A
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 08:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7384820F3
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 04:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="ge5fuSoO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kkmb1yV3"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4454B1FCB
-	for <linux-crypto@vger.kernel.org>; Fri, 10 Nov 2023 07:05:39 +0000 (UTC)
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE388254
-	for <linux-crypto@vger.kernel.org>; Thu,  9 Nov 2023 23:05:38 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so1578998b3a.2
-        for <linux-crypto@vger.kernel.org>; Thu, 09 Nov 2023 23:05:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1699599937; x=1700204737; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XUDU8jgptAxW+fbE2XJsHM9R/m1WuxaBgSA3vJN2eHc=;
-        b=ge5fuSoObGcu7H2HxOmot+bxPZhuxk4kot4v2LyputHTWYK/drvtZtO4ypto+P8/vn
-         ESzbe/fGOrKRKenBNkORqnVngBs2fEHYbLTXVrFKwo8KcPvEZKPrwVAMvUqlnYzMMa6U
-         6Bmox/YylFPTxxiTdASo2eBxpuFWQe9tdII3tFo/NkPhTEE9JWW+CAtYp8CUw4cF361z
-         3qiEmjtfqNFM/RDptxc7VMy0fzf7knGVEyPs3ScqM7JcJpLuPoLZya5v6DvCDYg4+Wdl
-         lwezlhmmcw3CQRWy9m1bxRPEahF6c56Hk53wr3WLG6luQEDJ2WKPbwd0nSRrX6kjXbLK
-         Nkkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699599937; x=1700204737;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XUDU8jgptAxW+fbE2XJsHM9R/m1WuxaBgSA3vJN2eHc=;
-        b=VW6VL8i7ShUkiEy+AEDZ3NX6c6WC2aHsDC2g7sqrnqgTy1Cb7wTymOMU5bz0ExlNmS
-         D3uLhQVneMI696tKe2/PIkeS71vFLjyA5snHWca6CoByO9ghpybbzyeQYK5hoVRYWGZZ
-         iTLSathoe5ilvFhPKKjduwYuuJygzDxRpmj0j1VgvTWSwgGD6f2klaEGatja8E5Zk9B+
-         1Tvq7w+DhzfNZS3gImHLeK5AdioiFzK6ZrZnEnPpD6xiBzwVNoaQNTM9rRWOpMC+egIC
-         t84HQZnJwQfdauKiz+EfjGXXKA2xEV/7vvP9TjKKaZiNUxp8g/hFChRbWK8rjiFt7/8N
-         S6MQ==
-X-Gm-Message-State: AOJu0YwnkCC+odcggs+B27n7WWRfAiYk4403XgTvgbouSbkbNl1pHBA6
-	50oKP8DHKXjEKXcvix5i0GZ+3RrX7tG7P2lSpJl7dg==
-X-Google-Smtp-Source: AGHT+IHRC6A0RYIZ+hAK7pADe4iS4Ng9L/OaXImZUunvvqSvdYwesELoXVdLs1NatCPZXbqISvIX0A==
-X-Received: by 2002:a67:e0c6:0:b0:45d:9376:a873 with SMTP id m6-20020a67e0c6000000b0045d9376a873mr7001350vsl.29.1699589176700;
-        Thu, 09 Nov 2023 20:06:16 -0800 (PST)
-Received: from ?IPv6:2402:7500:4ce:aeef:99fc:78aa:eebe:b7e0? ([2402:7500:4ce:aeef:99fc:78aa:eebe:b7e0])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170902e88d00b001c627413e87sm4301587plg.290.2023.11.09.20.06.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Nov 2023 20:06:16 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C343F63BC
+	for <linux-crypto@vger.kernel.org>; Fri, 10 Nov 2023 04:34:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF575C433C8;
+	Fri, 10 Nov 2023 04:34:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699590899;
+	bh=luMWNgUgOzDCukfqCzpzbeoC/xYIuvR4tlh8y8BriOI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Kkmb1yV3cX8ZqC2Ugs56PrhNzF27vOjUHj7Zi9Am2rWheYaIW6PoIBxdQXrExYQ6d
+	 /M+jhxGhYDtOneLSN0nlDZyHowUbNauRO+fyhNafAl1Y0X7jzGFlyJ+klNa7Lnat+y
+	 49Yxbwrr+8p5wcA6XhOK34zy5ZlTMKxY4d7CSJYRNS14I1K2tao9RwYjCPJilMg4Fl
+	 TMDeMHKmxFrCqUeQbLDaIJMxJecWs33mXwwUJ6mX2FdYgr8bPk0PBecmLBjtz8C+Pt
+	 CUpVSOZvKNwscrCaq03QH8fQk86sPy/9dHwK9zdoOj2sp1EaZiVN3g3RVC/Z5zqJZe
+	 TM6yuwOERH10w==
+Date: Thu, 9 Nov 2023 20:34:57 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Jerry Shih <jerry.shih@sifive.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
+	Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
+	davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
+	conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
+	heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
+	hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated
+ AES-CBC/CTR/ECB/XTS implementations
+Message-ID: <20231110043457.GA6572@sol.localdomain>
+References: <20231025183644.8735-1-jerry.shih@sifive.com>
+ <20231025183644.8735-7-jerry.shih@sifive.com>
+ <20231102051639.GF1498@sol.localdomain>
+ <39126F19-8FEB-4E18-B61D-4494B59C43A1@sifive.com>
+ <20231109071623.GB1245@sol.localdomain>
+ <659DE1CF-4F42-4935-9DFD-E127269CEC54@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated AES-CBC/CTR/ECB/XTS
- implementations
-From: Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231109080549.GC1245@sol.localdomain>
-Date: Fri, 10 Nov 2023 12:06:10 +0800
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- palmer@dabbelt.com,
- Albert Ou <aou@eecs.berkeley.edu>,
- herbert@gondor.apana.org.au,
- davem@davemloft.net,
- andy.chiu@sifive.com,
- greentime.hu@sifive.com,
- conor.dooley@microchip.com,
- guoren@kernel.org,
- bjorn@rivosinc.com,
- heiko@sntech.de,
- ardb@kernel.org,
- phoebe.chen@sifive.com,
- hongrong.hsu@sifive.com,
- linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CF7F714A-CAC1-41C4-A43A-DA1273111492@sifive.com>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-7-jerry.shih@sifive.com>
- <20231109080549.GC1245@sol.localdomain>
-To: Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <659DE1CF-4F42-4935-9DFD-E127269CEC54@sifive.com>
 
-On Nov 9, 2023, at 16:05, Eric Biggers <ebiggers@kernel.org> wrote:
-> On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
->> +# prepare input data(v24), iv(v28), bit-reversed-iv(v16), =
-bit-reversed-iv-multiplier(v20)
->> +sub init_first_round {
->> ....
->> +    # Prepare GF(2^128) multiplier [1, x, x^2, x^3, ...] in v8.
->> +    slli $T0, $LEN32, 2
->> +    @{[vsetvli "zero", $T0, "e32", "m1", "ta", "ma"]}
->> +    # v2: [`1`, `1`, `1`, `1`, ...]
->> +    @{[vmv_v_i $V2, 1]}
->> +    # v3: [`0`, `1`, `2`, `3`, ...]
->> +    @{[vid_v $V3]}
->> +    @{[vsetvli "zero", $T0, "e64", "m2", "ta", "ma"]}
->> +    # v4: [`1`, 0, `1`, 0, `1`, 0, `1`, 0, ...]
->> +    @{[vzext_vf2 $V4, $V2]}
->> +    # v6: [`0`, 0, `1`, 0, `2`, 0, `3`, 0, ...]
->> +    @{[vzext_vf2 $V6, $V3]}
->> +    slli $T0, $LEN32, 1
->> +    @{[vsetvli "zero", $T0, "e32", "m2", "ta", "ma"]}
->> +    # v8: [1<<0=3D1, 0, 0, 0, 1<<1=3Dx, 0, 0, 0, 1<<2=3Dx^2, 0, 0, =
-0, ...]
->> +    @{[vwsll_vv $V8, $V4, $V6]}
->=20
-> This code assumes that '1 << i' fits in 64 bits, for 0 <=3D i < vl.
->=20
-> I think that works out to an implicit assumption that VLEN <=3D 2048.  =
-I.e.,
-> AES-XTS encryption/decryption would produce the wrong result on RISC-V
-> implementations with VLEN > 2048.
->=20
-> Perhaps it should be explicitly checked that VLEN <=3D 2048?
->=20
-> - Eric
+On Fri, Nov 10, 2023 at 11:58:02AM +0800, Jerry Shih wrote:
+> On Nov 9, 2023, at 15:16, Eric Biggers <ebiggers@kernel.org> wrote:
+> > On Tue, Nov 07, 2023 at 04:53:13PM +0800, Jerry Shih wrote:
+> >> On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
+> >>> On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
+> >>>> +static int ecb_encrypt(struct skcipher_request *req)
+> >>>> +{
+> >>> 
+> >>> There's no fallback for !crypto_simd_usable() here.  I really like it this way.
+> >>> However, for it to work (for skciphers and aeads), RISC-V needs to allow the
+> >>> vector registers to be used in softirq context.  Is that already the case?
+> >> 
+> >> The kernel-mode-vector could be enabled in softirq, but we don't have nesting
+> >> vector contexts. Will we have the case that kernel needs to jump to softirq for
+> >> encryptions during the regular crypto function? If yes, we need to have fallbacks
+> >> for all algorithms.
+> > 
+> > Are you asking what happens if a softirq is taken while the CPU is between
+> > kernel_vector_begin() and kernel_vector_end()?  I think that needs to be
+> > prevented by making kernel_vector_begin() and kernel_vector_end() disable and
+> > re-enable softirqs, like what kernel_neon_begin() and kernel_neon_end() do on
+> > arm64.  Refer to commit 13150149aa6ded which implemented that behavior on arm64.
+> > 
+> > - Eric
+> 
+> The current kernel-mode-vector implementation, it only calls `preempt_disable()` during
+> vector context. So, we will hit nesting vector context issue from softirq which also use
+> kernel-vector.
+> https://lore.kernel.org/all/20230721112855.1006-1-andy.chiu@sifive.com/
+> 
+> Maybe we could use the `simd_register_aeads_compat()` wrapping as x86 platform
+> first in a simpler way first.
 
-Yes, we could just have the simple checking like:
+The "crypto SIMD helpers" (simd_register_*() in crypto/simd.c) are quite complex
+and have some disadvantages such as marking the resulting algorithms as
+"asynchronous".  I expect that a much better approach would be to align RISC-V
+with arm64 by disabling softirqs while the kernel vector unit is in use.
 
-  riscv_vector_vlen() >=3D 128 || riscv_vector_vlen() <=3D2048
-
-We could also truncate the VL inside for VLEN>2048 case.
-Let me think more about these two approaches.=20
-
--Jerry=
+- Eric
 
