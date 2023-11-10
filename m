@@ -1,143 +1,233 @@
-Return-Path: <linux-crypto+bounces-66-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-70-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74A9E7E796A
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 07:34:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902007E7B7B
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 11:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3870B281049
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 06:34:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2F3F1C20CAC
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 10:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E312F63C9
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 06:34:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GrXR5qO4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D231134C0
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 10:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA8920E4
-	for <linux-crypto@vger.kernel.org>; Fri, 10 Nov 2023 05:44:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8E93C43391;
-	Fri, 10 Nov 2023 05:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699595070;
-	bh=YgOoKgJVYyykPZO6YJWAatV8j2OrL6qNPMuouTnarbc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GrXR5qO4IM6Cz5Zcb5EYepEpMb2Sl+PsQOQScRShBkAKI4jTOd/zz0AFn0pgmRd5a
-	 xDH4cUqUJC5YWWsfhL1D663qotYxPUJJELe9nVKyiR9eWQ+9tvovBmk9LoSm9FNN6V
-	 itysJvwbCQVDYL1SiGTtfUEd2zVzTIE0vPiDKREnn6sOi4TJZEfQy0NsM5WfWu1Ylc
-	 7IxZciEGuqK19h0abPrAFbIe5LerhD1Wgvgcl5QRcL+TDQ6MBjY6D8ef/xo2++DYMV
-	 +dHoyAZB76oRGRLALh4arWeFIvgxIHX1109PTUtOE3kHdCWCMwTwkp3y+gSQtFFHty
-	 n2hQUKtGeF8Kw==
-Date: Thu, 9 Nov 2023 21:44:28 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Andy Chiu <andy.chiu@sifive.com>
-Cc: Jerry Shih <jerry.shih@sifive.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-	Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-	davem@davemloft.net, greentime.hu@sifive.com,
-	conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-	heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
-	hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated
- AES-CBC/CTR/ECB/XTS implementations
-Message-ID: <20231110054428.GC6572@sol.localdomain>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-7-jerry.shih@sifive.com>
- <20231102051639.GF1498@sol.localdomain>
- <39126F19-8FEB-4E18-B61D-4494B59C43A1@sifive.com>
- <20231109071623.GB1245@sol.localdomain>
- <CABgGipXnGVB770ZA=60rD-6Hi5Fv_wh3tST+G+VFbTmMYzz0Mw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF7BD51F
+	for <linux-crypto@vger.kernel.org>; Fri, 10 Nov 2023 09:04:54 +0000 (UTC)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EE3AF80;
+	Fri, 10 Nov 2023 01:04:51 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d9c66e70ebdso1843023276.2;
+        Fri, 10 Nov 2023 01:04:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699607091; x=1700211891;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WHZPpTTWcN/qBtcyGF24DlgLlsqCltsVlukIwu8/1iQ=;
+        b=QiYKoo/QUg++OBz4Mna7w7ILuBGUOiWQYItNKUu+AfYr2EfW8cvfmn+flNQjapSixE
+         Z6mHN0nfOyVFvLbJGiqWGEEC4lyIDURfkftU26TrIw1tXdPCPSHdxYvm+R/fJrxEcXKL
+         EPvFe21+Va9CDkBr2QgY5usptWnWBU7CcEphBAN/1OvREB9t/SROT23hLrbCk8fWqj3Q
+         +COSxbSCZo/DlYg2cVHKw78jdn7rTpln/Wstn7WxhKWELYOtpNKZsNPOw2nak2zSN4yw
+         OGR83qmhtmrOwJDjEU6iPMb1+qtjnSm0KbPjWHOyZXGG+/ib7yS73FyYib2AMd+64BG9
+         1K7w==
+X-Gm-Message-State: AOJu0Yw9tJfdHIJh68sVqpefpk8PF6eOdJdnMIbRN9Pd8Ut9WEIk9NRV
+	KesGUyJsApzfcjHiTbk//ZPsWhbMDCEgKw==
+X-Google-Smtp-Source: AGHT+IEEa4GrP5RKDm7nfjuGhV+kD81VRn41CavZ63GmDswLUYsSSe4/1yhToJgXSgvu1T206jClXQ==
+X-Received: by 2002:a25:e441:0:b0:d78:f32:5849 with SMTP id b62-20020a25e441000000b00d780f325849mr6958918ybh.24.1699607090762;
+        Fri, 10 Nov 2023 01:04:50 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id g10-20020a5b070a000000b00da041da21e7sm7718137ybq.65.2023.11.10.01.04.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 01:04:50 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a7af52ee31so21843487b3.2;
+        Fri, 10 Nov 2023 01:04:50 -0800 (PST)
+X-Received: by 2002:a0d:dc85:0:b0:5a7:baae:329f with SMTP id
+ f127-20020a0ddc85000000b005a7baae329fmr7246797ywe.15.1699607089817; Fri, 10
+ Nov 2023 01:04:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgGipXnGVB770ZA=60rD-6Hi5Fv_wh3tST+G+VFbTmMYzz0Mw@mail.gmail.com>
+References: <Yzv0wXi4Uu2WND37@gondor.apana.org.au> <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
+ <Y/MDmL02XYfSz8XX@gondor.apana.org.au> <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
+ <ZJ0RSuWLwzikFr9r@gondor.apana.org.au> <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
+ <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au> <CAHk-=wj0-QNH5gMeYs3b+LU-isJyE4Eu9p8vVH9fb-vHHmUw0g@mail.gmail.com>
+ <ZUSKk6Tb7+0n9X5s@gondor.apana.org.au> <CAHk-=wh=xH7TNHeaYdsrVW6p1fCQEV5PZMpaFNsZyXYqzn8Stg@mail.gmail.com>
+ <ZUi5KMUaNkp0c1Ds@gondor.apana.org.au>
+In-Reply-To: <ZUi5KMUaNkp0c1Ds@gondor.apana.org.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 10 Nov 2023 10:04:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWWMABFmejXPEuKyvDC7CgUZSeWU6cR8qpBdVa9KiBdUQ@mail.gmail.com>
+Message-ID: <CAMuHMdWWMABFmejXPEuKyvDC7CgUZSeWU6cR8qpBdVa9KiBdUQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: jitterentropy - Hide esoteric Kconfig options
+ under FIPS and EXPERT
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
+	Steffen Klassert <steffen.klassert@secunet.com>, =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>, 
+	Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 10, 2023 at 12:58:12PM +0800, Andy Chiu wrote:
-> Hi Eric,
-> 
-> On Thu, Nov 9, 2023 at 3:16 PM Eric Biggers <ebiggers@kernel.org> wrote:
+Hi Herbert, Yamada-san,
+
+On Mon, Nov 6, 2023 at 11:00=E2=80=AFAM Herbert Xu <herbert@gondor.apana.or=
+g.au> wrote:
+> On Thu, Nov 02, 2023 at 08:32:36PM -1000, Linus Torvalds wrote:
+> > I think that would help the situation, but I assume the sizing for the
+> > jitter buffer is at least partly due to trying to account for cache
+> > sizing or similar issues?
 > >
-> > On Tue, Nov 07, 2023 at 04:53:13PM +0800, Jerry Shih wrote:
-> > > On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
-> > > > On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
-> > > >> +static int ecb_encrypt(struct skcipher_request *req)
-> > > >> +{
-> > > >> +  struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-> > > >> +  const struct riscv64_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
-> > > >> +  struct skcipher_walk walk;
-> > > >> +  unsigned int nbytes;
-> > > >> +  int err;
-> > > >> +
-> > > >> +  /* If we have error here, the `nbytes` will be zero. */
-> > > >> +  err = skcipher_walk_virt(&walk, req, false);
-> > > >> +  while ((nbytes = walk.nbytes)) {
-> > > >> +          kernel_vector_begin();
-> > > >> +          rv64i_zvkned_ecb_encrypt(walk.src.virt.addr, walk.dst.virt.addr,
-> > > >> +                                   nbytes & AES_BLOCK_VALID_SIZE_MASK,
-> > > >> +                                   &ctx->key);
-> > > >> +          kernel_vector_end();
-> > > >> +          err = skcipher_walk_done(
-> > > >> +                  &walk, nbytes & AES_BLOCK_REMAINING_SIZE_MASK);
-> > > >> +  }
-> > > >> +
-> > > >> +  return err;
-> > > >> +}
-> > > >
-> > > > There's no fallback for !crypto_simd_usable() here.  I really like it this way.
-> > > > However, for it to work (for skciphers and aeads), RISC-V needs to allow the
-> > > > vector registers to be used in softirq context.  Is that already the case?
-> > >
-> > > The kernel-mode-vector could be enabled in softirq, but we don't have nesting
-> > > vector contexts. Will we have the case that kernel needs to jump to softirq for
-> > > encryptions during the regular crypto function? If yes, we need to have fallbacks
-> > > for all algorithms.
+> > Which really means that I assume any static compile-time answer to
+> > that question is always wrong - whether you are an expert or not.
+> > Unless you are just building the thing for one particular machine.
 > >
-> > Are you asking what happens if a softirq is taken while the CPU is between
-> > kernel_vector_begin() and kernel_vector_end()?  I think that needs to be
-> > prevented by making kernel_vector_begin() and kernel_vector_end() disable and
-> > re-enable softirqs, like what kernel_neon_begin() and kernel_neon_end() do on
-> > arm64.  Refer to commit 13150149aa6ded which implemented that behavior on arm64.
-> 
-> Yes, if making Vector available to softirq context is a must, then it
-> is reasonable to call local_bh_disable() in kernel_vector_begin().
-> However, softirq would not be the only user for Vector and disabling
-> it may cause extra latencies. Meanwhile, simply disabling bh in
-> kernel_vector_begin() will conflict with the patch[1] that takes an
-> approach to run Preemptible Vector. Though it is not clear yet on
-> whether we should run Vector without turning off preemption, I have
-> tested running preemptible Vector and observed some latency
-> improvements without sacrificing throughput. We will have a discussion
-> on LPC2023[2] and it'd be great if you could join or continue to
-> discuss it here.
-> 
-> Approaches can be done such as nesting, if running Vector in softirq
-> is required. Since it requires extra save/restore on nesting, I think
-> we should run some tests to get more performance (latency/throughput)
-> figure let the result decide the final direction. For example, we
-> could run Vector in either nesting with preempt-V and  non-nesting
-> without preempt-V and compare the following performance catachristics:
->  - System-wide latency impact
->  - Latency and throughput of softirq-Vector itself
+> > So I do think the problem is deeper than "this is a question only for
+> > experts". I definitely don't think you should ask a regular user (or
+> > even a distro kernel package manager). I suspect it's likely that the
+> > question is just wrong in general - because any particular one buffer
+> > size for any number of machines simply cannot be the right answer.
+> >
+> > I realize that the commit says "*allow* for configuration of memory
+> > size", but I really question the whole approach.
+>
+> Yes I think these are all valid points.  I just noticed that I
+> forgot to cc the author so let's see if Stephan has anything to
+> add.
+>
+> > But yes - hiding these questions from any reasonable normal user is at
+> > least a good first step.
+>
+> OK here's the patch:
+>
+> ---8<---
+> As JITTERENTROPY is selected by default if you enable the CRYPTO
+> API, any Kconfig options added there will show up for every single
+> user.  Hide the esoteric options under EXPERT as well as FIPS so
+> that only distro makers will see them.
+>
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-The skcipher and aead APIs do indeed need to work in softirq context.
+Thanks for your patch, which is now commit e7ed6473c2c8c4e4 ("crypto:
+jitterentropy - Hide esoteric Kconfig options under FIPS and EXPERT").
 
-It's possible to use a fallback, either by falling back to scalar instructions
-or by punting the encryption/decryption operation to a workqueue using
-crypto/simd.c.  However, both approaches have some significant disadvantages.
-It was nice that the need for them on arm64 was eliminated by commit
-13150149aa6ded.  Note that it's possible to yield the vector unit occasionally,
-to keep preemption and softirqs from being disabled for too long.
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -1297,10 +1297,12 @@ config CRYPTO_JITTERENTROPY
+>
+>           See https://www.chronox.de/jent.html
+>
+> +if CRYPTO_JITTERENTROPY
+> +if CRYPTO_FIPS && EXPERT
+> +
+>  choice
+>         prompt "CPU Jitter RNG Memory Size"
+>         default CRYPTO_JITTERENTROPY_MEMSIZE_2
+> -       depends on CRYPTO_JITTERENTROPY
+>         help
+>           The Jitter RNG measures the execution time of memory accesses.
+>           Multiple consecutive memory accesses are performed. If the memo=
+ry
+> @@ -1344,7 +1346,6 @@ config CRYPTO_JITTERENTROPY_OSR
+>         int "CPU Jitter RNG Oversampling Rate"
+>         range 1 15
+>         default 1
+> -       depends on CRYPTO_JITTERENTROPY
+>         help
+>           The Jitter RNG allows the specification of an oversampling rate=
+ (OSR).
+>           The Jitter RNG operation requires a fixed amount of timing
+> @@ -1359,7 +1360,6 @@ config CRYPTO_JITTERENTROPY_OSR
+>
+>  config CRYPTO_JITTERENTROPY_TESTINTERFACE
+>         bool "CPU Jitter RNG Test Interface"
+> -       depends on CRYPTO_JITTERENTROPY
+>         help
+>           The test interface allows a privileged process to capture
+>           the raw unconditioned high resolution time stamp noise that
+> @@ -1377,6 +1377,28 @@ config CRYPTO_JITTERENTROPY_TESTINTERFACE
+>
+>           If unsure, select N.
+>
+> +endif  # if CRYPTO_FIPS && EXPERT
+> +
+> +if !(CRYPTO_FIPS && EXPERT)
+> +
+> +config CRYPTO_JITTERENTROPY_MEMORY_BLOCKS
+> +       int
+> +       default 64
+> +
+> +config CRYPTO_JITTERENTROPY_MEMORY_BLOCKSIZE
+> +       int
+> +       default 32
+> +
+> +config CRYPTO_JITTERENTROPY_OSR
+> +       int
+> +       default 1
+> +
+> +config CRYPTO_JITTERENTROPY_TESTINTERFACE
+> +       bool
 
-- Eric
+This duplicates the symbols in the CRYPTO_FIPS && EXPERT section above,
+which is fragile.
+
+For the int and bool symbols, this can be handled without duplication
+using:
+
+     config CRYPTO_JITTERENTROPY_OSR
+    -       int "CPU Jitter RNG Oversampling Rate"
+    +       int "CPU Jitter RNG Oversampling Rate" if CRYPTO_FIPS && EXPERT
+
+     config CRYPTO_JITTERENTROPY_TESTINTERFACE
+    -       bool "CPU Jitter RNG Test Interface"
+    +       bool "CPU Jitter RNG Test Interface" if CRYPTO_FIPS && EXPERT
+
+Unfortunately the following does not work for the choice statement,
+although kconfig does not report an error:
+
+     choice
+    -       prompt "CPU Jitter RNG Memory Size"
+    +       prompt "CPU Jitter RNG Memory Size" if CRYPTO_FIPS && EXPERT
+             default CRYPTO_JITTERENTROPY_MEMSIZE_2
+
+Unlike for other symbol types, which just become silent if
+!(CRYPTO_FIPS && EXPERT), the choice is skipped completely if
+!(CRYPTO_FIPS && EXPERT), and CRYPTO_JITTERENTROPY_MEMSIZE_2 is not set.
+
+Yamada-san: Do you know why choice behaves differently?
+Is this easy to fix?
+
+Thanks!
+
+> +
+> +endif  # if !(CRYPTO_FIPS && EXPERT)
+> +endif  # if CRYPTO_JITTERENTROPY
+> +
+>  config CRYPTO_KDF800108_CTR
+>         tristate
+>         select CRYPTO_HMAC
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
