@@ -1,80 +1,148 @@
-Return-Path: <linux-crypto+bounces-64-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-67-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6973E7E7790
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 03:33:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D667E7A2F
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 09:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 224D2280F76
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 02:33:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF600B20981
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 08:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79EB80A
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 02:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C4CD51F
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Nov 2023 08:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QsToYqcr"
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="ieQ0H1el"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E12ED0
-	for <linux-crypto@vger.kernel.org>; Fri, 10 Nov 2023 01:30:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 63A3BC433C8;
-	Fri, 10 Nov 2023 01:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699579827;
-	bh=QXKTvhWHBgvgPkLO1gSFMd6sxBadRrPpalvLsnx+m98=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=QsToYqcr8pwTqsZ6hel8ILJkuhsY0BLXDXxDJuTOqpFOmAdY/c8fF4jFebzz8d1Vm
-	 rto/kPw7r8Yv/UQTRzTw0t2koEKSRnHZ+v3Em21V18+csWmev8EiuzHPXdFUnXTaxQ
-	 LbEUG80pRI4EZnFgdvzpVwkkfv3BnVD2UXC+gpa0h0/ymrjfc6ViiS2vJdIJgGZi3d
-	 Bm/cQv5JQ3bqChAwxvHR46nILKINWKH5s3wAOppvwm3R1kATLVoOUhZR2Necr3rDyJ
-	 wAThFJCv9Tq7d9WfUpEdjz/11O2P0f0N43Ty4N8B1lJ5xjAcwOWV+uF4wCU1p0n0Xb
-	 Fd2NXp/F/6FGw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4E348C00446;
-	Fri, 10 Nov 2023 01:30:27 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Fixes for 6.7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ZUxgc8jIBEgc9CMc@gondor.apana.org.au>
-References: <Yr1XPJsAH2l1cx3A@gondor.apana.org.au>
- <Y0zcWCmNmdXnX8RP@gondor.apana.org.au>
- <Y1thZ/+Gh/ONyf7x@gondor.apana.org.au>
- <Y7fmtJHWT1Zx+A1j@gondor.apana.org.au>
- <ZARrt99wJb7IhoY4@gondor.apana.org.au>
- <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
- <ZHQe9A8CC93iCFMG@gondor.apana.org.au>
- <ZKtH5zrS4pR22PGT@gondor.apana.org.au>
- <ZOLcCC523FoBAyv0@gondor.apana.org.au>
- <ZPAiMYaqUslSyZ6+@gondor.apana.org.au> <ZUxgc8jIBEgc9CMc@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZUxgc8jIBEgc9CMc@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.7-p2
-X-PR-Tracked-Commit-Id: 9aedd10fe38418319bd8ed55dc68a40ec04aaa05
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3b220413438184b352b297e7cf593fa56999b5b3
-Message-Id: <169957982731.19824.17401685485894678356.pr-tracker-bot@kernel.org>
-Date: Fri, 10 Nov 2023 01:30:27 +0000
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3CD15C5
+	for <linux-crypto@vger.kernel.org>; Fri, 10 Nov 2023 06:44:39 +0000 (UTC)
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C62D7D8B
+	for <linux-crypto@vger.kernel.org>; Thu,  9 Nov 2023 22:44:38 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-5844bc378feso937540eaf.0
+        for <linux-crypto@vger.kernel.org>; Thu, 09 Nov 2023 22:44:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1699598677; x=1700203477; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YGF1v/gqhKIfK3lN8tg1lEaaH/f3W7AggG6onMYyyAU=;
+        b=ieQ0H1elL7Gb/RhajHK9aMhhQrzku8gILgdGaDiNQol+nuzYrtr/HiLHy5a8/lwoIF
+         YQJtaukqEkPjXEPkpcn+G9HSK7JMiDw0Dfnz78vs/qg+bJWvJ3f7Sa/N6j5zigRdpAwW
+         US9p2+U0bEBAaJdKHVnex3byDHgXKgnk//s+rYm3MjdblPgTTLOz1fjIIsyMZAFzPavg
+         /yotpT/PLQOXdw0KQGNkEopweHg8gm8EjQJ9xYEkFPYfzUUgF/GqwHbDoK4cJaq9qI01
+         6F7thaaQ52PVo4hkt1LOr65kAy3x0GS712S7q/Ttx8+6779enDhtdRWk4VU667HIGTW+
+         gPnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699598677; x=1700203477;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YGF1v/gqhKIfK3lN8tg1lEaaH/f3W7AggG6onMYyyAU=;
+        b=TEwHiJEaXf/fp0VAa/whamKafUtiNbR4tUmkLyM8TKefi4rCX576tUHkqm7YlZb4NK
+         rtTGaO73Nsi7Bl9zdSBMsXwLLl9MryB3XtXIcVdK6lsTGO0omA1z/cCSfMZrTaTbDHq1
+         0bE121NBjq9aeVVbDobY7uPOGAX/cZimaXIYUyHuAdO16M0pOXURrw1/UhILsfR/rKhr
+         q5QupTWKmbmFBymItoL39O1fO7Fk/SnQqvPlH8rmWWNsv88I+kEoc5k9XRCAZy/6C0U1
+         Ja3D1ByUU8lmt1ivy35qd7njredseB7Kul0dfHWYNjqpKjEkAjqfBhPY2xcGB2K+G6E3
+         fsrA==
+X-Gm-Message-State: AOJu0Yxz4BfqXOOlnW5ReuXbECMwD8a18AONKVYZOGyxhgII2WBjKEga
+	jYnM7jC8hZ1cinb1TjhaIOnOPK6zEhYyMjyAbuN2Sg==
+X-Google-Smtp-Source: AGHT+IH9dKkq1F5Ww/wHqKo0Olzi4faKaa+VUqagiGOI3qwKWLaQqIZvl/khSG+4iZp6x2Dc6RGO1Q==
+X-Received: by 2002:a67:ef49:0:b0:452:6178:642c with SMTP id k9-20020a67ef49000000b004526178642cmr6819492vsr.1.1699588687911;
+        Thu, 09 Nov 2023 19:58:07 -0800 (PST)
+Received: from ?IPv6:2402:7500:4ce:aeef:99fc:78aa:eebe:b7e0? ([2402:7500:4ce:aeef:99fc:78aa:eebe:b7e0])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b001cc307bcdbdsm4303356plg.211.2023.11.09.19.58.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Nov 2023 19:58:07 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated AES-CBC/CTR/ECB/XTS
+ implementations
+From: Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231109071623.GB1245@sol.localdomain>
+Date: Fri, 10 Nov 2023 11:58:02 +0800
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ palmer@dabbelt.com,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ herbert@gondor.apana.org.au,
+ davem@davemloft.net,
+ andy.chiu@sifive.com,
+ greentime.hu@sifive.com,
+ conor.dooley@microchip.com,
+ guoren@kernel.org,
+ bjorn@rivosinc.com,
+ heiko@sntech.de,
+ ardb@kernel.org,
+ phoebe.chen@sifive.com,
+ hongrong.hsu@sifive.com,
+ linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-crypto@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <659DE1CF-4F42-4935-9DFD-E127269CEC54@sifive.com>
+References: <20231025183644.8735-1-jerry.shih@sifive.com>
+ <20231025183644.8735-7-jerry.shih@sifive.com>
+ <20231102051639.GF1498@sol.localdomain>
+ <39126F19-8FEB-4E18-B61D-4494B59C43A1@sifive.com>
+ <20231109071623.GB1245@sol.localdomain>
+To: Eric Biggers <ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3445.9.7)
 
-The pull request you sent on Thu, 9 Nov 2023 12:30:43 +0800:
+On Nov 9, 2023, at 15:16, Eric Biggers <ebiggers@kernel.org> wrote:
+> On Tue, Nov 07, 2023 at 04:53:13PM +0800, Jerry Shih wrote:
+>> On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
+>>> On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
+>>>> +static int ecb_encrypt(struct skcipher_request *req)
+>>>> +{
+>>>=20
+>>> There's no fallback for !crypto_simd_usable() here.  I really like =
+it this way.
+>>> However, for it to work (for skciphers and aeads), RISC-V needs to =
+allow the
+>>> vector registers to be used in softirq context.  Is that already the =
+case?
+>>=20
+>> The kernel-mode-vector could be enabled in softirq, but we don't have =
+nesting
+>> vector contexts. Will we have the case that kernel needs to jump to =
+softirq for
+>> encryptions during the regular crypto function? If yes, we need to =
+have fallbacks
+>> for all algorithms.
+>=20
+> Are you asking what happens if a softirq is taken while the CPU is =
+between
+> kernel_vector_begin() and kernel_vector_end()?  I think that needs to =
+be
+> prevented by making kernel_vector_begin() and kernel_vector_end() =
+disable and
+> re-enable softirqs, like what kernel_neon_begin() and =
+kernel_neon_end() do on
+> arm64.  Refer to commit 13150149aa6ded which implemented that behavior =
+on arm64.
+>=20
+> - Eric
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.7-p2
+The current kernel-mode-vector implementation, it only calls =
+`preempt_disable()` during
+vector context. So, we will hit nesting vector context issue from =
+softirq which also use
+kernel-vector.
+https://lore.kernel.org/all/20230721112855.1006-1-andy.chiu@sifive.com/
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3b220413438184b352b297e7cf593fa56999b5b3
+Maybe we could use the `simd_register_aeads_compat()` wrapping as x86 =
+platform
+first in a simpler way first.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+-Jerry=
 
