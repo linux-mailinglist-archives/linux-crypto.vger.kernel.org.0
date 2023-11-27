@@ -1,58 +1,58 @@
-Return-Path: <linux-crypto+bounces-298-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-300-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254697F9BC6
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Nov 2023 09:35:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FD617F9BC8
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Nov 2023 09:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF8471F201A1
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Nov 2023 08:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C5CF280C76
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Nov 2023 08:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A02F1798D
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Nov 2023 08:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C2B17994
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Nov 2023 08:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="R3bGiBJy"
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="kjzYockN"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF421A7
-	for <linux-crypto@vger.kernel.org>; Sun, 26 Nov 2023 23:07:28 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cfc35090b0so6525655ad.1
-        for <linux-crypto@vger.kernel.org>; Sun, 26 Nov 2023 23:07:28 -0800 (PST)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66A413E
+	for <linux-crypto@vger.kernel.org>; Sun, 26 Nov 2023 23:07:31 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cf5901b4c8so32239235ad.1
+        for <linux-crypto@vger.kernel.org>; Sun, 26 Nov 2023 23:07:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701068848; x=1701673648; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1701068851; x=1701673651; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I9NcydlPjJuZdBvk47SliSWRPXO51iH+ClRWgIXdngI=;
-        b=R3bGiBJyq+uYPEskiMD2ig1vN6/rcwG2a45RUwH5v8t+GhKBASiJ2KCfoRAn8QERwB
-         Fwjs7IIY/oCs9P1Eafo/z/2qRS1WfEXf7i210aFCLEDdvsIyNEh2DNin+8kvlzQer6OX
-         2M31tXupx7SV+Vk4A7EoPk1pd4hi8K8Xz0T6nxvjeGZk/8oV+5tF2GlstIaMZ2RsLMTY
-         bDMXAcsqi5GJY8zab1zE4JaC+pdDFrQeYIb274LosuLyjt66+OddRoUGLI4ru4y4mR0k
-         tKiamBKph5O4/sifbbYhaIAcjnXWMxdbn726u8JcDt/QzMCnVllmoRHWmiNIYFFGEomz
-         MHGg==
+        bh=KWDZyqBJhOVpYqYhwbudR4lRinTiZ1fIB/oQ8fHi3tg=;
+        b=kjzYockN9LFJ6sx2k0sGTTv2ytJuV4elNRp7fBYMsUAQ9WMnE/5gs3P+8QSQ9lYcUu
+         y0q54OvISdijCRal+GXbTQQM9k8P4lbgU7+Qi6cXrbec2Vy0BhNWcgObBZGenfaBM0pa
+         WWfUkV5tBE3ALfJosouIAt6/wP/1T092eOP9/CmWzyHQUYfUK4BkAioZkNr2/Sly8FSm
+         umWvG6sqhe0fLBciczQW2wL/PushexwwSJTU843BMvxw4DkiMzx+1G5AQJ7Ugi7Omh7L
+         waH/IKc9Ewewq1bLR7U2nQWiX6+COnNYXo+fV/MpRKzFBgi9xpjCIy6jkqqN4dKvlNhK
+         KIOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701068848; x=1701673648;
+        d=1e100.net; s=20230601; t=1701068851; x=1701673651;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I9NcydlPjJuZdBvk47SliSWRPXO51iH+ClRWgIXdngI=;
-        b=jvkcovpzb8StDFBZSU7oSSu9Pj59o77upJVzdkHvTPbX7HGpO1vSLgfmgI+oQgVCH8
-         AZZO5pW5QwEa8hYj2YscDjZESyMpgZpNWYiPNPaOKOxqRHFl1ps1IQOVQL6DY2pMndMj
-         bclns/OMaKCL3Ogd6jUY4uiQtSUhspn88ecueQ1oOGiH+lltbvxxAAmepYhUn/qEPpsw
-         F4ZwX8TIWR28jTXG3XjgoM7u5dWJwuOIu46Zb5TIyJrJmSqwDRPBVgSIXSxqik2XmLeH
-         Ws3vByHKzQfl0DsK8PMZ63iBbzS4HMWWliXVFiCY7SDJeDLUBWaRYAp0eua/IxRhGJh+
-         t38w==
-X-Gm-Message-State: AOJu0Yz7POaD1WjaPp72uhzV/RcO1kpYOcEPQifPh1EEex2vlryYNwrk
-	/1IHvTLCup9ubJHgFDNaIDOPgA==
-X-Google-Smtp-Source: AGHT+IELRS3hxE4VCKaoEswdjN2LTSxsJZBADubHAmIAofnrpOYQED6FfVAgy1DMUxcK/odvBEY6yg==
-X-Received: by 2002:a17:903:1d1:b0:1cf:d58b:da39 with SMTP id e17-20020a17090301d100b001cfd58bda39mr1135943plh.64.1701068848370;
-        Sun, 26 Nov 2023 23:07:28 -0800 (PST)
+        bh=KWDZyqBJhOVpYqYhwbudR4lRinTiZ1fIB/oQ8fHi3tg=;
+        b=RDJ0vB34FuWXY7EvAufgGtq8oHt43u95SmpgTIYOId2kgv1Vbyd/5Jqsob+fT9IGo3
+         OJIqz1b46hjNHLJ8NzEW2Aow0MaoMPTbnmwyABZ9i82V8vJGnivezlWXERydK4SSYtdf
+         x5SVi3mHkLv09Hv+iyRZ5up9Q4QyPqB7birp+jUM44FdjwkAJoilUzVLXUS/g7t0hGzP
+         3GbhHlwlUzRCc/Z0JOBpz0A6V9RRVqLMxqn0MHG6ELInSlHZIbZyC5QerAa0UN81RR/F
+         UTS/+cD0g/Xr/ShXPvIl+/WI3bLPNPAIkdZn5X7bE2jaHkMqsLqywCpcIDyk7DimRMFQ
+         bsbA==
+X-Gm-Message-State: AOJu0YwcURpubDhX5Jvdf/nO+BgiJmKF4jCD6mmfjKfe+KIEx39dJ5jO
+	x1tFiDDDJS14kSM/d8g/C0Q0xQ==
+X-Google-Smtp-Source: AGHT+IH+pvi642lKHelJCCdm6Sbw3UusLCtlqBwe0TaqWn+6ozeTKQf9INKnJ4k0xOSABXksoQFmKA==
+X-Received: by 2002:a17:902:820b:b0:1cf:cd4e:ca02 with SMTP id x11-20020a170902820b00b001cfcd4eca02mr2699019pln.24.1701068851234;
+        Sun, 26 Nov 2023 23:07:31 -0800 (PST)
 Received: from localhost.localdomain ([101.10.45.230])
-        by smtp.gmail.com with ESMTPSA id jh15-20020a170903328f00b001cfcd3a764esm1340134plb.77.2023.11.26.23.07.25
+        by smtp.gmail.com with ESMTPSA id jh15-20020a170903328f00b001cfcd3a764esm1340134plb.77.2023.11.26.23.07.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Nov 2023 23:07:28 -0800 (PST)
+        Sun, 26 Nov 2023 23:07:31 -0800 (PST)
 From: Jerry Shih <jerry.shih@sifive.com>
 To: paul.walmsley@sifive.com,
 	palmer@dabbelt.com,
@@ -68,9 +68,9 @@ Cc: heiko@sntech.de,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux-crypto@vger.kernel.org
-Subject: [PATCH v2 05/13] crypto: simd - Update `walksize` in simd skcipher
-Date: Mon, 27 Nov 2023 15:06:55 +0800
-Message-Id: <20231127070703.1697-6-jerry.shih@sifive.com>
+Subject: [PATCH v2 06/13] crypto: scatterwalk - Add scatterwalk_next() to get the next scatterlist in scatter_walk
+Date: Mon, 27 Nov 2023 15:06:56 +0800
+Message-Id: <20231127070703.1697-7-jerry.shih@sifive.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20231127070703.1697-1-jerry.shih@sifive.com>
 References: <20231127070703.1697-1-jerry.shih@sifive.com>
@@ -82,38 +82,38 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The `walksize` assignment is missed in simd skcipher.
+In some situations, we might split the `skcipher_request` into several
+segments. When we try to move to next segment, we might use
+`scatterwalk_ffwd()` to get the corresponding `scatterlist` iterating from
+the head of `scatterlist`.
+
+This helper function could just gather the information in `skcipher_walk`
+and move to next `scatterlist` directly.
 
 Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 ---
- crypto/cryptd.c | 1 +
- crypto/simd.c   | 1 +
- 2 files changed, 2 insertions(+)
+ include/crypto/scatterwalk.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/crypto/cryptd.c b/crypto/cryptd.c
-index bbcc368b6a55..253d13504ccb 100644
---- a/crypto/cryptd.c
-+++ b/crypto/cryptd.c
-@@ -405,6 +405,7 @@ static int cryptd_create_skcipher(struct crypto_template *tmpl,
- 		(alg->base.cra_flags & CRYPTO_ALG_INTERNAL);
- 	inst->alg.ivsize = crypto_skcipher_alg_ivsize(alg);
- 	inst->alg.chunksize = crypto_skcipher_alg_chunksize(alg);
-+	inst->alg.walksize = crypto_skcipher_alg_walksize(alg);
- 	inst->alg.min_keysize = crypto_skcipher_alg_min_keysize(alg);
- 	inst->alg.max_keysize = crypto_skcipher_alg_max_keysize(alg);
+diff --git a/include/crypto/scatterwalk.h b/include/crypto/scatterwalk.h
+index 32fc4473175b..b1a90afe695d 100644
+--- a/include/crypto/scatterwalk.h
++++ b/include/crypto/scatterwalk.h
+@@ -98,7 +98,12 @@ void scatterwalk_map_and_copy(void *buf, struct scatterlist *sg,
+ 			      unsigned int start, unsigned int nbytes, int out);
  
-diff --git a/crypto/simd.c b/crypto/simd.c
-index edaa479a1ec5..ea0caabf90f1 100644
---- a/crypto/simd.c
-+++ b/crypto/simd.c
-@@ -181,6 +181,7 @@ struct simd_skcipher_alg *simd_skcipher_create_compat(const char *algname,
+ struct scatterlist *scatterwalk_ffwd(struct scatterlist dst[2],
+-				     struct scatterlist *src,
+-				     unsigned int len);
++				     struct scatterlist *src, unsigned int len);
++
++static inline struct scatterlist *scatterwalk_next(struct scatterlist dst[2],
++						   struct scatter_walk *src)
++{
++	return scatterwalk_ffwd(dst, src->sg, src->offset - src->sg->offset);
++}
  
- 	alg->ivsize = ialg->ivsize;
- 	alg->chunksize = ialg->chunksize;
-+	alg->walksize = ialg->walksize;
- 	alg->min_keysize = ialg->min_keysize;
- 	alg->max_keysize = ialg->max_keysize;
- 
+ #endif  /* _CRYPTO_SCATTERWALK_H */
 -- 
 2.28.0
 
