@@ -1,97 +1,94 @@
-Return-Path: <linux-crypto+bounces-362-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-365-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0705E7FC39B
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 19:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB927FC592
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 21:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5142282839
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21E38282C3B
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 20:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7413D0AF
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9BD5477C
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 20:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hsiw/925"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hm1ZsD3E"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2785B5DE
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Nov 2023 17:54:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D643EC433C9;
-	Tue, 28 Nov 2023 17:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701194094;
-	bh=N3vZMmlwPmMLxmgsU8NU5aW8UlcCxY+iRKRi4fSgJas=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hsiw/925cVatmSVS2Mjf+lwGsahVcUe9gEJwVlcmNPn+zWbmwNZ2MPg9C24I1RYFq
-	 skwNvzE0segMkYvoLC58hDXsNzhnsX3tfykvPEfkeBlgAQXPLVjPalu2EOmmIgvATQ
-	 aoxfGaC2vUW1mpXBAFr/E2qRXkpGsa6WRLj3i45jI8GsHf/aJokHiMdpDsswRmp4Ah
-	 DfMLen3NJkBkTvG87EMmW3JR0n8L0v4+iXgXwtJcN0VoeGH7M1OgsO9pWPe5lQyExH
-	 iZTLYaSNqnPLlBpXSFPrzBksF+fRvVV8C9J7TpdYC6shFoTQk/+7WWgpHw8LPVNmEh
-	 zdq2ORS22eNSg==
-Date: Tue, 28 Nov 2023 17:54:49 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Jerry Shih <jerry.shih@sifive.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	conor.dooley@microchip.com, ebiggers@kernel.org, ardb@kernel.org,
-	heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 04/13] RISC-V: crypto: add Zvkned accelerated AES
- implementation
-Message-ID: <20231128-await-tipper-2094715466f2@spud>
-References: <20231127070703.1697-1-jerry.shih@sifive.com>
- <20231127070703.1697-5-jerry.shih@sifive.com>
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D8A170B
+	for <linux-crypto@vger.kernel.org>; Tue, 28 Nov 2023 11:17:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701199056; x=1732735056;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=JaaRU6eJOUifiBK2iS8tZDc7FvXFNJCBvXxcDQYoXUs=;
+  b=hm1ZsD3E8/zT2JrdYsyGoQirSvo3YLY/KuGclWjqWsU4BSF7CnBtp5PW
+   7X7/qBxWtawqG+LTGg703VNN4Uoj/sX+f5+nin47M7moyhP/+NHvHGoKy
+   wUML81Wt1pcjFU/p3SxCmso7zA9Lr4N9CXsHYvX7NCBSejlWgjMUPeJkR
+   K9FEaqXulxPESRTiJ8POEJQzEPy8MVpTFGnVLwzPBgVdB7pNqFiZYlLf0
+   6uwQpZOJIH50QlBhbWh/2/UL7Mzh988u/5PnXnMRy5Adt7Lo4sh1xH4Qk
+   ijOT5ppVl1ysMAbN0DQAd1v7HS2UCUd+sdc9O2WkndsM6yxpNDaVXP8cq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="459508565"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="459508565"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 11:17:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="797681461"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="797681461"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.216])
+  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 11:17:34 -0800
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To: herbert@gondor.apana.org.au
+Cc: linux-crypto@vger.kernel.org,
+	qat-linux@intel.com,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Ahsan Atta <ahsan.atta@intel.com>,
+	David Guckian <david.guckian@intel.com>
+Subject: [PATCH] crypto: qat - add NULL pointer check
+Date: Tue, 28 Nov 2023 19:17:25 +0000
+Message-ID: <20231128191731.10575-1-giovanni.cabiddu@intel.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="c+Bx+5YDpVONEprp"
-Content-Disposition: inline
-In-Reply-To: <20231127070703.1697-5-jerry.shih@sifive.com>
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+Content-Transfer-Encoding: 8bit
 
+There is a possibility that the function adf_devmgr_pci_to_accel_dev()
+might return a NULL pointer.
+Add a NULL pointer check in the function rp2srv_show().
 
---c+Bx+5YDpVONEprp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: dbc8876dd873 ("crypto: qat - add rp2svc sysfs attribute")
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Ahsan Atta <ahsan.atta@intel.com>
+Reviewed-by: David Guckian <david.guckian@intel.com>
+---
+ drivers/crypto/intel/qat/qat_common/adf_sysfs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> +static inline bool check_aes_ext(void)
-> +{
-> +	return riscv_isa_extension_available(NULL, ZVKNED) &&
-> +	       riscv_vector_vlen() >= 128;
-> +}
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_sysfs.c b/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
+index 6f0b3629da13..d450dad32c9e 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_sysfs.c
+@@ -215,6 +215,9 @@ static ssize_t rp2srv_show(struct device *dev, struct device_attribute *attr,
+ 	enum adf_cfg_service_type svc;
+ 
+ 	accel_dev = adf_devmgr_pci_to_accel_dev(to_pci_dev(dev));
++	if (!accel_dev)
++		return -EINVAL;
++
+ 	hw_data = GET_HW_DATA(accel_dev);
+ 
+ 	if (accel_dev->sysfs.ring_num == UNSET_RING_NUM)
+-- 
+2.42.0
 
-I'm not keen on this construct, where you are checking vlen greater than
-128 and the presence of Zvkned without checking for the presence of V
-itself. Can you use "has_vector()" in any places where you depend on the
-presence of vector please?
-
-Also, there are potentially a lot of places in this drivers where you
-can replace "riscv_isa_extension_available()" with
-"riscv_has_extension_likely()". The latter is optimised with
-alternatives, so in places that are going to be evaluated frequently it
-may be beneficial for you.
-
-Cheers,
-Conor.
-
---c+Bx+5YDpVONEprp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWYpaQAKCRB4tDGHoIJi
-0gizAQClyXLat6AoDqeEMU7fszIl0aqY562jWFVvkg9MjgR24gEAzNdLynP6jTGp
-PoJqYxyEhhUhpsxklOCYQbwZPyDf8ws=
-=ixTm
------END PGP SIGNATURE-----
-
---c+Bx+5YDpVONEprp--
 
