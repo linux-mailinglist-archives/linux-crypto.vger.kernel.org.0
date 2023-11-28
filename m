@@ -1,100 +1,97 @@
-Return-Path: <linux-crypto+bounces-364-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-362-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD14B7FC39D
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 19:41:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0705E7FC39B
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 19:41:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A130B20E1E
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5142282839
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFBD37D29
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7413D0AF
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gVuf14B6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hsiw/925"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A1419BC
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Nov 2023 09:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701194313; x=1732730313;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mwIB5m3wu/n6AhYUpJiPbBD+ig/ptoxTgVFtM5xU7qc=;
-  b=gVuf14B6QUUqGcIZUDAM2aGd9QOC/SL8odbPjzw4ue20RvOC3X3hUlPc
-   vV/9njHlblDTMpwMLXsz1RErkIdYIu9g6YcIz/LtDuE1K4LakjHCMaVs2
-   FUYVihkQXvexzGbO4EYHE6Z9oaEsV0IaqxgPVgv1mQ3IrO2qMXFw7jj7S
-   QvjNimqSkOY1TZG/77LktvhyGopEp5Xjci5xKWj6A1Ggr3gsExtZV3puz
-   dzxSsyrB4GxnKKJzOErDseh4BRd4povLPpomzopegvW7anCDo+DR5wGqN
-   Zoe3MHddYrdecM2Qyv5zjqu9oih8OpzjBlOVneP8VCUBmv0hppfg0k0Ld
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392729683"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="392729683"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 09:58:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="16687600"
-Received: from r031s002_zp31l10c01.deacluster.intel.com (HELO localhost.localdomain) ([10.219.171.29])
-  by orviesa001.jf.intel.com with ESMTP; 28 Nov 2023 09:58:31 -0800
-From: Damian Muszynski <damian.muszynski@intel.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	qat-linux@intel.com,
-	Damian Muszynski <damian.muszynski@intel.com>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH] crypto: qat - fix mutex ordering in adf_rl
-Date: Tue, 28 Nov 2023 18:39:30 +0100
-Message-ID: <20231128174053.84356-1-damian.muszynski@intel.com>
-X-Mailer: git-send-email 2.41.0
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2785B5DE
+	for <linux-crypto@vger.kernel.org>; Tue, 28 Nov 2023 17:54:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D643EC433C9;
+	Tue, 28 Nov 2023 17:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701194094;
+	bh=N3vZMmlwPmMLxmgsU8NU5aW8UlcCxY+iRKRi4fSgJas=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hsiw/925cVatmSVS2Mjf+lwGsahVcUe9gEJwVlcmNPn+zWbmwNZ2MPg9C24I1RYFq
+	 skwNvzE0segMkYvoLC58hDXsNzhnsX3tfykvPEfkeBlgAQXPLVjPalu2EOmmIgvATQ
+	 aoxfGaC2vUW1mpXBAFr/E2qRXkpGsa6WRLj3i45jI8GsHf/aJokHiMdpDsswRmp4Ah
+	 DfMLen3NJkBkTvG87EMmW3JR0n8L0v4+iXgXwtJcN0VoeGH7M1OgsO9pWPe5lQyExH
+	 iZTLYaSNqnPLlBpXSFPrzBksF+fRvVV8C9J7TpdYC6shFoTQk/+7WWgpHw8LPVNmEh
+	 zdq2ORS22eNSg==
+Date: Tue, 28 Nov 2023 17:54:49 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Jerry Shih <jerry.shih@sifive.com>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	herbert@gondor.apana.org.au, davem@davemloft.net,
+	conor.dooley@microchip.com, ebiggers@kernel.org, ardb@kernel.org,
+	heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v2 04/13] RISC-V: crypto: add Zvkned accelerated AES
+ implementation
+Message-ID: <20231128-await-tipper-2094715466f2@spud>
+References: <20231127070703.1697-1-jerry.shih@sifive.com>
+ <20231127070703.1697-5-jerry.shih@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="c+Bx+5YDpVONEprp"
+Content-Disposition: inline
+In-Reply-To: <20231127070703.1697-5-jerry.shih@sifive.com>
 
-If the function validate_user_input() returns an error, the error path
-attempts to unlock an unacquired mutex.
-Acquire the mutex before calling validate_user_input(). This is not
-strictly necessary but simplifies the code.
 
-Fixes: d9fb8408376e ("crypto: qat - add rate limiting feature to qat_4xxx")
-Signed-off-by: Damian Muszynski <damian.muszynski@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/intel/qat/qat_common/adf_rl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--c+Bx+5YDpVONEprp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_rl.c b/drivers/crypto/intel/qat/qat_common/adf_rl.c
-index f2de3cd7d05d..de1b214dba1f 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_rl.c
-+++ b/drivers/crypto/intel/qat/qat_common/adf_rl.c
-@@ -815,13 +815,13 @@ static int add_update_sla(struct adf_accel_dev *accel_dev,
- 		return -EFAULT;
- 	}
- 
-+	mutex_lock(&rl_data->rl_lock);
-+
- 	/* Input validation */
- 	ret = validate_user_input(accel_dev, sla_in, is_update);
- 	if (ret)
- 		goto ret_err;
- 
--	mutex_lock(&rl_data->rl_lock);
--
- 	if (is_update) {
- 		ret = validate_sla_id(accel_dev, sla_in->sla_id);
- 		if (ret)
+> +static inline bool check_aes_ext(void)
+> +{
+> +	return riscv_isa_extension_available(NULL, ZVKNED) &&
+> +	       riscv_vector_vlen() >= 128;
+> +}
 
-base-commit: ed628a28e67c93d65400e7f00e0ff5d4f7a87070
--- 
-2.41.0
+I'm not keen on this construct, where you are checking vlen greater than
+128 and the presence of Zvkned without checking for the presence of V
+itself. Can you use "has_vector()" in any places where you depend on the
+presence of vector please?
 
+Also, there are potentially a lot of places in this drivers where you
+can replace "riscv_isa_extension_available()" with
+"riscv_has_extension_likely()". The latter is optimised with
+alternatives, so in places that are going to be evaluated frequently it
+may be beneficial for you.
+
+Cheers,
+Conor.
+
+--c+Bx+5YDpVONEprp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWYpaQAKCRB4tDGHoIJi
+0gizAQClyXLat6AoDqeEMU7fszIl0aqY562jWFVvkg9MjgR24gEAzNdLynP6jTGp
+PoJqYxyEhhUhpsxklOCYQbwZPyDf8ws=
+=ixTm
+-----END PGP SIGNATURE-----
+
+--c+Bx+5YDpVONEprp--
 
