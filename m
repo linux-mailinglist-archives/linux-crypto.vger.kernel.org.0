@@ -1,115 +1,114 @@
-Return-Path: <linux-crypto+bounces-361-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-363-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB2CF7FC39A
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 19:41:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB9AA7FC39C
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 19:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 250C6B20FFC
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C1061C209B6
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A6A37D06
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9493D0A0
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Nov 2023 18:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cnGCPorL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZMn+ZwjG"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280C053817
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Nov 2023 17:23:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C758C433C7;
-	Tue, 28 Nov 2023 17:23:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701192218;
-	bh=VxGlt7hegXrzPaBYpjEp75xdeopS3/YpGUiONM5sob0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cnGCPorLQr7ZkBy0m2cT2BizcFYs+Iw9nHvy00zenf2+hPwWyUBRrpbxR1aQ1UlIp
-	 kmCJpgsqhz1ihkVLH/tPfhbMpJOFxaf3hFO/Uial2me2nbfIj9al0FJUZxJWCtiSBS
-	 dqNs1VYYBRrB3hE98xRSnuS12VxaX4xKL63iemfaOEDFfC7qy/xpd5UkvAkb/o+0Yr
-	 c6URq2fk/I7MkBVqlvO+etcIWQ7i5SJf527CKCb4dlqfRWGhjJQ8/R4xhvX2eiI3cC
-	 p+fg6DYbBWo1u4ypje/QufX/riQN9fjkJXTc9Z6jIWPClr0b/vgDdcBC+vm+mpsVI2
-	 30oBqj68fZi6A==
-Date: Tue, 28 Nov 2023 09:23:36 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Jerry Shih <jerry.shih@sifive.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-	Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-	davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
-	heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 09/13] RISC-V: crypto: add Zvknha/b accelerated
- SHA224/256 implementations
-Message-ID: <20231128172336.GC1148@sol.localdomain>
-References: <20231127070703.1697-1-jerry.shih@sifive.com>
- <20231127070703.1697-10-jerry.shih@sifive.com>
- <20231128041235.GJ1463@sol.localdomain>
- <51190E7A-25BD-4D9A-AADF-02FE2A280508@sifive.com>
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9E7210C
+	for <linux-crypto@vger.kernel.org>; Tue, 28 Nov 2023 09:56:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701194186; x=1732730186;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jANSly3SCs0KMx1UgUvYj11BDQWDzndCBmMmO7qQydo=;
+  b=ZMn+ZwjG/HYIUTKi738nHUsAOZol3rdkRC9FFE1xrvkQIuLmrashb1Ia
+   zlOp9Xi99Gpz+r/k93Ar1vr84uMaCO3wgoVBFC73kBuIDblsUvbncMxsm
+   Bs6HRQtR5eLq+0rbW4FZhiL1x6IDp+FE8URGykJjuxXqdo7kQ/deWBPSP
+   tlTClE6Mibc1im/JvPTAN1lWBZsVVYs2awYGy5HlJ6zZLBHc7pq7caeED
+   H1rC2eSf2LrobpfH5mwOQrASP11o2TnaxXqYpw3I/fYBKfmSbIiwhqQak
+   E0QjE9rqB1L9Opd09iEnWiNMftuIeXZHZ3qQqX4T3U4/nruRwNxHaBtaq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="383367885"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="383367885"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 09:56:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="886489477"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="886489477"
+Received: from r031s002_zp31l10c01.deacluster.intel.com (HELO localhost.localdomain) ([10.219.171.29])
+  by fmsmga002.fm.intel.com with ESMTP; 28 Nov 2023 09:56:24 -0800
+From: Damian Muszynski <damian.muszynski@intel.com>
+To: herbert@gondor.apana.org.au
+Cc: linux-crypto@vger.kernel.org,
+	qat-linux@intel.com,
+	Damian Muszynski <damian.muszynski@intel.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: [PATCH] crypto: qat - fix error path in add_update_sla()
+Date: Tue, 28 Nov 2023 18:37:32 +0100
+Message-ID: <20231128173828.84083-1-damian.muszynski@intel.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51190E7A-25BD-4D9A-AADF-02FE2A280508@sifive.com>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
+Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 28, 2023 at 03:16:53PM +0800, Jerry Shih wrote:
-> On Nov 28, 2023, at 12:12, Eric Biggers <ebiggers@kernel.org> wrote:
-> > On Mon, Nov 27, 2023 at 03:06:59PM +0800, Jerry Shih wrote:
-> >> +/*
-> >> + * sha256 using zvkb and zvknha/b vector crypto extension
-> >> + *
-> >> + * This asm function will just take the first 256-bit as the sha256 state from
-> >> + * the pointer to `struct sha256_state`.
-> >> + */
-> >> +asmlinkage void
-> >> +sha256_block_data_order_zvkb_zvknha_or_zvknhb(struct sha256_state *digest,
-> >> +					      const u8 *data, int num_blks);
-> > 
-> > The SHA-2 and SM3 assembly functions are potentially being called using indirect
-> > calls, depending on whether the compiler optimizes out the indirect call that
-> > exists in the code or not.  These assembly functions also are not defined using
-> > SYM_TYPED_FUNC_START.  This is not compatible with Control Flow Integrity
-> > (CONFIG_CFI_CLANG); these indirect calls might generate CFI failures.
-> > 
-> > I recommend using wrapper functions to avoid this issue, like what is done in
-> > arch/arm64/crypto/sha2-ce-glue.c.
-> > 
-> > - Eric
-> 
-> Here is the previous review comment for the assembly function wrapper:
-> > > +asmlinkage void sha256_block_data_order_zvbb_zvknha(u32 *digest, const void *data,
-> > > +					unsigned int num_blks);
-> > > +
-> > > +static void __sha256_block_data_order(struct sha256_state *sst, u8 const *src,
-> > > +				      int blocks)
-> > > +{
-> > > +	sha256_block_data_order_zvbb_zvknha(sst->state, src, blocks);
-> > > +}
-> > Having a double-underscored function wrap around a non-underscored one like this
-> > isn't conventional for Linux kernel code.  IIRC some of the other crypto code
-> > happens to do this, but it really is supposed to be the other way around.
-> > 
-> > I think you should just declare the assembly function to take a 'struct
-> > sha256_state', with a comment mentioning that only the 'u32 state[8]' at the
-> > beginning is actually used.  That's what arch/x86/crypto/sha256_ssse3_glue.c
-> > does, for example.  Then, __sha256_block_data_order() would be unneeded.
-> 
-> Do you mean that we need the wrapper functions back for both SHA-* and SM3?
-> If yes, we also don't need to check the state offset like:
-> 	BUILD_BUG_ON(offsetof(struct sha256_state, state) != 0);
-> 
-> Could we just use the `SYM_TYPED_FUNC_START` in asm directly without the
-> wrappers?
+The input argument `sla_in` is a pointer to a structure that contains
+the parameters of the SLA which is being added or updated.
+If this pointer is NULL, the function should return an error as
+the data required for the algorithm is not available.
+By mistake, the logic jumps to the error path which dereferences
+the pointer.
 
-Sorry, I forgot that I had recommended against wrapper functions earlier.  I
-didn't realize that SYM_TYPED_FUNC_START was missing.  Yes, you can also do it
-without wrapper functions if you add SYM_TYPED_FUNC_START to the assembly.
+This results in a warnings reported by the static analyzer Smatch when
+executed without a database:
 
-- Eric
+    drivers/crypto/intel/qat/qat_common/adf_rl.c:871 add_update_sla()
+    error: we previously assumed 'sla_in' could be null (see line 812)
+
+This issue was not found in internal testing as the pointer cannot be
+NULL. The function add_update_sla() is only called (indirectly) by
+the rate limiting sysfs interface implementation in adf_sysfs_rl.c
+which ensures that the data structure is allocated and valid. This is
+also proven by the fact that Smatch executed with a database does not
+report such error.
+
+Fix it by returning with error if the pointer `sla_in` is NULL.
+
+Fixes: d9fb8408376e ("crypto: qat - add rate limiting feature to qat_4xxx")
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Damian Muszynski <damian.muszynski@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+---
+ drivers/crypto/intel/qat/qat_common/adf_rl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_rl.c b/drivers/crypto/intel/qat/qat_common/adf_rl.c
+index 86e3e2152b1b..f2de3cd7d05d 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_rl.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_rl.c
+@@ -812,8 +812,7 @@ static int add_update_sla(struct adf_accel_dev *accel_dev,
+ 	if (!sla_in) {
+ 		dev_warn(&GET_DEV(accel_dev),
+ 			 "SLA input data pointer is missing\n");
+-		ret = -EFAULT;
+-		goto ret_err;
++		return -EFAULT;
+ 	}
+ 
+ 	/* Input validation */
+
+base-commit: 27265511a765f4380257319b0c088097b9cf1a71
+-- 
+2.41.0
+
 
