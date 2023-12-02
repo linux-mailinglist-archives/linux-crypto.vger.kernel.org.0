@@ -1,197 +1,174 @@
-Return-Path: <linux-crypto+bounces-505-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-507-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8F4E801C3A
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Dec 2023 11:32:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B592801D48
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Dec 2023 15:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E667EB20C99
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Dec 2023 10:32:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01A501F21184
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Dec 2023 14:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6537320DD9
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Dec 2023 10:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AEE618C1E
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Dec 2023 14:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="nU4OdBVY"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D2F1A6;
-	Sat,  2 Dec 2023 01:20:58 -0800 (PST)
-Received: from dggpeml500005.china.huawei.com (unknown [172.30.72.53])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Sj47t2nPfzsRbK;
-	Sat,  2 Dec 2023 17:17:14 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- dggpeml500005.china.huawei.com (7.185.36.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 2 Dec 2023 17:20:56 +0800
-From: Zhiqi Song <songzhiqi1@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<wangzhou1@hisilicon.com>, <fanghao11@huawei.com>, <liulongfang@huawei.com>,
-	<qianweili@huawei.com>, <shenyang39@huawei.com>
-Subject: [PATCH 5/5] crypto: hisilicon/zip - save capability registers in probe process
-Date: Sat, 2 Dec 2023 17:17:22 +0800
-Message-ID: <20231202091722.1974582-6-songzhiqi1@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231202091722.1974582-1-songzhiqi1@huawei.com>
-References: <20231202091722.1974582-1-songzhiqi1@huawei.com>
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB9FFB
+	for <linux-crypto@vger.kernel.org>; Sat,  2 Dec 2023 05:20:48 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cddb35ef8bso2568546b3a.2
+        for <linux-crypto@vger.kernel.org>; Sat, 02 Dec 2023 05:20:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1701523248; x=1702128048; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=38eV0LKdNi3TITjOGB0YU27nx54Nu5BIRGcEBAMr+DY=;
+        b=nU4OdBVYi+M3f4g0QhQpZCbelDpKcNzM1VuYqPssUwiZ+6eufQ3T4XarWstqP1GIWE
+         4s3x+pZ5ugnWHr4UQGkLLRToO+RW6dvVHZNMTn3avOzNdQJAwQTFyX3jNr0oQ9sHyowT
+         eWHXVqII7zdbPVL6NSOPYwzYBBrqWn6hZ6ZjUgBFe6NtV3Z4mqWHNY8JECpz7oHOoJbF
+         sWSh8X4dJ8s+ohZN8KWuNmV0hHeHsu2k/QPBVnaB8FOR8wgcnnKZPKNUgoxTa53pgfmv
+         t4A5uiA+NiHJLnLtjWQ2jyzuSqneC7FWiDjNOupC0EZNuYunQcjFJgHL3wUWS6rRUeCW
+         Jx6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701523248; x=1702128048;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=38eV0LKdNi3TITjOGB0YU27nx54Nu5BIRGcEBAMr+DY=;
+        b=CbwsNgW2zxX9/oi0SXKCzNWBqdIgyEKf0GBGVBRc9NNGXr1JNmaDScB70jJ0N7+0w4
+         0YGTyMTeiRdkJ4F5q11HgDGK0xT1BaqdWopDdiaxTghCAV6doM2KGA//ekmWdivybyya
+         GScdT7Ycysr3tOPT+dp2PHgqLGXkWlTKMszPlCqbQFA3y6oxs3cNnhLRCkLhQM2ILQPj
+         Et4EjDqseIbBKO6xP1EoDB8GXE6hjDUqQvn7j26B89qhLsk6en0CBcbYG2wwqiWUqiHb
+         ynjj5H4v4cTCigzyx12tR7WsLudlzkC6zTvI9YpCaTnxwM9wFlOUiSg8plFxFOaSc05M
+         UDmQ==
+X-Gm-Message-State: AOJu0YxZTNjL6+VdSrZ0RyvqQSetZER/R0Fn54+mQAAHaoA34GtHk9IV
+	e6kU1Ax/Bkmdwfy9ScHctc+VxA==
+X-Google-Smtp-Source: AGHT+IEzgP87enLKzkmPs6y8qDB6CMCPP38yBGAzMauITYCVSxePOcsnUgMZlQEjr/wK10DVgz7vOg==
+X-Received: by 2002:a05:6a00:2a09:b0:6bd:9281:9453 with SMTP id ce9-20020a056a002a0900b006bd92819453mr483081pfb.9.1701523247890;
+        Sat, 02 Dec 2023 05:20:47 -0800 (PST)
+Received: from ?IPv6:2402:7500:4d5:3c6d:245f:1df8:d6c0:9d2d? ([2402:7500:4d5:3c6d:245f:1df8:d6c0:9d2d])
+        by smtp.gmail.com with ESMTPSA id e2-20020a635442000000b005bdd8dcfe19sm4614743pgm.10.2023.12.02.05.20.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 02 Dec 2023 05:20:47 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500005.china.huawei.com (7.185.36.59)
-X-CFilter-Loop: Reflected
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v2 07/13] RISC-V: crypto: add accelerated
+ AES-CBC/CTR/ECB/XTS implementations
+From: Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231129201601.GA1174@sol.localdomain>
+Date: Sat, 2 Dec 2023 21:20:42 +0800
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ palmer@dabbelt.com,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ herbert@gondor.apana.org.au,
+ davem@davemloft.net,
+ conor.dooley@microchip.com,
+ ardb@kernel.org,
+ heiko@sntech.de,
+ phoebe.chen@sifive.com,
+ hongrong.hsu@sifive.com,
+ linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-crypto@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <67F5B520-ED93-4CF2-AACB-D0B64F5B38A1@sifive.com>
+References: <20231127070703.1697-1-jerry.shih@sifive.com>
+ <20231127070703.1697-8-jerry.shih@sifive.com>
+ <20231128040716.GI1463@sol.localdomain>
+ <7DFBB20D-B8D4-409B-8562-4C60E67FD279@sifive.com>
+ <20231129201601.GA1174@sol.localdomain>
+To: Eric Biggers <ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3445.9.7)
 
-Pre-store the valid value of the zip alg support related capability
-register in hisi_zip_qm_init(), which will be called by hisi_zip_probe().
-It can reduce the number of capability register queries and avoid
-obtaining incorrect values in abnormal scenarios, such as reset failed
-and the memory space disabled.
+On Nov 30, 2023, at 04:16, Eric Biggers <ebiggers@kernel.org> wrote:
+> On Wed, Nov 29, 2023 at 03:57:25PM +0800, Jerry Shih wrote:
+>> On Nov 28, 2023, at 12:07, Eric Biggers <ebiggers@kernel.org> wrote:
+>>> On Mon, Nov 27, 2023 at 03:06:57PM +0800, Jerry Shih wrote:
+>>>> +typedef void (*aes_xts_func)(const u8 *in, u8 *out, size_t length,
+>>>> +			     const struct crypto_aes_ctx *key, u8 *iv,
+>>>> +			     int update_iv);
+>>>=20
+>>> There's no need for this indirection, because the function pointer =
+can only have
+>>> one value.
+>>>=20
+>>> Note also that when Control Flow Integrity is enabled, assembly =
+functions can
+>>> only be called indirectly when they use SYM_TYPED_FUNC_START.  =
+That's another
+>>> reason to avoid indirect calls that aren't actually necessary.
+>>=20
+>> We have two function pointers for encryption and decryption.
+>> 	static int xts_encrypt(struct skcipher_request *req)
+>> 	{
+>> 		return xts_crypt(req, =
+rv64i_zvbb_zvkg_zvkned_aes_xts_encrypt);
+>> 	}
+>>=20
+>> 	static int xts_decrypt(struct skcipher_request *req)
+>> 	{
+>> 		return xts_crypt(req, =
+rv64i_zvbb_zvkg_zvkned_aes_xts_decrypt);
+>> 	}
+>> The enc and dec path could be folded together into `xts_crypt()`, but =
+we will have
+>> additional branches for enc/decryption path if we don't want to have =
+the indirect calls.
+>> Use `SYM_TYPED_FUNC_START` in asm might be better.
+>>=20
+>=20
+> Right.  Normal branches are still more efficient and straightforward =
+than
+> indirect calls, though, and they don't need any special considerations =
+for CFI.
+> So I'd just add a 'bool encrypt' or 'bool decrypt' argument to =
+xts_crypt(), and
+> make xts_crypt() call the appropriate assembly function based on that.
 
-Fixes: db700974b69d ("crypto: hisilicon/zip - support zip capability")
-Signed-off-by: Zhiqi Song <songzhiqi1@huawei.com>
----
- drivers/crypto/hisilicon/zip/zip_main.c | 73 ++++++++++++++++++++-----
- 1 file changed, 60 insertions(+), 13 deletions(-)
+Fixed.
+The xts_crypt() now has an additional bool argument for enc/decryption.
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 2934de25efa4..479ba8a1d6b5 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -249,6 +249,26 @@ static struct hisi_qm_cap_info zip_basic_cap_info[] = {
- 	{ZIP_CAP_MAX, 0x317c, 0, GENMASK(0, 0), 0x0, 0x0, 0x0}
- };
- 
-+enum zip_pre_store_cap_idx {
-+	ZIP_CORE_NUM_CAP_IDX = 0x0,
-+	ZIP_CLUSTER_COMP_NUM_CAP_IDX,
-+	ZIP_CLUSTER_DECOMP_NUM_CAP_IDX,
-+	ZIP_DECOMP_ENABLE_BITMAP_IDX,
-+	ZIP_COMP_ENABLE_BITMAP_IDX,
-+	ZIP_DRV_ALG_BITMAP_IDX,
-+	ZIP_DEV_ALG_BITMAP_IDX,
-+};
-+
-+static const u32 zip_pre_store_caps[] = {
-+	ZIP_CORE_NUM_CAP,
-+	ZIP_CLUSTER_COMP_NUM_CAP,
-+	ZIP_CLUSTER_DECOMP_NUM_CAP,
-+	ZIP_DECOMP_ENABLE_BITMAP,
-+	ZIP_COMP_ENABLE_BITMAP,
-+	ZIP_DRV_ALG_BITMAP,
-+	ZIP_DEV_ALG_BITMAP,
-+};
-+
- enum {
- 	HZIP_COMP_CORE0,
- 	HZIP_COMP_CORE1,
-@@ -443,7 +463,7 @@ bool hisi_zip_alg_support(struct hisi_qm *qm, u32 alg)
- {
- 	u32 cap_val;
- 
--	cap_val = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_DRV_ALG_BITMAP, qm->cap_ver);
-+	cap_val = qm->cap_tables.dev_cap_table[ZIP_DRV_ALG_BITMAP_IDX].cap_val;
- 	if ((alg & cap_val) == alg)
- 		return true;
- 
-@@ -568,10 +588,8 @@ static int hisi_zip_set_user_domain_and_cache(struct hisi_qm *qm)
- 	}
- 
- 	/* let's open all compression/decompression cores */
--	dcomp_bm = hisi_qm_get_hw_info(qm, zip_basic_cap_info,
--				       ZIP_DECOMP_ENABLE_BITMAP, qm->cap_ver);
--	comp_bm = hisi_qm_get_hw_info(qm, zip_basic_cap_info,
--				      ZIP_COMP_ENABLE_BITMAP, qm->cap_ver);
-+	dcomp_bm = qm->cap_tables.dev_cap_table[ZIP_DECOMP_ENABLE_BITMAP_IDX].cap_val;
-+	comp_bm = qm->cap_tables.dev_cap_table[ZIP_COMP_ENABLE_BITMAP_IDX].cap_val;
- 	writel(HZIP_DECOMP_CHECK_ENABLE | dcomp_bm | comp_bm, base + HZIP_CLOCK_GATE_CTRL);
- 
- 	/* enable sqc,cqc writeback */
-@@ -798,9 +816,8 @@ static int hisi_zip_core_debug_init(struct hisi_qm *qm)
- 	char buf[HZIP_BUF_SIZE];
- 	int i;
- 
--	zip_core_num = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_CORE_NUM_CAP, qm->cap_ver);
--	zip_comp_core_num = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_CLUSTER_COMP_NUM_CAP,
--						qm->cap_ver);
-+	zip_core_num = qm->cap_tables.dev_cap_table[ZIP_CORE_NUM_CAP_IDX].cap_val;
-+	zip_comp_core_num = qm->cap_tables.dev_cap_table[ZIP_CLUSTER_COMP_NUM_CAP_IDX].cap_val;
- 
- 	for (i = 0; i < zip_core_num; i++) {
- 		if (i < zip_comp_core_num)
-@@ -942,7 +959,7 @@ static int hisi_zip_show_last_regs_init(struct hisi_qm *qm)
- 	u32 zip_core_num;
- 	int i, j, idx;
- 
--	zip_core_num = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_CORE_NUM_CAP, qm->cap_ver);
-+	zip_core_num = qm->cap_tables.dev_cap_table[ZIP_CORE_NUM_CAP_IDX].cap_val;
- 
- 	debug->last_words = kcalloc(core_dfx_regs_num * zip_core_num + com_dfx_regs_num,
- 				    sizeof(unsigned int), GFP_KERNEL);
-@@ -998,9 +1015,9 @@ static void hisi_zip_show_last_dfx_regs(struct hisi_qm *qm)
- 				 hzip_com_dfx_regs[i].name, debug->last_words[i], val);
- 	}
- 
--	zip_core_num = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_CORE_NUM_CAP, qm->cap_ver);
--	zip_comp_core_num = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_CLUSTER_COMP_NUM_CAP,
--						qm->cap_ver);
-+	zip_core_num = qm->cap_tables.dev_cap_table[ZIP_CORE_NUM_CAP_IDX].cap_val;
-+	zip_comp_core_num = qm->cap_tables.dev_cap_table[ZIP_CLUSTER_COMP_NUM_CAP_IDX].cap_val;
-+
- 	for (i = 0; i < zip_core_num; i++) {
- 		if (i < zip_comp_core_num)
- 			scnprintf(buf, sizeof(buf), "Comp_core-%d", i);
-@@ -1156,6 +1173,28 @@ static int hisi_zip_pf_probe_init(struct hisi_zip *hisi_zip)
- 	return ret;
- }
- 
-+static int zip_pre_store_cap_reg(struct hisi_qm *qm)
-+{
-+	struct hisi_qm_cap_record *zip_cap;
-+	struct pci_dev *pdev = qm->pdev;
-+	size_t i, size;
-+
-+	size = ARRAY_SIZE(zip_pre_store_caps);
-+	zip_cap = devm_kzalloc(&pdev->dev, sizeof(*zip_cap) * size, GFP_KERNEL);
-+	if (!zip_cap)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < size; i++) {
-+		zip_cap[i].type = zip_pre_store_caps[i];
-+		zip_cap[i].cap_val = hisi_qm_get_hw_info(qm, zip_basic_cap_info,
-+				     zip_pre_store_caps[i], qm->cap_ver);
-+	}
-+
-+	qm->cap_tables.dev_cap_table = zip_cap;
-+
-+	return 0;
-+}
-+
- static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- {
- 	u64 alg_msk;
-@@ -1194,7 +1233,15 @@ static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 		return ret;
- 	}
- 
--	alg_msk = hisi_qm_get_hw_info(qm, zip_basic_cap_info, ZIP_DEV_ALG_BITMAP, qm->cap_ver);
-+	/* Fetch and save the value of capability registers */
-+	ret = zip_pre_store_cap_reg(qm);
-+	if (ret) {
-+		pci_err(qm->pdev, "Failed to pre-store capability registers!\n");
-+		hisi_qm_uninit(qm);
-+		return ret;
-+	}
-+
-+	alg_msk = qm->cap_tables.dev_cap_table[ZIP_DEV_ALG_BITMAP_IDX].cap_val;
- 	ret = hisi_qm_set_algs(qm, alg_msk, zip_dev_algs, ARRAY_SIZE(zip_dev_algs));
- 	if (ret) {
- 		pci_err(qm->pdev, "Failed to set zip algs!\n");
--- 
-2.30.0
+>>> Did you consider writing xts_crypt() the way that arm64 and x86 do =
+it?  The
+>>> above seems to reinvent sort of the same thing from first =
+principles.  I'm
+>>> wondering if you should just copy the existing approach for now.  =
+Then there
+>>> would be no need to add the scatterwalk_next() function, and also =
+the handling
+>>> of inputs that don't need ciphertext stealing would be a bit more =
+streamlined.
+>>=20
+>> I will check the arm and x86's implementations.
+>> But the `scatterwalk_next()` proposed in this series does the same =
+thing as the
+>> call `scatterwalk_ffwd()` in arm and x86's implementations.
+>> The scatterwalk_ffwd() iterates from the beginning of =
+scatterlist(O(n)), but the=20
+>> scatterwalk_next() is just iterates from the end point of the last =
+used
+>> scatterlist(O(1)).
+>=20
+> Sure, but your scatterwalk_next() only matters when there are multiple
+> scatterlist entries and the AES-XTS message length isn't a multiple of =
+the AES
+> block size.  That's not an important case, so there's little need to
+> micro-optimize it.  The case that actually matters for AES-XTS is a =
+single-entry
+> scatterlist containing a whole number of AES blocks.
 
+The v3 patch will remove the `scatterwalk_next()` and use =
+`scatterwalk_ffwd()`
+instead.
+
+-Jerry=
 
