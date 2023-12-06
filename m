@@ -1,68 +1,70 @@
-Return-Path: <linux-crypto+bounces-602-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-604-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0433980650F
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Dec 2023 03:36:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3FA806512
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Dec 2023 03:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AEE9B20E41
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Dec 2023 02:36:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBE8F2815B3
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Dec 2023 02:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D04ECA69
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Dec 2023 02:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="la+CqPPq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FF7DF52
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Dec 2023 02:36:34 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFDF62A
-	for <linux-crypto@vger.kernel.org>; Wed,  6 Dec 2023 00:46:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A3FC433C8;
-	Wed,  6 Dec 2023 00:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701823619;
-	bh=b5r5GxuYWHo36uh4ovYgu5m135G+N9ZSSwh0htqUnfM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=la+CqPPqfkLVqIiY+xzaHmGFS9CkyQKnrbETqIQqwbah3+lvOql3uSGTnKbd83GLn
-	 CzuOC3tBU4YX+V8KeKYAKaiAHdqLsvqhqCFg79UNf+B39DvfMCQ6TyyGfa1uXiTgQu
-	 VlXLmGB/edcKWRAWOUYlFMEIz0IXVwPjs+cKEXvZlGOhgd7iIzfj22r0+1vDGkIRxE
-	 3LT0+Z1LetBYgNADApH2HDkkJ/mM04ENyOwRyK9PytwjoKUnF7Dgr+OxQzx/IF3oeU
-	 CpYVPv9ANhxGcLcr/YNz+008+G6UFW1VV5Vd/GgNA57hTptrXjkS++E1NxT5ERcKXq
-	 5Q8PKY4BV++Wg==
-Date: Tue, 5 Dec 2023 16:46:56 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Jerry Shih <jerry.shih@sifive.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	conor.dooley@microchip.com, ardb@kernel.org, conor@kernel.org,
-	heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v3 00/12] RISC-V: provide some accelerated cryptography
- implementations using vector extensions
-Message-ID: <20231206004656.GC1118@sol.localdomain>
-References: <20231205092801.1335-1-jerry.shih@sifive.com>
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877B81B5;
+	Tue,  5 Dec 2023 17:42:48 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 0779B7FFC;
+	Wed,  6 Dec 2023 09:42:42 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 09:42:41 +0800
+Received: from ubuntu.localdomain (202.188.176.82) by EXMBX068.cuchost.com
+ (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 09:42:38 +0800
+From: Jia Jie Ho <jiajie.ho@starfivetech.com>
+To: Olivia Mackall <olivia@selenic.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, <linux-crypto@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] hwrng: starfive: Add support for JH8100
+Date: Wed, 6 Dec 2023 09:42:33 +0800
+Message-ID: <20231206014236.1109832-1-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205092801.1335-1-jerry.shih@sifive.com>
+Content-Type: text/plain
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX068.cuchost.com
+ (172.16.6.68)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 05, 2023 at 05:27:49PM +0800, Jerry Shih wrote:
-> This series depend on:
-> 2. support kernel-mode vector
-> Link: https://lore.kernel.org/all/20230721112855.1006-1-andy.chiu@sifive.com/
-> 3. vector crypto extensions detection
-> Link: https://lore.kernel.org/lkml/20231017131456.2053396-1-cleger@rivosinc.com/
+This series adds driver support for StarFive JH8100 trng. It also adds
+suspend-to-idle support for the original driver.
 
-What's the status of getting these prerequisites merged?
+Thanks,
+Jia Jie
 
-- Eric
+Jia Jie Ho (3):
+  dt-bindings: rng: starfive: Add jh8100 compatible string
+  hwrng: starfive - Update compatible string
+  hwrng: starfive - Add suspend-to-idle support
+
+ .../devicetree/bindings/rng/starfive,jh7110-trng.yaml |  4 +++-
+ drivers/char/hw_random/jh7110-trng.c                  | 11 ++++++++---
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+--=20
+2.34.1
+
 
