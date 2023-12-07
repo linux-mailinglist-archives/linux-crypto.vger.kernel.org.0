@@ -1,44 +1,44 @@
-Return-Path: <linux-crypto+bounces-2022-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2013-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A8D852C1C
-	for <lists+linux-crypto@lfdr.de>; Tue, 13 Feb 2024 10:16:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B649852C13
+	for <lists+linux-crypto@lfdr.de>; Tue, 13 Feb 2024 10:16:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D76BD2864DE
-	for <lists+linux-crypto@lfdr.de>; Tue, 13 Feb 2024 09:16:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 259A3B24C17
+	for <lists+linux-crypto@lfdr.de>; Tue, 13 Feb 2024 09:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26107224D4;
-	Tue, 13 Feb 2024 09:16:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 053CD224DB;
+	Tue, 13 Feb 2024 09:16:38 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC500224CF
-	for <linux-crypto@vger.kernel.org>; Tue, 13 Feb 2024 09:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC65224D4
+	for <linux-crypto@vger.kernel.org>; Tue, 13 Feb 2024 09:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707815813; cv=none; b=owbSKVCszwNZEBa+TNca2B60FRp2G1JVrOnGzKEIKYBwqtsKHw2WHchXcYEXXgetE1ZzWq8SWrH5MSEfD869Q00vAdgJv0DUDA53CHo8ozugfMHk/yBzwLqJZuEYxCztvrjQA9aa1IeWhC/AO2+wMj4qu5ILzyGTgbvzel85kKE=
+	t=1707815797; cv=none; b=sZKjztrSygY1KKLJPoltH6b+HoMLjTf0s8RikVxNnp1dor0AeSJ8asOJYs+73BfPE4ezOYBefrVygoiIb/N8ZQJCYGwFreuoDKDbAYM4CmWG7lVLBv4UUYk9jlmJfQbQBXtUWmAaVStIeXjJ2Y6zfAULNX+jWblihtmfwPApfb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707815813; c=relaxed/simple;
-	bh=gWFzrtOaKQWYEO1jMXfxCKsEOPF9us+nOzFX2DI1FWw=;
-	h=Message-Id:In-Reply-To:References:From:Date:Subject:To; b=paTRkcTAxTjCIzzvsI2wbHHaE7txxFiOCxvUmJosUEdawIKfu624RvGyoxqx7VdGZx01kooHTU+TspXZaVSt/63aEmmVgJjBaHUOqWbRiMpnqgx3A2GR4kDHD2bASzKHMtwQqyIz/3k49C1qbJVHhvQdnq6srY33gyyu2b83nOg=
+	s=arc-20240116; t=1707815797; c=relaxed/simple;
+	bh=uxRJorngY1aIn9vmvIIrT7uKl1hDXYYuUeYI9p/XXiA=;
+	h=Message-Id:In-Reply-To:References:From:Date:Subject:To; b=Ax8HXYhcU68BpTPKZa3M9cZUp1JBThZ+Uo5NglJmrlT5C5owqiLoA4twR/QPOKESq6b9FyQbPIA5L/HFs2R15P6NZpLmiyj1IGsVeO9QY3Z0lnSzBP2Z9P7M99kei67IZ/X74QYCckczuoMsap48Xn3+iI4i+xqaX7CVxJmoORw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rZouF-00D1s2-0b; Tue, 13 Feb 2024 17:16:48 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 13 Feb 2024 17:17:01 +0800
-Message-Id: <88c723ec1903971bc726828a8aa2eb3622aa6df8.1707815065.git.herbert@gondor.apana.org.au>
+	id 1rZoty-00D1pd-A6; Tue, 13 Feb 2024 17:16:31 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 13 Feb 2024 17:16:44 +0800
+Message-Id: <0d402ea82463e6d7dec2cf9b85d0ed92e0f2103f.1707815065.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1707815065.git.herbert@gondor.apana.org.au>
 References: <cover.1707815065.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Date: Wed, 6 Dec 2023 16:55:32 +0800
-Subject: [PATCH 11/15] crypto: skcipher - Propagate zero-length requests to
- lskcipher
+Date: Thu, 7 Dec 2023 18:03:31 +0800
+Subject: [PATCH 03/15] crypto: skcipher - Remove ivsize check for lskcipher
+ simple templates
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -46,39 +46,56 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 
-Propagate zero-length requests down to the lskcipher algorithm as
-otherwise the return value could be different, e.g., zero vs. -EINVAL
-for xts.
+Remove the ivsize check for lskcipher simple templates so that it
+can be used for cts.  Check for the ivsize in users such as cbc
+instead.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/lskcipher.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ crypto/cbc.c       | 5 +++++
+ crypto/lskcipher.c | 6 +-----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/crypto/cbc.c b/crypto/cbc.c
+index eedddef9ce40..173e47aecb1f 100644
+--- a/crypto/cbc.c
++++ b/crypto/cbc.c
+@@ -148,6 +148,11 @@ static int crypto_cbc_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	if (!is_power_of_2(inst->alg.co.base.cra_blocksize))
+ 		goto out_free_inst;
+ 
++	if (inst->alg.co.ivsize)
++		goto out_free_inst;
++
++	inst->alg.co.ivsize = inst->alg.co.base.cra_blocksize;
++
+ 	inst->alg.encrypt = crypto_cbc_encrypt;
+ 	inst->alg.decrypt = crypto_cbc_decrypt;
+ 
 diff --git a/crypto/lskcipher.c b/crypto/lskcipher.c
-index 8660d6e3ccce..00ea963a2d2d 100644
+index 2a602911f4fc..260666f34500 100644
 --- a/crypto/lskcipher.c
 +++ b/crypto/lskcipher.c
-@@ -227,6 +227,11 @@ static int crypto_lskcipher_crypt_sg(struct skcipher_request *req,
- 	if (!(req->base.flags & CRYPTO_SKCIPHER_REQ_NOTFINAL))
- 		flags |= CRYPTO_LSKCIPHER_FLAG_FINAL;
+@@ -630,10 +630,6 @@ struct lskcipher_instance *lskcipher_alloc_instance_simple(
+ 			goto err_free_inst;
+ 	}
  
-+	if (unlikely(!req->cryptlen)) {
-+		err = crypt(tfm, NULL, NULL, 0, ivs, flags);
-+		goto out;
-+	}
-+
- 	do {
- 		err = skcipher_walk_virt(&walk, req, false);
- 		morethanone = walk.nbytes != walk.total;
-@@ -245,6 +250,7 @@ static int crypto_lskcipher_crypt_sg(struct skcipher_request *req,
- 			return err;
- 	} while (!secondpass++ && !isincremental && morethanone);
+-	err = -EINVAL;
+-	if (cipher_alg->co.ivsize)
+-		goto err_free_inst;
+-
+ 	inst->free = lskcipher_free_instance_simple;
  
-+out:
- 	if (flags & CRYPTO_LSKCIPHER_FLAG_FINAL)
- 		memcpy(req->iv, ivs, ivsize);
+ 	/* Default algorithm properties, can be overridden */
+@@ -642,7 +638,7 @@ struct lskcipher_instance *lskcipher_alloc_instance_simple(
+ 	inst->alg.co.base.cra_priority = cipher_alg->co.base.cra_priority;
+ 	inst->alg.co.min_keysize = cipher_alg->co.min_keysize;
+ 	inst->alg.co.max_keysize = cipher_alg->co.max_keysize;
+-	inst->alg.co.ivsize = cipher_alg->co.base.cra_blocksize;
++	inst->alg.co.ivsize = cipher_alg->co.ivsize;
+ 	inst->alg.co.statesize = cipher_alg->co.statesize;
  
+ 	/* Use struct crypto_lskcipher * by default, can be overridden */
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
