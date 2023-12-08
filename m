@@ -1,36 +1,35 @@
-Return-Path: <linux-crypto+bounces-637-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-638-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E613809B08
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Dec 2023 05:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9CE2809B09
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Dec 2023 05:34:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE27A281886
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Dec 2023 04:34:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95B65281D73
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Dec 2023 04:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2F3107B7
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 Dec 2023 04:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5572B111AA
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 Dec 2023 04:34:42 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D6A1716;
-	Thu,  7 Dec 2023 20:08:12 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00A81718
+	for <linux-crypto@vger.kernel.org>; Thu,  7 Dec 2023 20:08:13 -0800 (PST)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rBS9Z-008Ijk-He; Fri, 08 Dec 2023 12:07:54 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 08 Dec 2023 12:08:03 +0800
-Date: Fri, 8 Dec 2023 12:08:03 +0800
+	id 1rBS9o-008Ijs-UI; Fri, 08 Dec 2023 12:08:09 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 08 Dec 2023 12:08:18 +0800
+Date: Fri, 8 Dec 2023 12:08:18 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Bharat Bhushan <bbhushan2@marvell.com>
-Cc: bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
-	davem@davemloft.net, alobakin@pm.me, tj@kernel.org,
-	masahiroy@kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto/octeontx2: By default allocate one CPT LF per CPT
- VF
-Message-ID: <ZXKWo66iNvgpjaJ5@gondor.apana.org.au>
-References: <20231129154133.1529898-1-bbhushan2@marvell.com>
+To: Yang Yingliang <yangyingliang@huaweicloud.com>
+Cc: linux-crypto@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+	gatien.chevallier@foss.st.com, yangyingliang@huawei.com
+Subject: Re: [PATCH] hwrng: stm32 - add missing clk_disable_unprepare() in
+ stm32_rng_init()
+Message-ID: <ZXKWsq/+td8HUmVQ@gondor.apana.org.au>
+References: <20231201082048.1975940-1-yangyingliang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -39,31 +38,18 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129154133.1529898-1-bbhushan2@marvell.com>
+In-Reply-To: <20231201082048.1975940-1-yangyingliang@huaweicloud.com>
 
-On Wed, Nov 29, 2023 at 09:11:33PM +0530, Bharat Bhushan wrote:
-> There are limited number CPT LFs (example 64 LFs on cn10k) and
-> these LFs are allocated/attached to CPT VF on its creation.
-> cptpf sysfs parameter "kvf_limits" defines number of CPT LFs
-> per CPT VF. Default "kvf_limits" is initialized to zero and if
-> kvf_limits is zero then number of LF allocated are equal to
-> online cpus in system.
+On Fri, Dec 01, 2023 at 04:20:48PM +0800, Yang Yingliang wrote:
+> From: Yang Yingliang <yangyingliang@huawei.com>
 > 
-> For example on 24 core system, 24 CPT LFs will be attached per VF.
-> That means no CPT LF available when creating more than 2 CPT VFs
-> on system which have total 64 LFs. Although VFs gets created but
-> no LF attached to it.
+> Add clk_disable_unprepare() in the error path in stm32_rng_init().
 > 
-> There seems no reason to default allocate as many LFs as many
-> online cpus in system. This patch initializes "kvf_limits" to
-> one to limit one LF allocated per CPT VF. "kvf_limits" can
-> be changed in range of 1 to number-of-online-cpus via sysfs.
-> 
-> Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
+> Fixes: 6b85a7e141cb ("hwrng: stm32 - implement STM32MP13x support")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c | 1 +
->  drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c | 3 +--
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  drivers/char/hw_random/stm32-rng.c | 1 +
+>  1 file changed, 1 insertion(+)
 
 Patch applied.  Thanks.
 -- 
