@@ -1,42 +1,43 @@
-Return-Path: <linux-crypto+bounces-666-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-673-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF5880BD8F
-	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 23:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E328A80BD97
+	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 23:13:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BC151C2089C
-	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 22:13:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207BA1C20856
+	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 22:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC101D548;
-	Sun, 10 Dec 2023 22:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9141D555;
+	Sun, 10 Dec 2023 22:12:57 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A07CF
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF64D8
 	for <linux-crypto@vger.kernel.org>; Sun, 10 Dec 2023 14:12:49 -0800 (PST)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rCS2W-0006Oi-Kx; Sun, 10 Dec 2023 23:12:44 +0100
+	id 1rCS2W-0006Ox-Ky; Sun, 10 Dec 2023 23:12:44 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rCS2T-00ExY6-Tc; Sun, 10 Dec 2023 23:12:41 +0100
+	id 1rCS2U-00ExY9-6N; Sun, 10 Dec 2023 23:12:42 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rCS2T-000RW8-KW; Sun, 10 Dec 2023 23:12:41 +0100
+	id 1rCS2T-000RWM-TM; Sun, 10 Dec 2023 23:12:41 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Olivia Mackall <olivia@selenic.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>
-Cc: linux-crypto@vger.kernel.org,
+Cc: Rob Herring <robh@kernel.org>,
+	linux-crypto@vger.kernel.org,
 	kernel@pengutronix.de
-Subject: [PATCH 06/12] hwrng: mxc - Convert to platform remove callback returning void
-Date: Sun, 10 Dec 2023 23:12:21 +0100
-Message-ID:  <e6b365656865c8934342edab9a730652d976dd04.1702245873.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 07/12] hwrng: n2 - Convert to platform remove callback returning void
+Date: Sun, 10 Dec 2023 23:12:22 +0100
+Message-ID:  <8a470b0d899f42d49c679ff763d3133a109830b2.1702245873.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1702245873.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1702245873.git.u.kleine-koenig@pengutronix.de>
@@ -47,7 +48,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1835; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=aWklsF4m7KKS+I4Wu0a1XcRMXztlVelCPKUldjZc5lU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBldjfGnlS9qcVg8DF1/UVfFAhCNntrcLhQhl/bO onS9PJT3zqJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXY3xgAKCRCPgPtYfRL+ TkRyB/9eGmF+oyV93mG2GqUCsKtWDoglXP47aDDsEkzLD+tlsMSaXQ3XL7VYbEj2a597AVRDjSJ rasTo4nUCMz55qGppijQWoGD0thOJRpbx1KZ5DejYAg6fMWwRLyC+wXocL+8dHUYUjIEAOPfEwu OaAS3Debw0pWlkuFrVrAJa23MEqST0uwbcP4dxXeDA3LfOQAlWbLQaaIW8gttVULD74271NtVg3 s3EjmulKkLDK9zUBpqDJsyvKkqxaXDdltGZphTSMGnsMup9EGX19zKygApLVK4iVDRca3vAf28X l0ao+HU+UZHISJ2ZWKKX/vgGA7tpVpewP9Em7YQ9FUD8r0Fa
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1785; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=8DSLRtuH+m4SMxX9zwxvj2v6domeulWXdRnv2oPApBI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBldjfHJdbX/wTFWIIxAplaJw+kOoz5Zd89+LgU3 3YIdsB068qJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXY3xwAKCRCPgPtYfRL+ TtyvCACKcLL8YKWZbPbDToddG6ilsbTeNS/VGvFFmodKoqHEueCRgZnOLr7vgTbtgLfp4V6XRl+ UMh/cGqLnmbyCQ22EChCtuvmrOnKrsLZF9NfyUZ6G/Tqx7E+ekeCMHqfHQ4QqfbwlWF/T/EfZYG Xopwqfa2I3X4cEyE48cCuDopkpF7kdm9kn18jca18OyOmuiAV94/QNl531XCY8MauZ+vnlc9ofS x55CEQAuRt213ThTbN2xYNsWmOl8G+ve0zwTuvU29MnN1YXZfTnv/RqUbVPu3prGR2enUC4DmQX GSX5p014NuOMcUxK0D1TkfY2qQ+jsYbctshTBbTQFa27MWFc
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,39 +71,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/char/hw_random/mxc-rnga.c | 6 ++----
+ drivers/char/hw_random/n2-drv.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/hw_random/mxc-rnga.c b/drivers/char/hw_random/mxc-rnga.c
-index 008763c988ed..07ec000e4cd7 100644
---- a/drivers/char/hw_random/mxc-rnga.c
-+++ b/drivers/char/hw_random/mxc-rnga.c
-@@ -176,15 +176,13 @@ static int __init mxc_rnga_probe(struct platform_device *pdev)
+diff --git a/drivers/char/hw_random/n2-drv.c b/drivers/char/hw_random/n2-drv.c
+index aaae16b98475..2e669e7c14d3 100644
+--- a/drivers/char/hw_random/n2-drv.c
++++ b/drivers/char/hw_random/n2-drv.c
+@@ -781,7 +781,7 @@ static int n2rng_probe(struct platform_device *op)
  	return err;
  }
  
--static int __exit mxc_rnga_remove(struct platform_device *pdev)
-+static void __exit mxc_rnga_remove(struct platform_device *pdev)
+-static int n2rng_remove(struct platform_device *op)
++static void n2rng_remove(struct platform_device *op)
  {
- 	struct mxc_rng *mxc_rng = platform_get_drvdata(pdev);
+ 	struct n2rng *np = platform_get_drvdata(op);
  
- 	hwrng_unregister(&mxc_rng->rng);
+@@ -790,8 +790,6 @@ static int n2rng_remove(struct platform_device *op)
+ 	cancel_delayed_work_sync(&np->work);
  
- 	clk_disable_unprepare(mxc_rng->clk);
+ 	sun4v_hvapi_unregister(HV_GRP_RNG);
 -
 -	return 0;
  }
  
- static const struct of_device_id mxc_rnga_of_match[] = {
-@@ -199,7 +197,7 @@ static struct platform_driver mxc_rnga_driver = {
- 		.name = "mxc_rnga",
- 		.of_match_table = mxc_rnga_of_match,
+ static struct n2rng_template n2_template = {
+@@ -860,7 +858,7 @@ static struct platform_driver n2rng_driver = {
+ 		.of_match_table = n2rng_match,
  	},
--	.remove = __exit_p(mxc_rnga_remove),
-+	.remove_new = __exit_p(mxc_rnga_remove),
+ 	.probe		= n2rng_probe,
+-	.remove		= n2rng_remove,
++	.remove_new	= n2rng_remove,
  };
  
- module_platform_driver_probe(mxc_rnga_driver, mxc_rnga_probe);
+ module_platform_driver(n2rng_driver);
 -- 
 2.42.0
 
