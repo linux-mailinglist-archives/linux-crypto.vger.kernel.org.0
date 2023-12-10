@@ -1,43 +1,48 @@
-Return-Path: <linux-crypto+bounces-665-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-674-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0471380BD8E
-	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 23:12:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 013B980BD99
+	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 23:13:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28CDB1C203B0
-	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 22:12:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3264E1C2042F
+	for <lists+linux-crypto@lfdr.de>; Sun, 10 Dec 2023 22:13:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773E61D53C;
-	Sun, 10 Dec 2023 22:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA881D559;
+	Sun, 10 Dec 2023 22:12:57 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9356D5
-	for <linux-crypto@vger.kernel.org>; Sun, 10 Dec 2023 14:12:49 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5672F4
+	for <linux-crypto@vger.kernel.org>; Sun, 10 Dec 2023 14:12:53 -0800 (PST)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rCS2X-0006Oz-36; Sun, 10 Dec 2023 23:12:45 +0100
+	id 1rCS2a-0006P0-BC; Sun, 10 Dec 2023 23:12:48 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rCS2U-00ExYF-NY; Sun, 10 Dec 2023 23:12:42 +0100
+	id 1rCS2U-00ExYI-U3; Sun, 10 Dec 2023 23:12:42 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rCS2U-000RWU-EL; Sun, 10 Dec 2023 23:12:42 +0100
+	id 1rCS2U-000RWY-Ks; Sun, 10 Dec 2023 23:12:42 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Olivia Mackall <olivia@selenic.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Deepak Saxena <dsaxena@plexity.net>,
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Gatien Chevallier <gatien.chevallier@foss.st.com>,
+	Rob Herring <robh@kernel.org>,
 	linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
 	kernel@pengutronix.de
-Subject: [PATCH 09/12] hwrng: omap - Convert to platform remove callback returning void
-Date: Sun, 10 Dec 2023 23:12:24 +0100
-Message-ID:  <ac07e92ffdaee27d2c4616de89f58de272641d5b.1702245873.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 10/12] hwrng: stm32 - Convert to platform remove callback returning void
+Date: Sun, 10 Dec 2023 23:12:25 +0100
+Message-ID:  <855e8e89de0c0e2a82e181b883275754f8c16a38.1702245873.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1702245873.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1702245873.git.u.kleine-koenig@pengutronix.de>
@@ -48,7 +53,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1878; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=LfUR14esOo8oEFXn7iRhYS5wKFCP5zWPXp6cKLmQ68A=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBldjfJ4k9pmj/OWf8r30NDz3h+byxGGc2Ty8xDu 7gpM2R4Vz+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXY3yQAKCRCPgPtYfRL+ To22CACbE1sSOtnN4RHFx7kDvy/pll0IlUcR+ZVvcOQ0I10z29krE05S+iVwBCicdBECyMBsUha 9LuQKR2d/xy7+Oe4GjMSfXsnq51cowNKKWCvhxwvA+G0FmGPhmQa9DFR/fw8/OI9pqSOEAOoF5r N+y+y13qGyVHoiQ+q+75lH1JKrWcraU75EJs1csKSyCd2SDOTzznr8jznQdOSxE7KuQHBggIEUp W+UXayUc9lBsf2iOEW1UqE3frJEPWeXSKo+kHQlZhS0U4U9anL4tOduzO7PB1FMF4cocxYZODco JsfKv6mZ79sowdqwq9EOa6j4P/qpSJveJqxOLSwuSkhG/iKF
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1686; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=tJ2yKb21/v8dgfuhgALzaxDexLMP8sgVYPpXDzQrTKs=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBldjfKeIvGJORSVKGHwwwyFKf7y9MUJlfleH1Jl DiYf7f3Vr+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXY3ygAKCRCPgPtYfRL+ TtbwCACuhFqANg8WSx60uhQJSpr0JdPEteh6pcmqE2mfzI4AetRrLIKWj1F8o/MM6mj3cU8M+4S hcitsrZA76q3cL4RTQFzPX8JkrSwm4OjxGDEQFOrAa/l69INUglpYKYPEFBrrLks8D/HDJ2Ift7 rKB3lNgzJ7lTJe+SpojQGsoe5gLsxivIIcc4XsVJ0iuoDVp57EN5iyVZoA+mGSTvkQwi44SaX8Q VUbOiHSuksPBkyd8R06N588Wo369O08Ff6WCrv/QbArB+eI+pjwBKaW7YNTIA9cVbfxX+/qKx+z 99S4hJ0pj3y0TEfK3h400SL6iP3K9C10AE+L30YTDOrqLhro
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -71,40 +76,35 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/char/hw_random/omap-rng.c | 6 ++----
+ drivers/char/hw_random/stm32-rng.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/hw_random/omap-rng.c b/drivers/char/hw_random/omap-rng.c
-index be03f76a2a80..d4c02e900466 100644
---- a/drivers/char/hw_random/omap-rng.c
-+++ b/drivers/char/hw_random/omap-rng.c
-@@ -509,7 +509,7 @@ static int omap_rng_probe(struct platform_device *pdev)
- 	return ret;
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index 41e1dbea5d2e..98c92b914cfd 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -362,11 +362,9 @@ static int stm32_rng_init(struct hwrng *rng)
+ 	return 0;
  }
  
--static int omap_rng_remove(struct platform_device *pdev)
-+static void omap_rng_remove(struct platform_device *pdev)
+-static int stm32_rng_remove(struct platform_device *ofdev)
++static void stm32_rng_remove(struct platform_device *ofdev)
  {
- 	struct omap_rng_dev *priv = platform_get_drvdata(pdev);
- 
-@@ -521,8 +521,6 @@ static int omap_rng_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(priv->clk);
- 	clk_disable_unprepare(priv->clk_reg);
+ 	pm_runtime_disable(&ofdev->dev);
 -
 -	return 0;
  }
  
- static int __maybe_unused omap_rng_suspend(struct device *dev)
-@@ -560,7 +558,7 @@ static struct platform_driver omap_rng_driver = {
- 		.of_match_table = of_match_ptr(omap_rng_of_match),
+ static int __maybe_unused stm32_rng_runtime_suspend(struct device *dev)
+@@ -557,7 +555,7 @@ static struct platform_driver stm32_rng_driver = {
+ 		.of_match_table = stm32_rng_match,
  	},
- 	.probe		= omap_rng_probe,
--	.remove		= omap_rng_remove,
-+	.remove_new	= omap_rng_remove,
+ 	.probe = stm32_rng_probe,
+-	.remove = stm32_rng_remove,
++	.remove_new = stm32_rng_remove,
  };
  
- module_platform_driver(omap_rng_driver);
+ module_platform_driver(stm32_rng_driver);
 -- 
 2.42.0
 
