@@ -1,149 +1,227 @@
-Return-Path: <linux-crypto+bounces-797-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-799-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F8CB811107
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Dec 2023 13:22:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F16658111C6
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Dec 2023 13:51:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 732A21C20FA5
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 Dec 2023 12:22:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99CDF1F20FD8
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 Dec 2023 12:51:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC4B128E2C;
-	Wed, 13 Dec 2023 12:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065622C19B;
+	Wed, 13 Dec 2023 12:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="me0OkCP+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zyre5Dyq"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2076.outbound.protection.outlook.com [40.107.93.76])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234E7120;
-	Wed, 13 Dec 2023 04:21:58 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LrFoCbuQnbYFhb/syTc+7iGfOn6RfqrtWbUwigtiqHT+V2jUoosmJtQ5maO4xgRfPolaHYCjsBQCMDV/YexLv3MMqijJ13zeBdwEzzifjjUE4qZkCLY1NLNc3rpRitom2Ub+dqB5pu2GlRvMFZAZlHnydkv5uzjnH7yItR7ArcVf+xPcVSMXy6WY/xAPVfAYSEmSWLsNadH9KLXTVx9Pf+nrO7gfB+WsxfoMDgAmL7BvJI9cfbhg7uBpEuZQrdS1JUS6fXuFQXTKoUyhMGxTLBkO0Yk+1OXCOccxNmJRljsANoOkZgsa4P4wmeoVgr4ZeY8NDU3fZBlczw+CLZhuOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5eMMog2MnMnqsmecZf7t0U1qGTG82j1sYnMIXXptBr0=;
- b=PTd6Nd3b9IXkVOnMgRPNTlAKnCDxK+8lerlKwx+/z97bPwykYKxWA55IRfnNlWY7siFZUNebSbqHv3yg2n/dlpP8jSsmeAKIW/0ypd66v65TNxLbPHP7UGPDCKVXrzIzU2lNSRVnSMLoKViNTTPQr/9ZtFdEKqPmIWDA0yuFcqTc6tu4xeM874AxXPIA3V086FnkMqSLgOtCKmVKZ9KpmJ4CP1iH/ScsnWRzPrNw492Mbd44rLZePTQqwl+lhne4y6Et6aYw2gOgR02y36s340HwZLvGqD4jICCQli9bG0oE27u0i2MdWbFkvG88kmZ7MzDCVrAlQR9n7cxOVuaryQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=gondor.apana.org.au
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5eMMog2MnMnqsmecZf7t0U1qGTG82j1sYnMIXXptBr0=;
- b=me0OkCP+jLVQWGK7dG1gBtXoy5KY12Mv3v7YeFzqm6saNpbInEffglBWLdOetuyeiJxALgaUOaqlzF7o0vIYldQZUYi5S7CVMiqRtnSadp3CeqxFTdQVeiLYYci4R9I1h3KkRHkqQ8ksDOu/j/WEFdrY40AWbkIbyPNpy7pO0shDkFde0CFr8nd5IZMSS4mEUOiQO5KNmfMzqtAuAeuM/oBCKTMhBycxI//fWhb679EYefvigY41KbyUZLfqUybBzU4VtW6f1i6m6NKh0cvwrJdyG9Eq2w6J1zI1RxwHIwCZbjztah01fd46/exLyqYno++iAj943BlTksyTmJhsKw==
-Received: from DS7PR03CA0223.namprd03.prod.outlook.com (2603:10b6:5:3ba::18)
- by CY5PR12MB6322.namprd12.prod.outlook.com (2603:10b6:930:21::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 12:21:55 +0000
-Received: from DS2PEPF0000343C.namprd02.prod.outlook.com
- (2603:10b6:5:3ba:cafe::64) by DS7PR03CA0223.outlook.office365.com
- (2603:10b6:5:3ba::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26 via Frontend
- Transport; Wed, 13 Dec 2023 12:21:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS2PEPF0000343C.mail.protection.outlook.com (10.167.18.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.26 via Frontend Transport; Wed, 13 Dec 2023 12:21:52 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 13 Dec
- 2023 04:21:46 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Wed, 13 Dec 2023 04:21:46 -0800
-Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.14) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Wed, 13 Dec 2023 04:21:44 -0800
-From: Akhil R <akhilrajeev@nvidia.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-	<linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-	<linux-tegra@vger.kernel.org>
-CC: Akhil R <akhilrajeev@nvidia.com>
-Subject: [PATCH 5/5] arm64: tegra: Add Tegra Security Engine DT nodes
-Date: Wed, 13 Dec 2023 17:50:30 +0530
-Message-ID: <20231213122030.11734-6-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231213122030.11734-1-akhilrajeev@nvidia.com>
-References: <20231213122030.11734-1-akhilrajeev@nvidia.com>
-X-NVConfidentiality: public
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D4510F
+	for <linux-crypto@vger.kernel.org>; Wed, 13 Dec 2023 04:50:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702471808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=L53V/B5rMe96aC7XL7PLksvfyfKnOaNV78+sYgsMyoE=;
+	b=Zyre5DyqMQbgAq7cl5nGNJDFQCtr4XO2yM2eWXU/D0hhBRPafSxa5uAO2fRbDEt8bAzHeg
+	ymxF2+T7C1aFPn84hXA4Ew092/Udh8Dk8zClsR15UeLtD6COB7+Z8TbfZr9uUFA0Aslzea
+	8ym7gZjA/by1S1EfcYhNlJuwVogJrNU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-377-u1KSwTLYPhCJK8Su6so59A-1; Wed, 13 Dec 2023 07:50:06 -0500
+X-MC-Unique: u1KSwTLYPhCJK8Su6so59A-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c27a351e2so43088085e9.2
+        for <linux-crypto@vger.kernel.org>; Wed, 13 Dec 2023 04:50:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702471806; x=1703076606;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L53V/B5rMe96aC7XL7PLksvfyfKnOaNV78+sYgsMyoE=;
+        b=Q7ym2bBEx5CoDo7yq9bItDI5hkc86lF3p0l5u9yvADQ7FDXxyJWKHsJhnDbHZ77TOb
+         5aZyjpvjrWIN/qksbpfdP4KvEfjc/jl4sMEtPOXTQUI8fnr3yIEkiX/231jvv4D/7U5c
+         1zTEknr1Q5P24wSnrGnalcTNVWij+qoX3TtMFAT9WbT2KLT4kzPx130rmetKL8hohfTi
+         yajBu8mrNxSOpDifo/QZ+DOnVc1UdJacPp9p6xtSaGH2nS/fE+9lttBHsuKn4n6HsCzG
+         NP2AptIS16gAc68+Dgjm5C29KtuKAU/hItChI890ZzI/8CWCCCUAA080LzLCHwdLxyco
+         bNpg==
+X-Gm-Message-State: AOJu0YzoHHK3q0YQyhv5Hop1493VLvOYJ7MKUXsSrxPxhLm8xs1rmoB+
+	s206R9ln0qYzVSmAOWy6tpYrZPg+3m1SnQVbKntyR3clqBsSIUqeNrl5XvBMCTAFmrZNNHrCgVL
+	6uBEBJxlGVNyhefEhEERDsPTe
+X-Received: by 2002:a05:600c:348e:b0:40c:32b3:f294 with SMTP id a14-20020a05600c348e00b0040c32b3f294mr2156478wmq.318.1702471805746;
+        Wed, 13 Dec 2023 04:50:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG1VR0Uo3Jw+upFUMG6CccPX7W5J+yMKTI/ryCu+dLrWoYxSW4ekledWb92O7Y8EtzJsc4FCw==
+X-Received: by 2002:a05:600c:348e:b0:40c:32b3:f294 with SMTP id a14-20020a05600c348e00b0040c32b3f294mr2156434wmq.318.1702471805333;
+        Wed, 13 Dec 2023 04:50:05 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id w18-20020a5d5452000000b00336367631efsm2399896wrv.65.2023.12.13.04.50.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 04:50:04 -0800 (PST)
+Message-ID: <e094dc8b-6758-4dd8-89a5-8aab05b2626b@redhat.com>
+Date: Wed, 13 Dec 2023 13:50:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF0000343C:EE_|CY5PR12MB6322:EE_
-X-MS-Office365-Filtering-Correlation-Id: f835d51b-cdd9-4419-af83-08dbfbd61702
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	nU/Se23nAcqTnLy+rKGob8BY05jVLxvsYrDyJ/15ChJRdHz/TkgBdByJ3iqSSPEbEMsU1uHJQMWficTWAOr7IfbzWJAFs0AwdVPv/fqUiobvmlQRFWnrbVKfGj3nk3U8i0M9HwPTOxZEZzfIbyyQVTvemqy7HlcahMZfugEVr2Lj704D+iPvqogcOneUN/aSSrxWNVWjbCxJysdAwGzsBJrNEDMsOIzcgU5scbzedVcEqzenBnM+HUcCU1dhl7Az0Ul6KtEj7EGbUAy9ocyzed2MhV6cis6ddKzEe7FeoI7PPECMf74uOqr2wgsaWDegRj1+XdUd+POwQsvvCX0k+BRiHgZnVT84y2W3Q7GwA56oXqH4X4Q3uuATNEjbKT7lC97ba3rhvNMukDACjRheUPOR42wVKxkCL0QohysohRUYkEC8MIHXj5XxzHya/JEWQPxOhyDtgR6v7VXQAMIIOV6C0iYF6OmOBS70ELZa3avXuNUslH8DR+nVWVtKbJ7ILJ5urKOlVI+tX0K2VIawZ2vxTBg/8pNDhtEok99LEyOl8HL6lM2A/bQLl1cpjy7JWmpq52GnF8+KtbjB204OFO1EI0Nf0orUzQfZBz5Gcs6pRzVR4wC/K80BJ7TitXYXZFSIF6igqWKrwqWUj0L7cUML3vpTVDrVB30P32pNfrR40fONRZWzkGF519j20HiyLLTfyexd/5rtrVsCHTZESrJCI2Pb3ITMxqSEqn6eog0=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(39860400002)(136003)(230922051799003)(186009)(64100799003)(1800799012)(82310400011)(451199024)(40470700004)(46966006)(36840700001)(2616005)(1076003)(40460700003)(426003)(26005)(336012)(107886003)(6666004)(7696005)(36860700001)(83380400001)(47076005)(5660300002)(4326008)(8676002)(8936002)(41300700001)(2906002)(4744005)(478600001)(316002)(70206006)(110136005)(70586007)(82740400003)(86362001)(7636003)(356005)(36756003)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 12:21:52.9275
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f835d51b-cdd9-4419-af83-08dbfbd61702
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF0000343C.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6322
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 03/50] KVM: SEV: Do not intercept accesses to
+ MSR_IA32_XSS for SEV-ES guests
+Content-Language: en-US
+To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+ thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com,
+ vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+ dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+ peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+ rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+ vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+ tony.luck@intel.com, marcorr@google.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+ jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+ pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
+ Alexey Kardashevskiy <aik@amd.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-4-michael.roth@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20231016132819.1002933-4-michael.roth@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add device tree nodes for Tegra AES and HASH engines.
+On 10/16/23 15:27, Michael Roth wrote:
+> Address this by disabling intercepts of MSR_IA32_XSS for SEV-ES guests
+> if the host/guest configuration allows it. If the host/guest
+> configuration doesn't allow for MSR_IA32_XSS, leave it intercepted so
+> that it can be caught by the existing checks in
+> kvm_{set,get}_msr_common() if the guest still attempts to access it.
 
-Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra234.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+This is wrong, because it allows the guest to do untrapped writes to
+MSR_IA32_XSS and therefore (via XRSTORS) to MSRs that the host might not
+save or restore.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234.dtsi b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-index 3f16595d099c..05da74d1c2f4 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-@@ -2304,6 +2304,22 @@
- 				 */
- 				status = "disabled";
- 			};
+If the processor cannot let the host validate writes to MSR_IA32_XSS,
+KVM simply cannot expose XSAVES to SEV-ES (and SEV-SNP) guests.
+
+Because SVM doesn't provide a way to disable just XSAVES in the guest,
+all that KVM can do is keep on trapping MSR_IA32_XSS (which the guest
+shouldn't read or write to).  In other words the crash on accesses to
+MSR_IA32_XSS is not a bug but a feature (of the hypervisor, that
+wants/needs to protect itself just as much as the guest wants to).
+
+The bug is that there is no API to tell userspace "do not enable this
+and that CPUID for SEV guests", there is only the extremely limited
+KVM_GET_SUPPORTED_CPUID system ioctl.
+
+For now, all we can do is document our wishes, with which userspace had
+better comply.  Please send a patch to QEMU that makes it obey.
+
+Paolo
+
+--------------------------- 8< -----------------------
+ From 303e66472ddf54c2a945588b133d34eaab291257 Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 13 Dec 2023 07:45:08 -0500
+Subject: [PATCH] Documentation: KVM: suggest disabling XSAVES on SEV-ES guests
+
+When intercepts are enabled for MSR_IA32_XSS, the host will swap in/out
+the guest-defined values while context-switching to/from guest mode.
+However, in the case of SEV-ES, vcpu->arch.guest_state_protected is set,
+so the guest-defined value is effectively ignored when switching to
+guest mode with the understanding that the VMSA will handle swapping
+in/out this register state.
+
+However, SVM is still configured to intercept these accesses for SEV-ES
+guests, so the values in the initial MSR_IA32_XSS are effectively
+read-only, and a guest will experience undefined behavior if it actually
+tries to write to this MSR. Fortunately, only CET/shadowstack makes use
+of this register on SEV-ES-capable systems currently, which isn't yet
+widely used, but this may become more of an issue in the future.
+
+Additionally, enabling intercepts of MSR_IA32_XSS results in #VC
+exceptions in the guest in certain paths that can lead to unexpected #VC
+nesting levels. One example is SEV-SNP guests when handling #VC
+exceptions for CPUID instructions involving leaf 0xD, subleaf 0x1, since
+they will access MSR_IA32_XSS as part of servicing the CPUID #VC, then
+generate another #VC when accessing MSR_IA32_XSS, which can lead to
+guest crashes if an NMI occurs at that point in time. Running perf on a
+guest while it is issuing such a sequence is one example where these can
+be problematic.
+
+Unfortunately, there is not really a way to fix this issue; allowing
+unfiltered access to MSR_IA32_XSS also lets the guest write (via
+XRSTORS) MSRs that the host might not be ready to save or restore.
+Because SVM doesn't provide a way to disable just XSAVES in the guest,
+all that KVM can do to protect itself is keep on trapping MSR_IA32_XSS.
+Userspace has to comply and not enable XSAVES in CPUID, so that the
+guest has no business accessing MSR_IA32_XSS at all.
+
+Unfortunately^2, there is no API to tell userspace "do not enable this
+and that CPUID for SEV guests", there is only the extremely limited
+KVM_GET_SUPPORTED_CPUID system ioctl.  So all we can do for now is
+document it.
+
+Reported-by: Michael Roth <michael.roth@amd.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+diff --git a/Documentation/virt/kvm/x86/errata.rst b/Documentation/virt/kvm/x86/errata.rst
+index 49a05f24747b..0c91916c0164 100644
+--- a/Documentation/virt/kvm/x86/errata.rst
++++ b/Documentation/virt/kvm/x86/errata.rst
+@@ -33,6 +33,15 @@ Note however that any software (e.g ``WIN87EM.DLL``) expecting these features
+  to be present likely predates these CPUID feature bits, and therefore
+  doesn't know to check for them anyway.
+  
++Encrypted guests
++~~~~~~~~~~~~~~~~
 +
-+			crypto@15820000 {
-+				compatible = "nvidia,tegra234-se2-aes";
-+				reg = <0x00 0x15820000 0x00 0x10000>;
-+				clocks = <&bpmp TEGRA234_CLK_SE>;
-+				iommus = <&smmu_niso1 TEGRA234_SID_SES_SE1>;
-+				dma-coherent;
-+			};
++For SEV-ES guests, it is impossible for KVM to validate writes for MSRs that
++are part of the VMSA.  In the case of MSR_IA32_XSS, however, KVM needs to
++validate writes to the MSR in order to prevent the guest from using XRSTORS
++to overwrite host MSRs.  Therefore, the XSAVES feature should never be exposed
++to SEV-ES guests.
 +
-+			crypto@15840000 {
-+				compatible = "nvidia,tegra234-se4-hash";
-+				reg = <0x00 0x15840000 0x00 0x10000>;
-+				clocks = <&bpmp TEGRA234_CLK_SE>;
-+				iommus = <&smmu_niso1 TEGRA234_SID_SES_SE1>;
-+				dma-coherent;
-+			};
- 		};
- 
- 		pcie@140a0000 {
--- 
-2.17.1
+  Nested virtualization features
+  ------------------------------
+  
 
 
