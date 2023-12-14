@@ -1,64 +1,67 @@
-Return-Path: <linux-crypto+bounces-831-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-842-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5DB812D27
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Dec 2023 11:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C21812F04
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Dec 2023 12:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E9F21F2121F
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Dec 2023 10:36:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BA861F21441
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Dec 2023 11:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A633C08D;
-	Thu, 14 Dec 2023 10:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89D54AF8E;
+	Thu, 14 Dec 2023 11:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LNOkMoFK"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Bqjbd6Hj"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDED10E;
-	Thu, 14 Dec 2023 02:36:41 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE9K6JT028706;
-	Thu, 14 Dec 2023 10:36:33 GMT
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE16B2;
+	Thu, 14 Dec 2023 03:43:00 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE5tKH8000547;
+	Thu, 14 Dec 2023 11:42:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=Hy0ZCuxeshJ9OJqrWSouk5mKlu/Kf0gzIP9t1ih7CTA=; b=LN
-	OkMoFKYjFQD+lYDukDIkcmZ09DimEPdpEaJazOMOf1SrEJRjAGtJrMmrPeXSekeM
-	1HIGT3IC8VRKmFv1rxy8oOXvX/VQ7+hnG50D8CF08Hyk6QdhNHj8ZS3WnXYuGZeL
-	yoNsOSY6zSIH4TDO9QQUrL8hbID9OJq3loyPrgIZdCmYx952TBh5EGnugQD1Lwrd
-	4D+KIIy4Os56qkxlKF0laYQG2O2hKGkMk5z/bQnu4r89SmwgvOXv4QdMXwO2jsDp
-	ZFES3Zq5+MrrjMDAjIELnCDTeoAioAOBlVEay1bkLjRb7zR+bLOLxILZKzi0zNyU
-	6jBhagoCEsRC5yOoBONQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyqgt115s-1
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=UaPkvFvrgs/7Kiutb4T2
+	XzNFd/EKJ1AzPTC8kfhBZE4=; b=Bqjbd6HjqtgfwrN1X32fHLW4lG/+8MoxpPLR
+	OAN2yEqCqRZ0maPPBtcLj9e5zDYXyWofXUs5y5L7YRVFtbAuQXSKXH/z7/gdZs1X
+	rVH6hZMyPhoDv6hy1llB5vbhAjhhRttYuKUJt8EO4ybVOwJrSKOf1aKjz81ou/Ci
+	4l+F/akw6y5+FELOnIo20+dly7fNQvMlYJr9c8gk+AHyOX6eDCBofok6w9anYUUI
+	P6GaQfqECGrTYX18Nkbo0f8t1ZDHyYQ4ddwQ2PD5o8G9rV9sTfdhT5TXHWp5qgTC
+	vkLs12idH3QSI8fEUWDiT7ygfHOQ6yCuMXKbFV5ni2F414Izag==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyp0p9a38-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Dec 2023 10:36:33 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BEAaW2O002868
+	Thu, 14 Dec 2023 11:42:48 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BEBgh38003053;
+	Thu, 14 Dec 2023 11:42:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3uvhaktcgh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Dec 2023 10:36:32 GMT
-Received: from hu-omprsing-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 02:36:27 -0800
-From: Om Prakash Singh <quic_omprsing@quicinc.com>
-To: <quic_omprsing@quicinc.com>
-CC: <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
-        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
-        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
-        <robh+dt@kernel.org>, <vkoul@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-Subject: [PATCH V3 2/2] arm64: dts: qcom: sc7280: add QCrypto nodes
-Date: Thu, 14 Dec 2023 16:06:00 +0530
-Message-ID: <20231214103600.2613988-3-quic_omprsing@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231214103600.2613988-1-quic_omprsing@quicinc.com>
-References: <20231214103600.2613988-1-quic_omprsing@quicinc.com>
+	Thu, 14 Dec 2023 11:42:43 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEBghom002916;
+	Thu, 14 Dec 2023 11:42:43 GMT
+Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3BEBghj5002826
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Dec 2023 11:42:43 +0000
+Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
+	id 81C9D414B7; Thu, 14 Dec 2023 17:12:42 +0530 (+0530)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: thara.gopinath@gmail.com, herbert@gondor.apana.org.au, davem@davemloft.net,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        vkoul@kernel.org, linux-crypto@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, quic_srichara@quicinc.com,
+        quic_varada@quicinc.com
+Cc: quic_mdalam@quicinc.com
+Subject: [PATCH 00/11] Add cmd descriptor support
+Date: Thu, 14 Dec 2023 17:12:28 +0530
+Message-Id: <20231214114239.2635325-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -66,71 +69,65 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eI1ZMDqxm7hjzoiataeKDsSfKo5OS_qG
-X-Proofpoint-ORIG-GUID: eI1ZMDqxm7hjzoiataeKDsSfKo5OS_qG
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: tqziVHUzaBsXNm0zfwIgwYP9Qqh9ElzM
+X-Proofpoint-GUID: tqziVHUzaBsXNm0zfwIgwYP9Qqh9ElzM
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=810 mlxscore=0 clxscore=1015
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312140070
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=491 mlxscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ clxscore=1015 malwarescore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312140080
 
-Add the QCE and Crypto BAM DMA nodes.
+This series of patches will add command descriptor
+support to read/write crypto engine register via
+BAM/DMA
 
-Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
----
+We need this support because if there is multiple EE's
+(Execution Environment) accessing the same CE even with
+different BAM pipe , then there will be race condition.
+To avoid this race condition BAM HW having LOCK/UNLOCK 
+feature on BAM pipes and this LOCK/UNLOCK will be set
+via command descriptor only.
 
-Changes in V3:
-  - V2 patch was sent without actual modification. Resending the patch with modified file.
+Since each EE's having their dedicated BAM pipe, BAM allows
+Locking and Unlocking on BAM pipe. So if one EE's requesting
+for CE5 access then that EE's first has to LOCK the BAM pipe
+while setting LOCK bit on command descriptor and then access
+it. After finishing the request EE's has to UNLOCK the BAM pipe
+so in this way we race condition will not happen.
 
-Changes in V2:
-  - Update DT node sequence as per register ascending order.
-  - Fix DT node properties as per convention.
+Md Sadre Alam (11):
+  crypto: qce - Add support for crypto address read
+  crypto: qce - Add bam dma support for crypto register r/w
+  crypto: qce - Convert register r/w for skcipher via BAM/DMA
+  crypto: qce - Convert register r/w for sha via BAM/DMA
+  crypto: qce - Convert register r/w for aead via BAM/DMA
+  drivers: bam_dma: Add LOCK & UNLOCK flag support
+  crypto: qce - Add LOCK and UNLOCK flag support
+  crypto: qce - Add support for lock aquire,lock release api.
+  crypto: qce - Add support for lock/unlock in skcipher
+  crypto: qce - Add support for lock/unlock in sha
+  crypto: qce - Add support for lock/unlock in aead
 
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/crypto/qce/aead.c        |  16 +++
+ drivers/crypto/qce/common.c      | 144 +++++++++++++------
+ drivers/crypto/qce/core.c        |   9 ++
+ drivers/crypto/qce/core.h        |  12 ++
+ drivers/crypto/qce/dma.c         | 238 +++++++++++++++++++++++++++++++
+ drivers/crypto/qce/dma.h         |  26 +++-
+ drivers/crypto/qce/sha.c         |  16 +++
+ drivers/crypto/qce/skcipher.c    |  16 +++
+ drivers/dma/qcom/bam_dma.c       |  10 ++
+ include/linux/dma/qcom_bam_dma.h |   2 +
+ 10 files changed, 447 insertions(+), 42 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 66f1eb83cca7..b819724c1255 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2233,6 +2233,28 @@ pcie1_phy: phy@1c0e000 {
- 			status = "disabled";
- 		};
- 
-+		cryptobam: dma-controller@1dc4000 {
-+			compatible = "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
-+			reg = <0x0 0x01dc4000 0x0 0x28000>;
-+			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			iommus = <&apps_smmu 0x4e4 0x0011>,
-+				 <&apps_smmu 0x4e6 0x0011>;
-+			qcom,ee = <0>;
-+			qcom,controlled-remotely;
-+		};
-+
-+		crypto: crypto@1dfa000 {
-+			compatible = "qcom,sc7280-qce", "qcom,sm8150-qce", "qcom,qce";
-+			reg = <0x0 0x01dfa000 0x0 0x6000>;
-+			dmas = <&cryptobam 4>, <&cryptobam 5>;
-+			dma-names = "rx", "tx";
-+			iommus = <&apps_smmu 0x4e4 0x0011>,
-+				 <&apps_smmu 0x4e4 0x0011>;
-+			interconnects = <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "memory";
-+		};
-+
- 		ipa: ipa@1e40000 {
- 			compatible = "qcom,sc7280-ipa";
- 
 -- 
-2.25.1
+2.34.1
 
 
