@@ -1,38 +1,40 @@
-Return-Path: <linux-crypto+bounces-957-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-958-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08CB781C34E
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Dec 2023 04:16:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313CA81C386
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Dec 2023 04:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3B54285E7B
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Dec 2023 03:16:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF5EA281F1F
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Dec 2023 03:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C69211C;
-	Fri, 22 Dec 2023 03:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6057C20FB;
+	Fri, 22 Dec 2023 03:33:55 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55640210B
-	for <linux-crypto@vger.kernel.org>; Fri, 22 Dec 2023 03:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463B717D3;
+	Fri, 22 Dec 2023 03:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rGW0p-00DgWT-4o; Fri, 22 Dec 2023 11:15:48 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Dec 2023 11:15:57 +0800
-Date: Fri, 22 Dec 2023 11:15:57 +0800
+	id 1rGWIB-00Dgpy-KJ; Fri, 22 Dec 2023 11:33:44 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Dec 2023 11:33:54 +0800
+Date: Fri, 22 Dec 2023 11:33:54 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Horia =?iso-8859-1?Q?Geant=C4?= <horia.geanta@nxp.com>,
-	Gaurav Jain <gaurav.jain@nxp.com>,
-	Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Cc: Ondrej Mosnacek <omosnace@redhat.com>
-Subject: caam test failures with libkcapi
-Message-ID: <ZYT/beBEO7dAlVO2@gondor.apana.org.au>
+To: Gonglei <arei.gonglei@huawei.com>
+Cc: linux-crypto@vger.kernel.org, mst@redhat.com,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org, lixiao91@huawei.com,
+	wangyangxin <wangyangxin1@huawei.com>
+Subject: Re: [PATCH 2/2] crypto: virtio-crypto: Fix gcc check warnings
+Message-ID: <ZYUDop1Cv1ddrqQf@gondor.apana.org.au>
+References: <1702294936-61080-1-git-send-email-arei.gonglei@huawei.com>
+ <1702294936-61080-3-git-send-email-arei.gonglei@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -41,17 +43,37 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1702294936-61080-3-git-send-email-arei.gonglei@huawei.com>
 
-Hi:
+On Mon, Dec 11, 2023 at 07:42:16PM +0800, Gonglei wrote:
+>
+>  static inline int virtio_crypto_get_current_node(void)
+>  {
+> -	int cpu, node;
+> +	int node;
+>  
+> -	cpu = get_cpu();
+> -	node = topology_physical_package_id(cpu);
+> +	node = topology_physical_package_id(get_cpu());
 
-It's been brought to my attention that the caam driver fails with
-libkcapi test suite:
+This looks like a bogus warning.  I think we should do something
+like this instead:
 
-	https://github.com/smuellerDD/libkcapi/
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index ae81a7191c1c..0cb43986061b 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -191,7 +191,7 @@ DECLARE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
+ #define cpu_data(cpu)		per_cpu(cpu_info, cpu)
+ #else
+ #define cpu_info		boot_cpu_data
+-#define cpu_data(cpu)		boot_cpu_data
++#define cpu_data(cpu)		((void)cpu, boot_cpu_data)
+ #endif
+ 
+ extern const struct seq_operations cpuinfo_op;
 
-Can you please have a look into this? It would also be useful to
-get some confirmation that caam still passes the extra fuzzing
-tests.
+Please send this patch to the x86 people.
 
 Thanks,
 -- 
