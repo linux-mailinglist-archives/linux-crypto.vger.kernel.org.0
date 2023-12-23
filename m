@@ -1,176 +1,135 @@
-Return-Path: <linux-crypto+bounces-984-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-986-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DECBA81D45D
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 Dec 2023 14:59:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 876DB81D564
+	for <lists+linux-crypto@lfdr.de>; Sat, 23 Dec 2023 18:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3925DB21F76
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 Dec 2023 13:59:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00405B21EB4
+	for <lists+linux-crypto@lfdr.de>; Sat, 23 Dec 2023 17:46:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDADF4E8;
-	Sat, 23 Dec 2023 13:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6143012E7C;
+	Sat, 23 Dec 2023 17:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LBsKTuZV"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="p2ZOEY/N"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A1AF4E2
-	for <linux-crypto@vger.kernel.org>; Sat, 23 Dec 2023 13:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703339930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ml8loPAoHCaUTkjCCP35WEEpNUNzN3KpRtiyrHAoqRM=;
-	b=LBsKTuZVSBHuYSv2iY9UO3V+jcv8pmW9IabOvXA4Z+pfGieNo3UZCsHdxlc08OaXhWYafT
-	C0oc5vSGs0G5I6d5eATkpKaiIN5QGxKFa0x1hcveMFQZJ9NYlHZMu40mLdnQsAoq9FnaBl
-	UNO4bWaJH7aLODKxVctrvd5JDT/d988=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-120-LxyGYJwrOsKreKO3Elrwrw-1; Sat, 23 Dec 2023 08:58:49 -0500
-X-MC-Unique: LxyGYJwrOsKreKO3Elrwrw-1
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-59436f69e8cso2042945eaf.0
-        for <linux-crypto@vger.kernel.org>; Sat, 23 Dec 2023 05:58:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703339928; x=1703944728;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ml8loPAoHCaUTkjCCP35WEEpNUNzN3KpRtiyrHAoqRM=;
-        b=iOlhranwLA0Kzmlew3hGYu72HpZW6zhpDkm+FvO/CfHxsyajnTgPaT7Zsl53PSdNPH
-         wEqjQ6NlRmsq7KjzXIMgvKMhL0+Z48oAfqPRiqu7ikc0zbbP5VomLOcESTwO6BDQcOz+
-         P72GsEMI1L/YMz0QoAyYruAoKL8cQLGoxyDSvW7d5fgnieQ/nRF61iRGk+2aYAj02QJR
-         mL/tnDY/4Io2oSxxfrtbjPMTpfHMABnh3A+c1MZpvKTV2FdEV2IgwGkCYsQgILaqDIrH
-         x+rmfQ/IV5obPTigOCIjxhV3G4TMnilWQhrLZug5nOrymezCyejP0vqZt6Rta7cFcwqX
-         X3cA==
-X-Gm-Message-State: AOJu0YyCktgnPrqK51uWunLtiuB/pmZtuOuFEbnDqDwCf3Sad92kFAN/
-	ym3HE5V0LeY6+TQRQrPbwbKNtcsMaLhf2E02ds8d8nykvHxZsHF67/rbOdvZ+E+5L+nBMrd4PDy
-	dSmIqLg9zUzAKg9ebPlv62ZbbkcqkuTLrKZshj8YKdIJf9/+Y
-X-Received: by 2002:a05:6359:1a46:b0:170:b476:d962 with SMTP id ru6-20020a0563591a4600b00170b476d962mr2415976rwb.20.1703339928391;
-        Sat, 23 Dec 2023 05:58:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHRD3CtDp5xH12+RxaNKEcmbP3iA3iiji2uVgtBeeOVQnJ9rdmrwcyMpvVCHdUuXELACtx1tGK/qJZyLO0bv0Q=
-X-Received: by 2002:a05:6359:1a46:b0:170:b476:d962 with SMTP id
- ru6-20020a0563591a4600b00170b476d962mr2415966rwb.20.1703339928020; Sat, 23
- Dec 2023 05:58:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D287712E47;
+	Sat, 23 Dec 2023 17:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=WhHixi2VZpDBVLftarK1q7P/+5qNlOuePs7odpBRn3Q=; b=p2ZOEY/NVK6ni17P7SCHFCqOkX
+	Jf+wx4r85sublaH1FlECpxiseI01AzmGtaABJw38POe+Qr3k6oF7yZGM3Kg/d0cX3Eo4OtzUBLv5c
+	WhhlNSDRhs5MeovdKpHzHsGVeZ5T6Myjz624BdyG7SZp4kQvLRRPfSNGHoDvxEOYXxgaWonOTJCxM
+	Xe/KDPSmw05dxrByFuitCYiZ9hRj3BLtr9PEY8PD+wDD4EMWAUafcoSN0dvJnf8U/XIGBymm0VM2U
+	xooWt95cOATUHLM/yTPklik9hd4l/FiGmu0sPjeAhwZeAZkLk1/siPAAj/wWXJ+4NfGjBv9aNuJ8o
+	0QCjkWwg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rH64D-008EuA-37;
+	Sat, 23 Dec 2023 17:45:42 +0000
+Message-ID: <fd99702a-a380-4c5f-bf6a-40b1eb912cf8@infradead.org>
+Date: Sat, 23 Dec 2023 09:45:41 -0800
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZYT/beBEO7dAlVO2@gondor.apana.org.au> <AM0PR04MB6004FDAC2B2C0B4D41A92A89E794A@AM0PR04MB6004.eurprd04.prod.outlook.com>
-In-Reply-To: <AM0PR04MB6004FDAC2B2C0B4D41A92A89E794A@AM0PR04MB6004.eurprd04.prod.outlook.com>
-From: Ondrej Mosnacek <omosnace@redhat.com>
-Date: Sat, 23 Dec 2023 14:58:36 +0100
-Message-ID: <CAFqZXNtb1hErawH30dN4vgGPD0tQv9Rd+9s26MBaT3boRYtPCA@mail.gmail.com>
-Subject: Re: [EXT] caam test failures with libkcapi
-To: Gaurav Jain <gaurav.jain@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Horia Geanta <horia.geanta@nxp.com>, 
-	Pankaj Gupta <pankaj.gupta@nxp.com>, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Dec 22, 2023 at 11:50=E2=80=AFAM Gaurav Jain <gaurav.jain@nxp.com> =
-wrote:
->
-> Hi Herbert
->
-> tcrypt tests are passing with kernel crypto CAAM driver.
-
-Is that also with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=3Dy ? (We didn't
-test that, but we suspect it may be able to trigger the issue.)
-
-> Can you please share the logs for libkcapi test failures.
-
-A log from our kernel CI testing is available here (it is from CentOS
-Stream 9, but it fails in the same way on the Fedora's 6.6.6-based
-kernel):
-https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/trusted-artifacts/1=
-109180874/test_aarch64/5766414724/artifacts/run.done.03/job.01/recipes/1519=
-4733/tasks/31/logs/taskout.log
-
-You should be able to reproduce it on your machine easily:
-1. dnf install -y git-core gcc autoconf automake libtool (or an
-equivalent for your distribution)
-2. git clone https://github.com/smuellerDD/libkcapi/
-3. cd libkcapi/
-4. autoreconf -i
-5. cd test/
-6. ./test-invocation.sh
-
->
-> Regards
-> Gaurav Jain
->
-> > -----Original Message-----
-> > From: Herbert Xu <herbert@gondor.apana.org.au>
-> > Sent: Friday, December 22, 2023 8:46 AM
-> > To: Horia Geanta <horia.geanta@nxp.com>; Gaurav Jain
-> > <gaurav.jain@nxp.com>; Pankaj Gupta <pankaj.gupta@nxp.com>; Linux Crypt=
-o
-> > Mailing List <linux-crypto@vger.kernel.org>
-> > Cc: Ondrej Mosnacek <omosnace@redhat.com>
-> > Subject: [EXT] caam test failures with libkcapi
-> >
-> > Caution: This is an external email. Please take care when clicking link=
-s or
-> > opening attachments. When in doubt, report the message using the 'Repor=
-t this
-> > email' button
-> >
-> >
-> > Hi:
-> >
-> > It's been brought to my attention that the caam driver fails with libkc=
-api test
-> > suite:
-> >
-> >
-> > https://github.co/
-> > m%2FsmuellerDD%2Flibkcapi%2F&data=3D05%7C02%7Cgaurav.jain%40nxp.com%
-> > 7C3dad774d29404c40164908dc029c4da1%7C686ea1d3bc2b4c6fa92cd99c5c30
-> > 1635%7C0%7C0%7C638388117546628060%7CUnknown%7CTWFpbGZsb3d8eyJ
-> > WIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C
-> > 3000%7C%7C%7C&sdata=3DaQ2MLvyfioDjh8a1c600f8A5sTMSlaPSckg8QY6RpVs%
-> > 3D&reserved=3D0
-> >
-> > Can you please have a look into this? It would also be useful to get so=
-me
-> > confirmation that caam still passes the extra fuzzing tests.
-> >
-> > Thanks,
-> > --
-> > Email: Herbert Xu <herbert@gondor.apana.org.au> Home Page:
-> > http://gondor.ap/
-> > ana.org.au%2F~herbert%2F&data=3D05%7C02%7Cgaurav.jain%40nxp.com%7C3d
-> > ad774d29404c40164908dc029c4da1%7C686ea1d3bc2b4c6fa92cd99c5c301635
-> > %7C0%7C0%7C638388117546784331%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
-> > MC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000
-> > %7C%7C%7C&sdata=3D9YTdCRpZOzKmkYlMKhGvBkuvVG9tmg%2FQ4Y1VnLuVGCg
-> > %3D&reserved=3D0
-> > PGP Key:
-> > http://gondor.ap/
-> > ana.org.au%2F~herbert%2Fpubkey.txt&data=3D05%7C02%7Cgaurav.jain%40nxp.c
-> > om%7C3dad774d29404c40164908dc029c4da1%7C686ea1d3bc2b4c6fa92cd99c
-> > 5c301635%7C0%7C0%7C638388117546784331%7CUnknown%7CTWFpbGZsb3d
-> > 8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D
-> > %7C3000%7C%7C%7C&sdata=3Djf80tCyfL65DjtCqNfX%2BYnEKIC%2FG8PL63LiZyP
-> > GGgdk%3D&reserved=3D0
->
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] crypto: skcipher - remove excess kerneldoc members
+Content-Language: en-US
+To: Vegard Nossum <vegard.nossum@oracle.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>
+References: <20231223083459.3025561-1-vegard.nossum@oracle.com>
+ <20231223083459.3025561-2-vegard.nossum@oracle.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231223083459.3025561-2-vegard.nossum@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
---
-Ondrej Mosnacek
-Senior Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
 
+On 12/23/23 00:34, Vegard Nossum wrote:
+> Commit 31865c4c4db2 ("crypto: skcipher - Add lskcipher") moved some
+> fields from 'struct skcipher_alg' into SKCIPHER_ALG_COMMON but didn't
+> remove the corresponding kerneldoc members, which results in these
+> warnings when running 'make htmldocs':
+> 
+>   ./include/crypto/skcipher.h:182: warning: Excess struct member 'min_keysize' description in 'skcipher_alg'
+>   ./include/crypto/skcipher.h:182: warning: Excess struct member 'max_keysize' description in 'skcipher_alg'
+>   ./include/crypto/skcipher.h:182: warning: Excess struct member 'ivsize' description in 'skcipher_alg'
+>   ./include/crypto/skcipher.h:182: warning: Excess struct member 'chunksize' description in 'skcipher_alg'
+>   ./include/crypto/skcipher.h:182: warning: Excess struct member 'stat' description in 'skcipher_alg'
+>   ./include/crypto/skcipher.h:182: warning: Excess struct member 'base' description in 'skcipher_alg'
+> 
+> SKCIPHER_ALG_COMMON already has the documentation for all these fields.
+> 
+> Fixes: 31865c4c4db2 ("crypto: skcipher - Add lskcipher")
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  include/crypto/skcipher.h | 16 ----------------
+>  1 file changed, 16 deletions(-)
+> 
+> diff --git a/include/crypto/skcipher.h b/include/crypto/skcipher.h
+> index ea18af48346b..8831fcf8f1da 100644
+> --- a/include/crypto/skcipher.h
+> +++ b/include/crypto/skcipher.h
+> @@ -108,16 +108,6 @@ struct skcipher_alg_common SKCIPHER_ALG_COMMON;
+>  
+>  /**
+>   * struct skcipher_alg - symmetric key cipher definition
+> - * @min_keysize: Minimum key size supported by the transformation. This is the
+> - *		 smallest key length supported by this transformation algorithm.
+> - *		 This must be set to one of the pre-defined values as this is
+> - *		 not hardware specific. Possible values for this field can be
+> - *		 found via git grep "_MIN_KEY_SIZE" include/crypto/
+> - * @max_keysize: Maximum key size supported by the transformation. This is the
+> - *		 largest key length supported by this transformation algorithm.
+> - *		 This must be set to one of the pre-defined values as this is
+> - *		 not hardware specific. Possible values for this field can be
+> - *		 found via git grep "_MAX_KEY_SIZE" include/crypto/
+>   * @setkey: Set key for the transformation. This function is used to either
+>   *	    program a supplied key into the hardware or store the key in the
+>   *	    transformation context for programming it later. Note that this
+> @@ -152,15 +142,9 @@ struct skcipher_alg_common SKCIPHER_ALG_COMMON;
+>   * @exit: Deinitialize the cryptographic transformation object. This is a
+>   *	  counterpart to @init, used to remove various changes set in
+>   *	  @init.
+> - * @ivsize: IV size applicable for transformation. The consumer must provide an
+> - *	    IV of exactly that size to perform the encrypt or decrypt operation.
+> - * @chunksize: Equal to the block size except for stream ciphers such as
+> - *	       CTR where it is set to the underlying block size.
+>   * @walksize: Equal to the chunk size except in cases where the algorithm is
+>   * 	      considerably more efficient if it can operate on multiple chunks
+>   * 	      in parallel. Should be a multiple of chunksize.
+> - * @stat: Statistics for cipher algorithm
+> - * @base: Definition of a generic crypto algorithm.
+>   * @co: see struct skcipher_alg_common
+>   *
+>   * All fields except @ivsize are mandatory and must be filled.
+
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
