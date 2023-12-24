@@ -1,50 +1,51 @@
-Return-Path: <linux-crypto+bounces-1004-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1001-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A5E81D83B
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 Dec 2023 09:21:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8080381D839
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 Dec 2023 09:21:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3731D1C20BBA
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 Dec 2023 08:21:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0A841C20D52
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 Dec 2023 08:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F95420E0;
-	Sun, 24 Dec 2023 08:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB14C1856;
+	Sun, 24 Dec 2023 08:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="USuF6Wp/"
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="HeGlrgi4"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5A815CF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5D415D0
 	for <linux-crypto@vger.kernel.org>; Sun, 24 Dec 2023 08:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
 Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BO8L2fM015315;
-	Sun, 24 Dec 2023 08:21:02 GMT
+	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BO8L2fN015315;
+	Sun, 24 Dec 2023 08:21:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:content-transfer-encoding
-	:content-type:mime-version; s=PPS06212021; bh=PsCLVfto7WCZMLcR4C
-	RADhosWht8PyVmxjD6c6D+Hvg=; b=USuF6Wp/f31VOpO5Bq/MousXtk3z8DFBh5
-	xyKL5k6USTjC+gxOnvrPdbSJg+xLeQtWoqTWZNgZChCUAoAp4Rn+iGgrz8DW13UY
-	hMWmRWQy7pZ6QzdpZbjMwXqoqNfSf0VCTQHDA34ogbONsmvAsYvetjY+hbdbeFpW
-	wgXR24eVwqX3iWtnay55cp88wLr+r+HtwEsKSHcL4oZfnC3cUqACiht8Qi1MRkvQ
-	vw/rrQf4++qm+VqxVI91nIfSRM61zqcUjduWoz+CnH/SLoECc/LCe33KJ44D6dsj
-	mTSNR1/coPGGHCRodzh21MDRVc3B7VoGlJ2j9L9RSTjDKi0Pg2fA==
+	 h=from:to:cc:subject:date:message-id:in-reply-to:references
+	:content-transfer-encoding:content-type:mime-version; s=
+	PPS06212021; bh=WHTWWF6fs3oGlO2xpIVhZtmOOTc6efUyQ676WhtCIo8=; b=
+	HeGlrgi4JMDjxW3kHv2/iytjFiO3+g8iPCErpnvSAoZYsmgAt+cfO7yD9cUGIy2n
+	MvcMhAdZPsc6X5ZSs6r6iqOtRI25LsOwHlr1+Yn2guAGWUZlYbXi1miCi0pb+bqg
+	l2IzyYvFCkA3uy9hD8ufsmcF0uLDxukc3hvMOuFVG1wolt8NwhJ8a8MTSPuymr32
+	nW5E/Xlms0WpSEf3eKxK4xvVFAXkErEfPynaErj4//rny1szbHtjvjv/5+A//pnw
+	CslkZd9EkyWk1esesfLuR62gvCrwva/mKeP0uV8BXUtn/kVzTm3CPyfnZyLnozZ2
+	eUx8gOa3/I6BYLToZLsqxA==
 Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3v5ph60rs6-1
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3v5ph60rs6-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Sun, 24 Dec 2023 08:21:02 +0000 (GMT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gFxEsQqYFKreDx/jXH9BrBdk6EN/aV3e2rljiyT/AoXlZ2cogf0m3Y4z/tf8OguVY2QAsQ4MTwrb40Hq1OwPZYuSEJoC4thfbU1KJ+W0lZPtv1p9HLdp2FbtEY2j1OWcw8qI9+zLc25kQRkkvFetvW++pqENek0aQn2E5/SE8gH/ibhUl2R3OPbBEueNwpWHMMPD3OQ4agbhhpD7Jq/Ee9igA+sHIo5XAQW1YDGOmRopZfC5+Dv/Mhh7QRnh7V9SAlEXY0+3R6D0DYMsVxY+GcptlrUMOwvYJLTRjf7EHGQp5J4eXVCl+Dxto1CwoGdYwRzifzYdDd+e3TexC+4unA==
+ b=QotxFuBwe+ZiiN3qlBYP6PjN3Umk1jbEf/jeNpdRWpgUVGN7+zDPR7XCHvK45TzYd76UXUhSosrQX9vUbBEt9vhgeCNsx57CTsSNLcOaKZ2q4ZVahqp8g4aQwEs3mwOvHygocDgaKQ2roPXBZOTWWbKaNUmUq6xmcTbZP98+KioG5nMS3uZQdQei9vGz35FluolJIqKl7vQQvR6GS+cJlWIB3BoY0F2fCtQ+h/4Fg38wu3ni7AAg2by9S5E2eT8ylP1YLDcCVFVtBP6aV3xEkAV+au3StI76EplSJMsSOwr+wCFuCAvcoLTQPgzdF2+Bi4QVMqFlDWzeiS541n1b0A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PsCLVfto7WCZMLcR4CRADhosWht8PyVmxjD6c6D+Hvg=;
- b=RgY00YaRswlPobAl13P0puCjofftt4Fi84E6YMmOVSX7Jk/vaq7sjtvF88Xm8RG9Oy0HzOSCvz1onjlq6muS8Ml6kzH/boSBWBzBCuZhmJesFr5pG2idpHhBlK3Rfqb/ysaAaGoT2pKPGQcI2UTnpAJ3MvHBXFNM1tRJTH1JREIlIEMDaqxH3imWzEaOO72vFO18iEQbc+Hvf+2IOID6FvfhJ9Gin5sJHB3tnFp8UKBJgedYcjuzZyGzx/3xNSYefsIeKVs5tiZx1r7eAgDa7qKMrAz2arzLpbEHNQHmoBjK4LVCQyb4elTaL1Oduz4etfx1VyX3VJN5ghVFajXBJQ==
+ bh=WHTWWF6fs3oGlO2xpIVhZtmOOTc6efUyQ676WhtCIo8=;
+ b=YPuZ9Gbagys9lk1dmCM1bJG4PpDfR2oBTQZfONSHj2uJ9r9vir5ItcvzS+JAHbdHiDbw8uUxB1jjicnQqIAlc7OsTxj7dNHKC+mgPcXnOB8+9GMk+h/Q2qfrTsjfBBQeNspvFyxFzswAznMZft/X5lvv0ZLDqKD18c7AErEd08SZR68u2yku1u9+JZa0RcvcjewTDxWFboYpP/9YGVJl4s8Q8vQADZmy1QpJsbG95g8zT8MY0sukggjD/Q+8K9f1eWK3PhJzFS8/htUOSMBEb95owPkFLxijVl+p8lE/C7XlY85M5WQ9UxL+COezE++NZdyGs8fvy0E6nulw4l2Fuw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=windriver.com; dmarc=pass action=none
  header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
@@ -52,18 +53,20 @@ Received: from DM4PR11MB5327.namprd11.prod.outlook.com (2603:10b6:5:392::22)
  by IA1PR11MB7246.namprd11.prod.outlook.com (2603:10b6:208:42e::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.24; Sun, 24 Dec
- 2023 08:20:59 +0000
+ 2023 08:21:01 +0000
 Received: from DM4PR11MB5327.namprd11.prod.outlook.com
  ([fe80::7c2e:5b95:fdc2:30e]) by DM4PR11MB5327.namprd11.prod.outlook.com
  ([fe80::7c2e:5b95:fdc2:30e%3]) with mapi id 15.20.7113.023; Sun, 24 Dec 2023
- 08:20:59 +0000
+ 08:21:01 +0000
 From: ovidiu.panait@windriver.com
 To: linux-crypto@vger.kernel.org
 Cc: herbert@gondor.apana.org.au, davem@davemloft.net, festevam@gmail.com
-Subject: [PATCH v2 00/14] crypto: sahara - bugfixes and small improvements
-Date: Sun, 24 Dec 2023 10:21:30 +0200
-Message-Id: <20231224082144.3894863-1-ovidiu.panait@windriver.com>
+Subject: [PATCH v2 01/14] crypto: sahara - handle zero-length aes requests
+Date: Sun, 24 Dec 2023 10:21:31 +0200
+Message-Id: <20231224082144.3894863-2-ovidiu.panait@windriver.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231224082144.3894863-1-ovidiu.panait@windriver.com>
+References: <20231224082144.3894863-1-ovidiu.panait@windriver.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: VI1PR09CA0094.eurprd09.prod.outlook.com
@@ -77,95 +80,90 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM4PR11MB5327:EE_|IA1PR11MB7246:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5405aee1-dd99-4761-f1b9-08dc04594243
+X-MS-Office365-Filtering-Correlation-Id: 16e18ae4-c5f6-46f6-22a5-08dc04594337
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	MhD2Mxc2A5EB1hECd0qwccTQTJXVZ4LlFMpvEiFKi5tTgQtcsdJ3tqogDOrEDTKR0wJ+UuT8NrAGJlsaxOeUmSoZTvIclABF5zDWw1UQ9iyHZwx/BovGj7RuO2nnqSRNq5DGe2UuwueI9VaSFmkuTRMAzNuD87TBtgEk9PHWIpMvrphI2Wb9o1YaxExzJcQCs88u//QCz+Tp0asmru0CHrHXtjiTlv+zjM+GklU0G0Hyz2cFH7ahyCO8aVU4QQDgPYEpCeDZuL2spqwZq34coq7a6Ve7Zva3Rzd3cUfsmMa3k9cHBycsnLOBr7TWoI9oWIDW5RUSTQ4mSaTmelyD/cUmh++GSFNyDp5FHuLwRfJ/Mu2TCyc/cpmaqfAfaKg8vQEZ/GRRMpMjxr87X+1AOxym3CdEQhRWtG2lLZ3tLwPe94y/WtUv5UWpxVHEkLVdiRzbeUwlx8hpP5lOT1dDE1/xB3510kN3BhBvL5AsVkeTaAtY95ri66Nb9xd6PAPDvrvii2mUFw+fMt8FhbUigVDPK8mb2eVPpNrKrvqcbr+SH0fddHIPy553LXpx4nMF+06E3P1n8cT5HcfGEByVfSl9OQ8UeEsrZUxXJ+i63R8=
+	nMfhcQjS0CG/rT9d3fQM357GWA30r7e0s8frRZySbvhenlyfpbYSQ3EGmeiivdoRTn9l8KXT/uA9YYElJ6XhAeV8R6GcMbrcWXd//y8/pGfdlhq8mSeHNP2lEuLZf6btXuFCiucrcXO4GhEAx6y8lteWaqCD5AbzI3weqFl0sSvN3+ecJ3ERrjUic7CXFcMcStVx687o6AYy/sVx5Y7UyTbBK/F1baih/O86iB+9SnEkI5idLACCL1Ww2t3Iqv0tjGi6Q+8PXTZPrCGt1CpavD3qXWcSjxI7n2ITXbHy0eDhAOAIdD3XWlLC9s+7qPlab0PqvkI/8vJXjGyZGMh8WvjOUGyl9ShCjZnQT9+/dQXcNGLT9N0R8Z1YA5e957fTrATwsvdMg7TC18it/f5HgwDgnWBU8q+IkGodZkmKqXPh9YoMJMbvnIYv1xfdlh8EX2/j9kAWdoABmnNbS95nR+njC8Nd1p3qXW7XcLeaJIwAn1ZIh3jmZFT+rds0bJVjPNGXqRDAHXW9Fd+hxO2hW1djdki+88HJXV1uBR5UGbr1Kq/MiQFzYoHNOazldD7rnw7QxDQEwPSF6rjSo6EWhxy0ZK1je3P6Bil0nUv0lR3Y+8Qgb5giBVWDen1cQoxL
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5327.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39840400004)(346002)(376002)(396003)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(1076003)(26005)(2616005)(52116002)(6512007)(9686003)(6506007)(83380400001)(6916009)(86362001)(8936002)(316002)(66556008)(66946007)(66476007)(8676002)(4326008)(6666004)(966005)(6486002)(478600001)(38100700002)(38350700005)(2906002)(41300700001)(5660300002)(36756003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5327.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39840400004)(346002)(376002)(396003)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(1076003)(26005)(2616005)(52116002)(6512007)(9686003)(6506007)(83380400001)(6916009)(86362001)(8936002)(316002)(66556008)(66946007)(66476007)(8676002)(4326008)(6666004)(6486002)(478600001)(38100700002)(38350700005)(4744005)(2906002)(41300700001)(5660300002)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?JFegnIARl7wuj9nNfKlPUY4OoOHWCnMIh2mTG52dJWOkOJktPk/1EFh3lD6a?=
- =?us-ascii?Q?4C8bEpDH2DeBiXwQbxt2BdmcqMxICiP2QsXBVQqPrsxCyqWJ126OK5gtx+jy?=
- =?us-ascii?Q?VnDW2Oq0vkUz7066Sl0U2MDQrl5atQ8/v/5KTL6C1sOnRWimACSwFigW5XeI?=
- =?us-ascii?Q?zzWbARvR5jQIU/QWA/3jQ5ReEvX+hiUBEhvKHDwH4XBOhp3IR+Kk+WZcliAg?=
- =?us-ascii?Q?cgHU4qpPIt+gATZd563Kfw6yZVslvsjM6IDOsI01ySQKycDlx2dcrfp6yde7?=
- =?us-ascii?Q?5idukhtApf1vfdppTPsqLg9lhXODq65HUOJ8sgt6BhJXS+p/4gT9EQBbNMXn?=
- =?us-ascii?Q?ogG/H/hJ1HGELOxcjfl61vGLD4xx9E70LxGyJnVEQKcLauhHa0OVYilUVHts?=
- =?us-ascii?Q?4VZUe+UGWILbHywXlYOKRVHDzD01B3jOkODaR1/oFFqJVoO2jX+oDa3dbCma?=
- =?us-ascii?Q?N6ihYdVZTM4fUbbHkK3LM1dV3DhSt1t+NkxwRNuwvCpUL49kWoPXIm4TM2Yi?=
- =?us-ascii?Q?7N6hCDEjNCYT1xtuDzkr8UxZdx6xJ6H8v/uIc/pILtNtgR+bLHLppRpAlBE8?=
- =?us-ascii?Q?750hTH5PW0ZpJFjgCkjUbfiSQ+1ayzaUUYAdaJR60ej1LTq2oG47psi3pgxf?=
- =?us-ascii?Q?tAOfotU4E2ZOWXGrVW1D6qrdx/EJgHI+FixuVVbFh2TpbyfrepKIE0afvTSy?=
- =?us-ascii?Q?mHOAAXm6h0a/Tg+ogY+wvMRaPX6EqMdsfZ/1VWRJ5igdm1TSyLvz1P3d2pgR?=
- =?us-ascii?Q?nTysTB/8p3+swJpw8ezynyfE7YJrYhGUI16NyNM8wa5iKmLulUbYfQR4s3/D?=
- =?us-ascii?Q?oUc1pybfHxthHzmYn1B54PCdBqt2vNLauvdo0JVjkq4XQgH1ooceN3b2sVFc?=
- =?us-ascii?Q?WTpCYsI58amDDA4l2G4driFonvgWsjGnBBJ5wwvgIWALFh1ZZhm4d4HYT11e?=
- =?us-ascii?Q?l9IUVhfPRy3IU0Y1NBdD2EwplkaJDilofv77mSZ7bM3Pt5wCQmvHmPuNy2Zj?=
- =?us-ascii?Q?uSp7QWkXmMACNiRzB6NZionrlDZIjmGHVqRF4H6p1Z0TreoXteWSGDPbYiqc?=
- =?us-ascii?Q?VKmNzNKielCGFnA1R605JvzZKK+l6BNDPl9AOHvknCkXSQyHNLLL9rw6F0gv?=
- =?us-ascii?Q?A/ran9FTF0+ACD5JWUb8SPtju0NTLyMKKPT5wIgfaGSOUldUzjjP7Vmkj4N8?=
- =?us-ascii?Q?CnsDATl11I2RJHNowQrLgU7vbqJgyx85yDb2WadbFLcsy/qAbMYEMtZuwaCR?=
- =?us-ascii?Q?DRFQgHBG2Q51QNkdAky9r7HNjNyHo4AOjj+8WwBGF5fSiCOjp8vSgtLJ4Wz2?=
- =?us-ascii?Q?NHuztdRqBVVYNF+/6UjJHhEsWaVJ4r8O0bHMZ6JVOfmXQ2MyGRy0dxktJdpk?=
- =?us-ascii?Q?3yBjUWab72vHAme3tkp6S58N9Rg+8cVKWS1Gp2TxhMA2basHa0/UalgEFW1H?=
- =?us-ascii?Q?YouA8pjFvCopsq5F7HB7jpjAKncxdlS94uDg6zFbwAxqusrRoPWJUQ/DjgDM?=
- =?us-ascii?Q?9UsQN5p6yh4quxwRlUpbjHIDVafVWR9m4Gp0/yhJ8Aww8dpii4SFKDMXeQwm?=
- =?us-ascii?Q?cT1B0FXd9o3Gkegdz1ncDjBL/DGETznC25uYDKvLpXN2qVFiCs/8hzp3IRb5?=
- =?us-ascii?Q?LA=3D=3D?=
+	=?us-ascii?Q?BUhInwOPYlJEGNiPFujUrXaB9gWxmHEoNwGq5IWGiQYu+c5Aj32e/6PcA61+?=
+ =?us-ascii?Q?JEOuBPH1MtwQwsktNEZg9/ZYMtL0GhZLw/7hDcUV23bmF7+GXtFim1tCv746?=
+ =?us-ascii?Q?HJvspVBuInHPn7Qqz7gipJIbMJfeDY+yMFE4o00zhPN8D9aamnWy0nuS7T26?=
+ =?us-ascii?Q?OkfYZPdlSwV9SomLu1OYwJSjrbKL7X1m4ihxU3scbf28ocZxFKG7WHsi/1Si?=
+ =?us-ascii?Q?CpB8JX3RCkuogCSVRvtkAyNlX4hHajYRS7m+p0WC7BRJMwGuUSyBd289s3Pi?=
+ =?us-ascii?Q?dKAJivgUaBLO0ACcQFGwroJDCgSzu3Eb8lWsTYrQZbpxQySs1uYMZNewDVfT?=
+ =?us-ascii?Q?Cj7VYVJWsbUd+EFePPOUv6CeiozgiDcy/+JxYAsvAKSt9YMS2Gvcu155aA0O?=
+ =?us-ascii?Q?uhJbCYzGwCCh8/lwxP6c1ffuJn3UrffYw+Mp7IJ6OOeb1Kmyxk5Evd4OSAwK?=
+ =?us-ascii?Q?V1eZHF3kiG82VFmRvj90wNb3A3ZhAWdPhOgN/0zCvCYM5rT8F2lc1WVKyp0A?=
+ =?us-ascii?Q?5F/2AYuLm96n1Q87eTpMPqnvUknOtCNLboB9Kxl+peULEDPalD3oKbswENPB?=
+ =?us-ascii?Q?00Ba58DlQKAOeXDFRfpTAHAClUero29arPZbbkFo77TMpnDPsMmf9fRjpOqt?=
+ =?us-ascii?Q?zO9oWTU4SDczCAe7thLdzIQzLc66mZTR5dDL10u2Cq6u09CpvErgmSOV4pgj?=
+ =?us-ascii?Q?zQyxt4QCZ8z0j99ZukM48RAWnVdbitWBXTmQPvNtQPMwg5KgXlJ0SEGlTKie?=
+ =?us-ascii?Q?aF5+pRq35wM1wogcYmfS977bFoORmwDFkscnTIgj4c6qajyK+OepPFzp1/cR?=
+ =?us-ascii?Q?wriJGuggcKHu6CaMhbBAwEJHYM6UZFxv+CKc3zPVO4f+TH/WUXCXjzcB79lO?=
+ =?us-ascii?Q?dWKqbLtmO43bN2pboRLKV8evPpR//VgtI8V9EjfzyaIm6gDCLS4EU99ke+kX?=
+ =?us-ascii?Q?OPVd5Ly+oRfvM2KCPuQeWroy36dyWrRlqvDLbAfTKKLO/Opz4gOPGEJVjfBm?=
+ =?us-ascii?Q?wIFgL3rBuKvbcfOyhKou+Wt3DQJY+GxlkK4RF1aTvEe2KglhDj7ewMdJsHlc?=
+ =?us-ascii?Q?YmYbROM1a1pQdN/GyZTWkOu/OhsVtMlF68QjZ6DszDAszioPJ7knhChza10z?=
+ =?us-ascii?Q?bpjcglqGJvTyLOFwNEjNNSBpBOqlf2vCUICGtf+iU0YtJ0uIaaRRU6fxvFni?=
+ =?us-ascii?Q?rqxKcMudK7T2klBn/T7lXtwhMb/O/nOoBnLr+5wyTKWoDEr9YeOzUdGpAmzk?=
+ =?us-ascii?Q?sky9ennYPI+kEs0RbiGqEemv4RN/YZGztMqmAcVry1XCaVkvrcdAO+pEiWSY?=
+ =?us-ascii?Q?6dbzNrqKQ4a8Z/nS42cRcSS6oQR/qdkTMwFO7eEo20o/tUKRu+X8euJRRMGB?=
+ =?us-ascii?Q?lc7k0Se7M0ND4PvsWI6NUbziY6eeABj7YSnXPFJHUd8J/2FM3NPFNN3w+To9?=
+ =?us-ascii?Q?pGU7ajRCGelo7MBCmtUw+EcoX9OZ0R777ALWnMpc1v0tlHf5/vQauzpJKYwt?=
+ =?us-ascii?Q?EyP5wiD2M4obLCVkD0f4qML62WlJ02FQ8W5+B5FWPgOrD89oBGv2fj7cnQx/?=
+ =?us-ascii?Q?kxcuz/w49UuhkWuSHZVpeDXdGvWK1IgoxTZlKkU/0X0iqlsSGePGOfwqHhyl?=
+ =?us-ascii?Q?GA=3D=3D?=
 X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5405aee1-dd99-4761-f1b9-08dc04594243
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16e18ae4-c5f6-46f6-22a5-08dc04594337
 X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5327.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Dec 2023 08:20:59.3461
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Dec 2023 08:21:01.2522
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vj7ZFQVvED1/QdsFaoarku4GSik/XrWpg/DKasDoABgmjFJbC1nszi76TLihyCxkJDzFjoagqUYOIacyjuKzszyli1fdDVf4Kr8XEOtosxc=
+X-MS-Exchange-CrossTenant-UserPrincipalName: NIGVwNLwst525ta9HVB9q0x8JwTnIkPrwNMoydZ4hBu8YLbjrvgdLo+RZwarnr6UpC2qu+8bstTOFwOFmKdpZEY80+3yg+OjQKfnc+0Ic2g=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7246
-X-Proofpoint-ORIG-GUID: ReMIQvwrzVwQlDbFMzw5tUhw6QMGZIN0
-X-Proofpoint-GUID: ReMIQvwrzVwQlDbFMzw5tUhw6QMGZIN0
+X-Proofpoint-ORIG-GUID: CjJB1gtSxwI6p5_3BMx2Az14z-t32dyK
+X-Proofpoint-GUID: CjJB1gtSxwI6p5_3BMx2Az14z-t32dyK
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-16_25,2023-11-16_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
  priorityscore=1501 clxscore=1015 malwarescore=0 suspectscore=0 spamscore=0
- adultscore=0 mlxscore=0 mlxlogscore=771 bulkscore=0 impostorscore=0
+ adultscore=0 mlxscore=0 mlxlogscore=691 bulkscore=0 impostorscore=0
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2312240066
 
 From: Ovidiu Panait <ovidiu.panait@windriver.com>
 
-v2 updates:
-patch 14/14 - ("crypto: sahara - add support for crypto_engine"):
-  - added back missing SAHARA_VERSION_3 check in sahara_unregister_algs()
+In case of a zero-length input, exit gracefully from sahara_aes_crypt().
 
-v1: https://lore.kernel.org/linux-crypto/20231223181108.3819741-1-ovidiu.panait@windriver.com/T/#t
+Fixes: 5de8875281e1 ("crypto: sahara - Add driver for SAHARA2 accelerator.")
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+---
+ drivers/crypto/sahara.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Ovidiu Panait (14):
-  crypto: sahara - handle zero-length aes requests
-  crypto: sahara - fix ahash reqsize
-  crypto: sahara - fix wait_for_completion_timeout() error handling
-  crypto: sahara - improve error handling in sahara_sha_process()
-  crypto: sahara - fix processing hash requests with req->nbytes <
-    sg->length
-  crypto: sahara - do not resize req->src when doing hash operations
-  crypto: sahara - clean up macro indentation
-  crypto: sahara - use BIT() macro
-  crypto: sahara - use devm_clk_get_enabled()
-  crypto: sahara - use dev_err_probe()
-  crypto: sahara - remove 'active' flag from sahara_aes_reqctx struct
-  crypto: sahara - remove unnecessary NULL assignments
-  crypto: sahara - remove error message for bad aes request size
-  crypto: sahara - add support for crypto_engine
-
- drivers/crypto/Kconfig  |   1 +
- drivers/crypto/sahara.c | 657 +++++++++++++++++-----------------------
- 2 files changed, 285 insertions(+), 373 deletions(-)
-
+diff --git a/drivers/crypto/sahara.c b/drivers/crypto/sahara.c
+index 27ed66cb761f..1f78dfe84c51 100644
+--- a/drivers/crypto/sahara.c
++++ b/drivers/crypto/sahara.c
+@@ -674,6 +674,9 @@ static int sahara_aes_crypt(struct skcipher_request *req, unsigned long mode)
+ 	struct sahara_dev *dev = dev_ptr;
+ 	int err = 0;
+ 
++	if (!req->cryptlen)
++		return 0;
++
+ 	if (unlikely(ctx->keylen != AES_KEYSIZE_128))
+ 		return sahara_aes_fallback(req, mode);
+ 
 -- 
 2.34.1
 
