@@ -1,40 +1,39 @@
-Return-Path: <linux-crypto+bounces-1078-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1080-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4CC81FCC7
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 Dec 2023 04:28:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F06181FCCC
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Dec 2023 04:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A99D21C21695
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 Dec 2023 03:28:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 195CA285400
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Dec 2023 03:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C002F5252;
-	Fri, 29 Dec 2023 03:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 916228C09;
+	Fri, 29 Dec 2023 03:29:17 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A772584;
-	Fri, 29 Dec 2023 03:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003EF8BF9;
+	Fri, 29 Dec 2023 03:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rJ3Y0-00FG3R-64; Fri, 29 Dec 2023 11:28:33 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 Dec 2023 11:28:43 +0800
-Date: Fri, 29 Dec 2023 11:28:43 +0800
+	id 1rJ3YA-00FG3x-O9; Fri, 29 Dec 2023 11:28:43 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 Dec 2023 11:28:53 +0800
+Date: Fri, 29 Dec 2023 11:28:53 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: ovidiu.panait@windriver.com
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	davem@davemloft.net, Heiko Stuebner <heiko@sntech.de>,
-	Corentin Labbe <clabbe@baylibre.com>,
-	linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/7] crypto: rk3288 - Use helper to set reqsize
-Message-ID: <ZY486/gwA4o/hmeM@gondor.apana.org.au>
-References: <20231218164649.2492465-1-ovidiu.panait@windriver.com>
+To: Tom Zanussi <tom.zanussi@linux.intel.com>
+Cc: davem@davemloft.net, fenghua.yu@intel.com, dave.jiang@intel.com,
+	tony.luck@intel.com, jacob.jun.pan@intel.com,
+	christophe.jaillet@wanadoo.fr, linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH 0/2] crypto: Intel Analytics Accelerator (IAA) updates
+Message-ID: <ZY489YOIyeyf8DOk@gondor.apana.org.au>
+References: <20231218204715.220299-1-tom.zanussi@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -43,22 +42,31 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231218164649.2492465-1-ovidiu.panait@windriver.com>
+In-Reply-To: <20231218204715.220299-1-tom.zanussi@linux.intel.com>
 
-On Mon, Dec 18, 2023 at 06:46:43PM +0200, ovidiu.panait@windriver.com wrote:
-> From: Ovidiu Panait <ovidiu.panait@windriver.com>
+On Mon, Dec 18, 2023 at 02:47:13PM -0600, Tom Zanussi wrote:
+> Hi Herbert,
 > 
-> The value of reqsize must only be changed through the helper.
+> Here are a couple patches that didn't make it into the last version of
+> the IAA crypto driver.
 > 
-> Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
-> ---
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Cc: Corentin Labbe <clabbe@baylibre.com>
-> Cc: linux-rockchip@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
+> Tested using both shared and dedicated workqueues, with no problems
+> seen.
 > 
->  drivers/crypto/rockchip/rk3288_crypto_skcipher.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Thanks,
+> 
+> Tom
+> 
+> Tom Zanussi (2):
+>   crypto: iaa - Change desc->priv to 0
+>   crypto: iaa - Remove unneeded newline in update_max_adecomp_delay_ns()
+> 
+>  drivers/crypto/intel/iaa/iaa_crypto_main.c  | 8 ++++----
+>  drivers/crypto/intel/iaa/iaa_crypto_stats.c | 1 -
+>  2 files changed, 4 insertions(+), 5 deletions(-)
+> 
+> -- 
+> 2.34.1
 
 All applied.  Thanks.
 -- 
