@@ -1,87 +1,80 @@
-Return-Path: <linux-crypto+bounces-1358-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1363-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6EDE82A214
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jan 2024 21:19:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4724082A27C
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jan 2024 21:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A7411F2B0EA
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jan 2024 20:19:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8E9228DA0E
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jan 2024 20:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4254F215;
-	Wed, 10 Jan 2024 20:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B12537E3;
+	Wed, 10 Jan 2024 20:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZvkunF8I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ngjMnmh6"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D909D4F5EF;
-	Wed, 10 Jan 2024 20:18:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01087C433F1;
-	Wed, 10 Jan 2024 20:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C42952F83;
+	Wed, 10 Jan 2024 20:38:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 55250C43142;
+	Wed, 10 Jan 2024 20:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704917926;
-	bh=fgRgZuoAXQ+AEZV1jM9xn99Om5QJ8jDoPAfUebkzG1k=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=ZvkunF8I+PbytQ3aauQZUhtA04lAEOU1IIG/RzeLPK401UDcocZUiX7tCvNZkhUk4
-	 J8a7G8Iysz62mTv6dS7JxkxqOpnkVy0/tWgEyKHX0ldkP1s5h1dIXmuIQPkQhKovTm
-	 Cub4+DO8mPJAz+POJlzwqzGt+XtknBta4GkxUMyo0//jfrITtgslfxtCKBzyk9B0qx
-	 raZ45Hlaa0llbA+sg7uaPslIrVCLG2bYGGGl4PlWYiRlAyGoNI0zCZ+6ZGhY9M/AMT
-	 /ni0sJFRI03TITR1JWZJnCtipD43lilhybATuWTUCrc8Q7YIMfY2l/lWVu4GyNF9xT
-	 JNdHq6vFCh6cg==
+	s=k20201202; t=1704919126;
+	bh=od8ATEcsWESiCSB7pkmppJARE/+9hRLv/g6UpS5J1BI=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=ngjMnmh6KIq+Y4E9lfDNs4V12CFmtM0n4RFqxnMxXMZNyZWobgMChWDqJ1uzBmVIr
+	 tEgdLEw838EcIWzOg9aRS4CdwSdDIn+EhvLax8MuotmkKJTFAG3tzDMSCyyyoWq2GR
+	 Lja5n2TQLBpis3SgdBbnyrLcNCgjeQZ5VUntfIwqrA9D7u4k3s2FMTD/dlSkwEOXIG
+	 zcO2y6iJ8Q+aSgH2qk7m2JC2xogVvlbADxU2TDVhWQu27fSmcIxgzxSpSRXXjitxWc
+	 H2RQ+lyY++F3nhEx+ybhwXN5fs4EciALyev8Ekxz4DNCHg5WNva5inSFo7OmdjZAyx
+	 alPLSss0TiHJQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 415BDDFC686;
+	Wed, 10 Jan 2024 20:38:46 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto Update for 6.8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
+References: <YkUdKiJflWqxBmx5@gondor.apana.org.au>
+ <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
+ <Yui+kNeY+Qg4fKVl@gondor.apana.org.au>
+ <Yzv0wXi4Uu2WND37@gondor.apana.org.au>
+ <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
+ <Y/MDmL02XYfSz8XX@gondor.apana.org.au>
+ <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
+ <ZJ0RSuWLwzikFr9r@gondor.apana.org.au>
+ <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
+ <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au> <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.8-p1
+X-PR-Tracked-Commit-Id: b8910630c967ffee582289451ddb5f9f19c26872
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0cb552aa97843f24549ce808883494138471c16b
+Message-Id: <170491912626.22036.12940633878070587625.pr-tracker-bot@kernel.org>
+Date: Wed, 10 Jan 2024 20:38:46 +0000
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 10 Jan 2024 22:18:37 +0200
-Message-Id: <CYBAYMHESW3Z.1EVW4Q0W0FHEC@suppilovahvero>
-Cc: <x86@kernel.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
- <linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
- <jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
- <ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
- <vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
- <dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
- <peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
- <rientjes@google.com>, <tobin@ibm.com>, <vbabka@suse.cz>,
- <kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
- <sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
- <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>, <pankaj.gupta@amd.com>,
- <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>, "Brijesh Singh"
- <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 07/26] x86/fault: Add helper for dumping RMP entries
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Borislav Petkov" <bp@alien8.de>, "Michael Roth" <michael.roth@amd.com>
-X-Mailer: aerc 0.15.2
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-8-michael.roth@amd.com>
- <20240110095912.GAZZ5qcFXYgvPrCdRI@fat_crate.local>
-In-Reply-To: <20240110095912.GAZZ5qcFXYgvPrCdRI@fat_crate.local>
 
-On Wed Jan 10, 2024 at 11:59 AM EET, Borislav Petkov wrote:
-> On Sat, Dec 30, 2023 at 10:19:35AM -0600, Michael Roth wrote:
-> > +void snp_dump_hva_rmpentry(unsigned long hva)
-> > +{
-> > +	unsigned int level;
-> > +	pgd_t *pgd;
-> > +	pte_t *pte;
-> > +
-> > +	pgd =3D __va(read_cr3_pa());
-> > +	pgd +=3D pgd_index(hva);
-> > +	pte =3D lookup_address_in_pgd(pgd, hva, &level);
-> > +
-> > +	if (!pte) {
-> > +		pr_info("Can't dump RMP entry for HVA %lx: no PTE/PFN found\n", hva)=
-;
-                ~~~~~~~
-		is this correct log level?
+The pull request you sent on Wed, 10 Jan 2024 06:17:32 +0800:
 
-BR, Jarkko
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.8-p1
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0cb552aa97843f24549ce808883494138471c16b
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
