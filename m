@@ -1,51 +1,62 @@
-Return-Path: <linux-crypto+bounces-1520-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1522-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE448835799
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Jan 2024 20:49:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CCEC8358E9
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jan 2024 01:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 889F9281840
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Jan 2024 19:49:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD80CB217C6
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jan 2024 00:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F3138398;
-	Sun, 21 Jan 2024 19:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677D0364;
+	Mon, 22 Jan 2024 00:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b="vXvqKi5x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cSiMXi3d"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.jvdsn.com (smtp.jvdsn.com [129.153.194.31])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5769F3838D
-	for <linux-crypto@vger.kernel.org>; Sun, 21 Jan 2024 19:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.153.194.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23838360;
+	Mon, 22 Jan 2024 00:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705866553; cv=none; b=rnmYYV4+EBNcB+D+Ac/dklZJHziNAVGgtb2hbpPd+8xtqvAJsWFyRJXeKd3S9sou8FrzKhrPU5MAPFhaJ7eD3f8zlayazaMQIVzvs10ooS8xXHhb9eknNMsoo8M5OCW3PX3tdq5MxY9GpWVUL/yodBeWlVtrK6hNj7sBDf3D4U0=
+	t=1705882978; cv=none; b=MSEfEj7eESJZ5DCcE6G4rMKSHwVia6PNwX7he075oSesnrX5Zf5aNIEZPsp++7RUYJ1thlBgR138h2Iv6Mbu/oq9rJEKHpVLiZ+AG8RPkDL6X3rgIbGUaJSvGH6Cc3fSsc8Q/8Yge/2+KnsyCdHKcEyWpcF79EaHFicDJLTSRlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705866553; c=relaxed/simple;
-	bh=Io8CZinL8nPZ8HMB8amdcvs5wzCPD4xojiPD9RtJ8Ac=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qqA1ilNeStl+k2O+Nb2nxLN+6sY09WT3aWu7fClnY3gmeIOir5swjIqtL6pW9bpE50k9k9JndETbknbv+jrkphs4kWEdMupqtF8p2Zf42k+AA4OHelJTXKR1PZ66XtvjzWyZdD0g2fDM8xw2PYM+M1qt1d9/1RYQxZDnEbPX5+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com; spf=pass smtp.mailfrom=jvdsn.com; dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b=vXvqKi5x; arc=none smtp.client-ip=129.153.194.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jvdsn.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jvdsn.com; s=mail;
-	t=1705866551; bh=Io8CZinL8nPZ8HMB8amdcvs5wzCPD4xojiPD9RtJ8Ac=;
-	h=From:To:Cc:Subject:Date;
-	b=vXvqKi5xA75THLzKTY73FRgEos5YiEJ8NtqkXA6FsfZPIUv9Fk10mw+Fp0VdWKTvy
-	 W0/8Xtks9Jb2qdNu8Eytth14zbPRNc6bF/PV+FKEjB52zBDmHIGEeemioSBOCvrJRn
-	 AUwBFkzF8rICSZBBduYeY3OjFTWkEnXZYeF1ydddfL1qnI9pBWOTPf6LAbPlVRwdDy
-	 m3m+ELjGrOCVJnxMf4VNfrPO9npIiRba8K+7A3+9Vmjoqjex8Gz474oCa238ZPy65G
-	 RlvAxuyhyfBZ4e+aZSec5+z7+Zq2QsFJmWufprBSAgH+24xeUSjFfKCN/jhES6e3+i
-	 vCejpwwfgcgJg==
-From: Joachim Vandersmissen <git@jvdsn.com>
+	s=arc-20240116; t=1705882978; c=relaxed/simple;
+	bh=/98FyMHfNpcE20uREuwvTI8aEaiGp4Wx3e7AXQcREB8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ucWKTQL00fDxj8wVJ1AT6fjJA0ZntKeFByLOqr8kqi92ZdRKkr7vuvAdBB4yNPl6YAIzhZzjzTRxLBThnFXBEl/DVBe8gJVCyWPxfVKm/DiUqrPZqJE2QOIW+5y/XlYA9khuqWOYyQhvoiiAZEs+jt1elDl+m6jCKXxazG+ajAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cSiMXi3d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03362C433F1;
+	Mon, 22 Jan 2024 00:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705882977;
+	bh=/98FyMHfNpcE20uREuwvTI8aEaiGp4Wx3e7AXQcREB8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=cSiMXi3dT5GpQICa7Om7LNG5CODXq/A5eLQLot62CARYuv48uTEsKFbCUsiN/aK2v
+	 s9uZxu7P3fbDu+6LfqSxjftwQ/QcWy37EZwTnoHtMjuasPfcu1t9F4/OALHYoVQQqZ
+	 dOy0OsVn3VSEk2ucP4CrE2u5gasKrgU04YMIK19Ww/xIJHxRd99H+NTqZHejdVXXB8
+	 laEOtzT7btvQ0yYcJOMpqmZPLwbrnbQ2graMl+UTIi4gjQF8l1dtaM63DO9NUPVWXw
+	 hi/A8A1kiJovyJZkATF/D05ea2yE+fUWWRdtJBn4z3NmGyIvM69hmD5JdZTMBv+nts
+	 AJ+QYb+emR7jg==
+From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Joachim Vandersmissen <git@jvdsn.com>
-Subject: [PATCH] crypto: rsa - restrict plaintext/ciphertext values more in FIPS mode
-Date: Sun, 21 Jan 2024 13:49:00 -0600
-Message-ID: <20240121194901.344206-1-git@jvdsn.com>
+	linux-riscv@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	=?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Jerry Shih <jerry.shih@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Phoebe Chen <phoebe.chen@sifive.com>,
+	hongrong.hsu@sifive.com
+Subject: [PATCH v3 00/10] RISC-V crypto with reworked asm files
+Date: Sun, 21 Jan 2024 16:19:11 -0800
+Message-ID: <20240122002024.27477-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -56,75 +67,122 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-SP 800-56Br2, Section 7.1.1 [1] specifies that:
-1. If m does not satisfy 1 < m < (n – 1), output an indication that m is
-out of range, and exit without further processing.
+This patchset, which applies to v6.8-rc1, adds cryptographic algorithm
+implementations accelerated using the RISC-V vector crypto extensions
+(https://github.com/riscv/riscv-crypto/releases/download/v1.0.0/riscv-crypto-spec-vector.pdf)
+and RISC-V vector extension
+(https://github.com/riscv/riscv-v-spec/releases/download/v1.0/riscv-v-spec-1.0.pdf).
+The following algorithms are included: AES in ECB, CBC, CTR, and XTS modes;
+ChaCha20; GHASH; SHA-2; SM3; and SM4.
 
-Similarly, Section 7.1.2 of the same standard specifies that:
-1. If the ciphertext c does not satisfy 1 < c < (n – 1), output an
-indication that the ciphertext is out of range, and exit without further
-processing.
+In general, the assembly code requires a 64-bit RISC-V CPU with VLEN >= 128,
+little endian byte order, and vector unaligned access support.  The ECB, CTR,
+XTS, and ChaCha20 code is designed to naturally scale up to larger VLEN values.
+Building the assembly code requires tip-of-tree binutils (future 2.42) or
+tip-of-tree clang (future 18.x).  All algorithms pass testing in QEMU, using
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y.  Much of the assembly code is derived from
+OpenSSL code that was added by https://github.com/openssl/openssl/pull/21923.
+It's been cleaned up for integration with the kernel, e.g. reducing code
+duplication, eliminating use of .inst and perlasm, and fixing a few bugs.
 
-[1] https://doi.org/10.6028/NIST.SP.800-56Br2
+This patchset incorporates the work of multiple people, including Jerry Shih,
+Heiko Stuebner, Christoph Müllner, Phoebe Chen, Charalampos Mitrodimas, and
+myself.  This patchset went through several versions from Heiko (last version
+https://lore.kernel.org/linux-crypto/20230711153743.1970625-1-heiko@sntech.de),
+then several versions from Jerry (last version:
+https://lore.kernel.org/linux-crypto/20231231152743.6304-1-jerry.shih@sifive.com),
+then finally several versions from me.  Thanks to everyone who has contributed
+to this patchset or its prerequisites.  Since v6.8-rc1, all prerequisite kernel
+patches are upstream.  I think this is now ready, and I'd like for it to be
+applied for 6.9, either to the crypto or riscv tree (at maintainers' choice).
 
-Signed-off-by: Joachim Vandersmissen <git@jvdsn.com>
----
- crypto/rsa.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Below is the changelog for my versions of the patchset.  For the changelog of
+the older versions, see the above links.
 
-diff --git a/crypto/rsa.c b/crypto/rsa.c
-index b9cd11fb7d36..b5c67e6f8774 100644
---- a/crypto/rsa.c
-+++ b/crypto/rsa.c
-@@ -24,12 +24,36 @@ struct rsa_mpi_key {
- 	MPI qinv;
- };
- 
-+static int rsa_check_payload_fips(MPI x, MPI n)
-+{
-+	MPI n1;
-+
-+	if (mpi_cmp_ui(x, 1) <= 0)
-+		return -EINVAL;
-+
-+	n1 = mpi_alloc(0);
-+	if (!n1)
-+		return -ENOMEM;
-+
-+	if (mpi_sub_ui(n1, n, 1) || mpi_cmp(x, n1) >= 0) {
-+		mpi_free(n1);
-+		return -EINVAL;
-+	}
-+
-+	mpi_free(n1);
-+	return 0;
-+}
-+
- /*
-  * RSAEP function [RFC3447 sec 5.1.1]
-  * c = m^e mod n;
-  */
- static int _rsa_enc(const struct rsa_mpi_key *key, MPI c, MPI m)
- {
-+	/* For FIPS, SP 800-56Br2, Section 7.1.1 requires 1 < m < n - 1 */
-+	if (fips_enabled && rsa_check_payload_fips(m, key->n))
-+		return -EINVAL;
-+
- 	/* (1) Validate 0 <= m < n */
- 	if (mpi_cmp_ui(m, 0) < 0 || mpi_cmp(m, key->n) >= 0)
- 		return -EINVAL;
-@@ -50,6 +74,11 @@ static int _rsa_dec_crt(const struct rsa_mpi_key *key, MPI m_or_m1_or_h, MPI c)
- 	MPI m2, m12_or_qh;
- 	int ret = -ENOMEM;
- 
-+	/* For FIPS, SP 800-56Br2, Section 7.1.2 requires 1 < c < n - 1 */
-+	if (fips_enabled && rsa_check_payload_fips(c, key->n))
-+		return -EINVAL;
-+
-+
- 	/* (1) Validate 0 <= c < n */
- 	if (mpi_cmp_ui(c, 0) < 0 || mpi_cmp(c, key->n) >= 0)
- 		return -EINVAL;
+Changed in v3:
+  - Fixed a bug in the AES-XTS implementation where it assumed the CPU
+    always set vl to the maximum possible value.  This was okay for
+    QEMU, but the vector spec allows CPUs to have different behavior.
+  - Increased the LMUL for AES-ECB to 8, as the registers are available.
+  - Fixed some license text that I had mistakenly changed when doing a
+    find-and-replace of code.
+  - Addressed a checkpatch warning by not including filename in file.
+  - Rename some labels.
+  - Constify a variable.
+
+Changed in v2:
+  - Merged the AES modules together to prevent a build error.
+  - Only unregister AES algorithms that were registered.
+  - Corrected walksize properties to match the LMUL used by asm code.
+  - Simplified the CTR and XTS glue code slightly.
+  - Minor cleanups.
+
+Changed in v1:
+  - Refer to my cover letter
+    https://lore.kernel.org/linux-crypto/20240102064743.220490-1-ebiggers@kernel.org/
+
+Eric Biggers (1):
+  RISC-V: add TOOLCHAIN_HAS_VECTOR_CRYPTO
+
+Heiko Stuebner (2):
+  RISC-V: add helper function to read the vector VLEN
+  RISC-V: hook new crypto subdir into build-system
+
+Jerry Shih (7):
+  crypto: riscv - add vector crypto accelerated AES-{ECB,CBC,CTR,XTS}
+  crypto: riscv - add vector crypto accelerated ChaCha20
+  crypto: riscv - add vector crypto accelerated GHASH
+  crypto: riscv - add vector crypto accelerated SHA-{256,224}
+  crypto: riscv - add vector crypto accelerated SHA-{512,384}
+  crypto: riscv - add vector crypto accelerated SM3
+  crypto: riscv - add vector crypto accelerated SM4
+
+ arch/riscv/Kbuild                             |   1 +
+ arch/riscv/Kconfig                            |   7 +
+ arch/riscv/crypto/Kconfig                     |  93 +++
+ arch/riscv/crypto/Makefile                    |  23 +
+ arch/riscv/crypto/aes-macros.S                | 156 +++++
+ arch/riscv/crypto/aes-riscv64-glue.c          | 550 ++++++++++++++++++
+ .../crypto/aes-riscv64-zvkned-zvbb-zvkg.S     | 312 ++++++++++
+ arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S   | 146 +++++
+ arch/riscv/crypto/aes-riscv64-zvkned.S        | 180 ++++++
+ arch/riscv/crypto/chacha-riscv64-glue.c       | 101 ++++
+ arch/riscv/crypto/chacha-riscv64-zvkb.S       | 294 ++++++++++
+ arch/riscv/crypto/ghash-riscv64-glue.c        | 168 ++++++
+ arch/riscv/crypto/ghash-riscv64-zvkg.S        |  72 +++
+ arch/riscv/crypto/sha256-riscv64-glue.c       | 137 +++++
+ .../sha256-riscv64-zvknha_or_zvknhb-zvkb.S    | 225 +++++++
+ arch/riscv/crypto/sha512-riscv64-glue.c       | 133 +++++
+ .../riscv/crypto/sha512-riscv64-zvknhb-zvkb.S | 203 +++++++
+ arch/riscv/crypto/sm3-riscv64-glue.c          | 112 ++++
+ arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S    | 123 ++++
+ arch/riscv/crypto/sm4-riscv64-glue.c          | 107 ++++
+ arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S   | 117 ++++
+ arch/riscv/include/asm/vector.h               |  11 +
+ crypto/Kconfig                                |   3 +
+ 23 files changed, 3274 insertions(+)
+ create mode 100644 arch/riscv/crypto/Kconfig
+ create mode 100644 arch/riscv/crypto/Makefile
+ create mode 100644 arch/riscv/crypto/aes-macros.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvbb-zvkg.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.S
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.S
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.S
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-zvknha_or_zvknhb-zvkb.S
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-zvknhb-zvkb.S
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
 -- 
 2.43.0
 
