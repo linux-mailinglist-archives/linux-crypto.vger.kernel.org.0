@@ -1,129 +1,117 @@
-Return-Path: <linux-crypto+bounces-1570-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1576-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 806EE8395EA
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jan 2024 18:07:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DDAA8396B7
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jan 2024 18:45:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75681B264B3
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jan 2024 17:04:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA3FC2922CB
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jan 2024 17:45:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3931129A6D;
-	Tue, 23 Jan 2024 16:59:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2572080050;
+	Tue, 23 Jan 2024 17:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Gh0ImxRf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E6fNOKV8"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28D7128368;
-	Tue, 23 Jan 2024 16:58:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3C4811E4;
+	Tue, 23 Jan 2024 17:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706029141; cv=none; b=MgGhX5YjcNPgqEohOoRiq6l+vWTtbyU1K20bohHYGlQhNnLuZHcVkLOoezUKuaaFon8REyLljsFAZHMeg4mqjlK4KgbkOJMtHCUBLDcWAn4jkkzrPWi3sTzP88dpvM+vz8+o9L4JOrxErRV/9M338ogmtqYzgUpcS+GQbupl/m8=
+	t=1706031912; cv=none; b=TG4H/sMevIbta3Vz0uBaZG8OOyQzPYOeHp7KLAox05vCDZZUNdRG6S6F22ziKDBG7+b98C9X4YY2f8H/xSVv4kQcE6ok7fPe+NM7NcxEhSRmkJUxTike7BUxo+aAYDRjelQ2q+x68EeNHMLKHZIMG1zvPgm5H2MN+kBBlvvy6so=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706029141; c=relaxed/simple;
-	bh=Xc0o3jbBAJ4zoyjIrykPdIA+JyN75J7/ftf7hDAal1A=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A/O33+cYFWXpMhrmKMuKS66MiimKmaL6IbcEdS/FsOfM6WJkJh0DwtkYWX/TL4JiuycTg5hfpraoXN6UEGEOp1xYAjQhvmyl0nJWPgRsQgBEYfIqfxIeBnjnhiw3B88E8oZQ6vyMb+K1dEj0JDkrCE84B3gRLtimDQfZIpFsczA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Gh0ImxRf; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id EE260100017;
-	Tue, 23 Jan 2024 19:58:57 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru EE260100017
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1706029137;
-	bh=lnEQAu9jSHDE3/ODiSZUSC4yHnPooP6ni0dyVvfYe+M=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Gh0ImxRfpsbeSYS+IidjREEzsWMuwrIfUaPpOPCgh/4ozCFAw56tL5sGioWTPOzVH
-	 HSIRwB8Zrgw1SE3rmxeEPFw7Sltt7NHxbv6/scoXp+/4el6JJ8ZzSfj4VsJxMVvbTi
-	 7l2Zxl4bl+m5wg09maHQ8Dle8/RFFRo05IDRpjE55rCOv9IashdszDRz0wYWxTwUO6
-	 E5ekDY/QLSZ9skpZNzVkhvt4NFKlA/U0VvRbVM7OQfL6rDgFPoRfkdycYRCRh6PrWe
-	 QnFAaaFM01VmxXPc/lO2/yFTwXCJNG/9Qskzoc0qIPOpk2B1ML+xZQwSFuw2sPyab+
-	 GWeM0dKBAmK/w==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 23 Jan 2024 19:58:57 +0300 (MSK)
-Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 23 Jan 2024 19:58:57 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: <neil.armstrong@linaro.org>, <clabbe@baylibre.com>,
-	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>
-CC: <linux-crypto@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kernel@salutedevices.com>, Alexey
- Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v2 20/20] arch: arm64: dts: meson: axg: add crypto node
-Date: Tue, 23 Jan 2024 19:58:31 +0300
-Message-ID: <20240123165831.970023-21-avromanov@salutedevices.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240123165831.970023-1-avromanov@salutedevices.com>
-References: <20240123165831.970023-1-avromanov@salutedevices.com>
+	s=arc-20240116; t=1706031912; c=relaxed/simple;
+	bh=hiYpf5YTmy2SgRtEVXbmJOPkhwnjcJIUaFmiSYESsd0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TxXAh1hIqyNZyECEPjSjszGYsgU1Kh3OSCFsEB6ea6tBiQSnLS6RsMKRSvAmhJh2AFe3M5GhghQsGO3eq5J1v3anBwd3oruv68BaDGJSa6fU8Hzu1JBLaNhYPQ1KXIhYu8zg4BMTyd7ncWpu5cWRLionRt0DI+2ipFOptcAuu7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E6fNOKV8; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e775695c6so45190635e9.3;
+        Tue, 23 Jan 2024 09:45:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706031909; x=1706636709; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W4oyBrQ4+qtvNHd22bRaiLV27J7OcLKPIojk24G7ULU=;
+        b=E6fNOKV8eltoEw0cXzEo7w9kUircsqvGkdr52sS9pUBS0BCHqnT78i57GBLojr+wW9
+         U8Rp2yq+2u1vOMx5LywwxbC6hAYtKZKbPsCyc6RuQqxZ4S5kluSdzzsYdvjJ+NUTauGF
+         K/Z33B4EXqmOkQUGJ8YMU/EUGPvVir3MH7nok9YKx4RsWC2YnN/QfFe6+cz8pvNahi/H
+         iHj1jHXQh2hzb8Bo2+Dy/NQaDKdWgsyXyteJVrfg1ZP7cI2eysBaxRXHwcP0xaPTJfLI
+         pQ1V7e00gba7gbPkIQQdEhO1R+bS533KzZLCALd1KFDn4QCpsNypBr63y1SxuYLpvZW+
+         tj9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706031909; x=1706636709;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W4oyBrQ4+qtvNHd22bRaiLV27J7OcLKPIojk24G7ULU=;
+        b=FwkmQ/8yWeUipg9YP6Nd16O/IAQsIcanQvggCHlYzg+nE9NB2yP6iydas0CyrqNNHY
+         pjEJVKIMbfbjjVc4xV7dppJEEJEj7gYgA3lvc/X0sbKzvX2r5DppnzDL/sw8s9Zxj0+S
+         2ndiq1QK9fWLqVmkosD/B/c591uaAJGA+UwnL90rUoKkI8Fjk3fxPUysaRgaAwaOW9ST
+         H7z89Ch10wg38wiATNpz9agbY/cxoN8GECUvDE9wfC1VTKvl6pjqbGhKWzfygpHqWW0Y
+         KzJjiTNNXnz8rdfFvdqFe0ZvrPQ8OZ1IS9Goxp2fscm9h+VN3UJnLnCB++SsDqXxarv5
+         QGog==
+X-Gm-Message-State: AOJu0YyjsG2UU99JxpX6orgLaQegjHQAm/DhYk/9rjfy0AEl2twrseDY
+	B4N0vGmt0M+CQE3JGN8lhHvrh1dtJTHUT6QbHqv4BkSLO9S8qA8m
+X-Google-Smtp-Source: AGHT+IFvQq2aPOGlvF4JOsf/hb7L41ATp/rSHCn3ZpEvu3AEHPAoSdqMSCs8os0KHLA0EEadsR8H9A==
+X-Received: by 2002:adf:e84c:0:b0:337:cdc1:daff with SMTP id d12-20020adfe84c000000b00337cdc1daffmr3997048wrn.71.1706031908892;
+        Tue, 23 Jan 2024 09:45:08 -0800 (PST)
+Received: from jernej-laptop.localnet (86-58-14-70.dynamic.telemach.net. [86.58.14.70])
+        by smtp.gmail.com with ESMTPSA id x8-20020adfdd88000000b003392ae3aee8sm9009835wrl.97.2024.01.23.09.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 09:45:08 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Corentin Labbe <clabbe.montjoie@gmail.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>, Jonathan Corbet <corbet@lwn.net>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Erick Archer <erick.archer@gmx.com>
+Cc: Erick Archer <erick.archer@gmx.com>, linux-crypto@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] crypto: sun8i-ce - Use kcalloc() instead of kzalloc()
+Date: Tue, 23 Jan 2024 18:45:07 +0100
+Message-ID: <1876185.tdWV9SEqCh@jernej-laptop>
+In-Reply-To: <20240121153407.8348-1-erick.archer@gmx.com>
+References: <20240121153407.8348-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182873 [Jan 23 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/23 13:53:00 #23383939
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-This patch adds a crypto node declaration. With the
-Amlogic crypto driver we can use HW implementation
-of SHA1/224/256 and AES algo.
+Dne nedelja, 21. januar 2024 ob 16:34:07 CET je Erick Archer napisal(a):
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the purpose specific kcalloc() function instead of the argument
+> size * count in the kzalloc() function.
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
----
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index 7e5ac9db93f8..39ecb894668e 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -286,6 +286,12 @@ ethmac: ethernet@ff3f0000 {
- 			status = "disabled";
- 		};
- 
-+		crypto: crypto@ff63e000 {
-+			compatible = "amlogic,axg-crypto";
-+			reg = <0x0 0xff63e000 0x0 0x48>;
-+			interrupts = <GIC_SPI 180 IRQ_TYPE_EDGE_RISING>;
-+		};
-+
- 		pcie_phy: phy@ff644000 {
- 			compatible = "amlogic,axg-pcie-phy";
- 			reg = <0x0 0xff644000 0x0 0x1c>;
--- 
-2.34.1
+Best regards,
+Jernej
+
+
+
 
 
