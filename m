@@ -1,54 +1,47 @@
-Return-Path: <linux-crypto+bounces-1600-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1597-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A0183BDF1
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jan 2024 10:52:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E3AD83BD81
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jan 2024 10:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 097DC1F2E8B3
-	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jan 2024 09:52:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBA582941DD
+	for <lists+linux-crypto@lfdr.de>; Thu, 25 Jan 2024 09:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66D41C6B9;
-	Thu, 25 Jan 2024 09:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9BA31CAB3;
+	Thu, 25 Jan 2024 09:37:17 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79CCE1CD02;
-	Thu, 25 Jan 2024 09:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3E31CA8B;
+	Thu, 25 Jan 2024 09:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706176334; cv=none; b=t4G0eCK/5QtEKQ1pCDq7iHLytkQmeXXp7eB2VEVbcpz4Ru8joH3oah2HHSENrC3VxVvPL4c8qC7ADCP/Ew2JpBOHYvEUDOivM1Jrz1FxAvE9KN8Hv7CrH2Q3NBJQwF3po/f+B7b6+MmpVVVMUBcbvRhMtBASOayaDxaK0/0OYHw=
+	t=1706175437; cv=none; b=kp/ysHLP7f6fDHjFQJvRFOoIv8KNyBgKGZDywrYfjUqClCBKk6NXd9g1uOk3XzVtMqzR6VmNFqVgbpFuSg+oUkckF6W++Onn4Fqk5nBKu1gcBqIaSP6E3WaiRqZhKm1N8f6vm3v/c4Yk7KwQ2vgKMxxEwSMhrgXk4QJmPfM8CBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706176334; c=relaxed/simple;
-	bh=StG+/eVbGK2/dVKyODarUOD8vIXXM+MXKHc4ky+fXlY=;
+	s=arc-20240116; t=1706175437; c=relaxed/simple;
+	bh=pANF+oLZHBkHSuW3uOERdFLcUTwaM+ZLvBfpRyEnK4k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PQh1rxRr1+6Ofv1SSeDZY4KWdRxI4pFGfpv/ncEX+MGF1tENok071lOJYNINzIr7NEvuZ0R6W1jqnhltCLyuM3G+qG1Y/kNjSlUeaJ9H7jiO2E8OMa4yAjjixvQaRD1qVZEmVxzTyd2ZIWHHbIaAVDBaqWuyyexij3If5lN5v+A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=kgVD6kq3DWi0j1bgEkQvOdosl8yxcT5twcWIqpVflxaJvXEzhINkzMMtOgZUWMnlmBEJXMUhkZ6fMclShZQoDAltWDORl8saiujFwh9Od1E0C0vciGFSaCYTGJMy7Q+aXdSgds0cTufnJXq6mhZXz2uWeazbRXHNRyakXxhPA44=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rSvxo-005s2C-0g; Thu, 25 Jan 2024 17:24:01 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 25 Jan 2024 17:24:12 +0800
-Date: Thu, 25 Jan 2024 17:24:12 +0800
+	id 1rSwAQ-005sJt-Kl; Thu, 25 Jan 2024 17:37:03 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 25 Jan 2024 17:37:15 +0800
+Date: Thu, 25 Jan 2024 17:37:15 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Vadim Fedorenko <vadfed@meta.com>, netdev@vger.kernel.org,
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org,
-	Victor Stewart <v@nametag.social>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>
-Subject: Re: [PATCH bpf-next v8 2/3] bpf: crypto: add skcipher to bpf crypto
-Message-ID: <ZbIovBWdpDrwFw0V@gondor.apana.org.au>
-References: <20240115220803.1973440-1-vadfed@meta.com>
- <20240115220803.1973440-2-vadfed@meta.com>
- <dc3f48ee-2742-4c59-96a1-a06ffa1d7712@linux.dev>
+To: Qi Tao <taoqi10@huawei.com>
+Cc: davem@davemloft.net, liulongfang@huawei.com,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 3/4] crypto: hisilicon/sec2 - fix some cleanup issues
+Message-ID: <ZbIry8M6yFUAr5oL@gondor.apana.org.au>
+References: <20231229064421.16981-1-taoqi10@huawei.com>
+ <20231229064421.16981-4-taoqi10@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -57,35 +50,18 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dc3f48ee-2742-4c59-96a1-a06ffa1d7712@linux.dev>
+In-Reply-To: <20231229064421.16981-4-taoqi10@huawei.com>
 
-On Wed, Jan 24, 2024 at 05:14:56PM -0800, Martin KaFai Lau wrote:
-> On 1/15/24 2:08 PM, Vadim Fedorenko wrote:
-> > Implement skcipher crypto in BPF crypto framework.
-> > 
-> > Signed-off-by: Vadim Fedorenko<vadfed@meta.com>
-> > ---
-> > v7 -> v8:
-> > - Move bpf_crypto_skcipher.c to crypto and make it part of
-> >    skcipher module. This way looks more natural and makes bpf crypto
-> >    proper modular. MAINTAINERS files is adjusted to make bpf part
-> >    belong to BPF maintainers.
-> > v6 - v7:
-> > - style issues
-> > v6:
-> > - introduce new file
-> > ---
-> >   MAINTAINERS                  |  8 ++++
-> >   crypto/Makefile              |  3 ++
-> >   crypto/bpf_crypto_skcipher.c | 82 ++++++++++++++++++++++++++++++++++++
-> 
-> The changes are mostly isolated to the new bpf_crypto_skcipher.c file
-> addition to the crypto/ but still will be helpful to get an Ack from the
-> crypto maintainers (Herbert?).
+On Fri, Dec 29, 2023 at 02:44:20PM +0800, Qi Tao wrote:
+>
+> @@ -1371,7 +1371,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
+>  	sec_sqe3->bd_param = cpu_to_le32(bd_param);
+>  
+>  	sec_sqe3->c_len_ivin |= cpu_to_le32(c_req->c_len);
+> -	sec_sqe3->tag = cpu_to_le64(req);
+> +	sec_sqe3->tag = cpu_to_le64((unsigned long)(uintptr_t)req);
 
-Looks good to me.
-
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Please explain why you're casting twice.
 
 Thanks,
 -- 
