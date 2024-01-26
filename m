@@ -1,54 +1,51 @@
-Return-Path: <linux-crypto+bounces-1667-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1669-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C33A83D74B
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 11:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1035783D7AA
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 11:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E3D21F265FC
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 10:06:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8CC21F2F9EA
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 10:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED0D1C289;
-	Fri, 26 Jan 2024 09:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE4F6A32B;
+	Fri, 26 Jan 2024 09:39:18 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC121BF39;
-	Fri, 26 Jan 2024 09:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA516A32A;
+	Fri, 26 Jan 2024 09:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706260935; cv=none; b=O0ITE4U+I7PzkwyZtO+bMvLtT94A9TG0xu06WcCfdDsmQMhEHe2Tw/EAdPCGO9tjHeRxH+UmEM3ccuk6HfKcZQeiCyhttyRUTpMMNpmVZB9peVrXONEt8TED6qXRpKQ+P/bbs6KNuP+yas1WGdE9qsZDM8HyIP0pu0Gye9Hc0xc=
+	t=1706261958; cv=none; b=e2J+yHY4QE9IjJ9JdCX1QfwD3hsV/7geC0nIGA589yRpxjLKVg8W07AjsGSFIlXHL57c1HfFybGKkTD0kSsOTP35gz3PPT3mQQYeb8GrTu222tt7dARpl7NqgxRVFSDXe9PRadid3lwdPpyglT6qWtt9tc+ZsGWB8SXsIaq1Md4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706260935; c=relaxed/simple;
-	bh=pcmjglrZ4EwD3/dAqW8smfIfukdxFkWINVKjHUXxQso=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n/Lvr03Nhej9SawN5CCml/eE0bwBk6cbA8pLWKZC+2vyxJOGwvQSwD93Qz5H9zUGofJdeb23SUZ6uD7wsq1NY9OMiGEM7HWebiIACgIdZQ2kiU2GXWmtUIXAPswcdyEWe6DUBKXvM6nupSU6TbU/lXW33NrT3Q1bgrbLDxdOPY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+	s=arc-20240116; t=1706261958; c=relaxed/simple;
+	bh=Lf3encN/F8/HuCIppMQ0kCZkOPYn0JSFA0SPxEOdeLA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=b2LtDMVilRSRLM95IUgVZ9kLG7Wr8vov79Y0Kj0uVjITaKCMdPsL7lTyccE1beLrk+3yXbvHQWTFtBmxYiKATKMZAvW3NrGoUwLsvxIcVYizrb9HLYNbPrgXaSzPmlOt8ZGMzWUJUIlIt9TNW9ayMVqAMpBiGgKFv3z8ide0U2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TLsd84M1SzNlfY;
-	Fri, 26 Jan 2024 17:21:16 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TLt030cF2zvVLK;
+	Fri, 26 Jan 2024 17:37:39 +0800 (CST)
 Received: from dggpeml500001.china.huawei.com (unknown [7.185.36.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8E9BB1400D6;
-	Fri, 26 Jan 2024 17:22:11 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 69B46140136;
+	Fri, 26 Jan 2024 17:39:13 +0800 (CST)
 Received: from huawei.com (10.69.192.56) by dggpeml500001.china.huawei.com
  (7.185.36.227) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Jan
- 2024 17:22:11 +0800
+ 2024 17:39:13 +0800
 From: Qi Tao <taoqi10@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<liulongfang@huawei.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-Subject: [PATCH v2 4/4] crypto: hisilicon/sec - remove unused parameter
-Date: Fri, 26 Jan 2024 17:21:24 +0800
-Message-ID: <20240126092124.14055-5-taoqi10@huawei.com>
+Subject: [PATCH v2 0/4] some updates and cleanups for hisilicon/sec2.
+Date: Fri, 26 Jan 2024 17:38:24 +0800
+Message-ID: <20240126093828.14131-1-taoqi10@huawei.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240126092124.14055-1-taoqi10@huawei.com>
-References: <20240126092124.14055-1-taoqi10@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -57,80 +54,31 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500001.china.huawei.com (7.185.36.227)
 
-From: Wenkai Lin <linwenkai6@hisilicon.com>
+This seires patch mainly add some RAS registers to enhance the 
+DFX positioning function and fix some cleanup issues.
 
-Unused parameter of static functions should be removed.
+[PATCH v1 3/4] -> [PATCH v2 3/4]
+	sec_sqe3->c_len_ivin |= cpu_to_le32(c_req->c_len);
+-	sec_sqe3->tag = cpu_to_le64((unsigned long)(uintptr_t)req);
++	sec_sqe3->tag = cpu_to_le64((unsigned long)req);
 
-Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
----
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+Other patches are not modified.
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 5d4facf62c86..ee6cc2e483ab 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -485,8 +485,7 @@ static void sec_alg_resource_free(struct sec_ctx *ctx,
- 		sec_free_mac_resource(dev, qp_ctx->res);
- }
- 
--static int sec_alloc_qp_ctx_resource(struct hisi_qm *qm, struct sec_ctx *ctx,
--				     struct sec_qp_ctx *qp_ctx)
-+static int sec_alloc_qp_ctx_resource(struct sec_ctx *ctx, struct sec_qp_ctx *qp_ctx)
- {
- 	u16 q_depth = qp_ctx->qp->sq_depth;
- 	struct device *dev = ctx->dev;
-@@ -541,8 +540,7 @@ static void sec_free_qp_ctx_resource(struct sec_ctx *ctx, struct sec_qp_ctx *qp_
- 	kfree(qp_ctx->req_list);
- }
- 
--static int sec_create_qp_ctx(struct hisi_qm *qm, struct sec_ctx *ctx,
--			     int qp_ctx_id, int alg_type)
-+static int sec_create_qp_ctx(struct sec_ctx *ctx, int qp_ctx_id)
- {
- 	struct sec_qp_ctx *qp_ctx;
- 	struct hisi_qp *qp;
-@@ -561,7 +559,7 @@ static int sec_create_qp_ctx(struct hisi_qm *qm, struct sec_ctx *ctx,
- 	idr_init(&qp_ctx->req_idr);
- 	INIT_LIST_HEAD(&qp_ctx->backlog);
- 
--	ret = sec_alloc_qp_ctx_resource(qm, ctx, qp_ctx);
-+	ret = sec_alloc_qp_ctx_resource(ctx, qp_ctx);
- 	if (ret)
- 		goto err_destroy_idr;
- 
-@@ -614,7 +612,7 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
- 	}
- 
- 	for (i = 0; i < sec->ctx_q_num; i++) {
--		ret = sec_create_qp_ctx(&sec->qm, ctx, i, 0);
-+		ret = sec_create_qp_ctx(ctx, i);
- 		if (ret)
- 			goto err_sec_release_qp_ctx;
- 	}
-@@ -750,9 +748,7 @@ static void sec_skcipher_uninit(struct crypto_skcipher *tfm)
- 	sec_ctx_base_uninit(ctx);
- }
- 
--static int sec_skcipher_3des_setkey(struct crypto_skcipher *tfm, const u8 *key,
--				    const u32 keylen,
--				    const enum sec_cmode c_mode)
-+static int sec_skcipher_3des_setkey(struct crypto_skcipher *tfm, const u8 *key, const u32 keylen)
- {
- 	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
- 	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
-@@ -843,7 +839,7 @@ static int sec_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 
- 	switch (c_alg) {
- 	case SEC_CALG_3DES:
--		ret = sec_skcipher_3des_setkey(tfm, key, keylen, c_mode);
-+		ret = sec_skcipher_3des_setkey(tfm, key, keylen);
- 		break;
- 	case SEC_CALG_AES:
- 	case SEC_CALG_SM4:
+Qi Tao (3):
+  crypto: hisilicon/sec2 - updates the sec DFX function register
+  crypto: hisilicon/sec2 - modify nested macro call
+  crypto: hisilicon/sec2 - fix some cleanup issues
+
+Wenkai Lin (1):
+  crypto: hisilicon/sec - remove unused parameter
+
+  drivers/crypto/hisilicon/sec2/sec_crypto.c | 33 ++++++++--------------
+  drivers/crypto/hisilicon/sec2/sec_main.c   |  5 ++++
+  2 files changed, 17 insertions(+), 21 deletions(-)
+
 -- 
 2.33.0
 
