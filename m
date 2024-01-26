@@ -1,330 +1,166 @@
-Return-Path: <linux-crypto+bounces-1676-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1674-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40FB883D8CD
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 12:01:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B601383D91E
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 12:14:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 661411C251E5
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 11:01:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F30AB3FC63
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 10:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E18D17565;
-	Fri, 26 Jan 2024 11:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BA117730;
+	Fri, 26 Jan 2024 10:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cduZuv0M"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wX446PTZ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC1D134A9
-	for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 11:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960BE17582
+	for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 10:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706266863; cv=none; b=AzonNjjvi+wiXtuTYMs4UyclFwFY6jhg/oVtAAXDGhtzg/42uYLP//UazKobb6B1/zIvAh3fpUsRpzUEaEZVOyEM3IXpXnvqZcrgS3+H1f1TRQ6XNVdNETCRh0qII2FcEAnmp71Qu3Q8I525Clfbf99ccfRYx9gB+gVOXkha8GM=
+	t=1706265060; cv=none; b=NWxSg4T3LiUBr8vb22LIa0eGdtqlv+We0UyKQx6yYbZ/oA7SNnBQAE7H3ry7oBtzhVQJQQ+ilTtPsl2j6g8CGNd4iYicLd5Pm5pIDZvd951Xub37c6Ohflu7B8KGy4egaYooSze9nGruwe+ZXmQ4Ksp8mVmOD52lsmV4JGWQqKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706266863; c=relaxed/simple;
-	bh=2Kk/JhDn9ums2Gl2pmtY8M5lBtSFaCH5fDViOXSC1mo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QzZCg5CqheeRnlfWmJ4+wmAK5S+TNGr5M0NxdTE5mx4hb+NyUXA9NU7jyMIjvHt4SvcmHvblsyjqcE2IkaVpwlwIhOrHLdrJ9Q3SKf6W56m4EaW8AeZ/gwLOF7MUnM5BL9HC6NXzfOHosYY4F9HYvkIoznwskH3ylnc8TKqPXzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cduZuv0M; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706266859;
+	s=arc-20240116; t=1706265060; c=relaxed/simple;
+	bh=8lg/b7eX807+j1J3wZYy8O4FO7Zd4a5U1Nff7rJUlWM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yp3jm6Zt+v5HCLiCcgdEpIKkTd8qF8fN1GKb0MNDTxTEm5fnpMPIlJCGH/fhSorLeFPA+F+b+DqLGSR2wLo2wOWzofUpm5FGz6kd79mZPJaG7y48tPsK9bExVRJ5hkEQpUGmm7ND3thixccigOqVlvcG//Npt+F11WQQojw5gFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wX446PTZ; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f70e2d1e-b17d-44c2-9077-51afa9f4f05e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706265056;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vz4PWAkydzxt+A7z4COEEylDr902GbpCA3qhDTN+Qeg=;
-	b=cduZuv0M4Psp1UTRkyPuFLufaaHbpUVp6kClk7L0pz/gGYWXDFEvBwYXTMqDgx4XYJrzL6
-	oJtcRsSZrWX4C+U0RoKsUkpEId1sUnt70DbaNSAhLb7LaGKmTTtMVwQLyPnGTd9J4iarfL
-	Y68eDSPDieorlPcNYSQjsIpOXZVERto=
-Received: from mail-ua1-f70.google.com (mail-ua1-f70.google.com
- [209.85.222.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-410-KTL9RRWyMQyaDk2C2jZCnw-1; Fri, 26 Jan 2024 06:00:57 -0500
-X-MC-Unique: KTL9RRWyMQyaDk2C2jZCnw-1
-Received: by mail-ua1-f70.google.com with SMTP id a1e0cc1a2514c-7d2dfe84153so132594241.3
-        for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 03:00:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706266857; x=1706871657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vz4PWAkydzxt+A7z4COEEylDr902GbpCA3qhDTN+Qeg=;
-        b=re13SY5QLuiZNJdcmtCJsdahUFZ1FA2z9pneRUcm+x7klBjOSwA1TTQSAA5uT1GtTb
-         gN05sIqJ7HaBYsnMRzWSY+f9MhxHx6NDBvI2iGxSVmuATHy/gfi1m3knmCB8CFtUXyqs
-         3B0dJI5zIaLiNzXSPGItfE2o1MxQwLoA1KIuxLlCo5JzI5avJ6aGqWMf1aruCgQUwMmD
-         z8hHQi37shMyPpNqKJO1ESTr4ZuzezpvMwBWIHBC42Jc4CIy+dssluFoOQs3iUNqnajb
-         V0mto7fo1RKqGHxXz0Q2Wf+hHd9eBKvgGsHW3WswQ5iu7cK6rSSMyMgJI9iuVnToIOi1
-         nHAg==
-X-Gm-Message-State: AOJu0Yw3c95TUU3JGfDR1ajMc/+rGkfihjj1D8StX7r2fRdXwcfFsVst
-	cYJPefuXkXpcjcxEQ0dgInKdpdw1YkqJeBJIb992FIkffHGlsrSJZsm7SAmKFc3X87wRLB88k0d
-	d04R+hnfaBNRe+90/H9Pwj6Il7+qGWgrYAToM6NDXxuz5wSThqnWGX+LA7PO2gdkxKIqzAPOKjV
-	N71Tc0XdCMTUfZdXgvTrMAEKLHk0LzRSCRd3db
-X-Received: by 2002:a67:f7d3:0:b0:46b:2177:3dd5 with SMTP id a19-20020a67f7d3000000b0046b21773dd5mr813806vsp.59.1706266857213;
-        Fri, 26 Jan 2024 03:00:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGpXTYAbdzLiIsrnQlBUga5yJGtTPifrKZ94nSeg3N8tWU7X+J3z3U88iJcUhzqazoErnhnGdfkCOzGN9AK1kM=
-X-Received: by 2002:a67:f7d3:0:b0:46b:2177:3dd5 with SMTP id
- a19-20020a67f7d3000000b0046b21773dd5mr813761vsp.59.1706266856821; Fri, 26 Jan
- 2024 03:00:56 -0800 (PST)
+	bh=GQ5cQQbN07W3Mr8WJy7OQCLh5hYQXPQPQN6G40syBwQ=;
+	b=wX446PTZNwlaRGbnarns756kx9vXUVcwAQ0IMJWhtOzdLSXSNzC5yv3VXQY/VD63MpQsF0
+	MKtrioPpboc/H4N6vRPsJK8ORZO8CnpZ5Q+/D5/9D4CP1vcl9Kb09wsj0R5dJK44gDM0PY
+	0yeMrn/aLlSjNM68CEv2zt1y1Htxt4Y=
+Date: Fri, 26 Jan 2024 10:30:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126041126.1927228-1-michael.roth@amd.com> <20240126041126.1927228-22-michael.roth@amd.com>
-In-Reply-To: <20240126041126.1927228-22-michael.roth@amd.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 26 Jan 2024 12:00:43 +0100
-Message-ID: <CABgObfaqjBBt74ZX6LtP=sQgYsu4FRTuKsDZ1ZaFkA5vK1ddCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 21/25] KVM: SEV: Make AVIC backing, VMSA and VMCB
- memory allocation SNP safe
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev, 
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, 
-	seanjc@google.com, vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, tobin@ibm.com, bp@alien8.de, vbabka@suse.cz, 
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
-	Brijesh Singh <brijesh.singh@amd.com>, Marc Orr <marcorr@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v8 1/3] bpf: make common crypto API for TC/XDP
+ programs
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, Vadim Fedorenko <vadfed@meta.com>
+Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+ bpf@vger.kernel.org, Victor Stewart <v@nametag.social>,
+ Jakub Kicinski <kuba@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>
+References: <20240115220803.1973440-1-vadfed@meta.com>
+ <3d2d5f4e-c554-4648-bcec-839d83585123@linux.dev>
+ <a682b902-37a2-4d43-8f39-56ca213f6663@linux.dev>
+ <cec469f4-2fd0-479a-8919-0d5578687fb2@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <cec469f4-2fd0-479a-8919-0d5578687fb2@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 26, 2024 at 5:45=E2=80=AFAM Michael Roth <michael.roth@amd.com>=
- wrote:
->
-> From: Brijesh Singh <brijesh.singh@amd.com>
->
-> Implement a workaround for an SNP erratum where the CPU will incorrectly
-> signal an RMP violation #PF if a hugepage (2MB or 1GB) collides with the
-> RMP entry of a VMCB, VMSA or AVIC backing page.
->
-> When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
-> backing pages as "in-use" via a reserved bit in the corresponding RMP
-> entry after a successful VMRUN. This is done for _all_ VMs, not just
-> SNP-Active VMs.
->
-> If the hypervisor accesses an in-use page through a writable
-> translation, the CPU will throw an RMP violation #PF. On early SNP
-> hardware, if an in-use page is 2MB-aligned and software accesses any
-> part of the associated 2MB region with a hugepage, the CPU will
-> incorrectly treat the entire 2MB region as in-use and signal a an RMP
-> violation #PF.
->
-> To avoid this, the recommendation is to not use a 2MB-aligned page for
-> the VMCB, VMSA or AVIC pages. Add a generic allocator that will ensure
-> that the page returned is not 2MB-aligned and is safe to be used when
-> SEV-SNP is enabled. Also implement similar handling for the VMCB/VMSA
-> pages of nested guests.
->
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Co-developed-by: Marc Orr <marcorr@google.com>
-> Signed-off-by: Marc Orr <marcorr@google.com>
-> Reported-by: Alper Gun <alpergun@google.com> # for nested VMSA case
-> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> [mdr: squash in nested guest handling from Ashish, commit msg fixups]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
+On 25/01/2024 22:34, Martin KaFai Lau wrote:
+> On 1/25/24 3:19 AM, Vadim Fedorenko wrote:
+>> On 25/01/2024 01:10, Martin KaFai Lau wrote:
+>>> On 1/15/24 2:08 PM, Vadim Fedorenko wrote:
+>>>> +static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
+>>>> +                const struct bpf_dynptr_kern *src,
+>>>> +                struct bpf_dynptr_kern *dst,
+>>>> +                const struct bpf_dynptr_kern *siv,
+>>>> +                bool decrypt)
+>>>> +{
+>>>> +    u32 src_len, dst_len, siv_len;
+>>>> +    const u8 *psrc;
+>>>> +    u8 *pdst, *piv;
+>>>> +    int err;
+>>>> +
+>>>> +    if (ctx->type->get_flags(ctx->tfm) & CRYPTO_TFM_NEED_KEY)
+>>>
+>>> nit. Does the indirect call get_flags() return different values?
+>>> Should it be rejected earlier, e.g. in bpf_crypto_ctx_create()?
+>>
+>> Well, that is the common pattern in crypto subsys to check flags.
+>> But after looking at it second time, I think I have to refactor this
+>> part. CRYPTO_TFM_NEED_KEY is set during tfm creation if algo requires
+>> the key. And it's freed when the key setup is successful. As there is no
+>> way bpf programs can modify tfm directly we can move this check to
+>> bpf_crypto_ctx_create() to key setup part and avoid indirect call in 
+>> this place.
+>>>
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    if (__bpf_dynptr_is_rdonly(dst))
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    siv_len = __bpf_dynptr_size(siv);
+>>>> +    src_len = __bpf_dynptr_size(src);
+>>>> +    dst_len = __bpf_dynptr_size(dst);
+>>>> +    if (!src_len || !dst_len)
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    if (siv_len != (ctx->type->ivsize(ctx->tfm) + 
+>>>> ctx->type->statesize(ctx->tfm)))
+>>>
+>>> Same here, two indirect calls per en/decrypt kfunc call. Does the 
+>>> return value change?
+>>
+>> I have to check the size of IV provided by the caller, and then to avoid
+>> indirect calls I have to store these values somewhere in ctx. It gives a
+>> direct access to these values to bpf programs, which can potentially
+>> abuse them. Not sure if it's good to open such opportunity.
+> 
+> I don't think it makes any difference considering tfm has already been 
+> accessible in ctx->tfm.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Fair. I'll do it then.
 
+> A noob question, what secret is in the siv len?
 
-> ---
->  arch/x86/include/asm/kvm-x86-ops.h |  1 +
->  arch/x86/include/asm/kvm_host.h    |  1 +
->  arch/x86/kvm/lapic.c               |  5 ++++-
->  arch/x86/kvm/svm/nested.c          |  2 +-
->  arch/x86/kvm/svm/sev.c             | 32 ++++++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c             | 17 +++++++++++++---
->  arch/x86/kvm/svm/svm.h             |  1 +
->  7 files changed, 54 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kv=
-m-x86-ops.h
-> index 378ed944b849..ab24ce207988 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -138,6 +138,7 @@ KVM_X86_OP(complete_emulated_msr)
->  KVM_X86_OP(vcpu_deliver_sipi_vector)
->  KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
->  KVM_X86_OP_OPTIONAL(get_untagged_addr)
-> +KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
->
->  #undef KVM_X86_OP
->  #undef KVM_X86_OP_OPTIONAL
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
-ost.h
-> index b5b2d0fde579..5c12af29fd9b 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1794,6 +1794,7 @@ struct kvm_x86_ops {
->         unsigned long (*vcpu_get_apicv_inhibit_reasons)(struct kvm_vcpu *=
-vcpu);
->
->         gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsi=
-gned int flags);
-> +       void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
->  };
->
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 3242f3da2457..1edf93ee3395 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2815,7 +2815,10 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int ti=
-mer_advance_ns)
->
->         vcpu->arch.apic =3D apic;
->
-> -       apic->regs =3D (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
-> +       if (kvm_x86_ops.alloc_apic_backing_page)
-> +               apic->regs =3D static_call(kvm_x86_alloc_apic_backing_pag=
-e)(vcpu);
-> +       else
-> +               apic->regs =3D (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT=
-);
->         if (!apic->regs) {
->                 printk(KERN_ERR "malloc apic regs error for vcpu %x\n",
->                        vcpu->vcpu_id);
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index dee62362a360..55b9a6d96bcf 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -1181,7 +1181,7 @@ int svm_allocate_nested(struct vcpu_svm *svm)
->         if (svm->nested.initialized)
->                 return 0;
->
-> -       vmcb02_page =3D alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +       vmcb02_page =3D snp_safe_alloc_page(&svm->vcpu);
->         if (!vmcb02_page)
->                 return -ENOMEM;
->         svm->nested.vmcb02.ptr =3D page_address(vmcb02_page);
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 564091f386f7..f99435b6648f 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -3163,3 +3163,35 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu =
-*vcpu, u8 vector)
->
->         ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, 1);
->  }
-> +
-> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
-> +{
-> +       unsigned long pfn;
-> +       struct page *p;
-> +
-> +       if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +               return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +
-> +       /*
-> +        * Allocate an SNP-safe page to workaround the SNP erratum where
-> +        * the CPU will incorrectly signal an RMP violation #PF if a
-> +        * hugepage (2MB or 1GB) collides with the RMP entry of a
-> +        * 2MB-aligned VMCB, VMSA, or AVIC backing page.
-> +        *
-> +        * Allocate one extra page, choose a page which is not
-> +        * 2MB-aligned, and free the other.
-> +        */
-> +       p =3D alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
-> +       if (!p)
-> +               return NULL;
-> +
-> +       split_page(p, 1);
-> +
-> +       pfn =3D page_to_pfn(p);
-> +       if (IS_ALIGNED(pfn, PTRS_PER_PMD))
-> +               __free_page(p++);
-> +       else
-> +               __free_page(p + 1);
-> +
-> +       return p;
-> +}
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 61f2bdc9f4f8..272d5ed37ce7 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -703,7 +703,7 @@ static int svm_cpu_init(int cpu)
->         int ret =3D -ENOMEM;
->
->         memset(sd, 0, sizeof(struct svm_cpu_data));
-> -       sd->save_area =3D alloc_page(GFP_KERNEL | __GFP_ZERO);
-> +       sd->save_area =3D snp_safe_alloc_page(NULL);
->         if (!sd->save_area)
->                 return ret;
->
-> @@ -1421,7 +1421,7 @@ static int svm_vcpu_create(struct kvm_vcpu *vcpu)
->         svm =3D to_svm(vcpu);
->
->         err =3D -ENOMEM;
-> -       vmcb01_page =3D alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +       vmcb01_page =3D snp_safe_alloc_page(vcpu);
->         if (!vmcb01_page)
->                 goto out;
->
-> @@ -1430,7 +1430,7 @@ static int svm_vcpu_create(struct kvm_vcpu *vcpu)
->                  * SEV-ES guests require a separate VMSA page used to con=
-tain
->                  * the encrypted register state of the guest.
->                  */
-> -               vmsa_page =3D alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO)=
-;
-> +               vmsa_page =3D snp_safe_alloc_page(vcpu);
->                 if (!vmsa_page)
->                         goto error_free_vmcb_page;
->
-> @@ -4900,6 +4900,16 @@ static int svm_vm_init(struct kvm *kvm)
->         return 0;
->  }
->
-> +static void *svm_alloc_apic_backing_page(struct kvm_vcpu *vcpu)
-> +{
-> +       struct page *page =3D snp_safe_alloc_page(vcpu);
-> +
-> +       if (!page)
-> +               return NULL;
-> +
-> +       return page_address(page);
-> +}
-> +
->  static struct kvm_x86_ops svm_x86_ops __initdata =3D {
->         .name =3D KBUILD_MODNAME,
->
-> @@ -5031,6 +5041,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata =
-=3D {
->
->         .vcpu_deliver_sipi_vector =3D svm_vcpu_deliver_sipi_vector,
->         .vcpu_get_apicv_inhibit_reasons =3D avic_vcpu_get_apicv_inhibit_r=
-easons,
-> +       .alloc_apic_backing_page =3D svm_alloc_apic_backing_page,
->  };
->
->  /*
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 8ef95139cd24..7f1fbd874c45 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -694,6 +694,7 @@ void sev_es_vcpu_reset(struct vcpu_svm *svm);
->  void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
->  void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa);
->  void sev_es_unmap_ghcb(struct vcpu_svm *svm);
-> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
->
->  /* vmenter.S */
->
-> --
-> 2.25.1
->
+No secrets in the values themself. The problem I see is that user (bpf
+program) can adjust them to avoid proper validation and then pass
+smaller buffer and trigger read/write out-of-bounds.
+
+> btw, unrelated, based on the selftest in patch 3, is it supporting any 
+> siv_len > 0 for now?
+
+Well, it should. I see no reasons not to support it. But to test it
+properly another cipher should be used. I'll think about extending tests
+
+> 
+>>
+>>>
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    psrc = __bpf_dynptr_data(src, src_len);
+>>>> +    if (!psrc)
+>>>> +        return -EINVAL;
+>>>> +    pdst = __bpf_dynptr_data_rw(dst, dst_len);
+>>>> +    if (!pdst)
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    piv = siv_len ? __bpf_dynptr_data_rw(siv, siv_len) : NULL;
+>>>> +    if (siv_len && !piv)
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    err = decrypt ? ctx->type->decrypt(ctx->tfm, psrc, pdst, 
+>>>> src_len, piv)
+>>>> +              : ctx->type->encrypt(ctx->tfm, psrc, pdst, src_len, 
+>>>> piv);
+>>>> +
+>>>> +    return err;
+>>>> +}
+>>>
+>>
+> 
 
 
