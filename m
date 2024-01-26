@@ -1,48 +1,54 @@
-Return-Path: <linux-crypto+bounces-1659-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1661-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E0583D70A
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 10:58:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD4B83D704
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 10:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60598295947
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 09:56:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E669C1F28CC0
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 09:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5176C605DC;
-	Fri, 26 Jan 2024 09:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F15260BBE;
+	Fri, 26 Jan 2024 09:06:48 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5298BD30B
-	for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 09:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5C860B90;
+	Fri, 26 Jan 2024 09:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706259971; cv=none; b=THoIhNl0mffEhFxeX2urN5y38pOywNLdCHi9QYYBSZbIHm5wy1AaCYfuRS6YHYT/0BgkgRYHHMoDTu/tLA3xszJSQAoWsNN6S3dh/70bYlBggnIWNA7QGR7Jk7vnyEH89EfmySRiC849Ox299r/pb/IquMs406iFoeRjF3FOfCQ=
+	t=1706260008; cv=none; b=nCJFaBYTpAiLqsiKsk5rjoLI0d92wMhbx7Q+EWG9WZ7GarBSWgmWZMfSK7ehyos2sBMPppcNavSI9Aze6yLT0ss7fiITDIB1DfkwLqncaQce3MnjuSMyz1BQVFeZibnpZTBcvXN2DIFvvK66N4AJQd4Ay7UFozu2wylcZ5nEiG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706259971; c=relaxed/simple;
-	bh=JIYMR9PKIpQteV+fhrlcQCP1MPn4Ra/MuZxxH52Mbes=;
+	s=arc-20240116; t=1706260008; c=relaxed/simple;
+	bh=FmZ7L70FxZzdqagdRT1MctQ8VKv5y9VO6LoUIfjlsTQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=drj7FtP9dsvqUb7E9SDvonjjRC6oT5xyqIZWWv6t7JxwEjQ2csXUHadSmK2dksYu3OSgh98JklA51L77QytlbCJ7g0EbGRUBY+4DDuIi5cwtQG8QR+r8QuiackHDTvZ1US1gCrLwKRjAtIszjZX3St2ojdDtwAfhlAEZmluiOgI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=pT8I4HVCc8fBIywDamug1+mM3G5z8OfnRizdbNOx2FX0ydsh5RPxHpqBNY25FyF1y1r527gzwHmq5oQEaKW6j2MKF9crICKrkXNdUv4e3pxW6wnkdsQlLBLkWO6S/nxV9J0m+wSI+ocupGaQ3h0fKp2i1oGi5KPXJX1VhXg5dNw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rTIA1-006Ety-6s; Fri, 26 Jan 2024 17:06:06 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 17:06:17 +0800
-Date: Fri, 26 Jan 2024 17:06:17 +0800
+	id 1rTIAG-006Eu5-Mh; Fri, 26 Jan 2024 17:06:21 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 17:06:33 +0800
+Date: Fri, 26 Jan 2024 17:06:33 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>
-Cc: Damian Muszynski <damian.muszynski@intel.com>,
-	linux-crypto@vger.kernel.org, qat-linux@intel.com
-Subject: Re: [PATCH] crypto: qat - fix arbiter mapping generation algorithm
- for QAT 402xx
-Message-ID: <ZbN2CdAtOLpSUYzh@gondor.apana.org.au>
-References: <20240119161325.12582-1-damian.muszynski@intel.com>
- <Zaqp5+mL/Gg2i/Oo@gcabiddu-mobl.ger.corp.intel.com>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: Corentin Labbe <clabbe.montjoie@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] crypto: sun8i-ce - Use kcalloc() instead of kzalloc()
+Message-ID: <ZbN2GfKU18pVEprw@gondor.apana.org.au>
+References: <20240121153407.8348-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -51,16 +57,28 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zaqp5+mL/Gg2i/Oo@gcabiddu-mobl.ger.corp.intel.com>
+In-Reply-To: <20240121153407.8348-1-erick.archer@gmx.com>
 
-On Fri, Jan 19, 2024 at 04:57:11PM +0000, Cabiddu, Giovanni wrote:
-> Hi Herbert,
+On Sun, Jan 21, 2024 at 04:34:07PM +0100, Erick Archer wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
-> would it be possible to send this as a fix for 6.8?
+> So, use the purpose specific kcalloc() function instead of the argument
+> size * count in the kzalloc() function.
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+> ---
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes I will push it along.
-
-Thanks,
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
