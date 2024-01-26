@@ -1,69 +1,85 @@
-Return-Path: <linux-crypto+bounces-1663-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1665-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E252E83D725
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 11:01:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AB3C83D746
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 11:06:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D781A29CE27
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 10:00:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B1FA1C2C40A
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 10:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5795864CF8;
-	Fri, 26 Jan 2024 09:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981DC1BF52;
+	Fri, 26 Jan 2024 09:22:15 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F0E64CF9
-	for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 09:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C32C1BF3E;
+	Fri, 26 Jan 2024 09:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706260230; cv=none; b=qD/TpeIKfoEKDREumpWyNJ5lqyVNHmDpmTdEGVYRhsY2ZW3ChB8KiY6nGSrelDsQpGm1TpRJjOZQ1VpxxS3k1GItje6ok4hKhPQ/Yo1O41hQJnMT5btuS8KBoVJ8j0xlIYFnfWrZhyS/abG+OlauLyF0qUrucau3rpvOICOHuYk=
+	t=1706260935; cv=none; b=A35zR7prgneunyZqrYFLPZIt/Ryiscj+1mdakc/pArb/PzFgCpNxSUS7ABCiLif/a9rIIlXdfxd72b+M/gUZ784PRaNeCRthEYYZWgmSvv6N8jYXhedtcK/qhuo2Af4WQfq2/iYRCe9mmeYXTY6iFnFF64GV2S9ZBxyVUrJJzVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706260230; c=relaxed/simple;
-	bh=Ufj/5fASrf5uZOKl+4u0QX+Su7BuF59lAmtDWy0Rb5g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZNuUSfob+wFVDRJFr0dettGM6iOHTklfPxyWV18b+zyqZk0R5M9boHQ5j3fT3ztIn5UM5SOYkLbgHJODdlZjwBp+TTgStCoGwZErYPXY7EHr0ZifmrfvisfnHS69JeIXNLDFa2xcCqnPG8pIIpNuTfHjMUZDLUfCzQ+YQgpWjlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rTIEB-006F0D-7a; Fri, 26 Jan 2024 17:10:24 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 17:10:35 +0800
-Date: Fri, 26 Jan 2024 17:10:35 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Joachim Vandersmissen <git@jvdsn.com>
-Cc: linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: remove unused xts4096 and xts512 algorithms from
- testmgr.c
-Message-ID: <ZbN3C+1b5Lv5Xzjy@gondor.apana.org.au>
-References: <20240121194526.344007-1-git@jvdsn.com>
+	s=arc-20240116; t=1706260935; c=relaxed/simple;
+	bh=Lf3encN/F8/HuCIppMQ0kCZkOPYn0JSFA0SPxEOdeLA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PULD+ZE8PQjoymMkI2a2quNFekwprutzk/d6rppROzvvOBmqHQnOZeJEK2QTcjHPW9Ik94Lq4cEzf+PwFGX+ZEPUoIGhA3uKfJiYSn6ciTSXSW7xMp5hXDP3LItlXUmWZBoXMmx9YqSuOKqY/w6G1jfu3fYNnyyz3X+bPPKy0nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TLsc86slsz29kgF;
+	Fri, 26 Jan 2024 17:20:24 +0800 (CST)
+Received: from dggpeml500001.china.huawei.com (unknown [7.185.36.227])
+	by mail.maildlp.com (Postfix) with ESMTPS id ED1A8140416;
+	Fri, 26 Jan 2024 17:22:10 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by dggpeml500001.china.huawei.com
+ (7.185.36.227) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Jan
+ 2024 17:22:10 +0800
+From: Qi Tao <taoqi10@huawei.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+	<liulongfang@huawei.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
+Subject: [PATCH v2 0/4] some updates and cleanups for hisilicon/sec2.
+Date: Fri, 26 Jan 2024 17:21:20 +0800
+Message-ID: <20240126092124.14055-1-taoqi10@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121194526.344007-1-git@jvdsn.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500001.china.huawei.com (7.185.36.227)
 
-On Sun, Jan 21, 2024 at 01:45:26PM -0600, Joachim Vandersmissen wrote:
-> Commit a93492cae30a ("crypto: ccree - remove data unit size support")
-> removed support for the xts512 and xts4096 algorithms, but left them
-> defined in testmgr.c. This patch removes those definitions.
-> 
-> Signed-off-by: Joachim Vandersmissen <git@jvdsn.com>
-> ---
->  crypto/testmgr.c | 8 --------
->  1 file changed, 8 deletions(-)
+This seires patch mainly add some RAS registers to enhance the 
+DFX positioning function and fix some cleanup issues.
 
-Patch applied.  Thanks.
+[PATCH v1 3/4] -> [PATCH v2 3/4]
+	sec_sqe3->c_len_ivin |= cpu_to_le32(c_req->c_len);
+-	sec_sqe3->tag = cpu_to_le64((unsigned long)(uintptr_t)req);
++	sec_sqe3->tag = cpu_to_le64((unsigned long)req);
+
+Other patches are not modified.
+
+Qi Tao (3):
+  crypto: hisilicon/sec2 - updates the sec DFX function register
+  crypto: hisilicon/sec2 - modify nested macro call
+  crypto: hisilicon/sec2 - fix some cleanup issues
+
+Wenkai Lin (1):
+  crypto: hisilicon/sec - remove unused parameter
+
+  drivers/crypto/hisilicon/sec2/sec_crypto.c | 33 ++++++++--------------
+  drivers/crypto/hisilicon/sec2/sec_main.c   |  5 ++++
+  2 files changed, 17 insertions(+), 21 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.33.0
+
 
