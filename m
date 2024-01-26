@@ -1,74 +1,87 @@
-Return-Path: <linux-crypto+bounces-1640-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1641-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A45783D416
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 06:58:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FB5183D444
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 07:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E868E1F256C4
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 05:58:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0168FB209D1
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 06:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92780BE7D;
-	Fri, 26 Jan 2024 05:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD878C2E3;
+	Fri, 26 Jan 2024 06:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b="7dZap3Ml"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from smtp.jvdsn.com (smtp.jvdsn.com [129.153.194.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0518CBE4E
-	for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 05:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE2BBBE65
+	for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 06:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.153.194.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706248728; cv=none; b=Jb0Nv/rXzS+7RJRJ5q8nUk8Ds8P++PsczCDMyIF4uYdWrWZiG+vd2lvGkgn/LIDARl0V+t0l4N3yE2na7FN2iKcMPdgsT9zzTJeHeDk8n11G71vtHLRBJpLyWn/WI9NWhOZRW1Doji1j7NXb+ty0zF2u3dvpzU3+Rvg9OyHH/b8=
+	t=1706249590; cv=none; b=NgghGuluT05CvHBwOebUL60PgEzdX1y/rh1lZOSGh69XWjeNvyUKi3Yu3nQ2drQSgFfWT1Beqkmfw34nxIzAMMmXi1FqgWW7kS5IbfJgzUBTRKkJDhppCzaj7PWozw9MTyOb5tudphtz/QDYm+Nc2qe46A2agOFAoTdOYD7h+VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706248728; c=relaxed/simple;
-	bh=9L+GGz90Pc91pu0axVQOTlb+2Gj2Rd8uRYAPgahsf/0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Obk+AZK8aOJEOqGssQhoNjAaDyWs/zhX1NDD9+qqatjD4eQSKm3S7Ro+4faz5RXmM9WvH5WXNwmSqyM9qSgzGIJfJoNX0zGNDmzgaQMj5Rsem1nfJaBWg1hZoL6FrwcGcovFtfPT6nVi+cn6nZB3GNVTkTX6trlL7fZAs4/4g3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rTFEd-006Ct5-R0; Fri, 26 Jan 2024 13:58:40 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 13:58:52 +0800
-Date: Fri, 26 Jan 2024 13:58:52 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Joachim Vandersmissen <git@jvdsn.com>
-Cc: linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: rsa - restrict plaintext/ciphertext values more
- in FIPS mode
-Message-ID: <ZbNKHGDiGOyIB5+S@gondor.apana.org.au>
-References: <20240121194901.344206-1-git@jvdsn.com>
+	s=arc-20240116; t=1706249590; c=relaxed/simple;
+	bh=pXO9bmd7s3XRMWB3J0KjhHGGtIDYTGw3RaJ8EEuMvKg=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ED8xAtYO98eB78kzEQKC1FWwwdQQ3XQhrN63n14Fu7QbOhMwgsoPbc0Q9osozAHZ47fLTxf+s1UNxla6NqGZZKOoV1ff06LgHi9y0gFuLu2EH+Lxepl5UTysHnsGpxxpF45lAaFUfNql83L62gmCEx9khKbmVPutDrighQbEySI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com; spf=pass smtp.mailfrom=jvdsn.com; dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b=7dZap3Ml; arc=none smtp.client-ip=129.153.194.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jvdsn.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jvdsn.com; s=mail;
+	t=1706249582; bh=pXO9bmd7s3XRMWB3J0KjhHGGtIDYTGw3RaJ8EEuMvKg=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To;
+	b=7dZap3MlqLJTqXYNExjKJzQDrgs3JUeR1exAQtXp7feapH6OJD2syZDg9XqYAe2ni
+	 4PROaRZAotppufnAKrbhWmERcMgYA+Z4n0vSyooTd6vPJnzGQrAy2xTNcFUf0dYt0H
+	 iCEPeb4+Ve0MfroyeI1RiPYw5OFjSBdlQy8dH3vxI/2YC17PwTxwjwHCOW8EoBPRjj
+	 etuecqw1xi/c3KWLBtA6dHuJ27w8g/EPH9b883V/KskbRYwDeyKom6HuZWw01AMYBI
+	 m9qAG5DTAzhCW8jbpGtv05wCBn7tN7tQZMKBQwdDZkHS9nLaf2w5eoVXqFMFwdCXPr
+	 D7aJsmW8ySL1Q==
+Message-ID: <b2dc028f-54e5-4992-8f8b-32cbfd072f73@jvdsn.com>
+Date: Fri, 26 Jan 2024 00:13:00 -0600
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121194901.344206-1-git@jvdsn.com>
+From: Joachim Vandersmissen <git@jvdsn.com>
+Subject: Re: [PATCH] crypto: rsa - restrict plaintext/ciphertext values more
+ in FIPS mode
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-crypto@vger.kernel.org
+References: <20240121194901.344206-1-git@jvdsn.com>
+ <ZbNKHGDiGOyIB5+S@gondor.apana.org.au>
+Content-Language: en-US
+In-Reply-To: <ZbNKHGDiGOyIB5+S@gondor.apana.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 21, 2024 at 01:49:00PM -0600, Joachim Vandersmissen wrote:
+Hi Herbert,
+
+On 1/25/24 23:58, Herbert Xu wrote:
+> On Sun, Jan 21, 2024 at 01:49:00PM -0600, Joachim Vandersmissen wrote:
+>>   static int _rsa_enc(const struct rsa_mpi_key *key, MPI c, MPI m)
+>>   {
+>> +	/* For FIPS, SP 800-56Br2, Section 7.1.1 requires 1 < m < n - 1 */
+>> +	if (fips_enabled && rsa_check_payload_fips(m, key->n))
+>> +		return -EINVAL;
+>> +
+>>   	/* (1) Validate 0 <= m < n */
+>>   	if (mpi_cmp_ui(m, 0) < 0 || mpi_cmp(m, key->n) >= 0)
+>>   		return -EINVAL;
+> I think this check makes sense in general, so why not simply
+> replace the second check above with the new check?
+
+Yes, mathematically speaking the values 1 and n - 1 aren't suitable for 
+RSA (they will always be fixed points). I simply didn't want to 
+introduce a breaking change. If you think a breaking change is 
+acceptable, I can update the patch to replace the RFC3447 check with the 
+stricter check.
+
 >
->  static int _rsa_enc(const struct rsa_mpi_key *key, MPI c, MPI m)
->  {
-> +	/* For FIPS, SP 800-56Br2, Section 7.1.1 requires 1 < m < n - 1 */
-> +	if (fips_enabled && rsa_check_payload_fips(m, key->n))
-> +		return -EINVAL;
-> +
->  	/* (1) Validate 0 <= m < n */
->  	if (mpi_cmp_ui(m, 0) < 0 || mpi_cmp(m, key->n) >= 0)
->  		return -EINVAL;
-
-I think this check makes sense in general, so why not simply
-replace the second check above with the new check?
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> Thanks,
 
