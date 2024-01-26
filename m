@@ -1,52 +1,46 @@
-Return-Path: <linux-crypto+bounces-1639-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1640-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F1383D3FB
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 06:38:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A45783D416
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 06:58:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BC9D1C22247
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 05:37:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E868E1F256C4
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jan 2024 05:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84EEABA57;
-	Fri, 26 Jan 2024 05:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92780BE7D;
+	Fri, 26 Jan 2024 05:58:48 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FE8BA33;
-	Fri, 26 Jan 2024 05:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0518CBE4E
+	for <linux-crypto@vger.kernel.org>; Fri, 26 Jan 2024 05:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706247475; cv=none; b=iU1Mh5OnUw2YADF6+1ER8fKhSQK13V3XBFQElddn8zN4gFK2zejq+YVT5F/QwOrlhLqsSFOMjhhdO9WhwprqtV+azw6eI9g8a09p/P6Ti0SSX5CoFtl5+Dw+UJ5+JeB/Q7PIbYt77obPcjLWScylpSSeqSQ0I5CBLLigMs2NDIw=
+	t=1706248728; cv=none; b=Jb0Nv/rXzS+7RJRJ5q8nUk8Ds8P++PsczCDMyIF4uYdWrWZiG+vd2lvGkgn/LIDARl0V+t0l4N3yE2na7FN2iKcMPdgsT9zzTJeHeDk8n11G71vtHLRBJpLyWn/WI9NWhOZRW1Doji1j7NXb+ty0zF2u3dvpzU3+Rvg9OyHH/b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706247475; c=relaxed/simple;
-	bh=S0K5VFn4XkEj6LucTmHHkt4xJ4B4YZkO2Nf6C4KQQ8s=;
+	s=arc-20240116; t=1706248728; c=relaxed/simple;
+	bh=9L+GGz90Pc91pu0axVQOTlb+2Gj2Rd8uRYAPgahsf/0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aKhyTrOWaG6tJvfXKGYKbDId2ZaypOMbu27Bq3cRDOMMrbhmFnTZtgyk22bUe5xTEsoQm3OGoFfuv+/8Uat0Y1lYPZ/bd/qbtyNm74abL558FgZne2CSz7e2VcdmuC7bUIKbGuwJEsBLdrii3DvRHi1hpPV35tMIUN1wXan+O9w=
+	 Content-Type:Content-Disposition:In-Reply-To; b=Obk+AZK8aOJEOqGssQhoNjAaDyWs/zhX1NDD9+qqatjD4eQSKm3S7Ro+4faz5RXmM9WvH5WXNwmSqyM9qSgzGIJfJoNX0zGNDmzgaQMj5Rsem1nfJaBWg1hZoL6FrwcGcovFtfPT6nVi+cn6nZB3GNVTkTX6trlL7fZAs4/4g3M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rTEtv-006Chw-FO; Fri, 26 Jan 2024 13:37:16 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 13:37:28 +0800
-Date: Fri, 26 Jan 2024 13:37:28 +0800
+	id 1rTFEd-006Ct5-R0; Fri, 26 Jan 2024 13:58:40 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Jan 2024 13:58:52 +0800
+Date: Fri, 26 Jan 2024 13:58:52 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: David Howells <dhowells@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] X.509: Introduce scope-based x509_certificate allocation
-Message-ID: <ZbNFGC4q0Yy6RPNe@gondor.apana.org.au>
-References: <70ecd3904a70d2b92f8f1e04365a2b9ce66fac25.1705857475.git.lukas@wunner.de>
+To: Joachim Vandersmissen <git@jvdsn.com>
+Cc: linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] crypto: rsa - restrict plaintext/ciphertext values more
+ in FIPS mode
+Message-ID: <ZbNKHGDiGOyIB5+S@gondor.apana.org.au>
+References: <20240121194901.344206-1-git@jvdsn.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -55,18 +49,24 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <70ecd3904a70d2b92f8f1e04365a2b9ce66fac25.1705857475.git.lukas@wunner.de>
+In-Reply-To: <20240121194901.344206-1-git@jvdsn.com>
 
-On Sun, Jan 21, 2024 at 06:50:39PM +0100, Lukas Wunner wrote:
+On Sun, Jan 21, 2024 at 01:49:00PM -0600, Joachim Vandersmissen wrote:
 >
-> * x509_cert_parse() now checks that "cert" is not an ERR_PTR() before
->   calling x509_free_certificate() at end of scope.  The compiler doesn't
->   know that kzalloc() never returns an ERR_PTR().
+>  static int _rsa_enc(const struct rsa_mpi_key *key, MPI c, MPI m)
+>  {
+> +	/* For FIPS, SP 800-56Br2, Section 7.1.1 requires 1 < m < n - 1 */
+> +	if (fips_enabled && rsa_check_payload_fips(m, key->n))
+> +		return -EINVAL;
+> +
+>  	/* (1) Validate 0 <= m < n */
+>  	if (mpi_cmp_ui(m, 0) < 0 || mpi_cmp(m, key->n) >= 0)
+>  		return -EINVAL;
 
-How about moving the IS_ERR_OR_NULL check into x509_free_certificate
-itself so that you can always call it?
+I think this check makes sense in general, so why not simply
+replace the second check above with the new check?
 
-Cheers,
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
