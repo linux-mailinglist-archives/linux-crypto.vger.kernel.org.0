@@ -1,183 +1,119 @@
-Return-Path: <linux-crypto+bounces-1893-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1897-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE29984C7F8
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Feb 2024 10:52:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A980184CAE9
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Feb 2024 13:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEBAF1C23065
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Feb 2024 09:52:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66F8E283A36
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Feb 2024 12:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A4624B2A;
-	Wed,  7 Feb 2024 09:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEC276036;
+	Wed,  7 Feb 2024 12:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aXQ4sQOG"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B11823745;
-	Wed,  7 Feb 2024 09:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C9959B6F
+	for <linux-crypto@vger.kernel.org>; Wed,  7 Feb 2024 12:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299516; cv=none; b=Xq5ml4e+ujkTrJy7F89j2UJoGQrozKUBjBnoO5yi3siocf8tQZwaoBwFn7M6kY3jFZ02E3LtLCoDHWCbHFkUwT3Zj6R8ES4wS8VSiNuUXaVr5S1+wvXB6pMdWBAlCvpUC9DmvnHLH5xr+rQTpmOa64NmoPZI/GOR8DZmGs8Xxuo=
+	t=1707310319; cv=none; b=WYSbfRx6qULgSZPxAO4tjR4X63HNB/oYPZ2OX9bGvxkCKfNnFet7FyztHFWLVX9mR/LGWEAbh8VsQD0ZNTid4KC1OoOAJ+FBtkPGoPWX9TNEnVVXDqqZ8ScfBA7194G6Bn8Dz39VgogYnuwbc24LSIzxLXjXcRoKLTjN7u+93sE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299516; c=relaxed/simple;
-	bh=4kcjacRz2KskItIX69UOdtQkTulwWY4O5zrOTTU3cro=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XIbNu9FIDCxC+8iZuZmXUoBvVhIH3qszmOHHsSGXTm2pdPl8Y6xpcWBlgrewUH1q5y/VY+tR48lgFlWloKfEUygO6Yi+FCzKAvYyzsru9zzNETLlNEOu+69cEqBFwiVhmhqRumPjz7mQROlzE8wNR6htDO/5mMpnVJr09cG/D20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TVFhh1zDDz1gydf;
-	Wed,  7 Feb 2024 17:49:56 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (unknown [7.193.23.164])
-	by mail.maildlp.com (Postfix) with ESMTPS id A15331402E1;
-	Wed,  7 Feb 2024 17:51:52 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 17:51:52 +0800
-From: Weili Qian <qianweili@huawei.com>
-To: <herbert@gondor.apana.org.au>
-CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<liulongfang@huawei.com>
-Subject: [PATCH v2 3/3] crypto: hisilicon/qm - change function type to void
-Date: Wed, 7 Feb 2024 17:51:01 +0800
-Message-ID: <20240207095101.37280-4-qianweili@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240207095101.37280-1-qianweili@huawei.com>
-References: <20240207095101.37280-1-qianweili@huawei.com>
+	s=arc-20240116; t=1707310319; c=relaxed/simple;
+	bh=FNXI84mmzRVwDhPJEp3EvSeXVASjyT+spfWA2/rlLn0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=WeD30zILOUbUHDgRjFOyplu7kTCgCPeT8nM/WYuaiQ+EGG736MbOrBCrUBYbQhmwdW+Z0PjUKkmCswZyKWlX4ll7IuPrlTUahqCBkY7BmwngG1nXfMhxa0Rf0/mLmaGBdzm4c+2GqL3q4tic7nFvlRcOb+GvZClmWFxoXNRSvPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aXQ4sQOG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707310316;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2k34FDeRLtzwVnv2etwwcbzwTkIKZsSi/l8+498T6LI=;
+	b=aXQ4sQOGcAvbeOoRuRNa2yj5Ug9KIr5HQPhBWbrdu7FFwb51q20kHOzBvL8owgnzeu9oVj
+	WO9jTolSbHEBljTLYLd0dTiytsAWH0j+My1t1m8m2TqRYCn0gauR/IZS+L/R/gVQbdoMlp
+	Tz9uOoEfOSpmk9CbXejHbIMnkc9wf0A=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-SlgGrPIWNGGtBVhFN0hqWg-1; Wed, 07 Feb 2024 07:51:52 -0500
+X-MC-Unique: SlgGrPIWNGGtBVhFN0hqWg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 691091064DA4;
+	Wed,  7 Feb 2024 12:51:52 +0000 (UTC)
+Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1DF73C1690E;
+	Wed,  7 Feb 2024 12:51:52 +0000 (UTC)
+Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
+	id 0030C30C1B8F; Wed,  7 Feb 2024 12:51:51 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id F15B13FFC5;
+	Wed,  7 Feb 2024 13:51:51 +0100 (CET)
+Date: Wed, 7 Feb 2024 13:51:51 +0100 (CET)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: Eric Biggers <ebiggers@kernel.org>
+cc: Herbert Xu <herbert@gondor.apana.org.au>, 
+    "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org, 
+    dm-devel@lists.linux.dev
+Subject: Re: A question about modifying the buffer under authenticated
+ encryption
+In-Reply-To: <20240207004723.GA35324@sol.localdomain>
+Message-ID: <1a4713fc-62c7-4a8f-e28a-14fc5d04977@redhat.com>
+References: <f22dae2c-9cac-a63-fff-3b0b7305be6@redhat.com> <20240207004723.GA35324@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600009.china.huawei.com (7.193.23.164)
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-The function qm_stop_qp_nolock() always return zero, so
-function type is changed to void.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 38 ++++++++++-------------------------
- include/linux/hisi_acc_qm.h   |  2 +-
- 2 files changed, 12 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 41dff28326f1..92f0a1d9b4a6 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -2124,7 +2124,7 @@ static int qm_drain_qp(struct hisi_qp *qp)
- 	return ret;
- }
- 
--static int qm_stop_qp_nolock(struct hisi_qp *qp)
-+static void qm_stop_qp_nolock(struct hisi_qp *qp)
- {
- 	struct hisi_qm *qm = qp->qm;
- 	struct device *dev = &qm->pdev->dev;
-@@ -2138,7 +2138,7 @@ static int qm_stop_qp_nolock(struct hisi_qp *qp)
- 	 */
- 	if (atomic_read(&qp->qp_status.flags) != QP_START) {
- 		qp->is_resetting = false;
--		return 0;
-+		return;
- 	}
- 
- 	atomic_set(&qp->qp_status.flags, QP_STOP);
-@@ -2155,25 +2155,19 @@ static int qm_stop_qp_nolock(struct hisi_qp *qp)
- 		qp_stop_fail_cb(qp);
- 
- 	dev_dbg(dev, "stop queue %u!", qp->qp_id);
--
--	return 0;
- }
- 
- /**
-  * hisi_qm_stop_qp() - Stop a qp in qm.
-  * @qp: The qp we want to stop.
-  *
-- * This function is reverse of hisi_qm_start_qp. Return 0 if successful.
-+ * This function is reverse of hisi_qm_start_qp.
-  */
--int hisi_qm_stop_qp(struct hisi_qp *qp)
-+void hisi_qm_stop_qp(struct hisi_qp *qp)
- {
--	int ret;
--
- 	down_write(&qp->qm->qps_lock);
--	ret = qm_stop_qp_nolock(qp);
-+	qm_stop_qp_nolock(qp);
- 	up_write(&qp->qm->qps_lock);
--
--	return ret;
- }
- EXPORT_SYMBOL_GPL(hisi_qm_stop_qp);
- 
-@@ -3120,25 +3114,18 @@ static int qm_restart(struct hisi_qm *qm)
- }
- 
- /* Stop started qps in reset flow */
--static int qm_stop_started_qp(struct hisi_qm *qm)
-+static void qm_stop_started_qp(struct hisi_qm *qm)
- {
--	struct device *dev = &qm->pdev->dev;
- 	struct hisi_qp *qp;
--	int i, ret;
-+	int i;
- 
- 	for (i = 0; i < qm->qp_num; i++) {
- 		qp = &qm->qp_array[i];
--		if (qp && atomic_read(&qp->qp_status.flags) == QP_START) {
-+		if (atomic_read(&qp->qp_status.flags) == QP_START) {
- 			qp->is_resetting = true;
--			ret = qm_stop_qp_nolock(qp);
--			if (ret < 0) {
--				dev_err(dev, "Failed to stop qp%d!\n", i);
--				return ret;
--			}
-+			qm_stop_qp_nolock(qp);
- 		}
- 	}
--
--	return 0;
- }
- 
- /**
-@@ -3201,11 +3188,8 @@ int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r)
- 			}
- 		}
- 
--		ret = qm_stop_started_qp(qm);
--		if (ret < 0) {
--			dev_err(dev, "Failed to stop started qp!\n");
--			goto err_unlock;
--		}
-+		qm_stop_started_qp(qm);
-+
- 		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_RX_OFFSET);
- 	}
- 
-diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index 2d14742ad729..9d7754ad5e9b 100644
---- a/include/linux/hisi_acc_qm.h
-+++ b/include/linux/hisi_acc_qm.h
-@@ -531,7 +531,7 @@ void hisi_qm_uninit(struct hisi_qm *qm);
- int hisi_qm_start(struct hisi_qm *qm);
- int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r);
- int hisi_qm_start_qp(struct hisi_qp *qp, unsigned long arg);
--int hisi_qm_stop_qp(struct hisi_qp *qp);
-+void hisi_qm_stop_qp(struct hisi_qp *qp);
- int hisi_qp_send(struct hisi_qp *qp, const void *msg);
- void hisi_qm_debug_init(struct hisi_qm *qm);
- void hisi_qm_debug_regs_clear(struct hisi_qm *qm);
--- 
-2.33.0
+On Tue, 6 Feb 2024, Eric Biggers wrote:
+
+> On Tue, Feb 06, 2024 at 10:46:59PM +0100, Mikulas Patocka wrote:
+> > Hi
+> > 
+> > I'm trying to fix some problems in dm-crypt that it may report 
+> > authentication failures when the user reads data with O_DIRECT and 
+> > modifies the read buffer while it is being read.
+> > 
+> > I'd like to ask you:
+> > 
+> > 1. If the authenticated encryption encrypts a message, reading from 
+> >    buffer1 and writing to buffer2 - and buffer1 changes while reading from 
+> >    it - is it possible that it generates invalid authentication tag?
+> > 
+> > 2. If the authenticated encryption decrypts a message, reading from 
+> >    buffer1 and writing to buffer2 - and buffer2 changes while writing to 
+> >    it - is is possible that it reports authentication tag mismatch?
+> > 
+> 
+> Yes, both scenarios are possible.  But it depends on the AEAD algorithm and how
+> it happens to be implemented, and on whether the data overlaps or not.
+> 
+> This is very much a "don't do that" sort of thing.
+> 
+> - Eric
+
+I see. So I will copy the data to a kernel buffer before encryption or 
+decryption.
+
+I assume that authenticated encryption or decryption using the same buffer 
+as a source and as a destination should be ok. Right?
+
+Mikulas
 
 
