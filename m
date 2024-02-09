@@ -1,294 +1,224 @@
-Return-Path: <linux-crypto+bounces-1928-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-1931-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E4DC84EB9F
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Feb 2024 23:20:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9405284EEA7
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Feb 2024 02:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 230D428FEB4
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Feb 2024 22:20:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 995661C2437C
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 Feb 2024 01:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4635D524B1;
-	Thu,  8 Feb 2024 22:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAABEBB;
+	Fri,  9 Feb 2024 01:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HHPFzkRp"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vc2ZM0uO"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBB45025C;
-	Thu,  8 Feb 2024 22:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707430754; cv=none; b=o7zC3QG2jEoZNxU5O7TBiI4rMJD9n0XspIRzFPQZObP4aEgWoVRb7BBTHunVm3dWpgSQio10+Fi7ySmo9OSi2lemiHNlhSnerwZMaaGRiBmby0Ea8FuAkkxVr1ULbf03DN4J8Qdx3/AkVrT0EzOCXV7fgZ46QjHh5uzfk7GO3TE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707430754; c=relaxed/simple;
-	bh=F/mAtaeJcEMawKUIa5T5CchnpYrElfVMXKvGX6fEl/g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E8dXcu7A2WCG6jSKjf1kHzyJa9GMT0UHVxh2SBvNUQ8fYsqqP6kpHPnxFsxuOo5LeEBrdvKBKOaqQRrLL45qAhmheLWl8MLnYu5xolOoLfwC7FGKLTwSl3ruAJDAfk6dldvQ0Tsq3mMFA+fVkxS7PDtLq6DPNjUrSM7zyKwdqDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HHPFzkRp; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 418KgSBS029872;
-	Thu, 8 Feb 2024 22:19:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=MNvh8Nc+gNbNK94roYiPNmsNctehYNw70lTmKlLbE64=;
- b=HHPFzkRpns5gdDEHVfz5re7lfsMYbiQIL7s4TjGf6qxvQ91cbt3Als+8DJ0SaHFhWHnU
- OgTVaKgyUp4aD4Y9uErqA3xHBL16GSl31zpSOh6V3ttXAFHltZhl6mY5jT2IucvesHUj
- ThbUPb/VognEORIwAiX57QUVANINz8bVHUoAz4D1dpHFRoI0prC6qWpZno+RNAq5kKrc
- 3tZuwYToIcH8UrjWYhnFwCm7H2MGN/G+ngZBmNUkBiIyF7Jauzj3kH9a931XnbNLNp3Q
- FtRxaWtncr0+9l9h8VSDZxF+NDn+rXEpzo1pU+24EIbZPC0apfkBgQOT1n1oJY/RoalC Rw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w567j1vnu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 22:19:09 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 418LvSFn016149;
-	Thu, 8 Feb 2024 22:19:08 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w22h2f2ms-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 22:19:08 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 418MJ7XU43647406
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 8 Feb 2024 22:19:08 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D55425805A;
-	Thu,  8 Feb 2024 22:19:07 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 38EC35803F;
-	Thu,  8 Feb 2024 22:19:07 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  8 Feb 2024 22:19:07 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.ibm.com>
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH 14/14] crypto: ecdh - Add support for NIST P521 and add test case
-Date: Thu,  8 Feb 2024 17:18:40 -0500
-Message-ID: <20240208221840.3665874-15-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240208221840.3665874-1-stefanb@linux.ibm.com>
-References: <20240208221840.3665874-1-stefanb@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C7B139B;
+	Fri,  9 Feb 2024 01:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707443557; cv=fail; b=Z1iAM0Hx/F1GzoAZIKXREU5oXRqFwb0JVopvKxDqaVCU0AN27aUa0QN7PpHlSlTbWKzw1a8JAf9RIDBH71rwr4yqEJBOpgeIfN9Eu7Rno+hQHkqM8qkEYdTcBItv1I+OPqKs8PxAt17cK9hw2bxc/Z5xlbZ5kRNxf/U8heCnhUk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707443557; c=relaxed/simple;
+	bh=rr7ch+BB5rbmLRxe2vw8svA9wa6jHBJegCOaz9teuxY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZYcU6sj6Puu2+ULUHD7B28QSEgKZ5mShnnsOzuNUJqaQwIOWPowyi1Z5GZjJ0SSD5RQbQeTRtMpYDoM1n58jDu21XTT47Jhxo2ZlPghhBARaHGV50AhYk2MAlwrY6mhQfxEy4sNgU/IHpbZTStCouY4nwROkpGiaTct1F+4Nyi4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=vc2ZM0uO; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eSfRpxSib2XslGPPtpqUwtzvDRlIM17eRLW1pr/60HQwdcFaNADaMy+Om4KxMyN/GVsj1oLnr1g5itudAKFS5z87VaKDWJ/Gg0qWwolq5gQSuZHh7IZTjjmEy0AHbObqWytqM7rpTnH+IwMvbhuofS8eU65KNDBXGvjrpoT8MjvK6gDgKkoN0nu88Nsv+7Ta72NjU1oK9HIHfzElxca4wXQw7r8RFbJhF42ljpH4XUiENGUYi2vFkOSPVfvZUQUyk0pf/C7vhaQPNnSc6lML1/BcZPF2GDvrXg4RAz16ZiBDlPFKoS4YscmDcoyMl1sBogAPqspSIKcLTO3KwO0afw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UxuYHw6h45Qj/UCXjWNQNek+lV/wpatv3BONnJE2QpA=;
+ b=lxABmzCcwSN58TldKCeeWGXMfSLIfi3Hg9RhCACxQ6Z6/+GoH7GBLhelPjpM/ARfrjweGahJGYh2DSb9gya/DkvmJNNaRQlOiV4/AZKqkqBS7HVnQ1eUP3FAcBSwyUEA8JWKTh9RsUiYcy6fb7Eky2OUWzUMOBoPPlU3HzaUD/R20u0lmRDV3p10jxfl8sPW6s2TmeOs21qLT2okkITbEYDRsWpYtyhaDv/A+bMhx8cdi18LXG2noQhDe8gb4EHc0O7M04D/vqE248TCKCVvSFd3sVbnbZrr8MB80lgzuS0PpbS1+1mqKginvRynM0rvuvzhaF4Vc+Jk0o9wzAhbsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UxuYHw6h45Qj/UCXjWNQNek+lV/wpatv3BONnJE2QpA=;
+ b=vc2ZM0uOXKRf0IUgJkuA4lxG7+JxTPkIY3lSL6/POxyRSw+dl0O+4Y/sYiknXjRHU5QY6Qgc9ZFCoXFnunjVMphCRy2YxIfPUq773L/5zVYUnroUAYZ0C7EnDaHZfVZnSm/HTKZwgg+wA26i6KAYxj7JVK4QGs4toiyquRqWuJc=
+Received: from MN2PR04CA0011.namprd04.prod.outlook.com (2603:10b6:208:d4::24)
+ by CY8PR12MB7266.namprd12.prod.outlook.com (2603:10b6:930:56::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Fri, 9 Feb
+ 2024 01:52:31 +0000
+Received: from BL6PEPF0001AB52.namprd02.prod.outlook.com
+ (2603:10b6:208:d4:cafe::65) by MN2PR04CA0011.outlook.office365.com
+ (2603:10b6:208:d4::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36 via Frontend
+ Transport; Fri, 9 Feb 2024 01:52:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB52.mail.protection.outlook.com (10.167.241.4) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7181.14 via Frontend Transport; Fri, 9 Feb 2024 01:52:31 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 8 Feb
+ 2024 19:52:30 -0600
+Date: Thu, 8 Feb 2024 19:52:05 -0600
+From: Michael Roth <michael.roth@amd.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+CC: Sean Christopherson <seanjc@google.com>, <kvm@vger.kernel.org>,
+	<linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
+	<ardb@kernel.org>, <vkuznets@redhat.com>, <jmattson@google.com>,
+	<luto@kernel.org>, <dave.hansen@linux.intel.com>, <slp@redhat.com>,
+	<pgonda@google.com>, <peterz@infradead.org>,
+	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
+	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
+	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
+	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
+	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v11 18/35] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
+Message-ID: <20240209015205.xv66udh6hqz7a6t7@amd.com>
+References: <20231230172351.574091-1-michael.roth@amd.com>
+ <20231230172351.574091-19-michael.roth@amd.com>
+ <ZZ67oJwzAsSvui5U@google.com>
+ <20240116041457.wver7acnwthjaflr@amd.com>
+ <Zb1yv67h6gkYqqv9@google.com>
+ <CABgObfa_PbxXdj9v7=2ZXfqQ_tJgdQTrO9NHKOQ691TSKQDY2A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: giEBpFPa0OcELL3wnxCJUgFOOMXyqxFS
-X-Proofpoint-ORIG-GUID: giEBpFPa0OcELL3wnxCJUgFOOMXyqxFS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-08_11,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 adultscore=0 spamscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402080124
+In-Reply-To: <CABgObfa_PbxXdj9v7=2ZXfqQ_tJgdQTrO9NHKOQ691TSKQDY2A@mail.gmail.com>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB52:EE_|CY8PR12MB7266:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0bc132a9-4cf1-4242-be94-08dc2911c720
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Rp4KlCA6h9GSEFM4xw3CHc36Ockr2TWiLUpM6af5/38SK97bGJwtGNqAoZALe0x341TrKAOcBb1u6jCN6ioWufngeVoQBMlfUbhSIyWMT8vqllrTcu2sf21j6J8wZLJtbXfVAwEDZP+2XkXz/nz7N5f/cM1CcHdJUqKXL8f6tvM/wY2eojtp3UcFunjJYlFR1csxA1wla1uBetex583xlfRsS2194VoL5R6m32EFXPavzWRiv2hpj0UEngTlucpa2VavepWhWL3JFMNgpAtV3RpIn49VckeoPo980OsvUtHbc41fiDxZrDRauTh3hexDTT1H31DC59sDMWGd5+pW1luLJQyNQ1ZHCj7ny0IWGpT6rdivMO3hh4XeqdaXAwIboUdFExgAKrxyOoDiQRI10xqursc8jhsiZJyRnzXlBYGXm8tklfHYrmG7P4ZodKkB/JflzygJVBFgR2iNakxXZ/tgVAuqgCn+VtYbTmMJibNShzHEp8IhAKS+/WFAk882clBD+SqoWQsVvcWc41W9sQNbXGPxPpzNP+0b4vo5BGwfhzP7xvFfzUVFm4qfX5TRZRlngl8+Pw0kt56E5W+8DXWwW+oA+ez+1qEDCVZZ9HY=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(82310400011)(64100799003)(186009)(1800799012)(451199024)(40470700004)(36840700001)(46966006)(2616005)(26005)(426003)(336012)(16526019)(83380400001)(1076003)(478600001)(53546011)(86362001)(70586007)(316002)(6916009)(8676002)(54906003)(4326008)(70206006)(8936002)(81166007)(6666004)(356005)(82740400003)(44832011)(36756003)(41300700001)(2906002)(7406005)(7416002)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 01:52:31.0981
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bc132a9-4cf1-4242-be94-08dc2911c720
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB52.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7266
 
-Implement ecdh support with NIST P521 and add a test case from RFC5903.
+On Wed, Feb 07, 2024 at 12:43:02AM +0100, Paolo Bonzini wrote:
+> On Fri, Feb 2, 2024 at 11:55 PM Sean Christopherson <seanjc@google.com> wrote:
+> > > > > +        struct kvm_sev_snp_launch_update {
+> > > > > +                __u64 start_gfn;        /* Guest page number to start from. */
+> > > > > +                __u64 uaddr;            /* userspace address need to be encrypted */
+> > > >
+> > > > Huh?  Why is KVM taking a userspace address?  IIUC, the address unconditionally
+> > > > gets translated into a gfn, so why not pass a gfn?
+> > > >
+> > > > And speaking of gfns, AFAICT start_gfn is never used.
+> > >
+> > > I think having both the uaddr and start_gfn parameters makes sense. I
+> > > think it's only awkward because how I'm using the memslot to translate
+> > > the uaddr to a GFN in the current implementation,
+> >
+> > Yes.
+> >
+> > > > Oof, reading more of the code, this *requires* an effective in-place copy-and-convert
+> > > > of guest memory.
+> > >
+> > > So that's how it's done here, KVM_SNP_LAUNCH_UPDATE copies the pages into
+> > > gmem, then passes those pages on to firmware for encryption. Then the
+> > > VMM is expected to mark the GFN range as private via
+> > > KVM_SET_MEMORY_ATTRIBUTES, since the VMM understands what constitutes
+> > > initial private/encrypted payload. I should document that better in
+> > > KVM_SNP_LAUNCH_UPDATE docs however.
+> >
+> > That's fine.  As above, my complaints are that the unencrypted source *must* be
+> > covered by a memslot.  That's beyond ugly.
+> 
+> Yes, if there's one field that has to go it's uaddr, and then you'll
+> have a non-in-place encrypt (any copy performed by KVM it is hidden).
+> 
+> > > > > +         kvaddr = pfn_to_kaddr(pfns[i]);
+> > > > > +         if (!virt_addr_valid(kvaddr)) {
+> > > >
+> > > > I really, really don't like that this assume guest_memfd is backed by struct page.
+> > >
+> > > There are similar enforcements in the SEV/SEV-ES code. There was some
+> > > initial discussion about relaxing this for SNP so we could support
+> > > things like /dev/mem-mapped guest memory, but then guest_memfd came
+> > > along and made that to be an unlikely use-case in the near-term given
+> > > that it relies on alloc_pages() currently and explicitly guards against
+> > > mmap()'ing pages in userspace.
+> > >
+> > > I think it makes to keep the current tightened restrictions in-place
+> > > until such a use-case comes along, since otherwise we are relaxing a
+> > > bunch of currently-useful sanity checks that span all throughout the code
+> 
+> What sanity is being checked for, in other words why are they useful?
+> If all you get for breaking the promise is a KVM_BUG_ON, for example,
+> that's par for the course. If instead you get an oops, then we have a
+> problem.
+> 
+> I may be a bit less draconian than Sean, but the assumptions need to
+> be documented and explained because they _are_ going to go away.
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- crypto/ecdh.c                 | 34 +++++++++++++++
- crypto/testmgr.c              |  7 ++++
- crypto/testmgr.h              | 79 +++++++++++++++++++++++++++++++++++
- include/crypto/internal/ecc.h |  1 +
- 4 files changed, 121 insertions(+)
+Maybe in this case sanity-check isn't the right word, but for instance
+the occurance Sean objected to:
 
-diff --git a/crypto/ecdh.c b/crypto/ecdh.c
-index 9f16dbef94d5..ed6c1eff83ce 100644
---- a/crypto/ecdh.c
-+++ b/crypto/ecdh.c
-@@ -207,6 +207,32 @@ static struct kpp_alg ecdh_nist_p384 = {
- 	},
- };
- 
-+static int ecdh_nist_p521_init_tfm(struct crypto_kpp *tfm)
-+{
-+	struct ecdh_ctx *ctx = ecdh_get_ctx(tfm);
-+
-+	ctx->curve_id = ECC_CURVE_NIST_P521;
-+	ctx->ndigits = ECC_CURVE_NIST_P521_DIGITS;
-+	ctx->nbytes = DIV_ROUND_UP(521, 8);
-+	ctx->msd_mask = 0x1ff;
-+
-+	return 0;
-+}
-+static struct kpp_alg ecdh_nist_p521 = {
-+	.set_secret = ecdh_set_secret,
-+	.generate_public_key = ecdh_compute_value,
-+	.compute_shared_secret = ecdh_compute_value,
-+	.max_size = ecdh_max_size,
-+	.init = ecdh_nist_p521_init_tfm,
-+	.base = {
-+		.cra_name = "ecdh-nist-p521",
-+		.cra_driver_name = "ecdh-nist-p521-generic",
-+		.cra_priority = 100,
-+		.cra_module = THIS_MODULE,
-+		.cra_ctxsize = sizeof(struct ecdh_ctx),
-+	},
-+};
-+
- static bool ecdh_nist_p192_registered;
- 
- static int __init ecdh_init(void)
-@@ -225,8 +251,15 @@ static int __init ecdh_init(void)
- 	if (ret)
- 		goto nist_p384_error;
- 
-+	ret = crypto_register_kpp(&ecdh_nist_p521);
-+	if (ret)
-+		goto nist_p521_error;
-+
- 	return 0;
- 
-+nist_p521_error:
-+	crypto_unregister_kpp(&ecdh_nist_p384);
-+
- nist_p384_error:
- 	crypto_unregister_kpp(&ecdh_nist_p256);
- 
-@@ -242,6 +275,7 @@ static void __exit ecdh_exit(void)
- 		crypto_unregister_kpp(&ecdh_nist_p192);
- 	crypto_unregister_kpp(&ecdh_nist_p256);
- 	crypto_unregister_kpp(&ecdh_nist_p384);
-+	crypto_unregister_kpp(&ecdh_nist_p521);
- }
- 
- subsys_initcall(ecdh_init);
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index a017b4ad119b..d1aa0b62f12d 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -5077,6 +5077,13 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		.suite = {
- 			.kpp = __VECS(ecdh_p384_tv_template)
- 		}
-+	}, {
-+		.alg = "ecdh-nist-p521",
-+		.test = alg_test_kpp,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.kpp = __VECS(ecdh_p521_tv_template)
-+		}
- 	}, {
- 		.alg = "ecdsa-nist-p192",
- 		.test = alg_test_akcipher,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 9bde04be8df9..dc9a2b30b5fd 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -4468,6 +4468,85 @@ static const struct kpp_testvec ecdh_p384_tv_template[] = {
- 	}
- };
- 
-+/*
-+ * NIST P521 test vectors from RFC5903
-+ */
-+static const struct kpp_testvec ecdh_p521_tv_template[] = {
-+	{
-+	.secret =
-+#ifdef __LITTLE_ENDIAN
-+	"\x02\x00" /* type */
-+	"\x48\x00" /* len */
-+	"\x42\x00" /* key_size */
-+#else
-+	"\x00\x02" /* type */
-+	"\x00\x48" /* len */
-+	"\x00\x42" /* key_size */
-+#endif
-+	"\x00\x37\xAD\xE9\x31\x9A\x89\xF4"
-+	"\xDA\xBD\xB3\xEF\x41\x1A\xAC\xCC"
-+	"\xA5\x12\x3C\x61\xAC\xAB\x57\xB5"
-+	"\x39\x3D\xCE\x47\x60\x81\x72\xA0"
-+	"\x95\xAA\x85\xA3\x0F\xE1\xC2\x95"
-+	"\x2C\x67\x71\xD9\x37\xBA\x97\x77"
-+	"\xF5\x95\x7B\x26\x39\xBA\xB0\x72"
-+	"\x46\x2F\x68\xC2\x7A\x57\x38\x2D"
-+	"\x4A\x52",
-+	.b_public =
-+	"\x00\xD0\xB3\x97\x5A\xC4\xB7\x99"
-+	"\xF5\xBE\xA1\x6D\x5E\x13\xE9\xAF"
-+	"\x97\x1D\x5E\x9B\x98\x4C\x9F\x39"
-+	"\x72\x8B\x5E\x57\x39\x73\x5A\x21"
-+	"\x9B\x97\xC3\x56\x43\x6A\xDC\x6E"
-+	"\x95\xBB\x03\x52\xF6\xBE\x64\xA6"
-+	"\xC2\x91\x2D\x4E\xF2\xD0\x43\x3C"
-+	"\xED\x2B\x61\x71\x64\x00\x12\xD9"
-+	"\x46\x0F"
-+	"\x01\x5C\x68\x22\x63\x83\x95\x6E"
-+	"\x3B\xD0\x66\xE7\x97\xB6\x23\xC2"
-+	"\x7C\xE0\xEA\xC2\xF5\x51\xA1\x0C"
-+	"\x2C\x72\x4D\x98\x52\x07\x7B\x87"
-+	"\x22\x0B\x65\x36\xC5\xC4\x08\xA1"
-+	"\xD2\xAE\xBB\x8E\x86\xD6\x78\xAE"
-+	"\x49\xCB\x57\x09\x1F\x47\x32\x29"
-+	"\x65\x79\xAB\x44\xFC\xD1\x7F\x0F"
-+	"\xC5\x6A",
-+	.expected_a_public =
-+	"\x00\x15\x41\x7E\x84\xDB\xF2\x8C"
-+	"\x0A\xD3\xC2\x78\x71\x33\x49\xDC"
-+	"\x7D\xF1\x53\xC8\x97\xA1\x89\x1B"
-+	"\xD9\x8B\xAB\x43\x57\xC9\xEC\xBE"
-+	"\xE1\xE3\xBF\x42\xE0\x0B\x8E\x38"
-+	"\x0A\xEA\xE5\x7C\x2D\x10\x75\x64"
-+	"\x94\x18\x85\x94\x2A\xF5\xA7\xF4"
-+	"\x60\x17\x23\xC4\x19\x5D\x17\x6C"
-+	"\xED\x3E"
-+	"\x01\x7C\xAE\x20\xB6\x64\x1D\x2E"
-+	"\xEB\x69\x57\x86\xD8\xC9\x46\x14"
-+	"\x62\x39\xD0\x99\xE1\x8E\x1D\x5A"
-+	"\x51\x4C\x73\x9D\x7C\xB4\xA1\x0A"
-+	"\xD8\xA7\x88\x01\x5A\xC4\x05\xD7"
-+	"\x79\x9D\xC7\x5E\x7B\x7D\x5B\x6C"
-+	"\xF2\x26\x1A\x6A\x7F\x15\x07\x43"
-+	"\x8B\xF0\x1B\xEB\x6C\xA3\x92\x6F"
-+	"\x95\x82",
-+	.expected_ss =
-+	"\x01\x14\x4C\x7D\x79\xAE\x69\x56"
-+	"\xBC\x8E\xDB\x8E\x7C\x78\x7C\x45"
-+	"\x21\xCB\x08\x6F\xA6\x44\x07\xF9"
-+	"\x78\x94\xE5\xE6\xB2\xD7\x9B\x04"
-+	"\xD1\x42\x7E\x73\xCA\x4B\xAA\x24"
-+	"\x0A\x34\x78\x68\x59\x81\x0C\x06"
-+	"\xB3\xC7\x15\xA3\xA8\xCC\x31\x51"
-+	"\xF2\xBE\xE4\x17\x99\x6D\x19\xF3"
-+	"\xDD\xEA",
-+	.secret_size = 72,
-+	.b_public_size = 132,
-+	.expected_a_public_size = 132,
-+	.expected_ss_size = 66
-+	}
-+};
-+
- /*
-  * MD4 test vectors from RFC1320
-  */
-diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.h
-index 29e899fcde8d..6e3e3eec0923 100644
---- a/include/crypto/internal/ecc.h
-+++ b/include/crypto/internal/ecc.h
-@@ -33,6 +33,7 @@
- #define ECC_CURVE_NIST_P192_DIGITS  3
- #define ECC_CURVE_NIST_P256_DIGITS  4
- #define ECC_CURVE_NIST_P384_DIGITS  6
-+#define ECC_CURVE_NIST_P521_DIGITS  9
- #define ECC_MAX_DIGITS              (576 / 64) /* due to NIST P521 */
- 
- #define ECC_DIGITS_TO_BYTES_SHIFT 3
--- 
-2.43.0
+  kvaddr = pfn_to_kaddr(pfns[i]);
+  if (!virt_addr_valid(kvaddr)) {
+    ...
+    ret = -EINVAL;
 
+where there are pfn_valid() checks underneath the covers that provide
+some assurance this is normal struct-page-backed/kernel-tracked memory
+that has a mapping in the directmap we can use here. Dropping that
+assumption means we need to create temporary mappings to access the PFN,
+which complicates the code for a potential use-case that doesn't yet
+exist. But if the maintainers are telling me this will change then I
+have no objection to making those changes :) That was just my thinking
+at the time.
+
+And yes, if we move more of this sort of functionality closer to gmem
+then those assumptions become reality and we can keep the code more
+closely in sync will how memory is actually allocated.
+
+I'll rework this to something closer to what Sean mentioned during the
+PUCK call: a gmem interface that can be called to handle populating
+initial gmem pages, and drop remaining any assumptions about
+struct-backed/directmapped in PFNs in the code that remains afterward.
+
+I'm hoping if we do move to a unified KVM API that a similar approach
+will work in that case too. It may be a bit tricky with how TDX does
+a lot of this through KVM MMU / SecureEPT hooks, this may complicate
+locking expectations and not necessarily fit nicely into the same flow
+as SNP, but we'll see how it goes.
+
+-Mike
 
