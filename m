@@ -1,110 +1,97 @@
-Return-Path: <linux-crypto+bounces-2122-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2124-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55279858192
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Feb 2024 16:42:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA29D858479
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Feb 2024 18:47:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 101BC28798F
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Feb 2024 15:42:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B17CB26432
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Feb 2024 17:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0FF1350CF;
-	Fri, 16 Feb 2024 15:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A6A13174B;
+	Fri, 16 Feb 2024 17:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n2VZHRx5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="URQ6Ph5o"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F4C134CC8
-	for <linux-crypto@vger.kernel.org>; Fri, 16 Feb 2024 15:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE53F132C1E
+	for <linux-crypto@vger.kernel.org>; Fri, 16 Feb 2024 17:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708097923; cv=none; b=lBnhFPviczKA1OYO5oaybI+OKEGia7AAQsQxtYpUtY+2mLgHOqEsPsrZqVkU+K15bIvymcbjcm9lWGsCNOHaetfk2kBqeAdnywvZ5Y4WbzEn2FP8f9jgLCOg61tms/ZGVTCCvWDDi69MatsGPf9gZ0WFCW4vjx7v/HEw6jJeDJs=
+	t=1708105534; cv=none; b=ZZ8fuZ7OBICsIlZyv4H69NvSPV7hkF3T9lo5UdaeKlsDhLAbBpiJOHe9QIuins+KylGiPvakxBOrlUwLDkp1hP0mnRbwkzI4Gg5nkmKdxf/btrX9K5vhYcmsygWpBYAeObOC/0D0UFxv0EMG1HcsbQjUuj7sSLR0E0N58hjfk30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708097923; c=relaxed/simple;
-	bh=1svJpBeoKPTG7RxSJ6pjNnVim87jOmiIf7DSmYutcrY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GCz6SkbHIrjO3/0f2yAeKL2/XC0MROy/eDffnd8s/wCo0Ee0plQsNk5HlwVyQCQdIWNVl2Gv/d3CTFNekeLYw0nVTwE9R+tfbtNGWLJfE2s4r9TO2e/8d+LSboE/Bl9n6ledsQ4WiKB22R4w6nnrEXioYenauiIjDUJwMuHZ18Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n2VZHRx5; arc=none smtp.client-ip=192.198.163.10
+	s=arc-20240116; t=1708105534; c=relaxed/simple;
+	bh=/l6K6+Jo45rbjIxVE64EnVNxZis/lqmX/+MFD5DAFTM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u8EvLSh3yYF/dh5+mHwWdTZTo1924YpZBF0/w5oNgNFG/B/2u6XpDdINWb1btyPp1UbKKLXuNtfvumfvUWeQ72tLlkozfM/yewy/Y+prxoamWZeCqC4uPvP8HWnwR1OysXkW8kyD62TBK+Kj0TnpPfOwgL64NFHK6VHXg+OQahw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=URQ6Ph5o; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708097921; x=1739633921;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1svJpBeoKPTG7RxSJ6pjNnVim87jOmiIf7DSmYutcrY=;
-  b=n2VZHRx5+cUhUZ6wyXnGXFcWjVJIBAzxY8GTjSuTwMshZoOhWzpswRaE
-   g8yi63tjFuGBCfMasFL8B10KpU2gXLAAayaX+qfSzVxEE82x++3fVNEHQ
-   xDbw6hWzcFUGoUXmYlC79SsyEoZ2EZb+zj9hLKydSTkQIhHHTguQnjJj4
-   T+MqFx7VZJZcFamP5cq7PATlvQYsFMwkh3FbH2P49mpdIgrCZv9FGnmQD
-   0ywJtcLEAevWRxEc5+h3lX07xLzFnsuyhwavo6Lsl23JOau5ej9vgfF2/
-   mM4Oj4HRu80yaTY2Ze6pDo8ttugojylmImngop5YgS/zPeBvT4lZwxy2h
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="13622791"
+  t=1708105534; x=1739641534;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/l6K6+Jo45rbjIxVE64EnVNxZis/lqmX/+MFD5DAFTM=;
+  b=URQ6Ph5o1YewAytBVFduaxVn48jYgnqagkxw66GGeRWjGFZXh+BQjNqm
+   YYIvEgH7SHGCjiDXKCEUr6BfCoXupdHSrkzws0y+Mcscj8kpiLsv7g3wr
+   1fQICqROIFAXWf4rStcT2Qes/W6EccBWQ3HLdYthpv1vgIiJjm9bw2Nsk
+   YkLLzh3ArGgTRvujV7kvySlV1ABrT15vXDkGDEDsm4FgCVawWO+nujy61
+   akP3Va1eUKcfGbunMMmm6e2Vfi0t2azZQAuDRM3gqx5i3WWisgpDMNy4D
+   1eZfXOcX3S4+rZAG7N7aBDbrnAyyetrCz6nInefSgA2o+c7pKxqP5qlfj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2097813"
 X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="13622791"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 07:38:40 -0800
+   d="scan'208";a="2097813"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 09:45:33 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="935861516"
 X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="935861516"
-Received: from silpixa00400295.ir.intel.com ([10.237.213.194])
-  by fmsmga001.fm.intel.com with ESMTP; 16 Feb 2024 07:38:39 -0800
-From: Adam Guerin <adam.guerin@intel.com>
+   d="scan'208";a="8507235"
+Received: from r031s002_zp31l10c01.deacluster.intel.com (HELO localhost.localdomain) ([10.219.171.29])
+  by fmviesa003.fm.intel.com with ESMTP; 16 Feb 2024 09:45:32 -0800
+From: Damian Muszynski <damian.muszynski@intel.com>
 To: herbert@gondor.apana.org.au
 Cc: linux-crypto@vger.kernel.org,
 	qat-linux@intel.com,
-	Adam Guerin <adam.guerin@intel.com>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 6/6] crypto: qat - fix comment structure
-Date: Fri, 16 Feb 2024 15:20:00 +0000
-Message-Id: <20240216151959.19382-7-adam.guerin@intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240216151959.19382-1-adam.guerin@intel.com>
-References: <20240216151959.19382-1-adam.guerin@intel.com>
+	Damian Muszynski <damian.muszynski@intel.com>
+Subject: [PATCH 0/3] crypto: qat - fix and make common ring to service map in QAT GEN4
+Date: Fri, 16 Feb 2024 18:21:53 +0100
+Message-ID: <20240216172545.177303-1-damian.muszynski@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organisation: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare, Ireland
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
 Content-Transfer-Encoding: 8bit
 
-Move comment description to the same line as the function name.
+This set is revamping the method that generates the ring-to-service maps
+in QAT. The initial two patches rectify the existing algorithm version
+for use cases when the dcc service was enabled. The final patch
+eliminates the function's duplication in device-specific code and
+relocates it to a shared file.
 
-This is to fix the following warning when compiling the QAT driver
-using the clang compiler with CC=clang W=2:
-    drivers/crypto/intel/qat/qat_common/qat_crypto.c:108: warning: missing initial short description on line:
-     * qat_crypto_vf_dev_config()
+Damian Muszynski (3):
+  crypto: qat - fix ring to service map for dcc in 4xxx
+  crypto: qat - fix ring to service map for dcc in 420xx
+  crypto: qat - make ring to service map common for QAT GEN4
 
-Signed-off-by: Adam Guerin <adam.guerin@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/intel/qat/qat_common/qat_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../intel/qat/qat_420xx/adf_420xx_hw_data.c   | 64 +++++--------------
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     | 64 +++++--------------
+ .../intel/qat/qat_common/adf_accel_devices.h  |  1 +
+ .../intel/qat/qat_common/adf_gen4_hw_data.c   | 56 ++++++++++++++++
+ .../intel/qat/qat_common/adf_gen4_hw_data.h   |  1 +
+ 5 files changed, 90 insertions(+), 96 deletions(-)
 
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_crypto.c b/drivers/crypto/intel/qat/qat_common/qat_crypto.c
-index 40c8e74d1cf9..101c6ea41673 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_crypto.c
-+++ b/drivers/crypto/intel/qat/qat_common/qat_crypto.c
-@@ -105,8 +105,8 @@ struct qat_crypto_instance *qat_crypto_get_instance_node(int node)
- }
- 
- /**
-- * qat_crypto_vf_dev_config()
-- *     create dev config required to create crypto inst.
-+ * qat_crypto_vf_dev_config() - create dev config required to create
-+ * crypto inst.
-  *
-  * @accel_dev: Pointer to acceleration device.
-  *
+
+base-commit: 48f0668106f3664f4101c9f24fdb3b8c13f5880d
 -- 
-2.40.1
+2.43.0
 
 
