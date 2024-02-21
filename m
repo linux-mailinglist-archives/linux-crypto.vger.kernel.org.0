@@ -1,165 +1,124 @@
-Return-Path: <linux-crypto+bounces-2211-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2213-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1560E85D040
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 07:10:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C55D585D2C5
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 09:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38CD31C21543
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 06:10:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FE1D285DB7
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 08:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549FF39FE7;
-	Wed, 21 Feb 2024 06:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF293CF40;
+	Wed, 21 Feb 2024 08:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HHdXJ5Sa"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="NtQq/3C6"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825D339FE4;
-	Wed, 21 Feb 2024 06:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3193C064
+	for <linux-crypto@vger.kernel.org>; Wed, 21 Feb 2024 08:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708495848; cv=none; b=VIP1/zXxzEwcp3sRe8+GeuU3JPJsfjaCs0q2DGctxax7Ggp7pVChy47JJEMBr+2j86Or47pEjv6QjU/GMS52EYqgKnXUPWld9ksK662uuSbfGBTeA2meod4oSeGmp8Uirqaf/PAh5R4Zn+HsOTdY1szbBW97+iNj5WuqRlFG78w=
+	t=1708505142; cv=none; b=DbS7Xhybq9JWRGRyo8IIueiC6RyTeyOOoKbOD6WavhOradV9HVjBRJugpIlh6R0YrP9MrdqEt6n0ke9ou2AMG3dBjmFDzCii7saJGNdrtAxWxpldHoHscmDNcpGTUHiQqQRD/FwLkpRpZlijRtP4lMTTtnAnONxrEKWYnQ6jSZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708495848; c=relaxed/simple;
-	bh=nOFgbZ8HBxTz94wttEmZFotxCzQC7NygkRCq5asfT10=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kygH3WsnG28FCyCj3gvKg7RNnTAgR8iuNooN9WRtC/51biCSjXSN6lOLh36jY1njVaBZH0FCQaGc9cOFpthiu+4hpLvK026Kl3Xkd5uKCuHgVrGq4UmCHK6fFARSQFARNqnixKGANj8qIT8KwkoVJq/FLCrrGYvVz5nefXMfcCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HHdXJ5Sa; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so139462241.3;
-        Tue, 20 Feb 2024 22:10:46 -0800 (PST)
+	s=arc-20240116; t=1708505142; c=relaxed/simple;
+	bh=MV7cCDhFf7qoSlKGh26KdQdQQeeDgNXi5QmZqdulyTo=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=NkjR2QB1OxI2tB12oOXlF+0UV4BRSrkTZz2bT6y1isrCqIibGjR+hjk6kamaF162w5ecNhimsLwbH9tcVCeIEzwF24sz4ja/VIDlJTgYLlUpJl2ShebpUXqjEPnoXQB/OQ34ah7c+HeGVPL/Zi1yZt+1BuKHxBEInEUtSbITrQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=NtQq/3C6; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3e82664d53so404894066b.3
+        for <linux-crypto@vger.kernel.org>; Wed, 21 Feb 2024 00:45:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708495845; x=1709100645; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gP/yx5IKqNIOfZ+RA2vffQW+rHFO3lsQYKh8HrE0o3E=;
-        b=HHdXJ5SaGesN3QoM3eABmgK5F+SX8IV+DuslS3L7SLDs53TWts7Fklks9moa0IiM9K
-         JB/Nd72eaEVmVFAb2xJkAFMAuhkFSHjA89IbHeWQM0yPKwdx1VnbtYKeEIHVbjO+zKUp
-         UBYX4o5vgARhcrLq3Q/eu4Tn+ZrB/J63lQDIbNUt+C06XjEyOQpMhCu5UqcN1qiMHdWL
-         N+kGDsm19yDog+C40SGQsyqHei8nyg0qnlin5Kir6G7o43QnB6tDe7WRoVj1cStaZZKE
-         aoPflG2ADsSUnlwH8CVhfaNwfdv2gVR/X7NrXY2YXFnBFhcNbv9txvkz1Ta/OHiEYGPg
-         iWqw==
+        d=cloudflare.com; s=google09082023; t=1708505138; x=1709109938; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=kZQ4OFhsxkDYgnz61RE7tAY18/3VcWGx+gq9WX1pJrw=;
+        b=NtQq/3C6wLMRimvVMUBFuVsnz3LCYR0G3iNxhh/PW7OaevP+NarximxmQfN471VuHa
+         HVMZKJ6CYvMmhmKQ22gsjbYj9mx2tJUuCkJcaCHiqLK0zD8M7WmgLYqH/ehzllq90juv
+         i/lQ3/0tDQMDhSWd1T7b0LLBOr9LS15lrBLzJ+ZKI7lQ56ZeI2Br+e6hoKMyrtHCUcUr
+         U+dv+UCxWxzJsK5vo8tW146Qaky01vcpVATM8Y0S/TKvPR3CWx6z29ANfGvnwBOuBJg5
+         hxPa9Fqp1EPMIwhPJ7pIkTZ7Ar6TK2viNH30jdSbfTNcX/cxlO0snu5qi/WsrLhOPgAN
+         LnKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708495845; x=1709100645;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gP/yx5IKqNIOfZ+RA2vffQW+rHFO3lsQYKh8HrE0o3E=;
-        b=fmliHnE/a1FTZWVD3Bo2jnRuKcfBgEfijolIoJOOXTzD9pi+uJPWCV3+ngt8Q3un3e
-         NDb/TaxF4Ph+PPr+s4HlmRewdFmWgcqTi3GPF1MMNaUQdzIcj02JIrOCSPnTZhDb1RPN
-         1VM5yI+6nGr9mEx3zdKEnfMYCpk3EpoDwhRNJK7vcMX2BDLTgXfOKjYs/9ZQaI2NFmbh
-         BsJBus2FF7AclF67bWHAVS0MHAbtsoGZquhecsSZfH0hwxBKxSsfJBvM3w5FLoAuIshb
-         riQrUMWiZKzRB4mbF+a1a6S6lSwiO10mz+fU/WjfhCvUtOxsfD5w+J3XEDhg80AnmbYv
-         u5cA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/D2XdjKQqkQ1q0HziZoc4xjQ/as4ayanKgsx27kGmE7SBHkcUoR2vvZKbf72+JxnFvRS+c6EGaH48aQvUnddxdGvd/kQ1qVPURY/P9jBdCLvd6djIM2xf5hlH/Uvhz95G8uqd5v58QBkn
-X-Gm-Message-State: AOJu0YwE2iOOeB4Rlk54obCJJVargmQrGWeL7iTtkZuszeBFnsacUuWc
-	5hmF0RD7F9zpAxYLOyI3E/r0S99XVzB9tnCmH4EnfWAwRvUYn01jZn1DhB6lDzM7XNhzE7p3MT7
-	V+3VjY+4qoRn2C29pd0P0nScOsS0=
-X-Google-Smtp-Source: AGHT+IEC4mk/79rg9qunBsxTl0hy7B1wG1nWoGnl3shs9m7Fv4hs8dl+Pn9sauvzLmUcSGHVDFdCF1muxDuOUqrsjGQ=
-X-Received: by 2002:a05:6102:1894:b0:470:4bff:830a with SMTP id
- ji20-20020a056102189400b004704bff830amr7751496vsb.13.1708495845413; Tue, 20
- Feb 2024 22:10:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708505138; x=1709109938;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kZQ4OFhsxkDYgnz61RE7tAY18/3VcWGx+gq9WX1pJrw=;
+        b=p/PdMByNJ4yGRlkv6GNGUibmMJBOfr3+/2R5/E24mfbLEu6ASaBRvDfOiJ7q3RAZnN
+         ThK4fKELeZrtVHcwxRogTWznWBu+CvPqCFMGs1GcIsyeQl8+e4e6cf+KHR0DLK0HZlAF
+         +Q5P/E+DT7KbR8weodrFkEfK8e9PTNaaxRL7kz/B94IMe9PHeRHB1l/IbNu7Jfufqnqj
+         b72AuxDZGDUL5hS9tSzAWWMx+GSJyD8WZsrXYKKnrc7utREw8MnLU1zToY1fXDrp4uMe
+         qo/KZP1YD5SdSTHowMKl0y/axse6NXsiMKPNW0/5ODt1LiNZdVHvF14WtmHFAiKpBUPH
+         0eqg==
+X-Forwarded-Encrypted: i=1; AJvYcCXsu7MGghjMW/Z1d9exxxuwFVB4mbkvW9/dxZ/L1uCxlwudu2YJShF0wBYcdnFGDPIW+cVKdT6/Mby5wp8ms7oFsZRW/QShfXnK1AN6
+X-Gm-Message-State: AOJu0Yy5dMP0OWsgLogU9M3sPhmmj3znogXNxCKfoZriyJFijYW6V6By
+	ZHFidiR+BpPCxsEm/CJDXxmU8buSBATGTuE3lGk/fyVu9Cvfgk2qqUgmPLyqFC0=
+X-Google-Smtp-Source: AGHT+IEDaGKj6QcO81XW7tgCoQbWz+vDwzVQKdeoeHwxTbJSHX/2OJ8SZ7AO4OOsy2cb+xQgBAVwUQ==
+X-Received: by 2002:a17:906:81d3:b0:a3e:c9f5:fbaa with SMTP id e19-20020a17090681d300b00a3ec9f5fbaamr5107340ejx.68.1708505138617;
+        Wed, 21 Feb 2024 00:45:38 -0800 (PST)
+Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:d4])
+        by smtp.gmail.com with ESMTPSA id bh5-20020a170906a0c500b00a3ea6b5e4eesm2660862ejb.19.2024.02.21.00.45.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 00:45:38 -0800 (PST)
+References: <20240115220803.1973440-1-vadfed@meta.com>
+ <20240115220803.1973440-3-vadfed@meta.com>
+User-agent: mu4e 1.6.10; emacs 29.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Vadim Fedorenko <vadfed@meta.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Jakub Kicinski
+ <kuba@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Andrii
+ Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Mykola
+ Lysenko <mykolal@fb.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ netdev@vger.kernel.org, linux-crypto@vger.kernel.org, bpf@vger.kernel.org,
+ Victor Stewart <v@nametag.social>
+Subject: Re: [PATCH bpf-next v8 3/3] selftests: bpf: crypto skcipher algo
+ selftests
+Date: Wed, 21 Feb 2024 09:43:46 +0100
+In-reply-to: <20240115220803.1973440-3-vadfed@meta.com>
+Message-ID: <87frxmmci7.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220064414.262582-1-21cnbao@gmail.com> <20240220064414.262582-4-21cnbao@gmail.com>
- <ZdWLim6zYSl/x1Bk@gondor.apana.org.au> <CAGsJ_4xCgSWz832N8+RsE=5StWwuc1zu3KpeCGxq7LdyVLY+Sg@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xCgSWz832N8+RsE=5StWwuc1zu3KpeCGxq7LdyVLY+Sg@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Wed, 21 Feb 2024 19:10:33 +1300
-Message-ID: <CAGsJ_4y69s7-_UW=gaUuk3TJzwj3xRCoZhamsn0-6k65cbeR0A@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] crypto: scompress: remove memcpy if sg_nents is 1
-To: Herbert Xu <herbert@gondor.apana.org.au>, akpm@linux-foundation.org
-Cc: davem@davemloft.net, hannes@cmpxchg.org, linux-crypto@vger.kernel.org, 
-	linux-mm@kvack.org, nphamcs@gmail.com, yosryahmed@google.com, 
-	zhouchengming@bytedance.com, chriscli@google.com, chrisl@kernel.org, 
-	ddstreet@ieee.org, linux-kernel@vger.kernel.org, sjenning@redhat.com, 
-	vitaly.wool@konsulko.com, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Wed, Feb 21, 2024 at 6:55=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
+On Mon, Jan 15, 2024 at 02:08 PM -08, Vadim Fedorenko wrote:
+> Add simple tc hook selftests to show the way to work with new crypto
+> BPF API. Some tricky dynptr initialization is used to provide empty iv
+> dynptr. Simple AES-ECB algo is used to demonstrate encryption and
+> decryption of fixed size buffers.
 >
-> On Wed, Feb 21, 2024 at 6:35=E2=80=AFPM Herbert Xu <herbert@gondor.apana.=
-org.au> wrote:
-> >
-> > On Tue, Feb 20, 2024 at 07:44:14PM +1300, Barry Song wrote:
-> > > From: Barry Song <v-songbaohua@oppo.com>
-> > >
-> > > while sg_nents is 1 which is always true for the current kernel
-> > > as the only user - zswap is the case, we should remove two big
-> > > memcpy.
-> > >
-> > > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > > Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
-> > > ---
-> > >  crypto/scompress.c | 36 +++++++++++++++++++++++++++++-------
-> > >  1 file changed, 29 insertions(+), 7 deletions(-)
-> >
-> > This patch is independent of the other two.  Please split it
-> > out so I can apply it directly.
->
-> Ok. OTOH, patch 3/3 has no dependency with other patches. so patch
-> 3/3 should be perfectly applicable to crypto :-)
->
-> Hi Andrew,
-> Would you please handle patch 1/3 and 2/3 in mm-tree given Herbert's ack =
-on
-> 1/3?
->
-> >
-> > > @@ -134,13 +135,25 @@ static int scomp_acomp_comp_decomp(struct acomp=
-_req *req, int dir)
-> > >       scratch =3D raw_cpu_ptr(&scomp_scratch);
-> > >       spin_lock(&scratch->lock);
-> > >
-> > > -     scatterwalk_map_and_copy(scratch->src, req->src, 0, req->slen, =
-0);
-> > > +     if (sg_nents(req->src) =3D=3D 1) {
-> > > +             src =3D kmap_local_page(sg_page(req->src)) + req->src->=
-offset;
-> >
-> > What if the SG entry is longer than PAGE_SIZE (or indeed crosses a
-> > page boundary)? I think the test needs to be strengthened.
->
-> I don't understand what is the problem for a nents to cross two pages
-> as anyway they are contiguous in both physical and virtual addresses.
-> if they are not contiguous, they will be two nents.
+> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+> ---
 
-second thought,  you are right.  sorry for my noise.
-The test was running on a platform like arm64 without HIGHMEM. thus,
-kmap_local_page always returns mapped page_address of normal
-zone.
+[...]
 
-but for platforms with HIGHMEM for example arm32, x86_32 , we can't use
-the virtual address of the first page as the start address of two pages tho=
-ugh
-they are physically contiguous.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c b/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
+> new file mode 100644
+> index 000000000000..70bde9640651
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
+> @@ -0,0 +1,217 @@
 
-I will rework on this.  ideally, we should still avoid the memcpy though
-two pages are within one nents :-) we are really this case for zswap
-as the dst is always two pages in case the compressed data is
-longer than the original data.
+[...]
 
->
-> >
-> > Thanks,
-> > --
-> > Email: Herbert Xu <herbert@gondor.apana.org.au>
-> > Home Page: http://gondor.apana.org.au/~herbert/
-> > PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
->
+> +static void deinit_afalg(void)
+> +{
+> +	if (tfmfd)
+> +		close(tfmfd);
+> +	if (opfd)
+> +		close(opfd);
+> +}
 
-Thanks
-Barry
+Did you mean tfmfd/opfd != -1?
+
+[...]
 
