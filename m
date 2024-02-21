@@ -1,231 +1,99 @@
-Return-Path: <linux-crypto+bounces-2212-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2214-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237C585D2C1
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 09:44:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B08D385D320
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 10:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8117B20F08
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 08:44:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E25641C22BD3
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Feb 2024 09:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4FE3A28E;
-	Wed, 21 Feb 2024 08:44:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j4XQyt99"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930663D961;
+	Wed, 21 Feb 2024 09:07:45 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAABA3C6A4;
-	Wed, 21 Feb 2024 08:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708505078; cv=fail; b=lb1pkw+tl2py8ByIXzVEJiimsW5ZT7lnYh91NYJfxjHjC7V+4uVyIj+DdXyTEos83RdRbTJS9U4qamkUmUFUfWx+p5Cij9ZeuSdMUcybPBSmKiKieYijxwDqUBc88zuI+BSxBAkFYO3w8P14vMTWMbP4dfV9vkI2FmMVeY+6OD8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708505078; c=relaxed/simple;
-	bh=2L2XnyXvLBXGvmqL9Br+jsDpNqLL2e0paCdCAJ5PPPA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=SQ/wOl9JTHofYI1rHeuX2FxNTFgFIVEK6wAkkyCvxuwqgVcyhahnG6GiqEHPmdZocC9pAVMqLBVukRcV/LudUT8erMWNj5xFmnJ6/QlCD9pxkucwiD16W/D0ib7NEcXVKc20kdzKoBgof7qp9c2K+6OQFmVDkvL2hrXuZIqgktg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j4XQyt99; arc=fail smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708505076; x=1740041076;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=2L2XnyXvLBXGvmqL9Br+jsDpNqLL2e0paCdCAJ5PPPA=;
-  b=j4XQyt992jLsGnDKG+uAS2jRViDUbzYjpQldluTncNjU7xVKgJYRV+Lr
-   S7WcFFMgXOkXrvI9mrWI7Aw9swMw7KkaETZHwtpb1M1LbGxdI69A5Dif0
-   EVaPaaKKXsfoBiDJp3SDUu7o7uemEgLE9A9EF2d1aiXBbjoLgkTtHjvwV
-   MnXKuD9JwIj4n0cGp/GCGe8bo76NIYHTnyFy1yUXhKS71SV+2bRTwoib9
-   dnv4tzEmA0zdFbvOcE5/N+5NZafI4CapMJhrj6z7FVyt+fll9ghj1As7S
-   B3A1RHBKPns9/xW70+d63GzWj3Rwcyk8hj9ndF8NDErmLYXAg+ES8amxK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="20193040"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="20193040"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 00:44:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="9705261"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Feb 2024 00:44:35 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 21 Feb 2024 00:44:33 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 00:44:33 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 21 Feb 2024 00:44:33 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dD6pz3JY5zl5SBrBaroWc/PQgj4r9TJp/BMjbhalDa5KCTkiQ3wbixwiB1n2Xf2oNy50D7fifPYNobnRe1IznmadGkB2VB19mh5LRPOBbL0lI08Ln1WGw6UK6rmYpU69UBBjXEtwUX6/NSlPZhbMZH16DEvjeNnTzcvAxEtKFyGldzkmQqRln63GEBSy5Gk3fK+wZw8Dpa9mn1WT9ed1AmnDeIiP0BUw0jy8TQi9qG4NwsX6eBqhAvEUvtjyAOz336bY7eq1JGUmti5ci0Gf85z8rzFasVDr9pE7UgrJvJ7vN0aWIxP7OQd4PqdNS7cFxjybYBZyBRXpdMWMNWQfwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XNe4jSprJdXc657n+ngehqnRzgo3FmIAaNuxCEkHkv0=;
- b=OW+e2vDjdtMS49GKUv8WwvcKaYs9q5Nne4sh3FLf7kqFbpJk/8785Je1OaNTUeGTdjTWfanbNfabb0nPweVJXixmzjpmtne+2CNsggw8sHC+sybrepEUSzE5O3PDr+Y9eV+O9THs2vstjKsUNAE0gUZwOiUMVl+Wuksg4IlJ0W8LcHCxfJCl3WDVRS/88+15BbI00e5ITcqc8RWBDJf3FJT8Xxixs1GmDydgEtVAMc6ee8pgA/mkKMqVKa8dmwOjeaCjhUtLovNmFXKiN/nHqcFei6eDOmiarDCfvhDKU2BcFp9QEE6Wf6ZbXrYlwPEgqabegnCEl/F6nX9ugA00uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DM4PR11MB5502.namprd11.prod.outlook.com (2603:10b6:5:39e::23)
- by SJ1PR11MB6132.namprd11.prod.outlook.com (2603:10b6:a03:45d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Wed, 21 Feb
- 2024 08:44:31 +0000
-Received: from DM4PR11MB5502.namprd11.prod.outlook.com
- ([fe80::502d:eb38:b486:eef0]) by DM4PR11MB5502.namprd11.prod.outlook.com
- ([fe80::502d:eb38:b486:eef0%4]) with mapi id 15.20.7292.036; Wed, 21 Feb 2024
- 08:44:31 +0000
-From: "Zeng, Xin" <xin.zeng@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: Yishai Hadas <yishaih@nvidia.com>, "herbert@gondor.apana.org.au"
-	<herbert@gondor.apana.org.au>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, qat-linux <qat-linux@intel.com>,
-	"Cao, Yahui" <yahui.cao@intel.com>
-Subject: RE: [PATCH 10/10] vfio/qat: Add vfio_pci driver for Intel QAT VF
- devices
-Thread-Topic: [PATCH 10/10] vfio/qat: Add vfio_pci driver for Intel QAT VF
- devices
-Thread-Index: AQHaVSVFJ9K0TVMQD0C9btTtb+JmirD9TRgAgAQ3vqCAAHLkgIAC42sAgAhyjxCABghogIAADukQgAAuE4CAAQBLIA==
-Date: Wed, 21 Feb 2024 08:44:31 +0000
-Message-ID: <DM4PR11MB550223E2A68FA6A95970873888572@DM4PR11MB5502.namprd11.prod.outlook.com>
-References: <20240201153337.4033490-1-xin.zeng@intel.com>
- <20240201153337.4033490-11-xin.zeng@intel.com>
- <20240206125500.GC10476@nvidia.com>
- <DM4PR11MB550222F7A5454DF9DBEE7FEC884B2@DM4PR11MB5502.namprd11.prod.outlook.com>
- <20240209121045.GP10476@nvidia.com>
- <e740d9ec-6783-4777-b984-98262566974c@nvidia.com>
- <DM4PR11MB550274B713F6AE416CDF7FDB88532@DM4PR11MB5502.namprd11.prod.outlook.com>
- <20240220132459.GM13330@nvidia.com>
- <DM4PR11MB5502BE3CC8BD098584F31E8D88502@DM4PR11MB5502.namprd11.prod.outlook.com>
- <20240220170315.GO13330@nvidia.com>
-In-Reply-To: <20240220170315.GO13330@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR11MB5502:EE_|SJ1PR11MB6132:EE_
-x-ms-office365-filtering-correlation-id: a4b77399-5800-4f99-7930-08dc32b9526b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1pfjhTGZIPcyC54XMV2pNrL4630amzM6bmQ1e7PbafmgUaQtv7C0rr2c8Hzx3DiVzaUWaj+Dr4xK7qwbgRaXwlgFHcndE/KPQOeoAXU8skbXCigK8XQ67dB961UiUAagwvG4GsA9NSxBxoAgvXROoovHFT0uwvXhK5YBnSc0L0Vy8NhOd/Firw4dGB/Wpbrq9O6D61xEzj3HbwDOFZyeymX7n962HwhvvbcF4twWAjSJvKqbeL1dI5/e0OxSWsqyfcEIUXsTzNNRUc6a1cOO6DnJzcx1wbCp+dgHHa6iyVwOE/jepuTASoxntsIEZxPmA+ToLcsuoJi5J59acZtVysy7k5YMuP2CHCrkcPorw22vDYCRWwSB0zBDt4FI5a03b6TkXbV3W6vnSx6ByvKj6Uf5nHOpTRO7Bhfgah+YRG12dqt5kvplk7RhFQBBF7AEta5V+X3KYCoGy7eqzdEX4z9FF0QbRsA0Pr5Cz6iAVxxVpJUd5hSpq7M5XrP/oMnJG+F2aXj9EPfy6WNLghCqHV7hUjhSclz0ymw6cPtcvJGlmw7SfDZWdcyRb2RkUZ4xUXG/OU9PSGVvjzfp0AS6zwtjCpxf6Yoodl59M+CZiGgAcbYrPULYLlFC3KF/xz2y
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5502.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?m64YW1c09uUEESGSB2fPrREZAriQi3JB8p5PPWpFPoISwh6vI1rxQVi6f2DL?=
- =?us-ascii?Q?DfZb3gKNI2lKuUcYqCezLOegCCRDZLEfTPk+5F02ob0YSIdvTiRtdPjpcEGE?=
- =?us-ascii?Q?be5sTCq1uVtp29+dW9dptoJY39xaUFHnK+Di0FatZwKy3nOObr294daYJYAc?=
- =?us-ascii?Q?8zNcHzSzl1zPQwpSughW65WlJ1fE9nfePQqkqU3nhXoYNwJ1zPidiRr94YEl?=
- =?us-ascii?Q?F+lpUTOk/B3LQwFUDTON9GpIx19FrBz2p+/IcN0zcekn8SsMCueP7LABILFp?=
- =?us-ascii?Q?v9c45ozP8fEBN07wPobtw75p586iNiVAro4EUifrz9hd33OquAsaQrBq0WG0?=
- =?us-ascii?Q?w/X1sgZ+nVj5ruvsVlJ47JQphRNEZRU4vDLzG9rYQzLf7dAQGKpiweFctr/f?=
- =?us-ascii?Q?8YXL1pmGB+ND4Aqc0jFHM2D1vInwm5p9UcF1j8rP1n8hkcVfR+DtT3cHTL3U?=
- =?us-ascii?Q?kbsxYmgUsd0elGuodhRfMjdSRk2U3up/SNGYU6nkVwzDOhdG0Uotixv6v6Gt?=
- =?us-ascii?Q?aAwKNXIVoSUpjAGLzZFdOz801lJmY+w408QNb1uN69LxL5jnmh3Zr+cNT7cr?=
- =?us-ascii?Q?yNbj5darbNcmiHu7n1DrJKuctjV3SoVrVKtqDRHG7fGnEjCcvjoW+/5bHM+Q?=
- =?us-ascii?Q?GtkXgNy7noQzSdVAr6rBWc9MWu319HxToGzvcuZng6mzKABqZnAlMN3w4Y4z?=
- =?us-ascii?Q?C3rH8h5ntm9bCWx8z/Rri4mACBS6f8w+HNdhlpSZ5aZ/pRejajnwoM2nCZYz?=
- =?us-ascii?Q?6p5rV8SPS6zSv6z//eRI1sPcijkgMocx3NxtLtKUcQc59hMphztjx6p9iF1p?=
- =?us-ascii?Q?DKu9ZNgvC4YGLXD2V9OH+8/6GyFiGTOBTmNDeFFHIuuG6m6DjcUbEKtCDAJK?=
- =?us-ascii?Q?I/jDEAn2teRYlK78inIYfi/94u4usiEo090zit4ENq2SRvuYZCfuDXE1ACcv?=
- =?us-ascii?Q?UuI/fhQgZlpJvrp3I6MHEsL3nmnx9IDkILEmKEHIv8vDpStkbngzeIDKm4qT?=
- =?us-ascii?Q?iku28/I0TWtarqATaQai6GYChq8pG+guYPYH2fCRm+klz0PC7sScs1MJ4LW5?=
- =?us-ascii?Q?vkC6MJBri++VD95RL4fEYemVgG/H8rA6c7Dnwe9YBJSWmZoSDTXszfF3jrTK?=
- =?us-ascii?Q?FdsbdGaPicrEofPulgzVVaryR1s2cQfleyu9z6S31FU2sB99fEgpkAcTuTxY?=
- =?us-ascii?Q?CiAq+DWNOimVpMQdWl4Y7XCtXuEiEKMrcb6b5+lGAoIgPYzbqkSV6xahiVJm?=
- =?us-ascii?Q?VOUDERbASLFsHDOVaJSModmK61i5bgKKByIKRMq2O0tVvalvhyS7BbASEw5c?=
- =?us-ascii?Q?1Xjf+ezUi3ttXqpjtERkrU4PaX0BT8iWhIJ8QN+r00AHOJEOULB0Vp1hgg9k?=
- =?us-ascii?Q?6m/2GMVcaEWPWFijiTedfQSTsPS7fR4670vlDkbPYhVeFPOEmLQCULg8jLJC?=
- =?us-ascii?Q?eKdKLvAkX9XNL63VnuTde3c344DgVCX8d5OLUHcRpfTWf4nrRIU+CSj6JkzD?=
- =?us-ascii?Q?bQ+b+VqNfy+o5y5NTyu5Ov65uBzwzA75SukQ4x35MZdpjtFiulsUZoMVoMfe?=
- =?us-ascii?Q?8LlRBk9JlKFszR4KKsQbwmnm3vg8Q+y08WeyAt4m?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBFF3C6B3;
+	Wed, 21 Feb 2024 09:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708506465; cv=none; b=KI2I4bRh/z3Q7wniEjMtjb0w+I1d+PGvqlbwCP/PVGp7GLsn+5dpSczHt/q3HN2sP37LR+lx8K4XpL6FZX8ob1VfRCnhX45BsfaHdonOgp6xdZT3XHMS3M16Udyvvhiy7s5Oy7SCNZ0MILfxGkkKCtcrNBVW/KWGFxeplkmpq6g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708506465; c=relaxed/simple;
+	bh=Cw0vjSxZd4BozTwPlM6pL0uP35pHBxORm59HXV+iY1U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KGi0PGgmEmyTBH6kwXAk57nq8gXjHjC5mzPoclPoU9MvC0UfiZy1XEptk/mO9JjKdpAb5BesCBFrfVbQ6DnGSqqjbYvUXEHrJB2SF0vUGs4BWsbO9MIt80m2omvOf0Y+bKeKUBGMnVd8rxd0+gkBVqzKPg4HS+NmFAK6AkUQqe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rciZd-00G0nc-TZ; Wed, 21 Feb 2024 17:07:30 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 21 Feb 2024 17:07:44 +0800
+Date: Wed, 21 Feb 2024 17:07:44 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: syzbot <syzbot+b90b904ef6bdfdafec1d@syzkaller.appspotmail.com>
+Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: [PATCH] crypto: lskcipher - Copy IV in lskcipher glue code always
+Message-ID: <ZdW9YBgTtaXo7DGQ@gondor.apana.org.au>
+References: <00000000000097f7f90611d1370c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5502.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4b77399-5800-4f99-7930-08dc32b9526b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2024 08:44:31.2783
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uc0nkSlR8BVMJHQSWMzEqKX1rE+y1HbE6qpGj44dJW32Nac7QB8Qq5MD+iyA774WRLDobygQha2w704PUmDOEg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6132
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000097f7f90611d1370c@google.com>
 
-On Wednesday, February 21, 2024 1:03 AM, Jason Gunthorpe wrote:
-> On Tue, Feb 20, 2024 at 03:53:08PM +0000, Zeng, Xin wrote:
-> > On Tuesday, February 20, 2024 9:25 PM, Jason Gunthorpe wrote:
-> > > To: Zeng, Xin <xin.zeng@intel.com>
-> > > Cc: Yishai Hadas <yishaih@nvidia.com>; herbert@gondor.apana.org.au;
-> > > alex.williamson@redhat.com; shameerali.kolothum.thodi@huawei.com;
-> Tian,
-> > > Kevin <kevin.tian@intel.com>; linux-crypto@vger.kernel.org;
-> > > kvm@vger.kernel.org; qat-linux <qat-linux@intel.com>; Cao, Yahui
-> > > <yahui.cao@intel.com>
-> > > Subject: Re: [PATCH 10/10] vfio/qat: Add vfio_pci driver for Intel QA=
-T VF
-> devices
-> > >
-> > > On Sat, Feb 17, 2024 at 04:20:20PM +0000, Zeng, Xin wrote:
-> > >
-> > > > Thanks for this information, but this flow is not clear to me why i=
-t
-> > > > cause deadlock. From this flow, CPU0 is not waiting for any resourc=
-e
-> > > > held by CPU1, so after CPU0 releases mmap_lock, CPU1 can continue
-> > > > to run. Am I missing something?
-> > >
-> > > At some point it was calling copy_to_user() under the state
-> > > mutex. These days it doesn't.
-> > >
-> > > copy_to_user() would nest the mm_lock under the state mutex which is
-> a
-> > > locking inversion.
-> > >
-> > > So I wonder if we still have this problem now that the copy_to_user()
-> > > is not under the mutex?
-> >
-> > In protocol v2, we still have the scenario in precopy_ioctl where
-> copy_to_user is
-> > called under state_mutex.
->=20
-> Why? Does mlx5 do that? It looked Ok to me:
->=20
->         mlx5vf_state_mutex_unlock(mvdev);
->         if (copy_to_user((void __user *)arg, &info, minsz))
->                 return -EFAULT;
+The lskcipher glue code for skcipher needs to copy the IV every
+time rather than only on the first and last request.  Otherwise
+those algorithms that use IV to perform chaining may break, e.g.,
+CBC.
 
-Indeed, thanks, Jason. BTW, is there any reason why was "deferred_reset" mo=
-de
-still implemented in mlx5 driver given this deadlock condition has been avo=
-ided
-with migration protocol v2 implementation.
-Anyway, I'll use state_mutex directly instead of the "deferred_reset" mode =
-in qat
-variant driver and update it in next version soon, please help to review.
-Thanks,
-Xin
+This is because crypto_skcipher_import/export do not include the
+IV as part of the saved state.
 
+Reported-by: syzbot+b90b904ef6bdfdafec1d@syzkaller.appspotmail.com
+Fixes: 662ea18d089b ("crypto: skcipher - Make use of internal state")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/lskcipher.c b/crypto/lskcipher.c
+index 0b6dd8aa21f2..0f1bd7dcde24 100644
+--- a/crypto/lskcipher.c
++++ b/crypto/lskcipher.c
+@@ -212,13 +212,12 @@ static int crypto_lskcipher_crypt_sg(struct skcipher_request *req,
+ 
+ 	ivsize = crypto_lskcipher_ivsize(tfm);
+ 	ivs = PTR_ALIGN(ivs, crypto_skcipher_alignmask(skcipher) + 1);
++	memcpy(ivs, req->iv, ivsize);
+ 
+ 	flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP;
+ 
+ 	if (req->base.flags & CRYPTO_SKCIPHER_REQ_CONT)
+ 		flags |= CRYPTO_LSKCIPHER_FLAG_CONT;
+-	else
+-		memcpy(ivs, req->iv, ivsize);
+ 
+ 	if (!(req->base.flags & CRYPTO_SKCIPHER_REQ_NOTFINAL))
+ 		flags |= CRYPTO_LSKCIPHER_FLAG_FINAL;
+@@ -234,8 +233,7 @@ static int crypto_lskcipher_crypt_sg(struct skcipher_request *req,
+ 		flags |= CRYPTO_LSKCIPHER_FLAG_CONT;
+ 	}
+ 
+-	if (flags & CRYPTO_LSKCIPHER_FLAG_FINAL)
+-		memcpy(req->iv, ivs, ivsize);
++	memcpy(req->iv, ivs, ivsize);
+ 
+ 	return err;
+ }
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
