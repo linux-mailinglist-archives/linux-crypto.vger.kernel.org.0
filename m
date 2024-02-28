@@ -1,165 +1,144 @@
-Return-Path: <linux-crypto+bounces-2357-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2359-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7456986ACD1
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 Feb 2024 12:19:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C28686B07E
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 Feb 2024 14:38:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 116371F26043
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 Feb 2024 11:19:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDC791C25A81
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 Feb 2024 13:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4EC12D77B;
-	Wed, 28 Feb 2024 11:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21C114C59D;
+	Wed, 28 Feb 2024 13:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IhLoNFaK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APWU8rZM"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681727A728;
-	Wed, 28 Feb 2024 11:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2536F14AD07;
+	Wed, 28 Feb 2024 13:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119160; cv=none; b=Zxn8fMkRMiz1ztB81gcZBLJu7D5PO0vup9UtxP+gYDja5jxY6uroKVR1UpEW6o28ymPvWIvtgZIxUsD5tR9XDVrD2UljXGGuKW582vlnVem4RFFf841ZCyRc8TWXylA4a2dhOkP3QvAObaFkfUogt877cadtTctjg0QTg4uLUIA=
+	t=1709127477; cv=none; b=WGuor1psIn3zRHmH+kiBC4a/xvSjFqOdjWoFrISnf0Mga6Ae2DHEGRZgaUB+TpoGTYbC6vAlkR45as5Mk3v59o+A72lrcDr6vYr2Bk6ilZ7CrMTE2eZNQfS/dTs1huMatVCO8fQPpZclHgv/Jozl5cNgC9MHBkczZOtdiB8zrBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119160; c=relaxed/simple;
-	bh=k9YHtI7jHipmokPKQWwD0PwKV0bONau5eJ2uz027Y+8=;
+	s=arc-20240116; t=1709127477; c=relaxed/simple;
+	bh=ZrIig3MM4Z+bo/sqJIChCKj/Pje7QWTe1w+LQ7AYd7o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I8rmmgjiInA/xCjMvm25XbUDt8M5zXtQ55raSqfVpjMvHJ9mzIv/aCgVLOze81noU3p/FCnpwy60/n23CKav+afa7tseqmg+d/S9+BnVeGN0iOJA9uFh9jBEtfqVb/IPatB6XdWrGeIg6yYTU6pRMBs8PyNzTrFR0gGEDp84w2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IhLoNFaK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC640C433C7;
-	Wed, 28 Feb 2024 11:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709119160;
-	bh=k9YHtI7jHipmokPKQWwD0PwKV0bONau5eJ2uz027Y+8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IhLoNFaKAQdVot2WS3QbJN46t2xwvd5iAZeyv1fJxI0L0G0bNHvBAiBibtz4Tebbt
-	 NZ4+7MJdH4KmZ3Eu134/XgIKniJfaivXns3Tl+/tOtwggGPIya21SKzB2zRqyjGcHi
-	 kHi+UK/Nu+1lhk/cGCWh9+7kHoB2tPmOsKYvV2gf/J+MkItLm5I6dCvdNZuuGA9Nzg
-	 kxhDinCnPoc1AkKOQqICR9jq05wRfN1wKN6gcwjmpmuhhX6Yy6z9i45IQ9OfFA1cyd
-	 v1bqleQhztYAFc86kbu5VsASnA2cxDmhkZwVHyF++Oc2RXrMw2efRTVfuVQvFTabFo
-	 JfuKnV9PZE+KA==
-Date: Wed, 28 Feb 2024 11:19:15 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Jia Jie Ho <jiajie.ho@starfivetech.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S . Miller" <davem@davemloft.net>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-	Vinod Koul <vkoul@kernel.org>, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org
-Subject: Re: [PATCH v3 1/6] dt-bindings: crypto: starfive: Add jh8100 support
-Message-ID: <20240228-margarita-glory-73db09c5fc91@spud>
-References: <20240227163758.198133-1-jiajie.ho@starfivetech.com>
- <20240227163758.198133-2-jiajie.ho@starfivetech.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t3C5wje0ZBAMHkEDJvs/QqxLp7xj68H4AxADUJ30bVqnq/zL3/dwYb+lQ4TbFyRpFNJfLWwzOw7KwwSdLSUoX1A7HWEHru0gsSY9JOpKCY0hXAYR4ZMw0wqPWlPswHAHJOgW+0TMSo4ap3UvhrqzFGetE3VXcmMG5EFQROzjmw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=APWU8rZM; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso84619211fa.2;
+        Wed, 28 Feb 2024 05:37:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709127474; x=1709732274; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SxWgL4sElI1B0/tx2GgHOxLa5Q0889pBGSF5c/6AjSo=;
+        b=APWU8rZMSd44oQK4cQwmDyD10Bati7iN4EYq2cFJf/V1ausdaVI0S7ZjOw/vMsnBRs
+         vuaSteWGsJjghSjwCoFIInKuskyETVmni6mymCmQ+EkMnHpVJmHFB3VmbTGDQUH5uVdy
+         LMyjr2UQddYb9ilHugc46oTLuxy+zyr3VgEnMH0XRl5vzQCEMB2WY1O4+dYVTtBn3oEQ
+         21qUR6CUxggCQaOU1EVUv6oR65e2On0zkmsdyv9nOe8CI1Mnq/xMd8rrK8hz/an8Iv57
+         ESdhQF/ktOUnINjlQTMdCG655Q/E4E35Y9WzLS393DhvubtnnRYYqJ3nEK/X9FGEQM50
+         S88w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709127474; x=1709732274;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SxWgL4sElI1B0/tx2GgHOxLa5Q0889pBGSF5c/6AjSo=;
+        b=VY91DAgGmj4xy6cWHWafm6sXi3ULU/y5c2HQbT2VSny1jOzBRcEJ1mq1gy8QInJMh0
+         uJv8iRrqZ0E8a9tv66LVFhKrQDvUAiz0mKkBIdffJr6UUr+xuNwrOcyRS3Tugb94Xm6P
+         /aYUZe4ccKuLG+Km4Bc1LVcq0zcRVQ32+DzHa2nDeJQ2bYCzOW9YWjqGHEGmn4DxoLrE
+         PQIXvzrbDvEm8jteDyJSjmbiKDMRDUJ93w1/S9OHOOkrKTi7gVvqZg7hQIzGrP8YH91L
+         m/3Op4tM0O4awnEXvOyQ/j1Xzd50YTh4AIfC6SETtDcrG/fsP9UOUYnrcG1qLqP6tf9P
+         AOig==
+X-Forwarded-Encrypted: i=1; AJvYcCXAK/oy7uXDCa+avjP2kvJT4XQg4eEoz3fJ4OaHQtjI0EeDpgyw1XjhWm8u+7aWAsJ5XGTWmZumgC6nni2bApivkZAjkhuMsZtkdlshf7Me3xLtOXeX9+rCGy+7lZvPqWM5b7zoNe1I2iYT
+X-Gm-Message-State: AOJu0YyRLeHfdObX//0GiDh/Ik5rlTBNGFCD5q4YEW6M6hbAD+wZ0z/z
+	VV6Oi74J+q8r6+33tS+y3y04BK8GwIZMSLs3rx2CBNicuOF9PcAf
+X-Google-Smtp-Source: AGHT+IEGAbjhr46EhXX778kptGTzCsJXZVuCDdfQgon6/ZXpJpBpqXYL2Ir2C0Xs3h1Pus1GVC1Ojw==
+X-Received: by 2002:a05:6512:21b1:b0:512:f733:9eb with SMTP id c17-20020a05651221b100b00512f73309ebmr5671413lft.11.1709127473910;
+        Wed, 28 Feb 2024 05:37:53 -0800 (PST)
+Received: from localhost ([94.19.228.143])
+        by smtp.gmail.com with ESMTPSA id o11-20020ac2494b000000b005131434454bsm433619lfi.228.2024.02.28.05.37.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 05:37:53 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:35:39 +0300
+From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Corentin Labbe <clabbe.montjoie@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Ovidiu Panait <ovidiu.panait@windriver.com>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Subject: Re: [PATCH] crypto: rk3288 - Fix use after free in unprepare
+Message-ID: <Zd82q8lw_qH7KLCs@skv.local>
+Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Corentin Labbe <clabbe.montjoie@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Ovidiu Panait <ovidiu.panait@windriver.com>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>
+References: <20240226215358.555234-1-andrej.skvortzov@gmail.com>
+ <Zd75LLhzlJx4nJiP@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6rTo2fkA4bSImk4p"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240227163758.198133-2-jiajie.ho@starfivetech.com>
+In-Reply-To: <Zd75LLhzlJx4nJiP@gondor.apana.org.au>
 
-
---6rTo2fkA4bSImk4p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Feb 28, 2024 at 12:37:53AM +0800, Jia Jie Ho wrote:
-> Add compatible string and additional interrupt for StarFive JH8100
-> crypto engine.
->=20
-> Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->  .../crypto/starfive,jh7110-crypto.yaml        | 30 +++++++++++++++++--
->  1 file changed, 28 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/crypto/starfive,jh7110-cry=
-pto.yaml b/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.=
-yaml
-> index 71a2876bd6e4..d44d77908966 100644
-> --- a/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
-> @@ -12,7 +12,9 @@ maintainers:
-> =20
->  properties:
->    compatible:
-> -    const: starfive,jh7110-crypto
-> +    enum:
-> +      - starfive,jh8100-crypto
-> +      - starfive,jh7110-crypto
-> =20
->    reg:
->      maxItems: 1
-> @@ -28,7 +30,10 @@ properties:
->        - const: ahb
-> =20
->    interrupts:
-> -    maxItems: 1
-> +    minItems: 1
-> +    items:
-> +      - description: SHA2 module irq
-> +      - description: SM3 module irq
-> =20
->    resets:
->      maxItems: 1
-> @@ -54,6 +59,27 @@ required:
-> =20
->  additionalProperties: false
-> =20
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          const: starfive,jh7110-crypto
+On 24-02-28 17:13, Herbert Xu wrote:
+> The unprepare call must be carried out before the finalize call
+> as the latter can free the request.
+> 
+> Fixes: c66c17a0f69b ("crypto: rk3288 - Remove prepare/unprepare request")
+> Reported-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> diff --git a/drivers/crypto/rockchip/rk3288_crypto_ahash.c b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
+> index 1b13b4aa16ec..a235e6c300f1 100644
+> --- a/drivers/crypto/rockchip/rk3288_crypto_ahash.c
+> +++ b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
+> @@ -332,12 +332,12 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
+>  theend:
+>  	pm_runtime_put_autosuspend(rkc->dev);
+>  
+> +	rk_hash_unprepare(engine, breq);
 > +
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          maxItems: 1
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          const: starfive,jh8100-crypto
-> +
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          maxItems: 2
-> +
->  examples:
->    - |
->      crypto: crypto@16000000 {
-> --=20
-> 2.34.1
->=20
+>  	local_bh_disable();
+>  	crypto_finalize_hash_request(engine, breq, err);
+>  	local_bh_enable();
+>  
+> -	rk_hash_unprepare(engine, breq);
+> -
+>  	return 0;
+>  }
+>  
+Thanks, that was quick. I had locally the same change.
 
---6rTo2fkA4bSImk4p
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd8WswAKCRB4tDGHoIJi
-0scyAQCyzlNaU4MW+ttTttfD9zVood2a3GWnh9luZay5NWSbwAD/YoGkkKgWc9jh
-Gk/AToNTyc/NecNiJZkRXrDV7ig7FwU=
-=byAE
------END PGP SIGNATURE-----
-
---6rTo2fkA4bSImk4p--
+-- 
+Best regards,
+Andrey Skvortsov
 
