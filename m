@@ -1,44 +1,72 @@
-Return-Path: <linux-crypto+bounces-2421-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2423-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A944686DF4A
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Mar 2024 11:37:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1A8486DFAB
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Mar 2024 11:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 192E11F25D5C
-	for <lists+linux-crypto@lfdr.de>; Fri,  1 Mar 2024 10:37:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65C54285A4E
+	for <lists+linux-crypto@lfdr.de>; Fri,  1 Mar 2024 10:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB46A16FF46;
-	Fri,  1 Mar 2024 10:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 737FC6BFC8;
+	Fri,  1 Mar 2024 10:53:30 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F47339B1
-	for <linux-crypto@vger.kernel.org>; Fri,  1 Mar 2024 10:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261246BFA4;
+	Fri,  1 Mar 2024 10:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709289433; cv=none; b=UPfSt2LAUnLftrTDUDi5d5jMpYxeu54AtIBK8K8ph4lUNWDbNEGSdw1uyza4uQ/t4fd8dpa/faG50hoEHA9Hxt4+MZPWSnJvNOCgbOv3K4FsaWTmfAD/wSwVxrIjqI5YJBpBxO3xixIQmOcSIEebIWKUQ3KbFVotfhCycFbHzqQ=
+	t=1709290410; cv=none; b=KjyFmVZfTyuQb0Z1cRiEC7k9nrSGrFIsMPODHhVudvpmv1a5cAR+UVQn0oGE8RK+/S78cNtszJqfDh3BxQlgHTkzEQnYaBubGiDvkwKPz9edoJcYHyTfnyX57T1ioFRGCht3bOKej8VsoJHVmjZ/jlurh0pmhi2SRLiNhp7GBWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709289433; c=relaxed/simple;
-	bh=vnrrAWvuoftL1aeJ8dlr+yyTDXmBz2ZGBPG90GMHP14=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=fL4dBlLqJrGLBDF+K2p/SmBkmioyi0MywIQbhgCNci1dUXuYqSdbKp1ooa5glqR5DK1MMuqMj94+CTY0gNPmFBJbycM2VaS0oI2AXupsZ96txCUunbcU/WLha+kq6PFEaNBQDnvmMB7ote6eHUMX8duqZDcYmPO1Szt2oRaVaVo=
+	s=arc-20240116; t=1709290410; c=relaxed/simple;
+	bh=t4ccu+GWe684aqIDSKF9bD//mn+pVsNSlItyqSKCQgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ThG9ajKwQuEM+6aiQJ6J1MrUBPD6GEoxaZRIvott21tk4R3d5oEEEZTMtlaZ2aPM5Y5luzQtV2wMga8FNnUMVnqDG3GMn8Ukc+W8/U0TRbE7vlYIEnJhRJFI4V2ddO8bzNVjwsemeyX/PjNJyhVKME/Vj3sZsoAyhVcEKa4DFXY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rg0GG-002HF1-Nv; Fri, 01 Mar 2024 18:37:05 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 01 Mar 2024 18:37:19 +0800
-Date: Fri, 1 Mar 2024 18:37:19 +0800
+	id 1rg0UC-002Hbb-4N; Fri, 01 Mar 2024 18:51:29 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 01 Mar 2024 18:51:43 +0800
+Date: Fri, 1 Mar 2024 18:51:43 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-crypto@vger.kernel.org, clabbe@baylibre.com
-Subject: Re: [RFC PATCH] crypto: remove CONFIG_CRYPTO_STATS
-Message-ID: <ZeGv37BjlO11V0+a@gondor.apana.org.au>
+To: Varshini Rajendran <varshini.rajendran@microchip.com>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	mturquette@baylibre.com, sboyd@kernel.org, davem@davemloft.net,
+	andi.shyti@kernel.org, tglx@linutronix.de, tudor.ambarus@linaro.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	linus.walleij@linaro.org, sre@kernel.org,
+	u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
+	olivia@selenic.com, radu_nicolae.pirea@upb.ro,
+	richard.genoud@gmail.com, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+	wim@linux-watchdog.org, linux@roeck-us.net, linux@armlinux.org.uk,
+	andrei.simion@microchip.com, mihai.sain@microchip.com,
+	andre.przywara@arm.com, neil.armstrong@linaro.org, tony@atomide.com,
+	durai.manickamkr@microchip.com, geert+renesas@glider.be,
+	arnd@arndb.de, Jason@zx2c4.com, rdunlap@infradead.org,
+	rientjes@google.com, vbabka@suse.cz, mripard@kernel.org,
+	codrin.ciubotariu@microchip.com, eugen.hristev@collabora.com,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v4 00/39] Add support for sam9x7 SoC family
+Message-ID: <ZeGzPwdslHIj5IWt@gondor.apana.org.au>
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -47,119 +75,176 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240223090334.167519-1-ebiggers@kernel.org>
-X-Newsgroups: apana.lists.os.linux.cryptoapi
+In-Reply-To: <20240223171342.669133-1-varshini.rajendran@microchip.com>
 
-Eric Biggers <ebiggers@kernel.org> wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Fri, Feb 23, 2024 at 10:43:42PM +0530, Varshini Rajendran wrote:
+> This patch series adds support for the new SoC family - sam9x7.
+>  - The device tree, configs and drivers are added
+>  - Clock driver for sam9x7 is added
+>  - Support for basic peripherals is added
+>  - Target board SAM9X75 Curiosity is added
 > 
-> Remove support for the "Crypto usage statistics" feature
-> (CONFIG_CRYPTO_STATS).  This feature does not appear to have ever been
-> used, and it is harmful because it significantly reduces performance and
-> is a large maintenance burden.
+>  Changes in v4:
+>  --------------
 > 
-> Covering each of these points in detail:
+>  - Addressed all the review comments in the patches
+>  - Picked up all Acked-by and Reviewed-by tags
+>  - Dropped applied patches from the series
+>  - Added pwm node and related dt binding documentation
+>  - Added support for exporting some clocks to DT
+>  - Dropped USB related patches and changes. See NOTE.
+>  - All the specific changes are captured in the corresponding patches
 > 
-> 1. Feature is not being used
+>  NOTE: Owing to the discussion here
+>  https://lore.kernel.org/linux-devicetree/CAL_JsqJ9PrX6fj-EbffeJce09MXs=B7t+KS_kOinxaRx38=WxA@mail.gmail.com/
+>  the USB related changes are dropped from this series in order to enable
+>  us to work on the mentioned issues before adding new compatibles as
+>  said. The issues/warnings will be addressed in subsequent patches.
+>  After which the USB related support for sam9x7 SoCs will be added. Hope
+>  this works out fine.
 > 
-> Since these generic crypto statistics are only readable using netlink,
-> it's fairly straightforward to look for programs that use them.  I'm
-> unable to find any evidence that any such programs exist.  For example,
-> Debian Code Search returns no hits except the kernel header and kernel
-> code itself and translations of the kernel header:
-> https://codesearch.debian.net/search?q=CRYPTOCFGA_STAT&literal=1&perpkg=1
+>  Changes in v3:
+>  --------------
 > 
-> The patch series that added this feature in 2018
-> (https://lore.kernel.org/linux-crypto/1537351855-16618-1-git-send-email-clabbe@baylibre.com/)
-> said "The goal is to have an ifconfig for crypto device."  This doesn't
-> appear to have happened.
+>  - Fixed the DT documentation errors pointed out in v2.
+>  - Dropped Acked-by tag in tcb DT doc patch as it had to be adapted
+>    according to sam9x7 correctly.
+>  - Picked by the previously missed tags.
+>  - Dropped this patch "dt-bindings: usb: generic-ehci: Document clock-names
+>    property" as the warning was not found while validating DT-schema for
+>    at91-sam9x75_curiosity.dtb.
+>  - Dropped redundant words in the commit message.
+>  - Fixed the CHECK_DTBS warnings validated against
+>    at91-sam9x75_curiosity.dtb.
+>  - Renamed dt nodes according to naming convention.
+>  - Dropped unwanted status property in dts.
+>  - Removed nodes that are not in use from the board dts.
+>  - Removed spi DT doc patch from the series as it was already applied
+>    and a fix patch was applied subsequently. Added a patch to remove the
+>    compatible to adapt sam9x7.
+>  - Added sam9x7 compatibles in usb dt documentation.
 > 
-> It's not clear that there is real demand for crypto statistics.  Just
-> because the kernel provides other types of statistics such as I/O and
-> networking statistics and some people find those useful does not mean
-> that crypto statistics are useful too.
 > 
-> Further evidence that programs are not using CONFIG_CRYPTO_STATS is that
-> it was able to be disabled in RHEL and Fedora as a bug fix
-> (https://gitlab.com/redhat/centos-stream/src/kernel/centos-stream-9/-/merge_requests/2947).
+>  Changes in v2:
+>  --------------
 > 
-> Even further evidence comes from the fact that there are and have been
-> bugs in how the stats work, but they were never reported.  For example,
-> before Linux v6.7 hash stats were double-counted in most cases.
+>  - Added sam9x7 specific compatibles in DT with fallbacks
+>  - Documented all the newly added DT compatible strings
+>  - Added device tree for the target board sam9x75 curiosity and
+>    documented the same in the DT bindings documentation
+>  - Removed the dt nodes that are not supported at the moment
+>  - Removed the configs added by previous version that are not supported
+>    at the moment
+>  - Fixed all the corrections in the commit message
+>  - Changed all the instances of copyright year to 2023
+>  - Added sam9x7 flag in PIT64B configuration
+>  - Moved macro definitions to header file
+>  - Added another divider in mck characteristics in the pmc driver
+>  - Fixed the memory leak in the pmc driver
+>  - Dropped patches that are no longer needed
+>  - Picked up Acked-by and Reviewed-by tags
 > 
-> There has also never been any documentation for this feature, so it
-> might be hard to use even if someone wanted to.
 > 
-> 2. CONFIG_CRYPTO_STATS significantly reduces performance
+> Varshini Rajendran (39):
+>   dt-bindings: net: cdns,macb: add sam9x7 ethernet interface
+>   dt-bindings: atmel-sysreg: add sam9x7
+>   dt-bindings: crypto: add sam9x7 in Atmel AES
+>   dt-bindings: crypto: add sam9x7 in Atmel SHA
+>   dt-bindings: crypto: add sam9x7 in Atmel TDES
+>   dt-bindings: i2c: at91: Add sam9x7 compatible string
+>   dt-bindings: atmel-ssc: add microchip,sam9x7-ssc
+>   dt-bindings: atmel-nand: add microchip,sam9x7-pmecc
+>   dt-bindings: pinctrl: at91: add sam9x7
+>   dt-bindings: rng: atmel,at91-trng: add sam9x7 TRNG
+>   dt-bindings: rtt: at91rm9260: add sam9x7 compatible
+>   dt-bindings: serial: atmel,at91-usart: add compatible for sam9x7.
+>   ASoC: dt-bindings: atmel-classd: add sam9x7 compatible
+>   dt-bindings: pwm: at91: Add sam9x7 compatible strings list
+>   dt-bindings: watchdog: sama5d4-wdt: add compatible for sam9x7-wdt
+>   spi: dt-bindings: atmel,at91rm9200-spi: remove 9x60 compatible from
+>     list
+>   ASoC: dt-bindings: microchip: add sam9x7
+>   ARM: at91: pm: add support for sam9x7 SoC family
+>   ARM: at91: pm: add sam9x7 SoC init config
+>   ARM: at91: add support in SoC driver for new sam9x7
+>   dt-bindings: clk: at91: add sam9x7
+>   dt-bindings: clk: at91: add sam9x7 clock controller
+>   clk: at91: clk-sam9x60-pll: re-factor to support individual core freq
+>     outputs
+>   clk: at91: sam9x7: add support for HW PLL freq dividers
+>   clk: at91: sama7g5: move mux table macros to header file
+>   dt-bindings: clock: at91: Allow PLLs to be exported and referenced in
+>     DT
+>   clk: at91: sam9x7: add sam9x7 pmc driver
+>   dt-bindings: irqchip/atmel-aic5: Add support for sam9x7 aic
+>   irqchip/atmel-aic5: Add support to get nirqs from DT for sam9x60 &
+>     sam9x7
+>   power: reset: at91-poweroff: lookup for proper pmc dt node for sam9x7
+>   power: reset: at91-reset: add reset support for sam9x7 SoC
+>   power: reset: at91-reset: add sdhwc support for sam9x7 SoC
+>   dt-bindings: reset: atmel,at91sam9260-reset: add sam9x7
+>   dt-bindings: power: reset: atmel,sama5d2-shdwc: add sam9x7
+>   ARM: at91: Kconfig: add config flag for SAM9X7 SoC
+>   ARM: configs: at91: enable config flags for sam9x7 SoC family
+>   ARM: dts: at91: sam9x7: add device tree for SoC
+>   dt-bindings: arm: add sam9x75 curiosity board
+>   ARM: dts: at91: sam9x75_curiosity: add sam9x75 curiosity board
 > 
-> Enabling CONFIG_CRYPTO_STATS significantly reduces the performance of
-> the crypto API, even if no program ever retrieves the statistics.  This
-> primarily affects systems with large number of CPUs.  For example,
-> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2039576 reported
-> that Lustre client encryption performance improved from 21.7GB/s to
-> 48.2GB/s by disabling CONFIG_CRYPTO_STATS.
+>  .../devicetree/bindings/arm/atmel-at91.yaml   |    6 +
+>  .../devicetree/bindings/arm/atmel-sysregs.txt |    7 +-
+>  .../bindings/clock/atmel,at91rm9200-pmc.yaml  |    2 +
+>  .../bindings/clock/atmel,at91sam9x5-sckc.yaml |    4 +-
+>  .../crypto/atmel,at91sam9g46-aes.yaml         |    6 +-
+>  .../crypto/atmel,at91sam9g46-sha.yaml         |    6 +-
+>  .../crypto/atmel,at91sam9g46-tdes.yaml        |    6 +-
+>  .../bindings/i2c/atmel,at91sam-i2c.yaml       |    4 +-
+>  .../interrupt-controller/atmel,aic.txt        |    2 +-
+>  .../devicetree/bindings/misc/atmel-ssc.txt    |    1 +
+>  .../devicetree/bindings/mtd/atmel-nand.txt    |    1 +
+>  .../devicetree/bindings/net/cdns,macb.yaml    |    5 +
+>  .../bindings/pinctrl/atmel,at91-pinctrl.txt   |    2 +
+>  .../power/reset/atmel,sama5d2-shdwc.yaml      |    3 +
+>  .../bindings/pwm/atmel,at91sam-pwm.yaml       |    3 +
+>  .../reset/atmel,at91sam9260-reset.yaml        |    4 +
+>  .../bindings/rng/atmel,at91-trng.yaml         |    4 +
+>  .../bindings/rtc/atmel,at91sam9260-rtt.yaml   |    4 +-
+>  .../bindings/serial/atmel,at91-usart.yaml     |   12 +-
+>  .../bindings/sound/atmel,sama5d2-classd.yaml  |    7 +-
+>  .../sound/microchip,sama7g5-i2smcc.yaml       |   11 +-
+>  .../bindings/spi/atmel,at91rm9200-spi.yaml    |    1 -
+>  .../bindings/watchdog/atmel,sama5d4-wdt.yaml  |   12 +-
+>  arch/arm/boot/dts/microchip/Makefile          |    3 +
+>  .../dts/microchip/at91-sam9x75_curiosity.dts  |  309 +++++
+>  arch/arm/boot/dts/microchip/sam9x60.dtsi      |    1 +
+>  arch/arm/boot/dts/microchip/sam9x7.dtsi       | 1214 +++++++++++++++++
+>  arch/arm/configs/at91_dt_defconfig            |    1 +
+>  arch/arm/mach-at91/Kconfig                    |   23 +-
+>  arch/arm/mach-at91/Makefile                   |    1 +
+>  arch/arm/mach-at91/generic.h                  |    2 +
+>  arch/arm/mach-at91/pm.c                       |   35 +
+>  arch/arm/mach-at91/sam9x7.c                   |   34 +
+>  drivers/clk/at91/Makefile                     |    1 +
+>  drivers/clk/at91/clk-sam9x60-pll.c            |   50 +-
+>  drivers/clk/at91/pmc.h                        |   18 +
+>  drivers/clk/at91/sam9x60.c                    |    7 +
+>  drivers/clk/at91/sam9x7.c                     |  946 +++++++++++++
+>  drivers/clk/at91/sama7g5.c                    |   42 +-
+>  drivers/irqchip/irq-atmel-aic5.c              |   12 +-
+>  drivers/power/reset/Kconfig                   |    4 +-
+>  drivers/power/reset/at91-sama5d2_shdwc.c      |    1 +
+>  drivers/soc/atmel/soc.c                       |   23 +
+>  drivers/soc/atmel/soc.h                       |    9 +
+>  include/dt-bindings/clock/at91.h              |    4 +
+>  45 files changed, 2788 insertions(+), 65 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
+>  create mode 100644 arch/arm/boot/dts/microchip/sam9x7.dtsi
+>  create mode 100644 arch/arm/mach-at91/sam9x7.c
+>  create mode 100644 drivers/clk/at91/sam9x7.c
 > 
-> It can be argued that this means that CONFIG_CRYPTO_STATS should be
-> optimized with per-cpu counters similar to many of the networking
-> counters.  But no one has done this in 5+ years.  This is consistent
-> with the fact that the feature appears to be unused, so there seems to
-> be little interest in improving it as opposed to just disabling it.
-> 
-> It can be argued that because CONFIG_CRYPTO_STATS is off by default,
-> performance doesn't matter.  But Linux distros tend to error on the side
-> of enabling options.  The option is enabled in Ubuntu and Arch Linux,
-> and until recently was enabled in RHEL and Fedora (see above).  So, even
-> just having the option available is harmful to users.
-> 
-> 3. CONFIG_CRYPTO_STATS is a large maintenance burden
-> 
-> There are over 1000 lines of code associated with CONFIG_CRYPTO_STATS,
-> spread among 32 files.  It significantly complicates much of the
-> implementation of the crypto API.  After the initial submission, many
-> fixes and refactorings have consumed effort of multiple people to keep
-> this feature "working".  We should be spending this effort elsewhere.
-> 
-> Cc: Corentin Labbe <clabbe@baylibre.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> arch/s390/configs/debug_defconfig            |   1 -
-> arch/s390/configs/defconfig                  |   1 -
-> crypto/Kconfig                               |  20 ---
-> crypto/Makefile                              |   2 -
-> crypto/acompress.c                           |  47 +----
-> crypto/aead.c                                |  84 +--------
-> crypto/ahash.c                               |  63 +------
-> crypto/akcipher.c                            |  31 ----
-> crypto/compress.h                            |   5 -
-> crypto/{crypto_user_base.c => crypto_user.c} |  10 +-
-> crypto/crypto_user_stat.c                    | 176 -------------------
-> crypto/hash.h                                |  30 ----
-> crypto/kpp.c                                 |  30 ----
-> crypto/lskcipher.c                           |  73 +-------
-> crypto/rng.c                                 |  44 +----
-> crypto/scompress.c                           |   8 +-
-> crypto/shash.c                               |  75 +-------
-> crypto/sig.c                                 |  13 --
-> crypto/skcipher.c                            |  86 +--------
-> crypto/skcipher.h                            |  10 --
-> include/crypto/acompress.h                   |  90 +---------
-> include/crypto/aead.h                        |  21 ---
-> include/crypto/akcipher.h                    |  78 +-------
-> include/crypto/algapi.h                      |   3 -
-> include/crypto/hash.h                        |  22 ---
-> include/crypto/internal/acompress.h          |   7 +-
-> include/crypto/internal/cryptouser.h         |  16 --
-> include/crypto/internal/scompress.h          |   8 +-
-> include/crypto/kpp.h                         |  58 +-----
-> include/crypto/rng.h                         |  51 +-----
-> include/crypto/skcipher.h                    |  25 ---
-> include/uapi/linux/cryptouser.h              |  28 +--
-> 32 files changed, 77 insertions(+), 1139 deletions(-)
-> rename crypto/{crypto_user_base.c => crypto_user.c} (98%)
-> delete mode 100644 crypto/crypto_user_stat.c
-> delete mode 100644 include/crypto/internal/cryptouser.h
+> -- 
+> 2.25.1
 
-Patch applied.  Thanks.
+Patches 3-5 and 10 applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
