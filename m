@@ -1,185 +1,113 @@
-Return-Path: <linux-crypto+bounces-2518-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2523-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4A3872DA0
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Mar 2024 04:46:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB522872EC5
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Mar 2024 07:24:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60EB01F21D05
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Mar 2024 03:46:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C47081C213E4
+	for <lists+linux-crypto@lfdr.de>; Wed,  6 Mar 2024 06:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8FE14280;
-	Wed,  6 Mar 2024 03:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF381BDED;
+	Wed,  6 Mar 2024 06:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vayavyalabs.com header.i=@vayavyalabs.com header.b="agwg0mcA"
+	dkim=pass (2048-bit key) header.d=quicklyemailsend77.com header.i=@quicklyemailsend77.com header.b="O12X8v0q"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from quicklyemailsend77.com (quicklyemailsend77.com [57.128.172.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6335314273
-	for <linux-crypto@vger.kernel.org>; Wed,  6 Mar 2024 03:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB8C1BDD6
+	for <linux-crypto@vger.kernel.org>; Wed,  6 Mar 2024 06:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.128.172.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709696804; cv=none; b=DfUjPYvEP2NqRzXvku2hkP9Cjrx30CRG3TD1AUSoQ/2GTqAtv77pimm1NjaKoyicVZT6wiZOYy1DVIseTtzGDndYmFpj1jeOve4hRj0FJ+fakgN8wEDKMrM1qfYv9+iBPRG0dQXZJghAXPadPtFQ9NzWV1c2dHhduSIzwZLP6OE=
+	t=1709706240; cv=none; b=FET2Y4Tl9Iq0zojCE2M0oUeiFPqQWI+7VztBCGNe5TWfEzhxuYVqGjsF9Ib+d9+9g8A2oOv//zYMwAkU1XwAKXnkXxqsd6W5LxQNiSuTNJMj7uB6KEiLZVkG4eomgopl7EO72ZU9T/6mHysLTrJt8X5aBaSmXdwEjZiYMKIeu2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709696804; c=relaxed/simple;
-	bh=2c78cK1XQnmsmG8+7n8w2V7n1cMXuquRqGreCLUPgjk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HGfnPJi+oZZZFe3gT9QKZTD6CW39kII4VhpIfwoexzFp/5pnRbaD+KzM4kixchVr6nvCbDTEDNVryOBMFCV32YUw1gcwj79pUcsFHtdWPH3iz9dJezpT3+KDT/t6Om8Z21VQROSBJyTwwDsByV8cZjU/NzBEvOGo6Tfgv6L21/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=vayavyalabs.com; spf=pass smtp.mailfrom=vayavyalabs.com; dkim=pass (1024-bit key) header.d=vayavyalabs.com header.i=@vayavyalabs.com header.b=agwg0mcA; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=vayavyalabs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vayavyalabs.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60983233a0dso5500157b3.3
-        for <linux-crypto@vger.kernel.org>; Tue, 05 Mar 2024 19:46:43 -0800 (PST)
+	s=arc-20240116; t=1709706240; c=relaxed/simple;
+	bh=UkCnC3hxyWUR811IY5T5PlAQFaHotSY7xhHSl4hh88I=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aL80rOpLlrGhdSZNG3SylFcWvIApmrabRafP0b9SOvBON4WmOgEhmRDJmsLql31SXID1xMkyhhDFx9tCvCIaahU2MowWHY5ZF4NJXgrdX3Gn+MIxK9fKQee3BbPVdc/RTIJNlInichogoL4bdP6KVEmY4dsqZA9rE+lYuYi/1iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicklyemailsend77.com; spf=pass smtp.mailfrom=quicklyemailsend77.com; dkim=pass (2048-bit key) header.d=quicklyemailsend77.com header.i=@quicklyemailsend77.com header.b=O12X8v0q; arc=none smtp.client-ip=57.128.172.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicklyemailsend77.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicklyemailsend77.com
+Received: from quicklyemailsend77.com (unknown [185.255.114.95])
+	by quicklyemailsend77.com (Postfix) with ESMTPA id B7BE5397793
+	for <linux-crypto@vger.kernel.org>; Wed,  6 Mar 2024 03:51:41 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 quicklyemailsend77.com B7BE5397793
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vayavyalabs.com; s=google; t=1709696802; x=1710301602; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ouY2hpmeW2k/P5GfJGCZNfQwVVpUUR+xpZsAYl3McfM=;
-        b=agwg0mcAvPYaoFsEv5oaWm/xAh5RoZ5wi4BfYhk/CmIFJdEuN+2J7F8Kh1qkCdLlzW
-         i0jl2PiuvXdHIaX0UiJJTMd+S7hd66lOSKhL1axn79pSUfValIJsNolYaJtCB+sLqNj4
-         vcxJPg51wfd+ByWN+9tTARaI8ITGmYJCZyg3I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709696802; x=1710301602;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ouY2hpmeW2k/P5GfJGCZNfQwVVpUUR+xpZsAYl3McfM=;
-        b=ggEF42DT9c1bKc/1ccvRW9t7kdJioxv+ti0nDPxvDw41YlMYZcBKxwdtC/Ds9ruO6v
-         JYVBFbysLZDw20XqZhJkb4pZniHLf4BBy8EoEHmNcdmMEAd/oRcEPzZ4425eweI+qcbW
-         3+bfYjTtelACRMilbQlT8ajjQh5pPSGm/3o3w3KCRHDxf492X+z9pjaSDIOD585NAWb2
-         GA9oA3Fm9CDjXbUdUybcz9/bJCs+2kr6iw0AbSnFxaJjZ2U4Mj7iX4TeB9kfzFkZhbpU
-         VYc1hFk9ySask3ljPdXdpnAq0x9BOAT7U/6Uz0ARl39FyyA0l4/u4XcmRBr30jLH0kJ2
-         OsCA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmAqs+wxa4o0Sn3E9Q6Mh8w0LADQYU1du5jUxtbLp66/YbVDGe1hnnShd6h22BYWwvI/vnRusanjLV8XEB4neQxA8NLdFQqBJ+OfpA
-X-Gm-Message-State: AOJu0YynjHE3fAQeG3yb6aDMGERs9uapPj8ARs+8TX+jxGS5VYybdl+P
-	ce6iRhrsoz5TyFUcv6ttwqRnjUW+ihBj3dl2unzqR702dqfkmNm4VfJW58Ay6RWl19uWoQE0mjX
-	86iOWHwE85R1td9W4dW2LQ09QBklKxLhl+I4CRA==
-X-Google-Smtp-Source: AGHT+IF4OR562RLSvhFbbL1fZZC9wIqI0yqHTgnE1V2E0Abmnulx7GG75/aiJTdCzrVIdEZlvt/zsJdLY3B0N1vfBgA=
-X-Received: by 2002:a0d:f504:0:b0:608:d1b3:30ac with SMTP id
- e4-20020a0df504000000b00608d1b330acmr15675551ywf.30.1709696802436; Tue, 05
- Mar 2024 19:46:42 -0800 (PST)
+	d=quicklyemailsend77.com; s=default; t=1709697102;
+	bh=eefLZdwY5mr6nwq86b3d+rtsxGUHJntuGmXl+R35AcQ=;
+	h=Reply-To:From:To:Subject:Date:From;
+	b=O12X8v0qhf5LNSL2cEJsy/vkXSLj2fYXhGyO6f6YfoYLHYqWqO+tgi0maChOgiZhc
+	 nTWyhb1HIa2ZB3kWhWtxn0N4zqsrcMzR9s3yi/UC/EMDKxFTMKgFFcXNjUOUrvW3Ls
+	 zaWU6ISbdxoKnMFe02J73erggaNomrmMl2FAi2GAOg18EzqpsqHfu2DIADOFR6j1vU
+	 uNAok1AWhCBONbxz+P3MH//or8fpZVPuQJFsLtru6vR8fxtGFhkv0E8jb40RLRefgX
+	 EF8vI4uI3HeQn3KZVjkRXXlwdiet0i6IwB99MOjvgs75iklHfexpQ9lBgs3KGyO1xC
+	 KutcH0G1S/kAA==
+Reply-To: joakimlarson@skendiaelevator.com
+From: info@quicklyemailsend77.com
+To: linux-crypto@vger.kernel.org
+Subject: =?UTF-8?B?7YyQ66ekIOusuOydmCAyMDI0?=
+Date: 05 Mar 2024 19:51:41 -0800
+Message-ID: <20240305195141.A36817D47FF9C89F@quicklyemailsend77.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305112831.3380896-1-pavitrakumarm@vayavyalabs.com> <20240305211318.GA1202@sol.localdomain>
-In-Reply-To: <20240305211318.GA1202@sol.localdomain>
-From: Pavitrakumar Managutte <pavitrakumarm@vayavyalabs.com>
-Date: Wed, 6 Mar 2024 09:16:31 +0530
-Message-ID: <CALxtO0kp+vDstePYkq3AYSD-h6LRt1HvRm4HdW-OtTQm5ipqkw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Add spacc crypto driver support
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org, 
-	Ruud.Derwig@synopsys.com, manjunath.hadli@vayavyalabs.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Eric,
-  Yes we have tested this with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=3Dy
 
-  Also is it fine if those additional algos stay inside that disabled
-CONFIG. SPAcc hardware
-  does support those algos.
+=EC=95=88=EB=85=95=ED=95=98=EC=84=B8=EC=9A=94
+=20
+=EC=8A=A4=EC=9B=A8=EB=8D=B4 =EC=8A=A4=EC=B9=B8=EB=94=94=EC=95=84 =EC=97=98=
+=EB=A0=88=EB=B0=94=ED=86=A0(Skandia Elevato)=EC=97=90=EC=84=9C =EC=98=A8 =
+=EC=9A=94=EC=95=84=ED=82=B4 =EB=9D=BC=EB=A5=B4=EC=86=90(JOAKIM LARSSON) .
+=20
+=EC=9A=B0=EB=A6=AC=EB=8A=94 =EA=B8=B4=EA=B8=89=ED=95=98=EA=B2=8C =EA=B7=80=
+=ED=95=98=EC=9D=98 =EC=A0=9C=ED=92=88=EC=9D=84 =ED=95=84=EC=9A=94=EB=A1=9C =
+=ED=95=98=EB=A9=B0 =EA=B0=80=EB=8A=A5=ED=95=9C =ED=95=9C =EB=B9=A8=EB=A6=AC=
+ =EC=8B=9C=ED=97=98 =EC=A3=BC=EB=AC=B8=EC=9D=84 =ED=95=98=EA=B3=A0 =EC=8B=
+=B6=EC=8A=B5=EB=8B=88=EB=8B=A4. 
+=20
+=EC=98=A8=EB=9D=BC=EC=9D=B8=EC=9C=BC=EB=A1=9C =EC=A0=9C=ED=92=88=EC=97=90 =
+=EB=8C=80=ED=95=9C =EC=A0=95=EB=B3=B4=EB=A5=BC =EC=88=98=EC=A7=91=ED=95=98=
+=EA=B3=A0 =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=A4. 
+=20
+=EA=B7=B8=EB=A6=AC=EA=B3=A0 =EB=82=B4 =EB=AA=A8=EC=9E=84=EC=97=90=EC=84=9C =
+=EB=82=98=EB=8A=94 =EC=9A=B0=EB=A6=AC=EA=B0=80 =EB=8B=B9=EC=8B=A0=EC=9D=98 =
+=EC=A0=9C=ED=92=88=EC=9D=84 =EC=A3=BC=EB=AC=B8=ED=95=A0 =EA=B2=83=EC=9D=B4=
+=EB=9D=BC=EA=B3=A0 =EC=83=9D=EA=B0=81=ED=95=A9=EB=8B=88=EB=8B=A4.
+=20
+1. =EC=B5=9C=EC=8B=A0 Catalouge=EB=A5=BC =EB=B3=B4=EB=82=BC =EC=88=98 =EC=
+=9E=88=EC=8A=B5=EB=8B=88=EA=B9=8C?
+=20
+2. =EC=9A=B0=EB=A6=AC=EA=B0=80 =EC=A3=BC=EB=AC=B8=ED=95=A0 =EC=88=98 =EC=9E=
+=88=EB=8A=94 =EC=B5=9C=EC=86=8C=ED=95=9C=EC=9D=80 =EB=AC=B4=EC=97=87=EC=9D=
+=B4=EA=B3=A0 =EB=98=90=ED=95=9C =EA=B8=B0=EA=B0=84=EC=9D=84 =EB=B3=B4=EB=82=
+=B4=EC=8B=AD=EC=8B=9C=EC=98=A4=20
+=EB=B0=8F =EC=A1=B0=EA=B1=B4.
+3. =EC=9A=B0=EB=A6=AC=EA=B0=80 =EC=A3=BC=EB=AC=B8=ED=95=98=EB=8A=94 =EA=B2=
+=BD=EC=9A=B0 =EC=A7=80=EB=B6=88=EC=9D=84 =EC=96=B4=EB=96=BB=EA=B2=8C =ED=95=
+=B4=EA=B2=B0=ED=95=98=EA=B8=B0=EB=A5=BC =EC=9B=90=ED=95=98=EC=8B=AD=EB=8B=
+=88=EA=B9=8C?
+=20
+=EA=B7=80=ED=95=98=EC=9D=98 =ED=9A=8C=EC=8B=A0 =EB=8C=80=EA=B8=B0 =EC=A4=91=
 
-- PK
 
+Mr Joakim larssonv(=EB=B6=80=EC=82=AC=EC=9E=A5/=EC=98=81=EC=97=85 =EA=B4=80=
+=EB=A6=AC=EC=9E=90)
 
-On Wed, Mar 6, 2024 at 2:43=E2=80=AFAM Eric Biggers <ebiggers@kernel.org> w=
-rote:
->
-> On Tue, Mar 05, 2024 at 04:58:27PM +0530, Pavitrakumar M wrote:
-> > Add the driver for SPAcc(Security Protocol Accelerator), which is a
-> > crypto acceleration IP from Synopsys. The SPAcc supports many cipher,
-> > hash, aead algorithms and various modes.The driver currently supports
-> > below,
->
-> Has this been tested with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=3Dy?
->
-> > aead:
-> > - ccm(sm4)
-> > - ccm(aes)
-> > - gcm(sm4)
-> > - gcm(aes)
-> > - rfc8998(gcm(sm4))
-> > - rfc7539(chacha20,poly1305)
-> >
-> > cipher:
-> > - cbc(sm4)
-> > - ecb(sm4)
-> > - ofb(sm4)
-> > - cfb(sm4)
-> > - ctr(sm4)
-> > - cbc(aes)
-> > - ecb(aes)
-> > - ctr(aes)
-> > - xts(aes)
-> > - cts(cbc(aes))
-> > - cbc(des)
-> > - ecb(des)
-> > - cbc(des3_ede)
-> > - ecb(des3_ede)
-> > - chacha20
-> > - xts(sm4)
-> > - cts(cbc(sm4))
-> > - ecb(kasumi)
-> > - f8(kasumi)
-> > - snow3g_uea2
-> > - cs1(cbc(aes))
-> > - cs2(cbc(aes))
-> > - cs1(cbc(sm4))
-> > - cs2(cbc(sm4))
-> > - f8(sm4)
-> >
-> > hash:
-> > - michael_mic
-> > - sm3
-> > - hmac(sm3)
-> > - sha3-512
-> > - sha3-384
-> > - sha3-256
-> > - sha3-224
-> > - hmac(sha512)
-> > - hmac(sha384)
-> > - hmac(sha256)
-> > - hmac(sha224)
-> > - sha512
-> > - sha384
-> > - sha256
-> > - sha224
-> > - sha1
-> > - hmac(sha1)
-> > - md5
-> > - hmac(md5)
-> > - cmac(sm4)
-> > - xcbc(aes)
-> > - cmac(aes)
-> > - xcbc(sm4)
-> > - sha512-224
-> > - hmac(sha512-224)
-> > - sha512-256
-> > - hmac(sha512-256)
-> > - mac(kasumi_f9)
-> > - mac(snow3g)
-> > - mac(zuc)
-> > - sslmac(sha1)
-> > - shake128
-> > - shake256
-> > - cshake128
-> > - cshake256
-> > - kcmac128
-> > - kcmac256
-> > - kcmacxof128
-> > - kcmacxof256
-> > - sslmac(md5)
->
-> Algorithms that don't have a generic implementation shouldn't be included=
-.
->
-> - Eric
+=EB=B0=A9=EB=AC=B8=EC=9E=90 =EC=A3=BC=EC=86=8C: Kedumsv=C3=A4gen 14, SE-534=
+ 94 Vara, Sweden
+
+=EB=B0=B0=EC=86=A1 =EC=A3=BC=EC=86=8C: Industriv=C3=A4gen, SE-534 94 Vara, =
+Sweden
+
+joakimlarson@skendiaelevator.com
+https://skandiaelevator.com
+
 
