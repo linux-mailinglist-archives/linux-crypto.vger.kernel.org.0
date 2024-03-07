@@ -1,91 +1,47 @@
-Return-Path: <linux-crypto+bounces-2553-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2556-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E1618742F7
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Mar 2024 23:48:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43275874884
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Mar 2024 08:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1EFA1F22D46
-	for <lists+linux-crypto@lfdr.de>; Wed,  6 Mar 2024 22:48:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7475E1C20C4A
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 Mar 2024 07:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826A01C6A0;
-	Wed,  6 Mar 2024 22:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OfLF2DTP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45361CD2B;
+	Thu,  7 Mar 2024 07:14:12 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6551B7E4;
-	Wed,  6 Mar 2024 22:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2744D1F932;
+	Thu,  7 Mar 2024 07:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709765299; cv=none; b=m/NSPIY9M3sD9yRInrMIUNPceUDvbFXOv4vw/iDrONX8e+huyli6vx2KULYzld1HtlJ2GUn0zG8PMaZ2atasx7Y0oJLIYXwqaiOHJgtrozFBEaU8NznPNYCoIX8TbXeny076+NpcXTrf8AvTw3BA+CyoEIv/UDtbNqTjFM9dAvc=
+	t=1709795652; cv=none; b=A9eczeKoM/jllG9MVuQaCHVdhyX1JPZOmmztTeqPGxLV7uIOggIY5WMKVGuniYflKe5QJjR2MRtJ60b0YhyuRaG83KtdIokIW5ImsRJQdlk7F/CERet0/Qbig/pjpYr1JP6b9RpCfXYF5y/SWID5WFrj6pc3J5czw6Bkvzwb1UA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709765299; c=relaxed/simple;
-	bh=osERkD6x25VFZbh9JDDNJ74m6/+fUzUgTEQNEFwZkFA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J/Drxhr1x1i/vkdL2/cB5zJhDZP4+p4bvqmzHiM+awUTrITnp73etvj8+JbQZ4txinJQXDkxFDLlnK/cjjvxk/U5KGNWxmOarRTxCEFcb58uzjIN6rNpLnsv90axTJWxJzLJXBO2HF8D3liu/RVW5S+/DJ+yBBMFtRRz1M+T75Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OfLF2DTP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 426M7F4M000882;
-	Wed, 6 Mar 2024 22:48:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=EULON2aVDwRpBJ8sxfIz3QiJcn11hx0E9aBparFisOA=;
- b=OfLF2DTPxZ5FgpsjOCxZcwhu7mHid+SaSs1htm+3oY8J5Vnk0Y/2Ny9u50CANSj3xxNt
- Y0Yf8QeJB5oaM0/O4CzqleUgRQllpKYXDn0URYfn+yQSCw2SgLoamqXr6HIr6/zvt5dz
- rlNYWWWKleRh2nszjo1GCFrBM5tlpuQGn/P2+l5//N6rprVQhb0G00FWjQAh4dpNT1ag
- c2ucG9OLpJG1HBFmwP9yLXKt9dgWtARwFCPQ4sLV3egNBtxoQK0lkEzIRifmW2Y3giSZ
- 5ukVLgBUKzoc9q3B9lUHOeSXPE7rXxAh96zF4p2j1SRPR1kBvhwbQRratSlYVHwh1P4q pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wq10h1242-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 22:48:11 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 426MDHVi021082;
-	Wed, 6 Mar 2024 22:48:10 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wq10h123d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 22:48:10 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 426LeRFJ026296;
-	Wed, 6 Mar 2024 22:23:12 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmfep1nqb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 22:23:12 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 426MN9P334013508
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 6 Mar 2024 22:23:11 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 62B8658057;
-	Wed,  6 Mar 2024 22:23:09 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D9A2958058;
-	Wed,  6 Mar 2024 22:23:08 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  6 Mar 2024 22:23:08 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.ibm.com>
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH v5 12/12] crypto: x509 - Add OID for NIST P521 and extend parser for it
-Date: Wed,  6 Mar 2024 17:22:57 -0500
-Message-ID: <20240306222257.979304-13-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240306222257.979304-1-stefanb@linux.ibm.com>
-References: <20240306222257.979304-1-stefanb@linux.ibm.com>
+	s=arc-20240116; t=1709795652; c=relaxed/simple;
+	bh=I0Eb1RcvG2mnFN9txzANi9+x7+5ju+ursRojhbBWMVQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZuDu4Q0K9KtLjR9OfBGnXBcPC7oHr+E6r/a/HEBjmg6cYbJgxTeon5nwY3ZHZo9cwD3fnRZJs0XvsNI66rusrbX/1S/G0sFloqZPL+1ho9ICqAZTE5yLImJd1O48Qml2Dt/ckAuKXhzwcA/E227ZvyOrut5I/Wz4J3DE70mTlxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from localhost.localdomain (78.37.41.175) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 7 Mar
+ 2024 10:13:56 +0300
+From: Roman Smirnov <r.smirnov@omp.ru>
+To: Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
+	<davem@davemloft.net>
+CC: Roman Smirnov <r.smirnov@omp.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Karina Yankevich <k.yankevich@omp.ru>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH] crypto: ecc: fix NULL pointer dereferencing in ecc_gen_privkey()
+Date: Thu, 7 Mar 2024 10:13:18 +0300
+Message-ID: <20240307071318.5206-1-r.smirnov@omp.ru>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -93,56 +49,75 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oJrNBdjshfqGf9L06AE7AW56KtYOZjem
-X-Proofpoint-ORIG-GUID: 46JsISEMnIgFnEqMgpzRdpct4XXE9s8K
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-06_12,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 phishscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 lowpriorityscore=0 malwarescore=0 mlxscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403060183
+Content-Type: text/plain
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/07/2024 06:56:30
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 184019 [Mar 07 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 9 0.3.9 e923e63e431b6489f12901471775b2d1b59df0ba
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;78.37.41.175:7.4.1,7.7.3;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.175
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 03/07/2024 07:02:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 3/7/2024 2:51:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Enable the x509 parser to accept NIST P521 certificates and add the
-OID for ansip521r1, which is the identifier for NIST P521.
+ecc_get_curve() can return NULL. It is necessary to check
+for NULL before dereferencing.
 
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Tested-by: Lukas Wunner <lukas@wunner.de>
+Found by Linux Verification Center (linuxtesting.org) with Svace.
+
+Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 ---
- crypto/asymmetric_keys/x509_cert_parser.c | 3 +++
- include/linux/oid_registry.h              | 1 +
- 2 files changed, 4 insertions(+)
+ crypto/ecc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 487204d39426..99f809b7910b 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -538,6 +538,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 		case OID_id_ansip384r1:
- 			ctx->cert->pub->pkey_algo = "ecdsa-nist-p384";
- 			break;
-+		case OID_id_ansip521r1:
-+			ctx->cert->pub->pkey_algo = "ecdsa-nist-p521";
-+			break;
- 		default:
- 			return -ENOPKG;
- 		}
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 3921fbed0b28..af16d96fbbf2 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -65,6 +65,7 @@ enum OID {
- 	OID_Scram,			/* 1.3.6.1.5.5.14 */
- 	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
- 	OID_id_ansip384r1,		/* 1.3.132.0.34 */
-+	OID_id_ansip521r1,		/* 1.3.132.0.35 */
- 	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
- 	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
- 	OID_sha512,			/* 2.16.840.1.101.3.4.2.3 */
+diff --git a/crypto/ecc.c b/crypto/ecc.c
+index f53fb4d6af99..fd63e354895b 100644
+--- a/crypto/ecc.c
++++ b/crypto/ecc.c
+@@ -1471,9 +1471,14 @@ int ecc_gen_privkey(unsigned int curve_id, unsigned int ndigits, u64 *privkey)
+ 	const struct ecc_curve *curve = ecc_get_curve(curve_id);
+ 	u64 priv[ECC_MAX_DIGITS];
+ 	unsigned int nbytes = ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
+-	unsigned int nbits = vli_num_bits(curve->n, ndigits);
++	unsigned int nbits;
+ 	int err;
+ 
++	if (!curve)
++		return -EINVAL;
++
++	nbits = vli_num_bits(curve->n, ndigits);
++
+ 	/* Check that N is included in Table 1 of FIPS 186-4, section 6.1.1 */
+ 	if (nbits < 160 || ndigits > ARRAY_SIZE(priv))
+ 		return -EINVAL;
 -- 
-2.43.0
+2.34.1
 
 
