@@ -1,151 +1,171 @@
-Return-Path: <linux-crypto+bounces-2644-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2646-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BB5879BA5
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Mar 2024 19:39:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5C4879CD3
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Mar 2024 21:26:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 155D21C22C78
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 Mar 2024 18:39:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FC652825F0
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 Mar 2024 20:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124B0144056;
-	Tue, 12 Mar 2024 18:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606BC142911;
+	Tue, 12 Mar 2024 20:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AcdJyQDx"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PuyKhozq"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17838142630;
-	Tue, 12 Mar 2024 18:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1CF142906
+	for <linux-crypto@vger.kernel.org>; Tue, 12 Mar 2024 20:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710268678; cv=none; b=aJjps/FWVYu4AfpPeYPu/nPDi9/x4nvmoTHrKihLXSE3NsZZiu2j6kE3YayqFMissH1Yts0nr2AHc3Ip4y1huWc5I/0CrEP/fNmvJerl26VDsW7rJrny0xkZNlozAGbpcEG9yNlZ+PUKblr/Ey9za1FmnnB7/wPdOs/wrmyRG6s=
+	t=1710275206; cv=none; b=NP0ERUUG+eSN1d8AGkj74IKjh1ew3Dh7U1T0pkT7zzYnHF7zQLaK9SYRTOausAhnMD9D1EhECctwFqCCJmROgIG5Xify0wt1WRMmIbOAiYYVaLtTLx7uBZe6cv5DgMcM+x8lpqz60FBH3wooFdgDYPNRfKPoxMOV8jajTZR7dik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710268678; c=relaxed/simple;
-	bh=RGzYtkq3koJ+IYtBiPKa/zCvRRqct8hCOumMlCZ0lu8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o3Wv8io/rn+Qx6BC1H64qOlAHq//6jm3GFM/SAwJfTkCBnEEPhsAxHhfI1A1zwSPUD5GEzF2YqdEQKVFvBp452Ibvc+0XfQDuXiuV91zFJ1xkM+FArYV0M1Tx1TH0kP1W+8AbQXiqaNhpAblOxDoz0r3GGsJ7c83c3jsbJBAdI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AcdJyQDx; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIW0m0011605;
-	Tue, 12 Mar 2024 18:36:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=HYtIQQmQyi2J8b6s2DXbCXcJus8U+wP4ZhU7m7CSRUA=;
- b=AcdJyQDxglcJ0wWtwM6na0FBNVRTLkUiqqNu2bfark5ulieKAu/gP6+KxET+uCOW39XA
- 7vhHq0anqvj30ED0leXy+jNSAKMFD1rNZfPAZsQ2nICZMqU8uAImAcy/AgqXlZmjDwnr
- XpZNXzyaea1ZyGj+6mDW5LgU+Cy03D+qKjk38erjLZtXXlQSDIwiUeRlujgniYGfl1da
- 0UqZZNz4eIsz1FZBjS2mOqneNYwyWxkErP44qDP7/WEr2Fa+NiE/v1jJ6IA4SMRxUwIg
- KjmaI8jw2/ARv4zvIj6xrcCqsaJw2xnGYeCWLxwfCaRVOyEveL/S++u2cgk6AAY4/y4W 4Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtsaputc0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 18:36:39 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42CIac84022396;
-	Tue, 12 Mar 2024 18:36:38 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtsaputbt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 18:36:38 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIJl9D020435;
-	Tue, 12 Mar 2024 18:36:38 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws3km0ren-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 18:36:38 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42CIaZaL18547162
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 12 Mar 2024 18:36:37 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0752758056;
-	Tue, 12 Mar 2024 18:36:35 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 067C858060;
-	Tue, 12 Mar 2024 18:36:34 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 12 Mar 2024 18:36:33 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.vnet.ibm.com>
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
-        bbhushan2@marvell.com, jarkko@kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH v6 13/13] crypto: x509 - Add OID for NIST P521 and extend parser for it
-Date: Tue, 12 Mar 2024 14:36:18 -0400
-Message-ID: <20240312183618.1211745-14-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+	s=arc-20240116; t=1710275206; c=relaxed/simple;
+	bh=Yh+LhS5yhRkoUraEclEvC+FapyUA4I8kLPY2KFzzQ6E=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ZVrvBTY1Pk8FLeM8FYZacUyNZanUJ3oQX9zbCXKDcVCtFDyiKGfwm8XyuQgLYDcxU+1j5Z5KbZvXVTWaEXEKNwWtXq5fGwq5ke6Q1tkGl+xoVQ1G7eK/Pq9E9CoD7GHhRNULlEZxAq4nRqG7ufJaZUPgG9AMp4wOIrgcNx75fFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PuyKhozq; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcbee93a3e1so7728364276.3
+        for <linux-crypto@vger.kernel.org>; Tue, 12 Mar 2024 13:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710275203; x=1710880003; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qkdeVHiZ4dO2mKNOI6prWlI/035w5V9mRcS9wJoax+0=;
+        b=PuyKhozqlfbC+6hjQddM8pdLLVWSOXVaU+Qw5kWbrPZi8VvDIU6rEYnZ0YlPJults/
+         LnKpQhiNDnMV3RY1NbpN4XoQMk9zhOoeb1R2U4BqIYLaiYoxmc7S43aejdEjwf3z43d2
+         5AYQ+IATL+JlW3ZV4UKmKUUYmHegeYGcPbP1I29y8ZpOzpc2JMlFQ4L0dSIpgFKd8OQm
+         AHfasU3Jac1Mnzde8e3VyJ8atIrEg2Rh9pjE9y2VFye0CFBIVtoQ4kitdL3J0XaQsDTg
+         STsvy1rnghf+urEwTL7Qg4kISHFOIYms9zMTzVOn/i8H16Gn0yMGPGJYWx/jrLdeYCNc
+         Pofw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710275203; x=1710880003;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qkdeVHiZ4dO2mKNOI6prWlI/035w5V9mRcS9wJoax+0=;
+        b=H9ayYqBu2sbauJ5vn2I+2kc8X+fblYPLMVtOq0L6LHi5ebEOq6MpAdmpWC84Fxxqur
+         Qgedtggg5qt4U4tqRyf1kXnDmngME+DjTiuNJpe2pfbBeyo5wWJP/sLZMWxmutvRPMWq
+         wchmQmmRA6U3LV0lhzDsxjfBVH1IiaoXA0UKNCmsQbxNm0ppKTurzgFS/Zs3Sh3gclPq
+         UBu01x4CqqNAHpQDkv+P+BSrM9ZrpIhJdo7sunajdITX550BbTVfQcYv9Glmwqx0HYPB
+         4lg+zmYCmzc241tWQl9zMYfcOYHdwFx9Zo1AKU8wk4QPIb+fnDaIRnsXJOB0FVhsOCav
+         5s8w==
+X-Forwarded-Encrypted: i=1; AJvYcCVLzJv+dCaLYZz+3S7fa9gYkM7dMKYx7z+EhT3zvSFRsJ2NSga1T2j6Wil4DUUNTqBgWjiqu/emun6iVd0WPPaj/WbQQmLeBxj4inTO
+X-Gm-Message-State: AOJu0YyDoON3rmIN3aivfegN0Y6/+Ibt1uvKec6Jq5hTLfkf1jHB64pp
+	G18HdW3/eaZ83Hgeep4MsiW0/zHMdSt8uYlmwA83bTyFgejW5heueCjsAd48JuVzHf4KQg0AQFe
+	BEQ==
+X-Google-Smtp-Source: AGHT+IFUmGhOgcd89e4lrqvlrIUFlYT8TKtqW8wVsN51aYrWhEhHnUI06gztJWUkIbtg80Ly0GbAPRIO8Ug=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:114a:b0:dc6:d890:1a97 with SMTP id
+ p10-20020a056902114a00b00dc6d8901a97mr59614ybu.9.1710275203718; Tue, 12 Mar
+ 2024 13:26:43 -0700 (PDT)
+Date: Tue, 12 Mar 2024 13:26:42 -0700
+In-Reply-To: <20240311172431.zqymfqd4xlpd3pft@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: lcengRLdxZm4iBzPJ4JF2j8PG8dxzR0s
-X-Proofpoint-GUID: ocG_9iP6VjEYR4oQNpVm_KIspBilBW8F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_11,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- suspectscore=0 clxscore=1015 phishscore=0 mlxlogscore=986 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403120139
+Mime-Version: 1.0
+References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-5-michael.roth@amd.com>
+ <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com> <ZcY2VRsRd03UQdF7@google.com>
+ <84d62953-527d-4837-acf8-315391f4b225@arm.com> <ZcZBCdTA2kBoSeL8@google.com> <20240311172431.zqymfqd4xlpd3pft@amd.com>
+Message-ID: <ZfC6gnqVhZQJnB_3@google.com>
+Subject: Re: [PATCH RFC gmem v1 4/8] KVM: x86: Add gmem hook for invalidating memory
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, "tabba@google.com" <tabba@google.com>, linux-coco@lists.linux.dev, 
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	pbonzini@redhat.com, isaku.yamahata@intel.com, ackerleytng@google.com, 
+	vbabka@suse.cz, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	jroedel@suse.de, pankaj.gupta@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+On Mon, Mar 11, 2024, Michael Roth wrote:
+> On Fri, Feb 09, 2024 at 07:13:13AM -0800, Sean Christopherson wrote:
+> > On Fri, Feb 09, 2024, Steven Price wrote:
+> > > >> One option that I've considered is to implement a seperate CCA ioctl to
+> > > >> notify KVM whether the memory should be mapped protected.
+> > > > 
+> > > > That's what KVM_SET_MEMORY_ATTRIBUTES+KVM_MEMORY_ATTRIBUTE_PRIVATE is for, no?
+> > > 
+> > > Sorry, I really didn't explain that well. Yes effectively this is the
+> > > attribute flag, but there's corner cases for destruction of the VM. My
+> > > thought was that if the VMM wanted to tear down part of the protected
+> > > range (without making it shared) then a separate ioctl would be needed
+> > > to notify KVM of the unmap.
+> > 
+> > No new uAPI should be needed, because the only scenario time a benign VMM should
+> > do this is if the guest also knows the memory is being removed, in which case
+> > PUNCH_HOLE will suffice.
+> > 
+> > > >> This 'solves' the problem nicely except for the case where the VMM
+> > > >> deliberately punches holes in memory which the guest is using.
+> > > > 
+> > > > I don't see what problem there is to solve in this case.  PUNCH_HOLE is destructive,
+> > > > so don't do that.
+> > > 
+> > > A well behaving VMM wouldn't PUNCH_HOLE when the guest is using it, but
+> > > my concern here is a VMM which is trying to break the host. In this case
+> > > either the PUNCH_HOLE needs to fail, or we actually need to recover the
+> > > memory from the guest (effectively killing the guest in the process).
+> > 
+> > The latter.  IIRC, we talked about this exact case somewhere in the hour-long
+> > rambling discussion on guest_memfd at PUCK[1].  And we've definitely discussed
+> > this multiple times on-list, though I don't know that there is a single thread
+> > that captures the entire plan.
+> > 
+> > The TL;DR is that gmem will invoke an arch hook for every "struct kvm_gmem"
+> > instance that's attached to a given guest_memfd inode when a page is being fully
+> > removed, i.e. when a page is being freed back to the normal memory pool.  Something
+> > like this proposed SNP patch[2].
+> > 
+> > Mike, do have WIP patches you can share?
+> 
+> Sorry, I missed this query earlier. I'm a bit confused though, I thought
+> the kvm_arch_gmem_invalidate() hook provided in this patch was what we
+> ended up agreeing on during the PUCK call in question.
 
-Enable the x509 parser to accept NIST P521 certificates and add the
-OID for ansip521r1, which is the identifier for NIST P521.
+Heh, I trust your memory of things far more than I trust mine.  I'm just proving
+Cunningham's Law.  :-)
 
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Tested-by: Lukas Wunner <lukas@wunner.de>
----
- crypto/asymmetric_keys/x509_cert_parser.c | 3 +++
- include/linux/oid_registry.h              | 1 +
- 2 files changed, 4 insertions(+)
+> There was an open question about what to do if a use-case came along
+> where we needed to pass additional parameters to
+> kvm_arch_gmem_invalidate() other than just the start/end PFN range for
+> the pages being freed, but we'd determined that SNP and TDX did not
+> currently need this, so I didn't have any changes planned in this
+> regard.
+> 
+> If we now have such a need, what we had proposed was to modify
+> __filemap_remove_folio()/page_cache_delete() to defer setting
+> folio->mapping to NULL so that we could still access it in
+> kvm_gmem_free_folio() so that we can still access mapping->i_private_list
+> to get the list of gmem/KVM instances and pass them on via
+> kvm_arch_gmem_invalidate().
 
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 487204d39426..99f809b7910b 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -538,6 +538,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 		case OID_id_ansip384r1:
- 			ctx->cert->pub->pkey_algo = "ecdsa-nist-p384";
- 			break;
-+		case OID_id_ansip521r1:
-+			ctx->cert->pub->pkey_algo = "ecdsa-nist-p521";
-+			break;
- 		default:
- 			return -ENOPKG;
- 		}
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 3921fbed0b28..af16d96fbbf2 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -65,6 +65,7 @@ enum OID {
- 	OID_Scram,			/* 1.3.6.1.5.5.14 */
- 	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
- 	OID_id_ansip384r1,		/* 1.3.132.0.34 */
-+	OID_id_ansip521r1,		/* 1.3.132.0.35 */
- 	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
- 	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
- 	OID_sha512,			/* 2.16.840.1.101.3.4.2.3 */
--- 
-2.43.0
+Yeah, this is what I was remembering.  I obviously forgot that we didn't have a
+need to iterate over all bindings at this time.
 
+> So that's doable, but it's not clear from this discussion that that's
+> needed.
+
+Same here.  And even if it is needed, it's not your problem to solve.  The above
+blurb about needing to preserve folio->mapping being free_folio() is sufficient
+to get the ARM code moving in the right direction.
+
+Thanks!
+
+> If the idea to block/kill the guest if VMM tries to hole-punch,
+> and ARM CCA already has plans to wire up the shared/private flags in
+> kvm_unmap_gfn_range(), wouldn't that have all the information needed to
+> kill that guest? At that point, kvm_gmem_free_folio() can handle
+> additional per-page cleanup (with additional gmem/KVM info plumbed in
+> if necessary).
 
