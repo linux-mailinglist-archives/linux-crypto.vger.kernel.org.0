@@ -1,127 +1,104 @@
-Return-Path: <linux-crypto+bounces-2818-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2820-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63FDA88607A
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Mar 2024 19:25:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75C3388624C
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Mar 2024 22:09:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045021F222CA
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Mar 2024 18:25:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0618BB2258E
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Mar 2024 21:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF42133408;
-	Thu, 21 Mar 2024 18:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BAD136676;
+	Thu, 21 Mar 2024 21:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Omyzrrfr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fJK5qdcN"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BC479C3;
-	Thu, 21 Mar 2024 18:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC472135A72;
+	Thu, 21 Mar 2024 21:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711045526; cv=none; b=Mks2a4aLmgLr/ZEDSOn8S08d2GBGjdrwTJbr8eRPPzg3QmZikiz69G8pUeCJlC3vteW7WzVP0tG4Ruf/cMMD6meNiHze4OF8miQ5LIC7v/06W0IUM9Zdhz34boOyMgAruDfO2GBXK/ATALujdQb+6wxIgi6foE2Mhp1cVRw0fAg=
+	t=1711055333; cv=none; b=pyK1EB5H8saxS3XUBFqT97VofWKaNhIXqWsJilqqQJSYR7s5GkgsdDdGNRrMYhzdFuCwWF5YBIZdYThSZfI5tCbSGYFPo49ugPdFshq4kmoemNeXokyKQ1SMy4vNHiPGQBjWRBLWTaeiCsbdx934DSqt65Zb5c84CMkuXctg1dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711045526; c=relaxed/simple;
-	bh=GSm30TNvJb3WRtML6WpgbGZ659hB6xOjASeoFE5AicI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=GG3cW6PXjvyTwXbYypLc4KVuaurnhEmnia34JOna9WxzOEA/EK1yc7ReF8bC1U5xDm/G1tEvzGX+pYuC/n7+31F0zkmoZIv7gxVwwvtjYqDYG1E2lQLZZJGbiNvuRcaFX6FgL06zAYmLnIk5Hf8xQNngnj6+kI0qTwfrpZdBuII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Omyzrrfr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D83A2C433C7;
-	Thu, 21 Mar 2024 18:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711045525;
-	bh=GSm30TNvJb3WRtML6WpgbGZ659hB6xOjASeoFE5AicI=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=OmyzrrfrgBYAsSaQSWU4pA/fRi563CAGY/aoIPyzl78XLfH3G1Sq+Te0Xl7IpO07b
-	 4i0Kf9hPbDbpO05M2Y/daA7DOy3bR+/7TXlkSyATk7XVSfW2b1nbiicGD605uS1Gxs
-	 rwK2jSgRL4st1o5V12W+0k07kPWbQ9uDkuPkoPUFzDXztr1YwbFrFBICZ+9cxQCl1Q
-	 cO/kXYk+FxpmUP8L7vEiVK9Dv6nVEOY2/5BHZWWHAmUdqn82FbAsn6eBzcnXHNsJIQ
-	 L4wGjGJuuFeCap0xUdoH/XZNaSa4wIDMvV7HjkHKpucMCeSwO9SvSxs6+GBL4c5kFH
-	 /OiYAwEOMxQVA==
+	s=arc-20240116; t=1711055333; c=relaxed/simple;
+	bh=TeJGj1/tK9CmXzP6fD4kuH3rPg5TtofR/Xu7iirtjCM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mBj53jROMJNakzM0g9JzhjOetGVmoAkO7O8theMpZZ5aVS9e/DytHHEVQ+AUP/fwtK9yUJ7HvD/qMkIgnJRVXAA+H0TVig/Vvbk9VvMgvCdSsLq07HaqSnpMEquazIN/jV9KMPRrIV7JNkN1PbpdZjnNYOJT9ns8XqrTet0bmsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fJK5qdcN; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711055330; x=1742591330;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TeJGj1/tK9CmXzP6fD4kuH3rPg5TtofR/Xu7iirtjCM=;
+  b=fJK5qdcNnuCXkgIVYmKJIzhd5Ozt3eQhd+LQtrhpTJxABI1GXi7IceGy
+   Y+cFuOW/FJo/+4WRnMHh99gCnFe2gC3cICrHsVcRS9U9x5M0v2zDNIeTn
+   5XbgVvt9rznhu2dK/n9EU+wJ+ItYVesXIC08PeL4KzrNc6X6fVOK52D1E
+   JflKouytRPqgUJNakPWcRIoHZ07h90X9jSpU1+DbR923iupD+OXkNTwiR
+   2NLLABnVxBhSvQa5z9Y8suBrIBWzBDkwdwwTZJDdZiBIXY6lPU9i9LS8U
+   nXPjHDJShlZZxqffxmd28sgc/7NDzZFgc+GE++10ovF4s4vmbHNgJ63dk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="28551474"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="28551474"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 14:08:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="19362672"
+Received: from derragan-mobl.amr.corp.intel.com (HELO tzanussi-mobl1.amr.corp.intel.com) ([10.213.183.52])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 14:08:48 -0700
+From: Tom Zanussi <tom.zanussi@linux.intel.com>
+To: herbert@gondor.apana.org.au,
+	davem@davemloft.net
+Cc: jsnitsel@redhat.com,
+	linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: [PATCH 0/2] crypto: iaa - A couple of bugfixes
+Date: Thu, 21 Mar 2024 16:08:44 -0500
+Message-Id: <20240321210846.1307596-1-tom.zanussi@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 20:25:22 +0200
-Message-Id: <CZZN0LEJ6DA6.1CGFPODVM7RCH@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>, <bbhushan2@marvell.com>, "David Howells"
- <dhowells@redhat.com>
-Subject: Re: [PATCH v7 13/13] crypto: x509 - Add OID for NIST P521 and
- extend parser for it
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
- <20240320114725.1644921-14-stefanb@linux.ibm.com>
- <CZZLN3B7TMG5.1A0518I6Z3MEA@kernel.org>
- <0216c143-445b-472d-a62a-57cbe8b19c24@linux.ibm.com>
-In-Reply-To: <0216c143-445b-472d-a62a-57cbe8b19c24@linux.ibm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu Mar 21, 2024 at 7:42 PM EET, Stefan Berger wrote:
->
->
-> On 3/21/24 13:20, Jarkko Sakkinen wrote:
-> > On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
-> >> Enable the x509 parser to accept NIST P521 certificates and add the
-> >> OID for ansip521r1, which is the identifier for NIST P521.
-> >>
-> >> Cc: David Howells <dhowells@redhat.com>
-> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> >> Tested-by: Lukas Wunner <lukas@wunner.de>
-> >> ---
-> >>   crypto/asymmetric_keys/x509_cert_parser.c | 3 +++
-> >>   include/linux/oid_registry.h              | 1 +
-> >>   2 files changed, 4 insertions(+)
-> >>
-> >> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymme=
-tric_keys/x509_cert_parser.c
-> >> index 487204d39426..99f809b7910b 100644
-> >> --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> >> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> >> @@ -538,6 +538,9 @@ int x509_extract_key_data(void *context, size_t hd=
-rlen,
-> >>   		case OID_id_ansip384r1:
-> >>   			ctx->cert->pub->pkey_algo =3D "ecdsa-nist-p384";
-> >>   			break;
-> >> +		case OID_id_ansip521r1:
-> >> +			ctx->cert->pub->pkey_algo =3D "ecdsa-nist-p521";
-> >> +			break;
-> >>   		default:
-> >>   			return -ENOPKG;
-> >>   		}
-> >> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry=
-.h
-> >> index 3921fbed0b28..af16d96fbbf2 100644
-> >> --- a/include/linux/oid_registry.h
-> >> +++ b/include/linux/oid_registry.h
-> >> @@ -65,6 +65,7 @@ enum OID {
-> >>   	OID_Scram,			/* 1.3.6.1.5.5.14 */
-> >>   	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
-> >>   	OID_id_ansip384r1,		/* 1.3.132.0.34 */
-> >> +	OID_id_ansip521r1,		/* 1.3.132.0.35 */
-> >>   	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
-> >>   	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
-> >>   	OID_sha512,			/* 2.16.840.1.101.3.4.2.3 */
-> >=20
-> > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> >=20
-> > BR, Jarkko
->
->
-> Thanks for the tags.
+Hi Herbert,
 
-Sure, at least the noise I've made is the sign that someone actually did
-read through all the code changes, right? :-)
+Here are a couple of bugfixes to iaa_crypto.
 
-BR, Jarkko
+The first is a documentation fix from Jerry Snitselaar, which I added
+my Reviewed-by: to.
+
+The second is a fix for a divide-by-0 bug when running with a single
+cpu, which was reported by Jerry as well, and which I've tested with
+various numbers of cpus and other permutations with no problems.
+
+Thanks to Jerry for the patch and bug report.
+
+Thanks,
+
+Tom
+
+Jerry Snitselaar (1):
+  crypto: iaa: Fix some errors in IAA documentation
+
+Tom Zanussi (1):
+  crypto: iaa - Fix nr_cpus < nr_iaa case
+
+ .../driver-api/crypto/iaa/iaa-crypto.rst      | 22 ++++++++++++++-----
+ drivers/crypto/intel/iaa/iaa_crypto_main.c    | 10 ++++++---
+ 2 files changed, 23 insertions(+), 9 deletions(-)
+
+-- 
+2.34.1
+
 
