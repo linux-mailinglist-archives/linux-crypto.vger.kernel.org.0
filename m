@@ -1,46 +1,47 @@
-Return-Path: <linux-crypto+bounces-2989-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-2991-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8B088FCBF
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 11:17:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D866088FD4B
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 11:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 612061C25CF8
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 10:17:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11AB81C27FB0
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 10:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4EE42A88;
-	Thu, 28 Mar 2024 10:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C167CF17;
+	Thu, 28 Mar 2024 10:44:28 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5E35223
-	for <linux-crypto@vger.kernel.org>; Thu, 28 Mar 2024 10:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D143F53818;
+	Thu, 28 Mar 2024 10:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621044; cv=none; b=tzDAflstCc3+5RzLyAPK8lUMk7do1JStBzb0U8zraAwAujtWqxQA68S+zS4z92oHchQrILt10cpsv9466qkqNO16uuOiNlKiHI5+hImMUWgPbJOkJNxU6KHekW7WI0pKbngjwANeoySKOMHLdEkjJ4bBdBRcLsldRqrcFdOeUZs=
+	t=1711622668; cv=none; b=oG1aN3nTFwpdYQT7MBFfwWc7gG561pTtUc/aDeTLsAozX5ixEznjg0LyfDc6tQS6f3VuVv8onEQFk9Ub3LGEPqN5i5FYzYNCu+dJd5F6rkWAw0fhUqU8ntyCKczvTVmbwHgoQ+lure/VzYRvMciAp5uM/jd4LpNGn8YLqWOlRBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621044; c=relaxed/simple;
-	bh=7NCOP9+2sqRClXSKEASo7Uwi3USYyilhrNI8GfJnpkk=;
+	s=arc-20240116; t=1711622668; c=relaxed/simple;
+	bh=mhF/HUvrBvoHvRE2SKCDRMWLPtYp46iCtm+XUxhGaXM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SJZrLtPt7oKwhWUSHJ6ORgzS9yUq8K2RupCc88G5iFmu595aNkSO5woY791VuDHvV9756npqrGBbBCDwY9mZN7AXeGLeSpP+mxGxYVqEIXA04c7CCZwpCa4SfyNWCHEypCNzpRzsa/uxXu2/Ueaziaq+Z9yv57Ect+SyfbzaxeQ=
+	 Content-Type:Content-Disposition:In-Reply-To; b=VHDYp9M6Mx162fxpQ5T90uP6Aw0l2ZfWliqRdbe3G2tZTMk2OZc/TP1HI1B3/Aje6REL8wmBtGy4LgBvdQrnkiYsUrltsaPxqbI7wnVYb53xN159BOWqvqG4hJ7vOPc3uGJbJAY5Dyh3n1HvofBxnGopS4cpd44Pi6K1pat+TAg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rpmot-00C7Ww-L6; Thu, 28 Mar 2024 18:17:16 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Mar 2024 18:17:32 +0800
-Date: Thu, 28 Mar 2024 18:17:32 +0800
+	id 1rpnF1-00C8Ar-KN; Thu, 28 Mar 2024 18:44:16 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Mar 2024 18:44:32 +0800
+Date: Thu, 28 Mar 2024 18:44:32 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Joachim Vandersmissen <git@jvdsn.com>
-Cc: linux-crypto@vger.kernel.org,
-	Salvator Benedetto <salvatore.benedetto@intel.com>
-Subject: Re: [PATCH] crypto: ecdh - explicitly zeroize private_key
-Message-ID: <ZgVDvHT1sIOW+ZwV@gondor.apana.org.au>
-References: <20240320045106.61875-1-git@jvdsn.com>
+To: Tom Zanussi <tom.zanussi@linux.intel.com>
+Cc: davem@davemloft.net, andre.glover@linux.intel.com,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	dmaengine@vger.kernel.org
+Subject: Re: [PATCH 0/4] crypto: IAA stats bugfixes and simplifications
+Message-ID: <ZgVKECpfxpxyrzfR@gondor.apana.org.au>
+References: <20240304212011.1525003-1-tom.zanussi@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -49,27 +50,52 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240320045106.61875-1-git@jvdsn.com>
+In-Reply-To: <20240304212011.1525003-1-tom.zanussi@linux.intel.com>
 
-On Tue, Mar 19, 2024 at 11:51:06PM -0500, Joachim Vandersmissen wrote:
->
-> diff --git a/crypto/ecdh.c b/crypto/ecdh.c
-> index 80afee3234fb..ce332b39b705 100644
-> --- a/crypto/ecdh.c
-> +++ b/crypto/ecdh.c
-> @@ -33,6 +33,8 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
->  	    params.key_size > sizeof(u64) * ctx->ndigits)
->  		return -EINVAL;
->  
-> +	memzero_explicit(ctx->private_key, sizeof(ctx->private_key));
+On Mon, Mar 04, 2024 at 03:20:07PM -0600, Tom Zanussi wrote:
+> Hi Herbert,
+> 
+> While doing some testing, I noticed a discrepancy in the
+> decomp_bytes_in stat, which the first patch in this series (crypto:
+> iaa - fix decomp_bytes_in stats) fixes.
+> 
+> I also realized that there were some other problems unrelated to that
+> but also that the stats code could be simplified in a number of ways
+> and that some of it wasn't really useful.  The stats code is debugging
+> code and has been helpful to quickly verify whether things are
+> basically working, but since it's there we should make it as accurate
+> and actually useful as possible.
+> 
+> I realize the second patch (crypto: iaa - Remove comp/decomp delay
+> statistics) removes the code I just fixed up in a patch you just
+> merged (crypto: iaa - Fix comp/decomp delay statistics) - let me know
+> if you want me to combine those if you want to remove the latter from
+> your branch...
+> 
+> Thanks,
+> 
+> Tom
+> 
+> 
+> *** BLURB HERE ***
+> 
+> Tom Zanussi (4):
+>   crypto: iaa - fix decomp_bytes_in stats
+>   crypto: iaa - Remove comp/decomp delay statistics
+>   crypto: iaa - Add global_stats file and remove individual stat files
+>   crypto: iaa - Change iaa statistics to atomic64_t
+> 
+>  .../driver-api/crypto/iaa/iaa-crypto.rst      |  76 +++++---
+>  drivers/crypto/intel/iaa/iaa_crypto.h         |  16 +-
+>  drivers/crypto/intel/iaa/iaa_crypto_main.c    |  13 +-
+>  drivers/crypto/intel/iaa/iaa_crypto_stats.c   | 183 ++++++++----------
+>  drivers/crypto/intel/iaa/iaa_crypto_stats.h   |   8 -
+>  5 files changed, 140 insertions(+), 156 deletions(-)
+> 
+> -- 
+> 2.34.1
 
-Please use memset instead of memzero_explicit unless it is actually
-needed (which is not the case here).
-
-I know there is another memzero_explicit in this function which should
-also be memset so it's not your fault.
-
-Thanks,
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
