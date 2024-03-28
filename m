@@ -1,262 +1,242 @@
-Return-Path: <linux-crypto+bounces-3006-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3008-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C3E89005E
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 14:36:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB0B1890294
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 16:04:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A4991F25D38
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 13:36:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F4812933C9
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 Mar 2024 15:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D4480BFC;
-	Thu, 28 Mar 2024 13:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933C57F481;
+	Thu, 28 Mar 2024 15:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ls7eTJPH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b28V5b0q"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3637F489
-	for <linux-crypto@vger.kernel.org>; Thu, 28 Mar 2024 13:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04A11E48C
+	for <linux-crypto@vger.kernel.org>; Thu, 28 Mar 2024 15:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711633006; cv=none; b=Eaqw0KHytsetsqNotCp5ZSQL/5Dtc3Ozjl/XHSAt1BvCFeICqiDeyLOn0DVlulLpjGT5TXr3Qw9F7f+rUFlMuwllwdnYFGTChgIOLqfGptpXJ/hrsfLJ9UFEHSObrylH5qtQ2avt36qnNo+BwvJKO1maSdjnsVn12B/UnELRyo0=
+	t=1711638237; cv=none; b=MxETyLXVcdCX/CT0pMovSH7JHCmAbfNfKKZvUe92DZv57ToVFx3trGyyToOWl58WJLmk6hE8Tgtb6p10avNcsR3e/ysk7UMfITc1kch8MqValP416sucBLYCQVpt+wch2wcNYzEprNwzlYqMpNVwFLIKiHNllOWK9luaCmQdm/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711633006; c=relaxed/simple;
-	bh=ImeiQvEeK4vVx6wgVtnrIyHLe/KlQ6pY3d5ytHEwbuc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rzLue6LRJ+AaTo7qAI6wE5gcLxIKszEegCzuS/ViRKHsxNUtYx6W+TcCMJk8me0We9/3TG2iDx0U1XVv9GtBJjnr2CbK+FhVY+U8enO1XdarXxOf7WFDAUGz+uAgwA70KFrPqKSjt5cMktQLgLd2A5J71PH9FZscRU/aG+nt25c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ls7eTJPH; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4148c6132b4so12005325e9.1
-        for <linux-crypto@vger.kernel.org>; Thu, 28 Mar 2024 06:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711633003; x=1712237803; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=1IePTNqHmG2u8C44qjEuGkD7ttbOGPgyCjA8yYZ50bc=;
-        b=ls7eTJPHiC5L1ZjnEH3HxkoCDdjo5ndDi1hffwr+ln8UC6/VVTXLl5uBXEmaTVLzgc
-         Qr8DFzXBRBWD3p7ft7QK7UG04VmXtnrxglgvoPjaYnjxyTcSdNNJ/95EN1g1LJlUbowV
-         D8wxtc8u01Qc/x8b+WBRvIY7yHEVRSn1pTK0CoTJxnyXuE8BB2auCZOtVkryoAlk+Zsp
-         McMfvBtcnQSqXNrCY0heLEWB+B2fOAWt3SlXamPM4SB0COYbsO2bWXKJdNiIZMwo+xFb
-         FUQSGqPve5UK2g+YiCMoTm3/shvejOQYmJQlEgHOODwm2TdDdcjcceGpGHQU4KTs+YgB
-         Rizg==
+	s=arc-20240116; t=1711638237; c=relaxed/simple;
+	bh=gJHZ46h8jHWVRXzxUbrEFp1Bi2yWWykv7eE+mdolLJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=F7m4Ah0BMk+gnvv8hd8kmWvcVr49Q/3Yf41J8Sl2iUiOoLyL+eS1sWIX0qgkIq0/9XPJbCRGLDn0VOUd5RpppAI+Z+jXgUy+DBapge6kCr4ag0gTPCOtBAoKlNzywlr50RWE69tz6rX+e+6nSeBsy6GniqfV/dWXrspljbQrLuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b28V5b0q; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711638234;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZDanVVD4Yszv4zW65N/qyFiX7XqJVAu3Bm8+wTDV9/o=;
+	b=b28V5b0qLdr7FAv6hH10E+/1EflBxm6eAAiZVMKkmgOcVWWc+b9U+DSh/sYyrkOx4sFAVe
+	+veCar/9Mbc9Up4zOi+QPz5HcLZ+b9iZ4DvrufIKNX/Gou4UWIXg3SK6yxxvKDyatKPGaL
+	65Z+67l5QFuWE9QOUk1HdLmPQMSq05Q=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-333-X-R9aQE0PVi_dTNuoGueOw-1; Thu, 28 Mar 2024 11:03:53 -0400
+X-MC-Unique: X-R9aQE0PVi_dTNuoGueOw-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc7a6a043bso111489639f.0
+        for <linux-crypto@vger.kernel.org>; Thu, 28 Mar 2024 08:03:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711633003; x=1712237803;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1IePTNqHmG2u8C44qjEuGkD7ttbOGPgyCjA8yYZ50bc=;
-        b=dUEX3TtVbL/JyrmAVzFbp1KbodPcHz1NKlpcAJoe1PhPeafW+FckrhLOWdp4UHno4N
-         UR/7NyIKN2IjbC2oVTROxwiR8Mc8CjX/jGaKxP1IJjflp+x1iu1gYwIVdFWi4voEordJ
-         m4P0HdQDwU5eF6QJ7lSbaw88Nz5kfdE0vdMDg0yXmufuMcmQqktRBQXMYgK1a0hiOrvp
-         CLaS8TB3mR8+/d9yMNvaKlyQyBSPH1sLWJOj7xgjxyYTicbAvAhJB+mkvw5xxc3FgSqV
-         mXSSl2NWu5q/FQvsBxpNevIcFKyNlnClVBJCxGGm+3trUZk7rjO95of0VKtEEtOhpTIc
-         fLJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUPIhlNygboglyEo3N1egTE4rRETCI98YiNqGYVnyxcMlgMrYf30xJX/rEwp3wqjqXQKc4uN6JbpkBeN3PGzMBzSafztZhWWry8CV4/
-X-Gm-Message-State: AOJu0Yx93jPRrA8quKLZiN7F99NXnpydR7Oh3ewug89wMtghRBl3znkS
-	UUFEETxRov9xmjS3vgBf5Yx6+6ci3xuh7ymVPeipUBBvU8n1IIk5+8ur88Y1bg4=
-X-Google-Smtp-Source: AGHT+IEqy69lfejNCICnEF+Lz3j5+RW5/EqlqxH994OBXzrzmpwHtFr1ILfHmp+nOsj3wq2bEQxAVA==
-X-Received: by 2002:adf:e6cb:0:b0:343:343f:85da with SMTP id y11-20020adfe6cb000000b00343343f85damr886818wrm.33.1711633002735;
-        Thu, 28 Mar 2024 06:36:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.50])
-        by smtp.gmail.com with ESMTPSA id fj3-20020a05600c0c8300b00414896b61e4sm5493647wmb.16.2024.03.28.06.36.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 06:36:42 -0700 (PDT)
-Message-ID: <6b691a48-ca97-4f23-a09f-69b9254f0c11@linaro.org>
-Date: Thu, 28 Mar 2024 14:36:40 +0100
+        d=1e100.net; s=20230601; t=1711638232; x=1712243032;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZDanVVD4Yszv4zW65N/qyFiX7XqJVAu3Bm8+wTDV9/o=;
+        b=O6qWoVDtDMJrzAXLOwTyS0n3+3ulJxvDwHWs4RKhT1bRfJHULIMlelKFjF5OwMc4SD
+         6PNf8YQ4njkcCNRegdKcOOMryidJuOLZLhWPIilglCbpGJTPc2YWXUbv3Jkai+PIwyIO
+         6JJeosbiGm+NWcTB6ybJ+htQyab9xwDrJLU/m66XdxQGZl7KQwfznvTmvv+Qqb3DFl3w
+         VGBjPWj/p5SE0oFEwZRaD/UOmliTT39Jl/Sji1fGxHlvJJUNUdMvGOzLnkNgzAWMIapV
+         Le2tWv6goRzjP+hxer6lBoWKfvGWugTbmWcBYky96kWbUT+1fZGosiTUHNwQejBmJ/ks
+         62ug==
+X-Forwarded-Encrypted: i=1; AJvYcCV/Sf+eU9HDauUqL9q867InoB5YlDxoF1e78Vh3t5r5mD0ZfecTJzQMU1ea4S8OUO+V9FNmRFmoadUY5U9hC+oNpJ0s5YJ357CM5gQY
+X-Gm-Message-State: AOJu0YwsNeTi9ecVMASimfEUWaQ11zXnVzZDooXReE1iDyft209d3do1
+	uVq7ynv3i2tuAccW7JhS47+RwrCapTRNdcEpm3EyytchtW6rQfRXXaqJq4d5TheDtK8ihS6WJOc
+	QyZH51b4ODz/WBe/+URYDV7Q6A/5Le3oxHhxdaEizcOBosn+mPDX2o8oK6zZWwg==
+X-Received: by 2002:a92:cd50:0:b0:368:98c2:fcaf with SMTP id v16-20020a92cd50000000b0036898c2fcafmr2565219ilq.0.1711638232264;
+        Thu, 28 Mar 2024 08:03:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEpTaDo//5WNLD+81yRkJrCSOR0W6wX23ZmAkwthAWMBbBiuFpz6SS/AzrpkI37HUCjEmei4A==
+X-Received: by 2002:a92:cd50:0:b0:368:98c2:fcaf with SMTP id v16-20020a92cd50000000b0036898c2fcafmr2565202ilq.0.1711638231996;
+        Thu, 28 Mar 2024 08:03:51 -0700 (PDT)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id h8-20020a02c4c8000000b0047bee4d297asm402412jaj.155.2024.03.28.08.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 08:03:51 -0700 (PDT)
+Date: Thu, 28 Mar 2024 09:03:49 -0600
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Xin Zeng <xin.zeng@intel.com>, jgg@nvidia.com, yishaih@nvidia.com,
+ shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+ linux-crypto@vger.kernel.org, kvm@vger.kernel.org, qat-linux@intel.com
+Subject: Re: [PATCH v5 00/10] crypto: qat - enable QAT GEN4 SRIOV VF live
+ migration for QAT GEN4
+Message-ID: <20240328090349.4f18cb36.alex.williamson@redhat.com>
+In-Reply-To: <ZgVLvdhhU6o7sJwF@gondor.apana.org.au>
+References: <20240306135855.4123535-1-xin.zeng@intel.com>
+	<ZgVLvdhhU6o7sJwF@gondor.apana.org.au>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH REVIEW] hwrng: add exynos Secure World RNG device driver
-To: Alexey Klimov <alexey.klimov@linaro.org>, olivia@selenic.com,
- herbert@gondor.apana.org.au, sehi.kim@samsung.com,
- linux-samsung-soc@vger.kernel.org, peter.griffin@linaro.org,
- =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Cc: alim.akhtar@samsung.com, linux-crypto@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-team@android.com, andre.draszik@linaro.org, willmcvicker@google.com,
- saravanak@google.com, elder@linaro.org, tudor.ambarus@linaro.org,
- klimov.linux@gmail.com
-References: <20240328125056.1054878-1-alexey.klimov@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240328125056.1054878-1-alexey.klimov@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 28/03/2024 13:50, Alexey Klimov wrote:
-> The Exynos TRNG device is controlled by firmware and shared between
+On Thu, 28 Mar 2024 18:51:41 +0800
+Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-No, it is not. I have TRNG perfectly usable on my board. Maybe you are
-refer to some specific SoC...
-
-Please always Cc existing TRNG driver maintainer.
-
-> non-secure world and secure world. Access to it is exposed via SMC
-> interface which is implemented here. The firmware code does
-> additional security checks, start-up test and some checks on resume.
+> On Wed, Mar 06, 2024 at 09:58:45PM +0800, Xin Zeng wrote:
+> > This set enables live migration for Intel QAT GEN4 SRIOV Virtual
+> > Functions (VFs).
+> > It is composed of 10 patches. Patch 1~6 refactor the original QAT PF
+> > driver implementation which will be reused by the following patches.
+> > Patch 7 introduces the logic to the QAT PF driver that allows to save
+> > and restore the state of a bank (a QAT VF is a wrapper around banks) and
+> > drain a ring pair. Patch 8 adds the QAT PF driver a set of interfaces to
+> > allow to save and restore the state of a VF that will be called by the
+> > module qat_vfio_pci which will be introduced in the last patch. Patch 9
+> > implements the defined device interfaces. The last one adds a vfio pci
+> > extension specific for QAT which intercepts the vfio device operations
+> > for a QAT VF to allow live migration.
+> > 
+> > Here are the steps required to test the live migration of a QAT GEN4 VF:
+> > 1. Bind one or more QAT GEN4 VF devices to the module qat_vfio_pci.ko 
+> > 2. Assign the VFs to the virtual machine and enable device live
+> > migration 
+> > 3. Run a workload using a QAT VF inside the VM, for example using qatlib
+> > (https://github.com/intel/qatlib) 
+> > 4. Migrate the VM from the source node to a destination node
+> > 
+> > Changes in v5 since v4: https://lore.kernel.org/kvm/20240228143402.89219-9-xin.zeng@intel.com
+> > -  Remove device ID recheck as no consensus has been reached yet (Kevin)
+> > -  Add missing state PRE_COPY_P2P in precopy_iotcl (Kevin)
+> > -  Rearrange the state transition flow for better readability (Kevin)
+> > -  Remove unnecessary Reviewed-by in commit message (Kevin)
+> > 
+> > Changes in v4 since v3: https://lore.kernel.org/kvm/20240221155008.960369-11-xin.zeng@intel.com
+> > -  Change the order of maintainer entry for QAT vfio pci driver in
+> >    MAINTAINERS to make it alphabetical (Alex)
+> > -  Put QAT VFIO PCI driver under vfio/pci directly instead of
+> >    vfio/pci/intel (Alex)
+> > -  Add id_table recheck during device probe (Alex)
+> > 
+> > Changes in v3 since v2: https://lore.kernel.org/kvm/20240220032052.66834-1-xin.zeng@intel.com
+> > -  Use state_mutex directly instead of unnecessary deferred_reset mode
+> >    (Jason)
+> > 
+> > Changes in v2 since v1: https://lore.kernel.org/all/20240201153337.4033490-1-xin.zeng@intel.com
+> > -  Add VFIO_MIGRATION_PRE_COPY support (Alex)
+> > -  Remove unnecessary module dependancy in Kconfig (Alex)
+> > -  Use direct function calls instead of function pointers in qat vfio
+> >    variant driver (Jason)
+> > -  Address the comments including uncessary pointer check and kfree,
+> >    missing lock and direct use of pci_iov_vf_id (Shameer)
+> > -  Change CHECK_STAT macro to avoid repeat comparison (Kamlesh)
+> > 
+> > Changes in v1 since RFC: https://lore.kernel.org/all/20230630131304.64243-1-xin.zeng@intel.com
+> > -  Address comments including the right module dependancy in Kconfig,
+> >    source file name and module description (Alex)
+> > -  Added PCI error handler and P2P state handler (Suggested by Kevin)
+> > -  Refactor the state check duing loading ring state (Kevin) 
+> > -  Fix missed call to vfio_put_device in the error case (Breet)
+> > -  Migrate the shadow states in PF driver
+> > -  Rebase on top of 6.8-rc1
+> > 
+> > Giovanni Cabiddu (2):
+> >   crypto: qat - adf_get_etr_base() helper
+> >   crypto: qat - relocate CSR access code
+> > 
+> > Siming Wan (3):
+> >   crypto: qat - rename get_sla_arr_of_type()
+> >   crypto: qat - expand CSR operations for QAT GEN4 devices
+> >   crypto: qat - add bank save and restore flows
+> > 
+> > Xin Zeng (5):
+> >   crypto: qat - relocate and rename 4xxx PF2VM definitions
+> >   crypto: qat - move PFVF compat checker to a function
+> >   crypto: qat - add interface for live migration
+> >   crypto: qat - implement interface for live migration
+> >   vfio/qat: Add vfio_pci driver for Intel QAT VF devices
+> > 
+> >  MAINTAINERS                                   |    8 +
+> >  .../intel/qat/qat_420xx/adf_420xx_hw_data.c   |    3 +
+> >  .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     |    5 +
+> >  .../intel/qat/qat_c3xxx/adf_c3xxx_hw_data.c   |    1 +
+> >  .../qat/qat_c3xxxvf/adf_c3xxxvf_hw_data.c     |    1 +
+> >  .../intel/qat/qat_c62x/adf_c62x_hw_data.c     |    1 +
+> >  .../intel/qat/qat_c62xvf/adf_c62xvf_hw_data.c |    1 +
+> >  drivers/crypto/intel/qat/qat_common/Makefile  |    6 +-
+> >  .../intel/qat/qat_common/adf_accel_devices.h  |   88 ++
+> >  .../intel/qat/qat_common/adf_common_drv.h     |   10 +
+> >  .../qat/qat_common/adf_gen2_hw_csr_data.c     |  101 ++
+> >  .../qat/qat_common/adf_gen2_hw_csr_data.h     |   86 ++
+> >  .../intel/qat/qat_common/adf_gen2_hw_data.c   |   97 --
+> >  .../intel/qat/qat_common/adf_gen2_hw_data.h   |   76 --
+> >  .../qat/qat_common/adf_gen4_hw_csr_data.c     |  231 ++++
+> >  .../qat/qat_common/adf_gen4_hw_csr_data.h     |  188 +++
+> >  .../intel/qat/qat_common/adf_gen4_hw_data.c   |  380 +++++--
+> >  .../intel/qat/qat_common/adf_gen4_hw_data.h   |  127 +--
+> >  .../intel/qat/qat_common/adf_gen4_pfvf.c      |    8 +-
+> >  .../intel/qat/qat_common/adf_gen4_vf_mig.c    | 1010 +++++++++++++++++
+> >  .../intel/qat/qat_common/adf_gen4_vf_mig.h    |   10 +
+> >  .../intel/qat/qat_common/adf_mstate_mgr.c     |  318 ++++++
+> >  .../intel/qat/qat_common/adf_mstate_mgr.h     |   89 ++
+> >  .../intel/qat/qat_common/adf_pfvf_pf_proto.c  |    8 +-
+> >  .../intel/qat/qat_common/adf_pfvf_utils.h     |   11 +
+> >  drivers/crypto/intel/qat/qat_common/adf_rl.c  |   10 +-
+> >  drivers/crypto/intel/qat/qat_common/adf_rl.h  |    2 +
+> >  .../crypto/intel/qat/qat_common/adf_sriov.c   |    7 +-
+> >  .../intel/qat/qat_common/adf_transport.c      |    4 +-
+> >  .../crypto/intel/qat/qat_common/qat_mig_dev.c |  130 +++
+> >  .../qat/qat_dh895xcc/adf_dh895xcc_hw_data.c   |    1 +
+> >  .../qat_dh895xccvf/adf_dh895xccvf_hw_data.c   |    1 +
+> >  drivers/vfio/pci/Kconfig                      |    2 +
+> >  drivers/vfio/pci/Makefile                     |    2 +
+> >  drivers/vfio/pci/qat/Kconfig                  |   12 +
+> >  drivers/vfio/pci/qat/Makefile                 |    3 +
+> >  drivers/vfio/pci/qat/main.c                   |  662 +++++++++++
+> >  include/linux/qat/qat_mig_dev.h               |   31 +
+> >  38 files changed, 3344 insertions(+), 387 deletions(-)
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen2_hw_csr_data.c
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen2_hw_csr_data.h
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_hw_csr_data.c
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_hw_csr_data.h
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_vf_mig.c
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_gen4_vf_mig.h
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_mstate_mgr.c
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_mstate_mgr.h
+> >  create mode 100644 drivers/crypto/intel/qat/qat_common/qat_mig_dev.c
+> >  create mode 100644 drivers/vfio/pci/qat/Kconfig
+> >  create mode 100644 drivers/vfio/pci/qat/Makefile
+> >  create mode 100644 drivers/vfio/pci/qat/main.c
+> >  create mode 100644 include/linux/qat/qat_mig_dev.h
+> > 
+> > 
+> > base-commit: 318407ed77e4140d02e43a001b1f4753e3ce6b5f
+> > -- 
+> > 2.18.2  
 > 
-> This device is found, for instance, in Google Tensor GS101-family
-> of devices.
+> Patches 1-9 applied.  Thanks.
 
-Nothing here explains why this cannot be integrated into existing
-driver. Maybe it, maybe it cannot...
+Hi Herbert,
 
-You try to upstream again vendor driver ignoring that community already
-did it and instead it might be enough to customize it.
+Would you mind making a branch available for those in anticipation of
+the qat vfio variant driver itself being merged through the vfio tree?
+Thanks,
 
-Guys, the same as all the MCT, PHYs and PCI in previous works of various
-people: stop duplicating drivers by upstreaming new vendor stuff with
-all the issues we already fixed and please work on re-using existing
-drivers.
-
-Sometimes work cannot be combined, so come with arguments. Otherwise we
-keep repeating and repeating the same feedback.
-
-> 
-> Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
-> ---
->  drivers/char/hw_random/Kconfig           |  12 +
->  drivers/char/hw_random/Makefile          |   1 +
->  drivers/char/hw_random/exynos-swd-trng.c | 423 +++++++++++++++++++++++
->  3 files changed, 436 insertions(+)
->  create mode 100644 drivers/char/hw_random/exynos-swd-trng.c
-> 
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 442c40efb200..bff7c3ec129a 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -479,6 +479,18 @@ config HW_RANDOM_EXYNOS
->  
->  	  If unsure, say Y.
->  
-> +config HW_RANDOM_EXYNOS_SWD
-> +	tristate "Exynos SWD HW random number generator support"
-
-What is SWD?
-
-> +	default n
-> +	help
-> +	  This driver provides kernel-side support for accessing Samsung
-> +	  TRNG hardware located in secure world using smc calls.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called exynos-swd-trng.
-> +
-> +	  If unsure, say N.
-> +
-
-
-...
-
-> +
-> +static UNIVERSAL_DEV_PM_OPS(exyswd_rng_pm_ops, exyswd_rng_suspend,
-> +			    exyswd_rng_resume, NULL);
-> +
-> +static struct platform_driver exyswd_rng_driver = {
-> +	.probe		= exyswd_rng_probe,
-> +	.remove		= exyswd_rng_remove,
-> +	.driver		= {
-> +		.name	= DRVNAME,
-> +		.owner	= THIS_MODULE,
-
-So this was fixed ~8-10 years ago. Yet it re-appears. Please do not use
-downstream code as template.
-
-Take upstream driver and either change it or customize it.
-
-
-> +		.pm     = &exyswd_rng_pm_ops,
-> +	},
-> +};
-> +
-> +static struct platform_device *exyswd_rng_pdev;
-
-And if I have multiple devices?
-
-> +
-> +static int __init exyswd_rng_init(void)
-> +{
-> +	int ret;
-> +
-> +	exyswd_rng_pdev = platform_device_register_simple(DRVNAME, -1, NULL, 0);
-> +	if (IS_ERR(exyswd_rng_pdev))
-> +		pr_err(DRVNAME ": could not register device: %ld\n",
-> +		       PTR_ERR(exyswd_rng_pdev));
-
-This is some oddity... Why do you create devices based on module load?
-So I load this on Qualcomm anbd you create exynos device? This does not
-make sense.
-
-
-> +
-> +	ret = platform_driver_register(&exyswd_rng_driver);
-> +	if (ret) {
-> +		platform_device_unregister(exyswd_rng_pdev);
-> +		return ret;
-> +	}
-> +
-> +	pr_info("ExyRNG driver, (c) 2014 Samsung Electronics\n");
-
-Drop, dirvers should not print code just because I load a driver. Again:
-imagine I load it on Qualcomm.
-
-
-Best regards,
-Krzysztof
+Alex
 
 
