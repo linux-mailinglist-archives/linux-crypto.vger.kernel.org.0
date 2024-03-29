@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-3211-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3205-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 566E58934F1
-	for <lists+linux-crypto@lfdr.de>; Sun, 31 Mar 2024 19:18:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A9108934D9
+	for <lists+linux-crypto@lfdr.de>; Sun, 31 Mar 2024 19:15:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A3AF1C23E29
-	for <lists+linux-crypto@lfdr.de>; Sun, 31 Mar 2024 17:18:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E08E31F23EE8
+	for <lists+linux-crypto@lfdr.de>; Sun, 31 Mar 2024 17:15:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107C91487D3;
-	Sun, 31 Mar 2024 16:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5B814F9C9;
+	Sun, 31 Mar 2024 16:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pVQbPIWb"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EQB9OIea"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058BE1465B0;
-	Sun, 31 Mar 2024 16:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02ADF14E2E2;
+	Sun, 31 Mar 2024 16:46:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=62.96.220.36
 ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711903641; cv=fail; b=rj6KpQurpPv9t16H0cF4Q0G2Gk4WlBrpdor72XHhCFnCmkuq1G93ylkTVz13zx5X2B1b2AQtwO4C4HILAi+u+8uIDK70P21ZwSrDNiI4dtgCLfNeeLe1lJjrlVnDFATbrrmzOV8O0uKsLuxtRSpHs4bZLk0VDslrY1TvLPRaToc=
+	t=1711903586; cv=fail; b=vBXkwah7LE2hwCU/oSCKLqGpHSLEdJ1RJCgpV7o2oqfhCUUnrkREalemBAhcKBAyYzcTt6X5g7b+40qk4Rq79mmc04A+aTJGmwzfXYBHmUPJk+u6lz6FH/0KsWIcfmNQEgCviXYhfh2oyr2HHLtxrwzsrsfdGZsVKkZbrU0ILek=
 ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711903641; c=relaxed/simple;
-	bh=xuYbFPeVPDBp/bSWDDuwFyAyAVIgE5nOY7qlKsPnmvM=;
+	s=arc-20240116; t=1711903586; c=relaxed/simple;
+	bh=xVW41Bw99ZhaQHEO0UGzws734JTGZKokdoYDiXwrByI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X6CIiVTbMRXqbYSXa+Au9Nz9Y67VLkIU2OtWI3fpAE5BORbbW9BapEZE2sBPr89xgwAKr5E96AsHbEP3vK0mwM22hYGWluqc+sPw4sVWpuzcq66Eq5GG3fm75qVYWWgDQ5AfvKyIYfZAKpGB1jBsdrBTVm3WynBg+G7BTY3xxHU=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=fail (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pVQbPIWb reason="signature verification failed"; arc=fail smtp.client-ip=40.107.101.48; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; arc=fail smtp.client-ip=62.96.220.36
+	 MIME-Version:Content-Type; b=lJ3lGjqBkRir4/nTKLl7CpROdiSZg3PF0jmb2nmEWsDLhKWfVOqdnpEsgoGOGc7Kkzmm+uTuI+yC1GsP2txlBl4A4oUi67UcQWbP6e5X1epA1wBk6qRMdWxTmFv7wo/8Pmn4vvjI4YIBLktfYfExRYSPD9Lcui/MoFo0ixqUq9c=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=fail (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EQB9OIea reason="signature verification failed"; arc=fail smtp.client-ip=40.107.95.86; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; arc=fail smtp.client-ip=62.96.220.36
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id 9C5FF2084C;
-	Sun, 31 Mar 2024 18:47:17 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id 8C520208E0;
+	Sun, 31 Mar 2024 18:46:21 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id oLrIFc9wglF9; Sun, 31 Mar 2024 18:47:16 +0200 (CEST)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+	with ESMTP id 1nCrrVRrbfLB; Sun, 31 Mar 2024 18:46:19 +0200 (CEST)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id F1D22201C7;
-	Sun, 31 Mar 2024 18:47:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com F1D22201C7
+	by a.mx.secunet.com (Postfix) with ESMTPS id 3BD70208E4;
+	Sun, 31 Mar 2024 18:46:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 3BD70208E4
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout2.secunet.com (Postfix) with ESMTP id BCD4680005A;
+	by mailout1.secunet.com (Postfix) with ESMTP id E7006800059;
 	Sun, 31 Mar 2024 18:40:24 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
@@ -53,49 +53,48 @@ Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  15.1.2507.35; Sun, 31 Mar 2024 18:40:24 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
  15.1.2507.17; Sun, 31 Mar 2024 16:36:44 +0000
-X-sender: <linux-crypto+bounces-3106-steffen.klassert=secunet.com@vger.kernel.org>
-X-Receiver: <steffen.klassert@secunet.com>
- ORCPT=rfc822;steffen.klassert@secunet.com;
- X-ExtendedProps=DwA1AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLklzUmVzb3VyY2UCAAAFABUAFgACAAAABQAUABEA8MUJLbkECUOS0gjaDTZ+uAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGIAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249U3RlZmZlbiBLbGFzc2VydDY4YwUACwAXAL4AAACheZxkHSGBRqAcAp3ukbifQ049REI2LENOPURhdGFiYXNlcyxDTj1FeGNoYW5nZSBBZG1pbmlzdHJhdGl2ZSBHcm91cCAoRllESUJPSEYyM1NQRExUKSxDTj1BZG1pbmlzdHJhdGl2ZSBHcm91cHMsQ049c2VjdW5ldCxDTj1NaWNyb3NvZnQgRXhjaGFuZ2UsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAOABEABiAS9uuMOkqzwmEZDvWNNQUAHQAPAAwAAABtYngtZXNzZW4tMDIFADwAAgAADwA2AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50LkRpc3BsYXlOYW1lDwARAAAAS2xhc3NlcnQsIFN0ZWZmZW4FAGwAAgAABQBYABcASgAAAPDFCS25BAlDktII2g02frhDTj1LbGFzc2VydCBTdGVmZmVuLE9VPVVzZXJzLE9VPU1pZ3JhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAMAAIAAAUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9ye
-	TogRmFsc2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
+X-sender: <kvm+bounces-13133-martin.weber=secunet.com@vger.kernel.org>
+X-Receiver: <martin.weber@secunet.com> ORCPT=rfc822;martin.weber@secunet.com;
+ X-ExtendedProps=BQBYABcARgAAAJuYHy0vkvxLoOu7fW2WcxdDTj1XZWJlciBNYXJ0aW4sT1U9VXNlcnMsT1U9TWlncmF0aW9uLERDPXNlY3VuZXQsREM9ZGUFAGwAAgAABQAMAAIAAA8ANgAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5EaXNwbGF5TmFtZQ8ADQAAAFdlYmVyLCBNYXJ0aW4FADwAAgAABQAdAA8ADAAAAG1ieC1lc3Nlbi0wMQUADgARAEAJ/dJgSQNPjrUVnMO/4HsFAAsAFwC+AAAAsylSdUnj6k+wvjsUej6W+0NOPURCMixDTj1EYXRhYmFzZXMsQ049RXhjaGFuZ2UgQWRtaW5pc3RyYXRpdmUgR3JvdXAgKEZZRElCT0hGMjNTUERMVCksQ049QWRtaW5pc3RyYXRpdmUgR3JvdXBzLENOPXNlY3VuZXQsQ049TWljcm9zb2Z0IEV4Y2hhbmdlLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUAEgAPAF4AAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249V2ViZXIgTWFydGluOTU1BQBHAAIAAAUARgAHAAMAAAAFAEMAAgAABQAWAAIAAAUAagAJAAEAAAAAAAAABQAUABEAm5gfLS+S/Eug67t9bZZzFwUAFQAWAAIAAAAPADUAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LkRpcmVjdG9yeURhdGEuSXNSZXNvdXJjZQIAAAUAIwACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9yeTogRmFsc2UNCg8AL
+	wAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAmAAIAAQ==
 X-CreatedBy: MSExchange15
 X-HeloDomain: b.mx.secunet.com
-X-ExtendedProps: BQBjAAoA6kmmlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2VjdW5ldC5jb20FAAYAAgABDwAqAAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5SZXN1Ym1pdENvdW50BwACAAAADwAJAAAAQ0lBdWRpdGVkAgABBQACAAcAAQAAAAUAAwAHAAAAAAAFAAUAAgABBQBiAAoATgAAAM6KAAAFAGQADwADAAAASHViBQApAAIAAQ8APwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRGlyZWN0b3J5RGF0YS5NYWlsRGVsaXZlcnlQcmlvcml0eQ8AAwAAAExvdw==
+X-ExtendedProps: BQBjAAoA6kmmlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAGAAAAG1hcnRpbi53ZWJlckBzZWN1bmV0LmNvbQUABgACAAEPACoAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LlJlc3VibWl0Q291bnQHAAEAAAAPAAkAAABDSUF1ZGl0ZWQCAAEFAAIABwABAAAABQADAAcAAAAAAAUABQACAAEFAGIACgBUAAAAzooAAAUAZAAPAAMAAABIdWIFACkAAgABDwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
 X-Source: SMTP:Default MBX-ESSEN-02
 X-SourceIPAddress: 62.96.220.37
-X-EndOfInjectedXHeaders: 22703
+X-EndOfInjectedXHeaders: 33470
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.80.249; helo=am.mirrors.kernel.org; envelope-from=linux-crypto+bounces-3106-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 01E05200BB
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.80.249; helo=am.mirrors.kernel.org; envelope-from=kvm+bounces-13133-martin.weber=secunet.com@vger.kernel.org; receiver=martin.weber@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com CE6FB200BB
 Authentication-Results: b.mx.secunet.com;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pVQbPIWb"
-X-Original-To: linux-crypto@vger.kernel.org
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.48
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EQB9OIea"
+X-Original-To: kvm@vger.kernel.org
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.86
 ARC-Seal: i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711753565; cv=fail; b=nySl60dntVQyPamC5zHokQ59i8eUA14VcdmUSIxZVrv4o47wSi2elTNxC+0KAI+xBvRR1sZ2v8HUEYX4B2acaXAd+qH0TnIR7Q7+sZsumOQ9ZNju1Fx6OSRxJjn4j0p84rj90JPzlqxNnU9GHhvHZNXZWDRlF+W/GuH+aAiTJug=
+	t=1711753587; cv=fail; b=uVxzxBp9ua9ojUje7iOTm6ElFMdMHmdPYW0cUn6bjO7rF9rpTnSFzjBQNwx9spej1SZwD2d3ddUJSL7R2Behss3Yf5iVrst2nE0eE8Kf9rwbOVWN2G2Wo4zkjF8M1GkC3ISI2lp8VHqirYlYmhXAcrvJ0aWXLcJjioCaJ2gdSfo=
 ARC-Message-Signature: i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711753565; c=relaxed/simple;
-	bh=1mt+dPqGVGgxhVCKEG3pXqMiUa4XApuT0BM0owhsWto=;
+	s=arc-20240116; t=1711753587; c=relaxed/simple;
+	bh=KalEbdqRGRxS5KjJYNiUkYknvhPkZuxd2fBb0cCgSeE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MiA9QHfN5QPr81nmkTuaS5BtC7vny4OCpm2fNYUYj783qUCLSPRTm9S1SoUx3OCOiP2TV1katS6TRLP7s1Hn+O7vKGjZzdlBAc0uDl496/6oAq8XFpbE1NnIimM/kIBiMn52lb2Ivs1No1ZN9z6NUmFXuH98rYfvzDBSIsRaAAQ=
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pVQbPIWb; arc=fail smtp.client-ip=40.107.101.48
+	 MIME-Version:Content-Type; b=BOktB9YS73vaB1FyI/btKNHhjK+iudqpuFu8zlcHRObZnEOUWR6aTCQIvgQSBjZ5ifi/zYzsQla9sGYZzlKbXFWcfl/2AMUZeZb7bjFZR/d+d1/oa1Sur7wYqaGcpelZf1ezG2GCIarZyD2juMhQo2HIkLuvXaJvQDhjINv0lNo=
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EQB9OIea; arc=fail smtp.client-ip=40.107.95.86
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=imaqi7zO++Pueh1kiczxyzbdLQbAvufU75qRWyu2zj1Gky5hCoS3w+yInJ0L3dUXfuaFx9DN08KYjvM03AxEFOUF1M700WDoWkkppUeah6369frkyhubt9gmIPSzEJupYZDwODCSA7DU2A/QdTKWtIvajcJYH+UfhcoaOwL8rbBfvy2IZTm7BukJIUrD6yjpky4ro99oL7ugAgDAIYnTLgywKVhVkw3JZA2jDJmw3s1UPHwouImDX6DyfV8MusvmSstKSkVyQDunHM7KEzBPEyneL7ih4zbEvEb1YRSzyQce/Swsfc3YtoduzRQ9kO36itueeu7Kz2yuT97MVHXOXg==
+ b=CFHIOL2v24wJaO2yisaKcXeiUV+EUvOpK9IZEbVfDGmni78YdT0lMZvfpeYqipud8yhZ4gHslAMcdAQuRzk7xciD9c1598D8uZ49rcSjondc9yXX8RRPFMtdylgd6HqoBsseYuRzulAUZ37Zap4H6hxM73NbuAGbOPlloxcddZtPSqnauMXbFezr+3Ef+E4FyYSzxbLkuR8lcNsckXvl6B/FSK28NgDvprWlY8C8e9jc5TSQrufwnBwlVZnEXN40saecPKgxuvpcmxoS//9XPnw1OWEwqx0KLvA+oD1DiQhvgTJdmWJjEsN2gPhhKfBV0SxUD3Yml5RkRt2ef4lrrw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CFi7FUdlAWZbxIeQZPeXjgozeEMcnuRszCmTYDdmjJw=;
- b=jr3CpJ2B9ia9wR1FHBCqA3R/rAM6kID2KydtbDP63g9WFvHXi453xc7V7PwiJhBUZYCUj89Xzes5WQvlV0sh/cFMXbKXRy3Ym5LJIngzSC3Vqj55baspbaJHUWtMWx1OUZraxO/2tnABuT/ZhXYqfWXp3U/8WNP/DhkXylSlqMqcIGJ1rp2fZI7/9h6kK6I3pO9kIh3sw/VP9XIA4Q9tdF4fcH+MxqkCVJkBSj7eWj6ZKV9UQ8CPArPPbdh1+nqisbzHp5SyIalfBZnmAv2U/QkEVLAntvMg8ecAQE9lvv9LUqwM6UbuPL2wpiGXvA/uDycwDsIEV1wxijg+TN3tMA==
+ bh=xP7eiDAex+6DfGwbSIMsn9LpYXQmn4Kn5QQfRgVRAv8=;
+ b=ZvZnMU/ezwI47YqFGuq1hiunzr+cbZzvidUZhx+bqCC51581eV856EBTaw2ucSXMHjUU1fVSs08ZRxWyVUFU+/wF/uRF3k0Iix6KbiwZoY0YL5B3dlrL7oOsRCnqkL9AGsjIswEnCUoJQRUfeFtAVIXwhn/edhT3VN+ysHS188w6CWhK5PohJGWVw08l9Xox6RHmIBsgEiWCkMUKnHVeK2jJ4PAXzapHJz+ZZO0o4AoeC3uqTbbl4u1prerJUGbjuHsknwLjMpCEyTpCOFWaDk8hmEZmyCwnK9HDF7HGK0rLEgAVApg+HWWMbhRvvlLZu2ADZx9vo2DqA6wr0mZLDw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CFi7FUdlAWZbxIeQZPeXjgozeEMcnuRszCmTYDdmjJw=;
- b=pVQbPIWbese89EZLyabCbuNSndnvJlEBLQ0FbXJsU/BU5bRdWBMXFlEV5gp+Ry0aZm+Qr6tDyl90OpotfnuRujcOYxMvAlkxrHJvJLYBQCU7ctGa6tenr4X0tdWCCVzDbi7ndk8u5ZUER2aAQ944jHEIlPJOWvsMJVItu6bqIwY=
+ bh=xP7eiDAex+6DfGwbSIMsn9LpYXQmn4Kn5QQfRgVRAv8=;
+ b=EQB9OIeaxFjsOzOPKNd8cAEUq7aSSCsc1yGTlBbuIZbxYtxUCa2I+XTMLCPgKruQYscZzJF92fnmoACvtFHOjpstNXrXbQkb38Z1Kc0qn5MP4NGE+3/CUP4fiFbfGWpQnglJXfkKUuHWghjC56ZmuNe921Y5nuLVeUGWMqB3KLI=
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -118,9 +117,9 @@ CC: <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
 	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
 	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
 	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: [PATCH v12 27/29] crypto: ccp: Add the SNP_VLEK_LOAD command
-Date: Fri, 29 Mar 2024 17:58:33 -0500
-Message-ID: <20240329225835.400662-28-michael.roth@amd.com>
+Subject: [PATCH v12 28/29] crypto: ccp: Add the SNP_{PAUSE,RESUME}_ATTESTATION commands
+Date: Fri, 29 Mar 2024 17:58:34 -0500
+Message-ID: <20240329225835.400662-29-michael.roth@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240329225835.400662-1-michael.roth@amd.com>
 References: <20240329225835.400662-1-michael.roth@amd.com>
@@ -131,65 +130,211 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017094:EE_|DS0PR12MB6389:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9c5ce47d-5076-4cef-2387-08dc5044cd0d
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017092:EE_|DS7PR12MB8322:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc6f20e1-32a1-4880-c374-08dc5044d987
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M108XjrRq0MG2qHrQcGm9f5QoZTpFMpGESUVMEAwEi0Jg/7J8Sx0JfHp3iC8H9S89d26XnzK5RVaR+N6ZfBRD7fWFThxq8QMDl68ulJk2Mf74+t6uO5YrRyhRhGmhr4yV/FrtLRjhb0oVT9g6eoMg4qUNl56tP7p0Krb8gQXsV1NVbL38MQrAiRhb3Y3OZ2XOQiASoe36x+FrWtjv17hp2luILOtcD49WV56UuLNfoTkyMu2hja3vxe8rGXeY6Sf8VqdOWqCz2lXkkVeVDW3NsxzZthoO860rK1TI9ukxS7YiyieJ7TFE7mWV02s5//sfWqDQEzl2784/fSh1eGv3Hp9Yt24EmhxIkqfkxCrV1JpR91l5nCDMwm/MxcL9VqtfoZowhaf9TiT2WXqATZoAMuxhmdA2nHqXz/7pIKpcA2ZYz80Cj0NrJ7fxQIiOGV/WYLsdspbT0crbgqWrSC947+aQzX3g192HkGgthx9y0Vt/xC26IOIGJq4DAI5cBLoAfwrUI5I87osChI5eKSPC9yb9tdrG3NBWVv5rihbacgKtUF9N3oe6SpKfBllelkVPDKY9NAZedjB9+W5QTua9kkbKUWCihKwymTqhwX21WuOjeGGRkq0V8uvQu6vITHwXdcMeuhXZn7ECZfLVvq7zLSf2T5+QxW0AocGlILVlcHt9omD7TQJLkhluUkwsSy+zCjBpvKY+PNuAyzevoWp7/aDmFS5H30wB41TKsS3LdL66ZIodV4x0jQ2fT+hIy4G
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(376005)(82310400014)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 23:06:00.7175
+X-Microsoft-Antispam-Message-Info: leMQLN+KuRS4VcoSCnLaLz7JNsXtLC80aCs8Pj12CnRImmggJ3DHcFgvQll5xsifg/F+W9bI5AQmcUgQqWDWwCHPJTd7zXvQ1C82aUFmJN8M/gg3V5yymXo/c4W/5GwrqcAsxOnq+y8DAgVF0P5WdwcNDnOPWozhyr8xPtFKoW39EgfQvEMCSU/tNVuRU6PBH7V7Modl55CEewnnr0D4ldtLJDCpOwlcAI3q5xVSs6RWojWCjRU+ria7e4JSLKysNWfPDUy85V+cH9LSmxMHvyDmXsBLbvC0BK1TWDEmGyH3pPv0fxmSMuZ3r3WP/5PQWR39flwAtRXSe1GYsflpCbTlTZcju0SqiDhOINxrLbgEKF5QTKnQbcLHyIRupp0CVz44dF2Tp75Iznvkycf1Dtoj0uv8DIV9mz8Rc0HdRf40weU8+Btj93wy2FncEGSpr+Yq8o7hRxjhudDxwHaZw2ICisoEs8fbFbJrEzbhB7Iu+/xnn5IooeevBLB0vPQ8F4/qNQIaYMXQC3k2DTd5r0sN+Obmprz0Biq+ngTERL455yH84jkaW/AaZQPdH8+Wim7NFcmnE2BZ/kwo9aksMGZe+A5mV/3rJx+5+H659gQvgkkXJMRVAhmrnKKmZmePZkAQ/O45FJjrxhXXO8xp7UzVUG/jwDXzgRivyEc8VGg/zTNp0EmWwjU/ymrymD6gZPOPrteZxD+dHaHvXopGXCVl1SdmFOgY+UAe+h17Af9Syjhb77+v+JgZBQfK1ZrX
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(82310400014)(376005)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 23:06:21.6538
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c5ce47d-5076-4cef-2387-08dc5044cd0d
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc6f20e1-32a1-4880-c374-08dc5044d987
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017094.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017092.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6389
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8322
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-When requesting an attestation report a guest is able to specify whether
-it wants SNP firmware to sign the report using either a Versioned Chip
-Endorsement Key (VCEK), which is derived from chip-unique secrets, or a
-Versioned Loaded Endorsement Key (VLEK) which is obtained from an AMD
-Key Derivation Service (KDS) and derived from seeds allocated to
-enrolled cloud service providers (CSPs).
+These commands can be used to pause servicing of guest attestation
+requests. This useful when updating the reported TCB or signing key with
+commands such as SNP_SET_CONFIG/SNP_COMMIT/SNP_VLEK_LOAD, since they may
+in turn require updates to userspace-supplied certificates, and if an
+attestation request happens to be in-flight at the time those updates
+are occurring there is potential for a guest to receive a certificate
+blob that is out of sync with the effective signing key for the
+attestation report.
 
-For VLEK keys, an SNP_VLEK_LOAD SNP firmware command is used to load
-them into the system after obtaining them from the KDS. Add a
-corresponding userspace interface so to allow the loading of VLEK keys
-into the system.
-
-See SEV-SNP Firmware ABI 1.54, SNP_VLEK_LOAD for more details.
+These interfaces also provide some versatility with how similar
+firmware/certificate update activities can be handled in the future.
 
 Signed-off-by: Michael Roth <michael.roth@amd.com>
 ---
- drivers/crypto/ccp/sev-dev.c | 36 ++++++++++++++++++++++++++++++++++++
- include/uapi/linux/psp-sev.h | 27 +++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
+ Documentation/virt/coco/sev-guest.rst | 50 +++++++++++++++++++++++++--
+ arch/x86/include/asm/sev.h            |  4 +++
+ arch/x86/virt/svm/sev.c               | 43 +++++++++++++++++++++++
+ drivers/crypto/ccp/sev-dev.c          | 47 +++++++++++++++++++++++++
+ include/uapi/linux/psp-sev.h          | 12 +++++++
+ 5 files changed, 154 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/virt/coco/sev-guest.rst b/Documentation/virt/coco/sev-guest.rst
+index e1eaf6a830ce..dd5cf2098afd 100644
+--- a/Documentation/virt/coco/sev-guest.rst
++++ b/Documentation/virt/coco/sev-guest.rst
+@@ -128,8 +128,6 @@ the SEV-SNP specification for further details.
+ 
+ The SNP_GET_EXT_REPORT ioctl is similar to the SNP_GET_REPORT. The difference is
+ related to the additional certificate data that is returned with the report.
+-The certificate data returned is being provided by the hypervisor through the
+-SNP_SET_EXT_CONFIG.
+ 
+ The ioctl uses the SNP_GUEST_REQUEST (MSG_REPORT_REQ) command provided by the SEV-SNP
+ firmware to get the attestation report.
+@@ -176,6 +174,54 @@ to SNP_CONFIG command defined in the SEV-SNP spec. The current values of
+ the firmware parameters affected by this command can be queried via
+ SNP_PLATFORM_STATUS.
+ 
++2.7 SNP_PAUSE_ATTESTATION / SNP_RESUME_ATTESTATION
++--------------------------------------------------
++:Technology: sev-snp
++:Type: hypervisor ioctl cmd
++:Parameters (out): struct sev_user_data_snp_pause_transaction
++:Returns (out): 0 on success, -negative on error
++
++When requesting attestation reports, SNP guests have the option of issuing
++an extended guest request which allows host userspace to supply additional
++certificate data that can be used to validate the signature used to sign
++the attestation report. This signature is generated using a key that is
++derived from the reported TCB that can be set via the SNP_SET_CONFIG and
++SNP_COMMIT ioctls, so the accompanying certificate data needs to be kept in
++sync with the changes made to the reported TCB via these ioctls.
++
++Similarly, interfaces like SNP_LOAD_VLEK can modify the key used to sign
++the attestation reports, which may in turn require updating the certificate
++data provided to guests via extended guest requests.
++
++To allow for updating the reported TCB, endorsement key, and any certificate
++data in a manner that is atomic to guests, the SNP_PAUSE_ATTESTATION and
++SNP_RESUME_ATTESTATION commands are provided.
++
++After SNP_PAUSE_ATTESTATION is issued, any attestation report requests via
++extended guest requests that are in-progress, or received after
++SNP_PAUSE_ATTESTATION is issued, will result in the guest receiving a
++GHCB-defined error message instructing it to retry the request. Once all
++the desired reported TCB, endorsement keys, or certificate data updates
++are completed on the host, the SNP_RESUME_ATTESTATION command must be
++issued to allow guest attestation requests to proceed.
++
++In general, hosts should serialize updates of this sort and never have more
++than 1 outstanding transaction in flight that could result in the
++interleaving of multiple SNP_PAUSE_ATTESTATION/SNP_RESUME_ATTESTATION pairs.
++To guard against this, SNP_PAUSE_ATTESTATION will fail if another process
++has already paused attestation requests.
++
++However, there may be occassions where a transaction needs to be aborted due
++to unexpected activity in userspace such as timeouts, crashes, etc., so
++SNP_RESUME_ATTESTATION will always succeed. Nonetheless, this could
++potentially lead to SNP_RESUME_ATTESTATION being called out of sequence, so
++to allow for callers of SNP_{PAUSE,RESUME}_ATTESTATION to detect such
++occurrences, each ioctl will return a transaction ID in the response so the
++caller can monitor whether the start/end ID both match. If they don't, the
++caller should assume that attestation has been paused/resumed unexpectedly,
++and take whatever measures it deems necessary such as logging, reporting,
++auditing the sequence of events.
++
+ 3. SEV-SNP CPUID Enforcement
+ ============================
+ 
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index 234a998e2d2d..975e92005438 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -272,6 +272,8 @@ int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 asid, bool immut
+ int rmp_make_shared(u64 pfn, enum pg_level level);
+ void snp_leak_pages(u64 pfn, unsigned int npages);
+ void kdump_sev_callback(void);
++int snp_pause_attestation(u64 *transaction_id);
++void snp_resume_attestation(u64 *transaction_id);
+ #else
+ static inline bool snp_probe_rmptable_info(void) { return false; }
+ static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
+@@ -285,6 +287,8 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 as
+ static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENODEV; }
+ static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
+ static inline void kdump_sev_callback(void) { }
++static inline int snp_pause_attestation(u64 *transaction_id) { return 0; }
++static inline void snp_resume_attestation(u64 *transaction_id) {}
+ #endif
+ 
+ #endif
+diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+index ab0e8448bb6e..09d62870306b 100644
+--- a/arch/x86/virt/svm/sev.c
++++ b/arch/x86/virt/svm/sev.c
+@@ -70,6 +70,11 @@ static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
+ 
+ static unsigned long snp_nr_leaked_pages;
+ 
++/* For synchronizing TCB/certificate updates with extended guest requests */
++static DEFINE_MUTEX(snp_pause_attestation_lock);
++static u64 snp_transaction_id;
++static bool snp_attestation_paused;
++
+ #undef pr_fmt
+ #define pr_fmt(fmt)	"SEV-SNP: " fmt
+ 
+@@ -568,3 +573,41 @@ void kdump_sev_callback(void)
+ 	if (cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		wbinvd();
+ }
++
++int snp_pause_attestation(u64 *transaction_id)
++{
++	mutex_lock(&snp_pause_attestation_lock);
++
++	if (snp_attestation_paused) {
++		mutex_unlock(&snp_pause_attestation_lock);
++		return -EBUSY;
++	}
++
++	/*
++	 * The actual transaction ID update will happen when
++	 * snp_resume_attestation() is called, so return
++	 * the *anticipated* transaction ID that will be
++	 * returned by snp_resume_attestation(). This is
++	 * to ensure that unbalanced/aborted transactions will
++	 * be noticeable when the caller that started the
++	 * transaction calls snp_resume_attestation().
++	 */
++	*transaction_id = snp_transaction_id + 1;
++	snp_attestation_paused = true;
++
++	mutex_unlock(&snp_pause_attestation_lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snp_pause_attestation);
++
++void snp_resume_attestation(u64 *transaction_id)
++{
++	mutex_lock(&snp_pause_attestation_lock);
++
++	snp_attestation_paused = false;
++	*transaction_id = ++snp_transaction_id;
++
++	mutex_unlock(&snp_pause_attestation_lock);
++}
++EXPORT_SYMBOL_GPL(snp_resume_attestation);
 diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 2102377f727b..97a7959406ee 100644
+index 97a7959406ee..7eb18a273731 100644
 --- a/drivers/crypto/ccp/sev-dev.c
 +++ b/drivers/crypto/ccp/sev-dev.c
-@@ -2027,6 +2027,39 @@ static int sev_ioctl_do_snp_set_config(struct sev_is=
-sue_cmd *argp, bool writable
- 	return __sev_do_cmd_locked(SEV_CMD_SNP_CONFIG, &config, &argp->error);
+@@ -2060,6 +2060,47 @@ static int sev_ioctl_do_snp_vlek_load(struct sev_issue_cmd *argp, bool writable)
+ 	return ret;
  }
-=20
-+static int sev_ioctl_do_snp_vlek_load(struct sev_issue_cmd *argp, bool wri=
-table)
+ 
++static int sev_ioctl_do_snp_pause_attestation(struct sev_issue_cmd *argp, bool writable)
 +{
-+	struct sev_device *sev =3D psp_master->sev_data;
-+	struct sev_user_data_snp_vlek_load input;
-+	void *blob;
++	struct sev_user_data_snp_pause_attestation transaction = {0};
++	struct sev_device *sev = psp_master->sev_data;
 +	int ret;
 +
 +	if (!sev->snp_initialized || !argp->data)
@@ -198,268 +343,194 @@ table)
 +	if (!writable)
 +		return -EPERM;
 +
-+	if (copy_from_user(&input, u64_to_user_ptr(argp->data), sizeof(input)))
++	ret = snp_pause_attestation(&transaction.id);
++	if (ret)
++		return ret;
++
++	if (copy_to_user((void __user *)argp->data, &transaction, sizeof(transaction)))
 +		return -EFAULT;
 +
-+	if (input.len !=3D sizeof(input) || input.vlek_wrapped_version !=3D 0)
-+		return -EINVAL;
-+
-+	blob =3D psp_copy_user_blob(input.vlek_wrapped_address,
-+				  sizeof(struct sev_user_data_snp_wrapped_vlek_hashstick));
-+	if (IS_ERR(blob))
-+		return PTR_ERR(blob);
-+
-+	input.vlek_wrapped_address =3D __psp_pa(blob);
-+
-+	ret =3D __sev_do_cmd_locked(SEV_CMD_SNP_VLEK_LOAD, &input, &argp->error);
-+
-+	kfree(blob);
-+
-+	return ret;
++	return 0;
 +}
 +
- static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long=
- arg)
++static int sev_ioctl_do_snp_resume_attestation(struct sev_issue_cmd *argp, bool writable)
++{
++	struct sev_user_data_snp_pause_attestation transaction = {0};
++	struct sev_device *sev = psp_master->sev_data;
++
++	if (!sev->snp_initialized || !argp->data)
++		return -EINVAL;
++
++	if (!writable)
++		return -EPERM;
++
++	snp_resume_attestation(&transaction.id);
++
++	if (copy_to_user((void __user *)argp->data, &transaction, sizeof(transaction)))
++		return -EFAULT;
++
++	return 0;
++}
++
+ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
  {
- 	void __user *argp =3D (void __user *)arg;
-@@ -2087,6 +2120,9 @@ static long sev_ioctl(struct file *file, unsigned int=
- ioctl, unsigned long arg)
- 	case SNP_SET_CONFIG:
- 		ret =3D sev_ioctl_do_snp_set_config(&input, writable);
+ 	void __user *argp = (void __user *)arg;
+@@ -2123,6 +2164,12 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+ 	case SNP_VLEK_LOAD:
+ 		ret = sev_ioctl_do_snp_vlek_load(&input, writable);
  		break;
-+	case SNP_VLEK_LOAD:
-+		ret =3D sev_ioctl_do_snp_vlek_load(&input, writable);
++	case SNP_PAUSE_ATTESTATION:
++		ret = sev_ioctl_do_snp_pause_attestation(&input, writable);
++		break;
++	case SNP_RESUME_ATTESTATION:
++		ret = sev_ioctl_do_snp_resume_attestation(&input, writable);
 +		break;
  	default:
- 		ret =3D -EINVAL;
+ 		ret = -EINVAL;
  		goto out;
 diff --git a/include/uapi/linux/psp-sev.h b/include/uapi/linux/psp-sev.h
-index b7a2c2ee35b7..2289b7c76c59 100644
+index 2289b7c76c59..7b35b2814a99 100644
 --- a/include/uapi/linux/psp-sev.h
 +++ b/include/uapi/linux/psp-sev.h
-@@ -31,6 +31,7 @@ enum {
- 	SNP_PLATFORM_STATUS,
+@@ -32,6 +32,8 @@ enum {
  	SNP_COMMIT,
  	SNP_SET_CONFIG,
-+	SNP_VLEK_LOAD,
-=20
+ 	SNP_VLEK_LOAD,
++	SNP_PAUSE_ATTESTATION,
++	SNP_RESUME_ATTESTATION,
+ 
  	SEV_MAX,
  };
-@@ -214,6 +215,32 @@ struct sev_user_data_snp_config {
- 	__u8 rsvd1[52];
+@@ -241,6 +243,16 @@ struct sev_user_data_snp_wrapped_vlek_hashstick {
+ 	__u8 data[432];				/* In */
  } __packed;
-=20
+ 
 +/**
-+ * struct sev_data_snp_vlek_load - SNP_VLEK_LOAD structure
++ * struct sev_user_data_snp_pause_attestation - metadata for pausing attestation
 + *
-+ * @len: length of the command buffer read by the PSP
-+ * @vlek_wrapped_version: version of wrapped VLEK hashstick (Must be 0h)
-+ * @rsvd: reserved
-+ * @vlek_wrapped_address: address of a wrapped VLEK hashstick
-+ *                        (struct sev_user_data_snp_wrapped_vlek_hashstick=
-)
++ * @id: the ID of the transaction started/ended by a call to SNP_PAUSE_ATTESTATION
++ *	or SNP_RESUME_ATTESTATION, respectively.
 + */
-+struct sev_user_data_snp_vlek_load {
-+	__u32 len;				/* In */
-+	__u8 vlek_wrapped_version;		/* In */
-+	__u8 rsvd[3];				/* In */
-+	__u64 vlek_wrapped_address;		/* In */
-+} __packed;
-+
-+/**
-+ * struct sev_user_data_snp_vlek_wrapped_vlek_hashstick - Wrapped VLEK dat=
-a
-+ *
-+ * @data: Opaque data provided by AMD KDS (as described in SEV-SNP Firmwar=
-e ABI
-+ *        1.54, SNP_VLEK_LOAD)
-+ */
-+struct sev_user_data_snp_wrapped_vlek_hashstick {
-+	__u8 data[432];				/* In */
++struct sev_user_data_snp_pause_attestation {
++	__u64 id;				/* Out */
 +} __packed;
 +
  /**
   * struct sev_issue_cmd - SEV ioctl parameters
   *
---=20
+-- 
 2.25.1
 
 
-X-sender: <linux-kernel+bounces-125510-steffen.klassert=3Dsecunet.com@vger.=
-kernel.org>
-X-Receiver: <steffen.klassert@secunet.com> ORCPT=3Drfc822;steffen.klassert@=
-secunet.com NOTIFY=3DNEVER; X-ExtendedProps=3DDwA1AAAATWljcm9zb2Z0LkV4Y2hhb=
-mdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLklzUmVzb3VyY2UCAAAFABUAFgACAAAABQAUABEA=
-8MUJLbkECUOS0gjaDTZ+uAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQB=
-HAAIAAAUAEgAPAGIAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3=
-VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249U3RlZmZlbiBLbGFzc2VydDY4Y=
-wUACwAXAL4AAACheZxkHSGBRqAcAp3ukbifQ049REI2LENOPURhdGFiYXNlcyxDTj1FeGNoYW5n=
-ZSBBZG1pbmlzdHJhdGl2ZSBHcm91cCAoRllESUJPSEYyM1NQRExUKSxDTj1BZG1pbmlzdHJhdGl=
-2ZSBHcm91cHMsQ049c2VjdW5ldCxDTj1NaWNyb3NvZnQgRXhjaGFuZ2UsQ049U2VydmljZXMsQ0=
-49Q29uZmlndXJhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAOABEABiAS9uuMOkqzwmEZDvWNNQUAH=
-QAPAAwAAABtYngtZXNzZW4tMDIFADwAAgAADwA2AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5z=
-cG9ydC5NYWlsUmVjaXBpZW50LkRpc3BsYXlOYW1lDwARAAAAS2xhc3NlcnQsIFN0ZWZmZW4FAGw=
-AAgAABQBYABcASgAAAPDFCS25BAlDktII2g02frhDTj1LbGFzc2VydCBTdGVmZmVuLE9VPVVzZX=
-JzLE9VPU1pZ3JhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAMAAIAAAUAJgACAAEFACIADwAxAAAAQ=
-XV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9yeTogRmFsc2UNCg8ALwAAAE1p=
-Y3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmV=
-yc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ=3D=3D
+X-sender: <linux-crypto+bounces-3107-steffen.klassert=secunet.com@vger.kernel.org>
+X-Receiver: <steffen.klassert@secunet.com> ORCPT=rfc822;steffen.klassert@secunet.com
 X-CreatedBy: MSExchange15
-X-HeloDomain: b.mx.secunet.com
-X-ExtendedProps: BQBjAAoA6kmmlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc2=
-9mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAA=
-AAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2Vj=
-dW5ldC5jb20FAAYAAgABDwAqAAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5SZXN1Ym1=
-pdENvdW50BwACAAAADwAJAAAAQ0lBdWRpdGVkAgABBQACAAcAAQAAAAUAAwAHAAAAAAAFAAUAAg=
-ABBQBiAAoATwAAAM6KAAAFAGQADwADAAAASHViBQApAAIAAQ8APwAAAE1pY3Jvc29mdC5FeGNoY=
-W5nZS5UcmFuc3BvcnQuRGlyZWN0b3J5RGF0YS5NYWlsRGVsaXZlcnlQcmlvcml0eQ8AAwAAAExv=
-dw=3D=3D
+X-HeloDomain: mbx-essen-01.secunet.de
+X-ExtendedProps: BQBjAAoAFEqmlidQ3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
 X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 62.96.220.37
-X-EndOfInjectedXHeaders: 22661
-Received: from cas-essen-01.secunet.de (10.53.40.201) by
+X-SourceIPAddress: 10.53.40.197
+X-EndOfInjectedXHeaders: 23022
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  mbx-essen-02.secunet.de (10.53.40.198) with Microsoft SMTP Server
- (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37; Sat, 30 Mar 2024 00:06:39 +0100
-Received: from b.mx.secunet.com (62.96.220.37) by cas-essen-01.secunet.de
- (10.53.40.201) with Microsoft SMTP Server (version=3DTLS1_2,
- cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Fronte=
-nd
- Transport; Sat, 30 Mar 2024 00:06:39 +0100
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.37; Sat, 30 Mar 2024 00:06:58 +0100
+Received: from b.mx.secunet.com (62.96.220.37) by cas-essen-02.secunet.de
+ (10.53.40.202) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Sat, 30 Mar 2024 00:06:58 +0100
 Received: from localhost (localhost [127.0.0.1])
-	by b.mx.secunet.com (Postfix) with ESMTP id 9C3452032C
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 00:06:39 +0100 (CET)
+	by b.mx.secunet.com (Postfix) with ESMTP id A3A792032C
+	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 00:06:58 +0100 (CET)
 X-Virus-Scanned: by secunet
 X-Spam-Flag: NO
 X-Spam-Score: -5.15
 X-Spam-Level:
-X-Spam-Status: No, score=3D-5.15 tagged_above=3D-999 required=3D2.1
-	tests=3D[BAYES_00=3D-1.9, DKIMWL_WL_HIGH=3D-0.099, DKIM_SIGNED=3D0.1,
-	DKIM_VALID=3D-0.1, DKIM_VALID_AU=3D-0.1,
-	HEADER_FROM_DIFFERENT_DOMAINS=3D0.249, MAILING_LIST_MULTI=3D-1,
-	RCVD_IN_DNSWL_MED=3D-2.3, SPF_HELO_NONE=3D0.001, SPF_PASS=3D-0.001]
-	autolearn=3Dunavailable autolearn_force=3Dno
+X-Spam-Status: No, score=-5.15 tagged_above=-999 required=2.1
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.099, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	HEADER_FROM_DIFFERENT_DOMAINS=0.249, MAILING_LIST_MULTI=-1,
+	RCVD_IN_DNSWL_MED=-2.3, SPF_HELO_NONE=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
 Authentication-Results: a.mx.secunet.com (amavisd-new);
-	dkim=3Dpass (1024-bit key) header.d=3Damd.com
+	dkim=pass (1024-bit key) header.d=amd.com
 Received: from b.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id l4pwceeobCkH for <steffen.klassert@secunet.com>;
-	Sat, 30 Mar 2024 00:06:39 +0100 (CET)
-Received-SPF: Pass (sender SPF authorized) identity=3Dmailfrom; client-ip=
-=3D147.75.199.223; helo=3Dny.mirrors.kernel.org; envelope-from=3Dlinux-kern=
-el+bounces-125510-steffen.klassert=3Dsecunet.com@vger.kernel.org; receiver=
-=3Dsteffen.klassert@secunet.com=20
-DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com CF6F6200BB
+	with ESMTP id cvq5nLGcq4z1 for <steffen.klassert@secunet.com>;
+	Sat, 30 Mar 2024 00:06:55 +0100 (CET)
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.199.223; helo=ny.mirrors.kernel.org; envelope-from=linux-crypto+bounces-3107-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 2CCE2200BB
 Authentication-Results: b.mx.secunet.com;
-	dkim=3Dpass (1024-bit key) header.d=3Damd.com header.i=3D@amd.com header.b=
-=3D"pVQbPIWb"
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223=
-])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EQB9OIea"
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by b.mx.secunet.com (Postfix) with ESMTPS id CF6F6200BB
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 00:06:38 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.2=
-5.139.140])
+	by b.mx.secunet.com (Postfix) with ESMTPS id 2CCE2200BB
+	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 00:06:55 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D67FB1C2146E
-	for <steffen.klassert@secunet.com>; Fri, 29 Mar 2024 23:06:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BDFE1C216D9
+	for <steffen.klassert@secunet.com>; Fri, 29 Mar 2024 23:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F404B13F435;
-	Fri, 29 Mar 2024 23:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FD913E05E;
+	Fri, 29 Mar 2024 23:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=3Dpass (1024-bit key) header.d=3Damd.com header.i=3D@amd.com header.b=
-=3D"pVQbPIWb"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04=
-on2048.outbound.protection.outlook.com [40.107.101.48])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EQB9OIea"
+X-Original-To: linux-crypto@vger.kernel.org
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2086.outbound.protection.outlook.com [40.107.95.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807FB4B5DA;
-	Fri, 29 Mar 2024 23:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=3Dfail smtp.client-ip=
-=3D40.107.101.48
-ARC-Seal: i=3D2; a=3Drsa-sha256; d=3Dsubspace.kernel.org; s=3Darc-20240116;
-	t=3D1711753565; cv=3Dfail; b=3DnySl60dntVQyPamC5zHokQ59i8eUA14VcdmUSIxZVrv=
-4o47wSi2elTNxC+0KAI+xBvRR1sZ2v8HUEYX4B2acaXAd+qH0TnIR7Q7+sZsumOQ9ZNju1Fx6OS=
-RxJjn4j0p84rj90JPzlqxNnU9GHhvHZNXZWDRlF+W/GuH+aAiTJug=3D
-ARC-Message-Signature: i=3D2; a=3Drsa-sha256; d=3Dsubspace.kernel.org;
-	s=3Darc-20240116; t=3D1711753565; c=3Drelaxed/simple;
-	bh=3D1mt+dPqGVGgxhVCKEG3pXqMiUa4XApuT0BM0owhsWto=3D;
-	h=3DFrom:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=3DMiA9QHfN5QPr81nmkTuaS5BtC7vny4OCpm2fNYUYj7=
-83qUCLSPRTm9S1SoUx3OCOiP2TV1katS6TRLP7s1Hn+O7vKGjZzdlBAc0uDl496/6oAq8XFpbE1=
-NnIimM/kIBiMn52lb2Ivs1No1ZN9z6NUmFXuH98rYfvzDBSIsRaAAQ=3D
-ARC-Authentication-Results: i=3D2; smtp.subspace.kernel.org; dmarc=3Dpass (=
-p=3Dquarantine dis=3Dnone) header.from=3Damd.com; spf=3Dfail smtp.mailfrom=
-=3Damd.com; dkim=3Dpass (1024-bit key) header.d=3Damd.com header.i=3D@amd.c=
-om header.b=3DpVQbPIWb; arc=3Dfail smtp.client-ip=3D40.107.101.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=3Dpass (p=3Dquarant=
-ine dis=3Dnone) header.from=3Damd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=3Dfail smtp.mailfrom=
-=3Damd.com
-ARC-Seal: i=3D1; a=3Drsa-sha256; s=3Darcselector9901; d=3Dmicrosoft.com; cv=
-=3Dnone;
- b=3Dimaqi7zO++Pueh1kiczxyzbdLQbAvufU75qRWyu2zj1Gky5hCoS3w+yInJ0L3dUXfuaFx9=
-DN08KYjvM03AxEFOUF1M700WDoWkkppUeah6369frkyhubt9gmIPSzEJupYZDwODCSA7DU2A/Qd=
-TKWtIvajcJYH+UfhcoaOwL8rbBfvy2IZTm7BukJIUrD6yjpky4ro99oL7ugAgDAIYnTLgywKVhV=
-kw3JZA2jDJmw3s1UPHwouImDX6DyfV8MusvmSstKSkVyQDunHM7KEzBPEyneL7ih4zbEvEb1YRS=
-zyQce/Swsfc3YtoduzRQ9kO36itueeu7Kz2yuT97MVHXOXg=3D=3D
-ARC-Message-Signature: i=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed; d=3Dmicr=
-osoft.com;
- s=3Darcselector9901;
- h=3DFrom:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-A=
-ntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Ex=
-change-AntiSpam-MessageData-1;
- bh=3DCFi7FUdlAWZbxIeQZPeXjgozeEMcnuRszCmTYDdmjJw=3D;
- b=3Djr3CpJ2B9ia9wR1FHBCqA3R/rAM6kID2KydtbDP63g9WFvHXi453xc7V7PwiJhBUZYCUj8=
-9Xzes5WQvlV0sh/cFMXbKXRy3Ym5LJIngzSC3Vqj55baspbaJHUWtMWx1OUZraxO/2tnABuT/Zh=
-XYqfWXp3U/8WNP/DhkXylSlqMqcIGJ1rp2fZI7/9h6kK6I3pO9kIh3sw/VP9XIA4Q9tdF4fcH+M=
-xqkCVJkBSj7eWj6ZKV9UQ8CPArPPbdh1+nqisbzHp5SyIalfBZnmAv2U/QkEVLAntvMg8ecAQE9=
-lvv9LUqwM6UbuPL2wpiGXvA/uDycwDsIEV1wxijg+TN3tMA=3D=3D
-ARC-Authentication-Results: i=3D1; mx.microsoft.com 1; spf=3Dpass (sender i=
-p is
- 165.204.84.17) smtp.rcpttodomain=3Dvger.kernel.org smtp.mailfrom=3Damd.com=
-;
- dmarc=3Dpass (p=3Dquarantine sp=3Dquarantine pct=3D100) action=3Dnone
- header.from=3Damd.com; dkim=3Dnone (message not signed); arc=3Dnone (0)
-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed; d=3Damd.com; s=
-=3Dselector1;
- h=3DFrom:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-S=
-enderADCheck;
- bh=3DCFi7FUdlAWZbxIeQZPeXjgozeEMcnuRszCmTYDdmjJw=3D;
- b=3DpVQbPIWbese89EZLyabCbuNSndnvJlEBLQ0FbXJsU/BU5bRdWBMXFlEV5gp+Ry0aZm+Qr6=
-tDyl90OpotfnuRujcOYxMvAlkxrHJvJLYBQCU7ctGa6tenr4X0tdWCCVzDbi7ndk8u5ZUER2aAQ=
-944jHEIlPJOWvsMJVItu6bqIwY=3D
-Received: from DM5PR08CA0040.namprd08.prod.outlook.com (2603:10b6:4:60::29)=
- by
- DS0PR12MB6389.namprd12.prod.outlook.com (2603:10b6:8:cf::9) with Microsoft
- SMTP Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA=
-384) id
- 15.20.7409.32; Fri, 29 Mar 2024 23:06:01 +0000
-Received: from DS1PEPF00017094.namprd03.prod.outlook.com
- (2603:10b6:4:60:cafe::4f) by DM5PR08CA0040.outlook.office365.com
- (2603:10b6:4:60::29) with Microsoft SMTP Server (version=3DTLS1_2,
- cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.41 via Front=
-end
- Transport; Fri, 29 Mar 2024 23:06:01 +0000
-X-MS-Exchange-Authentication-Results: spf=3Dpass (sender IP is 165.204.84.1=
-7)
- smtp.mailfrom=3Damd.com; dkim=3Dnone (message not signed)
- header.d=3Dnone;dmarc=3Dpass action=3Dnone header.from=3Damd.com;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1559F13E408;
+	Fri, 29 Mar 2024 23:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.86
+ARC-Seal: i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711753587; cv=fail; b=uVxzxBp9ua9ojUje7iOTm6ElFMdMHmdPYW0cUn6bjO7rF9rpTnSFzjBQNwx9spej1SZwD2d3ddUJSL7R2Behss3Yf5iVrst2nE0eE8Kf9rwbOVWN2G2Wo4zkjF8M1GkC3ISI2lp8VHqirYlYmhXAcrvJ0aWXLcJjioCaJ2gdSfo=
+ARC-Message-Signature: i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711753587; c=relaxed/simple;
+	bh=KalEbdqRGRxS5KjJYNiUkYknvhPkZuxd2fBb0cCgSeE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BOktB9YS73vaB1FyI/btKNHhjK+iudqpuFu8zlcHRObZnEOUWR6aTCQIvgQSBjZ5ifi/zYzsQla9sGYZzlKbXFWcfl/2AMUZeZb7bjFZR/d+d1/oa1Sur7wYqaGcpelZf1ezG2GCIarZyD2juMhQo2HIkLuvXaJvQDhjINv0lNo=
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EQB9OIea; arc=fail smtp.client-ip=40.107.95.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CFHIOL2v24wJaO2yisaKcXeiUV+EUvOpK9IZEbVfDGmni78YdT0lMZvfpeYqipud8yhZ4gHslAMcdAQuRzk7xciD9c1598D8uZ49rcSjondc9yXX8RRPFMtdylgd6HqoBsseYuRzulAUZ37Zap4H6hxM73NbuAGbOPlloxcddZtPSqnauMXbFezr+3Ef+E4FyYSzxbLkuR8lcNsckXvl6B/FSK28NgDvprWlY8C8e9jc5TSQrufwnBwlVZnEXN40saecPKgxuvpcmxoS//9XPnw1OWEwqx0KLvA+oD1DiQhvgTJdmWJjEsN2gPhhKfBV0SxUD3Yml5RkRt2ef4lrrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xP7eiDAex+6DfGwbSIMsn9LpYXQmn4Kn5QQfRgVRAv8=;
+ b=ZvZnMU/ezwI47YqFGuq1hiunzr+cbZzvidUZhx+bqCC51581eV856EBTaw2ucSXMHjUU1fVSs08ZRxWyVUFU+/wF/uRF3k0Iix6KbiwZoY0YL5B3dlrL7oOsRCnqkL9AGsjIswEnCUoJQRUfeFtAVIXwhn/edhT3VN+ysHS188w6CWhK5PohJGWVw08l9Xox6RHmIBsgEiWCkMUKnHVeK2jJ4PAXzapHJz+ZZO0o4AoeC3uqTbbl4u1prerJUGbjuHsknwLjMpCEyTpCOFWaDk8hmEZmyCwnK9HDF7HGK0rLEgAVApg+HWWMbhRvvlLZu2ADZx9vo2DqA6wr0mZLDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xP7eiDAex+6DfGwbSIMsn9LpYXQmn4Kn5QQfRgVRAv8=;
+ b=EQB9OIeaxFjsOzOPKNd8cAEUq7aSSCsc1yGTlBbuIZbxYtxUCa2I+XTMLCPgKruQYscZzJF92fnmoACvtFHOjpstNXrXbQkb38Z1Kc0qn5MP4NGE+3/CUP4fiFbfGWpQnglJXfkKUuHWghjC56ZmuNe921Y5nuLVeUGWMqB3KLI=
+Received: from DM6PR01CA0015.prod.exchangelabs.com (2603:10b6:5:296::20) by
+ DS7PR12MB8322.namprd12.prod.outlook.com (2603:10b6:8:ed::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.32; Fri, 29 Mar 2024 23:06:21 +0000
+Received: from DS1PEPF00017092.namprd03.prod.outlook.com
+ (2603:10b6:5:296:cafe::60) by DM6PR01CA0015.outlook.office365.com
+ (2603:10b6:5:296::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.40 via Frontend
+ Transport; Fri, 29 Mar 2024 23:06:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=3Dprotection.outlook.com;
- client-ip=3D165.204.84.17; helo=3DSATLEXMB04.amd.com; pr=3DC
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF00017094.mail.protection.outlook.com (10.167.17.137) with Microsoft
- SMTP Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA=
-256) id
- 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 23:06:00 +0000
+ DS1PEPF00017092.mail.protection.outlook.com (10.167.17.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 23:06:21 +0000
 Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=3DTLS1_2,
- cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 29 M=
-ar
- 2024 18:06:00 -0500
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 29 Mar
+ 2024 18:06:20 -0500
 From: Michael Roth <michael.roth@amd.com>
 To: <kvm@vger.kernel.org>
 CC: <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
@@ -476,17 +547,17 @@ CC: <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
 	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
 	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
 	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: [PATCH v12 27/29] crypto: ccp: Add the SNP_VLEK_LOAD command
-Date: Fri, 29 Mar 2024 17:58:33 -0500
-Message-ID: <20240329225835.400662-28-michael.roth@amd.com>
+Subject: [PATCH v12 28/29] crypto: ccp: Add the SNP_{PAUSE,RESUME}_ATTESTATION commands
+Date: Fri, 29 Mar 2024 17:58:34 -0500
+Message-ID: <20240329225835.400662-29-michael.roth@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240329225835.400662-1-michael.roth@amd.com>
 References: <20240329225835.400662-1-michael.roth@amd.com>
 Precedence: bulk
-X-Mailing-List: linux-kernel@vger.kernel.org
-List-Id: <linux-kernel.vger.kernel.org>
-List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+X-Mailing-List: linux-crypto@vger.kernel.org
+List-Id: <linux-crypto.vger.kernel.org>
+List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -494,208 +565,219 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017094:EE_|DS0PR12MB6389:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9c5ce47d-5076-4cef-2387-08dc5044cd=
-0d
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017092:EE_|DS7PR12MB8322:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc6f20e1-32a1-4880-c374-08dc5044d987
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M108XjrRq0MG2qHrQcGm9f5QoZTpFMpGESUVMEAw=
-Ei0Jg/7J8Sx0JfHp3iC8H9S89d26XnzK5RVaR+N6ZfBRD7fWFThxq8QMDl68ulJk2Mf74+t6uO5=
-YrRyhRhGmhr4yV/FrtLRjhb0oVT9g6eoMg4qUNl56tP7p0Krb8gQXsV1NVbL38MQrAiRhb3Y3OZ=
-2XOQiASoe36x+FrWtjv17hp2luILOtcD49WV56UuLNfoTkyMu2hja3vxe8rGXeY6Sf8VqdOWqCz=
-2lXkkVeVDW3NsxzZthoO860rK1TI9ukxS7YiyieJ7TFE7mWV02s5//sfWqDQEzl2784/fSh1eGv=
-3Hp9Yt24EmhxIkqfkxCrV1JpR91l5nCDMwm/MxcL9VqtfoZowhaf9TiT2WXqATZoAMuxhmdA2nH=
-qXz/7pIKpcA2ZYz80Cj0NrJ7fxQIiOGV/WYLsdspbT0crbgqWrSC947+aQzX3g192HkGgthx9y0=
-Vt/xC26IOIGJq4DAI5cBLoAfwrUI5I87osChI5eKSPC9yb9tdrG3NBWVv5rihbacgKtUF9N3oe6=
-SpKfBllelkVPDKY9NAZedjB9+W5QTua9kkbKUWCihKwymTqhwX21WuOjeGGRkq0V8uvQu6vITHw=
-XdcMeuhXZn7ECZfLVvq7zLSf2T5+QxW0AocGlILVlcHt9omD7TQJLkhluUkwsSy+zCjBpvKY+PN=
-uAyzevoWp7/aDmFS5H30wB41TKsS3LdL66ZIodV4x0jQ2fT+hIy4G
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;I=
-PV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS=
-:(13230031)(36860700004)(1800799015)(376005)(82310400014)(7416005);DIR:OUT;=
-SFP:1101;
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 23:06:00.7175
+X-Microsoft-Antispam-Message-Info: leMQLN+KuRS4VcoSCnLaLz7JNsXtLC80aCs8Pj12CnRImmggJ3DHcFgvQll5xsifg/F+W9bI5AQmcUgQqWDWwCHPJTd7zXvQ1C82aUFmJN8M/gg3V5yymXo/c4W/5GwrqcAsxOnq+y8DAgVF0P5WdwcNDnOPWozhyr8xPtFKoW39EgfQvEMCSU/tNVuRU6PBH7V7Modl55CEewnnr0D4ldtLJDCpOwlcAI3q5xVSs6RWojWCjRU+ria7e4JSLKysNWfPDUy85V+cH9LSmxMHvyDmXsBLbvC0BK1TWDEmGyH3pPv0fxmSMuZ3r3WP/5PQWR39flwAtRXSe1GYsflpCbTlTZcju0SqiDhOINxrLbgEKF5QTKnQbcLHyIRupp0CVz44dF2Tp75Iznvkycf1Dtoj0uv8DIV9mz8Rc0HdRf40weU8+Btj93wy2FncEGSpr+Yq8o7hRxjhudDxwHaZw2ICisoEs8fbFbJrEzbhB7Iu+/xnn5IooeevBLB0vPQ8F4/qNQIaYMXQC3k2DTd5r0sN+Obmprz0Biq+ngTERL455yH84jkaW/AaZQPdH8+Wim7NFcmnE2BZ/kwo9aksMGZe+A5mV/3rJx+5+H659gQvgkkXJMRVAhmrnKKmZmePZkAQ/O45FJjrxhXXO8xp7UzVUG/jwDXzgRivyEc8VGg/zTNp0EmWwjU/ymrymD6gZPOPrteZxD+dHaHvXopGXCVl1SdmFOgY+UAe+h17Af9Syjhb77+v+JgZBQfK1ZrX
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(82310400014)(376005)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 23:06:21.6538
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c5ce47d-5076-4cef-2387-08dc5=
-044cd0d
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc6f20e1-32a1-4880-c374-08dc5044d987
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3D=
-3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=3D[165.204.84.17];Helo=3D[SATLEXMB0=
-4.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017094.namprd03.prod.outlook=
-.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017092.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6389
-Return-Path: linux-kernel+bounces-125510-steffen.klassert=3Dsecunet.com@vge=
-r.kernel.org
-X-MS-Exchange-Organization-OriginalArrivalTime: 29 Mar 2024 23:06:39.6710
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8322
+Return-Path: linux-crypto+bounces-3107-steffen.klassert=secunet.com@vger.kernel.org
+X-MS-Exchange-Organization-OriginalArrivalTime: 29 Mar 2024 23:06:58.7028
  (UTC)
-X-MS-Exchange-Organization-Network-Message-Id: e96fe527-a006-49ca-5d2b-08dc=
-5044e439
+X-MS-Exchange-Organization-Network-Message-Id: 2ce8fc15-1b0f-476a-621b-08dc5044ef91
 X-MS-Exchange-Organization-OriginalClientIPAddress: 62.96.220.37
-X-MS-Exchange-Organization-OriginalServerIPAddress: 10.53.40.201
-X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: cas-essen-01.s=
-ecunet.de
-X-MS-Exchange-Organization-OrderedPrecisionLatencyInProgress: LSRV=3Dmbx-es=
-sen-02.secunet.de:TOTAL-HUB=3D33145.636|SMR=3D0.142(SMRDE=3D0.003|SMRC=3D0.=
-138(SMRCL=3D0.103|X-SMRCR=3D0.138))|CAT=3D0.076(CATOS=3D0.001
- |CATRESL=3D0.028(CATRESLP2R=3D0.022)|CATORES=3D0.043(CATRS=3D0.043(CATRS-T=
-ransport
- Rule Agent=3D0.001 (X-ETREX=3D0.001)|CATRS-Index Routing
- Agent=3D0.041)))|QDM=3D13523.031|SMSC=3D0.582(X-SMSDR=3D0.020
- )|SMS=3D5.485(SMSMBXD-INC=3D4.967)|QDM=3D19611.141|CAT=3D0.016(CATMS=3D0.0=
-03|CATRESL=3D0.010(CATRESLP2R=3D0.007
- ))|UNK=3D0.001|QDM=3D5.237|CAT=3D0.176(CATRESL=3D0.175(CATRESLP2R=3D0.021)=
-);2024-03-30T08:19:05.324Z
+X-MS-Exchange-Organization-OriginalServerIPAddress: 10.53.40.202
+X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: cas-essen-02.secunet.de
+X-MS-Exchange-Organization-OrderedPrecisionLatencyInProgress: LSRV=cas-essen-02.secunet.de:TOTAL-FE=0.007|SMR=0.007(SMRPI=0.004(SMRPI-FrontendProxyAgent=0.004));2024-03-29T23:06:58.709Z
 X-MS-Exchange-Forest-ArrivalHubServer: mbx-essen-02.secunet.de
-X-MS-Exchange-Organization-AuthSource: cas-essen-01.secunet.de
+X-MS-Exchange-Organization-AuthSource: cas-essen-02.secunet.de
 X-MS-Exchange-Organization-AuthAs: Anonymous
-X-MS-Exchange-Organization-FromEntityHeader: Internet
-X-MS-Exchange-Organization-OriginalSize: 15889
-X-MS-Exchange-Organization-HygienePolicy: Standard
-X-MS-Exchange-Organization-MessageLatency: SRV=3Dcas-essen-01.secunet.de:TO=
-TAL-FE=3D0.015|SMR=3D0.010(SMRPI=3D0.007(SMRPI-FrontendProxyAgent=3D0.007))=
-|SMS=3D0.005
-X-MS-Exchange-Organization-Recipient-Limit-Verified: True
-X-MS-Exchange-Organization-TotalRecipientCount: 1
-X-MS-Exchange-Organization-Rules-Execution-History: 0b0cf904-14ac-4724-8bdf=
--482ee6223cf2%%%fd34672d-751c-45ae-a963-ed177fcabe23%%%d8080257-b0c3-47b4-b=
-0db-23bc0c8ddb3c%%%95e591a2-5d7d-4afa-b1d0-7573d6c0a5d9%%%f7d0f6bc-4dcc-487=
-6-8c5d-b3d6ddbb3d55%%%16355082-c50b-4214-9c7d-d39575f9f79b
-X-MS-Exchange-Forest-RulesExecuted: mbx-essen-02
-X-MS-Exchange-Organization-RulesExecuted: mbx-essen-02
-X-MS-Exchange-Forest-IndexAgent-0: AQ0CZW4AAV4JAAAPAAADH4sIAAAAAAAEAK1Xe0/b=
-WBa/zsMhhtBS+u
- 7+cbvSziY0CRAeKbBTlaV0hQoFEaazUjWyHPsGLBLbazswTNvvtB9x
- zznXdpxnO9JaItzHef7Oy/7vX3+9Eg73xX/6Ight55IbDjfCEDZGaL
- t447l+yA1+iQTcDrjR7goeujzwhGl37vjtlQivhF/S7JDfGk4Y8NbH
- M96x/d6t4UtK+9LhQBML6weoSNjIBpI/CT8AVcLiB1e2V9IOHcv1A9
- ETTsg/iDte/nRw+KFSBUW2eYUWWMK3b4C847s9bgJPre/Y4AAPhOmL
- MKhyF+SWtIHgY9ew4N+45GOQPBDstkPDdmLJgMT+ybuShpTvUKVEpC
- X8G9sUvPzhXasCRNawPYEQFoDU7bqmEcJh6JY04fhutwsbs+v2LSCR
- EjzfvbGBOeDlg9ZZUKmXtJL2HmxHs/i1uANPwAiAU8cT/fh0/90wuK
- bb66EFYHs/IGW8C66WNIC2x20H9oh7cBeEsDc6IQAuncQIEBEZjUTg
- Tp3vWxYiZ7q+LwLPdSykA9F+4BlgMUgUfgdXgYvK0M1b4ka1SOt2Bt
- ZDSgxbQA62hOCtw081dOR97Mj+P4/4en1rszribQfQ6LlAYAmwuhtI
- CZBPwqq5nU6tfbfLTyB6hujycze84v/oyV3dh91bo2fVAaM3Ja1Wq5
- U0bmGg/GDV9O+80F01TW81EDc1S9zUTf6Vb2zzVz/wgCDbMbt9S6z2
- Dc9e7dpO//dVL/BqIKx+BYIazVmCgL8BMeyKALLXcC6FVeXbGyATcM
- YUC8qvKuinZXc6vFa7hMIyVmea3p55jXGwxO+8sb7W2Gg2O81Gs12v
- 7zSN5s7WzubaNgRkfW1te3OTYPqOrpIGHnxX4du3vNZYazSrgCj939
- jhcEZdxcQ0giK40W3XDLu65eqB4+mBCHXTdTr2ZTkI/b4ZkQRBX+hm
- z+Irhn/pVXnbdbv81rdD7EOAZPRA3fd9h+s6MoFE4NChBK+FVYZk0w
- 9O3umYWQenH98f/avKf5KaYIFSa2+E77t+ZQ/kfUPkX80y9KYrrnXM
- 9x+3E8L56gv8Rcam+AAvbAUrsOY/c8ghvWdAqfi1N3RrhMbeRD6sSb
- oeNgks9vphiuXGtcGkdtdtpw7RLQAMT1KHHV5+iSF8gxKhQ4S20bX/
- gK7y9St/KWFChZUBywj4tcOjj5/2jyeITeMwjffs8PxknNV0vTsdex
- R5XP6J/Kvy/vamHroSBS/0yynzqjBv/hBup0yklcosne/3fzm+GFdK
- nPUuDMaXPw9LQyzkLUF+6xueJyz9Rk4aJF/7k/hgaKLIk6/kEh6WJ+
- gxLAv6clAdVzH+RHZPzZnEdlRwZQRXMP/N60plbxiLo5Z+eH5eRotm
- QHl2cT4gGwF0qhvgtq6j454xiRFEE8Xsik5mBdRylByjNZ2Sed3xhZ
- iiDP2IquIb3cXtquvCYEvaQIwoNnC+gr+Qjk5AM4kqi6hSZ8QOJgF6
- /MugY1Fl6hQU2TPA2fLQYQVO9+Je+lr20vXGWjXdSv+PtkWPaQSCpn
- Dr8CLql7uD21Tcwd5ZTTyORlL7e+NS2r4wrlMJl+hOoro7MeUmqR60
- 5UmaR4XEmuO9JTpGvxtO9XRQu6P3ly6847jUdIcG9sxXhPbM63hgt5
- tGw2wIsbHVbtbrjcbrnXbTbG6bWzsjA3u2MDmwZ9Ngkm2sY4rBbxMT
- TDj9XjpfMSxnx/sX70/PT/TWxf7FL63q8O3B6cnJ0cXI4SCLUl1ruH
- Bx4iYsUNon+/9GId/i3F/flKm/Vd1oyNSf0tJk5qWNhlJ6zf3gxlr/
- vNX4jeY79hwD28geTfrVlRW0a2VoKI/P1drIi6mk7vuCmKWEtzAxdj
- n8XMKLKLwI44tv/Ibe7nc6UNOQdbC+o6uz1lnEN2mW7PJ4qICk6E6+
- Wie9mpdP+vBN1hZ87aoSiUJfd0ENfmMIa5L8qPnu8rgLg3xjigbJP+
- X506OFpK3S29V332NSb0sQQ4g7wLo3zRL5rK7wI0cqSEd/Erh7P8SJ
- WH7e+G2W2omc25t8EuJ70ziHUvLVlJycANRkmCFVf00HE3nSSYr7XX
- 7qGfjFjJv4O5QSE7548UuQlw38zg5M327T6Jj4yTaUHhM+334g4lN8
- +DISCqT/vLnRmBGMGYByApQPAzp4Y6+hc3I0cs/wjZ6AF/CAGLDBlr
- RGvbFVX8d2UdIYy7G8xuYzLDvPFlRWUFgmz1TYwjn8FthcgRVhAYdZ
- lpujNVzBGojhULIUmZZjKkjIsnyOziUvUOYUNs/yQCblKCwLxLCNiV
- VJDJKlxiwJB5OAXq6lHCADxgzZAGs4LLL5HNOAIEdykFdhpWibl9YC
- WeIL0CRX0ngyOzqRusC8EluEc9KVTRxP5EghJGEeuRRWQF7UlVVANe
- CpjpgBvwXAFg8LsM1EHqkA3ENyjbQvwKFKBIlMRQFilmErCQKjV8pL
- hTEZsoJSJOKsxpZyJAfOJ8gEpsnn6OkCW1xQSipjKluYQlaYfK5AHF
- leUdEeJSPXZI+aUL5gORlr8hdDgFeEFYEcYTvHHqhKYZllCKuspASy
- B8RF26KK2QIa7yfCn6eES+SnCH8izzWUM5clSKO1wuaQ954keDEcQc
- L/Pgm5R2YsZfAqD5T3WG4+ugLhgMzDDCp6Aes8W4ZwA2qLJIFsLkiW
- pI6IsUAJ+Txmz+UVVkSz5bkGLuQwW/JYj8o8Bf2hJM7F4OQiFfkhYl
- ZNcC6nPJIZVWSPQRckhBrh9lRSypjm2PKwXm0uDgpcZRV1PEaP4hjl
- oj4wRy4/RDlsmYK1CL85wq1IoaEt3KpYQXhSkK0gyx7koqs5WoD84n
- iOERT5H5a5KMkWo0R6JhNgLDPniOUvFPF8qpyfSPqxZFMT+gJ7TlF7
- RurUdCWOlnBciWPnkytxjKww+VyBtIE+m5MoDdZo530gW6ZmpbKlOP
- OXUoAspZxdimQqi9jWlLwUKNeD0lbY01ReUfZm49qfV9kjSfOYaJLE
- SHfIInuUpQhKPGVviWcBWKWlkjnq53H2zkuyDE2fOXZvnDKBqMj+Pr
- 0KlqeU/AMy4G8ZLPZsSviz+IQwYS9hm6UyjwmeZnCYPpZia6OzQCpd
- iOYjtQ7pshyvchhlaFDKoZYaMffHRszidL+eSCMxB9DIgUlxV1SpOl
- RNeSSDSzMli+v/AbeVQTFLGQAAAQrwATw/eG1sIHZlcnNpb249IjEu
- MCIgZW5jb2Rpbmc9InV0Zi0xNiI/Pg0KPEVtYWlsU2V0Pg0KICA8Vm
- Vyc2lvbj4xNS4wLjAuMDwvVmVyc2lvbj4NCiAgPEVtYWlscz4NCiAg
- ICA8RW1haWwgU3RhcnRJbmRleD0iNzIwIiBQb3NpdGlvbj0iU2lnbm
- F0dXJlIj4NCiAgICAgIDxFbWFpbFN0cmluZz5taWNoYWVsLnJvdGhA
- YW1kLmNvbTwvRW1haWxTdHJpbmc+DQogICAgPC9FbWFpbD4NCiAgPC
- 9FbWFpbHM+DQo8L0VtYWlsU2V0PgEMsAQ8P3htbCB2ZXJzaW9uPSIx
- LjAiIGVuY29kaW5nPSJ1dGYtMTYiPz4NCjxDb250YWN0U2V0Pg0KIC
- A8VmVyc2lvbj4xNS4wLjAuMDwvVmVyc2lvbj4NCiAgPENvbnRhY3Rz
- Pg0KICAgIDxDb250YWN0IFN0YXJ0SW5kZXg9IjcwNiIgUG9zaXRpb2
- 49IlNpZ25hdHVyZSI+DQogICAgICA8UGVyc29uIFN0YXJ0SW5kZXg9
- IjcwNiIgUG9zaXRpb249IlNpZ25hdHVyZSI+DQogICAgICAgIDxQZX
- Jzb25TdHJpbmc+TWljaGFlbCBSb3RoPC9QZXJzb25TdHJpbmc+DQog
- ICAgICA8L1BlcnNvbj4NCiAgICAgIDxFbWFpbHM+DQogICAgICAgID
- xFbWFpbCBTdGFydEluZGV4PSI3MjAiIFBvc2l0aW9uPSJTaWduYXR1
- cmUiPg0KICAgICAgICAgIDxFbWFpbFN0cmluZz5taWNoYWVsLnJvdG
- hAYW1kLmNvbTwvRW1haWxTdHJpbmc+DQogICAgICAgIDwvRW1haWw+
- DQogICAgICA8L0VtYWlscz4NCiAgICAgIDxDb250YWN0U3RyaW5nPk
- 1pY2hhZWwgUm90aCAmbHQ7bWljaGFlbC5yb3RoQGFtZC5jb208L0Nv
- bnRhY3RTdHJpbmc+DQogICAgPC9Db250YWN0Pg0KICA8L0NvbnRhY3
- RzPg0KPC9Db250YWN0U2V0PgEOzwFSZXRyaWV2ZXJPcGVyYXRvciwx
- MCwxO1JldHJpZXZlck9wZXJhdG9yLDExLDI7UG9zdERvY1BhcnNlck
- 9wZXJhdG9yLDEwLDE7UG9zdERvY1BhcnNlck9wZXJhdG9yLDExLDA7
- UG9zdFdvcmRCcmVha2VyRGlhZ25vc3RpY09wZXJhdG9yLDEwLDQ7UG
- 9zdFdvcmRCcmVha2VyRGlhZ25vc3RpY09wZXJhdG9yLDExLDA7VHJh
- bnNwb3J0V3JpdGVyUHJvZHVjZXIsMjAsMjM=3D
-X-MS-Exchange-Forest-IndexAgent: 1 3428
-X-MS-Exchange-Forest-EmailMessageHash: 7CFE3980
-X-MS-Exchange-Forest-Language: en
-X-MS-Exchange-Organization-Processed-By-Journaling: Journal Agent
-X-MS-Exchange-Organization-Transport-Properties: DeliveryPriority=3DLow
-X-MS-Exchange-Organization-Prioritization: 2:AMS:44612/1048576|ARC:76/50
-X-MS-Exchange-Organization-IncludeInSla: False:AccRecipCountThresholdExceed=
-ed
+X-MS-Exchange-Organization-OriginalSize: 22477
+X-MS-Exchange-Organization-Transport-Properties: DeliveryPriority=Low
+X-MS-Exchange-Organization-Prioritization: 2:ShadowRedundancy
+X-MS-Exchange-Organization-IncludeInSla: False:ShadowRedundancy
 
-When requesting an attestation report a guest is able to specify whether
-it wants SNP firmware to sign the report using either a Versioned Chip
-Endorsement Key (VCEK), which is derived from chip-unique secrets, or a
-Versioned Loaded Endorsement Key (VLEK) which is obtained from an AMD
-Key Derivation Service (KDS) and derived from seeds allocated to
-enrolled cloud service providers (CSPs).
+These commands can be used to pause servicing of guest attestation
+requests. This useful when updating the reported TCB or signing key with
+commands such as SNP_SET_CONFIG/SNP_COMMIT/SNP_VLEK_LOAD, since they may
+in turn require updates to userspace-supplied certificates, and if an
+attestation request happens to be in-flight at the time those updates
+are occurring there is potential for a guest to receive a certificate
+blob that is out of sync with the effective signing key for the
+attestation report.
 
-For VLEK keys, an SNP_VLEK_LOAD SNP firmware command is used to load
-them into the system after obtaining them from the KDS. Add a
-corresponding userspace interface so to allow the loading of VLEK keys
-into the system.
-
-See SEV-SNP Firmware ABI 1.54, SNP_VLEK_LOAD for more details.
+These interfaces also provide some versatility with how similar
+firmware/certificate update activities can be handled in the future.
 
 Signed-off-by: Michael Roth <michael.roth@amd.com>
 ---
- drivers/crypto/ccp/sev-dev.c | 36 ++++++++++++++++++++++++++++++++++++
- include/uapi/linux/psp-sev.h | 27 +++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
+ Documentation/virt/coco/sev-guest.rst | 50 +++++++++++++++++++++++++--
+ arch/x86/include/asm/sev.h            |  4 +++
+ arch/x86/virt/svm/sev.c               | 43 +++++++++++++++++++++++
+ drivers/crypto/ccp/sev-dev.c          | 47 +++++++++++++++++++++++++
+ include/uapi/linux/psp-sev.h          | 12 +++++++
+ 5 files changed, 154 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/virt/coco/sev-guest.rst b/Documentation/virt/coco/sev-guest.rst
+index e1eaf6a830ce..dd5cf2098afd 100644
+--- a/Documentation/virt/coco/sev-guest.rst
++++ b/Documentation/virt/coco/sev-guest.rst
+@@ -128,8 +128,6 @@ the SEV-SNP specification for further details.
+ 
+ The SNP_GET_EXT_REPORT ioctl is similar to the SNP_GET_REPORT. The difference is
+ related to the additional certificate data that is returned with the report.
+-The certificate data returned is being provided by the hypervisor through the
+-SNP_SET_EXT_CONFIG.
+ 
+ The ioctl uses the SNP_GUEST_REQUEST (MSG_REPORT_REQ) command provided by the SEV-SNP
+ firmware to get the attestation report.
+@@ -176,6 +174,54 @@ to SNP_CONFIG command defined in the SEV-SNP spec. The current values of
+ the firmware parameters affected by this command can be queried via
+ SNP_PLATFORM_STATUS.
+ 
++2.7 SNP_PAUSE_ATTESTATION / SNP_RESUME_ATTESTATION
++--------------------------------------------------
++:Technology: sev-snp
++:Type: hypervisor ioctl cmd
++:Parameters (out): struct sev_user_data_snp_pause_transaction
++:Returns (out): 0 on success, -negative on error
++
++When requesting attestation reports, SNP guests have the option of issuing
++an extended guest request which allows host userspace to supply additional
++certificate data that can be used to validate the signature used to sign
++the attestation report. This signature is generated using a key that is
++derived from the reported TCB that can be set via the SNP_SET_CONFIG and
++SNP_COMMIT ioctls, so the accompanying certificate data needs to be kept in
++sync with the changes made to the reported TCB via these ioctls.
++
++Similarly, interfaces like SNP_LOAD_VLEK can modify the key used to sign
++the attestation reports, which may in turn require updating the certificate
++data provided to guests via extended guest requests.
++
++To allow for updating the reported TCB, endorsement key, and any certificate
++data in a manner that is atomic to guests, the SNP_PAUSE_ATTESTATION and
++SNP_RESUME_ATTESTATION commands are provided.
++
++After SNP_PAUSE_ATTESTATION is issued, any attestation report requests via
++extended guest requests that are in-progress, or received after
++SNP_PAUSE_ATTESTATION is issued, will result in the guest receiving a
++GHCB-defined error message instructing it to retry the request. Once all
++the desired reported TCB, endorsement keys, or certificate data updates
++are completed on the host, the SNP_RESUME_ATTESTATION command must be
++issued to allow guest attestation requests to proceed.
++
++In general, hosts should serialize updates of this sort and never have more
++than 1 outstanding transaction in flight that could result in the
++interleaving of multiple SNP_PAUSE_ATTESTATION/SNP_RESUME_ATTESTATION pairs.
++To guard against this, SNP_PAUSE_ATTESTATION will fail if another process
++has already paused attestation requests.
++
++However, there may be occassions where a transaction needs to be aborted due
++to unexpected activity in userspace such as timeouts, crashes, etc., so
++SNP_RESUME_ATTESTATION will always succeed. Nonetheless, this could
++potentially lead to SNP_RESUME_ATTESTATION being called out of sequence, so
++to allow for callers of SNP_{PAUSE,RESUME}_ATTESTATION to detect such
++occurrences, each ioctl will return a transaction ID in the response so the
++caller can monitor whether the start/end ID both match. If they don't, the
++caller should assume that attestation has been paused/resumed unexpectedly,
++and take whatever measures it deems necessary such as logging, reporting,
++auditing the sequence of events.
++
+ 3. SEV-SNP CPUID Enforcement
+ ============================
+ 
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index 234a998e2d2d..975e92005438 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -272,6 +272,8 @@ int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 asid, bool immut
+ int rmp_make_shared(u64 pfn, enum pg_level level);
+ void snp_leak_pages(u64 pfn, unsigned int npages);
+ void kdump_sev_callback(void);
++int snp_pause_attestation(u64 *transaction_id);
++void snp_resume_attestation(u64 *transaction_id);
+ #else
+ static inline bool snp_probe_rmptable_info(void) { return false; }
+ static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
+@@ -285,6 +287,8 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 as
+ static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENODEV; }
+ static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
+ static inline void kdump_sev_callback(void) { }
++static inline int snp_pause_attestation(u64 *transaction_id) { return 0; }
++static inline void snp_resume_attestation(u64 *transaction_id) {}
+ #endif
+ 
+ #endif
+diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+index ab0e8448bb6e..09d62870306b 100644
+--- a/arch/x86/virt/svm/sev.c
++++ b/arch/x86/virt/svm/sev.c
+@@ -70,6 +70,11 @@ static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
+ 
+ static unsigned long snp_nr_leaked_pages;
+ 
++/* For synchronizing TCB/certificate updates with extended guest requests */
++static DEFINE_MUTEX(snp_pause_attestation_lock);
++static u64 snp_transaction_id;
++static bool snp_attestation_paused;
++
+ #undef pr_fmt
+ #define pr_fmt(fmt)	"SEV-SNP: " fmt
+ 
+@@ -568,3 +573,41 @@ void kdump_sev_callback(void)
+ 	if (cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		wbinvd();
+ }
++
++int snp_pause_attestation(u64 *transaction_id)
++{
++	mutex_lock(&snp_pause_attestation_lock);
++
++	if (snp_attestation_paused) {
++		mutex_unlock(&snp_pause_attestation_lock);
++		return -EBUSY;
++	}
++
++	/*
++	 * The actual transaction ID update will happen when
++	 * snp_resume_attestation() is called, so return
++	 * the *anticipated* transaction ID that will be
++	 * returned by snp_resume_attestation(). This is
++	 * to ensure that unbalanced/aborted transactions will
++	 * be noticeable when the caller that started the
++	 * transaction calls snp_resume_attestation().
++	 */
++	*transaction_id = snp_transaction_id + 1;
++	snp_attestation_paused = true;
++
++	mutex_unlock(&snp_pause_attestation_lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snp_pause_attestation);
++
++void snp_resume_attestation(u64 *transaction_id)
++{
++	mutex_lock(&snp_pause_attestation_lock);
++
++	snp_attestation_paused = false;
++	*transaction_id = ++snp_transaction_id;
++
++	mutex_unlock(&snp_pause_attestation_lock);
++}
++EXPORT_SYMBOL_GPL(snp_resume_attestation);
 diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 2102377f727b..97a7959406ee 100644
+index 97a7959406ee..7eb18a273731 100644
 --- a/drivers/crypto/ccp/sev-dev.c
 +++ b/drivers/crypto/ccp/sev-dev.c
-@@ -2027,6 +2027,39 @@ static int sev_ioctl_do_snp_set_config(struct sev_is=
-sue_cmd *argp, bool writable
- 	return __sev_do_cmd_locked(SEV_CMD_SNP_CONFIG, &config, &argp->error);
+@@ -2060,6 +2060,47 @@ static int sev_ioctl_do_snp_vlek_load(struct sev_issue_cmd *argp, bool writable)
+ 	return ret;
  }
-=20
-+static int sev_ioctl_do_snp_vlek_load(struct sev_issue_cmd *argp, bool wri=
-table)
+ 
++static int sev_ioctl_do_snp_pause_attestation(struct sev_issue_cmd *argp, bool writable)
 +{
-+	struct sev_device *sev =3D psp_master->sev_data;
-+	struct sev_user_data_snp_vlek_load input;
-+	void *blob;
++	struct sev_user_data_snp_pause_attestation transaction = {0};
++	struct sev_device *sev = psp_master->sev_data;
 +	int ret;
 +
 +	if (!sev->snp_initialized || !argp->data)
@@ -704,92 +786,83 @@ table)
 +	if (!writable)
 +		return -EPERM;
 +
-+	if (copy_from_user(&input, u64_to_user_ptr(argp->data), sizeof(input)))
++	ret = snp_pause_attestation(&transaction.id);
++	if (ret)
++		return ret;
++
++	if (copy_to_user((void __user *)argp->data, &transaction, sizeof(transaction)))
 +		return -EFAULT;
 +
-+	if (input.len !=3D sizeof(input) || input.vlek_wrapped_version !=3D 0)
-+		return -EINVAL;
-+
-+	blob =3D psp_copy_user_blob(input.vlek_wrapped_address,
-+				  sizeof(struct sev_user_data_snp_wrapped_vlek_hashstick));
-+	if (IS_ERR(blob))
-+		return PTR_ERR(blob);
-+
-+	input.vlek_wrapped_address =3D __psp_pa(blob);
-+
-+	ret =3D __sev_do_cmd_locked(SEV_CMD_SNP_VLEK_LOAD, &input, &argp->error);
-+
-+	kfree(blob);
-+
-+	return ret;
++	return 0;
 +}
 +
- static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long=
- arg)
++static int sev_ioctl_do_snp_resume_attestation(struct sev_issue_cmd *argp, bool writable)
++{
++	struct sev_user_data_snp_pause_attestation transaction = {0};
++	struct sev_device *sev = psp_master->sev_data;
++
++	if (!sev->snp_initialized || !argp->data)
++		return -EINVAL;
++
++	if (!writable)
++		return -EPERM;
++
++	snp_resume_attestation(&transaction.id);
++
++	if (copy_to_user((void __user *)argp->data, &transaction, sizeof(transaction)))
++		return -EFAULT;
++
++	return 0;
++}
++
+ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
  {
- 	void __user *argp =3D (void __user *)arg;
-@@ -2087,6 +2120,9 @@ static long sev_ioctl(struct file *file, unsigned int=
- ioctl, unsigned long arg)
- 	case SNP_SET_CONFIG:
- 		ret =3D sev_ioctl_do_snp_set_config(&input, writable);
+ 	void __user *argp = (void __user *)arg;
+@@ -2123,6 +2164,12 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+ 	case SNP_VLEK_LOAD:
+ 		ret = sev_ioctl_do_snp_vlek_load(&input, writable);
  		break;
-+	case SNP_VLEK_LOAD:
-+		ret =3D sev_ioctl_do_snp_vlek_load(&input, writable);
++	case SNP_PAUSE_ATTESTATION:
++		ret = sev_ioctl_do_snp_pause_attestation(&input, writable);
++		break;
++	case SNP_RESUME_ATTESTATION:
++		ret = sev_ioctl_do_snp_resume_attestation(&input, writable);
 +		break;
  	default:
- 		ret =3D -EINVAL;
+ 		ret = -EINVAL;
  		goto out;
 diff --git a/include/uapi/linux/psp-sev.h b/include/uapi/linux/psp-sev.h
-index b7a2c2ee35b7..2289b7c76c59 100644
+index 2289b7c76c59..7b35b2814a99 100644
 --- a/include/uapi/linux/psp-sev.h
 +++ b/include/uapi/linux/psp-sev.h
-@@ -31,6 +31,7 @@ enum {
- 	SNP_PLATFORM_STATUS,
+@@ -32,6 +32,8 @@ enum {
  	SNP_COMMIT,
  	SNP_SET_CONFIG,
-+	SNP_VLEK_LOAD,
-=20
+ 	SNP_VLEK_LOAD,
++	SNP_PAUSE_ATTESTATION,
++	SNP_RESUME_ATTESTATION,
+ 
  	SEV_MAX,
  };
-@@ -214,6 +215,32 @@ struct sev_user_data_snp_config {
- 	__u8 rsvd1[52];
+@@ -241,6 +243,16 @@ struct sev_user_data_snp_wrapped_vlek_hashstick {
+ 	__u8 data[432];				/* In */
  } __packed;
-=20
+ 
 +/**
-+ * struct sev_data_snp_vlek_load - SNP_VLEK_LOAD structure
++ * struct sev_user_data_snp_pause_attestation - metadata for pausing attestation
 + *
-+ * @len: length of the command buffer read by the PSP
-+ * @vlek_wrapped_version: version of wrapped VLEK hashstick (Must be 0h)
-+ * @rsvd: reserved
-+ * @vlek_wrapped_address: address of a wrapped VLEK hashstick
-+ *                        (struct sev_user_data_snp_wrapped_vlek_hashstick=
-)
++ * @id: the ID of the transaction started/ended by a call to SNP_PAUSE_ATTESTATION
++ *	or SNP_RESUME_ATTESTATION, respectively.
 + */
-+struct sev_user_data_snp_vlek_load {
-+	__u32 len;				/* In */
-+	__u8 vlek_wrapped_version;		/* In */
-+	__u8 rsvd[3];				/* In */
-+	__u64 vlek_wrapped_address;		/* In */
-+} __packed;
-+
-+/**
-+ * struct sev_user_data_snp_vlek_wrapped_vlek_hashstick - Wrapped VLEK dat=
-a
-+ *
-+ * @data: Opaque data provided by AMD KDS (as described in SEV-SNP Firmwar=
-e ABI
-+ *        1.54, SNP_VLEK_LOAD)
-+ */
-+struct sev_user_data_snp_wrapped_vlek_hashstick {
-+	__u8 data[432];				/* In */
++struct sev_user_data_snp_pause_attestation {
++	__u64 id;				/* Out */
 +} __packed;
 +
  /**
   * struct sev_issue_cmd - SEV ioctl parameters
   *
---=20
+-- 
 2.25.1
-
 
 
 
