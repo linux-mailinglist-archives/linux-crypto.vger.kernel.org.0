@@ -1,39 +1,39 @@
-Return-Path: <linux-crypto+bounces-3290-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3297-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5BB9896B8D
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Apr 2024 12:06:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD01C896B9E
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Apr 2024 12:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FB661F2AE04
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Apr 2024 10:06:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D3771F211BC
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Apr 2024 10:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46FA137934;
-	Wed,  3 Apr 2024 10:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3841613D8BF;
+	Wed,  3 Apr 2024 10:05:49 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0E5135A58;
-	Wed,  3 Apr 2024 10:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B1213DDC7;
+	Wed,  3 Apr 2024 10:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712138732; cv=none; b=ox4VF7Au0yMVzjhKnMGcXvh1kjX9P6svaMD1GY4TWa4b8jQyXQAJHZvhWiGrdgTKkO/QQn0VwaWRQPfWN4SF3V9IAgUbcen6s4u6bzEHFLVJYtiHYSlnM+bsFxxAK9uoqeduTrwKXnLeSAiL2fFkEGZ4zkievwHOCcorjZaeN/w=
+	t=1712138749; cv=none; b=nlXGBPX9QczeLeiZ+vPRw4DOChVu5OqLsR91rp+e0j8Q+MZUIu911DXskBi2qSsi3xekEHPJX3I+zIyJp5Ot9tbv9u1dcLiigSrivvcMuKv3WDb1nr6u7Q5mDKccIoosR3EgbmkGCp48DPT5eCtOVlUP8qK+ZnW6u+h7PWMfUWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712138732; c=relaxed/simple;
-	bh=4X7bb0ikerFe5yNJkCqO9owSgxH9ZYXoE8odVRPTh8M=;
+	s=arc-20240116; t=1712138749; c=relaxed/simple;
+	bh=IWmag/TML6Tv6Hu6G9U6MPtnz9M6+9Xlreue3sMUpMQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=er/2FgTim2aQ8+rQNXqtLFmtnlgDmf2Fpgp6EH3wJ4zjw222WvHEoq8okXieyGkA3WhnpKTymTzTYgi9HivcSEH5ajTKETrS/AREmFNZUzHC+KRoJCak2QVI3xn2TdSgix/S2Sjf8u2wQCicccQ6N73j4gd+TWNyimmR3ohFDkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+	 MIME-Version:Content-Type; b=owl4i6hlKQVd6Cd16fdfTXQeWPDfJv1F/FZY0mTsUlTPN7lTJpoI5mZ8uhUu0MLoSJKN0QJ1gRJLLQw9lj4mQO6t/UNzAkbiHkgXrs0NhoBciJrJqrhz2/lRFtohWuowkhi+rHdmVCrZKIWhTifsxwZe4hD5dZoMGU6RRaaSYSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4V8gKn4J1qz1Q8qr;
-	Wed,  3 Apr 2024 18:02:53 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4V8gMh6bNlzbf84;
+	Wed,  3 Apr 2024 18:04:32 +0800 (CST)
 Received: from dggpemd200003.china.huawei.com (unknown [7.185.36.122])
-	by mail.maildlp.com (Postfix) with ESMTPS id B9B4318007F;
+	by mail.maildlp.com (Postfix) with ESMTPS id E2F3514037B;
 	Wed,  3 Apr 2024 18:05:27 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  dggpemd200003.china.huawei.com (7.185.36.122) with Microsoft SMTP Server
@@ -46,9 +46,9 @@ CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<songzhiqi1@huawei.com>, <qianweili@huawei.com>, <liushangbin@hisilicon.com>,
 	<linwenkai6@hisilicon.com>, <taoqi10@huawei.com>, <wangzhou1@hisilicon.com>,
 	<huangchenghai2@huawei.com>
-Subject: [PATCH 2/9] crypto: hisilicon/debugfs - Fix debugfs uninit process issue
-Date: Wed, 3 Apr 2024 18:00:55 +0800
-Message-ID: <20240403100102.2735306-3-huangchenghai2@huawei.com>
+Subject: [PATCH 3/9] crypto: hisilicon/sgl - Delete redundant parameter verification
+Date: Wed, 3 Apr 2024 18:00:56 +0800
+Message-ID: <20240403100102.2735306-4-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240403100102.2735306-1-huangchenghai2@huawei.com>
 References: <20240403100102.2735306-1-huangchenghai2@huawei.com>
@@ -63,74 +63,42 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpemd200003.china.huawei.com (7.185.36.122)
 
-During the zip probe process, the debugfs failure does not stop
-the probe. When debugfs initialization fails, jumping to the
-error branch will also release regs, in addition to its own
-rollback operation.
+The input parameter check in acc_get_sgl is redundant. The
+caller has been verified once. When the check is performed for
+multiple times, the performance deteriorates.
 
-As a result, it may be released repeatedly during the regs
-uninit process. Therefore, the null check needs to be added to
-the regs uninit process.
+So the redundant parameter verification is deleted, and the
+index verification is changed to the module entry function for
+verification.
 
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 ---
- drivers/crypto/hisilicon/debugfs.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ drivers/crypto/hisilicon/sgl.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/debugfs.c b/drivers/crypto/hisilicon/debugfs.c
-index cd67fa348ca7..6351a452878d 100644
---- a/drivers/crypto/hisilicon/debugfs.c
-+++ b/drivers/crypto/hisilicon/debugfs.c
-@@ -809,8 +809,14 @@ static void dfx_regs_uninit(struct hisi_qm *qm,
- {
- 	int i;
+diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
+index 0beca257c20b..568acd0aee3f 100644
+--- a/drivers/crypto/hisilicon/sgl.c
++++ b/drivers/crypto/hisilicon/sgl.c
+@@ -161,9 +161,6 @@ static struct hisi_acc_hw_sgl *acc_get_sgl(struct hisi_acc_sgl_pool *pool,
+ 	struct mem_block *block;
+ 	u32 block_index, offset;
  
-+	if (!dregs)
-+		return;
-+
- 	/* Setting the pointer is NULL to prevent double free */
- 	for (i = 0; i < reg_len; i++) {
-+		if (!dregs[i].regs)
-+			continue;
-+
- 		kfree(dregs[i].regs);
- 		dregs[i].regs = NULL;
- 	}
-@@ -860,14 +866,21 @@ static struct dfx_diff_registers *dfx_regs_init(struct hisi_qm *qm,
- static int qm_diff_regs_init(struct hisi_qm *qm,
- 		struct dfx_diff_registers *dregs, u32 reg_len)
- {
-+	int ret;
-+
- 	qm->debug.qm_diff_regs = dfx_regs_init(qm, qm_diff_regs, ARRAY_SIZE(qm_diff_regs));
--	if (IS_ERR(qm->debug.qm_diff_regs))
--		return PTR_ERR(qm->debug.qm_diff_regs);
-+	if (IS_ERR(qm->debug.qm_diff_regs)) {
-+		ret = PTR_ERR(qm->debug.qm_diff_regs);
-+		qm->debug.qm_diff_regs = NULL;
-+		return ret;
-+	}
+-	if (!pool || !hw_sgl_dma || index >= pool->count)
+-		return ERR_PTR(-EINVAL);
+-
+ 	block = pool->mem_block;
+ 	block_index = index / pool->sgl_num_per_block;
+ 	offset = index % pool->sgl_num_per_block;
+@@ -230,7 +227,7 @@ hisi_acc_sg_buf_map_to_hw_sgl(struct device *dev,
+ 	struct scatterlist *sg;
+ 	int sg_n;
  
- 	qm->debug.acc_diff_regs = dfx_regs_init(qm, dregs, reg_len);
- 	if (IS_ERR(qm->debug.acc_diff_regs)) {
- 		dfx_regs_uninit(qm, qm->debug.qm_diff_regs, ARRAY_SIZE(qm_diff_regs));
--		return PTR_ERR(qm->debug.acc_diff_regs);
-+		ret = PTR_ERR(qm->debug.acc_diff_regs);
-+		qm->debug.acc_diff_regs = NULL;
-+		return ret;
- 	}
+-	if (!dev || !sgl || !pool || !hw_sgl_dma)
++	if (!dev || !sgl || !pool || !hw_sgl_dma || index >= pool->count)
+ 		return ERR_PTR(-EINVAL);
  
- 	return 0;
-@@ -908,7 +921,9 @@ static int qm_last_regs_init(struct hisi_qm *qm)
- static void qm_diff_regs_uninit(struct hisi_qm *qm, u32 reg_len)
- {
- 	dfx_regs_uninit(qm, qm->debug.acc_diff_regs, reg_len);
-+	qm->debug.acc_diff_regs = NULL;
- 	dfx_regs_uninit(qm, qm->debug.qm_diff_regs, ARRAY_SIZE(qm_diff_regs));
-+	qm->debug.qm_diff_regs = NULL;
- }
- 
- /**
+ 	sg_n = sg_nents(sgl);
 -- 
 2.30.0
 
