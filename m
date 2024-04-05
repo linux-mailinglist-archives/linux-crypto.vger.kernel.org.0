@@ -1,47 +1,71 @@
-Return-Path: <linux-crypto+bounces-3359-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3362-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27E9189971F
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Apr 2024 09:57:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC798899735
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Apr 2024 09:58:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D799A283089
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Apr 2024 07:57:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C84A1F21F29
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Apr 2024 07:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69489142914;
-	Fri,  5 Apr 2024 07:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E1114387E;
+	Fri,  5 Apr 2024 07:57:42 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BF91428F8;
-	Fri,  5 Apr 2024 07:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33ED912F36F;
+	Fri,  5 Apr 2024 07:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712303783; cv=none; b=FTg6Ou/n6ErliASPlRPsehQu8u6aoYo9N0WQjuyMg894kSX0TwIsR/GTNPR5ycxQ88jiReqHXNvfg7yvUietZekwPhvpSi4Ze+9Awn+7Ick36BId1J1zt9ZhrftwUKfB4Je6MBFtiWSjwP6tKBmG1/iZ0ytPnL+yo61LYKP1xWM=
+	t=1712303861; cv=none; b=IHqpm1miK83AGe2UAuAjKrHN+Y9XfCmKjrZsbssF97JWtZjBkqeT5e4JI1u1/C1N3ydJp3EW2tsLZN+Nw13u5xSf84JCLJEdg5+oxRY1l7zbVugoId8m6s/flcD6MHu+sNzvoCnDAc7R5ARsYONrTFlkd9p/i96spPvupS+MGao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712303783; c=relaxed/simple;
-	bh=SMgSnO0dEhQ8NbC3AA5vERFlEK7T5wnHtoSPEChbVrk=;
+	s=arc-20240116; t=1712303861; c=relaxed/simple;
+	bh=3n8kIwNnAG2JAJWgK4lWxzjsNrvgfN6/NgUinhjWmMI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TNOfFQbaBbLZ6E7oSSp+5baXTi9p7TwClm2SrSwzfaomwRiQovhkpPFSnl4/pUdMfcSWtl4YwrYPtRsvBYGk/fA3R9fH8js/Dagit6yC7GeirH9gMxN8j7x86MUx9Nw+Mq46RCVKVM6qsryLP6sBriYNa6Vo2dnoMV1jWP0BTag=
+	 Content-Type:Content-Disposition:In-Reply-To; b=LQTTpMXiTcq49e8DkJigiG1H40fpvOElXL+XGME3IIaXrYZHvAJdrpf5IvIJFBPbFqRT0glgI4S08O/2Xn417llD7m0xbQ6jDImq8KuTzYaN0G0BNvJEYiYN2LOH3G36HGZGD/ggACR6CljMzzCSYwOO3TDwGuhWgdjYVq1NLUk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rseQn-00FU8r-5J; Fri, 05 Apr 2024 15:56:14 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Apr 2024 15:56:30 +0800
-Date: Fri, 5 Apr 2024 15:56:30 +0800
+	id 1rseRA-00FUA8-A3; Fri, 05 Apr 2024 15:56:37 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Apr 2024 15:56:53 +0800
+Date: Fri, 5 Apr 2024 15:56:53 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] crypto: jitter - Remove duplicate word in comment
-Message-ID: <Zg+urvO2r39OI9H/@gondor.apana.org.au>
-References: <20240328160401.445647-2-thorsten.blum@toblux.com>
- <20240329154455.1733-3-thorsten.blum@toblux.com>
+To: j.granados@samsung.com
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	David Howells <dhowells@redhat.com>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Luis Chamberlain <mcgrof@kernel.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+	io-uring@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/7] crypto: Remove the now superfluous sentinel element
+ from ctl_table array
+Message-ID: <Zg+uxQxlhC6OcoVd@gondor.apana.org.au>
+References: <20240328-jag-sysctl_remset_misc-v1-0-47c1463b3af2@samsung.com>
+ <20240328-jag-sysctl_remset_misc-v1-3-47c1463b3af2@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -50,19 +74,23 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240329154455.1733-3-thorsten.blum@toblux.com>
+In-Reply-To: <20240328-jag-sysctl_remset_misc-v1-3-47c1463b3af2@samsung.com>
 
-On Fri, Mar 29, 2024 at 04:44:54PM +0100, Thorsten Blum wrote:
-> s/in//
+On Thu, Mar 28, 2024 at 04:57:50PM +0100, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
 > 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which will
+> reduce the overall build time size of the kernel and run time memory
+> bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> 
+> Remove sentinel from crypto_sysctl_table
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 > ---
-> Changes in v2:
-> - Fix the commit diff because I made a mistake when breaking up changes
->   into individual patches
-> ---
->  crypto/jitterentropy.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  crypto/fips.c | 1 -
+>  1 file changed, 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
