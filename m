@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-3377-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3378-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CD6D89A7EA
-	for <lists+linux-crypto@lfdr.de>; Sat,  6 Apr 2024 02:28:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE6A89A7EB
+	for <lists+linux-crypto@lfdr.de>; Sat,  6 Apr 2024 02:28:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13416B23412
-	for <lists+linux-crypto@lfdr.de>; Sat,  6 Apr 2024 00:28:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 932C9B231BA
+	for <lists+linux-crypto@lfdr.de>; Sat,  6 Apr 2024 00:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A6336B;
-	Sat,  6 Apr 2024 00:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE823C0B;
+	Sat,  6 Apr 2024 00:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YR23UDKd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oiG72Znk"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1E51879
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44BB2CAB
 	for <linux-crypto@vger.kernel.org>; Sat,  6 Apr 2024 00:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712363286; cv=none; b=HtPIhaKEty311i7eXGut3d3Prm4MmHGXfEKRLXly5f/Ke9DEMIwolwaNDZ+OdU4hCacwdKOnbprfDuZrBx+Clkp1fBxUDPffWr5XQtwTOlcUrSXVgNL95+cZb1Tb+5NjBFyMA6+vpnj6Wudbsp8wiBu2Y0ZMI7qnysnFhqGirAQ=
+	t=1712363287; cv=none; b=mh2gmzAIBPOjv117KAhhS0u9GWnThti5mh4LI/bKTAooU5/RAmZA1rm6rKoEWSdQFd9UNGC55jiU0ZN5nIOwNUN8QyuZQ8CI6m8u0L8olv8EI8/CjGcAIU4LajFvqU2ySQ2dIB1xvxM10gBOiLuXujuYdpDixezSS3Ljfuudmeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712363286; c=relaxed/simple;
-	bh=IK2GT9BV3++m+qSw9PNeNHZP43zJpPO86nVMwRDr8+Y=;
+	s=arc-20240116; t=1712363287; c=relaxed/simple;
+	bh=HyTNCHwRiyVtvVQuLZycGw9jDb9+G3ZiYKXX8g+LLzg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K+LImcbRk3a9RbG7jV/0gZNTdAucBOZ9qI1WKB2+gemysxXgfw6VCbtSZU6Ti4QabDdCCMNwvgt/T+APqGs+lEEG8/DXxHxKBActtZIWSK56ZhsoUSCEQSoJtO/+qe3l/mdLWSH3pLRyt5QzkHwt+ZLrcFw7uAD5qYJp8irbhpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YR23UDKd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9A3EC43399;
-	Sat,  6 Apr 2024 00:28:05 +0000 (UTC)
+	 MIME-Version; b=Gw0PRxU3fD1KKTbbS6IyHhSl6MvV5ayKizxZRiiWf7Pcx0t6ARnfxyIxEVum5P4mDZ+raOFvMSgTp19xpdFXSmf4/lQS2/Oqm2twb1AnTS2Av2TpPAJgDcmz6NQmnpbeknPWMVTnewOXPuUphH5DM6nf3r/k0leOqDrvRAR2hbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oiG72Znk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C740C433C7;
+	Sat,  6 Apr 2024 00:28:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1712363286;
-	bh=IK2GT9BV3++m+qSw9PNeNHZP43zJpPO86nVMwRDr8+Y=;
+	bh=HyTNCHwRiyVtvVQuLZycGw9jDb9+G3ZiYKXX8g+LLzg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YR23UDKd99WMDqwJL9gOdPjj+GlLnXewTH1UHaINs5ihpRKQNdXhlnpjXpgjvQtjg
-	 EUCFiADFJMp0OAUPaJI2ikM33Mlv4iUHlMnpSif7mrVSIKkoyNATQPxuDH1xs3cDA6
-	 H2KgH/wgT0IzWtgxNaw0oSLqZ4lDUAhbYWZReGrRNpNCDB/6feV37/5veWlPZGLuFS
-	 LndCkRgWV6TvbvEqBA7OkC+/7g1HrgFhDmZJQ+m4h8tufZ8EhAbat0d7u4RgCzwTiC
-	 OLmM0WAJIGcZMAZtOzBPF1ViHweeB93LMPCNHP0uzJ04kx0xhTG8i5IKZhq3Tar2/B
-	 GJSTSmEKSlj/A==
+	b=oiG72Znkk++15W67rpieOoJVY/oNvdA7TZirv9GYFzvoI2eXccs8zWoT0uvvMdBi3
+	 9S3etXilgrjDUY6SEYR7qzxF/1SGpy1n1dC1rdD/2Mpc5GCtKk8EevaUdEcnDSaVOY
+	 sLR1ltkRjBSBEI8iUOInl5vD1zSVP9duEr9UfXqUbqepBMx1v7LOkJTAjvsSXCeAUF
+	 1YLMpApKmUXUk/XB4QRtPKXazLPzlvdgbVpuukS3Jmg2w3mf+vA34AA+t6t5G9JKbC
+	 fdsj/0jnBnIFWFSSwBH4zwO7YhYlWlMPsCO/D67NaoQLdRTAiPPF8/4hW6lkzgA+TZ
+	 tWP/m1IBdzS0Q==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: x86@kernel.org,
 	Tim Chen <tim.c.chen@linux.intel.com>
-Subject: [PATCH 2/3] crypto: x86/sha256-avx2 - add missing vzeroupper
-Date: Fri,  5 Apr 2024 20:26:09 -0400
-Message-ID: <20240406002610.37202-3-ebiggers@kernel.org>
+Subject: [PATCH 3/3] crypto: x86/sha512-avx2 - add missing vzeroupper
+Date: Fri,  5 Apr 2024 20:26:10 -0400
+Message-ID: <20240406002610.37202-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240406002610.37202-1-ebiggers@kernel.org>
 References: <20240406002610.37202-1-ebiggers@kernel.org>
@@ -61,32 +61,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Since sha256_transform_rorx() uses ymm registers, execute vzeroupper
+Since sha512_transform_rorx() uses ymm registers, execute vzeroupper
 before returning from it.  This is necessary to avoid reducing the
 performance of SSE code.
 
-Fixes: d34a460092d8 ("crypto: sha256 - Optimized sha256 x86_64 routine using AVX2's RORX instructions")
+Fixes: e01d69cb0195 ("crypto: sha512 - Optimized SHA512 x86_64 assembly routine using AVX instructions.")
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/sha256-avx2-asm.S | 1 +
+ arch/x86/crypto/sha512-avx2-asm.S | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/crypto/sha256-avx2-asm.S b/arch/x86/crypto/sha256-avx2-asm.S
-index 9918212faf91..0ffb072be956 100644
---- a/arch/x86/crypto/sha256-avx2-asm.S
-+++ b/arch/x86/crypto/sha256-avx2-asm.S
-@@ -714,10 +714,11 @@ SYM_TYPED_FUNC_START(sha256_transform_rorx)
- 	popq	%r15
- 	popq	%r14
- 	popq	%r13
- 	popq	%r12
- 	popq	%rbx
+diff --git a/arch/x86/crypto/sha512-avx2-asm.S b/arch/x86/crypto/sha512-avx2-asm.S
+index f08496cd6870..24973f42c43f 100644
+--- a/arch/x86/crypto/sha512-avx2-asm.S
++++ b/arch/x86/crypto/sha512-avx2-asm.S
+@@ -678,10 +678,11 @@ SYM_TYPED_FUNC_START(sha512_transform_rorx)
+ 	pop	%r14
+ 	pop	%r13
+ 	pop	%r12
+ 	pop	%rbx
+ 
 +	vzeroupper
  	RET
- SYM_FUNC_END(sha256_transform_rorx)
+ SYM_FUNC_END(sha512_transform_rorx)
  
- .section	.rodata.cst512.K256, "aM", @progbits, 512
- .align 64
+ ########################################################################
+ ### Binary Data
 -- 
 2.44.0
 
