@@ -1,199 +1,231 @@
-Return-Path: <linux-crypto+bounces-3450-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3452-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B1A48A0C96
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Apr 2024 11:39:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FC658A15A6
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Apr 2024 15:34:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10A8D285F7B
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Apr 2024 09:39:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A59DBB210C9
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Apr 2024 13:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87ED214534C;
-	Thu, 11 Apr 2024 09:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A3B14F125;
+	Thu, 11 Apr 2024 13:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="RH23LTku"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5VenDP5k"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3930B13B2A8;
-	Thu, 11 Apr 2024 09:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712828386; cv=none; b=PusHeacMlNx8UuWmN4NbKIVMZcoaG4BKdYp/SRlPNHPaGq7Rwb+PW/8TeXzmByAFPL92qZzyKbEJcOZ4NenJa5ad2MTA0JAHKNKLmsVfQq50PurIT2O6Ec5W45O9pDBU34ahT4O7JZEVWwZkM5L1RPSqmMbfk9KKMxTPd13di5U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712828386; c=relaxed/simple;
-	bh=wanp9p18Kaf0ShHZ0lGWcX4M0b7lk+ryk6Qlal5cEOU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=V6pVbqzfPJc7ZepFHHLG6R+/HQ+5hm4Dc0FsZoEHB3Hc68T4bRN5eJ70O2/BbP32elGL92pHfIMI7/c/cL3fCAZO/Gp+YmlWgbpxnSo7s7CkOgg+2cwxg9N81U08ZmXL4G3l725gJxlw0bjioDZYAED3jKQCnnonw4a5+zdEqZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=RH23LTku; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43B7Pfi7029833;
-	Thu, 11 Apr 2024 11:38:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=6rfS5zPiSmzZMMxQ4v6y7X7sH1FVnmMas6q+NGiPbP0=; b=RH
-	23LTkuSOQZgrLqSQPcyDWEaHansF0FyzusSDHHejYeeQubA/RF03+Fcw0JO1uxMG
-	vxF1TpPcpGgm0D5a22KTGFQ7B10VA0NGWF7kWPIuCEes6xP+vVpTvGT3WcMqMrto
-	D4vR5lrxgA/glhjYfqpRe5c0L23nsZVK7DVfPfG0lEV5OCEp0AXAts6p2Sz8Eqn+
-	pfNDTysrxZZj3w6etWkPop5DdColzGvEkh0mS5oMq1L4D7HeqW1uQ1DiKhu8ho9x
-	WWExS/Zmj9aq87LkaFiH+L0wv8VNYlPBEg0uHS/sXlEIu+kMGooWvN+/JWrTbuwL
-	XfW02l4cyVpCxpiEPg5w==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xbfy12h6s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 11:38:51 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D322A4002D;
-	Thu, 11 Apr 2024 11:38:34 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 906DE2132CA;
-	Thu, 11 Apr 2024 11:37:27 +0200 (CEST)
-Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 11 Apr
- 2024 11:37:25 +0200
-Message-ID: <ee47d2e8-763f-4451-b9f3-b46ded4c1b97@foss.st.com>
-Date: Thu, 11 Apr 2024 11:37:24 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E59114F13D;
+	Thu, 11 Apr 2024 13:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712842442; cv=fail; b=g82uL9vV0pRQbhYTSO61oFIiHoIhChTlymTURvu/02MBVGocF3Y8uNjeeclQFh8joCKUUjeF46rDcPVNwVfGx9IjSl+rJo4TlAvM8lON89z1yfIJvxgkc47gN4MSasgyrvvQWRtgEIwvW6/Klhzdt/rZc/sca7dLjfnPmKAR4Xk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712842442; c=relaxed/simple;
+	bh=o+KkzQc1IDW19NSkJ4Xh/Fw56B5+sNlMM3VRXaFYgPA=;
+	h=Message-ID:Date:To:Cc:References:From:Subject:In-Reply-To:
+	 Content-Type:MIME-Version; b=XnH7LgHO1jUqfw/n9SK6i92vmLG0VTj+H9qmg5o3dIu07vnZVCC5deOs6un8yUeXrRq1Qi0zHLDFQW3ymlPpSyLbJE6c8bLEgdcGEvlX5HMAYEHSP/VXanjJDHVy14NbxlFkslz5JvOSKn+/Se28k04F7q1NLeEFVE7NAt1CqlA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=5VenDP5k; arc=fail smtp.client-ip=40.107.244.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FrO3dKIFCiOhOE4yzq2EY/KYZylP0Txu7IVLBTx61bhkvbZrR0F4OYz06Q0IRhtmZo9fcYLVSSK5X4LurrprOya1vS8fa9PQz4+yxlzrrpEkwSBskxdiv8ZLPyhQJigJRMVWASkoztAqpQ/PufgOtiFskXlzm0KFH7OnYXIUer/P30oq6QCLzsfxrS1SMvSw4jWwqUYq2L2boYJQGXAy1WYQH8QstXUUuv+oMZEkYkK2JBhYvnqNQLrs2FI+EXdCVIFsXo5e5tdNrz5LXIkIGLaJehu318VSRJ+sxMFDTUSsH1QFVXWQenQCVip9/kmfJpTW1UkYKJJDrTrOX4vKhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OP7iCONSt2x+x+rkn/Rm1B7Q2oq9yJKrAkYJT2hnBbM=;
+ b=a/w/mfBA16zguFB3EVvNL7mn9C5LbVxA8xoXpW70johP7VFn1dVgIL0ew8PA/3rNlWE21Qd/hp3OBHsT0EWuRkicTCijVBtnVmckvGvX60UlakbTQVLI2Z01gFV7ugMIC6QV2ljWmZWjf8C4iiXy0ouz4aww0hUhkHo9u0nArGk6ENob+RwYqFnfxXYk79ldRUb96skpTFxY6wmGHoyAFS/m3do3Q/P+aHS1ITgLuGyYm+7x/KF6Ins8/CZ8TBac1JMk6ANRyJ7atjZ80rzx7nCRswCkI4ROkb2Wl/bjinhoX6BPEtUqIOmHK6k6XmZciv+kGhTOHPRzfkRObb97BA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OP7iCONSt2x+x+rkn/Rm1B7Q2oq9yJKrAkYJT2hnBbM=;
+ b=5VenDP5k4w731IfMqFscQbsO2PHBv7lYhHZ3OHyMqH9Z+P676gF8DiyqJE49nKBvtEc2g9gaNYY4L1oOzVtkJ7PLQz0o++Xb5Dq4Y5ei+513+CwQnP8VseJEWOXHA0CNRebyxcqiqXQHo7f0qHK9K5nYRgyCWxMpVnk04Ez5nlw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by CY5PR12MB6129.namprd12.prod.outlook.com (2603:10b6:930:27::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 11 Apr
+ 2024 13:33:55 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::1032:4da5:7572:508]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::1032:4da5:7572:508%6]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
+ 13:33:55 +0000
+Message-ID: <5f0e74f2-6261-d836-5161-a525ed9c497a@amd.com>
+Date: Thu, 11 Apr 2024 08:33:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, hpa@zytor.com,
+ ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+ vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+ dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+ peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+ rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+ vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+ tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+ alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+ nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com
+References: <20240329225835.400662-1-michael.roth@amd.com>
+ <20240329225835.400662-30-michael.roth@amd.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v12 29/29] KVM: SEV: Provide support for
+ SNP_EXTENDED_GUEST_REQUEST NAE event
+In-Reply-To: <20240329225835.400662-30-michael.roth@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR13CA0019.namprd13.prod.outlook.com
+ (2603:10b6:806:21::24) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 00/13] Introduce STM32 Firewall framework
-To: Rob Herring <robh+dt@kernel.org>
-CC: Gatien Chevallier <gatien.chevallier@foss.st.com>,
-        <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
-        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
-        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
-        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
-        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <peng.fan@oss.nxp.com>, <lars@metafoo.de>, <rcsekar@samsung.com>,
-        <wg@grandegger.com>, <mkl@pengutronix.de>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-References: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
- <61608010-fbce-46c6-a83d-94c04d0f000d@foss.st.com>
- <CAL_JsqJTiBK3qzdMzL-ZuARosKGqnf_PjyCj13_H=V415y9sHQ@mail.gmail.com>
-Content-Language: en-US
-From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <CAL_JsqJTiBK3qzdMzL-ZuARosKGqnf_PjyCj13_H=V415y9sHQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_03,2024-04-09_01,2023-05-22_02
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|CY5PR12MB6129:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9b950d46-f3f6-44fe-88c3-08dc5a2c089d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	E5NXiPUYegdxsM2ENNoHt9iFDVF7jk8RDIyCOUwzuu4loajaahqdubX8mj75OAGaa8CgoW6NwfX4+e/pX59U1Mr3UHBYn9XxBxCFaIrUL6w5rJAt4We9qCKEyN+oYVqzZRbhjF4+JD1K01pYwqKCe3TlvDtCZUX3Orf56QH9/hBJc3+mA6t6TUQ5ky6vbZ26xpQDFQCOnA11/0BV9kNxCAnjE6pcUN7j5qzHZ0Xc8sKqLKYO/UQDVdv/ELnf0NXbugrHHmdgi8v3SrnEmIeNvcCmAlFSVSdZh72JMb+Ddjf3BqnwEjDId8NIQ/c3iN/PJzqQLz50tfQRCZmKYDdiPxewxmgIXdEuE1I/ceTI8QdEUwulT8ahlnEk0yjVAx3pGtHbLjcqCpr6oiQTA4ty2v7fHOl5aIsfN7XnkteFpGRuNgk4xTmtceg26UK0SoJtwDg50OmSw8mWnA6Wq0/vrIUok4NHiAaDeDP+P3l8akutKTwur7smzvi4tOhSi4SE0bX/ZNG0QsCIyGp8RP4h4kdK8rNp890FdvE0+5r69WDfxnGvZGFcJAovPw0iIvzK1sD9Xvy/pxoi+5kajxZxJn8+zw2H+5SPW4WpEQ1CxyMjyhl8/t0weD2R9+mkfiBNbsTjdAEgKsNN4slVhWNh/WRrrMJDqeo0It/H0RoT0eM=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TE5QendCVXpKZnN6eXJRa3ZZTFUvSHJCTktXWGJ4QW5Ocmc3ckJKeFdpUnly?=
+ =?utf-8?B?YjRMdjFFL0hzemNhMkpKeUVrSjdVMkNvQXBIb2dEUU9iN3BRV0Q5OWxRUUR2?=
+ =?utf-8?B?V0doNFFYYlpzOEtXNjVQVWQ4NTY2cWVuckhBVkVPYXo5SXQxTmJieGkvT2Ev?=
+ =?utf-8?B?blhBdTl4bHk0dklKQUY5N3BOcUZpYkwzL0RXNVRBSG9qQXc4OWxzZkJ2NS9z?=
+ =?utf-8?B?TjNlNVVwNVJIcHBUZnpKQXNEOEVZbzFzVHowZ3ppdnZxVC9SNlNNWUxwU0Va?=
+ =?utf-8?B?bUNqay9Sd3RsVGRrQWhMbjl1WHRNYVQvdzhhajBCMytXeFVlZHJSZThFQjM0?=
+ =?utf-8?B?Vms2UEdNWUpycEQ0d0F1WGZLQWNJb1BNWHNYOHlaK2Z0RTJpMmVyaG13cnlp?=
+ =?utf-8?B?ZUpMRFdzb0dldDUxYjJhTkl3UUY4cG5WeWtoS1hSUmtCNGE5S1h0elYrUFNU?=
+ =?utf-8?B?ZTFSTlRsNFhpWXlQQ2E5MDlqWHRDdEtjRUVkb2wwMmxiK1MxWWdGTEFTZTdU?=
+ =?utf-8?B?akFLNmxRNVhOSDBtcTJiUXZwM1ZmZEdEcmh2N1VLVXZ2QWJOMDRGcEpiY1ph?=
+ =?utf-8?B?MnAxRkJrdlVPb2RVdGdlazMxdGg1cFpGbktRL09NMFdmT3NSWDZPcllnMWdh?=
+ =?utf-8?B?L2RXc25Wc0tkeC9YREdoZ1lpY2hwQ3dJOFdjRkx5OWxRTDNsYThLemo5cHNC?=
+ =?utf-8?B?QUFIeW1KRzZ6TDlNbVl6U1ViTzE4YmdyS0xUM3NoVE8ySTRnT2NubDl5aVJG?=
+ =?utf-8?B?TGk1UHM2SXlyTDVWcUxqNEliVVJzUmlPZzF2N2lLUzlWdkkwdU1MSGxERlpx?=
+ =?utf-8?B?eFl4TEcveEczYjkrSVV4bjFBblJxREVsOWxsL1lZVm1XcnE3a2ExM3Zvc3hB?=
+ =?utf-8?B?MVlmRmNEakNEKzgxTDV5cXFibUJGOXU5dVdCWEhpa0pNMkpyNkd5K1RMRVBy?=
+ =?utf-8?B?aU1zWnNlRGFiSU1TWXRkQXVkbG1BQkZuZzI3VXhnMzBwSVdzcEM1STMxcjJW?=
+ =?utf-8?B?MHpLd0JaelU1bXdrZHNrYnR5d1p3RkFkOTlmZlMwY2txL3g4WThzenVpeS9J?=
+ =?utf-8?B?UW9TeTZqN3hVSzFJM0ZveEk0Yy8wZ3MwNjRrdWhtbDVwM3F4UGw1T3RpTi94?=
+ =?utf-8?B?bUhQeHZJTUV0L2FXYXJiV21HRVpsV3BkUnVLa3F1Wlp4cU43Mnp5WlA4MjVl?=
+ =?utf-8?B?SjRtWVVRNDRMN2J1NUhhQXlpUHpNd3pXejlNVUkrbDE0aDNOejc3V1g1Wlh2?=
+ =?utf-8?B?ZEdPKzBIY3A3Z1JQaVRqUmY0eTRwRm4vaFQ0VHRpYjlVWDNTUWU0Y3doeTRX?=
+ =?utf-8?B?U0FnU0YyRElIaTVsMWNBclFXTDlQSm5jeGVzSnA1OEduVmZscnF6N2R4Ulp3?=
+ =?utf-8?B?VlVZMmcwNEhDVjI4SzhyVGxrbHpjS0NtSlhOTlovSnN2Vm1SN0tIZ0Z4ZzdC?=
+ =?utf-8?B?MkEySmlEL2FqZEVPVGFaTnk1UzZJWkJZcXkxcExLcnpEN0k2YXB5ZFdkM3B2?=
+ =?utf-8?B?b0tKdHhuMHQycFVINmJrbXNpWlJreEdDTnZwNDI3N294WFFNNEcxNjVyL2Iv?=
+ =?utf-8?B?WmNBdTNnSGdwbFBIRWlyZENJWDlFTisvVGxoR2FsLy9LN2JGZXdRY2REb3JQ?=
+ =?utf-8?B?L0E0SW01S2wzZEhJMENwdXZtck5KazlUMnVkYWE1U2JvQkxRQVlySno0bDI4?=
+ =?utf-8?B?UXorNWJyc2x6UVFzNjFERXExODhRV0x3Q3hTa0ZrS3lZZTVoa3VIQjMvQmZX?=
+ =?utf-8?B?MXBtbGdTb1l3ME51c3JkUS9IM2ZBUEJUZnMzR0ZQRXlvYkhmVGVMa04ySmlG?=
+ =?utf-8?B?Vk9jZzNZR3VEWWovc1BtQlBHVEphNzRmNXlkd2FoNk1QRWF3aU50UExObG16?=
+ =?utf-8?B?Tloxa3p4ckRYejQwYjIzcWFGNnpVMzBmV05DaEhUSnd4b2dLZmQvTmxpVVdi?=
+ =?utf-8?B?TjBSSndYSDlFbUx2Z0V2RXpIWWlwRWREMDBiam1zcCtsNzhQNlNzYTB1R2ZB?=
+ =?utf-8?B?bGZkZ2FQM1RtZTJIbFpjRkI3UnhoUjJSWStJWHhQMFNqRi9QbWVGeHhIaUs5?=
+ =?utf-8?B?ME1KZzJTY0NvcWUya0VBZGV2bkpsWEhxcUV6bWNtNUNFYzYzd3cyMzYrdklL?=
+ =?utf-8?Q?dmI+oI8coesRarkATXoJ3ZRRX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b950d46-f3f6-44fe-88c3-08dc5a2c089d
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 13:33:55.1172
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aFf6YMJECUgrvRoSzJZqoRjNvYh4+PoEbJqpH3yLB0aSSGWgrUEpCYdThZrL0DCGKQK9h1UdYcSxJsTNtqVVvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6129
 
-Hi Rob
-
-On 4/9/24 19:13, Rob Herring wrote:
-> On Mon, Apr 8, 2024 at 3:44 AM Alexandre TORGUE
-> <alexandre.torgue@foss.st.com> wrote:
->>
->> Hi Gatien,
->>
->> On 1/5/24 14:03, Gatien Chevallier wrote:
->>> Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
->>> platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
->>> register to the framework to offer firewall services such as access
->>> granting.
->>>
->>> This series of patches is a new approach on the previous STM32 system
->>> bus, history is available here:
->>> https://lore.kernel.org/lkml/20230127164040.1047583/
->>>
->>> The need for such framework arises from the fact that there are now
->>> multiple hardware firewalls implemented across multiple products.
->>> Drivers are shared between different products, using the same code.
->>> When it comes to firewalls, the purpose mostly stays the same: Protect
->>> hardware resources. But the implementation differs, and there are
->>> multiple types of firewalls: peripheral, memory, ...
->>>
->>> Some hardware firewall controllers such as the RIFSC implemented on
->>> STM32MP2x platforms may require to take ownership of a resource before
->>> being able to use it, hence the requirement for firewall services to
->>> take/release the ownership of such resources.
->>>
->>> On the other hand, hardware firewall configurations are becoming
->>> more and more complex. These mecanisms prevent platform crashes
->>> or other firewall-related incoveniences by denying access to some
->>> resources.
->>>
->>> The stm32 firewall framework offers an API that is defined in
->>> firewall controllers drivers to best fit the specificity of each
->>> firewall.
->>>
->>> For every peripherals protected by either the ETZPC or the RIFSC, the
->>> firewall framework checks the firewall controlelr registers to see if
->>> the peripheral's access is granted to the Linux kernel. If not, the
->>> peripheral is configured as secure, the node is marked populated,
->>> so that the driver is not probed for that device.
->>>
->>> The firewall framework relies on the access-controller device tree
->>> binding. It is used by peripherals to reference a domain access
->>> controller. In this case a firewall controller. The bus uses the ID
->>> referenced by the access-controller property to know where to look
->>> in the firewall to get the security configuration for the peripheral.
->>> This allows a device tree description rather than a hardcoded peripheral
->>> table in the bus driver.
->>>
->>> The STM32 ETZPC device is responsible for filtering accesses based on
->>> security level, or co-processor isolation for any resource connected
->>> to it.
->>>
->>> The RIFSC is responsible for filtering accesses based on Compartment
->>> ID / security level / privilege level for any resource connected to
->>> it.
->>>
->>> STM32MP13/15/25 SoC device tree files are updated in this series to
->>> implement this mecanism.
->>>
->>
->> ...
->>
->> After minor cosmetic fixes, series applied on stm32-next.
->> Seen with Arnd: it will be part on my next PR and will come through
->> arm-soc tree.
+On 3/29/24 17:58, Michael Roth wrote:
+> Version 2 of GHCB specification added support for the SNP Extended Guest
+> Request Message NAE event. This event serves a nearly identical purpose
+> to the previously-added SNP_GUEST_REQUEST event, but allows for
+> additional certificate data to be supplied via an additional
+> guest-supplied buffer to be used mainly for verifying the signature of
+> an attestation report as returned by firmware.
 > 
-> And there's some new warnings in next with it:
+> This certificate data is supplied by userspace, so unlike with
+> SNP_GUEST_REQUEST events, SNP_EXTENDED_GUEST_REQUEST events are first
+> forwarded to userspace via a KVM_EXIT_VMGEXIT exit type, and then the
+> firmware request is made only afterward.
 > 
->        1  venc@480e0000: 'access-controllers' does not match any of the
-> regexes: 'pinctrl-[0-9]+'
->        1  vdec@480d0000: 'access-controllers' does not match any of the
-> regexes: 'pinctrl-[0-9]+'
-
-Yes I noticed it to my colleague. YAML update has been sent for VEND/VDENC.
-
-https://lore.kernel.org/lkml/171276671618.403884.13818480350194550959.robh@kernel.org/T/
-
-As soon as it is acked I could merge it in my tree.
-
-Alex
-
+> Implement handling for these events.
 > 
-> Rob
+> Since there is a potential for race conditions where the
+> userspace-supplied certificate data may be out-of-sync relative to the
+> reported TCB or VLEK that firmware will use when signing attestation
+> reports, make use of the synchronization mechanisms wired up to the
+> SNP_{PAUSE,RESUME}_ATTESTATION SEV device ioctls such that the guest
+> will be told to retry the request while attestation has been paused due
+> to an update being underway on the system.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>   Documentation/virt/kvm/api.rst | 26 ++++++++++++
+>   arch/x86/include/asm/sev.h     |  4 ++
+>   arch/x86/kvm/svm/sev.c         | 75 ++++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/svm/svm.h         |  3 ++
+>   arch/x86/virt/svm/sev.c        | 21 ++++++++++
+>   include/uapi/linux/kvm.h       |  6 +++
+>   6 files changed, 135 insertions(+)
+> 
 
+> +static int snp_complete_ext_guest_req(struct kvm_vcpu *vcpu)
+> +{
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +	struct vmcb_control_area *control;
+> +	struct kvm *kvm = vcpu->kvm;
+> +	sev_ret_code fw_err = 0;
+> +	int vmm_ret;
+> +
+> +	vmm_ret = vcpu->run->vmgexit.ext_guest_req.ret;
+> +	if (vmm_ret) {
+> +		if (vmm_ret == SNP_GUEST_VMM_ERR_INVALID_LEN)
+> +			vcpu->arch.regs[VCPU_REGS_RBX] =
+> +				vcpu->run->vmgexit.ext_guest_req.data_npages;
+> +		goto abort_request;
+> +	}
+> +
+> +	control = &svm->vmcb->control;
+> +
+> +	if (!__snp_handle_guest_req(kvm, control->exit_info_1, control->exit_info_2,
+> +				    &fw_err))
+> +		vmm_ret = SNP_GUEST_VMM_ERR_GENERIC;
+> +
+> +	/*
+> +	 * Give errors related to stale transactions precedence to provide more
+> +	 * potential options for servicing firmware while guests are running.
+> +	 */
+> +	if (snp_transaction_is_stale(svm->snp_transaction_id))
+> +		vmm_ret = SNP_GUEST_VMM_ERR_BUSY;
 
+I think having this after the call to the SEV firmware will cause an 
+issue. If the firmware has performed the attestation request 
+successfully in the __snp_handle_guest_req() call, then it will have 
+incremented the sequence number. If you return busy, then the sev-guest 
+driver will attempt to re-issue the request with the original sequence 
+number which will now fail. That failure will then be propagated back to 
+the sev-guest driver which will then disable the VMPCK key.
 
+So I think you need to put this before the call to firmware.
+
+Thanks,
+Tom
+
+> +
 
