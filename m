@@ -1,121 +1,149 @@
-Return-Path: <linux-crypto+bounces-3511-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3507-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C5AD8A2970
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 10:38:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD198A28E4
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 10:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB245287A1D
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 08:38:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30EB8B21FBF
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 08:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284CF37145;
-	Fri, 12 Apr 2024 08:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E9450241;
+	Fri, 12 Apr 2024 08:07:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="gAimeoj9"
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="UBWcZIIT"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E185F1B5A0;
-	Fri, 12 Apr 2024 08:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972F2502AB
+	for <linux-crypto@vger.kernel.org>; Fri, 12 Apr 2024 08:07:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712911094; cv=none; b=ogdLDPM2/gPhzOO1rVxRg/VEtMq0DQAGlB0/lVcSuMHEH5lLN5mLTKDOybHKJKw5+oU8RpvUOd5BW0+5AZr44dsmgJLCncROLTqohkq/Dhe9t/UWpmQuNzL14q9Jnqewot5wiWo2iWr2s6mCBEkKOef2ko1FfNrMiZ3aHvix0ZI=
+	t=1712909253; cv=none; b=czkff9/lPhkYgORJo5YUDyUBZYuC8kua1a5jTmP2gKzVWDB/V+y6JlQCaNzCmgaNgn/Rctr+9oG459ny21C4Bw8fl9q8/IJyFjELusJ8tvPNegl4El1H9AmP1OXuFk+DpBG8NXjBLNV3VuTx+KlXnlBuI1q9HuFWLNfsghf6M1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712911094; c=relaxed/simple;
-	bh=KgVYfdLUzep0SkrpXvuq683Itn9YhVNpEO1dPfvTN+4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=NPc9J81UQpg3w/0q+vwzZEAxdBpEQ5AdF30NiVKByXpDyRM143MZtUeLmMZ/SX3bXifS+Hdu4LpdWaR7WLuJx9sd7eU0Sr36TrpOSlXvK6INn3q3JA2n3EyuUQfsfQRcfQB1l3jlBPuaGApJahnH1YBCGNGxLqDGgVVVLfu1Z0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=gAimeoj9; arc=none smtp.client-ip=203.205.221.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712911082; bh=gE4UiwTwaZDj/y1D5EUtDgaY6Zh1vXQNUMpz2cuxwAs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gAimeoj9xNuspZwpchRMK2dt8vExrlS/TlTFXycoarwZLr+EuNePo142jy1qb9aNG
-	 WhikFRSQRlYmLumVV4nLuVXuS7wk1ZoZQbezch1xwpz4u4ihQ9iRREmnf9iJ4HBd4D
-	 vDf9PXBIIvHXThnibifwFmDHYWAfADtGhjVU8qI4=
-Received: from Yangyus-MBP-2.lan ([219.141.235.82])
-	by newxmesmtplogicsvrszb16-0.qq.com (NewEsmtp) with SMTP
-	id EC914EF9; Fri, 12 Apr 2024 15:59:09 +0800
-X-QQ-mid: xmsmtpt1712908749tdf3a543a
-Message-ID: <tencent_C7B10C572AA62E84ABF1818F52904DFBCA05@qq.com>
-X-QQ-XMAILINFO: NY3HYYTs4gYSkUDCWdovIJbdRXTBoHzZJsvwt/KXGLaYIhohNB5cj0rYEUis96
-	 B4MM6TnQVwXI2teG/zqPf7QLeagvsUXP6EbnNy9qolyR9ELDaoSLqfDbvFRFcbJlB/iD5rMJ9VQL
-	 BYIm9j6ZMzkEMYi2rBL+HNQTe14yvQDPCMP+M5dAmsER4GAnvbKQ6UbMmFn4GsCxq5tNswy0MQq3
-	 Fg4+5yXSzL8spvZrhJ5Qp8uaUZ75dAZQbcoZUS14AeaGVZr3NhdV84/4kmLApm812Uot2P7Bn+62
-	 ej9Efp6uCT6MYtcSmL0EFrypwsGhfdOWWRsajYsFm0PeuS4essy+9qmWx9daFEf+L65E+AeazfPb
-	 fzWBwwfGwwBG0wi1f4/CsZycnu5pkpfOyQkhY+kcmRZfbu1Gkhl+FF7UcINAkL5YT/OJWNRtbloZ
-	 ZHimNhLvPfkV4KcUoUdFOcsgIKH3QFrknB8eVQVzVni+fp/dt6m1A5s0CXmRH/u21PqGMpDD1v4t
-	 Bb0nfLd2E4t/83uYzpsIPlC5ImX3Fa8l2d7vRlUY2R4+3qr7LHm2gmJ2SEC1HziZg3riTNqSxfWo
-	 eCgpOk2Q+qdsnsqY+no26TbRo7wOtbXEJk+PCX/2/8k3q1QHM7MsCCteJ46cziMtCBqdXdSYOxo5
-	 XWgAJdVR3VV+Uwrs9u8HZ3XfdATJM0Ra9Nm367Ufj9SndZt7QXpWNJIPgAhhM5ekM1/xbETn6VRA
-	 xc06JjhXx65doC6pPQS2ZmLLC+K5FEjCzWVB+lNvToaB+Dk6ziIhMJ4QUCfsh3/JUhViB8+BxD+4
-	 uuWNq+DTTx+/6D3rYvBavNdmvllhqNu5xx+TXgkFgwXwthGhGqCyI5yq37uuwnDJmcDV/EoZmKRq
-	 mohN2+X8WTJWyG2yKqRito/2dPLFs5u7tr7pU14ee1Fa5+aK57UpPSZJ/etfgJfTUWHAfx4OMSHs
-	 In2CnKWj+2S1VqQr9x7SM3++aLdp4ILAwjcw6ERWctsWMLIEImFt3I/hiHOB/G1yhgM2sj4VLkLS
-	 PEMj6SRBBmnAu7lPOw
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Yangyu Chen <cyy@cyyself.name>
-To: ebiggers@kernel.org
-Cc: andy.chiu@sifive.com,
-	aou@eecs.berkeley.edu,
-	ardb@kernel.org,
-	christoph.muellner@vrull.eu,
-	heiko@sntech.de,
-	hongrong.hsu@sifive.com,
-	jerry.shih@sifive.com,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	phoebe.chen@sifive.com
-Subject: Re: [PATCH v3 05/10] crypto: riscv - add vector crypto accelerated ChaCha20
-Date: Fri, 12 Apr 2024 15:59:08 +0800
-X-OQ-MSGID: <20240412075908.68485-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240122002024.27477-6-ebiggers@kernel.org>
-References: <20240122002024.27477-6-ebiggers@kernel.org>
+	s=arc-20240116; t=1712909253; c=relaxed/simple;
+	bh=3IjMoJPPDsmrGln27ZH7cdC9pcrDYQA5K5g/Cj2Jo3Y=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=lR64WFdDotCLqTgOvYoUHakPYqIZFibHDMkF+76/ypDV6iAANV1AW8IoElrNyTtkED2awvQOnGdfGjUeNa0Vqvbe5GJdOpPKnJinzhxVIt39IKdJ6LrGMQS3W16zD8wjp/e1PblHiI1HFST0IR4fpGxSXJvowB8eZN0sAQJj4tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=UBWcZIIT; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2a53e810f10so428915a91.0
+        for <linux-crypto@vger.kernel.org>; Fri, 12 Apr 2024 01:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1712909252; x=1713514052; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nGl9jdbv5Am2wxVTko9m/8o+kZf52GqNyMAe+a/ezhg=;
+        b=UBWcZIITH5sfwq21LqCMqFOsBKL8mQ2l1rL3SdHm8vLlTZ3X+5qJ06o0nB+8CClrzN
+         vg4ra3Mwquo2/NxLOPA+UVJSiZ1jMRGjY5/EDFbT35c8qLewnX1HtQSn4iB1nliMutbz
+         fd7aSlCVR0uZe//+7RPjCvMWhJKPJrNgM94wMdTmvnC2M6ETs+wVTcNgetCFvh5vbu7Z
+         h2I2Wkprke/V2ok8zw4qF7FLWgZpZTMeptbllISHUYaLiilN5N3AqNzbuzQ6UAXXXbdQ
+         coxRc4f9QTJdp7BW4nqcpAzV/vf4gAy9EVI+4pGPL4YTvVOlFKrS7HMCcczhl6ESvM9A
+         dgEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712909252; x=1713514052;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nGl9jdbv5Am2wxVTko9m/8o+kZf52GqNyMAe+a/ezhg=;
+        b=n4Bjj2ClLrEg1BszhphqU+bc5Itii1T3IZjT/zJ7o62ERXhsMrxZu+N/jKwLUZJI4d
+         IxXtsbyMS/C2bwMbZeVbSaiZpbasnridzTd34ai1J9vGaBnIIy05xv9HJ92cbPDaVm23
+         wfFxh6SoS8B67od7o8rvnPAvmWqHOQcjkprfYKaOTrzyUxwfQ7OcpK497SdrrPHtnYq0
+         1vORP/xHjBwz7iArXMqLn/ytNAXFwGTMAV6XM1CfjiadV3y1HzigUjrxIC6q/wOXNAWr
+         yqcfEHDMYtu+4ox6J6Q5TgGLSoX+pGMSabwxQwO/zTSyy5TlrKd2eDm8Ykq24mEHTn+f
+         k12g==
+X-Forwarded-Encrypted: i=1; AJvYcCU9QvbZDNHcScDhXiQvlqC8Lp0gIwYu3grtmXamWCQjWtsT1QVWMh0cNQDoFlW99X65a/WdhRO5HwcDEDIMZig0i/mMl920HBBhaHRl
+X-Gm-Message-State: AOJu0Yx2mKwl8j8iY3UPUzelIjF6n569YbMILY3G8MfzDhnmHAixWRhb
+	scpPX66mYgRokpy/Ej9EmD78V7/J9TXiRCyHtQ3viGiX4fB/v7FMuspHcRApYzc=
+X-Google-Smtp-Source: AGHT+IGkFTDo+PWyXaeyOSY2amADa59LduvcEJ+hSQBEwUy0nDRJvaJ0TqxG3cldc9JpbpHf0UsuAA==
+X-Received: by 2002:a17:90a:8b09:b0:2a5:e1e7:b994 with SMTP id y9-20020a17090a8b0900b002a5e1e7b994mr1541409pjn.19.1712909251929;
+        Fri, 12 Apr 2024 01:07:31 -0700 (PDT)
+Received: from ?IPv6:2402:7500:5d1:35b0:d179:3a11:9628:3bf0? ([2402:7500:5d1:35b0:d179:3a11:9628:3bf0])
+        by smtp.gmail.com with ESMTPSA id h16-20020a17090a051000b002a2e4b593cdsm4338701pjh.51.2024.04.12.01.07.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Apr 2024 01:07:31 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v3 05/10] crypto: riscv - add vector crypto accelerated
+ ChaCha20
+From: Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <tencent_C7B10C572AA62E84ABF1818F52904DFBCA05@qq.com>
+Date: Fri, 12 Apr 2024 16:07:26 +0800
+Cc: Eric Biggers <ebiggers@kernel.org>,
+ Andy Chiu <andy.chiu@sifive.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ ardb@kernel.org,
+ christoph.muellner@vrull.eu,
+ heiko@sntech.de,
+ hongrong.hsu@sifive.com,
+ linux-crypto@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org,
+ palmer@dabbelt.com,
+ paul.walmsley@sifive.com,
+ phoebe.chen@sifive.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <36AECE24-69F7-4A95-A9C5-E1EFBE05DE9B@sifive.com>
+References: <20240122002024.27477-6-ebiggers@kernel.org>
+ <tencent_C7B10C572AA62E84ABF1818F52904DFBCA05@qq.com>
+To: Yangyu Chen <cyy@cyyself.name>
+X-Mailer: Apple Mail (2.3445.9.7)
 
-On 2024/1/22 08:19, Eric Biggers wrote:> From: Jerry Shih <jerry.shih@sifive.com>
-> 
-> Add an implementation of ChaCha20 using the Zvkb extension.  The
-> assembly code is derived from OpenSSL code (openssl/openssl#21923) that
-> was dual-licensed so that it could be reused in the kernel.
-> Nevertheless, the assembly has been significantly reworked for
-> integration with the kernel, for example by using a regular .S file
-> instead of the so-called perlasm, using the assembler instead of bare
-> '.inst', and reducing code duplication.
-> 
-> Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
+On Apr 12, 2024, at 15:59, Yangyu Chen <cyy@cyyself.name> wrote:
+> On 2024/1/22 08:19, Eric Biggers wrote:> From: Jerry Shih =
+<jerry.shih@sifive.com>
+>>=20
+>> Add an implementation of ChaCha20 using the Zvkb extension.  The
+>> assembly code is derived from OpenSSL code (openssl/openssl#21923) =
+that
+>> was dual-licensed so that it could be reused in the kernel.
+>> Nevertheless, the assembly has been significantly reworked for
+>> integration with the kernel, for example by using a regular .S file
+>> instead of the so-called perlasm, using the assembler instead of bare
+>> '.inst', and reducing code duplication.
+>>=20
+>> Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
+>> Co-developed-by: Eric Biggers <ebiggers@google.com>
+>> Signed-off-by: Eric Biggers <ebiggers@google.com>
+>> ---
+>=20
+> Hi, Jerry Shih and Eric Biggers,
+>=20
+> Since this implementation is derived from OpenSSL, I have an issue on
+> OpenSSL about this chacha20 implementation using Zvkb [1] and see a =
+fixes
+> PR by Jerry Shih [2].
+>=20
+> I wonder will kernel need to port those fixes to handle the =
+non-multiple
+> block length of the chacha20 cipher? If yes, we should port it =
+immediately
+> to catch up with the v6.9 release if we can.
+>=20
+> [1] https://github.com/openssl/openssl/issues/24070
+> [2] https://github.com/openssl/openssl/pull/24097
+>=20
+> Thanks,
+> Yangyu Chen
+>=20
 
-Hi, Jerry Shih and Eric Biggers,
+There is no non-multiple block size issue here. It's already handled by =
+the gluing part.
 
-Since this implementation is derived from OpenSSL, I have an issue on
-OpenSSL about this chacha20 implementation using Zvkb [1] and see a fixes
-PR by Jerry Shih [2].
+=
+https://github.com/torvalds/linux/blob/586b5dfb51b962c1b6c06495715e4c4f76a=
+7fc5a/arch/riscv/crypto/chacha-riscv64-glue.c#L45-L53
 
-I wonder will kernel need to port those fixes to handle the non-multiple
-block length of the chacha20 cipher? If yes, we should port it immediately
-to catch up with the v6.9 release if we can.
-
-[1] https://github.com/openssl/openssl/issues/24070
-[2] https://github.com/openssl/openssl/pull/24097
-
-Thanks,
-Yangyu Chen
-
+-Jerry=
 
