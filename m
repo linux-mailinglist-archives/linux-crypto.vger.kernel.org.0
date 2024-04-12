@@ -1,145 +1,99 @@
-Return-Path: <linux-crypto+bounces-3510-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3512-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 038368A2947
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 10:26:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A26888A2E8B
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 14:46:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 259F81C21544
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 08:26:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DD8F282606
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Apr 2024 12:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58EF50A9D;
-	Fri, 12 Apr 2024 08:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A004597C;
+	Fri, 12 Apr 2024 12:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="C8YBflIp"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I3MR8ipI"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D3D50A62;
-	Fri, 12 Apr 2024 08:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C904C624
+	for <linux-crypto@vger.kernel.org>; Fri, 12 Apr 2024 12:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712910351; cv=none; b=H+X+Se8eIf8pDKqbL5a4NwpVKH/pc4D6yDFYOLWkm64t4boEg7FSQ8UppEGoYRYdbPTt67rVMAjfX/iHMWoWioViuLTEuoMmiwYUnJZUL5AFzhIwgEWGsSNlnHqYnLfcHTrpIBMDMZ3uL6YIB3KDBKC2faf5hknK8GWIaF9mGqs=
+	t=1712926002; cv=none; b=irDRRie/Xj+lpSPKQ25h2moJhUeeCTYDfC2Mt7xCodBUFCe7JKcdk5CgI8DmD58EFFYoMo+54v5sTyNV3KEc4KVwkQO4JMnBTOLJDnYq83I06lfyDiEhLq0BUSuTS1HH9KHwf6pXlziQcbdezysKAIncqAPQtO6kPWfajjzHNpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712910351; c=relaxed/simple;
-	bh=AgQMwhLM2SQJL/DxUrA6t4vddU8OTk+2j0IqX/shhbU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=fZhr9uqlwXhDIx6G+hgZAyjOw6W3pRI9RjROcDNSuJi2cheCk/jmZ01yYIj4kPQfinDx8QzyfQg0zZ9wL5gOrIdurTjqSpH0nWaaDw8paZ61CrqaqwCc2I9prhuzJbxLou4vALE3KNlVPFqjuRJ2pOuRX1+C9n9MXmD3mFf355c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=C8YBflIp; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id BA55C120006;
-	Fri, 12 Apr 2024 11:25:46 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru BA55C120006
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712910346;
-	bh=AgQMwhLM2SQJL/DxUrA6t4vddU8OTk+2j0IqX/shhbU=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-	b=C8YBflIpipAZ1mefV1MD4x/XIVT6rsTSMbfjhioBjJDidSL6leypyb9BeXPtgCcCm
-	 XPU3EBax6cIFufbBJy4gPC59D8uvydAABfj8CdDcf7YVqA7KTSVE94RmUD/v77c8NV
-	 1HTkVFrhRvpTH9nBZBkdCyVauNLvXopCCWJSuavTr0P3Xhw3foVhPFW2LAzYAiqJHZ
-	 rkpzr2HijTQdszf39V9GZariGuUkxTe1TUr2wiIQatAHsUv1BnmcRK5LGzLDTVZ3py
-	 FhTahrgp42fUF2ac97CMhCGCpMgbEvSAIZkTr7rfAVz5VFWrDrQW1ttWNH3SeHXfk7
-	 C6m2KpSMAiBng==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 12 Apr 2024 11:25:46 +0300 (MSK)
-Received: from p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 12 Apr 2024 11:25:46 +0300
-Received: from p-i-exch-sc-m02.sberdevices.ru ([fe80::10c3:6e04:fd07:c511]) by
- p-i-exch-sc-m02.sberdevices.ru ([fe80::10c3:6e04:fd07:c511%9]) with mapi id
- 15.02.1118.040; Fri, 12 Apr 2024 11:25:46 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-	"clabbe@baylibre.com" <clabbe@baylibre.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "khilman@baylibre.com"
-	<khilman@baylibre.com>, "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
-	"vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
-Subject: Re: [PATCH v7 00/23] Support more Amlogic SoC families in crypto
- driver
-Thread-Topic: [PATCH v7 00/23] Support more Amlogic SoC families in crypto
- driver
-Thread-Index: AQHajBWUrVGAoz0gN0yHbEf56dYdJrFjvtOAgABbAICAAAC3AIAAAQKA
-Date: Fri, 12 Apr 2024 08:25:46 +0000
-Message-ID: <20240412082541.zxlbnigfs733q4sf@cab-wsm-0029881.sigma.sbrf.ru>
-References: <20240411133832.2896463-1-avromanov@salutedevices.com>
- <ZhiiPVckOYH9dFQ/@gondor.apana.org.au>
- <20240412081931.3s2fw6hds3hh5cwg@cab-wsm-0029881.sigma.sbrf.ru>
- <ZhjvLMcMXKNmlCZ7@gondor.apana.org.au>
-In-Reply-To: <ZhjvLMcMXKNmlCZ7@gondor.apana.org.au>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7DE82C9FF3EB794695833D14A6D82635@sberdevices.ru>
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1712926002; c=relaxed/simple;
+	bh=tZ1ZbqAnT8ir9mCfI1SAc5683Xq2nUN8AWo0xR6nHdo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QMTY758CQwZIBAuweanraIRfdqfbETnXfb9zomZWuAGI0t/Ps1dUejPCNhesgs3aJMsSfFJUX6Lhnc+O7uEhmSJTuVV8kCRWDiwqCKM1bKNwRbZWd0fvENoHktn8wiXNlcTuO3a6qcu1jHxmOCTQuZSlopnHilCBhHtACdNkzls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I3MR8ipI; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712926001; x=1744462001;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tZ1ZbqAnT8ir9mCfI1SAc5683Xq2nUN8AWo0xR6nHdo=;
+  b=I3MR8ipIRgmNcIZu44anJ/VxePRiKBswLupM22qxW4kZ9fsorsGzw7zQ
+   TnqJY7n1bSbVkVNpRELh802nAc1Poxx7etG5MBiU0lGhbQI9lMBpQJt6C
+   NUlgnP0XGjHXDZFpSx9U6cpyHMh2ThQzvNagn6tcdfZ99KfeTX9ywT30k
+   ZXxOzGZwaIjtDQn9JllbL8uCx1ll3s7I2KWs4GX1OKvOq/ZJoFLKLJ493
+   fRmwq8EtaqTmh5y0QE/4kf6klWLXA+TBpHOwyIdVDKbWMoYNStHKSzs2A
+   6crIkUGkGaFpajU1tR+5JtGhWhyyyabkUhPjkO+XKSnBef0RJ7JS4FhR9
+   g==;
+X-CSE-ConnectionGUID: dy8E/Z2IQ9KcFFMkeLPWxA==
+X-CSE-MsgGUID: vsoKezBfQSurlK1xgGxeQw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="19529091"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="19529091"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 05:46:40 -0700
+X-CSE-ConnectionGUID: spt6bk7QTDCnwhLiqghgcw==
+X-CSE-MsgGUID: WUmQaofmSiKvQL5B+Mfxzw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="25902077"
+Received: from silpixa00400295.ir.intel.com ([10.237.213.194])
+  by orviesa003.jf.intel.com with ESMTP; 12 Apr 2024 05:46:38 -0700
+From: Adam Guerin <adam.guerin@intel.com>
+To: herbert@gondor.apana.org.au
+Cc: linux-crypto@vger.kernel.org,
+	qat-linux@intel.com,
+	Adam Guerin <adam.guerin@intel.com>
+Subject: [PATCH v2 0/2] Improve error logging in the qat driver
+Date: Fri, 12 Apr 2024 13:24:00 +0100
+Message-Id: <20240412122401.243378-1-adam.guerin@intel.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184683 [Apr 12 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;gondor.apana.org.au:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;cab-wsm-0029881.sigma.sbrf.ru:7.1.1,5.0.1;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/12 08:01:00
-X-KSMG-LinksScanning: Clean, bases: 2024/04/12 08:01:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/12 02:59:00 #24750120
-X-KSMG-AntiVirus-Status: Clean, skipped
+Organisation: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare, Ireland
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 04:22:04PM +0800, Herbert Xu wrote:
-> On Fri, Apr 12, 2024 at 08:19:36AM +0000, Alexey Romanov wrote:
-> >
-> > Old Amlogic Soc's for crypto HW used a BLKMV engine, which required
-> > a clk input and a second interrupt line. New SoC's uses DMA engine
-> > and don't need this.
-> >=20
-> > I spoke with vendor, and they confirmed that AXG, G12A, G12B, SM1,
-> > A1, S4 and GXL is using DMA engine and crypto HW is not connected
-> > to clk / second interrupt line.
->=20
-> Sorry I'm just asking you to ensure that you've tested the whole
-> patch-series with CRYPTO_MANAGER_EXTRA_TESTS enabled and there are
-> no errors reported.
+This set simply improves error logging in the driver, making error logging
+consistent between rate limiting and telemetry and improve readability
+of logging in adf_get_arbiter_mapping().
 
-Oh, yep, I will test with this option enabled soon.
+v1 -> v2:
+ -fixed commit id in fixes tag of both patches to be 12 char long.
 
->=20
-> Thanks,
-> --=20
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Adam Guerin (2):
+  crypto: qat - improve error message in adf_get_arbiter_mapping()
+  crypto: qat - improve error logging to be consistent across features
 
---=20
-Thank you,
-Alexey=
+ drivers/crypto/intel/qat/qat_420xx/adf_420xx_hw_data.c | 2 +-
+ drivers/crypto/intel/qat/qat_4xxx/adf_4xxx_hw_data.c   | 2 +-
+ drivers/crypto/intel/qat/qat_common/adf_rl.c           | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+
+base-commit: 0419fa6732b2b98ea185ac05f2a3c430b7de2abb
+-- 
+2.40.1
+
 
