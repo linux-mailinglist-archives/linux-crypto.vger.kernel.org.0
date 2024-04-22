@@ -1,458 +1,217 @@
-Return-Path: <linux-crypto+bounces-3750-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3758-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F388AC097
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Apr 2024 20:09:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5B38AC3F5
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Apr 2024 07:59:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 673C61C20952
-	for <lists+linux-crypto@lfdr.de>; Sun, 21 Apr 2024 18:09:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6A8A1C21B1D
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Apr 2024 05:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D9A43A8CE;
-	Sun, 21 Apr 2024 18:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tlSEWCCc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33CCE1862F;
+	Mon, 22 Apr 2024 05:59:20 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2042.outbound.protection.outlook.com [40.107.243.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6003B1A2;
-	Sun, 21 Apr 2024 18:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713722929; cv=fail; b=Na46PLI/s0JmNyDALJt0+LU2dAplpfNan/Jd1HCWWoek/CketJLdtu39qDLPbuxzAfkQD51s4gSHLnFOoObwiaynYTnxqggug6YjTmImBsK15GBEQRYT4b7KyQVgXOs9J8nT6Sr6xytxuqB8H2n13LUdODwAs/kIx6KF/7Uq3AA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713722929; c=relaxed/simple;
-	bh=WBYBeeZLBm/B2DESUsVDrDULDXseq+v+B1b1Grfieq8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QNQLGTE+TL0f3wih1GPzAV7VjxWqmKe/X3dBYkQomw3+eaMpUmWzmusDvyXERJkEMBlJosGQvniTzlgszUBJ1Y1i64PQD0jS4W0SXvMKikCdAChjn33jgnFLLBmtTAt5kXomrHWl1IjIm6Lxqd27lf9ORXTzHvKJGL3lijfJ/Uw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tlSEWCCc; arc=fail smtp.client-ip=40.107.243.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nHPlmFiD4JG39A65gyJ/7H3XKSvChChPfFo/CDn4f4pplozAzPjVjUhonKHGiZakGJvf2iOPTnQ+Ghyv2V2inW0MmkpLxMBCwC4gF+IRFIfXmfhHehMRWDjsarIFzDEKwi23FU5iVmyiVpvoJu4WdEfD7N6eV6WAbO5amIpW04GRgwB63+A8Ea1u/7XNntxgsePMWuB76DWPDz3Bsp66qnQJew7m4VcJ4/0YIkoCS8lHp6AKjcoCYod5ZKPdamabjMCYxTUWmEgpDnPPC8uYlv96xqJGWVCrHztUeb8odXNUAKqle4TYoWiQAbX0MWi2no321kQufYEPn5lJlZtr/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=agCuD0cvtD6/j72PtGo3DJ5+sXz548I6rxzD/SUBvFY=;
- b=G9gYeka2ZYYr67ui0/51G0jgTPMQ2Vp5ka/PIOQqQi70VDK+lYdQ2bjgZdQZ9zuynmbFR2vMzrKHWZce095Vx3otdco72K1fSnWHegIv/gG5T1AmUI0JabgchMmlQrhnXYYhEDum6A69wgek14Ss97DvPg7+ib+h+0L5BjvRfjKTBYXIE+Lngi0H0wj1s0UVUfM+6/ZVid+gZGoa4Tfo5mUAbRNAwoCgFRtsbP0OByGVvfgMmJVT8f6uX5RnQ2Xnc0DT/0H+/5NpkQwOCl8JK5dEA9BSPg0QJZpBdDX6az9tA4Qs/lChemPkYe6+sWQ7WxmIr1hkF0rJr52v843scQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=agCuD0cvtD6/j72PtGo3DJ5+sXz548I6rxzD/SUBvFY=;
- b=tlSEWCCcsu4BzPgUAxmtkzS3zf/DsMPTwPN9l0A7H31v0j/YYEF7p6N46BLKJCFb1lM6/uxlcg90So6ouLuPRo+2pmPwP0BlMbQ63jUHv4Uzm8v7CltbSyhKdrqIJhUHZz6fYbOHRxn0m0Raz+6TtnJdJJPeU1OnBzqghY1UVaU=
-Received: from DS7PR07CA0014.namprd07.prod.outlook.com (2603:10b6:5:3af::17)
- by SJ0PR12MB6877.namprd12.prod.outlook.com (2603:10b6:a03:47f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Sun, 21 Apr
- 2024 18:08:43 +0000
-Received: from CY4PEPF0000FCC2.namprd03.prod.outlook.com
- (2603:10b6:5:3af:cafe::41) by DS7PR07CA0014.outlook.office365.com
- (2603:10b6:5:3af::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.33 via Frontend
- Transport; Sun, 21 Apr 2024 18:08:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000FCC2.mail.protection.outlook.com (10.167.242.104) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Sun, 21 Apr 2024 18:08:42 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 21 Apr
- 2024 13:08:41 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: <kvm@vger.kernel.org>
-CC: <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
-	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
-	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
-	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
-	<rientjes@google.com>, <dovmurik@linux.ibm.com>, <tobin@ibm.com>,
-	<bp@alien8.de>, <vbabka@suse.cz>, <kirill@shutemov.name>,
-	<ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: [PATCH v14 22/22] KVM: SEV: Provide support for SNP_EXTENDED_GUEST_REQUEST NAE event
-Date: Sun, 21 Apr 2024 13:01:22 -0500
-Message-ID: <20240421180122.1650812-23-michael.roth@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240421180122.1650812-1-michael.roth@amd.com>
-References: <20240421180122.1650812-1-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0CB11CAB
+	for <linux-crypto@vger.kernel.org>; Mon, 22 Apr 2024 05:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713765560; cv=none; b=DD3g+QbJ5X4wi127J08F5JpnIUM+8NRRtCUIGj10DlcInXeIdz87qOM9O2ZzL06zVp6pUJolnIRw1U/7SrcXesbt/citY78e8F8zJQMQLGgWSgawTQimmHy8ODDvM0AtkqVt56+MribpX+GH/gezrI4l9ZW64F+Sc1OOCtywAQQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713765560; c=relaxed/simple;
+	bh=D79eC8RJMKbFce8fku++21OGsQR2++flL3fDDqwdG7o=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=AyUJG2HYZryfGHGQj/ab72CiQVhMmYWoHKp9Y13Gc9K41lCDc+ifV+bUq0+34VGrV4eUjDcfIaXlHDPweFX2MxL2GPh9ZJa71ywqiEqBnkBiLVNZaF7OBrLz7qnwvKj1Wfq80sU8O9ABNq/ZDH7dXC8IC3ZI7rGXC98t3bwHVz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36c09a7173dso13933785ab.2
+        for <linux-crypto@vger.kernel.org>; Sun, 21 Apr 2024 22:59:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713765557; x=1714370357;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D2d2NpQ9xAPEYhugtPsQxFL11CSDyYRVuV6nMVsTlPI=;
+        b=mVqNGACeFue+Gkdy4EmgIbGYTzLvwQ7rh5PiiFUViRup5ZHSXstmXIGJnn+YTkYi/N
+         vdoNQsZgJ64g2KKI8BNk9+i4Yp/1pqGEBOU6XYIhXBSTXOq+sOJjL6BM8/T66JHMcFcw
+         HGya+L9a7AuPfMYFx2CrRRkAEA5s7TkuQy48zGAj7h8/MhsacdeVkk3hzKeoBYHDNii4
+         XogYiBk9zbj2pWvhKZllWwzTYQVa5+QJm5gK3mk49lMZZb4BV8+UexN2Dexcluv6FHsB
+         knSP1MTNbV0/AFwoxeLj85iNvj0xi7+5ClHImSu/Qi7O62idUfA34nIeEyTKrjvxpxYc
+         2x2w==
+X-Forwarded-Encrypted: i=1; AJvYcCV7+0/thP0GdovbIEk14f6lWQ/LjX36TqAI3Cj6xDvwKmP1/1tukSEKtyIp7lCVYfV4qXsliBshoWNiZnjSJl8a1fz3B+fG8Uf8+QH5
+X-Gm-Message-State: AOJu0YwqHW+vSrhBrusUDoTO0hNwEhHjq9Ru0buvaCjjgXemSMrI11Hy
+	K/WmTvoJt1sSS3oxzikummoH7SLjgjsXPXIL8HrtWcOVw6RchBHVKW8CyxGF8zhEx5Xwi25VGJ5
+	swI4KXx/Z+lMWEoFo68J99jHVG8OEBQiB1lVLbwNwnoVLruwfRWly3BI=
+X-Google-Smtp-Source: AGHT+IGiKq6tLFsZZugvLy4A9PfNmkP00nQs83eDbIUn9ZWGg5P4PZUUYaFKyjyh/wMyfLYwZRIAX/45y/as2MPxo4A86aDUBBwg
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCC2:EE_|SJ0PR12MB6877:EE_
-X-MS-Office365-Filtering-Correlation-Id: cdce3836-cdfc-449e-85e1-08dc622e142b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?h+/5bJsUiNDrDBBLQN8Xlp1hZ8JUS8GdykALPHwCO8xk4i8EJw6thevATD0m?=
- =?us-ascii?Q?ZXt5xExYSB4pys/qB5R1Jvi4NrW7q/a+hfywRjU/wb2pxtB5w3yw6dFJFfMz?=
- =?us-ascii?Q?MEu5GdhL5kdBYsFX+tcZvhRVZSO4pmK6BH1OUcnyvZn09KXisc0zl9xFH/m6?=
- =?us-ascii?Q?PZh8o9UjRFShEAc4JIsQiCpjnEuGLjioBthfeOabX8JdUHkT31sz0cCpQh5I?=
- =?us-ascii?Q?R8jfGnxa9ZRhISXgfjQq84XAXNcTdL8xi56PePv9AkncXKgajEc3chSabbfo?=
- =?us-ascii?Q?ADREsvTAKVdO2IPmhYQGo9QyuKNEO442Oy9fm4HCUFi8q8ry1D+oAog1bITF?=
- =?us-ascii?Q?PbnFvO7sKECw2G1oOyEkcUOue1BkG1lYJOp4/8vupoae4HocjqesEDHIHXJL?=
- =?us-ascii?Q?qTV1d4CjiowqxaQdtoJUIzqE9+EOsLiws1pCzbaB7E4qTa8IVCWT6YKVTNVR?=
- =?us-ascii?Q?D/KgOWV3dlz1M3lGMTxQ2fVzWGlXqv+7sQyIovnHelCrGkqmiSOCuu0s++m1?=
- =?us-ascii?Q?cHMuIcSozeTxF+SNKChM4cSMup6O2XqlzirQMvZzspZKKvpi88cBCKUO5wt9?=
- =?us-ascii?Q?KvfsMeufB4luzsOHF242IEIAgFQaTeZni8OZcNtBcwLK9nW59pGIFoGMwT9q?=
- =?us-ascii?Q?KJ26faQmID35p09wKvRdLip3Dcj/iX5YBsPT3lrfCrVwYUXHkNRY4csn5VVP?=
- =?us-ascii?Q?1Mb0frpKR3nWIJimMBNeYIFc552LFEgLR04WH+ZIgNhmbSWTGf/eLfB824ul?=
- =?us-ascii?Q?t90yC7L3P76sGQV8nVb8oSmvuTrPFU17ih3pDv9eJFXV62RB/ULGeCcBCyzA?=
- =?us-ascii?Q?/Cl+cZ1Swm5fmX8is5UOW59ouWqwwL2HKlQOw1qDgZbYxPztGU8pafoYOJPU?=
- =?us-ascii?Q?8TbkzqLsggVO/syEHr4kl/w9cpnXGFblEOjnRAUtG//PWqAehYl9iIhfGyEn?=
- =?us-ascii?Q?GzI148fSBqf66qfNVLLrExs2QRXr2IjdwgK970ielHajFN3KxDFcoOndDBZ7?=
- =?us-ascii?Q?sktjlA3ZnkGSNlPrlUGxtUcFB/UF5N82CriArHn21S1fzOsKaZSh3WYXrMnS?=
- =?us-ascii?Q?1o2XAwLYPG/5yF9OYmC4mqnQ/MDiLUn6Oc568G7ORaiik6k5jGCYKPrvf2SE?=
- =?us-ascii?Q?SD0lJGF7pQtr1Klrpv0F6uRyTaRfZ8D+Gcg/GrQ2jk4j2o8LXFWoBrraBOtI?=
- =?us-ascii?Q?brgtZYmxljEy8V8ENX6PRAHK1ZMuBEPtedEYBUoJa7Ibqv6+ONqFxrDjHPnH?=
- =?us-ascii?Q?1kSsVkyAWnsQRQ+XBliGTszxCQqgzm3iI/gDXZxfzGsQtSmvTBLCzMtkhDDO?=
- =?us-ascii?Q?CIu2LQdbNWj9IkNR+1ckwwG6AxWh2BtQo6J+RhcFaQw4eh1MMBdh4UXkaoC8?=
- =?us-ascii?Q?+F/OVwzCOvvG20RqbmvcrjLqtrEZ?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2024 18:08:42.5088
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cdce3836-cdfc-449e-85e1-08dc622e142b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000FCC2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6877
+X-Received: by 2002:a05:6e02:12ed:b0:36b:f94f:3022 with SMTP id
+ l13-20020a056e0212ed00b0036bf94f3022mr324469iln.5.1713765557765; Sun, 21 Apr
+ 2024 22:59:17 -0700 (PDT)
+Date: Sun, 21 Apr 2024 22:59:17 -0700
+In-Reply-To: <000000000000e71ee0060ee5283b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c9ae20616a923cf@google.com>
+Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in lzo1x_1_do_compress (2)
+From: syzbot <syzbot+9a049ebdaacbb076e50a@syzkaller.appspotmail.com>
+To: davem@davemloft.net, herbert@gondor.apana.org.au, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Version 2 of GHCB specification added support for the SNP Extended Guest
-Request Message NAE event. This event serves a nearly identical purpose
-to the previously-added SNP_GUEST_REQUEST event, but allows for
-additional certificate data to be supplied via an additional
-guest-supplied buffer to be used mainly for verifying the signature of
-an attestation report as returned by firmware.
+syzbot has found a reproducer for the following issue on:
 
-This certificate data is supplied by userspace, so unlike with
-SNP_GUEST_REQUEST events, SNP_EXTENDED_GUEST_REQUEST events are first
-forwarded to userspace via a KVM_EXIT_VMGEXIT exit type, and then the
-firmware request is made only afterward.
+HEAD commit:    3b68086599f8 Merge tag 'sched_urgent_for_v6.9_rc5' of git:..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1717a99f180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a049ebdaacbb076e50a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1293271b180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=173fe0fd180000
 
-Implement handling for these events.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6a0c6d102762/disk-3b680865.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/02126711948e/vmlinux-3b680865.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7d390469c033/bzImage-3b680865.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4f2c52f00058/mount_0.gz
 
-Since there is a potential for race conditions where the
-userspace-supplied certificate data may be out-of-sync relative to the
-reported TCB or VLEK that firmware will use when signing attestation
-reports, make use of the synchronization mechanisms wired up to the
-SNP_{PAUSE,RESUME}_ATTESTATION SEV device ioctls such that the guest
-will be told to retry the request while attestation has been paused due
-to an update being underway on the system.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9a049ebdaacbb076e50a@syzkaller.appspotmail.com
 
-Signed-off-by: Michael Roth <michael.roth@amd.com>
+=====================================================
+BUG: KMSAN: uninit-value in lzo1x_1_do_compress+0x913/0x2510 lib/lzo/lzo1x_compress.c:107
+ lzo1x_1_do_compress+0x913/0x2510 lib/lzo/lzo1x_compress.c:107
+ lzogeneric1x_1_compress+0x26a/0x11b0 lib/lzo/lzo1x_compress.c:333
+ lzo1x_1_compress+0x47/0x80 lib/lzo/lzo1x_compress.c:383
+ __lzo_compress crypto/lzo.c:58 [inline]
+ lzo_scompress+0x98/0x180 crypto/lzo.c:79
+ scomp_acomp_comp_decomp+0x7c6/0xb90
+ scomp_acomp_compress+0x32/0x40 crypto/scompress.c:187
+ crypto_acomp_compress include/crypto/acompress.h:308 [inline]
+ zswap_compress+0x377/0xb10 mm/zswap.c:1040
+ zswap_store+0x2180/0x2ca0 mm/zswap.c:1573
+ swap_writepage+0x126/0x4c0 mm/page_io.c:198
+ shmem_writepage+0x1826/0x1f70 mm/shmem.c:1518
+ pageout mm/vmscan.c:660 [inline]
+ shrink_folio_list+0x4a55/0x7910 mm/vmscan.c:1323
+ evict_folios+0x9d7f/0xcc20 mm/vmscan.c:4537
+ try_to_shrink_lruvec+0x160e/0x1a50 mm/vmscan.c:4733
+ shrink_one+0x66f/0xd40 mm/vmscan.c:4772
+ shrink_many mm/vmscan.c:4835 [inline]
+ lru_gen_shrink_node mm/vmscan.c:4935 [inline]
+ shrink_node+0x4856/0x55f0 mm/vmscan.c:5894
+ kswapd_shrink_node mm/vmscan.c:6704 [inline]
+ balance_pgdat mm/vmscan.c:6895 [inline]
+ kswapd+0x1eba/0x4460 mm/vmscan.c:7164
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was stored to memory at:
+ memcpy_from_iter lib/iov_iter.c:73 [inline]
+ iterate_bvec include/linux/iov_iter.h:122 [inline]
+ iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
+ iterate_and_advance include/linux/iov_iter.h:271 [inline]
+ __copy_from_iter lib/iov_iter.c:249 [inline]
+ copy_page_from_iter_atomic+0x12b7/0x2b60 lib/iov_iter.c:481
+ generic_perform_write+0x4c1/0xc60 mm/filemap.c:3982
+ shmem_file_write_iter+0x2bd/0x2f0 mm/shmem.c:2920
+ do_iter_readv_writev+0x7e6/0x960
+ vfs_iter_write+0x459/0xd00 fs/read_write.c:895
+ lo_write_bvec drivers/block/loop.c:246 [inline]
+ lo_write_simple drivers/block/loop.c:267 [inline]
+ do_req_filebacked drivers/block/loop.c:491 [inline]
+ loop_handle_cmd drivers/block/loop.c:1907 [inline]
+ loop_process_work+0x1502/0x3440 drivers/block/loop.c:1942
+ loop_rootcg_workfn+0x2b/0x40 drivers/block/loop.c:1973
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
+ worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was stored to memory at:
+ ntfs_write_bh+0x652/0xdb0 fs/ntfs3/fsntfs.c:1450
+ indx_write fs/ntfs3/index.c:1027 [inline]
+ indx_insert_into_root+0x36f4/0x37d0 fs/ntfs3/index.c:1761
+ indx_insert_entry+0xe1d/0xee0 fs/ntfs3/index.c:1975
+ ntfs_create_inode+0x49b6/0x5100 fs/ntfs3/inode.c:1671
+ ntfs_atomic_open+0x90a/0xbb0 fs/ntfs3/namei.c:434
+ atomic_open fs/namei.c:3360 [inline]
+ lookup_open fs/namei.c:3468 [inline]
+ open_last_lookups fs/namei.c:3566 [inline]
+ path_openat+0x2230/0x5b00 fs/namei.c:3796
+ do_filp_open+0x20e/0x590 fs/namei.c:3826
+ do_sys_openat2+0x1bf/0x2f0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_creat fs/open.c:1497 [inline]
+ __se_sys_creat fs/open.c:1491 [inline]
+ __x64_sys_creat+0xe6/0x140 fs/open.c:1491
+ x64_sys_call+0x2966/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:86
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Uninit was stored to memory at:
+ hdr_insert_de+0x3d4/0x3f0 fs/ntfs3/index.c:838
+ indx_insert_into_root+0x33f6/0x37d0 fs/ntfs3/index.c:1753
+ indx_insert_entry+0xe1d/0xee0 fs/ntfs3/index.c:1975
+ ntfs_create_inode+0x49b6/0x5100 fs/ntfs3/inode.c:1671
+ ntfs_atomic_open+0x90a/0xbb0 fs/ntfs3/namei.c:434
+ atomic_open fs/namei.c:3360 [inline]
+ lookup_open fs/namei.c:3468 [inline]
+ open_last_lookups fs/namei.c:3566 [inline]
+ path_openat+0x2230/0x5b00 fs/namei.c:3796
+ do_filp_open+0x20e/0x590 fs/namei.c:3826
+ do_sys_openat2+0x1bf/0x2f0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_creat fs/open.c:1497 [inline]
+ __se_sys_creat fs/open.c:1491 [inline]
+ __x64_sys_creat+0xe6/0x140 fs/open.c:1491
+ x64_sys_call+0x2966/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:86
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3804 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ kmem_cache_alloc+0x5b6/0xbe0 mm/slub.c:3852
+ ntfs_create_inode+0x5e0/0x5100 fs/ntfs3/inode.c:1314
+ ntfs_atomic_open+0x90a/0xbb0 fs/ntfs3/namei.c:434
+ atomic_open fs/namei.c:3360 [inline]
+ lookup_open fs/namei.c:3468 [inline]
+ open_last_lookups fs/namei.c:3566 [inline]
+ path_openat+0x2230/0x5b00 fs/namei.c:3796
+ do_filp_open+0x20e/0x590 fs/namei.c:3826
+ do_sys_openat2+0x1bf/0x2f0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_creat fs/open.c:1497 [inline]
+ __se_sys_creat fs/open.c:1491 [inline]
+ __x64_sys_creat+0xe6/0x140 fs/open.c:1491
+ x64_sys_call+0x2966/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:86
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 0 PID: 80 Comm: kswapd0 Not tainted 6.9.0-rc4-syzkaller-00274-g3b68086599f8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
 ---
- Documentation/virt/kvm/api.rst | 26 +++++++++++
- arch/x86/include/asm/sev.h     |  6 +++
- arch/x86/kvm/svm/sev.c         | 82 ++++++++++++++++++++++++++++++++++
- arch/x86/kvm/svm/svm.h         |  3 ++
- arch/x86/virt/svm/sev.c        | 37 +++++++++++++++
- include/uapi/linux/kvm.h       |  6 +++
- 6 files changed, 160 insertions(+)
-
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 85099198a10f..6cf186ed8f66 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -7066,6 +7066,7 @@ values in kvm_run even if the corresponding bit in kvm_dirty_regs is not set.
- 		struct kvm_user_vmgexit {
- 		#define KVM_USER_VMGEXIT_PSC_MSR	1
- 		#define KVM_USER_VMGEXIT_PSC		2
-+		#define KVM_USER_VMGEXIT_EXT_GUEST_REQ	3
- 			__u32 type; /* KVM_USER_VMGEXIT_* type */
- 			union {
- 				struct {
-@@ -7079,6 +7080,11 @@ values in kvm_run even if the corresponding bit in kvm_dirty_regs is not set.
- 					__u64 shared_gpa;
- 					__u64 ret;
- 				} psc;
-+				struct {
-+					__u64 data_gpa;
-+					__u64 data_npages;
-+					__u32 ret;
-+				} ext_guest_req;
- 			};
- 		};
- 
-@@ -7108,6 +7114,26 @@ private/shared state. Userspace will return a value in 'ret' that is in
- agreement with the GHCB-defined return values that the guest will expect
- in the SW_EXITINFO2 field of the GHCB in response to these requests.
- 
-+For the KVM_USER_VMGEXIT_EXT_GUEST_REQ type, the ext_guest_req union type
-+is used. The kernel will supply in 'data_gpa' the value the guest supplies
-+via the RAX field of the GHCB when issued extended guest requests.
-+'data_npages' will similarly contain the value the guest supplies in RBX
-+denoting the number of shared pages available to write the certificate
-+data into.
-+
-+  - If the supplied number of pages is sufficient, userspace should write
-+    the certificate data blob (in the format defined by the GHCB spec) in
-+    the address indicated by 'data_gpa' and set 'ret' to 0.
-+
-+  - If the number of pages supplied is not sufficient, userspace must write
-+    the required number of pages in 'data_npages' and then set 'ret' to 1.
-+
-+  - If userspace is temporarily unable to handle the request, 'ret' should
-+    be set to 2 to inform the guest to retry later.
-+
-+  - If some other error occurred, userspace should set 'ret' to a non-zero
-+    value that is distinct from the specific return values mentioned above.
-+
- 6. Capabilities that can be enabled on vCPUs
- ============================================
- 
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index ee24ef815e35..dfc28ac4dd0e 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -276,6 +276,9 @@ void snp_leak_pages(u64 pfn, unsigned int npages);
- void kdump_sev_callback(void);
- int snp_pause_attestation(u64 *transaction_id);
- void snp_resume_attestation(u64 *transaction_id);
-+u64 snp_transaction_get_id(void);
-+bool __snp_transaction_is_stale(u64 transaction_id);
-+bool snp_transaction_is_stale(u64 transaction_id);
- #else
- static inline bool snp_probe_rmptable_info(void) { return false; }
- static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
-@@ -291,6 +294,9 @@ static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
- static inline void kdump_sev_callback(void) { }
- static inline int snp_pause_attestation(u64 *transaction_id) { return 0; }
- static inline void snp_resume_attestation(u64 *transaction_id) {}
-+static inline u64 snp_transaction_get_id(void) { return 0; }
-+static inline bool __snp_transaction_is_stale(u64 transaction_id) { return false; }
-+static inline bool snp_transaction_is_stale(u64 transaction_id) { return false; }
- #endif
- 
- #endif
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 68db390b19d0..1cec466e593b 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -3292,6 +3292,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
- 	case SVM_VMGEXIT_PSC:
- 	case SVM_VMGEXIT_TERM_REQUEST:
- 	case SVM_VMGEXIT_GUEST_REQUEST:
-+	case SVM_VMGEXIT_EXT_GUEST_REQUEST:
- 		break;
- 	default:
- 		reason = GHCB_ERR_INVALID_EVENT;
-@@ -3812,6 +3813,84 @@ static void snp_handle_guest_req(struct vcpu_svm *svm, gpa_t req_gpa, gpa_t resp
- 	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SNP_GUEST_ERR(vmm_ret, fw_err));
- }
- 
-+static int snp_complete_ext_guest_req(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	struct vmcb_control_area *control;
-+	struct kvm *kvm = vcpu->kvm;
-+	sev_ret_code fw_err = 0;
-+	int vmm_ret;
-+
-+	vmm_ret = vcpu->run->vmgexit.ext_guest_req.ret;
-+	if (vmm_ret) {
-+		if (vmm_ret == SNP_GUEST_VMM_ERR_INVALID_LEN)
-+			vcpu->arch.regs[VCPU_REGS_RBX] =
-+				vcpu->run->vmgexit.ext_guest_req.data_npages;
-+		goto abort_request;
-+	}
-+
-+	control = &svm->vmcb->control;
-+
-+	/*
-+	 * To avoid the message sequence number getting out of sync between the
-+	 * actual value seen by firmware verses the value expected by the guest,
-+	 * make sure attestations can't get paused on the write-side at this
-+	 * point by holding the lock for the entire duration of the firmware
-+	 * request so that there is no situation where SNP_GUEST_VMM_ERR_BUSY
-+	 * would need to be returned after firmware sees the request.
-+	 */
-+	mutex_lock(&snp_pause_attestation_lock);
-+
-+	if (__snp_transaction_is_stale(svm->snp_transaction_id))
-+		vmm_ret = SNP_GUEST_VMM_ERR_BUSY;
-+	else if (!__snp_handle_guest_req(kvm, control->exit_info_1,
-+					 control->exit_info_2, &fw_err))
-+		vmm_ret = SNP_GUEST_VMM_ERR_GENERIC;
-+
-+	mutex_unlock(&snp_pause_attestation_lock);
-+
-+abort_request:
-+	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SNP_GUEST_ERR(vmm_ret, fw_err));
-+
-+	return 1; /* resume guest */
-+}
-+
-+static int snp_begin_ext_guest_req(struct kvm_vcpu *vcpu)
-+{
-+	int vmm_ret = SNP_GUEST_VMM_ERR_GENERIC;
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	unsigned long data_npages;
-+	sev_ret_code fw_err;
-+	gpa_t data_gpa;
-+
-+	if (!sev_snp_guest(vcpu->kvm))
-+		goto abort_request;
-+
-+	data_gpa = vcpu->arch.regs[VCPU_REGS_RAX];
-+	data_npages = vcpu->arch.regs[VCPU_REGS_RBX];
-+
-+	if (!IS_ALIGNED(data_gpa, PAGE_SIZE))
-+		goto abort_request;
-+
-+	svm->snp_transaction_id = snp_transaction_get_id();
-+	if (snp_transaction_is_stale(svm->snp_transaction_id)) {
-+		vmm_ret = SNP_GUEST_VMM_ERR_BUSY;
-+		goto abort_request;
-+	}
-+
-+	vcpu->run->exit_reason = KVM_EXIT_VMGEXIT;
-+	vcpu->run->vmgexit.type = KVM_USER_VMGEXIT_EXT_GUEST_REQ;
-+	vcpu->run->vmgexit.ext_guest_req.data_gpa = data_gpa;
-+	vcpu->run->vmgexit.ext_guest_req.data_npages = data_npages;
-+	vcpu->arch.complete_userspace_io = snp_complete_ext_guest_req;
-+
-+	return 0; /* forward request to userspace */
-+
-+abort_request:
-+	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SNP_GUEST_ERR(vmm_ret, fw_err));
-+	return 1; /* resume guest */
-+}
-+
- static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
- {
- 	struct vmcb_control_area *control = &svm->vmcb->control;
-@@ -4076,6 +4155,9 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
- 		snp_handle_guest_req(svm, control->exit_info_1, control->exit_info_2);
- 		ret = 1;
- 		break;
-+	case SVM_VMGEXIT_EXT_GUEST_REQUEST:
-+		ret = snp_begin_ext_guest_req(vcpu);
-+		break;
- 	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
- 		vcpu_unimpl(vcpu,
- 			    "vmgexit: unsupported event - exit_info_1=%#llx, exit_info_2=%#llx\n",
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 8a8ee475ad86..28140bc8af27 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -303,6 +303,9 @@ struct vcpu_svm {
- 
- 	/* Guest GIF value, used when vGIF is not enabled */
- 	bool guest_gif;
-+
-+	/* Transaction ID associated with SNP config updates */
-+	u64 snp_transaction_id;
- };
- 
- struct svm_cpu_data {
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index b75f2e7d4012..f1f7486a3dcf 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -72,6 +72,7 @@ static unsigned long snp_nr_leaked_pages;
- 
- /* For synchronizing TCB/certificate updates with extended guest requests */
- DEFINE_MUTEX(snp_pause_attestation_lock);
-+EXPORT_SYMBOL_GPL(snp_pause_attestation_lock);
- static u64 snp_transaction_id;
- static bool snp_attestation_paused;
- 
-@@ -611,3 +612,39 @@ void snp_resume_attestation(u64 *transaction_id)
- 	mutex_unlock(&snp_pause_attestation_lock);
- }
- EXPORT_SYMBOL_GPL(snp_resume_attestation);
-+
-+u64 snp_transaction_get_id(void)
-+{
-+	u64 id;
-+
-+	mutex_lock(&snp_pause_attestation_lock);
-+	id = snp_transaction_id;
-+	mutex_unlock(&snp_pause_attestation_lock);
-+
-+	return id;
-+}
-+EXPORT_SYMBOL_GPL(snp_transaction_get_id);
-+
-+/* Must be called with snp_pause_attestion_lock held */
-+bool __snp_transaction_is_stale(u64 transaction_id)
-+{
-+	lockdep_assert_held(&snp_pause_attestation_lock);
-+
-+	return (snp_attestation_paused ||
-+		transaction_id != snp_transaction_id);
-+}
-+EXPORT_SYMBOL_GPL(__snp_transaction_is_stale);
-+
-+bool snp_transaction_is_stale(u64 transaction_id)
-+{
-+	bool stale;
-+
-+	mutex_lock(&snp_pause_attestation_lock);
-+
-+	stale = __snp_transaction_is_stale(transaction_id);
-+
-+	mutex_unlock(&snp_pause_attestation_lock);
-+
-+	return stale;
-+}
-+EXPORT_SYMBOL_GPL(snp_transaction_is_stale);
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index e33c48bfbd67..585de3a2591e 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -138,6 +138,7 @@ struct kvm_xen_exit {
- struct kvm_user_vmgexit {
- #define KVM_USER_VMGEXIT_PSC_MSR	1
- #define KVM_USER_VMGEXIT_PSC		2
-+#define KVM_USER_VMGEXIT_EXT_GUEST_REQ	3
- 	__u32 type; /* KVM_USER_VMGEXIT_* type */
- 	union {
- 		struct {
-@@ -151,6 +152,11 @@ struct kvm_user_vmgexit {
- 			__u64 shared_gpa;
- 			__u64 ret;
- 		} psc;
-+		struct {
-+			__u64 data_gpa;
-+			__u64 data_npages;
-+			__u32 ret;
-+		} ext_guest_req;
- 	};
- };
- 
--- 
-2.25.1
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
