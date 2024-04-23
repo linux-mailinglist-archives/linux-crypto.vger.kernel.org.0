@@ -1,144 +1,142 @@
-Return-Path: <linux-crypto+bounces-3787-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3790-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71BB8AE397
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 13:12:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED3CA8AE567
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 14:05:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E92991C218F9
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 11:12:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9902288B87
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 12:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD6377F1B;
-	Tue, 23 Apr 2024 11:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7631C12E1F3;
+	Tue, 23 Apr 2024 11:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vayavyalabs.com header.i=@vayavyalabs.com header.b="Cb0mcFO3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l70ZxMLC"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D01E576
-	for <linux-crypto@vger.kernel.org>; Tue, 23 Apr 2024 11:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5FF7EEE1;
+	Tue, 23 Apr 2024 11:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713870739; cv=none; b=fmOdGi2CE7cf8qxTaZcG8HRIKRh7OL8e1g17Uz5iNYjcQzf4DSJa/mcyJ2KHMSgatSHVB6TjMgra4TygiNL4N81TSXIwLHzfrzFfC67Vn96agtc8+H1yp2qESUL6Syi5AZCU/jl5vSGbOVkkiIU68nLPH0di03RgDKHgbywh6To=
+	t=1713873396; cv=none; b=h9jKYHiacrwmt6Ry3dnH1SxsSws/deFf5JiDsRsLw/Zr3J9r5qr7oLj48sD7kYTxPJgKB5iFelEPifPCwGZ5dlYVGEXTilAKEf1moDJWL+kBi+4/lA9NFrbD6tV35TJ7wIcUbKqD5FwNoX1I1RydHkuXSxwnOC8c0gKXREySIqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713870739; c=relaxed/simple;
-	bh=kzjLAYwrFgVgyMPQ3WDVJlSsahRaZyHUh1KL7phHh7E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hZwD7v47jw7vZVWftoUtpul1CzeKxc46UxmB+lZgSxbEmPQR0xXzmBy7dngByR2M982oV6AZnqoO/iBhO52SWaf/Jstq8UKd2AkSzGbvyBu2Wge728Kzddsa4wj0bLN/Nr5kTlv0kZKgJIQ+k02MQ7g60u1laamu2Ghv4bxZ4PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=vayavyalabs.com; spf=pass smtp.mailfrom=vayavyalabs.com; dkim=pass (1024-bit key) header.d=vayavyalabs.com header.i=@vayavyalabs.com header.b=Cb0mcFO3; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=vayavyalabs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vayavyalabs.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-61b6025c473so22628277b3.2
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Apr 2024 04:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vayavyalabs.com; s=google; t=1713870736; x=1714475536; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dFqjZC+981DkSxcZCXPB84S2G8dBo9db4D+EwMuc0OA=;
-        b=Cb0mcFO38U+zhd80gQcmyaayarxOzIlttsg029PMmlPeig1qY/5JEJfLFm543O3fV1
-         D35UqznncxV21x+qR1TLwxVpt5C2azFhR1zktaATnqUYagzbnZIYKwSxDuqfGDvGGNGF
-         gX2dn/A+0O/xbjKZLBeEGdq5BTA+RbEjoaBho=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713870736; x=1714475536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dFqjZC+981DkSxcZCXPB84S2G8dBo9db4D+EwMuc0OA=;
-        b=ZumFg6ccMv2VqYo8bHUfiv05gonjCUFjh7drfKN9KskFUGDtyoA2qIa+iZrAnBKbCt
-         FNkOobmfrbOXmPPTbUbF6s74heMo07zygnIdGWzdb91YGkRucRxyhWU37H9GrT/2JPEd
-         rPEPCHaD+VUf4xHQ9C7iTVnZbduEVRgNJDsgQYJ3e30uGVfWxvjrlPFPmogp26IHWdYO
-         ChoeOfHCpeq6LfKBRgN28xgMu3HAcZNM63IlNVyhBZKaXf27ftKHkVYP9fAlVjBWkYKC
-         SH5nNfOmv5oWawUT5MEpIvoJGFxz3kFTpBO5I3589GDWvlVVyaUfahOPWqo9qLyIcK+P
-         nHeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVl9qB3mS4uIYvoaDspU7jsAlqLyStzXU7ITmMdwzvUxzd+ODuKi5SjWGgcirW6tbrqltweFqgaFzzQmtzsY/P1pIeN+JUt3oCl48Uj
-X-Gm-Message-State: AOJu0Yxaf4dI6hNN9uJKwKn8yAui1bgpGhEEzU+128mDXbRxlfWSp3bx
-	oggMgAulqEUwy5fQCNxYpdmRNiinBCBZ9om6o2cFTVahrUgcnxOSqzbF1X2OTft3ugppB5K6cR5
-	ei28Q9P6ZD+zzg1BIUsUMVcrdui45YlcHdz5mtQ==
-X-Google-Smtp-Source: AGHT+IGB+v4SzR0r2Zrz1d2fCu7rR+lmddUKRc4MetYRPTooHdXaOBrM+IKvezKiniOs4G7L3ID6fdQyle3v0PKhpIg=
-X-Received: by 2002:a05:690c:64c2:b0:61b:6757:a3df with SMTP id
- ht2-20020a05690c64c200b0061b6757a3dfmr6220432ywb.33.1713870736685; Tue, 23
- Apr 2024 04:12:16 -0700 (PDT)
+	s=arc-20240116; t=1713873396; c=relaxed/simple;
+	bh=p/uf6VYgCKT6JxvSBrFmzJpBlF+YiW1WjAHp1el+N5I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RRefhtASDKr2mEtCS9loH8pgtQWYN18D53HyMy1whrzoBECHPWqDZdm2D18Q0UaZHdG6UYl/X308kqKJ0JuXaMIt+BPHsTa+N1IQ00Q9DWpIhDl8jwiz4ZI4DOsgb4yZpomF3evbWPuNx+aMLylSTPDbc7T8UZPbyo6Y8R3Krdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l70ZxMLC; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713873394; x=1745409394;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=p/uf6VYgCKT6JxvSBrFmzJpBlF+YiW1WjAHp1el+N5I=;
+  b=l70ZxMLCwCNRoVpPZ+6C1OJXBW1NP6oY2Pq1YTRMDENlzci8CzzE9n8N
+   DVB7iUAfVhYTMyBCMcbCRBP2Al10uk6cDKYL+AeT8UXV4Co24b3kVDB9z
+   bCK8HKX8iq0hJVlF5XJ1eR38SbiiZIWFr9i/ySPa4vbcuEec4FcYQsuZr
+   lNMxhmjkoygZdNhANOZj1AgV9LINxiRChBKksICUsmZ0ung2UuyMV8osl
+   zt1BW10YJjFVD0OUqkDGaWHS60qPnNvhz4rNiYVwHGS/+I222MgYruUBU
+   4IemIm7ObGEJNGl1F4AEyGwK4K9F/9ph3Sg0cGbgxTncTduIKHLlPxKUm
+   g==;
+X-CSE-ConnectionGUID: aWWkIAmwT5yF6caDE4I5tw==
+X-CSE-MsgGUID: +5RLew28Sn6Zlr3xt0ZJFQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9305408"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="9305408"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 04:56:33 -0700
+X-CSE-ConnectionGUID: hWAL2QWzRY67+bfCqqupIA==
+X-CSE-MsgGUID: nyaBbhdCQVKOIqKg29TI3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="55297699"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 23 Apr 2024 04:56:30 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rzEl9-0000A4-0p;
+	Tue, 23 Apr 2024 11:56:27 +0000
+Date: Tue, 23 Apr 2024 19:56:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vadim Fedorenko <vadfed@meta.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v10 1/4] bpf: make common crypto API for TC/XDP
+ programs
+Message-ID: <202404231955.qUkSEasH-lkp@intel.com>
+References: <20240422225024.2847039-2-vadfed@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412035342.1233930-1-pavitrakumarm@vayavyalabs.com>
- <20240412035342.1233930-2-pavitrakumarm@vayavyalabs.com> <51a5305d-04d2-4c6b-8ea3-0edc6e10c188@linux.microsoft.com>
- <CALxtO0=UT=KDY+WzZcdVj6nwPfcsmQVTCpmRGx65_SZvh91eqQ@mail.gmail.com> <5f3af250-da94-410f-858e-822b974b14bf@linux.microsoft.com>
-In-Reply-To: <5f3af250-da94-410f-858e-822b974b14bf@linux.microsoft.com>
-From: Pavitrakumar Managutte <pavitrakumarm@vayavyalabs.com>
-Date: Tue, 23 Apr 2024 16:42:05 +0530
-Message-ID: <CALxtO0moQmdki44w9j1B-41925YCQ3-1mrbbGcoOXroKMaVsYw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] Add SPAcc driver to Linux kernel
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org, 
-	Ruud.Derwig@synopsys.com, manjunath.hadli@vayavyalabs.com, 
-	bhoomikak@vayavyalabs.com, shwetar <shwetar@vayavyalabs.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422225024.2847039-2-vadfed@meta.com>
 
-Hi Easwar,
-   We have broken the main driver patch into 4 patches as shown below
+Hi Vadim,
 
-  LOC    PATCH
-  4979 - 0001-Add-SPAcc-Skcipher-support.patch
-  1470 - 0002-Enable-SPAcc-AUTODETECT.patch
-  1283 - 0003-Add-SPAcc-ahash-support.patch
-  1333 - 0004-Add-SPAcc-aead-support.patch
+kernel test robot noticed the following build warnings:
 
-   138 - 0005-Add-SPAcc-Kconfig-and-Makefile.patch
-    33  - 0006-Add-SPAcc-node-zynqmp-dts.patch
-    60  - 0007-Enable-Driver-compilation-in-crypto-Kconfig-and-Make.patch
+[auto build test WARNING on bpf-next/master]
 
-  I have NOT broken the first patch into a "core" and a "skcipher"
-patch because the core patch
-  will throw warnings for "Functions defined but not used" if applied
-standalone during kernel CI/CD.
-  No compilation errors, so nothing is going to break; but there will
-be warnings.
+url:    https://github.com/intel-lab-lkp/linux/commits/Vadim-Fedorenko/bpf-make-common-crypto-API-for-TC-XDP-programs/20240423-070416
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240422225024.2847039-2-vadfed%40meta.com
+patch subject: [PATCH bpf-next v10 1/4] bpf: make common crypto API for TC/XDP programs
+config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240423/202404231955.qUkSEasH-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 5ef5eb66fb428aaf61fb51b709f065c069c11242)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240423/202404231955.qUkSEasH-lkp@intel.com/reproduce)
 
-  Core patch provides the infrastructure that cipher, hash and aead modules=
- use.
-  I will check with the kernel CI/CD team regarding this but do let me
-know if you have any
-  details related to this.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404231955.qUkSEasH-lkp@intel.com/
 
-  If thats not a problem for kernel CI/CD, i.e. if the kernel CI/CD is
-run only after all patches
-  are applied in order, then I can break up the first patch further
-into two. So the core patch
-  will mostly be around 4k Lines of Code.
+All warnings (new ones prefixed by >>):
 
-  Do let me know.
+>> kernel/bpf/crypto.c:34: warning: Function parameter or struct member 'reserved' not described in 'bpf_crypto_params'
+   kernel/bpf/crypto.c:55: warning: Function parameter or struct member 'siv_len' not described in 'bpf_crypto_ctx'
 
-Warm regards,
-PK
 
-On Thu, Apr 18, 2024 at 10:43=E2=80=AFPM Easwar Hariharan
-<eahariha@linux.microsoft.com> wrote:
->
-> On 4/17/2024 8:54 PM, Pavitrakumar Managutte wrote:
-> > Hi Easwar,
-> >    The driver has legacy code which was taking time in splitting, so
-> > pushed the v2
-> > patch without splitting. I am splitting AEAD, Hash and Cipher module co=
-de, which
-> > would be easier to review instead of a single 9k loc patch.
-> >
-> > I do appreciate your valuable time and feedback on the patches.
-> >
-> > Warm regards,
-> > PK
-> >
->
-> Thanks, I'll wait for that v3 to continue review.
->
-> - Easwar
->
+vim +34 kernel/bpf/crypto.c
+
+    17	
+    18	/* BPF crypto initialization parameters struct */
+    19	/**
+    20	 * struct bpf_crypto_params - BPF crypto initialization parameters structure
+    21	 * @type:	The string of crypto operation type.
+    22	 * @algo:	The string of algorithm to initialize.
+    23	 * @key:	The cipher key used to init crypto algorithm.
+    24	 * @key_len:	The length of cipher key.
+    25	 * @authsize:	The length of authentication tag used by algorithm.
+    26	 */
+    27	struct bpf_crypto_params {
+    28		char type[14];
+    29		u8 reserved[2];
+    30		char algo[128];
+    31		u8 key[256];
+    32		u32 key_len;
+    33		u32 authsize;
+  > 34	};
+    35	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
