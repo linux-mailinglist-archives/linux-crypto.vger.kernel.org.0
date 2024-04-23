@@ -1,121 +1,154 @@
-Return-Path: <linux-crypto+bounces-3786-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3788-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC0138ADC8F
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 06:02:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B7B8AE457
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 13:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1680A1C21868
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 04:02:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FB991C22B8C
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 11:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3DB1CA9E;
-	Tue, 23 Apr 2024 04:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FFE127E08;
+	Tue, 23 Apr 2024 11:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b="NeVqRsmq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T26Hqxue"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.jvdsn.com (smtp.jvdsn.com [129.153.194.31])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B621946B;
-	Tue, 23 Apr 2024 04:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.153.194.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D197F126F3F;
+	Tue, 23 Apr 2024 11:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713844968; cv=none; b=OqNjiC4JT/H00TKolkgVKOBTKa8qpZxEJq79kyvGrD7YhUhv1hvaf0wRUTncyzvaTLSNvu9byX5DmjZXrUPdWeLHrqXDrfpl95NNcn0naAYcWYOv524ASpmOTu/qxTPb7OXlrRamppXhBLiNS8wvEe6LYkPAX8pr4dE/8UvpWVE=
+	t=1713872410; cv=none; b=XLqaMNg6763hEvJnDC9cZkIYEM53PpzWABVJW4YhzVp2HNANCVQI3OhPzvkHvRdbi+Dvmucf1h9A59MSFrB0gXezCj56J1XpR5zSWAH2LUJ2lzScYou9IkDiAa6aZWvU5IrWyHKIuA94skRwBk1tnPYuuh2T7tSnGgiB5JGSsWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713844968; c=relaxed/simple;
-	bh=vhzq0N45gGQV1PgabGARl3LmJh7oOAEKzl/9R6dIHj4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jImKVjGxlVK1ro2P853qCNpDTPijPPrPftgTzDqgwxNRUcb97KsilLc5fqT5DkhvNK6/noLyJIQfmn4yti4YJZna3nnG+cOEhiO8612ybfHhO3mpm1zghScVGpo41I/B+P7gfmkHgVKBDvgplSrGey+ul7EVBFkofTmNAph1SB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com; spf=pass smtp.mailfrom=jvdsn.com; dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b=NeVqRsmq; arc=none smtp.client-ip=129.153.194.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jvdsn.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jvdsn.com; s=mail;
-	t=1713844960; bh=vhzq0N45gGQV1PgabGARl3LmJh7oOAEKzl/9R6dIHj4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=NeVqRsmqAo4YjlmHAr8CFyo8V3qZ5HYT2nuCPv4h+1WHrz0wzEMgFzDYmVvhGSXOm
-	 QPWtyvNBgygbzfwN+9q8rxcusGmPc6oJ6OdHm0tflfHqvhxlPNYDs2G8JAgXYRYivR
-	 NreF0xCg3WRWITVJgXRo48MSC/b24MCIFuewfQBsfniyWAHo5+IG4cuBT45dKiFeA8
-	 eZnlZ5Tjy21FU+TNqN5M+NZE+JxyZbWrkUY63ftOndka0a5NZyq+0Xpd+pDeqOj6ct
-	 pLVUpY95DvDq2jHUI1c1/TvGCGi8rXpRBDJBaRNrbM2yMZWeoy2mvsWAS+CeUfIjh7
-	 G55dnRhV4otmg==
-Message-ID: <908bc808-f8bd-4cc2-8644-c6c84e8cd4ea@jvdsn.com>
-Date: Mon, 22 Apr 2024 23:02:38 -0500
+	s=arc-20240116; t=1713872410; c=relaxed/simple;
+	bh=BUu7gSVq7EVIapepEGDTH6KVx8cTZeOA7YDgtQSfOKA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sSZAhio6OIZtfk1Lf0C3pqZfHRpuCN0AcxVzytkUk/DxSPEwZf2PHxmyczdDCxsJWSLFfp2gnfrFBD5th1DYohiqVZ2LPsVUAt4LJTJ38+zVk5QaaK22eCVF4efk40muBDlnH6lKLW0NuDg190R3zuNjWt6UPi0eTvVPDKhqlKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T26Hqxue; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71015C2BD11;
+	Tue, 23 Apr 2024 11:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713872409;
+	bh=BUu7gSVq7EVIapepEGDTH6KVx8cTZeOA7YDgtQSfOKA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=T26HqxueHe14iMiLW7WG7T5gxN+Xq/8/xLLcT/AXlWqmeWQ1UyAA7JPGgNwKN35wE
+	 rNqde0e7V4wtLf+qjre3F8Pm9jq3x6y/58fHhpkLKSgtJfZURoZxDNzA0/rFNLKEea
+	 BbB3H8Wzz7RFszcenVDDikZiUPeg7RYMxtLGlENjQt7y8M/SRUejX8iCk4BYjCwzlf
+	 gncbl8fAIfhafIinkTjMLOVLOSwqMCITaSzfwoBT/1yah6NG92w7hZWAobLwxUYbKU
+	 C4dBZk1o/rQOMSZGqXOCRqifk/hBZ1QxBO90aAofdqzla+UgFp+hQaIR7B6VwGLxjS
+	 hyMmJ5GS4XiSQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+	=?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Sasha Levin <sashal@kernel.org>,
+	davem@davemloft.net,
+	linux-crypto@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 6.8 05/18] powerpc/crypto/chacha-p10: Fix failure on non Power10
+Date: Tue, 23 Apr 2024 07:01:01 -0400
+Message-ID: <20240423110118.1652940-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240423110118.1652940-1-sashal@kernel.org>
+References: <20240423110118.1652940-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] KEYS: asymmetric: Add missing dependencies of
- FIPS_SIGNATURE_SELFTEST
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
- stable@vger.kernel.org, Simo Sorce <simo@redhat.com>,
- David Howells <dhowells@redhat.com>,
- kernel test robot <oliver.sang@intel.com>
-References: <20240422211041.322370-1-ebiggers@kernel.org>
-Content-Language: en-US
-From: Joachim Vandersmissen <git@jvdsn.com>
-Autocrypt: addr=joachim@jvdsn.com; keydata=
- xjMEYFm2zhYJKwYBBAHaRw8BAQdAa0ToltLs88MRtcZT3AnfaX4y9z7tNuQumkFnraoacSrN
- KUpvYWNoaW0gVmFuZGVyc21pc3NlbiA8am9hY2hpbUBqdmRzbi5jb20+wosEExYIADMWIQTl
- ppuIImvmYHZckHHNOH6x9cuKxQUCYFm2zgIbAwULCQgHAgYVCAkKCwIFFgIDAQAACgkQzTh+
- sfXLisVD7wEAufvtZXIMlofHV5P3O4Cj+J/npvpmxnNPBqd+2AdJ8GAA+wS1j7TvvtPhTccG
- DYXZbrGlvTrCrGyGdTRdK0ZcTgQLzjgEYFm2zhIKKwYBBAGXVQEFAQEHQHUI004BPYxgvmBd
- PTzZYgyko/t3ZlPeWcSQen0JEOZ2AwEIB8J4BBgWCAAgFiEE5aabiCJr5mB2XJBxzTh+sfXL
- isUFAmBZts4CGwwACgkQzTh+sfXLisVlRQD/XXtpe2kyEJ4rkRHNxS/0yHi4B26uyyutGaZN
- t/aaUDQA/RweY9tHblOuDvCCMnRSI+HDambm+2OgKwe45MXNdssK
-In-Reply-To: <20240422211041.322370-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.7
+Content-Transfer-Encoding: 8bit
 
-Hi Eric,
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-On 4/22/24 4:10 PM, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
->
-> Since the signature self-test uses RSA and SHA-256, it must only be
-> enabled when those algorithms are enabled.  Otherwise it fails and
-> panics the kernel on boot-up.
+[ Upstream commit 69630926011c1f7170a465b7b5c228deb66e9372 ]
 
-I actually submitted two related patch recently which change the 
-structure of the PKCS#7 self-tests and add an ECDSA self-test. See 
-"[PATCH v2 1/2] certs: Move RSA self-test data to separate file" and 
-"[PATCH v2 2/2] certs: Add ECDSA signature verification self-test" on 
-2024-04-20. The explicit dependency on CRYPTO_RSA shouldn't be necessary 
-with those patches (I think).
+The chacha-p10-crypto module provides optimised chacha routines for
+Power10. It also selects CRYPTO_ARCH_HAVE_LIB_CHACHA which says it
+provides chacha_crypt_arch() to generic code.
 
-However, I didn't consider CRYPTO_SHA256 there. I think it can remain 
-since both the RSA and proposed ECDSA self-tests use SHA-256.
+Notably the module needs to provide chacha_crypt_arch() regardless of
+whether it is loaded on Power10 or an older CPU.
 
->
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202404221528.51d75177-lkp@intel.com
-> Fixes: 3cde3174eb91 ("certs: Add FIPS selftests")
-> Cc: stable@vger.kernel.org
-> Cc: Simo Sorce <simo@redhat.com>
-> Cc: David Howells <dhowells@redhat.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->   crypto/asymmetric_keys/Kconfig | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
-> index 59ec726b7c77..4abc58c55efa 100644
-> --- a/crypto/asymmetric_keys/Kconfig
-> +++ b/crypto/asymmetric_keys/Kconfig
-> @@ -83,7 +83,9 @@ config FIPS_SIGNATURE_SELFTEST
->   	  for FIPS.
->   	depends on KEYS
->   	depends on ASYMMETRIC_KEY_TYPE
->   	depends on PKCS7_MESSAGE_PARSER=X509_CERTIFICATE_PARSER
->   	depends on X509_CERTIFICATE_PARSER
-> +	depends on CRYPTO_RSA
-> +	depends on CRYPTO_SHA256
->   
->   endif # ASYMMETRIC_KEY_TYPE
->
-> base-commit: ed30a4a51bb196781c8058073ea720133a65596f
+The implementation of chacha_crypt_arch() already has a fallback to
+chacha_crypt_generic(), however the module as a whole fails to load on
+pre-Power10, because of the use of module_cpu_feature_match().
+
+This breaks for example loading wireguard:
+
+  jostaberry-1:~ # modprobe -v wireguard
+  insmod /lib/modules/6.8.0-lp155.8.g7e0e887-default/kernel/arch/powerpc/crypto/chacha-p10-crypto.ko.zst
+  modprobe: ERROR: could not insert 'wireguard': No such device
+
+Fix it by removing module_cpu_feature_match(), and instead check the
+CPU feature manually. If the CPU feature is not found, the module
+still loads successfully, but doesn't register the Power10 specific
+algorithms. That allows chacha_crypt_generic() to remain available for
+use, fixing the problem.
+
+  [root@fedora ~]# modprobe -v wireguard
+  insmod /lib/modules/6.8.0-00001-g786a790c4d79/kernel/net/ipv4/udp_tunnel.ko
+  insmod /lib/modules/6.8.0-00001-g786a790c4d79/kernel/net/ipv6/ip6_udp_tunnel.ko
+  insmod /lib/modules/6.8.0-00001-g786a790c4d79/kernel/lib/crypto/libchacha.ko
+  insmod /lib/modules/6.8.0-00001-g786a790c4d79/kernel/arch/powerpc/crypto/chacha-p10-crypto.ko
+  insmod /lib/modules/6.8.0-00001-g786a790c4d79/kernel/lib/crypto/libchacha20poly1305.ko
+  insmod /lib/modules/6.8.0-00001-g786a790c4d79/kernel/drivers/net/wireguard/wireguard.ko
+  [   18.910452][  T721] wireguard: allowedips self-tests: pass
+  [   18.914999][  T721] wireguard: nonce counter self-tests: pass
+  [   19.029066][  T721] wireguard: ratelimiter self-tests: pass
+  [   19.029257][  T721] wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
+  [   19.029361][  T721] wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+
+Reported-by: Michal Suchánek <msuchanek@suse.de>
+Closes: https://lore.kernel.org/all/20240315122005.GG20665@kitsune.suse.cz/
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20240328130200.3041687-1-mpe@ellerman.id.au
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/powerpc/crypto/chacha-p10-glue.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/crypto/chacha-p10-glue.c b/arch/powerpc/crypto/chacha-p10-glue.c
+index 74fb86b0d2097..7c728755852e1 100644
+--- a/arch/powerpc/crypto/chacha-p10-glue.c
++++ b/arch/powerpc/crypto/chacha-p10-glue.c
+@@ -197,6 +197,9 @@ static struct skcipher_alg algs[] = {
+ 
+ static int __init chacha_p10_init(void)
+ {
++	if (!cpu_has_feature(CPU_FTR_ARCH_31))
++		return 0;
++
+ 	static_branch_enable(&have_p10);
+ 
+ 	return crypto_register_skciphers(algs, ARRAY_SIZE(algs));
+@@ -204,10 +207,13 @@ static int __init chacha_p10_init(void)
+ 
+ static void __exit chacha_p10_exit(void)
+ {
++	if (!static_branch_likely(&have_p10))
++		return;
++
+ 	crypto_unregister_skciphers(algs, ARRAY_SIZE(algs));
+ }
+ 
+-module_cpu_feature_match(PPC_MODULE_FEATURE_P10, chacha_p10_init);
++module_init(chacha_p10_init);
+ module_exit(chacha_p10_exit);
+ 
+ MODULE_DESCRIPTION("ChaCha and XChaCha stream ciphers (P10 accelerated)");
+-- 
+2.43.0
+
 
