@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-3788-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3789-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71B7B8AE457
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 13:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 259E78AE48D
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 13:45:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FB991C22B8C
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 11:41:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5673F1C220F9
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Apr 2024 11:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FFE127E08;
-	Tue, 23 Apr 2024 11:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92B313B7A3;
+	Tue, 23 Apr 2024 11:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T26Hqxue"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MggvnvHC"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D197F126F3F;
-	Tue, 23 Apr 2024 11:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B8613B5BF;
+	Tue, 23 Apr 2024 11:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872410; cv=none; b=XLqaMNg6763hEvJnDC9cZkIYEM53PpzWABVJW4YhzVp2HNANCVQI3OhPzvkHvRdbi+Dvmucf1h9A59MSFrB0gXezCj56J1XpR5zSWAH2LUJ2lzScYou9IkDiAa6aZWvU5IrWyHKIuA94skRwBk1tnPYuuh2T7tSnGgiB5JGSsWk=
+	t=1713872440; cv=none; b=XkJLOo7JfA/5qy3bBtCqEJKe829ZQEmlK8BakYFRZFIk2wfSQkVjLeaEyAKLFXb62XOOd1CYEj5ZWHE1eF6S5NtiH4eeru0lsfpC3NlD0rqzqfsxbDJZ33wiLts8LNQgZ/EPq9yucrFvgArSdJ3tJrXtyhhCegG9pcms0VGUORo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872410; c=relaxed/simple;
+	s=arc-20240116; t=1713872440; c=relaxed/simple;
 	bh=BUu7gSVq7EVIapepEGDTH6KVx8cTZeOA7YDgtQSfOKA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sSZAhio6OIZtfk1Lf0C3pqZfHRpuCN0AcxVzytkUk/DxSPEwZf2PHxmyczdDCxsJWSLFfp2gnfrFBD5th1DYohiqVZ2LPsVUAt4LJTJ38+zVk5QaaK22eCVF4efk40muBDlnH6lKLW0NuDg190R3zuNjWt6UPi0eTvVPDKhqlKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T26Hqxue; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71015C2BD11;
-	Tue, 23 Apr 2024 11:40:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=lwRF7jj6QBGn65c+WfTfhLFyOEia1WqBtFsLJVV3Wpra/aDWdMs/W9qhcHU7bjR+siIIIuaAGj5mNLQjMk8U/9oefPBrB0y49byGQ7RWx7kB0Ibnwsa0LpgejQtLHkhg8NO7NhdzIIhHFavAUAiv/Y7A0ZlcDGVgKoXUJqXXLow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MggvnvHC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77933C116B1;
+	Tue, 23 Apr 2024 11:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872409;
+	s=k20201202; t=1713872440;
 	bh=BUu7gSVq7EVIapepEGDTH6KVx8cTZeOA7YDgtQSfOKA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T26HqxueHe14iMiLW7WG7T5gxN+Xq/8/xLLcT/AXlWqmeWQ1UyAA7JPGgNwKN35wE
-	 rNqde0e7V4wtLf+qjre3F8Pm9jq3x6y/58fHhpkLKSgtJfZURoZxDNzA0/rFNLKEea
-	 BbB3H8Wzz7RFszcenVDDikZiUPeg7RYMxtLGlENjQt7y8M/SRUejX8iCk4BYjCwzlf
-	 gncbl8fAIfhafIinkTjMLOVLOSwqMCITaSzfwoBT/1yah6NG92w7hZWAobLwxUYbKU
-	 C4dBZk1o/rQOMSZGqXOCRqifk/hBZ1QxBO90aAofdqzla+UgFp+hQaIR7B6VwGLxjS
-	 hyMmJ5GS4XiSQ==
+	b=MggvnvHCIZG3rEFI7aNL5Am8evbh+SbnjNZIHc3KD7m5eW3fVv0KbV4gHpsR7kpUh
+	 TZ3DYkDfodHV3Ri5mlKWuP//M42VWVr2+Gdd2SdCWhBaIweZA6aQAt9LuyY6YOojA/
+	 lARvuqpVq6WiNz6YGd1l+y1GwoKWD8IRjLWiDdcTlxtxHWCtXzH7/bWXm+LMVW5DRG
+	 dAyUo/R/a9LNvmdIyHAkIvb0NwolST493J1Me9y7Gw5L5cmtZLP6crbTPFFNYdxE/b
+	 YqGds313IKXqZ11GCaYly8S5F/blw+0UPhuUt2djD91dCyGdZXpD8W3lLTc4DAj4Oy
+	 q6rS+0otLiUHw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	davem@davemloft.net,
 	linux-crypto@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 6.8 05/18] powerpc/crypto/chacha-p10: Fix failure on non Power10
-Date: Tue, 23 Apr 2024 07:01:01 -0400
-Message-ID: <20240423110118.1652940-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 05/16] powerpc/crypto/chacha-p10: Fix failure on non Power10
+Date: Tue, 23 Apr 2024 07:01:38 -0400
+Message-ID: <20240423110151.1658546-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240423110118.1652940-1-sashal@kernel.org>
-References: <20240423110118.1652940-1-sashal@kernel.org>
+In-Reply-To: <20240423110151.1658546-1-sashal@kernel.org>
+References: <20240423110151.1658546-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -66,7 +66,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.8.7
+X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
 From: Michael Ellerman <mpe@ellerman.id.au>
