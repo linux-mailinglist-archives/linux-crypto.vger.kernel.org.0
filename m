@@ -1,126 +1,118 @@
-Return-Path: <linux-crypto+bounces-3960-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-3962-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61ECE8B8450
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 May 2024 04:22:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930B98B8472
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 May 2024 05:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0504E2834B1
-	for <lists+linux-crypto@lfdr.de>; Wed,  1 May 2024 02:22:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B51021C20D78
+	for <lists+linux-crypto@lfdr.de>; Wed,  1 May 2024 03:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF00110A19;
-	Wed,  1 May 2024 02:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DDAE1BF3A;
+	Wed,  1 May 2024 03:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="JCcmxzxx"
+	dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b="xuz3s0CY"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.jvdsn.com (smtp.jvdsn.com [129.153.194.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31394437
-	for <linux-crypto@vger.kernel.org>; Wed,  1 May 2024 02:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB6422EE3
+	for <linux-crypto@vger.kernel.org>; Wed,  1 May 2024 03:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.153.194.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714530144; cv=none; b=Y7Nv7u04RH6jMOnBGChpTbzU5I5AayJJRHvcysLHktZbxUZy1TE478T13hT1tpbGwi10twy/UPkD6VH0aXfavEAxA8Jo9jkKOFyzvy5eWc4pkmMS+mFK/MJXL97MtT1k6jUOZ8HauvRmy7kL0BZ/OCSMUkbaVjsvNRE43lcyra0=
+	t=1714532492; cv=none; b=DW6aaDL3/VXDDMPuasnU7HaPcd3qSCW3OrHyGWvMPsKKA0VYNJpoo/vtHvtFp60stbpHR+YuyRULjlaknfvtr1NGnLZldnCaa3u/6KZ+W9knq3h3wS1Zg0dKnC2cj9hv+S4BNpCnP6e5OxsFKhBxQCXWhVqumm/Fejp1D66qgMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714530144; c=relaxed/simple;
-	bh=tLDbUIdh1res7S2ApImHSrYF3GBedRC/aB6hGdipB7k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XbmbRvqQveiqsMx8dzO2IVESs6H/WrLgyHcufYpVz2PDs9ohMZiT8IVumD1n42WUoyxvGYUJzvwK1Jw9W6ufRqnbO4wugt4znR7vaW2ZjBTe5RWhCKBZV2/k7M4w3x/Wk3vRmQt937AEgkIOdT7Ez4nmIr/s1bSxoz0nXy4LY4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=JCcmxzxx; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4412M2lD018844
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 22:22:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1714530126; bh=ycnxCU4aRUN0CT5wAn+au+vBsaR04nzay6J9xUEb54Q=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=JCcmxzxxmA2Uiv4hCUXnE1PYZSqWRCq2ywaa3ukQfwZoIm9rCjZJmjwJD+IInjDDK
-	 Ih7RL6X489M2hup3eskn7wdLc6yzll2AMQzJCDEWWZ8USYLsWKBTsGYyk9aAvBEXLx
-	 UANwQfv0sZIIh92XmHx2AE1g9EqchQSznoIP4BQnJRfkPvC/QhQYBbm7/g3jYbiO8u
-	 2lyWpqREDHAAkxbDrSi1QYoPvbSdenEWglYgwyckgc86Jc+XXLIBtAzmYYbXhhJHz7
-	 J577qRGfGhm/FoDG9KDP09046zXEyJsT6enU7fYxM1Pg4UiqxeLQRgpWwxaYu7IkLD
-	 sW9uvtl3+hl0A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id EB87115C02BB; Tue, 30 Apr 2024 22:22:01 -0400 (EDT)
-Date: Tue, 30 Apr 2024 22:22:01 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Aaron Toponce <aaron.toponce@gmail.com>
-Cc: Eric Biggers <ebiggers@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] random: add chacha8_block and swtich the rng to it
-Message-ID: <20240501022201.GD1743554@mit.edu>
-References: <20240429134942.2873253-1-aaron.toponce@gmail.com>
- <20240430031105.GA10165@sol.localdomain>
- <ZjB2ZjkebZyC7FZp@hercules>
- <20240430162632.GA1924352@mit.edu>
- <ZjEf2VV4igcCtkRE@hercules>
+	s=arc-20240116; t=1714532492; c=relaxed/simple;
+	bh=bDo4oRYbf4croWUFPynRoDuzCOPy3dg5iCM6HULHCvQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=trHdelwYq/Hxc4wnQbLK5SBsGxDIZX3uZagJ95FZu/M1g1KzRW9Q9eZpGJP/2/JFy8b0tdhUgaewrFuM+hmL6THjIKn8xXY5YhGgE9wHdaC9q+jV9AofsY7uxychYZkiD+qMtBK8mr/Q22P/dipUBCrTydalSnn2OGGgsQzyEkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com; spf=pass smtp.mailfrom=jvdsn.com; dkim=pass (2048-bit key) header.d=jvdsn.com header.i=@jvdsn.com header.b=xuz3s0CY; arc=none smtp.client-ip=129.153.194.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jvdsn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jvdsn.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jvdsn.com; s=mail;
+	t=1714531966; bh=bDo4oRYbf4croWUFPynRoDuzCOPy3dg5iCM6HULHCvQ=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To;
+	b=xuz3s0CYI/nZ5qALiN6WqISD/SBQQRMeEW4syYI5GvZJCaWfTismLD2F8uAs0Ammu
+	 MGmEcOvWLUWaNvpOsVUihlbWqSz2OvH8Ytc0bUsiOCLXpO98vFLwZi8hmMHaa422wz
+	 FpWMIsqdudq8OwM+46laiM4NcgrSHgT/mgVo2LatoxsfypDsczY5Jy4TO4lvgKw6UT
+	 GJCccSlCSz0exeIW0CsuqWVpXogB54PqdiFQeOoNKc689Ftd3oVNmus3m56txI7wmR
+	 C08H4tiJjfub0T738tDyJJqs3zV/pRWOFJ14skq1uIixn5zoB8K8Z1z/TPponR126h
+	 3AtfjydsmfnOQ==
+Message-ID: <b2787b62-fd1e-4815-a1c1-6b2d567ab977@jvdsn.com>
+Date: Tue, 30 Apr 2024 21:52:44 -0500
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjEf2VV4igcCtkRE@hercules>
+From: Joachim Vandersmissen <git@jvdsn.com>
+Subject: Re: [PATCH v2 1/2] certs: Move RSA self-test data to separate file
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
+ Simo Sorce <simo@redhat.com>, Stephan Mueller <smueller@chronox.de>
+References: <20240420054243.176901-1-git@jvdsn.com>
+ <Zinnl2Y11i0GHLEO@gondor.apana.org.au>
+Content-Language: en-US
+In-Reply-To: <Zinnl2Y11i0GHLEO@gondor.apana.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-So first of all, my apologies for giving you offense.  I really didn't
-think you were a shill for the NSA or the MSS, but I have to admit
-that when I get large set of patches which removes "unnecessary" code,
-which is _technically_ safe, but which reduces the safety margin, I
-find myself wondering whether it's part of a binary payload.  (This is
-especially when I get patches from someone that I don't normally
-receive patches from.)  Unfortunately, in the wake of the xz hack,
-we're just all going to have to be a lot more careful.
+Hi Herbert,
 
-On Tue, Apr 30, 2024 at 10:44:09AM -0600, Aaron Toponce wrote:
+On 4/25/24 12:18 AM, Herbert Xu wrote:
+> On Sat, Apr 20, 2024 at 12:42:42AM -0500, Joachim Vandersmissen wrote:
+>> Herbert, please let me know if this is what you had in mind. Thanks.
+> Thanks, it's pretty much what I had in mind.
+>   
+>> diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
+>> index 1a273d6df3eb..4db6968132e9 100644
+>> --- a/crypto/asymmetric_keys/Makefile
+>> +++ b/crypto/asymmetric_keys/Makefile
+>> @@ -24,6 +24,7 @@ x509_key_parser-y := \
+>>   	x509_public_key.o
+>>   obj-$(CONFIG_FIPS_SIGNATURE_SELFTEST) += x509_selftest.o
+>>   x509_selftest-y += selftest.o
+>> +x509_selftest-$(CONFIG_CRYPTO_RSA) += selftest_rsa.o
+> This doesn't work if RSA is a module.  So you need to play a bit
+> more of a game with Kconfig to get it to work.  Perhaps define
+> an extra Kconfig option for it:
 >
-> The goal is just to make the CSPRNG more efficient without sacrificing security.
-> Of course most reads will be small for cryptographic keys. ChaCha8 means even
-> those small reads will be 2.5x more efficient than ChaCha20. The dd(1) example
-> was just to demonstrate the efficiency, not to be "fun".
+> config FIPS_SIGNATURE_SELFTEST_RSA
+> 	def_bool (FIPS_SIGNATURE_SELFTEST=m && CRYPTO_RSA!=n) || CRYPTO_RSA=y
+>
+> and then
+>
+> x509_selftest-$(CONFIG_FIPS_SIGNATURE_SELFTEST_RSA) += selftest_rsa.o
 
-This is a philosophical question; are we going for maximum efficiency,
-or maximum safety so long as it meets the performance requirements for
-the intended use case?  From an academic perspective, or if a
-cryptographer is designing cipher for a NIST competition, there's a
-strong desire for maximum efficiency, since that's one of the metrics
-used in the competition.  But for the Linux RNG, my bias is to go for
-safety, since we're not competing on who can do the fast bulk
-encryption, but "sufficiently fast for keygen".
+After thinking about it for a while, I understand what you mean now. The 
+current behavior of the patch seems to be that, if 
+FIPS_SIGNATURE_SELFTEST=y but CRYPTO_RSA=m, the RSA signature self-test 
+will not be executed. I believe your suggestion would explicitly encode 
+that behavior in the Kconfig?
 
-People of good will can disagree on what the approach should be.  I
-tend to have much of a pragmatic engineer's perspective.  It's been
-said that the Empire State Building is overbuilt by a factor of 10,
-but that doesn't bother me.  People are now saying that perhaps the
-Francis Scott Key bridge, when it is rebuilt, should have more safety
-margin, since container ships have gotten so much bigger.  (And
-apparently, cheap sh*t diesel fuel that is contaminated and the ship
-owners buy fuel from the lowest bidder.)
+The most correct solution in that case would probably be executing the 
+PKCS#7 self-test when the RSA module is loaded, but I don't think that's 
+feasible in the current architecture.
 
-Or we can talk about how Boeing has been trying to cheap-out on plane
-manufacturing to save $$$; but I think you get the point of where I'm
-coming from.  I'm not a big fan of trimming safety margins and making
-things more efficient for it's own sake.  (At least in the case of
-Boeing, the CEO at least got paid $22/million a year, so at least
-there's that.  :-)
+Another option would be to simply add CRYPTO_RSA and CRYPTO_ECDSA as 
+explicit dependencies to FIPS_SIGNATURE_SELFTEST, as Eric Biggers 
+proposed. Perhaps nowadays everyone includes ECDSA already.
 
-Now, if this is actually impacting the TLS connection termination for
-a Facebook or Bing or Google's front end web server, then great, we
-can try to optimize it.  But if it's not a bottleneck, what's the
-point?  Making change for change's sake, especially when it's reducing
-safety margins, is just one of those things that I find really hard to
-get excited about.
+I'm currently leaning towards adding FIPS_SIGNATURE_SELFTEST_RSA (and 
+similarly FIPS_SIGNATURE_SELFTEST_ECDSA) as user-facing configuration 
+options that depend on CRYPTO_RSA (and CRYPTO_ECDSA) and 
+FIPS_SIGNATURE_SELFTEST. Then, it is up to the user to select the 
+correct self-tests they need. It would still allow the user to create 
+the same configuration "error" where FIPS_SIGNATURE_SELFTEST=y and 
+FIPS_SIGNATURE_SELFTEST_RSA=m, but I think that users which care about 
+FIPS_SIGNATURE_SELFTEST are doing it in the first place for FIPS 
+compliance reasons. In that case, a FIPS laboratory should review the 
+configuration to verify that the correct self-tests are executed at the 
+correct time.
 
-Cheers,
-
-					- Ted
+>
+> Thanks,
 
