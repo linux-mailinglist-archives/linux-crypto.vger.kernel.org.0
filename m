@@ -1,80 +1,60 @@
-Return-Path: <linux-crypto+bounces-4003-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4006-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F8B8B9D95
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 May 2024 17:35:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C750B8BA1C9
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 May 2024 23:00:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E468A1F22D5E
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 May 2024 15:35:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B9C42832C3
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 May 2024 21:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4F015B54F;
-	Thu,  2 May 2024 15:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DE2180A8E;
+	Thu,  2 May 2024 21:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="yScL0wg9"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="kTsD4wzs"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32AB15ADB1
-	for <linux-crypto@vger.kernel.org>; Thu,  2 May 2024 15:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC0A1635DB
+	for <linux-crypto@vger.kernel.org>; Thu,  2 May 2024 21:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714664104; cv=none; b=T+n7BN+yqPpzPUQ2lO8A2x7D+B0RQY58KIgTwkLvEKS7BKZhaqAqH/Y2jwLW+oIL1DQMWqyrFfpMYSLnkAIaENgCX4SNtwqKUafDkpVKczmGRauatT8jpqJGyZA+BKSlP8/DiahoWDE5uTOM50/kXx9Uql7EmoFelOp85BzhXUM=
+	t=1714683648; cv=none; b=UZPDcoIwIpCCExG7ZihAn527AZZK5ubJ1aaYVKdRPzVr6A6ew9+x53Bc4yyAKGdndOsrSBLm0zwYrw7xUU6gtKAilhXgVQqBMd36QIP8QrFzNL8Hqik3U32hRAHEHnLBym0PoY2+FvD9QgcamQa27XYhli5I8nPCzDWP2ASURts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714664104; c=relaxed/simple;
-	bh=R+pJmmxpNrZ/XJxigie9GtGPdSpA3KgFHVA0wipAK7E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MoEge3UujmNAU0n67ToQqQ1EQguBwgQ0vH82Vm5x+ZQvUqK0S3Mw2WFk5tE5iNzsA988T5YoAptxV5jm8XMhaIm+X3uLwINQabTFYUPGvk+qM5Yq3meR082feQ1nSyauOYBO1W8cXRwlL0FezeDPTAIHmicbLNgDBZBs4RBJ1NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=yScL0wg9; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a5966ea4fafso191335466b.0
-        for <linux-crypto@vger.kernel.org>; Thu, 02 May 2024 08:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1714664100; x=1715268900; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ce5FXE5idr82jeqevYO8YWeQ0hM+JzLoZr03p3rxaCE=;
-        b=yScL0wg9qUChw1cmaZ3tDo4DHELgq6gUPBj5+tZ7W/eKXER+BT9WKBfsuWTWWDXL/d
-         tkBSsxbh7S/DxXRT/a+KuLYpv54ihMRiljBcSetSqEZqGCoO3MSF5CB9BxIaDZl88Jet
-         pP8aTSfeZioalHZ2rAohCiVBBoJ+mOovAXk52PwCh5/lLbi3eIfGHwZRgZDsBdrNcCgC
-         CmeSqjp1YhEG3XQAO1QJJq2rPpY6H+j6EDIWLdW6A3JbPkANaPWtsLkeolS7Lu162gLU
-         2/Y4znvNX42IofJg7tBbZZpgkWHHmSnwTeSu1LMPtFxibFRskkyfpb6TBTAnI6aFPibC
-         Cpmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714664100; x=1715268900;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ce5FXE5idr82jeqevYO8YWeQ0hM+JzLoZr03p3rxaCE=;
-        b=phTM/RWBQ/rIFBQ6k+pFGUwVxhkXTC9OIeH9/E1cTHjSCcjV9dqI2TueCxNUCxJ2D3
-         59j1chWVF861f2r+5T4llG5xIyCrL3tXP6AW/deDGxLieqWdFI4FmTMLN3KshDAkElLy
-         hhk9OMm2vGrs4FGkeleYIFWkc0Kbv1NtxgJY40fPZiIGARWXgSIPETq4vzO6uN+l07R/
-         XvPKLVvgKHNmoZDLaM9RtZjTVrK3Gt57Da5zAiClES2CQCHW3+RAJpBp6rqyxqGo4oK3
-         nWR7+sJmBACi4rS2dlmSfFA97kgLOkFPvtFIPBf/1kmXlyAXeZdIcLYkvL9TCHvJe6u4
-         6X5Q==
-X-Gm-Message-State: AOJu0YwYpcIahpdwOoaB7xgIvhBxQOurWP3FEwzNPKmDhYNw0KiAtD+e
-	IVBev+j9PZMB7oVZuesL1ueWCXEuclCqCT19zI8Shlt6kR3VFT5NHP3FtXgFq3g=
-X-Google-Smtp-Source: AGHT+IEQfs59rIUKVTrOCgSJ3jKTTUJ2JzRMpQm4fmKS62RfKZlGAhSLcI0NsdYjXVyyfSKA9TdCqA==
-X-Received: by 2002:a17:906:6a05:b0:a58:7ddf:1805 with SMTP id qw5-20020a1709066a0500b00a587ddf1805mr3302521ejc.7.1714664100017;
-        Thu, 02 May 2024 08:35:00 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-62-216-208-100.dynamic.mnet-online.de. [62.216.208.100])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170906279500b00a5587038aefsm675107ejc.156.2024.05.02.08.34.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 08:34:59 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Tom Zanussi <tom.zanussi@linux.intel.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] crypto: iaa - Use kmemdup() instead of kzalloc() and memcpy()
-Date: Thu,  2 May 2024 17:33:39 +0200
-Message-ID: <20240502153338.6945-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714683648; c=relaxed/simple;
+	bh=G2G5Fdd8L1eMCVpoJCoNvgyMBlb75rzt+1FCyv2puVo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BmZ1ArA9KY3+2hstxvbzyyDTFY3f05N8vcKo6sMcItk8jVjRhLNNaBtEv0U52CP24mlcv55FN8KxKlq+xUYu93lvBbZP3HVbyxxUm2n+wFQErTt8FL4BfbS6HUf3QfPZJQLoraXC3NM+hb8SG7bf/aW/n9xDkR/S18oJ/zkzFNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=kTsD4wzs; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=from:to:cc:subject:date:message-id
+	:mime-version:content-transfer-encoding; s=k1; bh=vbLbGnRrGB7osk
+	150qN2jGrCzd2fjB5/oPHzyxdfjfo=; b=kTsD4wzsqhNs625k+/D3X4EveeW156
+	xolafYJZMXNmURAxMJW+VCLt7kkK/pfWh2TyUZJtR73Ex3q5/LaM1fhnVKbCX0aN
+	b8rtHgKHqNEYKNyEek6k/+5QdVpHHqQktdrahFswrIQTyhyvybT+u7muQTF6V7k2
+	okY7OPAqkeEcHpRbDcjKWizio5tXyGMtpPVSoxyAOfmDem7pXlZNfryFbn4eJL37
+	pDKgHZuI/OHUy4RJHE11vBQMPxIKJJs8Ejee3756yPKLKjJeV6a3yJzdOClXcWqL
+	4bjpmX2ztPBpJNGAGAKUEFzNjoKlI3+AjX4W5pTIydSSd11Hv+LgxGnQ==
+Received: (qmail 3365792 invoked from network); 2 May 2024 23:00:40 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 2 May 2024 23:00:40 +0200
+X-UD-Smtp-Session: l3s3148p1@ZIs/5X4XVopehhrT
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-crypto@vger.kernel.org
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-fpga@vger.kernel.org,
+	Michal Simek <michal.simek@amd.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>
+Subject: [PATCH 0/2] fpga: use 'time_left' instead of 'timeout' with wait_for_*() functions
+Date: Thu,  2 May 2024 23:00:35 +0200
+Message-ID: <20240502210038.11480-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -83,43 +63,35 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fixes the following two Coccinelle/coccicheck warnings reported by
-memdup.cocci:
+There is a confusing pattern in the kernel to use a variable named 'timeout' to
+store the result of wait_for_*() functions causing patterns like:
 
-	iaa_crypto_main.c:350:19-26: WARNING opportunity for kmemdup
-	iaa_crypto_main.c:358:18-25: WARNING opportunity for kmemdup
+        timeout = wait_for_completion_timeout(...)
+        if (!timeout) return -ETIMEDOUT;
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+with all kinds of permutations. Use 'time_left' as a variable to make the code
+obvious and self explaining.
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index b2191ade9011..7635fbebe52f 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -347,18 +347,16 @@ int add_iaa_compression_mode(const char *name,
- 		goto free;
- 
- 	if (ll_table) {
--		mode->ll_table = kzalloc(ll_table_size, GFP_KERNEL);
-+		mode->ll_table = kmemdup(ll_table, ll_table_size, GFP_KERNEL);
- 		if (!mode->ll_table)
- 			goto free;
--		memcpy(mode->ll_table, ll_table, ll_table_size);
- 		mode->ll_table_size = ll_table_size;
- 	}
- 
- 	if (d_table) {
--		mode->d_table = kzalloc(d_table_size, GFP_KERNEL);
-+		mode->d_table = kmemdup(d_table, d_table_size, GFP_KERNEL);
- 		if (!mode->d_table)
- 			goto free;
--		memcpy(mode->d_table, d_table, d_table_size);
- 		mode->d_table_size = d_table_size;
- 	}
- 
+This is part of a tree-wide series. The rest of the patches can be found here
+(some parts may still be WIP):
+
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/time_left
+
+Because these patches are generated, I audit them before sending. This is why I
+will send series step by step. Build bot is happy with these patches, though.
+No functional changes intended.
+
+Wolfram Sang (2):
+  fpga: socfpga: use 'time_left' variable with
+    wait_for_completion_interruptible_timeout()
+  fpga: zynq-fpga: use 'time_left' variable with
+    wait_for_completion_timeout()
+
+ drivers/fpga/socfpga.c   | 7 ++++---
+ drivers/fpga/zynq-fpga.c | 8 ++++----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
+
 -- 
-2.44.0
+2.43.0
 
 
