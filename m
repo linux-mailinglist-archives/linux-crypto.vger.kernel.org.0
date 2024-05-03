@@ -1,117 +1,120 @@
-Return-Path: <linux-crypto+bounces-4024-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4029-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12DE98BB4E0
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2024 22:33:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3CCD8BB549
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2024 23:12:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BFC4B22A25
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2024 20:33:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20531C22CA1
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 May 2024 21:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C701CD29;
-	Fri,  3 May 2024 20:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF7754762;
+	Fri,  3 May 2024 21:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ngm3Yeap"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EaTNk1PU"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A428637E;
-	Fri,  3 May 2024 20:32:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FEFF41C7F;
+	Fri,  3 May 2024 21:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714768376; cv=none; b=J3HzGq31sVfzLNABSLVZBivZvUXOHhKFxIPXB0P7+vTLIZY3qgpXkCtVrVlsl6Py1IMv3RXI+Up5CJ+X8Rt9Zkbo1MTYwH99k6Ne+bn/PmmXu/9BFWGWNUY+PnxUFxMdbH8xG9bucX359OYOPCwX2smmd0J7HOYkVmCwtztr7cc=
+	t=1714770681; cv=none; b=T03iAgNFJvqYCJWFnXa1fZ13z9ssSxEkHILFbmTaSaMs7Qk+TJV8iRQrxyG7ODeUvRoLP18fdQmQTrOV4bZdNytKKxOGcQmiW1PzKwEn0OMHU7t0+tEcu9Ehhs0bQGZokET4JKIktXAjRwaDWX6OXKomRIi8Emf1b4z/DCU0RKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714768376; c=relaxed/simple;
-	bh=lLRSrEFOKeLd7wm/DXk6Glzr+B7ECHvb+9hKkMGORuA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kkq0/g+cNDWVjHUT+VOaaOw7wFpCTWNtuEGzv1j3jwRz27kb9G4opB/nedO7Tc2v+LLcVmY3QstwWxKpE9F01ITC418rUYVITHeS1JSgGrrnl9/K1ocw7OYzCekZ+f/Ml82Nsuv1xKdYl5nJDDSianAnoq0N3QhBhq9RM4djicA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ngm3Yeap; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714768375; x=1746304375;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=lLRSrEFOKeLd7wm/DXk6Glzr+B7ECHvb+9hKkMGORuA=;
-  b=Ngm3YeapflW5N3uhfBQT7Z+VpR8M3EPT34NfkkAaHt5nK6hMHoIZRf+L
-   ThnoQy4LJwffxifX9YRsiFIHSRpsltRYY76tTkXjhEDEPXZ6XiPxG6DwP
-   ACJqBtA0W6jeMs9fWAGbZllMrqTw9rrPPnBOgPh6hKLg7GdZyC3sNZrqw
-   9E5W6MqBWZlryqn8M3/IcLAmQvoCzHKFV2/V0nh3wYmPdGuuxJuEVhKOP
-   tdyj2Q6Dq9soGL8uyzPK3yT4sAs5JcElrB8TuTBvVAJ0XAGaozNilSK0q
-   XlIisD1ya0C4gdiq3bq8G44PiLXXfGqBADy/p14HmjHF+YP+lIa7hsAG/
-   w==;
-X-CSE-ConnectionGUID: SYqS9wqqT/aLeRxZG8id2w==
-X-CSE-MsgGUID: FzqoMtDLSS+ciCYRxjzs2Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="28069040"
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="28069040"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 13:32:54 -0700
-X-CSE-ConnectionGUID: 37gUMsnETu22TU2GxlUNnw==
-X-CSE-MsgGUID: 1U/q5K/mTr2yZM/5yPcgjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="50748465"
-Received: from eowusuan-mobl.amr.corp.intel.com ([10.209.164.73])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 13:32:53 -0700
-Message-ID: <7da2bc1a966061aa11110f7e0304d82dfaa322e8.camel@linux.intel.com>
-Subject: Re: [PATCH] crypto: iaa - Use kmemdup() instead of kzalloc() and
- memcpy()
-From: Tom Zanussi <tom.zanussi@linux.intel.com>
-To: Thorsten Blum <thorsten.blum@toblux.com>, Herbert Xu
-	 <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Fri, 03 May 2024 15:32:52 -0500
-In-Reply-To: <20240502153338.6945-2-thorsten.blum@toblux.com>
-References: <20240502153338.6945-2-thorsten.blum@toblux.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714770681; c=relaxed/simple;
+	bh=d/SD6qIRdSFdmB6XYHh2XnFL0LvVoGCB7gGxH6DO6E0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kr2bAdPr9Qk4u0gidxn4f/KjT4wVN8WkCCJVNE1o0Zy5+BT4BHoerRsTHG+2cZqaV8NQrDgndJPHyBAh+ygiBHPAT73L1zncx2j0IN/QW5lowG+v5RJdqcnqCbjFjVNjo6l06Z8/lQj3OS8AeQpSgBQWnm5ygBXEcBiqWriZ2WU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EaTNk1PU; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34eb52bfca3so43f8f.0;
+        Fri, 03 May 2024 14:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714770659; x=1715375459; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gFiIP6TYjHJaDi+mdlJ+P1+Htp6nG8gyq660Ei0mCwI=;
+        b=EaTNk1PU2agFC4D9yBcNSVkoridsOET3WUhY5aLUagMuiq5LFaf0YTnRMoIPM0Ede1
+         hQiR7xc8JEldpqrKzb33ctfLkePxBQ+ddtM9NleToGAUtVSNvz7rEoKcORyDX2uvEy5k
+         UvomMz0FIF7+8KdMrIDqPZ8zdup9WBF03TyqbMmyKJhhFbtDLPHiR5Lq9mNxgmgJfmg2
+         aXqLBdcIKhH3EtG+CmbN/eGBnW7l64TxdIK1iTq1kZRgyE1KN4OucjnP/kf7AKqfXrxl
+         VGe/mIx5hIgtjg47C2V3ykmSjWjHdkvhdiTHMGKmzLCBorfz0Kfcw3+UTfV2m/Rr2Xii
+         XJeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714770659; x=1715375459;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gFiIP6TYjHJaDi+mdlJ+P1+Htp6nG8gyq660Ei0mCwI=;
+        b=OX1jfJ3XSbfxX4U9d6nTFVCNWcIxIu9NBlYZXxWmkEdFPPoNEKWJqABNGTCd+lwYI1
+         VmkaVYrdePnSFzX6k4tKRHeS5FmVMMX6QSFHrwR7yfgnOdCir/64dZ5aC4EKk/yX9rA5
+         sugK/hyFSge+mcl0cWgpFEUdQIvMljZbXArKpUHbTLx7KnPMONZhNeaLv9qGUx7RI99m
+         Se0QllMZy58lMNhlzfEk702Ss116yRC4X0s3M7LN6EUt+A+jAEAF9xMK1eJ6PFXqCRs7
+         UhnsyYoIG4a2LxkRsJTMbmCyNXIq+MqKvj8ZdrNZbJO8jtddezGmi2RzsPimTYeby2eH
+         g5CA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJFTYgtxv4U8cUSDrEoIEAUY73zNtmzMy9pCEMP5o992lDdUghN896oGo4wfFxFE7IPEkUzYku/BsOLTaq+pKEd8/EC1zoH2aqs5/UhrkGdQfroLRsFYcaisLftfTjGj5kcO3KEa+F0klM
+X-Gm-Message-State: AOJu0YzkUmrH/wgB5X/ECE70XBcoryIaW+hcEbi1hIMuclJ64CPbIes9
+	TG8CID43wD0Bx6SQBnqUF7yXSnLlxvTcGb6WCxxYFSHhrSmpuYd2
+X-Google-Smtp-Source: AGHT+IGfa5q14NXQ2Z8X2gRIXybvC2IDcQj5fP0NrlA9hdgN8bemn/OKKjEsD1OhXnquVgR9MF06mA==
+X-Received: by 2002:adf:fc44:0:b0:34c:fa08:791c with SMTP id e4-20020adffc44000000b0034cfa08791cmr3214794wrs.45.1714770658778;
+        Fri, 03 May 2024 14:10:58 -0700 (PDT)
+Received: from 58b9ec80ce2f.v.cablecom.net (84-72-156-211.dclient.hispeed.ch. [84.72.156.211])
+        by smtp.gmail.com with ESMTPSA id jy9-20020a170907762900b00a598646f173sm1475948ejc.191.2024.05.03.14.10.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 14:10:58 -0700 (PDT)
+From: Lothar Rubusch <l.rubusch@gmail.com>
+To: herbert@gondor.apana.org.au,
+	davem@davemloft.net
+Cc: nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com,
+	claudiu.beznea@tuxon.dev,
+	linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	l.rubusch@gmail.com
+Subject: [PATCH v2 0/4] crypto: atmel-sha204a - read out otp zone
+Date: Fri,  3 May 2024 21:10:50 +0000
+Message-Id: <20240503211054.1231-1-l.rubusch@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-SGkgVGhvcnN0ZW4sCgpPbiBUaHUsIDIwMjQtMDUtMDIgYXQgMTc6MzMgKzAyMDAsIFRob3JzdGVu
-IEJsdW0gd3JvdGU6Cj4gRml4ZXMgdGhlIGZvbGxvd2luZyB0d28gQ29jY2luZWxsZS9jb2NjaWNo
-ZWNrIHdhcm5pbmdzIHJlcG9ydGVkIGJ5Cj4gbWVtZHVwLmNvY2NpOgo+IAo+IMKgwqDCoMKgwqDC
-oMKgwqBpYWFfY3J5cHRvX21haW4uYzozNTA6MTktMjY6IFdBUk5JTkcgb3Bwb3J0dW5pdHkgZm9y
-IGttZW1kdXAKPiDCoMKgwqDCoMKgwqDCoMKgaWFhX2NyeXB0b19tYWluLmM6MzU4OjE4LTI1OiBX
-QVJOSU5HIG9wcG9ydHVuaXR5IGZvciBrbWVtZHVwCj4gCj4gU2lnbmVkLW9mZi1ieTogVGhvcnN0
-ZW4gQmx1bSA8dGhvcnN0ZW4uYmx1bUB0b2JsdXguY29tPgo+IC0tLQo+IMKgZHJpdmVycy9jcnlw
-dG8vaW50ZWwvaWFhL2lhYV9jcnlwdG9fbWFpbi5jIHwgNiArKy0tLS0KPiDCoDEgZmlsZSBjaGFu
-Z2VkLCAyIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvY3J5cHRvL2ludGVsL2lhYS9pYWFfY3J5cHRvX21haW4uYyBiL2RyaXZlcnMvY3J5cHRv
-L2ludGVsL2lhYS9pYWFfY3J5cHRvX21haW4uYwo+IGluZGV4IGIyMTkxYWRlOTAxMS4uNzYzNWZi
-ZWJlNTJmIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvY3J5cHRvL2ludGVsL2lhYS9pYWFfY3J5cHRv
-X21haW4uYwo+ICsrKyBiL2RyaXZlcnMvY3J5cHRvL2ludGVsL2lhYS9pYWFfY3J5cHRvX21haW4u
-Ywo+IEBAIC0zNDcsMTggKzM0NywxNiBAQCBpbnQgYWRkX2lhYV9jb21wcmVzc2lvbl9tb2RlKGNv
-bnN0IGNoYXIgKm5hbWUsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIGZy
-ZWU7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKGxsX3RhYmxlKSB7Cj4gLcKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoG1vZGUtPmxsX3RhYmxlID0ga3phbGxvYyhsbF90YWJsZV9zaXpl
-LCBHRlBfS0VSTkVMKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbW9kZS0+bGxf
-dGFibGUgPSBrbWVtZHVwKGxsX3RhYmxlLCBsbF90YWJsZV9zaXplLCBHRlBfS0VSTkVMKTsKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICghbW9kZS0+bGxfdGFibGUpCj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBmcmVlOwo+
-IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBtZW1jcHkobW9kZS0+bGxfdGFibGUsIGxs
-X3RhYmxlLCBsbF90YWJsZV9zaXplKTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oG1vZGUtPmxsX3RhYmxlX3NpemUgPSBsbF90YWJsZV9zaXplOwo+IMKgwqDCoMKgwqDCoMKgwqB9
-Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKGRfdGFibGUpIHsKPiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgbW9kZS0+ZF90YWJsZSA9IGt6YWxsb2MoZF90YWJsZV9zaXplLCBHRlBf
-S0VSTkVMKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbW9kZS0+ZF90YWJsZSA9
-IGttZW1kdXAoZF90YWJsZSwgZF90YWJsZV9zaXplLCBHRlBfS0VSTkVMKTsKPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICghbW9kZS0+ZF90YWJsZSkKPiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIGZyZWU7Cj4gLcKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoG1lbWNweShtb2RlLT5kX3RhYmxlLCBkX3RhYmxlLCBkX3Rh
-YmxlX3NpemUpOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbW9kZS0+ZF90YWJs
-ZV9zaXplID0gZF90YWJsZV9zaXplOwo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAKCkxvb2tzIGdv
-b2QsIHRoYW5rcyBmb3IgdGhlIGNsZWFudXAuCgpSZXZpZXdlZC1ieTogVG9tIFphbnVzc2kgPHRv
-bS56YW51c3NpQGxpbnV4LmludGVsLmNvbT4KCg==
+Read out otp memory zone of this secure eeprom and rng chip. The chip
+has an otp zone and data zone, both still not accessed. The otp zone
+can be used to store persistently serial numbers or similar, if externally
+pre-configured. In any way the Atmel SHA204a needs to be preconfgured and
+fuse locked in order to be useful also for the already implemented RNG
+functionality. Placing data into the otp zone is optional. If empty, the
+chip returns 0xff on all field. The implementation passes the content to
+a new sysfs handle to userspace. If the chip is locked or not accessible
+no sysfs handle is set.
+
+Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+---
+v1 -> v2
+- fix typo in commit title
+- drop patch: remove unused includes
+
+Lothar Rubusch (4):
+  crypto: atmel-i2c - add missing arg description
+  crypto: atmel-i2c - rename read function
+  crypto: atmel-sha204a - add reading from otp zone
+  crypto: atmel-sha204a - provide the otp content
+
+ drivers/crypto/atmel-i2c.c     | 30 +++++++++++++--
+ drivers/crypto/atmel-i2c.h     |  8 +++-
+ drivers/crypto/atmel-sha204a.c | 68 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 102 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
 
 
