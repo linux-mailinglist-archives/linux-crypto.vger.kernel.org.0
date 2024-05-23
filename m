@@ -1,92 +1,119 @@
-Return-Path: <linux-crypto+bounces-4357-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4361-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0D7E8CD541
-	for <lists+linux-crypto@lfdr.de>; Thu, 23 May 2024 16:01:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB3178CD5E3
+	for <lists+linux-crypto@lfdr.de>; Thu, 23 May 2024 16:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D26021C2282B
-	for <lists+linux-crypto@lfdr.de>; Thu, 23 May 2024 14:01:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20D33282148
+	for <lists+linux-crypto@lfdr.de>; Thu, 23 May 2024 14:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43CC514A62B;
-	Thu, 23 May 2024 14:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGjpHLR9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1061213BC13;
+	Thu, 23 May 2024 14:35:29 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from xmailer.gwdg.de (xmailer.gwdg.de [134.76.10.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E901DFF8;
-	Thu, 23 May 2024 14:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095261EA74;
+	Thu, 23 May 2024 14:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.76.10.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716472880; cv=none; b=bf5kBh97xEMxUV8kL+Nc1S5l4jOWXeN4bz/+3a/rSKlYN7EdV0YXHtx0CvM7OH1RaLnYAD4TqiMe9Er41AUBqx3zKjGuQg+qZ6GpEHfXvwlLqhxXRou7oTI5LtJDjNYziis9KPC2K0pRDOBy21VjBYBOZg44xb8fnKP8oH8dey0=
+	t=1716474928; cv=none; b=abLdKV2ij0Pwfexy0cS3/WggqlAYTpHaTe4VaSoBbJEGYtJDS2UXkT60JomI+pZOkUDlMsAZukj5JHak20wwidQHlDLHwnNIXlVu4UlZ9tiV5Jder5yYP1CM+CA3aZk1nREx/JH9zjK6IbIudXbeQbq4Gkddc2b2JKX9xKxh8xY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716472880; c=relaxed/simple;
-	bh=tRKZmbPOTvI23VV67m+vV9W4fwcgI39dj6FthEbjgi8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=njM+N0TyQ/OA0yrBqjPtSzJw1lHQIk/2c3FNTtAfG/1z4btDdBQ16zC8vRHQDzWJ4DMwQ1rjre7OEtVVKksRl0vDGUAmd0xAygOvB4LFkh/Eudqiz8smayVkzwcfpsxtmyiZ5ERg2hC40sLDzqnDp14l8XB+TB0BuT50GVQyDUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGjpHLR9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45FA9C2BD10;
-	Thu, 23 May 2024 14:01:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716472879;
-	bh=tRKZmbPOTvI23VV67m+vV9W4fwcgI39dj6FthEbjgi8=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=gGjpHLR9w345lhL8pxttkPEpky4+fa6YtHkdcCUWM08co1kKjYD9+Q0cyUtVBZONN
-	 Lw+TsMUFQYmq/xWzr9lmWVsKbiYbCwCXosLZtmqq+kAiQynlnlxB3gzshLWHyosTs3
-	 S/Nr8gMPsHWKB9I9kUxDdr3TPBOQjI655XRen2zwRKZNZ+Xb2RRXAfedfLKplf5JI2
-	 NsUWSf/pc12UbaPPrgFLf1YpCyT9Ypnaj6j90/ge238n0m7lrsM2FWoNDES0GMkdPS
-	 5gpkPEmuAMAMvkZ7xPKV6xoxwdxbgsiZczivCCdYjnxVgrtHG2vTmOgTCaWQNxhWhP
-	 4boxiv62xXGLA==
+	s=arc-20240116; t=1716474928; c=relaxed/simple;
+	bh=DqNAaMwLUQKqQeSpUg1T7UK/osvQjYsNfnoBau1Fld0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YmdDSy3SvLdRCLwaz3gksYbrGnFdyw7NLXS2Cln4F0yBetiNQrTZLkJNyuc6WfpioJ/J369f57Udpa0DofGXpps0EH7BjJohhK2FeORCU+BAXXqLw/shy3aqKQLnWVtTF0kIQv8mc2T5ElpyEiKeMOD7KH92U5cWnmo+l7GRlbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuebingen.mpg.de; spf=pass smtp.mailfrom=tuebingen.mpg.de; arc=none smtp.client-ip=134.76.10.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuebingen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuebingen.mpg.de
+Received: from mailgw.tuebingen.mpg.de ([192.124.27.5] helo=tuebingen.mpg.de)
+	by mailer.gwdg.de with esmtp (GWDG Mailer)
+	(envelope-from <maan@tuebingen.mpg.de>)
+	id 1sA9Fd-000Fu8-1x;
+	Thu, 23 May 2024 16:17:01 +0200
+Received: from [10.35.40.80] (HELO mailhost.tuebingen.mpg.de)
+  by tuebingen.mpg.de (CommuniGate Pro SMTP 6.2.6)
+  with SMTP id 52279345; Thu, 23 May 2024 16:17:00 +0200
+Received: by mailhost.tuebingen.mpg.de (sSMTP sendmail emulation); Thu, 23 May 2024 16:17:00 +0200
+Date: Thu, 23 May 2024 16:17:00 +0200
+From: Andre Noll <maan@tuebingen.mpg.de>
+To: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maciej Sosnowski <maciej.sosnowski@intel.com>,
+	Andre Noll <maan@systemlinux.org>, linux-crypto@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: Re: [PATCH] docs: crypto: async-tx-api: fix broken code example
+Message-ID: <Zk9P3ITcqc-9EhZp@tuebingen.mpg.de>
+References: <20240523-async-dma-docs-v1-1-b900e0804e11@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 23 May 2024 17:01:14 +0300
-Message-Id: <D1H2UON4NTVS.1JG8PCOCAL4NY@kernel.org>
-To: "David Howells" <dhowells@redhat.com>
-Cc: <linux-integrity@vger.kernel.org>, <keyrings@vger.kernel.org>, "David
- Woodhouse" <dwmw2@infradead.org>, "Eric Biggers" <ebiggers@kernel.org>,
- "James Bottomley" <James.Bottomley@hansenpartnership.com>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
- "Andrew Morton" <akpm@linux-foundation.org>, "Mimi Zohar"
- <zohar@linux.ibm.com>, "Paul Moore" <paul@paul-moore.com>, "James Morris"
- <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, "open
- list:CRYPTO API" <linux-crypto@vger.kernel.org>, "open list"
- <linux-kernel@vger.kernel.org>, "open list:SECURITY SUBSYSTEM"
- <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v2] KEYS: trusted: Use ASN.1 encoded OID
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240523132341.32092-1-jarkko@kernel.org>
- <576061.1716471541@warthog.procyon.org.uk>
-In-Reply-To: <576061.1716471541@warthog.procyon.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240523-async-dma-docs-v1-1-b900e0804e11@pengutronix.de>
+User-Agent: Mutt/2.2.13 (00d56288) (2024-03-09)
+X-Spam-Level: $
+X-Virus-Scanned: (clean) by clamav
 
-On Thu May 23, 2024 at 4:39 PM EEST, David Howells wrote:
-> Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> > There's no reason to encode OID_TPMSealedData at run-time, as it never
-> > changes.
-> >=20
-> > Replace it with the encoded version, which has exactly the same size:
-> >=20
-> > 	67 81 05 0A 01 05
-> >=20
-> > Include OBJECT IDENTIFIER (0x06) tag and length as the epilogue so that
-> > the OID can be simply copied to the blob.
-> >=20
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
->
-> Reviewed-by: David Howells <dhowells@redhat.com>
+On Thu, May 23, 15:18, Ahmad Fatoum wrote
+> The code example fails to compile:
+> 
+>   1) ddr_conv is defined twice, once as a VLA, which have been phased out
 
-Thanks!
+       addr_conv
+> 
+>   2) submit is not a pointer, but is still dereferenced with ->
 
-BR, Jarkko
+3) The first call to async_xor() lacked the trailing semicolon.
+
+> Fix these issues and while at it, make the functions static as users
+> are unlikely to export them.
+
+No objections, but please don't consider me authoritative. Two nits
+below, FWIW.
+
+> --- a/Documentation/crypto/async-tx-api.rst
+> +++ b/Documentation/crypto/async-tx-api.rst
+> @@ -150,38 +150,38 @@ of an operation.
+>  Perform a xor->copy->xor operation where each operation depends on the
+>  result from the previous operation::
+
+Maybe add
+
+#include <linux/async_tx.h>
+
+>  
+> -    void callback(void *param)
+> +    static void callback(void *param)
+>      {
+>  	    struct completion *cmp = param;
+>  
+>  	    complete(cmp);
+>      }
+
+This could be simplified to
+
+static void callback(void *param)
+{
+	complete(param);
+}
+
+Best
+Andre
+-- 
+Max Planck Institute for Biology
+Tel: (+49) 7071 601 829
+Max-Planck-Ring 5, 72076 Tübingen, Germany
+http://people.tuebingen.mpg.de/maan/
 
