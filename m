@@ -1,101 +1,157 @@
-Return-Path: <linux-crypto+bounces-4454-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4456-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39EB48D1CF7
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 15:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BABDF8D1DC1
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 15:57:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE5931F21D43
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 13:29:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59E911F23E19
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 13:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D5216F0DE;
-	Tue, 28 May 2024 13:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFBE16F0F9;
+	Tue, 28 May 2024 13:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H3IC5dJR"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="vEk1bhIc"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE4E1DFDE;
-	Tue, 28 May 2024 13:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD4D1DFEB;
+	Tue, 28 May 2024 13:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716902947; cv=none; b=dFbU/CsdpgVsDjezpXmc85V8NEjr2El3yEczfuhpCpQWPUb2mkvETSN4oUbvZBoKMtuYlG4PkNkRsi2dkDoTcmJ+NOGIG304SrV23Lo9dg+rmdUwyK31pUjTvC7dQx+/dlFefQ8dUBCTWyeHogBzoGsL8ll2Qf72W+oEU/HUpjw=
+	t=1716904648; cv=none; b=Aa5kf08wY4LKdePBwGjxLF8x/GTg5kQX/G4sZBnQf6kweUAovSjAGPu/xZGw3NqkeaxA38IgOMNDnlo3/H8JKnMY7rt6Xr3eoOAtoYvwbbayHVcPM4dq9J+k7+DVF/qooPeoG2nmEF6KFpXypm2RSqIaLCGtpn95oUA0/hQMV3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716902947; c=relaxed/simple;
-	bh=xyyTmTzN9d8hqo9iRE/ESmgFIUN4LB9umMa2nCS2waI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=F2PNTq0e9jfrXsytJRrAF8iN/7bX8xFfCZ8RNvFSeIpUmD3ymm1TaqvZ0B+URJ9kW2jQdYgFjPh2sgIprXRibTtUdiM8yAXZ47s7MxoKhR09QlrWiezPvZ2UI7UHb3xVOU8n1z/dULyAnPyb9M0dv301nrzVG7OvTcWQGMRgEyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H3IC5dJR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7143BC3277B;
-	Tue, 28 May 2024 13:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716902946;
-	bh=xyyTmTzN9d8hqo9iRE/ESmgFIUN4LB9umMa2nCS2waI=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=H3IC5dJRl7xG89iDpASrt8tZba/beNU9g20FeAZl2g/h0uH/mKw9uPEYDp37YBLQ8
-	 uHU9vl7Ou4ioTe0i2hq1xTz2WZ3rRXbyelwyvS9HxMftlXDkpwaM6Zwa3segTW6IU2
-	 YQ8m4cBvkljr5eFAVfeEuA0y4CKrdma+12FNxhFSAjldN5HnM3mOhYecpZwHCAZiJ9
-	 cN/5JZsLtPVDyT9p5vZaxAX3C/9ryOZUsqyG4ksR57pFiBtyhtK1byVx0eAdSG8VZQ
-	 9hXPyYtz0YO9uQO4fWwVXB5xA6KHbq/OUOpnKv4AVm/rIj0UEVBlbYUHxEJZgsTbSX
-	 HnmVMh5IiRMNQ==
+	s=arc-20240116; t=1716904648; c=relaxed/simple;
+	bh=lvauc8lUfBZMFnljdZm+wq4srDvCwzjLTImIswTNMIA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dgMfyMwYTtcM7qKIZmR5ZRFv6HqWqaO17RlQXBQy2dEzq4SXxkxXbTytKxA6dSJYgQh2ltQLVmH7+T4R3CY0MolysLSv+gEKDTraIzcyZK9637FfN9al/zOAr7yCzpTftMSWgJIAMSwWc/bTc4Hjgbaiw3UqrvqI7QMsn1Evlfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=vEk1bhIc; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44SDcObZ029891;
+	Tue, 28 May 2024 15:56:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=selector1; bh=
+	3iMyPRzAl6P/YSbrLht+RjqstDWVPqn81XuUkiZnR+I=; b=vEk1bhIc8n7CjGg5
+	x2HRcAASI53sQW4Pcc6zc9FV9e2nzcgQQPX7sUXXq9BYBepj3HtTXkaB3LvmgXZL
+	IkinWSTPRbA+pXMPuE8us9knYU+ciDlyF5RgTRinULTJans/MSjaNaDdQbt6cK//
+	vCjS5wXGjlVBdgMPQL4K6h83j/VmvbIE6t6+uKRYMWqvZ8jZ7HPODpq48n+h3C7E
+	WtuQG2U0/0m1N3GHVWN/yaC25PahAIdohjRloO16/0zW5KtyihJEm1tHD5n7G8UN
+	SGnj8JWqRjyvMhAsDC0REHgpLFCpxRVF49Ha9GsTMiOR9u1OUOj+P3fJWBHOeFMD
+	JNKvmg==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3yb9yjcdpd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 28 May 2024 15:56:36 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id A161240044;
+	Tue, 28 May 2024 15:56:25 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B107921A91B;
+	Tue, 28 May 2024 15:55:26 +0200 (CEST)
+Received: from [10.48.87.204] (10.48.87.204) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 28 May
+ 2024 15:55:25 +0200
+Message-ID: <47ed8f22-fc8c-4fb4-89c5-7d8ef7e8e728@foss.st.com>
+Date: Tue, 28 May 2024 15:55:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 28 May 2024 16:29:03 +0300
-Message-Id: <D1LBARSTFSFC.1DQSHTGGDL0C6@kernel.org>
-Cc: <linux-crypto@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: ecdsa: Fix the public key format description
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Stefan Berger"
- <stefanb@linux.ibm.com>, "Herbert Xu" <herbert@gondor.apana.org.au>
-X-Mailer: aerc 0.17.0
-References: <20240527202840.4818-1-jarkko@kernel.org>
- <D1KQDPOZRWCW.1763CCYF1B84X@kernel.org>
- <D1KRILI1KRQ8.2CNPU7PFES0VI@kernel.org>
- <D1KRXI87G4S0.1ROKTQENIZHT7@kernel.org>
- <D1KS7LCALKD4.1J13QGYGZ6LBW@kernel.org>
- <D1KSLKGUWGFO.21T4OBXQQ88D@kernel.org>
- <D1KSSWD7FA94.5705Z3J7LKZA@kernel.org>
- <b5ff9003-065f-437f-bf6b-7f1ae0a0364a@linux.ibm.com>
- <D1LB8PVCTP1S.JDCEWNODTGTQ@kernel.org>
-In-Reply-To: <D1LB8PVCTP1S.JDCEWNODTGTQ@kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [RFC] clk: stm32mp1: Keep RNG1 clock always running
+To: Marek Vasut <marex@denx.de>, <linux-crypto@vger.kernel.org>
+CC: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Gabriel Fernandez
+	<gabriel.fernandez@foss.st.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Turquette
+	<mturquette@baylibre.com>,
+        Olivia Mackall <olivia@selenic.com>, Rob Herring
+	<robh@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Yang Yingliang
+	<yangyingliang@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20240513220349.183568-1-marex@denx.de>
+ <b2d0dfcb-37d6-4375-a4ad-ca96a5339840@foss.st.com>
+ <cc6f98eb-f6b2-4a34-a8ed-c0f759fa4c79@denx.de>
+ <51951dd4-8e8c-4e67-89f6-6a710022e34f@foss.st.com>
+ <3257e8f8-5bb0-4c75-a3a3-e5685b65de2a@denx.de>
+ <5b39b5b6-7008-4362-a578-3faab87cd23b@foss.st.com>
+ <2eb2b80e-8650-46cf-9d8f-6dd6a884558a@denx.de>
+ <eb3a2581-efc6-40c3-a7ea-551865017d40@foss.st.com>
+ <c28e39e3-64d8-4ed7-a2e5-48ee124ef8e3@denx.de>
+ <07d54026-5d2a-49a3-9211-bfc6e62afec3@foss.st.com>
+ <0a37659a-1c5e-4bff-ab8e-9c777c0520d5@denx.de>
+Content-Language: en-US
+From: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
+In-Reply-To: <0a37659a-1c5e-4bff-ab8e-9c777c0520d5@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-28_10,2024-05-28_01,2024-05-17_01
 
-On Tue May 28, 2024 at 4:26 PM EEST, Jarkko Sakkinen wrote:
-> On Tue May 28, 2024 at 3:37 PM EEST, Stefan Berger wrote:
-> >      Signature Value:
-> >          30:45:02:21:00:d9:d7:64:ba:5d:03:07:ee:20:a0:12:16:46:
-> >          31:e6:8e:66:0c:17:0d:74:07:87:58:5a:13:fc:14:62:98:9a:
-> >          99:02:20:59:ff:29:9c:52:b9:0a:35:3c:4b:03:bb:47:0e:c8:
-> >          3e:2d:cb:3e:1c:d3:51:88:91:b1:40:e3:03:86:1b:2a:e8
-> >
-> > 30:45 =3D> sequence containing 69 bytes
-> >    02:21: =3D> first coordinate with 0x21 bytes
-> >      00:d9 =3D> 0x21 bytes of ASN.1 integer with leading 0 to make the=
-=20
-> > following 0x20-byte integer a positive number (its most significant bit=
-=20
-> > is set).
-> >    02:20: =3D> int with 0x20 bytes
-> >     ...
->
-> This actually helped me located the bug in my code: I had 32 bytes for
-> the first one, with no leading zero. I.e. total length was off-by-one.
->
-> So I'll just extend either or both based on msb?=20
 
-Actually I use a patch that I made for early version:
 
-https://lore.kernel.org/linux-integrity/20240521152659.26438-3-jarkko@kerne=
-l.org/
+On 5/21/24 12:27, Marek Vasut wrote:
+> On 5/17/24 5:39 PM, Gatien CHEVALLIER wrote:
+> 
+> Hi,
+> 
+>>> Possibly. I use script as init which contains basically #!/bin/sh , 
+>>> mount of a few filesystems like dev, proc, sys, and then the pm_test 
+>>> sequence to avoid wasting time booting full userspace.
+>>>
+>> Ok,
+>>
+>> The strangest thing is not being to enable the clock, maybe there's
+>> something on the clock driver side. Tracking clock enable/disable
+>> may lead to something.
+> 
+> I suspect the problem is that rng_read and runtime suspend/resume can 
+> run in parallel, that's why this problem occurs.
+> 
 
-BR, Jarkko
+Hum, this looks strange... This would need to be confirmed in your
+use case. That would mean that flags aren't synced at the entry of these
+functions?
+
+>>>> FYI, I have been running your script with (echo devices > 
+>>>> /sys/power/pm_test) for 5 hours now and haven't been able to 
+>>>> reproduce the issue.
+>>>
+>>> Maybe the 'devices' test is not enough and the deeper pm_test states 
+>>> have some sort of impact ?
+>>>
+>>
+>> Maybe, I don't have the knowledge to confirm or invalidate this.
+>> Tasks should be frozen before drivers are put to sleep so my instinct
+>> would say no but you can't take it for granted :)
+> 
+> Could it be the kernel that requires randomness ?
+
+That can be confirmed by adding traces to the entry point in random.c.
+Maybe activating CONFIG_WARN_ALL_UNSEEDED_RANDOM will help investigate
+this. It will add verbosity if crng isn't ready.
+
+Or maybe try calling directely rng_is_initialized() to see if the crng
+is ready when your issue occurs.
+
+Best regards,
+Gatien
 
