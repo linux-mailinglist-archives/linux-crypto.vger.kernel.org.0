@@ -1,79 +1,79 @@
-Return-Path: <linux-crypto+bounces-4458-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4461-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 491DB8D1DEA
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 16:07:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFE338D1DFD
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 16:09:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 971ACB2176C
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 14:07:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F1051F22277
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 May 2024 14:09:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C62916F830;
-	Tue, 28 May 2024 14:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814C916F8E7;
+	Tue, 28 May 2024 14:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="ebzQdQu2"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="iMdtq39P"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273EC16F293;
-	Tue, 28 May 2024 14:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9161D16F287;
+	Tue, 28 May 2024 14:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716905239; cv=none; b=Vay56XLpePoS/bmY4zMtayJavlCIs0ak3j0CGWtjgtqwj0nYQkA5N+6PZAP7FUToR++XtFiLvywr5WV5lA81MHx5KkpQgojirRTyIAvUIGZfgQnlXqrhdPTMfPal2u2WxnNs2Lbzvpkp2/NCNDfPWz9ZR8CCl+33OQfmGOgo8nI=
+	t=1716905314; cv=none; b=IeZN2rTtCYIDW7L1gzd5W/eJLWkLjXFrBDDwvJ2KC3act7Py8Q+55c3DCwioGwkpiq8Tm18bFMoQcMz1SI+w+8si6NeXOcOk7rZ+ZrCSuEnzey29wYE77ye3QlVzcKEC7sE+sY3W9urUYN0fyhccPuy1bFt/DNyxZ+T6bdFI/BQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716905239; c=relaxed/simple;
-	bh=SneKdd7y8z3fUGaVNMnWjH1Q1X33sbSk6/9UWXmudtI=;
+	s=arc-20240116; t=1716905314; c=relaxed/simple;
+	bh=0kYRkuoifz238hYaa7+VBTksrIRPb0Qrje3MA74G5/Q=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RZRITIvTIR0wAZCzxMNjB6XDDbL/+iQLHfRBZ6QZegYqXmWUileBY9Q7Qb8cZdVm5+hPxOf1Bd50Qhc933txI/BubxJViQ/HsHTebjTXxu9UGe9weXfFXaDQmkVT+1OJvjEoo75uvij88HMT5wQKb80Tb+UrCe67E1FkEW9hcR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=ebzQdQu2; arc=none smtp.client-ip=185.132.182.106
+	 MIME-Version:Content-Type; b=WEOy97NY6KGIVwo1rh83q8pS1xtw5LxIzfFWTcta28Zylh12wT85ECcRXchSQgckHZSkuWkqpS0RnaPuEiRDJW74Y2oGMyqXhP2a3sS/6IvolWoXR2fyyv0MJYwMKzwR1qSNMIVvsfRzl09pEOmzKMTCIvMO/7J+JnBCSZjQO2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=iMdtq39P; arc=none smtp.client-ip=91.207.212.93
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44SDcOdO029891;
-	Tue, 28 May 2024 16:06:55 +0200
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44SDhLnC025707;
+	Tue, 28 May 2024 16:08:05 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=selector1; bh=
-	v7E8OMWYxR1Y6IK0L9YNl8ouxqDGEKTc3SeFud18MwE=; b=ebzQdQu2CehgUyU7
-	I6S/9JAO5LGTr9OHe4jtdL+pmGJiYoVdjU9sYsHGSd47FJUDB7xpND8fBtIUIqPi
-	98eZemtcvN2KrARhVtZwZYjNylqZIlEGu5phIoF35Lq/YKmLb1OScRgORu2w1bOU
-	G6+MpFfSMJq4Eib0cC4JnNXzUuuEhwPDuutMOLg0HN+tQbjAiAfpHFsARSPoxDOx
-	kv4gaEpI4/jsdbEseiKLinhpRsVzbXDwTPAPQFSaU7HhN0AAryLJWX7DCsO9lhrz
-	rKgy6yqKm4T6CeekMUSUQA3O1yS+k4W4lhBwUpE+BtK6ffW1GAGJUhDwQAoV2aAW
-	Pe+WtA==
+	WID1Xn8lAVeZgvgjfAvIZ5toir+39YNbyOYV1Sn5tIE=; b=iMdtq39PTNMpN5q0
+	qF5bJ4MgHOGVhw1mZ69E37DDykQPYq78VRyRC8xOcDTIiHo8t1p5l7oZahTlfk0f
+	62z7DDATzMDcsBvM9BD7OGFShvez3iYvQr5XabiKWFIxf1f0351qZxdZyFDmvnxd
+	GoPFlJ3hA3qQASc8S351Qr8UAwzmTx6IN8L35oG2mTJ8HBYVxzGT1rhCD04nT8Q3
+	Un5yiNA+05t0WBvnKJiWdURvtWfMNoYRiQhfDHpDPnRX1HTJLWWgH8tk29MRAEMF
+	ZUoMTJzQW5S2qMI0c3XwQT+lqG3Z0Ree23XiH4o8uAVgvMLxRZfRL4i2crNBTggv
+	eKlDiQ==
 Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3yb9yjcf3q-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3yb9yjuyq7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 28 May 2024 16:06:55 +0200 (MEST)
+	Tue, 28 May 2024 16:08:05 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D84A840048;
-	Tue, 28 May 2024 16:06:50 +0200 (CEST)
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 9A0824004B;
+	Tue, 28 May 2024 16:08:01 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1D58D21BF45;
-	Tue, 28 May 2024 16:06:13 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D470621BF47;
+	Tue, 28 May 2024 16:07:23 +0200 (CEST)
 Received: from localhost (10.48.86.103) by SHFDAG1NODE3.st.com (10.75.129.71)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 28 May
- 2024 16:06:12 +0200
+ 2024 16:07:23 +0200
 From: Maxime MERE <maxime.mere@foss.st.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller"
 	<davem@davemloft.net>,
         Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "Alexandre Torgue" <alexandre.torgue@foss.st.com>
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>
 CC: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        "Rob
- Herring" <robh@kernel.org>, <linux-crypto@vger.kernel.org>,
+        Rob
+ Herring <robh@kernel.org>, <linux-crypto@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>,
-        =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@st.com>
-Subject: [PATCH v3 3/4] crypto: stm32/cryp - add CRYPTO_ALG_KERN_DRIVER_ONLY flag
-Date: Tue, 28 May 2024 16:05:47 +0200
-Message-ID: <20240528140548.1632562-4-maxime.mere@foss.st.com>
+        =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Subject: [PATCH v3 4/4] crypto: stm32/cryp - call finalize with bh disabled
+Date: Tue, 28 May 2024 16:05:48 +0200
+Message-ID: <20240528140548.1632562-5-maxime.mere@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240528140548.1632562-1-maxime.mere@foss.st.com>
 References: <20240528140548.1632562-1-maxime.mere@foss.st.com>
@@ -93,98 +93,40 @@ X-Proofpoint-Virus-Version: vendor=baseguard
 
 From: Maxime Méré <maxime.mere@foss.st.com>
 
-This flag is needed to make the driver visible from openssl and cryptodev.
+The finalize operation in interrupt mode produce a produces a spinlock
+recursion warning. The reason is the fact that BH must be disabled
+during this process.
 
-Signed-off-by: Maxime Méré <maxime.mere@st.com>
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
 ---
- drivers/crypto/stm32/stm32-cryp.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/crypto/stm32/stm32-cryp.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index b0d278421461..445276b848ed 100644
+index 445276b848ed..937f6dab8955 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -2283,7 +2283,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ecb(aes)",
- 		.base.cra_driver_name	= "stm32-ecb-aes",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= AES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2305,7 +2305,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "cbc(aes)",
- 		.base.cra_driver_name	= "stm32-cbc-aes",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= AES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2328,7 +2328,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ctr(aes)",
- 		.base.cra_driver_name	= "stm32-ctr-aes",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= 1,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2351,7 +2351,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ecb(des)",
- 		.base.cra_driver_name	= "stm32-ecb-des",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2373,7 +2373,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "cbc(des)",
- 		.base.cra_driver_name	= "stm32-cbc-des",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2396,7 +2396,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ecb(des3_ede)",
- 		.base.cra_driver_name	= "stm32-ecb-des3",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2418,7 +2418,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "cbc(des3_ede)",
- 		.base.cra_driver_name	= "stm32-cbc-des3",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2452,7 +2452,7 @@ static struct aead_engine_alg aead_algs[] = {
- 		.cra_name		= "gcm(aes)",
- 		.cra_driver_name	= "stm32-gcm-aes",
- 		.cra_priority		= 300,
--		.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.cra_blocksize		= 1,
- 		.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
- 		.cra_alignmask		= 0,
-@@ -2475,7 +2475,7 @@ static struct aead_engine_alg aead_algs[] = {
- 		.cra_name		= "ccm(aes)",
- 		.cra_driver_name	= "stm32-ccm-aes",
- 		.cra_priority		= 300,
--		.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.cra_blocksize		= 1,
- 		.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
- 		.cra_alignmask		= 0,
+@@ -11,6 +11,7 @@
+ #include <crypto/internal/des.h>
+ #include <crypto/internal/skcipher.h>
+ #include <crypto/scatterwalk.h>
++#include <linux/bottom_half.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
+@@ -2203,8 +2204,11 @@ static irqreturn_t stm32_cryp_irq_thread(int irq, void *arg)
+ 		it_mask &= ~IMSCR_OUT;
+ 	stm32_cryp_write(cryp, cryp->caps->imsc, it_mask);
+ 
+-	if (!cryp->payload_in && !cryp->header_in && !cryp->payload_out)
++	if (!cryp->payload_in && !cryp->header_in && !cryp->payload_out) {
++		local_bh_disable();
+ 		stm32_cryp_finish_req(cryp, 0);
++		local_bh_enable();
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
 -- 
 2.25.1
 
