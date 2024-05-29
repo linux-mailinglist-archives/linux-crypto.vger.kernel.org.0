@@ -1,151 +1,117 @@
-Return-Path: <linux-crypto+bounces-4509-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4512-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E16258D3F43
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 May 2024 22:02:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 203708D41B1
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 May 2024 01:09:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 318C1B23A44
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 May 2024 20:02:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80038284B9D
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 May 2024 23:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D3E1C68B1;
-	Wed, 29 May 2024 20:02:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803DA20010E;
+	Wed, 29 May 2024 23:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g/4AH4pV"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nGK0s54c"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2921C68A6
-	for <linux-crypto@vger.kernel.org>; Wed, 29 May 2024 20:02:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AFF17B4F8;
+	Wed, 29 May 2024 23:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717012929; cv=none; b=LfxqcT/m3+okmUmj6Wbo4EQ1uuzCTsjmjjDzMFiz3WvC5lMhB+9J7ovdBRh1je8ZBbPF4Ubrxu95xcDgIu1+/ERzgFbLwr8LslS/QFiJf+zukPwwAc7xN5jEPGoYEp7RUk0uqDaa1zaTlysBdHSgMYL76yWpsDtJFB6AbEuSaB0=
+	t=1717024127; cv=none; b=dOMjPX11fQvcKNCn5iaVIsgHyWxXxg7UyXxZAicGFubQytrijcyqsp8ATpopvKd4qa4vVa97v6Mj+UTk6n9cn+bb+4bVU9QIjVNJEcaqm1K8WKBwgShTFcPR67gJwngSCVmieNlyb2Uur9oNjk6LwQsCS9Elh0B224zDeZ5i9rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717012929; c=relaxed/simple;
-	bh=2hRlvy/RjWARtjo6oSUZO1Wu+DhCOpznFy5U6Li2iQs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=s4EcSlqPFfwn4Inx2nkHXbpUisqsKNb96b27uWouif3DzdVP3cmIe0c3aq+uprwlyDOznIfhQYQaK/TnxWW+di7KKuaYs2HIYt6+GxRmnY9XTpG3+IabAK+uIxj0oJoH1oB8RgM0XFuxYMZobfZUGJ7GwqmsoGxycuJV97JrcP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g/4AH4pV; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2bde0491546so82882a91.0
-        for <linux-crypto@vger.kernel.org>; Wed, 29 May 2024 13:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717012928; x=1717617728; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HB9I1KtyGLGWJZbJtvz+lEDv77A0FrVSDAPAJPLn2YA=;
-        b=g/4AH4pV/aPs8Fi1izGX2UjmiJSogqAia1/9khIPnH/nxiiWx3MQ/v1J+Mv4+5qd5b
-         /hJexKc7QERUqBAX6n0CgWdKsfZ7sWAR5FRNQTiMjLBuQYa21e9rH+FVukgLnnw+HuDr
-         4vtaev8QL85qecm1Hswu7m5uEfxl3TiJBepo/BD95KssSKctgleoC+a3JjQB0oMyZUmk
-         j4f3SmJ7CibudtSrLj5H7wl9V7jkccHoxCeBi2/ivKieBi9BGQnwtv7OJBjMhhrMXzWZ
-         LiafxYjZmN40fr7PRGKmq0O4eFptTJBx3RAKhQpujW5LKADYLX44RuxvvlapzzlcAHPR
-         zaQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717012928; x=1717617728;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HB9I1KtyGLGWJZbJtvz+lEDv77A0FrVSDAPAJPLn2YA=;
-        b=EFcjl9NT8eqx8ICrOpl4QSMC11sJ+6+nhkGpCgjkZP4YtolIFZqbLDWQmWBj5wPpPs
-         XhPZLPknZZJSsQKGnl09N1IEqr1O5NC4BIHrwg/rlVwObJgQUKJAIPypC1VINisZldR0
-         uW902CKzAQlJ1u/EzubOK/L0sQ3lt2QVaRIc20ZtE0vZ5HGYJF3OItF8L2EyGVN/qzBm
-         MMfub/OP08ODDNgbhtusP7XZXm5a0g1ZWQ30ytrPxd8geoRVBI0zIXkD5YVkerYYZVob
-         s85gVMhwWtJHDtmHc0ah8BZj+vF8ftN9TyP5n3ZOhiaZCPQoFu3xNMyRlNKRon72qp3H
-         eCfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUo4631D/0hB17rBpIOKDo3Oifj54ad220UdCM/cCFhxcnVuhw6/No36q/8MPl5MhEVhVwswJ4Eai8UhAAMYEHF4NsvHLhsi+7JoAX5
-X-Gm-Message-State: AOJu0Yzl26WHRzQNV51k1OzLP/wjjjaLA9u00TbP+eYD1hNVaIU6sWup
-	qWUAsTGNxQqbiAzab9GeUjdqrb1He65ckKX+tPAQehfOryTeDiaYaaQ2kdg2F46htoVUfXS4r3D
-	Mdg==
-X-Google-Smtp-Source: AGHT+IGnVjGAGUdS+QWuXtFD6JYVk48kHHGOYEmxpJY5fF1LGZtFCwusKyw4nxPICVEtyh7y/Kks5wf6ja0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:1258:b0:2b8:9aac:2b04 with SMTP id
- 98e67ed59e1d1-2c1abc659ddmr252a91.5.1717012927588; Wed, 29 May 2024 13:02:07
- -0700 (PDT)
-Date: Wed, 29 May 2024 13:02:06 -0700
-In-Reply-To: <CABgObfajCDkbDbK6-QyZABGTh=5rmE5q3ifvHfZD1A2Z+u0v3A@mail.gmail.com>
+	s=arc-20240116; t=1717024127; c=relaxed/simple;
+	bh=qqaqxixml0DZHaHq5au0Y/z6Z7gDIpLbU8xm2/jNyiQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S4xImnTvzAlmJwxwiN6I7T52VC9zcmJyYgb2as6Fztq/PcxjOI5gE/bnIGQaCmG1qRKRF62ONLHAT6QE2HRsBgoGYUIhLGGQqg35IFqUXPRnErGuKk+fCIfQ5qOqUUuusd2LIPa47stLK0t5GVPn2XweLtUGy5tx81KDvCk54Gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nGK0s54c; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44TMt8sS015064;
+	Wed, 29 May 2024 23:08:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc :
+ content-transfer-encoding : date : from : message-id : mime-version :
+ subject : to; s=pp1; bh=oTnFNl/RFWIcMBoViFfGUFJ0EOULpVLfxgPZ5X7QdL8=;
+ b=nGK0s54cLh/itnJYRHwdmOChZQLvFqPuIfV+Uoc+HAJ/rH1Zwhy4FR4xP21D+qKHK956
+ Hh2VkPO4vs8aDP/zDO7gBxpCbnS/z52gk1gLn71dISDZ0h1RUNiYTPiccj5e2mTkLiID
+ 0ZT2K4IrVmzRp69PHVRnpUry9XKMD4Ne4vcp0LQiTf5YBTfZuAVnxbqAalElRsP5BKV/
+ V0c1XZH7Quym5pNRV/BrvBSYVwVQ5sVIhzmV8oIMWBZH4UMQF1tIDTKd2tFESSyT/72D
+ T8WJGxRWh+XkNs6ZuVqB3hy+qEu+QAxe/MeLLHe+vt/mMbgYOPRcEcp7d9bE/urlvkwI 9Q== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3yedhsr0np-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 May 2024 23:08:35 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 44TLJs1F009841;
+	Wed, 29 May 2024 23:08:34 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ydpbbpkf1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 May 2024 23:08:34 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 44TN8VoU16056916
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 29 May 2024 23:08:34 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D57B558055;
+	Wed, 29 May 2024 23:08:31 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1A09058056;
+	Wed, 29 May 2024 23:08:31 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 29 May 2024 23:08:30 +0000 (GMT)
+From: Stefan Berger <stefanb@linux.ibm.com>
+To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, lukas@wunner.de, jarkko@kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH 0/2] ecdsa: Use ecc_digits_from_bytes to simplify code
+Date: Wed, 29 May 2024 19:08:25 -0400
+Message-ID: <20240529230827.379111-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240501085210.2213060-1-michael.roth@amd.com>
- <20240501085210.2213060-10-michael.roth@amd.com> <84e8460d-f8e7-46d7-a274-90ea7aec2203@linux.intel.com>
- <CABgObfaXmMUYHEuK+D+2E9pybKMJqGZsKB033X1aOSQHSEqqVA@mail.gmail.com>
- <7d6a4320-89f5-48ce-95ff-54b00e7e9597@linux.intel.com> <rczrxq3lhqguarwh4cwxwa35j5riiagbilcw32oaxd7aqpyaq7@6bqrqn6ontba>
- <7da9c4a3-8597-44aa-a7ad-cc2bd2a85024@linux.intel.com> <CABgObfajCDkbDbK6-QyZABGTh=5rmE5q3ifvHfZD1A2Z+u0v3A@mail.gmail.com>
-Message-ID: <ZleJvmCawKqmpFIa@google.com>
-Subject: Re: [PATCH v15 09/20] KVM: SEV: Add support to handle MSR based Page
- State Change VMGEXIT
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Binbin Wu <binbin.wu@linux.intel.com>, Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, 
-	linux-coco@lists.linux.dev, linux-mm@kvack.org, linux-crypto@vger.kernel.org, 
-	x86@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, 
-	mingo@redhat.com, jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, 
-	ardb@kernel.org, vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
-	Brijesh Singh <brijesh.singh@amd.com>, Isaku Yamahata <isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: chh-x652G66ubPkPQruPeqE_g9_7uw5M
+X-Proofpoint-ORIG-GUID: chh-x652G66ubPkPQruPeqE_g9_7uw5M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-29_16,2024-05-28_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ phishscore=0 mlxlogscore=738 spamscore=0 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2405010000 definitions=main-2405290166
 
-On Tue, May 28, 2024, Paolo Bonzini wrote:
-> On Mon, May 27, 2024 at 2:26=E2=80=AFPM Binbin Wu <binbin.wu@linux.intel.=
-com> wrote:
-> > > It seems like TDX should be able to do something similar by limiting =
-the
-> > > size of each KVM_HC_MAP_GPA_RANGE to TDX_MAP_GPA_MAX_LEN, and then
-> > > returning TDG_VP_VMCALL_RETRY to guest if the original size was great=
-er
-> > > than TDX_MAP_GPA_MAX_LEN. But at that point you're effectively done w=
-ith
-> > > the entire request and can return to guest, so it actually seems a li=
-ttle
-> > > more straightforward than the SNP case above. E.g. TDX has a 1:1 mapp=
-ing
-> > > between TDG_VP_VMCALL_MAP_GPA and KVM_HC_MAP_GPA_RANGE events. (And e=
-ven
-> > > similar names :))
-> > >
-> > > So doesn't seem like there's a good reason to expose any of these
-> > > throttling details to userspace,
->=20
-> I think userspace should never be worried about throttling. I would
-> say it's up to the guest to split the GPA into multiple ranges,
+Simplify two functions that were using temporary byte arrays for
+converting too-short input byte arrays to digits. Use ecc_digits_from_bytes
+since this function can now handle an input byte array that provides
+less bytes than what a coordinate of a curve requires - the function
+provides zeros for the missing (leading) bytes.
 
-I agree in principle, but in practice I can understand not wanting to split=
- up
-the conversion in the guest due to the additional overhead of the world swi=
-tches.
+See: c6ab5c915da4 ("crypto: ecc - Prevent ecc_digits_from_bytes from reading too many bytes")
 
->  but that's not how arch/x86/coco/tdx/tdx.c is implemented so instead we =
-can
->  do the split in KVM instead. It can be a module parameter or VM attribut=
-e,
->  establishing the size that will be processed in a single TDVMCALL.
+Regards,
+   Stefan
 
-Is it just interrupts that are problematic for conversions?  I assume so, b=
-ecause
-I can't think of anything else where telling the guest to retry would be ap=
-propriate
-and useful.
+Stefan Berger (2):
+  crypto: ecdsa - Use ecc_digits_from_bytes to create hash digits array
+  crypto: ecdsa - Use ecc_digits_from_bytes to convert signature
 
-If so, KVM shouldn't need to unconditionally restrict the size for a single
-TDVMCALL, KVM just needs to ensure interrupts are handled soonish.  To do t=
-hat,
-KVM could use a much smaller chunk size, e.g. 64KiB (completely made up num=
-ber),
-and keep processing the TDVMCALL as long as there is no interrupt pending.
-Hopefully that would obviate the need for a tunable.
+ crypto/ecdsa.c | 29 ++++++-----------------------
+ 1 file changed, 6 insertions(+), 23 deletions(-)
+
+-- 
+2.43.0
+
 
