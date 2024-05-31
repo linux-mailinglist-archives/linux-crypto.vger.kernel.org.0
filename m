@@ -1,148 +1,124 @@
-Return-Path: <linux-crypto+bounces-4544-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4565-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1442F8D57B8
-	for <lists+linux-crypto@lfdr.de>; Fri, 31 May 2024 03:23:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFF78D588C
+	for <lists+linux-crypto@lfdr.de>; Fri, 31 May 2024 04:17:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30DEF1C242E6
-	for <lists+linux-crypto@lfdr.de>; Fri, 31 May 2024 01:23:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42F781F25A75
+	for <lists+linux-crypto@lfdr.de>; Fri, 31 May 2024 02:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF07C156;
-	Fri, 31 May 2024 01:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24975757FD;
+	Fri, 31 May 2024 02:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gctc3cpe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hkaByAMr"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16AE7483;
-	Fri, 31 May 2024 01:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74E84C6D;
+	Fri, 31 May 2024 02:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717118584; cv=none; b=L/vNuUVWoEnZpV795cM53uOwssywO8YdZCv9an+kdtZEKVcNelFQwAlAziTIHXUqIcGbgtMafG1logrSsLYNV0E65dehXrdkcPPhCc9T8ob/vtl65VbGi7f/4CxDQxLD9aU8wGkT/4FI4zpBBio0p3CDeWSkY6g7bv50yioAiZk=
+	t=1717121819; cv=none; b=htacjHei9MURWTIIl7GEQgGhabsO7UwBiRSP03Ob9UfHiy4guG+5cv0UB81LpWmvchkM8puk0bPWZheogiXb0Xgu+kkrONa3kYG2zabNnQLtXBpRxpSQLBZYk6j2Kwmi7uNX54PwjMPcSoz/HfT3/rgh6YVE9u2Fc+tuld+aWgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717118584; c=relaxed/simple;
-	bh=nlJxlGmynhU7KREnzEbXx6DTgU2f7pwNSzsU+KcONRc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jR7EnXNoRPR3czusByXxDheyzstM9xfAkEp7KnumzPN2PjcRW7FKGms5YQYEJQQFq0QZ4oQ5e8ARupFcRjSOrV9aVjtCxENo0gQeVEMN0ZJlamrfTzCF1UcCkt42Mxyiw56H5efDptVfxnMe4PZgzBNP0A3H03slMHxxlcNy0JQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gctc3cpe; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717118582; x=1748654582;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nlJxlGmynhU7KREnzEbXx6DTgU2f7pwNSzsU+KcONRc=;
-  b=Gctc3cpe6JcGNm4yd1wve0ZwGc6ksMgZ1q8nMoN7/0NUvyjdcck0mcLF
-   QTdHd+EQDKNNByUYC7oPHSPwQgcNUtrWLZJkHAs+UlaiM6gUJeQKa6n9i
-   8ONn8NxzXPpu/ljg+CLJhcg76zJE+BnyIKXOgwQOl5UKIQz/yu4ex3PCa
-   kQkQfxQtMkpHLJSOiGsgvcrOIsuARUMoA9HWTMrWknBoK4hCAduEoL4c3
-   q03g9mNhHoEunL/7m+oqM6JXuTbVuzYxRwwDwmMDpODpzOi2FpYTPkw2e
-   GBCii+P3pJsFXDhz+OXfG3cgCmzfMAxJIUHmJ/0wdST5VUxEbqEgg9veR
-   Q==;
-X-CSE-ConnectionGUID: AffI23o3RU2EH1pTXQsM0g==
-X-CSE-MsgGUID: aQsD+GwnRwWG+DzhioaLqQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="13813789"
-X-IronPort-AV: E=Sophos;i="6.08,202,1712646000"; 
-   d="scan'208";a="13813789"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2024 18:23:02 -0700
-X-CSE-ConnectionGUID: JYIBlf2GTXWPxN7j2kb+Tw==
-X-CSE-MsgGUID: 0jVmIHa9Re2o9ypgdTRyTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,202,1712646000"; 
-   d="scan'208";a="67200458"
-Received: from unknown (HELO [10.238.8.173]) ([10.238.8.173])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2024 18:22:53 -0700
-Message-ID: <3999aadf-92a8-43f9-8d9d-84aa47e7d1ae@linux.intel.com>
-Date: Fri, 31 May 2024 09:22:51 +0800
+	s=arc-20240116; t=1717121819; c=relaxed/simple;
+	bh=P5d/0b92iEEWWrKJQ67tqG3rp+vdYxJZiUvaostorGY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nS65dhGE3Ncm1XPRHuXXGaRIeFSt4C+dVJhEsg2txL+S8/pu0kiz8Brmw4B4liC6jxwpnyz49+88sG0hZS9G+yHYBxSfn/fVhWsz9OY5XuBs8C6TAkx34n4Z/AmGJcRSHVW6n0UwUhibXhknCK7Z4q9MgbEYdo2np0Ij7mpBQlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hkaByAMr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E9C8C2BBFC;
+	Fri, 31 May 2024 02:16:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717121819;
+	bh=P5d/0b92iEEWWrKJQ67tqG3rp+vdYxJZiUvaostorGY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hkaByAMrS7s3R8mRhw3b+e4esv4ruad8pwZal97P7yPssH0JV1AZh/jIKAQTk6Tu+
+	 JS1Bcf42qlwozPi845OchFKmaFQBRLqLd5IbpLo33CwKwmKGGFe4caWgrY+BF6I3Oo
+	 lQvzd7s68N16zgT+eX1feCQkUFxpflo7srOsfgGO5Nuu3GlQXMIjaZH3HK4tB4440c
+	 GoqHWACn0iwEfylTG+VXzj9wuwAN+hfKFtYP4YBMVwebVRc6/hx6mLpjLqG0qGlEEW
+	 X+Fvudlzs2OvFvkw16SPZ8f9OE+vPr6XP+zhRE/XXACoJ4CmeoxbHv5oyuab8yZeqJ
+	 3rAnt80rtWJDg==
+Date: Thu, 30 May 2024 19:16:56 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Ross Philipson <ross.philipson@oracle.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
+	linux-efi@vger.kernel.org, iommu@lists.linux-foundation.org,
+	dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+	ardb@kernel.org, mjg59@srcf.ucam.org,
+	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
+	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
+	nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
+	davem@davemloft.net, corbet@lwn.net, ebiederm@xmission.com,
+	dwmw2@infradead.org, baolu.lu@linux.intel.com,
+	kanth.ghatraju@oracle.com, andrew.cooper3@citrix.com,
+	trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH v9 06/19] x86: Add early SHA-1 support for Secure Launch
+ early measurements
+Message-ID: <20240531021656.GA1502@sol.localdomain>
+References: <20240531010331.134441-1-ross.philipson@oracle.com>
+ <20240531010331.134441-7-ross.philipson@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 09/20] KVM: SEV: Add support to handle MSR based Page
- State Change VMGEXIT
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
- linux-coco@lists.linux.dev, linux-mm@kvack.org,
- linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
- thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
- vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
- dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
- peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
- rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
- vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
- tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
- alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
- nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com,
- Brijesh Singh <brijesh.singh@amd.com>,
- Isaku Yamahata <isaku.yamahata@intel.com>
-References: <20240501085210.2213060-1-michael.roth@amd.com>
- <20240501085210.2213060-10-michael.roth@amd.com>
- <84e8460d-f8e7-46d7-a274-90ea7aec2203@linux.intel.com>
- <CABgObfaXmMUYHEuK+D+2E9pybKMJqGZsKB033X1aOSQHSEqqVA@mail.gmail.com>
- <7d6a4320-89f5-48ce-95ff-54b00e7e9597@linux.intel.com>
- <rczrxq3lhqguarwh4cwxwa35j5riiagbilcw32oaxd7aqpyaq7@6bqrqn6ontba>
- <7da9c4a3-8597-44aa-a7ad-cc2bd2a85024@linux.intel.com>
- <CABgObfajCDkbDbK6-QyZABGTh=5rmE5q3ifvHfZD1A2Z+u0v3A@mail.gmail.com>
- <ZleJvmCawKqmpFIa@google.com>
-Content-Language: en-US
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZleJvmCawKqmpFIa@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240531010331.134441-7-ross.philipson@oracle.com>
 
+On Thu, May 30, 2024 at 06:03:18PM -0700, Ross Philipson wrote:
+> From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
+> 
+> For better or worse, Secure Launch needs SHA-1 and SHA-256. The
+> choice of hashes used lie with the platform firmware, not with
+> software, and is often outside of the users control.
+> 
+> Even if we'd prefer to use SHA-256-only, if firmware elected to start us
+> with the SHA-1 and SHA-256 backs active, we still need SHA-1 to parse
+> the TPM event log thus far, and deliberately cap the SHA-1 PCRs in order
+> to safely use SHA-256 for everything else.
+> 
+> The SHA-1 code here has its origins in the code from the main kernel:
+> 
+> commit c4d5b9ffa31f ("crypto: sha1 - implement base layer for SHA-1")
+> 
+> A modified version of this code was introduced to the lib/crypto/sha1.c
+> to bring it in line with the SHA-256 code and allow it to be pulled into the
+> setup kernel in the same manner as SHA-256 is.
+> 
+> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
 
+Thanks.  This explanation doesn't seem to have made it into the actual code or
+documentation.  Can you please get it into a more permanent location?
 
-On 5/30/2024 4:02 AM, Sean Christopherson wrote:
-> On Tue, May 28, 2024, Paolo Bonzini wrote:
->> On Mon, May 27, 2024 at 2:26 PM Binbin Wu <binbin.wu@linux.intel.com> wrote:
->>>> It seems like TDX should be able to do something similar by limiting the
->>>> size of each KVM_HC_MAP_GPA_RANGE to TDX_MAP_GPA_MAX_LEN, and then
->>>> returning TDG_VP_VMCALL_RETRY to guest if the original size was greater
->>>> than TDX_MAP_GPA_MAX_LEN. But at that point you're effectively done with
->>>> the entire request and can return to guest, so it actually seems a little
->>>> more straightforward than the SNP case above. E.g. TDX has a 1:1 mapping
->>>> between TDG_VP_VMCALL_MAP_GPA and KVM_HC_MAP_GPA_RANGE events. (And even
->>>> similar names :))
->>>>
->>>> So doesn't seem like there's a good reason to expose any of these
->>>> throttling details to userspace,
->> I think userspace should never be worried about throttling. I would
->> say it's up to the guest to split the GPA into multiple ranges,
-> I agree in principle, but in practice I can understand not wanting to split up
-> the conversion in the guest due to the additional overhead of the world switches.
->
->>   but that's not how arch/x86/coco/tdx/tdx.c is implemented so instead we can
->>   do the split in KVM instead. It can be a module parameter or VM attribute,
->>   establishing the size that will be processed in a single TDVMCALL.
-> Is it just interrupts that are problematic for conversions?  I assume so, because
-> I can't think of anything else where telling the guest to retry would be appropriate
-> and useful.
+Also, can you point to where the "deliberately cap the SHA-1 PCRs" thing happens
+in the code?
 
-The concern was the lockup detection in guest.
+That paragraph is also phrased as a hypothetical, "Even if we'd prefer to use
+SHA-256-only".  That implies that you do not, in fact, prefer SHA-256 only.  Is
+that the case?  Sure, maybe there are situations where you *have* to use SHA-1,
+but why would you not at least *prefer* SHA-256?
 
->
-> If so, KVM shouldn't need to unconditionally restrict the size for a single
-> TDVMCALL, KVM just needs to ensure interrupts are handled soonish.  To do that,
-> KVM could use a much smaller chunk size, e.g. 64KiB (completely made up number),
-> and keep processing the TDVMCALL as long as there is no interrupt pending.
-> Hopefully that would obviate the need for a tunable.
+> /*
+>  * An implementation of SHA-1's compression function.  Don't use in new code!
+>  * You shouldn't be using SHA-1, and even if you *have* to use SHA-1, this isn't
+>  * the correct way to hash something with SHA-1 (use crypto_shash instead).
+>  */
+> #define SHA1_DIGEST_WORDS	(SHA1_DIGEST_SIZE / 4)
+> #define SHA1_WORKSPACE_WORDS	16
+> void sha1_init(__u32 *buf);
+> void sha1_transform(__u32 *digest, const char *data, __u32 *W);
+>+void sha1(const u8 *data, unsigned int len, u8 *out);
 
-Thanks for the suggestion.
-By this way, interrupt can be injected to guest in time and the lockup 
-detection should not be a problem.
+Also, the comment above needs to be updated.
 
-About the chunk size, if it is too small, it will increase the cost of 
-kernel/userspace context switches.
-Maybe 2MB?
+- Eric
 
