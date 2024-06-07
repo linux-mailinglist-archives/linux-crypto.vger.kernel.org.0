@@ -1,55 +1,55 @@
-Return-Path: <linux-crypto+bounces-4829-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4822-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ADD990061D
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:15:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA562900608
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:14:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 271DE1C216B8
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:15:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF4F1C219C1
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA0D19AD9E;
-	Fri,  7 Jun 2024 14:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A39199223;
+	Fri,  7 Jun 2024 14:13:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="u/kRXT23"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="CSlw4+Xg"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF44190672;
-	Fri,  7 Jun 2024 14:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B48197521;
+	Fri,  7 Jun 2024 14:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717769593; cv=none; b=OZmPgkc5zn87E3qGLVySktRaOSfkLwWVD8ElUu96R2THXNMjzSiQzzRlScNgoOwY0jjcQYtzUAtSc9Ys7+MmWfCuCBt+UYObfJvBrG9BxsDRWo+/yDG7L1dtvL3q2kUCRV2gDxS4c+BJ1lIRxqW1S22QZGZQXnHa2rt0GcZc4+k=
+	t=1717769589; cv=none; b=kUeb5+VSBavBRfNJSxj2/gVi+FDjP5DIikhFeWOHBv8qcTd5FExZZNAvIReckOBB5b7NdrgGKmWeCFOeAkxbgsnxD0QgSd3k6WJy/5AFWN8ZFn1FPcC1noK83095yUGx3Xfm0qm9PdMrUuivY9qaI2yVZMh/WfRPr8fjjwqDxpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717769593; c=relaxed/simple;
-	bh=j12ia4XX8VMgrIj/I5g+9bpm+MP/MwxyhKQrMLIFPoA=;
+	s=arc-20240116; t=1717769589; c=relaxed/simple;
+	bh=uNX8s62PbprtUTXwxPSHV8sKfMZeM/btiSjxQHaknFQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AGtwoY3NRmiefphvQLkB1WjzwTWjOzu2MbHuw72SeWJDxYJjZW85cm4GjyG6nhe+aaupXBMokucAYQ3kNxfY8Tpg7wQkO70YI1Uy2Ft9m/xok6iojxKIw8W3oSPdJKvXYNeec7tv5KT7rnvOvoj8BGp4zJ1JyycYx8vtpluSrgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=u/kRXT23; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=tL/vUiy4SSfGdhJTgXv3MPK+7VgE6l0qxjSSRzOG0egV1CSFWhQVelzklRHjv2Wc1cf4/OVdOt6tjf7VWQQsSpkVqJg0JLluNrdbVVkY2WlefkfnBJ4rBPOCi13NLLxiJjwKD+S8TkFVy77MnbMDxZGfxSSYI4/pSTDa4hr0vno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=CSlw4+Xg; arc=none smtp.client-ip=37.18.73.165
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id F13AD120003;
-	Fri,  7 Jun 2024 17:13:05 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru F13AD120003
+Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 89D13100031;
+	Fri,  7 Jun 2024 17:13:06 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 89D13100031
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1717769585;
-	bh=NCOKTVg0nWMYZZiioHHnALckHQGoR5CtX9QXQdy+RvQ=;
+	s=mail; t=1717769586;
+	bh=Rh3JfsszeFzuirlBwoJubdS+Ixn9+e7gJuttUmBiLyg=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=u/kRXT23NpWBqT116wooSJl+YuzShCARz05vJYcUm8x7rECuvrESztAFf/TO4zweU
-	 AmUS0JlvhgBJUoRoiin8jdjIVhPImli0wULfjXDeP4uvK7li3idIq8K3KM3l0iG8HU
-	 3o5KnjA8YsXiHxbRMkZ8uBXJReY1qUjJ+VSo9O0xteiZDLlymcQXWdsp5mAZ2VYg6t
-	 SSt1GLxWFF9w469bND0TqvO5fsdnxRH/jinnBvm8X0tPKVtGbRoJVcKxE+eYEqLBrr
-	 Gz/Nt+Xywf1L9Ab10AsVOyAfVgXSkVIqassxfUF4KNZHPdHJ9fwjZZ32bD7oqyIP+1
-	 GG3ykEQRn1qvw==
+	b=CSlw4+XgVmVY3KUxoWWI3b38s7UaaEjQuP7T/90KxFUoXqHPD9sbGmYbCZsVzJvwP
+	 lBUS6Rfdu6bbsM1OB74xGV6IhuVdEdmUECekdjSOpA7cJNEoNLTxK6O9F6mW8jv4Er
+	 TVN2/O9mYMXZNfAo5MbpHMfVKZtT8SvR5Qh4DiiI4Q9OlqC04zihnUgIBa3uR4/7iy
+	 7WtEXHDVinUjW8PceGDOn0z6W1JpqqvqnFIzVKDnZCGFHbl4HuSNvuKwW1ZYi57WM/
+	 hy5sXqRafjHe3SBpQ+7gGo/klPbA+UqGdGQSZtMjLc//1Y/PFIEYJksyygxKHIjNBg
+	 5RikhzsXt2nYw==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri,  7 Jun 2024 17:13:05 +0300 (MSK)
+	Fri,  7 Jun 2024 17:13:06 +0300 (MSK)
 Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -64,9 +64,9 @@ CC: <linux-crypto@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <kernel@salutedevices.com>, Alexey
  Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v8 14/23] drivers: crypto: meson: add support for G12-series
-Date: Fri, 7 Jun 2024 17:12:33 +0300
-Message-ID: <20240607141242.2616580-15-avromanov@salutedevices.com>
+Subject: [PATCH v8 15/23] drivers: crypto: meson: add support for AXG-series
+Date: Fri, 7 Jun 2024 17:12:34 +0300
+Message-ID: <20240607141242.2616580-16-avromanov@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240607141242.2616580-1-avromanov@salutedevices.com>
 References: <20240607141242.2616580-1-avromanov@salutedevices.com>
@@ -89,7 +89,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -105,30 +105,32 @@ Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
  1 file changed, 13 insertions(+)
 
 diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
-index 4acacd925a21..928751a6fc31 100644
+index 928751a6fc31..4275f467d1c6 100644
 --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
 +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
-@@ -286,11 +286,24 @@ static const struct meson_pdata meson_gxl_pdata = {
- 	.support_192bit_key = true,
+@@ -295,6 +295,15 @@ static const struct meson_pdata meson_g12a_pdata = {
+ 	.support_192bit_key = false,
  };
  
-+static const struct meson_pdata meson_g12a_pdata = {
++static const struct meson_pdata meson_axg_pdata = {
 +	.descs_reg = 0x0,
 +	.status_reg = 0x8,
-+	.setup_desc_cnt = 1,
++	.setup_desc_cnt = 3,
 +	.hasher_supported = true,
 +	.reverse_keyiv = true,
-+	.support_192bit_key = false,
++	.support_192bit_key = true,
 +};
 +
  static const struct of_device_id meson_crypto_of_match_table[] = {
  	{
  		.compatible = "amlogic,gxl-crypto",
- 		.data = &meson_gxl_pdata,
+@@ -304,6 +313,10 @@ static const struct of_device_id meson_crypto_of_match_table[] = {
+ 		.compatible = "amlogic,g12a-crypto",
+ 		.data = &meson_g12a_pdata,
  	},
 +	{
-+		.compatible = "amlogic,g12a-crypto",
-+		.data = &meson_g12a_pdata,
++		.compatible = "amlogic,axg-crypto",
++		.data = &meson_axg_pdata,
 +	},
  	{},
  };
