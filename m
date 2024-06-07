@@ -1,59 +1,59 @@
-Return-Path: <linux-crypto+bounces-4828-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4833-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE89B90061A
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:15:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAFA890062A
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:16:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2581FB25D40
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:15:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B3F51C21AC5
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE0E19AD66;
-	Fri,  7 Jun 2024 14:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC63819CD14;
+	Fri,  7 Jun 2024 14:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="XH878EIo"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="g1qq+7rm"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8129B199EA0;
-	Fri,  7 Jun 2024 14:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D75194A43;
+	Fri,  7 Jun 2024 14:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717769593; cv=none; b=mIxdq1S4L886fCdWAvDsjQ+h2bjAnc8/UjQFJAaJt9ZS+kQPD/CZa4xj/yR/neAvTsNvIsmvEqO+tRN961IcBSbnNbaPDZV5NQMw+tl12jsl6AJTqlYI8MfACPLq29MUjqHem9hwmAbpJTrsr9khqMBWXCWZXE4QzhNdCSyJWr0=
+	t=1717769596; cv=none; b=t+YsnUhXgfgHVs6Ks1afksAyRluyf8xChNkVyS6OWUQ8xSYTKRZTihHy0BV7be2dvcJ72FzLpdV/gx3mzV+5kC40NutClZ8mvsBY3vjtwPmnWVyCvzMgX441yXUWERtxxSJXbkxiz5Eo+rRKlbCFWQ7dcR2ZbZ3RCJ0XqDruqgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717769593; c=relaxed/simple;
-	bh=PLa+/S6T2pqc4cVNdcXu6K0Lzgftno+ra38iIkQ71K4=;
+	s=arc-20240116; t=1717769596; c=relaxed/simple;
+	bh=QiDpR1TI+p2zZanenmfX7eDhMqWQYjltCW2O4S1NJA8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KgfO6j5vSKMY/eDReMcjVzYkGRixNpz4GTPGOvCF7VfrGrpF6rcx5Bkn6skJZCoumnB+xVs1gL9/OhJ9GdM38LT2J//mEN5+3bfxJg7iZ8XnkFiCmlL17COETs7vi0RsItUjuXsuH4WtaAyqjGrIkmi71xX0KkzRLC6BFKt1mmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=XH878EIo; arc=none smtp.client-ip=37.18.73.165
+	 MIME-Version:Content-Type; b=DStmS6bJX71d8oBwJM1H/90A2B36rJ1+yqTovW/ASZ6lPNvtUMsqpcy0yxh1ozXymHDj09sg+LNDoCPzm77pn3GaVM6RR+cw0r5jxijpTI8KbH8yBxj2weoShvBHdF6txuTs9EZWb13MEZKDrvwuu1dfsnMhRLz34fCC3sT1BzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=g1qq+7rm; arc=none smtp.client-ip=45.89.224.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 102A3100020;
+Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id CEF74120009;
 	Fri,  7 Jun 2024 17:13:10 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 102A3100020
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CEF74120009
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
 	s=mail; t=1717769590;
-	bh=TEtBJ1t8kyA5pEDAzPWW21NBmgevTHsUkQ8U8jPneUM=;
+	bh=WJ5Y7nNjU+mHDwFBxYVKvbc+SUuNTkVIZQiALCiymns=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=XH878EIo44Mp5hjyGNcDynGB4EY8IGRmoOxwJ1Ub7kw8xSD3gnHZZ55XvR8rw9O7P
-	 9VOfwV7C7UFSjgbz5l4Fxzkswu6jXlS5WxiTqVDVLcIV6qKUL34Tz1S+7zDUxnUevv
-	 AQCNm55Iylx1bF6Qj72oPZ58Wkvfb84o5wMElMygmRskeCbD1+dOg04SSPsmbLvzKC
-	 jkwvcBkMo3dy5pAGwWkuJg0P7eGhxI6XVQIVazuFCXX7dymiwI+P2vswLD+8/D+eZm
-	 zja18O75hksgYRabpsQkXzEuEnpKBlrwcheyy6ohuCCvI8QWNe8LW1pvSbB/Af9WYC
-	 Ii5fJlcu2BBAw==
+	b=g1qq+7rmP/9TEXADVYR43zqIDO/L4sJyexDg262/JK0aZQ5QoLmVGqZp6gNCh3IPg
+	 jbdhpjjupZGyU+du1IEVLOPiRxdSFMEqiouOWM5ybICRzxqGlnKfWEKhfLFCglT+m2
+	 n5Zr/RgNPPcov0z9NrwzcTKrAumG2f9Vih6hsxcdQ0nejOrZ9c5LyJHjvFqtSkOBVt
+	 M6iDjEzdex3853TH7W1YoJItQJX49tSHNFJJi7iYEFCse0YKcSla0bFZeLhBQwUfro
+	 NvooTFKCfAkq/RVu4bwc04wQAanAdg5HNr63QGz56MNRgrJhyVcu2ALLOXi/pyUser
+	 7EZ21LSDyDEAQ==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri,  7 Jun 2024 17:13:09 +0300 (MSK)
+	Fri,  7 Jun 2024 17:13:10 +0300 (MSK)
 Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 7 Jun 2024 17:13:09 +0300
+ 15.2.1118.40; Fri, 7 Jun 2024 17:13:10 +0300
 From: Alexey Romanov <avromanov@salutedevices.com>
 To: <neil.armstrong@linaro.org>, <clabbe@baylibre.com>,
 	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh+dt@kernel.org>,
@@ -64,9 +64,9 @@ CC: <linux-crypto@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <kernel@salutedevices.com>, Alexey
  Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v8 19/23] dt-bindings: crypto: meson: support new SoC's
-Date: Fri, 7 Jun 2024 17:12:38 +0300
-Message-ID: <20240607141242.2616580-20-avromanov@salutedevices.com>
+Subject: [PATCH v8 20/23] arch: arm64: dts: meson: a1: add crypto node
+Date: Fri, 7 Jun 2024 17:12:39 +0300
+Message-ID: <20240607141242.2616580-21-avromanov@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240607141242.2616580-1-avromanov@salutedevices.com>
 References: <20240607141242.2616580-1-avromanov@salutedevices.com>
@@ -89,7 +89,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -97,66 +97,48 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/06/07 12:12:00 #25491508
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-Now crypto module available at G12A/G12B/S4/A1/SM1/AXG.
-
-1. Add new compatibles:
-  - amlogic,g12a-crypto
-  - amlogic,axg-crypto
-  - amlogic,a1-crypto
-  - amlogic,s4-crypto (uses a1-crypto as fallback)
-
-Difference between this compatibles:
- * Different registers offset and the number of setup descriptors.
- * GXL doesn't support hashing like the others.
- * G12A/B and A1/S4 crypto HW don't support 192 AES key.
- * GXL, G12A/B and AXG require a reverse IV key before processing.
-
-2. Add power-domains in schema, which is required only for A1.
+This patch adds a crypto node declaration. With the
+Amlogic crypto driver we can use HW implementation
+of SHA1/224/256 and AES algo.
 
 Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
 ---
- .../bindings/crypto/amlogic,gxl-crypto.yaml   | 21 +++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-a1.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
-index aff6f3234dc9..a8344de71b4a 100644
---- a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
-+++ b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
-@@ -11,8 +11,16 @@ maintainers:
+diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+index 1520d51d41e0..2853454ae81b 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+@@ -162,6 +162,12 @@ spifc: spi@fd000400 {
+ 			status = "disabled";
+ 		};
  
- properties:
-   compatible:
--    items:
--      - const: amlogic,gxl-crypto
-+    oneOf:
-+      - items:
-+          - enum:
-+              - amlogic,s4-crypto
-+          - const: amlogic,a1-crypto
-+      - enum:
-+          - amlogic,gxl-crypto
-+          - amlogic,axg-crypto
-+          - amlogic,g12a-crypto
-+          - amlogic,a1-crypto
- 
-   reg:
-     maxItems: 1
-@@ -37,6 +45,15 @@ required:
-   - clocks
-   - clock-names
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          const: amlogic,a1-crypto
-+    then:
-+      required:
-+        - power-domains
++		clk81: clk81 {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <64000000>;
++		};
 +
- additionalProperties: false
+ 		apb: bus@fe000000 {
+ 			compatible = "simple-bus";
+ 			reg = <0x0 0xfe000000 0x0 0x1000000>;
+@@ -972,6 +978,15 @@ sd_emmc: sd@10000 {
+ 				status = "disabled";
+ 			};
  
- examples:
++			crypto: crypto@6000 {
++				compatible = "amlogic,a1-crypto";
++				reg = <0x0 0x6000 0x0 0x48>;
++				interrupts = <GIC_SPI 120 IRQ_TYPE_EDGE_RISING>;
++				clocks = <&clk81>;
++				clock-names = "clk81";
++				power-domains = <&pwrc PWRC_DMA_ID>;
++			};
++
+ 			acodec: audio-controller@4800 {
+ 				compatible = "amlogic,t9015-a1";
+ 				reg = <0x0 0x4800 0x0 0x14>;
 -- 
 2.34.1
 
