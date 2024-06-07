@@ -1,59 +1,59 @@
-Return-Path: <linux-crypto+bounces-4821-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4839-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2A7900607
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB813900652
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:20:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8410B1C223DE
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:13:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E8841C21FC1
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1192A1991D9;
-	Fri,  7 Jun 2024 14:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83309199E83;
+	Fri,  7 Jun 2024 14:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="PY1adfCB"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="HJr2xUlI"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0403196C85;
-	Fri,  7 Jun 2024 14:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FC719752F;
+	Fri,  7 Jun 2024 14:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717769589; cv=none; b=cAb2i+IDLJgk8oyad0IbULhwJMgarmfo48KwQwOhld/kvF7DoUVULhlYqIpdC77/vn40bYOL5qYhAL7lwRoL+0pXpkLhyE8uy+8DlGvyXd5ZvFhx8Uo7FMhyASRprQS3bIc+StrtitZ44s6mI0v5W1wDYZvEqGXXSx5qtt1tnLo=
+	t=1717769963; cv=none; b=YJYon3pLM50ss/8ZJKS1FY6Ez8sodcK4t+FDtr93SLJiq+WLGyn7Om2Hv/Gnewta679s0YmyHWn+4d3yFUmmLkNR4PuTXBRpQdWjK5+oAGTktpbkHwsCnLIIdaFD5T0VByzDgeptNSFhRJ39y8oWYWjD4CPaTbICKsg9BnbK18s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717769589; c=relaxed/simple;
-	bh=eKiX+/Kz2JJwdjMCuGv51OdF9N3/l/bTum2+ZwPcTTQ=;
+	s=arc-20240116; t=1717769963; c=relaxed/simple;
+	bh=QOYczxIU6FV0cOJGzOIxWZJrUesyGdwkLjpDpR1WMiY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=upfZf5Fa93MWQ9+ozgRV+4OWQKx+HZNdhuVWlCMicf/lo65LWaNCUdvnf3dfI+bBtaj8Pf1wh5uirlJInsrKXeRpCwE2OxdrqqAVf8dQfdmrztty+hw7KYX0CN6z+horDbdPo43rhKDvb34CdA8olAHFzW6uWYShkjMBV2eA6MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=PY1adfCB; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=MKCVEVlXcBvbbKTvM1ZodHC0C6cuacm9fFq8GWFUY8S+XjXm6+ek1KLKIv5foNUz7ALM3IYlCFaFH1jWXVaeW7L2Htb5PmOc7tL0On57LTXjNYLshHabN4wLZ6GvNQYO0fiRTJLz16hzRRF/RGxjRSVaml70YoeMOB1wKNC8uuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=HJr2xUlI; arc=none smtp.client-ip=37.18.73.165
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id E6B4B12000A;
-	Fri,  7 Jun 2024 17:12:59 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E6B4B12000A
+Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id B270410002E;
+	Fri,  7 Jun 2024 17:13:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B270410002E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1717769579;
-	bh=kbk01LZx5Gx3XlSl8eks76phYzgWifOc69jIi3h8WLs=;
+	s=mail; t=1717769580;
+	bh=6wrU1/sGluytgSBoZtiBi/2AtIb9XSpi3qvvAJFAO6Q=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=PY1adfCBDjN+GPKhtDheon+RUFZNRzkr7NUAipR3gwcEq3PQT/uzF0pPEGK6++7wr
-	 r5UfteUQ2E9LP71swIm+YYoO9+Ymp+bxW2bIiWZrD/nKh8ulhTTgH0DyAYyxFeRn8d
-	 Lp3qn/Tabrqzzud5NBwQZCAQMmDkT7jaVQSWN82plSMHxuC+yUuKZoSbSFVzaxYJ4M
-	 tVnM9ENtYKabuyu9Gu0jlp1Ibr38aRGwZg3c6Dk53HTI3qMHmGbjWOUBCK7ZG3JYNg
-	 rn6ot13OvCIA9BS3Esscj7FtwBQ+VQMKzpvF2s3rnltSOSzSd0Ki4Kd/ef0f4uBZie
-	 I5JU02Ai8fc6g==
+	b=HJr2xUlINgA4t1h3bIzYClpQn4aGnSORBWoaKTCt5sPsftUlVkdt4LDHJWHtjwzQ0
+	 44rZx7qpmn42523geGwoKIe8BveI0y/7KUxRDI3HMq4GZY/Md4+X8caTy8fKQGSsfU
+	 tW6RrKEvRabn5ezocFQTOKFmlZ1lz0tWsmhwtE55kbcn2yebPbqXEDGyt7lDdVi+4t
+	 YM7NHSVY5InbB6rctF9qaaRizHvNsRaGHxjW4tJ6ywPOeJULb/rpAh9B9k/odAXm/o
+	 DSXbWBwJsf8OWRmv4YjMyJ+QJWL3q2HZgkXAvgM32qmxlTy1G3vvi/8Wd1txoVmzE5
+	 05gTQdzROY8hA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri,  7 Jun 2024 17:12:59 +0300 (MSK)
+	Fri,  7 Jun 2024 17:13:00 +0300 (MSK)
 Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 7 Jun 2024 17:12:59 +0300
+ 15.2.1118.40; Fri, 7 Jun 2024 17:13:00 +0300
 From: Alexey Romanov <avromanov@salutedevices.com>
 To: <neil.armstrong@linaro.org>, <clabbe@baylibre.com>,
 	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh+dt@kernel.org>,
@@ -64,9 +64,9 @@ CC: <linux-crypto@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <kernel@salutedevices.com>, Alexey
  Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v8 05/23] drivers: crypto: meson: move get_engine_number()
-Date: Fri, 7 Jun 2024 17:12:24 +0300
-Message-ID: <20240607141242.2616580-6-avromanov@salutedevices.com>
+Subject: [PATCH v8 06/23] drivers: crypto: meson: drop status field from meson_flow
+Date: Fri, 7 Jun 2024 17:12:25 +0300
+Message-ID: <20240607141242.2616580-7-avromanov@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240607141242.2616580-1-avromanov@salutedevices.com>
 References: <20240607141242.2616580-1-avromanov@salutedevices.com>
@@ -89,7 +89,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -97,79 +97,76 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/06/07 12:12:00 #25491508
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-Move get_engine_number() function from cipher.c to core.c
+This field is used only to check for timeout. But there is more
+convenient way to achive the same goal.
 
 Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/crypto/amlogic/amlogic-gxl-cipher.c | 9 ++-------
- drivers/crypto/amlogic/amlogic-gxl-core.c   | 5 +++++
- drivers/crypto/amlogic/amlogic-gxl.h        | 2 ++
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c | 13 +++++++++----
+ drivers/crypto/amlogic/amlogic-gxl-core.c   |  1 -
+ drivers/crypto/amlogic/amlogic-gxl.h        |  2 --
  3 files changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-index 1fe916b0a138..18e9e2d39b1f 100644
+index 18e9e2d39b1f..dc0b100c5de2 100644
 --- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
 +++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-@@ -17,11 +17,6 @@
- #include <crypto/internal/skcipher.h>
- #include "amlogic-gxl.h"
+@@ -219,13 +219,18 @@ static int meson_cipher(struct skcipher_request *areq)
+ 	}
  
--static int get_engine_number(struct meson_dev *mc)
--{
--	return atomic_inc_return(&mc->flow) % mc->flow_cnt;
--}
--
- static bool meson_cipher_need_fallback(struct skcipher_request *areq)
- {
- 	struct scatterlist *src_sg = areq->src;
-@@ -282,7 +277,7 @@ int meson_skdecrypt(struct skcipher_request *areq)
- 	rctx->op_dir = MESON_DECRYPT;
- 	if (meson_cipher_need_fallback(areq))
- 		return meson_cipher_do_fallback(areq);
--	e = get_engine_number(op->mc);
-+	e = meson_get_engine_number(op->mc);
- 	engine = op->mc->chanlist[e].engine;
- 	rctx->flow = e;
+ 	reinit_completion(&mc->chanlist[flow].complete);
+-	mc->chanlist[flow].status = 0;
+ 	meson_dma_start(mc, flow);
+-	wait_for_completion_interruptible_timeout(&mc->chanlist[flow].complete,
+-						  msecs_to_jiffies(500));
+-	if (mc->chanlist[flow].status == 0) {
++
++	err = wait_for_completion_interruptible_timeout(&mc->chanlist[flow].complete,
++							msecs_to_jiffies(500));
++	if (err == 0) {
+ 		dev_err(mc->dev, "DMA timeout for flow %d\n", flow);
+ 		err = -EINVAL;
++	} else if (err < 0) {
++		dev_err(mc->dev, "Waiting for DMA completion is failed (%d)\n", err);
++	} else {
++		/* No error */
++		err = 0;
+ 	}
  
-@@ -300,7 +295,7 @@ int meson_skencrypt(struct skcipher_request *areq)
- 	rctx->op_dir = MESON_ENCRYPT;
- 	if (meson_cipher_need_fallback(areq))
- 		return meson_cipher_do_fallback(areq);
--	e = get_engine_number(op->mc);
-+	e = meson_get_engine_number(op->mc);
- 	engine = op->mc->chanlist[e].engine;
- 	rctx->flow = e;
- 
+ 	dma_unmap_single(mc->dev, phykeyiv, keyivlen, DMA_TO_DEVICE);
 diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
-index 0698ac5e2a6a..52317f111c6c 100644
+index 52317f111c6c..4d04bb0ddc4e 100644
 --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
 +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
-@@ -22,6 +22,11 @@
- 
- #include "amlogic-gxl.h"
- 
-+int meson_get_engine_number(struct meson_dev *mc)
-+{
-+	return atomic_inc_return(&mc->flow) % mc->flow_cnt;
-+}
-+
- void meson_dma_start(struct meson_dev *mc, int flow)
- {
- 	u32 offset = (mc->pdata->descs_reg + flow) << 2;
+@@ -53,7 +53,6 @@ static irqreturn_t meson_irq_handler(int irq, void *data)
+ 	for (flow = 0; flow < mc->flow_cnt; flow++) {
+ 		if (mc->chanlist[flow].irq == irq) {
+ 			if (meson_dma_ready(mc, flow)) {
+-				mc->chanlist[flow].status = 1;
+ 				complete(&mc->chanlist[flow].complete);
+ 				return IRQ_HANDLED;
+ 			}
 diff --git a/drivers/crypto/amlogic/amlogic-gxl.h b/drivers/crypto/amlogic/amlogic-gxl.h
-index 8670f7ebcdda..dc54bd533a2d 100644
+index dc54bd533a2d..4d60a0cc2dca 100644
 --- a/drivers/crypto/amlogic/amlogic-gxl.h
 +++ b/drivers/crypto/amlogic/amlogic-gxl.h
-@@ -161,6 +161,8 @@ struct meson_alg_template {
- #endif
- };
- 
-+int meson_get_engine_number(struct meson_dev *mc);
-+
- void meson_dma_start(struct meson_dev *mc, int flow);
- 
- int meson_enqueue(struct crypto_async_request *areq, u32 type);
+@@ -59,7 +59,6 @@ struct meson_desc {
+  * @engine:	ptr to the crypto_engine for this flow
+  * @keylen:	keylen for this flow operation
+  * @complete:	completion for the current task on this flow
+- * @status:	set to 1 by interrupt if task is done
+  * @irq:	IRQ number for amlogic-crypto
+  * @t_phy:	Physical address of task
+  * @tl:		pointer to the current ce_task for this flow
+@@ -68,7 +67,6 @@ struct meson_desc {
+ struct meson_flow {
+ 	struct crypto_engine *engine;
+ 	struct completion complete;
+-	int status;
+ 	int irq;
+ 	unsigned int keylen;
+ 	dma_addr_t t_phy;
 -- 
 2.34.1
 
