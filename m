@@ -1,50 +1,47 @@
-Return-Path: <linux-crypto+bounces-4809-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4811-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F6A9002D8
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAB179002DF
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:01:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDAFA1C220B4
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 12:01:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD6761C22C5D
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 12:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF768249F;
-	Fri,  7 Jun 2024 12:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6926193065;
+	Fri,  7 Jun 2024 12:01:13 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654D4D53C;
-	Fri,  7 Jun 2024 12:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DEED53C;
+	Fri,  7 Jun 2024 12:01:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717761669; cv=none; b=rYMlMuMmnXTGLeDrYX0gaahETQqNHkqsyg/nu7vd/2na3ux5jN/UxrvBPm9uf/1Xn0hylH19CfFUve5QZODxsqqj6lPikie7ho6xmeG87x5d2zBRJeG/GJfqx54o4Hu25utQ65bfejHVWjKtxECrujH52BWHYSy16lz1D8Gy4Vw=
+	t=1717761673; cv=none; b=b/znTz6lB8E2PgmEP3Egbz670u1MhUebkj9fqppBl1WWEUzNpNLc+z5vctL4yjx/13rGOQCI0tArNYp3Zxpr4fpCqYfs4NJFOXARmjfWjf6MO6nE8ytl5U/E2kxuEJagMnFOo6zOmKW/TW4ug5PnKk5Js40O61mgn22Te50tJEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717761669; c=relaxed/simple;
-	bh=8bM4TXmZF6Q3bEWKpxwk+dcuEiChrvC6AykME8hxFxU=;
+	s=arc-20240116; t=1717761673; c=relaxed/simple;
+	bh=8p8fuJbHt7CqPeFdlzjmbu8BWVDXgU7Df/yWpxLttSY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IzNFsbDdTWooe8d0oUsmZmtITttOKp7XJM26f7gFyXoMfcaKxmsL8DzI3ehaEUGA/5pGfQVyJqQmbSLpvZQwZHYOTsDUZEQSihY8Uv1151XqvI9Zvf5dNzKoeS0/UQ4Jq3Rct/eXdkLkGVc8TWBp+YthKyHtoyicAyVUoBxrbTE=
+	 Content-Type:Content-Disposition:In-Reply-To; b=hFucBbvFI2tdIN+eo3uvq+g8f8fopXIEQwcz5ja/LmfqttZ79cl+mKLwbgHlhFf+G33UxvOJ7h8BDCZzE7jDBAnT+g+dai4mc1ZbiXYM2qqAShs8QiSl8i5h/LtJo+MIGDoMgnMMYwIs/KB/vKa6+7VWsNcrsBqyicZBeH5k0ac=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1sFYHA-006pMU-3C;
-	Fri, 07 Jun 2024 20:00:58 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 07 Jun 2024 20:00:59 +0800
-Date: Fri, 7 Jun 2024 20:00:59 +0800
+	id 1sFYHI-006pMd-0M;
+	Fri, 07 Jun 2024 20:01:05 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 07 Jun 2024 20:01:06 +0800
+Date: Fri, 7 Jun 2024 20:01:06 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-	Declan Murphy <declan.murphy@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] crypto: keembay - add missing MODULE_DESCRIPTION() macro
-Message-ID: <ZmL2e00gtB9K88iv@gondor.apana.org.au>
-References: <20240602-md-keembay-ocs-hcu-v1-1-22741e1c3d13@quicinc.com>
+Cc: "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] crypto: sa2ul - add missing MODULE_DESCRIPTION() macro
+Message-ID: <ZmL2gqDd6ATPVzxd@gondor.apana.org.au>
+References: <20240602-md-crypto-sa2ul-v1-1-78f8a3112221@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -53,17 +50,17 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240602-md-keembay-ocs-hcu-v1-1-22741e1c3d13@quicinc.com>
+In-Reply-To: <20240602-md-crypto-sa2ul-v1-1-78f8a3112221@quicinc.com>
 
-On Sun, Jun 02, 2024 at 04:03:54PM -0700, Jeff Johnson wrote:
+On Sun, Jun 02, 2024 at 04:11:17PM -0700, Jeff Johnson wrote:
 > make allmodconfig && make W=1 C=1 reports:
-> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/crypto/intel/keembay/keembay-ocs-hcu.o
+> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/crypto/sa2ul.o
 > 
 > Add the missing invocation of the MODULE_DESCRIPTION() macro.
 > 
 > Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 > ---
->  drivers/crypto/intel/keembay/ocs-hcu.c | 1 +
+>  drivers/crypto/sa2ul.c | 1 +
 >  1 file changed, 1 insertion(+)
 
 Patch applied.  Thanks.
