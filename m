@@ -1,131 +1,122 @@
-Return-Path: <linux-crypto+bounces-4835-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4840-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0344900634
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:17:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0439D9006C2
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 16:35:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 582F51F22CFF
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:17:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF5AF1C21F28
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:35:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA0319DF67;
-	Fri,  7 Jun 2024 14:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A797C19751E;
+	Fri,  7 Jun 2024 14:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="rqyQuT9J"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="BBV00V0r"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1A319B3C6;
-	Fri,  7 Jun 2024 14:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AFB619643F;
+	Fri,  7 Jun 2024 14:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717769598; cv=none; b=h5ByLbl0+ZZDVBdTMnFIEu0yeUEiRljqBP+CKRvv0ZyBev1+ZWg+gLf+W1FX23J3IEarI/Zh0xtE/C4/AFX0W6wDpz7amZ7pQP4SClPCbs5zEL81YZCQLkFCG5pludny3R+ik5Z6e1nDQQlTMWxPAkPtf95r+n3YnGEhrfxSTDw=
+	t=1717770915; cv=none; b=Z4fcXb8nDXaAoTVw3nYINDJj9vwKc0pikrna9+I2Py+RNj87mJLAexOncaM7V8DmGfQ+nY+AO6wgyVmaHKULPG/7BquNwQdWHR0Ri/xfVzs0RvWm+9Cvd+443p0JIXGlLTm2hqnSnLIjyXu355QWWpFXPL4pSWwlupIu7Btbbt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717769598; c=relaxed/simple;
-	bh=A0mspt8LVfXdQeVmvIiFYRIg90bcFtnitvZUt752kTQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RCvGNz5c5ORBzVoWVkAeH7NBr66ZcPjWPaj4h4lR0n6K66S4IMu8XVkbvoDuUATxY/mNeaSczDv/GFNDezjeHSq+2TmgeM4W9Yy0Nhz6AfWOTYOgLc5otLIESjXZWwDmEqzzQMw5tkwFQNV1aQufZ/RmeaGc38Vn/Pzr5mgrTMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=rqyQuT9J; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 08606100031;
-	Fri,  7 Jun 2024 17:13:13 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 08606100031
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1717769593;
-	bh=XiQT/H7M4jDgCFiWpGsWvKDVI1+aeeu3L2WtQJLPQvA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=rqyQuT9Jfe+cFZhPVk809t0vOnFnOQpErpBGc2DakyFpQPL2j11jEg14naR0kld+I
-	 +P4rMWnvhk3gJt6Y5aRTPffaemWCOU0KAmrKydglKOGOtTJermjMXFdYPHJPz+9YqI
-	 OWPILZbz62IA0uPnfo4pu6Whz6+0rAF5kc7OUh97PQSfYfI+wSGqIejA1tNeinDZlJ
-	 pdn0vMcM2ipaQhI3sKm0oekIGwEI4XkxP1G1sHiXUbZzEBbKRai0DZZcR/Gfo1zix/
-	 beWuh3Rn0Au2I8y/yPr2xVWn0+Mou/qxKvc21YVceEM2WMpqE9t48tjRy0MXLmrf7f
-	 5zzzBmzgn+mYw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri,  7 Jun 2024 17:13:12 +0300 (MSK)
-Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 7 Jun 2024 17:13:12 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: <neil.armstrong@linaro.org>, <clabbe@baylibre.com>,
-	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <vadim.fedorenko@linux.dev>
-CC: <linux-crypto@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kernel@salutedevices.com>, Alexey
- Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v8 23/23] arch: arm64: dts: meson: axg: add crypto node
-Date: Fri, 7 Jun 2024 17:12:42 +0300
-Message-ID: <20240607141242.2616580-24-avromanov@salutedevices.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240607141242.2616580-1-avromanov@salutedevices.com>
-References: <20240607141242.2616580-1-avromanov@salutedevices.com>
+	s=arc-20240116; t=1717770915; c=relaxed/simple;
+	bh=mVgfio4EymRsdXfQ08fuEVop3EuHqiClvYLIu828s4Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KLiEmw8JLrWjVDJS0GlGUs+sSEJBBIwxYjqH2bMnfqLGAM42M6W51IIdrU1+IAWcm35Hki+na8und6/VNIopUYthXY95Lee5USUr0qZT6gesxh8cZs4oa0sFOS0vETXaCqiiB0xdgQRCOhzf2qJP59CLJk5YfC1xjTdTSH3eG4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=BBV00V0r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53995C3277B;
+	Fri,  7 Jun 2024 14:35:13 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="BBV00V0r"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1717770911;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ajPZqckOBJFHBstUW7T2O0UQJC/naoL0j9njP215Xzs=;
+	b=BBV00V0rOVi6HrMqRiRVMBCf116AxoPzpLtxDhj5y+tsyMd3Ym3ffI3cnLv8dHVT5N405b
+	VvhpMa4UmoOiBZt/mGdrFWTc2f3MuBriCR9lDODxjJx4qa7Kzoi9sOnhwxM3+615q3OZXt
+	qRoQv2RdtEaMVDJt1qoRdCuTADRmaYM=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 26266bc1 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Fri, 7 Jun 2024 14:35:11 +0000 (UTC)
+Date: Fri, 7 Jun 2024 16:35:06 +0200
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Jann Horn <jannh@google.com>
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+	tglx@linutronix.de, linux-crypto@vger.kernel.org,
+	linux-api@vger.kernel.org, x86@kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+	Carlos O'Donell <carlos@redhat.com>,
+	Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+	Christian Brauner <brauner@kernel.org>,
+	David Hildenbrand <dhildenb@redhat.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v16 1/5] mm: add VM_DROPPABLE for designating always
+ lazily freeable mappings
+Message-ID: <ZmMamtll1Yq1yfxc@zx2c4.com>
+References: <20240528122352.2485958-1-Jason@zx2c4.com>
+ <20240528122352.2485958-2-Jason@zx2c4.com>
+ <CAG48ez0P3EDXC0uLLPjSjx3i6qB3fcdZbL2kYyuK6fZ_nJeN5w@mail.gmail.com>
+ <Zlm-26QuqOSpXQg7@zx2c4.com>
+ <CAG48ez3VhWpJnzHHn4NAJdrsd1Ts9hs0zvHa6Pqwatu4wV63Kw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 185803 [Jun 07 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/06/07 12:12:00 #25491508
-X-KSMG-AntiVirus-Status: Clean, skipped
+In-Reply-To: <CAG48ez3VhWpJnzHHn4NAJdrsd1Ts9hs0zvHa6Pqwatu4wV63Kw@mail.gmail.com>
 
-This patch adds a crypto node declaration. With the
-Amlogic crypto driver we can use HW implementation
-of SHA1/224/256 and AES algo.
+On Fri, May 31, 2024 at 03:00:26PM +0200, Jann Horn wrote:
+> On Fri, May 31, 2024 at 2:13 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> > On Fri, May 31, 2024 at 12:48:58PM +0200, Jann Horn wrote:
+> > > On Tue, May 28, 2024 at 2:24 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> > > > c) If there's not enough memory to service a page fault, it's not fatal.
+> > > [...]
+> > > > @@ -5689,6 +5689,10 @@ vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
+> > > >
+> > > >         lru_gen_exit_fault();
+> > > >
+> > > > +       /* If the mapping is droppable, then errors due to OOM aren't fatal. */
+> > > > +       if (vma->vm_flags & VM_DROPPABLE)
+> > > > +               ret &= ~VM_FAULT_OOM;
+> > >
+> > > Can you remind me how this is supposed to work? If we get an OOM
+> > > error, and the error is not fatal, does that mean we'll just keep
+> > > hitting the same fault handler over and over again (until we happen to
+> > > have memory available again I guess)?
+> >
+> > Right, it'll just keep retrying. I agree this isn't great, which is why
+> > in the 2023 patchset, I had additional code to simply skip the faulting
+> > instruction, and then the userspace code would notice the inconsistency
+> > and fallback to the syscall. This worked pretty well. But it meant
+> > decoding the instruction and in general skipping instructions is weird,
+> > and that made this patchset very very contentious. Since the skipping
+> > behavior isn't actually required by the /security goals/ of this, I
+> > figured I'd just drop that. And maybe we can all revisit it together
+> > sometime down the line. But for now I'm hoping for something a little
+> > easier to swallow.
+> 
+> In that case, since we need to be able to populate this memory to make
+> forward progress, would it make sense to remove the parts of the patch
+> that treat the allocation as if it was allowed to silently fail (the
+> "__GFP_NOWARN | __GFP_NORETRY" and the "ret &= ~VM_FAULT_OOM")? I
+> think that would also simplify this a bit by making this type of
+> memory a little less special.
 
-Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
----
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+The whole point, though, is that it needs to not fail or warn. It's
+memory that can be dropped/zeroed at any moment, and the code is
+deliberately robust to that.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index 6d12b760b90f..4a3d5c2f823d 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -294,6 +294,14 @@ ethmac: ethernet@ff3f0000 {
- 			status = "disabled";
- 		};
- 
-+		crypto: crypto@ff63e000 {
-+			compatible = "amlogic,axg-crypto";
-+			reg = <0x0 0xff63e000 0x0 0x48>;
-+			interrupts = <GIC_SPI 180 IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&clkc CLKID_CLK81>;
-+			clock-names = "clk81";
-+		};
-+
- 		pcie_phy: phy@ff644000 {
- 			compatible = "amlogic,axg-pcie-phy";
- 			reg = <0x0 0xff644000 0x0 0x1c>;
--- 
-2.34.1
-
+Jason
 
