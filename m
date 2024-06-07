@@ -1,49 +1,52 @@
-Return-Path: <linux-crypto+bounces-4808-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4810-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E379002CD
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 13:58:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0CA39002DC
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 14:01:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61C471C2273E
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 11:58:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A425B22AD9
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Jun 2024 12:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F54E18FC63;
-	Fri,  7 Jun 2024 11:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBC3190696;
+	Fri,  7 Jun 2024 12:01:12 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A098415A4A2;
-	Fri,  7 Jun 2024 11:58:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8B718FC95;
+	Fri,  7 Jun 2024 12:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717761484; cv=none; b=j3qXgmxzHy4A06zSiSJxx4+nNgFEQ9g0F7sb90NG9BXGJZ6iO7VWNBPqAru1Eagxd/BlwOkxTa46Cg8UQX34czVeBb2jhdUoLPa0CPFqEhuuwpF/JBl2Y7GcscfPwL4q5HFfTKZGiGY2R9DXvCtLWjr9MUvyQow2Otr9eLczi08=
+	t=1717761672; cv=none; b=CGUl2oppy2PIFPqAnzTPYDalMX8Wsni+ijZG+H7sPU4oRV4CH2HoATasxWebVlFv/ZcJyrjYb3KyNvULJcCzRwUX3ZZUyTzbuUtSlLpNXUcFIZJJ/5lkQOmzebUgJElTgZ1lvCAfW8mRPtV3HteCnhd/VLurQOA96qFqY/3L+bI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717761484; c=relaxed/simple;
-	bh=BJgA5mjSOdgFasg9fVU69D0IkoNIEebkOV1Dysjw+vw=;
+	s=arc-20240116; t=1717761672; c=relaxed/simple;
+	bh=eJs63ZbeFgQzPVql9iMW8zmdX2TPotIFYYk2b6oCVZQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UAGkmDgl9pMyLmjP/AyKkX3UK73gYXiXHWB/vGA2H/sKa/W+Ef7neFxqW8liFa71n8RyW5VLMj8ZRa0I8aIvIiYA1T/V3Yfs+5kLbPrjzfKNEAk8X6PEwicxZh6A/b+sQWiiiLfaTYASGw28cOg7LhA87zTXkHywIyT688lTr4M=
+	 Content-Type:Content-Disposition:In-Reply-To; b=jAWpNVCCo45T588BfPPMIjmPnPIYr3dIog7MxIHVRUIkDkeL2CtWzkgG/A4VfobdgtLg4axBwWp02f7yQtZZaqhYyaUCajbAcJj4PNeKBq5XlSjaMHPZYhDMZQZ4cuX8unhjxleaLpLRtKri9clJmVmyOO1xiLJw9/jBRENrk14=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1sFYEH-006pKV-20;
-	Fri, 07 Jun 2024 19:57:58 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 07 Jun 2024 19:58:00 +0800
-Date: Fri, 7 Jun 2024 19:58:00 +0800
+	id 1sFYH3-006pMO-22;
+	Fri, 07 Jun 2024 20:00:50 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 07 Jun 2024 20:00:52 +0800
+Date: Fri, 7 Jun 2024 20:00:52 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Chenghai Huang <huangchenghai2@huawei.com>
-Cc: davem@davemloft.net, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org, shenyang39@huawei.com,
-	liulongfang@huawei.com, qianweili@huawei.com
-Subject: Re: [PATCH V3 0/2] crypto: hisilicon - adjust vf configuration
- sequence and optimize zip reg offset
-Message-ID: <ZmL1yH-6e6VE4Dtd@gondor.apana.org.au>
-References: <20240601025150.1660826-1-huangchenghai2@huawei.com>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] crypto: atmel-sha204a - add missing MODULE_DESCRIPTION()
+ macro
+Message-ID: <ZmL2dKZB04hlSxZ-@gondor.apana.org.au>
+References: <20240602-md-atmel-sha204a-v1-1-ab02640a0cf2@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -52,26 +55,20 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240601025150.1660826-1-huangchenghai2@huawei.com>
+In-Reply-To: <20240602-md-atmel-sha204a-v1-1-ab02640a0cf2@quicinc.com>
 
-On Sat, Jun 01, 2024 at 10:51:48AM +0800, Chenghai Huang wrote:
-> The VF enabling and disabling issues are fixed, and the ZIP address
-> offset calculation is optimized.
+On Sun, Jun 02, 2024 at 03:33:39PM -0700, Jeff Johnson wrote:
+> make allmodconfig && make W=1 C=1 reports:
+> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/crypto/atmel-sha204a.o
 > 
-> Chenghai Huang (2):
->   crypto: hisilicon/qm - adjust the internal processing sequence of the
->     vf enable and disable
->   crypto: hisilicon/zip - optimize the address offset of the reg query
->     function
+> Add the missing invocation of the MODULE_DESCRIPTION() macro.
 > 
->  drivers/crypto/hisilicon/qm.c           | 11 ++----
->  drivers/crypto/hisilicon/zip/zip_main.c | 48 +++++++++++--------------
->  2 files changed, 23 insertions(+), 36 deletions(-)
-> 
-> -- 
-> 2.33.0
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> ---
+>  drivers/crypto/atmel-sha204a.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
