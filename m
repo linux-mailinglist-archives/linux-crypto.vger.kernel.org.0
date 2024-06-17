@@ -1,122 +1,88 @@
-Return-Path: <linux-crypto+bounces-4991-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-4994-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82F890B4D8
-	for <lists+linux-crypto@lfdr.de>; Mon, 17 Jun 2024 17:42:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E660290B645
+	for <lists+linux-crypto@lfdr.de>; Mon, 17 Jun 2024 18:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E2BE1F233B2
-	for <lists+linux-crypto@lfdr.de>; Mon, 17 Jun 2024 15:42:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E0A91F2244D
+	for <lists+linux-crypto@lfdr.de>; Mon, 17 Jun 2024 16:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC688155354;
-	Mon, 17 Jun 2024 15:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4551614D71F;
+	Mon, 17 Jun 2024 16:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L3gFMkro"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="begfLGrf"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A6A69D3C
-	for <linux-crypto@vger.kernel.org>; Mon, 17 Jun 2024 15:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F15847A;
+	Mon, 17 Jun 2024 16:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718637122; cv=none; b=GrpbARtYxu26i5qa5GBfGyxKp5X5cr4toQO+NryF7EBGlPc6KBxblnMBI+qMGceMp9I+PyrDhJWAOCsMiwwGtrq7Deh9r8m2xp+u7SESBchkRStveQ53nOdqrY1ReMvUQHCeV7JbqA+GHHT39n6oFt1VY6/Oi1lq8LcDIxiKFvk=
+	t=1718641481; cv=none; b=VlMBe4Ac+jIjpCBWWt2NFPLzv/hcCbrTUjS5CCPNfXy6RtveSECL5UCM5zskEOoZ0MawiOMEnxvTRVQ8Z+/Y5YJcJUAfnd/RD7H5Mv8mKg6UBbDLJXcMCQTe5ygFzVNkskIUYHfHJ9aRaxj0xicEuPETN3NFlpRb/BnYhJ7xxWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718637122; c=relaxed/simple;
-	bh=BcHcXCkSiQi1C8vQWPOP5NNBCTJKNLS1M1cgQxV//GI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ph/qy//E2eht5GTcYs/u3OVLYmKwaoG7hLtO4V02eXvvDpQStgsiIwaYVyIw1UKxyW/7zRvyZpL7mvAwOUsLw64IDUeWUTxPS9xL3/kiiRq4bSGHQS2myrc3XJ60GEk26A1oR4XyP2etHERC4Jk+0WSadAZxeRe+DPwWt6Ftogs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L3gFMkro; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718637121; x=1750173121;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=BcHcXCkSiQi1C8vQWPOP5NNBCTJKNLS1M1cgQxV//GI=;
-  b=L3gFMkrosfusUC93gRgKXKwOJlfyVdJeMuTmByxhiITnFrrzSqgPMhR6
-   Ceql9fe5o97eUjtJ9KsPeUCOEvecS4sCKVGeZk+1iFRX+7cyYnhcm0Yf0
-   dQjJbFwShUf+Ht8BQ2l5BaM6tHQaitWqkVbXHnW9YWoTEGXEKIG60Fnmy
-   Lfn+LRVpHqjAEOA5f2SLjOadq1pgGgI+2RlIbWIznle6YM1tHHYp67bUm
-   MDMZ+6VoDOKmzxirGyuxTRGY2FBoc8fVgRfsbpH1apuBUAlAPsZtICCCV
-   v63M4+PXGtW7fwh8YLwbGq9POzkilFrBUOUliFS5TYZChM68XGt0HznEr
-   Q==;
-X-CSE-ConnectionGUID: y5J/pzd4RDGH6mNyulsnOQ==
-X-CSE-MsgGUID: mWp9/s6ASJ6+qs/z8F4r4w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11106"; a="15433253"
-X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="15433253"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 08:12:01 -0700
-X-CSE-ConnectionGUID: t7X8qAP0QiCKSU5/XB536w==
-X-CSE-MsgGUID: rkoBvtj5SKGyBMDfOTX0ug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="78691128"
-Received: from unknown (HELO localhost.igk.intel.com) ([10.211.127.84])
-  by orviesa001.jf.intel.com with ESMTP; 17 Jun 2024 08:12:00 -0700
-From: Sergey Portnoy <sergey.portnoy@intel.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	qat-linux@intel.com
-Subject: [PATCH v4] crypto: tcrypt - add skcipher speed for given alg
-Date: Mon, 17 Jun 2024 17:08:29 +0100
-Message-ID: <20240617161048.3480877-1-sergey.portnoy@intel.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1718641481; c=relaxed/simple;
+	bh=91LV93NxbGXaObbWSRWn/awCE5cjNH9Ay/li5FynBT8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DecOT51qP56eEHg10dAjVLJgRooZs08KNyeltGagM/ehOc/o4NYvozyUvhw2ENg5cNr6IWxgqSGkxIA55SXEZNZNPVs7dEkFvBMPuPOrniip2ORh2xVy2ek6TFRjAwnzjfQ9RwIlod3nYoggVLx2IBiP2Yfa1bxds2GLfbNK/74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=begfLGrf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0164C2BD10;
+	Mon, 17 Jun 2024 16:24:38 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="begfLGrf"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1718641477;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=91LV93NxbGXaObbWSRWn/awCE5cjNH9Ay/li5FynBT8=;
+	b=begfLGrfkwnWV142KKUjGxqZ3Zi7AJxslVOx8ShCJGRXAxyr3SAwysUeINd7Hyx0rdXrj+
+	Q7qK7bxNfabF/iLFHzE/YWPJV7syZPK7+ymS/rZ1WzjG7h0sYhn4+eTeJEToIiI4xqKDAz
+	D4cjcA58XiRC2v3cmOImkWi+t0ZWLvk=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 4ccbc541 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Mon, 17 Jun 2024 16:24:35 +0000 (UTC)
+Date: Mon, 17 Jun 2024 18:24:26 +0200
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: John Hubbard <jhubbard@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+	tglx@linutronix.de, linux-crypto@vger.kernel.org,
+	linux-api@vger.kernel.org, x86@kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+	Carlos O'Donell <carlos@redhat.com>,
+	Florian Weimer <fweimer@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jann Horn <jannh@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	David Hildenbrand <dhildenb@redhat.com>,
+	Samuel Neves <sneves@dei.uc.pt>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v17 5/5] x86: vdso: Wire up getrandom() vDSO
+ implementation
+Message-ID: <ZnBjOjWOoANFwuAx@zx2c4.com>
+References: <20240614190646.2081057-1-Jason@zx2c4.com>
+ <20240614190646.2081057-6-Jason@zx2c4.com>
+ <13483c92-cac5-4a3a-891f-22eb006c533b@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <13483c92-cac5-4a3a-891f-22eb006c533b@nvidia.com>
 
-Allow to run skcipher speed for given algorithm.
-Case 600 is modified to cover ENCRYPT and DECRYPT
-directions.
+On Fri, Jun 14, 2024 at 06:53:09PM -0700, John Hubbard wrote:
+> I'm adding linux-kselftest to Cc for visibility, and I've also Cc'd you
+> on a related selftests/vDSO series I just now posted [1].
+> be part of TEST_GEN_PROGS. Fixing it requires other changes, though, as
+> I've done in [2].
 
-Example:
-   modprobe tcrypt mode=600 alg="qat_aes_xts" klen=32
+If you can get these into 6.10 soon, I'll rebase atop your fixes so I
+can make this how you like it here.
 
-If succeed, the performance numbers will be printed in dmesg:
-   testing speed of multibuffer qat_aes_xts (qat_aes_xts) encryption
-   test 0 (256 bit key, 16 byte blocks): 1 operation in 14596 cycles (16 bytes)
-   ...
-   test 6 (256 bit key, 4096 byte blocks): 1 operation in 8053 cycles (4096 bytes)
-
-Signed-off-by: Sergey Portnoy <sergey.portnoy@intel.com>
----
-
-v3 -> v4
-
-- moving speed_template declaration to case section.
-
- crypto/tcrypt.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 8aea416f6480..e9e7dceb606e 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -2613,6 +2613,15 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 		break;
- 
- 	case 600:
-+		if (alg) {
-+			u8 speed_template[2] = {klen, 0};
-+			test_mb_skcipher_speed(alg, ENCRYPT, sec, NULL, 0,
-+					       speed_template, num_mb);
-+			test_mb_skcipher_speed(alg, DECRYPT, sec, NULL, 0,
-+					       speed_template, num_mb);
-+			break;
-+		}
-+
- 		test_mb_skcipher_speed("ecb(aes)", ENCRYPT, sec, NULL, 0,
- 				       speed_template_16_24_32, num_mb);
- 		test_mb_skcipher_speed("ecb(aes)", DECRYPT, sec, NULL, 0,
--- 
-2.44.0
-
+Jason
 
