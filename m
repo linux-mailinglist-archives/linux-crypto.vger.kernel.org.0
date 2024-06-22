@@ -1,129 +1,124 @@
-Return-Path: <linux-crypto+bounces-5181-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5183-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD3EE913099
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2024 00:56:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27027913309
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2024 12:43:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9E8F1C2121C
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Jun 2024 22:56:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F6B1F22C25
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Jun 2024 10:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F2A16F0C2;
-	Fri, 21 Jun 2024 22:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAC414EC44;
+	Sat, 22 Jun 2024 10:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qffyzywr"
+	dkim=pass (2048-bit key) header.d=aurel32.net header.i=@aurel32.net header.b="bTv1y0xU"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from hall.aurel32.net (hall.aurel32.net [195.154.113.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BBF16DEC5
-	for <linux-crypto@vger.kernel.org>; Fri, 21 Jun 2024 22:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B6E14B09C;
+	Sat, 22 Jun 2024 10:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.154.113.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719010561; cv=none; b=WvpP7G7rjzBV4OGSY0/AiTY6adh0/WgcNxzZo5aZMtLkXcWr7JfkjyPm751T/M+RVCn6nmeaG9nCor0hdAAw10mZIRG7d3Va5ZI31P7a+vgkYFMVg6lzXX8d5XDGX/3VrkPMjqF69Iypk9jYxl5Bt0MwRDZiV8kZPlSRroSRgc4=
+	t=1719053013; cv=none; b=rLHsTEClA9l5leN4pSkcx/K8KELhqTWGse99RZhNtgZ2V55364Vhcx3qLscImfz0LtgbOHgAO+XtD934zwfzGJA5oFDeC/8YGZexx6tTzypJM+5g29L9CHg+uQFOS5SlaFAD47e5EJEUKp4DSx3e7nTidX10ZEtocMEZ83e8720=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719010561; c=relaxed/simple;
-	bh=/fGMQstslMAQ1sAwKBQnY3piKVTdf0FZ+sfr3d5+kQU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UIbQzVfS54YxsdpKMabx4PmAxdRXkz1/WR0D37xknlzxpuPpTuCAPegHoClnPJ7YLJtsUFTaYkewed4guypyAqrLVwlulYBCmyPkF2iCUwT9mqPM6Ihn4lhEltwbeLnT7qwX+m6rOz5b0EMAZazy5+F49CDfLR9Z8V61kf8DmDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Qffyzywr; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-63ba688bdc9so25015047b3.1
-        for <linux-crypto@vger.kernel.org>; Fri, 21 Jun 2024 15:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719010559; x=1719615359; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/fGMQstslMAQ1sAwKBQnY3piKVTdf0FZ+sfr3d5+kQU=;
-        b=QffyzywrIMiiOUDrInGm2s+cz3kMzPYkPPwCFB3j5KIOPr355fiTeqBYglaNXBe054
-         kCKazQ5sK0diOLVl19gQcT7DWvlNfZAoPYqYtF3KWCYarWFh7qPu/1w7D6RED2aVQVw6
-         /5FBs/KRahanQgxXCbMs1L+Xe8cvCYNl/hVQX9XCQT+qUY96wZMe4CDwce54IZCI/c7Y
-         J0Op/PEeumJUez43jQjjkOZBNQlDFtM+rqLnVUgEq1WZovuULnjt74yEK8oZqSDI9s51
-         ZWEGUfNCgPwD1v1By3ODqSe4Bm6NBA9Af9DAhECATRlAWH+nbIEG9hC8PlSCEXVnPKbv
-         C1dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719010559; x=1719615359;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/fGMQstslMAQ1sAwKBQnY3piKVTdf0FZ+sfr3d5+kQU=;
-        b=exm4fz7/6Vn0a1hPj/Vb9jiiGWF1wLmVK7yYMoUSp2gQJ/OBd5+1kdV2kZar4LdI86
-         7W/XvXgkGt7vm3ZKjI11ESRV4DS1wqUDuo+7X+hRZ0kXxtoW9GpIK6vecyhy4SVntsl2
-         o19us0mFfjOLTyhDG7YDMx1y7VBzM2N410+s6YH8+qJYJ+S1Zo4sObBTstsM2N84OC1w
-         FFCtaywmvGXRBcVw+7psv85U16rp9M3ExiHMfyXJGj8duBq2R2xbVZ+z0sGNWE1zAKZV
-         WoJhVaQtaam9SRnwS+hGf/IJ8f5fEDBTC2iv1i2aIUHRJVqt3NDduRpqGIDhKNGhRdud
-         /egA==
-X-Forwarded-Encrypted: i=1; AJvYcCXXxBKYwSQsNCmtkcyjxFwZJoexJE2B221A2W9QOQNW1fZAT51XLLlSgXp9CGDFkpwPKweL/K6b0nMrKEiyIA/4kC7UZr4Xr+6qJdtU
-X-Gm-Message-State: AOJu0YxFBshBC6Lsdk4JMHoexww5aZRFSWmvzrbFWkGpiK+azmpYJs4x
-	vkTZo3gYEEK/kqy7Vd6NONAaOSQdemSUsL1k2gTqqHyXdzutEkvbAUPGEKqahyQ0Jxg1ztlM8QQ
-	CoXQR6DOxCyWo/Se5wjGH9eyowiZnyshGHAo8CQ==
-X-Google-Smtp-Source: AGHT+IEADyU6jrow5QVvxIIaLO6aTLEpPe+v44mG82CDywhDOOxA21g7uo+yUCib/NcuqiEIGJo5wYXwLqozIVXQNcg=
-X-Received: by 2002:a81:be12:0:b0:62f:23c3:1b68 with SMTP id
- 00721157ae682-63a8f9fb0b9mr92774257b3.48.1719010559268; Fri, 21 Jun 2024
- 15:55:59 -0700 (PDT)
+	s=arc-20240116; t=1719053013; c=relaxed/simple;
+	bh=LVfYR8/jFkVpAgI5c9DnudXm1sPcC5/oQYIYNdp8Jys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mfrpAsHEHqTRB6X2IOHRVfQniHPxGcZi5b78H8RujVF4MC3xSNwrNBt6oed/IvZZUVqW61Zz5KHF5i8licOe1LfjmNmN82l98oQOaX7VOhbhrVOstYr8frNfSSfBFX0o6DUPAQmNTdA9swFnfUmn/qR4PApCX5VgKg8JLpwRI3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aurel32.net; spf=pass smtp.mailfrom=aurel32.net; dkim=pass (2048-bit key) header.d=aurel32.net header.i=@aurel32.net header.b=bTv1y0xU; arc=none smtp.client-ip=195.154.113.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aurel32.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aurel32.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
+	; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
+	Subject:Content-ID:Content-Description:X-Debbugs-Cc;
+	bh=L7GES3nlJ/mbxpjgjMloPbQ6xU28njSFXetD3IW/C9k=; b=bTv1y0xUMPOFAGcp8NXNG5sAri
+	9Wuf4Hr94UiZ7MZR0BqUJALKC7GisIpFxsW4LjUzSTu1FQa6X6/y1SDljDg3i+o2SYsmilCnpGMmt
+	CbkRrHufQlZoVG/xB9JElfWnkZp8zN4O9JUqJfB+BjT42Xt+9oCe/VUU5TuPkmepcyVGseWADjq2b
+	cj2nad8/d1eEV2nuXGQo+5U/ebwR2rLenZBgHimL1u9n/wlKqDQcyCZZCZY+GI+SnPDQFkaePavUf
+	KzQEhPT/Mso/7rXN/RH21FOxsdKDOYvAKYTGT2lc97Jjyt56u0C1qbY7b2LoeI6bbTsFUMb5cK9mp
+	KNunQfcw==;
+Received: from [2a01:e34:ec5d:a741:1ee1:92ff:feb4:5ec0] (helo=ohm.rr44.fr)
+	by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <aurelien@aurel32.net>)
+	id 1sKxVY-003oby-0i;
+	Sat, 22 Jun 2024 11:58:08 +0200
+Date: Sat, 22 Jun 2024 11:58:06 +0200
+From: Aurelien Jarno <aurelien@aurel32.net>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <ukleinek@debian.org>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Anand Moon <linux.amoon@gmail.com>,
+	Dragan Simic <dsimic@manjaro.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Martin Kaiser <martin@kaiser.cx>, Ard Biesheuvel <ardb@kernel.org>,
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] hwrng: add hwrng support for Rockchip RK3568
+Message-ID: <ZnagLpqZS4UjDR6T@aurel32.net>
+Mail-Followup-To: Daniel Golle <daniel@makrotopia.org>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <ukleinek@debian.org>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Anand Moon <linux.amoon@gmail.com>,
+	Dragan Simic <dsimic@manjaro.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Martin Kaiser <martin@kaiser.cx>, Ard Biesheuvel <ardb@kernel.org>,
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1718921174.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20240621221113eucas1p25c2fbadceef48913c4a7b164e6d14890@eucas1p2.samsung.com>
- <CAPLW+4njmKxXSMqNazX6t6LS=fHNh6Pi8_icF1=aPw27G0J3PQ@mail.gmail.com> <oypijdcyoarlou.fsf%l.stelmach@samsung.com>
-In-Reply-To: <oypijdcyoarlou.fsf%l.stelmach@samsung.com>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Fri, 21 Jun 2024 17:55:48 -0500
-Message-ID: <CAPLW+4nQa_hnqg=UxgZ7EZ1z26HX+Y0Y-fV8rtHb4Sb7NQ47CQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] hwrng: exynos: Add SMC based TRNG operation
-To: Lukasz Stelmach <l.stelmach@samsung.com>
-Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Anand Moon <linux.amoon@gmail.com>, 
-	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, linux-samsung-soc@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1718921174.git.daniel@makrotopia.org>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On Fri, Jun 21, 2024 at 5:11=E2=80=AFPM Lukasz Stelmach <l.stelmach@samsung=
-.com> wrote:
+Hi Daniel,
 
-[snip]
+On 2024-06-21 02:24, Daniel Golle wrote:
+> Rockchip SoCs used to have a random number generator as part of their
+> crypto device, and support for it has to be added to the corresponding
+> driver.
+> 
+> However newer Rockchip SoCs like the RK3568 have an independent True
+> Random Number Generator device. This patchset adds a driver for it and
+> enable it in the device tree.
+> 
+> v2 of this patchset has been submitted by Aurelien Jarno in November
+> 2022. A follow-up submission addressing the comments received for v2
+> never happened.
 
-> >> This is good, thank you for adding it. It can be even better though, i=
-f
-> >> you don't skimp on message length (-; I mean, I know what BL is, I can
-> >> fingure what LDFW is because you have explained to me and I can see th=
-e
-> >> source code, but somewone who sees it for the first time will be only
-> >> slightly less surprised than with v2 error message only. Come on, you
-> >> can make this message twice as long and it will still fit in 80 charac=
-ters (-;
-> >>
-> >
-> > Guess my OCD got in the way and I just didn't want to break the line
-> > :) But yeah, LDFW =3D Loadable Firmware, and BL =3D bootloader. There i=
-s
-> > an "ldfw" partition on eMMC, and I noticed Samsung usually uses LDFW
-> > term, so I figured it was not a big deal to throw that abbreviation at
-> > the user. But I totally agree on BL part, it might be confusing. I
-> > don't have any strong opinion on this one. If you are going to apply
-> > v3, can I kindly ask you to change that message the way you want it to
-> > be?
->
-> I guess Olivia or Herbert will be applying it. Let me try=E2=80=A6 How ab=
-out:
->
-> "Check if your bootloader loads the firmware (SMC) part of the driver."
->
+I didn't have the time or energy to continue working on this. Thanks for
+continuing the work, I'll give it a try at some point.
 
-Much better. Thanks, Lukasz!
+Regards
+Aurelien
 
-> >> Don't change it if v3 is the last. If not, please, make it more verbos=
-e.
-> >>
+-- 
+Aurelien Jarno                          GPG: 4096R/1DDD8C9B
+aurelien@aurel32.net                     http://aurel32.net
 
