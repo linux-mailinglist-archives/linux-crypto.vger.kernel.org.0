@@ -1,59 +1,56 @@
-Return-Path: <linux-crypto+bounces-5441-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5445-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 627EA928FB3
-	for <lists+linux-crypto@lfdr.de>; Sat,  6 Jul 2024 02:17:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35C75928FDD
+	for <lists+linux-crypto@lfdr.de>; Sat,  6 Jul 2024 03:00:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1020428427A
-	for <lists+linux-crypto@lfdr.de>; Sat,  6 Jul 2024 00:17:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CD12B21C61
+	for <lists+linux-crypto@lfdr.de>; Sat,  6 Jul 2024 01:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFAEB4C66;
-	Sat,  6 Jul 2024 00:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B404A19;
+	Sat,  6 Jul 2024 01:00:52 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from norbury.hmeau.com (helcar.hmeau.com [216.24.177.18])
+Received: from norbury.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B305B629;
-	Sat,  6 Jul 2024 00:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.24.177.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53F16AB8
+	for <linux-crypto@vger.kernel.org>; Sat,  6 Jul 2024 01:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720225047; cv=none; b=CYB5zfiX73mW0gVAv8x9kwX0yjdWU9pr3vkd6rRTkQp3aOrs/KXk+w53lXZCIkHS6n9vBRssfOJje6zIboljeh8aLQ92nwiQxPImGnfnhPCU/le94ZnZr6uR7sRh53uN6WiOyf4FS9HUo2AwhuuIvBZOJvFMm/3CCb0irP2sCCI=
+	t=1720227652; cv=none; b=fpKPUFmzbKqoqTFJLMV+Hez7G/ir42pT2DbVpiQAtX128B/6aoLeDhSliUhK49MvNXbQfpEhFTfu9qPFBUK0XDTh02V3cz8VWWsZiacjUqtj42uf5Zd/mHQyfxCb6nZ+uwgfj0qfvaAOznK2SgNgBFjwdpNU0kgTF/ea1O47P3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720225047; c=relaxed/simple;
-	bh=cMJATAPOvLQoqwfPFRdiXpLFlGIrRlz9nAZQSkU3gS0=;
+	s=arc-20240116; t=1720227652; c=relaxed/simple;
+	bh=Eij4TIBMvKRm+0hBbw/dPnWyF+2k31vb8n451hmoMVE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t6pCmRhQ1zN74D/u5PSGB8dWdnLcWVqE3o2EkXe31RZ1fAyK418zN/HNwrdDdbtoeRAB4+QKQQm36RWkpmxYjr/gvZ5SeFecp+whpKKeYOpiwa51sHy95G8mVcmtWq2unMOZ+jhoIohmaHE4BJ3pDddnAfxlcX0DhBoPlWM8Gi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=216.24.177.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=mUpCGsi1DrY+gBNyNA/7/mrQ0iyA2TY+xGuRJqt97RzL4K5WtMxrPsoC5XC2LhgYy4FF0beFr/pSW1dzSMVxudpKISfDE9XxKtVR4RT/1aAmWa+WSYYT7z19jB4NasGVZuKzmVLrQApYtXGm6aVS5aT1XyTbMVO2qM+k73DJZEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
 	by norbury.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1sPt5o-006giK-2U;
-	Sat, 06 Jul 2024 10:16:11 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 06 Jul 2024 10:15:57 +1000
-Date: Sat, 6 Jul 2024 10:15:57 +1000
+	id 1sPtbs-006h1Y-2e;
+	Sat, 06 Jul 2024 10:49:05 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 06 Jul 2024 10:48:51 +1000
+Date: Sat, 6 Jul 2024 10:48:51 +1000
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Aurelien Jarno <aurelien@aurel32.net>,
-	Olivia Mackall <olivia@selenic.com>, Rob Herring <robh@kernel.org>,
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: Corentin Labbe <clabbe.montjoie@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>, Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <ukleinek@debian.org>,
-	Dragan Simic <dsimic@manjaro.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Martin Kaiser <martin@kaiser.cx>, Tony Luck <tony.luck@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] hwrng: add hwrng driver for Rockchip RK3568 SoC
-Message-ID: <ZoiMvTzXMFxkfcJF@gondor.apana.org.au>
-References: <cover.1719365405.git.daniel@makrotopia.org>
- <15b001360cffc0832e7e2748ad900b1336e0fa32.1719365406.git.daniel@makrotopia.org>
+	Ryan Walklin <ryan@testtoast.com>,
+	Philippe Simons <simons.philippe@gmail.com>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] crypto: sun8i-ce: add Allwinner H616 support
+Message-ID: <ZoiUc5TEk64hseK7@gondor.apana.org.au>
+References: <20240624232110.9817-1-andre.przywara@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,43 +59,62 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <15b001360cffc0832e7e2748ad900b1336e0fa32.1719365406.git.daniel@makrotopia.org>
+In-Reply-To: <20240624232110.9817-1-andre.przywara@arm.com>
 
-On Wed, Jun 26, 2024 at 02:37:10AM +0100, Daniel Golle wrote:
->
-> +#ifndef CONFIG_PM
-> +	rk_rng->rng.init = rk_rng_init;
-> +	rk_rng->rng.cleanup = rk_rng_cleanup;
-> +#endif
+On Tue, Jun 25, 2024 at 12:21:06AM +0100, Andre Przywara wrote:
+> This is an update to the H616 crypto engine support, with the sparse
+> warning fixed and the accrued tags added.
+> ========================
+> 
+> This series adds support for the crypto engine in the Allwinner H616
+> SoC. The IP and its capabilities are very similar to the H6, with the
+> major difference of the DMA engine supporting 34 bit wide addresses.
+> This is achieved by just shifting every address by 2 bits in the DMA
+> descriptors; Allwinner calls this "word addresses".
+> Patch 2/4 adds support for this by wrapping every address access in a
+> function that does the shift as needed. Patch 1/4 adds the new
+> compatible string to the binding, patch 3/4 adds that string to the
+> driver and enables the address shift for it. The final patch 4/4 adds
+> the DT node to the SoC .dtsi. Since this is an internal peripheral,
+> it's always enabled.
+> 
+> Corentin's cryptotest passed for me, though I haven't checked how fast
+> it is and if it really brings an advantage performance-wise, but maybe
+> people find it useful to offload that from the CPU cores.
+> One immediate advantage is the availability of the TRNG device, which
+> helps to feed the kernel's entropy pool much faster - typically before
+> we reach userland. Without the driver this sometimes takes minutes, and
+> delays workloads that rely on the entropy pool.
+> 
+> Please have a look and comment!
+> 
+> Cheers,
+> Andre
+> 
+> Changelog v1 ... v2:
+> - fix sparse warning by treating writel() call differently (2/4)
+> - add Acks, R-b and Tested-by: tags
+> 
+> Andre Przywara (4):
+>   dt-bindings: crypto: sun8i-ce: Add compatible for H616
+>   crypto: sun8i-ce - wrap accesses to descriptor address fields
+>   crypto: sun8i-ce - add Allwinner H616 support
+>   arm64: dts: allwinner: h616: add crypto engine node
+> 
+>  .../bindings/crypto/allwinner,sun8i-ce.yaml   |  2 ++
+>  .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 10 +++++++
+>  .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  8 +++---
+>  .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 28 ++++++++++++++++++-
+>  .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c |  6 ++--
+>  .../crypto/allwinner/sun8i-ce/sun8i-ce-prng.c |  6 ++--
+>  .../crypto/allwinner/sun8i-ce/sun8i-ce-trng.c |  2 +-
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  | 15 ++++++++++
+>  8 files changed, 65 insertions(+), 12 deletions(-)
+> 
+> -- 
+> 2.39.4
 
-Please rewrite this as
-
-	if (!IS_ENABLED(CONFIG_PM)) {
-		...
-	}
-
-> +#ifdef CONFIG_PM
-> +static int rk_rng_runtime_suspend(struct device *dev)
-> +{
-> +	struct rk_rng *rk_rng = dev_get_drvdata(dev);
-> +
-> +	rk_rng_cleanup(&rk_rng->rng);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rk_rng_runtime_resume(struct device *dev)
-> +{
-> +	struct rk_rng *rk_rng = dev_get_drvdata(dev);
-> +
-> +	return rk_rng_init(&rk_rng->rng);
-> +}
-> +#endif
-
-These ifdefs should just disappear, with __maybe_unused added
-instead.
-
-Thanks,
+Patches 1-3 applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
