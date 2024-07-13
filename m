@@ -1,102 +1,198 @@
-Return-Path: <linux-crypto+bounces-5577-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5580-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2DF99302BE
-	for <lists+linux-crypto@lfdr.de>; Sat, 13 Jul 2024 02:38:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA51930420
+	for <lists+linux-crypto@lfdr.de>; Sat, 13 Jul 2024 08:49:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F24D2833CC
-	for <lists+linux-crypto@lfdr.de>; Sat, 13 Jul 2024 00:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAD641C21154
+	for <lists+linux-crypto@lfdr.de>; Sat, 13 Jul 2024 06:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3391748D;
-	Sat, 13 Jul 2024 00:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F5C1EB3D;
+	Sat, 13 Jul 2024 06:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jzNsA6MZ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44106746E;
-	Sat, 13 Jul 2024 00:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC0718B09;
+	Sat, 13 Jul 2024 06:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720831098; cv=none; b=hF7/jufUw/asMXCx39R016sPbXnFPey8wnRf4hJgRrHTD1FkcJ1xNpuzKPxvM0F8FgdxtLrRvwryiSafZusF1UqsReZFpXw5h+aYW1gu64EyUf6A5kK1Pr6+5gE1VcNOGn9cfVhjBPwXRWn70LZWkQo/SM+ETO1MVbZoPvy3LK4=
+	t=1720853335; cv=none; b=LsTtmRNhGZAqNpkwspPWFpylhY22FLYAykjg+c1XhXHEK+Nwt0OxxBZTV3jq53R0NnpvXSe0Gkx/pBbHO1iwUdikpsYGWMCbwGGTo6syRHZaS0IcnvCIO1Ufqz9oXN1E4m3twN6Qw3/3cl/DzecPKipO1Qqhfcy1NUI+PVi0HOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720831098; c=relaxed/simple;
-	bh=4Gq5F+4TLOJHu4iY0ouW3Ff3R7izkcH1X9nC9PlgJEI=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KgW3mS8zTdgCfk5hR+9VFxP/4KAO9T909jM1gzK4v7Ys5E2YAXDrqMF4LD9GGLQRt2Zaxvw5e1muhAMhXkEcx+7Zwd0/ZPbM+LU/z90z4q/kGuCwdmVbY+an54M67Q+5IQkLYrCkUYJ6PHMc2k2W5Rg9t/Bj761t5toXQMRpEr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.97.1)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1sSQm5-000000005cq-1S8i;
-	Sat, 13 Jul 2024 00:38:05 +0000
-Date: Sat, 13 Jul 2024 01:38:01 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: Daniel Golle <daniel@makrotopia.org>,
-	Aurelien Jarno <aurelien@aurel32.net>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Dragan Simic <dsimic@manjaro.org>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <ukleinek@debian.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	Martin Kaiser <martin@kaiser.cx>, Ard Biesheuvel <ardb@kernel.org>,
-	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] arm64: dts: rockchip: add DT entry for RNG to RK356x
-Message-ID: <26d651a891b8740fd3719f465b72dc7b8cb299dc.1720830725.git.daniel@makrotopia.org>
-References: <cover.1720830725.git.daniel@makrotopia.org>
+	s=arc-20240116; t=1720853335; c=relaxed/simple;
+	bh=rmngPodD1hpovVDZjrY0POcxROayfR4qJFc2JSoZNHg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cfQ4qv+r7bt999PpmXYr+t0iBC+Kf9CT6TN0p0BGI/OG4ThQfeF5t9CTRzVwIM+IUfqsod9qp75/Hte1meCslCJ3hv7Ptw/7jfF5QywmT9OuWxmW5TIhJdlGLvrwfS2btXGqjTPBoNECXqijxnl6nNwl4ZgoWvP7kH4K3ANP3yU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jzNsA6MZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39898C4AF15;
+	Sat, 13 Jul 2024 06:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720853335;
+	bh=rmngPodD1hpovVDZjrY0POcxROayfR4qJFc2JSoZNHg=;
+	h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
+	b=jzNsA6MZh4gRJnAtWA224bQbcwcmRlfulT9/C5iGyz/mqns3Mkk7D1loYEBiVfVBJ
+	 F7JkLxOZoK1GketP7VEYlx7GHJyYlyIbHa3lH+H/lWwCEu3dznfMsXna03EptbfAVc
+	 w8LIf99uW9VNjJeqdWpelszhnIc8rPdD5lC5p4p64DR1Dd5jRo3VQNa4S3hAiUM3Xy
+	 3wbULs/3/B6cXzWKlYB9xyCWyZgxmQB+mUrQlq9k7e1E505BxC/tz1d52+9K/lvIg+
+	 QDorsjOJ/gpt/oE4jCp5U35Fn/jC3GK0JqdaL5HE4PL4RJ1TvhDdJkStpktuXMtVK1
+	 ywpW65tEtl4TA==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2eec7e431d9so34354571fa.2;
+        Fri, 12 Jul 2024 23:48:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVToCavhAuhqJIZCiaP3kLpfck+NDyh4U47aHxp5z118WvoFy3Lwi1hm64sv0ZoTddGW+Eqdt+qojW8CNafI+IVUmUb9Gn95JfYFGfKadGJk1mvx6GmayNLJSN7r8ycuRZCjKYgL1BvLBmVmBP2o+K3LVst4ewcCwknMjWJ/Xzev5qKJ15fww==
+X-Gm-Message-State: AOJu0YxOBeFUrxnWJX3u3Bc27zGJFHT5cwrmf60DmwaOcEcp+sff0RpN
+	bpngY1HS3Tc6DquNdQbrMRX5mZowTJEcaiDmqWhMzZD25e1aUPjZ9qeMr0JRfDpgaQNbxMkQQWO
+	DtZMi44k+Y17A/a36Il0yZAHpFD8=
+X-Google-Smtp-Source: AGHT+IH/4Jry0qoasCXWKjUAZkBfuqHL+VReoVc9bEqJlVdcgZjP7WNeITu1eBxpBYc6Ar9/BFXa9+EFkGyjAzlRL4w=
+X-Received: by 2002:a2e:9595:0:b0:2ec:58e8:d7a6 with SMTP id
+ 38308e7fff4ca-2eeb30b9b78mr86285991fa.5.1720853333390; Fri, 12 Jul 2024
+ 23:48:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <cover.1720830725.git.daniel@makrotopia.org>
 In-Reply-To: <cover.1720830725.git.daniel@makrotopia.org>
+Reply-To: wens@kernel.org
+From: Chen-Yu Tsai <wens@kernel.org>
+Date: Sat, 13 Jul 2024 14:48:39 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64ajgK_4G_ANFgwxQToEzDjuBgbmozb7CLxJyNDo-MkCw@mail.gmail.com>
+Message-ID: <CAGb2v64ajgK_4G_ANFgwxQToEzDjuBgbmozb7CLxJyNDo-MkCw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/3] hwrng: add hwrng support for Rockchip RK3568
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Aurelien Jarno <aurelien@aurel32.net>, Olivia Mackall <olivia@selenic.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Dragan Simic <dsimic@manjaro.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <ukleinek@debian.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, 
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, Martin Kaiser <martin@kaiser.cx>, 
+	Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Aurelien Jarno <aurelien@aurel32.net>
+Hi,
 
-Enable the just added Rockchip RNG driver for RK356x SoCs.
+On Sat, Jul 13, 2024 at 8:38=E2=80=AFAM Daniel Golle <daniel@makrotopia.org=
+> wrote:
+>
+> Rockchip SoCs used to have a random number generator as part of their
+> crypto device.
+>
+> However newer Rockchip SoCs like the RK3568 have an independent True
+> Random Number Generator device. This patchset adds a driver for it and
+> enables it in the device tree.
+>
 
-Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- arch/arm64/boot/dts/rockchip/rk356x.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Have you tested any of the later iterations? For me it stopped working
+at v3. After v3 (including v3), all it spits out is zeros.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-index 4690be841a1c..78377e7d1d6d 100644
---- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-@@ -1113,6 +1113,15 @@ sdhci: mmc@fe310000 {
- 		status = "disabled";
- 	};
- 
-+	rng: rng@fe388000 {
-+		compatible = "rockchip,rk3568-rng";
-+		reg = <0x0 0xfe388000 0x0 0x4000>;
-+		clocks = <&cru CLK_TRNG_NS>, <&cru HCLK_TRNG_NS>;
-+		clock-names = "core", "ahb";
-+		resets = <&cru SRST_TRNG_NS>;
-+		reset-names = "reset";
-+	};
-+
- 	i2s0_8ch: i2s@fe400000 {
- 		compatible = "rockchip,rk3568-i2s-tdm";
- 		reg = <0x0 0xfe400000 0x0 0x1000>;
--- 
-2.45.2
+> v5 -> v6:
+>  * Patch 1: unchanged
+>
+>  * Patch 2: get rid of #ifdef
+>    - use if (IS_ENABLED(...)) { ... }instead of #ifdef inside functions
+>    - use __maybe_unused for functions previously enclosed by #ifdef'ery
+>
+>  * Patch 3: unchanged
+>
+> v4 -> v5:
+>  * Patch 1: always use RK3568 name
+>    - use full RK3568 name in patch description
+>    - add RK3568 to title in binding
+>
+>  * Patch 2: full name and cosmetics
+>    - also always mention RK3568 as there may be other RNG in other
+>      (future) Rockchip SoCs
+>    - remove debug output on successful probe
+>    - use MODULE_AUTHOR several times instead of single comma-separated
+>
+>  * Patch 3: unchanged
+>
+> v3 -> v4:
+>  * Patch 1: minor corrections
+>    - fix Rokchip -> Rockchip typo
+>    - change commit title as requested
+>
+>  * Patch 2: improved error handling and resource management
+>    - Always use writel() instead of writel_relaxed()
+>    - Use pm_runtime_resume_and_get
+>    - Correctly return error code in rk_rng_read()
+>    - Make use of devm_reset_control_array_get_exclusive
+>    - Use devm_pm_runtime_enable and there by get rid of rk_rng_remove()
+>
+>  * Patch 3:
+>    - Move node to conform with ordering by address
+>
+> v2 -> v3: patch adopted by Daniel Golle
+>  * Patch 1: address comments of Krzysztof Kozlowski, add MAINTAINERS
+>    - improved description
+>    - meaningful clock-names
+>    - add entry in MAINTAINERS files
+>
+>  * Patch 2: numerous code-style improvements
+>    - drop misleading rk_rng_write_ctl(), simplify I/O writes
+
+This is probably the culprit. The RNG and RST control registers have
+enable bits in their top 16 bits. Without those set together with the
+actual bit values, the writes to the registers have no effect.
+
+Please check all your writel calls against the TRM and add appropriate
+bitmasks for the upper 16 bits.
+
+
+ChenYu
+
+>    - drop unused TRNG_RNG_DOUT_[1-7] macros
+>    - handle error handling for pm_runtime_get_sync()
+>    - use memcpy_fromio() instead of open coding for-loop
+>    - some minor white-spaces fixes
+>
+>  * Patch 3:
+>    - use clock-names as defined in dt-bindings
+>
+> v1 -> v2:
+>  * Patch 1: fix issues reported by Rob Herring and Krzysztof Kozlowski:
+>    - Rename rockchip-rng.yaml into rockchip,rk3568-rng.yaml
+>    - Fix binding title and description
+>    - Fix compatible property
+>    - Rename clocks and add the corresponding descriptions
+>    - Drop reset-names
+>    - Add a bus definition with #address-cells and #size-cells to the
+>      example.
+>
+>  * Patch 2: fix issue reported by kernel test robot <lkp@intel.com>
+>    - Do not read the random registers as big endian, looking at the
+>      RK3568 TRM this is actually not needed. This fixes a sparse
+>      warning.
+>
+>  * Patch 3: unchanged
+>
+> Aurelien Jarno (3):
+>   dt-bindings: rng: Add Rockchip RK3568 TRNG
+>   hwrng: add hwrng driver for Rockchip RK3568 SoC
+>   arm64: dts: rockchip: add DT entry for RNG to RK356x
+>
+>  .../bindings/rng/rockchip,rk3568-rng.yaml     |  61 +++++
+>  MAINTAINERS                                   |   7 +
+>  arch/arm64/boot/dts/rockchip/rk356x.dtsi      |   9 +
+>  drivers/char/hw_random/Kconfig                |  14 ++
+>  drivers/char/hw_random/Makefile               |   1 +
+>  drivers/char/hw_random/rockchip-rng.c         | 220 ++++++++++++++++++
+>  6 files changed, 312 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rng/rockchip,rk3568=
+-rng.yaml
+>  create mode 100644 drivers/char/hw_random/rockchip-rng.c
+>
+> --
+> 2.45.2
+>
 
