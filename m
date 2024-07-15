@@ -1,217 +1,391 @@
-Return-Path: <linux-crypto+bounces-5595-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5598-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51611931A09
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2024 20:13:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24470931BDF
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2024 22:32:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05CD92825BE
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2024 18:13:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BFD21F22E54
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jul 2024 20:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815ED61FD4;
-	Mon, 15 Jul 2024 18:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="px7cCpNO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2408144316;
+	Mon, 15 Jul 2024 20:30:37 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2055.outbound.protection.outlook.com [40.107.100.55])
+Received: from akranes.kaiser.cx (akranes.kaiser.cx [152.53.16.207])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DA973462;
-	Mon, 15 Jul 2024 18:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721067181; cv=fail; b=vB1f15KyCCr/dvnE5iot0u4DCl/op3WeCrcvJE1QGRgqQjrumph6V83WEoUUetG9AJamJ4jPaZFw6Y8P+OcQfrY1WcXiSc+RlJUsFjG0RG7z/QeF9Ka2zk52i63FX2PMma0JvFW0CVSZpragYkUs2RKJKCHxqThjpX77FTCDqUo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721067181; c=relaxed/simple;
-	bh=QOOYzVydlRpgah2EGs9TRScMRjw7qb4C4RQFGUgCk04=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=LQEiIh3KxNkA024MyU3DlfUVDCKMxPwEKXiHtZRw7N3hb+HmcZcHwZRTbXg3rCgCNerIhWfsHQrooc4FMXuky7N/cUCpyyWDk4d3wFUvBwqGTjs8W0u+r+wnfq8/nflkO+ISXE5F/CML9Zx983u9AttkSf8ea4wEomqiwhwqDrs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=px7cCpNO; arc=fail smtp.client-ip=40.107.100.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eCzDyaolEDIIfDa6ndE9umTPJcn8hmI5EHhg/z5WD8KuonhoslpkF8UgJWelwjrsEvP/wNDqkWxCZjr2fIW6VQN7FVMO6mQRQe/fL9cL1PAymisE2WJmcCzQXrNRpwAl94s8oXQVN1iEGvZF4T/iqq9oHS1gw9vLyOfK3EI+d/eYn8WhYo/apxh+10jXqkFBbB3T7lxoEFYZDtMmJSAAkVfrcScLLgofxr4QD3X3w4KJi7guDVcEe79CYtyiM/i13du86alCpej2WfdxK4bpy6g1LyqbAJ0UQEK6tyK/NzNw18fHEegeijPJNb+duOerJ8Y+ZmPcMi6/NDLun3+Q9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zOgOdnggyiKkqQSfMBus6HJvvQyj2nUdCS6fDVZxugI=;
- b=b/3851JQ6sECLPQ3P5RIhFvV3Y2WhMjYo+snK3+9q0ZztgpVLM6rDSnAUILjSALnZx6wHazUH1FlNId2t+TUi5VhOkC1xPBFZiWuW92+iC52bCfn0zSA/Nc8dy9d110NADv7ZD76aXfrDICzgmM8bzp78uDB8T2sGJebRib3sfN0cQk4jJMO5RGqoYnKbm//DmAVb8ap9fV6LSEu+JxmE1jH5QiLaiMMzzOakB2LU4scOR5HW+/uGcnc+EWYhoS5hkNSadIZvaGEb6aoH3+56xdlW4Vxw6Yr6/fJaawSiWRmzonTuuQQvloPeumQkl1tp4d4vm0YdIZ6vPie7gTFbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zOgOdnggyiKkqQSfMBus6HJvvQyj2nUdCS6fDVZxugI=;
- b=px7cCpNO8RJ2ySLp9q/gL2O2eZdoRli+29bbkApFy9OZBKPgBVwgzH/xhIpX+lHwbU1hQwkg0X2qXJKHi/8WqgB4Sbzc00Zd/EGc4J6OqRoujT/eFo2ycO13rO6q2+Y346NR8HKbmKbKtrX16NZhivw/3kSf3l8vCA/x38qxiwjy0vIcSe1oK9y3sPxq6nnYywc7C74WYTFVVyvXa6CLg4uUBbEJReAFC/7hIsL94aJ2f+lH/jBEedLZDgNTyzf6qO33V7bY5wrxjbTLnwProaFgbm/2Qv21krvUDzQOjyrxwCtNpyw84bihtlUdn49sL1uMhyEBS/36N7Ywa5Y98g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.23; Mon, 15 Jul
- 2024 18:12:53 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e%4]) with mapi id 15.20.7762.027; Mon, 15 Jul 2024
- 18:12:53 +0000
-Date: Mon, 15 Jul 2024 15:12:52 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Kees Cook <kees@kernel.org>
-Cc: Lukas Wunner <lukas@wunner.de>, Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	David Howells <dhowells@redhat.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD7D1442E8;
+	Mon, 15 Jul 2024 20:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=152.53.16.207
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721075437; cv=none; b=afLJcUUv7B8o8J4gpETmOrajw8/6U1aa+GEgThKKnEf5DFbvlj5gFnyR6c1q4ImN02OJfVnzgnPmSbfqMdGJxLCeMwfCtyQToRA9wPmeePnn5epb94wX6lq4N/6K8WTqvOWsc15f6AunjlL+K0f+kkZ2mptguT59IOChOzgfB20=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721075437; c=relaxed/simple;
+	bh=SYXTL2ZPOP+qHncxqQvm9el6lTaId8PyESkQbR0BWBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qTUd45hxE047KS5QE2mU40X3uN5+dGux1I5OEwuz1e+w12utyrQLnCV3BTCHNispcVeGgcyh/P7cyKCgygy5MCFl7ygTu8AD+SLcs8FCXCN2+UuFL+phKW0W8VmIUYg8xfkmTy3zQo1ulwhExig8rkTyPgDT6to+pzdBu9WnEw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx; spf=pass smtp.mailfrom=kaiser.cx; arc=none smtp.client-ip=152.53.16.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kaiser.cx
+Received: from martin by akranes.kaiser.cx with local (Exim 4.96)
+	(envelope-from <martin@akranes.kaiser.cx>)
+	id 1sTRfx-000ga8-0f;
+	Mon, 15 Jul 2024 21:47:57 +0200
+Date: Mon, 15 Jul 2024 21:47:57 +0200
+From: Martin Kaiser <martin@kaiser.cx>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Chen-Yu Tsai <wens@kernel.org>, Aurelien Jarno <aurelien@aurel32.net>,
+	Olivia Mackall <olivia@selenic.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Woodhouse <dwmw2@infradead.org>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	linux-pci@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linuxarm@huawei.com,
-	David Box <david.e.box@intel.com>, "Li, Ming" <ming4.li@intel.com>,
-	Ilpo Jarvinen <ilpo.jarvinen@linux.intel.com>,
-	Alistair Francis <alistair.francis@wdc.com>,
-	Wilfred Mallawa <wilfred.mallawa@wdc.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Alexey Kardashevskiy <aik@amd.com>,
-	Dhaval Giani <dhaval.giani@amd.com>,
-	Gobikrishna Dhanuskodi <gdhanuskodi@nvidia.com>,
-	Peter Gonda <pgonda@google.com>, Jerome Glisse <jglisse@google.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Alexander Graf <graf@amazon.com>, Samuel Ortiz <sameo@rivosinc.com>,
-	Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 08/18] PCI/CMA: Authenticate devices on enumeration
-Message-ID: <20240715181252.GU1482543@nvidia.com>
-References: <Zo_zivacyWmBuQcM@wunner.de>
- <66901b646bd44_1a7742941d@dwillia2-xfh.jf.intel.com.notmuch>
- <ZpOPgcXU6eNqEB7M@wunner.de>
- <202407151005.15C1D4C5E8@keescook>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202407151005.15C1D4C5E8@keescook>
-X-ClientProxiedBy: BL6PEPF00013E0B.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:22e:400:0:1001:0:10) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Dragan Simic <dsimic@manjaro.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <ukleinek@debian.org>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/3] hwrng: add hwrng driver for Rockchip RK3568 SoC
+Message-ID: <ZpV87YMXJaPnHM8H@akranes.kaiser.cx>
+References: <cover.1720969799.git.daniel@makrotopia.org>
+ <f606403145588d28dda14a55ba3afef85720a4dc.1720969799.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH7PR12MB5596:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33ebe449-8b06-424d-cf94-08dca4f9beb7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?QHets1scaj/z5LaYYfbSvRiAf01HOY+w6idujo0bBhZnjchoPqm9pIF8Hrwn?=
- =?us-ascii?Q?Fsyy9mBVEsMeyMupVA2j9sj8bzMPgQDD1SSt9Y4ebeoIPYi096pCemRdn0g/?=
- =?us-ascii?Q?9cODkIdwCaqU1psPTjpLRobdNQtCs+QNlC2bngLO5PuZwTzX0AWZEwefFxz8?=
- =?us-ascii?Q?OxhqWGQ5wgqAg46ao93e5eZtU4OGiEcDR+lXLhbXaiWq/CnFm507e4gwUHLs?=
- =?us-ascii?Q?cApYB+45UgTqeuaeN2byyL9YtJPEoqwksZod/a2LnW2lPg5eze7Ro7fhqBEQ?=
- =?us-ascii?Q?ljUdBZmkYh1l9QFIza/FNUTgG9mHYhFoAkRDBb5F9qfSFpSl/u1N+ofpU1EA?=
- =?us-ascii?Q?o9C7bfq36iig6zOqjrhJ4AGKxikSTbgHaDT6mZD7HWf1cbap9PLqlx/5/5eJ?=
- =?us-ascii?Q?MZiyNnR+NEfgU532ECXbeLJNRhEXgmhuWV750lh/AgmFXXcDTLHwelfQpUif?=
- =?us-ascii?Q?/zF8AAyElDpla2K0g8SQX0Sm7G9Yt0Yc5+EshtAyQQr3Fx3dgXvtoumfQ4we?=
- =?us-ascii?Q?6CSrq+V0brcFJ3OlzztvuJ6ihitjjgt+zM2YkBeT7VYtXLkXulhrxPMXOrJw?=
- =?us-ascii?Q?pEHk1hhE6C8b+gXWs7MOxks2xy4BqKmOgt36/BJ3AxYPabB8zcVZn05KPcbu?=
- =?us-ascii?Q?zLrwDgtL03ZvH8wxIECoup45hODRBZu3xKQWDhH4oEccaTTLX7LNln/0q7VU?=
- =?us-ascii?Q?D2Ss8eyjW060KQimgj6Bz2AdQSEMaLIj1i2qoGNfQQ1O8TRP3IjA6iLDBwvo?=
- =?us-ascii?Q?YTHuPyRdi0KHtPhROy/tX1pAVj/p9Cwa92mKOzmHrdBR/Yn7706tYhea465O?=
- =?us-ascii?Q?I3EBWYcYM5ANd7hoyAKScA2ctDcRLCNjH0yIlQiNJN1sktAJX0Iz1LtRnQ4I?=
- =?us-ascii?Q?4U42SEAuseo7CPnNsgv0gnO3YX9SUwizagEtbeL49qrmYEqGEWo8idicutRD?=
- =?us-ascii?Q?oG7kdjLOUK7/T/TRrJUFRTugVyXKLGmvRln0o30xKtCFw+qiW4k05h0aXQli?=
- =?us-ascii?Q?EzD/k5K8WuZruxtCUrcnIxcVqkfUgvqIGwEUBv4T54vrIMRMiSltTvH6INdz?=
- =?us-ascii?Q?ARGKqhJE9sywfl6RcVB8CejnVouABWl4gVzGf82tjHbj8pWJevesWBGNbrDn?=
- =?us-ascii?Q?0fYE8wLA3V9j4sg4ObFMmMdFPCPloKdEL+IrfQ3RrWHclMTHbg7v0K5GeLW2?=
- =?us-ascii?Q?fHHTKGz0K4RZY4BY4wsJKTZlz2lnTJgoaaYpZPdcwc4QFeB6+Op0gB+2TEsB?=
- =?us-ascii?Q?DoBMX4/41yf0+b8BSWyT6gydgphyB+W1tIxhhSrDh4xwmgcmZnQNYYYnbVUO?=
- =?us-ascii?Q?xT+j2aNJfBDo00//rgzI5Lh2ZwFjQ+JuJA0WZIZq/qjXbQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?jfIukPAg/TPB/BaVPR43RouO761oVkNjhj8aKJzXGt8gFsk2YhBfqMVZVgXi?=
- =?us-ascii?Q?7Wpoj9FJpFx74bfCO3/nwttmZuZm3bvxwP2lc6nOOEbJQgsBT6WCmaZC2bcQ?=
- =?us-ascii?Q?I2IlZqZUI3E85FvKEaqWua7ZyrLToLGIRvqE46UqcUUQTKzq+kyCt3HUFOVM?=
- =?us-ascii?Q?0vfx6F3OYNgKhOcFg1H4sIlZNod87t5WmBfu08j+/evFO7ZB0IEjYpQhPrg7?=
- =?us-ascii?Q?WDxTSOeHrF8FNc4OVM7UY9M+SFvGvsCvPJJJz+noNBnH3TXlUW9PeUJtSJhJ?=
- =?us-ascii?Q?/qfW2kUTRtLb3kaQ1plJpw6BUSLBs+RyABmps6vCoAa36oQ3CD2ZcmCrTlGq?=
- =?us-ascii?Q?nQXsyGEhNLM1vlTcaLufbkr1ejn2Kch9NQSvhRkq8xPJF4ejtRXgn3D3puKs?=
- =?us-ascii?Q?4IIrW6zYhY0daLpjvLR6e1HiwFARhjXhceJaURzG/m8MBcJ0OIc9Xp5gfDpb?=
- =?us-ascii?Q?TyVwavFIG5IwWI6GGSkuMm4KLsh2wjQmDAxLlNeKApLtKyz/NneH5OAJtSNk?=
- =?us-ascii?Q?LotVVENP0dEYtCQ6TXfmS9DoqUrwCWVuCDGIZV6iSbcpGVjFhAkfs5AQLcjf?=
- =?us-ascii?Q?ClA0WIc1HdjTTuSWsU/9Z27feL1s1uITBB0dDLyr/QGGmXQnYQxmVQEG209l?=
- =?us-ascii?Q?E8u0lf6K+9veKQJb+xxhFQZE4ITmPu9gUO1fAfiqyMP2GgRYDPYaFFPlPycg?=
- =?us-ascii?Q?9jBzwjH72pyJMaf7TuOdMQb+q5hO6Ze+YDiOcSoCvVZWIRktMWoY2KiCGuFj?=
- =?us-ascii?Q?EG5cyp2AXWwDRh1aNzONMcrCT/Lhy7Kumek2wQ/Nib6jHXkjlD0+LK38MzZE?=
- =?us-ascii?Q?kBsMnilMeqsvVVLqLVBEv2hjECd3NAZcWc6tHU+GkoYq7WIlEhvtk4tR9UXG?=
- =?us-ascii?Q?AwMz3qPgLosD+rLexKR8HJJYYxyXdICxitvxlHdOhR2iNQ/LocmFyORPM/Uy?=
- =?us-ascii?Q?9jYBd3xhl7nHNZd+kuxVr3x627SnpB3h7w+KlBRtccB41+mVE5c2Y67NSTgm?=
- =?us-ascii?Q?SS89ZTmuIJfSQpqpRIOxWstb42+Ao24/RaIGGvds7yCq/U8FalXzp42cfdXq?=
- =?us-ascii?Q?iTAQkgbWKusB0ULnvZCx75NZL3OzqV7JcDITPul5N5a6aY0tISzjcBWu1R77?=
- =?us-ascii?Q?YexVwV/fPbxrt9tQ0zMFY0C6ONMcDrKbmU8JEpdNxP8f1CEmfPZxRgvQd1ym?=
- =?us-ascii?Q?R6lRV6qbbSqXK8HmA2NV97k/GlyVsjPr9qJcN1QkaSipsY8wWxqcB5dsBPSr?=
- =?us-ascii?Q?6T5TmUeXcSnoNAzrWB1VXMX8Gp6IpFEJB18CuFgFaO7Lt6alRHMD4v9wenb6?=
- =?us-ascii?Q?ke6/gokAwaC4YWeNOfbZI2xKo9SiMM1ykdMNuI3ar6vU9K6/vb0Kqa71jVBU?=
- =?us-ascii?Q?U+g/yK4EDB52ex20nDGV9i1W2op5WCYTXCjnn89U07Y1oaHhtU1R5vqqI6YU?=
- =?us-ascii?Q?kJ7nyBOhSul6E8niGO0KvTj2catPDzZRkpkAzInXbErTlHs6s/PpMHLoatDg?=
- =?us-ascii?Q?2fKh9moap9n76wkRUtA5hNjmPF2/Mfb7korZ9BB2a5+kQXpYXSIQHmNX/xok?=
- =?us-ascii?Q?K97TVSkQOJFpcQDQLPQXVfIJirH978BdI7D79MnE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33ebe449-8b06-424d-cf94-08dca4f9beb7
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2024 18:12:53.4860
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: egRcP6wcA6NLovMCYdWIYbDrWiuGsdgBM6yjp46YrD1KCw93STezWCwV2r1AEz7U
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5596
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f606403145588d28dda14a55ba3afef85720a4dc.1720969799.git.daniel@makrotopia.org>
+Sender: "Martin Kaiser,,," <martin@akranes.kaiser.cx>
 
-On Mon, Jul 15, 2024 at 10:21:48AM -0700, Kees Cook wrote:
+Hi,
 
-> Anyway, following the threat model, it doesn't seem like half measures
-> make any sense. If the threat model is "we cannot trust bus members" and
-> authentication is being used to establish trust, then anything else must
-> be explicitly excluded. If this can only be done via the described
-> firewalling, then that really does seem to be the right choice.
+Thus wrote Daniel Golle (daniel@makrotopia.org):
 
-There is supposed to be a state machine here, devices start up at VM
-time 0 unable to DMA to secure guest memory under any conditions. This
-property must be enforced by the trusted platform.
+> From: Aurelien Jarno <aurelien@aurel32.net>
 
-Further the trusted plaform is supposed to prevent "replacement"
-attacks, so once the VM says it trusts a device it cannot be replaced
-with something else.
- 
-When the guest decides it would like the device to reach secure memory
-the trusted platform is part of making that happen.
+> Rockchip SoCs used to have a random number generator as part of their
+> crypto device, and support for it has to be added to the corresponding
+> driver. However newer Rockchip SoCs like the RK3568 have an independent
+> True Random Number Generator device. This patch adds a driver for it,
+> greatly inspired from the downstream driver.
 
-From a kernel and lifecycle perspective we need a bunch of new options
-for PCI devices that should be triggered after userspace has had a
-look at the device.
+> The TRNG device does not seem to have a signal conditionner and the FIPS
+> 140-2 test returns a lot of failures. They can be reduced by increasing
+> RK_RNG_SAMPLE_CNT, in a tradeoff between quality and speed. This value
+> has been adjusted to get ~90% of successes and the quality value has
+> been set accordingly.
 
- - A device is just forbidden from anything using it
- - A device used only with untrusted memory
- - A device is usable with trusted memory
+> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+> [daniel@makrotpia.org: code style fixes]
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  MAINTAINERS                           |   1 +
+>  drivers/char/hw_random/Kconfig        |  14 ++
+>  drivers/char/hw_random/Makefile       |   1 +
+>  drivers/char/hw_random/rockchip-rng.c | 227 ++++++++++++++++++++++++++
+>  4 files changed, 243 insertions(+)
+>  create mode 100644 drivers/char/hw_random/rockchip-rng.c
 
-IMHO this determination needs to be made before the device driver is
-bound.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7b2b8b1f526c..2745cfe56774 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19698,6 +19698,7 @@ M:	Daniel Golle <daniel@makrotopia.org>
+>  M:	Aurelien Jarno <aurelien@aurel32.net>
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/rng/rockchip,rk3568-rng.yaml
+> +F:	drivers/char/hw_random/rockchip-rng.c
 
-The kernel will self-accept a bunch of platform devices, but something
-like the boot volume's device will need something to go look and
-approve it.
+>  ROCKCHIP RASTER 2D GRAPHIC ACCELERATION UNIT DRIVER
+>  M:	Jacob Chen <jacob-chen@iotwrt.com>
+> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+> index 442c40efb200..2b62cd08f91a 100644
+> --- a/drivers/char/hw_random/Kconfig
+> +++ b/drivers/char/hw_random/Kconfig
+> @@ -573,6 +573,20 @@ config HW_RANDOM_JH7110
+>  	  To compile this driver as a module, choose M here.
+>  	  The module will be called jh7110-trng.
 
-Today the kernel self-approves untrusted devices, but this is perhaps
-not a great idea in the long run.
+> +config HW_RANDOM_ROCKCHIP
+> +	tristate "Rockchip True Random Number Generator"
+> +	depends on HW_RANDOM && (ARCH_ROCKCHIP || COMPILE_TEST)
+> +	depends on HAS_IOMEM
+> +	default HW_RANDOM
+> +	help
+> +	  This driver provides kernel-side support for the True Random Number
+> +	  Generator hardware found on some Rockchip SoC like RK3566 or RK3568.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called rockchip-rng.
+> +
+> +	  If unsure, say Y.
+> +
+>  endif # HW_RANDOM
 
-It is definately not a good idea for trusted devices.
+>  config UML_RANDOM
+> diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+> index 32549a1186dc..01f012eab440 100644
+> --- a/drivers/char/hw_random/Makefile
+> +++ b/drivers/char/hw_random/Makefile
+> @@ -48,4 +48,5 @@ obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
+>  obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
+>  obj-$(CONFIG_HW_RANDOM_CN10K) += cn10k-rng.o
+>  obj-$(CONFIG_HW_RANDOM_POLARFIRE_SOC) += mpfs-rng.o
+> +obj-$(CONFIG_HW_RANDOM_ROCKCHIP) += rockchip-rng.o
+>  obj-$(CONFIG_HW_RANDOM_JH7110) += jh7110-trng.o
+> diff --git a/drivers/char/hw_random/rockchip-rng.c b/drivers/char/hw_random/rockchip-rng.c
+> new file mode 100644
+> index 000000000000..a8ccaf14c2c2
+> --- /dev/null
+> +++ b/drivers/char/hw_random/rockchip-rng.c
+> @@ -0,0 +1,227 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * rockchip-rng.c True Random Number Generator driver for Rockchip RK3568 SoC
+> + *
+> + * Copyright (c) 2018, Fuzhou Rockchip Electronics Co., Ltd.
+> + * Copyright (c) 2022, Aurelien Jarno
+> + * Authors:
+> + *  Lin Jinhan <troy.lin@rock-chips.com>
+> + *  Aurelien Jarno <aurelien@aurel32.net>
+> + */
+> +#include <linux/clk.h>
+> +#include <linux/hw_random.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/reset.h>
+> +#include <linux/slab.h>
+> +
+> +#define RK_RNG_AUTOSUSPEND_DELAY	100
+> +#define RK_RNG_MAX_BYTE			32
+> +#define RK_RNG_POLL_PERIOD_US		100
+> +#define RK_RNG_POLL_TIMEOUT_US		10000
+> +
+> +/*
+> + * TRNG collects osc ring output bit every RK_RNG_SAMPLE_CNT time. The value is
+> + * a tradeoff between speed and quality and has been adjusted to get a quality
+> + * of ~900 (~90% of FIPS 140-2 successes).
+> + */
+> +#define RK_RNG_SAMPLE_CNT		1000
+> +
+> +/* TRNG registers from RK3568 TRM-Part2, section 5.4.1 */
+> +#define TRNG_RST_CTL			0x0004
+> +#define TRNG_RNG_CTL			0x0400
+> +#define TRNG_RNG_CTL_LEN_64_BIT		(0x00 << 4)
+> +#define TRNG_RNG_CTL_LEN_128_BIT	(0x01 << 4)
+> +#define TRNG_RNG_CTL_LEN_192_BIT	(0x02 << 4)
+> +#define TRNG_RNG_CTL_LEN_256_BIT	(0x03 << 4)
+> +#define TRNG_RNG_CTL_OSC_RING_SPEED_0	(0x00 << 2)
+> +#define TRNG_RNG_CTL_OSC_RING_SPEED_1	(0x01 << 2)
+> +#define TRNG_RNG_CTL_OSC_RING_SPEED_2	(0x02 << 2)
+> +#define TRNG_RNG_CTL_OSC_RING_SPEED_3	(0x03 << 2)
+> +#define TRNG_RNG_CTL_MASK		GENMASK(15, 0)
+> +#define TRNG_RNG_CTL_ENABLE		BIT(1)
+> +#define TRNG_RNG_CTL_START		BIT(0)
+> +#define TRNG_RNG_SAMPLE_CNT		0x0404
+> +#define TRNG_RNG_DOUT			0x0410
+> +
+> +struct rk_rng {
+> +	struct hwrng rng;
+> +	void __iomem *base;
+> +	struct reset_control *rst;
 
-Jason
+does it make sense to store rst here? it's used only in the probe function.
+
+> +	int clk_num;
+> +	struct clk_bulk_data *clk_bulks;
+> +};
+> +
+> +/* The mask in the upper 16 bits determines the bits that are updated */
+> +static void rk_rng_write_ctl(struct rk_rng *rng, u32 val, u32 mask)
+> +{
+> +	writel((mask << 16) | val, rng->base + TRNG_RNG_CTL);
+> +}
+> +
+> +static int rk_rng_init(struct hwrng *rng)
+> +{
+> +	struct rk_rng *rk_rng = container_of(rng, struct rk_rng, rng);
+> +	int ret;
+> +
+> +	/* start clocks */
+> +	ret = clk_bulk_prepare_enable(rk_rng->clk_num, rk_rng->clk_bulks);
+> +	if (ret < 0) {
+> +		dev_err((struct device *) rk_rng->rng.priv,
+> +			"Failed to enable clks %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* set the sample period */
+> +	writel(RK_RNG_SAMPLE_CNT, rk_rng->base + TRNG_RNG_SAMPLE_CNT);
+> +
+> +	/* set osc ring speed and enable it */
+> +	rk_rng_write_ctl(rk_rng, TRNG_RNG_CTL_LEN_256_BIT |
+> +				 TRNG_RNG_CTL_OSC_RING_SPEED_0 |
+> +				 TRNG_RNG_CTL_ENABLE,
+> +			 TRNG_RNG_CTL_MASK);
+> +
+> +	return 0;
+> +}
+> +
+> +static void rk_rng_cleanup(struct hwrng *rng)
+> +{
+> +	struct rk_rng *rk_rng = container_of(rng, struct rk_rng, rng);
+> +
+> +	/* stop TRNG */
+> +	rk_rng_write_ctl(rk_rng, 0, TRNG_RNG_CTL_MASK);
+> +
+> +	/* stop clocks */
+> +	clk_bulk_disable_unprepare(rk_rng->clk_num, rk_rng->clk_bulks);
+> +}
+> +
+> +static int rk_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+> +{
+> +	struct rk_rng *rk_rng = container_of(rng, struct rk_rng, rng);
+> +	size_t to_read = min_t(size_t, max, RK_RNG_MAX_BYTE);
+> +	u32 reg;
+> +	int ret = 0;
+
+no need to initialise ret, it's overwritten immediately
+
+> +
+> +	ret = pm_runtime_resume_and_get((struct device *) rk_rng->rng.priv);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Start collecting random data */
+> +	rk_rng_write_ctl(rk_rng, TRNG_RNG_CTL_START, TRNG_RNG_CTL_START);
+> +
+> +	ret = readl_poll_timeout(rk_rng->base + TRNG_RNG_CTL, reg,
+> +				 !(reg & TRNG_RNG_CTL_START),
+> +				 RK_RNG_POLL_PERIOD_US,
+> +				 RK_RNG_POLL_TIMEOUT_US);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	/* Read random data stored in the registers */
+> +	memcpy_fromio(buf, rk_rng->base + TRNG_RNG_DOUT, to_read);
+> +out:
+> +	pm_runtime_mark_last_busy((struct device *) rk_rng->rng.priv);
+> +	pm_runtime_put_sync_autosuspend((struct device *) rk_rng->rng.priv);
+> +
+> +	return (ret < 0) ? ret : to_read;
+> +}
+> +
+> +static int rk_rng_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct rk_rng *rk_rng;
+> +	int ret;
+> +
+> +	rk_rng = devm_kzalloc(dev, sizeof(*rk_rng), GFP_KERNEL);
+> +	if (!rk_rng)
+> +		return -ENOMEM;
+> +
+> +	rk_rng->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(rk_rng->base))
+> +		return PTR_ERR(rk_rng->base);
+> +
+> +	rk_rng->clk_num = devm_clk_bulk_get_all(dev, &rk_rng->clk_bulks);
+> +	if (rk_rng->clk_num < 0)
+> +		return dev_err_probe(dev, rk_rng->clk_num,
+> +				     "Failed to get clks property\n");
+> +
+> +	rk_rng->rst = devm_reset_control_array_get_exclusive(&pdev->dev);
+> +	if (IS_ERR(rk_rng->rst))
+> +		return dev_err_probe(dev, PTR_ERR(rk_rng->rst),
+> +				     "Failed to get reset property\n");
+> +
+> +	reset_control_assert(rk_rng->rst);
+> +	udelay(2);
+> +	reset_control_deassert(rk_rng->rst);
+> +
+> +	platform_set_drvdata(pdev, rk_rng);
+> +
+> +	rk_rng->rng.name = dev_driver_string(dev);
+> +	if (!IS_ENABLED(CONFIG_PM)) {
+> +		rk_rng->rng.init = rk_rng_init;
+> +		rk_rng->rng.cleanup = rk_rng_cleanup;
+> +	}
+> +	rk_rng->rng.read = rk_rng_read;
+> +	rk_rng->rng.priv = (unsigned long) dev;
+> +	rk_rng->rng.quality = 900;
+> +
+> +	pm_runtime_set_autosuspend_delay(dev, RK_RNG_AUTOSUSPEND_DELAY);
+> +	pm_runtime_use_autosuspend(dev);
+> +	devm_pm_runtime_enable(dev);
+
+could this fail? is it worth checking the return value?
+
+> +
+> +	ret = devm_hwrng_register(dev, &rk_rng->rng);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "Failed to register Rockchip hwrng\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused rk_rng_runtime_suspend(struct device *dev)
+> +{
+> +	struct rk_rng *rk_rng = dev_get_drvdata(dev);
+> +
+> +	rk_rng_cleanup(&rk_rng->rng);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused rk_rng_runtime_resume(struct device *dev)
+> +{
+> +	struct rk_rng *rk_rng = dev_get_drvdata(dev);
+> +
+> +	return rk_rng_init(&rk_rng->rng);
+> +}
+> +
+> +static const struct dev_pm_ops rk_rng_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(rk_rng_runtime_suspend,
+> +				rk_rng_runtime_resume, NULL)
+> +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+> +				pm_runtime_force_resume)
+> +};
+> +
+> +static const struct of_device_id rk_rng_dt_match[] = {
+> +	{ .compatible = "rockchip,rk3568-rng", },
+> +	{ /* sentinel */ },
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, rk_rng_dt_match);
+> +
+> +static struct platform_driver rk_rng_driver = {
+> +	.driver	= {
+> +		.name	= "rockchip-rng",
+> +		.pm	= &rk_rng_pm_ops,
+> +		.of_match_table = rk_rng_dt_match,
+> +	},
+> +	.probe	= rk_rng_probe,
+> +};
+> +
+> +module_platform_driver(rk_rng_driver);
+> +
+> +MODULE_DESCRIPTION("Rockchip RK3568 True Random Number Generator driver");
+> +MODULE_AUTHOR("Lin Jinhan <troy.lin@rock-chips.com>");
+> +MODULE_AUTHOR("Aurelien Jarno <aurelien@aurel32.net>");
+> +MODULE_AUTHOR("Daniel Golle <daniel@makrotopia.org>");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.45.2
 
