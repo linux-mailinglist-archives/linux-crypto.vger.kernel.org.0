@@ -1,90 +1,108 @@
-Return-Path: <linux-crypto+bounces-5804-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5806-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20BC794683E
-	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2024 08:49:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 733719468F2
+	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2024 11:54:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE4892822F3
-	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2024 06:49:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8D41C20F05
+	for <lists+linux-crypto@lfdr.de>; Sat,  3 Aug 2024 09:54:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16547D401;
-	Sat,  3 Aug 2024 06:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD86131E2D;
+	Sat,  3 Aug 2024 09:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="AbB4aZ73"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468D12AEEA
-	for <linux-crypto@vger.kernel.org>; Sat,  3 Aug 2024 06:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3EB867A0D
+	for <linux-crypto@vger.kernel.org>; Sat,  3 Aug 2024 09:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722667775; cv=none; b=Rg42cs1/GL5W286s519u3QmxO4vxVX7VP/1owX+XSpIjNheLXNrQ7QI2+j0b2WKGJqyNkzn95CaUnyuJDdQ1OeLx3HpX8KrllRiKGx1LIvLqyJMtgoQ7Arlo8L0WFZOon21tDqVtzZpk/7iwVtDT76SgjLx+KTWE8vF90Ck0Bfs=
+	t=1722678838; cv=none; b=tG5x6/5SnL64BD1iVzTuwEJgAYhS4BFLP+UnU72UM9cFAP3oVhrxEOyjMy41lVXnmyFVK1tBSMc2Fj4j1OkllcwW98PPjfX0/ezMrV4lyI4AcWEg+50Si+uet9tI7pC0v93ckdrf1V3cey2s+aD0oYYMJ80H1qIyA+FQBMhZfDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722667775; c=relaxed/simple;
-	bh=CKzhz5VIN2allRlAJY2DUZDEzHoDTkOKHaj+MmAIH9U=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rd9y+jzPHG4IVOysA9/AEecPtQFzKzg6nCh4nwFm6Kc0M6z052Vh4B6DJyj5ddF8mOZGdsOG9YfKSIKHWVyIoYEj0RrE2lZYUMTEceNQyZoNhtlBQ2mAWtV2aBLYOJuLfEJEqyI6jRq5HVH9Hrqm3H/2sudsJigJd7995IgrE+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WbYFy6S1Rz1L9dg;
-	Sat,  3 Aug 2024 14:49:10 +0800 (CST)
-Received: from kwepemd200011.china.huawei.com (unknown [7.221.188.251])
-	by mail.maildlp.com (Postfix) with ESMTPS id E7D701400DC;
-	Sat,  3 Aug 2024 14:49:25 +0800 (CST)
-Received: from cgs.huawei.com (10.244.148.83) by
- kwepemd200011.china.huawei.com (7.221.188.251) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Sat, 3 Aug 2024 14:49:25 +0800
-From: Gaosheng Cui <cuigaosheng1@huawei.com>
-To: <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
-	<florian.fainelli@broadcom.com>, <bcm-kernel-feedback-list@broadcom.com>,
-	<rjui@broadcom.com>, <sbranden@broadcom.com>, <hadar.gat@arm.com>,
-	<cuigaosheng1@huawei.com>, <alex@shruggie.ro>, <aboutphysycs@gmail.com>,
-	<wahrenst@gmx.net>, <robh@kernel.org>
-CC: <linux-crypto@vger.kernel.org>, <linux-rpi-kernel@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH -next 2/2] hwrng: cctrng - Add missing clk_disable_unprepare in cctrng_resume
-Date: Sat, 3 Aug 2024 14:49:23 +0800
-Message-ID: <20240803064923.337696-3-cuigaosheng1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240803064923.337696-1-cuigaosheng1@huawei.com>
-References: <20240803064923.337696-1-cuigaosheng1@huawei.com>
+	s=arc-20240116; t=1722678838; c=relaxed/simple;
+	bh=ymWPdCs1+qadU1Yr764y0/w0c4uGJgAiszgAJgK9nhY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AJIfyQ3MJlG/IwVrrYigcUB1xcczXhjP+5Z3AMZlPMnvNmtKO18qkTW3B6P2rwQg4RtLaGqTrqYbmTa7RGsx9UXIdtyYHEX6kT36stiZvNhH2iQRLhQbMy+d5T1nm5/QzqV5aaPnzEYqHizcGBVvsUih2qdokQhI7daBS9+Ke2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=AbB4aZ73; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1722678803; x=1723283603; i=wahrenst@gmx.net;
+	bh=ymWPdCs1+qadU1Yr764y0/w0c4uGJgAiszgAJgK9nhY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=AbB4aZ73EvKnTBiLETpu8MzLKSaSbiv0LzF/yHNnSrfw9MyT+PzHZoPPAQNHdhxR
+	 bePR9v+F2yIHTOnZDIKa0js75AWSMYWeyaDTn8au2PewK3e5NOqg1H0UWuiFnTtX5
+	 6/CTw9yl0UaijibFUIYrp2nzAaQsSO3qYIw4RH8AgKh4MYG8irD/mOIGsgCKNZp1d
+	 yBMswJeUONeZqRDqUKPdbGyxhXh6nXWOHptrbwAAcpb5seqvJHdhrUQ28BORIKyXo
+	 z4eUoTI2LQrp3c92ge//4i7/EPl7EMqJCpD3Rx2vBNo+v87mKqcuulMJd7VxHK5WS
+	 Lw04rwBSbMlNQbLbow==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.127] ([37.4.248.43]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MG9kM-1sSQ5n11Po-009jsn; Sat, 03
+ Aug 2024 11:53:23 +0200
+Message-ID: <6fafde5a-e532-4a1b-9a02-a5394577f3aa@gmx.net>
+Date: Sat, 3 Aug 2024 11:53:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd200011.china.huawei.com (7.221.188.251)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 1/2] hwrng: bcm2835 - Add missing
+ clk_disable_unprepare in bcm2835_rng_init
+To: Gaosheng Cui <cuigaosheng1@huawei.com>, olivia@selenic.com,
+ herbert@gondor.apana.org.au, florian.fainelli@broadcom.com,
+ bcm-kernel-feedback-list@broadcom.com, rjui@broadcom.com,
+ sbranden@broadcom.com, hadar.gat@arm.com, alex@shruggie.ro,
+ aboutphysycs@gmail.com, robh@kernel.org
+Cc: linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240803064923.337696-1-cuigaosheng1@huawei.com>
+ <20240803064923.337696-2-cuigaosheng1@huawei.com>
+Content-Language: en-US
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <20240803064923.337696-2-cuigaosheng1@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7GVyv+JJmSn+gXGU8XK2L/rbcxXMHKRGZsJn7wEyCdQBYpSyrZu
+ QiErn9zJwyRGsn+BS+BBROuJfzjxJxEwB6/45pm1Y1ZKMdSku9lmhiH8T6sa+lYW3N8glLt
+ nT+eYxdgQleN7MwCeg1IJZzMgRW/ylCAcsVoBS9Nqfg0kwW+Rs7tO1Acj7SiXQeeCve8zpK
+ 6m8+5d8olGYIJctevTrEg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:d1SLJ6J6NjI=;Pe7thD5kq7wGSfxKIsPX04l7XaG
+ uXnWM64UEM8nqsC/S8e1sOEkdMoOJ/+VxHp2JBnIKt0/zjonSyqaGAv8rmjpcEEvpY4Ef6Fcu
+ TeAt8LcqHiyDZSWaM6h4JvGpqxWRrxsPPV9B8zzCY9myVMeol1tskIOpaMsH5KGlK1XjUL8YM
+ zFo//nLQxfK6eiKHY01Vkn4CzthEsRRpCJpNhGCVbepFr57bLYTUGiph9mNtuC6jO+Hw5n/Yc
+ beVv1/DNC5o/xlmspiRBB0fZljmYr5xrHm5snznHVOc8K5dpvVFBZboBy/e73mXXm0NxuKawE
+ EoX9DnqrZSQjZwkclrv5GgzWZXwOGdJ/HmiSQiwGRCEuJBtqIfienG8LqQaUe5CsWjsfgT1EG
+ gGW4FKFyUZEuMDjyCTrxLHBcdWjkmFGPJ2qSiF9BXEX6ipyOzEbWNvpgD0mOiQBu0ZG40HkRm
+ AMkTZASI73KhdHwMmG/EVNhl4krybvj7f4HFhCki2Y/T94qOEWhcEHy5SLa0XkqGBMpAA30op
+ m9Ew+zXbyzqS9EXnhSIIDEzwy/3avixG8z+R814rIohYacKsXlsm5ym5kzHmE+Eohylj9TCLe
+ 2lxeP8WMeWC/FQj05biC4+AGqzv4HiLlSyZz1acxPmGC6+9nncWBA+26uxRm4Qn2LvNQ8gAk7
+ WSwO1Gp1YyePDj2rG2YK6DqOlsAuWefKd6pbc8gAeLKLF08EmsXZIDjvicE75Ndj4SWv7SLQn
+ kmkC0kVzomsQfeQ9nJNk1ZMUBc0+pXje7zMOR69+lGHfroHmUQXeGh5W3l0G2bD8DxXBfykln
+ Riu2UooHvyikDGCiMtIhqkdw==
 
-Add the missing clk_disable_unprepare() before return in
-cctrng_resume().
+Am 03.08.24 um 08:49 schrieb Gaosheng Cui:
+> Add the missing clk_disable_unprepare() before return in
+> bcm2835_rng_init().
+>
+> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+> ---
+Thanks
 
-Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
----
- drivers/char/hw_random/cctrng.c | 1 +
- 1 file changed, 1 insertion(+)
+This was introduced by e5f9f41d5e62 ("hwrng: bcm2835 - add reset
+support"), but i'm not sure if this needs a fixes tag.
 
-diff --git a/drivers/char/hw_random/cctrng.c b/drivers/char/hw_random/cctrng.c
-index c0d2f824769f..4c50efc46483 100644
---- a/drivers/char/hw_random/cctrng.c
-+++ b/drivers/char/hw_random/cctrng.c
-@@ -622,6 +622,7 @@ static int __maybe_unused cctrng_resume(struct device *dev)
- 	/* wait for Cryptocell reset completion */
- 	if (!cctrng_wait_for_reset_completion(drvdata)) {
- 		dev_err(dev, "Cryptocell reset not completed");
-+		clk_disable_unprepare(drvdata->clk);
- 		return -EBUSY;
- 	}
- 
--- 
-2.25.1
-
+Best regards
 
