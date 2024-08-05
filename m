@@ -1,67 +1,69 @@
-Return-Path: <linux-crypto+bounces-5824-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5826-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A92947862
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 Aug 2024 11:34:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE149478CA
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 Aug 2024 11:56:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AF2C28289F
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 Aug 2024 09:34:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 178A6B22870
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 Aug 2024 09:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4979F14D2B3;
-	Mon,  5 Aug 2024 09:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC3D142E9D;
+	Mon,  5 Aug 2024 09:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MklitRRb";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VtIixYwD"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1L8S+MLQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ANt4COKj"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD4915382E
-	for <linux-crypto@vger.kernel.org>; Mon,  5 Aug 2024 09:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771031422CA
+	for <linux-crypto@vger.kernel.org>; Mon,  5 Aug 2024 09:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722850466; cv=none; b=nusRTgqPo8TezUQfW+wPcfhxiKC4AIenV+5Z2er74NIDKl9gBihrWjZBAX5u3dLzmF1S7/hVxESE1DnOOIe2v4yXNtqBqvZgnKjvuhWIjd0Wq0xOL/yZTN19sOH9pTgcQ7GcFNpxMEdrN0RUCMZokMiAlCEkCYGtulmWmBxV8dk=
+	t=1722851784; cv=none; b=dVlLm0yG5WZdvN4+F1bqiZaI8Nqakj27NSHRXSqVIPdcBgQEGMG8SyKg9GTdoifL28u4BBRokPXYqB3XUFQWO87nvjOT6JrB7XdemzYl3ZKz800UaR+//leJOaoWFkX65eCOGWVLFe8e7dlOXDx23h7TB/CleFS8tgjd9bM6IyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722850466; c=relaxed/simple;
-	bh=w57TnR4ptMXUBp1wfScfm94bi5pNPi6ESOb3YcY3KYo=;
+	s=arc-20240116; t=1722851784; c=relaxed/simple;
+	bh=6CQUDd8LJQRQan6HNW41AEY9mHWOQm2dMM9tN4j9NL8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RzhK+Emw6nYuFdxeFqYxWo7ko2qA9jERnaCmioewcDg65gFExT5Xhq/vd7GW1SXnI+BCipkxMLQCWvr+JKjG5H2ZWonrEK+UF7M5f/LA86mvq7xBieM9PFFEQv+309QyaIiccCc7WSLyK6tdfFDeLtoUVlwOOmImZcozSx0L+qQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MklitRRb; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VtIixYwD; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=qF5MpT9Ig0s++q/U1VqqJ+1mjAzo6Kn1RPUfephZVSOgO5aSCsWvHQfMdiEDRyHyVkFYA3gL05b6gFtq569G0f/sdEicjig7lkio7tteq62Nlg70+/8PiQjWlidr8PUm6T2FLrUHNA13T5I0JCQM0jEHR0WYMNllDPF9HhEm57w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1L8S+MLQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ANt4COKj; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 5 Aug 2024 11:34:20 +0200
+Date: Mon, 5 Aug 2024 11:56:16 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1722850462;
+	s=2020; t=1722851777;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JzWNIz3IptDUR2+BfS00wCKZwWZ1Torsxtz6K0R0Eb4=;
-	b=MklitRRbAFLxQFjYXbNenT0TYM7VrYzJFym6mnB26DqCn05HFxzAEsWwKvy2zW3WuESW8j
-	3l8TFb5p2koRny2se9kLYtPO0edIquEmCZOxjyQ53ayG412ZfWuWI5Dpprkk+E+UWWRZIs
-	S20x1qXDNodwPzr5ZlWOoNLTi9aKf+gwLPiUTwS0IlLPjMKG4PDpto1k2hwyvsYA9m44u4
-	4VWbX8wjvouysiFhDTG+x1UjhP2hBowO6JxNPd1alDmnYxDAhGx6diNMa0okRHMH2no3on
-	dApDSRXghxp7E/iH5iLaPSh4mLp4+wofn11D+yE8kBlcnrAMqRk0a74ePm6I5A==
+	bh=gpSIsiiXYGHNuLgueKhua5RzybXnOxk4VP5Tmq8puyk=;
+	b=1L8S+MLQLDN57IDYBrKa/zf6as6BXNA7E9uU6VNGgn7OO32k5rXEYteDPDXZ5Ltq2LKsSJ
+	3UriWm/PkiCj8kzRo59fsPE4v8F0B/7tyru3oLvMV6eke7fc9VV3K8nM988V6xZbI88jSh
+	JYllSNk5peDZxmLrib2azpx/7S+GL37TOV68AgkzUK+jSfehFtEfl8BdrtmboFtxW5npxL
+	aH37v4aX8HH0j6H8wmR2ZDsdh5GkrOAeY80ti5WBlJRjWSlnoDerYsAKgLCEzZYmKoOX2Z
+	bicmLz7opMHCoD4yPPdyXVQWeYnED0j6GtjnMH32/JVAL7VMO3R8CpbbwTAIOw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1722850462;
+	s=2020e; t=1722851777;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JzWNIz3IptDUR2+BfS00wCKZwWZ1Torsxtz6K0R0Eb4=;
-	b=VtIixYwDwLhQ7nxqIdxhwG+Dgso02j64ACEVN7FwGTFbG0ctiFtJh0M1j45mH/ktP+RfKL
-	rxsWBxxKHForbUBg==
+	bh=gpSIsiiXYGHNuLgueKhua5RzybXnOxk4VP5Tmq8puyk=;
+	b=ANt4COKjT+qr0i7so0LXhywzlbFnqh/L3+5M0t2q/xJcWFnvpb9pwPxXEZQORSdATTGH17
+	GOm5FYDUjeDgTqAQ==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: linux-crypto@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Biggers <ebiggers@google.com>,
+Cc: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
 	Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: [PATCH] crypto: x86/aes-gcm: Disable FPU around
  skcipher_walk_done().
-Message-ID: <20240805093420.wMcRg2tb@linutronix.de>
+Message-ID: <20240805095616.xM0TxF1n@linutronix.de>
 References: <20240802102333.itejxOsJ@linutronix.de>
- <Zq17sZgSGueOsGiO@gondor.apana.org.au>
+ <20240802162832.GA1809@sol.localdomain>
+ <20240802164904.GB1809@sol.localdomain>
+ <ZrCVK91OPHKVNd8a@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -70,45 +72,18 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zq17sZgSGueOsGiO@gondor.apana.org.au>
+In-Reply-To: <ZrCVK91OPHKVNd8a@gondor.apana.org.au>
 
-On 2024-08-03 08:37:05 [+0800], Herbert Xu wrote:
-> On Fri, Aug 02, 2024 at 12:23:33PM +0200, Sebastian Andrzej Siewior wrote:
-> > kernel_fpu_begin() disables preemption. gcm_crypt() has a
-> > skcipher_walk_done() invocation within a preempt disabled section.
-> > skcipher_walk_done() can invoke kfree() which requires sleeping locks on
-> > PREEMPT_RT and must not be invoked with disabled preemption.
-> > 
-> > Keep FPU access enabled while skcipher_walk_done() is invoked.
-> > 
-> > Fixes: b06affb1cb580 ("crypto: x86/aes-gcm - add VAES and AVX512 / AVX10 optimized AES-GCM")
-> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > ---
-> >  arch/x86/crypto/aesni-intel_glue.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-> > index cd37de5ec4046..be92e4c3f9c7f 100644
-> > --- a/arch/x86/crypto/aesni-intel_glue.c
-> > +++ b/arch/x86/crypto/aesni-intel_glue.c
-> > @@ -1403,7 +1403,9 @@ gcm_crypt(struct aead_request *req, int flags)
-> >  			aes_gcm_update(key, le_ctr, ghash_acc,
-> >  				       walk.src.virt.addr, walk.dst.virt.addr,
-> >  				       nbytes, flags);
-> > +			kernel_fpu_end();
-> >  			err = skcipher_walk_done(&walk, 0);
-> > +			kernel_fpu_begin();
+On 2024-08-05 17:02:35 [+0800], Herbert Xu wrote:
+> On Fri, Aug 02, 2024 at 09:49:04AM -0700, Eric Biggers wrote:
+> >
+> > This would work too, I think:
 > 
-> What if the user already did a preempt_disable()? This would still
-> be buggy, right?
+> Yes, and we can go a bit further like this:
 
-Yes if it has been done explicitly by preempt_disable(). And I am
-looking into explicit case of disabling preemption and trying to get rid
-of it if I stumble upon one. This one just popped up on one of my boxes.
+Yes,
 
-> The Crypto API allows this to be called with preemption disabled.
-> 
-> Cheers,
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 Sebastian
 
