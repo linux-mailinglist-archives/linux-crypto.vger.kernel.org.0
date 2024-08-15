@@ -1,128 +1,154 @@
-Return-Path: <linux-crypto+bounces-5970-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5977-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7CF8952B50
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 11:51:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04537952B7C
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 12:03:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2E88B214DB
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 09:51:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E7E1C214FD
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 10:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A691A0728;
-	Thu, 15 Aug 2024 08:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501081D1F4A;
+	Thu, 15 Aug 2024 08:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A4xYLb0B"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A813BB50
-	for <linux-crypto@vger.kernel.org>; Thu, 15 Aug 2024 08:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3991C9EC6;
+	Thu, 15 Aug 2024 08:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723711910; cv=none; b=gdPI5stp4P2TaOriwkm+JWmM8Hl4qQ4rDWx2XThdWCIR8NaEiOGDLz/ipFWQ1A2qKsTpOGHxm00DoZYLB9Bysx4sSIdh2W6ENY7LhNKC1fu+jqqeQIxrLPhfJaRk8lF8JWp/Sud5WwB6C1qt4gXokszOLjSzU/HoHVNtyOUEM7k=
+	t=1723712279; cv=none; b=ddyxB5VdLkUBIOnP+8vu5weYhNGpGf6A21IWeQ0yhtsqhEmMEU1e/5MmeUdfSiU1IxzhLzp+E0E1UcREpxGtlM6SQl2pqgMppiK/BYFcvndj7XLEYsjF1qoizDpApaFv08qkmsHE/Y+MECcqd/XE4VBi2tgCzV3urCCKnDuEHAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723711910; c=relaxed/simple;
-	bh=02Mtuy/3IuxEbBZmqPQ8reBLkEA5xqqO54/7nXobsns=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ivw+f+m4l2BTu6GQoJH6NWvmk5CQNLaz78dT/56Wm4bNkZ8kLP2Pruyu5N4lg3i5dAhNbeDvZ+XEqvNlt2eTm6Nh+XMylRrV91QHzCtHItcoHcJv/B5dXqpu/Qe2N2Zyf7ras5QWa5kSHuB5+jBLAbLERYhUQcEUeAhJwNRNQlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1seW4L-004oTV-0D;
-	Thu, 15 Aug 2024 16:51:39 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 15 Aug 2024 16:51:38 +0800
-Date: Thu, 15 Aug 2024 16:51:38 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Pavitrakumar M <pavitrakumarm@vayavyalabs.com>,
-	Bhoomika K <bhoomikak@vayavyalabs.com>,
-	Ruud Derwig <Ruud.Derwig@synopsys.com>,
-	linux-crypto@vger.kernel.org
-Subject: [PATCH] crypto: spacc - Use crypto_authenc_extractkeys
-Message-ID: <Zr3Bmpcc4Y3hJNux@gondor.apana.org.au>
+	s=arc-20240116; t=1723712279; c=relaxed/simple;
+	bh=7l6wGQ98HpBbyXQeXaA1zEMxmFdw15AbADVhA9ODIsI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=NGOXjZF8SqTqCyZJVWSD/4E8GWfO5939idU95HrutPiQWnu6l9sNtSIIxi5RQFasEBU++aqTR3c/H/H/5WH1Fjlfj1uG9d5JpoZz5iHmldo9RtUmQGfW0ZCyCzvwktDi1HJmwRhSmjqWwiI+5EsZQBnK4mLkOjd7OLQPrNLwI34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=A4xYLb0B; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47EN9r1t027657;
+	Thu, 15 Aug 2024 08:57:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=qcppdkim1; bh=m7Xggm7ZIW4
+	WehkFh4oxlkRKXpkz8aAItTBbl9RctsA=; b=A4xYLb0BOKKQ84FcGw6wikF53nO
+	tGe5pzJrP6uQM2cWWRgosonBTd/q154ziowEeq5JB7LYJUSaTWKmsT9Cr54l/OzS
+	S67/RWQeMcfwkwqyZlyAdKvayd3kcAURoUOS8OIZMOjWMC1n4zdwCwR0bpaN+5jI
+	h7oZrM6t+doQCGgoZNxGW8AENCqKQM/vlTxXJM8LCMaHcYWoAfA6tOHpl6TCnYXv
+	nYDZ5kja85rWZvy7Edvf/DuxFINqDKHVIog+pi+mVhEZlp4F3Fe+E9/flJdAVy/J
+	2H3Nv9uVy0wSVVXS2B4Ropuq0uuRyCgtd6SwVMAvahdW751rOPY5aoDZHQw==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40x3etdq3v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Aug 2024 08:57:32 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTP id 47F8u85x028275;
+	Thu, 15 Aug 2024 08:57:29 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 40xkmhenmp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Aug 2024 08:57:29 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 47F8vSVu029647;
+	Thu, 15 Aug 2024 08:57:28 GMT
+Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 47F8vSEm029640
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Aug 2024 08:57:28 +0000
+Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
+	id 8F6CB411DA; Thu, 15 Aug 2024 14:27:27 +0530 (+0530)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: vkoul@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+        andersson@kernel.org, konradybcio@kernel.org, thara.gopinath@gmail.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        gustavoars@kernel.org, u.kleine-koenig@pengutronix.de, kees@kernel.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com,
+        quic_mdalam@quicinc.com, quic_utiwari@quicinc.com
+Subject: [PATCH v2 01/16] dt-bindings: dma: qcom,bam: Add bam pipe lock
+Date: Thu, 15 Aug 2024 14:27:10 +0530
+Message-Id: <20240815085725.2740390-2-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240815085725.2740390-1-quic_mdalam@quicinc.com>
+References: <20240815085725.2740390-1-quic_mdalam@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: dPzDTXje2zgTCvSf6rea3MW84dL_nyi4
+X-Proofpoint-ORIG-GUID: dPzDTXje2zgTCvSf6rea3MW84dL_nyi4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-15_01,2024-08-13_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 impostorscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
+ definitions=main-2408150064
 
-Use the crypto_authenc_extractkeys helper rather than ad-hoc parsing.
+BAM having pipe locking mechanism. The Lock and Un-Lock bit
+should be set on CMD descriptor only. Upon encountering a
+descriptor with Lock bit set, the BAM will lock all other
+pipes not related to the current pipe group, and keep
+handling the current pipe only until it sees the Un-Lock
+set.
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
 
-diff --git a/drivers/crypto/dwc-spacc/spacc_aead.c b/drivers/crypto/dwc-spacc/spacc_aead.c
-index 3468ff605957..3a617da9007d 100755
---- a/drivers/crypto/dwc-spacc/spacc_aead.c
-+++ b/drivers/crypto/dwc-spacc/spacc_aead.c
-@@ -5,7 +5,6 @@
- #include <crypto/gcm.h>
- #include <crypto/aead.h>
- #include <crypto/authenc.h>
--#include <linux/rtnetlink.h>
- #include <crypto/scatterwalk.h>
- #include <crypto/internal/aead.h>
- #include <linux/platform_device.h>
-@@ -540,15 +539,13 @@ static int spacc_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- {
- 	struct spacc_crypto_ctx *ctx  = crypto_aead_ctx(tfm);
- 	const struct spacc_alg  *salg = spacc_tfm_aead(&tfm->base);
-+	struct crypto_authenc_keys authenc_keys;
- 	struct spacc_priv	*priv;
--	struct rtattr *rta = (void *)key;
--	struct crypto_authenc_key_param *param;
- 	unsigned int authkeylen, enckeylen;
- 	const unsigned char *authkey, *enckey;
- 	unsigned char xcbc[64];
--
--	int err = -EINVAL;
- 	int singlekey = 0;
-+	int err;
+Change in [v2]
+
+* Added initial support for dt-binding
+
+Change in [v1]
+
+* This patch was not included in [v1]
+
+ Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+index 3ad0d9b1fbc5..91cc2942aa62 100644
+--- a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+@@ -77,6 +77,12 @@ properties:
+       Indicates that the bam is powered up by a remote processor but must be
+       initialized by the local processor.
  
- 	/* are keylens valid? */
- 	ctx->ctx_valid = false;
-@@ -569,26 +566,14 @@ static int spacc_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- 		goto skipover;
- 	}
++  qcom,bam_pipe_lock:
++    type: boolean
++    description:
++      Indicates that the bam pipe needs locking or not based on client driver
++      sending the LOCK or UNLOK bit set on command descriptor.
++
+   reg:
+     maxItems: 1
  
--	if (!RTA_OK(rta, keylen)		       ||
--	    rta->rta_type != CRYPTO_AUTHENC_KEYA_PARAM ||
--	    RTA_PAYLOAD(rta) < sizeof(*param))
--		return -EINVAL;
-+	err = crypto_authenc_extractkeys(&authenc_keys, key, keylen);
-+	if (err)
-+		return err;
- 
--	param	  = RTA_DATA(rta);
--	enckeylen = be32_to_cpu(param->enckeylen);
--	key	 += RTA_ALIGN(rta->rta_len);
--	keylen	 -= RTA_ALIGN(rta->rta_len);
--
--	if (keylen < enckeylen)
--		return -EINVAL;
--
--	authkeylen = keylen - enckeylen;
--
--	/* enckey is at &key[authkeylen] and
--	 * authkey is at &key[0]
--	 */
--	authkey = &key[0];
--	enckey  = &key[authkeylen];
-+	authkeylen = authenc_keys.authkeylen;
-+	authkey = authenc_keys.authkey;
-+	enckeylen = authenc_keys.enckeylen;
-+	enckey  = authenc_keys.enckey;
- 
- skipover:
- 	/* detect RFC3686/4106 and trim from enckeylen(and copy salt..) */
+@@ -92,6 +98,8 @@ anyOf:
+       - qcom,powered-remotely
+   - required:
+       - qcom,controlled-remotely
++  - required:
++      - qcom,bam_pipe_lock
+   - required:
+       - clocks
+       - clock-names
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.34.1
+
 
