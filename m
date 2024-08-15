@@ -1,68 +1,68 @@
-Return-Path: <linux-crypto+bounces-5972-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-5978-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535F5952B6D
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 12:01:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20130952B88
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 12:04:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71A31F21CB7
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 10:01:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9362EB20B14
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Aug 2024 10:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CA11CCB37;
-	Thu, 15 Aug 2024 08:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C871D2786;
+	Thu, 15 Aug 2024 08:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LEdZlbyb"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MmQy/tZ5"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5F81AE87C;
-	Thu, 15 Aug 2024 08:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2B01BB698;
+	Thu, 15 Aug 2024 08:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723712278; cv=none; b=BXz42CKWt4lObS4+3qDDdVyit4rcEQAhOYsPNEOf8qaRjitTX4ns5VnMdmqDz9fI5bJf517RGAYoaYqaUQiNze6sVckorbrXCQy41Ws6FJotC0t5hvibBZDgtHtisXOFuztDbG5VnMDlexSvxz81FJlUX1vSOC5MS2Xjj3xG8qc=
+	t=1723712279; cv=none; b=Xp260x12HsgUt/GfEUQDmvZlou/ucw5ENYnK5N6BHFY8OLimvHhx51tgL5KoymAbX8N6UAi43CbRD2bp0iDzBz7CTFkdNz3sa542jFhqO2j2eOV9LW9u6VfSYQPwuKe+CVNMiRb+v4N0b0PHw+r0kG23/UzcjwE1wwx4FlbuImk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723712278; c=relaxed/simple;
-	bh=vl/T7ZGahV2ed87B2vBdq0c1rbggs+bQLu5/eGdHwkU=;
+	s=arc-20240116; t=1723712279; c=relaxed/simple;
+	bh=PHOqtyKbmBusl7egA3xoMemSBFA9/t04wTp2QcxKP24=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eOi5JjHLa0VgxB37C6Cwr0SelhnrZlp4TA099xD8Kh54upJC09IczwDXvahU8jh7UOtAFdnLnG0lEd6rHJtooHiSZ4YgixQj67E9GE5k3QRFXvagyli6Yi97zBQcAglHMhh9b5qbvOBl0nXxDGQpdSQjjJWf5gTM0vO4SBsq168=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LEdZlbyb; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version; b=VU5t+c6DGecOR/oGNCCj/j8VSNJisH9nrjKzH+Yl3NaWpsQcCGEpUoYEpjHsTMEmIxXhYozAHVDuzthblB5fENwuFKbsa5vYN+U9usmjE75RS4+QhLbElevUc9QC3dYuwLhGm6UKpfR18W+ENgn24TYxO4oqaqQ28hi/LgipHmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MmQy/tZ5; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
 Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47EMKkqS027601;
-	Thu, 15 Aug 2024 08:57:33 GMT
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47ENBsqx027591;
+	Thu, 15 Aug 2024 08:57:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=qcppdkim1; bh=7lnRtsX8RcO
-	IS0YefxLVrkBHcLfVapkwzjVGjh3VaKw=; b=LEdZlbybL4igAcgBb4YT7AE1G92
-	Y+AcFl+Dt0AMnxjBnEoOH/fykcK/mEtdgbxnjNRD+wbeOHJokOLY1pTIa9JWFGLl
-	YVhiVz+CglMGk/Jw/0Bc+n2yieE/JDi9tCMPB3LAF43yh0CHkarSUVGoKbrW5a1i
-	ox9tCAsCkrT0f178dXzPGDn2yk462TIQ3blKSA1mr6duR1SzvPxhLVgxoZVQv8AQ
-	GOPcekFISzybMLEeCYpA9rj146xOoVprXgFjanhobErM0hmWAKjFjM9nSAdqXQ2a
-	55w4d7DnmgfRE4pGMPKC/uAHSSYjcQOdUugCsejW8+OjglQPXk6U/rF5gWQ==
+	:mime-version:references:subject:to; s=qcppdkim1; bh=xRdyMW3l8LB
+	NMV4txZ7rIFHVybiYltWd1qVEgHQBIxA=; b=MmQy/tZ5rZLNU9JYamzUvSbDkv0
+	a8C2yIGVGkNhHF60J6C0qW+SnFcPrlmEMexJ0gm3sH1uMtNDVvE1CXlwClyoa73H
+	a+V3adM8L2Wx8D6rz56zIHlO11cvfPlX/Fev4GbnnbtzJHZa87qzPLIf6eVd6uCV
+	wgSX/PWtLxqy/KuNdjlSWaQsD5aBL0XVX07zO/sbm86ldm6cj3kmaNfFkZRNCDLP
+	KPMQXxMhhX7OMOi16tjFV2sld3frkLI+gBUdBZX49ZpRRTvjPWZjauxbZn4zFkga
+	/QeFEvEirkAO8EOXn91RLk2hyRCHz/d9IzM3wj/NHyxJN9UJ4BLXZoee5Vg==
 Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40x3etdq3w-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40x3etdq40-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 15 Aug 2024 08:57:33 +0000 (GMT)
 Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTP id 47F8u8eC028285;
-	Thu, 15 Aug 2024 08:57:29 GMT
+	by APBLRPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTP id 47F8vSvE029673;
+	Thu, 15 Aug 2024 08:57:30 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 40xkmhenmm-1
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 40xkmhennq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Aug 2024 08:57:29 +0000
+	Thu, 15 Aug 2024 08:57:30 +0000
 Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 47F8vSAZ029649;
-	Thu, 15 Aug 2024 08:57:28 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 47F8vUxI029708;
+	Thu, 15 Aug 2024 08:57:30 GMT
 Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 47F8vSoK029641
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 47F8vTg7029698
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Aug 2024 08:57:28 +0000
+	Thu, 15 Aug 2024 08:57:30 +0000
 Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
-	id 9B58441328; Thu, 15 Aug 2024 14:27:27 +0530 (+0530)
+	id AC27A417F7; Thu, 15 Aug 2024 14:27:27 +0530 (+0530)
 From: Md Sadre Alam <quic_mdalam@quicinc.com>
 To: vkoul@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
         andersson@kernel.org, konradybcio@kernel.org, thara.gopinath@gmail.com,
@@ -73,9 +73,9 @@ To: vkoul@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
         linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
 Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com,
         quic_mdalam@quicinc.com, quic_utiwari@quicinc.com
-Subject: [PATCH v2 04/16] crypto: qce - Add support for crypto address read
-Date: Thu, 15 Aug 2024 14:27:13 +0530
-Message-Id: <20240815085725.2740390-5-quic_mdalam@quicinc.com>
+Subject: [PATCH v2 09/16] crypto: qce - Add LOCK and UNLOCK flag support
+Date: Thu, 15 Aug 2024 14:27:18 +0530
+Message-Id: <20240815085725.2740390-10-quic_mdalam@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240815085725.2740390-1-quic_mdalam@quicinc.com>
 References: <20240815085725.2740390-1-quic_mdalam@quicinc.com>
@@ -90,8 +90,8 @@ X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: p3P9FvkGCCxxLnxm90hBxU_-mHEuUf__
-X-Proofpoint-ORIG-GUID: p3P9FvkGCCxxLnxm90hBxU_-mHEuUf__
+X-Proofpoint-GUID: u6rFz-1kcwrVF-bUzY_5784bz7lk605l
+X-Proofpoint-ORIG-GUID: u6rFz-1kcwrVF-bUzY_5784bz7lk605l
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-08-15_01,2024-08-13_02,2024-05-17_01
@@ -101,84 +101,55 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malware
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
  definitions=main-2408150064
 
-Get crypto base address from DT. This will use for
-command descriptor support for crypto register r/w
-via BAM/DMA
+Add LOCK and UNLOCK flag support while preapring
+command descriptor for writing crypto register.
 
 Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 ---
+
 Change in [v2]
 
-* Addressed all comments from v1
+* No change
 
 Change in [v1]
 
-* Added support to read crypto base address from dt
+* Added initial support for lock/un-lock flag
 
- drivers/crypto/qce/core.c | 13 ++++++++++++-
- drivers/crypto/qce/core.h |  1 +
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ drivers/crypto/qce/dma.c | 7 ++++++-
+ drivers/crypto/qce/dma.h | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-index 28b5fd823827..9b23a948078a 100644
---- a/drivers/crypto/qce/core.c
-+++ b/drivers/crypto/qce/core.c
-@@ -192,6 +192,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct qce_device *qce;
-+	struct resource *res;
- 	int ret;
+diff --git a/drivers/crypto/qce/dma.c b/drivers/crypto/qce/dma.c
+index e4e672d65302..93d455d1d5b4 100644
+--- a/drivers/crypto/qce/dma.c
++++ b/drivers/crypto/qce/dma.c
+@@ -72,7 +72,12 @@ int qce_submit_cmd_desc(struct qce_device *qce, unsigned long flags)
+ 	unsigned long desc_flags;
+ 	int ret = 0;
  
- 	qce = devm_kzalloc(dev, sizeof(*qce), GFP_KERNEL);
-@@ -201,10 +202,16 @@ static int qce_crypto_probe(struct platform_device *pdev)
- 	qce->dev = dev;
- 	platform_set_drvdata(pdev, qce);
+-	desc_flags = DMA_PREP_CMD;
++	if (flags & QCE_DMA_DESC_FLAG_LOCK)
++		desc_flags = DMA_PREP_CMD | DMA_PREP_LOCK;
++	else if (flags & QCE_DMA_DESC_FLAG_UNLOCK)
++		desc_flags = DMA_PREP_CMD | DMA_PREP_UNLOCK;
++	else
++		desc_flags = DMA_PREP_CMD;
  
--	qce->base = devm_platform_ioremap_resource(pdev, 0);
-+	qce->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(qce->base))
- 		return PTR_ERR(qce->base);
+ 	/* For command descriptor always use consumer pipe
+ 	 * it recomended as per HPG
+diff --git a/drivers/crypto/qce/dma.h b/drivers/crypto/qce/dma.h
+index f10991590b3f..ad8a18a720b1 100644
+--- a/drivers/crypto/qce/dma.h
++++ b/drivers/crypto/qce/dma.h
+@@ -19,6 +19,8 @@
+ #define QCE_BAM_CMD_ELEMENT_SIZE       64
+ #define QCE_DMA_DESC_FLAG_BAM_NWD      (0x0004)
+ #define QCE_MAX_REG_READ               8
++#define QCE_DMA_DESC_FLAG_LOCK          (0x0002)
++#define QCE_DMA_DESC_FLAG_UNLOCK        (0x0001)
  
-+	qce->base_dma = dma_map_resource(dev, res->start,
-+					 resource_size(res),
-+					 DMA_BIDIRECTIONAL, 0);
-+	if (dma_mapping_error(dev, qce->base_dma))
-+		return -ENXIO;
-+
- 	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
- 	if (ret < 0)
- 		return ret;
-@@ -280,6 +287,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
- static void qce_crypto_remove(struct platform_device *pdev)
- {
- 	struct qce_device *qce = platform_get_drvdata(pdev);
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	tasklet_kill(&qce->done_tasklet);
- 	qce_unregister_algs(qce);
-@@ -287,6 +295,9 @@ static void qce_crypto_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(qce->bus);
- 	clk_disable_unprepare(qce->iface);
- 	clk_disable_unprepare(qce->core);
-+
-+	dma_unmap_resource(&pdev->dev, qce->base_dma, resource_size(res),
-+			   DMA_BIDIRECTIONAL, 0);
- }
- 
- static const struct of_device_id qce_crypto_of_match[] = {
-diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
-index 228fcd69ec51..25e2af45c047 100644
---- a/drivers/crypto/qce/core.h
-+++ b/drivers/crypto/qce/core.h
-@@ -39,6 +39,7 @@ struct qce_device {
- 	struct qce_dma_data dma;
- 	int burst_size;
- 	unsigned int pipe_pair_id;
-+	dma_addr_t base_dma;
- 	int (*async_req_enqueue)(struct qce_device *qce,
- 				 struct crypto_async_request *req);
- 	void (*async_req_done)(struct qce_device *qce, int ret);
+ struct qce_result_dump {
+ 	u32 auth_iv[QCE_AUTHIV_REGS_CNT];
 -- 
 2.34.1
 
