@@ -1,40 +1,40 @@
-Return-Path: <linux-crypto+bounces-6130-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6132-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948E99580F3
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 10:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2399580FA
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 10:29:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 404161F2206F
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 08:29:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54E5F1F2535C
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 08:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F315718B46D;
-	Tue, 20 Aug 2024 08:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE33F18A92C;
+	Tue, 20 Aug 2024 08:28:59 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62FA618A6D4;
-	Tue, 20 Aug 2024 08:28:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3632318C005;
+	Tue, 20 Aug 2024 08:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724142532; cv=none; b=CiRT58xCOT8KeYTCLqCBDfweRbbFwts9FvSaXiDAV15sb+9MaupysSTIhhBmH3Kl62yWr7EdweumjwortWn5sASy2+9wm7Aaqffwmc2snf6mGxIrUTguQPz1XHcufikH1niVGWSQXDfUmbl58RnoxmB9gnXcUbJcSf08KcWjERM=
+	t=1724142539; cv=none; b=aRgeka7dMo6Mu0Cyddi4vJDBKgV52S5aWU9cPT7Mr6kvYeHBsiod1b8z5bt4ek9apS/rIcyOXY6NuV3yLcSREAMZoI8FGnQ/a/+Y9a9Q9c33E40h0igbRDaEqmz4b/CfmmoBNhuywH2tKdeRaP3Byrg7a1/GFc8f7EPMJRvT9cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724142532; c=relaxed/simple;
-	bh=4QNP3843NBR9NxsKvc5dE9E8/RarI0Ca3O06VMtyTBo=;
+	s=arc-20240116; t=1724142539; c=relaxed/simple;
+	bh=l+gQcqS6r4WVGxU0tveksfUMjqzCz0MUkCahkMJEluo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WDxSr/29tDGwC+qUFUHwuNGZhicNyqwB0PtDgJowdmERTnXuoZi0+Zx/R7kyJ89iOQJKzJeW0oSitRN3UEDSK4HU0IrmveqIbYRazHHULA5Cdrx+x5bXWGK6TRI9CsxUB2j4w9OyELGPpX2U7GfabRj9QquCRC5DjFUQ1IOUjqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=e0dqJVJmrmOWFEUEBN/BugicvIvEgrvLAxnG4ng6MygQdp2Q8k8far1jn3SCtntNz45L3v681Qk5CUa6GXE85kGHE/FAXdeJ3RcVESzIc6LuAurINgZCAepyUnl7I/YlTUvxVLq9OTHOcNnVsL1PqWgOVU9mUWoQHFs19wsbFd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Wp2cm6nrJzhXrg;
-	Tue, 20 Aug 2024 16:26:48 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Wp2fM5Z4fzyQFW;
+	Tue, 20 Aug 2024 16:28:11 +0800 (CST)
 Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
-	by mail.maildlp.com (Postfix) with ESMTPS id F3E24180064;
-	Tue, 20 Aug 2024 16:28:48 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 92893140137;
+	Tue, 20 Aug 2024 16:28:49 +0800 (CST)
 Received: from huawei.com (10.175.101.6) by dggpemf500002.china.huawei.com
  (7.185.36.57) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 20 Aug
@@ -45,9 +45,9 @@ To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<arno@natisbad.org>, <bbrezillon@kernel.org>, <thomas.lendacky@amd.com>
 CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH -next 4/6] crypto: ccp - Remove unused declaration sp_get_master()
-Date: Tue, 20 Aug 2024 16:25:23 +0800
-Message-ID: <20240820082525.259337-5-yuehaibing@huawei.com>
+Subject: [PATCH -next 5/6] crypto: amlogic - Remove unused declaration meson_enqueue()
+Date: Tue, 20 Aug 2024 16:25:24 +0800
+Message-ID: <20240820082525.259337-6-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240820082525.259337-1-yuehaibing@huawei.com>
 References: <20240820082525.259337-1-yuehaibing@huawei.com>
@@ -63,26 +63,27 @@ X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpemf500002.china.huawei.com (7.185.36.57)
 
 This function is never implemented and used since introduction in
-commit 720419f01832 ("crypto: ccp - Introduce the AMD Secure Processor
-device").
+commit 48fe583fe541 ("crypto: amlogic - Add crypto accelerator for
+amlogic GXL").
 
 Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 ---
- drivers/crypto/ccp/sp-dev.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/crypto/amlogic/amlogic-gxl.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/crypto/ccp/sp-dev.h b/drivers/crypto/ccp/sp-dev.h
-index 0895de823674..6f9d7063257d 100644
---- a/drivers/crypto/ccp/sp-dev.h
-+++ b/drivers/crypto/ccp/sp-dev.h
-@@ -138,7 +138,6 @@ struct sp_device *sp_alloc_struct(struct device *dev);
+diff --git a/drivers/crypto/amlogic/amlogic-gxl.h b/drivers/crypto/amlogic/amlogic-gxl.h
+index 1013a666c932..d68094ffb70a 100644
+--- a/drivers/crypto/amlogic/amlogic-gxl.h
++++ b/drivers/crypto/amlogic/amlogic-gxl.h
+@@ -150,8 +150,6 @@ struct meson_alg_template {
+ #endif
+ };
  
- int sp_init(struct sp_device *sp);
- void sp_destroy(struct sp_device *sp);
--struct sp_device *sp_get_master(void);
- 
- int sp_suspend(struct sp_device *sp);
- int sp_resume(struct sp_device *sp);
+-int meson_enqueue(struct crypto_async_request *areq, u32 type);
+-
+ int meson_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 		     unsigned int keylen);
+ int meson_cipher_init(struct crypto_tfm *tfm);
 -- 
 2.34.1
 
