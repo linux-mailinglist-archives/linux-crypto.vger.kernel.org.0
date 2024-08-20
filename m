@@ -1,88 +1,128 @@
-Return-Path: <linux-crypto+bounces-6131-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6133-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F2B9580F8
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 10:29:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FFA5958217
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 11:25:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB7ED1C23D74
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 08:29:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFD501F21A2C
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Aug 2024 09:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420F118C01A;
-	Tue, 20 Aug 2024 08:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D8518B49E;
+	Tue, 20 Aug 2024 09:25:04 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796F418A952;
-	Tue, 20 Aug 2024 08:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131C818B498
+	for <linux-crypto@vger.kernel.org>; Tue, 20 Aug 2024 09:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724142534; cv=none; b=RmLQuU6m0fxjbMkrl+U41/QXtp0MPXJ5gQKyb6qX7CoUdmge5i1bkYZ9NQC5yURGoSAYxvNPq7W9abhg5qZlijcy7DAJ3XxtYRzTzl1Jbzv1J3TQIW7g5Mrm9YOEO9ZvbMIL44L5HT2JKwvwoA0oObbN7dUWT2bs/t1kDQYe1Oc=
+	t=1724145904; cv=none; b=qNv2ootWhFd3xXAa8FuSXZvDKHXFd3vqSMoubtvVF7gyBV01L0P3LDwvXSVLfVocUCzU3o6pCZfVGzlbktCRWnHF/GDO5fqDXlx+kAlRXA/VoK1eMM3woLopRua21vbpcikB3SZQZCESqNpKHGwO1DRnV1G7NKhFyMFmQDC+GB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724142534; c=relaxed/simple;
-	bh=nrZZkpD8nwrB94I0EhpSnSVF4/Bo7frwfEnSpZvY5/0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CSHrDBnYpvoYa+rljsAvfDS13iEfOKdmhSpmkHl1YE7WD1rXzX3ugVKWKABYwhcN+oheRvVbRYYMuJbicLIv9TdM90PyeNjALDufhXV4KJL8Blk11538oT10ZP1pGlhxvSq4QSk4zjb6Ns3z3hK5ZqkXDiPkY52XVu/eGs0yM38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Wp2dN3bDjzpTSv;
-	Tue, 20 Aug 2024 16:27:20 +0800 (CST)
-Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
-	by mail.maildlp.com (Postfix) with ESMTPS id 37764180106;
-	Tue, 20 Aug 2024 16:28:50 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpemf500002.china.huawei.com
- (7.185.36.57) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 20 Aug
- 2024 16:28:49 +0800
-From: Yue Haibing <yuehaibing@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-	<clabbe@baylibre.com>, <linus.walleij@linaro.org>, <atenart@kernel.org>,
-	<arno@natisbad.org>, <bbrezillon@kernel.org>, <thomas.lendacky@amd.com>
-CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH -next 6/6] crypto: crypto4xx - Remove unused declaration crypto4xx_free_ctx()
-Date: Tue, 20 Aug 2024 16:25:25 +0800
-Message-ID: <20240820082525.259337-7-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240820082525.259337-1-yuehaibing@huawei.com>
-References: <20240820082525.259337-1-yuehaibing@huawei.com>
+	s=arc-20240116; t=1724145904; c=relaxed/simple;
+	bh=3FiOCf8fm0kY9F5zQd4hyuzaEe7QA8k0TgU05oRkPe8=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=rSwkDBwNvDHmn0baO9ErTpdFTbgzDm6x/N35Iu9C1YDM/VcTE/Kg5R4eItDlQcTHbpwGev9RTFiE/TOcASU8oJ7VEfnZssgRP+uoylG2oSqJ/xVIOrNBujnmYumwBSbKgXcQh0BF2B0okRNAxjD0Z1OfsuTIxrr4Jv8BYeoXOYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:a2e4:464c:5828:2da3])
+	by albert.telenet-ops.be with bizsmtp
+	id 29Qt2D00E2WQTnu069QtqJ; Tue, 20 Aug 2024 11:24:54 +0200
+Received: from geert (helo=localhost)
+	by ramsan.of.borg with local-esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1sgL6j-000Mcf-AO;
+	Tue, 20 Aug 2024 11:24:53 +0200
+Date: Tue, 20 Aug 2024 11:24:53 +0200 (CEST)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Pavitrakumar M <pavitrakumarm@vayavyalabs.com>
+cc: herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org, 
+    Ruud.Derwig@synopsys.com, manjunath.hadli@vayavyalabs.com, 
+    bhoomikak@vayavyalabs.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 6/7] Add SPAcc dts overlay
+In-Reply-To: <20240618042750.485720-7-pavitrakumarm@vayavyalabs.com>
+Message-ID: <d430d47b-b8c6-69f8-3f2c-eeed78b583dc@linux-m68k.org>
+References: <20240618042750.485720-1-pavitrakumarm@vayavyalabs.com> <20240618042750.485720-7-pavitrakumarm@vayavyalabs.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemf500002.china.huawei.com (7.185.36.57)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-This function is never implemented and used since introduction in
-commit 049359d65527 ("crypto: amcc - Add crypt4xx driver").
+ 	Hi Pavitrakumar,
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
- drivers/crypto/amcc/crypto4xx_core.h | 1 -
- 1 file changed, 1 deletion(-)
+CC devicetree
 
-diff --git a/drivers/crypto/amcc/crypto4xx_core.h b/drivers/crypto/amcc/crypto4xx_core.h
-index 96355d463b04..3adcc5e65694 100644
---- a/drivers/crypto/amcc/crypto4xx_core.h
-+++ b/drivers/crypto/amcc/crypto4xx_core.h
-@@ -149,7 +149,6 @@ struct crypto4xx_alg {
- 
- int crypto4xx_alloc_sa(struct crypto4xx_ctx *ctx, u32 size);
- void crypto4xx_free_sa(struct crypto4xx_ctx *ctx);
--void crypto4xx_free_ctx(struct crypto4xx_ctx *ctx);
- int crypto4xx_build_pd(struct crypto_async_request *req,
- 		       struct crypto4xx_ctx *ctx,
- 		       struct scatterlist *src,
--- 
-2.34.1
+On Tue, 18 Jun 2024, Pavitrakumar M wrote:
+> Signed-off-by: Manjunath Hadli <manjunath.hadli@vayavyalabs.com>
+> Signed-off-by: Pavitrakumar M <pavitrakumarm@vayavyalabs.com>
+> Acked-by: Ruud Derwig <Ruud.Derwig@synopsys.com>
 
+Thanks for your patch!
+
+Please provide a patch description.
+The one-line summary is also not very informative and lacks a suitable prefix.
+
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/xilinx/snps-dwc-spacc.dtso
+> @@ -0,0 +1,35 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * dts file for Synopsys DWC SPAcc
+> + *
+> + * (C) Copyright 2024 Synopsys
+> + *
+> + * Ruud Derwig <Ruud.Derwig@synopsys.com>
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +/ {
+> +	#address-cells = <2>;
+> +	#size-cells = <2>;
+> +
+> +	fragment@0 {
+> +		target = <&amba>;
+> +
+> +		overlay1: __overlay__ {
+
+Please use sugar syntax.  See e.g. commit db2f3762d609318e ("of:
+convert unittest overlay devicetree source to sugar syntax").
+
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +
+> +			dwc_spacc: spacc@400000000 {
+> +				compatible = "snps-dwc-spacc";
+
+Where can we find the DT bindings?
+
+> +				reg = /bits/ 64 <0x400000000 0x3FFFF>;
+> +				interrupts = <0 89 4>;
+> +				interrupt-parent = <&gic>;
+> +				clock-names = "ref_clk";
+> +				spacc_priority = <0>;
+> +				spacc_index = <0>;
+> +			};
+> +		};
+> +	};
+> +};
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
 
