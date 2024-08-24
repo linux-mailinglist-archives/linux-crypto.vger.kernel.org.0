@@ -1,169 +1,169 @@
-Return-Path: <linux-crypto+bounces-6205-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6207-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 386E395D55D
-	for <lists+linux-crypto@lfdr.de>; Fri, 23 Aug 2024 20:39:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C094C95DC61
+	for <lists+linux-crypto@lfdr.de>; Sat, 24 Aug 2024 09:10:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E84C828442E
-	for <lists+linux-crypto@lfdr.de>; Fri, 23 Aug 2024 18:39:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422071F2323E
+	for <lists+linux-crypto@lfdr.de>; Sat, 24 Aug 2024 07:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACA5B18DF81;
-	Fri, 23 Aug 2024 18:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA78154458;
+	Sat, 24 Aug 2024 07:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RzyRdbRz"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IYxl7xYi"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 050E1190482;
-	Fri, 23 Aug 2024 18:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80DE1153824;
+	Sat, 24 Aug 2024 07:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724438365; cv=none; b=XjslTvwvzUUuBCWs52EcGWmjF/z8H84Z9fKy0ZajbV/N+Tr9tGgvxz0hKoqBG5OlFI+dHfdsxO9OeIkQkC8tiVfT4aPttgS9JDcoVze6KtGtxYnnAWpcHI4qw4PoE1mOZFKjkI/Ag2RFBaCuR9/ps3i9g9M3HedYeCwTVmjrHS4=
+	t=1724483430; cv=none; b=Ip+AYvCRjoKPLnokCZqra8yzmtujNQRWQiO55QMPienO+NKSIxZB8r6lTS9lveG1stayn5qY29QQo0JUGaIMEoIB57d64co7V5GU4tRItA3AGkrd9lqRejd4hrqF5n98vhQXXH5Qp6EAcZCAhICuVzdCEXfL7cXU3EW0c9j4FHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724438365; c=relaxed/simple;
-	bh=vS0rVEDSQYULdN8EnBPSspx7F1bgHxO4L9Yx3ey7uyw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oulPGcfw3cMoyn4EdhSMBXl0RJGZLtDKrtKvXFwlS/CfuUCPab1zHRSV2RjtB+zMzi/ZvdNYTQ99s0xZSFmqXLcEFdTj+9ZJO8ZSo9zICCLkcfLRJk3iq7lI1HdUr6j8BDWHpU2zSRKMP6uCvmb4qPtBNt77OH3jfAVOTJqC+WI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RzyRdbRz; arc=none smtp.client-ip=209.85.160.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-270298a3b6eso1605026fac.3;
-        Fri, 23 Aug 2024 11:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724438363; x=1725043163; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XNYyXTiUUKGs1jDISX3liwadU3ssMVGkOQ//kMNiZNE=;
-        b=RzyRdbRzasM+UDOFIj9+b1enP4/6vz4bgueFj8imNdpNHiV8rKQqysYDLBkb8Nzoai
-         QSwVa+dai3cuAmSa89tIHjD+pNw+xxo7Sr3/jc6vQZcmimZ+p2ZlhZJikH1UHWl4wZBh
-         VOC0TXxOgyL2H5C8ICai7hQ5E27hWijaZj5nXNwBvHjIEIWN1Zw2uCaPVo4IqNQt2yY8
-         F17aG+1OHKVByHCB9JK9fK5G1sd/TTwVRGAtC45OdetwLSmep1735wVjVeq9BGOX1Tr9
-         h8MJCeFFa0euFbwWSyB0V1E5Car47IwmYsGuEzOy8WQhf4GGULztQ69xyv6WLiwkadAo
-         cXrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724438363; x=1725043163;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XNYyXTiUUKGs1jDISX3liwadU3ssMVGkOQ//kMNiZNE=;
-        b=bb/4LJ/MxcVcNnyzKxMSiZvHU8x2SybskksdFTnHlxcFG5Mp3hcU32cDUd6G7sFNKd
-         4GBifxzCH7kwVQ8MFR+c4/08u9rJfDW16O5bBQRD8kcpZA4iSAi6U3yhplxnZQO73zfb
-         HSmOUNkyBumnwAAdIJ/a7xyMT9yzY+vmTamsR/qW2tgcsPuSarwGZ3eFxNOvhrxaONBP
-         hNLbSdcqPdGyZFMSlb1mjfCKRjqfeV8b6pJAZO0cn149kIr5x0qKSrUKuD1lLbRsQhBa
-         ljtOP8irkrQpZtx2zbhnGUcJ8fE42nYmGzid6iYrtRzkgOE1k3AAivoRuH3TPj3Ly1+T
-         hg3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVHwyh7ROjzPkpJxE65bzkeYzT+zvLCt0Fzwesib6DtYMpOol7HlqHJeIOBztMmUWdN67azTx2qGHmqTr6T@vger.kernel.org, AJvYcCVWE6PuLj0gZ+yUTtea2vmzTsQpRhT8wGxJokLD/zT1RYXchdxFL7/zRQNOTNgvbsHdX4y9iZgv5DknaD0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywt2i0rs6n1lhC5m1swEgE3Ey0Qj7EYXP9shNGJBTKOhUS+H6tp
-	fMAZj+jSYIT2CTnAgZ8t/xrRBKhKWTmNG1C6lqDsunxRPQg/Z+WQ
-X-Google-Smtp-Source: AGHT+IHbkE3ZdZNEe89UyGALRUQdE2iHgZVFlqykGhqfkjXdOnaI2N/Cf8M87lZEgKanxYVaiw3f+w==
-X-Received: by 2002:a05:6870:d113:b0:260:f50e:923c with SMTP id 586e51a60fabf-273e63e6ca2mr3485136fac.10.1724438363009;
-        Fri, 23 Aug 2024 11:39:23 -0700 (PDT)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7143425201csm3352157b3a.73.2024.08.23.11.39.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Aug 2024 11:39:22 -0700 (PDT)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: shenyang39@huawei.com,
-	wangzhou1@hisilicon.com
-Cc: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	jserv@ccns.ncku.edu.tw,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] crypto: hisilicon/zip - Optimize performance by replacing rw_lock with spinlock
-Date: Sat, 24 Aug 2024 02:38:56 +0800
-Message-Id: <20240823183856.561166-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1724483430; c=relaxed/simple;
+	bh=UMSSgFtE9sSYCRl7FqDQxvs8kkccAFFNVpy/6zc6pq0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qvLUYjaeKGHZbynOgSrVo47QD1DxOAQffaZGd/1GeYEpf+tg/1ryWwrnFWbEBWMZeJ33SBzK75SclsHx/oXD7baOOrVk+yOXqF2IztqcN+8/lcVS9xoRsFMdcB6T86rFynKKkQULzEF8kCVWeOFWLkSLugYlvn4nGGrasR0yrXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IYxl7xYi; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47O5S3sA023727;
+	Sat, 24 Aug 2024 07:05:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	ak1bjo5v/J0lhnYtiB4yxlYX1xBnGK1uJl/2njt9Dn4=; b=IYxl7xYiJCXgkflT
+	R2d2uDaG/EIKr4hQCBiCsdb8pOxHz81A7ktgxSvY3jeotypDcpgPvs0wRgJh8KPj
+	leC13oK/4iC1zeovvBwfmFut1yI01apa1qVqaS3uvMRrgigosUFhPLshc4nsqFRm
+	2shBJory1gY5/PA1EKyFT0WuuCEtPDkma9suMKFM2j1bUOs0qVnghTnDCH7d+tmj
+	srPA/rezRTRGlrbDQQC+TgYPg47OtRFFEz5EoJT260+jHAgGgBIw8q394vS7QGbq
+	xu9P7BccrFM0TPncSSpi89sxWXMgiIqxJ7uN4eRUD4q+f4x/Xmgag5mJuufPqUUM
+	dnAaWw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 417980r36h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 24 Aug 2024 07:05:14 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 47O75Dfp025819
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 24 Aug 2024 07:05:13 GMT
+Received: from [10.216.42.154] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Sat, 24 Aug
+ 2024 00:05:06 -0700
+Message-ID: <51653ef6-07f3-5419-e85b-b3e26958173f@quicinc.com>
+Date: Sat, 24 Aug 2024 12:34:53 +0530
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v2 01/16] dt-bindings: dma: qcom,bam: Add bam pipe lock
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC: <vkoul@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konradybcio@kernel.org>, <thara.gopinath@gmail.com>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <gustavoars@kernel.org>, <u.kleine-koenig@pengutronix.de>,
+        <kees@kernel.org>, <agross@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <quic_srichara@quicinc.com>,
+        <quic_varada@quicinc.com>, <quic_utiwari@quicinc.com>
+References: <20240815085725.2740390-1-quic_mdalam@quicinc.com>
+ <20240815085725.2740390-2-quic_mdalam@quicinc.com>
+ <20240823153958.vk4naz34vgkqzhrb@thinkpad>
+Content-Language: en-US
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <20240823153958.vk4naz34vgkqzhrb@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: fgyA9iH7KNSk9YsPjZ7AZdROO68WMbCg
+X-Proofpoint-ORIG-GUID: fgyA9iH7KNSk9YsPjZ7AZdROO68WMbCg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-24_05,2024-08-23_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ adultscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
+ definitions=main-2408240039
 
-The req_lock is currently implemented as a rw_lock, but there are no
-instances where read_lock() is called. This means that the lock is
-effectively only used by writers, making it functionally equivalent to
-a simple spinlock.
 
-As stated in Documentation/locking/spinlocks.rst:
-"Reader-writer locks require more atomic memory operations than simple
-spinlocks. Unless the reader critical section is long, you are better
-off just using spinlocks."
 
-Since the rw_lock in this case incurs additional atomic memory
-operations without any benefit from reader-writer locking, it is more
-efficient to replace it with a spinlock. This patch implements that
-replacement to optimize the driver's performance.
-
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
-Note: Build test only.
-
- drivers/crypto/hisilicon/zip/zip_crypto.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index 94e2d66b04b6..92d3bd0dfe1b 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -54,7 +54,7 @@ struct hisi_zip_req {
- struct hisi_zip_req_q {
- 	struct hisi_zip_req *q;
- 	unsigned long *req_bitmap;
--	rwlock_t req_lock;
-+	spinlock_t req_lock;
- 	u16 size;
- };
- 
-@@ -116,17 +116,17 @@ static struct hisi_zip_req *hisi_zip_create_req(struct hisi_zip_qp_ctx *qp_ctx,
- 	struct hisi_zip_req *req_cache;
- 	int req_id;
- 
--	write_lock(&req_q->req_lock);
-+	spin_lock(&req_q->req_lock);
- 
- 	req_id = find_first_zero_bit(req_q->req_bitmap, req_q->size);
- 	if (req_id >= req_q->size) {
--		write_unlock(&req_q->req_lock);
-+		spin_unlock(&req_q->req_lock);
- 		dev_dbg(&qp_ctx->qp->qm->pdev->dev, "req cache is full!\n");
- 		return ERR_PTR(-EAGAIN);
- 	}
- 	set_bit(req_id, req_q->req_bitmap);
- 
--	write_unlock(&req_q->req_lock);
-+	spin_unlock(&req_q->req_lock);
- 
- 	req_cache = q + req_id;
- 	req_cache->req_id = req_id;
-@@ -140,9 +140,9 @@ static void hisi_zip_remove_req(struct hisi_zip_qp_ctx *qp_ctx,
- {
- 	struct hisi_zip_req_q *req_q = &qp_ctx->req_q;
- 
--	write_lock(&req_q->req_lock);
-+	spin_lock(&req_q->req_lock);
- 	clear_bit(req->req_id, req_q->req_bitmap);
--	write_unlock(&req_q->req_lock);
-+	spin_unlock(&req_q->req_lock);
- }
- 
- static void hisi_zip_fill_addr(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
-@@ -456,7 +456,7 @@ static int hisi_zip_create_req_q(struct hisi_zip_ctx *ctx)
- 
- 			goto err_free_comp_q;
- 		}
--		rwlock_init(&req_q->req_lock);
-+		spin_lock_init(&req_q->req_lock);
- 
- 		req_q->q = kcalloc(req_q->size, sizeof(struct hisi_zip_req),
- 				   GFP_KERNEL);
--- 
-2.34.1
-
+On 8/23/2024 9:09 PM, Manivannan Sadhasivam wrote:
+> On Thu, Aug 15, 2024 at 02:27:10PM +0530, Md Sadre Alam wrote:
+>> BAM having pipe locking mechanism. The Lock and Un-Lock bit
+>> should be set on CMD descriptor only. Upon encountering a
+>> descriptor with Lock bit set, the BAM will lock all other
+>> pipes not related to the current pipe group, and keep
+>> handling the current pipe only until it sees the Un-Lock
+>> set.
+>>
+>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+>> ---
+>>
+>> Change in [v2]
+>>
+>> * Added initial support for dt-binding
+>>
+>> Change in [v1]
+>>
+>> * This patch was not included in [v1]
+>>
+>>   Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+>> index 3ad0d9b1fbc5..91cc2942aa62 100644
+>> --- a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+>> +++ b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+>> @@ -77,6 +77,12 @@ properties:
+>>         Indicates that the bam is powered up by a remote processor but must be
+>>         initialized by the local processor.
+>>   
+>> +  qcom,bam_pipe_lock:
+>> +    type: boolean
+>> +    description:
+>> +      Indicates that the bam pipe needs locking or not based on client driver
+>> +      sending the LOCK or UNLOK bit set on command descriptor.
+>> +
+> 
+> This looks like a pure driver implementation and doesn't belong to the DT at
+> all. Why can't you add a logic in the driver to use the lock based on some
+> detection mechanism?
+   Sure , will use BAM_SW_VERSION register for detection mechanism, since this
+   support only for bam version above 1.4.0.
+> 
+> - Mani
+> 
+>>     reg:
+>>       maxItems: 1
+>>   
+>> @@ -92,6 +98,8 @@ anyOf:
+>>         - qcom,powered-remotely
+>>     - required:
+>>         - qcom,controlled-remotely
+>> +  - required:
+>> +      - qcom,bam_pipe_lock
+>>     - required:
+>>         - clocks
+>>         - clock-names
+>> -- 
+>> 2.34.1
+>>
+>>
+> 
 
