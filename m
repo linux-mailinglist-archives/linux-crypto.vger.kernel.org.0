@@ -1,259 +1,328 @@
-Return-Path: <linux-crypto+bounces-6259-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6262-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCFE295FD4F
-	for <lists+linux-crypto@lfdr.de>; Tue, 27 Aug 2024 00:48:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA63E9604CB
+	for <lists+linux-crypto@lfdr.de>; Tue, 27 Aug 2024 10:47:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C5D6B21728
-	for <lists+linux-crypto@lfdr.de>; Mon, 26 Aug 2024 22:48:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C6F41F21297
+	for <lists+linux-crypto@lfdr.de>; Tue, 27 Aug 2024 08:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940321A2554;
-	Mon, 26 Aug 2024 22:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TLsj5pg8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE121993B0;
+	Tue, 27 Aug 2024 08:46:27 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD11D19DF79;
-	Mon, 26 Aug 2024 22:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B846719755A;
+	Tue, 27 Aug 2024 08:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724712273; cv=none; b=sWMUbQbmSIU1qOG4quyeJiH/AyRqEmGuXC9kqBxU5acJsjlfUUDKss9YM/DBIgo3Knc0Q58Ch4/MUEOfgBndARe2nWT8RzGtg6D73vOXPisVWuhrI15CIt2KCcU9irwaMURJIopVGWSjvKOg91iOBihGgbqnCnX/mdKMTNZbJzA=
+	t=1724748387; cv=none; b=hp8iJJQWoHrWWHVtWhWgWOaTanfQ4P2vbq5KffKVDJwF/wkcYUpdvk75EEQcGAU/nvHLCz/DwTfxFWpTLLcyaVjY1NtdHr++U7omJnTMjuyf+YbGlhXb2qwCRESdWfxxb3ZlyZGRS8nrbLF9CmPptrpzmibLsNiGBe1FWCBobws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724712273; c=relaxed/simple;
-	bh=jKHWf7aN/Dkxlehgudj5qPfLmOZoFIXTZUVsZB6DRMQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ThnDB4HgGmUWMt6nwVPM51oYjR16LY5T2Qg99JFXHmI/ZsqHtTrxhWFngGsiNBGgUlBJCKJRW5aFibOD8bNDFuXDE8X5oyYF5Wis4QOaKXTR9H2RQ9w87YnsB49zU0Ue1sOdIpq2qCr4DEZ/L4qiJwY4GaOLE0XRPHR/HuFVk6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TLsj5pg8; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47QKtToh014888;
-	Mon, 26 Aug 2024 22:44:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=corp-2023-11-20; bh=F
-	ZVeLxDSNo7d2mdIrU5gJs+5+aIX6K0McCQCkOYq2DA=; b=TLsj5pg8JwIWPCTGR
-	a44vpgcYPW5SHAF72319CDvpv3tAIPvsXNDcSkwR5Ip2wreuFuyJHVy/5rkikqbA
-	GjiS5d96uQMQx+jE1UJymIHctosiOgAnD/Xjg9PaF+ji6w3FsG6swCBEaKEXntZL
-	ICM/dOf/gbbXgNzCpGa9NyjN/w4odJUmH9Ey+o3gPJpq0kXgfUk+zoalnPUsPebn
-	1nyKy+sxs0xUzIc9RVfs3dqDFJxZIO+yETw4raKykeH1E9GKcTYnyQt5PtEwbn03
-	bojW58XGrPLsJQWSfq+uOAWMp65SSbCxRPhKt+fJGOwE47yRuaVNqyK/nOHzIl9P
-	NonCQ==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41782sv8s0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Aug 2024 22:44:05 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 47QLlvXI017435;
-	Mon, 26 Aug 2024 22:44:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 418a5rmr8x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 26 Aug 2024 22:44:04 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 47QMhlw8030730;
-	Mon, 26 Aug 2024 22:44:03 GMT
-Received: from localhost.us.oracle.com (bur-virt-x6-2-100.us.oracle.com [10.153.92.40])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 418a5rmr6b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 26 Aug 2024 22:44:03 +0000
-From: Ross Philipson <ross.philipson@oracle.com>
-To: linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
-        linux-efi@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc: ross.philipson@oracle.com, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        dave.hansen@linux.intel.com, ardb@kernel.org, mjg59@srcf.ucam.org,
-        James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
-        nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, corbet@lwn.net, ebiederm@xmission.com,
-        dwmw2@infradead.org, baolu.lu@linux.intel.com,
-        kanth.ghatraju@oracle.com, andrew.cooper3@citrix.com,
-        trenchboot-devel@googlegroups.com
-Subject: [PATCH v10 20/20] x86/efi: EFI stub DRTM launch support for Secure Launch
-Date: Mon, 26 Aug 2024 15:38:35 -0700
-Message-Id: <20240826223835.3928819-21-ross.philipson@oracle.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240826223835.3928819-1-ross.philipson@oracle.com>
-References: <20240826223835.3928819-1-ross.philipson@oracle.com>
+	s=arc-20240116; t=1724748387; c=relaxed/simple;
+	bh=TPLT3vvRAZxT23wj6dkwAi7NSu5Fi6ZCokm6CugQ2I8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=iqpN00Sm8IqQHtXb7Wk7dy2S9e5IA/GRI8frp2hz4LeJk6BwFTV9zFubJ0LvaMx2+fyFogCT6PiOTVDZ1Js7jMPIy+Q4OJo6v8M+LlyqKPovLDxNrNsPUArhh+KSRJtOVefm1lPqKsJliCuQ+n6XmS2s/fHIHUdMPDFVTKGk6VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4WtLk64rD9z9sRr;
+	Tue, 27 Aug 2024 10:46:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id i5nqJfxeDQXd; Tue, 27 Aug 2024 10:46:22 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4WtLk63Vlrz9sPd;
+	Tue, 27 Aug 2024 10:46:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 636F38B77B;
+	Tue, 27 Aug 2024 10:46:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id mPefEagid0UV; Tue, 27 Aug 2024 10:46:22 +0200 (CEST)
+Received: from [192.168.233.149] (PO19727.IDSI0.si.c-s.fr [192.168.233.149])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id C0E308B763;
+	Tue, 27 Aug 2024 10:46:21 +0200 (CEST)
+Message-ID: <397f9865-c4ad-44be-91ab-9764fe3aeb89@csgroup.eu>
+Date: Tue, 27 Aug 2024 10:46:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] aarch64: vdso: Wire up getrandom() vDSO implementation
+To: Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>,
+ linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Eric Biggers <ebiggers@kernel.org>
+References: <20240826181059.111536-1-adhemerval.zanella@linaro.org>
+Content-Language: fr-FR
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20240826181059.111536-1-adhemerval.zanella@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-26_16,2024-08-26_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
- definitions=main-2408260174
-X-Proofpoint-GUID: _txUEO6_ZPApYbvwaVaVoP0oF_4uE0Bl
-X-Proofpoint-ORIG-GUID: _txUEO6_ZPApYbvwaVaVoP0oF_4uE0Bl
 
-This support allows the DRTM launch to be initiated after an EFI stub
-launch of the Linux kernel is done. This is accomplished by providing
-a handler to jump to when a Secure Launch is in progress. This has to be
-called after the EFI stub does Exit Boot Services.
 
-Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
----
- drivers/firmware/efi/libstub/efistub.h  |  8 ++
- drivers/firmware/efi/libstub/x86-stub.c | 98 +++++++++++++++++++++++++
- 2 files changed, 106 insertions(+)
 
-diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-index d33ccbc4a2c6..baf42d6d0796 100644
---- a/drivers/firmware/efi/libstub/efistub.h
-+++ b/drivers/firmware/efi/libstub/efistub.h
-@@ -135,6 +135,14 @@ void efi_set_u64_split(u64 data, u32 *lo, u32 *hi)
- 	*hi = upper_32_bits(data);
- }
- 
-+static inline
-+void efi_set_u64_form(u32 lo, u32 hi, u64 *data)
-+{
-+	u64 upper = hi;
-+
-+	*data = lo | upper << 32;
-+}
-+
- /*
-  * Allocation types for calls to boottime->allocate_pages.
-  */
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index f8e465da344d..04786c1b3b5d 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -9,6 +9,8 @@
- #include <linux/efi.h>
- #include <linux/pci.h>
- #include <linux/stddef.h>
-+#include <linux/slr_table.h>
-+#include <linux/slaunch.h>
- 
- #include <asm/efi.h>
- #include <asm/e820/types.h>
-@@ -923,6 +925,99 @@ static efi_status_t efi_decompress_kernel(unsigned long *kernel_entry)
- 	return efi_adjust_memory_range_protection(addr, kernel_text_size);
- }
- 
-+static bool efi_secure_launch_update_boot_params(struct slr_table *slrt,
-+						 struct boot_params *boot_params)
-+{
-+	struct slr_entry_intel_info *txt_info;
-+	struct slr_entry_policy *policy;
-+	struct txt_os_mle_data *os_mle;
-+	bool updated = false;
-+	int i;
-+
-+	txt_info = slr_next_entry_by_tag(slrt, NULL, SLR_ENTRY_INTEL_INFO);
-+	if (!txt_info)
-+		return false;
-+
-+	os_mle = txt_os_mle_data_start((void *)txt_info->txt_heap);
-+	if (!os_mle)
-+		return false;
-+
-+	os_mle->boot_params_addr = (u64)boot_params;
-+
-+	policy = slr_next_entry_by_tag(slrt, NULL, SLR_ENTRY_ENTRY_POLICY);
-+	if (!policy)
-+		return false;
-+
-+	for (i = 0; i < policy->nr_entries; i++) {
-+		if (policy->policy_entries[i].entity_type == SLR_ET_BOOT_PARAMS) {
-+			policy->policy_entries[i].entity = (u64)boot_params;
-+			updated = true;
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * If this is a PE entry into EFI stub the mocked up boot params will
-+	 * be missing some of the setup header data needed for the second stage
-+	 * of the Secure Launch boot.
-+	 */
-+	if (image) {
-+		struct setup_header *hdr = (struct setup_header *)((u8 *)image->image_base +
-+					    offsetof(struct boot_params, hdr));
-+		u64 cmdline_ptr;
-+
-+		boot_params->hdr.setup_sects = hdr->setup_sects;
-+		boot_params->hdr.syssize = hdr->syssize;
-+		boot_params->hdr.version = hdr->version;
-+		boot_params->hdr.loadflags = hdr->loadflags;
-+		boot_params->hdr.kernel_alignment = hdr->kernel_alignment;
-+		boot_params->hdr.min_alignment = hdr->min_alignment;
-+		boot_params->hdr.xloadflags = hdr->xloadflags;
-+		boot_params->hdr.init_size = hdr->init_size;
-+		boot_params->hdr.kernel_info_offset = hdr->kernel_info_offset;
-+		efi_set_u64_form(boot_params->hdr.cmd_line_ptr, boot_params->ext_cmd_line_ptr,
-+				 &cmdline_ptr);
-+		boot_params->hdr.cmdline_size = strlen((const char *)cmdline_ptr);
-+	}
-+
-+	return updated;
-+}
-+
-+static void efi_secure_launch(struct boot_params *boot_params)
-+{
-+	struct slr_entry_dl_info *dlinfo;
-+	efi_guid_t guid = SLR_TABLE_GUID;
-+	dl_handler_func handler_callback;
-+	struct slr_table *slrt;
-+
-+	if (!IS_ENABLED(CONFIG_SECURE_LAUNCH))
-+		return;
-+
-+	/*
-+	 * The presence of this table indicated a Secure Launch
-+	 * is being requested.
-+	 */
-+	slrt = (struct slr_table *)get_efi_config_table(guid);
-+	if (!slrt || slrt->magic != SLR_TABLE_MAGIC)
-+		return;
-+
-+	/*
-+	 * Since the EFI stub library creates its own boot_params on entry, the
-+	 * SLRT and TXT heap have to be updated with this version.
-+	 */
-+	if (!efi_secure_launch_update_boot_params(slrt, boot_params))
-+		return;
-+
-+	/* Jump through DL stub to initiate Secure Launch */
-+	dlinfo = slr_next_entry_by_tag(slrt, NULL, SLR_ENTRY_DL_INFO);
-+
-+	handler_callback = (dl_handler_func)dlinfo->dl_handler;
-+
-+	handler_callback(&dlinfo->bl_context);
-+
-+	unreachable();
-+}
-+
- static void __noreturn enter_kernel(unsigned long kernel_addr,
- 				    struct boot_params *boot_params)
- {
-@@ -1050,6 +1145,9 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
- 		goto fail;
- 	}
- 
-+	/* If a Secure Launch is in progress, this never returns */
-+	efi_secure_launch(boot_params);
-+
- 	/*
- 	 * Call the SEV init code while still running with the firmware's
- 	 * GDT/IDT, so #VC exceptions will be handled by EFI.
--- 
-2.39.3
+Le 26/08/2024 à 20:10, Adhemerval Zanella a écrit :
+> Hook up the generic vDSO implementation to the aarch64 vDSO data page.
+> The _vdso_rng_data required data is placed within the _vdso_data vvar
+> page, by using a offset larger than the vdso_data
+> (__VDSO_RND_DATA_OFFSET).
+> 
+> The vDSO function requires a ChaCha20 implementation that does not
+> write to the stack, and that can do an entire ChaCha20 permutation.
+> The one provided is based on the current chacha-neon-core.S and uses NEON
+> on the permute operation.
+> 
+> Signed-off-by: Adhemerval Zanella <adhemerval.zanella@linaro.org>
+> ---
+>   arch/arm64/Kconfig                         |   1 +
+>   arch/arm64/include/asm/vdso/getrandom.h    |  50 +++++++
+>   arch/arm64/include/asm/vdso/vsyscall.h     |   9 ++
+>   arch/arm64/kernel/vdso/Makefile            |   7 +-
+>   arch/arm64/kernel/vdso/vdso.lds.S          |   4 +
+>   arch/arm64/kernel/vdso/vgetrandom-chacha.S | 153 +++++++++++++++++++++
+>   arch/arm64/kernel/vdso/vgetrandom.c        |  13 ++
+>   tools/testing/selftests/vDSO/Makefile      |   4 +-
+>   8 files changed, 238 insertions(+), 3 deletions(-)
+>   create mode 100644 arch/arm64/include/asm/vdso/getrandom.h
+>   create mode 100644 arch/arm64/kernel/vdso/vgetrandom-chacha.S
+>   create mode 100644 arch/arm64/kernel/vdso/vgetrandom.c
 
+Were you able to use selftests ? I think you are missing the symbolic 
+link to vdso directory (assuming you are using latest master branch from 
+https://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git)
+
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index b3fc891f1544..e3f4c5bf0661 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -237,6 +237,7 @@ config ARM64
+>   	select HAVE_KPROBES
+>   	select HAVE_KRETPROBES
+>   	select HAVE_GENERIC_VDSO
+> +	select VDSO_GETRANDOM
+
+You don't keep things in alphabetical here order on ARM64 ?
+
+>   	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+>   	select IRQ_DOMAIN
+>   	select IRQ_FORCED_THREADING
+> diff --git a/arch/arm64/include/asm/vdso/getrandom.h b/arch/arm64/include/asm/vdso/getrandom.h
+> new file mode 100644
+> index 000000000000..6e2b136813ca
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/vdso/getrandom.h
+> @@ -0,0 +1,50 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __ASM_VDSO_GETRANDOM_H
+> +#define __ASM_VDSO_GETRANDOM_H
+> +
+> +#ifndef __ASSEMBLY__
+> +
+> +#include <asm/unistd.h>
+> +#include <vdso/datapage.h>
+> +
+> +/**
+> + * getrandom_syscall - Invoke the getrandom() syscall.
+> + * @buffer:	Destination buffer to fill with random bytes.
+> + * @len:	Size of @buffer in bytes.
+> + * @flags:	Zero or more GRND_* flags.
+> + * Returns:	The number of random bytes written to @buffer, or a negative value indicating an error.
+> + */
+> +static __always_inline ssize_t getrandom_syscall(void *buffer, size_t len, unsigned int flags)
+> +{
+> +	register long int x8 asm ("x8") = __NR_getrandom;
+> +	register long int x0 asm ("x0") = (long int) buffer;
+> +	register long int x1 asm ("x1") = (long int) len;
+> +	register long int x2 asm ("x2") = (long int) flags;
+> +
+> +	asm ("svc 0" : "=r"(x0) : "r"(x8), "0"(x0), "r"(x1), "r"(x2));
+> +
+> +	return x0;
+> +}
+> +
+> +static __always_inline const struct vdso_rng_data *__arch_get_vdso_rng_data(void)
+> +{
+> +	return &_vdso_rng_data;
+> +}
+> +
+> +/**
+> + * __arch_chacha20_blocks_nostack - Generate ChaCha20 stream without using the stack.
+> + * @dst_bytes:	Destination buffer to hold @nblocks * 64 bytes of output.
+> + * @key:	32-byte input key.
+> + * @counter:	8-byte counter, read on input and updated on return.
+> + * @nblocks:	Number of blocks to generate.
+> + *
+> + * Generates a given positive number of blocks of ChaCha20 output with nonce=0, and does not write
+> + * to any stack or memory outside of the parameters passed to it, in order to mitigate stack data
+> + * leaking into forked child processes.
+> + */
+> +extern void __arch_chacha20_blocks_nostack(u8 *dst_bytes, const u32 *key, u32 *counter, size_t nblocks);
+
+For Jason: We all redefine this prototype, should we have it in a 
+central place, or do you expect some architecture to provide some static 
+inline for it ?
+
+> +
+> +#endif /* !__ASSEMBLY__ */
+> +
+> +#endif /* __ASM_VDSO_GETRANDOM_H */
+> diff --git a/arch/arm64/include/asm/vdso/vsyscall.h b/arch/arm64/include/asm/vdso/vsyscall.h
+> index f94b1457c117..7ddb2bc3b57b 100644
+> --- a/arch/arm64/include/asm/vdso/vsyscall.h
+> +++ b/arch/arm64/include/asm/vdso/vsyscall.h
+> @@ -2,6 +2,8 @@
+>   #ifndef __ASM_VDSO_VSYSCALL_H
+>   #define __ASM_VDSO_VSYSCALL_H
+>   
+> +#define __VDSO_RND_DATA_OFFSET  480
+> +
+
+How is this offset calculated or defined ? What happens if the other 
+structures grow ? Could you use some sizeof(something) instead of 
+something from asm-offsets if you also need it in ASM ?
+
+>   #ifndef __ASSEMBLY__
+>   
+>   #include <linux/timekeeper_internal.h>
+> @@ -21,6 +23,13 @@ struct vdso_data *__arm64_get_k_vdso_data(void)
+>   }
+>   #define __arch_get_k_vdso_data __arm64_get_k_vdso_data
+>   
+> +static __always_inline
+> +struct vdso_rng_data *__arm64_get_k_vdso_rnd_data(void)
+> +{
+> +	return (void *)__arm64_get_k_vdso_data() + __VDSO_RND_DATA_OFFSET;
+> +}
+> +#define __arch_get_k_vdso_rng_data __arm64_get_k_vdso_rnd_data
+> +
+>   static __always_inline
+>   void __arm64_update_vsyscall(struct vdso_data *vdata, struct timekeeper *tk)
+>   {
+> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+> index d11da6461278..37dad3bb953a 100644
+> --- a/arch/arm64/kernel/vdso/Makefile
+> +++ b/arch/arm64/kernel/vdso/Makefile
+> @@ -9,7 +9,7 @@
+>   # Include the generic Makefile to check the built vdso.
+>   include $(srctree)/lib/vdso/Makefile
+>   
+> -obj-vdso := vgettimeofday.o note.o sigreturn.o
+> +obj-vdso := vgettimeofday.o note.o sigreturn.o vgetrandom.o vgetrandom-chacha.o
+>   
+>   # Build rules
+>   targets := $(obj-vdso) vdso.so vdso.so.dbg
+> @@ -40,8 +40,13 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS) \
+>   				$(RANDSTRUCT_CFLAGS) $(GCC_PLUGINS_CFLAGS) \
+>   				$(CC_FLAGS_LTO) $(CC_FLAGS_CFI) \
+>   				-Wmissing-prototypes -Wmissing-declarations
+> +CFLAGS_REMOVE_vgetrandom.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS) \
+> +			     $(RANDSTRUCT_CFLAGS) $(GCC_PLUGINS_CFLAGS) \
+> +			     $(CC_FLAGS_LTO) $(CC_FLAGS_CFI) \
+> +			     -Wmissing-prototypes -Wmissing-declarations
+>   
+>   CFLAGS_vgettimeofday.o = -O2 -mcmodel=tiny -fasynchronous-unwind-tables
+> +CFLAGS_vgetrandom.o = -O2 -mcmodel=tiny -fasynchronous-unwind-tables
+>   
+>   ifneq ($(c-gettimeofday-y),)
+>     CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
+> diff --git a/arch/arm64/kernel/vdso/vdso.lds.S b/arch/arm64/kernel/vdso/vdso.lds.S
+> index 45354f2ddf70..f8dbcece20e2 100644
+> --- a/arch/arm64/kernel/vdso/vdso.lds.S
+> +++ b/arch/arm64/kernel/vdso/vdso.lds.S
+> @@ -12,6 +12,8 @@
+>   #include <asm/page.h>
+>   #include <asm/vdso.h>
+>   #include <asm-generic/vmlinux.lds.h>
+> +#include <vdso/datapage.h>
+> +#include <asm/vdso/vsyscall.h>
+>   
+>   OUTPUT_FORMAT("elf64-littleaarch64", "elf64-bigaarch64", "elf64-littleaarch64")
+>   OUTPUT_ARCH(aarch64)
+> @@ -19,6 +21,7 @@ OUTPUT_ARCH(aarch64)
+>   SECTIONS
+>   {
+>   	PROVIDE(_vdso_data = . - __VVAR_PAGES * PAGE_SIZE);
+> +	PROVIDE(_vdso_rng_data = _vdso_data + __VDSO_RND_DATA_OFFSET);
+>   #ifdef CONFIG_TIME_NS
+>   	PROVIDE(_timens_data = _vdso_data + PAGE_SIZE);
+>   #endif
+> @@ -102,6 +105,7 @@ VERSION
+>   		__kernel_gettimeofday;
+>   		__kernel_clock_gettime;
+>   		__kernel_clock_getres;
+> +		__kernel_getrandom;
+>   	local: *;
+>   	};
+>   }
+> diff --git a/arch/arm64/kernel/vdso/vgetrandom-chacha.S b/arch/arm64/kernel/vdso/vgetrandom-chacha.S
+
+[skipped ASM as I have not spoken ARM asm since I was at school in the 90's]
+
+> diff --git a/arch/arm64/kernel/vdso/vgetrandom.c b/arch/arm64/kernel/vdso/vgetrandom.c
+> new file mode 100644
+> index 000000000000..b6d6f4db3a98
+> --- /dev/null
+> +++ b/arch/arm64/kernel/vdso/vgetrandom.c
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#include <linux/types.h>
+> +#include <linux/mm.h>
+> +
+> +#include "../../../../lib/vdso/getrandom.c"
+
+For gettimeofday ARM64 uses c-gettimeofday-y in the Makefile instead.
+
+You should do the same with c-getrandom-y
+
+> +
+> +ssize_t __kernel_getrandom(void *buffer, size_t len, unsigned int flags, void *opaque_state, size_t opaque_len);
+> +
+> +ssize_t __kernel_getrandom(void *buffer, size_t len, unsigned int flags, void *opaque_state, size_t opaque_len)
+> +{
+> +	return __cvdso_getrandom(buffer, len, flags, opaque_state, opaque_len);
+> +}
+> diff --git a/tools/testing/selftests/vDSO/Makefile b/tools/testing/selftests/vDSO/Makefile
+> index 10ffdda3f2fa..f07ea679a4cc 100644
+> --- a/tools/testing/selftests/vDSO/Makefile
+> +++ b/tools/testing/selftests/vDSO/Makefile
+> @@ -1,6 +1,6 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   uname_M := $(shell uname -m 2>/dev/null || echo not)
+> -ARCH ?= $(shell echo $(uname_M) | sed -e s/i.86/x86/ -e s/x86_64/x86/)
+> +ARCH ?= $(shell echo $(uname_M) | sed -e s/i.86/x86/ -e s/x86_64/x86/ -e s/aarch64.*/arm64/)
+
+>   SODIUM := $(shell pkg-config --libs libsodium 2>/dev/null)
+>   
+>   TEST_GEN_PROGS := vdso_test_gettimeofday
+> @@ -11,7 +11,7 @@ ifeq ($(ARCH),$(filter $(ARCH),x86 x86_64))
+>   TEST_GEN_PROGS += vdso_standalone_test_x86
+>   endif
+>   TEST_GEN_PROGS += vdso_test_correctness
+> -ifeq ($(uname_M),x86_64)
+> +ifeq ($(uname_M), $(filter x86_64 aarch64, $(uname_M)))
+
+Does that work for you when you cross-compile ? For powerpc when I cross 
+compile I still get the x86_64 from uname_M here, which is unexpected.
+
+>   TEST_GEN_PROGS += vdso_test_getrandom
+>   ifneq ($(SODIUM),)
+>   TEST_GEN_PROGS += vdso_test_chacha
+
+Christophe
 
