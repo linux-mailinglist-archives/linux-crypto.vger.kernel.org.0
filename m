@@ -1,49 +1,48 @@
-Return-Path: <linux-crypto+bounces-6442-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6444-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11BF1965F5D
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 12:37:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15C7B965F6F
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 12:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1601F27067
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 10:37:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48D461C230A9
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 10:40:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257C118C007;
-	Fri, 30 Aug 2024 10:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0049E192587;
+	Fri, 30 Aug 2024 10:39:23 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA917175D34;
-	Fri, 30 Aug 2024 10:36:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83801917ED;
+	Fri, 30 Aug 2024 10:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725014215; cv=none; b=T7U56YN/PFtVhghxZgdb0kSddRjY2rcjP5Vsv+UCJuT5aiCKJNvF1DMY4QY1adaYvFfeXOYoCzYpqyHV8oAfBkMpxXtQuBJ3RJUGq4yDc8iADWruULKU3oeAaIn/yMNySxpo7Mteegd2+lMz2J8V4rg5YDX1TyOUWR9d57u9V4A=
+	t=1725014362; cv=none; b=tN2PqWwW+mhQ7PEDRgSkwBDlOaI3FXkqUFCNz98ujcJ6OIKjxhDW6KyXF8dmt4aliuidnF5xl+bJjMHyyLhjK8fpgsAf5PNnCbTaGdiZd/DPSPgzGAlrNrE6Z2/hmqAZsuuQiWeqJ8WqdSAAnnQ7+94dY8TxK4NuiwXcoGt5EVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725014215; c=relaxed/simple;
-	bh=E1WdfCvlI/aTa780Ydvt3ulJ3p7eoeSZLszJBUoQbQ0=;
+	s=arc-20240116; t=1725014362; c=relaxed/simple;
+	bh=m+fLPyaYlS1twH8qQ8AV1VpgxFqc6IYa1hsdbPeQLy4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NPwDf3JWSk4f4GRkK2WreNtEtMDlgdr64wiJvkEJHNi+AcSlEcYBzQlLTUDv6kyhwNrPYpFrubXHNPOxoT22TJO1bHvFrDfrQ9acBCCezeKBbcsLSa+oFAQMzUCwqrvnt74OGwsU0rndKr45Uikqy65D/lTuA161On/P5+TVvX8=
+	 Content-Type:Content-Disposition:In-Reply-To; b=rcuCXCd0u7tbKN7gkXTB/nBOohcFv+rNbJVan85v+ZyD6k/wF1G9uaq+a+yE5xTcNu1o4LKF4GybIfdhik7qlMP2+xNGewWD/1ehFMLP1Vgoka38MBzgL0Xrc5CYl3H50hLw7Wk7NRWKU4F6ME2R4T4QSuF9BTylSY97NKGZI1w=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1sjyrD-008Uop-2c;
-	Fri, 30 Aug 2024 18:36:41 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2024 18:36:40 +0800
-Date: Fri, 30 Aug 2024 18:36:40 +0800
+	id 1sjytQ-008UqR-0D;
+	Fri, 30 Aug 2024 18:38:58 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2024 18:38:57 +0800
+Date: Fri, 30 Aug 2024 18:38:57 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Huan Yang <link@vivo.com>
-Cc: Olivia Mackall <olivia@selenic.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	opensource.kernel@vivo.com
-Subject: Re: [PATCH] char: mxc-rnga: Use devm_clk_get_enabled() helpers
-Message-ID: <ZtGguPBIxNCVcQ0M@gondor.apana.org.au>
-References: <20240820094715.104998-1-link@vivo.com>
+To: Martin Kaiser <martin@kaiser.cx>
+Cc: Aurelien Jarno <aurelien@aurel32.net>,
+	Daniel Golle <daniel@makrotopia.org>, linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] hwrng: rockchip - two simple cleanups
+Message-ID: <ZtGhQXIWB5uUN1pE@gondor.apana.org.au>
+References: <20240821181235.22270-1-martin@kaiser.cx>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -52,22 +51,22 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240820094715.104998-1-link@vivo.com>
+In-Reply-To: <20240821181235.22270-1-martin@kaiser.cx>
 
-On Tue, Aug 20, 2024 at 05:47:11PM +0800, Huan Yang wrote:
-> The devm_clk_get_enabled() helpers:
->     - call devm_clk_get()
->     - call clk_prepare_enable() and register what is needed in order to
->      call clk_disable_unprepare() when needed, as a managed resource.
+On Wed, Aug 21, 2024 at 08:12:33PM +0200, Martin Kaiser wrote:
+> Two simple cleanups for the Rockchip RK3568 driver.
 > 
-> This simplifies the code and avoids the calls to clk_disable_unprepare().
+> Martin Kaiser (2):
+>   hwrng: rockchip - rst is used only during probe
+>   hwrng: rockchip - handle devm_pm_runtime_enable errors
 > 
-> Signed-off-by: Huan Yang <link@vivo.com>
-> ---
->  drivers/char/hw_random/mxc-rnga.c | 16 +++-------------
->  1 file changed, 3 insertions(+), 13 deletions(-)
+>  drivers/char/hw_random/rockchip-rng.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> -- 
+> 2.39.2
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
