@@ -1,51 +1,49 @@
-Return-Path: <linux-crypto+bounces-6445-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6447-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2708D965F72
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 12:40:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0545E965F8D
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 12:47:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D78E828AACC
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 10:40:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37FA31C21FC4
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 10:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A142218FC9D;
-	Fri, 30 Aug 2024 10:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC6C15C12D;
+	Fri, 30 Aug 2024 10:47:47 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D19C188A34;
-	Fri, 30 Aug 2024 10:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6556518FDA6
+	for <linux-crypto@vger.kernel.org>; Fri, 30 Aug 2024 10:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725014389; cv=none; b=s/aYBbllzEXlDc9dl8MTzquPSVNuQl4VD56YNDkWgwpze195bPvyAzDDETWLGjzmVU0tjx2spdfj06YODx/1DQeQBiOCws9dJbf+re5QarEffwSbXIAtnmzN4RLh+bXOvkmP0Z2/pf6/E+fFFh/SsAUjxXHnRT/U+G0gJVzR/Ho=
+	t=1725014867; cv=none; b=T66Lzqtk5XSbbu8V58tMthylQRmgNSqShVwHwjM0lD4iN1luo5AdQ+T7cGck7c6nIAZVAF4+tyokEsZiXsKEVy7Oij5NeRnyZotnTKY5NO61Hihl6NW4yIS7Ap20UJ731CsvXhmiNLfk9mRp+9rKo2J0XSpUNuMivYwlKRTtpMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725014389; c=relaxed/simple;
-	bh=ndbHB8FL13EXXITWif/5S6XY+CQ7u/Fe9YqEyt0dmp4=;
+	s=arc-20240116; t=1725014867; c=relaxed/simple;
+	bh=WIXNgSAvM1LNAy0wBgowC/37D2qR497JtEx9SCY/PtM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UaX1mguyo3Qovhoyz91aA8NbXvLozIeWTXbhbr3/KL4iBp8q7hsBMZXCud0LE02ajfLqIkQHKu+qnwurTwvgt8PPIRQ4JidWKkWPMtsaBvSwPRhfQAPxuF2K3QWhDDihHIUgV1NTiYWt0LyYteMQJaHzKCkAGsDh9WTtaNeH1Rs=
+	 Content-Type:Content-Disposition:In-Reply-To; b=M6MeFO3XAAe7hxoxfDsWPqQIiFyqPFwipm+eX2uiIpwBzzzG+yJH7NCigDH0ilQqV5lTJzDA1sx9tLJpu06JBod+k7nWOF/U2ppLVc6++OVbo6LK+/8lUda2Gf9b+S+C2c1IF67E3yMKCHWYiExfjgxk6bXyPGwJS0FYh8Pmok8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1sjytx-008UrA-32;
-	Fri, 30 Aug 2024 18:39:32 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2024 18:39:31 +0800
-Date: Fri, 30 Aug 2024 18:39:30 +0800
+	id 1sjz1c-008UxU-1L;
+	Fri, 30 Aug 2024 18:47:26 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2024 18:47:25 +0800
+Date: Fri, 30 Aug 2024 18:47:25 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Kamlesh Gurudasani <kamlesh@ti.com>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>,
-	Daniel Jordan <daniel.m.jordan@oracle.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Waiman Long <longman@redhat.com>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] padata: Honor the caller's alignment in case of
- chunk_size 0
-Message-ID: <ZtGhYmNAAyBJxega@gondor.apana.org.au>
-References: <20240822-max-v1-1-cb4bc5b1c101@ti.com>
+To: Chunhai Guo <guochunhai@vivo.com>
+Cc: davem@davemloft.net, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] crypto: atmel-{aes,sha} - use devm_clk_get_prepared()
+ helpers
+Message-ID: <ZtGjPez-NH5MU-H4@gondor.apana.org.au>
+References: <20240823094249.2172979-1-guochunhai@vivo.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -54,23 +52,17 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240822-max-v1-1-cb4bc5b1c101@ti.com>
+In-Reply-To: <20240823094249.2172979-1-guochunhai@vivo.com>
 
-On Thu, Aug 22, 2024 at 02:32:52AM +0530, Kamlesh Gurudasani wrote:
-> In the case where we are forcing the ps.chunk_size to be at least 1,
-> we are ignoring the caller's alignment.
+On Fri, Aug 23, 2024 at 03:42:49AM -0600, Chunhai Guo wrote:
+> Simplify the code by replacing devm_clk_get() and clk_prepare() with
+> devm_clk_get_prepared(), which also avoids the call to clk_unprepare().
 > 
-> Move the forcing of ps.chunk_size to be at least 1 before rounding it
-> up to caller's alignment, so that caller's alignment is honored.
-> 
-> While at it, use max() to force the ps.chunk_size to be at least 1 to
-> improve readability.
-> 
-> Fixes: 6d45e1c948a8 ("padata: Fix possible divide-by-0 panic in padata_mt_helper()")
-> Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
+> Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
 > ---
->  kernel/padata.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
+>  drivers/crypto/atmel-aes.c | 16 ++++------------
+>  drivers/crypto/atmel-sha.c | 14 +++-----------
+>  2 files changed, 7 insertions(+), 23 deletions(-)
 
 Patch applied.  Thanks.
 -- 
