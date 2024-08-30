@@ -1,55 +1,51 @@
-Return-Path: <linux-crypto+bounces-6443-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6445-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22983965F6E
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 12:39:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2708D965F72
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 12:40:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 547F91C23547
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 10:39:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D78E828AACC
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Aug 2024 10:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6F118F2FA;
-	Fri, 30 Aug 2024 10:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A142218FC9D;
+	Fri, 30 Aug 2024 10:39:49 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F7D18EFED;
-	Fri, 30 Aug 2024 10:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D19C188A34;
+	Fri, 30 Aug 2024 10:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725014360; cv=none; b=ESN6RQSWJ9W7w+I9aAh/ppprT2kKPrRT2UfnVp+hD3TaB4Zse8ZYJM6gcQWy5OU9YiF6GZP/+9LdmeVlDn5KaMnW+F1J8tggl5Uwb+SQ5HrRS7kZgyoKethpjW3evGt9hnaT+bwsfcu8D5n17ArFn/M6R4DY/hSTR1hv3du5wBA=
+	t=1725014389; cv=none; b=s/aYBbllzEXlDc9dl8MTzquPSVNuQl4VD56YNDkWgwpze195bPvyAzDDETWLGjzmVU0tjx2spdfj06YODx/1DQeQBiOCws9dJbf+re5QarEffwSbXIAtnmzN4RLh+bXOvkmP0Z2/pf6/E+fFFh/SsAUjxXHnRT/U+G0gJVzR/Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725014360; c=relaxed/simple;
-	bh=gvppTPOwKOdCSZvyPTB3N1VjeQmkQ/MKSgKPsBNp3wY=;
+	s=arc-20240116; t=1725014389; c=relaxed/simple;
+	bh=ndbHB8FL13EXXITWif/5S6XY+CQ7u/Fe9YqEyt0dmp4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ViwPZiIEnOhdRLeIn37ovQfc99c2LVnDoGNOgyMpK3Zni0kxJNxngecUqvppyO+NYI/tHiiXQ9nVfe6NoGV8mc7S0JhSAVl1/doMVue1MGYmXrn9WntzpA37389aKs3GzMCb0wRWIc4u+u/PHc8RtzzNTXkEWaqdMapO8meH00Q=
+	 Content-Type:Content-Disposition:In-Reply-To; b=UaX1mguyo3Qovhoyz91aA8NbXvLozIeWTXbhbr3/KL4iBp8q7hsBMZXCud0LE02ajfLqIkQHKu+qnwurTwvgt8PPIRQ4JidWKkWPMtsaBvSwPRhfQAPxuF2K3QWhDDihHIUgV1NTiYWt0LyYteMQJaHzKCkAGsDh9WTtaNeH1Rs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1sjytb-008Uqh-2P;
-	Fri, 30 Aug 2024 18:39:09 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2024 18:39:08 +0800
-Date: Fri, 30 Aug 2024 18:39:08 +0800
+	id 1sjytx-008UrA-32;
+	Fri, 30 Aug 2024 18:39:32 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 30 Aug 2024 18:39:31 +0800
+Date: Fri, 30 Aug 2024 18:39:30 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-	Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Gaurav Jain <gaurav.jain@nxp.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-crypto@vger.kernel.org,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 1/1] dt-bindings: crypto: fsl,sec-v4.0: add second
- register space for rtic
-Message-ID: <ZtGhTM4cHz2VWCdD@gondor.apana.org.au>
-References: <20240821192135.578126-1-Frank.Li@nxp.com>
+To: Kamlesh Gurudasani <kamlesh@ti.com>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>,
+	Daniel Jordan <daniel.m.jordan@oracle.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Waiman Long <longman@redhat.com>, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] padata: Honor the caller's alignment in case of
+ chunk_size 0
+Message-ID: <ZtGhYmNAAyBJxega@gondor.apana.org.au>
+References: <20240822-max-v1-1-cb4bc5b1c101@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -58,21 +54,23 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240821192135.578126-1-Frank.Li@nxp.com>
+In-Reply-To: <20240822-max-v1-1-cb4bc5b1c101@ti.com>
 
-On Wed, Aug 21, 2024 at 03:20:48PM -0400, Frank Li wrote:
-> Add two description for register space of rtic. There are two register
-> space, one is for control and status, the other optional space is
-> recoverable error indication register space.
+On Thu, Aug 22, 2024 at 02:32:52AM +0530, Kamlesh Gurudasani wrote:
+> In the case where we are forcing the ps.chunk_size to be at least 1,
+> we are ignoring the caller's alignment.
 > 
-> Fix below CHECK_DTBS error:
-> arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dtb: crypto@1700000: rtic@60000:reg: [[393216, 256], [396800, 24]] is too long
->         from schema $id: http://devicetree.org/schemas/crypto/fsl,sec-v4.0.yaml#
+> Move the forcing of ps.chunk_size to be at least 1 before rounding it
+> up to caller's alignment, so that caller's alignment is honored.
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> While at it, use max() to force the ps.chunk_size to be at least 1 to
+> improve readability.
+> 
+> Fixes: 6d45e1c948a8 ("padata: Fix possible divide-by-0 panic in padata_mt_helper()")
+> Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
 > ---
->  Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  kernel/padata.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 
 Patch applied.  Thanks.
 -- 
