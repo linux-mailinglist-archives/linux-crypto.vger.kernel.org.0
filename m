@@ -1,56 +1,51 @@
-Return-Path: <linux-crypto+bounces-6472-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6475-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5442D967096
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Aug 2024 11:50:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 197E296716A
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Aug 2024 13:52:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 072E01F22D94
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Aug 2024 09:50:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C965628363A
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Aug 2024 11:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C2117C224;
-	Sat, 31 Aug 2024 09:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA2417E01C;
+	Sat, 31 Aug 2024 11:52:22 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFED5170A24;
-	Sat, 31 Aug 2024 09:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8A14C99;
+	Sat, 31 Aug 2024 11:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725097817; cv=none; b=bCtG01eNHT2Ry4eP8bvs6Kcoggu2NAHijSBNvJziYpfjQaiDnCSNPkTchuwfKl3SybR8GY9UsnruInX8i3ntKOa0S6il/T0ZLk6vtWuviuLyJ/2u39K2hVZoe86paYsA9mTh4jtL5KFkJQjSmczWnDYnV7Z3uijWW20GDm1YYhg=
+	t=1725105142; cv=none; b=M8iIdlMA0F3k+YYNNic/MYCN2xWP1csexzoGBMFnoKG6oyN1VvGz5ft3yQ3S3ablc0XUnsEPqhHUQ8tuutSGDTcc4P1OxlF6lr7geITSILnaXDw9u1a9CeJrWjm9Kgh3SByo7gJrFeWxeL8dcHuoqDYdKuSErqCe7JUg6imNAwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725097817; c=relaxed/simple;
-	bh=hUbjT7qj0ylI5uwOskrsSChPh/FbefLjixfh3uDGogk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qSLJjvYzraqRv9WCx75dCKO1n9IlJ54crRwn70cj3fqA7XFnsvoq0uOXkTBijCBmYYaiO8VWHz7Tru6sCANmSnfarCCCyWqO6Z1EdSecBKTq1m4vh9l8IdgQIaTDxUTuhZPXym5eOSkPtQGVIuXPCJ26n6UqtOFSetN8lqeYqnI=
+	s=arc-20240116; t=1725105142; c=relaxed/simple;
+	bh=7KJMoXFm1sjE9zdEQDm6xbqnZvCYOVAuYscMOzihT0M=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XUlfMXv1tWxaGL0wcXjd3EkzU7nDLndEP5mPGyzclO1OLf0lcaUOw5btRxzBFst17TkCV5K+r97ZuNTVBW62e3ovALbVpw3lTddHJxIF6bm7OhSkH9NJGQXRIdAYlJnqaUvxIBeblv75mTt/xUdJKTtnH7igUOdfklvr63kAw8I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Wwqww0qmDzyQxg;
-	Sat, 31 Aug 2024 17:49:20 +0800 (CST)
-Received: from kwepemd200024.china.huawei.com (unknown [7.221.188.85])
-	by mail.maildlp.com (Postfix) with ESMTPS id 728A1140137;
-	Sat, 31 Aug 2024 17:50:12 +0800 (CST)
-Received: from localhost.huawei.com (10.90.30.45) by
- kwepemd200024.china.huawei.com (7.221.188.85) with Microsoft SMTP Server
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Wwtf64H1jzyR58;
+	Sat, 31 Aug 2024 19:51:42 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (unknown [7.193.23.164])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4AA021400DC;
+	Sat, 31 Aug 2024 19:52:16 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 31 Aug 2024 17:50:11 +0800
-From: Chenghai Huang <huangchenghai2@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <shenyang39@huawei.com>,
-	<songzhiqi1@huawei.com>, <qianweili@huawei.com>, <linwenkai6@hisilicon.com>,
-	<taoqi10@huawei.com>, <wangzhou1@hisilicon.com>, <huangchenghai2@huawei.com>
-Subject: [PATCH v2 3/3] crypto: hisilicon/trng - modifying the order of header files
-Date: Sat, 31 Aug 2024 17:50:09 +0800
-Message-ID: <20240831095009.446780-4-huangchenghai2@huawei.com>
+ 15.1.2507.39; Sat, 31 Aug 2024 19:52:15 +0800
+From: Weili Qian <qianweili@huawei.com>
+To: <herbert@gondor.apana.org.au>
+CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<liulongfang@huawei.com>, <shenyang39@huawei.com>
+Subject: [PATCH 0/3] crypto: hisilicon - fix issues related to device reset
+Date: Sat, 31 Aug 2024 19:48:28 +0800
+Message-ID: <20240831114831.21987-1-qianweili@huawei.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240831095009.446780-1-huangchenghai2@huawei.com>
-References: <20240831095009.446780-1-huangchenghai2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -59,50 +54,28 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd200024.china.huawei.com (7.221.188.85)
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
 
-Header files is included Order-ref: standard library headers,
-OS library headers, and project-specific headers. This patch
-modifies the order of header files according to suggestions.
+This set fixes some issues related to device reset:
+1. Before enabling the device, reset the device to ensure that
+the device is in the initial state.
+2. Mask device task timeout error because the current device
+timeout threshold is too short.
+3. Memory error is injected to close master ooo to prevent the
+device write the released memory.
 
-In addition, use %u to print unsigned int variables to prevent
-overflow.
+Weili Qian (3):
+  crypto: hisilicon/qm - reset device before enabling it
+  crypto: hisilicon/hpre - mask cluster timeout error
+  crypto: hisilicon/qm - inject error before stopping queue
 
-Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
----
- drivers/crypto/hisilicon/trng/trng.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  54 ++++----
+ drivers/crypto/hisilicon/qm.c             | 151 ++++++++++++++--------
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  16 +--
+ drivers/crypto/hisilicon/zip/zip_main.c   |  23 ++--
+ 4 files changed, 146 insertions(+), 98 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/trng/trng.c b/drivers/crypto/hisilicon/trng/trng.c
-index 451b167bcc73..66c551ecdee8 100644
---- a/drivers/crypto/hisilicon/trng/trng.c
-+++ b/drivers/crypto/hisilicon/trng/trng.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 HiSilicon Limited. */
- 
-+#include <crypto/internal/rng.h>
- #include <linux/acpi.h>
- #include <linux/crypto.h>
- #include <linux/err.h>
-@@ -13,7 +14,6 @@
- #include <linux/mutex.h>
- #include <linux/platform_device.h>
- #include <linux/random.h>
--#include <crypto/internal/rng.h>
- 
- #define HISI_TRNG_REG		0x00F0
- #define HISI_TRNG_BYTES		4
-@@ -121,7 +121,7 @@ static int hisi_trng_generate(struct crypto_rng *tfm, const u8 *src,
- 	u32 i;
- 
- 	if (dlen > SW_DRBG_BLOCKS_NUM * SW_DRBG_BYTES || dlen == 0) {
--		pr_err("dlen(%d) exceeds limit(%d)!\n", dlen,
-+		pr_err("dlen(%u) exceeds limit(%d)!\n", dlen,
- 			SW_DRBG_BLOCKS_NUM * SW_DRBG_BYTES);
- 		return -EINVAL;
- 	}
 -- 
 2.33.0
 
