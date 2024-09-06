@@ -1,86 +1,124 @@
-Return-Path: <linux-crypto+bounces-6664-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6666-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496F596EBA8
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Sep 2024 09:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65CC196EC30
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Sep 2024 09:39:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 002841F2442C
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Sep 2024 07:11:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BC071F220A4
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Sep 2024 07:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E0F914C5BE;
-	Fri,  6 Sep 2024 07:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B763154420;
+	Fri,  6 Sep 2024 07:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="EfUTrArE"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cB0wo8oG"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B79E145B11;
-	Fri,  6 Sep 2024 07:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF2314A604
+	for <linux-crypto@vger.kernel.org>; Fri,  6 Sep 2024 07:39:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725606644; cv=none; b=DNgeoqDZAzo8P1krnlUJtOEtX9pYnY9DTNkIG5YfV1E+iQtSdz7O9gHDIzLvBNxnDJFSpH4elnJcfUSj1XmlASXyoYfSrHfiBK7gDH1S5/o9MqUMnuu/kqKJouMwGoSL3Y7PQ/AHHPFwvmbjh0KIvs3cluZYwRRr4dbEAIW8+4g=
+	t=1725608344; cv=none; b=N8OH3vS35O47jhBxzcqPVVBO8qhLoon/I3Dg92keHEQkj/gkbMIi2qi5G260ix6OoIk9vvJkgG+28D2MwW96f0hStxaRlrZedkf1vpGVZ7M7laqNEQOoe5VKBuMWxE1T0U/0UI/TWEjGyQQSgC0ihGn9N3DCMg3fp2VutDKNkLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725606644; c=relaxed/simple;
-	bh=Ds7RT2fVT/UbrmuVwfHzcEs0c0ik9tAfLKssDNBJXZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GLmdJnNFmTeScMcg0dR8MWMkM1lC5hWlivTczZ05/6wVJBN+TCmfftMhQRfd4GWHGjhUiT98EY53UwmCcAdv4FiPqj7y6Ru2IgvjlGoHRAE4lhL2FhsWS/E8XbFcuT1PdUktxoTc1R5I4xSEKEGg5v5yweBkJt9xEbIXtu8yubI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=EfUTrArE; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=ToMMlBX7EEWJ20/agcgqyPHaIBkdoV0RP+7ViTCkwws=; b=EfUTrArEUtkQp+PmyqsOPvY7oX
-	MJ3FKI79nUaykR74o7QpSliRvFFeLoHRAOfLXXuWn1cRC4G5PTS0BVXYNQA5KEicRlwYMS1reJaN7
-	MsaAU/t4Jf3VXnMiJlRmGiUXa3uSeLq0IJY7v7SldRMQbC1hWJJZKJ1ZNcCeP4M8g674vXE8oeXlh
-	gnJePzvfkidao7NTisLuQ7cnKtNvPmLKEbW28RvuayKggx31mOD5j0mCSwbC3+ujy06uQ+mGt7lXY
-	ecoAUvsJmZQGBnE/X1woX+ASszCde2fFfOtmfnCY40glWYp49R/FNy4+jtvL+fQHKLWntdXI+Iw6A
-	9SYwJAFg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1smSxB-000WbE-2l;
-	Fri, 06 Sep 2024 15:10:36 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Sep 2024 15:10:35 +0800
-Date: Fri, 6 Sep 2024 15:10:35 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	"David S . Miller" <davem@davemloft.net>, qat-linux@intel.com,
-	linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] crypto: qat - Remove trailing space after \n
- newline
-Message-ID: <Ztqq68WWG13hoPce@gondor.apana.org.au>
-References: <20240901160717.143334-1-colin.i.king@gmail.com>
+	s=arc-20240116; t=1725608344; c=relaxed/simple;
+	bh=/VfN5TZBKFESX0ktdJnLpkP+3s1XJrbvW7+e2JjstSQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z7A2HiPADBetCQqKS6t8bEK1he0LFv8DqYxEcQq6UUD+AMNL0LdioKWqU8HuhArzEZPg4uvT7KL3MUgUtCjaF9laCKrRjgzMcHIKTJAwuK4dankzZK7TbjPJ0fixlIpWqSPdsdXQ0H5qmZFfjPdG4Bbr+bg29LvISHocL7JWnnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cB0wo8oG; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-374bd059b12so936390f8f.1
+        for <linux-crypto@vger.kernel.org>; Fri, 06 Sep 2024 00:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1725608339; x=1726213139; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xz9IdLmzy/T20GbDRPSYjXR1GKGx3xeoUvnivTDuQzM=;
+        b=cB0wo8oGQ4gkqzsJUvwKF2bKsP3JPyJcvK8bOlIjlrk+jEwF2DTaekiQ5x9nIxU/UZ
+         HaCsFa7RX/okxuGsDJAAUa9wIbIqORlQfJwHEEqjhATDZFBZXnh4K0gjB8TM9nBNytTH
+         Lpx4ZaujIBV1Y4PChxe/m+H3cnhkvFDulli0meNFfyNDTGKB6IYEnbfb+WZVDITwgwyf
+         Mtg9oW5A2dL3K3TxhVhVOTy8lY0hnWAOlVabsmGFF1FagxFC2iQ5AdRCVdjFdzQ4DQI1
+         aRafG/lG6ZWwZAaCW2b0/DfSRhZ0jDCKGlajtSZAp+/RjNDaPd4p0xjNgqps9c0zsTCp
+         8UzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725608339; x=1726213139;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xz9IdLmzy/T20GbDRPSYjXR1GKGx3xeoUvnivTDuQzM=;
+        b=Zmdc5CddCt3NDTLs69eem3dXS833AHcfw4t/hfA6cXQtc9RC9pipgV/Qv0QIRGma3K
+         pQ4AGM4Vh2l8C8ClTbPCU5STGmdZ6V2Lm24/OmQgmZgtPr4lwE4WxDQqM7IkDtT3YqmM
+         uAvj6i+IPT+/hLid/4LGUcB9FILwwRK1glvr3xORgsYGpHqPRMvXcEbTV1nFmWuSju2S
+         gKQklCEBHbkeQgPNgHct6Vdf9YpJRNeSOa0AmcTCLOqZcy5i+uxU4Jovn7RgaNezekhc
+         PO7Mry68kd1OaMH7TkPeQ8m7r8YU4VBoA22d5Hzqvvjp3kqr15tUJg6fz1V6da9GzMuG
+         /V8A==
+X-Forwarded-Encrypted: i=1; AJvYcCVHw2VGOyMGYLGIYKEXln6ex46z3cGKBjdwYp4eqlQKHKwXTibbuXwb0a0Han1w8wSgIm0A5NqEzEYqdtM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwSSXUzKAmiuv39V8LGgU299gtcS+gy//U6WCrKxKNZAZ5vJIi9
+	iueRKEEu9kWOXDoE+U6d+ANw3DrAqXl8FvYf8Jgy74IglGGGHV/tIACgAbMhIvU=
+X-Google-Smtp-Source: AGHT+IGFHwFQ99mHOKHLLsrCtuLnOv+VrrxaTcWgKFCATGwuZhLv7Zk5Z474pGF9RhYDinH0QTPZug==
+X-Received: by 2002:a5d:5f4a:0:b0:374:c269:df79 with SMTP id ffacd0b85a97d-374c269e0d7mr16000044f8f.22.1725608338871;
+        Fri, 06 Sep 2024 00:38:58 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-3749eea60e2sm21002351f8f.62.2024.09.06.00.38.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Sep 2024 00:38:58 -0700 (PDT)
+Message-ID: <64758ccf-7ad4-4490-b938-864ade9ae74c@linaro.org>
+Date: Fri, 6 Sep 2024 09:38:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240901160717.143334-1-colin.i.king@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/21] dt-bindings: thermal: tsens: document support on
+ SA8255p
+To: Nikunj Kela <quic_nkela@quicinc.com>
+Cc: andersson@kernel.org, konradybcio@kernel.org, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, rafael@kernel.org,
+ viresh.kumar@linaro.org, herbert@gondor.apana.org.au, davem@davemloft.net,
+ sudeep.holla@arm.com, andi.shyti@kernel.org, tglx@linutronix.de,
+ will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+ jassisinghbrar@gmail.com, lee@kernel.org, linus.walleij@linaro.org,
+ amitk@kernel.org, thara.gopinath@gmail.com, broonie@kernel.org,
+ cristian.marussi@arm.com, rui.zhang@intel.com, lukasz.luba@arm.com,
+ wim@linux-watchdog.org, linux@roeck-us.net, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
+ arm-scmi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-i2c@vger.kernel.org, iommu@lists.linux.dev,
+ linux-gpio@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ kernel@quicinc.com, quic_psodagud@quicinc.com,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240828203721.2751904-1-quic_nkela@quicinc.com>
+ <20240903220240.2594102-1-quic_nkela@quicinc.com>
+ <20240903220240.2594102-13-quic_nkela@quicinc.com>
+Content-Language: en-US
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240903220240.2594102-13-quic_nkela@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Sep 01, 2024 at 05:07:17PM +0100, Colin Ian King wrote:
-> There is a extraneous space after a newline in a pr_err message.
-> Remove it.
+On 04/09/2024 00:02, Nikunj Kela wrote:
+> Add compatible for sensors representing support on SA8255p.
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
 > ---
->  drivers/crypto/intel/qat/qat_common/qat_uclo.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Patch applied.  Thanks.
+Applied, thanks
+
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
