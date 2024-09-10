@@ -1,145 +1,140 @@
-Return-Path: <linux-crypto+bounces-6743-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6761-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE733973A94
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Sep 2024 16:51:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 775BB973C14
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Sep 2024 17:34:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A1081F2529C
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Sep 2024 14:51:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAC161C254B4
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Sep 2024 15:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1033919580B;
-	Tue, 10 Sep 2024 14:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B19F199FB9;
+	Tue, 10 Sep 2024 15:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=earth.li header.i=@earth.li header.b="I15zwZNd"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+Received: from the.earth.li (the.earth.li [93.93.131.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDC12BB05;
-	Tue, 10 Sep 2024 14:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5965F4204D;
+	Tue, 10 Sep 2024 15:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.93.131.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725979909; cv=none; b=lmr6t2/ah/qexSmF8NfGZbHm0hvDbqLbFSDM7j7+nYK5JBbH8DTDW8HErv/Psj1KsGUlUyJzakKOjhRsGdzDMRr1Ohb5xMCrZlYGFmThzyBFt4xruA/t/ctTGUn2TvdES75Yi2CDpH1hTGZ7asT2Au95Mt6Qix636waT0mMN4Vg=
+	t=1725982485; cv=none; b=homY8TL1OlR5a+FPxmTYOURoLZcF//Gz9oZNQdix28sgi22mdVL7wCswtxTeOimEYkv2bsv3AAsYki9nVe2iJIHx571Px95dAkhL4Ng5pDkZX2ZhtTX0lKkuez4Y78OdzTr+MKxpKuOO8GdVEtFR+/vm7e9D+j1khMD/ikSxCWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725979909; c=relaxed/simple;
-	bh=uvwLVFWov70fflU6oUvnlHd70Ue9hF5ps0SZxvsS9sk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QlumY7V+qJTQs+HdxjtdorbYSN+c6iTvxfMv07rfamYdMYhUAz186+Uq6v2UHmNZaRzv+QCMdRtZgXe1OssjUEP3P52Vw9sqQ8sWnqrqvjF3exYkI9fC0B6iNNdyVP6iKBYsLxEm49I9HDU+KUTYiyrfijs83CKXizrtd+gHayc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4X35kf0zP6z9v7NN;
-	Tue, 10 Sep 2024 22:32:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 1F6A7140604;
-	Tue, 10 Sep 2024 22:51:35 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwDXOMntXOBmIBCoAA--.53684S2;
-	Tue, 10 Sep 2024 15:51:34 +0100 (CET)
-Message-ID: <6c7e34b65d73e9fa2ba0fd39b357b9eb42ee0449.camel@huaweicloud.com>
+	s=arc-20240116; t=1725982485; c=relaxed/simple;
+	bh=Y7iQeD4hGzv3JM+SzFixGYto396Sd0RNqqi7OPzSN3A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YVNrQQ70bhxQaX71N7L8Ni6YdwybPtKZY0jOzGgkBBQUA1p4ilVS/ebEJ9YrdXvjgvS1+YWrTCf+/toouRbecziIFqNpxECFVL8FCKJORc169qC9Lr/iYM0FqcAyy5vOT+eI5tbAZe7chDaEubCIQwrVmNqYBtjitrGTuBrcfdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=earth.li; spf=pass smtp.mailfrom=earth.li; dkim=pass (2048-bit key) header.d=earth.li header.i=@earth.li header.b=I15zwZNd; arc=none smtp.client-ip=93.93.131.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=earth.li
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=earth.li
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+	s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:
+	Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=+recKoM7vFCwb1CTbRB4jGT2zAWewASBgrq/1E9M2bk=; b=I15zwZNdG7NLvGqEw2d8JTT3m8
+	SD6vM1xPqI2sokjlAYGNDkWWJ3WsVIfT4FimElW0Sn5uzXIluF2jac1NtsheuMsSRIkkiXhXBBOnW
+	zGpQcy5V8DGtBY6RiIDH2vFZNV2sjiLocLMxhEVpZqpzCaXyPKN2KFrlakRJLUrjsoEbwAhOzCSXx
+	OXXElYSvqUVRpaI2xBxbQ7NRHA4dE7XrShuuuUhw9bRAABWvQEKBjQq8Op2WXoVSa5aIP/v4b9vPi
+	B2YLbQFtNHllik3XTK+Mx5aKHQLYQEN02C5ftJMCnCYc8eZAxR6KQgqAVhz2NvC3pLh5xNwRfeFz/
+	mKcSl6xw==;
+Received: from noodles by the.earth.li with local (Exim 4.96)
+	(envelope-from <noodles@earth.li>)
+	id 1so2bv-004qYZ-0A;
+	Tue, 10 Sep 2024 16:16:55 +0100
+Date: Tue, 10 Sep 2024 16:16:55 +0100
+From: Jonathan McDowell <noodles@earth.li>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: dhowells@redhat.com, dwmw2@infradead.org, herbert@gondor.apana.org.au,
+	davem@davemloft.net, linux-kernel@vger.kernel.org,
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+	zohar@linux.ibm.com, linux-integrity@vger.kernel.org,
+	Roberto Sassu <roberto.sassu@huawei.com>, adrian@suse.de,
+	ro@suse.de
 Subject: Re: [PATCH v2 00/14] KEYS: Add support for PGP keys and signatures
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Jonathan McDowell <noodles@earth.li>
-Cc: dhowells@redhat.com, dwmw2@infradead.org, herbert@gondor.apana.org.au, 
- davem@davemloft.net, linux-kernel@vger.kernel.org,
- keyrings@vger.kernel.org,  linux-crypto@vger.kernel.org,
- zohar@linux.ibm.com,  linux-integrity@vger.kernel.org, Roberto Sassu
- <roberto.sassu@huawei.com>,  adrian@suse.de, ro@suse.de
-Date: Tue, 10 Sep 2024 16:51:22 +0200
-In-Reply-To: <a9502b8097841c36ca13871b22149eadd3fde355.camel@huaweicloud.com>
+Message-ID: <ZuBi56VwWxxX2Ce5@earth.li>
 References: <20240818165756.629203-1-roberto.sassu@huaweicloud.com>
-	 <ZsNf1VdfkHqD8R4Q@earth.li>
-	 <f142b1c4e662d4701a2ab67fa5fc839ab7109e5e.camel@huaweicloud.com>
-	 <ZsSkTs4TFfx2pK8r@earth.li>
-	 <a9502b8097841c36ca13871b22149eadd3fde355.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+ <ZsNf1VdfkHqD8R4Q@earth.li>
+ <f142b1c4e662d4701a2ab67fa5fc839ab7109e5e.camel@huaweicloud.com>
+ <ZsSkTs4TFfx2pK8r@earth.li>
+ <a9502b8097841c36ca13871b22149eadd3fde355.camel@huaweicloud.com>
+ <6c7e34b65d73e9fa2ba0fd39b357b9eb42ee0449.camel@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwDXOMntXOBmIBCoAA--.53684S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr4DurW5KF45Jr45Wry8Xwb_yoW8KF1Dpa
-	y8GF15AFWkJw1SyFn2k3WUurWYy39rJFy5Wwn8A3s5Crn0qFyF9F1xKF4Y9as8Wr4fCw1j
-	vrW3Jay3W3sYyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQACBGbfqvQMJwAAsL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c7e34b65d73e9fa2ba0fd39b357b9eb42ee0449.camel@huaweicloud.com>
 
-On Tue, 2024-09-10 at 16:36 +0200, Roberto Sassu wrote:
-> On Tue, 2024-08-20 at 15:12 +0100, Jonathan McDowell wrote:
-> > On Mon, Aug 19, 2024 at 05:15:02PM +0200, Roberto Sassu wrote:
-> > > On Mon, 2024-08-19 at 16:08 +0100, Jonathan McDowell wrote:
-> > > > On Sun, Aug 18, 2024 at 06:57:42PM +0200, Roberto Sassu wrote:
-> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > >=20
-> > > > > Support for PGP keys and signatures was proposed by David long ti=
-me ago,
-> > > > > before the decision of using PKCS#7 for kernel modules signatures
-> > > > > verification was made. After that, there has been not enough inte=
-rest to
-> > > > > support PGP too.
-> > > >=20
-> > > > You might want to update the RFC/bis references to RFC9580, which w=
-as
-> > > > published last month and updates things.
-> > >=20
-> > > Yes, makes sense (but probably isn't too much hassle to support more
-> > > things for our purposes?)
-> >=20
-> > I'm mostly suggesting that the comments/docs point to the latest
-> > standard rather than the draft version, not changing to support the new
-> > v6 keys.
-> >=20
-> > > > Also, I see support for v2 + v3 keys, and this doesn't seem like a =
-good
-> > > > idea. There are cryptographic issues with fingerprints etc there an=
-d I
-> > > > can't think of a good reason you'd want the kernel to support them.=
- The
-> > > > same could probably be said of DSA key support too.
-> > >=20
-> > > Uhm, if I remember correctly I encountered some old PGP keys used to
-> > > verify RPM packages (need to check). DSA keys are not supported, sinc=
-e
-> > > the algorithm is not in the kernel.
-> >=20
-> > I would question the benefit gained from using obsolete key/signature
-> > types for verification (I was involved in the process of Debian droppin=
-g
-> > them back in *2010* which was later than it should have been). Dropping
-> > the code for that path means a smaller attack surface/maintenance
-> > overhead for something that isn't giving a benefit.
->=20
-> Removed support for v3 PGP signatures... but that broke openSUSE
-> Tumbleweed.
->=20
-> [  295.837602] PGPL: Signature packet with unhandled version 3
+On Tue, Sep 10, 2024 at 04:51:22PM +0200, Roberto Sassu wrote:
+> On Tue, 2024-09-10 at 16:36 +0200, Roberto Sassu wrote:
+> > On Tue, 2024-08-20 at 15:12 +0100, Jonathan McDowell wrote:
+> > > On Mon, Aug 19, 2024 at 05:15:02PM +0200, Roberto Sassu wrote:
+> > > > On Mon, 2024-08-19 at 16:08 +0100, Jonathan McDowell wrote:
+> > > > > On Sun, Aug 18, 2024 at 06:57:42PM +0200, Roberto Sassu wrote:
+> > > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > > 
+> > > > > > Support for PGP keys and signatures was proposed by David long time ago,
+> > > > > > before the decision of using PKCS#7 for kernel modules signatures
+> > > > > > verification was made. After that, there has been not enough interest to
+> > > > > > support PGP too.
+> > > > > 
+> > > > > You might want to update the RFC/bis references to RFC9580, which was
+> > > > > published last month and updates things.
+> > > > 
+> > > > Yes, makes sense (but probably isn't too much hassle to support more
+> > > > things for our purposes?)
+> > > 
+> > > I'm mostly suggesting that the comments/docs point to the latest
+> > > standard rather than the draft version, not changing to support the new
+> > > v6 keys.
+> > > 
+> > > > > Also, I see support for v2 + v3 keys, and this doesn't seem like a good
+> > > > > idea. There are cryptographic issues with fingerprints etc there and I
+> > > > > can't think of a good reason you'd want the kernel to support them. The
+> > > > > same could probably be said of DSA key support too.
+> > > > 
+> > > > Uhm, if I remember correctly I encountered some old PGP keys used to
+> > > > verify RPM packages (need to check). DSA keys are not supported, since
+> > > > the algorithm is not in the kernel.
+> > > 
+> > > I would question the benefit gained from using obsolete key/signature
+> > > types for verification (I was involved in the process of Debian dropping
+> > > them back in *2010* which was later than it should have been). Dropping
+> > > the code for that path means a smaller attack surface/maintenance
+> > > overhead for something that isn't giving a benefit.
+> > 
+> > Removed support for v3 PGP signatures... but that broke openSUSE
+> > Tumbleweed.
 
-To add more context, this patch set adds the ability to the kernel to
-verify the PGP signature of RPM packages against Linux distributions
-PGP keys.
+Is this a signature from a v3 key, or a v3 signature? Unfortunately
+there are implementations which will issue a v3 signature even from a v4
+key; IIRC this ambiguity has been cleared up in the updated RFC.
 
-The purpose of this is to verify the authenticity of such RPM packages,
-and to extract from them file digests, which are in turn used as
-reference values for integrity check (appraisal) with IMA.
+> > [  295.837602] PGPL: Signature packet with unhandled version 3
+> 
+> To add more context, this patch set adds the ability to the kernel to
+> verify the PGP signature of RPM packages against Linux distributions
+> PGP keys.
 
-Roberto
+> The purpose of this is to verify the authenticity of such RPM packages,
+> and to extract from them file digests, which are in turn used as
+> reference values for integrity check (appraisal) with IMA.
 
+I don't believe allowing a v3 *key* gives a useful verification that is
+worth supporting. However unfortunately I think it sounds like support
+for v3 signatures from v4 keys is necessary.
+
+J.
+
+-- 
+Listen to the words, they tell you what to do...
 
