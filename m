@@ -1,72 +1,72 @@
-Return-Path: <linux-crypto+bounces-6854-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6850-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96EB19780B9
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 15:06:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AD429780AD
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 15:06:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5774D2840A1
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 13:06:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB9FF1F239B0
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 13:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A7E1DB935;
-	Fri, 13 Sep 2024 13:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2AFD1DB53B;
+	Fri, 13 Sep 2024 13:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="a92qGqf1"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="U5voN1IV"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBBC1DA62F;
-	Fri, 13 Sep 2024 13:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF7F1DA633;
+	Fri, 13 Sep 2024 13:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726232754; cv=none; b=h9PmflSNOx8fAFLEVIBndJK+E94DY2xRciPsD0hokg67lyAYFDL2Hy6d3bbmL+0hMGGknvPIg/NrXGoobdg8aCfX9gZfSPYWbk7GZMhyVJF4FCkroMu5jlkdzGBASk0G2iMHKHRFVgSHkmSQu+fDQT/sibsTiyKL5ITa5taTEJA=
+	t=1726232753; cv=none; b=VKz0K74/PvaWQeUmPFC24aCYZsk1V31fChG1TZz1/D+/1xpL+5dJiITlYOJdgUmF9LOPzoe2103WXgMrBTN5Au8eB+6PXoGu+xRu5JWJPuOiMwx8jzeLxkeM2ZfDZZH6ri5SecgHD4fLolm1mAC95WiMx6SNvV1n22why/MV/bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726232754; c=relaxed/simple;
-	bh=oEl36+voz+qtTGEMNvzWqOVzXnXDCugeAkPm19j4gFo=;
+	s=arc-20240116; t=1726232753; c=relaxed/simple;
+	bh=ZeSBXGnKWmELJd9VKFcca2xHwEh3bOM2Y8tNSdtl5A0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F2TFODYZNaQE0kmMQcJnqba7eggcqOrYifYpbuCzkdqqAvmiD8GCXxvaiWzepI+sY8Cox/8mXyM3SjUAzG2ATs2sU6Rc+fQQsq8a3WB5kRrL7ybG50UEg9JbnOT5AG7SaVAmRqXQnRiV1w4bynuSBmANFVT8M0hO5rup6JekzAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=a92qGqf1; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=UQOUT/ZbPyCtODR24p3B5sr4YM4kn6uPW9iGvxgaWeMObtQJdesvJE+o+HhZMeUdd3SDyph1UoL07uk+7hiPuLTL3dblw5UZ5qTbLj+k5RZnjN2jBU68r/HA/fFI22iPraKnPtaEYtmmj9JU0E0ArmFrFy09l9DJ6MgJpCizKNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=U5voN1IV; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48D6GP55019737;
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48D69d0v017485;
 	Fri, 13 Sep 2024 13:05:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
 	:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=pp1; bh=HuklU5+6a/WK1
-	HB92pTW2oH1NQRKsayz43JC79nFsRg=; b=a92qGqf1PubJc5b1e2nelnoWH2ZnU
-	NIwIDwyo+B+PSUuqVaXT+mWkcsVCaqL/7hrxI/g347jW4+FMjF3dwdhbPXXVfWBT
-	8CL/2TV7yDBPrRoRhFm6z0pBNiWQ5Uo153ZrBL3Eu/mZfQ5GSYpay67WNmTNTsCh
-	NWOr1LVGylnNjLOfaNewyKyk2GC2zVOVDoO80oXJlStsFe0vy1Z3vSWv8gVihNUT
-	usc+Y1oe3f6glzgTM4G4VaD54HOJnsS3iZe7mbMXoEtUnOO+fMkERqacJ7QxxtNI
-	ekRzsVJxRFZ09oingpIPqJgNslzHu3MecvDtIzaNXe9I/LAgTBYsyJODg==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gebat3hh-1
+	:mime-version:content-transfer-encoding; s=pp1; bh=8G8U5MZwRX6WH
+	tIt0vxDGdxnDdLkEPMl63e5SJO3lbo=; b=U5voN1IV2nc5iybd99Bspnz8NMW1N
+	xjXcWMA2e1Sf6zRLp4HnNWO3V9J+pGl904ysfJUUKCPxp5CRPg6Y7oZ/kC2lpY5C
+	ZnfSxCaofDcUdHqkvWy9aH+/SiQWlcj5JQ8Bp3bbVD7bjXN3jnbxzbIHRVJwhJpt
+	L5TALSK3/ykxBjgwiRw5we2fHYuIF08EBtOjYP+Tkch9go0gkTbFqlV/H5Qy2Y5k
+	C9aFUJYhodEj9qMnCqSHGxtcAbiBf3APuwJjof+ojlhLGfgbxAsM42nnHPimKZg6
+	UZ6a8Os7Nx1AINthg3dYiE9SfuuCISZhywuLt0P3ZlNHtV4G85eAP2F4Q==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gejb2521-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 13 Sep 2024 13:05:49 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48DB04Xc003123;
-	Fri, 13 Sep 2024 13:05:48 GMT
+	Fri, 13 Sep 2024 13:05:50 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48DCFWEH010793;
+	Fri, 13 Sep 2024 13:05:49 GMT
 Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 41h15uedrm-1
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41kmb71vj2-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 13 Sep 2024 13:05:48 +0000
+	Fri, 13 Sep 2024 13:05:49 +0000
 Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48DD5jcP31457842
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48DD5jOO10944802
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Fri, 13 Sep 2024 13:05:45 GMT
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 36DA220040;
+	by IMSVA (Postfix) with ESMTP id 87E4020040;
 	Fri, 13 Sep 2024 13:05:45 +0000 (GMT)
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E435420043;
-	Fri, 13 Sep 2024 13:05:44 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 4166F2004B;
+	Fri, 13 Sep 2024 13:05:45 +0000 (GMT)
 Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
 	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 13 Sep 2024 13:05:44 +0000 (GMT)
+	Fri, 13 Sep 2024 13:05:45 +0000 (GMT)
 From: Heiko Carstens <hca@linux.ibm.com>
 To: "Jason A . Donenfeld" <Jason@zx2c4.com>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -76,9 +76,9 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
         Harald Freudenberger <freude@linux.ibm.com>,
         Stefan Liebler <stli@linux.ibm.com>, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [PATCH 2/7] s390/alternatives: Remove ALT_FACILITY_EARLY
-Date: Fri, 13 Sep 2024 15:05:38 +0200
-Message-ID: <20240913130544.2398678-3-hca@linux.ibm.com>
+Subject: [PATCH 3/7] s390/facility: Let test_facility() generate static branch if possible
+Date: Fri, 13 Sep 2024 15:05:39 +0200
+Message-ID: <20240913130544.2398678-4-hca@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240913130544.2398678-1-hca@linux.ibm.com>
 References: <20240913130544.2398678-1-hca@linux.ibm.com>
@@ -90,60 +90,102 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jv36OOvX-Fhkyxh3JKZDyR-8Gt1ihtNo
-X-Proofpoint-GUID: jv36OOvX-Fhkyxh3JKZDyR-8Gt1ihtNo
+X-Proofpoint-ORIG-GUID: AwyVxn2EB-Vs-6MZ-XBh0ZU2WUv0a4uJ
+X-Proofpoint-GUID: AwyVxn2EB-Vs-6MZ-XBh0ZU2WUv0a4uJ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-13_10,2024-09-13_02,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- priorityscore=1501 bulkscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
- mlxscore=0 mlxlogscore=715 impostorscore=0 clxscore=1015 adultscore=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=737 spamscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
  definitions=main-2409130091
 
-Patch all alternatives which depend on facilities from the decompressor.
-There is no technical reason which enforces to split patching of such
-alternatives to the decompressor and the kernel.
+Let test_facility() generate a branch instruction if the tested facility is
+a constant, and where the result cannot be evaluated during compile
+time. The branch instruction defaults to "false" and is patched to nop
+(branch not taken) if the tested facility is available.
 
-This simplifies alternative handling a bit, since one alternative type is
-removed.
+This avoids runtime checks and is similar to x86's static_cpu_has() and
+arm64's alternative_has_cap_likely().
 
 Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 ---
- arch/s390/include/asm/alternative.h | 6 +-----
- arch/s390/kernel/entry.S            | 2 +-
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ arch/s390/include/asm/facility.h | 37 +++++++++++++++++++++++++-------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/arch/s390/include/asm/alternative.h b/arch/s390/include/asm/alternative.h
-index de980c938a3e..73e781b56bfe 100644
---- a/arch/s390/include/asm/alternative.h
-+++ b/arch/s390/include/asm/alternative.h
-@@ -39,11 +39,7 @@
- #define ALT_TYPE_SHIFT		20
- #define ALT_CTX_SHIFT		28
- 
--#define ALT_FACILITY_EARLY(facility)	(ALT_CTX_EARLY << ALT_CTX_SHIFT		| \
--					 ALT_TYPE_FACILITY << ALT_TYPE_SHIFT	| \
--					 (facility) << ALT_DATA_SHIFT)
+diff --git a/arch/s390/include/asm/facility.h b/arch/s390/include/asm/facility.h
+index 65ebf86506cd..715bcf8fb69a 100644
+--- a/arch/s390/include/asm/facility.h
++++ b/arch/s390/include/asm/facility.h
+@@ -14,7 +14,7 @@
+ #include <linux/string.h>
+ #include <linux/types.h>
+ #include <linux/preempt.h>
 -
--#define ALT_FACILITY(facility)		(ALT_CTX_LATE << ALT_CTX_SHIFT		| \
-+#define ALT_FACILITY(facility)		(ALT_CTX_EARLY << ALT_CTX_SHIFT		| \
- 					 ALT_TYPE_FACILITY << ALT_TYPE_SHIFT	| \
- 					 (facility) << ALT_DATA_SHIFT)
++#include <asm/alternative.h>
+ #include <asm/lowcore.h>
  
-diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-index 749410cfdbc0..269436665d02 100644
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -42,7 +42,7 @@ _LPP_OFFSET	= __LC_LPP
+ #define MAX_FACILITY_BIT (sizeof(stfle_fac_list) * 8)
+@@ -39,30 +39,51 @@ static inline void __clear_facility(unsigned long nr, void *facilities)
+ 	ptr[nr >> 3] &= ~(0x80 >> (nr & 7));
+ }
  
- 	.macro LPSWEY address, lpswe
- 	ALTERNATIVE_2 "b \lpswe;nopr", \
--		".insn siy,0xeb0000000071,\address,0", ALT_FACILITY_EARLY(193),		\
-+		".insn siy,0xeb0000000071,\address,0", ALT_FACILITY(193),		\
- 		__stringify(.insn siy,0xeb0000000071,LOWCORE_ALT_ADDRESS+\address,0),	\
- 		ALT_LOWCORE
- 	.endm
+-static inline int __test_facility(unsigned long nr, void *facilities)
++static __always_inline bool __test_facility(unsigned long nr, void *facilities)
+ {
+ 	unsigned char *ptr;
+ 
+ 	if (nr >= MAX_FACILITY_BIT)
+-		return 0;
++		return false;
+ 	ptr = (unsigned char *) facilities + (nr >> 3);
+ 	return (*ptr & (0x80 >> (nr & 7))) != 0;
+ }
+ 
++/*
++ * __test_facility_constant() generates a single instruction branch. If the
++ * tested facility is available (likely) the branch is patched into a nop.
++ *
++ * Do not use this function unless you know what you are doing. All users are
++ * supposed to use test_facility() which will do the right thing.
++ */
++static __always_inline bool __test_facility_constant(unsigned long nr)
++{
++	asm goto(
++		ALTERNATIVE("brcl 15,%l[l_no]", "brcl 0,0", ALT_FACILITY(%[nr]))
++		:
++		: [nr] "i" (nr)
++		:
++		: l_no);
++	return true;
++l_no:
++	return false;
++}
++
+ /*
+  * The test_facility function uses the bit ordering where the MSB is bit 0.
+  * That makes it easier to query facility bits with the bit number as
+  * documented in the Principles of Operation.
+  */
+-static inline int test_facility(unsigned long nr)
++static __always_inline bool test_facility(unsigned long nr)
+ {
+ 	unsigned long facilities_als[] = { FACILITIES_ALS };
+ 
+-	if (__builtin_constant_p(nr) && nr < sizeof(facilities_als) * 8) {
+-		if (__test_facility(nr, &facilities_als)) {
+-			if (!__is_defined(__DECOMPRESSOR))
+-				return 1;
++	if (!__is_defined(__DECOMPRESSOR) && __builtin_constant_p(nr)) {
++		if (nr < sizeof(facilities_als) * 8) {
++			if (__test_facility(nr, &facilities_als))
++				return true;
+ 		}
++		return __test_facility_constant(nr);
+ 	}
+ 	return __test_facility(nr, &stfle_fac_list);
+ }
 -- 
 2.43.0
 
