@@ -1,81 +1,83 @@
-Return-Path: <linux-crypto+bounces-6848-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6851-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C91C977FF0
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 14:31:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAAC69780B0
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 15:06:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08EABB20EAA
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 12:31:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CFD91F23FED
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 13:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0C71DA0F5;
-	Fri, 13 Sep 2024 12:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30B81DB548;
+	Fri, 13 Sep 2024 13:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tj3oRyoe"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DGMmQmi1"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937D51DA0E4;
-	Fri, 13 Sep 2024 12:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725531DA62E;
+	Fri, 13 Sep 2024 13:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726230683; cv=none; b=rd+galx5vKj5tCdQ+GsQc7FDOlCSPtP1rzXDXjMA/iLCVGBYKxASaqaItyPaZwpbzFvGBc/dsEgMxjn0sCh18j2lr4FweNnonB/xwraJdjIgBEDrw62hwmxMdMNIS6YOlekDMPNt6NNlgpQyXeeLcm3HcO2WeWtYX/91SFZccdc=
+	t=1726232753; cv=none; b=NhhJRYWRM5ObHwzDm395DjpSzh33ESK07Nm4zimhGsFvMrVKKOoVucAOAOJTR5mDJqCFpe/ecKjrXaaxT0Mkc92bBU+TZKwWSUDcRqpTythtHJ37ScCxJFQsBmM1iKoX7vgcpLHPw7fn2X1WgFFPaLzrT1MufTb3UbsqPvQtVO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726230683; c=relaxed/simple;
-	bh=E1neStRKpDV1ybNDML73uIi6mzKFNyw5RvgMSwRZ8vQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WZPv5dcfWbqZjua4khIL+iMomBgcXai/61OIOQAhQNEzkEvXL9x/4lKwruc6qiI+EnATjRzkhdNzD1XmAskHYpUDPMhju+weoSWh1CgTI3XOTQCV5AEaMzSGbEQnJc2pwT9C4/f4Zq/k0uuWCb/vIMC7HzfVOr8cNtWgFoYjNMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tj3oRyoe; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1726232753; c=relaxed/simple;
+	bh=ka0rqxcS2NBCAjK5Qw+iwYfxA/+ZTEiCWcrpXvkpRxQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XFNAXT7+MpSnL/yA8CH3YpjJhbnq1/x9XUjdIYDTVjC4S4B1kmdtCtIQ0MfK0fsLMaP59yHebvZ0RgVD3nKNi5dlFLGJfqm1WOOsrYaZIakzdi5XKvCn2tA62o2kaS4ulvW6UVxlUJHh3WbENKubIvX3ITAmbriavsqvbZ0Weow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DGMmQmi1; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48D5v5xx027443;
-	Fri, 13 Sep 2024 12:31:07 GMT
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48DBLjw5005775;
+	Fri, 13 Sep 2024 13:05:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
 	:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=pp1; bh=XWboUu/QhdmpUYTzcZAlK6rwdL
-	NtbtFc5AGbr7j7R3w=; b=tj3oRyoeXkKjt2dKlMYdVDZtxCMuhfK2AZuKOqkwuB
-	jR2O2PxGJ0ts5GI2KuWHZAwnve61TK3iPEJeW/yi3PcRLZu9MdnbN8uAytfEdzVC
-	Aj6IkCN8GuNA9bBk4d5chOOida42MVHYgRyOO2hok0oByZOY24uh8XwffxqIUDWy
-	+5WlN3ZRS5YQpOfk6RWa97MkPaXjJAsnxPL+pK4IUdM/OSYHk+u00N9sEQWg2ZF6
-	fW37OpPiUiNiSH3uxBCngMLJhgT2sX8S0n4qwK8m+6Uzdt6YV0uGKeboIqaMtoMc
-	cn6AQ8iY+fiWH153+Rf9xIQ3/MON77v6oNjDs+kota3g==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gejb1yde-1
+	:content-transfer-encoding; s=pp1; bh=HjynV7dZyRjGp2iCQjnPneTVJO
+	QAyBkiMk81rcoRE/E=; b=DGMmQmi1Vfoufw4Bkyr9BhJ5UvasSANmchFje9Hi+T
+	1on6iibAPZdfSJ29vPekwDYcOku7JPcwZP5JZBWf260xtVTgV/zDtDUksoBpcjYb
+	t4bbUGIs3V9ixStWCPmyCytLhlzsiWSb8bAvPQXkwNohuPUI9AKlN8u+U/M4XpSZ
+	lBdYCktaPjhjDCWq4frmqfeGXfq+lSj9bU+ftMHf36MiCBkL4d+K/DE7D4VtsmwF
+	x3uCTV7b/8DERz2LkugrWrE0PB/wycvF+JSI2+I1GaJsnI8eJ/sNL1vCz8Fo1anS
+	Tl2ncdHrZkbb1YqZRrS4MZj30zjs7is34Y2k8+GBDHDw==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gc8qtamh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 13 Sep 2024 12:31:07 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48D9cdKf027328;
-	Fri, 13 Sep 2024 12:31:06 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 41h3v3nt0e-1
+	Fri, 13 Sep 2024 13:05:49 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48DCFWEG010793;
+	Fri, 13 Sep 2024 13:05:48 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41kmb71vhv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 13 Sep 2024 12:31:06 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48DCV4VN27853388
+	Fri, 13 Sep 2024 13:05:48 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48DD5iD343778534
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 13 Sep 2024 12:31:04 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5AEE758056;
-	Fri, 13 Sep 2024 12:31:04 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 21C5A5805A;
-	Fri, 13 Sep 2024 12:31:04 +0000 (GMT)
-Received: from ltcden12-lp3.aus.stglabs.ibm.com (unknown [9.40.195.53])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 13 Sep 2024 12:31:04 +0000 (GMT)
-From: Danny Tsen <dtsen@linux.ibm.com>
-To: linux-crypto@vger.kernel.org
-Cc: herbert@gondor.apana.org.au, leitao@debian.org, nayna@linux.ibm.com,
-        appro@cryptogams.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com,
-        Danny Tsen <dtsen@linux.ibm.com>
-Subject: [PATCH] crypto: Removing CRYPTO_AES_GCM_P10.
-Date: Fri, 13 Sep 2024 08:30:43 -0400
-Message-ID: <20240913123043.1636183-1-dtsen@linux.ibm.com>
+	Fri, 13 Sep 2024 13:05:44 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7F36320043;
+	Fri, 13 Sep 2024 13:05:44 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3762A20040;
+	Fri, 13 Sep 2024 13:05:44 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 13 Sep 2024 13:05:44 +0000 (GMT)
+From: Heiko Carstens <hca@linux.ibm.com>
+To: "Jason A . Donenfeld" <Jason@zx2c4.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Stefan Liebler <stli@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH 0/7] s390/vdso: getrandom() vdso implementation
+Date: Fri, 13 Sep 2024 15:05:36 +0200
+Message-ID: <20240913130544.2398678-1-hca@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -85,68 +87,71 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -293XIbKKSlAq5Y-fjJeetFTX0HxSbLJ
-X-Proofpoint-GUID: -293XIbKKSlAq5Y-fjJeetFTX0HxSbLJ
+X-Proofpoint-GUID: _YpvvZE8HFa6yQq9mWMFb-nqqhS-vLwV
+X-Proofpoint-ORIG-GUID: _YpvvZE8HFa6yQq9mWMFb-nqqhS-vLwV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-13_09,2024-09-13_02,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 adultscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
- definitions=main-2409130084
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 clxscore=1015 mlxlogscore=295 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2408220000 definitions=main-2409130087
 
-Removing CRYPTO_AES_GCM_P10 in Kconfig first so that we can apply the
-subsequent patches to fix data mismatch over ipsec tunnel.
+Hi Jason,
 
-Signed-off-by: Danny Tsen <dtsen@linux.ibm.com>
----
- arch/powerpc/crypto/Kconfig | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+quite late but finally the s390 vdso getrandom implementation which applies
+on top of your random git tree.
 
-diff --git a/arch/powerpc/crypto/Kconfig b/arch/powerpc/crypto/Kconfig
-index 09ebcbdfb34f..96ca2c4c8827 100644
---- a/arch/powerpc/crypto/Kconfig
-+++ b/arch/powerpc/crypto/Kconfig
-@@ -105,22 +105,22 @@ config CRYPTO_AES_PPC_SPE
- 	  architecture specific assembler implementations that work on 1KB
- 	  tables or 256 bytes S-boxes.
- 
--config CRYPTO_AES_GCM_P10
--	tristate "Stitched AES/GCM acceleration support on P10 or later CPU (PPC)"
--	depends on PPC64 && CPU_LITTLE_ENDIAN && VSX
--	select CRYPTO_LIB_AES
--	select CRYPTO_ALGAPI
--	select CRYPTO_AEAD
--	select CRYPTO_SKCIPHER
--	help
--	  AEAD cipher: AES cipher algorithms (FIPS-197)
--	  GCM (Galois/Counter Mode) authenticated encryption mode (NIST SP800-38D)
--	  Architecture: powerpc64 using:
--	    - little-endian
--	    - Power10 or later features
--
--	  Support for cryptographic acceleration instructions on Power10 or
--	  later CPU. This module supports stitched acceleration for AES/GCM.
-+#config CRYPTO_AES_GCM_P10
-+#	tristate "Stitched AES/GCM acceleration support on P10 or later CPU (PPC)"
-+#	depends on PPC64 && CPU_LITTLE_ENDIAN && VSX
-+#	select CRYPTO_LIB_AES
-+#	select CRYPTO_ALGAPI
-+#	select CRYPTO_AEAD
-+#	select CRYPTO_SKCIPHER
-+#	help
-+#	  AEAD cipher: AES cipher algorithms (FIPS-197)
-+#	  GCM (Galois/Counter Mode) authenticated encryption mode (NIST SP800-38D)
-+#	  Architecture: powerpc64 using:
-+#	    - little-endian
-+#	    - Power10 or later features
-+#
-+#	  Support for cryptographic acceleration instructions on Power10 or
-+#	  later CPU. This module supports stitched acceleration for AES/GCM.
- 
- config CRYPTO_CHACHA20_P10
- 	tristate "Ciphers: ChaCha20, XChacha20, XChacha12 (P10 or later)"
+As a prerequisite this requires some changes to s390 core code to allow
+alternatives in vdso code. It is fine when all of this gets routed via your
+tree.
+
+Please note that the first patch of this series is already in linux-next
+[1], but given that it is so small it seems to be the easiest to apply it
+also on your tree; but I'm sure somebody will complain :)
+
+Thanks,
+Heiko
+
+[1] 0147addc4fb7 ("s390/facility: Disable compile time optimization for decompressor code")
+
+Heiko Carstens (7):
+  s390/facility: Disable compile time optimization for decompressor code
+  s390/alternatives: Remove ALT_FACILITY_EARLY
+  s390/facility: Let test_facility() generate static branch if possible
+  s390/module: Provide find_section() helper
+  s390/vdso: Allow alternatives in vdso code
+  s390/vdso: Move vdso symbol handling to separate header file
+  s390/vdso: Wire up getrandom() vdso implementation
+
+ arch/s390/Kconfig                           |   1 +
+ arch/s390/include/asm/alternative.h         |   6 +-
+ arch/s390/include/asm/facility.h            |  37 +++-
+ arch/s390/include/asm/fpu-insn-asm.h        |  22 +++
+ arch/s390/include/asm/module.h              |  14 ++
+ arch/s390/include/asm/vdso-symbols.h        |  17 ++
+ arch/s390/include/asm/vdso.h                |  12 --
+ arch/s390/include/asm/vdso/getrandom.h      |  40 +++++
+ arch/s390/include/asm/vdso/vsyscall.h       |  15 ++
+ arch/s390/kernel/compat_signal.c            |   2 +-
+ arch/s390/kernel/entry.S                    |   2 +-
+ arch/s390/kernel/signal.c                   |   2 +-
+ arch/s390/kernel/vdso.c                     |  26 ++-
+ arch/s390/kernel/vdso64/Makefile            |   9 +-
+ arch/s390/kernel/vdso64/vdso.h              |   1 +
+ arch/s390/kernel/vdso64/vdso64.lds.S        |   7 +
+ arch/s390/kernel/vdso64/vgetrandom-chacha.S | 184 ++++++++++++++++++++
+ arch/s390/kernel/vdso64/vgetrandom.c        |  14 ++
+ tools/arch/s390/vdso                        |   1 +
+ tools/testing/selftests/vDSO/Makefile       |   2 +-
+ 20 files changed, 378 insertions(+), 36 deletions(-)
+ create mode 100644 arch/s390/include/asm/vdso-symbols.h
+ create mode 100644 arch/s390/include/asm/vdso/getrandom.h
+ create mode 100644 arch/s390/kernel/vdso64/vgetrandom-chacha.S
+ create mode 100644 arch/s390/kernel/vdso64/vgetrandom.c
+ create mode 120000 tools/arch/s390/vdso
+
 -- 
 2.43.0
 
