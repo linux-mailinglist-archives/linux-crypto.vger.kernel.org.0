@@ -1,68 +1,68 @@
-Return-Path: <linux-crypto+bounces-6850-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6855-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AD429780AD
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 15:06:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14AB89780BA
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 15:06:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB9FF1F239B0
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 13:06:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F4831C22248
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Sep 2024 13:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2AFD1DB53B;
-	Fri, 13 Sep 2024 13:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E260F1DB938;
+	Fri, 13 Sep 2024 13:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="U5voN1IV"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gixD29Vp"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF7F1DA633;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C8331DA631;
 	Fri, 13 Sep 2024 13:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726232753; cv=none; b=VKz0K74/PvaWQeUmPFC24aCYZsk1V31fChG1TZz1/D+/1xpL+5dJiITlYOJdgUmF9LOPzoe2103WXgMrBTN5Au8eB+6PXoGu+xRu5JWJPuOiMwx8jzeLxkeM2ZfDZZH6ri5SecgHD4fLolm1mAC95WiMx6SNvV1n22why/MV/bk=
+	t=1726232754; cv=none; b=gJOvEQr2Mj2sUXvp4txnZ+FhOWOU0OxOqU6UxKB6pG95JL0fxwfGv/sV2HTjqYFhxu9Fn7DZrBn2HlabT9vawugKyHacxyb9ViNCYVb2OLPdGd07kPQI/KXch8BJZROueAdwEUkm1/BM83kocX65cwYpdhDyBxxxgahM5x50wgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726232753; c=relaxed/simple;
-	bh=ZeSBXGnKWmELJd9VKFcca2xHwEh3bOM2Y8tNSdtl5A0=;
+	s=arc-20240116; t=1726232754; c=relaxed/simple;
+	bh=tk7+gVZLeLXU7t+66s8i13HI1nku9D8W8bICtBD60gg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UQOUT/ZbPyCtODR24p3B5sr4YM4kn6uPW9iGvxgaWeMObtQJdesvJE+o+HhZMeUdd3SDyph1UoL07uk+7hiPuLTL3dblw5UZ5qTbLj+k5RZnjN2jBU68r/HA/fFI22iPraKnPtaEYtmmj9JU0E0ArmFrFy09l9DJ6MgJpCizKNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=U5voN1IV; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=cPzBTxxsVsorukNjzQhM1+HeGhWEz+sU/FvWgLJDeUNrPRobEcibkb3FicVacB2Ni1SvGp3uma5eckrsR+O0GxzsaBvxNrIK4ObyDHITKqUDCRaf2g+xsBLG3It1MpRjsU1k7y+9GzFSTinZrmTV3eu7jSf8p7hZ6PDUQ5YYyTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gixD29Vp; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48D69d0v017485;
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48D8CDa9021760;
 	Fri, 13 Sep 2024 13:05:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
 	:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=pp1; bh=8G8U5MZwRX6WH
-	tIt0vxDGdxnDdLkEPMl63e5SJO3lbo=; b=U5voN1IV2nc5iybd99Bspnz8NMW1N
-	xjXcWMA2e1Sf6zRLp4HnNWO3V9J+pGl904ysfJUUKCPxp5CRPg6Y7oZ/kC2lpY5C
-	ZnfSxCaofDcUdHqkvWy9aH+/SiQWlcj5JQ8Bp3bbVD7bjXN3jnbxzbIHRVJwhJpt
-	L5TALSK3/ykxBjgwiRw5we2fHYuIF08EBtOjYP+Tkch9go0gkTbFqlV/H5Qy2Y5k
-	C9aFUJYhodEj9qMnCqSHGxtcAbiBf3APuwJjof+ojlhLGfgbxAsM42nnHPimKZg6
-	UZ6a8Os7Nx1AINthg3dYiE9SfuuCISZhywuLt0P3ZlNHtV4G85eAP2F4Q==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gejb2521-1
+	:mime-version:content-transfer-encoding; s=pp1; bh=uaXYr7IRkkEcw
+	gpPxsCQAfW/yt2dgirIHku/Is3oCQ8=; b=gixD29Vpsn5GJygQRNZrOy4VuMQ88
+	KEn+gs5Wz4uZC59Tk58IiG2+8d+ToCGTRcne22dmOr6JHCqW6Mv/gG9pDRYCaJrR
+	tqNruoOiExOPYrI5eGYGkT3T0SULYmgiRQrJ1dUBBv7PoKK4P8RV0KMyuNvjG65T
+	+LBSYRzptTQKjtGN2XlW1d4KvG6N8O7DBuZvnCXXUzjtOVzAPIdAvElxqCXb69kL
+	dJpsUPirdnpEzvCUfBfID1ujfBrnQZed+HFE2RYh/+F8h7eH9qGqI4q3dgI1E9qR
+	YdSiJa1oRpyziw/X3IHmUlMDfaPs8PO2NvpVpKR+EN1g2YU0GmXNsltHA==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41gc8qtamk-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 13 Sep 2024 13:05:50 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48DCFWEH010793;
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48DC5KWD032099;
 	Fri, 13 Sep 2024 13:05:49 GMT
 Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41kmb71vj2-1
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41h2nn666j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 13 Sep 2024 13:05:49 +0000
 Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48DD5jOO10944802
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48DD5jDb10093024
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 13 Sep 2024 13:05:45 GMT
+	Fri, 13 Sep 2024 13:05:46 GMT
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 87E4020040;
+	by IMSVA (Postfix) with ESMTP id E145420040;
 	Fri, 13 Sep 2024 13:05:45 +0000 (GMT)
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4166F2004B;
+	by IMSVA (Postfix) with ESMTP id 923AB20043;
 	Fri, 13 Sep 2024 13:05:45 +0000 (GMT)
 Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
 	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -76,9 +76,9 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
         Harald Freudenberger <freude@linux.ibm.com>,
         Stefan Liebler <stli@linux.ibm.com>, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [PATCH 3/7] s390/facility: Let test_facility() generate static branch if possible
-Date: Fri, 13 Sep 2024 15:05:39 +0200
-Message-ID: <20240913130544.2398678-4-hca@linux.ibm.com>
+Subject: [PATCH 4/7] s390/module: Provide find_section() helper
+Date: Fri, 13 Sep 2024 15:05:40 +0200
+Message-ID: <20240913130544.2398678-5-hca@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240913130544.2398678-1-hca@linux.ibm.com>
 References: <20240913130544.2398678-1-hca@linux.ibm.com>
@@ -90,102 +90,48 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AwyVxn2EB-Vs-6MZ-XBh0ZU2WUv0a4uJ
-X-Proofpoint-GUID: AwyVxn2EB-Vs-6MZ-XBh0ZU2WUv0a4uJ
+X-Proofpoint-GUID: qdAT7z5y4BsTCTJ4ZyG4GIw5S5GdtQPL
+X-Proofpoint-ORIG-GUID: qdAT7z5y4BsTCTJ4ZyG4GIw5S5GdtQPL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-13_10,2024-09-13_02,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=737 spamscore=0 impostorscore=0 adultscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
- definitions=main-2409130091
+ definitions=2024-09-13_09,2024-09-13_02,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 clxscore=1015 mlxlogscore=606 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2408220000 definitions=main-2409130087
 
-Let test_facility() generate a branch instruction if the tested facility is
-a constant, and where the result cannot be evaluated during compile
-time. The branch instruction defaults to "false" and is patched to nop
-(branch not taken) if the tested facility is available.
-
-This avoids runtime checks and is similar to x86's static_cpu_has() and
-arm64's alternative_has_cap_likely().
+Provide find_section() helper function which can be used to find a
+section by name, similar to other architectures.
 
 Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 ---
- arch/s390/include/asm/facility.h | 37 +++++++++++++++++++++++++-------
- 1 file changed, 29 insertions(+), 8 deletions(-)
+ arch/s390/include/asm/module.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/arch/s390/include/asm/facility.h b/arch/s390/include/asm/facility.h
-index 65ebf86506cd..715bcf8fb69a 100644
---- a/arch/s390/include/asm/facility.h
-+++ b/arch/s390/include/asm/facility.h
-@@ -14,7 +14,7 @@
- #include <linux/string.h>
- #include <linux/types.h>
- #include <linux/preempt.h>
--
-+#include <asm/alternative.h>
- #include <asm/lowcore.h>
+diff --git a/arch/s390/include/asm/module.h b/arch/s390/include/asm/module.h
+index 9f1eea15872c..916ab59e458a 100644
+--- a/arch/s390/include/asm/module.h
++++ b/arch/s390/include/asm/module.h
+@@ -38,4 +38,18 @@ struct mod_arch_specific {
+ #endif /* CONFIG_FUNCTION_TRACER */
+ };
  
- #define MAX_FACILITY_BIT (sizeof(stfle_fac_list) * 8)
-@@ -39,30 +39,51 @@ static inline void __clear_facility(unsigned long nr, void *facilities)
- 	ptr[nr >> 3] &= ~(0x80 >> (nr & 7));
- }
- 
--static inline int __test_facility(unsigned long nr, void *facilities)
-+static __always_inline bool __test_facility(unsigned long nr, void *facilities)
- {
- 	unsigned char *ptr;
- 
- 	if (nr >= MAX_FACILITY_BIT)
--		return 0;
-+		return false;
- 	ptr = (unsigned char *) facilities + (nr >> 3);
- 	return (*ptr & (0x80 >> (nr & 7))) != 0;
- }
- 
-+/*
-+ * __test_facility_constant() generates a single instruction branch. If the
-+ * tested facility is available (likely) the branch is patched into a nop.
-+ *
-+ * Do not use this function unless you know what you are doing. All users are
-+ * supposed to use test_facility() which will do the right thing.
-+ */
-+static __always_inline bool __test_facility_constant(unsigned long nr)
++static inline const Elf_Shdr *find_section(const Elf_Ehdr *hdr,
++					   const Elf_Shdr *sechdrs,
++					   const char *name)
 +{
-+	asm goto(
-+		ALTERNATIVE("brcl 15,%l[l_no]", "brcl 0,0", ALT_FACILITY(%[nr]))
-+		:
-+		: [nr] "i" (nr)
-+		:
-+		: l_no);
-+	return true;
-+l_no:
-+	return false;
++	const char *secstrs = (void *)hdr + sechdrs[hdr->e_shstrndx].sh_offset;
++	const Elf_Shdr *s, *se;
++
++	for (s = sechdrs, se = sechdrs + hdr->e_shnum; s < se; s++) {
++		if (strcmp(name, secstrs + s->sh_name) == 0)
++			return s;
++	}
++	return NULL;
 +}
 +
- /*
-  * The test_facility function uses the bit ordering where the MSB is bit 0.
-  * That makes it easier to query facility bits with the bit number as
-  * documented in the Principles of Operation.
-  */
--static inline int test_facility(unsigned long nr)
-+static __always_inline bool test_facility(unsigned long nr)
- {
- 	unsigned long facilities_als[] = { FACILITIES_ALS };
- 
--	if (__builtin_constant_p(nr) && nr < sizeof(facilities_als) * 8) {
--		if (__test_facility(nr, &facilities_als)) {
--			if (!__is_defined(__DECOMPRESSOR))
--				return 1;
-+	if (!__is_defined(__DECOMPRESSOR) && __builtin_constant_p(nr)) {
-+		if (nr < sizeof(facilities_als) * 8) {
-+			if (__test_facility(nr, &facilities_als))
-+				return true;
- 		}
-+		return __test_facility_constant(nr);
- 	}
- 	return __test_facility(nr, &stfle_fac_list);
- }
+ #endif /* _ASM_S390_MODULE_H */
 -- 
 2.43.0
 
