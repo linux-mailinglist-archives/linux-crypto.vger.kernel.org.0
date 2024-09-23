@@ -1,92 +1,131 @@
-Return-Path: <linux-crypto+bounces-6990-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-6994-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7986D97EBB0
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Sep 2024 14:48:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F1BE97EC5B
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Sep 2024 15:36:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4DD028219F
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Sep 2024 12:48:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAD982827DA
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Sep 2024 13:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E98A197A7F;
-	Mon, 23 Sep 2024 12:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D651993AF;
+	Mon, 23 Sep 2024 13:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="SPD7zqub"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KzYL0Jtz"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14C119308A;
-	Mon, 23 Sep 2024 12:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B507919922F;
+	Mon, 23 Sep 2024 13:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727095700; cv=none; b=M7NlFkoRnQYl8uThvzKCfUrGhkuc5x53BUjO+ABLPjqcE+eIjk46bKolPs0QAMJ6o0Zw1xy6AcFi/B6eaCAKbPScmn7KpVn88YqR8TbL2EkS0mAvDhS5mhM2n9g8Bz0UUUYeoC1plTyqisrtlrNKM3Z3unSwKXZcs+7QfMErtPY=
+	t=1727098565; cv=none; b=mB/8Ysx0Zwghn+mYYy2fZRj/KIW/hpnDYuX66c0hjKSlnEW4g5gIXL/+BaSF0huci5Woy0erfQ3QmQkI5nbGlC+kHzHFaZhA8zq0lD6woF282L7wDLOxvikAMjoIOwvWFpbZuuSBHfWa9QbGImQTiA5SCasfyCadDvJnwjF4sR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727095700; c=relaxed/simple;
-	bh=WuStnSNKwvQZgEPx7G0FIjblHsWPHjNTi5mS6OkIrFI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XZtnpI0qs3qLyJEhIkQl/ivI9fC5uPLD3cLWYtfoxjbueKrbh8rnBrbWh9brAJff9za9+kDDlA5+AG4h0nIRzPGkc+QcF5SWuQky6Uoopl/qOTzRNxARTPSab2IGS6aa+4IYhUmCEjvBxcOklur0cu4KV//ePTUFId6Qn7Ee1jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=SPD7zqub; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A8CBC4CEC4;
-	Mon, 23 Sep 2024 12:48:18 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="SPD7zqub"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1727095695;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Qpvkt7qOaEtJ8Zm5fTtyShRLRVDg7RGKt8Rc8mLONhQ=;
-	b=SPD7zqubemn3aYcla4InoPy0A2IspA+u2NMGKac/xVY6RWKvd/uvOT0wnqAUn42EAWolUI
-	nww9kJecwrEOIU5xh1EMIZkUajmc+Zk6lvYTg0wXTIMASoDp7Z1VvW7pJTGwtcKhlQ+G0B
-	0EW4j81PN9nVkisbBEydSmoPSdA1f2I=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 3a25d15c (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Mon, 23 Sep 2024 12:48:14 +0000 (UTC)
-Date: Mon, 23 Sep 2024 14:48:11 +0200
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Xi Ruoyao <xry111@xry111.site>
-Cc: Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-crypto@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Jinyang He <hejinyang@loongson.cn>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] LoongArch: vDSO: Tune the chacha20 implementation
-Message-ID: <ZvFji_xpV0tWxZIn@zx2c4.com>
-References: <20240919091359.7023-1-xry111@xry111.site>
- <CAAhV-H68HOsX4=yZAmnCMW0VWf5SsqEckcHJQytSzjK8dHHW6g@mail.gmail.com>
- <b9bc6db245775b0a2e990467f414071e82b06a29.camel@xry111.site>
+	s=arc-20240116; t=1727098565; c=relaxed/simple;
+	bh=6ldzArpZc68z7glLwNUL1QXsRpeVl2IqY3TIk92Ps2U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JPFN/JAcgdeiY8fyoPzIMki0dH4lFsY035acJBJjeap9xcmofdAUfVntYsBTmqqU8xia1bJP+rTMEiMEYv6N5aJzmeIVC4ygeQAPx5MGD6oFP2gwac6C2/FVbRnnPLM3oavmZBfnQ9oSDAbRUWgeGFzy7D0GRK4Stvc9uq9a4TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KzYL0Jtz; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48N3QAmf019038;
+	Mon, 23 Sep 2024 13:30:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=pp1; bh=K6VUVDVlbjknK1JITS3QVF2LIj
+	rXAxju6GiTmbIQkx4=; b=KzYL0JtzygsIgy+RbQQRJC7wt6VXu1BITPSf4zBl1B
+	dcB8dE+JztIiaQ3mPqvFEEhHDaHeeOd4qngx7NPZrxXE864WT+LoHE9T3UlAbNZT
+	Qdhv3LvkGX2C8J1zlideLrGbNB7bzwhO0M6rGWSTFzcc2BVEHtvoFBuk16saAdWL
+	R43XjJn0e18G9u62W0iiV41xRW+AdTiAm67RVUWO909iPAYEslkBIYC5vKfqVSYK
+	GhmNRT4+24v7tR/xMFRyuqAeKtfqa4PyNIVRfTuMa60+iptTePQZ/jrlNkDqUb8o
+	KLbYUbeiALd9iAZKnl9ZI8mHUJwr5fPpwHxc5lbae8ng==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41skjrc305-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 23 Sep 2024 13:30:45 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48NBI9Xt012507;
+	Mon, 23 Sep 2024 13:30:44 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41t9fpptav-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 23 Sep 2024 13:30:44 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48NDUhW731916756
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 23 Sep 2024 13:30:43 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B95FE58062;
+	Mon, 23 Sep 2024 13:30:43 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1EF1458066;
+	Mon, 23 Sep 2024 13:30:43 +0000 (GMT)
+Received: from ltcden12-lp3.aus.stglabs.ibm.com (unknown [9.40.195.53])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 23 Sep 2024 13:30:43 +0000 (GMT)
+From: Danny Tsen <dtsen@linux.ibm.com>
+To: linux-crypto@vger.kernel.org
+Cc: stable@vger.kernel.org, herbert@gondor.apana.org.au, leitao@debian.org,
+        nayna@linux.ibm.com, appro@cryptogams.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au, ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com,
+        Danny Tsen <dtsen@linux.ibm.com>
+Subject: [PATCH 0/3] crypto: Fix data mismatch over ipsec tunnel encrypted/decrypted with ppc64le AES/GCM module.
+Date: Mon, 23 Sep 2024 09:30:37 -0400
+Message-ID: <20240923133040.4630-1-dtsen@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b9bc6db245775b0a2e990467f414071e82b06a29.camel@xry111.site>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yvnFcF5vjJnVYZy3BRhiNiuA6wQdrHdK
+X-Proofpoint-ORIG-GUID: yvnFcF5vjJnVYZy3BRhiNiuA6wQdrHdK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-23_10,2024-09-23_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ spamscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0
+ clxscore=1015 malwarescore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
+ definitions=main-2409230099
 
-On Mon, Sep 23, 2024 at 04:06:41PM +0800, Xi Ruoyao wrote:
-> On Mon, 2024-09-23 at 15:15 +0800, Huacai Chen wrote:
-> > > +#define line3          state12, state13, state14, state15
-> > > +
-> > > +#define        line1_perm      state5, state6, state7, state4
-> > > +#define        line2_perm      state10, state11, state8, state9
-> > > +#define        line3_perm      state15, state12, state13, state14
-> > > +
-> > > +#define        copy            copy0, copy1, copy2, copy3
-> > The indentation here is strange, it seems some of them are spaces and
-> > some of them are tabs.
-> 
-> Oops indeed.  The tabs after "#define" should be a space instead.
-> 
-> Jason: can you edit it for me or do you want a new revision of the patch
+Fix data mismatch over ipsec tunnel encrypted/decrypted with ppc64le AES/GCM module.
 
-I've fixed it in tree.
+This patch is to fix an issue when simd is not usable that data mismatch
+may occur. The fix is to register algs as SIMD modules so that the
+algorithm is excecuted when SIMD instructions is usable.
 
-Jason
+A new module rfc4106(gcm(aes)) is also added. Re-write AES/GCM assembly
+codes with smaller footprints and small performance gain.
+
+This patch has been tested with the kernel crypto module tcrypt.ko and
+has passed the selftest.  The patch is also tested with
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
+
+Fixes: fd0e9b3e2ee6 ("crypto: p10-aes-gcm - An accelerated AES/GCM stitched implementation")
+Fixes: cdcecfd9991f ("crypto: p10-aes-gcm - Glue code for AES/GCM stitched implementation")
+Fixes: 45a4672b9a6e2 ("crypto: p10-aes-gcm - Update Kconfig and Makefile")
+
+Signed-off-by: Danny Tsen <dtsen@linux.ibm.com>
+
+Danny Tsen (3):
+  crypto: Re-write AES/GCM stitched implementation for ppcle64.
+  crypto: Register modules as SIMD modules for ppcle64 AES/GCM algs.
+  crypto: added CRYPTO_SIMD in Kconfig for CRYPTO_AES_GCM_P10.
+
+ arch/powerpc/crypto/Kconfig            |    2 +-
+ arch/powerpc/crypto/aes-gcm-p10-glue.c |  141 +-
+ arch/powerpc/crypto/aes-gcm-p10.S      | 2421 +++++++++++-------------
+ 3 files changed, 1187 insertions(+), 1377 deletions(-)
+
+-- 
+2.43.0
+
 
