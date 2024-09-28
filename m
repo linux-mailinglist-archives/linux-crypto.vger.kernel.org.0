@@ -1,109 +1,119 @@
-Return-Path: <linux-crypto+bounces-7037-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7039-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C0FE988A57
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Sep 2024 20:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AADC9988EF2
+	for <lists+linux-crypto@lfdr.de>; Sat, 28 Sep 2024 12:06:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CCA21C230FF
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Sep 2024 18:49:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC4141C20E62
+	for <lists+linux-crypto@lfdr.de>; Sat, 28 Sep 2024 10:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7443C1C2316;
-	Fri, 27 Sep 2024 18:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA5119F411;
+	Sat, 28 Sep 2024 10:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cez9ZeDw"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o3HdzhXn"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8BF1C230D;
-	Fri, 27 Sep 2024 18:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A957319E7E8
+	for <linux-crypto@vger.kernel.org>; Sat, 28 Sep 2024 10:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727462958; cv=none; b=WvLbhkOx8IVW46GBiMOe+FwxZsW8NEJJi44oDsIl0SNCdK1Yvqgm9i1kycPSnxApTvO6PWt82nOgrrxJsokzq953iqU7F2BaOwoudghb/RBNQtKfM2woCgwWfySz1aEjvqNP750jFH2PitTQSB+RffXONi3LmMxEk6CelsYfYX8=
+	t=1727517948; cv=none; b=FvFIBRZ6l+FpTSNX+IAr7Fvu2Emlf9fzIIEHyqz24LliKdfXQnWy95V8OWLEm9f7Ltx0NiwnKGb5ixyhoGDIf/xUSoZQHTDhQbxu2OeMY3iC6N/FQXTbKfNRI+yJol96OzA2iWOlVg3owgZIBsuruVR3iKfow21I5SnJywzj0ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727462958; c=relaxed/simple;
-	bh=y/7cSwxsNP5gG8rsS+LqL1ZWq68q/juRgwY4ok3wZVs=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=uMeN7nPgKykN8CQ2+ooXh6C6n2CGignYnEszUTOTJ8RH4Fyr1G3nvfOQMOw5FQ2WP3dg4xDPJqGypnt+ii+b3XwjrJTUIt7v9tNg/C4psIIYq9DKnGQGCO1zsWPdVCc9kIYShc5/01mvWzLCWzHItxokSNfH04JEPERElfmic7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cez9ZeDw; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1727462956; x=1758998956;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=y/7cSwxsNP5gG8rsS+LqL1ZWq68q/juRgwY4ok3wZVs=;
-  b=Cez9ZeDwQr15mfwmS7ub3wtt2itI9gNYzxsSAE5YN9vurfd4oQw9L5QX
-   DdpWNTK+pL7UUu6+JblcP/gZxsf2tWfhukcTFNZnAPcgIt4a7jAonACjH
-   5CR8Cts7dkyzH1yZSno6zL+csSK4SIgFOE2LeuqHG3fgaYkReCj5cMyHz
-   VEznh7j3XdXa4TflxdXoGyWpTEvlus9kWaKAT//ZiZGZ5Lqh+QuPe2E5C
-   QdpkxAI3vgxNIinyL2S02JrLeqaVI0Q0C8kJaESs1Ad1yU8xOQr8/IUHe
-   idcr7HSd3fz4nQDaH6AbDkMjpSoASp6MHyfHKOuUAkm7SfBq4ijAgws7b
-   g==;
-X-CSE-ConnectionGUID: AZ85WXwtRQG0DeZ45EdovA==
-X-CSE-MsgGUID: mhqtoshnR/OF84taf+84GA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11208"; a="49144479"
-X-IronPort-AV: E=Sophos;i="6.11,159,1725346800"; 
-   d="scan'208";a="49144479"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2024 11:47:58 -0700
-X-CSE-ConnectionGUID: 7Q1/PQMATFOXD5E9wYaQ0g==
-X-CSE-MsgGUID: fXhCSlRqRn+GPhKo/AlG3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,159,1725346800"; 
-   d="scan'208";a="103427647"
-Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.246.129.181]) ([10.246.129.181])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2024 11:47:56 -0700
-Message-ID: <9afce713-db32-487b-b79e-3b294500d8d4@linux.intel.com>
-Date: Fri, 27 Sep 2024 13:47:55 -0500
+	s=arc-20240116; t=1727517948; c=relaxed/simple;
+	bh=Fhj/2WAgRX6TZNq4s+b672pG6RSzJbtSTQ4lNixnLGY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=pAkZhi9O+XuB0/F75Li0jgqsT+PpYuQQy4kOcUT9DwKEfnaNU1/a5rS8skbZ1iz6uyh91+s97qnuIn84F+w46a61VbFuSJMl31T0lqgpbvz1JRU94py4BXZuW437/+cZc2K9F0KL+KCWERetRL0PAhPxVWDsuCqdvDlrgrUZ/T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o3HdzhXn; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-42cae102702so22441135e9.0
+        for <linux-crypto@vger.kernel.org>; Sat, 28 Sep 2024 03:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727517944; x=1728122744; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wFXnq8tjuGE++NF0IRFhg8u5PXx+L4dCmmjvPjHBwaI=;
+        b=o3HdzhXnPH1LpR51MzYDBAiJA6/5cRm2VJR/v0v9YpbfHcaf6GES4L9riF64ru572b
+         2lmmjUDWPxwnCZEnmu85tpo/RqFuCAaSacVyONl9evKLdHRoVePv3W/nP1NwrBaaFNms
+         ghxXQfuTQiqKUySMbJRaKW13XzY3dT55VU5PQttiNJsKgp43Tqo7Hxoo0KECndUQARSH
+         uty3cxnnanyT886dRCask47aVrONdQRItwj0C3jyHDlrDWCncSMdxAckPQHsLHzTV5RZ
+         zOsJls1LNOKNQ2VY4zJYye6PttLoSx64abd3vsBjl6wHmbVljkH/Zsy/en1t3CIkZ4MO
+         K+4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727517944; x=1728122744;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wFXnq8tjuGE++NF0IRFhg8u5PXx+L4dCmmjvPjHBwaI=;
+        b=JgTD7Pp2V4Be4YZZvqYlykbtoI1Trr5zPX8hSEIJIGg/QFeM9My/sLucHQGCu2mlGJ
+         RnvZZ0fluQQcTFNJzY/v3RVcsvQ22GFheMmzdEmyWhPLyXx6cqTI+rFciuhdjupKGFqQ
+         bg1ngQ2gLVta55IrLT3GJIgiFVnsN8sWk9bIcFfu6Mq9LfmpZmfHIFw7Ez9vo8Kheojj
+         o1bKqIaCIJoBbf+7JFd0lZa7CDAwlsN0sfqEXEPcURhULp6ANPqDOVDIjVDpEZBe4D1H
+         8A4UsgBAH2MC8yy3ZbDoYsTJ4/taVdbEd6N5qS/5cVd57ye8h88zQfhQNlZAH0RNzT87
+         NYbw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFqZmxI1g1zIWvuSAagP34jWyk21CU55znHXjtHZBCyobHIOwApE9fmbHWmr11vgl4DF/6Rq28z2CWVGs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxN+vCQIqlWAhbWUrtEepSXUa/CsMBCdOZd9AsptXujzhblHoSS
+	8qZ3vGDxRhXkrgkpCw9uBe1RYxSDxr3I34OhddYVvsXWheIYE74q9s5RFs2nl+M=
+X-Google-Smtp-Source: AGHT+IHZBI2SeNYmPuzbzS4OIpWMwP4GQ7Yg15aONo1+6wQnhIL+THchIfM5hb67RF96jt8tGxyVRA==
+X-Received: by 2002:a05:600c:4f8f:b0:426:6a53:e54f with SMTP id 5b1f17b1804b1-42f5849101emr43200315e9.33.1727517943974;
+        Sat, 28 Sep 2024 03:05:43 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e90274aa0sm77268275e9.0.2024.09.28.03.05.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Sep 2024 03:05:43 -0700 (PDT)
+Date: Sat, 28 Sep 2024 13:05:01 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Jie Wang <jie.wang@intel.com>
+Cc: Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Damian Muszynski <damian.muszynski@intel.com>,
+	Tero Kristo <tero.kristo@linux.intel.com>,
+	Shashank Gupta <shashank.gupta@intel.com>,
+	Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
+	Dong Xie <dong.xie@intel.com>, qat-linux@intel.com,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] crypto: qat - (qat_420xx) fix off by one in uof_get_name()
+Message-ID: <796ecd7c-54ad-4bec-b748-3e156cc0a1aa@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH 2/2] MAINTAINERS: Make Kristen Accardi the IAA crypto driver
- maintainer
-Content-Language: en-GB
-From: "Zanussi, Tom" <tom.zanussi@linux.intel.com>
-To: herbert@gondor.apana.org.au
-Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- "Accardi, Kristen C" <kristen.c.accardi@intel.com>, zanussi@kernel.org
-References: <733a19ce-16f2-4d06-bce9-85d7473c9a4d@linux.intel.com>
-In-Reply-To: <733a19ce-16f2-4d06-bce9-85d7473c9a4d@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Since I'll be retiring from Intel and will no longer have access to
-hardware, Kristen Accardi will be taking over as the iaa_crypto
-maintainer.
+This is called from uof_get_name_420xx() where "num_objs" is the
+ARRAY_SIZE() of fw_objs[].  The > needs to be >= to prevent an out of
+bounds access.
 
-Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+Fixes: fcf60f4bcf54 ("crypto: qat - add support for 420xx devices")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- MAINTAINERS | 2 +-
+ drivers/crypto/intel/qat/qat_420xx/adf_420xx_hw_data.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a0b4c1210e92..b89c21ff2bc8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11300,7 +11300,7 @@ Q:	https://patchwork.kernel.org/project/linux-dmaengine/list/
- F:	drivers/dma/ioat*
+diff --git a/drivers/crypto/intel/qat/qat_420xx/adf_420xx_hw_data.c b/drivers/crypto/intel/qat/qat_420xx/adf_420xx_hw_data.c
+index 78f0ea49254d..9faef33e54bd 100644
+--- a/drivers/crypto/intel/qat/qat_420xx/adf_420xx_hw_data.c
++++ b/drivers/crypto/intel/qat/qat_420xx/adf_420xx_hw_data.c
+@@ -375,7 +375,7 @@ static const char *uof_get_name(struct adf_accel_dev *accel_dev, u32 obj_num,
+ 	else
+ 		id = -EINVAL;
  
- INTEL IAA CRYPTO DRIVER
--M:	Tom Zanussi <tom.zanussi@linux.intel.com>
-+M:	Kristen Accardi <kristen.c.accardi@intel.com>
- L:	linux-crypto@vger.kernel.org
- S:	Supported
- F:	Documentation/driver-api/crypto/iaa/iaa-crypto.rst
+-	if (id < 0 || id > num_objs)
++	if (id < 0 || id >= num_objs)
+ 		return NULL;
+ 
+ 	return fw_objs[id];
 -- 
-2.38.1
-
+2.45.2
 
 
