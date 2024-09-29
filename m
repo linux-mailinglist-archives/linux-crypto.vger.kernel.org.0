@@ -1,56 +1,53 @@
-Return-Path: <linux-crypto+bounces-7041-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7044-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A30E4989515
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2024 13:26:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51AA598951C
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2024 13:27:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3F3E1C219E5
-	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2024 11:26:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A371B210B8
+	for <lists+linux-crypto@lfdr.de>; Sun, 29 Sep 2024 11:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0101E15885E;
-	Sun, 29 Sep 2024 11:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1676C16EB76;
+	Sun, 29 Sep 2024 11:27:04 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636FC14F105;
-	Sun, 29 Sep 2024 11:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E1F15FD16;
+	Sun, 29 Sep 2024 11:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727609200; cv=none; b=K27/kCPZZfYpTXDt284AKMS9i0/5cvwIZkF5d9mhSUxU1N3f4slQgu5YFryF0sGLVG3UfkYRmUcFjSoCtr3KZjcyQmA6zw66BnP7dOTWJsBSVUciVjwPg2DjSczjZYqLxXb+HRXrRBzCeaWuhM2k49g31qRTZ0uRk+4zKxn6h/c=
+	t=1727609223; cv=none; b=sjs+WNCbXTOnqlLhOUDzK9aAjIEaS77gmSp9VcuPh3cmtqyGi9jZtm3K8oiHE+NgyV0MhK2CjmHiFsfLSYlHMN0/uQH6ivr7J9Iv6Qr+TKLWBo/8wEgyI9ojUcqtQwNCvLK8Fy7Wb76iWKF61hhUB4HcfLOCGN/MUNmo3/MP2sU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727609200; c=relaxed/simple;
-	bh=c1XklPJtWvPHJyrb4WS4LW40c61PjT9mPdjAvUCm0m8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hOJlTM9CO4ETt3GhH5UhPpZ58z4UiSDxM8uoWQ9tAenxTNESyWVLhAW89wt6lilCA7+znUz/MOzAqKjZLzfmBNsHTVaZdRp+Gu1TpUbenzqIN5x02MNOZKf7+NUbXa4GYOmieGqljNBV7OUuO1hc9FrD2Q2959OFJae7UpmcmCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+	s=arc-20240116; t=1727609223; c=relaxed/simple;
+	bh=2Z67kmiPpPiX4NPICSN6yxyqvDTL5rZxLnvaFETOx74=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=boZslonJ13pEcggGIz7Ge7i9U8v5QXML/FMoga0m3v25EBeQ7wE22doq88++O97Dj09B7ersBC4p6g88Eh+LHUSdZbjw+S4nVi1hD2IIfGkZsKrDpJoOAg06FjXYvI+De37FMD+nJPfxSiYxyWwpiDB0LaQPYf7uiRJEBeKOX+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4XGhgy2w8cz1T844;
-	Sun, 29 Sep 2024 19:25:02 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XGhdh1wHpz1HKJV;
+	Sun, 29 Sep 2024 19:23:04 +0800 (CST)
 Received: from kwepemd200024.china.huawei.com (unknown [7.221.188.85])
-	by mail.maildlp.com (Postfix) with ESMTPS id A48B11402CA;
-	Sun, 29 Sep 2024 19:26:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 278241A0188;
+	Sun, 29 Sep 2024 19:26:59 +0800 (CST)
 Received: from localhost.huawei.com (10.90.30.45) by
  kwepemd200024.china.huawei.com (7.221.188.85) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sun, 29 Sep 2024 19:26:32 +0800
+ 15.2.1544.11; Sun, 29 Sep 2024 19:26:58 +0800
 From: Chenghai Huang <huangchenghai2@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<liulongfang@huawei.com>, <shenyang39@huawei.com>, <qianweili@huawei.com>,
 	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>,
 	<huangchenghai2@huawei.com>
-Subject: [PATCH 2/2] crypto: hisilicon/sec2 - fix for aead invalid authsize
-Date: Sun, 29 Sep 2024 19:26:30 +0800
-Message-ID: <20240929112630.863282-3-huangchenghai2@huawei.com>
+Subject: [PATCH] crypto: hisilicon/qm - fix the coding specifications issue
+Date: Sun, 29 Sep 2024 19:26:57 +0800
+Message-ID: <20240929112657.863594-1-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240929112630.863282-1-huangchenghai2@huawei.com>
-References: <20240929112630.863282-1-huangchenghai2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,148 +59,150 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemd200024.china.huawei.com (7.221.188.85)
 
-When the digest alg is HMAC-SHAx or another, the authsize may be less
-than 4 bytes and mac_len of the BD is set to zero, the hardware considers
-it a BD configuration error and reports a ras error, so the sec driver
-needs to switch to software calculation in this case, this patch add a
-check for it and remove unnecessary check that has been done by crypto.
+Ensure that the inline function contains no more than 10 lines.
+move q_num_set() from hisi_acc_qm.h to qm.c.
 
-Fixes: 2f072d75d1ab ("crypto: hisilicon - Add aead support on SEC2")
-Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 59 ++++++++++++----------
- 1 file changed, 31 insertions(+), 28 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  2 +-
+ drivers/crypto/hisilicon/qm.c             | 31 +++++++++++++++++++++
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c   |  2 +-
+ include/linux/hisi_acc_qm.h               | 33 ++---------------------
+ 5 files changed, 36 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 470c2b422fa9..18b894ac282c 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -1114,10 +1114,7 @@ static int sec_aead_setauthsize(struct crypto_aead *aead, unsigned int authsize)
- 	struct sec_ctx *ctx = crypto_tfm_ctx(tfm);
- 	struct sec_auth_ctx *a_ctx = &ctx->a_ctx;
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index 6b536ad2ada5..365690e48d4d 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -415,7 +415,7 @@ static int pf_q_num_set(const char *val, const struct kernel_param *kp)
+ {
+ 	pf_q_num_flag = true;
  
--	if (unlikely(a_ctx->fallback_aead_tfm))
--		return crypto_aead_setauthsize(a_ctx->fallback_aead_tfm, authsize);
--
--	return 0;
-+	return crypto_aead_setauthsize(a_ctx->fallback_aead_tfm, authsize);
+-	return q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_HPRE_PF);
++	return hisi_qm_q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_HPRE_PF);
  }
  
- static int sec_aead_fallback_setkey(struct sec_auth_ctx *a_ctx,
-@@ -1154,13 +1151,7 @@ static int sec_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- 		}
- 		memcpy(c_ctx->c_key, key, keylen);
+ static const struct kernel_param_ops hpre_pf_q_num_ops = {
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index 07983af9e3e2..f7e8237e3a93 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -451,6 +451,37 @@ static struct qm_typical_qos_table shaper_cbs_s[] = {
  
--		if (unlikely(a_ctx->fallback_aead_tfm)) {
--			ret = sec_aead_fallback_setkey(a_ctx, tfm, key, keylen);
--			if (ret)
--				return ret;
--		}
--
--		return 0;
-+		return sec_aead_fallback_setkey(a_ctx, tfm, key, keylen);
- 	}
- 
- 	ret = crypto_authenc_extractkeys(&keys, key, keylen);
-@@ -1185,6 +1176,12 @@ static int sec_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- 		goto bad_key;
- 	}
- 
-+	ret = sec_aead_fallback_setkey(a_ctx, tfm, key, keylen);
-+	if (ret) {
-+		dev_err(dev, "set sec fallback key err!\n");
-+		goto bad_key;
+ static void qm_irqs_unregister(struct hisi_qm *qm);
+ static int qm_reset_device(struct hisi_qm *qm);
++int hisi_qm_q_num_set(const char *val, const struct kernel_param *kp,
++		      unsigned int device)
++{
++	struct pci_dev *pdev;
++	u32 n, q_num;
++	int ret;
++
++	if (!val)
++		return -EINVAL;
++
++	pdev = pci_get_device(PCI_VENDOR_ID_HUAWEI, device, NULL);
++	if (!pdev) {
++		q_num = min_t(u32, QM_QNUM_V1, QM_QNUM_V2);
++		pr_info("No device found currently, suppose queue number is %u\n",
++			q_num);
++	} else {
++		if (pdev->revision == QM_HW_V1)
++			q_num = QM_QNUM_V1;
++		else
++			q_num = QM_QNUM_V2;
++
++		pci_dev_put(pdev);
 +	}
 +
- 	return 0;
- 
- bad_key:
-@@ -1900,8 +1897,10 @@ static void sec_aead_exit(struct crypto_aead *tfm)
- 
- static int sec_aead_ctx_init(struct crypto_aead *tfm, const char *hash_name)
- {
-+	struct aead_alg *alg = crypto_aead_alg(tfm);
- 	struct sec_ctx *ctx = crypto_aead_ctx(tfm);
--	struct sec_auth_ctx *auth_ctx = &ctx->a_ctx;
-+	struct sec_auth_ctx *a_ctx = &ctx->a_ctx;
-+	const char *aead_name = alg->base.cra_name;
- 	int ret;
- 
- 	ret = sec_aead_init(tfm);
-@@ -1910,12 +1909,22 @@ static int sec_aead_ctx_init(struct crypto_aead *tfm, const char *hash_name)
- 		return ret;
- 	}
- 
--	auth_ctx->hash_tfm = crypto_alloc_shash(hash_name, 0, 0);
--	if (IS_ERR(auth_ctx->hash_tfm)) {
-+	a_ctx->hash_tfm = crypto_alloc_shash(hash_name, 0, 0);
-+	if (IS_ERR(a_ctx->hash_tfm)) {
- 		dev_err(ctx->dev, "aead alloc shash error!\n");
- 		sec_aead_exit(tfm);
--		return PTR_ERR(auth_ctx->hash_tfm);
-+		return PTR_ERR(a_ctx->hash_tfm);
-+	}
++	ret = kstrtou32(val, 10, &n);
++	if (ret || n < QM_MIN_QNUM || n > q_num)
++		return -EINVAL;
 +
-+	a_ctx->fallback_aead_tfm = crypto_alloc_aead(aead_name, 0,
-+						     CRYPTO_ALG_NEED_FALLBACK | CRYPTO_ALG_ASYNC);
-+	if (IS_ERR(a_ctx->fallback_aead_tfm)) {
-+		dev_err(ctx->dev, "aead driver alloc fallback tfm error!\n");
-+		crypto_free_shash(ctx->a_ctx.hash_tfm);
-+		sec_aead_exit(tfm);
-+		return PTR_ERR(a_ctx->fallback_aead_tfm);
- 	}
-+	a_ctx->fallback = false;
++	return param_set_int(val, kp);
++}
++EXPORT_SYMBOL_GPL(hisi_qm_q_num_set);
  
- 	return 0;
- }
-@@ -1924,6 +1933,7 @@ static void sec_aead_ctx_exit(struct crypto_aead *tfm)
+ static u32 qm_get_hw_error_status(struct hisi_qm *qm)
  {
- 	struct sec_ctx *ctx = crypto_aead_ctx(tfm);
- 
-+	crypto_free_aead(ctx->a_ctx.fallback_aead_tfm);
- 	crypto_free_shash(ctx->a_ctx.hash_tfm);
- 	sec_aead_exit(tfm);
- }
-@@ -2208,15 +2218,15 @@ static int sec_aead_spec_check(struct sec_ctx *ctx, struct sec_req *sreq)
- 	struct device *dev = ctx->dev;
- 	int ret;
- 
--	if (unlikely(req->cryptlen + req->assoclen > MAX_INPUT_DATA_LEN ||
--	    req->assoclen > SEC_MAX_AAD_LEN)) {
--		dev_err(dev, "aead input spec error!\n");
-+	/* Hardware does not handle cases where authsize is less than 4 bytes */
-+	if (unlikely(sz < MIN_MAC_LEN)) {
-+		ctx->a_ctx.fallback = true;
- 		return -EINVAL;
- 	}
- 
--	if (unlikely((c_mode == SEC_CMODE_GCM && sz < DES_BLOCK_SIZE) ||
--		     (c_mode == SEC_CMODE_CCM && (sz < MIN_MAC_LEN || sz & MAC_LEN_MASK)))) {
--		dev_err(dev, "aead input mac length error!\n");
-+	if (unlikely(req->cryptlen + req->assoclen > MAX_INPUT_DATA_LEN ||
-+	    req->assoclen > SEC_MAX_AAD_LEN)) {
-+		dev_err(dev, "aead input spec error!\n");
- 		return -EINVAL;
- 	}
- 
-@@ -2288,16 +2298,9 @@ static int sec_aead_soft_crypto(struct sec_ctx *ctx,
- 				bool encrypt)
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index c35533d8930b..3abd12017250 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -322,7 +322,7 @@ static int sec_pf_q_num_set(const char *val, const struct kernel_param *kp)
  {
- 	struct sec_auth_ctx *a_ctx = &ctx->a_ctx;
--	struct device *dev = ctx->dev;
- 	struct aead_request *subreq;
- 	int ret;
+ 	pf_q_num_flag = true;
  
--	/* Kunpeng920 aead mode not support input 0 size */
--	if (!a_ctx->fallback_aead_tfm) {
--		dev_err(dev, "aead fallback tfm is NULL!\n");
+-	return q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_SEC_PF);
++	return hisi_qm_q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_SEC_PF);
+ }
+ 
+ static const struct kernel_param_ops sec_pf_q_num_ops = {
+diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
+index d07e47b48be0..f547e6732bf5 100644
+--- a/drivers/crypto/hisilicon/zip/zip_main.c
++++ b/drivers/crypto/hisilicon/zip/zip_main.c
+@@ -402,7 +402,7 @@ static int pf_q_num_set(const char *val, const struct kernel_param *kp)
+ {
+ 	pf_q_num_flag = true;
+ 
+-	return q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_ZIP_PF);
++	return hisi_qm_q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_ZIP_PF);
+ }
+ 
+ static const struct kernel_param_ops pf_q_num_ops = {
+diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
+index 9d7754ad5e9b..389e95754776 100644
+--- a/include/linux/hisi_acc_qm.h
++++ b/include/linux/hisi_acc_qm.h
+@@ -436,37 +436,6 @@ struct hisi_qp {
+ 	struct uacce_queue *uacce_q;
+ };
+ 
+-static inline int q_num_set(const char *val, const struct kernel_param *kp,
+-			    unsigned int device)
+-{
+-	struct pci_dev *pdev;
+-	u32 n, q_num;
+-	int ret;
+-
+-	if (!val)
 -		return -EINVAL;
+-
+-	pdev = pci_get_device(PCI_VENDOR_ID_HUAWEI, device, NULL);
+-	if (!pdev) {
+-		q_num = min_t(u32, QM_QNUM_V1, QM_QNUM_V2);
+-		pr_info("No device found currently, suppose queue number is %u\n",
+-			q_num);
+-	} else {
+-		if (pdev->revision == QM_HW_V1)
+-			q_num = QM_QNUM_V1;
+-		else
+-			q_num = QM_QNUM_V2;
+-
+-		pci_dev_put(pdev);
 -	}
 -
- 	subreq = aead_request_alloc(a_ctx->fallback_aead_tfm, GFP_KERNEL);
- 	if (!subreq)
- 		return -ENOMEM;
+-	ret = kstrtou32(val, 10, &n);
+-	if (ret || n < QM_MIN_QNUM || n > q_num)
+-		return -EINVAL;
+-
+-	return param_set_int(val, kp);
+-}
+-
+ static inline int vfs_num_set(const char *val, const struct kernel_param *kp)
+ {
+ 	u32 n;
+@@ -526,6 +495,8 @@ static inline void hisi_qm_del_list(struct hisi_qm *qm, struct hisi_qm_list *qm_
+ 	mutex_unlock(&qm_list->lock);
+ }
+ 
++int hisi_qm_q_num_set(const char *val, const struct kernel_param *kp,
++		      unsigned int device);
+ int hisi_qm_init(struct hisi_qm *qm);
+ void hisi_qm_uninit(struct hisi_qm *qm);
+ int hisi_qm_start(struct hisi_qm *qm);
 -- 
 2.33.0
 
