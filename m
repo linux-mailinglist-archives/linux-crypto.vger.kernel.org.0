@@ -1,260 +1,156 @@
-Return-Path: <linux-crypto+bounces-7122-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7124-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58ADA98FFF2
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2024 11:41:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D904F9901C1
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2024 13:01:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77C451C22DA2
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2024 09:41:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 918A01F234FE
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Oct 2024 11:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C1A1494A5;
-	Fri,  4 Oct 2024 09:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="We6G6ueo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2217114B94C;
+	Fri,  4 Oct 2024 11:01:48 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F371487F4
-	for <linux-crypto@vger.kernel.org>; Fri,  4 Oct 2024 09:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D3712C81F;
+	Fri,  4 Oct 2024 11:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728034880; cv=none; b=a6v0besvN0MMOAMSf2Vw01It47zzxN70wLtGfzioeuX4Pun3YRkpShZGURcOzC9mP82gaPzAiy3jdyyrpem8mIF7+Ez8MIj1/nRcDxXX6HNtGv9HrNiW4pxZeG/+PXY+idyNRo0ki40HRDRNefNKUap4/pSafnrbjMs1aNww8rU=
+	t=1728039708; cv=none; b=DKAWsjEGjWmORig86hA9MQyoMfOI3MgBICUrJI+Wie0po2AjMtlh1xHbkSAtdsK/XfL1Hi/4iaNQ60djmcmaxwCZDNP3e+deT4/25IKmTaPEWzPmud2VECaWceNPL7nxznKpXBk1o8ydoE65ht4wWnPua18blAJgCyehhFW1baw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728034880; c=relaxed/simple;
-	bh=8ktEPHr11bpTyXw0rsSjug/eW6Ki4885nNCtJRjYKwk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lVpTSJ+xLZ7OegXHq7Gh1/j06s5NkX806n6OV8uQlGB2Yz10L1yiWIGKDP6pXU2hdCcQYCH43eP28CtNSHg6H0mSEnwIcBPfhHIJm772dBD1PYUB5j53MSqfUgSP3Pc8U6cgQW7NiJOWKnQH2Tj3BMsA3FCECUSFlvbIG8igDF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=We6G6ueo; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728034879; x=1759570879;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=8ktEPHr11bpTyXw0rsSjug/eW6Ki4885nNCtJRjYKwk=;
-  b=We6G6ueoi1Uy2EYMwRGyP+qpHcIsfy8IJa8Aw8hPN+wdoNHw/7SDkzeW
-   LPhDj6zFtcA3fvH702vUzLj0lFqT8JVPAj07JeXNNTvvp1iQi98zAsw9m
-   NjHVFBlA8we1RxWU94bxTr2Dl6R63PRPRVW01D7CqmID1rnqG0FBiB+/U
-   37A9RgTO3luopG63LIohaxUNVoUIlOAMSiBYb6da60cQezTrgJ0cYRINa
-   1UbYWaprqX4Fkq4VK3BY22gPTzycoaJjxlLrf/gtN0pHOYEkE3vyktW4C
-   UW59ZVGd/ez4PwgMepO2lzW7pbHWwLfjZO+mJr5EwAeSfojOVpcXey6QU
-   w==;
-X-CSE-ConnectionGUID: ZAdqrFJsT5mfiIhLqmmnlQ==
-X-CSE-MsgGUID: 27HFXT3oRR6Dqw6UZYmNvQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11214"; a="37856186"
-X-IronPort-AV: E=Sophos;i="6.11,177,1725346800"; 
-   d="scan'208";a="37856186"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2024 02:41:18 -0700
-X-CSE-ConnectionGUID: VPz0gbRmRt6KJtQ9pycZyA==
-X-CSE-MsgGUID: sH2NfNaJSCSeBohKD0GCww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,177,1725346800"; 
-   d="scan'208";a="74331922"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2024 02:41:16 -0700
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id 08F6A120CED;
-	Fri,  4 Oct 2024 12:41:12 +0300 (EEST)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
-	(envelope-from <sakari.ailus@linux.intel.com>)
-	id 1sweoC-000TW7-04;
-	Fri, 04 Oct 2024 12:41:12 +0300
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
-Subject: [PATCH 06/51] crypto: Switch to __pm_runtime_put_autosuspend()
-Date: Fri,  4 Oct 2024 12:41:12 +0300
-Message-Id: <20241004094112.113453-1-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241004094101.113349-1-sakari.ailus@linux.intel.com>
-References: <20241004094101.113349-1-sakari.ailus@linux.intel.com>
+	s=arc-20240116; t=1728039708; c=relaxed/simple;
+	bh=NtDsvusRx+fsiFebmXuORxX16ZxXymuvfEFFLg91cOE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=G7iRozRtflyPMoI43NvImWJJ3z7GSXkRiDwxiXZtynZckIGdsPcuy46HST5UqTj+sjgUXB5RY0Ok1dOTqONNmenZTPLQUoUKXiKwoJsRE6ua5fssDCO8jkEx+pd+GsrJ4HHgKekSJUdLrvikMSj3dPVx6yYDPzf9cvX4fG2pbVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4XKkx72wzVz9v7JQ;
+	Fri,  4 Oct 2024 18:16:59 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 537F5140935;
+	Fri,  4 Oct 2024 18:42:44 +0800 (CST)
+Received: from [10.81.200.188] (unknown [10.81.200.188])
+	by APP2 (Coremail) with SMTP id GxC2BwBH9saaxv9m_X80Ag--.35107S2;
+	Fri, 04 Oct 2024 11:42:43 +0100 (CET)
+Message-ID: <d5387ff4-06c7-4115-bd53-1c485e3743ec@huaweicloud.com>
+Date: Fri, 4 Oct 2024 12:42:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/14] KEYS: Add support for PGP keys and signatures
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>
+Cc: dhowells@redhat.com, dwmw2@infradead.org, davem@davemloft.net,
+ linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+ linux-crypto@vger.kernel.org, zohar@linux.ibm.com,
+ linux-integrity@vger.kernel.org, roberto.sassu@huawei.com,
+ linux-security-module@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
+References: <ZuPDZL_EIoS60L1a@gondor.apana.org.au>
+ <b4a3e55650a9e9f2302cf093e5cc8e739b4ac98f.camel@huaweicloud.com>
+ <CAHk-=wiU24MGO7LZ1ZZYpQJr1+CSFG9VnB0Nyy4xZSSc_Zu0rg@mail.gmail.com>
+ <ZuaVzQqkwwjbUHSh@gondor.apana.org.au>
+ <CAHk-=wgnG+C3fVB+dwZYi_ZEErnd_jFbrkN+xc__om3d=7optQ@mail.gmail.com>
+ <a991cf4187bced19485e28a5542ac446b92f864e.camel@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <a991cf4187bced19485e28a5542ac446b92f864e.camel@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwBH9saaxv9m_X80Ag--.35107S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxur4xCFW5Jw4rGrW8CFyDZFb_yoW5XF13pa
+	9aqFy2kr1kJr1Ik3Z7Ca18ZFWFyws3ta45Gr9xXryrA34YqF12yryfKF43ZFy2krn5Ga1j
+	vrZ8try5A3Z8ZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAGBGb-TvcIKQAAsC
 
-pm_runtime_put_autosuspend() will soon be changed to include a call to
-pm_runtime_mark_last_busy(). This patch switches the current users to
-__pm_runtime_put_autosuspend() which will continue to have the
-functionality of old pm_runtime_put_autosuspend().
+On 9/26/2024 11:41 AM, Roberto Sassu wrote:
+> On Sun, 2024-09-15 at 10:40 +0200, Linus Torvalds wrote:
+>> On Sun, 15 Sept 2024 at 10:08, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>>>
+>>> If the aformentioned EFI use-case is bogus, then distro package
+>>> verification is going to be the only application for PGP keys in
+>>> the kernel.
+>>
+>> So I haven't actually seen _that_ series, but as mentioned it does
+>> smell pretty conceptually broken to me.
+>>
+>> But hey, code talks, bullshit walks. People can most certainly try to
+>> convince me.
+> 
+> The solution has three parts.
+> 
+> 1. The kernel verifies the RPM header with a PGP key embedded in the
+> kernel, and provided by the Linux distribution vendor.
+> 
+> 2. The Integrity Digest Cache parses the verified RPM header in the
+> kernel and feeds one of the existing LSMs (IMA, IPE and BPF LSM) with
+> the digests extracted from the RPM header.
+> 
+> 3. The LSMs compare the fsverity digest they find in the filesystem
+> with the authenticated ones from the RPM header, and might deny access
+> to the file if the digests don't match.
+> 
+> At this point, RPM headers don't contain fsverity digests, only file
+> content digests, but this is an orthogonal problem.
+> 
+> 
+> I had a look at previous threads on similar topics, to find your
+> position on the matter.
+> 
+> I got that you would not be probably against (1), and maybe not (3).
+> 
+> However, we still need a source telling whether the fsverity digest in
+> the filesystem is the same of one calculated by Linux distributions
+> during build. That is what the Integrity Digest Cache provides.
+> 
+> Regarding (2), maybe I'm missing something fundamental, but isn't
+> parsing the ELF format of kernel modules from the kernel similar?
+> 
+> Cannot really go to user space at this point, since the authenticated
+> fsverity digests are directly consumed by LSMs. Also, as David pointed
+> out in this thread [1], there is no obligation for user space to call
+> any signature verification function before executing a file, this task
+> must be done by an LSM.
+> 
+> I'm aware that we should not run unnecessary code in the kernel. I
+> tried to mitigate this issue by striping the parsing functionality to
+> the minimum (220 LOC), and formally verifying it with the Frama-C
+> static analyzer. The parser is available here [2].
+> 
+> I'm also aware that this is not the long term solution, but I didn't
+> find much support on the alternatives, like a trustworthy user mode
+> driver [3][4] (isolated from other root processes) and signed eBPF
+> programs [5].
+> 
+> What it would be the right way to proceed, in your opinion?
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
- drivers/crypto/ccree/cc_pm.c                     | 2 +-
- drivers/crypto/hisilicon/qm.c                    | 2 +-
- drivers/crypto/omap-aes-gcm.c                    | 2 +-
- drivers/crypto/omap-aes.c                        | 2 +-
- drivers/crypto/omap-des.c                        | 2 +-
- drivers/crypto/omap-sham.c                       | 2 +-
- drivers/crypto/rockchip/rk3288_crypto_ahash.c    | 2 +-
- drivers/crypto/rockchip/rk3288_crypto_skcipher.c | 2 +-
- drivers/crypto/stm32/stm32-crc32.c               | 4 ++--
- drivers/crypto/stm32/stm32-cryp.c                | 2 +-
- drivers/crypto/stm32/stm32-hash.c                | 2 +-
- 11 files changed, 12 insertions(+), 12 deletions(-)
+If I remove the parsers completely from the kernel, and attach them 
+dynamically with eBPF, would you reconsider my patch set?
 
-diff --git a/drivers/crypto/ccree/cc_pm.c b/drivers/crypto/ccree/cc_pm.c
-index 6124fbbbed94..e4b7eab2e143 100644
---- a/drivers/crypto/ccree/cc_pm.c
-+++ b/drivers/crypto/ccree/cc_pm.c
-@@ -78,5 +78,5 @@ int cc_pm_get(struct device *dev)
- void cc_pm_put_suspend(struct device *dev)
- {
- 	pm_runtime_mark_last_busy(dev);
--	pm_runtime_put_autosuspend(dev);
-+	__pm_runtime_put_autosuspend(dev);
- }
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 07983af9e3e2..13408c43fa20 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -840,7 +840,7 @@ static void qm_pm_put_sync(struct hisi_qm *qm)
- 		return;
- 
- 	pm_runtime_mark_last_busy(dev);
--	pm_runtime_put_autosuspend(dev);
-+	__pm_runtime_put_autosuspend(dev);
- }
- 
- static void qm_cq_head_update(struct hisi_qp *qp)
-diff --git a/drivers/crypto/omap-aes-gcm.c b/drivers/crypto/omap-aes-gcm.c
-index c498950402e8..a5566268d928 100644
---- a/drivers/crypto/omap-aes-gcm.c
-+++ b/drivers/crypto/omap-aes-gcm.c
-@@ -39,7 +39,7 @@ static void omap_aes_gcm_finish_req(struct omap_aes_dev *dd, int ret)
- 	crypto_finalize_aead_request(dd->engine, req, ret);
- 
- 	pm_runtime_mark_last_busy(dd->dev);
--	pm_runtime_put_autosuspend(dd->dev);
-+	__pm_runtime_put_autosuspend(dd->dev);
- }
- 
- static void omap_aes_gcm_done_task(struct omap_aes_dev *dd)
-diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
-index bad1adacbc84..bf0d953b8697 100644
---- a/drivers/crypto/omap-aes.c
-+++ b/drivers/crypto/omap-aes.c
-@@ -402,7 +402,7 @@ static void omap_aes_finish_req(struct omap_aes_dev *dd, int err)
- 	crypto_finalize_skcipher_request(dd->engine, req, err);
- 
- 	pm_runtime_mark_last_busy(dd->dev);
--	pm_runtime_put_autosuspend(dd->dev);
-+	__pm_runtime_put_autosuspend(dd->dev);
- }
- 
- int omap_aes_crypt_dma_stop(struct omap_aes_dev *dd)
-diff --git a/drivers/crypto/omap-des.c b/drivers/crypto/omap-des.c
-index 209d3dc03a9b..156ef345e7fe 100644
---- a/drivers/crypto/omap-des.c
-+++ b/drivers/crypto/omap-des.c
-@@ -493,7 +493,7 @@ static void omap_des_finish_req(struct omap_des_dev *dd, int err)
- 	crypto_finalize_skcipher_request(dd->engine, req, err);
- 
- 	pm_runtime_mark_last_busy(dd->dev);
--	pm_runtime_put_autosuspend(dd->dev);
-+	__pm_runtime_put_autosuspend(dd->dev);
- }
- 
- static int omap_des_crypt_dma_stop(struct omap_des_dev *dd)
-diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index 5bcd9ab0f72a..6b36a1abd371 100644
---- a/drivers/crypto/omap-sham.c
-+++ b/drivers/crypto/omap-sham.c
-@@ -1168,7 +1168,7 @@ static void omap_sham_finish_req(struct ahash_request *req, int err)
- 			BIT(FLAGS_DMA_READY) | BIT(FLAGS_OUTPUT_READY));
- 
- 	pm_runtime_mark_last_busy(dd->dev);
--	pm_runtime_put_autosuspend(dd->dev);
-+	__pm_runtime_put_autosuspend(dd->dev);
- 
- 	ctx->offset = 0;
- 
-diff --git a/drivers/crypto/rockchip/rk3288_crypto_ahash.c b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-index 69d6019d8abc..0c9e1a7ee429 100644
---- a/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-+++ b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-@@ -330,7 +330,7 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
- 	}
- 
- theend:
--	pm_runtime_put_autosuspend(rkc->dev);
-+	__pm_runtime_put_autosuspend(rkc->dev);
- 
- 	rk_hash_unprepare(engine, breq);
- 
-diff --git a/drivers/crypto/rockchip/rk3288_crypto_skcipher.c b/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
-index 9393e10671c2..8ed80ab982ed 100644
---- a/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
-+++ b/drivers/crypto/rockchip/rk3288_crypto_skcipher.c
-@@ -413,7 +413,7 @@ static int rk_cipher_run(struct crypto_engine *engine, void *async_req)
- 	}
- 
- theend:
--	pm_runtime_put_autosuspend(rkc->dev);
-+	__pm_runtime_put_autosuspend(rkc->dev);
- 
- 	local_bh_disable();
- 	crypto_finalize_skcipher_request(engine, areq, err);
-diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
-index e0faddbf8990..366f8ed11b7f 100644
---- a/drivers/crypto/stm32/stm32-crc32.c
-+++ b/drivers/crypto/stm32/stm32-crc32.c
-@@ -139,7 +139,7 @@ static int stm32_crc_init(struct shash_desc *desc)
- 	spin_unlock_irqrestore(&crc->lock, flags);
- 
- 	pm_runtime_mark_last_busy(crc->dev);
--	pm_runtime_put_autosuspend(crc->dev);
-+	__pm_runtime_put_autosuspend(crc->dev);
- 
- 	return 0;
- }
-@@ -209,7 +209,7 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
- 
- pm_out:
- 	pm_runtime_mark_last_busy(crc->dev);
--	pm_runtime_put_autosuspend(crc->dev);
-+	__pm_runtime_put_autosuspend(crc->dev);
- 
- 	return 0;
- }
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 937f6dab8955..c4f926925f03 100644
---- a/drivers/crypto/stm32/stm32-cryp.c
-+++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -852,7 +852,7 @@ static void stm32_cryp_finish_req(struct stm32_cryp *cryp, int err)
- 		stm32_cryp_get_iv(cryp);
- 
- 	pm_runtime_mark_last_busy(cryp->dev);
--	pm_runtime_put_autosuspend(cryp->dev);
-+	__pm_runtime_put_autosuspend(cryp->dev);
- 
- 	if (is_gcm(cryp) || is_ccm(cryp))
- 		crypto_finalize_aead_request(cryp->engine, cryp->areq, err);
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index 351827372ea6..0d4b8a491620 100644
---- a/drivers/crypto/stm32/stm32-hash.c
-+++ b/drivers/crypto/stm32/stm32-hash.c
-@@ -1374,7 +1374,7 @@ static void stm32_hash_unprepare_request(struct ahash_request *req)
- 
- pm_runtime:
- 	pm_runtime_mark_last_busy(hdev->dev);
--	pm_runtime_put_autosuspend(hdev->dev);
-+	__pm_runtime_put_autosuspend(hdev->dev);
- }
- 
- static int stm32_hash_enqueue(struct ahash_request *req, unsigned int op)
--- 
-2.39.5
+Thanks
+
+Roberto
 
 
