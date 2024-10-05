@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-7140-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7141-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1827B9914A0
-	for <lists+linux-crypto@lfdr.de>; Sat,  5 Oct 2024 07:38:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BE4B9914A1
+	for <lists+linux-crypto@lfdr.de>; Sat,  5 Oct 2024 07:38:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3158BB2128C
-	for <lists+linux-crypto@lfdr.de>; Sat,  5 Oct 2024 05:38:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA90F1C22670
+	for <lists+linux-crypto@lfdr.de>; Sat,  5 Oct 2024 05:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6798A40C15;
-	Sat,  5 Oct 2024 05:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0551B450F2;
+	Sat,  5 Oct 2024 05:38:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="ZcjrCqJU"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="dwSibZ2q"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED9B231CB1
-	for <linux-crypto@vger.kernel.org>; Sat,  5 Oct 2024 05:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBA9231CB1;
+	Sat,  5 Oct 2024 05:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728106683; cv=none; b=njIm+gmgTSD26QFsX06GzsFDoNlk1SU7C6s2WJADfwSbrHEoMeme67KMvmwR9UeYEwirjZ8i+aBDh4C2QPBoGYGvhTVAM4zggscTG+4s3m2h+o8bZYa8unzrGLkxsutXwBtH2kaAzkKJFUbIh/xDxBwl3RDQwSXIlFA/lJjgbs4=
+	t=1728106708; cv=none; b=WXkM+SQjC9irSJ370cgVnbxTl17xtTTrG1/vCfXNYTSZ+3W6iTeeWswAdazf9ZQ3RbNIc11XzNVQinEWcArPGZ1Pf2CMUBhUcGQctEgGqHuDB5wt8tq1lUOioiLnTjAD4LY2iuazOm4bIU4K6Btva7Tay1i5b+S0psAIhYuMJx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728106683; c=relaxed/simple;
-	bh=Gq4Imn97tYB+ZU2P/W2GCXtC5ctGOxAT0xx2nlO6jgc=;
+	s=arc-20240116; t=1728106708; c=relaxed/simple;
+	bh=GuNaRBdFMs8lMZr3MaJoINKTCUdS8t/qVVasobkQHxM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GVHBT3BIL74L1qdMuK7i/IuwQRTNKW0TCRH+Hjs2hgOggUeAzTMI1HIF9MwM6unmZ2O5zcA1pdGmDhOcvj6U1O1faMWK+b2/QUmL56pE1OxRiTQt8qgiw1xof1QW2k07q+dtJlBrYlhTS/O4T5Lq6kic9vgGpeN56aW05dMW9H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=ZcjrCqJU; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=gsrXRwc+1OEdAZlJak3bf9EX/lP+0NFr2B6U+MRHr69A7Hk4RK1UPyg8nH1fE1ZXuKddm3SRfUNNofDfoV+60GqNAK1P+hPbmj+OFerJ1mSdFrHGZB7GdCWRxWOkyX4prRJZuPseHLipbbMd5ZXmNOUzeNS3oxZtiHacujgc1pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=dwSibZ2q; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,28 +37,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=rbGLYOoM8VoWEHZilj+r/p7P1edbCgRw9KSEUnQjt88=; b=ZcjrCqJUA6vyFDubkif972c88a
-	2BQhJhcvbXfsp6vzBnhFw70d9FE8+vaoggcIguKUB7o2YI9KnpdA9kVP0l+7AbvxWQdjf9PzTelBd
-	UnyyHuLVTpU5I7cuLZ9CRYWIZedycz+/9eM9NUsRRPnp6yG6MJSIAxfcHj5UleYhVMoiNu+cjktVU
-	0DvMRC9O2NJGYHtFUuG6ImODL6NOrxAPnW1UdI81QZOjuynxp3tdZO66wLjnJ4MxMKN2PrLCmwBOi
-	MfdrAcKMEPQJXFpp3v5+f7xRhbjfHvhoV2J+/ZBbOG0JNdP5G5rclpIgG7GIoIjxOqPLLdlL8U+e1
-	7hFRBxfw==;
+	bh=3TkvKOMXMhj3hu2Uvd5oDasxBleh5BTiSZLRAR5JBlg=; b=dwSibZ2qrNCN4o7FfSG88tBZB/
+	p9qFANUGDUMzseOgtOGie2P8Yc5KBDneOU8QgDpqBIsTnI8ED9RhSMLRAx+wlvjpBWD2jc9inr8lU
+	CA1M5MUR0M8nVLQ0PUGz9HJXLoNzr/7dQ3c6q335E51B/Sk8ZCpOztAl9whrJatpSvugI99qhZZbR
+	009RD0kSoW0ErmiMdZOG0F158VqzzBo3isewpiN9RZ9XhF0Y98/hy8aFiUYs8ygjGHbO1C/OUxYg3
+	vmsNdrby55wnfrLDZkRTQ32213nQTXgCpapo1ud0i40QgMGUM8aIwp5Q3s2oYeR1p4IAk0WGPCDnT
+	xJSNdE7Q==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1swxKR-0071cF-1e;
-	Sat, 05 Oct 2024 13:37:58 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 05 Oct 2024 13:37:57 +0800
-Date: Sat, 5 Oct 2024 13:37:57 +0800
+	id 1swxKo-0071cm-11;
+	Sat, 05 Oct 2024 13:38:21 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 05 Oct 2024 13:38:19 +0800
+Date: Sat, 5 Oct 2024 13:38:19 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Harsh Jain <harshjain.prof@gmail.com>
-Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-	Stephan Mueller <smueller@chronox.de>, h.jain@amd.com,
-	harsha.harsha@amd.com, sarat.chand.savitala@amd.com
-Subject: Re: HASH_MAX_DESCSIZE warn_on on init tfm with HMAC template
-Message-ID: <ZwDQtTaETTKQo0hJ@gondor.apana.org.au>
-References: <CAFXBA=kKHa5gGqOKGnJ5vN=XF9i3GB=OTUZZxbfpU5cks=fW3A@mail.gmail.com>
- <ZvEasINIFePe1tE7@gondor.apana.org.au>
- <CAFXBA=nKkV8tviqpzYFCqY1rjOKKDD8Z_T=poqjStWTLcP1Kbg@mail.gmail.com>
+To: "Zanussi, Tom" <tom.zanussi@linux.intel.com>
+Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	"Accardi, Kristen C" <kristen.c.accardi@intel.com>,
+	zanussi@kernel.org
+Subject: Re: [PATCH 0/2] iaa_crypto bugfix and maintainer change
+Message-ID: <ZwDQy-9lz9tzcnA8@gondor.apana.org.au>
+References: <733a19ce-16f2-4d06-bce9-85d7473c9a4d@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -67,19 +66,35 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFXBA=nKkV8tviqpzYFCqY1rjOKKDD8Z_T=poqjStWTLcP1Kbg@mail.gmail.com>
+In-Reply-To: <733a19ce-16f2-4d06-bce9-85d7473c9a4d@linux.intel.com>
 
-On Mon, Sep 30, 2024 at 01:08:37PM +0530, Harsh Jain wrote:
->
-> Any idea when multi buffer ahash related changes will be pushed?
+On Fri, Sep 27, 2024 at 01:45:42PM -0500, Zanussi, Tom wrote:
+> Hi Herbert,
+> 
+> The first patch here fixes a bug seen on some systems with broken IAA
+> hardware; it doesn't fix the hardware issue itself but exposes an
+> issue with trusting the hardware to either send a completion or
+> trigger a timeout - if neither happens, it shouldn't spin endlessly.
+> 
+> The second patch hands over iaa_crypto maintainership, since I'll be
+> retiring from Intel and won't have access to IAA hardware myself.
+> 
+> Thanks,
+> 
+> Tom
+> 
+> Tom Zanussi (2):
+>   crypto: iaa - Remove potential infinite loop in check_completion()
+>   MAINTAINERS: Make Kristen Accardi the IAA crypto driver maintainer
+> 
+>  MAINTAINERS                                |  2 +-
+>  drivers/crypto/intel/iaa/iaa_crypto_main.c | 10 ++++++++++
+>  2 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.38.1
 
-The mbhash code itself is almost ready.  However, I'm still working
-on the ahash interface for virtual addresses so please be patient :)
-
-In particular this is going to render lskcipher redundant so I want
-to make sure that doesn't get in the way of this work.
-
-Thanks,
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
