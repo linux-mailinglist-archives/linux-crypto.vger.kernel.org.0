@@ -1,135 +1,157 @@
-Return-Path: <linux-crypto+bounces-7249-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7262-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C62DF99A839
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Oct 2024 17:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02AAF99A880
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Oct 2024 17:58:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4586528579B
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Oct 2024 15:48:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 927AE2813ED
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Oct 2024 15:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912401974FE;
-	Fri, 11 Oct 2024 15:47:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C56198832;
+	Fri, 11 Oct 2024 15:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="ERD1Z+nj"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="7nccX1ru"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98472188CB1;
-	Fri, 11 Oct 2024 15:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAB78121F;
+	Fri, 11 Oct 2024 15:58:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728661679; cv=none; b=NQ6J39uvJ6OuHnyOsJ5PUgZD2u3/vuBRlFJWRsKhbozu9PC7Tvm1HDe2GdmG7u7DZawoxZo6JYeoF8NtC29Rqsj+JpcrioOxy/2YVH7A9C9jixQvY+UJFwYTze/pR1J+G+YEo3ubI5ix7tgh1aY1hLrdivVZ8dD9AcE7C3HGqgI=
+	t=1728662312; cv=none; b=NlU/k01P085Rrj0CrvkRpW6CYZLFQk8QEC6Y6mfZyxzwDY4+KE51CPjEqOMyqT0cjDNEy0sipFlfzJtWZ4sW57Eiue2/RaPBoNmSGhSRWTnL+8atiaCkSh4CXZxtHTuLLRqRjDc2NiC/39nUUII8sqsbfdcGktCPXB4zv1kIvW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728661679; c=relaxed/simple;
-	bh=ndRqdEUqlqoDLYoq/DyZovcBsgKifHrEueihar37Ea8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=LqzgHz1ve8NJZrNQqrbcCwQdsJaMiljM//+l5sQYFBPTPhtfozydQYvzLwGg3LfTfpVhp54ghNV2P2Luz81pYIENYSa/2L+WZVruDGFIsKqkr9iOZqMwf4yv0uGjbBPv90QmWMmCicZ8lKxRP3aFrplk0Z1gghhNgr735Gv+7Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=ERD1Z+nj; arc=none smtp.client-ip=185.132.182.106
+	s=arc-20240116; t=1728662312; c=relaxed/simple;
+	bh=/s8DCE6D6Ua9EmUIktxcY8jd/379RJ43MxlXPbFrHJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Wb6N0HPat7oZflByVr7NwODE2IkQOZtc/EFlDCotbu5/qzlK8SSuD1bgGmXrfk4mV1dCNH8BgdXZGxzExcfYn53fm5HjsztGZ4ywP2hZLNhsM/HhfHNX63/HljKchfq00/S6cbLKwy8HhI8HFG81zOSskc1zPPVCXFCQPFlR5J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=7nccX1ru; arc=none smtp.client-ip=185.132.182.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49BCZZVH000599;
-	Fri, 11 Oct 2024 17:47:30 +0200
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49BC8t96019689;
+	Fri, 11 Oct 2024 17:58:00 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=selector1; bh=
-	kxjVQ5QlVpWbTNWs/BiZxzev2jarsoMh2Wv+B6YsV/0=; b=ERD1Z+njRiE1sYOu
-	fPo44S39zhqYA0IW6NGtZw/mWje1L52ALGTm9FugHPn/EuQ1zosrFQRu/K71APm2
-	tWX1bF0XJZwIhgq4UVwSEafKegtuSA0mnASIEvsL1LjJ0SU02kvxwvd4Ue4f5dUf
-	NmfjGi4pVgDr8TEy25AcZSm3w3uskZ9NAr4R2I5sijB2rL5KcvXA8jVudFsr9/Dg
-	bug4T4n3tWDUeaSazY8OPG/kljHyXR3eT4PJ9Ekel/sH8stJkaPoisvBOqPz7yRA
-	KGUZutd6//hHFC49t1mHyR45RK5HRlKHEqrmzeAu25w5EVloA3gXkL3z2Yl5GTJ1
-	qHs3cA==
+	OHz3y/5Y8VHqEKFRloReVKDmCuuarSXTQ79JSws0eF8=; b=7nccX1ruGj+/RJf9
+	rK/uSIr4NPAKKO8VIXpBqEOA4lntUsw+0JRg4gtm6sYhEUEGUzJdThCPkOeuByAO
+	ixoLsOYlGzxysELO7+kBOD2w5YocEqPI3pmDfcFT2mvC3bOrzA4xuzEsI1q+ciU6
+	rmGmsClwiV+v4BY9iJSXpIKF6gtZSEP6y0Afe8osLqknFKnY0YgUhu2LChWSpzsF
+	6U4p8MpDjXN+lZAfjNXm8QaLHUPUrx2EIS2Tn4eOSWZKlfb9mgY6pviYJ5tPvx5f
+	zNWcs/12q2vUeWFXGZqpeol7G/HhMPFoiKD84AR5bDwA7Yi5Hl2PYnGCZsUJUTUx
+	MPIR6A==
 Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 423f11da79-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 4263439v5r-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 17:47:30 +0200 (MEST)
+	Fri, 11 Oct 2024 17:58:00 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id AC0554005F;
-	Fri, 11 Oct 2024 17:46:15 +0200 (CEST)
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id C685440048;
+	Fri, 11 Oct 2024 17:56:29 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5780129E02B;
-	Fri, 11 Oct 2024 17:43:18 +0200 (CEST)
-Received: from localhost (10.252.28.117) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 35AE229ADFB;
+	Fri, 11 Oct 2024 17:51:34 +0200 (CEST)
+Received: from [10.252.28.117] (10.252.28.117) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.37; Fri, 11 Oct
- 2024 17:43:18 +0200
-From: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Date: Fri, 11 Oct 2024 17:41:44 +0200
-Subject: [PATCH v2 4/4] arm64: dts: st: add RNG node on stm32mp251
+ 2024 17:51:33 +0200
+Message-ID: <3817a22e-72aa-45d3-8e16-19c703f7f7af@foss.st.com>
+Date: Fri, 11 Oct 2024 17:51:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20241011-rng-mp25-v2-v2-4-76fd6170280c@foss.st.com>
-References: <20241011-rng-mp25-v2-v2-0-76fd6170280c@foss.st.com>
-In-Reply-To: <20241011-rng-mp25-v2-v2-0-76fd6170280c@foss.st.com>
-To: Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu
-	<herbert@gondor.apana.org.au>,
-        Rob Herring <robh@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] hwrng: stm32 - implement support for STM32MP25x
+ platforms
+To: Marek Vasut <marex@denx.de>, Olivia Mackall <olivia@selenic.com>,
+        Herbert
+ Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof
- Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime
- Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Lionel Debieve <lionel.debieve@foss.st.com>, <marex@denx.de>
-CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>
+CC: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lionel
+ Debieve <lionel.debieve@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Gatien Chevallier <gatien.chevallier@foss.st.com>
-X-Mailer: b4 0.14.2
+        Yang
+ Yingliang <yangyingliang@huawei.com>
+References: <20241007132721.168428-1-gatien.chevallier@foss.st.com>
+ <20241007132721.168428-3-gatien.chevallier@foss.st.com>
+ <2fad1566-49f9-4586-b0d4-8a4a12f9e69e@denx.de>
+ <9283caeb-1b84-43c2-a8a4-6b43a6962f34@foss.st.com>
+ <b4932f99-cda4-42ef-88d8-461ca6e8cefd@denx.de>
+ <6a4cccb4-9e55-437d-925b-5f5bb1804159@foss.st.com>
+ <c59f3593-cb69-48c6-ab0e-f1275c7e5477@denx.de>
+Content-Language: en-US
+From: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
+In-Reply-To: <c59f3593-cb69-48c6-ab0e-f1275c7e5477@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
  (10.75.129.69)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 
-Update the device-tree stm32mp251.dtsi by adding the Random Number
-Generator(RNG) node.
 
-Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
----
 
-Changes in V2
-	-Renamed RNG clocks to "core" and "bus"
----
- arch/arm64/boot/dts/st/stm32mp251.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+On 10/11/24 14:38, Marek Vasut wrote:
+> On 10/11/24 2:07 PM, Gatien CHEVALLIER wrote:
+>>
+>>
+>> On 10/11/24 13:24, Marek Vasut wrote:
+>>> On 10/11/24 11:55 AM, Gatien CHEVALLIER wrote:
+>>>>
+>>>>
+>>>> On 10/7/24 15:54, Marek Vasut wrote:
+>>>>> On 10/7/24 3:27 PM, Gatien Chevallier wrote:
+>>>>>> Implement the support for STM32MP25x platforms. On this platform, a
+>>>>>> security clock is shared between some hardware blocks. For the RNG,
+>>>>>> it is the RNG kernel clock. Therefore, the gate is no more shared
+>>>>>> between the RNG bus and kernel clocks as on STM32MP1x platforms and
+>>>>>> the bus clock has to be managed on its own.
+>>>>>>
+>>>>>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+>>>>> A bit of a higher-level design question -- can you use drivers/clk/ 
+>>>>> clk-bulk.c clk_bulk_*() to handle all these disparate count of 
+>>>>> clock easily ?
+>>>>
+>>>> Hi, I'd like to make sure that we enable the core clock before the bus
+>>>> clock so that the RNG hardware block can start its internal tests while
+>>>> we ungate the bus clock. It's not a strong opinion but it feels better.
+>>> Maybe this could still work if the struct clk_bulk_data {} is ordered 
+>>> that way, so the bus clock are first, and the rest afterward ?
+>>
+>> I guess you meant, the core first.
+> 
+> Err, yes, core.
+> 
+>> Putting the bus clock first with the updated YAML doc generates a
+>> warning when checking the bindings. I guess what you propose is OK
+>> then. Core clock is defined first in the device tree.
+> 
+> Not in DT, leave DT as-is. Look at struct clk_bulk_data , I think when 
+> you use the clk_bulk_*() functions, you pass in a list of struct 
+> clk_bulk_data, which each describes one clock, so just make sure that 
+> list of struct clk_bulk_data in the driver is ordered the way you need 
+> it to be ordered and you should be fine.
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 1167cf63d7e87aaa15c5c1ed70a9f6511fd818d4..273da5f62294422b587b13404b499b5ffe6c148e 100644
---- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -493,6 +493,16 @@ uart8: serial@40380000 {
- 				status = "disabled";
- 			};
- 
-+			rng: rng@42020000 {
-+				compatible = "st,stm32mp25-rng";
-+				reg = <0x42020000 0x400>;
-+				clocks = <&clk_rcbsec>, <&rcc CK_BUS_RNG>;
-+				clock-names = "core", "bus";
-+				resets = <&rcc RNG_R>;
-+				access-controllers = <&rifsc 92>;
-+				status = "disabled";
-+			};
-+
- 			spi8: spi@46020000 {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
+I've sent a V2 with something that is functional but not aesthetic.
+You'll tell me if that's what you had in mind.
 
--- 
-2.25.1
-
+Best regards,
+Gatien
 
