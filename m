@@ -1,177 +1,151 @@
-Return-Path: <linux-crypto+bounces-7299-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7297-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299E999D800
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Oct 2024 22:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BAB699D6EC
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Oct 2024 21:01:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA1A9281B0C
-	for <lists+linux-crypto@lfdr.de>; Mon, 14 Oct 2024 20:14:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB4612841C9
+	for <lists+linux-crypto@lfdr.de>; Mon, 14 Oct 2024 19:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0477B1D0141;
-	Mon, 14 Oct 2024 20:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C9F1C9B87;
+	Mon, 14 Oct 2024 19:01:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="xEiUNz/G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="llYDHDQI"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7CAD1CDA36;
-	Mon, 14 Oct 2024 20:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D9013C810;
+	Mon, 14 Oct 2024 19:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728936859; cv=none; b=DdQli+AvM48aGq5VSQ7Geo+pbhdQYJYY7NsNUi2Si85aJ9yrDoNpFQyHr/y5zby2i1paK4ejNJ2dqQ361tEco2HkphaAk73a6MXvWaOmfJG+5DoGqB09fVv/IBNqay8CTNmuoe7WwWHWCzu2C9AURkOcfFIHff8mmA7WS4lta1g=
+	t=1728932505; cv=none; b=hnpfOFhNpzFsqGjVUhpyTLnMWZtDj9trKMzOM/Nw4Jv8EJYFUYrrM4bv9BpxtTq/uXd797rDuFeTu3rhZh6EQ1q1XZOvpStXrc79NzKMY9YRjb0e5s1RIRL96DKigpu4Tycf6hY4UVqzfVr+1pc2SqlGJmll92EUM1lsCl1+VBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728936859; c=relaxed/simple;
-	bh=Cu4BzJViP5i7qWOMh2TAQRd5Q+ATHHI112T1tzy/vQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C+UXVXY4OSAJRu9Q3MzIuwlNlRn5GxuQy4oXRfKKw5Sq24DWWWdObsZOvVAqN7/RWuwW6CbZJ2EcAjGBLJWM4rV8JusFmYmh3quxK/iXmIEw1JIoofToxYpg7iwY8CqC9vP25X6w+57OfupUCkpe2uZ67DhYjo39J98xB/8RTgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=xEiUNz/G; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id AC58789018;
-	Mon, 14 Oct 2024 22:14:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1728936855;
-	bh=Xb9CBRgvPOEpxga3+Wbc1szUOkY/ao1dzvTPIwjUP3o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=xEiUNz/GObmtvWPz61uJu77G0Jn4coceO8KwxpAXsGvRmTR66LBk7EftBsGwcnF3x
-	 qCoPs0UVNrKj5jALk4qSWwuSgwvbth2+a7bMQLSzDuSdcEvhPzOLcoDe6gKqTgk/WR
-	 wh7TyeAdMz0StdJOMDEzXl5+8IldCLzg317YcDv6Pw27Ji1TlcyACfcfuwVgRsolHS
-	 +BztRJZrPUPAcnvJUWZJ7vcgVTwWa75MAa80RLhBe55mWmvUmQqthN+i5iRzJeRfpP
-	 E8Zh2ic4KbHCGYU05M27Lu7g1txO4o36rBR62Y9fS9tpxq1oYVUAF/Gyu5+jNUOITn
-	 AUa1h9bWc1OTA==
-Message-ID: <dca83197-3484-4d6b-8507-118bf9e80e19@denx.de>
-Date: Mon, 14 Oct 2024 20:55:05 +0200
+	s=arc-20240116; t=1728932505; c=relaxed/simple;
+	bh=4B/4MKRiZMEAx3KlSKct+QBFZ1DTuDQEOf7PADj4UYE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=njYqvPwxwQLmBEBIRhLRX21BeUF13bWYbNpuMU4Pp8seKt5BjTsL/jQXV5Ty1AipwNhgQgMHPUOH6hf6TMVpWf92faoMvDvgqHJW0PEp9a8C3ZckMhMHEo9+AK3HesuL8d2ZKE0vEZBdjpJX0nxIXFNMCqJ5D4hGNb5RRToko5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=llYDHDQI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A59AC4CEC3;
+	Mon, 14 Oct 2024 19:01:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728932504;
+	bh=4B/4MKRiZMEAx3KlSKct+QBFZ1DTuDQEOf7PADj4UYE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=llYDHDQIkfBeL0ZFDnSSgtqfLxoWdgvdPQQopLaTh+W9roGjh6pHAihxCtKvjbeiz
+	 wrXDNxYaPBV1FqD3nwk/3XYS6tVExcudDEkF40u11/es90SNLxLgEqHKl90Bz1sm8/
+	 UE+OSwTwgfZeTZ5J5FhTealJUO8mYpq5b9wbmYQA9b1Lwm5kbcD2A7Hz0MRFUXysVb
+	 ql+tPM3W3hmDIUQGaM4lwFS/ufGdl+dQJJAMuhF3Jax0Bp7+aq6uc1oeUo74yE6RY1
+	 KUoQCo+a8R1KttTQuGt8RzU9Ij4Kv1zZJNls5IYCd4SPowfxKwEAOsnoFw2o4vmQBx
+	 EZr/wgp+Hbv9A==
+Date: Mon, 14 Oct 2024 12:01:42 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: David Laight <David.Laight@aculab.com>
+Cc: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 3/3] crypto: x86/crc32c - eliminate jump table and
+ excessive unrolling
+Message-ID: <20241014190142.GA1137@sol.localdomain>
+References: <20241014042447.50197-1-ebiggers@kernel.org>
+ <20241014042447.50197-4-ebiggers@kernel.org>
+ <a6c0c04a0486404ca4db3fd57a809d5b@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] hwrng: stm32 - implement support for STM32MP25x
- platforms
-To: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>,
- Olivia Mackall <olivia@selenic.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Lionel Debieve <lionel.debieve@foss.st.com>
-Cc: linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20241011-rng-mp25-v2-v2-0-76fd6170280c@foss.st.com>
- <20241011-rng-mp25-v2-v2-2-76fd6170280c@foss.st.com>
- <318dbd5e-f547-4d78-b42e-4dcacc08d328@denx.de>
- <f191d034-4116-4169-8c05-201450412bbd@foss.st.com>
- <8c13b0aa-7fb1-493c-9abc-5e5cfd982855@denx.de>
- <d862765e-e396-4f7c-97ff-76df9aa03216@foss.st.com>
-Content-Language: en-US
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <d862765e-e396-4f7c-97ff-76df9aa03216@foss.st.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a6c0c04a0486404ca4db3fd57a809d5b@AcuMS.aculab.com>
 
-On 10/14/24 2:36 PM, Gatien CHEVALLIER wrote:
+On Mon, Oct 14, 2024 at 04:30:05PM +0000, David Laight wrote:
+> From: Eric Biggers
+> > Sent: 14 October 2024 05:25
+> > 
+> > crc32c-pcl-intel-asm_64.S has a loop with 1 to 127 iterations fully
+> > unrolled and uses a jump table to jump into the correct location.  This
+> > optimization is misguided, as it bloats the binary code size and
+> > introduces an indirect call.  x86_64 CPUs can predict loops well, so it
+> > is fine to just use a loop instead.  Loop bookkeeping instructions can
+> > compete with the crc instructions for the ALUs, but this is easily
+> > mitigated by unrolling the loop by a smaller amount, such as 4 times.
 > 
+> Do you need to unroll it at all?
+
+It looks like on most CPUs, no.  On Haswell, Emerald Rapids, Zen 2 it does not
+make a significant difference.  However, it helps on Zen 5.
+
+> > +	# Unroll the loop by a factor of 4 to reduce the overhead of the loop
+> > +	# bookkeeping instructions, which can compete with crc32q for the ALUs.
+> > +.Lcrc_3lanes_4x_loop:
+> > +	crc32q	(bufp), crc_init_q
+> > +	crc32q	(bufp,chunk_bytes_q), crc1
+> > +	crc32q	(bufp,chunk_bytes_q,2), crc2
+> > +	crc32q	8(bufp), crc_init_q
+> > +	crc32q	8(bufp,chunk_bytes_q), crc1
+> > +	crc32q	8(bufp,chunk_bytes_q,2), crc2
+> > +	crc32q	16(bufp), crc_init_q
+> > +	crc32q	16(bufp,chunk_bytes_q), crc1
+> > +	crc32q	16(bufp,chunk_bytes_q,2), crc2
+> > +	crc32q	24(bufp), crc_init_q
+> > +	crc32q	24(bufp,chunk_bytes_q), crc1
+> > +	crc32q	24(bufp,chunk_bytes_q,2), crc2
+> > +	add	$32, bufp
+> > +	sub	$4, %eax
+> > +	jge	.Lcrc_3lanes_4x_loop
 > 
-> On 10/14/24 10:52, Marek Vasut wrote:
->> On 10/14/24 10:38 AM, Gatien CHEVALLIER wrote:
->>>
->>>
->>> On 10/11/24 18:17, Marek Vasut wrote:
->>>> On 10/11/24 5:41 PM, Gatien Chevallier wrote:
->>>>
->>>> [...]
->>>>
->>>>> @@ -551,6 +565,41 @@ static int stm32_rng_probe(struct 
->>>>> platform_device *ofdev)
->>>>>       priv->rng.read = stm32_rng_read;
->>>>>       priv->rng.quality = 900;
->>>>> +    if (!priv->data->nb_clock || priv->data->nb_clock > 2)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    priv->clk_bulk = devm_kzalloc(dev, priv->data->nb_clock * 
->>>>> sizeof(*priv->clk_bulk),
->>>>> +                      GFP_KERNEL);
->>>>> +    if (!priv->clk_bulk)
->>>>> +        return -ENOMEM;
->>>>
->>>> Try this:
->>>>
->>>> ret = devm_clk_bulk_get(dev, priv->data->nb_clock, priv->clk_bulk);
->>>> ...
->>>> // Swap the clock if they are not in the right order:
->>>> if (priv->data->nb_clock == 2 &&
->>>>      strcmp(__clk_get_name(priv->clk_bulk[0].clk), "core"))
->>>> {
->>>>   const char *id = priv->clk_bulk[1].id;
->>>>   struct clk *clk = priv->clk_bulk[1].clk;
->>>>   priv->clk_bulk[1].id = priv->clk_bulk[0].id;
->>>>   priv->clk_bulk[1].clk = priv->clk_bulk[0].clk;
->>>>   priv->clk_bulk[0].id = id;
->>>>   priv->clk_bulk[0].clk = clk;
->>>> }
->>>>
->>>
->>> Hi Marek,
->>>
->>> This won't work as the name returned by this API is clk->core->name.
->>> AFAICT, it doesn't correspond to the names present in the device tree
->>> under the "clock-names" property.
->>> Any other idea or are you fine with what's below?
->> Hmmm, it is not great, but at least it reduces the changes throughout 
->> the driver, so that is an improvement.
->>
->> I guess one could do some of_clk_get() and clk_is_match() in probe to 
->> look up the clock in OF by name and then compare which clock is which 
->> before swapping them in clk_bulk[] array, but that might be too 
->> convoluted?
+> If you are really lucky you'll get two memory reads/clock.
+> So you won't ever to do than two crc32/clock.
+> Looking at Agner's instruction latency tables I don't think
+> any cpu can do more that one per clock, or pipeline them.
+> I think that means you don't even need two (never mind 3)
+> buffers.
+
+On most Intel and AMD CPUs (I tested Haswell for old Intel, Emerald Rapids for
+new Intel, and Zen 2 for slightly-old AMD), crc32q has 3 cycle latency and 1 per
+cycle throughput.  So you do need at least 3 streams.
+
+AMD Zen 5 has much higher crc32q throughput and seems to want up to 7 streams.
+This is not implemented yet.
+
+> Most modern x86 can do 4 or 5 (or even more) ALU operations
+> per clock - depending on the combination of instructions.
 > 
-> Yes, probably too much. What's present in the patch is not close to
-> perfection but has the advantage of being straightforward. If we agree
-> on that, I'll send a V3 containing the modifications in the bindings
-> file.
-Errr, I'm sorry, maybe there is a way to do this better. Look at 
-drivers/clk/clk-bulk.c :
+> Replace the loop termination with a comparison of 'bufp'
+> against a pre-calculated limit and you get two instructions
+> (that might get merged into one u-op) for the loop overhead.
+> They'll run in parallel with the crc32q instructions.
 
-  15 static int __must_check of_clk_bulk_get(struct device_node *np, int 
-num_clks,
-  16                                         struct clk_bulk_data *clks)
-  17 {
-  18         int ret;
-  19         int i;
-  20
-  21         for (i = 0; i < num_clks; i++) {
-  22                 clks[i].id = NULL;
-  23                 clks[i].clk = NULL;
-  24         }
-  25
-  26         for (i = 0; i < num_clks; i++) {
-  27                 of_property_read_string_index(np, "clock-names", i, 
-&clks[i].id);
-  28                 clks[i].clk = of_clk_get(np, i);
+That's actually still three instructions: add, cmp, and jne.
 
-If I read this right, then clks[i].id should be the DT clock name. So 
-the swap conditional above could use .id to identify whether the first 
-position is core clock or not, like this:
+I tried it on both Intel and AMD, and it did not help.
 
-if (priv->data->nb_clock == 2 &&
-     strcmp(__clk_get_name(priv->clk_bulk[0].id), "core"))
-                                             ^^
+> I've never managed to get a 1-clock loop, but two is easy.
+> You might find that just:
+> 10:
+> 	crc32q	(bufp), crc
+> 	crc32q	8(bufp), crc
+> 	add		$16, bufp
+> 	cmp		bufp, buf_lim
+> 	jne		10b
+> will run at 8 bytes/clock on modern intel cpu.
 
-You might need to use devm_clk_bulk_get_all() to access the 
-of_clk_bulk_get() .
+No, the latency of crc32q is still three cycles.  You need three streams.
 
-Or am I missing something still ?
+> You can write that in C with a simple asm function for the crc32
+> instruction itself.
+
+Well, the single-stream CRC32C implementation already does that; see
+arch/x86/crypto/crc32c-intel_glue.c.  Things are not as simple for this
+multi-stream implementation, which uses pclmulqdq to combine the CRCs.
+
+- Eric
 
