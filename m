@@ -1,56 +1,59 @@
-Return-Path: <linux-crypto+bounces-7687-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7689-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34FD9B1CE7
-	for <lists+linux-crypto@lfdr.de>; Sun, 27 Oct 2024 10:45:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 401299B1CE9
+	for <lists+linux-crypto@lfdr.de>; Sun, 27 Oct 2024 10:45:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98D64281CE1
-	for <lists+linux-crypto@lfdr.de>; Sun, 27 Oct 2024 09:45:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FB471C20B27
+	for <lists+linux-crypto@lfdr.de>; Sun, 27 Oct 2024 09:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86ECC45948;
-	Sun, 27 Oct 2024 09:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948F27DA93;
+	Sun, 27 Oct 2024 09:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="j/1Fb+fg"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="MpODMt/A"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7603AD51
-	for <linux-crypto@vger.kernel.org>; Sun, 27 Oct 2024 09:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9500B67E
+	for <linux-crypto@vger.kernel.org>; Sun, 27 Oct 2024 09:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730022342; cv=none; b=c9sdywJ349mVkhWanrthZtSXyWtRgEXx99L1wlbbEchjKUoF3Onyy7j4/PqQJRf1/cMFHr/H5IzeX86EMrHSR0+U+ij6qFApHTEcHUGibMYXWf/OCofIJxkkW1hxpzJGYMYRGW/r5BGSvjpOGDMkkLVKeRpTjeRaYyGZG0qoZ1c=
+	t=1730022344; cv=none; b=Qi/dhKgc6A9+t7Q9UMcY/xkyUasgB6JnQ1UFP20gAZC81K8E7O+HGL2hNjbNGiWMQPnI0Xjg/2dgPUPSnPx4XVjMb63ht0eRpPknMyzsYFnlLHGfUqC1yNY86UP1rzeO+Iid53XqJNv7Gan8if5KGubO9PapZnFKLT/I5rU/lqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730022342; c=relaxed/simple;
-	bh=HXH2tPzEAEAHrCYv6K4fJIKXQeXYyycjIJWXE2noBi0=;
-	h=Date:Message-Id:From:Subject:To:Cc; b=tWG7cTZAaur+YgqWl65e1EdVjQvxcVbFXCxy7jgyQJ7fPkg/lFe2PeusSAittnrSrm2yHMvHftAd+Q+wmHU/9+RzZbgS1HnvX1BJYeY6SdUt/SQL5QSw9rJFvaQMORWrxD8DhqGN27swaJXe6ACfxlvrvvWT6ejQIep5YisCVxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=j/1Fb+fg; arc=none smtp.client-ip=144.6.53.87
+	s=arc-20240116; t=1730022344; c=relaxed/simple;
+	bh=a5IvobQdDd67NuvafwjGwrdTks1mGVCWAx+yKT8yafs=;
+	h=Date:Message-Id:In-Reply-To:References:From:Subject:To:Cc; b=kDKKtbNgknXz6bQKWgmIYPNnwCsLhUTe6AEEkESZu738Gjx/MoXxFYicMQqIwWo0lRxkQ7+QktFBWoOZxb/+JCOan3HIfFtFBLmblT2U2dBr7Zv5w+7h5hnFS7XOAt+hra/4z2BKo25TUHS6nQMznnhr2aEmeGLste0OSDfeY60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=MpODMt/A; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=Cc:To:Subject:From:Message-Id:Date:Sender:Reply-To:MIME-Version
-	:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=jaJNHzYY4wiAffM4JhOIuKuSKdmUqEbjOQtnFfXnm/M=; b=j/1Fb+fgAikGW2epxsMkcpRHhh
-	y/WXKO0PWDEBngRiHIjhJvxxG4wF+s1ae9hAzKa0kdIUGFV1MAVk606x0n8UTfKXLr/cOmcWewO1P
-	KLI5Q1t+b5jLqaVX87paUIDcAlfR0tRuFIJwZdbn3TU0DS/se3dnzMhVV1WJFa7cBQ6cmO9RgWI3U
-	Jviwp9lDoWPMJQxSlnveAHySGqkuebMiFdgpLsCbfU0C3w1/zdZgdGlG4zvz7Hpq0bBvKeyKvwCaW
-	99/AZhAdw82UvCyZZ/kksunTyzntY7zjr648p5ON3ef6FckTSLsfYTmfMH4Rhi5qJtKPw06oK1bQy
-	Q4mHjFHA==;
+	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
+	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=cyd6Nq1HT0PcrsGafZnNvIlqd9vNMhgLdADFFGPRSjQ=; b=MpODMt/AkAIBRrcNPnRpwUmR4G
+	GDW1pqa/YbGpRx8+j0YH6IPc7GqgdGLc7QlRhROr8s0t62sI514A2ipunKhw8pZf361kAu3FKioVH
+	GfGQBMbUWMBl4TCgXXof4u2jN+lM4rZrpSKcemCvvq/C0z4MAhMegkCLjyyhlpA7CqTViSE1E/HJd
+	CB/0FsmwjHaTvDzh22w1GruGAbDfdKgE7o3tE3bEqEUl8DSXdnzqvehZA3RKm4bwE8lzK4dUUhewI
+	ImT+jMYTrjGWbZStgsW0EWo/WqprfnIu8fSmPdKcFnJHgnNPzNfP8x54t7BX93jOW6xDFdn8rigJC
+	T40p5vZA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1t4zpw-00CRFj-1b;
-	Sun, 27 Oct 2024 17:45:29 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 27 Oct 2024 17:45:28 +0800
-Date: Sun, 27 Oct 2024 17:45:28 +0800
-Message-Id: <cover.1730021644.git.herbert@gondor.apana.org.au>
+	id 1t4zpy-00CRFr-2e;
+	Sun, 27 Oct 2024 17:45:31 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 27 Oct 2024 17:45:30 +0800
+Date: Sun, 27 Oct 2024 17:45:30 +0800
+Message-Id: <bba5aa7ac8084a6a0aae33054f6618a4ee68e786.1730021644.git.herbert@gondor.apana.org.au>
+In-Reply-To: <cover.1730021644.git.herbert@gondor.apana.org.au>
+References: <cover.1730021644.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 0/6] Multibuffer hashing take two
+Subject: [PATCH 1/6] crypto: ahash - Only save callback and data in
+ ahash_save_req
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Eric Biggers <ebiggers@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@linux.intel.com>, Tim Chen <tim.c.chen@linux.intel.com>
 Precedence: bulk
@@ -59,84 +62,208 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 
-Multibuffer hashing was a constant sore while it was part of the
-kernel.  It was very buggy and unnecessarily complex.  Finally
-it was removed when it had been broken for a while without anyone
-noticing.
+As unaligned operations are supported by the underlying algorithm,
+ahash_save_req and ahash_restore_req can be greatly simplified to
+only preserve the callback and data.
 
-Peace reigned in its absence, until Eric Biggers made a proposal
-for its comeback :)
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ crypto/ahash.c        | 97 ++++++++++++++++---------------------------
+ include/crypto/hash.h |  3 --
+ 2 files changed, 35 insertions(+), 65 deletions(-)
 
-Link: https://lore.kernel.org/all/20240415213719.120673-1-ebiggers@kernel.org/
-
-The issue is that the SHA algorithm (and possibly others) is
-inherently not parallelisable.  Therefore the only way to exploit
-parallelism on modern CPUs is to hash multiple indendent streams
-of data.
-
-Eric's proposal is a simple interface bolted onto shash that takes
-two streams of data of identical length.  I thought the limitation
-of two was too small, and Eric addressed that in his latest version:
-
-Link: https://lore.kernel.org/all/20241001153718.111665-2-ebiggers@kernel.org/
-
-However, I still disliked the addition of this to shash as it meant
-that users would have to spend extra effort in order to accumulate
-and maintain multiple streams of data.
-
-My preference is to use ahash as the basis of multibuffer, because
-its request object interface is perfectly suited to chaining.
-
-The ahash interface is almost universally hated because of its
-use of the SG list.  So to sweeten the deal I have added virtual
-address support to ahash, thus rendering the shash interface
-redundant.
-
-Note that ahash can already be used synchronously by asking for
-sync-only algorithms.  Thus there is no need to handle callbacks
-and such *if* you don't want to.
-
-This patch-set introduces two additions to the ahash interface.
-First of all request chaining is added so that an arbitrary number
-of requests can be submitted in one go.  Incidentally this also
-reduces the cost of indirect calls by amortisation.
-
-It then adds virtual address support to ahash.  This allows the
-user to supply a virtual address as the input instead of an SG
-list.
-
-This is assumed to be not DMA-capable so it is always copied
-before it's passed to an existing ahash driver.  New drivers can
-elect to take virtual addresses directly.  Of course existing shash
-algorithms are able to take virtual addresses without any copying.
-
-The final patch resurrects the old SHA2 AVX2 muiltibuffer code as
-a proof of concept that this API works.  The result shows that with
-a full complement of 8 requests, this API is able to achieve parity
-with the more modern but single-threaded SHA-NI code.
-
-Herbert Xu (6):
-  crypto: ahash - Only save callback and data in ahash_save_req
-  crypto: hash - Add request chaining API
-  crypto: tcrypt - Restore multibuffer ahash tests
-  crypto: ahash - Add virtual address support
-  crypto: ahash - Set default reqsize from ahash_alg
-  crypto: x86/sha2 - Restore multibuffer AVX2 support
-
- arch/x86/crypto/Makefile                   |   2 +-
- arch/x86/crypto/sha256_mb_mgr_datastruct.S | 304 +++++++++++
- arch/x86/crypto/sha256_ssse3_glue.c        | 523 ++++++++++++++++--
- arch/x86/crypto/sha256_x8_avx2.S           | 596 +++++++++++++++++++++
- crypto/ahash.c                             | 566 ++++++++++++++++---
- crypto/tcrypt.c                            | 227 ++++++++
- include/crypto/algapi.h                    |  10 +
- include/crypto/hash.h                      |  68 ++-
- include/crypto/internal/hash.h             |  17 +-
- include/linux/crypto.h                     |  26 +
- 10 files changed, 2209 insertions(+), 130 deletions(-)
- create mode 100644 arch/x86/crypto/sha256_mb_mgr_datastruct.S
- create mode 100644 arch/x86/crypto/sha256_x8_avx2.S
-
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index bcd9de009a91..c8e7327c6949 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -27,6 +27,12 @@
+ 
+ #define CRYPTO_ALG_TYPE_AHASH_MASK	0x0000000e
+ 
++struct ahash_save_req_state {
++	struct ahash_request *req;
++	crypto_completion_t compl;
++	void *data;
++};
++
+ /*
+  * For an ahash tfm that is using an shash algorithm (instead of an ahash
+  * algorithm), this returns the underlying shash tfm.
+@@ -262,67 +268,34 @@ int crypto_ahash_init(struct ahash_request *req)
+ }
+ EXPORT_SYMBOL_GPL(crypto_ahash_init);
+ 
+-static int ahash_save_req(struct ahash_request *req, crypto_completion_t cplt,
+-			  bool has_state)
++static int ahash_save_req(struct ahash_request *req, crypto_completion_t cplt)
+ {
+-	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
+-	unsigned int ds = crypto_ahash_digestsize(tfm);
+-	struct ahash_request *subreq;
+-	unsigned int subreq_size;
+-	unsigned int reqsize;
+-	u8 *result;
++	struct ahash_save_req_state *state;
+ 	gfp_t gfp;
+ 	u32 flags;
+ 
+-	subreq_size = sizeof(*subreq);
+-	reqsize = crypto_ahash_reqsize(tfm);
+-	reqsize = ALIGN(reqsize, crypto_tfm_ctx_alignment());
+-	subreq_size += reqsize;
+-	subreq_size += ds;
+-
+ 	flags = ahash_request_flags(req);
+ 	gfp = (flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?  GFP_KERNEL : GFP_ATOMIC;
+-	subreq = kmalloc(subreq_size, gfp);
+-	if (!subreq)
++	state = kmalloc(sizeof(*state), gfp);
++	if (!state)
+ 		return -ENOMEM;
+ 
+-	ahash_request_set_tfm(subreq, tfm);
+-	ahash_request_set_callback(subreq, flags, cplt, req);
+-
+-	result = (u8 *)(subreq + 1) + reqsize;
+-
+-	ahash_request_set_crypt(subreq, req->src, result, req->nbytes);
+-
+-	if (has_state) {
+-		void *state;
+-
+-		state = kmalloc(crypto_ahash_statesize(tfm), gfp);
+-		if (!state) {
+-			kfree(subreq);
+-			return -ENOMEM;
+-		}
+-
+-		crypto_ahash_export(req, state);
+-		crypto_ahash_import(subreq, state);
+-		kfree_sensitive(state);
+-	}
+-
+-	req->priv = subreq;
++	state->compl = req->base.complete;
++	state->data = req->base.data;
++	req->base.complete = cplt;
++	req->base.data = state;
++	state->req = req;
+ 
+ 	return 0;
+ }
+ 
+-static void ahash_restore_req(struct ahash_request *req, int err)
++static void ahash_restore_req(struct ahash_request *req)
+ {
+-	struct ahash_request *subreq = req->priv;
++	struct ahash_save_req_state *state = req->base.data;
+ 
+-	if (!err)
+-		memcpy(req->result, subreq->result,
+-		       crypto_ahash_digestsize(crypto_ahash_reqtfm(req)));
+-
+-	req->priv = NULL;
+-
+-	kfree_sensitive(subreq);
++	req->base.complete = state->compl;
++	req->base.data = state->data;
++	kfree(state);
+ }
+ 
+ int crypto_ahash_update(struct ahash_request *req)
+@@ -374,51 +347,51 @@ EXPORT_SYMBOL_GPL(crypto_ahash_digest);
+ 
+ static void ahash_def_finup_done2(void *data, int err)
+ {
+-	struct ahash_request *areq = data;
++	struct ahash_save_req_state *state = data;
++	struct ahash_request *areq = state->req;
+ 
+ 	if (err == -EINPROGRESS)
+ 		return;
+ 
+-	ahash_restore_req(areq, err);
+-
++	ahash_restore_req(areq);
+ 	ahash_request_complete(areq, err);
+ }
+ 
+ static int ahash_def_finup_finish1(struct ahash_request *req, int err)
+ {
+-	struct ahash_request *subreq = req->priv;
+-
+ 	if (err)
+ 		goto out;
+ 
+-	subreq->base.complete = ahash_def_finup_done2;
++	req->base.complete = ahash_def_finup_done2;
+ 
+-	err = crypto_ahash_alg(crypto_ahash_reqtfm(req))->final(subreq);
++	err = crypto_ahash_alg(crypto_ahash_reqtfm(req))->final(req);
+ 	if (err == -EINPROGRESS || err == -EBUSY)
+ 		return err;
+ 
+ out:
+-	ahash_restore_req(req, err);
++	ahash_restore_req(req);
+ 	return err;
+ }
+ 
+ static void ahash_def_finup_done1(void *data, int err)
+ {
+-	struct ahash_request *areq = data;
+-	struct ahash_request *subreq;
++	struct ahash_save_req_state *state0 = data;
++	struct ahash_save_req_state state;
++	struct ahash_request *areq;
+ 
++	state = *state0;
++	areq = state.req;
+ 	if (err == -EINPROGRESS)
+ 		goto out;
+ 
+-	subreq = areq->priv;
+-	subreq->base.flags &= CRYPTO_TFM_REQ_MAY_BACKLOG;
++	areq->base.flags &= ~CRYPTO_TFM_REQ_MAY_SLEEP;
+ 
+ 	err = ahash_def_finup_finish1(areq, err);
+ 	if (err == -EINPROGRESS || err == -EBUSY)
+ 		return;
+ 
+ out:
+-	ahash_request_complete(areq, err);
++	state.compl(state.data, err);
+ }
+ 
+ static int ahash_def_finup(struct ahash_request *req)
+@@ -426,11 +399,11 @@ static int ahash_def_finup(struct ahash_request *req)
+ 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
+ 	int err;
+ 
+-	err = ahash_save_req(req, ahash_def_finup_done1, true);
++	err = ahash_save_req(req, ahash_def_finup_done1);
+ 	if (err)
+ 		return err;
+ 
+-	err = crypto_ahash_alg(tfm)->update(req->priv);
++	err = crypto_ahash_alg(tfm)->update(req);
+ 	if (err == -EINPROGRESS || err == -EBUSY)
+ 		return err;
+ 
+diff --git a/include/crypto/hash.h b/include/crypto/hash.h
+index 2d5ea9f9ff43..9c1f8ca59a77 100644
+--- a/include/crypto/hash.h
++++ b/include/crypto/hash.h
+@@ -55,9 +55,6 @@ struct ahash_request {
+ 	struct scatterlist *src;
+ 	u8 *result;
+ 
+-	/* This field may only be used by the ahash API code. */
+-	void *priv;
+-
+ 	void *__ctx[] CRYPTO_MINALIGN_ATTR;
+ };
+ 
 -- 
 2.39.5
 
