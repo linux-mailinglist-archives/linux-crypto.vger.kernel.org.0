@@ -1,88 +1,87 @@
-Return-Path: <linux-crypto+bounces-7799-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7801-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 064769B9C06
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Nov 2024 02:39:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 587449B9C5E
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Nov 2024 03:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B21661F21EDD
-	for <lists+linux-crypto@lfdr.de>; Sat,  2 Nov 2024 01:39:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3A28282820
+	for <lists+linux-crypto@lfdr.de>; Sat,  2 Nov 2024 02:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75D554279;
-	Sat,  2 Nov 2024 01:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EvhPienQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B553145346;
+	Sat,  2 Nov 2024 02:56:13 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD824D8CB;
-	Sat,  2 Nov 2024 01:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09ADD20EB;
+	Sat,  2 Nov 2024 02:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730511567; cv=none; b=U/9ZMjRpGAgmbyENKwXHhCaSPAzWMf3yZQa4szyiyA/pkQbBVKjLwLfIoh0jEHKffxy0Tz/TrpgG30h6J+UHwfa7sMK3Mc9cV9YXOOpXVeL5bDFwbUyzA6bvvxVtUlFGk82mGRoCyl/lPAWk33savnAX9zUbl25ptbe3B/cJuYY=
+	t=1730516173; cv=none; b=i03+kmDBMvtiZGVJf5OI94oVzHONzsbn5um4V1Z6EutXertSeX7gJxe37A45m4+2jiAeAwvLkQNqbcEBhdXnhB9TFrBAqs5odtI7EZpwYxZ+v8rMt0ip+o0Zgz/ROGm7epQrGk3SW299aUs6i8P6oraDfH61qYQKCaOL6FYWbXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730511567; c=relaxed/simple;
-	bh=IaQl3xXmqIlGoa3l2q44Qr4bCwT9TUCnkQYdd7ZyWj8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=U9ZD2Bwxu+CbgFVnp7ySS1+tK3c9yx+b7XOmOIcEzMGplzKzQUEH2nvCVqRCV5lOZBBA/LWQMilih8/Gcigo5yHPmlPVTUUcW+1qFet3OWotBFqKNIm2+mlvqIf/ldbl3K3OiclL3+jlIgxRv+SiukITl0p5g6JtvP4EcUlz73U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EvhPienQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3256AC4CECD;
-	Sat,  2 Nov 2024 01:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730511566;
-	bh=IaQl3xXmqIlGoa3l2q44Qr4bCwT9TUCnkQYdd7ZyWj8=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=EvhPienQsr02gNyzBolx1UhCJ1qhimKmTyH8tA5JP3/dkX+EovpwLa10jl07kvICq
-	 KpjNiRsz5REVf64QX57lOuT87MNvpT5g5w6ffxRJyyjmVDpY6cx7XeCGLV7CysMFvC
-	 6i5LijMVHR3jTYdYodnQ6JGKQwo3kWdWKkJJ6M1GSfUKXaiqlikzWWiMUMbGnJgLWY
-	 ltTyzV5iKNMLr50jdOGeUr5p47Mt+AiPwQHmRp+7k++aOyeMHbe3snlraOgayvuE0V
-	 CtDIMGLaLyzX6DxAVngENUmyJsjNyLd8ANfd0St0wbfWjF03CtcrVd+smY/rs6q2YI
-	 /bFbtGlgGYLEg==
+	s=arc-20240116; t=1730516173; c=relaxed/simple;
+	bh=D5jHm/2iFM4uDlNx58MNahVQZDdbqB2cnP7kCC8bh5w=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QN8Clo7r/gQr1HIqMhTxD/iZKB1s3Pz4JCrF8su/P+aRv1ZiN8Wn4Q5RLEWHQvTv8HZ0UxFky9otWh/xtRj7dL+ki2O79+t1UFtMFsk7vMdhVC1Zrzx4H/7WDP6oFVJ8ceiUMc6KHCUjPIY7Fjoe2EDg2SdsB8uPFWbAXb2vXQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XgMjy26xfzdkRl;
+	Sat,  2 Nov 2024 10:53:26 +0800 (CST)
+Received: from kwepemd200024.china.huawei.com (unknown [7.221.188.85])
+	by mail.maildlp.com (Postfix) with ESMTPS id 29000140133;
+	Sat,  2 Nov 2024 10:56:01 +0800 (CST)
+Received: from localhost.huawei.com (10.90.30.45) by
+ kwepemd200024.china.huawei.com (7.221.188.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 2 Nov 2024 10:56:00 +0800
+From: Chenghai Huang <huangchenghai2@huawei.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<liulongfang@huawei.com>, <qianweili@huawei.com>, <linwenkai6@hisilicon.com>,
+	<wangzhou1@hisilicon.com>, <huangchenghai2@huawei.com>
+Subject: [PATCH v3 0/2] crypto: hisilicon - fix the authsize and icv problems of aead in sec
+Date: Sat, 2 Nov 2024 10:55:57 +0800
+Message-ID: <20241102025559.2256734-1-huangchenghai2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 02 Nov 2024 03:39:22 +0200
-Message-Id: <D5BB5GX4KEUO.VJ2G9G9QKYRR@kernel.org>
-Cc: <James.Bottomley@hansenpartnership.com>, <andrew.cooper3@citrix.com>,
- <ardb@kernel.org>, <baolu.lu@linux.intel.com>, <bp@alien8.de>,
- <dave.hansen@linux.intel.com>, <davem@davemloft.net>,
- <dpsmith@apertussolutions.com>, <dwmw2@infradead.org>,
- <ebiederm@xmission.com>, <herbert@gondor.apana.org.au>, <hpa@zytor.com>,
- <iommu@lists.linux-foundation.org>, <kanth.ghatraju@oracle.com>,
- <kexec@lists.infradead.org>, <linux-crypto@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <linux-efi@vger.kernel.org>,
- <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <luto@amacapital.net>, <mingo@redhat.com>, <mjg59@srcf.ucam.org>,
- <nivedita@alum.mit.edu>, <tglx@linutronix.de>,
- <trenchboot-devel@googlegroups.com>, <x86@kernel.org>
-Subject: Re: [RFC PATCH] tpm, tpm_tis: Introduce TPM_IOC_SET_LOCALITY
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, <ross.philipson@oracle.com>,
- "Jonathan Corbet" <corbet@lwn.net>, "Peter Huewe" <peterhuewe@gmx.de>,
- "Jason Gunthorpe" <jgg@ziepe.ca>
-X-Mailer: aerc 0.18.2
-References: <20240913200517.3085794-18-ross.philipson@oracle.com>
- <20241102013716.1036396-1-jarkko@kernel.org>
-In-Reply-To: <20241102013716.1036396-1-jarkko@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd200024.china.huawei.com (7.221.188.85)
 
-On Sat Nov 2, 2024 at 3:37 AM EET, Jarkko Sakkinen wrote:
-> DRTM needs to be able to set the locality used by kernel. Provide
-> TPM_IOC_SET_LOCALITY operation for this purpose. It is enabled only if
-> the kernel command-line has 'tpm.set_locality_enabled=3D1'. The operation
-> is one-shot allowed only for tpm_tis for the moment.
->
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+1. Fix for aead invalid authsize.
+2. Fix for aead icv error.
 
-I hope you could take it from there if this works for you in the big
-pic, and address possible comments, thanks.
+---
+Changes in v3:
+- Call crypto_aead_authsize to obtain authsize instead of
+actx->authsize.
+- Link to v2: https://lore.kernel.org/all/20241018105830.169212-1-huangchenghai2@huawei.com/
 
-BR, Jarkko
+Changes in v2:
+- Restored authsize to the tfm.
+- Link to v1: https://lore.kernel.org/all/20240929112630.863282-1-huangchenghai2@huawei.com/
+
+---
+Wenkai Lin (2):
+  crypto: hisilicon/sec2 - fix for aead icv error
+  crypto: hisilicon/sec2 - fix for aead invalid authsize
+
+ drivers/crypto/hisilicon/sec2/sec.h        |   1 -
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 156 ++++++++++-----------
+ drivers/crypto/hisilicon/sec2/sec_crypto.h |  11 --
+ 3 files changed, 73 insertions(+), 95 deletions(-)
+
+-- 
+2.33.0
+
 
