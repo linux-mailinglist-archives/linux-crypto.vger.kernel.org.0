@@ -1,98 +1,132 @@
-Return-Path: <linux-crypto+bounces-7907-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7909-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391F19BD1A1
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 17:06:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A53129BD1F8
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 17:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECFBC2854BE
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 16:06:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5F931C2118D
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 16:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7EA15383D;
-	Tue,  5 Nov 2024 16:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118F716DC12;
+	Tue,  5 Nov 2024 16:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NyGg9BLT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fz3vWWwP"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A5E7710C;
-	Tue,  5 Nov 2024 16:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E83D17C9A3
+	for <linux-crypto@vger.kernel.org>; Tue,  5 Nov 2024 16:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730822427; cv=none; b=mme9xvR3ZbQXTV7Gdle3DAKTR+Qkj2ctntK/+YGZAKp+Lxj6AOXhf+n+z1+OwE54ODMdHWiKkHekL6u235Qa413+7M7aFFRoVFmj/+lRWIQd1C1YX9F70oOHiwF0un0dFPTy3ba/XcXTLI1ozJZWbYvaB2G/wxNxGsTEogNTfWM=
+	t=1730823249; cv=none; b=oe4a0uHaB5BKUwBAAL/WGFDXnXugdu9gg2hV04EteB3TGMnBEEuCWlLjq2w2kWcQcktehxPIvbF2wdOYvrQp+sONFx4B/Y3kDr7wQVE9nGNrd1/Cgx+8p2s/mHh15rzz2ilvqI4IUoi5qkvQ+uCCiy3QqXlSmrhYFYtXvv26Cy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730822427; c=relaxed/simple;
-	bh=V6cdn4iEtDIyN/q6+O++ooUhnADPfXD/N74KSkmIMzw=;
-	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
-	 To:Date:Message-ID; b=UzJcl8CvgVeeIKYxrp4uTu8UU32sxJaK48ltr+kPdukhSXOgCpc700zG9ouZDSR8ycqKC6ZdWpXkcwqJv+x/qM6d0thJH3IYWfqScEfOnQzBmDNx/irUtJLHRAsJIpaDOF5xuSQxuLGIJwnJMQz8jKXhK9pTaYOV+DbR+kjaUno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NyGg9BLT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87000C4CED3;
-	Tue,  5 Nov 2024 16:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730822427;
-	bh=V6cdn4iEtDIyN/q6+O++ooUhnADPfXD/N74KSkmIMzw=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=NyGg9BLTx4pPapcJi+qjxTs6+JDahplJnDFgmnB8jbqxSG8JrecxViN+lWxqz/9TB
-	 wmBGcpsCJmyZsIQaK3D2OB8TBx0BvOfDe7zr97w4M421gEEPZ6lNfay48lRD1FXIb6
-	 d78BS4YJ9ISgJpiLgJhUf84VtZWscA3Nh7evo337F/lM9vhIgXLz4VDmsctT26gZn+
-	 dO2zYUBxeQ/YCEpxQe/GT4s544K0k+FxU3N8NSCN8opNX5qNUQPCVt14nzL7855yps
-	 e2Ox1sC6okVEBm6IqtIcVVj0LuKU8sN3mgFqPEehzxSSOPnJAYGYEGbjlbExsYGfu0
-	 1LEeCTMc1hOeg==
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1730823249; c=relaxed/simple;
+	bh=uQd2WSq/KpiWtVdhUcI/1aM+6ss12Y55aI/O2+gTMME=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=RQ3Sym3lKn+/KxwDSapI3S1ozRVCng34B+aI4mP1u358Nz37BRFwMZRZ0bFn3K0HnYX22p3MNqYH2AROLV0/4mZp8ALekPChof7R4fEa+T/C5xejCY8u6sU9VBOh2tphgG21/mmkmWOOXnHGD/cSLOE8eJ3tPuPcHmTYgdRVoPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fz3vWWwP; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-e2e3321aae0so8725405276.1
+        for <linux-crypto@vger.kernel.org>; Tue, 05 Nov 2024 08:14:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1730823247; x=1731428047; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8aGK7Z8v6XDcP9ImnsPr0SruZINT8w1jjDwyvhJdeK4=;
+        b=fz3vWWwPgyvldGDxZt5mHubSiXtYgR+nKuk/K57PQU+DobgQA8ps/1WjX3zkhhYEpY
+         iWYmyHX8bfF+jHYNfK2cm2xQB4UovSBc3Iwe+56nrPzaM5TbkI7HSzZRhZFb4pEu6IcD
+         5ITPxJsWddHItH+OhA5B+5C4un2/QG7H89uohqYoOev/mltY9YWL4G7iA/B4FudToO6t
+         sZpmd/RCiNBEKBcL1B0pxIZcs1mauPFeb04HWHbmUZBb0F7oB2b1uCNsc/ONnG6hRPQd
+         HsVKfY5nMrRzONZJ7qB/LJjCLcajLYki9hFSFyGyMF/huAvC9zO1kjwGRZnlv/j9LW8w
+         kNog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730823247; x=1731428047;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8aGK7Z8v6XDcP9ImnsPr0SruZINT8w1jjDwyvhJdeK4=;
+        b=TvLnPa9h0W7oDtDkf+GKDFnJz9hVJ6KbKoC2WuRerrDYa/qvuCVgANTDpnlh8KR/W4
+         r7GVILkzPyZCpSOq3pGFoK7JeZS89cZmFX01c2fdbOj/yBs3PBFC2F9PyZzXxtdIhzKl
+         Zp/TdeXWQRPNQI2Tl1nSxefHM+kQzKeTqEPJiY1b4wkiF+BkKLS75MPNTp4CHp0pxa8/
+         lzEgC8XvHchq4Q/e7eh8X95pC/PJFzJudb1ls0SkSR1lK7GswYG7u3E+TbPA+XaHayoI
+         Ydd2qeuKJPzvzf+k0bAlbE+x6ItZrZht3OIjAcP+AYH3ZOUSsgXU4VHQWTrF5Di8V63a
+         QZ4Q==
+X-Gm-Message-State: AOJu0Yycnhhk2oDwpHzXSsCgGXuCKeElBAk7d8LWhqLqFilSSA213yBR
+	QpqN/wlrJZNKe8lFw+KTbXhF6pI/ByuSYRwp5tWNe3sLHOo9i+J9sziiJM2+GTj8do8Z87aKjZ7
+	AvUNdSPRIO3sR9mJfLHA9deRx0oOD4vC9aIy9t2osizZwpTZ3zekHibZjq58hWb8k6NSAmHNTbd
+	wO7roaQW8JWLQVOnV92q6eMxXJ5KqIIA==
+X-Google-Smtp-Source: AGHT+IFgQPhrMAKZuJf7yR51BZB3JEW7r+3P9Pk41hz0OBgjmmPUoYv34HFNtd350qIvCf5NfzctdqMY
+X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:7b:198d:ac11:8138])
+ (user=ardb job=sendgmr) by 2002:a25:83c3:0:b0:e2b:cd96:67a6 with SMTP id
+ 3f1490d57ef6-e30e5a904d0mr12569276.5.1730823246978; Tue, 05 Nov 2024 08:14:06
+ -0800 (PST)
+Date: Tue,  5 Nov 2024 17:09:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20241031112755.2949815-1-lihuafei1@huawei.com>
-References: <20241031112755.2949815-1-lihuafei1@huawei.com>
-Subject: Re: [PATCH] crypto: inside-secure - Fix the return value of safexcel_xcbcmac_cra_init()
-From: Antoine Tenart <atenart@kernel.org>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, lihuafei1@huawei.com
-To: Li Huafei <lihuafei1@huawei.com>, davem@davemloft.net, herbert@gondor.apana.org.au, pliem@maxlinear.com
-Date: Tue, 05 Nov 2024 17:00:23 +0100
-Message-ID: <173082242323.5505.14169181853894683603@kwain>
+Mime-Version: 1.0
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1821; i=ardb@kernel.org;
+ h=from:subject; bh=Pzrr73yq0Dd7jZRnQEQgJMh0/mIP5h5eFWKeB+7qJPw=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIV3LWWbHtruB0yT9DUXnnppdv+ZosNX9TR/+aWc38yfla
+ Ij6fgzpKGVhEONgkBVTZBGY/ffdztMTpWqdZ8nCzGFlAhnCwMUpABP5PYPhn9pFraXNV9vXsG15
+ ++n2+qLIHVbsjKXbM85aJTqcij3l5MvwP2BtgdjiZd1SE85+09FMVfBhW1VhN4+3W27X+cuMnDE X+QA=
+X-Mailer: git-send-email 2.47.0.199.ga7371fff76-goog
+Message-ID: <20241105160859.1459261-8-ardb+git@google.com>
+Subject: [PATCH v2 0/6] Clean up and improve ARM/arm64 CRC-T10DIF code
+From: Ard Biesheuvel <ardb+git@google.com>
+To: linux-crypto@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, ebiggers@kernel.org, 
+	herbert@gondor.apana.org.au, keescook@chromium.org, 
+	Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Quoting Li Huafei (2024-10-31 12:27:55)
-> The commit 320406cb60b6 ("crypto: inside-secure - Replace generic aes
-> with libaes") replaced crypto_alloc_cipher() with kmalloc(), but did not
-> modify the handling of the return value. When kmalloc() returns NULL,
-> PTR_ERR_OR_ZERO(NULL) returns 0, but in fact, the memory allocation has
-> failed, and -ENOMEM should be returned.
->=20
-> Fixes: 320406cb60b6 ("crypto: inside-secure - Replace generic aes with li=
-baes")
-> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-Acked-by: Antoine Tenart <atenart@kernel.org>
+I realized that the generic sequence implementing 64x64 polynomial
+multiply using 8x8 PMULL instructions, which is used in the CRC-T10DIF
+code to implement a fallback version for cores that lack the 64x64 PMULL
+instruction, is not very efficient.
 
-Thanks!
+The folding coefficients that are used when processing the bulk of the
+data are only 16 bits wide, and so 3/4 of the partial results of all those
+8x8->16 bit multiplications do not contribute anything to the end result.
 
-> ---
->  drivers/crypto/inside-secure/safexcel_hash.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypt=
-o/inside-secure/safexcel_hash.c
-> index e17577b785c3..f44c08f5f5ec 100644
-> --- a/drivers/crypto/inside-secure/safexcel_hash.c
-> +++ b/drivers/crypto/inside-secure/safexcel_hash.c
-> @@ -2093,7 +2093,7 @@ static int safexcel_xcbcmac_cra_init(struct crypto_=
-tfm *tfm)
-> =20
->         safexcel_ahash_cra_init(tfm);
->         ctx->aes =3D kmalloc(sizeof(*ctx->aes), GFP_KERNEL);
-> -       return PTR_ERR_OR_ZERO(ctx->aes);
-> +       return ctx->aes =3D=3D NULL ? -ENOMEM : 0;
->  }
-> =20
->  static void safexcel_xcbcmac_cra_exit(struct crypto_tfm *tfm)
-> --=20
-> 2.25.1
->
+This means we can use a much faster implementation, producing a speedup
+of 3.3x on Cortex-A72 without Crypto Extensions (Raspberry Pi 4).
+
+The same logic can be ported to 32-bit ARM too, where it produces a
+speedup of 6.6x compared with the generic C implementation on the same
+platform.
+
+Changes since v1:
+- fix bug introduced in refactoring
+- add asm comments to explain the fallback algorithm
+- type 'u8 *out' parameter as 'u8 out[16]'
+- avoid asm code for 16 byte inputs (a higher threshold might be more
+  appropriate but 16 is nonsensical given that the folding routine
+  returns a 16 byte output)
+
+Ard Biesheuvel (6):
+  crypto: arm64/crct10dif - Remove obsolete chunking logic
+  crypto: arm64/crct10dif - Use faster 16x64 bit polynomial multiply
+  crypto: arm64/crct10dif - Remove remaining 64x64 PMULL fallback code
+  crypto: arm/crct10dif - Use existing mov_l macro instead of __adrl
+  crypto: arm/crct10dif - Macroify PMULL asm code
+  crypto: arm/crct10dif - Implement plain NEON variant
+
+ arch/arm/crypto/crct10dif-ce-core.S   | 249 ++++++++++-----
+ arch/arm/crypto/crct10dif-ce-glue.c   |  55 +++-
+ arch/arm64/crypto/crct10dif-ce-core.S | 335 +++++++++-----------
+ arch/arm64/crypto/crct10dif-ce-glue.c |  48 ++-
+ 4 files changed, 376 insertions(+), 311 deletions(-)
+
+-- 
+2.47.0.199.ga7371fff76-goog
+
 
