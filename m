@@ -1,68 +1,68 @@
-Return-Path: <linux-crypto+bounces-7906-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-7904-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E5E59BCE97
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 15:04:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 394A89BCE7B
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 14:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7036C1C2198E
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 14:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E06BB2837A8
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 Nov 2024 13:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1B41D86C0;
-	Tue,  5 Nov 2024 14:03:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3201D933A;
+	Tue,  5 Nov 2024 13:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Pe8X3vzs"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BSdneF/M"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626911D6DB9;
-	Tue,  5 Nov 2024 14:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235DB1D3199;
+	Tue,  5 Nov 2024 13:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730815424; cv=none; b=tJhJdLcq330pCYrufr+zgQ/5DEDGAZCvpWHj/FKufjTFD1/lwBcgpMqsT2O9b1ISiWn5wfFa7fqtGMyaMDJsklUk3UhD33HD91MxSjVpvrCqYZaBwZh8n+GQ2DzbsCDl89pfFDigBLcPd0FVCNi8YFNosA5u5sKJP+GRjVg18Jk=
+	t=1730815123; cv=none; b=SiPYBV6CTcr1WXEpURoZtbYb40QW/B24Gyhf7nL2wlljOs/204pFWK7SqwjTNruUV0zN7FWsEdcC9yyO+Kl/FmkOO+kfnz9FlRH5EFAls7cZ9pfCtin0RE8gDPXUZ7O7gnQeGB+8k6fE4CC4WGJxXd5bh2NkkaCy/CoMkjxSZsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730815424; c=relaxed/simple;
-	bh=HcRDTAQt784F6HXtvbTEYrL2Ax+mGjjUqslScqIg1ZM=;
+	s=arc-20240116; t=1730815123; c=relaxed/simple;
+	bh=J7Tz+W/EmVR+Qotl0IQFhiK6Gqu11qEw4bPeI94mRWk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vBSdg7M5v4RxKwOa6XPAEmlyP5J6HOHyEWsQFPf99kvVdfDJJx11eKunEe3HQDfQu4+eJehDBqXl7tjB4/byQIDg2C5RlSVOba3ye6NX/aH/p1x8s7jBtnLV+g6aYLmCNdvtG44kqtjEG2dh6yhu24GnAoltycooDDOb9z3CJHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Pe8X3vzs; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=FhFxw2PNDegAILek8hnXB5FJT/9MSlGyUJyp+T6XFF8zGqvRGobz03Fbh83VgkbeloUGnSSrNnsmAymV3Hv3JSvzAY8Q337/aARvcm4I+ID95lFt5mO4chJBmlAr3AVDqc1y+ePXFXVKeTcstP9qGcpAMcXz9f4Q3lySyg+uSDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BSdneF/M; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4A5DehT3031826;
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4A5DdgWE024432;
 	Tue, 5 Nov 2024 13:58:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=4RpvLuIzpZ7vreiHu
-	RfsaXxPvgXmzzigTouDYZLHauo=; b=Pe8X3vzsuNDGTn+pTUNL7lKWogDHALJq8
-	qhCpnv9VoqAWoLabMCW1xFFK51jnUv8ETUDOoW/zKbz6QBKsZYVr7zL+JFmTjLz5
-	KVdkkquMTLAvW+0afVPVPeIFFJee4MDNf7i8RSpR3n5MEx/0zotpnv/ozbFO5uSb
-	fv6I8+oUz2GoemSaZqdxlx8kKTxw40brh+rYOKhCbdfEawkf7tCd54ZQxWuvM41j
-	uQq7iGH2W1CsV41JNMqnlQVp7w+vXDqWuodn54CscjVWAmu12c4nX3raSEnvVlPj
-	m5VBKNo6kQtiK2NVHcsJS6Njwfaut/ymfOIGKX26jfrbhsiRT9v8A==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42qmeu03h0-1
+	:mime-version:references:subject:to; s=pp1; bh=tMvDn8+vwttdWRSWy
+	s3xeCPI0cOLKJk/hgz7UJM0RNk=; b=BSdneF/My9m2JfZ4b1P1MSL+mOpZ4xbZB
+	mhzyEA2saQGQkxrBfCHGQTmrA24zdRXntNFsiUf/C25Cv/ZFdqrnoRzsL9gJAGd2
+	zydxBjmUR8andq2nS/fcdaigmTUT9gJpK87gVjyF6gx5oXWHPkQJPrUrWdbTn80p
+	7JRCicXd8erkv6mKU/aRGbDU6hE+JY4VnQXGFXlfkFyqolU7TyeZDHEWrupMIrM4
+	yT68bqsGNGESd8eXs/v12jIn487ok/DzUcer/YJD3hFXTZoSP26q5dxQJ/IzD9py
+	2OTzAEYoTti+hx5sSdhDhKnFUf+FSNzTAfMArIGmo5mVLyqdBab3Q==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42qmepg3n9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 05 Nov 2024 13:58:38 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4A5DGiSG024261;
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4A58NYHc012288;
 	Tue, 5 Nov 2024 13:58:37 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42nxsy90dp-1
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 42p140v5yv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 05 Nov 2024 13:58:37 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4A5DwXEs34210460
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4A5DwYXq55640572
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 5 Nov 2024 13:58:33 GMT
+	Tue, 5 Nov 2024 13:58:34 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C105720040;
+	by IMSVA (Postfix) with ESMTP id E6D082004B;
 	Tue,  5 Nov 2024 13:58:33 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8B1F12004B;
+	by IMSVA (Postfix) with ESMTP id C6AC020043;
 	Tue,  5 Nov 2024 13:58:33 +0000 (GMT)
 Received: from funtu2.fritz.box?044ibm.com (unknown [9.152.224.229])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -71,9 +71,9 @@ From: Harald Freudenberger <freude@linux.ibm.com>
 To: dengler@linux.ibm.com, herbert@gondor.apana.org.au, davem@davemloft.net,
         hca@linux.ibm.com
 Cc: linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: [PATCH v2 1/3] crypto: api - Adjust HASH_MAX_DESCSIZE for s390-phmac context
-Date: Tue,  5 Nov 2024 14:58:30 +0100
-Message-ID: <20241105135833.391957-2-freude@linux.ibm.com>
+Subject: [PATCH v2 2/3] s390/crypto: Add protected key hmac subfunctions for KMAC
+Date: Tue,  5 Nov 2024 14:58:31 +0100
+Message-ID: <20241105135833.391957-3-freude@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241105135833.391957-1-freude@linux.ibm.com>
 References: <20241105135833.391957-1-freude@linux.ibm.com>
@@ -85,46 +85,43 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: YR7u_FPBfjV0FymFSB3tGcokYW9yhuba
-X-Proofpoint-ORIG-GUID: YR7u_FPBfjV0FymFSB3tGcokYW9yhuba
+X-Proofpoint-GUID: Bw_7tiOjbO7LqCp1PvRW0IzgIFpbJwys
+X-Proofpoint-ORIG-GUID: Bw_7tiOjbO7LqCp1PvRW0IzgIFpbJwys
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- impostorscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 spamscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ mlxlogscore=592 malwarescore=0 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2409260000 definitions=main-2411050105
 
 From: Holger Dengler <dengler@linux.ibm.com>
 
-The phmac context exceeds the generic "worst case".
-Change this define to cover the s390 specific 'phmac(sha512)'
-which is a "protected" key hmac-sha2 implementation.
+The CPACF KMAC instruction supports new subfunctions for
+protected key hmac. Add defines for these 4 new subfuctions.
 
 Signed-off-by: Holger Dengler <dengler@linux.ibm.com>
 Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
 ---
- include/crypto/hash.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/s390/include/asm/cpacf.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index 2d5ea9f9ff43..5b724dd7c5a7 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -159,10 +159,9 @@ struct shash_desc {
- #define HASH_MAX_DIGESTSIZE	 64
+diff --git a/arch/s390/include/asm/cpacf.h b/arch/s390/include/asm/cpacf.h
+index 1d3a4b0c650f..b1c1d5f5d9a1 100644
+--- a/arch/s390/include/asm/cpacf.h
++++ b/arch/s390/include/asm/cpacf.h
+@@ -127,6 +127,10 @@
+ #define CPACF_KMAC_HMAC_SHA_256	0x71
+ #define CPACF_KMAC_HMAC_SHA_384	0x72
+ #define CPACF_KMAC_HMAC_SHA_512	0x73
++#define CPACF_KMAC_PHMAC_SHA_224	0x78
++#define CPACF_KMAC_PHMAC_SHA_256	0x79
++#define CPACF_KMAC_PHMAC_SHA_384	0x7a
++#define CPACF_KMAC_PHMAC_SHA_512	0x7b
  
  /*
-- * Worst case is hmac(sha3-224-generic).  Its context is a nested 'shash_desc'
-- * containing a 'struct sha3_state'.
-+ * The max case is currently the s390 specific shash 'phmac(sha512)'.
-  */
--#define HASH_MAX_DESCSIZE	(sizeof(struct shash_desc) + 360)
-+#define HASH_MAX_DESCSIZE	(sizeof(struct shash_desc) + 376)
- 
- #define SHASH_DESC_ON_STACK(shash, ctx)					     \
- 	char __##shash##_desc[sizeof(struct shash_desc) + HASH_MAX_DESCSIZE] \
+  * Function codes for the PCKMO (PERFORM CRYPTOGRAPHIC KEY MANAGEMENT)
 -- 
 2.43.0
 
