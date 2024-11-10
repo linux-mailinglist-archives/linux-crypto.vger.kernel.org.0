@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-8028-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8030-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C6DC9C30CC
-	for <lists+linux-crypto@lfdr.de>; Sun, 10 Nov 2024 04:54:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF5189C30D3
+	for <lists+linux-crypto@lfdr.de>; Sun, 10 Nov 2024 04:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B9FD281FC3
-	for <lists+linux-crypto@lfdr.de>; Sun, 10 Nov 2024 03:54:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72B5FB2155B
+	for <lists+linux-crypto@lfdr.de>; Sun, 10 Nov 2024 03:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D460D145B39;
-	Sun, 10 Nov 2024 03:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6966714883C;
+	Sun, 10 Nov 2024 03:56:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="EnWlkgYr"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="PcJ23teR"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D304F2F5B;
-	Sun, 10 Nov 2024 03:54:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE79E148308;
+	Sun, 10 Nov 2024 03:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731210888; cv=none; b=lEWP3v6IQEC8VOvsfXwavLDi7h0atlGz4lTBAHQsoI8f0MlTMsCEIZv5OsMIkX/BRo+ypsXBnMfhLEt5QvXtN+3n3/pLa6ngnl0YCTtckc6DHG8ITbTQZc/ZTHybOq5cwsI85IWmeideuahVn+ZZAlfOA1sPhupk4SE+2rskF9A=
+	t=1731210967; cv=none; b=WK1KA3AFZMv03r5e+adoUCa+fiz6wOH0ihN5ENG9J7DtlNfE2KsRaV7x+sGcvbgHeBHHP8rPDOyjSgpcjwBn75Td1dGIkmO2Wz8Uou2fTDKpMqQaMSBleJ1MvU3vzky3KuJYE2C7qtpMiZz/ozcIdZjNKlA4vX9/3UJvLO6Yf7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731210888; c=relaxed/simple;
-	bh=U7RSp/hm4quWsG1vq5erxhW0wiR/eP6IV7sTxPdkXns=;
+	s=arc-20240116; t=1731210967; c=relaxed/simple;
+	bh=w2mawgF58ONJbwh7mosusB1YDV6GcFCEEMJsScRxxvQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SsN+jFkKx6q79LO+YDPxxP75BSMAl9ILdd8MwNIAQ/jDCBvbifVIIOCq1HqkAlQ76ss+0wJZI/M0pma0vFRLK9olSfomChJGBxYBHgrpL8xodVhyVgLLaWccrKZck3Ii7UG0a/EaWF+drQOSreSE1stLGMT3w4CvKXbZHwTpCB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=EnWlkgYr; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=SbXCdFr/vIj3XlH6Tj3MJJkoRjD099SBrYMA//aqDOrOT352rdPchwK8o0pPBe/20F/PV493+7jMNdprNIpVpw7LCA3bNivQDDc26idAks+VJbdBkyMzzHlujHwsvOAeU/fFw0WbR8kOJzN48xTY9ppkHu9oLdS1U0jPTD7VoBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=PcJ23teR; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,29 +37,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=n5wC9AfnAdAi+t6gW7YQWtL/DNCHNh9E/uxxFqePCTk=; b=EnWlkgYrQ/DYRVOrB9DyNJP92x
-	OT3dsfC7VcFVUrI68wt+6HhPWIhkcqfB4drA4Xepa7hOSBUWav1E1BJ7X4QRutOZOLb27NcM9nihm
-	MVDhYNrAFYXSH21dDE1Zl8z0bUF5Bl5BiQb0Nm6mGLqUGzTuPtyA5729x7pZJm+0qwj7AOZGGmMgZ
-	JqKRCbDrteOv8tjRXqpM6Mq8juVz7XWr4t5ubR0yADZsVhgWQohqsoB1awP+I/2nTnv7cfSKrryFa
-	65GI0rfOc+IzsrSSHZItuV8Q9GomECkjZJmXhEQYzNbNHy88kqdvghNl7IWL8apERwuJ6TIqVQgKl
-	mt9cNdkg==;
+	bh=y/a2GQ3nFt40l+lGaYgvIOC/EuDz7xB8jgMbukwBm7Q=; b=PcJ23teRQKN8D9JKvjcRkZADrN
+	mdZUuNKjkYIsisnZTOTkhYZvfi7dfEqW8GyqWvTIHNxh7UGtJ7K6rO0flmYNWcrbO+NYASqX62vFK
+	AG58hHSXBHH5f06S2i4uMEjJY75+VHhHipW4GboObXmHks0LMvW7eFMIR9uaGbKZMnXvjPrIYxur6
+	VnCJiiytF1dG37FoQFuj+qIWX/BLFaQsQmMXpGvgNzs74d6GPnyhB4cKv4SakMh2josUba2iK3kBM
+	+Q7Pvm/82JTk5JbSNnefcZ8dN4shTRY8TW8qB5mCysshXPFr6Zn92bWZwb3fr40R2u80i39TKtyYd
+	x0p3qqRQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1t9z1y-00FkE3-2F;
-	Sun, 10 Nov 2024 11:54:31 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 10 Nov 2024 11:54:30 +0800
-Date: Sun, 10 Nov 2024 11:54:30 +0800
+	id 1t9z3H-00FkF1-17;
+	Sun, 10 Nov 2024 11:55:52 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 10 Nov 2024 11:55:51 +0800
+Date: Sun, 10 Nov 2024 11:55:51 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Wang Hai <wanghai38@huawei.com>
-Cc: giovanni.cabiddu@intel.com, davem@davemloft.net, ahsan.atta@intel.com,
-	mun.chun.yep@intel.com, markas.rapoportas@intel.com,
-	damian.muszynski@intel.com, furong.zhou@intel.com,
-	adam.guerin@intel.com, zhangxiaoxu5@huawei.com, qat-linux@intel.com,
+To: Li Huafei <lihuafei1@huawei.com>
+Cc: pliem@maxlinear.com, atenart@kernel.org, davem@davemloft.net,
 	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] crypto: qat - Fix missing destroy_workqueue in
- adf_init_aer()
-Message-ID: <ZzAudk_EVc0fa9_E@gondor.apana.org.au>
-References: <20241029150523.52435-1-wanghai38@huawei.com>
+Subject: Re: [PATCH] crypto: inside-secure - Fix the return value of
+ safexcel_xcbcmac_cra_init()
+Message-ID: <ZzAux5qbAiGo9GTS@gondor.apana.org.au>
+References: <20241031112755.2949815-1-lihuafei1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -68,19 +65,20 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241029150523.52435-1-wanghai38@huawei.com>
+In-Reply-To: <20241031112755.2949815-1-lihuafei1@huawei.com>
 
-On Tue, Oct 29, 2024 at 11:05:23PM +0800, Wang Hai wrote:
-> The adf_init_aer() won't destroy device_reset_wq when alloc_workqueue()
-> for device_sriov_wq failed. Add destroy_workqueue for device_reset_wq to
-> fix this issue.
+On Thu, Oct 31, 2024 at 07:27:55PM +0800, Li Huafei wrote:
+> The commit 320406cb60b6 ("crypto: inside-secure - Replace generic aes
+> with libaes") replaced crypto_alloc_cipher() with kmalloc(), but did not
+> modify the handling of the return value. When kmalloc() returns NULL,
+> PTR_ERR_OR_ZERO(NULL) returns 0, but in fact, the memory allocation has
+> failed, and -ENOMEM should be returned.
 > 
-> Fixes: 4469f9b23468 ("crypto: qat - re-enable sriov after pf reset")
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> Fixes: 320406cb60b6 ("crypto: inside-secure - Replace generic aes with libaes")
+> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
 > ---
-> v1->v2: add 'device_reset_wq = NULL'
->  drivers/crypto/intel/qat/qat_common/adf_aer.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  drivers/crypto/inside-secure/safexcel_hash.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
