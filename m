@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-8094-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8093-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CD6B9C890E
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 12:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BBD39C893F
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 12:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C06AB22F66
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 11:25:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AF5EB363A6
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 11:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322EC192D9D;
-	Thu, 14 Nov 2024 11:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBCB1F9405;
+	Thu, 14 Nov 2024 11:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="LX3f3b2o"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="XqZYTKwh"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C7418BBBD;
-	Thu, 14 Nov 2024 11:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3101F9403;
+	Thu, 14 Nov 2024 11:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731583512; cv=none; b=b4TX8OwqZuT8SAsCPx2hJC00tu7uErNWwENOo8gTCiA4g1+6fw3JWVqB1XAK6VDDmJEvoExIgk6yPhKj2cmdBiUxaPJnAwsB1IAEiWkO0sKLM4wiwhFCMV7NKoR5il1Ca22X74c9ZFI24g7Q2R2Kny4lJriSTpnAokf+PK6AS3o=
+	t=1731583043; cv=none; b=emUmOWpijVv2STP6sR491ut0SMvj8/+Xnb0sqN0wbE0AXakFJIjD5KMboOu2etvQrrSRsgp97LwbY4ipp0v8EkCIjn1UmNtnssdMrzQwjpRx46e8jNgbXcM5/HLvo1jfI6QLgEL2M674X8t1eo1NKO++e7oneKfJsHaz+xdON+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731583512; c=relaxed/simple;
-	bh=aVIvz69luqtbRV5NCqi8GetZtaRWYDrPI881Uj4JbiY=;
+	s=arc-20240116; t=1731583043; c=relaxed/simple;
+	bh=bx26Wne9J/gleTdN6vd7L97fhvjjt1afdQNg1c4FV6g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f8Sr5jsAzL/qtF3cogv2BZS5K5zvCoeGs0ymK/PK7gLto0exNbRkYhvp4MX1+zgGchjDDPRGjpmzleGmM1XrDDfZP4THuGSMqHM2mcbVH/sEmgnlElx/xJgJ9bGNaXoEEg1103XBJxvN075hCb+2R21KoEVGqLhMOTMmCxv5lzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=LX3f3b2o; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=R65zQ/Hm3d9WT57Wzq0Tftf1yBEURQBMVAAjuAvBQI6Mw3oqNkAS1Od179GH1RGfb+RNU5rXtr1h+MZQe+8PxTnjF+JrtvWXoYkyTYQxysFc8yTDCjPk2fmP8711BvHL8HA/xTEqhECPPtztjA7y/nUOo7HMa5Sf9NqYb60c2YQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=XqZYTKwh; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,25 +37,28 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=axqXJOEvoFA8XZXHTN+P0B8l5JDKHF60G0U41LQtzq8=; b=LX3f3b2oa2RJw6pWciddcQfhFR
-	nFQl5fJSmncz+mJXUzGVfgQhfmXZRRs8ZoCGH65k8n8+iObxRykPrh7Im1kODRPx0vP8ysx1JZjw4
-	03BOV3T4tbbRpLDZDl5Gr307GJ1CZXpvf80x/rGCS7iotrixNOeSAaxBsZ5xr/pMXHp0YjhwPLCWV
-	NX8bVRQU1Aw/WckJxHlrEGmkaDhO4wQ22UNdj817qWu06W4WAZtvL9aUWGzgRuMiMxMrMjqmn1WiZ
-	OlTJnuFgVTXk168xrEAYG7RfH3IPkbaOMh7T96sdhH6f02xqNwVVvWBA2fO02/fh/wPaeAgaFnepC
-	yUeSOsiw==;
+	bh=oH606LSb0d3e7eUN6IdJB6b2VsHIS4Y58C5yG2pNubQ=; b=XqZYTKwh7qqZh/O6HpUd72b4rd
+	W9dVI7Zd6uT1sMZI/PuBHl0/UV3PYDzirAPmKEDudO7t/WOJ4z+6RQGMQpQSDYOI7WcKOVfM1Lip+
+	TVW804KX6RlxWq+zDpbxGb1YB+JYD8IaotFoP7HwXAOZGEZyF1S7Gdcdmms1wO9hC5GSygDEGlkQe
+	lqnGNPvFQohxb5efyJdbCbFRnwn3Lwhtx/KwF7vqcRFrHJS51r0HanIYYVUzHoNJyEIogGlFJAzqm
+	X0XikhIw8+Rx6nouggCekTSUrqBYEUFLTX/doaye9Enik8X3PyvVqgW74SYQcNVvHI9YcE0oPWTRD
+	RLghdGWA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tBXy8-00GmQC-0H;
-	Thu, 14 Nov 2024 19:25:01 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 14 Nov 2024 19:25:00 +0800
-Date: Thu, 14 Nov 2024 19:25:00 +0800
+	id 1tBXqQ-00GmJf-2e;
+	Thu, 14 Nov 2024 19:17:03 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 14 Nov 2024 19:17:02 +0800
+Date: Thu, 14 Nov 2024 19:17:02 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: syzbot <syzbot+listbb9cdfe92636134be785@syzkaller.appspotmail.com>
-Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] Monthly crypto report (Nov 2024)
-Message-ID: <ZzXeDFlmeJt_npKr@gondor.apana.org.au>
-References: <6734be89.050a0220.1324f8.0049.GAE@google.com>
+To: Harald Freudenberger <freude@linux.ibm.com>
+Cc: dengler@linux.ibm.com, davem@davemloft.net, hca@linux.ibm.com,
+	linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] s390/crypto: New s390 specific shash phmac
+Message-ID: <ZzXcLgY3WBuQ460e@gondor.apana.org.au>
+References: <20241107145521.424769-1-freude@linux.ibm.com>
+ <20241107145521.424769-4-freude@linux.ibm.com>
+ <ZzKxrKpSFCdz8LPp@gondor.apana.org.au>
+ <619dd7a11549a1b33827c5a8a680c371@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -64,27 +67,29 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6734be89.050a0220.1324f8.0049.GAE@google.com>
+In-Reply-To: <619dd7a11549a1b33827c5a8a680c371@linux.ibm.com>
 
-On Wed, Nov 13, 2024 at 06:58:17AM -0800, syzbot wrote:
->
-> Some of the still happening issues:
-> 
-> Ref Crashes Repro Title
-> <1> 228     Yes   BUG: unable to handle kernel paging request in crypto_skcipher_encrypt
->                   https://syzkaller.appspot.com/bug?extid=026f1857b12f5eb3f9e9
-> <2> 15      Yes   KMSAN: uninit-value in sw842_compress
->                   https://syzkaller.appspot.com/bug?extid=17cae3c0a5b0acdc327d
-> <3> 6       Yes   BUG: unable to handle kernel paging request in crypto_shash_update
->                   https://syzkaller.appspot.com/bug?extid=e46f29a4b409be681ad9
+On Tue, Nov 12, 2024 at 01:45:53PM +0100, Harald Freudenberger wrote:
+.
+> Well, we had a similar discussion once with paes (See
+> https://lore.kernel.org/linux-crypto/20191113105523.8007-1-freude@linux.ibm.com/)
 
-None of these appear to be crypto bugs.
+Thanks for refreshing my memroy.
+ 
+> Why not convert in the setkey() function? As of now this could be an option
+> as the invocation of convert_key() in the end within the PKEY pkey_pckmo
+> kernel module only calls PCKMO to generate the wrapped pkey. However, long
+> term we will have another path using a crypto card for this action and
+> then we are clearly in a sleeping context which must not be used from
+> setkey(). So make it correct now means to delay the conversion from setkey()
+> to later: the init of the hash context is the next chance to do this.
 
-#syz set <1> subsystems: bcachefs
-#syz set <2> subsystems: mm
-#syz set <3> subsystems: bcachefs
+I'm not sure I get this justification for putting it in init instead
+of setkey.  If you can't do it in setkey because it has to sleep,
+then surely you can't do it from init/udpate either as they too
+can be called from atomic contexts?
 
-Thanks,
+Cheers,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
