@@ -1,97 +1,144 @@
-Return-Path: <linux-crypto+bounces-8093-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8095-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBD39C893F
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 12:49:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5223F9C8A97
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 13:47:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AF5EB363A6
-	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 11:18:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A76B1F2314C
+	for <lists+linux-crypto@lfdr.de>; Thu, 14 Nov 2024 12:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBCB1F9405;
-	Thu, 14 Nov 2024 11:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="XqZYTKwh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8905C1FAEF4;
+	Thu, 14 Nov 2024 12:47:19 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3101F9403;
-	Thu, 14 Nov 2024 11:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216021FAEF1;
+	Thu, 14 Nov 2024 12:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731583043; cv=none; b=emUmOWpijVv2STP6sR491ut0SMvj8/+Xnb0sqN0wbE0AXakFJIjD5KMboOu2etvQrrSRsgp97LwbY4ipp0v8EkCIjn1UmNtnssdMrzQwjpRx46e8jNgbXcM5/HLvo1jfI6QLgEL2M674X8t1eo1NKO++e7oneKfJsHaz+xdON+4=
+	t=1731588439; cv=none; b=jAMQIVGofSRDs4HrkFCKoSP5NCbI0ROjHoW0sSySUQ2QK8NiYKCoEQp8I9UQJ/zMRoRcLpdAcahLTeouMQt8E3aL+afA2R1/9pjdca66KWow66Mb2om9jB3VUKXro0jVDfm342bAvdfdImxiMJFThTFzx9eAHWcpfDVfOl3/nQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731583043; c=relaxed/simple;
-	bh=bx26Wne9J/gleTdN6vd7L97fhvjjt1afdQNg1c4FV6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R65zQ/Hm3d9WT57Wzq0Tftf1yBEURQBMVAAjuAvBQI6Mw3oqNkAS1Od179GH1RGfb+RNU5rXtr1h+MZQe+8PxTnjF+JrtvWXoYkyTYQxysFc8yTDCjPk2fmP8711BvHL8HA/xTEqhECPPtztjA7y/nUOo7HMa5Sf9NqYb60c2YQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=XqZYTKwh; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=oH606LSb0d3e7eUN6IdJB6b2VsHIS4Y58C5yG2pNubQ=; b=XqZYTKwh7qqZh/O6HpUd72b4rd
-	W9dVI7Zd6uT1sMZI/PuBHl0/UV3PYDzirAPmKEDudO7t/WOJ4z+6RQGMQpQSDYOI7WcKOVfM1Lip+
-	TVW804KX6RlxWq+zDpbxGb1YB+JYD8IaotFoP7HwXAOZGEZyF1S7Gdcdmms1wO9hC5GSygDEGlkQe
-	lqnGNPvFQohxb5efyJdbCbFRnwn3Lwhtx/KwF7vqcRFrHJS51r0HanIYYVUzHoNJyEIogGlFJAzqm
-	X0XikhIw8+Rx6nouggCekTSUrqBYEUFLTX/doaye9Enik8X3PyvVqgW74SYQcNVvHI9YcE0oPWTRD
-	RLghdGWA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tBXqQ-00GmJf-2e;
-	Thu, 14 Nov 2024 19:17:03 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 14 Nov 2024 19:17:02 +0800
-Date: Thu, 14 Nov 2024 19:17:02 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Harald Freudenberger <freude@linux.ibm.com>
-Cc: dengler@linux.ibm.com, davem@davemloft.net, hca@linux.ibm.com,
-	linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] s390/crypto: New s390 specific shash phmac
-Message-ID: <ZzXcLgY3WBuQ460e@gondor.apana.org.au>
-References: <20241107145521.424769-1-freude@linux.ibm.com>
- <20241107145521.424769-4-freude@linux.ibm.com>
- <ZzKxrKpSFCdz8LPp@gondor.apana.org.au>
- <619dd7a11549a1b33827c5a8a680c371@linux.ibm.com>
+	s=arc-20240116; t=1731588439; c=relaxed/simple;
+	bh=DaeNh3V8A7sNYaGhQTiNRCHuFCp5y9qxRS8NBKYI9hM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=uawTyFqw6+7ZTXRLM32ZaNl0gG0H1Dpmw04YvxZxN0QXkjSNGWDLleM1AEGkfHNjVDixLv79slAvZXS3bdyb4KNxcB6wKijnVrTg45kiTILD7en0gni6/3B4xEs+mPE7MNQzjdh6VxrPybSRoTii9XtM1z817LXQ/4WIcPEc9kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xq0HN50PNz1T54P;
+	Thu, 14 Nov 2024 20:45:20 +0800 (CST)
+Received: from kwepemk200007.china.huawei.com (unknown [7.202.194.73])
+	by mail.maildlp.com (Postfix) with ESMTPS id AB39F140153;
+	Thu, 14 Nov 2024 20:47:12 +0800 (CST)
+Received: from [10.67.121.172] (10.67.121.172) by
+ kwepemk200007.china.huawei.com (7.202.194.73) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 14 Nov 2024 20:47:12 +0800
+Message-ID: <b67cecd0-e50c-40bd-99b7-b85482e55696@hisilicon.com>
+Date: Thu, 14 Nov 2024 20:47:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <619dd7a11549a1b33827c5a8a680c371@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] crypto: hisilicon/sec2 - fix for aead invalid
+ authsize
+To: Herbert Xu <herbert@gondor.apana.org.au>, Chenghai Huang
+	<huangchenghai2@huawei.com>
+CC: <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+	<linux-crypto@vger.kernel.org>, <liulongfang@huawei.com>,
+	<qianweili@huawei.com>, <wangzhou1@hisilicon.com>
+References: <20241102025559.2256734-1-huangchenghai2@huawei.com>
+ <20241102025559.2256734-3-huangchenghai2@huawei.com>
+ <ZzAqQhiebKSuRzOm@gondor.apana.org.au>
+From: "linwenkai (C)" <linwenkai6@hisilicon.com>
+In-Reply-To: <ZzAqQhiebKSuRzOm@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemk200007.china.huawei.com (7.202.194.73)
 
-On Tue, Nov 12, 2024 at 01:45:53PM +0100, Harald Freudenberger wrote:
-.
-> Well, we had a similar discussion once with paes (See
-> https://lore.kernel.org/linux-crypto/20191113105523.8007-1-freude@linux.ibm.com/)
 
-Thanks for refreshing my memroy.
- 
-> Why not convert in the setkey() function? As of now this could be an option
-> as the invocation of convert_key() in the end within the PKEY pkey_pckmo
-> kernel module only calls PCKMO to generate the wrapped pkey. However, long
-> term we will have another path using a crypto card for this action and
-> then we are clearly in a sleeping context which must not be used from
-> setkey(). So make it correct now means to delay the conversion from setkey()
-> to later: the init of the hash context is the next chance to do this.
+在 2024/11/10 11:36, Herbert Xu 写道:
+> On Sat, Nov 02, 2024 at 10:55:59AM +0800, Chenghai Huang wrote:
+>> @@ -2226,15 +2236,15 @@ static int sec_aead_spec_check(struct sec_ctx *ctx, struct sec_req *sreq)
+>>   	struct device *dev = ctx->dev;
+>>   	int ret;
+>>   
+>> -	if (unlikely(req->cryptlen + req->assoclen > MAX_INPUT_DATA_LEN ||
+>> -	    req->assoclen > SEC_MAX_AAD_LEN)) {
+>> -		dev_err(dev, "aead input spec error!\n");
+>> +	/* Hardware does not handle cases where authsize is less than 4 bytes */
+>> +	if (unlikely(sz < MIN_MAC_LEN)) {
+>> +		ctx->a_ctx.fallback = true;
+> This is broken.  sec_aead_spec_check is a per-request function,
+> called without any locking.  Therefore it must not modify any
+> field in the tfm context (at least not without additional locking),
+> because multiple requests can be issued on the same tfm at any time.
+>
+> I suppose for this field in particular you could move it to
+> set_authsize and there it would be safe to change the tfm context.
+>
+> Cheers,
 
-I'm not sure I get this justification for putting it in init instead
-of setkey.  If you can't do it in setkey because it has to sleep,
-then surely you can't do it from init/udpate either as they too
-can be called from atomic contexts?
+Hi,
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I have found another setup for fallback in the sec_aead_param_check 
+function, so I need to fix it right too.
+
+The orignal code:
+
+static int sec_aead_param_check(struct sec_ctx *ctx, struct sec_req *sreq)
+{
+
+         if (ctx->sec->qm.ver == QM_HW_V2) {
+                 if (unlikely(!req->cryptlen || (!sreq->c_req.encrypt &&
+                              req->cryptlen <= authsize))) {
+                         ctx->a_ctx.fallback = true;
+                         return -EINVAL;
+                 }
+         }
+}
+
+After the modification, I used a temporary variable fallback to save the 
+state:
+
+static int sec_aead_param_check(struct sec_ctx *ctx, struct sec_req 
+*sreq, bool *fallback)
+{
+
+         if (ctx->sec->qm.ver == QM_HW_V2) {
+                 if (unlikely(!req->cryptlen || (!sreq->c_req.encrypt &&
+                              req->cryptlen <= authsize))) {
+                         *fallback = true;
+                         return -EINVAL;
+                 }
+         }
+}
+
+Same with  the sec_aead_spec_check function.
+
+static int sec_aead_spec_check(struct sec_ctx *ctx, struct sec_req 
+*sreq, bool *fallback) {
+
+         /* Hardware does not handle cases where authsize is less than 4 
+bytes */
+         if (unlikely(sz < MIN_MAC_LEN)) {
+                 *fallback = true;
+                 return -EINVAL;
+         }
+
+}
+
+Do you think it is a better way?
+
+Thanks,
+
 
