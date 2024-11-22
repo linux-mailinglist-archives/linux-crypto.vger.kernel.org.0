@@ -1,86 +1,120 @@
-Return-Path: <linux-crypto+bounces-8182-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8184-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EDD49D5B15
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 09:37:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 320E69D5FB4
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 14:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 055E1283169
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 08:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D30671F22598
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 13:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE37E17625F;
-	Fri, 22 Nov 2024 08:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA9C1DF24A;
+	Fri, 22 Nov 2024 13:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="RG2bKg7U"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Ud8nCDdt"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4315316BE0D;
-	Fri, 22 Nov 2024 08:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5F01DEFFD;
+	Fri, 22 Nov 2024 13:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732264646; cv=none; b=Hh0AhkSk5BV42/MDSJg1F0kvTW0nEz0t5kDcZD49YbKEAlijHr/bOPNmqIH6+S+t65Fh1EIFrVEpw2ZsT3EfonVKOXdVxnE68yVhwxqmpNJ+GgwOUWjH/V31fEEXj7oo4vjG2Ke6KF24T3DyYUdQFykjrNG5wyGbuNCPfKSR4/g=
+	t=1732281970; cv=none; b=mCTZx3DI36tPYEgkpgW6XpIHyVqBO2YCVBs2xIf4jJw8y89RW1qFtYfrDWI5PDCHaJ5UX5aQ8jk65b89/9KJyoxPP6l5mVkkbMNChY3alL5LPNSFNHx1i0FjhADB7IMxSBG5KYOjjXOIIxHKbi+dYSfe61bHpSyQnmEbV+BS2E4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732264646; c=relaxed/simple;
-	bh=eJwBFSc+VSGtSBmQX5zNF6jaB3qJEZjYwnCtPHAcxhw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T7V/AxULC/4azPnkR8BVOhGOHprhCF9kJkO0jPv/+gNxeOlK4mBRpTd7A6w0+atSNi8Q/vHkFQhKOBwOUTDAFjy4lg49mrPYGdt8CPY9eYmikx+4Cu3coDL7xqy4vqR/QHy9jAnj68ncMdiu4INCMyaRUK1ansn2xgtxtoaSNBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=RG2bKg7U; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=hQFyjGxVbbAJxhO1KpGCzDqp5uIWXAEAvmxs7zwQrB4=; b=RG2bKg7UlG0LXZJQgpPplNHqfD
-	ZCKWATmPN9fD8sFoQf7I+AcmQTKKiacuKtdw9UEsTZXNar6IildtQC71ce4E3quBPHecJf/D1YmCM
-	aP1hv+cqc5VT5qQGQxpq0Hn+atwdXlceS5LBEZVKtWusq8lW6cfBOabzG46bkcNAwDt2tEAbD4/+e
-	fvxL//1AdXePc+2zL24Nabs58uhMeyZeyd3G5aXBYhAjzfLLhSqcPESd+meOsAV7zRloPORSklO3s
-	TAyliwoqRSzHcwWQCxtZeMitiZNxw+O5fgF2lUM2uE2T6jdXS5ccyYQtSXLjfWladSBskUB3Pi6H9
-	NisS762Q==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tEPA5-000vGI-2t;
-	Fri, 22 Nov 2024 16:37:10 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Nov 2024 16:37:09 +0800
-Date: Fri, 22 Nov 2024 16:37:09 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Ard Biesheuvel <ardb@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Cc: Zorro Lang <zlang@redhat.com>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [Bug report] kernel BUG at include/linux/scatterlist.h
-Message-ID: <Z0BCtZi2YJywGJAk@gondor.apana.org.au>
-References: <20241122045106.tzhvm2wrqvttub6k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <CAMj1kXGAuJSdDWvu7D5-PT6mSbNG9FeLObnYmpHeT08eNxaJWQ@mail.gmail.com>
- <Z0A2W1FTTPt9PeI5@gondor.apana.org.au>
+	s=arc-20240116; t=1732281970; c=relaxed/simple;
+	bh=eZoAv6hSbHxeaSbNPfTpBF+habOHlkApuQ0RM74broA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=h9Zw0heaCmqmBP+klFZpRcwjCsJ3zkd0ba+BeaKbvgkSUBa4/flhqv5EP3x2AWWPlZxclsylpgf6lrd4rcJa4kOnb9IowEz5HG604gM9mg/rDd9KvL2muPlzhjnF49K3DHW1v1v+SxosKojGz/47QWW0wS9P2FIYbFzVh1/lao4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Ud8nCDdt; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AMD5ZPr020748;
+	Fri, 22 Nov 2024 13:21:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=K6N9AZQOnQBx/9N5W6+uuY
+	oVJngUBFScBTgfgYZby70=; b=Ud8nCDdtRe8ZTB/CvbTbFk0Ge0JsZzm7HrjQwH
+	DEIWVzNPrGfNRquyKR/A2Z55jgqgo6FhSqeLbL9jDKEwvoABkekbRSKCA5w8x8AB
+	qwCo89RvMQx8nxdrZQUkTsDvQjTmzE3ryXpBQ6OxoI5pSLQjQa+JrHfUJew+3sKZ
+	bsIYQxFYEcgTdtwwL6P9NX9l75ZFoVfcOngkQbrF/3Z7Y2if2qUasWwfvraSyrpq
+	KRcMt0YbyYFoSWvTKvprw9rTjBt6/ZuLBgIDX6H0k5yuJNMOK6EQwFCNJwq9ndpT
+	LRBrkUDbQhwI3M7Ox6ERdcJlNZRJtGxCN+XxCtOiwQXmH5+w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 432thpg16p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Nov 2024 13:21:01 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4AMDL0ut009887
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Nov 2024 13:21:00 GMT
+Received: from hu-yrangana-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 22 Nov 2024 05:20:56 -0800
+From: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_yrangana@quicinc.com>
+Subject: [PATCH V2 0/2] Enable Inline crypto engine for QCS8300
+Date: Fri, 22 Nov 2024 18:50:42 +0530
+Message-ID: <20241122132044.30024-1-quic_yrangana@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z0A2W1FTTPt9PeI5@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pkEXk4YRoGgSfqBxRw9ySUwikLQTyPfb
+X-Proofpoint-ORIG-GUID: pkEXk4YRoGgSfqBxRw9ySUwikLQTyPfb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=700 priorityscore=1501 phishscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 clxscore=1015 adultscore=0
+ bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2409260000 definitions=main-2411220111
 
-On Fri, Nov 22, 2024 at 03:44:27PM +0800, Herbert Xu wrote:
-> 
-> This is a bug in the API/driver.  Users should not be expected to know
-> what kind of a virtual pointer is acceptable.
-> 
-> In this particular case, rsassa-pkcs1.c should be fixed to use the
-> crypto_akcipher_sync_encrypt interface.
+Document and add device-tree node to enable Inline crypto engine for QCS8300
 
-Lukas, could you please take a look at this regression?
+This series depends on below patch series:
+https://lore.kernel.org/all/20240925-qcs8300_initial_dtsi-v2-0-494c40fa2a42@quicinc.com/ - Reviewed
 
-Thanks,
+Changes in v2:
+ - extend UFS ICE to the full register range
+ - Link to v1: https://lore.kernel.org/all/20241113043351.2889027-1-quic_yrangana@quicinc.com/
+
+Signed-off-by: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>
+---
+Yuvaraj Ranganathan (2):
+  dt-bindings: crypto: ice: document the qcs8300 inline crypto engine
+  arm64: dts: qcom: qcs8300: enable the inline crypto engine
+
+ .../bindings/crypto/qcom,inline-crypto-engine.yaml        | 1 +
+ arch/arm64/boot/dts/qcom/qcs8300.dtsi                     | 8 ++++++++
+ 2 files changed, 9 insertions(+)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.34.1
+
 
