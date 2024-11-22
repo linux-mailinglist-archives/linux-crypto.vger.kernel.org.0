@@ -1,128 +1,130 @@
-Return-Path: <linux-crypto+bounces-8177-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8181-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2774B9D5978
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 07:43:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1997D9D5A3C
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 08:49:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E200E2827EB
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 06:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB3051F21BAC
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 07:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723E5166F26;
-	Fri, 22 Nov 2024 06:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283FB175D38;
+	Fri, 22 Nov 2024 07:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMHFqkYF"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XmfH8i8W"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBAC1632DC;
-	Fri, 22 Nov 2024 06:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782C7166F26;
+	Fri, 22 Nov 2024 07:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732257787; cv=none; b=HQc7gtAoGW/Ai6aWUiZX9vD6Q4u4slHOQcdbrNsKyUTIQYBlcUQI9WEoaGXHBmAnlE2fFtbWgMy2ObGuEobSyJLNoKX4h5ohAYpCdF0AcTUTmp8ucAcoZU1qoa5pxYCchbk5fpy49KnSL/ms6QQUhdwoICNauFUH9ZqF2Aw64W8=
+	t=1732261757; cv=none; b=jErXWdEQXdb83Qw6XKDba2kxyMoB8u23P1fanEDXc8fQlXdqAEv32DaOUzrQj0vdVsW68JJBhyIiuei48fD4LtrofRqEX74lOUs4DLIIXDOo5xlU+vqB5yyEEIgfKWRPlsRwq/lT1cmPjFiuNd4RGLGXLeRVy4OSfy7mMWmogNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732257787; c=relaxed/simple;
-	bh=pPVeIRdsw+cjbZoONd4IcJExIcXvQWAidHNWx09Farg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DFRiB00e73cbFoEgoYddHIDGR8xaRZp4lGipCrdbh4ZdeShR7K0hkdULQgwZiffADMXuPZkRjs103cr9ngN7s6d+ap9fCMYiJctn7Huza7dSeLOD8jRTWFVHcNKX4igF8RmG7GE9PqGIlX3wONWmF6Uix82IolETRkOZNMFfXHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lMHFqkYF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B2CCC4CECE;
-	Fri, 22 Nov 2024 06:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732257786;
-	bh=pPVeIRdsw+cjbZoONd4IcJExIcXvQWAidHNWx09Farg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lMHFqkYFyxq6EtTNZq+6yaHWeqE2296YK5w3CfryKOYNIdmg+F8FnAoOaDOmH+xxk
-	 lYvW6x9zBgbomfWLFEcLC5A07nfBj3fVzurs6hcz9HpJHVO8sk8+GrNMfuc8Yl6L0F
-	 XwaRSaqugr2xoBtX8auhP0EOBNVNKIVazGnWRQGqAmjhUTQ/FpMCGeLY1SI27LmwaF
-	 uNsauxRlGTUHSyay7CkWOmrJJX7cY4FrDBZ6DiqPpRshwM55iViLnUPDUyYarbe9Nr
-	 oz8H5fklewCliSl7tYFReDqi/Xe0RZkNDQjkAbpQ3xRejp4ESplMmnjmteCX5VFeGa
-	 FJiYTevqOtylQ==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-539e8607c2aso1948993e87.3;
-        Thu, 21 Nov 2024 22:43:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWyFbbIRzEdmqE6rnsyNMwrzVIVksNirga4uixWQ81ZgfdTdccl8B8pPBWZh3h5oh5/BUwMIVYQQPqez+8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSFwtqRTY2pD3/jwJoPkAsVJPCC7BHaOX/cQ7JAff2VGjt9jKW
-	XQmfPN2xzXoIvBdf7zpte9mxyLiW8iPHLdcBMmE2cAk4dIOzei1J808BUFMyjTsbTHnHVNka8r+
-	h1CMm9SVABrgXzhJHR0sCtAWChfM=
-X-Google-Smtp-Source: AGHT+IEZWa5ieH0Zuzv3oYICEkGpeEhHrre9AFb4UPBUadqbngvzxptEPjBajRge5GZCVY6QGK53EY3ePCPJHZwgYX4=
-X-Received: by 2002:a05:6512:1152:b0:53d:d461:80df with SMTP id
- 2adb3069b0e04-53dd461831fmr379627e87.25.1732257784872; Thu, 21 Nov 2024
- 22:43:04 -0800 (PST)
+	s=arc-20240116; t=1732261757; c=relaxed/simple;
+	bh=WW6+F3YHt7Q0nVVbX10+QizyzfkqHmQ6PIAQm3WgLGI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KQg02iHnDigjtDfsfyN2813qlT9+JoX+XVKc1hhHzJpYDkLGsgyTki9qBMIIhDBUxtCoLoIHQ830uftXywvhiCAWZzY2wIlW5K35SDMn4D9MFVOAdUU4k8AcRTs6TyCwbGwUgTK5xuFSnih2jGiyZc1Y5wa8WANtsITBMh7uQSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XmfH8i8W; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AM77Jem015637;
+	Fri, 22 Nov 2024 07:44:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=L6jwY0jLoN/OUVAS1Flnk8
+	KJib94VdADOkFeQ3Nyia4=; b=XmfH8i8WxQtD7ktFGfYr/hBYDegWP/G5U1UYeG
+	nC28ncZGbjNrBXVbYFR1M+ciWQd/8KWwGKQrSdSQKZbmEz41XHHGxXErdWAAv4VH
+	YMplnPMf7ciBwoKm9Fr6oKhAHyVLmI6TBTnjJQ9vbWFh1o9JS9Od9UDbPn1ctd9G
+	GxQvyWjuvx03YYoTrmIK7pVT7kvrviisK8a56EsGcgklKbGa7iBMD4NzxD8s4rqc
+	ObKtI5rmgFHGKJtcaRcDCW2d+qBABbBrmO8/43ivqENd1TSt9skfN0FkcyXMDUUx
+	AfugWBYxfIiD93GJbf9LHQKtXtNdZ7BzRC+Te9Kikuwze2Ug==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4320y9kcgk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Nov 2024 07:44:07 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4AM7i7wl013351
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Nov 2024 07:44:07 GMT
+Received: from hu-yrangana-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 21 Nov 2024 23:44:03 -0800
+From: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>, Vinod Koul
+	<vkoul@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_yrangana@quicinc.com>
+Subject: [PATCH V4 0/2] Enable TRNG for QCS8300
+Date: Fri, 22 Nov 2024 13:13:44 +0530
+Message-ID: <20241122074346.4084606-1-quic_yrangana@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241122045106.tzhvm2wrqvttub6k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-In-Reply-To: <20241122045106.tzhvm2wrqvttub6k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 22 Nov 2024 07:42:54 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGAuJSdDWvu7D5-PT6mSbNG9FeLObnYmpHeT08eNxaJWQ@mail.gmail.com>
-Message-ID: <CAMj1kXGAuJSdDWvu7D5-PT6mSbNG9FeLObnYmpHeT08eNxaJWQ@mail.gmail.com>
-Subject: Re: [Bug report] kernel BUG at include/linux/scatterlist.h
-To: Zorro Lang <zlang@redhat.com>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Herbert Xu <herbert@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5CdFZUxKHzWuWU3_0YpO7Pc9lbPFfSW0
+X-Proofpoint-ORIG-GUID: 5CdFZUxKHzWuWU3_0YpO7Pc9lbPFfSW0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=577 spamscore=0 mlxscore=0 malwarescore=0 clxscore=1015
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411220063
 
-On Fri, 22 Nov 2024 at 05:51, Zorro Lang <zlang@redhat.com> wrote:
->
-> Hi,
->
-> I hit a kernel panic on aarch64 several times recently, when I tried to do a
-> fstests test. It's not related with fstests, due to I hit it when I boot the
-> latest mainline linux kernel (HEAD=fc39fb56917bb3cb53e99560ca3612a84456ada2).
->
-> The console log looks like related with crypto things, I'm not familar with
-> it, so just send this email to linux-crypto@ and cc linux-kernel@.
->
-> I hit this panic several times, I did nothing except building and installing
-> the latest kernel and then boot it, then it crash directly on booting time.
-> Looks like crash from:
->
->        183 static inline void sg_set_buf(struct scatterlist *sg, const void *buf,
->        184                               unsigned int buflen)
->        185 {
->        186 #ifdef CONFIG_DEBUG_SG
-> ==>    187         BUG_ON(!virt_addr_valid(buf));
->        188 #endif
->        189         sg_set_page(sg, virt_to_page(buf), buflen, offset_in_page(buf));
->        190 }
->
-> If someone need, I can provide the big linux/.config file.
->
+Add device-tree nodes to enable TRNG for QCS8300
 
-Does this help?
+This series depends on below patch series:
+https://lore.kernel.org/all/20240925-qcs8300_initial_dtsi-v2-0-494c40fa2a42@quicinc.com/ - Reviewed
 
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4300,12 +4300,14 @@
+Signed-off-by: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>
+---
+Changes in v4:
+ - Address the reg entry style
+ - Link to v3: https://lore.kernel.org/all/20241113021819.2616961-1-quic_yrangana@quicinc.com/
 
- static int test_sig_one(struct crypto_sig *tfm, const struct sig_testvec *vecs)
- {
-+       const u8 *src __free(kfree);
-        u8 *ptr, *key __free(kfree);
-        int err, sig_size;
+Changes in v3:
+ - Drop DT label as per review comments
+ - Link to v2: https://lore.kernel.org/all/20241107121513.641281-1-quic_yrangana@quicinc.com/
 
-+       src = kmemdup_nul(vecs->c, vecs->c_size, GFP_KERNEL);
-        key = kmalloc(vecs->key_len + 2 * sizeof(u32) + vecs->param_len,
-                      GFP_KERNEL);
--       if (!key)
-+       if (!src || !key)
-                return -ENOMEM;
+Changes in v2:
+ - Mistakenly uploaded the base dtsi change instead of marking dependency
+ - Link to v1: https://lore.kernel.org/all/20241106110002.3054839-1-quic_yrangana@quicinc.com/
 
-        /* ecrdsa expects additional parameters appended to the key */
-@@ -4326,7 +4328,7 @@
-         * Run asymmetric signature verification first
-         * (which does not require a private key)
-         */
--       err = crypto_sig_verify(tfm, vecs->c, vecs->c_size,
-+       err = crypto_sig_verify(tfm, src, vecs->c_size,
-                                vecs->m, vecs->m_size);
-        if (err) {
-                pr_err("alg: sig: verify test failed: err %d\n", err);
+---
+Yuvaraj Ranganathan (2):
+  dt-bindings: crypto: qcom,prng: document QCS8300
+  arm64: dts: qcom: qcs8300: add TRNG node
+
+ Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 1 +
+ arch/arm64/boot/dts/qcom/qcs8300.dtsi                   | 5 +++++
+ 2 files changed, 6 insertions(+)
+
+-- 
+2.34.1
+
 
