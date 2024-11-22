@@ -1,167 +1,157 @@
-Return-Path: <linux-crypto+bounces-8186-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8189-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A90F9D5FC3
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 14:33:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35C909D6099
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 15:41:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF8C6B225BE
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 13:33:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A37AEB2468D
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 14:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8660118AEA;
-	Fri, 22 Nov 2024 13:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC1D13BC0D;
+	Fri, 22 Nov 2024 14:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="aLrgyS1c"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dNhZUamb"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB652594
-	for <linux-crypto@vger.kernel.org>; Fri, 22 Nov 2024 13:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F8813AA4E;
+	Fri, 22 Nov 2024 14:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732282367; cv=none; b=cidmtJD216D8atnSt27pSqnoWeaerjMjjiJOFfCZAPq+dGg4gCUic20ucby0O2+8uaB+F7BsTTjjR0NaZX5eN5MQkZB94Aax3Y378xxQL0JoFxkZFVgsEJxwgx1XzitTu4YhhaavjPhPmpXkJtwaFQlR6ZPCToyKPUZjKbJTYSs=
+	t=1732286378; cv=none; b=Irq6VUMerBGfkfb8QY2Jh8AxXVufcaJKIZhfbrrojw/Jkmw1HccWJIY0Ea3knlU5HjDSTwdGya53f82KofEliQK9uS3mflUCYf3B+0jaLy8t2VZ+KYcgEc5IBWy1tadhCzs+SuY9O1Rfj4pmHvQ7QnbyC68Npo446SxDiG5Gq/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732282367; c=relaxed/simple;
-	bh=QunPnbf0xVtgUmtvlwYZ4OjpvqL68OeWHfONZQcmhRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OtXVarmeYXVLtN8+cRqAx99ELzYrGyby3PORFpvE5nEAGT99b+ik0d7CEm4mnl/q4ZcXqARW4l5B6hOy7d1boH//H+cadPGVYcon0Sn5/jhLfv6XpXKog+WP3UK5cNR4kXvk1tDyo5VSz7lTUcweUIloO4E5f/hZF4b8t1fKFWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=aLrgyS1c; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AM7ZRYW015590
-	for <linux-crypto@vger.kernel.org>; Fri, 22 Nov 2024 13:32:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	1SlWBCRiGH4qgb/LdCPP7xOCkPJR6Xa67WYb1u2GOSI=; b=aLrgyS1cU01fZQd9
-	cQARyLvm+bzDwhN+cvVmJj7MKNi9Hqxh7xOyShQLlRASesTQMWqcX2zLISHWiH/w
-	9tUtF4FCPgaVCz6OCGE0tMZRCPGxOAwmNcrzN0HJLGCv0aKdsvuZVLG+cI/D8NgL
-	lwHSuuXICh3/g5MgKV0qrK/jBytAEAb0UTWhGuJcFlo1ZReolqGQERP7/qTCvIgI
-	tz7u4u3hG3f5DZhJ5TmsN+hk3dXcmkXU9SQwP1gK9Uh2VHk53S1ryA+khRgP1L7X
-	NpfjZtyGq+D+NftpNnZnc3HHbssesqwih85zNJXu8Qx33Zj0h+o2JE0zBcDTAM2d
-	pOdHkQ==
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4320y9m9d7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-crypto@vger.kernel.org>; Fri, 22 Nov 2024 13:32:43 +0000 (GMT)
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-460e81465f8so4703091cf.0
-        for <linux-crypto@vger.kernel.org>; Fri, 22 Nov 2024 05:32:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732282362; x=1732887162;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1SlWBCRiGH4qgb/LdCPP7xOCkPJR6Xa67WYb1u2GOSI=;
-        b=dXoqT7E2cVvh+j3nkC3dESktm/3G2bgrM6PfTr40NhekvA3pd1QVLERClh5X2MuUin
-         BClzmycxNJkvP3PX14TOIQukAvEwXpjhmOxaiCIx+VYKc/QHfngo/sas61dtzy3vmlE3
-         qCNK8Lcht/fRtxRoBMS77f3l6mj4D+UrVlA7XO22QmOSPd+ePTHDtGngrU+sF38vkimz
-         zH8rAHnYdgwfGhY//1CTVsUb5e593ih7cBmVXHInT7SwdQwITTvPcSPrWwiIob5E3Uhj
-         3U5IOHNvcw1DRI5pExvyqzdrWEXkMX4I10PLbgFsOeQwhIIo4x+SN4BMopt7BFDDfBMW
-         z+pg==
-X-Forwarded-Encrypted: i=1; AJvYcCXv2+bImyHrgidHJcPwQ5mv/xAqSCn4PFsVSjsrg42Wj+sooEw3ioUe5n+YbghZPlECXHhxIC6qaq1/VX8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOe8aLikLjjs+K1a42jg+MqmNIsD5X0w3PzZO6VwfduuHrjJJf
-	WcOd2bGM0YMPxjzvpsD69Eke+psAkeLE/v+srkEQU7fKAD05N5Mp+nJPOVlYfOIGU14NWJU5Lcu
-	FSK96dG5xKDe3NtdozomSC5OYKgUmTRFmJ7uF0bzlwPI8F0nna/Fbr7hX/E0Q+HU=
-X-Gm-Gg: ASbGnctJvBaWK/FhT2kekYxEUGKgH3OrsRLtWidl68FmMPdhDjLrMOMa8gResQJ3bEV
-	ewXju912W2JpUft3B/sNO3JzWOPsWR/2YTOJNTftbL80G91AYRE4/TBLoK6IGTgIKHrdetgPHZz
-	rBOpJMCk+Q440oqbirFAv+RG0SpKoGuy3b87+EbCMtLpg0C2AmqwBxmlnJNo20o40MttIqkhYNB
-	Y2SW15oiBgN8ivBwtFhrJc24DepJwdsgQGl3AFTcAfVtxa3tC6HzZ2h6VlxrGcQ55q0dRore8h5
-	szqMtCiMFAAEtY8/iSio/Oca2kH/mJw=
-X-Received: by 2002:a05:622a:3c8:b0:460:3a41:a9e5 with SMTP id d75a77b69052e-4653d62fa60mr16934681cf.13.1732282362286;
-        Fri, 22 Nov 2024 05:32:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHVf3O3jfV+1QWDBQ7DzPfL0PVS4kp8Bcv2BSTm+EqwdcoTXZJp32T0/6sMGFnYNedbZPT3iw==
-X-Received: by 2002:a05:622a:3c8:b0:460:3a41:a9e5 with SMTP id d75a77b69052e-4653d62fa60mr16934391cf.13.1732282361868;
-        Fri, 22 Nov 2024 05:32:41 -0800 (PST)
-Received: from [192.168.212.120] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d01d3c00aesm916730a12.43.2024.11.22.05.32.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Nov 2024 05:32:41 -0800 (PST)
-Message-ID: <211af8cb-6cc1-478e-b981-f88f70733872@oss.qualcomm.com>
-Date: Fri, 22 Nov 2024 14:32:38 +0100
+	s=arc-20240116; t=1732286378; c=relaxed/simple;
+	bh=mOKwCslIG7bQ2IcYM1y0ZOAHuZ7R3r24lc8GHKE9gBI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OISqsUzjhjN2h+o+PgRFxFn9HTl3IyslPzAp+X3Yi756xZVJ3R4HM7HIsMQitKF5hIfnam9DkXQBrfQX+06V3ipnH9CxP639UyT48gfjiiftEaKsioyihvnlsyXSCXm1NkBzgWdoW2xA0dQ3vQwcZ8efD6Q5BtIpOptJ1WHiKR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dNhZUamb; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AMCU0KL001142;
+	Fri, 22 Nov 2024 14:34:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=clLENGNOsbBJlNLmlpKKYu13xNB4UDxCgXAabcpmY
+	qw=; b=dNhZUambBu4xMNXXxZdvps4SkGSTJ747NBjJ/+Jo0nNP+kf6y7X+jKDY9
+	4QDFMeBJ2d3YFKgyVbYDtsx6DKmvz3z93xWSnvKhlnvK5nTG3DqVUt52RRbiE82/
+	NzFeEzgIZOA8aJ8KoFlJpt2K4AYZrcCD5IZpa/bBmTluO5rrO7shZ2vLO3HfVBYl
+	ztHsBPsi6i1rPr8QL6XAMhfGkJc97Yjg1kd6DowBMbXamOtmwyXUnhybyyN2wYz9
+	bKi0uOPCF4OFj9IW7ywbD8Xa2JRNHVfnnJTvDtEtHbl1Q/oO6vtMSsk2GuIFW6sn
+	adcOb/14oahSjUzKKAlPUjBkL/0yg==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4313gt07gs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Nov 2024 14:34:31 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AMDvt9o025841;
+	Fri, 22 Nov 2024 14:34:30 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42y6qn39r3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Nov 2024 14:34:30 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AMEYSIv64487818
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Nov 2024 14:34:28 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 506F82004F;
+	Fri, 22 Nov 2024 14:34:28 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 119562004B;
+	Fri, 22 Nov 2024 14:34:28 +0000 (GMT)
+Received: from funtu2.fritz.box?044ibm.com (unknown [9.171.82.52])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 22 Nov 2024 14:34:27 +0000 (GMT)
+From: Harald Freudenberger <freude@linux.ibm.com>
+To: herbert@gondor.apana.org.au, davem@davemloft.net, dengler@linux.ibm.com
+Cc: linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: [PATCH v5 0/3] New s390 specific protected key hmac
+Date: Fri, 22 Nov 2024 15:34:24 +0100
+Message-ID: <20241122143427.135682-1-freude@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] arm64: dts: qcom: qcs8300: enable the inline
- crypto engine
-To: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
- <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-References: <20241122132044.30024-1-quic_yrangana@quicinc.com>
- <20241122132044.30024-3-quic_yrangana@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20241122132044.30024-3-quic_yrangana@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: eGdpxr58i2eQ2hTdvFRlJN6b8ZVcbGle
-X-Proofpoint-ORIG-GUID: eGdpxr58i2eQ2hTdvFRlJN6b8ZVcbGle
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: e9OaT6h7AQY2apVlWNRXCpGVVRPCehJX
+X-Proofpoint-ORIG-GUID: e9OaT6h7AQY2apVlWNRXCpGVVRPCehJX
 X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0 clxscore=1015
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2411220114
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ adultscore=0 mlxlogscore=768 mlxscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411220122
 
-On 22.11.2024 2:20 PM, Yuvaraj Ranganathan wrote:
-> Add an ICE node to qcs8300 SoC description and enable it by adding a
-> phandle to the UFS node.
-> 
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+Add support for protected key hmac ("phmac") for s390 arch.
 
-Getting *a review* does *not* mean I gave you a Reviewed-by tag.
+With the latest machine generation there is now support for
+protected key (that is a key wrapped by a master key stored
+in firmware) hmac for sha2 (sha224, sha256, sha384 and sha512)
+for the s390 specific CPACF instruction kmac.
 
-https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+This patch adds support via 4 new shashes registered as
+phmac(sha224), phmac(sha256), phmac(sha384) and phmac(sha512).
 
-> Signed-off-by: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/qcs8300.dtsi | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/qcs8300.dtsi b/arch/arm64/boot/dts/qcom/qcs8300.dtsi
-> index 2c35f96c3f28..ab91c3b7bba6 100644
-> --- a/arch/arm64/boot/dts/qcom/qcs8300.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/qcs8300.dtsi
-> @@ -685,6 +685,7 @@ &mc_virt SLAVE_EBI1 0>,
->  					<0 0>,
->  					<0 0>,
->  					<0 0>;
-> +			qcom,ice = <&ice>;
->  			status = "disabled";
->  		};
->  
-> @@ -710,6 +711,13 @@ ufs_mem_phy: phy@1d87000 {
->  			status = "disabled";
->  		};
->  
-> +		ice: crypto@1d88000 {
-> +			compatible = "qcom,qcs8300-inline-crypto-engine",
-> +				     "qcom,inline-crypto-engine";
-> +			reg = <0x0 0x01d88000 0x0 0x18000>;
-> +			clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
-> +		};
+Please note that as of now, there is no selftest enabled for
+these shashes, but the implementation has been tested with
+testcases via AF_ALG interface. However, there may come an
+improvement soon to use the available clear key hmac selftests.
 
-Although this looks good now, so I'll allow you to keep it.
+Changelog:
+v1: Initial version
+v2: Increase HASH_MAX_DESCSIZE generic (not just for arch s390).
+    Fix one finding to use kmemdup instead of kmalloc/memcpy from test
+    robot. Remove unneeded cpacf subfunctions checks. Simplify
+    clone_tfm() function. Rebased to s390/features.
+v3: Feedback from Herbert: Use GFP_ATOMIC in setkey function.
+    Feedback from Holger: rework tfm clone function, move convert key
+    invocation from setkey to init function. Rebased to updated
+    s390/features from 11/7/2024. Ready for integration if there are
+    no complains on v3.
+v4: Rewind back more or less to v2. Add code to check for non-sleeping
+    context. Non-sleeping context during attempt to derive the
+    protected key from raw key material is not accepted and
+    -EOPNOTSUPP is returned (also currently all derivation pathes
+    would in fact never sleep). In general the phmac implementation is
+    not to be used within non-sleeping context and the code header
+    mentions this. Tested with (patched) dm-integrity - works fine.
+v5: As suggested by Herbert now the shashes have been marked as
+    'internal' and wrapped by ahashes which use the cryptd if an
+    atomic context is detected. So the visible phmac algorithms are
+    now ahashes. Unfortunately the dm-integrity implementation
+    currently requests and deals only with shashes and this phmac
+    implementation is not fitting to the original goal any more...
 
-I won't add it a second time here to avoid confusing the maintainer
-tools.
+Harald Freudenberger (1):
+  s390/crypto: New s390 specific protected key hash phmac
 
-Konrad
+Holger Dengler (2):
+  crypto: api - Adjust HASH_MAX_DESCSIZE for s390-phmac context
+  s390/crypto: Add protected key hmac subfunctions for KMAC
+
+ arch/s390/configs/debug_defconfig |   1 +
+ arch/s390/configs/defconfig       |   1 +
+ arch/s390/crypto/Makefile         |   1 +
+ arch/s390/crypto/phmac_s390.c     | 661 ++++++++++++++++++++++++++++++
+ arch/s390/include/asm/cpacf.h     |   4 +
+ drivers/crypto/Kconfig            |  12 +
+ include/crypto/hash.h             |   5 +-
+ 7 files changed, 682 insertions(+), 3 deletions(-)
+ create mode 100644 arch/s390/crypto/phmac_s390.c
+
+
+base-commit: 3f020399e4f1c690ce87b4c472f75b1fc89e07d5
+--
+2.43.0
+
 
