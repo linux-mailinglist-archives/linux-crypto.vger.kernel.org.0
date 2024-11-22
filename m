@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-8180-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8182-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D7769D5A2A
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 08:45:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDD49D5B15
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 09:37:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1E57B22EA2
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 07:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 055E1283169
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Nov 2024 08:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99968175D29;
-	Fri, 22 Nov 2024 07:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE37E17625F;
+	Fri, 22 Nov 2024 08:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="k8ynNSmi"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="RG2bKg7U"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF9B170A37;
-	Fri, 22 Nov 2024 07:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4315316BE0D;
+	Fri, 22 Nov 2024 08:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732261481; cv=none; b=jry/p5uhHNWKn33ql6uCTl/GaaiaiImsEKM8UmNGadC6L/nNLqQWb59d6nQx2i7jAW3z557MguuNY5r7vYhdu1txHK8Evb15nvdAzoX9zCSWAo9Gk5OHBLlyuUG1/yvLe2K703NT+rZh6T9JEj2zoh7nOt7gkaRfDd4pby6BZ9g=
+	t=1732264646; cv=none; b=Hh0AhkSk5BV42/MDSJg1F0kvTW0nEz0t5kDcZD49YbKEAlijHr/bOPNmqIH6+S+t65Fh1EIFrVEpw2ZsT3EfonVKOXdVxnE68yVhwxqmpNJ+GgwOUWjH/V31fEEXj7oo4vjG2Ke6KF24T3DyYUdQFykjrNG5wyGbuNCPfKSR4/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732261481; c=relaxed/simple;
-	bh=bizZchoBVNlH4WG6wwctE/hTudXZ/DpCgsH5vJjZPEI=;
+	s=arc-20240116; t=1732264646; c=relaxed/simple;
+	bh=eJwBFSc+VSGtSBmQX5zNF6jaB3qJEZjYwnCtPHAcxhw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s/JFnbb2w+dN/Xyd1tqByoU6gBBuGYmYhfJnbzVal5L2X7LoapNf+iV2aF1unaoY7XhbsUBZFnF+Ura19hUs1Kaa89wtPe9IbB3SjnJslUqE1ONviCCYnV4NqeQQDA3BxT8vpG1cogyGVza4ABng8xRppcP80ojHBSG7m3fX1/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=k8ynNSmi; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=T7V/AxULC/4azPnkR8BVOhGOHprhCF9kJkO0jPv/+gNxeOlK4mBRpTd7A6w0+atSNi8Q/vHkFQhKOBwOUTDAFjy4lg49mrPYGdt8CPY9eYmikx+4Cu3coDL7xqy4vqR/QHy9jAnj68ncMdiu4INCMyaRUK1ansn2xgtxtoaSNBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=RG2bKg7U; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,26 +37,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=6cgypngBYJ1FG4I1IIZQyMyKuh429tzjhlzyyaG3A6g=; b=k8ynNSmiQczZIRNQMRXw6yvaiH
-	dB3paNYPGnosEfJrtPuPOVia3UVIWbDXJ/RuCd3smILmi13bpPDG0CQIhd4P9hbH6sG1msZugbWi2
-	zs7F7dAri2H6X4aufikbWsEtEg8zDqQqasvarZgQPfGHNfq1k13NaN+5drTiX7Qilgf6RKQNompj4
-	RGhDCaev2BWbgeg0hLwo2bUsD1wXjFGReDE4Chl4PHcfXG5SIfBs2zqGjZaMqL6qDoMEuURD1Fhkc
-	rxyj7TRXeyypGZ9W9Yj1hQ/OI4rpBEV9gP0oGxvtmW+7xs9v385oYdOa1jSHxqgCmAdSRU3beke2X
-	wLoy8gjA==;
+	bh=hQFyjGxVbbAJxhO1KpGCzDqp5uIWXAEAvmxs7zwQrB4=; b=RG2bKg7UlG0LXZJQgpPplNHqfD
+	ZCKWATmPN9fD8sFoQf7I+AcmQTKKiacuKtdw9UEsTZXNar6IildtQC71ce4E3quBPHecJf/D1YmCM
+	aP1hv+cqc5VT5qQGQxpq0Hn+atwdXlceS5LBEZVKtWusq8lW6cfBOabzG46bkcNAwDt2tEAbD4/+e
+	fvxL//1AdXePc+2zL24Nabs58uhMeyZeyd3G5aXBYhAjzfLLhSqcPESd+meOsAV7zRloPORSklO3s
+	TAyliwoqRSzHcwWQCxtZeMitiZNxw+O5fgF2lUM2uE2T6jdXS5ccyYQtSXLjfWladSBskUB3Pi6H9
+	NisS762Q==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tEOL5-000udB-1b;
-	Fri, 22 Nov 2024 15:44:28 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Nov 2024 15:44:27 +0800
-Date: Fri, 22 Nov 2024 15:44:27 +0800
+	id 1tEPA5-000vGI-2t;
+	Fri, 22 Nov 2024 16:37:10 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Nov 2024 16:37:09 +0800
+Date: Fri, 22 Nov 2024 16:37:09 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Ard Biesheuvel <ardb@kernel.org>
+To: Ard Biesheuvel <ardb@kernel.org>, Lukas Wunner <lukas@wunner.de>
 Cc: Zorro Lang <zlang@redhat.com>, linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [Bug report] kernel BUG at include/linux/scatterlist.h
-Message-ID: <Z0A2W1FTTPt9PeI5@gondor.apana.org.au>
+Message-ID: <Z0BCtZi2YJywGJAk@gondor.apana.org.au>
 References: <20241122045106.tzhvm2wrqvttub6k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
  <CAMj1kXGAuJSdDWvu7D5-PT6mSbNG9FeLObnYmpHeT08eNxaJWQ@mail.gmail.com>
+ <Z0A2W1FTTPt9PeI5@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -65,17 +66,17 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXGAuJSdDWvu7D5-PT6mSbNG9FeLObnYmpHeT08eNxaJWQ@mail.gmail.com>
+In-Reply-To: <Z0A2W1FTTPt9PeI5@gondor.apana.org.au>
 
-On Fri, Nov 22, 2024 at 07:42:54AM +0100, Ard Biesheuvel wrote:
->
-> Does this help?
+On Fri, Nov 22, 2024 at 03:44:27PM +0800, Herbert Xu wrote:
+> 
+> This is a bug in the API/driver.  Users should not be expected to know
+> what kind of a virtual pointer is acceptable.
+> 
+> In this particular case, rsassa-pkcs1.c should be fixed to use the
+> crypto_akcipher_sync_encrypt interface.
 
-This is a bug in the API/driver.  Users should not be expected to know
-what kind of a virtual pointer is acceptable.
-
-In this particular case, rsassa-pkcs1.c should be fixed to use the
-crypto_akcipher_sync_encrypt interface.
+Lukas, could you please take a look at this regression?
 
 Thanks,
 -- 
