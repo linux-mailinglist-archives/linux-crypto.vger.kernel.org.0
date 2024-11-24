@@ -1,45 +1,45 @@
-Return-Path: <linux-crypto+bounces-8210-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8211-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79DDF9D6EF8
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 Nov 2024 13:57:46 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD319D6EF6
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 Nov 2024 13:57:40 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42E98B27769
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 Nov 2024 12:54:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25C4161AFF
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 Nov 2024 12:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F9018801A;
-	Sun, 24 Nov 2024 12:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13B11B3956;
+	Sun, 24 Nov 2024 12:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TBNRls1O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G9I0qmT9"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8FE18CC1C;
-	Sun, 24 Nov 2024 12:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698A11B3946;
+	Sun, 24 Nov 2024 12:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732452319; cv=none; b=j+CLJ/RalFS9E4oPxtJEFpRbvLodibfCSHC0CeH0Tln0hyLyopNC+G+wtZ12AEyaV7r0/aAqhbXkPoUA3Eg2q5brjU5SqAzyQE7+R3BlMewCdwusOViu1AZJzTJ7vBOODnfM2FN3rPJbKORTENddyjOxdPyuopobmMFFOve9skk=
+	t=1732452335; cv=none; b=sDLTyGCmHdxe8iGPUwslEJ3AO3ZK7SPV5EJdSl8pi3IvP/PxdyLa5xtRFgVNgz144qNJoW4XrUJJ9fBnzgqf3opqYZB3fZsLlDhTfLdpl1ZtV9txKsn7swQf27bxd4PDsJF/otr1nbcBP6P/obaxw99aMioccUBzCALDc2FyAhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732452319; c=relaxed/simple;
+	s=arc-20240116; t=1732452335; c=relaxed/simple;
 	bh=oirgsQnHBfGFNBrWVg1xmJLEkU3WZRxplluiMQ+96mc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZQlxT+zqyDDzvz7uxwHPnt/y0+5pRJmroTcFUnDTqMxsMrkL70Ysig/0AyTHOBvLt6TXodAzYvjrjn0d4COlYNWk0tG9MXnp6ONcn96Mo49iSffq43b6pmEFTlgxSQmGASmFrzozYE4lgwKG0C1qWSmKNGbLAKiKyG8vWRYhL88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TBNRls1O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B5F0C4CECC;
-	Sun, 24 Nov 2024 12:45:17 +0000 (UTC)
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QYC5+/lOng0EN2citW3YsYKEYyPQ8V30RlqNeV+CBWwYM6UOWtjzNV3HXbonHjw+eSQPLY+O7efbgXCFsa1Xt/lDutaMiSRGTUOq9dr4MvLEqf0/d0IUuCnqyrjcRI85WeswRzjIvYivY+CZ+01LoLYkWL5fwZYM7l6D/LmGU5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G9I0qmT9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D4EC4CECC;
+	Sun, 24 Nov 2024 12:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732452318;
+	s=k20201202; t=1732452334;
 	bh=oirgsQnHBfGFNBrWVg1xmJLEkU3WZRxplluiMQ+96mc=;
 	h=From:To:Cc:Subject:Date:From;
-	b=TBNRls1OTpbIZsa3DtJaC6aT9U5xvRKNhAr0lBffagq/oDK4XAyVYg9Y0tSNOHnP5
-	 r/Zj6+E9zcZYk/xWQYUF30rJZ7AS+WuBsmga7u1PPl68ZYR+3J9giyh2eBl+Do8lPE
-	 //yYhzn2PdrZFsYAnHhYa1NBZgbWg+HNPDmKBvhjdCZPxCts0/uexa4V8dMSa5SyUN
-	 WwN4ogy1TdrnuN9Wbf2yqhYTwpcGB5+v7C2tgVK7eaPyEgWrJIc2mjx+2SK1mfyg26
-	 8mUzfpC5z7XAnhPgjFEffnFnvUeC+WlJA4Qja36eyeYrnSZ/3fvnx0D/kFParBudnO
-	 wiC2wDUtvSBKg==
+	b=G9I0qmT9s5rGsPX9Y/fN09rtpJcn7RQuoTldRL8tZTyzmS3Xq0My20QFo6WYb1p/5
+	 7jQknUyNnrlCl/uo/2lgbhJJj5WlRkfBtlkgNVKiDeAqZ4nseRrnCfd3Dt47WH2wQF
+	 colqjlnBjSmcErbImdSz8le8N3yf91KFiVWV8vIah2K8kBkpP8XRXLDSlDiz+8m/8Y
+	 hQP1WU5eAJ/uG4QWoYMaswusLhZfNkN7MNop9IsNDsiyxxcnL084tCQwAH8DLQ7yjA
+	 ZQMnDOkmOVhOFrzV9UJjH98/Xiqpx/kV46CrxY26Og5CVeuQjGnIw2x6PnU+bl57Om
+	 smGQtQ4lZbddw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,9 +50,9 @@ Cc: Lukas Wunner <lukas@wunner.de>,
 	Sasha Levin <sashal@kernel.org>,
 	davem@davemloft.net,
 	linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 1/6] crypto: ecdsa - Avoid signed integer overflow on signature decoding
-Date: Sun, 24 Nov 2024 07:45:06 -0500
-Message-ID: <20241124124516.3337485-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.11 1/6] crypto: ecdsa - Avoid signed integer overflow on signature decoding
+Date: Sun, 24 Nov 2024 07:45:23 -0500
+Message-ID: <20241124124532.3337626-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -62,7 +62,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.1
+X-stable-base: Linux 6.11.10
 Content-Transfer-Encoding: 8bit
 
 From: Lukas Wunner <lukas@wunner.de>
