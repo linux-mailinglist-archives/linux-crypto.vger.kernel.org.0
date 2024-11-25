@@ -1,89 +1,123 @@
-Return-Path: <linux-crypto+bounces-8216-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8218-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E620E9D7918
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Nov 2024 00:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 978BB9D7AAC
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Nov 2024 05:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABE122821E3
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 Nov 2024 23:13:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52038281D6A
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Nov 2024 04:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E3B17DFEC;
-	Sun, 24 Nov 2024 23:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C47A38DD8;
+	Mon, 25 Nov 2024 04:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="oUZjO9t+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eV592IhP"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F7313D246;
-	Sun, 24 Nov 2024 23:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E302500DE;
+	Mon, 25 Nov 2024 04:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732490018; cv=none; b=WBpZvDHvayD80odmQoBJotegmEmRGnbNLY5xggKNVqrsvjiDASK0M6J64HfZNNqCNtHZ7/Q1ZyoR9RyFnmxpno7Qs/OttxQ4RILbX3A7j3ngwHKUSynG3APCaMpKTu1zMQ3GZGn3XIBYSwRROrjLhMx5W+ZmrPrVXsOuB52aJhE=
+	t=1732507969; cv=none; b=PzaWW3gKIUiX2YdTJvaQC7OZnxnyVaGPQf3PWbrUwMt+Op3G8+IKZUWUO0Y5GkV1MFgnNSot851MM0Jn5dMJsj/TqsTTwyhaxXsGYgY+4tgNy2kB7iPuhmeQVBe8s3KXVitH/x5cXAejgfVY+VOfDbObPB3bLbgmuEgnO8MEqJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732490018; c=relaxed/simple;
-	bh=JHUnnjmd6OaFYdcKTp20tiktkgxoI1YSFPMAF3hHrl8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=muUcZl6mPrJVAw8vzznFmwjdy4ORN2/248ZPWpp6n92oxmZp9O60ogTiVJ6EvTYb41gG+69e9UsPIU7zI0qCX8s1/qw0v54IkGG617FyneDRJ2/QnSohsp4RDzRGIu2RKQ832kUBT9O/8RTM19gOamt5FOSPufQKZneQx6I7bac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=oUZjO9t+; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=zoDFH/wEtZZ6L3WftPAPhsC4ZbUVV6hIOcO0GRhArgc=; b=oUZjO9t++maWUXPJr5FQP4D5tu
-	5NReK2IoNAdHAJ1l+HSOEnZiFunL4jCDOSn54/nKuj/lHiK/55rGhYe34cusEMIe4Bj6tMjIcBoQ3
-	MmwdpIY0YJgd/tLIezOosLprjNpBYT0tCrOVDdctdJ4ah4DsLtUtpQ1kIkG2QFQ+mySEgUs/LsntF
-	I+9QGF9fZ2yYKk43rQacTK8K/ZkAQdy3rfzvt7Lqj0e60nRMxL93XUid9TlzBquDwFIwCEQy5UzRb
-	oWJiifwbwPzf3Lgt6WLljP/prEdLYjcrODN6UEaaRqkItYsFCWWTfpgrNPAS8YWHRc0gQJZX3QU4T
-	tWD0fz5g==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tFLn4-001QQK-16;
-	Mon, 25 Nov 2024 07:13:19 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 25 Nov 2024 07:13:18 +0800
-Date: Mon, 25 Nov 2024 07:13:18 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Ard Biesheuvel <ardb@kernel.org>, Zorro Lang <zlang@redhat.com>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Bug report] kernel BUG at include/linux/scatterlist.h
-Message-ID: <Z0OzDle-VrrXf8rW@gondor.apana.org.au>
-References: <20241122045106.tzhvm2wrqvttub6k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <CAMj1kXGAuJSdDWvu7D5-PT6mSbNG9FeLObnYmpHeT08eNxaJWQ@mail.gmail.com>
- <Z0A2W1FTTPt9PeI5@gondor.apana.org.au>
- <Z0BCtZi2YJywGJAk@gondor.apana.org.au>
- <Z0NTLDYJQC242GMB@wunner.de>
+	s=arc-20240116; t=1732507969; c=relaxed/simple;
+	bh=UUUA1ZgwPqZlO0/3ylK8xMN9W4suSmmy4ypAl0Eeb5s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TzXy6z5/s/8fruWoGYxyCbl5iH/wHc9zG/BcwzU37LJu7ndLmFKqzF0JWhLki1cZL8CfPA/vBcL4ppMplCwUspXPDmPi90u40fEFfVc69S05GmCw9I5ERRikHYh5fwAJ4XwvYx2l7ztgqh3i8ZpegTKQS1anV0h2rOKD1TnwITI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eV592IhP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 599AAC4CED1;
+	Mon, 25 Nov 2024 04:12:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732507968;
+	bh=UUUA1ZgwPqZlO0/3ylK8xMN9W4suSmmy4ypAl0Eeb5s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eV592IhPDawLL+68tcYtw9FXThWgbpRzvTOqtOMDeDKOFSzKYf9xIgSvIV0MLIeBy
+	 k0XyZOrx/sGYYZMuvscXowtVT9XQQBpfpXvEOqVd5klqE5uCWYRZZvJ9//wUGKhh0Y
+	 ILT09ftkrkEhX6OyxmEquzASukyhiINi3QnowQCTGXehFl0ADAYfkIgetEjCTFuWMV
+	 j1fnIVfHaxnJjaiDDLCz5naTURuWM3bWiegbOtM+h9gKk0agYh9Tgw9cjSQQZg9r6H
+	 Hl9w6Cmq+82pqYkzV+9UaRiBkbQbMpxIZFrpLtxA5VxIUVpOPUM9hzLq+JJL0suahW
+	 2oVYvH4vfxUEA==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org,
+	x86@kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 0/6] x86: new optimized CRC functions, with VPCLMULQDQ support
+Date: Sun, 24 Nov 2024 20:11:23 -0800
+Message-ID: <20241125041129.192999-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z0NTLDYJQC242GMB@wunner.de>
+Content-Transfer-Encoding: 8bit
 
-On Sun, Nov 24, 2024 at 05:24:12PM +0100, Lukas Wunner wrote:
->
-> Hm, my impression is that this needs to be fixed in arm64's
-> virt_addr_valid() macro.
+This patchset is also available in git via:
 
-Regardless of what happens on arm64, you can't put a virtual
-address into an SG list in general.  It's just not allowed.
+    git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git crc-x86-v1
 
-In any case, we don't even need SG lists here since the correct
-interface to use in rsassa-pkcs1.c is crypto_akcipher_sync_encrypt.
+This patchset applies on top of my other recent CRC patchsets
+https://lore.kernel.org/r/20241103223154.136127-1-ebiggers@kernel.org/ and
+https://lore.kernel.org/r/20241117002244.105200-1-ebiggers@kernel.org/ .
+Consider it a preview for what may be coming next, as my priority is
+getting those two other patchsets merged first.
 
-Thanks,
+This patchset adds a new assembly macro that expands into the body of a
+CRC function for x86 for the specified number of bits, bit order, vector
+length, and AVX level.  There's also a new script that generates the
+constants needed by this function, given a CRC generator polynomial.
+
+This approach allows easily wiring up an x86-optimized implementation of
+any variant of CRC-8, CRC-16, CRC-32, or CRC-64, including full support
+for VPCLMULQDQ.  On long messages the resulting functions are up to 4x
+faster than the existing PCLMULQDQ optimized functions when they exist,
+or up to 29x faster than the existing table-based functions.
+
+This patchset starts by wiring up the new macro for crc32_le,
+crc_t10dif, and crc32_be.  Later I'd also like to wire up crc64_be and
+crc64_rocksoft, once the design of the library functions for those has
+been fixed to be like what I'm doing for crc32* and crc_t10dif.
+
+A similar approach of sharing code between CRC variants, and vector
+lengths when applicable, should work for other architectures.  The CRC
+constant generation script should be mostly reusable.
+
+Eric Biggers (6):
+  x86: move zmm exclusion list into CPU feature flag
+  scripts/crc: add gen-crc-consts.py
+  x86/crc: add "template" for [V]PCLMULQDQ based CRC functions
+  x86/crc32: implement crc32_le using new template
+  x86/crc-t10dif: implement crc_t10dif using new template
+  x86/crc32: implement crc32_be using new template
+
+ arch/x86/Kconfig                        |   2 +-
+ arch/x86/crypto/aesni-intel_glue.c      |  22 +-
+ arch/x86/include/asm/cpufeatures.h      |   1 +
+ arch/x86/kernel/cpu/intel.c             |  22 +
+ arch/x86/lib/Makefile                   |   2 +-
+ arch/x86/lib/crc-pclmul-consts.h        | 148 ++++++
+ arch/x86/lib/crc-pclmul-template-glue.h |  84 ++++
+ arch/x86/lib/crc-pclmul-template.S      | 588 ++++++++++++++++++++++++
+ arch/x86/lib/crc-t10dif-glue.c          |  22 +-
+ arch/x86/lib/crc16-msb-pclmul.S         |   6 +
+ arch/x86/lib/crc32-glue.c               |  38 +-
+ arch/x86/lib/crc32-pclmul.S             | 220 +--------
+ arch/x86/lib/crct10dif-pcl-asm_64.S     | 332 -------------
+ scripts/crc/gen-crc-consts.py           | 207 +++++++++
+ 14 files changed, 1087 insertions(+), 607 deletions(-)
+ create mode 100644 arch/x86/lib/crc-pclmul-consts.h
+ create mode 100644 arch/x86/lib/crc-pclmul-template-glue.h
+ create mode 100644 arch/x86/lib/crc-pclmul-template.S
+ create mode 100644 arch/x86/lib/crc16-msb-pclmul.S
+ delete mode 100644 arch/x86/lib/crct10dif-pcl-asm_64.S
+ create mode 100755 scripts/crc/gen-crc-consts.py
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.47.0
+
 
