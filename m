@@ -1,113 +1,125 @@
-Return-Path: <linux-crypto+bounces-8239-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8242-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C6B39D83CF
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Nov 2024 11:51:42 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53AD99D8530
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Nov 2024 13:14:39 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0093166D5B
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 Nov 2024 10:51:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BD25B42C81
+	for <lists+linux-crypto@lfdr.de>; Mon, 25 Nov 2024 11:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0242E194137;
-	Mon, 25 Nov 2024 10:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF78192D73;
+	Mon, 25 Nov 2024 11:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VoYQSvnA"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A622500B5;
-	Mon, 25 Nov 2024 10:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F59198A32;
+	Mon, 25 Nov 2024 11:24:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732531868; cv=none; b=fl0ZN61u0IVv64bBSaOkHZPiWJR9erK0QxZJ6Mv/WqA1y6+EExCzKdtnrzUlhKhmm2xA5bj8sFC8Ybe0QSVJ4PaDAdxsauUEJpXzINnUZZGx39XppUc/wpfOZ0bsO9EVQLzIqdDVviZtfWYrYDzZgK9fQYigj7c1xCe2iWkmDrU=
+	t=1732533888; cv=none; b=R/VBRncVzQU4giWmyVpizQmA/SRpzB2V2/Ngua7WWGfDsmcxuFJFczELekSEbugJKLXEiL8pNwTRyb3aYxH+Z+q9k9q8bFQKqc35vdOnxd3rR0ltRMZv3HKQMuaJnJzHUeS+RePNR+5fmF6nAtLCwt3GcorSpXIIr/YeWy/YpJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732531868; c=relaxed/simple;
-	bh=/yWyw62R/SG0tLxmmOZ9UjT8tj2zZAL5Cpw4RfSWPvU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TEG4y32LbhF3MhnFgzxNtxOA/7HUp3/amxbKvHzPKoYBW3GTD/iCcNYGF8v3pRO/efXmG6KyeevUp79e/O8QXGbB7LNpTxYdn2omFOVLciruZiPLDxpNave3VerGKBQ/4BNnc6dWEXiD0tVJmMADozTKf9xLxDQMc+V/++c+AzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3355E1692;
-	Mon, 25 Nov 2024 02:51:35 -0800 (PST)
-Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36CA93F66E;
-	Mon, 25 Nov 2024 02:51:03 -0800 (PST)
-Date: Mon, 25 Nov 2024 10:50:48 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Zorro Lang <zlang@redhat.com>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next/fixes] arm64/mm: Fix false-positive
- !virt_addr_valid() for kernel image
-Message-ID: <Z0RWcgrQASMIleRn@J2N7QTR9R3>
-References: <90667b2b7f773308318261f96ebefd1a67133c4c.1732464395.git.lukas@wunner.de>
- <CAMj1kXFvJGHr_iv6bFQfb89XqPFrNWH7-rV7SFy4QBSWXYC4RA@mail.gmail.com>
- <CAMj1kXER7AbNyUDjtij6Ni0jVRMg11xvyhkCMKAxaKbx=dsgcQ@mail.gmail.com>
- <Z0RJaU4wjU5WeQb4@wunner.de>
+	s=arc-20240116; t=1732533888; c=relaxed/simple;
+	bh=bufTrmZZEmz3z0SOZC4QdSCJjdahdcMLTexlKlGjLM4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XuQwTpCJdEGNeMjUfvwWRa3Io0MxQC82Udt8opP4L/aiWdrUbQp5ZMyCk3ftNQ1Pf2l2gOfUozqrTS/dYEe2gNTWk87rlXcPkYdQhnJ0ua95UI45z8xIpBFrIzc2ypXV5wqdXP8l5Hkldx0VHR7u1WojQr2AyUB9UkiMeXp7JL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VoYQSvnA; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4APAqEjH020661;
+	Mon, 25 Nov 2024 11:19:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=cCgvjCjtlR+ZQzoMmAJsBY
+	TLeELTO+RMuHAcI8dwO/I=; b=VoYQSvnAFhoxHSeeAQTAHkc6UHfd6Ijq0t+SRG
+	vrtyBV3Td+YIRzzU4iEE78/krwXAQLwesZVqvCKSZsQVAaTZekMt0sf7o9Yw6xwL
+	Ah0avUO5/40fEcnb5aU+888aA2waaX8Bd2ChOk+IEvLCsFI92f67Y6qrtJxnf7EQ
+	Kb6WBU+uQy3NNrzHON7Lr+m1osRoSFZmmdikotoVkGN/ErIwGEwiYs5vsMsBoinI
+	xRicBENRpciXIdm3z9ByJuXWklZV376d8EpFJ0D/xcgvUSKI/6g4MZzLBnfsCcHw
+	cTU8sfILHjf7tiTm6ligltwgDdtBB4h87ehpwNDPksCcJr3A==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4337tjcakq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Nov 2024 11:19:38 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4APBJbjL008505
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Nov 2024 11:19:37 GMT
+Received: from hu-yrangana-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Mon, 25 Nov 2024 03:19:33 -0800
+From: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>
+To: Thara Gopinath <thara.gopinath@gmail.com>,
+        Herbert Xu
+	<herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Rob
+ Herring" <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        "Conor
+ Dooley" <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konradybcio@kernel.org>,
+        Bhupesh Sharma
+	<bhupesh.sharma@linaro.org>
+CC: <linux-crypto@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_yrangana@quicinc.com>
+Subject: [PATCH V2 0/2] Add QCrypto support for QCS8300
+Date: Mon, 25 Nov 2024 16:49:21 +0530
+Message-ID: <20241125111923.2218374-1-quic_yrangana@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z0RJaU4wjU5WeQb4@wunner.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 29Jq7ffVKqMxKcmn50LUGHkDJQRsTQdZ
+X-Proofpoint-ORIG-GUID: 29Jq7ffVKqMxKcmn50LUGHkDJQRsTQdZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ impostorscore=0 priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=832 adultscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
+ definitions=main-2411250097
 
-On Mon, Nov 25, 2024 at 10:54:49AM +0100, Lukas Wunner wrote:
-> On Sun, Nov 24, 2024 at 06:13:26PM +0100, Ard Biesheuvel wrote:
-> > > On Sun, 24 Nov 2024 at 17:16, Lukas Wunner <lukas@wunner.de> wrote:
-> > > > Zorro reports a false-positive BUG_ON() when running crypto selftests on
-> > > > boot:  Since commit 1e562deacecc ("crypto: rsassa-pkcs1 - Migrate to
-> > > > sig_alg backend"), test_sig_one() invokes an RSA verify operation with a
-> > > > test vector in the kernel's .rodata section.  The test vector is passed
-> > > > to sg_set_buf(), which performs a virt_addr_valid() check.
-> > > >
-> > > > On arm64, virt_addr_valid() returns false for kernel image addresses
-> > > > such as this one, even though they're valid virtual addresses.
-> > > > x86 returns true for kernel image addresses, so the BUG_ON() does not
-> > > > occur there.  In fact, x86 has been doing so for 16 years, i.e. since
-> > > > commit af5c2bd16ac2 ("x86: fix virt_addr_valid() with
-> > > > CONFIG_DEBUG_VIRTUAL=y, v2").
-> > > >
-> > > > Do the same on arm64 to avoid the false-positive BUG_ON() and to achieve
-> > > > consistent virt_addr_valid() behavior across arches.
-> [...]
-> > that doesn't mean doing DMA from the kernel image is a great
-> > idea. Allocations in the linear map are rounded up to cacheline size
-> > to ensure that they are safe for non-coherent DMA, but this does not
-> > apply to the kernel image. .rodata should still be safe in this
-> > regard, but the general idea of allowing kernel image addresses in
-> > places where DMA'able virtual addresses are expected is something we
-> > should consider with care.
-> 
-> Other arches do not seem to be concerned about this and
-> let virt_addr_valid() return true for the kernel image.
-> It's not clear why arm64 is special and needs to return false.
-> 
-> However, I agree there's hardly ever a reason to DMA from/to the
-> .text section.  From a security perspective, constraining this to
-> .rodata seems reasonable to me and I'll be happy to amend the patch
-> to that effect if that's the consensus.
+Document QCS8300 support for QCrypto driver and add QCE 
+and Crypto BAM DMA nodes.
 
-Instead, can we update the test to use lm_alias() on the symbols in
-question? That'll convert a kernel image address to its linear map
-alias, and then that'll work with virt_addr_valid(), virt_to_phys(),
-etc.
+This series depends on below patch series:
+https://lore.kernel.org/all/20240925-qcs8300_initial_dtsi-v2-0-494c40fa2a42@quicinc.com/ - Reviewed
 
-I don't think it's generally a good idea to relax virt_addr_valid() to
-accept addresses outside of the linear map, regardless of what other
-architectures do. We've had issues in the past with broken conversions,
-and the fixups in virt_to_phys() is really only there as a best-effort
-way to not crash and allow the warning messages to get out.
+Signed-off-by: Yuvaraj Ranganathan <quic_yrangana@quicinc.com>
+---
+Changes in v2:
+ - Set the interconnect tag to QCOM_ICC_TAG_ALWAYS instead of passing 0(no TAG). 
+ - Link to v1:  https://lore.kernel.org/all/20241113055830.2918347-1-quic_yrangana@quicinc.com/
 
-Mark.
+---
+Yuvaraj Ranganathan (2):
+  dt-bindings: crypto: qcom-qce: document the QCS8300 crypto engine
+  arm64: dts: qcom: qcs8300: add QCrypto nodes
+
+ .../devicetree/bindings/crypto/qcom-qce.yaml  |  1 +
+ arch/arm64/boot/dts/qcom/qcs8300.dtsi         | 24 +++++++++++++++++++
+ 2 files changed, 25 insertions(+)
+
+-- 
+2.34.1
+
 
