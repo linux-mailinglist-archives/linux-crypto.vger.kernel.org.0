@@ -1,171 +1,159 @@
-Return-Path: <linux-crypto+bounces-8283-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8286-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9B899DC1BB
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 Nov 2024 10:53:30 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F87F9DC2A5
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Nov 2024 12:16:16 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F8E82824AF
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 Nov 2024 09:53:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25DB91615E1
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 Nov 2024 11:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96431850AF;
-	Fri, 29 Nov 2024 09:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1340719924E;
+	Fri, 29 Nov 2024 11:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="CcXX6HmQ"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bSVeQHeD"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A57160799;
-	Fri, 29 Nov 2024 09:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827591586C8;
+	Fri, 29 Nov 2024 11:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732874005; cv=none; b=NtuwgJQzvWhJZ3N1W9D0WS5EImZ/VFkRm29TskWXdCZCNmZ8x93DoxcjqDGkacgx2op7DtHTOqsdEhIfGVSMFyCUUhuE/8S0XyYVsApVg5NqKnP362gPDUAnD4wpgyi4chK+0qRglN4EDBtj90KF2hXRy9wAU5gxQyzq1VXAYGQ=
+	t=1732878971; cv=none; b=UmcAImmtsAAo0fmXA+xCPDYC+FF3Cg8up2ITd0AXr+IWGxwDxonORnnkLdB6tUIL/0EZG3TSgydLUeXAmgFAc69jhBfdzUTjq6KJDyOK9gjZvh9GGEOh+bkLNS3RHeRiuLN3exlPROfzqHZwZ6tbi8/tlsTZ9wtkU2IJG/ZaJDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732874005; c=relaxed/simple;
-	bh=hx3C9drbPwcI7X8FuWDpi2I33d1NaJctELt9voru1fI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bM7av9AGBK7vV+2A231Ip0ywKllHRdpQ5GYwk5p6EQYVxq8Xku5+fgR1zrhHgF0q6h5/yj2w5WQhs9GgQKwv8hmI44yEyGiHjo+RvC8zFjgq9WHt2yO3yIUo0TtlSIJDeMx+oM945MLJPWbr6tW7McjTXDK1baNsFlWOOX72RFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=CcXX6HmQ; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=Yl0j5uIS4r/S01x6tXWiLlOS813jd6l7rs7DmO+WbWI=; b=CcXX6HmQ7izN0f06eKh6B6PvY5
-	vwjaizE1uwJGGLrvtBhaKXdr815xV/SLM/vAjHNHCj48VMw1QSPsZzxaZEBOtzadymv3Dly7nX8QF
-	TKTaWPm7n6seDaDI/DmDMqV4ffI2rDnz3Ey8S3mxDVdDMku40Xs3yfTvxmUHGBnYt/eJRJoDvc6+9
-	+PBfE/6VRWYJHOsuMY7V+dL+PK+/BDEEVspnWY4oJmhNhzzInKVkGCCbKZfpYMsGaGzVHlCmEnx7I
-	3IkH2uh73gDAfu6VQcK1Wm0xq5nllLsu3gzC2ztfK6MfHpIugVGux6joOBR1ABBTu1R1AbK7w+mDU
-	0LnxyG6Q==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tGxgb-002MkO-01;
-	Fri, 29 Nov 2024 17:53:18 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 Nov 2024 17:53:16 +0800
-Date: Fri, 29 Nov 2024 17:53:16 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Zorro Lang <zlang@redhat.com>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Lukas Wunner <lukas@wunner.de>, Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH] crypto: rsassa-pkcs1 - Copy source data for SG list
-Message-ID: <Z0mPDA31r_LEYzNq@gondor.apana.org.au>
-References: <20241122045106.tzhvm2wrqvttub6k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+	s=arc-20240116; t=1732878971; c=relaxed/simple;
+	bh=6ouqENTqLw886zWpLJC0n681BepRUowgvS3Y3wxo1GA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gUuFw6+2HUUe06XFySn0zp6bA7NRxkF/du7I1Wp8J5U2+p1oA8/RppKHXJLiRk39/GXLknJwiQ1/YxXQf358Hz4wrHaZvdFLwZ48O3suTIPiqvDfjrbktcVRN1/1Pcv9E5ZtFaHxzqz64/zex01nmHWsagymciKuYro0i32K7hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bSVeQHeD; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AT80tv1002220;
+	Fri, 29 Nov 2024 11:11:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=gzcZkhh/Uh4y9Ds1ndVI+z0KwrwafdJ92qdDoS8bl
+	A8=; b=bSVeQHeDEufGMwkyWnFtu8Ga//Bp2OsJK7KbwkMPP/1F48VH9OXp/Z0T1
+	cnGcOByLkK3llGxkgUKRNokD7VWncYf8K1TanXON/f+yFjNYL2iZRH2m6pjVco2n
+	4VcKZks4K6Q8nL0GDO6PxAJOxTJd0bIK0KoM4NY2onVseIdOZ3iJKDn2PR/jlQbV
+	DnMeEmvfvOyqJE8T5StwNN4pwH2kQcI4xEysLdV2wwFIc3bK+gDoWny8WS7rfmmh
+	JVpGRPWOnygIa0B290U+M3JLa8ELQnqDsETYO9t5tBcrqeV6qyZfR8roLDSWWSfc
+	drsG0yOSNmlSytSRPlaliYSQsQrSg==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4366yxssqy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Nov 2024 11:11:02 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4ATB1Hgp011990;
+	Fri, 29 Nov 2024 11:11:01 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43672gv9hp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Nov 2024 11:11:01 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4ATBAx6329753954
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 29 Nov 2024 11:10:59 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BE52D2004B;
+	Fri, 29 Nov 2024 11:10:59 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8A24820040;
+	Fri, 29 Nov 2024 11:10:59 +0000 (GMT)
+Received: from funtu2.fritz.box?044ibm.com (unknown [9.171.44.200])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 29 Nov 2024 11:10:59 +0000 (GMT)
+From: Harald Freudenberger <freude@linux.ibm.com>
+To: herbert@gondor.apana.org.au, davem@davemloft.net, dengler@linux.ibm.com
+Cc: linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: [PATCH v6 0/2] New s390 specific protected key hmac
+Date: Fri, 29 Nov 2024 12:10:56 +0100
+Message-ID: <20241129111059.303905-1-freude@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241122045106.tzhvm2wrqvttub6k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PogoSDJfgxXMDn2pFgqjsklv9_jlPuw0
+X-Proofpoint-GUID: PogoSDJfgxXMDn2pFgqjsklv9_jlPuw0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ clxscore=1015 mlxlogscore=777 adultscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2411290090
 
-As virtual addresses in general may not be suitable for DMA, always
-perform a copy before using them in an SG list.
+Add support for protected key hmac ("phmac") for s390 arch.
 
-Fixes: 1e562deacecc ("crypto: rsassa-pkcs1 - Migrate to sig_alg backend")
-Reported-by: Zorro Lang <zlang@redhat.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+With the latest machine generation there is now support for
+protected key (that is a key wrapped by a master key stored
+in firmware) hmac for sha2 (sha224, sha256, sha384 and sha512)
+for the s390 specific CPACF instruction kmac.
 
-diff --git a/crypto/rsassa-pkcs1.c b/crypto/rsassa-pkcs1.c
-index 4d077fc96076..f68ffd338f48 100644
---- a/crypto/rsassa-pkcs1.c
-+++ b/crypto/rsassa-pkcs1.c
-@@ -163,10 +163,6 @@ static int rsassa_pkcs1_sign(struct crypto_sig *tfm,
- 	struct rsassa_pkcs1_inst_ctx *ictx = sig_instance_ctx(inst);
- 	const struct hash_prefix *hash_prefix = ictx->hash_prefix;
- 	struct rsassa_pkcs1_ctx *ctx = crypto_sig_ctx(tfm);
--	unsigned int child_reqsize = crypto_akcipher_reqsize(ctx->child);
--	struct akcipher_request *child_req __free(kfree_sensitive) = NULL;
--	struct scatterlist in_sg[3], out_sg;
--	struct crypto_wait cwait;
- 	unsigned int pad_len;
- 	unsigned int ps_end;
- 	unsigned int len;
-@@ -187,37 +183,25 @@ static int rsassa_pkcs1_sign(struct crypto_sig *tfm,
- 
- 	pad_len = ctx->key_size - slen - hash_prefix->size - 1;
- 
--	child_req = kmalloc(sizeof(*child_req) + child_reqsize + pad_len,
--			    GFP_KERNEL);
--	if (!child_req)
--		return -ENOMEM;
--
- 	/* RFC 8017 sec 8.2.1 step 1 - EMSA-PKCS1-v1_5 encoding generation */
--	in_buf = (u8 *)(child_req + 1) + child_reqsize;
-+	in_buf = dst;
-+	memmove(in_buf + pad_len + hash_prefix->size, src, slen);
-+	memcpy(in_buf + pad_len, hash_prefix->data, hash_prefix->size);
-+
- 	ps_end = pad_len - 1;
- 	in_buf[0] = 0x01;
- 	memset(in_buf + 1, 0xff, ps_end - 1);
- 	in_buf[ps_end] = 0x00;
- 
--	/* RFC 8017 sec 8.2.1 step 2 - RSA signature */
--	crypto_init_wait(&cwait);
--	sg_init_table(in_sg, 3);
--	sg_set_buf(&in_sg[0], in_buf, pad_len);
--	sg_set_buf(&in_sg[1], hash_prefix->data, hash_prefix->size);
--	sg_set_buf(&in_sg[2], src, slen);
--	sg_init_one(&out_sg, dst, dlen);
--	akcipher_request_set_tfm(child_req, ctx->child);
--	akcipher_request_set_crypt(child_req, in_sg, &out_sg,
--				   ctx->key_size - 1, dlen);
--	akcipher_request_set_callback(child_req, CRYPTO_TFM_REQ_MAY_SLEEP,
--				      crypto_req_done, &cwait);
- 
--	err = crypto_akcipher_decrypt(child_req);
--	err = crypto_wait_req(err, &cwait);
--	if (err)
-+	/* RFC 8017 sec 8.2.1 step 2 - RSA signature */
-+	err = crypto_akcipher_sync_decrypt(ctx->child, in_buf,
-+					   ctx->key_size - 1, in_buf,
-+					   ctx->key_size);
-+	if (err < 0)
- 		return err;
- 
--	len = child_req->dst_len;
-+	len = err;
- 	pad_len = ctx->key_size - len;
- 
- 	/* Four billion to one */
-@@ -239,8 +223,8 @@ static int rsassa_pkcs1_verify(struct crypto_sig *tfm,
- 	struct rsassa_pkcs1_ctx *ctx = crypto_sig_ctx(tfm);
- 	unsigned int child_reqsize = crypto_akcipher_reqsize(ctx->child);
- 	struct akcipher_request *child_req __free(kfree_sensitive) = NULL;
--	struct scatterlist in_sg, out_sg;
- 	struct crypto_wait cwait;
-+	struct scatterlist sg;
- 	unsigned int dst_len;
- 	unsigned int pos;
- 	u8 *out_buf;
-@@ -259,13 +243,12 @@ static int rsassa_pkcs1_verify(struct crypto_sig *tfm,
- 		return -ENOMEM;
- 
- 	out_buf = (u8 *)(child_req + 1) + child_reqsize;
-+	memcpy(out_buf, src, slen);
- 
- 	crypto_init_wait(&cwait);
--	sg_init_one(&in_sg, src, slen);
--	sg_init_one(&out_sg, out_buf, ctx->key_size);
-+	sg_init_one(&sg, out_buf, slen);
- 	akcipher_request_set_tfm(child_req, ctx->child);
--	akcipher_request_set_crypt(child_req, &in_sg, &out_sg,
--				   slen, ctx->key_size);
-+	akcipher_request_set_crypt(child_req, &sg, &sg, slen, slen);
- 	akcipher_request_set_callback(child_req, CRYPTO_TFM_REQ_MAY_SLEEP,
- 				      crypto_req_done, &cwait);
- 
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+This patch adds support via 4 new hashes registered as
+phmac(sha224), phmac(sha256), phmac(sha384) and phmac(sha512).
+
+Please note that as of now, there is no selftest enabled for
+these shashes, but the implementation has been tested with
+testcases via AF_ALG interface. However, there may come an
+improvement soon to use the available clear key hmac selftests.
+
+Changelog:
+v1: Initial version
+v2: Increase HASH_MAX_DESCSIZE generic (not just for arch s390).
+    Fix one finding to use kmemdup instead of kmalloc/memcpy from test
+    robot. Remove unneeded cpacf subfunctions checks. Simplify
+    clone_tfm() function. Rebased to s390/features.
+v3: Feedback from Herbert: Use GFP_ATOMIC in setkey function.
+    Feedback from Holger: rework tfm clone function, move convert key
+    invocation from setkey to init function. Rebased to updated
+    s390/features from 11/7/2024. Ready for integration if there are
+    no complains on v3.
+v4: Rewind back more or less to v2. Add code to check for non-sleeping
+    context. Non-sleeping context during attempt to derive the
+    protected key from raw key material is not accepted and
+    -EOPNOTSUPP is returned (also currently all derivation pathes
+    would in fact never sleep). In general the phmac implementation is
+    not to be used within non-sleeping context and the code header
+    mentions this. Tested with (patched) dm-integrity - works fine.
+v5: As suggested by Herbert now the shashes have been marked as
+    'internal' and wrapped by ahashes which use the cryptd if an
+    atomic context is detected. So the visible phmac algorithms are
+    now ahashes. Unfortunately the dm-integrity implementation
+    currently requests and deals only with shashes and this phmac
+    implementation is not fitting to the original goal any more...
+v6: As suggested by Herbert now a pure async phmac implementation.
+    Tested via AF_ALG interface. Untested via dm-integrity as this layer
+    only supports shashes. Maybe I'll develop a patch to switch the
+    dm-integrity to ahash as it is anyway the more flexible interface.
+
+Harald Freudenberger (1):
+  s390/crypto: New s390 specific protected key hash phmac
+
+Holger Dengler (1):
+  s390/crypto: Add protected key hmac subfunctions for KMAC
+
+ arch/s390/configs/debug_defconfig |   1 +
+ arch/s390/configs/defconfig       |   1 +
+ arch/s390/crypto/Makefile         |   1 +
+ arch/s390/crypto/phmac_s390.c     | 474 ++++++++++++++++++++++++++++++
+ arch/s390/include/asm/cpacf.h     |   4 +
+ drivers/crypto/Kconfig            |  12 +
+ 6 files changed, 493 insertions(+)
+ create mode 100644 arch/s390/crypto/phmac_s390.c
+
+
+base-commit: 3f020399e4f1c690ce87b4c472f75b1fc89e07d5
+--
+2.43.0
+
 
