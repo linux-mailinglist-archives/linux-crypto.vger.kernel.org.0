@@ -1,123 +1,176 @@
-Return-Path: <linux-crypto+bounces-8343-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8345-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8F59E080D
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Dec 2024 17:11:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D46589E0707
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Dec 2024 16:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A79AB391C8
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Dec 2024 14:30:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B175280A79
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Dec 2024 15:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F25E2204F63;
-	Mon,  2 Dec 2024 14:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4B120B7E9;
+	Mon,  2 Dec 2024 15:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ts5SCsA8"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uRx6VuxM"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B393E2040B3
-	for <linux-crypto@vger.kernel.org>; Mon,  2 Dec 2024 14:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17A420A5E1
+	for <linux-crypto@vger.kernel.org>; Mon,  2 Dec 2024 15:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733149831; cv=none; b=QEnxd9XNlgr5yDpevnhip1Gl4zq+5+HKz2F3frUH1URCpqQaRipdxel0nATBzsKzecysPh/+v+uhb1ryufio9dbBNKGqFUPmqVIw2SCQcvcY/PoVYVlSege/tZmCM5ZoMlF7JxyQMR5IeSatJzDPakvbM29UXQKGepE3/Dg5O0w=
+	t=1733153089; cv=none; b=ravQiM00Jj13qFktWoZ2/nzEer/PQ0zcWVC5uHWIsG1pSc7wY9bUARnFhmKC5p/FRK0pDpbwwFlTB5oZrCqieIdBd6O2a9xX2XghZLSoVdUrcq+xquuZ804Mh3Whhc1WEqtbkauFAZXqnn4jKZsjmkFwo3Y9AAqjGeyIzjV4Hrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733149831; c=relaxed/simple;
-	bh=Svjuo5V8Wl0PrlCCeCE0EAGZyFEy5Fqm+ODQK619Izs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VVLhm78445kgmwF55XMjnlCYA8tpTeE7k3d2AP4DqYz76Z1KyJk0QbSyCCh/6MSMfqGYc2IezI6S2xms1iutWRu2c+9VWOx8/xMP27jFzFeFVxwjFgjCL1e53lM4904PyqYuYj0qvzwtew5r2C5heXvGHNqPjCcMTMfNisk7sbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ts5SCsA8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85D0C4CEE0;
-	Mon,  2 Dec 2024 14:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733149831;
-	bh=Svjuo5V8Wl0PrlCCeCE0EAGZyFEy5Fqm+ODQK619Izs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ts5SCsA8hHVvGW0b1j8JtWJeQprvER+MmBD6Jgk68/j4LH4Hvo4ytmmoBmCov3f2G
-	 mPx5uSVqmJaSpOvd2sQJAsR5wasxi8KwZE3/9jAEf01dtKqZElcOqCvlrN9/IsCKoJ
-	 birBdQh4QiIq/9oqAFSugvZDLTFJ83pwrewDyazoUu5lB/vG/YkwxVUejNja97gG4i
-	 jBPGimXHqxiHHo+s0ojH8gucZbEhhpxNGtvDQOfnNF2/3zugvaFhIY/ct7TaZ+DheY
-	 udUCmTZQxGCIWNgttg6GTq26wuCH3hbiuXC4p4nyMgk4yJgjsEP3dDEtsRmN4d2lMB
-	 qXi/kwFHJPrUg==
-From: Hannes Reinecke <hare@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Keith Busch <kbusch@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	linux-nvme@lists.infradead.org,
-	Eric Biggers <ebiggers@kernel.org>,
-	linux-crypto@vger.kernel.org,
-	Hannes Reinecke <hare@kernel.org>
-Subject: [PATCH 10/10] nvmet: add tls_concat and tls_key debugfs entries
-Date: Mon,  2 Dec 2024 15:29:59 +0100
-Message-Id: <20241202142959.81321-11-hare@kernel.org>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20241202142959.81321-1-hare@kernel.org>
-References: <20241202142959.81321-1-hare@kernel.org>
+	s=arc-20240116; t=1733153089; c=relaxed/simple;
+	bh=goFeMCUVRbDjipThdghVVJLskLf8H473+GNXYnXXrDw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ABVj9opwdjRV2wTmutdVNXxWRuLGMtaWicfZr+QUuiACI3aDInSJ0IxHwvVtQJuHIaMUnuqjS9SYUrlUTny/seJeZ77IG3+h9iQZQ+5nS7AbBTLDlHGuTdu2O6WrZBgKkIsOP4swN39e9ToDsr2mxcgmzdNSCOFY3S5r2C8o6eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uRx6VuxM; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e3970ac2dddso3383890276.2
+        for <linux-crypto@vger.kernel.org>; Mon, 02 Dec 2024 07:24:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1733153086; x=1733757886; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=05ZXtxtYDYApb+lIzc95yV2LA74LDricN9fUjzTVsRg=;
+        b=uRx6VuxMhqjU5kzREUBVrmyWJSJ7t6VMUn63IrxrbKfo9zn62de77W8cHQYI1pZNTb
+         +Zf2y+HArTa8UNB7E0w4Sv93LqC/jOfvYSZvfhPTmZs1Hm/pEXeobFAd+FCNtGULtsCC
+         vRGSH43uofb1IDl+y0iRlmNSWBsOSa+b10ouag4h2ikswTJEuh+DIixdHGtOUEwl7JCn
+         a9t7QKqJ+YDq1wEn2s9ViNVOGoA5L1waoMBg5zdknUGpgn4AyuH3L5gxmTChIvDQNjX9
+         npjRvDIQcRyjJ88CRS9jyg/86RMeV+KQzJCzexa74VLy3Xq2ye1HPCUwi16MzhDQ6Gqd
+         Uflw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733153086; x=1733757886;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=05ZXtxtYDYApb+lIzc95yV2LA74LDricN9fUjzTVsRg=;
+        b=FhmZ4h2XrDTuFzWlkEhTcU4tjiecB65ENha/waq8RDv5rmoOWpE7Ky6cSaCoG9M3Rt
+         uXGvt9ya9haGiGkjef8g6FDaCkNTYdBfLVepAIcssJZJoc3aUGzP6xAzES7VXQxr0EH3
+         w2b+zjEf6yxaHk+5SQoOMXQWs1E+E7i17CsVqesrnvxgkOjXTpEs3DIvw+s73gW9FDUr
+         nSZYubC4Sc3PkUkFFtjYh6/gCnBUJAhatIlV5vLbXtkfEt4ElzC9y4HW7D3UyXNiHYik
+         2mnI1w+SLQG5BhUS2UE0YUpnHmKVCPALGWVJklhTtN7b+n2a/ttcV7MFxif1cbSA84sR
+         NtWg==
+X-Forwarded-Encrypted: i=1; AJvYcCUU7Zfd4YUfmcqNzsQaxhpxzYMjBSo5MNPNEpd/EmgvIY0+ll3bmQ5P1GpQedQPBhc58WdpCDoCOH2HUmg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5NhqNx44qTHj03vcFv4Kkeso3jLoeqofsh4D1nSJ3HC6/Xl0f
+	YqZzn6S9v0GHfY/QQ4qSuEtsXKDx4smH6gli2LkShAKz3QmS4b7/OE4Jfrsp00e3F6Ksw9qnUyr
+	DHfv7z00MEBo1R+qTpb6vnKeWm/ynllGKfKVYXg==
+X-Gm-Gg: ASbGncsei39GKg4sxBO5xKxpmZ+JMy6xJs1iDvpC2R5cMpusRIwntjue6vD8tN9Lt3h
+	Fb7MvDrqL9NJgHkOowzDc8JnV4QyrAXDI
+X-Google-Smtp-Source: AGHT+IG1/7GNikn+o7qWaeU6OlA3SHIeQqG6VzX6iFXwmrBOhF0bD/LXd61skcVAWua1i/pv/Z75jusfAxofKt3ImP8=
+X-Received: by 2002:a05:6902:2e0e:b0:e39:9b9f:7f87 with SMTP id
+ 3f1490d57ef6-e399b9f830cmr6954354276.29.1733153086437; Mon, 02 Dec 2024
+ 07:24:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241130094758.15553-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20241130094758.15553-1-krzysztof.kozlowski@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Mon, 2 Dec 2024 16:24:10 +0100
+Message-ID: <CAPDyKFqiar=EKBHG=PHimjNcdLKsVdx+BRZReEJzHr8_qoayeg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Drop Bhupesh Sharma from maintainers
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konradybcio@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
+	Bhupesh Sharma <bhupesh.linux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Add debugfs entries to display the 'concat' and 'tls_key' controller
-attributes.
+On Sat, 30 Nov 2024 at 10:48, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> For more than a year all emails to Bhupesh Sharma's Linaro emails bounce
+> and there were no updates to mailmap.  No reviews from Bhupesh, either,
+> so change the maintainer to Bjorn and Konrad (Qualcomm SoC maintainers).
+>
+> Cc: Bhupesh Sharma <bhupesh.linux@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Signed-off-by: Hannes Reinecke <hare@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
----
- drivers/nvme/target/debugfs.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+I have queued this up via my mmc tree for next. If anyone has
+objections to that and wants to funnel this via another tree, please
+let me know!
 
-diff --git a/drivers/nvme/target/debugfs.c b/drivers/nvme/target/debugfs.c
-index 220c7391fc19..e4300eb95101 100644
---- a/drivers/nvme/target/debugfs.c
-+++ b/drivers/nvme/target/debugfs.c
-@@ -132,6 +132,27 @@ static int nvmet_ctrl_host_traddr_show(struct seq_file *m, void *p)
- }
- NVMET_DEBUGFS_ATTR(nvmet_ctrl_host_traddr);
- 
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+static int nvmet_ctrl_tls_key_show(struct seq_file *m, void *p)
-+{
-+	struct nvmet_ctrl *ctrl = m->private;
-+	key_serial_t keyid = nvmet_queue_tls_keyid(ctrl->sqs[0]);
-+
-+	seq_printf(m, "%08x\n", keyid);
-+	return 0;
-+}
-+NVMET_DEBUGFS_ATTR(nvmet_ctrl_tls_key);
-+
-+static int nvmet_ctrl_tls_concat_show(struct seq_file *m, void *p)
-+{
-+	struct nvmet_ctrl *ctrl = m->private;
-+
-+	seq_printf(m, "%d\n", ctrl->concat);
-+	return 0;
-+}
-+NVMET_DEBUGFS_ATTR(nvmet_ctrl_tls_concat);
-+#endif
-+
- int nvmet_debugfs_ctrl_setup(struct nvmet_ctrl *ctrl)
- {
- 	char name[32];
-@@ -157,6 +178,12 @@ int nvmet_debugfs_ctrl_setup(struct nvmet_ctrl *ctrl)
- 			    &nvmet_ctrl_state_fops);
- 	debugfs_create_file("host_traddr", S_IRUSR, ctrl->debugfs_dir, ctrl,
- 			    &nvmet_ctrl_host_traddr_fops);
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+	debugfs_create_file("tls_concat", S_IRUSR, ctrl->debugfs_dir, ctrl,
-+			    &nvmet_ctrl_tls_concat_fops);
-+	debugfs_create_file("tls_key", S_IRUSR, ctrl->debugfs_dir, ctrl,
-+			    &nvmet_ctrl_tls_key_fops);
-+#endif
- 	return 0;
- }
- 
--- 
-2.35.3
+Kind regards
+Uffe
 
+
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom-qce.yaml         | 3 ++-
+>  Documentation/devicetree/bindings/mmc/sdhci-msm.yaml           | 3 ++-
+>  Documentation/devicetree/bindings/net/qcom,ethqos.yaml         | 3 ++-
+>  .../devicetree/bindings/remoteproc/qcom,sm6115-pas.yaml        | 3 ++-
+>  4 files changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> index c09be97434ac..62310add2e44 100644
+> --- a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Qualcomm crypto engine driver
+>
+>  maintainers:
+> -  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> +  - Bjorn Andersson <andersson@kernel.org>
+> +  - Konrad Dybcio <konradybcio@kernel.org>
+>
+>  description:
+>    This document defines the binding for the QCE crypto
+> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> index 8b393e26e025..eed9063e9bb3 100644
+> --- a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Qualcomm SDHCI controller (sdhci-msm)
+>
+>  maintainers:
+> -  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> +  - Bjorn Andersson <andersson@kernel.org>
+> +  - Konrad Dybcio <konradybcio@kernel.org>
+>
+>  description:
+>    Secure Digital Host Controller Interface (SDHCI) present on
+> diff --git a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+> index 0bcd593a7bd0..f117471fb06f 100644
+> --- a/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+> +++ b/Documentation/devicetree/bindings/net/qcom,ethqos.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Qualcomm Ethernet ETHQOS device
+>
+>  maintainers:
+> -  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> +  - Bjorn Andersson <andersson@kernel.org>
+> +  - Konrad Dybcio <konradybcio@kernel.org>
+>
+>  description:
+>    dwmmac based Qualcomm ethernet devices which support Gigabit
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,sm6115-pas.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,sm6115-pas.yaml
+> index 758adb06c8dd..059cb87b4d6c 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/qcom,sm6115-pas.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,sm6115-pas.yaml
+> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Qualcomm SM6115 Peripheral Authentication Service
+>
+>  maintainers:
+> -  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> +  - Bjorn Andersson <andersson@kernel.org>
+> +  - Konrad Dybcio <konradybcio@kernel.org>
+>
+>  description:
+>    Qualcomm SM6115 SoC Peripheral Authentication Service loads and boots
+> --
+> 2.43.0
+>
+>
 
