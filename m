@@ -1,248 +1,172 @@
-Return-Path: <linux-crypto+bounces-8396-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8398-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 911B69E279B
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 17:35:37 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C8C29E277B
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 17:31:04 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22D5616526A
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 16:31:01 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B6C1F76C2;
+	Tue,  3 Dec 2024 16:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cN7BVadz"
+X-Original-To: linux-crypto@vger.kernel.org
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D05BABC58BE
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 15:40:23 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44C220B1FF;
-	Tue,  3 Dec 2024 15:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IBKHnfVG"
-X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6DCE1F9EAC;
-	Tue,  3 Dec 2024 15:34:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0000F2BD1D;
+	Tue,  3 Dec 2024 16:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733240093; cv=none; b=fVsd3scDucZUhBa0AKKGjggMzce3ljPrWXPQ3R8SCfiH+tEUU7ABhKr2Mx1crpJwIW0d0lCnSC17QIlFdfRm0QMjhM4ilr7hjRkz0GdbM41iEy06rTTZwOQYhQ9GtwjfQOpExSM5JixFq9//d+rjQausf5a73YXcXLB/2lJ6HrA=
+	t=1733243460; cv=none; b=j18aJJg/4uP8dboD7XK5YQTxmza27j/FMpaiZWsBGNHsRN60cIkFC/irumvGzkhrjuYOomskaLtTtoKDpe9ckcNicMZDYbJojzEobfNXRl/yq1A/LJjkcmGQm/3DEohci76yaMOYItyDWO3FmhaTfjRbzIzB5bi3lZLAJ/8w3oQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733240093; c=relaxed/simple;
-	bh=7RdZ/c6LtqIwtQidEPgp/g2EsiXbW+42XlXhJHw90ZM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TLkZACpvdgGBy5ZmzIYyn4hVR2uqS5seQ099nvB1kAl+4DcuSjsvlzqfjcghU6aN9KU8S4E9dRPHUQzinyThi7qaBEhu82h/a57tERLt06qf6BlZL6rXspsdXTpHf5lQ0T6SJNf7al75LtC4TiHjM6BT1hpFEy8XSNa54KaffSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IBKHnfVG; arc=none smtp.client-ip=209.85.214.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-21577f65bdeso20414385ad.0;
-        Tue, 03 Dec 2024 07:34:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733240091; x=1733844891; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6n8xLa3bFG6KMlrCFd/orG3iRc5rITWuVB3hCMj+sL0=;
-        b=IBKHnfVGw2zwvQ1N+WRtaAUiccee4zOTzWJpsPMsfOOjNRAw6zWUkj4yMt5M+BHKlE
-         jnfSQeFBurikTVTHUL92LTHDb5PrpOpbtqyvSUzTpl4GYTfj69y10WBvrGLxEEaoWkzM
-         V7fExhMJFIsFGsu91fbiOZIZEzpSxdbZf6pnfQKwiyJk1kjd+0V9n5rVTdfEzcun5O5S
-         Ks3vpf8jco03oTap/75uSVSmI1T99s/3S5W8HjfjNNCMY7Bm1yh3fWsw8aTrhF8cOKZT
-         ufM9vWx4HzdCOzKDz+FCblIRH5iEhr1A3kJ5qguq2bRAMHHTJ4gWgVSdeCe0lFFIa4E9
-         t9Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733240091; x=1733844891;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6n8xLa3bFG6KMlrCFd/orG3iRc5rITWuVB3hCMj+sL0=;
-        b=I+mQcvtM1wOGnnlmaY0uniLD99Ele5voVXdWDSNw/UT7k0pUWlxtequpi+PT+vslbY
-         nGwiQsiNf9qmOUuz7zN17Yr6Gwg8ukC3yUiRj8jMgLoXlCsab6YP7DBBIz72i7Rtctje
-         IIvNYY7QVHLxv20ZKsp9LhyFVMJSdm5aOaYztq8KVSg2MDOXiTsfR+7FcZhlajjI5t7+
-         pY74mIHDgnveENGPvvahEa+p4GvYKVn5UJPezneZX6ErQtfzvPZBe675IWXVFj3uuqOj
-         wK/MOMGXBaoTpHofQ7iQOIZZ+pSPrpCzN2ygaywXvhvLdLtBB9HYJze2D/npZm6URH+x
-         H6Ew==
-X-Forwarded-Encrypted: i=1; AJvYcCUdlDNrHNSfjQXqZ0E5ew8xRLYKwtZKx/x0JPNT3FRr8khrr+rOZ4ScOugjw3A4x42tpN4R/stH@vger.kernel.org, AJvYcCWdL6AiCOCyUkR0FMepe28cAHWFGY6V48jcp6BWIk9BJGOVMBNzAS1zIGFv0aUHImrDEAjgrPxs9s88aWI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxam7KW8vChMPSidrKcnlcNB0FeUfTQ92E78L4LrhjqKfkPXMz3
-	YLLk5W/Z0oTqlYmQeNKB9K+6B+nkNIV9JdbS3qhnmi6sd6/c5aMX
-X-Gm-Gg: ASbGncv/QZ5+m2EJKxHVLR6TuBgHY8/g/22138vPTRIHEOrL9iIh/5cGaShSjUYmzzi
-	+JvBEa8bHOPNmIkdVRoqW5MfOeGbJSjHvemqhow/vHZl4iXnTbwMFqNDnUD1XSIW2PZ9lbwPWJl
-	nTChSthtmiD1JBpaYqIFBjLJV7FysFXi7YzWhCztJMZOdn189KkQtokqSpYSmHCZrdTHAilXdJy
-	EQmyOA7AHmaMEXKUxzVxUbNru4GgUtb5kuaVSqG6rWENfT3lMq3Ci5kMn+vxJT6pun+kWQgWhs9
-	2CWkH+kfJdhW3qN93A5dexi9jyiIlW/00uXcmvtDkjCXVaC7Ys8X1aNh5n3Kq2fwQUFhus96Ssh
-	s
-X-Google-Smtp-Source: AGHT+IH/KICx3rlwNY8aT9zlD4cMbpz9OhF6d9fOSNbxAJHun6FjDj1GaQo4A0Lx1jE3TYiafp4s6w==
-X-Received: by 2002:a17:902:e743:b0:215:6c5f:d142 with SMTP id d9443c01a7336-215be5fd2f8mr39362705ad.20.1733240090824;
-        Tue, 03 Dec 2024 07:34:50 -0800 (PST)
-Received: from localhost.localdomain.localdomain (n220246094186.netvigator.com. [220.246.94.186])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215c1322696sm12625335ad.155.2024.12.03.07.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 07:34:50 -0800 (PST)
-From: Zach Wade <zachwade.k@gmail.com>
-To: steffen.klassert@secunet.com,
-	daniel.m.jordan@oracle.com,
-	herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Zach Wade <zachwade.k@gmail.com>,
-	Ding Hui <dinghui@sangfor.com.cn>
-Subject: [PATCH] padata: Fix refcnt handling in padata_free_shell() again
-Date: Tue,  3 Dec 2024 23:34:26 +0800
-Message-ID: <20241203153426.62794-1-zachwade.k@gmail.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1733243460; c=relaxed/simple;
+	bh=9WLbfDlWBf7lIxo4Ik3otfBy5WpGKtytQam0hLGECxM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ov+lT07TXUKDE1oyQVsmP6NL9mM7hFqpJ6H7VKBSZeI0/0iHNCp84tNEXghDOybhdT6nvl+Raw3y1LJp6+AvkkXdeDiTrhdDahi29bmrH0GA/p7W6hKxE6nGLlEg1EMN8M5ofxBMqSrM/zpdgmJ2+0CGC5IdEQMYxxGfI+sjna4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cN7BVadz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB999C4CECF;
+	Tue,  3 Dec 2024 16:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733243459;
+	bh=9WLbfDlWBf7lIxo4Ik3otfBy5WpGKtytQam0hLGECxM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=cN7BVadzHZTZ8k/0Mao8K9b9j6SR4AxtW/zY1WyAYeB38yABXh70gFT0r3hCbbQtU
+	 haHWv9xZrY/MMfPCXS2FjiqnMHOKkQXmLHCJn2ADVEc/6rnH167Iyaeq8R9DAWwzcL
+	 UctflHT2ci0CycvYKWUGCJzKZ37ZV/ifSSx3Iyq8iczJFSHsS8gZEKxXLOHCrrTgvj
+	 UVw3Gs+zc7U9+78PvcQPUrE2boSGL5bf08XAwcSmjhNnpPDpg0w9WUSNmGDKljaIbT
+	 DaRRo2AmECvdIVJUfBs5DMO6s8eL4BNSFO8zQLAifTwj0BxljC1R70jTs7/OW04nZm
+	 wJMIwPKbT6AnQ==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2ffc3f2b3a9so77119361fa.1;
+        Tue, 03 Dec 2024 08:30:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVCDSpYM54uEj4ZikTckkqvdhSqDsCAKal0pjPQvJ50883ZbHG2LjELtp+AbPKUrGaYKebI2NO9IjnzL4A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBEy0ejqPC8WYXGDyNUriOjOmRT1Rp+2KkAJjHH2fsH3ePNrnk
+	iCVANAFLI0A7/ADqfg7yhT688DUWD+akWPZbOeGzZh3q9yKRY5C6qRNAHAVaG9T9qZRUUrdT36D
+	NEFZd6h4nt2u0Kq3DlC5/hIbXjiQ=
+X-Google-Smtp-Source: AGHT+IE89g3zw4bi/PoiZ1mYdJHT7q8RiN7r1eQmEL3MXVMc3aYkDMi2ulypAM0VD26e9gpMvQJJzIFok/4p8MxS4dE=
+X-Received: by 2002:a05:6512:1189:b0:53d:eef7:a017 with SMTP id
+ 2adb3069b0e04-53e129ff019mr3272024e87.15.1733243458067; Tue, 03 Dec 2024
+ 08:30:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <81560af7526138aa5221e5900ee7462f55bb090d.camel@HansenPartnership.com>
+ <CAMj1kXFGEeAkxpqsfp0G3VqTRs+Sve-pULDXBKvzSqAc_AVFMA@mail.gmail.com> <6d21ce25bab39922c5c8b9f9433267e9d3e40d52.camel@HansenPartnership.com>
+In-Reply-To: <6d21ce25bab39922c5c8b9f9433267e9d3e40d52.camel@HansenPartnership.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Tue, 3 Dec 2024 17:30:47 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXE5H9_FMeyx-P=1P-q_OignBD9fBZm4xcc+-tKQ7yE2OA@mail.gmail.com>
+Message-ID: <CAMj1kXE5H9_FMeyx-P=1P-q_OignBD9fBZm4xcc+-tKQ7yE2OA@mail.gmail.com>
+Subject: Re: section mismatch error in aesgcm causing a build failure
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: linux-crypto@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-testcases/kernel/crypto/pcrypt_aead01.c of LTP project has UAF.
+On Tue, 3 Dec 2024 at 15:56, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> On Tue, 2024-12-03 at 09:35 +0100, Ard Biesheuvel wrote:
+> > On Mon, 2 Dec 2024 at 21:27, James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+> > >
+> > > I'm getting this in 6.13-rc1:
+> > >
+> > > /home/jejb/git/linux-tpm/lib/crypto/aesgcm.c:212:29: error: ptext1
+> > > causes a section type conflict with aesgcm_tv
+> > >  static const u8 __initconst ptext1[16];
+> > >                              ^~~~~~
+> > > /home/jejb/git/linux-tpm/lib/crypto/aesgcm.c:570:9: note:
+> > > =E2=80=98aesgcm_tv=E2=80=99 was declared here
+> > >  } const aesgcm_tv[] __initconst =3D {
+> > >          ^~~~~~~~~
+> > > make[5]: *** [/home/jejb/git/linux-tpm/scripts/Makefile.build:194:
+> > > lib/crypto/aesgcm.o] Error 1
+> > > /home/jejb/git/linux-tpm/lib/crypto/aesgcm.c:212:29: error: ptext1
+> > > causes a section type conflict with aesgcm_tv
+> > >  static const u8 __initconst ptext1[16];
+> > >                              ^~~~~~
+> > > /home/jejb/git/linux-tpm/lib/crypto/aesgcm.c:570:9: note:
+> > > =E2=80=98aesgcm_tv=E2=80=99 was declared here
+> > >  } const aesgcm_tv[] __initconst =3D {
+> > >          ^~~~~~~~~
+> > > make[5]: *** [/home/jejb/git/linux-tpm/scripts/Makefile.build:194:
+> > > lib/crypto/aesgcm.o] Error 1
+> > >
+> > > I think it's way older than 6.13-rc1, but the inclusion of the
+> > > sevguest
+> > > driver in the merge window now means that something actually
+> > > selects
+> > > it.  I can fix it simply by adding a zero initialization to the
+> > > file:
+> > >
+> > > -static const u8 __initconst ptext1[16];
+> > > +static const u8 __initconst ptext1[16] =3D { 0 };
+> > >
+> > > Which I think means that by default the traditional zero
+> > > initialization
+> > > of a static variable is in the wrong section (and actually likely
+> > > is
+> > > wrong for all our __initX variables as well).
+> > >
+> > > In case it matters, this is with gcc-7
+> > >
+> >
+> > This also works
+> >
+> > static const u8 __section(".init.rodata,\"a\",@progbits #")
+> > ptext1[16];
+>
+> That also works for me.
+>
+> > and so this suggests that without the @progbits annotations, the
+> > compiler is placing ptext1 into a SHT_NOBITS section, causing a
+> > conflict with the SHT_PROGBITS annotation of aesgcm_tv.
+>
+> I'm not so sure about that:
+>
+> static const u8 __section(".bss.init,\"a\",@nobits #") ptext1[16];
+>
+> Also works for me.
+>
 
-Steps to reproduce:
-1. /sys/module/cryptomgr/parameters/notests is N
-2. run LTP ./testcases/bin/pcrypt_aead01
+I'm not sure I get the point you are trying to make. .bss.init does
+not exist otherwise, so there is no other section it might conflict
+with.
 
-There is a race condition when padata_free_shell is released, which
-causes it to be accessed after being released. We should use the rcu
-mechanism to protect it.
-            cpu0                |               cpu1
-================================================================
-padata_do_parallel              |   padata_free_shell
-    rcu_read_lock_bh            |       refcount_dec_and_test
-    # run to here <- 1          |       # run to here <- 2
-    refcount_inc(&pd->refcnt);  |           padata_free_pd <- 3
-    padata_work_alloc		|	...
-    rcu_read_unlock_bh          |
-				|
-There is a possibility of UAF after refcount_inc(&pd->refcnt).
+> > Given how unusual it is to have a static const variable without an
+> > initializer, I don't think this suggests that there is a wider issue
+> > with __initconst/__initdata.
+>
+> What I meant was that uninitialized static __initX variables point to
+> the bss section.  We don't seem to have a discardable init bss section,
+> so they remain allocated for the life of the kernel.
+>
 
-kasan report:
-[158753.658839] ==================================================================
-[158753.658851] BUG: KASAN: slab-use-after-free in padata_find_next+0x2d6/0x3f0
-[158753.658868] Read of size 4 at addr ffff88812f8b8524 by task kworker/u158:0/988818
-[158753.658878]
-[158753.658885] CPU: 23 UID: 0 PID: 988818 Comm: kworker/u158:0 Kdump: loaded Tainted: G        W   E      6.12.0-dirty #33
-[158753.658902] Tainted: [W]=WARN, [E]=UNSIGNED_MODULE
-[158753.658907] Hardware name: VMware, Inc. VMware20,1/440BX Desktop Reference Platform, BIOS VMW201.00V.20192059.B64.2207280713 07/28/2022
-[158753.658914] Workqueue: pdecrypt_parallel padata_parallel_worker
-[158753.658927] Call Trace:
-[158753.658932]  <TASK>
-[158753.658938]  dump_stack_lvl+0x5d/0x80
-[158753.658960]  print_report+0x174/0x505
-[158753.658992]  kasan_report+0xe0/0x160
-[158753.659013]  padata_find_next+0x2d6/0x3f0
-[158753.659035]  padata_reorder+0x1cc/0x400
-[158753.659043]  padata_parallel_worker+0x70/0x160
-[158753.659051]  process_one_work+0x646/0xeb0
-[158753.659061]  worker_thread+0x619/0x10e0
-[158753.659092]  kthread+0x28d/0x350
-[158753.659102]  ret_from_fork+0x31/0x70
-[158753.659111]  ret_from_fork_asm+0x1a/0x30
-[158753.659117]  </TASK>
-[158753.659119]
-[158753.659120] Allocated by task 1027931:
-[158753.659123]  kasan_save_stack+0x30/0x50
-[158753.659126]  kasan_save_track+0x14/0x30
-[158753.659128]  __kasan_kmalloc+0xaa/0xb0
-[158753.659130]  padata_alloc_pd+0x69/0x9f0
-[158753.659132]  padata_alloc_shell+0x82/0x210
-[158753.659134]  pcrypt_create+0x13b/0x7a0 [pcrypt]
-[158753.659139]  cryptomgr_probe+0x8d/0x230
-[158753.659144]  kthread+0x28d/0x350
-[158753.659147]  ret_from_fork+0x31/0x70
-[158753.659150]  ret_from_fork_asm+0x1a/0x30
-[158753.659152]
-[158753.659153] Freed by task 1024357:
-[158753.659155]  kasan_save_stack+0x30/0x50
-[158753.659158]  kasan_save_track+0x14/0x30
-[158753.659160]  kasan_save_free_info+0x3b/0x70
-[158753.659164]  __kasan_slab_free+0x4f/0x70
-[158753.659167]  kfree+0x119/0x440
-[158753.659172]  padata_free_shell+0x262/0x320
-[158753.659174]  pcrypt_free+0x43/0x90 [pcrypt]
-[158753.659177]  crypto_destroy_instance_workfn+0x79/0xc0
-[158753.659182]  process_one_work+0x646/0xeb0
-[158753.659184]  worker_thread+0x619/0x10e0
-[158753.659186]  kthread+0x28d/0x350
-[158753.659188]  ret_from_fork+0x31/0x70
-[158753.659191]  ret_from_fork_asm+0x1a/0x30
-[158753.659194]
-[158753.659195] The buggy address belongs to the object at ffff88812f8b8500
- which belongs to the cache kmalloc-192 of size 192
-[158753.659198] The buggy address is located 36 bytes inside of
- freed 192-byte region [ffff88812f8b8500, ffff88812f8b85c0)
-[158753.659202]
-[158753.659203] The buggy address belongs to the physical page:
-[158753.659205] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12f8b8
-[158753.659209] head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-[158753.659212] anon flags: 0x10000000000040(head|node=0|zone=2)
-[158753.659216] page_type: f5(slab)
-[158753.659220] raw: 0010000000000040 ffff88810004c3c0 0000000000000000 dead000000000001
-[158753.659223] raw: 0000000000000000 0000000080200020 00000001f5000000 0000000000000000
-[158753.659225] head: 0010000000000040 ffff88810004c3c0 0000000000000000 dead000000000001
-[158753.659228] head: 0000000000000000 0000000080200020 00000001f5000000 0000000000000000
-[158753.659230] head: 0010000000000001 ffffea0004be2e01 ffffffffffffffff 0000000000000000
-[158753.659232] head: ffff888100000002 0000000000000000 00000000ffffffff 0000000000000000
-[158753.659234] page dumped because: kasan: bad access detected
-[158753.659235]
-[158753.659236] Memory state around the buggy address:
-[158753.659238]  ffff88812f8b8400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[158753.659240]  ffff88812f8b8480: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[158753.659242] >ffff88812f8b8500: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[158753.659243]                                ^
-[158753.659245]  ffff88812f8b8580: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[158753.659247]  ffff88812f8b8600: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[158753.659248] ==================================================================
+This is not about the section, but about the type annotation.
 
-Fixes: 07928d9bfc81 ("padata: Remove broken queue flushing")
+__initdata will be emitted into .init.data, and it will be discarded
+after boot. Even if there is no initializer, the variable will still
+end up in the correct section, and not point to the .bss section as
+you claim.
 
-Co-developed-by: Ding Hui <dinghui@sangfor.com.cn>
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-Signed-off-by: Zach Wade <zachwade.k@gmail.com>
----
- include/linux/padata.h |  1 +
- kernel/padata.c        | 11 +++++++++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
+> > We're about to bump the minimum GCC version to 8 for other reasons,
+> > and I couldn't reproduce it with GCC 8.5.0. But the fix is
+> > straight-forward and actually clarifies this rather odd occurrence,
+> > so I think we should apply it nonetheless.
+>
+> Hm, that's going to cause some problems: I'm on openSUSE Leap.
+> Although all gcc's up to gcc-13 can be installed, the default compiler
+> is still gcc-7
+>
 
-diff --git a/include/linux/padata.h b/include/linux/padata.h
-index 0146daf34430..ee6155689e47 100644
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -103,6 +103,7 @@ struct parallel_data {
- 	int				cpu;
- 	struct padata_cpumask		cpumask;
- 	struct work_struct		reorder_work;
-+	struct rcu_head			rcu;
- 	spinlock_t                      ____cacheline_aligned lock;
- };
- 
-diff --git a/kernel/padata.c b/kernel/padata.c
-index d51bbc76b227..3afdccc7e20e 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -1109,6 +1109,14 @@ struct padata_shell *padata_alloc_shell(struct padata_instance *pinst)
- }
- EXPORT_SYMBOL(padata_alloc_shell);
- 
-+static void __padata_put_pd(struct rcu_head *head)
-+{
-+	struct parallel_data *pd = container_of(head, struct parallel_data, rcu);
-+
-+	if (refcount_dec_and_test(&pd->refcnt))
-+		padata_free_pd(pd);
-+}
-+
- /**
-  * padata_free_shell - free a padata shell
-  *
-@@ -1124,9 +1132,8 @@ void padata_free_shell(struct padata_shell *ps)
- 	mutex_lock(&ps->pinst->lock);
- 	list_del(&ps->list);
- 	pd = rcu_dereference_protected(ps->pd, 1);
--	if (refcount_dec_and_test(&pd->refcnt))
--		padata_free_pd(pd);
- 	mutex_unlock(&ps->pinst->lock);
-+	call_rcu(&pd->rcu, __padata_put_pd);
- 
- 	kfree(ps);
- }
--- 
-2.46.0
-
+I guess you will have to upgrade your compiler then.
 
