@@ -1,140 +1,116 @@
-Return-Path: <linux-crypto+bounces-8400-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8402-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D911B9E2A63
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 19:07:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C309E2AEA
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 19:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FC902855B1
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 18:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DE1B281E09
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 18:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABDD1FC115;
-	Tue,  3 Dec 2024 18:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C6F1FCCF9;
+	Tue,  3 Dec 2024 18:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ppJOnaei"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="exzalodJ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDD61E868;
-	Tue,  3 Dec 2024 18:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088661E009B
+	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 18:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733249182; cv=none; b=FqF2qfkCqjatbCJ/UI82ut1v1HQnX4EpeJ2uV8XQjfXJsuEaDFMUF2ZROuuxRFpPRxQ8WAc94gTaecz0tefWnKTmmIf6W0O+02/sqZlCJB/EEdr/IQd2sxxNAoDD9gTCOSu2E+mZDE5RXw7Mvs274nETKO3pcENq/F/n9rf4O5I=
+	t=1733250728; cv=none; b=RnNKI8h03cNSHmYlpcNSL2BPF31XP8TXheD0zvf50RD35ZQtmHHon4cVt1kD+/xr/OjTdo88iWnXeBvWnj/61xFr2Y4pc6OOP5ObSrUKfoSMRGLydiwuZJ02rOVjuEkS6ydteuX2NgX677MC8hFDz9YQHQbu77denLIWAzOULlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733249182; c=relaxed/simple;
-	bh=9u8s989myFYKkCTUJP7d/Zm+rUGH/bp1uHDBHysWMoo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c4mIyAHjMpFylPQ/rlJPkX5Jcb9CAuSCgZ8PSqQ0QS2W0bbC30J6N0MiBOK7x3jY9ZxkUQydg5T4OYPxskfPY0zcWrW6P3M2ODk8S0XMNfjtMEt/Id7r7CTn/w6PMSsCZeKw1ownl+9p0DT/H4qlf/o2VORtfyaIT3aoAGVb3FI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ppJOnaei; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85818C4CECF;
-	Tue,  3 Dec 2024 18:06:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733249180;
-	bh=9u8s989myFYKkCTUJP7d/Zm+rUGH/bp1uHDBHysWMoo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ppJOnaei+r0Ur3Iind5aY73YsTNdh2oJW6qhF1Pz16ihSZNj3OzHJjeRlX/CdI0Ja
-	 2b9HFOg59PtH+thgmQg7COpAAbQzfseIkG0aTZErLSXtbOka17c07VhGYosvVgQnAL
-	 kzTXIoKaZ48l6PTm6Fbjvddx9NShOkYdL+c8YcEWHT94mjKpfwftSKrhzI23txvtpW
-	 3bHIgdp1ZLcFmlnApKHMZBoMK2yhrXHtuuccyfkt3x3/HjereugCbLIHK3r6pMp/Rk
-	 j6x/OCQfXJXHXlu/33XPp/kYttRqF3ozNU1MgF635O65rG/vT9J33S+cVXIAlRKL9s
-	 FG2VrviMb008Q==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-arm-msm@vger.kernel.org,
+	s=arc-20240116; t=1733250728; c=relaxed/simple;
+	bh=teJpmPTMJwM4XhRCt98E5exgGcMwwsgs/+69aF/6jTs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gQIdhrTNTbijP/z0Nmw7iVA9oDdeMbLFR76FOUwt5nsrf66MOBbNtXnz3ppgXHmq+QlI3Z4XHadWdWN6l667d0wDC9lqyO/YSLPwd97dOuEYIYw9DC7CBRBLuu1qfEPGK2ChBkvlvoG6pCAyc2BJHX+irhTMGq7uXNZpigSWFAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=exzalodJ; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-434a2f3bae4so54656645e9.3
+        for <linux-crypto@vger.kernel.org>; Tue, 03 Dec 2024 10:32:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1733250725; x=1733855525; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MA0OIWYEx7lhE8KpQkBc+3xSlNCUl4o5/5suXDXfAEw=;
+        b=exzalodJ3+4UvOvky5pv0KEAEC2BqruWTai0ibunjgHRPzg7OITLYowpyr/jAvQUdt
+         9i/Qc/iB3GdPbXsXmXyepfPtoCQtsogpGiv2aIwkge3wUCTCNtL1v8ZfVg5uHntPCLl4
+         n1cNtT2hT1ufMD4FvNUym+NQ8d0umRv/guiiHHdqumXxAtTJmpnLGft6+CCfoHLsLuon
+         8gHabPQANiACfh3wMa7ohAikk8/7yM+J8GwXcEAK7uBR0B7PiG4gURXSyQdwVqXkueU1
+         YKHMYZqOJuRdVdPz4w507PVnit0eXjBaQwiRutvfIRD36mq7sQC5BX9lQal/N5o7989V
+         nINg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733250725; x=1733855525;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MA0OIWYEx7lhE8KpQkBc+3xSlNCUl4o5/5suXDXfAEw=;
+        b=A2cfVId3Q+lrW8KELBUP5YM05VoflSlQ7N7xwrO6v5QDEAtIPDEOlE0PbYVlIY4Non
+         KkC+26rUggHgiFS1NlxS5uyO4tVbYGSlpV2kGf+1thYfmZeYInHG3nNGH2rhYDD0KXne
+         /L/fImJI2kT6Zqp3jxbkv6uuBkwYqDUq821J23q6Nvo4xQet9QWdek6vxd3gbcyAhD+o
+         RllZRa3Arx+WasRRH7puni4CHJ5gkm12V822qFXM9655p2KPi1qmbkT0FN4GFI3hWCka
+         TbT595hzL9VlOibvVBwDbTpQ0AjYk2Oainq1nlHmmYeCkyPUcKzmq2afi5gvP6/0hfUT
+         2dTA==
+X-Forwarded-Encrypted: i=1; AJvYcCUCWaw7h12ynfm08y84ofThHZ132m3d/Gjk2JHRBYMRhmezmatbrq3aLq1hhbJaQgb3TT6nnlYRlYAVT48=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxN+CrDmExyEACeE3t63DkDENGB/EaNmJK5pu9OS2S67hgxb5n6
+	iNlbIZCHCF+LOf6dD/v7gWq6AGVb/X5jJH49N+w9wsOMRklWcipT63MDx0+uG1A=
+X-Gm-Gg: ASbGnctLgzIBN4bLXbQKCvzhCIsSXegN367Sxo0aFKUpcmA8SEd/w1ta4tyA/wNful1
+	9IP3aWQW4zvvjr4fBYdInciikv1rVIoKZTTyfBTpduVNFzloqJoBA1p9AUgLq9lMR2koe2nDL8R
+	BI2e5ksSNR49byefT1bg6WdZjntFBGSUFrY2FKNiuFOIEV7Ekm5odM8KT2+DoyBu6q837siBYNe
+	IQCilRhHs6NusyhsSClg4Wwm8U9JBRgohjLuUCdIx7oVW4biTCcLIrDzrWvUA==
+X-Google-Smtp-Source: AGHT+IHf+LjEeT/CgO0kZ2nnAkyl6mj5vAV7M9tzUOSZ6upVeF6Bbz1t4dAO1PkPUN1PMAflp/yrXQ==
+X-Received: by 2002:a5d:6483:0:b0:385:df2c:91b5 with SMTP id ffacd0b85a97d-385fd378ddamr3163149f8f.0.1733250725408;
+        Tue, 03 Dec 2024 10:32:05 -0800 (PST)
+Received: from linaro.org ([2a02:2454:ff21:ef80:41ad:5703:2486:8f59])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385ee2c7559sm7964163f8f.12.2024.12.03.10.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2024 10:32:05 -0800 (PST)
+Date: Tue, 3 Dec 2024 19:32:01 +0100
+From: Stephan Gerhold <stephan.gerhold@linaro.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Thara Gopinath <thara.gopinath@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Stanimir Varbanov <svarbanov@mm-sol.com>,
+	linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	stable@vger.kernel.org,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Thara Gopinath <thara.gopinath@gmail.com>
-Subject: [PATCH] crypto: qce - fix priority to be less than ARMv8 CE
-Date: Tue,  3 Dec 2024 10:05:53 -0800
-Message-ID: <20241203180553.16893-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.47.1
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 4/9] crypto: qce - shrink code with devres clk helpers
+Message-ID: <Z09OX3vnMC8bB6LG@linaro.org>
+References: <20241203-crypto-qce-refactor-v1-0-c5901d2dd45c@linaro.org>
+ <20241203-crypto-qce-refactor-v1-4-c5901d2dd45c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241203-crypto-qce-refactor-v1-4-c5901d2dd45c@linaro.org>
 
-From: Eric Biggers <ebiggers@google.com>
+On Tue, Dec 03, 2024 at 10:19:32AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Use devm_clk_get_optional_enabled() to avoid having to enable the clocks
+> separately as well as putting the clocks in error path and the remove()
+> callback.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-As QCE is an order of magnitude slower than the ARMv8 Crypto Extensions
-on the CPU, and is also less well tested, give it a lower priority.
-Previously the QCE SHA algorithms had higher priority than the ARMv8 CE
-equivalents, and the ciphers such as AES-XTS had the same priority which
-meant the QCE versions were chosen if they happened to be loaded later.
+FWIW: Ideally, the driver shouldn't keep on the clock all the time in
+the first place, since this will prevent reaching deeper low power
+states. So while this cleanup is nice, I think it will have to be
+reverted again once someone fixes that.
 
-Fixes: ec8f5d8f6f76 ("crypto: qce - Qualcomm crypto engine driver")
-Cc: stable@vger.kernel.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Thara Gopinath <thara.gopinath@gmail.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- drivers/crypto/qce/aead.c     | 2 +-
- drivers/crypto/qce/sha.c      | 2 +-
- drivers/crypto/qce/skcipher.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+If you're working on refactoring this rarely cared for driver, is there
+any chance you could add some form of runtime PM while you're at it? :-)
 
-diff --git a/drivers/crypto/qce/aead.c b/drivers/crypto/qce/aead.c
-index 7d811728f047..97b56e92ea33 100644
---- a/drivers/crypto/qce/aead.c
-+++ b/drivers/crypto/qce/aead.c
-@@ -784,11 +784,11 @@ static int qce_aead_register_one(const struct qce_aead_def *def, struct qce_devi
- 	alg->encrypt			= qce_aead_encrypt;
- 	alg->decrypt			= qce_aead_decrypt;
- 	alg->init			= qce_aead_init;
- 	alg->exit			= qce_aead_exit;
- 
--	alg->base.cra_priority		= 300;
-+	alg->base.cra_priority		= 275;
- 	alg->base.cra_flags		= CRYPTO_ALG_ASYNC |
- 					  CRYPTO_ALG_ALLOCATES_MEMORY |
- 					  CRYPTO_ALG_KERN_DRIVER_ONLY |
- 					  CRYPTO_ALG_NEED_FALLBACK;
- 	alg->base.cra_ctxsize		= sizeof(struct qce_aead_ctx);
-diff --git a/drivers/crypto/qce/sha.c b/drivers/crypto/qce/sha.c
-index fc72af8aa9a7..71b748183cfa 100644
---- a/drivers/crypto/qce/sha.c
-+++ b/drivers/crypto/qce/sha.c
-@@ -480,11 +480,11 @@ static int qce_ahash_register_one(const struct qce_ahash_def *def,
- 	else if (IS_SHA256(def->flags))
- 		tmpl->hash_zero = sha256_zero_message_hash;
- 
- 	base = &alg->halg.base;
- 	base->cra_blocksize = def->blocksize;
--	base->cra_priority = 300;
-+	base->cra_priority = 175;
- 	base->cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY;
- 	base->cra_ctxsize = sizeof(struct qce_sha_ctx);
- 	base->cra_alignmask = 0;
- 	base->cra_module = THIS_MODULE;
- 	base->cra_init = qce_ahash_cra_init;
-diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index 5b493fdc1e74..ffb334eb5b34 100644
---- a/drivers/crypto/qce/skcipher.c
-+++ b/drivers/crypto/qce/skcipher.c
-@@ -459,11 +459,11 @@ static int qce_skcipher_register_one(const struct qce_skcipher_def *def,
- 					  IS_DES(def->flags) ? qce_des_setkey :
- 					  qce_skcipher_setkey;
- 	alg->encrypt			= qce_skcipher_encrypt;
- 	alg->decrypt			= qce_skcipher_decrypt;
- 
--	alg->base.cra_priority		= 300;
-+	alg->base.cra_priority		= 275;
- 	alg->base.cra_flags		= CRYPTO_ALG_ASYNC |
- 					  CRYPTO_ALG_ALLOCATES_MEMORY |
- 					  CRYPTO_ALG_KERN_DRIVER_ONLY;
- 	alg->base.cra_ctxsize		= sizeof(struct qce_cipher_ctx);
- 	alg->base.cra_alignmask		= 0;
-
-base-commit: ceb8bf2ceaa77fe222fe8fe32cb7789c9099ddf1
--- 
-2.47.1
-
+Thanks,
+Stephan
 
