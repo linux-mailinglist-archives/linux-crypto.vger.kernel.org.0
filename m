@@ -1,267 +1,142 @@
-Return-Path: <linux-crypto+bounces-8391-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8395-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36069E23DA
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 16:43:45 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1110C9E21C1
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 16:17:13 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE7C1B63019
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 13:53:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0371168DC8
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 15:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7B01F1304;
-	Tue,  3 Dec 2024 13:53:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3A81F9AAC;
+	Tue,  3 Dec 2024 15:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OS2Rhfn1"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="SouZNHzi"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9CC1F12F8
-	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 13:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8841F942C
+	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 15:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733234006; cv=none; b=RrvnrPXdue4xbWUGRcLzB8zU2BYC4xkWWt5ml2zK8aPwDkiJaL0Lvymb0Lu+Lpc20Ean5rzznlJ8VMfQ6oMlGZlXWWzks24hk9tzWv9nv/NbrQBSjHhKM5oeAAVM5T5vj+OMm9HwhDMLau4xf49WlBWA/Fit8r6Ysb7HG2r0uCA=
+	t=1733238618; cv=none; b=lXSiY1yR4MwqHdkwY1ob5PiZzbcbKRFiKtxzwoBctQam9OAnbUT26kQaZkBoLHvy6CBbxvLXkzuCc8P39gN278b2VeryfdtnDh5INKQwaN1FKKFeaSBJ9x75MxmAGxGYxyES76Y0kozdtCn2XMRb/uvf6JHzOjJyyKx/v2pwPpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733234006; c=relaxed/simple;
-	bh=MfM0drVwbDYoPluV0REjpJpK0fyBprYzaokHgqmg1QA=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=IKpLQjLncSp3Fy+WFbM4c5LA5E5YBgyqg2uQnPQ0b/cCsoP1iyh/PPvJyiGUFFDuBW86zelqu5QDMM09cyhTkuuc0aFuf2mkWdkHas5U/lCVWFHjBL5UYYqi4TiQFJlOBnpadow6E3b2iULmnhKmNW3zTzdHderNBK6/iXts8Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OS2Rhfn1; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-385e075255fso2685247f8f.0
-        for <linux-crypto@vger.kernel.org>; Tue, 03 Dec 2024 05:53:24 -0800 (PST)
+	s=arc-20240116; t=1733238618; c=relaxed/simple;
+	bh=U/OoOzXsIi2r7sSP/cLR0FzyZqfuU3DiHqvIkCvcvj8=;
+	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uzq9INFTFhKvyHEb3nNf03E82D4VvByKLvLfuY5NBBoHEKSW9CxdPnJUz70SUTgrdJ9/JUTluLsIm8XJoPGL07KFH9l4rpRTUC4HTcAV+2UyqiuATZaRuK7GGCPXzEtXih/+hkR/8+M3tvYMcztnGbNzrLT5P1/KL488fio63bM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=SouZNHzi; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7fc41b4c78bso3265370a12.3
+        for <linux-crypto@vger.kernel.org>; Tue, 03 Dec 2024 07:10:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1733234003; x=1733838803; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wDNjqsNTvkXwslsyJDHeLHfffqCQZCYq3Xs1+G1L73g=;
-        b=OS2Rhfn16X2DnccQyEsDMeN2i08kkIRnYum6HsZOYsDTqD46DayBumhkMttelvwZTl
-         aiTNoorgZ0JsswbYJHPvWCDPqtQvo/bXr/Uy5BVh5Q5qFsCjH0kur7oOeLN8YI5DaAhJ
-         KtItMQGYX4WlnERP2nNIY+gazW0QsPn1aF+KgpIfoGsRKBxIIbiCcxgkQ4lGAG8wzJwu
-         HY7vOIgH/sj0IkU1Ti+o/ihy+cNpoNxfIPz/AYYcr/CSjWPAjGuZ9KqmgokrnmJM5QsP
-         7VCzV3CYhQmOV3OIpBE3t6q1dEBrlSOa4VlQnRmbEfrdTdErt25A2xdWcmQw13oDjPCv
-         cD2Q==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1733238616; x=1733843416; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p0ezAqCKNWBAiuxAl3Y2kJKU1te23QxF0JI4IxEegt0=;
+        b=SouZNHzingFWow5COB5W5tgVUhP/qi8eFeiHs4lESYZtkRSF2bGbFC1c5NmE97OfZq
+         DKb5APHfqw8Q9OIT2nSClQ6gAWzIuHc9ZI7DwsPmX+taeYs9kSVKyg9TYLDFDZud5Up8
+         vfIrWcXGdfk+U4eZ3f5Cs4hGQrNpbNSR/6XywidzeuDOqN0XHoeu3S090pUaGOxse7z2
+         whcN4x8YlDM5yRkqrvy7vJmnVOG5z+LL73ozPlsYYWCIaDm2UkyvFJ+l84/7oLnpR2rO
+         JUDy4k6+sDFzL9DHoY3k537qGV+rFV8pDRZm3dr96hIr9XE4ZHQYw+/zrac1Sxg44i3h
+         wU7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733234003; x=1733838803;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wDNjqsNTvkXwslsyJDHeLHfffqCQZCYq3Xs1+G1L73g=;
-        b=vf5R7ZAF0+S38ZiJQf8nqZ8jARllpLynheF8srzcI8ODF5J+iFEUUhqmx/v7/xIZGB
-         B57jiJTRt5m+m1Yt452f3iJKiib4Y99N51TUDNmIH44Y962MNOjYlM4orBw8Br8JcIxf
-         pDELCtGAPBruroNCZpgxbewgpVxo7OK7zOfoyF4oecT+Yr7wIeROMMgYacDUcGTJDn5s
-         kdrzoG3fqtQ/vwYpeRG32PoNx39qM40J8EUT7+GdoiI4GEpvDhYKIY6gSnRaqyG8soI5
-         nFUCLmslbiljxqIO8XXGxKDrBrnKqj4TxqNC3/JeOfT3dBSvUpSsqPyd5xh+TcR6RoKu
-         +Q6w==
-X-Gm-Message-State: AOJu0Yx3fAgnozvjYkOdBpeam+CEQFyHHmJjx/6X8AeLHSVRrg1YApVd
-	kL0OegDVHqQ7cYWMOuOtGBmWDNKL/d4zyB9t++BeAqDqgoH+bOxKlbRruPWbEEk=
-X-Gm-Gg: ASbGncuvrkGNXi6CYWYaVtSB8AnTrrlGsb2ot/1xCQSL1x1uAcmkQOFWbaYcKPxXADN
-	jlyRXeoELC7iWPb08Ye4mK+GqcsNoiaMm3vhY2Hh6U+6PpX0EAZ9G1ZqJ9kVoG8tac7/1EWO1PN
-	ue+zCEOa7lHPwP6N7qey071LTQm7FYREe0kOpT1A0zg2Gp1X0xsajehB8p4tQe9qWjr0/bo+XX4
-	iqekcdcaUqRYdBSg3wYHerTRT7UoCZbVxZfYMYknaWIvC19hG8RaVpFwDjUHg6vR2sTKcs7woSx
-	rCQXh4xrBI/TF1dJkk+jvi4l
-X-Google-Smtp-Source: AGHT+IGh+XS+vM0CbuRcrxDNTg3Y8TKQ9gEnvK0wrtUF8j62EtQ0gbCJvdajb5h8bz5IO1GMuUl3LQ==
-X-Received: by 2002:a5d:648f:0:b0:385:e13c:5409 with SMTP id ffacd0b85a97d-385fd3c68d2mr2122986f8f.5.1733234002695;
-        Tue, 03 Dec 2024 05:53:22 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:b668:b88:4ecf:c065? ([2a01:e0a:982:cbb0:b668:b88:4ecf:c065])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434b0d9bef8sm189836875e9.7.2024.12.03.05.53.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Dec 2024 05:53:22 -0800 (PST)
-Message-ID: <d6220576-eaf5-4415-b25f-b5984255ab78@linaro.org>
-Date: Tue, 3 Dec 2024 14:53:21 +0100
+        d=1e100.net; s=20230601; t=1733238616; x=1733843416;
+        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p0ezAqCKNWBAiuxAl3Y2kJKU1te23QxF0JI4IxEegt0=;
+        b=k/eTaJz5RjrElbQQN8xsHDMzu2HuxGSGmGVjEBqllvWOk22boM9rtjwzivVbZH3l0y
+         RDdTFn5y2R2YBIsLGIknXfgXYigqhg7fpXS/iY6QLbJcs89jHSptCYD1sD3P5jaw1FXK
+         zJDEgbEpPAbQ1DJvCuGrTTL1/Wf47PWS/M0zW320AuehwIj4o45KpHfUr0lPVhbkKtqv
+         tt6pWvN6wIQ57a+HS8/OXAIs0v7J+uvHpQgIqy6Em2coEk9m2XPlt9dWTsPFAhgxQspN
+         o9mrKFTNXC1HVbVmVT8M+XZ39tTEcIPCcXGCCdikJxKd1NLfPelZM8fa/W2G+VRXOATd
+         yyaA==
+X-Gm-Message-State: AOJu0YxARX6KXNwNT8gep0vqgHTZpBWyxPQz4a3p8t7m17KxbN1QUYTB
+	P+4Cluq6QunsHumOIiRSLWCK7wV+3ASZCWoQgT0E0o+a1N1VSWQvzLmUmu8e03ymyWY4I2XjzAd
+	dn9tiY5h0rzzBeQRbLUve0Gd9+u6KcQ292wgSSg==
+X-Gm-Gg: ASbGncvU0UX9plSDor1jXAOCypVQrHMThpj79rPFrZ4DGKIf9vp8Sj74j8cemrWKpeu
+	wlz4Fjrtw6MU5yp0e/UKLcPsDoSE5rnc=
+X-Google-Smtp-Source: AGHT+IGIUqVE82b+dvpoCo08vBA9hrCj+aCzVv5qZgUaQJourUSn2MQUzu2S39lm+R0r8d/vqoADCueK4RgwsGjH9Bk=
+X-Received: by 2002:a05:6a21:38b:b0:1e0:d9e9:a2c7 with SMTP id
+ adf61e73a8af0-1e1653b9c06mr3889882637.15.1733238616139; Tue, 03 Dec 2024
+ 07:10:16 -0800 (PST)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 3 Dec 2024 10:10:13 -0500
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+In-Reply-To: <d6220576-eaf5-4415-b25f-b5984255ab78@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 9/9] crypto: qce - switch to using a mutex
-To: Bartosz Golaszewski <brgl@bgdev.pl>,
- Thara Gopinath <thara.gopinath@gmail.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- Stanimir Varbanov <svarbanov@mm-sol.com>
-Cc: linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 References: <20241203-crypto-qce-refactor-v1-0-c5901d2dd45c@linaro.org>
- <20241203-crypto-qce-refactor-v1-9-c5901d2dd45c@linaro.org>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20241203-crypto-qce-refactor-v1-9-c5901d2dd45c@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <20241203-crypto-qce-refactor-v1-9-c5901d2dd45c@linaro.org> <d6220576-eaf5-4415-b25f-b5984255ab78@linaro.org>
+Date: Tue, 3 Dec 2024 10:10:13 -0500
+Message-ID: <CAMRc=MevaM4tUNQUs_LjFYaUtDH=YqE-t2gBponGqtK5xE9Gpw@mail.gmail.com>
+Subject: Re: [PATCH 9/9] crypto: qce - switch to using a mutex
+To: neil.armstrong@linaro.org
+Cc: linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Thara Gopinath <thara.gopinath@gmail.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	"David S. Miller" <davem@davemloft.net>, Stanimir Varbanov <svarbanov@mm-sol.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 03/12/2024 10:19, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Having switched to workqueue from tasklet, we are no longer limited to
-> atomic APIs and can now convert the spinlock to a mutex. This, along
-> with the conversion from tasklet to workqueue grants us ~15% improvement
-> in cryptsetup benchmarks for AES encryption.
+On Tue, 3 Dec 2024 14:53:21 +0100, neil.armstrong@linaro.org said:
+> On 03/12/2024 10:19, Bartosz Golaszewski wrote:
+>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>
+>> Having switched to workqueue from tasklet, we are no longer limited to
+>> atomic APIs and can now convert the spinlock to a mutex. This, along
+>> with the conversion from tasklet to workqueue grants us ~15% improvement
+>> in cryptsetup benchmarks for AES encryption.
+>
+> Can you share on which platforms you did the tests and the results you got ?
+>
 
-Can you share on which platforms you did the tests and the results you got ?
+Sure, I tested on sm8650 with the following results (they vary from
+one run to other but are more or less in this range):
 
-> 
-> While at it: use guards to simplify locking code.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->   drivers/crypto/qce/core.c | 46 +++++++++++++++++++++-------------------------
->   drivers/crypto/qce/core.h |  3 ++-
->   2 files changed, 23 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 6de9f1e23e282..e95e84486d9ae 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -3,6 +3,7 @@
->    * Copyright (c) 2010-2014, The Linux Foundation. All rights reserved.
->    */
->   
-> +#include <linux/cleanup.h>
->   #include <linux/clk.h>
->   #include <linux/device.h>
->   #include <linux/dma-mapping.h>
-> @@ -11,7 +12,6 @@
->   #include <linux/module.h>
->   #include <linux/mod_devicetable.h>
->   #include <linux/platform_device.h>
-> -#include <linux/spinlock.h>
->   #include <linux/types.h>
->   #include <crypto/algapi.h>
->   #include <crypto/internal/hash.h>
-> @@ -89,34 +89,28 @@ static int qce_handle_queue(struct qce_device *qce,
->   			    struct crypto_async_request *req)
->   {
->   	struct crypto_async_request *async_req, *backlog;
-> -	unsigned long flags;
->   	int ret = 0, err;
->   
-> -	spin_lock_irqsave(&qce->lock, flags);
-> +	scoped_guard(mutex, &qce->lock) {
-> +		if (req)
-> +			ret = crypto_enqueue_request(&qce->queue, req);
->   
-> -	if (req)
-> -		ret = crypto_enqueue_request(&qce->queue, req);
-> +		/* busy, do not dequeue request */
-> +		if (qce->req)
-> +			return ret;
->   
-> -	/* busy, do not dequeue request */
-> -	if (qce->req) {
-> -		spin_unlock_irqrestore(&qce->lock, flags);
-> -		return ret;
-> +		backlog = crypto_get_backlog(&qce->queue);
-> +		async_req = crypto_dequeue_request(&qce->queue);
-> +		if (async_req)
-> +			qce->req = async_req;
->   	}
->   
-> -	backlog = crypto_get_backlog(&qce->queue);
-> -	async_req = crypto_dequeue_request(&qce->queue);
-> -	if (async_req)
-> -		qce->req = async_req;
-> -
-> -	spin_unlock_irqrestore(&qce->lock, flags);
-> -
->   	if (!async_req)
->   		return ret;
->   
->   	if (backlog) {
-> -		spin_lock_bh(&qce->lock);
-> -		crypto_request_complete(backlog, -EINPROGRESS);
-> -		spin_unlock_bh(&qce->lock);
-> +		scoped_guard(mutex, &qce->lock)
-> +			crypto_request_complete(backlog, -EINPROGRESS);
->   	}
->   
->   	err = qce_handle_request(async_req);
-> @@ -133,12 +127,11 @@ static void qce_req_done_work(struct work_struct *work)
->   	struct qce_device *qce = container_of(work, struct qce_device,
->   					      done_work);
->   	struct crypto_async_request *req;
-> -	unsigned long flags;
->   
-> -	spin_lock_irqsave(&qce->lock, flags);
-> -	req = qce->req;
-> -	qce->req = NULL;
-> -	spin_unlock_irqrestore(&qce->lock, flags);
-> +	scoped_guard(mutex, &qce->lock) {
-> +		req = qce->req;
-> +		qce->req = NULL;
-> +	}
->   
->   	if (req)
->   		crypto_request_complete(req, qce->result);
-> @@ -243,7 +236,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	if (ret)
->   		return ret;
->   
-> -	spin_lock_init(&qce->lock);
-> +	ret = devm_mutex_init(qce->dev, &qce->lock);
-> +	if (ret)
-> +		return ret;
-> +
->   	INIT_WORK(&qce->done_work, qce_req_done_work);
->   	crypto_init_queue(&qce->queue, QCE_QUEUE_LENGTH);
->   
-> diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
-> index 39e75a75a4293..eb6fa7a8b64a8 100644
-> --- a/drivers/crypto/qce/core.h
-> +++ b/drivers/crypto/qce/core.h
-> @@ -6,6 +6,7 @@
->   #ifndef _CORE_H_
->   #define _CORE_H_
->   
-> +#include <linux/mutex.h>
->   #include <linux/workqueue.h>
->   
->   #include "dma.h"
-> @@ -30,7 +31,7 @@
->    */
->   struct qce_device {
->   	struct crypto_queue queue;
-> -	spinlock_t lock;
-> +	struct mutex lock;
->   	struct work_struct done_work;
->   	struct crypto_async_request *req;
->   	int result;
-> 
+With this series:
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+#     Algorithm |       Key |      Encryption |      Decryption
+        aes-cbc        128b        94.1 MiB/s       138.6 MiB/s
+    serpent-cbc        128b               N/A               N/A
+    twofish-cbc        128b               N/A               N/A
+        aes-cbc        256b        94.8 MiB/s       128.5 MiB/s
+    serpent-cbc        256b               N/A               N/A
+    twofish-cbc        256b               N/A               N/A
+        aes-xts        256b       132.9 MiB/s       131.8 MiB/s
+    serpent-xts        256b               N/A               N/A
+    twofish-xts        256b               N/A               N/A
+        aes-xts        512b       122.6 MiB/s       122.4 MiB/s
+    serpent-xts        512b               N/A               N/A
+    twofish-xts        512b               N/A               N/A
+
+Without it:
+
+#     Algorithm |       Key |      Encryption |      Decryption
+        aes-cbc        128b        96.4 MiB/s       141.0 MiB/s
+    serpent-cbc        128b               N/A               N/A
+    twofish-cbc        128b               N/A               N/A
+        aes-cbc        256b        67.0 MiB/s        97.8 MiB/s
+    serpent-cbc        256b               N/A               N/A
+    twofish-cbc        256b               N/A               N/A
+        aes-xts        256b       131.7 MiB/s       132.0 MiB/s
+    serpent-xts        256b               N/A               N/A
+    twofish-xts        256b               N/A               N/A
+        aes-xts        512b        93.9 MiB/s        96.8 MiB/s
+    serpent-xts        512b               N/A               N/A
+    twofish-xts        512b               N/A               N/A
+
+AES-CBC and AES-XTS with shorter keys remain pretty much the same. I'm not
+sure why that is. I also tested on sa8775p but there are no visible
+improvements there. :(
+
+Bart
 
