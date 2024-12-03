@@ -1,512 +1,157 @@
-Return-Path: <linux-crypto+bounces-8382-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8384-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF179E1C1A
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 13:26:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A169E1E13
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 14:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0402B377C2
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 11:03:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B24DA2813EB
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 13:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22931E47B9;
-	Tue,  3 Dec 2024 11:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91581F427D;
+	Tue,  3 Dec 2024 13:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JfODxFML"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Shl3/REX"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CE51E4101
-	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 11:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECE31F12F6
+	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 13:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733223795; cv=none; b=HZ7+9m7WHGWScXgSRRjmPp/HeRCFL/9zlcoUpG9Dz34n5Nn9BcSNHQ3ZqdNn5EqqVUSwjhhafk5G5qVIIV79Qoqul70iUykdG2MG0XKoHLE67V8ZfcRGjaZuGAJdMr9ADhbF9GqpaBN0KVd2+vsWVBmDVVMZFOAICMAD2RrIpqA=
+	t=1733233434; cv=none; b=Etu0XLe+L+pW4r9ESCSDWVtPmhFycEm3DWWwj0n7qTskqYRWAYCT6oD4pl3zYXVTTSmMsTHy7HOuLzA68vbON13V00oxFbHL1XNUbCVOl+jDUTlHOAdLUZnvJunRqHnbrVi1U8vfSCS1x2guvGcqZ+mPhmvvLixUkhIfRB+aPVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733223795; c=relaxed/simple;
-	bh=T2EI6b69ZCGFIQY1TyZdrY6FCH7Ioyhcrg9fna/9HvE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FvBQNpxRsM9GU3ELFtMlQnEjoA9Ppf1g9G7nVyJxJkcByo7ZTchc/REi1Rc/m0P/muslbUo9NluGVJKCgjQ7rAfOGjzd4BYYX4ZW8xwesy7o+MwN95hFsbHRLQ7bDLC7uNxLPtQK1znrIE55bEWFEGc0frf/siSsBjFBKIuM+Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JfODxFML; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B177C4CECF;
-	Tue,  3 Dec 2024 11:03:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733223795;
-	bh=T2EI6b69ZCGFIQY1TyZdrY6FCH7Ioyhcrg9fna/9HvE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JfODxFMLGQhmNPwNgPcrBDkF/FOjy83x8AYU22XPxgIIIbjXTHduUgbiRchdqx28g
-	 ukrDqo0OMMP85wE6T2yJGMG6fWarJWbyChoSko3FqdKa57cJYpoRToW/0eZqAv2TBB
-	 +RTyGT7f6u1S6Jjquqlz79rN4L6ihk9BHKoCP7xU+y8D2nEWiahHOZzbTeZHwnep6S
-	 +rCOCkGgVVvekXSt4Dsd4l9ST7s/0rT0F5CyXA+u7HKmWHFxntZjBHSMU3h2s6IUfW
-	 8nUslH2O9bICnMSWsfDO8XzofJ8+w0NEnlY1Q0Y6fPFZOVAONJBXsYq/gvh+NodZoz
-	 Vm8ifEgatlr6w==
-From: Hannes Reinecke <hare@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Keith Busch <kbusch@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	linux-nvme@lists.infradead.org,
-	Eric Biggers <ebiggers@kernel.org>,
-	linux-crypto@vger.kernel.org,
-	Hannes Reinecke <hare@kernel.org>
-Subject: [PATCH 09/10] nvmet-tcp: support secure channel concatenation
-Date: Tue,  3 Dec 2024 12:02:37 +0100
-Message-Id: <20241203110238.128630-11-hare@kernel.org>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20241203110238.128630-1-hare@kernel.org>
-References: <20241203110238.128630-1-hare@kernel.org>
+	s=arc-20240116; t=1733233434; c=relaxed/simple;
+	bh=h/H64AjH1resYYh7pSajSeRAMmIf+GNc/QzMRHg5pcU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=fYXotu+Jt3BMNRIWz+p+7oxixsr2FhojjocXqIewvss2EDrHOav1jsfUjqSHYCbXgmsUtob8u8Pu3hJtF4bdYy1ZcI9Re+LwpFQZ+Fue77hmO3Pqx4jLMQu70/gw5zX+5WKyI9ctNLSp21r06Ldv+PRb+bXi4slEdjp6C/lpM9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Shl3/REX; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-434a852bb6eso51093265e9.3
+        for <linux-crypto@vger.kernel.org>; Tue, 03 Dec 2024 05:43:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1733233431; x=1733838231; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DgdXZzkRST/sLdc7nrSWhwokS4E7nABem3RymMknfnU=;
+        b=Shl3/REXYe6Vp+IjtQG52B8n6ayXOG5eQJZTrW9Fq6nwchOTVvd+W7zhpJZIwCm4bv
+         zGVDs+/Ulj1CBXcbubI+eOG39mrJsUdnMMCO1SRcqkrVRd/fvmC3/L/+N23U9NL0Ksuz
+         4hD4knNuY6hyx2JWHR2DxNO/uyuzADfPncIYHe3Xdgqnr0uuTGU8ER55aNOiQ/f7JESD
+         djC4logeXyvbrUF+PqbXmkhN1VlGxH5mAXUGUiPos7DjYxyuih+JVJZ9AmpWzfiZHzvf
+         qcsr+Yx3rP2Y5kYIlZ8CJXtmlmS4FBV4pfHBnwE7r9GPDEQAIuumNeyTsmI2SHTS88m9
+         zLnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733233431; x=1733838231;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DgdXZzkRST/sLdc7nrSWhwokS4E7nABem3RymMknfnU=;
+        b=Wt56qbLA45L/QoObuGU2OFJHgiXRr2lz5zezOIStcBXo0uJJfIF5BZQkAOC2w8UgB7
+         vQqtoLuZM4kr/p8cNTJ+4a8gXUrGMDlPiJbKHnVpyizfuKKh/nyowvB194qBzA0y12Y+
+         eS45vJNoRb2xNhUHrKXIYFPbuEjdRxafhIKvHcP+cjr3NgccmbHzJ/YT1bTcrcFY2XXf
+         Ovk9Moa1Nl7CIOX4x9W+wv1swX+Ev0uI14GsCCldVf+wDvXRo0ePYIBsVqCzaYVNC5Ct
+         jJTTHep9DgbIu4PN+9jfjxlUYSI4K5eYDtiuoj85lFy72KgeF9l4ZDUL0eNrcAYGLl4+
+         rx+g==
+X-Gm-Message-State: AOJu0YyVRe8fdudlX88z1T1xPrYPdTm8eJWKCK+u5tbSv49UkHaSksJx
+	IXApkoHiOESywr/IJGf08XCICzW4gjqyZ2Gl0EITZu0TJ3of80YU2ABkYF3a22U=
+X-Gm-Gg: ASbGncsU3GzvcrHinGGOG5ST76X7QwnGiVNNSG5p85p41GRDndEr+Vzzp7qGs+00JNo
+	lGu2UVJzsK/P3i/Imm21LHykHzaOxywC7RjFdcJoBjCT2eMFqOXbbSNhlTdXEkHKM9wBqV2v4NO
+	rJ15Cmh6J3YdD/BVbHiY1dvhAb7fW0j7RjpkkkQ3ucfnIdHE7/LiTGGSEQH67wuvRQaxSdP/scU
+	Ht2kRgehse0Np43Fu+336V50qs5d6pM9au9HMBWlkgFUA2EWpiPb7c7RfANu+BIJcw/yTjFFQAi
+	Qn/TGFnpsfLINYT1hnQ8boUG
+X-Google-Smtp-Source: AGHT+IGbWePKnUO3Kq9oBel6RKE1Sq780i2MRlsxxW+cGbXtoJO2MzF/5XoVky0eO3VG0u70U6nKtQ==
+X-Received: by 2002:a05:600c:4fc9:b0:434:a0bf:98ea with SMTP id 5b1f17b1804b1-434d09c0b88mr23428935e9.9.1733233431323;
+        Tue, 03 Dec 2024 05:43:51 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:b668:b88:4ecf:c065? ([2a01:e0a:982:cbb0:b668:b88:4ecf:c065])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434b0f70ea8sm196319275e9.40.2024.12.03.05.43.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Dec 2024 05:43:50 -0800 (PST)
+Message-ID: <2a799583-3d19-4517-aa7f-347a05d02e0b@linaro.org>
+Date: Tue, 3 Dec 2024 14:43:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 1/9] crypto: qce - fix goto jump in error path
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+ Thara Gopinath <thara.gopinath@gmail.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>,
+ Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc: linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, stable@vger.kernel.org
+References: <20241203-crypto-qce-refactor-v1-0-c5901d2dd45c@linaro.org>
+ <20241203-crypto-qce-refactor-v1-1-c5901d2dd45c@linaro.org>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20241203-crypto-qce-refactor-v1-1-c5901d2dd45c@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Evaluate the SC_C flag during DH-CHAP-HMAC negotiation and insert
-the generated PSK once negotiation has finished.
+On 03/12/2024 10:19, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> If qce_check_version() fails, we should jump to err_dma as we already
+> called qce_dma_request() a couple lines before.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: ec8f5d8f6f76 ("crypto: qce - Qualcomm crypto engine driver")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>   drivers/crypto/qce/core.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index e228a31fe28dc..58ea93220f015 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -247,7 +247,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   
+>   	ret = qce_check_version(qce);
+>   	if (ret)
+> -		goto err_clks;
+> +		goto err_dma;
+>   
+>   	spin_lock_init(&qce->lock);
+>   	tasklet_init(&qce->done_tasklet, qce_tasklet_req_done,
+> 
 
-Signed-off-by: Hannes Reinecke <hare@kernel.org>
----
- drivers/nvme/target/auth.c             | 72 +++++++++++++++++++++++++-
- drivers/nvme/target/fabrics-cmd-auth.c | 49 +++++++++++++++---
- drivers/nvme/target/fabrics-cmd.c      | 33 +++++++++---
- drivers/nvme/target/nvmet.h            | 38 +++++++++++---
- drivers/nvme/target/tcp.c              | 23 +++++++-
- 5 files changed, 192 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/nvme/target/auth.c b/drivers/nvme/target/auth.c
-index 7897d02c681d..7470ac020db6 100644
---- a/drivers/nvme/target/auth.c
-+++ b/drivers/nvme/target/auth.c
-@@ -15,6 +15,7 @@
- #include <linux/ctype.h>
- #include <linux/random.h>
- #include <linux/nvme-auth.h>
-+#include <linux/nvme-keyring.h>
- #include <asm/unaligned.h>
- 
- #include "nvmet.h"
-@@ -138,7 +139,7 @@ int nvmet_setup_dhgroup(struct nvmet_ctrl *ctrl, u8 dhgroup_id)
- 	return ret;
- }
- 
--u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl)
-+u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl, struct nvmet_req *req)
- {
- 	int ret = 0;
- 	struct nvmet_host_link *p;
-@@ -164,6 +165,11 @@ u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl)
- 		goto out_unlock;
- 	}
- 
-+	if (nvmet_queue_tls_keyid(req->sq)) {
-+		pr_debug("host %s tls enabled\n", ctrl->hostnqn);
-+		goto out_unlock;
-+	}
-+
- 	ret = nvmet_setup_dhgroup(ctrl, host->dhchap_dhgroup_id);
- 	if (ret < 0) {
- 		pr_warn("Failed to setup DH group");
-@@ -232,6 +238,9 @@ u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl)
- void nvmet_auth_sq_free(struct nvmet_sq *sq)
- {
- 	cancel_delayed_work(&sq->auth_expired_work);
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+	sq->tls_key = 0;
-+#endif
- 	kfree(sq->dhchap_c1);
- 	sq->dhchap_c1 = NULL;
- 	kfree(sq->dhchap_c2);
-@@ -260,6 +269,12 @@ void nvmet_destroy_auth(struct nvmet_ctrl *ctrl)
- 		nvme_auth_free_key(ctrl->ctrl_key);
- 		ctrl->ctrl_key = NULL;
- 	}
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+	if (ctrl->tls_key) {
-+		key_put(ctrl->tls_key);
-+		ctrl->tls_key = NULL;
-+	}
-+#endif
- }
- 
- bool nvmet_check_auth_status(struct nvmet_req *req)
-@@ -541,3 +556,58 @@ int nvmet_auth_ctrl_sesskey(struct nvmet_req *req,
- 
- 	return ret;
- }
-+
-+void nvmet_auth_insert_psk(struct nvmet_sq *sq)
-+{
-+	int hash_len = nvme_auth_hmac_hash_len(sq->ctrl->shash_id);
-+	u8 *psk, *digest, *tls_psk;
-+	size_t psk_len;
-+	int ret;
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+	struct key *tls_key = NULL;
-+#endif
-+
-+	ret = nvme_auth_generate_psk(sq->ctrl->shash_id,
-+				     sq->dhchap_skey,
-+				     sq->dhchap_skey_len,
-+				     sq->dhchap_c1, sq->dhchap_c2,
-+				     hash_len, &psk, &psk_len);
-+	if (ret) {
-+		pr_warn("%s: ctrl %d qid %d failed to generate PSK, error %d\n",
-+			__func__, sq->ctrl->cntlid, sq->qid, ret);
-+		return;
-+	}
-+	ret = nvme_auth_generate_digest(sq->ctrl->shash_id, psk, psk_len,
-+					sq->ctrl->subsysnqn,
-+					sq->ctrl->hostnqn, &digest);
-+	if (ret) {
-+		pr_warn("%s: ctrl %d qid %d failed to generate digest, error %d\n",
-+			__func__, sq->ctrl->cntlid, sq->qid, ret);
-+		goto out_free_psk;
-+	}
-+	ret = nvme_auth_derive_tls_psk(sq->ctrl->shash_id, psk, psk_len,
-+				       digest, &tls_psk);
-+	if (ret) {
-+		pr_warn("%s: ctrl %d qid %d failed to derive TLS PSK, error %d\n",
-+			__func__, sq->ctrl->cntlid, sq->qid, ret);
-+		goto out_free_digest;
-+	}
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+	tls_key = nvme_tls_psk_refresh(NULL, sq->ctrl->hostnqn, sq->ctrl->subsysnqn,
-+				       sq->ctrl->shash_id, tls_psk, psk_len, digest);
-+	if (IS_ERR(tls_key)) {
-+		pr_warn("%s: ctrl %d qid %d failed to refresh key, error %ld\n",
-+			__func__, sq->ctrl->cntlid, sq->qid, PTR_ERR(tls_key));
-+		tls_key = NULL;
-+		kfree_sensitive(tls_psk);
-+	}
-+	if (sq->ctrl->tls_key)
-+		key_put(sq->ctrl->tls_key);
-+	sq->ctrl->tls_key = tls_key;
-+#endif
-+
-+out_free_digest:
-+	kfree_sensitive(digest);
-+out_free_psk:
-+	kfree_sensitive(psk);
-+}
-diff --git a/drivers/nvme/target/fabrics-cmd-auth.c b/drivers/nvme/target/fabrics-cmd-auth.c
-index 3f2857c17d95..cf4b38c0e7bd 100644
---- a/drivers/nvme/target/fabrics-cmd-auth.c
-+++ b/drivers/nvme/target/fabrics-cmd-auth.c
-@@ -43,8 +43,26 @@ static u8 nvmet_auth_negotiate(struct nvmet_req *req, void *d)
- 		 data->auth_protocol[0].dhchap.halen,
- 		 data->auth_protocol[0].dhchap.dhlen);
- 	req->sq->dhchap_tid = le16_to_cpu(data->t_id);
--	if (data->sc_c)
--		return NVME_AUTH_DHCHAP_FAILURE_CONCAT_MISMATCH;
-+	if (data->sc_c != NVME_AUTH_SECP_NOSC) {
-+		if (!IS_ENABLED(CONFIG_NVME_TARGET_TCP_TLS))
-+			return NVME_AUTH_DHCHAP_FAILURE_CONCAT_MISMATCH;
-+		/* Secure concatenation can only be enabled on the admin queue */
-+		if (req->sq->qid)
-+			return NVME_AUTH_DHCHAP_FAILURE_CONCAT_MISMATCH;
-+		switch (data->sc_c) {
-+		case NVME_AUTH_SECP_NEWTLSPSK:
-+			if (nvmet_queue_tls_keyid(req->sq))
-+				return NVME_AUTH_DHCHAP_FAILURE_CONCAT_MISMATCH;
-+			break;
-+		case NVME_AUTH_SECP_REPLACETLSPSK:
-+			if (!nvmet_queue_tls_keyid(req->sq))
-+				return NVME_AUTH_DHCHAP_FAILURE_CONCAT_MISMATCH;
-+			break;
-+		default:
-+			return NVME_AUTH_DHCHAP_FAILURE_CONCAT_MISMATCH;
-+		}
-+		ctrl->concat = true;
-+	}
- 
- 	if (data->napd != 1)
- 		return NVME_AUTH_DHCHAP_FAILURE_HASH_UNUSABLE;
-@@ -103,6 +121,13 @@ static u8 nvmet_auth_negotiate(struct nvmet_req *req, void *d)
- 			 nvme_auth_dhgroup_name(fallback_dhgid));
- 		ctrl->dh_gid = fallback_dhgid;
- 	}
-+	if (ctrl->dh_gid == NVME_AUTH_DHGROUP_NULL &&
-+	    ctrl->concat) {
-+		pr_debug("%s: ctrl %d qid %d: NULL DH group invalid "
-+			 "for secure channel concatenation\n", __func__,
-+			 ctrl->cntlid, req->sq->qid);
-+		return NVME_AUTH_DHCHAP_FAILURE_CONCAT_MISMATCH;
-+	}
- 	pr_debug("%s: ctrl %d qid %d: selected DH group %s (%d)\n",
- 		 __func__, ctrl->cntlid, req->sq->qid,
- 		 nvme_auth_dhgroup_name(ctrl->dh_gid), ctrl->dh_gid);
-@@ -154,6 +179,12 @@ static u8 nvmet_auth_reply(struct nvmet_req *req, void *d)
- 	kfree(response);
- 	pr_debug("%s: ctrl %d qid %d host authenticated\n",
- 		 __func__, ctrl->cntlid, req->sq->qid);
-+	if (!data->cvalid && ctrl->concat) {
-+		pr_debug("%s: ctrl %d qid %d invalid challenge\n",
-+			 __func__, ctrl->cntlid, req->sq->qid);
-+		return NVME_AUTH_DHCHAP_FAILURE_FAILED;
-+	}
-+	req->sq->dhchap_s2 = le32_to_cpu(data->seqnum);
- 	if (data->cvalid) {
- 		req->sq->dhchap_c2 = kmemdup(data->rval + data->hl, data->hl,
- 					     GFP_KERNEL);
-@@ -163,11 +194,15 @@ static u8 nvmet_auth_reply(struct nvmet_req *req, void *d)
- 		pr_debug("%s: ctrl %d qid %d challenge %*ph\n",
- 			 __func__, ctrl->cntlid, req->sq->qid, data->hl,
- 			 req->sq->dhchap_c2);
--	} else {
-+	}
-+	if (req->sq->dhchap_s2 == 0) {
-+		if (ctrl->concat)
-+			nvmet_auth_insert_psk(req->sq);
- 		req->sq->authenticated = true;
-+		kfree(req->sq->dhchap_c2);
- 		req->sq->dhchap_c2 = NULL;
--	}
--	req->sq->dhchap_s2 = le32_to_cpu(data->seqnum);
-+	} else if (!data->cvalid)
-+		req->sq->authenticated = true;
- 
- 	return 0;
- }
-@@ -241,7 +276,7 @@ void nvmet_execute_auth_send(struct nvmet_req *req)
- 			pr_debug("%s: ctrl %d qid %d reset negotiation\n",
- 				 __func__, ctrl->cntlid, req->sq->qid);
- 			if (!req->sq->qid) {
--				dhchap_status = nvmet_setup_auth(ctrl);
-+				dhchap_status = nvmet_setup_auth(ctrl, req);
- 				if (dhchap_status) {
- 					pr_err("ctrl %d qid 0 failed to setup re-authentication\n",
- 					       ctrl->cntlid);
-@@ -298,6 +333,8 @@ void nvmet_execute_auth_send(struct nvmet_req *req)
- 		}
- 		goto done_kfree;
- 	case NVME_AUTH_DHCHAP_MESSAGE_SUCCESS2:
-+		if (ctrl->concat)
-+			nvmet_auth_insert_psk(req->sq);
- 		req->sq->authenticated = true;
- 		pr_debug("%s: ctrl %d qid %d ctrl authenticated\n",
- 			 __func__, ctrl->cntlid, req->sq->qid);
-diff --git a/drivers/nvme/target/fabrics-cmd.c b/drivers/nvme/target/fabrics-cmd.c
-index c4b2eddd5666..9a1256deee51 100644
---- a/drivers/nvme/target/fabrics-cmd.c
-+++ b/drivers/nvme/target/fabrics-cmd.c
-@@ -199,10 +199,26 @@ static u16 nvmet_install_queue(struct nvmet_ctrl *ctrl, struct nvmet_req *req)
- 	return ret;
- }
- 
--static u32 nvmet_connect_result(struct nvmet_ctrl *ctrl)
-+static u32 nvmet_connect_result(struct nvmet_ctrl *ctrl, struct nvmet_req *req)
- {
-+	bool needs_auth = nvmet_has_auth(ctrl, req);
-+	key_serial_t keyid = nvmet_queue_tls_keyid(req->sq);
-+
-+	/* Do not authenticate I/O queues for secure concatenation */
-+	if (ctrl->concat && req->sq->qid)
-+		needs_auth = false;
-+
-+	if (keyid)
-+		pr_debug("%s: ctrl %d qid %d should %sauthenticate, tls psk %08x\n",
-+			 __func__, ctrl->cntlid, req->sq->qid,
-+			 needs_auth ? "" : "not ", keyid);
-+	else
-+		pr_debug("%s: ctrl %d qid %d should %sauthenticate%s\n",
-+			 __func__, ctrl->cntlid, req->sq->qid,
-+			 needs_auth ? "" : "not ",
-+			 ctrl->concat ? ", secure concatenation" : "");
- 	return (u32)ctrl->cntlid |
--		(nvmet_has_auth(ctrl) ? NVME_CONNECT_AUTHREQ_ATR : 0);
-+		(needs_auth ? NVME_CONNECT_AUTHREQ_ATR : 0);
- }
- 
- static void nvmet_execute_admin_connect(struct nvmet_req *req)
-@@ -251,7 +267,7 @@ static void nvmet_execute_admin_connect(struct nvmet_req *req)
- 
- 	uuid_copy(&ctrl->hostid, &d->hostid);
- 
--	dhchap_status = nvmet_setup_auth(ctrl);
-+	dhchap_status = nvmet_setup_auth(ctrl, req);
- 	if (dhchap_status) {
- 		pr_err("Failed to setup authentication, dhchap status %u\n",
- 		       dhchap_status);
-@@ -269,12 +285,13 @@ static void nvmet_execute_admin_connect(struct nvmet_req *req)
- 		goto out;
- 	}
- 
--	pr_info("creating %s controller %d for subsystem %s for NQN %s%s%s.\n",
-+	pr_info("creating %s controller %d for subsystem %s for NQN %s%s%s%s.\n",
- 		nvmet_is_disc_subsys(ctrl->subsys) ? "discovery" : "nvm",
- 		ctrl->cntlid, ctrl->subsys->subsysnqn, ctrl->hostnqn,
--		ctrl->pi_support ? " T10-PI is enabled" : "",
--		nvmet_has_auth(ctrl) ? " with DH-HMAC-CHAP" : "");
--	req->cqe->result.u32 = cpu_to_le32(nvmet_connect_result(ctrl));
-+		ctrl->pi_support ? ", T10-PI" : "",
-+		nvmet_has_auth(ctrl, req) ? ", DH-HMAC-CHAP" : "",
-+		nvmet_queue_tls_keyid(req->sq) ? ", TLS" : "");
-+	req->cqe->result.u32 = cpu_to_le32(nvmet_connect_result(ctrl, req));
- out:
- 	kfree(d);
- complete:
-@@ -330,7 +347,7 @@ static void nvmet_execute_io_connect(struct nvmet_req *req)
- 		goto out_ctrl_put;
- 
- 	pr_debug("adding queue %d to ctrl %d.\n", qid, ctrl->cntlid);
--	req->cqe->result.u32 = cpu_to_le32(nvmet_connect_result(ctrl));
-+	req->cqe->result.u32 = cpu_to_le32(nvmet_connect_result(ctrl, req));
- out:
- 	kfree(d);
- complete:
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index 190f55e6d753..c2e17201c757 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -121,6 +121,9 @@ struct nvmet_sq {
- 	u32			dhchap_s2;
- 	u8			*dhchap_skey;
- 	int			dhchap_skey_len;
-+#endif
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+	struct key		*tls_key;
- #endif
- 	struct completion	free_done;
- 	struct completion	confirm_done;
-@@ -237,6 +240,7 @@ struct nvmet_ctrl {
- 	u64			err_counter;
- 	struct nvme_error_slot	slots[NVMET_ERROR_LOG_SLOTS];
- 	bool			pi_support;
-+	bool			concat;
- #ifdef CONFIG_NVME_TARGET_AUTH
- 	struct nvme_dhchap_key	*host_key;
- 	struct nvme_dhchap_key	*ctrl_key;
-@@ -246,6 +250,9 @@ struct nvmet_ctrl {
- 	u8			*dh_key;
- 	size_t			dh_keysize;
- #endif
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+	struct key		*tls_key;
-+#endif
- };
- 
- struct nvmet_subsys {
-@@ -716,13 +723,29 @@ static inline void nvmet_req_bio_put(struct nvmet_req *req, struct bio *bio)
- 		bio_put(bio);
- }
- 
-+#ifdef CONFIG_NVME_TARGET_TCP_TLS
-+static inline key_serial_t nvmet_queue_tls_keyid(struct nvmet_sq *sq)
-+{
-+	return sq->tls_key ? key_serial(sq->tls_key) : 0;
-+}
-+static inline void nvmet_sq_put_tls_key(struct nvmet_sq *sq)
-+{
-+	if (sq->tls_key) {
-+		key_put(sq->tls_key);
-+		sq->tls_key = NULL;
-+	}
-+}
-+#else
-+static inline key_serial_t nvmet_queue_tls_keyid(struct nvmet_sq *sq) { return 0; }
-+static inline void nvmet_sq_put_tls_key(struct nvmet_sq *sq) {}
-+#endif
- #ifdef CONFIG_NVME_TARGET_AUTH
- void nvmet_execute_auth_send(struct nvmet_req *req);
- void nvmet_execute_auth_receive(struct nvmet_req *req);
- int nvmet_auth_set_key(struct nvmet_host *host, const char *secret,
- 		       bool set_ctrl);
- int nvmet_auth_set_host_hash(struct nvmet_host *host, const char *hash);
--u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl);
-+u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl, struct nvmet_req *req);
- void nvmet_auth_sq_init(struct nvmet_sq *sq);
- void nvmet_destroy_auth(struct nvmet_ctrl *ctrl);
- void nvmet_auth_sq_free(struct nvmet_sq *sq);
-@@ -732,16 +755,18 @@ int nvmet_auth_host_hash(struct nvmet_req *req, u8 *response,
- 			 unsigned int hash_len);
- int nvmet_auth_ctrl_hash(struct nvmet_req *req, u8 *response,
- 			 unsigned int hash_len);
--static inline bool nvmet_has_auth(struct nvmet_ctrl *ctrl)
-+static inline bool nvmet_has_auth(struct nvmet_ctrl *ctrl, struct nvmet_req *req)
- {
--	return ctrl->host_key != NULL;
-+	return ctrl->host_key != NULL && !nvmet_queue_tls_keyid(req->sq);
- }
- int nvmet_auth_ctrl_exponential(struct nvmet_req *req,
- 				u8 *buf, int buf_size);
- int nvmet_auth_ctrl_sesskey(struct nvmet_req *req,
- 			    u8 *buf, int buf_size);
-+void nvmet_auth_insert_psk(struct nvmet_sq *sq);
- #else
--static inline u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl)
-+static inline u8 nvmet_setup_auth(struct nvmet_ctrl *ctrl,
-+				  struct nvmet_req *req)
- {
- 	return 0;
- }
-@@ -754,11 +779,12 @@ static inline bool nvmet_check_auth_status(struct nvmet_req *req)
- {
- 	return true;
- }
--static inline bool nvmet_has_auth(struct nvmet_ctrl *ctrl)
-+static inline bool nvmet_has_auth(struct nvmet_ctrl *ctrl,
-+				  struct nvmet_req *req)
- {
- 	return false;
- }
- static inline const char *nvmet_dhchap_dhgroup_name(u8 dhgid) { return NULL; }
-+static inline void nvmet_auth_insert_psk(struct nvmet_sq *sq) {};
- #endif
--
- #endif /* _NVMET_H */
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index fa59a7996efa..6d8d150a75c6 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -1072,10 +1072,11 @@ static int nvmet_tcp_done_recv_pdu(struct nvmet_tcp_queue *queue)
- 
- 	if (unlikely(!nvmet_req_init(req, &queue->nvme_cq,
- 			&queue->nvme_sq, &nvmet_tcp_ops))) {
--		pr_err("failed cmd %p id %d opcode %d, data_len: %d\n",
-+		pr_err("failed cmd %p id %d opcode %d, data_len: %d, status: %04x\n",
- 			req->cmd, req->cmd->common.command_id,
- 			req->cmd->common.opcode,
--			le32_to_cpu(req->cmd->common.dptr.sgl.length));
-+		       le32_to_cpu(req->cmd->common.dptr.sgl.length),
-+		       le16_to_cpu(req->cqe->status));
- 
- 		nvmet_tcp_handle_req_failure(queue, queue->cmd, req);
- 		return 0;
-@@ -1601,6 +1602,7 @@ static void nvmet_tcp_release_queue_work(struct work_struct *w)
- 	/* stop accepting incoming data */
- 	queue->rcv_state = NVMET_TCP_RECV_ERR;
- 
-+	nvmet_sq_put_tls_key(&queue->nvme_sq);
- 	nvmet_tcp_uninit_data_in_cmds(queue);
- 	nvmet_sq_destroy(&queue->nvme_sq);
- 	cancel_work_sync(&queue->io_work);
-@@ -1806,6 +1808,23 @@ static void nvmet_tcp_tls_handshake_done(void *data, int status,
- 	spin_unlock_bh(&queue->state_lock);
- 
- 	cancel_delayed_work_sync(&queue->tls_handshake_tmo_work);
-+
-+	if (!status) {
-+		struct key *tls_key = nvme_tls_key_lookup(peerid);
-+
-+		if (IS_ERR(tls_key)) {
-+			pr_warn("%s: queue %d failed to lookup key %x\n",
-+				__func__, queue->idx, peerid);
-+			spin_lock_bh(&queue->state_lock);
-+			queue->state = NVMET_TCP_Q_FAILED;
-+			spin_unlock_bh(&queue->state_lock);
-+			status = PTR_ERR(tls_key);
-+		} else {
-+			pr_debug("%s: queue %d using TLS PSK %x\n",
-+				 __func__, queue->idx, peerid);
-+			queue->nvme_sq.tls_key = tls_key;
-+		}
-+	}
- 	if (status)
- 		nvmet_tcp_schedule_release_queue(queue);
- 	else
--- 
-2.35.3
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
