@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-8357-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8359-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105A29E1500
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 09:04:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 768949E1641
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 09:50:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7DF816468C
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 08:04:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A25A163D74
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 08:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B4118E056;
-	Tue,  3 Dec 2024 08:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0C21DC1BA;
+	Tue,  3 Dec 2024 08:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="OjrM7Fi/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="BhgBw16W"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA4F2500C5;
-	Tue,  3 Dec 2024 08:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D2D192D64;
+	Tue,  3 Dec 2024 08:50:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733212861; cv=none; b=tuSIMWuJvSAQUlDz7LfSzOPc4KFNypOpmdfkmDYixZKp0cNfVM4HNEzsFKvbamIIakZ8pBPReKkgyxchEsXh0PJUKlNgIJZr1zRYn87b9Jl1R83jnJLQBCV5gLWK0JmCVT+Ob2ncCG09zNUiLf1zhn+mjJTIqoioV/7ii6Ciav0=
+	t=1733215853; cv=none; b=Q21AAfqwwWHSwYXqOUdZyYZn/IP1WifO1ngO6vUd4XuwoPco1ybu1p9nWdUsKZrysVu4Jqi8C4+eL1FEKQ6lIAdj5CTrAf0U9m6ABkDv8slZW6zMtFqgtSloFEtyGrSPDHeqoxT5XS31NLK1/81SoWgdlCSrXW0zHcoIQfADzXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733212861; c=relaxed/simple;
-	bh=DxK2elVr2TglOMSfmiZzWk+c4ZqpAytERfWqpaeH6M8=;
+	s=arc-20240116; t=1733215853; c=relaxed/simple;
+	bh=V9mE91uJU38RWrFIrEtW2u16C+OaUZHHwy6JCoVZGP0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXsGnwyl+/xXhRb01L+xpckQ49biwqAEWU3VoeuUIVr7R0ecGrTle6nyGzaVAxXqp+JgYTz10N08oP8v9tEzZUxZiXg6FcDNWexcOhrE6wgjoZhVcVzZcpdhYmIOr305jvbnlkPSY4SsnEKmVpMOJ5+XXQOunqjPe9czwXr9/24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=OjrM7Fi/; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=O0C2JX6vxS0ATRr3YAbu045OZGyXUhBxliHa5rzKj2ZisdsINLJoD3WJTsry9zzsnYiY8feoQbsXSQRUHuGEV6RDIUERO9bM56UIUbBm+pirYlMl5WWkmsuOzqZo187lNz5HW2K0GHxKfmT/AGYrap8tkuFyFUOxeJTQg03PI0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=BhgBw16W; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,47 +37,29 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Z5W6TzUmpOT8OeMseNLRswu8nLNRFfWLwSH5h9kFvf8=; b=OjrM7Fi/UEJfixgHY/bJ7qvuaS
-	uRZMYNuC7UUE8nRW/QDiIfMPSbGVy5KTBnWolMExU1WQkVIfRMHIB3qbwfqMoiPBkqgivlMjeihti
-	EFn0epR7oq9NhGUDRyxUKIEI6VL5VXd5Ujun8GjfO1rH0SFybeM/cWhgh6ZL4D6E1l5oRkKdqG724
-	gmoF/8tFpUmsHcQ4Fh940aCHfIlemY4UhyuY6eB3KfUEM8j5g+2qDSDhN599sY6WsmFw3TSMpaTV8
-	sfdZhfv1hRJYVWyV1T1at8kFyzpbeVsMUnVGQ+J32X6m9HsxTzF0hm8rVSHmPtg80pUiN7svPZ6Qx
-	070tpn8g==;
+	bh=jJYA7Tj+Zo3Z3yF+IwYyaS7Puyr19q55Ek5JTHaOGp0=; b=BhgBw16Wy52oNykb/IRpz0izPA
+	UCV4vvucnJPrqSe6VYmcV3f/Nh3MruSDFwNP9KqfsjWD4DkXPzzHQKuXHeLF2v1DmDfOVauX2tC+t
+	fKuYMr0hRZG5R2Yr7dOQVvV9rSprqgUw7R3fHZ3I3Zj/Ot8RK9ZqWQvf/PK7BcIo0FdsHvdTJE9v2
+	7bsyTQclErrzwQCFxWe3Up4leN5G7+xpcm7ZnGQQg++H+RX5Jufjqg3L+8/34DfA3WYWRK9waQaws
+	/Ax86fACCYe/w1zzDsZRbf5euX/lUXIt8+YKac4jWempX5GFBtZqjrUlMMp0D+8Fc9vNSbaBPq/wD
+	t8CAIlaQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tINpn-0037jd-0I;
-	Tue, 03 Dec 2024 16:00:40 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 03 Dec 2024 16:00:39 +0800
-Date: Tue, 3 Dec 2024 16:00:39 +0800
+	id 1tIOcE-0038VG-3B;
+	Tue, 03 Dec 2024 16:50:44 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 03 Dec 2024 16:50:42 +0800
+Date: Tue, 3 Dec 2024 16:50:42 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: "Sridhar, Kanchana P" <kanchana.p.sridhar@intel.com>
-Cc: Nhat Pham <nphamcs@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-	"yosryahmed@google.com" <yosryahmed@google.com>,
-	"chengming.zhou@linux.dev" <chengming.zhou@linux.dev>,
-	"usamaarif642@gmail.com" <usamaarif642@gmail.com>,
-	"ryan.roberts@arm.com" <ryan.roberts@arm.com>,
-	"ying.huang@intel.com" <ying.huang@intel.com>,
-	"21cnbao@gmail.com" <21cnbao@gmail.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"clabbe@baylibre.com" <clabbe@baylibre.com>,
-	"ardb@kernel.org" <ardb@kernel.org>,
-	"ebiggers@google.com" <ebiggers@google.com>,
-	"surenb@google.com" <surenb@google.com>,
-	"Accardi, Kristen C" <kristen.c.accardi@intel.com>,
-	"Feghali, Wajdi K" <wajdi.k.feghali@intel.com>,
-	"Gopal, Vinodh" <vinodh.gopal@intel.com>
-Subject: Re: [PATCH v4 09/10] mm: zswap: Allocate pool batching resources if
- the crypto_alg supports batching.
-Message-ID: <Z066p53LoISwqkmX@gondor.apana.org.au>
-References: <20241123070127.332773-1-kanchana.p.sridhar@intel.com>
- <20241123070127.332773-10-kanchana.p.sridhar@intel.com>
- <CAKEwX=PmKWH4Z4Py9Jti9fcD6qCYJBBRrDF48qdmo8-i+LzzfA@mail.gmail.com>
- <SJ0PR11MB56783454B5985ACD48744772C9362@SJ0PR11MB5678.namprd11.prod.outlook.com>
+To: Harald Freudenberger <freude@linux.ibm.com>
+Cc: davem@davemloft.net, dengler@linux.ibm.com, linux-s390@vger.kernel.org,
+	linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [PATCH v6 2/2] s390/crypto: New s390 specific protected key hash
+ phmac
+Message-ID: <Z07GYlVeohJJyLNE@gondor.apana.org.au>
+References: <20241129111059.303905-1-freude@linux.ibm.com>
+ <20241129111059.303905-3-freude@linux.ibm.com>
+ <Z0nUQQ9E32xq0SY4@gondor.apana.org.au>
+ <c86548e680a151394fa814f543103481@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -86,37 +68,46 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SJ0PR11MB56783454B5985ACD48744772C9362@SJ0PR11MB5678.namprd11.prod.outlook.com>
+In-Reply-To: <c86548e680a151394fa814f543103481@linux.ibm.com>
 
-On Tue, Dec 03, 2024 at 12:30:30AM +0000, Sridhar, Kanchana P wrote:
+On Mon, Dec 02, 2024 at 06:25:22PM +0100, Harald Freudenberger wrote:
 >
-> > Why do we need this "can_batch" field? IIUC, this can be determined
-> > from the compressor internal fields itself, no?
-> > 
-> > acomp_has_async_batching(acomp);
-> > 
-> > Is this just for convenience, or is this actually an expensive thing to compute?
-> 
-> Thanks for your comments. This is a good question. I tried not to imply that
-> batching resources have been allocated for the cpu based only on what
-> acomp_has_async_batching() returns. It is possible that the cpu onlining
-> code ran into an -ENOMEM error on any particular cpu. In this case, I set
-> the pool->can_batch to "false", mainly for convenience, so that zswap
-> can be somewhat insulated from migration. I agree that this may not be
-> the best solution; and whether or not batching is enabled can be directly
-> determined just before the call to crypto_acomp_batch_compress()
-> based on:
-> 
-> acomp_ctx->nr_reqs == SWAP_CRYPTO_BATCH_SIZE;
+> - The attempt to derive a protected key usable by the cpacf instructions
+>   depends of the raw key material used. For 'clear key' material the
+>   derivation process is a simple instruction which can't fail.
+>   A more preferred way however is to use 'secure key' material which
+>   is transferred to a crypto card and then re-wrapped to be usable
+>   with cpacf instructions. This requires communication with a crypto
+>   card and thus may fail - because there is no card at all or there
+>   is temporarily no card available or the card is in bad state. If there
+>   is no usable card the AP bus returns -EBUSY at the pkey_key2protkey()
+>   function and triggers an asynchronous bus scan. As long as this scan
+>   is running (usually about 100ms or so) the -EBUSY is returned to indicate
+>   that the caller should retry "later". Other states are covered with
+>   other return codes like ENODEV or EIO and the caller is not supposed
+>   to loop but should fail. When there is no accessible hardware available
+>   to derive a protected key either the user or the admin broke something
+>   or something went really the bad way and then there is no help but the
+>   storage device must fail.
 
-With ahash request chaining, the idea is to accumulate as much
-data as you can before you provide it to the Crypto API.  The
-API is responsible for dividing it up if the underlying driver
-is only able to handle one request at a time.
+Thanks for the explanation.  I think it's fair enough to fail an
+op if the hardware is absent or broken.
 
-So that would be the ideal model to use for compression as well.
-Provide as much data as you can and let the API handle the case
-where the data needs to be divided up.
+So all I need is for you to turn the BUSY case into a delayed retry
+and I think that should be good enough.
+
+> - Do I get you right, that a completion is ok? I always had the impression
+>   that waiting on a completion is also a sleeping act and thus not allowed?
+
+No, what I mean is that if you get an EBUSY, you should return
+-EINPROGRESS to indicate that the operation is pending, and then
+schedule a delayed work to retry the operation.  When the retry
+fails or succeeds, it should invoke the callback with the correct
+error status.
+
+If the retry gets EBUSY again, then schedule another delayed
+work, or fail permanently by invoking the callback if you hit
+some sort of threshold like your existing limit of 3.
 
 Cheers,
 -- 
