@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-8379-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8383-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CE029E1A44
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B33689E1A45
 	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 12:04:01 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28DE7167191
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 11:03:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 782472831C2
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 11:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A62A1E47A4;
-	Tue,  3 Dec 2024 11:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21721E3789;
+	Tue,  3 Dec 2024 11:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kFyUFMI7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UnFad3i7"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2BA1E411D
-	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 11:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713E61E3798
+	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 11:03:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733223789; cv=none; b=VQAYHptx5VhkFOCjM5uSd4avd+j5f9Bj1E/VhmAF2vBqEHQRuCe3Ih3NAAY10/yfKSRlIybaBaLS9nkFUhFP+XRF50LQvgsvUI061KrnIJVykzl+mZxuowQ7EMh+JbXIC9DGsoodhWV69w65QIB2OBMKk2BnDtZobHMaGFqfCUI=
+	t=1733223798; cv=none; b=C7PK73rUhYgZvBXyDWNxDc3V4kub/wCPcoQT3RRYS3m1OcDyE4//rdRkjvjyocsUPkQqsLMAO1y0FqnyJkrVaEUbbMr6UDdD9VnicIBYNgCTdTW0/6GxRlAra7X+xEXvB/xnY19IFojVNp5lKh9dJJ+g/g8uV/7my0QOmkxIOl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733223789; c=relaxed/simple;
-	bh=HWMQCj01jHX4+s5mWusey4esbb+DqmOUgYumbOZlkCw=;
+	s=arc-20240116; t=1733223798; c=relaxed/simple;
+	bh=Svjuo5V8Wl0PrlCCeCE0EAGZyFEy5Fqm+ODQK619Izs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qScfpa66zz9No/sZ3hLg/pgmEBao9RlI8/bHlN2rsNqb6Aj4nnpHuAowYWPDvch5dPG34Hl2tVnVHSmjlUfsZWqQTdLS/wJ59U9KXPDjVCgWw7Q60PXbY1qy2i/u/wOLx+mnPMFf9ZkYL9FDJA258TOcGdRZQuD4smthXvrKWoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kFyUFMI7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FED4C4CECF;
-	Tue,  3 Dec 2024 11:03:07 +0000 (UTC)
+	 MIME-Version; b=blbfiqHT2bYBu4yud8jHrXJnb+oSIUukHbYXSo8ih3wZ9gsL3XwarqjwkSwnlUK7vdZWud7OskDuiX77TFvthLWWodOb9GN1vPdDX2e77tU6C6a0/qxrzF3QJvS41Cyle6H5F4Rtg6ee4w4UH0l8CRd7bVZdipYWN20QE6UD7ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UnFad3i7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DD80C4CEDD;
+	Tue,  3 Dec 2024 11:03:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733223788;
-	bh=HWMQCj01jHX4+s5mWusey4esbb+DqmOUgYumbOZlkCw=;
+	s=k20201202; t=1733223797;
+	bh=Svjuo5V8Wl0PrlCCeCE0EAGZyFEy5Fqm+ODQK619Izs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kFyUFMI7yBR73deP3Ew55VC0dgfs1oOIeHUkNetY44JYP++Fs5FS2GRPLP/Cnn7ww
-	 bObnG8aFCRx5adlAjSQ+6XRR+G+tLkl22bW3wl55TSCOOTj66XGtUhiNmNY0+kDCoD
-	 ir6KLFLtB8ySgQBAmKPd8cWLhEs5XgKuhPiexUI8cX/z6bWEIODB/eDQ1oRlLaXeNE
-	 KWWsPnVsQ5qoCtw9EQyWmPjW0XlGPJGdccEs3H1ZYH5Hrj5o1rRL/radX0jw05RAwU
-	 1mcyHvt4uiYSfqR2rnBDiku4MizwZ2tktoHuJO+iC2mAdt3INvYU7ZVhuZ5lUWuCgn
-	 byRAGuqwik7pA==
+	b=UnFad3i7jJHjSHI7osDDy8Yc7y+dK7D/ZPsGDOg0mHiMdM6dqK3i1jh5xiDclIL3T
+	 bYYwrTgTrPui4DKGsSo+Be92109dAxdFXCULeZ2H+VWSXFGGmrvn4pxUNh5rp26GeP
+	 6Lw0ff+KkWRAIgNIGPmGt0mGsIvBzg7uJfTcfLGwPQsWgWQSyon5WOFi/xuNrpnMBz
+	 AgHIyWBEJdFj8g7YoyspP51qITJ8h7HNIyI4z8kcF9evF9AMiPaSrHidUoDleJYDgt
+	 6gRmlP2G7+NWcx/ig5cFOoB8EzDLuDvy5cWOe58hsVa1f9VdeJ0J0xgc92xoNcEScR
+	 oAW/w+3coN6zQ==
 From: Hannes Reinecke <hare@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Keith Busch <kbusch@kernel.org>,
@@ -49,9 +49,9 @@ Cc: Keith Busch <kbusch@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>,
 	linux-crypto@vger.kernel.org,
 	Hannes Reinecke <hare@kernel.org>
-Subject: [PATCH 06/10] nvme: always include <linux/key.h>
-Date: Tue,  3 Dec 2024 12:02:34 +0100
-Message-Id: <20241203110238.128630-8-hare@kernel.org>
+Subject: [PATCH 10/10] nvmet: add tls_concat and tls_key debugfs entries
+Date: Tue,  3 Dec 2024 12:02:38 +0100
+Message-Id: <20241203110238.128630-12-hare@kernel.org>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20241203110238.128630-1-hare@kernel.org>
 References: <20241203110238.128630-1-hare@kernel.org>
@@ -63,65 +63,60 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To avoid build errors when NVME_KEYRING is not set.
+Add debugfs entries to display the 'concat' and 'tls_key' controller
+attributes.
 
 Signed-off-by: Hannes Reinecke <hare@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- drivers/nvme/common/keyring.c | 1 -
- drivers/nvme/host/tcp.c       | 1 -
- drivers/nvme/target/tcp.c     | 1 -
- include/linux/nvme-keyring.h  | 2 ++
- 4 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/nvme/target/debugfs.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/nvme/common/keyring.c b/drivers/nvme/common/keyring.c
-index 8cb253fcd586..32d16c53133b 100644
---- a/drivers/nvme/common/keyring.c
-+++ b/drivers/nvme/common/keyring.c
-@@ -5,7 +5,6 @@
+diff --git a/drivers/nvme/target/debugfs.c b/drivers/nvme/target/debugfs.c
+index 220c7391fc19..e4300eb95101 100644
+--- a/drivers/nvme/target/debugfs.c
++++ b/drivers/nvme/target/debugfs.c
+@@ -132,6 +132,27 @@ static int nvmet_ctrl_host_traddr_show(struct seq_file *m, void *p)
+ }
+ NVMET_DEBUGFS_ATTR(nvmet_ctrl_host_traddr);
  
- #include <linux/module.h>
- #include <linux/seq_file.h>
--#include <linux/key.h>
- #include <linux/key-type.h>
- #include <keys/user-type.h>
- #include <linux/nvme.h>
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 3e416af2659f..b5e11a0f7ba8 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -8,7 +8,6 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/err.h>
--#include <linux/key.h>
- #include <linux/nvme-tcp.h>
- #include <linux/nvme-keyring.h>
- #include <net/sock.h>
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index 7c51c2a8c109..fa59a7996efa 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -8,7 +8,6 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/err.h>
--#include <linux/key.h>
- #include <linux/nvme-tcp.h>
- #include <linux/nvme-keyring.h>
- #include <net/sock.h>
-diff --git a/include/linux/nvme-keyring.h b/include/linux/nvme-keyring.h
-index f7bbcbeb4b13..ab8971afa973 100644
---- a/include/linux/nvme-keyring.h
-+++ b/include/linux/nvme-keyring.h
-@@ -6,6 +6,8 @@
- #ifndef _NVME_KEYRING_H
- #define _NVME_KEYRING_H
- 
-+#include <linux/key.h>
++#ifdef CONFIG_NVME_TARGET_TCP_TLS
++static int nvmet_ctrl_tls_key_show(struct seq_file *m, void *p)
++{
++	struct nvmet_ctrl *ctrl = m->private;
++	key_serial_t keyid = nvmet_queue_tls_keyid(ctrl->sqs[0]);
 +
- #if IS_ENABLED(CONFIG_NVME_KEYRING)
++	seq_printf(m, "%08x\n", keyid);
++	return 0;
++}
++NVMET_DEBUGFS_ATTR(nvmet_ctrl_tls_key);
++
++static int nvmet_ctrl_tls_concat_show(struct seq_file *m, void *p)
++{
++	struct nvmet_ctrl *ctrl = m->private;
++
++	seq_printf(m, "%d\n", ctrl->concat);
++	return 0;
++}
++NVMET_DEBUGFS_ATTR(nvmet_ctrl_tls_concat);
++#endif
++
+ int nvmet_debugfs_ctrl_setup(struct nvmet_ctrl *ctrl)
+ {
+ 	char name[32];
+@@ -157,6 +178,12 @@ int nvmet_debugfs_ctrl_setup(struct nvmet_ctrl *ctrl)
+ 			    &nvmet_ctrl_state_fops);
+ 	debugfs_create_file("host_traddr", S_IRUSR, ctrl->debugfs_dir, ctrl,
+ 			    &nvmet_ctrl_host_traddr_fops);
++#ifdef CONFIG_NVME_TARGET_TCP_TLS
++	debugfs_create_file("tls_concat", S_IRUSR, ctrl->debugfs_dir, ctrl,
++			    &nvmet_ctrl_tls_concat_fops);
++	debugfs_create_file("tls_key", S_IRUSR, ctrl->debugfs_dir, ctrl,
++			    &nvmet_ctrl_tls_key_fops);
++#endif
+ 	return 0;
+ }
  
- struct key *nvme_tls_psk_refresh(struct key *keyring,
 -- 
 2.35.3
 
