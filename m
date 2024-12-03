@@ -1,80 +1,80 @@
-Return-Path: <linux-crypto+bounces-8388-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8391-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 860949E237F
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 16:38:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D36069E23DA
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 16:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7652B34B43
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 13:50:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE7C1B63019
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Dec 2024 13:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B8A1F12F7;
-	Tue,  3 Dec 2024 13:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7B01F1304;
+	Tue,  3 Dec 2024 13:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HnSmirQ1"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OS2Rhfn1"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8441E32CB
-	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 13:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9CC1F12F8
+	for <linux-crypto@vger.kernel.org>; Tue,  3 Dec 2024 13:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733233838; cv=none; b=o1ZUNCh7jdLsWIEAYYTBuB50sY85osWR6I4lJVDw26nCIhleiEFjGy/cUOmyjmQi4nXF6GP+2XjQSgi3/sBUQbo/FuQwh2KmmybuBUIXc8wHjNn0vScukTCLNK8xVXso7hXX/84fAEzL6d6NCyc5qSUdUqqCXkkbnwJ0VeyEnEc=
+	t=1733234006; cv=none; b=RrvnrPXdue4xbWUGRcLzB8zU2BYC4xkWWt5ml2zK8aPwDkiJaL0Lvymb0Lu+Lpc20Ean5rzznlJ8VMfQ6oMlGZlXWWzks24hk9tzWv9nv/NbrQBSjHhKM5oeAAVM5T5vj+OMm9HwhDMLau4xf49WlBWA/Fit8r6Ysb7HG2r0uCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733233838; c=relaxed/simple;
-	bh=bZyUqYcg3v5s0JBNpXcGl0Kr41t5wBvVh6TYlFZoBiM=;
+	s=arc-20240116; t=1733234006; c=relaxed/simple;
+	bh=MfM0drVwbDYoPluV0REjpJpK0fyBprYzaokHgqmg1QA=;
 	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=hDiduYlWDv/ELuD+/WV4zDjr178FNVL5QW1eED8NMvVfHXRsvMRxWSv1kAChXgjWfeMJJhU37CUSxR4orEbgj188Flo+X3ej+imhitU1TepgA75vCAs1JefxPgOmsF6bZr1gJqPiGTcpIX6YHZb4U0tU9hh2VUIKWfMhUAQyRsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HnSmirQ1; arc=none smtp.client-ip=209.85.128.42
+	 In-Reply-To:Content-Type; b=IKpLQjLncSp3Fy+WFbM4c5LA5E5YBgyqg2uQnPQ0b/cCsoP1iyh/PPvJyiGUFFDuBW86zelqu5QDMM09cyhTkuuc0aFuf2mkWdkHas5U/lCVWFHjBL5UYYqi4TiQFJlOBnpadow6E3b2iULmnhKmNW3zTzdHderNBK6/iXts8Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OS2Rhfn1; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-434aabd688fso35884645e9.3
-        for <linux-crypto@vger.kernel.org>; Tue, 03 Dec 2024 05:50:36 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-385e075255fso2685247f8f.0
+        for <linux-crypto@vger.kernel.org>; Tue, 03 Dec 2024 05:53:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1733233835; x=1733838635; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1733234003; x=1733838803; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hBcwo9eIpFhlU/J4DHTZIeUqEYh0WviOXbdmOon8iiA=;
-        b=HnSmirQ1Z6ljQcEiF7FMv+TQlXjyg/CM2ja4izsEXOzr9MQYOc7ejrN2ArFjzpGdCp
-         cY7GqnSV7YYFggwNk7ze3VMx1TDeDa/kfLr3bXTvuse7mMIozmKgjiDrDOp8kv+mmwDD
-         f4CrX5nZd4p0Rse6UB9WEW/QR4ciEvLYq6XtjNWMdNtiFTajk1u86EgWYkG5JJjr2Yki
-         Kw01O+tYiyk6xYOyih+aGItIsRwxH2Q3Kwe2Iwb4xE9gsYm8l3uuiVJ02O66ksQ3vSUI
-         IDJTq0Ht74vPCVsqmmnGDMXtks5S5g7qhP8UpBIy8igaAfMAFMDdP0DoXf0MD9DpsPkA
-         2sFw==
+        bh=wDNjqsNTvkXwslsyJDHeLHfffqCQZCYq3Xs1+G1L73g=;
+        b=OS2Rhfn16X2DnccQyEsDMeN2i08kkIRnYum6HsZOYsDTqD46DayBumhkMttelvwZTl
+         aiTNoorgZ0JsswbYJHPvWCDPqtQvo/bXr/Uy5BVh5Q5qFsCjH0kur7oOeLN8YI5DaAhJ
+         KtItMQGYX4WlnERP2nNIY+gazW0QsPn1aF+KgpIfoGsRKBxIIbiCcxgkQ4lGAG8wzJwu
+         HY7vOIgH/sj0IkU1Ti+o/ihy+cNpoNxfIPz/AYYcr/CSjWPAjGuZ9KqmgokrnmJM5QsP
+         7VCzV3CYhQmOV3OIpBE3t6q1dEBrlSOa4VlQnRmbEfrdTdErt25A2xdWcmQw13oDjPCv
+         cD2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733233835; x=1733838635;
+        d=1e100.net; s=20230601; t=1733234003; x=1733838803;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=hBcwo9eIpFhlU/J4DHTZIeUqEYh0WviOXbdmOon8iiA=;
-        b=JkjdU8xtJemIasgcLb/VoDSEfc3rDNLEl05MEs410w+dErc6zee+abjMC88L3/UYTM
-         yS7RVtkD8C53WHg4IAiCKo7vLFEU87QZrKDYYAcBIrCUNmmO7bzxvpFh7rnebwLoKln4
-         TVTwGHpymT+geYphwPGFmfFK8ybeyOQM6o41ftQlxNzx7+Rmm495ELNXZ0cOknFyxPSz
-         DnGhd9PgIczXsbYFv6uwUX0gqtDFbqUnQhxRk/i42BSLHC1TrUaMQV9qW0K5o3lGZjII
-         pQwUwWLkMSGPUNB7XeYMp6GW0iT5cxyY9mfTgF9qiryGEPZHXerPXntX648GektVNI+7
-         tATw==
-X-Gm-Message-State: AOJu0YwdtZjI3WzVf6fkbBU1pxwPfg244HBc2R02nvfH2gZhrnxK7RAY
-	m5ypCB0ARBa+aubXjS8BrbYH+L/Wne0MMEAhlsy0eRpen8hHP2dLQgxOQ8/hNeI=
-X-Gm-Gg: ASbGncu91/bRjYAMSbYJaO68bs5YPT/WFrL50gmiH4/ZqtEdYjbXlKDa4mNc7ij4ctC
-	wrXlIoQAlumfmfq66i4p4PLHzVHSjPRBHvPLjW3eBA4Eid0fhuxcpajOMN2m//q0Nn0lgQ1ANup
-	gcOIHzfOxre/xui/Wm177ZaZ2FXzVWz1o9aeqpIeB6Oak/wEum5H7ZMwC+70mQP6yKTTgGj6UnV
-	Z/GHyp0vZcCJyLk57ZH1nlrHQSSucq8/mok7ee+aCdLCrH1UIvuYUlAJHs8i/R0IsvXljIM75rS
-	MWgY6gjR6LlQEvWLgrhffpGd
-X-Google-Smtp-Source: AGHT+IEi93wdfnyxOOsXD1iaOm0aYo0vmjHZ2S8lJrh1fgGf6vIMZGQiHeweFABcyUVMhTNIfdCzPQ==
-X-Received: by 2002:a5d:5985:0:b0:385:e3c5:61ae with SMTP id ffacd0b85a97d-38607ae39fbmr265368f8f.31.1733233835095;
-        Tue, 03 Dec 2024 05:50:35 -0800 (PST)
+        bh=wDNjqsNTvkXwslsyJDHeLHfffqCQZCYq3Xs1+G1L73g=;
+        b=vf5R7ZAF0+S38ZiJQf8nqZ8jARllpLynheF8srzcI8ODF5J+iFEUUhqmx/v7/xIZGB
+         B57jiJTRt5m+m1Yt452f3iJKiib4Y99N51TUDNmIH44Y962MNOjYlM4orBw8Br8JcIxf
+         pDELCtGAPBruroNCZpgxbewgpVxo7OK7zOfoyF4oecT+Yr7wIeROMMgYacDUcGTJDn5s
+         kdrzoG3fqtQ/vwYpeRG32PoNx39qM40J8EUT7+GdoiI4GEpvDhYKIY6gSnRaqyG8soI5
+         nFUCLmslbiljxqIO8XXGxKDrBrnKqj4TxqNC3/JeOfT3dBSvUpSsqPyd5xh+TcR6RoKu
+         +Q6w==
+X-Gm-Message-State: AOJu0Yx3fAgnozvjYkOdBpeam+CEQFyHHmJjx/6X8AeLHSVRrg1YApVd
+	kL0OegDVHqQ7cYWMOuOtGBmWDNKL/d4zyB9t++BeAqDqgoH+bOxKlbRruPWbEEk=
+X-Gm-Gg: ASbGncuvrkGNXi6CYWYaVtSB8AnTrrlGsb2ot/1xCQSL1x1uAcmkQOFWbaYcKPxXADN
+	jlyRXeoELC7iWPb08Ye4mK+GqcsNoiaMm3vhY2Hh6U+6PpX0EAZ9G1ZqJ9kVoG8tac7/1EWO1PN
+	ue+zCEOa7lHPwP6N7qey071LTQm7FYREe0kOpT1A0zg2Gp1X0xsajehB8p4tQe9qWjr0/bo+XX4
+	iqekcdcaUqRYdBSg3wYHerTRT7UoCZbVxZfYMYknaWIvC19hG8RaVpFwDjUHg6vR2sTKcs7woSx
+	rCQXh4xrBI/TF1dJkk+jvi4l
+X-Google-Smtp-Source: AGHT+IGh+XS+vM0CbuRcrxDNTg3Y8TKQ9gEnvK0wrtUF8j62EtQ0gbCJvdajb5h8bz5IO1GMuUl3LQ==
+X-Received: by 2002:a5d:648f:0:b0:385:e13c:5409 with SMTP id ffacd0b85a97d-385fd3c68d2mr2122986f8f.5.1733234002695;
+        Tue, 03 Dec 2024 05:53:22 -0800 (PST)
 Received: from ?IPV6:2a01:e0a:982:cbb0:b668:b88:4ecf:c065? ([2a01:e0a:982:cbb0:b668:b88:4ecf:c065])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385df63255bsm12765093f8f.86.2024.12.03.05.50.34
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434b0d9bef8sm189836875e9.7.2024.12.03.05.53.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Dec 2024 05:50:34 -0800 (PST)
-Message-ID: <a2252349-b9e6-476d-a838-cb0e55e78da8@linaro.org>
-Date: Tue, 3 Dec 2024 14:50:33 +0100
+        Tue, 03 Dec 2024 05:53:22 -0800 (PST)
+Message-ID: <d6220576-eaf5-4415-b25f-b5984255ab78@linaro.org>
+Date: Tue, 3 Dec 2024 14:53:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -84,8 +84,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From: neil.armstrong@linaro.org
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 6/9] crypto: qce - make qce_register_algs() a managed
- interface
+Subject: Re: [PATCH 9/9] crypto: qce - switch to using a mutex
 To: Bartosz Golaszewski <brgl@bgdev.pl>,
  Thara Gopinath <thara.gopinath@gmail.com>,
  Herbert Xu <herbert@gondor.apana.org.au>,
@@ -95,7 +94,7 @@ Cc: linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org,
  Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 References: <20241203-crypto-qce-refactor-v1-0-c5901d2dd45c@linaro.org>
- <20241203-crypto-qce-refactor-v1-6-c5901d2dd45c@linaro.org>
+ <20241203-crypto-qce-refactor-v1-9-c5901d2dd45c@linaro.org>
 Content-Language: en-US, fr
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -122,80 +121,146 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro
-In-Reply-To: <20241203-crypto-qce-refactor-v1-6-c5901d2dd45c@linaro.org>
+In-Reply-To: <20241203-crypto-qce-refactor-v1-9-c5901d2dd45c@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 03/12/2024 10:19, Bartosz Golaszewski wrote:
 > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Make qce_register_algs() a managed interface. This allows us to further
-> simplify the remove() callback.
+> Having switched to workqueue from tasklet, we are no longer limited to
+> atomic APIs and can now convert the spinlock to a mutex. This, along
+> with the conversion from tasklet to workqueue grants us ~15% improvement
+> in cryptsetup benchmarks for AES encryption.
+
+Can you share on which platforms you did the tests and the results you got ?
+
+> 
+> While at it: use guards to simplify locking code.
 > 
 > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > ---
->   drivers/crypto/qce/core.c | 11 ++++++-----
->   1 file changed, 6 insertions(+), 5 deletions(-)
+>   drivers/crypto/qce/core.c | 46 +++++++++++++++++++++-------------------------
+>   drivers/crypto/qce/core.h |  3 ++-
+>   2 files changed, 23 insertions(+), 26 deletions(-)
 > 
 > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index e2cda24960f63..5e21754c7f822 100644
+> index 6de9f1e23e282..e95e84486d9ae 100644
 > --- a/drivers/crypto/qce/core.c
 > +++ b/drivers/crypto/qce/core.c
-> @@ -4,6 +4,7 @@
+> @@ -3,6 +3,7 @@
+>    * Copyright (c) 2010-2014, The Linux Foundation. All rights reserved.
 >    */
 >   
+> +#include <linux/cleanup.h>
 >   #include <linux/clk.h>
-> +#include <linux/device.h>
+>   #include <linux/device.h>
 >   #include <linux/dma-mapping.h>
->   #include <linux/interconnect.h>
->   #include <linux/interrupt.h>
-> @@ -37,9 +38,10 @@ static const struct qce_algo_ops *qce_ops[] = {
->   #endif
->   };
->   
-> -static void qce_unregister_algs(struct qce_device *qce)
-> +static void qce_unregister_algs(void *data)
+> @@ -11,7 +12,6 @@
+>   #include <linux/module.h>
+>   #include <linux/mod_devicetable.h>
+>   #include <linux/platform_device.h>
+> -#include <linux/spinlock.h>
+>   #include <linux/types.h>
+>   #include <crypto/algapi.h>
+>   #include <crypto/internal/hash.h>
+> @@ -89,34 +89,28 @@ static int qce_handle_queue(struct qce_device *qce,
+>   			    struct crypto_async_request *req)
 >   {
->   	const struct qce_algo_ops *ops;
-> +	struct qce_device *qce = data;
->   	int i;
+>   	struct crypto_async_request *async_req, *backlog;
+> -	unsigned long flags;
+>   	int ret = 0, err;
 >   
->   	for (i = 0; i < ARRAY_SIZE(qce_ops); i++) {
-> @@ -48,7 +50,7 @@ static void qce_unregister_algs(struct qce_device *qce)
+> -	spin_lock_irqsave(&qce->lock, flags);
+> +	scoped_guard(mutex, &qce->lock) {
+> +		if (req)
+> +			ret = crypto_enqueue_request(&qce->queue, req);
+>   
+> -	if (req)
+> -		ret = crypto_enqueue_request(&qce->queue, req);
+> +		/* busy, do not dequeue request */
+> +		if (qce->req)
+> +			return ret;
+>   
+> -	/* busy, do not dequeue request */
+> -	if (qce->req) {
+> -		spin_unlock_irqrestore(&qce->lock, flags);
+> -		return ret;
+> +		backlog = crypto_get_backlog(&qce->queue);
+> +		async_req = crypto_dequeue_request(&qce->queue);
+> +		if (async_req)
+> +			qce->req = async_req;
 >   	}
->   }
 >   
-> -static int qce_register_algs(struct qce_device *qce)
-> +static int devm_qce_register_algs(struct qce_device *qce)
->   {
->   	const struct qce_algo_ops *ops;
->   	int i, j, ret = -ENODEV;
-> @@ -63,7 +65,7 @@ static int qce_register_algs(struct qce_device *qce)
->   		}
+> -	backlog = crypto_get_backlog(&qce->queue);
+> -	async_req = crypto_dequeue_request(&qce->queue);
+> -	if (async_req)
+> -		qce->req = async_req;
+> -
+> -	spin_unlock_irqrestore(&qce->lock, flags);
+> -
+>   	if (!async_req)
+>   		return ret;
+>   
+>   	if (backlog) {
+> -		spin_lock_bh(&qce->lock);
+> -		crypto_request_complete(backlog, -EINPROGRESS);
+> -		spin_unlock_bh(&qce->lock);
+> +		scoped_guard(mutex, &qce->lock)
+> +			crypto_request_complete(backlog, -EINPROGRESS);
 >   	}
 >   
-> -	return 0;
-> +	return devm_add_action_or_reset(qce->dev, qce_unregister_algs, qce);
->   }
+>   	err = qce_handle_request(async_req);
+> @@ -133,12 +127,11 @@ static void qce_req_done_work(struct work_struct *work)
+>   	struct qce_device *qce = container_of(work, struct qce_device,
+>   					      done_work);
+>   	struct crypto_async_request *req;
+> -	unsigned long flags;
 >   
->   static int qce_handle_request(struct crypto_async_request *async_req)
-> @@ -248,7 +250,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	qce->async_req_enqueue = qce_async_request_enqueue;
->   	qce->async_req_done = qce_async_request_done;
+> -	spin_lock_irqsave(&qce->lock, flags);
+> -	req = qce->req;
+> -	qce->req = NULL;
+> -	spin_unlock_irqrestore(&qce->lock, flags);
+> +	scoped_guard(mutex, &qce->lock) {
+> +		req = qce->req;
+> +		qce->req = NULL;
+> +	}
 >   
-> -	return qce_register_algs(qce);
-> +	return devm_qce_register_algs(qce);
->   }
+>   	if (req)
+>   		crypto_request_complete(req, qce->result);
+> @@ -243,7 +236,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   	if (ret)
+>   		return ret;
 >   
->   static void qce_crypto_remove(struct platform_device *pdev)
-> @@ -256,7 +258,6 @@ static void qce_crypto_remove(struct platform_device *pdev)
->   	struct qce_device *qce = platform_get_drvdata(pdev);
+> -	spin_lock_init(&qce->lock);
+> +	ret = devm_mutex_init(qce->dev, &qce->lock);
+> +	if (ret)
+> +		return ret;
+> +
+>   	INIT_WORK(&qce->done_work, qce_req_done_work);
+>   	crypto_init_queue(&qce->queue, QCE_QUEUE_LENGTH);
 >   
->   	tasklet_kill(&qce->done_tasklet);
-> -	qce_unregister_algs(qce);
->   }
+> diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
+> index 39e75a75a4293..eb6fa7a8b64a8 100644
+> --- a/drivers/crypto/qce/core.h
+> +++ b/drivers/crypto/qce/core.h
+> @@ -6,6 +6,7 @@
+>   #ifndef _CORE_H_
+>   #define _CORE_H_
 >   
->   static const struct of_device_id qce_crypto_of_match[] = {
+> +#include <linux/mutex.h>
+>   #include <linux/workqueue.h>
+>   
+>   #include "dma.h"
+> @@ -30,7 +31,7 @@
+>    */
+>   struct qce_device {
+>   	struct crypto_queue queue;
+> -	spinlock_t lock;
+> +	struct mutex lock;
+>   	struct work_struct done_work;
+>   	struct crypto_async_request *req;
+>   	int result;
 > 
 
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
