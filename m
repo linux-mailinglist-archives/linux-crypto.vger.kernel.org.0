@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-8446-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8448-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC3B9E81E3
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 Dec 2024 20:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C73B9E81E5
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 Dec 2024 20:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 422A8165DC8
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 Dec 2024 19:58:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3092E165E61
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 Dec 2024 19:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED5BA156861;
-	Sat,  7 Dec 2024 19:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CAC156F5F;
+	Sat,  7 Dec 2024 19:58:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LmCK2WRe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OZnWh3D6"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE959155C82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA1F156641
 	for <linux-crypto@vger.kernel.org>; Sat,  7 Dec 2024 19:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733601513; cv=none; b=F6mEgmilZ4SQmB6zplyQHAWz4irmhyf/OMrQqcl14uYr5r8Fgc4E1Aome54B1XDCSBMglfRgnhjAFOvEPP17yUwrDvlIx0MKSDGWfx9uqRQ85PYYgLMOV+fKK24aolTm3Cau4Ca0+ae3gt4FF2MXG/fnahtaFHCwbqs3jYY7MKI=
+	t=1733601513; cv=none; b=DOmNoAmRALbIOzyWCALcQbn53kNib/p/uIUN2fFGwnTJop3ohoZXr0SM8vir3xmC63VYmY3iyZPsKr0V4BcLEv4iEDKy/RCNfDBCIC0bBhAhXzKD2m+LRq5RFMGvKl2dk3Clhr7bqANmQFm6KlBj15T6oiEju1W1Bf4xk7+dmUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1733601513; c=relaxed/simple;
-	bh=6/TQ3vOptxxMUN/+0bpc2eXcGnHqvxGx0hNgF0cctl0=;
+	bh=JD5IkYe6ngI5RFQ64i8zOqzDWCYgNzd34M9qimtusNM=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E8G7pTOZGlKSTsOBJf15yqoHQR0+HBJP2GRZ6guAwC8gYyQD7bneU58/cJhA3T+/CTyqYafCBtsffL1xw/X6XP9bX3H8BHUCCClX8dYe+2O/UDvlh+1sr+pbaVhLrkaPkbxedsVbQnRMc9oDMvdOMhOqvs5XLWZExO90YQ2hgSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LmCK2WRe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F78C4CEDC
+	 MIME-Version; b=HUQDHnYr9X2agR9/QHrDC9b4CRMQwxt+1nq/J//+nsHPhshF80p1jLocVX/4FfjVEiS5hqe2kMwnzZvzqVtZlamxjtWwz7NysX+NjrNHQgdtDKtzu9zQfwHp/HQ4SbEqHajX1ypyzUuUE0qzd26D9CPWpjZUdXfNSDYZyO1/juc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OZnWh3D6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34C5C4CEE1
 	for <linux-crypto@vger.kernel.org>; Sat,  7 Dec 2024 19:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1733601513;
-	bh=6/TQ3vOptxxMUN/+0bpc2eXcGnHqvxGx0hNgF0cctl0=;
+	bh=JD5IkYe6ngI5RFQ64i8zOqzDWCYgNzd34M9qimtusNM=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=LmCK2WRenVPIuVpMO7uXrSa7rod1P7YOBTSiC/Ls5OQhAvalIDssuk3psROlrERU9
-	 OE80NJmMGEd6I8tmK8L8CO7iwenkwskz7dMLM8KrDX/5i4d8NT5itfD5ZzdIwabvkm
-	 DfhphOjF1RnHKP59/jXCqpVg1cTt4NEio6j/8yObOt/Q7sykwpHHPZqYpcvuJlXrAm
-	 GF7PAjmsuaX1AivhV5+91aWnzuxP6STDc10S0uitDg+7+LmpBihgnOrjQTIiC91pA9
-	 3P2Z/lzDeyuRCbyEdJKfjvYIUSL4eFRr29672GtLmn+lq2wJpYHT4TKs+5a/YLtBwb
-	 KrToc2EXI/Rog==
+	b=OZnWh3D61r4EjCflnzH4rP5vDeVfEkt6bOGr0ZH09/j/AN9njXDRYBE70v2XpJY+h
+	 lk3BvUO8XSZr7ZM1mSLc5Rt2bIJqiQIbGwNaD4qXpE2JfN+U+aWvihw5eyVrVlnPa+
+	 CyHKwaunmObEHgMuBD6ZCsgDWs/pcgm6b38DAqDv4JhUjIZrzBl1Di6jkR6e+aZWUm
+	 WtQlMDSgFkYZP8JlQTWKG2vDqi3yTH4clB2avtFkmhoeS3LguBR39fwBi1BnD7lCyS
+	 +vpEGDrGZGPtv7Qxe9y2s4u9KLG223znw81TiMS7ovrhpZzdRCttKMI+S3+WLyzptX
+	 TCO6MNUEtjKXQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
-Subject: [PATCH 6/8] crypto: x86 - remove assignments of 0 to cra_alignmask
-Date: Sat,  7 Dec 2024 11:57:50 -0800
-Message-ID: <20241207195752.87654-7-ebiggers@kernel.org>
+Subject: [PATCH 7/8] crypto: aegis - remove assignments of 0 to cra_alignmask
+Date: Sat,  7 Dec 2024 11:57:51 -0800
+Message-ID: <20241207195752.87654-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241207195752.87654-1-ebiggers@kernel.org>
 References: <20241207195752.87654-1-ebiggers@kernel.org>
@@ -65,93 +65,37 @@ grepping for cra_alignmask.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/aegis128-aesni-glue.c | 1 -
- arch/x86/crypto/blowfish_glue.c       | 1 -
- arch/x86/crypto/camellia_glue.c       | 1 -
- arch/x86/crypto/des3_ede_glue.c       | 1 -
- arch/x86/crypto/twofish_glue.c        | 1 -
- 5 files changed, 5 deletions(-)
+ crypto/aegis128-core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/x86/crypto/aegis128-aesni-glue.c b/arch/x86/crypto/aegis128-aesni-glue.c
-index c19d8e3d96a35..01fa568dc5fc4 100644
---- a/arch/x86/crypto/aegis128-aesni-glue.c
-+++ b/arch/x86/crypto/aegis128-aesni-glue.c
-@@ -238,11 +238,10 @@ static struct aead_alg crypto_aegis128_aesni_alg = {
- 	.base = {
- 		.cra_flags = CRYPTO_ALG_INTERNAL,
- 		.cra_blocksize = 1,
- 		.cra_ctxsize = sizeof(struct aegis_ctx) +
- 			       __alignof__(struct aegis_ctx),
--		.cra_alignmask = 0,
- 		.cra_priority = 400,
+diff --git a/crypto/aegis128-core.c b/crypto/aegis128-core.c
+index 4fdb53435827e..6cbff298722b4 100644
+--- a/crypto/aegis128-core.c
++++ b/crypto/aegis128-core.c
+@@ -514,11 +514,10 @@ static struct aead_alg crypto_aegis128_alg_generic = {
+ 	.maxauthsize		= AEGIS128_MAX_AUTH_SIZE,
+ 	.chunksize		= AEGIS_BLOCK_SIZE,
  
- 		.cra_name = "__aegis128",
- 		.cra_driver_name = "__aegis128-aesni",
+ 	.base.cra_blocksize	= 1,
+ 	.base.cra_ctxsize	= sizeof(struct aegis_ctx),
+-	.base.cra_alignmask	= 0,
+ 	.base.cra_priority	= 100,
+ 	.base.cra_name		= "aegis128",
+ 	.base.cra_driver_name	= "aegis128-generic",
+ 	.base.cra_module	= THIS_MODULE,
+ };
+@@ -533,11 +532,10 @@ static struct aead_alg crypto_aegis128_alg_simd = {
+ 	.maxauthsize		= AEGIS128_MAX_AUTH_SIZE,
+ 	.chunksize		= AEGIS_BLOCK_SIZE,
  
-diff --git a/arch/x86/crypto/blowfish_glue.c b/arch/x86/crypto/blowfish_glue.c
-index 552f2df0643f2..26c5f2ee5d103 100644
---- a/arch/x86/crypto/blowfish_glue.c
-+++ b/arch/x86/crypto/blowfish_glue.c
-@@ -92,11 +92,10 @@ static struct crypto_alg bf_cipher_alg = {
- 	.cra_driver_name	= "blowfish-asm",
- 	.cra_priority		= 200,
- 	.cra_flags		= CRYPTO_ALG_TYPE_CIPHER,
- 	.cra_blocksize		= BF_BLOCK_SIZE,
- 	.cra_ctxsize		= sizeof(struct bf_ctx),
--	.cra_alignmask		= 0,
- 	.cra_module		= THIS_MODULE,
- 	.cra_u = {
- 		.cipher = {
- 			.cia_min_keysize	= BF_MIN_KEY_SIZE,
- 			.cia_max_keysize	= BF_MAX_KEY_SIZE,
-diff --git a/arch/x86/crypto/camellia_glue.c b/arch/x86/crypto/camellia_glue.c
-index f110708c8038c..3bd37d6641216 100644
---- a/arch/x86/crypto/camellia_glue.c
-+++ b/arch/x86/crypto/camellia_glue.c
-@@ -1311,11 +1311,10 @@ static struct crypto_alg camellia_cipher_alg = {
- 	.cra_driver_name	= "camellia-asm",
- 	.cra_priority		= 200,
- 	.cra_flags		= CRYPTO_ALG_TYPE_CIPHER,
- 	.cra_blocksize		= CAMELLIA_BLOCK_SIZE,
- 	.cra_ctxsize		= sizeof(struct camellia_ctx),
--	.cra_alignmask		= 0,
- 	.cra_module		= THIS_MODULE,
- 	.cra_u			= {
- 		.cipher = {
- 			.cia_min_keysize = CAMELLIA_MIN_KEY_SIZE,
- 			.cia_max_keysize = CAMELLIA_MAX_KEY_SIZE,
-diff --git a/arch/x86/crypto/des3_ede_glue.c b/arch/x86/crypto/des3_ede_glue.c
-index abb8b1fe123b4..e88439d3828ea 100644
---- a/arch/x86/crypto/des3_ede_glue.c
-+++ b/arch/x86/crypto/des3_ede_glue.c
-@@ -289,11 +289,10 @@ static struct crypto_alg des3_ede_cipher = {
- 	.cra_driver_name	= "des3_ede-asm",
- 	.cra_priority		= 200,
- 	.cra_flags		= CRYPTO_ALG_TYPE_CIPHER,
- 	.cra_blocksize		= DES3_EDE_BLOCK_SIZE,
- 	.cra_ctxsize		= sizeof(struct des3_ede_x86_ctx),
--	.cra_alignmask		= 0,
- 	.cra_module		= THIS_MODULE,
- 	.cra_u = {
- 		.cipher = {
- 			.cia_min_keysize	= DES3_EDE_KEY_SIZE,
- 			.cia_max_keysize	= DES3_EDE_KEY_SIZE,
-diff --git a/arch/x86/crypto/twofish_glue.c b/arch/x86/crypto/twofish_glue.c
-index 0614beece2793..4c67184dc573e 100644
---- a/arch/x86/crypto/twofish_glue.c
-+++ b/arch/x86/crypto/twofish_glue.c
-@@ -66,11 +66,10 @@ static struct crypto_alg alg = {
- 	.cra_driver_name	=	"twofish-asm",
- 	.cra_priority		=	200,
- 	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
- 	.cra_blocksize		=	TF_BLOCK_SIZE,
- 	.cra_ctxsize		=	sizeof(struct twofish_ctx),
--	.cra_alignmask		=	0,
- 	.cra_module		=	THIS_MODULE,
- 	.cra_u			=	{
- 		.cipher = {
- 			.cia_min_keysize	=	TF_MIN_KEY_SIZE,
- 			.cia_max_keysize	=	TF_MAX_KEY_SIZE,
+ 	.base.cra_blocksize	= 1,
+ 	.base.cra_ctxsize	= sizeof(struct aegis_ctx),
+-	.base.cra_alignmask	= 0,
+ 	.base.cra_priority	= 200,
+ 	.base.cra_name		= "aegis128",
+ 	.base.cra_driver_name	= "aegis128-simd",
+ 	.base.cra_module	= THIS_MODULE,
+ };
 -- 
 2.47.1
 
