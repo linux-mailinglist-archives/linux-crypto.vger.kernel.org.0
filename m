@@ -1,52 +1,52 @@
-Return-Path: <linux-crypto+bounces-8559-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8556-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 688FC9EFE3A
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 22:29:30 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D699EFE38
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 22:29:26 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 018C516A61A
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 21:29:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE168288CD8
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 21:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9303B1DA60F;
-	Thu, 12 Dec 2024 21:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838FF1D959E;
+	Thu, 12 Dec 2024 21:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sVGhh4n7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="slWTMyhm"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525A51D9A63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CF31D79B4
 	for <linux-crypto@vger.kernel.org>; Thu, 12 Dec 2024 21:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734038957; cv=none; b=DYf2QgSATGBW3Ax+0sy7HR9zK6YZFVH8dmCjPneECTFD64JyP8UIBCdZRkQVhk5m6okqNYM66bZYOV+jMq2JcT0Q5K5siKQ0rEjiHEnB4l07FkoQWs7RBTa9+XpA9tfr24tqg2hdI9vm3sC3YPD7x3I5I8BxsdrocZdHGSsxCjo=
+	t=1734038956; cv=none; b=jfj2kukbPtm1WdOSMi3fhgU1A5ZRTIwjEi+c8gnWNk9JZoY+q2M1lJY1r2F8uKZyX77YHJhg6uignXmENNIzHUkLSUVvfW4bE6l62+zCsuJj1QMnor8aUqhHIaegApcBfrCtpikCtWTvz5/oSprF84oKU9EZmzwGlroVgTg3PnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734038957; c=relaxed/simple;
-	bh=O+QDgYdLqxtymmElnvWAzhHkq2WeU2TcPO63cefZkw0=;
+	s=arc-20240116; t=1734038956; c=relaxed/simple;
+	bh=irQS/qqvaIZjrLrFc9t6oh6P4EtcoJVwxiXnHqisG2U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fUllaQQAcYd8MYqqOHayW+vPebir3G/DLQoY75x57ydjbxUPwT1tpV+Sy7EK2PJY/5UM7f7He71t0a67d0WXKgqx/JM0SiF3wPTNF2bOEVF9QvvMb+EElyZxIgEBcpYfUOu34wb06uUSBzc9kbQP4d85YhCYkjY0Y+/QsPrkXvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sVGhh4n7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C76FBC4CED0;
-	Thu, 12 Dec 2024 21:29:15 +0000 (UTC)
+	 MIME-Version; b=OQdBLVuPdt10FskgAb8FxjDydfw0LnTMF8xAfHneu/mbn5uPtfXJwh0JpzLN/TarwkL0TcRjpqpIhEFRrwQtBcM723Ltn+CYkpLs4+k1ZRibk2bAQH6g1AGTK7fwW3ZeXW+e2sSg+vWLOWec+3FkdjDPhRSLqP/LyvlJZ5divVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=slWTMyhm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE8BC4CED3;
+	Thu, 12 Dec 2024 21:29:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734038955;
-	bh=O+QDgYdLqxtymmElnvWAzhHkq2WeU2TcPO63cefZkw0=;
+	s=k20201202; t=1734038956;
+	bh=irQS/qqvaIZjrLrFc9t6oh6P4EtcoJVwxiXnHqisG2U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sVGhh4n7j9gpegCVvtk0RmuHla2JjoRLDMsKGboEGhMWOOyb6mlbvMqD3bnTTdJ/9
-	 Fxun92adT9Lq35I84LBUJ66kv6VDRkyStaqJom/3yz/XfP2JkHW6Z9w3sD/FNI078B
-	 kB0FQTKKyTBc82vcKiIRfYA7rIt/t4T2UX/QN8C/XESxyj3bNGQffwzkTI1MidRD6o
-	 Zxl0x3kgqI2Bll8OvgbmgMmL21DaYhX8G6AXwQDSLK2tm8wHBCs2/+uGkGgGIryarK
-	 CIPb3fkymhqXBcO+s6zEkvp1HxFWZqspJi/LTPWy+yyieWjMX30QLoPjY6s6enakAh
-	 5Usl3ulG0YR9w==
+	b=slWTMyhmhrX+evPy+y5P3BlUjmJzDRB4u2Ww/EhLp97PUN2NXfzBCF7/xftYFJsU8
+	 5CpQyfbPPuFOrNRrQE4If9PJCT577o9SMl8bVDPca+fo8CxXtDF9l4l66JxqkjUylL
+	 VUdlpBVNEtWbNtmcvIU2Gl2EAx0NMe2UAEMOVAL6Nz5fR5BI/RdrLBd8tQsUAmTf6O
+	 AK0UNvfxBaEyF0N4ybs0wx+j/CartZkPWW4K6YDtQ2z4RNKg0L2MtSzDQ0uZ7zkjiQ
+	 wls/QiFKL9JqeXCCMaprBwph9hYEXm25Pk8TvtNYLQ8fB3YMlDjo+LAmm1O14mnTpf
+	 8UCez49v6rFsA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: x86@kernel.org
-Subject: [PATCH v2 5/8] crypto: x86/aes-xts - improve some comments
-Date: Thu, 12 Dec 2024 13:28:42 -0800
-Message-ID: <20241212212845.40333-6-ebiggers@kernel.org>
+Subject: [PATCH v2 6/8] crypto: x86/aes-xts - change len parameter to int
+Date: Thu, 12 Dec 2024 13:28:43 -0800
+Message-ID: <20241212212845.40333-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241212212845.40333-1-ebiggers@kernel.org>
 References: <20241212212845.40333-1-ebiggers@kernel.org>
@@ -60,114 +60,89 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Improve some of the comments in aes-xts-avx-x86_64.S.
+The AES-XTS assembly code currently treats the length as signed, since
+this saves a few instructions in the loop compared to treating it as
+unsigned.  Therefore update the type to make this clear.  (It is not
+actually passed any values larger than PAGE_SIZE.)
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/aes-xts-avx-x86_64.S | 31 ++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ arch/x86/crypto/aes-xts-avx-x86_64.S |  2 +-
+ arch/x86/crypto/aesni-intel_glue.c   | 10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/arch/x86/crypto/aes-xts-avx-x86_64.S b/arch/x86/crypto/aes-xts-avx-x86_64.S
-index ca69e6480cb6..903b894e5f48 100644
+index 903b894e5f48..c4e8ba6ed61d 100644
 --- a/arch/x86/crypto/aes-xts-avx-x86_64.S
 +++ b/arch/x86/crypto/aes-xts-avx-x86_64.S
-@@ -341,13 +341,18 @@
- .endif
- .endm
- 
- // Do one step in computing the next set of tweaks using the VPCLMULQDQ method
- // (the same method _next_tweakvec uses for VL > 16).  This means multiplying
--// each tweak by x^(4*VL/16) independently.  Since 4*VL/16 is a multiple of 8
--// when VL > 16 (which it is here), the needed shift amounts are byte-aligned,
--// which allows the use of vpsrldq and vpslldq to do 128-bit wide shifts.
-+// each tweak by x^(4*VL/16) independently.
-+//
-+// Since 4*VL/16 is a multiple of 8 when VL > 16 (which it is here), the needed
-+// shift amounts are byte-aligned, which allows the use of vpsrldq and vpslldq
-+// to do 128-bit wide shifts.  The 128-bit left shift (vpslldq) saves
-+// instructions directly.  The 128-bit right shift (vpsrldq) performs better
-+// than a 64-bit right shift on Intel CPUs in the context where it is used here,
-+// because it runs on a different execution port from the AES instructions.
- .macro	_tweak_step_pclmul	i
- .if \i == 0
- 	vpsrldq		$(128 - 4*VL/16) / 8, TWEAK0, NEXT_TWEAK0
- .elseif \i == 2
- 	vpsrldq		$(128 - 4*VL/16) / 8, TWEAK1, NEXT_TWEAK1
-@@ -378,11 +383,11 @@
- // _tweak_step does one step of the computation of the next set of tweaks from
- // TWEAK[0-3].  To complete all steps, this is invoked with increasing values of
- // \i that include at least 0 through 19, then 1000 which signals the last step.
- //
- // This is used to interleave the computation of the next set of tweaks with the
--// AES en/decryptions, which increases performance in some cases.
-+// AES en/decryptions, which increases performance in some cases.  Clobbers V5.
- .macro	_tweak_step	i
- .if VL == 16
- 	_tweak_step_mulx	\i
- .else
- 	_tweak_step_pclmul	\i
-@@ -415,13 +420,14 @@
- 	// easy to do AES-128 and AES-192 by skipping irrelevant rounds at the
- 	// beginning.  Skipping rounds at the end doesn't work as well because
- 	// the last round needs different instructions.
- 	//
- 	// An alternative approach would be to roll up all the round loops.  We
--	// don't do that because it isn't compatible with caching the round keys
--	// in registers which we do when possible (see below), and also because
--	// it seems unwise to rely *too* heavily on the CPU's branch predictor.
-+	// don't do that because (a) it isn't compatible with caching the round
-+	// keys in registers which we do when possible (see below), (b) we
-+	// interleave the AES rounds with the XTS tweak computation, and (c) it
-+	// seems unwise to rely *too* heavily on the CPU's branch predictor.
- 	lea		OFFS-16(KEY, KEYLEN64, 4), KEY
- 
- 	// If all 32 SIMD registers are available, cache all the round keys.
- .if USE_AVX10
- 	cmp		$24, KEYLEN
-@@ -482,11 +488,11 @@
- .endm
- 
- // Do a single round of AES en/decryption on the blocks in registers V0-V3,
- // using the same key for all blocks.  The round key is loaded from the
- // appropriate register or memory location for round \i.  In addition, does two
--// steps of the computation of the next set of tweaks.  May clobber V4.
-+// steps of the computation of the next set of tweaks.  May clobber V4 and V5.
- .macro	_vaes_4x	enc, last, i
- .if USE_AVX10
- 	_tweak_step	(2*(\i-5))
- 	_vaes		\enc, \last, KEY\i, V0
- 	_vaes		\enc, \last, KEY\i, V1
-@@ -725,10 +731,13 @@
- 	jmp		.Ldone\@
- .endm
- 
- // void aes_xts_encrypt_iv(const struct crypto_aes_ctx *tweak_key,
- //			   u8 iv[AES_BLOCK_SIZE]);
-+//
-+// Encrypt |iv| using the AES key |tweak_key| to get the first tweak.  Assumes
-+// that the CPU supports AES-NI and AVX, but not necessarily VAES or AVX10.
- SYM_TYPED_FUNC_START(aes_xts_encrypt_iv)
- 	.set	TWEAK_KEY,	%rdi
- 	.set	IV,		%rsi
- 	.set	KEYLEN,		%eax
- 	.set	KEYLEN64,	%rax
-@@ -755,13 +764,13 @@ SYM_TYPED_FUNC_START(aes_xts_encrypt_iv)
- SYM_FUNC_END(aes_xts_encrypt_iv)
+@@ -765,11 +765,11 @@ SYM_FUNC_END(aes_xts_encrypt_iv)
  
  // Below are the actual AES-XTS encryption and decryption functions,
  // instantiated from the above macro.  They all have the following prototype:
  //
--// void (*xts_asm_func)(const struct crypto_aes_ctx *key,
--//			const u8 *src, u8 *dst, unsigned int len,
--//			u8 tweak[AES_BLOCK_SIZE]);
-+// void (*xts_crypt_func)(const struct crypto_aes_ctx *key,
-+//			  const u8 *src, u8 *dst, unsigned int len,
-+//			  u8 tweak[AES_BLOCK_SIZE]);
+ // void (*xts_crypt_func)(const struct crypto_aes_ctx *key,
+-//			  const u8 *src, u8 *dst, unsigned int len,
++//			  const u8 *src, u8 *dst, int len,
+ //			  u8 tweak[AES_BLOCK_SIZE]);
  //
  // |key| is the data key.  |tweak| contains the next tweak; the encryption of
  // the original IV with the tweak key was already done.  This function supports
  // incremental computation, but |len| must always be >= 16 (AES_BLOCK_SIZE), and
- // |len| must be a multiple of 16 except on the last call.  If |len| is a
+diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+index fbf43482e1f5..11e95fc62636 100644
+--- a/arch/x86/crypto/aesni-intel_glue.c
++++ b/arch/x86/crypto/aesni-intel_glue.c
+@@ -503,11 +503,11 @@ static int xts_setkey_aesni(struct crypto_skcipher *tfm, const u8 *key,
+ }
+ 
+ typedef void (*xts_encrypt_iv_func)(const struct crypto_aes_ctx *tweak_key,
+ 				    u8 iv[AES_BLOCK_SIZE]);
+ typedef void (*xts_crypt_func)(const struct crypto_aes_ctx *key,
+-			       const u8 *src, u8 *dst, unsigned int len,
++			       const u8 *src, u8 *dst, int len,
+ 			       u8 tweak[AES_BLOCK_SIZE]);
+ 
+ /* This handles cases where the source and/or destination span pages. */
+ static noinline int
+ xts_crypt_slowpath(struct skcipher_request *req, xts_crypt_func crypt_func)
+@@ -622,18 +622,18 @@ static void aesni_xts_encrypt_iv(const struct crypto_aes_ctx *tweak_key,
+ {
+ 	aesni_enc(tweak_key, iv, iv);
+ }
+ 
+ static void aesni_xts_encrypt(const struct crypto_aes_ctx *key,
+-			      const u8 *src, u8 *dst, unsigned int len,
++			      const u8 *src, u8 *dst, int len,
+ 			      u8 tweak[AES_BLOCK_SIZE])
+ {
+ 	aesni_xts_enc(key, dst, src, len, tweak);
+ }
+ 
+ static void aesni_xts_decrypt(const struct crypto_aes_ctx *key,
+-			      const u8 *src, u8 *dst, unsigned int len,
++			      const u8 *src, u8 *dst, int len,
+ 			      u8 tweak[AES_BLOCK_SIZE])
+ {
+ 	aesni_xts_dec(key, dst, src, len, tweak);
+ }
+ 
+@@ -788,14 +788,14 @@ asmlinkage void aes_xts_encrypt_iv(const struct crypto_aes_ctx *tweak_key,
+ 
+ #define DEFINE_XTS_ALG(suffix, driver_name, priority)			       \
+ 									       \
+ asmlinkage void								       \
+ aes_xts_encrypt_##suffix(const struct crypto_aes_ctx *key, const u8 *src,      \
+-			 u8 *dst, unsigned int len, u8 tweak[AES_BLOCK_SIZE]); \
++			 u8 *dst, int len, u8 tweak[AES_BLOCK_SIZE]);	       \
+ asmlinkage void								       \
+ aes_xts_decrypt_##suffix(const struct crypto_aes_ctx *key, const u8 *src,      \
+-			 u8 *dst, unsigned int len, u8 tweak[AES_BLOCK_SIZE]); \
++			 u8 *dst, int len, u8 tweak[AES_BLOCK_SIZE]);	       \
+ 									       \
+ static int xts_encrypt_##suffix(struct skcipher_request *req)		       \
+ {									       \
+ 	return xts_crypt(req, aes_xts_encrypt_iv, aes_xts_encrypt_##suffix);   \
+ }									       \
 -- 
 2.47.1
 
