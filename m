@@ -1,291 +1,255 @@
-Return-Path: <linux-crypto+bounces-8529-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8541-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 020279EDC5A
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 01:03:12 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 634F09EDE62
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 05:22:18 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADA7A283224
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 00:03:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 691BC188910F
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 04:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B146664D;
-	Thu, 12 Dec 2024 00:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D802C153BF6;
+	Thu, 12 Dec 2024 04:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="FIrjW113"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T+JN9e+Q"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2056.outbound.protection.outlook.com [40.107.102.56])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A94163;
-	Thu, 12 Dec 2024 00:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733961784; cv=fail; b=mMvmH/mEqH75pRUWc61kMwuWTiBBBKkXk/WBdDE/tOmwo9mBu5Ue/bS/83tbBt7sogPNkqDuJ0k8VBFNiLScOqJi0mUNrimH+OB544T5CC60qFfRgHDBzNnz4ParAu7DIb41u/2dtAbNz0C3tHsJEjvpAcI/N+l1aodxikuZF2I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733961784; c=relaxed/simple;
-	bh=1WDB77vS4Yht+b1dZUsQ0hbFWL97Wr+fgEcn1xnONHE=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=T+Vn3A4zpYxdC5B+HvA2/s5fD4O3tG2mIRO3z6ZcCB5OVTD3QSIiNnz7BIgst5cnxguO+urNajBd67uJ4Yb/Gv4pgc70eXFg2eqMgM1+4TXxHO6MS0+0a2pSl8hENvYkAvTxRIQ5NMi45NOu5xR6cEwdByazFaog6qjICj2urFM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=FIrjW113; arc=fail smtp.client-ip=40.107.102.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ogb1LnloPWnny+HYBLePuoF6o7bRTPTfW//NpERrx3VwgxpmDmv04nT38dOguil+thujoV+J5YgnwR6T9wzlJXA6hALVesPxaSxGLHUeGhwkdSu27iXyqZZvhkEvNvaMKgiLZ93UjoNL4N34Y2MUybml+CmhktTxQQgo6Y4Nw3wor03++/ZCL0pm7xQ7txGzQqwkdO2ACrEjAJ8ZoFEMcRLV58vtJZHmRCpUL9UrKS4m+6mKGs6xm/uhVdTZDmxQwvVJWcgUtn4dVQjwd1XCrty2TD4Cfsj+9E+PkTpzg6fTvXoIWCAuzLf8wU4zDk/qK3HmzkdSkY/VLhuGqDmS6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v/fngk/On138GHJUiZF/t3nd31IjJc9yuMaTkIibYzU=;
- b=ECMawII+ZuUAz3Fg5wuH8DgV87Z3KFNs5U9zNHO4ExJLoAbW4I2FclQjo+dSWGFy1YYx0CVGV5np8/AKxMh+XtmAdOU1z/yGdes13aLm2aElEsq+8gyWN5P0daHou8dChSMnA7LLDGqdzZ4YfwTcqnU0U+7GbFdlnLfAoXtcM/+bdY9ptaVVxoi8LRyWSqMZWYYUHc8HnpukgsZZ326iYiB0SgxZAGXBDNY9SuWvun6XMvdc2ob/aM3DCMBd0BgD11r4Md3petDHe2/SWL5YdDyUMIcx3meuaqeelDonVxtWDP1DqssWeD4VkFaIhVZIDczS/B0iXLlQJeT4nuVeRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v/fngk/On138GHJUiZF/t3nd31IjJc9yuMaTkIibYzU=;
- b=FIrjW113qWDazd+LBeAPn8qXeavfXDT44EcMyJEMp9sSHbgWK0BzsX+VHQLQv3hFonjfEtgRrFe9MGy7lZhM+COMl/+f2XezQqjXVXFAtOUg4gu1hkr769L47qH173GBijXRqdCrO6Vap9HfddG9mfGfNSAEeloC0/iF/9OQS7Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL3PR12MB9049.namprd12.prod.outlook.com (2603:10b6:208:3b8::21)
- by DM4PR12MB6616.namprd12.prod.outlook.com (2603:10b6:8:8e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.15; Thu, 12 Dec
- 2024 00:02:59 +0000
-Received: from BL3PR12MB9049.namprd12.prod.outlook.com
- ([fe80::c170:6906:9ef3:ecef]) by BL3PR12MB9049.namprd12.prod.outlook.com
- ([fe80::c170:6906:9ef3:ecef%7]) with mapi id 15.20.8230.016; Thu, 12 Dec 2024
- 00:02:58 +0000
-Message-ID: <423b28cd-436b-45ff-a82c-ee3112b425d7@amd.com>
-Date: Wed, 11 Dec 2024 18:02:54 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] x86/sev: Add SEV-SNP CipherTextHiding support
-From: "Kalra, Ashish" <ashish.kalra@amd.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>, Peter Gonda <pgonda@google.com>,
- pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, hpa@zytor.com, herbert@gondor.apana.org.au,
- x86@kernel.org, john.allen@amd.com, davem@davemloft.net,
- michael.roth@amd.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org
-References: <d3e78d92-29f0-4f56-a1fe-f8131cbc2555@amd.com>
- <d3de477d-c9bc-40b9-b7db-d155e492981a@amd.com> <Zz9mIBdNpJUFpkXv@google.com>
- <cb62940c-b2f7-0f3e-1710-61b92cc375e5@amd.com> <Zz9w67Ajxb-KQFZZ@google.com>
- <7ea2b3e8-56b7-418f-8551-b905bf10fecb@amd.com> <Z1N7ELGfR6eTuO6D@google.com>
- <5b77d19d-3f34-46d7-b307-738643504cd5@amd.com> <Z1eZmXmC9oZ5RyPc@google.com>
- <0a468f32-c586-4cfc-a606-89ab5c3e77c2@amd.com> <Z1jHZDevvjWFQo5A@google.com>
- <8dedde10-4dbb-47ce-ad7e-fa9e587303d8@amd.com>
- <e27a4198-ee94-4ca1-9973-1f6164ed4e64@amd.com>
-Content-Language: en-US
-In-Reply-To: <e27a4198-ee94-4ca1-9973-1f6164ed4e64@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0120.namprd05.prod.outlook.com
- (2603:10b6:803:42::37) To BL3PR12MB9049.namprd12.prod.outlook.com
- (2603:10b6:208:3b8::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C85C7346D;
+	Thu, 12 Dec 2024 04:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733977329; cv=none; b=GGtNbHapX6qLa6F5mPEEb6My18a8F+S2hi8SS3jUv7oBJXg20zKVZ/r3w4tTL+xYjUjXzSNUI9aNB2OsWSLfOOYugb2lzCopK+pcePftR8eDR2qg6a5Gr9HL9VUieGDUtO4TgA7jU8SLxnCIbAelSF3d5AN+1sCD+4+jjwEf9Gs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733977329; c=relaxed/simple;
+	bh=QStjar8bPX8KFhCIprblbF82qO5QFkrjkmCIwbuxdnc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hd0FEl/oH/cvIulcJ5A6VuAWud1vob/84tpQXIcqb8qVhWovOi9ZPOOSSWAzR3ITv5CQI5ZMdfxkwv/nxt1TdwSVRGRwuj/Y4xjwI0Q/7dFtf1wQtol/ntWGAV9w3ajtwHGqsIcF5EOXj6xl+Ks9vwhuA3qcVJJCgdat4jnlvjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T+JN9e+Q; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BBLQusg024170;
+	Thu, 12 Dec 2024 04:16:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=aMgfjKKszwppdDTDQKkd0U
+	mCUIaosnJ0OR30rkIOjBc=; b=T+JN9e+QpcrD5jnJXFJ4W9j2DKthVuiliz8ZgC
+	arGCWrwnElu/I/vNGrdwPqALnUPDbskCvYGtSAwgwyYdN6aIxIqueZKQDENYEAEQ
+	Zan0fLfFR2O/31xrUeLD+RMX9AuhPfY2cPaJVpWvN+kNrvTkYtKQODmn7ahXci1y
+	01WcPWKP35iF3OlrWtL4ZIK46wv/FGV4n6WrZV65/jrABZkD46+ZZRnP520w9n/+
+	Piva+Wlne4WyrVnUpmsOiTc7hNiTyPh1OdLTEgZOLEao201UVqhUDl+ByRyLypw5
+	evsBmGsuj3b+hG/4Ds23ZjQLgtmxAzR0+ULYivwGtVh63wcA==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 43fd40hpsu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 12 Dec 2024 04:16:59 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4BC4Gwoi010990
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 12 Dec 2024 04:16:58 GMT
+Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Wed, 11 Dec 2024 20:16:53 -0800
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: <vkoul@kernel.org>, <corbet@lwn.net>, <thara.gopinath@gmail.com>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <kees@kernel.org>, <dave.jiang@intel.com>, <dmaengine@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>,
+        <quic_mdalam@quicinc.com>, <quic_utiwari@quicinc.com>
+Subject: [PATCH v5 00/12] dmaengine: qcom: bam_dma: add cmd descriptor support
+Date: Thu, 12 Dec 2024 09:46:27 +0530
+Message-ID: <20241212041639.4109039-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL3PR12MB9049:EE_|DM4PR12MB6616:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4ffcb6d9-61f7-4889-d09e-08dd1a40564f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?U255bXZ5RXRsRVdCY2NKV3kzVldXa0t0dTlOa3BxREdmZVlpSEN4VlYzcEhL?=
- =?utf-8?B?R0ExOFBIWko2Vi9aTWdZdmhMYXRaMWMxMnBQSUFTN05xNHFJTkF5QjZ2Ni80?=
- =?utf-8?B?aWQwT1RUemZaaWp2UkplZW9SYTZ0c3ZRQXhZcjRwZlFxNWM1ZTBDOGJ0RHUz?=
- =?utf-8?B?Vll3Q0xlS00yM08wd1NybFRFQ2VMWGVzYkEyWnpCdHVUU1o2KzVzOUVCMTdz?=
- =?utf-8?B?QmZobGxPRCtoZCtXalk2Z01CWDNNME5JdWphODNmRjB0bCthZExLcGxIUlla?=
- =?utf-8?B?SHFhSEdGTnAyOGZvcmhGMGdCbXBCZS9CaXhjSTZHN0ZLS2U0V0g5aGgxK2RF?=
- =?utf-8?B?TUl1cCtYY0pmNVpRY2JnNXJHRlFwaUNhRDdkYXVlUkN6cGlZeHpIem0vWmdH?=
- =?utf-8?B?ZitZRVBVZExpQUZVL1ZiUisydGVUR0d2SU9Fa0pBamJrUlVvWWxtRnhDQ0s0?=
- =?utf-8?B?QlROeUdvZm5FU3RjcDlFc3VKcnA5OEN1UTJraUdFWHlweiswUExWSzFOUGFa?=
- =?utf-8?B?NllwTG5FUy8rM0x3c3R4OUhUbXM2TXNJV1d5dEdLRCtaazg4MXA5bk1yakdN?=
- =?utf-8?B?VTYyWERmK0ZMRjlwQWJEU0J3U3o4NVU0UmRVNlh1QkxpYlBSeG56eXcxcUJF?=
- =?utf-8?B?VCs1NG1SWFhnOVZQN0hrc3FBYjFTeHhhRlRqYnNraXFibTRnVkVaRjJIc3pQ?=
- =?utf-8?B?dEhxemd2L2ZjT2p5a3ZieUM2cENWOGo5TCt6YjhxUVcrMmI5bVgySndlT2Vs?=
- =?utf-8?B?b3J0b2MyelBZclNFQWZ1N1pHZFFKUUlTdW1sM1ZuRFNCNmZ0N3RRc1o0cGc3?=
- =?utf-8?B?aHNPMTFISG1JUFlMTjlJQkxkTWtYREVaaXNvbzAvNzhzV09mblJOVWxLZkxP?=
- =?utf-8?B?TmUxVUZmRXBKOWNmc25SZHp4N0hlTUNLdFQ5ZklTbkdRQllTaDZGaWlSL3JY?=
- =?utf-8?B?R2FsL0wzbXlnMFNOMHdXbGNpTlBDdGdmM20wOC8vUnZHbWJPRHhzY2Z0ZUFv?=
- =?utf-8?B?dFJvcFlVRGNlUllmNThmVnFKckQxYzJFNWpoSWIxNThpWUdOOXQzQ05UR0Rm?=
- =?utf-8?B?anM2a052eWo3bTA1ZUlodUtoZmlFWllxNTE2L2puYWcyWjllV2dwSWZjQ1By?=
- =?utf-8?B?NUE5S3pGc1lDUW5kNUczQnhzdGtIN21uYWczMVZndEpzTEJFL2FOYVhQM3N2?=
- =?utf-8?B?ZUZqcG9rOWVIandpTG9Pb0NhRGl0Q2xRclYvZERzZUFFUjVFbDd1WUQ5bXJR?=
- =?utf-8?B?L0hNVVNYcnJFRkxWODU4MEFOanhqMC9QdjhxSngvMjVUZ3BlYkVzVzhsd242?=
- =?utf-8?B?VTcxWDR5a29vZ1FBdDhLYjRYZUMzWFdQTHMvbzJJWWFkMitNckpxWHpGUUFW?=
- =?utf-8?B?NG9sVSswQkw2c25TakVTSlRyUStDUmxnckpoemdkNVhKSm92a2p2elNzN0I5?=
- =?utf-8?B?eVlPVmYxQi9SbjZNWUdTRTFqOVAvTUE5dlVQV3BQNCsvS3k5L0pHK25ndlFB?=
- =?utf-8?B?TGxSUUlyQ3Eyckc2VnNsVjd6NjkyWEs3TjQ0MFVYUkJOdDFLeGl6RHV2UGl4?=
- =?utf-8?B?Q0QyODh0STdDSnVsYjYwMXlZMi9OM3NpZ1pZVmlQUFFCTS9US2tGOGR0OGdR?=
- =?utf-8?B?R1J1SVAxT1BCcm8zTUkrYkdva3YwSVdSQ1pWeWl6eGwzVXNKZjlKOGUxY1B6?=
- =?utf-8?B?S1VlRXc0U1g3bnFGWXBtb1doV1gxcTMwd2dmd0IxNFNXSXhsMG5RV0R4Z2Zl?=
- =?utf-8?B?Ty9WWVVseVA1V2RlRisvZmF1a1I2aVhnYjVWUlFJYi9ZSTZBMGtQQ0hxVHcx?=
- =?utf-8?B?UGlGK1AzUEI3aGVzMmFMQT09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR12MB9049.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SnZkcnRIbWw3MVRUVWZNeXpNUFBYM3E0M2hQRlRIKy9pMHNiOXpmREVyUVg3?=
- =?utf-8?B?S2hLMEdvTmpuck5sWmJOQTlYRUkzdVpvNDV3TGtnTUpXSnFDRk9hNFMxcXA5?=
- =?utf-8?B?dzVLM0I4My9tcGVrOGd5STkxT1drbVhaRzV3c1VObFdNMHJ4UjNsSDludlRD?=
- =?utf-8?B?ZllnVWhwdkJOZlQ2cnU1Z1EycUlkYi9hd1BLSzAwOEhpVWdxUmFOZnVIOVE1?=
- =?utf-8?B?anpJNzlzQW9rRDRzU2lTZ3lHM0dndy96NkZWR1I2ajRkNnA2cFVWNDFoVmls?=
- =?utf-8?B?bHRQQmtVaDg4TERrT0h1OHdSQ0VjS2N5ZGg4SkMrMjdHV3I4clptcXhadlhk?=
- =?utf-8?B?Q3M1RTdCREZmdjlrS2ZNQXBKeGdJVTFjVWxvSmhobFhmZnU4L0Q3RHovR0NQ?=
- =?utf-8?B?OHY3cU9SZ245anZaVzVDSnVuV2hldko4UjJTNTNrZWlyazBvNTN3M1diMVF1?=
- =?utf-8?B?dEhZdVFuOTNicHJLZlNpMllnak9Hay9TQzV3ejNQNHJYMzBkZTFBRXhDcTVD?=
- =?utf-8?B?OEE4Njh2U1lib0srQ1B0b093dDJQMEFOWUdFTG42Qzh1WUp3N1NEQ01GY3ZV?=
- =?utf-8?B?T0x2enhkZFNGWkpqai9xQWR4V2ZsTVQxazVLeGVzMFYrUmdKWHE4THdHZ1NT?=
- =?utf-8?B?RmJFUWNWY1dKeXkvaS9oZzdLUXlRTWR2SmJLc3dyN3NoYjNFS1hXcUtjclRI?=
- =?utf-8?B?YjZvUEwrNUk5OVVDMEZ1YlRIb2d2NDVOMFoxQkJrditTNE9iNW9YbXRRMmZV?=
- =?utf-8?B?R0dzek9XZ1JHVjR5RlJPNURGVHZJQzNqN1pDQVd5WEtiVHBOSWMzRGh4YWRN?=
- =?utf-8?B?UGFqUGZOYm5yNnI2bVN5YjV4Q0xtU3FNVWlPUGZsTTB0TytmNFFqTzZxQnVC?=
- =?utf-8?B?N2R0dy9Bc09hRGJjNFB0WFRpNGpZNTFTak9IS1Rad1AzVmZCRFdKQTFzUFE2?=
- =?utf-8?B?VE8xbDUxTEVkczY4Tk5hVmovQUxZU1Q5UFF6d2hjaWJmT1l3bWZiTHJmSEhh?=
- =?utf-8?B?a1FqeVpmRXlPR1E2bTY1KzNVbWdBVW1IOGF5U0VJMWJDU2NmSngwMWFGc0Zm?=
- =?utf-8?B?VTFvaGkzYzh6bm1jQjAvM3Z4ZHRuTUFNQzF3Q3MvM1JDaWJkYnBwdzVGREFX?=
- =?utf-8?B?R2JSS3dwMG1HVXcxbCsrTkRwMlRjdm9taEZhVGMwSnJmbXc5ZlVhWHpqOVFu?=
- =?utf-8?B?NXpLREthbjdxb29GTGJIYW9Mb0dFV3dzSW83cVZxN09zajdQUzJwWEYrUDlh?=
- =?utf-8?B?azVHZk5OV3BTTW8yVk1LODZTSEEwVC8zQ0NFa1VLUVoyMlcrZDYvME5IelFZ?=
- =?utf-8?B?RWlacG1oQ3dLQld1bldiUVVmazR4WndUL1JxQTdBOEM3bGdGenl2K0ZleldP?=
- =?utf-8?B?OTByZDgwdlBBZS9mYXJDU3UyTmlvczJQalJIdlJlT1Q2Mm9USGh2elphaXNJ?=
- =?utf-8?B?SHloOXpKSGZwUDlqRmNUR0lKVGw3OFBPRVE2Q1dtRGZSV2t4R0MrNzFnZW1X?=
- =?utf-8?B?MEp5a3BRZ0VBMkZad3dpOWJnenhwZW1yTWt4ZFdnemtqMUgzVTVhM1Q3U3FD?=
- =?utf-8?B?YnR6SHpWY2hSZVAwVThzNnVJcXJpUzNtbHBSekVFUy9UUTl6RytjTUlJd2VR?=
- =?utf-8?B?WWZLTUdmQnlsMHJPbGY5dDBHUWowR3VGMjhCUlVIZk9kYkUyYU93RkRwUk1D?=
- =?utf-8?B?dnpMa3dKYlgzRHE2TjVseDlWYlc5a3o4bXNZc0E5ZFovZUJoL3dBQTFTMVlM?=
- =?utf-8?B?QlAzcWVrMjNkYWFGUzR4TjI4enk1TlVFb0NPRXhTVHdJRURIaHdvUSt2Mktu?=
- =?utf-8?B?ME9jd1FLcjNzMzk0WCtDT0kwRy9sWXpQa3FLcjRtVVltVHBDN250RlhsRE8y?=
- =?utf-8?B?TUI3R1AxUVE0dFk4ZjRYdS9EdSswcWEwazl2WU4wRWI4MzN1SmFWbzA5OS9p?=
- =?utf-8?B?Qmd0c2tVcldnczBpaEVEdDJDQklFYk5YUjVpVitLTVRWVXFpczhRaEZJWlhh?=
- =?utf-8?B?cFFkdGF3TzRvZURKbEhBRGllcmhnbWZFK1ZLTGh4TGVORmhhSlBrcFBDby96?=
- =?utf-8?B?RmQyR0VmZzcrVWVCNGpzSzVwbUVYcFlDNEEyeE0vNlBNQlFNZHRiRmY2K1lF?=
- =?utf-8?Q?aotmqKNPgUElS9MR5hz82GXOG?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ffcb6d9-61f7-4889-d09e-08dd1a40564f
-X-MS-Exchange-CrossTenant-AuthSource: BL3PR12MB9049.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2024 00:02:58.6299
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AHaZXDacmwPs+bvPpUTnIks5PiucSEXbh8tYLkCgG7LTBEYlLHck8uhCyJzUsIBkXG4VIMc1CktcOvzit+8pRQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6616
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 6rMe5kY8M5BZLK5esh9qXw--90iNK_Vb
+X-Proofpoint-ORIG-GUID: 6rMe5kY8M5BZLK5esh9qXw--90iNK_Vb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 phishscore=0 clxscore=1011 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412120028
 
+Requirements:
+  In QCE crypto driver we are accessing the crypto engine registers 
+  directly via CPU read/write. Trust Zone could possibly to perform some
+  crypto operations simultaneously, a race condition will be created and
+  this could result in undefined behavior.
 
+  To avoid this behavior we need to use BAM HW LOCK/UNLOCK feature on BAM 
+  pipes, and this LOCK/UNLOCK will be set via sending a command descriptor,
+  where the HLOS/TZ QCE crypto driver prepares a command descriptor with a
+  dummy write operation on one of the QCE crypto engine register and pass
+  the LOCK/UNLOCK flag along with it.
 
-On 12/10/2024 7:01 PM, Kalra, Ashish wrote:
-> 
-> 
-> On 12/10/2024 6:48 PM, Kalra, Ashish wrote:
->>
->>
->> On 12/10/2024 4:57 PM, Sean Christopherson wrote:
->>> On Tue, Dec 10, 2024, Ashish Kalra wrote:
->>>> On 12/9/2024 7:30 PM, Sean Christopherson wrote:
->>>>> Why can't we simply separate SNP initialization from SEV+ initialization?
->>>>
->>>> Yes we can do that, by default KVM module load time will only do SNP initialization,
->>>> and then we will do SEV initialization if a SEV VM is being launched.
->>>>
->>>> This will remove the probe parameter from init_args above, but will need to add another
->>>> parameter like VM type to specify if SNP or SEV initialization is to be performed with
->>>> the sev_platform_init() call.
->>>
->>> Any reason not to simply use separate APIs?  E.g. sev_snp_platform_init() and
->>> sev_platform_init()?
->>
->> One reason is the need to do SEV SHUTDOWN before SNP_SHUTDOWN if any SEV VMs are active
->> and this is taken care with the single API interface sev_platform_shutdown(), so that's 
->> why considering using a consistent API interface for both INIT and SHUTDOWN ...
->> - sev_platform_init()
->> - sev_platform_shutdown()
-> 
-> Which also assists in using the same internal interface __sev_firmware_shutdown()
-> to be called both with sev_platform_shutdown() and the SNP panic notifier to shutdown
-> both SEV and SNP (in that order). 
-> 
-> Thanks,
-> Ashish
-> 
->>
->> We can use separate APIs, but then we probably need the same for shutdown too and KVM
->> will need to keep track of any active SEV VMs and ensure to call sev_platform_shutdown()
->> before sev_snp_platform_shutdown() (as part of sev_hardware_unsetup()).
->>
+  This feature tested with tcrypt.ko and "libkcapi" with all the AES 
+  algorithm supported by QCE crypto engine. Tested on IPQ9574 and 
+  qcm6490.LE chipset.
 
-Worked on separating SEV and SNP initialization and got it working, but it needs 
-additional fix in qemu to remove the check for SEV-ES being already initialized (i.e, SEV
-INIT being already done) as below to ensure that SEV INIT is done on demand when
-SEV/SEV-ES guests are being launched: 
+  insmod tcrypt.ko mode=101
+  insmod tcrypt.ko mode=102
+  insmod tcrypt.ko mode=155
+  insmod tcrypt.ko mode=180
+  insmod tcrypt.ko mode=181
+  insmod tcrypt.ko mode=182
+  insmod tcrypt.ko mode=185
+  insmod tcrypt.ko mode=186
+  insmod tcrypt.ko mode=212
+  insmod tcrypt.ko mode=216
+  insmod tcrypt.ko mode=403
+  insmod tcrypt.ko mode=404
+  insmod tcrypt.ko mode=500
+  insmod tcrypt.ko mode=501
+  insmod tcrypt.ko mode=502
+  insmod tcrypt.ko mode=600
+  insmod tcrypt.ko mode=601
+  insmod tcrypt.ko mode=602
 
-diff --git a/target/i386/sev.c b/target/i386/sev.c
-index a0d271f898..bb541f9d41 100644
---- a/target/i386/sev.c
-+++ b/target/i386/sev.c
-@@ -1503,15 +1503,6 @@ static int sev_common_kvm_init(ConfidentialGuestSupport *cgs, Error **errp)
-         }
-     }
+  Encryption command line:
+ ./kcapi -x 1 -e -c "cbc(aes)" -k
+ 8d7dd9b0170ce0b5f2f8e1aa768e01e91da8bfc67fd486d081b28254c99eb423 -i
+ 7fbc02ebf5b93322329df9bfccb635af -p 48981da18e4bb9ef7e2e3162d16b1910
+ * 8b19050f66582cb7f7e4b6c873819b71
+ *
+ Decryption command line:
+ * $ ./kcapi -x 1 -c "cbc(aes)" -k
+ 3023b2418ea59a841757dcf07881b3a8def1c97b659a4dad -i
+ 95aa5b68130be6fcf5cabe7d9f898a41 -q c313c6b50145b69a77b33404cb422598
+ * 836de0065f9d6f6a3dd2c53cd17e33a
 
--    if (sev_es_enabled() && !sev_snp_enabled()) {
--        if (!(status.flags & SEV_STATUS_FLAGS_CONFIG_ES)) {
--            error_setg(errp, "%s: guest policy requires SEV-ES, but "
--                         "host SEV-ES support unavailable",
--                         __func__);
--            return -1;
--        }
--    }
--
-     trace_kvm_sev_init();
-     switch (x86_klass->kvm_type(X86_CONFIDENTIAL_GUEST(sev_common))) {
-     case KVM_X86_DEFAULT_VM:
->>
->>>
->>> And if the cc_platform_has(CC_ATTR_HOST_SEV_SNP) check is moved inside of
->>> sev_snp_platform_init() (probably needs to be there anyways), then the KVM code
->>> is quite simple and will undergo minimal churn.
->>>
->>> E.g.
->>>
->>> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
->>> index 5e4581ed0ef1..7e75bc55d017 100644
->>> --- a/arch/x86/kvm/svm/sev.c
->>> +++ b/arch/x86/kvm/svm/sev.c
->>> @@ -404,7 +404,6 @@ static int __sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp,
->>>                             unsigned long vm_type)
->>>  {
->>>         struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
->>> -       struct sev_platform_init_args init_args = {0};
->>>         bool es_active = vm_type != KVM_X86_SEV_VM;
->>>         u64 valid_vmsa_features = es_active ? sev_supported_vmsa_features : 0;
->>>         int ret;
->>> @@ -444,8 +443,7 @@ static int __sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp,
->>>         if (ret)
->>>                 goto e_no_asid;
->>>  
->>> -       init_args.probe = false;
->>> -       ret = sev_platform_init(&init_args);
->>> +       ret = sev_platform_init();
->>>         if (ret)
->>>                 goto e_free;
->>>  
->>> @@ -3053,7 +3051,7 @@ void __init sev_hardware_setup(void)
->>>         sev_es_asid_count = min_sev_asid - 1;
->>>         WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV_ES, sev_es_asid_count));
->>>         sev_es_supported = true;
->>> -       sev_snp_supported = sev_snp_enabled && cc_platform_has(CC_ATTR_HOST_SEV_SNP);
->>> +       sev_snp_supported = sev_snp_enabled && !sev_snp_platform_init();
->>>  
->>>  out:
->>>         if (boot_cpu_has(X86_FEATURE_SEV))
->>
-> 
+ * $ ./kcapi -x 3 -c sha256 -p 38f86d
+ * cc42f645c5aa76ac3154b023359b665375fc3ae42f025fe961fb0f65205ad70e
+ * $ ./kcapi -x 3 -c sha256 -p bbb300ac5eda9d
+ * 61f7b48577a613fbdfe0d6d90b49985e07a42c99e7a439b6efb76d5ec71b3d30
+
+ ./kcapi -x 12 -c "hmac(sha256)" -k
+ 0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b -i
+ 000102030405060708090a0b0c -p f0f1f2f3f4f5f6f7f8f9 -b 42
+ *
+ 3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf3400720
+ 8d5b887185865
+
+ Paraller test with two different EE's (Execution Environment)
+
+ EE1 (Trust Zone)                          EE2 (HLOS)
+
+ There is a TZ application which    "libkcapi" or "tcrypt.ko" will run in 
+ will do continuous enc/dec with     continuous loop to do enc/dec with 
+ different AES algorithm supported   different algorithm supported QCE
+ by QCE crypto engine.     	     crypto engine. 
+
+1) dummy write with LOCK bit set    1) dummy write with LOCK bit set                        
+2) bam will lock all other pipes    2) bam will lock all other pipes which
+   which not belongs to current	       not belongs to current EE's, i.e tz 
+   EE's, i.e HLOS pipe and keep        pipe and keep handling current
+   handling current pipe only.         pipe only. 
+                                    3) hlos prepare data descriptor and               
+3) tz prepare data descriptor          submit to CE5
+   and submit to CE5                4) dummy write with UNLOCK bit set
+4) dummy write with UNLOCK bit      5) bam will release all the locked 
+   set                                 pipes
+5) bam will release all the locked
+   pipes                   
+
+ Upon encountering a descriptor with Lock bit set, the BAM will lock all
+ other pipes not related to the current pipe group, and keep handling the 
+ current pipe only until it sees the Un-Lock set (then it will release all
+ locked pipes). The actual locking is done on the new descriptor fetching
+ for publishing, i.e. locked pipe will not fetch new descriptors even if 
+ it got event/events adding more descriptors for this pipe.
+
+v5:
+ * Added DMA_PREP_LOCK and DMA_PREP_UNLOCK flag support in separate patch
+ * Removed DMA_PREP_LOCK & DMA_PREP_UNLOCK flag
+ * Added FIELD_GET and GENMASK macro to extract major and minor version
+
+v4:
+  * Added feature description and test hardware
+    with test command
+  * Fixed patch version numbering
+  * Dropped dt-binding patch
+  * Dropped device tree changes
+  * Added BAM_SW_VERSION register read
+  * Handled the error path for the api dma_map_resource()
+    in probe
+  * updated the commit messages for batter redability
+  * Squash the change where qce_bam_acquire_lock() and
+    qce_bam_release_lock() api got introduce to the change where
+    the lock/unlock flag get introced
+  * changed cover letter subject heading to
+    "dmaengine: qcom: bam_dma: add cmd descriptor support"
+  * Added the very initial post for BAM lock/unlock patch link
+    as v1 to track this feature
+
+v3:
+  * https://lore.kernel.org/lkml/183d4f5e-e00a-8ef6-a589-f5704bc83d4a@quicinc.com/
+  * Addressed all the comments from v2
+  * Added the dt-binding
+  * Fix alignment issue
+  * Removed type casting from qce_write_reg_dma()
+    and qce_read_reg_dma()
+  * Removed qce_bam_txn = dma->qce_bam_txn; line from
+    qce_alloc_bam_txn() api and directly returning
+    dma->qce_bam_txn
+
+v2:
+  * https://lore.kernel.org/lkml/20231214114239.2635325-1-quic_mdalam@quicinc.com/
+  * Initial set of patches for cmd descriptor support
+  * Add client driver to use BAM lock/unlock feature
+  * Added register read/write via BAM in QCE Crypto driver
+    to use BAM lock/unlock feature
+
+v1:
+  * https://lore.kernel.org/all/1608215842-15381-1-git-send-email-mdalam@codeaurora.org/
+  * Initial support for LOCK/UNLOCK in bam_dma driver
+
+Md Sadre Alam (12):
+  dmaengine: qcom: bam_dma: Add bam_sw_version register read
+  dmaengine: add DMA_PREP_LOCK and DMA_PREP_UNLOCK flag
+  dmaengine: qcom: bam_dma: add bam_pipe_lock flag support
+  crypto: qce - Add support for crypto address read
+  crypto: qce - Add bam dma support for crypto register r/w
+  crypto: qce - Convert register r/w for skcipher via BAM/DMA
+  crypto: qce - Convert register r/w for sha via BAM/DMA
+  crypto: qce - Convert register r/w for aead via BAM/DMA
+  crypto: qce - Add LOCK and UNLOCK flag support
+  crypto: qce - Add support for lock/unlock in skcipher
+  crypto: qce - Add support for lock/unlock in sha
+  crypto: qce - Add support for lock/unlock in aead
+
+ .../driver-api/dmaengine/provider.rst         |  15 ++
+ drivers/crypto/qce/aead.c                     |   4 +
+ drivers/crypto/qce/common.c                   | 141 +++++++----
+ drivers/crypto/qce/core.c                     |  14 +-
+ drivers/crypto/qce/core.h                     |  12 +
+ drivers/crypto/qce/dma.c                      | 232 ++++++++++++++++++
+ drivers/crypto/qce/dma.h                      |  26 +-
+ drivers/crypto/qce/sha.c                      |   4 +
+ drivers/crypto/qce/skcipher.c                 |   4 +
+ drivers/dma/qcom/bam_dma.c                    |  32 ++-
+ include/linux/dmaengine.h                     |   6 +
+ 11 files changed, 445 insertions(+), 45 deletions(-)
+
+-- 
+2.34.1
 
 
