@@ -1,52 +1,52 @@
-Return-Path: <linux-crypto+bounces-8553-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8555-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F699EFE3C
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 22:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 151449EFE3E
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 22:29:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A3391889E11
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 21:29:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDF8E188D2E3
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Dec 2024 21:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB9931D89FE;
-	Thu, 12 Dec 2024 21:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3971D9341;
+	Thu, 12 Dec 2024 21:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cbDuwCQy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ONoxceoa"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4251D79B4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEEFB1D88DD
 	for <linux-crypto@vger.kernel.org>; Thu, 12 Dec 2024 21:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734038955; cv=none; b=IIbAztC20Dh2EawNQDTKXKiWmMMdWQG9O85aE0Go1hP/LspJC0HIbA5bf7w1H0IJcnmc7cy72YlCYuVR/OVhHrYQQwuDMWOYM3qUINuWHqez2F+KdkV09/Y06npD8+Y6HQJt/3Kfv3G3OWxv6gmPQPC4bhatj4Bs3CMhQcBZsEw=
+	t=1734038955; cv=none; b=mYKiyB0SVujq2gvzF/q9ddTVMsSXoJqm8iu0UBspMFsZCJsPN5Y7YVl9fq38mZuKGhPRPwqBkC1TZaX0zjRPSrTmrQwTBjOXD0zbT5L1rX75lPY7DoEOpWkWva4L6u2R575LXZ71CzAJDaFi30Edl1uXmcLP8nyeK/PkcIMd3lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734038955; c=relaxed/simple;
-	bh=FFfyPoD79Mg8fUB5soc2AZToAwkrs7/exNRNK6bG6ws=;
+	bh=yzWMmgWBSarP35vlDb1i18NSU9mHYw/ZyjnDbn+PkMU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X6lV4xrROnxl9FxAsfjPso+bGmABakgOyPFiScbEsR4MTjrVayI2v489c/JuyFmbWLl3Q6VWTBofo7fipk3YSkS+7U7Eo73X3MXua0G8bD0YXqrtu3UDDh4ZMSzPQTIEV2S16K7hRP2JQTUJGqRJbSbwynq6JHtRzt6lKj3Ck8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cbDuwCQy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58AE9C4CED0;
+	 MIME-Version; b=HpoGZpVu8HhPVPrjy30YQNskzbK5+rE3oBaD7fXuOMXcVZdFSDQ0sQkyIinviIDbO353JwghnB4NkxAHVevdVH2WDnbuTcPHOV7q3xUkiURGZ/TB7tzaTYcDQWxn79/ke2yWZ6fnJA6ptZA9J/DLNlKS22FBUrwgGJioTqjQdes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ONoxceoa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F2A7C4CED1;
 	Thu, 12 Dec 2024 21:29:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1734038955;
-	bh=FFfyPoD79Mg8fUB5soc2AZToAwkrs7/exNRNK6bG6ws=;
+	bh=yzWMmgWBSarP35vlDb1i18NSU9mHYw/ZyjnDbn+PkMU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cbDuwCQyGBodWU2+KS76E+TWZM/qRKosrR4MchQrVbarB29ZhxZ540Qhp0b2Z22OE
-	 /5e2NYFd73nCV5iI4baaEhUEjmAuDAsjNWJCHDuQSVIRbCep3qg6PSXVT0z1q0VFwl
-	 lbzI66I1QJSCYmhlod/CsKN2mboK7Fa/0ZA4oYd1tMTxVIbowhoK8Utnn5RhJ+LTBJ
-	 0PnN6bXEd4T402E+zjSMoizlCMJnGCYTT/k8r1SRrlTpFmMwfNWNN5HeB7cip4EmGX
-	 6Suf0bprPN64Lfip3l16TzGwydRD/ueKxNY4plQlXtIyiQ5DDUG3BjCqrKCfyNQ0ya
-	 Kp3aFsA7y9GOg==
+	b=ONoxceoaZWymjULE9EJP1DnE8d2Z6OGusfHroXM80DZB6euiHFMyikmC8rbfq75Cl
+	 GuL2C37gWkO7HGL1UbdxgTyD5kU9lX71stofR0dpwQS/UC+2W8pKt091nNy1HCrMiV
+	 h4ePGv7n13I2HcQ+dDS/Q/1LZi3Ygh2zsZwE4Nscmh9HnmUVK8DuYS9cwUHehxkTvi
+	 +CuSEvjzfMZcbsWuHvSqWrnPl/5aybVAxzDnK8J1i7lO4FJ+OYdqGGhghX6YDeJV1I
+	 FAwKkOI2BP3rHPJ/WUA1slFKFfJVVA7Ki3OwkTxsrN4O9i7326coMrduLNCrD/6iHG
+	 XGmPfZsLYS7Rw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: x86@kernel.org
-Subject: [PATCH v2 3/8] crypto: x86/aes-xts - use .irp when useful
-Date: Thu, 12 Dec 2024 13:28:40 -0800
-Message-ID: <20241212212845.40333-4-ebiggers@kernel.org>
+Subject: [PATCH v2 4/8] crypto: x86/aes-xts - make the register aliases per-function
+Date: Thu, 12 Dec 2024 13:28:41 -0800
+Message-ID: <20241212212845.40333-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241212212845.40333-1-ebiggers@kernel.org>
 References: <20241212212845.40333-1-ebiggers@kernel.org>
@@ -60,138 +60,123 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Use .irp instead of repeating code.
+Since aes-xts-avx-x86_64.S contains multiple functions, move the
+register aliases for the parameters and local variables of the XTS
+update function into the macro that generates that function.  Then add
+register aliases to aes_xts_encrypt_iv() to improve readability there.
+This makes aes-xts-avx-x86_64.S consistent with the GCM assembly files.
 
 No change in the generated code.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/x86/crypto/aes-xts-avx-x86_64.S | 74 ++++++----------------------
- 1 file changed, 15 insertions(+), 59 deletions(-)
+ arch/x86/crypto/aes-xts-avx-x86_64.S | 61 +++++++++++++++-------------
+ 1 file changed, 33 insertions(+), 28 deletions(-)
 
 diff --git a/arch/x86/crypto/aes-xts-avx-x86_64.S b/arch/x86/crypto/aes-xts-avx-x86_64.S
-index 48f97b79f7a9..580e73396052 100644
+index 580e73396052..ca69e6480cb6 100644
 --- a/arch/x86/crypto/aes-xts-avx-x86_64.S
 +++ b/arch/x86/crypto/aes-xts-avx-x86_64.S
-@@ -110,43 +110,17 @@
+@@ -78,26 +78,10 @@
+ 	.byte	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f
+ 	.byte	0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80
+ 	.byte	0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80
+ .text
  
- .macro _define_aliases
- 	// Define register aliases V0-V15, or V0-V31 if all 32 SIMD registers
- 	// are available, that map to the xmm, ymm, or zmm registers according
- 	// to the selected Vector Length (VL).
--	_define_Vi	0
--	_define_Vi	1
--	_define_Vi	2
--	_define_Vi	3
--	_define_Vi	4
--	_define_Vi	5
--	_define_Vi	6
--	_define_Vi	7
--	_define_Vi	8
--	_define_Vi	9
--	_define_Vi	10
--	_define_Vi	11
--	_define_Vi	12
--	_define_Vi	13
--	_define_Vi	14
--	_define_Vi	15
-+.irp i, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-+	_define_Vi	\i
-+.endr
- .if USE_AVX10
--	_define_Vi	16
--	_define_Vi	17
--	_define_Vi	18
--	_define_Vi	19
--	_define_Vi	20
--	_define_Vi	21
--	_define_Vi	22
--	_define_Vi	23
--	_define_Vi	24
--	_define_Vi	25
--	_define_Vi	26
--	_define_Vi	27
--	_define_Vi	28
--	_define_Vi	29
--	_define_Vi	30
--	_define_Vi	31
-+.irp i, 16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
-+	_define_Vi	\i
-+.endr
+-// Function parameters
+-.set	KEY,		%rdi	// Initially points to crypto_aes_ctx, then is
+-				// advanced to point to 7th-from-last round key
+-.set	SRC,		%rsi	// Pointer to next source data
+-.set	DST,		%rdx	// Pointer to next destination data
+-.set	LEN,		%ecx	// Remaining length in bytes
+-.set	LEN8,		%cl
+-.set	LEN64,		%rcx
+-.set	TWEAK,		%r8	// Pointer to next tweak
+-
+-// %rax holds the AES key length in bytes.
+-.set	KEYLEN,		%eax
+-.set	KEYLEN64,	%rax
+-
+-// %r9-r11 are available as temporaries.
+-
+ .macro	_define_Vi	i
+ .if VL == 16
+ 	.set	V\i,		%xmm\i
+ .elseif VL == 32
+ 	.set	V\i,		%ymm\i
+@@ -119,10 +103,26 @@
+ .irp i, 16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
+ 	_define_Vi	\i
+ .endr
  .endif
  
++	// Function parameters
++	.set	KEY,		%rdi	// Initially points to crypto_aes_ctx, then is
++					// advanced to point to 7th-from-last round key
++	.set	SRC,		%rsi	// Pointer to next source data
++	.set	DST,		%rdx	// Pointer to next destination data
++	.set	LEN,		%ecx	// Remaining length in bytes
++	.set	LEN8,		%cl
++	.set	LEN64,		%rcx
++	.set	TWEAK,		%r8	// Pointer to next tweak
++
++	// %rax holds the AES key length in bytes.
++	.set	KEYLEN,		%eax
++	.set	KEYLEN64,	%rax
++
++	// %r9-r11 are available as temporaries.
++
  	// V0-V3 hold the data blocks during the main loop, or temporary values
  	// otherwise.  V4-V5 hold temporary values.
  
-@@ -543,19 +517,13 @@
- 	_vaes_1x	\enc, 0, 2, \xmm_suffix, \data
- .Laes192\@:
- 	_vaes_1x	\enc, 0, 3, \xmm_suffix, \data
- 	_vaes_1x	\enc, 0, 4, \xmm_suffix, \data
- .Laes128\@:
--	_vaes_1x	\enc, 0, 5, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 6, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 7, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 8, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 9, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 10, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 11, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 12, \xmm_suffix, \data
--	_vaes_1x	\enc, 0, 13, \xmm_suffix, \data
-+.irp i, 5,6,7,8,9,10,11,12,13
-+	_vaes_1x	\enc, 0, \i, \xmm_suffix, \data
-+.endr
- 	_vaes_1x	\enc, 1, 14, \xmm_suffix, \data
- 	_vpxor		\tweak, \data, \data
+ 	// V6-V9 hold XTS tweaks.  Each 128-bit lane holds one tweak.
+ 	.set	TWEAK0_XMM,	%xmm6
+@@ -726,28 +726,33 @@
  .endm
  
- .macro	_aes_xts_crypt	enc
-@@ -616,19 +584,13 @@
- 	_vaes_4x	\enc, 0, 2
- .Laes192\@:
- 	_vaes_4x	\enc, 0, 3
- 	_vaes_4x	\enc, 0, 4
- .Laes128\@:
--	_vaes_4x	\enc, 0, 5
--	_vaes_4x	\enc, 0, 6
--	_vaes_4x	\enc, 0, 7
--	_vaes_4x	\enc, 0, 8
--	_vaes_4x	\enc, 0, 9
--	_vaes_4x	\enc, 0, 10
--	_vaes_4x	\enc, 0, 11
--	_vaes_4x	\enc, 0, 12
--	_vaes_4x	\enc, 0, 13
-+.irp i, 5,6,7,8,9,10,11,12,13
-+	_vaes_4x	\enc, 0, \i
-+.endr
- 	_vaes_4x	\enc, 1, 14
- 
- 	// XOR in the tweaks again.
- 	_vpxor		TWEAK0, V0, V0
- 	_vpxor		TWEAK1, V1, V1
-@@ -777,19 +739,13 @@ SYM_TYPED_FUNC_START(aes_xts_encrypt_iv)
- 	vaesenc		-5*16(%rdi), %xmm0, %xmm0
+ // void aes_xts_encrypt_iv(const struct crypto_aes_ctx *tweak_key,
+ //			   u8 iv[AES_BLOCK_SIZE]);
+ SYM_TYPED_FUNC_START(aes_xts_encrypt_iv)
+-	vmovdqu		(%rsi), %xmm0
+-	vpxor		(%rdi), %xmm0, %xmm0
+-	movl		480(%rdi), %eax		// AES key length
+-	lea		-16(%rdi, %rax, 4), %rdi
+-	cmp		$24, %eax
++	.set	TWEAK_KEY,	%rdi
++	.set	IV,		%rsi
++	.set	KEYLEN,		%eax
++	.set	KEYLEN64,	%rax
++
++	vmovdqu		(IV), %xmm0
++	vpxor		(TWEAK_KEY), %xmm0, %xmm0
++	movl		480(TWEAK_KEY), KEYLEN
++	lea		-16(TWEAK_KEY, KEYLEN64, 4), TWEAK_KEY
++	cmp		$24, KEYLEN
+ 	jl		.Lencrypt_iv_aes128
+ 	je		.Lencrypt_iv_aes192
+-	vaesenc		-6*16(%rdi), %xmm0, %xmm0
+-	vaesenc		-5*16(%rdi), %xmm0, %xmm0
++	vaesenc		-6*16(TWEAK_KEY), %xmm0, %xmm0
++	vaesenc		-5*16(TWEAK_KEY), %xmm0, %xmm0
  .Lencrypt_iv_aes192:
- 	vaesenc		-4*16(%rdi), %xmm0, %xmm0
- 	vaesenc		-3*16(%rdi), %xmm0, %xmm0
+-	vaesenc		-4*16(%rdi), %xmm0, %xmm0
+-	vaesenc		-3*16(%rdi), %xmm0, %xmm0
++	vaesenc		-4*16(TWEAK_KEY), %xmm0, %xmm0
++	vaesenc		-3*16(TWEAK_KEY), %xmm0, %xmm0
  .Lencrypt_iv_aes128:
--	vaesenc		-2*16(%rdi), %xmm0, %xmm0
--	vaesenc		-1*16(%rdi), %xmm0, %xmm0
--	vaesenc		0*16(%rdi), %xmm0, %xmm0
--	vaesenc		1*16(%rdi), %xmm0, %xmm0
--	vaesenc		2*16(%rdi), %xmm0, %xmm0
--	vaesenc		3*16(%rdi), %xmm0, %xmm0
--	vaesenc		4*16(%rdi), %xmm0, %xmm0
--	vaesenc		5*16(%rdi), %xmm0, %xmm0
--	vaesenc		6*16(%rdi), %xmm0, %xmm0
-+.irp i, -2,-1,0,1,2,3,4,5,6
-+	vaesenc		\i*16(%rdi), %xmm0, %xmm0
-+.endr
- 	vaesenclast	7*16(%rdi), %xmm0, %xmm0
- 	vmovdqu		%xmm0, (%rsi)
+ .irp i, -2,-1,0,1,2,3,4,5,6
+-	vaesenc		\i*16(%rdi), %xmm0, %xmm0
++	vaesenc		\i*16(TWEAK_KEY), %xmm0, %xmm0
+ .endr
+-	vaesenclast	7*16(%rdi), %xmm0, %xmm0
+-	vmovdqu		%xmm0, (%rsi)
++	vaesenclast	7*16(TWEAK_KEY), %xmm0, %xmm0
++	vmovdqu		%xmm0, (IV)
  	RET
  SYM_FUNC_END(aes_xts_encrypt_iv)
  
+ // Below are the actual AES-XTS encryption and decryption functions,
+ // instantiated from the above macro.  They all have the following prototype:
 -- 
 2.47.1
 
