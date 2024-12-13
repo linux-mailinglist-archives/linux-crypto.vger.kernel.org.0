@@ -1,259 +1,137 @@
-Return-Path: <linux-crypto+bounces-8563-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8567-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CAE49F0766
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Dec 2024 10:13:46 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A870E9F0BFB
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Dec 2024 13:14:34 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4D59281336
-	for <lists+linux-crypto@lfdr.de>; Fri, 13 Dec 2024 09:13:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23AF71888377
+	for <lists+linux-crypto@lfdr.de>; Fri, 13 Dec 2024 12:14:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC271AD3F6;
-	Fri, 13 Dec 2024 09:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F741DF739;
+	Fri, 13 Dec 2024 12:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EqYbLJa4"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299401AC458;
-	Fri, 13 Dec 2024 09:13:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D7D1DF263;
+	Fri, 13 Dec 2024 12:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734081222; cv=none; b=F0SHHH9D8zkn535QLzqRu2+XpDPSCo09j11YYE34shagpjQwGs2+l2WxDTosXFomj5vaZLiq9hl0VcBqqKXnw0xQF0db7p7GiNpfxqys3QH9K7gSoJ/66ImNi3AcRu1jvocQ2ciYxaEQ4Rhf0w/FAlgDX8ejOjNolOHwTxcdXvk=
+	t=1734092068; cv=none; b=hWNpmoLhbfT8m+WPwLR/PXrQsSsN0c4+aEZ6benbju6mnWFx/AUD1LdTdoXE+JDq5zuv3CG+k1JkujSAUcKTht7U2m9Chx+K4rxlBWEaUotBgikKfbaa6WpcBr/McmWg2NSFQNAOP0yXkhQzcsCKIJs9a8xuDpbvrSyZn3xWGlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734081222; c=relaxed/simple;
-	bh=2daSethAlsoY/fwBIlkFy/9/Pp03ZGxwK7TPILF4A6A=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kKravm5wVHBK2bSN4OMQFPiceGdJC2F+3lpCKWMpjO5jMaPFZGQNkBt0Jpx6NBvb05Jsr/zgjx9NfVIuE0921ZqEFJC5ZOdUa/bwa9BqWduTGAVVwy+9uTOYXbflCt3IYotlnKWge+2m3ac08FBsBapa5vkScwcyTX3DKFmNcAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Y8k8537xlz1V5WF;
-	Fri, 13 Dec 2024 17:10:29 +0800 (CST)
-Received: from kwepemd200024.china.huawei.com (unknown [7.221.188.85])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8D87A180101;
-	Fri, 13 Dec 2024 17:13:37 +0800 (CST)
-Received: from localhost.huawei.com (10.90.30.45) by
- kwepemd200024.china.huawei.com (7.221.188.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 13 Dec 2024 17:13:37 +0800
-From: Chenghai Huang <huangchenghai2@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<qianweili@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH v5 2/2] crypto: hisilicon/sec2 - fix for aead invalid authsize
-Date: Fri, 13 Dec 2024 17:13:35 +0800
-Message-ID: <20241213091335.4190437-3-huangchenghai2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20241213091335.4190437-1-huangchenghai2@huawei.com>
-References: <20241213091335.4190437-1-huangchenghai2@huawei.com>
+	s=arc-20240116; t=1734092068; c=relaxed/simple;
+	bh=sDiy10/kD9Kt51SgGl3FtSgXlIXSItrKPlATcZNKpG0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uZhStXKLPJvnfSqolFQoQslZ0gbf0Ti88OCFzyuOdiWmedbSnlI04GzyqNzlreJLoVtkLIYRTpbz0r6cG9jXTS8IrTH+g/I/hjNyV0w6k59NSlsUnlm7+s0QKutE7lM0pnVevr3Mk8Zh8j7ZAIGq3ZLM8qU7OHdiReVFRBzQWD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EqYbLJa4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 708F0C4CED0;
+	Fri, 13 Dec 2024 12:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1734092067;
+	bh=sDiy10/kD9Kt51SgGl3FtSgXlIXSItrKPlATcZNKpG0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EqYbLJa4H7fDN/UxVe8N2CnJOQx/9zyjmrsHGDC+u1Sjsw/EhzMk4/YEKaM2zZy1f
+	 xyvDY/fnp5rsV1U+IS2Uc4I/g60opzE/m32ZM8yHWuLQ9Z1BrmUceaAigPC9z8bK0K
+	 n19Pgf1iP9fbZDZz3M+Llcc+ctBymtB1llaOu2dA=
+Date: Fri, 13 Dec 2024 13:14:23 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	Jiri Slaby <jslaby@suse.cz>, Borislav Petkov <bp@suse.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	linux-arch@vger.kernel.org, linux-crypto@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, x86-ml <x86@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 243/321] x86/asm/crypto: Annotate local functions
+Message-ID: <2024121300-immerse-gooey-ee4f@gregkh>
+References: <20241212144229.291682835@linuxfoundation.org>
+ <20241212144239.574474355@linuxfoundation.org>
+ <20241212180023.GA112010@google.com>
+ <2024121201-recoup-gumming-92ce@gregkh>
+ <20241212180856.GB112010@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd200024.china.huawei.com (7.221.188.85)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241212180856.GB112010@google.com>
 
-From: Wenkai Lin <linwenkai6@hisilicon.com>
+On Thu, Dec 12, 2024 at 06:08:56PM +0000, Eric Biggers wrote:
+> On Thu, Dec 12, 2024 at 07:05:24PM +0100, Greg Kroah-Hartman wrote:
+> > On Thu, Dec 12, 2024 at 06:00:23PM +0000, Eric Biggers wrote:
+> > > On Thu, Dec 12, 2024 at 04:02:41PM +0100, Greg Kroah-Hartman wrote:
+> > > > 5.4-stable review patch.  If anyone has any objections, please let me know.
+> > > > 
+> > > > ------------------
+> > > > 
+> > > > From: Jiri Slaby <jslaby@suse.cz>
+> > > > 
+> > > > [ Upstream commit 74d8b90a889022e306b543ff2147a6941c99b354 ]
+> > > > 
+> > > > Use the newly added SYM_FUNC_START_LOCAL to annotate beginnings of all
+> > > > functions which do not have ".globl" annotation, but their endings are
+> > > > annotated by ENDPROC. This is needed to balance ENDPROC for tools that
+> > > > generate debuginfo.
+> > > > 
+> > > > These function names are not prepended with ".L" as they might appear in
+> > > > call traces and they wouldn't be visible after such change.
+> > > > 
+> > > > To be symmetric, the functions' ENDPROCs are converted to the new
+> > > > SYM_FUNC_END.
+> > > > 
+> > > > Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> > > > Signed-off-by: Borislav Petkov <bp@suse.de>
+> > > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > > > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > > Cc: linux-arch@vger.kernel.org
+> > > > Cc: linux-crypto@vger.kernel.org
+> > > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > > Cc: x86-ml <x86@kernel.org>
+> > > > Link: https://lkml.kernel.org/r/20191011115108.12392-7-jslaby@suse.cz
+> > > > Stable-dep-of: 3b2f2d22fb42 ("crypto: x86/aegis128 - access 32-bit arguments as 32-bit")
+> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > ---
+> > > >  arch/x86/crypto/aegis128-aesni-asm.S         |  8 ++--
+> > > >  arch/x86/crypto/aesni-intel_asm.S            | 49 ++++++++------------
+> > > >  arch/x86/crypto/camellia-aesni-avx-asm_64.S  | 20 ++++----
+> > > >  arch/x86/crypto/camellia-aesni-avx2-asm_64.S | 20 ++++----
+> > > >  arch/x86/crypto/cast5-avx-x86_64-asm_64.S    |  8 ++--
+> > > >  arch/x86/crypto/cast6-avx-x86_64-asm_64.S    |  8 ++--
+> > > >  arch/x86/crypto/chacha-ssse3-x86_64.S        |  4 +-
+> > > >  arch/x86/crypto/ghash-clmulni-intel_asm.S    |  4 +-
+> > > >  arch/x86/crypto/serpent-avx-x86_64-asm_64.S  |  8 ++--
+> > > >  arch/x86/crypto/serpent-avx2-asm_64.S        |  8 ++--
+> > > >  arch/x86/crypto/twofish-avx-x86_64-asm_64.S  |  8 ++--
+> > > >  11 files changed, 68 insertions(+), 77 deletions(-)
+> > > 
+> > > Unless the author of this patch acks this I'd rather you skipped this.  It's not
+> > > worth the risk of regressions in the crypto code.
+> > 
+> > It's a dependancy of commit 3b2f2d22fb42 ("crypto: x86/aegis128 - access
+> > 32-bit arguments as 32-bit"), so should we drop that one also?
+> > 
+> 
+> Well it is not a dependency if the conflict is properly resolved, but I would
+> just drop it too.  In theory it fixes a bug, but we haven't seen gcc or clang
+> generating code that makes it matter.  Also I've noticed that some other asm
+> files have the same issue...
 
-When the digest alg is HMAC-SHAx or another, the authsize may be less
-than 4 bytes and mac_len of the BD is set to zero, the hardware considers
-it a BD configuration error and reports a ras error, so the sec driver
-needs to switch to software calculation in this case, this patch add a
-check for it and remove unnecessary check that has been done by crypto.
+Good point, I've fixed up the dependant patch so that it doesn't need
+this one, and dropped this one from the queue.
 
-Fixes: 2f072d75d1ab ("crypto: hisilicon - Add aead support on SEC2")
-Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
-Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec.h        |  2 +-
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 64 +++++++++++-----------
- 2 files changed, 34 insertions(+), 32 deletions(-)
+thanks for the review!
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index 70c3bdedb6ba..4b9970230822 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -37,6 +37,7 @@ struct sec_aead_req {
- 	u8 *a_ivin;
- 	dma_addr_t a_ivin_dma;
- 	struct aead_request *aead_req;
-+	bool fallback;
- };
- 
- /* SEC request of Crypto */
-@@ -91,7 +92,6 @@ struct sec_auth_ctx {
- 	u8 *a_key;
- 	u8 a_key_len;
- 	u8 a_alg;
--	bool fallback;
- 	struct crypto_shash *hash_tfm;
- 	struct crypto_aead *fallback_aead_tfm;
- };
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 8db995279545..66bc07da9eb6 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -1119,10 +1119,7 @@ static int sec_aead_setauthsize(struct crypto_aead *aead, unsigned int authsize)
- 	struct sec_ctx *ctx = crypto_tfm_ctx(tfm);
- 	struct sec_auth_ctx *a_ctx = &ctx->a_ctx;
- 
--	if (unlikely(a_ctx->fallback_aead_tfm))
--		return crypto_aead_setauthsize(a_ctx->fallback_aead_tfm, authsize);
--
--	return 0;
-+	return crypto_aead_setauthsize(a_ctx->fallback_aead_tfm, authsize);
- }
- 
- static int sec_aead_fallback_setkey(struct sec_auth_ctx *a_ctx,
-@@ -1159,13 +1156,7 @@ static int sec_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- 		}
- 		memcpy(c_ctx->c_key, key, keylen);
- 
--		if (unlikely(a_ctx->fallback_aead_tfm)) {
--			ret = sec_aead_fallback_setkey(a_ctx, tfm, key, keylen);
--			if (ret)
--				return ret;
--		}
--
--		return 0;
-+		return sec_aead_fallback_setkey(a_ctx, tfm, key, keylen);
- 	}
- 
- 	ret = crypto_authenc_extractkeys(&keys, key, keylen);
-@@ -1190,6 +1181,12 @@ static int sec_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- 		goto bad_key;
- 	}
- 
-+	ret = sec_aead_fallback_setkey(a_ctx, tfm, key, keylen);
-+	if (ret) {
-+		dev_err(dev, "set sec fallback key err!\n");
-+		goto bad_key;
-+	}
-+
- 	return 0;
- 
- bad_key:
-@@ -1917,8 +1914,10 @@ static void sec_aead_exit(struct crypto_aead *tfm)
- 
- static int sec_aead_ctx_init(struct crypto_aead *tfm, const char *hash_name)
- {
-+	struct aead_alg *alg = crypto_aead_alg(tfm);
- 	struct sec_ctx *ctx = crypto_aead_ctx(tfm);
--	struct sec_auth_ctx *auth_ctx = &ctx->a_ctx;
-+	struct sec_auth_ctx *a_ctx = &ctx->a_ctx;
-+	const char *aead_name = alg->base.cra_name;
- 	int ret;
- 
- 	ret = sec_aead_init(tfm);
-@@ -1927,11 +1926,20 @@ static int sec_aead_ctx_init(struct crypto_aead *tfm, const char *hash_name)
- 		return ret;
- 	}
- 
--	auth_ctx->hash_tfm = crypto_alloc_shash(hash_name, 0, 0);
--	if (IS_ERR(auth_ctx->hash_tfm)) {
-+	a_ctx->hash_tfm = crypto_alloc_shash(hash_name, 0, 0);
-+	if (IS_ERR(a_ctx->hash_tfm)) {
- 		dev_err(ctx->dev, "aead alloc shash error!\n");
- 		sec_aead_exit(tfm);
--		return PTR_ERR(auth_ctx->hash_tfm);
-+		return PTR_ERR(a_ctx->hash_tfm);
-+	}
-+
-+	a_ctx->fallback_aead_tfm = crypto_alloc_aead(aead_name, 0,
-+						     CRYPTO_ALG_NEED_FALLBACK | CRYPTO_ALG_ASYNC);
-+	if (IS_ERR(a_ctx->fallback_aead_tfm)) {
-+		dev_err(ctx->dev, "aead driver alloc fallback tfm error!\n");
-+		crypto_free_shash(ctx->a_ctx.hash_tfm);
-+		sec_aead_exit(tfm);
-+		return PTR_ERR(a_ctx->fallback_aead_tfm);
- 	}
- 
- 	return 0;
-@@ -1941,6 +1949,7 @@ static void sec_aead_ctx_exit(struct crypto_aead *tfm)
- {
- 	struct sec_ctx *ctx = crypto_aead_ctx(tfm);
- 
-+	crypto_free_aead(ctx->a_ctx.fallback_aead_tfm);
- 	crypto_free_shash(ctx->a_ctx.hash_tfm);
- 	sec_aead_exit(tfm);
- }
-@@ -1967,7 +1976,6 @@ static int sec_aead_xcm_ctx_init(struct crypto_aead *tfm)
- 		sec_aead_exit(tfm);
- 		return PTR_ERR(a_ctx->fallback_aead_tfm);
- 	}
--	a_ctx->fallback = false;
- 
- 	return 0;
- }
-@@ -2226,15 +2234,15 @@ static int sec_aead_spec_check(struct sec_ctx *ctx, struct sec_req *sreq)
- 	struct device *dev = ctx->dev;
- 	int ret;
- 
--	if (unlikely(req->cryptlen + req->assoclen > MAX_INPUT_DATA_LEN ||
--	    req->assoclen > SEC_MAX_AAD_LEN)) {
--		dev_err(dev, "aead input spec error!\n");
-+	/* Hardware does not handle cases where authsize is less than 4 bytes */
-+	if (unlikely(sz < MIN_MAC_LEN)) {
-+		sreq->aead_req.fallback = true;
- 		return -EINVAL;
- 	}
- 
--	if (unlikely((c_mode == SEC_CMODE_GCM && sz < DES_BLOCK_SIZE) ||
--		     (c_mode == SEC_CMODE_CCM && (sz < MIN_MAC_LEN || sz & MAC_LEN_MASK)))) {
--		dev_err(dev, "aead input mac length error!\n");
-+	if (unlikely(req->cryptlen + req->assoclen > MAX_INPUT_DATA_LEN ||
-+	    req->assoclen > SEC_MAX_AAD_LEN)) {
-+		dev_err(dev, "aead input spec error!\n");
- 		return -EINVAL;
- 	}
- 
-@@ -2280,7 +2288,7 @@ static int sec_aead_param_check(struct sec_ctx *ctx, struct sec_req *sreq)
- 	if (ctx->sec->qm.ver == QM_HW_V2) {
- 		if (unlikely(!req->cryptlen || (!sreq->c_req.encrypt &&
- 			     req->cryptlen <= authsize))) {
--			ctx->a_ctx.fallback = true;
-+			sreq->aead_req.fallback = true;
- 			return -EINVAL;
- 		}
- 	}
-@@ -2308,16 +2316,9 @@ static int sec_aead_soft_crypto(struct sec_ctx *ctx,
- 				bool encrypt)
- {
- 	struct sec_auth_ctx *a_ctx = &ctx->a_ctx;
--	struct device *dev = ctx->dev;
- 	struct aead_request *subreq;
- 	int ret;
- 
--	/* Kunpeng920 aead mode not support input 0 size */
--	if (!a_ctx->fallback_aead_tfm) {
--		dev_err(dev, "aead fallback tfm is NULL!\n");
--		return -EINVAL;
--	}
--
- 	subreq = aead_request_alloc(a_ctx->fallback_aead_tfm, GFP_KERNEL);
- 	if (!subreq)
- 		return -ENOMEM;
-@@ -2349,10 +2350,11 @@ static int sec_aead_crypto(struct aead_request *a_req, bool encrypt)
- 	req->aead_req.aead_req = a_req;
- 	req->c_req.encrypt = encrypt;
- 	req->ctx = ctx;
-+	req->aead_req.fallback = false;
- 
- 	ret = sec_aead_param_check(ctx, req);
- 	if (unlikely(ret)) {
--		if (ctx->a_ctx.fallback)
-+		if (req->aead_req.fallback)
- 			return sec_aead_soft_crypto(ctx, a_req, encrypt);
- 		return -EINVAL;
- 	}
--- 
-2.33.0
-
+greg k-h
 
