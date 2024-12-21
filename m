@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-8696-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8698-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD75A9F9F71
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Dec 2024 10:11:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74009F9F77
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Dec 2024 10:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F9131891477
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Dec 2024 09:11:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2A2016AEC4
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Dec 2024 09:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4BF1F190E;
-	Sat, 21 Dec 2024 09:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FAE1EE7D8;
+	Sat, 21 Dec 2024 09:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PUEGMvVt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMMOUh+n"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969321EE7DD
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA04B1F190A
 	for <linux-crypto@vger.kernel.org>; Sat, 21 Dec 2024 09:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734772292; cv=none; b=HWpWapZq17v2vAXFwHlo8dAF1o8Iz1rG/JjaioSGjUPoyv37RZ6la4Mb/yCyEoxcOl2m3uuq5o0eQd1uXFSlJTXMZcc83iapmdnoQgdY8O5my59dWt+zun/RFnR0vLBYSGFMbFrbvnunvL9i+jugGodz0Nvc1OKQ/4/AutrKglA=
+	t=1734772292; cv=none; b=Sjja6dqiRQ3jpivfO1A930CoDkVzs77bn4wptIRwERm19HPmQe6JaA4B6dkB2gHumayUG+b/3EYOQxjaeUKzmAV+ba2g4fS2mazxgEdhLNocVHLCzR/Z6iCsiI+2Xb60bzaZcbIrOc0c7NlN/SlQYcmT2QlZgMigIcdkia5aAKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734772292; c=relaxed/simple;
-	bh=dnZAK361vmWixKcZ7acGRjvfLvttpdJxa1vRNfoj5IE=;
+	bh=2nhmId8pbA4hd6z9AgDYhLqfIP1ELc8P6LVbb7WGcqw=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WYzf6NZoZFT2ZM7jEOujrAQ9tgIDymr+IMSyzJBI0ruRU08/VSjW/p4DI1/rtbYyVHLFLQuAKeLQrKd/2oxvtuupNEoAUDCb3dtPj97Q1y8KwhTKA6B3e6QsvAVfmPFASrXxvf7mqvbiZRmUm/L5mKDg/KDxwhgmKTV0/ioUhnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PUEGMvVt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23546C4CECE
+	 MIME-Version; b=vDskzeM4/Q24PeIqp1tDXpUgnxtVuuNSRTs4ZjrcA8qFduP8/dEK5kyS9uTFLdsz1pyjzMw3Apg/tULYye4rPA8irEhGPhtAluJJficl9wje2TpnHF6kEV2nXY78dVMT+GvS3gdK0/y1Tf0NqxIjG3r5JvuG3HvMLipeCfVSwyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RMMOUh+n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 503F2C4CED4
 	for <linux-crypto@vger.kernel.org>; Sat, 21 Dec 2024 09:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1734772292;
-	bh=dnZAK361vmWixKcZ7acGRjvfLvttpdJxa1vRNfoj5IE=;
+	bh=2nhmId8pbA4hd6z9AgDYhLqfIP1ELc8P6LVbb7WGcqw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=PUEGMvVtN7BaRuL59lUDOjAG7JYDy7LGoFRHtP+MQVNPrwk1VPQWfTpy3P/OBHByy
-	 4YFKiJ0tH1yTN2IkFetJ8UZX/AKrVh9VfjiY3qX/Dhj0Ac78GN1QrliwGuWJ0c1sBf
-	 MBzW2F7lXRV1f6ExkrgYp+rSsIDAglQo8cDPK/Ta9jzbx9O4nNKJNOiVsO4xHha2mj
-	 r4m3SH6OslKSPYO5Or15px6Qhb0eJ5mLhuR8seRh26u0vuXF93SLy/+J9gg3pF/eaz
-	 BOVzsQ5jJAKUVWJu3LmXB4UKcMXzmaskO27IIOqL9A0FBKdd41kyqnujsAA1TTWONm
-	 C7lSvDPBxSCDA==
+	b=RMMOUh+npTSxrX4x6CngGwaLEw3dhtG2tAaaeLLIsWk7Hyn/8BzmFHUMcGKV9wwwX
+	 oLwHSapa9R5GmyBciACQxf1/wGPiENP/8hSNKRUPpMEB3ssGfe/qf5lihwl0EnVGcI
+	 lkjexImPCFrllbwkp7FOhAmkwNCnsO9s8cYEZT1N2i92MU4c0kcVyNIGLoR3mXQn3G
+	 eaEdqBEeuYceX77gNcZfJL6xKkh1bKyM2aqf1ZY159QcHp3fpe7loXDeNh4v2oYSgL
+	 khxkyI9UNZJmSnnyFgY1cvuQkW+aOJiF8NMhqLRT7nASB93OjW9TD+qsmQi8ByXvou
+	 +BnO+lk+DuR4g==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
-Subject: [PATCH 07/29] crypto: skcipher - optimize initializing skcipher_walk fields
-Date: Sat, 21 Dec 2024 01:10:34 -0800
-Message-ID: <20241221091056.282098-8-ebiggers@kernel.org>
+Subject: [PATCH 08/29] crypto: skcipher - call cond_resched() directly
+Date: Sat, 21 Dec 2024 01:10:35 -0800
+Message-ID: <20241221091056.282098-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241221091056.282098-1-ebiggers@kernel.org>
 References: <20241221091056.282098-1-ebiggers@kernel.org>
@@ -59,87 +59,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-The helper functions like crypto_skcipher_blocksize() take in a pointer
-to a tfm object, but they actually return properties of the algorithm.
-As the Linux kernel is compiled with -fno-strict-aliasing, the compiler
-has to assume that the writes to struct skcipher_walk could clobber the
-tfm's pointer to its algorithm.  Thus it gets repeatedly reloaded in the
-generated code.  Therefore, replace the use of these helper functions
-with staightforward accesses to the struct fields.
+In skcipher_walk_done(), instead of calling crypto_yield() which
+requires a translation between flags, just call cond_resched() directly.
+This has the same effect.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/skcipher.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ crypto/skcipher.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index e54d1ad46566..7ef2e4ddf07a 100644
+index 7ef2e4ddf07a..441e1d254d36 100644
 --- a/crypto/skcipher.c
 +++ b/crypto/skcipher.c
-@@ -306,12 +306,12 @@ static int skcipher_walk_first(struct skcipher_walk *walk)
- }
+@@ -144,12 +144,12 @@ int skcipher_walk_done(struct skcipher_walk *walk, int res)
+ 	scatterwalk_advance(&walk->out, n);
+ 	scatterwalk_done(&walk->in, 0, total);
+ 	scatterwalk_done(&walk->out, 1, total);
  
- int skcipher_walk_virt(struct skcipher_walk *walk,
- 		       struct skcipher_request *req, bool atomic)
- {
--	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
--	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
-+	const struct skcipher_alg *alg =
-+		crypto_skcipher_alg(crypto_skcipher_reqtfm(req));
+ 	if (total) {
+-		crypto_yield(walk->flags & SKCIPHER_WALK_SLEEP ?
+-			     CRYPTO_TFM_REQ_MAY_SLEEP : 0);
++		if (walk->flags & SKCIPHER_WALK_SLEEP)
++			cond_resched();
+ 		walk->flags &= ~(SKCIPHER_WALK_SLOW | SKCIPHER_WALK_COPY |
+ 				 SKCIPHER_WALK_DIFF);
+ 		return skcipher_walk_next(walk);
+ 	}
  
- 	might_sleep_if(req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP);
- 
- 	walk->total = req->cryptlen;
- 	walk->nbytes = 0;
-@@ -326,13 +326,13 @@ int skcipher_walk_virt(struct skcipher_walk *walk,
- 		return 0;
- 
- 	scatterwalk_start(&walk->in, req->src);
- 	scatterwalk_start(&walk->out, req->dst);
- 
--	walk->blocksize = crypto_skcipher_blocksize(tfm);
--	walk->ivsize = crypto_skcipher_ivsize(tfm);
--	walk->alignmask = crypto_skcipher_alignmask(tfm);
-+	walk->blocksize = alg->base.cra_blocksize;
-+	walk->ivsize = alg->co.ivsize;
-+	walk->alignmask = alg->base.cra_alignmask;
- 
- 	if (alg->co.base.cra_type != &crypto_skcipher_type)
- 		walk->stride = alg->co.chunksize;
- 	else
- 		walk->stride = alg->walksize;
-@@ -342,11 +342,11 @@ int skcipher_walk_virt(struct skcipher_walk *walk,
- EXPORT_SYMBOL_GPL(skcipher_walk_virt);
- 
- static int skcipher_walk_aead_common(struct skcipher_walk *walk,
- 				     struct aead_request *req, bool atomic)
- {
--	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
-+	const struct aead_alg *alg = crypto_aead_alg(crypto_aead_reqtfm(req));
- 
- 	walk->nbytes = 0;
- 	walk->iv = req->iv;
- 	walk->oiv = req->iv;
- 	if ((req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) && !atomic)
-@@ -364,14 +364,14 @@ static int skcipher_walk_aead_common(struct skcipher_walk *walk,
- 	scatterwalk_copychunks(NULL, &walk->out, req->assoclen, 2);
- 
- 	scatterwalk_done(&walk->in, 0, walk->total);
- 	scatterwalk_done(&walk->out, 0, walk->total);
- 
--	walk->blocksize = crypto_aead_blocksize(tfm);
--	walk->stride = crypto_aead_chunksize(tfm);
--	walk->ivsize = crypto_aead_ivsize(tfm);
--	walk->alignmask = crypto_aead_alignmask(tfm);
-+	walk->blocksize = alg->base.cra_blocksize;
-+	walk->stride = alg->chunksize;
-+	walk->ivsize = alg->ivsize;
-+	walk->alignmask = alg->base.cra_alignmask;
- 
- 	return skcipher_walk_first(walk);
- }
- 
- int skcipher_walk_aead_encrypt(struct skcipher_walk *walk,
 -- 
 2.47.1
 
