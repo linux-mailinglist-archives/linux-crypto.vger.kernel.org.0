@@ -1,165 +1,171 @@
-Return-Path: <linux-crypto+bounces-8851-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8853-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3CD99FF719
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jan 2025 09:49:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74CCB9FF79F
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jan 2025 10:46:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44A9A7A11D5
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jan 2025 08:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A358E1882B9F
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jan 2025 09:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CCF5192B8F;
-	Thu,  2 Jan 2025 08:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3475F1A3A95;
+	Thu,  2 Jan 2025 09:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aTpU5Zwf"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iRiOp9Bh"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7C518C932;
-	Thu,  2 Jan 2025 08:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBE931A254E;
+	Thu,  2 Jan 2025 09:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735807789; cv=none; b=BIT/v04Z6uTVbi16uj69anfWC8TDH7QVxL7JCzxOwb2sxA7m+FNVJZ6bs20NlYrxyRkwKDaOz4C8cglhosQS7nI/exd45hhitLuRt92PzozzUnzcMbUi/ezbPJR65hoEn5N3RM/3xjTvIgZe+iRCVPxTJKF7ngweNgCP5Ox//iM=
+	t=1735811185; cv=none; b=ONlvXrCL9AcKcIu15aOblscqU4ARbjyHhncnLGbNoQjJbDaQWMBT4NG7bNCgbcY0HK+pvHncBAj01DdEQr7Q+cSSsTJWpidjaxL0exkqM3wD5FvFXKRzGzVIzsp0WC0EWz+FSrsHehsv+vtPzouv28qk7mtUpVA7mB8MTHNJTZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735807789; c=relaxed/simple;
-	bh=WUK1SMs8GoW5u3MdAb41usLLlfEP0svpUzHtinjtVFs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QYu2r8hLUsG+BI5zsNUzRQewqLsI+Bg0U2WbzuEW5sTMm5Z264XCQ197rAJ7VNgi4ixk1iNCd7muUej8WVQBMGTRLzmtdPC2g1tPiWUSmXn9xZXWn0lp2UCsBTlnpgVl8Ey9g0y0TXTfn7aMgqSsOQHT6axCE5lSxH7gqIJK6Cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aTpU5Zwf; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-aae81f4fdc4so1717343966b.0;
-        Thu, 02 Jan 2025 00:49:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735807787; x=1736412587; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=VfGIzY3hMcgxJ/ViB/BOPn4C/1Cm0PNkLobtpeWUwuY=;
-        b=aTpU5ZwfagpMdwQCB19RNIPeCClWILy8Jy+U/6dN2OrR8IduN2PCIruWmnhdE8n4K6
-         uvhoDzLcx6KUvvP1YzVCNy+eDfUuHP5oq2eol9bD/XHB4MJiZC73a58Kq7nXhaQKJ233
-         VubZ/5+kOtaiqZzg6txMBtqNRH0cSaeMnTKL6v3NJYYFy/9+54WhKdj2yZavYHXKUX1X
-         +BnQ+NuRjoMSTtZjZvYi04dIj4M1l23WmLYKbmeZMdJvg2KW7UCHJGqeSh+scqo16Gnx
-         j+rudWQOieApuomo+rJ5Ql3Mnu8Lk5oAArAtEXrYlVdfVvs1valdYd9ZjJ/stkEQDrfs
-         shlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735807787; x=1736412587;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VfGIzY3hMcgxJ/ViB/BOPn4C/1Cm0PNkLobtpeWUwuY=;
-        b=QJEHDK18QUkGqAVbrilpewsXZnr5wTicudzMLItrSr6t2Z6LxiIkKf5eWa/Kf1dn10
-         fZBi8HxslAiAw8iYk8gNPPrFwRtrn9aT8wgKGtc0BGRKiwrQELIsi0+g9dclEGfdj6Zt
-         ESHP3m0Psz4/hEMMWfGz9arRVDJkPkFklZYZ4rypoPJEhtBr9/Jd1iNfnbI1LVAKc7U3
-         Jq884pCtmw7plcBTcG9gEcekuV1feaarR9ySaMXKW9UZPX+bYDpQDD2Yj5dScHYqmfhk
-         kiyf8roo3V/yB29m4lXK8aoE7ueDXSijMJ3y4WDxq7g7RlFWrZ7mMuo7Dd0XmVxXEZBa
-         u/dg==
-X-Forwarded-Encrypted: i=1; AJvYcCWXZBkp2hWFMi+BcJ1SODIgr0wcRDZkTfB9ZC5kY5NZin5o/uIrGgmI49ULR8LSdUyBlDUw7VROH84BspM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxusbFrrdNEkQgA6Qshg4Gy7Dv/JpLUFSH0kGJj5UDCuu95DYv/
-	hoUeBDTZILmrslAoP/mEjIDj2NzMyeeDAwkW/N8tDTNf+I+cDucJ
-X-Gm-Gg: ASbGncunAsT1sUiv6bOrbI9swySINUvFG2u1mszKMtdQdkBHkIp7CSCwoR0yJ7k0h5J
-	eHFbIsjIzvmVQkf3HLZVR6eqQECwTBm+v4paEn7D731jKYS7plT9335xZyfWD+oLgr3GRXq5a31
-	RfYlGBWVcKgeMSi3tiLqnsHfMnOOYeFtimhVjw15wbV4UcnlLwcldbVpv2uenrQ1jygC9ywYRAC
-	xsvn4vKEWYx41LUOmf38HVUEa25lV8XIXSW+uJSUkteLiWlw51IceaWEKB0k1qpRoVkXkKfklAp
-	02vq
-X-Google-Smtp-Source: AGHT+IGR6w55Z2SZ3nZ3oj2p1eo1H7ALyhhR760ZcjCEU/ByjDQUNJ9BeQGetfSa6UDnitD3OWjP1Q==
-X-Received: by 2002:a17:907:7250:b0:aa6:7737:199c with SMTP id a640c23a62f3a-aac2b0a5b5cmr4943543566b.15.1735807786354;
-        Thu, 02 Jan 2025 00:49:46 -0800 (PST)
-Received: from [147.251.42.106] (fosforos.fi.muni.cz. [147.251.42.106])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0f0159b8sm1766632566b.157.2025.01.02.00.49.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jan 2025 00:49:45 -0800 (PST)
-Message-ID: <86e3502f-5d24-4779-9d3b-3cd79288fa0d@gmail.com>
-Date: Thu, 2 Jan 2025 09:49:45 +0100
+	s=arc-20240116; t=1735811185; c=relaxed/simple;
+	bh=O8kqaxHe7hqKIZWCi3LT60SOTHAGWvKkXVMi2ObD0nU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PmCC3P243fXedY7XgqPkcqgQtfZ848CTHas1VFhH+q+8r208fwU7xZ4L7ojjCX0+C3IqUKj1K4gzJpaRtoQUPl2qPqfNLyJXx/5lrL0H5INH00mmZluGIG3FYpSzNoLlYfcmjSnj8Bda1t97CE2TW6qwBwyp/4ARYIQ8MwEfFkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iRiOp9Bh; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5023qgfq000530;
+	Thu, 2 Jan 2025 09:46:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=BuoaGvGBQ2J1OxY2nopde7uFw0xcEyUDuIX69RzLy
+	6I=; b=iRiOp9BhobCnIyF/khBnnn/ck4u48GI0Ofte5G2TBva0KGs2hbRbyOQ6u
+	PCMQaN1+MbwGHI6UHDCE1MS96IJAp51gmDTtTkY21eTkZ/uBpnKxTBR3dES4TBRh
+	1BZdGuERyg0txvGBm8BfIwb5DFrhxlsaw3OrK/eTAesz6kOd3KQeB41Qe/pCscSy
+	CqoADcGChrteTtY39xIJuTrdkmtjmI2Q+b4LCnfBEXe0/fKcRjaAWPJ1pfdSKXHR
+	+NTunLhZYt8r7v2lnjdIh6ncsaMKs3dGMhdrV0xReokJO+CRxTDOSSxdgWIURndo
+	GGhp1VIVeqkx8nTzY+LdU/Eg2cF2g==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43wk9gh2dr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 Jan 2025 09:46:19 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5024biDG014022;
+	Thu, 2 Jan 2025 09:46:18 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43tv1y9mp8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 Jan 2025 09:46:18 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5029kGMx50659586
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 2 Jan 2025 09:46:16 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4AF942004E;
+	Thu,  2 Jan 2025 09:46:16 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 022CE2004B;
+	Thu,  2 Jan 2025 09:46:16 +0000 (GMT)
+Received: from funtu2.fritz.box?044ibm.com (unknown [9.171.11.208])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  2 Jan 2025 09:46:15 +0000 (GMT)
+From: Harald Freudenberger <freude@linux.ibm.com>
+To: herbert@gondor.apana.org.au, davem@davemloft.net, dengler@linux.ibm.com
+Cc: linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: [PATCH v9 0/3] New s390 specific protected key hmac
+Date: Thu,  2 Jan 2025 10:46:12 +0100
+Message-ID: <20250102094615.99181-1-freude@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] crypto: vmac - remove unused VMAC algorithm
-To: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
- Atharva Tiwari <evepolonium@gmail.com>, Shane Wang <shane.wang@intel.com>
-References: <20241226194309.27733-1-ebiggers@kernel.org>
-Content-Language: en-US
-From: Milan Broz <gmazyland@gmail.com>
-Autocrypt: addr=gmazyland@gmail.com; keydata=
- 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
-In-Reply-To: <20241226194309.27733-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UfTC1RL2OnVuB4S1Bu0aOquZ6KpeUuHf
+X-Proofpoint-ORIG-GUID: UfTC1RL2OnVuB4S1Bu0aOquZ6KpeUuHf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0
+ phishscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=821 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
+ definitions=main-2501020081
 
-On 12/26/24 8:43 PM, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Remove the vmac64 template, as it has no known users.  It also continues
-> to have longstanding bugs such as alignment violations (see
-> https://lore.kernel.org/r/20241226134847.6690-1-evepolonium@gmail.com/).
+Add support for protected key hmac ("phmac") for s390 arch.
 
-...
+With the latest machine generation there is now support for
+protected key (that is a key wrapped by a master key stored
+in firmware) hmac for sha2 (sha224, sha256, sha384 and sha512)
+for the s390 specific CPACF instruction kmac.
 
-> No in-tree user has appeared since then, other than potentially the
-> usual components that allow specifying arbitrary hash algorithms by
-> name, namely AF_ALG and dm-integrity.  However there are no indications
-> that VMAC is being used with these components.  Debian Code Search and
-> web searches for "vmac64" (the actual algorithm name) do not return any
-> results other than the kernel itself, suggesting that it does not appear
-> in any other code or documentation.  Explicitly grepping the source code
-> of the usual suspects (libell, iwd, cryptsetup) finds no matches either.
+This patch adds support via 4 new hashes registered as
+phmac(sha224), phmac(sha256), phmac(sha384) and phmac(sha512).
 
-AFAIK it was never used for dm-integrity / cryptsetup and I am not even able
-to make it work for test now (isn't the vmac64 alg module init even broken?).
+Changelog:
+v1: Initial version
+v2: Increase HASH_MAX_DESCSIZE generic (not just for arch s390).
+    Fix one finding to use kmemdup instead of kmalloc/memcpy from test
+    robot. Remove unneeded cpacf subfunctions checks. Simplify
+    clone_tfm() function. Rebased to s390/features.
+v3: Feedback from Herbert: Use GFP_ATOMIC in setkey function.
+    Feedback from Holger: rework tfm clone function, move convert key
+    invocation from setkey to init function. Rebased to updated
+    s390/features from 11/7/2024. Ready for integration if there are
+    no complains on v3.
+v4: Rewind back more or less to v2. Add code to check for non-sleeping
+    context. Non-sleeping context during attempt to derive the
+    protected key from raw key material is not accepted and
+    -EOPNOTSUPP is returned (also currently all derivation pathes
+    would in fact never sleep). In general the phmac implementation is
+    not to be used within non-sleeping context and the code header
+    mentions this. Tested with (patched) dm-integrity - works fine.
+v5: As suggested by Herbert now the shashes have been marked as
+    'internal' and wrapped by ahashes which use the cryptd if an
+    atomic context is detected. So the visible phmac algorithms are
+    now ahashes. Unfortunately the dm-integrity implementation
+    currently requests and deals only with shashes and this phmac
+    implementation is not fitting to the original goal any more...
+v6: As suggested by Herbert now a pure async phmac implementation.
+    Tested via AF_ALG interface. Untested via dm-integrity as this layer
+    only supports shashes. Maybe I'll develop a patch to switch the
+    dm-integrity to ahash as it is anyway the more flexible interface.
+v7: Total rework of the implementation. Now uses workqueues and triggers
+    asynch requests for key convert, init, update, final and digest.
+    Tested with instrumented code and with a reworked version of
+    dm-integrity which uses asynchronous hashes. A patch for dm-integrity
+    is on the way but yet needs some last hone work.
+v8: Added selftest. With the selftest comes some code which wraps the
+    clear key into a "clear key token" digestible by PKEY. The
+    selftest also uses import() and export(), so these are now also
+    implemented. Furthermore a finup() implementation is now also
+    available. Tested with AF_ALG testcases and dm-integrity, also
+    tested with some instrumented code to check that the asynch
+    workqueue functions do their job correctly. Coding is complete!
+v9: As suggested by Herbert use ahash_request_complete() and surround it
+    with local_bh_disable().
 
-Just remove it...
+Harald Freudenberger (2):
+  s390/crypto: New s390 specific protected key hash phmac
+  s390/crypto: Enable phmac selftest invocation
 
-Thanks,
-Milan
+Holger Dengler (1):
+  s390/crypto: Add protected key hmac subfunctions for KMAC
+
+ arch/s390/configs/debug_defconfig |   1 +
+ arch/s390/configs/defconfig       |   1 +
+ arch/s390/crypto/Makefile         |   1 +
+ arch/s390/crypto/phmac_s390.c     | 986 ++++++++++++++++++++++++++++++
+ arch/s390/include/asm/cpacf.h     |   4 +
+ crypto/testmgr.c                  |  30 +
+ drivers/crypto/Kconfig            |  12 +
+ include/linux/crypto.h            |   5 +
+ 8 files changed, 1040 insertions(+)
+ create mode 100644 arch/s390/crypto/phmac_s390.c
+
+
+base-commit: fac04efc5c793dccbd07e2d59af9f90b7fc0dca4
+-- 
+2.43.0
 
 
