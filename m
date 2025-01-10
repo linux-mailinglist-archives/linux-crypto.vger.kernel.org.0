@@ -1,164 +1,114 @@
-Return-Path: <linux-crypto+bounces-8985-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8987-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A31AFA0885A
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 07:27:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4466CA088D1
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 08:14:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC9381655DF
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 06:27:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19A123A8F87
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 07:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965B5207662;
-	Fri, 10 Jan 2025 06:27:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B2220767C;
+	Fri, 10 Jan 2025 07:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V61kgX2s"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8472063FC;
-	Fri, 10 Jan 2025 06:27:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CCE8207656
+	for <linux-crypto@vger.kernel.org>; Fri, 10 Jan 2025 07:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736490444; cv=none; b=oWxCGMeh6cFwEOPoprxZeFBHb+MrIBVeGQg/SeXUJzoA61NjOl0Jn3LhsBxNA1ksc3K0ZmPyp2Tormn7SFmtYiiSIoTQ/Moh7l2j2c8GtMFlcayy/7zEwz+2DhoaHS8tdwlTfYebJu3i0M6LiNlNPBkZsAIDnouo7CyZqhApxgc=
+	t=1736493244; cv=none; b=bTSqFFpwwJwL8SlnW9sEhbg0MopgxvX9smDtCJljyu7ctWg64LmfIoPu5Y2Cb41ahMIyRKvq41ue/XbLk4ZM0okoDBjIc0xE4memdDQwRunnxXJXuXRlTdy8UxxX1bdmFbMd1VeuGhXERtQ5zbzS0hRZySiUluR3prE+IuuUViA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736490444; c=relaxed/simple;
-	bh=TuItg2cVex87EoCUMvkN0Ds3IPBNJUsMwiP15esgejQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XN8sc3N2DdPLwPRKqU/3kUpxgglLJAdY/Vgh/NDbVcvDmoQRcVLubK5awIO/xT8hgZSXVzJ6SE7b1+yg0gCgqTYrLQRjzVg6c15m77HpQdcSxNHu21DXFnU3v1mb4V0TSfFNfru+TW3SMrKlpxv7JVy2b1KDjW1mjlCSAJrYlYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YTsBW1BQfz4f3jqw;
-	Fri, 10 Jan 2025 14:26:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 3BA2D1A0CCD;
-	Fri, 10 Jan 2025 14:27:14 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgCXoGOzvYBnLbQtAg--.33415S5;
-	Fri, 10 Jan 2025 14:27:14 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: steffen.klassert@secunet.com,
-	daniel.m.jordan@oracle.com,
-	herbert@gondor.apana.org.au,
-	nstange@suse.de
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chenridong@huawei.com,
-	wangweiyang2@huawei.com
-Subject: [PATCH v2 3/3] padata: avoid UAF for reorder_work
-Date: Fri, 10 Jan 2025 06:16:39 +0000
-Message-Id: <20250110061639.1280907-4-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250110061639.1280907-1-chenridong@huaweicloud.com>
-References: <20250110061639.1280907-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1736493244; c=relaxed/simple;
+	bh=lprOQfulzu8v6KvGdaC/bIeIPCWpKvc6opCkgeRU8p8=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=uZxEleaEcGP5jNZnMF64wYGpuUR9oON6TScOh8jfKG0qfRxU0gnL8MPd67hmlhsn89UtugHKM6lR5s+b1wtiJwZnYewENXcJwtw4XX/v6sBLlfPdCtxALSyyzZkIOZhlVxrLQHLjnZpNO+Bp2goZLxiMaYZUkikyB+xQGc9eu2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V61kgX2s; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1736493242;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rQbXIksEk073+Fi/YrEVMIhtLpzXwHk7tiFH7RnZK5M=;
+	b=V61kgX2sg/pXaY2oCVnh2wd3bOTNJjRgac7L9uEh784T4E/UAwy/GPeLS+WOnXYHjSv8RY
+	smkWnaTEpd6PeXLlhQyZbwzYnh3tMTTkvTYT5vYdeeQ450st3uj43tkqP7OJmQa78vPNeZ
+	KzH4VUELI2kulMgtSPqcEyoYpnF/eNo=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-270-O0KBR35FP7uFyN5xYPBuug-1; Fri,
+ 10 Jan 2025 02:13:56 -0500
+X-MC-Unique: O0KBR35FP7uFyN5xYPBuug-1
+X-Mimecast-MFC-AGG-ID: O0KBR35FP7uFyN5xYPBuug
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 511911955D64;
+	Fri, 10 Jan 2025 07:13:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.12])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 4C52530001BE;
+	Fri, 10 Jan 2025 07:13:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20250110055058.GA63811@sol.localdomain>
+References: <20250110055058.GA63811@sol.localdomain> <20250110010313.1471063-1-dhowells@redhat.com> <20250110010313.1471063-3-dhowells@redhat.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: dhowells@redhat.com, Herbert Xu <herbert@gondor.apana.org.au>,
+    Chuck Lever <chuck.lever@oracle.com>,
+    Trond Myklebust <trond.myklebust@hammerspace.com>,
+    "David S. Miller" <davem@davemloft.net>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+    linux-crypto@vger.kernel.org, linux-afs@lists.infradead.org,
+    linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+    netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/8] crypto/krb5: Provide Kerberos 5 crypto through AEAD API
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXoGOzvYBnLbQtAg--.33415S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFWkAr13ur1ruF18WF4DJwb_yoW8trWDpF
-	4YkFW3JrW8JFW8K3s7ZF43Zr18W3WjgFy3ta95Gw1Yk3y5Jr1rCrnrtw1S9a409ryktw1D
-	Zr4qqFn2qwsFgFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr4
-	1l4c8EcI0Ec7CjxVAaw2AFwI0_JF0_Jw1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r
-	43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-	WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU
-	whFxUUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1478992.1736493228.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 10 Jan 2025 07:13:48 +0000
+Message-ID: <1478993.1736493228@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-From: Chen Ridong <chenridong@huawei.com>
+Eric Biggers <ebiggers@kernel.org> wrote:
 
-Although the previous patch can avoid ps and ps UAF for _do_serial, it
-can not avoid potential UAF issue for reorder_work. This issue can
-happen just as below:
+> It sounds like a lot of workarounds had to be implemented to fit these
+> protocols into the crypto_aead API.
+> =
 
-crypto_request			crypto_request		crypto_del_alg
-padata_do_serial
-  ...
-  padata_reorder
-    // processes all remaining
-    // requests then breaks
-    while (1) {
-      if (!padata)
-        break;
-      ...
-    }
+> It also seems unlikely that there will be other implementations of these
+> protocols added to the kernel, besides the one you're adding in crypto/k=
+rb5/.
+> =
 
-				padata_do_serial
-				  // new request added
-				  list_add
-    // sees the new request
-    queue_work(reorder_work)
-				  padata_reorder
-				    queue_work_on(squeue->work)
-...
+> Given that, providing this functionality as library functions instead wo=
+uld be
+> much simpler.  Take a look at how crypto/kdf_sp800108.c works, for examp=
+le.
 
-				<kworker context>
-				padata_serial_worker
-				// completes new request,
-				// no more outstanding
-				// requests
+Yes.  That's how I did my first implementation.  I basically took the code
+from net/sunrpc/auth_gss/ and made it more generic.  Herbert wants it done
+this way, however.  :-/
 
-							crypto_del_alg
-							  // free pd
-
-<kworker context>
-invoke_padata_reorder
-  // UAF of pd
-
-To avoid UAF for 'reorder_work', get 'pd' ref before put 'reorder_work'
-into the 'serial_wq' and put 'pd' ref until the 'serial_wq' finish.
-
-Fixes: bbefa1dd6a6d ("crypto: pcrypt - Avoid deadlock by using per-instance padata queues")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/padata.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/padata.c b/kernel/padata.c
-index de2c02a81469..418987056340 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -352,8 +352,14 @@ static void padata_reorder(struct parallel_data *pd)
- 	smp_mb();
- 
- 	reorder = per_cpu_ptr(pd->reorder_list, pd->cpu);
--	if (!list_empty(&reorder->list) && padata_find_next(pd, false))
-+	if (!list_empty(&reorder->list) && padata_find_next(pd, false)) {
-+		/*
-+		 * Other context(eg. the padata_serial_worker) can finish the request.
-+		 * To avoid UAF issue, add pd ref here, and put pd ref after reorder_work finish.
-+		 */
-+		padata_get_pd(pd);
- 		queue_work(pinst->serial_wq, &pd->reorder_work);
-+	}
- }
- 
- static void invoke_padata_reorder(struct work_struct *work)
-@@ -364,6 +370,8 @@ static void invoke_padata_reorder(struct work_struct *work)
- 	pd = container_of(work, struct parallel_data, reorder_work);
- 	padata_reorder(pd);
- 	local_bh_enable();
-+	/* Pairs with putting the reorder_work in the serial_wq */
-+	padata_put_pd(pd);
- }
- 
- static void padata_serial_worker(struct work_struct *serial_work)
--- 
-2.34.1
+David
 
 
