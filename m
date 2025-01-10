@@ -1,43 +1,43 @@
-Return-Path: <linux-crypto+bounces-8983-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8985-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200AFA08856
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 07:27:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31AFA0885A
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 07:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46DB43A5E46
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 06:27:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC9381655DF
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 06:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A376C2066CB;
-	Fri, 10 Jan 2025 06:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965B5207662;
+	Fri, 10 Jan 2025 06:27:24 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB2B17B500;
-	Fri, 10 Jan 2025 06:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8472063FC;
+	Fri, 10 Jan 2025 06:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736490442; cv=none; b=QmCvi/oUCeOvcDsssYHeCOMkqj6iWD5n0z9+1B2IewNanwX18A/Jz7kTw0nNUhIpqbY2U7E6oEVD/DUWdzFIuJv4G4A1hKFeHMwd7WScuin3pJCj+NRu2UreOZTJqez9tHD5I5hFAb6fgj0nsDnoSDsB7hliIT8e3Nt8+3YRABs=
+	t=1736490444; cv=none; b=oWxCGMeh6cFwEOPoprxZeFBHb+MrIBVeGQg/SeXUJzoA61NjOl0Jn3LhsBxNA1ksc3K0ZmPyp2Tormn7SFmtYiiSIoTQ/Moh7l2j2c8GtMFlcayy/7zEwz+2DhoaHS8tdwlTfYebJu3i0M6LiNlNPBkZsAIDnouo7CyZqhApxgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736490442; c=relaxed/simple;
-	bh=KDzoksDjv09O6cM7IUv0CrR1OWRVol+v6IzaT2A8I8k=;
+	s=arc-20240116; t=1736490444; c=relaxed/simple;
+	bh=TuItg2cVex87EoCUMvkN0Ds3IPBNJUsMwiP15esgejQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ibvtvmO5n9DvOwns4EVuPMYx473Z9KxSRd55DbbmoBvF0rEDiMAZr1kcerOnDxghSrnXbdsLI92McCgc+nFY6dBZM8LUwQ2TMaI8Bg2dSoRaV7kesHE6q/4C+3mjJkvvJ/sWnwRLnAfaAHSp0wmCgTGtmPjq2NEiQoSFNvT1s28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=XN8sc3N2DdPLwPRKqU/3kUpxgglLJAdY/Vgh/NDbVcvDmoQRcVLubK5awIO/xT8hgZSXVzJ6SE7b1+yg0gCgqTYrLQRjzVg6c15m77HpQdcSxNHu21DXFnU3v1mb4V0TSfFNfru+TW3SMrKlpxv7JVy2b1KDjW1mjlCSAJrYlYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YTsBP6mr8z4f3jJL;
-	Fri, 10 Jan 2025 14:26:53 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YTsBW1BQfz4f3jqw;
+	Fri, 10 Jan 2025 14:26:59 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 2ED491A0B21;
+	by mail.maildlp.com (Postfix) with ESMTP id 3BA2D1A0CCD;
 	Fri, 10 Jan 2025 14:27:14 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgCXoGOzvYBnLbQtAg--.33415S4;
-	Fri, 10 Jan 2025 14:27:12 +0800 (CST)
+	by APP2 (Coremail) with SMTP id Syh0CgCXoGOzvYBnLbQtAg--.33415S5;
+	Fri, 10 Jan 2025 14:27:14 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: steffen.klassert@secunet.com,
 	daniel.m.jordan@oracle.com,
@@ -47,9 +47,9 @@ Cc: linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	chenridong@huawei.com,
 	wangweiyang2@huawei.com
-Subject: [PATCH v2 2/3] padata: fix UAF in padata_reorder
-Date: Fri, 10 Jan 2025 06:16:38 +0000
-Message-Id: <20250110061639.1280907-3-chenridong@huaweicloud.com>
+Subject: [PATCH v2 3/3] padata: avoid UAF for reorder_work
+Date: Fri, 10 Jan 2025 06:16:39 +0000
+Message-Id: <20250110061639.1280907-4-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250110061639.1280907-1-chenridong@huaweicloud.com>
 References: <20250110061639.1280907-1-chenridong@huaweicloud.com>
@@ -60,107 +60,104 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXoGOzvYBnLbQtAg--.33415S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr47WFWkXw47JrWrCFWkCrg_yoW5GF43pF
-	ZxCrW7KrW8Gr1xGw43Ja1xW34ruw4Uury3KFWrKF1furW3Jr1vvrn2y3yFgryYvr9ay34D
-	Za1DXFy7KwsrAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+X-CM-TRANSID:Syh0CgCXoGOzvYBnLbQtAg--.33415S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFWkAr13ur1ruF18WF4DJwb_yoW8trWDpF
+	4YkFW3JrW8JFW8K3s7ZF43Zr18W3WjgFy3ta95Gw1Yk3y5Jr1rCrnrtw1S9a409ryktw1D
+	Zr4qqFn2qwsFgFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-	JVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrw
-	CF54CYxVCY1x0262kKe7AKxVWUAVWUtwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY
-	LvtUUUUU=
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr4
+	1l4c8EcI0Ec7CjxVAaw2AFwI0_JF0_Jw1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
+	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r
+	43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
+	7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
+	WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU
+	whFxUUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-A bug was found when run ltp test:
+Although the previous patch can avoid ps and ps UAF for _do_serial, it
+can not avoid potential UAF issue for reorder_work. This issue can
+happen just as below:
 
-BUG: KASAN: slab-use-after-free in padata_find_next+0x29/0x1a0
-Read of size 4 at addr ffff88bbfe003524 by task kworker/u113:2/3039206
-
-CPU: 0 PID: 3039206 Comm: kworker/u113:2 Kdump: loaded Not tainted 6.6.0+
-Workqueue: pdecrypt_parallel padata_parallel_worker
-Call Trace:
-<TASK>
-dump_stack_lvl+0x32/0x50
-print_address_description.constprop.0+0x6b/0x3d0
-print_report+0xdd/0x2c0
-kasan_report+0xa5/0xd0
-padata_find_next+0x29/0x1a0
-padata_reorder+0x131/0x220
-padata_parallel_worker+0x3d/0xc0
-process_one_work+0x2ec/0x5a0
-
-If 'mdelay(10)' is added before calling 'padata_find_next' in the
-'padata_reorder' function, this issue could be reproduced easily with
-ltp test (pcrypt_aead01).
-
-This can be explained as bellow:
-
-pcrypt_aead_encrypt
-...
-padata_do_parallel
-refcount_inc(&pd->refcnt); // add refcnt
-...
+crypto_request			crypto_request		crypto_del_alg
 padata_do_serial
-padata_reorder // pd
-while (1) {
-padata_find_next(pd, true); // using pd
-queue_work_on
+  ...
+  padata_reorder
+    // processes all remaining
+    // requests then breaks
+    while (1) {
+      if (!padata)
+        break;
+      ...
+    }
+
+				padata_do_serial
+				  // new request added
+				  list_add
+    // sees the new request
+    queue_work(reorder_work)
+				  padata_reorder
+				    queue_work_on(squeue->work)
 ...
-padata_serial_worker				crypto_del_alg
-padata_put_pd_cnt // sub refcnt
-						padata_free_shell
-						padata_put_pd(ps->pd);
-						// pd is freed
-// loop again, but pd is freed
-// call padata_find_next, UAF
-}
 
-In the padata_reorder function, when it loops in 'while', if the alg is
-deleted, the refcnt may be decreased to 0 before entering
-'padata_find_next', which leads to UAF.
+				<kworker context>
+				padata_serial_worker
+				// completes new request,
+				// no more outstanding
+				// requests
 
-As mentioned in [1], do_serial is supposed to be called with BHs disabled
-and always happen under RCU protection, to address this issue, add
-synchronize_rcu() in 'padata_free_shell' wait for all _do_serial calls
-to finish.
+							crypto_del_alg
+							  // free pd
 
-[1] https://lore.kernel.org/all/20221028160401.cccypv4euxikusiq@parnassus.localdomain/
-[2] https://lore.kernel.org/linux-kernel/jfjz5d7zwbytztackem7ibzalm5lnxldi2eofeiczqmqs2m7o6@fq426cwnjtkm/
-Fixes: b128a3040935 ("padata: allocate workqueue internally")
+<kworker context>
+invoke_padata_reorder
+  // UAF of pd
+
+To avoid UAF for 'reorder_work', get 'pd' ref before put 'reorder_work'
+into the 'serial_wq' and put 'pd' ref until the 'serial_wq' finish.
+
+Fixes: bbefa1dd6a6d ("crypto: pcrypt - Avoid deadlock by using per-instance padata queues")
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
-Signed-off-by: Qu Zicheng <quzicheng@huawei.com>
 ---
- kernel/padata.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/padata.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/padata.c b/kernel/padata.c
-index 7d79df1e3b33..de2c02a81469 100644
+index de2c02a81469..418987056340 100644
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -1135,6 +1135,12 @@ void padata_free_shell(struct padata_shell *ps)
- 	if (!ps)
- 		return;
+@@ -352,8 +352,14 @@ static void padata_reorder(struct parallel_data *pd)
+ 	smp_mb();
  
-+	/*
-+	 * Wait for all _do_serial calls to finish to avoid touching
-+	 * freed pd's and ps's.
-+	 */
-+	synchronize_rcu();
-+
- 	mutex_lock(&ps->pinst->lock);
- 	list_del(&ps->list);
- 	pd = rcu_dereference_protected(ps->pd, 1);
+ 	reorder = per_cpu_ptr(pd->reorder_list, pd->cpu);
+-	if (!list_empty(&reorder->list) && padata_find_next(pd, false))
++	if (!list_empty(&reorder->list) && padata_find_next(pd, false)) {
++		/*
++		 * Other context(eg. the padata_serial_worker) can finish the request.
++		 * To avoid UAF issue, add pd ref here, and put pd ref after reorder_work finish.
++		 */
++		padata_get_pd(pd);
+ 		queue_work(pinst->serial_wq, &pd->reorder_work);
++	}
+ }
+ 
+ static void invoke_padata_reorder(struct work_struct *work)
+@@ -364,6 +370,8 @@ static void invoke_padata_reorder(struct work_struct *work)
+ 	pd = container_of(work, struct parallel_data, reorder_work);
+ 	padata_reorder(pd);
+ 	local_bh_enable();
++	/* Pairs with putting the reorder_work in the serial_wq */
++	padata_put_pd(pd);
+ }
+ 
+ static void padata_serial_worker(struct work_struct *serial_work)
 -- 
 2.34.1
 
