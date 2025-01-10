@@ -1,119 +1,97 @@
-Return-Path: <linux-crypto+bounces-8982-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-8984-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F194AA08704
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 06:51:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FBCA08858
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 07:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A4CE7A31CD
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 05:51:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09B291645AC
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jan 2025 06:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74A8207641;
-	Fri, 10 Jan 2025 05:51:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5QK1Yek"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA7B206F3B;
+	Fri, 10 Jan 2025 06:27:24 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 659932066C5;
-	Fri, 10 Jan 2025 05:51:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D745B2063C3;
+	Fri, 10 Jan 2025 06:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736488261; cv=none; b=DherLUb55GCkOWcj/OzKG/hON1xAKVV3MQHIiBY1gDPtNJOvoawfChC1XALYhXFmg9DUavebzEOGObFwMpH8nTbYjFBzojOhMWUzM4jfu8SryH3D0DS6+X3tjfvczBFKzyLdk44sZo0rnKqmx/i3VpUaTxqQePe39i6FSYdCDqo=
+	t=1736490444; cv=none; b=IpKi8MPkXZTDSYMeXB7hymz7VcpEOiRyx7VnVyx7vFkCpxRRqiYnxdxzwxgVOpRPwXGJU0e//egDmMXlD+nmeOM3Z1t4sApBH63rWRH7RuB7g23b6rM256pZQyQE0zcVE0DDm6BUeJBpleHTxS3ubJTOZM9Q8bwjIdZAK0XGYkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736488261; c=relaxed/simple;
-	bh=7sJiEOL3Ux62LKGv8xXhL54o9Pz33Hn7gDl29c46DwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e5/1a+/Dh7ujepSWwISMi1KXZk6FD5dqXvFbXDr2B/2lG7cuFdAd8IHnnh5i+qgHNtHXiUGalzf2Koq2D74lnJsJIKcDwB4ufocCXtmJOD5/zXFh6CLNCl6QnGl9BVj3EpyhLfUDyjR/zxeF5MrWr9wb002xFEPnUBIipvNjo4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5QK1Yek; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67469C4CED6;
-	Fri, 10 Jan 2025 05:51:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736488260;
-	bh=7sJiEOL3Ux62LKGv8xXhL54o9Pz33Hn7gDl29c46DwA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D5QK1Yek3RTfhgGNF+pIqM2veo1fVnghWV3IiY68a3TMzmAMwyydTgNyyUlfcgRqK
-	 nVKsg5tnSUua0yHK7R12kH7lTu4dm5z9A2rLP8ajDlIWSRp5VCxaPsyIu7PaboUF0T
-	 vWcKdKkfmun11iexfHJ2E4E7SY11SVuRsuGfx6yit82fq4HecqpIYq34JKuPtID03n
-	 YK+aNE8o8pbsUA7D38V6wSclxKtGXTDTy1a+f5Ezi2gDeKmZOv/d0M+5msvJteEuuy
-	 TpzBQIYuCDEXM8NGVZ4lDJYkh8LjcUKF5ZxN7HOzGeMbfZ/6WJ/mPy5mPqblYtaUoO
-	 JHQDeoK7haarA==
-Date: Thu, 9 Jan 2025 21:50:58 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, linux-crypto@vger.kernel.org,
-	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/8] crypto/krb5: Provide Kerberos 5 crypto through
- AEAD API
-Message-ID: <20250110055058.GA63811@sol.localdomain>
-References: <20250110010313.1471063-1-dhowells@redhat.com>
- <20250110010313.1471063-3-dhowells@redhat.com>
+	s=arc-20240116; t=1736490444; c=relaxed/simple;
+	bh=g3puWqYUf9MNfZTwYufdnbwTa7VGbmrMWvrHteTQlSQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KqDXYj8ZwixYJKLDgGaJeo9Bgvl7T916rP7ch8a/PsDFrc2HomhnD00ykLUIDtHNPJtUG7wiEuljfpYnPFfqi7jM0SMa1ArNuIU48CmysfQ/47QJr9Xjgm6UYtLZjjQtzJleVmbwZWuqJw71LKMgN4pQv0rCGAd31Hpm+GDPzMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YTsBT3QYkz4f3jqw;
+	Fri, 10 Jan 2025 14:26:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 85A9B1A0845;
+	Fri, 10 Jan 2025 14:27:12 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP2 (Coremail) with SMTP id Syh0CgCXoGOzvYBnLbQtAg--.33415S2;
+	Fri, 10 Jan 2025 14:27:12 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: steffen.klassert@secunet.com,
+	daniel.m.jordan@oracle.com,
+	herbert@gondor.apana.org.au,
+	nstange@suse.de
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	chenridong@huawei.com,
+	wangweiyang2@huawei.com
+Subject: [PATCH v2 0/3] padata: fix UAF issues
+Date: Fri, 10 Jan 2025 06:16:36 +0000
+Message-Id: <20250110061639.1280907-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250110010313.1471063-3-dhowells@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgCXoGOzvYBnLbQtAg--.33415S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY17kC6x804xWl14x267AKxVW8JVW5JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
+	xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+	FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+	0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48J
+	MxAqzxv26xkF7I0En4kS14v26r126r1DMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR
+	6zUUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Fri, Jan 10, 2025 at 01:03:04AM +0000, David Howells wrote:
-> Use the AEAD crypto API to provide Kerberos 5 crypto, plus some
-> supplementary library functions that lie outside of the AEAD API.
-> 
-> The crypto algorithms only perform the actual crypto operations; they do
-> not do any laying out of the message and nor do they insert any metadata or
-> padding.  Everything is done by dead-reckoning as the AEAD API does not
-> provide a useful way to pass the extra parameters required.
-> 
-> When setting the key on a crypto algorithm, setkey takes a composite
-> structure consisting of an indication of the mode of transformation to be
-> applied to the message (checksum only or full encryption); the usage type
-> to be used in deriving the keys; an indicator indicating what key is being
-> presented (K0 or Kc/Ke+Ki); and the material for those key(s).  Based on
-> this, the setkey code allocates and keys the appropriate ciphers and
-> hashes.
-> 
-> When dispatching a request, both checksumming (MIC) and encryption use the
-> encrypt and decrypt methods.  A source message, prelaid out with
-> confounders or other metadata inserted is provided in the source buffer.
-> The cryptolen indicates the amount of source message data, not including
-> the trailer after the data (which includes the integrity checksum) and not
-> including any associated data.
-> 
-> Associated data is only used by checksumming encrypt/decrypt.  The
-> associated data is added to the checksum hash before the data in the
-> message, but does not occupy any part of the output message.
-> 
-> Authentication tags are not used at all and should cause EINVAL if used (a
-> later patch does that).
-> 
-> For the moment, the kerberos encryption algorithms use separate hash and
-> cipher algorithms internally, but should really use dual hash+cipher and
-> cipher+hash algorithms if possible to avoid doing these in series.  Offload
-> off this may be possible through something like the Intel QAT.
+From: Chen Ridong <chenridong@huawei.com>
 
-It sounds like a lot of workarounds had to be implemented to fit these protocols
-into the crypto_aead API.
+Fix UAF issues for padata.
 
-It also seems unlikely that there will be other implementations of these
-protocols added to the kernel, besides the one you're adding in crypto/krb5/.
+---
+v1->v2:
+ - use synchronize_rcu to fix UAF for padata_reorder.
+ - add patch to avoid UAF for 'reorder_work'
 
-Given that, providing this functionality as library functions instead would be
-much simpler.  Take a look at how crypto/kdf_sp800108.c works, for example.
+Chen Ridong (3):
+  padata: add pd get/put refcnt helper
+  padata: fix UAF in padata_reorder
+  padata: avoid UAF for reorder_work
 
-- Eric
+ kernel/padata.c | 43 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 35 insertions(+), 8 deletions(-)
+
+-- 
+2.34.1
+
 
