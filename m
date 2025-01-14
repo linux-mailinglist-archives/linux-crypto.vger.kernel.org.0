@@ -1,134 +1,126 @@
-Return-Path: <linux-crypto+bounces-9054-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9059-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930E9A1179A
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 04:00:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64CC6A11829
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 04:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D34BB188944B
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 03:00:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84DB3168BBA
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 03:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3F2156879;
-	Wed, 15 Jan 2025 03:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41ED22DF85;
+	Wed, 15 Jan 2025 03:58:25 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511CA22B8C2;
-	Wed, 15 Jan 2025 03:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from zxbjcas.zhaoxin.com (zxbjcas.zhaoxin.com [124.127.214.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D6421C190;
+	Wed, 15 Jan 2025 03:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.127.214.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736910023; cv=none; b=AuDPACjSBmySZjkNQ/a8jCsOck60wkcm5YBLE5n3eIQDDelTxLThEJ7p24e64mjYVCuza7dfmgo0Ym7EuguNEtlHUd4QT5bsvTUw/spANCzhcTGPWEyJJicPg0SM/JvcTDVrsotW4ITiBDF3RJHvwvT8QQs+a3Ebhs2d+BjdoOI=
+	t=1736913505; cv=none; b=HkWEHe7KmcDaEGxh4DmTzu/8QVGijvP7t+ytA4lTjItke4BGzyug2W0arJQ5mE1Pq2H4mJUClnMB3r1fOl131QGpyMSzA7DCVW+ZH//85MsPG2tAf2gFFYqL+KdTKKIrPGflcX4nKtNYXCamhtO4r9gS7sUOCMczMiBgzoGUvI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736910023; c=relaxed/simple;
-	bh=0inU6x9OEOlhOKqEGeSMD92WMNoNKj52lO6z/J3YNOo=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=j92qo5EljGSIonrBqgjWCpZBtZ16k+DA0gVI7XUhdVXkQr2B8rV4zzZOqJh8LV7kzwJmoH6o5oiEQjYBcZyrP5bDqEM9B7ysbsLIjgKaPLn4iJJ2BGFQZVQee81Xagse6+qfvWQRWoJJas/+37H13v0/e+qB7fTSEht1rcnP1Po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.164])
-	by gateway (Coremail) with SMTP id _____8BxPOLCJIdnGqpjAA--.3095S3;
-	Wed, 15 Jan 2025 11:00:18 +0800 (CST)
-Received: from [10.20.42.164] (unknown [10.20.42.164])
-	by front1 (Coremail) with SMTP id qMiowMAxz8e9JIdnxQwjAA--.18926S2;
-	Wed, 15 Jan 2025 11:00:15 +0800 (CST)
-Subject: Re: [PATCH v1 3/3] misc: ls6000se-sdf: Add driver for Loongson 6000SE
- SDF
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Xi Ruoyao <xry111@xry111.site>, Arnd Bergmann <arnd@arndb.de>
-Cc: Lee Jones <lee@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- "David S . Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
- "derek.kiernan@amd.com" <derek.kiernan@amd.com>,
- "dragan.cvetic@amd.com" <dragan.cvetic@amd.com>,
- Yinggang Gu <guyinggang@loongson.cn>
-References: <20250114095527.23722-1-zhaoqunqin@loongson.cn>
- <20250114095527.23722-4-zhaoqunqin@loongson.cn>
- <ee65851c-4149-4927-a2e7-356cdce2ba25@app.fastmail.com>
- <97000576d4ba6d94cea70363e321665476697052.camel@xry111.site>
- <2025011407-muppet-hurricane-196f@gregkh>
-From: Qunqin Zhao <zhaoqunqin@loongson.cn>
-Message-ID: <122aab11-f657-a48e-6b83-0e01ddd20ed3@loongson.cn>
-Date: Wed, 15 Jan 2025 10:58:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1736913505; c=relaxed/simple;
+	bh=cYGFKlgd4SSkI92x/MDN+1caDaBNPEj+ttaY7igNQV8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=k94geMI2o8SJt6U0jb6218/WfsrXEVDwMedlcjzri4Xk1BDwDeEZTbP9/LcNeT7czIxFok52L7saEHaE3eqxuIDPEXL7AtRyE4tLg4otJU7US7YOLnQwhbxd0CCfx+DL0NsS2I88Zdk39yi39VhE4LLUZyznXJpEYQCQmfrKvDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=124.127.214.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+Received: from zxbjcas.zhaoxin.com (localhost [127.0.0.2] (may be forged))
+	by zxbjcas.zhaoxin.com with ESMTP id 50F3W4Ng014586;
+	Wed, 15 Jan 2025 11:32:04 +0800 (GMT-8)
+	(envelope-from TonyWWang-oc@zhaoxin.com)
+Received: from ZXBJMBX02.zhaoxin.com (ZXBJMBX02.zhaoxin.com [10.29.252.6])
+	by zxbjcas.zhaoxin.com with ESMTP id 50F3T62k013867;
+	Wed, 15 Jan 2025 11:29:06 +0800 (GMT-8)
+	(envelope-from TonyWWang-oc@zhaoxin.com)
+Received: from ZXSHMBX1.zhaoxin.com (10.28.252.163) by ZXBJMBX02.zhaoxin.com
+ (10.29.252.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 15 Jan
+ 2025 11:29:05 +0800
+Received: from ZXSHMBX1.zhaoxin.com ([fe80::1f6:1739:ec6a:3d64]) by
+ ZXSHMBX1.zhaoxin.com ([fe80::1f6:1739:ec6a:3d64%7]) with mapi id
+ 15.01.2507.039; Wed, 15 Jan 2025 11:29:05 +0800
+Received: from tony.zhaoxin.com (10.32.65.152) by ZXBJMBX03.zhaoxin.com
+ (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 14 Jan
+ 2025 20:12:50 +0800
+From: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+To: <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
+        <pawan.kumar.gupta@linux.intel.com>, <jpoimboe@kernel.org>,
+        <daniel.sneddon@linux.intel.com>, <perry.yuan@amd.com>,
+        <thomas.lendacky@amd.com>, <sandipan.das@amd.com>,
+        <namhyung@kernel.org>, <acme@redhat.com>, <xin3.li@intel.com>,
+        <brijesh.singh@amd.com>, <TonyWWang-oc@zhaoxin.com>,
+        <linux-kernel@vger.kernel.org>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <linux-crypto@vger.kernel.org>
+CC: <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>, <LeoLiu-oc@zhaoxin.com>,
+        <GeorgeXue@zhaoxin.com>
+Subject: [PATCH v3 0/2] Add Zhaoxin hardware engine driver support for SHA
+Date: Tue, 14 Jan 2025 20:12:59 +0800
+Message-ID: <20250114121301.156359-1-TonyWWang-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <2025011407-muppet-hurricane-196f@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:qMiowMAxz8e9JIdnxQwjAA--.18926S2
-X-CM-SenderInfo: 52kd01pxqtx0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Ww1fury7GF4DWr1UKF13KFX_yoW8CFy7pa
-	13GF1IkFyUtr43Cr4vvw4rAr1Ikws3tF9xt34rAwsrZ39Iyrn5KFWIkryYva17Zr10kwnF
-	vay0va47u3WDZagCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUP0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
-	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
-	McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
-	I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF
-	x2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r
-	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
-	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-	0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUUU==
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Moderation-Data: 1/15/2025 11:29:03 AM
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:zxbjcas.zhaoxin.com 50F3W4Ng014586
+
+Zhaoxin currently uses CPUID leaf 0xC0000001 instead of VIA/Cyrix/
+Centaur to represent the presence or absence of certain CPU features
+due to company changes. The previously occupied bits in CPUID leaf
+0xC0000001 remain functional, and the unoccupied bits are used by
+Zhaoxin to represent some new CPU features.
+
+Zhaoxin CPUs implements the PadLock Hash Engine v2 feature on the
+basis of features supported by CPUID leaf 0xC0000001, which indicates
+that Zhaoxin CPUs support SHA384/SHA512 algorithm hardware instructions.
+So add two Padlock Hash Engine v2 feature flags support in cpufeatures.h
+
+Zhaoxin CPUs have implemented the SHA(Secure Hash Algorithm) as its CPU
+instructions, including SHA1, SHA256, SHA384 and SHA512, which conform
+to the Secure Hash Algorithms specified by FIPS 180-3.
+
+Zhaoxin CPU's SHA1/SHA256 implementation is compatible with VIA's
+SHA1/SHA256, so add Zhaoxin CPU's SHA384/SHA512 support in padlock-sha.c.
+
+v2 link is below:
+https://lore.kernel.org/all/20240123022852.2475-1-TonyWWang-oc@zhaoxin.com/
+
+v1 link is below:
+https://lore.kernel.org/all/20240116063549.3016-1-TonyWWang-oc@zhaoxin.com/
+
+---
+v2->v3:
+- Add Zhaoxin SHA384/SHA512 support in padlock-sha
+v1->v2:
+- Make Zhaoxin SHA depends on X86 && !UML
+- Update MAINTAINERS for Zhaoxin SHA
 
 
-在 2025/1/14 下午9:21, Greg Kroah-Hartman 写道:
-> On Tue, Jan 14, 2025 at 06:43:24PM +0800, Xi Ruoyao wrote:
->> On Tue, 2025-01-14 at 11:17 +0100, Arnd Bergmann wrote:
->>> On Tue, Jan 14, 2025, at 10:55, Qunqin Zhao wrote:
->>>> Loongson Secure Device Function device supports the functions specified
->>>> in "GB/T 36322-2018". This driver is only responsible for sending user
->>>> data to SDF devices or returning SDF device data to users.
->>> I haven't been able to find a public version of the standard
->> A public copy is available at
->> https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=69E793FE1769D120C82F78447802E14F,
->> pressing the blue "online preview" button, enter a captcha and you can
->> see it.  But the copy is in Chinese, and there's an explicit notice
->> saying translating this copy is forbidden, so I cannot translate it for
->> you either.
->>
->>> but
->>> from the table of contents it sounds like this is a standard for
->>> cryptographic functions that would otherwise be implemented by a
->>> driver in drivers/crypto/ so it can use the normal abstractions
->>> for both userspace and in-kernel users.
->>>
->>> Is there some reason this doesn't work?
->> I'm not an lawyer but I guess contributing code for that may have some
->> "cryptography code export rule compliance" issue.
-> Issue with what?  And why?  It's enabling the functionality of the
-> hardware either way, so the same rules should apply no matter where the
-> driver ends up in or what apis it is written against, right?
+Tony W Wang-oc (2):
+  x86/cpufeatures: Add CPU feature flags for Zhaoxin Hash Engine v2
+  crypto: Add Zhaoxin PadLock Hash Engine support for SHA384/SHA512
 
-SDF and tpm2.0 are both  "library specifications",  which means that
+ arch/x86/include/asm/cpufeatures.h       |   4 +-
+ drivers/crypto/Kconfig                   |  10 +-
+ drivers/crypto/padlock-sha.c             | 200 ++++++++++++++++++++++-
+ tools/arch/x86/include/asm/cpufeatures.h |   4 +-
+ 4 files changed, 208 insertions(+), 10 deletions(-)
 
-it supports a wide variety of functions not only cryptographic functions,
-
-but unlike tpm2.0, SDF is only used in China.
-
-You can refer to the tpm2.0 specification: 
-https://trustedcomputinggroup.org/resource/tpm-library-specification/
-
-
-Best regards,
-
-Qunqin.
-
->
-> thanks,
->
-> greg k-h
+--=20
+2.25.1
 
 
