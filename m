@@ -1,149 +1,156 @@
-Return-Path: <linux-crypto+bounces-9017-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9023-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEBD4A0C369
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jan 2025 22:16:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1469EA0FF1B
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jan 2025 04:16:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DDEF7A30EB
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jan 2025 21:16:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A95F3A43EC
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jan 2025 03:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04BF1D54FA;
-	Mon, 13 Jan 2025 21:16:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7890F2309AC;
+	Tue, 14 Jan 2025 03:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CUKrIzzv"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="YcISjwvO"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416761B0F30;
-	Mon, 13 Jan 2025 21:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6437D22FE18;
+	Tue, 14 Jan 2025 03:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736803000; cv=none; b=ruR15a6zIJczBWiFPJBoRFlEqrv55kvSBkN4zokOJgDy8PV5S3yxd1eA4xhIgXii84nOaq1roHld79BXzVF8djEray0YWxAgVKX/K/Lv8cONwGiLMhVk29+040wuYR/JdMv6QtP9IHJsVRyTrye4H34o+VeV/mPmkMqgyiXiaMI=
+	t=1736824556; cv=none; b=n/9MouDcpbZ6SGr4QjYY07y2n05Xi1uePjxityi/wOPzpFkA9gO725IRYEbpOUKENx+SFX2R+vbWNjKsfPvjVoCNS8LtHqzT+aNhGNReZrPnz4vAF/vml41SxKz8SxMOO0FIj7bEhN7dNB0U/prSZXpeuk2/bBAmEwiwUd66Lhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736803000; c=relaxed/simple;
-	bh=cOJsRDBcgLDBp32RqWAqDTQsoREZ6J+vEdj//CoPbrU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=RDfcN8mA9dJRCNbcXKCx0ob3E0U74hQe+X/sMRZfDTeshVXF3SYAtc9diCOwnYQk8tJ3HPfprHjhDC1DvOkJvcyg1rzwbaBs5YrkCeIwFtO4TKczhVbSwsOQfC3qLgIebMQNZchzUqpPt1ptqJfi5PutIzFHJtJ1KXQjfbkRw+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CUKrIzzv; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50DHDrGK015112;
-	Mon, 13 Jan 2025 21:16:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	ZpcRHclsZV+n0sv/cngvaVlAnRrHbAMrX2D3lIQUKxA=; b=CUKrIzzvizzBTaaV
-	oQDcKRNNubh1hP+kO4cgwV5dcDawX1uODW4mBXgeItuorJ4+YLVeE9Wm2NRL/C7s
-	tnivrRZ8H8qFuo9g4U52aJ2M092AI9e39Ob+XgrWP+yQMP4ZQL/Xq1VlmWXNMJE/
-	bExynpae3ldSZkQ+BRwwllg/RUh994D3stgFUNT1g79s1dY297dXlGWl6gfiuDCe
-	AWvzdWxOeX6tEsa+X1nW4+f+hVQSmF06W8NQbAHQAAnATWlm2fSzqhQLtvG2Q2Y1
-	XPTlkcgkvDQTayzp6a16/cRbO7rkXip6vDGd87ej2/5dttg8iiYe25BZdBkOyMRq
-	QK/xXw==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44571yrgxq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Jan 2025 21:16:33 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 50DLGXRf000946
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Jan 2025 21:16:33 GMT
-Received: from hu-molvera-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 13 Jan 2025 13:16:32 -0800
-From: Melody Olvera <quic_molvera@quicinc.com>
-Date: Mon, 13 Jan 2025 13:16:26 -0800
-Subject: [PATCH 6/6] arm64: dts: qcom: sm8750: Add ICE nodes
+	s=arc-20240116; t=1736824556; c=relaxed/simple;
+	bh=4yc6DCaNOTYnsKJUos1Hkpf5XjS/EBMVKnw64Rx11WU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ef3h7dz0Cqe4CMkUfS+LQyCdp2IMR5Z2VhSXSPuJSDCjwL2ALEm3eiMtVoJHXgw+D//4TLzp/fSOm77UZpkUN2IWdG/qlbt7xrpVG+r+ZyswwoasI6d5/iY7AeGq+DEkn4gLLJXWyIEv+yyiQZjWPw5bEzGoJxLg+kbqsYQJLBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=YcISjwvO; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=x89DqMLsnBNYRk0lxnHKXt48yEh+m9UWLjc0+56gCq4=; b=YcISjwvOnernJmKD4HEMkPBhej
+	U3QrrKSNnMV4u7sszt2ZFd82BbrIsHKc+c8xtKrdPBLaElJzAC0/tUQS+xuqMhqQGNky2wD+w6dwD
+	Gj/yllS0MREADT5G6mtaYEalxgtZw2yUvsN6YbxJ+DzIOyQXaAutNe49SCQ6Lw5zNrN0q+kHc2wIK
+	0KhGhiYsWHEyTCcx20gHu+6aFgFJzi6uHT8mx5Nv8GokeO3Sxtsooe3BDCfE8H7coCwBsEFPVfnwN
+	FugTfBETEtl7Rk75mrCSkGGXx/6tl/frtibc1hE5gp3sXlzoTNM4HltKhjXa2cTSMZmitNWAAR0qn
+	4ECSpm0g==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1tXXBm-008x7z-1l;
+	Tue, 14 Jan 2025 11:15:20 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 14 Jan 2025 11:15:19 +0800
+Date: Tue, 14 Jan 2025 11:15:19 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Breno Leitao <leitao@debian.org>,
+	"saeedm@nvidia.com" <saeedm@nvidia.com>,
+	"tariqt@nvidia.com" <tariqt@nvidia.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Graf <tgraf@suug.ch>, Tejun Heo <tj@kernel.org>,
+	Hao Luo <haoluo@google.com>, Josh Don <joshdon@google.com>,
+	Barret Rhoden <brho@google.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [v3 PATCH] rhashtable: Fix rhashtable_try_insert test
+Message-ID: <Z4XWx5X0doetOJni@gondor.apana.org.au>
+References: <20241128-scx_lockdep-v1-1-2315b813b36b@debian.org>
+ <Z1rYGzEpMub4Fp6i@gondor.apana.org.au>
+ <Z2aFL3dNLYOcmzH3@gondor.apana.org.au>
+ <20250102-daffy-vanilla-boar-6e1a61@leitao>
+ <SN6PR02MB41572415707F0FA6D9A61247D4132@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <20250109-marigold-bandicoot-of-exercise-8ebede@leitao>
+ <Z4DoFYQ3ytB-wS3-@gondor.apana.org.au>
+ <SN6PR02MB41577C2C4EB260F3D2D4F85FD41C2@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <Z4FXs8vAtitHIJyl@gondor.apana.org.au>
+ <SN6PR02MB41570F1F5F4F579B4E8F0CD3D41C2@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20250113-sm8750_crypto_master-v1-6-d8e265729848@quicinc.com>
-References: <20250113-sm8750_crypto_master-v1-0-d8e265729848@quicinc.com>
-In-Reply-To: <20250113-sm8750_crypto_master-v1-0-d8e265729848@quicinc.com>
-To: Thara Gopinath <thara.gopinath@gmail.com>,
-        Herbert Xu
-	<herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Rob
- Herring" <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        "Conor
- Dooley" <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konradybcio@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        "Satya Durga Srinivasu Prabhala" <quic_satyap@quicinc.com>,
-        Trilok Soni
-	<quic_tsoni@quicinc.com>
-CC: <linux-crypto@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Melody Olvera
-	<quic_molvera@quicinc.com>,
-        Gaurav Kashyap <quic_gaurkash@quicinc.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1736802990; l=1020;
- i=quic_molvera@quicinc.com; s=20241204; h=from:subject:message-id;
- bh=kYx1ne3b8juDuVcobYdCJj2Z5nQv/iZNrM6rP7xtAUU=;
- b=TQ5b0w/llxvDHVQnd9VvocaFvjCSbeU0CzLPOvFtmcP95z4DB1CeWzOoyizfvzPGtm00WuxXx
- aW4VHdWrM0FA7KRB/WQoYsyE0Mmhxe5PlATUxkSA7DeI8FjGmgomf3o
-X-Developer-Key: i=quic_molvera@quicinc.com; a=ed25519;
- pk=1DGLp3zVYsHAWipMaNZZTHR321e8xK52C9vuAoeca5c=
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Dslp47vCZZtcnVAoejdMzPxvCxUZ523f
-X-Proofpoint-ORIG-GUID: Dslp47vCZZtcnVAoejdMzPxvCxUZ523f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 spamscore=0 impostorscore=0 bulkscore=0
- clxscore=1015 lowpriorityscore=0 adultscore=0 suspectscore=0 mlxscore=0
- mlxlogscore=756 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501130169
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR02MB41570F1F5F4F579B4E8F0CD3D41C2@SN6PR02MB4157.namprd02.prod.outlook.com>
 
-From: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+On Fri, Jan 10, 2025 at 06:22:40PM +0000, Michael Kelley wrote:
+>
+> This patch passes my tests. I'm doing a narrow test to verify that
+> the boot failure when opening the Mellanox NIC is no longer occurring.
+> I also unloaded/reloaded the mlx5 driver a couple of times. For good
+> measure, I then did a full Linux kernel build, and all is good. My testing
+> does not broadly verify correct operation of rhashtable except as it
+> gets exercised implicitly by these basic tests.
 
-Add the SM8750 nodes for the UFS Inline Crypto Engine (ICE).
+Thanks for testing! The patch needs one more change though as
+moving the atomic_inc outside of the lock was a bad idea on my
+part.  This could cause atomic_inc/atomic_dec to be reordered
+thus resulting in an underflow.
 
-Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
-Signed-off-by: Melody Olvera <quic_molvera@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sm8750.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Thanks,
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8750.dtsi b/arch/arm64/boot/dts/qcom/sm8750.dtsi
-index 9b2ac8c30013b02ca78140eb4144b4530aba5d6a..63231f4d72e2ca2a109efff00ab7a21c7475888a 100644
---- a/arch/arm64/boot/dts/qcom/sm8750.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8750.dtsi
-@@ -1944,6 +1944,14 @@ mmss_noc: interconnect@1780000 {
- 			#interconnect-cells = <2>;
- 		};
+---8<---
+The test on whether rhashtable_insert_one did an insertion relies
+on the value returned by rhashtable_lookup_one.  Unfortunately that
+value is overwritten after rhashtable_insert_one returns.  Fix this
+by moving the test before data gets overwritten.
+
+Simplify the test as only data == NULL matters.
+
+Finally move atomic_inc back within the lock as otherwise it may
+be reordered with the atomic_dec on the removal side, potentially
+leading to an underflow.
+
+Reported-by: Michael Kelley <mhklinux@outlook.com>
+Fixes: e1d3422c95f0 ("rhashtable: Fix potential deadlock by moving schedule_work outside lock")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/lib/rhashtable.c b/lib/rhashtable.c
+index bf956b85455a..0e9a1d4cf89b 100644
+--- a/lib/rhashtable.c
++++ b/lib/rhashtable.c
+@@ -611,21 +611,23 @@ static void *rhashtable_try_insert(struct rhashtable *ht, const void *key,
+ 			new_tbl = rht_dereference_rcu(tbl->future_tbl, ht);
+ 			data = ERR_PTR(-EAGAIN);
+ 		} else {
++			bool inserted;
++
+ 			flags = rht_lock(tbl, bkt);
+ 			data = rhashtable_lookup_one(ht, bkt, tbl,
+ 						     hash, key, obj);
+ 			new_tbl = rhashtable_insert_one(ht, bkt, tbl,
+ 							hash, obj, data);
++			inserted = data && !new_tbl;
++			if (inserted)
++				atomic_inc(&ht->nelems);
+ 			if (PTR_ERR(new_tbl) != -EEXIST)
+ 				data = ERR_CAST(new_tbl);
  
-+		ice: crypto@1d88000 {
-+			compatible = "qcom,sm8750-inline-crypto-engine",
-+				     "qcom,inline-crypto-engine";
-+			reg = <0x0 0x01d88000 0x0 0x18000>;
-+
-+			clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
-+		};
-+
- 		cryptobam: dma-controller@1dc4000 {
- 			compatible = "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
- 			reg = <0x0 0x01dc4000 0x0 0x28000>;
-
+ 			rht_unlock(tbl, bkt, flags);
+ 
+-			if (PTR_ERR(data) == -ENOENT && !new_tbl) {
+-				atomic_inc(&ht->nelems);
+-				if (rht_grow_above_75(ht, tbl))
+-					schedule_work(&ht->run_work);
+-			}
++			if (inserted && rht_grow_above_75(ht, tbl))
++				schedule_work(&ht->run_work);
+ 		}
+ 	} while (!IS_ERR_OR_NULL(new_tbl));
+ 
 -- 
-2.46.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
