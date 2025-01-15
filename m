@@ -1,444 +1,223 @@
-Return-Path: <linux-crypto+bounces-9058-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9055-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27352A11827
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 04:58:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23E68A117E9
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 04:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AECF53A7642
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 03:58:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 219963A5D11
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 03:38:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E383E22DF85;
-	Wed, 15 Jan 2025 03:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC1C22E3FD;
+	Wed, 15 Jan 2025 03:38:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mnFeAKDc"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from zxbjcas.zhaoxin.com (zxbjcas.zhaoxin.com [124.127.214.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6590615250F;
-	Wed, 15 Jan 2025 03:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.127.214.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180F214A0BC;
+	Wed, 15 Jan 2025 03:38:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736913493; cv=none; b=d8r2POGg+0ijCe/U7cVW17xu87Vi11TLHqAzvYjuIwKgrV6ESlTqpFd2qLBmWUVNyD64/QOa0ONZ2FdBKz7JgmaDzGhp3wSmklNdmNB9RGjB7a4znw1w1Ruyho6CVNO7IWyNT0COxW8YLHLJFeGWkF4BYAoxamIAoJMqdVJYK9Q=
+	t=1736912315; cv=none; b=Rj3jt64ivy9NEsXjwnSHd6d407/jc8Eh1w7uc1uW0ARZzAMXLLrpGYY7FbDTgwjJFzgjC6sQILx6HDLb5Juv7gzuFpemnQvkC/OiJBVn4uRAhSJBMK4JKtZ1tcS9aPcDwq9GZ42qQ2hmfM394/+meNTrYcP2foztqWZODI5zGGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736913493; c=relaxed/simple;
-	bh=9b7a5MPW0z/mHGgFceEoXxq/NAGGXc48TTYGBS/Iw3k=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kmz+Asqs5CZ43TFYjhk+wYpsSkgvkZpeIE7eaZ7dZWZWK8HWGSMJlyxR1BHnbhhikWecEtak+s35seM2qwna2iM+7OUtdO86Q9u/eIigXAVEeFmoI0k76P2F1m6874X23UMKn0vEpXs1UXoLQZ8hHn5sHFLFZKmB1RaCx7PC8XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=124.127.214.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-Received: from zxbjcas.zhaoxin.com (localhost [127.0.0.2] (may be forged))
-	by zxbjcas.zhaoxin.com with ESMTP id 50F3VwVK014563;
-	Wed, 15 Jan 2025 11:31:58 +0800 (GMT-8)
-	(envelope-from TonyWWang-oc@zhaoxin.com)
-Received: from ZXBJMBX03.zhaoxin.com (ZXBJMBX03.zhaoxin.com [10.29.252.7])
-	by zxbjcas.zhaoxin.com with ESMTP id 50F3TCW8013884;
-	Wed, 15 Jan 2025 11:29:12 +0800 (GMT-8)
-	(envelope-from TonyWWang-oc@zhaoxin.com)
-Received: from ZXSHMBX1.zhaoxin.com (10.28.252.163) by ZXBJMBX03.zhaoxin.com
- (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 15 Jan
- 2025 11:29:11 +0800
-Received: from ZXSHMBX1.zhaoxin.com ([fe80::1f6:1739:ec6a:3d64]) by
- ZXSHMBX1.zhaoxin.com ([fe80::1f6:1739:ec6a:3d64%7]) with mapi id
- 15.01.2507.039; Wed, 15 Jan 2025 11:29:11 +0800
-Received: from tony.zhaoxin.com (10.32.65.152) by ZXBJMBX03.zhaoxin.com
- (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 14 Jan
- 2025 20:12:55 +0800
-From: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-To: <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-        <pawan.kumar.gupta@linux.intel.com>, <jpoimboe@kernel.org>,
-        <daniel.sneddon@linux.intel.com>, <perry.yuan@amd.com>,
-        <thomas.lendacky@amd.com>, <sandipan.das@amd.com>,
-        <namhyung@kernel.org>, <acme@redhat.com>, <xin3.li@intel.com>,
-        <brijesh.singh@amd.com>, <TonyWWang-oc@zhaoxin.com>,
-        <linux-kernel@vger.kernel.org>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>, <linux-crypto@vger.kernel.org>
-CC: <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>, <LeoLiu-oc@zhaoxin.com>,
-        <GeorgeXue@zhaoxin.com>
-Subject: [PATCH v3 2/2] crypto: Add Zhaoxin PadLock Hash Engine support for SHA384/SHA512
-Date: Tue, 14 Jan 2025 20:13:01 +0800
-Message-ID: <20250114121301.156359-3-TonyWWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250114121301.156359-1-TonyWWang-oc@zhaoxin.com>
-References: <20250114121301.156359-1-TonyWWang-oc@zhaoxin.com>
+	s=arc-20240116; t=1736912315; c=relaxed/simple;
+	bh=gN06EUNT97ngcgK4V6x/fRnJvp2euBs+cFhJIU8hNis=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g3aCxP1EUquptVUIFxP3ItWXUb4NQowcXwrJXUHvLWlz5Q1X9AhKV8CICvAAIQsFcuTjt0tDag1IQg/yFtIJhZvK7E0SGVcrvKcGadFfnf4HnhBOTUsrXMMM+3BvfCbUeVVw6y8PulmNQxTHmpgNojEVRfWFf7+r0oSFvTr5vDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mnFeAKDc; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e54d268bc3dso11146433276.1;
+        Tue, 14 Jan 2025 19:38:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736912313; x=1737517113; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ggG1Vuf9tiZ0JKZNDTMJJvN8O1nAUNZ5coZeOdFCGi0=;
+        b=mnFeAKDcxT3oG/sDf+Ds13LeBgdOjgifrc5Ap8N5qcujmADGqD6CzfyR2g6j1qtUPs
+         yQqDDoHvQZ5tX5FioRw8pWiae/sQT2bV2rsfWzSkgh1AQ35XiJ4Ka5q3zsbFAUrf6ygr
+         rqPc68ZI20aZvC8z2QAJKR8NU6QxOm8RdwiBJLYpUG7Mxc3g4hTz1/sVPx8EtvLhmvsn
+         Yvr+7jRQB3P/FkC+mX4arXdX3AT65DIBaCvfU8gDRjZrYhne53JEW2b9IN3F7BRSWhE1
+         J/xk+r/WFkcHtmTnkB2j8jRF67QnnBT/3RwHZYVefErenCfIrEByCxXrT8tDUuKZg1r9
+         5vxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736912313; x=1737517113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ggG1Vuf9tiZ0JKZNDTMJJvN8O1nAUNZ5coZeOdFCGi0=;
+        b=cwqINFkx03XZTYmuEGCqaCVh7XuH7SfUHiYRJsxC0DcCDXp/uytIj3xqbOGl+ufbN4
+         gTNqhe90D/IO2aiz2ycILknt3MisMgmFXt7lbrQEtO5Yw0XH0mk5NZdbKjdBoUyOycVX
+         bwlTgRhVxcE//BOHVDKj8bj3S5M9iOMkNcbemSsC9343L9fFVC4s0q6OnGw7QecSCPpQ
+         W8j31cIIxS94R0D3DRwKrls7/oRKg5JWnXMz857j5iazVKkZLL3c0RCPmyeN2sbnVdzq
+         eQvI/UDEBNJ725mQCpQQXj2K0eZUfvOpVei9a8Bpmwrgue4urPzriXQ986puHSl6RJuA
+         TyxA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5aPGjixjM28kstlR2DxEvu5NGwobMWmfPq2+LFvZbVg9uYyC5YuFhA5j3mKEEhQJkRzFB9KMPiZSyjA==@vger.kernel.org, AJvYcCVTvvETJJL79L632NLzO5A62h0lY1eFh94n/3LwezXgWj9NXHIY0qgo9nQ5+91j5HVyyCTaOpxjTjhbkg==@vger.kernel.org, AJvYcCWEvl80RPOIKRSM14TVIIaei6h5Vq+cCoHb6NOMuMEqia4UiawIatdEMnrDfe/KD+sZgOik6BPD6bbmJte+@vger.kernel.org, AJvYcCWRirQTNb5EU+Mvh4+4aq7lzMM987+ifz0fhzzdGSNR2w1KyJTk6y+wH5weVrcT+kYGzjkzQe5tCCvG@vger.kernel.org, AJvYcCXmijoXodwXJJaMkKtCl4aa4tdc4qP3bUucTwkcFlCVYV5DD7BW/yTVnyf2d6Y1e1i5djUa8/1m/8Og7+s=@vger.kernel.org, AJvYcCXsWJRLViMerI0+qRvBNGsoBZyf+va81IItCtvQFY/71zSkYDnZemJrRtEnFzz3PQXv6x7LOiz4@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaNHcuRwie5Y5V7Ymp2RdrV+R2YZAoHKFF2ylYh6tgOc1e9bKx
+	LKCrwBNGmAYzkTI06WjJ5YuJ7eQf4Z/J6KhlYgXtoFcGed44cR1o
+X-Gm-Gg: ASbGnctNkodeSO1I3knsfOIZzIhQ53tzTNzxsuH4JWhPdyxjwmL4eXxghn41Uq3kYzX
+	TCyS25UgKTe0oYqYpZFHUxOi8noXdWNqdq3QGpgoYKqACGFPPIXdCinv+6444SBNRuOeigREfkM
+	Ih6ZhA1Doi2Bs8aDSIGzt3pazKEvMNDZYIUKPWZ/oDTTO6E6oXnYVRkloZHs4iazLUqVK9RV2qc
+	b2gg8MUtQ6vFLyiqEY5/HWRmfIVmH+kUpbFexPN7CH03I+lOe1CY9kq
+X-Google-Smtp-Source: AGHT+IGcxF5UAr9VMjmEWcxKQm1jPE9VpwQlX4HhGZHkGGwOlZgKnKfAZqEBywSv8uk39tmS/FGABQ==
+X-Received: by 2002:a05:690c:62ca:b0:6ef:7d51:eba6 with SMTP id 00721157ae682-6f5312a8384mr216747977b3.28.1736912312722;
+        Tue, 14 Jan 2025 19:38:32 -0800 (PST)
+Received: from localhost ([2601:347:100:5ea0:e12f:d330:c8d6:a6b7])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6f546dd712esm23854477b3.79.2025.01.14.19.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2025 19:38:31 -0800 (PST)
+Date: Tue, 14 Jan 2025 22:38:30 -0500
+From: Yury Norov <yury.norov@gmail.com>
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	virtualization@lists.linux.dev, linux-nvme@lists.infradead.org,
+	linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-crypto@vger.kernel.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Haren Myneni <haren@linux.ibm.com>,
+	Rick Lindsley <ricklind@linux.ibm.com>,
+	Nick Child <nnac123@linux.ibm.com>,
+	Thomas Falcon <tlfalcon@linux.ibm.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	James Smart <james.smart@broadcom.com>,
+	Dick Kennedy <dick.kennedy@broadcom.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Matt Wu <wuqiang.matt@bytedance.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Daniel Jordan <daniel.m.jordan@oracle.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Greg Kurz <groug@kaod.org>, Peter Xu <peterx@redhat.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Hendrik Brueckner <brueckner@linux.ibm.com>
+Subject: Re: [PATCH 06/14] cpumask: re-introduce cpumask_next{,_and}_wrap()
+Message-ID: <Z4cttq0dfHnapkUI@thinkpad>
+References: <20241228184949.31582-1-yury.norov@gmail.com>
+ <20241228184949.31582-7-yury.norov@gmail.com>
+ <Z30r/6S8VBU8/Ml5@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Moderation-Data: 1/15/2025 11:29:10 AM
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:zxbjcas.zhaoxin.com 50F3VwVK014563
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z30r/6S8VBU8/Ml5@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
 
-Zhaoxin CPUs have implemented the SHA(Secure Hash Algorithm) as its CPU
-instructions, including SHA1, SHA256, SHA384 and SHA512, which conform
-to the Secure Hash Algorithms specified by FIPS 180-3.
+On Tue, Jan 07, 2025 at 02:28:31PM +0100, Alexander Gordeev wrote:
+> On Sat, Dec 28, 2024 at 10:49:38AM -0800, Yury Norov wrote:
+> 
+> Hi Yury,
+> 
+> > cpumask_next_wrap_old() has two additional parameters, comparing to it's
+> > analogue in linux/find.h find_next_bit_wrap(). The reason for that is
+> > historical.
+> > 
+> > Before 4fe49b3b97c262 ("lib/bitmap: introduce for_each_set_bit_wrap()
+> > macro"), cpumask_next_wrap() was used to implement for_each_cpu_wrap()
+> > iterator. Now that the iterator is an alias to generic
+> > for_each_set_bit_wrap(), the additional parameters aren't used and may
+> > confuse readers.
+> > 
+> > All existing users call cpumask_next_wrap() in a way that makes it
+> > possible to turn it to straight and simple alias to find_next_bit_wrap().
+> > 
+> > In a couple places kernel users opencode missing cpumask_next_and_wrap().
+> > Add it as well.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > ---
+> >  include/linux/cpumask.h | 37 +++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 37 insertions(+)
+> > 
+> > diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> > index b267a4f6a917..18c9908d50c4 100644
+> > --- a/include/linux/cpumask.h
+> > +++ b/include/linux/cpumask.h
+> > @@ -284,6 +284,43 @@ unsigned int cpumask_next_and(int n, const struct cpumask *src1p,
+> >  		small_cpumask_bits, n + 1);
+> >  }
+> >  
+> > +/**
+> > + * cpumask_next_and_wrap - get the next cpu in *src1p & *src2p, starting from
+> > + *			   @n and wrapping around, if needed
+> > + * @n: the cpu prior to the place to search (i.e. return will be > @n)
+> > + * @src1p: the first cpumask pointer
+> > + * @src2p: the second cpumask pointer
+> > + *
+> > + * Return: >= nr_cpu_ids if no further cpus set in both.
+> > + */
+> > +static __always_inline
+> > +unsigned int cpumask_next_and_wrap(int n, const struct cpumask *src1p,
+> > +			      const struct cpumask *src2p)
+> > +{
+> > +	/* -1 is a legal arg here. */
+> > +	if (n != -1)
+> > +		cpumask_check(n);
+> > +	return find_next_and_bit_wrap(cpumask_bits(src1p), cpumask_bits(src2p),
+> > +		small_cpumask_bits, n + 1);
+> > +}
+> > +
+> > +/*
+> > + * cpumask_next_wrap - get the next cpu in *src, starting from
+> > + *			   @n and wrapping around, if needed
+> 
+> Does it mean the search wraps a cpumask and starts from the beginning
+> if the bit is not found and returns >= nr_cpu_ids if @n crosses itself?
+> 
+> > + * @n: the cpu prior to the place to search
+> > + * @src: cpumask pointer
+> > + *
+> > + * Return: >= nr_cpu_ids if no further cpus set in both.
+> 
+> It looks like Return is a cpumask_next_and_wrap() comment leftover.
+> 
+> > + */
+> > +static __always_inline
+> > +unsigned int cpumask_next_wrap(int n, const struct cpumask *src)
+> > +{
+> > +	/* -1 is a legal arg here. */
+> > +	if (n != -1)
+> > +		cpumask_check(n);
+> > +	return find_next_bit_wrap(cpumask_bits(src), small_cpumask_bits, n + 1);
+> > +}
+> > +
+> >  /**
+> >   * for_each_cpu - iterate over every cpu in a mask
+> >   * @cpu: the (optionally unsigned) integer iterator
+> 
+> Thanks!
 
-Zhaoxin CPU's SHA1/SHA256 implementation is compatible with VIA's
-SHA1/SHA256, so add Zhaoxin CPU's SHA384/SHA512 support in padlock-sha.c.
-
-With the help of implementation of SHA in hardware instead of software,
-can develop applications with higher performance, more security and more
-flexibility.
-
-Below table gives a summary of test using the driver tcrypt with different
-crypt algorithm drivers on Zhaoxin KH-40000 platform:
----------------------------------------------------------------------------
-tcrypt     driver   16*    64      256     1024    2048    4096    8192
----------------------------------------------------------------------------
-           PadLock** 442.80 1309.21 3257.53 5221.56 5813.45 6136.39 6264.50=
-***
-403:SHA1   generic** 341.44 813.27  1458.98 1818.03 1896.60 1940.71 1939.06
-           ratio    1.30   1.61    2.23    2.87    3.07    3.16    3.23
----------------------------------------------------------------------------
-           Padlock  451.70 1313.65 2958.71 4658.55 5109.16 5359.08 5459.13
-404:SHA256 generic  202.62 463.55  845.01  1070.50 1117.51 1144.79 1155.68
-           ratio    2.23   2.83    3.50    4.35    4.57    4.68    4.72
----------------------------------------------------------------------------
-           Padlock  350.90 1406.42 3166.16 5736.39 6627.77 7182.01 7429.18
-405:SHA384 generic  161.76 654.88  979.06  1350.56 1423.08 1496.57 1513.12
-           ratio    2.17   2.15    3.23    4.25    4.66    4.80    4.91
----------------------------------------------------------------------------
-           Padlock  334.49 1394.71 3159.93 5728.86 6625.33 7169.23 7407.80
-406:SHA512 generic  161.80 653.84  979.42  1351.41 1444.14 1495.35 1518.43
-           ratio    2.07   2.13    3.23    4.24    4.59    4.79    4.88
----------------------------------------------------------------------------
-*: The length of each data block to be processed by one complete SHA
-   sequence, namely one INIT, multi UPDATEs and one FINAL.
-**: Crypt algorithm driver used by tcrypt, "PadLock" represents padlock-sha
-   while "generic" represents the generic software SHA driver.
-***: The speed of each crypt algorithm driver processing different length
-   of data blocks, unit is Mb/s.
-
-The ratio in the table implies the performance of SHA implemented by
-padlock-sha driver is much higher than the ones implemented by the generic
-software driver of sha1/sha256/sha384/sha512.
-
-Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
----
- drivers/crypto/Kconfig       |  10 +-
- drivers/crypto/padlock-sha.c | 200 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 202 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 19ab145f912e..0e97be36e037 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -39,15 +39,19 @@ config CRYPTO_DEV_PADLOCK_AES
- 	  called padlock-aes.
-=20
- config CRYPTO_DEV_PADLOCK_SHA
--	tristate "PadLock driver for SHA1 and SHA256 algorithms"
-+	tristate "PadLock driver for SHA1/SHA256/SHA384/SHA512 algorithms"
-+	depends on X86 && !UML
- 	depends on CRYPTO_DEV_PADLOCK
- 	select CRYPTO_HASH
- 	select CRYPTO_SHA1
- 	select CRYPTO_SHA256
-+	select CRYPTO_SHA512
- 	help
--	  Use VIA PadLock for SHA1/SHA256 algorithms.
-+	  Use PadLock for SHA1/SHA256 algorithms.
-+	  Available in VIA C7 and newer processors, available in Zhaoxin processo=
-rs.
-=20
--	  Available in VIA C7 and newer processors.
-+	  Use PadLock for SHA384/SHA512 algorithms.
-+	  Available in Zhaoxin processors.
-=20
- 	  If unsure say M. The compiled module will be
- 	  called padlock-sha.
-diff --git a/drivers/crypto/padlock-sha.c b/drivers/crypto/padlock-sha.c
-index 6865c7f1fc1a..80af906184e2 100644
---- a/drivers/crypto/padlock-sha.c
-+++ b/drivers/crypto/padlock-sha.c
-@@ -5,6 +5,10 @@
-  * Support for VIA PadLock hardware crypto engine.
-  *
-  * Copyright (c) 2006  Michal Ludvig <michal@logix.cz>
-+ *
-+ * Add SHA384/SHA512 support for Zhaoxin processors.
-+ *
-+ * Copyright (c) 2025  George Xue <georgexue@zhaoxin.com>
-  */
-=20
- #include <crypto/internal/hash.h>
-@@ -434,6 +438,123 @@ static int padlock_sha256_final_nano(struct shash_des=
-c *desc, u8 *out)
- 	return 0;
- }
-=20
-+static inline void padlock_output_block_512(uint64_t *src, uint64_t *dst, =
-size_t count)
-+{
-+	while (count--)
-+		*dst++ =3D swab64(*src++);
-+}
-+
-+static int padlock_sha384_init(struct shash_desc *desc)
-+{
-+	struct sha512_state *sctx =3D shash_desc_ctx(desc);
-+
-+	*sctx =3D (struct sha512_state){
-+		.state =3D { SHA384_H0, SHA384_H1, SHA384_H2, SHA384_H3, SHA384_H4, SHA3=
-84_H5,
-+			   SHA384_H6, SHA384_H7 },
-+		.count =3D { 0, 0 },
-+	};
-+
-+	return 0;
-+}
-+
-+static int padlock_sha512_init(struct shash_desc *desc)
-+{
-+	struct sha512_state *sctx =3D shash_desc_ctx(desc);
-+
-+	*sctx =3D (struct sha512_state){
-+		.state =3D { SHA512_H0, SHA512_H1, SHA512_H2, SHA512_H3, SHA512_H4, SHA5=
-12_H5,
-+			   SHA512_H6, SHA512_H7 },
-+		.count =3D { 0, 0 },
-+	};
-+
-+	return 0;
-+}
-+
-+static int padlock_sha512_update(struct shash_desc *desc, const u8 *data, =
-unsigned int len)
-+{
-+	struct sha512_state *sctx =3D shash_desc_ctx(desc);
-+	unsigned int partial, done;
-+	const u8 *src;
-+	u8 buf[SHA512_BLOCK_SIZE];
-+	u8 *dst =3D &buf[0];
-+
-+	partial =3D sctx->count[0] % SHA512_BLOCK_SIZE;
-+
-+	sctx->count[0] +=3D len;
-+	if (sctx->count[0] < len)
-+		sctx->count[1]++;
-+
-+	done =3D 0;
-+	src =3D data;
-+	memcpy(dst, sctx->state, SHA512_DIGEST_SIZE);
-+
-+	if ((partial + len) >=3D SHA512_BLOCK_SIZE) {
-+		/* Append the bytes in state's buffer to a block to handle */
-+		if (partial) {
-+			done =3D -partial;
-+			memcpy(sctx->buf + partial, data, done + SHA512_BLOCK_SIZE);
-+
-+			src =3D sctx->buf;
-+
-+			asm volatile(".byte 0xf3, 0x0f, 0xa6, 0xe0"
-+				     : "+S"(src), "+D"(dst)
-+				     : "c"(1UL));
-+
-+			done +=3D SHA512_BLOCK_SIZE;
-+			src =3D data + done;
-+		}
-+
-+		/* Process the left bytes from input data */
-+		if (len - done >=3D SHA512_BLOCK_SIZE) {
-+			asm volatile(".byte 0xf3, 0x0f, 0xa6, 0xe0"
-+				     : "+S"(src), "+D"(dst)
-+				     : "c"((unsigned long)((len - done) / SHA512_BLOCK_SIZE)));
-+
-+			done +=3D ((len - done) - (len - done) % SHA512_BLOCK_SIZE);
-+			src =3D data + done;
-+		}
-+		partial =3D 0;
-+	}
-+
-+	memcpy(sctx->state, dst, SHA512_DIGEST_SIZE);
-+	memcpy(sctx->buf + partial, src, len - done);
-+
-+	return 0;
-+}
-+
-+static int padlock_sha512_final(struct shash_desc *desc, u8 *out)
-+{
-+	const int bit_offset =3D SHA512_BLOCK_SIZE - sizeof(__be64[2]);
-+	struct sha512_state *state =3D shash_desc_ctx(desc);
-+	unsigned int partial =3D state->count[0] % SHA512_BLOCK_SIZE, padlen;
-+	__be64 bits[2];
-+
-+	/* Both SHA384 and SHA512 may be supported. */
-+	int dgst_size =3D crypto_shash_digestsize(desc->tfm);
-+
-+	static u8 padding[SHA512_BLOCK_SIZE];
-+
-+	memset(padding, 0, SHA512_BLOCK_SIZE);
-+	padding[0] =3D 0x80;
-+
-+	/* Convert byte count in little endian to bit count in big endian. */
-+	bits[0] =3D cpu_to_be64(state->count[1] << 3 | state->count[0] >> 61);
-+	bits[1] =3D cpu_to_be64(state->count[0] << 3);
-+
-+	padlen =3D (partial < bit_offset) ? (bit_offset - partial) :
-+					  ((SHA512_BLOCK_SIZE + bit_offset) - partial);
-+
-+	padlock_sha512_update(desc, padding, padlen);
-+
-+	/* Append length field bytes */
-+	padlock_sha512_update(desc, (const u8 *)bits, sizeof(__be64[2]));
-+
-+	/* Swap to output */
-+	padlock_output_block_512(state->state, (uint64_t *)out, dgst_size / sizeo=
-f(uint64_t));
-+
-+	return 0;
-+}
-+
- static int padlock_sha_export_nano(struct shash_desc *desc,
- 				void *out)
- {
-@@ -490,6 +611,42 @@ static struct shash_alg sha256_alg_nano =3D {
- 	}
- };
-=20
-+static struct shash_alg sha384_alg =3D {
-+	.digestsize =3D SHA384_DIGEST_SIZE,
-+	.init       =3D padlock_sha384_init,
-+	.update     =3D padlock_sha512_update,
-+	.final      =3D padlock_sha512_final,
-+	.export     =3D padlock_sha_export_nano,
-+	.import     =3D padlock_sha_import_nano,
-+	.descsize   =3D sizeof(struct sha512_state),
-+	.statesize  =3D sizeof(struct sha512_state),
-+	.base       =3D {
-+		.cra_name        =3D "sha384",
-+		.cra_driver_name =3D "sha384-padlock-zhaoxin",
-+		.cra_priority    =3D PADLOCK_CRA_PRIORITY,
-+		.cra_blocksize   =3D SHA384_BLOCK_SIZE,
-+		.cra_module      =3D THIS_MODULE,
-+	}
-+};
-+
-+static struct shash_alg sha512_alg =3D {
-+	.digestsize =3D SHA512_DIGEST_SIZE,
-+	.init       =3D padlock_sha512_init,
-+	.update     =3D padlock_sha512_update,
-+	.final      =3D padlock_sha512_final,
-+	.export     =3D padlock_sha_export_nano,
-+	.import     =3D padlock_sha_import_nano,
-+	.descsize   =3D sizeof(struct sha512_state),
-+	.statesize  =3D sizeof(struct sha512_state),
-+	.base       =3D {
-+		.cra_name        =3D "sha512",
-+		.cra_driver_name =3D "sha512-padlock-zhaoxin",
-+		.cra_priority    =3D PADLOCK_CRA_PRIORITY,
-+		.cra_blocksize   =3D SHA512_BLOCK_SIZE,
-+		.cra_module      =3D THIS_MODULE,
-+	}
-+};
-+
- static const struct x86_cpu_id padlock_sha_ids[] =3D {
- 	X86_MATCH_FEATURE(X86_FEATURE_PHE, NULL),
- 	{}
-@@ -502,12 +659,16 @@ static int __init padlock_init(void)
- 	struct cpuinfo_x86 *c =3D &cpu_data(0);
- 	struct shash_alg *sha1;
- 	struct shash_alg *sha256;
-+	struct shash_alg *sha384;
-+	struct shash_alg *sha512;
-=20
- 	if (!x86_match_cpu(padlock_sha_ids) || !boot_cpu_has(X86_FEATURE_PHE_EN))
- 		return -ENODEV;
-=20
--	/* Register the newly added algorithm module if on *
--	* VIA Nano processor, or else just do as before */
-+	/*
-+	 * Register the newly added algorithm module if on
-+	 * Zhaoxin/VIA Nano processor, or else just do as before
-+	 */
- 	if (c->x86_model < 0x0f) {
- 		sha1 =3D &sha1_alg;
- 		sha256 =3D &sha256_alg;
-@@ -524,15 +685,34 @@ static int __init padlock_init(void)
- 	if (rc)
- 		goto out_unreg1;
-=20
--	printk(KERN_NOTICE PFX "Using VIA PadLock ACE for SHA1/SHA256 algorithms.=
-\n");
-+	printk(KERN_NOTICE PFX "Using PadLock ACE for SHA1/SHA256 algorithms.\n")=
-;
-+
-+	if (boot_cpu_has(X86_FEATURE_PHE2_EN)) {
-+		sha384 =3D &sha384_alg;
-+		sha512 =3D &sha512_alg;
-+
-+		rc =3D crypto_register_shash(sha384);
-+		if (rc)
-+			goto out_unreg2;
-+
-+		rc =3D crypto_register_shash(sha512);
-+		if (rc)
-+			goto out_unreg3;
-+
-+		printk(KERN_NOTICE PFX "Using PadLock ACE for SHA384/SHA512 algorithms.\=
-n");
-+	}
-=20
- 	return 0;
-=20
-+out_unreg3:
-+	crypto_unregister_shash(sha384);
-+out_unreg2:
-+	crypto_unregister_shash(sha256);
- out_unreg1:
- 	crypto_unregister_shash(sha1);
-=20
- out:
--	printk(KERN_ERR PFX "VIA PadLock SHA1/SHA256 initialization failed.\n");
-+	printk(KERN_ERR PFX "PadLock SHA1/SHA256/SHA384/SHA5112 initialization fa=
-iled.\n");
- 	return rc;
- }
-=20
-@@ -543,6 +723,11 @@ static void __exit padlock_fini(void)
- 	if (c->x86_model >=3D 0x0f) {
- 		crypto_unregister_shash(&sha1_alg_nano);
- 		crypto_unregister_shash(&sha256_alg_nano);
-+
-+		if (boot_cpu_has(X86_FEATURE_PHE2_EN)) {
-+			crypto_unregister_shash(&sha384_alg);
-+			crypto_unregister_shash(&sha512_alg);
-+		}
- 	} else {
- 		crypto_unregister_shash(&sha1_alg);
- 		crypto_unregister_shash(&sha256_alg);
-@@ -552,11 +737,16 @@ static void __exit padlock_fini(void)
- module_init(padlock_init);
- module_exit(padlock_fini);
-=20
--MODULE_DESCRIPTION("VIA PadLock SHA1/SHA256 algorithms support.");
-+MODULE_DESCRIPTION("PadLock SHA1/SHA256/SHA384/SHA512 algorithms support."=
-);
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Michal Ludvig");
-+MODULE_AUTHOR("George Xue <georgexue@zhaoxin.com>");
-=20
- MODULE_ALIAS_CRYPTO("sha1-all");
- MODULE_ALIAS_CRYPTO("sha256-all");
-+MODULE_ALIAS_CRYPTO("sha384-all");
-+MODULE_ALIAS_CRYPTO("sha512-all");
- MODULE_ALIAS_CRYPTO("sha1-padlock");
- MODULE_ALIAS_CRYPTO("sha256-padlock");
-+MODULE_ALIAS_CRYPTO("sha384-padlock");
-+MODULE_ALIAS_CRYPTO("sha512-padlock");
---=20
-2.25.1
-
+Thanks, I'll update the comments.
 
