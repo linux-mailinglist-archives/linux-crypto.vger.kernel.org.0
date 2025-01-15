@@ -1,198 +1,179 @@
-Return-Path: <linux-crypto+bounces-9082-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9084-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79023A12706
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 16:16:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61382A12893
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 17:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CD1C166F0C
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 15:15:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D19B7A13B9
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jan 2025 16:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8A37E575;
-	Wed, 15 Jan 2025 15:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1728F14F9FB;
+	Wed, 15 Jan 2025 16:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DhMKYRka"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7863A24A7DB;
-	Wed, 15 Jan 2025 15:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C114D599;
+	Wed, 15 Jan 2025 16:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736954153; cv=none; b=kld3bfm7yyC9YKRaSb0z1OWAwbPhR81AYJ8pI8QkWFo/qXr1TxpudWFLxb/Omm1KluQCg3hahtTdkukqnERN3j8yxKz55IFbfThcXwB0o95spJArO5W3HiSrm4DIIw0B7BqXd2ZP+xx+N7CjBDXUIQpDFLoUPys+f0V5uNWPEzo=
+	t=1736958159; cv=none; b=uMPxWq7dDSal/F8CHH996kleKsntgG4b1X37dRn1ZuvN/pdCU7kAiFELi21f4uL1v6v6250IO8JL8qMiMMmwyi+YqsVe6Dea9OlSL0VrKJ+a/1n88D8muQWfKavGJn4u7BQsc6ZtquEg8vAmkWLN+cGWGD43uc9mWgIChrsZheA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736954153; c=relaxed/simple;
-	bh=n3aedPDU58g9oi8jG7q6qNb6L07RnHv5DCH2ebVvDrM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GqV7LdaWHf1vrRlIFft+e6vEQRoFmTinleFhXQWhQ8NY9+PIZjKUaBOWInTPxqkn0+YQn3zUWwOEp7+JQiwz8qEIXWKb8MFyYjIFwzHWgecb4KhUizSXIVPJRL+3rpR/SbOpRUUyi+xFOr4uGCCjdVRPDKElsnx9JQtZG8zG2+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-aaec61d0f65so1362698366b.1;
-        Wed, 15 Jan 2025 07:15:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736954150; x=1737558950;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VxAdtxkE+UEREV6mcvRrNj4o4nik0aOIdra7qRiWZc4=;
-        b=KV2Rf2PzVBpG+xmnig1IF++E6MrB71rpernBz3J+rGyEJ78ceCkFmW4VeuuSir6WyF
-         OTp8Kg8MkI6FEBNZyudjUmzy6QlTgqJFhjzcpn8gv4yLiZA5/G1Vc5eQv+8aBsYSNdc8
-         bWd7Bg29RMQrxtmPjWFNMntLAh8FgxOH0c7vT3WIgdLul0WUlbWB4IyFYzJUym0yVspP
-         g17MMZOeADNoP7qeMo+4f2HRju2tbzIsx0O8PhRdHXYp/rcaWCOPU6iScYqe7bF7jDzg
-         uGi1ZZiP0P/87gTfFTNOnYRBYVzbWi21Y7n9CMckDdP3SZGHOnjrCDCoBBMWC3FO9da+
-         vtgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWSQiRllGvc/VL1706xc+Zh23ErH1mATkF5ojI/7rOvl8CJ1KF1RdcGSpq6HtU+8c1WWj8X1nfsGCaQpR2R@vger.kernel.org, AJvYcCX3RzZ5ByvPVam8vaC1jFVw57ZZC/O0SZZFrWQ79pN+2Dzb09+tORxPYhksBHf060U+7rM5ptKL@vger.kernel.org, AJvYcCXE/jsFShp20JmyxN5jm60k4ns4Fbyve1+jUM6683WOM6uDFZ2/qYcxhvNgKbVxxhhuVi1aNbl6mVIXZK/5@vger.kernel.org, AJvYcCXt8H8LnEQdwUdfedWp8yaPqEIwiAhsNc6CJRVzN8Wy0gOkdcS+5yxaAg4w1d8eoU7XYulGq1Ja2A/nz8A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnhZnLmwLnrBcoBzhEIReqRRofOVr3NWmcjxz7GxFRYdOWgKn8
-	nqe0wTP5g1InJl0eKJ0v4BnJCbFGO0mCp4jPB86n97NCFwSTS8E/
-X-Gm-Gg: ASbGncv4uk2D5+SJdBLMrG0HAOeiX7FwBnRe03UrQ4B/vOZNFv2jZkb5IFpJRZLqru/
-	Yujxja28qApa+/ieZgxlgROecAPEmXA1RatzO+TIzUN0MCUAa1R4E64lf2uUJHVh+fPZIpj9ysa
-	OcazGh5VvVSO5F2sg7noF6vjEZRVPwPyJL8P7kfxnAAKKEd/JGPnwVWSVvZ/esQQBei+4WLzWbE
-	1nn7hY4aS0G2DuxcvJuRLq+zMDF3cn5sRI3yrK07NHE2n8=
-X-Google-Smtp-Source: AGHT+IHiSCWa2oGdZdDLuvQ3qdU+v2LX5LzfGe//YSM+4KYGuK3X4yasIQ/H0OgC3CyaYs2W7qOEFA==
-X-Received: by 2002:a17:907:3e24:b0:aac:2298:8960 with SMTP id a640c23a62f3a-ab2ab6fcf7amr2927968666b.35.1736954149465;
-        Wed, 15 Jan 2025 07:15:49 -0800 (PST)
-Received: from gmail.com ([2a03:2880:30ff:9::])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5da0aec6e7asm1101432a12.33.2025.01.15.07.15.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2025 07:15:48 -0800 (PST)
-Date: Wed, 15 Jan 2025 07:15:46 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Michael Kelley <mhklinux@outlook.com>,
-	"saeedm@nvidia.com" <saeedm@nvidia.com>,
-	"tariqt@nvidia.com" <tariqt@nvidia.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Graf <tgraf@suug.ch>, Tejun Heo <tj@kernel.org>,
-	Hao Luo <haoluo@google.com>, Josh Don <joshdon@google.com>,
-	Barret Rhoden <brho@google.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [v3 PATCH] rhashtable: Fix rhashtable_try_insert test
-Message-ID: <20250115-cordial-steadfast-perch-c4dfda@leitao>
-References: <Z1rYGzEpMub4Fp6i@gondor.apana.org.au>
- <Z2aFL3dNLYOcmzH3@gondor.apana.org.au>
- <20250102-daffy-vanilla-boar-6e1a61@leitao>
- <SN6PR02MB41572415707F0FA6D9A61247D4132@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20250109-marigold-bandicoot-of-exercise-8ebede@leitao>
- <Z4DoFYQ3ytB-wS3-@gondor.apana.org.au>
- <SN6PR02MB41577C2C4EB260F3D2D4F85FD41C2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <Z4FXs8vAtitHIJyl@gondor.apana.org.au>
- <SN6PR02MB41570F1F5F4F579B4E8F0CD3D41C2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <Z4XWx5X0doetOJni@gondor.apana.org.au>
+	s=arc-20240116; t=1736958159; c=relaxed/simple;
+	bh=O1u1+KMYnSCZQhbmL0uFi3Ar52EETgd6/T40tG7FjF8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KCcl+RVIsJmKbLBXaJWapENoSk4TrYXWEEODSCKzGTkMy4/+LLWUZZ/llTYXo+NaQbR01SFJ8MPjLMsjOb5aOCexJbS3vAXnT07it7czlE6H1L1mKl8JysWBkl4gng2hUerSNFavB3+7fFnHSeS4MnCHOzd+D4GelPsYr34BtXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DhMKYRka; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50FGK93B031977;
+	Wed, 15 Jan 2025 16:22:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=vZzre1O+M7RglHycufFbLsjY2KhmL6GOs8AD1Xj5W
+	mg=; b=DhMKYRkavy/pRXr1Fr+1y/gmt6pH9gMeHKQK49hEtDm8S6+zq1rnGpCHS
+	8kqwua68Wi83NZvFvKBB+VYnjiRFffLnxuVvyZrRNkVJCSIGhBLqjaouYM8unUAB
+	DQW/DQZhGqkr/of84yZTksmixJKtWFrn1OrXVlt7QZFi1NYOmGYQFNi/1WdQlTWX
+	iloCCaFRD6kA71yvjEo/jAr2gi/IuApYMYFPteAZ+7Tc5yhQDpeg4WGCD8oQB6G+
+	g8lv2N59jUiSbYHk5Z9h2s2VZoBeLLdGtRfbN9KGEuAjPM3bsQ2Hw6zcMCrHmFuY
+	wNJ93nbezaV9py/BMKPRq27m9eI2w==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4465gbu9ng-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 15 Jan 2025 16:22:35 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50FFG8JL001089;
+	Wed, 15 Jan 2025 16:22:34 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 44456k104n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 15 Jan 2025 16:22:34 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50FGMWfh33882846
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 15 Jan 2025 16:22:32 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 66CA32004B;
+	Wed, 15 Jan 2025 16:22:32 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 307EC20040;
+	Wed, 15 Jan 2025 16:22:32 +0000 (GMT)
+Received: from funtu2.fritz.box?044ibm.com (unknown [9.171.28.131])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 15 Jan 2025 16:22:32 +0000 (GMT)
+From: Harald Freudenberger <freude@linux.ibm.com>
+To: herbert@gondor.apana.org.au, davem@davemloft.net, dengler@linux.ibm.com
+Cc: linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: New s390 specific protected key hmac
+Date: Wed, 15 Jan 2025 17:22:26 +0100
+Message-ID: <20250115162231.83516-1-freude@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z4XWx5X0doetOJni@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Bcfo8TPHbWggQ5_O9n96FbejuCM4hyR3
+X-Proofpoint-ORIG-GUID: Bcfo8TPHbWggQ5_O9n96FbejuCM4hyR3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-01-15_07,2025-01-15_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ adultscore=0 mlxlogscore=737 phishscore=0 priorityscore=1501
+ suspectscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2411120000 definitions=main-2501150119
 
-On Tue, Jan 14, 2025 at 11:15:19AM +0800, Herbert Xu wrote:
-> On Fri, Jan 10, 2025 at 06:22:40PM +0000, Michael Kelley wrote:
-> >
-> > This patch passes my tests. I'm doing a narrow test to verify that
-> > the boot failure when opening the Mellanox NIC is no longer occurring.
-> > I also unloaded/reloaded the mlx5 driver a couple of times. For good
-> > measure, I then did a full Linux kernel build, and all is good. My testing
-> > does not broadly verify correct operation of rhashtable except as it
-> > gets exercised implicitly by these basic tests.
-> 
-> Thanks for testing! The patch needs one more change though as
-> moving the atomic_inc outside of the lock was a bad idea on my
-> part.  This could cause atomic_inc/atomic_dec to be reordered
-> thus resulting in an underflow.
-> 
-> Thanks,
-> 
-> ---8<---
-> The test on whether rhashtable_insert_one did an insertion relies
-> on the value returned by rhashtable_lookup_one.  Unfortunately that
-> value is overwritten after rhashtable_insert_one returns.  Fix this
-> by moving the test before data gets overwritten.
-> 
-> Simplify the test as only data == NULL matters.
-> 
-> Finally move atomic_inc back within the lock as otherwise it may
-> be reordered with the atomic_dec on the removal side, potentially
-> leading to an underflow.
-> 
-> Reported-by: Michael Kelley <mhklinux@outlook.com>
-> Fixes: e1d3422c95f0 ("rhashtable: Fix potential deadlock by moving schedule_work outside lock")
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Add support for protected key hmac ("phmac") for s390 arch.
 
-Reviewed-by: Breno Leitao <leitao@debian.org>
+With the latest machine generation there is now support for
+protected key (that is a key wrapped by a master key stored
+in firmware) hmac for sha2 (sha224, sha256, sha384 and sha512)
+for the s390 specific CPACF instruction kmac.
 
-> diff --git a/lib/rhashtable.c b/lib/rhashtable.c
-> index bf956b85455a..0e9a1d4cf89b 100644
-> --- a/lib/rhashtable.c
-> +++ b/lib/rhashtable.c
-> @@ -611,21 +611,23 @@ static void *rhashtable_try_insert(struct rhashtable *ht, const void *key,
->  			new_tbl = rht_dereference_rcu(tbl->future_tbl, ht);
->  			data = ERR_PTR(-EAGAIN);
->  		} else {
-> +			bool inserted;
-> +
->  			flags = rht_lock(tbl, bkt);
->  			data = rhashtable_lookup_one(ht, bkt, tbl,
->  						     hash, key, obj);
->  			new_tbl = rhashtable_insert_one(ht, bkt, tbl,
->  							hash, obj, data);
-> +			inserted = data && !new_tbl;
-> +			if (inserted)
-> +				atomic_inc(&ht->nelems);
->  			if (PTR_ERR(new_tbl) != -EEXIST)
->  				data = ERR_CAST(new_tbl);
->  
->  			rht_unlock(tbl, bkt, flags);
->  
-> -			if (PTR_ERR(data) == -ENOENT && !new_tbl) {
-> -				atomic_inc(&ht->nelems);
-> -				if (rht_grow_above_75(ht, tbl))
-> -					schedule_work(&ht->run_work);
-> -			}
-> +			if (inserted && rht_grow_above_75(ht, tbl))
-> +				schedule_work(&ht->run_work);
+This patch adds support via 4 new hashes registered as
+phmac(sha224), phmac(sha256), phmac(sha384) and phmac(sha512).
 
-That makes sense, since data could be ERR_PTR(-ENOENT) and ERR_PTR(-EAGAIN), and
-the object being inserted, which means that nelems should be increased.
+Changelog:
+v1: Initial version
+v2: Increase HASH_MAX_DESCSIZE generic (not just for arch s390).
+    Fix one finding to use kmemdup instead of kmalloc/memcpy from test
+    robot. Remove unneeded cpacf subfunctions checks. Simplify
+    clone_tfm() function. Rebased to s390/features.
+v3: Feedback from Herbert: Use GFP_ATOMIC in setkey function.
+    Feedback from Holger: rework tfm clone function, move convert key
+    invocation from setkey to init function. Rebased to updated
+    s390/features from 11/7/2024. Ready for integration if there are
+    no complains on v3.
+v4: Rewind back more or less to v2. Add code to check for non-sleeping
+    context. Non-sleeping context during attempt to derive the
+    protected key from raw key material is not accepted and
+    -EOPNOTSUPP is returned (also currently all derivation pathes
+    would in fact never sleep). In general the phmac implementation is
+    not to be used within non-sleeping context and the code header
+    mentions this. Tested with (patched) dm-integrity - works fine.
+v5: As suggested by Herbert now the shashes have been marked as
+    'internal' and wrapped by ahashes which use the cryptd if an
+    atomic context is detected. So the visible phmac algorithms are
+    now ahashes. Unfortunately the dm-integrity implementation
+    currently requests and deals only with shashes and this phmac
+    implementation is not fitting to the original goal any more...
+v6: As suggested by Herbert now a pure async phmac implementation.
+    Tested via AF_ALG interface. Untested via dm-integrity as this layer
+    only supports shashes. Maybe I'll develop a patch to switch the
+    dm-integrity to ahash as it is anyway the more flexible interface.
+v7: Total rework of the implementation. Now uses workqueues and triggers
+    asynch requests for key convert, init, update, final and digest.
+    Tested with instrumented code and with a reworked version of
+    dm-integrity which uses asynchronous hashes. A patch for dm-integrity
+    is on the way but yet needs some last hone work.
+v8: Added selftest. With the selftest comes some code which wraps the
+    clear key into a "clear key token" digestible by PKEY. The
+    selftest also uses import() and export(), so these are now also
+    implemented. Furthermore a finup() implementation is now also
+    available. Tested with AF_ALG testcases and dm-integrity, also
+    tested with some instrumented code to check that the asynch
+    workqueue functions do their job correctly. Coding is complete!
+v9: As suggested by Herbert use ahash_request_complete() and surround it
+    with local_bh_disable().
+v10: Split the pkey selftest patch into 3 patches. Slight rework of the
+     setkey function as suggested by Holger: When selftest is running
+     as much as possible of the production code should run. So now the
+     key prep with selftest is one additional if/then block instead of
+     an if/then/else construct.
+     Code is ready for integration and well tested.
 
-It was hard to review this patch, basically rhashtable_insert_one()
-returns three type of values, and you are interested in only one case,
-when the obj was inserted.
+Harald Freudenberger (4):
+  s390/crypto: New s390 specific protected key hash phmac
+  crypto: api - Add crypto_tfm_alg_get_flags() helper inline function
+  s390/crypto: Add selftest support for phmac
+  crypto: testmgr - Enable phmac selftest
 
-These are the type of values that is coming from
-rhashtable_insert_one():
+Holger Dengler (1):
+  s390/crypto: Add protected key hmac subfunctions for KMAC
 
-  1) NULL: if object was inserted OR if data is NULL
-  2) Non error and !NULL: A new table to look at
-  3) ERR: Definitely not added
-
-I am wondering if we decoupled the first case, and only return NULL iff
-the object was added, it would simplify this logic.
-
-Something like the following (not tested):
-
-	diff --git a/lib/rhashtable.c b/lib/rhashtable.c
-	index 3e555d012ed60..5a0ec71e990ee 100644
-	--- a/lib/rhashtable.c
-	+++ b/lib/rhashtable.c
-	@@ -554,7 +554,7 @@ static struct bucket_table *rhashtable_insert_one(
-			return ERR_PTR(-EEXIST);
-
-		if (PTR_ERR(data) != -EAGAIN && PTR_ERR(data) != -ENOENT)
-	-               return ERR_CAST(data);
-	+               return ERR_PTR(-EINVAL);
-
-		new_tbl = rht_dereference_rcu(tbl->future_tbl, ht);
-		if (new_tbl)
+ arch/s390/configs/debug_defconfig |   1 +
+ arch/s390/configs/defconfig       |   1 +
+ arch/s390/crypto/Makefile         |   1 +
+ arch/s390/crypto/phmac_s390.c     | 995 ++++++++++++++++++++++++++++++
+ arch/s390/include/asm/cpacf.h     |   4 +
+ crypto/testmgr.c                  |  30 +
+ drivers/crypto/Kconfig            |  12 +
+ include/linux/crypto.h            |   5 +
+ 8 files changed, 1049 insertions(+)
+ create mode 100644 arch/s390/crypto/phmac_s390.c
 
 
-Thanks for fixing it,
---breno
+base-commit: fac04efc5c793dccbd07e2d59af9f90b7fc0dca4
+-- 
+2.43.0
+
 
