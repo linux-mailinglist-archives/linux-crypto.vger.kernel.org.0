@@ -1,177 +1,152 @@
-Return-Path: <linux-crypto+bounces-9212-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9215-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6420FA1C64F
-	for <lists+linux-crypto@lfdr.de>; Sun, 26 Jan 2025 05:27:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFBBA1CDA1
+	for <lists+linux-crypto@lfdr.de>; Sun, 26 Jan 2025 19:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6C087A3A56
-	for <lists+linux-crypto@lfdr.de>; Sun, 26 Jan 2025 04:26:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 895DF18849A8
+	for <lists+linux-crypto@lfdr.de>; Sun, 26 Jan 2025 18:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE842E634;
-	Sun, 26 Jan 2025 04:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3CB718A6C4;
+	Sun, 26 Jan 2025 18:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="inxhmB7Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EyXFvuKm"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B1C26ADD;
-	Sun, 26 Jan 2025 04:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3377C8632B;
+	Sun, 26 Jan 2025 18:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737865615; cv=none; b=JcaqxwpwW/usptXjYXqBDZYVUS3PY+U0KosIaEEYbuZjLC+WTAZb0EjcfQ+7BWiwt/Rw9ey8cHst7cdZavdlV0gx2O+T7U6chTzqtp02Pr7azejPLAGP1Au4/KfwuEbfjVQjlDyOOAJIdCEVRbc3Ar2npxTN+ROFS0n/+F3wCXg=
+	t=1737917946; cv=none; b=Y0F4N2E1F1lsiu6Da0xXw8o2MO7z6pukvB2PHf0r/D4z28DNN5XTOCU9x5K3fGLkzo8/QlRV/AEcQUISgnQN+iLuq52a7M0iYt/YZvZu/hyXEBObSUiyxYncG6ECgn9fYnPAu0v/iT07rvq1t0KWS8JZDfAlQaYeZTmeCDg4P/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737865615; c=relaxed/simple;
-	bh=2WWxadxOpy+V8YBIupHOiBuQFFba5Q0KmSR3GVcy5TY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gvcmFnDrL7yikB5zZpu8zkS+ZAzmjSf2SqSDpAxNo6EGsiiIU7XmXeEH4nEfsdvMB2P+eLLLNhBIlR5yH34KeKI1OPmhHjhWJmEqjFWdHLQT8EDh0OMZjyszF9WdmtZViQICBhMt7tREPJK+HxPkyr3ZSP5+RY/hfOZjvpBpBoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=inxhmB7Z; arc=none smtp.client-ip=115.28.160.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-	t=1737865602; bh=2WWxadxOpy+V8YBIupHOiBuQFFba5Q0KmSR3GVcy5TY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=inxhmB7ZfDV3pBV3xQxdJIRxXq2vojtV8aEjUBD/A9mf9i4RLCNC9jIjlSRMk6ExQ
-	 59Y23qmEKs+Ln4LRsww3Y9Pepp2ixqTxCEJaw7+Ys8I0LTlFGxDFPNLGW9pstB5vPl
-	 bGiy+EHtmVAZO6qW4cHuVCql/ClZmF11YZ54VCGw=
-Received: from [IPV6:240e:388:8d02:a200:799b:c189:73a3:70e9] (unknown [IPv6:240e:388:8d02:a200:799b:c189:73a3:70e9])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 35F63600CE;
-	Sun, 26 Jan 2025 12:26:42 +0800 (CST)
-Message-ID: <d0e9c27c-078f-4126-adbc-3503791af43d@xen0n.name>
-Date: Sun, 26 Jan 2025 12:26:41 +0800
+	s=arc-20240116; t=1737917946; c=relaxed/simple;
+	bh=t7MiR81B+Iee46VXjw3fUJ5IYqT5cIbBOLroU8KM1fQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TG0MY0JB3XjVa9jJFFiHMsJuv3olg35ya46/0AjeT/PBV/pM0qt+OOxGGb8h0f0a6GH71jTG6ohXUCwQsqGDIeqdTTk+InZAEz/zefywvbqej5lgVTS+KyxIWxhgmI+Fx909t8Ub+V1/Nc5bTJMI662SEA8pQkK9xXDfTm1ozHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EyXFvuKm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7B03EC4CED3;
+	Sun, 26 Jan 2025 18:59:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737917945;
+	bh=t7MiR81B+Iee46VXjw3fUJ5IYqT5cIbBOLroU8KM1fQ=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=EyXFvuKmOEPqCcAclYtRc2Nf6D64xrAfFFHSZA0oJ5gamkDnb6Lx9KPgGTaKh2ZKh
+	 StvXwLWvB4AXxrvQfCNYMVQ+vpVzioxQMMB5QA+tePMantmyW6B9rN0BRQvG1/FvWU
+	 prHsgS/oe5U6OOHHZh5ZPSdmN7eKPsdtUb1nfbVEq0vPIx4qdqoqUXf6uZemN0OnPz
+	 K8suGTkXNhL0Xx0Ng2m6CJ3yVE19C8LvGkQWvvwWjtIzah0W0CKFmEx6/EnIToChCc
+	 AWYum0Cs2J7hzfAr6sBPp1fVniQybgbyId3cy5jTPg+VlAkwKGNgQLNyYIHuje6NCa
+	 rNybsHqvM8Eig==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66071C02181;
+	Sun, 26 Jan 2025 18:59:05 +0000 (UTC)
+From: =?utf-8?q?J=2E_Neusch=C3=A4fer_via_B4_Relay?= <devnull+j.ne.posteo.net@kernel.org>
+Subject: [PATCH 0/9] YAML conversion of several Freescale/PowerPC DT
+ bindings
+Date: Sun, 26 Jan 2025 19:58:55 +0100
+Message-Id: <20250126-ppcyaml-v1-0-50649f51c3dd@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] misc: ls6000se-sdf: Add driver for Loongson 6000SE
- SDF
-To: Xi Ruoyao <xry111@xry111.site>, "Zheng, Yaofei" <Yaofei.Zheng@dell.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Qunqin Zhao <zhaoqunqin@loongson.cn>
-Cc: Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
- "David S . Miller" <davem@davemloft.net>,
- "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
- "derek.kiernan@amd.com" <derek.kiernan@amd.com>,
- "dragan.cvetic@amd.com" <dragan.cvetic@amd.com>,
- Yinggang Gu <guyinggang@loongson.cn>
-References: <20250114095527.23722-1-zhaoqunqin@loongson.cn>
- <20250114095527.23722-4-zhaoqunqin@loongson.cn>
- <ee65851c-4149-4927-a2e7-356cdce2ba25@app.fastmail.com>
- <97000576d4ba6d94cea70363e321665476697052.camel@xry111.site>
- <2025011407-muppet-hurricane-196f@gregkh>
- <122aab11-f657-a48e-6b83-0e01ddd20ed3@loongson.cn>
- <2025011527-antacid-spilt-cbef@gregkh>
- <SA3PR19MB73993DCBDE9117AA1E77C127F9192@SA3PR19MB7399.namprd19.prod.outlook.com>
- <d56121dc6c6953d4f052be5da5203a4e28676b4e.camel@xry111.site>
-Content-Language: en-US
-From: WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <d56121dc6c6953d4f052be5da5203a4e28676b4e.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAO+FlmcC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1MDQyMz3YKC5MrE3BxdMwuD5OQUiyTjtGQjJaDqgqLUtMwKsEnRsbW1AIw
+ prb9ZAAAA
+X-Change-ID: 20250126-ppcyaml-680ccd8b3fc2
+To: devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: Scott Wood <oss@buserror.net>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Naveen N Rao <naveen@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
+ Niklas Cassel <cassel@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>, 
+ Vinod Koul <vkoul@kernel.org>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Bjorn Helgaas <bhelgaas@google.com>, 
+ =?utf-8?q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
+ Wim Van Sebroeck <wim@linux-watchdog.org>, 
+ Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
+ linux-pci@vger.kernel.org, linux-watchdog@vger.kernel.org, 
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ =?utf-8?q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1737917943; l=2648;
+ i=j.ne@posteo.net; s=20240329; h=from:subject:message-id;
+ bh=t7MiR81B+Iee46VXjw3fUJ5IYqT5cIbBOLroU8KM1fQ=;
+ b=rX4cEDadyqjKuA8yYkLZevdyfcRaUdz4BHeJl10YNn4xTsKCjeCD6OKBl3O1tpdL5puknSF0r
+ w3DGg25+T63CHz+RBokGYXZ8fMyOUHiLEo+aY9gwD/QBhE8TjlNwX8S
+X-Developer-Key: i=j.ne@posteo.net; a=ed25519;
+ pk=NIe0bK42wNaX/C4bi6ezm7NJK0IQE+8MKBm7igFMIS4=
+X-Endpoint-Received: by B4 Relay for j.ne@posteo.net/20240329 with
+ auth_id=156
+X-Original-From: =?utf-8?q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
+Reply-To: j.ne@posteo.net
 
-Hi,
+This is a spin-off of the series titled
+"powerpc: MPC83xx cleanup and LANCOM NWAPP2 board".
 
-On 1/15/25 19:13, Xi Ruoyao wrote:
-> On Wed, 2025-01-15 at 10:39 +0000, Zheng, Yaofei wrote:
->>
->> Internal Use - Confidential
->>> On Wed, Jan 15, 2025 at 10:58:52AM +0800, Qunqin Zhao wrote:
->>>>
->>>> 在 2025/1/14 下午9:21, Greg Kroah-Hartman 写道:
->>>>> On Tue, Jan 14, 2025 at 06:43:24PM +0800, Xi Ruoyao wrote:
->>>>>> On Tue, 2025-01-14 at 11:17 +0100, Arnd Bergmann wrote:
->>>>>>> On Tue, Jan 14, 2025, at 10:55, Qunqin Zhao wrote:
->>>>>>>> Loongson Secure Device Function device supports the functions
->>>>>>>> specified in "GB/T 36322-2018". This driver is only
->>>>>>>> responsible for sending user data to SDF devices or returning SDF device data to users.
->>>>>>> I haven't been able to find a public version of the standard
->>>>>> A public copy is available at
->>>>>> https://openstd.samr.gov.cn/bzgk/gb/ne
->>>>>> wGbInfo?hcno=69E793FE1769D120C82F78447802E14F__;!!LpKI!g7kUt84vOxl
->>>>>> 65EbgAJzXoupsM5Bx3FjUDPnKHaEw5RUoyUouS6IwCerRSZ7MIWi0Bw5WHaM2YP7pZ
->>>>>> IcYiDQOLf3F$ [openstd[.]samr[.]gov[.]cn], pressing the blue
->>>>>> "online preview" button, enter a captcha and you can see it.  But the copy is in Chinese, and there's an explicit notice saying translating this copy is forbidden, so I cannot translate it for you either.
->>>>>>
->>>>>>> but
->>>>>>> from the table of contents it sounds like this is a standard for
->>>>>>> cryptographic functions that would otherwise be implemented by a
->>>>>>> driver in drivers/crypto/ so it can use the normal abstractions
->>>>>>> for both userspace and in-kernel users.
->>>>>>>
->>>>>>> Is there some reason this doesn't work?
->>>>>> I'm not an lawyer but I guess contributing code for that may have
->>>>>> some "cryptography code export rule compliance" issue.
->>>>> Issue with what?  And why?  It's enabling the functionality of the
->>>>> hardware either way, so the same rules should apply no matter where
->>>>> the driver ends up in or what apis it is written against, right?
->>>>
->>>> SDF and tpm2.0 are both  "library specifications",  which means that
->>>>
->>>> it supports a wide variety of functions not only cryptographic
->>>> functions,
->>>>
->>>> but unlike tpm2.0, SDF is only used in China.
->>>>
->>>> You can refer to the tpm2.0 specification:
->>>> https://trustedcomputinggroup.org/resource
->>>> /tpm-library-specification/__;!!LpKI!g7kUt84vOxl65EbgAJzXoupsM5Bx3FjUD
->>>> PnKHaEw5RUoyUouS6IwCerRSZ7MIWi0Bw5WHaM2YP7pZIcYiCFoP-hu$
->>>> [trustedcomputinggroup[.]org]
->>>
->>> So this is an accelerator device somehow?  If it provides crypto functions, it must follow the crypto api, you can't just provide a "raw"
->>> char device node for it as that's not going to be portable at all.
->>> Please fit it into the proper kernel subsystem for the proper user/kernel api needed to drive this hardware.
->>>
->>> thanks,
->>>
->>> greg k-h
->>>
->>
->> Hi Qunqin and Ruoyao,
->>
->> "GB/T 36322-2018" is just a chinese national standard, not ISO standard, not an
->> enforced one, "T" repensts "推荐" which means "recommend". From what I understand
->>   it defined series of C API for cryptography devices after reading the standard.
->> Linux kernel have user space socket interface using type AF_ALG, and out of tree
->>   driver "Cryptodev". From my view: "GB/T 36322-2018" can be user space library
->> using socket interface, just like openssl, if must do it char dev way, do it out
->>   of tree, and reuse kernel space crypto API.
-> 
-> Figure 1 of the section 6.1 says the GB/T 36322 interface is between
-> "cryptography device" and "generic cryptography service and cryptography
-> device management."  IMO in a Linux (or any monolithic-kernel) system at
-> least "cryptography device management" is the job of the kernel, thus
-> exposing the GB/T 36322 interface directly to the userspace seems not a
-> good idea.
-> 
+During the development of that series, it became clear that many
+devicetree bindings for Freescale MPC8xxx platforms are still in the old
+plain-text format, or don't exist at all, and in any case don't mention
+all valid compatible strings.
 
-I've also taken a look at the standard text. The majority of it is the 
-SDF API definition which is in C and with all identifiers in English, so 
-even non-speakers of Chinese can probably understand much of it.
+Signed-off-by: J. Neuschäfer <j.ne@posteo.net>
+---
+J. Neuschäfer (9):
+      dt-bindings: powerpc: Add binding for Freescale/NXP MPC83xx SoCs
+      dt-bindings: ata: Convert fsl,pq-sata binding to YAML
+      dt-bindings: crypto: Convert fsl,sec-2.0 binding to YAML
+      dt-bindings: mfd: Convert fsl,mcu-mpc8349emitx binding to YAML
+      dt-bindings: dma: Convert fsl,elo*-dma bindings to YAML
+      dt-bindings: pci: Add fsl,mpc83xx-pcie bindings
+      dt-bindings: watchdog: Convert mpc8xxx-wdt binding to YAML
+      dt-bindings: spi: Convert Freescale SPI bindings to YAML
+      [RFC] dt-bindings: nand: Convert fsl,elbc bindings to YAML
 
-But I tend to agree that the SDF API is abstract enough that it does not 
-matter whether it's directly exposed by kernel UAPI or not; while I'm 
-not familiar with the Linux crypto subsystem either, it seems entirely 
-appropriate for the kernel driver to expose the standard crypto API, and 
-for the SDF API to reside in a user-space shim. This way we could have 
-non-SDF-aware applications transparently make use of the Loongson HW 
-capability, and also have non-Loongson crypto HW available through the 
-same SDF interface (should some board designer choose to do so).
+ .../devicetree/bindings/ata/fsl,pq-sata.yaml       |  59 ++++++
+ Documentation/devicetree/bindings/ata/fsl-sata.txt |  28 ---
+ .../devicetree/bindings/crypto/fsl,sec2.0.yaml     | 139 ++++++++++++++
+ .../devicetree/bindings/crypto/fsl-sec2.txt        |  65 -------
+ .../devicetree/bindings/dma/fsl,elo-dma.yaml       | 129 +++++++++++++
+ .../devicetree/bindings/dma/fsl,elo3-dma.yaml      | 105 +++++++++++
+ .../devicetree/bindings/dma/fsl,eloplus-dma.yaml   | 120 ++++++++++++
+ .../bindings/mfd/fsl,mcu-mpc8349emitx.yaml         |  53 ++++++
+ .../devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml |  61 ++++++
+ .../devicetree/bindings/pci/fsl,mpc8xxx-pci.yaml   |  83 +++++++++
+ .../devicetree/bindings/powerpc/fsl/dma.txt        | 204 ---------------------
+ .../bindings/powerpc/fsl/fsl,elbc-gpcm-uio.yaml    |  55 ++++++
+ .../devicetree/bindings/powerpc/fsl/fsl,elbc.yaml  | 150 +++++++++++++++
+ .../bindings/powerpc/fsl/fsl,mpc83xx.yaml          |  67 +++++++
+ .../devicetree/bindings/powerpc/fsl/lbc.txt        |  43 -----
+ .../bindings/powerpc/fsl/mcu-mpc8349emitx.txt      |  17 --
+ .../devicetree/bindings/spi/fsl,espi.yaml          |  56 ++++++
+ Documentation/devicetree/bindings/spi/fsl,spi.yaml |  71 +++++++
+ Documentation/devicetree/bindings/spi/fsl-spi.txt  |  62 -------
+ .../devicetree/bindings/watchdog/mpc8xxx-wdt.txt   |  25 ---
+ .../devicetree/bindings/watchdog/mpc8xxx-wdt.yaml  |  64 +++++++
+ 21 files changed, 1212 insertions(+), 444 deletions(-)
+---
+base-commit: ffd294d346d185b70e28b1a28abe367bbfe53c04
+change-id: 20250126-ppcyaml-680ccd8b3fc2
 
+Best regards,
 -- 
-WANG "xen0n" Xuerui
+J. Neuschäfer <j.ne@posteo.net>
 
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+
 
