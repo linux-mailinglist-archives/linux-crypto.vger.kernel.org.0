@@ -1,59 +1,59 @@
-Return-Path: <linux-crypto+bounces-9283-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9285-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCA5AA231E1
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 17:32:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3FCA231EC
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 17:33:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47536162CE8
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 16:32:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04FDB188AADA
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 16:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454CC1EBFE3;
-	Thu, 30 Jan 2025 16:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966CF1EE7DF;
+	Thu, 30 Jan 2025 16:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b="Br3QZibM"
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b="czPoU5by"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372601DA5F;
-	Thu, 30 Jan 2025 16:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899801EE03B;
+	Thu, 30 Jan 2025 16:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738254746; cv=pass; b=bHD4AXTLJNJiJjyla05htedUxqdP63d/NY+0As6QQ2uEYONrMvFntWifD5DIFFhH4kFIgVo4aT2fT7KGUkoXKWOBemor3RrBGtwLjxWa2Ybdos5mwyn/oWUMTjS9lSVHULPFYgcNHOMB6jBJiBDZEPS0HWL3gnhtMG+A+25z088=
+	t=1738254748; cv=pass; b=iy6x+ysyNjVfE1T1uydTfUUyiLDZhU8dwqtA858ivxSoFsntFDnjm8eT591NNVLWbHHlD70633pLxs8iPTW+qEQMDRXvYtDT+7rEUyQVgIXUL4Owck+v6oVR2clF+IcWokzIR5pKxlcNi7tNCwa9mk6r0D/MbCpMxXbkqLpB3R0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738254746; c=relaxed/simple;
-	bh=IofK4l5y5xA/k5+MG3Q2H7arU7k46yFxh0juUaEQ76k=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=AUwWePNyF+3m63IjHIDrfnVCmbIXc8fH93z2DFNz1WrrX947VJZzYUkSPLTOFjtGZnLeFHURtxms4Ct0ES8bbeVRYX4qKcO+uH30AovQjsytazW2GrjSpPKvcBJQEorQmJasf4zPlkzq0yzMxuO+moDrKXFZcX32gTqephjhyK0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b=Br3QZibM; arc=pass smtp.client-ip=136.143.188.15
+	s=arc-20240116; t=1738254748; c=relaxed/simple;
+	bh=H+faJSQERz6XlVXgIvWmgdDgoXnSY+tvteu/1tTDi6Y=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=bAY03krxzy2LTYmK09wi8FEV8E9Refuod+huN5asSwm7NCEmOd7tbfFxbuT9mZjAqdAnl80kf1oNsLD+THhi6UWQ8uwW8weX0HdaQ5Qpzx9RGctZY1WGHvVtIPv1WgfIdwxFToS06XISl/g7RhAX8yrX3h04349KmD3q0MaNCck=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b=czPoU5by; arc=pass smtp.client-ip=136.143.188.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-ARC-Seal: i=1; a=rsa-sha256; t=1738254702; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1738254708; cv=none; 
 	d=zohomail.com; s=zohoarc; 
-	b=lravY/6Wl6bFOP4EmaFB4pFXffqm3rogMJLqrBS5x/JGS95L2CmAN2jlNjV0gEXketvyyIBQGH2KucsT01Y6GQBjrkUPgZ5qnQrxP30NRwUgl/d+RK8qdZxwjphqX/FmcXMILZ/TtCJ7+8mjf1LwDLQWBVP1cguj66xFAKUwUGk=
+	b=HzZyOzS0iI+diApu/Me9R9cQq2rPXqw6qolEUG0i4cqN5lSvk94dDo7bBxt5/LpZgixsUk5yhwuUXFcGoXNNuENQcmOOZpW0qMnwrsYNXhTJqB29M2Aoqvoo0MSdojr/006QvpfFIxKZ+FGkjPx9tMprrYQykBkJBeUFXmeNsDQ=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1738254702; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=LVPLI6+c3jau3bRD8yp1Q2Hkp9hVE39g34stjXufaqs=; 
-	b=kY/vHYB63eY4CZqbBCJG6EwmrYBJ6KjPZZQuZMs1o0kzEEpM/qhlFjg5Ir4rYAcE3ebEXOd0wjprW5DlWjxHiKXFp8j2pNoxvXpHKEOzwRxkRbVKBGUF9St/LMyWiWkS90yEpN8y74lJCZ3LEmPbTkyGJ1Fu6Qns0QF27Hmkbr8=
+	t=1738254708; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=G9OrBOk1WRWC9wWzqwllT47RSn682Pz6FtVpe94Ta+8=; 
+	b=m+/3eKuJ7IfxarcwiARJsC/aDHjoQgKLaFA5aDQNqekygpFi5pByw7QDPtPqlQ/tmQIoxYJosfHwSeAXcFkz2ZJUg+jgHxfCeJ9xIDORe84ROnXSIrUVfRjV1ZFFHDcP5+vkTn/ZZxZY6mw3z0dFWTZE5vfX/pw+ECzBNl756Uk=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
 	dkim=pass  header.i=collabora.com;
 	spf=pass  smtp.mailfrom=nicolas.frattaroli@collabora.com;
 	dmarc=pass header.from=<nicolas.frattaroli@collabora.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1738254702;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1738254708;
 	s=zohomail; d=collabora.com; i=nicolas.frattaroli@collabora.com;
-	h=From:From:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding:To:To:Cc:Cc:Reply-To;
-	bh=LVPLI6+c3jau3bRD8yp1Q2Hkp9hVE39g34stjXufaqs=;
-	b=Br3QZibMOVoXRRji3+2/pdH3aVwjEE7w2baX8S5TdLTzFedExDU9KXTGXWKKQl7i
-	u/Q+Q/D/K3D4fmeCZ2A+g+7O3C0ysGnTJ8UrgWyOJO0i/UItnFvN0ThofxakxuSHbJM
-	/7Acx630s1y1zvBqNrVbYKuJWbj/H0keXU8nTEHs=
-Received: by mx.zohomail.com with SMTPS id 1738254696264631.910358401036;
-	Thu, 30 Jan 2025 08:31:36 -0800 (PST)
+	h=From:From:Date:Date:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Message-Id:References:In-Reply-To:To:To:Cc:Cc:Reply-To;
+	bh=G9OrBOk1WRWC9wWzqwllT47RSn682Pz6FtVpe94Ta+8=;
+	b=czPoU5by5qkdk/H4IEkIGWo2inh9yEQ8/QkI1OBG3+pzaHyjtQ3Fd9dBIkCnUwSx
+	DN+Xf5L7tAP6Hd+b+IIS+yM7AN5RMW0F3m8bF/nvrMX3vMONXsNJVssf7EUNeHxgLqg
+	VF0lKVWgZy84Crcbc+3K5PYXDENag1ud9ne9NFTc=
+Received: by mx.zohomail.com with SMTPS id 1738254702522121.14800745094715;
+	Thu, 30 Jan 2025 08:31:42 -0800 (PST)
 From: Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
-Subject: [PATCH 0/7] RK3588 Hardware Random Number Generator Driver
-Date: Thu, 30 Jan 2025 17:31:14 +0100
-Message-Id: <20250130-rk3588-trng-submission-v1-0-97ff76568e49@collabora.com>
+Date: Thu, 30 Jan 2025 17:31:15 +0100
+Subject: [PATCH 1/7] dt-bindings: reset: Add SCMI reset IDs for RK3588
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,10 +62,9 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAFKpm2cC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1MDQ2MD3aJsY1MLC92Sorx03eLSpNzMYpAWXQNTUyNT02RLMzMLSyWg5oK
- i1LTMCrDB0bG1tQCIRZyfaAAAAA==
-X-Change-ID: 20250130-rk3588-trng-submission-055255c96689
+Message-Id: <20250130-rk3588-trng-submission-v1-1-97ff76568e49@collabora.com>
+References: <20250130-rk3588-trng-submission-v1-0-97ff76568e49@collabora.com>
+In-Reply-To: <20250130-rk3588-trng-submission-v1-0-97ff76568e49@collabora.com>
 To: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzk+dt@kernel.org>, 
  Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
@@ -77,106 +76,80 @@ Cc: Sebastian Reichel <sebastian.reichel@collabora.com>,
  linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
  linux-crypto@vger.kernel.org, 
  Nicolas Frattaroli <nicolas.frattaroli@collabora.com>, 
- XiaoDong Huang <derrick.huang@rock-chips.com>, 
- Lin Jinhan <troy.lin@rock-chips.com>
+ XiaoDong Huang <derrick.huang@rock-chips.com>
 X-Mailer: b4 0.14.2
 
-This series adds support for the Rockchip RK3588's standalone hardware
-random number generator to the existing mainline rockchip-rng driver.
+When TF-A is used to assert/deassert the resets through SCMI, the
+IDs communicated to it are different than the ones mainline Linux uses.
 
-The RK3588 has several hardware random number generators, one in each
-the secure-world and non-secure-world crypto accelerator, and one
-standalone one in each the secure-world and non-secure-world, so 4
-hwrngs in total. This series adds support for the standalone hwrng,
-which is an entirely new IP on this SoC and distinct from the one in the
-Crypto IP.
+Import the list of SCMI reset IDs from mainline TF-A so that devicetrees
+can use these IDs more easily.
 
-The decision to integrate this into the existing rockchip-rng driver was
-made based on a few factors:
-
-1. The driver is fairly small.
-2. While not much code is shared, some code is, specifically relating to
-   power management, the hwrng interface and the probe function.
-3. I don't want users to figure out why "CONFIG_HW_RANDOM_ROCKCHIP"
-   doesn't enable the RK3588 one, and I really don't see a reason to
-   build without both of them considering the other RK3588 TRNG (for
-   which there is not yet a driver iirc) *does* share code with the
-   existing rockchip-rng driver.
-
-Here are the rngtest5 results from this new driver on my board:
-
-  user@debian-rockchip-rock5b-rk3588:~$ cat /sys/class/misc/hw_random/rng_current 
-  rockchip-rng
-  user@debian-rockchip-rock5b-rk3588:~$ sudo cat /dev/hwrng | rngtest -c 10000 
-  [...]
-  rngtest: bits received from input: 200000032
-  rngtest: FIPS 140-2 successes: 9990
-  rngtest: FIPS 140-2 failures: 10
-  rngtest: FIPS 140-2(2001-10-10) Monobit: 1
-  rngtest: FIPS 140-2(2001-10-10) Poker: 0
-  rngtest: FIPS 140-2(2001-10-10) Runs: 5
-  rngtest: FIPS 140-2(2001-10-10) Long run: 4
-  rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-  rngtest: input channel speed: (min=212.255; avg=29089.272; max=19531250.000)Kibits/s
-  rngtest: FIPS tests speed: (min=64.005; avg=102.494; max=153.818)Mibits/s
-  rngtest: Program run time: 11292340 microseconds
-
-As you can see, the quality of the entropy is quite good, and the
-throughput is an acceptable 29 Mibit/s.
-
-The series starts out with two patches for the bindings. The bindings
-are separate from the rockchip,rk3568-rng bindings, as the required
-properties differ. The SCMI reset ID numbers are needed because mainline
-uses a different reset numbering scheme, but TF-A uses the downstream
-numbering scheme as far as I know. The TRNG must be reset through SCMI.
-
-Next up are two cleanup patches for the existing driver. Even if a
-decision is made to split the drivers for whatever reason, these two
-patches should be used in the rk3568-rng driver as they get rid of small
-peculiarities in the code without meaningfully changing how the driver
-works.
-
-Next up is the main driver patch that adds support for the new TRNG. As
-the driver was developed by reading the downstream vendor code for this
-particular device and reworking it, I've included the downstream vendor
-developer who wrote the driver as a Co-developed-by tag with their
-existing downstream sign-off.
-
-The penultimate patch adds the node to the rk3588-base.dtsi, and enables
-it in the one device I've been testing it on (RADXA Rock 5B). Other
-devices may wish to enable it as well after verifying that the TRNG
-produces randomness of the expected quality on their particular flavour
-of the RK3588.* family.
-
-Last but not least, I'm adding myself to the mailmap, because I now work
-for Collabora.
-
+Co-developed-by: XiaoDong Huang <derrick.huang@rock-chips.com>
+Signed-off-by: XiaoDong Huang <derrick.huang@rock-chips.com>
 Signed-off-by: Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
 ---
-Nicolas Frattaroli (7):
-      dt-bindings: reset: Add SCMI reset IDs for RK3588
-      dt-bindings: rng: add binding for Rockchip RK3588 RNG
-      hwrng: rockchip: store dev pointer in driver struct
-      hwrng: rockchip: eliminate some unnecessary dereferences
-      hwrng: rockchip: add support for rk3588's standalone TRNG
-      arm64: dts: rockchip: Add rng node to RK3588
-      mailmap: add entry for Nicolas Frattaroli
+ include/dt-bindings/reset/rockchip,rk3588-cru.h | 41 ++++++++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 1 deletion(-)
 
- .mailmap                                           |   1 +
- .../bindings/rng/rockchip,rk3588-rng.yaml          |  61 +++++
- MAINTAINERS                                        |   2 +
- arch/arm64/boot/dts/rockchip/rk3588-base.dtsi      |   9 +
- arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts    |   4 +
- drivers/char/hw_random/Kconfig                     |   3 +-
- drivers/char/hw_random/rockchip-rng.c              | 264 ++++++++++++++++++---
- include/dt-bindings/reset/rockchip,rk3588-cru.h    |  41 +++-
- 8 files changed, 349 insertions(+), 36 deletions(-)
----
-base-commit: 72deda0abee6e705ae71a93f69f55e33be5bca5c
-change-id: 20250130-rk3588-trng-submission-055255c96689
+diff --git a/include/dt-bindings/reset/rockchip,rk3588-cru.h b/include/dt-bindings/reset/rockchip,rk3588-cru.h
+index e2fe4bd5f7f01569c804ae4ea87c7cf0433d2ae7..878beae6dc3baaa9a2eb46f7a81454d360968754 100644
+--- a/include/dt-bindings/reset/rockchip,rk3588-cru.h
++++ b/include/dt-bindings/reset/rockchip,rk3588-cru.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+ /*
+- * Copyright (c) 2021 Rockchip Electronics Co. Ltd.
++ * Copyright (c) 2021, 2024 Rockchip Electronics Co. Ltd.
+  * Copyright (c) 2022 Collabora Ltd.
+  *
+  * Author: Elaine Zhang <zhangqing@rock-chips.com>
+@@ -753,4 +753,43 @@
+ 
+ #define SRST_A_HDMIRX_BIU		660
+ 
++/* SCMI Secure Resets */
++
++/* Name=SECURE_SOFTRST_CON00,Offset=0xA00 */
++#define SCMI_SRST_A_SECURE_NS_BIU	10
++#define SCMI_SRST_H_SECURE_NS_BIU	11
++#define SCMI_SRST_A_SECURE_S_BIU	12
++#define SCMI_SRST_H_SECURE_S_BIU	13
++#define SCMI_SRST_P_SECURE_S_BIU	14
++#define SCMI_SRST_CRYPTO_CORE		15
++/* Name=SECURE_SOFTRST_CON01,Offset=0xA04 */
++#define SCMI_SRST_CRYPTO_PKA		16
++#define SCMI_SRST_CRYPTO_RNG		17
++#define SCMI_SRST_A_CRYPTO		18
++#define SCMI_SRST_H_CRYPTO		19
++#define SCMI_SRST_KEYLADDER_CORE	25
++#define SCMI_SRST_KEYLADDER_RNG		26
++#define SCMI_SRST_A_KEYLADDER		27
++#define SCMI_SRST_H_KEYLADDER		28
++#define SCMI_SRST_P_OTPC_S		29
++#define SCMI_SRST_OTPC_S		30
++#define SCMI_SRST_WDT_S			31
++/* Name=SECURE_SOFTRST_CON02,Offset=0xA08 */
++#define SCMI_SRST_T_WDT_S		32
++#define SCMI_SRST_H_BOOTROM		33
++#define SCMI_SRST_A_DCF			34
++#define SCMI_SRST_P_DCF			35
++#define SCMI_SRST_H_BOOTROM_NS		37
++#define SCMI_SRST_P_KEYLADDER		46
++#define SCMI_SRST_H_TRNG_S		47
++/* Name=SECURE_SOFTRST_CON03,Offset=0xA0C */
++#define SCMI_SRST_H_TRNG_NS		48
++#define SCMI_SRST_D_SDMMC_BUFFER	49
++#define SCMI_SRST_H_SDMMC		50
++#define SCMI_SRST_H_SDMMC_BUFFER	51
++#define SCMI_SRST_SDMMC			52
++#define SCMI_SRST_P_TRNG_CHK		53
++#define SCMI_SRST_TRNG_S		54
++
++
+ #endif
 
-Best regards,
 -- 
-Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
+2.48.1
 
 
