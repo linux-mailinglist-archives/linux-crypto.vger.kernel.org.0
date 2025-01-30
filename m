@@ -1,59 +1,59 @@
-Return-Path: <linux-crypto+bounces-9288-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9290-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A224AA23201
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 17:37:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D56A231FD
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 17:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B94847A165E
-	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 16:32:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FA98188B0E4
+	for <lists+linux-crypto@lfdr.de>; Thu, 30 Jan 2025 16:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF811F03D7;
-	Thu, 30 Jan 2025 16:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7321EF091;
+	Thu, 30 Jan 2025 16:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b="j80LJ3mO"
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b="jLm1UI5r"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9C91EE00A;
-	Thu, 30 Jan 2025 16:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F211EF08D;
+	Thu, 30 Jan 2025 16:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738254757; cv=pass; b=NeHuUvwtx2k5TXWi04i2TVGiiqVW7Rx+DnB10RA+pznmUBu/Q17rGIwzb9lpFDx3fYVBja6MpFuvgDkm1rCrpJ1HdJ96231dWSBsigEyGtbore848dTOWb1Ugx5BroqXu8e1I0avD5mdrvRcqvu9kt1HLC6aYb9fD6rpQEt2fXw=
+	t=1738254789; cv=pass; b=GyXadc0xx6mmDRoKE3p/m2CWR11s8XlTzz9L6rdKhYxZ2nmqApbJ6oGh0pb+kcQjFi4x8Q7uKTgfHa6lOsosSUTc9q4YpzWElJP4SpgDmnnDj+hDwotZ9O0vkqiy3z6CC5/LvebEMcUL1LfoKL18U9zVavsVFBb43xd2QpaYDw0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738254757; c=relaxed/simple;
-	bh=QkNjV9M7+C6z0NLu3F5x1NfeVFdklKWH29BBErv1KYA=;
+	s=arc-20240116; t=1738254789; c=relaxed/simple;
+	bh=ywECwYkKqif1Ptbyg7/tnBA60CTtZe8pnU0bMU4PIwQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jeEXqVMVu4EqBa9Jo6qX7C8K0jxDVMzevtQyZawin2BhSi/q+hLYyG6Gj24mwgCruOjlz7JOQ1qnTVwFSvtX9iwalnsj8tUJMgph0Es5gWyx5Jk5KAj8J6q/QGyFeAyRpRROF/CaZ3U4WzQ+68yuwpb6gx5w9RM49U8XMS+rYmc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b=j80LJ3mO; arc=pass smtp.client-ip=136.143.188.15
+	 In-Reply-To:To:Cc; b=YrGlx63E4CkVDtOitv0yMVvtYrXWRde7n8XUNUj85DXKs534F89ODOOTes3G0QXLZigtxgSbWO/fJjtuRnbieQVDK0RI4NgJdH20Ycs27w6E7VReX0tekwoID6fT9ivsg6L2+Ph+ZePrw9jiPyWh0PZjb+/ah+6LKNxKGCRP4Nw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b=jLm1UI5r; arc=pass smtp.client-ip=136.143.188.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-ARC-Seal: i=1; a=rsa-sha256; t=1738254731; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1738254761; cv=none; 
 	d=zohomail.com; s=zohoarc; 
-	b=OZfOqK7UyDFGJsQXib/gpgYHBzMWJMeZKAbDvDWFzaANruEAkbBoNAWi3h/WxPsVF2l+P2xNBfS+QpUGwsau7aZOz9Q9ECCTizFh6pEGJRcqXdfizmc8bJFo17RMfzd2qGaSBxDbPOxD8PG2OF/gUVnMnPjWr04b4WlLAii8KIE=
+	b=Afs9I66P4nPDOHHXiYSbFue8gfjFNvFdsY9Ez4F6h2G1pKI1oCAbFcGK9hP63OYYfW9bDL0NuJe1wi4WxvB/L3UreF2Vq/SRXk9dM8IKigtru9T+1dQ93H80EVX74NFDv2lnORKKoUG8xhl5RExjGa4U6lj8Jt9PulpcXNOdUhU=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1738254731; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=MfIMIPmWjQlIq+rN6AT54US673m3Vv7abwiUpRadqEo=; 
-	b=T9IoevOmePSt7qbl8FMmzE7jJ6bj/6a97GjzMCidcXd3PFYlQkALozhD3VliflPYq9GcfPJZNl23RXXlh/YN8zl7+KCb+9xOjl4PkenukQe/nKxh3+RVLZYAgk4po0LqncfLWha3nq9Y5WRFnQyUQs/ivfKwAPNG+0sTeLBgGF8=
+	t=1738254761; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=4P85b1Yewhr0bG0AVZgypW6WQK0tyFtk1cdyI+K42D8=; 
+	b=PW63N3zADGMcw5WzavUGXAqwpDQ+FHjxDE7juX8eKXR08Mbe9ftY5y/djcypmTkICp82A0pMzSAA+bjExZTbPzFVFuh3vDx9RoPmSEU7auDBFHFFVWw5tmBQp3bS2b82BijXA1lwKB0Az1S9Ktwm+FmJorXVd7IO/hqsaaB21WQ=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
 	dkim=pass  header.i=collabora.com;
 	spf=pass  smtp.mailfrom=nicolas.frattaroli@collabora.com;
 	dmarc=pass header.from=<nicolas.frattaroli@collabora.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1738254731;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1738254761;
 	s=zohomail; d=collabora.com; i=nicolas.frattaroli@collabora.com;
 	h=From:From:Date:Date:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Message-Id:References:In-Reply-To:To:To:Cc:Cc:Reply-To;
-	bh=MfIMIPmWjQlIq+rN6AT54US673m3Vv7abwiUpRadqEo=;
-	b=j80LJ3mOWHOUS5cYN8/9fjU3IH0zboU200gSWF+Q7SG0hPgsFNE1S0kVfmSxnbGW
-	kZvaUhhH2m+tvMM184rySkdotzz3tLGpp3ed3SkkpU8MTAc9ms/OoPhGuITZWsJP7Ew
-	54l//sso/HiogQMkslkvRqFRUP9btbTT4181NZZo=
-Received: by mx.zohomail.com with SMTPS id 173825472681471.09490665162434;
-	Thu, 30 Jan 2025 08:32:06 -0800 (PST)
+	bh=4P85b1Yewhr0bG0AVZgypW6WQK0tyFtk1cdyI+K42D8=;
+	b=jLm1UI5rW3l+RWZAg/nN290f1ftUNWa4KyJwUIooqu+hquGkCsbfFP3H9ptklXB+
+	lm8MUSjF9awrkFDjNW2tpsDEkhgFPMlGSqyGx3MoImrycN9OF1z3OfCe3lzmQR701SF
+	vWf92AEaENaoVroKisWvWveuSQJMPtolkXMJ8Amc=
+Received: by mx.zohomail.com with SMTPS id 1738254731433421.4839172231101;
+	Thu, 30 Jan 2025 08:32:11 -0800 (PST)
 From: Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
-Date: Thu, 30 Jan 2025 17:31:20 +0100
-Subject: [PATCH 6/7] arm64: dts: rockchip: Add rng node to RK3588
+Date: Thu, 30 Jan 2025 17:31:21 +0100
+Subject: [PATCH 7/7] mailmap: add entry for Nicolas Frattaroli
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,7 +62,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250130-rk3588-trng-submission-v1-6-97ff76568e49@collabora.com>
+Message-Id: <20250130-rk3588-trng-submission-v1-7-97ff76568e49@collabora.com>
 References: <20250130-rk3588-trng-submission-v1-0-97ff76568e49@collabora.com>
 In-Reply-To: <20250130-rk3588-trng-submission-v1-0-97ff76568e49@collabora.com>
 To: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
@@ -78,51 +78,25 @@ Cc: Sebastian Reichel <sebastian.reichel@collabora.com>,
  Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
 X-Mailer: b4 0.14.2
 
-Add the RK3588's standalone hardware random number generator node to its
-device tree, and enable it on the one board I've tested it on and can
-verify it produces good output, the Rock 5B.
+Add my new Collabora E-Mail address as the main contact.
 
 Signed-off-by: Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3588-base.dtsi   | 9 +++++++++
- arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 4 ++++
- 2 files changed, 13 insertions(+)
+ .mailmap | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
-index 8cfa30837ce72581d0b513a8274ab0177eb5ae15..1c72922bcbe1afd7c49beac771f8b7c6e5cc6e05 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
-@@ -1921,6 +1921,15 @@ sdhci: mmc@fe2e0000 {
- 		status = "disabled";
- 	};
- 
-+	rng: rng@fe378000 {
-+		compatible = "rockchip,rk3588-rng";
-+		reg = <0x0 0xfe378000 0x0 0x200>;
-+		interrupts = <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH 0>;
-+		clocks = <&scmi_clk SCMI_HCLK_SECURE_NS>;
-+		resets = <&scmi_reset SCMI_SRST_H_TRNG_NS>;
-+		status = "disabled";
-+	};
-+
- 	i2s0_8ch: i2s@fe470000 {
- 		compatible = "rockchip,rk3588-i2s-tdm";
- 		reg = <0x0 0xfe470000 0x0 0x1000>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-index d597112f1d5b8ee0b6a4fa17086c8671a5102583..00a915cf266202e26b274cab962f7bf6bcf76fc1 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-@@ -430,6 +430,10 @@ &pwm1 {
- 	status = "okay";
- };
- 
-+&rng {
-+	status = "okay";
-+};
-+
- &saradc {
- 	vref-supply = <&avcc_1v8_s0>;
- 	status = "okay";
+diff --git a/.mailmap b/.mailmap
+index 17dd8eb2630e6216336047c36037a509beaa0731..07dc4846c451d0f36e27fe67e224791cd48bfef9 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -525,6 +525,7 @@ Nicholas Piggin <npiggin@gmail.com> <npiggin@suse.de>
+ Nicholas Piggin <npiggin@gmail.com> <nickpiggin@yahoo.com.au>
+ Nicholas Piggin <npiggin@gmail.com> <piggin@cyberone.com.au>
+ Nicolas Ferre <nicolas.ferre@microchip.com> <nicolas.ferre@atmel.com>
++Nicolas Frattaroli <nicolas.frattaroli@collabora.com> <frattaroli.nicolas@gmail.com>
+ Nicolas Pitre <nico@fluxnic.net> <nicolas.pitre@linaro.org>
+ Nicolas Pitre <nico@fluxnic.net> <nico@linaro.org>
+ Nicolas Saenz Julienne <nsaenz@kernel.org> <nsaenzjulienne@suse.de>
 
 -- 
 2.48.1
