@@ -1,59 +1,60 @@
-Return-Path: <linux-crypto+bounces-9399-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9403-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7761DA2761C
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Feb 2025 16:38:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C3FBA27629
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Feb 2025 16:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55F467A1642
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Feb 2025 15:37:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00F151887E52
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Feb 2025 15:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6974D215181;
-	Tue,  4 Feb 2025 15:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BD8214A77;
+	Tue,  4 Feb 2025 15:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b="KF3VZuAJ"
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b="DXzJxLQF"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC9F21517C;
-	Tue,  4 Feb 2025 15:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDBE8214A66;
+	Tue,  4 Feb 2025 15:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738683441; cv=pass; b=JnWuohthMgGXfncHWNJgkDSIgFUdmD1zvX+UeXMH9FwB0zgcJqS3x6aTJSYbDV3mK/Qhi4t8GIE1hnAF/Hsv7kBRpgNdYel7srkr4ll0c56hfCbplm9XfBJjH5/mP68J6XWbtChPnwq1lU1LntWbH0xURxlsQlL7sban9FMvnhc=
+	t=1738683465; cv=pass; b=ac4BZZFl1KSL3Js1D18m+aapkrMAmJ0adGlouhkZcQTxcLB6weTgVD1wwUgDwGme1HDxcq5HbxqFDstjxvGeYwmmowyoI8j19UIUx8HVuLugyGcq2vsOX8JVENijJY31jeB2W+gneXOfYO5McVdrmAHXQbDUl1XcVdJW9/neI1M=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738683441; c=relaxed/simple;
-	bh=/QWtDtIVKZ+DOfkephsSkBjccTgJTNb3p230GiJawFE=;
+	s=arc-20240116; t=1738683465; c=relaxed/simple;
+	bh=ej/o4cJTTIHJl837+qTjEsvcPeb+gw3vdk7Zvl80cEw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hcv8K8Ke+CNo5EtU5UfOZahazH2/321he4/d8wpG4CE9otTeesqjbHlaBRRvSPMiMDwyDayKgR1fWFI5xq01GRnFrD6GrIOD54yfbLaSikfjqCz0Hbfk3l48q+YZ3gmiVi9TI0f2HdZEvUqeFrM+1j5ccPDz6x1HfTdoN4jj/tA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b=KF3VZuAJ; arc=pass smtp.client-ip=136.143.188.15
+	 In-Reply-To:To:Cc; b=cKtU79f8Vtzro54np/mOHKbF4+uQEVq/fsiXtl1LzkNm8hpHnZ/fxNj+mc15xiAyI65e2M/RQMuDpAkNPj/XETVpkvatjJKxNqAelWCLxp7KqUBwAUHSVAt74jbj9ktSisLx+vDeUjvTPaSRaRVBxS01q92sxLwHgOHRPhEw2mw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=nicolas.frattaroli@collabora.com header.b=DXzJxLQF; arc=pass smtp.client-ip=136.143.188.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-ARC-Seal: i=1; a=rsa-sha256; t=1738683408; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1738683433; cv=none; 
 	d=zohomail.com; s=zohoarc; 
-	b=M+jJ3zCjDsjDnu5p0IcsJGhTZbjO3H5WonEDeYztF8vGnaOlUfdssDT2ughk8sAij6nxTVcFzhIdgZTnxryv545JhTq+VrjfQaHRu52JZecT5XZ+yNjxNBL/OBwT+LQ0kyjRqB3MG3MIggeB1gopNjQ0Py1nAZGfFhqe1kYdOMU=
+	b=AvmAv3ZMNNQjKa92Q6A2zTNwgoxiWnuPZzRppLkhkGNhZTOwYvFJ0ieCOJkgvakEiC3gTdK7ZskBm+GinrqsWsKrf2kyGLJZBpvJ76vkdJau6YA3gRi1+tfvTqavfFwjqcM+8uJQQbcFK3yNGB9KvKAtBA91HlkUu+aM0cwP/Fw=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1738683408; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=54iXlGsz9B7Sdyg3RzGURwQveukxIgeMMUfxlEzdSXs=; 
-	b=R2mOS4nKAKumwAndqcYf6K2rnSvuDQXg8WwT7aNpWhkGDXgFu+NO8EMQGGOsQnrQGAu4YcSOjie5II/YCIHP+X6M9KZZ34eTk/TaytRbTUGNew99kmSjy5fB4RkyNfpQ9cbYu4TT10Qb3suF6DZ4m/Mv0dFsKBV3d5bdFSBTRic=
+	t=1738683433; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=BUfhFIAuuxHyoIK02RnTA8La0/z0w6Oz5SQr/C+g/RE=; 
+	b=BZhD3Zacf06Fmqn84zREbGo0msErPb0U58lhgoqwReNycuGx4TzkfpIka2KhKh+j2xWgF2j1rcKPDL8Vm3zjV7q5MK15Cq8g7eGVJTYuDuVPCFXpR9qS2h9AIVx4jw/F/bSkoItarHChVzxI5RLkOL9FvAqYJlQzr2fMifuWVZA=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
 	dkim=pass  header.i=collabora.com;
 	spf=pass  smtp.mailfrom=nicolas.frattaroli@collabora.com;
 	dmarc=pass header.from=<nicolas.frattaroli@collabora.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1738683408;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1738683433;
 	s=zohomail; d=collabora.com; i=nicolas.frattaroli@collabora.com;
 	h=From:From:Date:Date:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Message-Id:References:In-Reply-To:To:To:Cc:Cc:Reply-To;
-	bh=54iXlGsz9B7Sdyg3RzGURwQveukxIgeMMUfxlEzdSXs=;
-	b=KF3VZuAJFP5QPbkxC8awh5M+FfkmEf/aZLK/FuqXZ85aHe4qIsJcVom18JTduGLA
-	KmokPTb6ARVgyLMwXSB+ADu7j2yu8cQM5Ht7nQ3nWVSQbuMzjrg8pJivYZcdztaQ5H+
-	sY7JxC3Hd0VWttyjqiuDoM5NAYuZjXdfTin27Tb0=
-Received: by mx.zohomail.com with SMTPS id 1738683405706315.2089997355388;
-	Tue, 4 Feb 2025 07:36:45 -0800 (PST)
+	bh=BUfhFIAuuxHyoIK02RnTA8La0/z0w6Oz5SQr/C+g/RE=;
+	b=DXzJxLQFAlVb8TqTDspK5pXb87qZEYvLfBtpV3b2+T4pRghR4U9PhIyqi7AGjuKm
+	YlVwBQz+fJ4MwKy8/6uVzOapV01IScLgUYAkqR5fXQm5z53v39J74qlFupKgTQzWEUa
+	kjn/P6i44WKej6TjjUfHLMvxqw6UKy0QHrQz63AM=
+Received: by mx.zohomail.com with SMTPS id 1738683409157388.8818067976115;
+	Tue, 4 Feb 2025 07:36:49 -0800 (PST)
 From: Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
-Date: Tue, 04 Feb 2025 16:35:51 +0100
-Subject: [PATCH v2 6/7] arm64: dts: rockchip: Add rng node to RK3588
+Date: Tue, 04 Feb 2025 16:35:52 +0100
+Subject: [PATCH v2 7/7] MAINTAINERS: add Nicolas Frattaroli to rockchip-rng
+ maintainers
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,7 +63,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250204-rk3588-trng-submission-v2-6-608172b6fd91@collabora.com>
+Message-Id: <20250204-rk3588-trng-submission-v2-7-608172b6fd91@collabora.com>
 References: <20250204-rk3588-trng-submission-v2-0-608172b6fd91@collabora.com>
 In-Reply-To: <20250204-rk3588-trng-submission-v2-0-608172b6fd91@collabora.com>
 To: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
@@ -78,34 +79,27 @@ Cc: Sebastian Reichel <sebastian.reichel@collabora.com>,
  Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
 X-Mailer: b4 0.14.2
 
-Add the RK3588's standalone hardware random number generator node to its
-device tree, and enable it.
+I maintain the rockchip,rk3588-rng bindings, and I guess also the part
+of the driver that implements support for it. Therefore, add me to the
+MAINTAINERS for this driver and these bindings.
 
 Signed-off-by: Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3588-base.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
-index 8cfa30837ce72581d0b513a8274ab0177eb5ae15..3cb52547754c2b64ee2dc0e08c23decf9773faeb 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
-@@ -1921,6 +1921,15 @@ sdhci: mmc@fe2e0000 {
- 		status = "disabled";
- 	};
- 
-+	rng: rng@fe378000 {
-+		compatible = "rockchip,rk3588-rng";
-+		reg = <0x0 0xfe378000 0x0 0x200>;
-+		interrupts = <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH 0>;
-+		clocks = <&scmi_clk SCMI_HCLK_SECURE_NS>;
-+		resets = <&scmi_reset SCMI_SRST_H_TRNG_NS>;
-+		status = "okay";
-+	};
-+
- 	i2s0_8ch: i2s@fe470000 {
- 		compatible = "rockchip,rk3588-i2s-tdm";
- 		reg = <0x0 0xfe470000 0x0 0x1000>;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 256d0217196586d179197393e46a1e78da850712..7daf9bfeb0cb4e9e594b809012c7aa243b0558ae 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20420,6 +20420,7 @@ F:	include/uapi/linux/rkisp1-config.h
+ ROCKCHIP RK3568 RANDOM NUMBER GENERATOR SUPPORT
+ M:	Daniel Golle <daniel@makrotopia.org>
+ M:	Aurelien Jarno <aurelien@aurel32.net>
++M:	Nicolas Frattaroli <nicolas.frattaroli@collabora.com>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/rng/rockchip,rk3568-rng.yaml
+ F:	Documentation/devicetree/bindings/rng/rockchip,rk3588-rng.yaml
 
 -- 
 2.48.1
