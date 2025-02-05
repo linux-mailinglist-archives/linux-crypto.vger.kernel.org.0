@@ -1,67 +1,80 @@
-Return-Path: <linux-crypto+bounces-9421-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9424-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C91EA2831C
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Feb 2025 04:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E88BA28323
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Feb 2025 04:57:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 227527A1912
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Feb 2025 03:55:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29B227A298E
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Feb 2025 03:56:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15CBE2139CB;
-	Wed,  5 Feb 2025 03:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TP5yFMp6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775F32144AE;
+	Wed,  5 Feb 2025 03:56:36 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58162135A5;
-	Wed,  5 Feb 2025 03:55:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D942135C6;
+	Wed,  5 Feb 2025 03:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738727755; cv=none; b=t0zSM3Qewl7wD0ezt9gifwxfVRaQdpPvFHVcu5LnmtcTeDgOPNj3Ld6LvDgqHIFYaf6Kdhv3cs+wXaf9nmzwealmHN9GAnudQ6nHxzSj4U4Avy/mXcJZOQt4z6iLf/W3oK2gsa4zhAyzFeSMtzVnpLXZi73d2+rihVTMce589oI=
+	t=1738727796; cv=none; b=baUeuANaUAVbZwIzdxPs7/xJ1rNidiq0PzKZRkPc4cJhZsMcSc6/KKzWaNg4ZrukvZS5wh6IQmTM77nAmQvlQ/RYP/ZeOk0gTGQsLPpcg1jE+KAabJIpKsMQQ8QAlCj/qkzJJUSqD7kHIRxmhQMoP1bJlkoaSxRyaAmG6abPKKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738727755; c=relaxed/simple;
-	bh=Hxh2SRAP0zMObcV5VTYIvzA4/xncAqz0iygjTf1XkYA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ustbv+3m7VV9Q7MKwJhKmZUrYiD681wOAmrRxTmaEKzDERsJc59+bqNNWTJ42bu1NTNCbXemU9u+krLU/c0YO4uMUNfWtoYAAVvUWY53BQv8gy+UtnFlOOs71SLeuq1ipmRVkTJmmpiZ0wNCD0+OC+DJjpTBJe2Brw4y4Hr3cSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TP5yFMp6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C55CC4CED1;
-	Wed,  5 Feb 2025 03:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738727755;
-	bh=Hxh2SRAP0zMObcV5VTYIvzA4/xncAqz0iygjTf1XkYA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TP5yFMp6O2wrSwZ2j32dpiGXn/Lr+uagV/aaDIpDZY/CX/e2yOL1s/u8HjYbRjcA+
-	 Sr0Tl0AYPHNWqjFNFTVN2xoIdz8H0hzt7bFrYnA1LMldIbKFDNkGWEIlnMuFEyFSsZ
-	 ET+4yhWsYFay6VAKqVAfTHWYK3zobfD0X+nRapzmV22z2ZKsFGM630MK0g8djgjRcs
-	 LH1BowwB/udDXTXfQwDlphol02qPIXOgmK2SxNUiAB+kvzH8reVe8P2UGTMK1xuA7Z
-	 jwKIP+F0JINJSMB2gDSUC4eekqloICxvmHSxXn56vdaMuUcjj5syRDJKbK8eoATx2p
-	 ov06eQZ18VcDg==
-Date: Tue, 4 Feb 2025 19:55:53 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] crypto: x86 - AES-CTR and AES-XCTR rewrite
-Message-ID: <20250205035553.GA117323@sol.localdomain>
-References: <20250205035026.116976-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1738727796; c=relaxed/simple;
+	bh=DqTvswz0WCue98EzuV1YYpsi/NFRaFqyTBU+XDM7aLY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LJAtc8HjONgfuo1tehZrLphbV/T4ESIwuZ7dZBYjAMEap9rSqDMqWVyZn9hIFY8tFVNuGukXTrIFXxEvXgjOojYBaQjXHvQXpxDbvxDbW9hZZjYDQaCkFv3M3hzvQdVUgGiTNFFgWDLuwb3tWO/8/YtLkZhAwz2MjwO9ww2G+Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YnmWw0qHLz1W55W;
+	Wed,  5 Feb 2025 11:52:12 +0800 (CST)
+Received: from kwepemd200024.china.huawei.com (unknown [7.221.188.85])
+	by mail.maildlp.com (Postfix) with ESMTPS id B001D18010B;
+	Wed,  5 Feb 2025 11:56:29 +0800 (CST)
+Received: from localhost.huawei.com (10.90.30.45) by
+ kwepemd200024.china.huawei.com (7.221.188.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 5 Feb 2025 11:56:29 +0800
+From: Chenghai Huang <huangchenghai2@huawei.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<liulongfang@huawei.com>, <shenyang39@huawei.com>, <qianweili@huawei.com>,
+	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>
+Subject: [PATCH 0/3] crypto: hisilicon/sec2 - fix the specification problems for the sec
+Date: Wed, 5 Feb 2025 11:56:25 +0800
+Message-ID: <20250205035628.845962-1-huangchenghai2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250205035026.116976-1-ebiggers@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd200024.china.huawei.com (7.221.188.85)
 
-On Tue, Feb 04, 2025 at 07:50:24PM -0800, Eric Biggers wrote:
-> [PATCH 0/2] crypto: x86 - AES-CTR and AES-XCTR rewrite
+From: Wenkai Lin <linwenkai6@hisilicon.com>
 
-To clarify, this is meant to be v2.  I forgot to put it in the subject lines.
+1. Supports the case that the auth key length is 0.
+2. Check if the aead authsize alignment is 4-byte aligned for cbc mode.
+3. Fix for the specifications not supported by the sec hardware and
+   use the software api to do the caculation.
 
-- Eric
+Wenkai Lin (3):
+  crypto: hisilicon/sec2 - fix for aead auth key length
+  crypto: hisilicon/sec2 - fix for aead authsize alignment
+  crypto: hisilicon/sec2 - fix for sec spec check
+
+ drivers/crypto/hisilicon/sec2/sec.h        |   1 -
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 125 ++++++++-------------
+ 2 files changed, 47 insertions(+), 79 deletions(-)
+
+-- 
+2.33.0
+
 
