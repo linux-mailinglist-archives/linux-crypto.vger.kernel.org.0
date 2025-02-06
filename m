@@ -1,60 +1,61 @@
-Return-Path: <linux-crypto+bounces-9445-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9442-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13696A2A1E7
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 08:21:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D247DA2A1E3
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 08:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2658188898A
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 07:21:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A81DD1888698
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 07:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8672253E9;
-	Thu,  6 Feb 2025 07:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9400E22257A;
+	Thu,  6 Feb 2025 07:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mch5WHdE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AwPycfki"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE38E1FF1B4;
-	Thu,  6 Feb 2025 07:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF66150997;
+	Thu,  6 Feb 2025 07:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738826469; cv=none; b=NyMRX5Q7btkq55Kc6uPbMY+vv/Eig7cIbnNEoDsSqu3EfVtFoHTPX9fTlSzAkEtr17+msK/MDdf0apLx/2XQFoCrBLxtJzSba6d743w9coZEFviXQM8k/kC9mDpjT6m5z/y4F0gVaC3Utu1z9F/CmW4sjCahpAtrkQc+lQX0FLw=
+	t=1738826467; cv=none; b=ODA7Op3cZ29951J9BVHR451xuB8kPin5m23yyBGb83OM+N/iMy2+Cs515PPgKcGZ0h69dmrBzdhRj2qMfxpwvkzQNJ/56YZsrEoVR939r/W7VeRnJlw+0rCxMQCOvDwL5qrVwBs4TrMG73I15sfQImFNuBIwsMcbV1tE7VhpYc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738826469; c=relaxed/simple;
-	bh=84dbuA5ZeoWlBeaM0rI/RZHiZWWHT3sLg/FAVVpwgdY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PpjIjjmiguV1a0pED5oQYT43IPW0M4CgnXtOiiZeR+2MgkVJQUPWDwH9e6IqStJja2E8exj1RwmFvt0GlVQCXb5zsp47sjNnMuU3WuTJRExMc39sBlU9+qAPe8MUEQKEz1KPSZMLfydm9A8e0GSFUbFpxXdwFaJ3sJLz9o5L+yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mch5WHdE; arc=none smtp.client-ip=192.198.163.8
+	s=arc-20240116; t=1738826467; c=relaxed/simple;
+	bh=Dg6cX4FN0ukGigef7HcQnBK2IX626trFMZTmcHymvI0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=eA0L2Bxb1RptTtz7i59A6B8VI80SWHmAaC0XppLYt1kG/RYM2kN6DMoYwoMzWxaF04H/XNqGBGZhCnXJR+gJ/7QUl/D0fSoZJlC1LZTXo8/a0fZSL4uPtAPIYASweQY/DHg7g7rESYRQuj1DjCtHQ9dJH6EptkAqrsGQK/sv9ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AwPycfki; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738826467; x=1770362467;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=84dbuA5ZeoWlBeaM0rI/RZHiZWWHT3sLg/FAVVpwgdY=;
-  b=mch5WHdEdKPSy6cBkNO/OZJy3vcrc0Fg/M20t7QbmSxQYr6sOTCdM3sG
-   6xrJV/G//zWdZCAzNmOtYctq9YsMQTCbUB+IE+PR4FMSsBi0TlRb9tXr2
-   DBwx9gXeZEaGjCf56RDonNf03FkEGS0/wWNziwWwEZW0TuXP0Bn5zOs21
-   yefjVut9oT/6GFESZWJDOiLDA8+5Y7MVHl24yNKMxb2fFN5X9lPm0I5HX
-   zmeF7A/uBe3x8HiGSSAMkUARIF4hI4ayrH/8qBKFN20BnD/gQz4JIt5m6
-   oO4cQxPP2k0Tp2qqlV18YrrchalcNHYfZy8VZpd5EbIiw0MuER8+A/D7t
-   g==;
-X-CSE-ConnectionGUID: O9FGWRpFQR6b4OXx13TEpw==
-X-CSE-MsgGUID: kybj4M5sR8m7fDzlHimopQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="56962578"
+  t=1738826465; x=1770362465;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Dg6cX4FN0ukGigef7HcQnBK2IX626trFMZTmcHymvI0=;
+  b=AwPycfki3eoQ102Cp1qNzxHubJig977zc2mb+2KO7aMtvkNzlmEu2oCZ
+   AT4lvOt8/gN8IgCREh87reiX2oVaZXGsIS4MfZrVAE7E7SqkDcouf2CjT
+   opJT/TRKdk3j5IsuJw3ofRCAeYqK0w71LrecXFx8nsdR01qCSejrL7C60
+   i4p7uWsHb3eNAQVIpfFHbBzb4f1R1YwSwdXOKNTzciw6ycY1LoIQO1pLJ
+   pj7J8qk+ZdCXW81tV+rTBGxKxeVBx1kdNSoHaYM+Ad9qyypaZuSVS/osx
+   86mB0zrNIhS7eehnOaSQR+972IYoMgrpMYVVV/fRM+XicNKoTo9ZedfJm
+   Q==;
+X-CSE-ConnectionGUID: S9TWm/0rQf64bzOLaBfNRw==
+X-CSE-MsgGUID: NPPPfRpUTXO4KIO1TIHHMA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="56962595"
 X-IronPort-AV: E=Sophos;i="6.13,263,1732608000"; 
-   d="scan'208";a="56962578"
+   d="scan'208";a="56962595"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 23:21:03 -0800
-X-CSE-ConnectionGUID: LeJTioXSQoO9W5QzhAR/+A==
-X-CSE-MsgGUID: RAPwBuLjTPmmcINPz2v1SA==
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 23:21:04 -0800
+X-CSE-ConnectionGUID: 2/lOqTRoShKTaM2C9vEFFg==
+X-CSE-MsgGUID: o312Qv5QS82zTbitC+ehBQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="112022589"
+   d="scan'208";a="112022592"
 Received: from jf5300-b11a338t.jf.intel.com ([10.242.51.115])
   by orviesa008.jf.intel.com with ESMTP; 05 Feb 2025 23:21:03 -0800
 From: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
@@ -79,10 +80,12 @@ To: linux-kernel@vger.kernel.org,
 Cc: wajdi.k.feghali@intel.com,
 	vinodh.gopal@intel.com,
 	kanchana.p.sridhar@intel.com
-Subject: [PATCH v6 00/16] zswap IAA compress batching
-Date: Wed,  5 Feb 2025 23:20:46 -0800
-Message-Id: <20250206072102.29045-1-kanchana.p.sridhar@intel.com>
+Subject: [PATCH v6 01/16] crypto: acomp - Add synchronous/asynchronous acomp request chaining.
+Date: Wed,  5 Feb 2025 23:20:47 -0800
+Message-Id: <20250206072102.29045-2-kanchana.p.sridhar@intel.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20250206072102.29045-1-kanchana.p.sridhar@intel.com>
+References: <20250206072102.29045-1-kanchana.p.sridhar@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -91,707 +94,551 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-IAA Compression Batching:
-=========================
+This patch is based on Herbert Xu's request chaining for ahash
+("[PATCH 2/6] crypto: hash - Add request chaining API") [1]. The generic
+framework for request chaining that's provided in the ahash implementation
+has been used as reference to develop a similar synchronous request
+chaining framework for crypto_acomp.
 
-This patch-series introduces the use of the Intel Analytics Accelerator
-(IAA) for parallel batch compression of pages in large folios to improve
-zswap swapout latency.
+Furthermore, this commit develops an asynchronous request chaining
+framework and API that iaa_crypto can use for request chaining with
+parallelism, in order to fully benefit from Intel IAA's multiple
+compress/decompress engines in hardware. This allows us to gain significant
+latency improvements with IAA batching as compared to synchronous request
+chaining.
 
-Improvements seen with IAA compress batching vs. IAA sequential:
+ Usage of acomp request chaining API:
+ ====================================
 
- usemem30 with 64K folios:
- -------------------------
-  59.1% higher throughput
-  30.3% lower elapsed time
-  36.2% lower sys time 
+ Any crypto_acomp compressor can avail of request chaining as follows:
 
- usemem30 with 2M folios:
- ------------------------
-  60.2% higher throughput
-  26.7% lower elapsed time
-  30.5% lower sys time 
+ Step 1: Create request chain:
 
-There is no performance impact to zstd with v6.
+  Request 0 (the first req in the chain):
 
-The major focus for v6 was to fix the performance regressions observed in
-v5, highlighted by Yosry (Thanks Yosry):
+  void acomp_reqchain_init(struct acomp_req *req,
+                           u32 flags, crypto_completion_t compl,
+                           void *data);
 
- 1) zstd performance regression.
- 2) IAA batching vs. IAA non-batching regression.
+  Subsequent requests:
 
-The patch-series is organized as follows:
+  void acomp_request_chain(struct acomp_req *req,
+                           struct acomp_req *head);
 
- 1) crypto acomp & iaa_crypto driver enablers for batching: Relevant
-    patches are tagged with "crypto:" in the subject:
+ Step 2: Process the request chain using the specified compress/decompress
+         "op":
 
-    Patch 1) Adds new acomp request chaining framework and interface based
-             on Herbert Xu's ahash reference implementation in "[PATCH 2/6]
-             crypto: hash - Add request chaining API" [1]. acomp algorithms
-             can use request chaining through these interfaces:
+  2.a) Synchronous: the chain of requests is processed in series:
 
-             Setup the request chain:
-               acomp_reqchain_init()
-               acomp_request_chain()
+       int acomp_do_req_chain(struct acomp_req *req,
+                              int (*op)(struct acomp_req *req));
 
-             Process the request chain:
-               acomp_do_req_chain(): synchronously (sequentially)
-               acomp_do_async_req_chain(): asynchronously using submit/poll
-                                           ops (in parallel)
+  2.b) Asynchronous: the chain of requests is processed in parallel using a
+       submit-poll paradigm:
 
-    Patch 2) Adds acomp_alg/crypto_acomp interfaces for batch_compress(),
-             batch_decompress() and get_batch_size(), that swap modules can
-             invoke using the new batching API crypto_acomp_batch_compress(),
-             crypto_acomp_batch_decompress() and crypto_acomp_batch_size().
-             Additionally, crypto acomp provides a new
-             acomp_has_async_batching() interface to query for these API
-             before allocating batching resources for a given compressor in
-             zswap/zram.
+       int acomp_do_async_req_chain(struct acomp_req *req,
+                                    int (*op_submit)(struct acomp_req *req),
+                                    int (*op_poll)(struct acomp_req *req));
 
-    Patch 3) New CRYPTO_ACOMP_REQ_POLL acomp_req flag to act as a gate for
-             async poll mode in iaa_crypto.
+Request chaining will be used in subsequent patches to implement
+compress/decompress batching in the iaa_crypto driver for the two supported
+IAA driver sync_modes:
 
-    Patch 4) iaa-crypto driver implementations for sync/async
-             crypto_acomp_batch_compress() and
-             crypto_acomp_batch_decompress() developed using request
-             chaining. If the iaa_crypto driver is set up for 'async'
-             sync_mode, these batching implementations deploy the
-             asynchronous request chaining implementation. 'async' is the
-             recommended mode for realizing the benefits of IAA parallelism.
-             If iaa_crypto is set up for 'sync' sync_mode, the synchronous
-             version of the request chaining API is used.
-             
-             The "iaa_acomp_fixed_deflate" algorithm registers these
-             implementations for its "batch_compress" and "batch_decompress"
-             interfaces respectively and opts in with CRYPTO_ALG_REQ_CHAIN.
-             Further, iaa_crypto provides an implementation for the
-             "get_batch_size" interface: this returns the
-             IAA_CRYPTO_MAX_BATCH_SIZE constant that iaa_crypto defines
-             currently as 8U for IAA compression algorithms (iaa_crypto can
-             change this if needed as we optimize our batching algorithm).
+  sync_mode = 'sync' will use (2.a),
+  sync_mode = 'async' will use (2.b).
 
-    Patch 5) Modifies the default iaa_crypto driver mode to async, now that
-             iaa_crypto provides a truly async mode that gives
-             significantly better latency than sync mode for the batching
-             use case.
+These files are directly re-used from [1] which is not yet merged:
 
-    Patch 6) Disables verify_compress by default, to facilitate users to
-             run IAA easily for comparison with software compressors.
+include/crypto/algapi.h
+include/linux/crypto.h
 
-    Patch 7) Reorganizes the iaa_crypto driver code into logically related
-             sections and avoids forward declarations, in order to facilitate
-             Patch 8. This patch makes no functional changes.
-
-    Patch 8) Makes a major infrastructure change in the iaa_crypto driver,
-             to map IAA devices/work-queues to cores based on packages
-             instead of NUMA nodes. This doesn't impact performance on
-             the Sapphire Rapids system used for performance
-             testing. However, this change fixes functional problems we
-             found on Granite Rapids in internal validation, where the
-             number of NUMA nodes is greater than the number of packages,
-             which was resulting in over-utilization of some IAA devices
-             and non-usage of other IAA devices as per the current NUMA
-             based mapping infrastructure.
-             This patch also eliminates duplication of device wqs in
-             per-cpu wq_tables, thereby saving 140MiB on a 384 cores
-             Granite Rapids server with 8 IAAs. Submitting this change now
-             so that it can go through code reviews before it can be merged.
-
-    Patch 9) Builds upon the new infrastructure for mapping IAAs to cores
-             based on packages, and enables configuring a "global_wq" per
-             IAA, which can be used as a global resource for compress jobs
-             for the package. If the user configures 2WQs per IAA device,
-             the driver will distribute compress jobs from all cores on the
-             package to the "global_wqs" of all the IAA devices on that
-             package, in a round-robin manner. This can be used to improve
-             compression throughput for workloads that see a lot of swapout
-             activity.
-
-   Patch 10) Makes an important change to iaa_crypto driver's descriptor
-             allocation, from blocking to non-blocking with
-             retries/timeouts and mitigations in case of timeouts during
-             compress/decompress ops. This prevents tasks getting blocked
-             indefinitely, which was observed when testing 30 cores running
-             workloads, with only 1 IAA enabled on Sapphire Rapids (out of
-             4). These timeouts are typically only encountered, and
-             associated mitigations exercised, only in configurations with
-             1 IAA device shared by 30+ cores.
-
-   Patch 11) Fixes a bug with the "deflate_generic_tfm" global being
-             accessed without locks in the software decomp fallback code.
-
- 2) zswap modifications to enable compress batching in zswap_store()
-    of large folios (including pmd-mappable folios):
-
-   Patch 12) Defines a zswap-specific ZSWAP_MAX_BATCH_SIZE (currently set
-             as 8U) to denote the maximum number of acomp_ctx batching
-             resources. Further, the "struct crypto_acomp_ctx" is modified
-             to contain a configurable number of acomp_reqs and buffers.
-             The cpu hotplug onlining code will allocate up to
-             ZSWAP_MAX_BATCH_SIZE requests/buffers in the per-cpu
-             acomp_ctx, thereby limiting the memory usage in zswap, and
-             ensuring that non-batching compressors incur no memory penalty.
-
-   Patch 13) Restructures & simplifies zswap_store() to make it amenable
-             for batching. Moves the loop over the folio's pages to a new
-             zswap_store_folio(), which in turn allocates zswap entries
-             for all folio pages upfront, then calls zswap_compress() for
-             each folio page.
-
-   Patch 14) Introduces zswap_compress_folio() to compress all pages in a
-             folio. 
-
-   Patch 15) We modify zswap_compress_folio() to detect if the compressor
-             supports batching. If so, the "acomp_ctx->nr_reqs" becomes the
-             batch size with which we call crypto_acomp_batch_compress() to
-             compress multiple folio pages in parallel in IAA. Upon
-             successful compression of a batch, the compressed buffers are
-             stored in zpool.
-
-             For compressors that don't support batching,
-             zswap_compress_folio() will call zswap_compress() for each
-             page in the folio.
-
-             However, although we observe significantly better IAA batching
-             performance/throughput, there was also a significant
-             performance regression observed with zstd/2M folios. This is
-             fixed in patch 16.
-
-             Based on the discussions in [2], patch 15 invokes
-             crypto_acomp_batch_compress() with "NULL" for the @wait
-             parameter. This causes iaa_crypto's iaa_comp_acompress_batch()
-             to use asynchronous polling instead of async request chaining
-             for now, until there is better clarity on request
-             chaining. Further, testing with micro-benchmarks indicated a
-             slight increase in latency with request chaining:
-
-             crypto_acomp_batch_compress()  p05 (ns)   p50 (ns)  p99 (ns)
-             -------------------------------------------------------------
-             async polling                   5,279      5,589     8,875
-             async request chaining          5,316      5,662     8,923
-             -------------------------------------------------------------
-
-   Patch 16) The zstd 2M regression is fixed. We now see no regressions
-             with zstd, and impressive throughput/performance improvements
-             with IAA batching vs. no-batching.
-
-
-With v6 of this patch series, the IAA compress batching feature will be
-enabled seamlessly on Intel platforms that have IAA by selecting
-'deflate-iaa' as the zswap compressor, and using the iaa_crypto 'async'
-sync_mode driver attribute.
+Hence, I am adding Herbert as the co-developer of this acomp request
+chaining patch.
 
 [1]: https://lore.kernel.org/linux-crypto/677614fbdc70b31df2e26483c8d2cd1510c8af91.1730021644.git.herbert@gondor.apana.org.au/
-[2]: https://patchwork.kernel.org/project/linux-mm/patch/20241221063119.29140-3-kanchana.p.sridhar@intel.com/
 
-
-System setup for testing:
-=========================
-Testing of this patch-series was done with mm-unstable as of 2-1-2025,
-commit 7de6fd8ab650, without and with this patch-series.
-Data was gathered on an Intel Sapphire Rapids (SPR) server, dual-socket
-56 cores per socket, 4 IAA devices per socket, 503 GiB RAM and 525G SSD
-disk partition swap. Core frequency was fixed at 2500MHz.
-
-Other kernel configuration parameters:
-
-    zswap compressor  : zstd, deflate-iaa
-    zswap allocator   : zsmalloc
-    vm.page-cluster   : 0
-
-IAA "compression verification" is disabled and IAA is run in the async
-mode (the defaults with this series).
-
-I ran experiments with these workloads:
-
-1) usemem 30 processes with these large folios enabled to "always":
-   - 64k
-   - 2048k
-
-2) Kernel compilation allmodconfig with 2G max memory, 32 threads, run in
-   tmpfs with these large folios enabled to "always":
-   - 64k
-
-usemem30 and kernel compilation used different IAA WQs configurations:
-
-  usemem30 IAA WQ configuration:
-  ------------------------------
-  1 WQ with 128 entries per device. Compress/decompress jobs are sent to
-  the same WQ and IAA that is mapped to the cores. There is very less
-  swapin activity in this workload, and allocating 2WQs (one for decomps,
-  one for comps, each 64 entries) degrades compress batching latency. This
-  IAA WQ configuration explains the insignificant performance gains seen
-  with IAA batching in v5, and once again delivers the expected performance
-  improvements with batching.
-
-  Kernel compilation IAA WQ configuration:
-  ----------------------------------------
-  2WQs, with 64 entries each, are configured per IAA device. Compress jobs
-  from all cores on a socket are distributed among all 4 IAA devices on the
-  same socket.
-
-
-Performance testing (usemem30):
-===============================
-The vm-scalability "usemem" test was run in a cgroup whose memory.high
-was fixed at 150G. The is no swap limit set for the cgroup. 30 usemem
-processes were run, each allocating and writing 10G of memory, and sleeping
-for 10 sec before exiting:
-
-usemem --init-time -w -O -b 1 -s 10 -n 30 10g
-
-One important difference in v6's experiments is that the 30 usemem
-processes are pinned to 30 consecutive cores on socket 0, which makes use
-of the IAA devices only on socket 0.
-
-
- 64K folios: usemem30: deflate-iaa:
- ==================================
-
- -------------------------------------------------------------------------------
-                 mm-unstable-2-1-2025            v6             v6
- -------------------------------------------------------------------------------
- zswap compressor         deflate-iaa   deflate-iaa    deflate-iaa  IAA Batching
-                                                                        vs.
-                                                                      Sequential
- -------------------------------------------------------------------------------
- Total throughput (KB/s)    6,039,595     9,679,965      9,537,327       59.1%      
- Avg throughput (KB/s)        201,319       322,665        317,910                  
- elapsed time (sec)            100.74         69.05          71.43      -30.3%      
- sys time (sec)              2,446.53      1,526.71       1,596.23      -36.2%      
-                                                                                    
- -------------------------------------------------------------------------------
- memcg_high                   909,501       961,527        964,010                  
- memcg_swap_fail                1,580           733          2,393                  
- zswpout                   58,342,295    61,542,432     61,715,737                  
- zswpin                           425            80            442                  
- pswpout                            0             0              0                  
- pswpin                             0             0              0                  
- thp_swpout                         0             0              0                  
- thp_swpout_fallback                0             0              0                  
- 64kB_swpout_fallback           1,580           733          2,393                  
- pgmajfault                     3,311         2,860          3,220                  
- anon_fault_alloc_64kB      4,924,571     4,924,545      4,924,104                 
- ZSWPOUT-64kB               3,644,769     3,845,652      3,854,791 
- SWPOUT-64kB                        0             0              0 
- -------------------------------------------------------------------------------
-
-
- 2M folios: usemem30: deflate-iaa:
- =================================
-
-
- -------------------------------------------------------------------------------
-                 mm-unstable-2-1-2025             v6             v6
- -------------------------------------------------------------------------------
- zswap compressor         deflate-iaa    deflate-iaa    deflate-iaa IAA Batching
-                                                                        vs.
-                                                                     Sequential
- -------------------------------------------------------------------------------
- Total throughput (KB/s)     6,334,585     10,068,264    10,230,633      60.2%     
- Avg throughput (KB/s)         211,152        335,608       341,021                
- elapsed time (sec)              87.68          65.74         62.86     -26.7%     
- sys time (sec)               2,031.84       1,454.93      1,370.87     -30.5%     
-                                                                                   
- -------------------------------------------------------------------------------
- memcg_high                    115,322        121,226       120,093                
- memcg_swap_fail                   568            350           301                
- zswpout                   559,323,303     62,474,427    61,907,590                
- zswpin                            518            463            14                
- pswpout                             0              0             0                
- pswpin                              0              0             0                
- thp_swpout                          0              0             0                
- thp_swpout_fallback               568            350           301                
- pgmajfault                      3,298          3,247         2,826                
- anon_fault_alloc_2048kB       153,734        153,734       153,737               
- ZSWPOUT-2048kB                115,321        121,672       120,614           
- SWPOUT-2048kB                       0              0             0           
- -------------------------------------------------------------------------------
-
-
- 64K folios: usemem30: zstd:
- ===========================
-
- -------------------------------------------------------------------------------
-                mm-unstable-2-1-2025            v6            v6           v6
-                                          Patch 15      Patch 16     Patch 16
-                                            (regr)       (fixed)      (fixed)
- -------------------------------------------------------------------------------
- zswap compressor               zstd          zstd          zstd         zstd
- -------------------------------------------------------------------------------
- Total throughput (KB/s)   6,929,741     6,975,265     7,003,546    6,953,025
- Avg throughput (KB/s)       230,991       232,508       233,451      231,767
- elapsed time (sec)            88.59         87.32         87.45        88.57
- sys time (sec)             2,188.83      2,136.52      2,133.41     2,178.23
-
- -------------------------------------------------------------------------------
- memcg_high                  764,423       764,174       764,420      764,476
- memcg_swap_fail               1,236            15         1,234           16
- zswpout                  48,928,758    48,908,998    48,928,536   48,928,551
- zswpin                          421            68           396          100
- pswpout                           0             0             0            0
- pswpin                            0             0             0            0
- thp_swpout                        0             0             0            0
- thp_swpout_fallback               0             0             0            0
- 64kB_swpout_fallback          1,236            15         1,234           16
- pgmajfault                    3,196         2,875         3,570        3,284
- anon_fault_alloc_64kB     4,924,288     4,924,406     4,924,161    4,924,064
- ZSWPOUT-64kB              3,056,753     3,056,772     3,056,745    3,057,979
- SWPOUT-64kB                       0             0             0            0
- -------------------------------------------------------------------------------
-
-
- 2M folios: usemem30: zstd:
- ==========================
-
- -------------------------------------------------------------------------------
-                mm-unstable-2-1-2025            v6            v6           v6
-                                          Patch 15      Patch 16     Patch 16
-                                            (regr)       (fixed)      (fixed)
- -------------------------------------------------------------------------------
- zswap compressor               zstd          zstd          zstd         zstd
- -------------------------------------------------------------------------------
- Total throughput (KB/s)   7,712,462     7,235,682     7,716,994    7,745,378
- Avg throughput (KB/s)       257,082       241,189       257,233      258,179
- elapsed time (sec)            84.94         89.54         86.96        85.82
- sys time (sec)             2,008.19      2,141.90      2,059.80     2,039.96
-                                                                             
- -------------------------------------------------------------------------------
- memcg_high                   93,036        94,792        93,137       93,100
- memcg_swap_fail                 143           169            32           11
- zswpout                  48,062,240    48,929,604    48,113,722   48,073,739
- zswpin                          439           438            71            9
- pswpout                           0             0             0            0
- pswpin                            0             0             0            0
- thp_swpout                        0             0             0            0
- thp_swpout_fallback             143           169            32           11
- pgmajfault                    3,246         3,645         3,248        2,775
- anon_fault_alloc_2048kB     153,739       153,738       153,740      153,733
- ZSWPOUT-2048kB               93,726        95,398        93,940       93,883
- SWPOUT-2048kB                     0             0             0            0
- -------------------------------------------------------------------------------
-
- zstd 2M regression fix details:
- -------------------------------
- Patch 16 essentially adapts the batching implementation of
- zswap_store_folio() to be sequential, i.e., for the behavior to be the
- same as the earlier zswap_store_page() iteration over the folio's
- pages. It attempts to preserve common code paths.
-
- I wasn't able to quantify why the Patch 15 implementation caused
- the zstd regression with the usual profiling methods such as
- tracepoints/bpftrace. My best hypothesis as to why Patch 16 resolves the
- regression, is that it has to do with a combination of branch mispredicts
- and the working set in the zswap_store_folio() code blocks having to load
- and iterate over 512 pages in the 3 loops. I gathered perf event counts
- that seem to back up this hypothesis:
-
-
- -------------------------------------------------------------------------------
- usemem30, zstd,              v6 Patch 15          v6 Patch 16        Change in
- 2M Folios,            zstd 2M regression           Fixes zstd       PMU events
- perf stats                                      2M regression         with fix
- -------------------------------------------------------------------------------
- branch-misses              1,571,192,128        1,545,342,571       -25,849,557
- L1-dcache-stores       1,211,615,528,323    1,190,695,049,961   -20,920,478,362
- L1-dcache-loads        3,357,273,843,074    3,307,817,975,881   -49,455,867,193
- LLC-store-misses           3,357,428,475        3,340,252,023       -17,176,452
- branch-load-misses         1,567,824,197        1,546,321,034       -21,503,163
- branch-loads           1,463,632,526,371    1,449,551,102,173   -14,081,424,198
- mem-stores             1,211,399,592,024    1,191,473,855,029   -19,925,736,995
- dTLB-loads             3,367,449,558,533    3,308,475,712,698   -58,973,845,835
- LLC-loads                  1,867,235,354        1,773,790,017       -93,445,337
- node-load-misses               4,057,323            3,959,741           -97,582
- major-faults                         241                    0              -241
- L1-dcache-load-misses     22,339,515,994       24,381,783,235     2,042,267,241
- L1-icache-load-misses     21,182,690,283       26,504,876,405     5,322,186,122
- LLC-load-misses              224,000,082          258,495,328        34,495,246
- node-loads                   221,425,627          256,372,686        34,947,059
- mem-loads                              0                    0                 0
- dTLB-load-misses               4,886,686            8,672,079         3,785,393
- iTLB-load-misses               1,548,637            4,268,093         2,719,456
- cache-misses              10,831,533,095       10,834,598,425         3,065,330
- minor-faults                     155,246              155,707               461 
- -------------------------------------------------------------------------------
-
-
-
- 4K folios: usemem30: Regression testing:
- ========================================
-
- -------------------------------------------------------------------------------
-                        mm-unstable             v6   mm-unstable           v6
- -------------------------------------------------------------------------------
- zswap compressor       deflate-iaa    deflate-iaa          zstd         zstd   
- -------------------------------------------------------------------------------
- Total throughput (KB/s)  5,155,471      6,031,332     6,453,431    6,566,026
- Avg throughput (KB/s)      171,849        201,044       215,114      218,867
- elapsed time (sec)          108.35          92.61         95.50        88.99
- sys time (sec)            2,400.32       2,212.06      2,417.16     2,207.35
-                                                                                
- -------------------------------------------------------------------------------
- memcg_high                 670,635      1,007,763       764,456      764,470
- memcg_swap_fail                  0              0             0            0
- zswpout                 62,098,929     64,507,508    48,928,772   48,928,690
- zswpin                         425             77           457          461
- pswpout                          0              0             0            0
- pswpin                           0              0             0            0
- thp_swpout                       0              0             0            0
- thp_swpout_fallback              0              0             0            0
- pgmajfault                   3,271          2,864         3,240        3,242
- -------------------------------------------------------------------------------
-
-
-Performance testing (Kernel compilation, allmodconfig):
-=======================================================
-
-The experiments with kernel compilation test, 32 threads, in tmpfs use the
-"allmodconfig" that takes ~12 minutes, and has considerable swapout/swapin
-activity. The cgroup's memory.max is set to 2G.
-
-
- 64K folios: Kernel compilation/allmodconfig:
- ============================================
-
- -------------------------------------------------------------------------------
-                     mm-unstable               v6   mm-unstable            v6
- -------------------------------------------------------------------------------
- zswap compressor    deflate-iaa      deflate-iaa          zstd          zstd   
- -------------------------------------------------------------------------------
- real_sec                 767.36           743.90        776.08        769.43
- user_sec              15,773.57        15,773.34     15,780.93     15,736.49
- sys_sec                4,209.63         4,013.51      5,392.85      5,046.05
- -------------------------------------------------------------------------------
- Max_Res_Set_Size_KB   1,874,680        1,873,776     1,874,244     1,873,456
- -------------------------------------------------------------------------------
- memcg_high                    0                0             0             0
- memcg_swap_fail               0                0             0             0
- zswpout             109,623,799      110,737,958    89,488,777    81,553,126
- zswpin               33,303,441       33,295,883    26,753,716    23,266,542
- pswpout                     315              151            99           116
- pswpin                       80               54            64            32
- thp_swpout                    0                0             0             0
- thp_swpout_fallback           0                0             0             0
- 64kB_swpout_fallback          0              348             0             0
- pgmajfault           35,606,216       35,462,017    28,488,538    24,703,903
- ZSWPOUT-64kB          3,551,578        3,596,675     2,814,435     2,603,649
- SWPOUT-64kB                  19                5             5             7
- -------------------------------------------------------------------------------
-
-
-With the iaa_crypto driver changes for non-blocking descriptor allocations
-no timeouts-with-mitigations were seen in compress/decompress jobs, for all
-of the above experiments.
-
-
-Summary:
-========
-The performance testing data with usemem 30 processes and kernel
-compilation test show 60% throughput gains and 36% sys time reduction
-(usemem30) and 5% sys time reduction (kernel compilation) with
-zswap_store() large folios using IAA compress batching as compared to
-IAA sequential. There is no performance regression for zstd.
-
-We can expect to see even more significant performance and throughput
-improvements if we use the parallelism offered by IAA to do reclaim
-batching of 4K/large folios (really any-order folios), and using the
-zswap_store() high throughput compression to batch-compress pages
-comprising these folios, not just batching within large folios. This is the
-reclaim batching patch 13 in v1, which will be submitted in a separate
-patch-series.
-
-Our internal validation of IAA compress/decompress batching in highly
-contended Sapphire Rapids server setups with workloads running on 72 cores
-for ~25 minutes under stringent memory limit constraints have shown up to
-50% reduction in sys time and 21.3% more memory savings with IAA, as
-compared to zstd, for same performance. IAA batching demonstrates more than
-2X the memory savings obtained by zstd for same performance.
-
-
-Changes since v5:
-=================
-1) Rebased to mm-unstable as of 2-1-2025, commit 7de6fd8ab650.
-
-Several improvements, regression fixes and bug fixes, based on Yosry's
-v5 comments (Thanks Yosry!):
-
-2) Fix for zstd performance regression in v5.
-3) Performance debug and fix for marginal improvements with IAA batching
-   vs. sequential.
-4) Performance testing data compares IAA with and without batching, instead
-   of IAA batching against zstd.
-5) Commit logs/zswap comments not mentioning crypto_acomp implementation
-   details.
-6) Delete the pr_info_once() when batching resources are allocated in
-   zswap_cpu_comp_prepare().
-7) Use kcalloc_node() for the multiple acomp_ctx buffers/reqs in
-   zswap_cpu_comp_prepare().
-8) Simplify and consolidate error handling cleanup code in
-   zswap_cpu_comp_prepare().
-9) Introduce zswap_compress_folio() in a separate patch.
-10) Bug fix in zswap_store_folio() when xa_store() failure can cause all
-    compressed objects and entries to be freed, and UAF when zswap_store()
-    tries to free the entries that were already added to the xarray prior
-    to the failure.
-11) Deleting compressed_bytes/bytes. zswap_store_folio() also comprehends
-    the recent fixes in commit bf5eaaaf7941 ("mm/zswap: fix inconsistency
-    when zswap_store_page() fails") by Hyeonggon Yoo.
-
-iaa_crypto improvements/fixes/changes:
-
-12) Enables asynchronous mode and makes it the default. With commit
-    4ebd9a5ca478 ("crypto: iaa - Fix IAA disabling that occurs when
-    sync_mode is set to 'async'"), async mode was previously just sync. We
-    now have true async support.
-13) Change idxd descriptor allocations from blocking to non-blocking with
-    timeouts, and mitigations for compress/decompress ops that fail to
-    obtain a descriptor. This is a fix for tasks blocked errors seen in
-    configurations where 30+ cores are running workloads under high memory
-    pressure, and sending comps/decomps to 1 IAA device.
-14) Fixes a bug with unprotected access of "deflate_generic_tfm" in
-    deflate_generic_decompress(), which can cause data corruption and
-    zswap_decompress() kernel crash.
-15) zswap uses crypto_acomp_batch_compress() with async polling instead of
-    request chaining for slightly better latency. However, the request
-    chaining framework itself is unchanged, preserved from v5.
-
-
-Changes since v4:
-=================
-1) Rebased to mm-unstable as of 12-20-2024, commit 5555a83c82d6.
-2) Added acomp request chaining, as suggested by Herbert. Thanks Herbert!
-3) Implemented IAA compress batching using request chaining.
-4) zswap_store() batching simplifications suggested by Chengming, Yosry and
-   Nhat, thanks to all!
-   - New zswap_compress_folio() that is called by zswap_store().
-   - Move the loop over folio's pages out of zswap_store() and into a
-     zswap_store_folio() that stores all pages.
-   - Allocate all zswap entries for the folio upfront.
-   - Added zswap_batch_compress().
-   - Branch to call zswap_compress() or zswap_batch_compress() inside
-     zswap_compress_folio().
-   - All iterations over pages kept in same function level.
-   - No helpers other than the newly added zswap_store_folio() and
-     zswap_compress_folio().
-
-
-Changes since v3:
-=================
-1) Rebased to mm-unstable as of 11-18-2024, commit 5a7056135bb6.
-2) Major re-write of iaa_crypto driver's mapping of IAA devices to cores,
-   based on packages instead of NUMA nodes.
-3) Added acomp_has_async_batching() API to crypto acomp, that allows
-   zswap/zram to query if a crypto_acomp has registered batch_compress and
-   batch_decompress interfaces.
-4) Clear the poll bits on the acomp_reqs passed to
-   iaa_comp_a[de]compress_batch() so that a module like zswap can be
-   confident about the acomp_reqs[0] not having the poll bit set before
-   calling the fully synchronous API crypto_acomp_[de]compress().
-   Herbert, I would appreciate it if you can review changes 2-4; in patches
-   1-8 in v4. I did not want to introduce too many iaa_crypto changes in
-   v4, given that patch 7 is already making a major change. I plan to work
-   on incorporating the request chaining using the ahash interface in v5
-   (I need to understand the basic crypto ahash better). Thanks Herbert!
-5) Incorporated Johannes' suggestion to not have a sysctl to enable
-   compress batching.
-6) Incorporated Yosry's suggestion to allocate batching resources in the
-   cpu hotplug onlining code, since there is no longer a sysctl to control
-   batching. Thanks Yosry!
-7) Incorporated Johannes' suggestions related to making the overall
-   sequence of events between zswap_store() and zswap_batch_store() similar
-   as much as possible for readability and control flow, better naming of
-   procedures, avoiding forward declarations, not inlining error path
-   procedures, deleting zswap internal details from zswap.h, etc. Thanks
-   Johannes, really appreciate the direction!
-   I have tried to explain the minimal future-proofing in terms of the
-   zswap_batch_store() signature and the definition of "struct
-   zswap_batch_store_sub_batch" in the comments for this struct. I hope the
-   new code explains the control flow a bit better.
-
-
-Changes since v2:
-=================
-1) Rebased to mm-unstable as of 11-5-2024, commit 7994b7ea6ac8.
-2) Fixed an issue in zswap_create_acomp_ctx() with checking for NULL
-   returned by kmalloc_node() for acomp_ctx->buffers and for
-   acomp_ctx->reqs.
-3) Fixed a bug in zswap_pool_can_batch() for returning true if
-   pool->can_batch_comp is found to be equal to BATCH_COMP_ENABLED, and if
-   the per-cpu acomp_batch_ctx tests true for batching resources having
-   been allocated on this cpu. Also, changed from per_cpu_ptr() to
-   raw_cpu_ptr().
-4) Incorporated the zswap_store_propagate_errors() compilation warning fix
-   suggested by Dan Carpenter. Thanks Dan!
-5) Replaced the references to SWAP_CRYPTO_SUB_BATCH_SIZE in comments in
-   zswap.h, with SWAP_CRYPTO_BATCH_SIZE.
-
-Changes since v1:
-=================
-1) Rebased to mm-unstable as of 11-1-2024, commit 5c4cf96cd702.
-2) Incorporated Herbert's suggestions to use an acomp_req flag to indicate
-   async/poll mode, and to encapsulate the polling functionality in the
-   iaa_crypto driver. Thanks Herbert!
-3) Incorporated Herbert's and Yosry's suggestions to implement the batching
-   API in iaa_crypto and to make its use seamless from zswap's
-   perspective. Thanks Herbert and Yosry!
-4) Incorporated Yosry's suggestion to make it more convenient for the user
-   to enable compress batching, while minimizing the memory footprint
-   cost. Thanks Yosry!
-5) Incorporated Yosry's suggestion to de-couple the shrink_folio_list()
-   reclaim batching patch from this series, since it requires a broader
-   discussion.
-
-
-I would greatly appreciate code review comments for the iaa_crypto driver
-and mm patches included in this series!
-
-Thanks,
-Kanchana
-
-
-
-Kanchana P Sridhar (16):
-  crypto: acomp - Add synchronous/asynchronous acomp request chaining.
-  crypto: acomp - Define new interfaces for compress/decompress
-    batching.
-  crypto: iaa - Add an acomp_req flag CRYPTO_ACOMP_REQ_POLL to enable
-    async mode.
-  crypto: iaa - Implement batch_compress(), batch_decompress() API in
-    iaa_crypto.
-  crypto: iaa - Enable async mode and make it the default.
-  crypto: iaa - Disable iaa_verify_compress by default.
-  crypto: iaa - Re-organize the iaa_crypto driver code.
-  crypto: iaa - Map IAA devices/wqs to cores based on packages instead
-    of NUMA.
-  crypto: iaa - Distribute compress jobs from all cores to all IAAs on a
-    package.
-  crypto: iaa - Descriptor allocation timeouts with mitigations in
-    iaa_crypto.
-  crypto: iaa - Fix for "deflate_generic_tfm" global being accessed
-    without locks.
-  mm: zswap: Allocate pool batching resources if the compressor supports
-    batching.
-  mm: zswap: Restructure & simplify zswap_store() to make it amenable
-    for batching.
-  mm: zswap: Introduce zswap_compress_folio() to compress all pages in a
-    folio.
-  mm: zswap: Compress batching with Intel IAA in zswap_store() of large
-    folios.
-  mm: zswap: Fix for zstd performance regression with 2M folios.
-
- .../driver-api/crypto/iaa/iaa-crypto.rst      |   11 +-
- crypto/acompress.c                            |  287 +++
- drivers/crypto/intel/iaa/iaa_crypto.h         |   30 +-
- drivers/crypto/intel/iaa/iaa_crypto_main.c    | 1724 ++++++++++++-----
- include/crypto/acompress.h                    |  157 ++
- include/crypto/algapi.h                       |   10 +
- include/crypto/internal/acompress.h           |   29 +
- include/linux/crypto.h                        |   31 +
- mm/zswap.c                                    |  449 ++++-
- 9 files changed, 2170 insertions(+), 558 deletions(-)
-
-
-base-commit: 7de6fd8ab65003f050aa58e705592745717ed318
+Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
+Co-developed-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by:
+---
+ crypto/acompress.c                  | 284 ++++++++++++++++++++++++++++
+ include/crypto/acompress.h          |  41 ++++
+ include/crypto/algapi.h             |  10 +
+ include/crypto/internal/acompress.h |  10 +
+ include/linux/crypto.h              |  31 +++
+ 5 files changed, 376 insertions(+)
+
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index 6fdf0ff9f3c0..cb6444d09dd7 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -23,6 +23,19 @@ struct crypto_scomp;
+ 
+ static const struct crypto_type crypto_acomp_type;
+ 
++struct acomp_save_req_state {
++	struct list_head head;
++	struct acomp_req *req0;
++	struct acomp_req *cur;
++	int (*op)(struct acomp_req *req);
++	crypto_completion_t compl;
++	void *data;
++};
++
++static void acomp_reqchain_done(void *data, int err);
++static int acomp_save_req(struct acomp_req *req, crypto_completion_t cplt);
++static void acomp_restore_req(struct acomp_req *req);
++
+ static inline struct acomp_alg *__crypto_acomp_alg(struct crypto_alg *alg)
+ {
+ 	return container_of(alg, struct acomp_alg, calg.base);
+@@ -123,6 +136,277 @@ struct crypto_acomp *crypto_alloc_acomp_node(const char *alg_name, u32 type,
+ }
+ EXPORT_SYMBOL_GPL(crypto_alloc_acomp_node);
+ 
++static int acomp_save_req(struct acomp_req *req, crypto_completion_t cplt)
++{
++	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
++	struct acomp_save_req_state *state;
++	gfp_t gfp;
++	u32 flags;
++
++	if (!acomp_is_async(tfm))
++		return 0;
++
++	flags = acomp_request_flags(req);
++	gfp = (flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?  GFP_KERNEL : GFP_ATOMIC;
++	state = kmalloc(sizeof(*state), gfp);
++	if (!state)
++		return -ENOMEM;
++
++	state->compl = req->base.complete;
++	state->data = req->base.data;
++	state->req0 = req;
++
++	req->base.complete = cplt;
++	req->base.data = state;
++
++	return 0;
++}
++
++static void acomp_restore_req(struct acomp_req *req)
++{
++	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
++	struct acomp_save_req_state *state;
++
++	if (!acomp_is_async(tfm))
++		return;
++
++	state = req->base.data;
++
++	req->base.complete = state->compl;
++	req->base.data = state->data;
++	kfree(state);
++}
++
++static int acomp_reqchain_finish(struct acomp_save_req_state *state,
++				 int err, u32 mask)
++{
++	struct acomp_req *req0 = state->req0;
++	struct acomp_req *req = state->cur;
++	struct acomp_req *n;
++
++	req->base.err = err;
++
++	if (req == req0)
++		INIT_LIST_HEAD(&req->base.list);
++	else
++		list_add_tail(&req->base.list, &req0->base.list);
++
++	list_for_each_entry_safe(req, n, &state->head, base.list) {
++		list_del_init(&req->base.list);
++
++		req->base.flags &= mask;
++		req->base.complete = acomp_reqchain_done;
++		req->base.data = state;
++		state->cur = req;
++		err = state->op(req);
++
++		if (err == -EINPROGRESS) {
++			if (!list_empty(&state->head))
++				err = -EBUSY;
++			goto out;
++		}
++
++		if (err == -EBUSY)
++			goto out;
++
++		req->base.err = err;
++		list_add_tail(&req->base.list, &req0->base.list);
++	}
++
++	acomp_restore_req(req0);
++
++out:
++	return err;
++}
++
++static void acomp_reqchain_done(void *data, int err)
++{
++	struct acomp_save_req_state *state = data;
++	crypto_completion_t compl = state->compl;
++
++	data = state->data;
++
++	if (err == -EINPROGRESS) {
++		if (!list_empty(&state->head))
++			return;
++		goto notify;
++	}
++
++	err = acomp_reqchain_finish(state, err, CRYPTO_TFM_REQ_MAY_BACKLOG);
++	if (err == -EBUSY)
++		return;
++
++notify:
++	compl(data, err);
++}
++
++int acomp_do_req_chain(struct acomp_req *req,
++		       int (*op)(struct acomp_req *req))
++{
++	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
++	struct acomp_save_req_state *state;
++	struct acomp_save_req_state state0;
++	int err = 0;
++
++	if (!acomp_request_chained(req) || list_empty(&req->base.list) ||
++	    !crypto_acomp_req_chain(tfm))
++		return op(req);
++
++	state = &state0;
++
++	if (acomp_is_async(tfm)) {
++		err = acomp_save_req(req, acomp_reqchain_done);
++		if (err) {
++			struct acomp_req *r2;
++
++			req->base.err = err;
++			list_for_each_entry(r2, &req->base.list, base.list)
++				r2->base.err = err;
++
++			return err;
++		}
++
++		state = req->base.data;
++	}
++
++	state->op = op;
++	state->cur = req;
++	INIT_LIST_HEAD(&state->head);
++	list_splice(&req->base.list, &state->head);
++
++	err = op(req);
++	if (err == -EBUSY || err == -EINPROGRESS)
++		return -EBUSY;
++
++	return acomp_reqchain_finish(state, err, ~0);
++}
++EXPORT_SYMBOL_GPL(acomp_do_req_chain);
++
++static void acomp_async_reqchain_done(struct acomp_req *req0,
++				      struct list_head *state,
++				      int (*op_poll)(struct acomp_req *req))
++{
++	struct acomp_req *req, *n;
++	bool req0_done = false;
++	int err;
++
++	while (!list_empty(state)) {
++
++		if (!req0_done) {
++			err = op_poll(req0);
++			if (!(err == -EAGAIN || err == -EINPROGRESS || err == -EBUSY)) {
++				req0->base.err = err;
++				req0_done = true;
++			}
++		}
++
++		list_for_each_entry_safe(req, n, state, base.list) {
++			err = op_poll(req);
++
++			if (err == -EAGAIN || err == -EINPROGRESS || err == -EBUSY)
++				continue;
++
++			req->base.err = err;
++			list_del_init(&req->base.list);
++			list_add_tail(&req->base.list, &req0->base.list);
++		}
++	}
++
++	while (!req0_done) {
++		err = op_poll(req0);
++		if (!(err == -EAGAIN || err == -EINPROGRESS || err == -EBUSY)) {
++			req0->base.err = err;
++			break;
++		}
++	}
++}
++
++static int acomp_async_reqchain_finish(struct acomp_req *req0,
++				       struct list_head *state,
++				       int (*op_submit)(struct acomp_req *req),
++				       int (*op_poll)(struct acomp_req *req))
++{
++	struct acomp_req *req, *n;
++	int err = 0;
++
++	INIT_LIST_HEAD(&req0->base.list);
++
++	list_for_each_entry_safe(req, n, state, base.list) {
++		BUG_ON(req == req0);
++
++		err = op_submit(req);
++
++		if (!(err == -EINPROGRESS || err == -EBUSY)) {
++			req->base.err = err;
++			list_del_init(&req->base.list);
++			list_add_tail(&req->base.list, &req0->base.list);
++		}
++	}
++
++	acomp_async_reqchain_done(req0, state, op_poll);
++
++	return req0->base.err;
++}
++
++int acomp_do_async_req_chain(struct acomp_req *req,
++			     int (*op_submit)(struct acomp_req *req),
++			     int (*op_poll)(struct acomp_req *req))
++{
++	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
++	struct list_head state;
++	struct acomp_req *r2;
++	int err = 0;
++	void *req0_data = req->base.data;
++
++	if (!acomp_request_chained(req) || list_empty(&req->base.list) ||
++		!acomp_is_async(tfm) || !crypto_acomp_req_chain(tfm)) {
++
++		err = op_submit(req);
++
++		if (err == -EINPROGRESS || err == -EBUSY) {
++			bool req0_done = false;
++
++			while (!req0_done) {
++				err = op_poll(req);
++				if (!(err == -EAGAIN || err == -EINPROGRESS || err == -EBUSY)) {
++					req->base.err = err;
++					break;
++				}
++			}
++		} else {
++			req->base.err = err;
++		}
++
++		req->base.data = req0_data;
++		if (acomp_is_async(tfm))
++			req->base.complete(req->base.data, req->base.err);
++
++		return err;
++	}
++
++	err = op_submit(req);
++	req->base.err = err;
++
++	if (err && !(err == -EINPROGRESS || err == -EBUSY))
++		goto err_prop;
++
++	INIT_LIST_HEAD(&state);
++	list_splice(&req->base.list, &state);
++
++	err = acomp_async_reqchain_finish(req, &state, op_submit, op_poll);
++	req->base.data = req0_data;
++	req->base.complete(req->base.data, req->base.err);
++
++	return err;
++
++err_prop:
++	list_for_each_entry(r2, &req->base.list, base.list)
++		r2->base.err = err;
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(acomp_do_async_req_chain);
++
+ struct acomp_req *acomp_request_alloc(struct crypto_acomp *acomp)
+ {
+ 	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp);
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index 54937b615239..eadc24514056 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -206,6 +206,7 @@ static inline void acomp_request_set_callback(struct acomp_req *req,
+ 	req->base.data = data;
+ 	req->base.flags &= CRYPTO_ACOMP_ALLOC_OUTPUT;
+ 	req->base.flags |= flgs & ~CRYPTO_ACOMP_ALLOC_OUTPUT;
++	req->base.flags &= ~CRYPTO_TFM_REQ_CHAIN;
+ }
+ 
+ /**
+@@ -237,6 +238,46 @@ static inline void acomp_request_set_params(struct acomp_req *req,
+ 		req->flags |= CRYPTO_ACOMP_ALLOC_OUTPUT;
+ }
+ 
++static inline u32 acomp_request_flags(struct acomp_req *req)
++{
++	return req->base.flags;
++}
++
++static inline void acomp_reqchain_init(struct acomp_req *req,
++				       u32 flags, crypto_completion_t compl,
++				       void *data)
++{
++	acomp_request_set_callback(req, flags, compl, data);
++	crypto_reqchain_init(&req->base);
++}
++
++static inline void acomp_reqchain_clear(struct acomp_req *req, void *data)
++{
++	struct crypto_wait *wait = (struct crypto_wait *)data;
++	reinit_completion(&wait->completion);
++	crypto_reqchain_clear(&req->base);
++	acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
++				   crypto_req_done, data);
++}
++
++static inline void acomp_request_chain(struct acomp_req *req,
++				       struct acomp_req *head)
++{
++	crypto_request_chain(&req->base, &head->base);
++}
++
++int acomp_do_req_chain(struct acomp_req *req,
++		       int (*op)(struct acomp_req *req));
++
++int acomp_do_async_req_chain(struct acomp_req *req,
++			     int (*op_submit)(struct acomp_req *req),
++			     int (*op_poll)(struct acomp_req *req));
++
++static inline int acomp_request_err(struct acomp_req *req)
++{
++	return req->base.err;
++}
++
+ /**
+  * crypto_acomp_compress() -- Invoke asynchronous compress operation
+  *
+diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
+index 156de41ca760..c5df380c7d08 100644
+--- a/include/crypto/algapi.h
++++ b/include/crypto/algapi.h
+@@ -271,4 +271,14 @@ static inline u32 crypto_tfm_alg_type(struct crypto_tfm *tfm)
+ 	return tfm->__crt_alg->cra_flags & CRYPTO_ALG_TYPE_MASK;
+ }
+ 
++static inline bool crypto_request_chained(struct crypto_async_request *req)
++{
++	return req->flags & CRYPTO_TFM_REQ_CHAIN;
++}
++
++static inline bool crypto_tfm_req_chain(struct crypto_tfm *tfm)
++{
++	return tfm->__crt_alg->cra_flags & CRYPTO_ALG_REQ_CHAIN;
++}
++
+ #endif	/* _CRYPTO_ALGAPI_H */
+diff --git a/include/crypto/internal/acompress.h b/include/crypto/internal/acompress.h
+index 8831edaafc05..53b4ef59b48c 100644
+--- a/include/crypto/internal/acompress.h
++++ b/include/crypto/internal/acompress.h
+@@ -84,6 +84,16 @@ static inline void __acomp_request_free(struct acomp_req *req)
+ 	kfree_sensitive(req);
+ }
+ 
++static inline bool acomp_request_chained(struct acomp_req *req)
++{
++	return crypto_request_chained(&req->base);
++}
++
++static inline bool crypto_acomp_req_chain(struct crypto_acomp *tfm)
++{
++	return crypto_tfm_req_chain(&tfm->base);
++}
++
+ /**
+  * crypto_register_acomp() -- Register asynchronous compression algorithm
+  *
+diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+index b164da5e129e..7c27d557586c 100644
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -13,6 +13,8 @@
+ #define _LINUX_CRYPTO_H
+ 
+ #include <linux/completion.h>
++#include <linux/errno.h>
++#include <linux/list.h>
+ #include <linux/refcount.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+@@ -124,6 +126,9 @@
+  */
+ #define CRYPTO_ALG_FIPS_INTERNAL	0x00020000
+ 
++/* Set if the algorithm supports request chains. */
++#define CRYPTO_ALG_REQ_CHAIN		0x00040000
++
+ /*
+  * Transform masks and values (for crt_flags).
+  */
+@@ -133,6 +138,7 @@
+ #define CRYPTO_TFM_REQ_FORBID_WEAK_KEYS	0x00000100
+ #define CRYPTO_TFM_REQ_MAY_SLEEP	0x00000200
+ #define CRYPTO_TFM_REQ_MAY_BACKLOG	0x00000400
++#define CRYPTO_TFM_REQ_CHAIN		0x00000800
+ 
+ /*
+  * Miscellaneous stuff.
+@@ -174,6 +180,7 @@ struct crypto_async_request {
+ 	struct crypto_tfm *tfm;
+ 
+ 	u32 flags;
++	int err;
+ };
+ 
+ /**
+@@ -540,5 +547,29 @@ int crypto_comp_decompress(struct crypto_comp *tfm,
+ 			   const u8 *src, unsigned int slen,
+ 			   u8 *dst, unsigned int *dlen);
+ 
++static inline void crypto_reqchain_init(struct crypto_async_request *req)
++{
++	req->err = -EINPROGRESS;
++	req->flags |= CRYPTO_TFM_REQ_CHAIN;
++	INIT_LIST_HEAD(&req->list);
++}
++
++static inline void crypto_reqchain_clear(struct crypto_async_request *req)
++{
++	req->flags &= ~CRYPTO_TFM_REQ_CHAIN;
++}
++
++static inline void crypto_request_chain(struct crypto_async_request *req,
++					struct crypto_async_request *head)
++{
++	req->err = -EINPROGRESS;
++	list_add_tail(&req->list, &head->list);
++}
++
++static inline bool crypto_tfm_is_async(struct crypto_tfm *tfm)
++{
++	return tfm->__crt_alg->cra_flags & CRYPTO_ALG_ASYNC;
++}
++
+ #endif	/* _LINUX_CRYPTO_H */
+ 
 -- 
 2.27.0
 
