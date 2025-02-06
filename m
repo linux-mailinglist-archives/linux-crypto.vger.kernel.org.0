@@ -1,61 +1,61 @@
-Return-Path: <linux-crypto+bounces-9444-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9449-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6586A2A1E6
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 08:21:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823C5A2A1EF
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 08:22:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC37A7A39B6
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 07:20:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2F5E1888CA7
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Feb 2025 07:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE7B224B18;
-	Thu,  6 Feb 2025 07:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A233225798;
+	Thu,  6 Feb 2025 07:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YecJuRLP"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L8drw6WV"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7309224AF3;
-	Thu,  6 Feb 2025 07:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C466225412;
+	Thu,  6 Feb 2025 07:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738826469; cv=none; b=i0QkdIU3IxQP72gwFgvJcQxUXwVaAJ+OXE/JQrsInyu+Ws9cB1lqOY8oxJg3niNAvY+sAUg5wP42MajCSMkrhPNvoDzpIpVEAbCBsAaSq4fH08MU98drLwCuxayjfy4QItvHBjOefzArqUEDno9tdkN/VEB/0pKSToT/rPZw0YQ=
+	t=1738826473; cv=none; b=huLqiT79fSz9S2iDri6pO+3Xx9JhSoC+ucxagdM57gN8c4FU1k5Rx+Y536pYygIvcR/tanD8GqpPJUndXvxOUjPvFR89OIotYXFY076fJ5+XHlcdVfPhOc1gnM3oeXy1LRjOu3YZfk2eGQI3M1+d1GZPBqJU29v5yf5qBawveEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738826469; c=relaxed/simple;
-	bh=7tFXFDivua82eFBjtOF61mRcWq3imTHakYE6ae6fo/I=;
+	s=arc-20240116; t=1738826473; c=relaxed/simple;
+	bh=3AC0t67W9YXnQaqtfbv5O8FRwsYURPHnfKQ9TbAZwNM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GkvuVI+onwq0UZFeYA70R+WP6c4BHvnvy4WJjvgRboKCDtgndiqRhzZ0RhO/HFcLoqiu/Na/kwO2Qtn5t0KKJ1cjkMkxBdyONZp+rHXBulIav2Z3WvRSkDRNSDltHNJxTeHPnzCdU8sHI20YhO3kTmsUz+RgKfsMDQPHe91AXtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YecJuRLP; arc=none smtp.client-ip=192.198.163.8
+	 MIME-Version; b=BBuliX7G0IFAQz6onl+ogct+auLC2wE4naAc2PzcIJx1rJ32hial8KKTIsaXnFCXb9wbw3pEBZ4Y/6xaSjMMDwe3QmrjVE1AFeTyffaJRXVyA9zxtf4p69lJj8IIoYkgdRutdTRFg47ry1uFrpJKbYgH+tnXXBm71ullQ4OFT2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L8drw6WV; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738826468; x=1770362468;
+  t=1738826471; x=1770362471;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7tFXFDivua82eFBjtOF61mRcWq3imTHakYE6ae6fo/I=;
-  b=YecJuRLPj27xV8N7vcfqyL5mNkSGElOLhCdq5Spe1Fsan0xb5RpGT43j
-   /Zm52u6odxbE8pJc/otKdwD6Y4sb97JFHqBE6KNLK9ECBcuruKpxt4ODm
-   7Vsa4NNMHD9QUTZP4pAVcPzwlxEOoEQASjN41xO4yymyCB/n51yNztdeI
-   BuLNNMH/yP2f9fx2doaUjVL+A0cIw6FsD/s1QDuLEpjU+ZYNwWS996aeg
-   6ysP0MNDvS1J4JHcvTURqs8wn4cqcWmXL+GsfWw7xungxuGgKEZpIXMlu
-   K0UiMab6G26bZiWVLZ89gYanEuJwYSrZU5hRtoLZ2Tb8xpNsQdKMmafVc
+  bh=3AC0t67W9YXnQaqtfbv5O8FRwsYURPHnfKQ9TbAZwNM=;
+  b=L8drw6WVcz0l5+PL/Tjva+mGCrHs6aVlvGcfuCSBmXWIVUGK32C9hDBA
+   SqnmlgZZp7iGtdf4GSRslX0UTFTR7odOIRcObDdRQyLwVbt3Y8cco8zqG
+   X/fv273NV0Hd/srLXlSfEqpaHXhEp9DDty82aVOM9/9XexqKY2nksusOd
+   7RzJTJGuztJCMJOdZSE2uiHvVNg4Uskvzjekm5vyByt/BNQ+Q9X9A/Vay
+   udoyJYB0PJeljUpZgjxERYBgeokjH9CGEQOy+ZFS2aPmkDXF7I+GaR/yP
+   6vFibNnfpYJcmYrWXsDaZ55twq6pQSBgevEP8V+XaKpSNyp7RuwFLC2Xb
    Q==;
-X-CSE-ConnectionGUID: dX7XVEJqSbGtwkOdhdcRXQ==
-X-CSE-MsgGUID: p21JTnQtSeSzVWQvSkQA9g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="56962666"
+X-CSE-ConnectionGUID: 0AzmggkhRdeAe+O2647mnw==
+X-CSE-MsgGUID: xk7Wz4PdQeOSTqTWrv7zJg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="56962676"
 X-IronPort-AV: E=Sophos;i="6.13,263,1732608000"; 
-   d="scan'208";a="56962666"
+   d="scan'208";a="56962676"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 23:21:04 -0800
-X-CSE-ConnectionGUID: 6CGkxBTESVGUYwLAu6XXGg==
-X-CSE-MsgGUID: fgn9TkDzTSCQXltQ0Mf7rw==
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 23:21:05 -0800
+X-CSE-ConnectionGUID: BdejDC0cSAOKneED2yE52A==
+X-CSE-MsgGUID: pucbyX2lQJO2lO5OQM3S4g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="112022607"
+   d="scan'208";a="112022610"
 Received: from jf5300-b11a338t.jf.intel.com ([10.242.51.115])
   by orviesa008.jf.intel.com with ESMTP; 05 Feb 2025 23:21:04 -0800
 From: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
@@ -80,9 +80,9 @@ To: linux-kernel@vger.kernel.org,
 Cc: wajdi.k.feghali@intel.com,
 	vinodh.gopal@intel.com,
 	kanchana.p.sridhar@intel.com
-Subject: [PATCH v6 05/16] crypto: iaa - Enable async mode and make it the default.
-Date: Wed,  5 Feb 2025 23:20:51 -0800
-Message-Id: <20250206072102.29045-6-kanchana.p.sridhar@intel.com>
+Subject: [PATCH v6 06/16] crypto: iaa - Disable iaa_verify_compress by default.
+Date: Wed,  5 Feb 2025 23:20:52 -0800
+Message-Id: <20250206072102.29045-7-kanchana.p.sridhar@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20250206072102.29045-1-kanchana.p.sridhar@intel.com>
 References: <20250206072102.29045-1-kanchana.p.sridhar@intel.com>
@@ -94,81 +94,39 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch enables the 'async' sync_mode in the driver. Further, it sets
-the default sync_mode to 'async', which makes it easier for IAA hardware
-acceleration in the iaa_crypto driver to be loaded by default in the most
-efficient/recommended 'async' mode for parallel
-compressions/decompressions, namely, asynchronous submission of
-descriptors, followed by polling for job completions with or without
-request chaining. Earlier, the "sync" mode used to be the default.
+This patch makes it easier for IAA hardware acceleration in the iaa_crypto
+driver to be loaded by default with "iaa_verify_compress" disabled, to
+facilitate performance comparisons with software compressors (which also
+do not run compress verification by default). Earlier, iaa_crypto compress
+verification used to be enabled by default.
 
-This way, anyone who wants to use IAA for zswap/zram can do so after
-building the kernel, and without having to go through these steps to use
-async mode:
+With this patch, if users want to enable compress verification, they can do
+so with these steps:
 
   1) disable all the IAA device/wq bindings that happen at boot time
   2) rmmod iaa_crypto
   3) modprobe iaa_crypto
-  4) echo async > /sys/bus/dsa/drivers/crypto/sync_mode
+  4) echo 1 > /sys/bus/dsa/drivers/crypto/verify_compress
   5) re-run initialization of the IAA devices and wqs
 
 Signed-off-by: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 ---
- Documentation/driver-api/crypto/iaa/iaa-crypto.rst | 11 ++---------
- drivers/crypto/intel/iaa/iaa_crypto_main.c         |  4 ++--
- 2 files changed, 4 insertions(+), 11 deletions(-)
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/crypto/iaa/iaa-crypto.rst b/Documentation/driver-api/crypto/iaa/iaa-crypto.rst
-index 8e50b900d51c..782da5230fcd 100644
---- a/Documentation/driver-api/crypto/iaa/iaa-crypto.rst
-+++ b/Documentation/driver-api/crypto/iaa/iaa-crypto.rst
-@@ -272,7 +272,7 @@ The available attributes are:
-       echo async_irq > /sys/bus/dsa/drivers/crypto/sync_mode
- 
-     Async mode without interrupts (caller must poll) can be enabled by
--    writing 'async' to it (please see Caveat)::
-+    writing 'async' to it::
- 
-       echo async > /sys/bus/dsa/drivers/crypto/sync_mode
- 
-@@ -281,14 +281,7 @@ The available attributes are:
- 
-       echo sync > /sys/bus/dsa/drivers/crypto/sync_mode
- 
--    The default mode is 'sync'.
--
--    Caveat: since the only mechanism that iaa_crypto currently implements
--    for async polling without interrupts is via the 'sync' mode as
--    described earlier, writing 'async' to
--    '/sys/bus/dsa/drivers/crypto/sync_mode' will internally enable the
--    'sync' mode. This is to ensure correct iaa_crypto behavior until true
--    async polling without interrupts is enabled in iaa_crypto.
-+    The default mode is 'async'.
- 
- .. _iaa_default_config:
- 
 diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index 61134a7ad1da..6d49f82165fe 100644
+index 6d49f82165fe..f4807a828034 100644
 --- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
 +++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -153,7 +153,7 @@ static DRIVER_ATTR_RW(verify_compress);
-  */
+@@ -94,7 +94,7 @@ static bool iaa_crypto_enabled;
+ static bool iaa_crypto_registered;
  
- /* Use async mode */
--static bool async_mode;
-+static bool async_mode = true;
- /* Use interrupts */
- static bool use_irq;
+ /* Verify results of IAA compress or not */
+-static bool iaa_verify_compress = true;
++static bool iaa_verify_compress = false;
  
-@@ -173,7 +173,7 @@ static int set_iaa_sync_mode(const char *name)
- 		async_mode = false;
- 		use_irq = false;
- 	} else if (sysfs_streq(name, "async")) {
--		async_mode = false;
-+		async_mode = true;
- 		use_irq = false;
- 	} else if (sysfs_streq(name, "async_irq")) {
- 		async_mode = true;
+ static ssize_t verify_compress_show(struct device_driver *driver, char *buf)
+ {
 -- 
 2.27.0
 
