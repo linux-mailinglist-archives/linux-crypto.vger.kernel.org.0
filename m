@@ -1,87 +1,72 @@
-Return-Path: <linux-crypto+bounces-9524-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9527-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F022EA2BE19
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Feb 2025 09:33:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AAE1A2BFB8
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Feb 2025 10:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91A15169438
-	for <lists+linux-crypto@lfdr.de>; Fri,  7 Feb 2025 08:33:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D3A67A612A
+	for <lists+linux-crypto@lfdr.de>; Fri,  7 Feb 2025 09:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284211A727D;
-	Fri,  7 Feb 2025 08:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D7C1DE3B6;
+	Fri,  7 Feb 2025 09:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SHcdBsCn"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="ZXDaVjrD"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B18C1662EF;
-	Fri,  7 Feb 2025 08:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49F41DE2CD;
+	Fri,  7 Feb 2025 09:42:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738917229; cv=none; b=b1mg9AM7pVWP+iiOAyOyypEJWYD1gikrthmZJAJdmNUZb2GVTnOQD51UYGDacoLj8tnVX9QyMlMpZfHFDp/WKZd/spm3c4VpHl/HTaayfUmkn97BKFgHh7Pk4HVi+VK9PUiZ3vpPo0TzPCakz5swvuBhUU/I1pK0648h04Ui9Ew=
+	t=1738921334; cv=none; b=BIRGhLVOeyjPGUS7iXKOfULlTWGCLKTeKA+HXshPh9dekyIQa3zZsmdOXAWYw9ksD1KBrmR79x4C3TfUxfQ13bDaECr5aZ4NHch9HG5k3NaArAcB+7EgfGv0U2FEFWkp8f1KqOYY9h0V49ELDMTNF3v3pFmFY0K3/+iu8rVdBzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738917229; c=relaxed/simple;
-	bh=rEyHxETDDNZrKnj0uGzVSatZPl0zol+heJ1YboWObbQ=;
+	s=arc-20240116; t=1738921334; c=relaxed/simple;
+	bh=EewjN7nUhhtBPJOdfrZj64y7+JiFITVsxY5wBikw+WQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=trXx/9X+pe3l0gGbjGGxzPeggBf9UNEuTx0hyvsl82oaBknmHsSfELKUEfPkHL3yjDRYtHWP645xJ+mjUh60cxywDyd7FqhRl+AqgTAbrJxat+J8vG+39WbGVfIZTZwUPzaiMAyuHYI1Pg9mNWoOx7mGMdLVWm7i/I5tXIGrW2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SHcdBsCn; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=BS6iDdO4KJAv6Qvg1+T7FVPsD1MTg6ZHoV7nJRWxmPs=; b=SHcdBsCnGAKozLK3fxywAwg34L
-	BVZPfTBDE1VZ10TjXglEiLiuaAB8RrcyO2F8rz7/C2J98vfWOYNkNrpkQJT9C6DtFoRrmMQ7LSo+B
-	HmByJT+181U0H2f1v3QDbBdIl89CaNSkifK0XxetTK0hlDQkXkdVlJdh9p5ngZ3s0b+vNLphhs7nl
-	gvcCC4KbKJPJ1jzoXFEIavvv29vyxdkrJNPRJOHzNPRkDrtH2xbf/rfahL+4pdo/AwOhMRqwUXX4e
-	5My+1oS6ezE3ciKCo+G4a6I3Hpbb1AZ00WbiIazjNftHCjllrSaicLbDmFY77bbrSQPaVUHLDFnKB
-	zt+Nr0ow==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgJnr-0000000H901-2oF4;
-	Fri, 07 Feb 2025 08:33:40 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 3A7A2300310; Fri,  7 Feb 2025 09:33:35 +0100 (CET)
-Date: Fri, 7 Feb 2025 09:33:35 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Marco Elver <elver@google.com>
-Cc: Bart Van Assche <bvanassche@acm.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexander Potapenko <glider@google.com>,
-	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, rcu@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH RFC 01/24] compiler_types: Move lock checking attributes
- to compiler-capability-analysis.h
-Message-ID: <20250207083335.GW7145@noisy.programming.kicks-ass.net>
-References: <20250206181711.1902989-1-elver@google.com>
- <20250206181711.1902989-2-elver@google.com>
- <552e940f-df40-4776-916e-78decdaafb49@acm.org>
- <CANpmjNP6by9Kp0rf=ihwj_3j6AW+5aSm6L3LZ4NEW7uvBAV02Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YaroOi9OJkcqxJ9pYjTXQxe+jCnMiVL5EaSqPN+qPZmqjpyqzyHTLW5qPZ2Qgg6qBgPXC+8QhWtvu+1i9KvhTRsMLH+7y/KCHmDQDp0DpIduj6eMAMiROjfeh8UZwp+VotxJumfMdG+Vopzp1DpRq6TuRtRxp24wPLu+OWvjadw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=ZXDaVjrD; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=MhA1jDIfQ8iLGh9WfIUR3+LgFXMnqWm6EVDsj31vync=; b=ZXDaVjrDmJbS9jssNlbQ3D9Elb
+	r5Xsr+O3eH47BnThcCfwS3N8+p4zkexJmJG/747y6dDuOu7tkQkOCvKJ/GIuRunQjUD6KD25n0+X3
+	kcG1BAZ7Itvv9TbLunVGLSNIL1mtgJ3nUXgMX0L0AqAZcAaGEdBVjoDUsKQTUOzpRXN09nHvpZUNL
+	gxmLUvE2bu1GrU38+PRWbHHxCXP/OkHk9Ra1tn1ik0thv5vZatZna2CGm8jwG8HBcv9Yy+l75vUsS
+	o1ViSi5mUUyx6WHm0LR1XrsNS8UhS0DYuuJvLTJx0/gsGGdfUYRudFcqYM/d22WAdImA1rarkFFsF
+	lnfvqmgw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1tgJwx-00FpRv-2r;
+	Fri, 07 Feb 2025 16:56:21 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 07 Feb 2025 16:56:20 +0800
+Date: Fri, 7 Feb 2025 16:56:20 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: David Howells <dhowells@redhat.com>
+Cc: netdev@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 03/24] crypto: Add 'krb5enc' hash and cipher AEAD
+ algorithm
+Message-ID: <Z6XKtPKryJsRfYvK@gondor.apana.org.au>
+References: <20250203142343.248839-1-dhowells@redhat.com>
+ <20250203142343.248839-4-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -90,41 +75,24 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNP6by9Kp0rf=ihwj_3j6AW+5aSm6L3LZ4NEW7uvBAV02Q@mail.gmail.com>
+In-Reply-To: <20250203142343.248839-4-dhowells@redhat.com>
 
-On Thu, Feb 06, 2025 at 07:48:38PM +0100, Marco Elver wrote:
-> On Thu, 6 Feb 2025 at 19:40, Bart Van Assche <bvanassche@acm.org> wrote:
-> >
-> > On 2/6/25 10:09 AM, Marco Elver wrote:
-> > > +/* Sparse context/lock checking support. */
-> > > +# define __must_hold(x)              __attribute__((context(x,1,1)))
-> > > +# define __acquires(x)               __attribute__((context(x,0,1)))
-> > > +# define __cond_acquires(x)  __attribute__((context(x,0,-1)))
-> > > +# define __releases(x)               __attribute__((context(x,1,0)))
-> > > +# define __acquire(x)                __context__(x,1)
-> > > +# define __release(x)                __context__(x,-1)
-> > > +# define __cond_lock(x, c)   ((c) ? ({ __acquire(x); 1; }) : 0)
-> >
-> > If support for Clang thread-safety attributes is added, an important
-> > question is what to do with the sparse context attribute. I think that
-> > more developers are working on improving and maintaining Clang than
-> > sparse. How about reducing the workload of kernel maintainers by
-> > only supporting the Clang thread-safety approach and by dropping support
-> > for the sparse context attribute?
-> 
-> My 2c: I think Sparse's context tracking is a subset, and generally
-> less complete, favoring false negatives over false positives (also
-> does not support guarded_by).
-> So in theory they can co-exist.
-> In practice, I agree, there will be issues with maintaining both,
-> because there will always be some odd corner-case which doesn't quite
-> work with one or the other (specifically Sparse is happy to auto-infer
-> acquired and released capabilities/contexts of functions and doesn't
-> warn you if you still hold a lock when returning from a function).
-> 
-> I'd be in favor of deprecating Sparse's context tracking support,
-> should there be consensus on that.
+On Mon, Feb 03, 2025 at 02:23:19PM +0000, David Howells wrote:
+>
+> [!] Note that the net/sunrpc/auth_gss/ implementation gets a pair of
+> ciphers, one non-CTS and one CTS, using the former to do all the aligned
+> blocks and the latter to do the last two blocks if they aren't also
+> aligned.  It may be necessary to do this here too for performance reasons -
+> but there are considerations both ways:
 
-I don't think I've ever seen a useful sparse locking report, so yeah, no
-tears shed on removing it.
+The CTS template will take any hardware accelerated CBC implementation
+and turn it into CTS.
+
+So there is no reason to do the CTS/CBC thing by hand at all.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
