@@ -1,54 +1,53 @@
-Return-Path: <linux-crypto+bounces-9561-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9563-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D913A2D340
-	for <lists+linux-crypto@lfdr.de>; Sat,  8 Feb 2025 03:49:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E98A9A2D342
+	for <lists+linux-crypto@lfdr.de>; Sat,  8 Feb 2025 03:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B00AD3ACA51
-	for <lists+linux-crypto@lfdr.de>; Sat,  8 Feb 2025 02:49:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F034B3ACAC5
+	for <lists+linux-crypto@lfdr.de>; Sat,  8 Feb 2025 02:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A431531F9;
-	Sat,  8 Feb 2025 02:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EFC0156871;
+	Sat,  8 Feb 2025 02:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHzXWgiG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pzXD6Vhq"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B54829D0E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B997D1514E4;
 	Sat,  8 Feb 2025 02:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738982963; cv=none; b=ZVA5/bYjd8mhaqrhayW6hC8rF8oJoDipz9Tv5fmTjmHp8ss2KPfzjQWQuxqY3+/Is+fBwaI+/TGaTfJ1+/tfA76CDaVgJ0DGAgBoTwlVMVB78O4oz6zcf4OdFudYUgnHF1NVbefiQCu13jHH2dwAN4uoUxlGS74o5gxMQ9Sppf8=
+	t=1738982963; cv=none; b=j0bb3bkTlVQpEGKeN3Wf5cviEatd1QDsnZCrW6jkDpE4GdaAI5fn4zrjbHhWNh9iFkPICoVexOcMEHydUfPCfEcION6nYwQBbdvXo7VqPTtA2drNpuDBZsFsRowpU9/qrWnwDCPecavQrXjNgkiFR0sohQ6K4qnCiFu8TF+aGpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1738982963; c=relaxed/simple;
-	bh=CcbjCnOKgUgi0bXsM96+1hSnj0FEL/khYEZSB2AazeA=;
+	bh=UKNOpRq17HglB9yaAPYXxH+dAXWyU/9qtlMNOx890CA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t5hKP34P8QojSiF/f3+xaFwRY3/QwduS/g8M5GTSTYNmVp3d6Srlc2dID1/hYjL6+NMeFTsEscIZd2I1F8Pg/zE2CMdfuQenaA6kXixcwp+fxH3/FQTJZXntZQI52s2O8XoMFni3QqmwkuNLXs5C5eYA5iXx4eMgi5KygjdJEq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHzXWgiG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9BDFC4CED6;
-	Sat,  8 Feb 2025 02:49:22 +0000 (UTC)
+	 MIME-Version; b=eXq88j7ESbD3L5ZkzWbkJRzjZ1MbeRReIPH/HpRqCfMsstsAlA4Yln7u4FzAOdyMthGDOyiONNhoy5dUtAE81/182idwW7OVSNTaHkQ9mxAuYZTSBs5yaop4faMLgAOQ1iy/uPT7LpiPJ0qVjmYO0U8DAM+WeKG4Ze5q0gt7BBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pzXD6Vhq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BD40C4CEE6;
+	Sat,  8 Feb 2025 02:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1738982963;
-	bh=CcbjCnOKgUgi0bXsM96+1hSnj0FEL/khYEZSB2AazeA=;
+	bh=UKNOpRq17HglB9yaAPYXxH+dAXWyU/9qtlMNOx890CA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XHzXWgiGWT7/za6es3R66EVIPwn7nolhuIKqtLFEU/Qbkraq/6to5kCTx9rzNMRk9
-	 82b+gAYRg+uSrzQSKVvghqziDRXD9KZ4X1rj3TI4nOOXuioQ/G8lFSFGUDg+U7Qwb+
-	 aVIsqlfkLQ4eY099lMOtwYLJH6D/SxAvbTNbFqhNGXKMAQA+vrKBXMY8qWSLIEnJZ2
-	 zYHAjd3uOi0TDKo6+Udr/uSyVg5yh7qEvY8pBsqvDKg93K96S3toNpZ27LRnPIiGWA
-	 YA+Xtf9hYotEJpMPEQf4DTKz7gdmGhHkjWckziniERjljpc9J92nqcSPyAqNsFH9U3
-	 L/OJUkpzLOGiA==
+	b=pzXD6VhqfQbZzGTIOLcudLteIcsTwk8A72fHLdL6pMdf/xEfP0RWBFHrSMxxYrgwU
+	 yeV95g8pYAtUoOpDaOPh8+NSXse0ElEEexHGqNCFvI6KKm155c1JH5aFT8A2HjFVPG
+	 YbMkG0SMdez/x8R19HAzFKZN07dlV+fpESJO4Oon3sgDZdmSVmFPk0DvDxRXN9pGr+
+	 T5fNyKWnzGjQtftCcUBZRcY+wikNtkfyqDE+2XkEst23NDGc4ym4FCn8UJL1iR0EfK
+	 50vouHi0ezyj4lmuUTmFEgP0zjhMm/s2r2Vjt6+YOp1KK9LW4kvyulKAxZs/qrAs5s
+	 fK8tVGiRSRRhA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH v2 1/6] mips/crc32: remove unused enums
-Date: Fri,  7 Feb 2025 18:49:06 -0800
-Message-ID: <20250208024911.14936-2-ebiggers@kernel.org>
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH v2 2/6] lib/crc32: use void pointer for data
+Date: Fri,  7 Feb 2025 18:49:07 -0800
+Message-ID: <20250208024911.14936-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250208024911.14936-1-ebiggers@kernel.org>
 References: <20250208024911.14936-1-ebiggers@kernel.org>
@@ -62,43 +61,60 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Remove enum crc_op_size and enum crc_type, since they are never actually
-used.  Tokens with the names of the enum values do appear in the file,
-but they are only used for token concatenation with the preprocessor.
+Update crc32_le(), crc32_be(), and __crc32c_le() to take the data as a
+'const void *' instead of 'const u8 *'.
 
-This prevents a conflict with the addition of crc32c() to linux/crc32.h.
+This makes them slightly easier to use, as it can eliminate the need for
+casts in the calling code.  It's the only pointer argument, so there is
+no possibility for confusion with another pointer argument.
 
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Closes: https://lore.kernel.org/r/20250207224233.GA1261167@ax162
+Also, some of the CRC library functions, for example crc32c() and
+crc64_be(), already used 'const void *'.  Let's standardize on that, as
+it seems like a better choice.
+
+The underlying base and arch functions continue to use 'const u8 *', as
+that is often more convenient for the implementation.
+
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/mips/lib/crc32-mips.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ include/linux/crc32.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/lib/crc32-mips.c b/arch/mips/lib/crc32-mips.c
-index 083e5d693a169..100ac586aadb2 100644
---- a/arch/mips/lib/crc32-mips.c
-+++ b/arch/mips/lib/crc32-mips.c
-@@ -14,19 +14,10 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <asm/mipsregs.h>
- #include <linux/unaligned.h>
+diff --git a/include/linux/crc32.h b/include/linux/crc32.h
+index e9bd40056687a..e70977014cfdc 100644
+--- a/include/linux/crc32.h
++++ b/include/linux/crc32.h
+@@ -13,26 +13,26 @@ u32 __pure crc32_le_base(u32 crc, const u8 *p, size_t len);
+ u32 __pure crc32_be_arch(u32 crc, const u8 *p, size_t len);
+ u32 __pure crc32_be_base(u32 crc, const u8 *p, size_t len);
+ u32 __pure crc32c_le_arch(u32 crc, const u8 *p, size_t len);
+ u32 __pure crc32c_le_base(u32 crc, const u8 *p, size_t len);
  
--enum crc_op_size {
--	b, h, w, d,
--};
--
--enum crc_type {
--	crc32,
--	crc32c,
--};
--
- #ifndef TOOLCHAIN_SUPPORTS_CRC
- #define _ASM_SET_CRC(OP, SZ, TYPE)					  \
- _ASM_MACRO_3R(OP, rt, rs, rt2,						  \
- 	".ifnc	\\rt, \\rt2\n\t"					  \
- 	".error	\"invalid operands \\\"" #OP " \\rt,\\rs,\\rt2\\\"\"\n\t" \
+-static inline u32 __pure crc32_le(u32 crc, const u8 *p, size_t len)
++static inline u32 __pure crc32_le(u32 crc, const void *p, size_t len)
+ {
+ 	if (IS_ENABLED(CONFIG_CRC32_ARCH))
+ 		return crc32_le_arch(crc, p, len);
+ 	return crc32_le_base(crc, p, len);
+ }
+ 
+-static inline u32 __pure crc32_be(u32 crc, const u8 *p, size_t len)
++static inline u32 __pure crc32_be(u32 crc, const void *p, size_t len)
+ {
+ 	if (IS_ENABLED(CONFIG_CRC32_ARCH))
+ 		return crc32_be_arch(crc, p, len);
+ 	return crc32_be_base(crc, p, len);
+ }
+ 
+ /* TODO: leading underscores should be dropped once callers have been updated */
+-static inline u32 __pure __crc32c_le(u32 crc, const u8 *p, size_t len)
++static inline u32 __pure __crc32c_le(u32 crc, const void *p, size_t len)
+ {
+ 	if (IS_ENABLED(CONFIG_CRC32_ARCH))
+ 		return crc32c_le_arch(crc, p, len);
+ 	return crc32c_le_base(crc, p, len);
+ }
 -- 
 2.48.1
 
