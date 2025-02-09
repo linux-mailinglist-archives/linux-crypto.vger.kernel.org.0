@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-9586-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9587-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26CDCA2DC65
-	for <lists+linux-crypto@lfdr.de>; Sun,  9 Feb 2025 11:26:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48AABA2DC66
+	for <lists+linux-crypto@lfdr.de>; Sun,  9 Feb 2025 11:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 472733A6E48
-	for <lists+linux-crypto@lfdr.de>; Sun,  9 Feb 2025 10:25:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80E2F3A64E5
+	for <lists+linux-crypto@lfdr.de>; Sun,  9 Feb 2025 10:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DA71AF0AF;
-	Sun,  9 Feb 2025 10:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BDE1B21B2;
+	Sun,  9 Feb 2025 10:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="MO2maLvL"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="qOJTG/KH"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301B1189902;
-	Sun,  9 Feb 2025 10:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165DA18C936;
+	Sun,  9 Feb 2025 10:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739096529; cv=none; b=tZSaawHwIbqalbvRCN9YKjmvFY/zJnNTJxBKXFh1LgszdFev7YIRu1z7KSPgQwrZbxDruSW+ZrB54qNBTnGazo+qPzA78HEaWbaElSlw0oOKA8D4rS+35f0tuTyp8Avuq2mDffBAmU5lbkTzSQZ3n3/eUpaHHS0+tYa0vFmCbbU=
+	t=1739096538; cv=none; b=bceO9hJYy7U2TDuhxzQ1zKJPpy8tq/SPss00LgKyCYetmIGBaAF9kwQ57whgddHS0gNvEu0f1oPOIlcoR7tZYxniPhq1qVUj6jFQhAEWGzFJQ3mtjsCqyXWsvq11LwhrVVn6FTDihksaRWpfBfVgKiqdKk1guos3mJEkwJhTMSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739096529; c=relaxed/simple;
-	bh=UPLXXe6L2MrDc++BeOFQIuV2owi8xKA6eaEAAeZ776U=;
+	s=arc-20240116; t=1739096538; c=relaxed/simple;
+	bh=D5KMtvnOqjJBXMxZ7izITsUzbwabIVI4frTC0DqqW1M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G4YPb0s09RT/giM3z1lnSECA5CoiKrY9pyLYceWMj7qqx4s0tQpOZnhcDE9+6pX2flFQqZYx3VWymxNMOe5CniaLIkcRtBan7IaudppWXt6TCLSNTI3dXM5sGE9J1b2Fe4NrbIqTHAuqPbeO03E6kVwRLlCleWFdR+tpz+hb4H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=MO2maLvL; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=cnlXN6ar7XYW283A3TKastIaVZ1+0O771WV3c+96oClCiJaPXt5wjAW7ezwObOKKBrS8bMTpck3z2FeZUZMKHCsIebHykFP6klLBev669XtMs8t72NhzPBcFHwUDpaU7txp+TaiH/q41sVI4SgrBm0WnQJez3wUdSW4gmZ5Xj6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=qOJTG/KH; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,28 +37,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=mkPPjC8o0FMzZtM8Xt0RmrJn3Y3MticcSZvxgZEKe5I=; b=MO2maLvLsYu1EMaGtfRZxmWxkm
-	4Xpbu+Qm9RpGHqbzq+74mtxkXboM7K75TdFmZs0Sszm2rYVzqLT09Yrnx4fLzyYOxMpEKf+GF4mdY
-	7oQsF3xxULMwu37xr3pejXwQJBkIuo9IGRJmjgBWG6tO/myjFr5dHfwSj76xrptHjQ7vWTL8AX8Bh
-	78gl05Sr5BF+xB/ml1X8+wwWqRJnbs/Uos+g+ABPo+/DOhZZJ916gVuzJ+eA0tR4DlK4yS58+WVuF
-	zimwqV3agOSaww1mAW089Boy6Cl7b1B6jX/MkWFcyOTBCpsNjTJdKmN/xGOhM0CyK+TY1I0fVpSTG
-	RFXn8CJA==;
+	bh=kmzFPO6oq5CUTRzosRoTRZ48O9dAE5HzMxEJjZNytxI=; b=qOJTG/KHUNdpZf2ufR/EFbcG7E
+	Q5lPCGvlyBJZFqtpewBUChWj2VKiSoPF8Vllx5+cNb8MuFKXNIlVhIh2Bn7ecvxetQUeTmMjGDRXJ
+	UgK5TyeZsNmwVAB4R0eboCySXYtCNi8aeC7FcddwJeEqysZ9UziZICNfuBdkOF2liUFlDjD2YdidV
+	NYXmdTNqDo0AC0GBOHyZNaQHL8Pvas66N2QdWMo1XfpqI6QN0DHbnSq9aLKppuUBg9GP+EMTjqDjr
+	8LaWDNpnf9yHpSCWnLkfmuShYjifhOU5bTt085D1+Nl7INEc2X1ytiiTek7XUI9y2JMd7KTYjHCOc
+	9PPqiqTA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1th4Ei-00GIk9-1g;
-	Sun, 09 Feb 2025 18:21:46 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 09 Feb 2025 18:21:45 +0800
-Date: Sun, 9 Feb 2025 18:21:45 +0800
+	id 1th4Ey-00GIkK-0U;
+	Sun, 09 Feb 2025 18:22:01 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 09 Feb 2025 18:22:00 +0800
+Date: Sun, 9 Feb 2025 18:22:00 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Tanya Agarwal <tanyaagarwal25699@gmail.com>
-Cc: haren@us.ibm.com, ddstreet@ieee.org, Markus.Elfring@web.de,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org, anupnewsmail@gmail.com,
-	linux-crypto@vger.kernel.org
-Subject: Re: [RESEND PATCH V3] lib: 842: Improve error handling in
- sw842_compress()
-Message-ID: <Z6iBuarMDVyPv-UA@gondor.apana.org.au>
-References: <20250114141203.1421-1-tanyaagarwal25699@gmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+	Pankaj Gupta <pankaj.gupta@nxp.com>,
+	Gaurav Jain <gaurav.jain@nxp.com>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Arnaud Ebalard <arno@natisbad.org>,
+	Srujana Challa <schalla@marvell.com>, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, qat-linux@intel.com
+Subject: Re: [PATCH v2] crypto: Use str_enable_disable-like helpers
+Message-ID: <Z6iByA35mExfmwGa@gondor.apana.org.au>
+References: <20250114190501.846315-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -67,33 +71,33 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250114141203.1421-1-tanyaagarwal25699@gmail.com>
+In-Reply-To: <20250114190501.846315-1-krzysztof.kozlowski@linaro.org>
 
-On Tue, Jan 14, 2025 at 07:42:04PM +0530, Tanya Agarwal wrote:
-> From: Tanya Agarwal <tanyaagarwal25699@gmail.com>
+On Tue, Jan 14, 2025 at 08:05:01PM +0100, Krzysztof Kozlowski wrote:
+> Replace ternary (condition ? "enable" : "disable") syntax with helpers
+> from string_choices.h because:
+> 1. Simple function call with one argument is easier to read.  Ternary
+>    operator has three arguments and with wrapping might lead to quite
+>    long code.
+> 2. Is slightly shorter thus also easier to read.
+> 3. It brings uniformity in the text - same string.
+> 4. Allows deduping by the linker, which results in a smaller binary
+>    file.
 > 
-> The static code analysis tool "Coverity Scan" pointed the following
-> implementation details out for further development considerations:
-> CID 1309755: Unused value
-> In sw842_compress: A value assigned to a variable is never used. (CWE-563)
-> returned_value: Assigning value from add_repeat_template(p, repeat_count)
-> to ret here, but that stored value is overwritten before it can be used.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> Conclusion:
-> Add error handling for the return value from an add_repeat_template()
-> call.
-> 
-> Fixes: 2da572c959dd ("lib: add software 842 compression/decompression")
-> Signed-off-by: Tanya Agarwal <tanyaagarwal25699@gmail.com>
 > ---
-> V3: update title and reorganize commit description
-> V2: add Fixes tag and reword commit description
 > 
-> Coverity Link:
-> https://scan5.scan.coverity.com/#/project-view/63683/10063?selectedIssue=1309755
-> 
->  lib/842/842_compress.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Changes in v2:
+> 1. Also: drivers/crypto/caam/caamalg_qi2.c
+> ---
+>  drivers/crypto/bcm/cipher.c                         |  3 ++-
+>  drivers/crypto/bcm/spu2.c                           |  3 ++-
+>  drivers/crypto/caam/caamalg_qi2.c                   |  3 ++-
+>  drivers/crypto/intel/qat/qat_common/adf_sysfs.c     | 10 +++-------
+>  drivers/crypto/marvell/octeontx/otx_cptpf_ucode.c   |  5 +++--
+>  drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c |  3 ++-
+>  6 files changed, 14 insertions(+), 13 deletions(-)
 
 Patch applied.  Thanks.
 -- 
