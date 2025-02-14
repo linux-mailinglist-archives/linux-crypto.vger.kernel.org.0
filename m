@@ -1,198 +1,107 @@
-Return-Path: <linux-crypto+bounces-9773-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9775-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06927A361D0
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 16:34:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7521DA36392
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 17:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56EE01700EA
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 15:34:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D38A03A5BA7
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 16:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B52266EFD;
-	Fri, 14 Feb 2025 15:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C552676D6;
+	Fri, 14 Feb 2025 16:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ECrCiL7D"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yx/RAmga"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFFE25A2AD;
-	Fri, 14 Feb 2025 15:34:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65354245002
+	for <linux-crypto@vger.kernel.org>; Fri, 14 Feb 2025 16:50:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739547245; cv=none; b=Q8rLMdVk6uEcdf6amHcr3YJv9fzmPMZ9al2T077b+EZMBn/vDJnLJrLAVhQkhJ+F/+PMLJ++XcehldhTzlu0laoE33xv+1iBtO+F+5GG6+y0/NDJGje9aQ3NjBT7t87kEaRfSSZxY6sX9icG8LwPvPKQrpoxHcrDCtyEVALwwgQ=
+	t=1739551812; cv=none; b=TUO+j71lY+tTHflwms50XOMEUTOAIOqtFgATYn8xRaVIqJarBpLLFQpv+AZIF/KlNK1z8R15G9EJZB5k7PlruqmZ5LPy/tDxqkVGu9AQfNk+sRfOo12X8p9w9//ztMtKi6/fUrvbURvJzpjDFnr4SEBy6hGDMx37U5bdZqQjTEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739547245; c=relaxed/simple;
-	bh=afzjkoDNR+5URzZhBvSQ4ZnpfxUfaPdGqiY8US/VboU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=S/bf71BTKFO8Fhzgm3DuB1E9NI/C6YC2QCZfaPZEXuEvUttqtI2tS1S7ZHffMlu45TBp6SSvR2hDz2FEr+O/xRgHhpqmGI4TKT+GixrvUBh6cd8gIbsGvCv/LLZMTKgKfwaOxpAMWYmYhbHLGgID2iZZjFYy+nh9QyEftR8lkqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ECrCiL7D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E762C4CED1;
-	Fri, 14 Feb 2025 15:34:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739547244;
-	bh=afzjkoDNR+5URzZhBvSQ4ZnpfxUfaPdGqiY8US/VboU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ECrCiL7DBdPP6UFFz6PjonfFVlEUbl56ymR9CSiZzxpxCifwC27Tw8p1u6IDaNAcz
-	 XemUEQwq0pq9I6NzQ57R87EtLHA58AoZUYXKU4c/a4+0bKli0nC2pWWJ0CaTzucIWf
-	 zEEnZzErfP0wK5sPyu2mi2qclLmZogSRA/rGjbulFjwx2g9cjB/YQIACh2RMxA/mmG
-	 B0Uv3e4Yr3cTk/XVs+liLdVf+fr5YxFQXWCevR4NaUolQnSHhBUYWJJ4xYbbe3NeAW
-	 MF9KLwHoWvD7iUCoAoTnAelZhfw/GRKpfZBbyWOre6DjfvmbKONn7GTj2BMeFEUPTK
-	 6xY1KtkqdoRBw==
-Date: Fri, 14 Feb 2025 07:34:02 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre
- Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea
- <claudiu.beznea@tuxon.dev>, Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Miller
- <davem@davemloft.net>, Linus Walleij <linus.walleij@linaro.org>, Bartosz
- Golaszewski <brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>, Andrew Jeffery
- <andrew@codeconstruct.com.au>, Crt Mori <cmo@melexis.com>, Jonathan Cameron
- <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Jacky Huang
- <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>, Yury Norov
- <yury.norov@gmail.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Johannes
- Berg <johannes@sipsolutions.net>, Alex Elder <elder@ieee.org>, David Laight
- <david.laight.linux@gmail.com>, Vincent Mailhol
- <mailhol.vincent@wanadoo.fr>, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
- linux-crypto@vger.kernel.org, qat-linux@intel.com,
- linux-gpio@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
- linux-iio@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH treewide v3 2/4] bitfield: Add non-constant
- field_{prep,get}() helpers
-Message-ID: <20250214073402.0129e259@kernel.org>
-In-Reply-To: <2d30e5ffe70ce35f952b7d497d2959391fbf0580.1739540679.git.geert+renesas@glider.be>
-References: <cover.1739540679.git.geert+renesas@glider.be>
-	<2d30e5ffe70ce35f952b7d497d2959391fbf0580.1739540679.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1739551812; c=relaxed/simple;
+	bh=gPoxK90B3Kqc/vZW7WBculCQBSTvt/GSpX4CcAVf7Pw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dA17LpF9VKbVNAu+hfie4ZKPLoZfiqJM2e4jYgrnDORhneiMcG3DpbiX2tRLcrzFqXjS+s1eey5CjhOzBg7oOpv3mm4S+fq0TqrSVI6N4JL0RodCrsCWpXNI0/h3X8jGNyCu4e61kfqMkUR8OFK27BOd2SceCxxkjtyWwEugGMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yx/RAmga; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739551811; x=1771087811;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gPoxK90B3Kqc/vZW7WBculCQBSTvt/GSpX4CcAVf7Pw=;
+  b=Yx/RAmgaJ1QP8f7Ude3bCKBtniLFw3Y9ztHpFRkIt9qW47pVIYU+2VVl
+   11EmAEDZhT+B1Z7o0BvzI43nJ7Oq1rbnjGXklPsOEvZTjY/YRxIVDeWAd
+   IW32AcdZjy31+d2fRA5y2/ycdzHJybrJ9MHUbZKHfC4KPx+inll234qd+
+   YTbtKuOYmebSipWVGeAEV6Oa+sxKV4cAHmfE1rSYdt3fFWrHH4cVg51Ab
+   AZlsDKHDZaemy/gnHl0nRjVvq+VkJ20ucbME4ZEVWUJqFgvuazcH2CKFm
+   vv5jNlrlgdIq34nH152cXAfYLY3a6yxXbJtJgVQrZxuSbKM5EqJxlZG4g
+   w==;
+X-CSE-ConnectionGUID: XJpqCs7yQ7i76fSf4uScew==
+X-CSE-MsgGUID: oxIIFgspROmwvFHiaB6+og==
+X-IronPort-AV: E=McAfee;i="6700,10204,11345"; a="43959785"
+X-IronPort-AV: E=Sophos;i="6.13,286,1732608000"; 
+   d="scan'208";a="43959785"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2025 08:50:10 -0800
+X-CSE-ConnectionGUID: eXqy6qltQUmMeAyMvQMxfA==
+X-CSE-MsgGUID: 9cZJbrWtSD2DkVfsl0y9Bg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="118126351"
+Received: from unknown (HELO silpixa00400314.ger.corp.intel.com) ([10.237.223.156])
+  by fmviesa005.fm.intel.com with ESMTP; 14 Feb 2025 08:49:20 -0800
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To: herbert@gondor.apana.org.au
+Cc: linux-crypto@vger.kernel.org,
+	andriy.shevchenko@intel.com,
+	qat-linux@intel.com,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: [PATCH 0/2] crypto: qat - refactor service parsing logic
+Date: Fri, 14 Feb 2025 16:40:41 +0000
+Message-ID: <20250214164855.64851-2-giovanni.cabiddu@intel.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+Content-Transfer-Encoding: 8bit
 
-On Fri, 14 Feb 2025 14:55:51 +0100 Geert Uytterhoeven wrote:
-> The existing FIELD_{GET,PREP}() macros are limited to compile-time
-> constants.  However, it is very common to prepare or extract bitfield
-> elements where the bitfield mask is not a compile-time constant.
-> 
-> To avoid this limitation, the AT91 clock driver and several other
-> drivers already have their own non-const field_{prep,get}() macros.
-> Make them available for general use by consolidating them in
-> <linux/bitfield.h>, and improve them slightly:
->   1. Avoid evaluating macro parameters more than once,
->   2. Replace "ffs() - 1" by "__ffs()",
->   3. Support 64-bit use on 32-bit architectures.
-> 
-> This is deliberately not merged into the existing FIELD_{GET,PREP}()
-> macros, as people expressed the desire to keep stricter variants for
-> increased safety, or for performance critical paths.
+This small series refactors the service parsing logic in the QAT driver
+by replacing hard-coded service strings with a more flexible approach.
 
-I really really think that people should just use the static inline
-helpers if the field is not constant. And we should do something like
-below so that people can actually find them.
+The first patch removes an unnecessary export. The second patch reworks
+the service parsing logic to allow being extended in future.
 
-diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-index 63928f173223..e02afcd7aeee 100644
---- a/include/linux/bitfield.h
-+++ b/include/linux/bitfield.h
-@@ -156,6 +156,80 @@
- 		(typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask));	\
- 	})
- 
-+/**
-+ * u32_encode_bits() - prepare a u32 bitfield element (non-const)
-+ * @v: value to put in the field
-+ * @field: shifted mask defining the field's length and position
-+ *
-+ * Equivalent of FIELD_PREP() for u32, field does not have to be constant.
-+ *
-+ * Note that the helper is available for other field widths (generated below).
-+ */
-+static __always_inline __u32 u32_encode_bits(u32 v, u32 field)
-+{
-+	if (__builtin_constant_p(v) && (v & ~field_mask(field)))
-+		__field_overflow();
-+	return ((v & field_mask(field)) * field_multiplier(field));
-+}
-+
-+/**
-+ * u32_replace_bits() - change a u32 bitfield element (non-const)
-+ * @old: old u32 value to modify
-+ * @val: value to put in the field
-+ * @field: shifted mask defining the field's length and position
-+ *
-+ * Remove the current contents of the @field in @old and set it to @new.
-+ *
-+ * Note that the helper is available for other field widths (generated below).
-+ */
-+static __always_inline __u32 u32_replace_bits(__u32 old, u32 val, u32 field)
-+{
-+	return (old & ~(field)) | u32_encode_bits(val, field);
-+}
-+
-+/**
-+ * u32_get_bits() - get u32 bitfield element (non-const)
-+ * @v: value to extract the field from
-+ * @field: shifted mask defining the field's length and position
-+ *
-+ * Extract the value of the field and shift it down.
-+ *
-+ * Note that the helper is available for other field widths (generated below).
-+ */
-+static __always_inline u32 u32_get_bits(__u32 v, u32 field)
-+{
-+	return ((v) & field) / field_multiplier(field);
-+}
-+
-+static __always_inline void u32p_replace_bits(__u32 * p, u32 val, u32 field)
-+{
-+	* p = ( * p & ~(field)) | u32_encode_bits(val, field);
-+}
-+
-+static __always_inline __le32 le32_encode_bits(u32 v, u32 field)
-+{
-+	if (__builtin_constant_p(v) && (v & ~field_mask(field)))
-+		__field_overflow();
-+	return cpu_to_le32((v & field_mask(field)) * field_multiplier(field));
-+}
-+
-+static __always_inline __le32 le32_replace_bits(__le32 old, u32 val, u32 field)
-+{
-+	return (old & ~cpu_to_le32(field)) | le32_encode_bits(val, field);
-+}
-+
-+static __always_inline void le32p_replace_bits(__le32 * p, u32 val, u32 field)
-+{
-+	* p = ( * p & ~cpu_to_le32(field)) | le32_encode_bits(val, field);
-+}
-+
-+static __always_inline u32 le32_get_bits(__le32 v, u32 field)
-+{
-+	return (le32_to_cpu(v) & field) / field_multiplier(field);
-+}
-+
-+/* Auto-generate bit ops for other field width and endian combination */
-+
- extern void __compiletime_error("value doesn't fit into mask")
- __field_overflow(void);
- extern void __compiletime_error("bad bitfield mask")
-@@ -198,7 +272,7 @@ static __always_inline base type##_get_bits(__##type v, base field)	\
- 	____MAKE_OP(u##size,u##size,,)
- ____MAKE_OP(u8,u8,,)
- __MAKE_OP(16)
--__MAKE_OP(32)
-+____MAKE_OP(be32,u32,cpu_to_be32,be32_to_cpu) /* Other 32b types open coded */
- __MAKE_OP(64)
- #undef __MAKE_OP
- #undef ____MAKE_OP
+Giovanni Cabiddu (1):
+  crypto: qat - do not export adf_cfg_services
+
+Małgorzata Mielnik (1):
+  crypto: qat - refactor service parsing logic
+
+ .../intel/qat/qat_420xx/adf_420xx_hw_data.c   |  16 +-
+ .../intel/qat/qat_4xxx/adf_4xxx_hw_data.c     |  11 +-
+ .../intel/qat/qat_common/adf_accel_devices.h  |   1 +
+ .../intel/qat/qat_common/adf_cfg_services.c   | 167 +++++++++++++++---
+ .../intel/qat/qat_common/adf_cfg_services.h   |  26 ++-
+ .../intel/qat/qat_common/adf_cfg_strings.h    |   6 +-
+ .../intel/qat/qat_common/adf_gen4_config.c    |  15 +-
+ .../intel/qat/qat_common/adf_gen4_hw_data.c   |  26 ++-
+ .../intel/qat/qat_common/adf_gen4_hw_data.h   |   1 +
+ .../crypto/intel/qat/qat_common/adf_sysfs.c   |  12 +-
+ 10 files changed, 202 insertions(+), 79 deletions(-)
+
+-- 
+2.48.1
+
 
