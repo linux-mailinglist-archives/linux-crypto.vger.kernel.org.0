@@ -1,83 +1,86 @@
-Return-Path: <linux-crypto+bounces-9755-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9757-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0B38A35863
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 09:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3519A358B0
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 09:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C1063AF104
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 08:02:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5452C3AB8DF
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Feb 2025 08:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C5422155B;
-	Fri, 14 Feb 2025 08:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE21122332A;
+	Fri, 14 Feb 2025 08:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VI8QIQhg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lVF7Gtte"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74A122172F
-	for <linux-crypto@vger.kernel.org>; Fri, 14 Feb 2025 08:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC18D221D9F;
+	Fri, 14 Feb 2025 08:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739520160; cv=none; b=twLkGSRE/awsG5l7mJq6I51Hld6RiH3/vVclmZJryfyCoKWKeAb4qMlkMEBGn8inIvUnsUfXYtxESFmQPpy6nwXLijSvHvnJgL27WWLa4Vjun/cxcep6V+dgIxlVZqXpY+uPJrgxJEM8FQdpDqPhfB/IbBQltMe0btvjtR6QAaE=
+	t=1739521146; cv=none; b=A+w9HAigZV9Gjs2wjgzMw3fbGY5wfN9Q/Tp3Cn+Ynig8XvVGRdqKh/pac9+nl/GlbrE1KuhyuasibVMWMjBWZizenK2y1AObIWFuC3Gd6hjJZqrG0PZ3Divbuj6Z45Q84hoPl/UIjI+jPKyGBlS/LUAgNnqwFcCo5gtdhI0xOfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739520160; c=relaxed/simple;
-	bh=J4oE9m5naq7S2XKzW7q89ShYD12xzWhIuRo6goJRevg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bfswnin18uidwCNt8GJb3jqokMjxhHulCiVGVvVhKJpVtrWM8OXTmvSAqT6WZwJ/HqHjJtTpBZycoi8KP4r8txJOejhvILI7NI0FvKlBt/u6RX9gtHOJ6A9E7ikzqvSAconDSwHSNFBSJ4Z7wrnvz89vjNOgXJHN1gEnh/nUwjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VI8QIQhg; arc=none smtp.client-ip=209.85.208.51
+	s=arc-20240116; t=1739521146; c=relaxed/simple;
+	bh=+YRZa9GQMBvxCO42bZd2rPCKBHevSnFiZVRhYz/Twu4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qe7yiywb3HIu+r/WQ4Bzs3eCipMfT/o1WmtF2Frtk2anWAujsaUriQtFCOTmsorcpUA+zUZ467EagwiKiTwoUJYCBXB79xuNT5ka2SbbsdJIecggD0l0TPrTd95fHWaoXjY6q/UH9V9F6wUW2uICE15CNFgnMoeOSkaB+2D9JnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lVF7Gtte; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5df07041c24so378768a12.0
-        for <linux-crypto@vger.kernel.org>; Fri, 14 Feb 2025 00:02:38 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4396794bfdeso5241205e9.3;
+        Fri, 14 Feb 2025 00:19:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739520157; x=1740124957; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739521140; x=1740125940; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=26W2SAUaIn/oBZFf4Dbol+vvHRk+xozS2dfD+9MdceM=;
-        b=VI8QIQhgOIHArVollrtXW0e6lwFeVwBFixUH58R2sRSG6H9FQi2CO5Rke3MEUIFxCd
-         NVnk/IOLKWLhaTB11lZph5SgojBnFC4oM77GQs3RdmnYIlgKq0gzpto/Ak74zoAlkhJd
-         RyEwx2moj/jbUGSLxGjgXFM9e0ZOv01HS1R9mpgomf/RrCF6nsq+TUsRDv5PoMe9hLIz
-         VuJsOyrALXZV3cgDo12onEodPE/Sp9PCyf1Mjhr7G36XmxiK4eUA6+15HmiqtJs1NN32
-         vUqehV5qnh5LcWEI0TWKUOCkFOxGRF4CKHyMgOedvxZo82q4wsQsqCRtRywlkroFIg/Z
-         amIw==
+        bh=LbVa8HDmySOLzTxdp1rm7fHbF9zRW7+16BI5omjFQBQ=;
+        b=lVF7GttePDH4zpQG2F6wt4G/fcAfDK7keoGZ8sJbC4ZdQA27LLTT7gzXsHdVQ2cOKA
+         E3xTwBsvkss4GZLsrYEyIrwgEptAmiquMUgM5k/w+r29BJ8JTNPWvBPmSunhtiXRRKD5
+         /ElUE5e4L343sdLbPCXF3iW/rCj0Aa6WpTPQ7X+lfIpuOZ0dPvGdn7VZkMvo/PXU6FI2
+         k+zto5fp4s3rOftJwbryr1XmNv/IF4STtchZwQpohMjjDb9cQYIBEB1XYZ8swQ2hLgmv
+         8Zh8AHhvKoS1/0/PRJCLcWbxqLNXICmlaUtxFUCzCGoILpDnN3evYc+/Wg/W/lKLINrm
+         0z1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739520157; x=1740124957;
+        d=1e100.net; s=20230601; t=1739521140; x=1740125940;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=26W2SAUaIn/oBZFf4Dbol+vvHRk+xozS2dfD+9MdceM=;
-        b=Skrd2jKd26lxMKjGafCq3sLoBqP6FBXQ9E4hypk8EajLQmKifchAliX3uOBku3WXPD
-         WrP5xnEs5d2M8nhBrP6gNqM8SX4+cNH2e91U7mJTQ6FDf92l5TfY9roBHaelJIESjaNS
-         4BUrq+WDvnR1HmXrDFWhZPC6hXNWI3AlEhVPwrgJGATdY8udnkNyimiMG0ziIlz8HXQI
-         467VZY11VF6wd3ubwMc4dRbcQL7PUHk+vqpnWk5lwmw4c0qAUsMD3G6r/BMdXiklwh/7
-         yqBmLBhc2o3Yc2nB5wI34MZ3vttn/fbyUyf/0sGTZ1WO+Ol5mhw3qvf8qos2lcSswnLz
-         sEIw==
-X-Gm-Message-State: AOJu0Yx5bvzDCbE0neYFgR3/ZeyphTAa7/fgCWQinLxk5UFPJWR21oEv
-	bLmxsAhdOeHA3JF1wUGriwdHZ3YM33rsYCaaT9OO7gEr9DIpwihE1pGntXY50+30Lw==
-X-Gm-Gg: ASbGncvmRK4yeWw9TFvgKyZTks/rLo7pZ+FZwTKRCX2UZP5Fii/w7N5G8b3+lmAEEQp
-	2DKESMTb1y5lrEli0umCjSNRX1pnvKnlon5v1b17dmtUNGCZP5UahZlvLq9Sapax8+S7WravXR6
-	wphadrB8arR8coHpRzk3Gzi+q69Cr1nEmUirGPh5ojGBaun5T45eS+eIIXqZelp1MbQOjLk59Va
-	ilxO1Fjx/YdaxGQnRWlbRqxVAnBCtNSZRHkRfjPcSEHc+MdbLMydEaZe0qvLTsmmXIuWhbKa8wF
-	M/DAkP61WL+/rar7UIx+sAlq5zsmhts6d8yqR+5LCUz5LqZUUjotbR5cDeDKFSuJD7p+oH3xGNl
-	vwsIMbSmhVQVr48Q=
-X-Google-Smtp-Source: AGHT+IEPTh1YcTLerk5K2U23kd8GMiHsc17UjsmKGY0Bd14FJYGsFHF/k7RQF4/xMiFAoqWYDHlmSQ==
-X-Received: by 2002:a17:907:6d11:b0:ab2:f8e9:5f57 with SMTP id a640c23a62f3a-ab7f33bb639mr1012697466b.21.1739520156597;
-        Fri, 14 Feb 2025 00:02:36 -0800 (PST)
+        bh=LbVa8HDmySOLzTxdp1rm7fHbF9zRW7+16BI5omjFQBQ=;
+        b=a9qQpTbkYrxk2QywB5AdKbRcTiA64Y3w1Qy4NIVPLqaKJ1zLcz4CcrHKBDjOZ32yLp
+         rmNXCJgabvgWiR5n42/97LTDcYzMZIBmRemJuvj7S2NSR/wfBwbSdpT+Tt9ulVbybF8f
+         idjdlArsX9oyv3P2FVTEjGDXAbgHAXlOqOfKAaRG4EjocU08nRS+rDDqox97OTvPEQBo
+         USC9MvsJDE2OutnGur5Hl+C6Kl1Da7JEXIYFH32u9TfvorvcDgHQy7fMjWUCH5QnGzHu
+         tLBrb3SDqChn7bZ785MXrFHu/Rh6SkOIzz6d9B2uAmU4hjsZkVqg/Qcl462ZxyN8tXTR
+         fhgg==
+X-Forwarded-Encrypted: i=1; AJvYcCUL54b0pDN9kfRugIzLG1Vc6WayomaJJVB1bDQXCiwKpGpK97HylJns/Ia6hka5B7oxwbt3sW0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlwFIfwsTSFwFEPlUDAxVjBSkGkeBj/P292kmhlWdGIEK61YE0
+	NzDYtMD5rxZIuC2Mby+XHdBmMIdp9IF5Id4aFUAh4PdHsz10cpBu7bStW92amsqNAg==
+X-Gm-Gg: ASbGncu3AG5G1d3GNJm2FMQJB/6z/B+LLcrwHuNOAZjjKdIlAzDK0G7vzLhp7fhf6bd
+	CTjW8HSJ43aI5zQ7L+4Yg9nU/TOhHMJz77uZn+vL6LtFmLIesuZP7mO0yeC1MmXz1viBLnRJpxf
+	9554dnEfAUw9h9zWuka/UNvLTVpeeff2nURX1hNT7nl1MO1KIK90ngYSanI/OYjxf8c6RYS82fg
+	gtpS0p4MEChwa6GEYGPpQTSZaUOvNvUboqSHQ7oHt0ORCSG+EAritZ/2jQJBqdzL3xPGi/HYOD8
+	/0AdqJ7EwOcYBkzA+y6m/JIjiYWw/4wMpCmaN3LsRm8Y2SgKwrtvqO9j+9cLjTFmWSHHeZ5210Q
+	IVVSxrNAl5Bzs+bo=
+X-Google-Smtp-Source: AGHT+IGyXZdWdSWqRimzmSMnbhS5myJ9fXPKRG3aOdX5uBZS03JahStAbbfxW7j2lDOXI7yxVWNY9w==
+X-Received: by 2002:a05:600c:687:b0:439:5aa1:1ef2 with SMTP id 5b1f17b1804b1-4395aa12228mr98087905e9.27.1739521139878;
+        Fri, 14 Feb 2025 00:18:59 -0800 (PST)
 Received: from legolas.fritz.box (p200300d0af0cd200c9869c6f52eff023.dip0.t-ipconnect.de. [2003:d0:af0c:d200:c986:9c6f:52ef:f023])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aba53231798sm290928666b.16.2025.02.14.00.02.35
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4395a04ee48sm69409735e9.3.2025.02.14.00.18.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2025 00:02:36 -0800 (PST)
+        Fri, 14 Feb 2025 00:18:58 -0800 (PST)
 From: Markus Theil <theil.markus@gmail.com>
 To: linux-crypto@vger.kernel.org
-Cc: akpm@linux-foundation.org,
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	akpm@linux-foundation.org,
 	Jason@zx2c4.com,
 	Markus Theil <theil.markus@gmail.com>
-Subject: [PATCH] test_hash.c: replace custom PRNG by prandom
-Date: Fri, 14 Feb 2025 09:01:57 +0100
-Message-ID: <20250214080157.44419-1-theil.markus@gmail.com>
+Subject: [PATCH 0/2] prandom: add crypto warnings and switch to new PRNG
+Date: Fri, 14 Feb 2025 09:18:38 +0100
+Message-ID: <20250214081840.47229-1-theil.markus@gmail.com>
 X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -85,100 +88,42 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Use default PRNG, as there is no real need
-for a custom solution here.
+This series builds on top of the series:
+	"prandom: remove next_pseudo_random32."
 
-We know the sequence provided by our seed
-and do not need to do bit magic in order
-to obtain a non-zero byte. Just iterate a
-small number of times, if needed.
+With the current cryptographically safe PRNG in drivers/char/random.c
+fast enough for most purposes, make annoyingly clear, that no one should
+use the prandom PRNG for cryptographic purposes without known about
+this.
 
-Signed-off-by: Markus Theil <theil.markus@gmail.com>
----
- lib/test_hash.c | 40 +++++++++++++---------------------------
- 1 file changed, 13 insertions(+), 27 deletions(-)
+While looking at the prandom/random32 code, I informed myself about
+PRNGs and saw that currently fast PRNGs with better statistical
+properties than LFSR113, which is currently used, are available.
 
-diff --git a/lib/test_hash.c b/lib/test_hash.c
-index a7af39662a0a..308446ea3431 100644
---- a/lib/test_hash.c
-+++ b/lib/test_hash.c
-@@ -17,39 +17,21 @@
- #include <linux/compiler.h>
- #include <linux/types.h>
- #include <linux/module.h>
-+#include <linux/prandom.h>
- #include <linux/hash.h>
- #include <linux/stringhash.h>
- #include <kunit/test.h>
- 
--/* 32-bit XORSHIFT generator.  Seed must not be zero. */
--static u32 __attribute_const__
--xorshift(u32 seed)
--{
--	seed ^= seed << 13;
--	seed ^= seed >> 17;
--	seed ^= seed << 5;
--	return seed;
--}
--
--/* Given a non-zero x, returns a non-zero byte. */
--static u8 __attribute_const__
--mod255(u32 x)
--{
--	x = (x & 0xffff) + (x >> 16);	/* 1 <= x <= 0x1fffe */
--	x = (x & 0xff) + (x >> 8);	/* 1 <= x <= 0x2fd */
--	x = (x & 0xff) + (x >> 8);	/* 1 <= x <= 0x100 */
--	x = (x & 0xff) + (x >> 8);	/* 1 <= x <= 0xff */
--	return x;
--}
--
- /* Fill the buffer with non-zero bytes. */
--static void fill_buf(char *buf, size_t len, u32 seed)
-+static void fill_buf(char *buf, size_t len, struct rnd_state *prng)
- {
- 	size_t i;
- 
- 	for (i = 0; i < len; i++) {
--		seed = xorshift(seed);
--		buf[i] = mod255(seed);
-+		/* we know our seeds, no need to worry about endless runtime */
-+		do {
-+			buf[i] = (u8) prandom_u32_state(prng);
-+		} while (!buf[i]);
- 	}
- }
- 
-@@ -143,11 +125,13 @@ test_int_hash(struct kunit *test, unsigned long long h64, u32 hash_or[2][33])
- 
- static void test_string_or(struct kunit *test)
- {
--	char buf[SIZE+1];
-+	struct rnd_state prng;
- 	u32 string_or = 0;
-+	char buf[SIZE+1];
- 	int i, j;
- 
--	fill_buf(buf, SIZE, 1);
-+	prandom_seed_state(&prng, 0x1);
-+	fill_buf(buf, SIZE, &prng);
- 
- 	/* Test every possible non-empty substring in the buffer. */
- 	for (j = SIZE; j > 0; --j) {
-@@ -171,9 +155,11 @@ static void test_hash_or(struct kunit *test)
- 	char buf[SIZE+1];
- 	u32 hash_or[2][33] = { { 0, } };
- 	unsigned long long h64 = 0;
-+	struct rnd_state prng;
- 	int i, j;
- 
--	fill_buf(buf, SIZE, 1);
-+	prandom_seed_state(&prng, 0x1);
-+	fill_buf(buf, SIZE, &prng);
- 
- 	/* Test every possible non-empty substring in the buffer. */
- 	for (j = SIZE; j > 0; --j) {
+Recent alternatives to consider are in my opinion:
+* PCG: https://www.pcg-random.org
+* Xoshiro: https://prng.di.unimi.it
+
+While both seem to have good statistical properties, I recommend
+to chose Xoshiro256++ here, because it seems to be even faster than
+RNGs from the PCG series.
+
+Furthermore, the authors of Xoshiro provide a small RNG named SplitMix64
+for generating high quality seeds for the Xoshiro RNG. By using this in
+the default way, no further seed checks or state warmup are necessary.
+This simplifies the PRNG code IMHO.
+
+Markus Theil (2):
+  prandom: add usage comments for cryptography
+  prandom/random32: switch to Xoshiro256++
+
+ include/linux/prandom.h |  30 +---
+ lib/random32.c          | 351 ++++++++++++++++++++--------------------
+ 2 files changed, 180 insertions(+), 201 deletions(-)
+
 -- 
 2.47.2
 
