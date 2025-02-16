@@ -1,33 +1,33 @@
-Return-Path: <linux-crypto+bounces-9797-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9799-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E24B5A371EE
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 04:07:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA23A371EB
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 04:07:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5F273AEF3F
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 03:07:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7464716EE69
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 03:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D45C8E0;
-	Sun, 16 Feb 2025 03:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFD9199B8;
+	Sun, 16 Feb 2025 03:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="ZIF93BTV"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="Z8OREJTD"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7BB10A1F
-	for <linux-crypto@vger.kernel.org>; Sun, 16 Feb 2025 03:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6613510A1F
+	for <linux-crypto@vger.kernel.org>; Sun, 16 Feb 2025 03:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739675256; cv=none; b=ER5mXAo8XGCpQxUSIkkHK21Skp0gSD1VYaVt/wDSvo9I3FnQuGSvUDUNy05cVZ4mzYOmTMAJIeTUmsZr6mJaKH7I2xqaBiOWK5AF4oTvFaiSqjsLt8513frO9KPsiny+yMJcbLbNDoAykhJMstDmC0gZzwEb5AjGQBzVRNDPiRU=
+	t=1739675259; cv=none; b=LPDpBuvy0DhvQ+iRdfRKtIFZZWLZexSrvWQIfwBxAhQwMLGMAsDLphMqlaTsBGL3W3pOg8nRsZSuu46FI3+Y/9hwbBi23vmlEVfhjgAWP5NZcC7OOPKylrG06oflAVb5daPgp6A/HQ7QpF5BO/TE6FWej93NRE3l/BZGYhgq6uQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739675256; c=relaxed/simple;
-	bh=35yDBQpzpN6NuQDIyD47ciJFy71wiMY/6pgQ0NL/268=;
-	h=Date:Message-Id:In-Reply-To:References:From:Subject:To:Cc; b=YU1r8YXNsvUD9pU3pIityiv83wHOOYmXQNoU2LmfI6uv99MTG3JZZGKrXF+vdYs/7KZQ3pBtrHBF+A25ZsqUjA8ff/eW3sVGYflyIcrh/bOPl+rHIU1LZc4dsCtkrw1r9v2sOot2XeEArdcNt/Bb+32Gdi5GfW7ETw5NAxjcVug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=ZIF93BTV; arc=none smtp.client-ip=144.6.53.87
+	s=arc-20240116; t=1739675259; c=relaxed/simple;
+	bh=3n7dW+Dn06EC4hrLV6q4tdY3D7DDC32kKDRs/inG9Dc=;
+	h=Date:Message-Id:In-Reply-To:References:From:Subject:To:Cc; b=NiilKUWE6OhNv1VIpNMY5Xf1UaXUqmhCNIKwQLZo5ZfxM+fPZ9p8tqKA9wZvF/SoLvpeMbRji9Gjc9LS2pxLPQ9PC7VOu3CI7KrkU8kzez2uLsZjp/6aFPMecnPl61LdFPEh6K2FaRf//fF8gZaYbTvzwrkQvkIXrdcoAvcl69M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=Z8OREJTD; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=/Gy8ojeyn/pSetWrgiMW7tNsrPDhJ+xUsPdhwiBTYgM=; b=ZIF93BTVB/yehw23wiBlQJ0SKE
-	sX28cEjd4VVnom8X7mgS1YsYUOFY2ikCh3Lb1MdxP95UbUZSmsMxDswoKZ96gZw/Y+blGM2RKGyAJ
-	ZGi8v7m4LuhC4NGp/RB4TCnLwyecUzJaWZduKUDU5Z/bFUBt4QH7ifjKkpWyx5Gdsgq80EqQRIT4G
-	J6x+lYf6pu01I51xp33+HgWsEfX3eEPcHM+mYpmoQqn479jFDo4hpE78wmtfwbltTiQYkTZngsbpw
-	fbqvMEr0s1lUs0+kKrTOo9CpU+AKwqKWPeSgDtwyOvti00usNugRHwigKTjBmllYZKs84UBU5GlEj
-	GlZULOrw==;
+	bh=AfJ3SA/bRPE6cedgO69rzRNOIPPNNWgDTd0omE6JgLc=; b=Z8OREJTDYVUfKTZNaS9n5vQkyz
+	GCbtht/dIVEDcoOoHla0MGNzDET4NKthaT77gOnTrLbukhIQjgB8gj2NBsU7lERg72wWZBzA1Fu/A
+	w/Zya0eJBzWNBNVhAMnCL4q73t2Yu1oRMtVXjAZDYRgcJ6ClBjTun/vpkgADIcVyJ08pk2YW1O9PB
+	mGo7/s3/RWFuMzVmGMgcSRMgRCzql3ED/Eo1uzX4xuzrZydmfHizv15qS/MJfmOmvIrBasSMnUb51
+	+DVsErh3GSwT2drO6z/qrCm97lxwzJ9YxNi9w+qwtTBPjys/KfYBLH+zJiUZHmxC81Rc5oyN1slKm
+	YBREdUvQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tjUnK-000gZw-1z;
-	Sun, 16 Feb 2025 11:07:32 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 16 Feb 2025 11:07:31 +0800
-Date: Sun, 16 Feb 2025 11:07:31 +0800
-Message-Id: <d6e10dbf172f0b7c791f5406d55e8f1c74492d57.1739674648.git.herbert@gondor.apana.org.au>
+	id 1tjUnM-000ga9-2r;
+	Sun, 16 Feb 2025 11:07:34 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 16 Feb 2025 11:07:33 +0800
+Date: Sun, 16 Feb 2025 11:07:33 +0800
+Message-Id: <513768f4907245e15e5f12bb20bd50762c3cc25b.1739674648.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1739674648.git.herbert@gondor.apana.org.au>
 References: <cover.1739674648.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v2 PATCH 09/11] crypto: hash - Add sync hash interface
+Subject: [v2 PATCH 10/11] fsverity: Use sync hash instead of shash
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Eric Biggers <ebiggers@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Megha Dey <megha.dey@linux.intel.com>, Tim Chen <tim.c.chen@linux.intel.com>
 Precedence: bulk
@@ -61,277 +61,154 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 
-Introduce a new sync hash interface based on ahash, similar to
-sync skcipher.
-
-It will replace shash for existing users.
+Use the sync hash interface instead of shash.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/ahash.c        |  37 ++++++++++++++++
- include/crypto/hash.h | 100 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 137 insertions(+)
+ fs/verity/fsverity_private.h |  2 +-
+ fs/verity/hash_algs.c        | 41 +++++++++++++++++++-----------------
+ 2 files changed, 23 insertions(+), 20 deletions(-)
 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index 6b19fa6fc628..fafce2e47a78 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -949,6 +949,27 @@ struct crypto_ahash *crypto_alloc_ahash(const char *alg_name, u32 type,
- }
- EXPORT_SYMBOL_GPL(crypto_alloc_ahash);
+diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
+index b3506f56e180..aecc221daf8b 100644
+--- a/fs/verity/fsverity_private.h
++++ b/fs/verity/fsverity_private.h
+@@ -20,7 +20,7 @@
  
-+struct crypto_sync_hash *crypto_alloc_sync_hash(const char *alg_name,
-+						u32 type, u32 mask)
-+{
-+	struct crypto_ahash *tfm;
-+
-+	/* Only sync algorithms allowed. */
-+	mask |= CRYPTO_ALG_ASYNC;
-+	type &= ~CRYPTO_ALG_ASYNC;
-+
-+	tfm = crypto_alloc_ahash(alg_name, type, mask);
-+
-+	if (!IS_ERR(tfm) && WARN_ON(crypto_ahash_reqsize(tfm) >
-+				    MAX_SYNC_HASH_REQSIZE)) {
-+		crypto_free_ahash(tfm);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	return container_of(tfm, struct crypto_sync_hash, base);
-+}
-+EXPORT_SYMBOL_GPL(crypto_alloc_sync_hash);
-+
- int crypto_has_ahash(const char *alg_name, u32 type, u32 mask)
+ /* A hash algorithm supported by fs-verity */
+ struct fsverity_hash_alg {
+-	struct crypto_shash *tfm; /* hash tfm, allocated on demand */
++	struct crypto_sync_hash *tfm; /* hash tfm, allocated on demand */
+ 	const char *name;	  /* crypto API name, e.g. sha256 */
+ 	unsigned int digest_size; /* digest size in bytes, e.g. 32 for SHA-256 */
+ 	unsigned int block_size;  /* block size in bytes, e.g. 64 for SHA-256 */
+diff --git a/fs/verity/hash_algs.c b/fs/verity/hash_algs.c
+index 6b08b1d9a7d7..e088bcfe5ed1 100644
+--- a/fs/verity/hash_algs.c
++++ b/fs/verity/hash_algs.c
+@@ -43,7 +43,7 @@ const struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
+ 						      unsigned int num)
  {
- 	return crypto_type_has_alg(alg_name, &crypto_ahash_type, type, mask);
-@@ -1123,5 +1144,21 @@ void ahash_request_free(struct ahash_request *req)
- }
- EXPORT_SYMBOL_GPL(ahash_request_free);
+ 	struct fsverity_hash_alg *alg;
+-	struct crypto_shash *tfm;
++	struct crypto_sync_hash *tfm;
+ 	int err;
  
-+int crypto_sync_hash_digest(struct crypto_sync_hash *tfm, const u8 *data,
-+			    unsigned int len, u8 *out)
-+{
-+	SYNC_HASH_REQUEST_ON_STACK(req, tfm);
-+	int err;
-+
-+	ahash_request_set_callback(req, 0, NULL, NULL);
-+	ahash_request_set_virt(req, data, out, len);
-+	err = crypto_ahash_digest(req);
-+
-+	ahash_request_zero(req);
-+
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(crypto_shash_tfm_digest);
-+
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Asynchronous cryptographic hash type");
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index 2aa83ee0ec98..f6e0c44331a3 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -8,6 +8,7 @@
- #ifndef _CRYPTO_HASH_H
- #define _CRYPTO_HASH_H
+ 	if (num >= ARRAY_SIZE(fsverity_hash_algs) ||
+@@ -62,7 +62,7 @@ const struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
+ 	if (alg->tfm != NULL)
+ 		goto out_unlock;
  
-+#include <linux/align.h>
- #include <linux/atomic.h>
- #include <linux/crypto.h>
- #include <linux/string.h>
-@@ -162,6 +163,8 @@ struct shash_desc {
- 	void *__ctx[] __aligned(ARCH_SLAB_MINALIGN);
- };
+-	tfm = crypto_alloc_shash(alg->name, 0, 0);
++	tfm = crypto_alloc_sync_hash(alg->name, 0, 0);
+ 	if (IS_ERR(tfm)) {
+ 		if (PTR_ERR(tfm) == -ENOENT) {
+ 			fsverity_warn(inode,
+@@ -79,20 +79,20 @@ const struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
+ 	}
  
-+struct sync_hash_requests;
-+
- #define HASH_MAX_DIGESTSIZE	 64
+ 	err = -EINVAL;
+-	if (WARN_ON_ONCE(alg->digest_size != crypto_shash_digestsize(tfm)))
++	if (WARN_ON_ONCE(alg->digest_size != crypto_sync_hash_digestsize(tfm)))
+ 		goto err_free_tfm;
+-	if (WARN_ON_ONCE(alg->block_size != crypto_shash_blocksize(tfm)))
++	if (WARN_ON_ONCE(alg->block_size != crypto_sync_hash_blocksize(tfm)))
+ 		goto err_free_tfm;
  
- /*
-@@ -169,12 +172,30 @@ struct shash_desc {
-  * containing a 'struct sha3_state'.
-  */
- #define HASH_MAX_DESCSIZE	(sizeof(struct shash_desc) + 360)
-+#define MAX_SYNC_HASH_REQSIZE	HASH_MAX_DESCSIZE
+ 	pr_info("%s using implementation \"%s\"\n",
+-		alg->name, crypto_shash_driver_name(tfm));
++		alg->name, crypto_sync_hash_driver_name(tfm));
  
- #define SHASH_DESC_ON_STACK(shash, ctx)					     \
- 	char __##shash##_desc[sizeof(struct shash_desc) + HASH_MAX_DESCSIZE] \
- 		__aligned(__alignof__(struct shash_desc));		     \
- 	struct shash_desc *shash = (struct shash_desc *)__##shash##_desc
+ 	/* pairs with smp_load_acquire() above */
+ 	smp_store_release(&alg->tfm, tfm);
+ 	goto out_unlock;
  
-+#define SYNC_HASH_REQUEST_ON_STACK(name, _tfm) \
-+	char __##name##_req[sizeof(struct ahash_request) + \
-+			     MAX_SYNC_HASH_REQSIZE \
-+			    ] CRYPTO_MINALIGN_ATTR; \
-+	struct ahash_request *name = \
-+		(((struct ahash_request *)__##name##_req)->base.tfm = \
-+			crypto_sync_hash_tfm((_tfm)), \
-+		 (void *)__##name##_req)
-+
-+#define SYNC_HASH_REQUESTS_ON_STACK(name, _n, _tfm) \
-+	char __##name##_req[(_n) * ALIGN(sizeof(struct ahash_request) + \
-+					  MAX_SYNC_HASH_REQSIZE, \
-+					  CRYPTO_MINALIGN) \
-+			    ] CRYPTO_MINALIGN_ATTR; \
-+	struct sync_hash_requests *name = sync_hash_requests_on_stack_init( \
-+		__##name##_req, sizeof(__##name##_req), (_tfm))
-+
- /**
-  * struct shash_alg - synchronous message digest definition
-  * @init: see struct ahash_alg
-@@ -241,6 +262,10 @@ struct crypto_shash {
- 	struct crypto_tfm base;
- };
- 
-+struct crypto_sync_hash {
-+	struct crypto_ahash base;
-+};
-+
- /**
-  * DOC: Asynchronous Message Digest API
-  *
-@@ -273,6 +298,9 @@ static inline struct crypto_ahash *__crypto_ahash_cast(struct crypto_tfm *tfm)
- struct crypto_ahash *crypto_alloc_ahash(const char *alg_name, u32 type,
- 					u32 mask);
- 
-+struct crypto_sync_hash *crypto_alloc_sync_hash(const char *alg_name,
-+						u32 type, u32 mask);
-+
- struct crypto_ahash *crypto_clone_ahash(struct crypto_ahash *tfm);
- 
- static inline struct crypto_tfm *crypto_ahash_tfm(struct crypto_ahash *tfm)
-@@ -280,6 +308,12 @@ static inline struct crypto_tfm *crypto_ahash_tfm(struct crypto_ahash *tfm)
- 	return &tfm->base;
- }
- 
-+static inline struct crypto_tfm *crypto_sync_hash_tfm(
-+	struct crypto_sync_hash *tfm)
-+{
-+	return crypto_ahash_tfm(&tfm->base);
-+}
-+
- /**
-  * crypto_free_ahash() - zeroize and free the ahash handle
-  * @tfm: cipher handle to be freed
-@@ -291,6 +325,11 @@ static inline void crypto_free_ahash(struct crypto_ahash *tfm)
- 	crypto_destroy_tfm(tfm, crypto_ahash_tfm(tfm));
- }
- 
-+static inline void crypto_free_sync_hash(struct crypto_sync_hash *tfm)
-+{
-+	crypto_free_ahash(&tfm->base);
-+}
-+
- /**
-  * crypto_has_ahash() - Search for the availability of an ahash.
-  * @alg_name: is the cra_name / name or cra_driver_name / driver name of the
-@@ -313,6 +352,12 @@ static inline const char *crypto_ahash_driver_name(struct crypto_ahash *tfm)
- 	return crypto_tfm_alg_driver_name(crypto_ahash_tfm(tfm));
- }
- 
-+static inline const char *crypto_sync_hash_driver_name(
-+	struct crypto_sync_hash *tfm)
-+{
-+	return crypto_ahash_driver_name(&tfm->base);
-+}
-+
- /**
-  * crypto_ahash_blocksize() - obtain block size for cipher
-  * @tfm: cipher handle
-@@ -327,6 +372,12 @@ static inline unsigned int crypto_ahash_blocksize(struct crypto_ahash *tfm)
- 	return crypto_tfm_alg_blocksize(crypto_ahash_tfm(tfm));
- }
- 
-+static inline unsigned int crypto_sync_hash_blocksize(
-+	struct crypto_sync_hash *tfm)
-+{
-+	return crypto_ahash_blocksize(&tfm->base);
-+}
-+
- static inline struct hash_alg_common *__crypto_hash_alg_common(
- 	struct crypto_alg *alg)
+ err_free_tfm:
+-	crypto_free_shash(tfm);
++	crypto_free_sync_hash(tfm);
+ 	alg = ERR_PTR(err);
+ out_unlock:
+ 	mutex_unlock(&fsverity_hash_alg_init_mutex);
+@@ -112,17 +112,15 @@ const u8 *fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
+ 				      const u8 *salt, size_t salt_size)
  {
-@@ -354,6 +405,12 @@ static inline unsigned int crypto_ahash_digestsize(struct crypto_ahash *tfm)
- 	return crypto_hash_alg_common(tfm)->digestsize;
- }
+ 	u8 *hashstate = NULL;
+-	SHASH_DESC_ON_STACK(desc, alg->tfm);
++	SYNC_HASH_REQUEST_ON_STACK(req, alg->tfm);
+ 	u8 *padded_salt = NULL;
+ 	size_t padded_salt_size;
+ 	int err;
  
-+static inline unsigned int crypto_sync_hash_digestsize(
-+	struct crypto_sync_hash *tfm)
-+{
-+	return crypto_ahash_digestsize(&tfm->base);
-+}
-+
- /**
-  * crypto_ahash_statesize() - obtain size of the ahash state
-  * @tfm: cipher handle
-@@ -369,6 +426,12 @@ static inline unsigned int crypto_ahash_statesize(struct crypto_ahash *tfm)
- 	return tfm->statesize;
- }
+-	desc->tfm = alg->tfm;
+-
+ 	if (salt_size == 0)
+ 		return NULL;
  
-+static inline unsigned int crypto_sync_hash_statesize(
-+	struct crypto_sync_hash *tfm)
-+{
-+	return crypto_ahash_statesize(&tfm->base);
-+}
+-	hashstate = kmalloc(crypto_shash_statesize(alg->tfm), GFP_KERNEL);
++	hashstate = kmalloc(crypto_sync_hash_statesize(alg->tfm), GFP_KERNEL);
+ 	if (!hashstate)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -140,15 +138,19 @@ const u8 *fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
+ 		goto err_free;
+ 	}
+ 	memcpy(padded_salt, salt, salt_size);
+-	err = crypto_shash_init(desc);
 +
- static inline u32 crypto_ahash_get_flags(struct crypto_ahash *tfm)
++	ahash_request_set_callback(req, CRYPTO_TFM_REQ_MAY_SLEEP, NULL, NULL);
++
++	err = crypto_ahash_init(req);
+ 	if (err)
+ 		goto err_free;
+ 
+-	err = crypto_shash_update(desc, padded_salt, padded_salt_size);
++	ahash_request_set_virt(req, padded_salt, NULL, padded_salt_size);
++	err = crypto_ahash_update(req);
+ 	if (err)
+ 		goto err_free;
+ 
+-	err = crypto_shash_export(desc, hashstate);
++	err = crypto_ahash_export(req, hashstate);
+ 	if (err)
+ 		goto err_free;
+ out:
+@@ -176,21 +178,22 @@ const u8 *fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
+ int fsverity_hash_block(const struct merkle_tree_params *params,
+ 			const struct inode *inode, const void *data, u8 *out)
  {
- 	return crypto_tfm_get_flags(crypto_ahash_tfm(tfm));
-@@ -877,6 +940,9 @@ int crypto_shash_digest(struct shash_desc *desc, const u8 *data,
- int crypto_shash_tfm_digest(struct crypto_shash *tfm, const u8 *data,
- 			    unsigned int len, u8 *out);
+-	SHASH_DESC_ON_STACK(desc, params->hash_alg->tfm);
++	SYNC_HASH_REQUEST_ON_STACK(req, params->hash_alg->tfm);
+ 	int err;
  
-+int crypto_sync_hash_digest(struct crypto_sync_hash *tfm, const u8 *data,
-+			    unsigned int len, u8 *out);
-+
- /**
-  * crypto_shash_export() - extract operational state for message digest
-  * @desc: reference to the operational state handle whose state is exported
-@@ -982,6 +1048,13 @@ static inline void shash_desc_zero(struct shash_desc *desc)
- 			 sizeof(*desc) + crypto_shash_descsize(desc->tfm));
- }
+-	desc->tfm = params->hash_alg->tfm;
++	ahash_request_set_callback(req, CRYPTO_TFM_REQ_MAY_SLEEP, NULL, NULL);
++	ahash_request_set_virt(req, data, out, params->block_size);
  
-+static inline void ahash_request_zero(struct ahash_request *req)
-+{
-+	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
-+
-+	memzero_explicit(req, sizeof(*req) + crypto_ahash_reqsize(tfm));
-+}
-+
- static inline int ahash_request_err(struct ahash_request *req)
+ 	if (params->hashstate) {
+-		err = crypto_shash_import(desc, params->hashstate);
++		err = crypto_ahash_import(req, params->hashstate);
+ 		if (err) {
+ 			fsverity_err(inode,
+ 				     "Error %d importing hash state", err);
+ 			return err;
+ 		}
+-		err = crypto_shash_finup(desc, data, params->block_size, out);
++		err = crypto_ahash_finup(req);
+ 	} else {
+-		err = crypto_shash_digest(desc, data, params->block_size, out);
++		err = crypto_ahash_digest(req);
+ 	}
+ 	if (err)
+ 		fsverity_err(inode, "Error %d computing block hash", err);
+@@ -209,7 +212,7 @@ int fsverity_hash_block(const struct merkle_tree_params *params,
+ int fsverity_hash_buffer(const struct fsverity_hash_alg *alg,
+ 			 const void *data, size_t size, u8 *out)
  {
- 	return req->base.err;
-@@ -992,4 +1065,31 @@ static inline bool ahash_is_async(struct crypto_ahash *tfm)
- 	return crypto_tfm_is_async(&tfm->base);
+-	return crypto_shash_tfm_digest(alg->tfm, data, size, out);
++	return crypto_sync_hash_digest(alg->tfm, data, size, out);
  }
  
-+static inline struct ahash_request *sync_hash_requests(
-+	struct sync_hash_requests *reqs, int i)
-+{
-+	unsigned unit = sizeof(struct ahash_request) + MAX_SYNC_HASH_REQSIZE;
-+	unsigned alunit = ALIGN(unit, CRYPTO_MINALIGN);
-+
-+	return (void *)((char *)reqs + i * alunit);
-+}
-+
-+static inline struct sync_hash_requests *sync_hash_requests_on_stack_init(
-+	char *buf, unsigned len, struct crypto_sync_hash *tfm)
-+{
-+	unsigned unit = sizeof(struct ahash_request) + MAX_SYNC_HASH_REQSIZE;
-+	unsigned alunit = ALIGN(unit, CRYPTO_MINALIGN);
-+	struct sync_hash_requests *reqs = (void *)buf;
-+	int n = len / alunit;
-+	int i;
-+
-+	for (i = 0; i < n; i++) {
-+		struct ahash_request *req = sync_hash_requests(reqs, i);
-+
-+		req->base.tfm = crypto_sync_hash_tfm(tfm);
-+	}
-+
-+	return reqs;
-+}
-+
- #endif	/* _CRYPTO_HASH_H */
+ void __init fsverity_check_hash_algs(void)
 -- 
 2.39.5
 
