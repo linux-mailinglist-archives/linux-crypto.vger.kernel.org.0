@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-9809-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-9811-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC3DFA37217
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 06:25:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A670A3721C
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 06:27:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93F4016EC60
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 05:25:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 666793AFBD8
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Feb 2025 05:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0590513C9A3;
-	Sun, 16 Feb 2025 05:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169B513C9B8;
+	Sun, 16 Feb 2025 05:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="MaS5V+5Q"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="KPIevHoH"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF0C179A3;
-	Sun, 16 Feb 2025 05:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBFB179A3;
+	Sun, 16 Feb 2025 05:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739683538; cv=none; b=XELI6jBTKJy2OB6U0QqowBAf+hNhLiiiFaSTu98dI/R2g0ZeT8HHW7hGKooysHvE2GKF8JPuA5fOMU9mkOASan/9VamBhPr2RXpF+y9rpFI7vebxtBP6nbapJjUDTjVozbtti8LXJ9U6zPS5FZjxbrup1nN5TRhfSUzYxa6d+iw=
+	t=1739683615; cv=none; b=Mu/52h/s9suT9q7m3JmBvKqvLo5Ogy9y5xUNJYJRImRFevf8l8vlA4d31Vw4UzEv+JX9KAqPvEZvQh8waadpm6eyjN8nFh4VslTp32Ax7n4Rj0/wLLkGLvktF5Fw8MWzf1OeihV98fEImoh+bdrDdbP5Px7XwAT2tJ4zAyEiH/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739683538; c=relaxed/simple;
-	bh=E1PEQFRhCS4n7p9krpKfU5W/DosUhYeqrxkk/zHIF08=;
+	s=arc-20240116; t=1739683615; c=relaxed/simple;
+	bh=E1QDwKstxOFNFyxRj9iTZE4ltiILRIqxwicLYaRDBf8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ha/LeS8JC4459TfPbczeojuMbBJXoUSZ69U8Fs1vgNDJecFYG+lf8yc3dD647FQcIkzNQYcyuMV+gSUdKkNe+FA1KLyFsolcZKnMBZxHL4eBoXRsAHPGPGVCGEHzAjf+klk1pHXkV/nPNI1qHdWXbBcb92xTWbdk4YPwC9P04pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=MaS5V+5Q; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=G0nvLiRR+8TDxhDac4IPtCef1L9TqXtRYjqYHuGLdqd52hnr/jh5u0mrfJCHCjH/HMUz+2YYL+Uiee8mkfuOTqTOZgi1SBC/u6rTL3G2McY/Xy0vpoeKkFN+DJ/+g+GRiMThSIJWT6/8d8d/KdsPQ6gNUuSHEjzD6OReSxMLi3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=KPIevHoH; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,28 +37,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=1Xj6WolkhQsmKLkxiHNBfiO9vOrDoIGKF3dwDdOhHDU=; b=MaS5V+5QILt73e+0l4CJVpTDtY
-	Z46xKlqAQWlt3p4rRUKYtHW/yPe9dvwGtbsgiocgCFKQX+3wijW9apQ0AiasFl5pXJLG9jPUZZ+sy
-	KvoXMb4aFyORoQU6mFFTyGMzOXtWw0/qXfcMLbciS9TSv30RC4Faw78EOVU5ym+6KjyfPGA4Vx/5g
-	OubzGyC98Qy+PTrb2Z+ErF6hbumCA5t1uayo5W1Gp83VXlAG0SS6ihst4nTXlzJfhrmlmXELglDVb
-	4UyI2i2ieG9Azp2ALwcCHOap5fyJY90VnjLNXGBgqmR5GnbBuX58JF0PqGF9Q0kW6GNawirBoHO3p
-	YaX7NE1Q==;
+	bh=niZy1ehvvhSrvLi1KpzKomYT9ZZjgF2G9F7AWh8eZLM=; b=KPIevHoHu+L509LweCJTB+eM/f
+	hxTc3Fp2VSQw9IJ12oep+g+F6bGkMyLLdTRA+oYtBCUSCLDmVmVoa9ZrMHjO7bnKdQ4xAs/mDUuUa
+	tDhXsWpcQxE0Eu7YWywqjSjP04DQLDCip2frUsVy90qrOzvFZ3nnqHwqhDeAQtOQFZtDwgr4JOUAU
+	b0nlKNbq5D8U0OjF3P1e2ta18urx14ffaXk1eiNGD9oszBJD9t95kCniJtsMPgknuKcQXJzuSfl+c
+	E2xBjjHcTGRI98G93iO3CRkIHvGrzKjSy3B413z6YvbwWNrVgOt10ffaBWJDIPXDT902iR39QdbyW
+	ooATZvfw==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tjWwt-000hJk-1t;
-	Sun, 16 Feb 2025 13:25:33 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 16 Feb 2025 13:25:32 +0800
-Date: Sun, 16 Feb 2025 13:25:32 +0800
+	id 1tjWy9-000hLH-0y;
+	Sun, 16 Feb 2025 13:26:51 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 16 Feb 2025 13:26:50 +0800
+Date: Sun, 16 Feb 2025 13:26:50 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Chenghai Huang <huangchenghai2@huawei.com>
-Cc: davem@davemloft.net, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org, liulongfang@huawei.com,
-	shenyang39@huawei.com, qianweili@huawei.com,
-	linwenkai6@hisilicon.com, wangzhou1@hisilicon.com
-Subject: Re: [PATCH 0/3] crypto: hisilicon/sec2 - fix the specification
- problems for the sec
-Message-ID: <Z7F2zG5lvPuGSaAa@gondor.apana.org.au>
-References: <20250205035628.845962-1-huangchenghai2@huawei.com>
+To: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
+Cc: Tom Lendacky <Thomas.Lendacky@amd.com>, John Allen <john.allen@amd.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Mario Limonciello <Mario.Limonciello@amd.com>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Thomas Rijo-john <Rijo-john.Thomas@amd.com>,
+	Rajib Mahapatra <Rajib.Mahapatra@amd.com>,
+	Nimesh Easow <Nimesh.Easow@amd.com>
+Subject: Re: [PATCH] crypto: ccp - Add support for PCI device 0x1134
+Message-ID: <Z7F3Gp4Ks3XRqs81@gondor.apana.org.au>
+References: <8e2b6da988e7cb922010847bb07b5e9cf84bb563.1738879803.git.Devaraj.Rangasamy@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -67,29 +69,33 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250205035628.845962-1-huangchenghai2@huawei.com>
+In-Reply-To: <8e2b6da988e7cb922010847bb07b5e9cf84bb563.1738879803.git.Devaraj.Rangasamy@amd.com>
 
-On Wed, Feb 05, 2025 at 11:56:25AM +0800, Chenghai Huang wrote:
-> From: Wenkai Lin <linwenkai6@hisilicon.com>
+On Fri, Feb 07, 2025 at 03:41:52AM +0530, Devaraj Rangasamy wrote:
+> PCI device 0x1134 shares same register features as PCI device 0x17E0.
+> Hence reuse same data for the new PCI device ID 0x1134.
 > 
-> 1. Supports the case that the auth key length is 0.
-> 2. Check if the aead authsize alignment is 4-byte aligned for cbc mode.
-> 3. Fix for the specifications not supported by the sec hardware and
->    use the software api to do the caculation.
+> Signed-off-by: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
+> ---
+>  drivers/crypto/ccp/sp-pci.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Wenkai Lin (3):
->   crypto: hisilicon/sec2 - fix for aead auth key length
->   crypto: hisilicon/sec2 - fix for aead authsize alignment
->   crypto: hisilicon/sec2 - fix for sec spec check
-> 
->  drivers/crypto/hisilicon/sec2/sec.h        |   1 -
->  drivers/crypto/hisilicon/sec2/sec_crypto.c | 125 ++++++++-------------
->  2 files changed, 47 insertions(+), 79 deletions(-)
-> 
-> -- 
-> 2.33.0
+> diff --git a/drivers/crypto/ccp/sp-pci.c b/drivers/crypto/ccp/sp-pci.c
+> index 248d98fd8c48..5357c4308da0 100644
+> --- a/drivers/crypto/ccp/sp-pci.c
+> +++ b/drivers/crypto/ccp/sp-pci.c
+> @@ -529,6 +529,7 @@ static const struct pci_device_id sp_pci_table[] = {
+>  	{ PCI_VDEVICE(AMD, 0x14CA), (kernel_ulong_t)&dev_vdata[5] },
+>  	{ PCI_VDEVICE(AMD, 0x15C7), (kernel_ulong_t)&dev_vdata[6] },
+>  	{ PCI_VDEVICE(AMD, 0x1649), (kernel_ulong_t)&dev_vdata[6] },
+> +	{ PCI_VDEVICE(AMD, 0x1134), (kernel_ulong_t)&dev_vdata[7] },
+>  	{ PCI_VDEVICE(AMD, 0x17E0), (kernel_ulong_t)&dev_vdata[7] },
+>  	{ PCI_VDEVICE(AMD, 0x156E), (kernel_ulong_t)&dev_vdata[8] },
+>  	/* Last entry must be zero */
+> --
+> 2.25.1
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
