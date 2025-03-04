@@ -1,134 +1,98 @@
-Return-Path: <linux-crypto+bounces-10412-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10370-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C56DA4D88E
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 10:35:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FFA6A4D7F3
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 10:25:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EB871772D7
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 09:33:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9640616DB5B
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 09:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806691FF1A6;
-	Tue,  4 Mar 2025 09:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FBB1FCD0C;
+	Tue,  4 Mar 2025 09:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eqTUwK1o"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="jqovEuM+"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD412066CC
-	for <linux-crypto@vger.kernel.org>; Tue,  4 Mar 2025 09:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F03F31F37CE
+	for <linux-crypto@vger.kernel.org>; Tue,  4 Mar 2025 09:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741080404; cv=none; b=bQ3LHy3oGjLPQZA50NUF0HsH+2pe5bEK+F3mRc2uTcvCT5m89U6ecb8PqwxdLLOW4TucLFtKvQoL2HAeweurjJdQDSeEpC9GU/DPG7XnvP8XZf1HATwO4p6VtWBVYWD7QJMRjC4nTkDGPpKPJybWoyT+rlVfODCI8Yh2Hk8UR0s=
+	t=1741080310; cv=none; b=Iu70K/OgYI3yy/u2AhRgDPXAv30aS8Adarqyzc7GmnqknQeLY9YB9cWmpbV1sqx7a/g91zS7jruOQvh6TF9IPupN73YVilx5aDwCMhHRLxz8mBpKIBhClaGnfVapEcRFeGZma7ORooUKYvKVKrU4hpsGceGPTvPl9idCDthUq5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741080404; c=relaxed/simple;
-	bh=Pb5v8XeAHlUAdU8teJGT/joxk1D2UYCLbNbcthK7dEs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=PgVOvvKiGrU/NXD99AUyVy/YuSrIIrDxon0e56YRMmzAr/+xr07QxjcBL7lhHzgTEimR3w128aa2i2WavObHuxeA+bbE4nOEU4gXLBdhYBH7xOMWbhQ1Lr0Aae61aTDZddQ3X6IFLSVvBLOUWmyyvqIV9NatQOBkhsRtgupdZ7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eqTUwK1o; arc=none smtp.client-ip=209.85.218.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
-Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-abec83a498cso522432366b.1
-        for <linux-crypto@vger.kernel.org>; Tue, 04 Mar 2025 01:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1741080401; x=1741685201; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vumk0HTnchdldWRc8wT0cAdQjFLn1MfJ3/QC5i3Nw5Q=;
-        b=eqTUwK1ozQnv7PEsQryrxWFaC4V9xB/TW/o9zIGwNoOmqD1aqBzj1JC3drB8erfo5p
-         wb9Hcya48YEnC3EHpitzfauyVpJiyDwAjTkW/daucl+eHEuIIjalwWsm1eHbGLG41iBY
-         fgOLwF1PUiBtNADhsW4nt4zwl4L9fZK7mVDl2u6cvVDikqbjK7EUyQ0urMTCNYbdQO/l
-         mqJ3HSFwjdr5aYOsP9rBFQ2aUmj501MaDcxZzEinBfz8cG3OCcxAQ+XprkSAo44oY9iX
-         hKf8OutnsPysfeip7QE/2XGG68KKvnfkU3eHfiHBF4Po/OzNJeU0hNWIO8btMtdG4k+R
-         Li9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741080401; x=1741685201;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vumk0HTnchdldWRc8wT0cAdQjFLn1MfJ3/QC5i3Nw5Q=;
-        b=sRBrN3WCiZ7pPBp9Gn+5qMFbYpBwQK57xvrQQNeKvJ0knejHBeFKJfu5jHonfHcqxb
-         /H1XagZFkEJXFwCuiKfta3Q3PWY9qFZN9oI3RFl/WxxCQmZq0wtaECJ9m1j0yzu4jaMh
-         A6nPVC9ATWBcedajSLaiudIfXvFnFXRDl2oSymANMk1XodAJX9/OAcYxQvrEXbuQN3Dc
-         3+f0uzlSpVHBphRJAbx6/xl5j9Lw+2Lg7XSqNWCJXHF8ZKkoJjW1csx9KoFLKzBgzGLy
-         O8SY+0ieGYKpnNYMSsfqZAT5LvJ83muSiIfgEfsWa75nJfBcEgdA8Cp/rUxQpokrWF9n
-         GLZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCViyiKg3Ef5AcuJ6hB9FG39Pcj69/pKxxYKTUDDYHUCbzIy94VfjrVxcQQa6GaxVa+g8CZFZnV1w9Btw38=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzcX25VV5yswGQrhpKRpvZ4+w71CecWmoMdWrq5ugnQ2N/XP2su
-	sq93iDM2jwa5S8l1Un1caE9u7Y2NmpGgbu7MXghKYHiAKEDEb33x6Tbu/NXiR2A/obpUSxqtbw=
-	=
-X-Google-Smtp-Source: AGHT+IHe+2tTUNkWh4sjbCTVRn346FQZX3D8pl7o+PzR8CFWDsL38sKG72bCeLReMhyKEWhXvddJVO8sWw==
-X-Received: from ejckt25.prod.google.com ([2002:a17:907:9d19:b0:ac1:ed2c:ab54])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a17:906:7fd6:b0:abf:46cd:5e3f
- with SMTP id a640c23a62f3a-abf46cd7414mr1245962366b.16.1741080400857; Tue, 04
- Mar 2025 01:26:40 -0800 (PST)
-Date: Tue,  4 Mar 2025 10:21:33 +0100
-In-Reply-To: <20250304092417.2873893-1-elver@google.com>
+	s=arc-20240116; t=1741080310; c=relaxed/simple;
+	bh=V5WgKTuPylQ7ld1Wocn1u3xZQVR8yKw69FRZ0nsQ7i0=;
+	h=Date:Message-Id:From:Subject:To:Cc; b=adifdltFn9tOB402cE/rBHl3x/EKQtyKVAE4IRsAdRUiTkGrleRVE+Zxc0FumouSyJ5HePFKemNlJ+I6BL0l1Yp7cH9gamW8J3/3q2KO4CKMFqvMH/AhZfDvkOfeQPqEKvET6acqHpzEOIfseBtxW7bPY6LYs9xSvyf62sTFaZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=jqovEuM+; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=Cc:To:Subject:From:Message-Id:Date:Sender:Reply-To:MIME-Version
+	:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=oOWyZsWtOhaGOVjcVSi4lGgbwKvpdJ6y1wpvql7a50s=; b=jqovEuM+VoQGfea29LrxoT+JAc
+	nodb+6A5hb5kSEjKrQjpe3cnNcY84ezGkUC8okZd1A7ORgaIzewRFgzV7ZXPfilL++4nJ0tDS7KZB
+	Jm6pez3WuQW02oqxaohimeONzdXKX8I+4h8YUqJ5zLLv0txEo8hvKtmQjkGz3fW9+9g+r49vKkY73
+	HvW2qbSUt1XNxMlRE0sNpjeXu9ukzLh0BsxdLn7AziTGGUASgRp3ki2viueIICpSBuHOzuxApK3zR
+	wTETzClwxSxHD4d59LD5KzbeCpGIWhRw8Vz2aZdy2Jhu0ngVQhHuPjxNc8phpjE+8ihGrSLYKdpyS
+	q6I5grBw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1tpOWL-003a2B-1f;
+	Tue, 04 Mar 2025 17:25:02 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 04 Mar 2025 17:25:01 +0800
+Date: Tue, 04 Mar 2025 17:25:01 +0800
+Message-Id: <cover.1741080140.git.herbert@gondor.apana.org.au>
+From: Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [v2 PATCH 0/7] crypto: acomp - Add request chaining and virtual address support
+To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Cc: linux-mm@kvack.org, Yosry Ahmed <yosry.ahmed@linux.dev>, Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250304092417.2873893-1-elver@google.com>
-X-Mailer: git-send-email 2.48.1.711.g2feabab25a-goog
-Message-ID: <20250304092417.2873893-35-elver@google.com>
-Subject: [PATCH v2 34/34] MAINTAINERS: Add entry for Capability Analysis
-From: Marco Elver <elver@google.com>
-To: elver@google.com
-Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Bart Van Assche <bvanassche@acm.org>, Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@kernel.org>, 
-	Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Josh Triplett <josh@joshtriplett.org>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <kees@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, 
-	Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
-	Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-Add entry for all new files added for Clang's capability analysis.
+This patch series adds reqeust chaining and virtual address support
+to the crypto_acomp interface.
 
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: Bart Van Assche <bvanassche@acm.org>
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Herbert Xu (7):
+  crypto: api - Add cra_type->destroy hook
+  crypto: scomp - Remove tfm argument from alloc/free_ctx
+  crypto: acomp - Add request chaining and virtual addresses
+  crypto: testmgr - Remove NULL dst acomp tests
+  crypto: scomp - Remove support for most non-trivial destination SG
+    lists
+  crypto: scomp - Add chaining and virtual address support
+  crypto: acomp - Move stream management into scomp layer
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8e0736dc2ee0..cf9bf14f99b9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5638,6 +5638,17 @@ M:	Nelson Escobar <neescoba@cisco.com>
- S:	Supported
- F:	drivers/infiniband/hw/usnic/
- 
-+CLANG CAPABILITY ANALYSIS
-+M:	Marco Elver <elver@google.com>
-+R:	Bart Van Assche <bvanassche@acm.org>
-+L:	llvm@lists.linux.dev
-+S:	Maintained
-+F:	Documentation/dev-tools/capability-analysis.rst
-+F:	include/linux/compiler-capability-analysis.h
-+F:	lib/test_capability-analysis.c
-+F:	scripts/Makefile.capability-analysis
-+F:	scripts/capability-analysis-suppression.txt
-+
- CLANG CONTROL FLOW INTEGRITY SUPPORT
- M:	Sami Tolvanen <samitolvanen@google.com>
- M:	Kees Cook <kees@kernel.org>
+ crypto/842.c                           |   8 +-
+ crypto/acompress.c                     | 208 ++++++++++++++++++++---
+ crypto/algapi.c                        |   9 +
+ crypto/compress.h                      |   2 -
+ crypto/deflate.c                       |   4 +-
+ crypto/internal.h                      |   6 +-
+ crypto/lz4.c                           |   8 +-
+ crypto/lz4hc.c                         |   8 +-
+ crypto/lzo-rle.c                       |   8 +-
+ crypto/lzo.c                           |   8 +-
+ crypto/scompress.c                     | 226 +++++++++++++++----------
+ crypto/testmgr.c                       |  29 ----
+ crypto/zstd.c                          |   4 +-
+ drivers/crypto/cavium/zip/zip_crypto.c |   6 +-
+ drivers/crypto/cavium/zip/zip_crypto.h |   6 +-
+ include/crypto/acompress.h             | 118 ++++++++++---
+ include/crypto/internal/acompress.h    |  39 +++--
+ include/crypto/internal/scompress.h    |  18 +-
+ 18 files changed, 488 insertions(+), 227 deletions(-)
+
 -- 
-2.48.1.711.g2feabab25a-goog
+2.39.5
 
 
