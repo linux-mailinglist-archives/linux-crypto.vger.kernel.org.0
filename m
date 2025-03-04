@@ -1,153 +1,107 @@
-Return-Path: <linux-crypto+bounces-10452-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10445-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F168A4F15D
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Mar 2025 00:20:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F4BA4F130
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Mar 2025 00:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62F0A3AA446
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 23:20:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4D1E3A8166
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 23:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D575027BF99;
-	Tue,  4 Mar 2025 23:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1361D27817E;
+	Tue,  4 Mar 2025 23:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pKdmDevV"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AAD8278116;
-	Tue,  4 Mar 2025 23:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25D4278173;
+	Tue,  4 Mar 2025 23:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741130406; cv=none; b=e/wGhPN14cDGRhe2SFZeEeUXQAbh7+e8v6sOeR5vI5YPeyvX4CcHGPiyNBZXWfe6jUqgrB5TXNTaP+LRtoZNHiK78vwO6sW76GEP4TQ7irlxSiywfcMGDmNEL+maOuz0F2esHyIf5h2aS71TuHCQ70d4++xInttS5K54GQkGqfM=
+	t=1741129682; cv=none; b=oFj94Aiwb64dTcmxKD7W54xj1uDaLdMNUxfSI3ggbQ0nDlNcDbxVdkAUK4HG4jcGIcSeJqMIu2HzjWkDCdbXyId4ZoFcrQAQSdoIY0EhtiJfdmZKiwwwKRzV7nGlr4+ZweMtx8pyb5Jsta16lemM9K2xGxxWB0XEcmi3eJ/4cwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741130406; c=relaxed/simple;
-	bh=rxbY0OYKeF/ruyA697I5bCATkY6ZUvEuwEmFs1kOfUM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m/Dt1v8rKWmhGjDEDHr/67xSbWSFFTx5v+9LFLF4UsfmPkom4hv1+5Aq/tu3g7VdIKEAJBGKoE5lJUCrjOpVw6Uj0D1wbHYGU0RowoAgzmBkoeao+VB4X3RNIiFdmqAdnX6XykvzRlkF+6T/JObSqu7EXcr+CfvIXZt4k9TFRj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4Z6rn82bvXz9stM;
-	Wed,  5 Mar 2025 00:02:52 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id wPfy1sCZaY9s; Wed,  5 Mar 2025 00:02:52 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4Z6rn81Bh0z9stL;
-	Wed,  5 Mar 2025 00:02:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id E81738B776;
-	Wed,  5 Mar 2025 00:02:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id qWXKjmuiIl6W; Wed,  5 Mar 2025 00:02:51 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.202.221])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 168D68B763;
-	Wed,  5 Mar 2025 00:02:50 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	Danny Tsen <dtsen@linux.ibm.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Breno Leitao" <leitao@debian.org>,
-	Nayna Jain <nayna@linux.ibm.com>,
-	Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Naveen N Rao <naveen@kernel.org>,
-	linux-crypto@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Subject: [PATCH] crypto: powerpc: Mark ghashp8-ppc.o as an OBJECT_FILES_NON_STANDARD
-Date: Wed,  5 Mar 2025 00:02:39 +0100
-Message-ID: <7aa7eb73fe6bc95ac210510e22394ca0ae227b69.1741128786.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1741129682; c=relaxed/simple;
+	bh=avOBrQp+1xCaw6mvPe4FyA6ZZt6QMofEYyrAYjc4Hy8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r7IoH+p+xAKreZ1cSuqiXESD0mLhiT8H8D01IKhNf/aMiOqqbMm4n7w6gmbtMOJBVqrA+7J4Gd1ppaRTsQO5oxSo84fL9evENyoMzMVMo/bDr0sCC+x3lRiJ++o3c3gYsDE6qPhqf/WROBPbOC5E0XE1TR2z9j/XJqKbYmtEA+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pKdmDevV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1829AC4CEE5;
+	Tue,  4 Mar 2025 23:08:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741129682;
+	bh=avOBrQp+1xCaw6mvPe4FyA6ZZt6QMofEYyrAYjc4Hy8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pKdmDevVVMyapK/ylJ264FIA9AJNR9ei5kAhLaLfi7QQmScCfSvN0pe6DTOs/bTAn
+	 3f7HtY4GcIrsqU6cHEWBnPooeTjitKP8riXv/By6qRSPS1VbJrvRj88LplEZNM0TSz
+	 buYm/IJTiS+5JZiuoDDISYueh9HA9EPzGk6t5+zvtCsuVqqoj/Kf9RPjMd8lTsFjEu
+	 wqZdcgvPfskcFJaYBMwC3ESVhotCV6Ln9gzvMdNSMUVcDZ4qpRoTNtdQZyjDUnAQ7H
+	 rwoUmDPxuVxj3mZfJjWS38iqtepSlNZmVVdMJ6EtN83FoCWhL0QpseHjPqtiyroHJo
+	 sXqWSmN3pMZMw==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 0/5] Remove unnecessary prompts for CRC library (batch 1)
+Date: Tue,  4 Mar 2025 15:07:07 -0800
+Message-ID: <20250304230712.167600-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1741129359; l=2686; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=rxbY0OYKeF/ruyA697I5bCATkY6ZUvEuwEmFs1kOfUM=; b=QegfBkLIMtIn2pXyrwu9vHSHXI1g41Q0dNFUgkY3G903IcJVCl4645/HlUnQUPo95ItBmd33F HV13MubBCESC5ol+ngCq5l7/E9HpbAJBINPc6EkQXB1p97B+QaF8T8m
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 
-The following build warning has been reported:
+Library functions are already selected when they are needed, so there is
+no need to ask users whether to enable them or not.  This patchset fixes
+this for the first batch of CRC library options.
 
-  arch/powerpc/crypto/ghashp8-ppc.o: warning: objtool: .text+0x22c: unannotated intra-function call
+There will be a batch 2 later to handle the rest.
 
-This happens due to commit bb7f054f4de2 ("objtool/powerpc: Add support
-for decoding all types of uncond branches")
+Eric Biggers (5):
+  lib/crc: remove unnecessary prompt for CONFIG_CRC4
+  lib/crc: remove unnecessary prompt for CONFIG_CRC7
+  lib/crc: remove unnecessary prompt for CONFIG_CRC8
+  lib/crc: remove unnecessary prompt for CONFIG_LIBCRC32C
+  lib/crc: remove unnecessary prompt for CONFIG_CRC64
 
-Disassembly of arch/powerpc/crypto/ghashp8-ppc.o shows:
+ arch/arm/configs/dove_defconfig              |  1 -
+ arch/arm/configs/ep93xx_defconfig            |  1 -
+ arch/arm/configs/imx_v6_v7_defconfig         |  2 --
+ arch/arm/configs/lpc18xx_defconfig           |  1 -
+ arch/arm/configs/multi_v5_defconfig          |  1 -
+ arch/arm/configs/mvebu_v5_defconfig          |  1 -
+ arch/arm/configs/mxs_defconfig               |  1 -
+ arch/arm/configs/omap1_defconfig             |  1 -
+ arch/arm/configs/omap2plus_defconfig         |  2 --
+ arch/arm/configs/spitz_defconfig             |  1 -
+ arch/arm/configs/stm32_defconfig             |  1 -
+ arch/arm/configs/wpcm450_defconfig           |  1 -
+ arch/hexagon/configs/comet_defconfig         |  1 -
+ arch/mips/configs/bigsur_defconfig           |  1 -
+ arch/mips/configs/cobalt_defconfig           |  1 -
+ arch/mips/configs/fuloong2e_defconfig        |  1 -
+ arch/mips/configs/ip32_defconfig             |  1 -
+ arch/parisc/configs/generic-64bit_defconfig  |  1 -
+ arch/powerpc/configs/85xx/ge_imp3a_defconfig |  1 -
+ arch/powerpc/configs/skiroot_defconfig       |  1 -
+ arch/s390/configs/debug_defconfig            |  3 --
+ arch/s390/configs/defconfig                  |  3 --
+ arch/sh/configs/se7206_defconfig             |  2 --
+ arch/sh/configs/sh2007_defconfig             |  1 -
+ arch/sh/configs/titan_defconfig              |  1 -
+ arch/sparc/configs/sparc32_defconfig         |  1 -
+ arch/sparc/configs/sparc64_defconfig         |  1 -
+ lib/Kconfig                                  | 29 ++++----------------
+ 28 files changed, 5 insertions(+), 58 deletions(-)
 
- arch/powerpc/crypto/ghashp8-ppc.o:     file format elf64-powerpcle
 
- Disassembly of section .text:
-
- 0000000000000140 <gcm_ghash_p8>:
-   140:    f8 ff 00 3c     lis     r0,-8
- ...
-   20c:    20 00 80 4e     blr
-   210:    00 00 00 00     .long 0x0
-   214:    00 0c 14 00     .long 0x140c00
-   218:    00 00 04 00     .long 0x40000
-   21c:    00 00 00 00     .long 0x0
-   220:    47 48 41 53     rlwimi. r1,r26,9,1,3
-   224:    48 20 66 6f     xoris   r6,r27,8264
-   228:    72 20 50 6f     xoris   r16,r26,8306
-   22c:    77 65 72 49     bla     1726574 <gcm_ghash_p8+0x1726434>      <==
- ...
-
-It corresponds to the following code in ghashp8-ppc.o :
-
- _GLOBAL(gcm_ghash_p8)
-    lis    0,0xfff8
- ...
-    blr
- .long    0
- .byte    0,12,0x14,0,0,0,4,0
- .long    0
- .size    gcm_ghash_p8,.-gcm_ghash_p8
-
- .byte 71,72,65,83,72,32,102,111,114,32,80,111,119,101,114,73,83,65,32,50,46,48,55,44,32,67,82,89,80,84,79,71,65,77,83,32,98,121,32,60,97,112,112,114,111,64,111,112,101,110,115,115,108,46,111,114,103,62,0
- .align    2
- .align    2
-
-In fact this is raw data that is after the function end and that is
-not text so shouldn't be disassembled as text. But ghashp8-ppc.S is
-generated by a perl script and should have been marked as
-OBJECT_FILES_NON_STANDARD.
-
-Now that 'bla' is understood as a call instruction, that raw data
-is mis-interpreted as an infra-function call.
-
-Mark ghashp8-ppc.o as a OBJECT_FILES_NON_STANDARD to avoid this
-warning.
-
-Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Closes: https://lore.kernel.org/all/8c4c3fc2-2bd7-4148-af68-2f504d6119e0@linux.ibm.com
-Cc: Danny Tsen <dtsen@linux.ibm.com>
-Fixes: 109303336a0c ("crypto: vmx - Move to arch/powerpc/crypto")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/crypto/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/powerpc/crypto/Makefile b/arch/powerpc/crypto/Makefile
-index 9b38f4a7bc15..2f00b22b0823 100644
---- a/arch/powerpc/crypto/Makefile
-+++ b/arch/powerpc/crypto/Makefile
-@@ -51,3 +51,4 @@ $(obj)/aesp8-ppc.S $(obj)/ghashp8-ppc.S: $(obj)/%.S: $(src)/%.pl FORCE
- OBJECT_FILES_NON_STANDARD_aesp10-ppc.o := y
- OBJECT_FILES_NON_STANDARD_ghashp10-ppc.o := y
- OBJECT_FILES_NON_STANDARD_aesp8-ppc.o := y
-+OBJECT_FILES_NON_STANDARD_ghashp8-ppc.o := y
+base-commit: 13f3d13d88b5dcba104a204fcbee61c75f8407d0
 -- 
-2.47.0
+2.48.1
 
 
