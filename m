@@ -1,240 +1,164 @@
-Return-Path: <linux-crypto+bounces-10421-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10418-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F549A4E1F8
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 15:57:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E28F2A4DED1
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 14:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6DBC3AAF19
-	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 14:44:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A1A3AF1CC
+	for <lists+linux-crypto@lfdr.de>; Tue,  4 Mar 2025 13:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F80125D915;
-	Tue,  4 Mar 2025 14:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F226204592;
+	Tue,  4 Mar 2025 13:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gan4tHSV"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lgAjNSH8"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from beeline3.cc.itu.edu.tr (beeline3.cc.itu.edu.tr [160.75.25.117])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD21D20AF87
-	for <linux-crypto@vger.kernel.org>; Tue,  4 Mar 2025 14:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=160.75.25.117
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741099402; cv=fail; b=guBPjkdQmjqGKV/w/l747+lQ0r7ZCPuRxcMOwoxNvrN9ONVljnpztBJ46dRTrv9x7Hn4dqaSmCpZUftAGSmBGslj45teGno01frsBWoo6iby97QLm5xNyz26n9B7KUl3djY7edDn7OVwH8QztTgSIVrfxTYt/1ptr3UtcruWcac=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741099402; c=relaxed/simple;
-	bh=y6dWDKGFeKZwmZeh3ujFYEjNRFAP6fclRPV3N/W/44I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=POgQvnkkiM1vcyw5UuWJGKCsh2oEWjRlRZvRv2m69VUJA/N62YFMj/ytb2sSDRaP+5zNDD9IUajwlTXy9tulM8ubnbCq6Y8veZWQT7C2TZ+nTR5Jzc/9NvzhnDY/dGJIRocZ/ck4SKGIy3vh2o6h+SPufIHBxqI189ushLimIf8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=fail (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gan4tHSV reason="signature verification failed"; arc=none smtp.client-ip=192.198.163.14; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; arc=fail smtp.client-ip=160.75.25.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cc.itu.edu.tr
-Received: from lesvatest1.cc.itu.edu.tr (lesvatest1.cc.itu.edu.tr [10.146.128.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by beeline3.cc.itu.edu.tr (Postfix) with ESMTPS id 06D3C40D0C8F
-	for <linux-crypto@vger.kernel.org>; Tue,  4 Mar 2025 17:43:19 +0300 (+03)
-X-Envelope-From: <root@cc.itu.edu.tr>
-Authentication-Results: lesvatest1.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=gan4tHSV
-Received: from lesva1.cc.itu.edu.tr (unknown [160.75.70.79])
-	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6dfm4DTbzFxMR
-	for <linux-crypto@vger.kernel.org>; Tue,  4 Mar 2025 17:41:36 +0300 (+03)
-Received: by le1 (Postfix, from userid 0)
-	id 87D3242736; Tue,  4 Mar 2025 17:41:19 +0300 (+03)
-Authentication-Results: lesva1.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gan4tHSV
-X-Envelope-From: <linux-kernel+bounces-541187-bozkiru=itu.edu.tr@vger.kernel.org>
-Authentication-Results: lesva2.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gan4tHSV
-Received: from fgw1.itu.edu.tr (fgw1.itu.edu.tr [160.75.25.103])
-	by le2 (Postfix) with ESMTP id 29B3342106
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 11:49:13 +0300 (+03)
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by fgw1.itu.edu.tr (Postfix) with SMTP id D3A693063EFC
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 11:49:12 +0300 (+03)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46161611ED
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 08:49:11 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C591D1F1307;
-	Mon,  3 Mar 2025 08:47:37 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0BC1EE00F;
-	Mon,  3 Mar 2025 08:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0AA2040A9
+	for <linux-crypto@vger.kernel.org>; Tue,  4 Mar 2025 13:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740991654; cv=none; b=e5AuKdHOJgFVLzcQIDtTK/iiZXp1bHEFwwiluLIySDcABfASFFESXmXjGDxsMHJUhqTSlRdu7e/yvSXQoQQVW6LFrgMrONlTk5O8jkczJ3vE+n2FOo4iTiyFeIqnOMQ/mGYv92AY20/ys3rwRuFYfPKl/rCFUBptStSzQ7Yp8IU=
+	t=1741093801; cv=none; b=im5dL4+TpXmofMQBrJ6qheRL0HZHsZBHbRzNHN7ljstkP+rdWBy88Rp54WNf4kEUX+k/6+HKoWnZSpEn+3Qzfc2r+Wfoubk5ZuHb5HhMS6P+Ak7zvxHega7VtRDQBRp9thXmSHpE739Tl3wzw1Lhgc75by2ITqM138+ZY99yzYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740991654; c=relaxed/simple;
-	bh=8AO2hJSnLaCRd/8HtMcdHOYwB/zSpBOSifH5FW9w0Ms=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JD4aeToMkDrhgxT6FCVdYBxdAMWAWoo+ARpT2QXoYcnpVeO4GcShktLUN/O7aonXnAh+EItv0ViaBXtmsCkIvjn1hSL7pE3a4sA4EfKEp3iGU+skVTJAWOZxipaUXoUL9AW7q5Zd/tJML6L7Q9nFmsM1Ivn5ok+xF3WH6xPoELQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gan4tHSV; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740991653; x=1772527653;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=8AO2hJSnLaCRd/8HtMcdHOYwB/zSpBOSifH5FW9w0Ms=;
-  b=gan4tHSVnCuj8lqnKmX5E/1n3my8hT0Zw5/bADXPkrUryoDavj6WLCOI
-   mbVa9tmuKD0GaSJC2veKaU6DsbhzFNJHyk/RDIgTbfVA4x59f5h1luenD
-   XjezXiC46RX1JLtJU/8werS9emAtE336PO96o8kuyGeY/9Hm1lGJVE8XW
-   xao8UyK9xbXGxZBtkTglN9iyufUA4ath69zbLrgNZSLA7iGR0/gHo6YIB
-   VT+Htil/Qe2WB3GnYybofwUHb5a7HvCibiVtsohmBybK0dubU+bP+9JXf
-   RZSlvXMU5+HA3wxvjf2k+ZEc1x8ohO+KrAl+75C5k2LSLsRrVbbzEddQ9
-   A==;
-X-CSE-ConnectionGUID: KmQn2fHnSh+jqrjvkhzpiQ==
-X-CSE-MsgGUID: QjfLb+f3TPqFcO0lrNIlTA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11361"; a="42111881"
-X-IronPort-AV: E=Sophos;i="6.13,329,1732608000"; 
-   d="scan'208";a="42111881"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 00:47:29 -0800
-X-CSE-ConnectionGUID: SLQFcck9SfqnDM3/EV2iXg==
-X-CSE-MsgGUID: STpS0GyCTU2r/TCFjJpTcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,329,1732608000"; 
-   d="scan'208";a="118426771"
-Received: from jf5300-b11a338t.jf.intel.com ([10.242.51.115])
-  by fmviesa010.fm.intel.com with ESMTP; 03 Mar 2025 00:47:27 -0800
-From: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	hannes@cmpxchg.org,
-	yosry.ahmed@linux.dev,
-	nphamcs@gmail.com,
-	chengming.zhou@linux.dev,
-	usamaarif642@gmail.com,
-	ryan.roberts@arm.com,
-	21cnbao@gmail.com,
-	ying.huang@linux.alibaba.com,
-	akpm@linux-foundation.org,
-	linux-crypto@vger.kernel.org,
-	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	clabbe@baylibre.com,
-	ardb@kernel.org,
-	ebiggers@google.com,
-	surenb@google.com,
-	kristen.c.accardi@intel.com
-Cc: wajdi.k.feghali@intel.com,
-	vinodh.gopal@intel.com,
-	kanchana.p.sridhar@intel.com
-Subject: [PATCH v8 03/14] crypto: iaa - Add an acomp_req flag CRYPTO_ACOMP_REQ_POLL to enable async mode.
-Date: Mon,  3 Mar 2025 00:47:13 -0800
-Message-Id: <20250303084724.6490-4-kanchana.p.sridhar@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20250303084724.6490-1-kanchana.p.sridhar@intel.com>
-References: <20250303084724.6490-1-kanchana.p.sridhar@intel.com>
-Precedence: bulk
+	s=arc-20240116; t=1741093801; c=relaxed/simple;
+	bh=NcEqiAia7PtxdRC2CO01i7tbbhPiGij2sr/fLY4ZFuo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ueP0rbMBJJyUp1gdnKFqUkHIAyE5tUcOwPSa8hQmAFF/KJwfq924ukTJNFhCeslqUJ6einMFWQj7G88Udzg3Yxwjw7nU/RikvvMo5h9j7fgto9y/2J+dwDPVEMWTqbTwVBv3uhq/v57IT1gH5XmMbNWmVj0P4M8EJw5tntETHnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lgAjNSH8; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2235c5818a3so70851725ad.1
+        for <linux-crypto@vger.kernel.org>; Tue, 04 Mar 2025 05:09:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1741093798; x=1741698598; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=x117HPWY7hfxCsyRoomSLqnsp6TkG/IZ7mxFwBfWDy4=;
+        b=lgAjNSH82Xe0CP1ujbQj7vPkQrbO8ZclVJWv90V5wBvqUXjqSghCtyJRvjhHIr8M0M
+         /OuZ4QHZQQcC65o62tiWI9yXaGXaihz74p0q1M61rW7DhwwcOWkY+OH6eWqC8+tu4jeB
+         gEPiv6zkAHwYBMbLsuplq0EamVVXdhbDLdQGy8c/4sSkij5yOdAiUBW8wucJUbUWkez6
+         4MTzAblno9u3tr+lOa3zW/i0MubBIC+Q7FOFgvnMrJAS5fPu8mzyQ4XySxRkuIvs5U24
+         NY8dqCuTDoey43LQG0iIUoYJWNvGXCPHBqNNZpQ44+X9R29pTR131iCB9XKXPt0H0JVN
+         9GiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741093798; x=1741698598;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x117HPWY7hfxCsyRoomSLqnsp6TkG/IZ7mxFwBfWDy4=;
+        b=bK75tKw1Buw+Hyu8U33L58yC6+GGmrNqqZQHch7hHZlBvC7tk3kKfiMRNO1bVWD8EK
+         wPmRb1vIU01ovCJfurZ5/8nYYskzJfKIBiGjXiEYwEjrt6B6rkw+dPxE9xPNX0F0UZhy
+         7E6pqGHiHUV7y54M0mmz+7/UOuu7t7miQnk7wmXjTMgiyhu8MAPhunzkqNElOxfnMh4w
+         a9PaAqm5d8xOXj6PkCpzxbhJZ/f0CpLXcaePuJrBNbf+vq9BHUsuYRPdFh2pMNVVlx0h
+         D+bziRhVxHeoR/gZ2sRRxW+xgU4OxfiMBQ0vKZt4y6zbMtWxp4bZ/Zdk1QhQlaXHbsQT
+         YEKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWIt76d4oJYKAVKK4Da8ZJAze0bROuhtrMiJLTFIj8LZmv1qJ1JZnU8bCnfaniKkKWcRABDp0QQ5wbmqZM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyG5X0OpJH2x77lSeDV4gt/g54MaSL94vG63o4m/KiYqsc67BS
+	8Vh3UvoC4klXV+ctGrihMh+spnXA4fpQs/ahVM/PkbLLxgDkR8orz9atNOu3EqF8ddmmXUQsqw6
+	Z1iA9yhlqK7SDq0TorAK7gUKrAVfagH7w4zXm
+X-Gm-Gg: ASbGncvZ7XawK7zRxw8jB2nHwinK9dMpxqMKja70TdR5cwIXJWOm8e9RtzRBAhk7grs
+	Oby55XunaTgymoatTn0FeTcQvkc6L4PZ+swh65DfF4unpEWV/YldrpxpNh6uau6Dr2r3gIfnyEq
+	PMH1FjFGfsSnOSXA9i5dNKuA7hgoKsRAFTfyvUwMtdF1L03L36Dz9waQFB
+X-Google-Smtp-Source: AGHT+IFiWcYRRwZhjH3eoEETTKHMFeBTK3Bvk1Dikxat7wutRisU34tzNCYhuoO1ktV/UerXXSrorJjwJzvEu41/niQ=
+X-Received: by 2002:a17:902:ec91:b0:223:5ada:2484 with SMTP id
+ d9443c01a7336-2236926e8bemr319887595ad.44.1741093798418; Tue, 04 Mar 2025
+ 05:09:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ITU-Libra-ESVA-Information: Please contact Istanbul Teknik Universitesi for more information
-X-ITU-Libra-ESVA-ID: 4Z6dfm4DTbzFxMR
-X-ITU-Libra-ESVA: No virus found
-X-ITU-Libra-ESVA-From: root@cc.itu.edu.tr
-X-ITU-Libra-ESVA-Watermark: 1741704097.07468@oHJc+EkbHBWoRW/3Jmh5BA
-X-ITU-MailScanner-SpamCheck: not spam
+References: <20250304092417.2873893-1-elver@google.com> <20250304092417.2873893-7-elver@google.com>
+ <20250304125516.GF11590@noisy.programming.kicks-ass.net>
+In-Reply-To: <20250304125516.GF11590@noisy.programming.kicks-ass.net>
+From: Marco Elver <elver@google.com>
+Date: Tue, 4 Mar 2025 14:09:21 +0100
+X-Gm-Features: AQ5f1JpRduzHYdRlbPZG29NFbDiaHAHst1RMQPMNTm3NjpUDRIeFlhtOLA45DL8
+Message-ID: <CANpmjNNNB8zQJKZaby8KNu8PdAJDufcia+sa2RajWm6Bd2TC4A@mail.gmail.com>
+Subject: Re: [PATCH v2 06/34] cleanup: Basic compatibility with capability analysis
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Bart Van Assche <bvanassche@acm.org>, Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
+	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@kernel.org>, 
+	Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>, 
+	Joel Fernandes <joel@joelfernandes.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Josh Triplett <josh@joshtriplett.org>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <kees@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
+	Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
+	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-If the iaa_crypto driver has async_mode set to true, and use_irq set to
-false, it can still be forced to use synchronous mode by turning off the
-CRYPTO_ACOMP_REQ_POLL flag in req->flags.
+On Tue, 4 Mar 2025 at 13:55, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Mar 04, 2025 at 10:21:05AM +0100, Marco Elver wrote:
+> > Due to the scoped cleanup helpers used for lock guards wrapping
+> > acquire/release around their own constructors/destructors that store
+> > pointers to the passed locks in a separate struct, we currently cannot
+> > accurately annotate *destructors* which lock was released. While it's
+> > possible to annotate the constructor to say which lock was acquired,
+> > that alone would result in false positives claiming the lock was not
+> > released on function return.
+> >
+> > Instead, to avoid false positives, we can claim that the constructor
+> > "asserts" that the taken lock is held. This will ensure we can still
+> > benefit from the analysis where scoped guards are used to protect access
+> > to guarded variables, while avoiding false positives. The only downside
+> > are false negatives where we might accidentally lock the same lock
+> > again:
+> >
+> >       raw_spin_lock(&my_lock);
+> >       ...
+> >       guard(raw_spinlock)(&my_lock);  // no warning
+> >
+> > Arguably, lockdep will immediately catch issues like this.
+> >
+> > While Clang's analysis supports scoped guards in C++ [1], there's no way
+> > to apply this to C right now. Better support for Linux's scoped guard
+> > design could be added in future if deemed critical.
+>
+> Would definitely be nice to have.
 
-In other words, all three of the following need to be true for a request
-to be processed in fully async poll mode:
+Once we have the basic infra here, I think it'll be easier to push for
+these improvements. It's not entirely up to me, and we have to
+coordinate with the Clang maintainers. Definitely is on the list.
 
- 1) async_mode should be "true"
- 2) use_irq should be "false"
- 3) req->flags & CRYPTO_ACOMP_REQ_POLL should be "true"
+> > @@ -383,6 +387,7 @@ static inline void *class_##_name##_lock_ptr(class_##_name##_t *_T)       \
+> >
+> >  #define __DEFINE_LOCK_GUARD_1(_name, _type, _lock)                   \
+> >  static inline class_##_name##_t class_##_name##_constructor(_type *l)        \
+> > +     __no_capability_analysis __asserts_cap(l)                       \
+> >  {                                                                    \
+> >       class_##_name##_t _t = { .lock = l }, *_T = &_t;                \
+> >       _lock;                                                          \
+> > @@ -391,6 +396,7 @@ static inline class_##_name##_t class_##_name##_constructor(_type *l)     \
+> >
+> >  #define __DEFINE_LOCK_GUARD_0(_name, _lock)                          \
+> >  static inline class_##_name##_t class_##_name##_constructor(void)    \
+> > +     __no_capability_analysis                                        \
+>
+> Does this not need __asserts_cal(_lock) or somesuch?
+>
+> GUARD_0 is the one used for RCU and preempt, rather sad if it doesn't
+> have annotations at all.
 
-Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
----
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 11 ++++++++++-
- include/crypto/acompress.h                 |  5 +++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+This is solved later in the series where we need it for RCU:
+https://lore.kernel.org/all/20250304092417.2873893-15-elver@google.com/
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/=
-intel/iaa/iaa_crypto_main.c
-index c3776b0de51d..d7983ab3c34a 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -1520,6 +1520,10 @@ static int iaa_comp_acompress(struct acomp_req *re=
-q)
- 		return -EINVAL;
- 	}
-=20
-+	/* If the caller has requested no polling, disable async. */
-+	if (!(req->flags & CRYPTO_ACOMP_REQ_POLL))
-+		disable_async =3D true;
-+
- 	cpu =3D get_cpu();
- 	wq =3D wq_table_next_wq(cpu);
- 	put_cpu();
-@@ -1712,6 +1716,7 @@ static int iaa_comp_adecompress(struct acomp_req *r=
-eq)
- {
- 	struct crypto_tfm *tfm =3D req->base.tfm;
- 	dma_addr_t src_addr, dst_addr;
-+	bool disable_async =3D false;
- 	int nr_sgs, cpu, ret =3D 0;
- 	struct iaa_wq *iaa_wq;
- 	struct device *dev;
-@@ -1727,6 +1732,10 @@ static int iaa_comp_adecompress(struct acomp_req *=
-req)
- 		return -EINVAL;
- 	}
-=20
-+	/* If the caller has requested no polling, disable async. */
-+	if (!(req->flags & CRYPTO_ACOMP_REQ_POLL))
-+		disable_async =3D true;
-+
- 	if (!req->dst)
- 		return iaa_comp_adecompress_alloc_dest(req);
-=20
-@@ -1775,7 +1784,7 @@ static int iaa_comp_adecompress(struct acomp_req *r=
-eq)
- 		req->dst, req->dlen, sg_dma_len(req->dst));
-=20
- 	ret =3D iaa_decompress(tfm, req, wq, src_addr, req->slen,
--			     dst_addr, &req->dlen, false);
-+			     dst_addr, &req->dlen, disable_async);
- 	if (ret =3D=3D -EINPROGRESS)
- 		return ret;
-=20
-diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
-index 147f184b6bea..afadf84f236d 100644
---- a/include/crypto/acompress.h
-+++ b/include/crypto/acompress.h
-@@ -14,6 +14,11 @@
- #include <linux/crypto.h>
-=20
- #define CRYPTO_ACOMP_ALLOC_OUTPUT	0x00000001
-+/*
-+ * If set, the driver must have a way to submit the req, then
-+ * poll its completion status for success/error.
-+ */
-+#define CRYPTO_ACOMP_REQ_POLL		0x00000002
- #define CRYPTO_ACOMP_DST_MAX		131072
-=20
- /**
---=20
-2.27.0
-
-
+We can't add this to all GUARD_0, because not all will be for
+capability-enabled structs. Instead I added a helper to add the
+necessary annotations where needed (see DECLARE_LOCK_GUARD_0_ATTRS).
 
