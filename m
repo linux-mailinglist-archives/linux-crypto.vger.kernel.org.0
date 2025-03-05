@@ -1,165 +1,160 @@
-Return-Path: <linux-crypto+bounces-10488-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10490-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A93EA4F9F2
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Mar 2025 10:27:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E4B8A4FB59
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Mar 2025 11:11:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB32A7A273B
-	for <lists+linux-crypto@lfdr.de>; Wed,  5 Mar 2025 09:26:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DCD87A2CF1
+	for <lists+linux-crypto@lfdr.de>; Wed,  5 Mar 2025 10:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35D620468D;
-	Wed,  5 Mar 2025 09:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92249205AC8;
+	Wed,  5 Mar 2025 10:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="awQ2WJus"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f4u7LmwU"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E460620468E
-	for <linux-crypto@vger.kernel.org>; Wed,  5 Mar 2025 09:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD9E2063F3;
+	Wed,  5 Mar 2025 10:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741166832; cv=none; b=qF9Ip2reflpn9QUxPN7YzePgOnoUJFB9bLZYsBmWOFQ8vD161aq/i+kqwgYWhbPz0tmhZCPxd9V/v74BT3pPkvgdvzrsuqmdLrkKr97DVbhGmBxUzTsUJZ+ebs/NFJwS6LKo1J650N9ct/6lpELRcFohAUL5hhg+YTQFUKrnl4k=
+	t=1741169450; cv=none; b=F4KjqKgznYnqCmS/XXIo6jm/3heVXZmBzoNLLVJP22B/BxY3pPxIgHnIOQb2KwKQv9vWSAg8vzTNPShIOnwTw+TcS1agG6AusiraWqWN89WTbaSG5ipUZ1XXOlNvUG0Bnmz2lmzrGdCZwGXdHP9MqvqElDZ5Tmt+oEcyTKJoyg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741166832; c=relaxed/simple;
-	bh=3mDFeB3Bpj3IOfRwlQRf3Grj75HR3nrndwXyWmM3Ob4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A0QSa9rN0ql0JkZ75hUX7ZNqePGr5B3Ps/z9cli7esqzsn3pGYQhSUIXnYHZZeeT6seK8yLmQdu90nfki/CUaeBiFTQUwjcn7fsJ6Te8neO0VqiVeX6g2Xada0riRwS1p9n/g0LtDPICkArYL/CbFrc7I31mSQumNby4inl/ME4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=awQ2WJus; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43bcbdf79cdso11030125e9.2
-        for <linux-crypto@vger.kernel.org>; Wed, 05 Mar 2025 01:27:10 -0800 (PST)
+	s=arc-20240116; t=1741169450; c=relaxed/simple;
+	bh=llg0domLWIKPFm2rb3BZir48nLFe6AvnxeCjrY+USvs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WgfTCvd3ohTdnRw3ply+zcygiVo/sbPy2Nt9my2VhgQ4BDe37fCeSgbEnxw1MTU7tJBhtQ6NfmSa7f0NNK0Lybib1gYn9nWc5+SCq6vHLeqsfQQ98dG/Yg2NJ2BDbYjJf9JFmqep/xyo9NwbJxSvkyyFSrHR9YvlL4EgWYRzB7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f4u7LmwU; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-30bbc83fc35so6757531fa.0;
+        Wed, 05 Mar 2025 02:10:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1741166829; x=1741771629; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VaMa3tOr/8WS8V6AnlLw/eUNgZqrJVmxSDme9KtSQnA=;
-        b=awQ2WJusxW6Ge0kv9C7Zju2JITr5EXSeephgcSpgRUB67uiBC2wUReZa/SrihqlmBV
-         zMms2er4oICT6Quz/tBnkW/bMaNIjXMdxymm2mdhR9xfSuxVKM9ONClD/eluuDgTAG9Z
-         cSTRS5qBoAatCwOyBW6idxIRVSxCnO+pKzcmP7MQ0TPj3qdmkaBJ8Q/LWpx+Y/szwxxZ
-         LJpMWsH3PAH+QZGkJAJa1GPJ2b+1Y75T/DTdOUHiHu9jDRkjLhakyxdJWPiRbV2Wn6jw
-         PqJzVJnpSRn6f7FKJcb4MvkK/ygd88eqJXzL8DmZTvV5KzE9q14qcQvpm1uWSxpYfF86
-         iw7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741166829; x=1741771629;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1741169447; x=1741774247; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VaMa3tOr/8WS8V6AnlLw/eUNgZqrJVmxSDme9KtSQnA=;
-        b=Gkj2aQC5gBqu6DE3cjF1ELGnkp9vvn2vByBxXa93UAk5PoohTZQA3tQ3HNT0DqQYlF
-         KHmIwt2aZlQbis891yXdgPTofwKs6QNup6JitMnItjs95tNSjARfvssRVkC/eoG9xdNV
-         h8rlsWR2Z9mNlpuoEN2h9/+TOzpFBW8gdhn9sbPB/w/hUG75qZ5XcbgoElefZzvrpmUW
-         TBY4ug+KAJAKDCb/156g9C/AVSALVWihLTtibJcPWVS5mzUtaZk5Wcxmfj+1P2tNMAUB
-         AVdUkiBk4m/UuRfe9DC+q24N6nAuUKk69LtJpfy+bO85M3ih+SRH82n6j2dwJRv0uKwE
-         vu0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWZzzEW9OuEyfqD2/0CfyMQjRPZeX9rmfEFieEZwipq+J4/cm9zZdVjdg06UaC73pPZESzJB0BlWzbHD4A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/9xQbsnctbqNCDSZ4/afPXu9qD/bZjaNXriYpdDCHax8a6cW1
-	TSm8oCW7JbXzlJUZtVH62k/Y64k4kgjJfcO9P5ut2C8YtbzkofMCIFaOhdPu3jQ=
-X-Gm-Gg: ASbGncu3Q/HYcgtuz8RmpshdM21Ju3d8KLsTw3Xf4ee6WyaQ6xYFf7uDjgn+C0s3vno
-	N/Kf/pQLWIGJTso0wcAK+9evCVBzfmqY+Y/oAVDfZjNcZur+Fm9FicONAKm3LVDWZYuZZ6sUTAs
-	GaL+S/dAYA1pI/gTdJ+r8ghynUhopz1p1LH0BKh4f5nJO5vib5Ez41+YUoiJ5/He/T88VnD0S1S
-	AQdmdG4uzOfwjCXKXAIzWKUkBY3awq9BD09bTRgoht62qARZyWM/kqNorOubiFNnSbBPLDkyWH4
-	8GbLqzEnp2scqB3r5cO4rPKrtRPD9shJvgJ45IMpyZDy86hauw==
-X-Google-Smtp-Source: AGHT+IE3mizAOsnSuTtcbkO82OvTIYaM5IjOsyfCaEaBUlwqBcpm21mf2Z2/NNT65xir9k5CCr442Q==
-X-Received: by 2002:a05:600c:4750:b0:439:9e8b:228e with SMTP id 5b1f17b1804b1-43bd29c42c8mr13412085e9.20.1741166829098;
-        Wed, 05 Mar 2025 01:27:09 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-43bd426d069sm11942015e9.3.2025.03.05.01.27.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 01:27:08 -0800 (PST)
-Date: Wed, 5 Mar 2025 12:27:04 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Marco Elver <elver@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexander Potapenko <glider@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
-	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Kentaro Takeda <takedakn@nttdata.co.jp>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, rcu@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 01/34] compiler_types: Move lock checking attributes
- to compiler-capability-analysis.h
-Message-ID: <b6af185f-0109-4f98-a2d7-ab8f716e21a5@stanley.mountain>
-References: <20250304092417.2873893-1-elver@google.com>
- <20250304092417.2873893-2-elver@google.com>
- <f76a48fe-09da-41e0-be2e-e7f1b939b7e3@stanley.mountain>
- <Z8gVyLIU71Fg1QWK@elver.google.com>
+        bh=k6sJPgBFhipyGWeJK1GttBGiwRcJZd7KKopxjGpBJHY=;
+        b=f4u7LmwU/e69q6neZRFGqAyNqJhKpq8wp06EQvGmwUYZsWYuEX7DJ3jM1mE+1ytnPV
+         ZiwbEeBRBQ+NKCKpOljw4GAASN+8S5eHuBC5TGEJ66OAYfZDw6mvEW4OPPmAgFRW8PEZ
+         4McbFB1ILKOm6XHQVbMyaP0TTHVX7n5TV0CNqICmJ4qxpkDeIwL3EHC2RPNMLWg3F7cP
+         ycZraJ76E36uzJadaWbsonrbCd0p/edEkrK7z1FGTaHrgrdGZ8JYr0ZIn5EbLdvmWUdL
+         zxIAaqYTvxrT9is2X+u7WDCwmtHr2raigr6dvi9o9K2QtOQ9FhstPKnIESDGsxE92/dh
+         E21g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741169447; x=1741774247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k6sJPgBFhipyGWeJK1GttBGiwRcJZd7KKopxjGpBJHY=;
+        b=rrEsPmYL2oVg8A2dro212P89Q6puaXtuVsH36CewgdOL098AgIAaFmSAgkY1SLX7FG
+         VvigqaUfGY0ZhkyioqqGgd47nT6Hxt5vx2Nj5Xxkpo8jRpnY7hl5wCv3A22LO3IEIE1O
+         ZB7hLA7deSmlhueqicr5t6k7YOcRoEvVBKnwm97kh7h86gAXU+LrlhZxjvWR2vvKIJMn
+         aYqGFS4Vy9lYEGsPmQaxb/77C9JuD1/pIQaAiy9Bop+jESyr0b/ZUNFDmT/Dnvbp7bE7
+         lSXAL9W7XdG9bJUujVKaPXWas22mCvsK+BY09h59rYbkTmLmKv2X/I1bPWmcRPJAdOXb
+         abkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQvkuLtu63PKpI4HrOIz7N48yxMfHnEV4ih1tQqbqpeUZCIigX30rRmwHtNQqrNmOdmPJrC4JUAuhciRk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5iIroRRsnMk3ltiAcjk2c7PtGvdtodmWfKS+dn1fx4OVG/vcD
+	1h4uc2Fy9YGsK4nsf+qXvxonvDur+DPIPWVnFQZztoqbgDY21lJb61Rz3RwqvzpXEel65DP7n07
+	MfWw4lIBoCfT6vvQ3Bsd9kBLT6BQ=
+X-Gm-Gg: ASbGncvZbdmums+J60g7Xj6ifApgdaXMUE7hYaPf+yfMz/ERRQok115xYKobfZAxtDm
+	4F4M6Jq0AekWCISId2G2KRul9JPBw0nzp79TZ3fk81n396cEhqYwPLZH9jBmfh5dyHVRmhCUQBf
+	OosJp97c1eo6pWqQKtalorXG4iVA==
+X-Google-Smtp-Source: AGHT+IEURqWpoFonECBt8ISCyOLd+8RPbOZV7uLgtcPcEzt6+VvkWezBr6q5FXj/MkUUIbpTM4yfNKzX8SLCGwJcBkA=
+X-Received: by 2002:a05:651c:2207:b0:30b:c3ce:ea51 with SMTP id
+ 38308e7fff4ca-30bd7cd5c0cmr6897361fa.15.1741169446164; Wed, 05 Mar 2025
+ 02:10:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z8gVyLIU71Fg1QWK@elver.google.com>
+References: <20250304213216.108925-1-ebiggers@kernel.org>
+In-Reply-To: <20250304213216.108925-1-ebiggers@kernel.org>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Wed, 5 Mar 2025 11:10:40 +0100
+X-Gm-Features: AQ5f1JoL3EYBkezeivq6kAevMSsSR0Ei1buWNTADmjgUBeYw4D_is9BtgZdT5AU
+Message-ID: <CAFULd4Y8=zov8Yov3n4rhwT7JO0YxaEQJ56hq1Hd7TB=yQjWQw@mail.gmail.com>
+Subject: Re: [PATCH] x86/crc32: optimize tail handling for crc32c short inputs
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Bill Wendling <morbo@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Justin Stitt <justinstitt@google.com>, 
+	David Laight <david.laight.linux@gmail.com>, linux-crypto@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 05, 2025 at 10:13:44AM +0100, Marco Elver wrote:
-> On Wed, Mar 05, 2025 at 11:36AM +0300, Dan Carpenter wrote:
-> > On Tue, Mar 04, 2025 at 10:21:00AM +0100, Marco Elver wrote:
-> > > +#ifndef _LINUX_COMPILER_CAPABILITY_ANALYSIS_H
-> > > +#define _LINUX_COMPILER_CAPABILITY_ANALYSIS_H
-> > > +
-> > > +#ifdef __CHECKER__
-> > > +
-> > > +/* Sparse context/lock checking support. */
-> > > +# define __must_hold(x)		__attribute__((context(x,1,1)))
-> > > +# define __acquires(x)		__attribute__((context(x,0,1)))
-> > > +# define __cond_acquires(x)	__attribute__((context(x,0,-1)))
-> > > +# define __releases(x)		__attribute__((context(x,1,0)))
-> > > +# define __acquire(x)		__context__(x,1)
-> > > +# define __release(x)		__context__(x,-1)
-> > > +# define __cond_lock(x, c)	((c) ? ({ __acquire(x); 1; }) : 0)
-> > > +
-> > 
-> > The other thing you might want to annotate is ww_mutex_destroy().
-> 
-> We can add an annotation to check the lock is not held:
-> 
+On Wed, Mar 5, 2025 at 10:26=E2=80=AFAM Eric Biggers <ebiggers@kernel.org> =
+wrote:
+>
+> From: Eric Biggers <ebiggers@google.com>
+>
+> For handling the 0 <=3D len < sizeof(unsigned long) bytes left at the end=
+,
+> do a 4-2-1 step-down instead of a byte-at-a-time loop.  This allows
+> taking advantage of wider CRC instructions.  Note that crc32c-3way.S
+> already uses this same optimization too.
+>
+> crc_kunit shows an improvement of about 25% for len=3D127.
+>
+> Suggested-by: H. Peter Anvin <hpa@zytor.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Sorry, my email was bad.
+LGTM.
 
-I haven't actually tried your patch at all.  I have locking check in
-Smatch so I'm just basing this on the things that I did...
-https://github.com/error27/smatch/blob/master/smatch_locking.c
-This isn't a mandatory thing.  Whatever happens we're going to end up
-doing dozens of patches all over the kernel later.
+Acked-by: Uros Bizjak <ubizjak@gmail.com>
 
-I thought you could destroy a mutex regardless or whether it was held
-or not.  I was getting false positives which said that we should drop
-the lock on error but actually the mutex is destroyed on that path so it
-doesn't matter.
+Thanks,
+Uros.
 
-regards,
-dan carpenter
-
+> ---
+>
+> This applies to
+> https://web.git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/lo=
+g/?h=3Dcrc-next
+>
+>  arch/x86/lib/crc32-glue.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/lib/crc32-glue.c b/arch/x86/lib/crc32-glue.c
+> index 4b4721176799a..e3f93b17ac3f1 100644
+> --- a/arch/x86/lib/crc32-glue.c
+> +++ b/arch/x86/lib/crc32-glue.c
+> @@ -55,11 +55,19 @@ u32 crc32c_arch(u32 crc, const u8 *p, size_t len)
+>
+>         for (num_longs =3D len / sizeof(unsigned long);
+>              num_longs !=3D 0; num_longs--, p +=3D sizeof(unsigned long))
+>                 asm(CRC32_INST : "+r" (crc) : ASM_INPUT_RM (*(unsigned lo=
+ng *)p));
+>
+> -       for (len %=3D sizeof(unsigned long); len; len--, p++)
+> +       if (sizeof(unsigned long) > 4 && (len & 4)) {
+> +               asm("crc32l %1, %0" : "+r" (crc) : ASM_INPUT_RM (*(u32 *)=
+p));
+> +               p +=3D 4;
+> +       }
+> +       if (len & 2) {
+> +               asm("crc32w %1, %0" : "+r" (crc) : ASM_INPUT_RM (*(u16 *)=
+p));
+> +               p +=3D 2;
+> +       }
+> +       if (len & 1)
+>                 asm("crc32b %1, %0" : "+r" (crc) : ASM_INPUT_RM (*p));
+>
+>         return crc;
+>  }
+>  EXPORT_SYMBOL(crc32c_arch);
+>
+> base-commit: 13f3d13d88b5dcba104a204fcbee61c75f8407d0
+> --
+> 2.48.1
+>
 
