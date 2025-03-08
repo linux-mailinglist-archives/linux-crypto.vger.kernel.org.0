@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-10638-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10640-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B3C3A5793F
-	for <lists+linux-crypto@lfdr.de>; Sat,  8 Mar 2025 09:30:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25479A57947
+	for <lists+linux-crypto@lfdr.de>; Sat,  8 Mar 2025 09:32:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76E11893FE7
-	for <lists+linux-crypto@lfdr.de>; Sat,  8 Mar 2025 08:30:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FB0E16F6F3
+	for <lists+linux-crypto@lfdr.de>; Sat,  8 Mar 2025 08:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEAE1A01B9;
-	Sat,  8 Mar 2025 08:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8DB1A4AAA;
+	Sat,  8 Mar 2025 08:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="hLgz5Zs3"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="QI50Qy7Z"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0075013C8F3;
-	Sat,  8 Mar 2025 08:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4747188733;
+	Sat,  8 Mar 2025 08:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741422597; cv=none; b=dQGjWlw2kREnRlGbN8bIsRAgRHKG2UYak8Svcg1ZMA0vDCROOSOy726U9U/XN+uWcBmb+dlY/PBkLWCbz5ZSh34R61LJxl2MjsN1+7ps6Wya8nTlvOJwiHHyXcXs7obC9HtkP0fPipjORC33j700TABPBYoMwW0WZ5IqKTGvPrc=
+	t=1741422719; cv=none; b=jZecdzbIpHdcEuI9N+bv1tQyqNbJw6CtWBZSwU5SFqY47FdRxeOocgfnwwwDKDrmQbMZY1DFVt1t5vZFKO2jBY2SW+rFrmb8RTyFTykOIESkY6iNxAkAw+cmbG14GmzNYE0R5f2SRAzgd7AT9WSkzOK6yVZYLHeBG21FRRqMshA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741422597; c=relaxed/simple;
-	bh=WSNA3BBLFKSfUikJj+CfS+8eXC42JmjW0MdCGY60QbY=;
+	s=arc-20240116; t=1741422719; c=relaxed/simple;
+	bh=3AsAGj5LITHXckcZQFBdOahjYXqygagfms+EvBYg6tU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QPPcRHioAjgcD6CJkVy6nOTRvpOhNUGOAhOCiq3zluRh6lAFauE/q0TTkcSy/8GEjrkHlejsV7Vjz2vORnGw/krQz5oaYD8bpMgaog0CTo37UH94vbfxpL8GwtGk4s8FlMRqFmZv8n6OqBnne/qLmMAgfiv6dS8WlFp+5BOvo80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=hLgz5Zs3; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=JKW2z7Afkb19mip5m3cqaLcmX6YZY4Zw58otDIb/ePIqzWi7AmIVWlHfmYmFlTaCPED/J6pDQXnqJKJjkRtjTbBtFD/8SlUxIqrgnxVr2KgKJ2tP3OHYT+5psgvMNUxmQ+AqKIcqM2uJ90ArkPPxqiCFDov8nmjXEiN8lZyDugA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=QI50Qy7Z; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,26 +37,29 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=tZ+2bGh/MnVSsospfWDJ6WhrM00mV4Pwz55VQ3nG+C0=; b=hLgz5Zs3jAvhCOCW/KPX3pxJh1
-	LioTKil2EY2SdGkDsxZIpfbxED0HppEacOxF0IEmd8crY2Wzid/pk7KiXnJDBAVX3LwHVa1+Pv2nQ
-	5Am3unn+mlBdmhka9t48fDTuihPRo83RpuPCeBBA9mXYYE+2LjRiQgzOHCZCtDkiNipN0cP6BUFpz
-	OE/str7My4rTgFP+07z7hmITlD3YozZUGGQftgxPrKk2fCzNv6dIL+kZxuNYzn1+xJkAqiiefL04C
-	Z/sr9+GU2O+tD6aw+cs3Je2CIojAcqYDHdQUpjU1kU+tm+xlToZGvTuECG+jvsFLO9YppY/UUASfC
-	NE+10GIA==;
+	bh=nyxHSaV8z8EHDAet7YFpM8+cziZwMLw5X5/7w5W9HEc=; b=QI50Qy7ZWTPiZn+8oSjsCPpktY
+	AuU12D4/x8l2Js4+Oa8kMsemd1qsFjhPFxQtCaHiE1sgqY6ydFxaM/4CJofYAaJNQUiDFKyyshGyL
+	ISLzAIGhCSME6i0v0KqGUEeqvW23PHcZR2JvSAcG3gpwGf5+MdiyDqIjz8fBLaAbZxlMejQM+TPKK
+	3HX0IhUYUkpWPfHIWv5cG/oTubX7Z49E1oeAh76AylWgbiv3VsKDUjX+/8puazBwuSwPD3AhX0+mh
+	5ZAqFKkPex8kTLRdjaDzQZThm1brv1eKJzeX73IoVMu6CRKNN+5QPQuL76Nb2QFdJ2o5N6FTEs5qU
+	4Qb2ALGQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tqpZ2-004oeR-0m;
-	Sat, 08 Mar 2025 16:29:45 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 08 Mar 2025 16:29:44 +0800
-Date: Sat, 8 Mar 2025 16:29:44 +0800
+	id 1tqpb4-004of7-0l;
+	Sat, 08 Mar 2025 16:31:51 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 08 Mar 2025 16:31:50 +0800
+Date: Sat, 8 Mar 2025 16:31:50 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Akhil R <akhilrajeev@nvidia.com>
-Cc: davem@davemloft.net, thierry.reding@gmail.com, jonathanh@nvidia.com,
-	linux-crypto@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] Tegra Security Engine driver improvements
-Message-ID: <Z8v_-B8ZTIY4scFm@gondor.apana.org.au>
-References: <20250224091610.49683-1-akhilrajeev@nvidia.com>
+To: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Antoine Tenart <atenart@kernel.org>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: crypto: inside-secure,safexcel: Allow
+ dma-coherent
+Message-ID: <Z8wAdqekLEyBqVwK@gondor.apana.org.au>
+References: <20250226214243.3745682-1-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -65,50 +68,18 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250224091610.49683-1-akhilrajeev@nvidia.com>
+In-Reply-To: <20250226214243.3745682-1-robh@kernel.org>
 
-On Mon, Feb 24, 2025 at 02:46:00PM +0530, Akhil R wrote:
-> With the CRYPTO_TEST now being run asynchronously unveiled some
-> concurrency issues in the Security Engine driver. These were not
-> caught during functional or fuzz testing as all the tests were run
-> synchronously.
+On Wed, Feb 26, 2025 at 03:42:43PM -0600, Rob Herring (Arm) wrote:
+> Some platforms like Marvell are cache coherent, so allow the
+> "dma-coherent" property.
 > 
-> This patchset contains the fixes for the concurrency issues and few
-> other improvements identified during the stress-ng and cryptsetup tests.
-> 
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 > ---
-> v2->v3:
->  * Fixed testbot warnings.
-> v1->v2:
->  * Added patch to handle the scenario when keyslots are full
->  * Added patch to finalize crypto request which was not called in some
->    error cases.
-> 
-> v1: https://lore.kernel.org/lkml/20241217161207.72921-1-akhilrajeev@nvidia.com/
-> 
-> Akhil R (10):
->   crypto: tegra: Use separate buffer for setkey
->   crypto: tegra: Do not use fixed size buffers
->   crypto: tegra: finalize crypto req on error
->   crypto: tegra: check return value for hash do_one_req
->   crypto: tegra: Transfer HASH init function to crypto engine
->   crypto: tegra: Fix HASH intermediate result handling
->   crypto: tegra: Fix CMAC intermediate result handling
->   crypto: tegra: Set IV to NULL explicitly for AES ECB
->   crypto: tegra: Reserve keyslots to allocate dynamically
->   crypto: tegra: Use HMAC fallback when keyslots are full
-> 
->  drivers/crypto/tegra/tegra-se-aes.c  | 401 ++++++++++++++++++---------
->  drivers/crypto/tegra/tegra-se-hash.c | 287 ++++++++++++-------
->  drivers/crypto/tegra/tegra-se-key.c  |  27 +-
->  drivers/crypto/tegra/tegra-se-main.c |  16 +-
->  drivers/crypto/tegra/tegra-se.h      |  39 ++-
->  5 files changed, 523 insertions(+), 247 deletions(-)
-> 
-> -- 
-> 2.43.2
+>  .../devicetree/bindings/crypto/inside-secure,safexcel.yaml      | 2 ++
+>  1 file changed, 2 insertions(+)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
