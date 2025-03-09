@@ -1,129 +1,101 @@
-Return-Path: <linux-crypto+bounces-10653-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10655-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49DBCA58002
-	for <lists+linux-crypto@lfdr.de>; Sun,  9 Mar 2025 01:31:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAF8FA58054
+	for <lists+linux-crypto@lfdr.de>; Sun,  9 Mar 2025 03:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF5FE188C9A8
-	for <lists+linux-crypto@lfdr.de>; Sun,  9 Mar 2025 00:31:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBEE87A279D
+	for <lists+linux-crypto@lfdr.de>; Sun,  9 Mar 2025 02:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E14D4C91;
-	Sun,  9 Mar 2025 00:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59869224F0;
+	Sun,  9 Mar 2025 02:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b="sQYvBX8c"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="OIILnKm8"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F962914;
-	Sun,  9 Mar 2025 00:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6C717BA5
+	for <linux-crypto@vger.kernel.org>; Sun,  9 Mar 2025 02:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741480269; cv=none; b=KT35mMRwvGP5ujGCapTzYaJ7/9F6cKifshEwbvh5lswZ18+Hr0UU7vDxk5as4q0Dow+UUYVgs1iMnRmtKEWd3KzYVtpqA4Ud8NIjeS/iFggeCQmy+d+SFBkAa9h1wLdf0rCzEGr9h0iloki9d+mPqM6pavmtxOtTOvfSfj2keQE=
+	t=1741488200; cv=none; b=ssThHCSOI7tWQZ8oVBrCxoezVikUoRQSdslthZBAZ8nS2vdNdxeqnUb+XmUYAe7cpt1bi5+QiF0Rtl1tV8SoEJnGcSmHTjAVbgtT+T1zzWXGTjOpiFQvWYpYhmePSgfOm5knWqCcQPPt4Tfwrglh/mD6Li0VkXmru9vx8yMlQ9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741480269; c=relaxed/simple;
-	bh=HnksT8mSXFPdsYEwYEbQasBkNVX/yh2ujjHTAjEraco=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=dvhM1Z/2+UFMC3ne4+Vld0oiQnTcCae+TDGJd5yHbQ33dGHktFsqCpJKyIupajWziV7NngJwM1DixgfjoWuXIhf+bbroCGu66B62x3AaPBRBghzOcznwAuzykEsogRr9LIfcSOmwIpQipJKa5eMx3mBRIXE/boXJlnumJvXS8nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com; spf=pass smtp.mailfrom=ethancedwards.com; dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b=sQYvBX8c; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ethancedwards.com
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4Z9LXy6Tjcz9scd;
-	Sun,  9 Mar 2025 01:30:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ethancedwards.com;
-	s=MBO0001; t=1741480259;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=nw5BrMpWLwOkdKLfm5BC4XDDbHFMMDfyo9rI+ZmiLnU=;
-	b=sQYvBX8cQof5sXBhThSn//SbOyGSP2UipkdG50cAyiygr8+EkF5bIk2pI/CFs0wMNygbef
-	vtX8O5XfMt+SxzCifOihxzZBwOjjlTQ4KlG0AvxQlNFPAOPKg8xi6aVSVVRcTaJ5NkqSKs
-	L14Fnd7VkeJgLqE6SO1j9lhvN3GbZEYivTQiHEj5MqgApFXdfQ/dC8+occdUmjb9uy4TM5
-	odzw00vTGX6bH3zFaQMDJp0m0t+SHmfw6bYZbtkowvldlRjyWNYtWC0rzdali6DiIy1omy
-	7jxgp8tZApggohf7ZlofFh1g4vLJDbZaH1b/9snfGruiCPMjv14zQnYTJur74A==
-From: Ethan Carter Edwards <ethan@ethancedwards.com>
-Date: Sat, 08 Mar 2025 19:30:52 -0500
-Subject: [PATCH] crypto: axis/artpec6: change from kzalloc to kcalloc in
- artpec6_crypto_probe()
+	s=arc-20240116; t=1741488200; c=relaxed/simple;
+	bh=tmLysB9Khp1iYmMoyw5NJISthFKCFcw4TBvLLR6uQk4=;
+	h=Date:Message-Id:From:Subject:To:Cc; b=HfxEzh4NOSk4o29LsujTqCVg8VUYQw7PMGMTN3ql4pmhSJ4qeaninY3qGzGhgthXvSO+bEWtIG7czxpw5Ov2yfiCQcpctBjVmh//YMB7f5YQuBWJa0gmPQblGgMGHhzqFpqwblVYNXHBOBVRYPr6Lcs85yO9un0dEbn7LzZn0lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=OIILnKm8; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=Cc:To:Subject:From:Message-Id:Date:Sender:Reply-To:MIME-Version
+	:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=wmmkOpiVwPDJW+36ScQPJAsuKUZhZI4DO4YY8RoHQ7s=; b=OIILnKm8dFDzsi/XIkoyJio2tu
+	LeU0SYlIXMm/SueRQ1tFIhC5qRb+Ow/OYfkQDgw7OpHF2k+Fe7CHwggj3CEbc8Ul4ZplH76Uld8qj
+	yvXVl+4G2RpO7PahXPdwm1rqknhAkagIXrcDeyhSQmARsav1zg0fV4mDo4tQB9YGbONgsedVcxcd2
+	bT7/EehWScpry75qHRXauHzhCTo7a9TLkhWpmHRJ4xFF+v/AHa5UM0AQr8OphLUggTsp9po7Kl6Bi
+	R36b1BeuX8TNyMCmOIUABFyyPshiqOxow1a04ZRSdv86s2q/aFDSJcaUjHcdYAqIFzw2ipwH+dDC9
+	Pc80Dy3A==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1tr6dC-004zHG-0M;
+	Sun, 09 Mar 2025 10:43:11 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 09 Mar 2025 10:43:10 +0800
+Date: Sun, 09 Mar 2025 10:43:10 +0800
+Message-Id: <cover.1741488107.git.herbert@gondor.apana.org.au>
+From: Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [v3 PATCH 0/8] crypto: acomp - Add request chaining and virtual address support
+To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Cc: Yosry Ahmed <yosry.ahmed@linux.dev>, Kanchana P Sridhar <kanchana.p.sridhar@intel.com>, Sergey Senozhatsky <senozhatsky@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250308-artpec6-devm_kcalloc-v1-1-37886eaebd16@ethancedwards.com>
-X-B4-Tracking: v=1; b=H4sIADvhzGcC/x3MSQqAMAxA0atI1hZaJ9SriEiMUYNTaUUE8e4Wl
- 2/x/wOenbCHOnrA8SVejj3AxBHQjPvESoZgSHSS61SXCt1pmQo18LV1C+G6HqQqNIaoQOrLDEJ
- qHY9y/9umfd8PyZ7im2YAAAA=
-X-Change-ID: 20250308-artpec6-devm_kcalloc-9a11cc6acb84
-To: Jesper Nilsson <jesper.nilsson@axis.com>, 
- Lars Persson <lars.persson@axis.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- "David S. Miller" <davem@davemloft.net>
-Cc: linux-arm-kernel@axis.com, linux-crypto@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
- Ethan Carter Edwards <ethan@ethancedwards.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1739;
- i=ethan@ethancedwards.com; h=from:subject:message-id;
- bh=HnksT8mSXFPdsYEwYEbQasBkNVX/yh2ujjHTAjEraco=;
- b=LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tCgpvd0o0bkp2QXk4ekFKWGJEOXFoNThlVGp6e
- GhQcXlVeHBKOTVhSnZlVXhEek52UGMzRlc3RGxxdk1lSW9rdWFvCnpPSFcrVy80UDJUU0NqNkgr
- M3M3U2xrWXhMZ1laTVVVV2Y3bktLYzkxSnloc1BPdlN4UE1IRllta0NFTVhKd0MKTUpFSnJZd01
- wMzBaNUthY21zdHJYSGQ3NVZrRDlyTWNHc2ZZOWUxdVBiTHFPTFcxY3Z2TElvYi9EcHZuSG52eg
- phZTlxdzhubkZGaG1mYjl2ZEQvaDg0TFZWdzY5UC9IR2JVSERUVDRBZ1A1Uk9BPT0KPVBpSFAKL
- S0tLS1FTkQgUEdQIE1FU1NBR0UtLS0tLQo=
-X-Developer-Key: i=ethan@ethancedwards.com; a=openpgp;
- fpr=2E51F61839D1FA947A7300C234C04305D581DBFE
 
-We are trying to get rid of all multiplications from allocation
-functions to prevent potential integer overflows. Here the
-multiplication is probably safe, but using kcalloc() is more
-appropriate and improves readability. This patch has no effect
-on runtime behavior.
+v3 adds mixing SG with virtual, e.g., SG src with virtual dst.
 
-Link: https://github.com/KSPP/linux/issues/162 [1]
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+This patch series adds reqeust chaining and virtual address support
+to the crypto_acomp interface.
 
-Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
----
- drivers/crypto/axis/artpec6_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Herbert Xu (8):
+  crypto: api - Add cra_type->destroy hook
+  crypto: scomp - Remove tfm argument from alloc/free_ctx
+  crypto: acomp - Move stream management into scomp layer
+  crypto: scomp - Disable BH when taking per-cpu spin lock
+  crypto: acomp - Add request chaining and virtual addresses
+  crypto: testmgr - Remove NULL dst acomp tests
+  crypto: scomp - Remove support for most non-trivial destination SG
+    lists
+  crypto: scomp - Add chaining and virtual address support
 
-diff --git a/drivers/crypto/axis/artpec6_crypto.c b/drivers/crypto/axis/artpec6_crypto.c
-index 1c1f57baef0ea9f4ecf7ab39f2c0e9e4327ef568..500b08e42282608348481b759e0b79d25f0b5db0 100644
---- a/drivers/crypto/axis/artpec6_crypto.c
-+++ b/drivers/crypto/axis/artpec6_crypto.c
-@@ -2897,13 +2897,13 @@ static int artpec6_crypto_probe(struct platform_device *pdev)
- 	tasklet_init(&ac->task, artpec6_crypto_task,
- 		     (unsigned long)ac);
- 
--	ac->pad_buffer = devm_kzalloc(&pdev->dev, 2 * ARTPEC_CACHE_LINE_MAX,
-+	ac->pad_buffer = devm_kcalloc(&pdev->dev, 2, ARTPEC_CACHE_LINE_MAX,
- 				      GFP_KERNEL);
- 	if (!ac->pad_buffer)
- 		return -ENOMEM;
- 	ac->pad_buffer = PTR_ALIGN(ac->pad_buffer, ARTPEC_CACHE_LINE_MAX);
- 
--	ac->zero_buffer = devm_kzalloc(&pdev->dev, 2 * ARTPEC_CACHE_LINE_MAX,
-+	ac->zero_buffer = devm_kcalloc(&pdev->dev, 2, ARTPEC_CACHE_LINE_MAX,
- 				      GFP_KERNEL);
- 	if (!ac->zero_buffer)
- 		return -ENOMEM;
+ crypto/842.c                           |   8 +-
+ crypto/acompress.c                     | 204 +++++++++++++++++++---
+ crypto/api.c                           |  10 ++
+ crypto/compress.h                      |   2 -
+ crypto/deflate.c                       |   4 +-
+ crypto/internal.h                      |   6 +-
+ crypto/lz4.c                           |   8 +-
+ crypto/lz4hc.c                         |   8 +-
+ crypto/lzo-rle.c                       |   8 +-
+ crypto/lzo.c                           |   8 +-
+ crypto/scompress.c                     | 225 +++++++++++++++----------
+ crypto/testmgr.c                       |  29 ----
+ crypto/zstd.c                          |   4 +-
+ drivers/crypto/cavium/zip/zip_crypto.c |   6 +-
+ drivers/crypto/cavium/zip/zip_crypto.h |   6 +-
+ include/crypto/acompress.h             | 225 ++++++++++++++++++++++---
+ include/crypto/internal/acompress.h    |  59 +++++--
+ include/crypto/internal/scompress.h    |  18 +-
+ 18 files changed, 611 insertions(+), 227 deletions(-)
 
----
-base-commit: 0a2f889128969dab41861b6e40111aa03dc57014
-change-id: 20250308-artpec6-devm_kcalloc-9a11cc6acb84
-
-Best regards,
 -- 
-Ethan Carter Edwards <ethan@ethancedwards.com>
+2.39.5
 
 
