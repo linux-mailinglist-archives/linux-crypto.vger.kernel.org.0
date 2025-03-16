@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-10858-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10859-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AEB8A6340A
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Mar 2025 05:43:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C99A6340D
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Mar 2025 05:44:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C973B022E
-	for <lists+linux-crypto@lfdr.de>; Sun, 16 Mar 2025 04:42:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFD9B1892D16
+	for <lists+linux-crypto@lfdr.de>; Sun, 16 Mar 2025 04:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213121422AB;
-	Sun, 16 Mar 2025 04:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8DA71448E0;
+	Sun, 16 Mar 2025 04:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="k9NBerxG"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="dLzcAPAm"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB3D3FE4
-	for <linux-crypto@vger.kernel.org>; Sun, 16 Mar 2025 04:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CD027702
+	for <linux-crypto@vger.kernel.org>; Sun, 16 Mar 2025 04:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742100176; cv=none; b=dtqJTktQXbRk6nlucam4JmoaS/GBB0IUVwP33j3iU8AVW1wOlugRK2wMjM8HquyTWREuxUWJVT8THHSW7sjHyWeSC7jvEVtQZ1oGGndEnHCqipvFgJezNwNDQ6Xmyv5E0/J0qZZ4aAl/Kk+go3jyW5QjEXs2K6uAaU8EUx8Xb7E=
+	t=1742100295; cv=none; b=Hw5DjcOW/v0ORccGf4Wtnf68m1co5QXssNTQC+NSTvz17zQSru4EyvRtPZrJp1LzLgabLbq7vozlaT0g+sOtCQFhydPxGdhfyCDZh3Wr/44ta4DsEGbFXrU2n+1UKZnkg4u7Z9e5jxgyqkDDdjDILCSp2MHJFx6bU+xT6C2zDag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742100176; c=relaxed/simple;
-	bh=FGfADJhm3CFsBBZggsIiPgW1VfQ6TKF1BI01LcIXnxY=;
+	s=arc-20240116; t=1742100295; c=relaxed/simple;
+	bh=dXSRXAJLqRjwsRgrgoBHPfQfV1UaefHAcBYLxLQ3Vl4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ywu+kNYOTUJekiOHyx/dLbKqNFSJpJhPRgT1pTirtzwI+EghyEKiRsmHvx0AjJudnoyfM9r8SvJ9vI5ipJHoVUVL3Dl38WCwtg3Web4OoeLZZCxbJaQmWewp53NeKd6LArWWfOs2iib4X5qnjXZIc3wqMfEg7FDWpK56iAq+TtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=k9NBerxG; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=fFaAg7FXPJVrG3YwkxRR0N0UVJWQPp4YZoeeBImdSPh1oNiMIt72x+wMsc+KLMdbdmX1Vqr2uTFk/wFK0be9FLVXO6actb4pLOdB+gSVh/n/cerWhvrM7EWQlZjFVIJP9Ax+uLN9UrlD/7uCXgthUi00NI4Ng470y/oVqu8OH9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=dLzcAPAm; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,18 +37,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=9yXLEA2gkkxVwFj95a0vCypA5LZaUICGQDwQVgpFSFQ=; b=k9NBerxGqgHGEcMxl6lcRVW1nh
-	T8d8mErIpzSgpSALsqo5WOXzc6t2vB6vwlIsWldcIeO9GpniL2TfnD7atrfDoyKWGmVHswK0DNjjQ
-	BJaHQYeKTMeAa86B5j2A6Ogn61+7ZEChQ9eJfjHTz39BZOshwgecnCCzJHYvfuY0KmMjTqAC3/YPT
-	ht+oSST7dUZdGmrUYbwv8UOs47fU+GJh6hFiDUv2Xe99kRQpdRHLXCEeGI2Yc7YbUfXK3h3zCrWMT
-	iwMXS6QjjPgvy9jXUhWNxGCGUeeY8N6b0uBQFRnJboRflOs8gBvkXy035HzvmsJJRzAlWIV3mVK7j
-	1FfEel+g==;
+	bh=byhxYkr4VzW/xizG1Mej48+a8D11dGdfCyRAJP/5K3U=; b=dLzcAPAmO8VvlMEzWFoSeIbFEq
+	PdT25JtvcgVj/XjzfH9ByYTJvIYTgoDDm0N23+0aCXmpGR5KhLPDl+VacWYBXjCeMbzIc6Zq5Iebz
+	PoBC8f1X6NGvFWrO6TYYVwP8BLlZb5BQJFXPA9YqNE47ARx+Cyo+oUJWhlYgA21PJ6n8n2gSpt0zR
+	Xt5xrPvRV0S8qUlPZP75FiIg9Nkkh/ymC0dX65biVB2s6vLSbRL1GyChhdYIhxR8Ahl5EArpTWxI7
+	GRvJ0sJx6tTxG4O+r9r1xHobweJp4RWSdVvAIZGCLJX84wbe+4kucSy+p1PDnLrNmqFy/Djyey5Eg
+	C/6M3vNA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1ttfpo-006yzW-2M;
-	Sun, 16 Mar 2025 12:42:49 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 16 Mar 2025 12:42:48 +0800
-Date: Sun, 16 Mar 2025 12:42:48 +0800
+	id 1ttfrl-006yzy-1U;
+	Sun, 16 Mar 2025 12:44:50 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 16 Mar 2025 12:44:49 +0800
+Date: Sun, 16 Mar 2025 12:44:49 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Eric Biggers <ebiggers@kernel.org>
 Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
@@ -57,7 +57,7 @@ Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
 	Sergey Senozhatsky <senozhatsky@chromium.org>
 Subject: Re: [v3 PATCH 3/8] crypto: acomp - Move stream management into scomp
  layer
-Message-ID: <Z9ZWyGpILLHTQzhf@gondor.apana.org.au>
+Message-ID: <Z9ZXQdCaKYoU6FU-@gondor.apana.org.au>
 References: <cover.1741488107.git.herbert@gondor.apana.org.au>
  <25f96a0e0e642e9d1c6014b12b00fd21b9f9c785.1741488107.git.herbert@gondor.apana.org.au>
  <20250316043631.GC117195@sol.localdomain>
@@ -72,13 +72,18 @@ Content-Disposition: inline
 In-Reply-To: <20250316043631.GC117195@sol.localdomain>
 
 On Sat, Mar 15, 2025 at 09:36:31PM -0700, Eric Biggers wrote:
->
-> But of course there is also no guarantee that users want it to be per-"tfm"
-> either, let alone have a full set of per-CPU buffers.  FWIW, this series makes
-> the kernel use an extra 40 MB of memory on my system if I enable
-> CONFIG_UBIFS_FS, which seems problematic.
+> 
+> Well, except the workspace (which you seem to be calling a "stream" for some
+> reason) size depends heavily on the compression parameters, such as the maximum
+> input length and compression level.  Zstd for example wants 1303288 (comp) +
+> 95944 (decomp) with the parameters the crypto API is currently setting, but only
+> 89848 + 95944 if it's properly configured with estimated_src_size=4096 which is
+> what most of the users actually want.  So making this a per-algorithm property
+> is insufficiently flexible.
 
-The memory is allocated on first use, or am I missing something?
+We don't support parameters yet but yes this is something that will
+have to be addressed when we add parameter support.  Per-tfm for
+non-standard parameters is probably the best bet in this case.
 
 Cheers,
 -- 
