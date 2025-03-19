@@ -1,260 +1,175 @@
-Return-Path: <linux-crypto+bounces-10932-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10934-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D95EA68CF9
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Mar 2025 13:33:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C32A6931B
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Mar 2025 16:21:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01B017A7948
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Mar 2025 12:32:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73FDB8A5ABF
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Mar 2025 15:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D37F256C84;
-	Wed, 19 Mar 2025 12:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD63B1CB337;
+	Wed, 19 Mar 2025 15:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="sTxy71FH"
+	dkim=pass (2048-bit key) header.d=hifiphile-com.20230601.gappssmtp.com header.i=@hifiphile-com.20230601.gappssmtp.com header.b="fqYYj4hy"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13090253329
-	for <linux-crypto@vger.kernel.org>; Wed, 19 Mar 2025 12:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54411B4F15
+	for <linux-crypto@vger.kernel.org>; Wed, 19 Mar 2025 15:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742387515; cv=none; b=OryDR9lZ+yNr7rxHlpdlTaF71POPwU1IuFOmimWoBN8QTdowArd9kaQ8LVrTln7Fw4QEA6nTZXdUeFV+nyNgEjQxPJbThBCk9tFHqpIZ00+w7cWuIbu1BfhmCfxMe6t5AHwQn/0ooYkoM042yA6N8MYuI74jKYsu1oUI9ilsmPo=
+	t=1742396832; cv=none; b=Jzit/XfAlOiYjQBK+rF4VYeDmFmnA1Yd4YzvuynXhjF/6HoVRvlDwpwJvamFxxWIpxytmuuf24RFMscIkd5kBWYDFXx3F08ctMFnBnNO0wEOOxdEIrAmv3mMqj96gmx4+5zn8q3B2Hg9IHHroMTlQYknK8ELWVfxAKXH29h0f6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742387515; c=relaxed/simple;
-	bh=LsxevvB5nFM6xsefjkXDy+vlGYYgYLZ0JgqdGTyVfIk=;
-	h=Date:Message-Id:In-Reply-To:References:From:Subject:To:Cc; b=ICXWmuaRwloALy1UzTcCu07C08zaefLyGu2cQhiUz/SHvPBsqTMalCs4CMq8g3u7WBJh639D3f3BY32ok/Nr28xKZWQVRoQPor5beTfizzG6tagtSrm8ru2kL/fLSv9wvG9xxfOapS5t7pNhm8nSuxyqJgqQrX+8NHnGG+4Os4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=sTxy71FH; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
-	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=nVwUdE9HTC/8yO3XuoXy2CW+YxOqZB3IOsm+WSacGYE=; b=sTxy71FHiWwXeYVlEkyjIcIrIw
-	wZLKcWUdgbYqZVcOpUceDKy1iB749NqEyAor5AtUj9HaE9zFt+MMkpF+2ycCEr7osvqWNhI1MdvEt
-	iB08yVX+77JF66dNpwQBAKG7VLJ+d28Bk2X39OvGIElfdXaRX7gSf3r9GWqGj/XFU4CK9kFw576g1
-	VsgnCqK/r6B6DXyqubhIGRXKX83ZOBYfbA7BTocf/DKY8qgXGVKB5+8OfKzFmErI36GqRD3yca8jU
-	EAsSrNTlTBCrIKLA1GGJLy1OcETFxfjrIHsF7umQqYfcKKKoPtUZUUOcyF3NbM4AyNc5VtNJkkszZ
-	yzx857Lw==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tusaL-008Q12-1D;
-	Wed, 19 Mar 2025 20:31:50 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 19 Mar 2025 20:31:49 +0800
-Date: Wed, 19 Mar 2025 20:31:49 +0800
-Message-Id: <fdbda8c4d075545e424faf24a5f58f824b7186de.1742387288.git.herbert@gondor.apana.org.au>
-In-Reply-To: <cover.1742387288.git.herbert@gondor.apana.org.au>
-References: <cover.1742387288.git.herbert@gondor.apana.org.au>
-From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 3/3] crypto: scomp - Drop the dst scratch buffer
-To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
+	s=arc-20240116; t=1742396832; c=relaxed/simple;
+	bh=1eZHquLTepqy42xh0mfP0tdtkd1zv4tldeAHj1pBwyc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p8XvAzNhemN278HrE5jTTK1Ef7nwMtlZV3aCZiPqJSKoG+u4ozJI1XllAz1zezuQl6YXVvMH2tddwesXunZU45srwTHf7PLIeNuNZnqGpLAzVK0RC2xCauHdKSPrby3ImlGRCyA/nQKVRVVS0p5m+13uHAW3ON8vZNkOf1f10e4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hifiphile.com; spf=none smtp.mailfrom=hifiphile.com; dkim=pass (2048-bit key) header.d=hifiphile-com.20230601.gappssmtp.com header.i=@hifiphile-com.20230601.gappssmtp.com header.b=fqYYj4hy; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hifiphile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=hifiphile.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-39141ffa9fcso6070282f8f.0
+        for <linux-crypto@vger.kernel.org>; Wed, 19 Mar 2025 08:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hifiphile-com.20230601.gappssmtp.com; s=20230601; t=1742396828; x=1743001628; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zNv4YENHPmtSPb1F94zL2vQ71swaDzySWvLHzeXUzS4=;
+        b=fqYYj4hyfN+07nOSw7m2RfVCS70WVtGZy7hwnwMxSZ2TarYTxSuKWZwkfIqatVCn07
+         n9zGPI0+iP+KGyURCwCXbw/kHO6VNUiD2BANUMXqNwFbDUYIZLcdJWbFxY788OkSYG8Z
+         QmJgx5OQNF2yW3ixU6nVEzY61VW7w3o0c98dBZ/5cEe8Fgu3yIzp+UbSqhnC6PEBRd/1
+         poMjg7Az5VjnNtKwXvt4VO1cnRQU1Y/0PyCqteucHYJse/qj+/axZJ2eEbEfnOYHQO3K
+         vYslelwG6QhF0cZfDlvVJKRkLXYShnc4KnkuTt9OU5CmT6AAEe1YS0ZG38yJPRZ1tBFc
+         9U6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742396828; x=1743001628;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zNv4YENHPmtSPb1F94zL2vQ71swaDzySWvLHzeXUzS4=;
+        b=gAH6SrL+8SCuweVlYa2dcM1RLcfCFxKEeuRGeB3Ps9mkjzr/QJhlWWIR8WrtTpEElU
+         grvqC2eedqkfx49HM2KL51+If9sgZbTEOO4WfxlMAdi+1SNDVb2HvePCu5Lc5aVTIrXY
+         Tlzdw+mfrJd09xkGVF9bPrij+rojL2Q63GwpdaRw1+WlTH4tlY3X2mwUODmO3se1MRt7
+         vyuJF83s3LpITmUo2mXip41BjSqojIKULWDyh/MSfbTCCdS5Mz1W3UrzLYtpmgCCeu9a
+         sn8DI6q7tysSM2j1q7oY4bMBpOyEVc6DN/ZXHWtTQq0GDgQ6dz+tu6hVSCS5XeCVFVE+
+         Xtug==
+X-Forwarded-Encrypted: i=1; AJvYcCVjDS1l2n8Kg4Zd9703XsNncJWo4VPgrYv8RPwuF7PoYo1z0NePCeMH30vq1nD7QDtf8K5AhhpPL0kaWEk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMYajADcg1OZq14gHpGllWlUSj/lROyItI95nR5i1AfcMZdGsk
+	/Kg9KoPgNXbsmasTvc5aIxNJevJshzg7SdW7NkU/WCagW0H38xCPzyFrOp4UXiILHMmgveq/Dg9
+	Qi2fM1Q==
+X-Gm-Gg: ASbGncvQeIgm0qMk0L0DEB0FYLoVcqo1UDbzElMdsNXbCiGPpIHuSJUHDr54Hi1cldO
+	zyul/b5gf3OhqQEDOo6ZHK5YL0hRF9SI8aMe4tJ9CAF9vcCWCVewMVpuq3P75CN6PCVeKvFWVqy
+	P9f7g3hQjvv3HGRShjlx6WPPYqMubG++V4Cyb12hYBNLCUkrRC2Lak8kynjvEiMz2A6vgeTMGJV
+	XkwZN7whXX8X2T2awFwM+13u6tK6J1sbKQ0m4Pd04usxuHLre9UjbZDHhLPvrizE2GMIBUZo2OM
+	kFkz/bw3C7KeB74re36e8tGYCtyEXOtUWWuE4NFN3I1GfA==
+X-Google-Smtp-Source: AGHT+IG1T0wpdC2jhhxGsViaMerXWFKA7E61APRJ0hjnELjvuOcDSh7XS5SLOgX4CwPT1xf8fTb5ZQ==
+X-Received: by 2002:a5d:47c9:0:b0:391:2a9a:478c with SMTP id ffacd0b85a97d-399739c81bfmr2840201f8f.23.1742396827667;
+        Wed, 19 Mar 2025 08:07:07 -0700 (PDT)
+Received: from localhost.localdomain ([78.199.60.143])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-395c7df33aasm20875247f8f.2.2025.03.19.08.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Mar 2025 08:07:07 -0700 (PDT)
+From: Zixun LI <admin@hifiphile.com>
+X-Google-Original-From: Zixun LI <zli@ogga.fr>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc: Zixun LI <admin@hifiphile.com>,
+	linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: atmel - add CRYPTO_ALG_KERN_DRIVER_ONLY flag to atmel-aes, atmel-sha, atmel-tdes drivers
+Date: Wed, 19 Mar 2025 16:06:56 +0100
+Message-ID: <20250319150657.2698916-1-zli@ogga.fr>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-As deflate has been converted over to acomp, and cavium zip has been
-removed, there are no longer any scomp algorithms that can be used
-by IPsec.
+From: Zixun LI <admin@hifiphile.com>
 
-Since IPsec was the only user of the dst scratch buffer, remove it.
+This patch introduces the CRYPTO_ALG_KERN_DRIVER_ONLY flag to the
+atmel-aes, atmel-sha, and atmel-tdes drivers. This flag is set for
+hardware accelerated ciphers accessible through a kernel driver only,
+which is the case of these drivers.
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Zixun LI <admin@hifiphile.com>
 ---
- crypto/scompress.c | 98 +++++++++++++++++++++-------------------------
- 1 file changed, 44 insertions(+), 54 deletions(-)
+ drivers/crypto/atmel-aes.c  | 5 +++--
+ drivers/crypto/atmel-sha.c  | 6 ++++--
+ drivers/crypto/atmel-tdes.c | 3 ++-
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/crypto/scompress.c b/crypto/scompress.c
-index 5a40605570f5..4a2b3933aa95 100644
---- a/crypto/scompress.c
-+++ b/crypto/scompress.c
-@@ -25,15 +25,12 @@
+diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+index 90dcae7049b7..8a6ee5ac9956 100644
+--- a/drivers/crypto/atmel-aes.c
++++ b/drivers/crypto/atmel-aes.c
+@@ -1948,7 +1948,8 @@ static struct skcipher_alg aes_xts_alg = {
+ 	.base.cra_driver_name	= "atmel-xts-aes",
+ 	.base.cra_blocksize	= AES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct atmel_aes_xts_ctx),
+-	.base.cra_flags		= CRYPTO_ALG_NEED_FALLBACK,
++	.base.cra_flags		= CRYPTO_ALG_NEED_FALLBACK |
++						  CRYPTO_ALG_KERN_DRIVER_ONLY,
  
- #include "compress.h"
+ 	.min_keysize		= 2 * AES_MIN_KEY_SIZE,
+ 	.max_keysize		= 2 * AES_MAX_KEY_SIZE,
+@@ -2471,7 +2472,7 @@ static void atmel_aes_unregister_algs(struct atmel_aes_dev *dd)
  
--#define SCOMP_SCRATCH_SIZE 65400
--
- struct scomp_scratch {
- 	spinlock_t	lock;
- 	union {
- 		void	*src;
- 		unsigned long saddr;
- 	};
--	void		*dst;
- };
- 
- static DEFINE_PER_CPU(struct scomp_scratch, scomp_scratch) = {
-@@ -78,9 +75,7 @@ static void crypto_scomp_free_scratches(void)
- 		scratch = per_cpu_ptr(&scomp_scratch, i);
- 
- 		free_page(scratch->saddr);
--		kvfree(scratch->dst);
- 		scratch->src = NULL;
--		scratch->dst = NULL;
- 	}
- }
- 
-@@ -88,19 +83,12 @@ static int scomp_alloc_scratch(struct scomp_scratch *scratch, int cpu)
+ static void atmel_aes_crypto_alg_init(struct crypto_alg *alg)
  {
- 	int node = cpu_to_node(cpu);
- 	struct page *page;
--	void *mem;
- 
--	mem = kvmalloc_node(SCOMP_SCRATCH_SIZE, GFP_KERNEL, node);
--	if (!mem)
--		return -ENOMEM;
- 	page = alloc_pages_node(node, GFP_KERNEL, 0);
--	if (!page) {
--		kvfree(mem);
-+	if (!page)
- 		return -ENOMEM;
--	}
- 	spin_lock_bh(&scratch->lock);
- 	scratch->src = page_address(page);
--	scratch->dst = mem;
- 	spin_unlock_bh(&scratch->lock);
- 	return 0;
- }
-@@ -181,6 +169,8 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+-	alg->cra_flags |= CRYPTO_ALG_ASYNC;
++	alg->cra_flags |= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY;
+ 	alg->cra_alignmask = 0xf;
+ 	alg->cra_priority = ATMEL_AES_PRIORITY;
+ 	alg->cra_module = THIS_MODULE;
+diff --git a/drivers/crypto/atmel-sha.c b/drivers/crypto/atmel-sha.c
+index 3622120add62..40f6ed5b20ee 100644
+--- a/drivers/crypto/atmel-sha.c
++++ b/drivers/crypto/atmel-sha.c
+@@ -1254,7 +1254,8 @@ static int atmel_sha_cra_init(struct crypto_tfm *tfm)
+ static void atmel_sha_alg_init(struct ahash_alg *alg)
  {
- 	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
- 	struct crypto_scomp **tfm_ctx = acomp_tfm_ctx(tfm);
-+	bool src_isvirt = acomp_request_src_isvirt(req);
-+	bool dst_isvirt = acomp_request_dst_isvirt(req);
- 	struct crypto_scomp *scomp = *tfm_ctx;
- 	struct crypto_acomp_stream *stream;
- 	struct scomp_scratch *scratch;
-@@ -200,13 +190,33 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	if (!req->dst || !dlen)
- 		return -EINVAL;
+ 	alg->halg.base.cra_priority = ATMEL_SHA_PRIORITY;
+-	alg->halg.base.cra_flags = CRYPTO_ALG_ASYNC;
++	alg->halg.base.cra_flags = CRYPTO_ALG_ASYNC |
++							   CRYPTO_ALG_KERN_DRIVER_ONLY;
+ 	alg->halg.base.cra_ctxsize = sizeof(struct atmel_sha_ctx);
+ 	alg->halg.base.cra_module = THIS_MODULE;
+ 	alg->halg.base.cra_init = atmel_sha_cra_init;
+@@ -2043,7 +2044,8 @@ static void atmel_sha_hmac_cra_exit(struct crypto_tfm *tfm)
+ static void atmel_sha_hmac_alg_init(struct ahash_alg *alg)
+ {
+ 	alg->halg.base.cra_priority = ATMEL_SHA_PRIORITY;
+-	alg->halg.base.cra_flags = CRYPTO_ALG_ASYNC;
++	alg->halg.base.cra_flags = CRYPTO_ALG_ASYNC |
++							   CRYPTO_ALG_KERN_DRIVER_ONLY;
+ 	alg->halg.base.cra_ctxsize = sizeof(struct atmel_sha_hmac_ctx);
+ 	alg->halg.base.cra_module = THIS_MODULE;
+ 	alg->halg.base.cra_init	= atmel_sha_hmac_cra_init;
+diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
+index 099b32a10dd7..3a6a890172cd 100644
+--- a/drivers/crypto/atmel-tdes.c
++++ b/drivers/crypto/atmel-tdes.c
+@@ -898,7 +898,8 @@ static int atmel_tdes_init_tfm(struct crypto_skcipher *tfm)
+ static void atmel_tdes_skcipher_alg_init(struct skcipher_alg *alg)
+ {
+ 	alg->base.cra_priority = ATMEL_TDES_PRIORITY;
+-	alg->base.cra_flags = CRYPTO_ALG_ASYNC;
++	alg->base.cra_flags = CRYPTO_ALG_ASYNC |
++						  CRYPTO_ALG_KERN_DRIVER_ONLY;
+ 	alg->base.cra_ctxsize = sizeof(struct atmel_tdes_ctx);
+ 	alg->base.cra_module = THIS_MODULE;
  
--	stream = crypto_acomp_lock_stream_bh(&crypto_scomp_alg(scomp)->streams);
--	scratch = scomp_lock_scratch();
-+	if (dst_isvirt)
-+		dst = req->dvirt;
-+	else {
-+		if (acomp_request_dst_isfolio(req)) {
-+			dpage = folio_page(req->dfolio, 0);
-+			doff = req->doff;
-+		} else if (dlen <= req->dst->length) {
-+			dpage = sg_page(req->dst);
-+			doff = req->dst->offset;
-+		} else
-+			return -ENOSYS;
- 
--	if (acomp_request_src_isvirt(req))
-+		dpage = nth_page(dpage, doff / PAGE_SIZE);
-+		doff = offset_in_page(doff);
-+
-+		n = dlen / PAGE_SIZE;
-+		n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
-+		if (PageHighMem(dpage + n) &&
-+		    size_add(doff, dlen) > PAGE_SIZE)
-+			return -ENOSYS;
-+		dst = kmap_local_page(dpage) + doff;
-+	}
-+
-+	if (src_isvirt)
- 		src = req->svirt;
- 	else {
--		src = scratch->src;
-+		src = NULL;
- 		do {
- 			if (acomp_request_src_isfolio(req)) {
- 				spage = folio_page(req->sfolio, 0);
-@@ -227,57 +237,39 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 				break;
- 			src = kmap_local_page(spage) + soff;
- 		} while (0);
--
--		if (src == scratch->src)
--			memcpy_from_sglist(scratch->src, req->src, 0, slen);
- 	}
- 
--	if (acomp_request_dst_isvirt(req))
--		dst = req->dvirt;
--	else {
--		unsigned int max = SCOMP_SCRATCH_SIZE;
-+	stream = crypto_acomp_lock_stream_bh(&crypto_scomp_alg(scomp)->streams);
- 
--		dst = scratch->dst;
--		do {
--			if (acomp_request_dst_isfolio(req)) {
--				dpage = folio_page(req->dfolio, 0);
--				doff = req->doff;
--			} else if (dlen <= req->dst->length) {
--				dpage = sg_page(req->dst);
--				doff = req->dst->offset;
--			} else
--				break;
-+	if (!src_isvirt && !src) {
-+		const u8 *src;
- 
--			dpage = nth_page(dpage, doff / PAGE_SIZE);
--			doff = offset_in_page(doff);
-+		scratch = scomp_lock_scratch();
-+		src = scratch->src;
-+		memcpy_from_sglist(scratch->src, req->src, 0, slen);
- 
--			n = dlen / PAGE_SIZE;
--			n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
--			if (PageHighMem(dpage + n) &&
--			    size_add(doff, dlen) > PAGE_SIZE)
--				break;
--			dst = kmap_local_page(dpage) + doff;
--			max = dlen;
--		} while (0);
--		dlen = min(dlen, max);
--	}
-+		if (dir)
-+			ret = crypto_scomp_compress(scomp, src, slen,
-+						    dst, &dlen, stream->ctx);
-+		else
-+			ret = crypto_scomp_decompress(scomp, src, slen,
-+						      dst, &dlen, stream->ctx);
- 
--	if (dir)
-+		scomp_unlock_scratch(scratch);
-+	} else if (dir)
- 		ret = crypto_scomp_compress(scomp, src, slen,
- 					    dst, &dlen, stream->ctx);
- 	else
- 		ret = crypto_scomp_decompress(scomp, src, slen,
- 					      dst, &dlen, stream->ctx);
- 
--	if (dst == scratch->dst)
--		memcpy_to_sglist(req->dst, 0, dst, dlen);
--
--	scomp_unlock_scratch(scratch);
- 	crypto_acomp_unlock_stream_bh(stream);
- 
- 	req->dlen = dlen;
- 
--	if (!acomp_request_dst_isvirt(req) && dst != scratch->dst) {
-+	if (!src_isvirt && src)
-+		kunmap_local(src);
-+	if (!dst_isvirt) {
- 		kunmap_local(dst);
- 		dlen += doff;
- 		for (;;) {
-@@ -288,8 +280,6 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 			dpage = nth_page(dpage, 1);
- 		}
- 	}
--	if (!acomp_request_src_isvirt(req) && src != scratch->src)
--		kunmap_local(src);
- 
- 	return ret;
- }
 -- 
-2.39.5
+2.48.1
 
 
