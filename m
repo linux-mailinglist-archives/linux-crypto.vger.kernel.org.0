@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-10961-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-10963-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4E7A6B978
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Mar 2025 12:05:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F94A6B984
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Mar 2025 12:06:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8FA47A4CB8
-	for <lists+linux-crypto@lfdr.de>; Fri, 21 Mar 2025 11:04:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F78B18968EE
+	for <lists+linux-crypto@lfdr.de>; Fri, 21 Mar 2025 11:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3600A221569;
-	Fri, 21 Mar 2025 11:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DEAD22157E;
+	Fri, 21 Mar 2025 11:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="a+LqpFZq"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="b8M6lK95"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33E3EEB3;
-	Fri, 21 Mar 2025 11:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DAA71EFFA7;
+	Fri, 21 Mar 2025 11:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742555138; cv=none; b=P+NO1P3vMHMsEAEiI2g1ZNcALZVIbkVrJ+o1NN3sX068WJCPZVdngm9hKjo8zeAM0ZVlQw/vszhYCmu/UpsY43DSdPR07FSFVr2YjyfvagHyomOwLJojwSszheS6X28JBGA3c2d+vgTqQ9UIm3ud0dJP+g1DHYbTwjHLl1yx3fQ=
+	t=1742555161; cv=none; b=bnjfgoiIcdoS9HJhowS4w7hVjR7ek4m/GgeARDsqw5JDteEY1AB/jsP8vRzDMieCa8Q1/21vKSZjd54A49tBEJszPPWIhsogxb6OdUe1raNjvSP0ndTXasWnabwR5rBpnm0O6lh8dQZtzHReLWgDNaP3qlwWCywwqezlqY++Ci4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742555138; c=relaxed/simple;
-	bh=B4IzFYj788tU7aJFc3RiDB0Q4xbYY17WUUF0Lub25L8=;
+	s=arc-20240116; t=1742555161; c=relaxed/simple;
+	bh=xRLqHhWbNuG5IhyGQKgEDIc+2UgujdPr4j682Mmsg5Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=palRdk9KP/wWd/w7gBRV2Fx2GMZMnBFNSZbxW8HogQUzjvjOjAewrVVvdqOSBr4PDA1onUVz0oooDWCkSY62XOeiyDrq/DG0et8pKSFh5BdMFdA4hBHIspaKFW6E8ClvTfZ2lYw0ETlcuDG55ZsLgT2bSttmYfCmn0V8xMpCa18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=a+LqpFZq; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=A+hh4+mdAYmwC73TFaKoGIAMSQ3xQoIYhivW+EUKjy2l4gzQAqKm8L5nK4RSbjHVN3dReS3ul7z5JTUthfVnJmjxiGOrO+wtYQlWpLWfYC//oTCxYa/6U316DRYBWal54a0U7H50dYt4cLyu9ukaJs+0d2z9SNRtJi1jf50H3eM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=b8M6lK95; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,26 +37,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=SVnbEUv45EGKp5GEwds5oMcm/dliN8kRkMXwmns82v8=; b=a+LqpFZqXExI6tCRc0I+T69kVy
-	1W/SAMZ5YnZWHEgr4FatGlbEoyVoNb2oWORAlQ0+iaze+G3jNwhK7Volde9pNgwrS0WiT+TMR5fiF
-	hqpQVYZoljjNaITg4Rm9Ym3kj8rQzDldcdKFl3dxeVO/4vjPzCEyuvEW2qV/I3XZc6zNlFKCTXb9B
-	QIQ/Y8mYZ9fIPWEZHGllFTXfdPWJ+Ts7ReyX0dQUviovqFpkeUt+L/m0vDd0O3rRkoXrvhxASfoEC
-	OMDYFfCRawkPd+SLDn+96c97e+BkHp5xSdlpXFyRI+w3z03J6eSZ4UmlkLmk0oV4nw84Ee2c2wG14
-	Zc2GxeiA==;
+	bh=1F9WGvTQK6WV1C3GwKW0y31cLCZnLWHSsvw77eUqVxw=; b=b8M6lK95rucNzuK9Z99Q2eIbmG
+	iDSxCz+Jx6zCqd8GZknOy8T0F1ZVoO7jnquSgIFeEkS3pWZK89aJKZuo4kdVyFu9xdnk88t+Ye3SQ
+	3ep5CRdPxQgdZNaU2FWw4NLrECpqZuQq5ZP5DX0ebnUytcl3MW6u44ruRIPSLKnKwIO7f8HYjY18v
+	K9SOSIXg4JR/2bH/SLjjeKytSk+ROz3H/+EvEl7Jgji+gd2ttIJWNW4zWoC180L9nHf6CIwfAaJXJ
+	RbxXPyGS6LvXZNkjikX1Z4IkLH0kUD41XUZBkARlydvn5gf/CKX2AKOL/WD5fQCuXT4BQJkdhnFAN
+	Au7/8SvA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tvaBs-0090DE-06;
-	Fri, 21 Mar 2025 19:05:29 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Mar 2025 19:05:28 +0800
-Date: Fri, 21 Mar 2025 19:05:28 +0800
+	id 1tvaC8-0090DL-0n;
+	Fri, 21 Mar 2025 19:05:45 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Mar 2025 19:05:44 +0800
+Date: Fri, 21 Mar 2025 19:05:44 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Akhil R <akhilrajeev@nvidia.com>, linux-crypto@vger.kernel.org,
-	linux-tegra@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [PATCH] crypto: tegra - Fix format specifier in
- tegra_sha_prep_cmd()
-Message-ID: <Z91H-DiWq15lozQj@gondor.apana.org.au>
-References: <20250313-crypto-tegra-fix-format-specifier-for-size_t-v1-1-0b957726c9e5@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Akhil R <akhilrajeev@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Arnd Bergmann <arnd@arndb.de>, Chen Ridong <chenridong@huawei.com>,
+	linux-crypto@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: tegra: fix size_t format string
+Message-ID: <Z91ICAzFbHIzLjhA@gondor.apana.org.au>
+References: <20250314160006.346042-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -65,38 +69,27 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250313-crypto-tegra-fix-format-specifier-for-size_t-v1-1-0b957726c9e5@kernel.org>
+In-Reply-To: <20250314160006.346042-1-arnd@kernel.org>
 
-On Thu, Mar 13, 2025 at 04:29:31PM +0100, Nathan Chancellor wrote:
-> When building for 32-bit targets, for which ssize_t is 'int' instead of
-> 'long', there is a warning due to an incorrect format specifier:
+On Fri, Mar 14, 2025 at 04:59:59PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
->   In file included from include/linux/printk.h:610,
->                    from include/linux/kernel.h:31,
->                    from include/linux/clk.h:13,
->                    from drivers/crypto/tegra/tegra-se-hash.c:7:
->   drivers/crypto/tegra/tegra-se-hash.c: In function 'tegra_sha_prep_cmd':
->   drivers/crypto/tegra/tegra-se-hash.c:343:26: error: format '%lu' expects argument of type 'long unsigned int', but argument 6 has type 'ssize_t' {aka 'int'} [-Werror=format=]
->     343 |         dev_dbg(se->dev, "msg len %llu msg left %llu sz %lu cfg %#x",
->         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   ...
->   drivers/crypto/tegra/tegra-se-hash.c:343:59: note: format string is defined here
->     343 |         dev_dbg(se->dev, "msg len %llu msg left %llu sz %lu cfg %#x",
->         |                                                         ~~^
->         |                                                           |
->         |                                                           long unsigned int
->         |                                                         %u
->   cc1: all warnings being treated as errors
+> Printing size_t as %lu causes a warning when it is defined as 'unsigned int':
 > 
-> Use '%zd', the proper specifier for ssize_t, to resolve the warning.
+> drivers/crypto/tegra/tegra-se-hash.c:344:22: error: format specifies type 'unsigned long' but the argument has type 'ssize_t' (aka 'int') [-Werror,-Wformat]
+>   343 |         dev_dbg(se->dev, "msg len %llu msg left %llu sz %lu cfg %#x",
+>       |                                                         ~~~
+>       |                                                         %zd
+> 
+> Use %zu as the proper format string.
 > 
 > Fixes: ff4b7df0b511 ("crypto: tegra - Fix HASH intermediate result handling")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
 >  drivers/crypto/tegra/tegra-se-hash.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Patch applied.  Thanks.
+A similar patch has already been applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
