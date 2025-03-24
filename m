@@ -1,158 +1,208 @@
-Return-Path: <linux-crypto+bounces-11041-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11043-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3C00A6E58E
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Mar 2025 22:21:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9148CA6E566
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Mar 2025 22:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51FD03BB7BA
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Mar 2025 21:16:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2596E7A7A25
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Mar 2025 21:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4417B1E8351;
-	Mon, 24 Mar 2025 21:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202C31EB5E2;
+	Mon, 24 Mar 2025 21:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bixBpWlw"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QiaVOXIK"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2057.outbound.protection.outlook.com [40.107.93.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FC81DF72C;
-	Mon, 24 Mar 2025 21:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742850948; cv=none; b=ZrrZhLXTAnPLTNeyQggWenl8W2Po/qGmg+/C9tL3pLfJKhkO7s6rNqfSJTqUf/SohKcSEqSBgbu4Nd9MwZh3iCExEyn590BWkuyXU+0wke6BfC+V4Xgyy7XXNuOd8E0g1NZijIB+JynA4m/0L2eInVXBja24cKdxUm4RwcRRX5A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742850948; c=relaxed/simple;
-	bh=sg90PfFqCUCmU+2v+BsRP6GS/5oxOs7ge6RVmWp0PvA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VBuur6TPQHNDVvAUTflF7yE3MYPWvj22GKZFiMuZvToyqzSW5wb9zzoYfJB07++kEe1gkdOqbQMcruArXU3nqgB/IL0etbCOFkPKfudRdtVdEIZc9vgXLWtmxrxANa4R6TiwhauvzYznE9CRgLKAqZiF2VRcsgNkZ670wG2SiiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bixBpWlw; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6e8f4c50a8fso41012586d6.1;
-        Mon, 24 Mar 2025 14:15:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742850945; x=1743455745; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lSKBIP8Mkd5GDvgLOVXFICnmH/X830uwa0zqRwzeZJE=;
-        b=bixBpWlwkkM4MCwC5oPsIVmGd8D9Nm9lAgIwlHFI7Vwmk2zgqPU17JEUGRE2oUcZe0
-         9HJ5DC15HYE6O41OJnNp7cjzeBOvWE4D/6LL2J6jE9/5Q1BB7mSCXM3jN+yK0dRQgpm9
-         QVT6n1w+NVTnytlPo6AuUL0V9we+FTiJ0dVoI2h4iP68JmZFUU1NPfdkv8Id1XUCQZyw
-         kpgHHPhnbd/a3kIsERYSjj+dkyNBZ5RKSVWYRXYXN55Pnl4Z0xkSyd2FDce7yXFxUf0t
-         vB8V077ZNMx+Xa7cn7ISV9IzxUODu3PJjrvTLwbl9UupaAavIIHdW3pBblJaXmMX9+Jr
-         EMyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742850945; x=1743455745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lSKBIP8Mkd5GDvgLOVXFICnmH/X830uwa0zqRwzeZJE=;
-        b=GDDtwTDoUNIPA2Kvmukf0Egx2kZ/YTZt9/eZfweYLY1suwI8LjSeiAbJI99HpomoHQ
-         7VK+wBI0yc7/fU0CcDCytCgX1zkLEpDIjNc+rfxOCRrI2FWEmi5AhiOMZ595tlae2nPi
-         6pajqvkVWDuycKhd0CXrQDsd8g7EeR3cg0RDTbavk+cCW6CI+SekAKmGysU7oy6czwVx
-         OaquSNYGx1UEOymNOk8ldBreHkX4/X06WDrucd52R+ayPJnm0vqiOzw1X8f2ju+Ic8Ra
-         3d2I7Gu1zfqkY6/wTydNF76S0oflgm7cy4l4xb/oFO7GdsMS+gauEWFkVQX3HEVV6f0o
-         T6QA==
-X-Forwarded-Encrypted: i=1; AJvYcCUurusHZWjyn45c7tjZLkNEEMdGOqc7Q6cjsRfjWcByJFhdwCX0c+8WBPuMhtzmfuyBcNhwaNnx@vger.kernel.org, AJvYcCXU7BiWSBHqY/OGAlKbLL4skmA3/OxCPQLStIHBXsvSkd5HVBnVmaGngJIznwGyMnEw23GtPHQR8ekeobE=@vger.kernel.org, AJvYcCXfIljA8NfpXnN0NO1VWo30Gx8FM9bZ4Ca4FPlpzD//K22rbVmkYMpWUq8Mcl6H2tkEyy7DDhRiEDa/fM+u@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsSmdS6hwaUbt4yYsN62gZFwWal2rhU+4q+gO8sraNw6FDgK+O
-	V4OxsV58o+zL2SFktVepR4BZt4xI3HLrJi3fEUakbQoTNUjRUwTxzR3MvvdYZZMoFu65+hd+0le
-	NaM3ZIuSznlWQgI4ZhC+uFOBN1hw=
-X-Gm-Gg: ASbGnctQdikd1r5LcpMlQoLNvnXVYWDWoRWVYeBcmj5FNv8p24rcKbizIl0Wq3hjACM
-	Cp19pYncKg4P6HqBT7vquT5CWkgL481SZBt0iES3nUKQGv/zySJIqfPaxl82JZAdDBqSv91u2JD
-	D/PVgF3BKbacw2gI52mExSqHA5
-X-Google-Smtp-Source: AGHT+IFiDPL/9ISevfih3CU+IAz3/VPVmZN+89C5TtaK3nDklX0FR4qkhj35fyVMgxs6lvCDmNrjxWYjkj+AwQVv5+8=
-X-Received: by 2002:a05:6214:ca9:b0:6e8:9a2a:145b with SMTP id
- 6a1803df08f44-6eb3f2d6f65mr232017376d6.23.1742850944891; Mon, 24 Mar 2025
- 14:15:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6097019007F;
+	Mon, 24 Mar 2025 21:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742850964; cv=fail; b=Q63JcSgXzSJeY2A7boxalsqXMoMR08t3UPgwzfNbByPeGmUiMppgsU3rAsH0KM/+cpCjpbPmrmlTvi137Snh6eV7LlfhCNFa8KB/FO2ABFEqfQkK1flU+sgVj7aNx9kuG9n/mpXHhBzngUoTY8gQZK9aDFB9LvMJ902XRdFQsmM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742850964; c=relaxed/simple;
+	bh=LTlAm50khwx7MyGHDUe/J9IemorC42ny7oeVhuaTFEE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jPbblEorc9iWZ9YifniTVSmTlVXs3mLF+/+nAv7bTamNMxcUMQQFuGS6qnx0FTIVXSckm2AE5PFlDOyFVQE1tkdxb1j0ygNuqUZq+qm/UdOh6x9n4Rgys3Zn6inyKXae4LTReoF+JKROMyjliPPvi2PlwMsm+ddqtvuR1GSn2bw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QiaVOXIK; arc=fail smtp.client-ip=40.107.93.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=zNCoW3Kf4crN6r0FTxWPwsim96ZVewc1HTh1Ej6SjtUHHMyczVF9frHx2j/2k/82STcdPgxOeCqwF8PsfHYO4X9c97rYfmQUzOmE0/Ip+Z4nOAmBcXKg1hP978C4BO+ALAiMO01xUWq5KhpnfqICD2xBrLdXokrOCLSzdecGKcee0XSxjfsAeZLbZX5pMJGqKpvlz64v67OceH/tlQICNsA9208HyMXTpRHroYAZva1c+shfqZoq/PmNqw+SpS6/LAvgJ7cNzByQLpZYmBl6imt3Y8u80ctkn102l6DxNGS+3+QcWxJdR4QeoAz5e8ll0mbzAZNUbAFjf0k0DSF2sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2cNuKj6mGvdKVap2fHNknx2ahhzqXtraUwGyw/xoIZ4=;
+ b=Bpp9tEi5ol8bbhZrNpFLRQCjmZO93tRtuZKy/LcxsMw+tT0nWK8ETIUQOB8+zGMNJqAzsuH4jKU9tejx/S9mEmjo3iqnKGCZwSz/RTQgnj3R2GB5YgV+xfsrKAz0ltSQx2hfHhAElb91sUVQMGeDwinnke3rb5AkbSOUZgWN+MSzlWCq9Bd8Txwyusx9S4IbaFwve/KctcCUe0VmEkieuBZSSDlh99wjeFVEekHyHNSRUrpN1UliuMw7nl/78bRoIyb3eouXa7DMAAjB6ZxcCFYkhqDEk38wc1OCD/Vy2FYMH2qdz3W5+0RccJEkAwUwp/ZK4tWNHMcS13M2li4ipQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2cNuKj6mGvdKVap2fHNknx2ahhzqXtraUwGyw/xoIZ4=;
+ b=QiaVOXIKEdpcJtJTVCjIp/kb/ltUKFU2i36T38wIkJOK9BGdMGmNu0zDBhc1WakxnCby0qjh3CCR7308PCUqWWVFmk5enmZeLQKD3MfslerOCQwe2WPO4YmCgsSTKJpFuJ6q/CHNzYYB1Rprwrot7IVKJGGIku7b6QGHuAAs5IU=
+Received: from SJ0PR05CA0133.namprd05.prod.outlook.com (2603:10b6:a03:33d::18)
+ by SN7PR12MB8436.namprd12.prod.outlook.com (2603:10b6:806:2e3::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.42; Mon, 24 Mar
+ 2025 21:15:58 +0000
+Received: from SJ1PEPF00001CE0.namprd05.prod.outlook.com
+ (2603:10b6:a03:33d:cafe::73) by SJ0PR05CA0133.outlook.office365.com
+ (2603:10b6:a03:33d::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8534.42 via Frontend Transport; Mon,
+ 24 Mar 2025 21:15:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE0.mail.protection.outlook.com (10.167.242.8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.8534.20 via Frontend Transport; Mon, 24 Mar 2025 21:15:58 +0000
+Received: from ethanolx7e2ehost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 24 Mar
+ 2025 16:15:56 -0500
+From: Ashish Kalra <Ashish.Kalra@amd.com>
+To: <seanjc@google.com>, <pbonzini@redhat.com>, <tglx@linutronix.de>,
+	<mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
+	<x86@kernel.org>, <hpa@zytor.com>, <thomas.lendacky@amd.com>,
+	<john.allen@amd.com>, <herbert@gondor.apana.org.au>
+CC: <michael.roth@amd.com>, <dionnaglaze@google.com>, <nikunj@amd.com>,
+	<ardb@kernel.org>, <kevinloughlin@google.com>, <Neeraj.Upadhyay@amd.com>,
+	<aik@amd.com>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-crypto@vger.kernel.org>, <linux-coco@lists.linux.dev>
+Subject: [PATCH v7 8/8] crypto: ccp: Move SEV/SNP Platform initialization to KVM
+Date: Mon, 24 Mar 2025 21:15:47 +0000
+Message-ID: <1602f82feadaa127c0e4d626c55c93c29b3a022d.1742850400.git.ashish.kalra@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1742850400.git.ashish.kalra@amd.com>
+References: <cover.1742850400.git.ashish.kalra@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250226185625.2672936-1-yosry.ahmed@linux.dev>
-In-Reply-To: <20250226185625.2672936-1-yosry.ahmed@linux.dev>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 24 Mar 2025 17:15:33 -0400
-X-Gm-Features: AQ5f1Jr-uvoD-QGCe-ufQ2MPjnSeMYo7k_udyRgT5ya7AQurboow-ceIHS0yntI
-Message-ID: <CAKEwX=NmSaLdUHTdaCYamtdNhLVsDgzdkGbByFXmEcWe1w_esQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: zswap: fix crypto_free_acomp() deadlock in zswap_cpu_comp_dead()
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, "David S. Miller" <davem@davemloft.net>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, 
-	syzbot+1a517ccfcbc6a7ab0f82@syzkaller.appspotmail.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE0:EE_|SN7PR12MB8436:EE_
+X-MS-Office365-Filtering-Correlation-Id: c25f39d4-16c2-4490-bf65-08dd6b1912ae
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|1800799024|7416014|376014|82310400026|7053199007|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?jwHV0ALn7etJiukZ+byXcH1G7tPBwN/Ez0q82Mge2+ydexMqt7Ig3DkEu3Ul?=
+ =?us-ascii?Q?4DQVEakBCUVwmUNT1Bm7BD6a0mYDz95hpbe0DYVznz2aB5ZyPclWO4FQmUWb?=
+ =?us-ascii?Q?Bi3zAi4e7M053QASMekfv5hrLmoHxHGbOpqL0pwX+ckIFGsKXkLhdsbMQQQA?=
+ =?us-ascii?Q?x6ecMMx370QJjkhf0W0zl+kKNINdMyTqruyM9oPD7bF1XRQoGYq1oNT/54Mk?=
+ =?us-ascii?Q?n8Mq+WrocfwW2xb7a5GILHaTF9UdwFMuWeQDxiTVBSO/7u63CnxSax9SRblB?=
+ =?us-ascii?Q?XtVe1UdV6kaigtxYRzkvAfLKWRjp7VO0KK4LS6fVzWjcYzALCVX91fQn7IQW?=
+ =?us-ascii?Q?XIBIsdbsdVQw8gOHZ/N3+Jl7s+cUG2LqTNiXBapeNlXQGo/K63v6wA3XQdC2?=
+ =?us-ascii?Q?/06G4517owqXixHzyJQGU+nWqlrmqSUrhi8QPA36XeyuDIGGxq08cdQjVzsQ?=
+ =?us-ascii?Q?9ZMhsaDkqF0+bTAWetwwo2z8koe4D7hjOiDAuZJuOZ5cZsZPn4HIWmppoewy?=
+ =?us-ascii?Q?1aZdC2Fgr3U6lZqn9F+NOVcHzxohL1JQVZ5jPP38h0NvlBud4X4QAuHMh1KN?=
+ =?us-ascii?Q?ljAEr6W6+Y9TJsoZoXUoavOT1r2xcYQO+4rcXESBY4p3FegdK+2oUHsvBGOn?=
+ =?us-ascii?Q?YIdFDD8+/clvdSRsUfJyTVsxe3gTT6vAvRMut/ltUkAQrj58cUGy7kf7QJTh?=
+ =?us-ascii?Q?vRS+k61Sa2SIfZ+DQx24YHg60EBDb5+CePtaKQp4Nl5bhmRUJaz+dpUF5ld6?=
+ =?us-ascii?Q?7tZ8QTjXpHcSApc6h5ZqDjAI8KNqr8WpZkh2d8mwo3A4iEZ9BHMqJyQbPlD6?=
+ =?us-ascii?Q?n9YJOw7mrp0pL2Ym4ghoiK0+HlzYYw0MjiovdCOMEsJ8Y3p8JjYbwbKeL3nX?=
+ =?us-ascii?Q?xGNWk6mMRRDBGvCI9I1z80Zbxzk+4+sAPpG0lXZT0OwziOu2I/W/IckAKvPs?=
+ =?us-ascii?Q?/KTkdOaEht0bZ61XeL9K4Jm8QJjhOUhGTSh6AJENo0MNO6v0wDy2zHatQ5EV?=
+ =?us-ascii?Q?P7OgcWYBSbyVLWf6zN9SYJy+fGx8Y91gakukRrXizR60bHeYvdM4idIx7VBa?=
+ =?us-ascii?Q?yaamDwX0ompESMAeAJiwaQvV5My9tvG8tw2NfWuAsY3REM90+NTx4POfb4+V?=
+ =?us-ascii?Q?1poFAeBBop9E4ezbtCJZA6w7/Ee5AqPrQ2jXmJg1rrFTC5yRV8lxLlEsJbVb?=
+ =?us-ascii?Q?2A9lQQaJi0+u/foE8iYbEmWeQvc5dAWEl3wHX9DTLnbJWGW5coIG/+Td288A?=
+ =?us-ascii?Q?2W/PCKGVvW1xR0GAXEUORZJzR4R6TOImCBHSKfI7R7RFNp1mD/OwPDRFpzI2?=
+ =?us-ascii?Q?ShTBQ5xsGDBZWWGlwo5h1/fb1PicYUNMuWKfNXR46wOF2+nCSCVxwkWQjOT7?=
+ =?us-ascii?Q?dkiuPKezrSHOeYbXVUTFmUCgIxJDiOEb7IA+uuK5dtGhj3mcbHvbsjUVkvaI?=
+ =?us-ascii?Q?fredew0ut5Wzo/BJ+yNqtjNPhU51Jutrq+Iv76hSVcaAD0Ssd0MGG/Jhee8R?=
+ =?us-ascii?Q?+4+zkl1lQXNmbAZJYD0PesekVc7kXKjj9OpH?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(7416014)(376014)(82310400026)(7053199007)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2025 21:15:58.6868
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c25f39d4-16c2-4490-bf65-08dd6b1912ae
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE0.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8436
 
-On Wed, Feb 26, 2025 at 1:56=E2=80=AFPM Yosry Ahmed <yosry.ahmed@linux.dev>=
- wrote:
->
-> Currently, zswap_cpu_comp_dead() calls crypto_free_acomp() while holding
-> the per-CPU acomp_ctx mutex. crypto_free_acomp() then holds scomp_lock
-> (through crypto_exit_scomp_ops_async()).
->
-> On the other hand, crypto_alloc_acomp_node() holds the scomp_lock
-> (through crypto_scomp_init_tfm()), and then allocates memory.
-> If the allocation results in reclaim, we may attempt to hold the per-CPU
-> acomp_ctx mutex.
->
-> The above dependencies can cause an ABBA deadlock. For example in the
-> following scenario:
->
-> (1) Task A running on CPU #1:
->     crypto_alloc_acomp_node()
->       Holds scomp_lock
->       Enters reclaim
->       Reads per_cpu_ptr(pool->acomp_ctx, 1)
->
-> (2) Task A is descheduled
->
-> (3) CPU #1 goes offline
->     zswap_cpu_comp_dead(CPU #1)
->       Holds per_cpu_ptr(pool->acomp_ctx, 1))
->       Calls crypto_free_acomp()
->       Waits for scomp_lock
->
-> (4) Task A running on CPU #2:
->       Waits for per_cpu_ptr(pool->acomp_ctx, 1) // Read on CPU #1
->       DEADLOCK
->
-> Since there is no requirement to call crypto_free_acomp() with the
-> per-CPU acomp_ctx mutex held in zswap_cpu_comp_dead(), move it after the
-> mutex is unlocked. Also move the acomp_request_free() and kfree() calls
-> for consistency and to avoid any potential sublte locking dependencies
-> in the future.
->
-> With this, only setting acomp_ctx fields to NULL occurs with the mutex
-> held. This is similar to how zswap_cpu_comp_prepare() only initializes
-> acomp_ctx fields with the mutex held, after performing all allocations
-> before holding the mutex.
->
-> Opportunistically, move the NULL check on acomp_ctx so that it takes
-> place before the mutex dereference.
->
-> Fixes: 12dcb0ef5406 ("mm: zswap: properly synchronize freeing resources d=
-uring CPU hotunplug")
-> Reported-by: syzbot+1a517ccfcbc6a7ab0f82@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/67bcea51.050a0220.bbfd1.0096.GAE@goog=
-le.com/
-> Cc: <stable@vger.kernel.org>
-> Co-developed-by: Herbert Xu <herbert@gondor.apana.org.au>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> Signed-off-by: Yosry Ahmed <yosry.ahmed@linux.dev>
-> Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-As per:
+SNP initialization is forced during PSP driver probe purely because SNP
+can't be initialized if VMs are running.  But the only in-tree user of
+SEV/SNP functionality is KVM, and KVM depends on PSP driver for the same.
+Forcing SEV/SNP initialization because a hypervisor could be running
+legacy non-confidential VMs make no sense.
 
-https://lore.kernel.org/linux-mm/Z-GjbPTEEoo76uQu@google.com/T/#m6ccc248da7=
-5acb73b75c9bf05c90c40d626b12c9
+This patch removes SEV/SNP initialization from the PSP driver probe
+time and moves the requirement to initialize SEV/SNP functionality
+to KVM if it wants to use SEV/SNP.
 
-Tested-by: Nhat Pham <nphamcs@gmail.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Alexey Kardashevskiy <aik@amd.com>
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ drivers/crypto/ccp/sev-dev.c | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 671347702ae7..980b3d296dc6 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -1347,10 +1347,6 @@ static int _sev_platform_init_locked(struct sev_platform_init_args *args)
+ 	if (sev->state == SEV_STATE_INIT)
+ 		return 0;
+ 
+-	/*
+-	 * Legacy guests cannot be running while SNP_INIT(_EX) is executing,
+-	 * so perform SEV-SNP initialization at probe time.
+-	 */
+ 	rc = __sev_snp_init_locked(&args->error);
+ 	if (rc && rc != -ENODEV)
+ 		return rc;
+@@ -2524,9 +2520,7 @@ EXPORT_SYMBOL_GPL(sev_issue_cmd_external_user);
+ void sev_pci_init(void)
+ {
+ 	struct sev_device *sev = psp_master->sev_data;
+-	struct sev_platform_init_args args = {0};
+ 	u8 api_major, api_minor, build;
+-	int rc;
+ 
+ 	if (!sev)
+ 		return;
+@@ -2549,13 +2543,6 @@ void sev_pci_init(void)
+ 			 api_major, api_minor, build,
+ 			 sev->api_major, sev->api_minor, sev->build);
+ 
+-	/* Initialize the platform */
+-	args.probe = true;
+-	rc = sev_platform_init(&args);
+-	if (rc)
+-		dev_err(sev->dev, "SEV: failed to INIT error %#x, rc %d\n",
+-			args.error, rc);
+-
+ 	return;
+ 
+ err:
+-- 
+2.34.1
+
 
