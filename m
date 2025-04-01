@@ -1,212 +1,173 @@
-Return-Path: <linux-crypto+bounces-11262-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11265-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4AEAA77E37
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 16:51:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FE2FA77F7F
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 17:51:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6D643AE521
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 14:50:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BB3A1684A2
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 15:51:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07D120550C;
-	Tue,  1 Apr 2025 14:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1677020C48C;
+	Tue,  1 Apr 2025 15:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="COEXob/o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pg9hd6bO"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F341E47B3;
-	Tue,  1 Apr 2025 14:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A745020C01C;
+	Tue,  1 Apr 2025 15:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743519058; cv=none; b=K9tdvWMXrtqI21ZNkA2FkoItDCNysM1B78yg0T3EVPbHixKxVtgg4nNC9H59kWRpZs/gZ/ZUCKrVcHxSX8D6//i1F0/2J30VHQwF33v1k7FZoZtMXxl6Pqmm5IXHVxFA9TKy3fwANrkydMiWxAlbfwrf2VSC2qKYn1dAZyW6Osk=
+	t=1743522607; cv=none; b=SJCENRdJmh35YbAPUHqn2FjecI2WbLEYj8DaZMZGv+PdRclomPnuPPYbWlPSkiOVqrqCfCWJjkyqtVCJspZyb/GxjdwCfow4XpL+0Xg7fkinRJ8eSDTX/XJLKaLcraC6TJb+J+moD0AFdjSDoV1kovnIyY+Cl6CH5rGlSgMh3DU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743519058; c=relaxed/simple;
-	bh=Mv/7zMBiwb5gAMPkPyBbHEzvG1xCA85ECVJWhXZm6uU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BgpxqpxdpvO38guI2ANKVy7EovY7GYx9vob5NuPLsLX900ca32dRDsdC77zVx0LiiI0lU5j5idu0PQuCeQONv4+qV68DRqulSEVGxzKvbUpc1hzQJJwXpYhEHSViqcwLBti1xxniHj2GAomdLuOUoBFFAOdw9iATMQchbWgaArE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=COEXob/o; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5318bXQw011292;
-	Tue, 1 Apr 2025 14:50:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=1rYnEf9GN9FWsJos4
-	3c2Xr4krI+XIdkOBGcoTSPTg34=; b=COEXob/olbCZ0RUrv2g2XmRqMtsfcP+Hz
-	5NGgTtVxobOO6wp3VawvVybgvKcUJoHR2gyy7fFjFB8bgpUgAWj2AKMVNdKUE+R7
-	UqkuKMSK7+dXBKKfI7CwjXJQwu8TuqpBuvPs6NWdKWWVM4oQLsGOCC4k2pD4js/8
-	9lz7T5SECNBE9nMNyWA+vpukDIa15iXcof4MEpj1YUmVG8vtKXuiFeg0tHP+3iEg
-	Wv6voV5ybWdJLc7xEnGAbsqFPQcNPdOJWMx0QJERE5JFvi+9gRULlMKMNg519ZKm
-	CZzzR9AwpJ9XW2rWxdya7bIVoRqaz61Mu9Y9VsxIKZVP1Z+sGGxkQ==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45r290maxb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 01 Apr 2025 14:50:53 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 531BbanW019413;
-	Tue, 1 Apr 2025 14:50:52 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 45pu6t37fd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 01 Apr 2025 14:50:52 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 531EonFe32965076
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 1 Apr 2025 14:50:49 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 540EF20040;
-	Tue,  1 Apr 2025 14:50:49 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1A50A2004D;
-	Tue,  1 Apr 2025 14:50:49 +0000 (GMT)
-Received: from funtu2.boeblingen.de.ibm.com (unknown [9.152.224.229])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  1 Apr 2025 14:50:49 +0000 (GMT)
-From: Harald Freudenberger <freude@linux.ibm.com>
-To: herbert@gondor.apana.org.au, dengler@linux.ibm.com, ifranzki@linux.ibm.com,
-        fcallies@linux.ibm.com
-Cc: linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [PATCH v3 3/3] Documentation: crypto_engine: Update and extend crypto engine doc
-Date: Tue,  1 Apr 2025 16:50:48 +0200
-Message-ID: <20250401145048.52564-4-freude@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250401145048.52564-1-freude@linux.ibm.com>
-References: <20250401145048.52564-1-freude@linux.ibm.com>
+	s=arc-20240116; t=1743522607; c=relaxed/simple;
+	bh=1hkJIObXU6D6g/m6PDf5eOhm8XieoCe72AgLZFtJ1tY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQkjyyS2S9n3iHrYGp2lXYTjJfEwowWt+DXuiLuJQOKDcVr3A6oemgHOIZimLciIotYhoIIA68ZiCM4cHv1e4eJlQytsGmUCETsz/MPHPxlgTGOuZ7DoVLXzKLoZ3cn2wTVVlZNa4OMhkr09yn7bWTcNWqErJDWlcAq7FdQ/ajA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pg9hd6bO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CFFEC4CEE4;
+	Tue,  1 Apr 2025 15:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743522607;
+	bh=1hkJIObXU6D6g/m6PDf5eOhm8XieoCe72AgLZFtJ1tY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Pg9hd6bOaGA/LYOFZN8mY4c003tZBqGisSy1eGSSPOnbpvECWNvOgduhC3WV48xYp
+	 mzn/SLSFf8UozljIiONEJAh1yqrMkNGkPlDuXflY8TprZ3FeTfabYNro4cwehZWBhx
+	 aaaOauK6U+4vud+mQfyTDqL8OIyJEW5/FuhabMNYjH98UkDm01FORoRs7vcZzJZVrH
+	 Pi/ff8O/1EUuU1AOzgdLPQfUj/EfCSei+ij4B8QYBY58MsTjdmaSkG4UiH3GHWb/T0
+	 ORw0oMtC/KKdafl0LcV6605G+s7nkKpYuhXOo6JyRvCEki5c5wdOYjX36z5Wp3UHkh
+	 B59gg6SPSZewg==
+Date: Tue, 1 Apr 2025 18:50:02 +0300
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+	llvm@lists.linux.dev, nkapron@google.com, teknoraver@meta.com,
+	roberto.sassu@huawei.com, xiyou.wangcong@gmail.com
+Subject: Re: [RFC PATCH security-next 0/4] Introducing Hornet LSM
+Message-ID: <Z-wLKhlfJ5EQqvJC@kernel.org>
+References: <20250321164537.16719-1-bboscaccy@linux.microsoft.com>
+ <Z97xvUul1ObkmulE@kernel.org>
+ <871puc7wb8.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: otUhCinEq66YU-J-dmO_DyWWzSw-KRsP
-X-Proofpoint-GUID: otUhCinEq66YU-J-dmO_DyWWzSw-KRsP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-01_05,2025-04-01_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 adultscore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2502280000 definitions=main-2504010090
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871puc7wb8.fsf@microsoft.com>
 
-Remove outdated wording about crypto engine context.
-Rephrase and extend the usage of the crypto engine.
+On Mon, Mar 31, 2025 at 01:57:15PM -0700, Blaise Boscaccy wrote:
+> There are two flavors of skeletons, normal skeletons, and light
+> skeletons. Normal skeletons utilize relocation logic that lives in
+> libbpf, and the relocations/instruction rewriting happen in userspace.
+> The second flavor, light skeletons, uses a small eBPF program that
+> contains the relocation lookup logic. As it's running in in the kernel,
+> it unpacks the target program, peforms the instruction rewriting, and
+> loads the target program. Light skeletons are currently utilized for
+> some drivers, and BPF_PRELOAD functionionality since they can operate
+> without userspace.
+> 
+> Light skeletons were recommended on various mailing list discussions as
+> the preffered path to performing signature verification. There are some
+> PoCs floating around that used light-skeletons in concert with
+> fs-verity/IMA and eBPF LSMs. We took a slightly different approach to
+> Hornet, by utilizing the existing PCKS#7 signing scheme that is used for
+> kernel modules.
 
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
----
- Documentation/crypto/crypto_engine.rst | 78 ++++++++++++--------------
- 1 file changed, 36 insertions(+), 42 deletions(-)
+Right, because in the normal skeletons relocation logic remains
+unsigned?
 
-diff --git a/Documentation/crypto/crypto_engine.rst b/Documentation/crypto/crypto_engine.rst
-index d562ea17d994..3665d8062c07 100644
---- a/Documentation/crypto/crypto_engine.rst
-+++ b/Documentation/crypto/crypto_engine.rst
-@@ -6,25 +6,35 @@ Crypto Engine
- Overview
- --------
- The crypto engine (CE) API is a crypto queue manager.
-+It is the in-kernel crypto way to enqueue asynchronous crypto requests
-+instead of instantiating your own workqueue.
- 
- Requirement
- -----------
--You must put, at the start of your transform context your_tfm_ctx, the structure
--crypto_engine:
--
--::
--
--	struct your_tfm_ctx {
--		struct crypto_engine engine;
--		...
--	};
--
--The crypto engine only manages asynchronous requests in the form of
--crypto_async_request. It cannot know the underlying request type and thus only
--has access to the transform structure. It is not possible to access the context
--using container_of. In addition, the engine knows nothing about your
--structure "``struct your_tfm_ctx``". The engine assumes (requires) the placement
--of the known member ``struct crypto_engine`` at the beginning.
-+For registration with the use of an crypto engine instance the
-+transformation needs to implement the respective ``struct *_engine_alg``.
-+For example a skcipher transformation implements
-+``struct skcipher_engine_alg``. This struct consists of the usual
-+transformation struct (for example ``struct skcipher_alg``) plus a
-+``struct crypto_engine_op`` which provides the callback used by the
-+crypto engine to run the asynchronous requests.
-+
-+The transformation implements the callback function
-+``int (*do_one_request)(struct crypto_engine *engine, void *areq)``.
-+This callback is invoked by the engine to process asynchronous
-+requests which have been previously pushed to the engine with one of
-+the ``crypto_transfer_*_request_to_engine()``.
-+The ``do_one_request()`` implementation needs to handle the request
-+and on successful processing completes the request with a call to
-+``crypto_finalize_*_request()`` and a return value of 0. A return
-+value other than 0 indicates an error condition and the request is
-+unsuccessful marked as completed with this error value by the engine.
-+A special treatment is done for the return value ``-ENOSPC``. At
-+allocation of the engine instance via
-+``crypto_engine_alloc_init_and_set(..., bool retry_support, ...)``
-+with the ``retry_support`` parameter set to true, the engine instance
-+handles the ``-ENOSPC`` by re-queuing the request into the backlog and
-+at a later time the callback is invoked again to process this request.
- 
- Order of operations
- -------------------
-@@ -33,35 +43,19 @@ Start it via ``crypto_engine_start()``. When finished with your work, shut down
- engine using ``crypto_engine_stop()`` and destroy the engine with
- ``crypto_engine_exit()``.
- 
--Before transferring any request, you have to fill the context enginectx by
--providing functions for the following:
--
--* ``prepare_crypt_hardware``: Called once before any prepare functions are
--  called.
--
--* ``unprepare_crypt_hardware``: Called once after all unprepare functions have
--  been called.
--
--* ``prepare_cipher_request``/``prepare_hash_request``: Called before each
--  corresponding request is performed. If some processing or other preparatory
--  work is required, do it here.
--
--* ``unprepare_cipher_request``/``unprepare_hash_request``: Called after each
--  request is handled. Clean up / undo what was done in the prepare function.
--
--* ``cipher_one_request``/``hash_one_request``: Handle the current request by
--  performing the operation.
--
--Note that these functions access the crypto_async_request structure
--associated with the received request. You are able to retrieve the original
--request by using:
-+Before transferring any request, you may provide additional callback
-+functions within the ``struct engine`` instance you got from the alloc
-+call:
- 
--::
-+* ``prepare_crypt_hardware``: Called once before any
-+  ``do_one_request()`` invocations are done.
- 
--	container_of(areq, struct yourrequesttype_request, base);
-+* ``unprepare_crypt_hardware``: Called once after the
-+  ``do_one_request()`` are done.
- 
--When your driver receives a crypto_request, you must to transfer it to
--the crypto engine via one of:
-+When your driver receives a crypto_request, and you want this request
-+to be processed asynchronously, you must transfer it to the crypto
-+engine via one of:
- 
- * crypto_transfer_aead_request_to_engine()
- 
--- 
-2.43.0
+I have to admit I don't fully cope how the relocation process translates
+into eBPF program but I do get how it is better for signatures if it
+does :-)
 
+> 
+> >> verification. Signature data can be easily generated for the binary
+> >
+> > s/easily//
+> >
+> > Useless word having no measure.
+> >
+> 
+> Ack, thanks.
+> 
+> 
+> >> data that is generated via bpftool gen -L. This signature can be
+> >
+> > I have no idea what that command does.
+> >
+> > "Signature data can be generated for the binary data as follows:
+> >
+> > bpftool gen -L
+> >
+> > <explanation>"
+> >
+> > Here you'd need to answer to couple of unknowns:
+> >
+> > 1. What is in exact terms "signature data"?
+> 
+> That is a PKCS#7 signature of a data buffer containing the raw
+> instructions of an eBPF program, followed by the initial values of any
+> maps used by the program. 
+
+Got it, thanks. This motivates to refine my TPM2 asymmetric keys
+series so that TPM2 could anchor these :-)
+
+https://lore.kernel.org/linux-integrity/20240528210823.28798-1-jarkko@kernel.org/
+
+
+> 
+> > 2. What does "bpftool gen -L" do?
+> >
+> 
+> eBPF programs often have 2 parts. An orchestrator/loader program that
+> provides load -> attach/run -> i/o -> teardown logic and the in-kernel
+> program.
+> 
+> That command is used to generate a skeleton which can be used by the
+> orchestrator prgoram. Skeletons get generated as a C header file, that
+> contains various autogenerated functions that open and load bpf programs
+> as decribed above. That header file ends up being included in a
+> userspace orchestrator program or possibly a kernel module.
+
+I did read the man page now too, but thanks for the commentary!
+
+> 
+> > This feedback maps to other examples too in the cover letter.
+> >
+> > BR, Jarkko
+> 
+> 
+> I'll rework this with some definitions of the eBPF subsystem jargon
+> along with your suggestions.
+
+Yeah, you should be able to put the gist a factor better to nutshell :-)
+
+> 
+> -blaise
+
+BR, Jarkko
 
