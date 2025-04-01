@@ -1,67 +1,68 @@
-Return-Path: <linux-crypto+bounces-11263-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11261-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA7F2A77E3A
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 16:51:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8B9A77E39
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 16:51:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00B383AE21B
-	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 14:51:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 671C016B6B0
+	for <lists+linux-crypto@lfdr.de>; Tue,  1 Apr 2025 14:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A23E205513;
-	Tue,  1 Apr 2025 14:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE292054FC;
+	Tue,  1 Apr 2025 14:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Zi91CDh2"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bEjCfON0"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FCA2054ED;
-	Tue,  1 Apr 2025 14:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE3842054E9;
+	Tue,  1 Apr 2025 14:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743519059; cv=none; b=d1VtRsMUweMWwbe9F/a9tTPCO8p4z3X/EoA1vxcD7+FqoAivlmEL6LOL2b4qFOMx6S6lMTLWg1zcfDFzvmlOvXwsXp5DhP2FkPm6mDUi7+BKkBtbC9oBjnAc7m8Vc7cxXX2/+fy/5KNeZjwqBiiS/zg8WfD0VS1lSDz22MSDRUQ=
+	t=1743519057; cv=none; b=IUqeDo8iutiI/8FXga/ioykhiD8n3mM5a0SrsqujZ61pA7fTfonf4r91hOClQHLrKaqILaDwgzUxHVrhC8PlXyUmxRuqKtPpPpJNQwI0lQXrvXIq4QH6SLwDXBn1FE2ytnarHqd6cerIu9JSbsA6HKk9mTsmV5j5hgw7cX9zPuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743519059; c=relaxed/simple;
-	bh=knEnWKr1RLKeMazEKJCv57y2jf6RjGVrNW6mYybuP7A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jQdSe67JUc7k3bWarHbxM9MxdOsBaQ8KiriVPmK2P6WXGQu9Xc9Ieu7iDYnJMEEfbpq2Mlrru3S9/8HR7fBR6bzx/HEWPf077jTbwOtZ3xUB8RfQoLxol+z+qLlhi4+vIl6KThSh77887u0e+gtXVQbWEv4b9LrIxU7FS2rT2Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Zi91CDh2; arc=none smtp.client-ip=148.163.158.5
+	s=arc-20240116; t=1743519057; c=relaxed/simple;
+	bh=icvXYfnf6+mik10xHakNJ+KnH+6vJYfQ/YrHCfuR0q0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=W77qfgCDPiLBrGsi0+dHvQMnF2ko/LJncEH66dJYjwUDOlepu1lGhHs8/JJ7B6LTGUzhuMdheH45NNLNxf8ZlSynSe7xHezc00lZrHotE52lgCXegAtsEL4BnoEXiWRWaXI5ezUVfsV3QS4+JcwAj4qgkLc2IEAJAMmVhxJMKXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bEjCfON0; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53190DYC030115;
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 531CSpqE028472;
 	Tue, 1 Apr 2025 14:50:53 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=oRswy2m2KQgwvrhfciRi8pzc1LRJVsz5sbI9aLKXh
-	dI=; b=Zi91CDh2hSZcZRrroGeK3K57ZasIdrbriQswsAw6zJcYNhhVRxm1VGuNK
-	5bJ8mNFinX6tdFPJqOuMsPKBFsdXL574HtiD23UcqPAaedNyyfq0vTivdDUFlsVh
-	ZyvpRFSMpu+bcujH/U4hg0BpX1MwWAMU26ve1IZy4w12bu5DaBJJkMqwXjKptNwD
-	PKvBIvviZksP1kp/YQbuThfSZcgN0kuJONffasds1iyZPHBsS5OZwDrR6zXBqRv9
-	ELmh/BN7yitPl+Fm9kaA2NBLRlMDOFnyEyC1PdpFXlA47e36ntcSKf2v/pyPbBl6
-	VhbSnpv2rPa5r61rYFAAVYcdlXxKQ==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45r27q4atf-1
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=pp1; bh=PuoIDNSfeSca8qyur
+	PJiLdmFx539ShNpd7aUUNhZVRQ=; b=bEjCfON0HNAFYzIv42Fh41ywkDwwWz0jQ
+	F/pzDnQmqkQPA1vvTu8ztywbC/M9aIon9I+lZA1xnr45BdjLQ69Te7iJfD5rLuw0
+	qaimPZOByXz5T7QU+nNCvqw4Vys+LcnUj7BbSEO//qigpw/5UC7daJk8obIP9vcS
+	FT8eWY4jVZM1P534WclbyL6ccWfgCAuxBf+h4mBQgUeDNnJnG0uYzppLyTi+Ff0R
+	uVOWu24PGlSqet2dLJRzlClEqxECcyGkiXkZlsbY5wdrjSZQGW7RJRYz/+E5qCnz
+	EuMQD4aZU0tyALt2Kjs8xtyZjvkFRsutaw9p8l7syyg7KydObsHOQ==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45rg67gsgk-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 01 Apr 2025 14:50:53 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 531DHg6H014598;
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 531BPT5Z019742;
 	Tue, 1 Apr 2025 14:50:52 GMT
 Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45pvpm2wcd-1
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 45pu6t37fc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 01 Apr 2025 14:50:52 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 531Eom5B46465442
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 531Eomms46465444
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Tue, 1 Apr 2025 14:50:48 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6813A2004B;
+	by IMSVA (Postfix) with ESMTP id 8E24620043;
 	Tue,  1 Apr 2025 14:50:48 +0000 (GMT)
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 460DE20043;
+	by IMSVA (Postfix) with ESMTP id 6E04E2004D;
 	Tue,  1 Apr 2025 14:50:48 +0000 (GMT)
 Received: from funtu2.boeblingen.de.ibm.com (unknown [9.152.224.229])
 	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -70,10 +71,12 @@ From: Harald Freudenberger <freude@linux.ibm.com>
 To: herbert@gondor.apana.org.au, dengler@linux.ibm.com, ifranzki@linux.ibm.com,
         fcallies@linux.ibm.com
 Cc: linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [PATCH v3 0/3] Rework protected key AES for true asynch support
-Date: Tue,  1 Apr 2025 16:50:45 +0200
-Message-ID: <20250401145048.52564-1-freude@linux.ibm.com>
+Subject: [PATCH v3 1/3] s390/cpacf: Rework cpacf_pcc() to return condition code
+Date: Tue,  1 Apr 2025 16:50:46 +0200
+Message-ID: <20250401145048.52564-2-freude@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250401145048.52564-1-freude@linux.ibm.com>
+References: <20250401145048.52564-1-freude@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -82,126 +85,73 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AauGE_GgWwwBUzYf3HdToUWBeE2H85mT
-X-Proofpoint-GUID: AauGE_GgWwwBUzYf3HdToUWBeE2H85mT
+X-Proofpoint-ORIG-GUID: 0s_iTfAYMVnqzmgZPAUCroCJAqX1d0IV
+X-Proofpoint-GUID: 0s_iTfAYMVnqzmgZPAUCroCJAqX1d0IV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-04-01_05,2025-04-01_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=915
- impostorscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 clxscore=1015 phishscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2502280000 definitions=main-2504010090
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=676
+ suspectscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
+ malwarescore=0 phishscore=0 adultscore=0 mlxscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2504010090
 
-This is a complete rework of the protected key AES (PAES) implementation.
-The goal of this rework is to implement the 4 modes (ecb, cbc, ctr, xts)
-in a real asynchronous fashion:
+Some of the pcc sub-functions have a protected key as
+input and thus may run into the situation that this
+key may be invalid for example due to live guest migration
+to another physical hardware.
 
-- init(), exit() and setkey() are synchronous and don't allocate any memory.
-- the encrypt/decrypt functions first try to do the job in a synchronous
-  manner. If this fails, for example the protected key got invalid caused
-  by for example a guest suspend/resume or guest migration action, the
-  encrypt/decrypt is transfered to an instance of the crypto engine (see
-  below) for asynchronous processing.
-  These via crypto engine postponed requests are then handled via the
-  do_one_request() callback but may of course again run into a still
-  not converted key or the key is getting invalid. If the key is
-  still not converted, the first thread does the conversion and updates
-  the key status in the transformation context. The conversion is
-  invoked via pkey API with a new flag PKEY_XFLAG_NOMEMALLOC.
+Rework the inline assembler function cpacf_pcc() to
+return the condition code (cc) as return value:
+  0 - cc code 0 (normal completion)
+  1 - cc code 1 (prot key wkvp mismatch or src op out of range)
+  2 - cc code 2 (something invalid, scalar multiply infinity, ...)
+Note that cc 3 (partial completion) is handled within the asm code
+and never returned.
 
-The pkey API used here - the function pkey_key2protkey() - uses
-a new version of this in-kernel-API. A new flag PKEY_XFLAG_NOMEMALLOC
-tells the PKEY layer (and subsidiary layers) that it must not allocate
-any memory causing IO operations. Note that the patches for this
-pkey/zcrypt/AP extensions are currently under review and yet not
-upstream available. SO THIS PATCH DOES NOT COMPILE YET !!!
+Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+---
+ arch/s390/include/asm/cpacf.h | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-This patch together with the pkey/zcrypt/AP extensions should
-toughen the paes crypto algorithms to truly meet the requirements
-for in-kernel skcipher implementations and the usage patterns for
-the dm-crypt and dm-integrity layers.
-
-There is still some confusion about the way how paes treats the key
-within the transformation context. The tfm context may be shared by
-multiple requests running en/decryption with the same key. So the tfm
-context is supposed to be read-only.
-The s390 protected key support is in fact an encrypted key with the
-wrapping key sitting in the firmware. On each invocation of a
-protected key instruction the firmware unwraps the pkey and performs
-the operation. Part of the protected key is a hash about the wrapping
-key used - so the firmware is able to detect if a protected key
-matches to the wrapping key or not. If there is a mismatch the cpacf
-operation fails with cc 1 (key invalid). Such a situation can occur
-for example with a kvm live guest migration to another machine where
-the guest simple awakens in a new environment. As the wrapping key is
-NOT transfered, after the reawakening all protected key cpacf
-operations fail with "key invalid". There exist other situations
-where a protected key cpacf operation may run into "key invalid" and
-thus the code needs to be prepared for such cpacf failures.
-The recovery is simple: via pkey API the source key material (in real
-cases this is usually a secure key bound to a HSM) needs to generate
-a new protected key which is the wrapped by the wrapping key of the
-current firmware.
-So the paes tfms hold the source key material to be able to
-re-generate the protected key at any time. A naive implementation
-would hold the protected key in some kind of running context (for
-example the request context) and only the source key would be stored
-in the tfm context. But the derivation of the protected key from the
-source key is an expensive and time consuming process often involving
-interaction with a crypto card. And such a naive implementation would
-then for every tfm in use trigger the derivation process individual.
-So why not store the protected key in tfm context and only the very
-first process hitting the "invalid key" cc runs the derivation and
-updates the protected key stored in the tfm. The only really important
-thing is that the protected key update and cloning from this value
-needs to be done in a atomic fashion.
-Please note that there are still race conditions where the protected
-key stored in the tfm may get updated by an (outdated) protected key
-value. This is not an issue and the code handles this correctly by
-again re-deriving the protected key. The only fact that matters, is
-that the protected key must always be in a state where the cpacf
-instructions can figure out if it is valid (the hash part of the
-protected key matches to the hash of the wrapping key) or invalid
-(and refuse the crypto operation with "invalid key").
-
-Changelog:
-v1 - first version. Applied and tested on top of the mentioned
-     pkey/zcrypt/AP changes. Selftests and multithreaded testcases
-     executed via AP_ALG interface run successful and even instrumented
-     code (with some sleeps to force asynch pathes) ran fine.
-     Code is good enough for a first code review and collecting feedback.
-v2 - A new patch which does a slight rework of the cpacf_pcc() inline
-     function to return the condition code.
-     A rework of the paes implementation based on feedback from Herbert
-     and Ingo:
-     - the spinlock is now consequently used to protect updates and
-       changes on the protected key and protected key state within
-       the transformation context.
-     - setkey() is now synchronous
-     - the walk is now held in the request context and thus the
-       postponing of a request to the engine and later processing
-       can continue at exactly the same state.
-     - the param block needed for the cpacf instructions is constructed
-       once and held in the request context.
-     - if a request can't get handled synchronous, it is postponed
-       for asynch processing via an instance of the crpyto engine.
-     With v2 comes a patch which updates the crypto engine docu
-     in Documentation/crypto. Feel free to use it or drop it or
-     do some rework - at least it needs some review.
-     v2 was only posted internal to collect some feedback within IBM.
-v3 - Slight improvements based on feedback from Finn.
-
-Harald Freudenberger (3):
-  s390/cpacf: Rework cpacf_pcc() to return condition code
-  s390/crypto: Rework protected key AES for true asynch support
-  Documentation: crypto_engine: Update and extend crypto engine doc
-
- Documentation/crypto/crypto_engine.rst |   78 +-
- arch/s390/crypto/paes_s390.c           | 1725 ++++++++++++++++--------
- arch/s390/include/asm/cpacf.h          |   18 +-
- 3 files changed, 1234 insertions(+), 587 deletions(-)
-
+diff --git a/arch/s390/include/asm/cpacf.h b/arch/s390/include/asm/cpacf.h
+index 59ab1192e2d5..54cb97603ec0 100644
+--- a/arch/s390/include/asm/cpacf.h
++++ b/arch/s390/include/asm/cpacf.h
+@@ -649,18 +649,30 @@ static inline void cpacf_trng(u8 *ucbuf, unsigned long ucbuf_len,
+  *		 instruction
+  * @func: the function code passed to PCC; see CPACF_KM_xxx defines
+  * @param: address of parameter block; see POP for details on each func
++ *
++ * Returns the condition code, this is
++ * 0 - cc code 0 (normal completion)
++ * 1 - cc code 1 (protected key wkvp mismatch or src operand out of range)
++ * 2 - cc code 2 (something invalid, scalar multiply infinity, ...)
++ * Condition code 3 (partial completion) is handled within the asm code
++ * and never returned.
+  */
+-static inline void cpacf_pcc(unsigned long func, void *param)
++static inline int cpacf_pcc(unsigned long func, void *param)
+ {
++	int cc;
++
+ 	asm volatile(
+ 		"	lgr	0,%[fc]\n"
+ 		"	lgr	1,%[pba]\n"
+ 		"0:	.insn	rre,%[opc] << 16,0,0\n" /* PCC opcode */
+ 		"	brc	1,0b\n" /* handle partial completion */
+-		:
++		CC_IPM(cc)
++		: CC_OUT(cc, cc)
+ 		: [fc] "d" (func), [pba] "d" ((unsigned long)param),
+ 		  [opc] "i" (CPACF_PCC)
+-		: "cc", "memory", "0", "1");
++		: CC_CLOBBER_LIST("memory", "0", "1"));
++
++	return CC_TRANSFORM(cc);
+ }
+ 
+ /**
 -- 
 2.43.0
 
