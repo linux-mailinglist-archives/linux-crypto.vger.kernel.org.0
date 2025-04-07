@@ -1,90 +1,92 @@
-Return-Path: <linux-crypto+bounces-11522-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11524-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BEA5A7DDCE
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Apr 2025 14:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3862A7DDD8
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Apr 2025 14:39:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35DB63A84C0
-	for <lists+linux-crypto@lfdr.de>; Mon,  7 Apr 2025 12:37:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAD2C3B01DA
+	for <lists+linux-crypto@lfdr.de>; Mon,  7 Apr 2025 12:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB2524EA93;
-	Mon,  7 Apr 2025 12:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D54251791;
+	Mon,  7 Apr 2025 12:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IqHQ1O3u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dKFE3lTZ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7918D23AE64;
-	Mon,  7 Apr 2025 12:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC51524CEEA;
+	Mon,  7 Apr 2025 12:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744029442; cv=none; b=srLjmiGmCPfTS2ubs3QDjKamCvT9NhLWJ5/fGUd/qM55RZ6Eo/OQBm1a9wJo8dwDhY2NrpLDjMCckee0eQe+uEzvkFrFxk08eaxnqCJvrJ65CVsu+vK/WzLvcCFBLt/lfhW2z8fK2KgWmhN0IZHxInQuVU3UVFbCtFXHV7UZERc=
+	t=1744029444; cv=none; b=iiwy7P+owdTPfjoWeUYmg/ctD5d5kZ8UgT/nQQfWQ56vFdop0IjKhG/rSU9MxVrkNSK/vul5YyeQfrt8SV8Kqq4y5S7Zw3cekGu3IjGVS0YMm8uDE6TB8A8KeFedS/OcCNDQjIH9hwSV2IOGLBuvOlFqtAHO+ns5Zv20mg+xUq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744029442; c=relaxed/simple;
-	bh=SvbeQtb6k7bGVUoSWfqcjFFLSqmkgm82+xG8E4qpwXU=;
+	s=arc-20240116; t=1744029444; c=relaxed/simple;
+	bh=fPaIJlcWeN7XcHAT4dA7liyZzdvlkwCm9/OnQCQ+nbM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oZ8InpNjWHLJJI1jI192IvcFkVmwPCo4qu6IHYZBm5Aiz0GsUEeCMPJuMRCivuCZWgtSQRt2lBrEfonYMhx0xmLYzfAKLrRYN5GrYrS2Ktf37D6ly2mgKCAlIf3JTzXrJdmX8/5+ZeVwqCPA/CJxPCsMAGC4WT8/60OsJZaSy2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IqHQ1O3u; arc=none smtp.client-ip=209.85.221.47
+	 MIME-Version; b=aaMC5146PtEYrzqpmLuDq3Kcz3k/QAdJeEme8odZZwD8lX+oea1piismLwFuCKITxSEabcFS4Hwp+DEYPUsU3pZCBzyfR340iXT4N65ciXZWJqHyUIgMfe/9w0BYmT1tpXfPqATGBHdI/FUorF/fUAZpexJRgqkqh9vuUcAIgsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dKFE3lTZ; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-39c0dfad22aso2562431f8f.2;
-        Mon, 07 Apr 2025 05:37:19 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3912fdddf8fso3381814f8f.1;
+        Mon, 07 Apr 2025 05:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744029438; x=1744634238; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744029439; x=1744634239; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nJwN15SFuWFw+J8LbQ3OEgp3ncmtC3qYGCS05leh5Dk=;
-        b=IqHQ1O3uOX/D5ycDlRCSQ5Y7IhT624dLxADjMW/q3WIHsxO9s1WrS9SXGUpl2pCnW8
-         ehWaBI9fyVoKMK6wDL2Odp2CTcG8mGGN7eLe9zNTqGzJQyJYjRcY2QHoqXhIfPi2gckm
-         jxZt5pgL9NdyeLiyStweTROSl4I7b7ahpUgfS/uWeNQK1EnxbkAo2I/8WPo2epEzmqrJ
-         GwstknGAKR+8HDfjEovepz45NpZ+mM7mW+tuCJMHqwBTj3pj6DDSuKtfov0OHo8IiD5P
-         LzCg/zekzdGedIoKZ7yBBEWvXpmhDLb9yKMZc4KntGkjk97FJLnlIckI2NP1kM82hXIr
-         eBRA==
+        bh=0o6+zdI0AtRq1Xlwz5OA5c9uHll3v6Nadhh0JoXi15w=;
+        b=dKFE3lTZVDjWFDEn8jhcl91iaoqGJTLt5gt3eLm10FXWozrWUejOwGdrYEWUygFZHv
+         eHO14cjEnkHwIG9RhI5IyYoadXBNqoAWikdCX8esKBxAO3zZ6sHWrDCMMC/Pf60NDNqM
+         2IurqPFpOfcT3in62fWYbqwW7cxLGzi9GKG+ieXkQRdybBAFqEHmkorPpYWBSCVlPEIm
+         XAtXQxDHvMzhxv+lPDC9LRrQCadtAx7Mo2ROeAmRSq1mi/UOhPQY1r3QEwRUZ9H44J8Z
+         uB7xLwujSxWWl1cfTqF67iAj+2HiHWjQgcvWByrzXh/bGdvFtAsaUAI9mB++68wv6ZMC
+         txrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744029438; x=1744634238;
+        d=1e100.net; s=20230601; t=1744029439; x=1744634239;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nJwN15SFuWFw+J8LbQ3OEgp3ncmtC3qYGCS05leh5Dk=;
-        b=L0Bta4x3tJBwTvQ5p1+SjR324WYoSerCxAOM34kroNUrnQ2i1GuJsJmRpOOy9bX4bW
-         iF6GkX2JTPGFTehjkvNf4ZeCFTvpzqfXASZtDQDfj0RnkvU5JFoejdhZbRokqsRifD1I
-         MVSIiAkw3qGYGpvpCEAEnv6ax6dkXthIDnivEpNWa1NPqzZ5/Kw/EDksQE7cZF3IeqMH
-         cA6fpvptpWOJVHptmaMm+6q3tqqKQAvPypnrBVA6BXlJdctocazTw2xE2ik6g9Z5UPZQ
-         vTQhh0dYUDjHRI3a4BJcMjEdMXdIVElj3qzMFZHVjp947UogU8EXkhEJspAUgpMsDQHU
-         cY2w==
-X-Forwarded-Encrypted: i=1; AJvYcCVK9J2War/NAAT39x/rQPbd9mhwbDdtHlTnLFqLhuVX6OR+GXf0GSvID9u9qaiOe+22XrwcpzBrqCl2cXA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8NbG+MMVZffMW3eXC50gVx6mCawJ2/sK70DNxD1dr1hRaQe1f
-	dxEOF7ZGvXKgXyYbqxX4rvllb/iDV7RHo1yFeDL8KgrmxLXT8USATZAHvw==
-X-Gm-Gg: ASbGnctNslXOv8JaKHp7BBYB41e0ecaay3UlNEgfjJf7sY9tLo2YBbA0pBmIIURSMau
-	urYb0kC0t0Fwi/LgvKdXvVoW0o6y8flhDOmMjJ7xDkclixN07RNrslZyI77qKBEIwFEwNl30SBn
-	h7fT1lD3DV1Y6/BUkO0r6fIMBINyAbZV57CM6Jn7xKc6nV0szicr+C5iPQ028WezlbG1ROCjgVh
-	EjTDwko8R/o0gNyg39upAb6tflpa0MKVeqMqF7+aV3gJRU6srLQMKsxVmcSU2ua4stR9EvANsrx
-	s+CpKxhakKu1JkduDRgD4gEoNU8AXl4ClJTSNKIKckZIQZd4T58kf2WOCBbp/8EB3a2Y1DBQ
-X-Google-Smtp-Source: AGHT+IGOiYeoMEwHC9hRn8culHx4Ww1nJheukDZ53zBULfafTN1LFvaJ8yuDLqKUZnP9wmJYz7FCzQ==
-X-Received: by 2002:a05:6000:2405:b0:391:4999:776c with SMTP id ffacd0b85a97d-39cba975d5dmr10077751f8f.40.1744029437773;
-        Mon, 07 Apr 2025 05:37:17 -0700 (PDT)
+        bh=0o6+zdI0AtRq1Xlwz5OA5c9uHll3v6Nadhh0JoXi15w=;
+        b=jHRza67fp2WYokvGsdMzDm+0x138yWdY4WAYKxYnocyR+3qLlB7BKqeyQdSpXRT0AB
+         c4vDzy3YQkKPdf2VVdsUk2IvIxqYI59NCYieSwCtqeuoZl7Oefkcb9E7exTiCkDy7H1Y
+         1slzZZ66PNtk6rIAnf3HAZmKHDcztRHA8RQ8iVqioLMkYaIN1Zvss/+nY+irWUMOFLDX
+         ScYYtU+N0ggx34W1SXdVbhQnO4ELHNA+EyWC+ViB8iUCt8txh9vY10Ze3lVydTqMJTt/
+         U3+rir+6ZOxHtVA1rQg+a6dTYekoa4hgiSI76s5oadh256mCGQ17OARCx4hdwuThWBTk
+         sYlw==
+X-Forwarded-Encrypted: i=1; AJvYcCWB5e8/r8onX3WflIONSMJLrZIMUlFdNIhe0ih4CU3zVxqzEpnZSgsr8dK55KjYN4vjyuCJF83RsQ8WQHE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywz8zvNdCG7sNQPrUMQWZPRq0vwdiNgkV8VD6eejmKXk+rg4q64
+	A89Rn52GuPObMZimYnGuemB8uyrb7LkcWe3qgPd4v3rdVh5A9Kc9v+nzXg==
+X-Gm-Gg: ASbGncsAynOa+nLisx953XjGsoO9HbjYHnzLeE7UXJmQy0gScnaXt8+d3qG4yyls0ap
+	X3K+b94EZe2uEGear8klTIS4sGrt0DTblTaXC/wgHR0emoJU1SGGuXCIXTFxiv6ywjGWVyPBOLa
+	33NG3cshfq+3kDTd/SEBIpza3CcRLvNyCK0/awLQuElxx0C1M1KbDNeSV/f/4lTr92rlWeKcQWj
+	cEdKjUGoEkWQCumyn2UvLFNDxBarGcyEiHf7yQ1M7xuzB/FOLaPw1ZnqwfEI4hFt2BFsugASMn6
+	29F6d6Nllpn2zPLQCHFFqLbVLKFwTEhnqBQAUom9g0F2fW1s3eAEeGC3x34oDlyzJUTXqXSN
+X-Google-Smtp-Source: AGHT+IEPI0/uAmG1j3NVe3lMMXToyTKqXz/tt6wVkSqKVKUWUxmvO7uD/TEvDrvrmVRLlqnGT6k+9g==
+X-Received: by 2002:a05:6000:2489:b0:390:e9ee:f27a with SMTP id ffacd0b85a97d-39cba94dac8mr10539389f8f.28.1744029438981;
+        Mon, 07 Apr 2025 05:37:18 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:2f0e:c50a:8800:cf9e:ee0b:4a01:37f6])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c301b76f2sm12065198f8f.53.2025.04.07.05.37.16
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c301b76f2sm12065198f8f.53.2025.04.07.05.37.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Apr 2025 05:37:17 -0700 (PDT)
+        Mon, 07 Apr 2025 05:37:18 -0700 (PDT)
 From: Ovidiu Panait <ovidiu.panait.oss@gmail.com>
 To: linux-crypto@vger.kernel.org,
 	herbert@gondor.apana.org.au
 Cc: davem@davemloft.net,
 	linux-kernel@vger.kernel.org,
 	Ovidiu Panait <ovidiu.panait.oss@gmail.com>,
-	Corentin Labbe <clabbe@baylibre.com>,
-	Heiko Stuebner <heiko@sntech.de>,
+	Corentin Labbe <clabbe.montjoie@gmail.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
 	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-Subject: [PATCH 2/4] crypto: rk3288 - use API helpers to setup fallback request
-Date: Mon,  7 Apr 2025 15:36:02 +0300
-Message-ID: <20250407123604.2109561-2-ovidiu.panait.oss@gmail.com>
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH 3/4] crypto: sun8i-ss - use API helpers to setup fallback request
+Date: Mon,  7 Apr 2025 15:36:03 +0300
+Message-ID: <20250407123604.2109561-3-ovidiu.panait.oss@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250407123604.2109561-1-ovidiu.panait.oss@gmail.com>
 References: <20250407123604.2109561-1-ovidiu.panait.oss@gmail.com>
@@ -105,20 +107,84 @@ to the fallback algorithm, which avoids a crash with async fallbacks.
 
 Signed-off-by: Ovidiu Panait <ovidiu.panait.oss@gmail.com>
 ---
-Cc: Corentin Labbe <clabbe@baylibre.com>
-Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc: Samuel Holland <samuel@sholland.org>
 Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-rockchip@lists.infradead.org
+Cc: linux-sunxi@lists.linux.dev
 
- drivers/crypto/rockchip/rk3288_crypto_ahash.c | 52 ++++++++++---------
- 1 file changed, 27 insertions(+), 25 deletions(-)
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 49 ++++++++++---------
+ 1 file changed, 27 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/crypto/rockchip/rk3288_crypto_ahash.c b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-index 69d6019d8abc..d6928ebe9526 100644
---- a/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-+++ b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-@@ -52,12 +52,11 @@ static int rk_ahash_digest_fb(struct ahash_request *areq)
- 	algt->stat_fb++;
+diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+index 753f67a36dc5..8bc08089f044 100644
+--- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+@@ -150,7 +150,9 @@ int sun8i_ss_hash_init(struct ahash_request *areq)
+ 	memset(rctx, 0, sizeof(struct sun8i_ss_hash_reqctx));
+ 
+ 	ahash_request_set_tfm(&rctx->fallback_req, tfmctx->fallback_tfm);
+-	rctx->fallback_req.base.flags = areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP;
++	ahash_request_set_callback(&rctx->fallback_req,
++				   areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
++				   areq->base.complete, areq->base.data);
+ 
+ 	return crypto_ahash_init(&rctx->fallback_req);
+ }
+@@ -162,7 +164,9 @@ int sun8i_ss_hash_export(struct ahash_request *areq, void *out)
+ 	struct sun8i_ss_hash_tfm_ctx *tfmctx = crypto_ahash_ctx(tfm);
+ 
+ 	ahash_request_set_tfm(&rctx->fallback_req, tfmctx->fallback_tfm);
+-	rctx->fallback_req.base.flags = areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP;
++	ahash_request_set_callback(&rctx->fallback_req,
++				   areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
++				   areq->base.complete, areq->base.data);
+ 
+ 	return crypto_ahash_export(&rctx->fallback_req, out);
+ }
+@@ -174,7 +178,9 @@ int sun8i_ss_hash_import(struct ahash_request *areq, const void *in)
+ 	struct sun8i_ss_hash_tfm_ctx *tfmctx = crypto_ahash_ctx(tfm);
+ 
+ 	ahash_request_set_tfm(&rctx->fallback_req, tfmctx->fallback_tfm);
+-	rctx->fallback_req.base.flags = areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP;
++	ahash_request_set_callback(&rctx->fallback_req,
++				   areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
++				   areq->base.complete, areq->base.data);
+ 
+ 	return crypto_ahash_import(&rctx->fallback_req, in);
+ }
+@@ -186,9 +192,10 @@ int sun8i_ss_hash_final(struct ahash_request *areq)
+ 	struct sun8i_ss_hash_tfm_ctx *tfmctx = crypto_ahash_ctx(tfm);
+ 
+ 	ahash_request_set_tfm(&rctx->fallback_req, tfmctx->fallback_tfm);
+-	rctx->fallback_req.base.flags = areq->base.flags &
+-					CRYPTO_TFM_REQ_MAY_SLEEP;
+-	rctx->fallback_req.result = areq->result;
++	ahash_request_set_callback(&rctx->fallback_req,
++				   areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
++				   areq->base.complete, areq->base.data);
++	ahash_request_set_crypt(&rctx->fallback_req, NULL, areq->result, 0);
+ 
+ 	if (IS_ENABLED(CONFIG_CRYPTO_DEV_SUN8I_SS_DEBUG)) {
+ 		struct ahash_alg *alg = crypto_ahash_alg(tfm);
+@@ -212,10 +219,10 @@ int sun8i_ss_hash_update(struct ahash_request *areq)
+ 	struct sun8i_ss_hash_tfm_ctx *tfmctx = crypto_ahash_ctx(tfm);
+ 
+ 	ahash_request_set_tfm(&rctx->fallback_req, tfmctx->fallback_tfm);
+-	rctx->fallback_req.base.flags = areq->base.flags &
+-					CRYPTO_TFM_REQ_MAY_SLEEP;
+-	rctx->fallback_req.nbytes = areq->nbytes;
+-	rctx->fallback_req.src = areq->src;
++	ahash_request_set_callback(&rctx->fallback_req,
++				   areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
++				   areq->base.complete, areq->base.data);
++	ahash_request_set_crypt(&rctx->fallback_req, areq->src, NULL, areq->nbytes);
+ 
+ 	return crypto_ahash_update(&rctx->fallback_req);
+ }
+@@ -227,12 +234,11 @@ int sun8i_ss_hash_finup(struct ahash_request *areq)
+ 	struct sun8i_ss_hash_tfm_ctx *tfmctx = crypto_ahash_ctx(tfm);
  
  	ahash_request_set_tfm(&rctx->fallback_req, tfmctx->fallback_tfm);
 -	rctx->fallback_req.base.flags = areq->base.flags &
@@ -133,91 +199,26 @@ index 69d6019d8abc..d6928ebe9526 100644
 +	ahash_request_set_crypt(&rctx->fallback_req, areq->src, areq->result,
 +				areq->nbytes);
  
- 	return crypto_ahash_digest(&rctx->fallback_req);
- }
-@@ -124,8 +123,9 @@ static int rk_ahash_init(struct ahash_request *req)
- 	struct rk_ahash_ctx *ctx = crypto_ahash_ctx(tfm);
+ 	if (IS_ENABLED(CONFIG_CRYPTO_DEV_SUN8I_SS_DEBUG)) {
+ 		struct ahash_alg *alg = crypto_ahash_alg(tfm);
+@@ -256,12 +262,11 @@ static int sun8i_ss_hash_digest_fb(struct ahash_request *areq)
+ 	struct sun8i_ss_hash_tfm_ctx *tfmctx = crypto_ahash_ctx(tfm);
  
- 	ahash_request_set_tfm(&rctx->fallback_req, ctx->fallback_tfm);
--	rctx->fallback_req.base.flags = req->base.flags &
--					CRYPTO_TFM_REQ_MAY_SLEEP;
-+	ahash_request_set_callback(&rctx->fallback_req,
-+				   req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
-+				   req->base.complete, req->base.data);
- 
- 	return crypto_ahash_init(&rctx->fallback_req);
- }
-@@ -137,10 +137,10 @@ static int rk_ahash_update(struct ahash_request *req)
- 	struct rk_ahash_ctx *ctx = crypto_ahash_ctx(tfm);
- 
- 	ahash_request_set_tfm(&rctx->fallback_req, ctx->fallback_tfm);
--	rctx->fallback_req.base.flags = req->base.flags &
--					CRYPTO_TFM_REQ_MAY_SLEEP;
--	rctx->fallback_req.nbytes = req->nbytes;
--	rctx->fallback_req.src = req->src;
-+	ahash_request_set_callback(&rctx->fallback_req,
-+				   req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
-+				   req->base.complete, req->base.data);
-+	ahash_request_set_crypt(&rctx->fallback_req, req->src, NULL, req->nbytes);
- 
- 	return crypto_ahash_update(&rctx->fallback_req);
- }
-@@ -152,9 +152,10 @@ static int rk_ahash_final(struct ahash_request *req)
- 	struct rk_ahash_ctx *ctx = crypto_ahash_ctx(tfm);
- 
- 	ahash_request_set_tfm(&rctx->fallback_req, ctx->fallback_tfm);
--	rctx->fallback_req.base.flags = req->base.flags &
--					CRYPTO_TFM_REQ_MAY_SLEEP;
--	rctx->fallback_req.result = req->result;
-+	ahash_request_set_callback(&rctx->fallback_req,
-+				   req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
-+				   req->base.complete, req->base.data);
-+	ahash_request_set_crypt(&rctx->fallback_req, NULL, req->result, 0);
- 
- 	return crypto_ahash_final(&rctx->fallback_req);
- }
-@@ -166,12 +167,11 @@ static int rk_ahash_finup(struct ahash_request *req)
- 	struct rk_ahash_ctx *ctx = crypto_ahash_ctx(tfm);
- 
- 	ahash_request_set_tfm(&rctx->fallback_req, ctx->fallback_tfm);
--	rctx->fallback_req.base.flags = req->base.flags &
+ 	ahash_request_set_tfm(&rctx->fallback_req, tfmctx->fallback_tfm);
+-	rctx->fallback_req.base.flags = areq->base.flags &
 -					CRYPTO_TFM_REQ_MAY_SLEEP;
 -
--	rctx->fallback_req.nbytes = req->nbytes;
--	rctx->fallback_req.src = req->src;
--	rctx->fallback_req.result = req->result;
+-	rctx->fallback_req.nbytes = areq->nbytes;
+-	rctx->fallback_req.src = areq->src;
+-	rctx->fallback_req.result = areq->result;
 +	ahash_request_set_callback(&rctx->fallback_req,
-+				   req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
-+				   req->base.complete, req->base.data);
-+	ahash_request_set_crypt(&rctx->fallback_req, req->src, req->result,
-+				req->nbytes);
++				   areq->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
++				   areq->base.complete, areq->base.data);
++	ahash_request_set_crypt(&rctx->fallback_req, areq->src, areq->result,
++				areq->nbytes);
  
- 	return crypto_ahash_finup(&rctx->fallback_req);
- }
-@@ -183,8 +183,9 @@ static int rk_ahash_import(struct ahash_request *req, const void *in)
- 	struct rk_ahash_ctx *ctx = crypto_ahash_ctx(tfm);
- 
- 	ahash_request_set_tfm(&rctx->fallback_req, ctx->fallback_tfm);
--	rctx->fallback_req.base.flags = req->base.flags &
--					CRYPTO_TFM_REQ_MAY_SLEEP;
-+	ahash_request_set_callback(&rctx->fallback_req,
-+				   req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
-+				   req->base.complete, req->base.data);
- 
- 	return crypto_ahash_import(&rctx->fallback_req, in);
- }
-@@ -196,8 +197,9 @@ static int rk_ahash_export(struct ahash_request *req, void *out)
- 	struct rk_ahash_ctx *ctx = crypto_ahash_ctx(tfm);
- 
- 	ahash_request_set_tfm(&rctx->fallback_req, ctx->fallback_tfm);
--	rctx->fallback_req.base.flags = req->base.flags &
--					CRYPTO_TFM_REQ_MAY_SLEEP;
-+	ahash_request_set_callback(&rctx->fallback_req,
-+				   req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP,
-+				   req->base.complete, req->base.data);
- 
- 	return crypto_ahash_export(&rctx->fallback_req, out);
- }
+ 	if (IS_ENABLED(CONFIG_CRYPTO_DEV_SUN8I_SS_DEBUG)) {
+ 		struct ahash_alg *alg = crypto_ahash_alg(tfm);
 -- 
 2.48.1
 
