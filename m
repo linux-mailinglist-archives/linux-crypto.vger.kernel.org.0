@@ -1,132 +1,123 @@
-Return-Path: <linux-crypto+bounces-11580-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11582-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9EDBA81B72
-	for <lists+linux-crypto@lfdr.de>; Wed,  9 Apr 2025 05:29:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 876BFA820D3
+	for <lists+linux-crypto@lfdr.de>; Wed,  9 Apr 2025 11:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14FEC882FE7
-	for <lists+linux-crypto@lfdr.de>; Wed,  9 Apr 2025 03:29:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D8521BA6B45
+	for <lists+linux-crypto@lfdr.de>; Wed,  9 Apr 2025 09:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B2F1A315A;
-	Wed,  9 Apr 2025 03:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B0A253F19;
+	Wed,  9 Apr 2025 09:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="D2D/ELRP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U+JWoiGn"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45CC329A2;
-	Wed,  9 Apr 2025 03:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476902B9CD;
+	Wed,  9 Apr 2025 09:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744169356; cv=none; b=SL2PRWWIvwCuKatD6eYWJpDxYpVZ+khzf0n4XjEbs3E6gDYpsJ8pw/lshedMJ/7O4wkJNmYc3kXBzkaYIujTs/rE4fTovuGSQjzA14WQ2iAcDY0QgklYEHMWh8ke2ogHnzt75DVkn6Up6Da0xEM11ajm435kMA4voCqK2Gv9iZ4=
+	t=1744190147; cv=none; b=tEbTe0wBRZsTVOySwZICVh9k/JZyBTqKqKN60zVcjfzsYSEcrulKnSoqeWE/0VSXaSdnuFwklXNyef/4iGGgIdz7IEIDVLR7QjrSaVW0U/skM6v4gDOs9zEDKHYQsE4V5yQUJhsnQX1fRqTs+o6QaMwHOC+duw+XC3KB0gD3PDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744169356; c=relaxed/simple;
-	bh=4p/IbFEezQpWXPH8NofazJ6FUPVgXzJL0rqHzdQx3QQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IpyHj2UNG7NyAKV/+wFBExRfLCsaxk5xVwdzjuQimWx4W/sYVTtTZ7qrRjAc2E9L5XHrrwOVJXvFaOSLphKFk30euEXiA3m0JXQNCiYu7t2mr/Pr6pPBBp/AfXz+gQhla6xWt4rQoHfOotXeSC/FYtFAiRIZJ3eX1ugXuvSCDXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=D2D/ELRP; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=BEXCXXMNkXzsQ7EhgQi62ODf9OaSN7AbBYwpyLCGWxA=; b=D2D/ELRPPBU6u3pEkRJ602uyPP
-	/hri3nu/1gCHhMSocAYMMSWKnjSDY8vrA5nKY9HpBXpqGcvbIzPkTg8ByzDcTGWmY81eiGN87Zup3
-	3aHiwJMw146hdpOkVI+7xlxW/iLfLOSp6ZrVWYTEEorFZxoY3xjYvLM5WyF3aXPC+uhFzolKuCz+i
-	kJjrUiqxSMY8pxVdDX9wO7puTZu1pYN8bq6uXHSMXzKihjUQfQL0Ehh6yTQdS8k7OVqtstdco+pbr
-	SmmV0V4RBLX+RsX5bjeP28JJeBaeBV7rv4Sbwz46vUDa0rPVMiMJoGSK9Xe5SppzSN1e+tGwb+iMA
-	I0/tqI3A==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1u2M7b-00E6NS-1f;
-	Wed, 09 Apr 2025 11:29:04 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 09 Apr 2025 11:29:03 +0800
-Date: Wed, 9 Apr 2025 11:29:03 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-	Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Gaurav Jain <gaurav.jain@nxp.com>, linux-crypto@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-kernel@vger.kernel.org,
-	Valentin Ciocoi Radulescu <valentin.ciocoi@nxp.com>
-Subject: [PATCH] crypto: api - Allow delayed algorithm destruction
-Message-ID: <Z_XpfyPaoZ6Y8u6z@gondor.apana.org.au>
-References: <17f9af67-de10-4b96-99ef-3c5cd78124c0@linux.dev>
- <Z_SxYFdyBJTYe_7G@gondor.apana.org.au>
- <e3dd2f83-8451-47b0-a774-a697b861ceb3@linux.dev>
- <Z_XiPLmSVs8PGTZD@gondor.apana.org.au>
+	s=arc-20240116; t=1744190147; c=relaxed/simple;
+	bh=Ty1pwqrmShrkkSXMYJB/5FbS4/B1OSXP3/4mT9aAsdM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ka6/6ViYIYGJL4nprcB029WYYBqdlDIh7+3A6uXlIZaxOKNs0tD/EjKru/lPL9x9ITiG1eIwZ+GLoF6NRR0lZPmuzDvLA7ARRPjxzlqV0vP+uH6Me0gsdjmCmPJ0RYT+xc1SojNVUMqnDy0VLNRAt+4Up+mQ9j4uOsetXE5Dr60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U+JWoiGn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3ACBC4CEEE;
+	Wed,  9 Apr 2025 09:15:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744190146;
+	bh=Ty1pwqrmShrkkSXMYJB/5FbS4/B1OSXP3/4mT9aAsdM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=U+JWoiGnB3Ltj1oq2Lf12BbJStduvwmmIbUpPwE46zLzraulDbpUgoHkBVVxSd8dR
+	 xOjYR3O0gjN793iX6J5SWUKGfn+DlCd+uaXBa+XFVfRJqxVnHQLRo7nKYLq9iVeXzp
+	 A/XArWDVpftzIr3pQVPG/eHPWRm3RpI0SJr9XSe0gl9SKO/KANIGVe8EcU5X7aFWTa
+	 RGiQ2+2WTb/xFNL+o/t7/fYw5Du7FdwDxlEPGS/tMcK8pzaxCTKqVFYH8LIx3xs4J/
+	 ErqqLr1eYv8y+gb3UwC3FHhHjttrF/dppMtlQcx4TZpLLNii5sUvwGx1x4OAmCwuw6
+	 uOEeyj0DSftjA==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-549b159c84cso4589821e87.3;
+        Wed, 09 Apr 2025 02:15:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUgSzhF7Y3/gyKzFLL0DIAPu946Tfhx9pgySOUcWKcp6r9meUdZ8Vp7zd25RZWW/toXZmzRv5QMTbaN@vger.kernel.org, AJvYcCVCUlaSgUmr2jrTmLM+kEATKVQ/WbsNRiAuR85WbGmmQbBtk7mQYnJevWfqXBAMbN5Kc8MWY28yp3jjGsLjvWxh@vger.kernel.org, AJvYcCVLuk0NjYvcXlSNV/aOHWYRF3tXKOcCA2K8FfCWt4d0rlbaTJaTOuMHLCIStvd1XUp8kVpvoY8tcj5IG5l9@vger.kernel.org, AJvYcCVyzk5eztTdtqq6WdCgwGERRM1zD6Ka4JowOP8UR1oNx2MHnWRDqri2xoN9N8M2R6jfYFq1qVD1r+oVI5k=@vger.kernel.org, AJvYcCW7GIpvuMbbX7bmeLkv8aheWSGNVviCFWOunLp1RXDF19I2yyWp6rR2WWYwxR++Dqk5/sjYlg2gKlG6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxgYdVILBznhKsRZwTE0CVRjC2r9439bosqfwgJ6UiU78jr6/KY
+	/1t5TX95wzDcKQJpdtaW2VMvizyS5GggiSCFGJY/1AFMoJFs2uQRETKopT1F/GGxvgiCTGmC6j+
+	jb1PeeuCERB0ingq8YeaS6Ug4fHo=
+X-Google-Smtp-Source: AGHT+IGr6pJEooPeND2WPKwmKzqEYbai9tqpsiAki3uL4C9w+bT2D4fnGON4jq0ew7tRiFB4rDjlDOhGc1mfiwwy2OM=
+X-Received: by 2002:a05:6512:3981:b0:545:8a1:5379 with SMTP id
+ 2adb3069b0e04-54c44561c19mr593775e87.43.1744190145154; Wed, 09 Apr 2025
+ 02:15:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z_XiPLmSVs8PGTZD@gondor.apana.org.au>
+References: <20250328230814.2210230-1-ross.philipson@oracle.com>
+ <20250328230814.2210230-20-ross.philipson@oracle.com> <B41D3199-8054-4B2C-94D6-508D1DE4C8B3@zytor.com>
+ <886145d3-a9f2-41f3-a754-253decdb1b4f@oracle.com> <Z_WkaJhel-BYxHeW@char.us.oracle.com>
+In-Reply-To: <Z_WkaJhel-BYxHeW@char.us.oracle.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 9 Apr 2025 11:15:34 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEAZS+839zmpW3WfwvTRMZmRbPYGpEoY=Xj9qFch9J7BA@mail.gmail.com>
+X-Gm-Features: ATxdqUF80H-sehwytd1k_ZBdeFEl5wo_O_6zq2xvDwvr3fvlWsrlNSPU8VOuvPk
+Message-ID: <CAMj1kXEAZS+839zmpW3WfwvTRMZmRbPYGpEoY=Xj9qFch9J7BA@mail.gmail.com>
+Subject: Re: [PATCH v13 19/19] x86/efi: EFI stub DRTM launch support for
+ Secure Launch
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: ross.philipson@oracle.com, hpa@zytor.com, linux-kernel@vger.kernel.org, 
+	x86@kernel.org, linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, kexec@lists.infradead.org, 
+	linux-efi@vger.kernel.org, iommu@lists.linux.dev, 
+	dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com, 
+	bp@alien8.de, dave.hansen@linux.intel.com, mjg59@srcf.ucam.org, 
+	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de, jarkko@kernel.org, 
+	jgg@ziepe.ca, luto@amacapital.net, nivedita@alum.mit.edu, 
+	herbert@gondor.apana.org.au, davem@davemloft.net, corbet@lwn.net, 
+	ebiederm@xmission.com, dwmw2@infradead.org, baolu.lu@linux.intel.com, 
+	kanth.ghatraju@oracle.com, andrew.cooper3@citrix.com, 
+	trenchboot-devel@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 09, 2025 at 10:58:04AM +0800, Herbert Xu wrote:
+On Wed, 9 Apr 2025 at 00:35, Konrad Rzeszutek Wilk
+<konrad.wilk@oracle.com> wrote:
 >
-> What I'll do is make the crypto_unregister call wait for the users
-> to go away.  That matches how the network device unregistration works
-> and hopefully should solve this problem.  But keep your eyes for
-> dead locks that used to plague netdev unregistration :)
+> ..snip..
+> > > > @@ -925,6 +1014,11 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
+> > > >           goto fail;
+> > > >   }
+> > > >
+> > > > +#if (IS_ENABLED(CONFIG_SECURE_LAUNCH))
+> > > > + /* If a Secure Launch is in progress, this never returns */
+> > > > + efi_secure_launch(boot_params);
+> > > > +#endif
+> > > > +
+> > > >   /*
+> > > >    * Call the SEV init code while still running with the firmware's
+> > > >    * GDT/IDT, so #VC exceptions will be handled by EFI.
+> > >
+> > > efi_set_u64_form()?
+> > >
+> > > What the heck is that? If it actually involves two u32 packed into a 64 field, why not simply do two stores?
+> > >
+> >
+> > Well the story is this. The EFI maintainers asked me to use the
+> > efi_set_u64_split() type functions (this one splits a u64 into 2 u32). I
+> > went to look and there was no function that did the opposite action so I
+> > added it. The original function was called efi_set_u64_split() so
+> > efi_set_u64_form() was what I came up with. I can name it anything that is
+> > desired.
+>
+> Hey Peter,
+>
+> Is there anything in particular that needs to be done to this patch?
+>
 
-That was a dumb idea.  All it would do is make the shutdown hang.
-So here is a different tack.  Let the algorithms stick around,
-by allocating them dynamically instead.  Then we could simply
-kfree them when the user finally disappears (if ever).
-
-Note to make this work, caam needs to be modified to allocate the
-algorithms dynamically (kmemdup should work), and add a cra_destroy
-function to kfree the memory.
-
----8<---
-The current algorithm unregistration mechanism originated from
-software crypto.  The code relies on module reference counts to
-stop in-use algorithms from being unregistered.  Therefore if
-the unregistration function is reached, it is assumed that the
-module reference count has hit zero and thus the algorithm reference
-count should be exactly 1.
-
-This is completely broken for hardware devices, which can be
-unplugged at random.
-
-Fix this by allowing algorithms to be destroyed later if a destroy
-callback is provided.
-
-Reported-by: Sean Anderson <sean.anderson@linux.dev>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/crypto/algapi.c b/crypto/algapi.c
-index 5b8a4c787387..f368c0dc0d6d 100644
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -481,10 +481,10 @@ void crypto_unregister_alg(struct crypto_alg *alg)
- 	if (WARN(ret, "Algorithm %s is not registered", alg->cra_driver_name))
- 		return;
- 
--	if (WARN_ON(refcount_read(&alg->cra_refcnt) != 1))
--		return;
--
--	if (alg->cra_type && alg->cra_type->destroy)
-+	if (alg->cra_destroy)
-+		crypto_alg_put(alg);
-+	else if (!WARN_ON(refcount_read(&alg->cra_refcnt) != 1) &&
-+		 alg->cra_type && alg->cra_type->destroy)
- 		alg->cra_type->destroy(alg);
- 
- 	crypto_remove_final(&list);
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+If anyone feels strongly enough about this, we can fix it in a
+follow-up patch. The code works as expected, so no need to derail this
+series even further.
 
