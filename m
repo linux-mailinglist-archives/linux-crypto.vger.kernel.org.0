@@ -1,121 +1,114 @@
-Return-Path: <linux-crypto+bounces-11593-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11596-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59916A839EC
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 08:54:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E242A83A50
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 09:08:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 147EB7ADBF6
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 06:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E0AA4A4164
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 07:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F439204695;
-	Thu, 10 Apr 2025 06:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4585D202C26;
+	Thu, 10 Apr 2025 07:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H7hxTsIX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IBo2V+wm"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA37E2040A8
-	for <linux-crypto@vger.kernel.org>; Thu, 10 Apr 2025 06:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F61C204C03
+	for <linux-crypto@vger.kernel.org>; Thu, 10 Apr 2025 07:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744268062; cv=none; b=ZVUgcOrRnTObxTUFP9G9Du8WzeZPlqsLAdgRhK5QNn6wmO8JPBIOU3S1QMoyH5RkNcA4kkRnHF2m5w1PSdR9Fcwe77Y04Bsc5mpjAi8RSMEg7YMVn5DZIIO178DzWiV1iGXZgfnaMFekq7OGm3mELu5peuqZB4iLICa5HHzvJWQ=
+	t=1744268804; cv=none; b=ZJR1m5xK9aMvq8xLJkqPLIpXIYxus0ruBVPQKKgom3wWOhBip+YvoNhwFhVC0OCTFr1EEeq4m5vQEFYeVNXNnXB3Q3C2ozaglfwhvhzUsgG9En+YjbJhk/FyhxJbI/iEUvMwfyqvsrWLMx6f7PykZa6+hiPuV3UeXVLK8CAhZk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744268062; c=relaxed/simple;
-	bh=TxrLqC9nYF89a5TnZLBY5qvjm88ALGL/VzZaEHaJi3k=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=G00pod1vdLSPMeJEJdxPvnZuTscbBF3kEuOL66BWpo8+VgHmV9q+oYHmfdsYizzzRWTtMMPUdEIidrQsvKubZGqHDwEp8BsQ2nEzwchj0Ki8802VCKynGAi83+e/nOfel0I0rE3p//bRXGYAO6Y2CEvAehX9wLPOLLtmR0RGYoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H7hxTsIX; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744268059;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2BSsly/zurt18wlsSnRCbFAkcKV3HWi5lt2feE8wbC4=;
-	b=H7hxTsIXZdzqHday74V8reApYpj2JyQfnflV3UvWmZ6JbOOtZbgbqQfw7XlFdW5LZlrmmo
-	vFpkOoQsjfRP4CCXg9A4miLGkTVq6BfJ8P9Ar8TL1ubG5Zl+7mqwIoBOk7pNgHw98p/lns
-	iAtEGna3u6OeC4bY0VdEA3Y4TTDfCac=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-685-88WP7-plNJCCe5GNVi4wAg-1; Thu,
- 10 Apr 2025 02:54:16 -0400
-X-MC-Unique: 88WP7-plNJCCe5GNVi4wAg-1
-X-Mimecast-MFC-AGG-ID: 88WP7-plNJCCe5GNVi4wAg_1744268054
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 07AEB1801A12;
-	Thu, 10 Apr 2025 06:54:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.40])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id CF1C719560AD;
-	Thu, 10 Apr 2025 06:54:10 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20250409190335.3858426f@kernel.org>
-References: <20250409190335.3858426f@kernel.org> <20250407161130.1349147-1-dhowells@redhat.com> <20250407161130.1349147-7-dhowells@redhat.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: dhowells@redhat.com, netdev@vger.kernel.org,
-    Marc Dionne <marc.dionne@auristor.com>,
-    "David S.
- Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-    Simon Horman <horms@kernel.org>,
-    Christian Brauner <brauner@kernel.org>,
-    Chuck Lever <chuck.lever@oracle.com>, linux-afs@lists.infradead.org,
-    linux-kernel@vger.kernel.org,
-    Herbert Xu <herbert@gondor.apana.org.au>,
-    linux-crypto@vger.kernel.org
-Subject: Re: [PATCH net-next v2 06/13] rxrpc: rxgk: Provide infrastructure and key derivation
+	s=arc-20240116; t=1744268804; c=relaxed/simple;
+	bh=BwgGI6MZYv2vNydtUJb8sY2UgwkVT1/xfezAVPOvL2k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HQoso7LrqzKPLtKCy1UftYjaI2xdncv0zsphX5KNgaG3AebZsYBggJWWm6OqF+pAo155bRWqp100IVqWQinlK2UwE2e22T5ard0pdL0qln8S8b7NzUmznn5T/vkvxwA8oTq/1Fne9pPg3wvDiG1U1AgUSt4BgUFqnJjcGUZ1LDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IBo2V+wm; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744268803; x=1775804803;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BwgGI6MZYv2vNydtUJb8sY2UgwkVT1/xfezAVPOvL2k=;
+  b=IBo2V+wm9LHaoN9+ycvhGi2Hu3NIC9QKIr6i86CcpO9xHQMmcqIiX5pt
+   eqJmSDSCCRvmnPAb3WizVgVY7KVU388T+JFeFtgWo0Zg1a8+YvU3nTQc2
+   z4GRzy8bVtxfalpbmwCMlrDjRpj1SqHVws2yiwZ6SRU0MbnWrMBq9Vg1P
+   xDS2MO3/5yBqcR2yN+d/Cmo7T9FFF53KE/Gc16uR5MGF2/4SZTwZfUifI
+   l8Q8wtJ1QAqRgVeOkc0Jzorx0p5kMm/CBqMQbaahuJnO8KaFIvA0WmsfN
+   5mJxcbmbI08T3Z63Nsb8QrTMXr9olD533gc2fOTkvbNlXWM55qeDbgrBC
+   g==;
+X-CSE-ConnectionGUID: j+vZTDSVQr2vrUvTVv7dxQ==
+X-CSE-MsgGUID: NIXVziBAS4GbS5qbvM19pA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11399"; a="45484810"
+X-IronPort-AV: E=Sophos;i="6.15,202,1739865600"; 
+   d="scan'208";a="45484810"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 00:06:40 -0700
+X-CSE-ConnectionGUID: dc0X+vL2S5ioxsxxRhI0SA==
+X-CSE-MsgGUID: 4vsCeVDXRH+kGFuW1sc24A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,202,1739865600"; 
+   d="scan'208";a="128791503"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 00:06:36 -0700
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id A9DBE11FA2C;
+	Thu, 10 Apr 2025 10:06:33 +0300 (EEST)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
+	(envelope-from <sakari.ailus@linux.intel.com>)
+	id 1u2lzd-00FQT3-20;
+	Thu, 10 Apr 2025 10:06:33 +0300
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: linux-crypto@vger.kernel.org
+Cc: Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Avi Fishman <avifishman70@gmail.com>,
+	Tomer Maimon <tmaimon77@gmail.com>,
+	Tali Perry <tali.perry1@gmail.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	openbmc@lists.ozlabs.org
+Subject: [PATCH 0/3] Use a local device pointer for hwrng drivers instead of casting constantly
+Date: Thu, 10 Apr 2025 10:06:20 +0300
+Message-Id: <20250410070623.3676647-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2099211.1744268049.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 10 Apr 2025 07:54:09 +0100
-Message-ID: <2099212.1744268049@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Content-Transfer-Encoding: 8bit
 
-Jakub Kicinski <kuba@kernel.org> wrote:
+Hi folks,
 
-> On Mon,  7 Apr 2025 17:11:19 +0100 David Howells wrote:
-> > +	aead =3D crypto_krb5_prepare_encryption(krb5, &TK, RXGK_CLIENT_ENC_R=
-ESPONSE, gfp);
-> > +	if (IS_ERR(aead))
-> > +		goto aead_error;
-> > +	gk->resp_enc =3D aead;
-> > +
-> > +	if (crypto_aead_blocksize(gk->resp_enc) !=3D krb5->block_len ||
-> > +	    crypto_aead_authsize(gk->resp_enc) !=3D krb5->cksum_len) {
-> > +		pr_notice("algo inconsistent with krb5 table %u!=3D%u or %u!=3D%u\n=
-",
-> > +			  crypto_aead_blocksize(gk->resp_enc), krb5->block_len,
-> > +			  crypto_aead_authsize(gk->resp_enc), krb5->cksum_len);
-> > +		return -EINVAL;
-> =
+Clean up random number reading by adding a local shorthand variable for a
+struct device pointer used on multiple Runtime PM functions. The changes
+are very similar in all three drivers.
 
-> kfree_sensitive(buffer); missing?
+Sakari Ailus (3):
+  hwrng: atmel - Add a local variable for struct device pointer
+  hwrng: mtk - Add a local variable for struct device pointer
+  hwrng: npcm - Add a local variable for struct device pointer
 
-Good catch, thanks.  That path should never trigger, but it should really =
-do
-"ret =3D -EINVAL; goto out;".
+ drivers/char/hw_random/atmel-rng.c | 9 +++++----
+ drivers/char/hw_random/mtk-rng.c   | 7 ++++---
+ drivers/char/hw_random/npcm-rng.c  | 7 ++++---
+ 3 files changed, 13 insertions(+), 10 deletions(-)
 
-Do you want me to respin the patches or follow up with a fix patch?
-
-David
+-- 
+2.39.5
 
 
