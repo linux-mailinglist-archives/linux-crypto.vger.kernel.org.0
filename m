@@ -1,69 +1,69 @@
-Return-Path: <linux-crypto+bounces-11595-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11597-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B3CA83A5F
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 09:11:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97AE4A83A56
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 09:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03A1E3AF616
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 07:07:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1DC41B8251B
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 07:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54AA20AF78;
-	Thu, 10 Apr 2025 07:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A56420AF8D;
+	Thu, 10 Apr 2025 07:06:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n0I/C6tg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iQXMUbHK"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFDB202C26
-	for <linux-crypto@vger.kernel.org>; Thu, 10 Apr 2025 07:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43F220AF77
+	for <linux-crypto@vger.kernel.org>; Thu, 10 Apr 2025 07:06:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744268803; cv=none; b=mvCtaOlDpuvaw9Vyz/jbgsuMYFUxKd1N67o+fBgqqwQJnjVEy62ycRd5HUY7efnNaRyfD/ozs4poKBb9A/5pyUXinw6aS8rpEtPGX45U67G2Xc6Q5wbIxl7h2s/5bLhMnZ8niHgD/iVwibz9ff3r0HTUo8MvEcbhFmKkbFWmQs0=
+	t=1744268805; cv=none; b=clRbYVOORdfmHLx9H97zKAUOa/IQb3OvxquU2mj5DiHweL4eV91pY1h61uJOJwm6nSkmRuS5/iUdv7O2ls2fYja+xGP+mhSUfaRH/rsHkww+b3PlxZLbUcGKQdZXEG897ypaDeT7npqmMjDeLxf3LMjS0t280/SOVvsS+kIq2YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744268803; c=relaxed/simple;
-	bh=TE7iAMTJLA59sZpWYVqvYbWng+qFOuV9FpYpZVf3SEg=;
+	s=arc-20240116; t=1744268805; c=relaxed/simple;
+	bh=eTuV2CyB5vjAJ0CZ1BcbW4eb89Fsn/ZCIyYBD5yo6Ow=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lZDp1y3kaZayXyQX5q2ylVdqOy7nrcDvGhqfNe/IsEdBo//o99ID7Abs1ixPXCzRoJACToYUkNahTbe1yScexKAjjMz2OhFhYN8QmWjv+8GJwCKlPjt7sG08jzAfC6i4W/buUF3/5tCsTwik2/J/hUxjRlao3jh9EYXMMSj25Co=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n0I/C6tg; arc=none smtp.client-ip=198.175.65.20
+	 MIME-Version; b=DXktP2coSm0VuW8vh6pjWAEMwqui6Co4R13yV1KC2CzOmSO+FeKotsE+IkwfxCIrxfn0Lm7oMhMkwL++IDCmnCWFFjlYZc47lljLPBO5IZIOnqRyBMn6Yt64mSURL/L0yo2NWQWddDClqZj0GHomuR/LaBE6yhX0+p+mwRpTjQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iQXMUbHK; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744268802; x=1775804802;
+  t=1744268804; x=1775804804;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=TE7iAMTJLA59sZpWYVqvYbWng+qFOuV9FpYpZVf3SEg=;
-  b=n0I/C6tgLWS7kpL9mYduKa7xm7k4/uYtzXjMvIa9hu+kM0fA5mYSatg8
-   hU76vhlJGvjaJUNwm6hTAXE/NSaM4l3M2y32OZKsc2f1CDVGeVOIan+ff
-   7QAjZQSpO1OYtCgI4bwFojJ3umdiJVr+zrsdvWujBi7bgazB+kVl8umrb
-   K23UaTcvjwPsIaivFwd4fPOsL1k0rSfFZHXV08+M7m2jhPAPGJ4W3rzPf
-   uMwc06/OX1M7+C88I+5waESEZhi2Abq1CwDHfd8QZb4vO1qNat9pb4tpm
-   AdZNnp0EFT/OxnVvbc4E+zQOpy1zrIodt8NcP/ScZLHo9zbF5Kjdasvw7
+  bh=eTuV2CyB5vjAJ0CZ1BcbW4eb89Fsn/ZCIyYBD5yo6Ow=;
+  b=iQXMUbHKyY+LUYtzVwuJeB3mt0IA7V7fchJiyPT9eIoBDKMFxNmhIo1P
+   bQFJrsaFeTfnK7rxREp99jfITQigT0utfDX7tIS18acZjLW0ZYmfN5iQp
+   oHtg+abQX4Kng02OuidRtAFZaLMc1R3u3HPYm2MmglpwQoabvAvT+/iaM
+   97caIB40bs6OfCjxBif4rSOGHbeMv7K9XJkSMdVgpPo1RcfExTtMyEYqe
+   in1jfTgXFVjrBieulTq5xqonTRuM/zfFnn7yiSNv6vaHgZkXCWCes0LdC
+   QnT0s91Ogs5i4qVEn8KBqxOkI5syneBU+ybuCjuZG8is+usbFb35wDANO
    g==;
-X-CSE-ConnectionGUID: ia9BVW9nR7aRO5VL609+RQ==
-X-CSE-MsgGUID: bP2mnaoMQ7+AGcy9trXslg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11399"; a="45484800"
+X-CSE-ConnectionGUID: DzR/+4++Qiqr2b9QZJHgIQ==
+X-CSE-MsgGUID: eA/LFEuBS6OwXL1921ZT8A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11399"; a="45484820"
 X-IronPort-AV: E=Sophos;i="6.15,202,1739865600"; 
-   d="scan'208";a="45484800"
+   d="scan'208";a="45484820"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 00:06:39 -0700
-X-CSE-ConnectionGUID: jcRV1cD5T0GwUaoEVA8YeA==
-X-CSE-MsgGUID: RLnB8c7VT5SfdPnsXZyizA==
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 00:06:40 -0700
+X-CSE-ConnectionGUID: /9qgZoukRT2V3k+E473utg==
+X-CSE-MsgGUID: eCd3L+qyRjqOTOU2EOJUdg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,202,1739865600"; 
-   d="scan'208";a="128791502"
+   d="scan'208";a="128791505"
 Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
   by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 00:06:36 -0700
 Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id ACEFF11FB1F;
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id B0BBE1203B9;
 	Thu, 10 Apr 2025 10:06:33 +0300 (EEST)
 Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
 	(envelope-from <sakari.ailus@linux.intel.com>)
-	id 1u2lzd-00FQTB-2E;
+	id 1u2lzd-00FQTF-2I;
 	Thu, 10 Apr 2025 10:06:33 +0300
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 From: Sakari Ailus <sakari.ailus@linux.intel.com>
@@ -81,9 +81,9 @@ Cc: Olivia Mackall <olivia@selenic.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
 	openbmc@lists.ozlabs.org
-Subject: [PATCH 2/3] hwrng: mtk - Add a local variable for struct device pointer
-Date: Thu, 10 Apr 2025 10:06:22 +0300
-Message-Id: <20250410070623.3676647-3-sakari.ailus@linux.intel.com>
+Subject: [PATCH 3/3] hwrng: npcm - Add a local variable for struct device pointer
+Date: Thu, 10 Apr 2025 10:06:23 +0300
+Message-Id: <20250410070623.3676647-4-sakari.ailus@linux.intel.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250410070623.3676647-1-sakari.ailus@linux.intel.com>
 References: <20250410070623.3676647-1-sakari.ailus@linux.intel.com>
@@ -101,27 +101,28 @@ needed.
 
 Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
- drivers/char/hw_random/mtk-rng.c | 7 ++++---
+ drivers/char/hw_random/npcm-rng.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/char/hw_random/mtk-rng.c b/drivers/char/hw_random/mtk-rng.c
-index 1e3048f2bb38..38e57900080a 100644
---- a/drivers/char/hw_random/mtk-rng.c
-+++ b/drivers/char/hw_random/mtk-rng.c
-@@ -83,9 +83,10 @@ static bool mtk_rng_wait_ready(struct hwrng *rng, bool wait)
- static int mtk_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+diff --git a/drivers/char/hw_random/npcm-rng.c b/drivers/char/hw_random/npcm-rng.c
+index 9ff00f096f38..beec96391af7 100644
+--- a/drivers/char/hw_random/npcm-rng.c
++++ b/drivers/char/hw_random/npcm-rng.c
+@@ -54,10 +54,11 @@ static void npcm_rng_cleanup(struct hwrng *rng)
+ static int npcm_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
  {
- 	struct mtk_rng *priv = to_mtk_rng(rng);
-+	struct device *dev = (struct device *)priv->rng.priv;
+ 	struct npcm_rng *priv = to_npcm_rng(rng);
++	struct device *dev = (struct device *)priv->rng.priv
  	int retval = 0;
+ 	int ready;
  
 -	pm_runtime_get_sync((struct device *)priv->rng.priv);
 +	pm_runtime_get_sync(dev);
  
- 	while (max >= sizeof(u32)) {
- 		if (!mtk_rng_wait_ready(rng, wait))
-@@ -97,8 +98,8 @@ static int mtk_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
- 		max -= sizeof(u32);
+ 	while (max) {
+ 		if (wait) {
+@@ -79,8 +80,8 @@ static int npcm_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+ 		max--;
  	}
  
 -	pm_runtime_mark_last_busy((struct device *)priv->rng.priv);
