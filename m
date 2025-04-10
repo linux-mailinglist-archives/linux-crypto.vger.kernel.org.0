@@ -1,68 +1,69 @@
-Return-Path: <linux-crypto+bounces-11607-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11608-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA42A847AA
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 17:23:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D451A847AB
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 17:23:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10B8E462DD4
-	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 15:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01FBA463CF6
+	for <lists+linux-crypto@lfdr.de>; Thu, 10 Apr 2025 15:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D0D1E766E;
-	Thu, 10 Apr 2025 15:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC43D1E8847;
+	Thu, 10 Apr 2025 15:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F+vCj7RW"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kOVRpegt"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07A51C6FE8
-	for <linux-crypto@vger.kernel.org>; Thu, 10 Apr 2025 15:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AB561E5B62
+	for <linux-crypto@vger.kernel.org>; Thu, 10 Apr 2025 15:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744298580; cv=none; b=NyHg0uY6hJ89x2uE3CeV+2fNRDHJM6nDW6XuqPhwouqToTcX8Z6DbCTQ1rQUuu8jNvrQIZLsqcOOnN43cToKt3cd3HYb9x2us2B+jXmo+ED81DyXnC5r3IuSZGA/YvitE723CPkOBF/jfXGr6rVGmng5ZdnZSoEyqLUrj7/7/18=
+	t=1744298581; cv=none; b=CXaQy8dJYwDuUYfbXoqB+WYDTRFIHfD73tIXV8lyLvlT9Fg0On8FjRNVfVwShCIXf2zK9XbIkHUN/u9x4g9ehFcVxryNIJk1rhsGPIJboskwwjrthqmKdPtedy2sprCYzv/Iy60JCEE3WbGUjdaVEcC5TSo0i5SXvsDXb6ZhcBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744298580; c=relaxed/simple;
-	bh=kVA5MpLBMU4IYqfLgN92o9IEr4g+jq3spidVJHcMb6o=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AjUig1RtZ5oxj9SIexQxY1reYWvcJ3XPOWbG2Exr5Uxf65D4CZJhqGdrGeps0uXcjLWI7o8PWjqvIMk2Z0TVoTBIrNdedId0wXxdhjtKb5+ORXNBpo+hrL1cL0VfN97zxz3no/vLD3BWtXTPwpyTWBl8cQ+aa35pDw1g/Jk2Mzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F+vCj7RW; arc=none smtp.client-ip=192.198.163.17
+	s=arc-20240116; t=1744298581; c=relaxed/simple;
+	bh=2nEmXOWj61EFby8lltYJVgmKKKLIgiCDNpDNWcMK21o=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HPMVa9iMfk0Ig1pREf6JnT16f3o+x5jiRZ+MCVhNNvlmhdmJvCW6pwlCdfnUZF0ClwWehVN2Du9ksQzCYiy8/mHWhvhclp2bPkfabmlWyjj8mQhLfM8x7IUzqWR/LkIeunansUIJGudN9s/7yA5On0QOzTjyok3KPTVLcilMV/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kOVRpegt; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744298579; x=1775834579;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=kVA5MpLBMU4IYqfLgN92o9IEr4g+jq3spidVJHcMb6o=;
-  b=F+vCj7RWR7oYrP1928ZdkeKLW7tho4g95VSXJfwPnRFFUrVVMKrGRRGl
-   2q6GCwg4w7QU3qpEW2FlrlB6bCx1JIHW+XywdJiete0tUZZiNqz2cg4Ru
-   9dLQbJ9ihhuEXNGjaD2bP035rWjHCQa6AObOiEN9GLrsEAfyVWduWq5EW
-   +IvHbGjO0curCwAwNswsLrYGF5xJeUoBX/wUQB4bieyDnzlmUyGR+A/yA
-   b41b+qeOEdZotxQAgUrLbcDh1p7g73r66cEseuvRqffm6/UARecc2Y/+k
-   LWPi3nK7H3Q2AGrb63f3WgIdgg9IFC/DwoFRpelXe0wdRTHu1fC0YzKDV
+  t=1744298580; x=1775834580;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=2nEmXOWj61EFby8lltYJVgmKKKLIgiCDNpDNWcMK21o=;
+  b=kOVRpegtD5rbzNQWGftgu7oq5GC6qa7C7euWwPRaI8GPXoRIi0Jlqrh3
+   7uG93wTs8QfrV8OUgboliMriC+NaexcrPH/+Azv4uXD0EG7bNOIvSRcVw
+   0l2VIdRXDJreHKWjMoO5tDQFebtzYScvyHD+/04YlqNLI7xNK1gfvqAap
+   5GQl2Fq5WOKXYS8NbYaVn37VKOAiaxThydDBQYK8IfPOjbm4mpkFWVm3O
+   V8nQqZl12XvIbbMhAQ1RlMIqPVIkj1V0j9LovQR/EF3EkOBCPEu7xjGCQ
+   l/VTCjmAVinv0j34ZNIQhdfngXnJxfzVDWB3nry4ctv4xkOaFL7CRpAkS
    g==;
-X-CSE-ConnectionGUID: dBvDs7+1QQqM+M0Q14hqug==
-X-CSE-MsgGUID: c8BWFwvZQbmQBqYT0rLzuA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11400"; a="45716269"
+X-CSE-ConnectionGUID: GbZ0U74JTOOTsNq2HXy94A==
+X-CSE-MsgGUID: +XSs0FbkQsCwEyivaknttQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11400"; a="45716291"
 X-IronPort-AV: E=Sophos;i="6.15,202,1739865600"; 
-   d="scan'208";a="45716269"
+   d="scan'208";a="45716291"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
   by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 08:22:56 -0700
-X-CSE-ConnectionGUID: 3j6bmGJiRKOZWNowD2NzRA==
-X-CSE-MsgGUID: ew/RyzT9RNy/1OP0CZJiGQ==
+X-CSE-ConnectionGUID: xwrGhn4bQV2XQcBYOS31NQ==
+X-CSE-MsgGUID: 7SLwaDhESOSRn2bA8q196Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,202,1739865600"; 
-   d="scan'208";a="134108194"
+   d="scan'208";a="134108201"
 Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 08:22:52 -0700
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 08:22:53 -0700
 Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id DEA3A11F74E;
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id E27B411FA2F;
 	Thu, 10 Apr 2025 18:22:49 +0300 (EEST)
 Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
 	(envelope-from <sakari.ailus@linux.intel.com>)
-	id 1u2tjt-00HObw-2j;
+	id 1u2tjt-00HObz-2s;
 	Thu, 10 Apr 2025 18:22:49 +0300
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 From: Sakari Ailus <sakari.ailus@linux.intel.com>
@@ -80,10 +81,12 @@ Cc: Olivia Mackall <olivia@selenic.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
 	openbmc@lists.ozlabs.org
-Subject: [PATCH v2 0/3] Use a local device pointer for hwrng drivers instead of casting constantly
-Date: Thu, 10 Apr 2025 18:22:36 +0300
-Message-Id: <20250410152239.4146166-1-sakari.ailus@linux.intel.com>
+Subject: [PATCH v2 1/3] hwrng: atmel - Add struct device pointer to device context struct
+Date: Thu, 10 Apr 2025 18:22:37 +0300
+Message-Id: <20250410152239.4146166-2-sakari.ailus@linux.intel.com>
 X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250410152239.4146166-1-sakari.ailus@linux.intel.com>
+References: <20250410152239.4146166-1-sakari.ailus@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -92,26 +95,61 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi folks,
+Add a struct device pointer field to the device's context struct. This
+makes using the unsigned long priv pointer in struct hwrng unnecessary, so
+remove that one as well.
 
-Clean up random number reading by storing struct device pointer to device
-context struct. The changes are very similar in all three drivers.
-
-since v2:
-
-- Add a struct device pointer field to device context structs, don't use
-  struct hwrgn priv field for the purpose anymore.
-
-Sakari Ailus (3):
-  hwrng: atmel - Add struct device pointer to device context struct
-  hwrng: mtk - Add struct device pointer to device context struct
-  hwrng: npcm - Add struct device pointer to device context struct
-
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+---
  drivers/char/hw_random/atmel-rng.c | 11 ++++++-----
- drivers/char/hw_random/mtk-rng.c   |  9 +++++----
- drivers/char/hw_random/npcm-rng.c  |  9 +++++----
- 3 files changed, 16 insertions(+), 13 deletions(-)
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/char/hw_random/atmel-rng.c b/drivers/char/hw_random/atmel-rng.c
+index 143406bc6939..d2b00458761e 100644
+--- a/drivers/char/hw_random/atmel-rng.c
++++ b/drivers/char/hw_random/atmel-rng.c
+@@ -37,6 +37,7 @@ struct atmel_trng {
+ 	struct clk *clk;
+ 	void __iomem *base;
+ 	struct hwrng rng;
++	struct device *dev;
+ 	bool has_half_rate;
+ };
+ 
+@@ -59,9 +60,9 @@ static int atmel_trng_read(struct hwrng *rng, void *buf, size_t max,
+ 	u32 *data = buf;
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync((struct device *)trng->rng.priv);
++	ret = pm_runtime_get_sync(trng->dev);
+ 	if (ret < 0) {
+-		pm_runtime_put_sync((struct device *)trng->rng.priv);
++		pm_runtime_put_sync(trng->dev);
+ 		return ret;
+ 	}
+ 
+@@ -79,8 +80,8 @@ static int atmel_trng_read(struct hwrng *rng, void *buf, size_t max,
+ 	ret = 4;
+ 
+ out:
+-	pm_runtime_mark_last_busy((struct device *)trng->rng.priv);
+-	pm_runtime_put_sync_autosuspend((struct device *)trng->rng.priv);
++	pm_runtime_mark_last_busy(trng->dev);
++	pm_runtime_put_sync_autosuspend(trng->dev);
+ 	return ret;
+ }
+ 
+@@ -134,9 +135,9 @@ static int atmel_trng_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 
+ 	trng->has_half_rate = data->has_half_rate;
++	trng->dev = &pdev->dev;
+ 	trng->rng.name = pdev->name;
+ 	trng->rng.read = atmel_trng_read;
+-	trng->rng.priv = (unsigned long)&pdev->dev;
+ 	platform_set_drvdata(pdev, trng);
+ 
+ #ifndef CONFIG_PM
 -- 
 2.39.5
 
