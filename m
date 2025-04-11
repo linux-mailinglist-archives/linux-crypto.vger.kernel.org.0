@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-11678-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11680-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F662A8695D
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 01:43:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 729EDA86968
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 01:45:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E6C31B65400
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Apr 2025 23:43:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 429017AC159
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Apr 2025 23:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219EA2BEC53;
-	Fri, 11 Apr 2025 23:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA60B2BF3E2;
+	Fri, 11 Apr 2025 23:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="KVoVbP4n"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="mmPKP+VA"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.166.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F06522126B;
-	Fri, 11 Apr 2025 23:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8CE2BF3CB;
+	Fri, 11 Apr 2025 23:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744414998; cv=none; b=D46Y5iF50OrZJOwqLvQOXWZxUsDe3tzgDLXsNRaiYAVp9e7vVutqTJH/RDhkrJL0JKqW3TTycvM+1gq9WQUnL6a+OI+suYzYozeVlfLKSFpmxbBackWPX5wR8Vmc8dyG5QK8F8ef8SS778fV+zmr1+yReaK+JrM/g4589zidzsw=
+	t=1744415016; cv=none; b=nboOE6RHb4Cx+qZLhhLKamxu3HCgwSVh3WhpydyP8NI13jXUfYiiQzy5JdB/L7burvv5Ggkk3SdZLdiQf9Ryby8mz1H93Iryc6TLingaQgarLM6LkXxySRWSTOQqbPaVRXOS1/GLK41UQ6zGp1wrsef2hbb9FJJyskPXI9NikFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744414998; c=relaxed/simple;
-	bh=R9cSfNoj8XYtLswy63/tc4b6hplxuTpNLz5Xze37v48=;
+	s=arc-20240116; t=1744415016; c=relaxed/simple;
+	bh=Gn0befkxpjUuQ4Y7CTytfFWl+hOl1Eyt4SuMSid/He4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ovHcfP1I6K4p9d1adBemj1MBhohXKAqr6nNCvEMToa46/WMhyxMZMw4JyJMcQQ53gVeOz0pT0VG6IsYC7LXKznioEwnvDAIXMPKXfoLhJgh+8nmbTUGOnY1JFcPqIefp0olM3CPn4oe6prhfHgzm/QQQbu9AZIAog4ewV+ietpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=KVoVbP4n; arc=none smtp.client-ip=192.19.166.231
+	 MIME-Version; b=JTAHrESyfND2EUlSI5V5yd8mGxK5lRUe3meoMYDdFrJSprZOeEkKpRSxn2M1n9qPOj3erfie7HR5nyjvxeVohtKMpe4VZ8LLssjjs796f32QKo39ISHEqc9F1oxHNTd/H0pPrDl2b+FoRhLHVVlOORam+Yz1pIsmGRlniOY62oY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=mmPKP+VA; arc=none smtp.client-ip=192.19.166.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id AF9A0C0004E8;
-	Fri, 11 Apr 2025 16:43:16 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com AF9A0C0004E8
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 644CCC000357;
+	Fri, 11 Apr 2025 16:43:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 644CCC000357
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1744414996;
-	bh=R9cSfNoj8XYtLswy63/tc4b6hplxuTpNLz5Xze37v48=;
+	s=dkimrelay; t=1744415014;
+	bh=Gn0befkxpjUuQ4Y7CTytfFWl+hOl1Eyt4SuMSid/He4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KVoVbP4nVZ4cqUPVSAW9pXLhLa5pLwV3lVgn2rFXbaXhohZ+bVghKaYBQg9Tmgq2U
-	 bsHRKMtym9OSJ08q0Ki9SQtVetN4rRQKbETPX3emAxY9qy9t6RWmB7jj371kO8bcIn
-	 zS9PLpyBPhOdMiFktl5+VD+Q9O0zx2JBvqoJCjFM=
+	b=mmPKP+VAODshvA1naaw6yZY6lZbDiPMTkksh5p35S/BMzfjfKcKv40pWyyRckeMc7
+	 Q5tIVkUyGwP040Soe+2KyhAJtnex5tG60km5zbEFv5eaCv4dQUYkpDA736LK/pV1Zk
+	 nHB5ZoIo6lFoyy3cWEkMrPrCfyx7bhOenbjv5+IA=
 Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 761AF180004FC;
-	Fri, 11 Apr 2025 16:43:16 -0700 (PDT)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 2CFD118000530;
+	Fri, 11 Apr 2025 16:43:34 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: bcm-kernel-feedback-list@broadcom.com,
 	Linus Walleij <linus.walleij@linaro.org>,
@@ -66,12 +66,12 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 08/12] ARM: dts: bcm63178: Add BCMBCA peripherals
-Date: Fri, 11 Apr 2025 16:43:16 -0700
-Message-ID: <20250411234316.1022980-1-florian.fainelli@broadcom.com>
+Subject: Re: [PATCH v2 09/12] ARM64: dts: bcm4908: Add BCMBCA peripherals
+Date: Fri, 11 Apr 2025 16:43:33 -0700
+Message-ID: <20250411234333.1023114-1-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250406-bcmbca-peripherals-arm-v2-8-22130836c2ed@linaro.org>
-References: <20250406-bcmbca-peripherals-arm-v2-0-22130836c2ed@linaro.org> <20250406-bcmbca-peripherals-arm-v2-8-22130836c2ed@linaro.org>
+In-Reply-To: <20250406-bcmbca-peripherals-arm-v2-9-22130836c2ed@linaro.org>
+References: <20250406-bcmbca-peripherals-arm-v2-0-22130836c2ed@linaro.org> <20250406-bcmbca-peripherals-arm-v2-9-22130836c2ed@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -82,22 +82,23 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Fainelli <f.fainelli@gmail.com>
 
-On Sun, 06 Apr 2025 17:32:48 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
+On Sun, 06 Apr 2025 17:32:49 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
 > All the BCMBCA SoCs share a set of peripherals at 0xff800000,
 > albeit at slightly varying memory locations on the bus and
-> with varying IRQ assignments.
+> with varying IRQ assignments. ARM64 SoCs have additional
+> peripherals at 0xff858000.
 > 
-> Add the watchdog, GPIO, RNG, LED and DMA blocks for the
-> BCM63178 based on the vendor files 63178_map_part.h and
-> 63178_intr.h from the "bcmopen-consumer" code drop.
+> Add the watchdog, remaining GPIO blocks, RNG, and DMA blocks
+> for the BCM4908 based on the vendor files 4908_map_part.h
+> and 4908_intr.h from the "bcmopen-consumer" code drop.
 > 
-> This SoC has up to 256 possible GPIOs due to having 8
+> This SoC has up to 320 possible GPIOs due to having 10
 > registers with 32 GPIOs in each available.
 > 
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
+Applied to https://github.com/Broadcom/stblinux/commits/devicetree-arm64/next, thanks!
 --
 Florian
 
