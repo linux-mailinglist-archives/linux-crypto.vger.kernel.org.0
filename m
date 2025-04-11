@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-11675-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11685-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51041A8695A
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 01:42:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D6D0A86979
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 01:49:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D87B4A4DF7
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Apr 2025 23:42:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 246D37AEC1B
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Apr 2025 23:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E562BEC48;
-	Fri, 11 Apr 2025 23:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949CC2BD5AD;
+	Fri, 11 Apr 2025 23:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="fUzyMCjQ"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TxGl8ei7"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.166.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C988022126B;
-	Fri, 11 Apr 2025 23:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4FB1F9413;
+	Fri, 11 Apr 2025 23:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744414945; cv=none; b=HG4wCv4yXAKVzsBmMYHe21GRIGzpBOM+sC5PknNb+yJFYDScCcieyxMzylSSvUjra4SothPg9BO+VBw2DjlrdhlAdX8IwOafkJ22CF0whcpdcpUa4NQFKvWIntqIGpYgG++SrFd7Utdo8hy6ieYy0Ff1+vB76fj8ixyQtW9W22o=
+	t=1744415360; cv=none; b=DqWm2agrVFLm0LtbeJ2tyXOMbxjMyRxc6Q791bGjYRRbZKpC23YyFXGmNuApSmSy6LIqnL9IbEdPDiiIqiu6S3ikVE/pKWw96LovvPDXlF+50pGmlUrDkjHrWqnWJO6u9ppui2T7oYLYOPjxiQSMJYWMfBxX9Z+ElHfZ/ayUcfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744414945; c=relaxed/simple;
-	bh=o4Ze9aTAXad9MHK9fp4kWPnEdNcQSCRFnECzWnzg2LE=;
+	s=arc-20240116; t=1744415360; c=relaxed/simple;
+	bh=KE7xx5fV3DHlKulz2UWAtTlLl8KAKyE2y/a01nvcr8s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X0xNtOk3cAivggpqefPQ33iwCOzDm5IrZWO5beSIXFXYQclAGflzZct8S/DkN03UIJKm38+JUIVRXbW+1YsNKN1oVHlcHDvyPAD0UBvE4d+KWDMtgZpnNfulvVwXp9H/rsOZHhUk6TFUde4TFXx3vUCBhM4A0pwl99UTkie2btI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=fUzyMCjQ; arc=none smtp.client-ip=192.19.144.207
+	 MIME-Version; b=ohYeb1+SGpZP0xwyQ+FKw57F6crEXW0V6rM3LP8A6nm44BxEA01nC41+mAogLoaDotEMrYrt3mL02z39FWKJaSkYcwUetbx49MoZ3Vts5y9L7CipRQwC0hXDI2eQHx/jb6DXujLOG614+g71xgBqGVyzgZqpBi16sRdJ3GXaViw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=TxGl8ei7; arc=none smtp.client-ip=192.19.166.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B433FC0019E0;
-	Fri, 11 Apr 2025 16:42:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B433FC0019E0
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 3468DC0000E7;
+	Fri, 11 Apr 2025 16:42:27 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 3468DC0000E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1744414942;
-	bh=o4Ze9aTAXad9MHK9fp4kWPnEdNcQSCRFnECzWnzg2LE=;
+	s=dkimrelay; t=1744414947;
+	bh=KE7xx5fV3DHlKulz2UWAtTlLl8KAKyE2y/a01nvcr8s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fUzyMCjQ1Oeavs6aWcQpeo+M/RmEhKeSRfrnKIaK7U0Es4MTKniSOgZ+gEiVL/kvp
-	 cDQx8aPWWBmbuzrO1b//NP64Lpl1v669uW54eQsMP+US8id9UzmVyoJCuk+BeI/i53
-	 MS+vXzwGgW4RCSP/ry4CD+8eGWVrmk4zADbwExIU=
+	b=TxGl8ei7TG0FMdq8oJTJ1FLRjiUokkxHXRTnAveVbeoc1GT7VVIdqoKVrwCzOApwp
+	 Btsja+ZySFOReaIPBkbIPngIiCOnAusNTp+ZB2oR86suP2Wpf1jBIfjA64U9RqYkhw
+	 mBv86qa+/9Bf0qh5gjF+r/XNEQMZ5NYb+sT1U6RY=
 Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 3DA2418000530;
-	Fri, 11 Apr 2025 16:42:22 -0700 (PDT)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id EC41D18000530;
+	Fri, 11 Apr 2025 16:42:26 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: bcm-kernel-feedback-list@broadcom.com,
 	Linus Walleij <linus.walleij@linaro.org>,
@@ -65,14 +65,13 @@ To: bcm-kernel-feedback-list@broadcom.com,
 Cc: Florian Fainelli <f.fainelli@gmail.com>,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	linux-crypto@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 02/12] dt-bindings: rng: r200: Add interrupt property
-Date: Fri, 11 Apr 2025 16:42:21 -0700
-Message-ID: <20250411234221.1022325-1-florian.fainelli@broadcom.com>
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v2 03/12] ARM: dts: bcm6846: Add interrupt to RNG
+Date: Fri, 11 Apr 2025 16:42:26 -0700
+Message-ID: <20250411234226.1022410-1-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250406-bcmbca-peripherals-arm-v2-2-22130836c2ed@linaro.org>
-References: <20250406-bcmbca-peripherals-arm-v2-0-22130836c2ed@linaro.org> <20250406-bcmbca-peripherals-arm-v2-2-22130836c2ed@linaro.org>
+In-Reply-To: <20250406-bcmbca-peripherals-arm-v2-3-22130836c2ed@linaro.org>
+References: <20250406-bcmbca-peripherals-arm-v2-0-22130836c2ed@linaro.org> <20250406-bcmbca-peripherals-arm-v2-3-22130836c2ed@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -83,11 +82,9 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Fainelli <f.fainelli@gmail.com>
 
-On Sun, 06 Apr 2025 17:32:42 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
-> This IP block has an interrupt. Add it and add it to the
-> example as well.
+On Sun, 06 Apr 2025 17:32:43 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
+> The r200 RNG has an interrupt so let's add it.
 > 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
 
