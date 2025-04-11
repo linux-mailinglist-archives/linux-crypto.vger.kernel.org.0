@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-11686-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11681-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21D4BA8697F
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 01:53:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA9FA86963
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 01:44:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DE01BA32EF
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Apr 2025 23:53:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C71017E863
+	for <lists+linux-crypto@lfdr.de>; Fri, 11 Apr 2025 23:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D542BEC37;
-	Fri, 11 Apr 2025 23:53:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728912BEC59;
+	Fri, 11 Apr 2025 23:43:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="vGnk/1KR"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Eh8SaD6b"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.166.228])
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.166.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D622253EA;
-	Fri, 11 Apr 2025 23:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF5A12BEC48;
+	Fri, 11 Apr 2025 23:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744415584; cv=none; b=DH8wzL2NZeNK9EEr8gSJJT97TX2JWnCaldJcEatTJLZtmXNH+U+CX9YNHe1lGpB5ovzpObSgzYxUKA4giLuxNM9jcHBlwV8G9M3Im5/rd2sOhASBqrhqNkLEUrdmj/ucnziaQNGCfU4clrwQfqB9zpMRYiMl9l4GEb5khoZwDro=
+	t=1744415024; cv=none; b=vFDEI0mJBkbovupa+a3O7n9EYq7ycIcGP4StbT6fZ3hRzP9W548iIFQCuzMj8Od5AReJI+7GqHwxjXT4ZKQhWO/1q5DDSmJPSkPeKx3y5eWJQ/9aRnSoAjpK9wrfISDYN6NDPDgJWcYMc+qEE+jI2PCtHIBRfSwrw0ts0xKjB+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744415584; c=relaxed/simple;
-	bh=n7d/uF9YGLt1M/PYjRqomBSG2/DI9yalhdVcq0M5Qsc=;
+	s=arc-20240116; t=1744415024; c=relaxed/simple;
+	bh=DzedMiQG3AVGSKDf3skGJdk6le90+TdtXlLYWQkUTdg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eJFqS+u/T10EakYJ12DpxiipXr1RUIIYIOhx0U5eXLDGGeZvx8iJXf+yFg7FrEqG99P5eIcBr3vS/3iqiYLwpd2PedtXhAa0WEDGi5awbo/2HhR8HqO8UqbMPUhXOzwEzshcn0gvwy9u51ihCxdK2iSkzQnB+25hb+R/QUaXiFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=vGnk/1KR; arc=none smtp.client-ip=192.19.166.228
+	 MIME-Version; b=A842+LoGaOAfJxqPgW/2Dznvn0w5acfFYRcrG+YLGFunJE61wFiZAiRQPbuY69GJECceegB7rv7k+fPz8Mmg/svrMgufQ21RYrwzJhnQ8OuUisSBeyyAQlKlLLz2tc/6LRxKN1ew8YBxqqaavIo3lMRwGiLmDv63ItQdSDuJE1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Eh8SaD6b; arc=none smtp.client-ip=192.19.166.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id D5E5EC000F98;
-	Fri, 11 Apr 2025 16:44:08 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com D5E5EC000F98
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 7848CC00035C;
+	Fri, 11 Apr 2025 16:43:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 7848CC00035C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1744415048;
-	bh=n7d/uF9YGLt1M/PYjRqomBSG2/DI9yalhdVcq0M5Qsc=;
+	s=dkimrelay; t=1744415022;
+	bh=DzedMiQG3AVGSKDf3skGJdk6le90+TdtXlLYWQkUTdg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vGnk/1KRcC7jBOjAsRtIn3JRPhqQGlZaAZOKbmS9feWr0hopkM+PJqeMERotgTp5q
-	 W21lV2oh0Sya6RjmcD5UPwUsaCBbtX7/atAVh3pNFEwbJsv/Etg6uLY+nkWT6cu+b9
-	 B/f4AsfwwQbJ9u6wEamQr+RG99nGkEbmlDmIAmzo=
+	b=Eh8SaD6bZlTSo3mbyKoWzXc3+6GygADghR41sy7/4EutbXS4eoH7IZVPy4iufGFTb
+	 SbHJbNjOZ/Mx871wyI39tHCx5HbIdruqeWiFAWQza9x63DzLFvuhaToslrkH5m5kKU
+	 9YYguey/utDp/YSIZW5xBMMpN0YFlIggHjtH76v0=
 Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id A059718000530;
-	Fri, 11 Apr 2025 16:43:38 -0700 (PDT)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 48835180004FC;
+	Fri, 11 Apr 2025 16:43:42 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: bcm-kernel-feedback-list@broadcom.com,
 	Linus Walleij <linus.walleij@linaro.org>,
@@ -66,12 +66,12 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 10/12] ARM64: dts: bcm6856: Add BCMBCA peripherals
-Date: Fri, 11 Apr 2025 16:43:38 -0700
-Message-ID: <20250411234338.1023197-1-florian.fainelli@broadcom.com>
+Subject: Re: [PATCH v2 11/12] ARM64: dts: bcm6858: Add BCMBCA peripherals
+Date: Fri, 11 Apr 2025 16:43:41 -0700
+Message-ID: <20250411234341.1023279-1-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250406-bcmbca-peripherals-arm-v2-10-22130836c2ed@linaro.org>
-References: <20250406-bcmbca-peripherals-arm-v2-0-22130836c2ed@linaro.org> <20250406-bcmbca-peripherals-arm-v2-10-22130836c2ed@linaro.org>
+In-Reply-To: <20250406-bcmbca-peripherals-arm-v2-11-22130836c2ed@linaro.org>
+References: <20250406-bcmbca-peripherals-arm-v2-0-22130836c2ed@linaro.org> <20250406-bcmbca-peripherals-arm-v2-11-22130836c2ed@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -82,17 +82,21 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Fainelli <f.fainelli@gmail.com>
 
-On Sun, 06 Apr 2025 17:32:50 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
+On Sun, 06 Apr 2025 17:32:51 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
 > All the BCMBCA SoCs share a set of peripherals at 0xff800000,
 > albeit at slightly varying memory locations on the bus and
 > with varying IRQ assignments. ARM64 SoCs have additional
-> peripherals at 0xff858000. On BCM6856 the PERF window was
-> too big so adjust it down to its real size (0x3000) and add
-> another window for PERF1 at 0xff858000.
+> peripherals at 0xff858000. On BCM6858 the PERF window was
+> too big so adjust it down to its real size (0x3000).
 > 
 > Add the watchdog, GPIO blocks, RNG, LED, second UART and DMA
-> blocks for the BCM6856 based on the vendor files 6856_map_part.h
-> and 6856_intr.h from the "bcmopen-consumer" code drop.
+> blocks for the BCM6858 based on the vendor files 6858_map_part.h
+> and 6858_intr.h from the "bcmopen-consumer" code drop.
+> 
+> Curiously, on the BCM6858, the PL081 DMA block is separate
+> from the two peripheral groups PERF and PERF1, so we put it
+> in its own bus in the device tree to translate the fourcell
+> addresses.
 > 
 > This SoC has up to 256 possible GPIOs due to having 8
 > registers with 32 GPIOs in each available.
