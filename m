@@ -1,113 +1,160 @@
-Return-Path: <linux-crypto+bounces-11682-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11687-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D7EA86965
-	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 01:45:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CC21A8698D
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 02:09:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDDFE4A6813
-	for <lists+linux-crypto@lfdr.de>; Fri, 11 Apr 2025 23:44:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26520174626
+	for <lists+linux-crypto@lfdr.de>; Sat, 12 Apr 2025 00:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C072BEC53;
-	Fri, 11 Apr 2025 23:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895F32F5B;
+	Sat, 12 Apr 2025 00:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="lX6+nAd4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NTAFEmLC"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.166.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7072A2BEC48;
-	Fri, 11 Apr 2025 23:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C58CA2D;
+	Sat, 12 Apr 2025 00:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744415059; cv=none; b=pkKCMoOOdP042zm4bYxiVTQAztb3ai6gjJEqssMs2cks7a2nYTZh9Cg9nK9WfLNn6luaEGvsyTafHa8MTBs9juwJcRc0zbpDfynoDoXb2h5i1fQP8iSnsBRHi/WXMIJnqYCcq5eEZlBeSdI8eoQ52Z2bEBxu/B+o5A1vu23QJxQ=
+	t=1744416569; cv=none; b=UlQJGkB3tTBS7XbE1drG47fZWb3Qgbcq4UcqQZMZDnOjQRCkayxuWvUaooLlxpIcl4f54xdJQGbowbYGp4QlzbPgoiGvFpfjvdi2dO9rZ/mGzsrDrALfhy8x1DdL5S1dCq3n3jZur0tDJCZWocETT1YWm2B4a8cqIZkFYWLql+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744415059; c=relaxed/simple;
-	bh=fEKOzKlvelgdVgB8dlcuUPM3nk96uyOOonGkap/UOq8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZmBjbVO1UGeRbU4fZusrzIhmKEUeiIxVshClqSD9+Smw3cEqHA/w+bGpVo+xKn9zZZqGDfLyJXUAJOzYTsOGl4V1kVbGVoYg0nm1gffAXJ2DGle1fFUj/BhvNveZ8X1pE6jZnto5nY0yEXrHXmduEL+fc0+is0pvngpSw7NWZms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=lX6+nAd4; arc=none smtp.client-ip=192.19.166.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B3280C0004E9;
-	Fri, 11 Apr 2025 16:44:16 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B3280C0004E9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1744415056;
-	bh=fEKOzKlvelgdVgB8dlcuUPM3nk96uyOOonGkap/UOq8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lX6+nAd4pejMDMA7GYM46vJ5l7AgaTy/INmtG6LPpDwJ+qSw99OnYMCJYYIn6aDOY
-	 NO7ucUnoOmdXKqtfr6jFZhp4ULjzsDV7AmhB0kEh6DPbVlSQJESArsdWGj0/gG0P+v
-	 ju9A/jp2B1yLNkj7072QO7ladG6rQngNn6xEFoPU=
-Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 7DB48180004FC;
-	Fri, 11 Apr 2025 16:43:46 -0700 (PDT)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: bcm-kernel-feedback-list@broadcom.com,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	William Zhang <william.zhang@broadcom.com>,
-	Anand Gore <anand.gore@broadcom.com>,
-	Kursad Oney <kursad.oney@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	=?iso-8859-2?q?Rafa=B3_Mi=B3ecki?= <rafal@milecki.pl>,
-	Olivia Mackall <olivia@selenic.com>,
-	Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] ARM64: dts: bcm63158: Add BCMBCA peripherals
-Date: Fri, 11 Apr 2025 16:43:46 -0700
-Message-ID: <20250411234346.1023364-1-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250406-bcmbca-peripherals-arm-v2-12-22130836c2ed@linaro.org>
-References: <20250406-bcmbca-peripherals-arm-v2-0-22130836c2ed@linaro.org> <20250406-bcmbca-peripherals-arm-v2-12-22130836c2ed@linaro.org>
+	s=arc-20240116; t=1744416569; c=relaxed/simple;
+	bh=slG7ZFqjM0P/YPzxS6s5ruPPxuA1SgdXhHRCsMqCfpE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SvMoMHFUOlr1WK8jxO4lKYKVK91ePy7lvHO8a5xdrC8u68bEB7OliWQnYmbMcAg6BLSWiFEnZ+1deWymuSDT1zZ4u5lSWcLhY1nr/hjefOsi33gw/QNxEhFOCL2t/cGfeiPDb1TppButZ4DV7kmRt8HTGBZM6JWgGDVZypASTfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NTAFEmLC; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43cfe574976so18309675e9.1;
+        Fri, 11 Apr 2025 17:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744416566; x=1745021366; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T2GCjRQaYLHuBl+cFkX5JcBxBsl6uDH5BuvGq8wYLRI=;
+        b=NTAFEmLCnUfrvK/ay/owjgcD5zlWR5tEsYN0yELdrRkihk6wvIW2i5BMlgZpcGFk3M
+         t2qQUiAc+eQrr2ZFSGTFHLNKVY+Y7otrX0vUR4UYJSRfHn08lU2CyDKNW98migx9pj1e
+         lAW003+6zbIRAaYEdUJJrTBGuegga7x7yLbxopUYX3QLl4on7P3iU6sHZxNIJ+Mgg+KP
+         jfGOoTAQboACpzgz7WzH8/yTMofIVofrne0uukvqqCT0DK/3q65JRWxDfxbe9hkMXuIw
+         315xQyVU3APdlmBSbMqKrtnPf9MB+QEpMj9x3RIbRX9rew6wC+P7XVxtc9iptKkNUKOm
+         ZIeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744416566; x=1745021366;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T2GCjRQaYLHuBl+cFkX5JcBxBsl6uDH5BuvGq8wYLRI=;
+        b=EOWegHs5mokxmSIZfgRO7kHKynvrOb8fQLYLiH7fceWzFYswsBd5lVpaYTrO4se2Ag
+         q3vGquiRA1HxoISphMNro4Vh4ykH3SwCZ9l1p2/gGjNziZjmFfMHn5vMxE1fntEAIBP0
+         +psB3pbxQINNFYoMp1SeRGpswsJV3p3jDxGbi5ThSKBAbJvdHTkmBBFfaPAO/7DdjOJV
+         IaR1Q93fdXui6OG/z74WsiL2xYNaxb/ZBJ0ZssoR9M05u8vO9oNqKpTa/4V0B9am1Luy
+         BDewbO6qM2eKwJuDSMXDno/gxkdfZ6oKXpW+30lAQjPa8aSXcUELyOixfMD1eum9HHd/
+         1U1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUL04/Ah7ct/ZCX258GTplrpbRqfqDwm5kgyy7MMjIcj3kiprjGibSLAyG6YI4ENZ3n4IzeC6pKNXbi2OuQ4M4Pkba2/r1i@vger.kernel.org, AJvYcCV/LSkZjS14CCNCsfGq7i9OCL8ZWwcBj2K5eoVLNdqKeJKK9LT32UQzBCNvdq4nHgLwZBdtZ8kOaA/JyuhL@vger.kernel.org, AJvYcCVxDNtVlpPsU/+J7MHk745qi9qV+Xdo3Uub0F1DaaVYN3Dqwlc5JUD0HFxVhmqTh3U/WXH2sOi2004Div01@vger.kernel.org, AJvYcCWkp6lSJyJC0jRRyuU0WVaMSAtu+H+zV5nPE2t2TNprFpuApLaiQpdugZvTgAfaEnqSZw0=@vger.kernel.org, AJvYcCX0PPrUPpgDxadL1Ru9xTt+YVLKeml9Ef9Vef/cC1Hu0hxg1rWb1mZVgkRpDC5ghR4eUKi17eMfmQEY22JfCXJF@vger.kernel.org, AJvYcCXJ/fAE1nc5ekHXXccxzUdchk2UHhN8SVfkktZrpAR/ShYSH9w0VNYqpJbZOMLqe6CTumfiZKVgd08=@vger.kernel.org, AJvYcCXPBmcmkqy7XRjwpW94NVDX+9O0MIOEdmDq41+PB9W/GUaDvqMmSQQjVK1uyJE3YfbfhnDW0mOHd1tuAFAF@vger.kernel.org, AJvYcCXZKk5Nl/uhEB9YCORPWEY0Uy640emCbmkyJzcuFCTG/EuJKKuZd5WUJRc0QjpbTYc4oeYmthvvf86Q@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywv572RGHKcoRvXkmx8z5S1eFS/8VuAiHgSJMuf1wfXzGG6tV+r
+	bmmkr2iUdySlKVw7XIR+eMQ6kTUc5TGtT4wf8gAV5CdiU/6wRxTbfaBmxpa63i+VEXJh7g33QQX
+	oGV2CceHnbnYrmiPDRXNvA4Xdjn0=
+X-Gm-Gg: ASbGncsz3v+9459BJIWXHYHlKDMT2Ry5UCexSVOePJxbwt+dTxOHVqaExaaS7Zhg6Bb
+	MbMNgBPPJEwDKCZ0LgH/rt4NzeIodTIXHyp30hXw1pc/6a1Oih5rL+EYU7QsBzGM+Vbsw9Frv6n
+	ysW+1sCRrWAyD54VGajJYNwTdtq6zQRZoM75zeag==
+X-Google-Smtp-Source: AGHT+IER5g1V+SGACXD789HoA96PF5Q+6oEkXwJNtoTADXBrV4pog5v9nyOvdiwVLDKGrhB5NiVs+frZTCfJMF//ErQ=
+X-Received: by 2002:a05:600c:1e1c:b0:43c:f8fc:f687 with SMTP id
+ 5b1f17b1804b1-43f3a9adc61mr49442465e9.27.1744416565507; Fri, 11 Apr 2025
+ 17:09:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com> <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
+In-Reply-To: <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 11 Apr 2025 17:09:14 -0700
+X-Gm-Features: ATxdqUGoWOEoj9dKHnOcyxWEmhHLYFaTJ3UVlV4EkUb8mJP4lqeOyUKxu-D0tAo
+Message-ID: <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
+Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
+	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	keyrings@vger.kernel.org, 
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, 
+	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, 
+	Matteo Croce <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+On Fri, Apr 4, 2025 at 2:56=E2=80=AFPM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
+> +
+> +static int hornet_find_maps(struct bpf_prog *prog, struct hornet_maps *m=
+aps)
+> +{
+> +       struct bpf_insn *insn =3D prog->insnsi;
+> +       int insn_cnt =3D prog->len;
+> +       int i;
+> +       int err;
+> +
+> +       for (i =3D 0; i < insn_cnt; i++, insn++) {
+> +               if (insn[0].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW)) {
+> +                       switch (insn[0].src_reg) {
+> +                       case BPF_PSEUDO_MAP_IDX_VALUE:
+> +                       case BPF_PSEUDO_MAP_IDX:
+> +                               err =3D add_used_map(maps, insn[0].imm);
+> +                               if (err < 0)
+> +                                       return err;
+> +                               break;
+> +                       default:
+> +                               break;
+> +                       }
+> +               }
+> +       }
 
-On Sun, 06 Apr 2025 17:32:52 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
-> All the BCMBCA SoCs share a set of peripherals at 0xff800000,
-> albeit at slightly varying memory locations on the bus and
-> with varying IRQ assignments. On BCM63158 the PERF window was
-> too big so adjust it down to its real size (0x3000).
-> 
-> Add the watchdog, GPIO blocks, RNG, LED, second UART and DMA
-> blocks for the BCM63158 based on the vendor files 63158_map_part.h
-> and 63158_intr.h from the "bcmopen-consumer" code drop.
-> 
-> The DTSI file has clearly been authored for the B0 revision of
-> the SoC: there is an earlier A0 version, but this has
-> the UARTs in the legacy PERF memory space, while the B0
-> has opened a new peripheral window at 0xff812000 for the
-> three UARTs. It also has a designated AHB peripheral area
-> at 0xff810000 where the DMA resides, so we create new windows
-> for these two peripheral group reflecting the internal
-> structure of the B0 SoC.
-> 
-> This SoC has up to 256 possible GPIOs due to having 8
-> registers with 32 GPIOs in each available.
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
+...
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree-arm64/next, thanks!
---
-Florian
+> +               if (!map->frozen) {
+> +                       attr.map_fd =3D fd;
+> +                       err =3D kern_sys_bpf(BPF_MAP_FREEZE, &attr, sizeo=
+f(attr));
+
+Sorry for the delay. Still swamped after conferences and the merge window.
+
+Above are serious layering violations.
+LSMs should not be looking that deep into bpf instructions.
+Calling into sys_bpf from LSM is plain nack.
+
+The verification of module signatures is a job of the module loading proces=
+s.
+The same thing should be done by the bpf system.
+The signature needs to be passed into sys_bpf syscall
+as a part of BPF_PROG_LOAD command.
+It probably should be two new fields in union bpf_attr
+(signature and length),
+and the whole thing should be processed as part of the loading
+with human readable error reported back through the verifier log
+in case of signature mismatch, etc.
+
+What LSM can do in addition is to say that if the signature is not
+specified in the prog_load command then deny such request outright.
+bpf syscall itself will deny program loading if signature is incorrect.
 
