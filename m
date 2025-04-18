@@ -1,33 +1,33 @@
-Return-Path: <linux-crypto+bounces-11959-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-11960-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F02F8A9307D
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Apr 2025 05:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF98A9307E
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Apr 2025 05:02:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D680462CDB
-	for <lists+linux-crypto@lfdr.de>; Fri, 18 Apr 2025 03:02:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A382B17D28B
+	for <lists+linux-crypto@lfdr.de>; Fri, 18 Apr 2025 03:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C2A268C60;
-	Fri, 18 Apr 2025 03:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF156268C65;
+	Fri, 18 Apr 2025 03:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="F5mdUfxU"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="TdC9G2lv"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0262B268C5D
-	for <linux-crypto@vger.kernel.org>; Fri, 18 Apr 2025 03:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0863D268C6C
+	for <linux-crypto@vger.kernel.org>; Fri, 18 Apr 2025 03:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744945253; cv=none; b=RGTL/vSjYpdIIkBxcLmpy79Vyr+CUDwLM3QJDXwOdeLWm9Qo1HVSvYwlMu8RRnIJJilXM9hELmBXLpMiuLvfqaafhrSKE3l5eFmLJD9vZyP4ZQbygG/BUsIXkCTG4qwvUpkR/ke4aVXNqtS7G9vDReP16l0XbjFon5vcnoehUY4=
+	t=1744945255; cv=none; b=C8mb2NMIS2O1CZ+/WX0NF5u4/I0IfVj45QMwoc4qa3vB40BaIlThe7hVIOIXIUD9CvzMwo85wSNMvwfvtsUuIEzB3mrf5XUk6FdPiyEnI97KQiW+fDxCudfT7tjkOG5FE7fZQbm3jFL/IqEE3FfaPtYnV1BepJwzyucRFSNhJkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744945253; c=relaxed/simple;
-	bh=CL8cRF1NNWrZpA/XuzaI9xesWNY75T6eDlGj1DolE4M=;
-	h=Date:Message-Id:In-Reply-To:References:From:Subject:To; b=ha8ZWRq3omt9OrDbImFHnihosIdvuNyvvfMh7LNpGR5QW5xEWGiB2ElDIHOd8j7n82vSSrT+lo7YVEmt9x/KEDqKZVKLB+niebkgyykxR4gx+0zCbGT2c2CVN0aEo0trdQhqqQYORJYqbW6WuQuRFwuVvMtwR/wXTZHpdjMrftI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=F5mdUfxU; arc=none smtp.client-ip=144.6.53.87
+	s=arc-20240116; t=1744945255; c=relaxed/simple;
+	bh=fpk4GljKRSuuvclONBCyhMGalvMN3iyo3k1bja8Po6U=;
+	h=Date:Message-Id:In-Reply-To:References:From:Subject:To; b=aeJfkKbuyRY81kZkeXuLziyaXNtKOCy4q7jOxzKsHkgRLChcqKfUsIJzZWv0bNgLJnwxm8zaQYfgEA3k5hRGADogx+dXC2uvx3sXsSbxZAx2j86TTQJrEezEpQ2XL8f4M8qNqpFElBVIsVExQjOVRiym3TCzbIkDOhEtNSrynK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=TdC9G2lv; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Q/hvU7RsoKjdYCNAHKjwgyCOQnly1jJaXI3c67GAA/E=; b=F5mdUfxUn3DhyNXoLb4K8sl3RP
-	eeVSVgsN4KNWqB+BDcHVeX345LLvKz+46DwUayLYlXZVd0jGigmjXvEOT4qcdyMnuSmwYFK19iDTl
-	VBRtpabF/EJAniBJWKdEsvGJaKWeRNbKhrjIUjDggdHyEn4zALlKP30//oRYar3fu/3d/hPM/m/FN
-	UeU6MQe0qy8En34yTVTgfNaRnRTZvFVlUp12rzaX0DRyjgmWFu/TdkyTaeqSz46ohtdXjDRkABdzO
-	oWpxSLcsHQ+uJWyhQQnZCV2WvROrmtTDiUb/AcRn6koVz3pcMSehXyeH6k7e9t/XHl+5NhaAt+eEi
-	67kqXKQQ==;
+	bh=SL1B6s5VQHnV/Khwst2w0X6OolZRTQQVoaInxFRrDgE=; b=TdC9G2lvv9pkfgxT0sD5els8W/
+	9IFXhzNA4fU/mPqyw9D6l8sUQZaifxhdv4ppX0sJFPoiKj1Rss5xuxmoFVJbBNYN4oq7div96Ca/b
+	up72/MXlRSm5nnPC7PAzMpIJShxwKWSDj9DHWlNzJY2ataObZa6VmrYMo+pwNuvcnLIGmjT32ngsY
+	QKttZ0D5LAyJO4Oh3CuD8tMhJHuvmnKt5CBBh1h5spwjW+L0Q8V5oENSzL1twxlRZyxng+iEWZj4l
+	4MXQKaywHZGgEzlLBo6GSBivsq5hUgq0Xrm1ObVrghlfuOLGexA/w24G6S3ZcgHbh6Qu1xFYUVzf0
+	GZKtcohg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1u5byC-00GeHL-0g;
-	Fri, 18 Apr 2025 11:00:49 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Apr 2025 11:00:48 +0800
-Date: Fri, 18 Apr 2025 11:00:48 +0800
-Message-Id: <ac023b3b5adc4dd18a57c8bb2dc4c15f8445fe66.1744945025.git.herbert@gondor.apana.org.au>
+	id 1u5byE-00GeHW-1Z;
+	Fri, 18 Apr 2025 11:00:51 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Apr 2025 11:00:50 +0800
+Date: Fri, 18 Apr 2025 11:00:50 +0800
+Message-Id: <5a1b7a1c24b9b55f2630fe1947d3c251bc2b62e0.1744945025.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1744945025.git.herbert@gondor.apana.org.au>
 References: <cover.1744945025.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v2 PATCH 56/67] crypto: arm64/sm3-ce - Use API partial block
+Subject: [v2 PATCH 57/67] crypto: arm64/sm3-neon - Use API partial block
  handling
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
@@ -67,13 +67,13 @@ Also remove the unnecessary SIMD fallback path.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- arch/arm64/crypto/sm3-ce-glue.c | 48 ++++++---------------------------
+ arch/arm64/crypto/sm3-neon-glue.c | 48 ++++++-------------------------
  1 file changed, 8 insertions(+), 40 deletions(-)
 
-diff --git a/arch/arm64/crypto/sm3-ce-glue.c b/arch/arm64/crypto/sm3-ce-glue.c
-index 1a71788c4cda..eac6f5fa0abe 100644
---- a/arch/arm64/crypto/sm3-ce-glue.c
-+++ b/arch/arm64/crypto/sm3-ce-glue.c
+diff --git a/arch/arm64/crypto/sm3-neon-glue.c b/arch/arm64/crypto/sm3-neon-glue.c
+index 8dd71ce79b69..6c4611a503a3 100644
+--- a/arch/arm64/crypto/sm3-neon-glue.c
++++ b/arch/arm64/crypto/sm3-neon-glue.c
 @@ -6,14 +6,11 @@
   */
  
@@ -89,10 +89,10 @@ index 1a71788c4cda..eac6f5fa0abe 100644
 +#include <linux/kernel.h>
  #include <linux/module.h>
  
- MODULE_DESCRIPTION("SM3 secure hash using ARMv8 Crypto Extensions");
-@@ -26,50 +23,20 @@ asmlinkage void sm3_ce_transform(struct sm3_state *sst, u8 const *src,
- static int sm3_ce_update(struct shash_desc *desc, const u8 *data,
- 			 unsigned int len)
+ 
+@@ -23,50 +20,20 @@ asmlinkage void sm3_neon_transform(struct sm3_state *sst, u8 const *src,
+ static int sm3_neon_update(struct shash_desc *desc, const u8 *data,
+ 			   unsigned int len)
  {
 -	if (!crypto_simd_usable()) {
 -		sm3_update(shash_desc_ctx(desc), data, len);
@@ -101,14 +101,14 @@ index 1a71788c4cda..eac6f5fa0abe 100644
 +	int remain;
  
  	kernel_neon_begin();
--	sm3_base_do_update(desc, data, len, sm3_ce_transform);
-+	remain = sm3_base_do_update_blocks(desc, data, len, sm3_ce_transform);
+-	sm3_base_do_update(desc, data, len, sm3_neon_transform);
++	remain = sm3_base_do_update_blocks(desc, data, len, sm3_neon_transform);
  	kernel_neon_end();
 -
 -	return 0;
 -}
 -
--static int sm3_ce_final(struct shash_desc *desc, u8 *out)
+-static int sm3_neon_final(struct shash_desc *desc, u8 *out)
 -{
 -	if (!crypto_simd_usable()) {
 -		sm3_final(shash_desc_ctx(desc), out);
@@ -116,15 +116,15 @@ index 1a71788c4cda..eac6f5fa0abe 100644
 -	}
 -
 -	kernel_neon_begin();
--	sm3_base_do_finalize(desc, sm3_ce_transform);
+-	sm3_base_do_finalize(desc, sm3_neon_transform);
 -	kernel_neon_end();
 -
 -	return sm3_base_finish(desc, out);
 +	return remain;
  }
  
- static int sm3_ce_finup(struct shash_desc *desc, const u8 *data,
- 			unsigned int len, u8 *out)
+ static int sm3_neon_finup(struct shash_desc *desc, const u8 *data,
+ 			  unsigned int len, u8 *out)
  {
 -	if (!crypto_simd_usable()) {
 -		struct sm3_state *sctx = shash_desc_ctx(desc);
@@ -137,29 +137,29 @@ index 1a71788c4cda..eac6f5fa0abe 100644
 -
  	kernel_neon_begin();
 -	if (len)
--		sm3_base_do_update(desc, data, len, sm3_ce_transform);
--	sm3_base_do_finalize(desc, sm3_ce_transform);
-+	sm3_base_do_finup(desc, data, len, sm3_ce_transform);
+-		sm3_base_do_update(desc, data, len, sm3_neon_transform);
+-	sm3_base_do_finalize(desc, sm3_neon_transform);
++	sm3_base_do_finup(desc, data, len, sm3_neon_transform);
  	kernel_neon_end();
 -
  	return sm3_base_finish(desc, out);
  }
  
-@@ -77,11 +44,12 @@ static struct shash_alg sm3_alg = {
+@@ -74,11 +41,12 @@ static struct shash_alg sm3_alg = {
  	.digestsize		= SM3_DIGEST_SIZE,
  	.init			= sm3_base_init,
- 	.update			= sm3_ce_update,
--	.final			= sm3_ce_final,
- 	.finup			= sm3_ce_finup,
+ 	.update			= sm3_neon_update,
+-	.final			= sm3_neon_final,
+ 	.finup			= sm3_neon_finup,
 -	.descsize		= sizeof(struct sm3_state),
 +	.descsize		= SM3_STATE_SIZE,
  	.base.cra_name		= "sm3",
- 	.base.cra_driver_name	= "sm3-ce",
+ 	.base.cra_driver_name	= "sm3-neon",
 +	.base.cra_flags		= CRYPTO_AHASH_ALG_BLOCK_ONLY |
 +				  CRYPTO_AHASH_ALG_FINUP_MAX,
  	.base.cra_blocksize	= SM3_BLOCK_SIZE,
  	.base.cra_module	= THIS_MODULE,
- 	.base.cra_priority	= 400,
+ 	.base.cra_priority	= 200,
 -- 
 2.39.5
 
