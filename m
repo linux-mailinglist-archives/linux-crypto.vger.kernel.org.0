@@ -1,117 +1,96 @@
-Return-Path: <linux-crypto+bounces-12046-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12048-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64628A94D7D
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Apr 2025 09:51:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40557A94E1C
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Apr 2025 10:32:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B9A23A626D
-	for <lists+linux-crypto@lfdr.de>; Mon, 21 Apr 2025 07:51:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5A091713F1
+	for <lists+linux-crypto@lfdr.de>; Mon, 21 Apr 2025 08:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A0B1E32CF;
-	Mon, 21 Apr 2025 07:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Imqomrpz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABA121322B;
+	Mon, 21 Apr 2025 08:31:46 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D751172A;
-	Mon, 21 Apr 2025 07:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+Received: from mail.nfschina.com (unknown [42.101.60.213])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 79D36288D2;
+	Mon, 21 Apr 2025 08:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=42.101.60.213
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745221901; cv=none; b=BlGuwYqzd/c7ZLe9VhFDLwKyIVjnnvg8owwEv643pJqErRzkIMvJSAI0JiAjGXbqjPCHycmEb/exJMfjDSM4MCebha/Qx5arbXrTuxDzvZz7Pe8mAvL8SOMMakQIR3/cS7+9riIy3NDCYwUWGdW4yAsU//aQxQXo7QF8P6bW8O4=
+	t=1745224306; cv=none; b=G+rMPiPN0pnjlXq5oq1qZY6hvJorn9qZvR66oJfhBmagrXFV9j9LBpBAovpouJuRHoWAY+BzmJfG5OSyQrorXru4jDWrsC382TULnB2IHchPw12dloxFOSojUhTFFUfKS9+wyUgWshmF3WJ9kxsJzmk/lQXcIfLbrhtzcdN53DY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745221901; c=relaxed/simple;
-	bh=3EkWytvG1FAq4wSiAgBGR+l+bJeIVa+qMUoJsIjq+G8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VidubEG719APNjAARjM3snHEiFjMU/xtLw3TRkjpQekd/hUUgkWU81l1QDcmZcgqSyRAEaFBIidf2IHa8JpuWpX+xNcQ517GbRGb3ciSot547sB0qLM4Sj7KKqGR2eUHKJXIt87lHMabtqlruW6oCQMwSbJoLEMhZJlpctvzRRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Imqomrpz; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53L6kP4p002241;
-	Mon, 21 Apr 2025 07:51:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=Zrxe4BNXmiX+JsfnkgMsSiUWHNsZF/
-	9cngeWX3ef/yQ=; b=ImqomrpzNxCgrQYaQmUIUOt4z7pdd9isSZeReR9twXUZva
-	D276bTRcOJm5yvzgrXe8dsvSmM7N+CNFUOM7jn11vLVteR5vAZsulrUhKkQmkqfD
-	ig6Uw2QBmfnr6oNnoIRqFnupf1AQW1AGfMoNJhmMYPgys5cr4yoSAKnIL149HJQ8
-	3abIbBQ27YUw1twEHj65jm1a2GUceIg22INtt4h7Zdd7T9yEL5PCQGUyWOeV8fBB
-	Luhi7syGPQWwefT0tJMhH2wkgBWUj9YELdeIRIjFzvG002cNtsHazE63jWsbBbr5
-	DYRO+hRtCEEqQ1wqVtn0IuKN736IlKiSa9r8OpLQ==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 464xuhud3t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Apr 2025 07:51:36 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53L6Hagx012493;
-	Mon, 21 Apr 2025 07:51:36 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 464p5swkds-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Apr 2025 07:51:35 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53L7pYCn34013524
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 21 Apr 2025 07:51:34 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3733620043;
-	Mon, 21 Apr 2025 07:51:34 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DAE8420040;
-	Mon, 21 Apr 2025 07:51:33 +0000 (GMT)
-Received: from osiris (unknown [9.87.139.110])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 21 Apr 2025 07:51:33 +0000 (GMT)
-Date: Mon, 21 Apr 2025 09:51:32 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] s390/crc32: Remove no-op module init and exit functions
-Message-ID: <20250421075132.39860A95-hca@linux.ibm.com>
-References: <20250417163829.4599-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1745224306; c=relaxed/simple;
+	bh=BA7VZdnswUJ0BTvh/DJPgGayChaPc3t2wYtkXj3cQEA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PsEeeTPrIDZxTf/JzFbYSOBWqS+iVEql0cOF+vuRTgO0avfHI68cUT1wMFn23Jbe7RIHiN/HRaIIy7ZhrsVBmVS7STJl6zIziD5TbIlEiytrWnk0yQxEi1IVcuihvQdj3BGhC1FgCC9m63YGallnHLUa8gjNiQU9ZwtA7+R93YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com; spf=pass smtp.mailfrom=nfschina.com; arc=none smtp.client-ip=42.101.60.213
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
+Received: from longsh.shanghai.nfschina.local (unknown [180.167.10.98])
+	by mail.nfschina.com (MailData Gateway V2.8.8) with ESMTPSA id 886DF60260748;
+	Mon, 21 Apr 2025 16:31:37 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From: Su Hui <suhui@nfschina.com>
+To: herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	steffen.klassert@secunet.com,
+	christophe.jaillet@wanadoo.fr
+Cc: Su Hui <suhui@nfschina.com>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2 0/2] crypto: some cleanup and hardening
+Date: Mon, 21 Apr 2025 16:31:15 +0800
+Message-Id: <20250421083116.1161805-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250417163829.4599-1-ebiggers@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QS8RGRcVQCRxBNwMwTrXfFOHbArAlT7P
-X-Proofpoint-ORIG-GUID: QS8RGRcVQCRxBNwMwTrXfFOHbArAlT7P
-X-Authority-Analysis: v=2.4 cv=LbY86ifi c=1 sm=1 tr=0 ts=6805f908 cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=kj9zAlcOel0A:10 a=XR8D0OoHHMoA:10 a=1XWaLZrsAAAA:8 a=VnNF1IyMAAAA:8 a=Akb6hcwL4JXZyUYhJT8A:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-21_03,2025-04-21_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1015
- mlxlogscore=695 phishscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- adultscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
- definitions=main-2504210058
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 17, 2025 at 09:38:29AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Now that the crc32-s390 module init function is a no-op, there is no
-> need to define it.  Remove it.  The removal of the init function also
-> makes the exit function unnecessary, so remove that too.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> I'll take this via the crc tree.
-> 
->  arch/s390/lib/crc32-glue.c | 11 -----------
->  1 file changed, 11 deletions(-)
+using size_add() to hardening kmalloc() and remove some redundant include
+headers.
+Compile test only.
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+v2:
+ - remove redundant include headers in v1 (<linux/overflow.h>).
+ - add a patch to remove other redundant headers.
+
+v1:
+ - https://lore.kernel.org/all/20250421055104.663552-1-suhui@nfschina.com/
+
+Su Hui (2):
+  crypto: using size_add() for kmalloc()
+  crypto: remove some redundant include headers
+
+ include/crypto/acompress.h    | 4 ----
+ include/crypto/aead.h         | 6 +-----
+ include/crypto/aes.h          | 1 -
+ include/crypto/akcipher.h     | 4 ++--
+ include/crypto/algapi.h       | 3 ---
+ include/crypto/blowfish.h     | 1 -
+ include/crypto/cast5.h        | 1 -
+ include/crypto/cast6.h        | 1 -
+ include/crypto/drbg.h         | 2 --
+ include/crypto/hash.h         | 2 --
+ include/crypto/internal/des.h | 1 -
+ include/crypto/kpp.h          | 5 +----
+ include/crypto/krb5.h         | 1 -
+ include/crypto/pcrypt.h       | 1 -
+ include/crypto/poly1305.h     | 1 -
+ include/crypto/polyval.h      | 1 -
+ include/crypto/rng.h          | 2 --
+ include/crypto/serpent.h      | 1 -
+ include/crypto/skcipher.h     | 4 ----
+ include/crypto/sm4.h          | 1 -
+ 20 files changed, 4 insertions(+), 39 deletions(-)
+
+-- 
+2.30.2
+
 
