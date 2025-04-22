@@ -1,52 +1,52 @@
-Return-Path: <linux-crypto+bounces-12112-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12115-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9F0A97075
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 17:23:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F033EA97078
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 17:23:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5033189F164
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 15:23:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAFA8163D1A
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 15:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2585A2900A3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54C528EA7D;
 	Tue, 22 Apr 2025 15:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nhb4pOE7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJpPZpPz"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C3B28FFFF;
-	Tue, 22 Apr 2025 15:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81500290BA1;
+	Tue, 22 Apr 2025 15:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745335336; cv=none; b=FY7b2wub34I4FN4QBr8V+fGiePUHGCvRvxZAlJDOq7e+Y4m9zirAfyWOF1FmoDZITaFkBHevO2qYNvcRaS9AMC0T9Tz7ypZu3/J/WcGFpY2KQFK0CnhWK/LnwEP9hX5hj+CBZUyDSGLN6wVulPH5cAxnQBSBCSWLXgXLcPVI63g=
+	t=1745335337; cv=none; b=BWaxwpClWh5/rjFPc4s3Nw/hMmUk4MH3lINrMIZXHLsTL3X5DV9jVtaoUcciJPCRFnM7AyJf4hf5dQAD544926QYg2LCchg28ALCr7AQ1cYzeLWHvA02FnByOVRhO323gQBBEEXgc+TDW1XYA59MXQxiv5+40xwRffdSUB7QIDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745335336; c=relaxed/simple;
-	bh=zid3wbE0N6PR/ZbHMrHjdUZwPDvJSQdSYgG0fRhSudE=;
+	s=arc-20240116; t=1745335337; c=relaxed/simple;
+	bh=GWAAmyXmfW9WCHfO06f6Q6TX+D2TqheNvg6AW8lmdn0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gfRNZ0pwszHq+tkfeAYj2sEcjh1uz30tjCPkAsiyidHzHIgAXRgEUiSfwvNhBlvLcCQYZA8p7Mr9ZWpmNaWokApLEG5tivmT+H/eutXOKKYC739glRsyn/cNvHuyyQZJmq9LVbmWxWxiHGHIMOjsMVITsOSF5ByaUKnPg5JyTsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nhb4pOE7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A43C0C4CEF1;
+	 MIME-Version; b=fm/xiBmkUwAK53FnAMF6cnGcfYU4R3DmlAqcnk6d9AAwrzL4RpE/z4zh8PwysVf2XpFa065LYDp41THppLgZPqvDx8RJ7nBn8RA070jqi/I8JJOcBZgOvOBKy/CtJg6FBbHL5/W9c9XsdZOSsbSkRZ24M11jSCR89yrpCStiloQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJpPZpPz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA1EC4CEE9;
 	Tue, 22 Apr 2025 15:22:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745335336;
-	bh=zid3wbE0N6PR/ZbHMrHjdUZwPDvJSQdSYgG0fRhSudE=;
+	s=k20201202; t=1745335337;
+	bh=GWAAmyXmfW9WCHfO06f6Q6TX+D2TqheNvg6AW8lmdn0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Nhb4pOE7q23yl5HYbf7zleQji/SLQ4PdKAMnKr7SM46gtvUkFiBupAItpEs9E8EzV
-	 Rim15wDSaMD2PJnsmZUqgHQC8GbI3MJEzC6PYZ2CdkWoLUKPFNOamMfPGnmcX0KN34
-	 L5cx6wF0nJQ67dr71ntcFd9yt9eiiNoS8ART7i/rQeZlQ+Pp23gwGRgbJ2ekbG/gvR
-	 +5xgYULffUsPOpmuIupp54Yf5rLi3Qen3KVC05KMAYuL9yQ2+56MDlsOzLRMTfAFr2
-	 tdskkYzLpD4m1AQCB2n6Za7skpGWeenozzdQ9K1zjTDeSKEJ+jsnTk7KskvuA4wy3V
-	 4d+o+jfDVRyUg==
+	b=GJpPZpPzBXuzsuOw7C422dF+6JGs5E2txYMtowMfXqicri6Cb3VL1suXQ+SjT7MQ5
+	 Oum9czdZURjP2Ce4SZGBUu6jbqQYvKOgEK9nIWt83nIrBmJD2aheB2aGCfk2CEtLY5
+	 HJvYwFHhNqLkKrfH3ps+jc8FZz1H43z0SyRRKKyvqYi3+ttaCiUGm55MhIF0uzW4Jx
+	 YX7IYPY58AabKgjVgB8hUxAAv6Ccw9G6+0WwFrpSJdn/npEBlZTRf+ZpYkD2pvbiHg
+	 J6/0CIKkXsnmgFOBBKZcVOVl45Ygtp7o9PIWRTUIz8/PlP/4jSL3u+kzW3cZCoizB+
+	 yxzDMngDmgWTA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/9] crypto: testmgr - rename noextratests to noslowtests
-Date: Tue, 22 Apr 2025 08:21:49 -0700
-Message-ID: <20250422152151.3691-8-ebiggers@kernel.org>
+Subject: [PATCH v2 8/9] crypto: Kconfig - make CRYPTO_MANAGER a hidden symbol
+Date: Tue, 22 Apr 2025 08:21:50 -0700
+Message-ID: <20250422152151.3691-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250422152151.3691-1-ebiggers@kernel.org>
 References: <20250422152151.3691-1-ebiggers@kernel.org>
@@ -60,209 +60,162 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Rename the noextratests module parameter to noslowtests, and replace
-other remaining mentions of "extra" in the code with "slow".  This
-addresses confusion regarding the word "extra" like that seen at
-https://lore.kernel.org/r/6cecf2de-9aa0-f6ea-0c2d-8e974a1a820b@huawei.com/.
+There is no reason for people configuring the kernel to be asked about
+CRYPTO_MANAGER, so make it a hidden symbol.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/testmgr.c | 41 ++++++++++++++++++++---------------------
- 1 file changed, 20 insertions(+), 21 deletions(-)
+ arch/arm/configs/milbeaut_m10v_defconfig    | 1 -
+ arch/arm/configs/pxa_defconfig              | 1 -
+ arch/mips/configs/decstation_64_defconfig   | 1 -
+ arch/mips/configs/decstation_defconfig      | 1 -
+ arch/mips/configs/decstation_r4k_defconfig  | 1 -
+ arch/mips/configs/ip28_defconfig            | 1 -
+ arch/parisc/configs/generic-64bit_defconfig | 1 -
+ arch/sh/configs/migor_defconfig             | 1 -
+ crypto/Kconfig                              | 2 +-
+ 9 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index a02cb7f828673..be3ffc47109f2 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -41,15 +41,15 @@
+diff --git a/arch/arm/configs/milbeaut_m10v_defconfig b/arch/arm/configs/milbeaut_m10v_defconfig
+index 2741c08e93dbc..263e966fad822 100644
+--- a/arch/arm/configs/milbeaut_m10v_defconfig
++++ b/arch/arm/configs/milbeaut_m10v_defconfig
+@@ -91,11 +91,10 @@ CONFIG_CONFIGFS_FS=y
+ # CONFIG_MISC_FILESYSTEMS is not set
+ CONFIG_NLS_CODEPAGE_437=y
+ CONFIG_NLS_ISO8859_1=y
+ CONFIG_NLS_UTF8=y
+ CONFIG_KEYS=y
+-CONFIG_CRYPTO_MANAGER=y
+ # CONFIG_CRYPTO_ECHAINIV is not set
+ CONFIG_CRYPTO_AES=y
+ CONFIG_CRYPTO_SEQIV=m
+ CONFIG_CRYPTO_GHASH_ARM_CE=m
+ CONFIG_CRYPTO_SHA1_ARM_NEON=m
+diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
+index 821c670dd6877..7bd7eff7f6122 100644
+--- a/arch/arm/configs/pxa_defconfig
++++ b/arch/arm/configs/pxa_defconfig
+@@ -634,11 +634,10 @@ CONFIG_NLS_ASCII=m
+ CONFIG_NLS_ISO8859_1=m
+ CONFIG_NLS_ISO8859_15=m
+ CONFIG_NLS_UTF8=m
+ CONFIG_TIMER_STATS=y
+ CONFIG_SECURITY=y
+-CONFIG_CRYPTO_MANAGER=y
+ CONFIG_CRYPTO_CRYPTD=m
+ CONFIG_CRYPTO_AUTHENC=m
+ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
+diff --git a/arch/mips/configs/decstation_64_defconfig b/arch/mips/configs/decstation_64_defconfig
+index 9655567614aa2..85a4472cb0582 100644
+--- a/arch/mips/configs/decstation_64_defconfig
++++ b/arch/mips/configs/decstation_64_defconfig
+@@ -166,11 +166,10 @@ CONFIG_NLS_ISO8859_9=m
+ CONFIG_NLS_ISO8859_13=m
+ CONFIG_NLS_ISO8859_14=m
+ CONFIG_NLS_ISO8859_15=m
+ CONFIG_NLS_UTF8=m
+ CONFIG_CRYPTO_RSA=m
+-CONFIG_CRYPTO_MANAGER=y
+ CONFIG_CRYPTO_CCM=m
+ CONFIG_CRYPTO_GCM=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+diff --git a/arch/mips/configs/decstation_defconfig b/arch/mips/configs/decstation_defconfig
+index 1539fe8eb34d0..a3b2c8da2ddef 100644
+--- a/arch/mips/configs/decstation_defconfig
++++ b/arch/mips/configs/decstation_defconfig
+@@ -161,11 +161,10 @@ CONFIG_NLS_ISO8859_9=m
+ CONFIG_NLS_ISO8859_13=m
+ CONFIG_NLS_ISO8859_14=m
+ CONFIG_NLS_ISO8859_15=m
+ CONFIG_NLS_UTF8=m
+ CONFIG_CRYPTO_RSA=m
+-CONFIG_CRYPTO_MANAGER=y
+ CONFIG_CRYPTO_CCM=m
+ CONFIG_CRYPTO_GCM=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+diff --git a/arch/mips/configs/decstation_r4k_defconfig b/arch/mips/configs/decstation_r4k_defconfig
+index 58c36720c94a4..a476717b8a6ad 100644
+--- a/arch/mips/configs/decstation_r4k_defconfig
++++ b/arch/mips/configs/decstation_r4k_defconfig
+@@ -161,11 +161,10 @@ CONFIG_NLS_ISO8859_9=m
+ CONFIG_NLS_ISO8859_13=m
+ CONFIG_NLS_ISO8859_14=m
+ CONFIG_NLS_ISO8859_15=m
+ CONFIG_NLS_UTF8=m
+ CONFIG_CRYPTO_RSA=m
+-CONFIG_CRYPTO_MANAGER=y
+ CONFIG_CRYPTO_CCM=m
+ CONFIG_CRYPTO_GCM=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+diff --git a/arch/mips/configs/ip28_defconfig b/arch/mips/configs/ip28_defconfig
+index e0040110a3eeb..6db21e498faa9 100644
+--- a/arch/mips/configs/ip28_defconfig
++++ b/arch/mips/configs/ip28_defconfig
+@@ -58,8 +58,7 @@ CONFIG_PROC_KCORE=y
+ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
+ CONFIG_NFS_FS=y
+ CONFIG_NFS_V3_ACL=y
+ CONFIG_ROOT_NFS=y
+-CONFIG_CRYPTO_MANAGER=y
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_MAGIC_SYSRQ=y
+diff --git a/arch/parisc/configs/generic-64bit_defconfig b/arch/parisc/configs/generic-64bit_defconfig
+index 2487765b7be36..d9778c9bef4ae 100644
+--- a/arch/parisc/configs/generic-64bit_defconfig
++++ b/arch/parisc/configs/generic-64bit_defconfig
+@@ -281,11 +281,10 @@ CONFIG_NLS_CODEPAGE_1250=m
+ CONFIG_NLS_CODEPAGE_1251=m
+ CONFIG_NLS_ASCII=m
+ CONFIG_NLS_ISO8859_1=m
+ CONFIG_NLS_ISO8859_2=m
+ CONFIG_NLS_UTF8=m
+-CONFIG_CRYPTO_MANAGER=y
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_ECB=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MD5=y
+diff --git a/arch/sh/configs/migor_defconfig b/arch/sh/configs/migor_defconfig
+index 2d1e65cad2398..4d06a4d844dd9 100644
+--- a/arch/sh/configs/migor_defconfig
++++ b/arch/sh/configs/migor_defconfig
+@@ -85,9 +85,8 @@ CONFIG_UIO_PDRV_GENIRQ=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_TMPFS=y
+ CONFIG_NFS_FS=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_DEBUG_FS=y
+-CONFIG_CRYPTO_MANAGER=y
+ # CONFIG_CRYPTO_ANSI_CPRNG is not set
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC_T10DIF=y
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 538a874262fc5..fa354b54d09b1 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -146,11 +146,11 @@ config CRYPTO_HKDF
+ 	select CRYPTO_SHA256 if CRYPTO_SELFTESTS
+ 	select CRYPTO_SHA512 if CRYPTO_SELFTESTS
+ 	select CRYPTO_HASH2
  
- MODULE_IMPORT_NS("CRYPTO_INTERNAL");
+ config CRYPTO_MANAGER
+-	tristate "Cryptographic algorithm manager"
++	tristate
+ 	select CRYPTO_MANAGER2
+ 	help
+ 	  Create default cryptographic template instantiations such as
+ 	  cbc(aes).
  
- static bool notests;
- module_param(notests, bool, 0644);
--MODULE_PARM_DESC(notests, "disable crypto self-tests");
-+MODULE_PARM_DESC(notests, "disable all crypto self-tests");
- 
--static bool noextratests;
--module_param(noextratests, bool, 0644);
--MODULE_PARM_DESC(noextratests, "disable expensive crypto self-tests");
-+static bool noslowtests;
-+module_param(noslowtests, bool, 0644);
-+MODULE_PARM_DESC(noslowtests, "disable slow crypto self-tests");
- 
- static unsigned int fuzz_iterations = 100;
- module_param(fuzz_iterations, uint, 0644);
- MODULE_PARM_DESC(fuzz_iterations, "number of fuzz test iterations");
- 
-@@ -1672,11 +1672,11 @@ static int test_hash_vec(const struct hash_testvec *vec, unsigned int vec_num,
- 					req, desc, tsgl, hashstate);
- 		if (err)
- 			return err;
- 	}
- 
--	if (!noextratests) {
-+	if (!noslowtests) {
- 		struct rnd_state rng;
- 		struct testvec_config cfg;
- 		char cfgname[TESTVEC_CONFIG_NAMELEN];
- 
- 		init_rnd_state(&rng);
-@@ -1762,11 +1762,11 @@ static int test_hash_vs_generic_impl(const char *generic_driver,
- 	char vec_name[64];
- 	struct testvec_config *cfg;
- 	char cfgname[TESTVEC_CONFIG_NAMELEN];
- 	int err;
- 
--	if (noextratests)
-+	if (noslowtests)
- 		return 0;
- 
- 	init_rnd_state(&rng);
- 
- 	if (!generic_driver) { /* Use default naming convention? */
-@@ -2230,11 +2230,11 @@ static int test_aead_vec(int enc, const struct aead_testvec *vec,
- 					req, tsgls);
- 		if (err)
- 			return err;
- 	}
- 
--	if (!noextratests) {
-+	if (!noslowtests) {
- 		struct rnd_state rng;
- 		struct testvec_config cfg;
- 		char cfgname[TESTVEC_CONFIG_NAMELEN];
- 
- 		init_rnd_state(&rng);
-@@ -2250,11 +2250,11 @@ static int test_aead_vec(int enc, const struct aead_testvec *vec,
- 		}
- 	}
- 	return 0;
- }
- 
--struct aead_extra_tests_ctx {
-+struct aead_slow_tests_ctx {
- 	struct rnd_state rng;
- 	struct aead_request *req;
- 	struct crypto_aead *tfm;
- 	const struct alg_test_desc *test_desc;
- 	struct cipher_test_sglists *tsgls;
-@@ -2425,12 +2425,11 @@ static void generate_random_aead_testvec(struct rnd_state *rng,
- 	snprintf(name, max_namelen,
- 		 "\"random: alen=%u plen=%u authsize=%u klen=%u novrfy=%d\"",
- 		 vec->alen, vec->plen, authsize, vec->klen, vec->novrfy);
- }
- 
--static void try_to_generate_inauthentic_testvec(
--					struct aead_extra_tests_ctx *ctx)
-+static void try_to_generate_inauthentic_testvec(struct aead_slow_tests_ctx *ctx)
- {
- 	int i;
- 
- 	for (i = 0; i < 10; i++) {
- 		generate_random_aead_testvec(&ctx->rng, ctx->req, &ctx->vec,
-@@ -2445,11 +2444,11 @@ static void try_to_generate_inauthentic_testvec(
- 
- /*
-  * Generate inauthentic test vectors (i.e. ciphertext, AAD pairs that aren't the
-  * result of an encryption with the key) and verify that decryption fails.
-  */
--static int test_aead_inauthentic_inputs(struct aead_extra_tests_ctx *ctx)
-+static int test_aead_inauthentic_inputs(struct aead_slow_tests_ctx *ctx)
- {
- 	unsigned int i;
- 	int err;
- 
- 	for (i = 0; i < fuzz_iterations * 8; i++) {
-@@ -2480,11 +2479,11 @@ static int test_aead_inauthentic_inputs(struct aead_extra_tests_ctx *ctx)
- 
- /*
-  * Test the AEAD algorithm against the corresponding generic implementation, if
-  * one is available.
-  */
--static int test_aead_vs_generic_impl(struct aead_extra_tests_ctx *ctx)
-+static int test_aead_vs_generic_impl(struct aead_slow_tests_ctx *ctx)
- {
- 	struct crypto_aead *tfm = ctx->tfm;
- 	const char *algname = crypto_aead_alg(tfm)->base.cra_name;
- 	const char *driver = crypto_aead_driver_name(tfm);
- 	const char *generic_driver = ctx->test_desc->generic_driver;
-@@ -2584,19 +2583,19 @@ static int test_aead_vs_generic_impl(struct aead_extra_tests_ctx *ctx)
- 	crypto_free_aead(generic_tfm);
- 	aead_request_free(generic_req);
- 	return err;
- }
- 
--static int test_aead_extra(const struct alg_test_desc *test_desc,
--			   struct aead_request *req,
--			   struct cipher_test_sglists *tsgls)
-+static int test_aead_slow(const struct alg_test_desc *test_desc,
-+			  struct aead_request *req,
-+			  struct cipher_test_sglists *tsgls)
- {
--	struct aead_extra_tests_ctx *ctx;
-+	struct aead_slow_tests_ctx *ctx;
- 	unsigned int i;
- 	int err;
- 
--	if (noextratests)
-+	if (noslowtests)
- 		return 0;
- 
- 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
-@@ -2699,11 +2698,11 @@ static int alg_test_aead(const struct alg_test_desc *desc, const char *driver,
- 
- 	err = test_aead(DECRYPT, suite, req, tsgls);
- 	if (err)
- 		goto out;
- 
--	err = test_aead_extra(desc, req, tsgls);
-+	err = test_aead_slow(desc, req, tsgls);
- out:
- 	free_cipher_test_sglists(tsgls);
- 	aead_request_free(req);
- 	crypto_free_aead(tfm);
- 	return err;
-@@ -2973,11 +2972,11 @@ static int test_skcipher_vec(int enc, const struct cipher_testvec *vec,
- 					    req, tsgls);
- 		if (err)
- 			return err;
- 	}
- 
--	if (!noextratests) {
-+	if (!noslowtests) {
- 		struct rnd_state rng;
- 		struct testvec_config cfg;
- 		char cfgname[TESTVEC_CONFIG_NAMELEN];
- 
- 		init_rnd_state(&rng);
-@@ -3075,11 +3074,11 @@ static int test_skcipher_vs_generic_impl(const char *generic_driver,
- 	char vec_name[64];
- 	struct testvec_config *cfg;
- 	char cfgname[TESTVEC_CONFIG_NAMELEN];
- 	int err;
- 
--	if (noextratests)
-+	if (noslowtests)
- 		return 0;
- 
- 	init_rnd_state(&rng);
- 
- 	if (!generic_driver) { /* Use default naming convention? */
-@@ -5713,11 +5712,11 @@ static void alg_check_testvec_configs(void)
- static void testmgr_onetime_init(void)
- {
- 	alg_check_test_descs_order();
- 	alg_check_testvec_configs();
- 
--	if (!noextratests)
-+	if (!noslowtests)
- 		pr_warn("alg: full crypto tests enabled.  This is intended for developer use only.\n");
- }
- 
- static int alg_find_test(const char *alg)
- {
 -- 
 2.49.0
 
