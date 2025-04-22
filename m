@@ -1,52 +1,52 @@
-Return-Path: <linux-crypto+bounces-12106-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12110-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E3AA9706B
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 17:22:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC5DA9706E
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 17:22:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC3AB188CD27
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 15:22:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59688163704
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 15:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A8528FFCA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E2428FFFC;
 	Tue, 22 Apr 2025 15:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hFnHCsvu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bjf/wxrP"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D012749CD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904E328FFE9;
 	Tue, 22 Apr 2025 15:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745335335; cv=none; b=Ipy/8rUaNRcB37p8+dTdge8Q2C//8tji+vOj3Z0YmS8W2ARAE+uZ7nfQFzbnqui2DGzVXAT/7siOYrmokTodg1o1OzUSzaRNCGBDaE0B6mG7LXkdI6JSGhvkygbU3nGeL9DyrwoAoMH15kNk78vuJDaiE6qJWbhmCghKCuTdYhk=
+	t=1745335336; cv=none; b=X2mMBJBwIYr81RACnvzX4QJcwKIlooplFWVYTV30JReD7h6lypBJJlmDJcHLMg4kMOCQZNcJZ22KXuxOvY+shovyNiEkdhu5Cp9QuVxd83N+iF+LMwSkSMDdTjbdGNwSAyJoWh37LV69TlHvjtyawA5QfDDTOaeWuxzFrTUQ0gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745335335; c=relaxed/simple;
-	bh=VWdIHfp62FpQhsxJqqk7rsXa3ipyLUWLzEXRYrT1f/Y=;
+	s=arc-20240116; t=1745335336; c=relaxed/simple;
+	bh=PI6fmE6hac82ilGM4ofOMzTeHSz3ca6buYYzlQ8KByI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U0rV8JJKukncV/qdjHvDaVq604rS1qx+8BV2OJnxv2f9iaP9f0XnCcwEYYSD9PLfwdKfxRHOknqhCmn749prXBKZrHmtH9gFJxO/m58MArYojkbRmxhr9ecY8OOWty2p5zRdPgItKptfwZKF2BlZiXCzhOVsuxTbiWwB+kRLYWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hFnHCsvu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 853AEC4CEEE;
+	 MIME-Version; b=B4X9uEapzM9YUiW4OkOBFqGuRegqfB+4Xg9EtkeqCamCCPnBtV51XmfHjIdIifkriozBM5zK0VHDKVAxF3ZHzNe9BabSjuGPJlH/2y4LtTWnZaJh0K9zigb6Ix0mWqJ6v6glZnPK5jkN6h9IHQqAetPLy1C8WRuaFT0ZMg76JGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bjf/wxrP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC1C4C4CEED;
 	Tue, 22 Apr 2025 15:22:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1745335335;
-	bh=VWdIHfp62FpQhsxJqqk7rsXa3ipyLUWLzEXRYrT1f/Y=;
+	bh=PI6fmE6hac82ilGM4ofOMzTeHSz3ca6buYYzlQ8KByI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hFnHCsvuhC/wMzsAMqn1LrjxhKuVmxIJcc3M/o4owu4b6P+DFyCsOQvbLL8O9KMxk
-	 eUyBIHIFV+A/49vvlGsoK17nVykThYgHhF9MlpuC9I4KP4yJG8wA1JoK9YMkfkzR3Y
-	 9C/O9kZaYZ9tcs0b+YNfJeY1bxGFC09oDf9/+1ccXHWeYkX/Nl7sH4jYzSRjF8KAaF
-	 lj7VnhQSQ9I1i1MoRcPkKlNF65hVTQTPyPssdlNcbbGQOwRhnqSw0EPHwDGkenupr0
-	 coJjvu+kpVQGmzRSlx9F8gbdbcIfMwL/9xFredP7aDY1NyTejRxhSbxLcmZJNRS1+d
-	 f1vNILuC1WtDQ==
+	b=bjf/wxrPKEIxTrjzeRktRZncd0aNH/p9DQVUumGx8/0APP/inoMMZ9XJ810AWOMAz
+	 Bnkngp+Kfd89PAqwaEzbkar+XF5Lza4iH41uIKxmItpbbH/GzEPBXm+i9mNXqg29Cf
+	 aUZHSXj/Lr+A+G1MVKFkdPQQ36j1cLOz7aQfp9kn5Htm0Tu8l61AEBATswP3OYP63y
+	 5JoylL4WieQKDp7fAMZ5CdtyjmKn0OzyFtOpy9n8vZte4+xNf+Xn7tmR5ydDBZDkFQ
+	 4UeuxCFFZZ6C0PdtBsKi542ikZQdcB0ItoJlTtBD+rN03Ysb3sTpSqU9dlV1pSQunF
+	 /GGzt0wJ5c4Aw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/9] crypto: tcrypt - rename CRYPTO_TEST to CRYPTO_BENCHMARK
-Date: Tue, 22 Apr 2025 08:21:44 -0700
-Message-ID: <20250422152151.3691-3-ebiggers@kernel.org>
+Subject: [PATCH v2 3/9] crypto: testmgr - remove CRYPTO_MANAGER_DISABLE_TESTS from defconfigs
+Date: Tue, 22 Apr 2025 08:21:45 -0700
+Message-ID: <20250422152151.3691-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250422152151.3691-1-ebiggers@kernel.org>
 References: <20250422152151.3691-1-ebiggers@kernel.org>
@@ -60,119 +60,85 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-tcrypt is actually a benchmarking module and not the actual tests.  This
-regularly causes confusion.  Update the kconfig option name and help
-text accordingly.
+Unsetting CONFIG_CRYPTO_MANAGER_DISABLE_TESTS enables the crypto
+self-tests, which are only really useful for developers working on the
+crypto subsystem.  Some defconfigs did this.  But as with most of the
+other crypto options that tend to be randomly set in defconfigs, it is
+unlikely that much thought was put into these, especially when placed in
+"production" defconfigs.  Clear it out of the defconfigs for now.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/Kconfig  | 10 +++++++---
- crypto/Makefile |  2 +-
- crypto/tcrypt.c |  8 ++++----
- crypto/tcrypt.h |  4 ++--
- 4 files changed, 14 insertions(+), 10 deletions(-)
+ arch/arm/configs/milbeaut_m10v_defconfig   | 1 -
+ arch/loongarch/configs/loongson3_defconfig | 1 -
+ arch/s390/configs/debug_defconfig          | 1 -
+ arch/s390/configs/defconfig                | 1 -
+ 4 files changed, 4 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 9322e42e562de..48283975fb2ba 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -244,16 +244,20 @@ config CRYPTO_KRB5ENC
- 	help
- 	  Combined hash and cipher support for Kerberos 5 RFC3961 simplified
- 	  profile.  This is required for Kerberos 5-style encryption, used by
- 	  sunrpc/NFS and rxrpc/AFS.
- 
--config CRYPTO_TEST
--	tristate "Testing module"
-+config CRYPTO_BENCHMARK
-+	tristate "Crypto benchmarking module"
- 	depends on m || EXPERT
- 	select CRYPTO_MANAGER
- 	help
--	  Quick & dirty crypto test module.
-+	  Quick & dirty crypto benchmarking module.
-+
-+	  This is mainly intended for use by people developing cryptographic
-+	  algorithms in the kernel.  It should not be enabled in production
-+	  kernels.
- 
- config CRYPTO_SIMD
- 	tristate
- 	select CRYPTO_CRYPTD
- 
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 5d2f2a28d8a07..18b057a799b02 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -171,11 +171,11 @@ obj-$(CONFIG_CRYPTO_JITTERENTROPY) += jitterentropy_rng.o
- CFLAGS_jitterentropy.o = -O0
- KASAN_SANITIZE_jitterentropy.o = n
- UBSAN_SANITIZE_jitterentropy.o = n
- jitterentropy_rng-y := jitterentropy.o jitterentropy-kcapi.o
- obj-$(CONFIG_CRYPTO_JITTERENTROPY_TESTINTERFACE) += jitterentropy-testing.o
--obj-$(CONFIG_CRYPTO_TEST) += tcrypt.o
-+obj-$(CONFIG_CRYPTO_BENCHMARK) += tcrypt.o
- obj-$(CONFIG_CRYPTO_GHASH) += ghash-generic.o
- obj-$(CONFIG_CRYPTO_POLYVAL) += polyval-generic.o
- obj-$(CONFIG_CRYPTO_USER_API) += af_alg.o
- obj-$(CONFIG_CRYPTO_USER_API_HASH) += algif_hash.o
- obj-$(CONFIG_CRYPTO_USER_API_SKCIPHER) += algif_skcipher.o
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 879fc21dcc166..d1d88debbd71e 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -1,10 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Quick & dirty crypto testing module.
-+ * Quick & dirty crypto benchmarking module.
-  *
-- * This will only exist until we have a better testing mechanism
-+ * This will only exist until we have a better benchmarking mechanism
-  * (e.g. a char device).
-  *
-  * Copyright (c) 2002 James Morris <jmorris@intercode.com.au>
-  * Copyright (c) 2002 Jean-Francois Dive <jef@linuxbe.org>
-  * Copyright (c) 2007 Nokia Siemens Networks
-@@ -37,11 +37,11 @@
- 
- #include "internal.h"
- #include "tcrypt.h"
- 
- /*
-- * Need slab memory for testing (size in number of pages).
-+ * Need slab memory for benchmarking (size in number of pages).
-  */
- #define TVMEMSIZE	4
- 
- /*
- * Used by test_cipher_speed()
-@@ -2866,7 +2866,7 @@ module_param(num_mb, uint, 0000);
- MODULE_PARM_DESC(num_mb, "Number of concurrent requests to be used in mb speed tests (defaults to 8)");
- module_param(klen, uint, 0);
- MODULE_PARM_DESC(klen, "Key length (defaults to 0)");
- 
- MODULE_LICENSE("GPL");
--MODULE_DESCRIPTION("Quick & dirty crypto testing module");
-+MODULE_DESCRIPTION("Quick & dirty crypto benchmarking module");
- MODULE_AUTHOR("James Morris <jmorris@intercode.com.au>");
-diff --git a/crypto/tcrypt.h b/crypto/tcrypt.h
-index 96c843a246071..7f938ac93e583 100644
---- a/crypto/tcrypt.h
-+++ b/crypto/tcrypt.h
-@@ -1,10 +1,10 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
- /*
-- * Quick & dirty crypto testing module.
-+ * Quick & dirty crypto benchmarking module.
-  *
-- * This will only exist until we have a better testing mechanism
-+ * This will only exist until we have a better benchmarking mechanism
-  * (e.g. a char device).
-  *
-  * Copyright (c) 2002 James Morris <jmorris@intercode.com.au>
-  * Copyright (c) 2002 Jean-Francois Dive <jef@linuxbe.org>
-  * Copyright (c) 2007 Nokia Siemens Networks
+diff --git a/arch/arm/configs/milbeaut_m10v_defconfig b/arch/arm/configs/milbeaut_m10v_defconfig
+index acd16204f8d7f..2741c08e93dbc 100644
+--- a/arch/arm/configs/milbeaut_m10v_defconfig
++++ b/arch/arm/configs/milbeaut_m10v_defconfig
+@@ -92,11 +92,10 @@ CONFIG_CONFIGFS_FS=y
+ CONFIG_NLS_CODEPAGE_437=y
+ CONFIG_NLS_ISO8859_1=y
+ CONFIG_NLS_UTF8=y
+ CONFIG_KEYS=y
+ CONFIG_CRYPTO_MANAGER=y
+-# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+ # CONFIG_CRYPTO_ECHAINIV is not set
+ CONFIG_CRYPTO_AES=y
+ CONFIG_CRYPTO_SEQIV=m
+ CONFIG_CRYPTO_GHASH_ARM_CE=m
+ CONFIG_CRYPTO_SHA1_ARM_NEON=m
+diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
+index 90f21dfe22b13..3f588ad2071e2 100644
+--- a/arch/loongarch/configs/loongson3_defconfig
++++ b/arch/loongarch/configs/loongson3_defconfig
+@@ -1024,11 +1024,10 @@ CONFIG_SECURITY_SELINUX=y
+ CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+ CONFIG_SECURITY_APPARMOR=y
+ CONFIG_SECURITY_YAMA=y
+ CONFIG_DEFAULT_SECURITY_DAC=y
+ CONFIG_CRYPTO_USER=m
+-# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+ CONFIG_CRYPTO_PCRYPT=m
+ CONFIG_CRYPTO_CRYPTD=m
+ CONFIG_CRYPTO_ANUBIS=m
+ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAST5=m
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index 0216a6f508016..d4781acad45f0 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -741,11 +741,10 @@ CONFIG_IMA=y
+ CONFIG_IMA_DEFAULT_HASH_SHA256=y
+ CONFIG_IMA_WRITE_POLICY=y
+ CONFIG_IMA_APPRAISE=y
+ CONFIG_BUG_ON_DATA_CORRUPTION=y
+ CONFIG_CRYPTO_USER=m
+-# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+ CONFIG_CRYPTO_PCRYPT=m
+ CONFIG_CRYPTO_CRYPTD=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECDSA=m
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index c0528f791ecf9..732452c41f446 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -727,11 +727,10 @@ CONFIG_IMA_DEFAULT_HASH_SHA256=y
+ CONFIG_IMA_WRITE_POLICY=y
+ CONFIG_IMA_APPRAISE=y
+ CONFIG_BUG_ON_DATA_CORRUPTION=y
+ CONFIG_CRYPTO_FIPS=y
+ CONFIG_CRYPTO_USER=m
+-# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+ CONFIG_CRYPTO_PCRYPT=m
+ CONFIG_CRYPTO_CRYPTD=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECDSA=m
 -- 
 2.49.0
 
