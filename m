@@ -1,86 +1,153 @@
-Return-Path: <linux-crypto+bounces-12105-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12108-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE49FA96E21
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 16:16:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B801A97069
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 17:22:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 839E27AC676
-	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 14:15:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF182163782
+	for <lists+linux-crypto@lfdr.de>; Tue, 22 Apr 2025 15:22:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB721F099A;
-	Tue, 22 Apr 2025 14:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3240328FFD2;
+	Tue, 22 Apr 2025 15:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="O9B3eU/X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WfVWQoeh"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF39F2F37;
-	Tue, 22 Apr 2025 14:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3A4F28FFC8;
+	Tue, 22 Apr 2025 15:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745331388; cv=none; b=c+FrRheOZIjE1CI1KEOSFhWGL18Oa61wGlBqs0Ohg7MoPs0hL4hzRKxNEUjqK5eMss60LLHbctxiJAULHYth3w5+XTfRR5DjnQGfjaPuQKyFp2/SzlhXwO1gIhEs63GOEzPZpc1vAfKilO6NCgS8sw1vW33ysAO3AX0+mWCpprw=
+	t=1745335336; cv=none; b=P+ntz8ErpGW5LTyKPzazWbVB3lowQKHlelJQvzsMIn4O+/UsfgTgARIUyz7U44K8fUy5RrDmBOJ9W4JLk0P4dzMU0G3nro3ysT0GINfhusyZy4wyJ64qVUsWSMmkk8+2+OWwdcIVkNu7H2KPPlerHcJL2LZIbEPGcqp33v7ykDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745331388; c=relaxed/simple;
-	bh=fTQYKsQu+QIX6vKu1CNgck+u+htNJM8BuxeBg9H3Ncw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mNmi6v7odRtIUnwV92g3RB6yvG8MhlzUGJ1k2ALQUP+yymYfVek/PhMMCVyET9DaJkMTagEuroDKkyOYkG9Pc8chBbWBTkTQnfyBhE1q/hV18eRoBFxx/adNTl5vLHQ853fbWUsM/KchT2UUsle3kk3XYq94gZZVF3C1carXXnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=O9B3eU/X; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=X1iB3P09c3OCc6TeaNE/sjxKLRzl4DmSZont3k5A34E=; b=O9B3eU/XO44sQ/COW2TsYSFVeC
-	8HaxsYfeE4ViRZXzyJVKR1GhXZUYEorsPPknJO1tVFEcumPvQvbFxbcv5x7MhALrOUAxaGcbpTiKI
-	Czg+jvzOISJm4elGJBAT1MVzhJx0s9833QCqJTXPKS85fGA8z+4oSNKGdkl6hUwPfc+1jhMu/22oB
-	KYxn9Ovd/56p062KKoVz14R0zo2Av2V3xI5HiPMqWIElRqyw9QKAbs2cE3HnLNPsnTizxfWL9wI3A
-	8ooW19keW8XR9u18v+nhbDGVDtSSR/sMtm0SOJdHIVkCWIjMHW1KINe76S6O8IZQwu7wyr7JBJrwV
-	OHUeVnkA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1u7EPx-00063n-2B;
-	Tue, 22 Apr 2025 22:16:10 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 22 Apr 2025 22:16:09 +0800
-Date: Tue, 22 Apr 2025 22:16:09 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Su Hui <suhui@nfschina.com>, davem@davemloft.net,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] crypto: using size_add() for kmalloc()
-Message-ID: <aAekqQH3yWk_GhMN@gondor.apana.org.au>
-References: <20250421055104.663552-1-suhui@nfschina.com>
- <aAY0lyWzsRVDge_f@gondor.apana.org.au>
- <2169828c-127c-4bf7-b953-2f1194b72830@stanley.mountain>
+	s=arc-20240116; t=1745335336; c=relaxed/simple;
+	bh=zUtpOZDFxmrHW1MXGPjDdrx0vQICEc+s+0Jje5GRyXQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tx2QRfvP05lsdsr+yicZAPAaRC0Y13gcMOT3GDlgp8T2o5mWaeDHdfUqArCxSz1QiC6Nbr8zs+3hQ4GfeWitsym8bTzxFOVYHbIl1XaSMrol3xAmnZpGbIevY81VQhVxcRtseyL01/6X71IC23cKXTVMjzgA2hJdd4Zyfkx3YN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WfVWQoeh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 168A1C4CEE9;
+	Tue, 22 Apr 2025 15:22:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745335335;
+	bh=zUtpOZDFxmrHW1MXGPjDdrx0vQICEc+s+0Jje5GRyXQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WfVWQoehc386JtqAJhFPLmCvJLqfrp7w9HGh1Nfb9QjxTiDCPwoTJbPKOKZF+yS9U
+	 nTJao6xjerKJG2H4uBBQ+IVzI+IBqXhLwElXmdZnHttlJpKGuwSeOX+AYwaZwiwU7k
+	 R7ZgdkSDZhiOVYDqdMCj+/P0nJSnUS5WFGyyOSCkYUAoMS8OhVHSImojj6Gecealml
+	 HPBQmE7MGErHNXKCQK2YcZWvubozmO0deqgN7NQrVRLqICCajZ3ks3DCT+7q0QFqE5
+	 /wvX2w/+dYba3nOjHM67MxB8MGUgsMLzgibZh4JdzgmBs0T45cFuxLLxtQ876FTaBN
+	 qSB/8FIyWAQsg==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/9] Clean up the crypto testing options
+Date: Tue, 22 Apr 2025 08:21:42 -0700
+Message-ID: <20250422152151.3691-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2169828c-127c-4bf7-b953-2f1194b72830@stanley.mountain>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 22, 2025 at 01:24:22PM +0300, Dan Carpenter wrote:
->
-> This is exactly what Kees did with the mass conversion to
-> struct_size().  I occasionally run across places where Kees's mass
-> conversion patches did fix real integer overflow bugs.
+This series reworks the crypto testing kconfig options to fix some
+longstanding issues:
 
-The point is that the reqsize shouldn't even exceed a page in size,
-let alone be anywhere near 2^32.
+- Replace the inverted option CONFIG_CRYPTO_MANAGER_DISABLE_TESTS with a
+  regular option CONFIG_CRYPTO_SELFTESTS.
 
-Cheers,
+- Make CONFIG_CRYPTO_SELFTESTS enable the full set of tests by default,
+  removing CONFIG_CRYPTO_MANAGER_EXTRA_TESTS.
+
+- Automatically enable CONFIG_CRYPTO_MANAGER when needed for the tests.
+
+- Rename cryptomgr.noextratests to cryptomgr.noslowtests.
+
+- Remove cryptomgr.panic_on_fail, as panic_on_warn can be used instead.
+
+- Rename CONFIG_CRYPTO_TEST to CONFIG_CRYPTO_BENCHMARK.
+
+Changed in v2:
+  - Moved selftest lines in lib/crypto/Makefile to appropriate places.
+  - Fixed a commit message.
+
+Eric Biggers (9):
+  crypto: tcrypt - remove CRYPTO_TEST from defconfigs
+  crypto: tcrypt - rename CRYPTO_TEST to CRYPTO_BENCHMARK
+  crypto: testmgr - remove CRYPTO_MANAGER_DISABLE_TESTS from defconfigs
+  crypto: testmgr - remove panic_on_fail
+  crypto: testmgr - replace CRYPTO_MANAGER_DISABLE_TESTS with
+    CRYPTO_SELFTESTS
+  crypto: testmgr - make it easier to enable the full set of tests
+  crypto: testmgr - rename noextratests to noslowtests
+  crypto: Kconfig - make CRYPTO_MANAGER a hidden symbol
+  crypto: testmgr - enable CRYPTO_MANAGER when CRYPTO_SELFTESTS
+
+ arch/arm/configs/exynos_defconfig           |   1 -
+ arch/arm/configs/milbeaut_m10v_defconfig    |   2 -
+ arch/arm/configs/pxa_defconfig              |   2 -
+ arch/arm/configs/spitz_defconfig            |   1 -
+ arch/arm64/configs/defconfig                |   1 -
+ arch/loongarch/configs/loongson3_defconfig  |   1 -
+ arch/m68k/configs/amiga_defconfig           |   1 -
+ arch/m68k/configs/apollo_defconfig          |   1 -
+ arch/m68k/configs/atari_defconfig           |   1 -
+ arch/m68k/configs/bvme6000_defconfig        |   1 -
+ arch/m68k/configs/hp300_defconfig           |   1 -
+ arch/m68k/configs/mac_defconfig             |   1 -
+ arch/m68k/configs/multi_defconfig           |   1 -
+ arch/m68k/configs/mvme147_defconfig         |   1 -
+ arch/m68k/configs/mvme16x_defconfig         |   1 -
+ arch/m68k/configs/q40_defconfig             |   1 -
+ arch/m68k/configs/sun3_defconfig            |   1 -
+ arch/m68k/configs/sun3x_defconfig           |   1 -
+ arch/mips/configs/decstation_64_defconfig   |   1 -
+ arch/mips/configs/decstation_defconfig      |   1 -
+ arch/mips/configs/decstation_r4k_defconfig  |   1 -
+ arch/mips/configs/gpr_defconfig             |   1 -
+ arch/mips/configs/ip28_defconfig            |   1 -
+ arch/mips/configs/lemote2f_defconfig        |   1 -
+ arch/mips/configs/mtx1_defconfig            |   1 -
+ arch/mips/configs/rb532_defconfig           |   1 -
+ arch/parisc/configs/generic-32bit_defconfig |   1 -
+ arch/parisc/configs/generic-64bit_defconfig |   1 -
+ arch/powerpc/configs/g5_defconfig           |   1 -
+ arch/powerpc/configs/powernv_defconfig      |   1 -
+ arch/powerpc/configs/ppc64_defconfig        |   1 -
+ arch/powerpc/configs/ppc64e_defconfig       |   1 -
+ arch/powerpc/configs/ppc6xx_defconfig       |   1 -
+ arch/s390/configs/debug_defconfig           |   2 -
+ arch/s390/configs/defconfig                 |   2 -
+ arch/sh/configs/migor_defconfig             |   1 -
+ arch/sparc/configs/sparc64_defconfig        |   1 -
+ crypto/Kconfig                              |  44 ++++----
+ crypto/Makefile                             |   2 +-
+ crypto/algapi.c                             |   5 +-
+ crypto/algboss.c                            |   2 +-
+ crypto/api.c                                |   3 +-
+ crypto/hkdf.c                               |   2 +-
+ crypto/internal.h                           |   5 +-
+ crypto/kdf_sp800108.c                       |   2 +-
+ crypto/tcrypt.c                             |   8 +-
+ crypto/tcrypt.h                             |   4 +-
+ crypto/testmgr.c                            | 115 +++++---------------
+ include/crypto/internal/simd.h              |   6 +-
+ lib/crypto/Makefile                         |  11 +-
+ lib/crypto/aescfb.c                         |   2 +-
+ lib/crypto/aesgcm.c                         |   2 +-
+ lib/crypto/blake2s.c                        |   2 +-
+ lib/crypto/chacha20poly1305.c               |   2 +-
+ lib/crypto/curve25519.c                     |   2 +-
+ 55 files changed, 77 insertions(+), 183 deletions(-)
+
+
+base-commit: bb9c648b334be581a791c7669abaa594e4b5ebb7
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.49.0
+
 
