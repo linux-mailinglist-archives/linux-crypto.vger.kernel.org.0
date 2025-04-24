@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-12222-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12226-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19E1BA99CCA
-	for <lists+linux-crypto@lfdr.de>; Thu, 24 Apr 2025 02:23:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08350A99CDC
+	for <lists+linux-crypto@lfdr.de>; Thu, 24 Apr 2025 02:24:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DEA01940D02
-	for <lists+linux-crypto@lfdr.de>; Thu, 24 Apr 2025 00:23:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65FA27AFBAD
+	for <lists+linux-crypto@lfdr.de>; Thu, 24 Apr 2025 00:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784543CF58;
-	Thu, 24 Apr 2025 00:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C879E146D53;
+	Thu, 24 Apr 2025 00:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o2B0dh/D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZjLHst4b"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEE720322;
-	Thu, 24 Apr 2025 00:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9EA13D531;
+	Thu, 24 Apr 2025 00:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745454179; cv=none; b=tgqBT8bSphyBJTBI9fV1z2AcxL9Ig7U5NtthrEjQ7Q688P9OOO6ozWRp3pGh9tirCmyjIREZN9zUk0Tg8CvGokEIL0ayTxBYDMawPS5yCYq8ZzSWs2jq1md7Ud2HsafUirufl6iPRmnmFBmbDHSiHtzHnaLqKGqjiCgGzbnkS+g=
+	t=1745454180; cv=none; b=UrevDruZn0UQgeeCPVUyPtFS0GFL4qhSPhR+FB5t013e6e1AAnL+HPDhsvLcwr1mr4wOS8pkMMuWBby9n6fCj2RCzsqgiuFI9bvqi7ieu74CN6UplPXl5FHIBf3NbjmwMvwoz5NsNrrieTK7mZQngZcNJW+pickNIQbVgQEc4Ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745454179; c=relaxed/simple;
-	bh=rccSS05ssS2rf46bfeneK2x/JfdC1a/pj9EmN7hGOls=;
+	s=arc-20240116; t=1745454180; c=relaxed/simple;
+	bh=bmNtnPkT7vfqz7VYymkCYs+RWq0I1HO9RIQ1+wDAdb0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gRShsUNLVj3YrI7MnuSNRjPdTMN4gXkHNInMWgC8JJt4hfjLYVqasqql3sv9eNNCtYguHG1E+5tPiXMVbQ9/sZGA+1kzyApmO6IYLLQayI78FlXfIeZ0qTSfSdvMlXYnHgPYYOni2F0q8S659Y5jZsM+EMa89cYYIbh6nqP8RnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o2B0dh/D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E19C4CEF0;
+	 MIME-Version; b=McUdC5v3CyznkYCI/46zize9EvSdAH8mLyxVrKVcCBBW74cPBq7VabNaPzuNhAWPJTVVEUZyROu4if5VriotFLRA44p/i7tkLXvT0pZhq7qm6cQ/GSKxJPrJ3mzmb/Zavefe0IIDdKT3Am+w7Wx9biR6eJ38YbY5/bTV9xL/VNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZjLHst4b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2374C4CEEF;
 	Thu, 24 Apr 2025 00:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745454178;
-	bh=rccSS05ssS2rf46bfeneK2x/JfdC1a/pj9EmN7hGOls=;
+	s=k20201202; t=1745454179;
+	bh=bmNtnPkT7vfqz7VYymkCYs+RWq0I1HO9RIQ1+wDAdb0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=o2B0dh/DG8edBPHhL47uq8g33ExepNWr6h3LPHIZCuKmntMSr/mh8xBGoaCzeCIYz
-	 ss0X/+nCSNljZQuvdx+/pPkkezIyuP5LflGCrevm+LNGeVaMyD2Bg6p2Da+9UM9Mx4
-	 KIMbFYDHf8G5Up1Y78RwbPpfddi8F6XU3lykN13xvuYUnJupXwxOl1nMQA3Dp51vP7
-	 iH3kpAnJrUwX3mmdSdb+ZbQQkvzajKh+TbEXfG5Fs3gexCvVC8F/d9Sg29inCjkDwM
-	 EDPcg2qEEExXt3Dh3Gp/NMUGs3fC3hGtzesBe0Ebszy0b8o2TkzOhyB5MydePYwlG7
-	 0/PFol/maj0BA==
+	b=ZjLHst4bVDcbmK2s/0yw9jwnVejn2n2RNgkYtDcj19TnSrcTNR941Nezg68ow3IGG
+	 OWWvyd7GLInEMusl4tIdEBgGWvnXyC7jS/KhbQLMmxwkmC4mNAzxsnou9OH8/Rhaeo
+	 yorikXu6NekPONq5K0lpepo2u9ToPhVacC0I61FsEwFspybjF+wEG4KGGqEzjivZNE
+	 NDEnU7QcaQu3to8MPi6vph/yjuH35LTnDR8OtP+RRMx0Gas4KpaHV+j2zXwJ1Mcf5Z
+	 jkP4vvkXCfBanEugjydAu4QeBrQbhkac5HveHAp4hgDpO3wbrngz0kXqgz19nTpu3V
+	 axl/ON8oAh5Uw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Ard Biesheuvel <ardb@kernel.org>,
 	linux-s390@vger.kernel.org,
 	sparclinux@vger.kernel.org,
 	x86@kernel.org
-Subject: [PATCH 4/7] powerpc/crc: rename crc32-vpmsum_core.S to crc-vpmsum-template.S
-Date: Wed, 23 Apr 2025 17:20:35 -0700
-Message-ID: <20250424002038.179114-5-ebiggers@kernel.org>
+Subject: [PATCH 5/7] s390/crc: drop "glue" from filenames
+Date: Wed, 23 Apr 2025 17:20:36 -0700
+Message-ID: <20250424002038.179114-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250424002038.179114-1-ebiggers@kernel.org>
 References: <20250424002038.179114-1-ebiggers@kernel.org>
@@ -66,47 +66,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-Rename crc32-vpmsum_core.S to crc-vpmsum-template.S to properly convey
-that (a) it actually generates code for both 32-bit and 16-bit CRCs, not
-just 32-bit CRCs; and (b) it has "template" semantics, like x86's
-crc-pclmul-template.S, in the sense that it's included by other files.
+The use of the term "glue" in filenames is a Crypto API-ism that does
+not show up elsewhere in lib/.  I think adopting it there was a mistake.
+The library just uses standard functions, so the amount of code that
+could be considered "glue" is quite small.  And while often the C
+functions just wrap the assembly functions, there are also cases like
+crc32c_arch() in arch/x86/lib/crc32-glue.c that blur the line by
+in-lining the actual implementation into the C function.  That's not
+"glue code", but rather the actual code.
+
+Therefore, let's drop "glue" from the filenames and instead use e.g.
+crc32.c instead of crc32-glue.c.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/powerpc/lib/{crc32-vpmsum_core.S => crc-vpmsum-template.S} | 0
- arch/powerpc/lib/crc32c-vpmsum_asm.S                            | 2 +-
- arch/powerpc/lib/crct10dif-vpmsum_asm.S                         | 2 +-
- 3 files changed, 2 insertions(+), 2 deletions(-)
- rename arch/powerpc/lib/{crc32-vpmsum_core.S => crc-vpmsum-template.S} (100%)
+ arch/s390/lib/Makefile                  | 2 +-
+ arch/s390/lib/{crc32-glue.c => crc32.c} | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename arch/s390/lib/{crc32-glue.c => crc32.c} (100%)
 
-diff --git a/arch/powerpc/lib/crc32-vpmsum_core.S b/arch/powerpc/lib/crc-vpmsum-template.S
+diff --git a/arch/s390/lib/Makefile b/arch/s390/lib/Makefile
+index 14bbfe50033c7..271a1c407121c 100644
+--- a/arch/s390/lib/Makefile
++++ b/arch/s390/lib/Makefile
+@@ -24,6 +24,6 @@ obj-$(CONFIG_S390_MODULES_SANITY_TEST_HELPERS) += test_modules_helpers.o
+ lib-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+ 
+ obj-$(CONFIG_EXPOLINE_EXTERN) += expoline.o
+ 
+ obj-$(CONFIG_CRC32_ARCH) += crc32-s390.o
+-crc32-s390-y := crc32-glue.o crc32le-vx.o crc32be-vx.o
++crc32-s390-y := crc32.o crc32le-vx.o crc32be-vx.o
+diff --git a/arch/s390/lib/crc32-glue.c b/arch/s390/lib/crc32.c
 similarity index 100%
-rename from arch/powerpc/lib/crc32-vpmsum_core.S
-rename to arch/powerpc/lib/crc-vpmsum-template.S
-diff --git a/arch/powerpc/lib/crc32c-vpmsum_asm.S b/arch/powerpc/lib/crc32c-vpmsum_asm.S
-index bf442004ea1f2..1b35c55cce0a6 100644
---- a/arch/powerpc/lib/crc32c-vpmsum_asm.S
-+++ b/arch/powerpc/lib/crc32c-vpmsum_asm.S
-@@ -837,6 +837,6 @@
- 	/* 33 bit reflected Barrett constant n */
- 	.octa 0x00000000000000000000000105ec76f1
- 
- #define CRC_FUNCTION_NAME __crc32c_vpmsum
- #define REFLECT
--#include "crc32-vpmsum_core.S"
-+#include "crc-vpmsum-template.S"
-diff --git a/arch/powerpc/lib/crct10dif-vpmsum_asm.S b/arch/powerpc/lib/crct10dif-vpmsum_asm.S
-index f0b93a0fe168a..47a6266d89a8a 100644
---- a/arch/powerpc/lib/crct10dif-vpmsum_asm.S
-+++ b/arch/powerpc/lib/crct10dif-vpmsum_asm.S
-@@ -840,6 +840,6 @@
- 	.octa 0x000000000000000000000001f65a57f8	/* x^64 div p(x) */
- 	/* Barrett constant n */
- 	.octa 0x0000000000000000000000018bb70000
- 
- #define CRC_FUNCTION_NAME __crct10dif_vpmsum
--#include "crc32-vpmsum_core.S"
-+#include "crc-vpmsum-template.S"
+rename from arch/s390/lib/crc32-glue.c
+rename to arch/s390/lib/crc32.c
 -- 
 2.49.0
 
