@@ -1,81 +1,94 @@
-Return-Path: <linux-crypto+bounces-12482-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12488-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938A0AA021E
-	for <lists+linux-crypto@lfdr.de>; Tue, 29 Apr 2025 07:54:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 862CAAA062C
+	for <lists+linux-crypto@lfdr.de>; Tue, 29 Apr 2025 10:51:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99765841A41
-	for <lists+linux-crypto@lfdr.de>; Tue, 29 Apr 2025 05:54:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D89551B600A7
+	for <lists+linux-crypto@lfdr.de>; Tue, 29 Apr 2025 08:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BABE26F460;
-	Tue, 29 Apr 2025 05:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="j2desh9h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D3C293B70;
+	Tue, 29 Apr 2025 08:50:38 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1949E1DE8B2;
-	Tue, 29 Apr 2025 05:54:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76397279347;
+	Tue, 29 Apr 2025 08:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745906086; cv=none; b=RMRQJZMlRW/uekul2CJNMzOGa4s0rwbijMcKLy2xGylkLa72YaP2rBjmfUsMnEk9v5e4tMsrXQkme13uJGcy+EhVLd140QK8UjUshy8qtSQdYHZdstbya0OCVv1wKh8949aj+fzxRql1hSgRS5vcagaRpqwufvcuHYUwkVQTwH0=
+	t=1745916638; cv=none; b=qOjqaDU0GMmEvO+mpcBbSVBbdnqP57twnfbAlRcP/+yOJ2DmgSbH/q0fBIHCfOrMOq3v3JR6g1F47qyip67t/FrABh6zRmk06Cu4xGAiPh5wH6Hs5dP4GR8JFhYpWX22/p1FJCdFmqgrCKkKD7FkeW0TSAtG09Ft38aCgw7IVGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745906086; c=relaxed/simple;
-	bh=nb+nYwrAgyj/eqxrYtpAH90jouJToyN/XaNbYT+bYXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kZjMqhLIBUUuAvE9LhIIP1uE+IdaguGJshNtOVhihkFbMkgeywQZZxgRkI2HSzxTWzMRAlNF+rXSHyI+qokLrLyTpljSHVTiCeZHS/Kmq9lE/Vkyu9v5zvtYJ+QhGoxjLiptU4SgXmpXPvn+Te9fX2+NUBilaUEBwY2IBtMMYcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=j2desh9h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE9EEC4CEE3;
-	Tue, 29 Apr 2025 05:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1745906085;
-	bh=nb+nYwrAgyj/eqxrYtpAH90jouJToyN/XaNbYT+bYXY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j2desh9hc8fSy74ecVOLk4Y/lCsVOGGJK+3KCZqtCWbnMU8BaOyaofa4wCvjtKYqu
-	 GIqywQRYwaFnjoBhbwfWh//LwZ0KGTOJgR71MS3YHnlZ3DfII6wIRzqfSDdGXPeGoQ
-	 vwPIKOntjnKNAITU/Ah2woAv+l5vTZjqdw1LSxVI=
-Date: Tue, 29 Apr 2025 07:54:42 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Danilo Krummrich <dakr@kernel.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH] firmware_loader: use SHA-256 library API instead of
- crypto_shash API
-Message-ID: <2025042935-ethanol-remodeler-bf69@gregkh>
-References: <20250428190909.852705-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1745916638; c=relaxed/simple;
+	bh=6C2TMS+n6qqj5M83V5ptzbHpW40e+AmDHnNCpPTAXdc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t5eoK39GHJVxFvL2PADcfoUMuOSQhG5sS2nzrD2nF681IPXkQa6QHRO7a7wwQzBK0Uu2W9TSHkWiwdIQtFI/MCL2iTQ5Mb3wD0OiUohQL6K/6Zq+UUmEvM7fQrYS4fhuIqorRqeRtwEvi2hAJzYin3cyUVXEn1GnghSkWfsXgRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4ZmtbH6JVvz9sFT;
+	Tue, 29 Apr 2025 10:22:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id e30qWr8CZO0g; Tue, 29 Apr 2025 10:22:19 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4ZmtbG0699z9sCk;
+	Tue, 29 Apr 2025 10:22:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id F1CD98B766;
+	Tue, 29 Apr 2025 10:22:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id 2CpqnVV7VgEF; Tue, 29 Apr 2025 10:22:17 +0200 (CEST)
+Received: from [192.168.235.99] (unknown [192.168.235.99])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 3E7F68B763;
+	Tue, 29 Apr 2025 10:22:17 +0200 (CEST)
+Message-ID: <df566157-5320-47cf-ae14-a2e578f68a35@csgroup.eu>
+Date: Tue, 29 Apr 2025 10:22:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250428190909.852705-1-ebiggers@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 02/13] crypto: powerpc - drop redundant dependencies on
+ PPC
+To: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, x86@kernel.org,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>, Ard Biesheuvel <ardb@kernel.org>
+References: <20250422152716.5923-1-ebiggers@kernel.org>
+ <20250422152716.5923-3-ebiggers@kernel.org>
+Content-Language: fr-FR
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20250422152716.5923-3-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 28, 2025 at 12:09:09PM -0700, Eric Biggers wrote:
+
+
+Le 22/04/2025 à 17:27, Eric Biggers a écrit :
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> This user of SHA-256 does not support any other algorithm, so the
-> crypto_shash abstraction provides no value.  Just use the SHA-256
-> library API instead, which is much simpler and easier to use.
+> arch/powerpc/crypto/Kconfig is sourced only when CONFIG_PPC=y, so there
+> is no need for the symbols defined inside it to depend on PPC.
 > 
-> Also take advantage of printk's built-in hex conversion using %*phN.
-> 
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> This patch is targeting the firmware_loader tree for 6.16.
 
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+Note that there are other redundancies in the file, for instance 
+CONFIG_VSX already depends on CONFIG_PPC64
+
+Christophe
+
 
