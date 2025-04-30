@@ -1,63 +1,63 @@
-Return-Path: <linux-crypto+bounces-12558-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12560-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC35AA5622
-	for <lists+linux-crypto@lfdr.de>; Wed, 30 Apr 2025 22:53:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F549AA5625
+	for <lists+linux-crypto@lfdr.de>; Wed, 30 Apr 2025 22:53:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11BE71B67EE6
-	for <lists+linux-crypto@lfdr.de>; Wed, 30 Apr 2025 20:53:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A91C1B68795
+	for <lists+linux-crypto@lfdr.de>; Wed, 30 Apr 2025 20:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A7F2C1796;
-	Wed, 30 Apr 2025 20:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24AE2C2AC2;
+	Wed, 30 Apr 2025 20:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ID+WMFH3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y0cscRh/"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE63D2983E9;
-	Wed, 30 Apr 2025 20:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2432C031F;
+	Wed, 30 Apr 2025 20:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746046392; cv=none; b=SC1MO8lE2YmZexkL9kkX9OmcvPywmcy3uiySJLppIBip6TQ9loYXECLWViY13SagByGeIeQWOlNKG9Oo0H7vN7xqN49Kf2x2bv1hMe7VgrtqI9dyHmNznxpuSSdD3XdcSiaPkRa9B0i/40DafHpkvnt0WQEMR38kZxM8J5paLn8=
+	t=1746046393; cv=none; b=sjna/pHIAC9pGCK6K0NwoniaIvmkk2lbmXucBVSMOTxj+wsTVLXZZ3ruSVv7DZtEoGRSkdnmykiGFREAgHSdhn0449gx8PMx2evGw1EeDzoZtk9Va0LnhyA9c2OER7ghiCrpWdaOiGlXzuBodn/wF2cM75gnsXWdzVHi5MZhhnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746046392; c=relaxed/simple;
-	bh=6wbRhOV0GFWlmqPXQS6DTk+b5GGSil7xU+GDXQbyLR0=;
+	s=arc-20240116; t=1746046393; c=relaxed/simple;
+	bh=YCqkHG3xgUw0fvPeOxdezVgACk/mFbGDzGAv8tGRuL4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oWg+/QuG2P9NeS++wHqH1IjIhg439UnZIl90b17Mf4Rc0VkeXV9Lvx82z2t5/d8CwUvR7i7D7Z04X9/wlxPM17OsCsP3eccviqyGCAf4CqazQ7n0Q2dpI2HBAHx8FWbX/XoX8uTTsYqseWGdr4GetAJiVmNVLge08aYlXuLYV38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ID+WMFH3; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version; b=eg4fSPkPICL8jxdTG4Zgh7VrUkT+TFZfEp/KgkZcL/xBvyVG8jBPeiUZf24UhjOrEAUCv2rmeMlmcMbmzAlfGlsKQw+6wPb8qVK7LKCGCu9yc9X1eBUmZPtU6iLdpYUtWAvF7phuRP0GQQZ75/A8fIy/VVJrZClnneclDbMP3hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y0cscRh/; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1746046391; x=1777582391;
+  t=1746046392; x=1777582392;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=6wbRhOV0GFWlmqPXQS6DTk+b5GGSil7xU+GDXQbyLR0=;
-  b=ID+WMFH3aNwACK47bQ/BhqainNBxbM2MiCy81SDjyP7VIJjZpE5BznnP
-   HVRqFKqipmoPZdvLMq5Fzq8ZgdVOYDwNJgakz79dhudjij8rYS04Ves/U
-   RS6QROpAQoj6zfJbDeEF5D9J2HhnawfMpDNQdRJViR12G5VPztY0KFXuU
-   /b+W77Xt0wfrjPi3J8Dq+sNrJXRPQgrjegk3P7aJ0i0F8PWofNIR3I2O1
-   gQM8jxMNwCSxBi1ACHP3kzf2D0+Bimz4F8XHCJ9M/rgVEdX98FtmcPDQQ
-   e1DgnEknOmfu3bc2nVVCvGGoyomDsIIb947nNn3/m47DAVDNcgYu/XwjL
-   w==;
-X-CSE-ConnectionGUID: QZPZmI/nSwWGZ8ItD4wTIw==
-X-CSE-MsgGUID: RlAjiTB0T/ytnvk+GxWdSw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11419"; a="51388490"
+  bh=YCqkHG3xgUw0fvPeOxdezVgACk/mFbGDzGAv8tGRuL4=;
+  b=Y0cscRh/OG2ku+Z0iTKYrnc9sPokLUS/Wr+1a+T7qUmRTncP4CxHTYWy
+   WMTREFuD8idTo+uFYB5fgWnAfzyjSWFe9jjw6xlAym+8prbQ27Pl9z7uf
+   VAipUFlR8s9CbQwAnsOpoRDnfgFRAwzWq8LZEJDP+4bQZbTkIvUrdlVkv
+   fiLvS//rD+RFVIn0IchuCmJ9fLeozIrPmsJM9nU84Gzvvm5Zo5MSMlaXd
+   zKdRciiudGiU9+mknKtVnbhmGmlTcY8L8Ju3xtQVCog0mZ5lpNiIoN4Pv
+   LREztIhCWCPcTp5+3Aju1zY82liieLXkR8wuLhl7uivPw6xFj0oytzeVh
+   A==;
+X-CSE-ConnectionGUID: iwGvo8igSC2jGba6ljHJhg==
+X-CSE-MsgGUID: rQ1gcJV6TUyYIgV10Jml2Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11419"; a="51388507"
 X-IronPort-AV: E=Sophos;i="6.15,252,1739865600"; 
-   d="scan'208";a="51388490"
+   d="scan'208";a="51388507"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
   by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2025 13:53:09 -0700
-X-CSE-ConnectionGUID: Qv3hyzFRRt66jXyyBrDrAg==
-X-CSE-MsgGUID: DNCHjZ4LRBOGQBsceF2LLA==
+X-CSE-ConnectionGUID: qKggRo/DSYuDc9AfVrK5YQ==
+X-CSE-MsgGUID: cLh+tXX5TPuOQqqsbCXIhA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,252,1739865600"; 
-   d="scan'208";a="138248876"
+   d="scan'208";a="138248881"
 Received: from jf5300-b11a338t.jf.intel.com ([10.242.51.115])
-  by fmviesa003.fm.intel.com with ESMTP; 30 Apr 2025 13:53:07 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 30 Apr 2025 13:53:08 -0700
 From: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -81,9 +81,9 @@ To: linux-kernel@vger.kernel.org,
 Cc: wajdi.k.feghali@intel.com,
 	vinodh.gopal@intel.com,
 	kanchana.p.sridhar@intel.com
-Subject: [PATCH v9 02/19] crypto: acomp - Reinstate non-chained crypto_acomp_[de]compress().
-Date: Wed, 30 Apr 2025 13:52:48 -0700
-Message-Id: <20250430205305.22844-3-kanchana.p.sridhar@intel.com>
+Subject: [PATCH v9 03/19] Revert "crypto: testmgr - Add multibuffer acomp testing"
+Date: Wed, 30 Apr 2025 13:52:49 -0700
+Message-Id: <20250430205305.22844-4-kanchana.p.sridhar@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20250430205305.22844-1-kanchana.p.sridhar@intel.com>
 References: <20250430205305.22844-1-kanchana.p.sridhar@intel.com>
@@ -95,47 +95,247 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This reverts the request chaining implementations of
-crypto_acomp_[de]compress() introduced in commit b67a02600372
-("crypto: acomp - Add request chaining and virtual addresses") since
-request chaining has been removed from acomp subsequently in commit
-64929fe8c0a4 ("crypto: acomp - Remove request chaining").
+This reverts commit 99585c2192cb1ce212876e82ef01d1c98c7f4699.
 
-This patch restores the implementations of crypto_acomp_[de]compress()
-from prior to commit b67a02600372.
+Remove the acomp multibuffer tests so that the interface can be
+redesigned.
 
-Signed-off-by: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/acompress.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ crypto/testmgr.c | 147 +++++++++++++++++++++--------------------------
+ 1 file changed, 64 insertions(+), 83 deletions(-)
 
-diff --git a/crypto/acompress.c b/crypto/acompress.c
-index 82fb3c04e68f..d08e0fe8cd9e 100644
---- a/crypto/acompress.c
-+++ b/crypto/acompress.c
-@@ -310,21 +310,13 @@ static int acomp_do_req_chain(struct acomp_req *req, bool comp)
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index abd609d4c8ef..82977ea25db3 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -58,9 +58,6 @@ module_param(fuzz_iterations, uint, 0644);
+ MODULE_PARM_DESC(fuzz_iterations, "number of fuzz test iterations");
+ #endif
  
- int crypto_acomp_compress(struct acomp_req *req)
- {
--	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
+-/* Multibuffer is unlimited.  Set arbitrary limit for testing. */
+-#define MAX_MB_MSGS	16
 -
--	if (crypto_acomp_req_chain(tfm) || acomp_request_issg(req))
--		crypto_acomp_reqtfm(req)->compress(req);
--	return acomp_do_req_chain(req, true);
-+	return crypto_acomp_reqtfm(req)->compress(req);
- }
- EXPORT_SYMBOL_GPL(crypto_acomp_compress);
+ #ifdef CONFIG_CRYPTO_MANAGER_DISABLE_TESTS
  
- int crypto_acomp_decompress(struct acomp_req *req)
+ /* a perfect nop */
+@@ -3329,48 +3326,27 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 		      int ctcount, int dtcount)
  {
--	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
+ 	const char *algo = crypto_tfm_alg_driver_name(crypto_acomp_tfm(tfm));
+-	struct scatterlist *src = NULL, *dst = NULL;
+-	struct acomp_req *reqs[MAX_MB_MSGS] = {};
+-	char *decomp_out[MAX_MB_MSGS] = {};
+-	char *output[MAX_MB_MSGS] = {};
+-	struct crypto_wait wait;
+-	struct acomp_req *req;
+-	int ret = -ENOMEM;
+ 	unsigned int i;
++	char *output, *decomp_out;
++	int ret;
++	struct scatterlist src, dst;
++	struct acomp_req *req;
++	struct crypto_wait wait;
+ 
+-	src = kmalloc_array(MAX_MB_MSGS, sizeof(*src), GFP_KERNEL);
+-	if (!src)
+-		goto out;
+-	dst = kmalloc_array(MAX_MB_MSGS, sizeof(*dst), GFP_KERNEL);
+-	if (!dst)
+-		goto out;
 -
--	if (crypto_acomp_req_chain(tfm) || acomp_request_issg(req))
--		crypto_acomp_reqtfm(req)->decompress(req);
--	return acomp_do_req_chain(req, false);
-+	return crypto_acomp_reqtfm(req)->decompress(req);
+-	for (i = 0; i < MAX_MB_MSGS; i++) {
+-		reqs[i] = acomp_request_alloc(tfm);
+-		if (!reqs[i])
+-			goto out;
+-
+-		acomp_request_set_callback(reqs[i],
+-					   CRYPTO_TFM_REQ_MAY_SLEEP |
+-					   CRYPTO_TFM_REQ_MAY_BACKLOG,
+-					   crypto_req_done, &wait);
+-		if (i)
+-			acomp_request_chain(reqs[i], reqs[0]);
+-
+-		output[i] = kmalloc(COMP_BUF_SIZE, GFP_KERNEL);
+-		if (!output[i])
+-			goto out;
++	output = kmalloc(COMP_BUF_SIZE, GFP_KERNEL);
++	if (!output)
++		return -ENOMEM;
+ 
+-		decomp_out[i] = kmalloc(COMP_BUF_SIZE, GFP_KERNEL);
+-		if (!decomp_out[i])
+-			goto out;
++	decomp_out = kmalloc(COMP_BUF_SIZE, GFP_KERNEL);
++	if (!decomp_out) {
++		kfree(output);
++		return -ENOMEM;
+ 	}
+ 
+ 	for (i = 0; i < ctcount; i++) {
+ 		unsigned int dlen = COMP_BUF_SIZE;
+ 		int ilen = ctemplate[i].inlen;
+ 		void *input_vec;
+-		int j;
+ 
+ 		input_vec = kmemdup(ctemplate[i].input, ilen, GFP_KERNEL);
+ 		if (!input_vec) {
+@@ -3378,61 +3354,70 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 			goto out;
+ 		}
+ 
++		memset(output, 0, dlen);
+ 		crypto_init_wait(&wait);
+-		sg_init_one(src, input_vec, ilen);
++		sg_init_one(&src, input_vec, ilen);
++		sg_init_one(&dst, output, dlen);
+ 
+-		for (j = 0; j < MAX_MB_MSGS; j++) {
+-			sg_init_one(dst + j, output[j], dlen);
+-			acomp_request_set_params(reqs[j], src, dst + j, ilen, dlen);
++		req = acomp_request_alloc(tfm);
++		if (!req) {
++			pr_err("alg: acomp: request alloc failed for %s\n",
++			       algo);
++			kfree(input_vec);
++			ret = -ENOMEM;
++			goto out;
+ 		}
+ 
+-		req = reqs[0];
++		acomp_request_set_params(req, &src, &dst, ilen, dlen);
++		acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
++					   crypto_req_done, &wait);
++
+ 		ret = crypto_wait_req(crypto_acomp_compress(req), &wait);
+ 		if (ret) {
+ 			pr_err("alg: acomp: compression failed on test %d for %s: ret=%d\n",
+ 			       i + 1, algo, -ret);
+ 			kfree(input_vec);
++			acomp_request_free(req);
+ 			goto out;
+ 		}
+ 
+ 		ilen = req->dlen;
+ 		dlen = COMP_BUF_SIZE;
++		sg_init_one(&src, output, ilen);
++		sg_init_one(&dst, decomp_out, dlen);
+ 		crypto_init_wait(&wait);
+-		for (j = 0; j < MAX_MB_MSGS; j++) {
+-			sg_init_one(src + j, output[j], ilen);
+-			sg_init_one(dst + j, decomp_out[j], dlen);
+-			acomp_request_set_params(reqs[j], src + j, dst + j, ilen, dlen);
+-		}
+-
+-		crypto_wait_req(crypto_acomp_decompress(req), &wait);
+-		for (j = 0; j < MAX_MB_MSGS; j++) {
+-			ret = reqs[j]->base.err;
+-			if (ret) {
+-				pr_err("alg: acomp: compression failed on test %d (%d) for %s: ret=%d\n",
+-				       i + 1, j, algo, -ret);
+-				kfree(input_vec);
+-				goto out;
+-			}
++		acomp_request_set_params(req, &src, &dst, ilen, dlen);
+ 
+-			if (reqs[j]->dlen != ctemplate[i].inlen) {
+-				pr_err("alg: acomp: Compression test %d (%d) failed for %s: output len = %d\n",
+-				       i + 1, j, algo, reqs[j]->dlen);
+-				ret = -EINVAL;
+-				kfree(input_vec);
+-				goto out;
+-			}
++		ret = crypto_wait_req(crypto_acomp_decompress(req), &wait);
++		if (ret) {
++			pr_err("alg: acomp: compression failed on test %d for %s: ret=%d\n",
++			       i + 1, algo, -ret);
++			kfree(input_vec);
++			acomp_request_free(req);
++			goto out;
++		}
+ 
+-			if (memcmp(input_vec, decomp_out[j], reqs[j]->dlen)) {
+-				pr_err("alg: acomp: Compression test %d (%d) failed for %s\n",
+-				       i + 1, j, algo);
+-				hexdump(output[j], reqs[j]->dlen);
+-				ret = -EINVAL;
+-				kfree(input_vec);
+-				goto out;
+-			}
++		if (req->dlen != ctemplate[i].inlen) {
++			pr_err("alg: acomp: Compression test %d failed for %s: output len = %d\n",
++			       i + 1, algo, req->dlen);
++			ret = -EINVAL;
++			kfree(input_vec);
++			acomp_request_free(req);
++			goto out;
++		}
++
++		if (memcmp(input_vec, decomp_out, req->dlen)) {
++			pr_err("alg: acomp: Compression test %d failed for %s\n",
++			       i + 1, algo);
++			hexdump(output, req->dlen);
++			ret = -EINVAL;
++			kfree(input_vec);
++			acomp_request_free(req);
++			goto out;
+ 		}
+ 
+ 		kfree(input_vec);
++		acomp_request_free(req);
+ 	}
+ 
+ 	for (i = 0; i < dtcount; i++) {
+@@ -3446,9 +3431,10 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 			goto out;
+ 		}
+ 
++		memset(output, 0, dlen);
+ 		crypto_init_wait(&wait);
+-		sg_init_one(src, input_vec, ilen);
+-		sg_init_one(dst, output[0], dlen);
++		sg_init_one(&src, input_vec, ilen);
++		sg_init_one(&dst, output, dlen);
+ 
+ 		req = acomp_request_alloc(tfm);
+ 		if (!req) {
+@@ -3459,7 +3445,7 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 			goto out;
+ 		}
+ 
+-		acomp_request_set_params(req, src, dst, ilen, dlen);
++		acomp_request_set_params(req, &src, &dst, ilen, dlen);
+ 		acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
+ 					   crypto_req_done, &wait);
+ 
+@@ -3481,10 +3467,10 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 			goto out;
+ 		}
+ 
+-		if (memcmp(output[0], dtemplate[i].output, req->dlen)) {
++		if (memcmp(output, dtemplate[i].output, req->dlen)) {
+ 			pr_err("alg: acomp: Decompression test %d failed for %s\n",
+ 			       i + 1, algo);
+-			hexdump(output[0], req->dlen);
++			hexdump(output, req->dlen);
+ 			ret = -EINVAL;
+ 			kfree(input_vec);
+ 			acomp_request_free(req);
+@@ -3498,13 +3484,8 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 	ret = 0;
+ 
+ out:
+-	acomp_request_free(reqs[0]);
+-	for (i = 0; i < MAX_MB_MSGS; i++) {
+-		kfree(output[i]);
+-		kfree(decomp_out[i]);
+-	}
+-	kfree(dst);
+-	kfree(src);
++	kfree(decomp_out);
++	kfree(output);
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(crypto_acomp_decompress);
  
 -- 
 2.27.0
