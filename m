@@ -1,518 +1,186 @@
-Return-Path: <linux-crypto+bounces-12675-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12687-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EFB9AA9339
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 14:33:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3765AA9496
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 15:31:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEF313B3B09
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 12:32:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFCFA189B53F
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 13:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4E01FE47C;
-	Mon,  5 May 2025 12:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2DF42A82;
+	Mon,  5 May 2025 13:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="gLinxCU8"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CDSmGOZd"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B035F19D8BC
-	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 12:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8690EC8FE
+	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 13:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746448378; cv=none; b=RtLOrBOzd0VJ0VoUEc6+URXf4wtG6ZhRLxcw+4JTNOntMbELqBvH5w0b/AZ2ObYUvIzNJOuGelB5I7SaeHEPmvP+/T3FbNs/tFlIv7wfWw89NhhIpcB9NjPYT6TNzZ4J9TmXqsYNN8jAwvFdW/QrmjdZOFBPhuzh/NIwuRdFqA0=
+	t=1746451887; cv=none; b=Bu9p0be0WpRQzKu1elPn1cHlstP5Xw/LbMtrrWQgdwECeruAadLMuvoAiMmowCYt1AgkaWKY/bFh0mcA+FMZW8ZcebqI0tN1IpcjC9bU58pduxXGC4wRh7pueeIUJHInnI2nZR7ZxjnQV9Ft6gSNwiFjmuhsYKliQOJyKUJ8Iws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746448378; c=relaxed/simple;
-	bh=lNocnCYF2AWOvURZmMCNj2y0E1NhG0V416Lfm6Yv/gU=;
-	h=Date:Message-Id:In-Reply-To:References:From:Subject:To; b=U3KnJdtWF/t71YaOJ5CGubFNaHVcO40BejNcIeSuDQygfO/RhCW+tdEZ/oxkklXj1gA8lkRhqSIE391bZqm0itQDIRxcaYVzIyH67kPjIyuOTkggIdmTGOhN9cXWf5GG66mdS+IZV58I/zOs0n4/8kR2YMdlx5wSSW/JzOtI0Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=gLinxCU8; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=To:Subject:From:References:In-Reply-To:Message-Id:Date:Sender:
-	Reply-To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=N88lLH6gcdrw0kWSh2Sy2mKFUyXffOkdByVyHMrf4Tk=; b=gLinxCU86jEC66OM9KGSJfS8ai
-	mvSmm4185QeRYuidEIJV6pIIxQ5CxCEFKRWYx27GR1W5Q5x6/Irq9JHaex4oPRoZJAuUJnKAAvneZ
-	Z1dYwa3UQrq4GrSKlCysGFFtaQ7bMXFHz/dfODUZQZ4koYCQ0KBOV/vtOf0bIX0aETV83VnGT+Yx3
-	47KgWtk5fjcXVw5aaZS1Wi9dctf1rZi/EpKikVqJaqZklBUSa6OWe70REycrraPzB8jzAnBHtzaeX
-	6xpPCjveFfvYzh6+syPurdYtStChOqkTqHWOOeKlqbdPJuoqFuzhPI7ooEdvqtpfT7hU7piLM/sxX
-	MNhfHiMA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1uBv07-003YOa-2B;
-	Mon, 05 May 2025 20:32:52 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 05 May 2025 20:32:51 +0800
-Date: Mon, 05 May 2025 20:32:51 +0800
-Message-Id: <f67cc874594fd2cc873667530c83e239ae09db81.1746448291.git.herbert@gondor.apana.org.au>
-In-Reply-To: <1bdf0bc9343ad20885076a17c5c720acfd4a2547.1746448291.git.herbert@gondor.apana.org.au>
-References: <1bdf0bc9343ad20885076a17c5c720acfd4a2547.1746448291.git.herbert@gondor.apana.org.au>
-From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 6/6] crypto: hmac - Add ahash support
-To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+	s=arc-20240116; t=1746451887; c=relaxed/simple;
+	bh=9vuZWKZCBFxezRU/zHa59Sr9XjDAud0SBF8y3+RIRUU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=haTRx4qJxBk55xscBFr97pw/S+H7NptlhU70qrlmf5XJ5CFoQQ/uRfViIMbqZSWq4ildY/+The84RoB5RdJFKQeR1r2vZM6K48s+S6dmzy+bsVN0GyOF23baycBTxXZTXQq7btQ/gZeGy07Fr8Y5GaF/thMTqUs/6GVmKhAH24w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CDSmGOZd; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 545AfLOT010802;
+	Mon, 5 May 2025 12:45:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=99aahL
+	4GoB8DQvuaxB4kVfw7rQXYGn5INTVtgjTAwVg=; b=CDSmGOZdQPQ2xBdyrKrMXp
+	expcylQ0/Sh58AvAzdwW3lb/H6u+GMg8nfq3jctAqMgPSSO6nDN/7MjdFWxB0Qxw
+	aiP78nPxC2V4I88QmEFWs+BzsxQuVSGEjMNuQfd7RIjWYEd5HOJ2dmgDtWkCu/DZ
+	XvNm9iQktkCgeXLu3eCacdDkxVzY8uvVAX8XnNFUIYY1v0OmZCSMAoUoIiO4wQOw
+	qZUmSc8C3VBz3U5/pENUJYruZk3rLMT/0QiTpsI+Bemj0eR5yQYpuGC/W7B6C4ym
+	jKJBd0CzxJHYqyN9aKbuTcPaA8vvengpqn0VZ92Xy2mTnpsd/jROH/HlN4CQwZfg
+	==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46eusrrgnn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 May 2025 12:45:15 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 545C8DM5002728;
+	Mon, 5 May 2025 12:45:14 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46dxfnp7v6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 May 2025 12:45:14 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 545CjAQh56623454
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 5 May 2025 12:45:10 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5DEEF20043;
+	Mon,  5 May 2025 12:45:10 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3EB7D20040;
+	Mon,  5 May 2025 12:45:10 +0000 (GMT)
+Received: from [9.111.162.37] (unknown [9.111.162.37])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  5 May 2025 12:45:10 +0000 (GMT)
+Message-ID: <9c50b5ad-39ae-4c0e-ac9b-ee95e8b7e8b0@linux.ibm.com>
+Date: Mon, 5 May 2025 14:45:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crypto: s390/sha512 - Fix sha512 state size
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Holger Dengler <dengler@linux.ibm.com>, linux-crypto@vger.kernel.org,
+        Harald Freudenberger <freude@linux.ibm.com>
+References: <632df0c6adc88f82d27bbabcc3fc6d7f@linux.ibm.com>
+ <aBCX_l0kSHVx4xQn@gondor.apana.org.au>
+Content-Language: en-US, de-DE
+From: Ingo Franzki <ifranzki@linux.ibm.com>
+In-Reply-To: <aBCX_l0kSHVx4xQn@gondor.apana.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: HXn7LYSyB806AsiPOrXavZgAB1SIbl20
+X-Authority-Analysis: v=2.4 cv=dMSmmPZb c=1 sm=1 tr=0 ts=6818b2db cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=9qcPPypGzFYYKdnir20A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: HXn7LYSyB806AsiPOrXavZgAB1SIbl20
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA1MDExNiBTYWx0ZWRfX45OkBb3tQnXE Qzw83BxmaltJMBWmOvtGouD2qrD/N44WeztjNiLUYdbxaqTmdYo/XD+KVSPrbtRL0Ne2y8MaT+n S8o5QfPoawitXYjCBE35ZHii8IpnA7V+uhKRKxiMbqMeLI0P/4nyFdaF+sur4PSyKHX/TP6Vc3k
+ V3ULtc7OvSqGBNZ4RZkNxngQqqbjFHLerdoHcF1kpIXRbNnFfjhxLc2YU1qvQWcm++hZX2rbRV6 WLf8NQkleqoUiL2HG1AzvUVHpIF1IZnfWXopB0QqR7gU2HXpndjWRhoTePQYYFO1y4EURYWT7pT jQFDsrUruyCxjlL3IWsKTu08587kb1l3RTSz+hsMOgYRX5LBYlEdAlVfoN4C1EwxJRHueoYIgOS
+ WLlad1IBVM1pQIf/6vGXEIrd2Th0YWmpYw/96HQ9Em7VOS7wLtOnPnm8C6pAVxRiI70FFVdK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-05_05,2025-04-30_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1011 mlxlogscore=999 bulkscore=0 spamscore=0 suspectscore=0
+ adultscore=0 mlxscore=0 malwarescore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2505050116
 
-Add ahash support to hmac so that drivers that can't do hmac in
-hardware do not have to implement duplicate copies of hmac.
+On 29.04.2025 11:12, Herbert Xu wrote:
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
----
- crypto/ahash.c                 |  10 +-
- crypto/hmac.c                  | 318 +++++++++++++++++++++++++++++++--
- include/crypto/hash.h          |   3 +-
- include/crypto/internal/hash.h |   9 +
- 4 files changed, 326 insertions(+), 14 deletions(-)
 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index ec246cc37619..ae3eac5c7c97 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -845,7 +845,7 @@ int crypto_has_ahash(const char *alg_name, u32 type, u32 mask)
- }
- EXPORT_SYMBOL_GPL(crypto_has_ahash);
- 
--static bool crypto_hash_alg_has_setkey(struct hash_alg_common *halg)
-+bool crypto_hash_alg_has_setkey(struct hash_alg_common *halg)
+> diff --git a/arch/s390/crypto/sha512_s390.c b/arch/s390/crypto/sha512_s390.c
+> index 14818fcc9cd4..3c5175e6dda6 100644
+> --- a/arch/s390/crypto/sha512_s390.c
+> +++ b/arch/s390/crypto/sha512_s390.c
+> @@ -22,13 +22,13 @@ static int sha512_init(struct shash_desc *desc)
+>  	struct s390_sha_ctx *ctx = shash_desc_ctx(desc);
+>  
+>  	ctx->sha512.state[0] = SHA512_H0;
+> -	ctx->sha512.state[2] = SHA512_H1;
+> -	ctx->sha512.state[4] = SHA512_H2;
+> -	ctx->sha512.state[6] = SHA512_H3;
+> -	ctx->sha512.state[8] = SHA512_H4;
+> -	ctx->sha512.state[10] = SHA512_H5;
+> -	ctx->sha512.state[12] = SHA512_H6;
+> -	ctx->sha512.state[14] = SHA512_H7;
+> +	ctx->sha512.state[1] = SHA512_H1;
+> +	ctx->sha512.state[2] = SHA512_H2;
+> +	ctx->sha512.state[3] = SHA512_H3;
+> +	ctx->sha512.state[4] = SHA512_H4;
+> +	ctx->sha512.state[5] = SHA512_H5;
+> +	ctx->sha512.state[6] = SHA512_H6;
+> +	ctx->sha512.state[7] = SHA512_H7;
+>  	ctx->count = 0;
+>  	ctx->sha512.count_hi = 0;
+>  	ctx->func = CPACF_KIMD_SHA_512;
+
+We still get one selftest failure on sha384:
+
+/proc/crypto:
+name         : sha384
+driver       : sha384-s390
+module       : sha512_s390
+priority     : 300
+refcnt       : 1
+selftest     : unknown   <---------
+internal     : no
+type         : shash
+blocksize    : 128
+digestsize   : 48
+
+Syslog:
+alg: shash: sha384-s390 test failed (wrong result) on test vector 0, cfg="init+update+final aligned buffer"
+
+Shouldn't the sha384_init() function also use array indexes 0-7 like your fix in sha512_init() ?
+It currently is:
+
+ static int sha384_init(struct shash_desc *desc)
  {
- 	struct crypto_alg *alg = &halg->base;
+ 	struct s390_sha_ctx *ctx = shash_desc_ctx(desc);
  
-@@ -854,6 +854,7 @@ static bool crypto_hash_alg_has_setkey(struct hash_alg_common *halg)
+ 	*(__u64 *)&ctx->state[0] = SHA384_H0;
+ 	*(__u64 *)&ctx->state[2] = SHA384_H1;
+ 	*(__u64 *)&ctx->state[4] = SHA384_H2;
+ 	*(__u64 *)&ctx->state[6] = SHA384_H3;
+ 	*(__u64 *)&ctx->state[8] = SHA384_H4;
+ 	*(__u64 *)&ctx->state[10] = SHA384_H5;
+ 	*(__u64 *)&ctx->state[12] = SHA384_H6;
+ 	*(__u64 *)&ctx->state[14] = SHA384_H7;
+ 	ctx->count = 0;
+ 	ctx->func = CPACF_KIMD_SHA_512;
  
- 	return __crypto_ahash_alg(alg)->setkey != ahash_nosetkey;
+ 	return 0;
  }
-+EXPORT_SYMBOL_GPL(crypto_hash_alg_has_setkey);
- 
- struct crypto_ahash *crypto_clone_ahash(struct crypto_ahash *hash)
- {
-@@ -1060,5 +1061,12 @@ int crypto_hash_digest(struct crypto_ahash *tfm, const u8 *data,
- }
- EXPORT_SYMBOL_GPL(crypto_hash_digest);
- 
-+void ahash_free_singlespawn_instance(struct ahash_instance *inst)
-+{
-+	crypto_drop_spawn(ahash_instance_ctx(inst));
-+	kfree(inst);
-+}
-+EXPORT_SYMBOL_GPL(ahash_free_singlespawn_instance);
-+
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Asynchronous cryptographic hash type");
-diff --git a/crypto/hmac.c b/crypto/hmac.c
-index 4517e04bfbaa..c9c635e48250 100644
---- a/crypto/hmac.c
-+++ b/crypto/hmac.c
-@@ -26,6 +26,12 @@ struct hmac_ctx {
- 	u8 pads[];
- };
- 
-+struct ahash_hmac_ctx {
-+	struct crypto_ahash *hash;
-+	/* Contains 'u8 ipad[statesize];', then 'u8 opad[statesize];' */
-+	u8 pads[];
-+};
-+
- static int hmac_setkey(struct crypto_shash *parent,
- 		       const u8 *inkey, unsigned int keylen)
- {
-@@ -157,21 +163,17 @@ static void hmac_exit_tfm(struct crypto_shash *parent)
- 	crypto_free_shash(tctx->hash);
- }
- 
--static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
-+static int hmac_create_shash(struct crypto_template *tmpl, struct rtattr **tb,
-+			     u32 mask)
- {
- 	struct shash_instance *inst;
- 	struct crypto_shash_spawn *spawn;
- 	struct crypto_alg *alg;
- 	struct shash_alg *salg;
--	u32 mask;
- 	int err;
- 	int ds;
- 	int ss;
- 
--	err = crypto_check_attr_type(tb, CRYPTO_ALG_TYPE_SHASH, &mask);
--	if (err)
--		return err;
--
- 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
- 	if (!inst)
- 		return -ENOMEM;
-@@ -226,20 +228,312 @@ static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	return err;
- }
- 
--static struct crypto_template hmac_tmpl = {
--	.name = "hmac",
--	.create = hmac_create,
--	.module = THIS_MODULE,
-+static int hmac_setkey_ahash(struct crypto_ahash *parent,
-+			     const u8 *inkey, unsigned int keylen)
-+{
-+	struct ahash_hmac_ctx *tctx = crypto_ahash_ctx(parent);
-+	struct crypto_ahash *fb = crypto_ahash_fb(tctx->hash);
-+	int ds = crypto_ahash_digestsize(parent);
-+	int bs = crypto_ahash_blocksize(parent);
-+	int ss = crypto_ahash_statesize(parent);
-+	HASH_REQUEST_ON_STACK(req, fb);
-+	u8 *opad = &tctx->pads[ss];
-+	u8 *ipad = &tctx->pads[0];
-+	int err, i;
-+
-+	if (fips_enabled && (keylen < 112 / 8))
-+		return -EINVAL;
-+
-+	ahash_request_set_callback(req, 0, NULL, NULL);
-+
-+	if (keylen > bs) {
-+		ahash_request_set_virt(req, inkey, ipad, keylen);
-+		err = crypto_ahash_digest(req);
-+		if (err)
-+			goto out_zero_req;
-+
-+		keylen = ds;
-+	} else
-+		memcpy(ipad, inkey, keylen);
-+
-+	memset(ipad + keylen, 0, bs - keylen);
-+	memcpy(opad, ipad, bs);
-+
-+	for (i = 0; i < bs; i++) {
-+		ipad[i] ^= HMAC_IPAD_VALUE;
-+		opad[i] ^= HMAC_OPAD_VALUE;
-+	}
-+
-+	ahash_request_set_virt(req, ipad, NULL, bs);
-+	err = crypto_ahash_init(req) ?:
-+	      crypto_ahash_update(req) ?:
-+	      crypto_ahash_export(req, ipad);
-+
-+	ahash_request_set_virt(req, opad, NULL, bs);
-+	err = err ?:
-+	      crypto_ahash_init(req) ?:
-+	      crypto_ahash_update(req) ?:
-+	      crypto_ahash_export(req, opad);
-+
-+out_zero_req:
-+	HASH_REQUEST_ZERO(req);
-+	return err;
-+}
-+
-+static int hmac_export_ahash(struct ahash_request *preq, void *out)
-+{
-+	return crypto_ahash_export(ahash_request_ctx(preq), out);
-+}
-+
-+static int hmac_import_ahash(struct ahash_request *preq, const void *in)
-+{
-+	struct crypto_ahash *tfm = crypto_ahash_reqtfm(preq);
-+	struct ahash_hmac_ctx *tctx = crypto_ahash_ctx(tfm);
-+	struct ahash_request *req = ahash_request_ctx(preq);
-+
-+	ahash_request_set_tfm(req, tctx->hash);
-+	return crypto_ahash_import(req, in);
-+}
-+
-+static int hmac_init_ahash(struct ahash_request *preq)
-+{
-+	struct crypto_ahash *tfm = crypto_ahash_reqtfm(preq);
-+	struct ahash_hmac_ctx *tctx = crypto_ahash_ctx(tfm);
-+
-+	return hmac_import_ahash(preq, &tctx->pads[0]);
-+}
-+
-+static int hmac_update_ahash(struct ahash_request *preq)
-+{
-+	struct ahash_request *req = ahash_request_ctx(preq);
-+
-+	ahash_request_set_callback(req, ahash_request_flags(preq),
-+				   preq->base.complete, preq->base.data);
-+	if (ahash_request_isvirt(preq))
-+		ahash_request_set_virt(req, preq->svirt, NULL, preq->nbytes);
-+	else
-+		ahash_request_set_crypt(req, preq->src, NULL, preq->nbytes);
-+	return crypto_ahash_update(req);
-+}
-+
-+static int hmac_finup_finish(struct ahash_request *preq, unsigned int mask)
-+{
-+	struct crypto_ahash *tfm = crypto_ahash_reqtfm(preq);
-+	struct ahash_request *req = ahash_request_ctx(preq);
-+	struct ahash_hmac_ctx *tctx = crypto_ahash_ctx(tfm);
-+	int ds = crypto_ahash_digestsize(tfm);
-+	int ss = crypto_ahash_statesize(tfm);
-+	const u8 *opad = &tctx->pads[ss];
-+
-+	ahash_request_set_callback(req, ahash_request_flags(preq) & ~mask,
-+				   preq->base.complete, preq->base.data);
-+	ahash_request_set_virt(req, preq->result, preq->result, ds);
-+	return crypto_ahash_import(req, opad) ?:
-+	       crypto_ahash_finup(req);
-+
-+}
-+
-+static void hmac_finup_done(void *data, int err)
-+{
-+	struct ahash_request *preq = data;
-+
-+	if (err)
-+		goto out;
-+
-+	err = hmac_finup_finish(preq, CRYPTO_TFM_REQ_MAY_SLEEP);
-+	if (err == -EINPROGRESS || err == -EBUSY)
-+		return;
-+
-+out:
-+	ahash_request_complete(preq, err);
-+}
-+
-+static int hmac_finup_ahash(struct ahash_request *preq)
-+{
-+	struct ahash_request *req = ahash_request_ctx(preq);
-+
-+	ahash_request_set_callback(req, ahash_request_flags(preq),
-+				   hmac_finup_done, preq);
-+	if (ahash_request_isvirt(preq))
-+		ahash_request_set_virt(req, preq->svirt, preq->result,
-+				       preq->nbytes);
-+	else
-+		ahash_request_set_crypt(req, preq->src, preq->result,
-+					preq->nbytes);
-+	return crypto_ahash_finup(req) ?:
-+	       hmac_finup_finish(preq, 0);
-+}
-+
-+static int hmac_digest_ahash(struct ahash_request *preq)
-+{
-+	return hmac_init_ahash(preq) ?:
-+	       hmac_finup_ahash(preq);
-+}
-+
-+static int hmac_init_ahash_tfm(struct crypto_ahash *parent)
-+{
-+	struct ahash_instance *inst = ahash_alg_instance(parent);
-+	struct ahash_hmac_ctx *tctx = crypto_ahash_ctx(parent);
-+	struct crypto_ahash *hash;
-+
-+	hash = crypto_spawn_ahash(ahash_instance_ctx(inst));
-+	if (IS_ERR(hash))
-+		return PTR_ERR(hash);
-+
-+	if (crypto_ahash_reqsize(parent) < sizeof(struct ahash_request) +
-+					   crypto_ahash_reqsize(hash))
-+		return -EINVAL;
-+
-+	tctx->hash = hash;
-+	return 0;
-+}
-+
-+static int hmac_clone_ahash_tfm(struct crypto_ahash *dst,
-+				struct crypto_ahash *src)
-+{
-+	struct ahash_hmac_ctx *sctx = crypto_ahash_ctx(src);
-+	struct ahash_hmac_ctx *dctx = crypto_ahash_ctx(dst);
-+	struct crypto_ahash *hash;
-+
-+	hash = crypto_clone_ahash(sctx->hash);
-+	if (IS_ERR(hash))
-+		return PTR_ERR(hash);
-+
-+	dctx->hash = hash;
-+	return 0;
-+}
-+
-+static void hmac_exit_ahash_tfm(struct crypto_ahash *parent)
-+{
-+	struct ahash_hmac_ctx *tctx = crypto_ahash_ctx(parent);
-+
-+	crypto_free_ahash(tctx->hash);
-+}
-+
-+static int __hmac_create_ahash(struct crypto_template *tmpl,
-+			       struct rtattr **tb, u32 mask)
-+{
-+	struct crypto_ahash_spawn *spawn;
-+	struct ahash_instance *inst;
-+	struct crypto_alg *alg;
-+	struct hash_alg_common *halg;
-+	int ds, ss, err;
-+
-+	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
-+	if (!inst)
-+		return -ENOMEM;
-+	spawn = ahash_instance_ctx(inst);
-+
-+	err = crypto_grab_ahash(spawn, ahash_crypto_instance(inst),
-+				crypto_attr_alg_name(tb[1]), 0, mask);
-+	if (err)
-+		goto err_free_inst;
-+	halg = crypto_spawn_ahash_alg(spawn);
-+	alg = &halg->base;
-+
-+	/* The underlying hash algorithm must not require a key */
-+	err = -EINVAL;
-+	if (crypto_hash_alg_needs_key(halg))
-+		goto err_free_inst;
-+
-+	ds = halg->digestsize;
-+	ss = halg->statesize;
-+	if (ds > alg->cra_blocksize || ss < alg->cra_blocksize)
-+		goto err_free_inst;
-+
-+	err = crypto_inst_setname(ahash_crypto_instance(inst), "hmac",
-+				  "hmac-ahash", alg);
-+	if (err)
-+		goto err_free_inst;
-+
-+	inst->alg.halg.base.cra_flags = alg->cra_flags &
-+					CRYPTO_ALG_INHERITED_FLAGS;
-+	inst->alg.halg.base.cra_flags |= CRYPTO_ALG_REQ_VIRT;
-+	inst->alg.halg.base.cra_priority = alg->cra_priority + 100;
-+	inst->alg.halg.base.cra_blocksize = alg->cra_blocksize;
-+	inst->alg.halg.base.cra_ctxsize = sizeof(struct ahash_hmac_ctx) +
-+					  (ss * 2);
-+	inst->alg.halg.base.cra_reqsize = sizeof(struct ahash_request) +
-+					  alg->cra_reqsize;
-+
-+	inst->alg.halg.digestsize = ds;
-+	inst->alg.halg.statesize = ss;
-+	inst->alg.init = hmac_init_ahash;
-+	inst->alg.update = hmac_update_ahash;
-+	inst->alg.finup = hmac_finup_ahash;
-+	inst->alg.digest = hmac_digest_ahash;
-+	inst->alg.export = hmac_export_ahash;
-+	inst->alg.import = hmac_import_ahash;
-+	inst->alg.setkey = hmac_setkey_ahash;
-+	inst->alg.init_tfm = hmac_init_ahash_tfm;
-+	inst->alg.clone_tfm = hmac_clone_ahash_tfm;
-+	inst->alg.exit_tfm = hmac_exit_ahash_tfm;
-+
-+	inst->free = ahash_free_singlespawn_instance;
-+
-+	err = ahash_register_instance(tmpl, inst);
-+	if (err) {
-+err_free_inst:
-+		ahash_free_singlespawn_instance(inst);
-+	}
-+	return err;
-+}
-+
-+static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
-+{
-+	struct crypto_attr_type *algt;
-+	u32 mask;
-+
-+	algt = crypto_get_attr_type(tb);
-+	if (IS_ERR(algt))
-+		return PTR_ERR(algt);
-+
-+	mask = crypto_algt_inherited_mask(algt);
-+
-+	if (!((algt->type ^ CRYPTO_ALG_TYPE_AHASH) &
-+	      algt->mask & CRYPTO_ALG_TYPE_MASK))
-+		return __hmac_create_ahash(tmpl, tb, mask);
-+
-+	if ((algt->type ^ CRYPTO_ALG_TYPE_SHASH) &
-+	    algt->mask & CRYPTO_ALG_TYPE_MASK)
-+		return -EINVAL;
-+
-+	return hmac_create_shash(tmpl, tb, mask);
-+}
-+
-+static int hmac_create_ahash(struct crypto_template *tmpl, struct rtattr **tb)
-+{
-+	u32 mask;
-+	int err;
-+
-+	err = crypto_check_attr_type(tb, CRYPTO_ALG_TYPE_AHASH, &mask);
-+	if (err)
-+		return err == -EINVAL ? -ENOENT : err;
-+
-+	return __hmac_create_ahash(tmpl, tb, mask);
-+}
-+
-+static struct crypto_template hmac_tmpls[] = {
-+	{
-+		.name = "hmac",
-+		.create = hmac_create,
-+		.module = THIS_MODULE,
-+	},
-+	{
-+		.name = "hmac-ahash",
-+		.create = hmac_create_ahash,
-+		.module = THIS_MODULE,
-+	},
- };
- 
- static int __init hmac_module_init(void)
- {
--	return crypto_register_template(&hmac_tmpl);
-+	return crypto_register_templates(hmac_tmpls, ARRAY_SIZE(hmac_tmpls));
- }
- 
- static void __exit hmac_module_exit(void)
- {
--	crypto_unregister_template(&hmac_tmpl);
-+	crypto_unregister_templates(hmac_tmpls, ARRAY_SIZE(hmac_tmpls));
- }
- 
- module_init(hmac_module_init);
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index 540e09ff395d..2d982995dd12 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -179,7 +179,8 @@ struct shash_desc {
-  * containing a 'struct s390_sha_ctx'.
-  */
- #define HASH_MAX_DESCSIZE	(sizeof(struct shash_desc) + 360)
--#define MAX_SYNC_HASH_REQSIZE	HASH_MAX_DESCSIZE
-+#define MAX_SYNC_HASH_REQSIZE	(sizeof(struct ahash_request) + \
-+				 HASH_MAX_DESCSIZE)
- 
- #define SHASH_DESC_ON_STACK(shash, ctx)					     \
- 	char __##shash##_desc[sizeof(struct shash_desc) + HASH_MAX_DESCSIZE] \
-diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
-index ef5ea75ac5c8..519e2de4bfba 100644
---- a/include/crypto/internal/hash.h
-+++ b/include/crypto/internal/hash.h
-@@ -64,6 +64,7 @@ int crypto_register_ahashes(struct ahash_alg *algs, int count);
- void crypto_unregister_ahashes(struct ahash_alg *algs, int count);
- int ahash_register_instance(struct crypto_template *tmpl,
- 			    struct ahash_instance *inst);
-+void ahash_free_singlespawn_instance(struct ahash_instance *inst);
- 
- int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
- 		    unsigned int keylen);
-@@ -73,12 +74,20 @@ static inline bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
- 	return alg->setkey != shash_no_setkey;
- }
- 
-+bool crypto_hash_alg_has_setkey(struct hash_alg_common *halg);
-+
- static inline bool crypto_shash_alg_needs_key(struct shash_alg *alg)
- {
- 	return crypto_shash_alg_has_setkey(alg) &&
- 		!(alg->base.cra_flags & CRYPTO_ALG_OPTIONAL_KEY);
- }
- 
-+static inline bool crypto_hash_alg_needs_key(struct hash_alg_common *alg)
-+{
-+	return crypto_hash_alg_has_setkey(alg) &&
-+		!(alg->base.cra_flags & CRYPTO_ALG_OPTIONAL_KEY);
-+}
-+
- int crypto_grab_ahash(struct crypto_ahash_spawn *spawn,
- 		      struct crypto_instance *inst,
- 		      const char *name, u32 type, u32 mask);
+
 -- 
-2.39.5
+Ingo Franzki
+eMail: ifranzki@linux.ibm.com  
+Tel: ++49 (0)7031-16-4648
+Linux on IBM Z Development, Schoenaicher Str. 220, 71032 Boeblingen, Germany
 
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Gregor Pillen
+Geschäftsführung: David Faller
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM DATA Privacy Statement: https://www.ibm.com/privacy/us/en/
 
