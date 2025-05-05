@@ -1,124 +1,202 @@
-Return-Path: <linux-crypto+bounces-12677-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12679-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A294AA939E
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 14:54:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF572AA93AB
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 14:57:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8298416493C
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 12:54:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95081188467D
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 12:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C931201006;
-	Mon,  5 May 2025 12:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE92C252284;
+	Mon,  5 May 2025 12:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="SSSYmHcB"
+	dkim=pass (1024-bit key) header.d=vayavyalabs.com header.i=@vayavyalabs.com header.b="jjKAhme6"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FE541C63
-	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 12:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D5D2512EC
+	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 12:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746449688; cv=none; b=LglJeLSiRfay0id/keUx1zTHKoMng1EkwuhtllSoKcV0pzjWLGqu062wwiUONKMGRvBO0luyalpVGhUqzioeg2aQE8cs8n8kFf1RdfOF41uWFZXEGsrLxw8oZZ/8Q9oOtjNjQXg6lVK2JfVyXuqLuGIxWxfe2f+KP85JWBhAD9s=
+	t=1746449795; cv=none; b=VHBDqqU3RWJ/L2tVN+p65L1juvDAH08wBv0FokswHC83M53e+eAaZkMRYvzG73gz/PLV09c3k90XcfYS8BLpLanNemMrQ8+ju7gpSDZU9yVQzGB/EMPZS84HWTWolXzz9QAZyalFHKPXpBgaSCJP8hw+c4VCDvgxY50HBWk4sBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746449688; c=relaxed/simple;
-	bh=xsiNfgIXVoni+kkOYNvcEhe1FJGy046tFO91rZ8roRA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MaeaYIETwFqBEi4svw9kcTg+kym7IYJj5L/79n4OZmCoZHtZD5e+rxMnJ0xtp8Gugot7UaOfut0r0FoHHrlxDj9ZuIsvFVejgKJLNxbnZMPUIo7KesdBK47rEmVqQnVePk4XxGV0ZvR5r874pX4M7qCqQdp/8SucfrRgt6QBcew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=SSSYmHcB; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=w7WBS3HXwBYvql4leWhRbNzxZfOY9nOt4+c/l2i27bk=; b=SSSYmHcBICqjjnp+0FIDApV+QS
-	exisRD9WLjuQFsOTSx/lZHXssu5op5vPtMDXfc0yZPD2Xf+zNs7EXkkZ1NrW6Pd/lEktGAWvK9GdS
-	niXCr7FC8i7J4lmNoAT+VcGcCkd8/Aw+a7K9YphIss51uxXw+UKG1y1Cb1Y0Z/ylBjw+5IwBXXkcn
-	96CkoIo0xubG/jWuEHZLQG1G93+a1N+7H1qbuC/b0FXpuf09IG0D9JLSpQJ/kzkCCx2OlD/J2lgbr
-	gEg4g3gROHCPnxjsi2C1XUxxnYnfFGUCERnf6KAbx9H+jX5C5b1Zi2iZ/WH6DHHXOARlIWczBSyjn
-	gBk+IBtg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1uBvLF-003YfV-03;
-	Mon, 05 May 2025 20:54:42 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 05 May 2025 20:54:41 +0800
-Date: Mon, 5 May 2025 20:54:41 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Ingo Franzki <ifranzki@linux.ibm.com>
-Cc: Holger Dengler <dengler@linux.ibm.com>, linux-crypto@vger.kernel.org,
-	Harald Freudenberger <freude@linux.ibm.com>
-Subject: [PATCH] crypto: s390/sha512 - Initialise upper counter to zero for
- sha384
-Message-ID: <aBi1EbRU5cqdgVHZ@gondor.apana.org.au>
-References: <632df0c6adc88f82d27bbabcc3fc6d7f@linux.ibm.com>
- <aBCX_l0kSHVx4xQn@gondor.apana.org.au>
- <9c50b5ad-39ae-4c0e-ac9b-ee95e8b7e8b0@linux.ibm.com>
+	s=arc-20240116; t=1746449795; c=relaxed/simple;
+	bh=cFqBE34txTRBz5u1i0lU3gPtRNXfWw+oybt/9tjZKEM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aj7F1DIRhXunbjnkhKC8L6tiAXYSWCRtt9s5htEwO+Kh7mL9I2Y0N0v4l4cKhQdPorrIALT2LF68plvz9A0Xm2hjJXsxFCw8AkMA05kdBL/APlgnQ8t599Hgp6hb6neCcbeYbswUtElWAWD/591wvXbliN/+Uf3G/34Ap2zdkW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vayavyalabs.com; spf=pass smtp.mailfrom=vayavyalabs.com; dkim=pass (1024-bit key) header.d=vayavyalabs.com header.i=@vayavyalabs.com header.b=jjKAhme6; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vayavyalabs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vayavyalabs.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-af59c920d32so2845927a12.0
+        for <linux-crypto@vger.kernel.org>; Mon, 05 May 2025 05:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vayavyalabs.com; s=google; t=1746449793; x=1747054593; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bAnzCXe5txb+UjJy80i7lsKQWkz0PMSte3uBrvU5TzU=;
+        b=jjKAhme6l35ZvzLjmNoqI4mYM0pJLM+IKWjPWTsfCqiOsi1G4jNYlTVJy9PFQT6wIv
+         tvCILprIgnNpG4sdYKQqXAT2+8Yw5VZFCziP2x77P4QwSVM8Qb1NIrZrBwz55Vdp07ya
+         qyVIXBzUtRrlGTYjd1cqP8J07Ni2TsLmVd9Z4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746449793; x=1747054593;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bAnzCXe5txb+UjJy80i7lsKQWkz0PMSte3uBrvU5TzU=;
+        b=mrxamCqZYbqWr92QO5sUQxubwmcyCTx3K7iN4S5cDzuzXzRRcD7rM3ve3umzJ8XJx5
+         7+b05P8N5uSzBTKU3KMhpfSk2WP46pnHhgbQSNyxqKYxKv9hxonF9/xeXdPbaN+nBgnb
+         WdTeZ8v2UOvL8D7UIP5aCFp1AVXWKMUYqwKwMyMcMoNfGOfZmlW0OaIBwEpNaCmkB+08
+         HzmNM+UgB6JEaV7Eauc0b5nCDSbEq0B/acsOzKOuJeEQpc0LlzQ3tBUhX6eh6hN4meCc
+         yufFFhaGFwHCU9O+VS9jLt6vHNdCdp/C7pAnvqlC6SQADon3kpSJCp94CsdrhjqUmdaa
+         wyng==
+X-Gm-Message-State: AOJu0Yx3zIHJeWD3TMZOyZH5IFP52uzconD/W9IAyzSv2Ozj5LnBeK4L
+	kcp3gmjq5Sm+O0wOKBcMFl7a/CCPW5BBHSwqiGsrVFCkGC84iXvEKd9cSKGHoy7ROmwNjKVZn1z
+	4
+X-Gm-Gg: ASbGncuhaHs4wnQBlQWdAssDl7b16tr6qKbN+nw8K/Ma6gBfOKRXKeUZm4M410w8q88
+	6nsN20ygXcgPt2ufA2P1E3D3krJxI9/uFb4paS7YjPfjiPnffxHYT14+8PMpBJs+COwl8l3trMb
+	gw1e5LugKMyXvnDZFaFfC5KL7WTZMESyib4HXB0XIyeGRTuNUbGFMc9sMFWRjXZjXkdYJktCj5e
+	km2Bz/me/aBatiaoochUlYhf2vjXwqM+NeXc2oqKXU1XjG/hhR3BJT9gmYu01x9nJhqYqptOSs6
+	Xjq796PUivvgr5jZZGjrOBdQltuTjv9kmZ3vVDgRkV457tkB0SvE1VAU2GI2+bGs
+X-Google-Smtp-Source: AGHT+IEyEpdDrrmWogQElo0DR+gWPXLf+SlnENF+4mdj9wocOmAOCP3bfFYGnG50O+Vp/nCEbn5zRA==
+X-Received: by 2002:a17:902:d2d2:b0:21f:8453:7484 with SMTP id d9443c01a7336-22e1ea3a9b8mr96685165ad.30.1746449793039;
+        Mon, 05 May 2025 05:56:33 -0700 (PDT)
+Received: from localhost.localdomain ([103.108.57.9])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e1521fc6fsm53559565ad.145.2025.05.05.05.56.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 May 2025 05:56:32 -0700 (PDT)
+From: Pavitrakumar M <pavitrakumarm@vayavyalabs.com>
+To: linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	herbert@gondor.apana.org.au,
+	robh@kernel.org
+Cc: Ruud.Derwig@synopsys.com,
+	manjunath.hadli@vayavyalabs.com,
+	adityak@vayavyalabs.com,
+	Pavitrakumar M <pavitrakumarm@vayavyalabs.com>
+Subject: [PATCH v2 0/6] Add SPAcc Crypto Driver
+Date: Mon,  5 May 2025 18:25:32 +0530
+Message-Id: <20250505125538.2991314-1-pavitrakumarm@vayavyalabs.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c50b5ad-39ae-4c0e-ac9b-ee95e8b7e8b0@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 05, 2025 at 02:45:09PM +0200, Ingo Franzki wrote:
->
-> Shouldn't the sha384_init() function also use array indexes 0-7 like your fix in sha512_init() ?
+Add the driver for SPAcc(Security Protocol Accelerator), which is a             
+crypto acceleration IP from Synopsys. The SPAcc supports multiple ciphers,      
+hashes and AEAD algorithms with various modes. The driver currently supports    
+below                                                                           
+                                                                                
+AEAD:                                                                           
+- ccm(sm4)                                                                      
+- ccm(aes)                                                                      
+- gcm(sm4)                                                                      
+- gcm(aes)                                                                      
+- rfc7539(chacha20,poly1305)                                                    
+                                                                                
+cipher:                                                                         
+- cbc(sm4)                                                                      
+- ecb(sm4)                                                                      
+- ctr(sm4)                                                                      
+- xts(sm4)                                                                      
+- cts(cbc(sm4))                                                                 
+- cbc(aes)                                                                      
+- ecb(aes)                                                                      
+- xts(aes)                                                                      
+- cts(cbc(aes))                                                                 
+- ctr(aes)                                                                      
+- chacha20                                                                      
+- ecb(des)                                                                      
+- cbc(des)                                                                      
+- ecb(des3_ede)                                                                 
+- cbc(des3_ede)                                                                 
+                                                                                
+hash:                                                                           
+- cmac(aes)                                                                     
+- xcbc(aes)                                                                     
+- cmac(sm4)                                                                     
+- xcbc(sm4)                                                                     
+- hmac(md5)                                                                     
+- md5                                                                           
+- hmac(sha1)                                                                    
+- sha1                                                                          
+- sha224
+- sha256                                                                        
+- sha384                                                                        
+- sha512                                                                        
+- hmac(sha224)                                                                  
+- hmac(sha256)                                                                  
+- hmac(sha384)                                                                  
+- hmac(sha512)                                                                  
+- sha3-224                                                                      
+- sha3-256                                                                      
+- sha3-384                                                                      
+- sha3-512                                                                      
+- hmac(sm3)                                                                     
+- sm3                                                                           
+- michael_mic                                              
 
-It certainly should.  Although that is not the reason why it fails
-as the 32-to-64 change is just cosmetic.  The real reason is that
-as I overlooked this function the high bits of the counter just isn't
-set and contains garbage:
+Pavitrakumar Managutte (6):
+  dt-bindings: crypto: Document support for SPAcc
+  Add SPAcc Skcipher support
+  Add SPAcc AUTODETECT Support
+  Add SPAcc ahash support
+  Add SPAcc AEAD support
+  Add SPAcc Kconfig and Makefile
 
----8<---
-Initialise the high bit counter to zero in sha384_init.
+changelog:
+  v1->v2 changes:
+    - Added local_bh_disable() and local_bh_enable() for the below calls.
+      a. for ciphers skcipher_request_complete()
+      b. for aead aead_request_complete()
+      c. for hash ahash_request_complete()
+    - dt-bindings updates
+      a. removed snps,vspacc-priority and made it into config option
+      b. renamed snps,spacc-wdtimer to snps,spacc-internal-counter
+      c. Added description to all properties
+    - Updated corresponding dt-binding changes to code 
 
-Also change the state initialisation to use ctx->sha512.state
-instead of ctx->state for consistency.
+ .../bindings/crypto/snps,dwc-spacc.yaml       |   81 +
+ drivers/crypto/Kconfig                        |    1 +
+ drivers/crypto/Makefile                       |    1 +
+ drivers/crypto/dwc-spacc/Kconfig              |  103 +
+ drivers/crypto/dwc-spacc/Makefile             |   16 +
+ drivers/crypto/dwc-spacc/spacc_aead.c         | 1297 +++++++++
+ drivers/crypto/dwc-spacc/spacc_ahash.c        |  972 +++++++
+ drivers/crypto/dwc-spacc/spacc_core.c         | 2464 +++++++++++++++++
+ drivers/crypto/dwc-spacc/spacc_core.h         |  829 ++++++
+ drivers/crypto/dwc-spacc/spacc_device.c       |  309 +++
+ drivers/crypto/dwc-spacc/spacc_device.h       |  231 ++
+ drivers/crypto/dwc-spacc/spacc_hal.c          |  374 +++
+ drivers/crypto/dwc-spacc/spacc_hal.h          |  114 +
+ drivers/crypto/dwc-spacc/spacc_interrupt.c    |  324 +++
+ drivers/crypto/dwc-spacc/spacc_manager.c      |  610 ++++
+ drivers/crypto/dwc-spacc/spacc_skcipher.c     |  779 ++++++
+ 16 files changed, 8505 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/snps,dwc-spacc.yaml
+ create mode 100644 drivers/crypto/dwc-spacc/Kconfig
+ create mode 100644 drivers/crypto/dwc-spacc/Makefile
+ create mode 100755 drivers/crypto/dwc-spacc/spacc_aead.c
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_ahash.c
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_core.c
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_core.h
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_device.c
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_device.h
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_hal.c
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_hal.h
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_interrupt.c
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_manager.c
+ create mode 100644 drivers/crypto/dwc-spacc/spacc_skcipher.c
 
-Fixes: 572b5c4682c7 ("crypto: s390/sha512 - Use API partial block handling")
-Reported-by: Ingo Franzki <ifranzki@linux.ibm.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-diff --git a/arch/s390/crypto/sha512_s390.c b/arch/s390/crypto/sha512_s390.c
-index 3c5175e6dda6..33711a29618c 100644
---- a/arch/s390/crypto/sha512_s390.c
-+++ b/arch/s390/crypto/sha512_s390.c
-@@ -86,15 +86,16 @@ static int sha384_init(struct shash_desc *desc)
- {
- 	struct s390_sha_ctx *ctx = shash_desc_ctx(desc);
- 
--	*(__u64 *)&ctx->state[0] = SHA384_H0;
--	*(__u64 *)&ctx->state[2] = SHA384_H1;
--	*(__u64 *)&ctx->state[4] = SHA384_H2;
--	*(__u64 *)&ctx->state[6] = SHA384_H3;
--	*(__u64 *)&ctx->state[8] = SHA384_H4;
--	*(__u64 *)&ctx->state[10] = SHA384_H5;
--	*(__u64 *)&ctx->state[12] = SHA384_H6;
--	*(__u64 *)&ctx->state[14] = SHA384_H7;
-+	ctx->sha512.state[0] = SHA384_H0;
-+	ctx->sha512.state[1] = SHA384_H1;
-+	ctx->sha512.state[2] = SHA384_H2;
-+	ctx->sha512.state[3] = SHA384_H3;
-+	ctx->sha512.state[4] = SHA384_H4;
-+	ctx->sha512.state[5] = SHA384_H5;
-+	ctx->sha512.state[6] = SHA384_H6;
-+	ctx->sha512.state[7] = SHA384_H7;
- 	ctx->count = 0;
-+	ctx->sha512.count_hi = 0;
- 	ctx->func = CPACF_KIMD_SHA_512;
- 
- 	return 0;
+base-commit: 2dfc7cd74a5e062a5405560447517e7aab1c7341
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.25.1
+
 
