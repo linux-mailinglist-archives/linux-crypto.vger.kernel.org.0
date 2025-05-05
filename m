@@ -1,59 +1,63 @@
-Return-Path: <linux-crypto+bounces-12728-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12724-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB5AAAAB1E
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 03:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5446BAAADF8
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 04:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 925603B5E97
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 01:47:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A61F23BF328
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 02:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 855722F479E;
-	Mon,  5 May 2025 23:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C9C429CB2A;
+	Mon,  5 May 2025 22:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0Y4C8l4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DKQTVHT7"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4662DEB97;
-	Mon,  5 May 2025 23:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86538299A87;
+	Mon,  5 May 2025 22:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746486137; cv=none; b=QIq7zsDzsEl3tMUJUbg0suzme13ZHA24IHw0H4iJtdnB7W3vFA5B35/33K14PQqrab3avPAa9v9R+zBnen9CjoCkKzGi7qNj5ctN6XTpFS2rMvmcZ80lX6ZlpgGeb5aUf4Wf8Xgzj3pWZ+26Zsl+gdK/XlWx2dEKjJdWDkg5yxM=
+	t=1746484993; cv=none; b=Bs+Jhdx1SA1M/p28qRX+BllakIh8IQ2RFAodwbct8FxAE/pv/C9fkwOfN5B85JlK1JDQ/4mo8gOQmTRXXof1ewlGLqjhMNDSTmt9EaD+Z27kgsHEy86+vhKJ1QdpTC3YiRIynNyWpNosutA2A/xEGERU/qZwaW4zFuKnEq35jGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746486137; c=relaxed/simple;
-	bh=1POYf0LwGw6uahw9yIbWbRozUWFElzKFLk8W9wbKX/0=;
+	s=arc-20240116; t=1746484993; c=relaxed/simple;
+	bh=BFmc84IeGC9GR1voaM5+gS5OimBrB7/kQB36gwmZwUE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QclX0ZTs36htxyW9BDQrc+l+PdQTHmgDP9XHrq8C7afQjaXzo6yW7cP5OHaHLESFVWNXytEUPJnF5Vp2ngYJN26KkTeHFjVPPEk1kWot8SYCeUxv9IPAIpwaeSB5m9LXnvIn4fQmQDqQhMSA7EMoZomOfn3JyJwzofxk2oYygPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0Y4C8l4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C29BFC4CEED;
-	Mon,  5 May 2025 23:02:15 +0000 (UTC)
+	 MIME-Version; b=o/KGQRnzs2qeuTivQB7NfARO9PFPMYSvrtJGjpqeO7GhtHuQAZrF0W2NnRcqBmi+XSIuMBinEvBr0i86faJeavDrCKkdazRHKqTSjTTIIlW5gl8m9McCTKJ/0L2vigIehMaCSX0QxG9OYB4MRW38htDf71wSY30D6BrEJdM29+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DKQTVHT7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CFF2C4CEE4;
+	Mon,  5 May 2025 22:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746486136;
-	bh=1POYf0LwGw6uahw9yIbWbRozUWFElzKFLk8W9wbKX/0=;
+	s=k20201202; t=1746484992;
+	bh=BFmc84IeGC9GR1voaM5+gS5OimBrB7/kQB36gwmZwUE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h0Y4C8l4cNVl9SA0/iDB7fwC/nw11kiEdpioaUagTkt3mkYE5oynCWTBTK/968CWL
-	 73vPYFjrX4orNhVUMbUQDMON9q+lSVLqpn/P2zzkGSM2U9LrBxxCTeH+kjrw6Dlnu7
-	 lUzBOZVxygu3gojhBiLhj7lNwLkRMVHkG8yMMEg/mA481lJfToJuHlD6KJolVqXQuR
-	 sx0bleNGj+DLTKBYhb6iK4vjWhEX86OuNPVdbFwVPgbAWlBtT+SiKYBYmHQX4eMNHe
-	 299D33xAFp3TmXKTCRNPL4yPIBlLrWikg/X0N3dwwhj3TOibbhNeHEwyrCXmvinADJ
-	 /ry2xudBXApcA==
+	b=DKQTVHT7vYWdgro1OP8dzORulSrRWmaD/8DlDOsLWOEl7/PAiqCrKod+Ah0AEwoMF
+	 FHYCeo1kMurkDE5PuI44rQeiagQhKzBDKQsurZhowv/0aReO3RXuisWbUmM2/k0xO9
+	 3SkpQdEKrIi6lANEaRhcQ+AKaxj+vvAhmI7cdynHKrIgFVhHpfeGmAmbbT1m9b1YSv
+	 coCbAXupT8mgDO3vmaCyJZ9DhHLFzrX8lb4xuYD7CzodOLGuSrFwVRwGcYDLpdi+Cn
+	 4ehBBqJvqDKZv08JdyeJfmqe237Je4AxJL41yXr3i3ZkrLzmUfOGo8ghfyc4F2g0WO
+	 vS+GDdpmbG3Fg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+Cc: Shashank Gupta <shashankg@marvell.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>,
+	bbrezillon@kernel.org,
+	arno@natisbad.org,
+	schalla@marvell.com,
 	davem@davemloft.net,
 	linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 170/294] crypto: ahash - Set default reqsize from ahash_alg
-Date: Mon,  5 May 2025 18:54:30 -0400
-Message-Id: <20250505225634.2688578-170-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 114/486] crypto: octeontx2 - suppress auth failure screaming due to negative tests
+Date: Mon,  5 May 2025 18:33:10 -0400
+Message-Id: <20250505223922.2682012-114-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
-References: <20250505225634.2688578-1-sashal@kernel.org>
+In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
+References: <20250505223922.2682012-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,67 +66,43 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.89
+X-stable-base: Linux 6.12.26
 Content-Transfer-Encoding: 8bit
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Shashank Gupta <shashankg@marvell.com>
 
-[ Upstream commit 9e01aaa1033d6e40f8d7cf4f20931a61ce9e3f04 ]
+[ Upstream commit 64b7871522a4cba99d092e1c849d6f9092868aaa ]
 
-Add a reqsize field to struct ahash_alg and use it to set the
-default reqsize so that algorithms with a static reqsize are
-not forced to create an init_tfm function.
+This patch addresses an issue where authentication failures were being
+erroneously reported due to negative test failures in the "ccm(aes)"
+selftest.
+pr_debug suppress unnecessary screaming of these tests.
 
+Signed-off-by: Shashank Gupta <shashankg@marvell.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/ahash.c        | 4 ++++
- include/crypto/hash.h | 3 +++
- 2 files changed, 7 insertions(+)
+ drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index 709ef09407991..6168f3532f552 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -427,6 +427,7 @@ static int crypto_ahash_init_tfm(struct crypto_tfm *tfm)
- 	hash->setkey = ahash_nosetkey;
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c
+index 5387c68f3c9df..4262441070372 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c
+@@ -264,9 +264,10 @@ static int cpt_process_ccode(struct otx2_cptlfs_info *lfs,
+ 				break;
+ 			}
  
- 	crypto_ahash_set_statesize(hash, alg->halg.statesize);
-+	crypto_ahash_set_reqsize(hash, alg->reqsize);
- 
- 	if (tfm->__crt_alg->cra_type != &crypto_ahash_type)
- 		return crypto_init_shash_ops_async(tfm);
-@@ -599,6 +600,9 @@ static int ahash_prepare_alg(struct ahash_alg *alg)
- 	if (alg->halg.statesize == 0)
- 		return -EINVAL;
- 
-+	if (alg->reqsize && alg->reqsize < alg->halg.statesize)
-+		return -EINVAL;
-+
- 	err = hash_prepare_alg(&alg->halg);
- 	if (err)
- 		return err;
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index f7c2a22cd776d..c0d472fdc82e6 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -153,6 +153,7 @@ struct ahash_request {
-  *	      This is a counterpart to @init_tfm, used to remove
-  *	      various changes set in @init_tfm.
-  * @clone_tfm: Copy transform into new object, may allocate memory.
-+ * @reqsize: Size of the request context.
-  * @halg: see struct hash_alg_common
-  */
- struct ahash_alg {
-@@ -169,6 +170,8 @@ struct ahash_alg {
- 	void (*exit_tfm)(struct crypto_ahash *tfm);
- 	int (*clone_tfm)(struct crypto_ahash *dst, struct crypto_ahash *src);
- 
-+	unsigned int reqsize;
-+
- 	struct hash_alg_common halg;
- };
- 
+-			dev_err(&pdev->dev,
+-				"Request failed with software error code 0x%x\n",
+-				cpt_status->s.uc_compcode);
++			pr_debug("Request failed with software error code 0x%x: algo = %s driver = %s\n",
++				 cpt_status->s.uc_compcode,
++				 info->req->areq->tfm->__crt_alg->cra_name,
++				 info->req->areq->tfm->__crt_alg->cra_driver_name);
+ 			otx2_cpt_dump_sg_list(pdev, info->req);
+ 			break;
+ 		}
 -- 
 2.39.5
 
