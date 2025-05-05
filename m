@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-12703-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12706-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C06CAA9C43
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 21:11:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BF87AA9C4A
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 21:12:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75B6A17DA7A
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 19:11:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E14F189F951
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 19:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE25A26FA47;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BC426FD81;
 	Mon,  5 May 2025 19:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3Zl2DMB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MuislPSA"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BFCF26F44E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA04C26FA40
 	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 19:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746472297; cv=none; b=lldPEDIo4XR1ZdDnGbWBX3SZvXss0jHckTowPqeU9rjX9QVxlkNiL0bMNmJ2ueQcsBCPuoGqlXbN1k+3QjXoAjMj4takS9Jm8pMJet5Lc9mQDUINwnkpNwCsbP9nGfL4MYke7rhH0M8C6o4TLput0dEWn5+btrtCaP+l2N493/A=
+	t=1746472297; cv=none; b=pNwDyKIlkfLUWgpUsLbxfL2a1BM78Uewu+I4ZDP8ca0nYX2Ebe6s4DtLgEVKlI5piBezY2f37HteHWr59uKpAT71j58AjT4djsvjXL3K7GFBQ/gAKen9s9hwMQ6UrA4UaYdpCKbf//hHDh9TwltwvbDO2PIY68HRVryPZ11KdvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746472297; c=relaxed/simple;
-	bh=1B6sDRX1WskvsadgsOPI+1LsNAsBz/m9k3PHvJzF4wc=;
+	bh=zadINjCerNEtZzA2gwp///+vanXky5GqozH+EKV6cvg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iczndbc4a+Iogg/424AUhEI47Sm0KBwmypUKcV8qz5JZTX7UeHtfieb4cVHJMuCx76RrITxM0e8BmxRN2dNtOe/KBcmYqpYOQsPE1c8pEvttJRnS4Zm+Bt+SadR2t3hQlOfyP/1VVUVuIQux+b80CGhFTR+LL/R1s/0xHb/VhZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I3Zl2DMB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9B62C4CEEF
-	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 19:11:36 +0000 (UTC)
+	 MIME-Version; b=GmUiUW8wOlo6taFVAX4Eu+bKZglNM/u3yP0m+mBgsPe+82PtF3mZ9jnAfupzvvPmrQLPtQsIR7yIzpYUbOPoj3hDhPV/alJ4e0QDUIpXm4I7K857JOpFdUfxOxn5okc47XnYiyPE61ne/5zW03Zx7Ia30Gc5VXicYV3Au4i1KeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MuislPSA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23E15C4CEF2
+	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 19:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1746472297;
-	bh=1B6sDRX1WskvsadgsOPI+1LsNAsBz/m9k3PHvJzF4wc=;
+	bh=zadINjCerNEtZzA2gwp///+vanXky5GqozH+EKV6cvg=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=I3Zl2DMBZxLLPU2bfVPHr0M8eIXEG/9gPOSGepC930PH5JOlCOMKd2XWpl8bDk5Xc
-	 /lpuadMnTepqiP5l68X9IZzvt+YZcEO1cQWFglHUL6hYMUo5MGXxQqTlYkAQnuo2Qc
-	 lI14QUFoGlm758UJldY6c6sgrrJXTpZFug6ZVH5NUP+EIanmfYRfyXzBuIk7jg0ST9
-	 DPknC3u0Nk7hP7NqZfFSnlctANPoJuEeUFt9kjGpu4hXstkCF0m9AU0eeobEfuceOD
-	 ww2OC5tiJ9bGzI1aeUVQ3xmy4I7baA/R6xSKBByx9octoW7ibB0Ay13BuppnmLDl46
-	 k1A1yq6zfkhrg==
+	b=MuislPSAz7JPsiJpKg5MwsMnR+2FTuJRU7fLvgWT2kvq3C2Ptr7A8MHkg4OhXMT0n
+	 sz6yI2KT/6dPFKAEm4ve9WeqjaQ82SkowbZ5lof5AVA9LXoRgZ9iX9Byy/0IuctE6I
+	 vwL+Cks7j+YqNQc89PK32xuR88dqQvu5JBkycEpTE43SgkwYQI+ltFV7kK4i6cJMue
+	 Xhj1gpnt90keMgCDWvGopEuKqnvEbb5WEZIS+w+M5h7VduaYiqV10og+szedr8BE8v
+	 +YJZQtorAgdLOeljDPEXO9dELZViXWnZVxWfYQNqQzcgMFAOhGTEb3zCmkpFjki5Xw
+	 3XCSi9T5a+rwQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
-Subject: [PATCH 3/8] crypto: gcm - use memcpy_sglist() instead of null skcipher
-Date: Mon,  5 May 2025 12:10:40 -0700
-Message-ID: <20250505191045.763835-4-ebiggers@kernel.org>
+Subject: [PATCH 4/8] crypto: geniv - use memcpy_sglist() instead of null skcipher
+Date: Mon,  5 May 2025 12:10:41 -0700
+Message-ID: <20250505191045.763835-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250505191045.763835-1-ebiggers@kernel.org>
 References: <20250505191045.763835-1-ebiggers@kernel.org>
@@ -64,163 +64,177 @@ instead of the so-called "null skcipher".  This is much simpler.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/Kconfig |  1 -
- crypto/gcm.c   | 41 ++++-------------------------------------
- 2 files changed, 4 insertions(+), 38 deletions(-)
+ crypto/Kconfig                  |  1 -
+ crypto/echainiv.c               | 18 +++---------------
+ crypto/geniv.c                  | 13 +------------
+ crypto/seqiv.c                  | 17 +++--------------
+ include/crypto/internal/geniv.h |  1 -
+ 5 files changed, 7 insertions(+), 43 deletions(-)
 
 diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 537602b8e60e..231791703594 100644
+index 231791703594..f0c8cc5e30ae 100644
 --- a/crypto/Kconfig
 +++ b/crypto/Kconfig
-@@ -803,11 +803,10 @@ config CRYPTO_CCM
- config CRYPTO_GCM
- 	tristate "GCM (Galois/Counter Mode) and GMAC (GCM MAC)"
- 	select CRYPTO_CTR
+@@ -813,11 +813,10 @@ config CRYPTO_GCM
+ 	  This is required for IPSec ESP (XFRM_ESP).
+ 
+ config CRYPTO_GENIV
+ 	tristate
  	select CRYPTO_AEAD
- 	select CRYPTO_GHASH
 -	select CRYPTO_NULL
  	select CRYPTO_MANAGER
- 	help
- 	  GCM (Galois/Counter Mode) authenticated encryption mode and GMAC
- 	  (GCM Message Authentication Code) (NIST SP800-38D)
+ 	select CRYPTO_RNG_DEFAULT
  
-diff --git a/crypto/gcm.c b/crypto/gcm.c
-index 54ca9faf0e0c..97716482bed0 100644
---- a/crypto/gcm.c
-+++ b/crypto/gcm.c
-@@ -7,11 +7,10 @@
- 
- #include <crypto/gf128mul.h>
- #include <crypto/internal/aead.h>
- #include <crypto/internal/skcipher.h>
- #include <crypto/internal/hash.h>
--#include <crypto/null.h>
- #include <crypto/scatterwalk.h>
- #include <crypto/gcm.h>
- #include <crypto/hash.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -44,11 +43,10 @@ struct crypto_rfc4543_instance_ctx {
- 	struct crypto_aead_spawn aead;
- };
- 
- struct crypto_rfc4543_ctx {
- 	struct crypto_aead *child;
--	struct crypto_sync_skcipher *null;
- 	u8 nonce[4];
- };
- 
- struct crypto_rfc4543_req_ctx {
- 	struct aead_request subreq;
-@@ -77,12 +75,10 @@ struct crypto_gcm_req_priv_ctx {
- static struct {
- 	u8 buf[16];
- 	struct scatterlist sg;
- } *gcm_zeroes;
- 
--static int crypto_rfc4543_copy_src_to_dst(struct aead_request *req, bool enc);
--
- static inline struct crypto_gcm_req_priv_ctx *crypto_gcm_reqctx(
- 	struct aead_request *req)
- {
- 	unsigned long align = crypto_aead_alignmask(crypto_aead_reqtfm(req));
- 
-@@ -928,16 +924,16 @@ static int crypto_rfc4543_crypt(struct aead_request *req, bool enc)
- 	struct crypto_rfc4543_req_ctx *rctx = aead_request_ctx(req);
- 	struct aead_request *subreq = &rctx->subreq;
- 	unsigned int authsize = crypto_aead_authsize(aead);
- 	u8 *iv = PTR_ALIGN((u8 *)(rctx + 1) + crypto_aead_reqsize(ctx->child),
- 			   crypto_aead_alignmask(ctx->child) + 1);
+ config CRYPTO_SEQIV
+ 	tristate "Sequence Number IV Generator"
+diff --git a/crypto/echainiv.c b/crypto/echainiv.c
+index 1913be8dfbba..e0a2d3209938 100644
+--- a/crypto/echainiv.c
++++ b/crypto/echainiv.c
+@@ -30,33 +30,21 @@ static int echainiv_encrypt(struct aead_request *req)
+ 	struct aead_request *subreq = aead_request_ctx(req);
+ 	__be64 nseqno;
+ 	u64 seqno;
+ 	u8 *info;
+ 	unsigned int ivsize = crypto_aead_ivsize(geniv);
 -	int err;
  
- 	if (req->src != req->dst) {
--		err = crypto_rfc4543_copy_src_to_dst(req, enc);
+ 	if (req->cryptlen < ivsize)
+ 		return -EINVAL;
+ 
+ 	aead_request_set_tfm(subreq, ctx->child);
+ 
+ 	info = req->iv;
+ 
+-	if (req->src != req->dst) {
+-		SYNC_SKCIPHER_REQUEST_ON_STACK(nreq, ctx->sknull);
+-
+-		skcipher_request_set_sync_tfm(nreq, ctx->sknull);
+-		skcipher_request_set_callback(nreq, req->base.flags,
+-					      NULL, NULL);
+-		skcipher_request_set_crypt(nreq, req->src, req->dst,
+-					   req->assoclen + req->cryptlen,
+-					   NULL);
+-
+-		err = crypto_skcipher_encrypt(nreq);
 -		if (err)
 -			return err;
-+		unsigned int nbytes = req->assoclen + req->cryptlen -
-+				      (enc ? 0 : authsize);
-+
-+		memcpy_sglist(req->dst, req->src, nbytes);
- 	}
+-	}
++	if (req->src != req->dst)
++		memcpy_sglist(req->dst, req->src,
++			      req->assoclen + req->cryptlen);
  
- 	memcpy(iv, ctx->nonce, 4);
- 	memcpy(iv + 4, req->iv, 8);
+ 	aead_request_set_callback(subreq, req->base.flags,
+ 				  req->base.complete, req->base.data);
+ 	aead_request_set_crypt(subreq, req->dst, req->dst,
+ 			       req->cryptlen, info);
+diff --git a/crypto/geniv.c b/crypto/geniv.c
+index bee4621b4f12..42eff6a7387c 100644
+--- a/crypto/geniv.c
++++ b/crypto/geniv.c
+@@ -7,11 +7,10 @@
+  * Copyright (c) 2007-2019 Herbert Xu <herbert@gondor.apana.org.au>
+  */
  
-@@ -950,26 +946,10 @@ static int crypto_rfc4543_crypt(struct aead_request *req, bool enc)
- 				    subreq->cryptlen);
+ #include <crypto/internal/geniv.h>
+ #include <crypto/internal/rng.h>
+-#include <crypto/null.h>
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/slab.h>
+@@ -123,41 +122,31 @@ int aead_init_geniv(struct crypto_aead *aead)
+ 				   crypto_aead_ivsize(aead));
+ 	crypto_put_default_rng();
+ 	if (err)
+ 		goto out;
  
- 	return enc ? crypto_aead_encrypt(subreq) : crypto_aead_decrypt(subreq);
+-	ctx->sknull = crypto_get_default_null_skcipher();
+-	err = PTR_ERR(ctx->sknull);
+-	if (IS_ERR(ctx->sknull))
+-		goto out;
+-
+ 	child = crypto_spawn_aead(aead_instance_ctx(inst));
+ 	err = PTR_ERR(child);
+ 	if (IS_ERR(child))
+-		goto drop_null;
++		goto out;
+ 
+ 	ctx->child = child;
+ 	crypto_aead_set_reqsize(aead, crypto_aead_reqsize(child) +
+ 				      sizeof(struct aead_request));
+ 
+ 	err = 0;
+ 
+ out:
+ 	return err;
+-
+-drop_null:
+-	crypto_put_default_null_skcipher();
+-	goto out;
  }
+ EXPORT_SYMBOL_GPL(aead_init_geniv);
  
--static int crypto_rfc4543_copy_src_to_dst(struct aead_request *req, bool enc)
--{
--	struct crypto_aead *aead = crypto_aead_reqtfm(req);
--	struct crypto_rfc4543_ctx *ctx = crypto_aead_ctx(aead);
--	unsigned int authsize = crypto_aead_authsize(aead);
--	unsigned int nbytes = req->assoclen + req->cryptlen -
--			      (enc ? 0 : authsize);
--	SYNC_SKCIPHER_REQUEST_ON_STACK(nreq, ctx->null);
--
--	skcipher_request_set_sync_tfm(nreq, ctx->null);
--	skcipher_request_set_callback(nreq, req->base.flags, NULL, NULL);
--	skcipher_request_set_crypt(nreq, req->src, req->dst, nbytes, NULL);
--
--	return crypto_skcipher_encrypt(nreq);
--}
--
- static int crypto_rfc4543_encrypt(struct aead_request *req)
+ void aead_exit_geniv(struct crypto_aead *tfm)
  {
- 	return crypto_ipsec_check_assoclen(req->assoclen) ?:
- 	       crypto_rfc4543_crypt(req, true);
- }
-@@ -985,47 +965,34 @@ static int crypto_rfc4543_init_tfm(struct crypto_aead *tfm)
- 	struct aead_instance *inst = aead_alg_instance(tfm);
- 	struct crypto_rfc4543_instance_ctx *ictx = aead_instance_ctx(inst);
- 	struct crypto_aead_spawn *spawn = &ictx->aead;
- 	struct crypto_rfc4543_ctx *ctx = crypto_aead_ctx(tfm);
- 	struct crypto_aead *aead;
--	struct crypto_sync_skcipher *null;
- 	unsigned long align;
--	int err = 0;
- 
- 	aead = crypto_spawn_aead(spawn);
- 	if (IS_ERR(aead))
- 		return PTR_ERR(aead);
- 
--	null = crypto_get_default_null_skcipher();
--	err = PTR_ERR(null);
--	if (IS_ERR(null))
--		goto err_free_aead;
--
- 	ctx->child = aead;
--	ctx->null = null;
- 
- 	align = crypto_aead_alignmask(aead);
- 	align &= ~(crypto_tfm_ctx_alignment() - 1);
- 	crypto_aead_set_reqsize(
- 		tfm,
- 		sizeof(struct crypto_rfc4543_req_ctx) +
- 		ALIGN(crypto_aead_reqsize(aead), crypto_tfm_ctx_alignment()) +
- 		align + GCM_AES_IV_SIZE);
- 
- 	return 0;
--
--err_free_aead:
--	crypto_free_aead(aead);
--	return err;
- }
- 
- static void crypto_rfc4543_exit_tfm(struct crypto_aead *tfm)
- {
- 	struct crypto_rfc4543_ctx *ctx = crypto_aead_ctx(tfm);
+ 	struct aead_geniv_ctx *ctx = crypto_aead_ctx(tfm);
  
  	crypto_free_aead(ctx->child);
 -	crypto_put_default_null_skcipher();
  }
+ EXPORT_SYMBOL_GPL(aead_exit_geniv);
  
- static void crypto_rfc4543_free(struct aead_instance *inst)
- {
- 	struct crypto_rfc4543_instance_ctx *ctx = aead_instance_ctx(inst);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Shared IV generator code");
+diff --git a/crypto/seqiv.c b/crypto/seqiv.c
+index a17ef5184398..2bae99e33526 100644
+--- a/crypto/seqiv.c
++++ b/crypto/seqiv.c
+@@ -62,24 +62,13 @@ static int seqiv_aead_encrypt(struct aead_request *req)
+ 
+ 	compl = req->base.complete;
+ 	data = req->base.data;
+ 	info = req->iv;
+ 
+-	if (req->src != req->dst) {
+-		SYNC_SKCIPHER_REQUEST_ON_STACK(nreq, ctx->sknull);
+-
+-		skcipher_request_set_sync_tfm(nreq, ctx->sknull);
+-		skcipher_request_set_callback(nreq, req->base.flags,
+-					      NULL, NULL);
+-		skcipher_request_set_crypt(nreq, req->src, req->dst,
+-					   req->assoclen + req->cryptlen,
+-					   NULL);
+-
+-		err = crypto_skcipher_encrypt(nreq);
+-		if (err)
+-			return err;
+-	}
++	if (req->src != req->dst)
++		memcpy_sglist(req->dst, req->src,
++			      req->assoclen + req->cryptlen);
+ 
+ 	if (unlikely(!IS_ALIGNED((unsigned long)info,
+ 				 crypto_aead_alignmask(geniv) + 1))) {
+ 		info = kmemdup(req->iv, ivsize, req->base.flags &
+ 			       CRYPTO_TFM_REQ_MAY_SLEEP ? GFP_KERNEL :
+diff --git a/include/crypto/internal/geniv.h b/include/crypto/internal/geniv.h
+index 7fd7126f593a..012f5fb22d43 100644
+--- a/include/crypto/internal/geniv.h
++++ b/include/crypto/internal/geniv.h
+@@ -13,11 +13,10 @@
+ #include <linux/types.h>
+ 
+ struct aead_geniv_ctx {
+ 	spinlock_t lock;
+ 	struct crypto_aead *child;
+-	struct crypto_sync_skcipher *sknull;
+ 	u8 salt[] __attribute__ ((aligned(__alignof__(u32))));
+ };
+ 
+ struct aead_instance *aead_geniv_alloc(struct crypto_template *tmpl,
+ 				       struct rtattr **tb);
 -- 
 2.49.0
 
