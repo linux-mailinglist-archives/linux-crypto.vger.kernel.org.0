@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-12705-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12707-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80F40AA9C45
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 21:11:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8F99AA9C49
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 21:11:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89A7C7A71C4
-	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 19:10:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 139283B2201
+	for <lists+linux-crypto@lfdr.de>; Mon,  5 May 2025 19:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69A726FA76;
-	Mon,  5 May 2025 19:11:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243DC26F463;
+	Mon,  5 May 2025 19:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BS6KdRc6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGD8xjHt"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A995926C3A5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D856626FA60
 	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 19:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746472297; cv=none; b=nN/uRFf/PmV8E222D8MlEMeDSMSvfKLwAKlRSGJmnwS5oPitGdc0V6FKGuIaTysraGZ1NDwukzeuLw/cexq7LrjGhGOA+XTWyauiLxEpIlkFOQD1x0f2xUUTn7UT4Z1lB0Yh+Uh0bu30MXQ5CXanw6CnoWRWhDGgp/FmFBfSTGQ=
+	t=1746472297; cv=none; b=DKSidntmvXp9ZE8oRTUNzwtTQK2ZqYXgMXVy4QjdTi/i1ZQMeB2cqb90Pn4OZKtn2d2sEGLo4VIlWVQsU8eOQA+iOmgAgiDbG4bnLbKoboJ+Rk455cxbmVgJBTYI1DOZMFE+/uG+hpmAVti5SpzV3KTjO7Fi2MR6cgSGzaef6Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746472297; c=relaxed/simple;
-	bh=NqOPML6jSJcXyXyFGmWequwI2EaJipm7zIcb3OtbBak=;
+	bh=Ef9zmYIZe+4TF2b7Q1Lz2u+fhl0U7p7qqpocEBgQQ8o=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DCXim+pTIatK9GKXLNZ3wf9BRA8a14OJ0OCNNPfhwHHtgu2LVTouH+fLB2oMDIG2NwaKvnh2TnP2Iakzc6VhhQOnwXpHbK+b5evhhtKGhaGeVLsRF4QrFXnQAd03cMoRByGEREugnrOvPe/jGzUKV0xYCePy44Q8lu65ciy5CuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BS6KdRc6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81499C4CEE9
+	 MIME-Version; b=T5mEbXSIaqpbMMDtLM4fH9Fk00qzaENUmidusWrEm86zpuGJiSoHXf5OxxCawS7pF/ZP5bfSMbySb117blmXHi5wFXgVoM+/vsfZsN26+YZiw+LK5Pa9oE/wjv+D19q0p88Uq9mYQQ3jeFlGz8VT942EqIcELRQz4u6K5gNvvvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGD8xjHt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0147C4CEF1
 	for <linux-crypto@vger.kernel.org>; Mon,  5 May 2025 19:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1746472297;
-	bh=NqOPML6jSJcXyXyFGmWequwI2EaJipm7zIcb3OtbBak=;
+	bh=Ef9zmYIZe+4TF2b7Q1Lz2u+fhl0U7p7qqpocEBgQQ8o=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=BS6KdRc6Irl1b80HgT+hC8xEyfOg21xMb8Ce4/gReHG74Pty7RjziWb2BRKhanE+r
-	 wALlS2M/PExGGsI7SLSPBnQ65vYZPNGKyJaMpIxPJ286ci4xSBvtMBHxMqHJMt4vC5
-	 ver+zP8LOeOk8tgH1AdFhmoaMGTGrX0lHYofS3GG/N1ZnAgSOjMjH+xKn8vxvQUXFe
-	 iTDIyi/mq17LMvebU/rkGRBAy6HSMPNzgz0v/sejm/mVV7ba4pQJejYxmkRU7vNgp5
-	 LKFZF717+sZfk3Btb0OLoCquqoltD/nO9GJnFqsOb42e446Ko016ni7nTqXiOu3np5
-	 c8P0Nx9L/rjJA==
+	b=gGD8xjHtUOzw6oCsX571V23i6FYfVsPtQlvX2cIuwl3/jB3N8v0ZLygqqjLA2Zlt2
+	 R7gjhIV2hvrpnqFuIbUh3MX2tw4bUhSSSd2GRv61bZ6QJl/V3B2W9K4w5AYme0dgTF
+	 CrwUzwt4LYqVqGU3OdKPjjpOmILAj/ybqnn0BR0uGZGnkOV1UAkp7XaA0ZAvDjHTKm
+	 vcQnKShukJqeviQ4kBKbQisrNqF7vjC2rqquag9M21+0Xuu+KdxgcTMBSAcKlIkck6
+	 YCA43zHoolXWPLXqflsz9WPzLmcdjHVCwKGfwVauPKxYdIQWiPkxtwOuwMYUstEDrw
+	 LiVTdIIum2GBA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
-Subject: [PATCH 6/8] crypto: null - remove the default null skcipher
-Date: Mon,  5 May 2025 12:10:43 -0700
-Message-ID: <20250505191045.763835-7-ebiggers@kernel.org>
+Subject: [PATCH 7/8] crypto: null - merge CRYPTO_NULL2 into CRYPTO_NULL
+Date: Mon,  5 May 2025 12:10:44 -0700
+Message-ID: <20250505191045.763835-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250505191045.763835-1-ebiggers@kernel.org>
 References: <20250505191045.763835-1-ebiggers@kernel.org>
@@ -59,110 +59,60 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-crypto_get_default_null_skcipher() and
-crypto_put_default_null_skcipher() are no longer used, so remove them.
+There is no reason to have separate CRYPTO_NULL2 and CRYPTO_NULL
+options.  Just merge them into CRYPTO_NULL.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- crypto/crypto_null.c  | 53 -------------------------------------------
- include/crypto/null.h |  3 ---
- 2 files changed, 56 deletions(-)
+ crypto/Kconfig  | 10 +++-------
+ crypto/Makefile |  2 +-
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/crypto/crypto_null.c b/crypto/crypto_null.c
-index 5822753b0995..48c71b925f37 100644
---- a/crypto/crypto_null.c
-+++ b/crypto/crypto_null.c
-@@ -15,17 +15,12 @@
- #include <crypto/null.h>
- #include <crypto/internal/hash.h>
- #include <crypto/internal/skcipher.h>
- #include <linux/init.h>
- #include <linux/module.h>
--#include <linux/spinlock.h>
- #include <linux/string.h>
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index cf5a427bb54d..7347277bedf3 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -190,20 +190,16 @@ config CRYPTO_MANAGER_EXTRA_TESTS
+ 	  This is intended for developer use only, as these tests take much
+ 	  longer to run than the normal self tests.
  
--static DEFINE_SPINLOCK(crypto_default_null_skcipher_lock);
--static struct crypto_sync_skcipher *crypto_default_null_skcipher;
--static int crypto_default_null_skcipher_refcnt;
--
- static int null_init(struct shash_desc *desc)
- {
- 	return 0;
- }
+ config CRYPTO_NULL
+ 	tristate "Null algorithms"
+-	select CRYPTO_NULL2
++	select CRYPTO_ALGAPI
++	select CRYPTO_SKCIPHER
++	select CRYPTO_HASH
+ 	help
+ 	  These are 'Null' algorithms, used by IPsec, which do nothing.
  
-@@ -127,58 +122,10 @@ static struct crypto_alg cipher_null = {
- };
- 
- MODULE_ALIAS_CRYPTO("digest_null");
- MODULE_ALIAS_CRYPTO("cipher_null");
- 
--struct crypto_sync_skcipher *crypto_get_default_null_skcipher(void)
--{
--	struct crypto_sync_skcipher *ntfm = NULL;
--	struct crypto_sync_skcipher *tfm;
+-config CRYPTO_NULL2
+-	tristate
+-	select CRYPTO_ALGAPI2
+-	select CRYPTO_SKCIPHER2
+-	select CRYPTO_HASH2
 -
--	spin_lock_bh(&crypto_default_null_skcipher_lock);
--	tfm = crypto_default_null_skcipher;
--
--	if (!tfm) {
--		spin_unlock_bh(&crypto_default_null_skcipher_lock);
--
--		ntfm = crypto_alloc_sync_skcipher("ecb(cipher_null)", 0, 0);
--		if (IS_ERR(ntfm))
--			return ntfm;
--
--		spin_lock_bh(&crypto_default_null_skcipher_lock);
--		tfm = crypto_default_null_skcipher;
--		if (!tfm) {
--			tfm = ntfm;
--			ntfm = NULL;
--			crypto_default_null_skcipher = tfm;
--		}
--	}
--
--	crypto_default_null_skcipher_refcnt++;
--	spin_unlock_bh(&crypto_default_null_skcipher_lock);
--
--	crypto_free_sync_skcipher(ntfm);
--
--	return tfm;
--}
--EXPORT_SYMBOL_GPL(crypto_get_default_null_skcipher);
--
--void crypto_put_default_null_skcipher(void)
--{
--	struct crypto_sync_skcipher *tfm = NULL;
--
--	spin_lock_bh(&crypto_default_null_skcipher_lock);
--	if (!--crypto_default_null_skcipher_refcnt) {
--		tfm = crypto_default_null_skcipher;
--		crypto_default_null_skcipher = NULL;
--	}
--	spin_unlock_bh(&crypto_default_null_skcipher_lock);
--
--	crypto_free_sync_skcipher(tfm);
--}
--EXPORT_SYMBOL_GPL(crypto_put_default_null_skcipher);
--
- static int __init crypto_null_mod_init(void)
- {
- 	int ret = 0;
- 
- 	ret = crypto_register_alg(&cipher_null);
-diff --git a/include/crypto/null.h b/include/crypto/null.h
-index 0ef577cc00e3..1c66abf9de3b 100644
---- a/include/crypto/null.h
-+++ b/include/crypto/null.h
-@@ -7,9 +7,6 @@
- #define NULL_KEY_SIZE		0
- #define NULL_BLOCK_SIZE		1
- #define NULL_DIGEST_SIZE	0
- #define NULL_IV_SIZE		0
- 
--struct crypto_sync_skcipher *crypto_get_default_null_skcipher(void);
--void crypto_put_default_null_skcipher(void);
--
- #endif
+ config CRYPTO_PCRYPT
+ 	tristate "Parallel crypto engine"
+ 	depends on SMP
+ 	select PADATA
+ 	select CRYPTO_MANAGER
+diff --git a/crypto/Makefile b/crypto/Makefile
+index 84f6911dc9ba..0f77e093512c 100644
+--- a/crypto/Makefile
++++ b/crypto/Makefile
+@@ -69,11 +69,11 @@ cryptomgr-y := algboss.o testmgr.o
+ obj-$(CONFIG_CRYPTO_MANAGER2) += cryptomgr.o
+ obj-$(CONFIG_CRYPTO_USER) += crypto_user.o
+ obj-$(CONFIG_CRYPTO_CMAC) += cmac.o
+ obj-$(CONFIG_CRYPTO_HMAC) += hmac.o
+ obj-$(CONFIG_CRYPTO_XCBC) += xcbc.o
+-obj-$(CONFIG_CRYPTO_NULL2) += crypto_null.o
++obj-$(CONFIG_CRYPTO_NULL) += crypto_null.o
+ obj-$(CONFIG_CRYPTO_MD4) += md4.o
+ obj-$(CONFIG_CRYPTO_MD5) += md5.o
+ obj-$(CONFIG_CRYPTO_RMD160) += rmd160.o
+ obj-$(CONFIG_CRYPTO_SHA1) += sha1_generic.o
+ obj-$(CONFIG_CRYPTO_SHA256) += sha256.o
 -- 
 2.49.0
 
