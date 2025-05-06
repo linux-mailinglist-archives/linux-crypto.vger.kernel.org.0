@@ -1,90 +1,144 @@
-Return-Path: <linux-crypto+bounces-12740-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12744-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582E5AAB9FC
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 09:10:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FE10AAB9C4
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 09:04:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 709CA3B4032
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 06:52:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C10B1C2843E
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 May 2025 06:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4980127815F;
-	Tue,  6 May 2025 04:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="h3AzWpOn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5D42C2AA6;
+	Tue,  6 May 2025 04:05:03 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5437F30916E;
-	Tue,  6 May 2025 02:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1164B35EBA6;
+	Tue,  6 May 2025 03:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746498831; cv=none; b=Cpm62BY5i9rS1YzxhmagJeFlXdFJvBoG7c6BhzpxzFp915ZUjZk7f2q1gePYfA+wm0aaFa+2vdT22K2pllx6ZJAGYwvxyDQkqq1cJr3QznvV4aDzL2cFA88SQYXQkZkg7kOHr7xpKbtq55KBElPCmZVtsqCLbG/wSTepA5xKB5o=
+	t=1746501537; cv=none; b=C4ZwTaUhydG55Nj3pLXxLk5h57dhgEZnP4euD8npPSmwFF/iLxhdaKZyXR8Rb6+n7Zw9NJvETpBCnPxJCCTJdX1qbonvB9/Gp6HlY1Wd7xUXGNmPbEeIwvHbDVHWpqJHdE+jYNjREkZEqrFi7GZRsgIbyp16l3KXhqsC4N96IfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746498831; c=relaxed/simple;
-	bh=xVlNlU4XQoRh4d4EOhjr3P9ThvWqnSPcN2Gd0m7hlgM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R10jx+dfv4RmsypHVJpx/BrxUf4en55O8lBhK4l7MXxPgP+aKDd/IFU0ObV7vT02RpyuIlLFXvh6a+xTyYFfmsep6xR9TJ9PRwWPYJYEE1xY+CtCbMOrmvJsuRNT6jo0cfdVGYtBj2m5e/WtWc+feyv00OO4lgGu4pzBkIvOV8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=h3AzWpOn; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=nxrM5dMhPcSwrVYbGQa0JbLBq2iuzf/yihTR/MkMTc8=; b=h3AzWpOnnleKePJmJrJtIjaTy0
-	QYS/X0mNwevFaZIHMwAuJT81OygmdER+/ycBtOmW/DsT1/Q/TSkF/6h1zfZAIxEMKdTSfxwFnr0mA
-	kywQBwyzfYo6jWU/YQWSa7nLRLwlWsCSMa/rhptPVYgoknpYSdIHESn5ggxHSHwpFjmBmQVgQYJv6
-	bx4X2gGEoceBMEGc9spZUgehux0sMIZEarmmDxNW05K8RWs53QzqE9fyo5jYgATA+H4sS2JCTKiXG
-	SeIVDOPehY+dggYBgTRa7kDh9+uCvOHgCUsOIpKH6b1bYf7ZEz1jQ/ihSfUnrEqcA1MKazOwJ38kQ
-	jV+Zyf9w==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1uC87r-003lkJ-2f;
-	Tue, 06 May 2025 10:33:44 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 06 May 2025 10:33:43 +0800
-Date: Tue, 6 May 2025 10:33:43 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Crypto List <linux-crypto@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the crypto tree
-Message-ID: <aBl1BwLiK-gzQyoz@gondor.apana.org.au>
-References: <20250506122222.2a910820@canb.auug.org.au>
+	s=arc-20240116; t=1746501537; c=relaxed/simple;
+	bh=2A6JQf6nMBe59h6dBlVjCIOa4LyO+MYa8F434CoNhJA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D92vtpxMKXLTk0RB1hOo0aVyUfWmowQsYMzjjQWIXuUyoVRUTFVL0hit2D4bOnvaSIaGrv4S/cK7ebzIAS2B+skO8CeL3IIIR67X/x02KenrIEf76GbwEKWwa/3LFcUR/EBwpMhQDZR7uKt3FwG7dsYSiCoOncCJo5oz+HRZryA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.40.54.178])
+	by gateway (Coremail) with SMTP id _____8CxvOKUfxloj0rWAA--.25898S3;
+	Tue, 06 May 2025 11:18:44 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.40.54.178])
+	by front1 (Coremail) with SMTP id qMiowMCx7MSPfxloqre1AA--.770S2;
+	Tue, 06 May 2025 11:18:39 +0800 (CST)
+From: Qunqin Zhao <zhaoqunqin@loongson.cn>
+To: lee@kernel.org,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	peterhuewe@gmx.de,
+	jarkko@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-crypto@vger.kernel.org,
+	jgg@ziepe.ca,
+	linux-integrity@vger.kernel.org,
+	pmenzel@molgen.mpg.de,
+	Qunqin Zhao <zhaoqunqin@loongson.cn>
+Subject: [PATCH v9 0/5] Add Loongson Security Engine chip driver
+Date: Tue,  6 May 2025 11:19:42 +0800
+Message-ID: <20250506031947.11130-1-zhaoqunqin@loongson.cn>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250506122222.2a910820@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowMCx7MSPfxloqre1AA--.770S2
+X-CM-SenderInfo: 52kd01pxqtx0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxCr43XFy5WrW7try5tF43urX_yoW5GFWrpF
+	45C3yfCr4UJr47Cr93J34UCFy3Z3s3Jr9Iga9rXw15ur9rAa4xXrWakFyUAF47AFn3Jry2
+	vFWkCF4UCF1UJacCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
+	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
+	McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+	1lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
+	Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+	cVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+	8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+	6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
 
-On Tue, May 06, 2025 at 12:22:22PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the crypto tree, today's linux-next build (x86_64
-> allmocdonfig) failed like this:
-> 
-> x86_64-linux-gnu-ld: vmlinux.o: in function `__chacha20poly1305_encrypt':
-> chacha20poly1305.c:(.text+0x1a690e1): undefined reference to `poly1305_init'
+The Loongson Security Engine chip supports RNG, SM2, SM3 and SM4
+accelerator engines. Each engine have its own DMA buffer provided
+by the controller. The kernel cannot directly send commands to the
+engine and must first send them to the controller, which will
+forward them to the corresponding engine. Based on these engines,
+TPM2 have been implemented in the chip, then let's treat TPM2 itself
+as an engine.
 
-Thanks Stephen.
+v9: Moved the base driver back to drivers/mfd. Cleanned up coding style.
 
-I've just pushed out a fix for this:
+v8: Like Lee said, the base driver goes beyond MFD scope. Since these
+    are all encryption related drivers and SM2, SM3, and SM4 drivers
+    will be added to the crypto subsystem in the future, the base driver
+    need to be changed when adding these drivers. Therefore, it may be
+    more appropriate to place the base driver within the crypto
+    subsystem.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/commit/?id=43d9d3e84ee1bc1ca98a964e0963bab39de36a44
+    Removed complete callback in all drivers. Removed the concepts of
+    "channel", "msg" and "request" as they may be confusing. Used the
+    concepts of "egnine" and "command" may be better.
 
-Cheers,
+v7: Addressed Huacai's comments.
+
+v6: mfd :MFD_LS6000SE -> MFD_LOONGSON_SE,  ls6000se.c -> loongson-se.c
+
+    crypto :CRYPTO_DEV_LS6000SE_RNG -> CRYPTO_DEV_LOONGSON_RNG,
+    ls6000se-rng.c ->loongson-rng.c
+
+    tpm: TCG_LSSE -> TCG_LOONGSON, tpm_lsse.c ->tpm_loongson.c
+
+v5: Registered "ls6000se-rng" device in mfd driver
+
+Qunqin Zhao (5):
+  mfd: Add support for Loongson Security Engine chip controller
+  crypto: loongson - add Loongson RNG driver support
+  MAINTAINERS: Add entry for Loongson crypto driver
+  tpm: Add a driver for Loongson TPM device
+  MAINTAINERS: Add tpm_loongson.c to LOONGSON CRYPTO DRIVER entry
+
+ MAINTAINERS                            |   9 +
+ drivers/char/tpm/Kconfig               |   9 +
+ drivers/char/tpm/Makefile              |   1 +
+ drivers/char/tpm/tpm_loongson.c        |  78 ++++++++
+ drivers/crypto/Kconfig                 |   1 +
+ drivers/crypto/Makefile                |   1 +
+ drivers/crypto/loongson/Kconfig        |   5 +
+ drivers/crypto/loongson/Makefile       |   1 +
+ drivers/crypto/loongson/loongson-rng.c | 197 +++++++++++++++++++++
+ drivers/mfd/Kconfig                    |  11 ++
+ drivers/mfd/Makefile                   |   2 +
+ drivers/mfd/loongson-se.c              | 235 +++++++++++++++++++++++++
+ include/linux/mfd/loongson-se.h        |  52 ++++++
+ 13 files changed, 602 insertions(+)
+ create mode 100644 drivers/char/tpm/tpm_loongson.c
+ create mode 100644 drivers/crypto/loongson/Kconfig
+ create mode 100644 drivers/crypto/loongson/Makefile
+ create mode 100644 drivers/crypto/loongson/loongson-rng.c
+ create mode 100644 drivers/mfd/loongson-se.c
+ create mode 100644 include/linux/mfd/loongson-se.h
+
+
+base-commit: 92a09c47464d040866cf2b4cd052bc60555185fb
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.45.2
+
 
