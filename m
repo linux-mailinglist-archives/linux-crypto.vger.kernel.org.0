@@ -1,61 +1,61 @@
-Return-Path: <linux-crypto+bounces-12861-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12863-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 473E8AB03DF
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 May 2025 21:44:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376BEAB03D9
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 May 2025 21:44:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D39FB2128D
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 May 2025 19:42:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C40A1C04989
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 May 2025 19:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E1828CF6B;
-	Thu,  8 May 2025 19:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5851428D84F;
+	Thu,  8 May 2025 19:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bxis3f6D"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VkBAoceq"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3CD28A720;
-	Thu,  8 May 2025 19:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEA428C87F;
+	Thu,  8 May 2025 19:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746733307; cv=none; b=p0SWAdWMX7eph0OPqoUsxrZxj48Jv7iQ96LteAfQfoayOUO3fzDjFECk1sOpqiejWcV2rvXCwH/1OnHfqgmmDVVkUDxDxci1T7Wn5ibLPy6kbkb4bc/hwIDNLuMEaVboDq/+VN4U+r3yKTM7ams5rx8uDeiyXUzt7B+4rT3N1W0=
+	t=1746733309; cv=none; b=Pjga38aDCX7JTeLwJsdGKnKqzouVVwKW+1pAeqgKqTGKeM8/RUW/smDXCuj8Ne8Yl9iidJkg9f1CDASKRHz+rbphkC9d4JVxUZmDNiMfCdgc+FkAdiBz6zwvbbZw10Nfk1CCZG3s5qYa3Dkm6HT2ExXy8TTYIeT4/xPLa4eNhus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746733307; c=relaxed/simple;
-	bh=cw35xIKM3GQ7IYN44nqMVxUAoNpG2Du37jUAD6lMlcs=;
+	s=arc-20240116; t=1746733309; c=relaxed/simple;
+	bh=UyA9sOUzeFWM/IfsI80doZFP3YbMuXrREZWQXOgHADM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=okJmoSHo8OgF6XsiwYxYaqafu/UJ4wgJ7JwEwreF3O9agDsOOTg/upuDdPKFe+HqC/CAXjQhPXfdoZIbCUyDn63cC/3QZbE60qlW/CGGG4wfxbkGBPSwNHii7OZkj1D2rrRQ2LkMMbCxkYLdyMDWSG4XAzCinRrX7LBWzXT1T7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bxis3f6D; arc=none smtp.client-ip=192.198.163.17
+	 MIME-Version; b=B1Rd0uZ3IWIRmw5OoTtDuyAIsmomzs+tySnrpgX/EnVD46eu2Wn5+CchiCpK/mfie5Yw5V4rkbsylJAE32c3qTiTl2SXOx0EbLqGNkPexGMLMQejUlj4rzxVQVL6NodkxqZ4p+X/+bqWd4hREJuDNfRMupJ8Ad0AlT6Lvf9gikE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VkBAoceq; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1746733306; x=1778269306;
+  t=1746733307; x=1778269307;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cw35xIKM3GQ7IYN44nqMVxUAoNpG2Du37jUAD6lMlcs=;
-  b=bxis3f6Dr4pj0BZzEdLSMDtJ2GLtUXvn9xvgUbW+P02ntkgECa1dpM/W
-   M2aYKJ9cjPS1DwjRNzJxoN0TbEeg16OmZWtron+dmdBbL8QPdoF0/8IZ3
-   QVuYK7Wtd8s2l+t89aDDsdZ7Pbi6OT6Oe2EWxtZ3t45snvT6ds2tdOWYI
-   hI+DZoSJrZcj+gOJ7gOdB8tKtepkkDYk8/Yy4iTOm96ucqwK6aXU27Xly
-   fi5ehlrRepB3y4+JLzonPXxT6XJ2JFszyI1GanYCStWhWakjf4wR9uJiJ
-   r6BIK5eOB03F0Mo78A0jH/8dXg6M5r3XuMEt0DZRpReysCU7qL4ATQYRr
+  bh=UyA9sOUzeFWM/IfsI80doZFP3YbMuXrREZWQXOgHADM=;
+  b=VkBAoceqk6eiXqT3b3mjp3YsDZsIjJnFGn3w3nolBLItyGo0EV+2qU12
+   oUgifmLW1sU05nXYFrvWqkAjE6P9q1NxD5ZLTZhsL4nL6aZeaDC3/eeBs
+   2V1T8Fuve92TO7u8qa4HA03Ge0RJBq+oTMKXlmFxOgs3PzfPsE8AYsr0U
+   WLZkIgnxOnD28ld7LqXwuc1oFf8gI09HsiZWpko1I6Of/oMxzrj6ZRcc5
+   qApuJs0AOU1vXZDECLPCx1RUWsBqFNTkBwJfc/x5kzH617pVD3zTNEMJk
+   a9zM6m1LBY/298IvYDDSPrSPfUSQMJrCBJ35ZYvqVdCWsC1CE69k71Nm8
    g==;
-X-CSE-ConnectionGUID: B+56qbRfSBmt9GK58i/Msg==
-X-CSE-MsgGUID: BaB6jL3vTHmu/5W+Hrs32A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11427"; a="48454700"
+X-CSE-ConnectionGUID: lg5v2KRFTLCfZ2eJB99vZg==
+X-CSE-MsgGUID: m5hWiDVESX6bKRSJ7XYtow==
+X-IronPort-AV: E=McAfee;i="6700,10204,11427"; a="48454714"
 X-IronPort-AV: E=Sophos;i="6.15,273,1739865600"; 
-   d="scan'208";a="48454700"
+   d="scan'208";a="48454714"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2025 12:41:42 -0700
-X-CSE-ConnectionGUID: YpFzO/86RtSHtUCgGnfk6g==
-X-CSE-MsgGUID: 050zpBjPSv2w1g071KVj/Q==
+X-CSE-ConnectionGUID: K4lxUqTMSzCylnQWzosqTA==
+X-CSE-MsgGUID: eUm8qbXhSCC1RvKiO9HcpQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,273,1739865600"; 
-   d="scan'208";a="136880863"
+   d="scan'208";a="136880866"
 Received: from jf5300-b11a338t.jf.intel.com ([10.242.51.115])
   by fmviesa010.fm.intel.com with ESMTP; 08 May 2025 12:41:41 -0700
 From: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
@@ -83,9 +83,9 @@ To: linux-kernel@vger.kernel.org,
 Cc: wajdi.k.feghali@intel.com,
 	vinodh.gopal@intel.com,
 	kanchana.p.sridhar@intel.com
-Subject: [PATCH v9 10/19] crypto: acomp - New interfaces to facilitate batching support in acomp & drivers.
-Date: Thu,  8 May 2025 12:41:25 -0700
-Message-Id: <20250508194134.28392-11-kanchana.p.sridhar@intel.com>
+Subject: [PATCH v9 11/19] crypto: iaa - Implement crypto_acomp batching interfaces for Intel IAA.
+Date: Thu,  8 May 2025 12:41:26 -0700
+Message-Id: <20250508194134.28392-12-kanchana.p.sridhar@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20250508194134.28392-1-kanchana.p.sridhar@intel.com>
 References: <20250508194134.28392-1-kanchana.p.sridhar@intel.com>
@@ -97,151 +97,170 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds get_batch_size(), batch_compress() and batch_decompress()
-interfaces to:
+iaa_crypto implements the new crypto_acomp get_batch_size() interface
+that returns an iaa_driver specific constant, IAA_CRYPTO_MAX_BATCH_SIZE
+(set to 8U currently).
 
-  struct acomp_alg
-  struct crypto_acomp
+This patch also provides the iaa_crypto driver implementations for the
+newly added crypto_acomp batch_compress() and batch_decompress()
+interfaces.
 
-A crypto_acomp compression algorithm that supports batching of compressions
-and decompressions must provide implementations for these API, so that a
-higher level module based on crypto_acomp, such as zswap, can allocate
-resources for submitting multiple compress/decompress jobs that can be
-batched, and invoke batching of [de]compressions.
+This allows swap modules such as zswap to allocate required batching
+resources and then invoke fully asynchronous batch parallel
+compression/decompression of pages on systems with Intel IAA, by
+invoking these crypto API, respectively:
 
-A new helper function acomp_has_async_batching() can be invoked to query if
-a crypto_acomp has registered these batching interfaces.
+   crypto_acomp_batch_size(...);
+   crypto_acomp_batch_compress(...);
+   crypto_acomp_batch_decompress(...);
 
-Further, zswap can invoke the newly added "crypto_acomp_batch_size()"
-API to query the maximum number of requests that can be batch
-[de]compressed. crypto_acomp_batch_size() returns 1 if the acomp has not
-provided an implementation for get_batch_size(). Based on this, zswap
-can use the minimum of any zswap-specific upper limits for batch-size
-and the compressor's max batch-size, to allocate batching resources.
+This enables zswap compress batching code to be developed in
+a manner similar to the current single-page synchronous calls to:
 
-This allows the iaa_crypto Intel IAA driver to register implementations for
-the get_batch_size(), batch_compress() and batch_decompress() acomp_alg
-interfaces, that can subsequently be invoked from zswap to
-compress/decompress pages in parallel in the IAA hardware accelerator to
-improve swapout/swapin performance, through these newly added
-corresponding crypto_acomp API:
+   crypto_acomp_compress(...);
 
-  crypto_acomp_batch_size()
-  crypto_acomp_batch_compress()
-  crypto_acomp_batch_decompress()
+thereby, facilitating encapsulated and modular hand-off between the
+kernel mm/zswap code and the crypto_acomp layer.
 
+Suggested-by: Yosry Ahmed <yosry.ahmed@linux.dev>
 Signed-off-by: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 ---
- crypto/acompress.c                  |   3 +
- include/crypto/acompress.h          | 107 ++++++++++++++++++++++++++++
- include/crypto/internal/acompress.h |  20 ++++++
- 3 files changed, 130 insertions(+)
+ drivers/crypto/intel/iaa/iaa_crypto.h      |   9 +
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 288 +++++++++++++++++++++
+ 2 files changed, 297 insertions(+)
 
-diff --git a/crypto/acompress.c b/crypto/acompress.c
-index d08e0fe8cd9e..c7cca5596acf 100644
---- a/crypto/acompress.c
-+++ b/crypto/acompress.c
-@@ -95,6 +95,9 @@ static int crypto_acomp_init_tfm(struct crypto_tfm *tfm)
+diff --git a/drivers/crypto/intel/iaa/iaa_crypto.h b/drivers/crypto/intel/iaa/iaa_crypto.h
+index b4a94da2c315..90ce336879f1 100644
+--- a/drivers/crypto/intel/iaa/iaa_crypto.h
++++ b/drivers/crypto/intel/iaa/iaa_crypto.h
+@@ -42,6 +42,15 @@
+ 					 IAA_DECOMP_CHECK_FOR_EOB | \
+ 					 IAA_DECOMP_STOP_ON_EOB)
  
- 	acomp->compress = alg->compress;
- 	acomp->decompress = alg->decompress;
-+	acomp->get_batch_size = alg->get_batch_size;
-+	acomp->batch_compress = alg->batch_compress;
-+	acomp->batch_decompress = alg->batch_decompress;
- 	acomp->reqsize = alg->reqsize;
- 
- 	acomp->base.exit = crypto_acomp_exit_tfm;
-diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
-index 939e51d122b0..e50f3e71ba58 100644
---- a/include/crypto/acompress.h
-+++ b/include/crypto/acompress.h
-@@ -120,6 +120,10 @@ struct acomp_req {
-  *
-  * @compress:		Function performs a compress operation
-  * @decompress:		Function performs a de-compress operation
-+ * @get_batch_size:	Maximum batch-size for batching compress/decompress
-+ *			operations.
-+ * @batch_compress:	Function performs a batch compress operation.
-+ * @batch_decompress:	Function performs a batch decompress operation.
-  * @reqsize:		Context size for (de)compression requests
-  * @fb:			Synchronous fallback tfm
-  * @base:		Common crypto API algorithm data structure
-@@ -127,6 +131,22 @@ struct acomp_req {
- struct crypto_acomp {
- 	int (*compress)(struct acomp_req *req);
- 	int (*decompress)(struct acomp_req *req);
-+	unsigned int (*get_batch_size)(void);
-+	bool (*batch_compress)(
-+		struct acomp_req *reqs[],
-+		struct page *pages[],
-+		u8 *dsts[],
-+		unsigned int dlens[],
-+		int errors[],
-+		int nr_reqs);
-+	bool (*batch_decompress)(
-+		struct acomp_req *reqs[],
-+		u8 *srcs[],
-+		struct page *pages[],
-+		unsigned int slens[],
-+		unsigned int dlens[],
-+		int errors[],
-+		int nr_reqs);
- 	unsigned int reqsize;
- 	struct crypto_acomp *fb;
- 	struct crypto_tfm base;
-@@ -224,6 +244,13 @@ static inline bool acomp_is_async(struct crypto_acomp *tfm)
- 	       CRYPTO_ALG_ASYNC;
- }
- 
-+static inline bool acomp_has_async_batching(struct crypto_acomp *tfm)
-+{
-+	return (acomp_is_async(tfm) &&
-+		(crypto_comp_alg_common(tfm)->base.cra_flags & CRYPTO_ALG_TYPE_ACOMPRESS) &&
-+		tfm->get_batch_size && tfm->batch_compress && tfm->batch_decompress);
-+}
-+
- static inline struct crypto_acomp *crypto_acomp_reqtfm(struct acomp_req *req)
- {
- 	return __crypto_acomp_tfm(req->base.tfm);
-@@ -595,4 +622,84 @@ static inline struct acomp_req *acomp_request_on_stack_init(
- 	return req;
- }
- 
-+/**
-+ * crypto_acomp_batch_size() -- Get the algorithm's batch size
-+ *
-+ * Function returns the algorithm's batch size for batching operations
-+ *
-+ * @tfm:	ACOMPRESS tfm handle allocated with crypto_alloc_acomp()
-+ *
-+ * Return:	crypto_acomp's batch size.
++/*
++ * The maximum compress/decompress batch size for IAA's implementation of
++ * the crypto_acomp batch_compress() and batch_decompress() interfaces.
++ * The IAA compression algorithms should provide the crypto_acomp
++ * get_batch_size() interface through a function that returns this
++ * constant.
 + */
-+static inline unsigned int crypto_acomp_batch_size(struct crypto_acomp *tfm)
-+{
-+	if (acomp_has_async_batching(tfm))
-+		return tfm->get_batch_size();
++#define IAA_CRYPTO_MAX_BATCH_SIZE 8U
 +
-+	return 1;
+ /* Representation of IAA workqueue */
+ struct iaa_wq {
+ 	struct list_head	list;
+diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+index 52fe68606f4d..d577f555d6ab 100644
+--- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
++++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+@@ -2149,6 +2149,291 @@ static void compression_ctx_init(struct iaa_compression_ctx *ctx)
+ 	ctx->use_irq = use_irq;
+ }
+ 
++static __always_inline unsigned int iaa_comp_get_batch_size(void)
++{
++	return IAA_CRYPTO_MAX_BATCH_SIZE;
++}
++
++static int iaa_comp_poll(struct acomp_req *req)
++{
++	struct idxd_desc *idxd_desc;
++	struct idxd_device *idxd;
++	struct iaa_wq *iaa_wq;
++	struct pci_dev *pdev;
++	struct device *dev;
++	struct idxd_wq *wq;
++	bool compress_op;
++	int ret;
++
++	idxd_desc = req->data;
++	if (!idxd_desc)
++		return -EAGAIN;
++
++	compress_op = (idxd_desc->iax_hw->opcode == IAX_OPCODE_COMPRESS);
++	wq = idxd_desc->wq;
++	iaa_wq = idxd_wq_get_private(wq);
++	idxd = iaa_wq->iaa_device->idxd;
++	pdev = idxd->pdev;
++	dev = &pdev->dev;
++
++	ret = check_completion(dev, idxd_desc->iax_completion, compress_op, true);
++	if (ret == -EAGAIN)
++		return ret;
++	if (ret)
++		goto out;
++
++	req->dlen = idxd_desc->iax_completion->output_size;
++
++	/* Update stats */
++	if (compress_op) {
++		update_total_comp_bytes_out(req->dlen);
++		update_wq_comp_bytes(wq, req->dlen);
++	} else {
++		update_total_decomp_bytes_in(req->slen);
++		update_wq_decomp_bytes(wq, req->slen);
++	}
++
++	if (iaa_verify_compress && (idxd_desc->iax_hw->opcode == IAX_OPCODE_COMPRESS)) {
++		struct crypto_tfm *tfm = req->base.tfm;
++		dma_addr_t src_addr, dst_addr;
++		u32 compression_crc;
++
++		compression_crc = idxd_desc->iax_completion->crc;
++
++		dma_sync_sg_for_device(dev, req->dst, 1, DMA_FROM_DEVICE);
++		dma_sync_sg_for_device(dev, req->src, 1, DMA_TO_DEVICE);
++
++		src_addr = sg_dma_address(req->src);
++		dst_addr = sg_dma_address(req->dst);
++
++		ret = iaa_compress_verify(tfm, req, wq, src_addr, req->slen,
++					  dst_addr, &req->dlen, compression_crc);
++	}
++out:
++	/* caller doesn't call crypto_wait_req, so no acomp_request_complete() */
++
++	dma_unmap_sg(dev, req->dst, sg_nents(req->dst), DMA_FROM_DEVICE);
++	dma_unmap_sg(dev, req->src, sg_nents(req->src), DMA_TO_DEVICE);
++
++	idxd_free_desc(idxd_desc->wq, idxd_desc);
++
++	dev_dbg(dev, "%s: returning ret=%d\n", __func__, ret);
++
++	return ret;
++}
++
++static __always_inline void iaa_set_req_poll(
++	struct acomp_req *reqs[],
++	int nr_reqs,
++	bool set_flag)
++{
++	int i;
++
++	for (i = 0; i < nr_reqs; ++i) {
++		set_flag ? (reqs[i]->base.flags |= CRYPTO_ACOMP_REQ_POLL) :
++			   (reqs[i]->base.flags &= ~CRYPTO_ACOMP_REQ_POLL);
++	}
 +}
 +
 +/**
-+ * crypto_acomp_batch_compress() -- Invoke asynchronous compress of a batch
-+ * of requests.
++ * This API provides IAA compress batching functionality for use by swap
++ * modules.
 + *
 + * @reqs: @nr_reqs asynchronous compress requests.
 + * @pages: Pages to be compressed by IAA.
-+ * @dsts: Pre-allocated destination buffers to store results of compression.
-+ *        Each element of @dsts must be of size "PAGE_SIZE * 2".
-+ * @dlens: Will contain the compressed lengths for @pages.
++ * @dsts: Pre-allocated destination buffers to store results of IAA
++ *        compression. Each element of @dsts must be of size "PAGE_SIZE * 2".
++ * @dlens: Will contain the compressed lengths.
 + * @errors: zero on successful compression of the corresponding
 + *          req, or error code in case of error.
-+ * @nr_reqs: The number of requests in @reqs, up to IAA_CRYPTO_MAX_BATCH_SIZE,
++ * @nr_reqs: The number of requests, up to IAA_CRYPTO_MAX_BATCH_SIZE,
 + *           to be compressed.
 + *
 + * Returns true if all compress requests in the batch complete successfully,
 + * false otherwise.
 + */
-+static inline bool crypto_acomp_batch_compress(
++static bool iaa_comp_acompress_batch(
 +	struct acomp_req *reqs[],
 +	struct page *pages[],
 +	u8 *dsts[],
@@ -249,31 +268,97 @@ index 939e51d122b0..e50f3e71ba58 100644
 +	int errors[],
 +	int nr_reqs)
 +{
-+	struct crypto_acomp *tfm = crypto_acomp_reqtfm(reqs[0]);
++	struct scatterlist inputs[IAA_CRYPTO_MAX_BATCH_SIZE];
++	struct scatterlist outputs[IAA_CRYPTO_MAX_BATCH_SIZE];
++	bool compressions_done = false;
++	int i, err = 0;
 +
-+	return tfm->batch_compress(reqs, pages, dsts, dlens, errors, nr_reqs);
++	BUG_ON(nr_reqs > IAA_CRYPTO_MAX_BATCH_SIZE);
++
++	iaa_set_req_poll(reqs, nr_reqs, true);
++
++	/*
++	 * Prepare and submit the batch of acomp_reqs to IAA. IAA will process
++	 * these compress jobs in parallel.
++	 */
++	for (i = 0; i < nr_reqs; ++i) {
++		sg_init_table(&inputs[i], 1);
++		sg_set_page(&inputs[i], pages[i], PAGE_SIZE, 0);
++
++		/*
++		 * We need PAGE_SIZE * 2 here since there maybe over-compression case,
++		 * and hardware-accelerators may won't check the dst buffer size, so
++		 * giving the dst buffer with enough length to avoid buffer overflow.
++		 */
++		sg_init_one(&outputs[i], dsts[i], PAGE_SIZE * 2);
++		acomp_request_set_params(reqs[i], &inputs[i],
++					 &outputs[i], PAGE_SIZE, PAGE_SIZE);
++
++		errors[i] = iaa_comp_acompress(reqs[i]);
++
++		if (errors[i] != -EINPROGRESS) {
++			errors[i] = -EINVAL;
++			err = -EINVAL;
++		} else {
++			errors[i] = -EAGAIN;
++		}
++	}
++
++	/*
++	 * Asynchronously poll for and process IAA compress job completions.
++	 */
++	while (!compressions_done) {
++		compressions_done = true;
++
++		for (i = 0; i < nr_reqs; ++i) {
++			/*
++			 * Skip, if the compression has already completed
++			 * successfully or with an error.
++			 */
++			if (errors[i] != -EAGAIN)
++				continue;
++
++			errors[i] = iaa_comp_poll(reqs[i]);
++
++			if (errors[i]) {
++				if (errors[i] == -EAGAIN)
++					compressions_done = false;
++				else
++					err = -EINVAL;
++			} else {
++				dlens[i] = reqs[i]->dlen;
++			}
++		}
++	}
++
++	/*
++	 * For the same 'reqs[]' to be usable by
++	 * iaa_comp_acompress()/iaa_comp_adecompress(),
++	 * clear the CRYPTO_ACOMP_REQ_POLL bit on all acomp_reqs.
++	 */
++	iaa_set_req_poll(reqs, nr_reqs, false);
++
++	return !err;
 +}
 +
 +/**
-+ * crypto_acomp_batch_decompress() -- Invoke asynchronous decompress of a batch
-+ * of requests.
++ * This API provides IAA decompress batching functionality for use by swap
++ * modules.
 + *
 + * @reqs: @nr_reqs asynchronous decompress requests.
-+ * @srcs: Source buffers to to be decompressed.
-+ * @pages: Destination pages corresponding to @srcs.
-+ * @slens: Buffer lengths for @srcs.
-+ * @dlens: Will contain the decompressed lengths for @srcs.
-+ *	   For batch decompressions, the caller must enforce additional
-+ *	   semantics such as, BUG_ON(dlens[i] != PAGE_SIZE) assertions.
-+ * @errors: zero on successful decompression of the corresponding
++ * @srcs: The src buffers to be decompressed by IAA.
++ * @pages: The pages to store the decompressed buffers.
++ * @slens: Compressed lengths of @srcs.
++ * @dlens: Will contain the decompressed lengths.
++ * @errors: zero on successful compression of the corresponding
 + *          req, or error code in case of error.
-+ * @nr_reqs: The number of requests in @reqs, up to IAA_CRYPTO_MAX_BATCH_SIZE,
-+ *           to be decompressed.
++ * @nr_reqs: The number of pages, up to IAA_CRYPTO_MAX_BATCH_SIZE,
++ *            to be decompressed.
 + *
-+ * Returns true if all decompress requests in the batch complete successfully,
++ * Returns true if all decompress requests complete successfully,
 + * false otherwise.
 + */
-+static inline bool crypto_acomp_batch_decompress(
++static bool iaa_comp_adecompress_batch(
 +	struct acomp_req *reqs[],
 +	u8 *srcs[],
 +	struct page *pages[],
@@ -282,50 +367,94 @@ index 939e51d122b0..e50f3e71ba58 100644
 +	int errors[],
 +	int nr_reqs)
 +{
-+	struct crypto_acomp *tfm = crypto_acomp_reqtfm(reqs[0]);
++	struct scatterlist inputs[IAA_CRYPTO_MAX_BATCH_SIZE];
++	struct scatterlist outputs[IAA_CRYPTO_MAX_BATCH_SIZE];
++	bool decompressions_done = false;
++	int i, err = 0;
 +
-+	return tfm->batch_decompress(reqs, srcs, pages, slens, dlens, errors, nr_reqs);
++	BUG_ON(nr_reqs > IAA_CRYPTO_MAX_BATCH_SIZE);
++
++	iaa_set_req_poll(reqs, nr_reqs, true);
++
++	/*
++	 * Prepare and submit the batch of acomp_reqs to IAA. IAA will process
++	 * these decompress jobs in parallel.
++	 */
++	for (i = 0; i < nr_reqs; ++i) {
++		sg_init_one(&inputs[i], srcs[i], slens[i]);
++		sg_init_table(&outputs[i], 1);
++		sg_set_page(&outputs[i], pages[i], PAGE_SIZE, 0);
++		acomp_request_set_params(reqs[i], &inputs[i],
++					&outputs[i], slens[i], PAGE_SIZE);
++
++		errors[i] = iaa_comp_adecompress(reqs[i]);
++
++		/*
++		 * If it failed desc allocation/submission, errors[i] can
++		 * be 0 or error value from software decompress.
++		 */
++		if (errors[i] != -EINPROGRESS) {
++			errors[i] = -EINVAL;
++			err = -EINVAL;
++		} else {
++			errors[i] = -EAGAIN;
++		}
++	}
++
++	/*
++	 * Asynchronously poll for and process IAA decompress job completions.
++	 */
++	while (!decompressions_done) {
++		decompressions_done = true;
++
++		for (i = 0; i < nr_reqs; ++i) {
++			/*
++			 * Skip, if the decompression has already completed
++			 * successfully or with an error.
++			 */
++			if (errors[i] != -EAGAIN)
++				continue;
++
++			errors[i] = iaa_comp_poll(reqs[i]);
++
++			if (errors[i]) {
++				if (errors[i] == -EAGAIN)
++					decompressions_done = false;
++				else
++					err = -EINVAL;
++			} else {
++				/*
++				 * For batch decompressions, the caller should
++				 * check @errors and handle dlens[i] != PAGE_SIZE.
++				 */
++				dlens[i] = reqs[i]->dlen;
++			}
++		}
++	}
++
++	/*
++	 * For the same 'reqs[]' to be usable by
++	 * iaa_comp_acompress()/iaa_comp_adecompress(),
++	 * clear the CRYPTO_ACOMP_REQ_POLL bit on all acomp_reqs.
++	 */
++	iaa_set_req_poll(reqs, nr_reqs, false);
++
++	return !err;
 +}
 +
- #endif
-diff --git a/include/crypto/internal/acompress.h b/include/crypto/internal/acompress.h
-index b69d818d7e68..891e40831af8 100644
---- a/include/crypto/internal/acompress.h
-+++ b/include/crypto/internal/acompress.h
-@@ -23,6 +23,10 @@
-  *
-  * @compress:	Function performs a compress operation
-  * @decompress:	Function performs a de-compress operation
-+ * @get_batch_size:	Maximum batch-size for batching compress/decompress
-+ *			operations.
-+ * @batch_compress:	Function performs a batch compress operation.
-+ * @batch_decompress:	Function performs a batch decompress operation.
-  * @init:	Initialize the cryptographic transformation object.
-  *		This function is used to initialize the cryptographic
-  *		transformation object. This function is called only once at
-@@ -43,6 +47,22 @@
- struct acomp_alg {
- 	int (*compress)(struct acomp_req *req);
- 	int (*decompress)(struct acomp_req *req);
-+	unsigned int (*get_batch_size)(void);
-+	bool (*batch_compress)(
-+		struct acomp_req *reqs[],
-+		struct page *pages[],
-+		u8 *dsts[],
-+		unsigned int dlens[],
-+		int errors[],
-+		int nr_reqs);
-+	bool (*batch_decompress)(
-+		struct acomp_req *reqs[],
-+		u8 *srcs[],
-+		struct page *pages[],
-+		unsigned int slens[],
-+		unsigned int dlens[],
-+		int errors[],
-+		int nr_reqs);
- 	int (*init)(struct crypto_acomp *tfm);
- 	void (*exit)(struct crypto_acomp *tfm);
- 
+ /*********************************************
+  * Interfaces to crypto_alg and crypto_acomp.
+  *********************************************/
+@@ -2169,6 +2454,9 @@ static struct acomp_alg iaa_acomp_fixed_deflate = {
+ 	.init			= iaa_comp_init_fixed,
+ 	.compress		= iaa_comp_acompress,
+ 	.decompress		= iaa_comp_adecompress,
++	.get_batch_size		= iaa_comp_get_batch_size,
++	.batch_compress		= iaa_comp_acompress_batch,
++	.batch_decompress	= iaa_comp_adecompress_batch,
+ 	.base			= {
+ 		.cra_name		= "deflate",
+ 		.cra_driver_name	= "deflate-iaa",
 -- 
 2.27.0
 
