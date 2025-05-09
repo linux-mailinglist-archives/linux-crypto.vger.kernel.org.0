@@ -1,217 +1,123 @@
-Return-Path: <linux-crypto+bounces-12885-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12889-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88526AB107B
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 May 2025 12:24:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FDD2AB1160
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 May 2025 13:01:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0E2B4A3F97
-	for <lists+linux-crypto@lfdr.de>; Fri,  9 May 2025 10:24:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D312B3AB52B
+	for <lists+linux-crypto@lfdr.de>; Fri,  9 May 2025 11:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221F228EA44;
-	Fri,  9 May 2025 10:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67BC28ECDA;
+	Fri,  9 May 2025 11:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tpkdO9Bt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bOQ6qiBt"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19198287500;
-	Fri,  9 May 2025 10:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41FE218EB1;
+	Fri,  9 May 2025 11:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746786253; cv=none; b=mHgYYcaZoL20u+sw8W45QPY9pYjetzofKE3OpawZE8fDsZdo+pNShqLBIW9DbsQgRed5J2YST4vXIVmMwePSYWPhDIS7fWIjhGRMRPfUyuNLwMCo137QmGLYspO9tZZOA8fPT5lEmWNQyjpPZrnwcmzJs4lv26XAmMQ2ljxQVM4=
+	t=1746788487; cv=none; b=O3equcl+Z7p7Hl1oomW1a6laCRB9rQB5t6fMqgmZugFLqLohHPS3HsxJXoyn5wwRsCqSwhYpqjfpwZ63Fdq/y9jiB7JXvAQrfbN2SYfY5xAURKfoFcJQpI0Ou6ssIHSh3gE0oxjcCxigZ7/SXidP9WSvSsvZeT87LR8Ub0jq6CE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746786253; c=relaxed/simple;
-	bh=Mv/7zMBiwb5gAMPkPyBbHEzvG1xCA85ECVJWhXZm6uU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=luCBuvMP//IVThbzPuHQZiet0wUGto8eozHKvQGk8D7eLzWpMurrFMcnBJUmYuX6+GcN5Pk9lvhfGh/IkuRApTDJrzdBDEXoVPv7Y0BNR98bbAlW3RkpICGzeLH9qe4zDp6W/AxMayiOEmDLfaCfjoYXnIBZULmYgdfKQF/DYbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tpkdO9Bt; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5494Bx6m029630;
-	Fri, 9 May 2025 10:24:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=1rYnEf9GN9FWsJos4
-	3c2Xr4krI+XIdkOBGcoTSPTg34=; b=tpkdO9BtEuVmNDxBEEXrSuvx7djqExkig
-	xnH3wv9FtLULDFwKHza75WyaaOv5dM6hVpgSqJ54fyND+ziySv5qYF8hjgBwBhJG
-	YFezALcAjlNnlqdhqlx4mnAVuSzplNRuTjFog+OVemExayYfTa5hsp2rxjNBODNm
-	7GhvSqrbpA0zDiIGZVYzvcOt6ydAkFDLOx4dZRdymkfH93YvsaSxnyAFqqXYk1qf
-	ByVkv2UuAgbxXD9kJES85aUnWAL7EaNAI6xEEdZRWsOlrHN2ECsM06Ej5UtgVIgT
-	eYQSx79Vxfvta04AbY21eOw2e9mmEbSL1WozaWc7biP/vin1RthUQ==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46h6k0jr41-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 May 2025 10:24:08 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5499nM30014583;
-	Fri, 9 May 2025 10:24:07 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 46dypm2m2q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 May 2025 10:24:07 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 549AO4aL52822524
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 9 May 2025 10:24:04 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EF20220040;
-	Fri,  9 May 2025 10:24:03 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B45C12004E;
-	Fri,  9 May 2025 10:24:03 +0000 (GMT)
-Received: from funtu2.fritz.box?044ibm.com (unknown [9.111.70.163])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  9 May 2025 10:24:03 +0000 (GMT)
-From: Harald Freudenberger <freude@linux.ibm.com>
-To: herbert@gondor.apana.org.au, dengler@linux.ibm.com, ifranzki@linux.ibm.com,
-        fcallies@linux.ibm.com
-Cc: linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [PATCH v4 3/3] Documentation: crypto_engine: Update and extend crypto engine doc
-Date: Fri,  9 May 2025 12:24:02 +0200
-Message-ID: <20250509102402.27287-4-freude@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250509102402.27287-1-freude@linux.ibm.com>
-References: <20250509102402.27287-1-freude@linux.ibm.com>
+	s=arc-20240116; t=1746788487; c=relaxed/simple;
+	bh=gRgLFX3wudpilZbhg89XKnOTVJhitrzM2EL48kaXQIY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fowYU7zsuty+6rnhZEMPrmqXoBqt9qdSOEH1RirsthnqTD9NYoFkSeM8W9zNeBkgHmnnWRs1QntOgG2KJvEAA+ivpml7iLAP9+BgxPWwKByns69vpyK1ffd6kNvyk8qr0YLpj9bAuf9DTHQYMc8QKp/Zoi7u1T3wTCgCYWKPRic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bOQ6qiBt; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a1fb17a9beso178404f8f.3;
+        Fri, 09 May 2025 04:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746788484; x=1747393284; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=r53khiO3ex71dGFIBcMlSGwX4XCBTtxUE+p0BbXkqFo=;
+        b=bOQ6qiBtWmUJBqJUHnTjFVAcT2k1Vr8P2CNv2wxfNgqHRHQl1Ww+zEMhCdRIvYba6s
+         jHPaLyPI+yQbAMeRpN/ItUKP+qa8hlYS6Asrn25FWvuSaGPHc6nuHA2hYtZWymEM7nqK
+         iq8bKrqfRTeHhOzRtjlDdSnt6pAMEen0PiR0dh+e9lPuOqlGag/buFo931kjOVeuLbWF
+         GY0J9/uAJMiLLxOnyvJK7WS0OFv8WPVFPPruBdP9zVxWuoPDOhhSPEPScAoiaOW5FWQC
+         ofJJ9RXhKgHvnQcxGg25fF9ZxQx8otBA6uR4+ZlXrn7rQGTMaN59/A8AXbY+N7kyd9U9
+         HEMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746788484; x=1747393284;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r53khiO3ex71dGFIBcMlSGwX4XCBTtxUE+p0BbXkqFo=;
+        b=DOa687Fxa9qf9iQdhOFVm7m0ObZ5XNol9M+COtcRDDIrvxU81TRXDMVXOmmC0t4hfF
+         PJ8TDzsYAh2ezRXnvkyk6IuvDutz+EIeP68ag8pqHq7AnvRdsevMm1AvD6vCjeYrKuPX
+         JJwHEG8ogWWpx1cVNnq8KKJ3ihUGSIGOGUbVMoMJo8ICEo3ak2SAzOVIO4WoME+NHM8u
+         spBODrDVEXP451LLfPXZFN21bh/yNH4ywrKgAfC6nGR4PwKSYzA3+KGkVA2CxKju2a4G
+         WL3wHtjyQ71GW98nRtz353OWXrXXnb+gpgKH539a9FpyOK3LaccO+KwivPFVx1zhAeJi
+         YNgw==
+X-Forwarded-Encrypted: i=1; AJvYcCWfsZe+EE7u1v/yKrgZP8thf9IpcdBPoxLr7pKu6gKa+ucb4Z5d+Cv4FkWqR/7Z4rFF27xL79wBoMSdzf0=@vger.kernel.org, AJvYcCXn0lbPOfVK0Ir7Wz61U95U9HF90659o7eDAZjyPrWAZVShFE8mWhlsuwLuMqJpXh52CLXDl/UilgY4IpLw@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAml8b5CLWST71kuvTeqa9RhYsnKOqU5KRCe5s1N54nTof1M3K
+	zbPP6LrGjX03HnuF3PWmq1TuO3ZL8UZvLJrQSxubKWRN29bHWZCk
+X-Gm-Gg: ASbGncsEsM5jhHfh3OFygnz9yhNHjRJ4Nt0SIEbfN4vK7HBz27l0PaidYthpgaiTIfT
+	1Ips47ZIcWhVBmJYnjpMZLO0p8Wif/1XU+t2dAkT5FP5SLSXcUtJTLw1HqXAQE27Byrnnq+nl/j
+	aWY1Z5GE4NiZH0nI8PwCnWGLcz+l+aaHQQ7jW1i8jHjDc4HhPjv+U3txN+g5b5eZVYCOjoMaEfP
+	33pGQQBgf86lQKBQ9Gd049XfslWWSb2rzuFuQrugp7lZq4pEbp2RWI9IpYAREnL8dDgcgTxkZQi
+	ZCF3EzDaQJUKsPstmfMt6tSeIwfPkXrCvcrEvbJltg==
+X-Google-Smtp-Source: AGHT+IHxdrrT1mXNTg47HWfTSTmmEC51lBLDoX8qYM2Pqx0cEOFChgQ2wd+oIPWDgDsHqFvJei+Rdw==
+X-Received: by 2002:a05:6000:430d:b0:3a0:b9a9:2fd9 with SMTP id ffacd0b85a97d-3a1f64a34c6mr2544261f8f.51.1746788483860;
+        Fri, 09 May 2025 04:01:23 -0700 (PDT)
+Received: from Red ([2a01:cb1d:898:ab00:4a02:2aff:fe07:1efc])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-3a1f57de100sm2871878f8f.2.2025.05.09.04.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 04:01:23 -0700 (PDT)
+Date: Fri, 9 May 2025 13:01:21 +0200
+From: Corentin Labbe <clabbe.montjoie@gmail.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Klaus Kudielka <klaus.kudielka@gmail.com>, regressions@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	EBALARD Arnaud <Arnaud.Ebalard@ssi.gouv.fr>,
+	Romain Perier <romain.perier@gmail.com>
+Subject: Re: [v3 PATCH] crypto: marvell/cesa - Do not chain submitted requests
+Message-ID: <aB3ggeQDdaPblUxi@Red>
+References: <aBoMSHEMYj6FbH8o@gondor.apana.org.au>
+ <aBsdTJUAcQgW4ink@gondor.apana.org.au>
+ <aBt5Mxq1MeefwXGJ@Red>
+ <aBw-C_krkNsIoPlT@gondor.apana.org.au>
+ <aBw_iC_4okpiKglQ@gondor.apana.org.au>
+ <aBypVwhHHzmqqN5K@Red>
+ <aBytNdRyd5Ywh1Pq@gondor.apana.org.au>
+ <aBy06xyzh5kKC48a@Red>
+ <aB10PqZNk0L-ly70@gondor.apana.org.au>
+ <aB24nSeEJKtP1bO_@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8NqhmbDcAj9lXWvOqHuQ0R84xsEsz0Yx
-X-Proofpoint-ORIG-GUID: 8NqhmbDcAj9lXWvOqHuQ0R84xsEsz0Yx
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA5MDA5NyBTYWx0ZWRfXwXWfGi2xdgnc 0aiG6vLa6oXBO2OJ7g6HkzNZXnVPT1icsiTHG1rYU8xH7cAn9xw8tXUJTI8D4TLAPUvrUwjHssI g1HZ+YhlMr1L3KHjBDNkJuYGu7OQ9TDkIeKStbR+HWp2k3mViwKgAlVhEjpeHdKSqskk0ecTa1t
- KKNvffdkMjdLaeWX0tfcKMBnNfgu8jkTB/xF33mvm6j31ubvsoxsVeevQAS0MQJu0SzwtoxkRV9 hHhzMWZJJ2n0lIgqzPoMUJT34SVmH+CkGbL8r3rVNxCabDkKbUduMek4ClJU+ySkBSgNEcnDI58 SV64kAuZfENuySkkvprOqj3gAnWVL1Qs9qwqWl0xddL0HVeH/oVjpa68liioMf/gLixrZ8VWu7o
- 80nidC/Al64f1KvY6FYS2R3JlpvnwQdJKuiJ0nMWAsB8BRqvzAzBpiEKZ+l2gXVX8AbGfKfP
-X-Authority-Analysis: v=2.4 cv=OcCYDgTY c=1 sm=1 tr=0 ts=681dd7c8 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=xi-NTiZ_wNmCx6O0tBcA:9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-09_04,2025-05-08_04,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 impostorscore=0
- malwarescore=0 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
- definitions=main-2505090097
+In-Reply-To: <aB24nSeEJKtP1bO_@gondor.apana.org.au>
 
-Remove outdated wording about crypto engine context.
-Rephrase and extend the usage of the crypto engine.
+Le Fri, May 09, 2025 at 04:11:09PM +0800, Herbert Xu a écrit :
+> On Fri, May 09, 2025 at 11:19:26AM +0800, Herbert Xu wrote:
+> >
+> > I wonder if the skcipher code is corrupting the ahash state when
+> > run concurrently (and chained together).
+> 
+> Please try this patch to see if the hashes can work without
+> the skciphers.
+> 
 
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
----
- Documentation/crypto/crypto_engine.rst | 78 ++++++++++++--------------
- 1 file changed, 36 insertions(+), 42 deletions(-)
+Hello
 
-diff --git a/Documentation/crypto/crypto_engine.rst b/Documentation/crypto/crypto_engine.rst
-index d562ea17d994..3665d8062c07 100644
---- a/Documentation/crypto/crypto_engine.rst
-+++ b/Documentation/crypto/crypto_engine.rst
-@@ -6,25 +6,35 @@ Crypto Engine
- Overview
- --------
- The crypto engine (CE) API is a crypto queue manager.
-+It is the in-kernel crypto way to enqueue asynchronous crypto requests
-+instead of instantiating your own workqueue.
- 
- Requirement
- -----------
--You must put, at the start of your transform context your_tfm_ctx, the structure
--crypto_engine:
--
--::
--
--	struct your_tfm_ctx {
--		struct crypto_engine engine;
--		...
--	};
--
--The crypto engine only manages asynchronous requests in the form of
--crypto_async_request. It cannot know the underlying request type and thus only
--has access to the transform structure. It is not possible to access the context
--using container_of. In addition, the engine knows nothing about your
--structure "``struct your_tfm_ctx``". The engine assumes (requires) the placement
--of the known member ``struct crypto_engine`` at the beginning.
-+For registration with the use of an crypto engine instance the
-+transformation needs to implement the respective ``struct *_engine_alg``.
-+For example a skcipher transformation implements
-+``struct skcipher_engine_alg``. This struct consists of the usual
-+transformation struct (for example ``struct skcipher_alg``) plus a
-+``struct crypto_engine_op`` which provides the callback used by the
-+crypto engine to run the asynchronous requests.
-+
-+The transformation implements the callback function
-+``int (*do_one_request)(struct crypto_engine *engine, void *areq)``.
-+This callback is invoked by the engine to process asynchronous
-+requests which have been previously pushed to the engine with one of
-+the ``crypto_transfer_*_request_to_engine()``.
-+The ``do_one_request()`` implementation needs to handle the request
-+and on successful processing completes the request with a call to
-+``crypto_finalize_*_request()`` and a return value of 0. A return
-+value other than 0 indicates an error condition and the request is
-+unsuccessful marked as completed with this error value by the engine.
-+A special treatment is done for the return value ``-ENOSPC``. At
-+allocation of the engine instance via
-+``crypto_engine_alloc_init_and_set(..., bool retry_support, ...)``
-+with the ``retry_support`` parameter set to true, the engine instance
-+handles the ``-ENOSPC`` by re-queuing the request into the backlog and
-+at a later time the callback is invoked again to process this request.
- 
- Order of operations
- -------------------
-@@ -33,35 +43,19 @@ Start it via ``crypto_engine_start()``. When finished with your work, shut down
- engine using ``crypto_engine_stop()`` and destroy the engine with
- ``crypto_engine_exit()``.
- 
--Before transferring any request, you have to fill the context enginectx by
--providing functions for the following:
--
--* ``prepare_crypt_hardware``: Called once before any prepare functions are
--  called.
--
--* ``unprepare_crypt_hardware``: Called once after all unprepare functions have
--  been called.
--
--* ``prepare_cipher_request``/``prepare_hash_request``: Called before each
--  corresponding request is performed. If some processing or other preparatory
--  work is required, do it here.
--
--* ``unprepare_cipher_request``/``unprepare_hash_request``: Called after each
--  request is handled. Clean up / undo what was done in the prepare function.
--
--* ``cipher_one_request``/``hash_one_request``: Handle the current request by
--  performing the operation.
--
--Note that these functions access the crypto_async_request structure
--associated with the received request. You are able to retrieve the original
--request by using:
-+Before transferring any request, you may provide additional callback
-+functions within the ``struct engine`` instance you got from the alloc
-+call:
- 
--::
-+* ``prepare_crypt_hardware``: Called once before any
-+  ``do_one_request()`` invocations are done.
- 
--	container_of(areq, struct yourrequesttype_request, base);
-+* ``unprepare_crypt_hardware``: Called once after the
-+  ``do_one_request()`` are done.
- 
--When your driver receives a crypto_request, you must to transfer it to
--the crypto engine via one of:
-+When your driver receives a crypto_request, and you want this request
-+to be processed asynchronously, you must transfer it to the crypto
-+engine via one of:
- 
- * crypto_transfer_aead_request_to_engine()
- 
--- 
-2.43.0
+Got http://kernel.montjoie.ovh/478064.log
 
+Thanks
+Regards
 
