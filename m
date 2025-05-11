@@ -1,33 +1,33 @@
-Return-Path: <linux-crypto+bounces-12927-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12929-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2A8AB2770
-	for <lists+linux-crypto@lfdr.de>; Sun, 11 May 2025 11:09:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB7DDAB2772
+	for <lists+linux-crypto@lfdr.de>; Sun, 11 May 2025 11:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BE5F3AC733
-	for <lists+linux-crypto@lfdr.de>; Sun, 11 May 2025 09:09:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3F30171234
+	for <lists+linux-crypto@lfdr.de>; Sun, 11 May 2025 09:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B921A0BCD;
-	Sun, 11 May 2025 09:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5171A5BBE;
+	Sun, 11 May 2025 09:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="puOTjPHU"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="fWX5njCb"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C812F2E
-	for <linux-crypto@vger.kernel.org>; Sun, 11 May 2025 09:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266D31A08A6
+	for <linux-crypto@vger.kernel.org>; Sun, 11 May 2025 09:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746954582; cv=none; b=iN/mr5cMfwNVeybeAt6AXrmLKjKSsjBWEMzzxMltTS2wg/+hYqFpzwMhLh2dRijbReXmAavMkoUVD5xeNXP+C5j1tKyKwI5DV8N/dGRHd/dWQuGAFzM93ljacH8q6RoNofRaZhmRsR+CZIsn2gI2smmSQ4LNKASqh2ZBdMBJXh0=
+	t=1746954583; cv=none; b=VXUPy+nAhtPlAm6xVpvNSwKFQ8o6O4CLtunAIzn0hssMUfMCzG5d5bH59TapGIPSh3/8GxY4n9e6gwALrBD2AHAXVyYPu9LhO2Hnnb/jlsxluzPn7eJfGs/CeSGaUrmCtVPmcAygZ7HwzUAQJB7Vg00qHzNGNRrVsayjEUcj1Do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746954582; c=relaxed/simple;
-	bh=OEtrYjh+OnXnBeVDlTZkPiZOK3YV9DDwJd7JqbiNGNg=;
-	h=Date:Message-Id:In-Reply-To:References:From:Subject:To; b=F1S+hAlu/1Hrv0HHRIZ00+fNO/l+Ianv0n6hFK01NXTppPUIB4hbpXDB6wy/XQpElY8O7Q2KMWB41g4QhaN7qkHf8ojA/fPKkvaWTZxdtDq3Q2vH2IImSbQS0JXTPpSFSi55vQc60KG21T/KvUf+ERKYqOlEPyEYsdYticKiiZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=puOTjPHU; arc=none smtp.client-ip=144.6.53.87
+	s=arc-20240116; t=1746954583; c=relaxed/simple;
+	bh=9tWgCCNwY+gnw3L+QWy6wpABYFI2a3P8NYtGBFSdLmg=;
+	h=Date:Message-Id:In-Reply-To:References:From:Subject:To; b=id2RDgUD72+6bglELSSOt3hJ4jefaWhtEK5ByZLQHlot9RNXBNp9vNuVckrwY0UVoDzlDfkWQKlOqigFh7qPHwRXXFwZc9wU1Bt5RCDhy6lgzb/qsKZDYN/3a5ZIUtJJD+ItpwhhESMdV19WEws1IFYLmneGqwET3zfB17rJzRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=fWX5njCb; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=fIgqEnX3h4ql/3S6yRDsAqYNc6fg5z5m6YGDMX2ixn4=; b=puOTjPHUuh0imf8U8tJkkzWZVq
-	ek7NocUdJFQhxUhQWQMRNL/YDQ1kGUWQWYFxX/9LET1NZ4vLGYvA0RGuYtDzHC+X3p7XKBtYUYIkM
-	+k06Xh68/LLSxXq7b2w9pb3xU/THoGuAYVrwD8GnZqEeLtyy9EAy59rsZVjDEVIM1HR6RJdaUKBFz
-	CIVLMdpRjSCHW5ehNHWi1uHd8fMX8Mns/10s10eiJ199Jrp/Ugk93oVHls3hXN18+I7pTYIqEbPjf
-	ifCeNn2Kyso3OAL7GyXMchASeJ8n51HvO7E4MLrZAd8/5pV0ql3yRyyimybxys2Lax8RAgXcUdbfL
-	hcXdhohw==;
+	bh=CGAbShIUEA8/KbiKCV87SA1/aAXSgLsxqitpuP7LbaA=; b=fWX5njCbaM469+z2wjdGR9yYGw
+	3X7xz76cLmeWIdzdrl5E4y2sUZYImpIo4CihCCfLaLvQgRcx+KV3axqba6n0jZzDk6kwoyiIIcSkq
+	TXbJGzCliMzXjT3ZOp3FNbWTlxiMjsGEhH389w9+8/OOYIUm+caY/dP1xupxRSdCWKo8JR2KizmDp
+	FVUsPQQdi38skS1yfW/QiOUEPFu4lQtvgOdYkJn4ArUNbh893M+9yuN6PIQkUy9J+EinpOXIx9hYH
+	vWoSsMFgZ9HsV7T9MzQMbbtVfIFRwUxsrhWiYHUyWWijqxQaMxlVIfhPB0arz62S3V0ZoKisngbFj
+	chvUbkqA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1uE2gi-005CPN-0W;
-	Sun, 11 May 2025 17:09:37 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 11 May 2025 17:09:36 +0800
-Date: Sun, 11 May 2025 17:09:36 +0800
-Message-Id: <3aa07acbe7c873b2e3b70fe0e1c273ebaf327228.1746954402.git.herbert@gondor.apana.org.au>
+	id 1uE2gk-005CPY-1R;
+	Sun, 11 May 2025 17:09:39 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 11 May 2025 17:09:38 +0800
+Date: Sun, 11 May 2025 17:09:38 +0800
+Message-Id: <7cdd299b7111b6218042f6e50118812452db6a73.1746954402.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1746954402.git.herbert@gondor.apana.org.au>
 References: <cover.1746954402.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v2 PATCH 3/6] crypto: hmac - Zero shash desc in setkey
+Subject: [v2 PATCH 4/6] crypto: shash - Set reqsize in shash_alg
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -60,94 +60,39 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 
-The shash desc needs to be zeroed after use in setkey as it is
-not finalised (finalisation automatically zeroes it).
-
-Also remove the final function as it's been superseded by finup.
+Make reqsize static for shash algorithms.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/hmac.c | 35 ++++++++++-------------------------
- 1 file changed, 10 insertions(+), 25 deletions(-)
+ crypto/ahash.c | 1 -
+ crypto/shash.c | 2 ++
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/crypto/hmac.c b/crypto/hmac.c
-index ba36ddf50037..4517e04bfbaa 100644
---- a/crypto/hmac.c
-+++ b/crypto/hmac.c
-@@ -13,13 +13,11 @@
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index c474aad88f68..8f0215b2bfc4 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -286,7 +286,6 @@ static int crypto_init_ahash_using_shash(struct crypto_tfm *tfm)
  
- #include <crypto/hmac.h>
- #include <crypto/internal/hash.h>
--#include <crypto/scatterwalk.h>
- #include <linux/err.h>
- #include <linux/fips.h>
--#include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/scatterlist.h>
-+#include <linux/slab.h>
- #include <linux/string.h>
+ 	crypto_ahash_set_flags(crt, crypto_shash_get_flags(shash) &
+ 				    CRYPTO_TFM_NEED_KEY);
+-	crt->reqsize = sizeof(struct shash_desc) + crypto_shash_descsize(shash);
  
- struct hmac_ctx {
-@@ -39,7 +37,7 @@ static int hmac_setkey(struct crypto_shash *parent,
- 	u8 *ipad = &tctx->pads[0];
- 	u8 *opad = &tctx->pads[ss];
- 	SHASH_DESC_ON_STACK(shash, hash);
--	unsigned int i;
-+	int err, i;
- 
- 	if (fips_enabled && (keylen < 112 / 8))
+ 	return 0;
+ }
+diff --git a/crypto/shash.c b/crypto/shash.c
+index dee391d47f51..dd3b7de89309 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -483,6 +483,8 @@ static int shash_prepare_alg(struct shash_alg *alg)
+ 	if (alg->statesize > HASH_MAX_STATESIZE)
  		return -EINVAL;
-@@ -65,12 +63,14 @@ static int hmac_setkey(struct crypto_shash *parent,
- 		opad[i] ^= HMAC_OPAD_VALUE;
- 	}
  
--	return crypto_shash_init(shash) ?:
--	       crypto_shash_update(shash, ipad, bs) ?:
--	       crypto_shash_export(shash, ipad) ?:
--	       crypto_shash_init(shash) ?:
--	       crypto_shash_update(shash, opad, bs) ?:
--	       crypto_shash_export(shash, opad);
-+	err = crypto_shash_init(shash) ?:
-+	      crypto_shash_update(shash, ipad, bs) ?:
-+	      crypto_shash_export(shash, ipad) ?:
-+	      crypto_shash_init(shash) ?:
-+	      crypto_shash_update(shash, opad, bs) ?:
-+	      crypto_shash_export(shash, opad);
-+	shash_desc_zero(shash);
-+	return err;
++	base->cra_reqsize = sizeof(struct shash_desc) + alg->descsize;
++
+ 	return 0;
  }
  
- static int hmac_export(struct shash_desc *pdesc, void *out)
-@@ -105,20 +105,6 @@ static int hmac_update(struct shash_desc *pdesc,
- 	return crypto_shash_update(desc, data, nbytes);
- }
- 
--static int hmac_final(struct shash_desc *pdesc, u8 *out)
--{
--	struct crypto_shash *parent = pdesc->tfm;
--	int ds = crypto_shash_digestsize(parent);
--	int ss = crypto_shash_statesize(parent);
--	const struct hmac_ctx *tctx = crypto_shash_ctx(parent);
--	const u8 *opad = &tctx->pads[ss];
--	struct shash_desc *desc = shash_desc_ctx(pdesc);
--
--	return crypto_shash_final(desc, out) ?:
--	       crypto_shash_import(desc, opad) ?:
--	       crypto_shash_finup(desc, out, ds, out);
--}
--
- static int hmac_finup(struct shash_desc *pdesc, const u8 *data,
- 		      unsigned int nbytes, u8 *out)
- {
-@@ -222,7 +208,6 @@ static int hmac_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	inst->alg.descsize = sizeof(struct shash_desc) + salg->descsize;
- 	inst->alg.init = hmac_init;
- 	inst->alg.update = hmac_update;
--	inst->alg.final = hmac_final;
- 	inst->alg.finup = hmac_finup;
- 	inst->alg.export = hmac_export;
- 	inst->alg.import = hmac_import;
 -- 
 2.39.5
 
