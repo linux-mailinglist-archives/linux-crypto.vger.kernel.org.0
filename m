@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-12985-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12987-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3A2AB44F0
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 21:31:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03433AB44F3
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 21:31:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5166A17B454
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 19:30:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C54654A194F
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 19:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064D6299A8D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98AB29A303;
 	Mon, 12 May 2025 19:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Y9Ebcp9U"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="KhOE6LBf"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432F5298CC1;
-	Mon, 12 May 2025 19:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11227299931;
+	Mon, 12 May 2025 19:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747078190; cv=none; b=uYTYUfy4pee4yh4hd/3VMFNviv4fTjBr2sbXlypnV2iXUdo3eJfG1eSz/z6spQOoXRjJtaG+qszFvC9n5Ieg51IsC92/Eo4rUXVJoxOQA3hin1y5hRCqc8P2BGk3Bc4nzg4yRLEM5Ugj01vM03xzBYd0qmPP6XuKlhLEmHChhYM=
+	t=1747078191; cv=none; b=Alckt9e8dXr6bAeT2rnJbAvGhYdJMDNprK3wwZwSrss0czjGQiKDESko14/zZODSN66bhYiqV89rJeS4fKDECkh1SqF5RZdfYSuopQfd5s9mo/vk/dvm/ENGR1U76416Szm0it5bTEpQXnITuS12M1UdL/gJ7ncWGIM5QRwSsYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747078190; c=relaxed/simple;
-	bh=0sFBIF2ykXtcl0pQgru1CGwjmwrKN9g0PCzlEM3PZHg=;
+	s=arc-20240116; t=1747078191; c=relaxed/simple;
+	bh=YtwlXJOdp02r4WrFCnC4/Gfz2ncr79DHWxCt0DsELGg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=m6rXdPxHUGschaECwgR2LkjGeqnXpwmZSfMb3Jp8XwHOroHrdyjq8+3MGrXIbyTpUzVB8HQyo/IjPkEOah5qJZ9ZVpTJaPZ29zvS3i5a/tQUxY7OErwjjzfM9gqx3ad47ZdIC2paDaWBbmTT1JsFY4JEv93BbBUeIJpfgozyrUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Y9Ebcp9U; arc=none smtp.client-ip=68.232.154.123
+	 MIME-Version:Content-Type; b=Y3mJd64x2xR8f5P/sUlRR4EYWf44/qziSmwHKuQYaHtosGV6qo1YGvMGZsVLzq88KF34XGDqJlo/WsVy5Mq/i6wBlIj68cjYpEY+QLkcly4Ey3WQABHghfqlEdD6Iupo2JrBxyvtcxbxX76h1p4rrcZjMIXSeaK69JtOnkFGC3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=KhOE6LBf; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1747078189; x=1778614189;
+  t=1747078190; x=1778614190;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0sFBIF2ykXtcl0pQgru1CGwjmwrKN9g0PCzlEM3PZHg=;
-  b=Y9Ebcp9UjLgGJZJYpCSoAoaS+EO2DbHxHsx2NH0yyS3zuF3pM2YrM/+u
-   w9SEmUbk2YuWx9rrypIoMQZlqtC9hjFoQrf4dmXNlyWWxwgKQsEogA4iW
-   OQ2d1V4vyeiZfOwvAYErohe+5pLCrvAo37R5mDuuR7YT70lSjEh0b/zTQ
-   Q2CGoxCpoitJMkWNspIpO7G/EytiYm9pf3Hn8fgu+tXWiprt7XEISbihB
-   M5Q5woAxQ4jzqKwHpx5NCByTbcqA4CIXJ8gJ05+toIN95ZHwZonQwP9Dq
-   jOu4wj9q3QGkkIC2pF6wpd9NLYIfkGQaAYgCjxrGE962TeDDzjxcxlI9U
-   w==;
+  bh=YtwlXJOdp02r4WrFCnC4/Gfz2ncr79DHWxCt0DsELGg=;
+  b=KhOE6LBfFjrcMoygDsfiNpIMd5Bs88r0Co6fYTYHJd735hi4Dyv7Niaj
+   8VgUX7CU/PzvUMnOhqdLLQwSlB0p6khnmi2gCGBSwmuMVXVf4hnTVRfiV
+   UvkeanS0cutVYiJCaOnbYyus1aFZO42BwpoIj675rnFZLcykVhUG3X8hH
+   vKnFWeGQWIL65Mxwg/NSX8xfWQ+hPKaREjmVVPUgdvPCGPVes3bwiQXAU
+   ATmDVV0ZHgIVT8RNpgFgRWR5wBd4C7BmBcXJOxUY0VMDUx/N1dJiq3gyP
+   VJuOi9mfpMdohJ4FeA/HJPVEupHs8npBVP/9DfwFOhIe7xAI9APQl44Hh
+   Q==;
 X-CSE-ConnectionGUID: hYKpzzHaRPOvLPNNOvU8gw==
-X-CSE-MsgGUID: PNaWPgFuQ2mg//QaTO6urQ==
+X-CSE-MsgGUID: Jhtxy2cESSuOatJLEl5tcg==
 X-IronPort-AV: E=Sophos;i="6.15,283,1739862000"; 
-   d="scan'208";a="209006613"
+   d="scan'208";a="209006614"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
   by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 May 2025 12:29:38 -0700
@@ -66,9 +66,9 @@ To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh@kernel.org>,
 CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Ryan
  Wanner" <Ryan.Wanner@microchip.com>
-Subject: [PATCH 7/9] ARM: dts: microchip: sama7d65: Add PWM support
-Date: Mon, 12 May 2025 12:27:33 -0700
-Message-ID: <fae166010f94a672e4f1906f5fd4394f4236da53.1747077616.git.Ryan.Wanner@microchip.com>
+Subject: [PATCH 8/9] ARM: dts: microchip: sama7d65: Add CAN bus support
+Date: Mon, 12 May 2025 12:27:34 -0700
+Message-ID: <445c4c72243f1ba85e3681ba026cfefaf6036890.1747077616.git.Ryan.Wanner@microchip.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1747077616.git.Ryan.Wanner@microchip.com>
 References: <cover.1747077616.git.Ryan.Wanner@microchip.com>
@@ -83,33 +83,104 @@ Content-Type: text/plain
 
 From: Ryan Wanner <Ryan.Wanner@microchip.com>
 
-Add support for PWMs to the SAMA7D65 SoC.
+Add support for CAN bus to the SAMA7D65 SoC.
 
 Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
 ---
- arch/arm/boot/dts/microchip/sama7d65.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm/boot/dts/microchip/sama7d65.dtsi | 80 +++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
 
 diff --git a/arch/arm/boot/dts/microchip/sama7d65.dtsi b/arch/arm/boot/dts/microchip/sama7d65.dtsi
-index 90cbea576d91..796909fa2368 100644
+index 796909fa2368..a62d2ef9fcab 100644
 --- a/arch/arm/boot/dts/microchip/sama7d65.dtsi
 +++ b/arch/arm/boot/dts/microchip/sama7d65.dtsi
-@@ -293,6 +293,15 @@ pit64b1: timer@e1804000 {
- 			clock-names = "pclk", "gclk";
+@@ -163,6 +163,86 @@ chipid@e0020000 {
+ 			reg = <0xe0020000 0x8>;
  		};
  
-+		pwm: pwm@e1818000 {
-+			compatible = "microchip,sama7d65-pwm", "atmel,sama5d2-pwm";
-+			reg = <0xe1818000 0x500>;
-+			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&pmc PMC_TYPE_PERIPHERAL 72>;
-+			#pwm-cells = <3>;
++		can0: can@e0828000 {
++			compatible = "bosch,m_can";
++			reg = <0xe0828000 0x200>, <0x100000 0x7800>;
++			reg-names = "m_can", "message_ram";
++			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "int0", "int1";
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 58>, <&pmc PMC_TYPE_GCK 58>;
++			clock-names = "hclk", "cclk";
++			assigned-clocks = <&pmc PMC_TYPE_GCK 58>;
++			assigned-clock-rates = <40000000>;
++			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
++			bosch,mram-cfg = <0x3400 0 0 64 0 0 32 32>;
 +			status = "disabled";
 +		};
 +
- 		flx0: flexcom@e1820000 {
- 			compatible = "microchip,sama7d65-flexcom", "atmel,sama5d2-flexcom";
- 			reg = <0xe1820000 0x200>;
++		can1: can@e082c000 {
++			compatible = "bosch,m_can";
++			reg = <0xe082c000 0x200>, <0x100000 0xbc00>;
++			reg-names = "m_can", "message_ram";
++			interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "int0", "int1";
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 59>, <&pmc PMC_TYPE_GCK 59>;
++			clock-names = "hclk", "cclk";
++			assigned-clocks = <&pmc PMC_TYPE_GCK 59>;
++			assigned-clock-rates = <40000000>;
++			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
++			bosch,mram-cfg = <0x7800 0 0 64 0 0 32 32>;
++			status = "disabled";
++		};
++
++		can2: can@e0830000 {
++			compatible = "bosch,m_can";
++			reg = <0xe0830000 0x200>, <0x100000 0x10000>;
++			reg-names = "m_can", "message_ram";
++			interrupts = <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "int0", "int1";
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 60>, <&pmc PMC_TYPE_GCK 60>;
++			clock-names = "hclk", "cclk";
++			assigned-clocks = <&pmc PMC_TYPE_GCK 60>;
++			assigned-clock-rates = <40000000>;
++			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
++			bosch,mram-cfg = <0xbc00 0 0 64 0 0 32 32>;
++			status = "disabled";
++		};
++
++		can3: can@e0834000 {
++			compatible = "bosch,m_can";
++			reg = <0xe0834000 0x200>, <0x110000 0x4400>;
++			reg-names = "m_can", "message_ram";
++			interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "int0", "int1";
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 61>, <&pmc PMC_TYPE_GCK 61>;
++			clock-names = "hclk", "cclk";
++			assigned-clocks = <&pmc PMC_TYPE_GCK 61>;
++			assigned-clock-rates = <40000000>;
++			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
++			bosch,mram-cfg = <0x0 0 0 64 0 0 32 32>;
++			status = "disabled";
++		};
++
++		can4: can@e0838000 {
++			compatible = "bosch,m_can";
++			reg = <0xe0838000 0x200>, <0x110000 0x8800>;
++			reg-names = "m_can", "message_ram";
++			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "int0", "int1";
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 62>, <&pmc PMC_TYPE_GCK 62>;
++			clock-names = "hclk", "cclk";
++			assigned-clocks = <&pmc PMC_TYPE_GCK 62>;
++			assigned-clock-rates = <40000000>;
++			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
++			bosch,mram-cfg = <0x4400 0 0 64 0 0 32 32>;
++			status = "disabled";
++		};
++
+ 		dma2: dma-controller@e1200000 {
+ 			compatible = "microchip,sama7d65-dma", "microchip,sama7g5-dma";
+ 			reg = <0xe1200000 0x1000>;
 -- 
 2.43.0
 
