@@ -1,150 +1,103 @@
-Return-Path: <linux-crypto+bounces-12988-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12990-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8584AAB44F4
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 21:31:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B032FAB45C5
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 22:55:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FA2819E87A0
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 19:31:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5214F8C41A1
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 20:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C109129A32A;
-	Mon, 12 May 2025 19:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7AF429A31C;
+	Mon, 12 May 2025 20:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="vytXWb+Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fZFs/K33"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE19B299A87;
-	Mon, 12 May 2025 19:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC2329A301;
+	Mon, 12 May 2025 20:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747078192; cv=none; b=oewraJ3zVOzP9xaWnw8glNN+TX5z4jNA5XFE7nrHhpshyPWHtTh3dOW/SV3CVo5hpPRsODHrCmEw0cqr/uUOIkvHT28ass+7U2Wf2MCcStoKpoo5GvszckJtyR8bz1nXsgFcsKy1Ay1X2YCUuQSqtkzCOQkxgPwFGczNTX74NiM=
+	t=1747083297; cv=none; b=ixz5iBt8kolJ1BOgBKeW8Xt8TGfoxy7BWlpnh7Fe1Ncpa0Y63kHl0GIg79YaswngbTJKM5M21M04g2TlI/nsfIQRs+z0QcFbEC3UevJn9XIfH8q02Sdju2WL42vQZ2bPFeYBYZqqVlsu4npFe844gArtedWFM74CiNIb3zTyVo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747078192; c=relaxed/simple;
-	bh=7g4YU5RvMdO8nUKIAvi8SziBhELB9C+O6jh6PDYC3HM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MV3VgyNUJBvYOAs7preqPlFddTR42xUNlghVUm6TZMfnY57fR2R7t5rG5Y08XtdY/yKHarK+C5Obj05khOxFVZno1Bj4LrKTHcMlPmVoJCtnocrCuArTJrslusZR+gfgDZzCPBllo+X7rwK9h/aOcm5YzYvvhlDvdMfVx1z81mU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=vytXWb+Y; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1747078190; x=1778614190;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7g4YU5RvMdO8nUKIAvi8SziBhELB9C+O6jh6PDYC3HM=;
-  b=vytXWb+YSpzqKHV3s4GbTa3GOQ0R8Ys9y9lnOOX8Ks+eGvCKz0rBFPyR
-   yyGBMPXSZ4/Gt4sXwuscfFg330fmoby8nGHneT8sKkPCww6LTgUlXmyZ+
-   OAdXCgmOgEr9FQceEjD8GdFIprmTW9y1RbJh9J0QllNsWLK5SNYP31+CR
-   MBg/WxqRAaqk0JZzx0xHEDxXHLa0PMauVirjjrzdSiqCAPZGXrU8fj8Q9
-   5vkAHRFadnsoJHf4zSxnLGNCvnH+j3Am/mIr2r0gbtGzB/+i5Bd+H99hP
-   T+q/tngHduBOqPjWBhrjMW29CYnMm1JJqP7jUy06EeULzY0URZGgc2tdq
-   g==;
-X-CSE-ConnectionGUID: hYKpzzHaRPOvLPNNOvU8gw==
-X-CSE-MsgGUID: pCEDP93tTVWVq4rPvoMskA==
-X-IronPort-AV: E=Sophos;i="6.15,283,1739862000"; 
-   d="scan'208";a="209006615"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 May 2025 12:29:38 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Mon, 12 May 2025 12:28:57 -0700
-Received: from ryan-Precision-3630-Tower.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.44 via Frontend Transport; Mon, 12 May 2025 12:28:57 -0700
-From: <Ryan.Wanner@microchip.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh@kernel.org>,
-	<krzk+dt@kernel.org>, <conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<olivia@selenic.com>
-CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Ryan
- Wanner" <Ryan.Wanner@microchip.com>
-Subject: [PATCH 9/9] ARM: dts: microchip: sama7d65: Enable CAN bus
-Date: Mon, 12 May 2025 12:27:35 -0700
-Message-ID: <0e34e0416c43f4de6d2cef5cea46087af4577a50.1747077616.git.Ryan.Wanner@microchip.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1747077616.git.Ryan.Wanner@microchip.com>
-References: <cover.1747077616.git.Ryan.Wanner@microchip.com>
+	s=arc-20240116; t=1747083297; c=relaxed/simple;
+	bh=WYopPnPUw1i5AsuO8nHMj+s662geBZfWCMLAQjzs1EA=;
+	h=Date:Content-Type:MIME-Version:From:Cc:To:In-Reply-To:References:
+	 Message-Id:Subject; b=NlPrllRXLT2ytvcWlbtRRyKExlEtRHAtD4fNSFNhVq5oTYHrFclZo/88aZfFnDTjh0kb1k6E7jLtbMNEV1lKvvKOkxJdy2TypjpMD8VRK+TQ/mUm+AZ82gSjxBoPXL80A434TQijEopuRuH6Fgc+dM5gNoxUkmuUjO9d9dhA8X0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fZFs/K33; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98243C4CEFE;
+	Mon, 12 May 2025 20:54:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747083296;
+	bh=WYopPnPUw1i5AsuO8nHMj+s662geBZfWCMLAQjzs1EA=;
+	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
+	b=fZFs/K330IkmKc5AuLextmGbByhcgoV45YIH2XjLvi7tflgMS4VqbjL3oPHYmWooS
+	 ahtt6gjhkj/JZHfKCwUeT2OsMmxu48eamKn1I1bIhPFbXFXpo/aEkvhx7c9YaqWSdq
+	 4gODb+8UBzBXbwDq/5nqB/CjjOT1H+dCrZvcM5uvQZwbvGZ5i3U47kAoU5KE7W64Sa
+	 RMB2Y5zoX5RPYxjJzATIG2FxdZkBHfbG9ERizdXozqndZjAR6aKSlSv+CD/0bC4XUa
+	 f38sCqkjibSr7bJk43x6JJT9As7jzTylhFyYvB7KmYC7MXWilC4XoptSHfEuclNGJ0
+	 7PYowlBSCS20A==
+Date: Mon, 12 May 2025 15:54:54 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+From: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, 
+ olivia@selenic.com, devicetree@vger.kernel.org, davem@davemloft.net, 
+ herbert@gondor.apana.org.au, krzk+dt@kernel.org, 
+ linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, 
+ alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev, 
+ conor+dt@kernel.org
+To: Ryan.Wanner@microchip.com
+In-Reply-To: <a5509576e211bcf528e088f78e619575a26bbd8f.1747077616.git.Ryan.Wanner@microchip.com>
+References: <cover.1747077616.git.Ryan.Wanner@microchip.com>
+ <a5509576e211bcf528e088f78e619575a26bbd8f.1747077616.git.Ryan.Wanner@microchip.com>
+Message-Id: <174708329324.4035802.9148165987582319414.robh@kernel.org>
+Subject: Re: [PATCH 1/9] dt-bindings: crypto: add sama7d65 in Atmel AES
 
-From: Ryan Wanner <Ryan.Wanner@microchip.com>
 
-Enable CAN bus for SAMA7D65 curiosity board.
+On Mon, 12 May 2025 12:27:27 -0700, Ryan.Wanner@microchip.com wrote:
+> From: Ryan Wanner <Ryan.Wanner@microchip.com>
+> 
+> Add DT bindings for SAMA7D65 SoC in atmel AES.
+> 
+> Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
+> ---
+>  .../devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml     | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
----
- .../dts/microchip/at91-sama7d65_curiosity.dts | 35 +++++++++++++++++++
- 1 file changed, 35 insertions(+)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/arch/arm/boot/dts/microchip/at91-sama7d65_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sama7d65_curiosity.dts
-index 53a657cf4efb..34935179897e 100644
---- a/arch/arm/boot/dts/microchip/at91-sama7d65_curiosity.dts
-+++ b/arch/arm/boot/dts/microchip/at91-sama7d65_curiosity.dts
-@@ -38,7 +38,24 @@ reg_5v: regulator-5v {
- 		regulator-max-microvolt = <5000000>;
- 		regulator-always-on;
- 	};
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1_default>;
-+	status = "okay";
-+};
- 
-+&can2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can2_default>;
-+	status = "okay";
-+};
-+
-+&can3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can3_default>;
-+	status = "okay";
- };
- 
- &dma0 {
-@@ -278,6 +295,24 @@ &main_xtal {
- };
- 
- &pioa {
-+	pinctrl_can1_default: can1-default {
-+		pinmux = <PIN_PD10__CANTX1>,
-+			<PIN_PD11__CANRX1>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_can2_default: can2-default {
-+		pinmux = <PIN_PD12__CANTX2>,
-+			<PIN_PD13__CANRX2>;
-+		bias-disable;
-+	};
-+
-+	pinctrl_can3_default: can3-default {
-+		pinmux = <PIN_PD14__CANTX3>,
-+			<PIN_PD15__CANRX3>;
-+		bias-disable;
-+	};
-+
- 	pinctrl_gmac0_default: gmac0-default {
- 		pinmux = <PIN_PA26__G0_TX0>,
- 			 <PIN_PA27__G0_TX1>,
--- 
-2.43.0
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml:19:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+
+dtschema/dtc warnings/errors:
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/a5509576e211bcf528e088f78e619575a26bbd8f.1747077616.git.Ryan.Wanner@microchip.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
