@@ -1,56 +1,56 @@
-Return-Path: <linux-crypto+bounces-12989-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-12981-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD3B2AB44FA
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 21:32:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78C0CAB44E1
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 21:30:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84919466EB9
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 19:31:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D577C8683D4
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 May 2025 19:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0362027511F;
-	Mon, 12 May 2025 19:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96522298C37;
+	Mon, 12 May 2025 19:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="vSrPR2KO"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="PMTaLIFH"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CEAEAC7;
-	Mon, 12 May 2025 19:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3CA22989AE;
+	Mon, 12 May 2025 19:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747078211; cv=none; b=pWGD4X3VwiFwTwOuZE1ICsgNW98yZ7z5ltkz7XPvVOP7Y+aRY83+KphGBNuyrJDicOMB/fM7WPSVzTSP5NsaAbbAWytoFsgPJNNM2840MXSYEg1wCR5nUsjzzl/+/NxjxsHBLkEtWL2e8wp0FFVfjNjv92U+PsQoW1HCP1KQAXg=
+	t=1747078187; cv=none; b=gsePK/frtlW/V/o6wQOupMi4SFScHC6O5VMSH3k5DhiUZh940qZG967yfAWWGurXiZSitRD4JkQGMIRKyEp78fw81FFdmt1cH3pEAO53V0Py4X4gyWRPlkxvTUhZjKIN8w98tIB6lY1pM0oFgEW0vBhzVd+cvr94N17fkOY4iGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747078211; c=relaxed/simple;
-	bh=EAq9igK9ZsRG9y+KYZS6Syh/KUFHCf2/FcNcB//qTFw=;
+	s=arc-20240116; t=1747078187; c=relaxed/simple;
+	bh=/61U+nFwbRYm9NmcMk+7wewKlEE4ETc8NUwzLZDc/gA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NseYPSqQtyDMpi9eM8RAm87/S0IPnnaZvdMrqlRSpGcH3Ht0UNSbWgWg+qmg4pz7/lLEfhFrO0PxaT0Cb0XNuuvE3PCnbonGWTmZYJ2G13OKQEObpbbTRXF7nA27kqK0JTinmMXMHNCZ/SoI8VZd+5U+T2UU/yIuEhvoj5Ntq8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=vSrPR2KO; arc=none smtp.client-ip=68.232.154.123
+	 MIME-Version:Content-Type; b=g1+uh+rSVDCQ4oxiGaAhwWNiOP7bQ+Ig/CPIt1FGbNJJ/5f650Bz60CkhpvwHlwl7Mj6cg5R9ybEN+kMvK7GNeaZYPrck61oIF9lSEL4jRC6ThrrwE/fU4OpNn4gHtCxqQmazpc5EpcVroWoxx7+uJ73yDu6wRS/uOTjh/cuiwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=PMTaLIFH; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1747078210; x=1778614210;
+  t=1747078185; x=1778614185;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=EAq9igK9ZsRG9y+KYZS6Syh/KUFHCf2/FcNcB//qTFw=;
-  b=vSrPR2KOSZex4Hxb/iD5+eKTFcdSj47MfYuLoE7yonDgG+Ew9BW9ETTu
-   gUX6f3YKNag4rBaWd4NyqWJltP7c9PIWi9TzwJwTNXsDR54tWOqFyl7NV
-   xgBOjKQk1wAD5EnDF8iKOjgxd9NMh5/sM7mnerbRKRwv5FURaTG8EumiP
-   bTUlzY/R2HMXRwPUA7UIZO6vAwXMf+uKT6mW7YRSSCwnfPPVI6bDGoIrK
-   CkqDMumVzsFiDkPEePWvr7YLOXtdWweo3tRAKSRFAlGJlgINFllg3fzgV
-   oOPxHxHFTx4rTxfL8GYRoAkvf+Dro+Ya401+adKiQ3bLNzQaiKdpp/pVc
-   w==;
-X-CSE-ConnectionGUID: lnPSkm7mSRKB1sBnpug5Qw==
-X-CSE-MsgGUID: z8AX82L7SnK3k23+cBcxsw==
+  bh=/61U+nFwbRYm9NmcMk+7wewKlEE4ETc8NUwzLZDc/gA=;
+  b=PMTaLIFHPRLMhmP11cjel4bgUf4RPSJTDcekm6HLb/AHSBr+Qc2d0fGL
+   zH+uBNGIwh2XzYXdhz19A3AJ9zHCTAVE0R5JKOJDVAxxmxtPqiIApcnts
+   nSCc/JNdc7+liJ8Ny/m7xQy90haZ/T1LpDCHj0JOzy2pcCZ8t+0vWPi6f
+   bgQMop/jEg5jYMVYshnX0T1zUOEmojbWCNBqP675uj/vBUiDdORB1laTD
+   Behpc2F9CnjCi9X0MDr1jB1ghZ7aHBmZFU5HwHP93bGzG3G1QzGJ4+8NV
+   wPVKpFqn0Y/vE7BD0Berqe+WeDPrrjPDtC/lTvFIqMefRZprfr4ohPkqX
+   g==;
+X-CSE-ConnectionGUID: hYKpzzHaRPOvLPNNOvU8gw==
+X-CSE-MsgGUID: NLlxROieQM+TrxnEaF/p7w==
 X-IronPort-AV: E=Sophos;i="6.15,283,1739862000"; 
-   d="scan'208";a="41049771"
+   d="scan'208";a="209006608"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 May 2025 12:30:09 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 May 2025 12:29:36 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -66,9 +66,9 @@ To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh@kernel.org>,
 CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Ryan
  Wanner" <Ryan.Wanner@microchip.com>
-Subject: [PATCH 1/9] dt-bindings: crypto: add sama7d65 in Atmel AES
-Date: Mon, 12 May 2025 12:27:27 -0700
-Message-ID: <a5509576e211bcf528e088f78e619575a26bbd8f.1747077616.git.Ryan.Wanner@microchip.com>
+Subject: [PATCH 2/9] dt-bindings: crypto: add sama7d65 in Atmel SHA
+Date: Mon, 12 May 2025 12:27:28 -0700
+Message-ID: <5c87dd0c60e3ab295bf084cabb59199d5cb4d93b.1747077616.git.Ryan.Wanner@microchip.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1747077616.git.Ryan.Wanner@microchip.com>
 References: <cover.1747077616.git.Ryan.Wanner@microchip.com>
@@ -83,26 +83,26 @@ Content-Type: text/plain
 
 From: Ryan Wanner <Ryan.Wanner@microchip.com>
 
-Add DT bindings for SAMA7D65 SoC in atmel AES.
+Add DT bindings for SAMA7D65 SoC Atmel SHA.
 
 Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
 ---
- .../devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml     | 4 +++-
+ .../devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml     | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
-index 7dc0748444fd..1de4ee70a05f 100644
---- a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
-+++ b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+diff --git a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml
+index d378c53314dd..375464222942 100644
+--- a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml
++++ b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml
 @@ -15,7 +15,9 @@ properties:
      oneOf:
-       - const: atmel,at91sam9g46-aes
+       - const: atmel,at91sam9g46-sha
        - items:
--          - const: microchip,sam9x7-aes
+-          - const: microchip,sam9x7-sha
 +          - enum:
-+            - microchip,sam9x7-aes
-+            - microchip,sama7d65-aes
-           - const: atmel,at91sam9g46-aes
++            - microchip,sam9x7-sha
++            - microchip,sama7d65-sha
+           - const: atmel,at91sam9g46-sha
  
    reg:
 -- 
