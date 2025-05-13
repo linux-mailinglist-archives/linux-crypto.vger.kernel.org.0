@@ -1,73 +1,60 @@
-Return-Path: <linux-crypto+bounces-13037-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13039-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 456ECAB52BD
-	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 12:37:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9935FAB5C6F
+	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 20:40:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 982247B41FA
-	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 10:35:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D21A47B1718
+	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 18:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877421EB19F;
-	Tue, 13 May 2025 10:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9581A2BF962;
+	Tue, 13 May 2025 18:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hmFIKXui"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gTnW/qEr"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F04827056D
-	for <linux-crypto@vger.kernel.org>; Tue, 13 May 2025 10:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D45145B25;
+	Tue, 13 May 2025 18:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747131939; cv=none; b=nTHdhos7b5vrYdUWwXsbGwATqubU+42HK8BJTBL7Yi2xn+NOCQBWOWlOvINMLaiUiRfvENehEXyDuCE3yp66NbmWlh71NWDX4HsMup7yRMzxd+eRwVvFdhhmb5LWDdPV5KGY4z8TYw51rI1Xg/ihb5YbyROHmCTKgNFoJrglzPo=
+	t=1747161640; cv=none; b=p3O7Y7EHdc59y+AZZYUIwKCvIhTQ/MjMCy1aeHtBdnz1u2CPi2eRlZ/9NAj5JZ4lrO77rKxp5D2at2+tZljN0NMuN08c+TkCEV5D1r/e2QM/DcJD46U0R+4Oq0eN61ryEey4uA3grlZfvXUXo/y1CztlnK8l2BMibZZkF7nfq64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747131939; c=relaxed/simple;
-	bh=afy3gUW1afOEJQkLuhDV/WUQx6m0aJNpWS36ogG5MBA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dCsNsnFytYPQ7Zgzfz6erQPV5iVAYU9rT0ctcJ/dnJqhUB4CL4vh/WJ+CbxaoNcnFq07qHF0etTkALdtUSIkig6Jmm9H4nO+nl7n1idBuoHkJHoj4p0z5ya4ej7yiWu9qXg1Qrwfia+nW9ONd9DTsSdy/DmR97jtn1NDgzMrF08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hmFIKXui; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747131937; x=1778667937;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=afy3gUW1afOEJQkLuhDV/WUQx6m0aJNpWS36ogG5MBA=;
-  b=hmFIKXuiAqwp2dWRR6XXNd5+kdQkZiCUQTuKHFCImP8NxVBUaDfXSNlf
-   /YkJmQs9IuVYZ4zYk1IlsDCWKDyOhxh/NtoynPyVFC+cBYxSFsIo+C3KC
-   i3TRfI3pp+rmbK8E61BtID4QM9muZg0SgVynyx9W2mQNGsY2MAkEaUmyY
-   qa1msttxho7D7YeeK4GvzNwXhvXu13nt9Vahs4pYUhEg3ZjrER13ZHxcZ
-   ksfHgbH6iQBReqw8Qy80ZUi5UKe3t4TeEHiIf7iQ5wIxtFptZVizDx4B8
-   rYlEmyXsdtzLqQoyqBm/DjjLNhsU8GrgbVkKAm0YC1bbSCzuCxZw+QjaX
-   w==;
-X-CSE-ConnectionGUID: 1YWNxOkUQiqWw/FjkpycgA==
-X-CSE-MsgGUID: Mpixb1CGTj+bJWI1Vn734A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11431"; a="48076419"
-X-IronPort-AV: E=Sophos;i="6.15,284,1739865600"; 
-   d="scan'208";a="48076419"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2025 03:25:37 -0700
-X-CSE-ConnectionGUID: fwbeBCsqTVSNRzbklp/OOg==
-X-CSE-MsgGUID: uXFHpwo0SxW1o30bSecOIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,284,1739865600"; 
-   d="scan'208";a="142786422"
-Received: from t21-qat.iind.intel.com ([10.49.15.35])
-  by orviesa005.jf.intel.com with ESMTP; 13 May 2025 03:25:36 -0700
-From: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-To: herbert@gondor.apana.org.au
+	s=arc-20240116; t=1747161640; c=relaxed/simple;
+	bh=Vs2C3qOUbRBwvYmS5MjM0iD2wHG0dHWNUgMPIk3Zu70=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PIO4opJzJJJu/F63C1Ywdc6hUoZLLgkf0OpjkOfbsuhBM2F3SGtfxsNw0YFNVXgOJg+U4mwPzP5auBBOgfQR7MqwjU5ZmhrefUfl7A5Ig/Tgq8SvOde+8wuAtl7li50rr/INnHBKTfrc34El49NVzYtxFMvB7AXNvRrR5uIm0VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gTnW/qEr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A031C4CEE4;
+	Tue, 13 May 2025 18:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747161639;
+	bh=Vs2C3qOUbRBwvYmS5MjM0iD2wHG0dHWNUgMPIk3Zu70=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gTnW/qErJnYV2LqRR/j1WWPpDFFgRA7vs3cghFfNzBNW0gC6ZFKzFSOiDm+nu4grW
+	 k4T8x0z9QU4QnQuff554CZ9pFPD67bSgrOKGwHnI0d+CjtwzCGEjEr0J6C8hSdOudY
+	 dMNgpeL0eElx304doApj2bv4PFPNL2y3redG4TCA4oBhUPLPIZKDtc3PTIvNq5zVw5
+	 iozHg5R82YzLFc0euhDXsgnfvOx61KAKN3rTp7fPpjY2Q7SR0/yAKZRhND58ux93DQ
+	 eSCuFVH0H/eECADZ6cNITL15shchx7sB3yve6euwIaTSWlMNEiIbeTgFNIyYJ95DB8
+	 b9pvBL1JcE3nA==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+	Pankaj Gupta <pankaj.gupta@nxp.com>,
+	Gaurav Jain <gaurav.jain@nxp.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
 Cc: linux-crypto@vger.kernel.org,
-	qat-linux@intel.com
-Subject: [PATCH 2/2] crypto: qat - enable reporting of error counters for GEN6 devices
-Date: Tue, 13 May 2025 11:25:27 +0100
-Message-Id: <20250513102527.1181096-3-suman.kumar.chakraborty@intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20250513102527.1181096-1-suman.kumar.chakraborty@intel.com>
-References: <20250513102527.1181096-1-suman.kumar.chakraborty@intel.com>
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: crypto: fsl,sec-v4.0: Add fsl,sec-v6.0
+Date: Tue, 13 May 2025 13:40:28 -0500
+Message-ID: <20250513184030.3051100-1-robh@kernel.org>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -76,75 +63,211 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Enable the reporting of error counters through sysfs for QAT GEN6
-devices and update the ABI documentation.
+The fsl,sec-v6.0 binding is the same as the fsl,sec-v4.0 binding, so add
+it to the existing schema and drop the old .txt binding.
 
-This enables the reporting of the following:
-   - errors_correctable - hardware correctable errors that allow the
-     system to recover without data loss.
-   - errors_nonfatal: errors that can be isolated to specific in-flight
-     requests.
-   - errors_fatal: errors that cannot be contained to a request,
-     requiring a Function Level Reset (FLR) upon occurrence.
+The compatibles in the .txt binding don't match the 1 user. Follow the
+user for the schema.
 
-Signed-off-by: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-driver-qat_ras | 8 ++++----
- drivers/crypto/intel/qat/qat_6xxx/adf_drv.c    | 2 ++
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ .../bindings/crypto/fsl,sec-v4.0.yaml         |  10 +-
+ .../devicetree/bindings/crypto/fsl-sec6.txt   | 157 ------------------
+ 2 files changed, 9 insertions(+), 158 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/crypto/fsl-sec6.txt
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-qat_ras b/Documentation/ABI/testing/sysfs-driver-qat_ras
-index 176dea1e9c0a..82ceb04445ec 100644
---- a/Documentation/ABI/testing/sysfs-driver-qat_ras
-+++ b/Documentation/ABI/testing/sysfs-driver-qat_ras
-@@ -4,7 +4,7 @@ KernelVersion:	6.7
- Contact:	qat-linux@intel.com
- Description:	(RO) Reports the number of correctable errors detected by the device.
- 
--		This attribute is only available for qat_4xxx devices.
-+		This attribute is only available for qat_4xxx and qat_6xxx devices.
- 
- What:		/sys/bus/pci/devices/<BDF>/qat_ras/errors_nonfatal
- Date:		January 2024
-@@ -12,7 +12,7 @@ KernelVersion:	6.7
- Contact:	qat-linux@intel.com
- Description:	(RO) Reports the number of non fatal errors detected by the device.
- 
--		This attribute is only available for qat_4xxx devices.
-+		This attribute is only available for qat_4xxx and qat_6xxx devices.
- 
- What:		/sys/bus/pci/devices/<BDF>/qat_ras/errors_fatal
- Date:		January 2024
-@@ -20,7 +20,7 @@ KernelVersion:	6.7
- Contact:	qat-linux@intel.com
- Description:	(RO) Reports the number of fatal errors detected by the device.
- 
--		This attribute is only available for qat_4xxx devices.
-+		This attribute is only available for qat_4xxx and qat_6xxx devices.
- 
- What:		/sys/bus/pci/devices/<BDF>/qat_ras/reset_error_counters
- Date:		January 2024
-@@ -38,4 +38,4 @@ Description:	(WO) Write to resets all error counters of a device.
- 			# cat /sys/bus/pci/devices/<BDF>/qat_ras/errors_fatal
- 			0
- 
--		This attribute is only available for qat_4xxx devices.
-+		This attribute is only available for qat_4xxx and qat_6xxx devices.
-diff --git a/drivers/crypto/intel/qat/qat_6xxx/adf_drv.c b/drivers/crypto/intel/qat/qat_6xxx/adf_drv.c
-index 2531c337e0dd..d40030b585d3 100644
---- a/drivers/crypto/intel/qat/qat_6xxx/adf_drv.c
-+++ b/drivers/crypto/intel/qat/qat_6xxx/adf_drv.c
-@@ -173,6 +173,8 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		return dev_err_probe(dev, ret, "Failed to save pci state.\n");
- 
-+	accel_dev->ras_errors.enabled = true;
-+
- 	adf_dbgfs_init(accel_dev);
- 
- 	ret = devm_add_action_or_reset(dev, adf_dbgfs_cleanup, accel_dev);
+diff --git a/Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml b/Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml
+index f0c4a7c83568..75afa441e019 100644
+--- a/Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml
++++ b/Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml
+@@ -38,7 +38,9 @@ properties:
+   compatible:
+     oneOf:
+       - items:
+-          - const: fsl,sec-v5.4
++          - enum:
++              - fsl,sec-v5.4
++              - fsl,sec-v6.0
+           - const: fsl,sec-v5.0
+           - const: fsl,sec-v4.0
+       - items:
+@@ -93,6 +95,12 @@ patternProperties:
+     properties:
+       compatible:
+         oneOf:
++          - items:
++              - const: fsl,sec-v6.0-job-ring
++              - const: fsl,sec-v5.2-job-ring
++              - const: fsl,sec-v5.0-job-ring
++              - const: fsl,sec-v4.4-job-ring
++              - const: fsl,sec-v4.0-job-ring
+           - items:
+               - const: fsl,sec-v5.4-job-ring
+               - const: fsl,sec-v5.0-job-ring
+diff --git a/Documentation/devicetree/bindings/crypto/fsl-sec6.txt b/Documentation/devicetree/bindings/crypto/fsl-sec6.txt
+deleted file mode 100644
+index 73b0eb950bb3..000000000000
+--- a/Documentation/devicetree/bindings/crypto/fsl-sec6.txt
++++ /dev/null
+@@ -1,157 +0,0 @@
+-SEC 6 is as Freescale's Cryptographic Accelerator and Assurance Module (CAAM).
+-Currently Freescale powerpc chip C29X is embedded with SEC 6.
+-SEC 6 device tree binding include:
+-   -SEC 6 Node
+-   -Job Ring Node
+-   -Full Example
+-
+-=====================================================================
+-SEC 6 Node
+-
+-Description
+-
+-    Node defines the base address of the SEC 6 block.
+-    This block specifies the address range of all global
+-    configuration registers for the SEC 6 block.
+-    For example, In C293, we could see three SEC 6 node.
+-
+-PROPERTIES
+-
+-   - compatible
+-      Usage: required
+-      Value type: <string>
+-      Definition: Must include "fsl,sec-v6.0".
+-
+-   - fsl,sec-era
+-      Usage: optional
+-      Value type: <u32>
+-      Definition: A standard property. Define the 'ERA' of the SEC
+-          device.
+-
+-   - #address-cells
+-       Usage: required
+-       Value type: <u32>
+-       Definition: A standard property.  Defines the number of cells
+-           for representing physical addresses in child nodes.
+-
+-   - #size-cells
+-       Usage: required
+-       Value type: <u32>
+-       Definition: A standard property.  Defines the number of cells
+-           for representing the size of physical addresses in
+-           child nodes.
+-
+-   - reg
+-      Usage: required
+-      Value type: <prop-encoded-array>
+-      Definition: A standard property.  Specifies the physical
+-          address and length of the SEC 6 configuration registers.
+-
+-   - ranges
+-       Usage: required
+-       Value type: <prop-encoded-array>
+-       Definition: A standard property.  Specifies the physical address
+-           range of the SEC 6.0 register space (-SNVS not included).  A
+-           triplet that includes the child address, parent address, &
+-           length.
+-
+-   Note: All other standard properties (see the Devicetree Specification)
+-   are allowed but are optional.
+-
+-EXAMPLE
+-	crypto@a0000 {
+-		compatible = "fsl,sec-v6.0";
+-		fsl,sec-era = <6>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		reg = <0xa0000 0x20000>;
+-		ranges = <0 0xa0000 0x20000>;
+-	};
+-
+-=====================================================================
+-Job Ring (JR) Node
+-
+-    Child of the crypto node defines data processing interface to SEC 6
+-    across the peripheral bus for purposes of processing
+-    cryptographic descriptors. The specified address
+-    range can be made visible to one (or more) cores.
+-    The interrupt defined for this node is controlled within
+-    the address range of this node.
+-
+-  - compatible
+-      Usage: required
+-      Value type: <string>
+-      Definition: Must include "fsl,sec-v6.0-job-ring".
+-
+-  - reg
+-      Usage: required
+-      Value type: <prop-encoded-array>
+-      Definition: Specifies a two JR parameters:  an offset from
+-           the parent physical address and the length the JR registers.
+-
+-   - interrupts
+-      Usage: required
+-      Value type: <prop_encoded-array>
+-      Definition:  Specifies the interrupts generated by this
+-           device.  The value of the interrupts property
+-           consists of one interrupt specifier. The format
+-           of the specifier is defined by the binding document
+-           describing the node's interrupt parent.
+-
+-EXAMPLE
+-	jr@1000 {
+-		compatible = "fsl,sec-v6.0-job-ring";
+-		reg = <0x1000 0x1000>;
+-		interrupts = <49 2 0 0>;
+-	};
+-
+-===================================================================
+-Full Example
+-
+-Since some chips may contain more than one SEC, the dtsi contains
+-only the node contents, not the node itself.  A chip using the SEC
+-should include the dtsi inside each SEC node.  Example:
+-
+-In qoriq-sec6.0.dtsi:
+-
+-	compatible = "fsl,sec-v6.0";
+-	fsl,sec-era = <6>;
+-	#address-cells = <1>;
+-	#size-cells = <1>;
+-
+-	jr@1000 {
+-		compatible = "fsl,sec-v6.0-job-ring",
+-			     "fsl,sec-v5.2-job-ring",
+-			     "fsl,sec-v5.0-job-ring",
+-			     "fsl,sec-v4.4-job-ring",
+-			     "fsl,sec-v4.0-job-ring";
+-		reg	   = <0x1000 0x1000>;
+-	};
+-
+-	jr@2000 {
+-		compatible = "fsl,sec-v6.0-job-ring",
+-			     "fsl,sec-v5.2-job-ring",
+-			     "fsl,sec-v5.0-job-ring",
+-			     "fsl,sec-v4.4-job-ring",
+-			     "fsl,sec-v4.0-job-ring";
+-		reg	   = <0x2000 0x1000>;
+-	};
+-
+-In the C293 device tree, we add the include of public property:
+-
+-	crypto@a0000 {
+-		/include/ "qoriq-sec6.0.dtsi"
+-	}
+-
+-	crypto@a0000 {
+-		reg = <0xa0000 0x20000>;
+-		ranges = <0 0xa0000 0x20000>;
+-
+-		jr@1000 {
+-			interrupts = <49 2 0 0>;
+-		};
+-
+-		jr@2000 {
+-			interrupts = <50 2 0 0>;
+-		};
+-	};
 -- 
-2.40.1
+2.47.2
 
 
