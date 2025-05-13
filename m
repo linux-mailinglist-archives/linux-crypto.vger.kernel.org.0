@@ -1,108 +1,97 @@
-Return-Path: <linux-crypto+bounces-13021-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13031-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 682A8AB4DA8
-	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 10:07:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE15DAB4EBD
+	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 11:01:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06A718661B6
-	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 08:07:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 394B77AE50D
+	for <lists+linux-crypto@lfdr.de>; Tue, 13 May 2025 09:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6765E1F4E57;
-	Tue, 13 May 2025 08:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA42D210F53;
+	Tue, 13 May 2025 09:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="Rqq8c87Z"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Ulz46r/t"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7989812CDAE;
-	Tue, 13 May 2025 08:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303021F152D;
+	Tue, 13 May 2025 09:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747123648; cv=none; b=ekxsdcF6F3f0xcZxdddtaB41ezbcPsWEj17og9oqL16yX/9RXUyEbeMsCMWsjavLrmJqvM1Py8ojdhVfCXKxUbLF4+hW4KBqjxCXnP19iBFahMKhrP0ks9cZCyjMuYgwBJW9sHuTBnoPRqL/dUa6izg9O6RGloVzbTXrpY1m5S0=
+	t=1747126881; cv=none; b=lCwXBC85TLrYv0QyPOqar5WfLhOETDWQzdYpg3kqNDg33S2lMxPuikd94WcosSQf3W8GkuzF99wpmTO7BZWBwSfQtEsH0lijOHpohiOYFfniGz5L0lnDyr67r32BxKWr13O+tnBR+M7nEf6S1D4r+tgLV+xErRKrrE9U+z8gCLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747123648; c=relaxed/simple;
-	bh=vud7CUVgVr2JwbnoYvC6dIKqLE5UZ6qaK+fH767KXuo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SLbJwgU1bcUPXijoQDLGrVszYRkZYv+fU+lBRzUyD9QvuxlMGMeyMCx6M2Qu9ZB+pE2GkmmMbKUL6zKSLJha1dfahA8PgJw9EAtpjc0ct2tbf7DksmQs/Yum6gxOT6A3+zNCAlU+luo7PR+R58xcEaWUZiykllIrOaZcH09Nlag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=Rqq8c87Z; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=Bwa5BnGhIKvbYBQdupkPabThUggiYmqnSYcORBHjVZw=; b=Rqq8c87ZhxLQLDUnilPn9Fs1pJ
-	aTOroWzL9IT3k7j/lkhp9b2LgrdHgxhA5EKZXrB6UwpqwrQHz4rTRDuUYIXMBbRkQw836BvDm8i8i
-	ywXywCgJkGwJSKoR/eLJJfZ9knuwVGCmT4C11Y5I4nanb4t14AxEf/Rf5RfZVDwDJt2R84NfVqHTA
-	LGzjDEUPg3RlyiC6fbT91eytlcC1ZfxeRsNwEgt/40r4DPblGjYJeORr4gow5TLHw9tAQVn3pYIJ5
-	TqeMtbTAUooyN0ox6MijBVgQA4WzYSljQP9wvmtgGBIREcejFRryrz9VYU9b4Wc9vXzvp/vZVtn+z
-	LUsH2rSQ==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1uEkfZ-005hTW-2K;
-	Tue, 13 May 2025 16:07:22 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 13 May 2025 16:07:21 +0800
-Date: Tue, 13 May 2025 16:07:21 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Harald Freudenberger <freude@linux.ibm.com>
-Cc: dengler@linux.ibm.com, ifranzki@linux.ibm.com, fcallies@linux.ibm.com,
-	linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] s390/crypto: Rework protected key AES for true
- asynch support
-Message-ID: <aCL9uctC5tQSea3t@gondor.apana.org.au>
-References: <20250509102402.27287-1-freude@linux.ibm.com>
- <20250509102402.27287-3-freude@linux.ibm.com>
+	s=arc-20240116; t=1747126881; c=relaxed/simple;
+	bh=6JaYxfdAQJiPRQ8zXP1h2w7gcM977OHUbEVJN7BCbr4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=hi5zkaETBnZQFPzX0ZH7p5GP8/AyOLCZQ5Eb4ZIJlhN6Xf9lUfgpWIdZm/81e0EDZ7EfmjSGtk10Av01FfIpexrwLC/j3BcZk0Ock9DwPGFyqNzRDTboQtBpXpQEf5ol+RdzQ16tCQ5O+ByLgUwRQkMbO3GZvpNhr16qKAzzbBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Ulz46r/t; arc=none smtp.client-ip=192.19.144.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B83A5C0003DE;
+	Tue, 13 May 2025 01:52:29 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B83A5C0003DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1747126349;
+	bh=6JaYxfdAQJiPRQ8zXP1h2w7gcM977OHUbEVJN7BCbr4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Ulz46r/t0gAYZzJQVapdPbIhLe6hnr49XYFJfAzTH1GCNETAG5h1Dq5ytb1ymj+Q7
+	 c4DFlOZwSRUdP9luneeZA0mF5cUvfOgjQHeduw9DAEH+A8ssitOnaQr6fGGgc9l1Zb
+	 Rv/VKta2gS+7+8ir+tqJ4Fp4UYZCMT9Ft+DK9BOI=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 4437118000530;
+	Tue, 13 May 2025 01:52:29 -0700 (PDT)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: bcm-kernel-feedback-list@broadcom.com,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	William Zhang <william.zhang@broadcom.com>,
+	Anand Gore <anand.gore@broadcom.com>,
+	Kursad Oney <kursad.oney@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	=?iso-8859-2?q?Rafa=B3_Mi=B3ecki?= <rafal@milecki.pl>,
+	Olivia Mackall <olivia@selenic.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] ARM: dts: bcm6878: Correct UART0 IRQ number
+Date: Tue, 13 May 2025 01:52:28 -0700
+Message-ID: <20250513085228.2043216-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250512-bcmbca-peripherals-arm-v3-1-86f97ab4326f@linaro.org>
+References: <20250512-bcmbca-peripherals-arm-v3-0-86f97ab4326f@linaro.org> <20250512-bcmbca-peripherals-arm-v3-1-86f97ab4326f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250509102402.27287-3-freude@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 09, 2025 at 12:24:01PM +0200, Harald Freudenberger wrote:
-> This is a complete rework of the protected key AES (PAES) implementation.
-> The goal of this rework is to implement the 4 modes (ecb, cbc, ctr, xts)
-> in a real asynchronous fashion:
-> - init(), exit() and setkey() are synchronous and don't allocate any memory.
-> - the encrypt/decrypt functions first try to do the job in a synchronous
->   manner. If this fails, for example the protected key got invalid caused
->   by a guest suspend/resume or guest migration action, the encrypt/decrypt
->   is transferred to an instance of the crypto engine (see below) for
->   asynchronous processing.
->   These postponed requests are then handled by the crypto engine by
->   invoking the do_one_request() callback but may of course again run into
->   a still not converted key or the key is getting invalid. If the key is
->   still not converted, the first thread does the conversion and updates
->   the key status in the transformation context. The conversion is
->   invoked via pkey API with a new flag PKEY_XFLAG_NOMEMALLOC.
->   Note that once there is an active requests enqueued to get async
->   processed via crypto engine, further requests also need to go via
->   crypto engine to keep the request sequence.
+From: Florian Fainelli <f.fainelli@gmail.com>
+
+On Mon, 12 May 2025 14:05:47 +0200, Linus Walleij <linus.walleij@linaro.org> wrote:
+> According to the vendor file 6878_intr.h the UART0 has IRQ
+> 92, not 32.
 > 
-> This patch together with the pkey/zcrypt/AP extensions to support
-> the new PKEY_XFLAG_NOMEMMALOC should toughen the paes crypto algorithms
-> to truly meet the requirements for in-kernel skcipher implementations
-> and the usage patterns for the dm-crypt and dm-integrity layers.
+> Assuming this is a copy-and-paste error.
 > 
-> Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  arch/s390/crypto/paes_s390.c | 1812 ++++++++++++++++++++++++----------
->  1 file changed, 1270 insertions(+), 542 deletions(-)
 
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
+--
+Florian
 
