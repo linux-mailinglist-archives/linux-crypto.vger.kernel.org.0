@@ -1,208 +1,148 @@
-Return-Path: <linux-crypto+bounces-13065-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13067-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE0BAAB621D
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 07:12:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8338AB6226
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 07:15:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5B077B4E40
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 05:11:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ADDB4647D0
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 05:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B501F8F04;
-	Wed, 14 May 2025 05:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A191F418F;
+	Wed, 14 May 2025 05:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="e9zHG8JV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ERvyXj03"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9FB1F869E;
-	Wed, 14 May 2025 05:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47ED202C2A;
+	Wed, 14 May 2025 05:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747199502; cv=none; b=G+/0ELmlIhBBQtEFJ2LnEIP1JBAU/CdZiSc110UDE70CPDaSAkN4IKh9igO99phuaXvuFihqGetgH3KgHVFzLc7qu81Zfm4f05IZBW7KlF9DsovyoWLRenoXb/Y1dtZkl4QDrQ//BgrHFo4VN1iRjaNgtyB/EpYDMgrJ4hLRKa8=
+	t=1747199577; cv=none; b=YHkKRkdMbpauyGds6+qd2IMdNVC9Qcw4JkzwgdUk7YRusLrbwgd2GUaFYOSRukt4ZQx6bQVUr/pUf3nyK3dOp1VNhvmS/eIx3ujWhg3KZ/lnRzd0cN+SdvrTGwU7awqsHopDghiBjvyorTdJxBPENyO3/PDUcVI1D0lVk+p7YHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747199502; c=relaxed/simple;
-	bh=dnAcYrEyP+ymeEgu74eHqf7dLrNlQn8rqfoAYZ3/DBQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Oq+biGdXX1+yJxPouf+qp4H+g17KY0ItfVAF3R6g2TBVwrMtoN/A6SLpmWP6+Er3iDGajJLnAiK7/+wf4e9rBY1N1Gy2yOLo7Lb4uMcnTHe3o7Jl1SFt2mssk1bXKktQJ/qqwb+PPUyoqkM4gz/tjjnaF8ObWTQsgPweDPQHWFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=e9zHG8JV; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54DIUXjD005444;
-	Tue, 13 May 2025 22:11:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pfpt0220; bh=0
-	g/h8q626a64HHL3mcFWLA55+bwvt3DSSW+DimH6wWA=; b=e9zHG8JVKAgM3PhLj
-	lhYADt7Nwjn6waV21FUc3ahOff5YYkE3YwUIA0a4NaNsdv8vrQl/HDXlGgKBgrow
-	2SrDqEGSAsNkADeyAFheZBnWfIpBi8WOj+jQuScMI5uGVuGqD9Dfxaf6RLx9UKMv
-	f1Z/IQWc2yWDgBkVTQ+CvEBt+lYAj3GoVMbLCNjJfzDaeBHVrgf0C7SbU4F/46ha
-	c3+nepWqxCkVgfzGjAmE83uNZdb3j7p5D7q5Vs3dWYK1siGbzjdHsCdEo3gR8ElP
-	+Ba7eqEFJYmmWMxCC9slMEQG+0r9/LpUiMEiSMPNe0sr8qsT9ahOETYQw8rXG3xt
-	rzu3w==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 46mbe211s5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 May 2025 22:11:31 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 13 May 2025 22:11:30 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 13 May 2025 22:11:30 -0700
-Received: from bharat-OptiPlex-Tower-Plus-7020.. (unknown [10.28.34.254])
-	by maili.marvell.com (Postfix) with ESMTP id 4F79A5B693A;
-	Tue, 13 May 2025 22:11:26 -0700 (PDT)
-From: Bharat Bhushan <bbhushan2@marvell.com>
-To: <bbrezillon@kernel.org>, <arno@natisbad.org>, <schalla@marvell.com>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <giovanni.cabiddu@intel.com>, <linux@treblig.org>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bharatb.linux@gmail.com>
-CC: <stable@vger.kernel.org>, Bharat Bhushan <bbhushan2@marvell.com>
-Subject: [PATCH 4/4 RESEND] crypto: octeontx2: Fix address alignment on CN10KB and CN10KA-B0
-Date: Wed, 14 May 2025 10:40:43 +0530
-Message-ID: <20250514051043.3178659-5-bbhushan2@marvell.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250514051043.3178659-1-bbhushan2@marvell.com>
-References: <20250514051043.3178659-1-bbhushan2@marvell.com>
+	s=arc-20240116; t=1747199577; c=relaxed/simple;
+	bh=yUG8ONjOe4LwcmpGH9v/45YXrb92a0dsHUD1DMtRqgc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BjRlAJWlB2X6kUCpjOqZTMDluv5rPWwjsOOBq0kMzMi3EzxSAZTVZaCIICtvhBV4ee6MjysKWVzFOPLR/FpA8I+pDWHSmSfTjXvytAtGbf27hoLhnWqxv1v4RydhJIQOTnlYq0cfW6OgAm1cVi/hG1YL54n09NnBHlaHpbcQ0z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ERvyXj03; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43d04dc73b7so68032845e9.3;
+        Tue, 13 May 2025 22:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747199574; x=1747804374; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ccAXzQ7Hj2l1zKP83Bp1shjlWNHgYOcGKTaM8SjJfbs=;
+        b=ERvyXj03jeNUrtEQZx/jmiJsgYp6D/B7KzejNBzdgIp2Mw/h9gegTk0pmapkhUMqz2
+         4qDVqBFnV3bIDKdAMCztG9HlggFn3f91yDBCa5xeejCVV0MKnC6bIxPFQI8060grI3As
+         jidD78SSPJR4Nbx4y9FdkZnBQ6ymM9jlsSdaTjNc8kYund5wS5SEIHo0DCObZ3ctJ+xG
+         Jp51utAqCiJDNZLeKkJgsXmRPW+bIz3YDc33C0Rsvfo7CAEDdwaZY+N6cUhEA75aY6NJ
+         BTErzuX6i1QVHqBLJ7GTFDEYlKL69FglhBhvq7EAI0Y02cLhypPxFesAs2HBOfYUV3xB
+         6MxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747199574; x=1747804374;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ccAXzQ7Hj2l1zKP83Bp1shjlWNHgYOcGKTaM8SjJfbs=;
+        b=OIgNgDSATBfItz8v4pMyUerrScKwZp0tE7Npud2WLvi5IB7AmzKClNCU/MiJU6zdne
+         tCW8BWCSy6QcX5427+8I8Fyx9kbzpVhwLgX6TutkOklCqnRtCozD0742QOTO+LtZOWAy
+         puXGCymrO/iaTv4NHwsLrY9Z3u1hS1r2aiNuIucIav8Byz9ojWAu9XurwORi+lcUChe1
+         +ff7YrVNqWWx0XM2KQDT73n4oC0nCZXKeO6x3dxbh2eXNFHUDw6OiUGTNmzIAD/cdEWl
+         Pjs8hc3SwZ5h9JBj2OnfNVpbDNGBHXIGqh3sBUeiOuukQpaR/78RGBmf0VqohsNocXTr
+         EXCw==
+X-Forwarded-Encrypted: i=1; AJvYcCWCag/coQlLxGy9lwjIpGXJ4myxlpZGniv7cN8lq2PhafP69NdXb8iY5WIphpaqN/OpKZtw2GyUN/TWKPg=@vger.kernel.org, AJvYcCXto5VaI+CvJUAiucboCTqOUXIIRMgQ+5xcRtUxjRaqexVShlIehc6WZ9DYVP6eVZoJPEtjtqzEAxp00Q2b@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4fipg9Afl9t+Kjmjej0Yja0zAjg+3kIAQnwD2VkGkJeBz70v8
+	57jCLzGY8tQemSgBLZyLRAiQgT4xmtXidJ9MaKpy1K79jXQzfjVE
+X-Gm-Gg: ASbGncugRuBztxXatI32FilkCchX0ULP7wYBws9mVyTmOtRzdOk2cjypNLBuJWXf1le
+	SjJoJSbwmmmde5UKtw2LRZEZhbI7UsR2v4QXwkTTg7PJkj892NWuWqKLG4Gax5M7nNehr50NAIT
+	LUrBtHlbJemFeEkROnCYmUyLokRxaCz3GeP7a87GagRmo7TJ4MWlvLVr2FycRYGVUlFQ3CdHKm7
+	/iOcgcYiWgTP6yr/RcVqG3kfoQIRc+t1mMNimneMjTejXd/LY5u6tnlclCG4jK3kNgDjfmUbw8c
+	E0UAAtS1TO3giV2sToJ9RSs0jMPYHIN78QHf4TzNTBE5zmL2cgBb3oIp3mLhV+qFVhs1JGMJ46W
+	1GySLoLSAp9avtEdR5mJgDnvMuseT6BhH
+X-Google-Smtp-Source: AGHT+IEz8NL5ChkEQch25k/avcSb+ro7yC4An0ceFXjPtSS6PO6SClvUvx1aOjHJkqF+FfK7lsjm4w==
+X-Received: by 2002:a05:600c:1986:b0:43d:7588:6688 with SMTP id 5b1f17b1804b1-442f4735b63mr6963485e9.12.1747199573832;
+        Tue, 13 May 2025 22:12:53 -0700 (PDT)
+Received: from ?IPv6:2a02:168:6806:0:a31b:44a3:4e3a:b121? ([2a02:168:6806:0:a31b:44a3:4e3a:b121])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442f39e84d3sm12939905e9.32.2025.05.13.22.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 May 2025 22:12:53 -0700 (PDT)
+Message-ID: <8e9b45bdafe6ac3f12bcbb5fce5bc9949566344f.camel@gmail.com>
+Subject: Re: [PATCH] crypto: marvell/cesa - Avoid empty transfer descriptor
+From: Klaus Kudielka <klaus.kudielka@gmail.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Corentin Labbe <clabbe.montjoie@gmail.com>, regressions@lists.linux.dev,
+ 	linux-kernel@vger.kernel.org, Linux Crypto Mailing List	
+ <linux-crypto@vger.kernel.org>, Boris Brezillon <bbrezillon@kernel.org>, 
+ EBALARD Arnaud <Arnaud.Ebalard@ssi.gouv.fr>, Romain Perier
+ <romain.perier@gmail.com>
+Date: Wed, 14 May 2025 07:12:52 +0200
+In-Reply-To: <aCMOyWVte4tw85_F@gondor.apana.org.au>
+References: <aBt5Mxq1MeefwXGJ@Red> <aBw-C_krkNsIoPlT@gondor.apana.org.au>
+	 <aBw_iC_4okpiKglQ@gondor.apana.org.au>
+	 <dd55ba91a5aebce0e643cab5d57e4c87a006600f.camel@gmail.com>
+	 <aB8W4iuvjvAZSJoc@gondor.apana.org.au>
+	 <41680c5d41ed568e8c65451843e3ff212fd340c4.camel@gmail.com>
+	 <aB8t1ZTVBexqGlcm@gondor.apana.org.au>
+	 <dcb0b04e479d6f3cfed87795d100ea09e4fbcf53.camel@gmail.com>
+	 <aCAX8rj2ie4QMnTo@gondor.apana.org.au>
+	 <28184fb96e2de8a0af32816f5ff1b3d776b57217.camel@gmail.com>
+	 <aCMOyWVte4tw85_F@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1-1 
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8XBC0Qi1HInnHcRMF01cq8uLWf0bHDAo
-X-Authority-Analysis: v=2.4 cv=fbyty1QF c=1 sm=1 tr=0 ts=68242603 cx=c_pps a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17 a=dt9VzEwgFbYA:10 a=M5GUcnROAAAA:8 a=BhrP5AWxFkdJNdVQK0QA:9 a=OBjm3rFKGHvpk9ecZwUJ:22
-X-Proofpoint-GUID: 8XBC0Qi1HInnHcRMF01cq8uLWf0bHDAo
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE0MDA0MyBTYWx0ZWRfX7zN8vu+hBjlS cRi1zHqncRLxpjls5wfL6bEvpEZbCaejTEwhxAT8IhdQoAjYZ8gdX0ew+RkDjVnYSWXpP7J44K5 Xxw4oorj3zDnRYwmhXlRQeBq3tJ6W22/y5cjwgLevK291LGM2C3qZ1cQxtaqvMrSqH/qqRIaSac
- r+w/6mbOru/46Pi+LXUyznQ+5d3L/7bO3Jwhx3YShGtPd84EHUYrqbS3lZE8o9MWtQZERHyqJUM mDPA+m7oRCiiWOFa/9fKl59TdgHGsKt+3r6zURjoM+Ep47XMfawug/ScfKq577mC/7CcPzY2Jbr 5CMUvtE7k5e4rOLvZQLRyeotmiADMVq3MyW4F/OOnvNO4gxdCBO1ZIzalLQ4ySSxspnPfMRWm9c
- k9+EIqeFwPw3jOAkwK6qRQ/o5STGa9W7M4eONWY0x2y2ngGjfK3Jd75c1JexD8mr//n43w4W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-14_01,2025-05-09_01,2025-02-21_01
 
-octeontx2 crypto driver allocates memory using kmalloc/kzalloc,
-and uses this memory for dma (does dma_map_single()). It assumes
-that kmalloc/kzalloc will return 128-byte aligned address. But
-kmalloc/kzalloc returns 8-byte aligned address after below changes:
-  "9382bc44b5f5 arm64: allow kmalloc() caches aligned to the
-   smaller cache_line_size()
+On Tue, 2025-05-13 at 17:20 +0800, Herbert Xu wrote:
+> On Sun, May 11, 2025 at 06:39:43PM +0200, Klaus Kudielka wrote:
+> >=20
+> > Here the log after modprobe, with the new printk patch:
+>=20
+> Thanks.=C2=A0 I'm starting to get the feeling that the partial hash
+> is corrupted.
+>=20
+> Please apply this patch on top of the printk patch to confirm this.
+>=20
+> Cheers,
 
-Memory allocated are used for following purpose:
- - Input data or scatter list address - 8-Byte alignment
- - Output data or gather list address - 8-Byte alignment
- - Completion address - 32-Byte alignment.
-
-This patch ensures all addresses are aligned as mentioned above.
-
-Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
----
- .../marvell/octeontx2/otx2_cpt_reqmgr.h       | 57 ++++++++++++++-----
- 1 file changed, 42 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h b/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h
-index f0f1ff45c383..b49dafc596c7 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h
-@@ -350,22 +350,45 @@ static inline struct otx2_cpt_inst_info *
- cn10k_sgv2_info_create(struct pci_dev *pdev, struct otx2_cpt_req_info *req,
- 		       gfp_t gfp)
- {
--	u32 dlen = 0, g_len, sg_len, info_len;
--	int align = OTX2_CPT_DMA_MINALIGN;
-+	u32 dlen = 0, g_len, s_len, sg_len, info_len;
- 	struct otx2_cpt_inst_info *info;
--	u16 g_sz_bytes, s_sz_bytes;
- 	u32 total_mem_len;
- 	int i;
- 
--	g_sz_bytes = ((req->in_cnt + 2) / 3) *
--		      sizeof(struct cn10kb_cpt_sglist_component);
--	s_sz_bytes = ((req->out_cnt + 2) / 3) *
--		      sizeof(struct cn10kb_cpt_sglist_component);
-+	/* Allocate memory to meet below alignment requirement:
-+	 *  ----------------------------------
-+	 * |    struct otx2_cpt_inst_info     |
-+	 * |    (No alignment required)       |
-+	 * |     -----------------------------|
-+	 * |    | padding for 8B alignment    |
-+	 * |----------------------------------|
-+	 * |    SG List Gather/Input memory   |
-+	 * |    Length = multiple of 32Bytes  |
-+	 * |    Alignment = 8Byte             |
-+	 * |----------------------------------|
-+	 * |    SG List Scatter/Output memory |
-+	 * |    Length = multiple of 32Bytes  |
-+	 * |    Alignment = 8Byte             |
-+	 * |    (padding for below alignment) |
-+	 * |     -----------------------------|
-+	 * |    | padding for 32B alignment   |
-+	 * |----------------------------------|
-+	 * |    Result response memory        |
-+	 *  ----------------------------------
-+	 */
-+
-+	info_len = sizeof(*info);
- 
--	g_len = ALIGN(g_sz_bytes, align);
--	sg_len = ALIGN(g_len + s_sz_bytes, align);
--	info_len = ALIGN(sizeof(*info), align);
--	total_mem_len = sg_len + info_len + sizeof(union otx2_cpt_res_s);
-+	g_len = ((req->in_cnt + 2) / 3) *
-+		 sizeof(struct cn10kb_cpt_sglist_component);
-+	s_len = ((req->out_cnt + 2) / 3) *
-+		 sizeof(struct cn10kb_cpt_sglist_component);
-+	sg_len = g_len + s_len;
-+
-+	/* Allocate extra memory for SG and response address alignment */
-+	total_mem_len = ALIGN(info_len, OTX2_CPT_DPTR_RPTR_ALIGN) + sg_len;
-+	total_mem_len = ALIGN(total_mem_len, OTX2_CPT_RES_ADDR_ALIGN) +
-+			 sizeof(union otx2_cpt_res_s);
- 
- 	info = kzalloc(total_mem_len, gfp);
- 	if (unlikely(!info))
-@@ -375,7 +398,9 @@ cn10k_sgv2_info_create(struct pci_dev *pdev, struct otx2_cpt_req_info *req,
- 		dlen += req->in[i].size;
- 
- 	info->dlen = dlen;
--	info->in_buffer = (u8 *)info + info_len;
-+	info->in_buffer = PTR_ALIGN((u8 *)info + info_len,
-+				    OTX2_CPT_DPTR_RPTR_ALIGN);
-+	info->out_buffer = info->in_buffer + g_len;
- 	info->gthr_sz = req->in_cnt;
- 	info->sctr_sz = req->out_cnt;
- 
-@@ -387,7 +412,7 @@ cn10k_sgv2_info_create(struct pci_dev *pdev, struct otx2_cpt_req_info *req,
- 	}
- 
- 	if (sgv2io_components_setup(pdev, req->out, req->out_cnt,
--				    &info->in_buffer[g_len])) {
-+				    info->out_buffer)) {
- 		dev_err(&pdev->dev, "Failed to setup scatter list\n");
- 		goto destroy_info;
- 	}
-@@ -404,8 +429,10 @@ cn10k_sgv2_info_create(struct pci_dev *pdev, struct otx2_cpt_req_info *req,
- 	 * Get buffer for union otx2_cpt_res_s response
- 	 * structure and its physical address
- 	 */
--	info->completion_addr = info->in_buffer + sg_len;
--	info->comp_baddr = info->dptr_baddr + sg_len;
-+	info->completion_addr = PTR_ALIGN((info->in_buffer + sg_len),
-+					  OTX2_CPT_RES_ADDR_ALIGN);
-+	info->comp_baddr = ALIGN((info->dptr_baddr + sg_len),
-+				 OTX2_CPT_RES_ADDR_ALIGN);
- 
- 	return info;
- 
--- 
-2.34.1
-
+drivers/crypto/marvell/cesa/hash.c: In function =E2=80=98mv_cesa_ahash_comp=
+lete=E2=80=99:
+drivers/crypto/marvell/cesa/hash.c:403:25: error: implicit declaration of f=
+unction =E2=80=98HASH_FBREQ_ON_STACK=E2=80=99; did you mean =E2=80=98SHASH_=
+DESC_ON_STACK=E2=80=99? [-Wimplicit-function-declaration]
+  403 |                         HASH_FBREQ_ON_STACK(fbreq, ahashreq);
+      |                         ^~~~~~~~~~~~~~~~~~~
+      |                         SHASH_DESC_ON_STACK
+drivers/crypto/marvell/cesa/hash.c:403:45: error: =E2=80=98fbreq=E2=80=99 u=
+ndeclared (first use in this function)
+  403 |                         HASH_FBREQ_ON_STACK(fbreq, ahashreq);
+      |                                             ^~~~~
+drivers/crypto/marvell/cesa/hash.c:403:45: note: each undeclared identifier=
+ is reported only once for each function it appears in
+drivers/crypto/marvell/cesa/hash.c:405:25: error: implicit declaration of f=
+unction =E2=80=98crypto_ahash_import_core=E2=80=99; did you mean =E2=80=98c=
+rypto_ahash_import=E2=80=99? [-Wimplicit-function-declaration]
+  405 |                         crypto_ahash_import_core(fbreq, &state);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+      |                         crypto_ahash_import
+  CC [M]  drivers/crypto/marvell/cesa/tdma.o
+drivers/crypto/marvell/cesa/hash.c:407:25: error: implicit declaration of f=
+unction =E2=80=98crypto_ahash_export_core=E2=80=99; did you mean =E2=80=98c=
+rypto_ahash_export=E2=80=99? [-Wimplicit-function-declaration]
+  407 |                         crypto_ahash_export_core(fbreq, &state);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+      |                         crypto_ahash_export
+make[9]: *** [scripts/Makefile.build:203: drivers/crypto/marvell/cesa/hash.=
+o] Error 1
 
