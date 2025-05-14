@@ -1,56 +1,72 @@
-Return-Path: <linux-crypto+bounces-13061-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13063-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D67AB61F5
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 07:07:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D156AB6214
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 07:11:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C1707A300D
-	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 05:05:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C26A119E80AC
+	for <lists+linux-crypto@lfdr.de>; Wed, 14 May 2025 05:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F017F1F3BBB;
-	Wed, 14 May 2025 05:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6791D1F418F;
+	Wed, 14 May 2025 05:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sOCKSdm/"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="kwdEWofw"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1F91862BB;
-	Wed, 14 May 2025 05:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA2519E975;
+	Wed, 14 May 2025 05:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747199218; cv=none; b=Upuv/dy2jKjCMz15+yHBHXCk3U+b1dnyWWfiizKAmrlVPTIfAMpKu97YbdUS2OGSjOiS3a+lXr9kuncaLZZQAs8hiiEXcXvuO4Z4FillDG2i3u1V9MplfLfVqAojjOmjgGjbhvUTtROGMZUAOXMwAf6WtStpTpRQ8mh45GxJQ7g=
+	t=1747199492; cv=none; b=pHumWwhQvphjfd5WGZqZUWDQzzYR9guipLYHJKKq3KjlDrvcAYg8SD+jZ07avIzyNeWv2OmOu6/34dqtDmT6NaCTRM00dZkr5perQHQOORjPnz5AfGvmgxba0K1e2tlRTz7nd/jL2nzSBmonDMOdvO+j6rGDuuIaAIK41ExoigY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747199218; c=relaxed/simple;
-	bh=k57HVPVcev5O8s0L2S+SuCnpZBmGwPnMelaElVsD2gY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VN7/Aes5S8LoQxTjKWVeAFhAhXGgNiokCUH5bCHvzZzIKza/UK1aaQi6vpOM1Q+j7eWxW5PYmJNaH2qdrLd/tZ9nWYwhf8Yl1znCWCfrX4wrG3Z4MJAEG8a8grcV2yYedXOGd/pCVRcDHjHbu8Op3LcFmomtpesezW3fzRtYQos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sOCKSdm/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EECC0C4CEEF;
-	Wed, 14 May 2025 05:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747199218;
-	bh=k57HVPVcev5O8s0L2S+SuCnpZBmGwPnMelaElVsD2gY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=sOCKSdm/EbTOaGKQu6YlYD8C8zQc/L3CeGPIbHCsKnKlBPgLRzTE5q/SpFdN2A7NC
-	 bez8m5il/14xhoHwdzF5fu+kyva73P1i3YiPrTOwt9w0e5DUXNJkBUZdhWDpnGTkwR
-	 kUmsyCu44Z6yMKvGieKeNWXivS0J3cvJNHwHlBNkgUdHT6TEiTB4YceT+chFWEOU/a
-	 RPkDfpZhvN10IvXkbG4umJGuqj+yDlLxVvtU+JCpkU1cp5gde29kl3M072Lx8dgpxs
-	 KCZyTZmpDTjM+HmLwpxptVP+okhWFTN8cOpxqhVYm7yebZTMPYQpnTIuouH/5/CgZU
-	 aQ2cEUY9VYqyg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: Fan Wu <wufan@kernel.org>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E . Hallyn" <serge@hallyn.com>
-Cc: linux-security-module@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: [PATCH] ipe: use SHA-256 library API instead of crypto_shash API
-Date: Tue, 13 May 2025 22:05:46 -0700
-Message-ID: <20250514050546.155041-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1747199492; c=relaxed/simple;
+	bh=DOk6w4KAtF/2yyHIl4W/3BA+O6PvltzofmtBqfLTc9U=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qFPHGnrub8taBHJi9/Vzs/zksJSc5sUl/IY2llGgSPREhZairSN8ZiaxPGqNdA7DmXx5ZKxmS8vcJ5284Z7Mg4faDzZmYrZy3ZZ8iVtVDp/nhAJpetdy74sDEuYUo5CFcsCUI5XL5LDbCOwk3PML+WJdA/G05pWMw7EgQjI5SS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=kwdEWofw; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0431383.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54DNU10p018657;
+	Tue, 13 May 2025 22:11:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pfpt0220; bh=HBkYcfhQW5E/EeMsTr5py5E
+	JzuJHUSEjDNHl11vsfGA=; b=kwdEWofwDwz6h//gWXs8U1nWdgmModTvW8GQ+ml
+	4Vlal5wo+Y4G9cOgce3sxmnlywbrGVpqHRFdWIM3hR/GHUPf7jlVvQJTpDAdXHtN
+	E9hiiVG7tTVMIN4ZkZK8dPX1d3Yp5UQn4wLo3twyvYAXC0OojRrgRGZJtks0S5Mr
+	urom44oZvTrS7MqIzpTxOopCIPffO1h6BfOooZuJpbyGP+U4HQrdRpzrNa0wmtKf
+	tVPEjNb5+KLcb0J6ScwV5LE38k4pqi9aHsDmEvFriPfKKPA1J+rvhRYcr6mzDonp
+	Tt7E3jwuEfB33itoQzhMkaAcB6C4MPgpNoOGbMcRIWpg2vA==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 46mft50gvv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 May 2025 22:11:13 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Tue, 13 May 2025 22:11:12 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Tue, 13 May 2025 22:11:12 -0700
+Received: from bharat-OptiPlex-Tower-Plus-7020.. (unknown [10.28.34.254])
+	by maili.marvell.com (Postfix) with ESMTP id B400C5B693B;
+	Tue, 13 May 2025 22:11:07 -0700 (PDT)
+From: Bharat Bhushan <bbhushan2@marvell.com>
+To: <bbrezillon@kernel.org>, <arno@natisbad.org>, <schalla@marvell.com>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <giovanni.cabiddu@intel.com>, <linux@treblig.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bharatb.linux@gmail.com>
+CC: <stable@vger.kernel.org>, Bharat Bhushan <bbhushan2@marvell.com>
+Subject: [PATCH 0/4 RESEND] crypto: octeontx2: Fix hang and address alignment issues
+Date: Wed, 14 May 2025 10:40:39 +0530
+Message-ID: <20250514051043.3178659-1-bbhushan2@marvell.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -58,112 +74,37 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 0tcbA8q4hieW-hLdFQ9LezAcuoxpiC7g
+X-Authority-Analysis: v=2.4 cv=VITdn8PX c=1 sm=1 tr=0 ts=682425f1 cx=c_pps a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17 a=dt9VzEwgFbYA:10 a=voKHntS-kiqXh1f54uIA:9
+X-Proofpoint-GUID: 0tcbA8q4hieW-hLdFQ9LezAcuoxpiC7g
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE0MDA0MyBTYWx0ZWRfX0Yo8hlyuRNMB 0xgH5mAbD23FoN7bBR94N1HAiwFtD9nMW5bI2Y505TEm8EA5RA5tpVYGef1KHwVVi94V5me7Mdw WYOnZyElewxeZI/hMotipK8dhblcxvb0Dh9uMotxlBwslNV7673e9o6xJtlVA19L7rC96ZYbnjB
+ MHE+62eiN1wh2TCBua+La5uijnnWbyYYsnqyFcvk/McohoI+L8nc/h6wG7fJYb2xYWZzzkq1bj5 klx+vmNoYMUfLuYIDPpv9BtQRdOUPg5vYyIFm/Ihj5Fn3gJaM3p1v/Le6qiU37kOuCbMM9BUiiI axY6Ovkn6FUAYs6UAXaPFYraiSsDASqX/I33+ysK8c0BoEjhsx+XlQ8qphrkkOvANcfz8fblsMf
+ SunRKA0Yb9jp887ZXNlfeTWa/hQfuUWy8Git6JzUH6jNo0zU1G3oGWyzXVL4EJ2vpIlkorX5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-14_01,2025-05-09_01,2025-02-21_01
 
-From: Eric Biggers <ebiggers@google.com>
+First patch of the series fixes possible infinite loop.
 
-audit_policy() does not support any other algorithm, so the crypto_shash
-abstraction provides no value.  Just use the SHA-256 library API
-instead, which is much simpler and easier to use.
+Remaining three patches fixes address alignment issue observed
+after "9382bc44b5f5 arm64: allow kmalloc() caches aligned to the
+       smaller cache_line_size()"
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- security/ipe/Kconfig |  1 +
- security/ipe/audit.c | 33 +++++----------------------------
- 2 files changed, 6 insertions(+), 28 deletions(-)
+Patch-2 and patch-3 applies to stable version 6.6 onwards.
+Patch-4 applies to stable version 6.12 onwards
 
-diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
-index 3c75bf267da46..a110a6cd848b7 100644
---- a/security/ipe/Kconfig
-+++ b/security/ipe/Kconfig
-@@ -4,10 +4,11 @@
- #
- 
- menuconfig SECURITY_IPE
- 	bool "Integrity Policy Enforcement (IPE)"
- 	depends on SECURITY && SECURITYFS && AUDIT && AUDITSYSCALL
-+	select CRYPTO_LIB_SHA256
- 	select PKCS7_MESSAGE_PARSER
- 	select SYSTEM_DATA_VERIFICATION
- 	select IPE_PROP_DM_VERITY if DM_VERITY
- 	select IPE_PROP_DM_VERITY_SIGNATURE if DM_VERITY && DM_VERITY_VERIFY_ROOTHASH_SIG
- 	select IPE_PROP_FS_VERITY if FS_VERITY
-diff --git a/security/ipe/audit.c b/security/ipe/audit.c
-index 9668ecc5acd53..de5fed62592e1 100644
---- a/security/ipe/audit.c
-+++ b/security/ipe/audit.c
-@@ -4,22 +4,22 @@
-  */
- 
- #include <linux/slab.h>
- #include <linux/audit.h>
- #include <linux/types.h>
--#include <crypto/hash.h>
-+#include <crypto/sha2.h>
- 
- #include "ipe.h"
- #include "eval.h"
- #include "hooks.h"
- #include "policy.h"
- #include "audit.h"
- #include "digest.h"
- 
- #define ACTSTR(x) ((x) == IPE_ACTION_ALLOW ? "ALLOW" : "DENY")
- 
--#define IPE_AUDIT_HASH_ALG "sha256"
-+#define IPE_AUDIT_HASH_ALG "sha256" /* keep in sync with audit_policy() */
- 
- #define AUDIT_POLICY_LOAD_FMT "policy_name=\"%s\" policy_version=%hu.%hu.%hu "\
- 			      "policy_digest=" IPE_AUDIT_HASH_ALG ":"
- #define AUDIT_POLICY_LOAD_NULL_FMT "policy_name=? policy_version=? "\
- 				   "policy_digest=?"
-@@ -180,41 +180,18 @@ void ipe_audit_match(const struct ipe_eval_ctx *const ctx,
-  */
- static void audit_policy(struct audit_buffer *ab,
- 			 const char *audit_format,
- 			 const struct ipe_policy *const p)
- {
--	SHASH_DESC_ON_STACK(desc, tfm);
--	struct crypto_shash *tfm;
--	u8 *digest = NULL;
-+	u8 digest[SHA256_DIGEST_SIZE];
- 
--	tfm = crypto_alloc_shash(IPE_AUDIT_HASH_ALG, 0, 0);
--	if (IS_ERR(tfm))
--		return;
--
--	desc->tfm = tfm;
--
--	digest = kzalloc(crypto_shash_digestsize(tfm), GFP_KERNEL);
--	if (!digest)
--		goto out;
--
--	if (crypto_shash_init(desc))
--		goto out;
--
--	if (crypto_shash_update(desc, p->pkcs7, p->pkcs7len))
--		goto out;
--
--	if (crypto_shash_final(desc, digest))
--		goto out;
-+	sha256(p->pkcs7, p->pkcs7len, digest);
- 
- 	audit_log_format(ab, audit_format, p->parsed->name,
- 			 p->parsed->version.major, p->parsed->version.minor,
- 			 p->parsed->version.rev);
--	audit_log_n_hex(ab, digest, crypto_shash_digestsize(tfm));
--
--out:
--	kfree(digest);
--	crypto_free_shash(tfm);
-+	audit_log_n_hex(ab, digest, sizeof(digest));
- }
- 
- /**
-  * ipe_audit_policy_activation() - Audit a policy being activated.
-  * @op: Supplies a pointer to the previously activated policy to audit.
+Bharat Bhushan (4):
+  crypto: octeontx2: add timeout for load_fvc completion poll
+  crypto: octeontx2: Fix address alignment issue on ucode loading
+  crypto: octeontx2: Fix address alignment on CN10K A0/A1 and OcteonTX2
+  crypto: octeontx2: Fix address alignment on CN10KB and CN10KA-B0
 
-base-commit: aa94665adc28f3fdc3de2979ac1e98bae961d6ca
+ .../marvell/octeontx2/otx2_cpt_reqmgr.h       | 119 +++++++++++++-----
+ .../marvell/octeontx2/otx2_cptpf_ucode.c      |  46 ++++---
+ 2 files changed, 121 insertions(+), 44 deletions(-)
+
 -- 
-2.49.0
+2.34.1
 
 
