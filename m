@@ -1,222 +1,220 @@
-Return-Path: <linux-crypto+bounces-13156-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13153-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF288AB9B89
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 May 2025 13:56:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC649AB9ADC
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 May 2025 13:22:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC8F6A20DCD
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 May 2025 11:55:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C51A1B6553D
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 May 2025 11:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974482376EF;
-	Fri, 16 May 2025 11:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5490B235072;
+	Fri, 16 May 2025 11:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iram.es header.i=@iram.es header.b="rV4MaNF3"
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="dMVYUlr0"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx07-006a4e02.pphosted.com (mx07-006a4e02.pphosted.com [143.55.146.78])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949B3227EBF;
-	Fri, 16 May 2025 11:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=143.55.146.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81791205502;
+	Fri, 16 May 2025 11:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747396559; cv=none; b=DMy2cIeZkHxgmFoRlNBpf8Guppkj3za19G6EiOqnkPNx+Wuhuz1rvuz89z+m3EyV+B3EAfnBt6W3QFa7db5aNNnaDfeEn5syCFjxTg95J6AbibLeppDdxiXwcj8ASFSoLiifSlxf3MGnbkjCAAggP2EPqJ+usTN8nCtToPJ4VG4=
+	t=1747394560; cv=none; b=hmCup/CGSUNOtkgCrCzXE5XICdbe69aO7YqIJgwbcqg+8S2vta3JDBOblsXhDGQd+Ze117ZaH8CCMI0jQVZ7Slul8BlQvQWGkdCCTEdGPpr+n+9deqOfDPOYWaQHLthTsF5gtrrf/4fFZS+GJpoEJnOPmTw4lnA5rK+YIXkYWyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747396559; c=relaxed/simple;
-	bh=giXkP9+j3aa2B4vWkt+/h2ylfg8ZzjjCkVq81okbuaM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BggkK3UIe0nSH9AAusBwUNc0flDeCA06Q599JIeeoFh0H7afI0WoOSu+p7/kFw+IoMX8K3LRQTE6g6HGi7gJ3EzJjdzKxi1ZaegnCz5va3IjrD1Oxui2ENGNA70q5V5AvpK4FdiaIbeP97XBo3XdfV6mSf3WFYytSKWmtfjdMmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=iram.es; spf=pass smtp.mailfrom=iram.es; dkim=pass (2048-bit key) header.d=iram.es header.i=@iram.es header.b=rV4MaNF3; arc=none smtp.client-ip=143.55.146.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=iram.es
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iram.es
-Received: from pps.filterd (m0316687.ppops.net [127.0.0.1])
-	by m0316687.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 54G9xZ29008804;
-	Fri, 16 May 2025 13:06:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iram.es; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=dkim3; bh=bAYUGQc7Hv5rKaaMRmows/SqSVf4
-	K8fqsjT9i6Qc9Mc=; b=rV4MaNF34s8G27C5bOSrMOefpzbnwgynEvS6vcjxBy1i
-	Mq+s4gKZkkLyil0gXiDBo0yYmYIfDW/bFZuwRaB5EhWmWGdmtApMGh/Z/ROFrs2M
-	KuzZ2+VjjZvyjKfPt/9g6vw7GCNsvl7WQ7Ps0Tm51un0GvjGdyEYE/rS1ibfChUk
-	F8ub0lMfbasg+cSLngx5oFK03GvmcqC+PWojhrY1UkyJsxv3zmb7uZAHT2b8ZVzh
-	7CQmgVe7hSNIPfkh33qf9EW4IrSUgipP1wcfNBwDb+Qe9hk7qZ0hvw07HPce+b7x
-	4xET90GnlLho/Ijpa+/13LP6PFZOgAxWvMpPleJ5YA==
-Received: from sim.rediris.es (mta-out04.sim.rediris.es [130.206.24.46])
-	by m0316687.ppops.net (PPS) with ESMTPS id 46p0mfm9qs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 May 2025 13:06:57 +0200 (MEST)
-Received: from sim.rediris.es (localhost.localdomain [127.0.0.1])
-	by sim.rediris.es (Postfix) with ESMTPS id C5065181FA5;
-	Fri, 16 May 2025 13:06:56 +0200 (CEST)
+	s=arc-20240116; t=1747394560; c=relaxed/simple;
+	bh=XGogDbOEILm3N06AAw1DkScVu6xnREQYzKm/mnJRkls=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=oqhjaO+OrtRi6VwY591x8qjz0GqnJMavjVCFRi78eCl+tOk+cvLcVm/oPa/eEv4zT8A0boZ7+gyK6vwzHEvq85/pGH18iXmWGW8x5cVuxWKCfDyYEPgb1nUjQnSQ3zbZu509BB+AscvN2JrQHvPmh42p0wAlc+fe43seC/hO4Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=dMVYUlr0; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by sim.rediris.es (Postfix) with ESMTP id A8707181FAB;
-	Fri, 16 May 2025 13:06:56 +0200 (CEST)
-X-Amavis-Modified: Mail body modified (using disclaimer) -
- mta-out04.sim.rediris.es
-Received: from sim.rediris.es ([127.0.0.1])
- by localhost (mta-out04.sim.rediris.es [127.0.0.1]) (amavis, port 10026)
- with ESMTP id IkzjQ4rBb6FP; Fri, 16 May 2025 13:06:56 +0200 (CEST)
-Received: from lt-gp.iram.es (haproxy01.sim.rediris.es [130.206.24.69])
-	by sim.rediris.es (Postfix) with ESMTPA id E3CE4181FA5;
-	Fri, 16 May 2025 13:06:55 +0200 (CEST)
-Date: Fri, 16 May 2025 13:06:54 +0200
-From: Gabriel Paubert <paubert@iram.es>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E4BE140E0239;
+	Fri, 16 May 2025 11:22:34 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id gkD7PYQiGAv1; Fri, 16 May 2025 11:22:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1747394551; bh=VwrxsVN/udlP3VH2K1KzDlIzwERL61ifcK1TgFlzfWU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=dMVYUlr0jLG2c2nvA9BFB7xyrNBY4tun8Cmc4CWlUh791iizHVWtbG+TZd05hPiDd
+	 1bYiXWPqluG+hSIfa6DiKvk8vN+VQM13Cc1/O5V7sapDViWUvojNj3BGremhBR5ayY
+	 9C+2aPF3zaudIA72o78Vx62STYyKpE/RDqcmRKu5YqXcf6TNjQB4nfF7LL6TtrdEvl
+	 jnsfTZiP0YVrbdshkH/ckE/3ypJdlbBvbiJiRNDLJGFfIzCiFyEmey18EGUNsUnM8U
+	 SgW11tNX8degenU357mARTlBltkP1I9U1A7CjR7wJCukY+bEVOksqHKcdrTdEnH81g
+	 8NCaF2fNy5fWcbYuBG775RbOiaKG2Dkt7rD6WsMQH3rYyXuyXQPJKUCC+cgeYVgtOe
+	 pid/aPR91H0zd9oJnlcTuDRLlHzMqlv+d06F6y3+hQRo3/4Ci8xGuORu2OSuKZF1mN
+	 URdFHo2rM344YVSa2rkePLc7jXRSpIiYkziiXCh2/ib/XJ4df9e/t/Gtsh7W0OWIRk
+	 2QjsMprsAckF3hbgCMbIBdKJxSoEwQD58guPWydBceTDmkk+RaXg7+bDrUkzUES56S
+	 JqXRCbbKkt5z1IB0yPdYaQnyrI2XMvG3jHOHEnu/ZaXGQR+B+xNSYymRqzu1mr94Sv
+	 lPLUZwtU+H+RSMSv0TgJBx3A=
+Received: from zn.tnic (p579690ee.dip0.t-ipconnect.de [87.150.144.238])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D1B1840E016A;
+	Fri, 16 May 2025 11:22:23 +0000 (UTC)
+Date: Fri, 16 May 2025 13:22:17 +0200
+From: Borislav Petkov <bp@alien8.de>
 To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Danny Tsen <dtsen@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH] powerpc: Add gcc 128-bit shift helpers
-Message-ID: <aCccToR_71ETmPd-@lt-gp.iram.es>
-References: <202505152053.FrKekjCe-lkp@intel.com>
- <aCb7WW2gRrtEmgqD@gondor.apana.org.au>
+Cc: Jain@web.codeaurora.org, Ayush <Ayush.Jain3@amd.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>, x86-ml <x86@kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>, linux-crypto@vger.kernel.org
+Subject: cryptodev linux-next splat
+Message-ID: <20250516112217.GBaCcf6Yoc6LkIIryP@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aCb7WW2gRrtEmgqD@gondor.apana.org.au>
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE2MDEwNSBTYWx0ZWRfX7CsnzgdvuQVa
- Hc0cXDxfh9yA4+m/JqkPrYv58GcaKF2gqvrkHtx4ktpgF+qchKBAmO1vfHLNXItrxaNVEmmS5yA
- iQ5B0ELhcz8FOhNRnOfb++zNkj5qRa44Bdxqjz9WyKxw1Fkqk7eHk92A/qc675NjLSAYuI+0szR
- ve5FtbhAH+qplRVNcdyhzkKqJJf8mQg+pncjyCpBWQKSeKOjA0FbBvuJrcxES4u6kycmPs28fDz
- R6+Wk8hrNqdnWD/ofZ/P2fwtxJ92VlL6/NdE/C/j7DYd/UChPGvNdibzZNOWJuKjK6liRb3pks5
- EB64UGcBZCabpVQrWY839k5+3fsfT+/36RHAmhB6b+++0oB13dY9s2aIezsZ7kX0PQla7Ejbeo9
- XVSPThMtUaR7gPt/oCEHfgFOOf+h0QI0jvps/AhgmqsZwQxddlKBu+vixOL25xlnfTGh4RNX
-X-Proofpoint-GUID: H_SYM61NNgWlRx99XEkaczkpNMGGkLti
-X-Proofpoint-ORIG-GUID: H_SYM61NNgWlRx99XEkaczkpNMGGkLti
-X-Authority-Analysis: v=2.4 cv=EtzSrTcA c=1 sm=1 tr=0 ts=68271c51 cx=c_pps
- a=Kke4r4mcy+kRAsMtzpf9hg==:117 a=Kke4r4mcy+kRAsMtzpf9hg==:17
- a=kj9zAlcOel0A:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=i3X5FwGiAAAA:8
- a=QyXUC8HyAAAA:8 a=FNyBlpCuAAAA:8 a=LpSzYAz8VI8wa4E5YnoA:9 a=CjuIK1q_8ugA:10
- a=mmqRlSCDY2ywfjPLJ4af:22 a=RlW-AWeGUCXs_Nkyno-6:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-16_04,2025-05-16_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=salida_notspam policy=salida score=0
- mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 mlxlogscore=999 impostorscore=0 spamscore=0 lowpriorityscore=0
- adultscore=0 clxscore=1011 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505070000
- definitions=main-2505160105
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 16, 2025 at 04:46:17PM +0800, Herbert Xu wrote:
-> On Thu, May 15, 2025 at 08:06:09PM +0800, kernel test robot wrote:
-> > tree:   https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git__;!!D9dNQwwGXtA!TSuOAutxjuD3Hp-RC0Fw9dTNuagdCKeNLTN71tv_OmhUxyAPLfIfwwpZop5pKFXgS4Jfkt830_tEMkbHT4vfog$  master
-> > head:   484803582c77061b470ac64a634f25f89715be3f
-> > commit: c66d7ebbe2fa14e41913adb421090a7426f59786 [10914/11408] crypto: powerpc/poly1305 - Add SIMD fallback
-> > config: powerpc64-randconfig-002-20250515 (https://urldefense.com/v3/__https://download.01.org/0day-ci/archive/20250515/202505152053.FrKekjCe-lkp@intel.com/config__;!!D9dNQwwGXtA!TSuOAutxjuD3Hp-RC0Fw9dTNuagdCKeNLTN71tv_OmhUxyAPLfIfwwpZop5pKFXgS4Jfkt830_tEMkaPDLMaoA$ )
-> > compiler: powerpc64-linux-gcc (GCC) 8.5.0
-> > reproduce (this is a W=1 build): (https://urldefense.com/v3/__https://download.01.org/0day-ci/archive/20250515/202505152053.FrKekjCe-lkp@intel.com/reproduce__;!!D9dNQwwGXtA!TSuOAutxjuD3Hp-RC0Fw9dTNuagdCKeNLTN71tv_OmhUxyAPLfIfwwpZop5pKFXgS4Jfkt830_tEMkbNYWK3LQ$ )
-> 
-> Thanks for the report.  This patch should fix the problem.
+Hi Herbert,
 
-It won't work for big endian, nor for 32 bit obviously.
+one of our linux-next tests which hotplugs a CPU fails with the below splat.
 
-Besides that, in arch/power/kernel/misc_32.S, you'll find a branchless
-version of these functions. It's for 64 bit shifts on 32 bit big-endian
-but it can easily be adapted to 128 bit shifts on 64 bit processors
-(swapping r3 and r4 depending on endianness).
+Reproducing is very easy:
 
-Several functions of kernel/misc_32.S should arguably be moved to lib/.
+# echo 0 > /sys/devices/system/cpu/cpu1/online=20
+# echo 1 > /sys/devices/system/cpu/cpu1/online
 
-Cheers,
-Gabriel
+Opcode bytes point to:
+
+02:06:54 [ 3199.416779] Code: 65 c6 05 9a c8 ad 02 01 f7 47 2c 00 40 20 00 =
+74 4f 65 48 c7 05 95 c8 ad 02 00 00 00 00 f6 c3 02 74 0d c7 44 24 04 80 1f =
+00 00 <0f> ae 54 24 04 83 e3 01 75 47 48 8b 44 24 08 65 48 2b 05 49 97 ad
+All code
+=3D=3D=3D=3D=3D=3D=3D=3D
+   0:   65 c6 05 9a c8 ad 02    movb   $0x1,%gs:0x2adc89a(%rip)        # 0x=
+2adc8a2
+   7:   01=20
+   8:   f7 47 2c 00 40 20 00    testl  $0x204000,0x2c(%rdi)
+   f:   74 4f                   je     0x60
+  11:   65 48 c7 05 95 c8 ad    movq   $0x0,%gs:0x2adc895(%rip)        # 0x=
+2adc8b2
+  18:   02 00 00 00 00=20
+  1d:   f6 c3 02                test   $0x2,%bl
+  20:   74 0d                   je     0x2f
+  22:   c7 44 24 04 80 1f 00    movl   $0x1f80,0x4(%rsp)
+  29:   00=20
+  2a:*  0f ae 54 24 04          ldmxcsr 0x4(%rsp)               <-- trappin=
+g instruction
+  2f:   83 e3 01                and    $0x1,%ebx
+  32:   75 47                   jne    0x7b
+  34:   48 8b 44 24 08          mov    0x8(%rsp),%rax
+  39:   65                      gs
+  3a:   48                      rex.W
+  3b:   2b                      .byte 0x2b
+  3c:   05                      .byte 0x5
+  3d:   49 97                   xchg   %rax,%r15
+  3f:   ad                      lods   %ds:(%rsi),%eax
+
+Code starting with the faulting instruction
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+   0:   0f ae 54 24 04          ldmxcsr 0x4(%rsp)
+   5:   83 e3 01                and    $0x1,%ebx
+   8:   75 47                   jne    0x51
+   a:   48 8b 44 24 08          mov    0x8(%rsp),%rax
+   f:   65                      gs
+  10:   48                      rex.W
+  11:   2b                      .byte 0x2b
+  12:   05                      .byte 0x5
+  13:   49 97                   xchg   %rax,%r15
+  15:   ad                      lods   %ds:(%rsi),%eax
+
+And LDMXCSR would #UD for a bunch of conditions.
+
+Reverting cryptodev from linux-next next-20250515 this way:
+
+$ git revert -m 1 ed18a632e45785e3392cf96b9683ca033a74b1f8
+
+fixes the issue so I'm thinking it must be one of the patches you guys have
+there.
+
+Ideas?
+
+Thx.
+
+02:05:36  [ 3129.220448] systemd[1]: systemd-timedated.service: Deactivated=
+ successfully.
+02:05:36  [ 3129.252398] systemd[1]: systemd-hostnamed.service: Deactivated=
+ successfully.
+02:06:54  [ 3199.347946] smpboot: CPU 1 is now offline
+02:06:54  [ 3199.375693] smpboot: Booting Node 0 Processor 1 APIC 0x2
+02:06:54  [ 3199.381723] Oops: invalid opcode: 0000 [#1] SMP NOPTI
+02:06:54  [ 3199.387364] CPU: 1 UID: 0 PID: 0 Comm: swapper/1 Kdump: loaded=
+ Not tainted 6.15.0-rc6-next-20250515-484803582c77-1747374910702 #1 PREEMPT=
+(voluntary)=20
+02:06:54  [ 3199.402308] Hardware name: AMD Corporation Cinnabar/Cinnabar, =
+BIOS RCB100DB 08/09/2024
+02:06:54  [ 3199.411140] RIP: 0010:kernel_fpu_begin_mask+0x58/0xc0
+02:06:54  [ 3199.416779] Code: 65 c6 05 9a c8 ad 02 01 f7 47 2c 00 40 20 00=
+ 74 4f 65 48 c7 05 95 c8 ad 02 00 00 00 00 f6 c3 02 74 0d c7 44 24 04 80 1f=
+ 00 00 <0f> ae 54 24 04 83 e3 01 75 47 48 8b 44 24 08 65 48 2b 05 49 97 ad
+02:06:54  [ 3199.437736] RSP: 0000:ff3a2270c019fd98 EFLAGS: 00010002
+02:06:54  [ 3199.443568] RAX: 0000000000000046 RBX: 0000000000000002 RCX: 0=
+000000000000000
+02:06:54  [ 3199.451528] RDX: 0000000000000057 RSI: ff380c5800eba000 RDI: f=
+f380c5800eec280
+02:06:54  [ 3199.459487] RBP: ff3a2270c019fe30 R08: 0000000000000000 R09: f=
+f380c8684245078
+02:06:54  [ 3199.467446] R10: 0000000000000000 R11: 0000000000000000 R12: f=
+f380c5800eba000
+02:06:54  [ 3199.475405] R13: 0000000000000057 R14: 00000000000015c0 R15: 0=
+0000000000015c0
+02:06:54  [ 3199.483364] FS:  0000000000000000(0000) GS:ff380c86d4935000(00=
+00) knlGS:0000000000000000
+02:06:54  [ 3199.492391] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+02:06:54  [ 3199.498801] CR2: 0000000000000000 CR3: 000000304b82a000 CR4: 0=
+0000000003318b0
+02:06:54  [ 3199.506761] Call Trace:
+02:06:54  [ 3199.509487]  <TASK>
+02:06:54  [ 3199.511825]  sha256_blocks_simd+0x23/0x50
+02:06:54  [ 3199.516303]  sha256_update+0x73/0x100
+02:06:54  [ 3199.520381]  sha256+0x70/0xa0
+02:06:54  [ 3199.523690]  ? __smp_call_single_queue+0xb0/0x120
+02:06:54  [ 3199.528939]  ? srso_alias_return_thunk+0x5/0xfbef5
+02:06:54  [ 3199.534285]  ? bsearch+0x57/0x90
+02:06:54  [ 3199.537884]  ? __pfx_cmp_id+0x10/0x10
+02:06:54  [ 3199.541968]  __apply_microcode_amd+0xf1/0x1c0
+02:06:54  [ 3199.546827]  ? srso_alias_return_thunk+0x5/0xfbef5
+02:06:54  [ 3199.552169]  ? srso_alias_return_thunk+0x5/0xfbef5
+02:06:54  [ 3199.557511]  ? cpu_init_exception_handling+0x1fe/0x2c0
+02:06:54  [ 3199.563241]  ? srso_alias_return_thunk+0x5/0xfbef5
+02:06:54  [ 3199.568584]  apply_microcode_amd+0xca/0x110
+02:06:54  [ 3199.573251]  start_secondary+0x24/0x140
+02:06:54  [ 3199.577531]  ? srso_alias_return_thunk+0x5/0xfbef5
+02:06:54  [ 3199.582872]  common_startup_64+0x13e/0x141
+02:06:54  [ 3199.587446]  </TASK>
+02:06:54  [ 3199.589877] Modules linked in: iscsi_target_mod target_core_mo=
+d binfmt_misc xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nft_compat =
+nf_nat_tftp nf_conntrack_tftp overlay snd_seq_dummy snd_hrtimer snd_seq snd=
+_seq_device snd_timer snd soundcore nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 =
+nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft=
+_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 rfkill ip_set =
+nf_tables nfnetlink sunrpc vfat fat amd_atl intel_rapl_msr intel_rapl_commo=
+n amd64_edac edac_mce_amd kvm_amd ipmi_ssif kvm mlx5_ib irqbypass cdc_ether=
+ ib_uverbs usbnet rapl mii wmi_bmof pcspkr dax_hmem acpi_cpufreq ib_core ac=
+pi_ipmi i2c_piix4 k10temp i2c_smbus ipmi_si ipmi_devintf ipmi_msghandler i2=
+c_designware_platform i2c_designware_core sch_fq_codel xfs ast drm_client_l=
+ib i2c_algo_bit drm_shmem_helper mlx5_core ahci drm_kms_helper libahci mlxf=
+w tls nvme ghash_clmulni_intel sha512_ssse3 drm tg3 psample pci_hyperv_intf=
+ libata ccp nvme_core sp5100_tco wmi dm_mirror dm_region_hash dm_log
 
 
-> 
-> ---8<---
-> When optimising for size, gcc generates out-of-line calls for 128-bit
-> integer shifts.  Add these functions to avoid build errors.
-> 
-> Fixes: c66d7ebbe2fa ("crypto: powerpc/poly1305 - Add SIMD fallback")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505152053.FrKekjCe-lkp@intel.com/__;!!D9dNQwwGXtA!TSuOAutxjuD3Hp-RC0Fw9dTNuagdCKeNLTN71tv_OmhUxyAPLfIfwwpZop5pKFXgS4Jfkt830_tEMkbo7rsvYg$ 
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> diff --git a/arch/powerpc/lib/Makefile b/arch/powerpc/lib/Makefile
-> index 1cd74673cbf7..a41c071c1652 100644
-> --- a/arch/powerpc/lib/Makefile
-> +++ b/arch/powerpc/lib/Makefile
-> @@ -87,3 +87,5 @@ obj-$(CONFIG_CRC_T10DIF_ARCH) += crc-t10dif-powerpc.o
->  crc-t10dif-powerpc-y := crc-t10dif-glue.o crct10dif-vpmsum_asm.o
->  
->  obj-$(CONFIG_PPC64) += $(obj64-y)
-> +
-> +obj-$(CONFIG_ARCH_SUPPORTS_INT128) += tishift.o
-> diff --git a/arch/powerpc/lib/tishift.S b/arch/powerpc/lib/tishift.S
-> new file mode 100644
-> index 000000000000..79afef2d8d54
-> --- /dev/null
-> +++ b/arch/powerpc/lib/tishift.S
-> @@ -0,0 +1,54 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (c) 2025 Herbert Xu <herbert@gondor.apana.org.au>
-> + */
-> +#include <asm/ppc_asm.h>
-> +#include <linux/export.h>
-> +
-> +_GLOBAL(__lshrti3)
-> +	cmplwi	r5,63
-> +	ble	1f
-> +	addi	r5,r5,-64
-> +	srd	r3,r4,r5
-> +	li	r4,0
-> +	blr
-> +1:
-> +	subfic	r7,r5,64
-> +	srd	r3,r3,r5
-> +	sld	r6,r4,r7
-> +	srd	r4,r4,r5
-> +	or	r3,r3,r6
-> +	blr
-> +EXPORT_SYMBOL(__lshrti3)
-> +
-> +_GLOBAL(__ashrti3)
-> +	cmplwi	r5,63
-> +	ble	1f
-> +	addi	r5,r5,-64
-> +	srad	r3,r4,r5
-> +	sradi	r4,r4,63
-> +	blr
-> +1:
-> +	subfic	r7,r5,64
-> +	srd	r3,r3,r5
-> +	sld	r6,r4,r7
-> +	srad	r4,r4,r5
-> +	or	r3,r3,r6
-> +	blr
-> +EXPORT_SYMBOL(__ashrti3)
-> +
-> +_GLOBAL(__ashlti3)
-> +	cmplwi	r5,63
-> +	ble	1f
-> +	addi	r5,r5,-64
-> +	sld	r4,r3,r5
-> +	li	r3,0
-> +	blr
-> +1:
-> +	subfic	r7,r5,64
-> +	sld	r4,r4,r5
-> +	srd	r6,r3,r7
-> +	sld	r3,r3,r5
-> +	or	r4,r4,r6
-> +	blr
-> +EXPORT_SYMBOL(__ashlti3)
-> -- 
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: https://urldefense.com/v3/__http://gondor.apana.org.au/*herbert/__;fg!!D9dNQwwGXtA!TSuOAutxjuD3Hp-RC0Fw9dTNuagdCKeNLTN71tv_OmhUxyAPLfIfwwpZop5pKFXgS4Jfkt830_tEMkbwt6bO1g$ 
-> PGP Key: https://urldefense.com/v3/__http://gondor.apana.org.au/*herbert/pubkey.txt__;fg!!D9dNQwwGXtA!TSuOAutxjuD3Hp-RC0Fw9dTNuagdCKeNLTN71tv_OmhUxyAPLfIfwwpZop5pKFXgS4Jfkt830_tEMkam0aoZDQ$ 
-> 
- 
+--=20
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
