@@ -1,103 +1,95 @@
-Return-Path: <linux-crypto+bounces-13171-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13173-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9218ABA4BA
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 May 2025 22:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93F54ABA678
+	for <lists+linux-crypto@lfdr.de>; Sat, 17 May 2025 01:21:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDEDE1896F4F
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 May 2025 20:34:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 863FD1893DC2
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 May 2025 23:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0863C22B8D4;
-	Fri, 16 May 2025 20:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC1C280326;
+	Fri, 16 May 2025 23:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bEcwge25";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6+GOcLMP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bnLsFJei"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F0E1A704B;
-	Fri, 16 May 2025 20:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953D0280039;
+	Fri, 16 May 2025 23:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747427676; cv=none; b=o3UY2A4oI8pgIBfOL9fwLhBdCx/GEGFOUfoo0nkcqjpqiIwqgszDp5vCNZUU9fKqMYLfaXmBgecECSA65oOP8eFRSHeKPTQNGRLN/kBuUadhBQE8culUO1wpPAiVsn8HbOkKI8A19uVRa0vriCVlAOQQya/hbwmTHwC+dELvQF4=
+	t=1747437701; cv=none; b=dF/Gk0+aSx5dIRQjv2vLVEtnzfC2Gw/YH5wZywtKu4wwRlOQFdjXlTNKdjVinaOYvBBkf8SZnKpvviv5AFZWZL/6MVlwWiSWzubfwmldTXTfBAlxXem+/C4yxqkYGDE7uugHFQqhduBYmLJjSfeRlADWAp8+1LvSLbYJgIwi3cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747427676; c=relaxed/simple;
-	bh=oDITZp2JUKinj2OF3yzLkCxXdgtggFHsz66jrQHnX7E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gyuYGx9Ef9KiGWS1KgsKlwMElorF2TaRZagNaxM/3E1IHZ3zvs0Hzhl/5V6ZbXmIe27hNwGmH9gksH/8VjJGniffJhLuxft0/zr5rG+jtdGgP35VyNLM4U83dfYnqk2HRFZKeeQKrLhBKkUSac/DT1U6zp0TIfNzNbqltT08iTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bEcwge25; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6+GOcLMP; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1747427672;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5NrUWaZXoz1DpdYXQ04WhnkJI4EjPXUKE2xGFcUiCM0=;
-	b=bEcwge25WHvSPXYxmX1EfAKXU+1OW8cAagPhMlF24quearlFyfmB4OieaWIft/TYqRRE95
-	CcWbMNoB5ytdvw59wXJ4rnKseIZ7YAmUaLwT1G3zjQFPGCwxmMSEMppiL9B7hZgrKPwuH8
-	tG9RgFztCg/fAyfir7s2fR/dJoGaraOSSemPNTjs96K8cz26wvS7YAgBo0hVkFA2R8ckoe
-	gowBIh/wAiY4/vODFZjxSaMh5vsYQdU29arGEqUoDus19NOsI6GVpzgZ6IibZ4EYh257Dh
-	21l5NcaZRT7NFFHpgRdLTpJY+6TIXlCbx3eokDO65fDme0zbeULp39CZ1QUmKw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1747427672;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5NrUWaZXoz1DpdYXQ04WhnkJI4EjPXUKE2xGFcUiCM0=;
-	b=6+GOcLMPecrhZkZJmyFAjBKqTblvXaeC0BAYdi0zoR4KZm5RCGrye9urGVI335Db781haK
-	e6bq6QJ9p9h0piAA==
-To: Eric Biggers <ebiggers@kernel.org>, Borislav Petkov <bp@alien8.de>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
- Jain@formenos.rohan.me.apana.org.au, Ayush <Ayush.Jain3@amd.com>, Stephen
- Rothwell <sfr@canb.auug.org.au>, x86-ml <x86@kernel.org>, lkml
- <linux-kernel@vger.kernel.org>, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: lib/sha256 - Disable SIMD
-In-Reply-To: <20250516190637.GA32835@sol>
-References: <20250516112217.GBaCcf6Yoc6LkIIryP@fat_crate.local>
- <aCcirrsFFrrRqf5A@gondor.apana.org.au>
- <aCcmJGuCnuyHmHbx@gondor.apana.org.au> <20250516170316.GD1241@sol>
- <20250516181322.GGaCeAQjnIVQx_tX_R@fat_crate.local>
- <20250516190637.GA32835@sol>
-Date: Fri, 16 May 2025 22:34:31 +0200
-Message-ID: <878qmwi9bc.ffs@tglx>
+	s=arc-20240116; t=1747437701; c=relaxed/simple;
+	bh=e1V1pY03oCpsIuuhhQkGl6HJfVOxmgaj7taaKNoalKo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eGRCgizdfLI5EgXrEmfvMHlU0Z0GfVYTpWI5Ze3+bYlfSe16IkikzgrBa0V05X5YVdigmiqLLnVc7iYc35H3DGP0G9OPHrMIXw8h0guUfiZXiJMF+07XL4JsuFIRXHdbrJkSq5evFk/3aGJmUAsx3tXZ32c8OwgKTR/zH2wj1ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bnLsFJei; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEDE9C4CEE4;
+	Fri, 16 May 2025 23:21:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747437700;
+	bh=e1V1pY03oCpsIuuhhQkGl6HJfVOxmgaj7taaKNoalKo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bnLsFJeivXx9AhpRKcNYoe8LxpYKnDr5NoBzJ8mjEBLVmCLl3Dp+Lwgz0+on8Waok
+	 28Insh5NwBymW6BwVR2afBjvv0EgacFDSDo1wcGePcvrnE75Kh+NR/aWGsS4R0AyyX
+	 yhcl+yPdQCgUJ0sl6qEC5bl8zf2pPM8Z+ohet6ozqsQDrOB/dC3r4kSZLvvgHs+0sp
+	 C1Rgxw4fX7VxhK2YJ8hYi0Z+7pN42MTCh/aziw+TDrHRFBqbefqrX6lqcXSax+oRWI
+	 7ekvIoE12+QIHoOW9CIoaaIBc7nDfHemhsYOFKrqGhsxxYA+U74A1wosJ3brG4eNJQ
+	 jFsZvfhiozb7w==
+From: Eric Biggers <ebiggers@kernel.org>
+To: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Borislav Petkov <bp@alien8.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ayush Jain <Ayush.Jain3@amd.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 0/3] x86: Don't support kernel-mode FPU with hardirqs disabled
+Date: Fri, 16 May 2025 16:18:55 -0700
+Message-ID: <20250516231858.27899-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 16 2025 at 12:06, Eric Biggers wrote:
-> What would you say about going back to my earlier plan to make irq_fpu_usable()
-> return false when irqs_disabled(), like what arm64 does?  (As I had in
-> https://lore.kernel.org/lkml/20250220051325.340691-2-ebiggers@kernel.org/).
+This series returns to my earlier suggestion to make x86 not support
+kernel-mode FPU when hardirqs are disabled, aligning it with arm64
+(https://lore.kernel.org/r/20250220051325.340691-2-ebiggers@kernel.org).
+To make this possible despite the use of the kernel-mode FPU functions
+by __save_processor_state() (which I mentioned at
+https://lore.kernel.org/r/20250228035924.GC5588@sol.localdomain), I've
+changed __save_processor_state() to use a new function instead of
+(mis)using the kernel-mode FPU functions.
 
-> +	return !this_cpu_read(in_kernel_fpu) &&
-> +		!in_hardirq() && !irqs_disabled() && !in_nmi();
+This slightly reduces the overhead of kernel-mode FPU (since the result
+is fewer checks), and it fixes the issue reported at
+https://lore.kernel.org/r/20250516112217.GBaCcf6Yoc6LkIIryP@fat_crate.local/
+where irq_fpu_usable() incorrectly returned false during CPU
+initialization, causing a crash in the SHA-256 library code.
 
-The !in_hardirq() is redundant because hard interrupt context runs with
-interrupts disabled.
+Eric Biggers (3):
+  x86/fpu: Add fpu_save_state() for __save_processor_state()
+  x86/pm: Use fpu_save_state() in __save_processor_state()
+  x86/fpu: Don't support kernel-mode FPU when irqs_disabled()
 
-> I think that would handle all these cases, as well as others.  We'd need to fix
-> __save_processor_state() to save the FPU state directly without pretending that
-> it's using kernel-mode FPU, but I don't know of any issues besides
-> that.
+ arch/x86/include/asm/fpu/api.h |  1 +
+ arch/x86/kernel/fpu/core.c     | 92 ++++++++++++++++++++--------------
+ arch/x86/power/cpu.c           | 18 +++----
+ 3 files changed, 62 insertions(+), 49 deletions(-)
 
-Looks about right.
 
-> Then we could also delete the irqs_disabled() checks that I added to
-> kernel_fpu_begin() and kernel_fpu_end().
+base-commit: 8566fc3b96539e3235909d6bdda198e1282beaed
+-- 
+2.49.0
 
-Yes. That conditional locking is horrible.
-
-Thanks,
-
-        tglx
 
