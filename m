@@ -1,249 +1,109 @@
-Return-Path: <linux-crypto+bounces-13189-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13192-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4C69ABA7D8
-	for <lists+linux-crypto@lfdr.de>; Sat, 17 May 2025 04:25:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D10CBABA814
+	for <lists+linux-crypto@lfdr.de>; Sat, 17 May 2025 06:04:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC4569E56F1
-	for <lists+linux-crypto@lfdr.de>; Sat, 17 May 2025 02:25:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 377B69E73D6
+	for <lists+linux-crypto@lfdr.de>; Sat, 17 May 2025 04:04:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1265D18B47D;
-	Sat, 17 May 2025 02:25:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B3015A858;
+	Sat, 17 May 2025 04:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rjk/HbXw"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="EDx64oHx"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB0017B418;
-	Sat, 17 May 2025 02:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314DD4B1E76;
+	Sat, 17 May 2025 04:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747448718; cv=none; b=M0EncSOzbnu7dUf3llKRof2x10UZJNLouQxyDJUqbtOSgHvh8jgXoF+dZ7RhW9S3UsWYmAcOknVc6RqWn1JUQsTRM7uvnEzfOqGeNIeIPwAbqL21nCJaGqoA5wFSmfoeaLbaXVbj4LRrznwyPwYkSgJhPeBZF65JdDuL8xjS9zo=
+	t=1747454683; cv=none; b=gHmiRQKWSertujIz7dWZxDY2MkiBFvSueJKAwnUm2LQf8ehPo4R56m1P80q4d4H18IfRLDu++3bg9AIn3vqdUJc9truQ60/EWi8GDkbLpEvwbHSws+YN8jXBLr+YK9Hevh6XdREDueyv1Tj+ZO5AIWhOZN3bn1+CSl6o7fCOxFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747448718; c=relaxed/simple;
-	bh=zFcS6uR/dj+Xz3GyEef0LushmVtjQgiIhaKrPjHNxPI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Spo12R7tcGjS9EEt3TMg2FPqyizEy2Xs8aPc3nFDOv0UqxDLgpUSEbZOtMtP6vI2zt3WYcIWt+hbxcsetaBpu1g6hEhHIdTOQLAPP8UgtP7v1v596iirjgHfYpO6fvQJ0/a8Lc27WHmD4JslTbNuB47PRle1k/ov1tlgOVZFyA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rjk/HbXw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A797C4CEF0;
-	Sat, 17 May 2025 02:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747448718;
-	bh=zFcS6uR/dj+Xz3GyEef0LushmVtjQgiIhaKrPjHNxPI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rjk/HbXwyKzKwudbiPupxPDvIRdSBB13izcj3mHKpTZT6+6ZmDrbq4MZ67OEgsPXG
-	 U/9sDvGp7gvd2laSlHF+RvBOiFpVanpmbNaiMql+BwVGw1+HoYXflCrHY5smrSXsF6
-	 OkqPCiX7qGwmEsAUogDDse6GXoit8QrTVCJNgOjx3FPfhTFYxkxPyiy/b5sB9tCSIQ
-	 Bo+LM/QyojDUhCvLGZ0acrbP/DtTZFM2/LTj5a2movkrAWgypEDO28e2e+92JIBGIs
-	 0r93ikIEKBQXjvKnaF5CwTRAkZtDGb3gubz9XwuiThTQoG9mTugaTK9V5jPIMo9QEZ
-	 EVdUA+fvsOSQw==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] Revert "crypto: lib/sha256 - Add helpers for block-based shash"
-Date: Fri, 16 May 2025 19:24:28 -0700
-Message-ID: <20250517022428.401622-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250517022428.401622-1-ebiggers@kernel.org>
-References: <20250517022428.401622-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1747454683; c=relaxed/simple;
+	bh=1vRjM3XvjwfIykQPa3Xkj1NllSnYDC3NpEBH9OkOJno=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=exD+piTP70JZR6NrqjwGgA+Yy6WFp8FrirMnJToei/OcnRdmX7IPvHbu34b8PAR5tVHQ5XaVASzetWLnQKXh40EzJ2qQtivVjt+Vv5R16qZUEeSmSwn+RuTQIYDZ7PxcZc5NIrdLnWrsTOhqZ9Sd44TNObGAmTEHZShlEdaZl3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=EDx64oHx; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Uwqu2b52J98glaxbPk7AfH0U6sSJXaY/+XEyftIzbzk=; b=EDx64oHxMzQ6vAsNnA8/frK4vF
+	oNBGOspz07bgp10uR4DwooOW0fhoDjvAxC4OKwnibppueKxJqs6q0OCb0q4XhiDn7BqNVf7hI6/jD
+	yb9T3j5faH/LwFgMLEMThtkg1sIagSQe7VVHkaHY6IUfUmN4KFvWZRzAXhwT45rRR5i0YzW1QQxtp
+	+eKJFX06CXowF+FA/4kePGjVq+kv8mfTV7drNNEVXzbJWP4Vc9rBQk4P7S08CbsYDf7kgPM02d7+p
+	cvS+MWlBYn2mEJIlfE9WfNTldYAgpTZ0WOEqesf3ZmeZwh7k2zhJrOpN5PWUwkdK53yS6MgHNmalw
+	EDZa7sug==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1uG8mn-006kn8-34;
+	Sat, 17 May 2025 12:04:35 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 17 May 2025 12:04:33 +0800
+Date: Sat, 17 May 2025 12:04:33 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] SHA-256 cleanup
+Message-ID: <aCgK0TDExgBnBHX9@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250517022428.401622-1-ebiggers@kernel.org>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
 
-From: Eric Biggers <ebiggers@google.com>
+Eric Biggers <ebiggers@kernel.org> wrote:
+> This series restores the SHA-256 code to have a clean design where the
+> crypto_shash API is implemented on top of the regular library API
+> instead of a special unsafe low-level API.  Diffstat is -41 lines.
+> 
+> Eric Biggers (8):
+>  Revert "crypto: sha256 - Use the partial block API"
+>  Revert "crypto: lib/sha256 - Use generic block helper"
+>  Revert "crypto: x86/sha256 - Add simd block function"
+>  Revert "crypto: riscv/sha256 - Add simd block function"
+>  Revert "crypto: arm64/sha256 - Add simd block function"
+>  Revert "crypto: arm/sha256 - Add simd block function"
+>  Revert "crypto: sha256 - Use the partial block API for generic"
+>  Revert "crypto: lib/sha256 - Add helpers for block-based shash"
+> 
+> arch/arm/lib/crypto/Kconfig         |   1 -
+> arch/arm/lib/crypto/sha256-armv4.pl |  20 ++--
+> arch/arm/lib/crypto/sha256.c        |  14 +--
+> arch/arm64/crypto/sha512-glue.c     |   6 +-
+> arch/arm64/lib/crypto/Kconfig       |   1 -
+> arch/arm64/lib/crypto/sha2-armv8.pl |   2 +-
+> arch/arm64/lib/crypto/sha256.c      |  14 +--
+> arch/riscv/lib/crypto/Kconfig       |   1 -
+> arch/riscv/lib/crypto/sha256.c      |  13 +--
+> arch/x86/lib/crypto/Kconfig         |   1 -
+> arch/x86/lib/crypto/sha256.c        |  12 +--
+> crypto/sha256.c                     | 142 ++++++++++------------------
+> include/crypto/internal/sha2.h      |  52 ++--------
+> include/crypto/sha2.h               |   7 +-
+> lib/crypto/Kconfig                  |   8 --
+> lib/crypto/sha256.c                 |  97 +++++++++++++++----
+> 16 files changed, 175 insertions(+), 216 deletions(-)
+> 
+> 
+> base-commit: 1bafd82d9a40cf09c6c40f1c09cc35b7050b1a9f
 
-This reverts commit 5b90a779bc547939421bfeb333e470658ba94fb6 which got
-pushed out despite being nacked.
-
-That commit added a special low-level interface to allow the
-crypto_shash API to bypass the safety check for using vector or SIMD
-registers.  It could give a marginal performance benefit for
-crypto_shash, but just is not worth the complexity and footgun.
-Moreover, the distinction between "arch" and "simd" is confusing and is
-not something that really should exist in generic code, given that
-different architectures can mean different things by "simd".
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- include/crypto/internal/sha2.h | 45 ----------------------------------
- lib/crypto/Kconfig             |  8 ------
- lib/crypto/sha256.c            | 32 +++++++++++++++++-------
- 3 files changed, 23 insertions(+), 62 deletions(-)
-
-diff --git a/include/crypto/internal/sha2.h b/include/crypto/internal/sha2.h
-index fff156f66edc3..d641c67abcbc3 100644
---- a/include/crypto/internal/sha2.h
-+++ b/include/crypto/internal/sha2.h
-@@ -1,16 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- 
- #ifndef _CRYPTO_INTERNAL_SHA2_H
- #define _CRYPTO_INTERNAL_SHA2_H
- 
--#include <crypto/internal/simd.h>
- #include <crypto/sha2.h>
--#include <linux/compiler_attributes.h>
--#include <linux/string.h>
--#include <linux/types.h>
--#include <linux/unaligned.h>
- 
- void sha256_update_generic(struct sha256_state *sctx,
- 			   const u8 *data, size_t len);
- void sha256_final_generic(struct sha256_state *sctx,
- 			  u8 out[SHA256_DIGEST_SIZE]);
-@@ -27,47 +22,7 @@ static inline bool sha256_is_arch_optimized(void)
- #endif
- void sha256_blocks_generic(u32 state[SHA256_STATE_WORDS],
- 			   const u8 *data, size_t nblocks);
- void sha256_blocks_arch(u32 state[SHA256_STATE_WORDS],
- 			const u8 *data, size_t nblocks);
--void sha256_blocks_simd(u32 state[SHA256_STATE_WORDS],
--			const u8 *data, size_t nblocks);
--
--static inline void sha256_choose_blocks(
--	u32 state[SHA256_STATE_WORDS], const u8 *data, size_t nblocks,
--	bool force_generic, bool force_simd)
--{
--	if (!IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_SHA256) || force_generic)
--		sha256_blocks_generic(state, data, nblocks);
--	else if (IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_SHA256_SIMD) &&
--		 (force_simd || crypto_simd_usable()))
--		sha256_blocks_simd(state, data, nblocks);
--	else
--		sha256_blocks_arch(state, data, nblocks);
--}
--
--static __always_inline void sha256_finup(
--	struct crypto_sha256_state *sctx, u8 buf[SHA256_BLOCK_SIZE],
--	size_t len, u8 out[SHA256_DIGEST_SIZE], size_t digest_size,
--	bool force_generic, bool force_simd)
--{
--	const size_t bit_offset = SHA256_BLOCK_SIZE - 8;
--	__be64 *bits = (__be64 *)&buf[bit_offset];
--	int i;
--
--	buf[len++] = 0x80;
--	if (len > bit_offset) {
--		memset(&buf[len], 0, SHA256_BLOCK_SIZE - len);
--		sha256_choose_blocks(sctx->state, buf, 1, force_generic,
--				     force_simd);
--		len = 0;
--	}
--
--	memset(&buf[len], 0, bit_offset - len);
--	*bits = cpu_to_be64(sctx->count << 3);
--	sha256_choose_blocks(sctx->state, buf, 1, force_generic, force_simd);
--
--	for (i = 0; i < digest_size; i += 4)
--		put_unaligned_be32(sctx->state[i / 4], out + i);
--}
- 
- #endif /* _CRYPTO_INTERNAL_SHA2_H */
-diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
-index 1ec1466108ccd..6319358b38c20 100644
---- a/lib/crypto/Kconfig
-+++ b/lib/crypto/Kconfig
-@@ -148,18 +148,10 @@ config CRYPTO_ARCH_HAVE_LIB_SHA256
- 	bool
- 	help
- 	  Declares whether the architecture provides an arch-specific
- 	  accelerated implementation of the SHA-256 library interface.
- 
--config CRYPTO_ARCH_HAVE_LIB_SHA256_SIMD
--	bool
--	help
--	  Declares whether the architecture provides an arch-specific
--	  accelerated implementation of the SHA-256 library interface
--	  that is SIMD-based and therefore not usable in hardirq
--	  context.
--
- config CRYPTO_LIB_SHA256_GENERIC
- 	tristate
- 	default CRYPTO_LIB_SHA256 if !CRYPTO_ARCH_HAVE_LIB_SHA256
- 	help
- 	  This symbol can be selected by arch implementations of the SHA-256
-diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-index 2ced29efa181c..563f09c9f3815 100644
---- a/lib/crypto/sha256.c
-+++ b/lib/crypto/sha256.c
-@@ -13,30 +13,29 @@
- 
- #include <crypto/internal/sha2.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/string.h>
-+#include <linux/unaligned.h>
- 
- /*
-  * If __DISABLE_EXPORTS is defined, then this file is being compiled for a
-  * pre-boot environment.  In that case, ignore the kconfig options, pull the
-  * generic code into the same translation unit, and use that only.
-  */
- #ifdef __DISABLE_EXPORTS
- #include "sha256-generic.c"
- #endif
- 
--static inline bool sha256_purgatory(void)
--{
--	return __is_defined(__DISABLE_EXPORTS);
--}
--
- static inline void sha256_blocks(u32 state[SHA256_STATE_WORDS], const u8 *data,
- 				 size_t nblocks, bool force_generic)
- {
--	sha256_choose_blocks(state, data, nblocks,
--			     force_generic || sha256_purgatory(), false);
-+#if IS_ENABLED(CONFIG_CRYPTO_ARCH_HAVE_LIB_SHA256) && !defined(__DISABLE_EXPORTS)
-+	if (!force_generic)
-+		return sha256_blocks_arch(state, data, nblocks);
-+#endif
-+	sha256_blocks_generic(state, data, nblocks);
- }
- 
- static inline void __sha256_update(struct sha256_state *sctx, const u8 *data,
- 				   size_t len, bool force_generic)
- {
-@@ -78,14 +77,29 @@ void sha256_update(struct sha256_state *sctx, const u8 *data, size_t len)
- EXPORT_SYMBOL(sha256_update);
- 
- static inline void __sha256_final(struct sha256_state *sctx, u8 *out,
- 				  size_t digest_size, bool force_generic)
- {
-+	const size_t bit_offset = SHA256_BLOCK_SIZE - sizeof(__be64);
-+	__be64 *bits = (__be64 *)&sctx->buf[bit_offset];
- 	size_t partial = sctx->count % SHA256_BLOCK_SIZE;
-+	size_t i;
-+
-+	sctx->buf[partial++] = 0x80;
-+	if (partial > bit_offset) {
-+		memset(&sctx->buf[partial], 0, SHA256_BLOCK_SIZE - partial);
-+		sha256_blocks(sctx->state, sctx->buf, 1, force_generic);
-+		partial = 0;
-+	}
-+
-+	memset(&sctx->buf[partial], 0, bit_offset - partial);
-+	*bits = cpu_to_be64(sctx->count << 3);
-+	sha256_blocks(sctx->state, sctx->buf, 1, force_generic);
-+
-+	for (i = 0; i < digest_size; i += 4)
-+		put_unaligned_be32(sctx->state[i / 4], out + i);
- 
--	sha256_finup(&sctx->ctx, sctx->buf, partial, out, digest_size,
--		     force_generic || sha256_purgatory(), false);
- 	memzero_explicit(sctx, sizeof(*sctx));
- }
- 
- void sha256_final(struct sha256_state *sctx, u8 out[SHA256_DIGEST_SIZE])
- {
+Nack.  This breaks the cryptodev tree.
 -- 
-2.49.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
