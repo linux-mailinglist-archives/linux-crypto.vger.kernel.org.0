@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-13229-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13230-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E45E0ABB4A4
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 May 2025 08:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9704AABB4A8
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 May 2025 08:01:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E6B91896D74
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 May 2025 06:01:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B28F318973DA
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 May 2025 06:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4C21F5828;
-	Mon, 19 May 2025 06:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D63220C030;
+	Mon, 19 May 2025 06:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="XB7JJsCH"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="bikX9Aj0"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76B21DB124;
-	Mon, 19 May 2025 06:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521871DA617;
+	Mon, 19 May 2025 06:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747634430; cv=none; b=dEXf94U39tGWNjXaTqxtdAa91dfcLk2q0BGEr1e0+FIzbYImp+U7Hp+TDP5V+PwTOZf80GTfGiqaJ331yS8+nSANWJhYXP8SXdBgNItIkCq+H/dixHpaID6LmVuItmJpUnSUc/vXm4XjXbYcciOVFLvf6EHvsnHHF/d12Z3sVmg=
+	t=1747634439; cv=none; b=azExIxGTRGZv7BCmDYV4vTNQqhFr1ILAMCcVVnyzonKvUYRnms3Efs34V/LJyN5bmVwPZCghqv+WHu++bgLc9DRmgowSQy9WGIiA1Bv8ZYi/1IsGGwoMfe+TD+2ZJRAK/u9FAUhVxBmfaSGIHws/FIs6gQXjoOUX9wDms0MWZfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747634430; c=relaxed/simple;
-	bh=kgBObOU0QEWFCvH9HE0z6Qenp2aFs/1chqQKcpffaZQ=;
+	s=arc-20240116; t=1747634439; c=relaxed/simple;
+	bh=y8+cgVGKozzcLhskG6T2cA1ptF/3oBXZUGRIfGql1PI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FnclcmeXyc1ddBwUWh5kBFLBqCbJ17c4oGC/6qnwtkG4iQYKAjuZQo6VYMgntSakjWZQs8B3hfUVkGNsyyHyyia5hHRWHCuZjcoZDtnZsSePBO5l1uHkYfPDk5fRDTgY1yTRDcPzvHO2NudIBZID4f+VQxY3jzfE+kflUSjobCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=XB7JJsCH; arc=none smtp.client-ip=144.6.53.87
+	 Content-Type:Content-Disposition:In-Reply-To; b=jz4EQBcuuFzvcjooBnlXCBRbWoj4X4sHBTk5/13UxTWuDt/ck8YMyKOziG0xfberxYsTfIuplk21Q2SyZEqNYXIIoe3AOAZ1rPSnYxmK0AMpj1++nEZxwd7fSrhlyZClBB6doV06l+I6j7M7S0cWIcUEq+9NKfGeSKEB2Q4x8M0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=bikX9Aj0; arc=none smtp.client-ip=144.6.53.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
@@ -37,30 +37,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=zmYEzmY7zniKdLeHpZ92TRxM6yC+t06mMZulo7RohG8=; b=XB7JJsCHefpfhJizxSbXff55Ie
-	SWXMyD1OWHTUUVFGs87RD8CYSGWU/LeUg49NfrKekGyoUmZfEsTRbluJS0LJ2R0GAp7hC+mHKV9Hz
-	UUTX0R9A3Wd11nhmdKysON2m1Am1EHZvwob4mSqU+ED6JIpR1bDVZML3zbTxcToSIrhbqgeXleVQW
-	S3bfaM0+YQWARjAqUg95UO7giSiTKbmKahXR0nFhpjgmjPPkXpWOG7Q/XYEVzObEl5QaenwwKmidS
-	Vtoaf9Bj9MccaVPjvQvNx7R58U9ozSg8MYzzIxT/VB9CaV/Btgz/jVZpgXZwcLh+Quq7/UbbPRRff
-	Ju3YaBog==;
+	bh=KHB1YmBr5prsc7T//Il8yQ3wXH6P7KIQaca5dF2r68Q=; b=bikX9Aj0/ZW3R8mp6etSgKgSMn
+	B51dwrb21vEkAfxpw1bXFRx3YW3e0iJm/wj/3s534re0yqpec29J3u1t/eDxRLaIUebe7/WVQAmFH
+	wJ4+TgZZw24PZp9o2PW6l7Zc5BDfg29/5FXNIjrhqxsLtyGXh7crOYXOSf090NR6IB38HxxvjjJhY
+	fmLqP3gJKYMHaXQUvu9LVQqm1niJuvVILnMWhXegJD9SYN4kDMhtldeIOq7wB2P3YCDKjEzL+1Aj+
+	UP+VgV4F7Ol6m7CdJdcOzn6r7U4kfQPplQinV+lWRtIRiXIcBzETOqf4+oXBOxQ+HnpJZKq9zL1GC
+	07KpRv/w==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1uGtXx-00785i-20;
-	Mon, 19 May 2025 14:00:22 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 19 May 2025 14:00:21 +0800
-Date: Mon, 19 May 2025 14:00:21 +0800
+	id 1uGtY5-00785p-0u;
+	Mon, 19 May 2025 14:00:30 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 19 May 2025 14:00:29 +0800
+Date: Mon, 19 May 2025 14:00:29 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: "Rob Herring (Arm)" <robh@kernel.org>
 Cc: "David S. Miller" <davem@davemloft.net>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	James Hartley <james.hartley@imgtec.com>,
 	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: crypto: Convert hisilicon,hip0{6,7}-sec to
- DT schema
-Message-ID: <aCrI9fxmrUaQ89ze@gondor.apana.org.au>
-References: <20250513184111.3052281-1-robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: crypto: Convert img,hash-accelerator to DT
+ schema
+Message-ID: <aCrI_dlXsYIDeT-O@gondor.apana.org.au>
+References: <20250513184118.3052496-1-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -69,19 +69,19 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250513184111.3052281-1-robh@kernel.org>
+In-Reply-To: <20250513184118.3052496-1-robh@kernel.org>
 
-On Tue, May 13, 2025 at 01:41:10PM -0500, Rob Herring (Arm) wrote:
-> Convert the HiSilicon HIP06/7 Security Accelerator binding to DT schema
-> format. It's a straight forward conversion.
+On Tue, May 13, 2025 at 01:41:16PM -0500, Rob Herring (Arm) wrote:
+> Convert the Imagination Technologies hardware hash accelerator binding
+> to DT schema format. It's a straight forward conversion.
 > 
 > Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 > ---
->  .../bindings/crypto/hisilicon,hip06-sec.yaml  | 134 ++++++++++++++++++
->  .../bindings/crypto/hisilicon,hip07-sec.txt   |  67 ---------
->  2 files changed, 134 insertions(+), 67 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/crypto/hisilicon,hip06-sec.yaml
->  delete mode 100644 Documentation/devicetree/bindings/crypto/hisilicon,hip07-sec.txt
+>  .../bindings/crypto/img,hash-accelerator.yaml | 69 +++++++++++++++++++
+>  .../devicetree/bindings/crypto/img-hash.txt   | 27 --------
+>  2 files changed, 69 insertions(+), 27 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/img,hash-accelerator.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/crypto/img-hash.txt
 
 Patch applied.  Thanks.
 -- 
