@@ -1,70 +1,79 @@
-Return-Path: <linux-crypto+bounces-13335-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13337-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCFC5AC06E8
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 May 2025 10:21:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01F29AC0812
+	for <lists+linux-crypto@lfdr.de>; Thu, 22 May 2025 11:00:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CFFF189597B
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 May 2025 08:22:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0287F3BEA2B
+	for <lists+linux-crypto@lfdr.de>; Thu, 22 May 2025 08:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D15F263889;
-	Thu, 22 May 2025 08:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F743288C05;
+	Thu, 22 May 2025 08:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LAVWRL0I"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bb0MEZme"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A120242D77
-	for <linux-crypto@vger.kernel.org>; Thu, 22 May 2025 08:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6AD22259B;
+	Thu, 22 May 2025 08:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747902113; cv=none; b=LvymX2FOemp91LWHbRiIpxbjpTrWfti96f4jUlyQB31g67Yr4+vjmd7XPOs8RMEe9vWeQmzW0n5q+qbAOcHCOHmquv7Qh9AFlegU5+t9sQNjgSt6UKAs0djS/giKFKEeRQoeaMnXCihilUK0jWYDMjI+iB1bY4FChxphyUUmL1U=
+	t=1747904286; cv=none; b=QWICIA89uLwZ1LQd3JnlzLQxluXgzTE43jY3aXYtbLXqo7//okslmYK39ev23z5tVnlkHebf2lgeFegAzs2wFy7rlzXCA+rjqtTiKftxXFiSrKhcB9TOw4+dfGtkBWwcSJzcoorNCHG61ngkepeHdkVWP9KNmJm4TKBA0u9or5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747902113; c=relaxed/simple;
-	bh=/smFB71iK/1/DLBAzk2VYnS3SY0BqznfGZpDITP2Bmw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JbIYqej6n+pDqx+5NdJ+vDTrgpNLeDpAfhq4wbpJZekHfnsEDtFLoJQBEOgPVQDXKmutf36aK92aUpw1vzbZPDxtoQQy6YUeWIb0TH7+uDv0ZisjbiRJXa3Sbm8AvquHUAG3eAnOcwbO8RQXIlguZxIp4IUGpr0/rADKIi9hRhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LAVWRL0I; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747902112; x=1779438112;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/smFB71iK/1/DLBAzk2VYnS3SY0BqznfGZpDITP2Bmw=;
-  b=LAVWRL0IdpM9KPXEtv3Z06UN8dzP3jq1F+Os9qgybL6w49O43qL5I+GN
-   Xf0ItMwqkqkaXacKdTNtIl5jgmxT9uOjllkXwkgpHGohJsm+LGb7I51mN
-   d6XLFQVe341VhALP0lxBcsGeP6M71V7sxiHTAb1VqhuTpBQ21TzWBt04j
-   Xuzdbi5Tmw8IaeWBV909rJUA8CGY6gnNZobbEyg91vTFQxLY+1N/rmDYQ
-   riFspTJ2OX9/qCW9OC67dvOdDDflFRcxJYyR4MOQX1OIEtRaN206/vD+K
-   5dBzyduNZxaA3bZAwZAq41O08WyD0wgV5YIur2L7XSW0GcjWXdEVly3T3
-   g==;
-X-CSE-ConnectionGUID: B2urLEVvTq+CB5nGsnnAvQ==
-X-CSE-MsgGUID: 5+rzOlcAT/yD3l5VpyBXsg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="67467707"
-X-IronPort-AV: E=Sophos;i="6.15,305,1739865600"; 
-   d="scan'208";a="67467707"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 01:21:51 -0700
-X-CSE-ConnectionGUID: PrFrXjX4TSO3Rf78qEad/g==
-X-CSE-MsgGUID: 4EXoGyazRqiOGX/BMK+cSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,305,1739865600"; 
-   d="scan'208";a="144430719"
-Received: from t21-qat.iind.intel.com ([10.49.15.35])
-  by fmviesa003.fm.intel.com with ESMTP; 22 May 2025 01:21:50 -0700
-From: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	qat-linux@intel.com
-Subject: [PATCH] crypto: qat - use unmanaged allocation for dc_data
-Date: Thu, 22 May 2025 09:21:41 +0100
-Message-Id: <20250522082141.3726551-1-suman.kumar.chakraborty@intel.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1747904286; c=relaxed/simple;
+	bh=/8SzdPdJRCUD+kdnzMwrPVzUfPKTOvoWoF3HgJWODvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F/ohp4ACUOMYY686yAXnFoul6y2OzluLQV+vZkPpUu2oVOb1Dx9hFm4/N03dr9CAvCtEzZmnt+mrpo/1P8Q1gIMNQj5XczHuk0dmwjEMm/jfHeJNQDDTyPNxjLLAm1TlRegrfTyREsLdrKXCRTLkD/ZmDz96x/d3YQGkFGIEk3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bb0MEZme; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54LMX8gE006679;
+	Thu, 22 May 2025 08:58:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=Bx/rEuUxuzs7gyWVc8XdUVpRrUA5dK9EU/SQIevMz
+	C0=; b=bb0MEZme8EoyfpNIfgFRPB6/3UGXEAm2AM9aUYBM4z/T7Xw+etor+etPM
+	77IL0L0bKVFkmApSDzNKtnKQDj0oGoGyE9SJIwlJNFUkqy817PI1uiuZenn2vvSC
+	L/rILPdatdRwAfLhKswzXY919XEDZ+HBspMFXIX/CRS+tgGE4oIatoAL5f3c6r0Z
+	ypLaHW9TfKHjwJc5dd1XQ4HU/MFPZZkq5rqIdHHEJrSyd3ez8K8qjQVlGUKO6Gt9
+	TRGuIdVk8T6SWWSGbgCxZAVVbvDfRbNR2puI1ISlHERfaDVCftXMKJplr2WMo0ku
+	0pUYIOgbe+Wql5NE83NUbn7tQ0zMA==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46sg234pqw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 May 2025 08:58:00 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54M5SP0u010630;
+	Thu, 22 May 2025 08:57:59 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46rwnmgp52-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 May 2025 08:57:59 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54M8vtGV55902580
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 May 2025 08:57:56 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF8B020043;
+	Thu, 22 May 2025 08:57:55 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9593420040;
+	Thu, 22 May 2025 08:57:55 +0000 (GMT)
+Received: from funtu2.fritz.box?044ibm.com (unknown [9.152.224.229])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 22 May 2025 08:57:55 +0000 (GMT)
+From: Harald Freudenberger <freude@linux.ibm.com>
+To: herbert@gondor.apana.org.au, dengler@linux.ibm.com, ifranzki@linux.ibm.com
+Cc: linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        fcallies@linux.ibm.com
+Subject: [PATCH v11 0/6] New s390 specific protected key hmac
+Date: Thu, 22 May 2025 10:57:49 +0200
+Message-ID: <20250522085755.40732-1-freude@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -72,73 +81,113 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Cf8PmfsIr-FHRVPW9-AkYI4bl6OrVtjZ
+X-Authority-Analysis: v=2.4 cv=RPmzH5i+ c=1 sm=1 tr=0 ts=682ee718 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=dt9VzEwgFbYA:10 a=-xSpq2wtoGP2116iE9YA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIyMDA4NiBTYWx0ZWRfX87WsgnSRmo9x 0KO1yePM1ZBoYcvcmyqNID0IGYmnsmi5dZMfjidRrETqX9f69iG+t3vw+80eKETud5D/UvJzm0V LPKXIStcOLLV988U4ykrd0uw5V45+EeVgxBwPRKEueGo6Lpf+n4LpeWnijenrHibScLsIQq0QfW
+ cD3prmwmdvSWdCWSfpOeaRdQWO1Ina4i85Qjj6fUtoXHIYFDQT+4MOIo3TF/Cj9vDVk+IIU14s9 UOQQwfXP+Uc+bxiTFWNjI1xOh2HKyv0nXeqei5FTYruTATbn2kBtiAIbCsvPkUX9eefH0SqSdla jJGgY4VEulF/v29i3LRw6EDd82gszrwf2aCqv1f9ry3X5PGEfk4h20L/1r5xZW9GbO93liT+ycG
+ mfxkoe6C5KTFl6V9f8aNR2o8nLe6U7Wvmp5YLco34BaDxZX/bSYITTjOCFvtK4TQYm1Envoe
+X-Proofpoint-GUID: Cf8PmfsIr-FHRVPW9-AkYI4bl6OrVtjZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-22_04,2025-05-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 impostorscore=0 adultscore=0 priorityscore=1501
+ bulkscore=0 phishscore=0 mlxscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505160000 definitions=main-2505220086
 
-The dc_data structure holds data required for handling compression
-operations, such as overflow buffers. In this context, the use of
-managed memory allocation APIs (devm_kzalloc() and devm_kfree())
-is not necessary, as these data structures are freed and
-re-allocated when a device is restarted in adf_dev_down() and
-adf_dev_up().
+Add support for protected key hmac ("phmac") for s390 arch.
 
-Additionally, managed APIs automatically handle memory cleanup when the
-device is detached, which can lead to conflicts with manual cleanup
-processes. Specifically, if a device driver invokes the adf_dev_down()
-function as part of the cleanup registered with
-devm_add_action_or_reset(), it may attempt to free memory that is also
-managed by the device's resource management system, potentially leading
-to a double-free.
+With the latest machine generation there is now support for
+protected key (that is a key wrapped by a master key stored
+in firmware) hmac for sha2 (sha224, sha256, sha384 and sha512)
+for the s390 specific CPACF instruction kmac.
 
-This might result in a warning similar to the following when unloading
-the device specific driver, for example qat_6xxx.ko:
+This patch adds support via 4 new hashes registered as
+phmac(sha224), phmac(sha256), phmac(sha384) and phmac(sha512).
 
-    qat_free_dc_data+0x4f/0x60 [intel_qat]
-    qat_compression_event_handler+0x3d/0x1d0 [intel_qat]
-    adf_dev_shutdown+0x6d/0x1a0 [intel_qat]
-    adf_dev_down+0x32/0x50 [intel_qat]
-    devres_release_all+0xb8/0x110
-    device_unbind_cleanup+0xe/0x70
-    device_release_driver_internal+0x1c1/0x200
-    driver_detach+0x48/0x90
-    bus_remove_driver+0x74/0xf0
-    pci_unregister_driver+0x2e/0xb0
+Changelog:
+v1: Initial version
+v2: Increase HASH_MAX_DESCSIZE generic (not just for arch s390).
+    Fix one finding to use kmemdup instead of kmalloc/memcpy from test
+    robot. Remove unneeded cpacf subfunctions checks. Simplify
+    clone_tfm() function. Rebased to s390/features.
+v3: Feedback from Herbert: Use GFP_ATOMIC in setkey function.
+    Feedback from Holger: rework tfm clone function, move convert key
+    invocation from setkey to init function. Rebased to updated
+    s390/features from 11/7/2024. Ready for integration if there are
+    no complains on v3.
+v4: Rewind back more or less to v2. Add code to check for non-sleeping
+    context. Non-sleeping context during attempt to derive the
+    protected key from raw key material is not accepted and
+    -EOPNOTSUPP is returned (also currently all derivation pathes
+    would in fact never sleep). In general the phmac implementation is
+    not to be used within non-sleeping context and the code header
+    mentions this. Tested with (patched) dm-integrity - works fine.
+v5: As suggested by Herbert now the shashes have been marked as
+    'internal' and wrapped by ahashes which use the cryptd if an
+    atomic context is detected. So the visible phmac algorithms are
+    now ahashes. Unfortunately the dm-integrity implementation
+    currently requests and deals only with shashes and this phmac
+    implementation is not fitting to the original goal any more...
+v6: As suggested by Herbert now a pure async phmac implementation.
+    Tested via AF_ALG interface. Untested via dm-integrity as this layer
+    only supports shashes. Maybe I'll develop a patch to switch the
+    dm-integrity to ahash as it is anyway the more flexible interface.
+v7: Total rework of the implementation. Now uses workqueues and triggers
+    asynch requests for key convert, init, update, final and digest.
+    Tested with instrumented code and with a reworked version of
+    dm-integrity which uses asynchronous hashes. A patch for dm-integrity
+    is on the way but yet needs some last hone work.
+v8: Added selftest. With the selftest comes some code which wraps the
+    clear key into a "clear key token" digestible by PKEY. The
+    selftest also uses import() and export(), so these are now also
+    implemented. Furthermore a finup() implementation is now also
+    available. Tested with AF_ALG testcases and dm-integrity, also
+    tested with some instrumented code to check that the asynch
+    workqueue functions do their job correctly. Coding is complete!
+v9: As suggested by Herbert use ahash_request_complete() and surround it
+    with local_bh_disable().
+v10: Split the pkey selftest patch into 3 patches. Slight rework of the
+     setkey function as suggested by Holger: When selftest is running
+     as much as possible of the production code should run. So now the
+     key prep with selftest is one additional if/then block instead of
+     an if/then/else construct.
+     Code is ready for integration and well tested.
+v11: Utterly rework with the insights collected with the paes rework
+     and the basic work done with the pkey rework over the last 5 month.
+     Note that patch #1 effectively reverts commit 7fa481734016
+     ("crypto: ahash - make hash walk functions private to ahash.c")
+     from Eric Biggers.
 
-Use unmanaged memory allocation APIs (kzalloc_node() and kfree()) for
-the dc_data structure. This ensures that memory is explicitly allocated
-and freed under the control of the driver code, preventing manual
-deallocation from interfering with automatic cleanup.
+Harald Freudenberger (5):
+  crypto: ahash - make hash walk functions from ahash.c public
+  s390/crypto: New s390 specific protected key hash phmac
+  crypto: api - Add crypto_tfm_alg_get_flags() helper inline function
+  s390/crypto: Add selftest support for phmac
+  crypto: testmgr - Enable phmac selftest
 
-Fixes: 1198ae56c9a5 ("crypto: qat - expose deflate through acomp api for QAT GEN2")
-Signed-off-by: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/intel/qat/qat_common/qat_compression.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Holger Dengler (1):
+  s390/crypto: Add protected key hmac subfunctions for KMAC
 
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_compression.c b/drivers/crypto/intel/qat/qat_common/qat_compression.c
-index c285b45b8679..0a77ca65c8d4 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_compression.c
-+++ b/drivers/crypto/intel/qat/qat_common/qat_compression.c
-@@ -196,7 +196,7 @@ static int qat_compression_alloc_dc_data(struct adf_accel_dev *accel_dev)
- 	struct adf_dc_data *dc_data = NULL;
- 	u8 *obuff = NULL;
- 
--	dc_data = devm_kzalloc(dev, sizeof(*dc_data), GFP_KERNEL);
-+	dc_data = kzalloc_node(sizeof(*dc_data), GFP_KERNEL, dev_to_node(dev));
- 	if (!dc_data)
- 		goto err;
- 
-@@ -234,7 +234,7 @@ static void qat_free_dc_data(struct adf_accel_dev *accel_dev)
- 	dma_unmap_single(dev, dc_data->ovf_buff_p, dc_data->ovf_buff_sz,
- 			 DMA_FROM_DEVICE);
- 	kfree_sensitive(dc_data->ovf_buff);
--	devm_kfree(dev, dc_data);
-+	kfree(dc_data);
- 	accel_dev->dc_data = NULL;
- }
- 
+ arch/s390/configs/debug_defconfig |    1 +
+ arch/s390/configs/defconfig       |    1 +
+ arch/s390/crypto/Makefile         |    1 +
+ arch/s390/crypto/phmac_s390.c     | 1042 +++++++++++++++++++++++++++++
+ arch/s390/include/asm/cpacf.h     |    4 +
+ crypto/ahash.c                    |   26 +-
+ crypto/testmgr.c                  |   30 +
+ drivers/crypto/Kconfig            |   12 +
+ include/crypto/internal/hash.h    |   23 +
+ include/linux/crypto.h            |    5 +
+ 10 files changed, 1124 insertions(+), 21 deletions(-)
+ create mode 100644 arch/s390/crypto/phmac_s390.c
 
-base-commit: d86499800d16eb1e91191a09e58c698432ed2f48
--- 
-2.40.1
+
+base-commit: b5185ea1a6bd35957e556129bb92a64f83aa65e4
+--
+2.43.0
 
 
