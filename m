@@ -1,119 +1,209 @@
-Return-Path: <linux-crypto+bounces-13474-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13478-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C05ACAC69FD
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 15:07:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC33AC6C06
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 16:43:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 039C53AE737
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 13:06:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80A1F1BA2C14
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 14:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646F71C84C6;
-	Wed, 28 May 2025 13:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iqzwSksJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D448028A415;
+	Wed, 28 May 2025 14:43:17 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail.actia.se (mail.actia.se [212.181.117.226])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915CE23CB
-	for <linux-crypto@vger.kernel.org>; Wed, 28 May 2025 13:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A7C289812;
+	Wed, 28 May 2025 14:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.181.117.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748437631; cv=none; b=aEzDCKXSTXpL25qYCM14ndlH5Lfm/5GUOJOwdpEYsVTMbq+/CR99D8Zg9qzQzHrUP/RBruutdpoZ/d3AIS9jWLiRt2qfEoB8IlPnAVVvU4bjDZhXJmGsA+iIvb2QGsXdqvQCafMg28A6mA9ky1aJXVJis2ln52ohsi0oYwfbi0A=
+	t=1748443397; cv=none; b=Ewl03WJoilMETFXs2IevGOXXYPMX5HjPv1l8U2yxxV1bfrUoHIv7ptTzwCce77FlvC6186XV7EgCe3UPlIwmz6RnxlfF+qiN0yhgcbLzKRsP4ySV5p7bBrp5NgmreRM/9m7hTwKckwBc1cXkGQV0IDZMbavzCSRL/t3n6MRRZr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748437631; c=relaxed/simple;
-	bh=rKzdJjxN1ZBs/PBVJ3+ttMFFYU+EOv3UZFZn4wu6H0c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Omk28oPyHDx5Ki4z7sATGE1c+dZWN2hMGsSx0KVZNHXk+l9ysxKIBp7dGgOlFf9NRXONU4ymdSWtzf40qfL3wpHNc3tWPSRLMNu3HKecqtRWcXremmil3dvFvC8DBrAFd7RrJJazWz1h1DtCtNHaG7t+hdlZjcQ1sfNsgASI9SY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iqzwSksJ; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a4d152cb44so4069414f8f.2
-        for <linux-crypto@vger.kernel.org>; Wed, 28 May 2025 06:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748437628; x=1749042428; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fJve3zndb49Vryo7N3DSl+geHmJfQfyEWh47hFf1fIg=;
-        b=iqzwSksJ9ZYe8NdMOCm+KUaUk2jJIKBv2gof6NUjZxaZlg4eMtfccBER/8U/ClT7e1
-         xeiH8ZHQPaCPviUcfWldTX0SotxyumIHIULpOPdXuJtqPVOmUuwcZgsQ8w4XjKFmh0qu
-         Pi3HMFLBWVUyIDiYZ2VsqpclXD7TS0Z8KxRdoLVpJnICyAMhi6beFRugKOpqtww5wbX4
-         N5xbgsA37HK67EhiKhjba7+IZnmv8adl459yNjqQX8ppb+90CVt/ZEi1TtLDacqKBThe
-         eCdb4RgMeW1rjUSqs9OM+1Js9eF7yaJ9lbUke+/cHeV4VYPANHwmQsEjwu51N01bQGDd
-         FcAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748437628; x=1749042428;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fJve3zndb49Vryo7N3DSl+geHmJfQfyEWh47hFf1fIg=;
-        b=V1/NeIIebJhFBAiBcqs5fFfzIP5mHlSq2UTTPL2drzaCXzs3HtGGXh9W4wHFyIb6u2
-         rw/WyUyGQsz0R9q8AR8cvVLeAnwtHk0RTNIOft1v7vzXaF9RwiWO5tHQ5SgwPTHnR/fe
-         TH2CxMPT+YINiuKSKxLlbspJFPvbdWx5ZduMODVmhpFHOdjgjZYqql3oe9iV3HTTDThi
-         0M0YsjEjumbc8HJouYm3lktk3yjprrFD39TjecS5tYuWLeggFKdkU5hYcWlzJrfCSqiN
-         TtxdwRMcGdkxItmacr68oMQl2/dWsFS4IeZdbcb1NjDaI5foopROc7/eV/lURm5o1pAZ
-         y+jg==
-X-Forwarded-Encrypted: i=1; AJvYcCUzMZxrhHWxFDVGEMVmZGRoXhUi3QxuUFxFmERuTcEW+nL9BXF4TvwLqBjz8+Thkqfp9ziOg6mFa6z4UPQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzgCsbw6olsNw2ofO3rwyDks6LtiErtux2cV43VDplZnL4Virb7
-	Oj7SgLaxAenE65fanqx7S9Bkyh3JsQSj6t0Xfvv9h/f7gDe4TpBMCP7K
-X-Gm-Gg: ASbGncvi9uFMO+fq9/JeR1CudFCXmrT+WDA+x2Ia9HErCPIwWbq66xLiPR1IlvYFfax
-	EaX+R7IN87owrGzor2HN+hEOcLvqtxHape5c9JYFxrpvg0burX777ADZs6WBvjg5Y/mI4fKUsn7
-	0ub+tZfeBJxeOVVxGPof2PmDuxtlNuJ3cI72VF6p41BE/EXA4D1ypbgdIBil+lyJgih6Z/Pf24n
-	vxixhByU8YNHWeD/6wstYD3ESD32Wft2KQW+5h5gx64Si+cXynbo+uDbU+hkOwgU6l6MGlaPpbF
-	uOUTH7mW9pYBNvpcy7VzoNTHue3Gt5YQTBYgczwXl0Zc3lj7HlA=
-X-Google-Smtp-Source: AGHT+IGvtMs/Cym5cpaNwyMlymv1tXC9XRE6OCDxdC2LiAmRaVLNMwQdU/owkLojUjrEDLqd0tTKYA==
-X-Received: by 2002:a5d:64cb:0:b0:3a1:fa6c:4735 with SMTP id ffacd0b85a97d-3a4cb474157mr15066112f8f.35.1748437627134;
-        Wed, 28 May 2025 06:07:07 -0700 (PDT)
-Received: from Red ([2a01:cb1d:897:7800:4a02:2aff:fe07:1efc])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-450787d3be4sm17314405e9.35.2025.05.28.06.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 May 2025 06:07:05 -0700 (PDT)
-Date: Wed, 28 May 2025 15:07:03 +0200
-From: Corentin Labbe <clabbe.montjoie@gmail.com>
-To: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-Cc: herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-	qat-linux@intel.com, dsterba@suse.com, terrelln@fb.com
-Subject: Re: [v3] crypto: zstd - convert to acomp
-Message-ID: <aDcKdxPMLdOxFUEB@Red>
-References: <20250527102321.516638-1-suman.kumar.chakraborty@intel.com>
+	s=arc-20240116; t=1748443397; c=relaxed/simple;
+	bh=abC6uraCLSUTnAYB4jmIhkqVK5vXXVPLLmEZmI5ug1o=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Zsmb9iR5dZ0JKY2bGneSTX5FLbBOQLT7eZwxp8hlHI63x2uOOoY/TtLejidbNGwGp/o1MQuwDpTPPT98QI+5KBCmbP8y2fd9NWEDy/PXs4PXzqW2I1dBewDBzFbiZOO+cUByHbLWraNytneruriBk4YB285KToBTjkBDlcBvgEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=actia.se; spf=pass smtp.mailfrom=actia.se; arc=none smtp.client-ip=212.181.117.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=actia.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=actia.se
+Received: from S036ANL.actianordic.se (10.12.31.117) by S036ANL.actianordic.se
+ (10.12.31.117) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 28 May
+ 2025 16:43:07 +0200
+Received: from S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69]) by
+ S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69%3]) with mapi id
+ 15.01.2507.039; Wed, 28 May 2025 16:43:07 +0200
+From: John Ernberg <john.ernberg@actia.se>
+To: =?iso-8859-2?Q?Horia_Geant=E3?= <horia.geanta@nxp.com>, Pankaj Gupta
+	<pankaj.gupta@nxp.com>, Gaurav Jain <gaurav.jain@nxp.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>, "Rob
+ Herring" <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, "Conor
+ Dooley" <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+	<s.hauer@pengutronix.de>
+CC: Frank Li <Frank.li@nxp.com>, Pengutronix Kernel Team
+	<kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Thomas Richard
+	<thomas.richard@bootlin.com>, "linux-crypto@vger.kernel.org"
+	<linux-crypto@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, John Ernberg <john.ernberg@actia.se>,
+	"stable@kernel.org" <stable@kernel.org>
+Subject: [PATCH v3 1/4] crypto: caam - Prevent crash on suspend with iMX8QM /
+ iMX8ULP
+Thread-Topic: [PATCH v3 1/4] crypto: caam - Prevent crash on suspend with
+ iMX8QM / iMX8ULP
+Thread-Index: AQHbz97TifK0/bkJfUas794AaCBb6Q==
+Date: Wed, 28 May 2025 14:43:07 +0000
+Message-ID: <20250528144259.2603914-2-john.ernberg@actia.se>
+References: <20250528144259.2603914-1-john.ernberg@actia.se>
+In-Reply-To: <20250528144259.2603914-1-john.ernberg@actia.se>
+Accept-Language: en-US, sv-SE
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: git-send-email 2.49.0
+x-esetresult: clean, is OK
+x-esetid: 37303A2955B14453607C60
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250527102321.516638-1-suman.kumar.chakraborty@intel.com>
 
-Le Tue, May 27, 2025 at 11:23:21AM +0100, Suman Kumar Chakraborty a écrit :
-> Convert the implementation to a native acomp interface using zstd
-> streaming APIs, eliminating the need for buffer linearization.
-> 
-> This includes:
->    - Removal of the scomp interface in favor of acomp
->    - Refactoring of stream allocation, initialization, and handling for
->      both compression and decompression using Zstandard streaming APIs
->    - Replacement of crypto_register_scomp() with crypto_register_acomp()
->      for module registration
-> 
-> Signed-off-by: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-> Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> ---
-> v2->v3:
->    - Updated the logic to verify the existence of a single
->      flat buffer using the acomp walk API.
-> 
+Since the CAAM on these SoCs is managed by another ARM core, called the
+SECO (Security Controller) on iMX8QM and Secure Enclave on iMX8ULP, which
+also reserves access to register page 0 suspend operations cannot touch
+this page.
 
-Hello
+This is similar to when running OPTEE, where OPTEE will reserve page 0.
 
-Please use the right mail prefix [PATCH vX]
+Track this situation using a new state variable no_page0, reflecting if
+page 0 is reserved elsewhere, either by other management cores in SoC or
+by OPTEE.
 
-Thanks
-Regards
+Replace the optee_en check in suspend/resume with the new check.
+
+optee_en cannot go away as it's needed elsewhere to gate OPTEE specific
+situations.
+
+Fixes the following splat at suspend:
+
+    Internal error: synchronous external abort: 0000000096000010 [#1] SMP
+    Hardware name: Freescale i.MX8QXP ACU6C (DT)
+    pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+    pc : readl+0x0/0x18
+    lr : rd_reg32+0x18/0x3c
+    sp : ffffffc08192ba20
+    x29: ffffffc08192ba20 x28: ffffff8025190000 x27: 0000000000000000
+    x26: ffffffc0808ae808 x25: ffffffc080922338 x24: ffffff8020e89090
+    x23: 0000000000000000 x22: ffffffc080922000 x21: ffffff8020e89010
+    x20: ffffffc080387ef8 x19: ffffff8020e89010 x18: 000000005d8000d5
+    x17: 0000000030f35963 x16: 000000008f785f3f x15: 000000003b8ef57c
+    x14: 00000000c418aef8 x13: 00000000f5fea526 x12: 0000000000000001
+    x11: 0000000000000002 x10: 0000000000000001 x9 : 0000000000000000
+    x8 : ffffff8025190870 x7 : ffffff8021726880 x6 : 0000000000000002
+    x5 : ffffff80217268f0 x4 : ffffff8021726880 x3 : ffffffc081200000
+    x2 : 0000000000000001 x1 : ffffff8020e89010 x0 : ffffffc081200004
+    Call trace:
+     readl+0x0/0x18
+     caam_ctrl_suspend+0x30/0xdc
+     dpm_run_callback.constprop.0+0x24/0x5c
+     device_suspend+0x170/0x2e8
+     dpm_suspend+0xa0/0x104
+     dpm_suspend_start+0x48/0x50
+     suspend_devices_and_enter+0x7c/0x45c
+     pm_suspend+0x148/0x160
+     state_store+0xb4/0xf8
+     kobj_attr_store+0x14/0x24
+     sysfs_kf_write+0x38/0x48
+     kernfs_fop_write_iter+0xb4/0x178
+     vfs_write+0x118/0x178
+     ksys_write+0x6c/0xd0
+     __arm64_sys_write+0x14/0x1c
+     invoke_syscall.constprop.0+0x64/0xb0
+     do_el0_svc+0x90/0xb0
+     el0_svc+0x18/0x44
+     el0t_64_sync_handler+0x88/0x124
+     el0t_64_sync+0x150/0x154
+    Code: 88dffc21 88dffc21 5ac00800 d65f03c0 (b9400000)
+
+Fixes: d2835701d93c ("crypto: caam - i.MX8ULP donot have CAAM page0 access"=
+)
+Fixes: 61bb8db6f682 ("crypto: caam - Add support for i.MX8QM")
+Cc: stable@kernel.org # v6.10+
+Signed-off-by: John Ernberg <john.ernberg@actia.se>
+
+---
+
+I noticed this when enabling the iMX8QXP support (next patch), hence the
+iMX8QXP backtrace, but the iMX8QM CAAM integration works exactly the same
+and according to the NXP tree [1] the iMX8ULP suffers the same issue.
+
+[1]: https://github.com/nxp-imx/linux-imx/commit/653712ffe52dd59f407af1b781=
+ce318f3d9e17bb
+
+---
+
+v3:
+ - no changes
+
+v2:
+ - Adjust commit message to make it clearer what is happening around no_pag=
+e0 (Frank Li)
+---
+ drivers/crypto/caam/ctrl.c   | 5 +++--
+ drivers/crypto/caam/intern.h | 1 +
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index 38ff931059b4..766c447c9cfb 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -831,7 +831,7 @@ static int caam_ctrl_suspend(struct device *dev)
+ {
+ 	const struct caam_drv_private *ctrlpriv =3D dev_get_drvdata(dev);
+=20
+-	if (ctrlpriv->caam_off_during_pm && !ctrlpriv->optee_en)
++	if (ctrlpriv->caam_off_during_pm && !ctrlpriv->no_page0)
+ 		caam_state_save(dev);
+=20
+ 	return 0;
+@@ -842,7 +842,7 @@ static int caam_ctrl_resume(struct device *dev)
+ 	struct caam_drv_private *ctrlpriv =3D dev_get_drvdata(dev);
+ 	int ret =3D 0;
+=20
+-	if (ctrlpriv->caam_off_during_pm && !ctrlpriv->optee_en) {
++	if (ctrlpriv->caam_off_during_pm && !ctrlpriv->no_page0) {
+ 		caam_state_restore(dev);
+=20
+ 		/* HW and rng will be reset so deinstantiation can be removed */
+@@ -908,6 +908,7 @@ static int caam_probe(struct platform_device *pdev)
+=20
+ 		imx_soc_data =3D imx_soc_match->data;
+ 		reg_access =3D reg_access && imx_soc_data->page0_access;
++		ctrlpriv->no_page0 =3D !reg_access;
+ 		/*
+ 		 * CAAM clocks cannot be controlled from kernel.
+ 		 */
+diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
+index e51320150872..51c90d17a40d 100644
+--- a/drivers/crypto/caam/intern.h
++++ b/drivers/crypto/caam/intern.h
+@@ -115,6 +115,7 @@ struct caam_drv_private {
+ 	u8 blob_present;	/* Nonzero if BLOB support present in device */
+ 	u8 mc_en;		/* Nonzero if MC f/w is active */
+ 	u8 optee_en;		/* Nonzero if OP-TEE f/w is active */
++	u8 no_page0;		/* Nonzero if register page 0 is not controlled by Linux */
+ 	bool pr_support;        /* RNG prediction resistance available */
+ 	int secvio_irq;		/* Security violation interrupt number */
+ 	int virt_en;		/* Virtualization enabled in CAAM */
+--=20
+2.49.0
 
