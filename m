@@ -1,63 +1,63 @@
-Return-Path: <linux-crypto+bounces-13482-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13484-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F399AAC6C62
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 17:00:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38564AC6C68
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 17:01:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E1DA3A9A3F
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 15:00:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A4023AA03B
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 15:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1904F283FC4;
-	Wed, 28 May 2025 15:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D14286898;
+	Wed, 28 May 2025 15:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="cNAOQMg5"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="HtQkGB6U"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1243D27454;
-	Wed, 28 May 2025 15:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E557278162;
+	Wed, 28 May 2025 15:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748444421; cv=none; b=WJ3UhSukNQKqaKlbr0xPzAsTejXjM5iZcIMxGr+00+Df/qSSllrWd08gdn5jilEmFjX4GXqvVY2cxIKSFxTgrTTelECoUj+O3dMhdJkLms5Rep5am+Ke5pPgxpSyaPbm1PThAcLJ0UnUYCXZJpBxZWss6CjYd7m6u4IwuiLNXLw=
+	t=1748444475; cv=none; b=CTnL0p82ID+OMBlBUMnv7xaujr/3omzKgkpHBxbY/7aHNJ7/GQlkAck4QtNdy4JFLVwoMeQOR71w9NAS89MXns6diLXcChSJ9XbrpfKSXL2RFZlXcbdWoroWG4vIypu80cBghl49h8xOmW2yQrfFTt6nFLfzo4mTP/akr3jNias=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748444421; c=relaxed/simple;
-	bh=PEE6FuDKo4h6V90wsU4VKCmHyqBb8yiBwrX2i1gXiIU=;
+	s=arc-20240116; t=1748444475; c=relaxed/simple;
+	bh=tVOvSZ8WGTNMT3w3paP3QmhD8M1rHT/WEr04d2e45+I=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CiekyTDYhkJD07gKg8+YYPy43uJt5+ELnSl/VmVgY9cPFkE2S3Ahermt2r7I2QvuCuhkeO0WRzZuL5ukaXtZB4/Q3uKO5sfW7EqlbNTs0MX1GPl/xdeqhwqsfss4+whVhZlvkNIt30LxxsHcbS6/wfFnWd1j8lyO79trLOaYoew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=cNAOQMg5; arc=none smtp.client-ip=67.231.156.173
+	 MIME-Version:Content-Type; b=iXfTr4PJg9JwXWtg58UmbQcxnqBtdJqqOF9gO8AMEee86gUJiiIbhIu9FYg9qT9GDaAZsE2Y60BaQECttVXi4eTzI3PXURMN3kYG92YBFFqlDJ9TdKOZD9DUE5YKNio26jd0t0E5vFSHl0mOTbOYvfc8PFR8OVGAH7Ln4pZtQJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=HtQkGB6U; arc=none smtp.client-ip=67.231.156.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
 Received: from pps.filterd (m0431383.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54SDqTKi009900;
-	Wed, 28 May 2025 07:59:57 -0700
+	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54SDr8x5010777;
+	Wed, 28 May 2025 08:00:03 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
 	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pfpt0220; bh=p
-	ALYiRI/siKruRzfP5l7WiygRqJIDrWuK4jFkmWmTSg=; b=cNAOQMg5++V+KQbGH
-	HgthiZjmpjujQ6HWN0yPme5yMlu9TqH69ajBF9Jjq4OTUWfmGbHFx+L1u1cGbtOi
-	/vXj3VIOz3Eq5/FB+PDR8xrCEbuuBo9msTM0Imp28TXzGizQjEQWoohhYK6qAW4O
-	UM6ZLZ4V18nuzK+LQ7l6XEzPx3m+eXpO7gceVtXUTCfAj8BmyRUQtVu5G2Z/jVgx
-	3fvpBpnkU2wfC9ME1svvb9VGWO9fkdwDrjbzmYs3Wado0liEyqbiazgiFanlykou
-	+/z2139O14pUQpKUm7D+kjEBlm+zySG8ZzFbpSN0ip6x2e47eZFqwP/kFxhRoCIL
-	qSkBg==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 46x1e30bc8-1
+	:message-id:mime-version:references:subject:to; s=pfpt0220; bh=b
+	7wA58ZuF2OXeCi/aBSKESuuC9O3XlcY7z/3D2Eq/FY=; b=HtQkGB6Uz40VvLUrK
+	HsJy1cXhy5eQYUx+OUtzoHir/TLmCGs47lEqb5o01tPgOA5ZwjBiSDsL8yg2fm+m
+	eTFgMOB/+Anoh1hwzOmQZ/sTHAh86qLs5erWZYqopVBH/uAXTCGNDvshJRibaa6R
+	ocYYkrq5Jhz6w83Kz6+E0EnRqoaQm0/1II9xGykBBgDTIGksenJdlpVDvPHKk3OM
+	XvRL2g2TaZra4ESAtCsajuCdjLv9wN2Iga7V/1STmULD0IgI9IwjsDw3XtiyO3Me
+	jAFMcc0qiHOM5N3UPNbUhpXbjH8PQ9BdIGDy14Z0wjJ667sukhcGQG8ZJY1OII9C
+	0VCOw==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 46x1e30bce-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 May 2025 07:59:57 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
+	Wed, 28 May 2025 08:00:03 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Wed, 28 May 2025 07:59:56 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Wed, 28 May 2025 07:59:56 -0700
+ 15.2.1544.4; Wed, 28 May 2025 08:00:01 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Wed, 28 May 2025 08:00:01 -0700
 Received: from localhost.localdomain (unknown [10.28.36.167])
-	by maili.marvell.com (Postfix) with ESMTP id 752263F704F;
-	Wed, 28 May 2025 07:59:52 -0700 (PDT)
+	by maili.marvell.com (Postfix) with ESMTP id 3DB1F3F704F;
+	Wed, 28 May 2025 07:59:56 -0700 (PDT)
 From: Amit Singh Tomar <amitsinght@marvell.com>
 To: Srujana Challa <schalla@marvell.com>,
         Bharat Bhushan
@@ -72,9 +72,9 @@ To: Srujana Challa <schalla@marvell.com>,
         Philipp Stanner <pstanner@redhat.com>,
         Shashank Gupta <shashankg@marvell.com>, <linux-crypto@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Tanmay Jagdale <tanmay@marvell.com>
-Subject: [PATCH 1/2] crypto: octeontx2: Rework how engine group number is obtained
-Date: Wed, 28 May 2025 20:29:40 +0530
-Message-ID: <20250528145941.2659706-2-amitsinght@marvell.com>
+Subject: [PATCH 2/2] crypto: octeontx2: get engine group number for asymmetric engine
+Date: Wed, 28 May 2025 20:29:41 +0530
+Message-ID: <20250528145941.2659706-3-amitsinght@marvell.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250528145941.2659706-1-amitsinght@marvell.com>
 References: <20250528145941.2659706-1-amitsinght@marvell.com>
@@ -86,159 +86,99 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: QvGPBgVmeOEd8ii4BNgzwZvcBuAQwnNC
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI4MDEzMCBTYWx0ZWRfX2OQKxb9wcdNI kmHpCXzTGXTX2320W/f/dmg4lwiuOuD8OmBaPCX9snre3nvGh0Pyg/185U6e5KUCG5bSj4O8+pC PCzQum6U0febxQUq01DrAojQikeT34cfWWPO+DCf6FR7kdJTcF4ia2vlZZ6AnJZbuuEmdjKd2qb
- 1Qum210FNiv4FoKDWDVwNXakYVm7kAZE64RBNaGE9JQdMMueba1hoIKeiYK0JRlDaRnBNmupxYS 5giR4nb3+aOEQxnDl0ePWtImHlbvQ++qPeTatFDUbUfAwSwWS/DA25wubOxQf7C+Eg5qFk7QITe uhiOMYyQFUZ0w6NjJnHIoweBVDFWoKCXWAB6LJbOZ2ozqDcgYbnTdjAKL4PVL1V4qU69ljLA32Z
- oOVTFv1ZO/sTqnuAhp2FcuaK4WutBC0SBAfhj2hiICCia50vFGRI0ykXlskcUtH5qR+oPY1X
-X-Proofpoint-GUID: QvGPBgVmeOEd8ii4BNgzwZvcBuAQwnNC
-X-Authority-Analysis: v=2.4 cv=baVrUPPB c=1 sm=1 tr=0 ts=683724ed cx=c_pps a=gIfcoYsirJbf48DBMSPrZA==:117 a=gIfcoYsirJbf48DBMSPrZA==:17 a=dt9VzEwgFbYA:10 a=M5GUcnROAAAA:8 a=8f77AyW8qadUDfJvTo0A:9 a=OBjm3rFKGHvpk9ecZwUJ:22
+X-Proofpoint-ORIG-GUID: e4x9pK3bpR8ZeCjYTmRVQB9mlElvoYSh
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI4MDEzMCBTYWx0ZWRfXyCKjnCWrnV9r Xyywjxo2MIFrbHKH+a2/wW2SF2Jio4giVJwrAtNJvfxqtMuDbIyam1YWP1Ox3sT9qODtVcRIGou JXrJgph60mQGI3AasKaxL36bZYKuZiYLW8t09dXmnTJ4+xTLcuYNvw8ZEpPu4c9PjrJNMyduHUN
+ qxaZJf8t6Tu7xNenjTpwfnEJ4lw6wFOnd4auvwj8SsGQeHdOXGg2DSXeI4Rjrm7+e/vpfb4A0wJ Yh6Z1ddbTC+Q6QrX/YBTfjUn+ow6I0zrjvABx5f3AP1Cq2z/WXMww2Gs4GmzqOsK4D30dlNYPXp gFb3/gA16HzxfBuUXRpXxOYBp4KGfQwHTkOOmteQvQzziU9fbHlC9s1KkH68sYJXvtH7TVxObDT
+ XV7PgvRafgwjcmOuCIaZGBaDRnc5d7xpLEm3mcR4xdaOr13yWEFFmzif8dPw2Gteo0+sYc6p
+X-Proofpoint-GUID: e4x9pK3bpR8ZeCjYTmRVQB9mlElvoYSh
+X-Authority-Analysis: v=2.4 cv=baVrUPPB c=1 sm=1 tr=0 ts=683724f3 cx=c_pps a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17 a=dt9VzEwgFbYA:10 a=M5GUcnROAAAA:8 a=HShFi8kSKcbLiSuR9dgA:9 a=OBjm3rFKGHvpk9ecZwUJ:22
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-28_07,2025-05-27_01,2025-03-28_01
 
-By default, otx2_cpt_get_kcrypto_eng_grp_num() returns the engine group
-number of SE engine type. Add an engine type parameter to support
-retrieving the engine group number for different engine types.
+Cryptographic Accelerator Unit (CPT) support different engine groups, one
+for asymmetric algorithms (only AE engines in this group), one for the
+most common symmetric algorithms (all SE and all IE engines in this group),
+and one for other symmetric algorithms (only SE engines in this group).
 
-Since otx2_cpt_get_kcrypto_eng_grp_num() always returns the kernel crypto
-engine group number, rename it to otx2_cpt_get_eng_grp_num().
+For symmetric engine (SE), we obtain the group number using
+"MBOX_MSG_GET_ENG_GRP_NUM" mailbox. Let's follow a similar approach to
+determine the group number for asymmetric engine (AE).
 
 Signed-off-by: Amit Singh Tomar <amitsinght@marvell.com>
 ---
- drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h  |  3 ++-
- drivers/crypto/marvell/octeontx2/otx2_cptlf.h       |  2 +-
- drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c  |  6 ++++--
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c  | 13 +++++++------
- drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c  |  5 ++++-
- .../crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c    | 12 ++++++++++--
- 6 files changed, 28 insertions(+), 13 deletions(-)
+ drivers/crypto/marvell/octeontx2/otx2_cptlf.h   |  1 +
+ .../crypto/marvell/octeontx2/otx2_cptvf_main.c  | 17 ++++++++++++++++-
+ .../crypto/marvell/octeontx2/otx2_cptvf_mbox.c  |  2 ++
+ .../marvell/octeontx2/otx2_cptvf_reqmgr.c       |  2 ++
+ 4 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h b/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h
-index e27e849b01df..72473f0070f3 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cpt_reqmgr.h
-@@ -490,6 +490,7 @@ struct otx2_cptlf_wqe;
- int otx2_cpt_do_request(struct pci_dev *pdev, struct otx2_cpt_req_info *req,
- 			int cpu_num);
- void otx2_cpt_post_process(struct otx2_cptlf_wqe *wqe);
--int otx2_cpt_get_kcrypto_eng_grp_num(struct pci_dev *pdev);
-+int otx2_cpt_get_eng_grp_num(struct pci_dev *pdev,
-+			     enum otx2_cpt_eng_type);
- 
- #endif /* __OTX2_CPT_REQMGR_H */
 diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptlf.h b/drivers/crypto/marvell/octeontx2/otx2_cptlf.h
-index 6e004a5568d8..49ec2b92e86d 100644
+index 49ec2b92e86d..1b9f75214d18 100644
 --- a/drivers/crypto/marvell/octeontx2/otx2_cptlf.h
 +++ b/drivers/crypto/marvell/octeontx2/otx2_cptlf.h
-@@ -124,7 +124,7 @@ struct otx2_cptlfs_info {
- 	struct cpt_hw_ops *ops;
+@@ -125,6 +125,7 @@ struct otx2_cptlfs_info {
  	u8 are_lfs_attached;	/* Whether CPT LFs are attached */
  	u8 lfs_num;		/* Number of CPT LFs */
--	u8 kcrypto_eng_grp_num;	/* Kernel crypto engine group number */
-+	u8 kcrypto_se_eng_grp_num; /* Crypto symmetric engine group number */
+ 	u8 kcrypto_se_eng_grp_num; /* Crypto symmetric engine group number */
++	u8 kcrypto_ae_eng_grp_num; /* Crypto asymmetric engine group number */
  	u8 kvf_limits;          /* Kernel crypto limits */
  	atomic_t state;         /* LF's state. started/reset */
  	int blkaddr;            /* CPT blkaddr: BLKADDR_CPT0/BLKADDR_CPT1 */
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-index 7eb0bc13994d..8d9f394d6b50 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-@@ -384,7 +384,8 @@ static inline int cpt_enc_dec(struct skcipher_request *req, u32 enc)
- 	req_info->req_type = OTX2_CPT_ENC_DEC_REQ;
- 	req_info->is_enc = enc;
- 	req_info->is_trunc_hmac = false;
--	req_info->ctrl.s.grp = otx2_cpt_get_kcrypto_eng_grp_num(pdev);
-+	req_info->ctrl.s.grp = otx2_cpt_get_eng_grp_num(pdev,
-+							OTX2_CPT_SE_TYPES);
- 
- 	req_info->req.cptr = ctx->er_ctx.hw_ctx;
- 	req_info->req.cptr_dma = ctx->er_ctx.cptr_dma;
-@@ -1288,7 +1289,8 @@ static int cpt_aead_enc_dec(struct aead_request *req, u8 reg_type, u8 enc)
- 	if (status)
- 		return status;
- 
--	req_info->ctrl.s.grp = otx2_cpt_get_kcrypto_eng_grp_num(pdev);
-+	req_info->ctrl.s.grp = otx2_cpt_get_eng_grp_num(pdev,
-+							OTX2_CPT_SE_TYPES);
- 
- 	/*
- 	 * We perform an asynchronous send and once
 diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-index 56904bdfd6e8..79adc224066e 100644
+index 79adc224066e..c1c44a7b89fa 100644
 --- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
 +++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-@@ -265,17 +265,18 @@ static int cptvf_lf_init(struct otx2_cptvf_dev *cptvf)
- 	u8 eng_grp_msk;
- 
- 	/* Get engine group number for symmetric crypto */
--	cptvf->lfs.kcrypto_eng_grp_num = OTX2_CPT_INVALID_CRYPTO_ENG_GRP;
-+	cptvf->lfs.kcrypto_se_eng_grp_num = OTX2_CPT_INVALID_CRYPTO_ENG_GRP;
- 	ret = otx2_cptvf_send_eng_grp_num_msg(cptvf, OTX2_CPT_SE_TYPES);
- 	if (ret)
- 		return ret;
- 
--	if (cptvf->lfs.kcrypto_eng_grp_num == OTX2_CPT_INVALID_CRYPTO_ENG_GRP) {
--		dev_err(dev, "Engine group for kernel crypto not available\n");
--		ret = -ENOENT;
--		return ret;
-+	if (cptvf->lfs.kcrypto_se_eng_grp_num ==
+@@ -276,7 +276,22 @@ static int cptvf_lf_init(struct otx2_cptvf_dev *cptvf)
+ 			"Symmetric Engine group for crypto not available\n");
+ 		return -ENOENT;
+ 	}
+-	eng_grp_msk = 1 << cptvf->lfs.kcrypto_se_eng_grp_num;
++
++	/* Get engine group number for asymmetric crypto */
++	cptvf->lfs.kcrypto_ae_eng_grp_num = OTX2_CPT_INVALID_CRYPTO_ENG_GRP;
++	ret = otx2_cptvf_send_eng_grp_num_msg(cptvf, OTX2_CPT_AE_TYPES);
++	if (ret)
++		return ret;
++
++	if (cptvf->lfs.kcrypto_ae_eng_grp_num ==
 +		OTX2_CPT_INVALID_CRYPTO_ENG_GRP) {
 +		dev_err(dev,
-+			"Symmetric Engine group for crypto not available\n");
++			"Asymmetric Engine group for crypto not available\n");
 +		return -ENOENT;
- 	}
--	eng_grp_msk = 1 << cptvf->lfs.kcrypto_eng_grp_num;
-+	eng_grp_msk = 1 << cptvf->lfs.kcrypto_se_eng_grp_num;
++	}
++
++	eng_grp_msk = BIT(cptvf->lfs.kcrypto_se_eng_grp_num) |
++		      BIT(cptvf->lfs.kcrypto_ae_eng_grp_num);
  
  	ret = otx2_cptvf_send_kvf_limits_msg(cptvf);
  	if (ret)
 diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c
-index 931b72580fd9..f36d75f40014 100644
+index f36d75f40014..3078e2375d3b 100644
 --- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c
 +++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c
-@@ -75,6 +75,7 @@ static void process_pfvf_mbox_mbox_msg(struct otx2_cptvf_dev *cptvf,
- 	struct otx2_cpt_caps_rsp *eng_caps;
- 	struct cpt_rd_wr_reg_msg *rsp_reg;
- 	struct msix_offset_rsp *rsp_msix;
-+	u8 grp_num;
- 	int i;
- 
- 	if (msg->id >= MBOX_MSG_MAX) {
-@@ -122,7 +123,9 @@ static void process_pfvf_mbox_mbox_msg(struct otx2_cptvf_dev *cptvf,
- 		break;
- 	case MBOX_MSG_GET_ENG_GRP_NUM:
- 		rsp_grp = (struct otx2_cpt_egrp_num_rsp *) msg;
--		cptvf->lfs.kcrypto_eng_grp_num = rsp_grp->eng_grp_num;
-+		grp_num = rsp_grp->eng_grp_num;
-+		if (rsp_grp->eng_type == OTX2_CPT_SE_TYPES)
-+			cptvf->lfs.kcrypto_se_eng_grp_num = grp_num;
+@@ -126,6 +126,8 @@ static void process_pfvf_mbox_mbox_msg(struct otx2_cptvf_dev *cptvf,
+ 		grp_num = rsp_grp->eng_grp_num;
+ 		if (rsp_grp->eng_type == OTX2_CPT_SE_TYPES)
+ 			cptvf->lfs.kcrypto_se_eng_grp_num = grp_num;
++		else if (rsp_grp->eng_type == OTX2_CPT_AE_TYPES)
++			cptvf->lfs.kcrypto_ae_eng_grp_num = grp_num;
  		break;
  	case MBOX_MSG_GET_KVF_LIMITS:
  		rsp_limits = (struct otx2_cpt_kvf_limits_rsp *) msg;
 diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c
-index 426244107037..8b4ac269330a 100644
+index 8b4ac269330a..e71494486c64 100644
 --- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c
 +++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c
-@@ -391,9 +391,17 @@ void otx2_cpt_post_process(struct otx2_cptlf_wqe *wqe)
- 			      &wqe->lfs->lf[wqe->lf_num].pqueue);
- }
- 
--int otx2_cpt_get_kcrypto_eng_grp_num(struct pci_dev *pdev)
-+int otx2_cpt_get_eng_grp_num(struct pci_dev *pdev,
-+			     enum otx2_cpt_eng_type eng_type)
- {
- 	struct otx2_cptvf_dev *cptvf = pci_get_drvdata(pdev);
- 
--	return cptvf->lfs.kcrypto_eng_grp_num;
-+	switch (eng_type) {
-+	case OTX2_CPT_SE_TYPES:
-+		return cptvf->lfs.kcrypto_se_eng_grp_num;
-+	default:
-+		dev_err(&cptvf->pdev->dev, "Unsupported engine type");
-+		break;
-+	}
-+	return -ENXIO;
- }
+@@ -399,6 +399,8 @@ int otx2_cpt_get_eng_grp_num(struct pci_dev *pdev,
+ 	switch (eng_type) {
+ 	case OTX2_CPT_SE_TYPES:
+ 		return cptvf->lfs.kcrypto_se_eng_grp_num;
++	case OTX2_CPT_AE_TYPES:
++		return cptvf->lfs.kcrypto_ae_eng_grp_num;
+ 	default:
+ 		dev_err(&cptvf->pdev->dev, "Unsupported engine type");
+ 		break;
 -- 
 2.48.1
 
