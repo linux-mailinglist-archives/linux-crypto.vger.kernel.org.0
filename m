@@ -1,31 +1,31 @@
-Return-Path: <linux-crypto+bounces-13477-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13475-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 161AFAC6C03
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 16:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE496AC6BFD
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 16:43:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEF3117BD5E
-	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 14:43:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70E7017BDFA
+	for <lists+linux-crypto@lfdr.de>; Wed, 28 May 2025 14:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B026289E20;
-	Wed, 28 May 2025 14:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC88288CA6;
+	Wed, 28 May 2025 14:43:14 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mail.actia.se (mail.actia.se [212.181.117.226])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA340288C25;
-	Wed, 28 May 2025 14:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95751F4727;
+	Wed, 28 May 2025 14:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.181.117.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748443396; cv=none; b=MSft3erdl/KD4L1zF7KJbydbjo0j9zZ47aAD7VodT0KJrOccaLhlVguU6nYR5wdxnT8xH3mFHM9BQvtdKDN3VjmwnW7HjzmzP0vOuSRN0pAdYT1HZMNKHpu9Tgkj8B0zHVKtcqj7dxVs3d7mVjQ6CAoVy23zoJkTvyzoTUARFao=
+	t=1748443394; cv=none; b=OM6V3Y4f2K1DTzOq4fYbS86LmDstdP3ghs19hoywvLQwA2IdiiIQr1O0XdJFD8cNSB4THKS/D3/oyLLWUzoYtOVhCWVdvQm0R7mgCxWUiEcTPUWF/ZRGWUcQjPHOhdEe/xle4SJflrwGkoj1D56sox/IX1tLMpFR0OaSiF+r7Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748443396; c=relaxed/simple;
-	bh=lPkvLuqnIArzHwKYZ3O4kp4RNaEm/NYSJXDcaA05IOU=;
+	s=arc-20240116; t=1748443394; c=relaxed/simple;
+	bh=R+GbZ6nN6HjbsTbeOTTVLhsFdyWsq+06/Ht/0stBoYc=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=dvAY+MdTtG+48LEvx6433gE88l0C8wtUX0mzcMzKyd0HqiZaJEi5d1Rso3TrjvXOJJurWOdWtpLWhcSP4iI4FzPgA8WcYHHNjvpfCWiA8A/Ax9sh9CeCNXHWnJEZK6IFe179Z41j8GNs+GQS5oFG4grfsm+qAQYZrvijf+bHzBE=
+	 Content-Type:MIME-Version; b=oJ6HiaDlw7YEHmAfT+kZrnCK1fzKq7AdrbI/mCTCkuv2WnBc/iQvm2H7hhtYs+Si2NqDYcXicqCdp02+C6142C0ryqnGmVB9IbZTE/YHw7Qwg1jSLFht6mgpAetRlGdTSwAWq8sktLKHRXGxVJth/NPVHZPPs1pYM4tSnwU6ABY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=actia.se; spf=pass smtp.mailfrom=actia.se; arc=none smtp.client-ip=212.181.117.226
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=actia.se
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=actia.se
@@ -50,14 +50,14 @@ CC: Frank Li <Frank.li@nxp.com>, Pengutronix Kernel Team
 	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
 	<linux-kernel@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>,
 	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, John Ernberg <john.ernberg@actia.se>
-Subject: [PATCH v3 3/4] dt-bindings: crypto: fsl,sec-v4.0: Add power domains
- for iMX8QM and iMX8QXP
-Thread-Topic: [PATCH v3 3/4] dt-bindings: crypto: fsl,sec-v4.0: Add power
- domains for iMX8QM and iMX8QXP
-Thread-Index: AQHbz97TDhLekXOKbkmerT2PfEO8vg==
+	<linux-arm-kernel@lists.infradead.org>, John Ernberg <john.ernberg@actia.se>,
+	Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v3 2/4] crypto: caam - Support iMX8QXP and variants thereof
+Thread-Topic: [PATCH v3 2/4] crypto: caam - Support iMX8QXP and variants
+ thereof
+Thread-Index: AQHbz97Tel4fhEuYF0q9EmqYDGkHbg==
 Date: Wed, 28 May 2025 14:43:07 +0000
-Message-ID: <20250528144259.2603914-4-john.ernberg@actia.se>
+Message-ID: <20250528144259.2603914-3-john.ernberg@actia.se>
 References: <20250528144259.2603914-1-john.ernberg@actia.se>
 In-Reply-To: <20250528144259.2603914-1-john.ernberg@actia.se>
 Accept-Language: en-US, sv-SE
@@ -76,112 +76,42 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-NXP SoCs like the iMX8QM, iMX8QXP or iMX8DXP use power domains for
-resource management.
+The iMX8QXP (and variants such as the QX, DX, DXP) all identify as iMX8QXP.
 
-Allow specifying them for such SoCs.
+They have the exact same restrictions as the supported iMX8QM introduced
+at commit 61bb8db6f682 ("crypto: caam - Add support for i.MX8QM")
+
+Loosen the check a little bit with a wildcard to also match the iMX8QXP
+and its variants.
 
 Signed-off-by: John Ernberg <john.ernberg@actia.se>
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
 ---
 
 v3:
- - Fix warnings discovered by Rob Herring's bot
- - Declare the compatibles correctly (Krzysztof Kozlowski)
+ - no changes
 
 v2:
- - Adjust commit message (Frank Li)
- - Only allow power-domains when compatible with imx8qm (Frank Li)
+ - Collect review tag
 ---
- .../bindings/crypto/fsl,sec-v4.0.yaml         | 45 ++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ drivers/crypto/caam/ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml b/D=
-ocumentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml
-index 75afa441e019..a4ada0e2d97c 100644
---- a/Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml
-+++ b/Documentation/devicetree/bindings/crypto/fsl,sec-v4.0.yaml
-@@ -46,6 +46,7 @@ properties:
-       - items:
-           - enum:
-               - fsl,imx6ul-caam
-+              - fsl,imx8qm-caam
-               - fsl,sec-v5.0
-           - const: fsl,sec-v4.0
-       - const: fsl,sec-v4.0
-@@ -77,6 +78,9 @@ properties:
-   interrupts:
-     maxItems: 1
-=20
-+  power-domains:
-+    maxItems: 1
-+
-   fsl,sec-era:
-     description: Defines the 'ERA' of the SEC device.
-     $ref: /schemas/types.yaml#/definitions/uint32
-@@ -106,7 +110,9 @@ patternProperties:
-               - const: fsl,sec-v5.0-job-ring
-               - const: fsl,sec-v4.0-job-ring
-           - items:
--              - const: fsl,sec-v5.0-job-ring
-+              - enum:
-+                - fsl,imx8qm-job-ring
-+                - fsl,sec-v5.0-job-ring
-               - const: fsl,sec-v4.0-job-ring
-           - const: fsl,sec-v4.0-job-ring
-=20
-@@ -116,6 +122,9 @@ patternProperties:
-       interrupts:
-         maxItems: 1
-=20
-+      power-domains:
-+        maxItems: 1
-+
-       fsl,liodn:
-         description:
-           Specifies the LIODN to be used in conjunction with the ppid-to-l=
-iodn
-@@ -212,6 +221,40 @@ required:
-   - reg
-   - ranges
-=20
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx8qm-caam
-+    then:
-+      required:
-+        - power-domains
-+    else:
-+      properties:
-+        power-domains: false
-+
-+  - if:
-+      patternProperties:
-+        '^jr@[0-9a-f]+$':
-+          type: object
-+          properties:
-+            compatible:
-+              contains:
-+                const: fsl,imx8qm-job-ring
-+    then:
-+      patternProperties:
-+        '^jr@[0-9a-f]+$':
-+          type: object
-+          required:
-+            - power-domains
-+    else:
-+      patternProperties:
-+        '^jr@[0-9a-f]+$':
-+          type: object
-+          properties:
-+            power-domains: false
-+
- additionalProperties: false
-=20
- examples:
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index 766c447c9cfb..ce7b99019537 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -573,7 +573,7 @@ static const struct soc_device_attribute caam_imx_soc_t=
+able[] =3D {
+ 	{ .soc_id =3D "i.MX7*",  .data =3D &caam_imx7_data },
+ 	{ .soc_id =3D "i.MX8M*", .data =3D &caam_imx7_data },
+ 	{ .soc_id =3D "i.MX8ULP", .data =3D &caam_imx8ulp_data },
+-	{ .soc_id =3D "i.MX8QM", .data =3D &caam_imx8ulp_data },
++	{ .soc_id =3D "i.MX8Q*", .data =3D &caam_imx8ulp_data },
+ 	{ .soc_id =3D "VF*",     .data =3D &caam_vf610_data },
+ 	{ .family =3D "Freescale i.MX" },
+ 	{ /* sentinel */ }
 --=20
 2.49.0
 
