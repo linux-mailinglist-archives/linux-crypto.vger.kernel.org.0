@@ -1,159 +1,231 @@
-Return-Path: <linux-crypto+bounces-13534-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13536-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D3F5AC9321
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 May 2025 18:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62765AC93C7
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 May 2025 18:42:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F7451890671
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 May 2025 16:12:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30C221C21319
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 May 2025 16:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06587235079;
-	Fri, 30 May 2025 16:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043C7235065;
+	Fri, 30 May 2025 16:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uv+vLdpk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XG6B+NN/"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE693201100;
-	Fri, 30 May 2025 16:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88EB1DD9AB
+	for <linux-crypto@vger.kernel.org>; Fri, 30 May 2025 16:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748621511; cv=none; b=HxJF8VdyNoXmF0S0kfmkfDEN1NVEGt5DtYO1czthVR1ihTAuARvEqAGfjFVh78Ml7zcshjJNGjJtwK/oyazjs9Pz5FO4v48FNahmPlZsddzIN8PbP7z87ZAE69tW5NZN2uYiUjzqwzb/yvgsnJ4CvtGRI+Yo4NkAFLvAiC9i1no=
+	t=1748623339; cv=none; b=h7zyuSTWg4QnaBN3BO8XLSi4dNvee/+5oVaLCTyB0QAOAU3yfxKzK/YQ0lB7Unqs/NFhIcivNPAecTXwYdpw+qYvy+8qMfuqRTisw48zdPdnyesBIWsc0s0xNxQ1+RiiqaF1lynwITyX8zzgfJK5+/oEoHV3CvI4sAyhO4Nv9kQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748621511; c=relaxed/simple;
-	bh=wTQk6PCp/lFFKGrig6/uLoqINdQiBMib30kvAzZasYo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BU8oKPsPcAKFqOAZvo0nnAOB6k+UoggP3+5oe9IzlP0yM2e+WQ+m01K0/CFeZUbrcOb+mx+TQIWLK/su/v+acYpoLaBh0Lxq9ObaJPxqk3mY0ZisTFEe5dlvpJx0iLXjVPOJiAppKaUrScWuMVlQiTc9M0HSIFID7khFoC1DGPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uv+vLdpk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4570CC4CEE9;
-	Fri, 30 May 2025 16:11:49 +0000 (UTC)
+	s=arc-20240116; t=1748623339; c=relaxed/simple;
+	bh=6IpXsTCAiLKJWps9H8u+WyFNAUSFFMG0gHMOiyUtGhA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=usyCXoLPjoyp2i0+Zc9hDnnRQBr+Bi7JlJ71nMNVlrjgzB1ZIlh0pJb8YNY+V97b78RyA0C9aAYCU626s114SQnNeeSDSu49F2cL3Thh2/vjoBJ75gGlWBRTxVsGpKIiZaXYXla7rp/p9eXczg50CpJkZMjNkVgs8wDbJKjNHpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XG6B+NN/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30A6AC2BC87
+	for <linux-crypto@vger.kernel.org>; Fri, 30 May 2025 16:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748621511;
-	bh=wTQk6PCp/lFFKGrig6/uLoqINdQiBMib30kvAzZasYo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uv+vLdpkySLW3HE3WdXeTQ7ATCtjuH6p8unU0fNiyR5OqNTLXySrn45eSAfY3hjQS
-	 eCCJytd+GZadvja28z60ZKOrDNucABl1Xi1bC9y4LFKIcLZRvCqptVCKIpa5KZj6Ma
-	 HqF54hlf4ST6LxJ6njDal4HYtRHr+oZy4eW7hYePitcPABE2JBCUBWZ0zb0UX5Hwiv
-	 fImxIPboA7qBS9IyUix0weLO6B78CLk/7H910GFAkT5HMguRDYxYoReopdJOXTKZKN
-	 rEluHo/3rxzsdRFuVqa6u675+hI+gudMinKkf1DhJ9bxb3pJVPM/PDU2sYghU0WJRW
-	 YZxWLUuQMcCjQ==
-Date: Fri, 30 May 2025 17:11:47 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Harsh Jain <h.jain@amd.com>
-Cc: herbert@gondor.apana.org.au, davem@davemloft.net,
-	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-	mounika.botcha@amd.com, sarat.chand.savitala@amd.com,
-	mohan.dhanawade@amd.com, michal.simek@amd.com
-Subject: Re: [PATCH 1/3] dt-bindings: crypto: Add node for True Random Number
- Generator
-Message-ID: <20250530-gab-vocally-110247b8f60c@spud>
-References: <20250529113116.669667-1-h.jain@amd.com>
- <20250529113116.669667-2-h.jain@amd.com>
+	s=k20201202; t=1748623339;
+	bh=6IpXsTCAiLKJWps9H8u+WyFNAUSFFMG0gHMOiyUtGhA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XG6B+NN/QJtpZyHenAGFWr311twH4kXCQ4IYLnZfgBCPnl1Lf8lCgkq/gU1x/hn0M
+	 T5RQYIWPz0YWVPLHlLUPiTbBmBStzARmh2HklwELAubSPIPh0Q38wSuAqrgPbyV2se
+	 bX2gJ4qhHlzP2UD3ey7ufLMJas+Dk+6/w2tsGomJzqqYLsoq2lsRcGiRylRujJfSgG
+	 pkffiG2zxky6WA77s+WrMD7N7iRg5ZZ9BTvx4PCzhVR6Rl3oIPqv8JDdnMAZysYKru
+	 aO3XllYbqtxVQXjJGHQOXf02fDv8Zx6re6yTozHptJI4gXun4yq0b+alPApvyRCTI0
+	 IUIbxKZQUpBsA==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-604533a2f62so4156254a12.3
+        for <linux-crypto@vger.kernel.org>; Fri, 30 May 2025 09:42:19 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVDpmwPhL22cCLYM+83Kq10W+LudOq067YxWm+hPoqBcMfAkzGAv0l6p0LfWEhM1XiypE9JjGDzRLeou68=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYfStfVAvoNGpSFctv6zyHz2dV69s6fvJJS3JwEeVBulI8X2qF
+	Do//uDoIwuu4qsb8mRcjdvrcrvJEh04bsDX2v4S+TPXHBvwtOxXJEiZdiehhq7GcJNZzkty95Sy
+	bNPvjvsnk2IdbS9ty2h0e0+HS1zYwP8QgGgaUXrae
+X-Google-Smtp-Source: AGHT+IF2FYqfEVWekW2bGIEEdeuqDw988e+H+6pMRWdod3exqVv2+/w3XumjYUA5HTJg6yynsg8WDmm2FjVwvBVk7yM=
+X-Received: by 2002:a05:6402:234d:b0:605:310a:7668 with SMTP id
+ 4fb4d7f45d1cf-6056e15e067mr3642169a12.22.1748623337297; Fri, 30 May 2025
+ 09:42:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rnbGi+IB0VKW4Vv3"
-Content-Disposition: inline
-In-Reply-To: <20250529113116.669667-2-h.jain@amd.com>
-
-
---rnbGi+IB0VKW4Vv3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
+In-Reply-To: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Fri, 30 May 2025 18:42:05 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5oJASZ43B531gY8mESqAF3WYFKez-H5vKxnk8r48Ouxg@mail.gmail.com>
+X-Gm-Features: AX0GCFs-bIfXeMrte4iZc7juw786873JPtM7-P-E2EMKVgLQje7MKvpFUlnxFlU
+Message-ID: <CACYkzJ5oJASZ43B531gY8mESqAF3WYFKez-H5vKxnk8r48Ouxg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] BPF signature verification
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: Paul Moore <paul@paul-moore.com>, jarkko@kernel.org, zeffron@riotgames.com, 
+	xiyou.wangcong@gmail.com, kysrinivasan@gmail.com, code@tyhicks.com, 
+	linux-security-module@vger.kernel.org, roberto.sassu@huawei.com, 
+	James.Bottomley@hansenpartnership.com, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Howells <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>, 
+	Ignat Korchagin <ignat@cloudflare.com>, Quentin Monnet <qmo@kernel.org>, 
+	Jason Xing <kerneljasonxing@gmail.com>, Willem de Bruijn <willemb@google.com>, 
+	Anton Protopopov <aspsk@isovalent.com>, Jordan Rome <linux@jordanrome.com>, 
+	Martin Kelly <martin.kelly@crowdstrike.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Matteo Croce <teknoraver@meta.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, kys@microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 29, 2025 at 05:01:14PM +0530, Harsh Jain wrote:
-> Add TRNG node compatible string and reg properities.
->=20
-> Signed-off-by: Mounika Botcha <mounika.botcha@amd.com>
-> Signed-off-by: Harsh Jain <h.jain@amd.com>
+On Wed, May 28, 2025 at 11:50=E2=80=AFPM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
+>
+> As suggested or mandated by KP Singh
+> https://lore.kernel.org/linux-security-module/CACYkzJ6VQUExfyt0=3D-FmXz46=
+GHJh3d=3DFXh5j4KfexcEFbHV-vg@mail.gmail.com/,
+> this patchset proposes and implements an alternative hash-chain
+> algorithm for signature verification of BPF programs.
+>
+>
+>
+> This design diverges in two key ways:
+>
+> 1. Signature Strategy
+>
+> Two different signature strategies are
+> implemented. One verifies only the signature of the loader program in
+> the kernel, as described in the link above. The other verifies the
+> program=E2=80=99s maps in-kernel via a hash chain.  The original design
+> required loader programs to be =E2=80=9Cself-aborting=E2=80=9D and embedd=
+ed the
+> terminal hash verification logic as metaprogramming code generation
+> routines inside libbpf. While this patchset supports that scheme, it
+> is considered undesirable in certain environments due to the potential
+> for supply-chain attack vectors and the lack of visibility for the LSM
 
-The signoff chain here looks wrong, since there's no From: field in the
-patch, meaning that you are the author and submitter, but the order of
-signoffs suggests that Mounika is the author. If you are in fact the
-author and submitter, what was their role?
+The loader program is signed by a trusted entity, If you trust the
+signature, then you trust it to do the signature verification. This is
+a fairly common pattern in security and a pattern that we will be
+using in other signed bpf use-cases which can choose to depend on
+signed loaders.
 
-> ---
->  .../bindings/crypto/xlnx,versal-trng.yaml     | 36 +++++++++++++++++++
->  1 file changed, 36 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/crypto/xlnx,versal-=
-trng.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/crypto/xlnx,versal-trng.ya=
-ml b/Documentation/devicetree/bindings/crypto/xlnx,versal-trng.yaml
-> new file mode 100644
-> index 000000000000..547ed91aa873
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/crypto/xlnx,versal-trng.yaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/crypto/xlnx,versal-trng.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx Versal True Random Number Generator Hardware Accelerator
-> +
-> +maintainers:
-> +  - Harsh Jain <h.jain@amd.com>
-> +  - Mounika Botcha <mounika.botcha@amd.com>
-> +
-> +description:
-> +  The Versal True Random Number Generator cryptographic accelerator
-> +  is used to generate the random number.
+If your build environment that signs the BPF program is compromised
+and can inject arbitrary code, then signing does not help.  Can you
+explain what a supply chain attack would look like here?
 
-I would be surprised if the random number generator did not generate
-random numbers. I think you can probably just drop the description
-entirely in the future
+> subsystem.  Additionally, it is impossible to verify the code
+> performing the signature verification, as it is uniquely regenerated
 
-> +
-> +properties:
-> +  compatible:
-> +    const: xlnx,versal-trng
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    trng@f1230000 {
+The LSM needs to ensure that it allows trusted LOADER programs i.e.
+with signatures and potentially trusted signed user-space binaries
+with unsigned or delegated signing (this will be needed for Cilium and
+bpftrace that dynamically generate BPF programs), that's a more
+important aspect of the LSM policy from a BPF perspective.
 
-"rng" I think is the standard node name here, since you need to respin
-to fix the signoff chain.
+MAP_EXCLUSIVE is missing and is required which prevents maps from
+being accessed by other programs as explained in the proposal.
 
-> +        compatible =3D "xlnx,versal-trng";
-> +        reg =3D <0xf1230000 0x1000>;
-> +    };
-> +...
-> +
-> --=20
-> 2.34.1
->=20
->=20
+Please hold off on further iterations, I am working on a series and
+will share these patches based on the design that was proposed.
 
---rnbGi+IB0VKW4Vv3
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+> for every program.
+>
+>
+>
+> 2. Timing of Signature Check
+>
+> This patchset moves the signature check to a point before
+> security_bpf_prog_load is invoked, due to an unresolved discussion
+> here:
 
------BEGIN PGP SIGNATURE-----
+This is fine and what I had in mind, signature verification does not
+need to happen in the verifier and the existing hooks are good enough.
+I did not reply to Paul's comment since this is a fairly trivial
+detail and would be obvious in the implementation that the verifier is
+not the right place to check the signature anyways as the instruction
+buffer is only stable pre-verification.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaDnYwwAKCRB4tDGHoIJi
-0qw+AQCgQ0LZa9b6N09ngLAbztgXvj3A6gqZby43kH6gVRJjWQEAg2RePIl9eUus
-YDao47stg69hvfxUVfvQ19C3FVnbKwI=
-=Pldf
------END PGP SIGNATURE-----
+> https://lore.kernel.org/linux-security-module/CAHC9VhTj3=3DZXgrYMNA+G64zs=
+OyZO+78uDs1g=3Dkh91=3DGR5KypYg@mail.gmail.com/
+> This change allows the LSM subsystem to be informed of the signature
+> verification result=E2=80=94if it occurred=E2=80=94and the method used, a=
+ll without
+> introducing a new hook. It improves visibility and auditability,
+> reducing the =E2=80=9Ctrust me, friend=E2=80=9D aspect of the original de=
+sign.
 
---rnbGi+IB0VKW4Vv3--
+
+On Wed, May 28, 2025 at 11:50=E2=80=AFPM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
+>
+> As suggested or mandated by KP Singh
+> https://lore.kernel.org/linux-security-module/CACYkzJ6VQUExfyt0=3D-FmXz46=
+GHJh3d=3DFXh5j4KfexcEFbHV-vg@mail.gmail.com/,
+> this patchset proposes and implements an alternative hash-chain
+> algorithm for signature verification of BPF programs.
+>
+> This design diverges in two key ways:
+>
+> 1. Signature Strategy
+>
+> Two different signature strategies are
+> implemented. One verifies only the signature of the loader program in
+> the kernel, as described in the link above. The other verifies the
+> program=E2=80=99s maps in-kernel via a hash chain.  The original design
+> required loader programs to be =E2=80=9Cself-aborting=E2=80=9D and embedd=
+ed the
+> terminal hash verification logic as metaprogramming code generation
+> routines inside libbpf. While this patchset supports that scheme, it
+> is considered undesirable in certain environments due to the potential
+> for supply-chain attack vectors and the lack of visibility for the LSM
+> subsystem.  Additionally, it is impossible to verify the code
+> performing the signature verification, as it is uniquely regenerated
+> for every program.
+>
+> 2. Timing of Signature Check
+>
+> This patchset moves the signature check to a point before
+> security_bpf_prog_load is invoked, due to an unresolved discussion
+> here:
+> https://lore.kernel.org/linux-security-module/CAHC9VhTj3=3DZXgrYMNA+G64zs=
+OyZO+78uDs1g=3Dkh91=3DGR5KypYg@mail.gmail.com/
+> This change allows the LSM subsystem to be informed of the signature
+> verification result=E2=80=94if it occurred=E2=80=94and the method used, a=
+ll without
+> introducing a new hook. It improves visibility and auditability,
+> reducing the =E2=80=9Ctrust me, friend=E2=80=9D aspect of the original de=
+sign.
+>
+>
+> Blaise Boscaccy (3):
+>   bpf: Add bpf_check_signature
+>   bpf: Support light-skeleton signatures in autogenerated code
+>   bpftool: Allow signing of light-skeleton programs
+>
+>  include/linux/bpf.h            |   2 +
+>  include/linux/verification.h   |   1 +
+>  include/uapi/linux/bpf.h       |   4 +
+>  kernel/bpf/arraymap.c          |  11 +-
+>  kernel/bpf/syscall.c           | 123 +++++++++++++++++++-
+>  tools/bpf/bpftool/Makefile     |   4 +-
+>  tools/bpf/bpftool/common.c     | 204 +++++++++++++++++++++++++++++++++
+>  tools/bpf/bpftool/gen.c        |  66 ++++++++++-
+>  tools/bpf/bpftool/main.c       |  24 +++-
+>  tools/bpf/bpftool/main.h       |  23 ++++
+>  tools/include/uapi/linux/bpf.h |   4 +
+>  tools/lib/bpf/libbpf.h         |   4 +
+>  tools/lib/bpf/skel_internal.h  |  28 ++++-
+>  13 files changed, 491 insertions(+), 7 deletions(-)
+>
+> --
+> 2.48.1
+>
 
