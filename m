@@ -1,94 +1,113 @@
-Return-Path: <linux-crypto+bounces-13626-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13628-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4E8ACE22D
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 18:25:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B3B7ACE5DC
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 22:47:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A71C7AA5CE
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 16:24:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBCA2170372
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 20:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD791DED69;
-	Wed,  4 Jun 2025 16:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636901FCFF1;
+	Wed,  4 Jun 2025 20:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RB8BIpHd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VAdLUBgc"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795E1339A1;
-	Wed,  4 Jun 2025 16:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B620ABA42;
+	Wed,  4 Jun 2025 20:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749054346; cv=none; b=iXZ+emyUKnEMAqqZbQu9P21cZtww+kf2LFTcw2zmWXfuVq8i9kHaa1i81PQYD6SGb+md+Rr4F5QyEiQSCinzB7uzlXYRVIsf/3mLGkxZAzlJ8zMXgV8Bc0L2VcIDn2BbwZggWEjsWG29S3b2eV7NWTSsfsLeSAX/hHUQRzKpjn4=
+	t=1749070068; cv=none; b=FWVxv4hYlDe/vr4Xju+ZWJD27y2V0m+T1RmDJtQh1JcWVOClYp52WpZGTHhCTHQ+mSY7oxg07YrKcznI7iaWpwfwJSrsOa/mVhkdJWsHQjqUqBuPS7d/ibsWm8x5KACQSEbnej3fJLGzUyEmw/ffYsyTsIN++PYtCeazuVWhB5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749054346; c=relaxed/simple;
-	bh=ghWPhTJt8vtU/IFkZSAXQHMW5a8nxv+PINVZ/OZqkAQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j1zlC0TJKH8YvpgrXzSlBlvCiU7FgVDhi3cQoRye/Pv2G3CBF5sLYntkzNtARS3SxfpT2SHSOo1Tu3Nud5MNJkgtsXgHCcN1tIH0bPZ1yZuPfKC4zVBppR8HLwz/UKfIpsJul8yXALt4DPIyohWGYBD593ja68+pw2emRuwkD3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RB8BIpHd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 647F0C4CEE4;
-	Wed,  4 Jun 2025 16:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749054345;
-	bh=ghWPhTJt8vtU/IFkZSAXQHMW5a8nxv+PINVZ/OZqkAQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RB8BIpHdGyIOP+ZMGEj9My7w1u3/zdQFKRAKSB2KnrlZyS46581SBgBip0r/ATuJN
-	 tTsF6Kyb9q4XzqtCj+j1idCwZMCq68jfE2vqO87sry+de6j1PJFckCmkq7TChQIUPs
-	 xRcJW58dWb25CW+Mt5Arqe/du2QfeIIL+rz6eVj08qgLadKtv3UxUKhFvEooAkUpZX
-	 XCKqFwImpwE+4J0908tC/rO1LXfWB6m1NN/de91WtAn89yONW0nN/luRPQE0V5wL7e
-	 0R3ATaLXYnEPGNF87cB7dzsNPK44LJLHsxeMKQGXPN8YlhOfMp+ldxUBQihgaMTk0j
-	 VTcmlDR0cEKJw==
-Date: Wed, 4 Jun 2025 19:25:42 +0300
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Cc: Paul Moore <paul@paul-moore.com>, zeffron@riotgames.com,
-	xiyou.wangcong@gmail.com, kysrinivasan@gmail.com, code@tyhicks.com,
-	linux-security-module@vger.kernel.org, roberto.sassu@huawei.com,
-	James.Bottomley@hansenpartnership.com,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Howells <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>,
-	Ignat Korchagin <ignat@cloudflare.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Jason Xing <kerneljasonxing@gmail.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Jordan Rome <linux@jordanrome.com>,
-	Martin Kelly <martin.kelly@crowdstrike.com>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Matteo Croce <teknoraver@meta.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 1/3] bpf: Add bpf_check_signature
-Message-ID: <aEBzhhqab75jE080@kernel.org>
-References: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
- <20250528215037.2081066-2-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1749070068; c=relaxed/simple;
+	bh=RtHwNpiafW8lh4RMaVBEcTJkb9on9G2678OvSBi07bI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vx79kSbWD+LUSSAuTCUp9C8l0wxdFzbJQB97l013+Zw/eFv6jbCoyPEGRxffjnOw/T3Q9xpnRVK3OEevg+Nc4jSdHMyUvDLJRhX3zcGot/crZyF6yAsufepN8x2oda9A1CrS/LzXjuNk1Ew4YDS+QrRY81xdVZpCXffLZbyDeVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VAdLUBgc; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e812fc35985so336013276.0;
+        Wed, 04 Jun 2025 13:47:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749070064; x=1749674864; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vjwViiFJwU8CgwCU7LAAMLSZKpx7OJjGK3xVMyJx3OI=;
+        b=VAdLUBgcR1KaX7P6nFn2zQBJ/VOuBWexVwKnEePukYKGRkV0FHbNevWYC2gNWIjE9D
+         aW5eWAvTVfQnatR7rbgOAEJ3KPF1HH9KQp8Aiw461cfgKDqkoaUO/p1B+mWL4piJTgKh
+         hdphprbFtX5gbLuOruOvqxLG9zfpLd6XlvcavN+cLcK6gaQQy8yoc63PgAANAjlsomWc
+         1qLsUVS2vFhIS8pgzv0sJeN0RE0Wnqg0JaencuwJ3/KsstS7VAJxw5KbYoFt/OyM9dzc
+         aBbRtt3WK+Dz6p08TDGpS3pshMuzRBFOffmLi6Zbq4QkGIunT0luyLdtaKWiMQlHz2Ff
+         L9Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749070064; x=1749674864;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vjwViiFJwU8CgwCU7LAAMLSZKpx7OJjGK3xVMyJx3OI=;
+        b=B9i0z/8lcnSWy7/y+InL9UEjhyV2huH4yly70BeazsuNMLlFtzw/7zBLy52lrLKd5F
+         gNQ0ESjFJRtYZoCD2lnvA/Xrvy+Nixq8wdiOM0D45cZutY8gd6noTy3SNgd1gm1Nop4O
+         kUBeNUKpRGRYzAq5GJZmlR7l944EfmEoMtS8j16jrVliIQDVuGD6tu577fHVjIIUNO+W
+         XsMY8vRM+StyCZ3LYQZAQMyqGeT7L/z4ymlnFsH9IHLQO7l09y2hsAHmFxX6WlLkeEV9
+         XgQ6DLAsH3g11XSC8qgARZYJJyMJYF+c19MMzPmeK5aLMxtCEyoDS8PLWsu32pdf9Lbv
+         L73g==
+X-Forwarded-Encrypted: i=1; AJvYcCXfJPiqfvZmngxkxVq9Wc0LqTlvHjvdRjbsMVEFN3odB1zmp312NcdvWtXIGLEtik8dybtGndQTtqhNntw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEu+dXfkfxi2E1P0SDLL0rkxskqATInF6E/NtjU8uTCo7wCgb4
+	JtvkmL9O7T2/2oqTcBMW8YGkGn2qpFX1kt7RBhvXbj0lmmUHKj7SkgooR+X7Bg==
+X-Gm-Gg: ASbGncvme7ak+kNQaQcLnF/jhKZou+oFmdMDEras7Kg5JNfeOG9HtcGGCm88bFksb4a
+	gw4TKww4gS+PjZVOHh57yu+WORwnPcvC/G1InQH5qOd6F051RBxO/3eypnaG5mbUFnSsNin2quw
+	6pruxs4rMt2dTQH/PQS4pzlqyEKc6ni4N6PPkngKkES4kc6NN7z6IYSa9To40r4PZAm3zTyRyvr
+	yIBQ242fqckA60vUcjlKgto6giPbKn7wG926evP3LTW9aMgsM3uHcgOpaiAA64eOyAj4LzNGMhx
+	lvYPbYXbsEVraCfyz5IZn9/wMa/u973moHUxKmeyZCoFcEr0q2Y9JtehAur5fO1QIEtVvcUNt/P
+	2mPg+mp7AOMI=
+X-Google-Smtp-Source: AGHT+IHh5FeDd9yAuTUr4b6I32rGBvp1Xw2l6fOORmIF52EiRq6xHKfuHyoeapaXL005Tr7o9y7pcw==
+X-Received: by 2002:a05:690c:4984:b0:70d:f47a:7e3f with SMTP id 00721157ae682-710d9afa6a8mr62253357b3.20.1749070064529;
+        Wed, 04 Jun 2025 13:47:44 -0700 (PDT)
+Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-70f8abce520sm31878677b3.22.2025.06.04.13.47.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Jun 2025 13:47:43 -0700 (PDT)
+From: Yury Norov <yury.norov@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	=?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+	Pankaj Gupta <pankaj.gupta@nxp.com>,
+	Gaurav Jain <gaurav.jain@nxp.com>
+Cc: "Yury Norov [NVIDIA]" <yury.norov@gmail.com>
+Subject: [PATCH 0/2] crypto: replace cpumask_next with better API
+Date: Wed,  4 Jun 2025 16:47:39 -0400
+Message-ID: <20250604204742.21183-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250528215037.2081066-2-bboscaccy@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 28, 2025 at 02:49:03PM -0700, Blaise Boscaccy wrote:
-> This introduces signature verification for eBPF programs inside of the
+From: Yury Norov [NVIDIA]  <yury.norov@gmail.com>
 
-s/This introduces signature verification/Introduce a signature verification ???/
+Recently added cpumask_next_wrap() and cpumask_nth() work better than
+cpumask_next(). Use them where appropriate.
 
-I.e. Explain what sort of "thing" is "signature verification thing" ...
+Yury Norov [NVIDIA] (2):
+  crypto: pcrypt: Optimize pcrypt_aead_init_tfm()
+  crypto: caam - Fix opencoded cpumask_next_wrap() in
+    caam_drv_ctx_init()
 
-BR, Jarkko
+ crypto/pcrypt.c          | 7 ++-----
+ drivers/crypto/caam/qi.c | 5 +----
+ 2 files changed, 3 insertions(+), 9 deletions(-)
+
+-- 
+2.43.0
+
 
