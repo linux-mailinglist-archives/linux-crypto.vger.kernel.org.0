@@ -1,155 +1,148 @@
-Return-Path: <linux-crypto+bounces-13624-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13627-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23E20ACE1DA
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 18:00:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB82ACE3F8
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 19:53:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B818174BF5
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 16:00:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6790E1751F8
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Jun 2025 17:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C202B1A76D4;
-	Wed,  4 Jun 2025 16:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F187D1E47B4;
+	Wed,  4 Jun 2025 17:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bzQU9IyR"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="nfGDFa/7"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4178D18E1F
-	for <linux-crypto@vger.kernel.org>; Wed,  4 Jun 2025 16:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8547143895
+	for <linux-crypto@vger.kernel.org>; Wed,  4 Jun 2025 17:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749052817; cv=none; b=npRcnp0XTQCVFbiNgJWg85ecux0u9xXYTmA9NpTsHTMlA1hRgRh7qF8AYTJ5DqnMV5aSG7VOnpVR4vGCZO+15A9vPzjV8VStfl7qvlBCyjqCTQLcsjMvi1hpW8y2qVUoO4DPbLo/R4mtVuOnofMJD/R9igkKpgayfOqLRz2LjJQ=
+	t=1749059583; cv=none; b=A9g1hCuZ5QgRnlJbM0+gWY7W50XfdVzbIObpBbJIem/28vysDf2JtmVxOf1KnnqUWHtLBn1FMNHm9N51nCw6xZmvYBTTcQ5H7q5itnJfHteJ1NVcIER8j4tGSWnGgZg2nCP5zQLLwwvUiRYJ4/EcB2vBDe+uodZQ5tAw9UoJcXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749052817; c=relaxed/simple;
-	bh=ztKV5dovRv6t9eKGojAmhhZV/rc0e0y8ab7nVS1tj70=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nBIUuBHW58MrhUsq44k9pkm8dbGgyQmxEzuqyfib14yzWQY+xLNUkomqWonhxj94Fncs7MMNx7LVNARCLHZZ8jweR5uJKYrUFr01MShV5Yl+WGQi4Dig5ErUlG9tXckCvzj9vvYS2gnMtSnCX1XwSelq1fQlwl91uYyMsBjT58g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bzQU9IyR; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749052815; x=1780588815;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ztKV5dovRv6t9eKGojAmhhZV/rc0e0y8ab7nVS1tj70=;
-  b=bzQU9IyR8JypDXWtr3ILif+CieUnAam1o3lZmKUn+91cNYZ/c8GyO1Ib
-   Zvpkr8+juq+zq0Ix3hoix9xc/5r89J06GuwLqQGdsKZKAvuofWjH3jizS
-   zLisDc5grPd5VTBhx9TRbCMRV/nRkmfZn+m+ZycBKjrztplo9lJkSVWd3
-   Jq9GCY0fEHSV+Nmgvw79+ALK6T2AlRDpQrsKICaClk4EVGfBCsAwJqg2o
-   +FfKhCqwZTkPwIts8PTywi7NY4F5pfzr7GBkX73KAYczQXcFM7luROVFd
-   gOHYhfWnFrdpVBxxmBTMBFxAY9UsLR6qdX12F7mJcVBV1NhvEsugDmJvk
-   Q==;
-X-CSE-ConnectionGUID: frMnc4E1RN26TgytslrvBg==
-X-CSE-MsgGUID: YDtojGlrS8u6uEG+E4VjAQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11454"; a="62197308"
-X-IronPort-AV: E=Sophos;i="6.16,209,1744095600"; 
-   d="scan'208";a="62197308"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2025 09:00:15 -0700
-X-CSE-ConnectionGUID: dmx5zy2yTQauo+uUMCdGVg==
-X-CSE-MsgGUID: SIpZK0hATpucBPO28KJTWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,209,1744095600"; 
-   d="scan'208";a="176113777"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.223.204])
-  by fmviesa001.fm.intel.com with ESMTP; 04 Jun 2025 09:00:14 -0700
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	qat-linux@intel.com,
-	Svyatoslav Pankratov <svyatoslav.pankratov@intel.com>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH] crypto: qat - fix state restore for banks with exceptions
-Date: Wed,  4 Jun 2025 16:59:56 +0100
-Message-ID: <20250604160006.56369-1-giovanni.cabiddu@intel.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1749059583; c=relaxed/simple;
+	bh=GSwHGeOTi8L6igU4mRIYZm24LI4S0emqniOA80aEzFA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kxEAqR7t3e51MrsxSAG2ewHU80LO7QvEfX43D07JIogAimZ456xEUznkPPTfvd9Ns/BZizdYRRjh4N+lJQxHYVPQAwlyNgln+omYDOnhF2JUi80k1Ky+Mz2ZayQV79qtamMVk4yn8iDVQpgaOM9pTQzRu77BWxZtu4uRjT1KZAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=nfGDFa/7; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=ZOoYvB+fAB/JfKchjdQMRiOE3imv1441r4WMAS9IYdg=; b=nfGDFa/7o9L+a0NF22S6GOBneA
+	gbnYhqJLTKaTEh0FcsI5pb16LC4rk1W/cNWxIeodCfOlCYQEjabMNmCfvTJUTmC55xhRUUI9un4FN
+	06JNW5OU/+qEOiqemzYTFqvqfzVd0GR2knmn8sdgzhW+XUj3Eq1+wbBjrFdEEVLIYy6hc9fVvV8NC
+	qagekgFYB3WzJ/IhkQONdksVVm361gdhtJ8TgzSUjWANxCuUu1OgWzhpBGqzhl46OZzmrGt8k4cl+
+	7GRxvlbY2WO3HuAQM114Lwwic7Z1RYaTN6fXoZy4ZdjPz/F08gYusoVKxHbdTv6JC4L5O9Pnpi2Rx
+	sEHBHILQ==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1uMkpV-00AnTk-0l;
+	Wed, 04 Jun 2025 17:54:42 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 04 Jun 2025 17:54:41 +0800
+Date: Wed, 4 Jun 2025 17:54:41 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Harald Freudenberger <freude@linux.ibm.com>
+Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+	Holger Dengler <dengler@linux.ibm.com>,
+	Ingo Franzki <ifranzki@linux.ibm.com>
+Subject: [PATCH] crypto: ahash - Add support for drivers with no fallback
+Message-ID: <aEAX4c2vU46HlBjG@gondor.apana.org.au>
+References: <cover.1746162259.git.herbert@gondor.apana.org.au>
+ <c9e5c4beaad9c5876dc0f4ab15e16f020b992d9d.1746162259.git.herbert@gondor.apana.org.au>
+ <74ae23193f7c5a295c0bfee2604b478f@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <74ae23193f7c5a295c0bfee2604b478f@linux.ibm.com>
 
-From: Svyatoslav Pankratov <svyatoslav.pankratov@intel.com>
+On Tue, Jun 03, 2025 at 03:49:16PM +0200, Harald Freudenberger wrote:
+> Hello Herbert
+> 
+> I am facing a weird issue with my phmac implementation since kernel 5.15 has
+> been released. The algorithm registers fine but obviously it is not
+> self-tested
+> and thus you can't access it via AF_ALG or with an in-kernel customer.
 
-Change the logic in the restore function to properly handle bank
-exceptions.
+So the issue is that this algorithm cannot have a fallback, because
+the key is held in hardware only.
 
-The check for exceptions in the saved state should be performed before
-conducting any other ringstat register checks.
-If a bank was saved with an exception, the ringstat will have the
-appropriate rp_halt/rp_exception bits set, causing the driver to exit
-the restore process with an error. Instead, the restore routine should
-first check the ringexpstat register, and if any exception was raised,
-it should stop further checks and return without any error. In other
-words, if a ring pair is in an exception state at the source, it should
-be restored the same way at the destination but without raising an error.
+Please try the following patch and set the bit CRYPTO_ALG_NO_FALLBACK
+and see if it works.
 
-Even though this approach might lead to losing the exception state
-during migration, the driver will log the exception from the saved state
-during the restore process.
+Thanks,
 
-Signed-off-by: Svyatoslav Pankratov <svyatoslav.pankratov@intel.com>
-Fixes: bbfdde7d195f ("crypto: qat - add bank save and restore flows")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- .../intel/qat/qat_common/adf_gen4_hw_data.c   | 29 ++++++++++++++-----
- 1 file changed, 22 insertions(+), 7 deletions(-)
+---8<---
+Some drivers cannot have a fallback, e.g., because the key is held
+in hardwre.  Allow these to be used with ahash by adding the bit
+CRYPTO_ALG_NO_FALLBACK.
 
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_hw_data.c b/drivers/crypto/intel/qat/qat_common/adf_gen4_hw_data.c
-index 0406cb09c5bb..14d0fdd66a4b 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_gen4_hw_data.c
-+++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_hw_data.c
-@@ -581,6 +581,28 @@ static int bank_state_restore(struct adf_hw_csr_ops *ops, void __iomem *base,
- 	ops->write_csr_int_srcsel_w_val(base, bank, state->iaintflagsrcsel0);
- 	ops->write_csr_exp_int_en(base, bank, state->ringexpintenable);
- 	ops->write_csr_int_col_ctl(base, bank, state->iaintcolctl);
-+
-+	/*
-+	 * Verify whether any exceptions were raised during the bank save process.
-+	 * If exceptions occurred, the status and exception registers cannot
-+	 * be directly restored. Consequently, further restoration is not
-+	 * feasible, and the current state of the ring should be maintained.
-+	 */
-+	val = state->ringexpstat;
-+	if (val) {
-+		pr_info("QAT: Bank %u state not fully restored due to exception in saved state (%#x)\n",
-+			bank, val);
-+		return 0;
-+	}
-+
-+	/* Ensure that the restoration process completed without exceptions */
-+	tmp_val = ops->read_csr_exp_stat(base, bank);
-+	if (tmp_val) {
-+		pr_err("QAT: Bank %u restored with exception: %#x\n",
-+		       bank, tmp_val);
-+		return -EFAULT;
-+	}
-+
- 	ops->write_csr_ring_srv_arb_en(base, bank, state->ringsrvarben);
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index e10bc2659ae4..bd9e49950201 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -347,6 +347,9 @@ static int ahash_do_req_chain(struct ahash_request *req,
+ 	if (crypto_ahash_statesize(tfm) > HASH_MAX_STATESIZE)
+ 		return -ENOSYS;
  
- 	/* Check that all ring statuses match the saved state. */
-@@ -614,13 +636,6 @@ static int bank_state_restore(struct adf_hw_csr_ops *ops, void __iomem *base,
- 	if (ret)
- 		return ret;
++	if (!crypto_ahash_need_fallback(tfm))
++		return -ENOSYS;
++
+ 	{
+ 		u8 state[HASH_MAX_STATESIZE];
  
--	tmp_val = ops->read_csr_exp_stat(base, bank);
--	val = state->ringexpstat;
--	if (tmp_val && !val) {
--		pr_err("QAT: Bank was restored with exception: 0x%x\n", val);
--		return -EINVAL;
--	}
--
- 	return 0;
- }
+@@ -952,6 +955,10 @@ static int ahash_prepare_alg(struct ahash_alg *alg)
+ 	    base->cra_reqsize > MAX_SYNC_HASH_REQSIZE)
+ 		return -EINVAL;
  
++	if (base->cra_flags & CRYPTO_ALG_NEED_FALLBACK &&
++	    base->cra_flags & CRYPTO_ALG_NO_FALLBACK)
++		return -EINVAL;
++
+ 	err = hash_prepare_alg(&alg->halg);
+ 	if (err)
+ 		return err;
+@@ -960,7 +967,8 @@ static int ahash_prepare_alg(struct ahash_alg *alg)
+ 	base->cra_flags |= CRYPTO_ALG_TYPE_AHASH;
+ 
+ 	if ((base->cra_flags ^ CRYPTO_ALG_REQ_VIRT) &
+-	    (CRYPTO_ALG_ASYNC | CRYPTO_ALG_REQ_VIRT))
++	    (CRYPTO_ALG_ASYNC | CRYPTO_ALG_REQ_VIRT) &&
++	    !(base->cra_flags & CRYPTO_ALG_NO_FALLBACK))
+ 		base->cra_flags |= CRYPTO_ALG_NEED_FALLBACK;
+ 
+ 	if (!alg->setkey)
+diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+index b50f1954d1bb..a2137e19be7d 100644
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -136,6 +136,9 @@
+ /* Set if the algorithm supports virtual addresses. */
+ #define CRYPTO_ALG_REQ_VIRT		0x00040000
+ 
++/* Set if the algorithm cannot have a fallback (e.g., phmac). */
++#define CRYPTO_ALG_NO_FALLBACK		0x00080000
++
+ /* The high bits 0xff000000 are reserved for type-specific flags. */
+ 
+ /*
 -- 
-2.49.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
