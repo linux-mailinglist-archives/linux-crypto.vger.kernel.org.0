@@ -1,140 +1,123 @@
-Return-Path: <linux-crypto+bounces-13746-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13750-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD644AD2F5E
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Jun 2025 10:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63085AD30EA
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Jun 2025 10:52:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71BE2171963
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Jun 2025 08:01:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C8B2171B92
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Jun 2025 08:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76F127EC97;
-	Tue, 10 Jun 2025 08:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A5L/+G0K"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0352836BD;
+	Tue, 10 Jun 2025 08:51:26 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail.actia.se (mail.actia.se [212.181.117.226])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFED721D3D1
-	for <linux-crypto@vger.kernel.org>; Tue, 10 Jun 2025 08:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580952820AF;
+	Tue, 10 Jun 2025 08:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.181.117.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749542465; cv=none; b=OX29DBTfX4mYHTqeP/8n8Vyx2nlL03a2Sgz9N4SgMquchBNI06VFZsNlxyTHVIHX2HUHS/n8ZB8TO2vWaxkkh0i/t8LLmdHnlH4DDr1eD+lxWRLxqfJJf8YiN9dCrQ+esTn/m30oiSiyypOa06MsRgLLrr3tKHTbx0iWl5Xr7IU=
+	t=1749545486; cv=none; b=jmNY/9UzDDyC5SQiOSjua/fiBpBwZzdhCMb0tui8VhjbXANzaZOEw9zpgiaQjD9S2xeITWNsEOOyHCMtOpwWJnyZEYs4tmk+fJ3Z2z80b/zRNLeTiPzc30HH7zU4RYRFkpE4JrxjBrL7Pc0sR2TS4keWJo2SeOKzX/+Zrg7Mi1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749542465; c=relaxed/simple;
-	bh=GquF+jZovk8RCJjze7Xb5g+H3uRIu4j+p0ose5q2frg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z0mBExMgsjPWLO1aXi7PMjB2Ub1oH1eJriqLoXET3/Cc9RMA7PR2qj6z7ic8YnCoPEEDXwGTbrebV2sXS/ezP/s3NE1RHMXn9u3XWpgvL/xazNkgeelbTr2kPS9rQu/i8BvlicsbRZoEZePMmo/1aFAwduPLqV2E44VGlfZQOBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=A5L/+G0K; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-441d437cfaaso31940995e9.1
-        for <linux-crypto@vger.kernel.org>; Tue, 10 Jun 2025 01:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1749542462; x=1750147262; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mKWAmISk89aOM0wVfQYa31c/BeY5WyWlYt42tEpUpVU=;
-        b=A5L/+G0KAf/tC5UTxw8H+KcTlDULc+AJRrXCCetXnavVixY0X98AOWcnQJkrdYTRum
-         5S2C2829EQEvGy2KX425qu9m9NB4JDfpr1aAW2fGswD07hXlwonoxCjfnw4lCF2BAr0S
-         PM+lvg1FeJW7TfxdQUX9sqiGM/mOLPHmPmrzeU5t61aY+MuoyhsXXorRtu5j/52cgFTt
-         ObBLB2cw0/FPlHnWMtxTf8R/dbOJys2V27zBh+MBbM/JLRtWD2P6OBQnwsdK6nnu1Iw7
-         LTCqr1pIJIRSVGYyADlGOcYAyOef1t9wgnjICb09CNL2MnHI1C4NeZReb70RV3gf/OXg
-         ynMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749542462; x=1750147262;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mKWAmISk89aOM0wVfQYa31c/BeY5WyWlYt42tEpUpVU=;
-        b=viHkK5Wbb84NqCmlUb5EaC0/tSw3QCYWmGJ7y8g9nvsYegK7lngw2uihhyPsfIHYrl
-         FIcoZmlozGF5cCu3pcyuiIlIxSAc4Vx+vJ8D00ORW2oZBs/BH52HXlLMrM0VTYZzUbVI
-         UiwYLieGe4hady0Xuw6wmU5odTU20bpBy6NhlcHa8f5OmlJj90Cje8iafCqyxMGu2RHk
-         YN7NPZGYEMFeVXJ7KI0Zmim+19vPmILvMF0dwZKu3fO7KWVh4GPGtHcr698J7x2RNXmO
-         Jp6peebp3F7cCiGIf1JxlhxAGpgdvWy13to9i38fW6iWn06fQg9fnnJMTEycEvlcl9Dj
-         nwlg==
-X-Forwarded-Encrypted: i=1; AJvYcCVoJIxPIF1j28iB96oo4T6vbOcCpdqoPCCkRs1Co4YpJDm2RKxx2olNIxCV6Q+p9kuN5ZDNp+Xlhbjxz4c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YydXVU4hTeUA8Xu9WaW3sEpfYIh5uqjLZZzotjK2nEVeEWubvJ7
-	q6fel/PxpDMwcNCE+fHaJR48BULuKagv/20sY4pp80+8RDZ/W3+gW9G7XlxMrda94K0=
-X-Gm-Gg: ASbGncvM+HSfYVgEvTZ/5LSQNKNvroueleb96udv3asW2CYHhySR0w6TUCfl6CD26jZ
-	MXCEZpFkNbv7zVwvFuRttZ7JWYgFmbKBNkS8WyS9uz9ADZNR0oC3gcAXRVkGII9uSIbC9N8kiWl
-	2ytXmVEudJtY/71eI3hPZKtEUrcURjmoteOzUzDEsKBCh4ZgD0gwBEt0jM1+v9QVxQpaO/0miit
-	tYSW+SGg9pYUzPtbXz1v5/7SLOwh99F3ie9jUx6y9ibeOU3Gkc9aLwQ0HYK3Ju+7xkyYppHdSos
-	GWS+t86D/qIJtHqSEBlzVITZM58FG33XG1nE9SwWk5EXwtA0LDBGyphqz6IbgYgjT2A=
-X-Google-Smtp-Source: AGHT+IERMqPGjTquJvfsUCkSxdiNBdK+K6B6sBYGUKvuIYyCZj05skSoySHcYQ9VjAMuk44kIdnhIg==
-X-Received: by 2002:a05:600c:6989:b0:442:e9eb:1b48 with SMTP id 5b1f17b1804b1-452014977f7mr135407865e9.24.1749542461982;
-        Tue, 10 Jun 2025 01:01:01 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45307b9d827sm84741535e9.22.2025.06.10.01.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jun 2025 01:01:01 -0700 (PDT)
-Date: Tue, 10 Jun 2025 11:00:57 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Jain, Harsh (AECG-SSW)" <h.jain@amd.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-	"davem@davemloft.net" <davem@davemloft.net>,
+	s=arc-20240116; t=1749545486; c=relaxed/simple;
+	bh=RWy8yPJilC69TYAy3q25BRrNte4rjuEjuCZAHDMAGnA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=EMmEesauqMKwZ7gZenE61fZiFQT4Ajtz1acvf5h1uuzTLiRL0toQpriOrAh9mJSK/zqpFfYzud3EyAoKntMw6cPEXQzXtxmLtvW6XZqQt+L0goxl9KUatMSDjpIn+vJfvIWmk4sfIT9yz/ie+nbpqszuzpopfrrwIz1/zgS67aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=actia.se; spf=pass smtp.mailfrom=actia.se; arc=none smtp.client-ip=212.181.117.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=actia.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=actia.se
+Received: from S036ANL.actianordic.se (10.12.31.117) by S036ANL.actianordic.se
+ (10.12.31.117) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 10 Jun
+ 2025 10:51:17 +0200
+Received: from S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69]) by
+ S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69%3]) with mapi id
+ 15.01.2507.039; Tue, 10 Jun 2025 10:51:17 +0200
+From: John Ernberg <john.ernberg@actia.se>
+To: =?iso-8859-2?Q?Horia_Geant=E3?= <horia.geanta@nxp.com>, Pankaj Gupta
+	<pankaj.gupta@nxp.com>, Gaurav Jain <gaurav.jain@nxp.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>, "Rob
+ Herring" <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, "Conor
+ Dooley" <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+	<s.hauer@pengutronix.de>
+CC: Frank Li <Frank.Li@nxp.com>, Peng Fan <peng.fan@nxp.com>, "Pengutronix
+ Kernel Team" <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
 	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
 	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"Botcha, Mounika" <Mounika.Botcha@amd.com>,
-	"Savitala, Sarat Chand" <sarat.chand.savitala@amd.com>,
-	"Dhanawade, Mohan" <mohan.dhanawade@amd.com>,
-	"Simek, Michal" <michal.simek@amd.com>
-Subject: Re: [PATCH v2 5/6] crypto: xilinx: Fix missing goto in probe
-Message-ID: <aEfmOQm0FtqtP22v@stanley.mountain>
-References: <20250609045110.1786634-1-h.jain@amd.com>
- <20250609045110.1786634-6-h.jain@amd.com>
- <25b144f6-ccf6-4426-a021-11f3f00074bd@kernel.org>
- <DS0PR12MB93454C9316C3C54E45BFD65B976AA@DS0PR12MB9345.namprd12.prod.outlook.com>
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, John Ernberg <john.ernberg@actia.se>
+Subject: [PATCH v5 2/4] crypto: caam - Support iMX8QXP and variants thereof
+Thread-Topic: [PATCH v5 2/4] crypto: caam - Support iMX8QXP and variants
+ thereof
+Thread-Index: AQHb2eTUC9Cp7KL6lkKcbctbdtZZjA==
+Date: Tue, 10 Jun 2025 08:51:17 +0000
+Message-ID: <20250610085110.2295392-3-john.ernberg@actia.se>
+References: <20250610085110.2295392-1-john.ernberg@actia.se>
+In-Reply-To: <20250610085110.2295392-1-john.ernberg@actia.se>
+Accept-Language: en-US, sv-SE
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: git-send-email 2.49.0
+x-esetresult: clean, is OK
+x-esetid: 37303A2955B1445362776A
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DS0PR12MB93454C9316C3C54E45BFD65B976AA@DS0PR12MB9345.namprd12.prod.outlook.com>
 
-On Tue, Jun 10, 2025 at 06:28:22AM +0000, Jain, Harsh (AECG-SSW) wrote:
-> [AMD Official Use Only - AMD Internal Distribution Only]
-> 
-> > -----Original Message-----
-> > From: Krzysztof Kozlowski <krzk@kernel.org>
-> > Sent: Tuesday, June 10, 2025 11:48 AM
-> > To: Jain, Harsh (AECG-SSW) <h.jain@amd.com>; herbert@gondor.apana.org.au;
-> > davem@davemloft.net; linux-crypto@vger.kernel.org; devicetree@vger.kernel.org;
-> > Botcha, Mounika <Mounika.Botcha@amd.com>; Savitala, Sarat Chand
-> > <sarat.chand.savitala@amd.com>; Dhanawade, Mohan
-> > <mohan.dhanawade@amd.com>; Simek, Michal <michal.simek@amd.com>
-> > Cc: kernel test robot <lkp@intel.com>; Dan Carpenter <dan.carpenter@linaro.org>
-> > Subject: Re: [PATCH v2 5/6] crypto: xilinx: Fix missing goto in probe
-> >
-> > Caution: This message originated from an External Source. Use proper caution
-> > when opening attachments, clicking links, or responding.
-> >
-> >
-> > On 09/06/2025 06:51, Harsh Jain wrote:
-> > > Add goto to clean up allocated cipher on reseed failure.
-> > >
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > Closes: https://lore.kernel.org/r/202505311325.22fIOcCt-lkp@intel.com/
-> >
-> > Please stop adding bugs and fixing them afterwards. Fix your patch first.
-> 
-> Hi Kozlowski,
-> 
-> After squashing this fix, Do I need to add "Reported-by, Closes" tag in original patch?
-> 
+The iMX8QXP (and variants such as the QX, DX, DXP) all identify as iMX8QXP.
 
-Nope.
+They have the exact same restrictions as the supported iMX8QM introduced
+at commit 61bb8db6f682 ("crypto: caam - Add support for i.MX8QM")
 
-regards,
-dan carpenter
+Loosen the check a little bit with a wildcard to also match the iMX8QXP
+and its variants.
 
+Signed-off-by: John Ernberg <john.ernberg@actia.se>
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
+
+---
+
+v5:
+ - Collect tags
+
+v4:
+ - no changes
+
+v3:
+ - no changes
+
+v2:
+ - Collect review tag
+---
+ drivers/crypto/caam/ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index 766c447c9cfb..ce7b99019537 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -573,7 +573,7 @@ static const struct soc_device_attribute caam_imx_soc_t=
+able[] =3D {
+ 	{ .soc_id =3D "i.MX7*",  .data =3D &caam_imx7_data },
+ 	{ .soc_id =3D "i.MX8M*", .data =3D &caam_imx7_data },
+ 	{ .soc_id =3D "i.MX8ULP", .data =3D &caam_imx8ulp_data },
+-	{ .soc_id =3D "i.MX8QM", .data =3D &caam_imx8ulp_data },
++	{ .soc_id =3D "i.MX8Q*", .data =3D &caam_imx8ulp_data },
+ 	{ .soc_id =3D "VF*",     .data =3D &caam_vf610_data },
+ 	{ .family =3D "Freescale i.MX" },
+ 	{ /* sentinel */ }
+--=20
+2.49.0
 
