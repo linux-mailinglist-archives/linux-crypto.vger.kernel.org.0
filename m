@@ -1,206 +1,99 @@
-Return-Path: <linux-crypto+bounces-13785-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13768-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002F5AD48B6
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 04:15:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B30AD4862
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 04:10:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765513A5B51
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 02:14:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0000F7A8A74
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 02:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426D51DF994;
-	Wed, 11 Jun 2025 02:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBF0158538;
+	Wed, 11 Jun 2025 02:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SRBS7SW8"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="skPpYOvy"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BD61DED53;
-	Wed, 11 Jun 2025 02:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45B6146A68;
+	Wed, 11 Jun 2025 02:10:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749607980; cv=none; b=M85cXvg69CNDUJn4OgmFMLnIzk5S6bjNwceuGO+YF7ZAwxEorP8x22Qfjycl3FOAyvpQN6JVW57T9sLb/cF+WDUF51alpIdpL9XvgbfhjqN+Hq3sFb1cVLfGsINE6MATl9kbIgDEA3gWCSNNwcy6/TXy7WGkaBdSiq2ecp/AY94=
+	t=1749607823; cv=none; b=CFGAF57NxVf1W8e6dZpEwIugcd+U5NRRFxtEdBYpTf5AuqFdwfFN45KKR0p0KxqRj3dI2umTMdkdoR6kbSGJgKVmy5qwTxTExYnkogrRa3DiQthiP8ztUnvL2Y0Q9OTXyCYTxXJZSAgfwE+/jQmm7jS6EWPKan9rtXLAUhTUW/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749607980; c=relaxed/simple;
-	bh=CfGkdjItRjUxPxMuzjk2hmHTtGTMsfQDaBtxQ0B43iQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mTyaMtjWx71+a6ZpYHos7lUI/N3gmfMWMDW8lUw/w/ZAcLERrQmNcolhfiPdkEQbSV/pnM9Xqz2pMrG2LtmlhF5ZUAcmfRGWva+JUPyI4cw4IWdbAQnSp5XFSg+lzrCZ94cqglBlpv5cn00W9sf+sl9zGdhtG6Pi3AjLYxjDvjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SRBS7SW8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 757C9C4CEF4;
-	Wed, 11 Jun 2025 02:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749607979;
-	bh=CfGkdjItRjUxPxMuzjk2hmHTtGTMsfQDaBtxQ0B43iQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SRBS7SW8VmFEJ0509uOL86wnk9Tx1wrf6gYUew2s1ujJ6OdYPHuwrCvUEfCLoSjX8
-	 WwoHxf1HurvQAjWwoKYOETmw6DM1g7C5xr39n/gjn4Gbmegy1hA7S+jSz40kW9Kx2v
-	 WC0PvLKZGpvQgqRruPy3sGcGnwNvIi4pPSUeFv6Va1/udN6ifk+e5oNF51Z7KHPcem
-	 6xI1n/YfA6eHNzWoUsO3+3i9jU1vkIfCsx54Rge0mBlQKq/XD01CtZPgdTOnS2o69P
-	 G0LG9Cu+ajcQADMD1qLeKwR+WfjVK3TAj47rvQqhv/QHxu0zE/AObXnmC2iEWjW+4s
-	 R/fA3gadiYkqg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	x86@kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld " <Jason@zx2c4.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 16/16] crypto: sha512 - remove sha512_base.h
-Date: Tue, 10 Jun 2025 19:09:23 -0700
-Message-ID: <20250611020923.1482701-17-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250611020923.1482701-1-ebiggers@kernel.org>
-References: <20250611020923.1482701-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1749607823; c=relaxed/simple;
+	bh=bdajXBWMLVtUnv6iNJh0P+J15tqpBrKvq6lkhpeiVEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jC7Bt9gWJoUbmkCZpRk3xl5cl+YjL5Z9w39mW4iqRd5OVKYQt05d7dXZOSzY+uBYUBaE7MSQ7uqZGFR/fW57Bw3xkxjklQGFDCk+QWk+zg2ybWYyF+5AgVX1r01Jhuof6w+wZm1UQ/VkmJ5oh4GBhXUlbjllzu+YiS6M963FrQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=skPpYOvy; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=SDQToI/TzBm/Nj78Pcmlye3TohvWIQtZzAcJDnoDzYg=; b=skPpYOvy2eBBN6tLwg0dNDQEJn
+	NQ2JFQT/4VsvMt/gV5snM86pd0Xqez6LDKgw/l7NDxFSBN825xr5M9eQ4i6Gte9aU7rf+W8aapUUI
+	CL5EdqyGjqW6t45pRLlgXaoBc1Y7gl0Z81bpV2xEBnSgKoLtFN5baj3P11E4gP3NJHhyWVOMBy1M6
+	+TT4AQIxEmp1Gka9XwYrJOwdWoZGGVIO/UiAm9koC6M1FocW8eLnOuSbK9EZSRjo9McRpLDM8WapV
+	HwdyASXU2ZM/IMiG+//FvjO+gNIFLlPcGWbEU1rcT+ejmaikyw0ezyMC4K6lGh0lGXGXUtVd/8nk5
+	q9WOQZWQ==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1uPAug-00CEXL-1E;
+	Wed, 11 Jun 2025 10:10:03 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 11 Jun 2025 10:10:02 +0800
+Date: Wed, 11 Jun 2025 10:10:02 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: meenakshi.aggarwal@nxp.com
+Cc: gaurav.jain@nxp.com, davem@davemloft.net, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: caam - Set DMA alignment explicitly
+Message-ID: <aEjlevVOgCMgBmq0@gondor.apana.org.au>
+References: <20250604101446.3993932-1-meenakshi.aggarwal@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250604101446.3993932-1-meenakshi.aggarwal@nxp.com>
 
-From: Eric Biggers <ebiggers@google.com>
+On Wed, Jun 04, 2025 at 12:14:46PM +0200, meenakshi.aggarwal@nxp.com wrote:
+> From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+> 
+> Few DMA alignment were missed in the original patch.
+> 
+> Fixes: 4cb4f7c11dee ("crypto: caam - Set DMA alignment explicitly")
+> 
+> Signed-off-by: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+> ---
+>  drivers/crypto/caam/caamalg.c    | 22 +++++++++++-----------
+>  drivers/crypto/caam/caamalg_qi.c |  4 ++--
+>  2 files changed, 13 insertions(+), 13 deletions(-)
 
-sha512_base.h is no longer used, so remove it.
+Why does the request contexts need DMA alignment? There is no DMA memory
+in them:
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- include/crypto/sha512_base.h | 117 -----------------------------------
- 1 file changed, 117 deletions(-)
- delete mode 100644 include/crypto/sha512_base.h
+struct caam_skcipher_req_ctx {
+	struct skcipher_edesc *edesc;
+	struct skcipher_request fallback_req;
+};
 
-diff --git a/include/crypto/sha512_base.h b/include/crypto/sha512_base.h
-deleted file mode 100644
-index d1361b3eb70b0..0000000000000
---- a/include/crypto/sha512_base.h
-+++ /dev/null
-@@ -1,117 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * sha512_base.h - core logic for SHA-512 implementations
-- *
-- * Copyright (C) 2015 Linaro Ltd <ard.biesheuvel@linaro.org>
-- */
--
--#ifndef _CRYPTO_SHA512_BASE_H
--#define _CRYPTO_SHA512_BASE_H
--
--#include <crypto/internal/hash.h>
--#include <crypto/sha2.h>
--#include <linux/compiler.h>
--#include <linux/math.h>
--#include <linux/string.h>
--#include <linux/types.h>
--#include <linux/unaligned.h>
--
--typedef void (sha512_block_fn)(struct sha512_state *sst, u8 const *src,
--			       int blocks);
--
--static inline int sha384_base_init(struct shash_desc *desc)
--{
--	struct sha512_state *sctx = shash_desc_ctx(desc);
--
--	sctx->state[0] = SHA384_H0;
--	sctx->state[1] = SHA384_H1;
--	sctx->state[2] = SHA384_H2;
--	sctx->state[3] = SHA384_H3;
--	sctx->state[4] = SHA384_H4;
--	sctx->state[5] = SHA384_H5;
--	sctx->state[6] = SHA384_H6;
--	sctx->state[7] = SHA384_H7;
--	sctx->count[0] = sctx->count[1] = 0;
--
--	return 0;
--}
--
--static inline int sha512_base_init(struct shash_desc *desc)
--{
--	struct sha512_state *sctx = shash_desc_ctx(desc);
--
--	sctx->state[0] = SHA512_H0;
--	sctx->state[1] = SHA512_H1;
--	sctx->state[2] = SHA512_H2;
--	sctx->state[3] = SHA512_H3;
--	sctx->state[4] = SHA512_H4;
--	sctx->state[5] = SHA512_H5;
--	sctx->state[6] = SHA512_H6;
--	sctx->state[7] = SHA512_H7;
--	sctx->count[0] = sctx->count[1] = 0;
--
--	return 0;
--}
--
--static inline int sha512_base_do_update_blocks(struct shash_desc *desc,
--					       const u8 *data,
--					       unsigned int len,
--					       sha512_block_fn *block_fn)
--{
--	unsigned int remain = len - round_down(len, SHA512_BLOCK_SIZE);
--	struct sha512_state *sctx = shash_desc_ctx(desc);
--
--	len -= remain;
--	sctx->count[0] += len;
--	if (sctx->count[0] < len)
--		sctx->count[1]++;
--	block_fn(sctx, data, len / SHA512_BLOCK_SIZE);
--	return remain;
--}
--
--static inline int sha512_base_do_finup(struct shash_desc *desc, const u8 *src,
--				       unsigned int len,
--				       sha512_block_fn *block_fn)
--{
--	unsigned int bit_offset = SHA512_BLOCK_SIZE / 8 - 2;
--	struct sha512_state *sctx = shash_desc_ctx(desc);
--	union {
--		__be64 b64[SHA512_BLOCK_SIZE / 4];
--		u8 u8[SHA512_BLOCK_SIZE * 2];
--	} block = {};
--
--	if (len >= SHA512_BLOCK_SIZE) {
--		int remain;
--
--		remain = sha512_base_do_update_blocks(desc, src, len, block_fn);
--		src += len - remain;
--		len = remain;
--	}
--
--	if (len >= bit_offset * 8)
--		bit_offset += SHA512_BLOCK_SIZE / 8;
--	memcpy(&block, src, len);
--	block.u8[len] = 0x80;
--	sctx->count[0] += len;
--	block.b64[bit_offset] = cpu_to_be64(sctx->count[1] << 3 |
--					    sctx->count[0] >> 61);
--	block.b64[bit_offset + 1] = cpu_to_be64(sctx->count[0] << 3);
--	block_fn(sctx, block.u8, (bit_offset + 2) * 8 / SHA512_BLOCK_SIZE);
--	memzero_explicit(&block, sizeof(block));
--
--	return 0;
--}
--
--static inline int sha512_base_finish(struct shash_desc *desc, u8 *out)
--{
--	unsigned int digest_size = crypto_shash_digestsize(desc->tfm);
--	struct sha512_state *sctx = shash_desc_ctx(desc);
--	__be64 *digest = (__be64 *)out;
--	int i;
--
--	for (i = 0; digest_size > 0; i++, digest_size -= sizeof(__be64))
--		put_unaligned_be64(sctx->state[i], digest++);
--	return 0;
--}
--
--#endif /* _CRYPTO_SHA512_BASE_H */
+struct caam_aead_req_ctx {
+	struct aead_edesc *edesc;
+};
+
+Cheers,
 -- 
-2.49.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
