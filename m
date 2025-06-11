@@ -1,199 +1,267 @@
-Return-Path: <linux-crypto+bounces-13767-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-13769-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3A76AD476F
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 02:23:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 440D9AD486C
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 04:13:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C08E317B03F
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 00:23:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4A611899BD5
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Jun 2025 02:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E3079DA;
-	Wed, 11 Jun 2025 00:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10EEF165EFC;
+	Wed, 11 Jun 2025 02:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="QQdEpC8t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PYKA3dc2"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A94125B2
-	for <linux-crypto@vger.kernel.org>; Wed, 11 Jun 2025 00:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1081156F45;
+	Wed, 11 Jun 2025 02:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749601394; cv=none; b=H1UH3Ye37X11eQbZi+IP17Njdicz/+X8C6mwcV57+sEarN3Oi9rDt6PdrY5hm9JGKUEhJG/c6I3hjhbRKZ1gl9ICV4C7+tFDQ+7UqBDjG/wUDL7VVbHwXSVF75ZyDvYycXP36y1ze7ySy91wFPe+PlvLwQomrYsmVqXdEZd/L7M=
+	t=1749607972; cv=none; b=iJSdjZn7imSJTYQk1D7cnrZDbVK91t+GH7UtAKCE6Xvjtfm73RsfyimSD+LEJhoUjAzekYiOY0jn2Ae9nNRjRsu547uCXvZxb9zo/H0utMGaL2R38yuNPmEhEG/obUtP+iK6fc4Dw2HnOkloKfBTAOz9Q4cTGKryIp0JnFoATAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749601394; c=relaxed/simple;
-	bh=V3aNCDfEzfxl/wtuWs/n53MDcr+guvxs8lJ6Ns350/k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F6iKAn/KNU9b3yzza8HtDXQ+m7No4vUZEPCSduDS+0Gs11YEbTKjd1VRktgRIt8Y2vRaJ+xe8hI2tY83jn5qwHxY3trsH9NP1CigvQhpYkALl1ZvnirqKfvUN7QHINJKDQOakeRD3FdzITesv++4ays256Nra2064nbAdApSI84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=QQdEpC8t; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-70e767ce72eso56387437b3.1
-        for <linux-crypto@vger.kernel.org>; Tue, 10 Jun 2025 17:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1749601390; x=1750206190; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mqyjEVOkyXwfMaGU1TDVpK5OMwZjvM7JjuGuGfqQfiw=;
-        b=QQdEpC8tvO2NYpn3COPmL+/PVmayKd1y/tEzRp0zD6fbiE8eEN/tMpdbmPxgl4EMO0
-         ScWtF+n9c/bZM6shIOECHLIXiu4uMksVUw4N2IjniUwitDomLVXsMEs0p9mBN/UZqxQg
-         9PHX0ZJhAdHoHjQL73gzqD5WWL/Dj3Ts/ki+xHpY6Ad+AY0jMdoH4HJLmlxtAuzFOPv9
-         90GBTd4WFbQMWM4bCKBKQ1RXY7p3jLNOcCJNxI1iT+If9x4AZuVqy4MJr6wuQXT4puvA
-         dZV7tUaAYEAQoe6iGv542LJH5RyAAWpsiUtdZikRLcn9Uf5NarsFa89Ah5Waf3KQDSUR
-         2JyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749601390; x=1750206190;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mqyjEVOkyXwfMaGU1TDVpK5OMwZjvM7JjuGuGfqQfiw=;
-        b=oWljvwKCfi9FY8iawcRgcE8/U+nJbR67af1S76xxEY8OpEKjzF8LCPOOXpbrk/irSw
-         BQru4nsWVI3qr/sqi0tZnnFUhuvel6iUKojHGUvAAeV0CCrUCgWRfnvKgZdWhFrYyxex
-         SqP4CEuNhUKg7sSshIj03eI4CwFPPTkXUmuH/UTKM4YRLvC7L1iRhsKpO8RcirZ/4jjf
-         qrvmMjC9bbHDpKc2Ns50xlE+8bjj2Lj7DZ6AhbUORH8c9V8++K09ouEnIkjod5KxsLPK
-         6HERMLYLUdytz8hlYyxBvLWjcL5RjCyD4ywys0/IbSlZpa/lWh8fU9o0j6v6sz2cz+s4
-         6rHw==
-X-Forwarded-Encrypted: i=1; AJvYcCXxpRmgpKhaZNKhiHK7kxaxPcneMQ6TQQ3kSm3jXQLy0WHIufNACoz4j2sEm2rdQ7ffu0GoehVaRxHGtaA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZDaZfdj9buSnpG754eiC2nA5t1c2Btka3E0vM1Dl112WZMU1L
-	xGkLp8jBZWrEO8AMjydrS0ha9JSnBSXW8K6AeZJTVwp4IufXYCCIbw1sq98prNpaBKVGti0p8Bz
-	IwUBpAdD6hBhBUN0Ws7B33PLbDvnKMB83uofgIdnR
-X-Gm-Gg: ASbGncuThGfnao0OHqSvJqtUMa+50s07gx9THGolyFHNy7v8tTxJ9p33fFc1NTV1RPJ
-	uF6y7KTBkm37kWjTsjyNUhqEV8LVE+VhFh+HOFZyTFr0OctnOVAcFA56BKhQJUHRYkdvIiIva0v
-	oFHJE4LeUjiQ/qEDpog2lpU8NnEu/snCEsL/XtiQnZiD0=
-X-Google-Smtp-Source: AGHT+IE8M3LJ60ObL9WxE/FHdUjay5d0gjuX+l5wso77lgWCLyR1qO4waNRelGVeYQBTPS1XTsACv75zMxCstcB/c64=
-X-Received: by 2002:a05:690c:c92:b0:710:ead5:8a95 with SMTP id
- 00721157ae682-71142415677mr13830317b3.14.1749601390477; Tue, 10 Jun 2025
- 17:23:10 -0700 (PDT)
+	s=arc-20240116; t=1749607972; c=relaxed/simple;
+	bh=H6nrs/ntjG5cZgZMn/Mw/s7NFoDXvl6Tqz/mtTtGbAk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tiewwi8mLMF0LNbP/2et+SdNf59+fJQKQXHoa2Z6ARsF1a+6RAunywNWAkUYg0vLXkQWBRfNbRo/wOAKDOYh6AzKH9mET0tWsskNM4EsvRyC6+GVLEecp16Df0JrZhyF+zI4b4Q9sDHw/mIPoCiOc027Jvsvo1bQzsduUaZLKrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PYKA3dc2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2851C4CEED;
+	Wed, 11 Jun 2025 02:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749607972;
+	bh=H6nrs/ntjG5cZgZMn/Mw/s7NFoDXvl6Tqz/mtTtGbAk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PYKA3dc2syWyr6YVP6t0ca76B97xO8mJG7hrM6OKlq+h4g/iVbtMAnPJ7En0+89/b
+	 Oy2VApdT31w9w5YJBMuqLkCWbLYkoIHX7VKsFw9+kKkeSp34hKz+LfwpuSFAa/0jUn
+	 BwoiICSLlHnaZUHBIjsarOIHjcXUo9jX1jWYGdQ+ECyqBJ+KsE8DWmZHHBANZHv5N0
+	 ZvSFNDQr0rYd/M5dCfIkLU4RHgNuKWaucik9Oxad3XnA55F3K1s4il2JkPrKt75+a+
+	 W0BY6uoFVICpQNOX5+BVh8NZ46X5n6E04FKVLBiuX9oyBN15oBt5QT47gllSYdGFGS
+	 0OwoOxuJDCeRQ==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld " <Jason@zx2c4.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 00/16] SHA-512 library functions
+Date: Tue, 10 Jun 2025 19:09:07 -0700
+Message-ID: <20250611020923.1482701-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <301015.1748434697@warthog.procyon.org.uk>
-In-Reply-To: <301015.1748434697@warthog.procyon.org.uk>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 10 Jun 2025 20:22:59 -0400
-X-Gm-Features: AX0GCFuzTbBPakT7-fabDOVnCNVNEVKiLmeRI0FjA7IWgXlosDeLqvnendebUgs
-Message-ID: <CAHC9VhRn=EGu4+0fYup1bGdgkzWvZYpMPXKoARJf2N+4sy9g2w@mail.gmail.com>
-Subject: Re: [PATCH] KEYS: Invert FINAL_PUT bit
-To: David Howells <dhowells@redhat.com>
-Cc: torvalds@linux-foundation.org, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 28, 2025 at 8:19=E2=80=AFAM David Howells <dhowells@redhat.com>=
- wrote:
->
-> Hi Linus,
->
-> Could you apply this, please?  There shouldn't be any functional change,
-> rather it's a switch to using combined bit-barrier ops and lesser barrier=
-s.
-> A better way to do this might be to provide set_bit_release(), but the en=
-d
-> result would be much the same.
->
-> Thanks,
-> David
-> ---
-> From: Herbert Xu <herbert@gondor.apana.org.au>
->
-> KEYS: Invert FINAL_PUT bit
->
-> Invert the FINAL_PUT bit so that test_bit_acquire and clear_bit_unlock
-> can be used instead of smp_mb.
->
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> cc: keyrings@vger.kernel.org
-> cc: linux-security-module@vger.kernel.org
-> cc: linux-crypto@vger.kernel.org
-> cc: linux-integrity@vger.kernel.org
-> ---
->  include/linux/key.h |    2 +-
->  security/keys/gc.c  |    4 ++--
->  security/keys/key.c |    5 +++--
->  3 files changed, 6 insertions(+), 5 deletions(-)
+This series applies to v6.16-rc1 and is targeting the libcrypto-next
+tree.  It is also available at:
 
-It doesn't look like this has made its way to Linus.  David or Jarkko,
-do one of you want to pick this up into a tree and send this to Linus
-properly?
+    git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git sha512-lib-v1
 
-> diff --git a/include/linux/key.h b/include/linux/key.h
-> index ba05de8579ec..81b8f05c6898 100644
-> --- a/include/linux/key.h
-> +++ b/include/linux/key.h
-> @@ -236,7 +236,7 @@ struct key {
->  #define KEY_FLAG_ROOT_CAN_INVAL        7       /* set if key can be inva=
-lidated by root without permission */
->  #define KEY_FLAG_KEEP          8       /* set if key should not be remov=
-ed */
->  #define KEY_FLAG_UID_KEYRING   9       /* set if key is a user or user s=
-ession keyring */
-> -#define KEY_FLAG_FINAL_PUT     10      /* set if final put has happened =
-on key */
-> +#define KEY_FLAG_USER_ALIVE    10      /* set if final put has not happe=
-ned on key yet */
->
->         /* the key type and key description string
->          * - the desc is used to match a key against search criteria
-> diff --git a/security/keys/gc.c b/security/keys/gc.c
-> index f27223ea4578..748e83818a76 100644
-> --- a/security/keys/gc.c
-> +++ b/security/keys/gc.c
-> @@ -218,8 +218,8 @@ static void key_garbage_collector(struct work_struct =
-*work)
->                 key =3D rb_entry(cursor, struct key, serial_node);
->                 cursor =3D rb_next(cursor);
->
-> -               if (test_bit(KEY_FLAG_FINAL_PUT, &key->flags)) {
-> -                       smp_mb(); /* Clobber key->user after FINAL_PUT se=
-en. */
-> +               if (!test_bit_acquire(KEY_FLAG_USER_ALIVE, &key->flags)) =
-{
-> +                       /* Clobber key->user after final put seen. */
->                         goto found_unreferenced_key;
->                 }
->
-> diff --git a/security/keys/key.c b/security/keys/key.c
-> index 7198cd2ac3a3..3bbdde778631 100644
-> --- a/security/keys/key.c
-> +++ b/security/keys/key.c
-> @@ -298,6 +298,7 @@ struct key *key_alloc(struct key_type *type, const ch=
-ar *desc,
->         key->restrict_link =3D restrict_link;
->         key->last_used_at =3D ktime_get_real_seconds();
->
-> +       key->flags |=3D 1 << KEY_FLAG_USER_ALIVE;
->         if (!(flags & KEY_ALLOC_NOT_IN_QUOTA))
->                 key->flags |=3D 1 << KEY_FLAG_IN_QUOTA;
->         if (flags & KEY_ALLOC_BUILT_IN)
-> @@ -658,8 +659,8 @@ void key_put(struct key *key)
->                                 key->user->qnbytes -=3D key->quotalen;
->                                 spin_unlock_irqrestore(&key->user->lock, =
-flags);
->                         }
-> -                       smp_mb(); /* key->user before FINAL_PUT set. */
-> -                       set_bit(KEY_FLAG_FINAL_PUT, &key->flags);
-> +                       /* Mark key as safe for GC after key->user done. =
-*/
-> +                       clear_bit_unlock(KEY_FLAG_USER_ALIVE, &key->flags=
-);
->                         schedule_work(&key_gc_work);
->                 }
->         }
->
->
+This series adds support for SHA-384, SHA-512, HMAC-SHA384, and
+HMAC-SHA512 to lib/crypto/.  The new functions take advantage of the
+kernel's existing architecture-optimized implementations of the SHA-512
+compression function.  The new functions are fully tested using KUnit.
 
---=20
-paul-moore.com
+To avoid duplicating all arch-optimized implementations of the SHA-512
+compression function (~3000 lines of code total), they are moved into
+lib/crypto/ rather than copied.  To make the "sha384", "sha512",
+"hmac(sha384)", and "hmac(sha512)" crypto_shash algorithms in the
+old-school crypto API continue to be properly optimized after that, they
+are reimplemented on top of lib/crypto/, which is straightforward.
+
+The following lists some of the design choices and conventions that I've
+followed in more detail.  Where these differ from the code or APIs for
+other algorithms (e.g., SHA-256 in some cases), I'd like to do it this
+way going forward and plan to fix up the other algorithms accordingly:
+
+- APIs are fully documented with kerneldoc comments.
+
+- APIs cannot fail, and return void.
+
+- APIs work in all contexts.  This doesn't mean that they *should* be
+  called in all contexts, but rather they always just work as expected.
+
+- Tests are KUnit tests, and they are fairly thorough (more thorough
+  than crypto/testmgr.c) and also optionally include benchmarks.
+
+- Architecture-optimized code is integrated the same way I'm doing it
+  for lib/crc/: it's in subdirectories lib/crypto/$(SRCARCH), it's
+  enabled by default, and it's inlined into the same module as the
+  generic code.  This solves a number of problems; for more details, see
+  https://lore.kernel.org/r/20250607200454.73587-1-ebiggers@kernel.org
+
+- HMAC support is a first-class citizen.
+
+- APIs handle zeroization, when applicable.
+
+- Message contexts are *_ctx instead of *_state.  It's shorter, avoids
+  ambiguity with the compression function state, and matches OpenSSL.
+
+- Length arguments are size_t, are in bytes, are named len or *_len, and
+  immediately follow the corresponding buffer.  "Object" being operated
+  on is first argument; outputs otherwise follow inputs.
+
+- The structures for different algorithms use different types, which
+  prevents usage errors where functions are mixed up between algorithms.
+
+- The compression function state is strongly typed, not a plain array.
+
+Eric Biggers (16):
+  crypto: sha512 - rename conflicting symbols
+  lib/crypto/sha512: add support for SHA-384 and SHA-512
+  lib/crypto/sha512: add HMAC-SHA384 and HMAC-SHA512 support
+  lib/crypto/sha512: add KUnit tests for SHA-384 and SHA-512
+  lib/crypto/sha256: add KUnit tests for SHA-224 and SHA-256
+  crypto: riscv/sha512 - stop depending on sha512_generic_block_fn
+  crypto: sha512 - replace sha512_generic with wrapper around SHA-512
+    library
+  lib/crypto/sha512: migrate arm-optimized SHA-512 code to library
+  lib/crypto/sha512: migrate arm64-optimized SHA-512 code to library
+  mips: cavium-octeon: move octeon-crypto.h into asm directory
+  lib/crypto/sha512: migrate mips-optimized SHA-512 code to library
+  lib/crypto/sha512: migrate riscv-optimized SHA-512 code to library
+  lib/crypto/sha512: migrate s390-optimized SHA-512 code to library
+  lib/crypto/sha512: migrate sparc-optimized SHA-512 code to library
+  lib/crypto/sha512: migrate x86-optimized SHA-512 code to library
+  crypto: sha512 - remove sha512_base.h
+
+ arch/arm/configs/exynos_defconfig             |   1 -
+ arch/arm/configs/milbeaut_m10v_defconfig      |   1 -
+ arch/arm/configs/multi_v7_defconfig           |   1 -
+ arch/arm/configs/omap2plus_defconfig          |   1 -
+ arch/arm/configs/pxa_defconfig                |   1 -
+ arch/arm/crypto/Kconfig                       |  10 -
+ arch/arm/crypto/Makefile                      |  15 -
+ arch/arm/crypto/sha512-glue.c                 | 110 ---
+ arch/arm/crypto/sha512-neon-glue.c            |  75 --
+ arch/arm/crypto/sha512.h                      |   3 -
+ arch/arm64/configs/defconfig                  |   1 -
+ arch/arm64/crypto/Kconfig                     |  19 -
+ arch/arm64/crypto/Makefile                    |  14 -
+ arch/arm64/crypto/sha512-ce-glue.c            |  96 ---
+ arch/arm64/crypto/sha512-glue.c               |  83 ---
+ arch/mips/cavium-octeon/crypto/Makefile       |   1 -
+ .../mips/cavium-octeon/crypto/octeon-crypto.c |   3 +-
+ arch/mips/cavium-octeon/crypto/octeon-md5.c   |   3 +-
+ arch/mips/cavium-octeon/crypto/octeon-sha1.c  |   3 +-
+ .../mips/cavium-octeon/crypto/octeon-sha256.c |   3 +-
+ .../mips/cavium-octeon/crypto/octeon-sha512.c | 167 -----
+ arch/mips/configs/cavium_octeon_defconfig     |   1 -
+ arch/mips/crypto/Kconfig                      |  10 -
+ .../asm/octeon/crypto.h}                      |   0
+ arch/riscv/crypto/Kconfig                     |  11 -
+ arch/riscv/crypto/Makefile                    |   3 -
+ arch/riscv/crypto/sha512-riscv64-glue.c       | 124 ----
+ arch/s390/configs/debug_defconfig             |   1 -
+ arch/s390/configs/defconfig                   |   1 -
+ arch/s390/crypto/Kconfig                      |  10 -
+ arch/s390/crypto/Makefile                     |   1 -
+ arch/s390/crypto/sha512_s390.c                | 151 ----
+ arch/sparc/crypto/Kconfig                     |  10 -
+ arch/sparc/crypto/Makefile                    |   2 -
+ arch/sparc/crypto/sha512_glue.c               | 122 ----
+ arch/x86/crypto/Kconfig                       |  13 -
+ arch/x86/crypto/Makefile                      |   3 -
+ arch/x86/crypto/sha512_ssse3_glue.c           | 322 ---------
+ crypto/Kconfig                                |   4 +-
+ crypto/Makefile                               |   2 +-
+ crypto/sha512.c                               | 254 +++++++
+ crypto/sha512_generic.c                       | 217 ------
+ crypto/testmgr.c                              |  16 +
+ drivers/crypto/starfive/jh7110-hash.c         |   8 +-
+ include/crypto/sha2.h                         | 350 +++++++++
+ include/crypto/sha512_base.h                  | 120 ----
+ lib/crypto/Kconfig                            |  20 +
+ lib/crypto/Makefile                           |  38 +
+ lib/crypto/arm/.gitignore                     |   2 +
+ .../crypto => lib/crypto/arm}/sha512-armv4.pl |   0
+ lib/crypto/arm/sha512.h                       |  38 +
+ lib/crypto/arm64/.gitignore                   |   2 +
+ .../crypto/arm64}/sha512-ce-core.S            |  10 +-
+ lib/crypto/arm64/sha512.h                     |  46 ++
+ lib/crypto/mips/sha512.h                      |  74 ++
+ .../riscv}/sha512-riscv64-zvknhb-zvkb.S       |   4 +-
+ lib/crypto/riscv/sha512.h                     |  41 ++
+ lib/crypto/s390/sha512.h                      |  28 +
+ lib/crypto/sha512.c                           | 403 +++++++++++
+ lib/crypto/sparc/sha512.h                     |  42 ++
+ .../crypto => lib/crypto/sparc}/sha512_asm.S  |   0
+ lib/crypto/tests/Kconfig                      |  24 +
+ lib/crypto/tests/Makefile                     |   6 +
+ lib/crypto/tests/hash-test-template.h         | 512 ++++++++++++++
+ lib/crypto/tests/sha224-testvecs.h            | 223 ++++++
+ lib/crypto/tests/sha224_kunit.c               |  50 ++
+ lib/crypto/tests/sha256-testvecs.h            | 223 ++++++
+ lib/crypto/tests/sha256_kunit.c               |  39 ++
+ lib/crypto/tests/sha384-testvecs.h            | 566 +++++++++++++++
+ lib/crypto/tests/sha384_kunit.c               |  48 ++
+ lib/crypto/tests/sha512-testvecs.h            | 662 ++++++++++++++++++
+ lib/crypto/tests/sha512_kunit.c               |  48 ++
+ .../crypto/x86}/sha512-avx-asm.S              |  11 +-
+ .../crypto/x86}/sha512-avx2-asm.S             |  11 +-
+ .../crypto/x86}/sha512-ssse3-asm.S            |  12 +-
+ lib/crypto/x86/sha512.h                       |  54 ++
+ scripts/crypto/gen-hash-testvecs.py           |  83 +++
+ 77 files changed, 3931 insertions(+), 1756 deletions(-)
+ delete mode 100644 arch/arm/crypto/sha512-glue.c
+ delete mode 100644 arch/arm/crypto/sha512-neon-glue.c
+ delete mode 100644 arch/arm/crypto/sha512.h
+ delete mode 100644 arch/arm64/crypto/sha512-ce-glue.c
+ delete mode 100644 arch/arm64/crypto/sha512-glue.c
+ delete mode 100644 arch/mips/cavium-octeon/crypto/octeon-sha512.c
+ rename arch/mips/{cavium-octeon/crypto/octeon-crypto.h => include/asm/octeon/crypto.h} (100%)
+ delete mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
+ delete mode 100644 arch/s390/crypto/sha512_s390.c
+ delete mode 100644 arch/sparc/crypto/sha512_glue.c
+ delete mode 100644 arch/x86/crypto/sha512_ssse3_glue.c
+ create mode 100644 crypto/sha512.c
+ delete mode 100644 crypto/sha512_generic.c
+ delete mode 100644 include/crypto/sha512_base.h
+ create mode 100644 lib/crypto/arm/.gitignore
+ rename {arch/arm/crypto => lib/crypto/arm}/sha512-armv4.pl (100%)
+ create mode 100644 lib/crypto/arm/sha512.h
+ create mode 100644 lib/crypto/arm64/.gitignore
+ rename {arch/arm64/crypto => lib/crypto/arm64}/sha512-ce-core.S (97%)
+ create mode 100644 lib/crypto/arm64/sha512.h
+ create mode 100644 lib/crypto/mips/sha512.h
+ rename {arch/riscv/crypto => lib/crypto/riscv}/sha512-riscv64-zvknhb-zvkb.S (98%)
+ create mode 100644 lib/crypto/riscv/sha512.h
+ create mode 100644 lib/crypto/s390/sha512.h
+ create mode 100644 lib/crypto/sha512.c
+ create mode 100644 lib/crypto/sparc/sha512.h
+ rename {arch/sparc/crypto => lib/crypto/sparc}/sha512_asm.S (100%)
+ create mode 100644 lib/crypto/tests/Kconfig
+ create mode 100644 lib/crypto/tests/Makefile
+ create mode 100644 lib/crypto/tests/hash-test-template.h
+ create mode 100644 lib/crypto/tests/sha224-testvecs.h
+ create mode 100644 lib/crypto/tests/sha224_kunit.c
+ create mode 100644 lib/crypto/tests/sha256-testvecs.h
+ create mode 100644 lib/crypto/tests/sha256_kunit.c
+ create mode 100644 lib/crypto/tests/sha384-testvecs.h
+ create mode 100644 lib/crypto/tests/sha384_kunit.c
+ create mode 100644 lib/crypto/tests/sha512-testvecs.h
+ create mode 100644 lib/crypto/tests/sha512_kunit.c
+ rename {arch/x86/crypto => lib/crypto/x86}/sha512-avx-asm.S (97%)
+ rename {arch/x86/crypto => lib/crypto/x86}/sha512-avx2-asm.S (98%)
+ rename {arch/x86/crypto => lib/crypto/x86}/sha512-ssse3-asm.S (97%)
+ create mode 100644 lib/crypto/x86/sha512.h
+ create mode 100755 scripts/crypto/gen-hash-testvecs.py
+
+
+base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
+-- 
+2.49.0
+
 
