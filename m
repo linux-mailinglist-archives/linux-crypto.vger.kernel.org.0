@@ -1,67 +1,68 @@
-Return-Path: <linux-crypto+bounces-14020-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14022-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B46BBADCDD0
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 15:45:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2F85ADCDE4
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 15:46:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55FB716E144
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 13:45:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B734188D9A5
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 13:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44247215787;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91A72DF3CA;
 	Tue, 17 Jun 2025 13:44:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OgoFEtyi"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PJyBq7Ej"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C482DF3CA;
-	Tue, 17 Jun 2025 13:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D502E06D9;
+	Tue, 17 Jun 2025 13:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750167891; cv=none; b=Fx4rCg+KhSKgI9Z2aJnaJknqL9jWUXaLYkMnaEH/7oFIMSJEXIBa3N6XY0twU2WoEwIlW9WETuz4VEKZt4pWGeTsTDHHr/Ux1J5vEWxnBoudityMjVZ+dLDauaG+FKDut79Kknym/PYxfK1kKOF+c+2dZNi+xHUeGCfzt5TXhSY=
+	t=1750167891; cv=none; b=shmNYBUbcRxdbpY+DpxlrOl5rKck+eiTi0I8rLgrZyMjrHPqWhy2r2GB93VVEF0r5YNn78HDulYnsxx35QB3seRw21uCwZfGezSk+TpanFfbuxKGiHwK9tlq4TmNRNRK0a5RiCAJmIgGHMs+X/cbWtY7uskuy7pi/7lVjC/3iJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1750167891; c=relaxed/simple;
-	bh=1tTefitN9xfheFcOvtA5l7WyUhU/3NCTNfuS4ufSJvI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EQnYHCowCzBDePtFTCpL9DPo67NWJ6X9tbSVj3+eBZn9edzJEHGs6nk/UVJH00Qp32z3A95kSPmNteKnxZpuxDsIT/VBSwFc7oLOsVzn5/+0uKskxUiu+qeBvvNhw7D8JQUVgS2VXTj7pApo3bVkbVSQTtffzRZ0UyB1DGLoAXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OgoFEtyi; arc=none smtp.client-ip=148.163.158.5
+	bh=8cIgIum0jmv/ShMgBhHPZC5lT1rtO0t8hbJd6fgvTnA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=U1Xcn6bEfTU88SjklrJKMH2eMovSWCSzvS1gdXS5rxUSAMK3kHW9NX61ItltnmkR2fRTvQ7kuTbteu3QwRWqLivXVlJk01TsoL1O2PZAKq1hekUqe8e2KiD3C3YFnJ5B3yZA/F/F2ByW6RF6L4qEVpEG0olv9ZB3Mvou6tkwxI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PJyBq7Ej; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55HAn6uH013475;
-	Tue, 17 Jun 2025 13:44:46 GMT
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55H82YF0019190;
+	Tue, 17 Jun 2025 13:44:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=oPb/c30xF1/1rRkA8y/mfGecLt7IhDuqOQi4cHiTu
-	c0=; b=OgoFEtyiAELGjqI4qWQK5+ZCF+K56OzEH1l6h5aRek03N3QwV4p1OgKLU
-	AGDrbxL93V1C63OWV8cr1Z+QGhW67jJiiTmY7z9fU8iMzAGQX6+sxkOMK3qx+975
-	KZXeeONm4BBkCWOEa99982lR5r5CS/tAHIB71vIu3nvaO3gFRlTUQ5YzC1o7gqxD
-	mVt3JL0aKa6rh+gTAdJvBdStpZdjXDWri3RMc+eWuv57Z4gnLszgGrV1E8FXv+NN
-	dRhL98va816k/fpaO/i8ykd0eRMJ5JudiRJgMiedt5IKpnAQLnASXO8KB1uGIDse
-	nHYR2lONGhEtT9puYoJihK+GnKLpA==
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4790r206un-1
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=pp1; bh=T8NzjHz2qWHkHASQ9
+	Qu31S7FpavpHX6unso/xWiyLSw=; b=PJyBq7EjmZr/uj38UesAZrT1J8weIH7w7
+	+NtLUMyUwOKgc9gROWYiEfrv2mnffSBH4UZpvEjf+JzyUebY0Pd+WwY3xSJDnuHs
+	EiULybqMv2tLqv00makeu5JKyI4fOarclS8Zqg9loZZP1KpbNijI95v7u6qZ8I6a
+	rzsunDzHTMEe4CRcB3h8p9dS3YtXpJCA1SIa7m4LBJJv3WA8bjufvLHmBgM0XEGr
+	PT+bwq3nkQ/nrZOUFqYljbgQ9kMHmCfmG5zUhmDOqsHp21MapSF4p6cTwQ9x7yKV
+	XXm1yurrJ1ylIiT0qdWwc6N+m/an95XtRSAa+9EX0tLgj0TcIly4Q==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4790te0rae-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 17 Jun 2025 13:44:46 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55HC9DgE000724;
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55HD0K9I005481;
 	Tue, 17 Jun 2025 13:44:45 GMT
 Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 479mdp3r44-1
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 479mwm3n49-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 17 Jun 2025 13:44:45 +0000
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55HDifl452035898
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55HDif9M52035902
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Tue, 17 Jun 2025 13:44:41 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6512820043;
+	by IMSVA (Postfix) with ESMTP id C582D2004B;
 	Tue, 17 Jun 2025 13:44:41 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 11E452004B;
+	by IMSVA (Postfix) with ESMTP id 738C02004D;
 	Tue, 17 Jun 2025 13:44:41 +0000 (GMT)
 Received: from funtu2.fritz.box?044ibm.com (unknown [9.111.71.86])
 	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -71,10 +72,12 @@ To: herbert@gondor.apana.org.au
 Cc: linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
         dengler@linux.ibm.com, ifranzki@linux.ibm.com, fcallies@linux.ibm.com,
         hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com
-Subject: [PATCH v12 0/6] New s390 specific protected key hmac
-Date: Tue, 17 Jun 2025 15:44:34 +0200
-Message-ID: <20250617134440.48000-1-freude@linux.ibm.com>
+Subject: [PATCH v12 1/6] crypto: ahash - make hash walk functions from ahash.c public
+Date: Tue, 17 Jun 2025 15:44:35 +0200
+Message-ID: <20250617134440.48000-2-freude@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250617134440.48000-1-freude@linux.ibm.com>
+References: <20250617134440.48000-1-freude@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -83,114 +86,144 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7muto1cVZRNQTULUD81mGjktjCFnDQkv
-X-Proofpoint-ORIG-GUID: 7muto1cVZRNQTULUD81mGjktjCFnDQkv
-X-Authority-Analysis: v=2.4 cv=AqTu3P9P c=1 sm=1 tr=0 ts=6851714e cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=6IFa9wvqVegA:10 a=-xSpq2wtoGP2116iE9YA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE3MDEwNSBTYWx0ZWRfX6fm/BPIeAWwx ppJaKN1Y+e+9iukS5EYwSNepgTS8BseLK+3y/aecekqpGrHqt5K1SWuBq3GuLStXuzC6q2NRBRg i6WhfKbjKV4Tx9trlw9Q/iKAjhFY+RbeGI/t1SYvXTqcm0kWpeQ5T9t5CtHaiBoizyOZY7rjRyW
- aQ/beWmbWBcFmHtpZQYIWPcR9/KYLgCkliFrqmFYFHP7V1Wup6TWcNQZf/MHzMrzwCyGV64wC2F iuWxGOH4wyKHZ4i9pQh14V6OhhiJdrXo/h34SEAQkDfRLpcErnoAdvV7MMMiCK3djvM9ixW+gHY zvAIHyfmb3whNYa/YJ0/ffa8Vj6Z4+LRKHDizdm+CkKL7auUwU+UTDteynkG7QMK7HTGscnYvEu
- VpXb3h5Cm++ADjz2sqJXZ0yKqCrd54R+Qw2g25NB/cMu30vrl8Li9qwwK7rNzbRx8k1s3FGW
+X-Proofpoint-ORIG-GUID: MpX9xi3NJo9CZLYB_V6txk9QmpmvamYa
+X-Proofpoint-GUID: MpX9xi3NJo9CZLYB_V6txk9QmpmvamYa
+X-Authority-Analysis: v=2.4 cv=c92rQQ9l c=1 sm=1 tr=0 ts=6851714e cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=0o2RBGdjaH6X1lB8s1gA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE3MDEwNSBTYWx0ZWRfX2XAaVdYkQ2iu 3ftqFATgsSWQ3gdR3uvnN7ThBzuqp/GGTk6lzFI3aT6tnhohenPFaM2oVD0HBgKxllKl0bE9O8d 4tMBZEWaefqp5LxxG+u8q9VS1inGg3DnPA7TdGMxNGgY2l/d6/d5jecnjc+toPCoQfkzTvs9R8n
+ x+VMoL2zFdvBw9Km8852ZQErmP3qp/vKUZ8D0Jp7qd3LjYEELeDAt+vUrnpCsr4gIx+OlDP0LWO u4oLT2NTW8jar+6EYCZbzkvdVWiV5ova7aba9eSUnJEj2wcgZGGjhBXZTSZfrAdxOpuKfleRyfM EckggvkZejbxGzaUCZWqmIU/PmfcmRMGZWyKh3w0nYmra+hDIE4lLfXoq4vEnysFzIUnXy1LfCe
+ sSuPaNfttS5RTBRnyxCgRZBaJHpNaN6O1DlCjcVp6y/1zBozdpyuCrcW85NG7yXfX+iybogp
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-06-17_05,2025-06-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- bulkscore=0 malwarescore=0 classifier=spam authscore=0 authtc=n/a authcc=
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ bulkscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 suspectscore=0
+ impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2506170105
 
-Add support for protected key hmac ("phmac") for s390 arch.
+Make the hash walk functions
+  crypto_hash_walk_done()
+  crypto_hash_walk_first()
+  crypto_hash_walk_last()
+public again.
+These functions had been removed from the header file
+include/crypto/internal/hash.h with commit 7fa481734016
+("crypto: ahash - make hash walk functions private to ahash.c")
+as there was no crypto algorithm code using them.
 
-With the latest machine generation there is now support for
-protected key (that is a key wrapped by a master key stored
-in firmware) hmac for sha2 (sha224, sha256, sha384 and sha512)
-for the s390 specific CPACF instruction kmac.
+With the upcoming crypto implementation for s390 phmac
+these functions will be exploited and thus need to be
+public within the kernel again.
 
-This patch adds support via 4 new hashes registered as
-phmac(sha224), phmac(sha256), phmac(sha384) and phmac(sha512).
+Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+Acked-by: Holger Dengler <dengler@linux.ibm.com>
+---
+ crypto/ahash.c                 | 26 +++++---------------------
+ include/crypto/internal/hash.h | 23 +++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 21 deletions(-)
 
-Changelog:
-v1: Initial version
-v2: Increase HASH_MAX_DESCSIZE generic (not just for arch s390).
-    Fix one finding to use kmemdup instead of kmalloc/memcpy from test
-    robot. Remove unneeded cpacf subfunctions checks. Simplify
-    clone_tfm() function. Rebased to s390/features.
-v3: Feedback from Herbert: Use GFP_ATOMIC in setkey function.
-    Feedback from Holger: rework tfm clone function, move convert key
-    invocation from setkey to init function. Rebased to updated
-    s390/features from 11/7/2024. Ready for integration if there are
-    no complains on v3.
-v4: Rewind back more or less to v2. Add code to check for non-sleeping
-    context. Non-sleeping context during attempt to derive the
-    protected key from raw key material is not accepted and
-    -EOPNOTSUPP is returned (also currently all derivation pathes
-    would in fact never sleep). In general the phmac implementation is
-    not to be used within non-sleeping context and the code header
-    mentions this. Tested with (patched) dm-integrity - works fine.
-v5: As suggested by Herbert now the shashes have been marked as
-    'internal' and wrapped by ahashes which use the cryptd if an
-    atomic context is detected. So the visible phmac algorithms are
-    now ahashes. Unfortunately the dm-integrity implementation
-    currently requests and deals only with shashes and this phmac
-    implementation is not fitting to the original goal any more...
-v6: As suggested by Herbert now a pure async phmac implementation.
-    Tested via AF_ALG interface. Untested via dm-integrity as this layer
-    only supports shashes. Maybe I'll develop a patch to switch the
-    dm-integrity to ahash as it is anyway the more flexible interface.
-v7: Total rework of the implementation. Now uses workqueues and triggers
-    asynch requests for key convert, init, update, final and digest.
-    Tested with instrumented code and with a reworked version of
-    dm-integrity which uses asynchronous hashes. A patch for dm-integrity
-    is on the way but yet needs some last hone work.
-v8: Added selftest. With the selftest comes some code which wraps the
-    clear key into a "clear key token" digestible by PKEY. The
-    selftest also uses import() and export(), so these are now also
-    implemented. Furthermore a finup() implementation is now also
-    available. Tested with AF_ALG testcases and dm-integrity, also
-    tested with some instrumented code to check that the asynch
-    workqueue functions do their job correctly. Coding is complete!
-v9: As suggested by Herbert use ahash_request_complete() and surround it
-    with local_bh_disable().
-v10: Split the pkey selftest patch into 3 patches. Slight rework of the
-     setkey function as suggested by Holger: When selftest is running
-     as much as possible of the production code should run. So now the
-     key prep with selftest is one additional if/then block instead of
-     an if/then/else construct.
-     Code is ready for integration and well tested.
-v11: Utterly rework with the insights collected with the paes rework
-     and the basic work done with the pkey rework over the last 5 month.
-     Note that patch #1 effectively reverts commit 7fa481734016
-     ("crypto: ahash - make hash walk functions private to ahash.c")
-     from Eric Biggers.
-v12: Fixed some typos, adaptions to 128 bit total counter,
-     misc_register() invocation was missing in the patches series,
-     added Herbert's proposal for a new function crypto_ahash_tested().
-
-Harald Freudenberger (5):
-  crypto: ahash - make hash walk functions from ahash.c  public
-  s390/crypto: New s390 specific protected key hash phmac
-  crypto: api - Add crypto_ahash_tested() helper function
-  s390/crypto: Add selftest support for phmac
-  crypto: testmgr - Enable phmac selftest
-
-Holger Dengler (1):
-  s390/crypto: Add protected key hmac subfunctions for KMAC
-
- arch/s390/configs/debug_defconfig |    1 +
- arch/s390/configs/defconfig       |    1 +
- arch/s390/crypto/Makefile         |    1 +
- arch/s390/crypto/phmac_s390.c     | 1048 +++++++++++++++++++++++++++++
- arch/s390/include/asm/cpacf.h     |    4 +
- crypto/ahash.c                    |   26 +-
- crypto/testmgr.c                  |   30 +
- drivers/crypto/Kconfig            |   13 +
- include/crypto/internal/hash.h    |   30 +
- 9 files changed, 1133 insertions(+), 21 deletions(-)
- create mode 100644 arch/s390/crypto/phmac_s390.c
-
-
-base-commit: 1029436218e50168812dbc44b16bca6d35721b0b
---
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index bd9e49950201..0809ef102ef8 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -29,19 +29,6 @@
+ 
+ #define CRYPTO_ALG_TYPE_AHASH_MASK	0x0000000e
+ 
+-struct crypto_hash_walk {
+-	const char *data;
+-
+-	unsigned int offset;
+-	unsigned int flags;
+-
+-	struct page *pg;
+-	unsigned int entrylen;
+-
+-	unsigned int total;
+-	struct scatterlist *sg;
+-};
+-
+ static int ahash_def_finup(struct ahash_request *req);
+ 
+ static inline bool crypto_ahash_block_only(struct crypto_ahash *tfm)
+@@ -112,8 +99,8 @@ static int hash_walk_new_entry(struct crypto_hash_walk *walk)
+ 	return hash_walk_next(walk);
+ }
+ 
+-static int crypto_hash_walk_first(struct ahash_request *req,
+-				  struct crypto_hash_walk *walk)
++int crypto_hash_walk_first(struct ahash_request *req,
++			   struct crypto_hash_walk *walk)
+ {
+ 	walk->total = req->nbytes;
+ 	walk->entrylen = 0;
+@@ -133,8 +120,9 @@ static int crypto_hash_walk_first(struct ahash_request *req,
+ 
+ 	return hash_walk_new_entry(walk);
+ }
++EXPORT_SYMBOL_GPL(crypto_hash_walk_first);
+ 
+-static int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err)
++int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err)
+ {
+ 	if ((walk->flags & CRYPTO_AHASH_REQ_VIRT))
+ 		return err;
+@@ -160,11 +148,7 @@ static int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err)
+ 
+ 	return hash_walk_new_entry(walk);
+ }
+-
+-static inline int crypto_hash_walk_last(struct crypto_hash_walk *walk)
+-{
+-	return !(walk->entrylen | walk->total);
+-}
++EXPORT_SYMBOL_GPL(crypto_hash_walk_done);
+ 
+ /*
+  * For an ahash tfm that is using an shash algorithm (instead of an ahash
+diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
+index 0f85c543f80b..ef573545c85d 100644
+--- a/include/crypto/internal/hash.h
++++ b/include/crypto/internal/hash.h
+@@ -30,6 +30,20 @@
+                 __##name##_req, (req))
+ 
+ struct ahash_request;
++struct scatterlist;
++
++struct crypto_hash_walk {
++	const char *data;
++
++	unsigned int offset;
++	unsigned int flags;
++
++	struct page *pg;
++	unsigned int entrylen;
++
++	unsigned int total;
++	struct scatterlist *sg;
++};
+ 
+ struct ahash_instance {
+ 	void (*free)(struct ahash_instance *inst);
+@@ -61,6 +75,15 @@ struct crypto_shash_spawn {
+ 	struct crypto_spawn base;
+ };
+ 
++int crypto_hash_walk_done(struct crypto_hash_walk *walk, int err);
++int crypto_hash_walk_first(struct ahash_request *req,
++			   struct crypto_hash_walk *walk);
++
++static inline int crypto_hash_walk_last(struct crypto_hash_walk *walk)
++{
++	return !(walk->entrylen | walk->total);
++}
++
+ int crypto_register_ahash(struct ahash_alg *alg);
+ void crypto_unregister_ahash(struct ahash_alg *alg);
+ int crypto_register_ahashes(struct ahash_alg *algs, int count);
+-- 
 2.43.0
 
 
