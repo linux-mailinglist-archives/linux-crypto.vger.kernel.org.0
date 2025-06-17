@@ -1,157 +1,182 @@
-Return-Path: <linux-crypto+bounces-14023-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14027-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29BE5ADCE04
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 15:48:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1350CADCE5D
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 15:55:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3A983B835F
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 13:45:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BADFF188B049
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Jun 2025 13:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D8F2E3AE8;
-	Tue, 17 Jun 2025 13:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4225A2E338B;
+	Tue, 17 Jun 2025 13:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sOlp29k5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qQbquBVW"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF982E06DB;
-	Tue, 17 Jun 2025 13:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98132E266E;
+	Tue, 17 Jun 2025 13:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750167892; cv=none; b=T7tBYxkih3/CFa4PcP9jxHnRMQOXLQyVAFVyW3nwI5Ey9YON7jz1mE1xhKjt9vCokaQ9u3ltMOOU02TwgsxADbxQgxi2Z42t7LafruVA4ux+YN7QNmcCdSKJdYl63NLr+wsIWwsm8M96dhpjCqXPhmPKqq+fvZYMaoF9PUjNbls=
+	t=1750168460; cv=none; b=c2Mm4hIvAH4mugDHphcEXgDie0Wjodbk9w5I3DmDphdNanMX6LObfPFQFOUV5FKBJkyhgcnwZHlohYSwSF2y2hQvY95eWp3nmuAIOxaFGYDFYjS5s4BoIdkjYGvMe0g6zewvNvJouRZN2ELiTAnUBcLVhw3HgPZPo74aAifg1S4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750167892; c=relaxed/simple;
-	bh=pVkUkD7MNFdcuBQ69OW9O24KSZ7R9CAlgCDaCFMGaiU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O5LLTVSE6So1msSU+oD1Nf+KFy+qEwzhrjf0/nfxQIlpmfZmweTEQ40Ep+ZL6FIqWoAbawjQ2UgJhA/ZyJzkhMThjIOPR+/SOg8nrdJmAoPQWBwhvQm4OhpJtfp33Gutktdlp9VxhmFXjMHSjByCCnozvhY6Htrn53gqIWNXa4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sOlp29k5; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55HDAkev022514;
-	Tue, 17 Jun 2025 13:44:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=lLs7qzLT5eBhrmUy0
-	7X7p3Yd+cd5B3wNISxpKQ/SSsk=; b=sOlp29k5G9kON0prUDaHXzk2bsZoaR2js
-	KvMQWrRtlcQ7LHfx1OVoNU4XQGH5YFrwaSev326lMfIrC7eIvn0c6O+OujC1qwca
-	WRbxDGVuryByR69i/h+Ga2R49KNBX7AHdFeHSGiSXE04Ii4AhoW9kqY5MP6fN9xv
-	jOFFJIXvvwhyQmcNkbzzRrwLZBC1GatMnZjoieTvxvMGATgXW4HnPQj9VWGRvrA9
-	gjpHsgSTF0g2Z3KbwEqlBulfFqeWCz3YDRGKyKZQNZf4Ksb4RPseWnoXos00kitr
-	hfdrdjAE4Z4ge2pG//OHe3KxwO/OX6vXweOHyvnN8DcW0SwUOaXLQ==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4790s4gq7h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 17 Jun 2025 13:44:48 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55HANEaO014275;
-	Tue, 17 Jun 2025 13:44:47 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 479p42bcka-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 17 Jun 2025 13:44:47 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55HDihg559048430
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 17 Jun 2025 13:44:44 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D988820040;
-	Tue, 17 Jun 2025 13:44:43 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8751A2004D;
-	Tue, 17 Jun 2025 13:44:43 +0000 (GMT)
-Received: from funtu2.fritz.box?044ibm.com (unknown [9.111.71.86])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 17 Jun 2025 13:44:43 +0000 (GMT)
-From: Harald Freudenberger <freude@linux.ibm.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
-        dengler@linux.ibm.com, ifranzki@linux.ibm.com, fcallies@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com
-Subject: [PATCH v12 6/6] crypto: testmgr - Enable phmac selftest
-Date: Tue, 17 Jun 2025 15:44:40 +0200
-Message-ID: <20250617134440.48000-7-freude@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250617134440.48000-1-freude@linux.ibm.com>
-References: <20250617134440.48000-1-freude@linux.ibm.com>
+	s=arc-20240116; t=1750168460; c=relaxed/simple;
+	bh=+mvYcib1jOLn2MJdJlLe3/Of17qNWzn3vv5uSzZoKSU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kl/yJjI2fxj794RFGX1W66GaO/HqBu3oYdwnoKk3K2k8e9FwB9AL+PU18zphQadJuaYjFSiQ7opWs0gwaPIdiuL/ZGKb1oGwFGi+NJ09xnnulnYlJ3vgDTZ2++LZI8W0H10gl2PuGm95LgWXOlsyIKD4gQ/kUwFuOpgtdgz27jg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qQbquBVW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161CEC4CEF5;
+	Tue, 17 Jun 2025 13:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750168459;
+	bh=+mvYcib1jOLn2MJdJlLe3/Of17qNWzn3vv5uSzZoKSU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qQbquBVWTNilpD9J2DZukqDqhw6dYV6sQdAC3swnhkXDCzrarHfIjtDx6+iaanIj2
+	 /w49fQnKSs5gIvxmaG8LRqyy10uW6vxniN9Vtlf836msmzLX6mULgZBsyo2VCzTtdQ
+	 v8HEJuCYV3Vzp6qLFx9lNWclFdUMun1+SF3Xe0r/IgIThr2gBMuIJcCrwNKPXlzr4k
+	 qKVgTe3En5KlysSFaraPhOlK6Hm77MlTIQOT81QI2BUf7+QXEZ3OYgm8HvmQq5bDyj
+	 EA6ptglxv3jHHKeLyaL/2d/HPCJgn2G8R6Gxm7WZ6HZYrmkdGksTvaIIGBQm3ZA2aU
+	 6u12Pn3Ty9DSA==
+Date: Tue, 17 Jun 2025 16:54:15 +0300
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: David Howells <dhowells@redhat.com>
+Cc: keyrings@vger.kernel.org, Steve French <sfrench@samba.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jeffrey Altman <jaltman@auristor.com>, hch@infradead.org,
+	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org, linux-security-module@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] Keyrings: How to make them more useful
+Message-ID: <aFFzWwPoXMhMJjTL@kernel.org>
+References: <462886.1749731810@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE3MDEwNSBTYWx0ZWRfXwQWALA/eXfpD 2O1nbw8+EO2SkQk8A6tH82lZUi0SmTk308cqC1R0IQbrpPh4E6EN8ml71zHZiH8/Fdogv1qJ6HP JsDsvt/zesrs3oICGqj+uFsh8D+G5Sprr/Zt2ETMhf6J3emmRPubmW9SWfTS+uMZOkl/MNZbhVt
- DRJPUj+OIdKuzicmDHEtkAHYGnEsx7DZLvnTtjstEEjeadwxpudqeN5aYsUdBkYIysLGYggZVGR CayoiEqWXl98MJE+s9n26uiBskOD4exvFlxWgv44I+iAlpg8LiPDbi5qB1llyd7/voRkBZkv1zH Crqi7oyEJF4vxQgfi9n+1U54miRvR6c+cU5HPQRMP4f7lmPV5N82bYkS6REBDV0iqZCQVzJA7Bo
- gpQRfStDHEIdiO/+PmdtGYLXqJHI9otNiQ3GENxJH5/g3IMMwdi57YXi2XsfC0aMiPIBUsWB
-X-Proofpoint-ORIG-GUID: QBZzufnEEy1fr1vNKXQi1slLfHgGULkr
-X-Authority-Analysis: v=2.4 cv=Qc9mvtbv c=1 sm=1 tr=0 ts=68517150 cx=c_pps a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=XBO_9mDnZf_6bpFOmuAA:9
-X-Proofpoint-GUID: QBZzufnEEy1fr1vNKXQi1slLfHgGULkr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-17_05,2025-06-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 spamscore=0 impostorscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 adultscore=0 bulkscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2506170105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <462886.1749731810@warthog.procyon.org.uk>
 
-Add phmac selftest invocation to the crypto testmanager.
+On Thu, Jun 12, 2025 at 01:36:50PM +0100, David Howells wrote:
+> Hi Jarkko, Steve, Chuck, Mimi, et al.,
+> 
+> I think work needs to be done on the keyrings subsystem to make them more
+> useful for network filesystems and other kernel services such as TLS and
+> crypto.
+> 
+> There are a number of issues that I think need addressing:
+> 
+>  (1) One of the flaws in the initial design is that whilst keys have a type
+>      (which is necessary), this has to be specified as part of the lookup or
+>      the search, which is overly restrictive.
+> 
+>      It probably would have been better to search by description alone and
+>      then, if a key is found, have any type of key with that description
+>      returned and let the app/service investigate the key to find the type.
+> 
+>      Now, this is still possible to implement on top of the existing API: just
+>      allow a NULL type to be passed in - but we might need some way to
+>      enumerate all the keys with that description, but of different types.
+>      Possibly, the search function should return all the matching keys.
+> 
+>      Possibly, within the kernel, for each keyring, all the keys of the same
+>      description can be stored within a group structure, and the search
+>      returns the group.  This could also have the added benefit of maybe
+>      making it easier to handle updates.
 
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Acked-by: Holger Dengler <dengler@linux.ibm.com>
----
- crypto/testmgr.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+All keys matching the description can be collected by iterating all the
+key types (instead of passing NULL).
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index a4ad939e03c9..b42112a208ff 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -5306,6 +5306,36 @@ static const struct alg_test_desc alg_test_descs[] = {
- 			.cipher = __VECS(fcrypt_pcbc_tv_template)
- 		}
- 	}, {
-+#if IS_ENABLED(CONFIG_CRYPTO_PHMAC_S390)
-+		.alg = "phmac(sha224)",
-+		.test = alg_test_hash,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.hash = __VECS(hmac_sha224_tv_template)
-+		}
-+	}, {
-+		.alg = "phmac(sha256)",
-+		.test = alg_test_hash,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.hash = __VECS(hmac_sha256_tv_template)
-+		}
-+	}, {
-+		.alg = "phmac(sha384)",
-+		.test = alg_test_hash,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.hash = __VECS(hmac_sha384_tv_template)
-+		}
-+	}, {
-+		.alg = "phmac(sha512)",
-+		.test = alg_test_hash,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.hash = __VECS(hmac_sha512_tv_template)
-+		}
-+	}, {
-+#endif
- 		.alg = "pkcs1(rsa,none)",
- 		.test = alg_test_sig,
- 		.suite = {
--- 
-2.43.0
+Having only a syscall for the process has of course much better
+concurrency properties.  Just trying to understand the improvements by
+actual measure, that's all.
 
+>  (2) For certain applications, keys need versioning - and we need to be able
+>      to get access to older versions (at least to some extent) of the keys.
+>      An example of this is cifs where (if I understand it correctly) the key
+>      version gets cranked, but not all servers may have caught up yet, so we
+>      need to be able to try the keys in descending order of version.
+> 
+>      This could also work within the group idea mentioned above.
+> 
+>  (3) For certain applications, such as AFS and AF_RXRPC, we may need to be
+>      able to keep a number of keys around that have the same description
+>      (e.g. cell name) and basic type (e.g. rxrpc) and version, but that have
+>      different crypto types (e.g. Rx security classes and Kerberos types, such
+>      as RxGK+aes256-cts-hmac-sha1-96, RxGK+aes128-cts-hmac-sha256-128 or
+>      RxKAD) as different servers in the same cell might not support all or we
+>      might be implementing a server that is offering multiple crypto types.
+> 
+>      So we might need a "subtype" as well as a version.
+
+1. How the history is capped? I presume it is a fixed-size circular
+   buffer, where the oldest entry is deleted, when the key is updated.
+1. How history queried by the caller?
+2. How a newer version is revoked in favor of a newer version?
+
+>  (4) I think the keyring ACLs idea need to be revived.  We have a whole bunch
+>      of different keyrings, each with a specific 'domain' of usage for the
+>      keys contained therein for checking signatures on things.  Can we reduce
+>      this to one keyring and use ACLs to declare the specific purposes for
+>      which a key may be used or the specific tasks that may use it?  Use
+>      special subject IDs (ie. not simply UIDs/GIDs) to mark this.
+
+Is subject ID some kind of token that a process can hold (and possibly
+can be sent to a process)?
+
+> 
+>  (5) Replace the upcall mechanism with a listenable service channel, so that a
+>      userspace service (possibly part of systemd or driven from systemd) can
+>      listen on it and perform key creation/maintenance services.
+> 
+>      From previous discussions with the systemd maintainer, it would be a lot
+>      easier for them to manage if the key is attached to a file descriptor -
+>      at least for the duration of the maintenance operation.
+> 
+>      Further, this needs to be containerised in some way so that requests from
+>      different containers can be handled separately - and can be
+>      distinguished
+
+This sounds like an universally sane idea (outside the scope of the
+patch set).
+
+> 
+>  (6) Move away from keeping DNS records in a keyring, but rather keep them in
+>      some sort of shrinkable list.  They could still be looked up over a
+>      secure channel.
+
+Don't expertise to understand the benefits of this change. 
+
+
+> 
+> To aid with at least (1), (2) and (3) and possibly (4), I think it might be
+> worth adding an extended add_key() system call that takes an additional
+> parameter string:
+> 
+> 	key_serial_t add_key2(const char *type,
+> 			      const char *description,
+> 			      const char *parameters,
+> 			      const void payload, size_t plen,
+> 			      key_serial_t keyring);
+> 
+> The parameters would get passed to the key type driver for it to extract
+> things like version number and subtype from without the need to try and fold
+> it into the payload (which may, for example, be a binary ticket obtained from
+> kerberos).  Though possibly that is a bad example as the kerberos ticket may
+> contain multiple keys.
+
+Does the parameter list mimic kernel command-line style of comma
+separated attributes?
+
+BR, Jarkko
 
