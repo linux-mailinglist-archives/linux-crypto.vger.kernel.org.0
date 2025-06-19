@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-14112-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14114-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAA7DAE0CFF
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Jun 2025 20:35:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A14D0AE0D02
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Jun 2025 20:35:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 054FD3AA54C
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Jun 2025 18:35:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFEC53B6B02
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Jun 2025 18:35:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D94213E83;
-	Thu, 19 Jun 2025 18:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DCC27E7D9;
+	Thu, 19 Jun 2025 18:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OU7Du3Lq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMEQcIZc"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CECC30E855;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6233213E6D;
 	Thu, 19 Jun 2025 18:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750358128; cv=none; b=KzGc/Bt/K1T3XrqXiCIei7shPAAsfju1J5TkwuoUsXbwKJKcMRhgMvRSQHv7vh3mAJZcqV95SjJfnDC1EWpQ9LgLEe88+KyOOBG9jCYLJJUybyuBQ6nTUKkqDx7WhFxB3vL2nDq5D6DmhhsNm0AEJW2YJs0ZVXkwTaW5AtPyzxM=
+	t=1750358128; cv=none; b=Io6m2io/6gamqanSIjlVPXKuLxynPLAjhXr6o69OrarLBaucD69Js2b3QNZ47Zou0GDlTbWUWD6yAwKX/JhQs7gVDSnR70IyB2UAuQIA9q9wgiWQCmFdqs5qxV7MBbWcq8os3nUJPlgdw3jatmKSAQeint3Fc/4/Emh+eqAuv/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1750358128; c=relaxed/simple;
-	bh=Tx8W3/+Pe/JrdMxVTO0yqNcBUIYsC1CyRtfbfAki0H8=;
+	bh=qH5/JEmkvzKPI6/HH8DjDLCOwejQwXCTuISnD7/tw+0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tKGc8+0JFELYWpKnoviXL1xvaOFPDjjYn01OLgmU0l8QIengFQ+kbz6IYmnEN0occkzHSJzuIhhiWSopPtuW5RbbTHSRKd3f9iJ0wvHeprTNcyR3mmwl7QtxeaGMPV3UWxhE8RkmyMcUnBIdoJiaLqVawndkvN11BtqtjbWjshY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OU7Du3Lq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672CAC4CEED;
+	 MIME-Version; b=a/sx+09HaNsZzLIkbGA7yechbc+3bQTVbpOTSSiZCu9hy1NRJugBVgtcJumpo1exCxunq4CluSQIqGmYcKJaSzB+f8+42i+Pbj/2QCbmJtPEmvFsZDgjAo2jix8ll+b2flNKU46C2lRZnOinbl34/BetpAYVEEQNOtfedD66BTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nMEQcIZc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A33A2C4CEEA;
 	Thu, 19 Jun 2025 18:35:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1750358128;
-	bh=Tx8W3/+Pe/JrdMxVTO0yqNcBUIYsC1CyRtfbfAki0H8=;
+	bh=qH5/JEmkvzKPI6/HH8DjDLCOwejQwXCTuISnD7/tw+0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OU7Du3LqOF+G3XqtL4Ynnp1RpMujTnrqMEI30vVAoFY/eqTn3S2btI+GEe2bizjHg
-	 U6X5vuxkIpatuEDRR4ZkA2Veou4r420F3SZQ6TBFylsQGhBx49/IYaoQ3FApyXue2m
-	 LmnvUN8/T0OLEyGkIyXR3D3Mkz40GX2yA26pWee1lEr9AgtCDgMsniqiuN+X2r6LKp
-	 SusPxPfGw+/PL8e2X04SAm+hrAMZQ9yG4/p0Gd87A5uiEfXHns1p7O9MgxS28vCkLR
-	 3XDObzPXzag0lu9bJ/Lk1lE3yOlZyzlUhxKA1Fh2ggytvv6H641RXR9k8l9CaDDphK
-	 okF7t794TOmVA==
+	b=nMEQcIZcSEhyX9Kp2JPu8J6YgLcs2ThnNud8Juzg+VQihg3rPpas+qXiH+CKLR33o
+	 Kq0G+FKIQyV2u40098yDv/gi6mzH/FnffQ2xucfDGnlD88c5zMneW4yZ8LTX2eTIY9
+	 V0i8mornn0FufW1jUAiQkl1oYrAqZcqwriM0xCl4/MPFyMvqasv9o8AvWPRj1Gm29D
+	 D8pnqrYA7D3r7+zFoytwYbZ28GJ4yxjEqH9fxBgBLkSRDjhIOMq5A5NBS5yJTw4Wgm
+	 bAd9NIQhsNPhk5SDMWV9SIOU5ABiBSuI1WmXkHf9rul8IIyAcMCQj3pJey16FOJDG1
+	 VKJrUeFxs9yXg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>,
 	linux-crypto@vger.kernel.org
-Subject: [PATCH 2/3] lib/crc/crc32: change crc32() from macro to inline function and remove cast
-Date: Thu, 19 Jun 2025 11:34:13 -0700
-Message-ID: <20250619183414.100082-3-ebiggers@kernel.org>
+Subject: [PATCH 3/3] lib/crc/crc64: add include/linux/crc64.h to kernel-api.rst
+Date: Thu, 19 Jun 2025 11:34:14 -0700
+Message-ID: <20250619183414.100082-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <20250619183414.100082-1-ebiggers@kernel.org>
 References: <20250619183414.100082-1-ebiggers@kernel.org>
@@ -61,50 +61,30 @@ Content-Transfer-Encoding: 8bit
 
 From: Eric Biggers <ebiggers@google.com>
 
-There's no need for crc32() to be a macro.  Make it an inline function
-instead.  Also, remove the cast of the data pointer to
-'unsigned char const *', which is no longer necessary now that the type
-used in the function prototype is 'const void *'.
+The other CRC functions with kerneldoc are here, so add crc64.h too.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/linux/crc32.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ Documentation/core-api/kernel-api.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/crc32.h b/include/linux/crc32.h
-index f9c173206d4d1..da78b215ff2e9 100644
---- a/include/linux/crc32.h
-+++ b/include/linux/crc32.h
-@@ -28,10 +28,16 @@
-  * Context: Any context
-  * Return: The new CRC value
-  */
- u32 crc32_le(u32 crc, const void *p, size_t len);
+diff --git a/Documentation/core-api/kernel-api.rst b/Documentation/core-api/kernel-api.rst
+index 0096463c7d7f7..111f6a595e48d 100644
+--- a/Documentation/core-api/kernel-api.rst
++++ b/Documentation/core-api/kernel-api.rst
+@@ -154,10 +154,12 @@ CRC Functions
+ .. kernel-doc:: lib/crc/crc-itu-t.c
+    :export:
  
-+/* This is just an alias for crc32_le(). */
-+static inline u32 crc32(u32 crc, const void *p, size_t len)
-+{
-+	return crc32_le(crc, p, len);
-+}
+ .. kernel-doc:: include/linux/crc32.h
+ 
++.. kernel-doc:: include/linux/crc64.h
 +
- /**
-  * crc32_be() - Compute most-significant-bit-first IEEE CRC-32
-  * @crc: Initial CRC value.  ~0 (recommended) or 0 for a new CRC computation, or
-  *	 the previous CRC value if computing incrementally.
-  * @p: Pointer to the data buffer
-@@ -88,12 +94,10 @@ u32 crc32c(u32 crc, const void *p, size_t len);
- u32 crc32_optimizations(void);
- #else
- static inline u32 crc32_optimizations(void) { return 0; }
- #endif
+ Base 2 log and power Functions
+ ------------------------------
  
--#define crc32(seed, data, length)  crc32_le(seed, (unsigned char const *)(data), length)
--
- /*
-  * Helpers for hash table generation of ethernet nics:
-  *
-  * Ethernet sends the least significant bit of a byte first, thus crc32_le
-  * is used. The output of crc32_le is bit reversed [most significant bit
+ .. kernel-doc:: include/linux/log2.h
+    :internal:
 -- 
 2.50.0
 
