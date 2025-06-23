@@ -1,68 +1,68 @@
-Return-Path: <linux-crypto+bounces-14197-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14199-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1DCEAE429B
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Jun 2025 15:23:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 908CDAE42A2
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Jun 2025 15:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1807C1898C83
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Jun 2025 13:20:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EC52188DD99
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Jun 2025 13:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267C62561AA;
-	Mon, 23 Jun 2025 13:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63242571C6;
+	Mon, 23 Jun 2025 13:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MvG2wGML"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ht3etf6I"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134AC25394A;
-	Mon, 23 Jun 2025 13:18:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7925B256C83;
+	Mon, 23 Jun 2025 13:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750684731; cv=none; b=L0kGGp1reKG4lJU1KLEDSSUv4CwHfaX61auXxSTd16IzXItRgqTsoOWwqNDl++h3m6bKxIRv10jt9fDFCLRs/HoUB+jWHQUNHoC9hmn1HYngHLq+LfAFHwRzAEVd2wvGfKZvmIOhJrQeUuBB3cV2qvoDP9kKL3zWwtFdU52zT3Q=
+	t=1750684735; cv=none; b=BxOQ1nSSLDTtT5Ibgm1Uhs8qnXZqIdL6LVD6jtgcI4ZAPQuCWcEdUBSj5L8e9dq3SNO8IJg5WBImedtsu3XRsnMIiB+bK6BguxhAhWVQyCsMoafiyrRwx2AF4qbSblIhYqtHGLUMknqSXbg4QcXx4uoF7Oao63u8Me5WFsiqDuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750684731; c=relaxed/simple;
-	bh=ka7DOlStzpdl6AaErLxV2dkMbfEyCE7Z+4tBWDf+LTc=;
+	s=arc-20240116; t=1750684735; c=relaxed/simple;
+	bh=e3OzJbB8Wf28/Du+VCLKaLjpFFhqXcCZJTDTmDoy7zw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ear215rgXGpSFNuNqBPx1gj1zbUPqU4vr563sIvwvxX+nwQigW40l5nYCT52cZ0UX4+1dBJaHkOHR2Z3jiHXlQNHgztrodJE8Sa+2nM3ZDnnb7hxIQJgok1py+TwcdEIkHEqsK6WEjwmKGJt+amCGt1PBPIOqFir55UhQdXf4AA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MvG2wGML; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=b6Gj7Y14kjZBaehHqgjUf+Ki1CVSUNPxVhODa3ZKb3seNqvlUR57+OsKG/EfwVXl5JrgqThckNrVE5r/JSM7Y7RMzUvNsr+VcTwffeFRmLrCD9BWD/3meZBU5A6+HDLVv1j2Eo/AR52sOB2ituFwDxUbzsiDEMCCkR/XIcvumNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ht3etf6I; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55N9b28J019048;
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55N95QUx007226;
 	Mon, 23 Jun 2025 13:18:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=oowJ2zZXHBno6Zkk9
-	BIfEe5BYDUDl+9umhi0sKVyiDU=; b=MvG2wGML7TVDt4c5DzpAL6KCc9R1Guidm
-	+E9WRsarTLcoDWC8p/yz5UnPGSowsFh6S7NiXgP1lEWPH/STHUENZ9PGGj3OfiZb
-	MQJFr0uT+kibf4zdv1nyO0tl7lHuOgkCEm9DR1gpR4c81lvGISy30f6pP2sb7EaS
-	KBzK2T7vpDzu9RuWCJ1S24LsGIzBSVQLZNxa64ZiR+WXBENX6B4qIsJIPDGu7k1v
-	N3kBz2oNo0VKnvOwaLAl9gJtquTZKEqBztDyzp/DloztG+P4BcafepXexzj52pVW
-	Lxw7E+KqB7JSWF1f1XoL2F7CMlB7QOUYFzFC09QDcl9lh4wUYlhAg==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47dmfe2568-1
+	:mime-version:references:subject:to; s=pp1; bh=gVMgS5y5O7Jii0xEd
+	Jat2PaINYW81PyVxGrZ7lTrXms=; b=Ht3etf6IdwMsqdVxFKhtoPw+0vMytqQ0B
+	M3pobPmW4ogCnFzRBsRww8tBNvE2nJjXiJI/PtVrV0+NxxUBJqcP6SnVPgaBLMEd
+	usKSl26E1ChvM+FdE3WDA7sd582P8PjHCkv50aAUf250hFjMtUpQGAg5iDATAS34
+	8MX6w+P7U8pDTWKnLcO9IsyPA7vBDPhDjuggUkZzeWPZJL1x+61ukyC+NTmAQ9Gi
+	RdMSfIflCt6jXLxQSaPLYSbsya3sSx+iRT4cVgxhaJXRUrcvEGVQQuva8af1tDNw
+	vLHo3qcRmYDQqMl77xCXfUqeUXjPyFPRr6z72HqJazok/k2FQZt4w==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47dk63j3tk-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Jun 2025 13:18:43 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55NB1xou030552;
-	Mon, 23 Jun 2025 13:18:42 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47e7eypx70-1
+	Mon, 23 Jun 2025 13:18:44 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55NCXUfq014775;
+	Mon, 23 Jun 2025 13:18:43 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 47e9s26g54-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Jun 2025 13:18:42 +0000
+	Mon, 23 Jun 2025 13:18:43 +0000
 Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55NDIaOw24511182
+	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55NDIgB859638214
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 23 Jun 2025 13:18:37 GMT
+	Mon, 23 Jun 2025 13:18:42 GMT
 Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CAEBE58055;
-	Mon, 23 Jun 2025 13:18:41 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 609D758055;
+	Mon, 23 Jun 2025 13:18:42 +0000 (GMT)
 Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 563D558043;
+	by IMSVA (Postfix) with ESMTP id E1C3158059;
 	Mon, 23 Jun 2025 13:18:41 +0000 (GMT)
 Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
 	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
@@ -73,9 +73,9 @@ To: linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
 Cc: linux-kernel@vger.kernel.org, James.Bottomley@HansenPartnership.com,
         dhowells@redhat.com, simo@redhat.com,
         Stefan Berger <stefanb@linux.ibm.com>
-Subject: [RFC PATCH 2/4] crypto: Add shake128/256 to generic sha3 module
-Date: Mon, 23 Jun 2025 09:18:28 -0400
-Message-ID: <20250623131830.2194643-3-stefanb@linux.ibm.com>
+Subject: [RFC PATCH 3/4] crypto: Add tests cases for shake128 & shake256 to testmgr
+Date: Mon, 23 Jun 2025 09:18:29 -0400
+Message-ID: <20250623131830.2194643-4-stefanb@linux.ibm.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250623131830.2194643-1-stefanb@linux.ibm.com>
 References: <20250623131830.2194643-1-stefanb@linux.ibm.com>
@@ -87,379 +87,376 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6-Ivb8M0WJMwJ9k8TeSmKnS0_sK2jo0d
-X-Proofpoint-GUID: 6-Ivb8M0WJMwJ9k8TeSmKnS0_sK2jo0d
-X-Authority-Analysis: v=2.4 cv=BpqdwZX5 c=1 sm=1 tr=0 ts=68595433 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=7PqV0hYhwxvHinq54jsA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjIzMDA4MCBTYWx0ZWRfXx/BMbpXcXIaX GUAwemxa2TYqkZNA9RPGw0nt/2VtmydJohPYx24oDTq5JEwxhO/WvDcKgYQ4TA7y+yew5XCQKSl xjllX6ewNWtY+fytUH8FnFJIymDxaLTUCBLikiF4QmpWO1Fytr+SqdUTVHKILSPTzpDKrg1KfPE
- M8Zmv8szc272QzhsxrM7DIdf642/L5ERPCCUPnpZSKunAz4CWxgXD1kDEOca8Ud+WqGNMEbMXhy 5ZA3rNmRlYtkI9SAg91o/pjEbjcj411ZZbjCLegpYGkJOxgaLflrhyNMncWTh89suo8a1txqixC jCm148ouHW2WHkg0+fChobqZZwcTDisGr1EwouLd/QDtncd7IS2nOCpIePdBikhJE6ToeHcHs2G
- u89fyLa42jDas5Bd8uB4bt6K4GKc1ZXd8q/PkewXTDQRFubfJpJAjENIxmK0pKMWCoqJWuzV
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjIzMDA4MCBTYWx0ZWRfX1F5nnKAqYMKw VwWlEVpWX+XzjrcxT6GGPgH7nbo1gQSMgqZZpacjfxIqmVRB9ixbAeQTYoiP2npwnCgQ8r1J4nW rkjGCVY6nASV0PszrXLD3aIyK1qPWgOX294Si6C+LTh/trK9WcTXaUdRMNOVUL1EXG8Hp0zN7EB
+ zM2wj2HLfkUn2OXG8moq/NWxHz2q+ls1wwV6rpCKrfJYJtoU1I1RV1VTuqVbEtnh0rfGnrX+zuM Q1fOwMiOBifZ1Ylz6NqrBn+IbpCmB6DNtb8Uzceap3ftwoyUAHv+owsOObvSjdFQY0PW4EV+LYS y569M4VD/Ofdh5vZIohILQXeQ7Xg0sRydQFMK/fkN7JoT68/eiKWYMkVKHlKpvmianblStnBjYL
+ i9HhhCUrDuYKWzN5tUt1g564mqJyolD+6WrDchWvbpjzaqHkelY2PSHWxwQWwI3g8LwlkiqI
+X-Proofpoint-ORIG-GUID: lJqUz4S59PtGFCfZyv-d4Etc8kx2B3qH
+X-Proofpoint-GUID: lJqUz4S59PtGFCfZyv-d4Etc8kx2B3qH
+X-Authority-Analysis: v=2.4 cv=BfvY0qt2 c=1 sm=1 tr=0 ts=68595434 cx=c_pps a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=xF6bd4FRdrIRRYsjWBcA:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-06-23_03,2025-06-23_03,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 clxscore=1015 spamscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 malwarescore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 suspectscore=0 adultscore=0 spamscore=0
+ impostorscore=0 mlxlogscore=602 malwarescore=0 phishscore=0 bulkscore=0
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2506230080
 
-Extend the sha3 module with shake128 & shake256. For this, implement
-functions to get (squeeze) a number of bytes or blocks from the keccak
-sponge. A block here corresponds to the number of bytes available in a
-buffer following a keccak permutation. On top of this functionality,
-implement the general squeeze function that returns a requested number of
-bytes to the user. Implement the 'final' function on top of the squeeze
-function. The 'final' function will always request a fixed number of bytes
-from the squeeze function and set the 'final' parameter to true, clearing
-the state of the hash as usual.
-
-Adjust the maximum hash description and block sizes due to shake128.
-
-Extend the arrays for supported hashes with entries for shake128 and
-shake256.
+Add test cases for shake128 & shake256 to the testmgr.
 
 Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 ---
- crypto/hash_info.c             |   4 +
- crypto/sha3_generic.c          | 211 +++++++++++++++++++++++++++++++++
- include/crypto/algapi.h        |   2 +-
- include/crypto/hash.h          |   5 +-
- include/crypto/sha3.h          |  19 +++
- include/uapi/linux/hash_info.h |   2 +
- 6 files changed, 239 insertions(+), 4 deletions(-)
+ crypto/testmgr.c |  14 +++
+ crypto/testmgr.h | 310 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 324 insertions(+)
 
-diff --git a/crypto/hash_info.c b/crypto/hash_info.c
-index 9a467638c971..2e426be89463 100644
---- a/crypto/hash_info.c
-+++ b/crypto/hash_info.c
-@@ -32,6 +32,8 @@ const char *const hash_algo_name[HASH_ALGO__LAST] = {
- 	[HASH_ALGO_SHA3_256]    = "sha3-256",
- 	[HASH_ALGO_SHA3_384]    = "sha3-384",
- 	[HASH_ALGO_SHA3_512]    = "sha3-512",
-+	[HASH_ALGO_SHAKE128]	= "shake128",
-+	[HASH_ALGO_SHAKE256]	= "shake256",
- };
- EXPORT_SYMBOL_GPL(hash_algo_name);
- 
-@@ -59,5 +61,7 @@ const int hash_digest_size[HASH_ALGO__LAST] = {
- 	[HASH_ALGO_SHA3_256]    = SHA3_256_DIGEST_SIZE,
- 	[HASH_ALGO_SHA3_384]    = SHA3_384_DIGEST_SIZE,
- 	[HASH_ALGO_SHA3_512]    = SHA3_512_DIGEST_SIZE,
-+	[HASH_ALGO_SHAKE128]	= SHAKE128_DIGEST_SIZE,
-+	[HASH_ALGO_SHAKE256]	= SHAKE256_DIGEST_SIZE,
- };
- EXPORT_SYMBOL_GPL(hash_digest_size);
-diff --git a/crypto/sha3_generic.c b/crypto/sha3_generic.c
-index b103642b56ea..4782303527fe 100644
---- a/crypto/sha3_generic.c
-+++ b/crypto/sha3_generic.c
-@@ -29,6 +29,8 @@
- #define SHA3_INLINE	noinline
- #endif
- 
-+#define DOMAIN_SEPARATOR_SHAKE	0x1F
-+
- #define KECCAK_ROUNDS 24
- 
- static const u64 keccakf_rndc[24] = {
-@@ -237,6 +239,189 @@ int crypto_sha3_final(struct shash_desc *desc, u8 *out)
- }
- EXPORT_SYMBOL(crypto_sha3_final);
- 
-+static int crypto_shake_init(struct shash_desc *desc)
-+{
-+	struct shake_state *sctx = shash_desc_ctx(desc);
-+	unsigned int digest_size = crypto_shash_digestsize(desc->tfm);
-+
-+	sctx->rsiz = 200 - 2 * digest_size;
-+	sctx->rsizw = sctx->rsiz / 8;
-+	sctx->partial = 0;
-+	sctx->ridx = 0;
-+	sctx->finalized = false;
-+	sctx->permute = false;
-+
-+	memset(sctx->st, 0, sizeof(sctx->st));
-+	return 0;
-+}
-+
-+static int crypto_shake_update(struct shash_desc *desc, const u8 *data,
-+			       unsigned int len)
-+{
-+	struct shake_state *sctx = shash_desc_ctx(desc);
-+	unsigned int done;
-+	const u8 *src;
-+
-+	done = 0;
-+	src = data;
-+
-+	if ((sctx->partial + len) > (sctx->rsiz - 1)) {
-+		if (sctx->partial) {
-+			done = -sctx->partial;
-+			memcpy(sctx->buf + sctx->partial, data,
-+			       done + sctx->rsiz);
-+			src = sctx->buf;
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 82977ea25db3..2e4740448e3a 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -5558,6 +5558,20 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 		.suite = {
+ 			.hash = __VECS(sha512_tv_template)
+ 		}
++	}, {
++		.alg = "shake128",
++		.test = alg_test_hash,
++		.fips_allowed = 1,
++		.suite = {
++			.hash = __VECS(shake128_tv_template)
 +		}
-+
-+		do {
-+			unsigned int i;
-+
-+			for (i = 0; i < sctx->rsizw; i++)
-+				sctx->st[i] ^= get_unaligned_le64(src + 8 * i);
-+			keccakf(sctx->st);
-+
-+			done += sctx->rsiz;
-+			src = data + done;
-+		} while (done + (sctx->rsiz - 1) < len);
-+
-+		sctx->partial = 0;
-+	}
-+	memcpy(sctx->buf + sctx->partial, src, len - done);
-+	sctx->partial += (len - done);
-+
-+	return 0;
-+}
-+
-+static void crypto_shake_squeeze_bytes(struct shake_state *sctx,
-+				       u8 **out, size_t n)
-+{
-+	size_t i, to_copy, loops;
-+	__le64 *digest;
-+	u8 *_out = *out;
-+
-+	if (n == 0)
-+		return;
-+
-+	BUG_ON(sctx->ridx + n > sctx->rsiz);
-+
-+	if (sctx->permute) {
-+		keccakf(sctx->st);
-+		sctx->permute = false;
-+	}
-+
-+	while (n) {
-+		to_copy = (n < 8) ? n : 8 - (sctx->ridx & 7);
-+		if (to_copy < 8) {
-+			for (i = sctx->ridx; i < sctx->ridx + to_copy; i++)
-+				*_out++ = sctx->st[i / 8] >> 8 * (i & 7);
-+
-+			sctx->ridx += to_copy;
-+			n -= to_copy;
-+			if (n == 0)
-+				break;
++	}, {
++		.alg = "shake256",
++		.test = alg_test_hash,
++		.fips_allowed = 1,
++		.suite = {
++			.hash = __VECS(shake256_tv_template)
 +		}
-+
-+		BUG_ON((sctx->ridx & 7) != 0);
-+		digest = (__le64 *)_out;
-+		loops = n / 8;
-+		for (i = sctx->ridx / 8; i < (sctx->ridx / 8) + loops; i++)
-+			put_unaligned_le64(sctx->st[i], digest++);
-+
-+		sctx->ridx += 8 * loops;
-+		n -= 8 * loops;
-+		_out = (u8 *)digest;
-+	}
-+
-+	if (sctx->ridx == sctx->rsiz) {
-+		sctx->ridx = 0;
-+		sctx->permute = true;
-+	}
-+	*out = _out;
-+}
-+
-+static void crypto_shake_squeeze_blocks(struct shake_state *sctx,
-+					u8 **out, size_t nblocks)
-+{
-+	__le64 *digest = (__le64 *)*out;
-+	size_t i, j;
-+
-+	BUG_ON(sctx->ridx != 0);
-+
-+	for (i = 0; i < nblocks; i++) {
-+		if (sctx->permute)
-+			keccakf(sctx->st);
-+		sctx->permute = true;
-+
-+		for (j = 0; j < sctx->rsiz / 8; j++)
-+			put_unaligned_le64(sctx->st[j], digest++);
-+	}
-+	*out = (u8 *)digest;
-+}
-+
-+static void crypto_shake_finalize(struct shake_state *sctx,
-+				  u8 domsep)
-+{
-+	unsigned int inlen, i;
-+
-+	if (sctx->finalized)
-+		return;
-+
-+	inlen = sctx->partial;
-+	sctx->buf[inlen++] = domsep;
-+	memset(sctx->buf + inlen, 0, sctx->rsiz - inlen);
-+	sctx->buf[sctx->rsiz - 1] |= 0x80;
-+
-+	for (i = 0; i < sctx->rsizw; i++)
-+		sctx->st[i] ^= get_unaligned_le64(sctx->buf + 8 * i);
-+
-+	sctx->finalized = true;
-+	sctx->permute = true;
-+}
-+
-+static int crypto_shake_squeeze(struct shash_desc *desc,
-+				u8 *out, size_t outlen,
-+				bool final)
-+{
-+	struct shake_state *sctx = shash_desc_ctx(desc);
-+	size_t nblocks, to_copy;
-+
-+	if (!sctx->finalized)
-+		crypto_shake_finalize(sctx, DOMAIN_SEPARATOR_SHAKE);
-+
-+	if (sctx->ridx > 0) {
-+		to_copy = min(outlen, sctx->rsiz - sctx->ridx);
-+
-+		crypto_shake_squeeze_bytes(sctx, &out, to_copy);
-+		outlen -= to_copy;
-+		if (outlen == 0)
-+			goto done;
-+	}
-+
-+	nblocks = outlen / sctx->rsiz;
-+	if (nblocks) {
-+		crypto_shake_squeeze_blocks(sctx, &out, nblocks);
-+		outlen -= nblocks * sctx->rsiz;
-+	}
-+
-+	crypto_shake_squeeze_bytes(sctx, &out, outlen);
-+
-+done:
-+	if (final)
-+		memset(sctx, 0, sizeof(*sctx));
-+
-+	return 0;
-+}
-+
-+static int crypto_shake_final(struct shash_desc *desc, u8 *out)
-+{
-+	unsigned int digest_size = crypto_shash_digestsize(desc->tfm);
-+
-+	crypto_shake_squeeze(desc, out, digest_size, true);
-+
-+	return 0;
-+}
-+
-+
- static struct shash_alg algs[] = { {
- 	.digestsize		= SHA3_224_DIGEST_SIZE,
- 	.init			= crypto_sha3_init,
-@@ -277,6 +462,28 @@ static struct shash_alg algs[] = { {
- 	.base.cra_driver_name	= "sha3-512-generic",
- 	.base.cra_blocksize	= SHA3_512_BLOCK_SIZE,
- 	.base.cra_module	= THIS_MODULE,
-+}, {
-+	.digestsize		= SHAKE128_DIGEST_SIZE,
-+	.init			= crypto_shake_init,
-+	.update			= crypto_shake_update,
-+	.final			= crypto_shake_final,
-+	.squeeze		= crypto_shake_squeeze,
-+	.descsize		= sizeof(struct shake_state),
-+	.base.cra_name		= "shake128",
-+	.base.cra_driver_name	= "shake128-generic",
-+	.base.cra_blocksize	= SHAKE128_BLOCK_SIZE,
-+	.base.cra_module	= THIS_MODULE,
-+}, {
-+	.digestsize		= SHAKE256_DIGEST_SIZE,
-+	.init			= crypto_shake_init,
-+	.update			= crypto_shake_update,
-+	.final			= crypto_shake_final,
-+	.squeeze		= crypto_shake_squeeze,
-+	.descsize		= sizeof(struct shake_state),
-+	.base.cra_name		= "shake256",
-+	.base.cra_driver_name	= "shake256-generic",
-+	.base.cra_blocksize	= SHAKE256_BLOCK_SIZE,
-+	.base.cra_module	= THIS_MODULE,
- } };
+ 	}, {
+ 		.alg = "sm3",
+ 		.test = alg_test_hash,
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index afc10af59b0a..c99dc61353b1 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -5914,6 +5914,316 @@ static const struct hash_testvec sha3_512_tv_template[] = {
+ 	},
+ };
  
- static int __init sha3_generic_mod_init(void)
-@@ -303,3 +510,7 @@ MODULE_ALIAS_CRYPTO("sha3-384");
- MODULE_ALIAS_CRYPTO("sha3-384-generic");
- MODULE_ALIAS_CRYPTO("sha3-512");
- MODULE_ALIAS_CRYPTO("sha3-512-generic");
-+MODULE_ALIAS_CRYPTO("shake128");
-+MODULE_ALIAS_CRYPTO("shake128-generic");
-+MODULE_ALIAS_CRYPTO("shake256");
-+MODULE_ALIAS_CRYPTO("shake256-generic");
-diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
-index 6e07bbc04089..be30f895fe7b 100644
---- a/include/crypto/algapi.h
-+++ b/include/crypto/algapi.h
-@@ -20,7 +20,7 @@
-  * static buffers that are big enough for any combination of
-  * algs and architectures. Ciphers have a lower maximum size.
-  */
--#define MAX_ALGAPI_BLOCKSIZE		160
-+#define MAX_ALGAPI_BLOCKSIZE		168 /* shake128 */
- #define MAX_ALGAPI_ALIGNMASK		127
- #define MAX_CIPHER_BLOCKSIZE		16
- #define MAX_CIPHER_ALIGNMASK		15
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index 9072652e8e60..5d69c2d69b96 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -166,10 +166,9 @@ struct shash_desc {
- #define HASH_MAX_DIGESTSIZE	 64
- 
- /*
-- * Worst case is hmac(sha3-224-generic).  Its context is a nested 'shash_desc'
-- * containing a 'struct sha3_state'.
-+ * Worst case is shake128
-  */
--#define HASH_MAX_DESCSIZE	(sizeof(struct shash_desc) + 360)
-+#define HASH_MAX_DESCSIZE	(sizeof(struct shash_desc) + 384)
- 
- #define SHASH_DESC_ON_STACK(shash, ctx)					     \
- 	char __##shash##_desc[sizeof(struct shash_desc) + HASH_MAX_DESCSIZE] \
-diff --git a/include/crypto/sha3.h b/include/crypto/sha3.h
-index 080f60c2e6b1..d99d2bfbd27f 100644
---- a/include/crypto/sha3.h
-+++ b/include/crypto/sha3.h
-@@ -31,4 +31,23 @@ int crypto_sha3_update(struct shash_desc *desc, const u8 *data,
- 		       unsigned int len);
- int crypto_sha3_final(struct shash_desc *desc, u8 *out);
- 
-+
-+#define SHAKE128_DIGEST_SIZE	(128 / 8)
-+#define SHAKE128_BLOCK_SIZE	(200 - 2 * SHAKE128_DIGEST_SIZE)
-+
-+#define SHAKE256_DIGEST_SIZE	(256 / 8)
-+#define SHAKE256_BLOCK_SIZE	(200 - 2 * SHAKE256_DIGEST_SIZE)
-+
-+struct shake_state {
-+	u64		st[25];
-+	unsigned int	rsiz;
-+	unsigned int	rsizw;
-+
-+	unsigned int	partial;
-+	u8		buf[SHAKE128_BLOCK_SIZE];
-+	bool		finalized;
-+	bool		permute;
-+	unsigned int	ridx;
++static const struct hash_testvec shake128_tv_template[] = {
++	{
++		.plaintext = "",
++		.digest	= "\x7f\x9c\x2b\xa4\xe8\x8f\x82\x7d"
++				"\x61\x60\x45\x50\x76\x05\x85\x3e",
++	}, {
++		.plaintext = "a",
++		.psize	= 1,
++		.digest	= "\x85\xc8\xde\x88\xd2\x88\x66\xbf"
++				"\x08\x68\x09\x0b\x39\x61\x16\x2b",
++	}, {
++		.plaintext = "abcdbcdecdefdefgefghfghighijhijkijkl"
++			     "jklmklmnlmnomnopnopq",
++		.psize	= 56,
++		.digest = "\x1a\x96\x18\x2b\x50\xfb\x8c\x7e"
++				"\x74\xe0\xa7\x07\x78\x8f\x55\xe9",
++	}, {
++		.plaintext = "\x08\x9f\x13\xaa\x41\xd8\x4c\xe3"
++			     "\x7a\x11\x85\x1c\xb3\x27\xbe\x55"
++			     "\xec\x60\xf7\x8e\x02\x99\x30\xc7"
++			     "\x3b\xd2\x69\x00\x74\x0b\xa2\x16"
++			     "\xad\x44\xdb\x4f\xe6\x7d\x14\x88"
++			     "\x1f\xb6\x2a\xc1\x58\xef\x63\xfa"
++			     "\x91\x05\x9c\x33\xca\x3e\xd5\x6c"
++			     "\x03\x77\x0e\xa5\x19\xb0\x47\xde"
++			     "\x52\xe9\x80\x17\x8b\x22\xb9\x2d"
++			     "\xc4\x5b\xf2\x66\xfd\x94\x08\x9f"
++			     "\x36\xcd\x41\xd8\x6f\x06\x7a\x11"
++			     "\xa8\x1c\xb3\x4a\xe1\x55\xec\x83"
++			     "\x1a\x8e\x25\xbc\x30\xc7\x5e\xf5"
++			     "\x69\x00\x97\x0b\xa2\x39\xd0\x44"
++			     "\xdb\x72\x09\x7d\x14\xab\x1f\xb6"
++			     "\x4d\xe4\x58\xef\x86\x1d\x91\x28"
++			     "\xbf\x33\xca\x61\xf8\x6c\x03\x9a"
++			     "\x0e\xa5\x3c\xd3\x47\xde\x75\x0c"
++			     "\x80\x17\xae\x22\xb9\x50\xe7\x5b"
++			     "\xf2\x89\x20\x94\x2b\xc2\x36\xcd"
++			     "\x64\xfb\x6f\x06\x9d\x11\xa8\x3f"
++			     "\xd6\x4a\xe1\x78\x0f\x83\x1a\xb1"
++			     "\x25\xbc\x53\xea\x5e\xf5\x8c\x00"
++			     "\x97\x2e\xc5\x39\xd0\x67\xfe\x72"
++			     "\x09\xa0\x14\xab\x42\xd9\x4d\xe4"
++			     "\x7b\x12\x86\x1d\xb4\x28\xbf\x56"
++			     "\xed\x61\xf8\x8f\x03\x9a\x31\xc8"
++			     "\x3c\xd3\x6a\x01\x75\x0c\xa3\x17"
++			     "\xae\x45\xdc\x50\xe7\x7e\x15\x89"
++			     "\x20\xb7\x2b\xc2\x59\xf0\x64\xfb"
++			     "\x92\x06\x9d\x34\xcb\x3f\xd6\x6d"
++			     "\x04\x78\x0f\xa6\x1a\xb1\x48\xdf"
++			     "\x53\xea\x81\x18\x8c\x23\xba\x2e"
++			     "\xc5\x5c\xf3\x67\xfe\x95\x09\xa0"
++			     "\x37\xce\x42\xd9\x70\x07\x7b\x12"
++			     "\xa9\x1d\xb4\x4b\xe2\x56\xed\x84"
++			     "\x1b\x8f\x26\xbd\x31\xc8\x5f\xf6"
++			     "\x6a\x01\x98\x0c\xa3\x3a\xd1\x45"
++			     "\xdc\x73\x0a\x7e\x15\xac\x20\xb7"
++			     "\x4e\xe5\x59\xf0\x87\x1e\x92\x29"
++			     "\xc0\x34\xcb\x62\xf9\x6d\x04\x9b"
++			     "\x0f\xa6\x3d\xd4\x48\xdf\x76\x0d"
++			     "\x81\x18\xaf\x23\xba\x51\xe8\x5c"
++			     "\xf3\x8a\x21\x95\x2c\xc3\x37\xce"
++			     "\x65\xfc\x70\x07\x9e\x12\xa9\x40"
++			     "\xd7\x4b\xe2\x79\x10\x84\x1b\xb2"
++			     "\x26\xbd\x54\xeb\x5f\xf6\x8d\x01"
++			     "\x98\x2f\xc6\x3a\xd1\x68\xff\x73"
++			     "\x0a\xa1\x15\xac\x43\xda\x4e\xe5"
++			     "\x7c\x13\x87\x1e\xb5\x29\xc0\x57"
++			     "\xee\x62\xf9\x90\x04\x9b\x32\xc9"
++			     "\x3d\xd4\x6b\x02\x76\x0d\xa4\x18"
++			     "\xaf\x46\xdd\x51\xe8\x7f\x16\x8a"
++			     "\x21\xb8\x2c\xc3\x5a\xf1\x65\xfc"
++			     "\x93\x07\x9e\x35\xcc\x40\xd7\x6e"
++			     "\x05\x79\x10\xa7\x1b\xb2\x49\xe0"
++			     "\x54\xeb\x82\x19\x8d\x24\xbb\x2f"
++			     "\xc6\x5d\xf4\x68\xff\x96\x0a\xa1"
++			     "\x38\xcf\x43\xda\x71\x08\x7c\x13"
++			     "\xaa\x1e\xb5\x4c\xe3\x57\xee\x85"
++			     "\x1c\x90\x27\xbe\x32\xc9\x60\xf7"
++			     "\x6b\x02\x99\x0d\xa4\x3b\xd2\x46"
++			     "\xdd\x74\x0b\x7f\x16\xad\x21\xb8"
++			     "\x4f\xe6\x5a\xf1\x88\x1f\x93\x2a"
++			     "\xc1\x35\xcc\x63\xfa\x6e\x05\x9c"
++			     "\x10\xa7\x3e\xd5\x49\xe0\x77\x0e"
++			     "\x82\x19\xb0\x24\xbb\x52\xe9\x5d"
++			     "\xf4\x8b\x22\x96\x2d\xc4\x38\xcf"
++			     "\x66\xfd\x71\x08\x9f\x13\xaa\x41"
++			     "\xd8\x4c\xe3\x7a\x11\x85\x1c\xb3"
++			     "\x27\xbe\x55\xec\x60\xf7\x8e\x02"
++			     "\x99\x30\xc7\x3b\xd2\x69\x00\x74"
++			     "\x0b\xa2\x16\xad\x44\xdb\x4f\xe6"
++			     "\x7d\x14\x88\x1f\xb6\x2a\xc1\x58"
++			     "\xef\x63\xfa\x91\x05\x9c\x33\xca"
++			     "\x3e\xd5\x6c\x03\x77\x0e\xa5\x19"
++			     "\xb0\x47\xde\x52\xe9\x80\x17\x8b"
++			     "\x22\xb9\x2d\xc4\x5b\xf2\x66\xfd"
++			     "\x94\x08\x9f\x36\xcd\x41\xd8\x6f"
++			     "\x06\x7a\x11\xa8\x1c\xb3\x4a\xe1"
++			     "\x55\xec\x83\x1a\x8e\x25\xbc\x30"
++			     "\xc7\x5e\xf5\x69\x00\x97\x0b\xa2"
++			     "\x39\xd0\x44\xdb\x72\x09\x7d\x14"
++			     "\xab\x1f\xb6\x4d\xe4\x58\xef\x86"
++			     "\x1d\x91\x28\xbf\x33\xca\x61\xf8"
++			     "\x6c\x03\x9a\x0e\xa5\x3c\xd3\x47"
++			     "\xde\x75\x0c\x80\x17\xae\x22\xb9"
++			     "\x50\xe7\x5b\xf2\x89\x20\x94\x2b"
++			     "\xc2\x36\xcd\x64\xfb\x6f\x06\x9d"
++			     "\x11\xa8\x3f\xd6\x4a\xe1\x78\x0f"
++			     "\x83\x1a\xb1\x25\xbc\x53\xea\x5e"
++			     "\xf5\x8c\x00\x97\x2e\xc5\x39\xd0"
++			     "\x67\xfe\x72\x09\xa0\x14\xab\x42"
++			     "\xd9\x4d\xe4\x7b\x12\x86\x1d\xb4"
++			     "\x28\xbf\x56\xed\x61\xf8\x8f\x03"
++			     "\x9a\x31\xc8\x3c\xd3\x6a\x01\x75"
++			     "\x0c\xa3\x17\xae\x45\xdc\x50\xe7"
++			     "\x7e\x15\x89\x20\xb7\x2b\xc2\x59"
++			     "\xf0\x64\xfb\x92\x06\x9d\x34\xcb"
++			     "\x3f\xd6\x6d\x04\x78\x0f\xa6\x1a"
++			     "\xb1\x48\xdf\x53\xea\x81\x18\x8c"
++			     "\x23\xba\x2e\xc5\x5c\xf3\x67\xfe"
++			     "\x95\x09\xa0\x37\xce\x42\xd9\x70"
++			     "\x07\x7b\x12\xa9\x1d\xb4\x4b\xe2"
++			     "\x56\xed\x84\x1b\x8f\x26\xbd\x31"
++			     "\xc8\x5f\xf6\x6a\x01\x98\x0c\xa3"
++			     "\x3a\xd1\x45\xdc\x73\x0a\x7e\x15"
++			     "\xac\x20\xb7\x4e\xe5\x59\xf0\x87"
++			     "\x1e\x92\x29\xc0\x34\xcb\x62\xf9"
++			     "\x6d\x04\x9b\x0f\xa6\x3d\xd4\x48"
++			     "\xdf\x76\x0d\x81\x18\xaf\x23\xba"
++			     "\x51\xe8\x5c\xf3\x8a\x21\x95\x2c"
++			     "\xc3\x37\xce\x65\xfc\x70\x07\x9e"
++			     "\x12\xa9\x40\xd7\x4b\xe2\x79\x10"
++			     "\x84\x1b\xb2\x26\xbd\x54\xeb\x5f"
++			     "\xf6\x8d\x01\x98\x2f\xc6\x3a\xd1"
++			     "\x68\xff\x73\x0a\xa1\x15\xac\x43"
++			     "\xda\x4e\xe5\x7c\x13\x87\x1e\xb5"
++			     "\x29\xc0\x57\xee\x62\xf9\x90\x04"
++			     "\x9b\x32\xc9\x3d\xd4\x6b\x02\x76"
++			     "\x0d\xa4\x18\xaf\x46\xdd\x51\xe8"
++			     "\x7f\x16\x8a\x21\xb8\x2c\xc3\x5a"
++			     "\xf1\x65\xfc\x93\x07\x9e\x35\xcc"
++			     "\x40\xd7\x6e\x05\x79\x10\xa7\x1b"
++			     "\xb2\x49\xe0\x54\xeb\x82\x19\x8d"
++			     "\x24\xbb\x2f\xc6\x5d\xf4\x68\xff"
++			     "\x96\x0a\xa1\x38\xcf\x43\xda\x71"
++			     "\x08\x7c\x13\xaa\x1e\xb5\x4c",
++		.psize     = 1023,
++		.digest    = "\x13\x0a\x5b\xcb\x83\x9f\x10\x89"
++			     "\xbb\x62\xda\xe4\xf4\xd3\x21\xf8",
++	},
 +};
 +
- #endif
-diff --git a/include/uapi/linux/hash_info.h b/include/uapi/linux/hash_info.h
-index 0af23ec196d8..97af74326d31 100644
---- a/include/uapi/linux/hash_info.h
-+++ b/include/uapi/linux/hash_info.h
-@@ -38,6 +38,8 @@ enum hash_algo {
- 	HASH_ALGO_SHA3_256,
- 	HASH_ALGO_SHA3_384,
- 	HASH_ALGO_SHA3_512,
-+	HASH_ALGO_SHAKE128,
-+	HASH_ALGO_SHAKE256,
- 	HASH_ALGO__LAST
- };
++static const struct hash_testvec shake256_tv_template[] = {
++	{
++		.plaintext = "",
++		.digest	= "\x46\xb9\xdd\x2b\x0b\xa8\x8d\x13"
++				"\x23\x3b\x3f\xeb\x74\x3e\xeb\x24"
++				"\x3f\xcd\x52\xea\x62\xb8\x1b\x82"
++				"\xb5\x0c\x27\x64\x6e\xd5\x76\x2f",
++	}, {
++		.plaintext = "a",
++		.psize	= 1,
++		.digest	= "\x86\x7e\x2c\xb0\x4f\x5a\x04\xdc"
++				"\xbd\x59\x25\x01\xa5\xe8\xfe\x9c"
++				"\xea\xaf\xca\x50\x25\x56\x26\xca"
++				"\x73\x6c\x13\x80\x42\x53\x0b\xa4",
++	}, {
++		.plaintext = "abcdbcdecdefdefgefghfghighijhijkijkl"
++			     "jklmklmnlmnomnopnopq",
++		.psize	= 56,
++		.digest = "\x4d\x8c\x2d\xd2\x43\x5a\x01\x28"
++				"\xee\xfb\xb8\xc3\x6f\x6f\x87\x13"
++				"\x3a\x79\x11\xe1\x8d\x97\x9e\xe1"
++				"\xae\x6b\xe5\xd4\xfd\x2e\x33\x29",
++	}, {
++		.plaintext = "\x08\x9f\x13\xaa\x41\xd8\x4c\xe3"
++			     "\x7a\x11\x85\x1c\xb3\x27\xbe\x55"
++			     "\xec\x60\xf7\x8e\x02\x99\x30\xc7"
++			     "\x3b\xd2\x69\x00\x74\x0b\xa2\x16"
++			     "\xad\x44\xdb\x4f\xe6\x7d\x14\x88"
++			     "\x1f\xb6\x2a\xc1\x58\xef\x63\xfa"
++			     "\x91\x05\x9c\x33\xca\x3e\xd5\x6c"
++			     "\x03\x77\x0e\xa5\x19\xb0\x47\xde"
++			     "\x52\xe9\x80\x17\x8b\x22\xb9\x2d"
++			     "\xc4\x5b\xf2\x66\xfd\x94\x08\x9f"
++			     "\x36\xcd\x41\xd8\x6f\x06\x7a\x11"
++			     "\xa8\x1c\xb3\x4a\xe1\x55\xec\x83"
++			     "\x1a\x8e\x25\xbc\x30\xc7\x5e\xf5"
++			     "\x69\x00\x97\x0b\xa2\x39\xd0\x44"
++			     "\xdb\x72\x09\x7d\x14\xab\x1f\xb6"
++			     "\x4d\xe4\x58\xef\x86\x1d\x91\x28"
++			     "\xbf\x33\xca\x61\xf8\x6c\x03\x9a"
++			     "\x0e\xa5\x3c\xd3\x47\xde\x75\x0c"
++			     "\x80\x17\xae\x22\xb9\x50\xe7\x5b"
++			     "\xf2\x89\x20\x94\x2b\xc2\x36\xcd"
++			     "\x64\xfb\x6f\x06\x9d\x11\xa8\x3f"
++			     "\xd6\x4a\xe1\x78\x0f\x83\x1a\xb1"
++			     "\x25\xbc\x53\xea\x5e\xf5\x8c\x00"
++			     "\x97\x2e\xc5\x39\xd0\x67\xfe\x72"
++			     "\x09\xa0\x14\xab\x42\xd9\x4d\xe4"
++			     "\x7b\x12\x86\x1d\xb4\x28\xbf\x56"
++			     "\xed\x61\xf8\x8f\x03\x9a\x31\xc8"
++			     "\x3c\xd3\x6a\x01\x75\x0c\xa3\x17"
++			     "\xae\x45\xdc\x50\xe7\x7e\x15\x89"
++			     "\x20\xb7\x2b\xc2\x59\xf0\x64\xfb"
++			     "\x92\x06\x9d\x34\xcb\x3f\xd6\x6d"
++			     "\x04\x78\x0f\xa6\x1a\xb1\x48\xdf"
++			     "\x53\xea\x81\x18\x8c\x23\xba\x2e"
++			     "\xc5\x5c\xf3\x67\xfe\x95\x09\xa0"
++			     "\x37\xce\x42\xd9\x70\x07\x7b\x12"
++			     "\xa9\x1d\xb4\x4b\xe2\x56\xed\x84"
++			     "\x1b\x8f\x26\xbd\x31\xc8\x5f\xf6"
++			     "\x6a\x01\x98\x0c\xa3\x3a\xd1\x45"
++			     "\xdc\x73\x0a\x7e\x15\xac\x20\xb7"
++			     "\x4e\xe5\x59\xf0\x87\x1e\x92\x29"
++			     "\xc0\x34\xcb\x62\xf9\x6d\x04\x9b"
++			     "\x0f\xa6\x3d\xd4\x48\xdf\x76\x0d"
++			     "\x81\x18\xaf\x23\xba\x51\xe8\x5c"
++			     "\xf3\x8a\x21\x95\x2c\xc3\x37\xce"
++			     "\x65\xfc\x70\x07\x9e\x12\xa9\x40"
++			     "\xd7\x4b\xe2\x79\x10\x84\x1b\xb2"
++			     "\x26\xbd\x54\xeb\x5f\xf6\x8d\x01"
++			     "\x98\x2f\xc6\x3a\xd1\x68\xff\x73"
++			     "\x0a\xa1\x15\xac\x43\xda\x4e\xe5"
++			     "\x7c\x13\x87\x1e\xb5\x29\xc0\x57"
++			     "\xee\x62\xf9\x90\x04\x9b\x32\xc9"
++			     "\x3d\xd4\x6b\x02\x76\x0d\xa4\x18"
++			     "\xaf\x46\xdd\x51\xe8\x7f\x16\x8a"
++			     "\x21\xb8\x2c\xc3\x5a\xf1\x65\xfc"
++			     "\x93\x07\x9e\x35\xcc\x40\xd7\x6e"
++			     "\x05\x79\x10\xa7\x1b\xb2\x49\xe0"
++			     "\x54\xeb\x82\x19\x8d\x24\xbb\x2f"
++			     "\xc6\x5d\xf4\x68\xff\x96\x0a\xa1"
++			     "\x38\xcf\x43\xda\x71\x08\x7c\x13"
++			     "\xaa\x1e\xb5\x4c\xe3\x57\xee\x85"
++			     "\x1c\x90\x27\xbe\x32\xc9\x60\xf7"
++			     "\x6b\x02\x99\x0d\xa4\x3b\xd2\x46"
++			     "\xdd\x74\x0b\x7f\x16\xad\x21\xb8"
++			     "\x4f\xe6\x5a\xf1\x88\x1f\x93\x2a"
++			     "\xc1\x35\xcc\x63\xfa\x6e\x05\x9c"
++			     "\x10\xa7\x3e\xd5\x49\xe0\x77\x0e"
++			     "\x82\x19\xb0\x24\xbb\x52\xe9\x5d"
++			     "\xf4\x8b\x22\x96\x2d\xc4\x38\xcf"
++			     "\x66\xfd\x71\x08\x9f\x13\xaa\x41"
++			     "\xd8\x4c\xe3\x7a\x11\x85\x1c\xb3"
++			     "\x27\xbe\x55\xec\x60\xf7\x8e\x02"
++			     "\x99\x30\xc7\x3b\xd2\x69\x00\x74"
++			     "\x0b\xa2\x16\xad\x44\xdb\x4f\xe6"
++			     "\x7d\x14\x88\x1f\xb6\x2a\xc1\x58"
++			     "\xef\x63\xfa\x91\x05\x9c\x33\xca"
++			     "\x3e\xd5\x6c\x03\x77\x0e\xa5\x19"
++			     "\xb0\x47\xde\x52\xe9\x80\x17\x8b"
++			     "\x22\xb9\x2d\xc4\x5b\xf2\x66\xfd"
++			     "\x94\x08\x9f\x36\xcd\x41\xd8\x6f"
++			     "\x06\x7a\x11\xa8\x1c\xb3\x4a\xe1"
++			     "\x55\xec\x83\x1a\x8e\x25\xbc\x30"
++			     "\xc7\x5e\xf5\x69\x00\x97\x0b\xa2"
++			     "\x39\xd0\x44\xdb\x72\x09\x7d\x14"
++			     "\xab\x1f\xb6\x4d\xe4\x58\xef\x86"
++			     "\x1d\x91\x28\xbf\x33\xca\x61\xf8"
++			     "\x6c\x03\x9a\x0e\xa5\x3c\xd3\x47"
++			     "\xde\x75\x0c\x80\x17\xae\x22\xb9"
++			     "\x50\xe7\x5b\xf2\x89\x20\x94\x2b"
++			     "\xc2\x36\xcd\x64\xfb\x6f\x06\x9d"
++			     "\x11\xa8\x3f\xd6\x4a\xe1\x78\x0f"
++			     "\x83\x1a\xb1\x25\xbc\x53\xea\x5e"
++			     "\xf5\x8c\x00\x97\x2e\xc5\x39\xd0"
++			     "\x67\xfe\x72\x09\xa0\x14\xab\x42"
++			     "\xd9\x4d\xe4\x7b\x12\x86\x1d\xb4"
++			     "\x28\xbf\x56\xed\x61\xf8\x8f\x03"
++			     "\x9a\x31\xc8\x3c\xd3\x6a\x01\x75"
++			     "\x0c\xa3\x17\xae\x45\xdc\x50\xe7"
++			     "\x7e\x15\x89\x20\xb7\x2b\xc2\x59"
++			     "\xf0\x64\xfb\x92\x06\x9d\x34\xcb"
++			     "\x3f\xd6\x6d\x04\x78\x0f\xa6\x1a"
++			     "\xb1\x48\xdf\x53\xea\x81\x18\x8c"
++			     "\x23\xba\x2e\xc5\x5c\xf3\x67\xfe"
++			     "\x95\x09\xa0\x37\xce\x42\xd9\x70"
++			     "\x07\x7b\x12\xa9\x1d\xb4\x4b\xe2"
++			     "\x56\xed\x84\x1b\x8f\x26\xbd\x31"
++			     "\xc8\x5f\xf6\x6a\x01\x98\x0c\xa3"
++			     "\x3a\xd1\x45\xdc\x73\x0a\x7e\x15"
++			     "\xac\x20\xb7\x4e\xe5\x59\xf0\x87"
++			     "\x1e\x92\x29\xc0\x34\xcb\x62\xf9"
++			     "\x6d\x04\x9b\x0f\xa6\x3d\xd4\x48"
++			     "\xdf\x76\x0d\x81\x18\xaf\x23\xba"
++			     "\x51\xe8\x5c\xf3\x8a\x21\x95\x2c"
++			     "\xc3\x37\xce\x65\xfc\x70\x07\x9e"
++			     "\x12\xa9\x40\xd7\x4b\xe2\x79\x10"
++			     "\x84\x1b\xb2\x26\xbd\x54\xeb\x5f"
++			     "\xf6\x8d\x01\x98\x2f\xc6\x3a\xd1"
++			     "\x68\xff\x73\x0a\xa1\x15\xac\x43"
++			     "\xda\x4e\xe5\x7c\x13\x87\x1e\xb5"
++			     "\x29\xc0\x57\xee\x62\xf9\x90\x04"
++			     "\x9b\x32\xc9\x3d\xd4\x6b\x02\x76"
++			     "\x0d\xa4\x18\xaf\x46\xdd\x51\xe8"
++			     "\x7f\x16\x8a\x21\xb8\x2c\xc3\x5a"
++			     "\xf1\x65\xfc\x93\x07\x9e\x35\xcc"
++			     "\x40\xd7\x6e\x05\x79\x10\xa7\x1b"
++			     "\xb2\x49\xe0\x54\xeb\x82\x19\x8d"
++			     "\x24\xbb\x2f\xc6\x5d\xf4\x68\xff"
++			     "\x96\x0a\xa1\x38\xcf\x43\xda\x71"
++			     "\x08\x7c\x13\xaa\x1e\xb5\x4c",
++		.psize     = 1023,
++		.digest    = "\x24\xab\xec\xa1\x22\x05\x1c\xf3"
++			     "\xce\xdc\xc1\x02\x31\x6c\x0f\x19"
++			     "\x0a\xb2\x77\x24\xe7\x68\x71\x3b"
++			     "\x9b\x6d\x5f\xbc\xcf\x60\x28\x4c",
++	},
++};
++
  
+ /*
+  * MD5 test vectors from RFC1321
 -- 
 2.49.0
 
