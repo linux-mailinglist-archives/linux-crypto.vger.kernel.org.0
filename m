@@ -1,78 +1,78 @@
-Return-Path: <linux-crypto+bounces-14229-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14231-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03ADAE6773
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Jun 2025 15:56:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8D4FAE6781
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Jun 2025 15:57:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D1B017B9D9
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Jun 2025 13:55:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 630F61883EF4
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Jun 2025 13:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23CDE28314C;
-	Tue, 24 Jun 2025 13:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC432D8DA5;
+	Tue, 24 Jun 2025 13:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PX6OWzQ9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QHRgHmqd"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7312D4B59;
-	Tue, 24 Jun 2025 13:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97B92C3277;
+	Tue, 24 Jun 2025 13:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750773204; cv=none; b=sTgDbXXVYTaZOJuQzw71YTHslLLbB0aQ5rMe65VltB4tvmW3dZnHoL39scweFBskIfTo0Nxl2iOyQL5ODuBm5iIathUETiawy9JwoahCE96WWFVa+UZTE8QXo8FhEc75oiXSmBC30YCKnuIZRNI2kudiL4GUUrlzqBZdUGp6nMI=
+	t=1750773206; cv=none; b=tRRYFE5tRIpOnR/OI/OmIMAVUjieGMEFQR20J42XULJuuwGqlAlYhNrEaKrR29FpEAnS5mZXJv7UAGGc+pZ78Tq5PDZjnDrbTYgO28kNxaWhF8arrryK2O0kwsSr4wqSYqmAs79vt2ZE5qqBrO9GBtjyMtvhPaakoU+PYcVXebA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750773204; c=relaxed/simple;
-	bh=enK0PIxbFqpjFBzDv39VclcyFKGwzSsKko/Tb3D2PFs=;
+	s=arc-20240116; t=1750773206; c=relaxed/simple;
+	bh=0oyw5pqYxd62fT5Atb6DVLtHT4tQtNtHm9yrqGoR9H0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=diC2A+j0NWj4GrZ7yhNrP4Ymm/p7W1tiuojDVoY/NYcZ95OtwK2LKRWYOD8+7lP4RjzxrN/KF5MR/g5qN4qx7VXRIew5pSnXKhu5+r2zZOy87diBTCuBZnbAZw/q8DA0+80RLFT2GA79gWZ/Tkilagr4Ex5xYkkQ/4fJX5QmogQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PX6OWzQ9; arc=none smtp.client-ip=209.85.167.48
+	 MIME-Version; b=WLZP5/ijzCQoAV9If3ruECBiEGXSQQeiOMSsdWWEK5XQO5Q4dECpuGcZ+iTt9HppH6tuRVSG53x8LJDppctqlGTaglJDAkyYOCvAm0MDVTyir/QgA1WTgJtpKgN6kLPqEI8YKsTBFiC6BvIv31pryaacHSjuG+lTt3GG0L38T+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QHRgHmqd; arc=none smtp.client-ip=209.85.167.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-551efd86048so466263e87.3;
-        Tue, 24 Jun 2025 06:53:23 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-553d52cb80dso5671335e87.1;
+        Tue, 24 Jun 2025 06:53:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750773201; x=1751378001; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750773203; x=1751378003; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TwUHxKJnp5cLgpgYva+rlNxvXdISl3ekGoJdTDdzRBo=;
-        b=PX6OWzQ94YYMz0SGvh87EZ4xNIyhYJlhasQCOU76yKL1j4TMna9Mzm96zIxeCMlOL4
-         FKOkzZjyaE9UwXqLT2r3vTHwoy5ceuCql60XexDW3fDCSVec6jPUt7O70DWQoB5l/i99
-         dh38m0lJRAGd1RONaqJvgG+8E1wjE/t3UnQ7zFS2Teu/XtIur/2CyrXvwxLSKggtuQYe
-         of2fdDS7kf25/isMKg6AsPSnIn0yE78vAJKvYgRqA9uRzL32IaIm7+nwDV3/ZEvSmy+y
-         8BkGE37rHySsEE8ToDh+V1HLqZROsa1Xq5v8FXf6EKltqCTvlpxg4wJch1tbTtlrOJpq
-         L4Cw==
+        bh=s+MqIOFNRJ3iFcWe2+ZNr4wPLX6LJuQAzvpwDCjIk/I=;
+        b=QHRgHmqdY/H/W3lmW3o9skrkJjvI0hyFGVrE6wVxag8sJtiT1J9YuIT0g1eAx1QgAt
+         J0qHC/F+MmsBiXf2g/rynYKezLkhvJE/Hz5nhW8ie0xyD+ISBZpss0O4ldrXLXDiLuzC
+         gacTgx/F4UlT1FwYYWza+5zDaULH5l5WOLqESdRs3KpB8nSylH9eBIFL8rLoSvWtmQB2
+         i1OqVp3N2MQdVvHsQdW+5/HKpsSd+4HVbzxaC3vslqsaxR04QCEZbzyREUuQPZSDqig0
+         R01Vlirj7Am/NIBlG4Nr4L040G/ciXtNvrO0Fw6XamUpeh+f577IZvKjUMvHZVMptRJN
+         Rhow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750773201; x=1751378001;
+        d=1e100.net; s=20230601; t=1750773203; x=1751378003;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TwUHxKJnp5cLgpgYva+rlNxvXdISl3ekGoJdTDdzRBo=;
-        b=B/uh0c0oZSNlG8+byk/UuVHKo1CVht/QlbjTJxWHRP3Dhlgay0aGlbswuHe9NiFzbA
-         IdNTI2XbNccjbhysreq0hq9dtfuvhAQTnezsb1wxZt/nIog1BGxPKlUC2/wOMu/+ilT4
-         wlpx27P5bSEXQRNVGVWH4pj6dKbnhJTgh0FDqzHkb6Xw4dOnJ9r3mVM0OajUciFgNJiT
-         56x1AgPOv/Gm0B9NoabMJBGH5w8U6CANSpgBOhkgoTXq/rgkjvRrBru5l1ZffUNdX0u3
-         Wv/U0s8XTdbidNUYXx99iElGKrvnCYJktH+CvNl1l1kP+3IYLhJf9o4YCPVHB0jMXalh
-         icPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUTt7LWypJvOY0oduRdNDhPARdYswx3VRPGqgMMd8pfK9o4nV9Fpb0I6jFOrb1UIORWBXq2rccVDvjWRyi2@vger.kernel.org, AJvYcCVKh0DWx98eGDkN5kMF2aQ/AjnJNkWxiSzAdaZOIVLhyMcfF9srFXj6TKIZPzgG3aR+H2WXnMKl+kYG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzw8TD1Pk3FvR6/ppiRDwMrdtLdOfbc+3YFPYJnNbDF9xtXYmCJ
-	vIrnHwGG9QcYDWkp6h8YYMDpC4LzFWc95uVKUG79reHfkfFIcN1cZg2S
-X-Gm-Gg: ASbGnctaUCJ9GdSTDch+4wA0Fm3zJmnbD39YJbdECNYZ5oyLum7DFITA4pUbrOiX9DD
-	BIgYxME4XeolDq6+7xNV5HgkxK11MpDibRXKT9ayOf7TvnTlnYB1kGyU04C070lj1ENo4YOwn2V
-	wbK3AYmmBCjvbFyStKZng5wXzSPRH8+VDMS1L1RPc8Q2gFK2hvtppZ0dT1aL8pHQtRygRvKcy8q
-	CwGpz1oOBkS/OcVpryevflJqph7VTPeFo7czgDj8mJxfHe8SG5gZWhtZmzTTljrVm8MO40OhyR+
-	f4X9bYDQUPxXkehi9X4Lbut77L0OJc9riL/zmwLGO9S//7U2KVSMSw+HeQ3cCDncR9Ld4YVbAsI
-	41khJl0ymlVLtPAE765ad6pE1+uAeY5y5sUe3IdZo1EcaSCVzQqEGqA46DNPwCg==
-X-Google-Smtp-Source: AGHT+IFegUQyNWlfR73jyIeNSbKb+PL10eoaOMjltkUPqUsmae8e48puBzwbK+rUaYB2E2lscqlytg==
-X-Received: by 2002:a05:6512:3d04:b0:553:28a6:4390 with SMTP id 2adb3069b0e04-553e3d0ce96mr4929973e87.47.1750773201274;
-        Tue, 24 Jun 2025 06:53:21 -0700 (PDT)
+        bh=s+MqIOFNRJ3iFcWe2+ZNr4wPLX6LJuQAzvpwDCjIk/I=;
+        b=JL07IjULOB3k/6K7rSbh9L4UFSXZjcugEtySpKzDlBYnDG6BN+heY+YajiDFS6WP5f
+         TsuHpxYZhl3mlWWVUq8zPZYm8PSaO8sld1pUgn+UMXB6kQB5X7+TuDalNTvm+/RoeBHN
+         nIrp3TGMqBIGIjCwRn4EcDwelaql3aR4m6PHCg0KHbkjDt9CpBaSY3Zqd5bS05cqufDs
+         LR8z92G3oZ88g+AhVtRQJtg1OUeHy4rK2qz8ikuB/qSw3lmelp+KZps54aEF3ovHYhmP
+         qVEJ3t1sZtz8Y/F+ntJZq81I/ZdC4rA8w3wVWUD/9ty7GySTRSCqglQoV+qjh2inhgss
+         GSFw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3bv5eBjCcu7yrTnYYC9RdvTzj4Jzh4zpfrEit0fPjErMuXHTQRyxiHjsf7hI/rzwoJI/yIW/DvgxAdJGO@vger.kernel.org, AJvYcCUiPPp+xdojJVp5I26yfTamZmPqHs1DvlavcH9uN+gK4zeF4Ze2LLVOer/DhJ65wj18Iae2l0cXkuUs@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJXIPtt5jMM9L3l3mqmLkVtUciyly7FJpBWdCpeRvLLLal2jtu
+	ejHu84Z8ANRH58eYEjHgEDI5HVA/L/p528bS/gDUj68u0FsqVCQ3mmmx
+X-Gm-Gg: ASbGnctH6elRiOj3ixsjBOKE0Fj4q6YtdEG7GsdcT8ugdPLfG3vhMgybbdk0/In/aNM
+	gZPf4li4MWBoUh63tjWVTwggZwdQZgOb2XJrWrKWzNbRrOkhv/jeGACBr+r/7/0qP0Z4f96DoCV
+	KKAfoijO6DU/C6o23dwo3BfCcbjaoKqP04F5wUloW8PjXcvz6p0gCjgcIIoarf9dusDbXbFlZqR
+	wUfnkXUzrSe2yercYX4hxVcUtjecPxjSG/Lk4MEzKoRN1lyQnHEfdSmqglLIY0iJo2wGMcjS9Pk
+	8hLj32KGNwqiIWjBplS0IesNhc/o5hl3VD3sBAIIqmwX4OtmGl67wes44PH3VmoNggouIkumZ04
+	aoO+RSzC1HfQwa0bRdZlhGxgyYqzXmSK3OZkgzIHB9u6MayBnJ43wODLayhdWow==
+X-Google-Smtp-Source: AGHT+IEG3Nmxe5EPT7OWfXxcoBanx3ekkm42DOccYSN8J0OD87zwEToOOU3f+GyCigT3lhowCdOmDg==
+X-Received: by 2002:a05:6512:2395:b0:553:2308:1ac5 with SMTP id 2adb3069b0e04-554f5c817e2mr1016483e87.4.1750773202777;
+        Tue, 24 Jun 2025 06:53:22 -0700 (PDT)
 Received: from user-A520M-DS3H.sberdevices.ru (broadband-188-32-30-96.ip.moscow.rt.ru. [188.32.30.96])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-554e6dc186esm1282905e87.114.2025.06.24.06.53.19
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-554e6dc186esm1282905e87.114.2025.06.24.06.53.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 06:53:20 -0700 (PDT)
+        Tue, 24 Jun 2025 06:53:22 -0700 (PDT)
 From: Alexey Romanov <romanov.alexey2000@gmail.com>
 To: neil.armstrong@linaro.org,
 	clabbe@baylibre.com,
@@ -90,9 +90,9 @@ Cc: linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	Alexey Romanov <romanov.alexey2000@gmail.com>
-Subject: [PATCH v12 12/22] crypto: amlogic - Use fallback for 192-bit keys
-Date: Tue, 24 Jun 2025 16:52:04 +0300
-Message-Id: <20250624135214.1355051-13-romanov.alexey2000@gmail.com>
+Subject: [PATCH v12 13/22] crypto: amlogic - Add support for G12-series
+Date: Tue, 24 Jun 2025 16:52:05 +0300
+Message-Id: <20250624135214.1355051-14-romanov.alexey2000@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250624135214.1355051-1-romanov.alexey2000@gmail.com>
 References: <20250624135214.1355051-1-romanov.alexey2000@gmail.com>
@@ -104,65 +104,41 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Unforunately, not all Amlogic SoC's have a 192-bit key
-support for AES algo. In this case, use fallback.
+Tested via tcrypt module and with custom tests.
 
 Signed-off-by: Alexey Romanov <romanov.alexey2000@gmail.com>
 ---
- drivers/crypto/amlogic/amlogic-gxl-cipher.c | 7 +++++++
- drivers/crypto/amlogic/amlogic-gxl-core.c   | 1 +
- drivers/crypto/amlogic/amlogic-gxl.h        | 2 ++
- 3 files changed, 10 insertions(+)
+ drivers/crypto/amlogic/amlogic-gxl-core.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-index df42940f1112..6070ee6b488e 100644
---- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-+++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-@@ -41,6 +41,13 @@ static bool meson_cipher_need_fallback_sg(struct skcipher_request *areq,
- 
- static bool meson_cipher_need_fallback(struct skcipher_request *areq)
- {
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
-+	struct meson_cipher_tfm_ctx *op = crypto_skcipher_ctx_dma(tfm);
-+	struct meson_dev *mc = op->mc;
-+
-+	if (op->keymode == DESC_MODE_AES_192 && !mc->pdata->support_192bit_key)
-+		return true;
-+
- 	if (areq->cryptlen == 0)
- 		return true;
- 
 diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
-index 706db22b9f65..0f4b3db85031 100644
+index 0f4b3db85031..6529ae24b75f 100644
 --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
 +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
-@@ -279,6 +279,7 @@ static const struct meson_pdata meson_gxl_pdata = {
- 	.status_reg = 0x4,
- 	.setup_desc_cnt = 3,
- 	.hasher_supported = false,
-+	.support_192bit_key = true,
+@@ -282,11 +282,23 @@ static const struct meson_pdata meson_gxl_pdata = {
+ 	.support_192bit_key = true,
  };
  
++static const struct meson_pdata meson_g12a_pdata = {
++	.descs_reg = 0x0,
++	.status_reg = 0x8,
++	.setup_desc_cnt = 1,
++	.hasher_supported = true,
++	.support_192bit_key = false,
++};
++
  static const struct of_device_id meson_crypto_of_match_table[] = {
-diff --git a/drivers/crypto/amlogic/amlogic-gxl.h b/drivers/crypto/amlogic/amlogic-gxl.h
-index c4f65b541f83..1a15e6c0bf50 100644
---- a/drivers/crypto/amlogic/amlogic-gxl.h
-+++ b/drivers/crypto/amlogic/amlogic-gxl.h
-@@ -94,12 +94,14 @@ struct meson_flow {
-  * @reg_status:	offset to status register
-  * @setup_desc_cnt:	number of setup descriptor to configure.
-  * @hasher_supported:	indecates whether hasher is supported.
-+ * @support_192bit_key:	indicates whether platform support AES 192-bit key
-  */
- struct meson_pdata {
- 	u32 descs_reg;
- 	u32 status_reg;
- 	u32 setup_desc_cnt;
- 	bool hasher_supported;
-+	bool support_192bit_key;
+ 	{
+ 		.compatible = "amlogic,gxl-crypto",
+ 		.data = &meson_gxl_pdata,
+ 	},
++	{
++		.compatible = "amlogic,g12a-crypto",
++		.data = &meson_g12a_pdata,
++	},
+ 	{},
  };
- 
- /*
+ MODULE_DEVICE_TABLE(of, meson_crypto_of_match_table);
 -- 
 2.34.1
 
