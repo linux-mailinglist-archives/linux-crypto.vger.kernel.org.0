@@ -1,999 +1,200 @@
-Return-Path: <linux-crypto+bounces-14291-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14293-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BE7AE7D43
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Jun 2025 11:35:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D89AAE7DDD
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Jun 2025 11:48:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27CC63AC2FA
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Jun 2025 09:34:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 226771890E66
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Jun 2025 09:45:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9071A2F365C;
-	Wed, 25 Jun 2025 09:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5823E286D75;
+	Wed, 25 Jun 2025 09:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="kl6FDDOG"
+	dkim=pass (2048-bit key) header.d=cryptogams.org header.i=@cryptogams.org header.b="VzrLmpIY"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513CF2F0C71
-	for <linux-crypto@vger.kernel.org>; Wed, 25 Jun 2025 09:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E452AE72
+	for <linux-crypto@vger.kernel.org>; Wed, 25 Jun 2025 09:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750843414; cv=none; b=Vcb2SW0fnPHeAahPDwjzCE8F8ErW/yzAHcA/fEurwyXjpy4jxhI0TUf507Mw/uya2fuKNuNeOTQp0oUmcJZgNamS+Cz6i6ymMeni8tKkVeXjO9N+ifxFuSi59/QMmXc4oC/xcUZqgO0PNpMf8EazIuZqFZ4cjQC1N4LiqFx4Ck8=
+	t=1750844306; cv=none; b=jKmDFfpbABjzQo7EQJGOsmLFErlIFerGS5Hb+n2nuErNgt9duWmvpK8vxTSrrCHlFsC0s0LgIv0PVg8evXs9/kEasX5Jbe+jvnBE6isqbt040QfiZPbJjOfwbHr0nFvRxR+YDwzuH1FIvsIkO4LXiAaiQFO8Yik9ftiHIDNXCpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750843414; c=relaxed/simple;
-	bh=b1L8T64hp6GAFH9idBAVVMlsB+uDom6OB0svksRrRtA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RMxvRqbI39mEGqJUebfwKVYF1ztHgxGr5+jgOpf9uz2hR/zvGo3JZQVy48W+cXhyHvCy8unXzvhXv3S97xogZ03vqlxD1JeVMzcoHUmn70FmB+cs1y0bXTMklAgY+9euoSAnmITTVqaW0yqtRNOXMHTB9g4XYoxYzCd/gCZnu0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=kl6FDDOG; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ad891bb0957so235211366b.3
-        for <linux-crypto@vger.kernel.org>; Wed, 25 Jun 2025 02:23:26 -0700 (PDT)
+	s=arc-20240116; t=1750844306; c=relaxed/simple;
+	bh=jdOb14OSPUYa68p0Um5LF0FSPFO5uqq9o+vRR3XEL30=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tVDuEBLiSDFjThyfb8BR4jCXQb/YsRRY29/sMyHBJ0KWqMQbbehNG6I+7bQf3sKwDLZ3IKoAPGlDtiVyE7WZU2oYGT+ABAXZEINQgHW2SE5tbGNJTBhfsfEMut+Vt077/yEXbhZ7bdeXamh+HhhWg5mMglR0wLwrH3wj1bqUTLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cryptogams.org; spf=pass smtp.mailfrom=cryptogams.org; dkim=pass (2048-bit key) header.d=cryptogams.org header.i=@cryptogams.org header.b=VzrLmpIY; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cryptogams.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cryptogams.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-553e5df44f8so4832310e87.3
+        for <linux-crypto@vger.kernel.org>; Wed, 25 Jun 2025 02:38:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1750843404; x=1751448204; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vj0/+b6JxMQ0DFvOT8IeOkRqFe6fOK9ZEY2KhBVS8oQ=;
-        b=kl6FDDOGVnGwH8+xE9V+VNyJIsZCjY3NtNsOdSqtjZPa153/4XwO24V6d2PQYaD4Fh
-         JrMrzxyJgoce5iJxR3HKCMZcE1XKQ2zumAIpfr4845KC9aPUyCQdwbsdqi21M7bZYszt
-         P1ZxbLuRtta7L7LS2yvAJiyHyhN2G9UTbw5TOEMivzgzslLgRPJsIS+k5zLuJcuUjykg
-         IyOvIYCkjQlHQFrd2KTENqPpayQCw4IUPPyJdA4evVZJnoGFbFqWeR5S6GGY2iGSp5ZH
-         y3HuMKHyn0f+H5VRt3nCj/5EGoEIQWvHrevi07TGUFvHEH13otrwm3O6a1wK6gvy4B/T
-         Pbyw==
+        d=cryptogams.org; s=gmail; t=1750844302; x=1751449102; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K2bjFrjj2eMqiTRqSA0mu7oTkOAFVTQZyOnAVudgErE=;
+        b=VzrLmpIYOBjDeWdRDnw6PW5QzYzkP6D39EZ+48eWV28PmgiioDsxhx+zEjsU14AR9B
+         NAGEncD2CuJXUcQVZYrIHnpNAy0TEtKaQHUaF429Y0JLXXC50CrtpFNj47p4NvKEho/9
+         BinQDcj6019AbS11iAvrQ86jen4gjYAy5mII4kfbXHpSz//H2Z4TsEys6jXYkFS6BkEq
+         Qz7pO+7lc3qm0cqrdMNT441sOYsXnZ37+AHJ1HgnTcoi3fY4/ojlXUL1aItj9G6arBS3
+         Cb7f2WLCC1Gamp3NtxaXAHFDoPIZHrpxJGyIv/OWQAcJTiRS7rF21/RInaMIgeuKstFv
+         zaMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750843404; x=1751448204;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vj0/+b6JxMQ0DFvOT8IeOkRqFe6fOK9ZEY2KhBVS8oQ=;
-        b=ujjyHATxxnGKkCtH/EbwC+wb2A1tyvTe5rdCu935nNwXwD8T5SJZjWS9nJl7ndkEXC
-         Lps/0pPamVkyBo7+/mlzrjFC0XTeMXnVq/UtlTCphKramas2dkB7sXndgZ2TS+sU1Yys
-         z8+QV3PjMr2FqCXPxmc4L1dhhzsVGipSuVsndye3oUFxMFgp5BCJr3X429v1qWf/ij9U
-         hCA2HOMpVhdSs5daOVyu5Y99NsarGsZumqX2wfK0++ADbW/4pmmFaFMjCjYjnLZO4Z8z
-         +IFGNQurtqG2tF4OsJLojPrBaNVQlIGCeqVAVToZ0G0DMKUMNTbGOTPvnfAD4OvPK1dG
-         IqOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDdql3ek+hNKW+xOQChk+lueBqJkSxrpQMdSv/nNYXTPJqHolOPMnBdAGY4kB3ah0V4ylFJIwBKdS1pQY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5eISeTQqCdZKmOXKM4oJwq9uKZa4IiyIKY2x6XCE5q/h+FYNu
-	XJakZxZC+S16KfLq1+v9SX3I6gQHIV0EmQ19Xnqwdv8u2nKTVouoOGJVKG2v55gbt4U=
-X-Gm-Gg: ASbGncsQujzwF/jEMqDZZ8XTdKt9Q0ZwFUkIscnXftLiiEi7otZjIxSLfooDcsKdpn2
-	oqk0P8vm6Hn+ArYm4DwDjqAozXJJAIFbrnX6ONFMn46ln46FXyd2jbVeG7sJgWzYK8pAVptEV+s
-	ZQWKo5Od78qEYtUb+NR+qLk2rn2bhm9Dy1fbaU4onxqFV70RRXSRraUW8m+SaE3Q8W+yik9Z3/Q
-	tqXjM11h9Z53V5g3gXELSmb86ZFlvGVyaWLdz4LHGOQ0xI0kA+L/POXCHdUzBCegmoSkxy+fytu
-	bfhEIWzleKTj+b9nT8RSRZJYcZiB4gW+t1F8kmRSPCv7VoUBOyg3EPHMwEiNH62czG9n9bm88Td
-	rfxqDeoRgowri157KG+Ys00k1lpZSpmXnEXPhhh616G0=
-X-Google-Smtp-Source: AGHT+IFbStyu+dkT9cOjOdqNNy5J2sN8CjYyQ9O4MflTt+DtsG9Md6cICBfE0pHpwOnvfAgxWGxYyg==
-X-Received: by 2002:a17:907:940d:b0:ae0:b7c7:e181 with SMTP id a640c23a62f3a-ae0beea8657mr227766966b.41.1750843403827;
-        Wed, 25 Jun 2025 02:23:23 -0700 (PDT)
-Received: from otso.local (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae0aaa0a854sm270277766b.68.2025.06.25.02.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jun 2025 02:23:23 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Wed, 25 Jun 2025 11:23:09 +0200
-Subject: [PATCH 14/14] arm64: dts: qcom: Add The Fairphone (Gen. 6)
+        d=1e100.net; s=20230601; t=1750844302; x=1751449102;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K2bjFrjj2eMqiTRqSA0mu7oTkOAFVTQZyOnAVudgErE=;
+        b=VXlxoNgKl0NunK8r3oLMu5Z1MHcYccV/WqBHOewwDUYYh6DD9tstmz4eGS3E1dsTk3
+         BTjmterLVxbDu4GwOit+OzFZFJx41Aabh74QUXHHRgrzWMotfOXCUbfzh8HmNQuZgEJo
+         5ptCZAfSo6GqooW+2+9meskI+5D5P2HKIZkqJtjGWx/LbQo4NmPYi4uFzHA46exu5fUD
+         ljW7HonULia3CD9L63DiRU4LZf8AIeNHUDdQQTiqjsFQoFVpHY0yha+/v7QRianM48mT
+         SnK1S71nEvA3ipH8A9dMFwTemJOz3W+H7xKq5TKzW6R/O3eMLx4LBB/6ecFn8rCa2mLR
+         324A==
+X-Forwarded-Encrypted: i=1; AJvYcCWNjbGUpk/Zmlrz3HqAzxzkbK+zfSGe/JBwpu1kstpEM+KCrcIrozn2YJmeXP2J3I314H4fqJHSK6Rnm3Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxi8BtDte2FYgkfkgasP0HzK3RiOFONubeZJpkvXQC53hqKE/OA
+	PSV0SUj7U2lUxfC+IZ+oI1ElG6JyP8dRLexRM+LZDAJglf7lOQW/gc/rtNSPiBAP0nh1JF+VyPm
+	tiQfb
+X-Gm-Gg: ASbGncuWrD5s5MOgX+P4b07YqytRB7QOYq8aSrI4z/3rFimkJeMNpZMVueUNAxv5pAU
+	0wcs7b+f8JB7DpH8Uwbm0vtrfDU2I2bN7ZJax7zaW0Ca2Eh4Q6OD8bWubm/GopNrdGD7HTxAcYL
+	L78o31hS/7wPAEmU2geEzm/s54XZ4pcsjaZ94QoAmiLLPLJY7Vbo6r398nHg9Dvqf7t6a5Y0WlP
+	YiZuY9he8E+nqVAq2iM7h2BOmu89lW38sqj8MO8xmkjkheW4fUK8YI/JbGBlJSzdEv8jT3YPV6r
+	VoSaU+a3RuUKcTrekcGUgRf2Pxo/TgNpIP62p3SSXxqx6cTOpINmMkdu86spa0YaAnRPNnjvCJb
+	WkMtbMhajNdMbeZc2qVU0dDd+uTFvkg==
+X-Google-Smtp-Source: AGHT+IHIIeyvn8QfCduWJd5t2Oh9R8b98qsYEyBICh+DHmIf1GXxPxIHXDfOMOOH72H4d74hXDCEBg==
+X-Received: by 2002:a05:6512:3e02:b0:553:2a16:24fd with SMTP id 2adb3069b0e04-554fde59eb1mr653330e87.47.1750844301899;
+        Wed, 25 Jun 2025 02:38:21 -0700 (PDT)
+Received: from [10.0.1.129] (c-92-32-242-43.bbcust.telenor.se. [92.32.242.43])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553ea6132easm1752798e87.28.2025.06.25.02.38.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Jun 2025 02:38:21 -0700 (PDT)
+Message-ID: <3c191e21-ce26-4903-8515-3e110560aa66@cryptogams.org>
+Date: Wed, 25 Jun 2025 11:38:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] crypto: riscv/poly1305 - import OpenSSL/CRYPTOGAMS
+ implementation
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Zhihang Shao <zhihang.shao.iscas@gmail.com>,
+ linux-crypto@vger.kernel.org, linux-riscv@lists.infradead.org,
+ herbert@gondor.apana.org.au, paul.walmsley@sifive.com, alex@ghiti.fr,
+ zhang.lyra@gmail.com
+References: <20250611033150.396172-2-zhihang.shao.iscas@gmail.com>
+ <20250624035057.GD7127@sol>
+ <48de9a74-58e8-49c2-8d8a-fa9c71bf0092@cryptogams.org>
+ <20250625035446.GC8962@sol>
+Content-Language: en-US
+From: Andy Polyakov <appro@cryptogams.org>
+In-Reply-To: <20250625035446.GC8962@sol>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250625-sm7635-fp6-initial-v1-14-d9cd322eac1b@fairphone.com>
-References: <20250625-sm7635-fp6-initial-v1-0-d9cd322eac1b@fairphone.com>
-In-Reply-To: <20250625-sm7635-fp6-initial-v1-0-d9cd322eac1b@fairphone.com>
-To: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
- Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
- Viresh Kumar <viresh.kumar@linaro.org>, 
- Manivannan Sadhasivam <mani@kernel.org>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- "David S. Miller" <davem@davemloft.net>, Vinod Koul <vkoul@kernel.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konradybcio@kernel.org>, Robert Marko <robimarko@gmail.com>, 
- Das Srinagesh <quic_gurus@quicinc.com>, 
- Thomas Gleixner <tglx@linutronix.de>, Jassi Brar <jassisinghbrar@gmail.com>, 
- Amit Kucheria <amitk@kernel.org>, Thara Gopinath <thara.gopinath@gmail.com>, 
- Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
- Lukasz Luba <lukasz.luba@arm.com>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
- linux-mmc@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1750843387; l=22034;
- i=luca.weiss@fairphone.com; s=20250611; h=from:subject:message-id;
- bh=b1L8T64hp6GAFH9idBAVVMlsB+uDom6OB0svksRrRtA=;
- b=6wEHmsKRLfFnwKu02OdfcHJvVK9QXGRgOWwPAr7b1FFxeIsI8uFOclBVLITGPRc51pgfVDOzJ
- HqrQ7RwE1EyAdixR9FhzQC4qs0mDjec7XrfgjGtWWzdQI/KfWMuZXJN
-X-Developer-Key: i=luca.weiss@fairphone.com; a=ed25519;
- pk=O1aw+AAust5lEmgrNJ1Bs7PTY0fEsJm+mdkjExA69q8=
 
-Add a devicetree for The Fairphone (Gen. 6) smartphone, which is based
-on the SM7635 SoC.
+>>>> +#ifndef	__CHERI_PURE_CAPABILITY__
+>>>> +	andi	$tmp0,$inp,7		# $inp % 8
+>>>> +	andi	$inp,$inp,-8		# align $inp
+>>>> +	slli	$tmp0,$tmp0,3		# byte to bit offset
+>>>> +#endif
+>>>> +	ld	$in0,0($inp)
+>>>> +	ld	$in1,8($inp)
+>>>> +#ifndef	__CHERI_PURE_CAPABILITY__
+>>>> +	beqz	$tmp0,.Laligned_key
+>>>> +
+>>>> +	ld	$tmp2,16($inp)
+>>>> +	neg	$tmp1,$tmp0		# implicit &63 in sll
+>>>> +	srl	$in0,$in0,$tmp0
+>>>> +	sll	$tmp3,$in1,$tmp1
+>>>> +	srl	$in1,$in1,$tmp0
+>>>> +	sll	$tmp2,$tmp2,$tmp1
+>>>> +	or	$in0,$in0,$tmp3
+>>>> +	or	$in1,$in1,$tmp2
+>>>> +
+>>>> +.Laligned_key:
+>>>
+>>> This code is going through a lot of trouble to work on RISC-V CPUs that don't
+>>> support efficient misaligned memory accesses.  That includes issuing loads of
+>>> memory outside the bounds of the given buffer, which is questionable (even if
+>>> it's guaranteed to not cross a page boundary).
+>>
+>> It's indeed guaranteed to not cross a page *nor* even cache-line boundaries.
+>> Hence they can't trigger any externally observed side effects the
+>> corresponding unaligned loads won't. What is the concern otherwise? [Do note
+>> that the boundaries are not crossed on a boundary-enforcable CHERI platform
+>> ;-)]
+> 
+> With this, we get:
+> 
+> - More complex code.
 
-Supported functionality as of this initial submission:
-* Debug UART
-* Regulators (PM7550, PM8550VS, PMR735B, PM8008)
-* Remoteprocs (ADSP, CDSP, MPSS, WPSS)
-* Power Button, Volume Keys, Switch
-* Display (using simple-framebuffer)
-* PMIC-GLINK (Charger, Fuel gauge, USB-C mode switching)
-* Camera flash/torch LED
-* SD card
-* USB
+My rationale is as follows. It's beneficial to have this code to cover 
+the whole spectrum of processor implementations. I for one would even 
+say it's important, because penalties on processors that can't handle 
+misaligned access efficiently are just too high to ignore. Now, it's 
+possible to bypass it with #ifdef-s (as done for CHERI), but to make 
+things less confusing, a.k.a. *less* complex, it's preferred to rely on 
+the compiler predefines (as done for CHERI). Later compiler versions 
+introduced apparently suitable predefines for this, 
+__riscv_misaligned_slow/fast/avoid. However, as of the moment of this 
+writing the macros in question don't seem to depend on the -mcpu 
+parameter. But it's probably reasonable to assume that they will at a 
+later point. So the suggestion would be to use these. Does it sound 
+reasonable? Or would you insist on a custom macro that would need to be 
+set depending on CONFIG_RISCV_EFFICIENT_UNALIGNED_ACCESS?
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/Makefile                 |   1 +
- arch/arm64/boot/dts/qcom/sm7635-fairphone-fp6.dts | 837 ++++++++++++++++++++++
- 2 files changed, 838 insertions(+)
+> - Slower on CPUs that do support efficient misaligned accesses.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 669b888b27a1daa93ac15f47e8b9a302bb0922c2..c06c93a92fb9ce24aed9dee51c0907ab22903ac5 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -266,6 +266,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-curtana.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-joyeuse.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm7225-fairphone-fp4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm7325-nothing-spacewar.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sm7635-fairphone-fp6.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-microsoft-surface-duo.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sm7635-fairphone-fp6.dts b/arch/arm64/boot/dts/qcom/sm7635-fairphone-fp6.dts
-new file mode 100644
-index 0000000000000000000000000000000000000000..d687e4e75f21afbe317093cd3b48030354411592
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sm7635-fairphone-fp6.dts
-@@ -0,0 +1,837 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2025, Luca Weiss <luca.weiss@fairphone.com>
-+ */
-+
-+/dts-v1/;
-+
-+#define PMIV0104_SID 7
-+
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include "sm7635.dtsi"
-+#include "pm8550vs.dtsi"
-+#include "pmiv0104.dtsi" /* PMIV0108 */
-+#include "pmk8550.dtsi" /* PMK7635 */
-+#include "pmr735b.dtsi"
-+#include "pmxr2230.dtsi" /* PM7550 */
-+
-+/ {
-+	model = "The Fairphone (Gen. 6)";
-+	compatible = "fairphone,fp6", "qcom,sm7635";
-+	chassis-type = "handset";
-+
-+	aliases {
-+		serial0 = &uart5;
-+	};
-+
-+	chosen {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		framebuffer0: framebuffer@e3940000 {
-+			compatible = "simple-framebuffer";
-+			reg = <0x0 0xe3940000 0x0 (2484 * 1116 * 4)>;
-+			width = <1116>;
-+			height = <2484>;
-+			stride = <(1116 * 4)>;
-+			format = "a8r8g8b8";
-+			panel = <&panel>;
-+			interconnects = <&mmss_noc MASTER_MDP QCOM_ICC_TAG_ALWAYS
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>;
-+			clocks = <&gcc GCC_DISP_HF_AXI_CLK>;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-0 = <&volume_up_default>;
-+		pinctrl-names = "default";
-+
-+		key-volume-up {
-+			label = "Volume Up";
-+			gpios = <&pmxr2230_gpios 6 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEUP>;
-+		};
-+
-+		switch {
-+			label = "Switch";
-+			gpios = <&tlmm 107 GPIO_ACTIVE_HIGH>;
-+			linux,input-type = <EV_SW>;
-+			linux,code = <SW_MUTE_DEVICE>;
-+		};
-+	};
-+
-+	/* Dummy panel for simple-framebuffer dimension info */
-+	panel: panel {
-+		compatible = "boe,bj631jhm-t71-d900";
-+		width-mm = <65>;
-+		height-mm = <146>;
-+	};
-+
-+	pmic-glink {
-+		compatible = "qcom,sm7635-pmic-glink",
-+			     "qcom,sm8550-pmic-glink",
-+			     "qcom,pmic-glink";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		orientation-gpios = <&tlmm 131 GPIO_ACTIVE_HIGH>;
-+
-+		connector@0 {
-+			compatible = "usb-c-connector";
-+			reg = <0>;
-+
-+			power-role = "dual";
-+			data-role = "dual";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+
-+					pmic_glink_hs_in: endpoint {
-+						remote-endpoint = <&usb_1_dwc3_hs>;
-+					};
-+				};
-+			};
-+		};
-+	};
-+
-+	vreg_ff_afvdd_2p8: regulator-ff-afvdd-2p8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "ff_afvdd_2p8";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		startup-delay-us = <100>;
-+
-+		gpio = <&tlmm 93 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vreg_bob>;
-+	};
-+
-+	vreg_uw_afvdd_2p8: regulator-uw-afvdd-2p8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "uw_afvdd_2p8";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		startup-delay-us = <100>;
-+
-+		gpio = <&tlmm 23 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vreg_bob>;
-+	};
-+
-+	vreg_uw_dvdd: regulator-uw-dvdd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "uw_dvdd";
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+		startup-delay-us = <100>;
-+
-+		gpio = <&tlmm 28 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vreg_s1b>;
-+	};
-+
-+	vreg_ois_avdd0_1p8: regulator-ois-avdd0-1p8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "ois_avdd0_1p8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		startup-delay-us = <100>;
-+
-+		gpio = <&tlmm 27 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vreg_bob>;
-+	};
-+
-+	vreg_ois_vdd: regulator-ois-vdd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "ois_vdd";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100>;
-+
-+		gpio = <&tlmm 24 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	vreg_oled_dvdd_1p2: regulator-oled-dvdd-1p2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "oled_dvdd_1p2";
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+
-+		gpio = <&tlmm 54 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vreg_s2b>;
-+
-+		regulator-boot-on;
-+	};
-+
-+	vreg_s1j: regulator-pm3001a-s1j {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pm3001a_s1j";
-+		regulator-min-microvolt = <2200000>;
-+		regulator-max-microvolt = <2200000>;
-+		startup-delay-us = <1000>;
-+
-+		gpio = <&pmr735b_gpios 1 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vph_pwr>;
-+
-+		pinctrl-0 = <&s1j_enable_default>;
-+		pinctrl-names = "default";
-+	};
-+
-+	vreg_vtof_ldo_3p3: regulator-vtof-ldo-3p3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vtof_ldo_3p3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100>;
-+
-+		gpio = <&tlmm 76 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	vph_pwr: regulator-vph-pwr {
-+		compatible = "regulator-fixed";
-+
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	reserved-memory {
-+		/*
-+		 * ABL is powering down display and controller if this node is
-+		 * not named exactly "splash_region".
-+		 */
-+		splash_region@e3940000 {
-+			reg = <0x0 0xe3940000 0x0 0x2b00000>;
-+			no-map;
-+		};
-+	};
-+
-+	thermal-zones {
-+		pm8008-thermal {
-+			polling-delay-passive = <100>;
-+			thermal-sensors = <&pm8008>;
-+
-+			trips {
-+				trip0 {
-+					temperature = <95000>;
-+					hysteresis = <0>;
-+					type = "passive";
-+				};
-+
-+				trip1 {
-+					temperature = <115000>;
-+					hysteresis = <0>;
-+					type = "critical";
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&apps_rsc {
-+	regulators-0 {
-+		compatible = "qcom,pm7550-rpmh-regulators";
-+
-+		vdd-l1-supply = <&vreg_s1b>;
-+		vdd-l2-l3-supply = <&vreg_s3b>;
-+		vdd-l4-l5-supply = <&vreg_s2b>;
-+		vdd-l6-supply = <&vreg_s2b>;
-+		vdd-l7-supply = <&vreg_s1b>;
-+		vdd-l8-supply = <&vreg_s1b>;
-+		vdd-l9-l10-supply = <&vreg_s1b>;
-+		vdd-l11-supply = <&vreg_s1b>;
-+		vdd-l12-l14-supply = <&vreg_bob>;
-+		vdd-l13-l16-supply = <&vreg_bob>;
-+		vdd-l15-l17-l18-l19-l20-l21-l22-l23-supply = <&vreg_bob>;
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+
-+		qcom,pmic-id = "b";
-+
-+		vreg_s1b: smps1 {
-+			regulator-name = "vreg_s1b";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2080000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_s2b: smps2 {
-+			regulator-name = "vreg_s2b";
-+			regulator-min-microvolt = <1256000>;
-+			regulator-max-microvolt = <1408000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_s3b: smps3 {
-+			regulator-name = "vreg_s3b";
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <1040000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2b: ldo2 {
-+			regulator-name = "vreg_l2b";
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <912000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3b: ldo3 {
-+			regulator-name = "vreg_l3b";
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <912000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4b: ldo4 {
-+			regulator-name = "vreg_l4b";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5b: ldo5 {
-+			regulator-name = "vreg_l5b";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7b: ldo7 {
-+			regulator-name = "vreg_l7b";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8b: ldo8 {
-+			regulator-name = "vreg_l8b";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9b: ldo9 {
-+			regulator-name = "vreg_l9b";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10b: ldo10 {
-+			regulator-name = "vreg_l10b";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11b: ldo11 {
-+			regulator-name = "vreg_l11b";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12b: ldo12 {
-+			regulator-name = "vreg_l12b";
-+			/*
-+			 * Skip voltage voting for UFS VCC.
-+			 */
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13b: ldo13 {
-+			regulator-name = "vreg_l13b";
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l14b: ldo14 {
-+			regulator-name = "vreg_l14b";
-+			regulator-min-microvolt = <3300000>;
-+			regulator-max-microvolt = <3304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l15b: ldo15 {
-+			regulator-name = "vreg_l15b";
-+			regulator-min-microvolt = <3300000>;
-+			regulator-max-microvolt = <3304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l16b: ldo16 {
-+			regulator-name = "vreg_l16b";
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l17b: ldo17 {
-+			regulator-name = "vreg_l17b";
-+			regulator-min-microvolt = <3104000>;
-+			regulator-max-microvolt = <3104000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l18b: ldo18 {
-+			regulator-name = "vreg_l18b";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l19b: ldo19 {
-+			regulator-name = "vreg_l19b";
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l20b: ldo20 {
-+			regulator-name = "vreg_l20b";
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l21b: ldo21 {
-+			regulator-name = "vreg_l21b";
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l22b: ldo22 {
-+			regulator-name = "vreg_l22b";
-+			regulator-min-microvolt = <3200000>;
-+			regulator-max-microvolt = <3200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l23b: ldo23 {
-+			regulator-name = "vreg_l23b";
-+			regulator-min-microvolt = <1650000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_bob: bob {
-+			regulator-name = "vreg_bob";
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	regulators-1 {
-+		compatible = "qcom,pm8550vs-rpmh-regulators";
-+
-+		vdd-l1-supply = <&vreg_s3b>;
-+		vdd-l3-supply = <&vreg_s3b>;
-+
-+		qcom,pmic-id = "c";
-+
-+		vreg_l2c: ldo2 {
-+			regulator-name = "vreg_l2c";
-+			regulator-min-microvolt = <320000>;
-+			regulator-max-microvolt = <650000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	regulators-2 {
-+		compatible = "qcom,pmr735b-rpmh-regulators";
-+
-+		vdd-l1-l2-supply= <&vreg_s3b>;
-+		vdd-l3-supply= <&vreg_s3b>;
-+		vdd-l4-supply= <&vreg_s1b>;
-+		vdd-l5-supply= <&vreg_s2b>;
-+		vdd-l6-supply= <&vreg_s2b>;
-+		vdd-l7-l8-supply= <&vreg_s2b>;
-+		vdd-l9-supply= <&vreg_s3b>;
-+		vdd-l10-supply= <&vreg_s1b>;
-+		vdd-l11-supply= <&vreg_s3b>;
-+		vdd-l12-supply= <&vreg_s3b>;
-+
-+		qcom,pmic-id = "f";
-+
-+		vreg_l1f: ldo1 {
-+			regulator-name = "vreg_l1f";
-+			regulator-min-microvolt = <852000>;
-+			regulator-max-microvolt = <950000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2f: ldo2 {
-+			regulator-name = "vreg_l2f";
-+			regulator-min-microvolt = <751000>;
-+			regulator-max-microvolt = <824000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3f: ldo3 {
-+			regulator-name = "vreg_l3f";
-+			regulator-min-microvolt = <650000>;
-+			regulator-max-microvolt = <880000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4f: ldo4 {
-+			regulator-name = "vreg_l4f";
-+			regulator-min-microvolt = <1700000>;
-+			regulator-max-microvolt = <1950000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5f: ldo5 {
-+			regulator-name = "vreg_l5f";
-+			regulator-min-microvolt = <1140000>;
-+			regulator-max-microvolt = <1260000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6f: ldo6 {
-+			regulator-name = "vreg_l6f";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7f: ldo7 {
-+			regulator-name = "vreg_l7f";
-+			regulator-min-microvolt = <1080000>;
-+			regulator-max-microvolt = <1350000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8f: ldo8 {
-+			regulator-name = "vreg_l8f";
-+			regulator-min-microvolt = <1100000>;
-+			regulator-max-microvolt = <1320000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9f: ldo9 {
-+			regulator-name = "vreg_l9f";
-+			regulator-min-microvolt = <870000>;
-+			regulator-max-microvolt = <970000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10f: ldo10 {
-+			regulator-name = "vreg_l10f";
-+			regulator-min-microvolt = <1500000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11f: ldo11 {
-+			regulator-name = "vreg_l11f";
-+			regulator-min-microvolt = <320000>;
-+			regulator-max-microvolt = <864000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+};
-+
-+&dispcc {
-+	/* Disable for now so simple-framebuffer continues working */
-+	status = "disabled";
-+};
-+
-+&gpi_dma0 {
-+	status = "okay";
-+};
-+
-+&gpi_dma1 {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	/* Samsung NFC @ 0x27 */
-+
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	/* AW88261FCR amplifier (top) @ 0x34 */
-+	/* AW88261FCR amplifier (bottom) @ 0x35 */
-+
-+	status = "okay";
-+};
-+
-+&i2c7 {
-+	status = "okay";
-+
-+	pm8008: pmic@8 {
-+		compatible = "qcom,pm8008";
-+		reg = <0x8>;
-+
-+		interrupts-extended = <&tlmm 125 IRQ_TYPE_EDGE_RISING>;
-+		reset-gpios = <&pmr735b_gpios 3 GPIO_ACTIVE_LOW>;
-+
-+		vdd-l1-l2-supply = <&vreg_s2b>;
-+		vdd-l3-l4-supply = <&vreg_bob>;
-+		vdd-l5-supply = <&vreg_bob>;
-+		vdd-l6-supply = <&vreg_s1b>;
-+		vdd-l7-supply = <&vreg_bob>;
-+
-+		pinctrl-0 = <&pm8008_int_default>, <&pm8008_reset_n_default>;
-+		pinctrl-names = "default";
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-ranges = <&pm8008 0 0 2>;
-+
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+
-+		#thermal-sensor-cells = <0>;
-+
-+		regulators {
-+			vreg_l1p: ldo1 {
-+				regulator-name = "vreg_l1p";
-+				regulator-min-microvolt = <1000000>;
-+				regulator-max-microvolt = <1200000>;
-+			};
-+
-+			vreg_l2p: ldo2 {
-+				regulator-name = "vreg_l2p";
-+				regulator-min-microvolt = <950000>;
-+				regulator-max-microvolt = <1144000>;
-+			};
-+
-+			vreg_l3p: ldo3 {
-+				regulator-name = "vreg_l3p";
-+				regulator-min-microvolt = <2700000>;
-+				regulator-max-microvolt = <3000000>;
-+			};
-+
-+			vreg_l4p: ldo4 {
-+				regulator-name = "vreg_l4p";
-+				regulator-min-microvolt = <2700000>;
-+				regulator-max-microvolt = <2900000>;
-+			};
-+
-+			vreg_l5p: ldo5 {
-+				regulator-name = "vreg_l5p";
-+				regulator-min-microvolt = <2704000>;
-+				regulator-max-microvolt = <2900000>;
-+			};
-+
-+			vreg_l6p: ldo6 {
-+				regulator-name = "vreg_l6p";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <1896000>;
-+			};
-+
-+			vreg_l7p: ldo7 {
-+				regulator-name = "vreg_l7p";
-+				regulator-min-microvolt = <2700000>;
-+				regulator-max-microvolt = <3400000>;
-+			};
-+		};
-+	};
-+
-+	/* VL53L3 ToF @ 0x29 */
-+	/* AW86938FCR vibrator @ 0x5a */
-+};
-+
-+&pm8550vs_d {
-+	status = "disabled";
-+};
-+
-+&pm8550vs_e {
-+	status = "disabled";
-+};
-+
-+&pm8550vs_g {
-+	status = "disabled";
-+};
-+
-+&pmiv0104_eusb2_repeater {
-+	vdd18-supply = <&vreg_l7b>;
-+	vdd3-supply = <&vreg_l17b>;
-+
-+	qcom,tune-res-fsdif = /bits/ 8 <0x5>;
-+	qcom,tune-usb2-amplitude = /bits/ 8 <0x8>;
-+	qcom,tune-usb2-disc-thres = /bits/ 8 <0x7>;
-+	qcom,tune-usb2-preem = /bits/ 8 <0x6>;
-+};
-+
-+&pmr735b_gpios {
-+	pm8008_reset_n_default: pm8008-reset-n-default-state {
-+		pins = "gpio3";
-+		function = PMIC_GPIO_FUNC_NORMAL;
-+		bias-pull-down;
-+	};
-+
-+	s1j_enable_default: s1j-enable-default-state {
-+		pins = "gpio1";
-+		function = PMIC_GPIO_FUNC_NORMAL;
-+		power-source = <0>;
-+		bias-disable;
-+		output-low;
-+	};
-+};
-+
-+&pmxr2230_gpios {
-+	volume_up_default: volume-up-default-state {
-+		pins = "gpio6";
-+		function = PMIC_GPIO_FUNC_NORMAL;
-+		power-source = <1>;
-+		bias-pull-up;
-+	};
-+};
-+
-+&pmxr2230_flash {
-+	status = "okay";
-+
-+	led-0 {
-+		function = LED_FUNCTION_FLASH;
-+		color = <LED_COLOR_ID_WHITE>;
-+		led-sources = <1>, <4>;
-+		led-max-microamp = <350000>;
-+		flash-max-microamp = <1500000>;
-+		flash-max-timeout-us = <400000>;
-+	};
-+};
-+
-+&pon_pwrkey {
-+	status = "okay";
-+};
-+
-+&pon_resin {
-+	linux,code = <KEY_VOLUMEDOWN>;
-+	status = "okay";
-+};
-+
-+&qupv3_id_0 {
-+	status = "okay";
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
-+&remoteproc_adsp {
-+	firmware-name = "qcom/sm7635/fairphone/fp6/adsp.mbn",
-+			"qcom/sm7635/fairphone/fp6/adsp_dtb.mbn";
-+	status = "okay";
-+};
-+
-+&remoteproc_cdsp {
-+	firmware-name = "qcom/sm7635/fairphone/fp6/cdsp.mbn",
-+			"qcom/sm7635/fairphone/fp6/cdsp_dtb.mbn";
-+	status = "okay";
-+};
-+
-+&remoteproc_mpss {
-+	firmware-name = "qcom/sm7635/fairphone/fp6/modem.mbn";
-+	status = "okay";
-+};
-+
-+&remoteproc_wpss {
-+	firmware-name = "qcom/sm7635/fairphone/fp6/wpss.mbn";
-+	status = "okay";
-+};
-+
-+&sdhc_2 {
-+	cd-gpios = <&tlmm 65 GPIO_ACTIVE_HIGH>;
-+
-+	vmmc-supply = <&vreg_l13b>;
-+	vqmmc-supply = <&vreg_l23b>;
-+	no-sdio;
-+	no-mmc;
-+
-+	pinctrl-0 = <&sdc2_default>, <&sdc2_card_det_n>;
-+	pinctrl-1 = <&sdc2_sleep>, <&sdc2_card_det_n>;
-+	pinctrl-names = "default", "sleep";
-+
-+	status = "okay";
-+};
-+
-+&spi0 {
-+	/* Eswin EPH8621 touchscreen @ 0 */
-+};
-+
-+&tlmm {
-+	/*
-+	 * 8-11: Fingerprint SPI
-+	 * 13: NC
-+	 * 63-64: WLAN UART
-+	 */
-+	gpio-reserved-ranges = <8 4>, <13 1>, <63 2>;
-+
-+	pm8008_int_default: pm8008-int-default-state {
-+		pins = "gpio125";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	sdc2_card_det_n: sdc2-card-det-state {
-+		pins = "gpio65";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&usb_1 {
-+	dr_mode = "otg";
-+
-+	/* USB 2.0 only */
-+	qcom,select-utmi-as-pipe-clk;
-+
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3_hs {
-+	remote-endpoint = <&pmic_glink_hs_in>;
-+};
-+
-+&usb_1_hsphy {
-+	vdd-supply = <&vreg_l2b>;
-+	vdda12-supply = <&vreg_l4b>;
-+
-+	phys = <&pmiv0104_eusb2_repeater>;
-+
-+	status = "okay";
-+};
+With arguably marginal penalty, as discussed in the previous message. In 
+the context one can also view it as a trade-off between a small penalty 
+and increased #ifdef spaghetti :-)
 
--- 
-2.50.0
+> - The buffer underflows and overflows could cause problems with future CPU
+>    behavior.  (Did you consider the palette memory extension, for example?)
+
+Pallette memory extension colours fixed-size, hence accordingly aligned, 
+blocks. Since the block size is larger than the word load size, any 
+aligned load would be safe, because even a single "excess" or "short" 
+byte would colour the whole block accordingly.
+
+Just in case to be clear. The argument is about loads. Misaligned stores 
+is naturally different matter and it would be inappropriate to handle 
+them in the similar manner.
+
+> That being said, if there will continue to be many RISC-V CPUs that don't
+> support efficient misaligned accesses, then we effectively need to do this
+> anyway.  I hoped that things might be developing along the lines of ARM, where
+> eventually misaligned accesses started being supported uniformly.  But perhaps
+> RISC-V is still in the process of learning that lesson.
+
+One has to recognize that it can also be a matter of cost. I mean 
+imagine you want to license the least expensive IP from SiFive, or have 
+very limited space for MCU. Well, Linux, naturally having higher minimum 
+requirements, doesn't have to care about these, but it doesn't mean that 
+nobody would :-)
+
+>>> The rest of the kernel's RISC-V crypto code, which is based on the vector
+>>> extension, just assumes that efficient misaligned memory accesses are supported.
+>>
+>> Was it tested on real hardware though? I wonder what hardware is out there
+>> that supports the vector crypto extensions?
+> 
+> If I remember correctly, SiFive tested it on their hardware.
+
+Cool! The question was rather "how did it do performance-wise in the 
+context of this discussion," but never mind. Thanks! In a way there is a 
+contradiction. RISC-V as a concept is about openness to everybody, while 
+SiFive is naturally about itself ;-)
+
+Cheers.
+
 
 
