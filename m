@@ -1,174 +1,140 @@
-Return-Path: <linux-crypto+bounces-14385-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14387-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49647AEDFAD
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 15:54:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFD63AEE13A
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 16:44:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5CD167EB4
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 13:54:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEE4B4037D5
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 14:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6D628BA98;
-	Mon, 30 Jun 2025 13:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999EB28D8C8;
+	Mon, 30 Jun 2025 14:38:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="HCpLW8xs";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VlNd4II1"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lALjW5e6"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD02289E00;
-	Mon, 30 Jun 2025 13:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB2828C2AF;
+	Mon, 30 Jun 2025 14:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751291661; cv=none; b=b3NHDH2H6EQ0mCSGyah1FjQB5IKN06NU+nYzjRtzb/sc9Ria352x1Ul/+eVvIIw8CNhqU7F+pgs1P31ZjdF+TbcedZPeAKBssHBE18vkqq2RI0KxUCfNJUmhGwQF5Nx73JA0a46DZK/HWjzWEY81OB3b4bGuv1gvk1UgZjDqyRY=
+	t=1751294335; cv=none; b=h7UvjQ568wScomzNrrXnsN6r4qK0caA2tyuwH7PLXc+vuqIc2mD+dCyLWLtldA2sm+m+JiF0E/EdzP3zrXtAXIUTqNllTolSUJY6HFhI1V4jUbr4WITLGSS7uD0m+N811hB0Pem7LA/3tT6FLN6RB2o7mF+6amO4vBnmhOglQ80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751291661; c=relaxed/simple;
-	bh=XDIHXs4K7QWZcdabHUjQZzHGSYnnwRmcj9GQSvFWMks=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=t84sjE7VE0SB3VROJzaOkbZyghVoKWN7+R8pNiVP32zgnsWsXJ2dg6vdwpzz2Tp+Mbnazg2qDv4XutXUqaM0GMbvwjpre0cdB6xiYU0nSUIclkSMaEBqoP/yLlx8HlC1xMFedBErKWRmCloJ/inHl3pq2cUyCq8eUdOpiB86Sbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=HCpLW8xs; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VlNd4II1; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A41121400028;
-	Mon, 30 Jun 2025 09:54:16 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Mon, 30 Jun 2025 09:54:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1751291656;
-	 x=1751378056; bh=ik9oLe3KdALkxzKl69BBxlmJ8fpBBAh4pU7+UUhNIAg=; b=
-	HCpLW8xsF3EqejqRsdi4yjCzmlUTcGMoILiaKStETiAgoeykxvH8DpcWVyDgi7Zg
-	xX02l5ZTYkqo0QruDwzfQ++5RSoiqmz/kHiUUCOZiZA08maMoMNRBu4J0utGZaNS
-	TAFlOugGZqywPfBPzLWLK8CWreEh1ZpUQzLjUTy0KWh+FPWLM4HYflHiOyNjrWRp
-	M8ZaCKazgSGEfxTTuGveC6KrQEa0u/8GjsPXe85rOhttDPhXR8uogkwPdASMucj8
-	cjjdAgCA0JdmkfkfqRiP24v2d4N7x9f1V8PnIoLYLRQIBjAl4zCFd7nONXkI9Ech
-	FdRZ+inK4k7w8NzMsqM86Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1751291656; x=
-	1751378056; bh=ik9oLe3KdALkxzKl69BBxlmJ8fpBBAh4pU7+UUhNIAg=; b=V
-	lNd4II1MEchvr393QhsqIMCypt8IeM8qeUKvGbO0Qq7Wy2w+ub3YgnUiT0mQ12FX
-	KF0q7wdPAn4E8Nf8hsS68cO3yock4OkiY4SQNaeDwGZwTX7+OUcxsGWZabCcpoqR
-	82mkry5p9IJHYDpnFQLQ60+rrZPg6O2OCS6gDDjtx+EywTTMjcSgJwg+1BhPqmGe
-	PpnSeLcYKRPmzR7KJHgEn8S2pEiY1ZWOJCucyk2cxBYIfbcYxwTM5cdAFrU3T/YU
-	sJK78LjTadM0IPbp4mu0dum9PnEdbzR28u75DTplu97uq3ZuQIAUe6hTtQiR2ybY
-	J7hVufrDRH7au8tk+7P8g==
-X-ME-Sender: <xms:BpdiaGUGolou3QitfZg4BLCqsIQsIym4YCDRZA9BPbVpjvQSFuKbOw>
-    <xme:BpdiaCmTzevwMOgsbNp3SurxN3fnfZd5hxQ7tFPxER-J8eWckiPqYPWHZeCXCn0bM
-    4_Dpna6uxf0VicV6Rk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudekjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdetrhhnugcu
-    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
-    hnpedvhfdvkeeuudevfffftefgvdevfedvleehvddvgeejvdefhedtgeegveehfeeljeen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
-    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeduledpmhhouggvpehsmhhtphhouhht
-    pdhrtghpthhtoheptggrthgrlhhinhdrmhgrrhhinhgrshesrghrmhdrtghomhdprhgtph
-    htthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohephhgvrhgs
-    vghrthesghhonhguohhrrdgrphgrnhgrrdhorhhgrdgruhdprhgtphhtthhopegrnhguih
-    drshhhhihtiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghrohhonhhivgeskhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtohepvhhkohhulheskhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtohepfihilhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgr
-    rhhmqdhkvghrnhgvlheslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtth
-    hopegurghnihgvlhdrmhgrtghhohhnsehmihgtrhhotghhihhprdgtohhm
-X-ME-Proxy: <xmx:BpdiaKbW6kc3JjXJ_iF119Z2xF0TlpEZ7lZv-75taKItFXsh-Sj_Kg>
-    <xmx:BpdiaNX0wbV-b97Hre_u0SVfDSlOMJRgglPNtNh2F29eDDO-Qa2eMw>
-    <xmx:BpdiaAlhLEy218q7zgCoW-E8vY34X4w3snX9RIYXQv1AhPnnKNE1fQ>
-    <xmx:BpdiaCcDRhGlfi-Q6gHErHIhH-4Zlz1pe68U_7yL8dniJdgtiN14hw>
-    <xmx:CJdiaJYx9N4gSrfOr2NmNnOFHFvyapVyNj7lgmg6DXrTQTvDl3ADYuH->
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id CBC52700063; Mon, 30 Jun 2025 09:54:14 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1751294335; c=relaxed/simple;
+	bh=/iAxXW6FbvxTp0QaulS0wqiv/9rrGOG34RWaXC4nkP0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lNAoABBG7KDFsVwr3yOYDzoqE4ydD67nJmKCEABXx9oZeqvCWnzB6qmCIXngI51rgIMWewfFnlkW7woLvN61V0iKx+96r+4vt67Ut/dsVTjMH4XPeMDGqmR5sF8gKebQ1txFDdiTtZgtBxjjsvWGYHoF0LCPq+0lZuxLIcMjFxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lALjW5e6; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55U8pP9h023538;
+	Mon, 30 Jun 2025 14:38:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=eVXnPYrdhwrNl0WhAGMkGzMVySJUnLyM9PGWL+RRa
+	dA=; b=lALjW5e6NI6Xk7sjgPxC6ly/BVQwr7Wc9NJVC2NuXdqf5+djNI79kIgaC
+	egmCapqJ/CTCdal8mWfZEXuAmBCWRqh324oQig5Cqad1ks1PeJ5dW/bo0C8P6i/F
+	AQWt4bsAAjjacs0g9OO9mXL7TKLNHkIullYZLXyTWdkyPfI+JckTTLvHlPvp0oj1
+	cJBeoUDfmDc5MLlyw14G4JblzXopH3bR54B1DZmNn7SMBCg5q7ZMdnlaEWr1VBky
+	xTMmEAtrqPjjT59cMEIhsbYpjZXLKPsOJj1hnxFOALvxsmQYBvhUOnAsmGSphKwA
+	fgRvn/ahO1nbY3oUGlxFcq/FUc0lQ==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47j5tt2a57-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 30 Jun 2025 14:38:47 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55UECltw021909;
+	Mon, 30 Jun 2025 14:38:43 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47juqpe88t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 30 Jun 2025 14:38:43 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55UEcgB66947526
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 30 Jun 2025 14:38:42 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AD7445805C;
+	Mon, 30 Jun 2025 14:38:42 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DFF7A58059;
+	Mon, 30 Jun 2025 14:38:41 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 30 Jun 2025 14:38:41 +0000 (GMT)
+From: Stefan Berger <stefanb@linux.ibm.com>
+To: linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, James.Bottomley@HansenPartnership.com,
+        dhowells@redhat.com, simo@redhat.com,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v2 0/4] crypto: Add support for shake128/256 XOFs
+Date: Mon, 30 Jun 2025 10:38:30 -0400
+Message-ID: <20250630143834.2748285-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Tad13d72cbf59a799
-Date: Mon, 30 Jun 2025 15:53:54 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Robert Marko" <robert.marko@sartura.hr>
-Cc: "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Olivia Mackall" <olivia@selenic.com>,
- "Herbert Xu" <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>, "Vinod Koul" <vkoul@kernel.org>,
- "Andi Shyti" <andi.shyti@kernel.org>, "Mark Brown" <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
- "Pengutronix Kernel Team" <kernel@pengutronix.de>, ore@pengutronix.de,
- luka.perkov@sartura.hr, "Daniel Machon" <daniel.machon@microchip.com>
-Message-Id: <3e522dcc-3b68-4137-bd3a-dcc2c889dbd3@app.fastmail.com>
-In-Reply-To: 
- <CA+HBbNFd5hCKqUZY25Sws-o-0QALLue-JROyze_9biyuZZv4mg@mail.gmail.com>
-References: <20250613114148.1943267-1-robert.marko@sartura.hr>
- <3ba837f8-70bb-4b9e-a9f9-0e71b9e073c4@app.fastmail.com>
- <CA+HBbNFd5hCKqUZY25Sws-o-0QALLue-JROyze_9biyuZZv4mg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] arm64: lan969x: Add support for Microchip LAN969x SoC
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vmYM851hNMGF9Gf-Kko21cvYlKK9X463
+X-Authority-Analysis: v=2.4 cv=UtNjN/wB c=1 sm=1 tr=0 ts=6862a177 cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=6IFa9wvqVegA:10 a=JFUMmdeob1UW1lXIWCQA:9
+X-Proofpoint-ORIG-GUID: vmYM851hNMGF9Gf-Kko21cvYlKK9X463
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjMwMDExNyBTYWx0ZWRfX9kxb8Sq3J0JA knzNPpCfCXC2PXhJ/XB7jaCERKUgh2dpumkSbNSbhGh9w50Pbb6ExB9V4NKpFekoYv+5+5AUS5f TpvTw0p7ccpCoqPXN3qkh5lnRSyNe7IeZWVrxr/86g3CN2+CN19n1jNaf2m++rBJWH7AJ0gTXRo
+ lHoOa5jjD7vQ+84e+y/ZFFLh6G2P74PO3xy82JwZ6kXuF3A4jWmBiD3ezSpbYJwEX1i2TaOOGzT 334pK5yiHtTg6e/ntmH/CTBIHeJP+1+u4ygyRhRHtxX6R5PMJCnW03wp5MVGPEU8gR7zO0K6vl6 czrftvfWxWSF9AoKpmiCMWEAWVWekDBNV/QLBez6AhOqgsKcOoJxIJ2ukkBrjeG7FQTvq475m/5
+ r4xow01EJR4tJOrlLKnpTMlz/Cx8qMz+rhfiY8YUbk32xBqsgmz7PBbCxvYMSUFynf063YjP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-06-30_03,2025-06-27_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 phishscore=0 mlxscore=0 spamscore=0 mlxlogscore=896
+ adultscore=0 clxscore=1015 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2506300117
 
-On Mon, Jun 30, 2025, at 15:21, Robert Marko wrote:
-> On Mon, Jun 16, 2025 at 8:34=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> =
-wrote:
->> On Fri, Jun 13, 2025, at 13:39, Robert Marko wrote:
->>
->> If the drivers on ARCH_LAN969X are largely shared with those on
->> ARCH_AT91, should they perhaps depend on a common symbol?
->>
->> That could be either the existing ARCH_AT91 as we do with LAN966,
->> or perhaps ARCH_MICROCHIP, which is already used for riscv/polarfire.
->
-> Hi Arnd, I thought about this, but I am not sure whether its worth it
-> since we need LAN969x arch anyway for other drivers that currently
-> depend on LAN966x or SparX-5 but will be extended for LAN969x (I have
-> this already queued locally but need this to land first).
+This series adds support for shake128/256 extended output functions (XOFs)
+along with test cases to verify the produced digest and XOF output. A new
+squeeze method is added to the shash_alg structure to get an arbitrary
+number of bytes from these XOFs.
 
-I think in that case we would want one symbol for all of the above.
-We have a couple of cases where there multiple SoC product families
-get handled by a shared config symbol to make life easier for the
-kernel:
+Regards,
+   Stefan
 
-- ARCH_IMX contains multiple chip families that are now owned
-  by NXP but that have a complex history with acquisitions and
-  product families that mix-and-match IP blocks, similar to
-  Microchip
 
-- ARCH_EXYNOS contains chips from Samsung, Google, Tesla and Axis
-  that all share a lot of components because they are all based on
-  Samsung designs
+v2:
+ - Refactored crypto_shake_squeeze_bytes to be called for arbitrary number
+   of bytes to return
+ - Adjusted XOF test case parameters to better test modfied squeeze
+   function
 
-- ARCH_BCM contains several chip families that all started out
-  in Broadcom but actually share very few common components.
+Stefan Berger (4):
+  crypto: Add squeeze function to shash_alg for support of XOFs
+  crypto: Add shake128/256 to generic sha3 module
+  crypto: Add tests cases for shake128 & shake256 to testmgr
+  crypto: Extend testmgr with tests for shake128/256 XOFs
 
-On the other hand, we have TI with its davinci, omap, omap2
-keystone2 and k3 platforms, or Marvell with orion, mvebu,
-pxa, mmp, octeon, octeontx, thunderx and thunderx2 platforms
-that overlap to varying degrees but use separate Kconfig symbols.
+ crypto/hash_info.c             |   4 +
+ crypto/sha3_generic.c          | 238 +++++++++++++++
+ crypto/shash.c                 |   9 +
+ crypto/testmgr.c               |  70 +++++
+ crypto/testmgr.h               | 522 +++++++++++++++++++++++++++++++++
+ include/crypto/algapi.h        |   2 +-
+ include/crypto/hash.h          |  28 +-
+ include/crypto/sha3.h          |  19 ++
+ include/uapi/linux/hash_info.h |   2 +
+ 9 files changed, 888 insertions(+), 6 deletions(-)
 
-Since you already have an ARCH_MICROCHIP used by one of the
-microchip platforms, the simplest approach seems to me to
-include at91, lan969x, lan966x and sparx-5 under that as well.
-You could just select that symbol from each of the four
-and then change any driver that is used by more than one of
-these families to use 'depends on ARCH_MICROCHIP' instead of
-listing them individually.
 
-I assume the mips based PIC32 and VCOREIII (ocelot/jaguar)
-are distant enough that they wouldn't share any drivers with
-the other families any more, but they could be put into that
-as well if that helps.
+base-commit: a71d3e1beb7a9637eb75929b995f01d20981f013
+-- 
+2.49.0
 
-     Arnd
 
