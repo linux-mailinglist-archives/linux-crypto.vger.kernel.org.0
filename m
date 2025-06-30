@@ -1,148 +1,115 @@
-Return-Path: <linux-crypto+bounces-14379-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14381-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF2D2AEDEE9
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 15:25:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63AFDAEDF06
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 15:28:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E8003A3016
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 13:21:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C934D188C48D
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Jun 2025 13:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB23B284696;
-	Mon, 30 Jun 2025 13:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sartura.hr header.i=@sartura.hr header.b="ZQTv4zdI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E167D28B7D4;
+	Mon, 30 Jun 2025 13:27:39 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E54BD25BEE8
-	for <linux-crypto@vger.kernel.org>; Mon, 30 Jun 2025 13:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA6E28B3E8;
+	Mon, 30 Jun 2025 13:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751289694; cv=none; b=iOXj9IAoEO6FkBhGZxqzxS1nwZvUcrP6hIfB2Mw7c7UKLD/dBpMqBSbzuMlj4Xn8lvRV9SFbk8+VIH4MTfEkSIIGpHTja4YoeMgl48C/jZFuhYwvVOIJ+P16KEm8g5S9s89SB1aT4V2Pbu5p3NuuCRneYHIxIvbIQN4z9TiBZz0=
+	t=1751290059; cv=none; b=dljtetFcyFCD4FSOA98ii6/Novu/Dfnb8rh5aCCxHU14H4PcYT3y/ES2oQ6081xfR3UZBMZ2/fTvDx3XZ7HXvvUgd32pJg2L1k6TjAHhfIvqV+1SksC+d8NYW1HOyc85k6/4DjTMfefS9NjugBKur13Zdy6rgtWqNS/Vw17WqRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751289694; c=relaxed/simple;
-	bh=wYSk7fxInjdJNOHqBT3fau/40lgp1kFco8w401sE950=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GzoL6uRAyEa9h5Q/XPaDoI7mQKgwjrzk0pFyqy+yKYwx2whpxgqZW3iyKtYgdbntYig8s2/3+ANAN8dGn2ekBvELrknizcF7y4ye5orclJGYUkrSWR9oXwGmA0xJyu7Ew5WtyB6eAzayWemr1wzxov5W50GGyRnMHthhYn61W+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sartura.hr; spf=pass smtp.mailfrom=sartura.hr; dkim=pass (2048-bit key) header.d=sartura.hr header.i=@sartura.hr header.b=ZQTv4zdI; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sartura.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sartura.hr
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-ae223591067so375138266b.3
-        for <linux-crypto@vger.kernel.org>; Mon, 30 Jun 2025 06:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1751289691; x=1751894491; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2I8CsrHjtRtD5BaYjtdOSFNgRck9IxhroTpwRBGBREc=;
-        b=ZQTv4zdIh7dZ1Lg/rGgUPmWqnPT5GKG51d2hj3rr+Iar5/ZdgH8ostY0HGD9nH98oF
-         eLRWZgiyAITEb6Z/oyXegjB/VS4cCK9L3P7t7+tyEjFsfjg/dygDensV6bQF1hvoGx5c
-         d5gRhGF+PhBCLXbX2rAInJUHXRKouIPD2NBcwh2jGNn8Ih3bqVNq0Kam+RtqQB4QBVAC
-         Ngn7WKq6Tz+uOwudmI+78VjSWRXZYyztWpu1dVtyMw7dWEIFzV0AgVniYKzRoxHVCH97
-         SFmR0ZISn2FInckrd0R5ptTd95F6m1/KV+sUy6BAideGWb3nEgqWSKIFtN8pT9Jhp1zB
-         9CwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751289691; x=1751894491;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2I8CsrHjtRtD5BaYjtdOSFNgRck9IxhroTpwRBGBREc=;
-        b=vLYbpfl/vRWCp3UtkG32fmj4E3UunHbDuIKrOaVY7lYeAXm/mKMpcXDg9Sd+6z93j+
-         j6KivUIvJixJ2UDp4BX3i8PijFUJN4MSYleZ7pi6NB1X60L/gqriIs9aykEPOtwmHLZg
-         VbaxWvLSRhMsU3WI5ac06rRYroMnXw0eZtp0uk1lNzXDrW7Rg623qIj7IhW5kCUO6eWX
-         d+vi7Rtm2VL0zSfaI/1AOD28F3xxbfnlaIjFalbQbYVFFkD0lGyejazgVJ4WfTokZ+Dt
-         i92GvBS8mwIpfvqWoaRUZD+XgffYRdJuEUAhKt5OVI4+Vou0jdtbLUbBN8LFLYG5O+iL
-         0+kw==
-X-Forwarded-Encrypted: i=1; AJvYcCXFX+/1gHcYegXEB3XtsgG8YwxziHCIUtAFs6CV2MxbRp5wcOIqxUJcm1CJpuucaeatvu0eBi6G2XGwJPk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxp8RvFXmjyfqMg4NUb2+Nj8Am5d8MAn6YUugRoG/fLI47m6Tj0
-	OqMJQgYeO4s0dtNtgnqGx+wR1KMOuzPecRkX1/8xRNTtKTE9z1e1I811gd1BF/qXMc/3y2jdEzQ
-	TIHZELAjry3vlX+ZOdfG4uxuybv2cmr0+hd6G3KS0Nw==
-X-Gm-Gg: ASbGnctR2j1/1qe695kpXzz1zf57NDtV8UlWEz0laHNVwaqE09WVmpkPXq1hGPVP8kK
-	JgmGTZtSoWf5olFe6QQs4YYM5/YoCdTOEdSYYgu/h5RXwSQP4PpXPo0wBD+S1rVWJQ0lTrgYAP8
-	Ckw7XluGXEaFu5gONpoPgaut1wQ2GOp32841tqtYK0q8UKN4vNhcc7
-X-Google-Smtp-Source: AGHT+IExvta/iWzBmIlIztBuCgl2cUU6u80HBaLHyHvJJXhxVNxMY8nK4KaXwhnRKNkDAhQ4ZeG0igRs73XqWwJLjCE=
-X-Received: by 2002:a17:906:df08:b0:ae0:a88e:6f20 with SMTP id
- a640c23a62f3a-ae34fd88f8cmr778815366b.15.1751289691157; Mon, 30 Jun 2025
- 06:21:31 -0700 (PDT)
+	s=arc-20240116; t=1751290059; c=relaxed/simple;
+	bh=QWnJbWXPx0iuO3c6M0Re7/89e5BJvtjLRSQgMPj/IsM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dFz0Y1VCrddq5hFoVx8t2ypKuw+SYokxIIJM6jPt7P2JplGRjjnZppagBcK/fnkPv2slohY+epNQ9FUkNq+ZP9EJQxBqKHnvsvZU3RHIUIhvN+BeOWahQg2ZEOEqVJ02F60gM0FAp7ItjKMNkwqjEktYC14ei8E/euOkWy2+JFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4bW6L95Wqlzdb8p;
+	Mon, 30 Jun 2025 21:23:29 +0800 (CST)
+Received: from kwepemh100007.china.huawei.com (unknown [7.202.181.92])
+	by mail.maildlp.com (Postfix) with ESMTPS id D451A140156;
+	Mon, 30 Jun 2025 21:27:29 +0800 (CST)
+Received: from huawei.com (10.67.174.33) by kwepemh100007.china.huawei.com
+ (7.202.181.92) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 30 Jun
+ 2025 21:27:28 +0800
+From: Gu Bowen <gubowen5@huawei.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>, David Howells
+	<dhowells@redhat.com>, David Woodhouse <dwmw2@infradead.org>, Lukas Wunner
+	<lukas@wunner.de>, Ignat Korchagin <ignat@cloudflare.com>, "David S . Miller"
+	<davem@davemloft.net>, Jarkko Sakkinen <jarkko@kernel.org>, Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Eric Biggers <ebiggers@kernel.org>, "Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Ard Biesheuvel <ardb@kernel.org>, Tianjia Zhang
+	<tianjia.zhang@linux.alibaba.com>, Dan Carpenter <dan.carpenter@linaro.org>
+CC: <keyrings@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-crypto@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+	<linux-arm-kernel@lists.infradead.org>, Lu Jialin <lujialin4@huawei.com>,
+	GONG Ruiqi <gongruiqi1@huawei.com>, Gu Bowen <gubowen5@huawei.com>
+Subject: [PATCH RFC 0/4] Reintroduce the sm2 algorithm
+Date: Mon, 30 Jun 2025 21:39:30 +0800
+Message-ID: <20250630133934.766646-1-gubowen5@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250613114148.1943267-1-robert.marko@sartura.hr> <3ba837f8-70bb-4b9e-a9f9-0e71b9e073c4@app.fastmail.com>
-In-Reply-To: <3ba837f8-70bb-4b9e-a9f9-0e71b9e073c4@app.fastmail.com>
-From: Robert Marko <robert.marko@sartura.hr>
-Date: Mon, 30 Jun 2025 15:21:19 +0200
-X-Gm-Features: Ac12FXxhA2Gp9rwQDhKKgV4ARb8lKQ6I8YMqCzExRny5q7pcafJNPwE_zl3e6I4
-Message-ID: <CA+HBbNFd5hCKqUZY25Sws-o-0QALLue-JROyze_9biyuZZv4mg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] arm64: lan969x: Add support for Microchip LAN969x SoC
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	"David S . Miller" <davem@davemloft.net>, Vinod Koul <vkoul@kernel.org>, 
-	Andi Shyti <andi.shyti@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, ore@pengutronix.de, luka.perkov@sartura.hr, 
-	Daniel Machon <daniel.machon@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemh100007.china.huawei.com (7.202.181.92)
 
-On Mon, Jun 16, 2025 at 8:34=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
-:
->
-> On Fri, Jun 13, 2025, at 13:39, Robert Marko wrote:
-> > This patch series adds basic support for Microchip LAN969x SoC.
-> >
-> > It introduces the SoC ARCH symbol itself and allows basic peripheral
-> > drivers that are currently marked only for AT91 to be also selected for
-> > LAN969x.
-> >
-> > DTS and further driver will be added in follow-up series.
-> >
-> > Robert Marko (6):
-> >   arm64: lan969x: Add support for Microchip LAN969x SoC
-> >   spi: atmel: make it selectable for ARCH_LAN969X
-> >   i2c: at91: make it selectable for ARCH_LAN969X
-> >   dma: xdmac: make it selectable for ARCH_LAN969X
-> >   char: hw_random: atmel: make it selectable for ARCH_LAN969X
-> >   crypto: atmel-aes: make it selectable for ARCH_LAN969X
->
-> If the drivers on ARCH_LAN969X are largely shared with those on
-> ARCH_AT91, should they perhaps depend on a common symbol?
->
-> That could be either the existing ARCH_AT91 as we do with LAN966,
-> or perhaps ARCH_MICROCHIP, which is already used for riscv/polarfire.
+To reintroduce the sm2 algorithm, the patch set did the following:
+ - Reintroduce the mpi library based on libgcrypt.
+ - Reintroduce ec implementation to MPI library.
+ - Rework sm2 algorithm.
+ - Support verification of X.509 certificates.
 
-Hi Arnd, I thought about this, but I am not sure whether its worth it
-since we need
-LAN969x arch anyway for other drivers that currently depend on LAN966x
-or SparX-5
-but will be extended for LAN969x (I have this already queued locally
-but need this to
-land first).
+Gu Bowen (4):
+  Revert "Revert "lib/mpi: Extend the MPI library""
+  Revert "Revert "lib/mpi: Introduce ec implementation to MPI library""
+  crypto/sm2: Rework sm2 alg with sig_alg backend
+  crypto/sm2: support SM2-with-SM3 verification of X.509 certificates
 
-I hope this makes sense
+ certs/system_keyring.c                   |    8 +
+ crypto/Kconfig                           |   18 +
+ crypto/Makefile                          |    8 +
+ crypto/asymmetric_keys/public_key.c      |    7 +
+ crypto/asymmetric_keys/x509_public_key.c |   27 +-
+ crypto/sm2.c                             |  492 +++++++
+ crypto/sm2signature.asn1                 |    4 +
+ crypto/testmgr.c                         |    6 +
+ crypto/testmgr.h                         |   57 +
+ include/crypto/sm2.h                     |   31 +
+ include/keys/system_keyring.h            |   13 +
+ include/linux/mpi.h                      |  170 +++
+ lib/crypto/mpi/Makefile                  |    2 +
+ lib/crypto/mpi/ec.c                      | 1507 ++++++++++++++++++++++
+ lib/crypto/mpi/mpi-add.c                 |   50 +
+ lib/crypto/mpi/mpi-bit.c                 |  143 ++
+ lib/crypto/mpi/mpi-cmp.c                 |   46 +-
+ lib/crypto/mpi/mpi-div.c                 |   29 +
+ lib/crypto/mpi/mpi-internal.h            |   10 +
+ lib/crypto/mpi/mpi-inv.c                 |  143 ++
+ lib/crypto/mpi/mpi-mod.c                 |  144 +++
+ lib/crypto/mpi/mpicoder.c                |  336 +++++
+ lib/crypto/mpi/mpih-mul.c                |   25 +
+ lib/crypto/mpi/mpiutil.c                 |  182 +++
+ 24 files changed, 3447 insertions(+), 11 deletions(-)
+ create mode 100644 crypto/sm2.c
+ create mode 100644 crypto/sm2signature.asn1
+ create mode 100644 include/crypto/sm2.h
+ create mode 100644 lib/crypto/mpi/ec.c
+ create mode 100644 lib/crypto/mpi/mpi-inv.c
 
-Regards,
-Robert
->
->     Arnd
+-- 
+2.25.1
 
-
-
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura d.d.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
 
