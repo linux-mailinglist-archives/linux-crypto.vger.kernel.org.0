@@ -1,61 +1,61 @@
-Return-Path: <linux-crypto+bounces-14514-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14516-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83A83AF86A2
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Jul 2025 06:26:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D756AF86A7
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Jul 2025 06:26:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F6BC1C84F01
-	for <lists+linux-crypto@lfdr.de>; Fri,  4 Jul 2025 04:26:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EC037AFD29
+	for <lists+linux-crypto@lfdr.de>; Fri,  4 Jul 2025 04:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81747218827;
-	Fri,  4 Jul 2025 04:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34081239562;
+	Fri,  4 Jul 2025 04:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BnSV6SLK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kw7UVNkf"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D6320C004;
-	Fri,  4 Jul 2025 04:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3DA72139CE;
+	Fri,  4 Jul 2025 04:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751603020; cv=none; b=ksOX+Jil+C+B4A7u3ffw/YabjI0tcmJ900t0m/aE5ke/lyxbrkbT/rLJ3CVx7+JI5y6L84Ce7u/fLoqq4WW7BHC+sU1LvSOCudGNy1sTIZwv8porzRdw+3pw5LSXa82aoWKa36OnbidNHEyLabNvHv8O0GzLAF+2XRp+1yK8GVw=
+	t=1751603021; cv=none; b=uExhFkCApnFDFCDy9Pue5mbHgNQMs3Ry38BwUh9yjugNHYFgf/k2mv/Qa6nWH+inTBrLRo4X6NBliIdjCiLjoQ7AXhp6P5TKJ0oH2Pqi20gN+b3F+4WEmYXsv+chbl377ge7/fckF/sp92Up1IadiqQGaD3fX1a9HBnG6VW35fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751603020; c=relaxed/simple;
-	bh=67XBFQJx9vgOGh9HYwd5EPtGelqpXURPeqiAnhwiVtU=;
+	s=arc-20240116; t=1751603021; c=relaxed/simple;
+	bh=3e3UJSiDD0ePCp1UhoZ0QEgH6akJ/6LM7f1aXMoqR8U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E/Nur0Vue1WDD3ZDDn5GBoiAuXBcViV/La7DRJyFefrQKz5KT7aSc4khhVrfls5E/Xq3dawIDTYGvYi5PaxRoVUacsGk4E3Ch3GauYEW+g363M0a/yetperh+R0iaC1bTuMU1aNoXBJNhI8pwbiJlrJIPkLeH+V7blTDNJsc6Ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BnSV6SLK; arc=none smtp.client-ip=198.175.65.17
+	 MIME-Version; b=C/kjFcItf1A4u+xvv0g9gvNC7ByrrdK2Em3kXseJAY+RGYbtBtfAEzOKhzRqpkmiOW+p2GfFG36w3QYr99HUH1ofsWUCF8NCeHIVJmUtk59KmRlisIcJphiaoPpmuSjFXpy5XFs4GNXnjBb7UyC1GgvTFjAwpXuB1rBDOOkt+sM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kw7UVNkf; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1751603019; x=1783139019;
+  t=1751603020; x=1783139020;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=67XBFQJx9vgOGh9HYwd5EPtGelqpXURPeqiAnhwiVtU=;
-  b=BnSV6SLK5N4vA0y+fw9GQZQHiEEg46FT18xzNTd4xZDxc/eNR4G5C8Uy
-   1cXRNtlUpGo1qxF4x3OfylAjWvdPabsMlJPnaYcj6zpvFDnoIjNGIglFU
-   tFZzVU+oKCZSCmYa5/WFdmRoQIf1HahWIYQaB7GfUlcWMVA7ZV+ntnei9
-   uZfzYfZh9Abo5639tM9/rLqyJfIfBmz9HXLgKfaNGCfmswaHYQ4Vfg6y+
-   7+cJ9Rj9WHXoe9oPEeGNxvtSPiTJb5VMVY2bsood8Sqg7+wkgs5gNtcDK
-   eQF/QYbHdV6OPRaAlV1cq85+OUJh+tHpJy35OgPlSv2gEjPGfLx+6LfD8
-   Q==;
-X-CSE-ConnectionGUID: K2ySSIEqSP2zNuinM28bOw==
-X-CSE-MsgGUID: dzCz8PPzRFupYfQgO0wkWQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11483"; a="53909140"
+  bh=3e3UJSiDD0ePCp1UhoZ0QEgH6akJ/6LM7f1aXMoqR8U=;
+  b=kw7UVNkfeG9iZ7NznNYrNHabAICG4dn+iDOG6DotxMC1JWtX01Sa8Ikr
+   X23FACBIPuAGd7EeYiJXO0csESRE5D7AE+wX2A3iQkjmnioqX/Q8LnOuQ
+   k0IDkS1UfvRwbZDVkbekVY55lyre+Ks3tA34ixsDaONlucvkfT35e3yR3
+   pmIdRlHRYhy2ceXlLDTaSJOJGmLaJh/dGwIzz65i7t0dI5c8+jkIN7zUa
+   vM2UUSilnVBB4Ob3xksEh5e2F17dcuTx3n16lwPXeilvUQoUDurkKcUar
+   6M1KMhfYy6bK4Mqu1RMabVFcGN0rj1ZPTpjLPi4qHyaq0GYHmGZqzsSii
+   w==;
+X-CSE-ConnectionGUID: SfEH/Q3lRBGC9FZhTCkFjw==
+X-CSE-MsgGUID: GEkkO2FWSbej4o19Jsu13A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11483"; a="53909154"
 X-IronPort-AV: E=Sophos;i="6.16,286,1744095600"; 
-   d="scan'208";a="53909140"
+   d="scan'208";a="53909154"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2025 21:23:26 -0700
-X-CSE-ConnectionGUID: qLyqzMLLQ7iZNvpsrvEsFQ==
-X-CSE-MsgGUID: RY/Rd+qVQsSf6Lxgr2ABMw==
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2025 21:23:27 -0700
+X-CSE-ConnectionGUID: fpQ2MfLjQCyYj/Lk6NMX7g==
+X-CSE-MsgGUID: UUNqrK8TQdq0+7p7PZv2+g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.16,286,1744095600"; 
-   d="scan'208";a="153968705"
+   d="scan'208";a="153968708"
 Received: from jf5300-b11a338t.jf.intel.com ([10.242.51.115])
   by orviesa006.jf.intel.com with ESMTP; 03 Jul 2025 21:23:26 -0700
 From: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
@@ -83,9 +83,9 @@ To: linux-kernel@vger.kernel.org,
 Cc: wajdi.k.feghali@intel.com,
 	vinodh.gopal@intel.com,
 	kanchana.p.sridhar@intel.com
-Subject: [PATCH v10 15/25] crypto: iaa - Disable iaa_verify_compress by default.
-Date: Thu,  3 Jul 2025 21:23:13 -0700
-Message-Id: <20250704042323.10318-16-kanchana.p.sridhar@intel.com>
+Subject: [PATCH v10 16/25] crypto: iaa - Submit the two largest source buffers first in decompress batching.
+Date: Thu,  3 Jul 2025 21:23:14 -0700
+Message-Id: <20250704042323.10318-17-kanchana.p.sridhar@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20250704042323.10318-1-kanchana.p.sridhar@intel.com>
 References: <20250704042323.10318-1-kanchana.p.sridhar@intel.com>
@@ -97,55 +97,114 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch makes it easier for IAA hardware acceleration in the iaa_crypto
-driver to be loaded by default with "iaa_verify_compress" disabled, to
-facilitate performance comparisons with software compressors (which also
-do not run compress verification by default). Earlier, iaa_crypto compress
-verification used to be enabled by default.
+This patch finds the two largest source buffers in a given decompression
+batch, and submits them first to the IAA decompress engines.
 
-The iaa_crypto driver documentation has been updated with this change.
-
-With this patch, if users want to enable compress verification, they can do
-so with these steps:
-
-  1) disable all the IAA device/wq bindings that happen at boot time
-  2) rmmod iaa_crypto
-  3) modprobe iaa_crypto
-  4) echo 1 > /sys/bus/dsa/drivers/crypto/verify_compress
-  5) re-run initialization of the IAA devices and wqs
+This improves decompress batching latency because the hardware has a
+head start on decompressing the highest latency source buffers in the
+batch. Workload performance is also significantly improved as a result
+of this optimization.
 
 Signed-off-by: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 ---
- Documentation/driver-api/crypto/iaa/iaa-crypto.rst | 2 +-
- drivers/crypto/intel/iaa/iaa_crypto_main.c         | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 60 +++++++++++++++++++++-
+ 1 file changed, 58 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/crypto/iaa/iaa-crypto.rst b/Documentation/driver-api/crypto/iaa/iaa-crypto.rst
-index 8e0e98d509720..bc5912f22ae1f 100644
---- a/Documentation/driver-api/crypto/iaa/iaa-crypto.rst
-+++ b/Documentation/driver-api/crypto/iaa/iaa-crypto.rst
-@@ -239,7 +239,7 @@ The available attributes are:
- 
-       echo 0 > /sys/bus/dsa/drivers/crypto/verify_compress
- 
--    The default setting is '1' - verify all compresses.
-+    The default setting is '0' - to not verify compresses.
- 
-   - sync_mode
- 
 diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index cf12257f7400d..09d786e85ab66 100644
+index 09d786e85ab66..4ed56a69112a9 100644
 --- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
 +++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -120,7 +120,7 @@ static bool iaa_distribute_decomps;
- static bool iaa_distribute_comps = true;
+@@ -2375,6 +2375,35 @@ static int iaa_comp_acompress_batch(
+ 	return err;
+ }
  
- /* Verify results of IAA compress or not */
--static bool iaa_verify_compress = true;
-+static bool iaa_verify_compress;
++/*
++ * Find the two largest source buffers in @slens for a decompress batch,
++ * and pass their indices back in @idx_max and @idx_next_max.
++ *
++ * Returns true if there is no second largest source buffer, only a max buffer.
++ */
++static __always_inline bool decomp_batch_get_max_slens_idx(
++	unsigned int slens[],
++	int nr_pages,
++	int *idx_max,
++	int *idx_next_max)
++{
++	int i, max_i = 0, next_max_i = 0;
++
++	for (i = 0; i < nr_pages; ++i) {
++		if (slens[i] >= slens[max_i]) {
++			next_max_i = max_i;
++			max_i = i;
++		} else if ((next_max_i == max_i) || (slens[i] > slens[next_max_i])) {
++			next_max_i = i;
++		}
++	}
++
++	*idx_max = max_i;
++	*idx_next_max = next_max_i;
++
++	return (next_max_i == max_i);
++}
++
+ /**
+  * This API provides IAA decompress batching functionality for use by swap
+  * modules.
+@@ -2407,18 +2436,36 @@ static int iaa_comp_adecompress_batch(
+ {
+ 	struct scatterlist inputs[IAA_CRYPTO_MAX_BATCH_SIZE];
+ 	struct scatterlist outputs[IAA_CRYPTO_MAX_BATCH_SIZE];
++	bool max_processed = false, next_max_processed = false;
+ 	bool decompressions_done = false;
+-	int i, err = 0;
++	int i, max_i, next_max_i, err = 0;
  
- /*
-  * The iaa crypto driver supports three 'sync' methods determining how
+ 	BUG_ON(nr_reqs > IAA_CRYPTO_MAX_BATCH_SIZE);
+ 
+ 	iaa_set_req_poll(reqs, nr_reqs, true);
+ 
++	/*
++	 * Get the indices of the two largest decomp buffers in the batch.
++	 * Submit them first. This improves latency of the batch.
++	 */
++	next_max_processed = decomp_batch_get_max_slens_idx(slens, nr_reqs,
++							    &max_i, &next_max_i);
++
++	i = max_i;
++
+ 	/*
+ 	 * Prepare and submit the batch of iaa_reqs to IAA. IAA will process
+ 	 * these decompress jobs in parallel.
+ 	 */
+-	for (i = 0; i < nr_reqs; ++i) {
++	for (; i < nr_reqs; ++i) {
++		if ((i == max_i) && max_processed)
++			continue;
++		if ((i == next_max_i) && max_processed && next_max_processed)
++			continue;
++
++		if (max_processed && !next_max_processed)
++			i = next_max_i;
++
+ 		reqs[i]->src = &inputs[i];
+ 		reqs[i]->dst = &outputs[i];
+ 		sg_init_one(reqs[i]->src, srcs[i], slens[i]);
+@@ -2437,6 +2484,15 @@ static int iaa_comp_adecompress_batch(
+ 			errors[i] = -EAGAIN;
+ 		else if (errors[i])
+ 			err = -EINVAL;
++
++		if (i == max_i) {
++			max_processed = true;
++			i = -1;
++		}
++		if (i == next_max_i) {
++			next_max_processed = true;
++			i = -1;
++		}
+ 	}
+ 
+ 	/*
 -- 
 2.27.0
 
