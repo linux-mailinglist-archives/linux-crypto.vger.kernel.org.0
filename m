@@ -1,177 +1,273 @@
-Return-Path: <linux-crypto+bounces-14984-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14989-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7461B11C5A
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 12:31:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7AB3B11DCA
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 13:43:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93D494E0E76
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 10:30:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF8841CE338B
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 11:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A6C2DE71E;
-	Fri, 25 Jul 2025 10:31:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3468B2E7620;
+	Fri, 25 Jul 2025 11:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pgixuGk3"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C9P0LKz3"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2082.outbound.protection.outlook.com [40.107.93.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED23323A58E;
-	Fri, 25 Jul 2025 10:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753439463; cv=fail; b=co+QMtGEb0y7f/4j7m8IJugoTjSKjq3rbJY8v7K8q8eNe5MvDqXc3iLrSXNrO/b92uGhkUFhT28nfC7AzdBm0t5pX565c+ITj6c551cfvxnUAzaI4srOIo72GjpMfso/okLludmCaNnpSlNXDFl+Qk0TiMH9ZqKTCtz0pisp+yY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753439463; c=relaxed/simple;
-	bh=I4gPn7NjZOi8nTiJOwpQbnkEBoaF51p+reJgMk8h+O4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DqrlT3IEbiSoi2G4DnL1lsk4eXkUkRCl5bz/4XDjNZQLAkNLIBIkE7rhcFRJOezKbyBsw7KkWfNwS1HzlrbcDCY5Cy4l0uUMx5ID3H0u4uUKlGPVBSByjrlZS/rjWEa6vt2PYAl3gXtfhqkZMQFlFCGAGYXD74Oisil/h4nNBLk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pgixuGk3; arc=fail smtp.client-ip=40.107.93.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KBNLSYICEg+q9c8rVflZo5OlSbU+R5vEM1Z5MuV0sIucEEk1Fd1aGYzLQzDgWhfOci5RYQdj161aOT67cmRdGi5GKuVgGCL9cTFrHRo5RgLUJo5ehtHuLEklalZNUwl3mW4vwxPfP8qnJycDV4Sck5Ec2XnXIn3JB4ZJUuiV9MMq9g/2zWM5SYQZ0ax0oaMrUVk1rnFo5RLaaqwsoerTZQP5qdH9QMWEtTCPPzQl/zGyltpeNNOTq1wfXKGGGg2+4F+rYre4Ob3MWs+GDdjR9p01hd27SoVUuayjhqKe87ZuhI82hoETuNllgMntyK12dok19VfdsiB2XY5xgCMtJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=32UZYLywo8KH+MpROOPIKjo1og/FmFmziShXB6FNNrY=;
- b=NCs0aimk6oNqU0RC9El1ixKHoT6REUxgk0aq12OpAbfLLKZoESMObRmTydI2QNqB/wlKyf5/bppzygyNf/ChbZWsGvibuXTqiGaUP6ZX7XuBpdRzvshNnaDS3gpqPAb/TowKIHoOvW1BLFMdCyNWOP40lPMtHFa6kTDOW1meN0Xs0hDHkRBM2VGmgraBEyny6C9yPz4MFINt8G33fWRnj1pO7Onv06wRt6EzfNwY2d+2r7f01nahEEmQkfO+d4bA+PnrXgeWQVOKa1E420mrqI9f//VlHSl9raVZ7KMzYhuKWH947LtjmSSAtg5kCOGgkxzulyawVkmISXdKJ4jJnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=8bytes.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=32UZYLywo8KH+MpROOPIKjo1og/FmFmziShXB6FNNrY=;
- b=pgixuGk39a/YsiTY9mwDScNAd6/R6f9XzAF7vdmtgpbGvdddmqWYkc//RVMZJeTVKh2dPCydZ/MNPSuxWAW5/m/D3gRc2ZRZYrf6au7pKhNJXerYoLyaMjqST/auyxiqK19eipzPIr22/6g+IOTRC/GNPq5WbrqwB74B+UL6diY=
-Received: from BN9PR03CA0220.namprd03.prod.outlook.com (2603:10b6:408:f8::15)
- by DS7PR12MB8251.namprd12.prod.outlook.com (2603:10b6:8:e3::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8943.30; Fri, 25 Jul 2025 10:30:58 +0000
-Received: from BN1PEPF0000468E.namprd05.prod.outlook.com
- (2603:10b6:408:f8:cafe::15) by BN9PR03CA0220.outlook.office365.com
- (2603:10b6:408:f8::15) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8964.23 via Frontend Transport; Fri,
- 25 Jul 2025 10:30:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN1PEPF0000468E.mail.protection.outlook.com (10.167.243.139) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8964.20 via Frontend Transport; Fri, 25 Jul 2025 10:30:58 +0000
-Received: from [10.136.41.253] (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 25 Jul
- 2025 05:30:53 -0500
-Message-ID: <770f0fe1-08da-417e-9a0e-fc19d1781f51@amd.com>
-Date: Fri, 25 Jul 2025 16:00:51 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711BA2E7177
+	for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 11:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753443813; cv=none; b=VCSBW9IDFn86dgi9hDQvXD2sM5Z9sNveyAU3QuLgIbcAEB1I8sF6FlQeR4hlHLHbPSRdSzQqieT3TFap9DxonX3n8/cntpQ6GHmspA+e9KbSKkhAtbm3gxu73Qh/SNQKBgijYvEDcsSk7A3RbkqHqlui/3zgnK8f/EQNfVYoCvQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753443813; c=relaxed/simple;
+	bh=yYEFudnuqhhtZ+sqQ+TFTlE2skKtiAAPYNG8FKAlAuU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fIjsU7ClwSk6DIy0Nd2PvlsyJO5ARbyKlJwuVoPgAjNAkoAefLRAW4nTReirMT+Okql7x0Q4epDQo4ebryP051a+JXtEkiGNd3JVWkyLLd88HinUMxNfNNtjsF7BkdM+rzcZnd9dklqQcEkhYHADAfqPxhlXsl26MmzkLLcWAxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C9P0LKz3; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-41cbc8da42aso1084044b6e.2
+        for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 04:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1753443810; x=1754048610; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=29HDb0CStjqCTbdMTaT8ki881uLabi0viRhzF0Cw5Io=;
+        b=C9P0LKz3GqvzRV8Oq58vKadmo+TW7yKV5RdOyUPu2ET7+mhG37NjlAZB6NwXmdLqHw
+         DEjztsACvmM5Sm9zsPqeT5i0ziRwcfuzkf9gkUWPAneSW6rd1YjH6cBaHde81HmHmPg0
+         O00l2GlrBG5xZVzwmapFjCQIUIcpaMMYPT8kk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753443810; x=1754048610;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=29HDb0CStjqCTbdMTaT8ki881uLabi0viRhzF0Cw5Io=;
+        b=rvmWdA7mMd6xs/zeviMGjxvLZLytNhGrZadH1+G9zydKR2sfBobZPIrG7zh9sIBpvf
+         msz/t+ZNy3sqxJsx9bCBWwX5Sp40IjML/ZOsVIyoSPkREtsTIu5cZWsWOIAjKcgCTtmN
+         +lXomhCGLywNGfL/LjnJcIV/HYqvgNZDz2BMGLQCkFW3Me1FlTU5GE/XCb5cdCWe2IVu
+         Ox2HYoJYdAPSuFvnjb0T2lXUllWDYchztK86auGHHd7syOgr4dQ4jc5fqzilMcrTdftl
+         HmRYr7NxWYuHMw3H3sZCkSDd9I77CnySvNrgiuaNd0euFlHEqclo2BPxkhy0QX2Al8p4
+         2eQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUgGkz31c9YqY0yf/HTOKs6iod51vVlkSqybgr0l44a6iUwVt8X/G2exMtPpEVeoP21HnnXN7Cw2YKgWGQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXziEfUh5Y+BeVa3vwwe9MZ9Ys7fG7oivayTVt77g5ZjuAp5bN
+	iWa4oJr3fXEOD19jGVTYTCwmcpQGeH9uFkaq4osNVAlg7DcaYK8Ir+dn2H1RBPbeL6KU85IVd9o
+	3GKg6+w==
+X-Gm-Gg: ASbGncvIbs+XSEYalDlQrQWMS/QvI4SfBAHEfCACtz/L7dxYPK6k8jTZERuduiQguTA
+	nmsZwCflQumuFCLVGpzkqGIya5pV55TCJqoEhLukvOc83A/zLj12vkLxyOH9Qp5Daa5YKoFn/WR
+	blXgSWLeu8N7vYFxaNAURiw7nZ1Djr3eLiG2C6KFpAlnqFZrz5SUbC3bVTTK02WXC7++y9VsBhO
+	m6dqfl9KnIgbOPQY29Z1P5nzB7Ibd6N6crEGjX6W9j3MhXt3tyg6aAX+Hr69iDh35AqMIlyoT9i
+	4sNahTyB0rH7HWqfSKLZ2EGA9j4qKgJD9Yv33sOQidIg10b14DkdEfqW4VF/0QBVYIggJuPTnl2
+	5IBcb3h2E0mOkA0QwSQ0Kcts4BncULRqyR/94WFv8E7MySpvGJTgQ/2BpaQ==
+X-Google-Smtp-Source: AGHT+IEyRingtK5uHAEsvEGcr1iIGFBArvz+C/HKqAsLrTBX3ecAbViae0L2XsN3JkdacN5BwwGMWw==
+X-Received: by 2002:a05:6808:f0b:b0:425:767e:9ca2 with SMTP id 5614622812f47-42bb79cd130mr737308b6e.1.1753443810183;
+        Fri, 25 Jul 2025 04:43:30 -0700 (PDT)
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com. [209.85.161.41])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-42a30f5b39bsm601880b6e.17.2025.07.25.04.43.29
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jul 2025 04:43:29 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-61591e51092so981222eaf.0
+        for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 04:43:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWCPnQlo8rzz2ae9FnzwJbO7/2eLla9CuRtDLtyMZ6POaAhmS3pzfbDC096erpFDRO1uqA4mLRNUY83iK8=@vger.kernel.org
+X-Received: by 2002:a05:6102:5799:b0:4e5:ade7:eb7c with SMTP id
+ ada2fe7eead31-4fa3fac29femr330925137.12.1753439652105; Fri, 25 Jul 2025
+ 03:34:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/4] iommu/amd: Skip enabling command/event buffers for
- kdump
-To: Ashish Kalra <Ashish.Kalra@amd.com>, <joro@8bytes.org>,
-	<suravee.suthikulpanit@amd.com>, <thomas.lendacky@amd.com>,
-	<Sairaj.ArunKodilkar@amd.com>, <Vasant.Hegde@amd.com>,
-	<herbert@gondor.apana.org.au>
-CC: <seanjc@google.com>, <pbonzini@redhat.com>, <will@kernel.org>,
-	<robin.murphy@arm.com>, <john.allen@amd.com>, <davem@davemloft.net>,
-	<michael.roth@amd.com>, <iommu@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<kvm@vger.kernel.org>
-References: <cover.1753133022.git.ashish.kalra@amd.com>
- <eeecb08fee542b36713769a16e31532537de0727.1753133022.git.ashish.kalra@amd.com>
-Content-Language: en-US
-From: Sairaj Kodilkar <sarunkod@amd.com>
-In-Reply-To: <eeecb08fee542b36713769a16e31532537de0727.1753133022.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468E:EE_|DS7PR12MB8251:EE_
-X-MS-Office365-Filtering-Correlation-Id: 740fa15b-d13c-446c-da96-08ddcb66583c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|36860700013|1800799024|82310400026;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?aTN3NGNCY1NTUjZ1LzM0L0tSZFVBTnRVcVRtQlREYzFOTUpLakkxSUxWMXMr?=
- =?utf-8?B?b2JhSEdJYS9xNUp6NFVnbDhuY2FjbG9zL1BuSWNXTVkwREowZzBFams0QnV0?=
- =?utf-8?B?N2x4UjQ4dUNFazc2amVPOVQ0cW92QitvczdBaEtCRU5qZmUxYjNMeEpiaFI2?=
- =?utf-8?B?VU9ZMmwwb09zY0JXMWpIa2pWQXVFNEFicUxXQ050a0U0dkFLNi9FNm5LY0xL?=
- =?utf-8?B?ckVGR3YxQjI1YU5TclZGcG5aczdIRVFhY0JMVEt3ay9XUDhmd1hHa1QzUlNW?=
- =?utf-8?B?dlFrUk16WWExcVovNGFQUWh5K21OUEV5NklnWnNzcXlsSVp5MjJaeTdob3dW?=
- =?utf-8?B?M2M3STBGek9TZlhHNmRLc3FRTmx1blJaanNsUm9OMmgweVI3b002aFcvdVdu?=
- =?utf-8?B?N01JOWRtQlpjdWxPb3BVOGdvSEZma0RJbTRFa0JwQ0IvUmpyRmxHeDByM3Nu?=
- =?utf-8?B?djhCdnlWUlpwamFOQktlUnBlNWpSOTZMNzJPbGlYMFVlaVlGM01aQThKUlNL?=
- =?utf-8?B?VlN2WTBlOUFsOUpKU3dGSDhYQ3pHdFFnV2lkbG5ZZURVN1o1dGpzNHdtbVoz?=
- =?utf-8?B?WS96bEhra1BpRFNZbWdDdnFqRHo5TTBJRm4wck1TS0c1OEpoSTZERStuenZp?=
- =?utf-8?B?VFpDNWgzNCs2VUR3MDkyOHhaUkFnVHBLeGRITjVRb2M2RE0xa2pIWFcrSTdM?=
- =?utf-8?B?SmU5cUdzRWp0OVQwbi9JdWhyVjlUK2t2bk5qSEVnR1lXTUx2dy9WSk9OSDVz?=
- =?utf-8?B?QkQyUis4a3BJenR2M1UzT0dlOWJwbnNucjNuUHVLcW1lWVl3Mll2ZmJ2L2Nz?=
- =?utf-8?B?aDQreC9Qb3RQdmtHSlBvN1lFVWI4NFo1MWRhM1h2MEN0N0NtRUVXWjlFSFRP?=
- =?utf-8?B?LzloYitTR2Ftd3FBaGdhbjRBSnIrdHVwUkJOTEx1c2t0RTgwbUJkKzVBQUVW?=
- =?utf-8?B?OUxYSkpyZE01Q2lDbkFrRk40SngvbTlsQXBPdXhlc3YvRGF0V2pPc2RXcTg4?=
- =?utf-8?B?b1hwYmN2R2Y0N2Mva1pPVXJDMHU1dnVOODdtTFBCeUQ4Z0cxVmMxTjl1eU82?=
- =?utf-8?B?Mzkwa05XNDBReHIxM2NXdlhKN2M0U282OWxRODZNOXlwbkNtTHMrQkFvOHhu?=
- =?utf-8?B?cHdsZFg4WHVNZnQrU3A4TDMyTzY2SzFlYXdqVEpwNWh3TGNOazcyd2lONTg2?=
- =?utf-8?B?bm1mM3N5N3l3NFNSNFRwZGR2NjI1bk9mN0J2UUxCcjNHVTlBMHRya3M1a3pY?=
- =?utf-8?B?UUZmaHZKaWZ4U09aYUhpRnBkYXIzKzBTUE9jd1o1Z3lQSkRIRThOVVl1WTAw?=
- =?utf-8?B?UEo1ZHJTczlGcDQ4UUNGazRsYVoxdXFNNm00NjhRc3F2NHNWU3NRTkZWVE5T?=
- =?utf-8?B?NFZFbTl3V3RUNU53MGRpQmZvRmhISFoyMFVhVzUwSXJFNHhzZkZUNUcveE5U?=
- =?utf-8?B?UFF4RFZzd1ZmcllVdWJVY2xjbHlDMVlSMmdaZitacFRRWTlob21zOXJTTFlh?=
- =?utf-8?B?VVMrTmVBL2tSdDJXTHNlc1Nwb0l2RjN1SWlxMTNyUHRVOWY3eW1FNjBncjh2?=
- =?utf-8?B?bStGR3VqSy8wZ0d1MjVCOWc2YlMxWjVuVTM2WGJRdGFZelVnQW1RTHM0WVFL?=
- =?utf-8?B?c2tZVktqc1h0RFovdDRlQWcwRGxrZkxGdHNrbzFDV09ncVIrVUJibnVWcWsv?=
- =?utf-8?B?dU8vMGZkUm92Y2FQbmZ6Nk12SWxMZmNheEQ0aTN5QjdWeWtyS3hsbFNrOHNn?=
- =?utf-8?B?dm5ncXF5cDhJQXRidE5peVRTOFVMSE9VVzMrR0xlTVpqV3BvNlVyMGlkSEFK?=
- =?utf-8?B?Sis4QXNyUUFQQlFJOUpaRDZxQkxVbWRldGlYQWQ2YlQ4Ri8zazlYWmhoUGF4?=
- =?utf-8?B?OFdkNXJOMm1tMjJ0WHVmMEJqZ0YyRWVyTWVqcHhnbS9yazJLVWNGRnhTcWpw?=
- =?utf-8?B?ZGN5c2FieTN1aVgyZnFqS3ZucFpLcGNkTm9hOWd3T1ZValdZVHpqOHF2ekhP?=
- =?utf-8?B?aHpyZXZhT1VyclkwY2loajBPT2sySEFRSDhqR2tWcTNTQVQxSjEwenpwcWo5?=
- =?utf-8?Q?iWFSDW?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(36860700013)(1800799024)(82310400026);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2025 10:30:58.3535
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 740fa15b-d13c-446c-da96-08ddcb66583c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000468E.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8251
+References: <20250724083914.61351-1-angelogioacchino.delregno@collabora.com> <20250724083914.61351-35-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20250724083914.61351-35-angelogioacchino.delregno@collabora.com>
+From: Fei Shao <fshao@chromium.org>
+Date: Fri, 25 Jul 2025 18:33:36 +0800
+X-Gmail-Original-Message-ID: <CAC=S1nhfg_qD044bO8EOV=MckoNVtJXQ47XBeDFMPwJ9goHg-A@mail.gmail.com>
+X-Gm-Features: Ac12FXyYX3cOTb6n6096sUC59Z8DCV1ifB6_qbpW9gH46tmstAs2fiwwoJYhrGs
+Message-ID: <CAC=S1nhfg_qD044bO8EOV=MckoNVtJXQ47XBeDFMPwJ9goHg-A@mail.gmail.com>
+Subject: Re: [PATCH 34/38] arm64: dts: mediatek: mt8195: Fix ranges for jpeg
+ enc/decoder nodes
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-mediatek@lists.infradead.org, robh@kernel.org, 
+	daniel.lezcano@linaro.org, mwalle@kernel.org, devicetree@vger.kernel.org, 
+	linus.walleij@linaro.org, linux-remoteproc@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	olivia.wen@mediatek.com, shane.chien@mediatek.com, linux-gpio@vger.kernel.org, 
+	linux-phy@lists.infradead.org, airlied@gmail.com, simona@ffwll.ch, 
+	herbert@gondor.apana.org.au, jassisinghbrar@gmail.com, jiaxin.yu@mediatek.com, 
+	andy.teng@mediatek.com, chunfeng.yun@mediatek.com, jieyy.yang@mediatek.com, 
+	chunkuang.hu@kernel.org, conor+dt@kernel.org, jitao.shi@mediatek.com, 
+	p.zabel@pengutronix.de, arnd@arndb.de, kishon@kernel.org, 
+	kyrie.wu@mediatek.corp-partner.google.com, maarten.lankhorst@linux.intel.com, 
+	tinghan.shen@mediatek.com, mripard@kernel.org, ck.hu@mediatek.com, 
+	broonie@kernel.org, eugen.hristev@linaro.org, houlong.wei@mediatek.com, 
+	matthias.bgg@gmail.com, tglx@linutronix.de, mchehab@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, granquet@baylibre.com, 
+	sam.shih@mediatek.com, mathieu.poirier@linaro.org, fparent@baylibre.com, 
+	andersson@kernel.org, sean.wang@kernel.org, linux-sound@vger.kernel.org, 
+	lgirdwood@gmail.com, vkoul@kernel.org, linux-crypto@vger.kernel.org, 
+	tzimmermann@suse.de, atenart@kernel.org, krzk+dt@kernel.org, 
+	linux-media@vger.kernel.org, davem@davemloft.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jul 24, 2025 at 5:51=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> The jpeg decoder main node is under the soc bus but currently has
+> no ranges or reg specified, while the children do, and this is
+> wrong in multiple aspects.
+>
+> The very same is also valid for the jpeg encoder node.
+>
+> Rename the decoder and encoder nodes to "jpeg-decoder@1a040000"
+> and to "jpeg-encoder@1a030000" respectively, and change their
+> children to use the newly defined ranges.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
+abora.com>
 
+Despite now jpeg-encoder isn't sorted in order, I guess we all agree
+it's much easier to read in this way, so
 
-On 7/22/2025 3:23 AM, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> After a panic if SNP is enabled in the previous kernel then the kdump
-> kernel boots with IOMMU SNP enforcement still enabled.
-> 
-> IOMMU command buffers and event buffer registers remain locked and
-> exclusive to the previous kernel. Attempts to enable command and event
-> buffers in the kdump kernel will fail, as hardware ignores writes to
-> the locked MMIO registers as per AMD IOMMU spec Section 2.12.2.1.
-> 
-> Skip enabling command buffers and event buffers for kdump boot as they
-> are already enabled in the previous kernel.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-Tested-by: Sairaj Kodilkar <sarunkod@amd.com>
+Reviewed-by: Fei Shao <fshao@chromium.org>
+
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8195.dtsi | 30 +++++++++++++-----------
+>  1 file changed, 16 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt8195.dtsi
+> index dd065b1bf94a..35b10082bb89 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> @@ -3014,7 +3014,7 @@ venc: video-codec@1a020000 {
+>                         #size-cells =3D <2>;
+>                 };
+>
+> -               jpgdec-master {
+> +               jpeg-decoder@1a040000 {
+>                         compatible =3D "mediatek,mt8195-jpgdec";
+>                         power-domains =3D <&spm MT8195_POWER_DOMAIN_VDEC1=
+>;
+>                         iommus =3D <&iommu_vdo M4U_PORT_L19_JPGDEC_WDMA0>=
+,
+> @@ -3025,11 +3025,12 @@ jpgdec-master {
+>                                  <&iommu_vdo M4U_PORT_L19_JPGDEC_BUFF_OFF=
+SET0>;
+>                         #address-cells =3D <2>;
+>                         #size-cells =3D <2>;
+> -                       ranges;
+> +                       ranges =3D <0 0 0 0x1a040000 0 0x20000>,
+> +                                <1 0 0 0x1b040000 0 0x10000>;
+>
+> -                       jpgdec@1a040000 {
+> +                       jpgdec@0,0 {
+>                                 compatible =3D "mediatek,mt8195-jpgdec-hw=
+";
+> -                               reg =3D <0 0x1a040000 0 0x10000>;/* JPGDE=
+C_C0 */
+> +                               reg =3D <0 0 0 0x10000>;/* JPGDEC_C0 */
+>                                 iommus =3D <&iommu_vdo M4U_PORT_L19_JPGDE=
+C_WDMA0>,
+>                                          <&iommu_vdo M4U_PORT_L19_JPGDEC_=
+BSDMA0>,
+>                                          <&iommu_vdo M4U_PORT_L19_JPGDEC_=
+WDMA1>,
+> @@ -3042,9 +3043,9 @@ jpgdec@1a040000 {
+>                                 power-domains =3D <&spm MT8195_POWER_DOMA=
+IN_VDEC0>;
+>                         };
+>
+> -                       jpgdec@1a050000 {
+> +                       jpgdec@0,10000 {
+>                                 compatible =3D "mediatek,mt8195-jpgdec-hw=
+";
+> -                               reg =3D <0 0x1a050000 0 0x10000>;/* JPGDE=
+C_C1 */
+> +                               reg =3D <0 0 0x10000 0x10000>;/* JPGDEC_C=
+1 */
+>                                 iommus =3D <&iommu_vdo M4U_PORT_L19_JPGDE=
+C_WDMA0>,
+>                                          <&iommu_vdo M4U_PORT_L19_JPGDEC_=
+BSDMA0>,
+>                                          <&iommu_vdo M4U_PORT_L19_JPGDEC_=
+WDMA1>,
+> @@ -3057,9 +3058,9 @@ jpgdec@1a050000 {
+>                                 power-domains =3D <&spm MT8195_POWER_DOMA=
+IN_VDEC1>;
+>                         };
+>
+> -                       jpgdec@1b040000 {
+> +                       jpgdec@1,0 {
+>                                 compatible =3D "mediatek,mt8195-jpgdec-hw=
+";
+> -                               reg =3D <0 0x1b040000 0 0x10000>;/* JPGDE=
+C_C2 */
+> +                               reg =3D <1 0 0 0x10000>;/* JPGDEC_C2 */
+>                                 iommus =3D <&iommu_vpp M4U_PORT_L20_JPGDE=
+C_WDMA0>,
+>                                          <&iommu_vpp M4U_PORT_L20_JPGDEC_=
+BSDMA0>,
+>                                          <&iommu_vpp M4U_PORT_L20_JPGDEC_=
+WDMA1>,
+> @@ -3088,7 +3089,7 @@ vdosys0: syscon@1c01a000 {
+>                 };
+>
+>
+> -               jpgenc-master {
+> +               jpeg-encoder@1a030000 {
+>                         compatible =3D "mediatek,mt8195-jpgenc";
+>                         power-domains =3D <&spm MT8195_POWER_DOMAIN_VENC_=
+CORE1>;
+>                         iommus =3D <&iommu_vpp M4U_PORT_L20_JPGENC_Y_RDMA=
+>,
+> @@ -3097,11 +3098,12 @@ jpgenc-master {
+>                                         <&iommu_vpp M4U_PORT_L20_JPGENC_B=
+SDMA>;
+>                         #address-cells =3D <2>;
+>                         #size-cells =3D <2>;
+> -                       ranges;
+> +                       ranges =3D <0 0 0 0x1a030000 0 0x10000>,
+> +                                <1 0 0 0x1b030000 0 0x10000>;
+>
+> -                       jpgenc@1a030000 {
+> +                       jpgenc@0,0 {
+>                                 compatible =3D "mediatek,mt8195-jpgenc-hw=
+";
+> -                               reg =3D <0 0x1a030000 0 0x10000>;
+> +                               reg =3D <0 0 0 0x10000>;
+>                                 iommus =3D <&iommu_vdo M4U_PORT_L19_JPGEN=
+C_Y_RDMA>,
+>                                                 <&iommu_vdo M4U_PORT_L19_=
+JPGENC_C_RDMA>,
+>                                                 <&iommu_vdo M4U_PORT_L19_=
+JPGENC_Q_TABLE>,
+> @@ -3112,9 +3114,9 @@ jpgenc@1a030000 {
+>                                 power-domains =3D <&spm MT8195_POWER_DOMA=
+IN_VENC>;
+>                         };
+>
+> -                       jpgenc@1b030000 {
+> +                       jpgenc@1,0 {
+>                                 compatible =3D "mediatek,mt8195-jpgenc-hw=
+";
+> -                               reg =3D <0 0x1b030000 0 0x10000>;
+> +                               reg =3D <1 0 0 0x10000>;
+>                                 iommus =3D <&iommu_vpp M4U_PORT_L20_JPGEN=
+C_Y_RDMA>,
+>                                                 <&iommu_vpp M4U_PORT_L20_=
+JPGENC_C_RDMA>,
+>                                                 <&iommu_vpp M4U_PORT_L20_=
+JPGENC_Q_TABLE>,
+> --
+> 2.50.1
+>
+>
 
