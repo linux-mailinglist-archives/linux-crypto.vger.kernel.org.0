@@ -1,98 +1,98 @@
-Return-Path: <linux-crypto+bounces-14992-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-14995-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35809B11DF5
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 13:53:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF94DB11E1D
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 14:06:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86FB616A40B
-	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 11:53:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66C857BA69A
+	for <lists+linux-crypto@lfdr.de>; Fri, 25 Jul 2025 12:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81BBD2E5B20;
-	Fri, 25 Jul 2025 11:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BA6242D7F;
+	Fri, 25 Jul 2025 12:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="I8/IqKW5"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QTYJFWDJ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67DB2E6D1C
-	for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 11:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688CF1BD4F7
+	for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 12:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753444400; cv=none; b=Jn8zqNegf4kKdNM9/VBlifTiqZUKloqg2NMWJMwvj84UNhCDYAntUqWx8+ilgABJSmHvgqwrPkn921/DxmRDLZNoXQDHSi6BreSlJXvhGqHtfcPimiFSsUNKC5CzQwa9k5mKQgoOoKNLn27erdUa4UdXCIoQzAlNTaR/88r/J0k=
+	t=1753445173; cv=none; b=u63/vgZsEQNlo9gIzN+vLsCwMHOTxoLlQBm+n3vd9ZHzITFenPlUsEK5CMb+4yjwVW8o7yXMuK94HP+6L05OMMbjUd/CDQEjbg6jHNXHnA6OZLJDdmoGmIB+Fholy5sHQWnHxW0dAtov5PAgGr2vyiH7vevBy8m8uP5tIJXOxyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753444400; c=relaxed/simple;
-	bh=/FWxLS8hqus1+HRqR+NgfMdxvAEHUA0sDpoYtqNCdMg=;
+	s=arc-20240116; t=1753445173; c=relaxed/simple;
+	bh=V8hirrUVOWBBWHrhJ7nvVXSHaacevucbhSLPMWQvrV0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kKMk1CD6CzveF0YHtRlJVYtWHZW7qAwu9r967q1sm1mafVrUUbn/Ud+cTbDTP39Dr5MNC/e40pHWjG3pWAZO/n0oz0b4qqqrlnAoWdZahZYyYIw0G3TluLDyHIkWjyv4qUHdqCtbbOHK84C/HYU0c+Bzglg5wr6uBMXmw9GCtqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=I8/IqKW5; arc=none smtp.client-ip=209.85.210.42
+	 To:Cc:Content-Type; b=IhyWuw4AOkijahlA/p9jr74ZpwNnrjmaM5MQ/aYB7sczIA3glzR5YlXF3D130U4jfSxY7+i5lLWimGgVyMzo6+G0/5SwBk2826nND4V5/CvRxEy9ySXI63XbgvPTK0LopDL7t1Hd4NYQ2DPhqlMDiHDlG/ZZ/cnxz3VN5phOoXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QTYJFWDJ; arc=none smtp.client-ip=209.85.222.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-73e88bc3796so812921a34.0
-        for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 04:53:18 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7dfd667e539so214470785a.2
+        for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 05:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1753444398; x=1754049198; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1753445171; x=1754049971; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6mqK1RSBPE9C31GyE2vJbWJ8NDfAV+1bNXjXR8+rtBo=;
-        b=I8/IqKW5chig9DOi67VajrvTKeNxU+WBr9gIHuKmgVZWqTpib9wU+0jOITlqXS4Rv+
-         vZ2inrJ6Lr1u4wwASSFrVV1/PicL3IgkRq7iHMpQN/PNH2l8AfaeL6LPpdJn6DCLGow6
-         OqZ7axB0S89Z4aMCNByYxHgQ4QIUdVLbcSgDc=
+        bh=nOvBSwwtmNG8Z+SjWPY5aek+Y4mrxHqGqroX/bR/8SM=;
+        b=QTYJFWDJ3tGd2PAAbgETtPbeQp+PcYN1md4ep+9RD7ydcd0b5T6i3yxyyRc5s/uUeJ
+         ZdMvdx8DcsdOnEMhhc51Fq60XAHYVbP9GGTYywaWEb9ZSaOqVYKWxLiHAlK6/QbmaM88
+         dJaZrXgEvczBvf1CTATD0RrogjwhREEiaX2uE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753444398; x=1754049198;
+        d=1e100.net; s=20230601; t=1753445171; x=1754049971;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6mqK1RSBPE9C31GyE2vJbWJ8NDfAV+1bNXjXR8+rtBo=;
-        b=YyDGj3zs8DcumHwIOAP9Rztvo9ANL39BOE4gotS06F2T3O9c83QOnp2T/YK1i8MvsH
-         1+4zUG0FiRKyCTcwlDWIyfx9dEfbi+VkoYxLlHwoU8tALbfzw6HeD7jCyuQM8bJIzp8p
-         dgDsYW4J/+w6lZRnZAc74b222DNBSOvJaioBU6HCqoP3KiQKIr8n1HepN6Ot7K79Ow4g
-         RROI72Rv3Y4t8KX4UfYkFyvsRbErrMUG2D/UdeTVg/L0GwMOacCOtbcJH1zofBOw3QRi
-         Md+qKMzQrKjpJe2E93HsTLbMKpy0bEDOBSGoGmHWSoBX2KMLM3WSCjI+kRIihp9NjZb/
-         tCPw==
-X-Forwarded-Encrypted: i=1; AJvYcCXgMAI20u/Bs2teb/ZX6mihye19uYOjEtL32dba4mtEp5pHj5Nfpdagg37R3wREaVLMOBeQs/i8SYZGQ20=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbJeMD1xZ/axRLz6CjBABIzRyZn03FnCJsMNMFUpkj9Rxgbbp1
-	bOhn2ZY6NiFnZkL+OwwEDVMkOla7qcrGyjFd/6oBvVP3xtsX5i8eyvxTHLbgVUZzq3CCY7q1BIu
-	Cv44=
-X-Gm-Gg: ASbGncuJfoTzLB7XolLbNMNarud+NRQuzizolymAgJMi6LUxPJyrmdIzz77DDwVZ6mB
-	JqVt7zFUZNzU5ockwj5dn0xflqVx0RW+S8swXHfqnEDi0Bjhgav+x/Kb7v9p/PzbosRgQTMIlKB
-	qoJEjD5s2xnmxO9b2cNTTmixWS26oqecf6JTODPvBliIf57bgVyixilWcapflv6jeTDDHO/2K8p
-	+4Pqe6umYUDJWzEH0uLWMG9J682oAk/aNFPuzYZgHTbb0lonWskAV0Ru+ioHvp/9KpJMSy8fD2g
-	kQIXpBSNBcxC4Xq9bKrg9guRrylvoPe0FBb0FP8vl/QHpQgUrqhDo8NLaiu4GBJ3uIdMf5Ry5Go
-	NLSYMJffS+W96rf2QTFyLdc7rT8w8kd7HreQsLkNkJ51X/x2wJ+c5VgJeAQ==
-X-Google-Smtp-Source: AGHT+IETSy+gq5qPWveNvxYOHMuJByPwDMtXKRhbcdAKHcooTpxy5utXDDO/Pb2iMGiuz/LhFWD+TQ==
-X-Received: by 2002:a05:6830:6484:b0:73c:fb75:ef45 with SMTP id 46e09a7af769-7413df44036mr925646a34.26.1753444397620;
-        Fri, 25 Jul 2025 04:53:17 -0700 (PDT)
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com. [209.85.210.52])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7412d12fab9sm643394a34.14.2025.07.25.04.53.16
+        bh=nOvBSwwtmNG8Z+SjWPY5aek+Y4mrxHqGqroX/bR/8SM=;
+        b=n7swe/UHyWgzhXxzbcLMPa59gZq3ob+ClAjT3x3D+Csy5KoRxXzXHnzHpEXjAJc9ts
+         cqGIcpDJbJyqqHMZke5N7OR9OUNINXmUkU/hEN/lKtY0vda7qbZ+gzvnHC0wEPBs8qGO
+         K7AtYIREsmHoDt/8zNaaB8GLM2h/zgglHUF5vl/nF05Fk016xMgCdktSHHkngz9ocgyr
+         y6llUgohF/ffulV4Rl+h5v3N7xB2OCCifqqcBRbOmHMfAe6nkTGpOI7uZseiCbhdkpvk
+         Lx9HRj+A1x9+uFgF8ek8pwCg3Wk/FXtKilCu7PWL6jDRbImyO8a5XjOnObWL/G+gxKLH
+         fMKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2gH38ZcusuTar2ONimLBpK/JJEg7gKE1kggpY5HJQ7cN6COGhTs80JWAuFZuB+pOmdOiEmab0ah6f3KA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyI8LYUiNabYTDYBEQxu3v1i05aemO8Wfk/Ar/4ps65uJNNh30C
+	s+jHXinIC4F2ACAzoL+hp3ITmTHE4bwJOB/+BrcRr8l+QOra3rlhIz+Xwdm5ihcxGpil2X0E+J1
+	QYgw=
+X-Gm-Gg: ASbGncuMyPXEbfc06ebCkOeS7omQbAbcS2m7wmoOUceowzOesyEWYtagAsGsjswSa5V
+	N3s5Dt52aSspzft7Lis278rloRYHFMz6fQIAlrViPRQqb7skn3NA2MwNt1eOdFUcm8oqxRJWHfj
+	9T7QU1LLmtayvg/xPK2SMWj+lReXZYJV0No+jxixmbSA60g5oZxUUPOxDLLN4nV2hVPur0h0J8X
+	z2emdsrwvIqBt6fEQ6vbyF+kdx7VUTL/cl924nlJzMYMRIPi83luXZCyCxZushfmf9UpWDkXP5B
+	yd7IyCMfHAyZZYUhzzpZrQIJcewdePQYvwbIoM93qf4zUQ0ztgP3+37enGtfC+dxIE4a9tcenu5
+	DNtrtnGqut2Qv/noVdkCBo9kR9M1+BQm90fao+vISqUD8kfdQECjD5sg+QQ==
+X-Google-Smtp-Source: AGHT+IHKxhnh/6nhpzI4v7r56IuGpwzZywIdAT6uLMad5e6QkxVSU2EefUmDsCbrdGUtIfNh1Uop7Q==
+X-Received: by 2002:a05:6214:f04:b0:6fd:4cd1:c79a with SMTP id 6a1803df08f44-7072056af92mr22102366d6.21.1753445170788;
+        Fri, 25 Jul 2025 05:06:10 -0700 (PDT)
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com. [209.85.219.43])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7070fcd1824sm25869476d6.95.2025.07.25.05.06.10
         for <linux-crypto@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jul 2025 04:53:17 -0700 (PDT)
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-73e58d5108dso1263751a34.3
-        for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 04:53:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWiu/xMXOmQE6AE0oGwdphSzcrnbqv2qN6TwPY9WcbT29ABR/QLhCC8o6CfBkySl25N7Lq7b19e2uxUBoE=@vger.kernel.org
-X-Received: by 2002:a05:6102:5a92:b0:4eb:502c:569a with SMTP id
- ada2fe7eead31-4fa3fb3f3f9mr285813137.9.1753440864290; Fri, 25 Jul 2025
- 03:54:24 -0700 (PDT)
+        Fri, 25 Jul 2025 05:06:10 -0700 (PDT)
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6facf4d8e9eso12847816d6.1
+        for <linux-crypto@vger.kernel.org>; Fri, 25 Jul 2025 05:06:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVMNtmSMfQC+wZBj+UvLtz52saRx9H2cq8xgvXJyWxEnEYIECfUpEq2q1bgfwlhpXcBoIjM6NIeCGSVrBQ=@vger.kernel.org
+X-Received: by 2002:a05:6102:358c:b0:4e4:5df7:a10a with SMTP id
+ ada2fe7eead31-4fa3fc6be93mr374132137.16.1753440996607; Fri, 25 Jul 2025
+ 03:56:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250724083914.61351-1-angelogioacchino.delregno@collabora.com> <20250724083914.61351-19-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20250724083914.61351-19-angelogioacchino.delregno@collabora.com>
+References: <20250724083914.61351-1-angelogioacchino.delregno@collabora.com> <20250724083914.61351-17-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20250724083914.61351-17-angelogioacchino.delregno@collabora.com>
 From: Fei Shao <fshao@chromium.org>
-Date: Fri, 25 Jul 2025 18:53:47 +0800
-X-Gmail-Original-Message-ID: <CAC=S1njpbfARTSBwddCeeO+c0vvf=GVaD6+QhauJOki0NS9dTQ@mail.gmail.com>
-X-Gm-Features: Ac12FXy3jzZS4uZ6X5J7uIwzpvgV1oXiUrEGuonvNPTbsP1Oacxt9m6NF-3FvZA
-Message-ID: <CAC=S1njpbfARTSBwddCeeO+c0vvf=GVaD6+QhauJOki0NS9dTQ@mail.gmail.com>
-Subject: Re: [PATCH 18/38] arm64: dts: mediatek: mt6797: Remove bogus id
- property in i2c nodes
+Date: Fri, 25 Jul 2025 18:55:59 +0800
+X-Gmail-Original-Message-ID: <CAC=S1nhwrq60q-=jMZQ2u8TwwG9HHnQFWrFRx58VF2K6Xi16XA@mail.gmail.com>
+X-Gm-Features: Ac12FXy6b-EYxcfTGxWYM-OfSnpWrsOFjS6YFWPk3kTV_ZIdvcSVvNebJ1JSwHk
+Message-ID: <CAC=S1nhwrq60q-=jMZQ2u8TwwG9HHnQFWrFRx58VF2K6Xi16XA@mail.gmail.com>
+Subject: Re: [PATCH 16/38] arm64: dts: mediatek: mt6331: Fix pmic, regulators,
+ rtc, keys node names
 To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Cc: linux-mediatek@lists.infradead.org, robh@kernel.org, 
 	daniel.lezcano@linaro.org, mwalle@kernel.org, devicetree@vger.kernel.org, 
@@ -120,106 +120,62 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jul 24, 2025 at 5:48=E2=80=AFPM AngeloGioacchino Del Regno
 <angelogioacchino.delregno@collabora.com> wrote:
 >
-> All of the I2C nodes in this devicetree has a bogus "id" property,
-> which was probably specifying the I2C bus number.
+> The node names for "pmic", "regulators", "rtc", and "keys" are
+> dictated by the PMIC MFD binding: change those to adhere to it.
 >
-> This property was never parsed and never used - and besides, it
-> also gives dtbs_check warnings: remove it from all i2c nodes.
->
+> Fixes: aef783f3e0ca ("arm64: dts: mediatek: Add MT6331 PMIC devicetree")
 > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
 abora.com>
 
 Reviewed-by: Fei Shao <fshao@chromium.org>
 
 > ---
->  arch/arm64/boot/dts/mediatek/mt6797.dtsi | 10 ----------
->  1 file changed, 10 deletions(-)
+>  arch/arm64/boot/dts/mediatek/mt6331.dtsi | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
-> diff --git a/arch/arm64/boot/dts/mediatek/mt6797.dtsi b/arch/arm64/boot/d=
-ts/mediatek/mt6797.dtsi
-> index be401617dfd8..f2d93bf6a055 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt6797.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt6797.dtsi
-> @@ -285,7 +285,6 @@ uart3: serial@11005000 {
->         i2c0: i2c@11007000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <0>;
->                 reg =3D <0 0x11007000 0 0x1000>,
->                       <0 0x11000100 0 0x80>;
->                 interrupts =3D <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>;
-> @@ -301,7 +300,6 @@ i2c0: i2c@11007000 {
->         i2c1: i2c@11008000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <1>;
->                 reg =3D <0 0x11008000 0 0x1000>,
->                       <0 0x11000180 0 0x80>;
->                 interrupts =3D <GIC_SPI 85 IRQ_TYPE_LEVEL_LOW>;
-> @@ -317,7 +315,6 @@ i2c1: i2c@11008000 {
->         i2c8: i2c@11009000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <8>;
->                 reg =3D <0 0x11009000 0 0x1000>,
->                       <0 0x11000200 0 0x80>;
->                 interrupts =3D <GIC_SPI 86 IRQ_TYPE_LEVEL_LOW>;
-> @@ -334,7 +331,6 @@ i2c8: i2c@11009000 {
->         i2c9: i2c@1100d000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <9>;
->                 reg =3D <0 0x1100d000 0 0x1000>,
->                       <0 0x11000280 0 0x80>;
->                 interrupts =3D <GIC_SPI 87 IRQ_TYPE_LEVEL_LOW>;
-> @@ -351,7 +347,6 @@ i2c9: i2c@1100d000 {
->         i2c6: i2c@1100e000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <6>;
->                 reg =3D <0 0x1100e000 0 0x1000>,
->                       <0 0x11000500 0 0x80>;
->                 interrupts =3D <GIC_SPI 88 IRQ_TYPE_LEVEL_LOW>;
-> @@ -367,7 +362,6 @@ i2c6: i2c@1100e000 {
->         i2c7: i2c@11010000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <7>;
->                 reg =3D <0 0x11010000 0 0x1000>,
->                       <0 0x11000580 0 0x80>;
->                 interrupts =3D <GIC_SPI 89 IRQ_TYPE_LEVEL_LOW>;
-> @@ -383,7 +377,6 @@ i2c7: i2c@11010000 {
->         i2c4: i2c@11011000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <4>;
->                 reg =3D <0 0x11011000 0 0x1000>,
->                       <0 0x11000300 0 0x80>;
->                 interrupts =3D <GIC_SPI 90 IRQ_TYPE_LEVEL_LOW>;
-> @@ -399,7 +392,6 @@ i2c4: i2c@11011000 {
->         i2c2: i2c@11013000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <2>;
->                 reg =3D <0 0x11013000 0 0x1000>,
->                       <0 0x11000400 0 0x80>;
->                 interrupts =3D <GIC_SPI 95 IRQ_TYPE_LEVEL_LOW>;
-> @@ -416,7 +408,6 @@ i2c2: i2c@11013000 {
->         i2c3: i2c@11014000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <3>;
->                 reg =3D <0 0x11014000 0 0x1000>,
->                       <0 0x11000480 0 0x80>;
->                 interrupts =3D <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
-> @@ -433,7 +424,6 @@ i2c3: i2c@11014000 {
->         i2c5: i2c@1101c000 {
->                 compatible =3D "mediatek,mt6797-i2c",
->                              "mediatek,mt6577-i2c";
-> -               id =3D <5>;
->                 reg =3D <0 0x1101c000 0 0x1000>,
->                       <0 0x11000380 0 0x80>;
->                 interrupts =3D <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>;
+> diff --git a/arch/arm64/boot/dts/mediatek/mt6331.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt6331.dtsi
+> index d89858c73ab1..243afbffa21f 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt6331.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt6331.dtsi
+> @@ -6,12 +6,12 @@
+>  #include <dt-bindings/input/input.h>
+>
+>  &pwrap {
+> -       pmic: mt6331 {
+> +       pmic: pmic {
+>                 compatible =3D "mediatek,mt6331";
+>                 interrupt-controller;
+>                 #interrupt-cells =3D <2>;
+>
+> -               mt6331regulator: mt6331regulator {
+> +               mt6331regulator: regulators {
+>                         compatible =3D "mediatek,mt6331-regulator";
+>
+>                         mt6331_vdvfs11_reg: buck-vdvfs11 {
+> @@ -258,7 +258,7 @@ mt6331_vrtc_reg: ldo-vrtc {
+>                         };
+>
+>                         mt6331_vdig18_reg: ldo-vdig18 {
+> -                               regulator-name =3D "dvdd18_dig";
+> +                               regulator-name =3D "vdig18";
+>                                 regulator-min-microvolt =3D <1800000>;
+>                                 regulator-max-microvolt =3D <1800000>;
+>                                 regulator-ramp-delay =3D <0>;
+> @@ -266,11 +266,11 @@ mt6331_vdig18_reg: ldo-vdig18 {
+>                         };
+>                 };
+>
+> -               mt6331rtc: mt6331rtc {
+> +               mt6331rtc: rtc {
+>                         compatible =3D "mediatek,mt6331-rtc";
+>                 };
+>
+> -               mt6331keys: mt6331keys {
+> +               mt6331keys: keys {
+>                         compatible =3D "mediatek,mt6331-keys";
+>                         power {
+>                                 linux,keycodes =3D <KEY_POWER>;
 > --
 > 2.50.1
 >
