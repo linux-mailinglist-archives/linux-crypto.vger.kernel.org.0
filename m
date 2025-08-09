@@ -1,59 +1,75 @@
-Return-Path: <linux-crypto+bounces-15216-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-15218-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C36BB1F2BC
-	for <lists+linux-crypto@lfdr.de>; Sat,  9 Aug 2025 09:09:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6802BB1F405
+	for <lists+linux-crypto@lfdr.de>; Sat,  9 Aug 2025 12:05:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E7CF562185
-	for <lists+linux-crypto@lfdr.de>; Sat,  9 Aug 2025 07:08:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C98987A2BB5
+	for <lists+linux-crypto@lfdr.de>; Sat,  9 Aug 2025 10:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056A9279DCF;
-	Sat,  9 Aug 2025 07:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2CE2165EC;
+	Sat,  9 Aug 2025 10:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="SSE1jwF8"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from out203-205-221-242.mail.qq.com (out203-205-221-242.mail.qq.com [203.205.221.242])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCCCA204C0C;
-	Sat,  9 Aug 2025 07:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0EC146A72;
+	Sat,  9 Aug 2025 10:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.242
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754723323; cv=none; b=dbObgrSc8sCpmJbQWBfRziFzoXVxJdjX6ChnJmfg4XIodW4XTwsepTMGKTNzCV4SdMyVm8i17qYquC6M1owUQ173AjsaS3T7JhhGmNN2AeNRSmeeJDcOYz9PxMqNvKndUfiMbhGV7IVRKJTr5KWlSbp9ffIGid/d8yKw1X7rVlU=
+	t=1754733910; cv=none; b=HTYpn0UHEdReDJ9wjvug4m4i6ao9/o80QyOwImI/7y9HJm9LuRRnvQpoEdDLGIZZONX3Q3c0V/rtGh8DEe2s38eS1PjEi+pJbPO6Q4TNXfhTCjgtgb7V+WMjZhmy6nER5lNb23Jpr20Zk99CMbu8BI4chTjN0rwBxRaDDOpb4JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754723323; c=relaxed/simple;
-	bh=VZsuGeZRdPCWNg6T6HQEKhZN8ss8knjbtAqlaoTDdA8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D2uo1DL1eOz5rV9Az0n7Y0zph0XYgv3NivUc8crYsx3QxW1nOctMqPLzPtckRM6E+iTALqJruyjOZbGQqXoGFgu0wHnoU+fT0ZoVzCw6xvcU07fKV6v3IB7HnmaCRvZF8b6pJFuDh1wdIIC/WKi0XOQpuq+HRl6OCny0vo8wFKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4bzX8H5lGMz2YPh4;
-	Sat,  9 Aug 2025 15:09:35 +0800 (CST)
-Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7C6791A0188;
-	Sat,  9 Aug 2025 15:08:32 +0800 (CST)
-Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 9 Aug 2025 15:08:32 +0800
-Received: from localhost.huawei.com (10.90.31.46) by
- kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 9 Aug 2025 15:08:31 +0800
-From: Chenghai Huang <huangchenghai2@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<liulongfang@huawei.com>, <taoqi10@huawei.com>, <qianweili@huawei.com>,
-	<wangzhou1@hisilicon.com>
-Subject: [PATCH 3/3] crypto: hisilicon/sec2 - support skcipher/aead fallback for hardware queue unavailable
-Date: Sat, 9 Aug 2025 15:08:29 +0800
-Message-ID: <20250809070829.47204-4-huangchenghai2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250809070829.47204-1-huangchenghai2@huawei.com>
-References: <20250809070829.47204-1-huangchenghai2@huawei.com>
+	s=arc-20240116; t=1754733910; c=relaxed/simple;
+	bh=lVNZ6Vs+ZMKKXx3J6Dt8FT9hY4HAY8MLWksoD2tTOyc=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=XR1PrbYmQrfzyO859uFcd3dIpOy9flVvTJnyfgr853Y/f4YL06mebhu3WTkSUF3nfPC6lUfQ2ly+GXin5GhwZlYefaZfLIU1816NY7daKWOZCo7AUSIrel6Nn0iPcQ/E9ZkK4Im0xE2DnodJiIiSv80Iq5p6CjGwEJdmRGcqx6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=SSE1jwF8; arc=none smtp.client-ip=203.205.221.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1754733592; bh=DKmkljtQB7ro0+vyMCwEguJAv66dTk4iG4899l3s0Hk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=SSE1jwF8KMOM2lDmI1YxfLGGaZz0loe6UXyS5+LmKFo9/Ojzs0KkCdXlR3271eIGN
+	 LtIhnVsaT8QaWBBsrDGVGrFnl5mLPdJdhr/Q2ygtCvlrdXO7Bvv4VTeaCP5AizeW+l
+	 ZYVB4RfSu99orLrKp/ZZbaJFMsnjlluzKTfmA13M=
+Received: from pek-lxu-l1.corp.ad.wrs.com ([111.198.231.14])
+	by newxmesmtplogicsvrszb16-1.qq.com (NewEsmtp) with SMTP
+	id EF2BB6B8; Sat, 09 Aug 2025 17:59:50 +0800
+X-QQ-mid: xmsmtpt1754733590tuxu8ia6i
+Message-ID: <tencent_B406618996EEF22ED6CC8EA7DF46FD92D206@qq.com>
+X-QQ-XMAILINFO: Nq1uWKlIb9DMQ2GdnJ6K2hM4AFeSO37h50FFuFrT75jNbtFnBYc6FpF0W1e1vg
+	 PrCTGKPDOx3GqJ/cVM8LtZK1AsEEhbTs5UCXF0l1OBQUPKHr2jo7CHG2NQlntLcjzeAes93MJ78u
+	 kqmKFSD8SfVrRFaz0EwQwlBPcBJXZFh22LRhJ67ZUiLS0gtk8rlY95qjeHiMeheDr8jOGnv+knVW
+	 L9ZPfB0c2WWvlHL5/VYAmxJ4CgQ51jnL5sIRmgbzQ6jBU7+r8S3PhqB9nDtwvMmNcPfkeIiwuRDn
+	 9VK4Pp6W/qbdw6VyGQoH4XlfGBQWGWOUntpnZrJ3514ILthisC0vhZX6axH4VaHRPvOs0FtExgZ1
+	 J9dke9Sl5WPdYbPP/e8wLNvWCDIAXruhDlCVLlv2IE75F7oIFdPCGKLNIekOfOFjZ9bZnrMGW7La
+	 +WrU9OAbQdFrKaVyLHwu7nQUd6xlNoX/Tces3gCQGhGnVHiofQ8Vc+UlzVTpKfSHoYiWCgm25wTA
+	 IcbTG9q/P+s7N+S9F9wrUS6wsLmMs47TcK/mW00BBfIHoe85NpJVxrJ1dQ9VwslLAp+ahyUvbTt8
+	 qxn/zKa1HOyeYTCbjdex9MiBJeol3IyC8hsFnC2wisW1LY45ul7+JC7uZx5nDWpkbJ7+9iIFcRj1
+	 GPo74O1ixPkLCFDU79UJKU2xKbYdT5xNoyG4fkR+ijBojdsgNvn/a3kJjHxFi9pWQhNyQ2kVzKIC
+	 6ss5PL/GZR1qeYS7kIFICoiAq+MRbZcLE/JNnCDJCRCJvQ4RHXnWyD6Ci/aV50L9WofNRDwLJXRA
+	 Bpn2I059PgpBNlNdnV7y/6Wn+nbArATixGUE+yz4crleJ4QotStesgoQMYauOwhIabFuhcqdhUKK
+	 CIRAQNts1ZaDEj3jafTWXnPUREk6t4hcTa2HwKZXDv/PzUAWJYUA7ORve8KPsANY7QZpe7Ph9niA
+	 Xw+ZmpLGRSA0ry7tEOZ63FM3SNp7Mg
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+e8bcd7ee3db6cb5cb875@syzkaller.appspotmail.com
+Cc: davem@davemloft.net,
+	herbert@gondor.apana.org.au,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] crypto: Prevent kernel-infoleak in rng_recvmsg
+Date: Sat,  9 Aug 2025 17:59:43 +0800
+X-OQ-MSGID: <20250809095942.310397-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <6895b041.050a0220.7f033.0058.GAE@google.com>
+References: <6895b041.050a0220.7f033.0058.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -61,217 +77,32 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemq200001.china.huawei.com (7.202.195.16)
 
-From: Qi Tao <taoqi10@huawei.com>
+Initialize the intermediary array member to 0 to prevent the kernel from
+leaking uninitialized data to user space.
 
-There is an upper limit on the number of hardware queues.
-When all hardware queues are busy, new processes fail to
-apply for queues. To avoid affecting tasks, support fallback
-mechanism when hardware queues are unavailable.
-
-Signed-off-by: Qi Tao <taoqi10@huawei.com>
-Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
+Reported-by: syzbot+e8bcd7ee3db6cb5cb875@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=e8bcd7ee3db6cb5cb875
+Tested-by: syzbot+e8bcd7ee3db6cb5cb875@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 62 ++++++++++++++++------
- 1 file changed, 47 insertions(+), 15 deletions(-)
+ crypto/jitterentropy-kcapi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index d044ded0f290..8c983c561053 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -669,10 +669,8 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
- 	int i, ret;
- 
- 	ctx->qps = sec_create_qps();
--	if (!ctx->qps) {
--		pr_err("Can not create sec qps!\n");
-+	if (!ctx->qps)
- 		return -ENODEV;
--	}
- 
- 	sec = container_of(ctx->qps[0]->qm, struct sec_dev, qm);
- 	ctx->sec = sec;
-@@ -708,6 +706,9 @@ static void sec_ctx_base_uninit(struct sec_ctx *ctx)
+diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
+index c24d4ff2b4a8..9e9e069f55af 100644
+--- a/crypto/jitterentropy-kcapi.c
++++ b/crypto/jitterentropy-kcapi.c
+@@ -107,7 +107,7 @@ int jent_hash_time(void *hash_state, __u64 time, u8 *addtl,
  {
- 	int i;
- 
-+	if (!ctx->qps)
-+		return;
-+
- 	for (i = 0; i < ctx->sec->ctx_q_num; i++)
- 		sec_release_qp_ctx(ctx, &ctx->qp_ctx[i]);
- 
-@@ -719,6 +720,9 @@ static int sec_cipher_init(struct sec_ctx *ctx)
- {
- 	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
- 
-+	if (!ctx->qps)
-+		return 0;
-+
- 	c_ctx->c_key = dma_alloc_coherent(ctx->dev, SEC_MAX_KEY_SIZE,
- 					  &c_ctx->c_key_dma, GFP_KERNEL);
- 	if (!c_ctx->c_key)
-@@ -731,6 +735,9 @@ static void sec_cipher_uninit(struct sec_ctx *ctx)
- {
- 	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
- 
-+	if (!ctx->qps)
-+		return;
-+
- 	memzero_explicit(c_ctx->c_key, SEC_MAX_KEY_SIZE);
- 	dma_free_coherent(ctx->dev, SEC_MAX_KEY_SIZE,
- 			  c_ctx->c_key, c_ctx->c_key_dma);
-@@ -752,6 +759,9 @@ static void sec_auth_uninit(struct sec_ctx *ctx)
- {
- 	struct sec_auth_ctx *a_ctx = &ctx->a_ctx;
- 
-+	if (!ctx->qps)
-+		return;
-+
- 	memzero_explicit(a_ctx->a_key, SEC_MAX_AKEY_SIZE);
- 	dma_free_coherent(ctx->dev, SEC_MAX_AKEY_SIZE,
- 			  a_ctx->a_key, a_ctx->a_key_dma);
-@@ -789,7 +799,7 @@ static int sec_skcipher_init(struct crypto_skcipher *tfm)
- 	}
- 
- 	ret = sec_ctx_base_init(ctx);
--	if (ret)
-+	if (ret && ret != -ENODEV)
- 		return ret;
- 
- 	ret = sec_cipher_init(ctx);
-@@ -898,6 +908,9 @@ static int sec_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	struct device *dev = ctx->dev;
+ 	struct shash_desc *hash_state_desc = (struct shash_desc *)hash_state;
+ 	SHASH_DESC_ON_STACK(desc, hash_state_desc->tfm);
+-	u8 intermediary[SHA3_256_DIGEST_SIZE];
++	u8 intermediary[SHA3_256_DIGEST_SIZE] = { 0 };
+ 	__u64 j = 0;
  	int ret;
  
-+	if (!ctx->qps)
-+		goto set_soft_key;
-+
- 	if (c_mode == SEC_CMODE_XTS) {
- 		ret = xts_verify_key(tfm, key, keylen);
- 		if (ret) {
-@@ -928,13 +941,14 @@ static int sec_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	}
- 
- 	memcpy(c_ctx->c_key, key, keylen);
--	if (c_ctx->fbtfm) {
--		ret = crypto_sync_skcipher_setkey(c_ctx->fbtfm, key, keylen);
--		if (ret) {
--			dev_err(dev, "failed to set fallback skcipher key!\n");
--			return ret;
--		}
-+
-+set_soft_key:
-+	ret = crypto_sync_skcipher_setkey(c_ctx->fbtfm, key, keylen);
-+	if (ret) {
-+		dev_err(dev, "failed to set fallback skcipher key!\n");
-+		return ret;
- 	}
-+
- 	return 0;
- }
- 
-@@ -1398,6 +1412,9 @@ static int sec_aead_setkey(struct crypto_aead *tfm, const u8 *key,
- 	struct crypto_authenc_keys keys;
- 	int ret;
- 
-+	if (!ctx->qps)
-+		return sec_aead_fallback_setkey(a_ctx, tfm, key, keylen);
-+
- 	ctx->a_ctx.a_alg = a_alg;
- 	ctx->c_ctx.c_alg = c_alg;
- 	c_ctx->c_mode = c_mode;
-@@ -2057,6 +2074,9 @@ static int sec_skcipher_ctx_init(struct crypto_skcipher *tfm)
- 	if (ret)
- 		return ret;
- 
-+	if (!ctx->qps)
-+		return 0;
-+
- 	if (ctx->sec->qm.ver < QM_HW_V3) {
- 		ctx->type_supported = SEC_BD_TYPE2;
- 		ctx->req_op = &sec_skcipher_req_ops;
-@@ -2065,7 +2085,7 @@ static int sec_skcipher_ctx_init(struct crypto_skcipher *tfm)
- 		ctx->req_op = &sec_skcipher_req_ops_v3;
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- static void sec_skcipher_ctx_exit(struct crypto_skcipher *tfm)
-@@ -2133,7 +2153,7 @@ static int sec_aead_ctx_init(struct crypto_aead *tfm, const char *hash_name)
- 	int ret;
- 
- 	ret = sec_aead_init(tfm);
--	if (ret) {
-+	if (ret && ret != -ENODEV) {
- 		pr_err("hisi_sec2: aead init error!\n");
- 		return ret;
- 	}
-@@ -2175,7 +2195,7 @@ static int sec_aead_xcm_ctx_init(struct crypto_aead *tfm)
- 	int ret;
- 
- 	ret = sec_aead_init(tfm);
--	if (ret) {
-+	if (ret && ret != -ENODEV) {
- 		dev_err(ctx->dev, "hisi_sec2: aead xcm init error!\n");
- 		return ret;
- 	}
-@@ -2320,6 +2340,9 @@ static int sec_skcipher_crypto(struct skcipher_request *sk_req, bool encrypt)
- 	bool need_fallback = false;
- 	int ret;
- 
-+	if (!ctx->qps)
-+		goto soft_crypto;
-+
- 	if (!sk_req->cryptlen) {
- 		if (ctx->c_ctx.c_mode == SEC_CMODE_XTS)
- 			return -EINVAL;
-@@ -2337,9 +2360,12 @@ static int sec_skcipher_crypto(struct skcipher_request *sk_req, bool encrypt)
- 		return -EINVAL;
- 
- 	if (unlikely(ctx->c_ctx.fallback || need_fallback))
--		return sec_skcipher_soft_crypto(ctx, sk_req, encrypt);
-+		goto soft_crypto;
- 
- 	return ctx->req_op->process(ctx, req);
-+
-+soft_crypto:
-+	return sec_skcipher_soft_crypto(ctx, sk_req, encrypt);
- }
- 
- static int sec_skcipher_encrypt(struct skcipher_request *sk_req)
-@@ -2547,6 +2573,9 @@ static int sec_aead_crypto(struct aead_request *a_req, bool encrypt)
- 	bool need_fallback = false;
- 	int ret;
- 
-+	if (!ctx->qps)
-+		goto soft_crypto;
-+
- 	req->flag = a_req->base.flags;
- 	req->aead_req.aead_req = a_req;
- 	req->c_req.encrypt = encrypt;
-@@ -2557,11 +2586,14 @@ static int sec_aead_crypto(struct aead_request *a_req, bool encrypt)
- 	ret = sec_aead_param_check(ctx, req, &need_fallback);
- 	if (unlikely(ret)) {
- 		if (need_fallback)
--			return sec_aead_soft_crypto(ctx, a_req, encrypt);
-+			goto soft_crypto;
- 		return -EINVAL;
- 	}
- 
- 	return ctx->req_op->process(ctx, req);
-+
-+soft_crypto:
-+	return sec_aead_soft_crypto(ctx, a_req, encrypt);
- }
- 
- static int sec_aead_encrypt(struct aead_request *a_req)
 -- 
-2.33.0
+2.43.0
 
 
