@@ -1,60 +1,61 @@
-Return-Path: <linux-crypto+bounces-15457-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-15459-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21878B2D8E0
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 Aug 2025 11:45:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C418B2D8ED
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 Aug 2025 11:46:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9081F68503A
-	for <lists+linux-crypto@lfdr.de>; Wed, 20 Aug 2025 09:41:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A87EC16D351
+	for <lists+linux-crypto@lfdr.de>; Wed, 20 Aug 2025 09:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDE32E0B5A;
-	Wed, 20 Aug 2025 09:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9972E4272;
+	Wed, 20 Aug 2025 09:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lFFJzAqJ"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="O1jwZ7JC"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
+Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894BD275865;
-	Wed, 20 Aug 2025 09:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7E8275865;
+	Wed, 20 Aug 2025 09:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755682676; cv=none; b=q6fkUfeBJI8DBYZ1zNKtMBPASzx5dBXMuzClTFuwMsg3biPwbF5+ve0j+kXG3r8uDLXszOgME9Z42Wf2n8FSRyJjvRL1ZXcdR4MyWJNKaTSgdObMaiI3ga+m/1xljyRbvK2qBHXJUKfi84jtedKGQ7tko4TCFgnd9TdBRza6uuA=
+	t=1755682683; cv=none; b=rdDMgH7setrAx6B/Wt13pOsXZJE8vKuBx8DvIWJ+++nNh/DU8l1/pKGvbdDYpt9Aweq95KEQ+zfnNZMJ4zUQN3xeSB7qXTR3QG9XdyK4wrMQFMi0djth/dwYb9ORI7gAA2kDpbodDiUaI7SPb3bSDRDYDqARWbrTD3SpuPRk8ZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755682676; c=relaxed/simple;
-	bh=CKxYqhRhl4loo1ox1nG7a5Etf7YvcbqwFYZAD9TfdcY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IE7zabzECYL8k/RvW6djOJ4ySpZiDoJc+tn/7kXkfJ2HxODAPPJACuYoSqgm02c4zBWYmGJD3ZhTvycbrZ+2V17ku/6pB5as8l/nXSsH4RPLYR5K9HAe3OPyB1y1Y7m6DYOdvH2f6d9bqPDW69H6Vy1OSD/j6Y3ohmt2EA8t65M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=lFFJzAqJ; arc=none smtp.client-ip=198.47.19.245
+	s=arc-20240116; t=1755682683; c=relaxed/simple;
+	bh=xKa0O/SngrtF2YaSdM2z+vQ1VXaK3fatis0FtdVUw0Q=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=s3+iKp4uBCJ8chWKmvLnSObbCiFUW6RuxA69bN0IkyctZU4W9ByI6PiV96kXNQgl7QStr9eBjQoLyg1AbBamzrM/4LXAELgDsMK/IAHc3BbND8w9oG1/7Sx+HKt9bqiynRUU8nORm4iU1I5gUIlTmTqowZoM/6K8eX4WYabOvBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=O1jwZ7JC; arc=none smtp.client-ip=198.47.23.234
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57K9bkMC3104749;
-	Wed, 20 Aug 2025 04:37:46 -0500
+Received: from lelvem-sh01.itg.ti.com ([10.180.77.71])
+	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57K9brrN3165901;
+	Wed, 20 Aug 2025 04:37:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1755682666;
-	bh=v7KuCJOEXfogdf9zmemvwzD6OZ4YodlPBPiR1Btfx+o=;
-	h=From:To:CC:Subject:Date;
-	b=lFFJzAqJwmmYIxrMvD90JBBc4Gwe0FOSHgg6E5e2F+egwsEAP1z6T6rGq27LMllyE
-	 63/DCQ6f4eUHh+eqd1wwDln/ibEhAhwqqNLWssYfKYI6TiVBvZb20N8Ef8DL/XFjzF
-	 XUJ7V6vPj+hILdfoWCuAiqo1WYZqn1GOOy5Vakyk=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57K9bkEQ1959779
+	s=ti-com-17Q1; t=1755682673;
+	bh=VjsUd7nv0GPIjNDND7mWWJy38PU6jOtmXtrIPRTVCCA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=O1jwZ7JCIQTtetRC2Mhco++BfCnWhsRlmM1lT5wP+tkWtSANus4eviWcd8G4GF0lb
+	 hIBzRaojmsqKwWeYqhaLcVzgOydNBO2QSSjW2Y+bUiLl7eWELqd9t89B4xzKlVqyr3
+	 hrz4H+VkrpxNeFhtuagbkP77DtVPk78JCfuQ2cc0=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by lelvem-sh01.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57K9bqVF1098620
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Wed, 20 Aug 2025 04:37:46 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+	Wed, 20 Aug 2025 04:37:52 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Wed, 20
- Aug 2025 04:37:46 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2025 04:37:52 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Wed, 20 Aug 2025 04:37:46 -0500
+ Frontend Transport; Wed, 20 Aug 2025 04:37:52 -0500
 Received: from pratham-Workstation-PC (pratham-workstation-pc.dhcp.ti.com [10.24.69.191])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57K9bi27307955;
-	Wed, 20 Aug 2025 04:37:45 -0500
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57K9bopl020385;
+	Wed, 20 Aug 2025 04:37:51 -0500
 From: T Pratham <t-pratham@ti.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller"
@@ -63,9 +64,11 @@ To: Herbert Xu <herbert@gondor.apana.org.au>,
         Krzysztof Kozlowski
 	<krzk+dt@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>
-CC: T Pratham <t-pratham@ti.com>, <linux-crypto@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Kamlesh
+CC: T Pratham <t-pratham@ti.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Kamlesh
  Gurudasani <kamlesh@ti.com>,
         Manorit Chawdhry <m-chawdhry@ti.com>,
         Vignesh
@@ -73,10 +76,12 @@ CC: T Pratham <t-pratham@ti.com>, <linux-crypto@vger.kernel.org>,
         Praneeth Bajjuri <praneeth@ti.com>, Vishal
  Mahaveer <vishalm@ti.com>,
         Kavitha Malarvizhi <k-malarvizhi@ti.com>
-Subject: [PATCH v7 0/2] Add support for Texas Instruments DTHEv2 Crypto Engine
-Date: Wed, 20 Aug 2025 14:42:25 +0530
-Message-ID: <20250820092710.3510788-1-t-pratham@ti.com>
+Subject: [PATCH v7 1/2] dt-bindings: crypto: Add binding for TI DTHE V2
+Date: Wed, 20 Aug 2025 14:42:26 +0530
+Message-ID: <20250820092710.3510788-2-t-pratham@ti.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250820092710.3510788-1-t-pratham@ti.com>
+References: <20250820092710.3510788-1-t-pratham@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -87,109 +92,92 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-Data Transform and Hashing Engine (DTHE) v2 is a new cryptography engine
-introduced i TI AM62L SoC. DTHEv2 consists of multiple crypto IPs[1] (such
-as AES Engine, hashing engine, TRNG, etc.) which can be used for
-offloading cryptographic operations off of the CPU. The primary benefit
-of DTHEv2 is enhanced side-channel attack resistance, with AES and PKE
-engine being DPA and EMA resistant. These side-channel resistances are
-the underlying requirement for various certifications like SESIP, PSA,
-and IEC62443 (lvl 3+). Thus, DTHEv2 provides critical security benefits
-for embedded systems that require protection against passive physical
-attacks.
+Add DT binding for Texas Instruments DTHE V2 cryptography engine.
 
-The AES Engine of DTHEv2 supports multiple AES modes (ECB, CBC, CTR,
-CFB, f8), several protocols (GCM, CCM, XTS) and authentication modes
-(CBC-MAC and f9). The hashing engine supports MD5, SHA1, and SHA2 (224,
-256, 384, 512) algorithms along with HMAC. This patch series introduces
-basic driver support for DTHEv2 engine, beginning with suporting AES-ECB
-and AES-CBC algorithms. Other algorithms are planned to be added
-gradually in phases after initial suppport is added.
-
-The driver is tested using full kernel crypto selftests (CRYPTO_SELFTESTS)
-which all pass successfully [2].
+DTHE V2 is introduced as a part of TI AM62L SoC and can currently be
+only found in it.
 
 Signed-off-by: T Pratham <t-pratham@ti.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-[1]: Section 14.6.3 (DMA Control Registers -> DMASS_DTHE)
-Link: https://www.ti.com/lit/ug/sprujb4/sprujb4.pdf
-
-[2]: DTHEv2 AES-ECB and AES-CBC kernel self-tests logs
-Link: https://gist.github.com/Pratham-T/aaa499cf50d20310cb27266a645bfd60
-
-Change log:
-v7:
- - Dropped redundant crypto_engine_stop() calls.
- - Corrected Reviewed-by tag.
-v6:
- - Reworded the cover letter and commit messages to name DTHEv2 as a
-   crypto engine instead of crypto accelerator.
- - Reworded the cover letter completely to emphasise more on the utility
-   of DTHEv2 as better resistance against physical attacks
- - Reworded DTHEv2 description (help text) in KConfig
- - Added dma_terminate_sync calls to ensure DMA requests are removed in
-   case when completion times-out.
- - Some rearrangement of fields between dthe_tfm_ctx and dthe_aes_req_ctx
-   struct, so that per tfm members are correctly placed in tfm_ctx and per
-   request members are in req_ctx. Subsequently setkey, encrypt and
-   decrypt functions are also changed.
- - Removed exit_tfm function which was useless and not required.
- - Removed unnecessary zeroing of tfm_ctx object in init_tfm.
- - Corrected return value in dthe_aes_run function.
- - Reduced cra_priority of DTHEv2 algorithms.
-v5:
- - Simplified tfm ctx struct
- - Set cra_reqsize instead of using crypto_skcipher_set_reqsize()
- - Move setting sysconfig and irqenable registers to dthe_aes_run
-v4:
- - Corrected dt-bindings example indentation
- - Simplified dt-bindings example, removing the node surrounding crypto
- - Fixed typo in dthev2-common.h header guard
- - Removed unused ctx field in dev_data struct
- - Moved per-op data into request context
-v3:
- - Corrected dt-bindings reg length is too long error
- - Converted AES driver code to use crypto_engine APIs for using
-   internal crypto queue instead of mutex.
- - Removed calls to skcipher_request_complete in paths not returning
-   -EINPROGRESS before.
- - Added missing KConfig import, which was accidentally removed in v2.
-
-v2:
- - Corrected dt-bindings syntax errors and other review comments in v1.
- - Completely changed driver code structure, splitting code into
-   multiple files
-
-Link to previous versions:
-v6: https://lore.kernel.org/all/20250819065844.3337101-1-t-pratham@ti.com/
-v5: https://lore.kernel.org/all/20250603124217.957116-1-t-pratham@ti.com/
-v4: https://lore.kernel.org/all/20250508101723.846210-2-t-pratham@ti.com/
-v3: https://lore.kernel.org/all/20250502121253.456974-2-t-pratham@ti.com/
-v2: https://lore.kernel.org/all/20250411091321.2925308-1-t-pratham@ti.com/
-v1: https://lore.kernel.org/all/20250206-dthe-v2-aes-v1-0-1e86cf683928@ti.com/
----
-
-T Pratham (2):
-  dt-bindings: crypto: Add binding for TI DTHE V2
-  crypto: ti: Add driver for DTHE V2 AES Engine (ECB, CBC)
-
- .../bindings/crypto/ti,am62l-dthev2.yaml      |  50 +++
- MAINTAINERS                                   |   7 +
- drivers/crypto/Kconfig                        |   1 +
- drivers/crypto/Makefile                       |   1 +
- drivers/crypto/ti/Kconfig                     |  14 +
- drivers/crypto/ti/Makefile                    |   3 +
- drivers/crypto/ti/dthev2-aes.c                | 411 ++++++++++++++++++
- drivers/crypto/ti/dthev2-common.c             | 217 +++++++++
- drivers/crypto/ti/dthev2-common.h             | 101 +++++
- 9 files changed, 805 insertions(+)
+ .../bindings/crypto/ti,am62l-dthev2.yaml      | 50 +++++++++++++++++++
+ MAINTAINERS                                   |  6 +++
+ 2 files changed, 56 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/crypto/ti,am62l-dthev2.yaml
- create mode 100644 drivers/crypto/ti/Kconfig
- create mode 100644 drivers/crypto/ti/Makefile
- create mode 100644 drivers/crypto/ti/dthev2-aes.c
- create mode 100644 drivers/crypto/ti/dthev2-common.c
- create mode 100644 drivers/crypto/ti/dthev2-common.h
 
+diff --git a/Documentation/devicetree/bindings/crypto/ti,am62l-dthev2.yaml b/Documentation/devicetree/bindings/crypto/ti,am62l-dthev2.yaml
+new file mode 100644
+index 000000000000..5486bfeb2fe8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/crypto/ti,am62l-dthev2.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/crypto/ti,am62l-dthev2.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: K3 SoC DTHE V2 crypto module
++
++maintainers:
++  - T Pratham <t-pratham@ti.com>
++
++properties:
++  compatible:
++    enum:
++      - ti,am62l-dthev2
++
++  reg:
++    maxItems: 1
++
++  dmas:
++    items:
++      - description: AES Engine RX DMA Channel
++      - description: AES Engine TX DMA Channel
++      - description: SHA Engine TX DMA Channel
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx1
++      - const: tx2
++
++required:
++  - compatible
++  - reg
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    crypto@40800000 {
++        compatible = "ti,am62l-dthev2";
++        reg = <0x40800000 0x10000>;
++
++        dmas = <&main_bcdma 0 0 0x4700 0>,
++               <&main_bcdma 0 0 0xc701 0>,
++               <&main_bcdma 0 0 0xc700 0>;
++        dma-names = "rx", "tx1", "tx2";
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fe168477caa4..0f5bb8ad7653 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -25169,6 +25169,12 @@ S:	Odd Fixes
+ F:	drivers/clk/ti/
+ F:	include/linux/clk/ti.h
+ 
++TI DATA TRANSFORM AND HASHING ENGINE (DTHE) V2 CRYPTO DRIVER
++M:	T Pratham <t-pratham@ti.com>
++L:	linux-crypto@vger.kernel.org
++S:	Supported
++F:	Documentation/devicetree/bindings/crypto/ti,am62l-dthev2.yaml
++
+ TI DAVINCI MACHINE SUPPORT
+ M:	Bartosz Golaszewski <brgl@bgdev.pl>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
 -- 
 2.43.0
 
