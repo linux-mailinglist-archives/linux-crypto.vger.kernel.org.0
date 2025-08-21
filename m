@@ -1,94 +1,90 @@
-Return-Path: <linux-crypto+bounces-15533-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-15535-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51584B3053E
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 22:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 893E1B30542
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 22:28:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 605A5A059A4
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 20:23:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC2CBA27654
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 20:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE15F37E8F4;
-	Thu, 21 Aug 2025 20:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280D237E8E4;
+	Thu, 21 Aug 2025 20:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gWu3gNCR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EHZTLDSv"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1E137D5A1
-	for <linux-crypto@vger.kernel.org>; Thu, 21 Aug 2025 20:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B745353351
+	for <linux-crypto@vger.kernel.org>; Thu, 21 Aug 2025 20:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755806919; cv=none; b=dNGVo2lOnSc3l48995sA+SKSufLXqmGt13gUWtq+VVvJRGzCbw+5bKOYwIS3PqpJt0f3utfMIHRTkQFsGEvUJE9/9nqhOlovOBR7oVS3mnq4Nf2l2FyG/1F/Y21cD4cKpNUFApsRfbEB6rJwjT9oY19c4qkiYZZREL7hTR30pO4=
+	t=1755806920; cv=none; b=elLK5RSMW/RAH2X+KhUgAaYiUHOmSMzYqSfuR6MCZHO6jUhcErN682zgCzdy78ysNO+b6g2M7j1XqBsjfK5rWFA4eQ0h4quNMKyWK5T2Inmy+3njbmhSDXcdT7e6tOeakas7Obo+Ff61UHhajEsdbiD6WWd6nDJJuK8/QCiPjx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755806919; c=relaxed/simple;
-	bh=u2IvbkeQqipan9xn1FH8uDngo5kbDeDcvQE423cldao=;
+	s=arc-20240116; t=1755806920; c=relaxed/simple;
+	bh=I4BkP0poqeOVnf4Ccw0GJyYkhfaxRMDSlYagPRdC1UE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AyfkOCU1PNRfAyEHSH82peJf8fmfCs0ROzJcQ61e6X0Bxy5cbFyqNCjQXIIUwgeo/Gwt/7VM3hn92BE6HyQ7budyb9fjp/x5MotXV4vNkjOkUqgkU1f136g7ZdIRwuNNxyPsZA1RLosLTQq/bQDojKOiMvW+x028Jr/09PzFraw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gWu3gNCR; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=puoy9c1ScyGaZIGJgREBMA9RhrEE5Dah1rGM05aEpNl8vzRnSH6NcnNmdSi1/AKXrA9hnvuERTHILssvwEBvN5vofJYtlAAw+Tlw+GFL/V1Im89ERu3LTjbwZDfUnq2IDxovD13QHac/lnjNW7aJWBRMfxefvyARZYOf2GY2UyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EHZTLDSv; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1755806915;
+	s=mimecast20190719; t=1755806917;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uIthYg0x+2djveHghlw2Jb9wmVGYKVQz7R4ULrPQfiU=;
-	b=gWu3gNCRFOsVNUuWNJEaJT4/smWuwebgkhI909aCi18ILvJjj5U7YQmWWGABCmv4chp0TV
-	zV/fj1uRmOb/F8sJKTzbOiQuWGXb4y/HFFB5tpH6G0ZKaRgehJHsUCAVNpNvX0+YSn0rDQ
-	d62ftm4cV7f9jCf68yOkQkEp79sT6Pg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=3CqHI+s+zbpAzQhGC/xWDVPQsQNUZt86Ikrf9EwImgM=;
+	b=EHZTLDSvHEPiXzGx04lmmIvgP4XbFKSzjaflvit90eZrbjJ4sM/pHJzcMPfrS8u+Gwl0Jd
+	qH1ZkTwi1epu4FiDzxTt2+6xhnEScVUxg0NuuPNfMZB23O6t0ZovR1Dj23RMAhBPu8XrEE
+	HsGauPlBrsGoNoPE/ZPFGEtTcOOdf8c=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-14-xhnEJsPYOsinrmSL3i92ZA-1; Thu, 21 Aug 2025 16:08:33 -0400
-X-MC-Unique: xhnEJsPYOsinrmSL3i92ZA-1
-X-Mimecast-MFC-AGG-ID: xhnEJsPYOsinrmSL3i92ZA_1755806912
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3c584459d02so247635f8f.0
-        for <linux-crypto@vger.kernel.org>; Thu, 21 Aug 2025 13:08:33 -0700 (PDT)
+ us-mta-372-3pc_aQIMOQGgKPGjty9scg-1; Thu, 21 Aug 2025 16:08:36 -0400
+X-MC-Unique: 3pc_aQIMOQGgKPGjty9scg-1
+X-Mimecast-MFC-AGG-ID: 3pc_aQIMOQGgKPGjty9scg_1755806915
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-45a1b05b15eso10525485e9.1
+        for <linux-crypto@vger.kernel.org>; Thu, 21 Aug 2025 13:08:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755806912; x=1756411712;
+        d=1e100.net; s=20230601; t=1755806915; x=1756411715;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uIthYg0x+2djveHghlw2Jb9wmVGYKVQz7R4ULrPQfiU=;
-        b=PqYz6swFDavfXGfdT12vemX2HAbwXXjgSo3f/4ch8UNc5VPwin8+DlFztGgpa87fc7
-         7v7xl06zuCHjheEenyJkRCFFqe44pfeqU7e9uo2v9wAEoouQgdTQkEyHMSkgySaFVUgs
-         cL86uwrGpIe+pBUT7U4Y/p9waQaAgNC22TKb02b/YF8TdlAtesvYr0zRH64SGYWosEXM
-         ozdPrRa2NQPzsa3T+ao3RawOYZ8pXw+rEg/RH+MQ7gw3oW3Oi7xEuFpWAqOmsrCxPpAT
-         8eMKvBq+PHPVksOC6BeRtjucxUptk+4YTRRKU/QrRyqOx4P9bhe45xmPthz/q4k4uo0m
-         HbHA==
-X-Forwarded-Encrypted: i=1; AJvYcCXnZ91IKjmWbDy1pdp5lOOaC5w9CZ6ecBXsKnBvWcZGB4aJDgXcOiauhHz7kIhVZzXm6Hni4IJJjVpV1b4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxoduVjtYq+o5nbjlHwn16O66rEOsaNzpYh9uo+rW3Gzqd0XItp
-	sJP/cGk9knioD5pO6JLpHp+12JuqtNc0fAorzgTTs3TiJFxrEiz4mIQu7zvEESNZQsYxMj//n47
-	KHUAX2XRb7C6syim1PFJQ4tBjBLEXlyC9vv9VOrSB7a56IOA6S3zLcKmes8qaW7Fpvw==
-X-Gm-Gg: ASbGnctkMVjWNKWVnXdAlbsDBfzsc32tf1RuQTt7A47bknL3pH1EKm6NKijCuWaEsA3
-	P/bNG8pNoizAtXwa07MUDzxCFTYt2g3PVe0QuKjIpwjxJ7+qe70qYd368impEO2Dkv/XLRAwPsH
-	mJvwnRSxDHPBiR+w79gen/YqDwNVWYX5ulCZLBd585HiEUpfQ3oHK+Y/ycbQR70Oe8Q2B0TjHIg
-	N8weuBTGrbQ1bq8apfaGzUtFBju3rHr3mePSVf6vi8iqya/DaNhDrYSSaoQW/oXIT1zFEBROI3C
-	G8dvDFoOwzjswLkby1rXWs0R/X79xIbD/agqpV45NdhPfyKfsnTrSfXs/uVW4zxMI+9Ry/TDJik
-	CNkLmBun5OnH883V4dCqj2w==
-X-Received: by 2002:a05:6000:40de:b0:3a5:783f:528a with SMTP id ffacd0b85a97d-3c5dcefee22mr195271f8f.59.1755806912313;
-        Thu, 21 Aug 2025 13:08:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRe/VOMg0cdir08bDTWMwU06A85Ixelypa7wMbtHpunFYS8URS38ofNnAO5nDnYJmoWLlWSQ==
-X-Received: by 2002:a05:6000:40de:b0:3a5:783f:528a with SMTP id ffacd0b85a97d-3c5dcefee22mr195231f8f.59.1755806911819;
-        Thu, 21 Aug 2025 13:08:31 -0700 (PDT)
+        bh=3CqHI+s+zbpAzQhGC/xWDVPQsQNUZt86Ikrf9EwImgM=;
+        b=VeMdm7WBA7IQ1uP91zrIAe7nQ+933115OeYjhn8yHM+s58Kfbjd0O5ItMwGf7cQxTx
+         93zLSU9NaWXQuvASbMCsoNgQvdAuOjfGSqduO2/dhv3M1ZHPeFYrW8HgzrzcqoiXOKfm
+         PgV0ijmhTc1CM+jOz/Sl8LuCst22lAr07c01OSgUmwlPdrg15/GGip6RiTXKukZuhaUT
+         lLYdQTWpl+YLVImT17X36oLfH9o3NDTGpUJB0cqPSoPVuAA2Zzl1d3M8j+jn57x/E1dB
+         qqcUrd8N9X4dlVKJoxSm7myQYPKxlubB3eGx4Qdl3Rtcp74ivIrnmfPBCToWnv7TkgOV
+         v7eg==
+X-Forwarded-Encrypted: i=1; AJvYcCWhfWa9Sz4n1UJATOaglCvQfZzqAUgJqelOwpddyhUBu7eKzNLGShftiGasbwoAdi6ECggP2xQWER3uIM0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPA+WyDU9ZK+CnwnZxJwwHGem6VfNbbm9RnUUNNS2FpW5SFb6H
+	Gzw1hFhuXCRo6Z+IiGh9KHTKJjDUdrOR/PwwTeYSREbRtWk2/2JvAFfRnYHTXDIFrdeokPNjdOb
+	bZSGCPpc+SsbwV9Q705PqiFB9kSY3XOLxSi1hVDh1chtPYoQ0fOfTp/fXL73XtxOICg==
+X-Gm-Gg: ASbGnctPD1GUw1spCOIzgAL42zVPXbHqmiwlXsXIEImT7rWKiu6U7jRw0GEoo+YTkpz
+	pQDURKqvYwGDAIhu1oHbvjo+y8VmDNEG00jfWDML2ULgu314ksX19bjoOItcSTpz6IuQ09zDV0q
+	Ig3+yrxB2O9MH5l0Tt3d0/IFT/VgpRbkUB2b/WvbOnjhDwOY0X8MUIHgUAj4N9oYREoCLw6SIV6
+	f1Ca5WMwG5AFhhZfm/KcqOMckt4+Z2t8z2ekR2BOt31Xu2gM+Qk05SbYSAfuN2wQgeqdBvIvXFD
+	w9ILWtx0l1m+n8P7RpJOdOXOnnlwaV8rjZeGrA82KUY3wL6ONhIUPFm3IE+0K7R6HLuQuhWiY9h
+	npHOSN59dSyR7ulrZoO6X+g==
+X-Received: by 2002:a05:600c:1e85:b0:456:1006:5418 with SMTP id 5b1f17b1804b1-45b5179f0d8mr2710795e9.13.1755806915049;
+        Thu, 21 Aug 2025 13:08:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNGUbCcltH4em232KOd7NJpwM5baGf2Rerwczj+dvqvR7jiogPR9NbFTOrLGPDkQDJL8nGzQ==
+X-Received: by 2002:a05:600c:1e85:b0:456:1006:5418 with SMTP id 5b1f17b1804b1-45b5179f0d8mr2710565e9.13.1755806914568;
+        Thu, 21 Aug 2025 13:08:34 -0700 (PDT)
 Received: from localhost (p200300d82f26ba0008036ec5991806fd.dip0.t-ipconnect.de. [2003:d8:2f26:ba00:803:6ec5:9918:6fd])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45b50f16eb1sm7598185e9.3.2025.08.21.13.08.29
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3c074d43b9asm12707153f8f.24.2025.08.21.13.08.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Aug 2025 13:08:31 -0700 (PDT)
+        Thu, 21 Aug 2025 13:08:34 -0700 (PDT)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: David Hildenbrand <david@redhat.com>,
-	Brett Creeley <brett.creeley@amd.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
 	Alexander Potapenko <glider@google.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Brendan Jackman <jackmanb@google.com>,
@@ -135,9 +131,9 @@ Cc: David Hildenbrand <david@redhat.com>,
 	wireguard@lists.zx2c4.com,
 	x86@kernel.org,
 	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH RFC 30/35] vfio/pci: drop nth_page() usage within SG entry
-Date: Thu, 21 Aug 2025 22:06:56 +0200
-Message-ID: <20250821200701.1329277-31-david@redhat.com>
+Subject: [PATCH RFC 31/35] crypto: remove nth_page() usage within SG entry
+Date: Thu, 21 Aug 2025 22:06:57 +0200
+Message-ID: <20250821200701.1329277-32-david@redhat.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250821200701.1329277-1-david@redhat.com>
 References: <20250821200701.1329277-1-david@redhat.com>
@@ -152,46 +148,96 @@ Content-Transfer-Encoding: 8bit
 It's no longer required to use nth_page() when iterating pages within a
 single SG entry, so let's drop the nth_page() usage.
 
-Cc: Brett Creeley <brett.creeley@amd.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Yishai Hadas <yishaih@nvidia.com>
-Cc: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/vfio/pci/pds/lm.c         | 3 +--
- drivers/vfio/pci/virtio/migrate.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ crypto/ahash.c               | 4 ++--
+ crypto/scompress.c           | 8 ++++----
+ include/crypto/scatterwalk.h | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/vfio/pci/pds/lm.c b/drivers/vfio/pci/pds/lm.c
-index f2673d395236a..4d70c833fa32e 100644
---- a/drivers/vfio/pci/pds/lm.c
-+++ b/drivers/vfio/pci/pds/lm.c
-@@ -151,8 +151,7 @@ static struct page *pds_vfio_get_file_page(struct pds_vfio_lm_file *lm_file,
- 			lm_file->last_offset_sg = sg;
- 			lm_file->sg_last_entry += i;
- 			lm_file->last_offset = cur_offset;
--			return nth_page(sg_page(sg),
--					(offset - cur_offset) / PAGE_SIZE);
-+			return sg_page(sg) + (offset - cur_offset) / PAGE_SIZE;
+diff --git a/crypto/ahash.c b/crypto/ahash.c
+index a227793d2c5b5..a9f757224a223 100644
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -88,7 +88,7 @@ static int hash_walk_new_entry(struct crypto_hash_walk *walk)
+ 
+ 	sg = walk->sg;
+ 	walk->offset = sg->offset;
+-	walk->pg = nth_page(sg_page(walk->sg), (walk->offset >> PAGE_SHIFT));
++	walk->pg = sg_page(walk->sg) + walk->offset / PAGE_SIZE;
+ 	walk->offset = offset_in_page(walk->offset);
+ 	walk->entrylen = sg->length;
+ 
+@@ -226,7 +226,7 @@ int shash_ahash_digest(struct ahash_request *req, struct shash_desc *desc)
+ 	if (!IS_ENABLED(CONFIG_HIGHMEM))
+ 		return crypto_shash_digest(desc, data, nbytes, req->result);
+ 
+-	page = nth_page(page, offset >> PAGE_SHIFT);
++	page += offset / PAGE_SIZE;
+ 	offset = offset_in_page(offset);
+ 
+ 	if (nbytes > (unsigned int)PAGE_SIZE - offset)
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index c651e7f2197a9..1a7ed8ae65b07 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -198,7 +198,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 		} else
+ 			return -ENOSYS;
+ 
+-		dpage = nth_page(dpage, doff / PAGE_SIZE);
++		dpage += doff / PAGE_SIZE;
+ 		doff = offset_in_page(doff);
+ 
+ 		n = (dlen - 1) / PAGE_SIZE;
+@@ -220,12 +220,12 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 			} else
+ 				break;
+ 
+-			spage = nth_page(spage, soff / PAGE_SIZE);
++			spage = spage + soff / PAGE_SIZE;
+ 			soff = offset_in_page(soff);
+ 
+ 			n = (slen - 1) / PAGE_SIZE;
+ 			n += (offset_in_page(slen - 1) + soff) / PAGE_SIZE;
+-			if (PageHighMem(nth_page(spage, n)) &&
++			if (PageHighMem(spage + n) &&
+ 			    size_add(soff, slen) > PAGE_SIZE)
+ 				break;
+ 			src = kmap_local_page(spage) + soff;
+@@ -270,7 +270,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 			if (dlen <= PAGE_SIZE)
+ 				break;
+ 			dlen -= PAGE_SIZE;
+-			dpage = nth_page(dpage, 1);
++			dpage++;
  		}
- 		cur_offset += sg->length;
  	}
-diff --git a/drivers/vfio/pci/virtio/migrate.c b/drivers/vfio/pci/virtio/migrate.c
-index ba92bb4e9af94..7dd0ac866461d 100644
---- a/drivers/vfio/pci/virtio/migrate.c
-+++ b/drivers/vfio/pci/virtio/migrate.c
-@@ -53,8 +53,7 @@ virtiovf_get_migration_page(struct virtiovf_data_buffer *buf,
- 			buf->last_offset_sg = sg;
- 			buf->sg_last_entry += i;
- 			buf->last_offset = cur_offset;
--			return nth_page(sg_page(sg),
--					(offset - cur_offset) / PAGE_SIZE);
-+			return sg_page(sg) + (offset - cur_offset) / PAGE_SIZE;
- 		}
- 		cur_offset += sg->length;
+ 
+diff --git a/include/crypto/scatterwalk.h b/include/crypto/scatterwalk.h
+index 15ab743f68c8f..cdf8497d19d27 100644
+--- a/include/crypto/scatterwalk.h
++++ b/include/crypto/scatterwalk.h
+@@ -159,7 +159,7 @@ static inline void scatterwalk_map(struct scatter_walk *walk)
+ 	if (IS_ENABLED(CONFIG_HIGHMEM)) {
+ 		struct page *page;
+ 
+-		page = nth_page(base_page, offset >> PAGE_SHIFT);
++		page = base_page + offset / PAGE_SIZE;
+ 		offset = offset_in_page(offset);
+ 		addr = kmap_local_page(page) + offset;
+ 	} else {
+@@ -259,7 +259,7 @@ static inline void scatterwalk_done_dst(struct scatter_walk *walk,
+ 		end += (offset_in_page(offset) + offset_in_page(nbytes) +
+ 			PAGE_SIZE - 1) >> PAGE_SHIFT;
+ 		for (i = start; i < end; i++)
+-			flush_dcache_page(nth_page(base_page, i));
++			flush_dcache_page(base_page + i);
  	}
+ 	scatterwalk_advance(walk, nbytes);
+ }
 -- 
 2.50.1
 
