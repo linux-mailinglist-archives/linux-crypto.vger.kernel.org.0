@@ -1,44 +1,44 @@
-Return-Path: <linux-crypto+bounces-15477-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-15482-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55BE3B2EAC7
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 03:38:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8A05B2EACE
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 03:39:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DABFE1C28071
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 01:38:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91CCF1C28755
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 Aug 2025 01:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B1C246786;
-	Thu, 21 Aug 2025 01:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A308B27146A;
+	Thu, 21 Aug 2025 01:38:24 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7CD2417E0;
-	Thu, 21 Aug 2025 01:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD26261574;
+	Thu, 21 Aug 2025 01:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755740297; cv=none; b=ojeJGMhHcZtuUrL5o4kiiEVMejKJTvv+rY0Ke9efTCIQWDal0LI8/FvBuOCQ1dOmnV06/jxeUm1rKaHR+Er4XRd4m4+ukDnC3vb/sesLzJoy4vwbQ8zPEzpnNfkDgrlRUO1jZEznxaA+jk/6/SYxl+k8KJJ7jvLOkJUr4NFAMDc=
+	t=1755740304; cv=none; b=L1NtrUbyjxlSc6z52FqQ6wWgEzfyob5bLi+aGn7wyg2yUmY6/KpqbnFNNcFLw5U2XCHLaZImDInqLQvc6voscuGAJ7CVQzKw4IHTVvzUA17WLaDsOMP2ofEboS0VrbcLCydC0Z8/j6bCczTYSL3DbygZAMRiXTzC4U31JdohU7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755740297; c=relaxed/simple;
-	bh=MlHqMVnU07GH6ssx63UQwR8prdxAqb6ytrZHvNp0N2s=;
+	s=arc-20240116; t=1755740304; c=relaxed/simple;
+	bh=vSbxs4BqH5DRP182heMxDbAgc0iB7W+HGuO/sb1OSUI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MzXr8T2YiERTK9eGHWkqun3yl7Mre3aGCKD8UnioNTVtrvF5nVkJOWRZmppNViVE4BrVoQmaeH6ueoio4EhjHbMJEo3ph3wnYXmmTj8UHjZLlzfI8z3/nhxrbYWk7IUeN+FGAGyAmaSBq0/3APnGuIaAMwI4wWxj9UEFPYpCwR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=XNkdEYsJAC+ILsVAkSlse2tUQUucbRbHVXzIwR8vpRWQSbO6pjHIV/tw3jYnGg6R4CEEeC5kWe8PBlHJ0i19MwzBNhigq+O92ChHrDX01leeZj7odyjJ7wj1Dq2J1+Me2am33utgUzcy6R2q+xQyKrWYZ8S1kuQfbZWOQqQgkN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4c6m915pzCz2gLGY;
-	Thu, 21 Aug 2025 09:35:17 +0800 (CST)
-Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3B163140148;
-	Thu, 21 Aug 2025 09:38:11 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4c6m9F4l5Mz2TTQl;
+	Thu, 21 Aug 2025 09:35:29 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9922F18005F;
+	Thu, 21 Aug 2025 09:38:19 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 21 Aug 2025 09:38:10 +0800
+ 15.2.1544.11; Thu, 21 Aug 2025 09:38:11 +0800
 Received: from localhost.huawei.com (10.90.31.46) by
  kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -49,9 +49,9 @@ CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<linuxarm@openeuler.org>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
 	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>,
 	<yinzhushuai@huawei.com>
-Subject: [PATCH v2 2/6] crypto: hisilicon - re-enable address prefetch after device resuming
-Date: Thu, 21 Aug 2025 09:38:05 +0800
-Message-ID: <20250821013809.4016506-3-huangchenghai2@huawei.com>
+Subject: [PATCH v2 3/6] crypto: hisilicon - check the sva module status while enabling or disabling address prefetch
+Date: Thu, 21 Aug 2025 09:38:06 +0800
+Message-ID: <20250821013809.4016506-4-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250821013809.4016506-1-huangchenghai2@huawei.com>
 References: <20250821013809.4016506-1-huangchenghai2@huawei.com>
@@ -66,192 +66,359 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
  kwepemq200001.china.huawei.com (7.202.195.16)
 
-When the device resumes from a suspended state, it will revert to its
-initial state and requires re-enabling. Currently, the address prefetch
-function is not re-enabled after device resuming. Move the address prefetch
-enable to the initialization process. In this way, the address prefetch
-can be enabled when the device resumes by calling the initialization
-process.
+From: Weili Qian <qianweili@huawei.com>
 
-Fixes: 607c191b371d ("crypto: hisilicon - support runtime PM for accelerator device")
+After enabling address prefetch, check the sva module status. If all
+previous prefetch requests from the sva module are not completed, then
+disable the address prefetch to ensure normal execution of new task
+operations. After disabling address prefetch, check if all requests
+from the sva module have been completed.
+
+Fixes: a5c164b195a8 ("crypto: hisilicon/qm - support address prefetching")
+Signed-off-by: Weili Qian <qianweili@huawei.com>
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c |  3 +-
- drivers/crypto/hisilicon/qm.c             |  3 -
- drivers/crypto/hisilicon/sec2/sec_main.c  | 80 +++++++++++------------
- drivers/crypto/hisilicon/zip/zip_main.c   |  5 +-
- 4 files changed, 43 insertions(+), 48 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 63 ++++++++++++++----
+ drivers/crypto/hisilicon/sec2/sec_main.c  | 48 +++++++++++++-
+ drivers/crypto/hisilicon/zip/zip_main.c   | 79 +++++++++++++++++++----
+ 3 files changed, 164 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index f5b47e5ff48a..34f84978180f 100644
+index 34f84978180f..7b60e89015bd 100644
 --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
 +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -721,6 +721,7 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+@@ -78,6 +78,11 @@
+ #define HPRE_PREFETCH_ENABLE		(~(BIT(0) | BIT(30)))
+ #define HPRE_PREFETCH_DISABLE		BIT(30)
+ #define HPRE_SVA_DISABLE_READY		(BIT(4) | BIT(8))
++#define HPRE_SVA_PREFTCH_DFX4		0x301144
++#define HPRE_WAIT_SVA_READY		500000
++#define HPRE_READ_SVA_STATUS_TIMES	3
++#define HPRE_WAIT_US_MIN		10
++#define HPRE_WAIT_US_MAX		20
  
- 	/* Config data buffer pasid needed by Kunpeng 920 */
- 	hpre_config_pasid(qm);
-+	hpre_open_sva_prefetch(qm);
+ /* clock gate */
+ #define HPRE_CLKGATE_CTL		0x301a10
+@@ -466,6 +471,33 @@ struct hisi_qp *hpre_create_qp(u8 type)
+ 	return NULL;
+ }
  
- 	hpre_enable_clock_gate(qm);
- 
-@@ -1450,8 +1451,6 @@ static int hpre_pf_probe_init(struct hpre *hpre)
- 	if (ret)
- 		return ret;
- 
--	hpre_open_sva_prefetch(qm);
--
- 	hisi_qm_dev_err_init(qm);
- 	ret = hpre_show_last_regs_init(qm);
- 	if (ret)
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 8d45febb98dd..9bbbfff759a9 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -4447,9 +4447,6 @@ static void qm_restart_prepare(struct hisi_qm *qm)
++static int hpre_wait_sva_ready(struct hisi_qm *qm)
++{
++	u32 val, try_times = 0;
++	u8 count = 0;
++
++	/*
++	 * Read the register value every 10-20us. If the value is 0 for three
++	 * consecutive times, the SVA module is ready.
++	 */
++	do {
++		val = readl(qm->io_base + HPRE_SVA_PREFTCH_DFX4);
++		if (val)
++			count = 0;
++		else if (++count == HPRE_READ_SVA_STATUS_TIMES)
++			break;
++
++		usleep_range(HPRE_WAIT_US_MIN, HPRE_WAIT_US_MAX);
++	} while (++try_times < HPRE_WAIT_SVA_READY);
++
++	if (try_times == HPRE_WAIT_SVA_READY) {
++		pci_err(qm->pdev, "failed to wait sva prefetch ready\n");
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
++
+ static void hpre_config_pasid(struct hisi_qm *qm)
  {
- 	u32 value;
+ 	u32 val1, val2;
+@@ -563,7 +595,7 @@ static void disable_flr_of_bme(struct hisi_qm *qm)
+ 	writel(PEH_AXUSER_CFG_ENABLE, qm->io_base + QM_PEH_AXUSER_CFG_ENABLE);
+ }
  
--	if (qm->err_ini->open_sva_prefetch)
--		qm->err_ini->open_sva_prefetch(qm);
--
- 	if (qm->ver >= QM_HW_V3)
+-static void hpre_open_sva_prefetch(struct hisi_qm *qm)
++static void hpre_close_sva_prefetch(struct hisi_qm *qm)
+ {
+ 	u32 val;
+ 	int ret;
+@@ -571,20 +603,21 @@ static void hpre_open_sva_prefetch(struct hisi_qm *qm)
+ 	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
  		return;
  
+-	/* Enable prefetch */
+ 	val = readl_relaxed(qm->io_base + HPRE_PREFETCH_CFG);
+-	val &= HPRE_PREFETCH_ENABLE;
++	val |= HPRE_PREFETCH_DISABLE;
+ 	writel(val, qm->io_base + HPRE_PREFETCH_CFG);
+ 
+-	ret = readl_relaxed_poll_timeout(qm->io_base + HPRE_PREFETCH_CFG,
+-					 val, !(val & HPRE_PREFETCH_DISABLE),
++	ret = readl_relaxed_poll_timeout(qm->io_base + HPRE_SVA_PREFTCH_DFX,
++					 val, !(val & HPRE_SVA_DISABLE_READY),
+ 					 HPRE_REG_RD_INTVRL_US,
+ 					 HPRE_REG_RD_TMOUT_US);
+ 	if (ret)
+-		pci_err(qm->pdev, "failed to open sva prefetch\n");
++		pci_err(qm->pdev, "failed to close sva prefetch\n");
++
++	(void)hpre_wait_sva_ready(qm);
+ }
+ 
+-static void hpre_close_sva_prefetch(struct hisi_qm *qm)
++static void hpre_open_sva_prefetch(struct hisi_qm *qm)
+ {
+ 	u32 val;
+ 	int ret;
+@@ -592,16 +625,24 @@ static void hpre_close_sva_prefetch(struct hisi_qm *qm)
+ 	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
+ 		return;
+ 
++	/* Enable prefetch */
+ 	val = readl_relaxed(qm->io_base + HPRE_PREFETCH_CFG);
+-	val |= HPRE_PREFETCH_DISABLE;
++	val &= HPRE_PREFETCH_ENABLE;
+ 	writel(val, qm->io_base + HPRE_PREFETCH_CFG);
+ 
+-	ret = readl_relaxed_poll_timeout(qm->io_base + HPRE_SVA_PREFTCH_DFX,
+-					 val, !(val & HPRE_SVA_DISABLE_READY),
++	ret = readl_relaxed_poll_timeout(qm->io_base + HPRE_PREFETCH_CFG,
++					 val, !(val & HPRE_PREFETCH_DISABLE),
+ 					 HPRE_REG_RD_INTVRL_US,
+ 					 HPRE_REG_RD_TMOUT_US);
++	if (ret) {
++		pci_err(qm->pdev, "failed to open sva prefetch\n");
++		hpre_close_sva_prefetch(qm);
++		return;
++	}
++
++	ret = hpre_wait_sva_ready(qm);
+ 	if (ret)
+-		pci_err(qm->pdev, "failed to close sva prefetch\n");
++		hpre_close_sva_prefetch(qm);
+ }
+ 
+ static void hpre_enable_clock_gate(struct hisi_qm *qm)
 diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 72cf48d1f3ab..ddb20f380b54 100644
+index ddb20f380b54..348f1f52956d 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_main.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -464,6 +464,45 @@ static void sec_set_endian(struct hisi_qm *qm)
+@@ -93,6 +93,16 @@
+ #define SEC_PREFETCH_ENABLE		(~(BIT(0) | BIT(1) | BIT(11)))
+ #define SEC_PREFETCH_DISABLE		BIT(1)
+ #define SEC_SVA_DISABLE_READY		(BIT(7) | BIT(11))
++#define SEC_SVA_PREFETCH_INFO		0x301ED4
++#define SEC_SVA_STALL_NUM		GENMASK(23, 8)
++#define SEC_SVA_PREFETCH_NUM		GENMASK(2, 0)
++#define SEC_WAIT_SVA_READY		500000
++#define SEC_READ_SVA_STATUS_TIMES	3
++#define SEC_WAIT_US_MIN			10
++#define SEC_WAIT_US_MAX			20
++#define SEC_WAIT_QP_US_MIN		1000
++#define SEC_WAIT_QP_US_MAX		2000
++#define SEC_MAX_WAIT_TIMES		2000
+ 
+ #define SEC_DELAY_10_US			10
+ #define SEC_POLL_TIMEOUT_US		1000
+@@ -464,6 +474,33 @@ static void sec_set_endian(struct hisi_qm *qm)
  	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
  }
  
-+static void sec_close_sva_prefetch(struct hisi_qm *qm)
++static int sec_wait_sva_ready(struct hisi_qm *qm, __u32 offset, __u32 mask)
 +{
-+	u32 val;
-+	int ret;
++	u32 val, try_times = 0;
++	u8 count = 0;
 +
-+	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
-+		return;
++	/*
++	 * Read the register value every 10-20us. If the value is 0 for three
++	 * consecutive times, the SVA module is ready.
++	 */
++	do {
++		val = readl(qm->io_base + offset);
++		if (val & mask)
++			count = 0;
++		else if (++count == SEC_READ_SVA_STATUS_TIMES)
++			break;
 +
-+	val = readl_relaxed(qm->io_base + SEC_PREFETCH_CFG);
-+	val |= SEC_PREFETCH_DISABLE;
-+	writel(val, qm->io_base + SEC_PREFETCH_CFG);
++		usleep_range(SEC_WAIT_US_MIN, SEC_WAIT_US_MAX);
++	} while (++try_times < SEC_WAIT_SVA_READY);
 +
-+	ret = readl_relaxed_poll_timeout(qm->io_base + SEC_SVA_TRANS,
-+					 val, !(val & SEC_SVA_DISABLE_READY),
-+					 SEC_DELAY_10_US, SEC_POLL_TIMEOUT_US);
-+	if (ret)
-+		pci_err(qm->pdev, "failed to close sva prefetch\n");
++	if (try_times == SEC_WAIT_SVA_READY) {
++		pci_err(qm->pdev, "failed to wait sva prefetch ready\n");
++		return -ETIMEDOUT;
++	}
++
++	return 0;
 +}
 +
-+static void sec_open_sva_prefetch(struct hisi_qm *qm)
-+{
-+	u32 val;
-+	int ret;
-+
-+	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
-+		return;
-+
-+	/* Enable prefetch */
-+	val = readl_relaxed(qm->io_base + SEC_PREFETCH_CFG);
-+	val &= SEC_PREFETCH_ENABLE;
-+	writel(val, qm->io_base + SEC_PREFETCH_CFG);
-+
-+	ret = readl_relaxed_poll_timeout(qm->io_base + SEC_PREFETCH_CFG,
-+					 val, !(val & SEC_PREFETCH_DISABLE),
-+					 SEC_DELAY_10_US, SEC_POLL_TIMEOUT_US);
-+	if (ret)
-+		pci_err(qm->pdev, "failed to open sva prefetch\n");
-+}
-+
- static void sec_engine_sva_config(struct hisi_qm *qm)
+ static void sec_close_sva_prefetch(struct hisi_qm *qm)
  {
- 	u32 reg;
-@@ -497,45 +536,7 @@ static void sec_engine_sva_config(struct hisi_qm *qm)
- 		writel_relaxed(reg, qm->io_base +
- 				SEC_INTERFACE_USER_CTRL1_REG);
- 	}
--}
--
--static void sec_open_sva_prefetch(struct hisi_qm *qm)
--{
--	u32 val;
--	int ret;
--
--	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
--		return;
--
--	/* Enable prefetch */
--	val = readl_relaxed(qm->io_base + SEC_PREFETCH_CFG);
--	val &= SEC_PREFETCH_ENABLE;
--	writel(val, qm->io_base + SEC_PREFETCH_CFG);
--
--	ret = readl_relaxed_poll_timeout(qm->io_base + SEC_PREFETCH_CFG,
--					 val, !(val & SEC_PREFETCH_DISABLE),
--					 SEC_DELAY_10_US, SEC_POLL_TIMEOUT_US);
--	if (ret)
--		pci_err(qm->pdev, "failed to open sva prefetch\n");
--}
--
--static void sec_close_sva_prefetch(struct hisi_qm *qm)
--{
--	u32 val;
--	int ret;
--
--	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
--		return;
--
--	val = readl_relaxed(qm->io_base + SEC_PREFETCH_CFG);
--	val |= SEC_PREFETCH_DISABLE;
--	writel(val, qm->io_base + SEC_PREFETCH_CFG);
--
--	ret = readl_relaxed_poll_timeout(qm->io_base + SEC_SVA_TRANS,
--					 val, !(val & SEC_SVA_DISABLE_READY),
--					 SEC_DELAY_10_US, SEC_POLL_TIMEOUT_US);
--	if (ret)
--		pci_err(qm->pdev, "failed to close sva prefetch\n");
-+	sec_open_sva_prefetch(qm);
+ 	u32 val;
+@@ -481,6 +518,8 @@ static void sec_close_sva_prefetch(struct hisi_qm *qm)
+ 					 SEC_DELAY_10_US, SEC_POLL_TIMEOUT_US);
+ 	if (ret)
+ 		pci_err(qm->pdev, "failed to close sva prefetch\n");
++
++	(void)sec_wait_sva_ready(qm, SEC_SVA_PREFETCH_INFO, SEC_SVA_STALL_NUM);
  }
  
- static void sec_enable_clock_gate(struct hisi_qm *qm)
-@@ -1152,7 +1153,6 @@ static int sec_pf_probe_init(struct sec_dev *sec)
- 	if (ret)
- 		return ret;
+ static void sec_open_sva_prefetch(struct hisi_qm *qm)
+@@ -499,8 +538,15 @@ static void sec_open_sva_prefetch(struct hisi_qm *qm)
+ 	ret = readl_relaxed_poll_timeout(qm->io_base + SEC_PREFETCH_CFG,
+ 					 val, !(val & SEC_PREFETCH_DISABLE),
+ 					 SEC_DELAY_10_US, SEC_POLL_TIMEOUT_US);
+-	if (ret)
++	if (ret) {
+ 		pci_err(qm->pdev, "failed to open sva prefetch\n");
++		sec_close_sva_prefetch(qm);
++		return;
++	}
++
++	ret = sec_wait_sva_ready(qm, SEC_SVA_TRANS, SEC_SVA_PREFETCH_NUM);
++	if (ret)
++		sec_close_sva_prefetch(qm);
+ }
  
--	sec_open_sva_prefetch(qm);
- 	hisi_qm_dev_err_init(qm);
- 	sec_debug_regs_clear(qm);
- 	ret = sec_show_last_regs_init(qm);
+ static void sec_engine_sva_config(struct hisi_qm *qm)
 diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index fb7b19927dd3..480fa590664a 100644
+index 480fa590664a..341c4564e21a 100644
 --- a/drivers/crypto/hisilicon/zip/zip_main.c
 +++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -557,6 +557,7 @@ static int hisi_zip_set_user_domain_and_cache(struct hisi_qm *qm)
- 		writel(AXUSER_BASE, base + HZIP_DATA_WUSER_32_63);
- 		writel(AXUSER_BASE, base + HZIP_SGL_RUSER_32_63);
- 	}
-+	hisi_zip_open_sva_prefetch(qm);
+@@ -95,10 +95,16 @@
+ #define HZIP_PREFETCH_ENABLE		(~(BIT(26) | BIT(17) | BIT(0)))
+ #define HZIP_SVA_PREFETCH_DISABLE	BIT(26)
+ #define HZIP_SVA_DISABLE_READY		(BIT(26) | BIT(30))
++#define HZIP_SVA_PREFETCH_NUM		GENMASK(18, 16)
++#define HZIP_SVA_STALL_NUM		GENMASK(15, 0)
+ #define HZIP_SHAPER_RATE_COMPRESS	750
+ #define HZIP_SHAPER_RATE_DECOMPRESS	140
+-#define HZIP_DELAY_1_US		1
+-#define HZIP_POLL_TIMEOUT_US	1000
++#define HZIP_DELAY_1_US			1
++#define HZIP_POLL_TIMEOUT_US		1000
++#define HZIP_WAIT_SVA_READY		500000
++#define HZIP_READ_SVA_STATUS_TIMES	3
++#define HZIP_WAIT_US_MIN		10
++#define HZIP_WAIT_US_MAX		20
  
- 	/* let's open all compression/decompression cores */
+ /* clock gating */
+ #define HZIP_PEH_CFG_AUTO_GATE		0x3011A8
+@@ -462,7 +468,34 @@ static void hisi_zip_set_high_perf(struct hisi_qm *qm)
+ 	writel(val, qm->io_base + HZIP_HIGH_PERF_OFFSET);
+ }
  
-@@ -572,6 +573,7 @@ static int hisi_zip_set_user_domain_and_cache(struct hisi_qm *qm)
- 	       CQC_CACHE_WB_ENABLE | FIELD_PREP(SQC_CACHE_WB_THRD, 1) |
- 	       FIELD_PREP(CQC_CACHE_WB_THRD, 1), base + QM_CACHE_CTL);
+-static void hisi_zip_open_sva_prefetch(struct hisi_qm *qm)
++static int hisi_zip_wait_sva_ready(struct hisi_qm *qm, __u32 offset, __u32 mask)
++{
++	u32 val, try_times = 0;
++	u8 count = 0;
++
++	/*
++	 * Read the register value every 10-20us. If the value is 0 for three
++	 * consecutive times, the SVA module is ready.
++	 */
++	do {
++		val = readl(qm->io_base + offset);
++		if (val & mask)
++			count = 0;
++		else if (++count == HZIP_READ_SVA_STATUS_TIMES)
++			break;
++
++		usleep_range(HZIP_WAIT_US_MIN, HZIP_WAIT_US_MAX);
++	} while (++try_times < HZIP_WAIT_SVA_READY);
++
++	if (try_times == HZIP_WAIT_SVA_READY) {
++		pci_err(qm->pdev, "failed to wait sva prefetch ready\n");
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
++
++static void hisi_zip_close_sva_prefetch(struct hisi_qm *qm)
+ {
+ 	u32 val;
+ 	int ret;
+@@ -470,19 +503,20 @@ static void hisi_zip_open_sva_prefetch(struct hisi_qm *qm)
+ 	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
+ 		return;
  
-+	hisi_zip_set_high_perf(qm);
+-	/* Enable prefetch */
+ 	val = readl_relaxed(qm->io_base + HZIP_PREFETCH_CFG);
+-	val &= HZIP_PREFETCH_ENABLE;
++	val |= HZIP_SVA_PREFETCH_DISABLE;
+ 	writel(val, qm->io_base + HZIP_PREFETCH_CFG);
+ 
+-	ret = readl_relaxed_poll_timeout(qm->io_base + HZIP_PREFETCH_CFG,
+-					 val, !(val & HZIP_SVA_PREFETCH_DISABLE),
++	ret = readl_relaxed_poll_timeout(qm->io_base + HZIP_SVA_TRANS,
++					 val, !(val & HZIP_SVA_DISABLE_READY),
+ 					 HZIP_DELAY_1_US, HZIP_POLL_TIMEOUT_US);
+ 	if (ret)
+-		pci_err(qm->pdev, "failed to open sva prefetch\n");
++		pci_err(qm->pdev, "failed to close sva prefetch\n");
++
++	(void)hisi_zip_wait_sva_ready(qm, HZIP_SVA_TRANS, HZIP_SVA_STALL_NUM);
+ }
+ 
+-static void hisi_zip_close_sva_prefetch(struct hisi_qm *qm)
++static void hisi_zip_open_sva_prefetch(struct hisi_qm *qm)
+ {
+ 	u32 val;
+ 	int ret;
+@@ -490,15 +524,23 @@ static void hisi_zip_close_sva_prefetch(struct hisi_qm *qm)
+ 	if (!test_bit(QM_SUPPORT_SVA_PREFETCH, &qm->caps))
+ 		return;
+ 
++	/* Enable prefetch */
+ 	val = readl_relaxed(qm->io_base + HZIP_PREFETCH_CFG);
+-	val |= HZIP_SVA_PREFETCH_DISABLE;
++	val &= HZIP_PREFETCH_ENABLE;
+ 	writel(val, qm->io_base + HZIP_PREFETCH_CFG);
+ 
+-	ret = readl_relaxed_poll_timeout(qm->io_base + HZIP_SVA_TRANS,
+-					 val, !(val & HZIP_SVA_DISABLE_READY),
++	ret = readl_relaxed_poll_timeout(qm->io_base + HZIP_PREFETCH_CFG,
++					 val, !(val & HZIP_SVA_PREFETCH_DISABLE),
+ 					 HZIP_DELAY_1_US, HZIP_POLL_TIMEOUT_US);
++	if (ret) {
++		pci_err(qm->pdev, "failed to open sva prefetch\n");
++		hisi_zip_close_sva_prefetch(qm);
++		return;
++	}
++
++	ret = hisi_zip_wait_sva_ready(qm, HZIP_SVA_TRANS, HZIP_SVA_PREFETCH_NUM);
+ 	if (ret)
+-		pci_err(qm->pdev, "failed to close sva prefetch\n");
++		hisi_zip_close_sva_prefetch(qm);
+ }
+ 
+ static void hisi_zip_enable_clock_gate(struct hisi_qm *qm)
+@@ -522,6 +564,7 @@ static int hisi_zip_set_user_domain_and_cache(struct hisi_qm *qm)
+ 	void __iomem *base = qm->io_base;
+ 	u32 dcomp_bm, comp_bm;
+ 	u32 zip_core_en;
++	int ret;
+ 
+ 	/* qm user domain */
+ 	writel(AXUSER_BASE, base + QM_ARUSER_M_CFG_1);
+@@ -576,7 +619,15 @@ static int hisi_zip_set_user_domain_and_cache(struct hisi_qm *qm)
+ 	hisi_zip_set_high_perf(qm);
  	hisi_zip_enable_clock_gate(qm);
  
- 	return hisi_dae_set_user_domain(qm);
-@@ -1243,9 +1245,6 @@ static int hisi_zip_pf_probe_init(struct hisi_zip *hisi_zip)
- 	if (ret)
- 		return ret;
+-	return hisi_dae_set_user_domain(qm);
++	ret = hisi_dae_set_user_domain(qm);
++	if (ret)
++		goto close_sva_prefetch;
++
++	return 0;
++
++close_sva_prefetch:
++	hisi_zip_close_sva_prefetch(qm);
++	return ret;
+ }
  
--	hisi_zip_set_high_perf(qm);
--
--	hisi_zip_open_sva_prefetch(qm);
- 	hisi_qm_dev_err_init(qm);
- 	hisi_zip_debug_regs_clear(qm);
- 
+ static void hisi_zip_master_ooo_ctrl(struct hisi_qm *qm, bool enable)
 -- 
 2.33.0
 
