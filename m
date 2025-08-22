@@ -1,44 +1,44 @@
-Return-Path: <linux-crypto+bounces-15580-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-15582-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E9CB3159B
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Aug 2025 12:39:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08F0CB3159C
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Aug 2025 12:39:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89C11620302
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 Aug 2025 10:39:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8228620525
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 Aug 2025 10:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893502F6575;
-	Fri, 22 Aug 2025 10:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BB42F83CF;
+	Fri, 22 Aug 2025 10:39:12 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179142F6185;
-	Fri, 22 Aug 2025 10:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6AF2F5483;
+	Fri, 22 Aug 2025 10:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755859151; cv=none; b=ojU1K5tFnWDKdM2aeyRxCxyPR3KfEoe+5SrqEZfXD8KnLwy7TVsIKcPbyaZk52AJAVrsSxMNH1CETJBZfT/vCgR/OGPbagpcvafKKQcz1TewnfDI8FguOZwKvzirrwjNSwApWlFjfeswHcPgjRniHhH63JhOOv+ZkYVS35hN1Cg=
+	t=1755859152; cv=none; b=bXyNZmB6FE2KGlsffi8OCljXCyTLV5JciOOHV43mNJ7axP5COP6/ShzU0hmADuQJssIB2PmZiHms3dUPEVCx3MJ2JxXWlh0sKURlfHBEBf8VQ3NJtg3k1ybhXq3UpSobxGlVF7FCW4YIGucJsCVi4SOHy8/84Kqa5x4V/uW5dWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755859151; c=relaxed/simple;
-	bh=dTmHS+SXwmigGt+qIm+6F1mMEbPr3KsBXmdDhWkQLv8=;
+	s=arc-20240116; t=1755859152; c=relaxed/simple;
+	bh=5OW9O5RwyETlN8vXUqm94SQB4JN1rvICtu20k9gCrQM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lHtOCDVDlOotU6JjI1nZbpSVx+FPOhxshyS2i768BLCld/b8F4zo4hXbVE1wLbU85idxTfKTd8RjCRcKi0s6l3Bauz4OMmPoj5fKQRnVQ90b3NpFSbH+0XxzkvacKQU8KRuiZH6Wonb5u+hxxX8yvREy9byW8GuWvniPuxdx4kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=KcIQZnYGOvXwEcClnZmLPHy6rjItgIhXFv8gaI7nF5puC+gIDn2yw83M8eV/KsDxHQ2XE9BPxb7KuidS2UxNQZFObkOhhsWvfMqTHM8CEGDSjMQ7NRzcnlIt00VKbMALhjEZbZYtjsFfONTFZcmAxlGs+jiLZDeg9P9FfSX1DFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4c7c4k6LskzPqWq;
-	Fri, 22 Aug 2025 18:34:30 +0800 (CST)
-Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id D3534140257;
-	Fri, 22 Aug 2025 18:39:06 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4c7c6j3dN8z1R8yS;
+	Fri, 22 Aug 2025 18:36:13 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id 816F6140258;
+	Fri, 22 Aug 2025 18:39:07 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 22 Aug 2025 18:39:06 +0800
+ 15.2.1544.11; Fri, 22 Aug 2025 18:39:07 +0800
 Received: from localhost.huawei.com (10.90.31.46) by
  kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -50,9 +50,9 @@ CC: <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-crypto@vger.kernel.org>, <fanghao11@huawei.com>,
 	<shenyang39@huawei.com>, <qianweili@huawei.com>, <linwenkai6@hisilicon.com>,
 	<liulongfang@huawei.com>
-Subject: [PATCH 3/4] uacce: implement mremap in uacce_vm_ops to return -EPERM
-Date: Fri, 22 Aug 2025 18:39:03 +0800
-Message-ID: <20250822103904.3776304-4-huangchenghai2@huawei.com>
+Subject: [PATCH 4/4] uacce: ensure safe queue release with state management
+Date: Fri, 22 Aug 2025 18:39:04 +0800
+Message-ID: <20250822103904.3776304-5-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250822103904.3776304-1-huangchenghai2@huawei.com>
 References: <20250822103904.3776304-1-huangchenghai2@huawei.com>
@@ -67,38 +67,84 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
  kwepemq200001.china.huawei.com (7.202.195.16)
 
-From: Yang Shen <shenyang39@huawei.com>
+Directly calling `put_queue` carries risks since it cannot
+guarantee that resources of `uacce_queue` have been fully released
+beforehand. So adding a `stop_queue` operation for the
+UACCE_CMD_PUT_Q command and leaving the `put_queue` operation to
+the final resource release ensures safety.
 
-The current uacce_vm_ops does not support the mremap operation of
-vm_operations_struct. Implement .mremap to return -EPERM to remind
-users
+Queue states are defined as follows:
+- UACCE_Q_ZOMBIE: Initial state
+- UACCE_Q_INIT: After opening `uacce`
+- UACCE_Q_STARTED: After `start` is issued via `ioctl`
+
+When executing `poweroff -f` in virt while accelerator are still
+working, `uacce_fops_release` and `uacce_remove` may execute
+concurrently. This can cause `uacce_put_queue` within
+`uacce_fops_release` to access a NULL `ops` pointer. Therefore, add
+state checks to prevent accessing freed pointers.
 
 Fixes: 015d239ac014 ("uacce: add uacce driver")
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
+Signed-off-by: Yang Shen <shenyang39@huawei.com>
 ---
- drivers/misc/uacce/uacce.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/misc/uacce/uacce.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index 6a38809ca819..531a24145ba4 100644
+index 531a24145ba4..8a78edb545a1 100644
 --- a/drivers/misc/uacce/uacce.c
 +++ b/drivers/misc/uacce/uacce.c
-@@ -214,8 +214,14 @@ static void uacce_vma_close(struct vm_area_struct *vma)
- 	}
+@@ -40,20 +40,34 @@ static int uacce_start_queue(struct uacce_queue *q)
+ 	return 0;
  }
  
-+static int uacce_vma_mremap(struct vm_area_struct *area)
-+{
-+	return -EPERM;
+-static int uacce_put_queue(struct uacce_queue *q)
++static int uacce_stop_queue(struct uacce_queue *q)
+ {
+ 	struct uacce_device *uacce = q->uacce;
+ 
+-	if ((q->state == UACCE_Q_STARTED) && uacce->ops->stop_queue)
++	if (q->state != UACCE_Q_STARTED)
++		return 0;
++
++	if (uacce->ops->stop_queue)
+ 		uacce->ops->stop_queue(q);
+ 
+-	if ((q->state == UACCE_Q_INIT || q->state == UACCE_Q_STARTED) &&
+-	     uacce->ops->put_queue)
++	q->state = UACCE_Q_INIT;
++
++	return 0;
 +}
 +
- static const struct vm_operations_struct uacce_vm_ops = {
- 	.close = uacce_vma_close,
-+	.mremap = uacce_vma_mremap,
- };
++static void uacce_put_queue(struct uacce_queue *q)
++{
++	struct uacce_device *uacce = q->uacce;
++
++	uacce_stop_queue(q);
++
++	if (q->state != UACCE_Q_INIT)
++		return;
++
++	if (uacce->ops->put_queue)
+ 		uacce->ops->put_queue(q);
  
- static int uacce_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+ 	q->state = UACCE_Q_ZOMBIE;
+-
+-	return 0;
+ }
+ 
+ static long uacce_fops_unl_ioctl(struct file *filep,
+@@ -80,7 +94,7 @@ static long uacce_fops_unl_ioctl(struct file *filep,
+ 		ret = uacce_start_queue(q);
+ 		break;
+ 	case UACCE_CMD_PUT_Q:
+-		ret = uacce_put_queue(q);
++		ret = uacce_stop_queue(q);
+ 		break;
+ 	default:
+ 		if (uacce->ops->ioctl)
 -- 
 2.33.0
 
