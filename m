@@ -1,66 +1,66 @@
-Return-Path: <linux-crypto+bounces-16022-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16027-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C8AB44134
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 17:55:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF88DB44144
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 17:56:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97A2F587BB3
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 15:55:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30F987B088E
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 15:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CF4286435;
-	Thu,  4 Sep 2025 15:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166682D6630;
+	Thu,  4 Sep 2025 15:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="JQUGhZpJ"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ESlDrF+U"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93BF2836BD;
-	Thu,  4 Sep 2025 15:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F916281366;
+	Thu,  4 Sep 2025 15:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757001326; cv=none; b=RZi3rTUwuoNva14XK1WCdfw/qpXtpkQsDIGvQGAI2JOb2nQWnXuv0vqPj6lUi1ehgULYSMHgGGYLp64/DKiDRFEJB8EgZ/WXemB6XA7FTWIleddsEGwMQ2Er/2PGZzEACE7R6UZwY9uA4Oifp6JSAIR+M0YQWggV+euYfoSXHIc=
+	t=1757001343; cv=none; b=YCW9nm+hbj/7EkzI9z1eSOtck/xxtrnxj4Y1eOD+OIF7tbyy8nz0O0cREyUUyaK5P8Woeejoy39yB5JzWgRX82hT0QdQfhqHVGa6A7aCTxJpxhCLXet41nHshvLMAH1FZUUq4KhDGWKEDYRj9Bhspdot7rLoEBXpnXIi+2rvhEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757001326; c=relaxed/simple;
-	bh=pxw09zIdPdHEOD6sHfYpZ8l8koTl+Sf04Kl1gMzB+aw=;
+	s=arc-20240116; t=1757001343; c=relaxed/simple;
+	bh=J3rVPEA4/1BMwE2GxpEvEu0op0zo67k0SPW7/jJm700=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Hm2B77Lqhw3qtTZfERXsbITXkwKJggTMscZv82MbUPctNBN5yhuS/dovUWZ26SwW3I1AIUl8GU9tW6n8tyTXMTyqDWcUwY3XCa/oU7X9Fx1oMmqaB6moitumQaMQIKLtIGC5Vvvqf/BNdlbfjepHLRwdOvM1pi0oTxst2bqoGg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=JQUGhZpJ; arc=none smtp.client-ip=205.220.177.32
+	 MIME-Version; b=rM9sT7km14pnAq5KnivyIRTfWUTCnr+5VPmkSplDqgm/+31IaOyA9uUajHTuzZZvSY1w68VLbY6b442jLLi8C/Mj3GivE+24/wMSWhVUcrmTemI5snuew/R8unOCfpoKHlCufLkzMbRLNfuYf2UtRp7urPDcmH4UH+BtcwkcqiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ESlDrF+U; arc=none smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 584FjeEC008801;
-	Thu, 4 Sep 2025 15:55:14 GMT
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 584Fjprp026747;
+	Thu, 4 Sep 2025 15:55:19 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=h5wJi
-	KG8PQhmLB3Yl/OVA3XGBY1ryrZRdzwcLsN4j20=; b=JQUGhZpJl30pmsRn7cBZa
-	TlFsxtDH1BhKzAhlQnO7vx/hvSuJjho9jY/Ubs0Kt/gkU+T/dX8X/TA6amrUJVkt
-	HLARGTA65gM4gAESCaCXX8/26pKbFS4A9GjhXs1EcHrkY+LmOFrR4z7/3YSdUi3w
-	hQnYkVGVGgnPAfqiI+NYx2cBBdSfmPaqq8FG3jJBVsFMWDXiiVFV/S17MjMwfBFs
-	BrZpvEYD9UPP1PmF4BUIm6HgLemCWVtkOE16l3d6JD43l+Mv9Lz42EQY1IFxax+5
-	ud1wW38uHm/O59jDVAovV+ib6YWmOqBLVKluoooaFRghtZIrf/n9bFW6VlZMzA5R
-	Q==
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=8ZjPP
+	SkaOLbxoYQFdXvGLHuAbaZP97XZAQxfmZvOqFc=; b=ESlDrF+UjFC7RxXhRVtnV
+	7eexviLQBKKL9dqiJoK7Fb8n+eEDNMtdxY5s7g2d/n+xqvGqQnlUDTVTYdPM1h0v
+	sQ1D80AsGqclCvSgav9EisPZGD21wETiqZurs8PMAbp0705yWaFsTj3iYM8Ex7te
+	yp1bSIOJb9QBQZdbsKq6+lY9aABt8hOTxb5bklKWYWpi172SaKf6SRiQnMXscx+q
+	t1CDB+82w4qD8bgc+xL0/fUt2eUfSByqt+b7gvxQiJFK3pq6dLqLcfHgFVCqiTNE
+	A8SUXB89PY9vrRpm2Me8nJLPfZlMShlXLWoofz0ZtB4K3F+y1AoWSGvASUKrPzn7
+	g==
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48yd1004r2-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48ydacr2k0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Sep 2025 15:55:13 +0000 (GMT)
+	Thu, 04 Sep 2025 15:55:19 +0000 (GMT)
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 584FDeeP040212;
-	Thu, 4 Sep 2025 15:55:13 GMT
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 584EsIQk040070;
+	Thu, 4 Sep 2025 15:55:17 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48uqrhtkvq-1
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48uqrhtkyw-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Sep 2025 15:55:13 +0000
+	Thu, 04 Sep 2025 15:55:17 +0000
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 584Fsx4q000707;
-	Thu, 4 Sep 2025 15:55:12 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 584Fsx4s000707;
+	Thu, 4 Sep 2025 15:55:17 GMT
 Received: from localhost.localdomain (dhcp-10-154-122-161.vpn.oracle.com [10.154.122.161])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 48uqrhtkds-4;
-	Thu, 04 Sep 2025 15:55:12 +0000
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 48uqrhtkds-5;
+	Thu, 04 Sep 2025 15:55:16 +0000
 From: Vegard Nossum <vegard.nossum@oracle.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
@@ -73,10 +73,11 @@ Cc: Ard Biesheuvel <ardb@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
         Vladis Dronov <vdronov@redhat.com>,
         Stephan Mueller <smueller@chronox.de>,
         Sami Tolvanen <samitolvanen@google.com>, linux-modules@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: [PATCH RFC 003/104] crypto/jitterentropy: remove linux/fips.h include
-Date: Thu,  4 Sep 2025 17:50:35 +0200
-Message-Id: <20250904155216.460962-4-vegard.nossum@oracle.com>
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH RFC 004/104] crypto: api - Disallow identical template names
+Date: Thu,  4 Sep 2025 17:50:36 +0200
+Message-Id: <20250904155216.460962-5-vegard.nossum@oracle.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250904155216.460962-1-vegard.nossum@oracle.com>
 References: <20250904155216.460962-1-vegard.nossum@oracle.com>
@@ -94,53 +95,52 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 ph
  adultscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
  definitions=main-2509040156
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA0MDE0OCBTYWx0ZWRfXzM2kl4dwgd/G
- KkZhqsw41RiOK2WG3BcEfA04MkfyMnhIM7swt5kLH0jGKgXDPHKYHHrCzso+6ImwzNA7HbJFhsU
- wg3jsnr7/pcqnqIb59eMhmnvKxuP476Mfe0NBDhqU2AzBRLd/cOTAOs0pIEZIxGQ2v30y/EiP+t
- LzcRBA/+jO/oNR+AlbnR9fcAVsGf/UbgSxw/SiFDEHYbAjuixs9vfrSUBVZkkoQuvriAEjB8Xjl
- N/7hxVSgdM0yV6J35BDX5E2odhU9V1pUAKGsXZVfNpr5dMThMVg4W0VrKGmpR9JvsYt17J6EApF
- UXKhWGZyj0nFMKgOwBXFneYnarwle5MfvQAcO8fk+ANzhXO6VuqPQu/tUrkWXudEyYCzxxpat2N
- j9cpZ0cm8uqXiCjhcZqUsIRwntZDAw==
-X-Authority-Analysis: v=2.4 cv=CbkI5Krl c=1 sm=1 tr=0 ts=68b9b661 b=1 cx=c_pps
+X-Proofpoint-GUID: xpUKf88Jos_LOHnIrQntPAcLS8UXw8kg
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA0MDE1MCBTYWx0ZWRfX+QY5zy3l3ZUY
+ AKkpPPaaD6U3xULvlQf7dNkmKBDQOg87mMB3JMpicIZVlw0uYqEA2yldkLRdwXQ6r7CkHUxHtwZ
+ Bkum5owhK05McyqGcviXKpFZ8ZSL5FGBRjK8oC1CbH93ELofAwokFSwR7O8mgVuks9eTHYVYK/n
+ L8wPwIF/tHOE9HUqDovZK+tlKCtAvh8CmRrVVQQIDTWy5KmPQc3GoQ9wwDqUkblvE1gStcLoDs5
+ z1QFETXNhsV6Ej8uxj20gMwGWcVRhFlSCCZ8+gEMV79N2knQHeuwd3Bu4oCo36EZF+hObQiRrqg
+ bK5gQBC7Nr0tOIlh5c+7MLkQgVv2BhhE8kEaJ3EEgsUQ73h55AHquM00uBalk+/cCIeetmC+l4V
+ fGjAJt368OFUANLG99XBX7AimsjxkQ==
+X-Proofpoint-ORIG-GUID: xpUKf88Jos_LOHnIrQntPAcLS8UXw8kg
+X-Authority-Analysis: v=2.4 cv=TuTmhCXh c=1 sm=1 tr=0 ts=68b9b667 b=1 cx=c_pps
  a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=0-84nR_iETsBtlKI5ukA:9 cc=ntf
- awl=host:12068
-X-Proofpoint-ORIG-GUID: NDxDESRMPgIXplIBMFRLgKoq1_EXPhSe
-X-Proofpoint-GUID: NDxDESRMPgIXplIBMFRLgKoq1_EXPhSe
+ a=yJojWOMRYYMA:10 a=t7CeM3EgAAAA:8 a=FNyBlpCuAAAA:8 a=yPCof4ZbAAAA:8
+ a=-3I4fGBVCJMWvowuSIAA:9 a=FdTzh2GWekK77mhwV6Dw:22 a=RlW-AWeGUCXs_Nkyno-6:22
+ cc=ntf awl=host:12068
 
-crypto/jitterentropy.c is deliberately compiled with -O0 and is not
-supposed to depend on any kernel headers (see commit dfc9fa91938b
-"crypto: jitterentropy - avoid compiler warnings").
+Disallow registration of two templates with identical names. This
+normally does not occur naturally but results in very confusing
+behaviour when it does.
 
-We'll be changing include/linux/fips.h later in this series to include
-other headers which break the build of jitterentropy.c due to gcc not
-being able to constant propagate under -O0.
+This is similar in spirit to commit 27016f75f5ed47e2d8e
+("crypto: api - Disallow identical driver names").
 
-Just forward declare fips_enabled, which is the only thing
-jitterentropy.o needs from this header anyway.
-
+Cc: Ovidiu Panait <ovidiu.panait@windriver.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- crypto/jitterentropy.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ crypto/algapi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
-index 3f93cdc9a7af..d939f57667dd 100644
---- a/crypto/jitterentropy.c
-+++ b/crypto/jitterentropy.c
-@@ -146,10 +146,11 @@ struct rand_data {
- #define JENT_ENTROPY_SAFETY_FACTOR	64
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index e604d0d8b7b4..e11b8fdb0865 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -546,6 +546,12 @@ int crypto_register_template(struct crypto_template *tmpl)
+ 	crypto_check_module_sig(tmpl->module);
  
- #include <linux/array_size.h>
--#include <linux/fips.h>
- #include <linux/minmax.h>
- #include "jitterentropy.h"
- 
-+extern int fips_enabled;
-+
- /***************************************************************************
-  * Adaptive Proportion Test
-  *
+ 	list_for_each_entry(q, &crypto_template_list, list) {
++		/*
++		 * If we find a template already registered with the same
++		 * name, refuse to register a new one.
++		 */
++		if (!strcmp(q->name, tmpl->name))
++			goto out;
+ 		if (q == tmpl)
+ 			goto out;
+ 	}
 -- 
 2.39.3
 
