@@ -1,66 +1,66 @@
-Return-Path: <linux-crypto+bounces-16026-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16035-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2053CB44140
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 17:56:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45E57B44156
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 17:57:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0F1DA44F30
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 15:56:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ED9A5614B8
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 15:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815F42D6607;
-	Thu,  4 Sep 2025 15:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F42002820D7;
+	Thu,  4 Sep 2025 15:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="JoDZb2cK"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="pd8y/Jpe"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1C02D322F;
-	Thu,  4 Sep 2025 15:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF8828314E;
+	Thu,  4 Sep 2025 15:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757001343; cv=none; b=F5L52nZZVykQXlMfZwChex3ZMunr45PgXEtdgOARqXhURg2qhA4ykLwe/3XLOFJB7ugNwd/8Mz+kBMo2Vp5rto8swrcU1rX9hGAGNFnZQ1dU0f3KSjRusTZru55T5F5mIm2CZBjX2wsIv+Bd9LEMKVrhFcSoBPWa+QRr3WwFwQY=
+	t=1757001377; cv=none; b=C0smmi+dokqUCD3oWxo0gysu1UN3tYK3L+oxuWmN5T6mQflfZG1OudlxXQVox03AsF7t+a9yWXlNli7Whr9kCo851aPziY+/WDyeVIQ/z1JIpORrbCnYXjvsG2dXH3qDlzfdNpGnDMMoasS/E6QJRtTg3E2JIWNMlp+ayruCmwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757001343; c=relaxed/simple;
-	bh=xRSdlmR/yWazqoD81pKEerk2CR5EYkuWvr9UkB895MU=;
+	s=arc-20240116; t=1757001377; c=relaxed/simple;
+	bh=kRguSyTy6p6vDyElJDkYGwIZhh4PvcWhYho8EG0TaSs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jmtIUnBzXwm5g8P+N9wtSaDQAg3wINoYzJno2sUe/UjYODBPiuqTMo14/QtnckbG0o0SporjoS3qjRRPNXT7FbEt91Lr46lLwej/ATvdmFDrVqHrcSyUYaILfVzxVCiKI2l0mu3MmhmSm4YX22qcgjRShqizfh77FSaHSYaTXmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=JoDZb2cK; arc=none smtp.client-ip=205.220.177.32
+	 MIME-Version; b=jterFaHSnRdVT4R7Ck3k/anoaYgg3/RXyaiWCMH2q+x39fiQx2Tn27/Ofh/Q0ETVobD8A98bldcaJVISKEZVXM5OgRjoQJCYHJ3AP9iBEALoy4t5s41VS0zYHRJp++klkkwlv/RyT4CcCyCwRwbP8XhXOx+08xpuEMuOPTQiTgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=pd8y/Jpe; arc=none smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 584FjeEF008801;
-	Thu, 4 Sep 2025 15:55:30 GMT
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 584Fje8f006294;
+	Thu, 4 Sep 2025 15:55:35 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=q64d7
-	udWGMiLjjWA+0moofUx3X8YZ0jDQv1lPJTIk9w=; b=JoDZb2cKgtq1v8th9/yiL
-	Bj2d9qlq0LZHYZKRdRIxCCO3b42UIluVXLGsiViEZRcWS0SJsuKJ9xINfuZwhccB
-	bcy5gwHH2isXu3ga+ud1fzl9MrNPsIRtGB3mBHguJGDQknOxfeIGL9Tjff+WArRh
-	j05gJyY0DtIgfCXav/m5v7ebA7I9wJNwaUvY/x8dUtNi3X3K6qVRDxHSOq2N7Yp0
-	ca0vtSpfHPvr6qfj1aeFqNUt3YRu0JvXkV1YkTfF8ve8st4ruW3pcsP8LZc9Tg6g
-	DPXwRqS0KduEvKBPPi1hYRBlhOmjbI++UvhOgCstP46DhhT38sDMOP78gCOW1Jk3
-	w==
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=+5oQL
+	hiTQyXwVeZi9TnrXv10ncGU1rSggn+s8YfbYmk=; b=pd8y/JpeWP/Vg55sztxXk
+	I8E9pixJ5Jog0Yviv6uBNI7Tc2NrNU7tHGw5xBfC9cCAzI/sJIBbNNnTc/4u7mHu
+	OzodbafkG9TKddZmF2ZXMO7W9tjrvwKkDuvzargU+oHlL7mWMfTAcZHInMdL8bAo
+	mMJEbIjtMeSrHcLzWE8JaI6STZQn1cF9hBWHtAspl0K0j+MVo1AuDlj+/K0/N6GS
+	/ZYPslwdUkohyafERGxoLyAIcivAwxP9MONudl7bBvTFJclwH55Q72EE6Mvmb+OU
+	x6mO7lQd01JqFa2NRqp4MGdAq09zPmO2o058tA/rkuBrlFJVuqcLfZtUhmUscqcv
+	A==
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48yd1004rx-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48ydhd0206-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Sep 2025 15:55:30 +0000 (GMT)
+	Thu, 04 Sep 2025 15:55:35 +0000 (GMT)
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 584FcVo3040046;
-	Thu, 4 Sep 2025 15:55:29 GMT
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 584Fedo3040082;
+	Thu, 4 Sep 2025 15:55:34 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48uqrhtm5a-1
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48uqrhtm82-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Sep 2025 15:55:29 +0000
+	Thu, 04 Sep 2025 15:55:34 +0000
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 584Fsx50000707;
-	Thu, 4 Sep 2025 15:55:28 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 584Fsx52000707;
+	Thu, 4 Sep 2025 15:55:33 GMT
 Received: from localhost.localdomain (dhcp-10-154-122-161.vpn.oracle.com [10.154.122.161])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 48uqrhtkds-8;
-	Thu, 04 Sep 2025 15:55:28 +0000
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 48uqrhtkds-9;
+	Thu, 04 Sep 2025 15:55:33 +0000
 From: Vegard Nossum <vegard.nossum@oracle.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
@@ -73,10 +73,14 @@ Cc: Ard Biesheuvel <ardb@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
         Vladis Dronov <vdronov@redhat.com>,
         Stephan Mueller <smueller@chronox.de>,
         Sami Tolvanen <samitolvanen@google.com>, linux-modules@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: [PATCH RFC 007/104] testmgr: standardize alg/driver output in logs
-Date: Thu,  4 Sep 2025 17:50:39 +0200
-Message-Id: <20250904155216.460962-8-vegard.nossum@oracle.com>
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH RFC 008/104] arch/x86/boot/string.h: override memmove()/strlen()
+Date: Thu,  4 Sep 2025 17:50:40 +0200
+Message-Id: <20250904155216.460962-9-vegard.nossum@oracle.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250904155216.460962-1-vegard.nossum@oracle.com>
 References: <20250904155216.460962-1-vegard.nossum@oracle.com>
@@ -94,78 +98,69 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 ph
  adultscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
  definitions=main-2509040156
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA0MDE0OCBTYWx0ZWRfX7bsvr0VRP1SR
- PK12c6oPgowXBFCPjbHMAVSU5vNrV2lHFcj1kNejr2qbW2abz3PK1RG8U7RctIw1WNnEBSnMc4Q
- yWjtfEKsLHuttNn8NICiupkcftGRutXeDwarihIG0cMLfWu7ASHTce9FPlFGuEqGQC4F5rk1yHl
- dMQHUCOsCavkF7MY2ThQTgSUJInanWaqIrZ/N30q5bVrHZG9Ne+OYXKom4LGvitmIqLu8eAEPBI
- 4J/Nis3Igp4MFFalmbbXWLcUXR0wpsBfHHqec4QVjAXTV3ZO/BiPdyJ7viN6Pr6yb0UHWNUv4iv
- MpnOFMxCHRpC3KOn3lNM/Yp0y/KmOEbHgzqyun4U7F5TVbUKp199+8PBQ3E8g4+NiqhlX+x34b5
- g3ZEsocnQUTvRZio0Rhj/W/+4ZBUpA==
-X-Authority-Analysis: v=2.4 cv=CbkI5Krl c=1 sm=1 tr=0 ts=68b9b672 b=1 cx=c_pps
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA0MDE1MyBTYWx0ZWRfXwgFt1PDD2cUo
+ JpCFv5h1govAcoHYLsgs0TIFi+ewzG6gL2sMvkbDe1/POwbakcc6+yV1C/gpQbqwuU/N56/uXD5
+ I+PgVI96W8GXyoeY3CA41YtwSrvG6hoUf6m+ogusdkKSgEvWlAc+O1I4k5jznTALImiS2+mjklS
+ 1wGf3KhbY4F41fW81W//PuzHX6z5fDhNAiM7tPJQ2cjjvXuK5S24/RX5nhZ++ElOwojHkQSPTIf
+ 4w9pB1d60+pnv3muJAYq480Ih8Nj4zy3pyLcrvRezexUTtb3jSJtu42pMR8r8KYyGsUkFlmRkIc
+ sNmovxnwP5lnjloh1ybjDT6AWMKm4QXRNiMB3tZ7dvExcSARIPB05q+JPZgvzShM6Wy4oBQsyAQ
+ H85MGlHUVS9ikfvJCd/LyuVGBSsOrw==
+X-Proofpoint-GUID: bVKXUfMxT6UxCJXj4PZSD14BU2nvqdUT
+X-Proofpoint-ORIG-GUID: bVKXUfMxT6UxCJXj4PZSD14BU2nvqdUT
+X-Authority-Analysis: v=2.4 cv=QoZe3Uyd c=1 sm=1 tr=0 ts=68b9b677 b=1 cx=c_pps
  a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=rYamME7zdi_Fmqbn0fgA:9 cc=ntf
- awl=host:12068
-X-Proofpoint-ORIG-GUID: 9k7ONWN7VtMQdSxDM8FIldBQb8nKiT4B
-X-Proofpoint-GUID: 9k7ONWN7VtMQdSxDM8FIldBQb8nKiT4B
+ a=yJojWOMRYYMA:10 a=20KFwNOVAAAA:8 a=QyXUC8HyAAAA:8 a=VwQbUJbxAAAA:8
+ a=oGMlB6cnAAAA:8 a=yPCof4ZbAAAA:8 a=KKjx7Jt0W1jpihBkqf8A:9
+ a=NdAtdrkLVvyUPsUoGJp4:22 cc=ntf awl=host:12068
 
-The crypto code prints log messages with algorithm name and driver name
-in multiple places, usually as "$alg ($driver)", but sometimes as
-"$driver ($alg)", which is confusing.
+arch/x86/boot/string.h defines string functions used by
+arch/x86/purgatory/purgatory.c. Other headers used by this file may
+pull in existing definitions of memmove() and strlen(), so extend the
+overrides to these macros/functions as well.
 
-To remove all ambiguity, standardize on "$alg (driver $driver)".
+(This is needed as purgatory uses crypto functions which pull in other
+headers that I am changing in this patch series and causing errors.)
 
+We might consider simply moving all of this into purgatory.c after all
+the #includes to avoid similar issues in the future.
+
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- crypto/testmgr.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/x86/boot/string.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index ee33ba21ae2b..47764fc879bb 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -5753,7 +5753,7 @@ static int alg_find_test(const char *alg)
+diff --git a/arch/x86/boot/string.h b/arch/x86/boot/string.h
+index a5b05ebc037d..ac25100183bc 100644
+--- a/arch/x86/boot/string.h
++++ b/arch/x86/boot/string.h
+@@ -4,6 +4,7 @@
  
- static int alg_fips_disabled(const char *driver, const char *alg)
- {
--	pr_info("alg: %s (%s) is disabled due to FIPS\n", alg, driver);
-+	pr_info("alg: %s (driver %s) is disabled due to FIPS\n", alg, driver);
+ /* Undef any of these macros coming from string_32.h. */
+ #undef memcpy
++#undef memmove
+ #undef memset
+ #undef memcmp
  
- 	return -ECANCELED;
- }
-@@ -5814,18 +5814,18 @@ int alg_test(const char *driver, const char *alg, u32 type, u32 mask)
- 	if (rc) {
- 		if (fips_enabled) {
- 			fips_fail_notify();
--			panic("alg: self-tests for %s (%s) failed in fips mode!\n",
--			      driver, alg);
-+			panic("alg: self-tests for %s (driver %s) failed in fips mode!\n",
-+			      alg, driver);
- 		}
--		pr_warn("alg: self-tests for %s using %s failed (rc=%d)",
-+		pr_warn("alg: self-tests for %s (driver %s) failed (rc=%d)",
- 			alg, driver, rc);
- 		WARN(rc != -ENOENT,
--		     "alg: self-tests for %s using %s failed (rc=%d)",
-+		     "alg: self-tests for %s (driver %s) failed (rc=%d)",
- 		     alg, driver, rc);
- 	} else {
- 		if (fips_enabled)
--			pr_info("alg: self-tests for %s (%s) passed\n",
--				driver, alg);
-+			pr_info("alg: self-tests for %s (driver %s) passed\n",
-+				alg, driver);
- 	}
+@@ -15,9 +16,12 @@ int bcmp(const void *s1, const void *s2, size_t len);
  
- 	return rc;
-@@ -5850,7 +5850,7 @@ int alg_test(const char *driver, const char *alg, u32 type, u32 mask)
- 	}
+ /* Access builtin version by default. */
+ #define memcpy(d,s,l) __builtin_memcpy(d,s,l)
++#define memmove(d,s,l) __builtin_memmove(d,s,l)
+ #define memset(d,c,l) __builtin_memset(d,c,l)
+ #define memcmp	__builtin_memcmp
  
- notest2:
--	printk(KERN_INFO "alg: No test for %s (%s)\n", alg, driver);
-+	printk(KERN_INFO "alg: No test for %s (driver %s)\n", alg, driver);
- 
- 	if (type & CRYPTO_ALG_FIPS_INTERNAL)
- 		return alg_fips_disabled(driver, alg);
++#undef strlen
++
+ extern int strcmp(const char *str1, const char *str2);
+ extern int strncmp(const char *cs, const char *ct, size_t count);
+ extern size_t strlen(const char *s);
 -- 
 2.39.3
 
