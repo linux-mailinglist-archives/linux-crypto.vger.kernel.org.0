@@ -1,66 +1,66 @@
-Return-Path: <linux-crypto+bounces-16112-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16114-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64566B441D9
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 18:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF739B441DD
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 18:01:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40D441890C78
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 16:02:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADF881890EF3
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Sep 2025 16:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25632ED14E;
-	Thu,  4 Sep 2025 16:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEAC2F2900;
+	Thu,  4 Sep 2025 16:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KzF2qrJY"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jJ5svsPQ"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515F31F4262;
-	Thu,  4 Sep 2025 16:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838EA26C399;
+	Thu,  4 Sep 2025 16:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757001682; cv=none; b=tTwZmG7xdlGUyG5bgNLlTbdUoF9d9gnutUH7bDZ9bfHW1vcS1uFS07lTSqhy9h6Z7d+cgG3oFn+zR75AZlv/ZuT/p9+C7HdBSBUkOYSNOE+nPzOU6VkcfAJ19lexTnMIKVRvcVvoEznTdgy50REIPgZvgcCzDsTFBcWXNPBVGQc=
+	t=1757001688; cv=none; b=rmF1V3OGYAoCHkgsK32ZNm6L8zuj0xg70NGtX1UxLZhrVwWc6ng3PpbgvfpIdaOttSh/jyVN6XT69PhH/n3oQU7zJph/kZmJuDte3mN8TpJlgL29ezr+phB/6CqVCLyMz+b3vXwrGHErx8sbNeIIC8X+wZ183SopmAflZiDdf+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757001682; c=relaxed/simple;
-	bh=TpldjCqKmkbzAau3eAh8dk/9F9/dhCv8nTaLxqrdruE=;
+	s=arc-20240116; t=1757001688; c=relaxed/simple;
+	bh=nLTC1tyVRXr5Dq2jjaZccIP82GMSakarfb8N3XXq8sw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lHD6aB3gQ5CM4ZJ/6I1j6JBWhSzqTJJXx3jpx1ZM1Na9mcTc52gq2pOc/NhJoxKOvsn3pLCtnY0dxxjd6s68/mNtVSXf7PmVGtjOI//WRobbUodVrQnRreBkQmEoxg9xx1ttAbofyuhXx2VXzlulFrQVkOBQibmNALFWpEs0Jd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KzF2qrJY; arc=none smtp.client-ip=205.220.165.32
+	 MIME-Version; b=koybn58NplehbZk6VyXHzHZrKM90+e3Vpd7YDNinW70esXxolua0ts+N4xjvBedb+uS7BxAuy7KRrzSCB6yxPIAOfZiaM5El6OSF/bpHNGluDgdyFe+OlHd4ZDaqXC7EWeUccJF3XvzVWsuYvFcSHwUgfdx5EUAIVm4odJswjj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jJ5svsPQ; arc=none smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 584Ftmk0014920;
-	Thu, 4 Sep 2025 16:01:05 GMT
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 584FtmVV014916;
+	Thu, 4 Sep 2025 16:01:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=21jWU
-	s/rkVbvbvDvhfNI7i4eNB9i75TDGLUff35veBY=; b=KzF2qrJYnCcOCNty4nNKv
-	ZC0j+OJRkYeYoYLn8gGYeaozDLzPc6vfKgoTP7rkBpznjnGQfWMUEyUUmbh+qQ7y
-	ZMZP+3V+G9A0m7yd1RM6HfVTZXflqwc1v/tlApjLh//9yZF0e84LXobQ6BU+9KU7
-	IbibqA9bHzHKJ/IQOtbKdHKxsGqXvGzPLT3FgT2CiWZkTw3qH0nxuIIszUxMCN/O
-	pwxxRn6LAKblGj+qYoLz/j0BiVlaQxH6Jkc72U2HQjOvqko9pVySQmFA+eZA7MO3
-	1RH2DbRwXI3VJf3kFYArS1ZNi2cqGNXlQjIkxlyCSnNwR7yeBwUdjEwI7+Gz5jKC
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=xXnun
+	SrrK4iKpA0jKPK1eww6Bwl6ptTzDQXgOIGDOzs=; b=jJ5svsPQUY5x/ljkvg6tS
+	MYZtLAZ4K6x8k3QtKjwqPCED/9OD9y3q6+bkDi6CQ31b633/RDtrmfAQi6SMVYno
+	cRDAgUb3+t41Pihmtn1UJMc1gzzvMC20otU8M22FV2Ap6izSqtsrr/Gl3z/fxRH2
+	WLD+f5Rj58BGErl8Jvet9Bc18fCA2k3aKXmSN/b5/vUjkdzHNJ74NCp2zD+/TB/J
+	Y+TX+Gyoxb8Fr9y2WjuVWksgn8EgV4drfWzmWgd0x4dNTjJe9rJLGSwAS5FsP+y3
+	OzimUAtLMiOhNU08dlsyNWTacBa2A7buKS6ky7dvhtkub/oYZL9iqL/LmQT+/d5I
 	w==
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48ybmh0cky-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48ybmh0cm7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Sep 2025 16:01:05 +0000 (GMT)
+	Thu, 04 Sep 2025 16:01:08 +0000 (GMT)
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 584FG615040116;
-	Thu, 4 Sep 2025 16:01:03 GMT
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 584Fedqi040082;
+	Thu, 4 Sep 2025 16:01:06 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48uqrhtt9p-1
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48uqrhttb3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Sep 2025 16:01:03 +0000
+	Thu, 04 Sep 2025 16:01:06 +0000
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 584Fsx7q000707;
-	Thu, 4 Sep 2025 16:01:02 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 584Fsx7s000707;
+	Thu, 4 Sep 2025 16:01:05 GMT
 Received: from localhost.localdomain (dhcp-10-154-122-161.vpn.oracle.com [10.154.122.161])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 48uqrhtkds-93;
-	Thu, 04 Sep 2025 16:01:02 +0000
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 48uqrhtkds-94;
+	Thu, 04 Sep 2025 16:01:05 +0000
 From: Vegard Nossum <vegard.nossum@oracle.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
@@ -74,9 +74,9 @@ Cc: Ard Biesheuvel <ardb@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
         Stephan Mueller <smueller@chronox.de>,
         Sami Tolvanen <samitolvanen@google.com>, linux-modules@vger.kernel.org,
         Vegard Nossum <vegard.nossum@oracle.com>
-Subject: [PATCH RFC 092/104] crypto: fips140: manual fixups for include/crypto/aes.h
-Date: Thu,  4 Sep 2025 17:52:04 +0200
-Message-Id: <20250904155216.460962-93-vegard.nossum@oracle.com>
+Subject: [PATCH RFC 093/104] crypto: fips140: manual fixups for crypto/internal.h
+Date: Thu,  4 Sep 2025 17:52:05 +0200
+Message-Id: <20250904155216.460962-94-vegard.nossum@oracle.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250904155216.460962-1-vegard.nossum@oracle.com>
 References: <20250904155216.460962-1-vegard.nossum@oracle.com>
@@ -94,49 +94,51 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 ph
  adultscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
  definitions=main-2509040157
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA0MDEzMiBTYWx0ZWRfX3ZpSJRqVpRpd
- c4NTb06TAQyBdEXTom3QVVxs/731iw0LhVbhLqYlUXEDiKMlyuU5lZtyBCHboz93ctyh43hUE+K
- DosjisHNzuE/0oA54ZPZMtsfQ6Yt4VrhVZ2VdT4BOA59C5ZHnFz3TT321rqdYxUvKXmO96X9prR
- +KLAgGFBk9CWOkA0BcIeiPN5KYp+UxkRZy7CZUUn8xsBDksZw8Vpnyv/yDcgZOnSnmCwaEko/3U
- 91R1CjlU9mdfPCtYSB9ZXSd9X/LTrwBYLkYqfNtB6VbI2FK80kLV7NkR7zjntLpK8T0hVVNGVM5
- UCenH0uN8QXPg1RSnqallEXHcP1fuRkTVjtu9z36cxM/BdcdmEeg5TM+P1+Fz/SwZDj/dZxtycF
- h3lGqkLWhm/91e/8GpY86106hmR/pw==
-X-Authority-Analysis: v=2.4 cv=Z8PsHGRA c=1 sm=1 tr=0 ts=68b9b7c1 b=1 cx=c_pps
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA0MDEzMiBTYWx0ZWRfX/8h7MElbz5LW
+ qy/6FL0tvQjSfSnJedMrKZsm9yex20dxYmk4WehMI19ybsOEZuDdFPHRt2t1H1nH40QVIBoG8eV
+ ykniQ4xI6dMMzroqdXMJ2w8aAGLUo/bHBCVfY+3dZT56Zx5xoLjh9EVLHR5GFVF0P+P3wUga/ko
+ v0xAwQQxKFiWBrti4iUbVbTgA7xBMtxmWjRawPyEqxtd2fuqoew5Hmafm86aMJn3eSeIFrVCNBY
+ cBTeaLOTM95z4Mh4BzNARMLUUDX319lOIYCjfHIqfv0bYRIGV10VYhF9GstJwQT3o/bx1yI/wVT
+ pFAW2nRGIRBbNKIXNfhQM8mNjPwcnnVoJPl5aU3GMI80Ei8Cre9Zi/qiYEengG5z869dd8A6XnV
+ /uEKlsW2zcrYjHSxYC6XcYZ7mfDy5A==
+X-Authority-Analysis: v=2.4 cv=Z8PsHGRA c=1 sm=1 tr=0 ts=68b9b7c4 b=1 cx=c_pps
  a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=ifZSoDu5pcwbtJZEpGIA:9 cc=ntf
+ a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=DB-_GfZPeZJ4hgePeuEA:9 cc=ntf
  awl=host:12068
-X-Proofpoint-GUID: VyR-CH7QOS6wrZsvfXbl-bHl82SshJUN
-X-Proofpoint-ORIG-GUID: VyR-CH7QOS6wrZsvfXbl-bHl82SshJUN
+X-Proofpoint-GUID: zZUI7vqT-xLeArusDKPJeGZQrn_NiUy-
+X-Proofpoint-ORIG-GUID: zZUI7vqT-xLeArusDKPJeGZQrn_NiUy-
 
-Define fips_/nonfips_ variants of crypto_*_tab when the kernel is
-configured to use a standalone FIPS module.
+Define fips_/nonfips_ variants of cryoto_{alg_list,alg_sem,chain} when
+the kernel is configured to use a standalone FIPS module.
 
 Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- include/crypto/aes.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ crypto/internal.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/include/crypto/aes.h b/include/crypto/aes.h
-index 6a732ea5ee1b..77f5515c49c9 100644
---- a/include/crypto/aes.h
-+++ b/include/crypto/aes.h
-@@ -29,6 +29,16 @@ struct crypto_aes_ctx {
- 	u32 key_length;
- };
+diff --git a/crypto/internal.h b/crypto/internal.h
+index f4b12863d922..08f2f04b010d 100644
+--- a/crypto/internal.h
++++ b/crypto/internal.h
+@@ -62,6 +62,18 @@ enum {
+ /* Maximum number of (rtattr) parameters for each template. */
+ #define CRYPTO_MAX_ATTRS 32
  
 +#ifdef CONFIG_CRYPTO_FIPS140_EXTMOD
 +#ifdef FIPS_MODULE
-+#define crypto_ft_tab fips_crypto_ft_tab
-+#define crypto_it_tab fips_crypto_it_tab
++#define crypto_alg_list fips_crypto_alg_list
++#define crypto_alg_sem fips_crypto_alg_sem
++#define crypto_chain fips_crypto_chain
 +#else
-+#define crypto_ft_tab nonfips_crypto_ft_tab
-+#define crypto_it_tab nonfips_crypto_it_tab
++#define crypto_alg_list nonfips_crypto_alg_list
++#define crypto_alg_sem nonfips_crypto_alg_sem
++#define crypto_chain nonfips_crypto_chain
 +#endif
 +#endif
 +
- extern const u32 crypto_ft_tab[4][256] ____cacheline_aligned;
- extern const u32 crypto_it_tab[4][256] ____cacheline_aligned;
- 
+ extern struct list_head crypto_alg_list;
+ extern struct rw_semaphore crypto_alg_sem;
+ extern struct blocking_notifier_head crypto_chain;
 -- 
 2.39.3
 
