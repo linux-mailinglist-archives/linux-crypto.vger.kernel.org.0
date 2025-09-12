@@ -1,81 +1,81 @@
-Return-Path: <linux-crypto+bounces-16317-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16320-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A0BB55045
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Sep 2025 16:03:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B657B550DF
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Sep 2025 16:20:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94AF33B84B3
-	for <lists+linux-crypto@lfdr.de>; Fri, 12 Sep 2025 14:03:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C837A7C512D
+	for <lists+linux-crypto@lfdr.de>; Fri, 12 Sep 2025 14:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5584230F7F6;
-	Fri, 12 Sep 2025 14:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E993081D9;
+	Fri, 12 Sep 2025 14:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="joRavizD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gmEeiPsu"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD0F1E32B7
-	for <linux-crypto@vger.kernel.org>; Fri, 12 Sep 2025 14:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11E631076D
+	for <linux-crypto@vger.kernel.org>; Fri, 12 Sep 2025 14:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757685799; cv=none; b=OIUfxTA8byFmEevuVxxvYV1iyUMGT6rhhpAPqksvFQM0wPYJLMmm9dy1/R17X/jWGKDyX3uU7gEEk2Fjc7WylxVnkpbxDDBylSQuJBrE6ZuRLWHnfjX6AGR1y+cmjQ1FY8P+BldWfjEsm8pXi08iokDUBJd9ivnJ5/AVvVmiuUk=
+	t=1757686809; cv=none; b=cNXqQFqyofhldYj3ropkYAbDt5b/6IghQFdY6wI+J6eifyFGZ8xd4Khf2OQ996VGgjRGtFsKAM5/wy0VhtyjRkf2Ha5YFMVKxqF0UVtQ6FI6nUUXp0nZFnzyT5Ur3nCY1kZ2iC2R0jkM4ZVemvwWamO36QFg+NLqo5j6u7UvUrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757685799; c=relaxed/simple;
-	bh=aAY1g8zOPqBn5miZfFbCjKlL6xfEQPFSG95Zowlpqzg=;
+	s=arc-20240116; t=1757686809; c=relaxed/simple;
+	bh=3l449HK5NMkexamVRNEtGUCkmphtfcrXtQXq+LiZQeY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aqs78687O1G3k9+DHM+sA08QIZKpsRbBs9uQnZjmvPOBktnmpeTMSJqJgpfrL960F2nHizhlelhA2DDdRfvjVnp/ao0rDTTs/sfFoKWc+ShS971mxgmKLleyzlmXWziXaSflNq6O7IP4hCH6KXTVLUjNgCQcFIxb2m5gzAH+Tu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=joRavizD; arc=none smtp.client-ip=209.85.221.43
+	 In-Reply-To:Content-Type; b=FU3GhsSh3NPnfrvSY/EJpODs/TRxjiuEIQNB9R5omIqBKaTDes6Llfs2ajkCIlzWhL0DmK7kp0z8CimL9cjMj5TVGlLAAjxqQ4c66BrjXrg/yAeqn26kz7tg1k4UhSR9zHhsJflsJ4B/EpXEUAilLYAKiH6ZcdQcnLXTLMUY394=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gmEeiPsu; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3df15fdf0caso1581400f8f.0
-        for <linux-crypto@vger.kernel.org>; Fri, 12 Sep 2025 07:03:16 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45dcfecdc0fso19229475e9.1
+        for <linux-crypto@vger.kernel.org>; Fri, 12 Sep 2025 07:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757685795; x=1758290595; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757686805; x=1758291605; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=uH+YHXFVH2K1mzrQAHIZiTdd0wND2UdYXw5OhP6ad/I=;
-        b=joRavizDgeqwMPy2GO941dAZlnGDdgRFCcQAhvfu2jv8w7yf/aXrXuDdGSuNACmW7Y
-         gB+0fQTN4KAsXe9t3n4U+FNJWhQRsRElye6MB21w7YIztFYBDdJqe5IrHdnWT+4pqKSh
-         x2nZWF8ZFh3+trITdOudXMlhPEgPmSkCGPO+1syKjs8PEjB7JYvgSjIlS71wadFYaH4/
-         Tp7Vj6Y7jPVCclyvCoO6F5BZUPO7uXTeAKtL2I7bDhb6fIzuVfqp/XXt/fipVI2BCHI0
-         jiJ/20AWbgFs6Y8m/eBuu+Wgrhc6pORzGXZjs90vHOmWPx7s/26nhVTDshQrNjZsYra3
-         4Gxg==
+        bh=SmChZKjhh7WfaCiO6qYrnubA4AUjkq4py7dLEKKsD0M=;
+        b=gmEeiPsu0A2ECPHnslD6nMU7a8HpEImCAT2kADomDXZ3Qo0/HU3Lhwxx/c8r3Ir2UF
+         PDKiQMvH/UiMi6sQx0+kQxaOLMqLA4V5z/Ejv6DUUnE6LEv0+NO4X2K1A1ndc0MkKJ+j
+         ZnyxeHzoU1W2d75gU95FC1LTAxxayDbhtf/77BsniFKx7aQTho9bMvYcYbyhNa9/g9nQ
+         abkQFvttfvr++m8W7unHXUviB6UJ81GaLg/fF+lw8MfptZnanIemXWo4/w34CC+/mUSA
+         nCjkfQ3z80/EOK5bpe4Dw+ghV4HTkb6XAevsL2MYPzbezhXc02TrzJmm5RRW3oRt+bxh
+         LHZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757685795; x=1758290595;
+        d=1e100.net; s=20230601; t=1757686805; x=1758291605;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uH+YHXFVH2K1mzrQAHIZiTdd0wND2UdYXw5OhP6ad/I=;
-        b=cIhuLR+2qJ4Is+kIqAdtBMVPlQcllLZcVlOIZW3+iu2ZG10PIyQtI8IjKYMYzM8iun
-         dBo5xEfI7IU0lCbnf8lTdNvFgJK/7aMI4qelty18DOtwmfbPm/i5ZdmOmRHYC01cSKXh
-         v6KL5Di0SIGj8cm3OZx9X85A4Sw05jrj48zK6sLx2Qi1AgPp+gRaPSxd6SBpSpsxA0IH
-         GDfPi1JABYwglxrQWLbsWnw4BfgnRMS+4J6Mea3eVNgWjEXT5vQ7Si8YtYCgG+wnp26F
-         ywk/+OV5hQ5pCvoGhTqShj+WU5nrASo4TNLRm8qxkMXeZx9Lqtae5vBqLss+YgDDsNSx
-         vXPw==
-X-Forwarded-Encrypted: i=1; AJvYcCVDLe0lQN7F5h4Gdwlg54aymkWrj1uTyY8MktYfkCZBlO16P1iqifjooN9wfJ4pkmCAQK44S+F9gGu02t4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmweiTUqTL4Ai7IkIx9SY+x1s8wzhC9r+5jQhoiZmbCmry7I0R
-	BEs5PXtFbABPU8/LWlyWiU5FkCxJ2qlb02CdJJ0FrtOLb4vvc9wIYMKh
-X-Gm-Gg: ASbGnctArqZ+YI6wOLGuBWQw+PUo9kKk8kL1NSSq1FwcfgOtV6fWX8JdWtegqlLeG7P
-	F62Fg7jmxm1hP/gSWWbIfa5S8bqhsRZ7zSsPivn9wF2CWQKNoKy6W/JIkDx5RvMjqNZGkHCTAcK
-	S8wJhPgil4esm7XHw/+jWdpBWs2VXPgvqsabhIbQBuUfBT+ucX4DN07x2mVtWrrvZe8kKW1H6W/
-	ak3PZN/D4cTPGcdzwkIXjrfwv6GF4tBMWvJdpG+x5L+9OwIFKjpIRZ5iVXwfGroL88csRmexArN
-	qRRX5WiGLqetqeKp/UE3xT7SD6Jz8aWW7iCMPhaRXiM1qO0YdsItfygOIio2bfzyzIFlXblaFdH
-	XNdOHZlpMwLlxs5cSAY1RpfB5SjXMxIrFaxaZfF8yJOpLPA+EIaxt
-X-Google-Smtp-Source: AGHT+IHkpXgL67su2eP0NWVxDv0gnk9lbCDXLQlAVKtF0IvH2Kl70osZH/zbwKbUjcuxvdmzPdw9Pw==
-X-Received: by 2002:a05:6000:61e:b0:3e7:4414:794b with SMTP id ffacd0b85a97d-3e765a018a5mr2537897f8f.50.1757685794754;
-        Fri, 12 Sep 2025 07:03:14 -0700 (PDT)
+        bh=SmChZKjhh7WfaCiO6qYrnubA4AUjkq4py7dLEKKsD0M=;
+        b=oUpxABWU92NDqyCX6bSYKtCSyuIYAHxeyRnUtjFrv+5ff96XWk8Cm4dDltrcq7mLdR
+         4wSO+jy5uacKHwb64a4zh7MbSGZKwnqw67F9rU5Ka+gNHcsmrAYEFdaodDipwTMql0n3
+         0iUwvhqLpSs77ryaEc1JKtSTpHggg+mll8Jlzq2gsoSIdkgOKQL6ZKvIkyLb2oFSYkUP
+         tk9cCKs+7qmxKCYV5I3HTkVAPUOR3EfM1ZYWG6Mx9gRxiy4wnoL8jZEBDbe7byU3Q/gd
+         gR94byK4r6c966WLn9o0nYBTGY5+QOhlz2XqoWr94jTnBSgrSi0vGdmcceSXP7BaDqMD
+         v1mg==
+X-Forwarded-Encrypted: i=1; AJvYcCWbIzUu0sjAp1nBUL+aVfqInDQLUyTcv9POST/3erSBabhSCnHw/4wPxzFeb0ho0yyL2e36cSdakYW2OTE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxgVnfCLfkYL1t36LSzHGJzEqaH7tlzt0ZUmTEHl7qUInQNY7Q
+	PH8BHKx6C5Y4riPGnNaWrcNor7flnKqo6RfwwAqXeH5nTof/2vPTPyTC
+X-Gm-Gg: ASbGnctaIFr/C19obz+HcMeUMR8BiOQyxeKDA2uQMTL1TJHuOG8yHhus9uqh4SzH9q4
+	2pD+C81yoef8krpBy1Q+UKwjLM+gvz+5L+b5127f65bpcqTbxoGDGuZ7nfXujOCjduJUZZAEEIv
+	3s6O+rYGYpMykgjtwoQKEReQLQG7q+oGWM1r6EyO1+76JJy/OrSXAakeqpTfSNOU2KlA8SDj5Ce
+	VyMh6rrVBIxQ74e4O4YZlJFGhuw5SwByG3sm49ayGjp1BuFxeroyv6L0HEpouJlrazEioBv151q
+	OyVIwJ1PlF2JkiaNnxjYMwHIsSdZXvnTuHxg7C8nSFcO0Poh6bgDwnt6LMwdK8UtzBgwmWNa0f3
+	w/llb+K5JTFtsGFQsKbRGYzYRfqCa3hTCambRvl//og==
+X-Google-Smtp-Source: AGHT+IEKyinmwbN3yHvqC2TBvEPXOSoCWcr50U1b0sgHZon43u3EkY1RVzIl5661xTla3PsOT681zA==
+X-Received: by 2002:a05:600c:5254:b0:45d:f55d:3478 with SMTP id 5b1f17b1804b1-45f211e610fmr36884815e9.17.1757686804707;
+        Fri, 12 Sep 2025 07:20:04 -0700 (PDT)
 Received: from [192.168.2.177] ([91.116.220.47])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e774a3fb5bsm2033837f8f.58.2025.09.12.07.03.09
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45e0372b983sm63475385e9.9.2025.09.12.07.20.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 07:03:13 -0700 (PDT)
-Message-ID: <7765f224-60b2-4c92-a597-58c1c6bc5580@gmail.com>
-Date: Fri, 12 Sep 2025 16:03:08 +0200
+        Fri, 12 Sep 2025 07:20:03 -0700 (PDT)
+Message-ID: <c3d9cdfb-6cfe-41ea-830b-3ab0f6ebcd5f@gmail.com>
+Date: Fri, 12 Sep 2025 16:08:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -83,33 +83,32 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 19/38] arm64: dts: mediatek: mt6795: Add mediatek,infracfg
- to iommu node
-To: Fei Shao <fshao@chromium.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-mediatek@lists.infradead.org, robh@kernel.org,
- daniel.lezcano@linaro.org, mwalle@kernel.org, devicetree@vger.kernel.org,
- linus.walleij@linaro.org, linux-remoteproc@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- olivia.wen@mediatek.com, shane.chien@mediatek.com,
- linux-gpio@vger.kernel.org, linux-phy@lists.infradead.org,
- airlied@gmail.com, simona@ffwll.ch, herbert@gondor.apana.org.au,
- jassisinghbrar@gmail.com, jiaxin.yu@mediatek.com, andy.teng@mediatek.com,
- chunfeng.yun@mediatek.com, jieyy.yang@mediatek.com, chunkuang.hu@kernel.org,
- conor+dt@kernel.org, jitao.shi@mediatek.com, p.zabel@pengutronix.de,
- arnd@arndb.de, kishon@kernel.org, kyrie.wu@mediatek.corp-partner.google.com,
- maarten.lankhorst@linux.intel.com, tinghan.shen@mediatek.com,
- mripard@kernel.org, ck.hu@mediatek.com, broonie@kernel.org,
- eugen.hristev@linaro.org, houlong.wei@mediatek.com, tglx@linutronix.de,
- mchehab@kernel.org, linux-arm-kernel@lists.infradead.org,
- granquet@baylibre.com, sam.shih@mediatek.com, mathieu.poirier@linaro.org,
- fparent@baylibre.com, andersson@kernel.org, sean.wang@kernel.org,
- linux-sound@vger.kernel.org, lgirdwood@gmail.com, vkoul@kernel.org,
- linux-crypto@vger.kernel.org, tzimmermann@suse.de, atenart@kernel.org,
- krzk+dt@kernel.org, linux-media@vger.kernel.org, davem@davemloft.net
+Subject: Re: [PATCH 20/38] arm64: dts: mediatek: mt6795-xperia-m5: Fix mmc0
+ latch-ck value
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-mediatek@lists.infradead.org, robh@kernel.org
+Cc: herbert@gondor.apana.org.au, davem@davemloft.net, krzk+dt@kernel.org,
+ conor+dt@kernel.org, chunkuang.hu@kernel.org, p.zabel@pengutronix.de,
+ airlied@gmail.com, simona@ffwll.ch, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, tzimmermann@suse.de, jassisinghbrar@gmail.com,
+ mchehab@kernel.org, chunfeng.yun@mediatek.com, vkoul@kernel.org,
+ kishon@kernel.org, sean.wang@kernel.org, linus.walleij@linaro.org,
+ lgirdwood@gmail.com, broonie@kernel.org, andersson@kernel.org,
+ mathieu.poirier@linaro.org, daniel.lezcano@linaro.org, tglx@linutronix.de,
+ atenart@kernel.org, jitao.shi@mediatek.com, ck.hu@mediatek.com,
+ houlong.wei@mediatek.com, kyrie.wu@mediatek.corp-partner.google.com,
+ andy.teng@mediatek.com, tinghan.shen@mediatek.com, jiaxin.yu@mediatek.com,
+ shane.chien@mediatek.com, olivia.wen@mediatek.com, granquet@baylibre.com,
+ eugen.hristev@linaro.org, arnd@arndb.de, sam.shih@mediatek.com,
+ jieyy.yang@mediatek.com, frank-w@public-files.de, mwalle@kernel.org,
+ fparent@baylibre.com, linux-crypto@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org,
+ linux-gpio@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-sound@vger.kernel.org
 References: <20250724083914.61351-1-angelogioacchino.delregno@collabora.com>
- <20250724083914.61351-20-angelogioacchino.delregno@collabora.com>
- <CAC=S1nguRWyG3ubmSFE95_zgsCjjq4dxGWr5ErV9-Yu2+mTmpw@mail.gmail.com>
+ <20250724083914.61351-21-angelogioacchino.delregno@collabora.com>
 Content-Language: en-US, ca-ES, es-ES
 From: Matthias Brugger <matthias.bgg@gmail.com>
 Autocrypt: addr=matthias.bgg@gmail.com; keydata=
@@ -155,45 +154,40 @@ Autocrypt: addr=matthias.bgg@gmail.com; keydata=
  +zFJv9fVUpo/bjePOL4PMP1y+PYrp4PmPmRwoklBpy1ep8m8XURv46fGUHUEIsTwPWs2Q87k
  7vjYyrcyAOarX2X5pvMQvpAMADGf2Z3wrCsDdG25w2HztweUNd9QEprtJG8GNNzMOD4cQ82T
  a7eGvPWPeXauWJDLVR9jHtWT9Ot3BQgmApLxACvwvD1a69jaFKov28SPHxUCQ9Y1Y/Ct
-In-Reply-To: <CAC=S1nguRWyG3ubmSFE95_zgsCjjq4dxGWr5ErV9-Yu2+mTmpw@mail.gmail.com>
+In-Reply-To: <20250724083914.61351-21-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
 
-On 25/07/2025 12:52, Fei Shao wrote:
-> On Thu, Jul 24, 2025 at 5:49 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com> wrote:
->>
->> The "M4U" IOMMU requires a handle to the infracfg to switch to
->> the 4gb/pae addressing mode: add it.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+On 24/07/2025 10:38, AngeloGioacchino Del Regno wrote:
+> Change the latch-ck value from 0x14 to 4: as only bits [0-3] are
+> actually used, the final value that gets written to the register
+> field for DAT_LATCH_CK_SEL is just 0x4.
 > 
-> Reviewed-by: Fei Shao <fshao@chromium.org>
-
-Applied thanks
-
+> This also fixes dtbs_check warnings.
 > 
->> ---
->>   arch/arm64/boot/dts/mediatek/mt6795.dtsi | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt6795.dtsi b/arch/arm64/boot/dts/mediatek/mt6795.dtsi
->> index e5e269a660b1..38f65aad2802 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt6795.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt6795.dtsi
->> @@ -427,6 +427,7 @@ iommu: iommu@10205000 {
->>                          clocks = <&infracfg CLK_INFRA_M4U>;
->>                          clock-names = "bclk";
->>                          interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_LOW>;
->> +                       mediatek,infracfg = <&infracfg>;
->>                          mediatek,larbs = <&larb0 &larb1 &larb2 &larb3>;
->>                          power-domains = <&spm MT6795_POWER_DOMAIN_MM>;
->>                          #iommu-cells = <1>;
->> --
->> 2.50.1
->>
->>
+> Fixes: 5a65dcccf483 ("arm64: dts: mediatek: mt6795-xperia-m5: Add eMMC, MicroSD slot, SDIO")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Applied, thanks
+
+> ---
+>   arch/arm64/boot/dts/mediatek/mt6795-sony-xperia-m5.dts | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt6795-sony-xperia-m5.dts b/arch/arm64/boot/dts/mediatek/mt6795-sony-xperia-m5.dts
+> index 91de920c2245..03cc48321a3f 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt6795-sony-xperia-m5.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt6795-sony-xperia-m5.dts
+> @@ -212,7 +212,7 @@ proximity@48 {
+>   
+>   &mmc0 {
+>   	/* eMMC controller */
+> -	mediatek,latch-ck = <0x14>; /* hs400 */
+> +	mediatek,latch-ck = <4>; /* hs400 */
+>   	mediatek,hs200-cmd-int-delay = <1>;
+>   	mediatek,hs400-cmd-int-delay = <1>;
+>   	mediatek,hs400-ds-dly3 = <0x1a>;
 
 
