@@ -1,95 +1,127 @@
-Return-Path: <linux-crypto+bounces-16374-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16377-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3478B56066
-	for <lists+linux-crypto@lfdr.de>; Sat, 13 Sep 2025 12:58:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81E53B56072
+	for <lists+linux-crypto@lfdr.de>; Sat, 13 Sep 2025 13:06:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7BF7562641
-	for <lists+linux-crypto@lfdr.de>; Sat, 13 Sep 2025 10:58:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D77E31B24A39
+	for <lists+linux-crypto@lfdr.de>; Sat, 13 Sep 2025 11:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2022ED84B;
-	Sat, 13 Sep 2025 10:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07332EB5CE;
+	Sat, 13 Sep 2025 11:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ctkjdq05"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65582EC54F;
-	Sat, 13 Sep 2025 10:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660B8246788;
+	Sat, 13 Sep 2025 11:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757761082; cv=none; b=CvOnYM4ZeC41nbX7t78XXm54OwH7Aegy8Qvxhk6vmrcS00mvegMYEzVyPoAERudhoiT7/uw0KmtF1FnxptE30d/W09+vAJDUqFO/5J3grhKWLqgIgf47a7ZuqATCfosrL/7npLQGdYDh0EcFvGacDGOvb1Pd3mjhzhh0OhOjCd0=
+	t=1757761581; cv=none; b=gTiif43BRkSkRUqSkbtyDnBRQu8pErgh8bbee1L4KR+Q9dkV4JWNhWCkOCfWPnQ5jfQ8PX82MjYImWq3PEDKUPyTbkfa3fXBp88oUqnVT0M1hPzelAR77CDjZld4QNrIOqw+KxKyNNq17xM0lXEyDNSzozU+9jTRtAr+/TQAKlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757761082; c=relaxed/simple;
-	bh=tEoULR4TQVGBD33ZC7ngTEi1MtuRNy9fMIZTkALJd3w=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q8/7ky5zNjgHOQ21wqI76VtFWL+tU3iYrL+gEOlcTRatPPRzlmAFLCbqibQLev4gSrvRIALQZgU4Sf5E6J/r+lSZrLkc/q0ZskTIRFNRUSdeja+skZ23yjNTjUeMu/jtlOaaCHEquo75pVS5+kw2yGFtoTP+77QGv51IKjrTSQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4cP7Tp50KSz2VRgc;
-	Sat, 13 Sep 2025 18:54:38 +0800 (CST)
-Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id 84037180042;
-	Sat, 13 Sep 2025 18:57:58 +0800 (CST)
-Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 13 Sep 2025 18:57:58 +0800
-Received: from localhost.huawei.com (10.90.31.46) by
- kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 13 Sep 2025 18:57:57 +0800
-From: Chenghai Huang <huangchenghai2@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<linuxarm@openeuler.org>, <fanghao11@huawei.com>, <liulongfang@huawei.com>,
-	<qianweili@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 5/5] crypto: hisilicon/qm - set NULL to qm->debug.qm_diff_regs
-Date: Sat, 13 Sep 2025 18:57:54 +0800
-Message-ID: <20250913105754.3862444-6-huangchenghai2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250913105754.3862444-1-huangchenghai2@huawei.com>
-References: <20250913105754.3862444-1-huangchenghai2@huawei.com>
+	s=arc-20240116; t=1757761581; c=relaxed/simple;
+	bh=szFTrZp5S9Oy4p7ylGbdzdMqQBAOQWe3AlXIIsUOjWQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JIJzCoDQBXNLS1GSOzie9rFvUKWVhAgX2aBdRTmOwQwtXMWwj5OLubl++Sg+LWO0Uje2872PQCnp3VupDw0Vn/6biYjK6MWgbJ2l6KN7D6/vg4lHK5+vAO0FbgQNshJ0/uxZ0kf9byihsZ/99da4QKKQ2tLadqA5TkCzpKOHrc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ctkjdq05; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 873B8C4CEEB;
+	Sat, 13 Sep 2025 11:06:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1757761579;
+	bh=szFTrZp5S9Oy4p7ylGbdzdMqQBAOQWe3AlXIIsUOjWQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ctkjdq05sdDXthTlFmPEY/dXi1Z23yu9NNw4emWqkHw4ot8Fbuo0HQ8wQ7lkhcaw3
+	 QhCAbNhFAIg1qdY+VsqVNCIU7CoUGuKuUd3tqTob2p5wd7yTEAH3ej7PxbAj/BCsDt
+	 pzqkP85QR6r7WIUYRcmfSK5TeSt7nRHXidg7p09k=
+Date: Sat, 13 Sep 2025 13:06:15 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: huangchenghai <huangchenghai2@huawei.com>
+Cc: Zhangfei Gao <zhangfei.gao@linaro.org>, wangzhou1@hisilicon.com,
+	linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+	linux-crypto@vger.kernel.org, fanghao11@huawei.com,
+	shenyang39@huawei.com, qianweili@huawei.com,
+	linwenkai6@hisilicon.com, liulongfang@huawei.com
+Subject: Re: [PATCH 3/4] uacce: implement mremap in uacce_vm_ops to return
+ -EPERM
+Message-ID: <2025091358-doornail-underpaid-35ca@gregkh>
+References: <20250822103904.3776304-1-huangchenghai2@huawei.com>
+ <20250822103904.3776304-4-huangchenghai2@huawei.com>
+ <2025082208-coauthor-pagan-e72c@gregkh>
+ <CABQgh9GEZSasZq5bDthQrTZnJ_Uo8G-swDsrM_gWCecWbtTKgA@mail.gmail.com>
+ <2025090608-afloat-grumbling-e729@gregkh>
+ <868ceb0e-f4ba-4495-a1e1-0e387049281a@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemq200001.china.huawei.com (7.202.195.16)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <868ceb0e-f4ba-4495-a1e1-0e387049281a@huawei.com>
 
-When the initialization of qm->debug.acc_diff_reg fails,
-the probe process does not exit. However, after qm->debug.qm_diff_regs is
-freed, it is not set to NULL. This can lead to a double free when the
-remove process attempts to free it again. Therefore, qm->debug.qm_diff_regs
-should be set to NULL after it is freed.
+On Sat, Sep 13, 2025 at 06:40:23PM +0800, huangchenghai wrote:
+> 
+> On Sat, 6 Sept 2025 at 20:03, Greg KH wrote:
+> > On Thu, Aug 28, 2025 at 01:59:48PM +0800, Zhangfei Gao wrote:
+> > > Hi, Greg
+> > > 
+> > > On Fri, 22 Aug 2025 at 19:46, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > On Fri, Aug 22, 2025 at 06:39:03PM +0800, Chenghai Huang wrote:
+> > > > > From: Yang Shen <shenyang39@huawei.com>
+> > > > > 
+> > > > > The current uacce_vm_ops does not support the mremap operation of
+> > > > > vm_operations_struct. Implement .mremap to return -EPERM to remind
+> > > > > users
+> > > > Why is this needed?  If mremap is not set, what is the value returned?
+> > > Did some debug locally.
+> > > 
+> > > By default, mremap is permitted.
+> > > 
+> > > With mremap, the original vma is released,
+> > > The vma_close is called and free resources, including q->qfr.
+> > > 
+> > > However, vma->vm_private_data (q) is copied to the new vma.
+> > > When the new vma is closed, vma_close will get q and q->qft=0.
+> > > 
+> > > So disable mremap here looks safer.
+> > > 
+> > > > And why is -EPERM the correct value to return here?  That's not what the
+> > > > man pages say is valid :(
+> > > if disable mremap, -1 is returned as MAP_FAILED.
+> > > The errno is decided by the return value, -EPERM (-1) or -EINVAL (-22).
+> > > man mremap only lists -EINVAL.
+> > > 
+> > > However, here the driver wants to disable mremap, looks -EPERM is more suitable.
+> > Disabling mremap is not a permission issue, it's more of an invalid
+> > call?  I don't know, what do other drivers do?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> Hi Greg,
+> 
+> Thank you for your feedback.
+> 
+> The reason we need to explicitly disable mremap is that when the
+> driver does not implement .mremap, it uses the default mremap
+> method. This could lead to a risk scenario:
+> 
+> An application might first mmap address p1, then mremap to p2,
+> followed by munmap(p1), and finally munmap(p2). Since the default
+> mremap copies the original vma's vm_private_data (i.e., q) to the
+> new vma, both munmap operations would trigger vma_close, causing
+> q->qfr to be freed twice(qfr will be set to null here, so repeated release
+> is ok).
 
-Fixes: 8be091338971 ("crypto: hisilicon/debugfs - Fix debugfs uninit process issue")
-Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
----
- drivers/crypto/hisilicon/debugfs.c | 1 +
- 1 file changed, 1 insertion(+)
+Great, can you please include that in the changelog text?
 
-diff --git a/drivers/crypto/hisilicon/debugfs.c b/drivers/crypto/hisilicon/debugfs.c
-index 45e130b901eb..17eb236e9ee4 100644
---- a/drivers/crypto/hisilicon/debugfs.c
-+++ b/drivers/crypto/hisilicon/debugfs.c
-@@ -888,6 +888,7 @@ static int qm_diff_regs_init(struct hisi_qm *qm,
- 		dfx_regs_uninit(qm, qm->debug.qm_diff_regs, ARRAY_SIZE(qm_diff_regs));
- 		ret = PTR_ERR(qm->debug.acc_diff_regs);
- 		qm->debug.acc_diff_regs = NULL;
-+		qm->debug.qm_diff_regs = NULL;
- 		return ret;
- 	}
- 
--- 
-2.43.0
+thanks,
 
+greg k-h
 
