@@ -1,57 +1,57 @@
-Return-Path: <linux-crypto+bounces-16463-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16461-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A477B59ACE
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Sep 2025 16:50:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50EE5B59AC2
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Sep 2025 16:49:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3F61BC0366
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Sep 2025 14:49:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FBDB4876CE
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Sep 2025 14:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5744434DCF2;
-	Tue, 16 Sep 2025 14:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5DB33EB1C;
+	Tue, 16 Sep 2025 14:48:20 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EA72C11D1;
-	Tue, 16 Sep 2025 14:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC5A2C11D1;
+	Tue, 16 Sep 2025 14:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758034104; cv=none; b=coucXooNGebrpJq8+khJX3uahqOA0jzCUIzNqiL+U3GbzQ15APP0VQ6rR0Kgq3iCJbe80dVvEmJzTEv/R+ce8fxl3cNGnrt6IH8sUNXfeuYAM0ePdC/31l+/xH2qd7gQ2PHYW+2DHpl66ZpxDgkR0gYL4vxCT2GO+1RWbWQFkAU=
+	t=1758034100; cv=none; b=tKq02GNEQ8tVHIJklO8h2rmHQZzdp5zmeFUfiWtTu6JxjjKezVEBSWsz9vPIWU3ErIayhrwdWeA5wF1XuHEJtWUqFuWctTF5+srWIxK9bw22w+BSCkaiQQn+vrJm1K1b4cfZ3Ygnd5pT3R9GVcEbJGYbYiKfDFxsRwBov1FKipE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758034104; c=relaxed/simple;
-	bh=rtkIifI4CZFXQgWdW+YG4CepKxWjk2qQHcliol8lIfE=;
+	s=arc-20240116; t=1758034100; c=relaxed/simple;
+	bh=XFs81zs95XIBVvri2eZ/XJYmLVRQG8ik0skygWDFaAA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BMRqaQUMUzPoz5q0FXtNlEnNnmbdP+/vjd2vJrIXN1fNEMjUs7eE0xXwrN5SWDFHGERQ3956jd1uPvo6e+CJkTqZvLMfaezyQg27FJmMwZ95N8fgp2BbizibYg9ooBiK98QqOqObaOjcf7Gi7YBSrCXkKuYB+2cm/zsnGI1/8tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=gA5z8WIpuUdud5Yri80eyYopfBDVikv7IU6NSi5ZgLCnOPT9lRgxgz52GYUx0mcPqUOW82Ol4e3rX7xOeYbPruuKXT9bsLiTikAkyDp2g6wOEzOQGxK26SXu52/tWXWyUNTpI7fOCuM0qIi/uWV4cRqh1O4klqvoswh2ig3m/Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4cR4S20WZqz24jBn;
-	Tue, 16 Sep 2025 22:44:50 +0800 (CST)
-Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7ED5818005F;
-	Tue, 16 Sep 2025 22:48:13 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4cR4R93tNRz13NhQ;
+	Tue, 16 Sep 2025 22:44:05 +0800 (CST)
+Received: from dggemv712-chm.china.huawei.com (unknown [10.1.198.32])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1A450180485;
+	Tue, 16 Sep 2025 22:48:14 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
+ dggemv712-chm.china.huawei.com (10.1.198.32) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1544.11; Tue, 16 Sep 2025 22:48:13 +0800
 Received: from localhost.huawei.com (10.90.31.46) by
  kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 16 Sep 2025 22:48:12 +0800
+ 15.2.1544.11; Tue, 16 Sep 2025 22:48:13 +0800
 From: Chenghai Huang <huangchenghai2@huawei.com>
 To: <gregkh@linuxfoundation.org>, <zhangfei.gao@linaro.org>,
 	<wangzhou1@hisilicon.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<linuxarm@openeuler.org>, <fanghao11@huawei.com>, <shenyang39@huawei.com>,
 	<liulongfang@huawei.com>, <qianweili@huawei.com>
-Subject: [PATCH v2 1/4] uacce: fix for cdev memory leak
-Date: Tue, 16 Sep 2025 22:48:08 +0800
-Message-ID: <20250916144811.1799687-2-huangchenghai2@huawei.com>
+Subject: [PATCH v2 2/4] uacce: fix isolate sysfs check condition
+Date: Tue, 16 Sep 2025 22:48:09 +0800
+Message-ID: <20250916144811.1799687-3-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250916144811.1799687-1-huangchenghai2@huawei.com>
 References: <20250916144811.1799687-1-huangchenghai2@huawei.com>
@@ -66,66 +66,39 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  kwepemq200001.china.huawei.com (7.202.195.16)
 
-From: Wenkai Lin <linwenkai6@hisilicon.com>
+The uacce supports device isolation feature. If the driver
+implements the isolate_err_threshold_read and
+isolate_err_threshold_write callbacks, the uacce will create sysfs
+files. Users can read and configure isolation policies through
+sysfs. Currently, if either isolate_err_threshold_read or
+isolate_err_threshold_write callback exists, sysfs files are
+created.
 
-If cdev_device_add failed, it is hard to determine
-whether cdev_del has been executed, which lead to a
-memory leak issue, so we use cdev_init to avoid it.
+However, accessing a non-existent callback may cause a system panic.
+Therefore, sysfs files are only created when both
+isolate_err_threshold_read and isolate_err_threshold_write are
+present.
 
-Fixes: 015d239ac014 ("uacce: add uacce driver")
+Fixes: e3e289fbc0b5 ("uacce: supports device isolation feature")
 Cc: stable@vger.kernel.org
-Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 ---
- drivers/misc/uacce/uacce.c | 13 ++++---------
- include/linux/uacce.h      |  2 +-
- 2 files changed, 5 insertions(+), 10 deletions(-)
+ drivers/misc/uacce/uacce.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index 42e7d2a2a90c..12370469f646 100644
+index 12370469f646..770a931ef68d 100644
 --- a/drivers/misc/uacce/uacce.c
 +++ b/drivers/misc/uacce/uacce.c
-@@ -522,14 +522,10 @@ int uacce_register(struct uacce_device *uacce)
- 	if (!uacce)
- 		return -ENODEV;
+@@ -441,7 +441,7 @@ static umode_t uacce_dev_is_visible(struct kobject *kobj,
+ 		return 0;
  
--	uacce->cdev = cdev_alloc();
--	if (!uacce->cdev)
--		return -ENOMEM;
--
--	uacce->cdev->ops = &uacce_fops;
--	uacce->cdev->owner = THIS_MODULE;
-+	cdev_init(&uacce->cdev, &uacce_fops);
-+	uacce->cdev.owner = THIS_MODULE;
+ 	if (attr == &dev_attr_isolate_strategy.attr &&
+-	    (!uacce->ops->isolate_err_threshold_read &&
++	    (!uacce->ops->isolate_err_threshold_read ||
+ 	     !uacce->ops->isolate_err_threshold_write))
+ 		return 0;
  
--	return cdev_device_add(uacce->cdev, &uacce->dev);
-+	return cdev_device_add(&uacce->cdev, &uacce->dev);
- }
- EXPORT_SYMBOL_GPL(uacce_register);
- 
-@@ -568,8 +564,7 @@ void uacce_remove(struct uacce_device *uacce)
- 		unmap_mapping_range(q->mapping, 0, 0, 1);
- 	}
- 
--	if (uacce->cdev)
--		cdev_device_del(uacce->cdev, &uacce->dev);
-+	cdev_device_del(&uacce->cdev, &uacce->dev);
- 	xa_erase(&uacce_xa, uacce->dev_id);
- 	/*
- 	 * uacce exists as long as there are open fds, but ops will be freed
-diff --git a/include/linux/uacce.h b/include/linux/uacce.h
-index e290c0269944..98b896192a44 100644
---- a/include/linux/uacce.h
-+++ b/include/linux/uacce.h
-@@ -126,7 +126,7 @@ struct uacce_device {
- 	bool is_vf;
- 	u32 flags;
- 	u32 dev_id;
--	struct cdev *cdev;
-+	struct cdev cdev;
- 	struct device dev;
- 	struct mutex mutex;
- 	void *priv;
 -- 
 2.33.0
 
