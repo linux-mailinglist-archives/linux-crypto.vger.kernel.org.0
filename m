@@ -1,225 +1,99 @@
-Return-Path: <linux-crypto+bounces-16790-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-16792-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F16B9BA4305
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Sep 2025 16:29:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8212EBA44DD
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Sep 2025 16:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 280C17BCA38
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Sep 2025 14:26:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFC531B205A9
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Sep 2025 14:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925A83054DF;
-	Fri, 26 Sep 2025 14:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5986C1E47B7;
+	Fri, 26 Sep 2025 14:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LP9POOsM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VsIMOILF"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F03430504B
-	for <linux-crypto@vger.kernel.org>; Fri, 26 Sep 2025 14:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D36B38DE1;
+	Fri, 26 Sep 2025 14:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758896450; cv=none; b=OBBRo1Ihk0N7SKT160Pwko6tIhZfvpi0TNGfrfVU2LHT398iaSuMH/N7YDS9XzIbj5b6x3Uj3ou+WcnuJfCpl4+ruhXxSjjkG3sThUKRasohFA8BxMOO3gAowNBznH8SuiNOEwv6wrkJrvo6cOCzxk0rPSzQNKdcvosiaA0wlEc=
+	t=1758898542; cv=none; b=SvzVWUObue5LcPuRr31s+8OISdV8tmuNCpKIn00kvsg4TQwc11lSQNBjs5BLzqVscYFHMtJzgG8i1St4gNm+rNfEUh1wBRWjV78+YY5WD6/2CLApxrwXbHJiaqAbKWRKbKrbCO52wFGV7DY4B3GnHod3rxGHEpB/TPLle/nbtng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758896450; c=relaxed/simple;
-	bh=ySiSiNeZc9FNWHxIUaJv0xF7RkGpsemiZKhULj53bSc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=auLjWq9hBmQTEHOrfD4/nobPmlIgVuUYHEjzGpQsjmORcs/evG7QKXrXrYmik9DxFBw025JW9SXHBWwGdRrRN07UWKPx883CdfYvCx50qzbH8k4jxsDYqp0ZWN9if6F0vGTxoTeco9XutWChdY8MzCVxgyY8sDhrADyA9WiZzl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LP9POOsM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758896447;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4KUnTBzsGr+xU5+H4r3Ghz1bUcQIQV9Qsi5HH5seaJo=;
-	b=LP9POOsMI4GJ1GqRaP7r1E9YP6/xBf0YC8OLMUkf6DTOZTFK6r6MunNw6N3yIC3LqwPBO6
-	DmOwoiw6HOfeGX94+BUw+newDAr7V3uIv1j3yye2gJJaekJHPx39dKd6zWPnivW6U0SOfE
-	tzIMwUa4vzAYr09/+7AxxB12GQ4dHn4=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-482-TIP_uSxTMn2bVX1ho6DLow-1; Fri,
- 26 Sep 2025 10:20:42 -0400
-X-MC-Unique: TIP_uSxTMn2bVX1ho6DLow-1
-X-Mimecast-MFC-AGG-ID: TIP_uSxTMn2bVX1ho6DLow_1758896440
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C3BFC1800378;
-	Fri, 26 Sep 2025 14:20:40 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.155])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 86FC1180141C;
-	Fri, 26 Sep 2025 14:20:38 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: 
-Cc: David Howells <dhowells@redhat.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
+	s=arc-20240116; t=1758898542; c=relaxed/simple;
+	bh=8gj65qVHmn8vegx9eirL41njLH2RQUiHZwCiJ5RZXJA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=giW1UKH52GJgxyJoWbbQ/76NxQAjlsoP0GPE+PcktKVUz0LnEnln6VblLSlNPc5PPUlzpS7V58gH5wwmZZqfipIiDK0lhK00Fn94Qn3ijsOaiYuwazoFVwrIc6PX6oThLpoc/9e1IbaAeg2C8yDORgYcGF1y1QFOAx+42tmk9t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VsIMOILF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7740BC4CEF4;
+	Fri, 26 Sep 2025 14:55:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758898541;
+	bh=8gj65qVHmn8vegx9eirL41njLH2RQUiHZwCiJ5RZXJA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VsIMOILFvZt3zXiMnd+saoKFhSWh5zztX+Vkpu8GCGi2SCm9njFLFhSnDPSmZNwfv
+	 SYleGKAfg2B6nSMO8jJOkRwZp/YHbS3Dr++PLIQK9xXPglOmsI0R5WQNP2dlWAPC4M
+	 CeYuH+O4NbFWXni5LxPXR2/gc+hdGL1MGw2FeR0+dBAJxE0z96ICowzveFhLAzoCCQ
+	 caFPk/ln35737kfe6I5VenX7KEpnjhPImpeJLdZsFbaPNnPu1+BwId6SjWg1PLHdN6
+	 XmdlDWwHpw9tCsGkQIr52V/rybBVS936X3o7QcSxbt5TXrYmxM61F4u9YpWu1twaIP
+	 71oqhq8XgRDeg==
+Date: Fri, 26 Sep 2025 09:55:40 -0500
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-arm-kernel@lists.infradead.org,
+	John Crispin <john@phrozen.org>, linux-mediatek@lists.infradead.org,
+	linux-watchdog@vger.kernel.org,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	Stephan Mueller <smueller@chronox.de>,
+	Felix Fietkau <nbd@nbd.name>, Conor Dooley <conor+dt@kernel.org>,
 	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 8/8] crypto: SHAKE tests
-Date: Fri, 26 Sep 2025 15:19:51 +0100
-Message-ID: <20250926141959.1272455-9-dhowells@redhat.com>
-In-Reply-To: <20250926141959.1272455-1-dhowells@redhat.com>
-References: <20250926141959.1272455-1-dhowells@redhat.com>
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>
+Subject: Re: [PATCH v3 3/4] dt-bindings: arm64: dts: airoha: Add AN7583
+ compatible
+Message-ID: <175889851158.762885.9694825397072529711.robh@kernel.org>
+References: <20250925164038.13987-1-ansuelsmth@gmail.com>
+ <20250925164038.13987-4-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250925164038.13987-4-ansuelsmth@gmail.com>
 
----
- crypto/sha3_generic.c | 14 ++++++++--
- crypto/testmgr.c      | 14 ++++++++++
- crypto/testmgr.h      | 59 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 85 insertions(+), 2 deletions(-)
 
-diff --git a/crypto/sha3_generic.c b/crypto/sha3_generic.c
-index 4fae066ec3f5..61ba1cf6eadb 100644
---- a/crypto/sha3_generic.c
-+++ b/crypto/sha3_generic.c
-@@ -30,6 +30,16 @@ int crypto_sha3_init(struct shash_desc *desc)
- }
- EXPORT_SYMBOL(crypto_sha3_init);
- 
-+static int crypto_shake_init(struct shash_desc *desc)
-+{
-+	struct sha3_ctx *ctx = crypto_sha3_desc(desc);
-+
-+	memset(ctx, 0, sizeof(*ctx));
-+	ctx->block_size = crypto_shash_blocksize(desc->tfm);
-+	ctx->padding = 0x1f;
-+	return 0;
-+}
-+
- static int crypto_sha3_update(struct shash_desc *desc, const u8 *data,
- 			      unsigned int len)
- {
-@@ -97,7 +107,7 @@ static struct shash_alg algs[] = { {
- 	.base.cra_module	= THIS_MODULE,
- }, {
- 	.digestsize		= SHAKE128_DEFAULT_SIZE,
--	.init			= crypto_sha3_init,
-+	.init			= crypto_shake_init,
- 	.update			= crypto_sha3_update,
- 	.finup			= crypto_sha3_finup,
- 	.descsize		= sizeof(struct sha3_ctx),
-@@ -108,7 +118,7 @@ static struct shash_alg algs[] = { {
- 	.base.cra_module	= THIS_MODULE,
- }, {
- 	.digestsize		= SHAKE256_DEFAULT_SIZE,
--	.init			= crypto_sha3_init,
-+	.init			= crypto_shake_init,
- 	.update			= crypto_sha3_update,
- 	.finup			= crypto_sha3_finup,
- 	.descsize		= sizeof(struct sha3_ctx),
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 9dca41e7ee73..988bda74371e 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -5511,6 +5511,20 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		.suite = {
- 			.hash = __VECS(sha512_tv_template)
- 		}
-+	}, {
-+		.alg = "shake128",
-+		.test = alg_test_hash,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.hash = __VECS(shake128_tv_template)
-+		}
-+	}, {
-+		.alg = "shake256",
-+		.test = alg_test_hash,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.hash = __VECS(shake256_tv_template)
-+		}
- 	}, {
- 		.alg = "sm3",
- 		.test = alg_test_hash,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 268231227282..c0eca7f72aa0 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -4690,6 +4690,65 @@ static const struct hash_testvec sha3_512_tv_template[] = {
- };
- 
- 
-+/* From: https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines/example-values */
-+static const struct hash_testvec shake128_tv_template[] = {
-+	{
-+		.plaintext = "",
-+		.psize	= 0,
-+		.digest	=
-+		"\x7f\x9c\x2b\xa4\xe8\x8f\x82\x7d\x61\x60\x45\x50\x76\x05\x85\x3e",
-+	}, {
-+		.plaintext =
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3",
-+		.psize	= 200,
-+		.digest	=
-+		"\x13\x1a\xb8\xd2\xb5\x94\x94\x6b\x9c\x81\x33\x3f\x9b\xb6\xe0\xce",
-+	}
-+};
-+
-+/* From: https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines/example-values */
-+static const struct hash_testvec shake256_tv_template[] = {
-+	{
-+		.plaintext = "",
-+		.psize	= 0,
-+		.digest	=
-+		"\x46\xb9\xdd\x2b\x0b\xa8\x8d\x13\x23\x3b\x3f\xeb\x74\x3e\xeb\x24"
-+		"\x3f\xcd\x52\xea\x62\xb8\x1b\x82\xb5\x0c\x27\x64\x6e\xd5\x76\x2f"
-+	}, {
-+		.plaintext =
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3"
-+		"\xa3\xa3\xa3\xa3\xa3\xa3\xa3\xa3",
-+		.psize	= 200,
-+		.digest	=
-+		"\xcd\x8a\x92\x0e\xd1\x41\xaa\x04\x07\xa2\x2d\x59\x28\x86\x52\xe9"
-+		"\xd9\xf1\xa7\xee\x0c\x1e\x7c\x1c\xa6\x99\x42\x4d\xa8\x4a\x90\x4d",
-+	}
-+};
-+
-+
- /*
-  * MD5 test vectors from RFC1321
-  */
+On Thu, 25 Sep 2025 18:40:36 +0200, Christian Marangi wrote:
+> Add Airoha AN7583 compatible to the list of enum for Airoha Supported
+> SoCs.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/airoha.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+
+
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
+
+If a tag was not added on purpose, please state why and what changed.
+
+Missing tags:
+
+Acked-by: Rob Herring (Arm) <robh@kernel.org>
+
+
 
 
