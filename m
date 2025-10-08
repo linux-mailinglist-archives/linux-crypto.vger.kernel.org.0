@@ -1,170 +1,149 @@
-Return-Path: <linux-crypto+bounces-17013-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17018-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD23ABC5F73
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Oct 2025 18:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF47ABC601F
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Oct 2025 18:23:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E3D4541C78
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Oct 2025 15:50:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 644C44214B4
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Oct 2025 16:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448DA2FD7A5;
-	Wed,  8 Oct 2025 15:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15AF7260A;
+	Wed,  8 Oct 2025 16:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jkr9eYNL"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="g3//sxsB"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B678E2FCBEF
-	for <linux-crypto@vger.kernel.org>; Wed,  8 Oct 2025 15:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335C71A3166
+	for <linux-crypto@vger.kernel.org>; Wed,  8 Oct 2025 16:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759938429; cv=none; b=Jn6DavAO1TScl1oAui4D1zVBXXEgipy1bP5V+ISY3wqJ37S+srhaezxj618Hhna4d2RYQVrn4othHO3egnnSJcaQnlpm6rZ/3ab6vQEr7tj0a//kPqUXbEUt3JJ6v0+JcpxS7hs9r+36g+9FwMxoPsBhvv05RHXgeVuf/Uak3yw=
+	t=1759940172; cv=none; b=blRPIJdgzsCAnFFJ5RAZ6T70d1pjW2/lF7RkQaGhIqobBfNb5+CzEutbq75b7OoWIAc/CsRq6H+5OodAsOaLfa54+nOyIjiXOwgJY586Yk8by8LwEwk4GF2UnAsuGaprSedMG1ELoYKdk4LbDXAGZgw+NsfMV9GZrrZ33kR2NN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759938429; c=relaxed/simple;
-	bh=e1uCNgvDUPL6Q8IGrP4fE1tjT9jxmUxE+KdCoB9JZM4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=SeXN2+NHH6IfloC2y+q2IsuM50qPJKlWZGvE4v43t0/P7Lto1/WYco17JtgNf3BBWosRVemUs+uHFKpY4/njLSre6/uYneR62OqKQNBdGpcYYGB5PjJnyhNy7bNu/hrlHLFqMuqw7LBbFSAf1I4daa6QQEH6KlV54ujpsWtHjS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jkr9eYNL; arc=none smtp.client-ip=209.85.128.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-46e303235e8so12365e9.1
-        for <linux-crypto@vger.kernel.org>; Wed, 08 Oct 2025 08:47:06 -0700 (PDT)
+	s=arc-20240116; t=1759940172; c=relaxed/simple;
+	bh=uEGenzvUyzBkuEtUVn+BvDaUco6V3TK5byPQuBV+0Co=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HKbQ7fwJLvEw3oYOuqQPi0ZQSPZMjiHy+tD0/i4T0/HLytCKGOk7KPQNxJl7qAshSPJQU6Q6RoaBL4Ozav0lQ8/SUhwr+PYfi0n//3eJ51HVN2TzTqWho/vRd0sBIbns64UnjF9FgR5xryNagsPjy4lU4DYOfB477tACM8Tacf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=g3//sxsB; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-61feb87fe26so11287304a12.1
+        for <linux-crypto@vger.kernel.org>; Wed, 08 Oct 2025 09:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759938425; x=1760543225; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCqfiDMNXwNp3eFCLlUtfPhbgD3LgIedHtp2uSYpz9o=;
-        b=jkr9eYNLbk7wVyDI6UHYi+5oKhLyYsw+OAeiiWWIFWyV5yvpSWfSZBSDHo+RKdGlP+
-         /NyCCmyoxiZt/jGygIUbRKurDRf2frvj5PfpuhjgnMlTmcOE18dPlVwhP8e5LDC1YRhS
-         xfoCcUbbOchJIBv7Qkcv3PbllSQNnhdUvD/qBbAnKv1T9pZKvyNuCL2LxFf3+ZLGpWNH
-         BwPmlJg74Rvp+SYSaoL9VyyHBCi0F4lIf8wdHTLPtShc1Wy2+QTepdbmc8ExbYFM5AyU
-         t5wgrgOQhvDOO+pPNkonT55FBjrvuWVIc2fibVTRZfQCVY3pvbVlmlTIKUGfeLJ1pfkx
-         8mBA==
+        d=linux-foundation.org; s=google; t=1759940168; x=1760544968; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wafGHdomjeTMWOaW1CHD+uCxSHknTrB56S6k0QVoIaI=;
+        b=g3//sxsBOJ3PMgYtlhMwKsBs6AfWLzsigWrztQDQ/hFS2C3r4LB+SlwZF9wC9CIqHD
+         htaAHjIW4v18gKlrP5qFf4CwX8k1qX7lDU3POlhUgB29Zv0Rxg+6Ss8NCAA7JeUe86AE
+         ta6yVBwZAcgoHbLsf4azynepDkvl9GpftKVxE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759938425; x=1760543225;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCqfiDMNXwNp3eFCLlUtfPhbgD3LgIedHtp2uSYpz9o=;
-        b=hMSnNfj/BooRozPW+I+mHFDJrWezf5in30qQbibHy7zu2+vjDLT54WJsy7PdmL1Dzh
-         HTAyGE9fqWZrSXL5fHWx1x7w5k0sR+kPsUIbxy3I5Y8OsBXgzmyosHj53k5zvFrt75Se
-         BLSjD/G1YB4PJe1pkkHMS/WnyeoxFBdLhs7W5eke/WmZ4hk/FqdHLUVyMiT+2s2h5AB/
-         YVyj+TEqic3aursuGF96A8A10UC357BXLwNkVSpnSuJEUocE+gMYEzsEnpxmFptP2FJT
-         fWEwr3eS35IEuNFRAAfoJDkeDeViihDaLe1NuCA/nfeTW4QBElstEx9HKee4P0Ykq9ch
-         GiIA==
-X-Forwarded-Encrypted: i=1; AJvYcCU8P9OUz8nroHWLH2kkiEeLVw+lPk6VCGQMqjE6FutBje79nWcFJdGckNzPBXyEXIjs3ZTUSAV9Aj2in08=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYHt/6PDr7GjZmI2aoCVvyMy3Fh/sLi0WMarL7a5tFW4p9fJXO
-	N0Teb7hcbA3NBdr2IvkQSJxQctivKWtNsk7wHq4qsGQjkje/E7k4AGypoSVDHRiVfz/CrfsdwQ=
-	=
-X-Google-Smtp-Source: AGHT+IEstc5WbaKR984lcE73yhlUqY4mnQpun5Em/Dltp0yYfhzejBDQJd+oDTcw6HoRIbI7W/BkGtQg
-X-Received: from wmjf4.prod.google.com ([2002:a7b:cd04:0:b0:46e:38c2:1a34])
- (user=ardb job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:468e:b0:46e:4b79:551
- with SMTP id 5b1f17b1804b1-46fa9b092femr34512895e9.31.1759938425183; Wed, 08
- Oct 2025 08:47:05 -0700 (PDT)
-Date: Wed,  8 Oct 2025 17:45:52 +0200
-In-Reply-To: <20251008154533.3089255-23-ardb+git@google.com>
+        d=1e100.net; s=20230601; t=1759940168; x=1760544968;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wafGHdomjeTMWOaW1CHD+uCxSHknTrB56S6k0QVoIaI=;
+        b=LcAFU7DfgSLmjWFMxosrRZjG6aNyoviYhZNGHyA3c9mMSd888kr2ExmGa17N3Ml9fQ
+         eUZCw7T1Z3tPjO68J2nmM2Kx1sj0ow1m6AngSn34NuDgkMYrUzjPsNWqKTceW6uiIQCh
+         ynpADvw6pVTNIcmA5nF6Oo2MpQygmKOCUlxZ6/UBcJ6ouoJ8UALrBYanHN6Y3zSbUZmQ
+         OW7sZAMhxTn8vnWcRz/c0ArNzcvq7iEqNhQlnFSOl4EgSgIzMtAYbLhlcdXLVHjoGEdr
+         cE3ZHGyjMeg0bhURNYD1skTDOb1USE8tBdRmrQ/SIpgiNLII1fi1c08q8BTxmMkHYzHW
+         gBjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX56i8auyxTMOT5KfjHCGn56a+xLi0s77N/j4Jej8HLKCV7KTOG0Xo/kSsycKSvsATaTZlUck7hQykveGs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz3CaG4IM7KQBxznON05bAeFHxjjWsd4HaAeqcML87XoDGNluW9
+	SAPXwZTqPPkKsaGTeI8GvwQtpk/JkCvdEY3YI4icgkp+CQ3DEVgGchjzBcqxIf6h1SS4axTntu9
+	85TgCTnM=
+X-Gm-Gg: ASbGncuLLqLWvCUNxGjwJII0nRU7UeZSZPqAJLglZfgplpkG5hjnCMxfGn1oz2YYCpG
+	kz9fmAkUk0Kky6iLKChiaL8dDHcOXP42WcVFqZkYHRr+pUGr8f9XMVwIG63OzHYnBflcjvO869M
+	9XcFDTG8TeIFLI5q8PixZijp7BK8pJwFpH92ZmXiAbkCvyUyhzAXgLCtTVSbI0gCm2rg2Rlu48/
+	QKIU4U3sPuZcM5kFjH0wJ0erNS3BCBvbfa9AoTxwcz2lH2pe3nK/2UGIVy3nT5ap1GPsfzLNvRK
+	cYnJKjEUhz9IRjRDZnpJjD+pMQBpVhGNETh0X+qmJInXKQ88gsaM5YhM6JqEFX0To+qeGBov7u+
+	ho1aTgWqBYXcctY9OR8uKUrZ+nldkR6h/UAYa7MluUijZpW7J/7lRPy/xtxH/AVpY6uVyUIDUmh
+	nHbJaKFRopQR7Ndj+Ehkuq
+X-Google-Smtp-Source: AGHT+IHzDLpw5HHPMkH9M8XtgR/uyWhyv8x2D+av7RHLo68ZW/MJn3y5L58Ob3E9HC0Ilp4hIVU/4Q==
+X-Received: by 2002:a05:6402:5203:b0:636:7e05:b6c0 with SMTP id 4fb4d7f45d1cf-639d596e3f1mr3833418a12.0.1759940168102;
+        Wed, 08 Oct 2025 09:16:08 -0700 (PDT)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-639f30d51c7sm349631a12.11.2025.10.08.09.16.07
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Oct 2025 09:16:07 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-61feb87fe26so11287279a12.1
+        for <linux-crypto@vger.kernel.org>; Wed, 08 Oct 2025 09:16:07 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX3TyP3m9yZxFz0CCxOl3T2wKEOp1u21jmse7UcjXK9noVU81SdIfhok9M8dX+hWS3G2/R/jj9eWJFtxWQ=@vger.kernel.org
+X-Received: by 2002:a05:6402:1ed0:b0:639:e469:8ad1 with SMTP id
+ 4fb4d7f45d1cf-639e469a2e6mr1978291a12.20.1759940166695; Wed, 08 Oct 2025
+ 09:16:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20251008154533.3089255-23-ardb+git@google.com>
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2401; i=ardb@kernel.org;
- h=from:subject; bh=5nhtgxb3dS2zVbgouam5e+M4Gmu5K56lN9xZqYXBI3s=;
- b=owGbwMvMwCVmkMcZplerG8N4Wi2JIeNZe6DOTtbCqP/MvEdnNO/+dDayK/WX4sFtL+4vEJj/I
- +l81yPtjlIWBjEuBlkxRRaB2X/f7Tw9UarWeZYszBxWJpAhDFycAjCRyBUM/6z/Z+Z7rrJVsj3o
- NKFtdgfTrePKpyWn38q/ubvk6uoTq6UZGebIWslEbD0dYrpZ+BV3WHF94Ya0X7/LTFfJp3Rny69 v4AMA
-X-Mailer: git-send-email 2.51.0.710.ga91ca5db03-goog
-Message-ID: <20251008154533.3089255-41-ardb+git@google.com>
-Subject: [PATCH v3 18/21] arm64/xorblocks:  Switch to 'ksimd' scoped guard API
-From: Ard Biesheuvel <ardb+git@google.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	herbert@gondor.apana.org.au, ebiggers@kernel.org, 
-	Ard Biesheuvel <ardb@kernel.org>
+MIME-Version: 1.0
+References: <1a71398e-637f-4aa5-b4c6-0d3502a62a0c@kernel.org>
+ <f31dbb22-0add-481c-aee0-e337a7731f8e@oracle.com> <20251002172310.GC1697@sol>
+ <2981dc1d-287f-44fc-9f6f-a9357fb62dbf@oracle.com> <CAHk-=wjcXn+uPu8h554YFyZqfkoF=K4+tFFtXHsWNzqftShdbQ@mail.gmail.com>
+ <3b1ff093-2578-4186-969a-3c70530e57b7@oracle.com> <CAHk-=whzJ1Bcx5Yi5JC57pLsJYuApTwpC=WjNi28GLUv7HPCOQ@mail.gmail.com>
+ <e1dc974a-eb36-4090-8d5f-debcb546ccb7@oracle.com> <20251006192622.GA1546808@google.com>
+ <0acd44b257938b927515034dd3954e2d36fc65ac.camel@redhat.com> <20251008121316.GJ386127@mit.edu>
+In-Reply-To: <20251008121316.GJ386127@mit.edu>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 8 Oct 2025 09:15:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whTKNg8+F5EUP2oxcfr14P7geOOpaPBwhxF7a0jjBm2GA@mail.gmail.com>
+X-Gm-Features: AS18NWCvIhnESJ0gUsT-9HGa5XjpSt2eBl3AMS3_hBGymdQg0Vd76BELyTS6HCA
+Message-ID: <CAHk-=whTKNg8+F5EUP2oxcfr14P7geOOpaPBwhxF7a0jjBm2GA@mail.gmail.com>
+Subject: Re: 6.17 crashes in ipv6 code when booted fips=1 [was: [GIT PULL]
+ Crypto Update for 6.17]
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Simo Sorce <simo@redhat.com>, Eric Biggers <ebiggers@kernel.org>, 
+	Vegard Nossum <vegard.nossum@oracle.com>, Jiri Slaby <jirislaby@kernel.org>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, netdev@vger.kernel.org, 
+	Jakub Kicinski <kuba@kernel.org>, "nstange@suse.de" <nstange@suse.de>, "Wang, Jay" <wanjay@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Ard Biesheuvel <ardb@kernel.org>
+On Wed, 8 Oct 2025 at 05:13, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> If there is something beyond hard-disabling CONFIG_CRYPTO_SHA1 which
+> all distributions could agree with --- what would that set of patches
+> look like, and would it be evenly vaguely upstream acceptable.  It
+> could even hidden behind CONFIG_BROKEN.  :-)
 
-Switch to the more abstract 'scoped_ksimd()' API, which will be modified
-in a future patch to transparently allocate a kernel mode FP/SIMD state
-buffer on the stack, so that kernel mode FP/SIMD code remains
-preemptible in principe, but without the memory overhead that adds 528
-bytes to the size of struct task_struct.
+Maybe just
 
-Reviewed-by: Eric Biggers <ebiggers@kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm64/include/asm/xor.h | 22 ++++++++------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ (a) make it a runtime flag - so that it can't mess up the boot, at least
 
-diff --git a/arch/arm64/include/asm/xor.h b/arch/arm64/include/asm/xor.h
-index befcd8a7abc9..c38e3d017a79 100644
---- a/arch/arm64/include/asm/xor.h
-+++ b/arch/arm64/include/asm/xor.h
-@@ -9,7 +9,7 @@
- #include <linux/hardirq.h>
- #include <asm-generic/xor.h>
- #include <asm/hwcap.h>
--#include <asm/neon.h>
-+#include <asm/simd.h>
- 
- #ifdef CONFIG_KERNEL_MODE_NEON
- 
-@@ -19,9 +19,8 @@ static void
- xor_neon_2(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p2)
- {
--	kernel_neon_begin();
--	xor_block_inner_neon.do_2(bytes, p1, p2);
--	kernel_neon_end();
-+	scoped_ksimd()
-+		xor_block_inner_neon.do_2(bytes, p1, p2);
- }
- 
- static void
-@@ -29,9 +28,8 @@ xor_neon_3(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p2,
- 	   const unsigned long * __restrict p3)
- {
--	kernel_neon_begin();
--	xor_block_inner_neon.do_3(bytes, p1, p2, p3);
--	kernel_neon_end();
-+	scoped_ksimd()
-+		xor_block_inner_neon.do_3(bytes, p1, p2, p3);
- }
- 
- static void
-@@ -40,9 +38,8 @@ xor_neon_4(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p3,
- 	   const unsigned long * __restrict p4)
- {
--	kernel_neon_begin();
--	xor_block_inner_neon.do_4(bytes, p1, p2, p3, p4);
--	kernel_neon_end();
-+	scoped_ksimd()
-+		xor_block_inner_neon.do_4(bytes, p1, p2, p3, p4);
- }
- 
- static void
-@@ -52,9 +49,8 @@ xor_neon_5(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p4,
- 	   const unsigned long * __restrict p5)
- {
--	kernel_neon_begin();
--	xor_block_inner_neon.do_5(bytes, p1, p2, p3, p4, p5);
--	kernel_neon_end();
-+	scoped_ksimd()
-+		xor_block_inner_neon.do_5(bytes, p1, p2, p3, p4, p5);
- }
- 
- static struct xor_block_template xor_block_arm64 = {
--- 
-2.51.0.710.ga91ca5db03-goog
+ (b) make it ternary so that you get a "warn vs turn off"
 
+ (c) and allow people to clear it too - so that you can sanely *test*
+it without forcing a possibly unusable machine
+
+and then
+
+ (d) make the clearing be dependent on that 'lockdown' set that nobody
+remotely normal uses anyway
+
+would make this thing a whole lot more testable, and a whole lot less abrupt.
+
+Christ, if even FIPS went "we know this is a big thing, we'll give you
+a decade to sort things out", then the kernel damn well shouldn't make
+it some black-and-white sudden flag.
+
+So we should *NOT* say "FIPS says turn it off eventually, so we should
+turn it off". No. That was very very wrong.
+
+We should say "FIPS says turn it off eventually, so we should give
+users simple tools to find problem spots".
+
+And that "simple tools" very much is about not making it some kind of
+"Oh, what happens is that the machine is unusable". It should be that
+"Oh, look, now it gives a warning that I would have a problem in XYZ
+if it wasn't available".
+
+                   Linus
 
