@@ -1,70 +1,70 @@
-Return-Path: <linux-crypto+bounces-17000-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17006-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF6D1BC5F40
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Oct 2025 18:08:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 614A6BC5F24
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Oct 2025 18:07:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5714426C8E
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Oct 2025 15:47:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A602425C5D
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Oct 2025 15:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8BD2F7AD3;
-	Wed,  8 Oct 2025 15:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E622FB965;
+	Wed,  8 Oct 2025 15:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0LOzILw3"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Bu/dNmak"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BBC2EBBA8
-	for <linux-crypto@vger.kernel.org>; Wed,  8 Oct 2025 15:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5452FB0A0
+	for <linux-crypto@vger.kernel.org>; Wed,  8 Oct 2025 15:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759938412; cv=none; b=dV3EuH+Cms1lYeld0U6Fh9JFHoiCAr5tnNdR7PX9L2DEQO7FRaYOj27bKVeWqzyWgfTQkDFYQuGMhZzYeJkstjc4T/rS9ahT8XQ3OYjF05ghwsUnudw8gB6tfj7vLLQg69UB7T2/RqXBfZg8JbV4qvFOWAoBEs59gYhXvyZDZUw=
+	t=1759938420; cv=none; b=fNIH5DYF8Wn6DyWp1/EySq4Yv9Enpm7DJj4eP1+SV6oevyHEU6ReDHGzDDiCNcS+gcBO5+aL3/z9hSgcYQBeHy0PXxtB/BH7RNCZLawIPF6W8mCVX7omRqLx3wOW7RVX021/yQz0MJR/uix95HLtGpsGDWz2abc6tFTf8MNygFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759938412; c=relaxed/simple;
-	bh=9FmzEtdFM20sJTDcHY2CkIswmX83GWfybFiLYLap2Ag=;
+	s=arc-20240116; t=1759938420; c=relaxed/simple;
+	bh=RtakoNllASHXrHooobUros6OMf2QXz1XhPt9rY7cMgM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=udXkAm9HTQd1YuZY4aGDg03AMfZGylqpW0OcDMvic45vZuNbqiLIztcY0g02aLB0CZc7uolr+wU0pj2pHgSjDOfbwBd2bMU4H0PXP4Cuk5Rv1JDama0kzlDYA/2ep/fZQ/p2+mAGw9GgOXy65FzdSsRVcuLe8uliUPXWNlZizjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0LOzILw3; arc=none smtp.client-ip=209.85.128.73
+	 To:Cc:Content-Type; b=VUYswrvPHIhytH927KqGui9iIh9Bk+0+bUVX/CiA2amw4SE9bulUleWloBmWvT2crugKtEdmX9xEdcgy8q99tl3DwbeqYMfvaEx/l2ZsE+IQ3NakJJSrS5sOtWxt4zAJlSW+ORzcCZNjTKGkzqoaxBBRaL4sx/pOJu28DpX1uOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Bu/dNmak; arc=none smtp.client-ip=209.85.128.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-46e3ef2dd66so445995e9.1
-        for <linux-crypto@vger.kernel.org>; Wed, 08 Oct 2025 08:46:50 -0700 (PDT)
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-46e3ed6540fso516915e9.0
+        for <linux-crypto@vger.kernel.org>; Wed, 08 Oct 2025 08:46:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759938409; x=1760543209; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1759938415; x=1760543215; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uXOxGZ/YNATafGtRkFO3eyEiqFtBfSwf8M5twzbqcUE=;
-        b=0LOzILw34Y572FNhSbCe+tM2odhcs1iVGydR7iB7f5mZMnNxvejBUY6aHeDCGIQWlE
-         wH0wLh41+EtEZKzEu4yjfK6Daa7hlIK2c9jJlQT6JbxQ/YtOgbdEPkiMzy1ivl+jF1jL
-         g1DtZ1634rO2NtAIXYNt3AEWlWjT9hNoI8or9T4n+nTe7kX2BJNlWn2gjDQOrlUxfeYp
-         x9mRHqLW/fDTK3sAyJMtnTdX61O/9xkDzTWFLCbV7MijhC3Q7VPVVXJrZdknQP1KMRbX
-         FvhoTbFv2BMQ2g6PXD10QeINDxJRx+uyKzl8XShVvyLWBjG8fJkYuIx20vxcwVD3twQ5
-         8qIw==
+        bh=suglsX43a1PiFmk1IVTuyelqyhWxvfsGVtpIchz7pR4=;
+        b=Bu/dNmakfKBr6y72p8WCXvjYuw10ljRmk9MDlFIkieSvIutsd4G2kFcqgCUxviK/U3
+         mq4bU0oo3tYNsEpytrtVUSzpP5oqQwL+PyuRVH5PYjBt8ZZ/uFIx4IAKYXDyer2tRH2C
+         9JRcI/DPge4lF+8FKo83rZqGHDxBpYvCz7r5yEB6Z/RmyvPSRmX3soSvIUtmKx0OtRXj
+         uN97BdZcAR/GpAbv+06MHaMZ3OpZ0VqeC8aeLScVnfHY8KqgppK4g3ocHqniq8gqxTcV
+         AeK39UeKKdQyGqdEUP3RNiNF8Lkd7WXwyjqU566HV50W/95Kxa3bcYvlGZ4rBIE537o0
+         APCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759938409; x=1760543209;
+        d=1e100.net; s=20230601; t=1759938415; x=1760543215;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uXOxGZ/YNATafGtRkFO3eyEiqFtBfSwf8M5twzbqcUE=;
-        b=e+PUTjsp6jbu04fkjUPBgZae+GSYV4+cZncaYj0Kdqe1vP+bLYoU8F0qd4ZRyO5SIH
-         88joTiGhMBofzoc7VlTPSmXeRWb2F7njOmDasEdvJgupgBKKzLFZmHtrVWk/r92wlC6q
-         NlIjaVAI8xBxTfEt5VuJiBV6p6SDr4vItnpidVzeQeD1tV7vqkd2YHPBQHQu1yGvMGY3
-         MzkMM6l5syTObYJRrTuKxA5hZ92WT3L1fh4EL854OUF0usNwc5kFUwFRuaBQx5Zz9PIv
-         Nipwb5s66Zift4XteMU8wt5+jMNjscDWrPz20lnwVdDqjLJAwxncbYWdlKTOcUrHj3MW
-         lrMw==
-X-Forwarded-Encrypted: i=1; AJvYcCXOzVgB7R6c2E/pIS8L3gvwKKqVqsja6ftqB/dQX3upMsVOXjEbyc4qXSWZEl01dI/PP8MgJBzonfwa3O4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxioDe05nVp1FDMxSkExLQwH5TetGnKHWILCHGAflyvMUtu9urM
-	CqglnnC88LMsbO4rQkHSmv0b8AI+O9Lq8FDhqzb0Gaby2AzreKf+4F341K3wPLB03w2p1OxtWQ=
+        bh=suglsX43a1PiFmk1IVTuyelqyhWxvfsGVtpIchz7pR4=;
+        b=dCaNVq/323mrgKFa745B0GHc0HNGuf3uATPcqFAX3bHPD3sd5KffFriMK322QZ/fO9
+         SvXFxpXn72NcZwB5FM63ZRzb7xxrHX5NSOkuUGFlh2evVhydGrQTL0PAUHBSCIlTfvgm
+         kAOCBrOLItbSWqV1j5UXLZK+4VyKuIuZ/ekLUCfz0Limb+BvdolaJGufETqumFHVVySa
+         OGg0pLk6Dejbvh+So+cUzcdja2UjXItmTwkJvBqRlD3phHh/zyvaXMCVL68gcOKIMQpn
+         nqLWqJ3HZSGMJB07ETqFJYh96QQ9ll6YotcRHibYg0zkycRokDIIULv/G66VL02gIzcW
+         p6ug==
+X-Forwarded-Encrypted: i=1; AJvYcCVYh/qB6OyIiHtojucMg0uE/rgAX+q2DZSRzqvzjHdIeXARRpgQq0YF0ik0ILYI9ix3199+FwECt8wvb50=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyp3M/y4NGLiZJ2jy3R3gIVYdy1MItWz2gTkNwiHDk0+rKCE8ko
+	COnUBP2eFDaa/xnIwcbBPoDK+gQrJqdGw3ty6sf1pM4sbQ4Iqb2blkF1s66nKG2v0pRujORedg=
 	=
-X-Google-Smtp-Source: AGHT+IHrU6L0LG/tG+7wPrq4CdnXtlNwP7FFFswqEly2EF3y8DHI9O5XvzzoSmEJYWWHooMBlG9Iu1ob
-X-Received: from wmwn26.prod.google.com ([2002:a05:600d:435a:b0:46d:ab31:6ece])
- (user=ardb job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:a202:b0:46f:a995:55f8
- with SMTP id 5b1f17b1804b1-46fa995565bmr20733855e9.13.1759938409082; Wed, 08
- Oct 2025 08:46:49 -0700 (PDT)
-Date: Wed,  8 Oct 2025 17:45:38 +0200
+X-Google-Smtp-Source: AGHT+IFdfbQL0RA5gdPU5ap+qfVyAmYhR0j1pMraOOaIT9NAX6C6fTnoeZL9e/lDaNNwsknXNRyIUjcW
+X-Received: from wmgg6.prod.google.com ([2002:a05:600d:6:b0:46f:aa50:d70d])
+ (user=ardb job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:8a8:b0:46d:38c4:1ac9
+ with SMTP id 5b1f17b1804b1-46fa2952c99mr33990935e9.2.1759938415296; Wed, 08
+ Oct 2025 08:46:55 -0700 (PDT)
+Date: Wed,  8 Oct 2025 17:45:43 +0200
 In-Reply-To: <20251008154533.3089255-23-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -74,69 +74,324 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251008154533.3089255-23-ardb+git@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1521; i=ardb@kernel.org;
- h=from:subject; bh=sjBBfqHYpRbSdr0WNjBeTQONw5wjcd3c1yQxz5xj5oM=;
- b=owGbwMvMwCVmkMcZplerG8N4Wi2JIeNZu5ZqzFvNj+9Xti34033rQmJlb9VLuTw5mZLqRXlT7
- +4+4nGgo5SFQYyLQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAEykeDbD/9TlQevcHdwrDbTZ
- 1a4VZTKeqptx4ERN2/FmMyZ/vv8bOxkZLt2MCSvUsjctElfyuRjF8PHzGpndpaF6f7z4ys6eWPC bEwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9625; i=ardb@kernel.org;
+ h=from:subject; bh=MDqXRAAfE9gWZ5IvXlO00eYBvbAZGnLkU83dj+lis3o=;
+ b=owGbwMvMwCVmkMcZplerG8N4Wi2JIeNZu8VNuWn3b4Qv2bbiAavdW1fxGuMb59l9g/wMFpcxV
+ 02PKN7ZUcrCIMbFICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACZyt56R4eWc55Ou282UaWtU
+ Sv46YXN8eaq/iXnjtembi7PWC7s/yGJkaDIuWSs5xWIdx8XWkIveTAKxEdY5B2V8vyxzZNruktT CBQA=
 X-Mailer: git-send-email 2.51.0.710.ga91ca5db03-goog
-Message-ID: <20251008154533.3089255-27-ardb+git@google.com>
-Subject: [PATCH v3 04/21] arm64/simd: Add scoped guard API for kernel mode SIMD
+Message-ID: <20251008154533.3089255-32-ardb+git@google.com>
+Subject: [PATCH v3 09/21] lib/crypto: Switch ARM and arm64 to 'ksimd' scoped
+ guard API
 From: Ard Biesheuvel <ardb+git@google.com>
 To: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
 	herbert@gondor.apana.org.au, ebiggers@kernel.org, 
-	Ard Biesheuvel <ardb@kernel.org>, Kees Cook <kees@kernel.org>
+	Ard Biesheuvel <ardb@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-Encapsulate kernel_neon_begin() and kernel_neon_end() using a 'ksimd'
-cleanup guard. This hides the prototype of those functions, allowing
-them to be changed for arm64 but not ARM, without breaking code that is
-shared between those architectures (RAID6, AEGIS-128)
+Before modifying the prototypes of kernel_neon_begin() and
+kernel_neon_end() to accommodate kernel mode FP/SIMD state buffers
+allocated on the stack, move arm64 to the new 'ksimd' scoped guard API,
+which encapsulates the calls to those functions.
 
-It probably makes sense to expose this API more widely across
-architectures, as it affords more flexibility to the arch code to
-plumb it in, while imposing more rigid rules regarding the start/end
-bookends appearing in matched pairs.
+For symmetry, do the same for 32-bit ARM too.
 
-Reviewed-by: Kees Cook <kees@kernel.org>
 Reviewed-by: Eric Biggers <ebiggers@kernel.org>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/arm64/include/asm/simd.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ lib/crypto/arm/chacha.h     |  6 ++----
+ lib/crypto/arm/poly1305.h   |  6 ++----
+ lib/crypto/arm/sha1.h       | 13 ++++++-------
+ lib/crypto/arm/sha256.h     | 12 ++++++------
+ lib/crypto/arm/sha512.h     |  6 ++----
+ lib/crypto/arm64/chacha.h   | 11 ++++-------
+ lib/crypto/arm64/poly1305.h |  6 ++----
+ lib/crypto/arm64/sha1.h     |  7 +++----
+ lib/crypto/arm64/sha256.h   | 19 ++++++++-----------
+ lib/crypto/arm64/sha512.h   |  8 ++++----
+ 10 files changed, 39 insertions(+), 55 deletions(-)
 
-diff --git a/arch/arm64/include/asm/simd.h b/arch/arm64/include/asm/simd.h
-index 8e86c9e70e48..d9f83c478736 100644
---- a/arch/arm64/include/asm/simd.h
-+++ b/arch/arm64/include/asm/simd.h
-@@ -6,12 +6,15 @@
- #ifndef __ASM_SIMD_H
- #define __ASM_SIMD_H
+diff --git a/lib/crypto/arm/chacha.h b/lib/crypto/arm/chacha.h
+index 0cae30f8ee5d..b27ba00b3b23 100644
+--- a/lib/crypto/arm/chacha.h
++++ b/lib/crypto/arm/chacha.h
+@@ -12,7 +12,6 @@
  
-+#include <linux/cleanup.h>
- #include <linux/compiler.h>
- #include <linux/irqflags.h>
- #include <linux/percpu.h>
- #include <linux/preempt.h>
- #include <linux/types.h>
+ #include <asm/cputype.h>
+ #include <asm/hwcap.h>
+-#include <asm/neon.h>
+ #include <asm/simd.h>
  
-+#include <asm/neon.h>
+ asmlinkage void chacha_block_xor_neon(const struct chacha_state *state,
+@@ -87,9 +86,8 @@ static void chacha_crypt_arch(struct chacha_state *state, u8 *dst,
+ 	do {
+ 		unsigned int todo = min_t(unsigned int, bytes, SZ_4K);
+ 
+-		kernel_neon_begin();
+-		chacha_doneon(state, dst, src, todo, nrounds);
+-		kernel_neon_end();
++		scoped_ksimd()
++			chacha_doneon(state, dst, src, todo, nrounds);
+ 
+ 		bytes -= todo;
+ 		src += todo;
+diff --git a/lib/crypto/arm/poly1305.h b/lib/crypto/arm/poly1305.h
+index 0021cf368307..0fe903d8de55 100644
+--- a/lib/crypto/arm/poly1305.h
++++ b/lib/crypto/arm/poly1305.h
+@@ -6,7 +6,6 @@
+  */
+ 
+ #include <asm/hwcap.h>
+-#include <asm/neon.h>
+ #include <asm/simd.h>
+ #include <linux/cpufeature.h>
+ #include <linux/jump_label.h>
+@@ -32,9 +31,8 @@ static void poly1305_blocks(struct poly1305_block_state *state, const u8 *src,
+ 		do {
+ 			unsigned int todo = min_t(unsigned int, len, SZ_4K);
+ 
+-			kernel_neon_begin();
+-			poly1305_blocks_neon(state, src, todo, padbit);
+-			kernel_neon_end();
++			scoped_ksimd()
++				poly1305_blocks_neon(state, src, todo, padbit);
+ 
+ 			len -= todo;
+ 			src += todo;
+diff --git a/lib/crypto/arm/sha1.h b/lib/crypto/arm/sha1.h
+index 29f8bcad0447..3e2d8c7cab9f 100644
+--- a/lib/crypto/arm/sha1.h
++++ b/lib/crypto/arm/sha1.h
+@@ -4,7 +4,6 @@
+  *
+  * Copyright 2025 Google LLC
+  */
+-#include <asm/neon.h>
+ #include <asm/simd.h>
+ 
+ static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
+@@ -22,12 +21,12 @@ static void sha1_blocks(struct sha1_block_state *state,
+ {
+ 	if (IS_ENABLED(CONFIG_KERNEL_MODE_NEON) &&
+ 	    static_branch_likely(&have_neon) && likely(may_use_simd())) {
+-		kernel_neon_begin();
+-		if (static_branch_likely(&have_ce))
+-			sha1_ce_transform(state, data, nblocks);
+-		else
+-			sha1_transform_neon(state, data, nblocks);
+-		kernel_neon_end();
++		scoped_ksimd() {
++			if (static_branch_likely(&have_ce))
++				sha1_ce_transform(state, data, nblocks);
++			else
++				sha1_transform_neon(state, data, nblocks);
++		}
+ 	} else {
+ 		sha1_block_data_order(state, data, nblocks);
+ 	}
+diff --git a/lib/crypto/arm/sha256.h b/lib/crypto/arm/sha256.h
+index 7556457b3094..ae7e52dd6e3b 100644
+--- a/lib/crypto/arm/sha256.h
++++ b/lib/crypto/arm/sha256.h
+@@ -22,12 +22,12 @@ static void sha256_blocks(struct sha256_block_state *state,
+ {
+ 	if (IS_ENABLED(CONFIG_KERNEL_MODE_NEON) &&
+ 	    static_branch_likely(&have_neon) && likely(may_use_simd())) {
+-		kernel_neon_begin();
+-		if (static_branch_likely(&have_ce))
+-			sha256_ce_transform(state, data, nblocks);
+-		else
+-			sha256_block_data_order_neon(state, data, nblocks);
+-		kernel_neon_end();
++		scoped_ksimd() {
++			if (static_branch_likely(&have_ce))
++				sha256_ce_transform(state, data, nblocks);
++			else
++				sha256_block_data_order_neon(state, data, nblocks);
++		}
+ 	} else {
+ 		sha256_block_data_order(state, data, nblocks);
+ 	}
+diff --git a/lib/crypto/arm/sha512.h b/lib/crypto/arm/sha512.h
+index d1b485dd275d..8d3af965d2b3 100644
+--- a/lib/crypto/arm/sha512.h
++++ b/lib/crypto/arm/sha512.h
+@@ -18,10 +18,8 @@ static void sha512_blocks(struct sha512_block_state *state,
+ 			  const u8 *data, size_t nblocks)
+ {
+ 	if (IS_ENABLED(CONFIG_KERNEL_MODE_NEON) &&
+-	    static_branch_likely(&have_neon) && likely(may_use_simd())) {
+-		kernel_neon_begin();
+-		sha512_block_data_order_neon(state, data, nblocks);
+-		kernel_neon_end();
++		scoped_ksimd()
++			sha512_block_data_order_neon(state, data, nblocks);
+ 	} else {
+ 		sha512_block_data_order(state, data, nblocks);
+ 	}
+diff --git a/lib/crypto/arm64/chacha.h b/lib/crypto/arm64/chacha.h
+index ba6c22d46086..ca8c6a8b0578 100644
+--- a/lib/crypto/arm64/chacha.h
++++ b/lib/crypto/arm64/chacha.h
+@@ -23,7 +23,6 @@
+ #include <linux/kernel.h>
+ 
+ #include <asm/hwcap.h>
+-#include <asm/neon.h>
+ #include <asm/simd.h>
+ 
+ asmlinkage void chacha_block_xor_neon(const struct chacha_state *state,
+@@ -65,9 +64,8 @@ static void hchacha_block_arch(const struct chacha_state *state,
+ 	if (!static_branch_likely(&have_neon) || !crypto_simd_usable()) {
+ 		hchacha_block_generic(state, out, nrounds);
+ 	} else {
+-		kernel_neon_begin();
+-		hchacha_block_neon(state, out, nrounds);
+-		kernel_neon_end();
++		scoped_ksimd()
++			hchacha_block_neon(state, out, nrounds);
+ 	}
+ }
+ 
+@@ -81,9 +79,8 @@ static void chacha_crypt_arch(struct chacha_state *state, u8 *dst,
+ 	do {
+ 		unsigned int todo = min_t(unsigned int, bytes, SZ_4K);
+ 
+-		kernel_neon_begin();
+-		chacha_doneon(state, dst, src, todo, nrounds);
+-		kernel_neon_end();
++		scoped_ksimd()
++			chacha_doneon(state, dst, src, todo, nrounds);
+ 
+ 		bytes -= todo;
+ 		src += todo;
+diff --git a/lib/crypto/arm64/poly1305.h b/lib/crypto/arm64/poly1305.h
+index aed5921ccd9a..b77669767cd6 100644
+--- a/lib/crypto/arm64/poly1305.h
++++ b/lib/crypto/arm64/poly1305.h
+@@ -6,7 +6,6 @@
+  */
+ 
+ #include <asm/hwcap.h>
+-#include <asm/neon.h>
+ #include <asm/simd.h>
+ #include <linux/cpufeature.h>
+ #include <linux/jump_label.h>
+@@ -31,9 +30,8 @@ static void poly1305_blocks(struct poly1305_block_state *state, const u8 *src,
+ 		do {
+ 			unsigned int todo = min_t(unsigned int, len, SZ_4K);
+ 
+-			kernel_neon_begin();
+-			poly1305_blocks_neon(state, src, todo, padbit);
+-			kernel_neon_end();
++			scoped_ksimd()
++				poly1305_blocks_neon(state, src, todo, padbit);
+ 
+ 			len -= todo;
+ 			src += todo;
+diff --git a/lib/crypto/arm64/sha1.h b/lib/crypto/arm64/sha1.h
+index aaef4ebfc5e3..bc7071f1be09 100644
+--- a/lib/crypto/arm64/sha1.h
++++ b/lib/crypto/arm64/sha1.h
+@@ -4,7 +4,6 @@
+  *
+  * Copyright 2025 Google LLC
+  */
+-#include <asm/neon.h>
+ #include <asm/simd.h>
+ #include <linux/cpufeature.h>
+ 
+@@ -20,9 +19,9 @@ static void sha1_blocks(struct sha1_block_state *state,
+ 		do {
+ 			size_t rem;
+ 
+-			kernel_neon_begin();
+-			rem = __sha1_ce_transform(state, data, nblocks);
+-			kernel_neon_end();
++			scoped_ksimd()
++				rem = __sha1_ce_transform(state, data, nblocks);
 +
- #ifdef CONFIG_KERNEL_MODE_NEON
+ 			data += (nblocks - rem) * SHA1_BLOCK_SIZE;
+ 			nblocks = rem;
+ 		} while (nblocks);
+diff --git a/lib/crypto/arm64/sha256.h b/lib/crypto/arm64/sha256.h
+index 80d06df27d3a..568dff0f276a 100644
+--- a/lib/crypto/arm64/sha256.h
++++ b/lib/crypto/arm64/sha256.h
+@@ -4,7 +4,6 @@
+  *
+  * Copyright 2025 Google LLC
+  */
+-#include <asm/neon.h>
+ #include <asm/simd.h>
+ #include <linux/cpufeature.h>
  
- /*
-@@ -40,4 +43,8 @@ static __must_check inline bool may_use_simd(void) {
+@@ -27,17 +26,16 @@ static void sha256_blocks(struct sha256_block_state *state,
+ 			do {
+ 				size_t rem;
  
- #endif /* ! CONFIG_KERNEL_MODE_NEON */
- 
-+DEFINE_LOCK_GUARD_0(ksimd, kernel_neon_begin(), kernel_neon_end())
+-				kernel_neon_begin();
+-				rem = __sha256_ce_transform(state,
+-							    data, nblocks);
+-				kernel_neon_end();
++				scoped_ksimd()
++					rem = __sha256_ce_transform(state, data,
++								    nblocks);
 +
-+#define scoped_ksimd()	scoped_guard(ksimd)
+ 				data += (nblocks - rem) * SHA256_BLOCK_SIZE;
+ 				nblocks = rem;
+ 			} while (nblocks);
+ 		} else {
+-			kernel_neon_begin();
+-			sha256_block_neon(state, data, nblocks);
+-			kernel_neon_end();
++			scoped_ksimd()
++				sha256_block_neon(state, data, nblocks);
+ 		}
+ 	} else {
+ 		sha256_block_data_order(state, data, nblocks);
+@@ -66,9 +64,8 @@ static bool sha256_finup_2x_arch(const struct __sha256_ctx *ctx,
+ 	if (IS_ENABLED(CONFIG_KERNEL_MODE_NEON) &&
+ 	    static_branch_likely(&have_ce) && len >= SHA256_BLOCK_SIZE &&
+ 	    len <= 65536 && likely(may_use_simd())) {
+-		kernel_neon_begin();
+-		sha256_ce_finup2x(ctx, data1, data2, len, out1, out2);
+-		kernel_neon_end();
++		scoped_ksimd()
++			sha256_ce_finup2x(ctx, data1, data2, len, out1, out2);
+ 		kmsan_unpoison_memory(out1, SHA256_DIGEST_SIZE);
+ 		kmsan_unpoison_memory(out2, SHA256_DIGEST_SIZE);
+ 		return true;
+diff --git a/lib/crypto/arm64/sha512.h b/lib/crypto/arm64/sha512.h
+index ddb0d256f73a..7eb7ef04d268 100644
+--- a/lib/crypto/arm64/sha512.h
++++ b/lib/crypto/arm64/sha512.h
+@@ -4,7 +4,7 @@
+  *
+  * Copyright 2025 Google LLC
+  */
+-#include <asm/neon.h>
 +
- #endif
+ #include <asm/simd.h>
+ #include <linux/cpufeature.h>
+ 
+@@ -24,9 +24,9 @@ static void sha512_blocks(struct sha512_block_state *state,
+ 		do {
+ 			size_t rem;
+ 
+-			kernel_neon_begin();
+-			rem = __sha512_ce_transform(state, data, nblocks);
+-			kernel_neon_end();
++			scoped_ksimd()
++				rem = __sha512_ce_transform(state, data, nblocks);
++
+ 			data += (nblocks - rem) * SHA512_BLOCK_SIZE;
+ 			nblocks = rem;
+ 		} while (nblocks);
 -- 
 2.51.0.710.ga91ca5db03-goog
 
