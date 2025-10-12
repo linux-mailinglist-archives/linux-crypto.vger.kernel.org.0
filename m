@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-17083-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17081-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD7E8BCFE7C
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 04:01:06 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E911CBCFE73
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 04:00:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9B9864E39E1
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 02:01:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DC14A4E2FB8
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 02:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADCB21ADB7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006AE20CCDC;
 	Sun, 12 Oct 2025 01:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aqhjxUsc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FbM0R5dj"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF0E2153D2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABEC320126A;
 	Sun, 12 Oct 2025 01:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760234389; cv=none; b=deETar3eQD5kzUN6zrWKJ8S42uj79BJpAbcYFeh/H+blQoaYmNHYp+b4Fa+BQTmv+NZqHkxxXyUSG109P6aJc/edJiKc7lK0SfJvd5fE5Bsmx4QQzWPb6HAARq2Jk8eRTlveXR2EUBrRpmQaIjYknjXyE7LnsnI/Mkuuzc3E4yM=
+	t=1760234388; cv=none; b=YdH283ce9059970rJ+vu3n7/ZoWneLZSbztYyrPbbxOAM+5ooW8Llsrn3l3v9K8eQSUTXn0diPAyVTHR4GMezdKf2tWDePJJVciB5fkE7kOo476sdzkbWQ0KV08BgjGRBiS9tlWRBCL3LUnHRfQBP14XhchuE8Rlj6157ul9VmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760234389; c=relaxed/simple;
-	bh=HHm6pOVf3sXBU3OQBSM5qr/7AHVRHIgZ/gieJ/a5ZQ4=;
+	s=arc-20240116; t=1760234388; c=relaxed/simple;
+	bh=68uQaOv1+uvhvQouwuek8F2wnHh0nnIbcccW1KgVb2g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W8HaENpLJevaonIFa01OMYCABY44TE9mCri0daA+sFCdlm+WBkXM93yvKL3gk0YViTw7bRvopyTBRfwIUYHePHsHfyS9c0nIdNaXfvlITi4/XcHpvsTUAQSLrOdUL/px0MyW2r0zEXQ5hoIcgu+h4uSJOd4KSaMxH7/V+XrGOuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aqhjxUsc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B89E8C4AF0B;
-	Sun, 12 Oct 2025 01:59:47 +0000 (UTC)
+	 MIME-Version; b=A7fjjZQGLXVMgjMTgqV4p3dG4fvr00020CYAkQy7VFudzRN/+AShVo/TW5qIIPCYR8/lYuNSEZ+Eu377VZtWwCgQijTzUG7GSG1fKegKusVDNTHM4WL/ot4tHmZEI2fB/8gkhUdGV0wmjVQflhpRjQE9cNDOR5vr1jrVzsgaJag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FbM0R5dj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A54DC116C6;
+	Sun, 12 Oct 2025 01:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1760234388;
-	bh=HHm6pOVf3sXBU3OQBSM5qr/7AHVRHIgZ/gieJ/a5ZQ4=;
+	bh=68uQaOv1+uvhvQouwuek8F2wnHh0nnIbcccW1KgVb2g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aqhjxUsc4ywtaQlokdKDqKbCRA5CyYQm1lk/0pTxq/nIpBi+mwzgy3Y6jNeXHi+3y
-	 R05NLQYxEcZL34GbgR9WR4jmvXWDuCn1TCmsovkVweYiSfchAVj2eJN6ZeyTHJ6+xr
-	 Nixkr9LHao9w/RLuZjErdz3jExn6wTh0LeusFucQezfCgk5Z5L+QVmzuOzx/dYjuT+
-	 +jVCW3bqMSy2WgTIFG5T9CEfp/lnihyjgsrw9xW1E9QQ4rIwfgdQjjhzUQ5Fq8dM2S
-	 Xbh843sXNlUHPkVrxOUWFAHJdWlD1E72vRvRTKIUFvYhCaP018ICZUtayILJy+W/52
-	 8MA9HG46EHj6w==
+	b=FbM0R5djZTm0S99UUljKvf6qqa7s0wQ5i/slLm0bWAmG0y3kNMwAcz73FapbTXCl2
+	 B7YixY/GU6hExfPP5ZSRcPhzyQBhpDFKjL+Bh2xh1KjPM0rXXpQpgVO9+T76lo2CiL
+	 P6wVjwB5DQTyIY9octvl/B7bcuMsw51YhvE/EbiO5zSB4V2TGZe+pI28TkDHLjeEVw
+	 S+Yzja43QlhGQaLudM8BupaX1fQV7cMF1Q1a3vAzVNCwONO0LubdRGf4A/yRfjWLKE
+	 GjjRzqlokfgS+4nZ9P9pc6RShNo4L6IoXDvjhYr1P0QOB/dVHqGssFaDqYMGrS/IbA
+	 SiodS1DlZ084Q==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-cifs@vger.kernel.org,
 	Steve French <sfrench@samba.org>
@@ -53,9 +53,9 @@ Cc: samba-technical@lists.samba.org,
 	Tom Talpey <tom@talpey.com>,
 	Bharath SM <bharathsm@microsoft.com>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 7/8] smb: client: Remove obsolete crypto_shash allocations
-Date: Sat, 11 Oct 2025 18:57:37 -0700
-Message-ID: <20251012015738.244315-8-ebiggers@kernel.org>
+Subject: [PATCH 8/8] smb: client: Consolidate cmac(aes) shash allocation
+Date: Sat, 11 Oct 2025 18:57:38 -0700
+Message-ID: <20251012015738.244315-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251012015738.244315-1-ebiggers@kernel.org>
 References: <20251012015738.244315-1-ebiggers@kernel.org>
@@ -67,159 +67,77 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that the SMB client accesses MD5, HMAC-MD5, HMAC-SHA256, and SHA-512
-only via the library API and not via crypto_shash, allocating
-crypto_shash objects for these algorithms is no longer necessary.
-Remove all these allocations, their corresponding kconfig selections,
-and their corresponding module soft dependencies.
+Now that smb3_crypto_shash_allocate() and smb311_crypto_shash_allocate()
+are identical and only allocate "cmac(aes)", delete the latter and
+replace the call to it with the former.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- fs/smb/client/Kconfig         |  4 ----
- fs/smb/client/cifsencrypt.c   |  3 ---
- fs/smb/client/cifsfs.c        |  4 ----
- fs/smb/client/cifsglob.h      |  3 ---
- fs/smb/client/smb2transport.c | 35 ++---------------------------------
- 5 files changed, 2 insertions(+), 47 deletions(-)
+ fs/smb/client/sess.c          |  2 +-
+ fs/smb/client/smb2proto.h     |  2 +-
+ fs/smb/client/smb2transport.c | 10 +---------
+ 3 files changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/fs/smb/client/Kconfig b/fs/smb/client/Kconfig
-index f5a980bdfc939..17bd368574e94 100644
---- a/fs/smb/client/Kconfig
-+++ b/fs/smb/client/Kconfig
-@@ -3,15 +3,11 @@ config CIFS
- 	tristate "SMB3 and CIFS support (advanced network filesystem)"
- 	depends on INET
- 	select NLS
- 	select NLS_UCS2_UTILS
- 	select CRYPTO
--	select CRYPTO_MD5
--	select CRYPTO_SHA256
--	select CRYPTO_SHA512
- 	select CRYPTO_CMAC
--	select CRYPTO_HMAC
- 	select CRYPTO_AEAD2
- 	select CRYPTO_CCM
- 	select CRYPTO_GCM
- 	select CRYPTO_ECB
- 	select CRYPTO_AES
-diff --git a/fs/smb/client/cifsencrypt.c b/fs/smb/client/cifsencrypt.c
-index bbcf3b05c19ab..801824825ecf2 100644
---- a/fs/smb/client/cifsencrypt.c
-+++ b/fs/smb/client/cifsencrypt.c
-@@ -691,13 +691,10 @@ calc_seckey(struct cifs_ses *ses)
- 
- void
- cifs_crypto_secmech_release(struct TCP_Server_Info *server)
- {
- 	cifs_free_hash(&server->secmech.aes_cmac);
--	cifs_free_hash(&server->secmech.hmacsha256);
--	cifs_free_hash(&server->secmech.md5);
--	cifs_free_hash(&server->secmech.sha512);
- 
- 	if (server->secmech.enc) {
- 		crypto_free_aead(server->secmech.enc);
- 		server->secmech.enc = NULL;
+diff --git a/fs/smb/client/sess.c b/fs/smb/client/sess.c
+index 0a8c2fcc9dedf..ef3b498b0a02a 100644
+--- a/fs/smb/client/sess.c
++++ b/fs/smb/client/sess.c
+@@ -582,11 +582,11 @@ cifs_ses_add_channel(struct cifs_ses *ses,
+ 	/*
+ 	 * We need to allocate the server crypto now as we will need
+ 	 * to sign packets before we generate the channel signing key
+ 	 * (we sign with the session key)
+ 	 */
+-	rc = smb311_crypto_shash_allocate(chan->server);
++	rc = smb3_crypto_shash_allocate(chan->server);
+ 	if (rc) {
+ 		cifs_dbg(VFS, "%s: crypto alloc failed\n", __func__);
+ 		mutex_unlock(&ses->session_mutex);
+ 		goto out;
  	}
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index 05b1fa76e8ccf..4f959f1e08d23 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -2137,17 +2137,13 @@ MODULE_LICENSE("GPL");	/* combination of LGPL + GPL source behaves as GPL */
- MODULE_DESCRIPTION
- 	("VFS to access SMB3 servers e.g. Samba, Macs, Azure and Windows (and "
- 	"also older servers complying with the SNIA CIFS Specification)");
- MODULE_VERSION(CIFS_VERSION);
- MODULE_SOFTDEP("ecb");
--MODULE_SOFTDEP("hmac");
--MODULE_SOFTDEP("md5");
- MODULE_SOFTDEP("nls");
- MODULE_SOFTDEP("aes");
- MODULE_SOFTDEP("cmac");
--MODULE_SOFTDEP("sha256");
--MODULE_SOFTDEP("sha512");
- MODULE_SOFTDEP("aead2");
- MODULE_SOFTDEP("ccm");
- MODULE_SOFTDEP("gcm");
- module_init(init_cifs)
- module_exit(exit_cifs)
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 8f6f567d7474f..8932aa612db4a 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -219,13 +219,10 @@ struct session_key {
- 	char *response;
- };
- 
- /* crypto hashing related structure/fields, not specific to a sec mech */
- struct cifs_secmech {
--	struct shash_desc *md5; /* md5 hash function, for CIFS/SMB1 signatures */
--	struct shash_desc *hmacsha256; /* hmac-sha256 hash function, for SMB2 signatures */
--	struct shash_desc *sha512; /* sha512 hash function, for SMB3.1.1 preauth hash */
- 	struct shash_desc *aes_cmac; /* block-cipher based MAC function, for SMB3 signatures */
- 
- 	struct crypto_aead *enc; /* smb3 encryption AEAD TFM (AES-CCM and AES-GCM) */
- 	struct crypto_aead *dec; /* smb3 decryption AEAD TFM (AES-CCM and AES-GCM) */
- };
+diff --git a/fs/smb/client/smb2proto.h b/fs/smb/client/smb2proto.h
+index e7cda885c39f0..6eb86d134abcc 100644
+--- a/fs/smb/client/smb2proto.h
++++ b/fs/smb/client/smb2proto.h
+@@ -293,11 +293,11 @@ extern int smb2_validate_and_copy_iov(unsigned int offset,
+ 				      struct kvec *iov,
+ 				      unsigned int minbufsize, char *data);
+ extern void smb2_copy_fs_info_to_kstatfs(
+ 	 struct smb2_fs_full_size_info *pfs_inf,
+ 	 struct kstatfs *kst);
+-extern int smb311_crypto_shash_allocate(struct TCP_Server_Info *server);
++extern int smb3_crypto_shash_allocate(struct TCP_Server_Info *server);
+ extern void smb311_update_preauth_hash(struct cifs_ses *ses,
+ 				       struct TCP_Server_Info *server,
+ 				       struct kvec *iov, int nvec);
+ extern int smb2_query_info_compound(const unsigned int xid,
+ 				    struct cifs_tcon *tcon,
 diff --git a/fs/smb/client/smb2transport.c b/fs/smb/client/smb2transport.c
-index 89258accc2203..cd689bc27bfdc 100644
+index cd689bc27bfdc..ad6068e17a2a9 100644
 --- a/fs/smb/client/smb2transport.c
 +++ b/fs/smb/client/smb2transport.c
-@@ -29,53 +29,22 @@
+@@ -25,20 +25,12 @@
+ #include "smb2proto.h"
+ #include "cifs_debug.h"
+ #include "../common/smb2status.h"
+ #include "smb2glob.h"
  
- static int
- smb3_crypto_shash_allocate(struct TCP_Server_Info *server)
- {
- 	struct cifs_secmech *p = &server->secmech;
--	int rc;
+-static int
+-smb3_crypto_shash_allocate(struct TCP_Server_Info *server)
+-{
+-	struct cifs_secmech *p = &server->secmech;
 -
--	rc = cifs_alloc_hash("hmac(sha256)", &p->hmacsha256);
--	if (rc)
--		goto err;
+-	return cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
+-}
 -
--	rc = cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
--	if (rc)
--		goto err;
- 
--	return 0;
--err:
--	cifs_free_hash(&p->hmacsha256);
--	return rc;
-+	return cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
- }
- 
  int
- smb311_crypto_shash_allocate(struct TCP_Server_Info *server)
+-smb311_crypto_shash_allocate(struct TCP_Server_Info *server)
++smb3_crypto_shash_allocate(struct TCP_Server_Info *server)
  {
  	struct cifs_secmech *p = &server->secmech;
--	int rc = 0;
  
--	rc = cifs_alloc_hash("hmac(sha256)", &p->hmacsha256);
--	if (rc)
--		return rc;
--
--	rc = cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
--	if (rc)
--		goto err;
--
--	rc = cifs_alloc_hash("sha512", &p->sha512);
--	if (rc)
--		goto err;
--
--	return 0;
--
--err:
--	cifs_free_hash(&p->aes_cmac);
--	cifs_free_hash(&p->hmacsha256);
--	return rc;
-+	return cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
+ 	return cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
  }
- 
--
- static
- int smb3_get_sign_key(__u64 ses_id, struct TCP_Server_Info *server, u8 *key)
- {
- 	struct cifs_chan *chan;
- 	struct TCP_Server_Info *pserver;
 -- 
 2.51.0
 
