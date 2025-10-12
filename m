@@ -1,144 +1,133 @@
-Return-Path: <linux-crypto+bounces-17081-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17084-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E911CBCFE73
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 04:00:46 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32A5BBCFF22
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 05:08:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DC14A4E2FB8
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 02:00:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2101C4E4BC0
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Oct 2025 03:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006AE20CCDC;
-	Sun, 12 Oct 2025 01:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95CC1E1A3B;
+	Sun, 12 Oct 2025 03:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FbM0R5dj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TrwPM09L"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABEC320126A;
-	Sun, 12 Oct 2025 01:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AFE62B2D7;
+	Sun, 12 Oct 2025 03:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760234388; cv=none; b=YdH283ce9059970rJ+vu3n7/ZoWneLZSbztYyrPbbxOAM+5ooW8Llsrn3l3v9K8eQSUTXn0diPAyVTHR4GMezdKf2tWDePJJVciB5fkE7kOo476sdzkbWQ0KV08BgjGRBiS9tlWRBCL3LUnHRfQBP14XhchuE8Rlj6157ul9VmM=
+	t=1760238508; cv=none; b=gh5+ULsxL+Sd/heks8r8NUOqHvKlGo5UK1MtvbZkLeg5gYaF6WysZD4HTRklzIVfKKrOJh57elXRNArc6SW7zYGJWSI2Qx5cWpFqkI9umBV3zvD/jkAoO9LL21IuUy5rL4LETDVLNJAAqKDcjVfiqQNYjBEJUf1QK2S4ofn5/AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760234388; c=relaxed/simple;
-	bh=68uQaOv1+uvhvQouwuek8F2wnHh0nnIbcccW1KgVb2g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A7fjjZQGLXVMgjMTgqV4p3dG4fvr00020CYAkQy7VFudzRN/+AShVo/TW5qIIPCYR8/lYuNSEZ+Eu377VZtWwCgQijTzUG7GSG1fKegKusVDNTHM4WL/ot4tHmZEI2fB/8gkhUdGV0wmjVQflhpRjQE9cNDOR5vr1jrVzsgaJag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FbM0R5dj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A54DC116C6;
-	Sun, 12 Oct 2025 01:59:48 +0000 (UTC)
+	s=arc-20240116; t=1760238508; c=relaxed/simple;
+	bh=a0B/3/IMMDde1Kgn4DWqCPNin7xvdApoB+bc1/3Ktts=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eWmjGRWXfUiGyUzdD7RzsS72RoMOz7nb+pXC01Gtp6ZfhvTpDMb0Pyj8ZtK5rR/TyzOvDIKXsVj6b4JZhBOf58oeEdAgWdrH4hqAx7BRdPj0lwOAPbDX+bogX3bDPdyrJdVRJONbmt14N24l2D8feOULPBGwjGrGJPUJ0ezv+eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TrwPM09L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F49C4CEE7;
+	Sun, 12 Oct 2025 03:08:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760234388;
-	bh=68uQaOv1+uvhvQouwuek8F2wnHh0nnIbcccW1KgVb2g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FbM0R5djZTm0S99UUljKvf6qqa7s0wQ5i/slLm0bWAmG0y3kNMwAcz73FapbTXCl2
-	 B7YixY/GU6hExfPP5ZSRcPhzyQBhpDFKjL+Bh2xh1KjPM0rXXpQpgVO9+T76lo2CiL
-	 P6wVjwB5DQTyIY9octvl/B7bcuMsw51YhvE/EbiO5zSB4V2TGZe+pI28TkDHLjeEVw
-	 S+Yzja43QlhGQaLudM8BupaX1fQV7cMF1Q1a3vAzVNCwONO0LubdRGf4A/yRfjWLKE
-	 GjjRzqlokfgS+4nZ9P9pc6RShNo4L6IoXDvjhYr1P0QOB/dVHqGssFaDqYMGrS/IbA
-	 SiodS1DlZ084Q==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-cifs@vger.kernel.org,
-	Steve French <sfrench@samba.org>
-Cc: samba-technical@lists.samba.org,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 8/8] smb: client: Consolidate cmac(aes) shash allocation
-Date: Sat, 11 Oct 2025 18:57:38 -0700
-Message-ID: <20251012015738.244315-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251012015738.244315-1-ebiggers@kernel.org>
-References: <20251012015738.244315-1-ebiggers@kernel.org>
+	s=k20201202; t=1760238508;
+	bh=a0B/3/IMMDde1Kgn4DWqCPNin7xvdApoB+bc1/3Ktts=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TrwPM09LyhM7rIYOocDrpSDTQWqhMsNqfMh1gfJWBAdDHdKgYMSv5h4QGjqfezDJS
+	 CIqfhmMVFnlHf/KPrDH3Q2NMzVIQhPHr1PwBUbv0On897qGRCdLiTIOK951rEwzc1v
+	 ztoeObsMmipRchZxu3U07hsuSP44IlQ47eNCqMjgfCyPi652HP/oD4Kj7FZPeQpNYZ
+	 Yof3rc24fgaoEJeGzs/g38HvSnFYsfz9HcMFgqWStBfPk3Rt5OJk879aVgQi9QQyEt
+	 kUAUoeyhbKjGPmOjopkz/X8RtRVjbAPYGuTSekz1yZLYFIGpsbdsTwu8BA8xf48dwt
+	 1kCIdF7S/+++w==
+Message-ID: <aeed33fa-8659-4141-86ea-5b75541989b7@kernel.org>
+Date: Sun, 12 Oct 2025 05:08:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: crypto: qcom,prng: Document kaanapali
+ RNG
+To: Jingyi Wang <jingyi.wang@oss.qualcomm.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Thara Gopinath <thara.gopinath@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konradybcio@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ aiqun.yu@oss.qualcomm.com, tingwei.zhang@oss.qualcomm.com,
+ trilok.soni@oss.qualcomm.com, yijie.yang@oss.qualcomm.com,
+ Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>
+References: <20250924-knp-crypto-v1-0-49af17a231b7@oss.qualcomm.com>
+ <20250924-knp-crypto-v1-1-49af17a231b7@oss.qualcomm.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 a/A=
+In-Reply-To: <20250924-knp-crypto-v1-1-49af17a231b7@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Now that smb3_crypto_shash_allocate() and smb311_crypto_shash_allocate()
-are identical and only allocate "cmac(aes)", delete the latter and
-replace the call to it with the former.
+On 25/09/2025 01:38, Jingyi Wang wrote:
+> From: Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>
+> 
+> Document kaanapali compatible for the True Random Number Generator.
+> 
+> Signed-off-by: Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>
+> Signed-off-by: Jingyi Wang <jingyi.wang@oss.qualcomm.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 1 +
 
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- fs/smb/client/sess.c          |  2 +-
- fs/smb/client/smb2proto.h     |  2 +-
- fs/smb/client/smb2transport.c | 10 +---------
- 3 files changed, 3 insertions(+), 11 deletions(-)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/fs/smb/client/sess.c b/fs/smb/client/sess.c
-index 0a8c2fcc9dedf..ef3b498b0a02a 100644
---- a/fs/smb/client/sess.c
-+++ b/fs/smb/client/sess.c
-@@ -582,11 +582,11 @@ cifs_ses_add_channel(struct cifs_ses *ses,
- 	/*
- 	 * We need to allocate the server crypto now as we will need
- 	 * to sign packets before we generate the channel signing key
- 	 * (we sign with the session key)
- 	 */
--	rc = smb311_crypto_shash_allocate(chan->server);
-+	rc = smb3_crypto_shash_allocate(chan->server);
- 	if (rc) {
- 		cifs_dbg(VFS, "%s: crypto alloc failed\n", __func__);
- 		mutex_unlock(&ses->session_mutex);
- 		goto out;
- 	}
-diff --git a/fs/smb/client/smb2proto.h b/fs/smb/client/smb2proto.h
-index e7cda885c39f0..6eb86d134abcc 100644
---- a/fs/smb/client/smb2proto.h
-+++ b/fs/smb/client/smb2proto.h
-@@ -293,11 +293,11 @@ extern int smb2_validate_and_copy_iov(unsigned int offset,
- 				      struct kvec *iov,
- 				      unsigned int minbufsize, char *data);
- extern void smb2_copy_fs_info_to_kstatfs(
- 	 struct smb2_fs_full_size_info *pfs_inf,
- 	 struct kstatfs *kst);
--extern int smb311_crypto_shash_allocate(struct TCP_Server_Info *server);
-+extern int smb3_crypto_shash_allocate(struct TCP_Server_Info *server);
- extern void smb311_update_preauth_hash(struct cifs_ses *ses,
- 				       struct TCP_Server_Info *server,
- 				       struct kvec *iov, int nvec);
- extern int smb2_query_info_compound(const unsigned int xid,
- 				    struct cifs_tcon *tcon,
-diff --git a/fs/smb/client/smb2transport.c b/fs/smb/client/smb2transport.c
-index cd689bc27bfdc..ad6068e17a2a9 100644
---- a/fs/smb/client/smb2transport.c
-+++ b/fs/smb/client/smb2transport.c
-@@ -25,20 +25,12 @@
- #include "smb2proto.h"
- #include "cifs_debug.h"
- #include "../common/smb2status.h"
- #include "smb2glob.h"
- 
--static int
--smb3_crypto_shash_allocate(struct TCP_Server_Info *server)
--{
--	struct cifs_secmech *p = &server->secmech;
--
--	return cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
--}
--
- int
--smb311_crypto_shash_allocate(struct TCP_Server_Info *server)
-+smb3_crypto_shash_allocate(struct TCP_Server_Info *server)
- {
- 	struct cifs_secmech *p = &server->secmech;
- 
- 	return cifs_alloc_hash("cmac(aes)", &p->aes_cmac);
- }
--- 
-2.51.0
-
+Best regards,
+Krzysztof
 
