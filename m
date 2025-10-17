@@ -1,284 +1,233 @@
-Return-Path: <linux-crypto+bounces-17228-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17231-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573A2BE94C7
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 16:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D7FDBE9D86
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 17:28:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD1C0626047
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 14:47:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 785B8744EC2
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 15:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA11E32C939;
-	Fri, 17 Oct 2025 14:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32C5336EC2;
+	Fri, 17 Oct 2025 15:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LlmP2dUd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBJGnQw2"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F8B2F12A6
-	for <linux-crypto@vger.kernel.org>; Fri, 17 Oct 2025 14:44:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537EB335093;
+	Fri, 17 Oct 2025 15:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760712302; cv=none; b=PVS+xWZQY00DEBzz+Vc1soFGPIoNTDFzMLX9QOk5hG7q9tTIP3haql5/BdcM4Yi2x31mW+Y9PVnggQFreXCr5bx5cf3hAw7+c2KG3i4sTl0iFXOrpWsrAzyFC0OGvm/fEetySUiGYP619My/MRicAAWjbyGten1cf9pnpX/naYI=
+	t=1760714355; cv=none; b=SQVlofZQNeyhvW6KN4vA0futUeZKq/ISyNHTjYk06nyVQwdGyZCG7xCQqd9RXJuZcaTHajfPH+D5RatfL32OrPk/gpc5Ss92pkfODZIy9+TVwZjyyfC44a+Lj8k73gWmsFUcZYhezfIoEuJ3Oq36K6/qjBcIhcS0r52OnAQDnpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760712302; c=relaxed/simple;
-	bh=zdhUsYsNuD5UVZ5sdV6O5KnrH9qTzwzetvx3pp2yM4U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qhHm2IxI1WeMaZQ7R1q/SoUVlvgGynaYVR4jH1s9hFQMCq+isiPsq+jZNIzkS6GOGOdd+1ng6Jo5/fQVrtVhQo/DaFOEch1F3gzYSatUD2qUYds/RO6x0I2Pqr9PDtB/5+62PmSJ483SCNhlclYAozgJavfB8d9jmJoxlR4IAiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LlmP2dUd; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760712297;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xuF1zI/X45JtGhKorM1SQByR7PQAM32rNvbgQYcWujw=;
-	b=LlmP2dUdf5vxLEGuojaXCeAu7WAESiU66RknIQIzCyNJ7lklDNFd6aUUBLP4JikARlR9MQ
-	T7Psp9G7Vvd0Vn/L2goRLHfkoJbJ5KaZ2lLQnts2h8Y6yLp+JfYrl3tBa8KbeOcL7NE/qI
-	pOrsFnfjSzlMLAISIOgLjF5hGXxtC+0=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-647-RzTApwSQPB6rBUQSwUbHaQ-1; Fri,
- 17 Oct 2025 10:44:55 -0400
-X-MC-Unique: RzTApwSQPB6rBUQSwUbHaQ-1
-X-Mimecast-MFC-AGG-ID: RzTApwSQPB6rBUQSwUbHaQ_1760712293
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6FC271800592;
-	Fri, 17 Oct 2025 14:44:53 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.57])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id E098F1800452;
-	Fri, 17 Oct 2025 14:44:49 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: David Howells <dhowells@redhat.com>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Stephan Mueller <smueller@chronox.de>,
-	Lukas Wunner <lukas@wunner.de>,
-	Ignat Korchagin <ignat@cloudflare.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Daniel Gomez <da.gomez@kernel.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	linux-crypto@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 17/17] modsign: Enable ML-DSA module signing
-Date: Fri, 17 Oct 2025 15:43:01 +0100
-Message-ID: <20251017144311.817771-18-dhowells@redhat.com>
-In-Reply-To: <20251017144311.817771-1-dhowells@redhat.com>
-References: <20251017144311.817771-1-dhowells@redhat.com>
+	s=arc-20240116; t=1760714355; c=relaxed/simple;
+	bh=Jkoxv5jBiXwh3/Xam1mL3Rb7nwPNp22HhVGe+o5k1sY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lT+SAjbmhvUnXrEbcrnYhlbKwuzmp3aLg2hDmd54zgIipX3/Gso+63olqogeHhotWviM6iXqDqJSoZ/8/iNUVB9qoY2optZRxuFQOdxLlJ64Ij6XUpCvvcrLH1prSrxuM9GmR43kPdOce00cKbxeMCsrXzgpnWyFOioZdOnRvX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DBJGnQw2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98656C4CEE7;
+	Fri, 17 Oct 2025 15:19:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760714355;
+	bh=Jkoxv5jBiXwh3/Xam1mL3Rb7nwPNp22HhVGe+o5k1sY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DBJGnQw29zw6lCVTKtpBhIgSG7SMX4VZD9MlmLUEPUBMWipU3K8+xfy/xqlmxz8Qi
+	 mLxaq5V5Z7Et2fOTaRuUiiEspXQRrhIZZJ9xRqScULqTAgvTGjzSlFIQWaMNs3MR+A
+	 dKeaol6kFcz4lkdW7DFiMk5bbpEA1Dgh/SH6u6TIXDXdKDqoochxfVVvitpFaYDKlL
+	 bULb536qkalBIUpX9fU7Dk2QB8zCg/3nMjXL1nlc2Ddg/ayrRE+8/4gAavHoyhpk1Y
+	 0fREHXWYLfsbUhrNzXSgnVS+UpYAnpmQOfquXa1v8/EjnKyNDqrbCpraPpvMaG8lGT
+	 yY3YmE4+sr2qw==
+Date: Fri, 17 Oct 2025 08:19:12 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre
+ Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>, Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, David Miller
+ <davem@davemloft.net>, Linus Walleij <linus.walleij@linaro.org>, Bartosz
+ Golaszewski <brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>, Andrew Jeffery
+ <andrew@codeconstruct.com.au>, Crt Mori <cmo@melexis.com>, Jonathan Cameron
+ <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Jacky Huang
+ <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>, Yury Norov
+ <yury.norov@gmail.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Johannes
+ Berg <johannes@sipsolutions.net>, Alex Elder <elder@ieee.org>, David Laight
+ <david.laight.linux@gmail.com>, Vincent Mailhol
+ <mailhol.vincent@wanadoo.fr>, linux-clk@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+ linux-crypto@vger.kernel.org, qat-linux@intel.com,
+ linux-gpio@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+ linux-iio@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH treewide v3 2/4] bitfield: Add non-constant
+ field_{prep,get}() helpers
+Message-ID: <20251017081912.2ad26705@kernel.org>
+In-Reply-To: <2d30e5ffe70ce35f952b7d497d2959391fbf0580.1739540679.git.geert+renesas@glider.be>
+References: <cover.1739540679.git.geert+renesas@glider.be>
+	<2d30e5ffe70ce35f952b7d497d2959391fbf0580.1739540679.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Allow ML-DSA module signing to be enabled.
+On Fri, 14 Feb 2025 14:55:51 +0100 Geert Uytterhoeven wrote:
+> The existing FIELD_{GET,PREP}() macros are limited to compile-time
+> constants.  However, it is very common to prepare or extract bitfield
+> elements where the bitfield mask is not a compile-time constant.
+> 
+> To avoid this limitation, the AT91 clock driver and several other
+> drivers already have their own non-const field_{prep,get}() macros.
+> Make them available for general use by consolidating them in
+> <linux/bitfield.h>, and improve them slightly:
+>   1. Avoid evaluating macro parameters more than once,
+>   2. Replace "ffs() - 1" by "__ffs()",
+>   3. Support 64-bit use on 32-bit architectures.
+> 
+> This is deliberately not merged into the existing FIELD_{GET,PREP}()
+> macros, as people expressed the desire to keep stricter variants for
+> increased safety, or for performance critical paths.
 
-Note that openssl's CMS_*() function suite does not, as of openssl-3.5.1,
-support the use of CMS_NOATTR with ML-DSA, so the prohibition against using
-authenticatedAttributes with module signing has to be removed.  The selected
-digest then applies only to the algorithm used to calculate the digest
-stored in the messageDigest attribute.
+We already have helpers for this, please just don't know they exist :/
 
-The ML-DSA algorithm uses its own internal choice of digest (SHAKE256)
-without regard to what's specified in the CMS message.  This is, in theory,
-configurable, but there's currently no hook in the crypto_sig API to do
-that, though possibly it could be done by parameterising the name of the
-algorithm, e.g. ("ml-dsa87(sha512)").
+The "const" version of the helpers are specifically defined to work
+on masks generated with BIT() and GENMASK(). If the mask is not
+constant we should expect it to have a well defined width.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Lukas Wunner <lukas@wunner.de>
-cc: Ignat Korchagin <ignat@cloudflare.com>
-cc: Stephan Mueller <smueller@chronox.de>
-cc: Eric Biggers <ebiggers@kernel.org>
-cc: Herbert Xu <herbert@gondor.apana.org.au>
-cc: keyrings@vger.kernel.org
-cc: linux-crypto@vger.kernel.org
+I strongly prefer that we do this instead and convert the users to
+the fixed-width version:
+
+---->8----------------
+
+Subject: bitfield: open code the fixed-width non-const helpers so that people see them
+
+There is a number of useful helpers defined in bitfield.h but
+they are mostly invisible to the reader because they are all
+generated by macros. Open code the 32b versions (which are
+most commonly used) to give developers a chance to discover them.
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- Documentation/admin-guide/module-signing.rst | 15 +++++------
- certs/Kconfig                                | 24 ++++++++++++++++++
- certs/Makefile                               |  3 +++
- crypto/asymmetric_keys/pkcs7_verify.c        |  4 ---
- kernel/module/Kconfig                        |  5 ++++
- scripts/sign-file.c                          | 26 ++++++++++++++------
- 6 files changed, 58 insertions(+), 19 deletions(-)
+ include/linux/bitfield.h | 82 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 81 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index a8667a777490..6daff80c277b 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -28,10 +28,11 @@ trusted userspace bits.
+diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
+index 5355f8f806a9..0356e535f37d 100644
+--- a/include/linux/bitfield.h
++++ b/include/linux/bitfield.h
+@@ -173,6 +173,11 @@
+ 		*(_reg_p) |= (((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask));	\
+ 	})
  
- This facility uses X.509 ITU-T standard certificates to encode the public keys
- involved.  The signatures are not themselves encoded in any industrial standard
--type.  The built-in facility currently only supports the RSA & NIST P-384 ECDSA
--public key signing standard (though it is pluggable and permits others to be
--used).  The possible hash algorithms that can be used are SHA-2 and SHA-3 of
--sizes 256, 384, and 512 (the algorithm is selected by data in the signature).
-+type.  The built-in facility currently only supports the RSA, NIST P-384 ECDSA
-+and NIST FIPS-204 ML-DSA (Dilithium) public key signing standards (though it is
-+pluggable and permits others to be used).  For RSA and ECDSA, the possible hash
-+algorithms that can be used are SHA-2 and SHA-3 of sizes 256, 384, and 512 (the
-+algorithm is selected by data in the signature); ML-DSA uses SHAKE256.
- 
- 
- ==========================
-@@ -146,9 +147,9 @@ into vmlinux) using parameters in the::
- 
- file (which is also generated if it does not already exist).
- 
--One can select between RSA (``MODULE_SIG_KEY_TYPE_RSA``) and ECDSA
--(``MODULE_SIG_KEY_TYPE_ECDSA``) to generate either RSA 4k or NIST
--P-384 keypair.
-+One can select between RSA (``MODULE_SIG_KEY_TYPE_RSA``), ECDSA
-+(``MODULE_SIG_KEY_TYPE_ECDSA``) and ML-DSA (``MODULE_SIG_KEY_TYPE_ML_DSA``) to
-+generate an RSA 4k, a NIST P-384 keypair or an ML-DSA keypair.
- 
- It is strongly recommended that you provide your own x509.genkey file.
- 
-diff --git a/certs/Kconfig b/certs/Kconfig
-index 78307dc25559..a09db4b2c87c 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -39,6 +39,30 @@ config MODULE_SIG_KEY_TYPE_ECDSA
- 	 Note: Remove all ECDSA signing keys, e.g. certs/signing_key.pem,
- 	 when falling back to building Linux 5.14 and older kernels.
- 
-+config MODULE_SIG_KEY_TYPE_ML_DSA_44
-+	bool "ML-DSA (Dilithium) 44"
-+	select CRYPTO_ML_DSA
-+	select LIB_SHA3
-+	help
-+	  Use an ML-DSA (Dilithium) 87 key (NIST FIPS 204) for module signing
-+	  with a SHAKE256 'hash' of the message.
++/* Non-constant, fixed-width helpers follow
++ * Open code u32 and le32 versions for documentation / visibility,
++ * be32 and other widths exist but are generated using macroes.
++ */
 +
-+config MODULE_SIG_KEY_TYPE_ML_DSA_65
-+	bool "ML-DSA (Dilithium) 65"
-+	select CRYPTO_ML_DSA
-+	select LIB_SHA3
-+	help
-+	  Use an ML-DSA (Dilithium) 87 key (NIST FIPS 204) for module signing
-+	  with a SHAKE256 'hash' of the message.
+ extern void __compiletime_error("value doesn't fit into mask")
+ __field_overflow(void);
+ extern void __compiletime_error("bad bitfield mask")
+@@ -188,6 +193,81 @@ static __always_inline u64 field_mask(u64 field)
+ 	return field / field_multiplier(field);
+ }
+ #define field_max(field)	((typeof(field))field_mask(field))
 +
-+config MODULE_SIG_KEY_TYPE_ML_DSA_87
-+	bool "ML-DSA (Dilithium) 87"
-+	select CRYPTO_ML_DSA
-+	select LIB_SHA3
-+	help
-+	  Use an ML-DSA (Dilithium) 87 key (NIST FIPS 204) for module signing
-+	  with a SHAKE256 'hash' of the message.
++/**
++ * u32_encode_bits() - prepare a u32 bitfield element (non-const)
++ * @v: value to put in the field
++ * @field: shifted mask defining the field's length and position
++ *
++ * Equivalent of FIELD_PREP() for u32, field does not have to be constant.
++ *
++ * Note that the helper is available for other field widths (generated below).
++ */
++static __always_inline __u32 u32_encode_bits(u32 v, u32 field)
++{
++	if (__builtin_constant_p(v) && (v & ~field_mask(field)))
++		__field_overflow();
++	return ((v & field_mask(field)) * field_multiplier(field));
++}
 +
- endchoice
- 
- config SYSTEM_TRUSTED_KEYRING
-diff --git a/certs/Makefile b/certs/Makefile
-index f6fa4d8d75e0..231379c91b86 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -43,6 +43,9 @@ targets += x509_certificate_list
- ifeq ($(CONFIG_MODULE_SIG_KEY),certs/signing_key.pem)
- 
- keytype-$(CONFIG_MODULE_SIG_KEY_TYPE_ECDSA) := -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
-+keytype-$(CONFIG_MODULE_SIG_KEY_TYPE_ML_DSA_44) := -newkey ml-dsa-44
-+keytype-$(CONFIG_MODULE_SIG_KEY_TYPE_ML_DSA_65) := -newkey ml-dsa-65
-+keytype-$(CONFIG_MODULE_SIG_KEY_TYPE_ML_DSA_87) := -newkey ml-dsa-87
- 
- quiet_cmd_gen_key = GENKEY  $@
-       cmd_gen_key = openssl req -new -nodes -utf8 -$(CONFIG_MODULE_SIG_HASH) -days 36500 \
-diff --git a/crypto/asymmetric_keys/pkcs7_verify.c b/crypto/asymmetric_keys/pkcs7_verify.c
-index 0f9f515b784d..f7ea1d41771d 100644
---- a/crypto/asymmetric_keys/pkcs7_verify.c
-+++ b/crypto/asymmetric_keys/pkcs7_verify.c
-@@ -424,10 +424,6 @@ int pkcs7_verify(struct pkcs7_message *pkcs7,
- 			pr_warn("Invalid module sig (not pkcs7-data)\n");
- 			return -EKEYREJECTED;
- 		}
--		if (pkcs7->have_authattrs) {
--			pr_warn("Invalid module sig (has authattrs)\n");
--			return -EKEYREJECTED;
--		}
- 		break;
- 	case VERIFYING_FIRMWARE_SIGNATURE:
- 		if (pkcs7->data_type != OID_data) {
-diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
-index 2a1beebf1d37..4b5d1601d537 100644
---- a/kernel/module/Kconfig
-+++ b/kernel/module/Kconfig
-@@ -327,6 +327,10 @@ config MODULE_SIG_SHA3_512
- 	bool "SHA3-512"
- 	select CRYPTO_SHA3
- 
-+config MODULE_SIG_SHAKE256
-+	bool "SHAKE256"
-+	select CRYPTO_SHA3
++/**
++ * u32_replace_bits() - change a u32 bitfield element (non-const)
++ * @old: old u32 value to modify
++ * @val: value to put in the field
++ * @field: shifted mask defining the field's length and position
++ *
++ * Remove the current contents of the @field in @old and set it to @new.
++ *
++ * Note that the helper is available for other field widths (generated below).
++ */
++static __always_inline __u32 u32_replace_bits(__u32 old, u32 val, u32 field)
++{
++	return (old & ~(field)) | u32_encode_bits(val, field);
++}
 +
- endchoice
- 
- config MODULE_SIG_HASH
-@@ -339,6 +343,7 @@ config MODULE_SIG_HASH
- 	default "sha3-256" if MODULE_SIG_SHA3_256
- 	default "sha3-384" if MODULE_SIG_SHA3_384
- 	default "sha3-512" if MODULE_SIG_SHA3_512
-+	default "shake256" if MODULE_SIG_SHAKE256
- 
- config MODULE_COMPRESS
- 	bool "Module compression"
-diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-index 7070245edfc1..b726581075f9 100644
---- a/scripts/sign-file.c
-+++ b/scripts/sign-file.c
-@@ -315,18 +315,28 @@ int main(int argc, char **argv)
- 		ERR(!digest_algo, "EVP_get_digestbyname");
- 
- #ifndef USE_PKCS7
++/**
++ * u32_get_bits() - get u32 bitfield element (non-const)
++ * @v: value to extract the field from
++ * @field: shifted mask defining the field's length and position
++ *
++ * Extract the value of the field and shift it down.
++ *
++ * Note that the helper is available for other field widths (generated below).
++ */
++static __always_inline u32 u32_get_bits(__u32 v, u32 field)
++{
++	return ((v) & field) / field_multiplier(field);
++}
 +
-+		unsigned int flags =
-+			CMS_NOCERTS |
-+			CMS_PARTIAL |
-+			CMS_BINARY |
-+			CMS_DETACHED |
-+			CMS_STREAM  |
-+			CMS_NOSMIMECAP |
-+			CMS_NO_SIGNING_TIME |
-+			use_keyid;
-+		if (!EVP_PKEY_is_a(private_key, "ML-DSA-44") &&
-+		    !EVP_PKEY_is_a(private_key, "ML-DSA-65") &&
-+		    !EVP_PKEY_is_a(private_key, "ML-DSA-87"))
-+			flags |= use_signed_attrs;
++static __always_inline void u32p_replace_bits(__u32 *p, u32 val, u32 field)
++{
++	*p = (*p & ~(field)) | u32_encode_bits(val, field);
++}
 +
- 		/* Load the signature message from the digest buffer. */
--		cms = CMS_sign(NULL, NULL, NULL, NULL,
--			       CMS_NOCERTS | CMS_PARTIAL | CMS_BINARY |
--			       CMS_DETACHED | CMS_STREAM);
-+		cms = CMS_sign(NULL, NULL, NULL, NULL, flags);
- 		ERR(!cms, "CMS_sign");
- 
--		ERR(!CMS_add1_signer(cms, x509, private_key, digest_algo,
--				     CMS_NOCERTS | CMS_BINARY |
--				     CMS_NOSMIMECAP | use_keyid |
--				     use_signed_attrs),
-+		ERR(!CMS_add1_signer(cms, x509, private_key, digest_algo, flags),
- 		    "CMS_add1_signer");
--		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) != 1,
-+		ERR(CMS_final(cms, bm, NULL, flags) != 1,
- 		    "CMS_final");
- 
- #else
++static __always_inline __le32 le32_encode_bits(u32 v, u32 field)
++{
++	if (__builtin_constant_p(v) && (v & ~field_mask(field)))
++		__field_overflow();
++	return cpu_to_le32((v & field_mask(field)) * field_multiplier(field));
++}
++
++static __always_inline __le32 le32_replace_bits(__le32 old, u32 val, u32 field)
++{
++	return (old & ~cpu_to_le32(field)) | le32_encode_bits(val, field);
++}
++
++static __always_inline void le32p_replace_bits(__le32 *p, u32 val, u32 field)
++{
++	*p = (*p & ~cpu_to_le32(field)) | le32_encode_bits(val, field);
++}
++
++static __always_inline u32 le32_get_bits(__le32 v, u32 field)
++{
++	return (le32_to_cpu(v) & field) / field_multiplier(field);
++}
++
++/* Auto-generate bit ops for other field width and endian combination */
++
+ #define ____MAKE_OP(type,base,to,from)					\
+ static __always_inline __##type __must_check type##_encode_bits(base v, base field)	\
+ {									\
+@@ -215,7 +295,7 @@ static __always_inline base __must_check type##_get_bits(__##type v, base field)
+ 	____MAKE_OP(u##size,u##size,,)
+ ____MAKE_OP(u8,u8,,)
+ __MAKE_OP(16)
+-__MAKE_OP(32)
++____MAKE_OP(be32,u32,cpu_to_be32,be32_to_cpu) /* Other 32b types open coded */
+ __MAKE_OP(64)
+ #undef __MAKE_OP
+ #undef ____MAKE_OP
+-- 
+2.51.0
 
 
