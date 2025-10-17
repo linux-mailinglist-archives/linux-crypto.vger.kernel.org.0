@@ -1,172 +1,263 @@
-Return-Path: <linux-crypto+bounces-17208-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17210-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FAABE83EA
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 13:07:16 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C434BE89A1
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 14:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9FAF188FF69
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 11:07:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B05C54E7626
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Oct 2025 12:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342423321C0;
-	Fri, 17 Oct 2025 11:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EB12D542A;
+	Fri, 17 Oct 2025 12:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="qwAL2V6b"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ltd811Ol"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87565328B5F;
-	Fri, 17 Oct 2025 11:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E142D641D;
+	Fri, 17 Oct 2025 12:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760699231; cv=none; b=SviucGxecueu7O6mZQbvXL/j2YWQ5BGWJ9/eLOJmWt4fqcGeUilMaozLQa8BbRF2ONLKiZFJaovfvWfDJpVeI5b/blUxkUw2nkkZ4akp26xbcoZ8ekdwkI5DWYP8ChIgoYjr1N0ahy9gJdXJZKJwLLMTEhwc4jjkBrq8d8DMh9g=
+	t=1760704383; cv=none; b=Iny49IcMJ/NJQ7fa7TQlJXAr+u1SkIU6ljQIzFnIJSSVQhwSaVjmJsROC8SkLmbbDqCXnrjztvH9YxF3pAyzUYsCvPg9eisFaEV/4gm8ai5nEMcUVP8Lg1hJnB4oxHe+VzC1Dok0o0rsRw1F9SaQ58S6GpkzN971b8LRSyfx+9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760699231; c=relaxed/simple;
-	bh=YM1qJhiYW/aJM7mu78MMauGEvaYVNdHVJZF/56mG06A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z4kauBaFC5aK6CN0I+tqgEChB9QjzU6jTpffCbjE1zf0ZFFxLvgg0rtozRXDazvh2LY3zeIpjSWUS/gNcFzP9e0mjJyg5bS4DrQob7lQIscBQAk+Auv+878KAgqtRtv3Fg+ZO/ZbCcaOaDnmkH74T3B9IWOsKg3ddnLQOomPFEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=qwAL2V6b; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1760699200; x=1761304000; i=markus.elfring@web.de;
-	bh=mBs//QP/LI/q0shbH30wWUG5UPKzyBqKbrx2NSC0/iA=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=qwAL2V6bkyx6cmydBafs8WZ0S0BOEVtckYXPJzlqKcsMU/uTEwFV8ffzv2njWc5y
-	 +FVsqIN+ACzBv3T+qcNbzR+XcvdyGYB/lyvXO/kRPlyXWVGwe3nEMESRe2DF+tniA
-	 XvEYuFTlnvA+XJE3BSzwhwShlqbYTFLQVTJklBwmdvTcNPJKHh3EUu9LDtsUy4m7/
-	 yPu9o4c0YSKldWHx3WdsQCUgM4Rbsi6qfmEcGck4aj7MfS9mjroqy6hHct1UjTR0e
-	 UIttH3UQY3j/gOnO6jusnUxBceGFD6V+VJKI3/iVCsxBDvEPGlt7CHTSkZ9KF51O7
-	 bQAOj4oN15FQy6oPbQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.69.195]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M9ISh-1v69nL1Bvb-0067bb; Fri, 17
- Oct 2025 13:06:40 +0200
-Message-ID: <51baad8c-6997-4e3b-81df-6d0380fc48d0@web.de>
-Date: Fri, 17 Oct 2025 13:06:27 +0200
+	s=arc-20240116; t=1760704383; c=relaxed/simple;
+	bh=rj/rVvX8Y6+2oqmhQGdBhxdIPpHp46oUjOWLECRX/sc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LjBj3hdzSaz8jvh3I1ElgpJ1euWIjJCsnw3pdd7qBbpBjtMFYA7zR50YvgNNmzLconZYAebjzJxHnDJt61EyZmqeV9L2GrjfmiXif7ToyvcqOCbAPpCh3cVNkXbW++/VW8jqC1lIG/gen3AiPTY1IfvN7YgKTy4LU4Pt+5Wc6Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ltd811Ol; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59HAlkuu012300;
+	Fri, 17 Oct 2025 12:32:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=1BBG0X7k7miIzzq9SKlBFBaTbG/NUUKBIRhUBteX/
+	98=; b=ltd811OlpppWPoiEyqFAA2tEIcRmdAlEB0TtScUUxnpsNpzqpNv2QBCGT
+	g8k7kC5nxxXLtSEtT5ZkE9ATChE29ZUScM2J622kjAZqnnmR50YCmtLyvEH4XbhP
+	cMWJMJbuHWYJfJ7ZZo7o3HlnMdPjVgXyGFgL/B+NyYA65JbQkr4+a5flhSs7DIpK
+	DOnPB8fF1zJU1XFzbx+rdQeaCot6JVhZfo2sDMFN3ga+sQkz/gtskaMSepAnlGgn
+	IhehY9Gtwpc+HjH9C1tnpf/EdLQdqdCYOTMjfwM0FU2p4xHgKyrdZCsoPHaiWnAm
+	6B+tObn+tRpjOruR1opBpmncoFfXw==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49qcnrsgra-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 17 Oct 2025 12:32:57 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59HBaqkI018823;
+	Fri, 17 Oct 2025 12:32:56 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49r2jn58gg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 17 Oct 2025 12:32:56 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59HCWspq59310474
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 17 Oct 2025 12:32:54 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id ACE9520102;
+	Fri, 17 Oct 2025 12:32:54 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 906F720101;
+	Fri, 17 Oct 2025 12:32:54 +0000 (GMT)
+Received: from funtu2.ibm.com (unknown [9.111.134.111])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 17 Oct 2025 12:32:54 +0000 (GMT)
+From: Harald Freudenberger <freude@linux.ibm.com>
+To: herbert@gondor.apana.org.au
+Cc: linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        mpatocka@redhat.com
+Subject: [PATCH v3] crypto: s390/phmac - Do not modify the req->nbytes value
+Date: Fri, 17 Oct 2025 14:32:54 +0200
+Message-ID: <20251017123254.140080-1-freude@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/4] Add SPAcc ahash support
-To: Pavitrakumar Managutte <pavitrakumarm@vayavyalabs.com>,
- linux-crypto@vger.kernel.org, devicetree@vger.kernel.org
-Cc: Bhoomika Kadabi <bhoomikak@vayavyalabs.com>,
- Manjunath Hadli <manjunath.hadli@vayavyalabs.com>,
- Ruud Derwig <Ruud.Derwig@synopsys.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, Rob Herring <robh@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Aditya Kulkarni <adityak@vayavyalabs.com>, Conor Dooley
- <conor+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- T Pratham <t-pratham@ti.com>
-References: <20251007065020.495008-3-pavitrakumarm@vayavyalabs.com>
- <fe4d7cd9-0566-4d1b-97c0-91cc1f952077@web.de>
- <CALxtO0m1R0kf5Am+oEPAgqommQph9zs6+xfTM0GzGHV+YEXT3Q@mail.gmail.com>
-Content-Language: en-GB, de-DE
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <CALxtO0m1R0kf5Am+oEPAgqommQph9zs6+xfTM0GzGHV+YEXT3Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DOUqFi5mKdhYzqNv9/13UKY+qECSIwj2ZbFzXXp7zmcukapKswf
- yXlhHpC+NyCtA0zfrD36QrmTHyx1n8cCfIHa25+hDYKRQL//E1UDXQqdBNFsFuj5Y2Fpvxy
- 8mfDlLaCrLC3kL+YuVvXDwtpOxFgMX6SynxfXF7kgR60OZsjIroA9uG+4qBi+uXPMOHwKQR
- Q8zeuNt3gGPd8cXTqcBlg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:cRf46H0vaUY=;rhkQYmVCzYmb72mZbhYIBoGZV33
- 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
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=M5ZA6iws c=1 sm=1 tr=0 ts=68f23779 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VnNF1IyMAAAA:8
+ a=qGRyj5zWsW19h7j0xN0A:9
+X-Proofpoint-GUID: mcDnSsg0FUhspUFXvyfRaQ3nUu8ZFH_L
+X-Proofpoint-ORIG-GUID: mcDnSsg0FUhspUFXvyfRaQ3nUu8ZFH_L
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDEwMDE0MCBTYWx0ZWRfX7nCJBkq1mRMb
+ aKWWxMyMeJZPc4k772tHApR5E61uaAeIgUx3ReyC9Jic1KVUvQ7b0cEKS4GxmOuNx56OlGK2fTr
+ MxZf89KFoZaEZv08vl9nfIGLn5GlseLZI/FbPbq9Dt9lVD+58WHi5y2/ccLVdjCIoGWjlguE4ah
+ zF5KUAKSBER+22cqL044UWyl57av1vSyg0EyteLH56lNBu75DWLGUirewPtW73g/l8Zo4MphK2Q
+ Pm+S/pp3UMFj1wlNLev7J57MfxYHzVEUmGRvIzvE3LDoKQLt2fL6f0GU+KsfOeKUQlqYBUXnsGl
+ 6b5HCAp1hUDgSj8u0E/rSj0mD41X9IQauxYDDgDxHiTKl+hLtgQFi9aSW0vF7REMKlHSz79ziwn
+ SPn8m0Gb2VYzpMzGJXLZZUL/bieXqA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-17_04,2025-10-13_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 bulkscore=0 spamscore=0 clxscore=1015 impostorscore=0
+ phishscore=0 adultscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510020000
+ definitions=main-2510100140
 
->> =E2=80=A6
->>> +do_shash_err:
->>> +     crypto_free_shash(hash);
->>> +     kfree(sdesc);
->>> +
->>> +     return rc;
->>> +}
->> =E2=80=A6
->>
->> * You may use an additional label for better exception handling.
-> PK: Ack, I will go with an additional label.
+The phmac implementation used the req->nbytes field on combined
+operations (finup, digest) to track the state:
+with req->nbytes > 0 the update needs to be processed,
+while req->nbytes == 0 means to do the final operation. For
+this purpose the req->nbytes field was set to 0 after successful
+update operation. However, aead uses the req->nbytes field after a
+successful hash operation to determine the amount of data to
+en/decrypt. So an implementation must not modify the nbytes field.
 
-Can scope-based resource management become applicable for more use cases?
+Fixed by a slight rework on the phmac implementation. There is
+now a new field async_op in the request context which tracks
+the (asynch) operation to process. So the 'state' via req->nbytes
+is not needed any more and now this field is untouched and may
+be evaluated even after a request is processed by the phmac
+implementation.
 
-Regards,
-Markus
+Fixes: cbbc675506cc ("crypto: s390 - New s390 specific protected key hash phmac")
+Reported-by: Ingo Franzki <ifranzki@linux.ibm.com>
+Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+Tested-by: Ingo Franzki <ifranzki@linux.ibm.com>
+Reviewed-by: Ingo Franzki <ifranzki@linux.ibm.com>
+Reviewed-by: Holger Dengler <dengler@linux.ibm.com>
+---
+ arch/s390/crypto/phmac_s390.c | 52 +++++++++++++++++++++++------------
+ 1 file changed, 34 insertions(+), 18 deletions(-)
+
+diff --git a/arch/s390/crypto/phmac_s390.c b/arch/s390/crypto/phmac_s390.c
+index 7ecfdc4fba2d..89f3e6d8fd89 100644
+--- a/arch/s390/crypto/phmac_s390.c
++++ b/arch/s390/crypto/phmac_s390.c
+@@ -169,11 +169,18 @@ struct kmac_sha2_ctx {
+ 	u64 buflen[2];
+ };
+ 
++enum async_op {
++	OP_NOP = 0,
++	OP_UPDATE,
++	OP_FINAL,
++	OP_FINUP,
++};
++
+ /* phmac request context */
+ struct phmac_req_ctx {
+ 	struct hash_walk_helper hwh;
+ 	struct kmac_sha2_ctx kmac_ctx;
+-	bool final;
++	enum async_op async_op;
+ };
+ 
+ /*
+@@ -610,6 +617,7 @@ static int phmac_update(struct ahash_request *req)
+ 	 * using engine to serialize requests.
+ 	 */
+ 	if (rc == 0 || rc == -EKEYEXPIRED) {
++		req_ctx->async_op = OP_UPDATE;
+ 		atomic_inc(&tfm_ctx->via_engine_ctr);
+ 		rc = crypto_transfer_hash_request_to_engine(phmac_crypto_engine, req);
+ 		if (rc != -EINPROGRESS)
+@@ -647,8 +655,7 @@ static int phmac_final(struct ahash_request *req)
+ 	 * using engine to serialize requests.
+ 	 */
+ 	if (rc == 0 || rc == -EKEYEXPIRED) {
+-		req->nbytes = 0;
+-		req_ctx->final = true;
++		req_ctx->async_op = OP_FINAL;
+ 		atomic_inc(&tfm_ctx->via_engine_ctr);
+ 		rc = crypto_transfer_hash_request_to_engine(phmac_crypto_engine, req);
+ 		if (rc != -EINPROGRESS)
+@@ -676,13 +683,16 @@ static int phmac_finup(struct ahash_request *req)
+ 	if (rc)
+ 		goto out;
+ 
++	req_ctx->async_op = OP_FINUP;
++
+ 	/* Try synchronous operations if no active engine usage */
+ 	if (!atomic_read(&tfm_ctx->via_engine_ctr)) {
+ 		rc = phmac_kmac_update(req, false);
+ 		if (rc == 0)
+-			req->nbytes = 0;
++			req_ctx->async_op = OP_FINAL;
+ 	}
+-	if (!rc && !req->nbytes && !atomic_read(&tfm_ctx->via_engine_ctr)) {
++	if (!rc && req_ctx->async_op == OP_FINAL &&
++	    !atomic_read(&tfm_ctx->via_engine_ctr)) {
+ 		rc = phmac_kmac_final(req, false);
+ 		if (rc == 0)
+ 			goto out;
+@@ -694,7 +704,7 @@ static int phmac_finup(struct ahash_request *req)
+ 	 * using engine to serialize requests.
+ 	 */
+ 	if (rc == 0 || rc == -EKEYEXPIRED) {
+-		req_ctx->final = true;
++		/* req->async_op has been set to either OP_FINUP or OP_FINAL */
+ 		atomic_inc(&tfm_ctx->via_engine_ctr);
+ 		rc = crypto_transfer_hash_request_to_engine(phmac_crypto_engine, req);
+ 		if (rc != -EINPROGRESS)
+@@ -855,15 +865,16 @@ static int phmac_do_one_request(struct crypto_engine *engine, void *areq)
+ 
+ 	/*
+ 	 * Three kinds of requests come in here:
+-	 * update when req->nbytes > 0 and req_ctx->final is false
+-	 * final when req->nbytes = 0 and req_ctx->final is true
+-	 * finup when req->nbytes > 0 and req_ctx->final is true
+-	 * For update and finup the hwh walk needs to be prepared and
+-	 * up to date but the actual nr of bytes in req->nbytes may be
+-	 * any non zero number. For final there is no hwh walk needed.
++	 * 1. req->async_op == OP_UPDATE with req->nbytes > 0
++	 * 2. req->async_op == OP_FINUP with req->nbytes > 0
++	 * 3. req->async_op == OP_FINAL
++	 * For update and finup the hwh walk has already been prepared
++	 * by the caller. For final there is no hwh walk needed.
+ 	 */
+ 
+-	if (req->nbytes) {
++	switch (req_ctx->async_op) {
++	case OP_UPDATE:
++	case OP_FINUP:
+ 		rc = phmac_kmac_update(req, true);
+ 		if (rc == -EKEYEXPIRED) {
+ 			/*
+@@ -880,10 +891,11 @@ static int phmac_do_one_request(struct crypto_engine *engine, void *areq)
+ 			hwh_advance(hwh, rc);
+ 			goto out;
+ 		}
+-		req->nbytes = 0;
+-	}
+-
+-	if (req_ctx->final) {
++		if (req_ctx->async_op == OP_UPDATE)
++			break;
++		req_ctx->async_op = OP_FINAL;
++		fallthrough;
++	case OP_FINAL:
+ 		rc = phmac_kmac_final(req, true);
+ 		if (rc == -EKEYEXPIRED) {
+ 			/*
+@@ -897,10 +909,14 @@ static int phmac_do_one_request(struct crypto_engine *engine, void *areq)
+ 			cond_resched();
+ 			return -ENOSPC;
+ 		}
++		break;
++	default:
++		/* unknown/unsupported/unimplemented asynch op */
++		return -EOPNOTSUPP;
+ 	}
+ 
+ out:
+-	if (rc || req_ctx->final)
++	if (rc || req_ctx->async_op == OP_FINAL)
+ 		memzero_explicit(kmac_ctx, sizeof(*kmac_ctx));
+ 	pr_debug("request complete with rc=%d\n", rc);
+ 	local_bh_disable();
+-- 
+2.43.0
+
 
