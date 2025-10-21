@@ -1,98 +1,112 @@
-Return-Path: <linux-crypto+bounces-17329-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17333-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784DCBF69B9
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Oct 2025 15:01:11 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE656BF6E0F
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Oct 2025 15:50:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA6E819A3E57
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Oct 2025 13:01:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E0BCA4FE35B
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Oct 2025 13:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843603385B0;
-	Tue, 21 Oct 2025 12:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22456339B36;
+	Tue, 21 Oct 2025 13:50:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sSyWXcSX"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="3u+gyWWJ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FC233858C;
-	Tue, 21 Oct 2025 12:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8953385BB;
+	Tue, 21 Oct 2025 13:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761051598; cv=none; b=Iqx+5fA606AAeAxmy2byR2DSFGPYpErXykDsBLpv+oDFrjza5FTUHmvVu+rB0N0p8dTwiVeyiiCBYPOXCJhniD/5cco+ZJQ9clwdiN/TkUTMlEcpi2CZ5YI7qNyjoYMZ6CWCe6SNP7K09YjG81gdThG2UDsOwFVWS4rHK8eUl8E=
+	t=1761054614; cv=none; b=GuF5G2dfa4qzM1M0g5lbYGwIWNQ+j5NBH0UEXBn5bHct+lALlwWzOndVIup6ESi4eCpyAiMlAaNGZjigjn7YlwiK5vo/byWwmNiX17fKKhrANJB1FKPfClP+OijFarQJApjz4XbdrL3ECkb+D8JZYcBmHKw4crxwQkmOBso5ykI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761051598; c=relaxed/simple;
-	bh=g+MwokVCtBQhfzcdbPLrXUJmGtJrE4rOxHEp+iUZ664=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=S2U6p93a8TWENsfyb7A/2mLGk5S+1t+KKXaeN0Ut4tnqBtb0cBP8rzusTqoSsFMZAGkTX0nQN+37lFbO4JWXYtGrRS6wFAk5Ia/MLPC1nmh8C/krr7E0zOtzTCn/yOJCeRVGgSIMG4HVE3O1/d/E7xsX4xL/Jr+4N+GqdIHYAUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sSyWXcSX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BA57C4CEFF;
-	Tue, 21 Oct 2025 12:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761051597;
-	bh=g+MwokVCtBQhfzcdbPLrXUJmGtJrE4rOxHEp+iUZ664=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sSyWXcSXLybw8WXqY6tXyM7a6Bopf6qqPN4rdcjvEdcfI/zUtp6rs7X+qd4ttrMD5
-	 oDHrLToFzgzsL0GtN2fywqv9OYey9nAJxxKhTCHuw4m8pGRqpPYV4iBUGMtHTgz10h
-	 A37VHMkz3/gpp1Oy4KMZMMeOqrFEdvNzOiPkPOPdiaSk40LSkZjKD6WphLLdNHCLX7
-	 hzNmIJFRqQH9X8uW39cQ0dt/zXXYvpuZxCJ/olOHelpPcviTScDc5itz4+KbXfGJVw
-	 smzT++vQ6y5t6iu8099fBArHdy1RHLIKk9KhAGNdbg+bz+3h/XJtbbLvRvxiU2rvNw
-	 v7uTj6zuOWqEA==
-From: Christian Brauner <brauner@kernel.org>
-To: ecryptfs@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	Eric Biggers <ebiggers@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Tyler Hicks <code@tyhicks.com>,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] ecryptfs: Use MD5 library instead of crypto_shash
-Date: Tue, 21 Oct 2025 14:59:52 +0200
-Message-ID: <20251021-implosion-ambivalent-bfc95c0b3c5e@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251011200010.193140-1-ebiggers@kernel.org>
-References: <20251011200010.193140-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1761054614; c=relaxed/simple;
+	bh=S25G2AZzcgMcGlIiX0c+8ROaue2MIMhb9CwLPOFSdN4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SOBRVvYtob0NQSSdARKNncJkDcLvoxYWAsomTho3QEdzxU8yP71GHFOpyZZpKLD4GUQpzxPGGd3VntHYNLYnoRQA6nPLgF4GcQ/QYUzE3nrwVSTRvhsDyoV7RXIRV4zbbFm/iSJ/Y2XREVDxAedGTXQLDhcTvycYzIrEZPM9fKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=3u+gyWWJ; arc=none smtp.client-ip=113.46.200.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=afOO440E+h5xHJ+e1TzERB4wQNYDt+r2P7A9Bix2Pck=;
+	b=3u+gyWWJMgMaTiyHlNmjXxSGPnavB/WBNxw29ieA2bnx28EtyDSIDHRUWqaWCh5yx9kMuMwe8
+	XR8xJtMUy+pZDmlZGmOzC0xJtjdd6ibGLx8xq9LkVcKuAkNgRDmTokNZXm2FBxYpylJ0ySJnmbV
+	w4lpV1D3roQK6MuvqKzafug=
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4crYYM1DfYzcZyT;
+	Tue, 21 Oct 2025 21:48:55 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id C4CED18007F;
+	Tue, 21 Oct 2025 21:50:04 +0800 (CST)
+Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 21 Oct 2025 21:50:04 +0800
+Received: from localhost.huawei.com (10.90.31.46) by
+ kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 21 Oct 2025 21:50:04 +0800
+From: Chenghai Huang <huangchenghai2@huawei.com>
+To: <gregkh@linuxfoundation.org>, <zhangfei.gao@linaro.org>,
+	<wangzhou1@hisilicon.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<fanghao11@huawei.com>, <shenyang39@huawei.com>, <liulongfang@huawei.com>,
+	<qianweili@huawei.com>, <linwenkai6@hisilicon.com>
+Subject: [PATCH v3 0/4] uacce: driver fixes for memory leaks and state management
+Date: Tue, 21 Oct 2025 21:49:59 +0800
+Message-ID: <20251021135003.786588-1-huangchenghai2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1437; i=brauner@kernel.org; h=from:subject:message-id; bh=g+MwokVCtBQhfzcdbPLrXUJmGtJrE4rOxHEp+iUZ664=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWR8bz4Z+c1m19cvOc9UFOWvnnhv9uHWB7mwjfy8OUlPa 12ORLTydJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzkSC7Df99CQw+T4I3/wvJW Lg/6/z7o2N39Aj1BdbeXBJV/mvGUax4jw75v5kcYu3IvP3n7obSw5LBQjYicllLPo6Vummvb7Lx aOQE=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ kwepemq200001.china.huawei.com (7.202.195.16)
 
-On Sat, 11 Oct 2025 13:00:10 -0700, Eric Biggers wrote:
-> eCryptfs uses MD5 for a couple unusual purposes: to "mix" the key into
-> the IVs for file contents encryption (similar to ESSIV), and to prepend
-> some key-dependent bytes to the plaintext when encrypting filenames
-> (which is useless since eCryptfs encrypts the filenames with ECB).
-> 
-> Currently, eCryptfs computes these MD5 hashes using the crypto_shash
-> API.  Update it to instead use the MD5 library API.  This is simpler and
-> faster: the library doesn't require memory allocations, can't fail, and
-> provides direct access to MD5 without overhead such as indirect calls.
-> 
-> [...]
+This patch series addresses several issues in the uacce:
+1.Memory leak fix when device registration fails.
+2.Fix sysfs file creation conditions.
+3.Add error reporting for unsupported mremap operations.
+4.Ensuring safe queue release with proper state management.
 
-Applied to the vfs-6.19.misc branch of the vfs/vfs.git tree.
-Patches in the vfs-6.19.misc branch should appear in linux-next soon.
+---
+Changes in v3:
+- Move the checks for the 'isolate_strategy_show' and
+  'isolate_strategy_store' functions to their respective call sites.
+- Use kobject_put to release the cdev memory instead of modifying
+  cdev to be a static structure member.
+- Link to v2: https://lore.kernel.org/all/20250916144811.1799687-1-huangchenghai2@huawei.com/
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+Changes in v2:
+- Use cdev_init to allocate cdev memory to ensure that memory leaks
+  are avoided.
+- Supplement the reason for intercepting the remapping operation.
+- Add "cc: stable@vger.kernel.org" to paths with fixed.
+- Link to v1: https://lore.kernel.org/all/20250822103904.3776304-1-huangchenghai2@huawei.com/
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+Chenghai Huang (2):
+  uacce: fix isolate sysfs check condition
+  uacce: ensure safe queue release with state management
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+Wenkai Lin (1):
+  uacce: fix for cdev memory leak
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.19.misc
+Yang Shen (1):
+  uacce: implement mremap in uacce_vm_ops to return -EPERM
 
-[1/1] ecryptfs: Use MD5 library instead of crypto_shash
-      https://git.kernel.org/vfs/vfs/c/7f77fe73421f
+ drivers/misc/uacce/uacce.c | 55 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 44 insertions(+), 11 deletions(-)
+
+-- 
+2.33.0
+
 
