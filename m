@@ -1,99 +1,330 @@
-Return-Path: <linux-crypto+bounces-17367-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17370-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4B8BFD847
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 19:18:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65CAFBFD94B
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 19:29:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1E9142104E
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 16:50:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB3403ADE7A
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 17:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0459E35B14D;
-	Wed, 22 Oct 2025 16:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678FF285CB4;
+	Wed, 22 Oct 2025 17:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="U4/+3+yk"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F237335B132;
-	Wed, 22 Oct 2025 16:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2831E366;
+	Wed, 22 Oct 2025 17:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761151819; cv=none; b=shgoXekXV9UlN/ZNlT4VoQyg9TCLr9BjWM9Byzd+4dwN7TbZC11qtiie4lCzuy6YpEQJreLHyuwD5xTojvzqBcLBIU/C1t+g4ev54WXpdWtVxUoezeOtrUDhg7qkL4WFGLPWWyGUSeLnbifQDEJwfe/9VhU+h26Qngp/a1kQ91c=
+	t=1761153637; cv=none; b=KdICpo0pJCKnohHpc3AfrlJskACACZzN5OCHsTLOKdlovWSLAJ+bluc8xvO+1fu9XUz6vd2B7h7BEHtv+Q76vxxq4qGrdel2IXlJQob4fqIadBUQ8+pyHDf67E56UzhH0znkFr0muQ0rO70DaW3hm/QuGIxdtV6RrHTN+LPrmF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761151819; c=relaxed/simple;
-	bh=3V+p5ua18plT82ZOHQ2rZhidDblQMsuy7V9f26iqUMc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JOyGaNQ9RWmdaf/HogwmMSkCJhZKCAT9Oyn4E7E9vIXhHBGauUfFGqUReEqwnojyWaitKvaMilJQcOEm/dvD6i+ZUOxIL3yQuOesEEjhbDlUF8bU0Vk2sHilS7wzFaGp/l9NuxRkJnUIqiQwkcBJJzhRdjEjcGuJqIKzkMehHkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.95.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout1.hostsharing.net (Postfix) with ESMTPS id D25392C0667F;
-	Wed, 22 Oct 2025 18:50:14 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id CC0154A12; Wed, 22 Oct 2025 18:50:14 +0200 (CEST)
-Date: Wed, 22 Oct 2025 18:50:14 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: David Howells <dhowells@redhat.com>,
-	Ignat Korchagin <ignat@cloudflare.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Vivek Goyal <vgoyal@redhat.com>, keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] crypto: asymmetric_keys - prevent overflow in
- asymmetric_key_generate_id
-Message-ID: <aPkLRkgrfBXpFvkt@wunner.de>
-References: <20251013114010.28983-2-thorsten.blum@linux.dev>
- <aO0dJeqb9E99xVvD@wunner.de>
- <73423731-F3C2-483A-BDAB-3FEF5471B8EA@linux.dev>
+	s=arc-20240116; t=1761153637; c=relaxed/simple;
+	bh=UzXFscK7ZrDgpE46l6OobuZueeZYS8sRv7hF578oKpI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hmB+Nyi2DpUGWKAX12e7T1lZOo+idnwVya4j6Q+ozoIh0ctJu28Fps2vkMuO1hNLP/XRkOrNlAjOZvzer7E3UY58mpHRumWrrkqC7llmI/Upn4WP+fKzcHSBfBCJbzFfmX09Hxb2LdKm98BLHgQuc6vyR1BjIsUQB0tH/ZoFKRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=U4/+3+yk; arc=none smtp.client-ip=198.47.23.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
+	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 59MHKRXF1469374;
+	Wed, 22 Oct 2025 12:20:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1761153627;
+	bh=MdvdD5mimjpuIfdxMCPPZDwKw2INByWlalile2YS6KI=;
+	h=From:To:CC:Subject:Date;
+	b=U4/+3+ykakNhQHPvJFsGRzCqh43aYXSBC5sSrjR1u2LYOOlxOgYbgG37hgTjZ0I4j
+	 Eo6VFiRym9SbquVYzqQUFHfP81JbxaFtNqmf8CDFeCmfVyMYnRBceZhs9FUjxXxKOm
+	 YB2kG4Eh2ai4JyX1SPpFE3osIDPCPKC4Qot/LiAc=
+Received: from DFLE204.ent.ti.com (dfle204.ent.ti.com [10.64.6.62])
+	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 59MHKR8W1761746
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 22 Oct 2025 12:20:27 -0500
+Received: from DFLE203.ent.ti.com (10.64.6.61) by DFLE204.ent.ti.com
+ (10.64.6.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 22 Oct
+ 2025 12:20:27 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE203.ent.ti.com
+ (10.64.6.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Wed, 22 Oct 2025 12:20:27 -0500
+Received: from pratham-Workstation-PC (pratham-workstation-pc.dhcp.ti.com [10.24.69.191])
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 59MHKPjs1551845;
+	Wed, 22 Oct 2025 12:20:26 -0500
+From: T Pratham <t-pratham@ti.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller"
+	<davem@davemloft.net>
+CC: T Pratham <t-pratham@ti.com>, Manorit Chawdhry <m-chawdhry@ti.com>,
+        Kamlesh Gurudasani <kamlesh@ti.com>,
+        Shiva Tripathi <s-tripathi1@ti.com>,
+        Kavitha Malarvizhi <k-malarvizhi@ti.com>,
+        Vishal Mahaveer <vishalm@ti.com>, Praneeth Bajjuri <praneeth@ti.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] crypto: aead - Add support for on-stack AEAD req allocation
+Date: Wed, 22 Oct 2025 22:48:42 +0530
+Message-ID: <20251022171902.724369-2-t-pratham@ti.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73423731-F3C2-483A-BDAB-3FEF5471B8EA@linux.dev>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-On Wed, Oct 22, 2025 at 02:23:02PM +0200, Thorsten Blum wrote:
-> On 13. Oct 2025, at 17:39, Lukas Wunner wrote:
-> > On Mon, Oct 13, 2025 at 01:40:10PM +0200, Thorsten Blum wrote:
-> >> Use check_add_overflow() to guard against potential integer overflows
-> >> when adding the binary blob lengths and the size of an asymmetric_key_id
-> >> structure and return ERR_PTR(-EOVERFLOW) accordingly. This prevents a
-> >> possible buffer overflow when copying data from potentially malicious
-> >> X.509 certificate fields that can be arbitrarily large, such as ASN.1
-> >> INTEGER serial numbers, issuer names, etc.
-> >> 
-> >> Fixes: 7901c1a8effb ("KEYS: Implement binary asymmetric key ID handling")
-> >> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> 
-> I removed stable@ after your feedback to v2, but shouldn't v3 be applied
-> to stable as well?
+This patch introduces infrastructure for allocating req objects on the
+stack for AEADs. The additions mirror the existing sync skcipher APIs.
+This can be used in cases where simple sync AEAD operations are being
+done. So allocating the request on stack avoides possible out-of-memory
+errors.
 
-The Fixes tag you included implicitly serves as a stable tag.
-It's usually sufficient reason for stable maintainers to select
-the patch for backporting to stable kernels.
+The struct crypto_sync_aead is a wrapper around crypto_aead and should
+be used in its place when sync only requests will be done on the stack.
+Correspondingly, the request should be allocated with
+SYNC_AEAD_REQUEST_ON_STACK().
 
-I'm always a bit cautious with stable designations because
-if the patch turns out to be buggy, we broke the stable kernels as well,
-which is bad and embarrassing.
+Similar to sync_skcipher APIs, the new sync_aead APIs are wrappers
+around the regular aead APIs to facilitate sync only operations. The
+following crypto APIs are added:
+ - struct crypto_sync_aead
+ - crypto_alloc_sync_aead()
+ - crypto_free_sync_aead()
+ - crypto_aync_aead_tfm()
+ - crypto_sync_aead_setkey()
+ - crypto_sync_aead_setauthsize()
+ - crypto_sync_aead_authsize()
+ - crypto_sync_aead_maxauthsize()
+ - crypto_sync_aead_ivsize()
+ - crypto_sync_aead_blocksize()
+ - crypto_sync_aead_get_flags()
+ - crypto_sync_aead_set_flags()
+ - crypto_sync_aead_clear_flags()
+ - crypto_sync_aead_reqtfm()
+ - aead_request_set_sync_tfm()
+ - SYNC_AEAD_REQUEST_ON_STACK()
 
-In this particular case, the patch is fine but the bug doesn't look
-easy to trigger.  One would have to craft an extremely large certificate.
-Possible, but not very common.  Hence it doesn't seem super important
-to get this fixed in stable kernels and for this reason I wouldn't have
-included a Fixes tag if this was my patch.
+Signed-off-by: T Pratham <t-pratham@ti.com>
+---
+ crypto/aead.c         | 19 ++++++++++
+ include/crypto/aead.h | 87 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 106 insertions(+)
 
-Thanks,
+diff --git a/crypto/aead.c b/crypto/aead.c
+index 51ab3af691af2..08d44c5e5c336 100644
+--- a/crypto/aead.c
++++ b/crypto/aead.c
+@@ -205,6 +205,25 @@ struct crypto_aead *crypto_alloc_aead(const char *alg_name, u32 type, u32 mask)
+ }
+ EXPORT_SYMBOL_GPL(crypto_alloc_aead);
+ 
++struct crypto_sync_aead *crypto_alloc_sync_aead(const char *alg_name, u32 type, u32 mask)
++{
++	struct crypto_aead *tfm;
++
++	/* Only sync algorithms are allowed. */
++	mask |= CRYPTO_ALG_ASYNC;
++	type &= ~(CRYPTO_ALG_ASYNC);
++
++	tfm = crypto_alloc_tfm(alg_name, &crypto_aead_type, type, mask);
++
++	if (!IS_ERR(tfm) && WARN_ON(crypto_aead_reqsize(tfm) > MAX_SYNC_AEAD_REQSIZE)) {
++		crypto_free_aead(tfm);
++		return ERR_PTR(-EINVAL);
++	}
++
++	return (struct crypto_sync_aead *)tfm;
++}
++EXPORT_SYMBOL_GPL(crypto_alloc_sync_aead);
++
+ int crypto_has_aead(const char *alg_name, u32 type, u32 mask)
+ {
+ 	return crypto_type_has_alg(alg_name, &crypto_aead_type, type, mask);
+diff --git a/include/crypto/aead.h b/include/crypto/aead.h
+index 0e8a416386780..8e66a1fa9c786 100644
+--- a/include/crypto/aead.h
++++ b/include/crypto/aead.h
+@@ -159,6 +159,21 @@ struct crypto_aead {
+ 	struct crypto_tfm base;
+ };
+ 
++struct crypto_sync_aead {
++	struct crypto_aead base;
++};
++
++#define MAX_SYNC_AEAD_REQSIZE		384
++
++#define SYNC_AEAD_REQUEST_ON_STACK(name, _tfm)		\
++	char __##name##_desc[sizeof(struct aead_request) +	\
++			     MAX_SYNC_AEAD_REQSIZE		\
++			    ] CRYPTO_MINALIGN_ATTR;		\
++	struct aead_request *name =				\
++		(((struct aead_request *)__##name##_desc)->base.tfm = \
++			crypto_sync_aead_tfm((_tfm)),		\
++		 (void *)__##name##_desc)
++
+ static inline struct crypto_aead *__crypto_aead_cast(struct crypto_tfm *tfm)
+ {
+ 	return container_of(tfm, struct crypto_aead, base);
+@@ -180,11 +195,18 @@ static inline struct crypto_aead *__crypto_aead_cast(struct crypto_tfm *tfm)
+  */
+ struct crypto_aead *crypto_alloc_aead(const char *alg_name, u32 type, u32 mask);
+ 
++struct crypto_sync_aead *crypto_alloc_sync_aead(const char *alg_name, u32 type, u32 mask);
++
+ static inline struct crypto_tfm *crypto_aead_tfm(struct crypto_aead *tfm)
+ {
+ 	return &tfm->base;
+ }
+ 
++static inline struct crypto_tfm *crypto_sync_aead_tfm(struct crypto_sync_aead *tfm)
++{
++	return crypto_aead_tfm(&tfm->base);
++}
++
+ /**
+  * crypto_free_aead() - zeroize and free aead handle
+  * @tfm: cipher handle to be freed
+@@ -196,6 +218,11 @@ static inline void crypto_free_aead(struct crypto_aead *tfm)
+ 	crypto_destroy_tfm(tfm, crypto_aead_tfm(tfm));
+ }
+ 
++static inline void crypto_free_sync_aead(struct crypto_sync_aead *tfm)
++{
++	crypto_free_aead(&tfm->base);
++}
++
+ /**
+  * crypto_has_aead() - Search for the availability of an aead.
+  * @alg_name: is the cra_name / name or cra_driver_name / driver name of the
+@@ -238,6 +265,11 @@ static inline unsigned int crypto_aead_ivsize(struct crypto_aead *tfm)
+ 	return crypto_aead_alg_ivsize(crypto_aead_alg(tfm));
+ }
+ 
++static inline unsigned int crypto_sync_aead_ivsize(struct crypto_sync_aead *tfm)
++{
++	return crypto_aead_ivsize(&tfm->base);
++}
++
+ /**
+  * crypto_aead_authsize() - obtain maximum authentication data size
+  * @tfm: cipher handle
+@@ -255,6 +287,11 @@ static inline unsigned int crypto_aead_authsize(struct crypto_aead *tfm)
+ 	return tfm->authsize;
+ }
+ 
++static inline unsigned int crypto_sync_aead_authsize(struct crypto_sync_aead *tfm)
++{
++	return crypto_aead_authsize(&tfm->base);
++}
++
+ static inline unsigned int crypto_aead_alg_maxauthsize(struct aead_alg *alg)
+ {
+ 	return alg->maxauthsize;
+@@ -265,6 +302,11 @@ static inline unsigned int crypto_aead_maxauthsize(struct crypto_aead *aead)
+ 	return crypto_aead_alg_maxauthsize(crypto_aead_alg(aead));
+ }
+ 
++static inline unsigned int crypto_sync_aead_maxauthsize(struct crypto_sync_aead *tfm)
++{
++	return crypto_aead_maxauthsize(&tfm->base);
++}
++
+ /**
+  * crypto_aead_blocksize() - obtain block size of cipher
+  * @tfm: cipher handle
+@@ -280,6 +322,11 @@ static inline unsigned int crypto_aead_blocksize(struct crypto_aead *tfm)
+ 	return crypto_tfm_alg_blocksize(crypto_aead_tfm(tfm));
+ }
+ 
++static inline unsigned int crypto_sync_aead_blocksize(struct crypto_sync_aead *tfm)
++{
++	return crypto_aead_blocksize(&tfm->base);
++}
++
+ static inline unsigned int crypto_aead_alignmask(struct crypto_aead *tfm)
+ {
+ 	return crypto_tfm_alg_alignmask(crypto_aead_tfm(tfm));
+@@ -300,6 +347,21 @@ static inline void crypto_aead_clear_flags(struct crypto_aead *tfm, u32 flags)
+ 	crypto_tfm_clear_flags(crypto_aead_tfm(tfm), flags);
+ }
+ 
++static inline u32 crypto_sync_aead_get_flags(struct crypto_sync_aead *tfm)
++{
++	return crypto_aead_get_flags(&tfm->base);
++}
++
++static inline void crypto_sync_aead_set_flags(struct crypto_sync_aead *tfm, u32 flags)
++{
++	crypto_aead_set_flags(&tfm->base, flags);
++}
++
++static inline void crypto_sync_aead_clear_flags(struct crypto_sync_aead *tfm, u32 flags)
++{
++	crypto_aead_clear_flags(&tfm->base, flags);
++}
++
+ /**
+  * crypto_aead_setkey() - set key for cipher
+  * @tfm: cipher handle
+@@ -319,6 +381,12 @@ static inline void crypto_aead_clear_flags(struct crypto_aead *tfm, u32 flags)
+ int crypto_aead_setkey(struct crypto_aead *tfm,
+ 		       const u8 *key, unsigned int keylen);
+ 
++static inline int crypto_sync_aead_setkey(struct crypto_sync_aead *tfm,
++					 const u8 *key, unsigned int keylen)
++{
++	return crypto_aead_setkey(&tfm->base, key, keylen);
++}
++
+ /**
+  * crypto_aead_setauthsize() - set authentication data size
+  * @tfm: cipher handle
+@@ -331,11 +399,24 @@ int crypto_aead_setkey(struct crypto_aead *tfm,
+  */
+ int crypto_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize);
+ 
++static inline int crypto_sync_aead_setauthsize(struct crypto_sync_aead *tfm,
++					       unsigned int authsize)
++{
++	return crypto_aead_setauthsize(&tfm->base, authsize);
++}
++
+ static inline struct crypto_aead *crypto_aead_reqtfm(struct aead_request *req)
+ {
+ 	return __crypto_aead_cast(req->base.tfm);
+ }
+ 
++static inline struct crypto_sync_aead *crypto_sync_aead_reqtfm(struct aead_request *req)
++{
++	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
++
++	return container_of(tfm, struct crypto_sync_aead, base);
++}
++
+ /**
+  * crypto_aead_encrypt() - encrypt plaintext
+  * @req: reference to the aead_request handle that holds all information
+@@ -417,6 +498,12 @@ static inline void aead_request_set_tfm(struct aead_request *req,
+ 	req->base.tfm = crypto_aead_tfm(tfm);
+ }
+ 
++static inline void aead_request_set_sync_tfm(struct aead_request *req,
++					     struct crypto_sync_aead *tfm)
++{
++	aead_request_set_tfm(req, &tfm->base);
++}
++
+ /**
+  * aead_request_alloc() - allocate request data structure
+  * @tfm: cipher handle to be registered with the request
+-- 
+2.43.0
 
-Lukas
 
