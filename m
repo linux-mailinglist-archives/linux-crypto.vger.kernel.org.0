@@ -1,344 +1,114 @@
-Return-Path: <linux-crypto+bounces-17381-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17376-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20E82BFDC3A
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 20:04:33 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF92ABFDBF1
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 19:59:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D620919C4E42
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 18:04:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B9B264F32D2
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 17:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBA52F12CE;
-	Wed, 22 Oct 2025 18:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB772E62A2;
+	Wed, 22 Oct 2025 17:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tBw/B7pb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNZ/D84O"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1169E2FE048;
-	Wed, 22 Oct 2025 18:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A3B35B131;
+	Wed, 22 Oct 2025 17:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761156220; cv=none; b=KtBm45VUE2B/12r1KXCWbJv5j+QfmfZwUToS65Ye2rpwKDlhXVleIuxnqCEbWqi1Hxl4jOrsBBUlDyNajhAll5Jh2N7qMpepOMqhRftNRs+OZLQlXOqxEH0Wv1wKz003AxXJiQVDuMymMZdMjsBaO88riUeWR7tBsJPafsgEtWY=
+	t=1761155976; cv=none; b=F6M6bgy2HhKYTi5mZnkFqQN4gbauS5PVdF6rUFWz8MLC3vI+Nk0dNPl9o+VDJ4BVl6lMwtkn5ho/Hf5bc/OiFoVrsAKgiOvhD2z6u3C1K8d/c7LzPfMXs033DHqhNnuB/RjK4G1xo9seufIVukM1kuyMJN6MBuUr+g9vsgn+KRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761156220; c=relaxed/simple;
-	bh=CWWvWlCmp5lnV2QSgssL2GNmcICNuWiZP5idG/Ndsl8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=l+lbVuzezSdISyqmpnc4OUufJQEW37RlVLrCouomnmcyxYWSZQhDkvlKEsCAM2Q+TVG4XC+efaEyFVScwyDZdG2W/4k/Pc88UvtsblDz1yis5RdOv+8ZDsjIgk03PJMrMxR4P0F/H1tckEjT2rlB+ux+AcEYU6qYECR3/MGljsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tBw/B7pb; arc=none smtp.client-ip=198.47.23.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelvem-sh01.itg.ti.com ([10.180.77.71])
-	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 59MI3YVX1477225;
-	Wed, 22 Oct 2025 13:03:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1761156214;
-	bh=PKC599RkvKtLxFCsJ46IgIo6hP4F2Yr27hBp84tdG3U=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=tBw/B7pbARoch3Fapbn4ThGvnGQKPvXEHsDI2quoAxk2CsqJCMnWBrEOivbV63XzT
-	 PGut2jH2y39LQ4mWPdMkl+92dWm3Mjl2n73UC/YgxYh7vsVTkuKtx1cZde/oIxVj18
-	 oSzW9Mnj1zN1Gf9pOP3g4X5IpeDvkqZQJZf7FNLw=
-Received: from DLEE205.ent.ti.com (dlee205.ent.ti.com [157.170.170.85])
-	by lelvem-sh01.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 59MI3Y2d2112080
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 22 Oct 2025 13:03:34 -0500
-Received: from DLEE201.ent.ti.com (157.170.170.76) by DLEE205.ent.ti.com
- (157.170.170.85) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 22 Oct
- 2025 13:03:33 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE201.ent.ti.com
- (157.170.170.76) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Wed, 22 Oct 2025 13:03:33 -0500
-Received: from pratham-Workstation-PC (pratham-workstation-pc.dhcp.ti.com [10.24.69.191])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 59MI3WT71614080;
-	Wed, 22 Oct 2025 13:03:33 -0500
-From: T Pratham <t-pratham@ti.com>
-To: T Pratham <t-pratham@ti.com>, Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-CC: Manorit Chawdhry <m-chawdhry@ti.com>, Kamlesh Gurudasani <kamlesh@ti.com>,
-        Shiva Tripathi <s-tripathi1@ti.com>,
-        Kavitha Malarvizhi
-	<k-malarvizhi@ti.com>,
-        Vishal Mahaveer <vishalm@ti.com>, Praneeth Bajjuri
-	<praneeth@ti.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 4/4] crypto: ti - Add support for AES-CCM in DTHEv2 driver
-Date: Wed, 22 Oct 2025 23:15:42 +0530
-Message-ID: <20251022180302.729728-5-t-pratham@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20251022180302.729728-1-t-pratham@ti.com>
-References: <20251022180302.729728-1-t-pratham@ti.com>
+	s=arc-20240116; t=1761155976; c=relaxed/simple;
+	bh=9gx3OGdb0uIusRT1OUkumJNGerW8QboTuA02KwXp8SA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ALtrFHDsqceMXKlmjnW/nI/dfR9t112PMVdyGiqaFzCihy0PGF84OeQxMxwlIS0MK8eq4qSbd6LVhaezojhr0mDeuWhjGH6UFzhGD2HzLoRr6pDf1bsrjaZ4Db71ZHxM81TcHXu5aJ3qFeoVAmkQaJYq/1wOOQVUKDcVepo/ax4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XNZ/D84O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAEF8C4CEE7;
+	Wed, 22 Oct 2025 17:59:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761155976;
+	bh=9gx3OGdb0uIusRT1OUkumJNGerW8QboTuA02KwXp8SA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XNZ/D84OnEvWq0hPHRa2JfYwECvRchIFPwxWBOcwmcTyOTRVtou0qZVOs0Hzqtt55
+	 bmhRtjKgQLPobPbaWutj5XMInarn6n3p0Ci7nSAAhvZol1PyIZz4FlhCO5Xzybk5Ap
+	 p5PPk5+QbMfgNKZVTQwB/ah5K80YdWgL2/CcqClk9T2bsGuUHE7Le1JA0Z27yGsPoC
+	 131sA5lcua4B/QAOwg2wm1MFmn0xbE9nejABosRPJ6wXpLVFtI3oNq5rVu4k6JTrQQ
+	 Zh9fn3pfxrHxaregnyfdSIH+VrcbN5/sPU78OnCS1/MJ/8Ygd7tPpcmt1gMWISTFxL
+	 iTbRaCRExEjXw==
+Date: Wed, 22 Oct 2025 10:59:34 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH 10/10] btrfs: switch to library APIs for checksums
+Message-ID: <20251022175934.GA1646@quark>
+References: <20251018043106.375964-1-ebiggers@kernel.org>
+ <20251018043106.375964-11-ebiggers@kernel.org>
+ <20251022071141.GV13776@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251022071141.GV13776@twin.jikos.cz>
 
-AES-CCM is an AEAD algorithm supporting both encryption and
-authentication of data. This patch introduces support for AES-CCM AEAD
-algorithm in the DTHEv2 driver.
+On Wed, Oct 22, 2025 at 09:11:41AM +0200, David Sterba wrote:
+> On Fri, Oct 17, 2025 at 09:31:06PM -0700, Eric Biggers wrote:
+> > Make btrfs use the library APIs instead of crypto_shash, for all
+> > checksum computations.  This has many benefits:
+> > 
+> > - Allows future checksum types, e.g. XXH3 or CRC64, to be more easily
+> >   supported.  Only a library API will be needed, not crypto_shash too.
+> > 
+> > - Eliminates the overhead of the generic crypto layer, including an
+> >   indirect call for every function call and other API overhead.  A
+> >   microbenchmark of btrfs_check_read_bio() with crc32c checksums shows a
+> >   speedup from 658 cycles to 608 cycles per 4096-byte block.
+> > 
+> > - Decreases the stack usage of btrfs by reducing the size of checksum
+> >   contexts from 384 bytes to 240 bytes, and by eliminating the need for
+> >   some functions to declare a checksum context at all.
+> > 
+> > - Increases reliability.  The library functions always succeed and
+> >   return void.  In contrast, crypto_shash can fail and return errors.
+> >   Also, the library functions are guaranteed to be available when btrfs
+> >   is loaded; there's no longer any need to use module softdeps to try to
+> >   work around the crypto modules sometimes not being loaded.
+> > 
+> > - Fixes a bug where blake2b checksums didn't work on kernels booted with
+> >   fips=1.  Since btrfs checksums are for integrity only, it's fine for
+> >   them to use non-FIPS-approved algorithms.
+> > 
+> > Note that with having to handle 4 algorithms instead of just 1-2, this
+> > commit does result in a slightly positive diffstat.  That being said,
+> > this wouldn't have been the case if btrfs had actually checked for
+> > errors from crypto_shash, which technically it should have been doing.
+> > 
+> > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> 
+> Thanks, this simplifies quite a few things. I'd like to take it via the
+> btrfs tree as there may be the hash additions (XXH3, BLAKE3) but
+> currently I'm not sure if it won't make things more complicated. I
+> haven't started the kernel part yet so I can use this patchset for
+> development and rebase once it's merged. 
 
-Signed-off-by: T Pratham <t-pratham@ti.com>
----
- drivers/crypto/ti/Kconfig         |   1 +
- drivers/crypto/ti/dthev2-aes.c    | 129 ++++++++++++++++++++++++++----
- drivers/crypto/ti/dthev2-common.h |   1 +
- 3 files changed, 115 insertions(+), 16 deletions(-)
+Great.  I'm planning to take patches 1-9 through libcrypto-next for
+6.19.  You can then take patch 10 through the btrfs tree for 6.20.  Does
+that sound good?  We can work out the XXH3 and BLAKE3 support later.  If
+you'd like to add another checksum algorithm, I'd suggest picking just
+one.  btrfs already supports an awful lot of choices for the checksum.
+But we can discuss that later.
 
-diff --git a/drivers/crypto/ti/Kconfig b/drivers/crypto/ti/Kconfig
-index 221e483737439..1a3a571ac8cef 100644
---- a/drivers/crypto/ti/Kconfig
-+++ b/drivers/crypto/ti/Kconfig
-@@ -9,6 +9,7 @@ config CRYPTO_DEV_TI_DTHEV2
- 	select CRYPTO_CTR
- 	select CRYPTO_XTS
- 	select CRYPTO_GCM
-+	select CRYPTO_CCM
- 	select SG_SPLIT
- 	help
- 	  This enables support for the TI DTHE V2 hw cryptography engine
-diff --git a/drivers/crypto/ti/dthev2-aes.c b/drivers/crypto/ti/dthev2-aes.c
-index c63e3eac3346f..8c627539cf5c8 100644
---- a/drivers/crypto/ti/dthev2-aes.c
-+++ b/drivers/crypto/ti/dthev2-aes.c
-@@ -16,6 +16,7 @@
- 
- #include "dthev2-common.h"
- 
-+#include <linux/bitfield.h>
- #include <linux/delay.h>
- #include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
-@@ -69,6 +70,7 @@ enum aes_ctrl_mode_masks {
- 	AES_CTRL_CTR_MASK = BIT(6),
- 	AES_CTRL_XTS_MASK = BIT(12) | BIT(11),
- 	AES_CTRL_GCM_MASK = BIT(17) | BIT(16) | BIT(6),
-+	AES_CTRL_CCM_MASK = BIT(18) | BIT(6),
- };
- 
- #define DTHE_AES_CTRL_MODE_CLEAR_MASK		~GENMASK(28, 5)
-@@ -81,6 +83,11 @@ enum aes_ctrl_mode_masks {
- 
- #define DTHE_AES_CTRL_CTR_WIDTH_128B		(BIT(7) | BIT(8))
- 
-+#define DTHE_AES_CCM_L_FROM_IV_MASK		GENMASK(2, 0)
-+#define DTHE_AES_CCM_M_BITS			GENMASK(2, 0)
-+#define DTHE_AES_CTRL_CCM_L_FIELD_MASK		GENMASK(21, 19)
-+#define DTHE_AES_CTRL_CCM_M_FIELD_MASK		GENMASK(24, 22)
-+
- #define DTHE_AES_CTRL_SAVE_CTX_SET		BIT(29)
- 
- #define DTHE_AES_CTRL_OUTPUT_READY		BIT_MASK(0)
-@@ -96,6 +103,8 @@ enum aes_ctrl_mode_masks {
- #define AES_BLOCK_WORDS				(AES_BLOCK_SIZE / sizeof(u32))
- #define AES_IV_WORDS				AES_BLOCK_WORDS
- #define DTHE_AES_GCM_AAD_MAXLEN			(BIT_ULL(32) - 1)
-+#define DTHE_AES_CCM_AAD_MAXLEN			(BIT(16) - BIT(8))
-+#define DTHE_AES_CCM_CRYPT_MAXLEN		(BIT_ULL(61) - 1)
- #define POLL_TIMEOUT_INTERVAL			HZ
- 
- static int dthe_cipher_init_tfm(struct crypto_skcipher *tfm)
-@@ -264,6 +273,13 @@ static void dthe_aes_set_ctrl_key(struct dthe_tfm_ctx *ctx,
- 	case DTHE_AES_GCM:
- 		ctrl_val |= AES_CTRL_GCM_MASK;
- 		break;
-+	case DTHE_AES_CCM:
-+		ctrl_val |= AES_CTRL_CCM_MASK;
-+		ctrl_val |= FIELD_PREP(DTHE_AES_CTRL_CCM_L_FIELD_MASK,
-+				       (iv_in[0] & DTHE_AES_CCM_L_FROM_IV_MASK));
-+		ctrl_val |= FIELD_PREP(DTHE_AES_CTRL_CCM_M_FIELD_MASK,
-+				       ((ctx->authsize - 2) >> 1) & DTHE_AES_CCM_M_BITS);
-+		break;
- 	}
- 
- 	if (iv_in) {
-@@ -785,10 +801,6 @@ static int dthe_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_192 && keylen != AES_KEYSIZE_256)
- 		return -EINVAL;
- 
--	ctx->aes_mode = DTHE_AES_GCM;
--	ctx->keylen = keylen;
--	memcpy(ctx->key, key, keylen);
--
- 	crypto_sync_aead_clear_flags(ctx->aead_fb, CRYPTO_TFM_REQ_MASK);
- 	crypto_sync_aead_set_flags(ctx->aead_fb,
- 				   crypto_aead_get_flags(tfm) &
-@@ -797,6 +809,28 @@ static int dthe_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 	return crypto_sync_aead_setkey(ctx->aead_fb, key, keylen);
- }
- 
-+static int dthe_gcm_aes_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int keylen)
-+{
-+	struct dthe_tfm_ctx *ctx = crypto_aead_ctx(tfm);
-+
-+	ctx->aes_mode = DTHE_AES_GCM;
-+	ctx->keylen = keylen;
-+	memcpy(ctx->key, key, keylen);
-+
-+	return dthe_aead_setkey(tfm, key, keylen);
-+}
-+
-+static int dthe_ccm_aes_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int keylen)
-+{
-+	struct dthe_tfm_ctx *ctx = crypto_aead_ctx(tfm);
-+
-+	ctx->aes_mode = DTHE_AES_CCM;
-+	ctx->keylen = keylen;
-+	memcpy(ctx->key, key, keylen);
-+
-+	return dthe_aead_setkey(tfm, key, keylen);
-+}
-+
- static int dthe_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
- {
- 	struct dthe_tfm_ctx *ctx = crypto_aead_ctx(tfm);
-@@ -939,14 +973,18 @@ static int dthe_aead_run(struct crypto_engine *engine, void *areq)
- 		writel_relaxed(1, aes_base_reg + DTHE_P_AES_AUTH_LENGTH);
- 	}
- 
--	if (req->iv) {
--		memcpy(iv_in, req->iv, GCM_AES_IV_SIZE);
-+	if (ctx->aes_mode == DTHE_AES_GCM) {
-+		if (req->iv) {
-+			memcpy(iv_in, req->iv, GCM_AES_IV_SIZE);
-+		} else {
-+			iv_in[0] = 0;
-+			iv_in[1] = 0;
-+			iv_in[2] = 0;
-+		}
-+		iv_in[3] = 0x01000000;
- 	} else {
--		iv_in[0] = 0;
--		iv_in[1] = 0;
--		iv_in[2] = 0;
-+		memcpy(iv_in, req->iv, AES_IV_SIZE);
- 	}
--	iv_in[3] = 0x01000000;
- 
- 	/* Clear key2 to reset previous GHASH intermediate data */
- 	for (int i = 0; i < AES_KEYSIZE_256 / sizeof(u32); ++i)
-@@ -1014,20 +1052,54 @@ static int dthe_aead_crypt(struct aead_request *req)
- 	struct dthe_data *dev_data = dthe_get_dev(ctx);
- 	struct crypto_engine *engine;
- 	unsigned int cryptlen = req->cryptlen;
-+	bool is_zero_ctr = true;
- 
- 	/* In decryption, last authsize bytes are the TAG */
- 	if (!rctx->enc)
- 		cryptlen -= ctx->authsize;
- 
-+	if (ctx->aes_mode == DTHE_AES_CCM) {
-+		/*
-+		 * For CCM Mode, the 128-bit IV contains the following:
-+		 * | 0 .. 2 | 3 .. 7 | 8 .. (127-8*L) | (128-8*L) .. 127 |
-+		 * |   L-1  |  Zero  |     Nonce      |      Counter     |
-+		 * L needs to be between 2-8 (inclusive), i.e. 1 <= (L-1) <= 7
-+		 * and the next 5 bits need to be zeroes. Else return -EINVAL
-+		 */
-+		u8 *iv = req->iv;
-+		u8 L = iv[0];
-+
-+		if (L < 1 || L > 7)
-+			return -EINVAL;
-+		/*
-+		 * DTHEv2 HW can only work with zero initial counter in CCM mode.
-+		 * Check if the initial counter value is zero or not
-+		 */
-+		for (int i = 0; i < L + 1; ++i) {
-+			if (iv[AES_IV_SIZE - 1 - i] != 0) {
-+				is_zero_ctr = false;
-+				break;
-+			}
-+		}
-+	}
-+
- 	/*
- 	 * Need to fallback to software in the following cases due to HW restrictions:
- 	 * - Both AAD and plaintext/ciphertext are zero length
--	 * - AAD length is more than 2^32 - 1 bytes
--	 * PS: req->cryptlen is currently unsigned int type, which causes the above condition
--	 * tautologically false. If req->cryptlen were to be changed to a 64-bit type,
--	 * the check for this would need to be added below.
-+	 * - For AES-GCM, AAD length is more than 2^32 - 1 bytes
-+	 * - For AES-CCM, AAD length is more than 2^16 - 2^8 bytes
-+	 * - For AES-CCM, plaintext/ciphertext length is more than 2^61 - 1 bytes
-+	 * - For AES-CCM, AAD length is non-zero but plaintext/ciphertext length is zero
-+	 * - For AES-CCM, the initial counter (last L+1 bytes of IV) is not all zeroes
-+	 *
-+	 * PS: req->cryptlen is currently unsigned int type, which causes the second and fourth
-+	 * cases above tautologically false. If req->cryptlen is to be changed to a 64-bit
-+	 * type, the check for these would also need to be added below.
- 	 */
--	if (req->assoclen == 0 && cryptlen == 0) {
-+	if ((req->assoclen == 0 && cryptlen == 0) ||
-+	    (ctx->aes_mode == DTHE_AES_CCM && req->assoclen > DTHE_AES_CCM_AAD_MAXLEN) ||
-+	    (ctx->aes_mode == DTHE_AES_CCM && cryptlen == 0) ||
-+	    (ctx->aes_mode == DTHE_AES_CCM && !is_zero_ctr)) {
- 		SYNC_AEAD_REQUEST_ON_STACK(subreq, ctx->aead_fb);
- 
- 		aead_request_set_callback(subreq, aead_request_flags(req),
-@@ -1161,7 +1233,7 @@ static struct aead_engine_alg aead_algs[] = {
- 	{
- 		.base.init			= dthe_aead_init_tfm,
- 		.base.exit			= dthe_aead_exit_tfm,
--		.base.setkey			= dthe_aead_setkey,
-+		.base.setkey			= dthe_gcm_aes_setkey,
- 		.base.setauthsize		= dthe_aead_setauthsize,
- 		.base.maxauthsize		= AES_BLOCK_SIZE,
- 		.base.encrypt			= dthe_aead_encrypt,
-@@ -1183,6 +1255,31 @@ static struct aead_engine_alg aead_algs[] = {
- 		},
- 		.op.do_one_request = dthe_aead_run,
- 	}, /* GCM AES */
-+	{
-+		.base.init			= dthe_aead_init_tfm,
-+		.base.exit			= dthe_aead_exit_tfm,
-+		.base.setkey			= dthe_ccm_aes_setkey,
-+		.base.setauthsize		= dthe_aead_setauthsize,
-+		.base.maxauthsize		= AES_BLOCK_SIZE,
-+		.base.encrypt			= dthe_aead_encrypt,
-+		.base.decrypt			= dthe_aead_decrypt,
-+		.base.chunksize			= AES_BLOCK_SIZE,
-+		.base.ivsize			= AES_IV_SIZE,
-+		.base.base = {
-+			.cra_name		= "ccm(aes)",
-+			.cra_driver_name	= "ccm-aes-dthev2",
-+			.cra_priority		= 299,
-+			.cra_flags		= CRYPTO_ALG_TYPE_AEAD |
-+						  CRYPTO_ALG_KERN_DRIVER_ONLY |
-+						  CRYPTO_ALG_ASYNC |
-+						  CRYPTO_ALG_NEED_FALLBACK,
-+			.cra_blocksize		= 1,
-+			.cra_ctxsize		= sizeof(struct dthe_tfm_ctx),
-+			.cra_reqsize		= sizeof(struct dthe_aes_req_ctx),
-+			.cra_module		= THIS_MODULE,
-+		},
-+		.op.do_one_request = dthe_aead_run,
-+	}, /* CCM AES */
- };
- 
- int dthe_register_aes_algs(void)
-diff --git a/drivers/crypto/ti/dthev2-common.h b/drivers/crypto/ti/dthev2-common.h
-index 7c54291359bf5..3b8d30b3408a0 100644
---- a/drivers/crypto/ti/dthev2-common.h
-+++ b/drivers/crypto/ti/dthev2-common.h
-@@ -39,6 +39,7 @@ enum dthe_aes_mode {
- 	DTHE_AES_CTR,
- 	DTHE_AES_XTS,
- 	DTHE_AES_GCM,
-+	DTHE_AES_CCM,
- };
- 
- /* Driver specific struct definitions */
--- 
-2.43.0
-
+- Eric
 
