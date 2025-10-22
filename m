@@ -1,90 +1,77 @@
-Return-Path: <linux-crypto+bounces-17375-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17377-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00B5ABFDA0A
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 19:39:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F86BFDC1F
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 20:03:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 34FD04E5514
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 17:39:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9348F3AC2A9
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 18:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85892D29B7;
-	Wed, 22 Oct 2025 17:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC2A2E7637;
+	Wed, 22 Oct 2025 18:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wjhVwD7F"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nTAj+0ZR"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013017.outbound.protection.outlook.com [40.93.196.17])
+Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96A32D73B1;
-	Wed, 22 Oct 2025 17:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761154716; cv=fail; b=NBnYwTWHebOPprsMhCTyv/hdIeHBAfB6DKrYA+iOk/CHl6gR9jwyRxGq2zDkBwjtyel9qeWgt/eOTjs/3Ity12urIovEJBwfqmuCsalxkhKCatetEZ0/zMIfN0GPxnraPrptKENKflAeIjsKQGdapQ7DY75VIvQ/Ew6kDncjNUk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761154716; c=relaxed/simple;
-	bh=2S/3hIS3mWxG7KWWoLghWB+oB0Yw/n8TecyS04LzMkI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hKJYC2juPLd4lQc5S0Lwgdw6dhiXuZJYYG4OtGirdENX3K1ijQeXhL62l3NDVQjBY6jIvy8C0tkRVtoUavSV1AjBO2wveT1U0gI/DOYFc8aR53xTUJqrAAPTWKOkqaNNBad19j/kUJcqQ7v/G1TruVWO/Co9+rO+IpMMz7QAGVo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wjhVwD7F; arc=fail smtp.client-ip=40.93.196.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qqu7Y1OqP2KnpX21vWInMEez2ssKATbrNx/1GBL3FZ1qdVpVejrTzQHiCKB5axw8EUce2AjjzhGPe5sqUVXmliO/p06IpzVxIScmFgwPLD686M2Xu5Y6aBSJ6drIFW5sqQMHGjnOyIAA3xRhhOXWkeToIBIbshZMHpaW+J7xVnZJ1+xVKLkXV6ya9/FVE6b11nmrp0hsszI2XlIi0R90VTUULuNJQ7UatzXnmADvlDWFLtZY3lxP//wyzv/9sMKwseX7nKdRBRX8GHrgotFdGxTOXGlwxER2+4D6bot6isjxO6WpZBoglS2jKphX+eqY5G0kKgp08EUocIpcqNiZNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vzWx4c/xpRWt+W8cD5JFXtsltygRSfej9WV13jqYI6Y=;
- b=f/m9LnhPX0O7uTSInXr7M+Ps8mMEmQCo/26Y6EYefSKFxwKvab+UntjKgkAoY6Gpl6/9Jit9bVmdwAWKXC4MJxvuUVOyaKExxReUTBhIjE2xvY0/LSsufwXLUkWahwU5ogdsLiuA5TVm6fVn/8jS89V/ROfuSTzfhpbM+YdCygzcTrQ4c8c8+Zk3CCLlpdYKbRRaoORwb89ZCAR9Z31bgW6EdpG9Y/7y6YqRuyaZrMkky3skOWa7csnqVw+cJsRZZEpV4mP+bh3nMm8j0WqFdWOg2kEqBjgH2tlAZTEsRhn1jvhKUfJ7ybHbIY1sN9AWH4Ex6LytKBJH9qLtVHAxgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vzWx4c/xpRWt+W8cD5JFXtsltygRSfej9WV13jqYI6Y=;
- b=wjhVwD7F5LZM+0S5qLv4nO7LIjSi6gNU8wI8hFF3dhUhXKRgYGbKGbCWQ5zgr6hjUEihwOCAYbW5un7JcVSMffoS8cBTRatvbmbnWSsMfSZsp8n4JGf9NbSTO/aoVbJrGlO9eKAykFJ7YzWT8ASixwvydPe/igVJyKOvjVeVWR8=
-Received: from SJ0PR03CA0131.namprd03.prod.outlook.com (2603:10b6:a03:33c::16)
- by IA0PR12MB7700.namprd12.prod.outlook.com (2603:10b6:208:430::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9228.16; Wed, 22 Oct
- 2025 17:38:29 +0000
-Received: from SJ5PEPF000001F3.namprd05.prod.outlook.com
- (2603:10b6:a03:33c:cafe::53) by SJ0PR03CA0131.outlook.office365.com
- (2603:10b6:a03:33c::16) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9228.17 via Frontend Transport; Wed,
- 22 Oct 2025 17:38:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- SJ5PEPF000001F3.mail.protection.outlook.com (10.167.242.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9253.7 via Frontend Transport; Wed, 22 Oct 2025 17:38:28 +0000
-Received: from tlendack-t1.amd.com (10.180.168.240) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 22 Oct
- 2025 10:38:27 -0700
-From: Tom Lendacky <thomas.lendacky@amd.com>
-To: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-	<linux-crypto@vger.kernel.org>
-CC: Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson
-	<seanjc@google.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, Ingo Molnar <mingo@redhat.com>, "Thomas
- Gleixner" <tglx@linutronix.de>, Michael Roth <michael.roth@amd.com>, "Ashish
- Kalra" <ashish.kalra@amd.com>, Herbert Xu <herbert@gondor.apana.org.au>,
-	"David Miller" <davem@davemloft.net>
-Subject: [PATCH v3 4/4] KVM: SEV: Add known supported SEV-SNP policy bits
-Date: Wed, 22 Oct 2025 12:37:24 -0500
-Message-ID: <93045a3b8941e5b58f03a4d27945b523f5a9b8a2.1761154644.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <cover.1761154644.git.thomas.lendacky@amd.com>
-References: <cover.1761154644.git.thomas.lendacky@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D6B225A34;
+	Wed, 22 Oct 2025 18:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.234
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761156199; cv=none; b=Q5F48qEYcccQBge6k+tqLcTfDrfRw0T2zColXWiN2XpOB0vb1Z5/CgK69oai5pKLHRQW7ya5MKm23dQ4pfcdAQXfAEzlyHY+OrJrs7nMDO7e8HMBKIQMCsOjSO1BsxcomxqmmYXfyX9F7L65H16Oi2+sVj55OnCMV9s6kIVIZs8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761156199; c=relaxed/simple;
+	bh=LQrljQXVBNGPi3uExzVpccn2cMvSWQGjPo3cr1uKi8g=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O3NPkMt8a19YjS67LtUSh73GXmg4gJaqabsonqMjnN0sviHi2qH8rvKRLldj07VbHk+GPe2UsKiV0l6OHeSF9CvseEHIqe4QRRAIpZVX9YjlWCjqZbiIrOUuoYXVVMqhwybc6eUktkRTYLWWwIUGU1ZESnFdS26TrwE1VJQ4JSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=nTAj+0ZR; arc=none smtp.client-ip=198.47.23.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
+	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 59MI3CTA1477181;
+	Wed, 22 Oct 2025 13:03:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1761156192;
+	bh=STmKfude06QOtFedlY+kdkDf2QvLl8jRJXljC3uzCao=;
+	h=From:To:CC:Subject:Date;
+	b=nTAj+0ZR7qrqXTmxci/7H/CpO+gQzHv1rOXkSe0i9/t/PvCAYd+jPLBtpFu2+7MAf
+	 ufGY0hcj9qvY3EnDgdv5AOrUjqLYjxS5UxN6PhvljMaQxdSEy2et9N2iDMczmOQI41
+	 ZHzu6mEhWYn1QgLpNxb1WCvYO3tQEKjdE7avnbPI=
+Received: from DFLE213.ent.ti.com (dfle213.ent.ti.com [10.64.6.71])
+	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 59MI3CYS2203641
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 22 Oct 2025 13:03:12 -0500
+Received: from DFLE200.ent.ti.com (10.64.6.58) by DFLE213.ent.ti.com
+ (10.64.6.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 22 Oct
+ 2025 13:03:11 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE200.ent.ti.com
+ (10.64.6.58) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Wed, 22 Oct 2025 13:03:11 -0500
+Received: from pratham-Workstation-PC (pratham-workstation-pc.dhcp.ti.com [10.24.69.191])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 59MI3Amb1613833;
+	Wed, 22 Oct 2025 13:03:11 -0500
+From: T Pratham <t-pratham@ti.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller"
+	<davem@davemloft.net>
+CC: T Pratham <t-pratham@ti.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Manorit Chawdhry <m-chawdhry@ti.com>,
+        Kamlesh
+ Gurudasani <kamlesh@ti.com>,
+        Shiva Tripathi <s-tripathi1@ti.com>,
+        Kavitha
+ Malarvizhi <k-malarvizhi@ti.com>,
+        Vishal Mahaveer <vishalm@ti.com>, Praneeth
+ Bajjuri <praneeth@ti.com>
+Subject: [PATCH v5 0/4] Add support for more AES modes in TI DTHEv2
+Date: Wed, 22 Oct 2025 23:15:38 +0530
+Message-ID: <20251022180302.729728-1-t-pratham@ti.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -93,117 +80,92 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: satlexmb08.amd.com (10.181.42.217) To satlexmb07.amd.com
- (10.181.42.216)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001F3:EE_|IA0PR12MB7700:EE_
-X-MS-Office365-Filtering-Correlation-Id: b95e657e-d07b-4591-0272-08de1191d001
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|82310400026|36860700013;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?iDqkAU7HAY6Ebkz8i3p/ADHroEMZNJBZr0p2qkF1jlLEty9yLYvyhQNHhu+F?=
- =?us-ascii?Q?KaJPJx1qwEHDejTNszwTkw0CDz/+5WmMwF6d8PaK59QMJEFPbdY55kVyQz05?=
- =?us-ascii?Q?x7+P6GPWXKQzdz4+sirjWSi8qMCTjZnDFSRxSmp897c8n6h4rVhF9WD4yBdx?=
- =?us-ascii?Q?Vsc4sEIoyTci8DWDLlK0D2MOTqv4j+d5efJdfN2Pelgu/5moGV8apxPUYNCz?=
- =?us-ascii?Q?u5clpxWaqEgIfSuFbK4FH+vsHDI1DOBub9PT9QRNI6pq85C9Lbf8lGQ5R/95?=
- =?us-ascii?Q?1DtI5EslKKvowBd/DAtCTkKTXxDCmUpwNKQM1moec4OpSmfFYn6PGl+nk7Xm?=
- =?us-ascii?Q?t8akUnFgYCUEM5xQZybOB2XcU3HssdCURFFM7Vi+1EfwBC0hADlPAjlT6x6M?=
- =?us-ascii?Q?hszIkm+Cu7f2ILL+gPf1+XzD0wXmEcVM3J5lBfvYcTvwqNy3/gmT8d9Iz6vT?=
- =?us-ascii?Q?nhHMN0P23Sfp9RERfHFR4eZ6w3XvmEGafBVUKJaaH46f5S5kvUb3DNorINOI?=
- =?us-ascii?Q?JFVEzR7Gea3M6PSAzQkkYRgLTywsHjAH+WVE7tWP22FwNbtG971j8meNnFZ9?=
- =?us-ascii?Q?zfOQygWi3egbfC+fdvKvMyaSDlaWvOCCnIhx1KBKv7rdR7O0/u00YIdaJQip?=
- =?us-ascii?Q?WXymFhDHCYUmwBDRJ+nEa5Dqrlkte6shE0UvFdAiVjLfd3e+NEirxHq+iDNg?=
- =?us-ascii?Q?1TdO3Iwj/ZcfophyKgE8WXYmRQ+rMdqHbmPSooIPu4Vust57cw1/HNA5h0qU?=
- =?us-ascii?Q?PlICruNr1eRTGqXhHK5M3a0AXBVptH64g94fE8I7jLtUSK9LN5Yd/EH4iUwL?=
- =?us-ascii?Q?pmSTJr6GLDRw9wWA4yMHCL/BergRrW9uWRBN11BoKq3XoaOre59TaQVsbfMr?=
- =?us-ascii?Q?oMl0EP8yCqEkfa3BtqTa0zhXNm31mKemF+AwlSkGpkFb56oBIcIBP5Xy4OGo?=
- =?us-ascii?Q?poUfWHJKIJZvwvbzGhzumuNjjaoJeZ/ARYUMNsxuaW0mHTSrbXG5bfJUHojT?=
- =?us-ascii?Q?XcdMqXJVBdY7DdneFsjtYVNhCSE74nRduZ833ak6wsQRsrH0RXKcMW6UawqI?=
- =?us-ascii?Q?yFJ/EcnGf1176j76wHYGXdDVD72H2W6flz+2mSh7qf5IZSeyhtASWTfg7psS?=
- =?us-ascii?Q?yQZt1iK82ZxdGxivwZbRBbvHLZrtvCRx3cZfpT5+1KSA7cao0iCfPY/GXYh2?=
- =?us-ascii?Q?dNYuhSR2N5oSlRcDXqn3Ywd0RG8KPPoFCIXGm5ebcR9lgG2hOxDBCQX5beqn?=
- =?us-ascii?Q?TYpU3SYgfOm7kbNZFedHjuiqU0AewNSpa1TZuIcvMOa37D1xNjje+KCBMZX8?=
- =?us-ascii?Q?jpbswKKDsUnBpQN/mSd/Zb+qsIXyyREXoxjjo5ZddSx8j3Plw/ZmZelpwSiv?=
- =?us-ascii?Q?tXNhvZZMhSNWB8lDVdwfMcwZP9plHvpdYHBummk8sFVxFPx4s7hJwO/Io5Bl?=
- =?us-ascii?Q?2rb8fgq18deQD1ybvk8S86bMQBy+n3plRejS5ilHTICOHdyrjJbGtoKR3+rw?=
- =?us-ascii?Q?0NVHvsJWBI0gowrYjcMU3ylEbv7o/EpazfTO08xOqKYqksjBYvUoyxxkQ/fy?=
- =?us-ascii?Q?zB6HqgIaS8aw9SpKU6M=3D?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(82310400026)(36860700013);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2025 17:38:28.9491
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b95e657e-d07b-4591-0272-08de1191d001
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001F3.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7700
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-Add to the known supported SEV-SNP policy bits that don't require any
-implementation support from KVM in order to successfully use them.
+DTHEv2 is a new cryptography engine introduced in TI AM62L SoC. The
+features of DTHEv2 and details of AES modes supported were detailed in
+[1]. Additional hardware details available in SoC TRM [2].
 
-At this time, this includes:
-  - CXL_ALLOW
-  - MEM_AES_256_XTS
-  - RAPL_DIS
-  - CIPHERTEXT_HIDING_DRAM
-  - PAGE_SWAP_DISABLE
+This patch series adds support for the following AES modes:
+ - AES-XTS
+ - AES-CTR
+ - AES-GCM
+ - AES-CCM
 
-Arguably, RAPL_DIS and CIPHERTEXT_HIDING_DRAM require KVM and the CCP
-driver to enable these features in order for the setting of the policy
-bits to be successfully handled. But, a guest owner may not wish their
-guest to run on a system that doesn't provide support for those features,
-so allowing the specification of these bits accomplishes that. Whether
-or not the bit is supported by SEV firmware, a system that doesn't support
-these features will either fail during the KVM validation of supported
-policy bits before issuing the LAUNCH_START or fail during the
-LAUNCH_START.
+The driver is tested using full kernel crypto selftests
+(CRYPTO_SELFTESTS_FULL) which all pass successfully [3].
 
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+PS: The patches 3/4 and 4/4 in this series (AES-GCM and AES-CCM) depend
+on the following patch:
+https://lore.kernel.org/linux-crypto/20251022171902.724369-2-t-pratham@ti.com/
+
+Signed-off-by: T Pratham <t-pratham@ti.com>
 ---
- arch/x86/kvm/svm/sev.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+[1]: [PATCH v7 0/2] Add support for Texas Instruments DTHEv2 Crypto Engine
+Link: https://lore.kernel.org/all/20250820092710.3510788-1-t-pratham@ti.com/
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 24167178bf05..83beddc52715 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -65,12 +65,22 @@ module_param_named(ciphertext_hiding_asids, nr_ciphertext_hiding_asids, uint, 04
- #define AP_RESET_HOLD_NAE_EVENT		1
- #define AP_RESET_HOLD_MSR_PROTO		2
- 
--#define KVM_SNP_POLICY_MASK_VALID	(SNP_POLICY_MASK_API_MINOR	| \
--					 SNP_POLICY_MASK_API_MAJOR	| \
--					 SNP_POLICY_MASK_SMT		| \
--					 SNP_POLICY_MASK_RSVD_MBO	| \
--					 SNP_POLICY_MASK_DEBUG		| \
--					 SNP_POLICY_MASK_SINGLE_SOCKET)
-+/*
-+ * SEV-SNP policy bits that can be supported by KVM. These include policy bits
-+ * that have implementation support within KVM or policy bits that do not rely
-+ * on any implementation support within KVM.
-+ */
-+#define KVM_SNP_POLICY_MASK_VALID	(SNP_POLICY_MASK_API_MINOR		| \
-+					 SNP_POLICY_MASK_API_MAJOR		| \
-+					 SNP_POLICY_MASK_SMT			| \
-+					 SNP_POLICY_MASK_RSVD_MBO		| \
-+					 SNP_POLICY_MASK_DEBUG			| \
-+					 SNP_POLICY_MASK_SINGLE_SOCKET		| \
-+					 SNP_POLICY_MASK_CXL_ALLOW		| \
-+					 SNP_POLICY_MASK_MEM_AES_256_XTS	| \
-+					 SNP_POLICY_MASK_RAPL_DIS		| \
-+					 SNP_POLICY_MASK_CIPHERTEXT_HIDING_DRAM	| \
-+					 SNP_POLICY_MASK_PAGE_SWAP_DISABLE)
- 
- static u64 snp_supported_policy_bits __ro_after_init;
- 
+[2]: Section 14.6.3 (DMA Control Registers -> DMASS_DTHE)
+Link: https://www.ti.com/lit/ug/sprujb4/sprujb4.pdf
+
+[3]: DTHEv2 AES Engine kernel self-tests logs
+Link: https://gist.github.com/Pratham-T/aaa499cf50d20310cb27266a645bfd60
+
+Change log:
+v5:
+ - Simplified AES-XTS fallback allocation, directly using xts(aes) for
+   alg_name
+ - Changed fallback to sync and allocated on stack
+v4:
+ - Return -EINVAL in AES-XTS when cryptlen = 0
+ - Added software fallback for AES-XTS when ciphertext stealing is
+   required (cryptlen is not multiple of AES_BLOCK_SIZE)
+ - Changed DTHE_MAX_KEYSIZE definition to use AES_MAX_KEY_SIZE instead
+   of AES_KEYSIZE_256
+ - In AES-CTR, also pad dst scatterlist when padding src scatterlist
+ - Changed polling for TAG ready to use readl_relaxed_poll_timeout()
+ - Used crypto API functions to access struct members instead of
+   directly accessing them (crypto_aead_tfm and aead_request_flags)
+ - Allocated padding buffers in AEAD algos on the stack.
+ - Changed helper functions dthe_aead_prep_* to return ERR_PTR on error
+ - Changed some error labels in dthe_aead_run to improve clarity
+ - Moved iv_in[] declaration from middle of the function to the top
+ - Corrected setting CCM M value in the hardware register
+ - Added checks for CCM L value input in the algorithm from IV.
+ - Added more fallback cases for CCM where hardware has limitations
+v3:
+ - Added header files to remove implicit declaration error.
+ - Corrected assignment of src_nents and dst_nents in dthe_aead_run
+ (Ran the lkp kernel test bot script locally to ensure no more such
+ errors are present)
+v2:
+ - Corrected assignment of variable unpadded_cryptlen in dthe_aead_run.
+ - Removed some if conditions which are always false, and documented the
+   cases in comments.
+ - Moved polling of TAG ready register to a separate function and
+   returning -ETIMEDOUT on poll timeout.
+ - Corrected comments to adhere to kernel coding guidelines.
+
+Link to previous version:
+
+v4: https://lore.kernel.org/all/20251009111727.911738-1-t-pratham@ti.com/
+v3: https://lore.kernel.org/all/20250910100742.3747614-1-t-pratham@ti.com/
+v2: https://lore.kernel.org/all/20250908140928.2801062-1-t-pratham@ti.com/
+v1: https://lore.kernel.org/all/20250905133504.2348972-4-t-pratham@ti.com/
+---
+
+T Pratham (4):
+  crypto: ti - Add support for AES-XTS in DTHEv2 driver
+  crypto: ti - Add support for AES-CTR in DTHEv2 driver
+  crypto: ti - Add support for AES-GCM in DTHEv2 driver
+  crypto: ti - Add support for AES-CCM in DTHEv2 driver
+
+ drivers/crypto/ti/Kconfig         |   5 +
+ drivers/crypto/ti/dthev2-aes.c    | 918 +++++++++++++++++++++++++++++-
+ drivers/crypto/ti/dthev2-common.c |  19 +
+ drivers/crypto/ti/dthev2-common.h |  33 +-
+ 4 files changed, 958 insertions(+), 17 deletions(-)
+
 -- 
-2.51.1
+2.43.0
 
 
