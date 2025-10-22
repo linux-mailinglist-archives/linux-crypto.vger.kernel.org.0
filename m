@@ -1,108 +1,117 @@
-Return-Path: <linux-crypto+bounces-17355-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17357-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3F09BFB4C8
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 12:06:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C63DBFB579
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 12:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14C5D1891005
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 10:06:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 378AD568543
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 10:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8039D31985B;
-	Wed, 22 Oct 2025 10:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010D0320A0A;
+	Wed, 22 Oct 2025 10:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJ3RRgau"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cf+J0OUs"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6C63168E8
-	for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 10:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B356431D742
+	for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 10:13:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761127576; cv=none; b=OTKmGciXEnsLvNzi06nvqwy0T6ueP/Y/YZrO5Oqzn+1Xnmyfldk8Gr4u4lvFaYRgzcJ8dAhkWdf4ZtmzJc5rm9yG1lEReqE32fGFbgxrQ1sd4Vq3aoAdIALRvMNrvIKrimhUzZV963DsNnI7PEcHBTIJjd4+xBXtQ08H61uItIw=
+	t=1761128015; cv=none; b=tPKb6r5W+kX1t+NkMg7P+zSD26uyy1qq1S9+YTrm0sjosxnivcq5eBnnkJxMKFAzd1yFA1sRcgs+ZG4mdic16g8WHff6ksjEp6vIqOxJ9ivZfEi82wwz9tFYR41S13wRZVYC7Gwo3Atk+BlFssj/ZeGq9qzKtDsz0LZpkvfzSuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761127576; c=relaxed/simple;
-	bh=YjoTV+qcYnMvMR+XsIYNmyvY6Y1XWrBQdEZTQ1QtXaY=;
+	s=arc-20240116; t=1761128015; c=relaxed/simple;
+	bh=xbleyjew/gUw5tjiH+F/GM5sPSqPUuGp5zFrXdHnEss=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Al0pDvbJ6F7VxOyJV6ouD4xp9j41VariSySQI52Hiti2yAPO0EBGvEbYhBxnPeRtAp7nW7KdFv5sCYs4FW7Vz+YXuWx5wEL0rytsZIcgxiybDLRwTwVDgesautfv4nbgYCnGydCKOHZQUylh1bz5UFjRbhNwGeCs29TW7JrZefQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lJ3RRgau; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D798AC4AF09
-	for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 10:06:15 +0000 (UTC)
+	 To:Cc:Content-Type; b=s+sHGelqmfaYz/nKiwrzDVUlJkmiJnbAYYLm8STmGCB5bqZajeWJsnIsm2FJ8mksj8XLXANL2ulzMIwt/hMRFko39c6rZ8Zz59eHLFsxi3j+zavmb1y6VbG0TObt1XIInY5cLURd19JN6NYU0Ww5l7FPi2tt6o2rlNfrfQFIK6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cf+J0OUs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B375C116C6
+	for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 10:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761127575;
-	bh=YjoTV+qcYnMvMR+XsIYNmyvY6Y1XWrBQdEZTQ1QtXaY=;
+	s=k20201202; t=1761128015;
+	bh=xbleyjew/gUw5tjiH+F/GM5sPSqPUuGp5zFrXdHnEss=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lJ3RRgauYL2s1q2mrj02T4mhG/3jEuS3L47Y2Ptl8NII5BooZQVEual2l0fPnJnV/
-	 Ivbdm4cyPvZuGOIJ2X/NyLN7wAz1RSRUUfZgUxBBHXFyAsCMxx400RsrP8xdWd7XpM
-	 EDtq/sivF/R/BhCUYuW87jhA92jAd3Y+p0Os7nEe8EBDqOBZRmBZIb/gtwlHU48a4O
-	 7j7Q7umK4JwbokbOtCjigXyev8DnYEQ3hhTuJ1gLIC7lHVHq9bBchiUx6SM0jV8Qch
-	 nTDxQVrPB/S7TpBv6LBpE0cZSr7HZiJZ4xsa4fB17+4uAj61+puaDZitBj0OPkj10q
-	 dGQA1g9yKmysQ==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5818de29d15so7834532e87.2
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 03:06:15 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzupK0yZZmKviL463wISvYUZmURzsxZxyaLVUCYojGoa0Q8nASg
-	DMrHjJ7X5H7MwBuf0HRl5p5HH2QZThM8UrM54nLubVcbNr87gRWheI7D6x264aBXM2/MrTKG48g
-	UVKPisIZDw5WhKnFdw5yxAUHxWAa8KAw=
-X-Google-Smtp-Source: AGHT+IEz0x//kso/iNTS21v0xmTCFoU040wkVDk2FAWrns4i2WZvwnraWiRmT9a7dZUqlR2yjlPI5muBgbBSVJSiBMU=
-X-Received: by 2002:a05:6512:ea3:b0:592:ee1f:227a with SMTP id
- 2adb3069b0e04-592ee1f25e8mr889209e87.43.1761127574241; Wed, 22 Oct 2025
- 03:06:14 -0700 (PDT)
+	b=cf+J0OUsUIRcsHSBwhz7YYf0Z9ymKDK8GA1J6sql1jQu86YEQyfe66TD9dRlWn0fJ
+	 QxrInwySwhAi0o5kYZrKes3WJ2nzRGBOCd7FwAdipREv5jRGCRMV3IUUimULjKLnfl
+	 +Z0mdXVCUyzfK5up5HUbAFqPGJZcQ8OFOYfLsrPTmYSAcZjplbwcIg7YbDT8uyTR4Z
+	 i/IZKEQtk83EbTkiPASU5XBSDqduHq4NPrpPw2voDdoZ/fvNbX6Xt0yPJqXlVV0nHy
+	 lzJCtpmGOXU1EZV5iqntyALSeMSBpqBto9lXNShOBD0OXh5Fn5LIZU6quA5krtgF0j
+	 GJ74B0vbZiqsQ==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-57f1b88354eso7442790e87.1
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 03:13:35 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxXG3cFuIGD1rbZT+yIYwvOWIGDn7lVZan0PHxDaDaWwsYRZvwO
+	m4Mxvd+OCl3bU/eWumwB8aALW18p/vfaa8uE/LboYOBW8fb/z8hcyiA2xhcFfLjStd9/2IefmB3
+	KuaR6za9GvXvjI1xhXX8UegoPDSzzauM=
+X-Google-Smtp-Source: AGHT+IFcCPrNwnq8tqyu26uoCns+CxnDTAM88jzdNDUEvsfOGixRrsmaAiH98/VG4HRDwveCRetRp7qwt02Fdgsnfd0=
+X-Received: by 2002:a05:6512:159b:b0:55f:6fb4:e084 with SMTP id
+ 2adb3069b0e04-591d85739edmr7396384e87.50.1761128013726; Wed, 22 Oct 2025
+ 03:13:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251018043106.375964-1-ebiggers@kernel.org>
-In-Reply-To: <20251018043106.375964-1-ebiggers@kernel.org>
+References: <20251020005038.661542-1-ebiggers@kernel.org>
+In-Reply-To: <20251020005038.661542-1-ebiggers@kernel.org>
 From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 22 Oct 2025 12:06:02 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFNw73j2F2QQJQ8CDXj1qfpK-xE+TRnRZoak5OhVDPA3w@mail.gmail.com>
-X-Gm-Features: AS18NWBgd42L4tDl9i3Mf7M4zRNkrg9sTyvbPU9kg_gjKmxPKesRTrDlO8EAPyY
-Message-ID: <CAMj1kXFNw73j2F2QQJQ8CDXj1qfpK-xE+TRnRZoak5OhVDPA3w@mail.gmail.com>
-Subject: Re: [PATCH 00/10] BLAKE2b library API
+Date: Wed, 22 Oct 2025 12:13:22 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEh=nS+pFgJUm5Vsyk1fMvY0dJNjLzA90Zj4AQPrD5ZYg@mail.gmail.com>
+X-Gm-Features: AS18NWDkFNpIn7aOJ7I-K06jIqbriS-x6sjlQuJbYrgZlUVLWfy8F6r6U1x3XZ0
+Message-ID: <CAMj1kXEh=nS+pFgJUm5Vsyk1fMvY0dJNjLzA90Zj4AQPrD5ZYg@mail.gmail.com>
+Subject: Re: [PATCH 00/17] SHA-3 library
 To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	"Jason A . Donenfeld" <Jason@zx2c4.com>
+Cc: linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>, 
+	"Jason A . Donenfeld" <Jason@zx2c4.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 18 Oct 2025 at 06:36, Eric Biggers <ebiggers@kernel.org> wrote:
+On Mon, 20 Oct 2025 at 02:53, Eric Biggers <ebiggers@kernel.org> wrote:
 >
-> This series can also be retrieved from:
+> This series is targeting libcrypto-next.  It can also be retrieved from:
 >
->     git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git blake2b-lib-v1
+>     git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git sha3-lib-v1
 >
-> This series adds BLAKE2b support to lib/crypto/ and reimplements the
-> blake2b-* crypto_shash algorithms on top of it.
+> This series builds on the first 5 patches of David's v6 series
+> (https://lore.kernel.org/r/20251017144311.817771-1-dhowells@redhat.com),
+> which I've included unmodified as the initial patches.  The remaining
+> patches improve the SHA-3 library, for example by simplifying the API
+> and migrating the existing arm64 and s390-optimized SHA-3 code into the
+> library.  The last patch reimplements the sha3-* crypto_shash algorithms
+> on top of the library.
 >
-> To prepare for that, patches 1-4 clean up the BLAKE2s library code a
-> bit, and patch 5 adds some missing 64-bit byteorder helper functions.
-> Patches 6-8 add the BLAKE2b library API (closely mirroring the BLAKE2s
-> one), and patch 9 makes crypto_shash use it.  As usual, the library APIs
-> are documented (with kerneldoc) and tested (with KUnit).
+> If the s390 folks could re-test the s390 optimized SHA-3 code, that
+> would be helpful.  QEMU doesn't support the instructions it uses.
 >
-> With that done, all of btrfs's checksum algorithms have library APIs.
-> So patch 10 converts btrfs to use the library APIs instead of shash.
-> This has quite a few benefits, as detailed in that patch.
+> David Howells (5):
+>   s390/sha3: Rename conflicting functions
+>   arm64/sha3: Rename conflicting functions
+>   lib/crypto: Add SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE128,
+>     SHAKE256
+>   lib/crypto: Move the SHA3 Iota transform into the single round
+>     function
+>   lib/crypto: Add SHA3 kunit tests
 >
-> Patches 1-9 are targeting libcrypto-next for 6.19.  Patch 10 can go
-> through the btrfs tree later.
->
-> Eric Biggers (10):
->   lib/crypto: blake2s: Adjust parameter order of blake2s()
->   lib/crypto: blake2s: Rename blake2s_state to blake2s_ctx
->   lib/crypto: blake2s: Drop excessive const & rename block => data
->   lib/crypto: blake2s: Document the BLAKE2s library API
->   byteorder: Add le64_to_cpu_array() and cpu_to_le64_array()
->   lib/crypto: blake2b: Add BLAKE2b library functions
->   lib/crypto: arm/blake2b: Migrate optimized code into library
->   lib/crypto: tests: Add KUnit tests for BLAKE2b
->   crypto: blake2b - Reimplement using library API
->   btrfs: switch to library APIs for checksums
+> Eric Biggers (12):
+>   lib/crypto: sha3: Fix libsha3 build condition
+>   lib/crypto: sha3: Use appropriate conversions in
+>     sha3_keccakf_generic()
+>   lib/crypto: sha3: Drop unfinished SHAKE support from
+>     gen-hash-testvecs.py
+>   lib/crypto: sha3: Consistently use EXPORT_SYMBOL_GPL
+>   lib/crypto: sha3: Replace redundant ad-hoc test with FIPS test
+>   lib/crypto: sha3: Simplify the API
+>   lib/crypto: sha3: Document one-shot functions in header and improve
+>     docs
+>   crypto: arm64/sha3 - Update sha3_ce_transform() to prepare for library
+>   lib/crypto: arm64/sha3: Migrate optimized code into library
+>   lib/crypto: s390/sha3: Migrate optimized code into library
+>   crypto: jitterentropy - use default sha3 implementation
+>   crypto: sha3 - Reimplement using library API
 >
 
 Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
