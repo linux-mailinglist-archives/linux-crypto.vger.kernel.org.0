@@ -1,140 +1,311 @@
-Return-Path: <linux-crypto+bounces-17354-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17356-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8833DBFA9AC
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 09:37:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24C7BFB525
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 12:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B7CD3BFCBC
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 07:37:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8492119C4A75
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Oct 2025 10:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7F52FB09A;
-	Wed, 22 Oct 2025 07:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=h-partners.com header.i=@h-partners.com header.b="RqwbGJUO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116BA2FF660;
+	Wed, 22 Oct 2025 10:10:11 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E2B221F26;
-	Wed, 22 Oct 2025 07:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C2D30C35F
+	for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 10:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761118661; cv=none; b=o2wRX613gNWx61VgqN5mK8WUaJO/UDwAcKqVWgdvOwQuxEsAxNYIonv4Rtlo34Ka68mRLOV5hnHHeklD76BSJjgPSICi7HVwrTkEzC349ONBzpBcdhScUld66L4r2ffv4T6FBTBpGNf/tlLgGxJI2I6CxNBLtlmwMIzano0zCIE=
+	t=1761127810; cv=none; b=elYKddChfLX1wYYtm5UGnoqc8vKe7uXaERqZ+OJPRo6AfjIcfDAFpYv5i7Kn1XuZ884XZAK8d6BE1cFqEFf5dHTiMyigVRrShRGPkLkT137RoXRph/NNfOiBR7sf6vvqSigzPh7R13idacsIyD4RfZYG4Wb1XMJfWUYsts28sfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761118661; c=relaxed/simple;
-	bh=CNXsacZrYlCizcNkP14G0p+hbYUYpHwtpracQ0YFDWQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=AcXMv5Xv8a2jh2VsW7ZAk2deLc8+KEAa2eTFJg2gxYtkYmcuaHGV2bgTFvcM/J7Q3CppVZR40JIiDJiTXlRX2kAnYHbl1xc98HZJEmuC4zGNbB2kC/btkovPufCbm+Iu+TdmUUU97yyCeB7r9aYw3u6IDrT1MwAfdCcyHCkvxWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=h-partners.com; dkim=pass (1024-bit key) header.d=h-partners.com header.i=@h-partners.com header.b=RqwbGJUO; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h-partners.com
-Received: from canpmsgout12.his.huawei.com (unknown [172.19.92.144])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4cs1FV4pzgznfm2;
-	Wed, 22 Oct 2025 15:36:46 +0800 (CST)
-dkim-signature: v=1; a=rsa-sha256; d=h-partners.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=uMulYN+qePmxL2vU5StmzMeZjoafSCMQNt2A3M/a23A=;
-	b=RqwbGJUOHi7tAE2d7phDKzoo9ZtzuVj/7aJuYLNnleM3ilmd2ysq5hnzUB58XiON8Ud0mev4d
-	15iA3PgL+HRtkdGIUGBdCkaMjjnsep1EMn9VI3NpidZ3qOYmG0PyUvyKax728QvHjoO0nu7AUo7
-	fIDIjE1ziPuZpf+vyhQ/t2Y=
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cs1FV0hWSznTVF;
-	Wed, 22 Oct 2025 15:36:46 +0800 (CST)
-Received: from kwepemk200007.china.huawei.com (unknown [7.202.194.73])
-	by mail.maildlp.com (Postfix) with ESMTPS id 487911A016C;
-	Wed, 22 Oct 2025 15:37:27 +0800 (CST)
-Received: from [10.67.121.172] (10.67.121.172) by
- kwepemk200007.china.huawei.com (7.202.194.73) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 22 Oct 2025 15:37:26 +0800
-Message-ID: <2523f498-3723-48a1-8594-83bac35a4ead@hisilicon.com>
-Date: Wed, 22 Oct 2025 15:37:26 +0800
+	s=arc-20240116; t=1761127810; c=relaxed/simple;
+	bh=n8auG5eKlZyr31ot6Kp1D+Gj8aLD/n7p+Qqeh5TWnJo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NfPg0TvoHMIcFF4VE6UyXyAa9rkmU+Gk50ereXIeKrHrCwdMNmfbKd6Q5RMcomZiPeFCWhQYehk1hxGWCixOmrMhmY0f5+B0FFg1gXW1uvgJ+yLp8ZW4CG6ZddVqSlSjZz/SdnhWH6bxFw5OYOCl8ZP5uirTG+hUzTD2jv0Nmms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-88f27b67744so886988085a.0
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 03:10:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761127807; x=1761732607;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rEJ/AcXuMMrQoXRwb6HmCfF3LFX3cn+TJWCKJF/dV3w=;
+        b=J6L/isldl5RExqqi/hCYa7K+IY+P+6jdHnaUoYW/fGL209O+9lkBtVF0v5tG0Pbbfq
+         jZlfzmmyQ4o5e1/8fG9lSPsj0Y5qa+3ncDE3rt+49KRFEPx5123caOFW7Zd2euzyYNSm
+         3sqoQPi2ZWp3rzmdUP4ZUgjt6G3cDG+49lG5JQiZjyKv3fmB3cjhSvqzs7kIBRCi9zfO
+         HZ6nRqaud6wtdtJcDnrMToOd3xyv242qtas3fmj0dkUG5+vtRSBZzDNeV0HMvXqGfp9w
+         eWk8T4DPywjOd8Em4jdhiM9NIJR4O0hm/iTRyUMHtZH8+J1zKqXme7tel6Mm5PP1FIJC
+         +1AQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULUHw1M3iV2LtnRzJNwsYEF+Ff7lyW3n1X4P8/TVocuLKHxJD1u8bLoyxtB35X5hyptJixsZCuPjrLe4I=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywvvc/DSNF5pLLkizLNhS9ZAdSMIqwTBFOYAmlAaV8dblR2Dwx3
+	ShlRerTVJqEy+JQyvMjhkg4AenJWPCcrI4nwS5UU8kqh4+LVfQQKY0wYdPPvPzpg
+X-Gm-Gg: ASbGncsYscYzjaRNkdmOfeTsF99nIS+F2eLvv2PXe4vKwuDDnSPwrLPMoP/Hnzi/8EO
+	wQrn2v41iHvHQxt3r4lyDXyH/36dIr6x/TnpSD+59QiQYa9niEe4EYZSuBioHAc9GDGSBKkiNxO
+	o4S7wBQIY6eRAvI3ldWhnt9sSikIGCn7Nph75fNQ7+F/ULe9K0eqJr/tJ6jDhxn9bdTSYcugck1
+	4ppoqCgpFHEFfSzxtlBkQ3r85ejgoABvrGPDzbmu0aL988F4tasQ/cNUMtS0fVR3xVzQnupmxaL
+	UxwUHFHObtvmepxqA42k98kMl26rft/XBswOgah98j83QZHMpN33DFgardenvE4gSlqqC+WePAE
+	3LOTnINfZje0HY3zyZ3mQEX/7ihzGYTloPJjSiJwOBKoLDJ4GwYs0H4AV8D621NULD0lwM60cfC
+	CDUE+7N9v1r53ViLpZxTgO3TZyRLyfuR7CiEIrsRurEOPjNqsdFQ8T
+X-Google-Smtp-Source: AGHT+IHsT30CTuy31qGDXONGuzOIqlr7I71AukcqQ4Q9iz+ISpqcjtadPhY2QMxkfDg9BFOE/jA59A==
+X-Received: by 2002:a05:620a:4550:b0:850:3206:9734 with SMTP id af79cd13be357-8906dfe0138mr2043102785a.9.1761127806449;
+        Wed, 22 Oct 2025 03:10:06 -0700 (PDT)
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com. [209.85.222.182])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-891cd098334sm949477385a.18.2025.10.22.03.10.06
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Oct 2025 03:10:06 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-88fa5974432so880251585a.2
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Oct 2025 03:10:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWdBqp52DkudbWhCUyAbYegzUah6QG4hU/PyllhjK5NoYz/SRDZ/qVZrHtWoeyOdag3AHlv0FSYSIh2Ph4=@vger.kernel.org
+X-Received: by 2002:a05:6102:3f49:b0:5d6:615:a687 with SMTP id
+ ada2fe7eead31-5d7dd5544d6mr5930459137.7.1761127308820; Wed, 22 Oct 2025
+ 03:01:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/4] uacce: fix for cdev memory leak
-To: Zhangfei Gao <zhangfei.gao@linaro.org>, Chenghai Huang
-	<huangchenghai2@huawei.com>
-CC: <gregkh@linuxfoundation.org>, <wangzhou1@hisilicon.com>,
-	<linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<fanghao11@huawei.com>, <shenyang39@huawei.com>, <liulongfang@huawei.com>,
-	<qianweili@huawei.com>
-References: <20251022021149.1771168-1-huangchenghai2@huawei.com>
- <20251022021149.1771168-2-huangchenghai2@huawei.com>
- <CABQgh9HFHSstR19NtOw5c6E+qS7_d_=6qnCYq9VY6DNKT6o3ng@mail.gmail.com>
-From: "linwenkai (C)" <linwenkai6@hisilicon.com>
-In-Reply-To: <CABQgh9HFHSstR19NtOw5c6E+qS7_d_=6qnCYq9VY6DNKT6o3ng@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemk200007.china.huawei.com (7.202.194.73)
+References: <cover.1760696560.git.geert+renesas@glider.be> <67c1998f144b3a21399672c8e4d58d3884ae2b3c.1760696560.git.geert+renesas@glider.be>
+ <aPKQMdyMO-vrb30X@yury> <CAMuHMdXq7xubX4a6SZWcC1HX+_TsKeQigDVQrWvA=js5bhaUiQ@mail.gmail.com>
+ <aPhbhQEWAel4aD9t@yury>
+In-Reply-To: <aPhbhQEWAel4aD9t@yury>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 22 Oct 2025 12:01:37 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUOX=ToDU_44fHrqKWUtee1LKpgisfTKOe4R33er9g+DA@mail.gmail.com>
+X-Gm-Features: AS18NWAJp5tYw_pRqlFhPyJqRT3wi5ZG4jspqrcr0Xp9hgyi6lbaoTACOgNkevQ
+Message-ID: <CAMuHMdUOX=ToDU_44fHrqKWUtee1LKpgisfTKOe4R33er9g+DA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] bitfield: Add non-constant field_{prep,get}() helpers
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	David Miller <davem@davemloft.net>, Linus Walleij <linus.walleij@linaro.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>, 
+	Andrew Jeffery <andrew@codeconstruct.com.au>, Crt Mori <cmo@melexis.com>, 
+	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Shan-Chun Hung <schung@nuvoton.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@ieee.org>, 
+	David Laight <david.laight.linux@gmail.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+	Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>, 
+	Michael Hennerich <Michael.Hennerich@analog.com>, Kim Seer Paller <kimseer.paller@analog.com>, 
+	David Lechner <dlechner@baylibre.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Andy Shevchenko <andy@kernel.org>, Richard Genoud <richard.genoud@bootlin.com>, 
+	Cosmin Tanislav <demonsingur@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Jianping Shen <Jianping.Shen@de.bosch.com>, linux-clk@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, linux-edac@vger.kernel.org, qat-linux@intel.com, 
+	linux-gpio@vger.kernel.org, linux-aspeed@lists.ozlabs.org, 
+	linux-iio@vger.kernel.org, linux-sound@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Yury,
 
-在 2025/10/22 14:17, Zhangfei Gao 写道:
-> On Wed, 22 Oct 2025 at 10:12, Chenghai Huang <huangchenghai2@huawei.com> wrote:
->> From: Wenkai Lin <linwenkai6@hisilicon.com>
->>
->> In uacce_register(), if cdev_device_add() fails, we should properly
->> decrease the reference count of the cdev kobject and set uacce->cdev
->> to NULL to avoid potential use-after-free or double free issues.
->>
->> This change adds proper error handling after cdev_device_add() fails,
->> ensuring that kobject_put() is called and uacce->cdev is cleared.
->>
->> Fixes: 015d239ac014 ("uacce: add uacce driver")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
->> Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
->> ---
->>   drivers/misc/uacce/uacce.c | 11 ++++++++++-
->>   1 file changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
->> index 42e7d2a2a90c..9b82a6731832 100644
->> --- a/drivers/misc/uacce/uacce.c
->> +++ b/drivers/misc/uacce/uacce.c
->> @@ -519,6 +519,8 @@ EXPORT_SYMBOL_GPL(uacce_alloc);
->>    */
->>   int uacce_register(struct uacce_device *uacce)
->>   {
->> +       int ret;
->> +
->>          if (!uacce)
->>                  return -ENODEV;
->>
->> @@ -529,7 +531,14 @@ int uacce_register(struct uacce_device *uacce)
->>          uacce->cdev->ops = &uacce_fops;
->>          uacce->cdev->owner = THIS_MODULE;
->>
->> -       return cdev_device_add(uacce->cdev, &uacce->dev);
->> +       ret = cdev_device_add(uacce->cdev, &uacce->dev);
->> +       if (ret) {
->> +               kobject_put(&uacce->cdev->kobj);
-> Not understanding this,
-> What if kobject_put(&p->kobj) is called twice?
-> cdev_device_add would call cdev_del->kobject_put(&p->kobj) as well.
+On Wed, 22 Oct 2025 at 06:20, Yury Norov <yury.norov@gmail.com> wrote:
+> On Mon, Oct 20, 2025 at 03:00:24PM +0200, Geert Uytterhoeven wrote:
+> > On Fri, 17 Oct 2025 at 20:51, Yury Norov <yury.norov@gmail.com> wrote:
+> > > On Fri, Oct 17, 2025 at 12:54:10PM +0200, Geert Uytterhoeven wrote:
+> > > > The existing FIELD_{GET,PREP}() macros are limited to compile-time
+> > > > constants.  However, it is very common to prepare or extract bitfield
+> > > > elements where the bitfield mask is not a compile-time constant.
+> > > >
+> > > > To avoid this limitation, the AT91 clock driver and several other
+> > > > drivers already have their own non-const field_{prep,get}() macros.
+> > > > Make them available for general use by consolidating them in
+> > > > <linux/bitfield.h>, and improve them slightly:
+> > > >   1. Avoid evaluating macro parameters more than once,
+> > > >   2. Replace "ffs() - 1" by "__ffs()",
+> > > >   3. Support 64-bit use on 32-bit architectures.
+> > > >
+> > > > This is deliberately not merged into the existing FIELD_{GET,PREP}()
+> > > > macros, as people expressed the desire to keep stricter variants for
+> > > > increased safety, or for performance critical paths.
+> > > >
+> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > > > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > Acked-by: Crt Mori <cmo@melexis.com>
+> > > > ---
+> > > > v4:
+> > > >   - Add Acked-by,
+> > > >   - Rebase on top of commit 7c68005a46108ffa ("crypto: qat - relocate
+> > > >     power management debugfs helper APIs") in v6.17-rc1,
+> > > >   - Convert more recently introduced upstream copies:
+> > > >       - drivers/edac/ie31200_edac.c
+> > > >       - drivers/iio/dac/ad3530r.c
+> > >
+> > > Can you split out the part that actually introduces the new API?
+> >
+> > Unfortunately not, as that would cause build warnings/failures due
+> > to conflicting redefinitions.
+> > That is a reason why I want to apply this patch ASAP: new copies show
+> > up all the time.
 >
-> If you think cdev_device_add has an issue, maybe fixing
-> cdev_device_add itself is better?
+> In a preparation patch, for each driver:
 >
-> Thanks
-Regarding your concern, cdev_device_add() use cdev_del rolls back
-its cdev_add operations (add the refcount to 2) upon failure when
-dev->devt is not null, the refcount of cdev is still 1 after the
-rollback, so it does not free the memory of the cdev structure itself.
+>  +#ifndef field_prep
+>  #define field_prep() ...
+>  +#endif
+>
+> Or simply
+>
+>  +#undef field_prep
+>  #define field_prep() ...
+>
+> Then add the generic field_prep() in a separate patch. Then you can drop
+> ifdefery in the drivers.
+>
+> Yeah, more patches, but the result is cleaner.
 
-Therefore, in the error path of uacce_register, we still need to
-manually call kobject_put to decrement the refcount of the kobject to
-zero within cdev and free it.
+And we need 3 kernel releases, as the addition of the macros to
+the header file now has a hard dependency on adding the #undefs?
+Unless I still apply all of them to an immutable branch, but then what
+is the point?
 
-Thanks,
-Wenkai
+> > > > --- a/include/linux/bitfield.h
+> > > > +++ b/include/linux/bitfield.h
+> > > > @@ -220,4 +220,40 @@ __MAKE_OP(64)
+> > > >  #undef __MAKE_OP
+> > > >  #undef ____MAKE_OP
+> > > >
+> > > > +/**
+> > > > + * field_prep() - prepare a bitfield element
+> > > > + * @mask: shifted mask defining the field's length and position
+> > > > + * @val:  value to put in the field
+> > > > + *
+> > > > + * field_prep() masks and shifts up the value.  The result should be
+> > > > + * combined with other fields of the bitfield using logical OR.
+> > > > + * Unlike FIELD_PREP(), @mask is not limited to a compile-time constant.
+> > > > + */
+> > > > +#define field_prep(mask, val)                                                \
+> > > > +     ({                                                              \
+> > > > +             __auto_type __mask = (mask);                            \
+> > > > +             typeof(mask) __val = (val);                             \
+> > > > +             unsigned int __shift = sizeof(mask) <= 4 ?              \
+> > > > +                                    __ffs(__mask) : __ffs64(__mask); \
+> > > > +             (__val << __shift) & __mask;    \
+> > >
+> > > __ffs(0) is undef. The corresponding comment in
+> > > include/asm-generic/bitops/__ffs.h explicitly says: "code should check
+> > > against 0 first".
+> >
+> > An all zeroes mask is a bug in the code that calls field_{get,prep}().
+>
+> It's a bug in FIELD_GET() - for sure. Because it's enforced in
+> __BF_FIELD_CHECK(). field_get() doesn't enforce it, doesn't even
+> mention that in the comment.
+>
+> I'm not fully convinced that empty runtime mask should be a bug.
+
+Getting (and using) data from nowhere is a bug.
+Storing data where there is no space to store is also a bug.
+
+I will add a comment.
+
+> Consider memcpy(dst, src, 0). This is a no-op, but not a bug as
+> soon as the pointers are valid. If you _think_ it's a bug - please
+> enforce it.
+
+memcpy() with a fixed size of zero is probably a bug.
+memcpy() with a variable size is usually used to copy "as much as is
+needed", so zero is usually not a bug.
+
+> > > I think mask = 0 is a sign of error here. Can you add a code catching
+> > > it at compile time, and maybe at runtime too? Something like:
+> > >
+> > >  #define __field_prep(mask, val)
+> > >  ({
+> > >         unsigned __shift = sizeof(mask) <= 4 ? __ffs(mask) : __ffs64(mask);
+> > >         (val << __shift) & mask;
+> > >  })
+> > >
+> > >  #define field_prep(mask, val)
+> > >  ({
+> > >         unsigned int __shift;
+> > >         __auto_type __mask = (mask), __ret = 0;
+> > >         typeof(mask) __val = (val);
+> > >
+> > >         BUILD_BUG_ON_ZERO(const_true(mask == 0));
+> >
+> > Futile, as code with a constant mask should use FIELD_PREP() instead.
+>
+> It's a weak argument. Sometimes compiler is smart enough to realize
+> that something is a constant, while people won't. Sometimes code gets
+> refactored. Sometimes people build complex expressions that should
+> work both in run-time and compile time cases. Sometimes variables are
+> compile- or run-time depending on config (nr_cpu_ids is an example).
+>
+> The field_prep() must handle const case just as good as capitalized
+> version does.
+
+OK, I will add the (build-time) check.
+
+> > >         if (WARN_ON_ONCE(mask == 0))
+> > >                 goto out;
+> > >
+> > >         __ret = __field_prep(__mask, __val);
+> > >  out:
+> > >         ret;
+> > >  })
+> >
+> > Should we penalize all users (this is a macro, thus inlined everywhere)
+> > to protect against something that is clearly a bug in the caller?
+>
+> No. But we can wrap it with a config:
+>
+>  #ifdef CONFIG_BITFIELD_HARDENING
+>          if (WARN_ON_ONCE(mask == 0))
+>                  goto out;
+>  #endif
+
+That can be done later, when hardening other bitfield functions
+and macros.
+
+> > These new macros are intended for the case where mask is not a constant.
+> > So typically it is a variable of type u32 or u64.
+>
+> You never mentioned that. Anyways, it's again a weak argument.
+
+I'll add more comments ;-)
+
+> > > > +             unsigned int __shift = sizeof(mask) <= 4 ?              \
+> > > > +                                    __ffs(__mask) : __ffs64(__mask); \
+> > >
+> > > Can you use BITS_PER_TYPE() here?
+> >
+> > Yes, I could use BITS_PER_TYPE(unsigned long) here, to match the
+> > parameter type of __ffs() (on 64-bit platforms, __ffs() can be used
+> > unconditionally anyway), at the expense of making the line much longer
+> > so it has to be split.  Is that worthwhile?
+>
+> Not sure I understand... The
+>
+>         "unsigned int __shift = BITS_PER_TYPE(mask) < 64 ?"
+>
+> is 49 chars long vs 42 in your version. Even if you add two tabs, it's
+> still way below limits. And yes,
+
+Oh, you meant instead of the size check.
+I thought you objected to the hardcoded number 4.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
