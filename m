@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-17459-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17461-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A394AC0A386
-	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 06:54:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A95C0A3AA
+	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 06:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 504F734A9AD
-	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 05:54:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8401818A3D22
+	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 05:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB8F28DB76;
-	Sun, 26 Oct 2025 05:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB1A29B78D;
+	Sun, 26 Oct 2025 05:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VjCjZuVI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fJWEPIXQ"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9F9288C3D;
-	Sun, 26 Oct 2025 05:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E6F298CA5;
+	Sun, 26 Oct 2025 05:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761457989; cv=none; b=VBDtU6NIIL4l1rLLoyW/9YWtV0Pta9VpYLhiJvBizPP600E1jP/AWwvLMo9QzBk06oUgF4cSXDxpLydFuRNYMtCFggkvUOggIC9iDN6IVNKys/hiOTT68L1cgF7VgpwTIDie8ElMNr9xc39IaoQ2I5Ny3sar7CUPGkMzvmsb7k4=
+	t=1761457990; cv=none; b=o6JFKDsfsE6CyBxFb1PTphPCNorHOfOS7gCW512klsZtPf8A1H2iB4qZ5pwJs+mGhQpHy6qMO+4aAvW6kzg5+7gotrsDbOMPgGYBP6cT9obeG4zh2OCJ6+iivR54TkvVze00sG16iFELOTZp10cC1SuRk4abAMs4fDoFLhJeCOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761457989; c=relaxed/simple;
-	bh=tK4ZwtbvVT+WWMAoNFlch+KJGW1l/8qhroTz/lgXZ+w=;
+	s=arc-20240116; t=1761457990; c=relaxed/simple;
+	bh=J3m+RqWldOSAlbAr+elclDhB5NSc/+pHmiWDmVt7Zz4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JtywViQyNsVhA55lRfIMU6mb756YGhJ0d1ffxEBXUgPC06MLu1Vu2uQb1JUdnPfTs6wt7vsk05MZ9Bf4rwfGgaQXCinBW5nkxcqZ3gaI2cFeIz9q9KocRemm80Gzro9Ir5VfSm7zYph6FDhcJJTHYKqffQzEDMlZNuUrtbQi8ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VjCjZuVI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68413C116C6;
+	 MIME-Version; b=JNQmTLdwVymRe40RyU0Lb2ztocO+Qs64K5NXCG4dcmrp0KeNn71floBRlA49QmBKAShzJWH1BgxGg0i9KtXg8L3ZPTBR2pypYsUgR4+XL3J/t3Fdy4RhkWc1upUn26QXE3xl+inZrUgCpduilX7//vFo8308xvbOXp79pmYM4f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fJWEPIXQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBBC1C4CEE7;
 	Sun, 26 Oct 2025 05:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761457988;
-	bh=tK4ZwtbvVT+WWMAoNFlch+KJGW1l/8qhroTz/lgXZ+w=;
+	s=k20201202; t=1761457989;
+	bh=J3m+RqWldOSAlbAr+elclDhB5NSc/+pHmiWDmVt7Zz4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VjCjZuVIcC04piSCOr/VPr+Acxc4Jbc9WzwyZjZsuZyijzdgb4V2ePe38orck/ib4
-	 0QDKFZgHjokI7bVMZWsYUuc5osS8lr1CTrTtc4tVumVXTGVy2QFbBft1mQwlkFKYwj
-	 EyuYZXpOpVH7tKFGUGFf9wvRiuQibbsFoeFc5THM2DijB77in3MrMLNRpya/Bj0PuX
-	 ZDj47k4Sy1BRg1Z5kQEmwrVqxi6F4NHEQldxYeGterWeNg57gMojOcKASpAW3uDvEs
-	 Zz7xK6V/lReCdjwRzMavc+tLiIDxETdLKM7iZYd/rjCBbR6EKISWx5mn73nHurZXcE
-	 S5wYHNmhhtH5g==
+	b=fJWEPIXQJVdiF8om1EtHzN8GX9OBPNVfzf2bgq3sTdtKwrz3f5gMcKWNV3fJW3aId
+	 FQgVyV5Nq8FwB4EVlMSZ2dgwXr6JWPzyQpRysrgBNptPeidPWzySe9sCEcAzCHgd46
+	 wmFyiTVTrbUTd9lnxhdBncQ6tpkZ5wwQKND0af8Oo5rpoFoPMKAY2UBbkh/ExT620y
+	 mon9WeI8757GA5SKwNN9FC4UJ6gz853GlVrykUPmtNQ3pE0FwFGtVQ1lypnXh26l85
+	 yY+p7BuEsxsmvbc2PS0erCbH1bB4KZYL1AigdrHD1iPXQkMHFMRXFqy4wayfpB9cJu
+	 N2dD2j64H0kvQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: David Howells <dhowells@redhat.com>,
@@ -53,9 +53,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-s390@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/15] lib/crypto: s390/sha3: Add optimized one-shot SHA-3 digest functions
-Date: Sat, 25 Oct 2025 22:50:29 -0700
-Message-ID: <20251026055032.1413733-13-ebiggers@kernel.org>
+Subject: [PATCH v2 13/15] crypto: jitterentropy - Use default sha3 implementation
+Date: Sat, 25 Oct 2025 22:50:30 -0700
+Message-ID: <20251026055032.1413733-14-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.51.1.dirty
 In-Reply-To: <20251026055032.1413733-1-ebiggers@kernel.org>
 References: <20251026055032.1413733-1-ebiggers@kernel.org>
@@ -67,126 +67,64 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some z/Architecture processors can compute a SHA-3 digest in a single
-instruction.  Use this capability to implement the sha3_224(),
-sha3_256(), sha3_384(), and sha3_512() library functions.
+Make jitterentropy use "sha3-256" instead of "sha3-256-generic", as the
+ability to explicitly request the generic code is going away.  It's not
+worth providing a special generic API just for jitterentropy.  There are
+many other solutions available to it, such as doing more iterations or
+using a more effective jitter collection method.
 
-Note that the performance improvement is likely to be relatively small
-and be noticeable primarily on short messages, as the actual Keccak
-permutation is already accelerated via the implementations of
-sha3_absorb_blocks() and sha3_keccakf().  Nevertheless,
-arch/s390/crypto/ takes advantage of the "do the full SHA-3" capability,
-and it was requested that lib/crypto/ do so as well for parity with it.
+Moreover, the status quo is that SHA-3 is quite slow anyway.  Currently
+only arm64 and s390 have architecture-optimized SHA-3 code.  I'm not
+familiar with the performance of the s390 one, but the arm64 one isn't
+actually that much faster than the generic code anyway.
 
+Note that jitterentropy should just use the library API instead of
+crypto_shash.  But that belongs in a separate change later.
+
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- lib/crypto/s390/sha3.h | 67 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 2 deletions(-)
+ crypto/jitterentropy-kcapi.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/lib/crypto/s390/sha3.h b/lib/crypto/s390/sha3.h
-index 668e53da93d2c..85471404775a3 100644
---- a/lib/crypto/s390/sha3.h
-+++ b/lib/crypto/s390/sha3.h
-@@ -6,10 +6,11 @@
-  */
- #include <asm/cpacf.h>
- #include <linux/cpufeature.h>
+diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
+index a53de7affe8d1..7c880cf34c523 100644
+--- a/crypto/jitterentropy-kcapi.c
++++ b/crypto/jitterentropy-kcapi.c
+@@ -46,11 +46,11 @@
+ #include <linux/time.h>
+ #include <crypto/internal/rng.h>
  
- static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_sha3);
-+static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_sha3_init_optim);
+ #include "jitterentropy.h"
  
- static void sha3_absorb_blocks(struct sha3_state *state, const u8 *data,
- 			       size_t nblocks, size_t block_size)
- {
- 	if (static_branch_likely(&have_sha3)) {
-@@ -58,10 +59,65 @@ static void sha3_keccakf(struct sha3_state *state)
- 	} else {
- 		sha3_keccakf_generic(state);
+-#define JENT_CONDITIONING_HASH	"sha3-256-generic"
++#define JENT_CONDITIONING_HASH	"sha3-256"
+ 
+ /***************************************************************************
+  * Helper function
+  ***************************************************************************/
+ 
+@@ -228,19 +228,11 @@ static int jent_kcapi_init(struct crypto_tfm *tfm)
+ 	struct shash_desc *sdesc;
+ 	int size, ret = 0;
+ 
+ 	spin_lock_init(&rng->jent_lock);
+ 
+-	/*
+-	 * Use SHA3-256 as conditioner. We allocate only the generic
+-	 * implementation as we are not interested in high-performance. The
+-	 * execution time of the SHA3 operation is measured and adds to the
+-	 * Jitter RNG's unpredictable behavior. If we have a slower hash
+-	 * implementation, the execution timing variations are larger. When
+-	 * using a fast implementation, we would need to call it more often
+-	 * as its variations are lower.
+-	 */
++	/* Use SHA3-256 as conditioner */
+ 	hash = crypto_alloc_shash(JENT_CONDITIONING_HASH, 0, 0);
+ 	if (IS_ERR(hash)) {
+ 		pr_err("Cannot allocate conditioning digest\n");
+ 		return PTR_ERR(hash);
  	}
- }
- 
-+static inline bool s390_sha3(int func, const u8 *in, size_t in_len,
-+			     u8 *out, size_t out_len)
-+{
-+	struct sha3_state state;
-+
-+	if (!static_branch_likely(&have_sha3))
-+		return false;
-+
-+	if (static_branch_likely(&have_sha3_init_optim))
-+		func |= CPACF_KLMD_NIP | CPACF_KLMD_DUFOP;
-+	else
-+		memset(&state, 0, sizeof(state));
-+
-+	cpacf_klmd(func, &state, in, in_len);
-+
-+	if (static_branch_likely(&have_sha3_init_optim))
-+		kmsan_unpoison_memory(&state, out_len);
-+
-+	memcpy(out, &state, out_len);
-+	memzero_explicit(&state, sizeof(state));
-+	return true;
-+}
-+
-+#define sha3_224_arch sha3_224_arch
-+static bool sha3_224_arch(const u8 *in, size_t in_len,
-+			  u8 out[SHA3_224_DIGEST_SIZE])
-+{
-+	return s390_sha3(CPACF_KLMD_SHA3_224, in, in_len,
-+			 out, SHA3_224_DIGEST_SIZE);
-+}
-+
-+#define sha3_256_arch sha3_256_arch
-+static bool sha3_256_arch(const u8 *in, size_t in_len,
-+			  u8 out[SHA3_256_DIGEST_SIZE])
-+{
-+	return s390_sha3(CPACF_KLMD_SHA3_256, in, in_len,
-+			 out, SHA3_256_DIGEST_SIZE);
-+}
-+
-+#define sha3_384_arch sha3_384_arch
-+static bool sha3_384_arch(const u8 *in, size_t in_len,
-+			  u8 out[SHA3_384_DIGEST_SIZE])
-+{
-+	return s390_sha3(CPACF_KLMD_SHA3_384, in, in_len,
-+			 out, SHA3_384_DIGEST_SIZE);
-+}
-+
-+#define sha3_512_arch sha3_512_arch
-+static bool sha3_512_arch(const u8 *in, size_t in_len,
-+			  u8 out[SHA3_512_DIGEST_SIZE])
-+{
-+	return s390_sha3(CPACF_KLMD_SHA3_512, in, in_len,
-+			 out, SHA3_512_DIGEST_SIZE);
-+}
-+
- #define sha3_mod_init_arch sha3_mod_init_arch
- static void sha3_mod_init_arch(void)
- {
- 	int num_present = 0;
- 	int num_possible = 0;
-@@ -77,12 +133,19 @@ static void sha3_mod_init_arch(void)
- 	({ num_present += !!cpacf_query_func(opcode, func); num_possible++; })
- 	QUERY(CPACF_KIMD, CPACF_KIMD_SHA3_224);
- 	QUERY(CPACF_KIMD, CPACF_KIMD_SHA3_256);
- 	QUERY(CPACF_KIMD, CPACF_KIMD_SHA3_384);
- 	QUERY(CPACF_KIMD, CPACF_KIMD_SHA3_512);
-+	QUERY(CPACF_KLMD, CPACF_KLMD_SHA3_224);
-+	QUERY(CPACF_KLMD, CPACF_KLMD_SHA3_256);
-+	QUERY(CPACF_KLMD, CPACF_KLMD_SHA3_384);
-+	QUERY(CPACF_KLMD, CPACF_KLMD_SHA3_512);
- #undef QUERY
- 
--	if (num_present == num_possible)
-+	if (num_present == num_possible) {
- 		static_branch_enable(&have_sha3);
--	else if (num_present != 0)
-+		if (test_facility(86))
-+			static_branch_enable(&have_sha3_init_optim);
-+	} else if (num_present != 0) {
- 		pr_warn("Unsupported combination of SHA-3 facilities\n");
-+	}
- }
 -- 
 2.51.1.dirty
 
