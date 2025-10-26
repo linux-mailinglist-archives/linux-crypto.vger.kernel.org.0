@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-17460-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17462-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5287CC0A3A1
-	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 06:55:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5AF6C0A3B3
+	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 06:56:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AB283B199B
-	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 05:55:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 618953B1F50
+	for <lists+linux-crypto@lfdr.de>; Sun, 26 Oct 2025 05:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3606E29AB15;
-	Sun, 26 Oct 2025 05:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421602BD5A4;
+	Sun, 26 Oct 2025 05:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eFq2JDXg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tNUDlFIP"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8950296BD1;
-	Sun, 26 Oct 2025 05:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C4629E0ED;
+	Sun, 26 Oct 2025 05:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761457990; cv=none; b=or+jq9IZT8hPnIDP0/F2IikO0Q5GDZOz+daywgKtwDzwZYqEU8fsiMz72FSIee0IXPZPHqKJyijmTqiaNqLect17MDhR1sYVKXLAc4MydjCsDVHzDo7xESBBB6p20vFrLTJCJoZoeD+3sgguAo1+y7R9Aci1zj/HMrybZuEeTU4=
+	t=1761457991; cv=none; b=LjCrPg9qK0Q+DTaBQdEMVGVOqIrdz29H5OMq8pTOB3jr0Edqksw++aRkd/zG2BG3hD4g6XMPsPRYDc2l7g6jqY2wGB8nyIwUdm/T/cXyq0iXfkpg/uDm8+9GCLJwFMgfZIvTLdQiv9UYkmQ3zRcqmmBJGf8PPduOVHCIaY0eiRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761457990; c=relaxed/simple;
-	bh=Lzx62QBuaeOXq0bj2I+HZPtnTXKhz7ZQUxNW7xFMCUQ=;
+	s=arc-20240116; t=1761457991; c=relaxed/simple;
+	bh=FxkTtqmvapgMOXF2seH3qE7iMfwcM5QZ6SqZ2cx83o8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F/u1iDSHUbRgKGJpkBobjoxVnIXZOu4wQTN5Sg9CsPnSqL3CQ4Wo/HwkX8i0WL8JxbSl+AldO5DJm3as2zCmChoS1cBFHwBqj1JsUFrxdOYYeFlUXV54xNkw+Fell0BRzhc4xCpXMiUYM/Bgrn+1R1tvzK1ny73aqEf4yCyQTVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eFq2JDXg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63EA8C4AF16;
+	 MIME-Version; b=e74to5sztchHtYQliKEQMrl4KDi70QIP/0bDFn9QIDqEun4+SNXOdYNvMhgdTHhnxMyr4vQ/9QO9wDIVZVhetY5Ezkm1GpJNLcOUjr/yAex0qGMJYJpOUovDTxz5AHrFCEskc8N2SWElQVCy9kZDkpjm3YlZXe221uxTPg+AGmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tNUDlFIP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF5D7C116C6;
 	Sun, 26 Oct 2025 05:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761457989;
-	bh=Lzx62QBuaeOXq0bj2I+HZPtnTXKhz7ZQUxNW7xFMCUQ=;
+	s=k20201202; t=1761457990;
+	bh=FxkTtqmvapgMOXF2seH3qE7iMfwcM5QZ6SqZ2cx83o8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eFq2JDXgvXOyXU2M+OjGTFwuhY6MD4rN2xC1cvgsdXAl3V6rUPyGIRL2IxGVBtbct
-	 +cXMtc9F6yF/yPQNRX7D9e4nWj1NGTygsUXASKifPtPv3F8xLMSHbty1dd4nUrimWS
-	 I/WWqgfkqmApZFfkeru8AzRLobi421VRAvggTJmyX6e4s6gbCFzmP5RHJqHnMZNLfM
-	 r9e46Cs9yBxAGqgSNjIUA+wtzCv/uD+y/IDh7tQBL/nSEWchbrEaSYwPMwzSSDAlmg
-	 LC0sdS6NJF3/8lzKgEeMl4qitupFl3egd7eV8cyuzMlQDgDQdmB638fqWzKbFPSDCO
-	 rfNyKbE/z5O8g==
+	b=tNUDlFIPgnqc0EXEqpGqAa6pDym0eG8iIlNmAQcVq8kAN61eKZbgxL3QMv+pKpKOb
+	 LPAzqHg2C9BXJ/GtXU6zUaTJkuo1l6p/pvUvot0KrYPB7/hAclSxhQrphjIotiSnN0
+	 wtA7c2FIsig0ezUo3zECgZHGurQn/WhCqgzCR6/YSrimP5WMV1D6iGoAuM470mUSgH
+	 CvFtqMoyB4mmceTewc5Q0DzK5gX94lQFg8gfBtYOJ5I4v7FIOfgV51jlhI8OZC1Wuw
+	 sE0Gt29NwPTpWc0ZYsqcAmGhbPLnRf7Yx2J5EYK8J3e2Lmrnp61vMEBN2A9Rqi6CWU
+	 9Y58m3Tc8JQMw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: David Howells <dhowells@redhat.com>,
@@ -53,9 +53,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-s390@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 14/15] crypto: sha3 - Reimplement using library API
-Date: Sat, 25 Oct 2025 22:50:31 -0700
-Message-ID: <20251026055032.1413733-15-ebiggers@kernel.org>
+Subject: [PATCH v2 15/15] crypto: s390/sha3 - Remove superseded SHA-3 code
+Date: Sat, 25 Oct 2025 22:50:32 -0700
+Message-ID: <20251026055032.1413733-16-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.51.1.dirty
 In-Reply-To: <20251026055032.1413733-1-ebiggers@kernel.org>
 References: <20251026055032.1413733-1-ebiggers@kernel.org>
@@ -67,642 +67,648 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace sha3_generic.c with a new file sha3.c which implements the SHA-3
-crypto_shash algorithms on top of the SHA-3 library API.
+The SHA-3 library now utilizes the same s390 SHA-3 acceleration
+capabilities as the arch/s390/crypto/ SHA-3 crypto_shash algorithms.
+Moreover, crypto/sha3.c now uses the SHA-3 library.  The result is that
+all SHA-3 APIs are now s390-accelerated without any need for the old
+SHA-3 code in arch/s390/crypto/.  Remove this superseded code.
 
-Change the driver name suffix from "-generic" to "-lib" to reflect that
-these algorithms now just use the (possibly arch-optimized) library.
+Also update the s390 defconfig and debug_defconfig files to enable
+CONFIG_CRYPTO_SHA3 instead of CONFIG_CRYPTO_SHA3_256_S390 and
+CONFIG_CRYPTO_SHA3_512_S390.  This makes it so that the s390-optimized
+SHA-3 continues to be built when either of these defconfigs is used.
 
-This closely mirrors crypto/{md5,sha1,sha256,sha512,blake2b}.c.
-
-Implement export_core and import_core, since crypto/hmac.c expects these
-to be present.  (Note that there is no security purpose in wrapping
-SHA-3 with HMAC.  HMAC was designed for older algorithms that don't
-resist length extension attacks.  But since someone could be using
-"hmac(sha3-*)" via crypto_shash anyway, keep supporting it for now.)
-
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- crypto/Kconfig        |   1 +
- crypto/Makefile       |   2 +-
- crypto/sha3.c         | 166 ++++++++++++++++++++++++
- crypto/sha3_generic.c | 290 ------------------------------------------
- crypto/testmgr.c      |   8 ++
- include/crypto/sha3.h |   6 -
- 6 files changed, 176 insertions(+), 297 deletions(-)
- create mode 100644 crypto/sha3.c
- delete mode 100644 crypto/sha3_generic.c
+ arch/s390/configs/debug_defconfig |   3 +-
+ arch/s390/configs/defconfig       |   3 +-
+ arch/s390/crypto/Kconfig          |  20 ----
+ arch/s390/crypto/Makefile         |   2 -
+ arch/s390/crypto/sha.h            |  51 ----------
+ arch/s390/crypto/sha3_256_s390.c  | 157 ------------------------------
+ arch/s390/crypto/sha3_512_s390.c  | 157 ------------------------------
+ arch/s390/crypto/sha_common.c     | 117 ----------------------
+ 8 files changed, 2 insertions(+), 508 deletions(-)
+ delete mode 100644 arch/s390/crypto/sha.h
+ delete mode 100644 arch/s390/crypto/sha3_256_s390.c
+ delete mode 100644 arch/s390/crypto/sha3_512_s390.c
+ delete mode 100644 arch/s390/crypto/sha_common.c
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 0a7e74ac870b0..57b85e903cf0b 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1004,10 +1004,11 @@ config CRYPTO_SHA512
- 	  10118-3), including HMAC support.
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index b31c1df902577..5fdfebcfd50f2 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -790,10 +790,11 @@ CONFIG_CRYPTO_GCM=y
+ CONFIG_CRYPTO_SEQIV=y
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MD5=y
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_CRC32=m
+ CONFIG_CRYPTO_842=m
+@@ -803,12 +804,10 @@ CONFIG_CRYPTO_ZSTD=m
+ CONFIG_CRYPTO_ANSI_CPRNG=m
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_SHA3_256_S390=m
+-CONFIG_CRYPTO_SHA3_512_S390=m
+ CONFIG_CRYPTO_GHASH_S390=m
+ CONFIG_CRYPTO_AES_S390=m
+ CONFIG_CRYPTO_DES_S390=m
+ CONFIG_CRYPTO_HMAC_S390=m
+ CONFIG_ZCRYPT=m
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index 161dad7ef211a..7bac3f53a95b0 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -774,10 +774,11 @@ CONFIG_CRYPTO_GCM=y
+ CONFIG_CRYPTO_SEQIV=y
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MD5=y
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_CRC32=m
+ CONFIG_CRYPTO_842=m
+@@ -788,12 +789,10 @@ CONFIG_CRYPTO_ANSI_CPRNG=m
+ CONFIG_CRYPTO_JITTERENTROPY_OSR=1
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_SHA3_256_S390=m
+-CONFIG_CRYPTO_SHA3_512_S390=m
+ CONFIG_CRYPTO_GHASH_S390=m
+ CONFIG_CRYPTO_AES_S390=m
+ CONFIG_CRYPTO_DES_S390=m
+ CONFIG_CRYPTO_HMAC_S390=m
+ CONFIG_ZCRYPT=m
+diff --git a/arch/s390/crypto/Kconfig b/arch/s390/crypto/Kconfig
+index 03f73fbd38b62..f838ca055f6d7 100644
+--- a/arch/s390/crypto/Kconfig
++++ b/arch/s390/crypto/Kconfig
+@@ -1,29 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0
  
- config CRYPTO_SHA3
- 	tristate "SHA-3"
+ menu "Accelerated Cryptographic Algorithms for CPU (s390)"
+ 
+-config CRYPTO_SHA3_256_S390
+-	tristate "Hash functions: SHA3-224 and SHA3-256"
+-	select CRYPTO_HASH
+-	help
+-	  SHA3-224 and SHA3-256 secure hash algorithms (FIPS 202)
+-
+-	  Architecture: s390
+-
+-	  It is available as of z14.
+-
+-config CRYPTO_SHA3_512_S390
+-	tristate "Hash functions: SHA3-384 and SHA3-512"
+-	select CRYPTO_HASH
+-	help
+-	  SHA3-384 and SHA3-512 secure hash algorithms (FIPS 202)
+-
+-	  Architecture: s390
+-
+-	  It is available as of z14.
+-
+ config CRYPTO_GHASH_S390
+ 	tristate "Hash functions: GHASH"
  	select CRYPTO_HASH
-+	select CRYPTO_LIB_SHA3
  	help
- 	  SHA-3 secure hash algorithms (FIPS 202, ISO/IEC 10118-3)
+ 	  GCM GHASH hash function (NIST SP800-38D)
+diff --git a/arch/s390/crypto/Makefile b/arch/s390/crypto/Makefile
+index 998f4b656b18e..387a229e10381 100644
+--- a/arch/s390/crypto/Makefile
++++ b/arch/s390/crypto/Makefile
+@@ -1,12 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # Cryptographic API
+ #
  
- config CRYPTO_SM3_GENERIC
- 	tristate "SM3 (ShangMi 3)"
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 5b02ca2cb04e0..0388ff8d219d1 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -76,11 +76,11 @@ obj-$(CONFIG_CRYPTO_MD4) += md4.o
- obj-$(CONFIG_CRYPTO_MD5) += md5.o
- obj-$(CONFIG_CRYPTO_RMD160) += rmd160.o
- obj-$(CONFIG_CRYPTO_SHA1) += sha1.o
- obj-$(CONFIG_CRYPTO_SHA256) += sha256.o
- obj-$(CONFIG_CRYPTO_SHA512) += sha512.o
--obj-$(CONFIG_CRYPTO_SHA3) += sha3_generic.o
-+obj-$(CONFIG_CRYPTO_SHA3) += sha3.o
- obj-$(CONFIG_CRYPTO_SM3_GENERIC) += sm3_generic.o
- obj-$(CONFIG_CRYPTO_STREEBOG) += streebog_generic.o
- obj-$(CONFIG_CRYPTO_WP512) += wp512.o
- CFLAGS_wp512.o := $(call cc-option,-fno-schedule-insns)  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=79149
- obj-$(CONFIG_CRYPTO_BLAKE2B) += blake2b.o
-diff --git a/crypto/sha3.c b/crypto/sha3.c
-new file mode 100644
-index 0000000000000..8f364979ec890
---- /dev/null
-+++ b/crypto/sha3.c
-@@ -0,0 +1,166 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Crypto API support for SHA-3
-+ * (https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf)
-+ */
-+#include <crypto/internal/hash.h>
-+#include <crypto/sha3.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+
-+#define SHA3_CTX(desc) ((struct sha3_ctx *)shash_desc_ctx(desc))
-+
-+static int crypto_sha3_224_init(struct shash_desc *desc)
-+{
-+	sha3_224_init(SHA3_CTX(desc));
-+	return 0;
-+}
-+
-+static int crypto_sha3_256_init(struct shash_desc *desc)
-+{
-+	sha3_256_init(SHA3_CTX(desc));
-+	return 0;
-+}
-+
-+static int crypto_sha3_384_init(struct shash_desc *desc)
-+{
-+	sha3_384_init(SHA3_CTX(desc));
-+	return 0;
-+}
-+
-+static int crypto_sha3_512_init(struct shash_desc *desc)
-+{
-+	sha3_512_init(SHA3_CTX(desc));
-+	return 0;
-+}
-+
-+static int crypto_sha3_update(struct shash_desc *desc, const u8 *data,
-+			      unsigned int len)
-+{
-+	sha3_update(SHA3_CTX(desc), data, len);
-+	return 0;
-+}
-+
-+static int crypto_sha3_final(struct shash_desc *desc, u8 *out)
-+{
-+	sha3_final(SHA3_CTX(desc), out);
-+	return 0;
-+}
-+
-+static int crypto_sha3_224_digest(struct shash_desc *desc,
-+				  const u8 *data, unsigned int len, u8 *out)
-+{
-+	sha3_224(data, len, out);
-+	return 0;
-+}
-+
-+static int crypto_sha3_256_digest(struct shash_desc *desc,
-+				  const u8 *data, unsigned int len, u8 *out)
-+{
-+	sha3_256(data, len, out);
-+	return 0;
-+}
-+
-+static int crypto_sha3_384_digest(struct shash_desc *desc,
-+				  const u8 *data, unsigned int len, u8 *out)
-+{
-+	sha3_384(data, len, out);
-+	return 0;
-+}
-+
-+static int crypto_sha3_512_digest(struct shash_desc *desc,
-+				  const u8 *data, unsigned int len, u8 *out)
-+{
-+	sha3_512(data, len, out);
-+	return 0;
-+}
-+
-+static int crypto_sha3_export_core(struct shash_desc *desc, void *out)
-+{
-+	memcpy(out, SHA3_CTX(desc), sizeof(struct sha3_ctx));
-+	return 0;
-+}
-+
-+static int crypto_sha3_import_core(struct shash_desc *desc, const void *in)
-+{
-+	memcpy(SHA3_CTX(desc), in, sizeof(struct sha3_ctx));
-+	return 0;
-+}
-+
-+static struct shash_alg algs[] = { {
-+	.digestsize		= SHA3_224_DIGEST_SIZE,
-+	.init			= crypto_sha3_224_init,
-+	.update			= crypto_sha3_update,
-+	.final			= crypto_sha3_final,
-+	.digest			= crypto_sha3_224_digest,
-+	.export_core		= crypto_sha3_export_core,
-+	.import_core		= crypto_sha3_import_core,
-+	.descsize		= sizeof(struct sha3_ctx),
-+	.base.cra_name		= "sha3-224",
-+	.base.cra_driver_name	= "sha3-224-lib",
-+	.base.cra_blocksize	= SHA3_224_BLOCK_SIZE,
-+	.base.cra_module	= THIS_MODULE,
-+}, {
-+	.digestsize		= SHA3_256_DIGEST_SIZE,
-+	.init			= crypto_sha3_256_init,
-+	.update			= crypto_sha3_update,
-+	.final			= crypto_sha3_final,
-+	.digest			= crypto_sha3_256_digest,
-+	.export_core		= crypto_sha3_export_core,
-+	.import_core		= crypto_sha3_import_core,
-+	.descsize		= sizeof(struct sha3_ctx),
-+	.base.cra_name		= "sha3-256",
-+	.base.cra_driver_name	= "sha3-256-lib",
-+	.base.cra_blocksize	= SHA3_256_BLOCK_SIZE,
-+	.base.cra_module	= THIS_MODULE,
-+}, {
-+	.digestsize		= SHA3_384_DIGEST_SIZE,
-+	.init			= crypto_sha3_384_init,
-+	.update			= crypto_sha3_update,
-+	.final			= crypto_sha3_final,
-+	.digest			= crypto_sha3_384_digest,
-+	.export_core		= crypto_sha3_export_core,
-+	.import_core		= crypto_sha3_import_core,
-+	.descsize		= sizeof(struct sha3_ctx),
-+	.base.cra_name		= "sha3-384",
-+	.base.cra_driver_name	= "sha3-384-lib",
-+	.base.cra_blocksize	= SHA3_384_BLOCK_SIZE,
-+	.base.cra_module	= THIS_MODULE,
-+}, {
-+	.digestsize		= SHA3_512_DIGEST_SIZE,
-+	.init			= crypto_sha3_512_init,
-+	.update			= crypto_sha3_update,
-+	.final			= crypto_sha3_final,
-+	.digest			= crypto_sha3_512_digest,
-+	.export_core		= crypto_sha3_export_core,
-+	.import_core		= crypto_sha3_import_core,
-+	.descsize		= sizeof(struct sha3_ctx),
-+	.base.cra_name		= "sha3-512",
-+	.base.cra_driver_name	= "sha3-512-lib",
-+	.base.cra_blocksize	= SHA3_512_BLOCK_SIZE,
-+	.base.cra_module	= THIS_MODULE,
-+} };
-+
-+static int __init crypto_sha3_mod_init(void)
-+{
-+	return crypto_register_shashes(algs, ARRAY_SIZE(algs));
-+}
-+module_init(crypto_sha3_mod_init);
-+
-+static void __exit crypto_sha3_mod_exit(void)
-+{
-+	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+}
-+module_exit(crypto_sha3_mod_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Crypto API support for SHA-3");
-+
-+MODULE_ALIAS_CRYPTO("sha3-224");
-+MODULE_ALIAS_CRYPTO("sha3-224-lib");
-+MODULE_ALIAS_CRYPTO("sha3-256");
-+MODULE_ALIAS_CRYPTO("sha3-256-lib");
-+MODULE_ALIAS_CRYPTO("sha3-384");
-+MODULE_ALIAS_CRYPTO("sha3-384-lib");
-+MODULE_ALIAS_CRYPTO("sha3-512");
-+MODULE_ALIAS_CRYPTO("sha3-512-lib");
-diff --git a/crypto/sha3_generic.c b/crypto/sha3_generic.c
+-obj-$(CONFIG_CRYPTO_SHA3_256_S390) += sha3_256_s390.o sha_common.o
+-obj-$(CONFIG_CRYPTO_SHA3_512_S390) += sha3_512_s390.o sha_common.o
+ obj-$(CONFIG_CRYPTO_DES_S390) += des_s390.o
+ obj-$(CONFIG_CRYPTO_AES_S390) += aes_s390.o
+ obj-$(CONFIG_CRYPTO_PAES_S390) += paes_s390.o
+ obj-$(CONFIG_S390_PRNG) += prng.o
+ obj-$(CONFIG_CRYPTO_GHASH_S390) += ghash_s390.o
+diff --git a/arch/s390/crypto/sha.h b/arch/s390/crypto/sha.h
 deleted file mode 100644
-index 41d1e506e6dea..0000000000000
---- a/crypto/sha3_generic.c
+index b9cd9572dd35c..0000000000000
+--- a/arch/s390/crypto/sha.h
 +++ /dev/null
-@@ -1,290 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
+@@ -1,51 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0+ */
 -/*
 - * Cryptographic API.
 - *
-- * SHA-3, as specified in
-- * https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
+- * s390 generic implementation of the SHA Secure Hash Algorithms.
 - *
-- * SHA-3 code by Jeff Garzik <jeff@garzik.org>
-- *               Ard Biesheuvel <ard.biesheuvel@linaro.org>
+- * Copyright IBM Corp. 2007
+- * Author(s): Jan Glauber (jang@de.ibm.com)
 - */
+-#ifndef _CRYPTO_ARCH_S390_SHA_H
+-#define _CRYPTO_ARCH_S390_SHA_H
+-
+-#include <crypto/hash.h>
+-#include <crypto/sha2.h>
+-#include <crypto/sha3.h>
+-#include <linux/build_bug.h>
+-#include <linux/types.h>
+-
+-/* must be big enough for the largest SHA variant */
+-#define CPACF_MAX_PARMBLOCK_SIZE	SHA3_STATE_SIZE
+-#define SHA_MAX_BLOCK_SIZE		SHA3_224_BLOCK_SIZE
+-
+-struct s390_sha_ctx {
+-	u64 count;		/* message length in bytes */
+-	union {
+-		u32 state[CPACF_MAX_PARMBLOCK_SIZE / sizeof(u32)];
+-		struct {
+-			u64 state[SHA512_DIGEST_SIZE / sizeof(u64)];
+-			u64 count_hi;
+-		} sha512;
+-		struct {
+-			__le64 state[SHA3_STATE_SIZE / sizeof(u64)];
+-		} sha3;
+-	};
+-	int func;		/* KIMD function to use */
+-	bool first_message_part;
+-};
+-
+-struct shash_desc;
+-
+-int s390_sha_update_blocks(struct shash_desc *desc, const u8 *data,
+-			   unsigned int len);
+-int s390_sha_finup(struct shash_desc *desc, const u8 *src, unsigned int len,
+-		   u8 *out);
+-
+-static inline void __check_s390_sha_ctx_size(void)
+-{
+-	BUILD_BUG_ON(S390_SHA_CTX_SIZE != sizeof(struct s390_sha_ctx));
+-}
+-
+-#endif
+diff --git a/arch/s390/crypto/sha3_256_s390.c b/arch/s390/crypto/sha3_256_s390.c
+deleted file mode 100644
+index 7415d56649a52..0000000000000
+--- a/arch/s390/crypto/sha3_256_s390.c
++++ /dev/null
+@@ -1,157 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0+
+-/*
+- * Cryptographic API.
+- *
+- * s390 implementation of the SHA256 and SHA224 Secure Hash Algorithm.
+- *
+- * s390 Version:
+- *   Copyright IBM Corp. 2019
+- *   Author(s): Joerg Schmidbauer (jschmidb@de.ibm.com)
+- */
+-#include <asm/cpacf.h>
 -#include <crypto/internal/hash.h>
 -#include <crypto/sha3.h>
+-#include <linux/cpufeature.h>
+-#include <linux/errno.h>
 -#include <linux/kernel.h>
 -#include <linux/module.h>
 -#include <linux/string.h>
--#include <linux/unaligned.h>
 -
--/*
-- * On some 32-bit architectures (h8300), GCC ends up using
-- * over 1 KB of stack if we inline the round calculation into the loop
-- * in keccakf(). On the other hand, on 64-bit architectures with plenty
-- * of [64-bit wide] general purpose registers, not inlining it severely
-- * hurts performance. So let's use 64-bitness as a heuristic to decide
-- * whether to inline or not.
-- */
--#ifdef CONFIG_64BIT
--#define SHA3_INLINE	inline
--#else
--#define SHA3_INLINE	noinline
--#endif
+-#include "sha.h"
 -
--#define KECCAK_ROUNDS 24
--
--static const u64 keccakf_rndc[24] = {
--	0x0000000000000001ULL, 0x0000000000008082ULL, 0x800000000000808aULL,
--	0x8000000080008000ULL, 0x000000000000808bULL, 0x0000000080000001ULL,
--	0x8000000080008081ULL, 0x8000000000008009ULL, 0x000000000000008aULL,
--	0x0000000000000088ULL, 0x0000000080008009ULL, 0x000000008000000aULL,
--	0x000000008000808bULL, 0x800000000000008bULL, 0x8000000000008089ULL,
--	0x8000000000008003ULL, 0x8000000000008002ULL, 0x8000000000000080ULL,
--	0x000000000000800aULL, 0x800000008000000aULL, 0x8000000080008081ULL,
--	0x8000000000008080ULL, 0x0000000080000001ULL, 0x8000000080008008ULL
--};
--
--/* update the state with given number of rounds */
--
--static SHA3_INLINE void keccakf_round(u64 st[25])
+-static int s390_sha3_256_init(struct shash_desc *desc)
 -{
--	u64 t[5], tt, bc[5];
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
 -
--	/* Theta */
--	bc[0] = st[0] ^ st[5] ^ st[10] ^ st[15] ^ st[20];
--	bc[1] = st[1] ^ st[6] ^ st[11] ^ st[16] ^ st[21];
--	bc[2] = st[2] ^ st[7] ^ st[12] ^ st[17] ^ st[22];
--	bc[3] = st[3] ^ st[8] ^ st[13] ^ st[18] ^ st[23];
--	bc[4] = st[4] ^ st[9] ^ st[14] ^ st[19] ^ st[24];
+-	sctx->first_message_part = test_facility(86);
+-	if (!sctx->first_message_part)
+-		memset(sctx->state, 0, sizeof(sctx->state));
+-	sctx->count = 0;
+-	sctx->func = CPACF_KIMD_SHA3_256;
 -
--	t[0] = bc[4] ^ rol64(bc[1], 1);
--	t[1] = bc[0] ^ rol64(bc[2], 1);
--	t[2] = bc[1] ^ rol64(bc[3], 1);
--	t[3] = bc[2] ^ rol64(bc[4], 1);
--	t[4] = bc[3] ^ rol64(bc[0], 1);
--
--	st[0] ^= t[0];
--
--	/* Rho Pi */
--	tt = st[1];
--	st[ 1] = rol64(st[ 6] ^ t[1], 44);
--	st[ 6] = rol64(st[ 9] ^ t[4], 20);
--	st[ 9] = rol64(st[22] ^ t[2], 61);
--	st[22] = rol64(st[14] ^ t[4], 39);
--	st[14] = rol64(st[20] ^ t[0], 18);
--	st[20] = rol64(st[ 2] ^ t[2], 62);
--	st[ 2] = rol64(st[12] ^ t[2], 43);
--	st[12] = rol64(st[13] ^ t[3], 25);
--	st[13] = rol64(st[19] ^ t[4],  8);
--	st[19] = rol64(st[23] ^ t[3], 56);
--	st[23] = rol64(st[15] ^ t[0], 41);
--	st[15] = rol64(st[ 4] ^ t[4], 27);
--	st[ 4] = rol64(st[24] ^ t[4], 14);
--	st[24] = rol64(st[21] ^ t[1],  2);
--	st[21] = rol64(st[ 8] ^ t[3], 55);
--	st[ 8] = rol64(st[16] ^ t[1], 45);
--	st[16] = rol64(st[ 5] ^ t[0], 36);
--	st[ 5] = rol64(st[ 3] ^ t[3], 28);
--	st[ 3] = rol64(st[18] ^ t[3], 21);
--	st[18] = rol64(st[17] ^ t[2], 15);
--	st[17] = rol64(st[11] ^ t[1], 10);
--	st[11] = rol64(st[ 7] ^ t[2],  6);
--	st[ 7] = rol64(st[10] ^ t[0],  3);
--	st[10] = rol64(    tt ^ t[1],  1);
--
--	/* Chi */
--	bc[ 0] = ~st[ 1] & st[ 2];
--	bc[ 1] = ~st[ 2] & st[ 3];
--	bc[ 2] = ~st[ 3] & st[ 4];
--	bc[ 3] = ~st[ 4] & st[ 0];
--	bc[ 4] = ~st[ 0] & st[ 1];
--	st[ 0] ^= bc[ 0];
--	st[ 1] ^= bc[ 1];
--	st[ 2] ^= bc[ 2];
--	st[ 3] ^= bc[ 3];
--	st[ 4] ^= bc[ 4];
--
--	bc[ 0] = ~st[ 6] & st[ 7];
--	bc[ 1] = ~st[ 7] & st[ 8];
--	bc[ 2] = ~st[ 8] & st[ 9];
--	bc[ 3] = ~st[ 9] & st[ 5];
--	bc[ 4] = ~st[ 5] & st[ 6];
--	st[ 5] ^= bc[ 0];
--	st[ 6] ^= bc[ 1];
--	st[ 7] ^= bc[ 2];
--	st[ 8] ^= bc[ 3];
--	st[ 9] ^= bc[ 4];
--
--	bc[ 0] = ~st[11] & st[12];
--	bc[ 1] = ~st[12] & st[13];
--	bc[ 2] = ~st[13] & st[14];
--	bc[ 3] = ~st[14] & st[10];
--	bc[ 4] = ~st[10] & st[11];
--	st[10] ^= bc[ 0];
--	st[11] ^= bc[ 1];
--	st[12] ^= bc[ 2];
--	st[13] ^= bc[ 3];
--	st[14] ^= bc[ 4];
--
--	bc[ 0] = ~st[16] & st[17];
--	bc[ 1] = ~st[17] & st[18];
--	bc[ 2] = ~st[18] & st[19];
--	bc[ 3] = ~st[19] & st[15];
--	bc[ 4] = ~st[15] & st[16];
--	st[15] ^= bc[ 0];
--	st[16] ^= bc[ 1];
--	st[17] ^= bc[ 2];
--	st[18] ^= bc[ 3];
--	st[19] ^= bc[ 4];
--
--	bc[ 0] = ~st[21] & st[22];
--	bc[ 1] = ~st[22] & st[23];
--	bc[ 2] = ~st[23] & st[24];
--	bc[ 3] = ~st[24] & st[20];
--	bc[ 4] = ~st[20] & st[21];
--	st[20] ^= bc[ 0];
--	st[21] ^= bc[ 1];
--	st[22] ^= bc[ 2];
--	st[23] ^= bc[ 3];
--	st[24] ^= bc[ 4];
+-	return 0;
 -}
 -
--static void keccakf(u64 st[25])
+-static int sha3_256_export(struct shash_desc *desc, void *out)
 -{
--	int round;
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-	union {
+-		u8 *u8;
+-		u64 *u64;
+-	} p = { .u8 = out };
+-	int i;
 -
--	for (round = 0; round < KECCAK_ROUNDS; round++) {
--		keccakf_round(st);
--		/* Iota */
--		st[0] ^= keccakf_rndc[round];
+-	if (sctx->first_message_part) {
+-		memset(out, 0, SHA3_STATE_SIZE);
+-		return 0;
+-	}
+-	for (i = 0; i < SHA3_STATE_SIZE / 8; i++)
+-		put_unaligned(le64_to_cpu(sctx->sha3.state[i]), p.u64++);
+-	return 0;
+-}
+-
+-static int sha3_256_import(struct shash_desc *desc, const void *in)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-	union {
+-		const u8 *u8;
+-		const u64 *u64;
+-	} p = { .u8 = in };
+-	int i;
+-
+-	for (i = 0; i < SHA3_STATE_SIZE / 8; i++)
+-		sctx->sha3.state[i] = cpu_to_le64(get_unaligned(p.u64++));
+-	sctx->count = 0;
+-	sctx->first_message_part = 0;
+-	sctx->func = CPACF_KIMD_SHA3_256;
+-
+-	return 0;
+-}
+-
+-static int sha3_224_import(struct shash_desc *desc, const void *in)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-
+-	sha3_256_import(desc, in);
+-	sctx->func = CPACF_KIMD_SHA3_224;
+-	return 0;
+-}
+-
+-static struct shash_alg sha3_256_alg = {
+-	.digestsize	=	SHA3_256_DIGEST_SIZE,	   /* = 32 */
+-	.init		=	s390_sha3_256_init,
+-	.update		=	s390_sha_update_blocks,
+-	.finup		=	s390_sha_finup,
+-	.export		=	sha3_256_export,
+-	.import		=	sha3_256_import,
+-	.descsize	=	S390_SHA_CTX_SIZE,
+-	.statesize	=	SHA3_STATE_SIZE,
+-	.base		=	{
+-		.cra_name	 =	"sha3-256",
+-		.cra_driver_name =	"sha3-256-s390",
+-		.cra_priority	 =	300,
+-		.cra_flags	 =	CRYPTO_AHASH_ALG_BLOCK_ONLY,
+-		.cra_blocksize	 =	SHA3_256_BLOCK_SIZE,
+-		.cra_module	 =	THIS_MODULE,
+-	}
+-};
+-
+-static int s390_sha3_224_init(struct shash_desc *desc)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-
+-	s390_sha3_256_init(desc);
+-	sctx->func = CPACF_KIMD_SHA3_224;
+-	return 0;
+-}
+-
+-static struct shash_alg sha3_224_alg = {
+-	.digestsize	=	SHA3_224_DIGEST_SIZE,
+-	.init		=	s390_sha3_224_init,
+-	.update		=	s390_sha_update_blocks,
+-	.finup		=	s390_sha_finup,
+-	.export		=	sha3_256_export, /* same as for 256 */
+-	.import		=	sha3_224_import, /* function code different! */
+-	.descsize	=	S390_SHA_CTX_SIZE,
+-	.statesize	=	SHA3_STATE_SIZE,
+-	.base		=	{
+-		.cra_name	 =	"sha3-224",
+-		.cra_driver_name =	"sha3-224-s390",
+-		.cra_priority	 =	300,
+-		.cra_flags	 =	CRYPTO_AHASH_ALG_BLOCK_ONLY,
+-		.cra_blocksize	 =	SHA3_224_BLOCK_SIZE,
+-		.cra_module	 =	THIS_MODULE,
+-	}
+-};
+-
+-static int __init sha3_256_s390_init(void)
+-{
+-	int ret;
+-
+-	if (!cpacf_query_func(CPACF_KIMD, CPACF_KIMD_SHA3_256))
+-		return -ENODEV;
+-
+-	ret = crypto_register_shash(&sha3_256_alg);
+-	if (ret < 0)
+-		goto out;
+-
+-	ret = crypto_register_shash(&sha3_224_alg);
+-	if (ret < 0)
+-		crypto_unregister_shash(&sha3_256_alg);
+-out:
+-	return ret;
+-}
+-
+-static void __exit sha3_256_s390_fini(void)
+-{
+-	crypto_unregister_shash(&sha3_224_alg);
+-	crypto_unregister_shash(&sha3_256_alg);
+-}
+-
+-module_cpu_feature_match(S390_CPU_FEATURE_MSA, sha3_256_s390_init);
+-module_exit(sha3_256_s390_fini);
+-
+-MODULE_ALIAS_CRYPTO("sha3-256");
+-MODULE_ALIAS_CRYPTO("sha3-224");
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("SHA3-256 and SHA3-224 Secure Hash Algorithm");
+diff --git a/arch/s390/crypto/sha3_512_s390.c b/arch/s390/crypto/sha3_512_s390.c
+deleted file mode 100644
+index ff6ee55844005..0000000000000
+--- a/arch/s390/crypto/sha3_512_s390.c
++++ /dev/null
+@@ -1,157 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0+
+-/*
+- * Cryptographic API.
+- *
+- * s390 implementation of the SHA512 and SHA384 Secure Hash Algorithm.
+- *
+- * Copyright IBM Corp. 2019
+- * Author(s): Joerg Schmidbauer (jschmidb@de.ibm.com)
+- */
+-#include <asm/cpacf.h>
+-#include <crypto/internal/hash.h>
+-#include <crypto/sha3.h>
+-#include <linux/cpufeature.h>
+-#include <linux/errno.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/string.h>
+-
+-#include "sha.h"
+-
+-static int s390_sha3_512_init(struct shash_desc *desc)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-
+-	sctx->first_message_part = test_facility(86);
+-	if (!sctx->first_message_part)
+-		memset(sctx->state, 0, sizeof(sctx->state));
+-	sctx->count = 0;
+-	sctx->func = CPACF_KIMD_SHA3_512;
+-
+-	return 0;
+-}
+-
+-static int sha3_512_export(struct shash_desc *desc, void *out)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-	union {
+-		u8 *u8;
+-		u64 *u64;
+-	} p = { .u8 = out };
+-	int i;
+-
+-	if (sctx->first_message_part) {
+-		memset(out, 0, SHA3_STATE_SIZE);
+-		return 0;
+-	}
+-	for (i = 0; i < SHA3_STATE_SIZE / 8; i++)
+-		put_unaligned(le64_to_cpu(sctx->sha3.state[i]), p.u64++);
+-	return 0;
+-}
+-
+-static int sha3_512_import(struct shash_desc *desc, const void *in)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-	union {
+-		const u8 *u8;
+-		const u64 *u64;
+-	} p = { .u8 = in };
+-	int i;
+-
+-	for (i = 0; i < SHA3_STATE_SIZE / 8; i++)
+-		sctx->sha3.state[i] = cpu_to_le64(get_unaligned(p.u64++));
+-	sctx->count = 0;
+-	sctx->first_message_part = 0;
+-	sctx->func = CPACF_KIMD_SHA3_512;
+-
+-	return 0;
+-}
+-
+-static int sha3_384_import(struct shash_desc *desc, const void *in)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-
+-	sha3_512_import(desc, in);
+-	sctx->func = CPACF_KIMD_SHA3_384;
+-	return 0;
+-}
+-
+-static struct shash_alg sha3_512_alg = {
+-	.digestsize	=	SHA3_512_DIGEST_SIZE,
+-	.init		=	s390_sha3_512_init,
+-	.update		=	s390_sha_update_blocks,
+-	.finup		=	s390_sha_finup,
+-	.export		=	sha3_512_export,
+-	.import		=	sha3_512_import,
+-	.descsize	=	S390_SHA_CTX_SIZE,
+-	.statesize	=	SHA3_STATE_SIZE,
+-	.base		=	{
+-		.cra_name	 =	"sha3-512",
+-		.cra_driver_name =	"sha3-512-s390",
+-		.cra_priority	 =	300,
+-		.cra_flags	 =	CRYPTO_AHASH_ALG_BLOCK_ONLY,
+-		.cra_blocksize	 =	SHA3_512_BLOCK_SIZE,
+-		.cra_module	 =	THIS_MODULE,
+-	}
+-};
+-
+-MODULE_ALIAS_CRYPTO("sha3-512");
+-
+-static int s390_sha3_384_init(struct shash_desc *desc)
+-{
+-	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
+-
+-	s390_sha3_512_init(desc);
+-	sctx->func = CPACF_KIMD_SHA3_384;
+-	return 0;
+-}
+-
+-static struct shash_alg sha3_384_alg = {
+-	.digestsize	=	SHA3_384_DIGEST_SIZE,
+-	.init		=	s390_sha3_384_init,
+-	.update		=	s390_sha_update_blocks,
+-	.finup		=	s390_sha_finup,
+-	.export		=	sha3_512_export, /* same as for 512 */
+-	.import		=	sha3_384_import, /* function code different! */
+-	.descsize	=	S390_SHA_CTX_SIZE,
+-	.statesize	=	SHA3_STATE_SIZE,
+-	.base		=	{
+-		.cra_name	 =	"sha3-384",
+-		.cra_driver_name =	"sha3-384-s390",
+-		.cra_priority	 =	300,
+-		.cra_flags	 =	CRYPTO_AHASH_ALG_BLOCK_ONLY,
+-		.cra_blocksize	 =	SHA3_384_BLOCK_SIZE,
+-		.cra_ctxsize	 =	sizeof(struct s390_sha_ctx),
+-		.cra_module	 =	THIS_MODULE,
+-	}
+-};
+-
+-MODULE_ALIAS_CRYPTO("sha3-384");
+-
+-static int __init init(void)
+-{
+-	int ret;
+-
+-	if (!cpacf_query_func(CPACF_KIMD, CPACF_KIMD_SHA3_512))
+-		return -ENODEV;
+-	ret = crypto_register_shash(&sha3_512_alg);
+-	if (ret < 0)
+-		goto out;
+-	ret = crypto_register_shash(&sha3_384_alg);
+-	if (ret < 0)
+-		crypto_unregister_shash(&sha3_512_alg);
+-out:
+-	return ret;
+-}
+-
+-static void __exit fini(void)
+-{
+-	crypto_unregister_shash(&sha3_512_alg);
+-	crypto_unregister_shash(&sha3_384_alg);
+-}
+-
+-module_cpu_feature_match(S390_CPU_FEATURE_MSA, init);
+-module_exit(fini);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("SHA3-512 and SHA3-384 Secure Hash Algorithm");
+diff --git a/arch/s390/crypto/sha_common.c b/arch/s390/crypto/sha_common.c
+deleted file mode 100644
+index d6f8396187946..0000000000000
+--- a/arch/s390/crypto/sha_common.c
++++ /dev/null
+@@ -1,117 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0+
+-/*
+- * Cryptographic API.
+- *
+- * s390 generic implementation of the SHA Secure Hash Algorithms.
+- *
+- * Copyright IBM Corp. 2007
+- * Author(s): Jan Glauber (jang@de.ibm.com)
+- */
+-
+-#include <crypto/internal/hash.h>
+-#include <linux/export.h>
+-#include <linux/module.h>
+-#include <asm/cpacf.h>
+-#include "sha.h"
+-
+-int s390_sha_update_blocks(struct shash_desc *desc, const u8 *data,
+-			   unsigned int len)
+-{
+-	unsigned int bsize = crypto_shash_blocksize(desc->tfm);
+-	struct s390_sha_ctx *ctx = shash_desc_ctx(desc);
+-	unsigned int n;
+-	int fc;
+-
+-	fc = ctx->func;
+-	if (ctx->first_message_part)
+-		fc |= CPACF_KIMD_NIP;
+-
+-	/* process as many blocks as possible */
+-	n = (len / bsize) * bsize;
+-	ctx->count += n;
+-	switch (ctx->func) {
+-	case CPACF_KLMD_SHA_512:
+-	case CPACF_KLMD_SHA3_384:
+-		if (ctx->count < n)
+-			ctx->sha512.count_hi++;
+-		break;
+-	}
+-	cpacf_kimd(fc, ctx->state, data, n);
+-	ctx->first_message_part = 0;
+-	return len - n;
+-}
+-EXPORT_SYMBOL_GPL(s390_sha_update_blocks);
+-
+-static int s390_crypto_shash_parmsize(int func)
+-{
+-	switch (func) {
+-	case CPACF_KLMD_SHA_1:
+-		return 20;
+-	case CPACF_KLMD_SHA_256:
+-		return 32;
+-	case CPACF_KLMD_SHA_512:
+-		return 64;
+-	case CPACF_KLMD_SHA3_224:
+-	case CPACF_KLMD_SHA3_256:
+-	case CPACF_KLMD_SHA3_384:
+-	case CPACF_KLMD_SHA3_512:
+-		return 200;
+-	default:
+-		return -EINVAL;
 -	}
 -}
 -
--int crypto_sha3_init(struct shash_desc *desc)
+-int s390_sha_finup(struct shash_desc *desc, const u8 *src, unsigned int len,
+-		   u8 *out)
 -{
--	struct sha3_state *sctx = shash_desc_ctx(desc);
+-	struct s390_sha_ctx *ctx = shash_desc_ctx(desc);
+-	int mbl_offset, fc;
+-	u64 bits;
 -
--	memset(sctx->st, 0, sizeof(sctx->st));
--	return 0;
--}
--EXPORT_SYMBOL(crypto_sha3_init);
+-	ctx->count += len;
 -
--static int crypto_sha3_update(struct shash_desc *desc, const u8 *data,
--			      unsigned int len)
--{
--	unsigned int rsiz = crypto_shash_blocksize(desc->tfm);
--	struct sha3_state *sctx = shash_desc_ctx(desc);
--	unsigned int rsizw = rsiz / 8;
+-	bits = ctx->count * 8;
+-	mbl_offset = s390_crypto_shash_parmsize(ctx->func);
+-	if (mbl_offset < 0)
+-		return -EINVAL;
 -
--	do {
--		int i;
+-	mbl_offset = mbl_offset / sizeof(u32);
 -
--		for (i = 0; i < rsizw; i++)
--			sctx->st[i] ^= get_unaligned_le64(data + 8 * i);
--		keccakf(sctx->st);
+-	/* set total msg bit length (mbl) in CPACF parmblock */
+-	switch (ctx->func) {
+-	case CPACF_KLMD_SHA_512:
+-		/* The SHA512 parmblock has a 128-bit mbl field. */
+-		if (ctx->count < len)
+-			ctx->sha512.count_hi++;
+-		ctx->sha512.count_hi <<= 3;
+-		ctx->sha512.count_hi |= ctx->count >> 61;
+-		mbl_offset += sizeof(u64) / sizeof(u32);
+-		fallthrough;
+-	case CPACF_KLMD_SHA_1:
+-	case CPACF_KLMD_SHA_256:
+-		memcpy(ctx->state + mbl_offset, &bits, sizeof(bits));
+-		break;
+-	case CPACF_KLMD_SHA3_224:
+-	case CPACF_KLMD_SHA3_256:
+-	case CPACF_KLMD_SHA3_384:
+-	case CPACF_KLMD_SHA3_512:
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
 -
--		data += rsiz;
--		len -= rsiz;
--	} while (len >= rsiz);
--	return len;
--}
+-	fc = ctx->func;
+-	fc |= test_facility(86) ? CPACF_KLMD_DUFOP : 0;
+-	if (ctx->first_message_part)
+-		fc |= CPACF_KLMD_NIP;
+-	cpacf_klmd(fc, ctx->state, src, len);
 -
--static int crypto_sha3_finup(struct shash_desc *desc, const u8 *src,
--			     unsigned int len, u8 *out)
--{
--	unsigned int digest_size = crypto_shash_digestsize(desc->tfm);
--	unsigned int rsiz = crypto_shash_blocksize(desc->tfm);
--	struct sha3_state *sctx = shash_desc_ctx(desc);
--	__le64 block[SHA3_224_BLOCK_SIZE / 8] = {};
--	__le64 *digest = (__le64 *)out;
--	unsigned int rsizw = rsiz / 8;
--	u8 *p;
--	int i;
--
--	p = memcpy(block, src, len);
--	p[len++] = 0x06;
--	p[rsiz - 1] |= 0x80;
--
--	for (i = 0; i < rsizw; i++)
--		sctx->st[i] ^= le64_to_cpu(block[i]);
--	memzero_explicit(block, sizeof(block));
--
--	keccakf(sctx->st);
--
--	for (i = 0; i < digest_size / 8; i++)
--		put_unaligned_le64(sctx->st[i], digest++);
--
--	if (digest_size & 4)
--		put_unaligned_le32(sctx->st[i], (__le32 *)digest);
+-	/* copy digest to out */
+-	memcpy(out, ctx->state, crypto_shash_digestsize(desc->tfm));
 -
 -	return 0;
 -}
--
--static struct shash_alg algs[] = { {
--	.digestsize		= SHA3_224_DIGEST_SIZE,
--	.init			= crypto_sha3_init,
--	.update			= crypto_sha3_update,
--	.finup			= crypto_sha3_finup,
--	.descsize		= SHA3_STATE_SIZE,
--	.base.cra_name		= "sha3-224",
--	.base.cra_driver_name	= "sha3-224-generic",
--	.base.cra_flags		= CRYPTO_AHASH_ALG_BLOCK_ONLY,
--	.base.cra_blocksize	= SHA3_224_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--}, {
--	.digestsize		= SHA3_256_DIGEST_SIZE,
--	.init			= crypto_sha3_init,
--	.update			= crypto_sha3_update,
--	.finup			= crypto_sha3_finup,
--	.descsize		= SHA3_STATE_SIZE,
--	.base.cra_name		= "sha3-256",
--	.base.cra_driver_name	= "sha3-256-generic",
--	.base.cra_flags		= CRYPTO_AHASH_ALG_BLOCK_ONLY,
--	.base.cra_blocksize	= SHA3_256_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--}, {
--	.digestsize		= SHA3_384_DIGEST_SIZE,
--	.init			= crypto_sha3_init,
--	.update			= crypto_sha3_update,
--	.finup			= crypto_sha3_finup,
--	.descsize		= SHA3_STATE_SIZE,
--	.base.cra_name		= "sha3-384",
--	.base.cra_driver_name	= "sha3-384-generic",
--	.base.cra_flags		= CRYPTO_AHASH_ALG_BLOCK_ONLY,
--	.base.cra_blocksize	= SHA3_384_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--}, {
--	.digestsize		= SHA3_512_DIGEST_SIZE,
--	.init			= crypto_sha3_init,
--	.update			= crypto_sha3_update,
--	.finup			= crypto_sha3_finup,
--	.descsize		= SHA3_STATE_SIZE,
--	.base.cra_name		= "sha3-512",
--	.base.cra_driver_name	= "sha3-512-generic",
--	.base.cra_flags		= CRYPTO_AHASH_ALG_BLOCK_ONLY,
--	.base.cra_blocksize	= SHA3_512_BLOCK_SIZE,
--	.base.cra_module	= THIS_MODULE,
--} };
--
--static int __init sha3_generic_mod_init(void)
--{
--	return crypto_register_shashes(algs, ARRAY_SIZE(algs));
--}
--
--static void __exit sha3_generic_mod_fini(void)
--{
--	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
--}
--
--module_init(sha3_generic_mod_init);
--module_exit(sha3_generic_mod_fini);
+-EXPORT_SYMBOL_GPL(s390_sha_finup);
 -
 -MODULE_LICENSE("GPL");
--MODULE_DESCRIPTION("SHA-3 Secure Hash Algorithm");
--
--MODULE_ALIAS_CRYPTO("sha3-224");
--MODULE_ALIAS_CRYPTO("sha3-224-generic");
--MODULE_ALIAS_CRYPTO("sha3-256");
--MODULE_ALIAS_CRYPTO("sha3-256-generic");
--MODULE_ALIAS_CRYPTO("sha3-384");
--MODULE_ALIAS_CRYPTO("sha3-384-generic");
--MODULE_ALIAS_CRYPTO("sha3-512");
--MODULE_ALIAS_CRYPTO("sha3-512-generic");
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 3ab7adc1cdce5..90d06c3ec9679 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -5102,31 +5102,35 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		.suite = {
- 			.hash = __VECS(hmac_sha256_tv_template)
- 		}
- 	}, {
- 		.alg = "hmac(sha3-224)",
-+		.generic_driver = "hmac(sha3-224-lib)",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(hmac_sha3_224_tv_template)
- 		}
- 	}, {
- 		.alg = "hmac(sha3-256)",
-+		.generic_driver = "hmac(sha3-256-lib)",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(hmac_sha3_256_tv_template)
- 		}
- 	}, {
- 		.alg = "hmac(sha3-384)",
-+		.generic_driver = "hmac(sha3-384-lib)",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(hmac_sha3_384_tv_template)
- 		}
- 	}, {
- 		.alg = "hmac(sha3-512)",
-+		.generic_driver = "hmac(sha3-512-lib)",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(hmac_sha3_512_tv_template)
- 		}
-@@ -5476,31 +5480,35 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		.suite = {
- 			.hash = __VECS(sha256_tv_template)
- 		}
- 	}, {
- 		.alg = "sha3-224",
-+		.generic_driver = "sha3-224-lib",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(sha3_224_tv_template)
- 		}
- 	}, {
- 		.alg = "sha3-256",
-+		.generic_driver = "sha3-256-lib",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(sha3_256_tv_template)
- 		}
- 	}, {
- 		.alg = "sha3-384",
-+		.generic_driver = "sha3-384-lib",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(sha3_384_tv_template)
- 		}
- 	}, {
- 		.alg = "sha3-512",
-+		.generic_driver = "sha3-512-lib",
- 		.test = alg_test_hash,
- 		.fips_allowed = 1,
- 		.suite = {
- 			.hash = __VECS(sha3_512_tv_template)
- 		}
-diff --git a/include/crypto/sha3.h b/include/crypto/sha3.h
-index a7503dfc1a044..d713b5e3d6956 100644
---- a/include/crypto/sha3.h
-+++ b/include/crypto/sha3.h
-@@ -35,14 +35,10 @@
- #define SHAKE256_DEFAULT_SIZE	(256 / 8)
- #define SHAKE256_BLOCK_SIZE	(200 - 2 * SHAKE256_DEFAULT_SIZE)
- 
- #define SHA3_STATE_SIZE		200
- 
--struct shash_desc;
--
--int crypto_sha3_init(struct shash_desc *desc);
--
- /*
-  * State for the Keccak-f[1600] permutation: 25 64-bit words.
-  *
-  * We usually keep the state words as little-endian, to make absorbing and
-  * squeezing easier.  (It means that absorbing and squeezing can just treat the
-@@ -50,12 +46,10 @@ int crypto_sha3_init(struct shash_desc *desc);
-  * temporarily by implementations of the permutation that need native-endian
-  * words.  Of course, that conversion is a no-op on little-endian machines.
-  */
- struct sha3_state {
- 	union {
--		u64 st[SHA3_STATE_SIZE / 8]; /* temporarily retained for compatibility purposes */
--
- 		__le64 words[SHA3_STATE_SIZE / 8];
- 		u8 bytes[SHA3_STATE_SIZE];
- 
- 		u64 native_words[SHA3_STATE_SIZE / 8]; /* see comment above */
- 	};
+-MODULE_DESCRIPTION("s390 SHA cipher common functions");
 -- 
 2.51.1.dirty
 
