@@ -1,82 +1,81 @@
-Return-Path: <linux-crypto+bounces-17563-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17557-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 615F1C19B33
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 11:25:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD0D5C19B90
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 11:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 75E204FA023
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 10:24:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BA4E467AE6
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 10:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48AC032BF4B;
-	Wed, 29 Oct 2025 10:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D65330171A;
+	Wed, 29 Oct 2025 10:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wQGPUjgE"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="U6uHaOdx"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013012.outbound.protection.outlook.com [40.107.201.12])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010005.outbound.protection.outlook.com [52.101.193.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CA5730BF59;
-	Wed, 29 Oct 2025 10:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85ECA2FBDE3;
+	Wed, 29 Oct 2025 10:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.5
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761733387; cv=fail; b=IKeOtLK9kzECVQw1m3KM/XYKs4zJYVhV89uRhGgwzHQt/6mACld8+++WyvyNCQZrMZ/N29GR4tIMcUYDH3EeXQJ0lB0r4xGFaMSyJEurlTGYn/+cMm33Hvuns4uzHIDir6suxchh0z4EeqP12NJfIUNo3ITH+3x/uVEmq0ULb+E=
+	t=1761733377; cv=fail; b=BeiO46EgZnksGClxtceRzNtovWuahjUY53GpjchTcMHqgQ8tHBE6oTcv34ZPM4wxf/rHr/5tnkDcnJBkUN1bfvRF8rxjHpoFXZDnCwkeBkNdLmW+Rz90p767LLTUcnxcZo//umG+IpkCcqR7VYJr0N09w+wRHEvQkX5eTwnRRWY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761733387; c=relaxed/simple;
-	bh=nPP7acjeIg83PbHnd+nnOF8pwk1zgYwbv6OevdhU8Hs=;
+	s=arc-20240116; t=1761733377; c=relaxed/simple;
+	bh=BtkoLH/sixoozPMciXtgEJueY4xTGwCOpax6dhhm9S8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Fk935pO9GP0HeQ30gjMvh5YnELa30REDf132UjRgLQWjcNp82E+Rkk9CHzHFLiC9uf8oqGDLJT4ygbFNuJN8gDL6BxnIm3q1kAyC1jTlpPJ0cUbPZlqNAj5O+CswrJ5zuRWf8pCn7NjYxtsKTt0BNf0/oMgYcXW41rS5KUxIkI8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wQGPUjgE; arc=fail smtp.client-ip=40.107.201.12
+	 MIME-Version:Content-Type; b=t7+z8f3o7dk7vAQbT/dyCYhUlmYmyM9Ms5tlD+smZ8ZaY5SbFVJw3TBa9O0KE9fbTEBpZZZC8duO2iDyag+SfAE3fRJHTNLFYCbANUMZapaBQReER9pG+s5UwJbCPHbpuDPd3ThjuMbbBNjgy8Q0cfGpA5lA8D9P+AvmCJ+++BA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=U6uHaOdx; arc=fail smtp.client-ip=52.101.193.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nDvKhHgD1CqCBKQHMr2JyCO56FWYyhEgHKOfSweJ++Um0L4buo7xSc6UgzzWbKQEzzRILSwCFDJmG2866hVrT5bhHffrUu1pM4hJ22HWk3gkE42PoTwU4zq/3+26k4zzaFRTiECe/bOe5C/MUFatyPClviMe3JbUfFDkT9ir/B5gbC9oj23nW2E9JYFL8yNBDKSSBLs1Og92b88lQmuWt9IQozA5bqgZc4WaW5ShVXoPLKP6CvAxoI+jScS8xcVau73LBd6GHIQsJWdwD+ex3GEeXHB76xQrJwtDx35baoNqH0Ednzp1/jg7+Xv9sAuYUpkeYLg3zzxL1dsbY7VXZA==
+ b=ht8SLOyNGex8qavusxSZcHTGEXUi+mTskiDhJdXtllUhkf59mmKSVfjmJPy301I8Qn+acBZHjfJ2G1Y8xXd69ZwNzLZ9wIJP34mrkAhZIcqM5guG8FJSSogbnL6AF6/jINPcgJWxFqzv9w8aXPbNbqMEXWU3tSRQ4vJL5VXeaSbxIjziAmrZroLyZz2caFDow8lVm/X/k1fbUGdE1RnWVqMOp7JlPR0foCeEprPiJwbsgwVcD4yQgHqPNiJcvE+of+HkOeeHvpnAS74b+nX/i4UHIViDjDBtjwA0eOQgRyjUJqbt1F42tfNYeIkoksDLeXdTsGzAma8YhK4Rz3Y1lg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BLlRafDWGwjxvBo1GVdKnHqzv2zsctKpQyaV6jpY49M=;
- b=ZTJS0Ir5rubUmRd6lQFmkK5kLUkYJ+zUp7IJnhlOpXQQSugmrbvFkxpnBT4Mz0uu4gpSFNFw5qZdYeqqEAH1fj8d/NMRERVEqn+15z8a4wwGx/gJj2e6Xzhg3TgThDX0dIzTHqaAv9wJslG2uR89sug6xgjbLMy8YVeBn64O0O5Rzxib0aoqEX2Kg/nMafvwd6+3eul51s+NZZUvTLoMLERDa6OPcs/DkMwqzkiqm06O3ht8pt8P+AbqxcE8gCJkbi2ui/9TR4kmmFLXM8BmIRydITAXDWnsmrWcGOuyj90D+VRyFAS6ExfgootgLkC34Bm5+pXZMXsKYVvWJg5zRg==
+ bh=/y8kFwCNNHl45KqVXdIeL0iT2jIDPF24sdPuSdr0ckk=;
+ b=Iv97o7k2f3Q4qPRw4fsgPQSZXWnuraCYMv457QaI9dSF45yqf4qqffCYMR39cFe91lQpykRR41CDAXuyKu61HT+gKjJCsgXQyAKb7OqDSY8piIQbS5abcMc93q7VQ0qP59+NOn+CvbOT4eOsbxZpnvGlM/bLmKV82umoQgtVZRy7HjsQrnDRQ53JPXGfGbXDxP2V0ic5AdEzhoZOLK/WlCXZl06rAqRsWE4Mdil6Eam5Gt3JFOGL5Az21Y+XyMn7owQ2sZ6ONEF1yQdYy5DLeUOD5wzwYJY1RI4DQiX4Bewua/Zd2DmmArcd4grO6ZUtTLaai34tDspWiMnqL4EIXA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BLlRafDWGwjxvBo1GVdKnHqzv2zsctKpQyaV6jpY49M=;
- b=wQGPUjgEMgd2SJXNibj7wL3zIU+LK8s2ltqeD126vogxoYcTRjDTUMWRyfqv5ibx4UuSwnXMr695eWZYjCpgw4APpLMZIjHolzUztIlTHA5394i1E5gKVO5+ptFerYJkMkvrLpJshFPuC60vQ11+ZHedCK6wK8UYtwwPRW4D8tE=
-Received: from BL1PR13CA0087.namprd13.prod.outlook.com (2603:10b6:208:2b8::32)
- by BY5PR12MB4147.namprd12.prod.outlook.com (2603:10b6:a03:205::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.18; Wed, 29 Oct
- 2025 10:22:59 +0000
-Received: from BL6PEPF00022574.namprd02.prod.outlook.com
- (2603:10b6:208:2b8:cafe::e9) by BL1PR13CA0087.outlook.office365.com
- (2603:10b6:208:2b8::32) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.4 via Frontend Transport; Wed,
- 29 Oct 2025 10:22:57 +0000
+ bh=/y8kFwCNNHl45KqVXdIeL0iT2jIDPF24sdPuSdr0ckk=;
+ b=U6uHaOdxVOnzpoO1zqQkpCTRT0miusp0vbZMexO4ydKahDOzuz6yth3YOgSJnD44UXk4YAdvZvnfy7pWGJkASN6b7huCMvrkXuhaXhZ1md4CDOgpFiy5yBpCfkRRjwjW9u5L2crw8SZH4/xzNeyeIf0iTx8UKrsDgvyv9WgrCBU=
+Received: from MW4PR04CA0162.namprd04.prod.outlook.com (2603:10b6:303:85::17)
+ by DM4PR12MB6544.namprd12.prod.outlook.com (2603:10b6:8:8d::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9275.12; Wed, 29 Oct 2025 10:22:51 +0000
+Received: from CO1PEPF000044EF.namprd05.prod.outlook.com
+ (2603:10b6:303:85:cafe::10) by MW4PR04CA0162.outlook.office365.com
+ (2603:10b6:303:85::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.14 via Frontend Transport; Wed,
+ 29 Oct 2025 10:22:50 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- BL6PEPF00022574.mail.protection.outlook.com (10.167.249.42) with Microsoft
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ CO1PEPF000044EF.mail.protection.outlook.com (10.167.241.69) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9275.10 via Frontend Transport; Wed, 29 Oct 2025 10:22:58 +0000
-Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9275.10 via Frontend Transport; Wed, 29 Oct 2025 10:22:50 +0000
+Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 29 Oct
- 2025 03:22:42 -0700
+ 2025 03:22:45 -0700
 Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb09.amd.com
  (10.181.42.218) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 29 Oct
- 2025 03:22:41 -0700
+ 2025 03:22:45 -0700
 Received: from xhdharshj40.xilinx.com (10.180.168.240) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Wed, 29 Oct 2025 03:22:38 -0700
+ Transport; Wed, 29 Oct 2025 03:22:42 -0700
 From: Harsh Jain <h.jain@amd.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
@@ -85,9 +84,9 @@ To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<michal.simek@amd.com>, <linux-arm-kernel@lists.infradead.org>,
 	<jay.buddhabhatti@amd.com>
 CC: Harsh Jain <h.jain@amd.com>
-Subject: [PATCH 08/15] crypto: zynqmp-aes-gcm: Avoid submitting fallback requests to engine
-Date: Wed, 29 Oct 2025 15:51:51 +0530
-Message-ID: <20251029102158.3190743-9-h.jain@amd.com>
+Subject: [PATCH 09/15] crypto: zynqmp-aes-gcm: Fix setkey operation to select HW keys
+Date: Wed, 29 Oct 2025 15:51:52 +0530
+Message-ID: <20251029102158.3190743-10-h.jain@amd.com>
 X-Mailer: git-send-email 2.49.1
 In-Reply-To: <20251029102158.3190743-1-h.jain@amd.com>
 References: <20251029102158.3190743-1-h.jain@amd.com>
@@ -101,159 +100,248 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF00022574:EE_|BY5PR12MB4147:EE_
-X-MS-Office365-Filtering-Correlation-Id: 30d9bc04-79d1-45e6-20c1-08de16d5221a
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044EF:EE_|DM4PR12MB6544:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb7fef65-9f3a-49d2-dfad-08de16d51d03
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|376014|82310400026|921020;
+	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|376014|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?GF/Sn5tNT6+foZOVI9XONsnQvYoId26y2VfI+1YG7d46Wtk/shLfK/SOEe7p?=
- =?us-ascii?Q?Q6Bn4K3DIKvfzyJctlX8lrcZmABGlC3QawZgTa4s1/9Dl8CsXXeRTOczZAkC?=
- =?us-ascii?Q?dfqY2CtXGhsjj5LEN4yBYTK2VBq3EUu6mSoJSpxxIIp5nR0RFKXFLBmWx8Hn?=
- =?us-ascii?Q?JlNJd+1XwbLjazGBe3/h0lQLgEIvKIKIwZC4gf7vOVaSigEdj40ye8pBI8qi?=
- =?us-ascii?Q?LodjuzDR4D2UlyN33V5rvZahg1PFPVSFBJYDa3uHMDabrymNPWDDvCJ1VRtg?=
- =?us-ascii?Q?hRODQ3RjFOuuNd4KKyLYEEosOuC/Q8/isbY3vFEc1XonmiuAxVG2d4Z293hY?=
- =?us-ascii?Q?ZOtawU2QhsamMoN2ugACvDJyzzRhN/sMBsD0rhmvUF+KJEt/13+Gjevca6yu?=
- =?us-ascii?Q?fL7ljc3hUXlnBNOtOocFEBUTZ+2GfXO7rLk9CT0QN5X+jFJn7ydqNUcnKOyN?=
- =?us-ascii?Q?aQ/EDc7hJRXLv4OgiG3g5go79Qe879bL+B+iacnZa7lDxgwgwz/kiy27uedC?=
- =?us-ascii?Q?nBZ5Qc6xnKn/b6tyqDyqgr4VA1zKVVO5O9Z8q9nko1+ENKI5rcFqCZZpLdkQ?=
- =?us-ascii?Q?Xxlg+TDk6mixApQLJwL60zSAlMPz39mfCpIzkge903x5Dokc9bRuFo2X4Gfg?=
- =?us-ascii?Q?KRHFFAp9JYLxKQoObTREWwpTZkUFyhSwvAcEEDruODE4Bw8wXtThrTQpnPRJ?=
- =?us-ascii?Q?5RwSDrnVIvdhqiWkp9pX2I1xb8gUkcVFPpd0qwU9Zz7ynu7bxV6rD2AQozhp?=
- =?us-ascii?Q?0BZZkaEhk91r3hKg47jv4e/T3Tc4HMn5qgtY1kZnG03exCpaWbAOkTU6g/1Y?=
- =?us-ascii?Q?nF15bR53fVD1N4yYBhJpyjEeFAHM4VPVkqwTDpZTPX8k3DdiM9fXBI44QjYd?=
- =?us-ascii?Q?JIi6KB0bpgrIc1BCgCHgV0FYXGk4IMDKHcaih6x3t6onu+xDq2YC4FvzSmzH?=
- =?us-ascii?Q?pa5ZUwN77d8NwhxzvELtdJdDG4vUu69Q8t4PgMncKJw07Uqf9kAbLo/kpzh2?=
- =?us-ascii?Q?m58l9OcP1eFnzinaQ4tMVFcFG/fwzwm7kamm74RBe8zYADBl8BcSB9Sm0Zaq?=
- =?us-ascii?Q?X2cNWqF1oESLZAGawasCi0tXSVHfvVr8xRs3oX/cB+PKbjueAq6MEfdYJUJk?=
- =?us-ascii?Q?iskcF2zCNAa5xBpUcokgZweJpnZx0o3MiBHnsQPbAe5qY5ftqk9E0FD16e4P?=
- =?us-ascii?Q?3D/gbG4qf69SZ5xz3qosAFxyc3Q4Jn9xAQaL43pCfjUJuyrRhczdGXYPXlYF?=
- =?us-ascii?Q?vjZ+pHPcq2SJXK0KgyqYWNwfvsCFaW0EwafEvssOu0pE9q8lTS/t4UvQg/xy?=
- =?us-ascii?Q?msmgzSjgdQYoy5JYZHdKjktL9Jit3ML+1z1kRYBaUOP5xKFM0vNXcFQ9+mbd?=
- =?us-ascii?Q?g+Jnc4rI8sL9l8+038CGghHC+eUOOuQLPvGmxak/UxvWlf8/EzNBBX9i9a+F?=
- =?us-ascii?Q?kfzMCTrTncoNfEXKfOiG/lr90T7hhNH5wBInh1b8R6MPKXLQOJg9Yf6JHKPV?=
- =?us-ascii?Q?k/ccoMkoEkjwvSbkXvB3gDEgkWXSWKMavmt29Wv/w/CYp/y/ns9VeWKWKyMt?=
- =?us-ascii?Q?/v54O+amLKsGazfB4qptkgxUMIw9uK7VWxdVZJ1c?=
+	=?us-ascii?Q?tdO8v6CZaO6vWkbgRtMjggWcp7SYnGboXJt/K50MF1rEAQ2jxqMHexExz3rR?=
+ =?us-ascii?Q?DtRMaeCPQxWCPaLiZEn9bOGxvUL0IOHRg1g48Y2u3mN3DH1iYAf6KO/WnV2n?=
+ =?us-ascii?Q?UuuLzdi5ahMNsWzW2KnAutUyvaJ7aQCFUeaZpVcomiGrw1kf4Fng72GUjATI?=
+ =?us-ascii?Q?QklikCdTYjKdrtrZ3rCDRawp6h7c8IZsk2tbBO6AiVuNE2F0E+xbZ7td2K5J?=
+ =?us-ascii?Q?FRjOvi3b6Jlj0gQx1jI2gJyRcou7EfypvA0uP6yhKOs/swERZFkThM4Kcwap?=
+ =?us-ascii?Q?eaofLJXB5FO9LcZMIqdZoFv5y5DJBigei+epfCS5RbywIpQoljYglgsKKiVC?=
+ =?us-ascii?Q?DktcPgAQd9IK18NbHWpNjwB5J7MhtIC95v214qHZaKPZ5/pbDJ/rEWljAG0N?=
+ =?us-ascii?Q?mJsjzI5tcDkneTR+wkTHYB/sm4lamWFibP/r6zhGwXjcA3Y20Bf9Io08rots?=
+ =?us-ascii?Q?w5ptd224p1lmLfmcrS0dTrS4JHeI4YjmteivgxsCe4siLJAeY400QM6gK6ef?=
+ =?us-ascii?Q?L70Jynqm46OA9u21Lhx/XENfaavHAFgS+8tSKdAaNdJQFwJaBcOdUMA0V9PV?=
+ =?us-ascii?Q?qQtLO2mN+0sahC6xSOzJnipqtoa/U8Lt5zwyB3YB0lS97nT/xTbMspmT2s84?=
+ =?us-ascii?Q?NQtNCBfWglnhRPJ8tmB0ttl3jD1NJT7kTeSiWT7IgyEHhpRrfM2e82n5UnHm?=
+ =?us-ascii?Q?IIfxeZUJG7zF6XcTZTJm4i/3f7py6rjKMemkhaD3opi7ef43KEqac2hOTIog?=
+ =?us-ascii?Q?bZNATAYJd756dQzQPC6d1FN4gJCUOyqjhq8yAVOjdbqjRaQlo3oUM2KogQmj?=
+ =?us-ascii?Q?jdtPbDpSATKN0yZkw8sGlKfhYOE/mF+zlcj3rSQMRngW9HIRbriiGlCgMEWt?=
+ =?us-ascii?Q?RmaxwfNvQHSQVEj+tjBSecBPoTqy7De1gDXwxGZQRZ6Nbz3YLhOl7bDWh5NK?=
+ =?us-ascii?Q?kwFQM3wgTfeCnXkAqkamjjHQDPC44rFyr804YKftgLXCycDRwVIEJTI/1NxL?=
+ =?us-ascii?Q?PDPFZSXMGjUMvUIMMMyy9b1bAXlyhmkoKhtS76RNqQkwK7mRDHr+WW/GnDx8?=
+ =?us-ascii?Q?3pjvvSrAI0AijHAzvMJBSm9LC2V6hAspZN3j1mM0FZGmKP3RgFtS8oY/VbUt?=
+ =?us-ascii?Q?KK8ES5wNWulKB/sblKqVIjyghxjQmhxpItL9BgwuL/bT0Dh0ZDzQgv5tUlVZ?=
+ =?us-ascii?Q?w9Q2UPvp6bB4Yd3jD5zuYzzEQvgHm1F2XgOBIJj3oPqlb39bJlScEJXfNlyf?=
+ =?us-ascii?Q?e+MhH/CZl+OWd8oEorNn2372NNj4+CggJXSkEJqpgBOVEXsMH6YOgGcUVM1b?=
+ =?us-ascii?Q?jW/mYVfrIxncEfXsDdz+eReha635zWRfeaq41G/IE3a2/s1EoFBQtT/6GrLM?=
+ =?us-ascii?Q?mGbNoF4bnC6uNaHP20po0ttOVlW55vDmOROjCoEJUVjb5z9yFg9ZVMHMppxB?=
+ =?us-ascii?Q?hr/V2Lp6ZXa7TEr/AtLMTuUg21Hp9VMkJDkutS5NvpBfrUZw3acS4AbJqktv?=
+ =?us-ascii?Q?lTrmpJl7+9kaoG3WQOLg5uz2FHOYCQZnr4isZPCLbpleZxks+P9OpQ4ejRXY?=
+ =?us-ascii?Q?s9ZlSf8VW+xP8YhP9M/ezL5TagEWLJfxZncT2ZSd?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(376014)(82310400026)(921020);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(376014)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2025 10:22:58.8731
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2025 10:22:50.2493
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30d9bc04-79d1-45e6-20c1-08de16d5221a
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb7fef65-9f3a-49d2-dfad-08de16d51d03
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF00022574.namprd02.prod.outlook.com
+	CO1PEPF000044EF.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4147
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6544
 
-Don't enqueue requests which are supposed to fallback to s/w crypto.
+Currently keylen 1 is used to select hw key. There are -ve self test
+which can fail for setkey length 1. Update driver to use 4 bytes
+with magic number to select H/W key type.
 
 Signed-off-by: Harsh Jain <h.jain@amd.com>
 ---
- drivers/crypto/xilinx/zynqmp-aes-gcm.c | 62 +++++++++++++++-----------
- 1 file changed, 35 insertions(+), 27 deletions(-)
+ drivers/crypto/xilinx/zynqmp-aes-gcm.c | 94 ++++++++++++++++----------
+ 1 file changed, 60 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/crypto/xilinx/zynqmp-aes-gcm.c b/drivers/crypto/xilinx/zynqmp-aes-gcm.c
-index 3b346a1c9f7e..9be1305b79d2 100644
+index 9be1305b79d2..bc12340487be 100644
 --- a/drivers/crypto/xilinx/zynqmp-aes-gcm.c
 +++ b/drivers/crypto/xilinx/zynqmp-aes-gcm.c
-@@ -204,31 +204,9 @@ static int zynqmp_handle_aes_req(struct crypto_engine *engine,
+@@ -22,14 +22,14 @@
+ 
+ #define ZYNQMP_AES_KEY_SIZE		AES_KEYSIZE_256
+ #define ZYNQMP_AES_AUTH_SIZE		16U
+-#define ZYNQMP_KEY_SRC_SEL_KEY_LEN	1U
+ #define ZYNQMP_AES_BLK_SIZE		1U
+ #define ZYNQMP_AES_MIN_INPUT_BLK_SIZE	4U
+ #define ZYNQMP_AES_WORD_LEN		4U
+ 
+-#define ZYNQMP_AES_GCM_TAG_MISMATCH_ERR		0x01
+-#define ZYNQMP_AES_WRONG_KEY_SRC_ERR		0x13
+-#define ZYNQMP_AES_PUF_NOT_PROGRAMMED		0xE300
++#define ZYNQMP_AES_GCM_TAG_MISMATCH_ERR	0x01
++#define ZYNQMP_AES_WRONG_KEY_SRC_ERR	0x13
++#define ZYNQMP_AES_PUF_NOT_PROGRAMMED	0xE300
++#define XILINX_KEY_MAGIC		0x3EA0
+ 
+ enum zynqmp_aead_op {
+ 	ZYNQMP_AES_DECRYPT = 0,
+@@ -48,6 +48,11 @@ struct zynqmp_aead_drv_ctx {
+ 	struct crypto_engine *engine;
+ };
+ 
++struct xilinx_hwkey_info {
++	u16 magic;
++	u16 type;
++} __packed;
++
+ struct zynqmp_aead_hw_req {
+ 	u64 src;
+ 	u64 iv;
+@@ -64,7 +69,7 @@ struct zynqmp_aead_tfm_ctx {
+ 	u8 *iv;
+ 	u32 keylen;
+ 	u32 authsize;
+-	enum zynqmp_aead_keysrc keysrc;
++	u8 keysrc;
+ 	struct crypto_aead *fbk_cipher;
+ };
+ 
+@@ -175,32 +180,29 @@ static int zynqmp_aes_aead_cipher(struct aead_request *req)
+ static int zynqmp_fallback_check(struct zynqmp_aead_tfm_ctx *tfm_ctx,
+ 				 struct aead_request *req)
+ {
+-	int need_fallback = 0;
+ 	struct zynqmp_aead_req_ctx *rq_ctx = aead_request_ctx(req);
+ 
+ 	if (tfm_ctx->authsize != ZYNQMP_AES_AUTH_SIZE && rq_ctx->op == ZYNQMP_AES_DECRYPT)
+ 		return 1;
+ 
+-	if (tfm_ctx->keysrc == ZYNQMP_AES_KUP_KEY &&
+-	    tfm_ctx->keylen != ZYNQMP_AES_KEY_SIZE) {
+-		need_fallback = 1;
+-	}
+ 	if (req->assoclen != 0 ||
+-	    req->cryptlen < ZYNQMP_AES_MIN_INPUT_BLK_SIZE) {
+-		need_fallback = 1;
+-	}
++	    req->cryptlen < ZYNQMP_AES_MIN_INPUT_BLK_SIZE)
++		return 1;
++	if (tfm_ctx->keylen == AES_KEYSIZE_128 ||
++	    tfm_ctx->keylen == AES_KEYSIZE_192)
++		return 1;
++
+ 	if ((req->cryptlen % ZYNQMP_AES_WORD_LEN) != 0)
+-		need_fallback = 1;
++		return 1;
+ 
+ 	if (rq_ctx->op == ZYNQMP_AES_DECRYPT &&
+-	    req->cryptlen <= ZYNQMP_AES_AUTH_SIZE) {
+-		need_fallback = 1;
+-	}
+-	return need_fallback;
++	    req->cryptlen <= ZYNQMP_AES_AUTH_SIZE)
++		return 1;
++
++	return 0;
+ }
+ 
+-static int zynqmp_handle_aes_req(struct crypto_engine *engine,
+-				 void *req)
++static int zynqmp_handle_aes_req(struct crypto_engine *engine, void *req)
  {
  	struct aead_request *areq =
  				container_of(req, struct aead_request, base);
--	struct crypto_aead *aead = crypto_aead_reqtfm(req);
--	struct zynqmp_aead_tfm_ctx *tfm_ctx = crypto_aead_ctx(aead);
--	struct zynqmp_aead_req_ctx *rq_ctx = aead_request_ctx(areq);
--	struct aead_request *subreq = aead_request_ctx(req);
--	int need_fallback;
- 	int err;
- 
--	need_fallback = zynqmp_fallback_check(tfm_ctx, areq);
--
--	if (need_fallback) {
--		aead_request_set_tfm(subreq, tfm_ctx->fbk_cipher);
--
--		aead_request_set_callback(subreq, areq->base.flags,
--					  NULL, NULL);
--		aead_request_set_crypt(subreq, areq->src, areq->dst,
--				       areq->cryptlen, areq->iv);
--		aead_request_set_ad(subreq, areq->assoclen);
--		if (rq_ctx->op == ZYNQMP_AES_ENCRYPT)
--			err = crypto_aead_encrypt(subreq);
--		else
--			err = crypto_aead_decrypt(subreq);
--	} else {
--		err = zynqmp_aes_aead_cipher(areq);
--	}
--
-+	err = zynqmp_aes_aead_cipher(areq);
- 	local_bh_disable();
- 	crypto_finalize_aead_request(engine, areq, err);
- 	local_bh_enable();
-@@ -281,26 +259,56 @@ static int zynqmp_aes_aead_setauthsize(struct crypto_aead *aead,
- 
- static int zynqmp_aes_aead_encrypt(struct aead_request *req)
+@@ -218,32 +220,42 @@ static int zynqmp_aes_aead_setkey(struct crypto_aead *aead, const u8 *key,
+ 				  unsigned int keylen)
  {
--	struct zynqmp_aead_drv_ctx *drv_ctx;
-+	struct zynqmp_aead_req_ctx *rq_ctx = aead_request_ctx(req);
-+	struct aead_request *subreq = aead_request_ctx(req);
- 	struct crypto_aead *aead = crypto_aead_reqtfm(req);
-+	struct zynqmp_aead_tfm_ctx *tfm_ctx = crypto_aead_ctx(aead);
- 	struct aead_alg *alg = crypto_aead_alg(aead);
--	struct zynqmp_aead_req_ctx *rq_ctx = aead_request_ctx(req);
-+	struct zynqmp_aead_drv_ctx *drv_ctx;
+ 	struct crypto_tfm *tfm = crypto_aead_tfm(aead);
+-	struct zynqmp_aead_tfm_ctx *tfm_ctx =
+-			(struct zynqmp_aead_tfm_ctx *)crypto_tfm_ctx(tfm);
++	struct zynqmp_aead_tfm_ctx *tfm_ctx = crypto_tfm_ctx(tfm);
++	struct xilinx_hwkey_info hwkey;
+ 	unsigned char keysrc;
 +	int err;
  
- 	rq_ctx->op = ZYNQMP_AES_ENCRYPT;
- 	drv_ctx = container_of(alg, struct zynqmp_aead_drv_ctx, aead.base);
-+	err = zynqmp_fallback_check(tfm_ctx, req);
-+	if (err) {
-+		aead_request_set_tfm(subreq, tfm_ctx->fbk_cipher);
-+		aead_request_set_callback(subreq, req->base.flags,
-+					  NULL, NULL);
-+		aead_request_set_crypt(subreq, req->src, req->dst,
-+				       req->cryptlen, req->iv);
-+		aead_request_set_ad(subreq, req->assoclen);
-+		err = crypto_aead_encrypt(subreq);
-+
-+		return err;
+-	if (keylen == ZYNQMP_KEY_SRC_SEL_KEY_LEN) {
+-		keysrc = *key;
++	if (keylen == sizeof(struct xilinx_hwkey_info)) {
++		memcpy(&hwkey, key, sizeof(struct xilinx_hwkey_info));
++		if (hwkey.magic != XILINX_KEY_MAGIC)
++			return -EINVAL;
++		keysrc = hwkey.type;
+ 		if (keysrc == ZYNQMP_AES_KUP_KEY ||
+ 		    keysrc == ZYNQMP_AES_DEV_KEY ||
+ 		    keysrc == ZYNQMP_AES_PUF_KEY) {
+-			tfm_ctx->keysrc = (enum zynqmp_aead_keysrc)keysrc;
+-		} else {
+-			tfm_ctx->keylen = keylen;
++			tfm_ctx->keysrc = keysrc;
++			tfm_ctx->keylen = sizeof(struct xilinx_hwkey_info);
++			return 0;
+ 		}
+-	} else {
++		return -EINVAL;
 +	}
++
++	if (keylen == ZYNQMP_AES_KEY_SIZE && tfm_ctx->keysrc == ZYNQMP_AES_KUP_KEY) {
+ 		tfm_ctx->keylen = keylen;
+-		if (keylen == ZYNQMP_AES_KEY_SIZE) {
+-			tfm_ctx->keysrc = ZYNQMP_AES_KUP_KEY;
+-			memcpy(tfm_ctx->key, key, keylen);
+-		}
++		memcpy(tfm_ctx->key, key, keylen);
++	} else if (tfm_ctx->keysrc != ZYNQMP_AES_KUP_KEY) {
++		return -EINVAL;
+ 	}
  
- 	return crypto_transfer_aead_request_to_engine(drv_ctx->engine, req);
+ 	tfm_ctx->fbk_cipher->base.crt_flags &= ~CRYPTO_TFM_REQ_MASK;
+ 	tfm_ctx->fbk_cipher->base.crt_flags |= (aead->base.crt_flags &
+ 					CRYPTO_TFM_REQ_MASK);
+ 
+-	return crypto_aead_setkey(tfm_ctx->fbk_cipher, key, keylen);
++	err = crypto_aead_setkey(tfm_ctx->fbk_cipher, key, keylen);
++	if (!err)
++		tfm_ctx->keylen = keylen;
++
++	return err;
  }
  
- static int zynqmp_aes_aead_decrypt(struct aead_request *req)
- {
--	struct zynqmp_aead_drv_ctx *drv_ctx;
-+	struct zynqmp_aead_req_ctx *rq_ctx = aead_request_ctx(req);
-+	struct aead_request *subreq = aead_request_ctx(req);
- 	struct crypto_aead *aead = crypto_aead_reqtfm(req);
-+	struct zynqmp_aead_tfm_ctx *tfm_ctx = crypto_aead_ctx(aead);
- 	struct aead_alg *alg = crypto_aead_alg(aead);
--	struct zynqmp_aead_req_ctx *rq_ctx = aead_request_ctx(req);
-+	struct zynqmp_aead_drv_ctx *drv_ctx;
-+	int err;
+ static int zynqmp_aes_aead_setauthsize(struct crypto_aead *aead,
+@@ -267,9 +279,16 @@ static int zynqmp_aes_aead_encrypt(struct aead_request *req)
+ 	struct zynqmp_aead_drv_ctx *drv_ctx;
+ 	int err;
+ 
+-	rq_ctx->op = ZYNQMP_AES_ENCRYPT;
+ 	drv_ctx = container_of(alg, struct zynqmp_aead_drv_ctx, aead.base);
++	if (tfm_ctx->keysrc == ZYNQMP_AES_KUP_KEY &&
++	    tfm_ctx->keylen == sizeof(struct xilinx_hwkey_info))
++		return -EINVAL;
++
++	rq_ctx->op = ZYNQMP_AES_ENCRYPT;
+ 	err = zynqmp_fallback_check(tfm_ctx, req);
++	if (err && tfm_ctx->keysrc != ZYNQMP_AES_KUP_KEY)
++		return -EOPNOTSUPP;
++
+ 	if (err) {
+ 		aead_request_set_tfm(subreq, tfm_ctx->fbk_cipher);
+ 		aead_request_set_callback(subreq, req->base.flags,
+@@ -297,7 +316,12 @@ static int zynqmp_aes_aead_decrypt(struct aead_request *req)
  
  	rq_ctx->op = ZYNQMP_AES_DECRYPT;
  	drv_ctx = container_of(alg, struct zynqmp_aead_drv_ctx, aead.base);
-+	err = zynqmp_fallback_check(tfm_ctx, req);
-+	if (err) {
-+		aead_request_set_tfm(subreq, tfm_ctx->fbk_cipher);
-+		aead_request_set_callback(subreq, req->base.flags,
-+					  NULL, NULL);
-+		aead_request_set_crypt(subreq, req->src, req->dst,
-+				       req->cryptlen, req->iv);
-+		aead_request_set_ad(subreq, req->assoclen);
-+		err = crypto_aead_decrypt(subreq);
-+
-+		return err;
-+	}
++	if (tfm_ctx->keysrc == ZYNQMP_AES_KUP_KEY &&
++	    tfm_ctx->keylen == sizeof(struct xilinx_hwkey_info))
++		return -EINVAL;
+ 	err = zynqmp_fallback_check(tfm_ctx, req);
++	if (err && tfm_ctx->keysrc != ZYNQMP_AES_KUP_KEY)
++		return -EOPNOTSUPP;
+ 	if (err) {
+ 		aead_request_set_tfm(subreq, tfm_ctx->fbk_cipher);
+ 		aead_request_set_callback(subreq, req->base.flags,
+@@ -323,6 +347,8 @@ static int zynqmp_aes_aead_init(struct crypto_aead *aead)
  
- 	return crypto_transfer_aead_request_to_engine(drv_ctx->engine, req);
- }
+ 	drv_ctx = container_of(alg, struct zynqmp_aead_drv_ctx, aead.base);
+ 	tfm_ctx->dev = drv_ctx->dev;
++	tfm_ctx->keylen = 0;
++	tfm_ctx->keysrc = ZYNQMP_AES_KUP_KEY;
+ 
+ 	tfm_ctx->fbk_cipher = crypto_alloc_aead(drv_ctx->aead.base.base.cra_name,
+ 						0,
 -- 
 2.49.1
 
