@@ -1,150 +1,111 @@
-Return-Path: <linux-crypto+bounces-17578-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17583-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF343C1BA89
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 16:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F16C1BABF
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 16:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DC89258658D
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 14:35:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 682155C3C59
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 15:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631D6283683;
-	Wed, 29 Oct 2025 14:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746523128BD;
+	Wed, 29 Oct 2025 15:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sFixKe+a"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9519E1DF994
-	for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 14:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2364F2E62D0;
+	Wed, 29 Oct 2025 15:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761748509; cv=none; b=Vo84qPiBs0/LemKEqCEhuGv9yNRzMdpEldRPqNkSm6en9uWECUiC1+zZf5zfatMbYiwtScK2sMDmEL7f9SARLvvMU3ALxYz1o9BpOYVdw+ZfjVLLa5ex2tphNJsjQUivP5YA/OEnqpxzGcBlonKBGlthj0fwwMYt5QZ3zdXWj00=
+	t=1761751464; cv=none; b=rnBTzjlb4XQskKs9pc22wItzurK/YLttU9MEJ+CkQxwIHOpVGANwDBZ1Ef4iP69Tdjz1jBnwJ+InPcPLG8w02NO7GKl32ovcs32Jlrcf+x4Bl9vhZy18Uagw+5GA2OKRc77ubYjIFQtu8LIPU8VRZer3HOgdv8N3av9e9+1H2lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761748509; c=relaxed/simple;
-	bh=QXFJ9Wye89l5k56IzhXHnCZ5vP4dVOGIaGxaTnibrdI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WyUIF75pfbrnS1qhypCli0esTg7+Ns6KVyvtTDHHbfCdsbaO6SbrUWhAv0j/BvJTMJKJwT+fBO0u60Q5xlNn5mU1OoXOFoQnAcDN9GTHZJWbxdHeZwUFlGlAEQGDufPKYNr8NBzoCWhsck23CH8kAEWsOvhs9GgPDvBSGwLJlBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-932e88546a8so720969241.0
-        for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 07:35:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761748506; x=1762353306;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ohi/8MFIs+pUNYTuSKDH5KUVpFMJO5wn0YyhdMa7QIc=;
-        b=tCstj4btcW/AlbThE6RpAExWkwEUItJiFod12HyS4oRvugLoAetm+RfsSrfZYeJDDD
-         3Uzk0Ddi1YDAX/raM+D1jKXTRYkFf1gNZP6a+CnWEOAH72Odklwx5WK+/0rNGWCasZVZ
-         XxlH0Ywrq2/2+P77sMK8H+GQ/xwZJBqPbmaNEYSXIn5RqD1s50LtTMXWUo/6Ud7VQwsx
-         W7C3FCUogdtIzYjfRpXKFDBkXiWERpsI+RF9zlbDN6kC5sYT1KT3VWQf9QjeKrPEZNAC
-         4uWIs76fWfME2BwhtSK5VF7w+Xmszd2mXSVKGULFcM+gNvMrxKdZdFU1cqzojeqZCvjs
-         NJcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUISRk+7ALwZHPE/3JFoDHHFgx6UbWEMoaFn8XCIPqkDdh/Rfq91azXOCie5Fh5BIPN1+MO1RAf74CP6zE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoDbu/4feGB4BZcI1KGUbAzSnoVegar46WZq+c4KSitMBqCYXt
-	mJIW/+yjsHWSQ/J3aGXpSvA7/eJNbwMZN18c1vy0bA4IZBUTa1DZfa5Xprs8roaE
-X-Gm-Gg: ASbGncvtMeXX/FvtyRq5SLLD68dFlINZblXbLZLhxcri1j2GSV5XWd4DgTqT2WN3LNK
-	QcEJzFhurl0rNcSNwFtjTV2rbIEARcKcb7NkpcU1xS6HLBG0kpquSk2P5Sq+CNC82g9aNRbYcxy
-	ZFMbV21qaH/c83XdlVlvt2tonKfgoxBVFamu62FO7Xiu1xT1dfbT/4fk2avAGG5B6S5GuZDXVpl
-	LJp2FFFLCogcAqvNgBMyindUzJjYYta1441AyirekVRJ2Q+xniil17M5817QD/8sP/bsQHNEt6l
-	X/x54KX1xNMBWh7ydw4X1qZbiAW1xV4DRYJqSa7gtpnG9h0mielFi+vzrZbbrTMuGkb5ofhhr8H
-	usez1qBZNRKz1EXISRFay5UwLcTfy3oCir7LF5VXjh3rwmZPSGsay10V6evFz3DpuHVgVECPsoH
-	YhamPsPokNkYahZ9WxPBUGM66nnbexGuTJHufRPOoZ6sSs77RJarfR
-X-Google-Smtp-Source: AGHT+IHtmAAjvElMpX46WiMeR3GLAh4wCKBjZp1LDfDYSkTmfTp10NS4NYi/3Ja3DzoQ5YpratoAxQ==
-X-Received: by 2002:a05:6102:3eca:b0:51c:4443:16c7 with SMTP id ada2fe7eead31-5db8fbfc887mr1342437137.6.1761748505945;
-        Wed, 29 Oct 2025 07:35:05 -0700 (PDT)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5db4e521e0fsm5059668137.6.2025.10.29.07.35.03
-        for <linux-crypto@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Oct 2025 07:35:04 -0700 (PDT)
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-8eafd5a7a23so729849241.1
-        for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 07:35:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVM9/e8+fgex+IGuCecSU2Z8Lq9EKDELZvFbazeYQF/9xb9dIFEJ2iClOqdeFXPrpBY+tKJxK95UAPHikw=@vger.kernel.org
-X-Received: by 2002:a05:6102:2acd:b0:5db:9b88:1fec with SMTP id
- ada2fe7eead31-5db9b88219emr535412137.9.1761748503547; Wed, 29 Oct 2025
- 07:35:03 -0700 (PDT)
+	s=arc-20240116; t=1761751464; c=relaxed/simple;
+	bh=C78jSd2R7ge8lnlFlJKPQI9tQmjpUUXAcq2TBYPRtsk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V7mXrd7uU+3Zsdtmw6bYmPiEHfin6ztX1GJtEAwN99TibG1ytv3tDvUTJjutfr4Cy9kEaj+tF1xHw8RZeE55kAPm6t5W7IA1lKKm2VNBkAo1Wmo5MytD++ENToUhSW6C60xxg86/+7BZfvQ4SfwNVSmB1+IdK1KaE5TESwen92A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sFixKe+a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64FFDC4CEF7;
+	Wed, 29 Oct 2025 15:24:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761751463;
+	bh=C78jSd2R7ge8lnlFlJKPQI9tQmjpUUXAcq2TBYPRtsk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sFixKe+aIbeQujqaC/YV1xKNvQDajUPI3gt1V/tMkOThpr9JXeUGMO+EPU8/N76tL
+	 5nI9bwWf/7RH1BmMNdduG6y+mCwmlbl3ezcbXxMAqElyS58nJNYVyuth8gEghkA8Oh
+	 IuzipPhzUFZqmNWR0nCeB5DfhsDsGsQkcL5KJZqoexAQ4f5+pSHJA9iHo5cH+HKpoo
+	 FXnjjkCCUx8tK8iR6r6K0z7veF9UjK4VlMilddnA5YYZw1pvmS9feULnPEQWt1O0ey
+	 TSjMiPPKa6uZVfC47c9jb5SC/bPHNEnHfHczM0zctmHitWdSg/bapuWYI6kTChRm1J
+	 mSEXaHQKQECKQ==
+Date: Wed, 29 Oct 2025 10:27:26 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Jingyi Wang <jingyi.wang@oss.qualcomm.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>, 
+	"David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Vinod Koul <vkoul@kernel.org>, Thara Gopinath <thara.gopinath@gmail.com>, 
+	Konrad Dybcio <konradybcio@kernel.org>, aiqun.yu@oss.qualcomm.com, tingwei.zhang@oss.qualcomm.com, 
+	trilok.soni@oss.qualcomm.com, yijie.yang@oss.qualcomm.com, linux-arm-msm@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>
+Subject: Re: [PATCH v2 3/3] crypto: qce: fix version check
+Message-ID: <fkqs3deirpi3sdljuo4fnod2pryoqg2ho5bbuie77k55mktrlq@heg4gvoo2rvy>
+References: <20251029-knp-crypto-v2-0-b109a22da4f7@oss.qualcomm.com>
+ <20251029-knp-crypto-v2-3-b109a22da4f7@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1761588465.git.geert+renesas@glider.be> <ac3e718c5de6a23375055dd3c2e4ed6daf7542d5.1761588465.git.geert+renesas@glider.be>
- <CACRpkdYMv+R-NJ5R4+UyhK1+DJia0z72kZgt45+0eubXMuGpEw@mail.gmail.com>
-In-Reply-To: <CACRpkdYMv+R-NJ5R4+UyhK1+DJia0z72kZgt45+0eubXMuGpEw@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 29 Oct 2025 15:34:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUvLH-8yNRoqBdTB+mcmOUedwVGpJ_HGdq8sqgLNB4dvw@mail.gmail.com>
-X-Gm-Features: AWmQ_blZ8dUVr2aBwtWAAkAOaE93AtUSPNFDpslgvmXepFfW4tMWIOUWnRJkksY
-Message-ID: <CAMuHMdUvLH-8yNRoqBdTB+mcmOUedwVGpJ_HGdq8sqgLNB4dvw@mail.gmail.com>
-Subject: Re: [PATCH v5 18/23] pinctrl: ma35: Convert to common
- field_{get,prep}() helpers
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Nicolas Ferre <nicolas.ferre@microchip.com>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	David Miller <davem@davemloft.net>, Bartosz Golaszewski <brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>, 
-	Andrew Jeffery <andrew@codeconstruct.com.au>, Crt Mori <cmo@melexis.com>, 
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Shan-Chun Hung <schung@nuvoton.com>, Yury Norov <yury.norov@gmail.com>, 
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@ieee.org>, 
-	David Laight <david.laight.linux@gmail.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Kim Seer Paller <kimseer.paller@analog.com>, 
-	David Lechner <dlechner@baylibre.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Andy Shevchenko <andy@kernel.org>, Richard Genoud <richard.genoud@bootlin.com>, 
-	Cosmin Tanislav <demonsingur@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Jianping Shen <Jianping.Shen@de.bosch.com>, linux-clk@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, linux-edac@vger.kernel.org, qat-linux@intel.com, 
-	linux-gpio@vger.kernel.org, linux-aspeed@lists.ozlabs.org, 
-	linux-iio@vger.kernel.org, linux-sound@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251029-knp-crypto-v2-3-b109a22da4f7@oss.qualcomm.com>
 
-Hi Linus,
+On Wed, Oct 29, 2025 at 01:25:31AM -0700, Jingyi Wang wrote:
+> From: Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>
+> 
+> The previous version check made it difficult to support newer major
+> versions (e.g., v6.0) without adding extra checks/macros. Update the
+> logic to only reject v5.0 and allow future versions without additional
+> changes.
+> 
+> Signed-off-by: Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>
+> Signed-off-by: Jingyi Wang <jingyi.wang@oss.qualcomm.com>
 
-On Wed, 29 Oct 2025 at 15:21, Linus Walleij <linus.walleij@linaro.org> wrot=
-e:
-> On Mon, Oct 27, 2025 at 7:44=E2=80=AFPM Geert Uytterhoeven
-> <geert+renesas@glider.be> wrote:
->
-> > Drop the driver-specific field_get() and field_prep() macros, in favor
-> > of the globally available variants from <linux/bitfield.h>.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> > v5:
-> >   - Extracted from "bitfield: Add non-constant field_{prep,get}()
-> >     helpers".
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 
-Thanks!
-
-> I guess this needs to go with the rest of the patches?
-
-There is no hard requirement for that, but if 07/23 goes in, why not
-include this one, too?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> ---
+>  drivers/crypto/qce/core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index e95e84486d9a..b966f3365b7d 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -21,7 +21,6 @@
+>  #include "sha.h"
+>  #include "aead.h"
+>  
+> -#define QCE_MAJOR_VERSION5	0x05
+>  #define QCE_QUEUE_LENGTH	1
+>  
+>  #define QCE_DEFAULT_MEM_BANDWIDTH	393600
+> @@ -161,7 +160,7 @@ static int qce_check_version(struct qce_device *qce)
+>  	 * the driver does not support v5 with minor 0 because it has special
+>  	 * alignment requirements.
+>  	 */
+> -	if (major != QCE_MAJOR_VERSION5 || minor == 0)
+> +	if (major == 5 && minor == 0)
+>  		return -ENODEV;
+>  
+>  	qce->burst_size = QCE_BAM_BURST_SIZE;
+> 
+> -- 
+> 2.25.1
+> 
 
