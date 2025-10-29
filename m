@@ -1,82 +1,82 @@
-Return-Path: <linux-crypto+bounces-17555-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17560-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6E58C19ABB
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 11:23:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE25C19AE2
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 11:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4C60434B187
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 10:23:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA7B1467BF2
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 10:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A543009CB;
-	Wed, 29 Oct 2025 10:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF4A329C5D;
+	Wed, 29 Oct 2025 10:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ePS6ytm1"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dR77Ysxa"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11012022.outbound.protection.outlook.com [52.101.53.22])
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010024.outbound.protection.outlook.com [52.101.61.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3A22FBDE3;
-	Wed, 29 Oct 2025 10:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.53.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A92D303C9B;
+	Wed, 29 Oct 2025 10:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.24
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761733370; cv=fail; b=tPDQOvkwilIkwpusj+2UjfwKTDfGfWEjpNXKu7JYgGNtCH40hqJ46qiGWXtayVHIgNKP/s8lbKN9gs/N9GCPBs8q7fbAeou8YWXmzBGtfSkyEGFxjDjsZyllVOZd0qf+/FJFj4As5Dj5NLTLpNjYbrCt6xQzWkLH9zjRVFf3TPI=
+	t=1761733384; cv=fail; b=lI2W2mfUkugs4TKirDn2/Jfwe9VNaCGLpSpvUAA5b3H/+MA7tgjZn7jXnh90+oiAi2fcJ9qZcFrzGK7J7iEVlVF1eAGkwH8B/TRiZAQTeIk8d5/ZR43iEs0vG/4GBus3e6MB6R2RjV0AbHxYQ9ONnn5Hki1uRdiVcBy1J9XU9hk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761733370; c=relaxed/simple;
-	bh=10kRaqs2fsS/WiDUyhRcsgNgohjatwuylhvtEbwbWU0=;
+	s=arc-20240116; t=1761733384; c=relaxed/simple;
+	bh=InA1iH7K8r2Ci/hPrAfswC/5FmaKyZR03NhdwEdMQSg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dad/nDDS2pwwKH1WTc+DBGyh85oYBEJvNHhw12WFAPtnivp/hvKn2junUhh2jlRmM4MxtkVVvekz3XGXli0PFa/ODfIvVr/AbXoVORDZu+hekVjnEkNFbbSR+fSmPux+vtPje7UtgahNy2nSFHgOOXg5X8bgsUXZIPYC4ZNHAZg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ePS6ytm1; arc=fail smtp.client-ip=52.101.53.22
+	 MIME-Version:Content-Type; b=Y21beU5gmdgteHR3yY1bEkBLYX6I1DYeNSjXm0siZ3s32D5eSxvTszlGgtWGVXktKxlfh8B+/gNjQhhgcFiKbPAy+O3/Ao/Un3mTUZJ4DcsdVT2kBV67nAwSgip8QbzTArqRDo1jUUIu4NO9frdvlk2Yt7HEkm8rgdV0F6mQKS4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dR77Ysxa; arc=fail smtp.client-ip=52.101.61.24
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KRf1f0RCwuE2k7MfSrGQDHaX0a5HyFZyCG5CwsfzsG/zJqOyskrz87L5RQyzgWAWf4wjGMNCz5g4J4Sjq2b/XApITnjNxbGhnTzY4ynw63jtpYryoifwk/5ZIWzrjQWmb4S8nEZees7TvHzRN8QNLTJf35x+L+1xuuthRaUZ/DsecqIhFkUL4TVGcEJwia08uz/9ZZwoy98cgAufnHWBUVEcd5bJZPYjP7pQpnRqbvnKXhsMgLYcdIu6qrtcM+WNJ6TjvLGHCpNI1nT149XI7JUk6KpsYmJdgBulMVhtYQIYd7ehdQ2RaOL/3L7ykSK+sAkYsklOdmLEqHx03N72xw==
+ b=Y9ntreq71I58KCp1L0gZ3Z64YFUJ+opWGY+yacjsik2kOjjCyz8DyCXqDRMB2luCc6vuvbclEXx7oMQv3gLefd2jwO9lFbt6lvg7MupFEizueoTNiDJR05G7bv1u4f4DXITs1v+qrGbSwbE5MPsENmt6rjnLg13bu38VRYbByNh/2nG4InefZaJGf+WoQXvQjBExpjtxizqFxRLBlP1Op81QjUuMryNDutp/yh31vtIbc5bY4ueVQ4g6v+YoNi+2xnFIdPlbKYmLtUQYhCNox5mCkMpqg+EYVhtsBmeRpxMA4l3yxoekL2aAKwMgpGG1lfYX9SakKBgl/evXrh/fbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NWMNnbEGzYOm1zfhzgwhb54fQbaXZ1zvEy/txL90oDQ=;
- b=eERNjfRxEvrV57IiRpTB2lD9bX1t3qPzaZZdsZ+IdsZELsgGuY2nkB6zgv1UN8xEtVwaU8t7VImBvSWU37jtnsSojOXP5bLkT9PQNuiaLjz1KNPM1AnzUKwRGIoAR5Dzfq76zTsABWbwsa/yfM6971JMpAdUu3T7uMmWyWmwGsxwG1HLr8KGBKX/NFFePA+hD1r3Ih6eQh+njlKQ9dUmSDxDxs0ikc+exbXIda7GknSM3g0HANzPr/hgsOiPxxx6dnKmzkxL9JY6ZflRRYi+leTHr3dycWC0WG88p8Tbyt1uzTQksBhvLNaiz/Ff4T1jRvCw2PY0oAd3QI/IhuZaOg==
+ bh=cdzPFTclVKOXYxNUhD4Tgm5k/ts6pTcO8CO9breQqME=;
+ b=SlIR/ommDXCWPLa+zyWZ2iMbdBkKTU9mXQL8EDfZ5sJ2DU9Y6RdlQqa+sa8rkRgccT4K2Nyo8EBd1XwmSF4cOdRV8/Zwcy8oPS3TboEkjhKlkogxiwCRVN2Vd57HZ35jxodITFheSeSvHDS1h5vVSCyK6H14JG3FmL7mWEbo4IYkMGLR7o12NMBwjJ6gwSTGxcxT/UOSudSolQo3E38OutQGadcCqkr3pe73b+E62YebZ3P1X2U/GMuP6/IG1g2Oh56696aiX60EUL0qveeUE64lZZz2xW7S004MOnDZ0oS1p/vbSuBQ727zFqGODN9c5YZDDpoBB9mwMtyPT2vNhw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NWMNnbEGzYOm1zfhzgwhb54fQbaXZ1zvEy/txL90oDQ=;
- b=ePS6ytm1yi7AxAfjmyGkCfOVrAPJ+F3oHBn336lNJJKZJcCCeXFGdinEeNwb5G36xhLkwN+yx3SUgcXpLn3b9f+C1IUbmBYqae/TFz5CdCra6bsE4L1SJ45VcqF1DbKpVXrNEJ130GlihJopOFvtyj+jneUqoKEwpG6Kfnq85u4=
-Received: from SN6PR04CA0094.namprd04.prod.outlook.com (2603:10b6:805:f2::35)
- by DS7PR12MB8291.namprd12.prod.outlook.com (2603:10b6:8:e6::13) with
+ bh=cdzPFTclVKOXYxNUhD4Tgm5k/ts6pTcO8CO9breQqME=;
+ b=dR77Ysxa/KiXj9TDkfUHRRaGLRyciwXXgdgz/i5l/lLOJFQ4wU9G+QLxbkxeOr76K5j8mvEpgF6vKEMFELFxnVguinao4zWD/YOrXyDAO8auVVQ41bI42PQO04npVYOgkD5mT4r/+MG95t79khj2BCTJ6jkarLJeD8EAv5PJJ2s=
+Received: from BL1PR13CA0086.namprd13.prod.outlook.com (2603:10b6:208:2b8::31)
+ by SJ0PR12MB6925.namprd12.prod.outlook.com (2603:10b6:a03:483::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.13; Wed, 29 Oct
- 2025 10:22:43 +0000
-Received: from SN1PEPF00026369.namprd02.prod.outlook.com
- (2603:10b6:805:f2:cafe::20) by SN6PR04CA0094.outlook.office365.com
- (2603:10b6:805:f2::35) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9253.19 via Frontend Transport; Wed,
- 29 Oct 2025 10:22:42 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.19; Wed, 29 Oct
+ 2025 10:22:58 +0000
+Received: from BL6PEPF00022574.namprd02.prod.outlook.com
+ (2603:10b6:208:2b8:cafe::98) by BL1PR13CA0086.outlook.office365.com
+ (2603:10b6:208:2b8::31) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.13 via Frontend Transport; Wed,
+ 29 Oct 2025 10:22:57 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- SN1PEPF00026369.mail.protection.outlook.com (10.167.241.134) with Microsoft
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ BL6PEPF00022574.mail.protection.outlook.com (10.167.249.42) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9275.10 via Frontend Transport; Wed, 29 Oct 2025 10:22:42 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 29 Oct
- 2025 03:22:31 -0700
-Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb10.amd.com
- (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 29 Oct
- 2025 03:22:30 -0700
+ 15.20.9275.10 via Frontend Transport; Wed, 29 Oct 2025 10:22:57 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.17; Wed, 29 Oct
+ 2025 03:22:34 -0700
+Received: from satlexmb07.amd.com (10.181.42.216) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 29 Oct
+ 2025 05:22:34 -0500
 Received: from xhdharshj40.xilinx.com (10.180.168.240) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Wed, 29 Oct 2025 03:22:27 -0700
+ Transport; Wed, 29 Oct 2025 03:22:31 -0700
 From: Harsh Jain <h.jain@amd.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
@@ -85,9 +85,9 @@ To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<michal.simek@amd.com>, <linux-arm-kernel@lists.infradead.org>,
 	<jay.buddhabhatti@amd.com>
 CC: Harsh Jain <h.jain@amd.com>
-Subject: [PATCH 05/15] crypto: zynqmp-aes-gcm: Update probe to self discover the device
-Date: Wed, 29 Oct 2025 15:51:48 +0530
-Message-ID: <20251029102158.3190743-6-h.jain@amd.com>
+Subject: [PATCH 06/15] crypto: zynqmp-aes-gcm: Return linux error code instead of firmware error code
+Date: Wed, 29 Oct 2025 15:51:49 +0530
+Message-ID: <20251029102158.3190743-7-h.jain@amd.com>
 X-Mailer: git-send-email 2.49.1
 In-Reply-To: <20251029102158.3190743-1-h.jain@amd.com>
 References: <20251029102158.3190743-1-h.jain@amd.com>
@@ -99,212 +99,125 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+Received-SPF: None (SATLEXMB05.amd.com: h.jain@amd.com does not designate
+ permitted sender hosts)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00026369:EE_|DS7PR12MB8291:EE_
-X-MS-Office365-Filtering-Correlation-Id: df232ba0-9cba-4c69-7f16-08de16d51896
+X-MS-TrafficTypeDiagnostic: BL6PEPF00022574:EE_|SJ0PR12MB6925:EE_
+X-MS-Office365-Filtering-Correlation-Id: d6ec825b-0b49-4c61-6af1-08de16d52159
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700013|376014|82310400026|921020;
+	BCL:0;ARA:13230040|376014|82310400026|1800799024|36860700013|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?uysWVZMsxt/BUhIcTR8jGeXFm+EOs6O29ooR0DihFKfUAKMN3oDs0LEMdxVi?=
- =?us-ascii?Q?441wFTXFRoZP2X5D38a1BrxJj9K5jXvhVWR7Ju9ZJB3NkZ82o8B9O61C+GhC?=
- =?us-ascii?Q?UEVU6wchq3vDY0CMxtFowFPiPUhqzOfCQ8MtyN3Ci3fY48Teu2DE3EtL/7rX?=
- =?us-ascii?Q?G932bK8iMfpgm2w8C+kyanfHVe9vsmIt0aT0yMqT2j9RPiDOAyW4ypsSfG6g?=
- =?us-ascii?Q?mxVKIvR0BQPv8a5nIzhu6s4QjqjitfV0Ah/T/aYo46IazQG7z5so8pnQ0i9Q?=
- =?us-ascii?Q?mFoE0WsK2hdHoebL9fs2Z3Mg8aRzgY7+yVpLYxmlVsCLCZz9hL04RdieTZa7?=
- =?us-ascii?Q?6GvoSqjCDvvON/CbEC7/fbhkypPLioMsTsWpNi5LUR0dC2vxC2AYyx4Z/6MG?=
- =?us-ascii?Q?oJlao178CxKBH6dYyKmsDtY4PWTU6xxYKXZ3KlSjyD8QgpX6QeAx2Ld41Rz3?=
- =?us-ascii?Q?jJ8AFmp2XN+BCbuV4r6gDAOR82fAP6ycutN1TpVSjwgLpBVx2uYzl8O9BE2D?=
- =?us-ascii?Q?U++9fWRzlN0JJhbXkIy58lie3dvgs9V0AkeOmEgIBYq6q7ueCISYEno/A/Fg?=
- =?us-ascii?Q?W8IBYT4+YjAM0fxpJzwaGvrtJz+ZfhdbfAqOHT4VF7Slv6xRJEiNkivCh9Bw?=
- =?us-ascii?Q?uIvQyRqxNdHP/bvVrvuBkFeIzLuSEk5jeJuSdzx7f/QKky4UgMiAHYtUX+fQ?=
- =?us-ascii?Q?lSYjjlQcym5rs4vx4ZLLzvLS+7qeSWamdAkWr5c5xT1lmHBfwi0xZ3q3N0Mj?=
- =?us-ascii?Q?nuToYymXCV+hy8g2HiRtJJ1NavURHb2F+AEDx2YBYPASM8FXse0MpShgVABZ?=
- =?us-ascii?Q?NANLMgkEw2XlCa11hFJDhVnbES6eNi4CRm+gTVHYJD3XZfGYdFT7xOj4xK+X?=
- =?us-ascii?Q?ChggMjAjRvNNIEfFLlRZ7KFIY3r4bYHrhF9u3YOeCjBElxwc3D0LN76c3aXw?=
- =?us-ascii?Q?yp6F25XHsB10mvpdbsWXK9eJIdV3No5re7x6TXHszInCkQwWjNQc6nBzjCCU?=
- =?us-ascii?Q?JM70e+QBMAeYJfzoJvMAezjxAbbFFxOTwbnan8/FPay8IZd2HFEEKGuKHLo+?=
- =?us-ascii?Q?eSwvRjbKud8tWNuVQDas7DcdbfAn6SLwdCJNV/QiUuBfpNrPXQao03wzjOZb?=
- =?us-ascii?Q?p3+ED5yZKzM+rxKTHDglhoU8vwl1XQc/WrLVpSFza+VRJ0wk9SbbQMTT8919?=
- =?us-ascii?Q?kwQmIm1zLTABvkG+YtiqsA4EjOHnU0GU/PHDbUEWmaMTvOpC5B7oezusGO2s?=
- =?us-ascii?Q?yTYQ8MlkwrJsRESgYTNpiDW5w9ymsXI/2HhwyXD1nRru2IRclLhotvB7DLVt?=
- =?us-ascii?Q?ehvT8yZLHqw1kK/zvanaq9b4yL52YeAcMAQaK+jpUZRAXjYPq5S/qnD5zhH+?=
- =?us-ascii?Q?vdMT2z8FL/+eblNgfPuesxxJ8GAC7LSaVsLg8BU8vsDjhU9pI2OQITp9uJQS?=
- =?us-ascii?Q?7R+wcdEyyxQyUHAkSqcPDDQVG6LoR+FATU2KFN/nzFnhou06vdGiSR7e8pd3?=
- =?us-ascii?Q?tNjpVrfwTnpdnJxUtwZoqgaM4hDiekslsbkOPva+CTIy8uXISNfB/Yokd5yJ?=
- =?us-ascii?Q?EMyxtwbwwC3K3D4n6RPWWCaeDl5fH/ZcC5RZt52S?=
+	=?us-ascii?Q?iGYp0TcuMXVcYHHrMETjYs2dXXS4ApWvWyMPOd+Y7BevPEAnrq7g8xXCvO8X?=
+ =?us-ascii?Q?Zvk3wQVAHNDtLMNB3qFLpQpA0MHu5OBrn/AYwwwymuVm0p3FOpIsKnMqoY+/?=
+ =?us-ascii?Q?I5qiUI475pcDJ6rlVsUhSZHngWche9vfhusNvouwIKLt7t0gr9c1m4jM/WtK?=
+ =?us-ascii?Q?4suG2vcUd0isErvCB317p01vsKj1kB9M7e9znICg+HUXYgbtiUqQEZ1i/TeA?=
+ =?us-ascii?Q?aEaDRjF6i82kl1jKSAN5fgYIzsDMLkWC8F6NkLw7znWjN16uzrnMyIFd9Rje?=
+ =?us-ascii?Q?D3PFnN3AgXSKchE75KZGa8JWaDvNaYsXH2672UH7RaBUoaJZUoTvNQE4cz4C?=
+ =?us-ascii?Q?keQpBc3YPFVAnFb9T6ChSGhIsdqoX7JJVrHsaTBJPxAN4YGivvbac2/eTxqy?=
+ =?us-ascii?Q?aWfAByQ75cWI4Sa9BgfU2uDz2GTi/Iaqde1goaCGmq7nN7Uu0t6hlpMBlgeL?=
+ =?us-ascii?Q?yNPdLfs8yCvHZ0nJYVvnd1a82GK3dhFI9LkGaPE1ULtIdRVcYIei6ogGc8mA?=
+ =?us-ascii?Q?ymQUlW7E4QZSoGnX3WTs4we4e2M8sCaMkSMImhDHhp70qW+cD3fPZV9RWlFr?=
+ =?us-ascii?Q?2BY2DTwFSyY8TlroqMJstOABdZ3Rh6tgak0Pigg9jJ0BeLLAQN1L3A29LBRf?=
+ =?us-ascii?Q?j+FhbWDjuvixHzjBJsFJ22+jE6jMS7hfq56CsL/63dsfngqzu9KyhpXFltR/?=
+ =?us-ascii?Q?m3dtxP3e02i7agu7WWEQrAffUXJiS09xHFEw9i2QrOc2+8QcTA1fGnEpFrvd?=
+ =?us-ascii?Q?xFgUHwhGl2xbeq2dKlWlQLoNzYgf0HbYHUIkzJRCTvT7xSUcLXuGHDaerL9d?=
+ =?us-ascii?Q?6gu64Ft5Bf9k9DC31tjkJ4qsFJcCAha+o6MnFZ9Djf+qHBA0XLHR9n7iYV4d?=
+ =?us-ascii?Q?FGShpO8yUfhrVVzcy4jlr8x7eeLaHd/bPJDIMjtKDjb8HQ5i+Elhsd3dvAaW?=
+ =?us-ascii?Q?GNACtlhMwLdnZ3WLlZwdRuThvkeKaGt2LD/auAgftBUX+XLYJNIp8rqFeeXO?=
+ =?us-ascii?Q?aTFZYR2QjfmQL7nytDuBCuvRLOcQTy7fvhKH1Y/dmTS2XCGgq1bJfAwlfZbh?=
+ =?us-ascii?Q?l2LwPxRy0KKbUWUkO3GZobrHqQGbl0d0LgTY3jI6PLiP0GFG5nLVdUwmqqNh?=
+ =?us-ascii?Q?iLpfx8GNGpf/YrDBeAstsCr2WRD4dU3+vMek8LS+V+ZEm8ujfmyGzxusBac6?=
+ =?us-ascii?Q?R6CGSuymXrFuOTPTDu0XkpXn7HhkQ2Y65skneAS6VB/5G7r8ExyBxxprDirB?=
+ =?us-ascii?Q?CRzItXYazj3ZN5sLlT1eToEPjPvZp/MNA14RxJYFgHypiBT6Pyi9l9pA1opR?=
+ =?us-ascii?Q?x5QYO0UW4mB/B6LOlvZSE1Bf6W0vbuDfPZifWCmgfLgx4zfrze+UFnegpr1U?=
+ =?us-ascii?Q?fWzZ0mZ/0wDRX1tcDDEcWwsd0cjJT/nRsYVY3JbTL3TbkcclSQ+50Q43UX7Y?=
+ =?us-ascii?Q?xJd80eV9V017uFZlONQCkEL4xGxP1u6jwewHAEPFFxXO1PBeuGsIuBmI42u2?=
+ =?us-ascii?Q?FSb3dwmEnmtQ9KWJIfJL3JpZqdkxO8+X5iz2A2A6+GVdQJ3bIH7e0e+5mQKM?=
+ =?us-ascii?Q?ZXt7snahyeIm8KEebXRYc+IcDYe9oz2L2NNLTRok?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(82310400026)(921020);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(82310400026)(1800799024)(36860700013)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2025 10:22:42.8940
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2025 10:22:57.6112
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: df232ba0-9cba-4c69-7f16-08de16d51896
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6ec825b-0b49-4c61-6af1-08de16d52159
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF00026369.namprd02.prod.outlook.com
+	BL6PEPF00022574.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8291
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6925
 
-Update driver to self discover the device.
+Convert FW error code to linux error code and remove dmesg error print for
+authentication tag mismatch failure.
 
 Signed-off-by: Harsh Jain <h.jain@amd.com>
 ---
- drivers/crypto/xilinx/zynqmp-aes-gcm.c | 86 +++++++++++++++++++-------
- 1 file changed, 62 insertions(+), 24 deletions(-)
+ drivers/crypto/xilinx/zynqmp-aes-gcm.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/crypto/xilinx/zynqmp-aes-gcm.c b/drivers/crypto/xilinx/zynqmp-aes-gcm.c
-index 3ce1319d1a1a..04473ed9f08d 100644
+index 04473ed9f08d..e64316d9cabf 100644
 --- a/drivers/crypto/xilinx/zynqmp-aes-gcm.c
 +++ b/drivers/crypto/xilinx/zynqmp-aes-gcm.c
-@@ -346,7 +346,7 @@ static void zynqmp_aes_aead_exit(struct crypto_aead *aead)
- 	memzero_explicit(tfm_ctx, sizeof(struct zynqmp_aead_tfm_ctx));
- }
+@@ -85,7 +85,6 @@ static int zynqmp_aes_aead_cipher(struct aead_request *req)
+ 	int ret;
+ 	size_t dma_size;
+ 	char *kbuf;
+-	int err;
  
--static struct zynqmp_aead_drv_ctx aes_drv_ctx = {
-+static struct zynqmp_aead_drv_ctx zynqmp_aes_drv_ctx = {
- 	.aead.base = {
- 		.setkey		= zynqmp_aes_aead_setkey,
- 		.setauthsize	= zynqmp_aes_aead_setauthsize,
-@@ -375,74 +375,112 @@ static struct zynqmp_aead_drv_ctx aes_drv_ctx = {
- 	},
- };
+ 	if (tfm_ctx->keysrc == ZYNQMP_AES_KUP_KEY)
+ 		dma_size = req->cryptlen + ZYNQMP_AES_KEY_SIZE
+@@ -132,23 +131,23 @@ static int zynqmp_aes_aead_cipher(struct aead_request *req)
  
-+static struct xlnx_feature aes_feature_map[] = {
-+	{
-+		.family = PM_ZYNQMP_FAMILY_CODE,
-+		.feature_id = PM_SECURE_AES,
-+		.data = &zynqmp_aes_drv_ctx,
-+	},
-+	{ /* sentinel */ }
-+};
-+
- static int zynqmp_aes_aead_probe(struct platform_device *pdev)
- {
-+	struct zynqmp_aead_drv_ctx *aes_drv_ctx;
- 	struct device *dev = &pdev->dev;
- 	int err;
+ 	if (ret) {
+ 		dev_err(dev, "ERROR: AES PM API failed\n");
+-		err = ret;
+ 	} else if (status) {
+ 		switch (status) {
+ 		case ZYNQMP_AES_GCM_TAG_MISMATCH_ERR:
+-			dev_err(dev, "ERROR: Gcm Tag mismatch\n");
++			ret = -EBADMSG;
+ 			break;
+ 		case ZYNQMP_AES_WRONG_KEY_SRC_ERR:
++			ret = -EINVAL;
+ 			dev_err(dev, "ERROR: Wrong KeySrc, enable secure mode\n");
+ 			break;
+ 		case ZYNQMP_AES_PUF_NOT_PROGRAMMED:
++			ret = -EINVAL;
+ 			dev_err(dev, "ERROR: PUF is not registered\n");
+ 			break;
+ 		default:
+-			dev_err(dev, "ERROR: Unknown error\n");
++			ret = -EINVAL;
+ 			break;
+ 		}
+-		err = -status;
+ 	} else {
+ 		if (hwreq->op == ZYNQMP_AES_ENCRYPT)
+ 			data_size = data_size + ZYNQMP_AES_AUTH_SIZE;
+@@ -157,7 +156,7 @@ static int zynqmp_aes_aead_cipher(struct aead_request *req)
  
-+	/* Verify the hardware is present */
-+	aes_drv_ctx = xlnx_get_crypto_dev_data(aes_feature_map);
-+	if (IS_ERR(aes_drv_ctx)) {
-+		dev_err(dev, "AES is not supported on the platform\n");
-+		return PTR_ERR(aes_drv_ctx);
-+	}
-+
- 	/* ZynqMP AES driver supports only one instance */
--	if (!aes_drv_ctx.dev)
--		aes_drv_ctx.dev = dev;
-+	if (!aes_drv_ctx->dev)
-+		aes_drv_ctx->dev = dev;
- 	else
- 		return -ENODEV;
- 
-+	platform_set_drvdata(pdev, aes_drv_ctx);
- 	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(ZYNQMP_DMA_BIT_MASK));
- 	if (err < 0) {
- 		dev_err(dev, "No usable DMA configuration\n");
- 		return err;
+ 		sg_copy_from_buffer(req->dst, sg_nents(req->dst),
+ 				    kbuf, data_size);
+-		err = 0;
++		ret = 0;
  	}
  
--	aes_drv_ctx.engine = crypto_engine_alloc_init(dev, 1);
--	if (!aes_drv_ctx.engine) {
-+	aes_drv_ctx->engine = crypto_engine_alloc_init(dev, 1);
-+	if (!aes_drv_ctx->engine) {
- 		dev_err(dev, "Cannot alloc AES engine\n");
- 		err = -ENOMEM;
- 		goto err_engine;
+ 	if (kbuf) {
+@@ -169,7 +168,8 @@ static int zynqmp_aes_aead_cipher(struct aead_request *req)
+ 		dma_free_coherent(dev, sizeof(struct zynqmp_aead_hw_req),
+ 				  hwreq, dma_addr_hw_req);
  	}
- 
--	err = crypto_engine_start(aes_drv_ctx.engine);
-+	err = crypto_engine_start(aes_drv_ctx->engine);
- 	if (err) {
- 		dev_err(dev, "Cannot start AES engine\n");
- 		goto err_engine;
- 	}
- 
--	err = crypto_engine_register_aead(&aes_drv_ctx.aead);
-+	err = crypto_engine_register_aead(&aes_drv_ctx->aead);
- 	if (err < 0) {
- 		dev_err(dev, "Failed to register AEAD alg.\n");
--		goto err_aead;
-+		goto err_engine;
- 	}
- 	return 0;
- 
--err_aead:
--	crypto_engine_unregister_aead(&aes_drv_ctx.aead);
--
- err_engine:
--	if (aes_drv_ctx.engine)
--		crypto_engine_exit(aes_drv_ctx.engine);
-+	if (aes_drv_ctx->engine)
-+		crypto_engine_exit(aes_drv_ctx->engine);
- 
- 	return err;
- }
- 
- static void zynqmp_aes_aead_remove(struct platform_device *pdev)
- {
--	crypto_engine_exit(aes_drv_ctx.engine);
--	crypto_engine_unregister_aead(&aes_drv_ctx.aead);
--}
-+	struct zynqmp_aead_drv_ctx *aes_drv_ctx;
- 
--static const struct of_device_id zynqmp_aes_dt_ids[] = {
--	{ .compatible = "xlnx,zynqmp-aes" },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(of, zynqmp_aes_dt_ids);
-+	aes_drv_ctx = platform_get_drvdata(pdev);
-+	crypto_engine_exit(aes_drv_ctx->engine);
-+	crypto_engine_unregister_aead(&aes_drv_ctx->aead);
-+}
- 
- static struct platform_driver zynqmp_aes_driver = {
- 	.probe	= zynqmp_aes_aead_probe,
- 	.remove = zynqmp_aes_aead_remove,
- 	.driver = {
- 		.name		= "zynqmp-aes",
--		.of_match_table = zynqmp_aes_dt_ids,
- 	},
- };
- 
--module_platform_driver(zynqmp_aes_driver);
--MODULE_DESCRIPTION("Xilinx ZynqMP AES Driver");
-+static struct platform_device *platform_dev;
-+
-+static int __init aes_driver_init(void)
-+{
-+	int ret;
-+
-+	ret = platform_driver_register(&zynqmp_aes_driver);
-+	if (ret)
-+		return ret;
-+
-+	platform_dev = platform_device_register_simple(zynqmp_aes_driver.driver.name,
-+						       0, NULL, 0);
-+	if (IS_ERR(platform_dev)) {
-+		ret = PTR_ERR(platform_dev);
-+		platform_driver_unregister(&zynqmp_aes_driver);
-+	}
+-	return err;
 +
 +	return ret;
-+}
-+
-+static void __exit aes_driver_exit(void)
-+{
-+	platform_device_unregister(platform_dev);
-+	platform_driver_unregister(&zynqmp_aes_driver);
-+}
-+
-+module_init(aes_driver_init);
-+module_exit(aes_driver_exit);
-+MODULE_DESCRIPTION("zynqmp aes-gcm hardware acceleration support.");
- MODULE_LICENSE("GPL");
+ }
+ 
+ static int zynqmp_fallback_check(struct zynqmp_aead_tfm_ctx *tfm_ctx,
 -- 
 2.49.1
 
