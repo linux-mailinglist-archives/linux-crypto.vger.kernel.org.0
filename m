@@ -1,133 +1,162 @@
-Return-Path: <linux-crypto+bounces-17574-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17576-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F413C1B6FA
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 15:55:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C6B7C1B4DE
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 15:41:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A45DD584F3B
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 14:20:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79284188AAE8
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 14:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE0326CE06;
-	Wed, 29 Oct 2025 14:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4DD822D792;
+	Wed, 29 Oct 2025 14:30:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="STdMHBQT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HVwISxo1"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA7925F98E
-	for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 14:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9880C25229C
+	for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 14:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761747602; cv=none; b=C3+FArjZrofXEdT3OjjSZsoyLP5DgXgEO9Plh4/5cDabL0aRkAk8/T9hhw61PDx9Qh1bzNGwjy0f+oju8L5XKsrtdhEGurUIyIfEJxOESxCcwZmnvhLw4UbJm9jsrCpr5wl/pKjag9f6M2jvtsGXnX8mGvDkgAlNxZCoqJfc6Qs=
+	t=1761748237; cv=none; b=ak6ubKQcRcOqslhm0IjcJlNyqs1iFG/FQq/8ejJhbT1TylNdHl8t1BRgQ7B2LxM054LH3VT63t4/gjJfCan0i9uM2TAX+u8zfPGAT7ZgeyI+QbIUuOuZjQ3eg8jBBJulxmccyfIk7sS6nfxt7GEe35wxHvNlIaNiGtB/v16HY2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761747602; c=relaxed/simple;
-	bh=1CX+8+kOSf10qsVFbiIqXKLPwxKNZKPK3M5tdY2U3zQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZxQvePdgj56XmLMOXowSyvlRbchtj6TU7gjEof6/ANRU8tAcz6Rxyx/OlWj6UVh8dqG9EQQ13gjYXITNowwk480qPK0E01agfdVn7awkWWSmAmLG2vSENoXwwiG/BhOqs/sugygGSiWiiPY0sBuF9eC5BIiZH1YRPRzp+MP5gy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=STdMHBQT; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-591ec7af7a1so7346540e87.3
-        for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 07:19:59 -0700 (PDT)
+	s=arc-20240116; t=1761748237; c=relaxed/simple;
+	bh=7qSqb+8qhf4bmtYpSevPKgH9NpBXdJ7Y+QlL0CxIedM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NfvhfMv1HRAgeJH11uCJGDPTxhyb6Qk2FdUs/OBgHfdX8w13rA7AZjFiLz8hgTgxpjrgJZZP1LC+Ji5vhHMTglHgQ518JDojivcxBVuZ/rN9txf7PThT1KuKYBuaVtJ8vuA2canfVrlsXsAAUKJgskyhkrrAByrujAVmTd07XjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HVwISxo1; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4ecee8ce926so36901281cf.1
+        for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 07:30:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1761747598; x=1762352398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oOeCj7atBm+jp74qXquxytnJSCplsW/eyoN4u7SHchg=;
-        b=STdMHBQT12yVVhenBH9kjtzktzfxhBOPKOo9apSlTLueZcsupwgg31te2NoZ1MYB8V
-         MSCDsKHm3FOvPOU5eIBCDfHMdlRjXQ/WaIfGw7guwrNmTT3BzH6WS72IQ0rngTeIuIKG
-         geIpbGtk9/KkbvqJ4ys0/EumZ1gCsCKUv+qxxEKzmywlju+PTnHhCdTYr2IGsTbcyPmT
-         1dv7mnHne5W/9nCZuPRS5MOiokEytiREtrQcf4/hBmfAUMtMcLusUKfTMKcUvAn01g/8
-         YYl2+QIB5DhWKuvrDaYdcUxOB+ZWEQK/1a4i5MEDu6ruYYw7g+OmbE5blhnTFS7GFVRk
-         77Mg==
+        d=gmail.com; s=20230601; t=1761748233; x=1762353033; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JnpQqG3KsjO8HR5ITuKL9a0uCELInljqSPlsEDY9f3Y=;
+        b=HVwISxo10QqmrSYJm8NEWiPwMQdAiacHa63OSUEAOSCJl5S1CA8h1XtfTBJ+HmBrua
+         w0YVot9mWsIVPfNpcf5bUtJMJXLuR8HvqT4uo56qtjCKmLUSQiBatizK3mNSYFVNIqyT
+         YawDnfkurMYiTvK7GaRIEg9H7V06d4KB0okYHxfQLUJ8A0wxiAMZLhq6yzxKrBJvE948
+         ydDUTAKK8c26FesuIPJAp59RrcCTDy4fWxTiLBQNwkkz17hNB535tNRdNm6xv25uX473
+         +duWPWlmevzjZB4BKgqyMhXV20EeZDWiiTFHXfrcKqcTmGlM9nxBaHBuIZ7w/752aBPM
+         1Zmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761747598; x=1762352398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oOeCj7atBm+jp74qXquxytnJSCplsW/eyoN4u7SHchg=;
-        b=Dlzv4vMf2z81dOI5x7ZIiell7ZHoxYYnZDRSd8fkoDafXB1hE/t75teXCTT54s3KYm
-         BBTtXmJRceLYltILtTrg4ZgwlY6P7bE1yANRGjAXWzGy1ANkCyNvEdeht3heVfmMJGqi
-         7cE1lf/5HHH7tqUqBtmxG08RzPaGHslTJCzk/RpGE7tDsovQm4/+mN7FcLZiIYCW0paC
-         YTOBlnMA0zSdprdNHTL+NL0vU6fCDYvsCSx+lCtWje20fRdwNmCvOcc4o5lR66hz0zKT
-         Hi5m6Jjb9GjKRk+XQEX+RNhDeI2iHnASej5QZkUrDjEqjMf5P52YftA9ilUOjnF5McvP
-         Moyg==
-X-Forwarded-Encrypted: i=1; AJvYcCXvtbc/FP2qCKK1uIB6rde7ixW0QjSLG3WIoSTbYWPbE2N5asT64okY3WPmLUo8YFYryf6WI9Go8fgQ4Dk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGZkB3LtSS858ToOB/KWcROBaeWPt5eTGmZCGxYRURhvzNzOXA
-	Iz8pdcezhhkYam1Kiu6LG5wPHOJsfqY1ehLGi/MWrhAmPkR9nvMFOX4v7Go6upM/RyS1/c6/Vl/
-	udk0WfuGUSz8h5yWlGptFvTzgQBmvixJ7GXotOlFw5w==
-X-Gm-Gg: ASbGnctKvCRGiSVEjLuVIMAe/yoNr6zbryeN7BqPpj1dO+3QoJubdEoBsUCnvfnmuHG
-	nOcBnGmogHJmJLuNfq4xkvxV1VsuQYcRbx9d5Vnu1Rn2qLu7Q+OFtGIsVgKGaQBqubq/TYlz5Hx
-	1ddZjoh4DpDZglBBqg9Fiin68HoSs1PwBw0bRB3aBtD0EYqT0sbT2HMVQTHZ9ei/+f9AcGfBWLj
-	VeRq/vF0NgTsJnk+sZ97ZyVER4jqUi7R8EeFwQ/5+RHBa1AFlSD8qIpE3hvJd8t5Chf3PLaBRXo
-	GHIJvg==
-X-Google-Smtp-Source: AGHT+IG59+bQUerf6uihfCFWCYSjQICr8Xo4ZbiwSS1E65/x2rl3ls+2t5ioYCJKzMBcQXa5Sk43LYjN69G8TJb8SWg=
-X-Received: by 2002:a05:6512:3055:b0:592:fc68:5b9d with SMTP id
- 2adb3069b0e04-594128623cfmr1174582e87.10.1761747597543; Wed, 29 Oct 2025
- 07:19:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761748233; x=1762353033;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JnpQqG3KsjO8HR5ITuKL9a0uCELInljqSPlsEDY9f3Y=;
+        b=wsg8LIRWurHc53r9JsMnJL17FOsz5gE/Rk9aiG1+X1gzGYmqGJzLy4stYesnT+Sbwj
+         mmVfADyl0jYHYGH8GtiLEYfeBxGeoGyOQyh0Vh0S75mT7b7c26vMPFZq3Gk9lCi3QXah
+         8mp5hLjcaF1jlyztnbzLxtDA3QOgwqiMVrERP/w+dOp0p3W4SolbD/jkQeVYMuItEPo8
+         qXgZoYK4Zf9Q4y6pAJNcdzGLFPARj68zSz3cW+yXKmv9i48myZQRRgpqsIQVXfwTVvtm
+         xWdGTC/pCdCIOBN02lM1QSYGj+rMCQsunfiyq30yAh1uXTOu0qPLqrxyfzaBovE+5yLl
+         mT7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWqwiJSySsPF6GuGEPjkP4G5cSxynRSE2t9sQyAKP6/5xzL443pXIc6tHYLDB6SV1G8s5z0u6x8GgKnp0Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxso5Z3Cq/hqBFRMVrbMfRQBMxyg2lVluVH7v3YKIK1vpHY2KZs
+	6qIyAjOlnxqzY4tyh8QFXQppnEaduaGh0M/07eBe5PTjVkqU1ysroP26
+X-Gm-Gg: ASbGncs7Ljvd8AcPur7RSLh4IJzOZNEzJF9pQMD+H6v3trhXP/rG0PegmgSWavMxheQ
+	t3/1GiTRg70yH4rGiaKbepOVnTO130hA2zJyLAI39VtHPlZdj+FyCqvFIL1GJNLp7lnnYOyxzG4
+	FQBp0YilsCkqv2aN+rdFoXd/tiXeNT0yybCIJRWX430QPHxHQ0L3tPXdcBx6yJHdDrNNYMIDqG/
+	A6tqh031OvE+RErTZyxWl37T1eyYdsHHHzY/QtErQgsTA9Ou/DHBLRG4r1quBhqBUDdmxMzI48Q
+	qZfGEKCe9hXP/5CpvN0/tIkIbz0PMF+o1Kq7Uu6FRfhOC+0tj7tSbVvjdusjU5KMfqOOWCjfuNs
+	0YPQ+T0nXVFi8jFVQcqful3jhOw0b0zLbrWhpa/GiRi0DVhJ3ucQiYznNpsNOAVbVJOViBQdS
+X-Google-Smtp-Source: AGHT+IHd6ZEI/4efuxlvOLVTSJQH1JkXxxhkGirHmvwiRC9eDvjzIFKRpIZ05PrXMHCHH/Mrsnw0AA==
+X-Received: by 2002:a05:622a:24a:b0:4e8:93fc:f8c9 with SMTP id d75a77b69052e-4ed15b53cd6mr36770551cf.15.1761748233098;
+        Wed, 29 Oct 2025 07:30:33 -0700 (PDT)
+Received: from localhost ([12.22.141.131])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-87fc51e3809sm96571096d6.26.2025.10.29.07.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Oct 2025 07:30:32 -0700 (PDT)
+Date: Wed, 29 Oct 2025 10:30:31 -0400
+From: Yury Norov <yury.norov@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Miller <davem@davemloft.net>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Crt Mori <cmo@melexis.com>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@ieee.org>,
+	David Laight <david.laight.linux@gmail.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@alien8.de>,
+	Tony Luck <tony.luck@intel.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Kim Seer Paller <kimseer.paller@analog.com>,
+	David Lechner <dlechner@baylibre.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Richard Genoud <richard.genoud@bootlin.com>,
+	Cosmin Tanislav <demonsingur@gmail.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Jianping Shen <Jianping.Shen@de.bosch.com>,
+	linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-renesas-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-edac@vger.kernel.org, qat-linux@intel.com,
+	linux-gpio@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+	linux-iio@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 07/23] pinctrl: ma35: #undef field_{get,prep}() before
+ local definition
+Message-ID: <aQIlB8KLhVuSqQvt@yury>
+References: <cover.1761588465.git.geert+renesas@glider.be>
+ <03a492c8af84a41e47b33c9a974559805d070d8d.1761588465.git.geert+renesas@glider.be>
+ <CACRpkda6ykSZ0k9q4ChBW5NuPZvmjVjH2LPxyp3RB-=fJLBPFg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1761588465.git.geert+renesas@glider.be> <03a492c8af84a41e47b33c9a974559805d070d8d.1761588465.git.geert+renesas@glider.be>
-In-Reply-To: <03a492c8af84a41e47b33c9a974559805d070d8d.1761588465.git.geert+renesas@glider.be>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 29 Oct 2025 15:19:45 +0100
-X-Gm-Features: AWmQ_bk2MMp0FQz04qrj-8hmhOAMRkHeQZjiqCVvFpO75M_-67m5zTnOfqmkGUQ
-Message-ID: <CACRpkda6ykSZ0k9q4ChBW5NuPZvmjVjH2LPxyp3RB-=fJLBPFg@mail.gmail.com>
-Subject: Re: [PATCH v5 07/23] pinctrl: ma35: #undef field_{get,prep}() before
- local definition
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Nicolas Ferre <nicolas.ferre@microchip.com>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	David Miller <davem@davemloft.net>, Bartosz Golaszewski <brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>, 
-	Andrew Jeffery <andrew@codeconstruct.com.au>, Crt Mori <cmo@melexis.com>, 
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Shan-Chun Hung <schung@nuvoton.com>, Yury Norov <yury.norov@gmail.com>, 
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@ieee.org>, 
-	David Laight <david.laight.linux@gmail.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Kim Seer Paller <kimseer.paller@analog.com>, 
-	David Lechner <dlechner@baylibre.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Andy Shevchenko <andy@kernel.org>, Richard Genoud <richard.genoud@bootlin.com>, 
-	Cosmin Tanislav <demonsingur@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Jianping Shen <Jianping.Shen@de.bosch.com>, linux-clk@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, linux-edac@vger.kernel.org, qat-linux@intel.com, 
-	linux-gpio@vger.kernel.org, linux-aspeed@lists.ozlabs.org, 
-	linux-iio@vger.kernel.org, linux-sound@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkda6ykSZ0k9q4ChBW5NuPZvmjVjH2LPxyp3RB-=fJLBPFg@mail.gmail.com>
 
-Hi Geert,
+On Wed, Oct 29, 2025 at 03:19:45PM +0100, Linus Walleij wrote:
+> Hi Geert,
+> 
+> thanks for your patch!
+> 
+> On Mon, Oct 27, 2025 at 7:43 PM Geert Uytterhoeven
+> <geert+renesas@glider.be> wrote:
+> 
+> > Prepare for the advent of globally available common field_get() and
+> > field_prep() macros by undefining the symbols before defining local
+> > variants.  This prevents redefinition warnings from the C preprocessor
+> > when introducing the common macros later.
+> >
+> > Suggested-by: Yury Norov <yury.norov@gmail.com>
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> 
+> Do you want me to just merge this patch to the pinctrl tree or do
+> you have other plans?
 
-thanks for your patch!
+There's a couple nits from Andy, and also a clang W=1 warning to
+address. So I think, v6 is needed.
 
-On Mon, Oct 27, 2025 at 7:43=E2=80=AFPM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
+But overlall, the series is OK, and I'd like to take it in bitmaps
+branch as it's more related to bits rather than a particular
+subsystem.
 
-> Prepare for the advent of globally available common field_get() and
-> field_prep() macros by undefining the symbols before defining local
-> variants.  This prevents redefinition warnings from the C preprocessor
-> when introducing the common macros later.
->
-> Suggested-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Do you want me to just merge this patch to the pinctrl tree or do
-you have other plans?
-
-Yours,
-Linus Walleij
+Thanks,
+Yury
 
