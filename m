@@ -1,95 +1,176 @@
-Return-Path: <linux-crypto+bounces-17580-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17582-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B2CC1B63E
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 15:49:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD9C8C1B747
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 15:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E2111A215BC
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 14:45:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA2011885327
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Oct 2025 14:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11ABE2E0408;
-	Wed, 29 Oct 2025 14:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F2F343D7B;
+	Wed, 29 Oct 2025 14:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GEuqbie/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TAIsqD2Z"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CAF29B8D9;
-	Wed, 29 Oct 2025 14:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A042D73B4
+	for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 14:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761748701; cv=none; b=s4xRSZn9cdh8OuRL//2JjdBIfL/smueyQmQVB/kbcXVD8Q7VfUAgz7cZdCYzEdtXa2CP+I44cu72UDBxw9hNnylS1axRAtAAvB6QESN4oh1kAhRJcrR5ALWAMm01kZhnVLunWAV32K6j8rYxxn1mQX9Nw+EoWDkPu4bCz5QUFT0=
+	t=1761749021; cv=none; b=GFXhSMSuUjaS5H/Q9D9pbDy48v5cCRMT9RCKDp+cq3A2+AubI6GjfJChujumpTuesQkmGILaOtE53P5Fteh4XizrkG4zVPx22JnOeaXaEVht4P61jEFNMCUW4R9kVMh1Zmb8LGc8/tz6Ep2s5SHbmVBg/V/95p9HmnUHbgRcyw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761748701; c=relaxed/simple;
-	bh=GC14kFMWPtWt2Gtkk0MgEoVLhYTmCarqJXnxSpavDAY=;
+	s=arc-20240116; t=1761749021; c=relaxed/simple;
+	bh=Wgk3sH20qHeZBfqYYvcjCmo4mWJP4A+tn2y/6jju0pk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B9Lr1N1ZryIq9NvUwKMQKWLHvkSmdDgLydQHDy8QFRFiCjvtYsrFHBUAYBvAK08pms9QcG1JfPWn73FFACsBGHPj5LW96dbTbTUhPc2RLnMNv7Qdg8ZwzPFcg74W/NbQBGkEFJD2F7USmuQ0+Q2MM7LtZCuT1IkRAznNgH/Bxl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GEuqbie/; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZSNefP3kGlhfDPKLLTZZZwOAu0fb7rvyzu/Kl7KhTYU=; b=GEuqbie/FD8XRtOvpksnrYmVM/
-	yxBYrL3OAGeTQjnvYE8lWldox55/VPUDo9bbo1GS/N63U9F8V1KN/y+de3zS+l34ZZ03nWBteFZf7
-	DMo3ovFyKPDMV9Q+jJqEW5TtTYwBtOrXcu2CkMdedFvHOJYFYA0QU4HSxPXmAPQjp70karpYHfF4O
-	nqq9/8I505ZPmHqy0s/iYCPoIpcCrpUjAP5mLXSWZ9Frnp5NhnbQ6ph6uxqUu3PaXLSQWfAtupK5+
-	hqOpHXJS4gGOGpyAUHrK8m1Pr/s3mdU+EyQQCElhMSxXXZ+fs9CJo/mdnfHuAYJD1R7FpPyQ2fBBj
-	2g12CylA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vE7JV-00000001cIo-3QHR;
-	Wed, 29 Oct 2025 14:38:13 +0000
-Date: Wed, 29 Oct 2025 07:38:13 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Askar Safin <safinaskar@gmail.com>, linux-mm@kvack.org,
-	linux-pm@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-lvm@lists.linux.dev,
-	lvm-devel@lists.linux.dev, linux-raid@vger.kernel.org,
-	DellClientKernel <Dell.Client.Kernel@dell.com>,
-	dm-devel@lists.linux.dev, linux-btrfs@vger.kernel.org,
-	Nhat Pham <nphamcs@gmail.com>, Kairui Song <ryncsn@gmail.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Rodolfo =?iso-8859-1?Q?Garc=EDa_Pe=F1as?= <kix@kix.es>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Milan Broz <milan@mazyland.cz>
-Subject: Re: [PATCH] pm-hibernate: flush block device cache when hibernating
-Message-ID: <aQIm1bfwKlwaak52@infradead.org>
-References: <20251023112920.133897-1-safinaskar@gmail.com>
- <4cd2d217-f97d-4923-b852-4f8746456704@mazyland.cz>
- <03e58462-5045-e12f-9af6-be2aaf19f32c@redhat.com>
- <CAJZ5v0gcEjZPVtKrysS=ek7kHpH3afinwY-apKm3Yd4PmKDHdA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lfbIxgHQW9MTS9H62/gHLh+IJVYFKkBFTtgU4hcdGUs8PAlRCRc+oGsMOjLjZGipLjcEjKbpMqpSi77K7mXBgxNP85baozm4onlnbgxvQt8Ti+bZn0FJO03WH4Hf4mH0oppPkzxVBjHse66WSYGk9f1OKda0k/CAqqryyRKDgC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TAIsqD2Z; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-890521c116fso719152185a.3
+        for <linux-crypto@vger.kernel.org>; Wed, 29 Oct 2025 07:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761749018; x=1762353818; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YCEuo11ZBMvPKplSQXGviQNPwjkOhxFZqewnhvYiFAE=;
+        b=TAIsqD2Zns/vh6XEVxrMyZ9XiuMEDvnnK9GumKlk7zWINRHoMaoOl52OOx0Lv3wX8E
+         FjgJ1Sm+Ey5eB0PUO3wZTVtavS9oGJO4zX/CUrLLVqZ8sx8q3ZG1uLFEEbBv2ZdVYajt
+         Dsx6B18zxGO3c2fhfoTsIh8TM1Cz97PLXclZQKnVjwOunoDH5Kn+aeHtJiKRTNrK3eoj
+         cIPxW133XNU4KYCPbPC5CPEARUrEFJBY+QO9p5tF3RLTzbyE5eHRPa2N0WdMynNJgw0P
+         zhvL6d3CV0BX+AxHb9gKsR2IAi8Cjq81a8HPF3uWXZ5j8dblvIysIgyQc/LTj9vaalmW
+         bZCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761749018; x=1762353818;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YCEuo11ZBMvPKplSQXGviQNPwjkOhxFZqewnhvYiFAE=;
+        b=CSpFS5McQEXNRsjES9uYL+siV7rV8u1guGJmVEs7CfYlLSLAZxX77T38zVR9wpcAFN
+         OChzRXX3YCabsUkTr+n7L11h/0VN1vF/PVNii02L1XC+qiYgs+brdRU+K3m3UqsTKBur
+         QvfKO+WITkfDQQQu+F6OmXpUrokbVF7j7B6h2LuGW9H+v8YICk8JhgXYbldRX81HRzKc
+         Vz3+foA2Qu3hrd8xGS6P3C5swAkHbhufMSt+pnygeyAGTLezX8XecfXUu8mtOO4UZ/1Y
+         DYaIxtGtsa8U097VXz6Yyhu4Pfu3E1P4pcuohfpvDtR5/5AJZkc3BTzlXPSwrr4A71cE
+         jtdg==
+X-Forwarded-Encrypted: i=1; AJvYcCW5TxX3LDs712ld2X0OTJ4IkziowQTpuQNAd/QQsAAMzkPiPede+G0rU184jRMxlAVuQOHD5I4KjxFbkVI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMtk3NljHWs1nSEoBAzOb0r2nL6EX4iaKF2wCJBZTE/HF7PYDc
+	Cx7cOXKDeDnjNKnpfkGQ6sXV7k2Ij9yHbqh+unKTGeEKYJb6z+gNvboz
+X-Gm-Gg: ASbGncu6quY5bo4pM4v/rN0iJa1RHR6Pp45vihtCx677ir1/EdxhxWyVdNxEtdOY4Nx
+	5KkSZ3q2rPZIyGgXCDFQtUZGSsDnIY9jWP1c23l1ZJM3nqzM2JmmdcGL55Z4HPd0K9MKEhdsfYK
+	/b7Uc1q4NsrdrplWH7j5n5/rfWFt/cxNrBX0wpOM3rVrche3Gtja5Zco8+e2a5RfAo4BGYhQNdS
+	yDT6SPDivDhJCcEUv+KGQRqRtkxoqTwj1K6GzceRTuv7hOngfz4pZww2znwGoQoffYBrUfkKGmV
+	FMQ7m602DYtkzbVeYhjyhqZUnlDofhpfHjog46AyGD2vcQszkz7kSJ8PlQU7o2c18FZK+4pNxwN
+	H3ZWpGDUDeFgl03cMyDr4PGVh0Nn9g3Wt34dA1dlsgS/qSf12OZ7f/lD0O08PmKD3Ai/Hv2cd
+X-Google-Smtp-Source: AGHT+IHRIj9y57LgRm08PCQ5ag8nDTxAHjyPqcFEyJpmfMgUHtOJ1iinv/hiv9ZRE6XSrJXIT+Ycrw==
+X-Received: by 2002:a05:620a:710c:b0:89f:5a59:bf30 with SMTP id af79cd13be357-8a8e58b5164mr388519285a.78.1761749017372;
+        Wed, 29 Oct 2025 07:43:37 -0700 (PDT)
+Received: from localhost ([12.22.141.131])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8a8179460fasm337345285a.57.2025.10.29.07.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Oct 2025 07:43:36 -0700 (PDT)
+Date: Wed, 29 Oct 2025 10:43:35 -0400
+From: Yury Norov <yury.norov@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Miller <davem@davemloft.net>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Crt Mori <cmo@melexis.com>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jakub Kicinski <kuba@kernel.org>, Alex Elder <elder@ieee.org>,
+	David Laight <david.laight.linux@gmail.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@alien8.de>,
+	Tony Luck <tony.luck@intel.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Kim Seer Paller <kimseer.paller@analog.com>,
+	David Lechner <dlechner@baylibre.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Richard Genoud <richard.genoud@bootlin.com>,
+	Cosmin Tanislav <demonsingur@gmail.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Jianping Shen <Jianping.Shen@de.bosch.com>,
+	linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-renesas-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-edac@vger.kernel.org, qat-linux@intel.com,
+	linux-gpio@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+	linux-iio@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 07/23] pinctrl: ma35: #undef field_{get,prep}() before
+ local definition
+Message-ID: <aQIoF_TPNq13Hc3O@yury>
+References: <cover.1761588465.git.geert+renesas@glider.be>
+ <03a492c8af84a41e47b33c9a974559805d070d8d.1761588465.git.geert+renesas@glider.be>
+ <CACRpkda6ykSZ0k9q4ChBW5NuPZvmjVjH2LPxyp3RB-=fJLBPFg@mail.gmail.com>
+ <aQIlB8KLhVuSqQvt@yury>
+ <CAMuHMdUTR2VnQ++j_ccUN3-GzKmSzS3H3QNyYqZNacfOBXD50Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gcEjZPVtKrysS=ek7kHpH3afinwY-apKm3Yd4PmKDHdA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdUTR2VnQ++j_ccUN3-GzKmSzS3H3QNyYqZNacfOBXD50Q@mail.gmail.com>
 
-On Wed, Oct 29, 2025 at 02:31:05PM +0100, Rafael J. Wysocki wrote:
-> > This commit fixes the suspend code so that it issues flushes before
-> > writing the header and after writing the header.
+On Wed, Oct 29, 2025 at 03:33:49PM +0100, Geert Uytterhoeven wrote:
+> Hi Yury,
 > 
-> Hmm, shouldn't it flush every time it does a sync write, and not just
-> in these two cases?
+> On Wed, 29 Oct 2025 at 15:30, Yury Norov <yury.norov@gmail.com> wrote:
+> > On Wed, Oct 29, 2025 at 03:19:45PM +0100, Linus Walleij wrote:
+> > > On Mon, Oct 27, 2025 at 7:43 PM Geert Uytterhoeven
+> > > <geert+renesas@glider.be> wrote:
+> > > > Prepare for the advent of globally available common field_get() and
+> > > > field_prep() macros by undefining the symbols before defining local
+> > > > variants.  This prevents redefinition warnings from the C preprocessor
+> > > > when introducing the common macros later.
+> > > >
+> > > > Suggested-by: Yury Norov <yury.norov@gmail.com>
+> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > >
+> > > Do you want me to just merge this patch to the pinctrl tree or do
+> > > you have other plans?
+> >
+> > There's a couple nits from Andy, and also a clang W=1 warning to
+> > address. So I think, v6 is needed.
+> 
+> Indeed....
+> 
+> > But overlall, the series is OK, and I'd like to take it in bitmaps
+> > branch as it's more related to bits rather than a particular
+> > subsystem.
+> 
+> OK, fine for me (if I can still get an immutable branch ;-)
+> 
+> Note that as of today there are two more to fix in next:
+> commit d21b4338159ff7d7 ("mtd: rawnand: sunxi: introduce ecc_mode_mask
+> in sunxi_nfc_caps") in next-20251029
+> commit 6fc2619af1eb6f59 ("mtd: rawnand: sunxi: rework pattern found
+> registers") in next-20251029
 
-It certainly should not use the PREFLUSH flag that flushes before
-writing, as the cache will be dirty again after that.
+Oh, OK. Didn't actually want to undercut you. :) So, at your
+discretion. Just let me know what you'd prefer.
 
-I'd expect a single blkdev_issue_flush after all writing is done,
-under the assumption that the swsusp swap writing doesn't have
-transaction integrity for individual writes anyway.
+Thanks,
+Yury
 
