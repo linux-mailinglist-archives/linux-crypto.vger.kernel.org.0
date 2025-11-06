@@ -1,61 +1,62 @@
-Return-Path: <linux-crypto+bounces-17778-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17781-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0587AC395EF
-	for <lists+linux-crypto@lfdr.de>; Thu, 06 Nov 2025 08:17:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF000C3963F
+	for <lists+linux-crypto@lfdr.de>; Thu, 06 Nov 2025 08:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2E6B94FBB20
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Nov 2025 07:15:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26BFA18C7D21
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Nov 2025 07:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6812DF3FD;
-	Thu,  6 Nov 2025 07:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5225E2E6CD0;
+	Thu,  6 Nov 2025 07:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="G0gx0CoV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PqVYDScy"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9262DF141;
-	Thu,  6 Nov 2025 07:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0545A2E6CC6;
+	Thu,  6 Nov 2025 07:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762413316; cv=none; b=AXNwpx8wmkmo60XyOGSPeVIKulQbEyNIAhZHAVvb8mWJKzNiDbDwoq8xj1JEPWzxtS6fvtzlNCIuLbHw2DoJWMSfG0QYwHdoxmtY9oK/BWBdS+hW1ex7ZGb92qqv0sulHDDSHboPdr3KFXuPerZLbMjuug5CntCh14tWv7Mgl5Q=
+	t=1762413855; cv=none; b=AzJcnuo+wFx/B0DE49fXkDEnRop6ZehYpOekFx8w6DnLCZOQ0sFVVaIRifxcv6UMleFNNNY3RUlB9zfERbYKE8HLo/BRqFycRYcnMK0Sk1GTkVrDuhqlbTq+B3gqyEs+1YSJ3m8gQEar4F8HcvdvkcY4Uc6gcfxur09T6KZmOGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762413316; c=relaxed/simple;
-	bh=3fNemxrGiivFhJlesJwcFGpb43lACZhh1/eVkjpFPGI=;
+	s=arc-20240116; t=1762413855; c=relaxed/simple;
+	bh=EQIh4D6IlbvqscR4GqNU/8zxERgLPJ4GCKIjho5utAg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=duxu87MyPRunTRvYIb+srTbVrjPssvi5DP9pF9vsgVQRYzaEVBQgTWVhU0h3q3mGbiq/mCeWPHK1aMMzaBjC64VaR6PUVdURdc5ZzTyJZnmYn5WB8qY7LMVXe0+wmS4VV+cn4fvXorZiRIL3JkrvZYtw6vPP/8AXu/qO4CehY4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=G0gx0CoV; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=DtlUKepwY+74pLSNJNka3fYy+/86iIE0K3o5wL8EfII=; 
-	b=G0gx0CoVsAShTwmJyAqltaBCJ+m7JlFS+Oghr6UVJDAHisrGccKyYNktrsaqB3DAPv+4DXYTYSL
-	JrQyuk9BRloqH02UKCHKGn7BUXNiDIgjp7KhPQ0lDsdjpFX+DM5nCf9sckQREsX8XSi2eYS/2dWei
-	XBSdP0rbMvLR+pS7ZFJKTSvMsfbklcOKuvDTT8jsJCkhU0UfnPGn8qsPdhD8RJz2POA+SnmVW6Y2V
-	bVWxGig52wttmW//6cyu3XakfmoaxQF6V46c36GkXryVZI1q1XLeHrwO5JzO4C3gO9NrxRBaQ/G/3
-	L62Ik1mxEZZYPOT0hteMfbFW6we3c2md1+/g==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vGuD5-000rkX-0t;
-	Thu, 06 Nov 2025 15:15:08 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 06 Nov 2025 15:15:07 +0800
-Date: Thu, 6 Nov 2025 15:15:07 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org, ebiggers@kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v4 03/21] crypto/arm64: sm4-ce-gcm - Avoid pointless
- yield of the NEON unit
-Message-ID: <aQxK-6dKZI5Y44VJ@gondor.apana.org.au>
-References: <20251031103858.529530-23-ardb+git@google.com>
- <20251031103858.529530-26-ardb+git@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tTn6DaklC5BGFlqRg/VIPtvm3IamwNpzsagg5FMHd49QPHd47V22Dm8EYNl3iv+1L9muuOKB2KehC3eJyZBb10hqPdLdDr6HugcSpVj0czEaBgR0lmdD1Hqi5AxZjm5ZpIjpiz/q7x3KSAs7b1lu3LqMMDUIJlCr0FfPrhsH+6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PqVYDScy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545D5C4CEFB;
+	Thu,  6 Nov 2025 07:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762413854;
+	bh=EQIh4D6IlbvqscR4GqNU/8zxERgLPJ4GCKIjho5utAg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PqVYDScyf2laH9yanLvCfPYB3oEZdbDvBk1Nlv94RwxblyYeNSBg84zYu3VVelNux
+	 qoE+NVG/712HRyNrjkodwLqEkE9+gFEXxlbyZNjBp0DK4/ypwYX9XaIpNxxh6GG/YM
+	 uqNVQQeiSRPSEssJZnqBdoTCA0bOjSWQyPyB1DJ7u6WQyO2YF889Z55ytzR18+jEOE
+	 atq9IWZz9ewQSWuVh0qRol5GGvAOELX1F04jgpC3ruwyt4LTgXcHsttIJWY81P8MoQ
+	 EAJXOv05FebmrLL8omgPNYCNZOgJFdu5WkecghRqQVC721+Q7v1WDUnP9ANgd0SlTj
+	 MEg9wbpfP0u5w==
+Date: Wed, 5 Nov 2025 23:22:33 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Harald Freudenberger <freude@linux.ibm.com>
+Cc: linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Holger Dengler <dengler@linux.ibm.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/15] SHA-3 library
+Message-ID: <20251106072233.GA117499@sol>
+References: <20251026055032.1413733-1-ebiggers@kernel.org>
+ <20251103173404.GE1735@sol>
+ <4188d18bfcc8a64941c5ebd8de10ede2@linux.ibm.com>
+ <20251106043340.GC1650@sol>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -64,32 +65,78 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251031103858.529530-26-ardb+git@google.com>
+In-Reply-To: <20251106043340.GC1650@sol>
 
-On Fri, Oct 31, 2025 at 11:39:02AM +0100, Ard Biesheuvel wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
+On Wed, Nov 05, 2025 at 08:33:40PM -0800, Eric Biggers wrote:
+> On Wed, Nov 05, 2025 at 04:39:01PM +0100, Harald Freudenberger wrote:
+> > On 2025-11-03 18:34, Eric Biggers wrote:
+> > > On Sat, Oct 25, 2025 at 10:50:17PM -0700, Eric Biggers wrote:
+> > > > This series is targeting libcrypto-next.  It can also be retrieved
+> > > > from:
+> > > > 
+> > > >     git fetch
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+> > > > sha3-lib-v2
+> > > > 
+> > > > This series adds SHA-3 support to lib/crypto/.  This includes support
+> > > > for the digest algorithms SHA3-224, SHA3-256, SHA3-384, and SHA3-512,
+> > > > and also support for the extendable-output functions SHAKE128 and
+> > > > SHAKE256.  The SHAKE128 and SHAKE256 support will be needed by ML-DSA.
+> > > > 
+> > > > The architecture-optimized SHA-3 code for arm64 and s390 is migrated
+> > > > into lib/crypto/.  (The existing s390 code couldn't really be
+> > > > reused, so
+> > > > really I rewrote it from scratch.)  This makes the SHA-3 library
+> > > > functions be accelerated on these architectures.
+> > > > 
+> > > > Finally, the sha3-224, sha3-256, sha3-384, and sha3-512 crypto_shash
+> > > > algorithms are reimplemented on top of the library API.
+> > > 
+> > > I've applied this series to
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=libcrypto-next,
+> > > excluding the following 2 patches which are waiting on benchmark results
+> > > from the s390 folks:
+> > > 
+> > >     lib/crypto: sha3: Support arch overrides of one-shot digest
+> > > functions
+> > >     lib/crypto: s390/sha3: Add optimized one-shot SHA-3 digest functions
+> > > 
+> > > I'd be glad to apply those too if they're shown to be worthwhile.
+> > > 
+> > > Note: I also reordered the commits in libcrypto-next to put the new
+> > > KUnit test suites (blake2b and sha3) last, and to put the AES-GCM
+> > > improvements on a separate branch that's merged in.  This will allow
+> > > making separate pull requests for the tests and the AES-GCM
+> > > improvements, which I think aligns with what Linus had requested before
+> > > (https://lore.kernel.org/linux-crypto/CAHk-=wi5d4K+sF2L=tuRW6AopVxO1DDXzstMQaECmU2QHN13KA@mail.gmail.com/).
+> > > 
+> > > - Eric
+> > 
+> > Here are now some measurements on a LPAR with 500 runs once with
+> > sha3-lib-v2 branch full ("with") and once with reverting only the
+> > b2e169dd8ca5 lib/crypto: s390/sha3: Add optimized one-shot SHA-3 digest
+> > functions
+> > patch ("without"). With the help of gnuplot I generated distribution
+> > charts over the results of the len=16, 64, 256, 1024 and 4096 benchmark.
+> > See attached pictures - Sorry but I see no other way to provide this data
+> > than using an attachment.
+> > 
+> > Clearly the patch brings a boost - especially for the 256 byte case.
+> > 
+> > Harald Freudenberger
 > 
-> Kernel mode NEON sections are now preemptible on arm64, and so there is
-> no need to yield it when calling APIs that may sleep.
-> 
-> Also, move the calls to kernel_neon_end() to the same scope as
-> kernel_neon_begin(). This is needed for a subsequent change where a
-> stack buffer is allocated transparently and passed to
-> kernel_neon_begin().
-> 
-> While at it, simplify the logic.
-> 
-> Reviewed-by: Eric Biggers <ebiggers@kernel.org>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  arch/arm64/crypto/sm4-ce-gcm-glue.c | 25 +++++---------------
->  1 file changed, 6 insertions(+), 19 deletions(-)
+> Thanks.  I applied "lib/crypto: sha3: Support arch overrides of one-shot
+> digest functions" and "lib/crypto: s390/sha3: Add optimized one-shot
+> SHA-3 digest functions" to libcrypto-next.  For the latter, I improved
+> the commit message to mention your benchmark results:
 
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Also, I'm wondering what your plan to add support for these instructions
+to QEMU is?  The status quo, where only people with an s390 mainframe
+can test this code, isn't sustainable.
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I already have s390 in my testing matrix; I run the crypto and CRC tests
+on all architectures with optimized crypto or CRC code.  But most of the
+s390 optimized crypto code isn't actually being executed.
+
+- Eric
 
