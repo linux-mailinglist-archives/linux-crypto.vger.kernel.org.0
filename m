@@ -1,93 +1,116 @@
-Return-Path: <linux-crypto+bounces-17780-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17782-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7933C39636
-	for <lists+linux-crypto@lfdr.de>; Thu, 06 Nov 2025 08:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04CBCC39657
+	for <lists+linux-crypto@lfdr.de>; Thu, 06 Nov 2025 08:27:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86A4A18C38FD
-	for <lists+linux-crypto@lfdr.de>; Thu,  6 Nov 2025 07:24:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 859E218C7930
+	for <lists+linux-crypto@lfdr.de>; Thu,  6 Nov 2025 07:27:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E222DCF70;
-	Thu,  6 Nov 2025 07:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DCB2DEA6E;
+	Thu,  6 Nov 2025 07:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="AJkES2eG"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="VagYr5/c"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC2F2DE1FE;
-	Thu,  6 Nov 2025 07:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BA82DEA86;
+	Thu,  6 Nov 2025 07:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762413844; cv=none; b=p2HVsiEpuVYQwkl9O7DhmS1oByrJn5yzd+u/lmv9YlV5J8Hg1i42rzpmMlrI7ChqJd1B42Hm2pYGPBMQ5TXmMhdW5st66XqPilXa3PEF5rjgcbbwAB9CDQ499ubAGbC6WHcHtJTfW59O7qGxHLGyfk7gZK/Hwhxt7rD58/difNk=
+	t=1762414028; cv=none; b=LnK4IV4Vo0Y6I99pmDRlUXy9Bu/GYBi6JENCjI29m0s9YUine96iY38XnsxWDmtRmbQjOWSdPy4P6EbSqkuRGcFp0QXO3WXCawQD6I/HZU/2OOi0FVo+EFuMC1I6V60oSQjTysbjX4uHbO6+n0zudroDUIkSg9P/KfXYSpsLydU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762413844; c=relaxed/simple;
-	bh=wljagbX7AqpVKaYlbJPff7lxG2b1Pk3LOJIK8dwwGQA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R353mc5SS4pL3r/VOOZpGQUbUj8ujzyjetu2/4u/GYBMO0o9qXB0N+8UpCufmGkWruC0+Wo//HmF22CqXQDWRrKFOoHZwSRgpO/26Fc4O5Xkj20wv3+WHONQA12xBwiuIW7QGSekONqR+Q0Uv+P6qiVwr0TQYQ0jnX4AwIYEmDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=AJkES2eG; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=s7u2FYxwfy2t8ftGqfABpZj4gxjeyyVbnshkaKWkvIk=; 
-	b=AJkES2eGD+adJ8MfnR59+CqYOaXWNzovy7j21moDxkd6XzqlGwg6S4wkWAcQ9TYdGxzenzETakO
-	qv6PP3vvx07F2R2WWnT9QDYLg11UKE7o9EHDrpZf/CTjzXI3qnKS2yMm+pjzrNgW3CHINp82MAbaR
-	V+Ips7sy7Z7TSuAYPRUT/hJM+YZL84epN6SCnMojxguyq5VhdgtQBvUMtfezOdLuxUIXQR84Qk8lM
-	Vm2NiYDZ0zJpbNP5l1FNEMcYDp5s+rbAwNzmXj/q8fhAeuPs2sx5wX9Bu27gSJB1DiSDNDzblbYKV
-	LiCU3mXUlEuw9PLXzQVVpE54ocZfFBfuGkOg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vGuLR-000rq7-0C;
-	Thu, 06 Nov 2025 15:23:46 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 06 Nov 2025 15:23:45 +0800
-Date: Thu, 6 Nov 2025 15:23:45 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Srujana Challa <schalla@marvell.com>,
-	Bharat Bhushan <bbhushan2@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"Dr. David Alan Gilbert" <linux@treblig.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Sai Krishna <saikrishnag@marvell.com>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: octeontx2 - Replace deprecated strcpy in
- cpt_ucode_load_fw
-Message-ID: <aQxNAY1yzAgtE-lY@gondor.apana.org.au>
-References: <20251101140445.2226-1-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1762414028; c=relaxed/simple;
+	bh=ANLZ4nuzI28Jw/q/dw1oy3HkAMfTnpYAiKK29auuSQw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uREku0c/GFDgT6VQvPnUBrOBU1PnGUXJLZ2B2e8WhxYxZJMx2hwQxU3gNbTVj2qAaWTF4L26fWkcqy73Qwo7euS0TCPyBB/O33wp1aNQK4VofX18PJdxrJMYRqCfO2pThxswkurLBmZxsgqB9nHO5qRX2xqrm/ZcDMdK4bygyvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=VagYr5/c; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=202503; t=1762414022;
+	bh=Vz9mhb435f+hOkgsRUlA5LdbIcbxh8AyNii3iCi92dQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=VagYr5/c7IU+3HcZZDJxK4Gewbq8o8fLChSOHHEOsPFfpdoR55bLFotd9BdlZ4Kdc
+	 4eMPcLV7Hyda4iOupAWapEMdif9rbSWxjIs/TkserVMpgt7DAQBJLrHAEq+neNVNRw
+	 xsy0T8uOdegnWwZ/u14u5uXv7LW4PYnSmWxr5Gg+iTb2p8SybFRtrQzBl3Dtpj3h9v
+	 D0r5YPUcjWIAfOhlx1d4NvP11XGoLKSZp4ybItSQaFKucH8HC2zSfUjxE4wSJg85bs
+	 wVk2lXGRA0NI/OI17jDeSdgpDvYsfzJZ/BB5ofE7GX7SSV+5iGIgLZJvGDKijxT7Qr
+	 NnWLRpejiQGgg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4d2DKK58YQz4w9q;
+	Thu, 06 Nov 2025 18:27:01 +1100 (AEDT)
+Date: Thu, 6 Nov 2025 18:27:00 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Ard Biesheuvel
+ <ardb@kernel.org>, David Howells <dhowells@redhat.com>, Linux Crypto List
+ <linux-crypto@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the libcrypto tree
+Message-ID: <20251106182700.092a328f@canb.auug.org.au>
+In-Reply-To: <20251106041953.GB1650@sol>
+References: <20251106143623.06b23d57@canb.auug.org.au>
+	<20251106035521.GA1650@sol>
+	<20251106041953.GB1650@sol>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251101140445.2226-1-thorsten.blum@linux.dev>
+Content-Type: multipart/signed; boundary="Sig_/_3AyMO_=V=iRL6QgN5LCRd6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sat, Nov 01, 2025 at 03:04:42PM +0100, Thorsten Blum wrote:
-> strcpy() is deprecated; use the safer strscpy() instead.
-> 
-> The destination buffer is only zero-initialized for the first iteration
-> and since strscpy() guarantees its NUL termination anyway, remove
-> zero-initializing 'eng_type'.
-> 
-> Link: https://github.com/KSPP/linux/issues/88
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->  drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+--Sig_/_3AyMO_=V=iRL6QgN5LCRd6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Hi Eric,
+
+On Wed, 5 Nov 2025 20:19:53 -0800 Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> Okay, it's because some kernel-doc warnings were accidentally turned off
+> for everyone :-(  And they just got turned back on by
+> https://lore.kernel.org/r/20251104215502.1049817-1-andriy.shevchenko@linu=
+x.intel.com/
+> With that applied, './scripts/kernel-doc -v -none include/crypto/sha3.h'
+> does catch this.
+
+Yeah, I found quite a few warnings today.
+
+> I folded the following into "lib/crypto: sha3: Add SHA-3 support" to
+> convert the comments starting with "/**" into proper kerneldoc comments:
+
+Thanks.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_3AyMO_=V=iRL6QgN5LCRd6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmkMTcQACgkQAVBC80lX
+0GytUAf/eLz0/CNApPaPG3fxbGJ94IakX4pARYdnDig4Pt0NUV+ZJpQU4r6tJ5FM
+vA+jjQdzrtzuLDjOB/WZ9z5nFNMaGMuC+sOQUOQ6/mbmq9jvbcMdMnFM/QLbubzV
+/smdegYosizg0DwacpyW0hlmjr5ECAreHqR/NZOOEsxx6mrOB0Z0evOx/QHpG0v7
+X7u/2TSx1Zf0clAwcHx40vuUBMKI0Jrz0B3Tru+bzEW8HIE4Gu1gAahmgsCYncWE
++e69O58Wx9CxcMoKv3vhAbhxFfO32P/HpGVl0ePu1Pl+8H/FATUP1qHvZRtJ+ocX
+ODA4LdGCkr5hJQRClGoWr8yNUCgh5A==
+=Ho9X
+-----END PGP SIGNATURE-----
+
+--Sig_/_3AyMO_=V=iRL6QgN5LCRd6--
 
