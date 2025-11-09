@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-17928-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17930-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9907EC44A77
-	for <lists+linux-crypto@lfdr.de>; Mon, 10 Nov 2025 00:50:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD18C44A86
+	for <lists+linux-crypto@lfdr.de>; Mon, 10 Nov 2025 00:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5233D3B003B
-	for <lists+linux-crypto@lfdr.de>; Sun,  9 Nov 2025 23:50:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59B6C188D573
+	for <lists+linux-crypto@lfdr.de>; Sun,  9 Nov 2025 23:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AB8279DAF;
-	Sun,  9 Nov 2025 23:50:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77FF27FB25;
+	Sun,  9 Nov 2025 23:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bHY/4O64"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ipyjBVVB"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2E5279358;
-	Sun,  9 Nov 2025 23:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC3527EFE9;
+	Sun,  9 Nov 2025 23:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762732199; cv=none; b=CnhwxYHfcZY0ng3aw/kIABZMjedsaS2rPZU91iEikCy4cWEstfcMHKH+W+Xz9j60KJyWMkiYL3IXc1CEzZnZyWiXy8CU69xYy2tVB4tPrQtsqUYXQ+Bf/Kz45fUwWmUWMmafTeCY16MC9WsTxkxTzP7kjGvx4rYM4gKEf/67LVo=
+	t=1762732201; cv=none; b=c6oAvDoK7iZObraG3sCd54DDRKboAZenZXxtT2sGTas66u0SBZkgyrGaETrTzuAUJicHboK0rOhH2HFELOCdPDQhG9vgU/XyeNg2KI267yUvVktxDAgDUFpQO14XKIF6zpL96AdVn3JKTyb/6bIqgT3FaVVz+4axRNBEXwuLiYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762732199; c=relaxed/simple;
-	bh=Zodgx2IYoNCP1gQCEOxcXaY8nw/zLva62Cv6WrKrveo=;
+	s=arc-20240116; t=1762732201; c=relaxed/simple;
+	bh=nqSfESYD3WdUWSz/fBnUEecChZSD29umtZlw2xLsB0o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NKnEMOXpgJP3gH6qpw+4NArubckvYsJQhzUP8H98PQGXpoENJ/nHDygPycXStpaWDIlzmXyyOGzP2UpGSSV8skzKxpnZS4IMuq/cuZYFY8uVosq2V7HzaZqAUXdFar/3IOEBaoMWYhkqqvSYqJMJ5De1MzZyU0G74PifbzDSlEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bHY/4O64; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BCA9C113D0;
+	 MIME-Version; b=KphOvpRtx9Inz//tIz4f2kVhUO0+78ZV1WC1Lb8kt5LbzsgOwGiH74mKjmtmM83c7O04yPIpZtdFfHKQHLDvSVA4EYQ/HRcG1YJnECwJdzkR9Y486H2wl8gg+z207dxY1MAW7Wlbl4uFdD8qgvJq46LNtgiCNpFs5Lqjy2vlQBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ipyjBVVB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B38CCC4CEF8;
 	Sun,  9 Nov 2025 23:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1762732199;
-	bh=Zodgx2IYoNCP1gQCEOxcXaY8nw/zLva62Cv6WrKrveo=;
+	bh=nqSfESYD3WdUWSz/fBnUEecChZSD29umtZlw2xLsB0o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bHY/4O64tE1Hgu0ldpjTDMtmZm6jm5u7rgsO6X7LaBLYf6YGaIKvRImvfPpEkGKvV
-	 vB+Tps9CbLKK5/m/269VfcjRb9jzTi/Q11mSmmLg+1PQeoi3zNypTWcDYZrXODk25N
-	 4rpOMiC0KyNqSd1z9QRPQ8XWw6at6l0ZkTjD7ygoxSVRr8fqYZTJxzyI0M18nt9VN1
-	 Ha9E06n27LxzTrhD4/2tX8e0nL47DQKaJ05hyRxTY8AJbZydqgvnfUqL7twT0x+qFj
-	 RtwcFuRfV/4YbSkuOCj9J6wq5KSYeJZolawOA8q7HEwA1WDXLIE2ctKNFTB+PzyZ4d
-	 cdyTQrF+Rl8Qg==
+	b=ipyjBVVBmsPbmwitdkyiaqgT4axyARVg2FomhDjAfZkJc1ubHKtY/wftpORy2bCuo
+	 g3pkYu7Msd6Ua1c0v+tsP3fY+RprmxzK9s2+KaN6DKW0tl+eBqfxmfSgSq8W0qNhNM
+	 /Klt2r7KxtbhBX73y8AxEZZ1Hp1f2gK7VbciFBTvjrZuxAVn0g/+SfegyuxVAaOeT+
+	 cqgQL10S3WCaG5efZKJE5T722jmmCEIha+0RjvYOTfKohjIoS0xgNvupDTVy+gdMfE
+	 Ihy86GM1k2fQ+jAF5ZWJYRTlC/5S/GyBuFHdwo9aq7BPf439kTep7b2KvkifiqUUew
+	 YbRlwKqxunQbQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -50,9 +50,9 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	x86@kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 7/9] crypto: polyval - Remove the polyval crypto_shash
-Date: Sun,  9 Nov 2025 15:47:22 -0800
-Message-ID: <20251109234726.638437-8-ebiggers@kernel.org>
+Subject: [PATCH 8/9] crypto: testmgr - Remove polyval tests
+Date: Sun,  9 Nov 2025 15:47:23 -0800
+Message-ID: <20251109234726.638437-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20251109234726.638437-1-ebiggers@kernel.org>
 References: <20251109234726.638437-1-ebiggers@kernel.org>
@@ -64,269 +64,245 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Remove polyval support from crypto_shash.  It no longer has any user now
-that the HCTR2 code uses the POLYVAL library instead.
+These are no longer used, since polyval support has been removed from
+the crypto_shash API.
+
+POLYVAL remains supported via lib/crypto/, where it has a KUnit test
+suite instead.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- crypto/Kconfig           |  10 --
- crypto/Makefile          |   1 -
- crypto/polyval-generic.c | 205 ---------------------------------------
- 3 files changed, 216 deletions(-)
- delete mode 100644 crypto/polyval-generic.c
+ crypto/tcrypt.c  |   4 --
+ crypto/testmgr.c |   6 --
+ crypto/testmgr.h | 171 -----------------------------------------------
+ 3 files changed, 181 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 805172f75bf1..bf8b8a60a0c0 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -946,20 +946,10 @@ config CRYPTO_MICHAEL_MIC
- 	  known as WPA (Wif-Fi Protected Access).
+diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+index d1d88debbd71..32d9eaf2c8af 100644
+--- a/crypto/tcrypt.c
++++ b/crypto/tcrypt.c
+@@ -1688,14 +1688,10 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
  
- 	  This algorithm is required for TKIP, but it should not be used for
- 	  other purposes because of the weakness of the algorithm.
+ 	case 56:
+ 		ret = min(ret, tcrypt_test("ccm(sm4)"));
+ 		break;
  
--config CRYPTO_POLYVAL
--	tristate
--	select CRYPTO_HASH
--	select CRYPTO_LIB_GF128MUL
--	help
--	  POLYVAL hash function for HCTR2
+-	case 57:
+-		ret = min(ret, tcrypt_test("polyval"));
+-		break;
 -
--	  This is used in HCTR2.  It is not a general-purpose
--	  cryptographic hash function.
--
- config CRYPTO_RMD160
- 	tristate "RIPEMD-160"
- 	select CRYPTO_HASH
- 	help
- 	  RIPEMD-160 hash function (ISO/IEC 10118-3)
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 0388ff8d219d..093c56a45d3f 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -170,11 +170,10 @@ KASAN_SANITIZE_jitterentropy.o = n
- UBSAN_SANITIZE_jitterentropy.o = n
- jitterentropy_rng-y := jitterentropy.o jitterentropy-kcapi.o
- obj-$(CONFIG_CRYPTO_JITTERENTROPY_TESTINTERFACE) += jitterentropy-testing.o
- obj-$(CONFIG_CRYPTO_BENCHMARK) += tcrypt.o
- obj-$(CONFIG_CRYPTO_GHASH) += ghash-generic.o
--obj-$(CONFIG_CRYPTO_POLYVAL) += polyval-generic.o
- obj-$(CONFIG_CRYPTO_USER_API) += af_alg.o
- obj-$(CONFIG_CRYPTO_USER_API_HASH) += algif_hash.o
- obj-$(CONFIG_CRYPTO_USER_API_SKCIPHER) += algif_skcipher.o
- obj-$(CONFIG_CRYPTO_USER_API_RNG) += algif_rng.o
- obj-$(CONFIG_CRYPTO_USER_API_AEAD) += algif_aead.o
-diff --git a/crypto/polyval-generic.c b/crypto/polyval-generic.c
-deleted file mode 100644
-index fe5b01a4000d..000000000000
---- a/crypto/polyval-generic.c
-+++ /dev/null
-@@ -1,205 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
+ 	case 58:
+ 		ret = min(ret, tcrypt_test("gcm(aria)"));
+ 		break;
+ 
+ 	case 59:
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 499e979a56dc..6fb53978df11 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -5368,16 +5368,10 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 		.fips_allowed = 1,
+ 	}, {
+ 		.alg = "pkcs1pad(rsa)",
+ 		.test = alg_test_null,
+ 		.fips_allowed = 1,
+-	}, {
+-		.alg = "polyval",
+-		.test = alg_test_hash,
+-		.suite = {
+-			.hash = __VECS(polyval_tv_template)
+-		}
+ 	}, {
+ 		.alg = "rfc3686(ctr(aes))",
+ 		.test = alg_test_skcipher,
+ 		.fips_allowed = 1,
+ 		.suite = {
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index 268231227282..a3e4695945ca 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -36233,181 +36233,10 @@ static const struct cipher_testvec aes_xctr_tv_template[] = {
+ 		.len	= 512,
+ 	},
+ 
+ };
+ 
 -/*
-- * POLYVAL: hash function for HCTR2.
+- * Test vectors generated using https://github.com/google/hctr2
 - *
-- * Copyright (c) 2007 Nokia Siemens Networks - Mikko Herranen <mh1@iki.fi>
-- * Copyright (c) 2009 Intel Corp.
-- *   Author: Huang Ying <ying.huang@intel.com>
-- * Copyright 2021 Google LLC
+- * To ensure compatibility with RFC 8452, some tests were sourced from
+- * https://datatracker.ietf.org/doc/html/rfc8452
 - */
--
--/*
-- * Code based on crypto/ghash-generic.c
-- *
-- * POLYVAL is a keyed hash function similar to GHASH. POLYVAL uses a different
-- * modulus for finite field multiplication which makes hardware accelerated
-- * implementations on little-endian machines faster. POLYVAL is used in the
-- * kernel to implement HCTR2, but was originally specified for AES-GCM-SIV
-- * (RFC 8452).
-- *
-- * For more information see:
-- * Length-preserving encryption with HCTR2:
-- *   https://eprint.iacr.org/2021/1441.pdf
-- * AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption:
-- *   https://datatracker.ietf.org/doc/html/rfc8452
-- *
-- * Like GHASH, POLYVAL is not a cryptographic hash function and should
-- * not be used outside of crypto modes explicitly designed to use POLYVAL.
-- *
-- * This implementation uses a convenient trick involving the GHASH and POLYVAL
-- * fields. This trick allows multiplication in the POLYVAL field to be
-- * implemented by using multiplication in the GHASH field as a subroutine. An
-- * element of the POLYVAL field can be converted to an element of the GHASH
-- * field by computing x*REVERSE(a), where REVERSE reverses the byte-ordering of
-- * a. Similarly, an element of the GHASH field can be converted back to the
-- * POLYVAL field by computing REVERSE(x^{-1}*a). For more information, see:
-- * https://datatracker.ietf.org/doc/html/rfc8452#appendix-A
-- *
-- * By using this trick, we do not need to implement the POLYVAL field for the
-- * generic implementation.
-- *
-- * Warning: this generic implementation is not intended to be used in practice
-- * and is not constant time. For practical use, a hardware accelerated
-- * implementation of POLYVAL should be used instead.
-- *
-- */
--
--#include <crypto/gf128mul.h>
--#include <crypto/internal/hash.h>
--#include <crypto/polyval.h>
--#include <crypto/utils.h>
--#include <linux/errno.h>
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include <linux/string.h>
--#include <linux/unaligned.h>
--
--struct polyval_tfm_ctx {
--	struct gf128mul_4k *gf128;
--};
--
--struct polyval_desc_ctx {
--	union {
--		u8 buffer[POLYVAL_BLOCK_SIZE];
--		be128 buffer128;
--	};
--};
--
--static void copy_and_reverse(u8 dst[POLYVAL_BLOCK_SIZE],
--			     const u8 src[POLYVAL_BLOCK_SIZE])
--{
--	u64 a = get_unaligned((const u64 *)&src[0]);
--	u64 b = get_unaligned((const u64 *)&src[8]);
--
--	put_unaligned(swab64(a), (u64 *)&dst[8]);
--	put_unaligned(swab64(b), (u64 *)&dst[0]);
--}
--
--static int polyval_setkey(struct crypto_shash *tfm,
--			  const u8 *key, unsigned int keylen)
--{
--	struct polyval_tfm_ctx *ctx = crypto_shash_ctx(tfm);
--	be128 k;
--
--	if (keylen != POLYVAL_BLOCK_SIZE)
--		return -EINVAL;
--
--	gf128mul_free_4k(ctx->gf128);
--
--	BUILD_BUG_ON(sizeof(k) != POLYVAL_BLOCK_SIZE);
--	copy_and_reverse((u8 *)&k, key);
--	gf128mul_x_lle(&k, &k);
--
--	ctx->gf128 = gf128mul_init_4k_lle(&k);
--	memzero_explicit(&k, POLYVAL_BLOCK_SIZE);
--
--	if (!ctx->gf128)
--		return -ENOMEM;
--
--	return 0;
--}
--
--static int polyval_generic_init(struct shash_desc *desc)
--{
--	struct polyval_desc_ctx *dctx = shash_desc_ctx(desc);
--
--	memset(dctx, 0, sizeof(*dctx));
--
--	return 0;
--}
--
--static int polyval_generic_update(struct shash_desc *desc,
--				  const u8 *src, unsigned int srclen)
--{
--	struct polyval_desc_ctx *dctx = shash_desc_ctx(desc);
--	const struct polyval_tfm_ctx *ctx = crypto_shash_ctx(desc->tfm);
--	u8 tmp[POLYVAL_BLOCK_SIZE];
--
--	do {
--		copy_and_reverse(tmp, src);
--		crypto_xor(dctx->buffer, tmp, POLYVAL_BLOCK_SIZE);
--		gf128mul_4k_lle(&dctx->buffer128, ctx->gf128);
--		src += POLYVAL_BLOCK_SIZE;
--		srclen -= POLYVAL_BLOCK_SIZE;
--	} while (srclen >= POLYVAL_BLOCK_SIZE);
--
--	return srclen;
--}
--
--static int polyval_finup(struct shash_desc *desc, const u8 *src,
--			 unsigned int len, u8 *dst)
--{
--	struct polyval_desc_ctx *dctx = shash_desc_ctx(desc);
--
--	if (len) {
--		u8 tmp[POLYVAL_BLOCK_SIZE] = {};
--
--		memcpy(tmp, src, len);
--		polyval_generic_update(desc, tmp, POLYVAL_BLOCK_SIZE);
--	}
--	copy_and_reverse(dst, dctx->buffer);
--	return 0;
--}
--
--static int polyval_export(struct shash_desc *desc, void *out)
--{
--	struct polyval_desc_ctx *dctx = shash_desc_ctx(desc);
--
--	copy_and_reverse(out, dctx->buffer);
--	return 0;
--}
--
--static int polyval_import(struct shash_desc *desc, const void *in)
--{
--	struct polyval_desc_ctx *dctx = shash_desc_ctx(desc);
--
--	copy_and_reverse(dctx->buffer, in);
--	return 0;
--}
--
--static void polyval_exit_tfm(struct crypto_shash *tfm)
--{
--	struct polyval_tfm_ctx *ctx = crypto_shash_ctx(tfm);
--
--	gf128mul_free_4k(ctx->gf128);
--}
--
--static struct shash_alg polyval_alg = {
--	.digestsize	= POLYVAL_DIGEST_SIZE,
--	.init		= polyval_generic_init,
--	.update		= polyval_generic_update,
--	.finup		= polyval_finup,
--	.setkey		= polyval_setkey,
--	.export		= polyval_export,
--	.import		= polyval_import,
--	.exit_tfm	= polyval_exit_tfm,
--	.statesize	= sizeof(struct polyval_desc_ctx),
--	.descsize	= sizeof(struct polyval_desc_ctx),
--	.base		= {
--		.cra_name		= "polyval",
--		.cra_driver_name	= "polyval-generic",
--		.cra_priority		= 100,
--		.cra_flags		= CRYPTO_AHASH_ALG_BLOCK_ONLY,
--		.cra_blocksize		= POLYVAL_BLOCK_SIZE,
--		.cra_ctxsize		= sizeof(struct polyval_tfm_ctx),
--		.cra_module		= THIS_MODULE,
+-static const struct hash_testvec polyval_tv_template[] = {
+-	{ // From RFC 8452
+-		.key	= "\x31\x07\x28\xd9\x91\x1f\x1f\x38"
+-			  "\x37\xb2\x43\x16\xc3\xfa\xb9\xa0",
+-		.plaintext	= "\x65\x78\x61\x6d\x70\x6c\x65\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x48\x65\x6c\x6c\x6f\x20\x77\x6f"
+-			  "\x72\x6c\x64\x00\x00\x00\x00\x00"
+-			  "\x38\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x58\x00\x00\x00\x00\x00\x00\x00",
+-		.digest	= "\xad\x7f\xcf\x0b\x51\x69\x85\x16"
+-			  "\x62\x67\x2f\x3c\x5f\x95\x13\x8f",
+-		.psize	= 48,
+-		.ksize	= 16,
 -	},
+-	{ // From RFC 8452
+-		.key	= "\xd9\xb3\x60\x27\x96\x94\x94\x1a"
+-			  "\xc5\xdb\xc6\x98\x7a\xda\x73\x77",
+-		.plaintext	= "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00",
+-		.digest	= "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00",
+-		.psize	= 16,
+-		.ksize	= 16,
+-	},
+-	{ // From RFC 8452
+-		.key	= "\xd9\xb3\x60\x27\x96\x94\x94\x1a"
+-			  "\xc5\xdb\xc6\x98\x7a\xda\x73\x77",
+-		.plaintext	= "\x01\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x40\x00\x00\x00\x00\x00\x00\x00",
+-		.digest	= "\xeb\x93\xb7\x74\x09\x62\xc5\xe4"
+-			  "\x9d\x2a\x90\xa7\xdc\x5c\xec\x74",
+-		.psize	= 32,
+-		.ksize	= 16,
+-	},
+-	{ // From RFC 8452
+-		.key	= "\xd9\xb3\x60\x27\x96\x94\x94\x1a"
+-			  "\xc5\xdb\xc6\x98\x7a\xda\x73\x77",
+-		.plaintext	= "\x01\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x02\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x03\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x80\x01\x00\x00\x00\x00\x00\x00",
+-		.digest	= "\x81\x38\x87\x46\xbc\x22\xd2\x6b"
+-			  "\x2a\xbc\x3d\xcb\x15\x75\x42\x22",
+-		.psize	= 64,
+-		.ksize	= 16,
+-	},
+-	{ // From RFC 8452
+-		.key	= "\xd9\xb3\x60\x27\x96\x94\x94\x1a"
+-			  "\xc5\xdb\xc6\x98\x7a\xda\x73\x77",
+-		.plaintext	= "\x01\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x02\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x03\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x04\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x02\x00\x00\x00\x00\x00\x00",
+-		.digest	= "\x1e\x39\xb6\xd3\x34\x4d\x34\x8f"
+-			  "\x60\x44\xf8\x99\x35\xd1\xcf\x78",
+-		.psize	= 80,
+-		.ksize	= 16,
+-	},
+-	{ // From RFC 8452
+-		.key	= "\xd9\xb3\x60\x27\x96\x94\x94\x1a"
+-			  "\xc5\xdb\xc6\x98\x7a\xda\x73\x77",
+-		.plaintext	= "\x01\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x02\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x03\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x04\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x05\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x08\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x02\x00\x00\x00\x00\x00\x00",
+-		.digest	= "\xff\xcd\x05\xd5\x77\x0f\x34\xad"
+-			  "\x92\x67\xf0\xa5\x99\x94\xb1\x5a",
+-		.psize	= 96,
+-		.ksize	= 16,
+-	},
+-	{ // Random ( 1)
+-		.key	= "\x90\xcc\xac\xee\xba\xd7\xd4\x68"
+-			  "\x98\xa6\x79\x70\xdf\x66\x15\x6c",
+-		.plaintext	= "",
+-		.digest	= "\x00\x00\x00\x00\x00\x00\x00\x00"
+-			  "\x00\x00\x00\x00\x00\x00\x00\x00",
+-		.psize	= 0,
+-		.ksize	= 16,
+-	},
+-	{ // Random ( 1)
+-		.key	= "\xc1\x45\x71\xf0\x30\x07\x94\xe7"
+-			  "\x3a\xdd\xe4\xc6\x19\x2d\x02\xa2",
+-		.plaintext	= "\xc1\x5d\x47\xc7\x4c\x7c\x5e\x07"
+-			  "\x85\x14\x8f\x79\xcc\x73\x83\xf7"
+-			  "\x35\xb8\xcb\x73\x61\xf0\x53\x31"
+-			  "\xbf\x84\xde\xb6\xde\xaf\xb0\xb8"
+-			  "\xb7\xd9\x11\x91\x89\xfd\x1e\x4c"
+-			  "\x84\x4a\x1f\x2a\x87\xa4\xaf\x62"
+-			  "\x8d\x7d\x58\xf6\x43\x35\xfc\x53"
+-			  "\x8f\x1a\xf6\x12\xe1\x13\x3f\x66"
+-			  "\x91\x4b\x13\xd6\x45\xfb\xb0\x7a"
+-			  "\xe0\x8b\x8e\x99\xf7\x86\x46\x37"
+-			  "\xd1\x22\x9e\x52\xf3\x3f\xd9\x75"
+-			  "\x2c\x2c\xc6\xbb\x0e\x08\x14\x29"
+-			  "\xe8\x50\x2f\xd8\xbe\xf4\xe9\x69"
+-			  "\x4a\xee\xf7\xae\x15\x65\x35\x1e",
+-		.digest	= "\x00\x4f\x5d\xe9\x3b\xc0\xd6\x50"
+-			  "\x3e\x38\x73\x86\xc6\xda\xca\x7f",
+-		.psize	= 112,
+-		.ksize	= 16,
+-	},
+-	{ // Random ( 1)
+-		.key	= "\x37\xbe\x68\x16\x50\xb9\x4e\xb0"
+-			  "\x47\xde\xe2\xbd\xde\xe4\x48\x09",
+-		.plaintext	= "\x87\xfc\x68\x9f\xff\xf2\x4a\x1e"
+-			  "\x82\x3b\x73\x8f\xc1\xb2\x1b\x7a"
+-			  "\x6c\x4f\x81\xbc\x88\x9b\x6c\xa3"
+-			  "\x9c\xc2\xa5\xbc\x14\x70\x4c\x9b"
+-			  "\x0c\x9f\x59\x92\x16\x4b\x91\x3d"
+-			  "\x18\x55\x22\x68\x12\x8c\x63\xb2"
+-			  "\x51\xcb\x85\x4b\xd2\xae\x0b\x1c"
+-			  "\x5d\x28\x9d\x1d\xb1\xc8\xf0\x77"
+-			  "\xe9\xb5\x07\x4e\x06\xc8\xee\xf8"
+-			  "\x1b\xed\x72\x2a\x55\x7d\x16\xc9"
+-			  "\xf2\x54\xe7\xe9\xe0\x44\x5b\x33"
+-			  "\xb1\x49\xee\xff\x43\xfb\x82\xcd"
+-			  "\x4a\x70\x78\x81\xa4\x34\x36\xe8"
+-			  "\x4c\x28\x54\xa6\x6c\xc3\x6b\x78"
+-			  "\xe7\xc0\x5d\xc6\x5d\x81\xab\x70"
+-			  "\x08\x86\xa1\xfd\xf4\x77\x55\xfd"
+-			  "\xa3\xe9\xe2\x1b\xdf\x99\xb7\x80"
+-			  "\xf9\x0a\x4f\x72\x4a\xd3\xaf\xbb"
+-			  "\xb3\x3b\xeb\x08\x58\x0f\x79\xce"
+-			  "\xa5\x99\x05\x12\x34\xd4\xf4\x86"
+-			  "\x37\x23\x1d\xc8\x49\xc0\x92\xae"
+-			  "\xa6\xac\x9b\x31\x55\xed\x15\xc6"
+-			  "\x05\x17\x37\x8d\x90\x42\xe4\x87"
+-			  "\x89\x62\x88\x69\x1c\x6a\xfd\xe3"
+-			  "\x00\x2b\x47\x1a\x73\xc1\x51\xc2"
+-			  "\xc0\x62\x74\x6a\x9e\xb2\xe5\x21"
+-			  "\xbe\x90\xb5\xb0\x50\xca\x88\x68"
+-			  "\xe1\x9d\x7a\xdf\x6c\xb7\xb9\x98"
+-			  "\xee\x28\x62\x61\x8b\xd1\x47\xf9"
+-			  "\x04\x7a\x0b\x5d\xcd\x2b\x65\xf5"
+-			  "\x12\xa3\xfe\x1a\xaa\x2c\x78\x42"
+-			  "\xb8\xbe\x7d\x74\xeb\x59\xba\xba",
+-		.digest	= "\xae\x11\xd4\x60\x2a\x5f\x9e\x42"
+-			  "\x89\x04\xc2\x34\x8d\x55\x94\x0a",
+-		.psize	= 256,
+-		.ksize	= 16,
+-	},
+-
 -};
 -
--static int __init polyval_mod_init(void)
--{
--	return crypto_register_shash(&polyval_alg);
--}
--
--static void __exit polyval_mod_exit(void)
--{
--	crypto_unregister_shash(&polyval_alg);
--}
--
--module_init(polyval_mod_init);
--module_exit(polyval_mod_exit);
--
--MODULE_LICENSE("GPL");
--MODULE_DESCRIPTION("POLYVAL hash function");
--MODULE_ALIAS_CRYPTO("polyval");
--MODULE_ALIAS_CRYPTO("polyval-generic");
+ /*
+  * Test vectors generated using https://github.com/google/hctr2
+  */
+ static const struct cipher_testvec aes_hctr2_tv_template[] = {
+ 	{
 -- 
 2.51.2
 
