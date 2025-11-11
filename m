@@ -1,75 +1,66 @@
-Return-Path: <linux-crypto+bounces-17957-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-17962-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB2A7C4C282
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Nov 2025 08:45:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A29AAC4CB32
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Nov 2025 10:36:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AAF43ACD64
-	for <lists+linux-crypto@lfdr.de>; Tue, 11 Nov 2025 07:45:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7B9188C038
+	for <lists+linux-crypto@lfdr.de>; Tue, 11 Nov 2025 09:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7D7C1D79BE;
-	Tue, 11 Nov 2025 07:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3F92F618C;
+	Tue, 11 Nov 2025 09:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="mt3k4Nld";
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="mt3k4Nld"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="AbdAn3Hc"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF072BB17;
-	Tue, 11 Nov 2025 07:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E067C2F39B1;
+	Tue, 11 Nov 2025 09:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762847126; cv=none; b=ASrGhwUjv0/h8Ku6wJ3G6WOA3RohO5A9tJiyv3Jns953vbHtw14XgZVbJmGs/FJOcNJzWvNMwfriiHEawxSYc/g+Q/+lMBj8ISc6FMcuJVvJ+UgnHHSth8y8xh1CUS05/pUaqVbLNKbtQSCFpb2qXr1FeZMa2SnK2wV8oOcA9Cs=
+	t=1762853747; cv=none; b=YYR72KoVVRF1sdCYqfvzFUp/6pAh9/mt/Bv0TMQd7/kkSV0h3yHInk+AlzZQ2knetWLDELqa8c0mn67X9j22biRYjdGiOX9E/r5u7PLMR+EqAdNqTkeYIZm6a5FUowrw1fjnT31C18pNbFY0J2Ilk+09bselRme9TQ+ja7CQn2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762847126; c=relaxed/simple;
-	bh=kTmo2x6zuAhJQW95nab+9WiQ1laTWaIabF0YIpugNN8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=T+P4g9nCz7CTfVvifZ0/SXLxVl1z3LrxxvIbK1P7qGiIWYnXp3hN+uVXEp8Gqv7bSKWDP62jzmEwuAXjarFZMN2Ar7Np2U6GqpGlbgtEG1mho3YudvAt88MFJMEzKEEeyGvXZ3rhIZonAvuuJ+NePvthaJWR3Nifw1Jdu336g6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=mt3k4Nld; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=mt3k4Nld; arc=none smtp.client-ip=45.249.212.187
+	s=arc-20240116; t=1762853747; c=relaxed/simple;
+	bh=K7mxGMzPYZS5mFQRUgVfD8xDxGUX3YVR8aGbiFcUAO0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=K1wqdH0LOKafUj39i1XfgWWUXJiozg0TJ/RlX/lME3O6U7y2IokfkKNhcAdmcHnBsArD681HIBvomCYYzg3WM7Yq8VSGOp7hXtQ7HMw00aNGH68yinxKqe8CzncB27cmefLciI86Jh/pMPk1WT9xsz+0+VczxuWM6UKwu/nB6ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=AbdAn3Hc; arc=none smtp.client-ip=113.46.200.222
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=+xb/xGFV3+SOYW1VLDvSVDCTrOmrz1O3z37sbePsiVU=;
-	b=mt3k4NldqM69rlxFsAGrZHPjNHv4YKnartDTFn45ZFYQZiGzXIul58Ve8eLPAxrNROEKcDzIK
-	w7xGOYIWFiOmQqZzLfPFYxs3ElcUWK/L9PftaNWGQGngyruQO5js15CNLIu1wvdKQn6WPKL/qWE
-	T9BSHhp1SLUTjEMHv0wM1E4=
-Received: from canpmsgout04.his.huawei.com (unknown [172.19.92.133])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTPS id 4d5JTb3Rz9z1BFvc;
-	Tue, 11 Nov 2025 15:44:51 +0800 (CST)
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=+xb/xGFV3+SOYW1VLDvSVDCTrOmrz1O3z37sbePsiVU=;
-	b=mt3k4NldqM69rlxFsAGrZHPjNHv4YKnartDTFn45ZFYQZiGzXIul58Ve8eLPAxrNROEKcDzIK
-	w7xGOYIWFiOmQqZzLfPFYxs3ElcUWK/L9PftaNWGQGngyruQO5js15CNLIu1wvdKQn6WPKL/qWE
-	T9BSHhp1SLUTjEMHv0wM1E4=
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4d5JRx1ZSjz1prLT;
-	Tue, 11 Nov 2025 15:43:25 +0800 (CST)
-Received: from kwepemh100007.china.huawei.com (unknown [7.202.181.92])
-	by mail.maildlp.com (Postfix) with ESMTPS id A6E5B1402D0;
-	Tue, 11 Nov 2025 15:45:04 +0800 (CST)
-Received: from huawei.com (10.67.174.33) by kwepemh100007.china.huawei.com
- (7.202.181.92) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 11 Nov
- 2025 15:45:04 +0800
-From: Gu Bowen <gubowen5@huawei.com>
-To: <herbert@gondor.apana.org.au>
-CC: <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>, Lu Jialin
-	<lujialin4@huawei.com>
-Subject: Re: [GIT PULL] Crypto Fixes for 6.17
-Date: Tue, 11 Nov 2025 15:57:39 +0800
-Message-ID: <20251111075739.1649924-1-gubowen5@huawei.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <aMzXm4zy8LARVMbk@gondor.apana.org.au>
-References: <aMzXm4zy8LARVMbk@gondor.apana.org.au>
+	bh=Gr3o3tVvalWBpPWoYGfZ83VkNwYRGvBFoRGSAfjG5gE=;
+	b=AbdAn3HcGKg/UD2269yrvR+HWQ3GJpr4eRRF9sAqvFw/u9L1ka0ofgastZ2wfrmXDTJSOuUg0
+	hmlVcLuepwEPXkMpRgU5lxpuDpT0jE3IbpinvywaK+EK51uwD1/foQpm8N5WzuNbPp+1/Y4olqe
+	2Yi9ap9Oz1Gsd3wbmhSbGAY=
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4d5LvW3Qv2zLlWH;
+	Tue, 11 Nov 2025 17:33:59 +0800 (CST)
+Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0AA5B1A0188;
+	Tue, 11 Nov 2025 17:35:38 +0800 (CST)
+Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
+ dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 11 Nov 2025 17:35:37 +0800
+Received: from localhost.huawei.com (10.90.31.46) by
+ kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 11 Nov 2025 17:35:37 +0800
+From: Chenghai Huang <huangchenghai2@huawei.com>
+To: <gregkh@linuxfoundation.org>, <zhangfei.gao@linaro.org>,
+	<wangzhou1@hisilicon.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<fanghao11@huawei.com>, <shenyang39@huawei.com>, <liulongfang@huawei.com>,
+	<qianweili@huawei.com>, <linwenkai6@hisilicon.com>
+Subject: [PATCH v5 0/4] uacce: driver fixes for memory leaks and state management
+Date: Tue, 11 Nov 2025 17:35:32 +0800
+Message-ID: <20251111093536.3729-1-huangchenghai2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -78,21 +69,54 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemh100007.china.huawei.com (7.202.181.92)
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemq200001.china.huawei.com (7.202.195.16)
 
-Hi, 
-On Fri, Sep 19, 2025 at 12:10:03PM +0800, Herbert Xu wrote:
-> Herbert Xu (2):
->       crypto: af_alg - Set merge to zero early in af_alg_sendmsg
+This patch series addresses several issues in the uacce:
+1.Fix cdev handling in register and remove paths.
+2.Fix sysfs file creation conditions.
+3.Add error reporting for unsupported mremap operations.
+4.Ensuring safe queue release with proper state management.
 
-I have a question about this patch: is the "fixes" tag not quite
-appropriate? In older kernel versions, such as v5.10, MSG_SPLICE_PAGES
-is not yet supported, so there is no need for ctx->merge = 0. Perhaps
-d3dccb0a487d ("crypto: af_alg - Fix merging of written data into spliced
-pages") would be more suitable.
+---
+Changes in v5:
+- There is no memory leak issue when cdev_device_add fails, but it is necessary
+  to check a flag to avoid calling cdev_device_del during abnormal exit.
+- Link to v4: https://lore.kernel.org/all/20251022021149.1771168-1-huangchenghai2@huawei.com/
 
-Best Regards,
-Guber
+Changes in v4:
+- Revert the interception of sysfs creation for isolate_strategy.
+- Link to v3: https://lore.kernel.org/all/20251021135003.786588-1-huangchenghai2@huawei.com/
+
+Changes in v3:
+- Move the checks for the 'isolate_strategy_show' and
+  'isolate_strategy_store' functions to their respective call sites.
+- Use kobject_put to release the cdev memory instead of modifying
+  cdev to be a static structure member.
+- Link to v2: https://lore.kernel.org/all/20250916144811.1799687-1-huangchenghai2@huawei.com/
+
+Changes in v2:
+- Use cdev_init to allocate cdev memory to ensure that memory leaks
+  are avoided.
+- Supplement the reason for intercepting the remapping operation.
+- Add "cc: stable@vger.kernel.org" to paths with fixed.
+- Link to v1: https://lore.kernel.org/all/20250822103904.3776304-1-huangchenghai2@huawei.com/
+
+---
+Chenghai Huang (2):
+  uacce: fix isolate sysfs check condition
+  uacce: ensure safe queue release with state management
+
+Wenkai Lin (1):
+  uacce: fix cdev handling in register and remove paths
+
+Yang Shen (1):
+  uacce: implement mremap in uacce_vm_ops to return -EPERM
+
+ drivers/misc/uacce/uacce.c | 50 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 41 insertions(+), 9 deletions(-)
+
+-- 
+2.33.0
 
 
