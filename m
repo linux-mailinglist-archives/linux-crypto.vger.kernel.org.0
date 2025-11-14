@@ -1,68 +1,58 @@
-Return-Path: <linux-crypto+bounces-18057-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18059-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F03C5C6D7
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 11:04:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17196C5C8C1
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 11:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9291D34C528
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 10:00:12 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0768E4F95EA
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 10:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5998330B51D;
-	Fri, 14 Nov 2025 09:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7328630DEA6;
+	Fri, 14 Nov 2025 10:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="LqnKDYHJ"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="cauCCh9Y"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782AB30B50C;
-	Fri, 14 Nov 2025 09:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E80F3090C6;
+	Fri, 14 Nov 2025 10:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763114396; cv=none; b=POYj6zv3mZA6DNzp/n0pxlQMXFJ1PCah4w89szZRtvcLyHQ7U0HasjQ+XkZIKBgv0C+YvVTBc2dRog03efkPD5kSlXqk8S/+vfXK+6lMeBLi+dwPvb0Opj+UTOS+1caiaweq12dlAKVmKs+JcJ0dLr/otUJbLKmgP+cd9h5jsx0=
+	t=1763115327; cv=none; b=eLexSVqSte0eKP/h2sq+uyY2NHxY1Xik5xLc3E9wTmmRhY7mhQLddzSWfZ4kM/86/k5w62EuTYWZ9D52+uEOiE5Y/SDO2FS/kzQ9BPRw+3x/3uCwgNI7bQQ84EjBP6fVN1Nlt15r0XA/vOTEaudcZxuKcKKIvExPElWpkTc/E1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763114396; c=relaxed/simple;
-	bh=h/YX3dJDvTfjdK/QBeR1KF7ld5D/KoATDZ+ba3OtIJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EySZo/C0kpIucjz2xyGMVkp7ynOF7xrZDRw3uCkn+YKF7/itlzrFN/CLs8rCfp3uOa/5f5KN7m3xuNfpLPzLI/QgNv6wvnI05NZR7ZvoCKaLv+eid/XZ4dDsgNwJHPBHV9+SN8lFnnZJTfU3tHyiOeRDfr02ZEy2Jwka4rnsGAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=LqnKDYHJ; arc=none smtp.client-ip=180.181.231.80
+	s=arc-20240116; t=1763115327; c=relaxed/simple;
+	bh=9CfEl2OfTpWThOyHVylr/RC1TyPqN/2xv5pCXp/9jHk=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Q6Zy1U4mGY86yzEFmtIV2G1lMqQHRRTAvRozGWW1jKMatTPjHDRfI9w6HGnSbXRCtS4AoIHGl0V65Oj33w7w8pUulLjq10BQyagzBDT8XcBHU+8veU5GrVZOlp/9022TYw6vlfCGqdRV3YVYm36q+2BoZrMUrkjNUw7BLI+0v0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=cauCCh9Y; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=A2r/Q/+wRJ2BFr/BHn0s3SothtWMfgvNhJUxmswYYkc=; 
-	b=LqnKDYHJ2hV1IWITk+XlcWoHcu2Bw8J4lGqIWsyd9e2uwsdNVw9Yn38Wt/o2M7PcyulnvfUhU39
-	4KxuZBwog498fmSq/U2tuU0k1n2FhhPvnzMSrrDQr7Jml0Grp5VoP6FxpqtpZGKQDMdd2Yt0AjfTr
-	b8ud4vzpnGbgPkdCX7WvJR+hGGpKIU55v5G3xX2WxkSZlqnkmFRg3XEKLH6yztg4cjQUjeCWaTktt
-	LFaXDmsiA1XVetPG1Y0YvcILkSqEt/RLoe1cNVyvZpfYpmgW9p5gKglPeIz6HhQnaFov/u9bkhRB5
-	EKf+ZLk6JT1ynYj6u61PoNfgwjO2ZHji95Eg==;
+	d=gondor.apana.org.au; s=h01; h=Content-Type:MIME-Version:Message-ID:Subject:
+	To:From:Date:cc:to:subject:message-id:date:from:content-type:in-reply-to:
+	references:reply-to; bh=QkDpA54m7yE8g+BE95bZatgV3vJf2foKGuRK6JH61No=; b=cauCC
+	h9YjPLDeIJ91NP4nAeCZI1jIotgDVdQn8BbMyPlgDuuRCGqeRHIi3H+rNPdCHw9Rtxl9KJmLPHCM8
+	4K+nEsZfUHWX7gEyAp9uQYuJjRZ759H73lhOikcev4r2qoYzFWTyUKOFs17edQWD1EG38E863fsU5
+	lGJEe0QvSsvOoDcKrDWFwu+Przaz0nrei1dRy7NvHdescd8iOR7ogKKF1FuV+DajOFi0HfSzKiEUO
+	6s2+k71hKJZIY1KCfnBl/eyy1/rjdIlC63HMTE+2uFl4GQfranpK3zKtEUXTkndbNa9MO2lXWo87Z
+	6wn0p3SwHNJAd+JAC6TuByRutgC5A==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vJqaS-002y5g-25;
-	Fri, 14 Nov 2025 17:59:25 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Nov 2025 17:59:24 +0800
-Date: Fri, 14 Nov 2025 17:59:24 +0800
+	id 1vJqpp-002yLk-1K;
+	Fri, 14 Nov 2025 18:15:18 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Nov 2025 18:15:17 +0800
+Date: Fri, 14 Nov 2025 18:15:17 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, hannes@cmpxchg.org,
-	yosry.ahmed@linux.dev, nphamcs@gmail.com, chengming.zhou@linux.dev,
-	usamaarif642@gmail.com, ryan.roberts@arm.com, 21cnbao@gmail.com,
-	ying.huang@linux.alibaba.com, akpm@linux-foundation.org,
-	senozhatsky@chromium.org, sj@kernel.org, kasong@tencent.com,
-	linux-crypto@vger.kernel.org, davem@davemloft.net,
-	clabbe@baylibre.com, ardb@kernel.org, ebiggers@google.com,
-	surenb@google.com, kristen.c.accardi@intel.com,
-	vinicius.gomes@intel.com, wajdi.k.feghali@intel.com,
-	vinodh.gopal@intel.com
-Subject: Re: [PATCH v13 13/22] crypto: iaa - IAA Batching for parallel
- compressions/decompressions.
-Message-ID: <aRb9fGDUhgRASTmM@gondor.apana.org.au>
-References: <20251104091235.8793-1-kanchana.p.sridhar@intel.com>
- <20251104091235.8793-14-kanchana.p.sridhar@intel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [GIT PULL] Crypto Fixes for 6.18
+Message-ID: <aRcBNZJDTLFTTHxN@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -71,118 +61,34 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251104091235.8793-14-kanchana.p.sridhar@intel.com>
 
-On Tue, Nov 04, 2025 at 01:12:26AM -0800, Kanchana P Sridhar wrote:
->
-> +/**
-> + * This API provides IAA compress batching functionality for use by swap
-> + * modules.
-> + *
-> + * @ctx:  compression ctx for the requested IAA mode (fixed/dynamic).
-> + * @parent_req: The "parent" iaa_req that contains SG lists for the batch's
-> + *              inputs and outputs.
-> + * @unit_size: The unit size to apply to @parent_req->slen to get the number of
-> + *             scatterlists it contains.
-> + *
-> + * The caller should check the individual sg->lengths in the @parent_req for
-> + * errors, including incompressible page errors.
-> + *
-> + * Returns 0 if all compress requests in the batch complete successfully,
-> + * -EINVAL otherwise.
-> + */
-> +static int iaa_comp_acompress_batch(
-> +	struct iaa_compression_ctx *ctx,
-> +	struct iaa_req *parent_req,
-> +	unsigned int unit_size)
-> +{
-> +	struct iaa_batch_ctx *cpu_ctx = raw_cpu_ptr(iaa_batch_ctx);
-> +	int nr_reqs = parent_req->slen / unit_size;
-> +	int errors[IAA_CRYPTO_MAX_BATCH_SIZE];
-> +	int *dlens[IAA_CRYPTO_MAX_BATCH_SIZE];
-> +	bool compressions_done = false;
-> +	struct sg_page_iter sgiter;
-> +	struct scatterlist *sg;
-> +	struct iaa_req **reqs;
-> +	int i, err = 0;
-> +
-> +	mutex_lock(&cpu_ctx->mutex);
-> +
-> +	reqs = cpu_ctx->reqs;
-> +
-> +	__sg_page_iter_start(&sgiter, parent_req->src, nr_reqs,
-> +			     parent_req->src->offset/unit_size);
-> +
-> +	for (i = 0; i < nr_reqs; ++i, ++sgiter.sg_pgoffset) {
-> +		sg_set_page(reqs[i]->src, sg_page_iter_page(&sgiter), PAGE_SIZE, 0);
-> +		reqs[i]->slen = PAGE_SIZE;
-> +	}
-> +
-> +	for_each_sg(parent_req->dst, sg, nr_reqs, i) {
-> +		sg->length = PAGE_SIZE;
-> +		dlens[i] = &sg->length;
-> +		reqs[i]->dst = sg;
-> +		reqs[i]->dlen = PAGE_SIZE;
-> +	}
-> +
-> +	iaa_set_req_poll(reqs, nr_reqs, true);
-> +
-> +	/*
-> +	 * Prepare and submit the batch of iaa_reqs to IAA. IAA will process
-> +	 * these compress jobs in parallel.
-> +	 */
-> +	for (i = 0; i < nr_reqs; ++i) {
-> +		errors[i] = iaa_comp_acompress(ctx, reqs[i]);
-> +
-> +		if (likely(errors[i] == -EINPROGRESS)) {
-> +			errors[i] = -EAGAIN;
-> +		} else if (unlikely(errors[i])) {
-> +			*dlens[i] = errors[i];
-> +			err = -EINVAL;
-> +		} else {
-> +			*dlens[i] = reqs[i]->dlen;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Asynchronously poll for and process IAA compress job completions.
-> +	 */
-> +	while (!compressions_done) {
-> +		compressions_done = true;
-> +
-> +		for (i = 0; i < nr_reqs; ++i) {
-> +			/*
-> +			 * Skip, if the compression has already completed
-> +			 * successfully or with an error.
-> +			 */
-> +			if (errors[i] != -EAGAIN)
-> +				continue;
-> +
-> +			errors[i] = iaa_comp_poll(ctx, reqs[i]);
-> +
-> +			if (errors[i]) {
-> +				if (likely(errors[i] == -EAGAIN)) {
-> +					compressions_done = false;
-> +				} else {
-> +					*dlens[i] = errors[i];
-> +					err = -EINVAL;
-> +				}
-> +			} else {
-> +				*dlens[i] = reqs[i]->dlen;
-> +			}
-> +		}
-> +	}
+Hi Linus:
 
-Why is this polling necessary?
+The following changes since commit 3c9bf72cc1ced1297b235f9422d62b613a3fdae9:
 
-The crypto_acomp interface is async, even if the only user that
-you're proposing is synchronous.
+  crypto: aspeed - fix double free caused by devm (2025-10-23 12:53:23 +0800)
 
-IOW the driver shouldn't care about synchronous polling at all.
-Just invoke the callback once all the sub-requests are complete
-and the wait call in zswap will take care of the rest.
+are available in the Git repository at:
 
-Cheers,
+  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git tags/v6.18-p5
+
+for you to fetch changes up to 59b0afd01b2ce353ab422ea9c8375b03db313a21:
+
+  crypto: hisilicon/qm - Fix device reference leak in qm_get_qos_value (2025-11-06 14:29:49 +0800)
+
+----------------------------------------------------------------
+This push contains the following changes:
+
+- Fix device reference leak in hisilicon.
+----------------------------------------------------------------
+
+Miaoqian Lin (1):
+      crypto: hisilicon/qm - Fix device reference leak in qm_get_qos_value
+
+ drivers/crypto/hisilicon/qm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
