@@ -1,112 +1,122 @@
-Return-Path: <linux-crypto+bounces-18062-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18064-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C109CC5C8DC
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 11:25:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EADAC5C9AB
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 11:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A9243BC26C
-	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 10:22:27 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 97F974F7D36
+	for <lists+linux-crypto@lfdr.de>; Fri, 14 Nov 2025 10:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECD930FF08;
-	Fri, 14 Nov 2025 10:22:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21E1B3101DA;
+	Fri, 14 Nov 2025 10:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="kGrEOoIt"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="ZnU1QTQ2"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AAC130FC22;
-	Fri, 14 Nov 2025 10:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86C43101DC;
+	Fri, 14 Nov 2025 10:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763115738; cv=none; b=rW5kEk0v8BvZ6B0uwa+3Y3x61vpLJ5svVpLOaLot5iLi4P1KTzJE4VeBrzSlxtYuSxBDBehY+DN1cZN6g5qGDV4FNe0yDyGZhh0V4InJiBoMHfFvNcu5x3gtmxDEPeLGzGUAePCgGz3b4pdXkX2JJEYjQ4JtUwk9vYV81gq5oTk=
+	t=1763115807; cv=none; b=ZU2ZeiJDTtMSCeGan4ZRStSzYL6Phyq+v162RHoU9ndGIF7TyIl3Y23EdLZ3jFOt06uy/9hoiK4o2yi7bqMqKSl1EB7UZKhi1HR0PgAu+LCoJ54W3RE1ohg8KwZ7+e4AuQrWUrocHM1hwS73P8CU9TFZIa2Vll51UFgaW29NNOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763115738; c=relaxed/simple;
-	bh=roxFtnzuRkMpVmMngmMbrFnsoA97ovUMzkdQu17m+Ow=;
+	s=arc-20240116; t=1763115807; c=relaxed/simple;
+	bh=ctZHJWuq+0TpQST/zyyIk88G6B435ZSxcmvS9Z2hcIw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V7F2xoZBQkXLmPROqUbQ3lyrdkECf9n40aBLnQpUYNBDAlKlenlCv/lOU16jdFsd+IbgMyGDjxnWOJImair+eIuj5W4Li09lZX7A84BknMixNVayR7mj9GNUihqxWYsCXey28z2wHTSqdvAiXaC9W6AGyTlOZEoqgMQ5Q/OaHJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=kGrEOoIt; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=iJiWI1qJkM5fuxuoDSHT10S4TjdlZtl74adpV4gRXQQQq86f0Gfd5by/1cejxXdXCGWlwONovWwoH33H98rQq5sntBAPiCD+PeaXDwJj79cizQ03vPEO36X6b30v3uezmbCXBa2DfpgnwBs/5vODVhW0OWl88bafX2k8MY+PTP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ZnU1QTQ2; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=s8WLRgGe3nIjen0XaffMdObT975V6kaP5eCQBJs1sug=; 
-	b=kGrEOoItzCpGhuSJ2jbwDP1OhGaDco8UuAKWO1uHDSpg/uIGOAtkkiOPY4UB3lNVgJ4CLupwNY0
-	ZHHInSuv4xNCIZLTOg374Z4qbT846AfmvK5bOJlKgnPdRcnqPxJWHd341/67QML26MotB5fISUPny
-	V+HjQuUxbtfzAbe/2miUkBoX/YPpJ4DG3wMne7KtvTB4iKU+Bel+wXKn937yCVDkTB6rY3iKoGqHh
-	dZkUDVO7AWQElEzIOUNF6N0arxjySDHRdoB+hOKNH95BJKgdydXrph827wIxX+rSSgpDJf2hyMvhG
-	O8DwpQjyz5/tdTnbSxLviU6T59L57RUmUGIw==;
+	from:content-type:reply-to; bh=zn+WZbkFWl9GEXlWzbgdsX9misJw5iBF5BGbREwNIdQ=; 
+	b=ZnU1QTQ2Ezz66z5U+K+2XVzN9FSC9x7fI/wpDa0JR/y9hD98yNP5vNBBSB7/i4ZHJDzA3Vg6agJ
+	lZr/mJYkNxLWGhRY11EXNWP1m7kkhxAN+huwmjXhks6BcV88MvvVovp+w9+73Sz+Rj4c05YdKmf6V
+	YZx5Ap76TF7SxcHstmXugmQXRRsYHjw1dxIAlM/swiq2a9v8W4OA0Csy5dCyPTZS4CQIIYC9lFHVM
+	iWOw+pltNGDErFgNtW7dTYl7QYft3IxP8TFQsFAV/CLvUUgU3C+Xl5wTWub0z9STMqcPwdSaYROej
+	N4tt/J9N2G1zTGvWU9cYAhGQqCnoWlED3cvg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vJqwW-002yOU-1x;
-	Fri, 14 Nov 2025 18:22:13 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Nov 2025 18:22:12 +0800
-Date: Fri, 14 Nov 2025 18:22:12 +0800
+	id 1vJqwu-002yOl-2q;
+	Fri, 14 Nov 2025 18:22:37 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Nov 2025 18:22:36 +0800
+Date: Fri, 14 Nov 2025 18:22:36 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Marco Crivellari <marco.crivellari@suse.com>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Michal Hocko <mhocko@suse.com>,
-	"David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] crypto: cavium/nitrox - add WQ_PERCPU to alloc_workqueue
- users
-Message-ID: <aRcC1BbR6qNf1P2E@gondor.apana.org.au>
-References: <20251106164236.344954-1-marco.crivellari@suse.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Olivia Mackall <olivia@selenic.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Lars Persson <lars.persson@axis.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	John Allen <john.allen@amd.com>,
+	Srujana Challa <schalla@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@axis.com
+Subject: Re: [PATCH v2 0/6] crypto/hwrng: Simplify with
+ of_device_get_match_data()
+Message-ID: <aRcC7NzNk7__6hb3@gondor.apana.org.au>
+References: <20251107-crypto-of-match-v2-0-a0ea93e24d2a@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251106164236.344954-1-marco.crivellari@suse.com>
+In-Reply-To: <20251107-crypto-of-match-v2-0-a0ea93e24d2a@linaro.org>
 
-On Thu, Nov 06, 2025 at 05:42:36PM +0100, Marco Crivellari wrote:
-> Currently if a user enqueues a work item using schedule_delayed_work() the
-> used wq is "system_wq" (per-cpu wq) while queue_delayed_work() use
-> WORK_CPU_UNBOUND (used when a cpu is not specified). The same applies to
-> schedule_work() that is using system_wq and queue_work(), that makes use
-> again of WORK_CPU_UNBOUND.
-> This lack of consistency cannot be addressed without refactoring the API.
+On Fri, Nov 07, 2025 at 09:15:47AM +0100, Krzysztof Kozlowski wrote:
+> Changes in v2:
+> - crypto: artpec6: Add missing (enum artpec6_crypto_variant) cast (to
+>   fix 32-bit builds)
+> - Add Acks/Rb tags.
+> - Link to v1: https://patch.msgid.link/20251106-crypto-of-match-v1-0-36b26cd35cff@linaro.org
 > 
-> alloc_workqueue() treats all queues as per-CPU by default, while unbound
-> workqueues must opt-in via WQ_UNBOUND.
+> Few simple cleanups, not tested on the hardware.
 > 
-> This default is suboptimal: most workloads benefit from unbound queues,
-> allowing the scheduler to place worker threads where they’re needed and
-> reducing noise when CPUs are isolated.
+> Care has to be taken when converting of_match_data() into
+> of_device_get_match_data(), because first can check arbitrary
+> device_node and the latter checks device's node.  Cases here should be
+> safe because of_match_data() uses 'dev.of_node'.
 > 
-> This continues the effort to refactor workqueue APIs, which began with
-> the introduction of new workqueues and a new alloc_workqueue flag in:
+> Best regards,
+> Krzysztof
 > 
-> commit 128ea9f6ccfb ("workqueue: Add system_percpu_wq and system_dfl_wq")
-> commit 930c2ea566af ("workqueue: Add new WQ_PERCPU flag")
-> 
-> This change adds a new WQ_PERCPU flag to explicitly request alloc_workqueue()
-> to be per-cpu when WQ_UNBOUND has not been specified.
-> 
-> With the introduction of the WQ_PERCPU flag (equivalent to !WQ_UNBOUND),
-> any alloc_workqueue() caller that doesn’t explicitly specify WQ_UNBOUND
-> must now use WQ_PERCPU.
-> 
-> Once migration is complete, WQ_UNBOUND can be removed and unbound will
-> become the implicit default.
-> 
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
 > ---
->  drivers/crypto/cavium/nitrox/nitrox_mbx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Krzysztof Kozlowski (6):
+>       hwrng: bcm2835 - Move MODULE_DEVICE_TABLE() to table definition
+>       hwrng: bcm2835 - Simplify with of_device_get_match_data()
+>       crypto: artpec6 - Simplify with of_device_get_match_data()
+>       crypto: ccp - Constify 'dev_vdata' member
+>       crypto: ccp - Simplify with of_device_get_match_data()
+>       crypto: cesa - Simplify with of_device_get_match_data()
+> 
+>  drivers/char/hw_random/bcm2835-rng.c | 11 +++--------
+>  drivers/crypto/axis/artpec6_crypto.c |  9 +++------
+>  drivers/crypto/ccp/sp-dev.h          |  2 +-
+>  drivers/crypto/ccp/sp-platform.c     | 17 +++--------------
+>  drivers/crypto/marvell/cesa/cesa.c   |  7 ++-----
+>  5 files changed, 12 insertions(+), 34 deletions(-)
+> ---
+> base-commit: cec65c58b74636b6410fc766be1ca89247fbc68e
+> change-id: 20251106-crypto-of-match-22726ffd20b4
+> 
+> Best regards,
+> -- 
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
