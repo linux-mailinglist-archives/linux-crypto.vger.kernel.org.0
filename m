@@ -1,66 +1,68 @@
-Return-Path: <linux-crypto+bounces-18189-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18192-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472CEC7152B
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Nov 2025 23:45:04 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 716FFC7157F
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Nov 2025 23:47:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 66ED830176
-	for <lists+linux-crypto@lfdr.de>; Wed, 19 Nov 2025 22:43:47 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTPS id DCE4E2A629
+	for <lists+linux-crypto@lfdr.de>; Wed, 19 Nov 2025 22:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9891832C933;
-	Wed, 19 Nov 2025 22:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6C332571A;
+	Wed, 19 Nov 2025 22:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b="GD/J9RgG"
+	dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b="yRuc+7k5"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512B432AACA
-	for <linux-crypto@vger.kernel.org>; Wed, 19 Nov 2025 22:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E6B32C333
+	for <linux-crypto@vger.kernel.org>; Wed, 19 Nov 2025 22:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763592164; cv=none; b=S4ZhBQxhdbuhKKSNScB2NyT8/0UTHQ0M1iDYoQ+ius6nEBGZM8RsGF+z1BmdzUcDNXNzlsLo+NRPFMCzzVTc9bBzuq9wwCSfKgXZgZAHf+nfXIUlDBCs0U0kmSheR45/Zrm2waGBl5o7P89n273qDXRhdliqSqklvOi7PJ1D3y0=
+	t=1763592178; cv=none; b=FNc9NuO53OtJUfKr6FAia6gCR0Oa6FYL/bh6KzNCYdBL3+4XRA/7QvUw8cWr5ufbQycJWVHks129IKxR8PApQymMd/VfSVbFbwqArfqNSb1Q0PInpKFnnBtig6LFnTzuhaP7vQ/aStYYda/U3VrX1UOVcC+vhwdxbfn8rNVYNpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763592164; c=relaxed/simple;
-	bh=gAmheY3BdyOTd5f22skV+ygZFPkYkHLxZlz8qlPKzQk=;
+	s=arc-20240116; t=1763592178; c=relaxed/simple;
+	bh=HmDHkRA9WpbrXOoEfJ/ddkjX0oLoATDvE1Jo76ssmHo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RCOBGoWoCnHu/B1iVctExHZb7K4z+f9LjyIggFl7Uiv9+bqzjeTpYPyYnyUtLBkgZ4yVs4M2WrJmSf9aEow9yZbju5WL/8OsKaqzi2z9fmVdDLvoRIWNNl4HA5SUk+symF3Pa1qe4bU/fzPB1ZqLUipzL60A/p6QThhKKi4lRVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=runbox.com; dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b=GD/J9RgG; arc=none smtp.client-ip=185.226.149.37
+	 MIME-Version; b=l5S3rC8W+DKdFIlEnb+2JfKfDkh8ExDfuk3aQ3KR1KtF3FlXhLJDNtqD9HzR0v/LKFbkAAaTrPc8yRSx9Lq31+jaIRmRKzNXiWVsCBtR3L+Eg1o3CLmH2hBsaVWyyQjxRX8qxc3gVTcmZ2egt4EmqFYVqYSkE2SR1Gj5RtBYTgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=runbox.com; dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b=yRuc+7k5; arc=none smtp.client-ip=185.226.149.37
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=runbox.com
 Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
 	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 	(Exim 4.93)
 	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1vLqsp-006ypK-Qw; Wed, 19 Nov 2025 23:42:39 +0100
+	id 1vLqt2-006yww-Rn; Wed, 19 Nov 2025 23:42:52 +0100
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=runbox.com;
 	 s=selector1; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To
 	:Message-Id:Date:Subject:Cc:To:From;
-	bh=RPjl5M3K/tkNOzGdTBgvu8hHZsDSFSPtP5rvQki70cA=; b=GD/J9RgGPwKDAchM9K8Mxz8ffi
-	mtY0CaYUIrh/Ik1edJxi7EmD/h/sZht0bKV8HeKd6QWw8gGmblgT1oWnqhgy90zVRkKouqi3pm+tm
-	4azjYZ+F3G3ldL7OFIE7zsurowGZ05EEQskQBYZGv845ZoDx6tcJbtxlFDNXmZtotdhm5XOVwf/1T
-	fMlHCG2SmhkRI0yHiCboRkphAaFbJ/LUXGZBLcCcfZheI4eNii6frmUUGNAAXRmti4IJyGlcEOW5v
-	HqrF90FDfWB7pQvMMAtmgcpHvXkuQUQ2S60r0eh56Br8Ls5+dPQog2p6j6mpVXbuWWXDPic/k4Cft
-	F2rLHYmQ==;
+	bh=4WfkeXMO718uzCZ/CSShybOTo3+QWuW28/UydqaDh1k=; b=yRuc+7k5HDeesQBx0pKiQqGifX
+	e2I31OW6Qn46JQlheBVxaD1nMBWzCRF3PLWvQGAfp0DCiQf5jX+J0sn9icn5xsUZLponENMBGAasQ
+	6w7YPqyRem/wX7QvjuZhyt5cpPbgUnPEsGdadEugR/w2x4FlQ4jQZLWSFi82cGcazF/PHu7Cf3GlY
+	2FpXez+RgZkqejoYbX1fbEvoCjLo4YPIGm7BIjKUoYxACp8dcl2E/CTRDKOSrnuZvXQRlO5N6Z8nr
+	F3qakQB/Pk5JvOcO3c1VCjtBMFJKsM8zkwyTHdnBOdMmy7nAXmVCmgTnXGGp4+qLyL6mSm/rN75PZ
+	Sb19vLhA==;
 Received: from [10.9.9.74] (helo=submission03.runbox)
 	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
 	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1vLqsp-00084x-A3; Wed, 19 Nov 2025 23:42:39 +0100
+	id 1vLqt2-00086d-JF; Wed, 19 Nov 2025 23:42:52 +0100
 Received: by submission03.runbox with esmtpsa  [Authenticated ID (1493616)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.93)
-	id 1vLqsb-00Fos6-38; Wed, 19 Nov 2025 23:42:25 +0100
+	id 1vLqsc-00Fos6-0b; Wed, 19 Nov 2025 23:42:26 +0100
 From: david.laight.linux@gmail.com
 To: linux-kernel@vger.kernel.org,
 	linux-crypto@vger.kernel.org
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	Olivia Mackall <olivia@selenic.com>,
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	John Allen <john.allen@amd.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
 	David Laight <david.laight.linux@gmail.com>
-Subject: [PATCH 14/44] drivers/char/hw_random: use min3() instead of nested min_t()
-Date: Wed, 19 Nov 2025 22:41:10 +0000
-Message-Id: <20251119224140.8616-15-david.laight.linux@gmail.com>
+Subject: [PATCH 16/44] drivers/crypto/ccp: use min() instead of min_t()
+Date: Wed, 19 Nov 2025 22:41:12 +0000
+Message-Id: <20251119224140.8616-17-david.laight.linux@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20251119224140.8616-1-david.laight.linux@gmail.com>
 References: <20251119224140.8616-1-david.laight.linux@gmail.com>
@@ -74,30 +76,33 @@ Content-Transfer-Encoding: 8bit
 
 From: David Laight <david.laight.linux@gmail.com>
 
-min_t(u16, a, b) is likely to discard significant bits.
-Replace:
-	min_t(u16, min_t(u16, default_quality, 1024), rng->quality ?: 1024);
-with:
-	min3(default_quality, 1024, rng->quality ?: 1024);
+min_t(unsigned int, a, b) casts an 'unsigned long' to 'unsigned int'.
+Use min(a, b) instead as it promotes any 'unsigned int' to 'unsigned long'
+and so cannot discard significant bits.
+
+In this case the 'unsigned long' value is small enough that the result
+is ok.
+
+Detected by an extra check added to min_t().
 
 Signed-off-by: David Laight <david.laight.linux@gmail.com>
 ---
- drivers/char/hw_random/core.c | 2 +-
+ drivers/crypto/ccp/ccp-dev.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-index 018316f54621..74c8eb1d9048 100644
---- a/drivers/char/hw_random/core.c
-+++ b/drivers/char/hw_random/core.c
-@@ -542,7 +542,7 @@ int hwrng_register(struct hwrng *rng)
- 	init_completion(&rng->dying);
+diff --git a/drivers/crypto/ccp/ccp-dev.c b/drivers/crypto/ccp/ccp-dev.c
+index c531d13d971f..246801912e1a 100644
+--- a/drivers/crypto/ccp/ccp-dev.c
++++ b/drivers/crypto/ccp/ccp-dev.c
+@@ -507,7 +507,7 @@ int ccp_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+ {
+ 	struct ccp_device *ccp = container_of(rng, struct ccp_device, hwrng);
+ 	u32 trng_value;
+-	int len = min_t(int, sizeof(trng_value), max);
++	int len = min(sizeof(trng_value), max);
  
- 	/* Adjust quality field to always have a proper value */
--	rng->quality = min_t(u16, min_t(u16, default_quality, 1024), rng->quality ?: 1024);
-+	rng->quality = min3(default_quality, 1024, rng->quality ?: 1024);
- 
- 	if (!current_rng ||
- 	    (!cur_rng_set_by_user && rng->quality > current_rng->quality)) {
+ 	/* Locking is provided by the caller so we can update device
+ 	 * hwrng-related fields safely
 -- 
 2.39.5
 
