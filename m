@@ -1,65 +1,65 @@
-Return-Path: <linux-crypto+bounces-18229-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18227-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28822C746E2
-	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 15:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7E2C746A6
+	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 15:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1ED7535229D
-	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 13:59:01 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4C26E353728
+	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 13:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BDA345CD3;
-	Thu, 20 Nov 2025 13:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0A93346A9;
+	Thu, 20 Nov 2025 13:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="xIA6Q8pz"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="dJLTn4xU"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
+Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084DC345CB1;
-	Thu, 20 Nov 2025 13:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C83132FA16;
+	Thu, 20 Nov 2025 13:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763647116; cv=none; b=DSoLfs+OSlKTxYCnR1rNl9JkJ8RJVdj3RsdTDkGr3OtnhdQhri87yVVbpHJoJG7wxi/VqBq3f2/nLyMPb5Gpi+ELV1Vbvhvpcp7+xjLhv3D8mVBWQR/wA/b+g6lM/pTldQI0YW0WVvFMIvyCjhKFaJSTFzqkZqUUsiQcx4xwNHs=
+	t=1763647100; cv=none; b=jykM8WECVM6nEjSw/YOptFoL4GWXttpioFZbvTiKd0/Jca3i2StTtPuaDnktU16cV6a0L+/5BrUzPEYiWjOf+4t8E1APdS+7zWNEXw1akdn2+cKNyJLGHpAioJJLpBfSAkBGE6ck/aroXlfA4WnVRRhBSfpdOoJFqtwu882/+FA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763647116; c=relaxed/simple;
-	bh=0BzFpp/AjXyzPaiI73qdjVHGf2Lh/9FbsHIJNtrf7B4=;
+	s=arc-20240116; t=1763647100; c=relaxed/simple;
+	bh=/7tuEZLmnzvlhkwWeK1maNDWP7S8pXHUBUG0bkWAL28=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qiNQpff44xvxdFuZnaC5d/flL1urg77dX8mrHCmhtBXSLNBa4gptByecgSjk0Ub6kHe5ciuBGDvQa+52NlJSOAcRHcxx5kZRNWS0Nc3NWad/9vlYV4jXNF12ChJqlwv+NHm3eC5PCgPueNBILGfotCqW+3SWOLKwDgpuJni+/Yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=xIA6Q8pz; arc=none smtp.client-ip=113.46.200.218
+	 MIME-Version:Content-Type; b=iCCY2pYH4xSgmiiSvo3t3QsnXnCDHCauT7cGh8fmiMgvjvHNCsgp3CeicU4GiSrJ+RLbr7skJIKzkbEyZhnRHHcIH21ZIJYQ6sK+fobyUxlh8UTTZyXz9Xqo2pPP0rQww2YZH0WGfISbOmUA2FOyP2AfD4BZfWJXT+65k4Gsii8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=dJLTn4xU; arc=none smtp.client-ip=113.46.200.223
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=DZf+O5qJ0V6Yjg3qBBK9Tx120w3wgIPbtRLvX4AGG8I=;
-	b=xIA6Q8pzkYb3/wQCul79eZXWswUJJKGIAHu89QK8d/gGU9eLgW6yYGO68cIs9hwji6oY/ZVnJ
-	IRvUtvvyTYY+UzCocmaMZNqdEfYP6hW4typ7VseEiAyZEoT06oisQ/X/XH9kHI/4eq54037QDfX
-	b8gXR4Klf5gLqwlzjhlV8hc=
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4dC0J95YTwzpSv2;
-	Thu, 20 Nov 2025 21:56:25 +0800 (CST)
-Received: from dggemv712-chm.china.huawei.com (unknown [10.1.198.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id E9B6E180BD1;
-	Thu, 20 Nov 2025 21:58:22 +0800 (CST)
+	bh=+HcWhgPXtR7D8JcBEJZDe9j2C8W06P1QKnc0m/hTd+4=;
+	b=dJLTn4xUvA8t1w9XK/bFpJK8h2LZp1wDdioJKg3iyAPuJm6FOAWTg0HpWAAILg6rO92PwIwIL
+	0socxBLRLvJQTfxZ0ZKJ4/nOvRyOijI2+SOh5ieFyDmhneFJIN9MZnKJIHBYdn8Bw2LJrJUjS6y
+	FMfx4eMqTpmj4/w2r4x18Gw=
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4dC0JG1pD2zmV6R;
+	Thu, 20 Nov 2025 21:56:30 +0800 (CST)
+Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
+	by mail.maildlp.com (Postfix) with ESMTPS id D9A551800B2;
+	Thu, 20 Nov 2025 21:58:14 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv712-chm.china.huawei.com (10.1.198.32) with Microsoft SMTP Server
+ dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1544.11; Thu, 20 Nov 2025 21:58:14 +0800
 Received: from localhost.huawei.com (10.90.31.46) by
  kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 20 Nov 2025 21:58:13 +0800
+ 15.2.1544.11; Thu, 20 Nov 2025 21:58:14 +0800
 From: Chenghai Huang <huangchenghai2@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
 	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 1/2] crypto: hisilicon/trng - use DEFINE_MUTEX() and LIST_HEAD()
-Date: Thu, 20 Nov 2025 21:58:11 +0800
-Message-ID: <20251120135812.1814923-2-huangchenghai2@huawei.com>
+Subject: [PATCH 2/2] crypto: hisilicon/trng - support tfms sharing the device
+Date: Thu, 20 Nov 2025 21:58:12 +0800
+Message-ID: <20251120135812.1814923-3-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20251120135812.1814923-1-huangchenghai2@huawei.com>
 References: <20251120135812.1814923-1-huangchenghai2@huawei.com>
@@ -76,206 +76,226 @@ X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
 
 From: Weili Qian <qianweili@huawei.com>
 
-Runtime initialization of lock and list head is not
-reliable in a concurrent environment. Therefore, use
-DEFINE_MUTEX() and LIST_HEAD() for automatic initialization.
-And decide whether to register the algorithm to the crypto
-subsystem based on whether the list is empty, instead of
-using atomic operations.
+Since the number of devices is limited, and the number
+of tfms may exceed the number of devices, to ensure that
+tfms can be successfully allocated, support tfms
+sharing the same device.
 
 Fixes: e4d9d10ef4be ("crypto: hisilicon/trng - add support for PRNG")
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 ---
- drivers/crypto/hisilicon/trng/trng.c | 104 +++++++++++++--------------
- 1 file changed, 48 insertions(+), 56 deletions(-)
+ drivers/crypto/hisilicon/trng/trng.c | 98 ++++++++++++++++++++--------
+ 1 file changed, 69 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/trng/trng.c b/drivers/crypto/hisilicon/trng/trng.c
-index ac74df4a9471..dae81b6f43e3 100644
+index dae81b6f43e3..4dcb3398e020 100644
 --- a/drivers/crypto/hisilicon/trng/trng.c
 +++ b/drivers/crypto/hisilicon/trng/trng.c
-@@ -40,16 +40,10 @@
- #define SEED_SHIFT_24		24
+@@ -41,14 +41,16 @@
  #define SEED_SHIFT_16		16
  #define SEED_SHIFT_8		8
--
--struct hisi_trng_list {
--	struct mutex lock;
--	struct list_head list;
--	bool is_init;
--};
-+#define WAIT_PERIOD		20
+ #define WAIT_PERIOD		20
++#define SW_MAX_RANDOM_BYTES	65520
  
  struct hisi_trng {
  	void __iomem *base;
--	struct hisi_trng_list *trng_list;
  	struct list_head list;
  	struct hwrng rng;
  	u32 ver;
-@@ -61,8 +55,8 @@ struct hisi_trng_ctx {
- 	struct hisi_trng *trng;
+-	bool is_used;
+-	struct mutex mutex;
++	u32 ctx_num;
++	u32 random_bytes;
++	struct mutex lock;
  };
  
--static atomic_t trng_active_devs;
--static struct hisi_trng_list trng_devices;
-+static LIST_HEAD(trng_devices_list);
-+static DEFINE_MUTEX(trng_device_lock);
+ struct hisi_trng_ctx {
+@@ -57,10 +59,14 @@ struct hisi_trng_ctx {
  
- static void hisi_trng_set_seed(struct hisi_trng *trng, const u8 *seed)
+ static LIST_HEAD(trng_devices_list);
+ static DEFINE_MUTEX(trng_device_lock);
++static int hisi_trng_read(struct hwrng *rng, void *buf, size_t max, bool wait);
+ 
+-static void hisi_trng_set_seed(struct hisi_trng *trng, const u8 *seed)
++static int hisi_trng_set_seed(struct hisi_trng *trng, const u8 *seed)
  {
-@@ -157,8 +151,8 @@ static int hisi_trng_init(struct crypto_tfm *tfm)
- 	struct hisi_trng *trng;
- 	int ret = -EBUSY;
+ 	u32 val, seed_reg, i;
++	int ret;
++
++	writel(0x0, trng->base + SW_DRBG_BLOCKS);
  
--	mutex_lock(&trng_devices.lock);
--	list_for_each_entry(trng, &trng_devices.list, list) {
-+	mutex_lock(&trng_device_lock);
-+	list_for_each_entry(trng, &trng_devices_list, list) {
- 		if (!trng->is_used) {
- 			trng->is_used = true;
- 			ctx->trng = trng;
-@@ -166,7 +160,7 @@ static int hisi_trng_init(struct crypto_tfm *tfm)
+ 	for (i = 0; i < SW_DRBG_SEED_SIZE;
+ 	     i += SW_DRBG_SEED_SIZE / SW_DRBG_SEED_REGS_NUM) {
+@@ -72,6 +78,20 @@ static void hisi_trng_set_seed(struct hisi_trng *trng, const u8 *seed)
+ 		seed_reg = (i >> SW_DRBG_NUM_SHIFT) % SW_DRBG_SEED_REGS_NUM;
+ 		writel(val, trng->base + SW_DRBG_SEED(seed_reg));
+ 	}
++
++	writel(SW_DRBG_BLOCKS_NUM | (0x1 << SW_DRBG_ENABLE_SHIFT),
++	       trng->base + SW_DRBG_BLOCKS);
++	writel(0x1, trng->base + SW_DRBG_INIT);
++	ret = readl_relaxed_poll_timeout(trng->base + SW_DRBG_STATUS,
++					 val, val & BIT(0), SLEEP_US, TIMEOUT_US);
++	if (ret) {
++		pr_err("failed to init trng(%d)\n", ret);
++		return -EIO;
++	}
++
++	trng->random_bytes = 0;
++
++	return 0;
+ }
+ 
+ static int hisi_trng_seed(struct crypto_rng *tfm, const u8 *seed,
+@@ -79,8 +99,7 @@ static int hisi_trng_seed(struct crypto_rng *tfm, const u8 *seed,
+ {
+ 	struct hisi_trng_ctx *ctx = crypto_rng_ctx(tfm);
+ 	struct hisi_trng *trng = ctx->trng;
+-	u32 val = 0;
+-	int ret = 0;
++	int ret;
+ 
+ 	if (slen < SW_DRBG_SEED_SIZE) {
+ 		pr_err("slen(%u) is not matched with trng(%d)\n", slen,
+@@ -88,19 +107,30 @@ static int hisi_trng_seed(struct crypto_rng *tfm, const u8 *seed,
+ 		return -EINVAL;
+ 	}
+ 
+-	writel(0x0, trng->base + SW_DRBG_BLOCKS);
+-	hisi_trng_set_seed(trng, seed);
++	mutex_lock(&trng->lock);
++	ret = hisi_trng_set_seed(trng, seed);
++	mutex_unlock(&trng->lock);
+ 
+-	writel(SW_DRBG_BLOCKS_NUM | (0x1 << SW_DRBG_ENABLE_SHIFT),
+-	       trng->base + SW_DRBG_BLOCKS);
+-	writel(0x1, trng->base + SW_DRBG_INIT);
++	return ret;
++}
+ 
+-	ret = readl_relaxed_poll_timeout(trng->base + SW_DRBG_STATUS,
+-					val, val & BIT(0), SLEEP_US, TIMEOUT_US);
+-	if (ret)
+-		pr_err("fail to init trng(%d)\n", ret);
++static int hisi_trng_reseed(struct hisi_trng *trng)
++{
++	u8 seed[SW_DRBG_SEED_SIZE];
++	int size;
+ 
+-	return ret;
++	/* Allow other threads to acquire the lock and execute their jobs. */
++	mutex_unlock(&trng->lock);
++	mutex_lock(&trng->lock);
++
++	if (trng->random_bytes < SW_MAX_RANDOM_BYTES)
++		return 0;
++
++	size = hisi_trng_read(&trng->rng, seed, SW_DRBG_SEED_SIZE, false);
++	if (size != SW_DRBG_SEED_SIZE)
++		return -EIO;
++
++	return hisi_trng_set_seed(trng, seed);
+ }
+ 
+ static int hisi_trng_generate(struct crypto_rng *tfm, const u8 *src,
+@@ -114,17 +144,23 @@ static int hisi_trng_generate(struct crypto_rng *tfm, const u8 *src,
+ 	int ret;
+ 	u32 i;
+ 
+-	if (dlen > SW_DRBG_BLOCKS_NUM * SW_DRBG_BYTES || dlen == 0) {
+-		pr_err("dlen(%u) exceeds limit(%d)!\n", dlen,
+-			SW_DRBG_BLOCKS_NUM * SW_DRBG_BYTES);
++	if (!dstn || !dlen) {
++		pr_err("output is error, dlen %u !\n", dlen);
+ 		return -EINVAL;
+ 	}
+ 
++	mutex_lock(&trng->lock);
+ 	do {
++		if (trng->random_bytes >= SW_MAX_RANDOM_BYTES) {
++			ret = hisi_trng_reseed(trng);
++			if (ret)
++				break;
++		}
++
+ 		ret = readl_relaxed_poll_timeout(trng->base + SW_DRBG_STATUS,
+-		     val, val & BIT(1), SLEEP_US, TIMEOUT_US);
++						 val, val & BIT(1), SLEEP_US, TIMEOUT_US);
+ 		if (ret) {
+-			pr_err("fail to generate random number(%d)!\n", ret);
++			pr_err("failed to generate random number(%d)!\n", ret);
  			break;
  		}
- 	}
--	mutex_unlock(&trng_devices.lock);
-+	mutex_unlock(&trng_device_lock);
  
+@@ -139,9 +175,12 @@ static int hisi_trng_generate(struct crypto_rng *tfm, const u8 *src,
+ 			currsize = dlen;
+ 		}
+ 
++		trng->random_bytes += SW_DRBG_BYTES;
+ 		writel(0x1, trng->base + SW_DRBG_GEN);
+ 	} while (currsize < dlen);
+ 
++	mutex_unlock(&trng->lock);
++
  	return ret;
  }
-@@ -175,9 +169,9 @@ static void hisi_trng_exit(struct crypto_tfm *tfm)
+ 
+@@ -149,20 +188,19 @@ static int hisi_trng_init(struct crypto_tfm *tfm)
  {
  	struct hisi_trng_ctx *ctx = crypto_tfm_ctx(tfm);
+ 	struct hisi_trng *trng;
+-	int ret = -EBUSY;
++	u32 ctx_num = ~0;
  
--	mutex_lock(&trng_devices.lock);
-+	mutex_lock(&trng_device_lock);
- 	ctx->trng->is_used = false;
--	mutex_unlock(&trng_devices.lock);
-+	mutex_unlock(&trng_device_lock);
+ 	mutex_lock(&trng_device_lock);
+ 	list_for_each_entry(trng, &trng_devices_list, list) {
+-		if (!trng->is_used) {
+-			trng->is_used = true;
++		if (trng->ctx_num < ctx_num) {
++			ctx_num = trng->ctx_num;
+ 			ctx->trng = trng;
+-			ret = 0;
+-			break;
+ 		}
+ 	}
++	ctx->trng->ctx_num++;
+ 	mutex_unlock(&trng_device_lock);
+ 
+-	return ret;
++	return 0;
  }
  
- static int hisi_trng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-@@ -226,24 +220,43 @@ static struct rng_alg hisi_trng_alg = {
- 	},
- };
+ static void hisi_trng_exit(struct crypto_tfm *tfm)
+@@ -170,7 +208,7 @@ static void hisi_trng_exit(struct crypto_tfm *tfm)
+ 	struct hisi_trng_ctx *ctx = crypto_tfm_ctx(tfm);
  
--static void hisi_trng_add_to_list(struct hisi_trng *trng)
-+static int hisi_trng_crypto_register(struct hisi_trng *trng)
- {
--	mutex_lock(&trng_devices.lock);
--	list_add_tail(&trng->list, &trng_devices.list);
--	mutex_unlock(&trng_devices.lock);
-+	int ret = 0;
-+
-+	mutex_lock(&trng_device_lock);
-+	if (trng->ver != HISI_TRNG_VER_V1 &&
-+	    list_empty(&trng_devices_list)) {
-+		ret = crypto_register_rng(&hisi_trng_alg);
-+		if (ret) {
-+			pr_err("failed to register crypto(%d)\n", ret);
-+			goto unlock;
-+		}
-+	}
-+
-+	list_add_tail(&trng->list, &trng_devices_list);
-+unlock:
-+	mutex_unlock(&trng_device_lock);
-+	return ret;
+ 	mutex_lock(&trng_device_lock);
+-	ctx->trng->is_used = false;
++	ctx->trng->ctx_num--;
+ 	mutex_unlock(&trng_device_lock);
  }
  
--static int hisi_trng_del_from_list(struct hisi_trng *trng)
-+static int hisi_trng_crypto_unregister(struct hisi_trng *trng)
- {
+@@ -245,7 +283,7 @@ static int hisi_trng_crypto_unregister(struct hisi_trng *trng)
  	int ret = -EBUSY;
  
--	mutex_lock(&trng_devices.lock);
--	if (!trng->is_used) {
--		list_del(&trng->list);
--		ret = 0;
--	}
--	mutex_unlock(&trng_devices.lock);
-+	mutex_lock(&trng_device_lock);
-+	if (trng->is_used)
-+		goto unlock;
-+
-+	list_del(&trng->list);
-+	if (trng->ver != HISI_TRNG_VER_V1 &&
-+	    list_empty(&trng_devices_list))
-+		crypto_unregister_rng(&hisi_trng_alg);
+ 	mutex_lock(&trng_device_lock);
+-	if (trng->is_used)
++	if (trng->ctx_num)
+ 		goto unlock;
  
-+	ret = 0;
-+
-+unlock:
-+	mutex_unlock(&trng_device_lock);
- 	return ret;
- }
+ 	list_del(&trng->list);
+@@ -275,7 +313,9 @@ static int hisi_trng_probe(struct platform_device *pdev)
+ 	if (IS_ERR(trng->base))
+ 		return PTR_ERR(trng->base);
  
-@@ -264,23 +277,9 @@ static int hisi_trng_probe(struct platform_device *pdev)
- 
- 	trng->is_used = false;
+-	trng->is_used = false;
++	trng->ctx_num = 0;
++	trng->random_bytes = SW_MAX_RANDOM_BYTES;
++	mutex_init(&trng->lock);
  	trng->ver = readl(trng->base + HISI_TRNG_VERSION);
--	if (!trng_devices.is_init) {
--		INIT_LIST_HEAD(&trng_devices.list);
--		mutex_init(&trng_devices.lock);
--		trng_devices.is_init = true;
--	}
--
--	hisi_trng_add_to_list(trng);
--	if (trng->ver != HISI_TRNG_VER_V1 &&
--	    atomic_inc_return(&trng_active_devs) == 1) {
--		ret = crypto_register_rng(&hisi_trng_alg);
--		if (ret) {
--			dev_err(&pdev->dev,
--				"failed to register crypto(%d)\n", ret);
--			atomic_dec_return(&trng_active_devs);
--			goto err_remove_from_list;
--		}
--	}
-+	ret = hisi_trng_crypto_register(trng);
-+	if (ret)
-+		return ret;
- 
- 	trng->rng.name = pdev->name;
- 	trng->rng.read = hisi_trng_read;
-@@ -288,18 +287,13 @@ static int hisi_trng_probe(struct platform_device *pdev)
- 	ret = devm_hwrng_register(&pdev->dev, &trng->rng);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to register hwrng: %d!\n", ret);
--		goto err_crypto_unregister;
-+		goto unregister_crypto;
- 	}
- 
- 	return ret;
- 
--err_crypto_unregister:
--	if (trng->ver != HISI_TRNG_VER_V1 &&
--	    atomic_dec_return(&trng_active_devs) == 0)
--		crypto_unregister_rng(&hisi_trng_alg);
--
--err_remove_from_list:
--	hisi_trng_del_from_list(trng);
-+unregister_crypto:
-+	hisi_trng_crypto_unregister(trng);
- 	return ret;
- }
- 
-@@ -308,12 +302,10 @@ static void hisi_trng_remove(struct platform_device *pdev)
- 	struct hisi_trng *trng = platform_get_drvdata(pdev);
- 
- 	/* Wait until the task is finished */
--	while (hisi_trng_del_from_list(trng))
--		;
--
--	if (trng->ver != HISI_TRNG_VER_V1 &&
--	    atomic_dec_return(&trng_active_devs) == 0)
--		crypto_unregister_rng(&hisi_trng_alg);
-+	while (hisi_trng_crypto_unregister(trng)) {
-+		dev_info(&pdev->dev, "trng is in using!\n");
-+		msleep(WAIT_PERIOD);
-+	}
- }
- 
- static const struct acpi_device_id hisi_trng_acpi_match[] = {
+ 	ret = hisi_trng_crypto_register(trng);
+ 	if (ret)
 -- 
 2.33.0
 
