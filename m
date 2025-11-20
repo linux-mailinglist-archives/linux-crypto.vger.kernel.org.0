@@ -1,62 +1,62 @@
-Return-Path: <linux-crypto+bounces-18214-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18215-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD60C7385A
-	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 11:45:55 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0A6C73889
+	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 11:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 4650B2AF3B
-	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 10:45:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5B8EA355858
+	for <lists+linux-crypto@lfdr.de>; Thu, 20 Nov 2025 10:46:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D5132ED5B;
-	Thu, 20 Nov 2025 10:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B55532FA04;
+	Thu, 20 Nov 2025 10:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JSdiBlJ4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fdHEJWRY"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C6D2BE621
-	for <linux-crypto@vger.kernel.org>; Thu, 20 Nov 2025 10:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CE930B53F
+	for <linux-crypto@vger.kernel.org>; Thu, 20 Nov 2025 10:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763635528; cv=none; b=R6+xwMMXmBeJLu7PgLCk2YsFnOLrAy+G+ID1PEFBJUd8IsVVy3vVOhsOKczQkdZ6VnwBSkI/vn+EmmjfatQHiZW/G2d5HIwwm7xsV+2ThC0WUR9OrPS92RMSOPFHbZaxyCnEX7Yj6zx8LeCaqRqfPzrAvis5TZKI2xbCvNeyPdA=
+	t=1763635534; cv=none; b=ETpL0fLPsGdLI007AqfvdrbHQy2RXwc19I9M2Jtl6GwuKf+LMeN3344noOOMGVR9WdBI4xwc2t3pgETUBLSAxbGN8NbJ9rvAph8uFYdwmZZKJ8ltR79B/MH0mf1jFq9hZOySF7xr+A82IflpG/g3UTdq0eIpalgnnNA+MoibPmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763635528; c=relaxed/simple;
-	bh=YSuo8ZIpX+/vikOD945PRtO7zdcX3R4mj0XpS51lOo4=;
+	s=arc-20240116; t=1763635534; c=relaxed/simple;
+	bh=UJ0JNuAjO4bhNUyDJJTmWDirBsmcCcvUnyXrgyxFwC0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AZbEQRmSQFfeM95UKvZRUjFpdsISUptTYiFm89IhcwFxUN70Q5wU4v7Ubsai+6y6C5aQlzy/a/kcwg1SFQFC67v53sxYk5v/ZFK8ecjeCMlYWc8851cd26f9BW/nmyirq1a5isVmgE5zN/xN37ENA9rVZY79ywMx90xZc3I8zVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JSdiBlJ4; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=nuK32CRkeu2H7/wNNzBObJjhEcnoDyXBi42VeGMPP6gC1567n1BFw74HsIqdb4IjuhvpA9Zsd37ljaF8ZwtE4C6LxWnlD+mZYwMtZN7Kg0RbDBqCdUB0NkafBvAGtFrUg1xDwmYzptZaH6efgBGGagbrpHgo6mveOzGAcu6gTXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fdHEJWRY; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763635523;
+	s=mimecast20190719; t=1763635530;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lkgSZ60cW/M2Nn+CQQ1e2LUMfs3yx9bYyQ92Ar0JMBg=;
-	b=JSdiBlJ4thKOF0EVosspz0BxEUGcrOgehX64EEoUwgSZ7SRe1wtfOqTn6yZfILeIaAvjvl
-	dVT+oimp7ALQrx8nDajYCH4JRNWU8HXMNIvljeTDUaV/nR5VVnXpmoxrDT9y9wy13yG4q9
-	6Q0Me++GaMqHioxKF901Q5BYm7jCCqM=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=LPY+GhOJq5nNgZrUBrGTmZ1jrCpWP/ToTTWyLrp7aIg=;
+	b=fdHEJWRYA4uRsYRC/wUA3bbhulsqjBuPVsItKRarbvLoUCaVIO3XV7WyPc8+7K8/HuMlBA
+	H2ujs8Q/WoXJilqa5ln+9nBsGHeyOt/8yPxgB11pEYicKBa5Cz0VsJqFy7QrkTjYiWdyqw
+	vwXcSG7B736aC8z2F7VLQaEUNggu48Q=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-648-EgKK7jtJMROEEQHzuG8Afg-1; Thu,
- 20 Nov 2025 05:45:17 -0500
-X-MC-Unique: EgKK7jtJMROEEQHzuG8Afg-1
-X-Mimecast-MFC-AGG-ID: EgKK7jtJMROEEQHzuG8Afg_1763635515
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-267-o9iUTyagMcCIlRyNnQbWjg-1; Thu,
+ 20 Nov 2025 05:45:23 -0500
+X-MC-Unique: o9iUTyagMcCIlRyNnQbWjg-1
+X-Mimecast-MFC-AGG-ID: o9iUTyagMcCIlRyNnQbWjg_1763635520
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 645FE19560BE;
-	Thu, 20 Nov 2025 10:45:15 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5ED5A180057D;
+	Thu, 20 Nov 2025 10:45:20 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.5])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C48761940E85;
-	Thu, 20 Nov 2025 10:45:11 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id AEC3D180087B;
+	Thu, 20 Nov 2025 10:45:16 +0000 (UTC)
 From: David Howells <dhowells@redhat.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: David Howells <dhowells@redhat.com>,
@@ -74,9 +74,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	keyrings@vger.kernel.org,
 	linux-modules@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v10 5/8] crypto: Add ML-DSA crypto_sig support
-Date: Thu, 20 Nov 2025 10:44:32 +0000
-Message-ID: <20251120104439.2620205-6-dhowells@redhat.com>
+Subject: [PATCH v10 6/8] pkcs7: Allow the signing algo to calculate the digest itself
+Date: Thu, 20 Nov 2025 10:44:33 +0000
+Message-ID: <20251120104439.2620205-7-dhowells@redhat.com>
 In-Reply-To: <20251120104439.2620205-1-dhowells@redhat.com>
 References: <20251120104439.2620205-1-dhowells@redhat.com>
 Precedence: bulk
@@ -86,46 +86,132 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
+The ML-DSA public key algorithm really wants to calculate the message
+digest itself, rather than having the digest precalculated and fed to it
+separately as RSA does[*].  The kernel's PKCS#7 parser, however, is
+designed around the latter approach.
+
+  [*] ML-DSA does allow for an "external mu", but CMS doesn't yet have that
+  standardised.
+
+Fix this by noting in the public_key_signature struct when the signing
+algorithm is going to want this and then, rather than doing the digest of
+the authenticatedAttributes ourselves and overwriting the sig->digest with
+that, replace sig->digest with a copy of the contents of the
+authenticatedAttributes section and adjust the digest length to match.
+
+This will then be fed to the public key algorithm as normal which can do
+what it wants with the data.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Lukas Wunner <lukas@wunner.de>
+cc: Ignat Korchagin <ignat@cloudflare.com>
+cc: Stephan Mueller <smueller@chronox.de>
+cc: Eric Biggers <ebiggers@kernel.org>
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+cc: keyrings@vger.kernel.org
+cc: linux-crypto@vger.kernel.org
 ---
- crypto/Kconfig  | 10 ++++++++++
- crypto/Makefile |  2 ++
- 2 files changed, 12 insertions(+)
+ crypto/asymmetric_keys/pkcs7_parser.c |  4 +--
+ crypto/asymmetric_keys/pkcs7_verify.c | 48 ++++++++++++++++++---------
+ include/crypto/public_key.h           |  1 +
+ 3 files changed, 36 insertions(+), 17 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index bf8b8a60a0c0..45e376af02dc 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -344,6 +344,16 @@ config CRYPTO_ECRDSA
- 	  One of the Russian cryptographic standard algorithms (called GOST
- 	  algorithms). Only signature verification is implemented.
+diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+index 423d13c47545..3cdbab3b9f50 100644
+--- a/crypto/asymmetric_keys/pkcs7_parser.c
++++ b/crypto/asymmetric_keys/pkcs7_parser.c
+@@ -599,8 +599,8 @@ int pkcs7_sig_note_set_of_authattrs(void *context, size_t hdrlen,
+ 	}
  
-+config CRYPTO_MLDSA
-+	tristate "ML-DSA (Module-Lattice-Based Digital Signature Algorithm)"
-+	select CRYPTO_SIG
-+	select CRYPTO_LIB_MLDSA
-+	select CRYPTO_LIB_SHA3
-+	help
-+	  ML-DSA (Module-Lattice-Based Digital Signature Algorithm) (FIPS-204).
-+
-+	  Only signature verification is implemented.
-+
- endmenu
+ 	/* We need to switch the 'CONT 0' to a 'SET OF' when we digest */
+-	sinfo->authattrs = value - (hdrlen - 1);
+-	sinfo->authattrs_len = vlen + (hdrlen - 1);
++	sinfo->authattrs = value - hdrlen;
++	sinfo->authattrs_len = vlen + hdrlen;
+ 	return 0;
+ }
  
- menu "Block ciphers"
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 093c56a45d3f..b181f8a54099 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -60,6 +60,8 @@ ecdsa_generic-y += ecdsa-p1363.o
- ecdsa_generic-y += ecdsasignature.asn1.o
- obj-$(CONFIG_CRYPTO_ECDSA) += ecdsa_generic.o
- 
-+obj-$(CONFIG_CRYPTO_MLDSA) += mldsa.o
+diff --git a/crypto/asymmetric_keys/pkcs7_verify.c b/crypto/asymmetric_keys/pkcs7_verify.c
+index 6d6475e3a9bf..0f9f515b784d 100644
+--- a/crypto/asymmetric_keys/pkcs7_verify.c
++++ b/crypto/asymmetric_keys/pkcs7_verify.c
+@@ -70,8 +70,6 @@ static int pkcs7_digest(struct pkcs7_message *pkcs7,
+ 	 * digest we just calculated.
+ 	 */
+ 	if (sinfo->authattrs) {
+-		u8 tag;
+-
+ 		if (!sinfo->msgdigest) {
+ 			pr_warn("Sig %u: No messageDigest\n", sinfo->index);
+ 			ret = -EKEYREJECTED;
+@@ -97,20 +95,40 @@ static int pkcs7_digest(struct pkcs7_message *pkcs7,
+ 		 * as the contents of the digest instead.  Note that we need to
+ 		 * convert the attributes from a CONT.0 into a SET before we
+ 		 * hash it.
++		 *
++		 * However, for certain algorithms, such as ML-DSA, the digest
++		 * is integrated into the signing algorithm.  In such a case,
++		 * we copy the authattrs, modifying the tag type, and set that
++		 * as the digest.
+ 		 */
+-		memset(sig->digest, 0, sig->digest_size);
+-
+-		ret = crypto_shash_init(desc);
+-		if (ret < 0)
+-			goto error;
+-		tag = ASN1_CONS_BIT | ASN1_SET;
+-		ret = crypto_shash_update(desc, &tag, 1);
+-		if (ret < 0)
+-			goto error;
+-		ret = crypto_shash_finup(desc, sinfo->authattrs,
+-					 sinfo->authattrs_len, sig->digest);
+-		if (ret < 0)
+-			goto error;
++		if (sig->algo_does_hash) {
++			kfree(sig->digest);
 +
- crypto_acompress-y := acompress.o
- crypto_acompress-y += scompress.o
- obj-$(CONFIG_CRYPTO_ACOMP2) += crypto_acompress.o
++			ret = -ENOMEM;
++			sig->digest = kmalloc(umax(sinfo->authattrs_len, sig->digest_size),
++					      GFP_KERNEL);
++			if (!sig->digest)
++				goto error_no_desc;
++
++			sig->digest_size = sinfo->authattrs_len;
++			memcpy(sig->digest, sinfo->authattrs, sinfo->authattrs_len);
++			((u8 *)sig->digest)[0] = ASN1_CONS_BIT | ASN1_SET;
++			ret = 0;
++		} else {
++			u8 tag = ASN1_CONS_BIT | ASN1_SET;
++
++			ret = crypto_shash_init(desc);
++			if (ret < 0)
++				goto error;
++			ret = crypto_shash_update(desc, &tag, 1);
++			if (ret < 0)
++				goto error;
++			ret = crypto_shash_finup(desc, sinfo->authattrs + 1,
++						 sinfo->authattrs_len - 1,
++						 sig->digest);
++			if (ret < 0)
++				goto error;
++		}
+ 		pr_devel("AADigest = [%*ph]\n", 8, sig->digest);
+ 	}
+ 
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 81098e00c08f..e4ec8003a3a4 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -46,6 +46,7 @@ struct public_key_signature {
+ 	u8 *digest;
+ 	u32 s_size;		/* Number of bytes in signature */
+ 	u32 digest_size;	/* Number of bytes in digest */
++	bool algo_does_hash;	/* Public key algo does its own hashing */
+ 	const char *pkey_algo;
+ 	const char *hash_algo;
+ 	const char *encoding;
 
 
