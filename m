@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-18360-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18362-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8AC3C7D6C0
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 20:43:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31365C7D6C9
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 20:43:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 71C084E1793
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 19:43:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA1323AA4F4
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 19:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D782C3272;
-	Sat, 22 Nov 2025 19:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888272D5950;
+	Sat, 22 Nov 2025 19:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MM74jTXR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l2rI8DQR"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB90D2C21FB;
-	Sat, 22 Nov 2025 19:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8622D4816;
+	Sat, 22 Nov 2025 19:42:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763840566; cv=none; b=b3TeKtpywP1TWdpHwG9xoxVqtePgOeOxKz07roqoI6h0gYDmvC3lmhicFyE/dY42iC5hEBhy6QOVPIs8FL53Sf3iyaQxcn3YOoNh8vK3XlxN6KHiO1emECUN91MnsATdPb+7tNimG7DpcKZFDNBe0xlbsLDxdNL+03cCZZjD6Zg=
+	t=1763840569; cv=none; b=BIuWdehfYGns5SZU8BxBPwzVPZELrLg8i3mXwvVKmkvzH7WPSKRfx/SNcB6TJVqmR6vJvG1nwDDIvcWnO0DxcpUNhX8Smc4rPUvVH2tueUptA8creqnu2h3cr+I10YJjBV5nH0REm5F27RWST76BPq9puV8G+T3VoM5tIMbHHew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763840566; c=relaxed/simple;
-	bh=Vpv+tZscN2l9bt6vPiXuRUfDMu1WW0qW9PfdekwXokc=;
+	s=arc-20240116; t=1763840569; c=relaxed/simple;
+	bh=0IOUqs8lMMDtwM/i/7ezFpGR18sjAzjwbBN/o8ZuLWc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=reYuZdgfFWGomJh7tIzcPuzprfJyHGr9WMu8I6jj5Y0EkJZkXUBsWTAocnIpLB03idYRvNPpdUUTUXFQzqJPVH0PBupjyYsfb/sma5kmyRtMIOOLQ7B6KVsj0xRyu3bvSqS00ibqI3hvhnSUCv7h4RkwQOZwVT1Obaa/eGTAOps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MM74jTXR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC97EC4CEF5;
-	Sat, 22 Nov 2025 19:42:45 +0000 (UTC)
+	 MIME-Version; b=XvzUIk5fbBdoEgmwJZLfMfKhpb1FAdNe77ORXTyt4y2DZ31Uo0Zojml+TJwVSwbD0gyeyoCCUGcc5nqJYwSfPmaRVbN63Mk3Zs0R+pXlbSapj7taCXTrbXmscFCSHTIl/8xHKk6KY3m2oeQC2gXYdgxYqY41aOSpEUJmmFCOZ1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l2rI8DQR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 803D6C19425;
+	Sat, 22 Nov 2025 19:42:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763840566;
-	bh=Vpv+tZscN2l9bt6vPiXuRUfDMu1WW0qW9PfdekwXokc=;
+	s=k20201202; t=1763840567;
+	bh=0IOUqs8lMMDtwM/i/7ezFpGR18sjAzjwbBN/o8ZuLWc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MM74jTXRmc4CXrYu51xd7NPgkvyY2uCtaB98PufyxKjIO9AMqpvmO/MNWzn36v3Vp
-	 o8G4ahMH0RWzUaT7sndAv5Iqm0WRoZ/wpl/j6D1/sIzcJc7aAQRyctmnHDm5kRW4vH
-	 fTVMK0wt7gHskk0vVZF3pB5lkWsF6v/gd1Seb6EIT4HwOlaQE0E8MIuQDvj5yg2JJj
-	 12tDWXma/1Bo5UdLR2oO4rR+/EwXCuDTyafFP14gmMVGYtTtx16Wv2XTT1eJIdXpre
-	 J/pET1qo/JIx6FzHLLtWPa/S9oqcmafx5WXg+i7akBoxPBZVJxtHwJlgH7m7sLQUAz
-	 8mEg+HY3+Ti1g==
+	b=l2rI8DQRNoSuhrE5yb3zxnsKN8J96NlO9OU5eD5pOnrsg69KUwya1Aw8ahm4dx31h
+	 TlMB3Wu0IHh7FCZQ6fEzDCuRImnuqrYSSTc4FK3HNYJuYIsZFIyE966NPs6ErfV02K
+	 SmKV3eUH+KlbPae5+T9wZelfEtEamJigg+ZZoJ2wikH63ynk9TnMzGgsyQtdyAEqkd
+	 FbDNZk8RcP+5hwJPovVC8Ud1XTQeNzFCYWW/A9IN0V7up3ISIStGO+SP6xELbdPy2m
+	 OrXXDJ+LTiLwf+XdpSM1rwCXKGrmQKAQvtr70IwdV0RUpZjxjbQmXN/00XVAwmdxFt
+	 tsxHe/v8AG+AA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -50,9 +50,9 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org,
 	Kees Cook <kees@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 3/6] lib/crypto: md5: Add at_least decoration to fixed-size array params
-Date: Sat, 22 Nov 2025 11:42:03 -0800
-Message-ID: <20251122194206.31822-4-ebiggers@kernel.org>
+Subject: [PATCH 4/6] lib/crypto: poly1305: Add at_least decoration to fixed-size array params
+Date: Sat, 22 Nov 2025 11:42:04 -0800
+Message-ID: <20251122194206.31822-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20251122194206.31822-1-ebiggers@kernel.org>
 References: <20251122194206.31822-1-ebiggers@kernel.org>
@@ -65,79 +65,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Add the at_least (i.e. 'static') decoration to the fixed-size array
-parameters of the md5 library functions.  This causes clang to warn when
-a too-small array of known size is passed.
+parameters of the poly1305 library functions.  This causes clang to warn
+when a too-small array of known size is passed.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- include/crypto/md5.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ include/crypto/poly1305.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/crypto/md5.h b/include/crypto/md5.h
-index c9aa5c3abc53..c47aedfe67ec 100644
---- a/include/crypto/md5.h
-+++ b/include/crypto/md5.h
-@@ -74,21 +74,21 @@ void md5_update(struct md5_ctx *ctx, const u8 *data, size_t len);
-  *
-  * After finishing, this zeroizes @ctx.  So the caller does not need to do it.
-  *
-  * Context: Any context.
-  */
--void md5_final(struct md5_ctx *ctx, u8 out[MD5_DIGEST_SIZE]);
-+void md5_final(struct md5_ctx *ctx, u8 out[at_least MD5_DIGEST_SIZE]);
+diff --git a/include/crypto/poly1305.h b/include/crypto/poly1305.h
+index d4daeec8da19..190beb427c6d 100644
+--- a/include/crypto/poly1305.h
++++ b/include/crypto/poly1305.h
+@@ -57,11 +57,11 @@ struct poly1305_desc_ctx {
+ 	u32 s[4];
+ 	struct poly1305_block_state state;
+ };
  
- /**
-  * md5() - Compute MD5 message digest in one shot
-  * @data: the message data
-  * @len: the data length in bytes
-  * @out: (output) the resulting MD5 message digest
-  *
-  * Context: Any context.
-  */
--void md5(const u8 *data, size_t len, u8 out[MD5_DIGEST_SIZE]);
-+void md5(const u8 *data, size_t len, u8 out[at_least MD5_DIGEST_SIZE]);
+ void poly1305_init(struct poly1305_desc_ctx *desc,
+-		   const u8 key[POLY1305_KEY_SIZE]);
++		   const u8 key[at_least POLY1305_KEY_SIZE]);
+ void poly1305_update(struct poly1305_desc_ctx *desc,
+ 		     const u8 *src, unsigned int nbytes);
+ void poly1305_final(struct poly1305_desc_ctx *desc, u8 *digest);
  
- /**
-  * struct hmac_md5_key - Prepared key for HMAC-MD5
-  * @istate: private
-  * @ostate: private
-@@ -171,11 +171,11 @@ static inline void hmac_md5_update(struct hmac_md5_ctx *ctx,
-  *
-  * After finishing, this zeroizes @ctx.  So the caller does not need to do it.
-  *
-  * Context: Any context.
-  */
--void hmac_md5_final(struct hmac_md5_ctx *ctx, u8 out[MD5_DIGEST_SIZE]);
-+void hmac_md5_final(struct hmac_md5_ctx *ctx, u8 out[at_least MD5_DIGEST_SIZE]);
- 
- /**
-  * hmac_md5() - Compute HMAC-MD5 in one shot, using a prepared key
-  * @key: the prepared HMAC key
-  * @data: the message data
-@@ -185,11 +185,12 @@ void hmac_md5_final(struct hmac_md5_ctx *ctx, u8 out[MD5_DIGEST_SIZE]);
-  * If you're using the key only once, consider using hmac_md5_usingrawkey().
-  *
-  * Context: Any context.
-  */
- void hmac_md5(const struct hmac_md5_key *key,
--	      const u8 *data, size_t data_len, u8 out[MD5_DIGEST_SIZE]);
-+	      const u8 *data, size_t data_len,
-+	      u8 out[at_least MD5_DIGEST_SIZE]);
- 
- /**
-  * hmac_md5_usingrawkey() - Compute HMAC-MD5 in one shot, using a raw key
-  * @raw_key: the raw HMAC-MD5 key
-  * @raw_key_len: the key length in bytes.  All key lengths are supported.
-@@ -202,8 +203,8 @@ void hmac_md5(const struct hmac_md5_key *key,
-  *
-  * Context: Any context.
-  */
- void hmac_md5_usingrawkey(const u8 *raw_key, size_t raw_key_len,
- 			  const u8 *data, size_t data_len,
--			  u8 out[MD5_DIGEST_SIZE]);
-+			  u8 out[at_least MD5_DIGEST_SIZE]);
- 
- #endif /* _CRYPTO_MD5_H */
+ #endif
 -- 
 2.51.2
 
