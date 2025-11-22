@@ -1,66 +1,66 @@
-Return-Path: <linux-crypto+bounces-18342-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18336-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C84C7CA31
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 08:51:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 938BAC7CA04
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 08:49:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C1C43A8EA0
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 07:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 455F13A83A0
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 07:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FB42F693E;
-	Sat, 22 Nov 2025 07:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E0E2BEC52;
+	Sat, 22 Nov 2025 07:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="xRRonAxM"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="UNmmFbWn"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81FD1DE2A5;
-	Sat, 22 Nov 2025 07:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6701B85F8;
+	Sat, 22 Nov 2025 07:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763797772; cv=none; b=fu1UDCsfj2H5sQtcz0tyS1mNJ35ttnfiGdcS7QSn2Rx0Vx+puxn+S+79hawJP8tOfmOJDY/y/1AadIealy+HTa10cFgtFHw4U1qtwzlFt3GJFTBeEZWnw3IVHU+lH74uY22RNSY31UQjQs1bxCe47wEz8ME/bkJAcqh6RLhWaXE=
+	t=1763797766; cv=none; b=IWH/Ep2jtdgd0sNpH9jVunghwgPlkVZopeQUeFAwidWbyHalN9bj9xyZDBPiRzk1w9PAjj1fQUtRNYjBqXJVLEfLLDspbw7QSxmL/nZ60FUwI57NimyEA9k2+Qs4Jxg6tvC3UttdR+b0dZJIz6abj43oH1LWA3YMTlTRip9g9xU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763797772; c=relaxed/simple;
-	bh=Q2gVVrlQce/ejOUKLA694IvCSeb7BTJl8Q/9XxyZnJ8=;
+	s=arc-20240116; t=1763797766; c=relaxed/simple;
+	bh=6176ZIZ5IiSfussiKGbTQdM3mXFCSDfrmxc/eiNztH0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Oh0nzfSnT72/yNhvrCqW09CDKfn8yOpm4GeDGIop0V/KVFDQ2l+kdug9ZvQ9VtWyHpKfAYj+6n5a/V0nQqM9FGC+7uFSQxtuYjIxKYNlmzMxGAMuoleoy++4c6I0eVULZ2GjAAzw20azl/ho0zbRh7AdB7iQD5c7urkI5QNU13k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=xRRonAxM; arc=none smtp.client-ip=113.46.200.227
+	 MIME-Version:Content-Type; b=laKgJtU92Oei3wUSneLughNdEd/APMRqjj2OQqGr4jqnaO1ZGeQB590RbtOBD9ETJ39Atd3P44PzwB/rOj+/tOENglq5hdnXkeq2S1PE4GI5A+YHjyN7BWHRhkLn3R+K38/yVR6o+9s/c9QrxTH36MIA6tAHx26JReK4TIbmUmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=UNmmFbWn; arc=none smtp.client-ip=113.46.200.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=PDgCsS0HdBW5v8MKTJqrHgteS9M6r91rTTpe+Qi/aro=;
-	b=xRRonAxMlOhwdsVqmcIBNr2RC5eRQICArI84CRt35T2NuJnJoGgnFgRkyhCn0KPvfOclTsGWS
-	VB2UEZDK8R2NNHWztEllw5KrLXV2qYCX44QK+u4ubKLnnpSpCFGKDRi7j3GSiP1JGmaBrS6Y8AT
-	CGKyIvC8B6J9R3+TYYKJVMo=
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dD4225KNNznTWr;
-	Sat, 22 Nov 2025 15:47:54 +0800 (CST)
-Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id A058F1800CE;
-	Sat, 22 Nov 2025 15:49:20 +0800 (CST)
+	bh=Vm6uXFXxydiiwKIsx7W8VRO5SKwRPFOKZPatyoA1SlY=;
+	b=UNmmFbWnCsAvG2KynOxi/4GuqtIO1h1V82DJv6RsybcPSnX23Q+VQmJQ74sYjKDCbgervB/5X
+	QUakOVguUMd4j54qZgMT57AubIZ+tGb5XKY8Y8NeuxnmxnzClbmzCf1DdnDQQuEvwe/BmHbDYg+
+	mUOTTtNQjGOqILeAI4uUGUk=
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4dD41F32rNzcZyP;
+	Sat, 22 Nov 2025 15:47:13 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id 143521401F2;
+	Sat, 22 Nov 2025 15:49:21 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1544.11; Sat, 22 Nov 2025 15:49:20 +0800
 Received: from localhost.huawei.com (10.90.31.46) by
  kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 22 Nov 2025 15:49:19 +0800
+ 15.2.1544.11; Sat, 22 Nov 2025 15:49:20 +0800
 From: Chenghai Huang <huangchenghai2@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
 	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>, <lizhi206@huawei.com>,
 	<taoqi10@huawei.com>
-Subject: [PATCH v3 06/11] crypto: hisilicon - consolidate qp creation and start in hisi_qm_alloc_qps_node
-Date: Sat, 22 Nov 2025 15:49:11 +0800
-Message-ID: <20251122074916.2793717-7-huangchenghai2@huawei.com>
+Subject: [PATCH v3 07/11] crypto: hisilicon/qm - add reference counting to queues for tfm kernel reuse
+Date: Sat, 22 Nov 2025 15:49:12 +0800
+Message-ID: <20251122074916.2793717-8-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20251122074916.2793717-1-huangchenghai2@huawei.com>
 References: <20251122074916.2793717-1-huangchenghai2@huawei.com>
@@ -75,335 +75,191 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  kwepemq200001.china.huawei.com (7.202.195.16)
 
-Consolidate the creation and start of qp into the function
-hisi_qm_alloc_qps_node. This change eliminates the need for
-each module to perform these steps in two separate phases
-(creation and start).
+Add reference counting to queues. When all queues are occupied, tfm
+will reuse queues with the same algorithm type that have already
+been allocated in the kernel. The corresponding queue will be
+released when the reference count reaches 1.
 
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 40 ++-----------
- drivers/crypto/hisilicon/qm.c               | 65 ++++++++++++++++-----
- drivers/crypto/hisilicon/sec2/sec_crypto.c  |  8 ---
- drivers/crypto/hisilicon/zip/zip_crypto.c   | 40 +------------
- include/linux/hisi_acc_qm.h                 |  1 -
- 5 files changed, 58 insertions(+), 96 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 81 +++++++++++++++++++++++++++--------
+ include/linux/hisi_acc_qm.h   |  1 +
+ 2 files changed, 65 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 220022ae7afb..f410e610eaba 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -156,27 +156,6 @@ static void hpre_dfx_add_req_time(struct hpre_asym_request *hpre_req)
- 		ktime_get_ts64(&hpre_req->req_time);
- }
- 
--static struct hisi_qp *hpre_get_qp_and_start(u8 type)
--{
--	struct hisi_qp *qp;
--	int ret;
--
--	qp = hpre_create_qp(type);
--	if (!qp) {
--		pr_err("Can not create hpre qp!\n");
--		return ERR_PTR(-ENODEV);
--	}
--
--	ret = hisi_qm_start_qp(qp, 0);
--	if (ret < 0) {
--		hisi_qm_free_qps(&qp, 1);
--		pci_err(qp->qm->pdev, "Can not start qp!\n");
--		return ERR_PTR(-EINVAL);
--	}
--
--	return qp;
--}
--
- static int hpre_get_data_dma_addr(struct hpre_asym_request *hpre_req,
- 				  struct scatterlist *data, unsigned int len,
- 				  int is_src, dma_addr_t *tmp)
-@@ -316,9 +295,8 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 
- static void hpre_ctx_clear(struct hpre_ctx *ctx, bool is_clear_all)
- {
--	if (is_clear_all) {
-+	if (is_clear_all)
- 		hisi_qm_free_qps(&ctx->qp, 1);
--	}
- 
- 	ctx->crt_g2_mode = false;
- 	ctx->key_sz = 0;
-@@ -403,11 +381,10 @@ static int hpre_ctx_init(struct hpre_ctx *ctx, u8 type)
- 	struct hisi_qp *qp;
- 	struct hpre *hpre;
- 
--	qp = hpre_get_qp_and_start(type);
--	if (IS_ERR(qp))
--		return PTR_ERR(qp);
-+	qp = hpre_create_qp(type);
-+	if (!qp)
-+		return -ENODEV;
- 
--	qp->qp_ctx = ctx;
- 	qp->req_cb = hpre_alg_cb;
- 	ctx->qp = qp;
- 	ctx->dev = &qp->qm->pdev->dev;
-@@ -597,9 +574,6 @@ static void hpre_dh_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all)
- 	struct device *dev = ctx->dev;
- 	unsigned int sz = ctx->key_sz;
- 
--	if (is_clear_all)
--		hisi_qm_stop_qp(ctx->qp);
--
- 	if (ctx->dh.g) {
- 		dma_free_coherent(dev, sz, ctx->dh.g, ctx->dh.dma_g);
- 		ctx->dh.g = NULL;
-@@ -940,9 +914,6 @@ static void hpre_rsa_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all)
- 	unsigned int half_key_sz = ctx->key_sz >> 1;
- 	struct device *dev = ctx->dev;
- 
--	if (is_clear_all)
--		hisi_qm_stop_qp(ctx->qp);
--
- 	if (ctx->rsa.pubkey) {
- 		dma_free_coherent(dev, ctx->key_sz << 1,
- 				  ctx->rsa.pubkey, ctx->rsa.dma_pubkey);
-@@ -1112,9 +1083,6 @@ static void hpre_ecc_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all)
- 	unsigned int sz = ctx->key_sz;
- 	unsigned int shift = sz << 1;
- 
--	if (is_clear_all)
--		hisi_qm_stop_qp(ctx->qp);
--
- 	if (ctx->ecdh.p) {
- 		/* ecdh: p->a->k->b */
- 		memzero_explicit(ctx->ecdh.p + shift, sz);
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 3965c8d0993c..28256f64aa3c 100644
+index 28256f64aa3c..6ff189941300 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -3528,6 +3528,14 @@ void hisi_qm_dev_err_uninit(struct hisi_qm *qm)
+@@ -2002,7 +2002,38 @@ static void hisi_qm_unset_hw_reset(struct hisi_qp *qp)
+ 	*addr = 0;
  }
- EXPORT_SYMBOL_GPL(hisi_qm_dev_err_uninit);
  
-+static void qm_release_qp_nolock(struct hisi_qp *qp)
+-static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
++static struct hisi_qp *find_shareable_qp(struct hisi_qm *qm, u8 alg_type, bool is_in_kernel)
 +{
-+	struct hisi_qm *qm = qp->qm;
++	struct device *dev = &qm->pdev->dev;
++	struct hisi_qp *share_qp = NULL;
++	struct hisi_qp *qp;
++	u32 ref_count = ~0;
++	int i;
 +
-+	qm->qp_in_used--;
-+	idr_remove(&qm->qp_idr, qp->qp_id);
-+}
++	if (!is_in_kernel)
++		goto queues_busy;
 +
- /**
-  * hisi_qm_free_qps() - free multiple queue pairs.
-  * @qps: The queue pairs need to be freed.
-@@ -3540,8 +3548,14 @@ void hisi_qm_free_qps(struct hisi_qp **qps, int qp_num)
- 	if (!qps || qp_num <= 0)
- 		return;
- 
--	for (i = qp_num - 1; i >= 0; i--)
--		hisi_qm_release_qp(qps[i]);
-+	down_write(&qps[0]->qm->qps_lock);
-+
-+	for (i = qp_num - 1; i >= 0; i--) {
-+		qm_stop_qp_nolock(qps[i]);
-+		qm_release_qp_nolock(qps[i]);
-+	}
-+
-+	up_write(&qps[0]->qm->qps_lock);
- }
- EXPORT_SYMBOL_GPL(hisi_qm_free_qps);
- 
-@@ -3555,6 +3569,39 @@ static void free_list(struct list_head *head)
- 	}
- }
- 
-+static int qm_get_and_start_qp(struct hisi_qm *qm, int qp_num, struct hisi_qp **qps, u8 *alg_type)
-+{
-+	int ret = -ENODEV;
-+	int i, j;
-+
-+	down_write(&qm->qps_lock);
-+	for (i = 0; i < qp_num; i++) {
-+		qps[i] = qm_create_qp_nolock(qm, alg_type[i]);
-+		if (IS_ERR(qps[i])) {
-+			goto free_qp;
++	for (i = 0; i < qm->qp_num; i++) {
++		qp = &qm->qp_array[i];
++		if (qp->is_in_kernel && qp->alg_type == alg_type && qp->ref_count < ref_count) {
++			ref_count = qp->ref_count;
++			share_qp = qp;
 +		}
 +	}
 +
-+	for (j = 0; j < qp_num; j++) {
-+		ret = qm_start_qp_nolock(qps[j], 0);
-+		if (ret)
-+			goto stop_qp;
++	if (share_qp) {
++		share_qp->ref_count++;
++		return share_qp;
 +	}
-+	up_write(&qm->qps_lock);
 +
-+	return 0;
-+
-+stop_qp:
-+	for (j--; j >= 0; j--)
-+		qm_stop_qp_nolock(qps[j]);
-+free_qp:
-+	for (i--; i >= 0; i--)
-+		qm_release_qp_nolock(qps[i]);
-+	up_write(&qm->qps_lock);
-+
-+	return ret;
++queues_busy:
++	dev_info_ratelimited(dev, "All %u queues of QM are busy and no shareable queue\n",
++			     qm->qp_num);
++	atomic64_inc(&qm->debug.dfx.create_qp_err_cnt);
++	return ERR_PTR(-EBUSY);
 +}
 +
- static int hisi_qm_sort_devices(int node, struct list_head *head,
- 				struct hisi_qm_list *qm_list)
++static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type, bool is_in_kernel)
  {
-@@ -3608,7 +3655,6 @@ int hisi_qm_alloc_qps_node(struct hisi_qm_list *qm_list, int qp_num,
- 	struct hisi_qm_resource *tmp;
- 	int ret = -ENODEV;
- 	LIST_HEAD(head);
--	int i;
- 
- 	if (!qps || !qm_list || qp_num <= 0)
- 		return -EINVAL;
-@@ -3620,18 +3666,9 @@ int hisi_qm_alloc_qps_node(struct hisi_qm_list *qm_list, int qp_num,
+ 	struct device *dev = &qm->pdev->dev;
+ 	struct hisi_qp *qp;
+@@ -2013,17 +2044,14 @@ static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
+ 		return ERR_PTR(-EPERM);
  	}
  
- 	list_for_each_entry(tmp, &head, list) {
--		for (i = 0; i < qp_num; i++) {
--			qps[i] = hisi_qm_create_qp(tmp->qm, alg_type[i]);
--			if (IS_ERR(qps[i])) {
--				hisi_qm_free_qps(qps, i);
--				break;
--			}
--		}
--
--		if (i == qp_num) {
--			ret = 0;
-+		ret = qm_get_and_start_qp(tmp->qm, qp_num, qps, alg_type);
-+		if (!ret)
- 			break;
--		}
- 	}
- 
- 	mutex_unlock(&qm_list->lock);
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 364bd69c6088..d09d081f42dc 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -626,7 +626,6 @@ static int sec_create_qp_ctx(struct sec_ctx *ctx, int qp_ctx_id)
- 
- 	qp_ctx = &ctx->qp_ctx[qp_ctx_id];
- 	qp = ctx->qps[qp_ctx_id];
--	qp->qp_ctx = qp_ctx;
- 	qp_ctx->qp = qp;
- 	qp_ctx->ctx = ctx;
- 
-@@ -644,14 +643,8 @@ static int sec_create_qp_ctx(struct sec_ctx *ctx, int qp_ctx_id)
- 	if (ret)
- 		goto err_destroy_idr;
- 
--	ret = hisi_qm_start_qp(qp, 0);
--	if (ret < 0)
--		goto err_resource_free;
--
- 	return 0;
- 
--err_resource_free:
--	sec_free_qp_ctx_resource(ctx, qp_ctx);
- err_destroy_idr:
- 	idr_destroy(&qp_ctx->req_idr);
- 	return ret;
-@@ -660,7 +653,6 @@ static int sec_create_qp_ctx(struct sec_ctx *ctx, int qp_ctx_id)
- static void sec_release_qp_ctx(struct sec_ctx *ctx,
- 			       struct sec_qp_ctx *qp_ctx)
- {
--	hisi_qm_stop_qp(qp_ctx->qp);
- 	sec_free_qp_ctx_resource(ctx, qp_ctx);
- 	idr_destroy(&qp_ctx->req_idr);
- }
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index 2f9035c016f3..e675269e2e02 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -352,32 +352,6 @@ static int hisi_zip_adecompress(struct acomp_req *acomp_req)
- 	return ret;
- }
- 
--static int hisi_zip_start_qp(struct hisi_qp *qp, struct hisi_zip_qp_ctx *qp_ctx,
--			     int alg_type, int req_type)
--{
--	struct device *dev = &qp->qm->pdev->dev;
--	int ret;
--
--	qp->alg_type = alg_type;
--	qp->qp_ctx = qp_ctx;
--
--	ret = hisi_qm_start_qp(qp, 0);
--	if (ret < 0) {
--		dev_err(dev, "failed to start qp (%d)!\n", ret);
--		return ret;
+-	if (qm->qp_in_used == qm->qp_num) {
+-		dev_info_ratelimited(dev, "All %u queues of QM are busy!\n",
+-				     qm->qp_num);
+-		atomic64_inc(&qm->debug.dfx.create_qp_err_cnt);
+-		return ERR_PTR(-EBUSY);
 -	}
--
--	qp_ctx->qp = qp;
--
--	return 0;
--}
--
--static void hisi_zip_release_qp(struct hisi_zip_qp_ctx *qp_ctx)
--{
--	hisi_qm_stop_qp(qp_ctx->qp);
--	hisi_qm_free_qps(&qp_ctx->qp, 1);
--}
--
- static const struct hisi_zip_sqe_ops hisi_zip_ops = {
- 	.sqe_type		= 0x3,
- 	.fill_addr		= hisi_zip_fill_addr,
-@@ -396,7 +370,7 @@ static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int
- 	struct hisi_zip_qp_ctx *qp_ctx;
- 	u8 alg_type[HZIP_CTX_Q_NUM];
- 	struct hisi_zip *hisi_zip;
--	int ret, i, j;
-+	int ret, i;
++	/* Try to find a shareable queue when all queues are busy */
++	if (qm->qp_in_used == qm->qp_num)
++		return find_shareable_qp(qm, alg_type, is_in_kernel);
  
- 	/* alg_type = 0 for compress, 1 for decompress in hw sqe */
- 	for (i = 0; i < HZIP_CTX_Q_NUM; i++)
-@@ -413,17 +387,9 @@ static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int
- 	for (i = 0; i < HZIP_CTX_Q_NUM; i++) {
- 		qp_ctx = &hisi_zip_ctx->qp_ctx[i];
- 		qp_ctx->ctx = hisi_zip_ctx;
--		ret = hisi_zip_start_qp(qps[i], qp_ctx, i, req_type);
--		if (ret) {
--			for (j = i - 1; j >= 0; j--)
--				hisi_qm_stop_qp(hisi_zip_ctx->qp_ctx[j].qp);
--
--			hisi_qm_free_qps(qps, HZIP_CTX_Q_NUM);
--			return ret;
--		}
--
- 		qp_ctx->zip_dev = hisi_zip;
- 		qp_ctx->req_type = req_type;
-+		qp_ctx->qp = qps[i];
+ 	qp_id = idr_alloc_cyclic(&qm->qp_idr, NULL, 0, qm->qp_num, GFP_ATOMIC);
+ 	if (qp_id < 0) {
+-		dev_info_ratelimited(dev, "All %u queues of QM are busy!\n",
+-				    qm->qp_num);
++		dev_info_ratelimited(dev, "All %u queues of QM are busy, in_used = %u!\n",
++				    qm->qp_num, qm->qp_in_used);
+ 		atomic64_inc(&qm->debug.dfx.create_qp_err_cnt);
+ 		return ERR_PTR(-EBUSY);
+ 	}
+@@ -2034,10 +2062,10 @@ static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
+ 
+ 	qp->event_cb = NULL;
+ 	qp->req_cb = NULL;
+-	qp->qp_id = qp_id;
+ 	qp->alg_type = alg_type;
+-	qp->is_in_kernel = true;
++	qp->is_in_kernel = is_in_kernel;
+ 	qm->qp_in_used++;
++	qp->ref_count = 1;
+ 
+ 	return qp;
+ }
+@@ -2059,7 +2087,7 @@ static struct hisi_qp *hisi_qm_create_qp(struct hisi_qm *qm, u8 alg_type)
+ 		return ERR_PTR(ret);
+ 
+ 	down_write(&qm->qps_lock);
+-	qp = qm_create_qp_nolock(qm, alg_type);
++	qp = qm_create_qp_nolock(qm, alg_type, false);
+ 	up_write(&qm->qps_lock);
+ 
+ 	if (IS_ERR(qp))
+@@ -2458,7 +2486,6 @@ static int hisi_qm_uacce_get_queue(struct uacce_device *uacce,
+ 	qp->uacce_q = q;
+ 	qp->event_cb = qm_qp_event_notifier;
+ 	qp->pasid = arg;
+-	qp->is_in_kernel = false;
+ 
+ 	return 0;
+ }
+@@ -3532,6 +3559,9 @@ static void qm_release_qp_nolock(struct hisi_qp *qp)
+ {
+ 	struct hisi_qm *qm = qp->qm;
+ 
++	if (--qp->ref_count)
++		return;
++
+ 	qm->qp_in_used--;
+ 	idr_remove(&qm->qp_idr, qp->qp_id);
+ }
+@@ -3551,7 +3581,10 @@ void hisi_qm_free_qps(struct hisi_qp **qps, int qp_num)
+ 	down_write(&qps[0]->qm->qps_lock);
+ 
+ 	for (i = qp_num - 1; i >= 0; i--) {
+-		qm_stop_qp_nolock(qps[i]);
++		if (qps[i]->ref_count == 1) {
++			qm_stop_qp_nolock(qps[i]);
++			qm_pm_put_sync(qps[i]->qm);
++		}
+ 		qm_release_qp_nolock(qps[i]);
  	}
  
- 	hisi_zip_ctx->ops = &hisi_zip_ops;
-@@ -436,7 +402,7 @@ static void hisi_zip_ctx_exit(struct hisi_zip_ctx *hisi_zip_ctx)
- 	int i;
+@@ -3576,16 +3609,27 @@ static int qm_get_and_start_qp(struct hisi_qm *qm, int qp_num, struct hisi_qp **
  
- 	for (i = 0; i < HZIP_CTX_Q_NUM; i++)
--		hisi_zip_release_qp(&hisi_zip_ctx->qp_ctx[i]);
-+		hisi_qm_free_qps(&hisi_zip_ctx->qp_ctx[i].qp, 1);
- }
+ 	down_write(&qm->qps_lock);
+ 	for (i = 0; i < qp_num; i++) {
+-		qps[i] = qm_create_qp_nolock(qm, alg_type[i]);
++		qps[i] = qm_create_qp_nolock(qm, alg_type[i], true);
+ 		if (IS_ERR(qps[i])) {
+ 			goto free_qp;
+ 		}
+ 	}
  
- static int hisi_zip_create_req_q(struct hisi_zip_ctx *ctx)
+ 	for (j = 0; j < qp_num; j++) {
++		if (qps[j]->ref_count != 1)
++			continue;
++
++		ret = qm_pm_get_sync(qm);
++		if (ret) {
++			ret = -EINVAL;
++			goto stop_qp;
++		}
++
+ 		ret = qm_start_qp_nolock(qps[j], 0);
+-		if (ret)
++		if (ret) {
++			qm_pm_put_sync(qm);
+ 			goto stop_qp;
++		}
+ 	}
+ 	up_write(&qm->qps_lock);
+ 
+@@ -3593,7 +3637,10 @@ static int qm_get_and_start_qp(struct hisi_qm *qm, int qp_num, struct hisi_qp **
+ 
+ stop_qp:
+ 	for (j--; j >= 0; j--)
+-		qm_stop_qp_nolock(qps[j]);
++		if (qps[j]->ref_count == 1) {
++			qm_stop_qp_nolock(qps[j]);
++			qm_pm_put_sync(qm);
++		}
+ free_qp:
+ 	for (i--; i >= 0; i--)
+ 		qm_release_qp_nolock(qps[i]);
 diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index 75ae01ddaa1a..4cf418a41fe4 100644
+index 4cf418a41fe4..26032d98e9bd 100644
 --- a/include/linux/hisi_acc_qm.h
 +++ b/include/linux/hisi_acc_qm.h
-@@ -463,7 +463,6 @@ struct hisi_qp {
+@@ -472,6 +472,7 @@ struct hisi_qp {
+ 	u16 pasid;
+ 	struct uacce_queue *uacce_q;
  
- 	struct hisi_qp_status qp_status;
- 	struct hisi_qp_ops *hw_ops;
--	void *qp_ctx;
- 	void (*req_cb)(struct hisi_qp *qp, void *data);
- 	void (*event_cb)(struct hisi_qp *qp);
- 
++	u32 ref_count;
+ 	spinlock_t qp_lock;
+ 	struct instance_backlog backlog;
+ 	const void **msg;
 -- 
 2.33.0
 
