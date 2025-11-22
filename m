@@ -1,66 +1,66 @@
-Return-Path: <linux-crypto+bounces-18341-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18343-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FEC0C7CA25
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 08:50:46 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3327C7CA2B
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 08:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B3CC34E377F
-	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 07:50:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E33104E41C1
+	for <lists+linux-crypto@lfdr.de>; Sat, 22 Nov 2025 07:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DE22F690E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B7F2F745B;
 	Sat, 22 Nov 2025 07:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="l0/JZt5B"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="42vVJSDo"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
+Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006122EAB6F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F562EFD9E;
 	Sat, 22 Nov 2025 07:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763797772; cv=none; b=ZzSq2Ax/NM/MkrZ9fdrY0J/GXkZsyOgaBhxGQEXW7dEDhb0WytIE6k4RM+ifVg3LfGJIdrjEmt0hmJLWS5OQzLYpnU3R4GbjKMxO1Xm0OZ5F+bKgUz+XMjv3VwiPIGkGsJl1l28oDo3tt+fBGd1bOrIJdEi320wdgw9oil7jxd4=
+	t=1763797772; cv=none; b=CN+KonIPKu5hSOvDrV4phNpBYvYfyXXajo/MV9MZ8I5zbY4s/ppOgksZBNXu3c68v11/jpiDvbLsTH2SXDOE4mXV4Tu+rT5oxsAA4GOyTxd8LOkggB1eK5OhW+QiuW+vl/mwdKTFm0HugEcPETvxhBGbhw+CMsXkRduqs+AiMOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1763797772; c=relaxed/simple;
-	bh=ApDV33S+/zg89XOdXLh8aO65cUqiOOstQAFhRfXjd9M=;
+	bh=K3fMXEs/AIjOZiYh+qj/M3wWSOKD5Ye/DP/wFbPfusE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bGqG/p2BQfajBoj8w6fRTTVlkedsI5nYsZ0oUpdij0NYFw1aSeGfcw9IGvcF9mbzORROw96dAstjV6aAE9WyP57vpsO8C56OmRwyGvK3265I9ggw6kNcY+ZfYmCMbRN/rK7Td7d7ndohnRnI1lFPeIt9eVkeD1GnbSAhs9bm3vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=l0/JZt5B; arc=none smtp.client-ip=113.46.200.227
+	 MIME-Version:Content-Type; b=QfnAZFocL/BxoCpfwoThNStuS/sspeDQesunsIuqsUkWHrc+jWzhHWRzZcwyivsOPjQc/rMntPJTZIVtrg10ew4EOK5YjsJlxztcSScYdJT5E8GBFlZeSYl1g6QyvU9eYXnlM7vcER8xdn/wy19wojkFqHXMU+b1cBJpMBDAhas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=42vVJSDo; arc=none smtp.client-ip=113.46.200.218
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=lJvBbjVBXZcQn74sG6LQqdM85jl/ycBukkm6sqBngi0=;
-	b=l0/JZt5BG1u47YtQFXjKl/xv74vRKMlpTNqg7UOPZDcZpPyk5L87jP4a2H6B5+uXc8vIMtHQs
-	+p09wVZXsgPoD+GEis/PX6qETngN/iIyYMaPAIkCtnpg33npDwV27uGq2lXPB338HO5coxXga6/
-	IIsJnjocz/WYlqEA0jLury8=
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dD4234rvcznTwN;
-	Sat, 22 Nov 2025 15:47:55 +0800 (CST)
-Received: from dggemv712-chm.china.huawei.com (unknown [10.1.198.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id 915F7140296;
-	Sat, 22 Nov 2025 15:49:21 +0800 (CST)
+	bh=7ElhesMM7hnWDMkwRJdjH2UufMRtu9tAkQWz5Sf9l/o=;
+	b=42vVJSDo7MWf8y8c5jWzmG2HFhsY1x/b1XModt6uaiAdzNwqfY2gKRKu7gLno+2O34+wV/cJk
+	bD1QBE5LJ3wO8wwmz2sk1FpDAF9vfSJLoX2tKqv/xbqXjassYkwbeC5YbHnG4SRv9puEJIxjQud
+	cE/UBV5xBi40pipOd9Sd0HI=
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4dD41P5pcGzpStc;
+	Sat, 22 Nov 2025 15:47:21 +0800 (CST)
+Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
+	by mail.maildlp.com (Postfix) with ESMTPS id 05946140203;
+	Sat, 22 Nov 2025 15:49:22 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv712-chm.china.huawei.com (10.1.198.32) with Microsoft SMTP Server
+ dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1544.11; Sat, 22 Nov 2025 15:49:21 +0800
 Received: from localhost.huawei.com (10.90.31.46) by
  kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 22 Nov 2025 15:49:20 +0800
+ 15.2.1544.11; Sat, 22 Nov 2025 15:49:21 +0800
 From: Chenghai Huang <huangchenghai2@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
 	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>, <lizhi206@huawei.com>,
 	<taoqi10@huawei.com>
-Subject: [PATCH v3 08/11] crypto: hisilicon/qm - optimize device selection priority based on queue ref count and NUMA distance
-Date: Sat, 22 Nov 2025 15:49:13 +0800
-Message-ID: <20251122074916.2793717-9-huangchenghai2@huawei.com>
+Subject: [PATCH v3 09/11] crypto: hisilicon/zip - support fallback for zip
+Date: Sat, 22 Nov 2025 15:49:14 +0800
+Message-ID: <20251122074916.2793717-10-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20251122074916.2793717-1-huangchenghai2@huawei.com>
 References: <20251122074916.2793717-1-huangchenghai2@huawei.com>
@@ -75,81 +75,144 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  kwepemq200001.china.huawei.com (7.202.195.16)
 
-Add device sorting criteria to prioritize devices with fewer
-references and closer NUMA distances. Devices that are fully
-occupied will not be prioritized for use.
+When the hardware queue resource busy(no shareable queue)
+or memery alloc fail in initialization of acomp_alg, use
+soft algorithm to complete the work.
 
+Fixes: 1a9e6f59caee ("crypto: hisilicon/zip - remove zlib and gzip")
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
-Signed-off-by: Weili Qian <qianweili@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
+ drivers/crypto/hisilicon/Kconfig          |  1 +
+ drivers/crypto/hisilicon/zip/zip_crypto.c | 50 +++++++++++++++++++----
+ 2 files changed, 43 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 6ff189941300..e4f360172477 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -3592,6 +3592,20 @@ void hisi_qm_free_qps(struct hisi_qp **qps, int qp_num)
- }
- EXPORT_SYMBOL_GPL(hisi_qm_free_qps);
+diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
+index 4835bdebdbb3..a0cb1a8186ac 100644
+--- a/drivers/crypto/hisilicon/Kconfig
++++ b/drivers/crypto/hisilicon/Kconfig
+@@ -57,6 +57,7 @@ config CRYPTO_DEV_HISI_ZIP
+ 	depends on UACCE || UACCE=n
+ 	depends on ACPI
+ 	select CRYPTO_DEV_HISI_QM
++	select CRYPTO_DEFLATE
+ 	help
+ 	  Support for HiSilicon ZIP Driver
  
-+static void qm_insert_sorted(struct list_head *head, struct hisi_qm_resource *res)
+diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
+index e675269e2e02..e1d6a1e61724 100644
+--- a/drivers/crypto/hisilicon/zip/zip_crypto.c
++++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
+@@ -84,6 +84,7 @@ struct hisi_zip_sqe_ops {
+ struct hisi_zip_ctx {
+ 	struct hisi_zip_qp_ctx qp_ctx[HZIP_CTX_Q_NUM];
+ 	const struct hisi_zip_sqe_ops *ops;
++	bool fallback;
+ };
+ 
+ static int sgl_sge_nr_set(const char *val, const struct kernel_param *kp)
+@@ -110,6 +111,24 @@ static u16 sgl_sge_nr = HZIP_SGL_SGE_NR;
+ module_param_cb(sgl_sge_nr, &sgl_sge_nr_ops, &sgl_sge_nr, 0444);
+ MODULE_PARM_DESC(sgl_sge_nr, "Number of sge in sgl(1-255)");
+ 
++static int hisi_zip_fallback_do_work(struct acomp_req *acomp_req, bool is_decompress)
 +{
-+	struct hisi_qm_resource *tmp;
-+	struct list_head *n = head;
++	ACOMP_FBREQ_ON_STACK(fbreq, acomp_req);
++	int ret;
 +
-+	list_for_each_entry(tmp, head, list) {
-+		if (res->distance < tmp->distance) {
-+			n = &tmp->list;
-+			break;
-+		}
++	if (!is_decompress)
++		ret = crypto_acomp_compress(fbreq);
++	else
++		ret = crypto_acomp_decompress(fbreq);
++	if (ret) {
++		pr_err("failed to do fallback work, ret=%d\n", ret);
++		return ret;
 +	}
-+	list_add_tail(&res->list, n);
++
++	acomp_req->dlen = fbreq->dlen;
++	return ret;
 +}
 +
- static void free_list(struct list_head *head)
+ static struct hisi_zip_req *hisi_zip_create_req(struct hisi_zip_qp_ctx *qp_ctx,
+ 						struct acomp_req *req)
  {
- 	struct hisi_qm_resource *res, *tmp;
-@@ -3652,11 +3666,12 @@ static int qm_get_and_start_qp(struct hisi_qm *qm, int qp_num, struct hisi_qp **
- static int hisi_qm_sort_devices(int node, struct list_head *head,
- 				struct hisi_qm_list *qm_list)
+@@ -313,10 +332,15 @@ static int hisi_zip_acompress(struct acomp_req *acomp_req)
  {
--	struct hisi_qm_resource *res, *tmp;
-+	struct hisi_qm_resource *res;
- 	struct hisi_qm *qm;
--	struct list_head *n;
- 	struct device *dev;
- 	int dev_node;
-+	LIST_HEAD(non_full_list);
-+	LIST_HEAD(full_list);
+ 	struct hisi_zip_ctx *ctx = crypto_tfm_ctx(acomp_req->base.tfm);
+ 	struct hisi_zip_qp_ctx *qp_ctx = &ctx->qp_ctx[HZIP_QPC_COMP];
+-	struct device *dev = &qp_ctx->qp->qm->pdev->dev;
+ 	struct hisi_zip_req *req;
++	struct device *dev;
+ 	int ret;
  
- 	list_for_each_entry(qm, &qm_list->list, list) {
- 		dev = &qm->pdev->dev;
-@@ -3671,16 +3686,16 @@ static int hisi_qm_sort_devices(int node, struct list_head *head,
- 
- 		res->qm = qm;
- 		res->distance = node_distance(dev_node, node);
--		n = head;
--		list_for_each_entry(tmp, head, list) {
--			if (res->distance < tmp->distance) {
--				n = &tmp->list;
--				break;
--			}
--		}
--		list_add_tail(&res->list, n);
++	if (ctx->fallback)
++		return hisi_zip_fallback_do_work(acomp_req, 0);
 +
-+		if (qm->qp_in_used == qm->qp_num)
-+			qm_insert_sorted(&full_list, res);
-+		else
-+			qm_insert_sorted(&non_full_list, res);
++	dev = &qp_ctx->qp->qm->pdev->dev;
++
+ 	req = hisi_zip_create_req(qp_ctx, acomp_req);
+ 	if (IS_ERR(req))
+ 		return PTR_ERR(req);
+@@ -334,10 +358,15 @@ static int hisi_zip_adecompress(struct acomp_req *acomp_req)
+ {
+ 	struct hisi_zip_ctx *ctx = crypto_tfm_ctx(acomp_req->base.tfm);
+ 	struct hisi_zip_qp_ctx *qp_ctx = &ctx->qp_ctx[HZIP_QPC_DECOMP];
+-	struct device *dev = &qp_ctx->qp->qm->pdev->dev;
+ 	struct hisi_zip_req *req;
++	struct device *dev;
+ 	int ret;
+ 
++	if (ctx->fallback)
++		return hisi_zip_fallback_do_work(acomp_req, 1);
++
++	dev = &qp_ctx->qp->qm->pdev->dev;
++
+ 	req = hisi_zip_create_req(qp_ctx, acomp_req);
+ 	if (IS_ERR(req))
+ 		return PTR_ERR(req);
+@@ -512,7 +541,7 @@ static int hisi_zip_acomp_init(struct crypto_acomp *tfm)
+ 	ret = hisi_zip_ctx_init(ctx, COMP_NAME_TO_TYPE(alg_name), tfm->base.node);
+ 	if (ret) {
+ 		pr_err("failed to init ctx (%d)!\n", ret);
+-		return ret;
++		goto switch_to_soft;
  	}
  
-+	list_splice_tail(&non_full_list, head);
-+	list_splice_tail(&full_list, head);
-+
- 	return 0;
+ 	dev = &ctx->qp_ctx[0].qp->qm->pdev->dev;
+@@ -537,16 +566,20 @@ static int hisi_zip_acomp_init(struct crypto_acomp *tfm)
+ 	hisi_zip_release_req_q(ctx);
+ err_ctx_exit:
+ 	hisi_zip_ctx_exit(ctx);
+-	return ret;
++switch_to_soft:
++	ctx->fallback = true;
++	return 0;
  }
  
+ static void hisi_zip_acomp_exit(struct crypto_acomp *tfm)
+ {
+ 	struct hisi_zip_ctx *ctx = crypto_tfm_ctx(&tfm->base);
+ 
+-	hisi_zip_release_sgl_pool(ctx);
+-	hisi_zip_release_req_q(ctx);
+-	hisi_zip_ctx_exit(ctx);
++	if (!ctx->fallback) {
++		hisi_zip_release_sgl_pool(ctx);
++		hisi_zip_release_req_q(ctx);
++		hisi_zip_ctx_exit(ctx);
++	}
+ }
+ 
+ static struct acomp_alg hisi_zip_acomp_deflate = {
+@@ -557,7 +590,8 @@ static struct acomp_alg hisi_zip_acomp_deflate = {
+ 	.base			= {
+ 		.cra_name		= "deflate",
+ 		.cra_driver_name	= "hisi-deflate-acomp",
+-		.cra_flags		= CRYPTO_ALG_ASYNC,
++		.cra_flags		= CRYPTO_ALG_ASYNC |
++					  CRYPTO_ALG_NEED_FALLBACK,
+ 		.cra_module		= THIS_MODULE,
+ 		.cra_priority		= HZIP_ALG_PRIORITY,
+ 		.cra_ctxsize		= sizeof(struct hisi_zip_ctx),
 -- 
 2.33.0
 
