@@ -1,309 +1,186 @@
-Return-Path: <linux-crypto+bounces-18403-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18401-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF2AC7FC51
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 10:57:41 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8362FC7FBB5
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 10:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0CFD934B2D1
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 09:56:03 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 25C4E3493B8
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 09:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951F42FB989;
-	Mon, 24 Nov 2025 09:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D805B2F7AC8;
+	Mon, 24 Nov 2025 09:50:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="P87gnIuA"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MHM2LQTr"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010040.outbound.protection.outlook.com [52.101.193.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C901424B28;
-	Mon, 24 Nov 2025 09:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763978079; cv=none; b=OrhBTwl6BMqS8pYcfarqR9HGAhSeI26vREWeXj7sBtD3362M7aMbqTWKdvA+MacwqTfvv60xSfYJrLX5R7ZY13HB4AG4msj+1X0S9R+Z/MP740gcweSDj6N1kvAhRDqqwqzdmvUcPjbfzOSF6WcoccepgvIZ1DE8k4B1kYcckKQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763978079; c=relaxed/simple;
-	bh=zgUegguLz9fnh3Kc5FyiFvVdDbDa4+bOp5Www3PDcuc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ctY5ec1pVMPgAQziivIuyNMUNBBzBLjHqXG57D/iuzXjRNcJdrcJjU9kdacC12pvOLum/X7GMW/2XgVUnWfvsJJolpF2qFqE3iXEuv3DrL1T+h/W/fWPLtntbF/kEBoAZhmjDER1oIdcu/C7H+zIkeFDv76zc8PF6r9/vuR0yyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=P87gnIuA; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=B05uJapQfRMGohKkgF1xNVyERBHmagh8Bd3xg1q2NeI=; 
-	b=P87gnIuANW/TJp73uiT1mmsGlTWnBuH0H7vh23lNqSWq4OBDSGmsQEtkmAFMHotC7U4wL6z8BsM
-	xZhrA2DnJ6Byz1eNq9hCgsl0YlQqjChTspvActJHQABJusXSSyN3NViM7BAWMow9uYLi6/azgr/1S
-	bPNPkqeI4K++8lXngyxVPKygWdoefLDaHUV8R9vP4h+Voyby/LgDfyG/U2ZiZD9XFH7HpGmBTtoYh
-	gxxkqEEHWY1my7y2fTHFr9TydDJrVMgiVb3KBgJmEGPf57jfBn092eZeVh0rkWj5FfVDm/r5gwJdx
-	bl004005PGTqWH4a9OI+Nq6nG2BqQ4oMU7WA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vNTCh-005XNj-0w;
-	Mon, 24 Nov 2025 17:49:52 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 24 Nov 2025 17:49:51 +0800
-Date: Mon, 24 Nov 2025 17:49:51 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: david.laight.linux@gmail.com
-Cc: linux-kernel@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, Borislav Petkov <bp@alien8.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, David Ahern <dsahern@kernel.org>,
-	David Hildenbrand <david@redhat.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dennis Zhou <dennis@kernel.org>, Eric Dumazet <edumazet@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Jens Axboe <axboe@kernel.dk>, Jiri Slaby <jirislaby@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	John Allen <john.allen@amd.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Juergen Gross <jgross@suse.com>, Kees Cook <kees@kernel.org>,
-	KP Singh <kpsingh@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Mika Westerberg <westeri@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Neal Cardwell <ncardwell@google.com>, nic_swsd@realtek.com,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Olivia Mackall <olivia@selenic.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Huewe <peterhuewe@gmx.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Srinivas Kandagatla <srini@kernel.org>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, x86@kernel.org,
-	Yury Norov <yury.norov@gmail.com>, amd-gfx@lists.freedesktop.org,
-	bpf@vger.kernel.org, cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, io-uring@vger.kernel.org,
-	kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-integrity@vger.kernel.org, linux-mm@kvack.org,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, mptcp@lists.linux.dev,
-	netdev@vger.kernel.org, usb-storage@lists.one-eyed-alien.net
-Subject: Re: [PATCH 00/44] Change a lot of min_t() that might mask high bits
-Message-ID: <aSQqP6nlqGYOGqcJ@gondor.apana.org.au>
-References: <20251119224140.8616-1-david.laight.linux@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384EF2F6179;
+	Mon, 24 Nov 2025 09:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763977855; cv=fail; b=IPIizsua4QjK3m7YNqHRiLsyuRI70aLkSUdJDVZieeO3TzABX8SZrk/a1Z/lyV1Iev60F6nqvvcIt0WkI6EBE5+c7jivmC8JhBR+U97K0gtN5yBejGa79osjwPUtXlykd/YVwihLNDxCfUsGby0xmFqa2+2gnPxenZybirAouqs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763977855; c=relaxed/simple;
+	bh=cdBAjmNd9lTzKmnZBuG9wNWyTaQyGmadk5+hQpsMKss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=LkqME6cFMeU/6OeVbD6V/tu6jqhbCiQAc4+KRE1UI4Jkqk8AVTfw7Ia7pPYuDHEcuXxqi9QlInHAUEX+6ATxTezAmZ4PtB/rDhtmF+Eyj47Ug0eckLpz87RXCPWTagZgtZg2gCM0rqYYineuasj15kli3UFQhodGY03gGJynXYc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=MHM2LQTr; arc=fail smtp.client-ip=52.101.193.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=d2HtYl9XaHn0T0ZHkpVV3ifbsVCX3S476v61Ahl3PtZsxnDzFGl1o5duNhPAERGid/n+PaMXnnLZzRywE/mLV2WRXF+OIfE8WaTirrZ7kasf8rKkxYhw/kStz1AImgEG312TbP6gAPhoMDh5vE+LTWe8fPyj3qsOcL1Z7D7ww4U1mrgBpK3VNjp7prnSOvj0+iZgYt9DUThTLuiunGQZq1F4CH5ZfBz5uPd3LugPYaP/yjHTlGYxephp0BEgH9lL9zo3ocuVpeLc5DKq5NAucOkKO4Kv6pxHjyDvG3neNzLEQQUKA+ZjsjySVpDmgOmWFEYsqHZBT8VyjJ1nyZTrYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0HgXEsMCsaLInWXRHax6PGv8y2RyHZFAZTt3JbZ1iRA=;
+ b=UA0rlR2tnEvOe8lFIXklbVoC5kTNcgCXsNO0iYcBw/HZ3U1/QdRq5N+xt5QVAc+YnV/6ffaqCRYrFrQgYTxNneuxTBD+WtE9lxcJYKArNBen0QCrY7hXm9VpQNWKAlWneNwbXFZ/qxQ9Rp3qICc5tkTNqS1M19d3G10WXFhxhhelnuBxbHrQM5Z7FW9XTNWUw/frtru5+MCrDAJfU5EGzWp9tWLuhdffsgbzVyDx+m4wTJdNW5qKoyW2sdLkDWXibcpMPUxCP4dRgnzDlqKwYMHubhgkT9kTabfP7HB0cvJ9DYiMtC/RXNfzReUWzcPl0or7V2jXOzTcOACX4+qnvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.195) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0HgXEsMCsaLInWXRHax6PGv8y2RyHZFAZTt3JbZ1iRA=;
+ b=MHM2LQTrOkd1BumT+QRXw4K4Rhe2WsB8SE96ke+qWFvIjytwBD8UOAr4emhNFq6AW0qqCsBi6JhEHKikeONGfZRkTVWulGk8Io/NWgunrmlsr7JfJXAsXeKg5GtMMthM7nxAjMgGEWIpLvozyCkGZtmfUDwSjzgZrF6FtxRfVPY=
+Received: from BY5PR20CA0010.namprd20.prod.outlook.com (2603:10b6:a03:1f4::23)
+ by MN2PR10MB4173.namprd10.prod.outlook.com (2603:10b6:208:1d1::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.17; Mon, 24 Nov
+ 2025 09:50:50 +0000
+Received: from MWH0EPF000A6733.namprd04.prod.outlook.com
+ (2603:10b6:a03:1f4:cafe::2f) by BY5PR20CA0010.outlook.office365.com
+ (2603:10b6:a03:1f4::23) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9343.17 via Frontend Transport; Mon,
+ 24 Nov 2025 09:50:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
+Received: from flwvzet201.ext.ti.com (198.47.21.195) by
+ MWH0EPF000A6733.mail.protection.outlook.com (10.167.249.25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9366.7 via Frontend Transport; Mon, 24 Nov 2025 09:50:48 +0000
+Received: from DFLE215.ent.ti.com (10.64.6.73) by flwvzet201.ext.ti.com
+ (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 24 Nov
+ 2025 03:50:44 -0600
+Received: from DFLE213.ent.ti.com (10.64.6.71) by DFLE215.ent.ti.com
+ (10.64.6.73) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 24 Nov
+ 2025 03:50:43 -0600
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE213.ent.ti.com
+ (10.64.6.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Mon, 24 Nov 2025 03:50:43 -0600
+Received: from [10.24.69.191] (pratham-workstation-pc.dhcp.ti.com [10.24.69.191])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5AO9ofG31749365;
+	Mon, 24 Nov 2025 03:50:42 -0600
+Message-ID: <2e5c67a4-5497-4084-9568-575321cdd6c9@ti.com>
+Date: Mon, 24 Nov 2025 15:20:41 +0530
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251119224140.8616-1-david.laight.linux@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crypto: ahash - Zero positive err value in
+ ahash_update_finish
+To: Herbert Xu <herbert@gondor.apana.org.au>
+CC: "David S. Miller" <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Manorit Chawdhry <m-chawdhry@ti.com>, "Shiva
+ Tripathi" <s-tripathi1@ti.com>
+References: <20251113140634.1559529-1-t-pratham@ti.com>
+ <20251113140634.1559529-3-t-pratham@ti.com>
+ <aR_-jEam8i1qelAT@gondor.apana.org.au>
+Content-Language: en-US
+From: T Pratham <t-pratham@ti.com>
+In-Reply-To: <aR_-jEam8i1qelAT@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000A6733:EE_|MN2PR10MB4173:EE_
+X-MS-Office365-Filtering-Correlation-Id: bdbd64de-1f18-48ee-13ab-08de2b3ef24d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|376014|36860700013;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VkJESFVvLzNGUXBFU2w1ZjcrWWVHU05HaGF2YUFnYmhqUlNXSTBjN3BHQzla?=
+ =?utf-8?B?QVFWek4rdzNudG1VMkk5clJZM0hpM2dubXlJTVcyc0FTYU5wMU41OUk3cGVQ?=
+ =?utf-8?B?MUJTN1cxTFNFYk9DRzNGNEhMT0NkajZtbnA1UXRiVHpObGxXZVhmaWp2cWpP?=
+ =?utf-8?B?S2JmajdjNFIvQk9MNmhiKy91YXNkQUg5aC9uWDBpdHJlZjVJRnlpVDM5em9T?=
+ =?utf-8?B?TFpWOFRyZVZJZGZraGlnMzdobHA2Um5HakxQVkRjL3ZFVi9nK3JDdExtSnp4?=
+ =?utf-8?B?QTNuNUFyVm5ScHJocUgvT0JQL0NJcWJxR0MzZ0VpSTEvMHlxbmhKdVZrVmFM?=
+ =?utf-8?B?bSt3RzVJRVRJdUpzYS9CWS9hYisxSnN5dUQrNWkxemcwNkRWU0FFdzJvVmVz?=
+ =?utf-8?B?dUdna2dHY3FjeDUrM3V4QmltTkFhYzZwVjcwSjZLdTlvMkhrK3VDa3kvN29s?=
+ =?utf-8?B?MFg3Vm5YT2VEcWsxUlhDcVAyeTJRUGg1dFVTcElITmVMKzJwNXhlNjdQdFBh?=
+ =?utf-8?B?bkZDaWh2U1NjTXgxUWVKOVd1eTV3STdzVmxPNDh0dTRibkRWeTRZK0l3RVNn?=
+ =?utf-8?B?Y3VNRDJkUkpYMm53b1ZWallIZ2dhUS9XK21PM29aQXI0ZFR5MDV0ME1sOUN3?=
+ =?utf-8?B?N3E0dE9XejJUNkltSW1FbktPNlRvU0N3VG9ST0orTTJmQVIra0RuekRHK0k2?=
+ =?utf-8?B?LzRPQnZCS2tuT1hxYTRsTEZmVklkM0RRcER1cGZGdGtjbTlDS2d6YWJLR3di?=
+ =?utf-8?B?ZWJZNXJHcFlRZU5JUk1VbmdYTjU2QXNyTUlBdVNGaDFzRjFRTm5yMHlCVWVN?=
+ =?utf-8?B?Wmd4d1hUWWtNV0Z0NDJsbFdCSmFOcUdoellxaG9XdmRaS0NzNmZ1dG9CWVly?=
+ =?utf-8?B?U3I2SEF4ZmlMT1NXSHhjcHJJN1h1S1dJY1pXSUIxM2p6dlFhYXc3K0JHanVS?=
+ =?utf-8?B?TU50Z3dqenB5aHpxZGJybGFqRVc3RHBhcHVqMDJvWld4ZmJpaWhYT29GSkNO?=
+ =?utf-8?B?YVh0SnVKSXNva0ZMeFBERWE5N0lIK1JNeUtUVFJOSXdVLzhyeW5ud3pLdlZR?=
+ =?utf-8?B?REZURWUzNU9DSm5zdDRjaldzdWtHcFBYa01TcE8zWm9uL3RydE1pZUJubUpN?=
+ =?utf-8?B?VGhKU3dyaE85NjNmTkJxVHFoR09GZ05TeTBiMkFiQkVYSTMrYjdtQUllbGpP?=
+ =?utf-8?B?SGhPbVpFdTBYb0twTjBlV3BZRFRhR0kvZlE3a3QxVTBwYlRpTnpQcXZXclN3?=
+ =?utf-8?B?cGFNUzJ5Wk5DamFOUWkvQTlTT3hjRHFyOUtjMVg0c1NwVGlhYXZIY1hSRWdD?=
+ =?utf-8?B?SjVXUEtPb3ovZy91dk9OUmw0VlFBNlVxR2xBSk96STJFaWY2UzNVLzRYbDlJ?=
+ =?utf-8?B?aWU1SEJIVUtFbXJKckVvVm9aaXVRd3NITkxUckJCdGlTNC94cTVJaXozWk04?=
+ =?utf-8?B?RkMrUmJFK1F5MXpPUFliZzdYWjZ2ZWk2MzJ4Um9SY0lKNUtjUWlZdzJZdzMy?=
+ =?utf-8?B?aTBBVGRpS1czenBqUkRGc1ZZUG13TkpSQ0pSOXVIVHVianE3RGl2c3ZrK1Fn?=
+ =?utf-8?B?V3d2UXNxSDV4VUREQjVEV3VsYkRIcDdCMDB5ZHZTSTBUa3BmbDJjUXByZFFZ?=
+ =?utf-8?B?c0NsK0tVRnJ2M1laVU1SNjlpMGs5SXUxa1BxQ1dDc3RGLzNTNkR0aCsvZWZY?=
+ =?utf-8?B?ZnNGSGIxYWYzUVhVRHc2VlpzdUdOcFBkbFl6cUwxT25ReWJmM0FMN0Y5Z1dp?=
+ =?utf-8?B?c0hvYWRLcm5JcjlzcnYwZnVvMms2Yzl5RTlTdTRkbWxGS3JteUZ2dWhGM2hv?=
+ =?utf-8?B?eVZqQThVeHdUVmV6VldXVUwrYnNISmdTSyt6UW40dktRUWZPMXZpclJqRDhM?=
+ =?utf-8?B?STVyS1VId01VZHNVZUIrQU8zUVlNTWlveFRZRml0a2tBdkRVNlA1dGE0eHVh?=
+ =?utf-8?B?QUZPbzhsOThYUElKc2J2M2VqWXV5YVVDMEZlSVJiWWFrR3N3bTFSS1ZsRVIz?=
+ =?utf-8?B?NzF6VGc3Q0NKdXJxTW1wbDA3MnFwcnVqcGY0QVNHU3N1YkRlUVIyVVNTNjVB?=
+ =?utf-8?B?QTVlZFZYaXF5MDlhWE5MS2Y4Vm1MS1hkNFJ1bG04elhZV3ZSMHFyRTFEQnZW?=
+ =?utf-8?Q?jiKA=3D?=
+X-Forefront-Antispam-Report:
+	CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(376014)(36860700013);DIR:OUT;SFP:1101;
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2025 09:50:48.5681
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdbd64de-1f18-48ee-13ab-08de2b3ef24d
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000A6733.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4173
 
-On Wed, Nov 19, 2025 at 10:40:56PM +0000, david.laight.linux@gmail.com wrote:
-> From: David Laight <david.laight.linux@gmail.com>
+On 21/11/25 11:24, Herbert Xu wrote:
+> On Thu, Nov 13, 2025 at 07:30:13PM +0530, T Pratham wrote:
+> The partial block length returned by a block-only driver should
+> not be passed up to the caller since ahash itself deals with the
+> partial block data.
 > 
-> It in not uncommon for code to use min_t(uint, a, b) when one of a or b
-> is 64bit and can have a value that is larger than 2^32;
-> This is particularly prevelant with:
-> 	uint_var = min_t(uint, uint_var, uint64_expression);
+> Set err to zero in ahash_update_finish if it was positive.
 > 
-> Casts to u8 and u16 are very likely to discard significant bits.
+> Reported-by: T Pratham <t-pratham@ti.com>
+> Fixes: 9d7a0ab1c753 ("crypto: ahash - Handle partial blocks in API")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 > 
-> These can be detected at compile time by changing min_t(), for example:
-> #define CHECK_SIZE(fn, type, val) \
-> 	BUILD_BUG_ON_MSG(sizeof (val) > sizeof (type) && \
-> 		!statically_true(((val) >> 8 * (sizeof (type) - 1)) < 256), \
-> 		fn "() significant bits of '" #val "' may be discarded")
-> 
-> #define min_t(type, x, y) ({ \
-> 	CHECK_SIZE("min_t", type, x); \
-> 	CHECK_SIZE("min_t", type, y); \
-> 	__cmp_once(min, type, x, y); })
-> 
-> (and similar changes to max_t() and clamp_t().)
-> 
-> This shows up some real bugs, some unlikely bugs and some false positives.
-> In most cases both arguments are unsigned type (just different ones)
-> and min_t() can just be replaced by min().
-> 
-> The patches are all independant and are most of the ones needed to
-> get the x86-64 kernel I build to compile.
-> I've not tried building an allyesconfig or allmodconfig kernel.
-> I've also not included the patch to minmax.h itself.
-> 
-> I've tried to put the patches that actually fix things first.
-> The last one is 0009.
-> 
-> I gave up on fixing sched/fair.c - it is too broken for a single patch!
-> The patch for net/ipv4/tcp.c is also absent because do_tcp_getsockopt()
-> needs multiple/larger changes to make it 'sane'.
-> 
-> I've had to trim the 124 maintainers/lists that get_maintainer.pl finds
-> from 124 to under 100 to be able to send the cover letter.
-> The individual patches only go to the addresses found for the associated files.
-> That reduces the number of emails to a less unsane number.
-> 
-> David Laight (44):
->   x86/asm/bitops: Change the return type of variable__ffs() to unsigned
->     int
->   ext4: Fix saturation of 64bit inode times for old filesystems
->   perf: Fix branch stack callchain limit
->   io_uring/net: Change some dubious min_t()
->   ipc/msg: Fix saturation of percpu counts in msgctl_info()
->   bpf: Verifier, remove some unusual uses of min_t() and max_t()
->   net/core/flow_dissector: Fix cap of __skb_flow_dissect() return value.
->   net: ethtool: Use min3() instead of nested min_t(u16,...)
->   ipv6: __ip6_append_data() don't abuse max_t() casts
->   x86/crypto: ctr_crypt() use min() instead of min_t()
->   arch/x96/kvm: use min() instead of min_t()
->   block: use min() instead of min_t()
->   drivers/acpi: use min() instead of min_t()
->   drivers/char/hw_random: use min3() instead of nested min_t()
->   drivers/char/tpm: use min() instead of min_t()
->   drivers/crypto/ccp: use min() instead of min_t()
->   drivers/cxl: use min() instead of min_t()
->   drivers/gpio: use min() instead of min_t()
->   drivers/gpu/drm/amd: use min() instead of min_t()
->   drivers/i2c/busses: use min() instead of min_t()
->   drivers/net/ethernet/realtek: use min() instead of min_t()
->   drivers/nvme: use min() instead of min_t()
->   arch/x86/mm: use min() instead of min_t()
->   drivers/nvmem: use min() instead of min_t()
->   drivers/pci: use min() instead of min_t()
->   drivers/scsi: use min() instead of min_t()
->   drivers/tty/vt: use umin() instead of min_t(u16, ...) for row/col
->     limits
->   drivers/usb/storage: use min() instead of min_t()
->   drivers/xen: use min() instead of min_t()
->   fs: use min() or umin() instead of min_t()
->   block: bvec.h: use min() instead of min_t()
->   nodemask: use min() instead of min_t()
->   ipc: use min() instead of min_t()
->   bpf: use min() instead of min_t()
->   bpf_trace: use min() instead of min_t()
->   lib/bucket_locks: use min() instead of min_t()
->   lib/crypto/mpi: use min() instead of min_t()
->   lib/dynamic_queue_limits: use max() instead of max_t()
->   mm: use min() instead of min_t()
->   net: Don't pass bitfields to max_t()
->   net/core: Change loop conditions so min() can be used
->   net: use min() instead of min_t()
->   net/netlink: Use umin() to avoid min_t(int, ...) discarding high bits
->   net/mptcp: Change some dubious min_t(int, ...) to min()
-> 
->  arch/x86/crypto/aesni-intel_glue.c            |  3 +-
->  arch/x86/include/asm/bitops.h                 | 18 +++++-------
->  arch/x86/kvm/emulate.c                        |  3 +-
->  arch/x86/kvm/lapic.c                          |  2 +-
->  arch/x86/kvm/mmu/mmu.c                        |  2 +-
->  arch/x86/mm/pat/set_memory.c                  | 12 ++++----
->  block/blk-iocost.c                            |  6 ++--
->  block/blk-settings.c                          |  2 +-
->  block/partitions/efi.c                        |  3 +-
->  drivers/acpi/property.c                       |  2 +-
->  drivers/char/hw_random/core.c                 |  2 +-
->  drivers/char/tpm/tpm1-cmd.c                   |  2 +-
->  drivers/char/tpm/tpm_tis_core.c               |  4 +--
->  drivers/crypto/ccp/ccp-dev.c                  |  2 +-
->  drivers/cxl/core/mbox.c                       |  2 +-
->  drivers/gpio/gpiolib-acpi-core.c              |  2 +-
->  .../gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c  |  4 +--
->  drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c        |  2 +-
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  2 +-
->  drivers/i2c/busses/i2c-designware-master.c    |  2 +-
->  drivers/net/ethernet/realtek/r8169_main.c     |  3 +-
->  drivers/nvme/host/pci.c                       |  3 +-
->  drivers/nvme/host/zns.c                       |  3 +-
->  drivers/nvmem/core.c                          |  2 +-
->  drivers/pci/probe.c                           |  3 +-
->  drivers/scsi/hosts.c                          |  2 +-
->  drivers/tty/vt/selection.c                    |  9 +++---
->  drivers/usb/storage/protocol.c                |  3 +-
->  drivers/xen/grant-table.c                     |  2 +-
->  fs/buffer.c                                   |  2 +-
->  fs/exec.c                                     |  2 +-
->  fs/ext4/ext4.h                                |  2 +-
->  fs/ext4/mballoc.c                             |  3 +-
->  fs/ext4/resize.c                              |  2 +-
->  fs/ext4/super.c                               |  2 +-
->  fs/fat/dir.c                                  |  4 +--
->  fs/fat/file.c                                 |  3 +-
->  fs/fuse/dev.c                                 |  2 +-
->  fs/fuse/file.c                                |  8 ++---
->  fs/splice.c                                   |  2 +-
->  include/linux/bvec.h                          |  3 +-
->  include/linux/nodemask.h                      |  9 +++---
->  include/linux/perf_event.h                    |  2 +-
->  include/net/tcp_ecn.h                         |  5 ++--
->  io_uring/net.c                                |  6 ++--
->  ipc/mqueue.c                                  |  4 +--
->  ipc/msg.c                                     |  6 ++--
->  kernel/bpf/core.c                             |  4 +--
->  kernel/bpf/log.c                              |  2 +-
->  kernel/bpf/verifier.c                         | 29 +++++++------------
->  kernel/trace/bpf_trace.c                      |  2 +-
->  lib/bucket_locks.c                            |  2 +-
->  lib/crypto/mpi/mpicoder.c                     |  2 +-
->  lib/dynamic_queue_limits.c                    |  2 +-
->  mm/gup.c                                      |  4 +--
->  mm/memblock.c                                 |  2 +-
->  mm/memory.c                                   |  2 +-
->  mm/percpu.c                                   |  2 +-
->  mm/truncate.c                                 |  3 +-
->  mm/vmscan.c                                   |  2 +-
->  net/core/datagram.c                           |  6 ++--
->  net/core/flow_dissector.c                     |  7 ++---
->  net/core/net-sysfs.c                          |  3 +-
->  net/core/skmsg.c                              |  4 +--
->  net/ethtool/cmis_cdb.c                        |  7 ++---
->  net/ipv4/fib_trie.c                           |  2 +-
->  net/ipv4/tcp_input.c                          |  4 +--
->  net/ipv4/tcp_output.c                         |  5 ++--
->  net/ipv4/tcp_timer.c                          |  4 +--
->  net/ipv6/addrconf.c                           |  8 ++---
->  net/ipv6/ip6_output.c                         |  7 +++--
->  net/ipv6/ndisc.c                              |  5 ++--
->  net/mptcp/protocol.c                          |  8 ++---
->  net/netlink/genetlink.c                       |  9 +++---
->  net/packet/af_packet.c                        |  2 +-
->  net/unix/af_unix.c                            |  4 +--
->  76 files changed, 141 insertions(+), 176 deletions(-)
 
-Patches 10,14,16,37 applied.  Thanks.
+This fixes the issue.
+
+Tested-by: T Pratham <t-pratham@ti.com>
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Regards
+T Pratham <t-pratham@ti.com>
 
