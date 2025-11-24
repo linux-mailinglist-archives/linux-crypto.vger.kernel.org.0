@@ -1,59 +1,62 @@
-Return-Path: <linux-crypto+bounces-18402-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18404-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA657C7FBE2
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 10:55:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6DD1C7FCE4
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 11:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3EC9C34A09E
-	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 09:54:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CE5A3A2501
+	for <lists+linux-crypto@lfdr.de>; Mon, 24 Nov 2025 10:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4F762F7462;
-	Mon, 24 Nov 2025 09:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A592F744B;
+	Mon, 24 Nov 2025 10:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="pXwSPfTR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cJa0V8Fn"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DCB2F657F;
-	Mon, 24 Nov 2025 09:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C63324A043;
+	Mon, 24 Nov 2025 10:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763977910; cv=none; b=dB8lnUo4ZcHizL7nlkYDN/1C9Nzv9rdwLW7STvmNQcL+H4XXmPfHtwCyNg8Nghrjg5VN7oCAviUWA9IFwGDJI9d6QatQmKIo4/LX8GT46Ugr7gvUhZWc9Qv0IfTD9AAfWlQ4Ht9YbCn2L1k3dHy2FYflCVTZhBmryS1dG2a4gkk=
+	t=1763978862; cv=none; b=QN7xZMzDAYaaPV9nuqXZ8JgFh5QTSDjIDGwLBFIuXXeatowXPYGYwBh4qmBqxVpLkRsNTy6pL/ow6n/LHaCaeiWGusd2egvVQ4vZK5cfpNv0PvY/WYM0VX+tjl2bppKk4gQmVFxxc3LWr7kjegxcjRQZSpc/5i2pmlCHBGpXBQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763977910; c=relaxed/simple;
-	bh=OGzTKu3RaZeeTGEWvF4tKdcUIcFU07ZsNy6xTODec/Y=;
+	s=arc-20240116; t=1763978862; c=relaxed/simple;
+	bh=+mwAHnrUGHFDKB8XZfif0JXTCXVB4n3qcjzaW/132r0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RtYU+BEXCdwf6xDob3MFCDLxiz8tTck+fEI4nkm0skK0zP/oC7ntSDk6nCMSv+Kv8+PxIikFTN5EEcoZG/eN8R7c8pp8CC4Iu4danBGvgPUc023WGLPX2zNwoptI5c5+PuAl1yd80ImVFWbABEQOD8F/4iJjRleYxDcUjXcTHjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=pXwSPfTR; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=c7fgjhnceewX9WTWgDcP3o+c+gym320PIXC+PmkRQmA=; 
-	b=pXwSPfTRUQddVnMEepT8vWwygw8SsPTms8qX3o3U/1pzrAPtjcsteAJo4tddMzGVd+C147hOqwY
-	Mg36ouK0aYcilU7sOEStIo/yKGBj1mJvfrTGmVZzun5p5HL7WjpMWqfMM2zm2qNsGhYVWs9NMJPx+
-	qYWCnqzaoRVR4H9W8LH++5j7ZqLw0hy4qRFDhAl+OYGMC6GAIL4XedXcyBCUuWWJi6ur0GIF66wBT
-	fyEdkdSHd+otFOc0npyv6KwngLfkuIk9gE/OPbNnEa+DbGtYTLMOEeguZC9aLpS7U9h3pQJY49ikt
-	t9L8zsaMddJGFJynbO1T5ZdnKTnzaD9ZQh+w==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vNTEV-005XP3-2v;
-	Mon, 24 Nov 2025 17:51:45 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 24 Nov 2025 17:51:43 +0800
-Date: Mon, 24 Nov 2025 17:51:43 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
-	stable@vger.kernel.org,
-	Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-Subject: Re: [PATCH] crypto: zstd - fix double-free in per-CPU stream cleanup
-Message-ID: <aSQqr9wKzfNP_As8@gondor.apana.org.au>
-References: <20251120162619.28686-2-giovanni.cabiddu@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WrtwPftN3cZmfeq/GwLMWve/YbwNHehYvL5tJLYjIJBrOMw7a4RjwT/oEUXNLWr3bLGSJULHaSaMzbkhsrch3BpXxhzyvFlsOdBejuuJw6MsmfPaAQgI2Smi51KTVYYHy9IWcKYHX9paB2ZiOj3vgcLkEH0tN366lrp7+mKLP7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cJa0V8Fn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C154C116D0;
+	Mon, 24 Nov 2025 10:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763978861;
+	bh=+mwAHnrUGHFDKB8XZfif0JXTCXVB4n3qcjzaW/132r0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cJa0V8Fn59Isf1jQzAgwgA/1y9fdT8D3/yM030TrbakBWifL27QssEQWKp2nh9C//
+	 JtUwpoT3m+7Vyb+unNxRzyoN+W5XLwzfcoz3rVTV6HidrpRokxJY7HT6jIpEFf4yAJ
+	 M0wDLifsiGT2Vr+U1gUNoEW4L32oKtYCJljM8TRD9VuYoPM2PaE87SXyJVEuvKCHx4
+	 kTcG+FtuuBn8MqCtVKGD7lfO9fgqNWNI+lb6s6mviRqJrGXO+TPmY1/n055p4NXCvh
+	 jrIn79jrPymrEuAqogb62MzRDgQF7sEyUFC2Fa6BJUrH7k+MKoTNMyByvMz5QywUQj
+	 ndCN+bq3egLpw==
+Received: from johan by xi.lan with local (Exim 4.98.2)
+	(envelope-from <johan@kernel.org>)
+	id 1vNTTw-0000000029K-2v77;
+	Mon, 24 Nov 2025 11:07:40 +0100
+Date: Mon, 24 Nov 2025 11:07:40 +0100
+From: Johan Hovold <johan@kernel.org>
+To: liulongfang <liulongfang@huawei.com>
+Cc: Weili Qian <qianweili@huawei.com>, Zhou Wang <wangzhou1@hisilicon.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Kai Ye <yekai13@huawei.com>, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon/qm - fix device leak on QoS updates
+Message-ID: <aSQubH4nwxgmgK_U@hovoldconsulting.com>
+References: <20251121111130.25025-1-johan@kernel.org>
+ <f7a83c28-af17-7479-0b39-ff3b06ee4b8c@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,55 +65,18 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251120162619.28686-2-giovanni.cabiddu@intel.com>
+In-Reply-To: <f7a83c28-af17-7479-0b39-ff3b06ee4b8c@huawei.com>
 
-On Thu, Nov 20, 2025 at 04:26:09PM +0000, Giovanni Cabiddu wrote:
-> The crypto/zstd module has a double-free bug that occurs when multiple
-> tfms are allocated and freed.
-> 
-> The issue happens because zstd_streams (per-CPU contexts) are freed in
-> zstd_exit() during every tfm destruction, rather than being managed at
-> the module level.  When multiple tfms exist, each tfm exit attempts to
-> free the same shared per-CPU streams, resulting in a double-free.
-> 
-> This leads to a stack trace similar to:
-> 
->   BUG: Bad page state in process kworker/u16:1  pfn:106fd93
->   page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x106fd93
->   flags: 0x17ffffc0000000(node=0|zone=2|lastcpupid=0x1fffff)
->   page_type: 0xffffffff()
->   raw: 0017ffffc0000000 dead000000000100 dead000000000122 0000000000000000
->   raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
->   page dumped because: nonzero entire_mapcount
->   Modules linked in: ...
->   CPU: 3 UID: 0 PID: 2506 Comm: kworker/u16:1 Kdump: loaded Tainted: G    B
->   Hardware name: ...
->   Workqueue: btrfs-delalloc btrfs_work_helper
->   Call Trace:
->    <TASK>
->    dump_stack_lvl+0x5d/0x80
->    bad_page+0x71/0xd0
->    free_unref_page_prepare+0x24e/0x490
->    free_unref_page+0x60/0x170
->    crypto_acomp_free_streams+0x5d/0xc0
->    crypto_acomp_exit_tfm+0x23/0x50
->    crypto_destroy_tfm+0x60/0xc0
->    ...
-> 
-> Change the lifecycle management of zstd_streams to free the streams only
-> once during module cleanup.
-> 
-> Fixes: f5ad93ffb541 ("crypto: zstd - convert to acomp")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> Reviewed-by: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-> ---
->  crypto/zstd.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
+On Mon, Nov 24, 2025 at 10:03:03AM +0800, liulongfang wrote:
+> On 2025/11/21 19:11, Johan Hovold wrote:
+> > Make sure to drop the reference taken when looking up the PCI device on
+> > QoS updates.
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> This issue has already been fixed by the following patch:
+> "[PATCH] crypto: hisilicon/qm - Fix device reference leak in qm_get_qos_value".
+
+Ah, sorry for not noticing. I was still using rc5 as base and apparently
+forgot to check linux-next.
+
+Johan
 
