@@ -1,61 +1,84 @@
-Return-Path: <linux-crypto+bounces-18595-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18598-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 506ACC9A52E
-	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 07:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6588EC9AB1A
+	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 09:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4C5C3A6710
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 06:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B6573A51F8
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 08:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B803019A1;
-	Tue,  2 Dec 2025 06:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6821C215F7D;
+	Tue,  2 Dec 2025 08:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLuJ0Ckm"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r1a2bDAs"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2C9301460;
-	Tue,  2 Dec 2025 06:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F84C3C17
+	for <linux-crypto@vger.kernel.org>; Tue,  2 Dec 2025 08:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764657176; cv=none; b=k6yzUQlwJkfMV67tQh6P7kqLDTJ/X1nHV+WZf6nFLi/i1NRn8wnIYb/70SiAzCDuPz6wPcv9XaE8NwCok88W+avrP7JNTDR7ViOoiMnx5XPjsgeMFvPDPBUkxqFWcFzL/ZmoyNOilGXE7e5wxLN8VscVedahoYJuoklF2W2xcAM=
+	t=1764664345; cv=none; b=OnBTCXN6ri8TdNiQwWY0Jxsp8RlgYp2rNpXqdQvkQzs1ATQYu/lwoLMDKcRPHt1GNB6jZr24N4Bwh32FimitwzigALhws3N2MLVPqBUe1aJhhkjI0l/gxwDVEQ3ijUzDazGROwKP5YuLC+i5DjVx+gV0/c30iUjDVmkkUzCqa8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764657176; c=relaxed/simple;
-	bh=uq4FzFhbXgEfjRtm0v8jPvu/3eFqEqCLEHIabRwZTMI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dNEVgXmAuWHSIq/G9PNCULkjG8tf2grN6fUa6K4ZHqNCryqL1dqCrIaAjdRnBOwFec4euHq4N2181aXLeZ4+cYB5ppQ17k6n/o+NDQETcgcfjrGHfA7zBoVBGyTJUVUoX4ZHeESlMd1MbmlSRdBnkrmPLSDZOS2V8D8lFzfgHQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JLuJ0Ckm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 154CDC4CEF1;
-	Tue,  2 Dec 2025 06:32:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764657175;
-	bh=uq4FzFhbXgEfjRtm0v8jPvu/3eFqEqCLEHIabRwZTMI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JLuJ0Ckm5IS7nlUqKLi3MCoZ31aWBOxanAN27rKbwY03DJG26511TZawyBvPHgKZK
-	 ZN6qa+FfikT8uVMcvZNDtWVjcj3CT2mdNqi+czrktL9QusIdMPELIwXmDPJffg+bpu
-	 KErw7lDbdliaGRVu8au8yuVGNxv8jf05s9D4Gwkd8GQg05Cg3SWlnFiQeakYaIcLSG
-	 8B7TQ7+cFtH3Fv/hdz3D30e3i9RLjKQVofjKv1ZkwrBEiCS0M5e+k/+4XgCFkz3Pxo
-	 ZGGraR5KWVe0hasmv4ivp55mSi3M4guLzpGpN52fd3fsQZDVsV/jMIilGy0eOsPbSi
-	 fqfo2lCAcUBbg==
-Date: Mon, 1 Dec 2025 22:31:03 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Vivian Wang <wangruikang@iscas.ac.cn>
-Cc: Jerry Shih <jerry.shih@sifive.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Ard Biesheuvel <ardb@kernel.org>, Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	linux-crypto@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] lib/crypto: riscv/chacha: Avoid s0/fp register
-Message-ID: <20251202063103.GA100366@sol>
-References: <20251202-riscv-chacha_zvkb-fp-v2-1-7bd00098c9dc@iscas.ac.cn>
- <20251202053119.GA1416@sol>
- <80cb6553-af8f-4fce-a010-dff3a33c3779@iscas.ac.cn>
+	s=arc-20240116; t=1764664345; c=relaxed/simple;
+	bh=9jtbSUYB1F7B+WQCinwX1LvDrwGfU6ViN6VPDM86J0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=a/Csj3tppuLm8jzYw3CmQq6MfoDlqc3kN1Oimvok/dHgcbpkrinBzvrzWKoiqIQNH28PDXao89sQobboJDtYZEJ/R0cvZsVY7DyaNspaCJkYnKDoN6QMvB0sIPdXAYHaMNIQYra9Luw1uU7b58PFNjjxn2t9Y6rxhNjYXYRVx4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r1a2bDAs; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47118259fd8so49492435e9.3
+        for <linux-crypto@vger.kernel.org>; Tue, 02 Dec 2025 00:32:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1764664341; x=1765269141; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FsHqPTshFNHLEG20rETs0sf9qOuekVbz2zLD+bVQbvI=;
+        b=r1a2bDAshVCYlv8ehtwCrw2lpN1Tml+aF/kghfRJDWIniGw2Oxant1V5tnz90Y9TzQ
+         LQaiigQp5U8UNIZYeRL3RH+bIywm+sIg1VuAYcYnr346P+Evh40XT9Js5UwP1xIC2lm7
+         5Po79vL42WfLt1ukAtBm7EwlZJIJW4euuJC34K1F9qX2clf3ud2BW3fhDAg63rBgP/ud
+         55RUXmaiTVL95jpNp1yG8SBzLIEgwW05n+DVqLA9PfNeSagb3oo396xVRmLL2mfLndLR
+         qo8M2pVriOFymX7pQ0/hBg+d++KNiuGD1zmQUORRDCOI3WaU+0/SIzxq0AkHs1Chhtf3
+         BF9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764664341; x=1765269141;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FsHqPTshFNHLEG20rETs0sf9qOuekVbz2zLD+bVQbvI=;
+        b=IhfVwXR6i09FqmDiDKwpG50qaxAMHC9u5GPdOvdjU9oNdhiZ9luD4A3USZv91joGYc
+         cDql/m8DNOXJyv/5xoKDZUdIGZdr+AQ05eEAyyeG7GrhyFrflazK68gySNivYbowRwSs
+         eMob4quPsQdqfNnVlaFbj9ghx43RbG2Y5lmeKitWbCz2ZrrHzK01BazKzjZ034JecxJn
+         Odf2VW4vxiirTQfKkASmizZt4PzT15qJoFfMAnAZ6xA6QiT+LuBJSWXUXO+n2hrYr1W7
+         VusM0yHt89k0pTHAjTExYkM3vNCarvcS4JX+ocjcURjKwxlQ6rj38dQGXb8ID9QXFvKL
+         cUWQ==
+X-Gm-Message-State: AOJu0Yyq41pURtY15CGFlc1sWJqLg7MP5gLQuqXHOnvUYBp0xGn5Xd2P
+	c2ctSdpJk2usM7YdE9utvI5xJfiPjncRHs0le5jaWlwXBJ1qVFNlr8aS967SS4a19Mj1GhSU4SN
+	nwuQ5
+X-Gm-Gg: ASbGnctKh9tJRbrDOWBHr2iaqMiM/2w4bd70n5zACs1Ehp3ihfg0AcNNsFZ1+99sJ/C
+	csk5RrdVMScmmCS7OdxIEcN/FpE0dR3icl4eX/OL1JjWdGfNOCCwbivnnknnlLoX9c34dJWN1Uh
+	q/BovXWB1bo71ULae319mfF5kJfjUh9RYXgvma3UmfHqCcmBABizvw8FyuYsSZjVy5XYpu3rr+l
+	/j3Vc/5nyFUIhf8V6YF8J2bPtShTgdUj20FQ71tXrLo9XJ6HvlCkg0Go+l0APca7SVoFXkceLUc
+	fpNFs4VYdcwy4EzwGPQC0s2G44F4Aew2ZIWoxJw+Um88/5xas0yvDJQcpmE2XbqYEr+Y+TNCdI2
+	J1SpXOWZIgz2UUsRaQ78Zs449CfMWCKyQsHHvBRN22abqEYWTBjco1fALo36nDBsh5T4b41wcmn
+	qqrWPHhjfu3s28Vml1
+X-Google-Smtp-Source: AGHT+IFz6H4UwMZ4YMU33cn7Zdwnqkjvpb4Evb2fMV3ozaEs0cNcvZixxMFCO2MLrS8PoApwkB+IcQ==
+X-Received: by 2002:a05:6000:1a85:b0:42b:3e0a:64b8 with SMTP id ffacd0b85a97d-42e0f22c54amr30540657f8f.24.1764664340572;
+        Tue, 02 Dec 2025 00:32:20 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-42e1c5d6133sm33747712f8f.16.2025.12.02.00.32.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Dec 2025 00:32:20 -0800 (PST)
+Date: Tue, 2 Dec 2025 10:47:16 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Alexey Kardashevskiy <aik@amd.com>
+Cc: linux-crypto@vger.kernel.org
+Subject: [bug report] crypto/ccp: Implement SEV-TIO PCIe IDE (phase1)
+Message-ID: <aS6ZhKHx-mZF3qRI@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -64,38 +87,41 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <80cb6553-af8f-4fce-a010-dff3a33c3779@iscas.ac.cn>
 
-On Tue, Dec 02, 2025 at 02:24:46PM +0800, Vivian Wang wrote:
-> On 12/2/25 13:31, Eric Biggers wrote:
-> > On Tue, Dec 02, 2025 at 01:25:07PM +0800, Vivian Wang wrote:
-> >> In chacha_zvkb, avoid using the s0 register, which is the frame pointer,
-> >> by reallocating KEY0 to t5. This makes stack traces available if e.g. a
-> >> crash happens in chacha_zvkb.
-> >>
-> >> No frame pointer maintenence is otherwise required since this is a leaf
-> >> function.
-> > maintenence => maintenance
-> >
-> Ouch... I swear I specifically checked this before sending, but
-> apparently didn't see this. Thanks for the catch.
-> 
-> >>  SYM_FUNC_START(chacha_zvkb)
-> >>  	addi		sp, sp, -96
-> >> -	sd		s0, 0(sp)
-> > I know it's annoying, but would you mind also changing the 96 to 88, and
-> > decreasing all the offsets by 8, so that we don't leave a hole in the
-> > stack where s0 used to be?  Likewise at the end of the function.
-> 
-> No can do. Stack alignment on RISC-V is 16 bytes, and 80 won't fit.
-> 
+Hello Alexey Kardashevskiy,
 
-Hmm, interesting.  It shouldn't actually matter, since this doesn't call
-any other function, but we might as well leave it at 96 then.  I don't
-think this was considered when any of the RISC-V crypto code was
-written, but fortunately this is the only one that uses the stack.
+Commit 3532f6154971 ("crypto/ccp: Implement SEV-TIO PCIe IDE
+(phase1)") from Nov 21, 2025 (linux-next), leads to the following
+Smatch static checker warning:
 
-Anyway, I guess I'll apply this as-is then.
+	drivers/crypto/ccp/sev-dev-tsm.c:266 dsm_create()
+	error: we previously assumed 'pdev->bus' could be null (see line 264)
 
-- Eric
+drivers/crypto/ccp/sev-dev-tsm.c
+    261 static int dsm_create(struct tio_dsm *dsm)
+    262 {
+    263         struct pci_dev *pdev = dsm->tsm.base_tsm.pdev;
+    264         u8 segment_id = pdev->bus ? pci_domain_nr(pdev->bus) : 0;
+                                ^^^^^^^^^
+This line assumes "pdev->bus" can be NULL.
+
+    265         struct pci_dev *rootport = pcie_find_root_port(pdev);
+--> 266         u16 device_id = pci_dev_id(pdev);
+                                           ^^^^
+Unchecked dereference.
+
+    267         u16 root_port_id;
+    268         u32 lnkcap = 0;
+    269 
+    270         if (pci_read_config_dword(rootport, pci_pcie_cap(rootport) + PCI_EXP_LNKCAP,
+    271                                   &lnkcap))
+    272                 return -ENODEV;
+    273 
+    274         root_port_id = FIELD_GET(PCI_EXP_LNKCAP_PN, lnkcap);
+    275 
+    276         return sev_tio_dev_create(&dsm->data, device_id, root_port_id, segment_id);
+    277 }
+
+regards,
+dan carpenter
 
