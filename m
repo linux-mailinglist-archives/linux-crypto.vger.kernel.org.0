@@ -1,161 +1,100 @@
-Return-Path: <linux-crypto+bounces-18592-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18594-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78A0EC9A34D
-	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 07:14:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9035C9A3E7
+	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 07:25:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5D5354E2CA2
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 06:13:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C74B3A53E4
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 06:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FF830101B;
-	Tue,  2 Dec 2025 06:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="NtvX5/gt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451EA3009CA;
+	Tue,  2 Dec 2025 06:25:05 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277C82FFFA3;
-	Tue,  2 Dec 2025 06:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292692FFF89;
+	Tue,  2 Dec 2025 06:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764655990; cv=none; b=eb8YdzgsfGAUdmriy3mXow5Vh+Hjqd2hDl1yLXoAUXt24A6BWXww8OddgDalEX0JslA+fwcp+RMl8195ddKb+SU4WPBAWSSbeCQb5dgOgujgzk1LCjdXlFaXDcc8dyHXFZHCZfbdgF+drho2IK+t/aH8y2G2kTq3BYPzxLaL5Ec=
+	t=1764656705; cv=none; b=qTI0HSmd0Js+VkHNNV6IplH6f4hEA0KOWzpYsY6LroRHxToF2tArvUgg/U7OC23krL3wjc+ELfQSjl9CWnW3GukwI+XORWy/W1VDzKinIPZUcpYHgj7APBJ/H+YES6qEyNHGKCyOnefwzPwLB5H5qcqfjyxOk3MXPGLBHhiNRys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764655990; c=relaxed/simple;
-	bh=pua1amQvV9fCow0RBdrdv99qmahXdFL4paOWtrQkMFs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h65XAnday8mYtjyKcImyOJUvbhAAXFhLuvGOcQYXYAz6AjSaoGi51ur/b6j5Gd18DKHg0Fy//8c2qWyY6tyxpUJqlLwVxxg485ffRfsEXhvYTFfMcTUIFW9hdeD44vKFyGEV7ZEyMeGaEkbwVeh2SF1wveNofmL3vvI49MCcog0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=NtvX5/gt; arc=none smtp.client-ip=113.46.200.227
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=jhA8g0wHjWM0boaunGsWLeE7SRcYqrx99SvDaAeBx+0=;
-	b=NtvX5/gtfa/vLlxGaBC6VmEvYl3r8wjwIkX5ZdjIn6hIKpjKr1Zv1L6kgN1aJzmDxIk30dGsr
-	f9TjdXv1aZqxyo1R2c0IlV4ipQp2MbcYgDSV9jGaLHR1Xv4gHyNjMF0TJxJDAtPDVDsUqJwFqgW
-	HvxIYaJnL6EohLHiTOxBcQc=
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dL9P93ZQNznTXp;
-	Tue,  2 Dec 2025 14:10:37 +0800 (CST)
-Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id A23BF1A016C;
-	Tue,  2 Dec 2025 14:12:59 +0800 (CST)
-Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 2 Dec 2025 14:12:59 +0800
-Received: from localhost.huawei.com (10.90.31.46) by
- kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 2 Dec 2025 14:12:59 +0800
-From: Chenghai Huang <huangchenghai2@huawei.com>
-To: <gregkh@linuxfoundation.org>, <zhangfei.gao@linaro.org>,
-	<wangzhou1@hisilicon.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<fanghao11@huawei.com>, <shenyang39@huawei.com>, <liulongfang@huawei.com>,
-	<qianweili@huawei.com>, <linwenkai6@hisilicon.com>
-Subject: [PATCH v6 4/4] uacce: ensure safe queue release with state management
-Date: Tue, 2 Dec 2025 14:12:56 +0800
-Message-ID: <20251202061256.4158641-5-huangchenghai2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20251202061256.4158641-1-huangchenghai2@huawei.com>
-References: <20251202061256.4158641-1-huangchenghai2@huawei.com>
+	s=arc-20240116; t=1764656705; c=relaxed/simple;
+	bh=ckppSMB/ShTOuB5lgJCSTFQ7jzN/2iHVYT3QpUlK7vg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pW3EUZYroDdivynFmKNiH/z6Pq0lbNGJuwCZd+kwzNy0nrMZwfnO+v2dMWRrtyzKM8fdcCzvE6tqi0awrjbIexOyMPneSTjZaGWGenkvj10obSo/ArwFrDPjiyvdekHY9K9QHr2GT/JkS/l0oS2V0esxMzgPEbZaiC6WwJPJWLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from [192.168.0.107] (unknown [114.241.82.59])
+	by APP-01 (Coremail) with SMTP id qwCowABn_cwuhi5pmijUAg--.285S2;
+	Tue, 02 Dec 2025 14:24:46 +0800 (CST)
+Message-ID: <80cb6553-af8f-4fce-a010-dff3a33c3779@iscas.ac.cn>
+Date: Tue, 2 Dec 2025 14:24:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemq200001.china.huawei.com (7.202.195.16)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] lib/crypto: riscv/chacha: Avoid s0/fp register
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Jerry Shih <jerry.shih@sifive.com>, "Jason A. Donenfeld"
+ <Jason@zx2c4.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+ linux-crypto@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20251202-riscv-chacha_zvkb-fp-v2-1-7bd00098c9dc@iscas.ac.cn>
+ <20251202053119.GA1416@sol>
+Content-Language: en-US
+From: Vivian Wang <wangruikang@iscas.ac.cn>
+In-Reply-To: <20251202053119.GA1416@sol>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:qwCowABn_cwuhi5pmijUAg--.285S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFWDKr1xJw15tr1kGry3Arb_yoWfGrbEvr
+	WYyrn7Cwn8WFnrtFyjkr4UtrWDGw1fWFyIgryrXwsrKrW8Zan5Zr1kZrn5Aw1Sqw42yF9F
+	kr98Jay3W34a9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbskYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+	6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+	8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+	cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+	A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+	64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+	Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+	c7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+	14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+	IFyTuYvjxU2VbyDUUUU
+X-CM-SenderInfo: pzdqw2pxlnt03j6l2u1dvotugofq/
 
-Directly calling `put_queue` carries risks since it cannot
-guarantee that resources of `uacce_queue` have been fully released
-beforehand. So adding a `stop_queue` operation for the
-UACCE_CMD_PUT_Q command and leaving the `put_queue` operation to
-the final resource release ensures safety.
+On 12/2/25 13:31, Eric Biggers wrote:
+> On Tue, Dec 02, 2025 at 01:25:07PM +0800, Vivian Wang wrote:
+>> In chacha_zvkb, avoid using the s0 register, which is the frame pointer,
+>> by reallocating KEY0 to t5. This makes stack traces available if e.g. a
+>> crash happens in chacha_zvkb.
+>>
+>> No frame pointer maintenence is otherwise required since this is a leaf
+>> function.
+> maintenence => maintenance
+>
+Ouch... I swear I specifically checked this before sending, but
+apparently didn't see this. Thanks for the catch.
 
-Queue states are defined as follows:
-- UACCE_Q_ZOMBIE: Initial state
-- UACCE_Q_INIT: After opening `uacce`
-- UACCE_Q_STARTED: After `start` is issued via `ioctl`
+>>  SYM_FUNC_START(chacha_zvkb)
+>>  	addi		sp, sp, -96
+>> -	sd		s0, 0(sp)
+> I know it's annoying, but would you mind also changing the 96 to 88, and
+> decreasing all the offsets by 8, so that we don't leave a hole in the
+> stack where s0 used to be?  Likewise at the end of the function.
 
-When executing `poweroff -f` in virt while accelerator are still
-working, `uacce_fops_release` and `uacce_remove` may execute
-concurrently. This can cause `uacce_put_queue` within
-`uacce_fops_release` to access a NULL `ops` pointer. Therefore, add
-state checks to prevent accessing freed pointers.
-
-Fixes: 015d239ac014 ("uacce: add uacce driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
-Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
----
- drivers/misc/uacce/uacce.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index c061c6fa1c5e..6d71355528d3 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -40,20 +40,34 @@ static int uacce_start_queue(struct uacce_queue *q)
- 	return 0;
- }
- 
--static int uacce_put_queue(struct uacce_queue *q)
-+static int uacce_stop_queue(struct uacce_queue *q)
- {
- 	struct uacce_device *uacce = q->uacce;
- 
--	if ((q->state == UACCE_Q_STARTED) && uacce->ops->stop_queue)
-+	if (q->state != UACCE_Q_STARTED)
-+		return 0;
-+
-+	if (uacce->ops->stop_queue)
- 		uacce->ops->stop_queue(q);
- 
--	if ((q->state == UACCE_Q_INIT || q->state == UACCE_Q_STARTED) &&
--	     uacce->ops->put_queue)
-+	q->state = UACCE_Q_INIT;
-+
-+	return 0;
-+}
-+
-+static void uacce_put_queue(struct uacce_queue *q)
-+{
-+	struct uacce_device *uacce = q->uacce;
-+
-+	uacce_stop_queue(q);
-+
-+	if (q->state != UACCE_Q_INIT)
-+		return;
-+
-+	if (uacce->ops->put_queue)
- 		uacce->ops->put_queue(q);
- 
- 	q->state = UACCE_Q_ZOMBIE;
--
--	return 0;
- }
- 
- static long uacce_fops_unl_ioctl(struct file *filep,
-@@ -80,7 +94,7 @@ static long uacce_fops_unl_ioctl(struct file *filep,
- 		ret = uacce_start_queue(q);
- 		break;
- 	case UACCE_CMD_PUT_Q:
--		ret = uacce_put_queue(q);
-+		ret = uacce_stop_queue(q);
- 		break;
- 	default:
- 		if (uacce->ops->ioctl)
--- 
-2.33.0
+No can do. Stack alignment on RISC-V is 16 bytes, and 80 won't fit.
 
 
