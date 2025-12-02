@@ -1,127 +1,109 @@
-Return-Path: <linux-crypto+bounces-18598-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18596-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6588EC9AB1A
-	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 09:32:31 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 957BDC9A8D2
+	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 08:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B6573A51F8
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 08:32:26 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8853B4E2C62
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 07:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6821C215F7D;
-	Tue,  2 Dec 2025 08:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5AB5303A27;
+	Tue,  2 Dec 2025 07:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r1a2bDAs"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G56JQVrJ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F84C3C17
-	for <linux-crypto@vger.kernel.org>; Tue,  2 Dec 2025 08:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789C0302745
+	for <linux-crypto@vger.kernel.org>; Tue,  2 Dec 2025 07:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764664345; cv=none; b=OnBTCXN6ri8TdNiQwWY0Jxsp8RlgYp2rNpXqdQvkQzs1ATQYu/lwoLMDKcRPHt1GNB6jZr24N4Bwh32FimitwzigALhws3N2MLVPqBUe1aJhhkjI0l/gxwDVEQ3ijUzDazGROwKP5YuLC+i5DjVx+gV0/c30iUjDVmkkUzCqa8I=
+	t=1764661768; cv=none; b=ILAgBs0ldbNxSOKSgxcIaJnhaChP1Fz8u7QgexcjcwwvKAj0S7/D38EtmGaS/LECi0KNe6xKK+LYZVlSF7snh/rKiJEWvUJyKD2sF3sFywSnQxfX5xiHIyvSXWMyYkriuAF2uwTQEOOZOnPIQJLB9CwXcFhRGOfEhAv+dQqaC9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764664345; c=relaxed/simple;
-	bh=9jtbSUYB1F7B+WQCinwX1LvDrwGfU6ViN6VPDM86J0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=a/Csj3tppuLm8jzYw3CmQq6MfoDlqc3kN1Oimvok/dHgcbpkrinBzvrzWKoiqIQNH28PDXao89sQobboJDtYZEJ/R0cvZsVY7DyaNspaCJkYnKDoN6QMvB0sIPdXAYHaMNIQYra9Luw1uU7b58PFNjjxn2t9Y6rxhNjYXYRVx4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r1a2bDAs; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1764661768; c=relaxed/simple;
+	bh=3ssL8bEyPWOKoaGOkYPImlAucNDLLemdfe+CMvpPTnI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yt/VwG6RYCzdlnH+MiMVfLSXu4DRtQRslkLBCj+sfCsRlcq3uvpwbJPXg4YHxu3uxszn/fdeJiqhpMJUzG+iImeAFrj2kgdbvF9TlnwLwhARPrUdfvXVbRVSpxmzz/+gZ5DAMAoYIFBtESe+Ka3rnYHZ74AMKvlmmQJEq/3DWNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G56JQVrJ; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47118259fd8so49492435e9.3
-        for <linux-crypto@vger.kernel.org>; Tue, 02 Dec 2025 00:32:22 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5945510fd7aso4153536e87.0
+        for <linux-crypto@vger.kernel.org>; Mon, 01 Dec 2025 23:49:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1764664341; x=1765269141; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FsHqPTshFNHLEG20rETs0sf9qOuekVbz2zLD+bVQbvI=;
-        b=r1a2bDAshVCYlv8ehtwCrw2lpN1Tml+aF/kghfRJDWIniGw2Oxant1V5tnz90Y9TzQ
-         LQaiigQp5U8UNIZYeRL3RH+bIywm+sIg1VuAYcYnr346P+Evh40XT9Js5UwP1xIC2lm7
-         5Po79vL42WfLt1ukAtBm7EwlZJIJW4euuJC34K1F9qX2clf3ud2BW3fhDAg63rBgP/ud
-         55RUXmaiTVL95jpNp1yG8SBzLIEgwW05n+DVqLA9PfNeSagb3oo396xVRmLL2mfLndLR
-         qo8M2pVriOFymX7pQ0/hBg+d++KNiuGD1zmQUORRDCOI3WaU+0/SIzxq0AkHs1Chhtf3
-         BF9A==
+        d=linaro.org; s=google; t=1764661764; x=1765266564; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ssL8bEyPWOKoaGOkYPImlAucNDLLemdfe+CMvpPTnI=;
+        b=G56JQVrJVVTC32/dN8DSIoc2MWemv/RgDmFx0diOhyRGhUjjCpqi9AFNWPHMNwcOOV
+         ZfCopiOj2vnQiSKFnr30BbsXOxJT7lgIHkU9HPlojc7/WgHy2yJprImOJf23pFvU3+oA
+         HB5yj5xjmun8hSlZsEfyv6TRC3fYtaSkgYddqWAygTp+eFvLSRbdFzfD2eM7znnJk2oe
+         Sh7VejcydDKLg2P9yTIkhMXjHAcNl+2ftnl+Fgj/5pAmTdnDxK5FJviMcEefpT0cqqYT
+         WudfoajXDUS3ctSe+UwBQpYIPGRUcUiNFoODHhoXcMaelT1AJK7MTzLxR0++SJgt5Kxw
+         12uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764664341; x=1765269141;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FsHqPTshFNHLEG20rETs0sf9qOuekVbz2zLD+bVQbvI=;
-        b=IhfVwXR6i09FqmDiDKwpG50qaxAMHC9u5GPdOvdjU9oNdhiZ9luD4A3USZv91joGYc
-         cDql/m8DNOXJyv/5xoKDZUdIGZdr+AQ05eEAyyeG7GrhyFrflazK68gySNivYbowRwSs
-         eMob4quPsQdqfNnVlaFbj9ghx43RbG2Y5lmeKitWbCz2ZrrHzK01BazKzjZ034JecxJn
-         Odf2VW4vxiirTQfKkASmizZt4PzT15qJoFfMAnAZ6xA6QiT+LuBJSWXUXO+n2hrYr1W7
-         VusM0yHt89k0pTHAjTExYkM3vNCarvcS4JX+ocjcURjKwxlQ6rj38dQGXb8ID9QXFvKL
-         cUWQ==
-X-Gm-Message-State: AOJu0Yyq41pURtY15CGFlc1sWJqLg7MP5gLQuqXHOnvUYBp0xGn5Xd2P
-	c2ctSdpJk2usM7YdE9utvI5xJfiPjncRHs0le5jaWlwXBJ1qVFNlr8aS967SS4a19Mj1GhSU4SN
-	nwuQ5
-X-Gm-Gg: ASbGnctKh9tJRbrDOWBHr2iaqMiM/2w4bd70n5zACs1Ehp3ihfg0AcNNsFZ1+99sJ/C
-	csk5RrdVMScmmCS7OdxIEcN/FpE0dR3icl4eX/OL1JjWdGfNOCCwbivnnknnlLoX9c34dJWN1Uh
-	q/BovXWB1bo71ULae319mfF5kJfjUh9RYXgvma3UmfHqCcmBABizvw8FyuYsSZjVy5XYpu3rr+l
-	/j3Vc/5nyFUIhf8V6YF8J2bPtShTgdUj20FQ71tXrLo9XJ6HvlCkg0Go+l0APca7SVoFXkceLUc
-	fpNFs4VYdcwy4EzwGPQC0s2G44F4Aew2ZIWoxJw+Um88/5xas0yvDJQcpmE2XbqYEr+Y+TNCdI2
-	J1SpXOWZIgz2UUsRaQ78Zs449CfMWCKyQsHHvBRN22abqEYWTBjco1fALo36nDBsh5T4b41wcmn
-	qqrWPHhjfu3s28Vml1
-X-Google-Smtp-Source: AGHT+IFz6H4UwMZ4YMU33cn7Zdwnqkjvpb4Evb2fMV3ozaEs0cNcvZixxMFCO2MLrS8PoApwkB+IcQ==
-X-Received: by 2002:a05:6000:1a85:b0:42b:3e0a:64b8 with SMTP id ffacd0b85a97d-42e0f22c54amr30540657f8f.24.1764664340572;
-        Tue, 02 Dec 2025 00:32:20 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-42e1c5d6133sm33747712f8f.16.2025.12.02.00.32.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Dec 2025 00:32:20 -0800 (PST)
-Date: Tue, 2 Dec 2025 10:47:16 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Alexey Kardashevskiy <aik@amd.com>
-Cc: linux-crypto@vger.kernel.org
-Subject: [bug report] crypto/ccp: Implement SEV-TIO PCIe IDE (phase1)
-Message-ID: <aS6ZhKHx-mZF3qRI@stanley.mountain>
+        d=1e100.net; s=20230601; t=1764661764; x=1765266564;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ssL8bEyPWOKoaGOkYPImlAucNDLLemdfe+CMvpPTnI=;
+        b=OlqrFlUaR8LROUevTXXzmuRigP2j9w/unP9X5RBb/bG66WwCpaKIt2KNLU7mvfyVbN
+         2OiW8h5T3bUFmePyCyJ0rmbCwoT7RajeEcAvQ6yDTyLw16r6YI5hkiawSq8zDrgyQiYs
+         TooV+p1+WNfs1Y4LRm3Iz3waZk347KobiIKPJe2UHC4KAc7QEZwnK0zlzxhvg4ZeY7qo
+         quDnv3o3yfVy4Ua/i4arjE8/ZeO9ndVs+x6AO6JXSMYcPrjWORxLcysFISw7lVrBVtaM
+         IgFbKFEnUH4KbDgCaDCCUU0Qsv4jlvHc235L9N9yFmjyJ0kHpUYcFXfVmQ0TY8KMxdVN
+         tWbA==
+X-Forwarded-Encrypted: i=1; AJvYcCVly7QgV2tJnUileJQj+rMAlUH3bJyzdhihPDgquQ4fBJ8ozg4L1dMe1FVsOCHze3nXb5idO4gciG7p/Jw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTk4b8tVRQxMoEOwI7kYcw6Ub5f+q7HckPfGdS2r4d3gnAdNic
+	L6fbiPcjh92lTI+KS4f/j/0LLX8WYOybPkcn1I2T97iYth2jE7rwfNExPhDAlPtwSnaG+RBLxFh
+	7x66Ja/RYgrF3Cb1mOrYIXC06CCTOlibvAiErHY1imA==
+X-Gm-Gg: ASbGncsurVjHmiLvlTtCqUEaHzP2i2O/DCeHnWYa9kd3G5Hiqnv6ooTaojeoTLF//ru
+	HCAxPb+Apg/vEoDCzgowz5tZ8TSXwHLdSRrzS9chguw/DBS7fkcOJtCk1iCdSqaSQ0uEw+c4EEH
+	LuNWZ6/hVaqlGmB8DE1eHcMGZxclgKdpDTsfzgi/DkWVfskg8b11sIDApP8nvengo4htLafj571
+	yoWXM3u+N3vchfOa/4Syk70Nqlc2pOHPlZQSmQjHeYmLBFsdgoA8+omfLQufzml39dRTNWgAGT8
+	Sk7zhQ==
+X-Google-Smtp-Source: AGHT+IE+yz7EtxuU4R0Z+yMEJon0dUDP1V0/7zbAWTSTets6jWiJ5CZoYJMUPsjFu6Ze3uig3kvBnRRWURwgxDkVfiI=
+X-Received: by 2002:a05:6512:398c:b0:594:34c4:a33a with SMTP id
+ 2adb3069b0e04-596b5058d8bmr9800256e87.19.1764661763459; Mon, 01 Dec 2025
+ 23:49:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20251202061256.4158641-1-huangchenghai2@huawei.com> <20251202061256.4158641-2-huangchenghai2@huawei.com>
+In-Reply-To: <20251202061256.4158641-2-huangchenghai2@huawei.com>
+From: Zhangfei Gao <zhangfei.gao@linaro.org>
+Date: Tue, 2 Dec 2025 15:49:12 +0800
+X-Gm-Features: AWmQ_bk_L0GqaaaLWeuZHXK7ksV37IDdZTRn1b7YZa384X77oIw4aeK2Cv-BGYI
+Message-ID: <CABQgh9E3vLSwxFzH8UaQN8icGENhbAjsGO5MHO-dZwHNXrXBkw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] uacce: fix cdev handling in the cleanup path
+To: Chenghai Huang <huangchenghai2@huawei.com>
+Cc: gregkh@linuxfoundation.org, wangzhou1@hisilicon.com, 
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	fanghao11@huawei.com, shenyang39@huawei.com, liulongfang@huawei.com, 
+	qianweili@huawei.com, linwenkai6@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hello Alexey Kardashevskiy,
+On Tue, 2 Dec 2025 at 14:13, Chenghai Huang <huangchenghai2@huawei.com> wrote:
+>
+> From: Wenkai Lin <linwenkai6@hisilicon.com>
+>
+> When cdev_device_add fails, it internally releases the cdev memory,
+> and if cdev_device_del is then executed, it will cause a hang error.
+> To fix it, we check the return value of cdev_device_add() and clear
+> uacce->cdev to avoid calling cdev_device_del in the uacce_remove.
+>
+> Fixes: 015d239ac014 ("uacce: add uacce driver")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
+> Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 
-Commit 3532f6154971 ("crypto/ccp: Implement SEV-TIO PCIe IDE
-(phase1)") from Nov 21, 2025 (linux-next), leads to the following
-Smatch static checker warning:
+Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
 
-	drivers/crypto/ccp/sev-dev-tsm.c:266 dsm_create()
-	error: we previously assumed 'pdev->bus' could be null (see line 264)
-
-drivers/crypto/ccp/sev-dev-tsm.c
-    261 static int dsm_create(struct tio_dsm *dsm)
-    262 {
-    263         struct pci_dev *pdev = dsm->tsm.base_tsm.pdev;
-    264         u8 segment_id = pdev->bus ? pci_domain_nr(pdev->bus) : 0;
-                                ^^^^^^^^^
-This line assumes "pdev->bus" can be NULL.
-
-    265         struct pci_dev *rootport = pcie_find_root_port(pdev);
---> 266         u16 device_id = pci_dev_id(pdev);
-                                           ^^^^
-Unchecked dereference.
-
-    267         u16 root_port_id;
-    268         u32 lnkcap = 0;
-    269 
-    270         if (pci_read_config_dword(rootport, pci_pcie_cap(rootport) + PCI_EXP_LNKCAP,
-    271                                   &lnkcap))
-    272                 return -ENODEV;
-    273 
-    274         root_port_id = FIELD_GET(PCI_EXP_LNKCAP_PN, lnkcap);
-    275 
-    276         return sev_tio_dev_create(&dsm->data, device_id, root_port_id, segment_id);
-    277 }
-
-regards,
-dan carpenter
+Thanks
 
