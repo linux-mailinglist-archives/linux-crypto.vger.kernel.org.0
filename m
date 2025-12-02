@@ -1,48 +1,49 @@
-Return-Path: <linux-crypto+bounces-18591-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18593-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15EEFC9A344
-	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 07:13:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28CABC9A356
+	for <lists+linux-crypto@lfdr.de>; Tue, 02 Dec 2025 07:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B11C74E2C1B
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 06:13:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765C23A67EA
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Dec 2025 06:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B972FFF8D;
-	Tue,  2 Dec 2025 06:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A82301468;
+	Tue,  2 Dec 2025 06:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="0qvLFw1T"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="gJx9SrP1"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
+Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDF32FFDC9;
-	Tue,  2 Dec 2025 06:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A153009E3;
+	Tue,  2 Dec 2025 06:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764655987; cv=none; b=LCy/Gop6ejDRwPo7IUuSOmmx8hCP2kJL5s7/SPMH7Z23eeMIz9gQElCiHzOlFp9Y6Xjle1qmaLXUr5mjQMAqK0RVb/RzsGis8c4D8uEGejy0ExEnhOXtJ+q1/8AOQwjn7khynAb3tYG78anlF1FI3/giD6JqQVn3JmNW3eVMGJA=
+	t=1764655991; cv=none; b=ORjD2pb1RD9KGxLfpZzUq4mD3gSgv8k2Xj8kAy9oq6gsGhVt8RP8gwywR8qYLAxMFdXcfk2lxi0QKvynL6SBgx54nksa+RUj2GDWnEFKpkxFP9aOBcEKgG6fkT1wa/3OQsoNunJSUQVhQkyiP89IXLR1yHP/Gb/LJvvnoeUSMl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764655987; c=relaxed/simple;
-	bh=X3vZvd3SUa9y2+/QSzmbGoF+/KYrBdRFqMn0u6VUnyM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=llYevtAhy+5nx742hrgF/yYgAHryr7cbLpsiQr8k9YvYSybft4qbYWksUvFqDMYSl8yIS4kzOWcj/RkUJVF/IFTsnoXrEXIzlPPbviKsLEOzQf46YMeXvkrCoaaJ8sqwJaDL8GBORu3iYin0PkKJ3vuGPhELzjkQHUAhluujK2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=0qvLFw1T; arc=none smtp.client-ip=113.46.200.217
+	s=arc-20240116; t=1764655991; c=relaxed/simple;
+	bh=oUvMlSGPUklubX7pMUj2K6ocNCj4Fmrys3oZaGVyZCk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NxJ0tkCwib2mT8sxRB0W4PiJOYQJpgn7Tdats/jn/DN0D/Y88+iBEkHkvrQm6+tDSBghaZOyBEsq752TJ4q4hAjTDJB/6OMw+YhaEr8RwmY9dG0CKhl5ANgK3stv+DluvXguC3Y273gd3XerEe0V3E0OCkUqB/ZmlZsdwBARzd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=gJx9SrP1; arc=none smtp.client-ip=113.46.200.218
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=dVlVWczNwviCT3QsxlZFwu1Mb0gYzJP4pvZHLd6Vxsk=;
-	b=0qvLFw1TJPo25qKkNIOoSQc/fSM5yzFCzVctBRjWLiXMn8+E5qWHrcvpr/Lsv5HxNuTOMK8LL
-	oSGkBpK4MDRQ++ZTj5OkpioKmXac5HYZkk/84v5p4VwiLTqn7IuCu8baoRHQXeOaSf+t6+YOjke
-	vlENAdzKO07TQO5qTD7nECE=
+	bh=Z7G9BQ0ydyqiKjKK1XkGiJiClH35zTRc/fZlSb5dsLg=;
+	b=gJx9SrP17sqywA88CW1kzCAg3wzlNDtsAIKSTFaEUBDHZWNKNYyfHIrQvuhRIK6XFUgsucoQL
+	5Wt7dDF8a6zES8x+MbcRdfypw6VqXChIAwNgqdxwUHmLH+cDs4xaqjm+HseYk9xBuLvfth2eerJ
+	Vbn3zjzlcetWtnrKUe0XYZM=
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4dL9P8170nzcb1P;
-	Tue,  2 Dec 2025 14:10:36 +0800 (CST)
+	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4dL9PJ3y3MzpSwb;
+	Tue,  2 Dec 2025 14:10:44 +0800 (CST)
 Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id EBDDA180B66;
-	Tue,  2 Dec 2025 14:13:01 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 0037C180BD2;
+	Tue,  2 Dec 2025 14:13:02 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
  dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -57,10 +58,12 @@ To: <gregkh@linuxfoundation.org>, <zhangfei.gao@linaro.org>,
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<fanghao11@huawei.com>, <shenyang39@huawei.com>, <liulongfang@huawei.com>,
 	<qianweili@huawei.com>, <linwenkai6@hisilicon.com>
-Subject: [PATCH v6 0/4] uacce: driver fixes for memory leaks and state management
-Date: Tue, 2 Dec 2025 14:12:52 +0800
-Message-ID: <20251202061256.4158641-1-huangchenghai2@huawei.com>
+Subject: [PATCH v6 1/4] uacce: fix cdev handling in the cleanup path
+Date: Tue, 2 Dec 2025 14:12:53 +0800
+Message-ID: <20251202061256.4158641-2-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20251202061256.4158641-1-huangchenghai2@huawei.com>
+References: <20251202061256.4158641-1-huangchenghai2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -72,54 +75,47 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  kwepemq200001.china.huawei.com (7.202.195.16)
 
-This patch series addresses several issues in the uacce:
-1.Fix cdev handling in the cleanup path.
-2.Fix sysfs file creation conditions.
-3.Add error reporting for unsupported mremap operations.
-4.Ensuring safe queue release with proper state management.
+From: Wenkai Lin <linwenkai6@hisilicon.com>
 
+When cdev_device_add fails, it internally releases the cdev memory,
+and if cdev_device_del is then executed, it will cause a hang error.
+To fix it, we check the return value of cdev_device_add() and clear
+uacce->cdev to avoid calling cdev_device_del in the uacce_remove.
+
+Fixes: 015d239ac014 ("uacce: add uacce driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
+Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 ---
-Changes in v6:
-- In patch 1, if cdev_device_add() fails, it will automatically free the cdev, however,
-  we need to set uacce->cdev to NULL to prevent cdev_device_del() from being called.
-- Link to v5: https://lore.kernel.org/all/20251111093536.3729-1-huangchenghai2@huawei.com/
+ drivers/misc/uacce/uacce.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Changes in v5:
-- There is no memory leak issue when cdev_device_add fails, but it is necessary
-  to check a flag to avoid calling cdev_device_del during abnormal exit.
-- Link to v4: https://lore.kernel.org/all/20251022021149.1771168-1-huangchenghai2@huawei.com/
-
-Changes in v4:
-- Revert the interception of sysfs creation for isolate_strategy.
-- Link to v3: https://lore.kernel.org/all/20251021135003.786588-1-huangchenghai2@huawei.com/
-
-Changes in v3:
-- Move the checks for the 'isolate_strategy_show' and
-  'isolate_strategy_store' functions to their respective call sites.
-- Use kobject_put to release the cdev memory instead of modifying
-  cdev to be a static structure member.
-- Link to v2: https://lore.kernel.org/all/20250916144811.1799687-1-huangchenghai2@huawei.com/
-
-Changes in v2:
-- Use cdev_init to allocate cdev memory to ensure that memory leaks
-  are avoided.
-- Supplement the reason for intercepting the remapping operation.
-- Add "cc: stable@vger.kernel.org" to paths with fixed.
-- Link to v1: https://lore.kernel.org/all/20250822103904.3776304-1-huangchenghai2@huawei.com/
-
-Chenghai Huang (2):
-  uacce: fix isolate sysfs check condition
-  uacce: ensure safe queue release with state management
-
-Wenkai Lin (1):
-  uacce: fix cdev handling in the cleanup path
-
-Yang Shen (1):
-  uacce: implement mremap in uacce_vm_ops to return -EPERM
-
- drivers/misc/uacce/uacce.c | 48 +++++++++++++++++++++++++++++++-------
- 1 file changed, 40 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+index 42e7d2a2a90c..43d215fb8c73 100644
+--- a/drivers/misc/uacce/uacce.c
++++ b/drivers/misc/uacce/uacce.c
+@@ -519,6 +519,8 @@ EXPORT_SYMBOL_GPL(uacce_alloc);
+  */
+ int uacce_register(struct uacce_device *uacce)
+ {
++	int ret;
++
+ 	if (!uacce)
+ 		return -ENODEV;
+ 
+@@ -529,7 +531,11 @@ int uacce_register(struct uacce_device *uacce)
+ 	uacce->cdev->ops = &uacce_fops;
+ 	uacce->cdev->owner = THIS_MODULE;
+ 
+-	return cdev_device_add(uacce->cdev, &uacce->dev);
++	ret = cdev_device_add(uacce->cdev, &uacce->dev);
++	if (ret)
++		uacce->cdev = NULL;
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(uacce_register);
+ 
 -- 
 2.33.0
 
