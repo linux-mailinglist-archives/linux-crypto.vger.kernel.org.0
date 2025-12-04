@@ -1,36 +1,36 @@
-Return-Path: <linux-crypto+bounces-18651-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18653-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11768CA36B2
-	for <lists+linux-crypto@lfdr.de>; Thu, 04 Dec 2025 12:22:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 386B7CA36FC
+	for <lists+linux-crypto@lfdr.de>; Thu, 04 Dec 2025 12:27:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0E84C302B327
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Dec 2025 11:22:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5BBB2314ECD8
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Dec 2025 11:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9485933CEB9;
-	Thu,  4 Dec 2025 11:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2991B33CEBF;
+	Thu,  4 Dec 2025 11:23:12 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71EC833C18D;
-	Thu,  4 Dec 2025 11:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E1633D6CB;
+	Thu,  4 Dec 2025 11:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764847372; cv=none; b=HC//8ACuCk+AlWix2yZgu0++r86CzdVYEpK347c62QlSFuZdEg4A2TH6o6eghNKQgI8xEIlt9gvABSRk7aJvw+rwsOONUvMmxmSktv+odEvEFdu602oIFpVBn2n12KUeSROqePK1SN/sVv2MsUerzrBT76/cdExkGEB+nL/DKHY=
+	t=1764847392; cv=none; b=p7mNcR18pvd9vCeEBls3Qem+iLsrtD47ZwwdX73MeAWtWlpaQoxruLTAjn9UXaWmf7psagP7oPOGzrD+yOoEVAeS9nJZBHmz8k5qK+Ayf6vultk7ebOfvzwzCwt61OfZd5iOYZzcP8icC0StHMpc+w/O1Uc2Orzkm0K8BXkx38Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764847372; c=relaxed/simple;
-	bh=7uEZlY08pApLqncxFus98l7GN5XvIf15qCw1fmPb8g8=;
+	s=arc-20240116; t=1764847392; c=relaxed/simple;
+	bh=uzbfS19nbBJYRc1DEh5rH1dPybTnCU9D0YDZf+xGOus=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=g2AYU29OZDxxhM4mZV7i2QegkH7MC/XeePnvOml0AxtNwNTzkWDvfZ7xfSDxab0s39SSvJ6H3uqWhHbyFRRWpaJtWN4+jC/n/pj6G8oMsS8XQq8WIeQgkqfk+ZUygOpdTrDggP8tBE/LBeTITO9gOTEyYUI/1Yzye5LPB5sDTu4=
+	 MIME-Version; b=rox/1KBqNKAbp53NA2z+3La1umqya8aKRnpebZee3kgSqQgxgNW0qKMOv2V1VTxLyYgHGqmNOScgNRY2kJg0rbOM2q7HFYT47pvNPdgMJ/4h6hBHi/kJUBrX39T+h4O9rs/yLLRIDsp6Ga5KQ/hwK3OE6P/ytb+RTEyS5xVAkJE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8BxWNH4bjFp_AkrAA--.27439S3;
-	Thu, 04 Dec 2025 19:22:32 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8CxaNH6bjFpAworAA--.27790S3;
+	Thu, 04 Dec 2025 19:22:34 +0800 (CST)
 Received: from localhost.localdomain (unknown [10.2.5.213])
-	by front1 (Coremail) with SMTP id qMiowJCxG8HzbjFp1mpFAQ--.17590S4;
-	Thu, 04 Dec 2025 19:22:31 +0800 (CST)
+	by front1 (Coremail) with SMTP id qMiowJCxG8HzbjFp1mpFAQ--.17590S5;
+	Thu, 04 Dec 2025 19:22:33 +0800 (CST)
 From: Bibo Mao <maobibo@loongson.cn>
 To: Gonglei <arei.gonglei@huawei.com>,
 	"Michael S. Tsirkin" <mst@redhat.com>,
@@ -42,9 +42,9 @@ To: Gonglei <arei.gonglei@huawei.com>,
 Cc: virtualization@lists.linux.dev,
 	linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/9] crypto: virtio: Replace package id with numa node id
-Date: Thu,  4 Dec 2025 19:22:19 +0800
-Message-Id: <20251204112227.2659404-3-maobibo@loongson.cn>
+Subject: [PATCH v2 3/9] crypto: virtio: Add algo pointer in virtio_crypto_skcipher_ctx
+Date: Thu,  4 Dec 2025 19:22:20 +0800
+Message-Id: <20251204112227.2659404-4-maobibo@loongson.cn>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20251204112227.2659404-1-maobibo@loongson.cn>
 References: <20251204112227.2659404-1-maobibo@loongson.cn>
@@ -55,38 +55,98 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJCxG8HzbjFp1mpFAQ--.17590S4
+X-CM-TRANSID:qMiowJCxG8HzbjFp1mpFAQ--.17590S5
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
 	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
 	nUUI43ZEXa7xR_UUUUUUUUU==
 
-With multiple virtio crypto devices supported with different NUMA
-nodes, when crypto session is created, it will search virtio crypto
-device with the same numa node of current CPU.
+Structure virtio_crypto_skcipher_ctx is allocated together with
+crypto_skcipher, and skcipher_alg is set in strucutre crypto_skcipher
+when it is created.
 
-Here API topology_physical_package_id() is replaced with cpu_to_node()
-since package id is physical concept, and one package id have multiple
-memory numa id.
+Here add virtio_crypto_algo pointer in virtio_crypto_skcipher_ctx and
+set it in function virtio_crypto_skcipher_init(). So crypto service
+and algo can be acquired from virtio_crypto_algo pointer.
 
 Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 ---
- drivers/crypto/virtio/virtio_crypto_common.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../virtio/virtio_crypto_skcipher_algs.c      | 20 ++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/crypto/virtio/virtio_crypto_common.h b/drivers/crypto/virtio/virtio_crypto_common.h
-index 19c934af3df6..e559bdadf4f9 100644
---- a/drivers/crypto/virtio/virtio_crypto_common.h
-+++ b/drivers/crypto/virtio/virtio_crypto_common.h
-@@ -135,7 +135,7 @@ static inline int virtio_crypto_get_current_node(void)
- 	int cpu, node;
+diff --git a/drivers/crypto/virtio/virtio_crypto_skcipher_algs.c b/drivers/crypto/virtio/virtio_crypto_skcipher_algs.c
+index 1b3fb21a2a7d..d42c7a77cdbb 100644
+--- a/drivers/crypto/virtio/virtio_crypto_skcipher_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_skcipher_algs.c
+@@ -15,9 +15,11 @@
+ #include "virtio_crypto_common.h"
  
- 	cpu = get_cpu();
--	node = topology_physical_package_id(cpu);
-+	node = cpu_to_node(cpu);
- 	put_cpu();
  
- 	return node;
++struct virtio_crypto_algo;
+ struct virtio_crypto_skcipher_ctx {
+ 	struct virtio_crypto *vcrypto;
+ 
++	struct virtio_crypto_algo *alg;
+ 	struct virtio_crypto_sym_session_info enc_sess_info;
+ 	struct virtio_crypto_sym_session_info dec_sess_info;
+ };
+@@ -108,9 +110,7 @@ virtio_crypto_alg_validate_key(int key_len, uint32_t *alg)
+ 
+ static int virtio_crypto_alg_skcipher_init_session(
+ 		struct virtio_crypto_skcipher_ctx *ctx,
+-		uint32_t alg, const uint8_t *key,
+-		unsigned int keylen,
+-		int encrypt)
++		const uint8_t *key, unsigned int keylen, int encrypt)
+ {
+ 	struct scatterlist outhdr, key_sg, inhdr, *sgs[3];
+ 	struct virtio_crypto *vcrypto = ctx->vcrypto;
+@@ -140,7 +140,7 @@ static int virtio_crypto_alg_skcipher_init_session(
+ 	/* Pad ctrl header */
+ 	ctrl = &vc_ctrl_req->ctrl;
+ 	ctrl->header.opcode = cpu_to_le32(VIRTIO_CRYPTO_CIPHER_CREATE_SESSION);
+-	ctrl->header.algo = cpu_to_le32(alg);
++	ctrl->header.algo = cpu_to_le32(ctx->alg->algonum);
+ 	/* Set the default dataqueue id to 0 */
+ 	ctrl->header.queue_id = 0;
+ 
+@@ -261,13 +261,11 @@ static int virtio_crypto_alg_skcipher_init_sessions(
+ 		return -EINVAL;
+ 
+ 	/* Create encryption session */
+-	ret = virtio_crypto_alg_skcipher_init_session(ctx,
+-			alg, key, keylen, 1);
++	ret = virtio_crypto_alg_skcipher_init_session(ctx, key, keylen, 1);
+ 	if (ret)
+ 		return ret;
+ 	/* Create decryption session */
+-	ret = virtio_crypto_alg_skcipher_init_session(ctx,
+-			alg, key, keylen, 0);
++	ret = virtio_crypto_alg_skcipher_init_session(ctx, key, keylen, 0);
+ 	if (ret) {
+ 		virtio_crypto_alg_skcipher_close_session(ctx, 1);
+ 		return ret;
+@@ -293,7 +291,7 @@ static int virtio_crypto_skcipher_setkey(struct crypto_skcipher *tfm,
+ 		int node = virtio_crypto_get_current_node();
+ 		struct virtio_crypto *vcrypto =
+ 				      virtcrypto_get_dev_node(node,
+-				      VIRTIO_CRYPTO_SERVICE_CIPHER, alg);
++				      ctx->alg->service, ctx->alg->algonum);
+ 		if (!vcrypto) {
+ 			pr_err("virtio_crypto: Could not find a virtio device in the system or unsupported algo\n");
+ 			return -ENODEV;
+@@ -509,7 +507,11 @@ static int virtio_crypto_skcipher_decrypt(struct skcipher_request *req)
+ 
+ static int virtio_crypto_skcipher_init(struct crypto_skcipher *tfm)
+ {
++	struct virtio_crypto_skcipher_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
++
+ 	crypto_skcipher_set_reqsize(tfm, sizeof(struct virtio_crypto_sym_request));
++	ctx->alg = container_of(alg, struct virtio_crypto_algo, algo.base);
+ 
+ 	return 0;
+ }
 -- 
 2.39.3
 
