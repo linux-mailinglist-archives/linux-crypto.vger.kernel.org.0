@@ -1,232 +1,180 @@
-Return-Path: <linux-crypto+bounces-18711-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18713-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B24CA89BD
-	for <lists+linux-crypto@lfdr.de>; Fri, 05 Dec 2025 18:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62E53CA8B40
+	for <lists+linux-crypto@lfdr.de>; Fri, 05 Dec 2025 18:54:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 041BD3052B37
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Dec 2025 17:16:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1969B312C9B5
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Dec 2025 17:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310232F8BE6;
-	Fri,  5 Dec 2025 17:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B23347FC4;
+	Fri,  5 Dec 2025 17:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eqJIRSV1"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="TWpwCyzg";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="xZsXrtD5"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013064.outbound.protection.outlook.com [40.93.196.64])
+Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3377934B194;
-	Fri,  5 Dec 2025 17:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764954919; cv=fail; b=bJL4UbC00kZ6/M3gAV8ytGYqfVFpsDYqY76Sa8dNKXuVGBDiHjXD4OT3LILxQrjkYEnF2zXPtOq2sZI60u3FKnOlRCVjsSwNJFRZgyg6uFxqE0uEKrfBoGRhyEWU9qvIopKeXMCVE80n8nJGU1U0DRXXkI+y9XbX1bDiXFjNWiY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764954919; c=relaxed/simple;
-	bh=vCSI74Le58DnHo2apCNViGMgVC0x/Ymz5Ly4hlat8t0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eNfAT3MM0mq6lzCL+Bt7oKwzX7gKiJob+zruoI7VtgBJBsjhi1rsRMQB6LXf8GeBqsa2EQwwV9E7LjKpqaFJVNx3y66fweigxo+ng8IuJL0SwEYd3k+BcZ5g+p9j/NR2UsInBazsE6G2MLand8a5BWsbs0N2Qr9dpG+zF+RGDoU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=eqJIRSV1; arc=fail smtp.client-ip=40.93.196.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=c1Y16cc962QddVC9VEQvvPtsC3qWIf+6NmshUOovkOlTels8V4dLJuKHjbGUMzrF0JdPGZ7r++XPt4a/zR66tDsR9WwGq6yoKauoIminWjZlgxdLDJGLnE4XlOL4pIiBSQAS8ONwV5bMEWHxcGyLC+PBxQGLhX1HScbCuCpVKjjRjPZnuxuVI/qRU0wcXnsqwR4b6G62SFRGUQEiPE6JLJzzW0MZe0yRu/cMzrt1t7ARPlCBhlNlZia1D0PFzSvqAR4RBYAmhj+zaNGUM65DcerIlWH0QQrHbmTJoVcAMPmjnW2oSnidGboArt3kKgs1NIkndfTn5hATtVuUS+Oypw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vCSI74Le58DnHo2apCNViGMgVC0x/Ymz5Ly4hlat8t0=;
- b=T1bCeBZL3TLvARA28cuM5N8S015xfCuFHt8m9d7JQ8zbT+FDQNRbkWFixqA6w+Q6UVWhXWg2JhnaKvEYAaZJ2Gi+3VWUeSHx4fAdhK/upPu9IpF8sBKcZ3fTqCG1odG8pbWUVqifulUlKuTxzKMUe7UlJYTKvTnQuT1LEGMmMlFAo+8g8QV+8ItXZatEmf6WSjwVPKyEsD2RNrICHbthGB3KQKutaru63pe4xj4ld/kff9CNMLD+c9zbV7PBF9JAmb5qcqzZeGwkrtEX95HX1vguPjNS7v5dyqknfY70/7rsH5ZywytBxrSd+dUqg31o/DRcIF+6vnlqf4pnqUFEYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vCSI74Le58DnHo2apCNViGMgVC0x/Ymz5Ly4hlat8t0=;
- b=eqJIRSV166HghXzpQe4H0DHORTBXdkslwZAuohMijT7hDbOrdEssOTBi0IopITKdKExesXoZ4IL0du1m1cHQ+xYcZpoNGAT8CCLkUMdwMML5CWss4FNXY3EEMYmStquFGkKYUoV3P7vrnnFxStBeq1hp2IGXno+V+Xll02VkmxpXAXQ2YNNvQBSEfY3R14ii0fxqbWhfmSWT5wOtSsUA9cVZBreD18I893GbpVdlOVdR36IxtEgnE1epQPuFymhfnpp8clMFEzOUiFBddh01c8lnjL5t08SzYUIV84ZrwAVqke8JhKetv6YhXRT1CTY3pWOEgDADbrYQXyC/hCrfgg==
-Received: from MN2PR12MB3022.namprd12.prod.outlook.com (2603:10b6:208:ce::32)
- by IA1PR12MB7711.namprd12.prod.outlook.com (2603:10b6:208:421::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9388.12; Fri, 5 Dec
- 2025 17:15:14 +0000
-Received: from MN2PR12MB3022.namprd12.prod.outlook.com
- ([fe80::7074:6611:e437:bab9]) by MN2PR12MB3022.namprd12.prod.outlook.com
- ([fe80::7074:6611:e437:bab9%6]) with mapi id 15.20.9388.003; Fri, 5 Dec 2025
- 17:15:14 +0000
-From: Ron Li <xiangrongl@nvidia.com>
-To: Hans de Goede <hansg@kernel.org>, "ilpo.jarvinen@linux.intel.com"
-	<ilpo.jarvinen@linux.intel.com>, Vadim Pasternak <vadimp@nvidia.com>,
-	"alok.a.tiwari@oracle.com" <alok.a.tiwari@oracle.com>, Khalil Blaiech
-	<kblaiech@nvidia.com>, David Thompson <davthompson@nvidia.com>
-CC: "platform-driver-x86@vger.kernel.org"
-	<platform-driver-x86@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-crypto@vger.kernel.org"
-	<linux-crypto@vger.kernel.org>
-Subject: RE: [PATCH v3 2/3] platform/mellanox/mlxbf_pka: Add userspace PKA
- ring device interface
-Thread-Topic: [PATCH v3 2/3] platform/mellanox/mlxbf_pka: Add userspace PKA
- ring device interface
-Thread-Index: AQHcKZ8NLdiowY6PpkewaQI9nVsWLrT6hYQAgBk7wBA=
-Date: Fri, 5 Dec 2025 17:15:13 +0000
-Message-ID:
- <MN2PR12MB30228850A78FCEE1FB3BF394A9A7A@MN2PR12MB3022.namprd12.prod.outlook.com>
-References: <20250919195132.1088515-1-xiangrongl@nvidia.com>
- <20250919195132.1088515-3-xiangrongl@nvidia.com>
- <fab52b36-496b-41c3-9adc-cb4e26e91e53@kernel.org>
-In-Reply-To: <fab52b36-496b-41c3-9adc-cb4e26e91e53@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR12MB3022:EE_|IA1PR12MB7711:EE_
-x-ms-office365-filtering-correlation-id: e45234d3-fda8-4814-05c5-08de3421dac4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700021;
-x-microsoft-antispam-message-info:
- =?utf-8?B?WTFQaElUMEY5L1V1RVJHRW9KWDVCVk5ScENleWVMK2psdGg0emp4RzZGem8w?=
- =?utf-8?B?TGhueUFxdFlQS1QrUkpMd1JESVd3c08rd09ZU1pqUDlwamxtalZabVlJQXpV?=
- =?utf-8?B?N0IzRUMvS1p4T0V6amtSb3d5NVhWMUI4cS9ZN3lSQzVBZEhDTHRDZmhWQ0N5?=
- =?utf-8?B?RDRpSVNMNnVLMG93cDdqMVpEOW80WWQzQkpJN1lBeDROSFp5WjVXVkJ1cXls?=
- =?utf-8?B?Vzh3NDQ0M2ZJbC9aQmJUSU5LZU10akdPdFh5NVY3ekVSSEp4cUdZdFNmT3pN?=
- =?utf-8?B?VUFiRE9Nck5IUEVRTngxS29xRUZJcmFIcHROTUc2UUZveGIreU54VExFMzVo?=
- =?utf-8?B?NHV0OVNxbVkrRFl3ZHBNWkwxYTNVdHg2bDJWcGUyYml6Z3lwRjdRRk9JMzk1?=
- =?utf-8?B?ZG9sdkJJdXp2b3JUYlFYRUtPSG14UW8zOTVEN2Z4bFVCbUdzWnJQWXloNXcx?=
- =?utf-8?B?djliYXEwR1hxZ1FYY3NEMmZiL3EvekpyVjIrd0Nxb0ZQa2N4OTZzUGVQR1VQ?=
- =?utf-8?B?aGRsMDRSbCs3Y3J4K09RNHFPckRPMy9ab0dlQ0JveXBOd1NrZlhsTytLd3NB?=
- =?utf-8?B?VFdxMFhKK1R1NzRYZzh2a09MTlZzRUI0Q2QvMCsxem1VQWRIL2wvWU9zZkNj?=
- =?utf-8?B?dUxUL3BDUytCZ041Ym52cVE0MVUrQXJVWWdvTmZneXJnSmEyOGFDNTJjeXlv?=
- =?utf-8?B?QlZrWG1Fa3lwRVZsS3pVQzQzWWs5U1ZCcEVTSEVuc1VQU0pRTHdieGRmckV0?=
- =?utf-8?B?L3FtOURPT2N2MGd0aEUrVDF1clRuSmFoV3lzN1o1YVZGTXNXTnRSQlR6UFJW?=
- =?utf-8?B?dzlIMlhFbGhhTWdhZmNNeHZXYzZieFU5bFdBTllmL3BCSFcwVjlyRlU3N2Fi?=
- =?utf-8?B?SG01aVRLYlJOdjh6cXo3L3pzVnB3bHVtUEhvS1pHV2ZwbkhKci9DYjcwZ3hO?=
- =?utf-8?B?QTRzc3RuaVptd1RnMGtWM1IyQU5Bb0NoRGprZ1VRZG8xN053Vk5KdHg0Rkh2?=
- =?utf-8?B?dnlzWjBkTUNRbFZZZlBsZ1VHV1lzdGY5bmZHRytpK2hId2M3bUVlRjhQMFcr?=
- =?utf-8?B?MlVkcHp1RmdRR29QeE9xeGRDSDNFU0I2OXFXbXhDWlNCOXhZNWEyMk1OUW5a?=
- =?utf-8?B?c1pkZ2pDY2VqWVR5cU82Q2NxQmVrODJ6MGdFUjJRVlZZQWxmb2RzeituSktp?=
- =?utf-8?B?clM5YzZhZ3JmNG5hQUN1QmRWTklOVFcvZVV5a0I5RGxCZnBXTEJiTkNFTytO?=
- =?utf-8?B?b0lrWjU5N3A1eDB4OXZMOHp1Y0YvM2dCdW8vbWpUcC9CRGJFdWdvcnpYeDZQ?=
- =?utf-8?B?V3gyQXB3cnB2dTBzVmtmaDM1YVlwYW9kVnlUM3dyVFY4RUxPNXVMcW5LcGl4?=
- =?utf-8?B?b0lQWisrRlpLRldybC91WnorTytxSXpmNW5Jd1laU0dxQ1ZYRjA5YitnTVAz?=
- =?utf-8?B?ZWJMYm9rMjh6eUV0QzhFb3NjUVVaZnh6aVpkTDNqQUNFZkNwKzl1aUFrRStZ?=
- =?utf-8?B?VW81NXpyWEtoMjN0dCtad2VDd0hrNnhvOWl5YWZZUWMxT3hLR0dWSXJTTzNW?=
- =?utf-8?B?Y2c0Zm93TXlrQ2liTE1uT201NXlFYXlZM0tleUU2Nit4eFIvTVBJZHR1dDJX?=
- =?utf-8?B?NXhuQWJJSm1mNElxcGJvanRTaGdRUloxek01M3d2cEtxa1AyVFM1U3NNa3d5?=
- =?utf-8?B?bjFnVm8ydkZDZlgzWmttWm84ZDNWVzVwSEN4MmZhM25ZSG44bzVlSzNDS3dV?=
- =?utf-8?B?MzdtUGxhY3NnMmFKWUNRVlErZndmczV4R3ZzeW1YWW11T21yQVRhUmlRUTA0?=
- =?utf-8?B?aUZCQlpmZE9pRnlvdld4VWQwSTB3eEhiSHpDZDRadVp4TjZaMHlPbEVrcGFl?=
- =?utf-8?B?b2VCMVZxTTRhbXcwOFR5bWdlNnFHVWxXeDFVRE1oSk5aOHJZV3dVS0EzMld3?=
- =?utf-8?B?bkZ1WUFOa1VWVjlRdkFBVmFGRk9ybTZocWhuTStsZFkxejJad3gzLzEramVr?=
- =?utf-8?B?VURLWFIveHlNK25RRUFEaGczWE91VWRQSjRqbTlMRnVQZ2NhT1loQmErWitQ?=
- =?utf-8?Q?4tDKRO?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3022.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?Q3FvRzMzS3hpRDhoaWxNQXhpSUlOY3FQUGdHSDNaVVBIaisrckNXcjlsd2xp?=
- =?utf-8?B?M0xkRTliWTZLWGF0QnlPd2V6RDEyV2RHajA1MmI5bG5QME4wZmdsK0x2SWdk?=
- =?utf-8?B?cm1MemJYSGhsQ0QyWHNBallUSkc2eXZkdDM5ZlFRZkFQWmxqd2xGYkJHUWlZ?=
- =?utf-8?B?Vkt0YWF3eG9HUU9BUlgyZXZadE1vemVGZitWTTAwN0o5Y1ByWDJLVXpsbnZL?=
- =?utf-8?B?QzZZTEY0b3NsNEprZEtYbmZZN2tTOXRnZmJpQTM0RFZML1F6S3NUbDE5Wkd6?=
- =?utf-8?B?WnBLbDVqdWxiSnpqdXg4MHdXZ24wY2xhRHg0VUhBWXlsc1lOQWJDODU1ZFBZ?=
- =?utf-8?B?SWhlS2ZQVUdOZUdTbGdvZWMxa1ZkK0M4WkhodWtBdVZ5RFVYZTh3RHlKWkZq?=
- =?utf-8?B?cGxLTTV0V2swckk4TXNCbHlXeTZ3WFkwYU5GTkVTaEpVMm4rT1RHZmt4dFc4?=
- =?utf-8?B?aDdrZENpR2hnRzdiRlRrUUFXZGlJaU1aODBUT284Nkt0eWg0UWR0dDBNQjZ6?=
- =?utf-8?B?UlhoSWIyUlVBOFhBZGFJZ1FmTzZ3SFFxTE56YjBhbWM2akliaWhKczZxZi91?=
- =?utf-8?B?VkZHYnNnc0FycDl1bXF6NlcwVjRock1mT3N3WXZLTldJcEhyQWRLNmNUeFE2?=
- =?utf-8?B?WVdxRllWWm1OekZWa1p3N2tYMEJ2OERFekYvcitPZElUVzhuRzBpVVdvZFpw?=
- =?utf-8?B?cGFNbFR2WDA4Q2tpYjZlVG9EL3c3VzBTb2VtSXBQcjZiRm1YVjYvWlpndEUy?=
- =?utf-8?B?RGxUS3FlZThPY2NtQUEyU0FIWVdBamNmb3NhWTl1N3Y3M0d4TlNHNTlpUFk1?=
- =?utf-8?B?QTkwR200VXpDNnl4TW5Pb1VKdEF5VWRxOHN1T1JWbUZmcG8vSjZxR2ZuRlJh?=
- =?utf-8?B?cFVBbTM0NlRTT2ViY0xkYmJGTGpXRDBCZGxYQmp4a0ZQVjZKbFAvbXpmWGti?=
- =?utf-8?B?MTl5V3UvbHdIczFkVVNYWWZlUUdXaW1qNDBQb2l0MGdYb2dDMHVTL1VxQjQw?=
- =?utf-8?B?bXRZUW5LWnNPT1VXeHJjNTl2TnhZUitLcjcxR01IWlRjeUp0Ti9tZDd6TWt0?=
- =?utf-8?B?WGNtZlhFWG9jM2xQVWZVM0VKT05zSWIzOTN3S0M4LysxRUxXYnZ2bnVsNVA2?=
- =?utf-8?B?cnZNWGNCM3FGUUtKeis2NWwxT0N4d3JPTFFkanNoQ21meU5id0NOTFNIaldn?=
- =?utf-8?B?VXBnMFl6S09KWFNmNDBQejcvQTRHakR4c1Q0Nk5OWWVFaHVRZFBuVVV6YTBi?=
- =?utf-8?B?MG51dG5TbFd0ZHZWclJCWGd5YVVHamRXaHhkeWZTRW9WYklDZWhnUlNQTjgy?=
- =?utf-8?B?QjJIbFFPa3l5aFBIWnRweHhVREpkeFcrQ0U5NXhoaXZ6N1pocmxFTVNCRHVS?=
- =?utf-8?B?NUp4YXJ3YkNBd09ka3FFNG9NWVMwY1p1STI5S2ZsbUFUMm41U0NVT2pJZGc3?=
- =?utf-8?B?YUk3UFRYSFcvblBiSHBtSDBYNUYyWGhkY3d5ZFNLLzZhcmNUTDErT2ZhVzJY?=
- =?utf-8?B?KzY0YkM4amUxZDQ4amVMeisxWTk5T0tBcG5UbEMzazNRUXR6QW5CNWtPQjd5?=
- =?utf-8?B?eSt2M1p3VHNUYSt6UkdINk9KQUlreVBtb2NGbGQ3VDRkTXJVOUoxNFB6UC9V?=
- =?utf-8?B?VzNoNnJKV1BsRlZaOFVsTGJpc2N0UWxqbGkzU3FPaFdLaTBIM1hmeVBtUHNW?=
- =?utf-8?B?eVNXK3JQQXFsZVdLeTUvNjYrUWpOSDY4TXY1amt6QURTRVNWS2hEQ3RWN3pS?=
- =?utf-8?B?blFKSSt4S3FpRkxaVVg2WHVIK1Q1aXh0WTI4Y2psMHgxNGRrQ2tnMEYvY281?=
- =?utf-8?B?enpxUklFcThVZVJkMWhoZWFmVmdvMEF1VVM1MmlQR3RCTUw5a3R6MzMxdWE5?=
- =?utf-8?B?YlZibllvMWFwQkxiMis4RHFGY3kzcmNMSU5uR2ZNMWExazBDMU1CVTNnbm5t?=
- =?utf-8?B?R2FTa3MzSlM3OXdoc2pkZFYzUDVkcmpnSTdRa1JCajZGY0dsN0NOdGp2cVh0?=
- =?utf-8?B?ZS9Jb1VkZ016aSs4WkxoQ0FhRnVVQmZwQkV5N1hxSmlSeDE4d1R6UDAyM1lN?=
- =?utf-8?B?cnR3WVc2ZjV4dmd0ZGF2b29zQkZLenZuclNjSUF6WmJVNlBrcGdYbThUbUF1?=
- =?utf-8?Q?dpQ8fyQLcRG7DbAIiqBbOm+ep?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE9433F368;
+	Fri,  5 Dec 2025 17:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764956411; cv=none; b=kFaaVbwh4RXMI5B32bc6buz0KF0gposs1yf/3J2iNpuWQhARS1IVz4ylAuF2ZpG2ofA0WGl1eBSmop7CHQgzrJPF00TRYVyJ2+GIS+hQ5LdvLPhUqcGB5Jypn0VDmrT6ejFLsJYFY+506ImbN890Ih/o4TvvewOcIRrLPFVkoMA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764956411; c=relaxed/simple;
+	bh=8uchhBNj6BK/KhFDe8mYfRWRhb+wBNysW5VCuQdG9fU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JBV4GlA1FURRkFX1ae+IGdwKzXREZ872MTJhsxJ947yEBTCELio7ZltEew7hl9W3eRpG5KXFPGQD0ZEroUfl9DL2GN8moVI4Cif0p/XCD+K80lOVxB62sfFkb82DQPiZ4VchuGm3hmGrWfMBqIrp332mIBRu0yDqAPMYlkierfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=TWpwCyzg; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=xZsXrtD5; arc=none smtp.client-ip=135.148.138.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
+DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1764956364; bh=weK/aS7u/TYhdycr7iNp9dK
+	H2X/8olqegVmxJ3UYEh0=; b=TWpwCyzgmjzOhKNoTqftKQSRtAWxOw2iAR7GO71aL42dHSqyR0
+	Huxwib6OcovyRPSYHYR9WP6pcqWhb8AWcjL+Iiq/ev6BOfNEUfsxckNtKXGeIOUDVmv33c4S0Fn
+	VTVH7FFi2H6VA1Wa/tykMp4RpOeqUzJLzFXZ+UBjUTp8jRcllkgrKR+Tfv6uvl7xfTjyXS6oLvq
+	TL5JcIKed5YgQ3CRd1G7oTuhbAsI0EZTILCF8RfQcca6B+HnI9stTDTldxYWqxvpR7S8zb0qWvZ
+	ZC64K2tebcKA9EqVy7FlFyOoksdgYQpimrM4F/ybF0CACQaGwheXDPh8fjEw9MyKNYA==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1764956364; bh=weK/aS7u/TYhdycr7iNp9dK
+	H2X/8olqegVmxJ3UYEh0=; b=xZsXrtD5JaadNjtoFKD56YlPIzrXmOpT/KAwG1yJQJzQtg3ozW
+	TktA6hmcde2fI9Sb9MB8D+ZVRxpuZz9OqVBQ==;
+From: Daniel Hodges <git@danielhodges.dev>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	vadim.fedorenko@linux.dev
+Cc: martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Hodges <git@danielhodges.dev>
+Subject: [PATCH bpf-next v2 0/5] Add cryptographic hash and signature verification kfuncs to BPF
+Date: Fri,  5 Dec 2025 12:39:18 -0500
+Message-ID: <20251205173923.31740-1-git@danielhodges.dev>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3022.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e45234d3-fda8-4814-05c5-08de3421dac4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2025 17:15:14.1449
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZWQdpJ0TzlZHKwFi9bCxRr+HKun3gcGNQS+Ho6EIKsxQnw9HncCwKQ//meiP5WIhyxS7EKcx12boVKZECGWvZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7711
+Content-Transfer-Encoding: 8bit
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSGFucyBkZSBHb2VkZSA8
-aGFuc2dAa2VybmVsLm9yZz4NCj4gU2VudDogV2VkbmVzZGF5LCBOb3ZlbWJlciAxOSwgMjAyNSAx
-MDo1MiBBTQ0KPiBUbzogUm9uIExpIDx4aWFuZ3JvbmdsQG52aWRpYS5jb20+OyBpbHBvLmphcnZp
-bmVuQGxpbnV4LmludGVsLmNvbTsgVmFkaW0NCj4gUGFzdGVybmFrIDx2YWRpbXBAbnZpZGlhLmNv
-bT47IGFsb2suYS50aXdhcmlAb3JhY2xlLmNvbTsgS2hhbGlsIEJsYWllY2gNCj4gPGtibGFpZWNo
-QG52aWRpYS5jb20+OyBEYXZpZCBUaG9tcHNvbiA8ZGF2dGhvbXBzb25AbnZpZGlhLmNvbT4NCj4g
-Q2M6IHBsYXRmb3JtLWRyaXZlci14ODZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdl
-ci5rZXJuZWwub3JnOyBsaW51eC0NCj4gY3J5cHRvQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0
-OiBSZTogW1BBVENIIHYzIDIvM10gcGxhdGZvcm0vbWVsbGFub3gvbWx4YmZfcGthOiBBZGQgdXNl
-cnNwYWNlDQo+IFBLQSByaW5nIGRldmljZSBpbnRlcmZhY2UNCj4gDQo+IEV4dGVybmFsIGVtYWls
-OiBVc2UgY2F1dGlvbiBvcGVuaW5nIGxpbmtzIG9yIGF0dGFjaG1lbnRzDQo+IA0KPiANCj4gSGks
-DQo+IA0KPiBPbiAxOS1TZXAtMjUgOTo1MSBQTSwgUm9uIExpIHdyb3RlOg0KPiA+IEV4cG9zZSBl
-YWNoIEJsdWVGaWVsZCBQS0EgcmluZyBhcyBhIGNoYXJhY3RlciBkZXZpY2UgZm9yIHVzZXJzcGFj
-ZSBvZmZsb2FkLg0KPiA+IFRoaXMgZm9jdXNlcyBvbiBwZXItcmluZyByZXNvdXJjZXMsIGxheW91
-dCwgYW5kIGNvbnRyb2wsIHdpdGhvdXQgaW4ta2VybmVsDQo+ID4gY3J5cHRvIGFsZ29yaXRobXMu
-DQo+ID4NCj4gPiAtIENyZWF0ZSByaW5nIGRldmljZSBub2RlcyBhbmQgbGlmZWN5Y2xlOiBvcGVu
-L2Nsb3NlLCBtbWFwLCBpb2N0bA0KPiA+IC0gUGFydGl0aW9uIDE2S0IgV2luZG93IFJBTSBwZXIg
-cmluZyAoMUtCIGNtZCwgMUtCIHJlc3VsdCwgMTRLQiB2ZWN0b3JzKQ0KPiA+IC0gUHJvZ3JhbSBy
-aW5nIGluZm8gd29yZHMgKGNtZC9yc2x0IGJhc2VzLCBzaXplLCBob3N0X2Rlc2Nfc2l6ZSwgaW4t
-b3JkZXIpDQo+ID4gLSBQcm92aWRlIFVBUEkgaW9jdGxzOg0KPiA+ICAgLSBNTFhCRl9QS0FfUklO
-R19HRVRfUkVHSU9OX0lORk8NCj4gPiAgIC0gTUxYQkZfUEtBX0dFVF9SSU5HX0lORk8NCj4gPiAg
-IC0gTUxYQkZfUEtBX0NMRUFSX1JJTkdfQ09VTlRFUlMNCj4gPiAtIEFDUEktYmFzZWQgcHJvYmUg
-Zm9yIEJGMS9CRjIvQkYzIGFuZCBwZXItc2hpbSByaW5nIHNldHVwDQo+ID4gLSBEb2N1bWVudCBk
-ZXZpY2UvcmluZyBpZGVudGlmaWVycyBhbmQgaW50ZXJmYWNlIGluIHN5c2ZzIEFCSQ0KPiANCj4g
-SU1ITyB5b3UgcmVhbGx5IHNob3VsZCB1c2UgdGhlIHN0YW5kYXJkIGh3LWFjY2VsIGNyeXB0byBr
-ZXJuZWwgQVBJcw0KPiBmb3IgdGhpcyBhbmQgbm90IGludHJvZHVjZSBhIHNldCBvZiBjdXN0b20g
-aW9jdGxzLg0KPiANCj4gSSBndWVzcyBhbiBleGNlcHRpb24gY2FuIGJlIG1hZGUgaWY6DQo+IA0K
-PiAxLiBZb3UgY2FuIG1vdGl2YXRlIHdoeSB1c2luZyB0aGUgc3RhbmRhcmQgaHctYWNjZWwgY3J5
-cHRvIGtlcm5lbCBBUElzIHdpbGwNCj4gICAgbm90IHdvcmsgZm9yIHlvdXIgdXNlLWNhc2U7ICph
-bmQqDQo+IDIuIFlvdSBjYW4gZ2V0IGFuIGFjayBmcm9tIG9uZSBvZiB0aGUgbGludXgtY3J5cHRv
-IE1BSU5UQUlORVJzIGZvciBkb2luZyB0aGlzDQo+ICAgIG91dHNpZGUgb2YgdGhlIGNyeXB0byBz
-dWJzeXN0ZW1zLg0KPiANCj4gU29ycnksIGJ1dCB3ZSBjYW5ub3QgbWVyZ2UgdGhlc2UgcGF0Y2hl
-cyBhZGRpbmcgdGhpcyBjdXN0b20gY3J5cHRvIEFQSQ0KPiB1bmRlciBkcml2ZXJzL3BsYXRmb3Jt
-L21lbGxhbm94IHdpdGhvdXQgZXhwbGljaXQgcGVybWlzc2lvbiB0byBkZXZpYXRlDQo+IGZyb20g
-dGhlIHN0YW5kYXJkIGNyeXB0byBBUElzIGJ5IHRoZSBsaW51eC1jcnlwdG8gTUFJTlRBSU5FUnMu
-DQo+IA0KPiBSZWdhcmRzLA0KPiANCj4gSGFucw0KDQpIZWxsbyBsaW51eC1jcnlwdG8gbWFpbnRh
-aW5lcnMsDQpQbGVhc2UgcmV2aWV3IHRoZSBqdXN0aWZpY2F0aW9ucyBmb3IgYXZvaWRpbmcgdGhl
-IENyeXB0byBBUEkgZm9yIHRoZSBQS0EgZHJpdmVyOg0KLSBPdXIgcHJpbWFyeSBjb25zdW1lcnMg
-YXJlIHVzZXLigJFzcGFjZSBUTFMgc3RhY2tzIChPcGVuU1NML0JvcmluZ1NTTCkuIFRoZSB1c2Vy
-4oCRc3BhY2UgQUZfQUxHIGludGVyZmFjZSBkb2VzIG5vdCBleHBvc2UgYXN5bW1ldHJpYyBhbGdv
-cml0aG1zIChEb2N1bWVudGF0aW9uL2NyeXB0by91c2Vyc3BhY2UtaWYucnN0KSwgc28gaXQgd291
-bGRu4oCZdCByZWFjaCB0aG9zZSBjb25zdW1lcnMuDQotIEFkZGl0aW9uYWxseSwgcm91dGluZyB0
-aHJvdWdoIENyeXB0byBBUEkgYWRkcyBleHRyYSBjb3BpZXMvY29udGV4dCBob3BzIHRoYXQgcmVn
-cmVzcyBvdXIgaGFuZHNoYWtlIGxhdGVuY3kgYW5kIGJhdGNoZWQgdGhyb3VnaHB1dCB0YXJnZXRz
-IGNvbXBhcmVkIHRvIHRoZSBkaXJlY3QsIHplcm/igJFjb3B5IHF1ZXVlIFVBUEkuDQoNClBsZWFz
-ZSBhZHZpc2UgaWYgdGhlIHJldmlldyBwcm9jZWR1cmUgY2FuIHByb2NlZWQuDQoNClRoYW5rcw0K
-Um9uDQo=
+This series extends BPF's cryptographic capabilities by adding kfuncs for
+SHA hashing and ECDSA signature verification. These functions enable BPF
+programs to perform cryptographic operations for use cases such as content
+verification, integrity checking, and data authentication.
+
+BPF programs increasingly need to verify data integrity and authenticity in
+networking, security, and observability contexts. While BPF already supports
+symmetric encryption/decryption, it lacks support for:
+
+1. Cryptographic hashing - needed for content verification, fingerprinting,
+   and preparing message digests for signature operations
+2. Asymmetric signature verification - needed to verify signed data without
+   requiring the signing key in the datapath
+
+These capabilities enable use cases such as:
+- Verifying signed network packets or application data in XDP/TC programs
+- Implementing integrity checks in tracing and security monitoring
+- Building zero-trust security models where BPF programs verify credentials
+- Content-addressed storage and deduplication in BPF-based filesystems
+
+Implementation:
+
+The implementation follows BPF's existing crypto patterns:
+1. Uses bpf_dynptr for safe memory access without page fault risks
+2. Leverages the kernel's existing crypto library (lib/crypto/sha256.c and
+   crypto/ecdsa.c) rather than reimplementing algorithms
+3. Provides context-based API for ECDSA to enable key reuse and support
+   multiple program types (syscall, XDP, TC)
+4. Includes comprehensive selftests with NIST test vectors
+
+Patch 1: crypto: Add BPF hash algorithm type registration module
+  - Adds bpf_crypto_shash module in crypto/ subsystem
+  - Registers hash type with BPF crypto infrastructure
+  - Enables hash algorithm access through unified bpf_crypto_type interface
+  - Implements callbacks: alloc_tfm, free_tfm, hash, digestsize, get_flags
+  - Manages shash_desc lifecycle internally
+
+Patch 2: bpf: Add SHA hash kfunc for cryptographic hashing
+  - Adds bpf_crypto_hash() kfunc for SHA-256/384/512
+  - Extends bpf_crypto_type structure with hash operations
+  - Updates bpf_crypto_ctx_create() to support keyless operations
+  - Protected by CONFIG_CRYPTO_HASH2 guards
+  - Uses kernel's crypto library implementations
+
+Patch 3: selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  - Tests basic functionality with NIST "abc" test vectors
+  - Validates error handling for invalid parameters (zero-length input)
+  - Ensures correct hash output for SHA-256, SHA-384, and SHA-512
+  - Adds CONFIG_CRYPTO_HASH2 and CONFIG_CRYPTO_SHA512 to selftest config
+
+Patch 4: bpf: Add ECDSA signature verification kfuncs
+  - Context-based API: bpf_ecdsa_ctx_create/acquire/release pattern
+  - Supports NIST curves (P-256, P-384, P-521)
+  - Adds bpf_ecdsa_verify() for signature verification
+  - Includes size query functions: keysize, digestsize, maxsize
+  - Enables use in non-sleepable contexts via pre-allocated contexts
+  - Uses crypto_sig API with p1363 format (r || s signatures)
+
+Patch 5: selftests/bpf: Add tests for ECDSA signature verification
+  - Tests valid signature acceptance with RFC 6979 test vectors for P-256
+  - Tests invalid signature rejection
+  - Tests size query functions (keysize, digestsize, maxsize)
+  - Uses well-known NIST test vectors with "sample" message
+
+v2:
+
+- Fixed redundant __bpf_dynptr_is_rdonly() checks (Vadim)
+- Added BPF hash algorithm type registration module in crypto/ subsystem
+- Added CONFIG_CRYPTO_HASH2 guards around bpf_crypto_hash() kfunc and its
+  BTF registration, matching the pattern used for CONFIG_CRYPTO_ECDSA
+- Added mandatory digestsize validation for hash operations
+
+Test Results
+============
+
+All tests pass on x86_64 for both crypto_hash and ecdsa_verify test suites.
+
+Daniel Hodges (5):
+  crypto: Add BPF hash algorithm type registration module
+  bpf: Add SHA hash kfunc for cryptographic hashing
+  selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  bpf: Add ECDSA signature verification kfuncs
+  selftests/bpf: Add tests for ECDSA signature verification kfuncs
+
+ crypto/Makefile                               |   3 +
+ crypto/bpf_crypto_shash.c                     |  94 ++++++
+ include/linux/bpf_crypto.h                    |   2 +
+ kernel/bpf/crypto.c                                | 306 ++++++++++++++++++++-
+ tools/testing/selftests/bpf/config                 |   2 +
+ .../testing/selftests/bpf/prog_tests/crypto_hash.c | 158 +++++++++++
+ .../selftests/bpf/prog_tests/ecdsa_verify.c        |  74 +++++
+ tools/testing/selftests/bpf/progs/crypto_hash.c    | 141 ++++++++++
+ tools/testing/selftests/bpf/progs/ecdsa_verify.c   | 159 +++++++++++
+ 9 files changed, 931 insertions(+), 8 deletions(-)
+ create mode 100644 crypto/bpf_crypto_shash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ecdsa_verify.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ecdsa_verify.c
+
+-- 
+2.51.0
+
 
