@@ -1,360 +1,130 @@
-Return-Path: <linux-crypto+bounces-18741-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18745-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0896CABE8D
-	for <lists+linux-crypto@lfdr.de>; Mon, 08 Dec 2025 04:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 250B3CABF4E
+	for <lists+linux-crypto@lfdr.de>; Mon, 08 Dec 2025 04:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 85F4F301C977
-	for <lists+linux-crypto@lfdr.de>; Mon,  8 Dec 2025 03:04:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E917B3015AB0
+	for <lists+linux-crypto@lfdr.de>; Mon,  8 Dec 2025 03:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7D62D7DEB;
-	Mon,  8 Dec 2025 03:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF5E25487B;
+	Mon,  8 Dec 2025 03:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="JSi/BOZx";
-	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="WNw+eHC9"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="j00J0/IH"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B88168BD;
-	Mon,  8 Dec 2025 03:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872362309AA;
+	Mon,  8 Dec 2025 03:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765163047; cv=none; b=kvdKtP7YU+O82wHIl7NI1U76KE96Z/ZDUJNw0ZxI73W14EdwiWM/C8wpsEagycif08k/0dEgGqxYCtt6KOEOLcTVaaQ1JNxc/nrFpjfyhO3AFC9OdPF4b9Z0k7NclGZ63omLtifpjsDQuJaj/yiybHSa7WRvvs67dD+ur1nzsPU=
+	t=1765164270; cv=none; b=ZRrmEKQT1xoC7Kqq1PQzxYLzVt1X3AEtXGN2NHn/0CWjWwDjJgrmgrDSmW3bmXUV6/fbBnPhwMhiQFIU9KeRrwjqwKthe2BI3cbMxU5YNcGls6mmm6yrNlPrgDVApmuN10/vIR7sJ7IILGRqIVw+gVvPLfxKeOjtdZBF2k6F6rA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765163047; c=relaxed/simple;
-	bh=l/0TpHk1H6P6VyJGny365/cUvUSc72h/vGE/0DLKC94=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uMz/qTOPbOWttmQ9CBQi7UBlxMQySkFCijQXDLgxB/F6k1hyWHzl2M2EwELfAvU0jbVKAs6xmFbb8BYR3rM215W6yXx13DC+PIDZ2EE7Jo78RLS8uk+L5zASutDFDNYnQZRb0kXAnC2aFUXdvIHOGuyjbhVL1v3oCbdmCNztS2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=JSi/BOZx; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=WNw+eHC9; arc=none smtp.client-ip=135.148.138.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
-DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Date:Subject:To:From; t=1765162879; bh=/Adf8jxcFr7hW0Dm22zon8E
-	cslcLIH6NLfbXL5N6zrs=; b=JSi/BOZxNJBq4EatxjAWODTEhx+qRZtysHgFECi5m1M4YUJ5Ao
-	2qNECDZX8GdXxzFzS5q1FWqGnuQB5ljAe9+WuEhbVxM8TYOuhdtQte2J6EaRri66iDeRIohcWR3
-	dMhWX+NtvMceCrgLYaYKfI97JHcVTGVtHS+GtdW4VKyY8S+rfndMeneRb5DtpLlsoP0bp3uVcha
-	x9nwxel96W15jUA9bD+B2lmyZa5Rn+Z1n7DjAyEZ/Rxe6hzjGMqNmaCzbBhClrNPuui461u/trQ
-	s4gIidGFKJdiZtD9UaAKHwt2DX5rQeGgvxAdq3SgkYPkz0AtR/4cH4KAL47v4JL7YUg==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Date:Subject:To:From; t=1765162879; bh=/Adf8jxcFr7hW0Dm22zon8E
-	cslcLIH6NLfbXL5N6zrs=; b=WNw+eHC9dSOunuRoGKcQMYJZHRbPT1Ujvb1gLNxh5wXzm9IjT4
-	qQubJ+6smPDMtGVTNp1hk8vyY7psmhi7YRAw==;
-From: Daniel Hodges <git@danielhodges.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	vadim.fedorenko@linux.dev,
-	song@kernel.org,
-	yatsenko@meta.com,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	yonghong.song@linux.dev,
-	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Daniel Hodges <git@danielhodges.dev>
-Subject: [PATCH bpf-next v3 6/6] selftests/bpf: Add tests for ECDSA signature verification kfuncs
-Date: Sun,  7 Dec 2025 22:01:17 -0500
-Message-ID: <20251208030117.18892-7-git@danielhodges.dev>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251208030117.18892-1-git@danielhodges.dev>
-References: <20251208030117.18892-1-git@danielhodges.dev>
+	s=arc-20240116; t=1765164270; c=relaxed/simple;
+	bh=Pvrc4FadI4rh0F3zdUo69p2LT9Q3nnmRn/wVsyq7fes=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fBjST/EFj95MOYPKDf2aWPhntl3t319AnGg3AQ3MifVBh2n6oJJNSQ6IUYBg9wS4TGJbSX4tgkGkfquMtQjlh+iHt/9/+ccXRmHrR+dFaEOzmFnimMLICSzMC93jBGjHAAfaB+xJtdzdRqEkBn1fXROE4BDtMC+gfgC1wwrtuxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=j00J0/IH; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=xgnn6MwSl2S/6LuXc1sx4ksRMJ6UXHwQQO3rL1/acEI=; 
+	b=j00J0/IHH6pOHYr1EdBh3Pfn8wlSyxziIWLWdek3IBYXF/P9SrYAS3Gs51jEyFdh4bjSifxC5jv
+	ii/aC2PJTyv2sutj7cdM1hTQDoP11Fm7e8tRWpwlKpbH3qbQyXE9iJaiBJTT9/oEt8Qqh5dj2jl/A
+	sFjnI0WvAu3E5l4ciYVVvKt9wuMZmGO/nQt5qlvI2+wbpFMOuwABCwOoaul2lAm0svQMCmIOHK8Iu
+	LObyEF8YMbjrRvOIDBI5CnA5xXUkOe0fFG6nup7EtGu1xBcvk+jf7XHzMwvlD43xzEKTsaReTdJsb
+	64CGxDvsyKlgTkA/Ye8oSpj2YQV0I0VR1a+Q==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1vSRqn-008iGp-1h;
+	Mon, 08 Dec 2025 11:23:50 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 08 Dec 2025 11:23:49 +0800
+Date: Mon, 8 Dec 2025 11:23:49 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: "Sridhar, Kanchana P" <kanchana.p.sridhar@intel.com>
+Cc: Yosry Ahmed <yosry.ahmed@linux.dev>, SeongJae Park <sj@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+	"nphamcs@gmail.com" <nphamcs@gmail.com>,
+	"chengming.zhou@linux.dev" <chengming.zhou@linux.dev>,
+	"usamaarif642@gmail.com" <usamaarif642@gmail.com>,
+	"ryan.roberts@arm.com" <ryan.roberts@arm.com>,
+	"21cnbao@gmail.com" <21cnbao@gmail.com>,
+	"ying.huang@linux.alibaba.com" <ying.huang@linux.alibaba.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+	"kasong@tencent.com" <kasong@tencent.com>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"clabbe@baylibre.com" <clabbe@baylibre.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"ebiggers@google.com" <ebiggers@google.com>,
+	"surenb@google.com" <surenb@google.com>,
+	"Accardi, Kristen C" <kristen.c.accardi@intel.com>,
+	"Gomes, Vinicius" <vinicius.gomes@intel.com>,
+	"Feghali, Wajdi K" <wajdi.k.feghali@intel.com>,
+	"Gopal, Vinodh" <vinodh.gopal@intel.com>
+Subject: Re: [PATCH v13 22/22] mm: zswap: Batched zswap_compress() with
+ compress batching of large folios.
+Message-ID: <aTZExW2LgFNTfwVJ@gondor.apana.org.au>
+References: <20251104091235.8793-1-kanchana.p.sridhar@intel.com>
+ <20251104091235.8793-23-kanchana.p.sridhar@intel.com>
+ <q54bjetgzmwbsqpgbuuovdmcwxjwmtowwgsv7p3ykbodhxpvc7@6mqmz6ji4jja>
+ <SJ2PR11MB8472011B61F644D4662FE980C9CDA@SJ2PR11MB8472.namprd11.prod.outlook.com>
+ <ifqmrypobhqxlkh734md5it22vggmkvqo2t2uy7hgch5hmlyln@flqi75fwmfd4>
+ <SJ2PR11MB8472610CE6EF5BA83BCC8D2EC9CAA@SJ2PR11MB8472.namprd11.prod.outlook.com>
+ <ygtejnrci7cnjkpomoqhz3jdtryjffmk3o2avatjppylirbbem@qppr4eybud47>
+ <aSaUUez5J1w5WyE-@gondor.apana.org.au>
+ <j7vaexpi3lmheowozkymesvekasccdgnxijjip66ryngj66llf@kolcsjasxxdy>
+ <SA1PR11MB8476756D7255F1EA1EBE322AC9DEA@SA1PR11MB8476.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SA1PR11MB8476756D7255F1EA1EBE322AC9DEA@SA1PR11MB8476.namprd11.prod.outlook.com>
 
-Add selftests to validate the ECDSA signature verification kfuncs
-introduced in the BPF crypto subsystem. The tests verify both valid
-signature acceptance and invalid signature rejection using the
-context-based ECDSA API.
+On Wed, Nov 26, 2025 at 08:05:40PM +0000, Sridhar, Kanchana P wrote:
+>
+> Herbert, to make sure I understand, will you be implementing all of these
+> features in crypto_acomp for software compressors? I would appreciate it
+> if you can clarify:
+> 
+> 1) Error & compressed length propagation to the dst sg->length only for
+>     non-batching compressors.
+>     a) For batching compressors, this wouldn't apply since errors could occur
+>         for any page in the batch, and the first page (dst sg->length) could have
+>         successfully compressed.
 
-The tests use RFC 6979 test vectors for NIST P-256 (secp256r1) with
-well-known valid signatures. The algorithm "p1363(ecdsa-nist-p256)"
-is used to handle standard r||s signature format.
+This would be the first step.
 
-Signed-off-by: Daniel Hodges <git@danielhodges.dev>
----
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/ecdsa_verify.c   |  75 ++++++++
- .../selftests/bpf/progs/ecdsa_verify.c        | 160 ++++++++++++++++++
- 3 files changed, 236 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/ecdsa_verify.c
- create mode 100644 tools/testing/selftests/bpf/progs/ecdsa_verify.c
+> 2) Will you also be handling the case where zswap can send an SG list batch
+>      with multiple pages to a non-batching compressor, and the crypto_acomp
+>      API will internally compress each page sequentially, propagate
+>      errors/compress lengths before returning?
+>         
+> If so, this would really standardize the code in zswap for batching and
+> non-batching compressors.
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index d168b3073cba..c99811d3f61f 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -15,6 +15,7 @@ CONFIG_CRYPTO_HMAC=y
- CONFIG_CRYPTO_HASH2=y
- CONFIG_CRYPTO_SHA256=y
- CONFIG_CRYPTO_SHA512=y
-+CONFIG_CRYPTO_ECDSA=y
- CONFIG_CRYPTO_USER_API=y
- CONFIG_CRYPTO_USER_API_HASH=y
- CONFIG_CRYPTO_USER_API_SKCIPHER=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/ecdsa_verify.c b/tools/testing/selftests/bpf/prog_tests/ecdsa_verify.c
-new file mode 100644
-index 000000000000..4e88b3eeb3eb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/ecdsa_verify.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <test_progs.h>
-+#include "ecdsa_verify.skel.h"
-+
-+static void test_ecdsa_verify_valid_signature(void)
-+{
-+	struct ecdsa_verify *skel;
-+	int err, prog_fd;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	skel = ecdsa_verify__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "ecdsa_verify__open_and_load"))
-+		return;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test_ecdsa_verify_valid);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_ecdsa_verify_valid");
-+	ASSERT_EQ(skel->data->ctx_create_status, 0, "ctx_create_status");
-+	ASSERT_EQ(skel->data->verify_result, 0, "verify_valid_signature");
-+
-+	ecdsa_verify__destroy(skel);
-+}
-+
-+static void test_ecdsa_verify_invalid_signature(void)
-+{
-+	struct ecdsa_verify *skel;
-+	int err, prog_fd;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	skel = ecdsa_verify__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "ecdsa_verify__open_and_load"))
-+		return;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test_ecdsa_verify_invalid);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_ecdsa_verify_invalid");
-+	ASSERT_NEQ(skel->data->verify_invalid_result, 0, "verify_invalid_signature_rejected");
-+
-+	ecdsa_verify__destroy(skel);
-+}
-+
-+static void test_ecdsa_size_queries(void)
-+{
-+	struct ecdsa_verify *skel;
-+	int err, prog_fd;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	skel = ecdsa_verify__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "ecdsa_verify__open_and_load"))
-+		return;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test_ecdsa_size_queries);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_ecdsa_size_queries");
-+	ASSERT_EQ(skel->data->keysize_result, 256, "keysize_p256");
-+	ASSERT_EQ(skel->data->digestsize_result, 64, "digestsize_p256");
-+	ASSERT_EQ(skel->data->maxsize_result, 64, "maxsize_p256");
-+
-+	ecdsa_verify__destroy(skel);
-+}
-+
-+void test_ecdsa_verify(void)
-+{
-+	if (test__start_subtest("verify_valid_signature"))
-+		test_ecdsa_verify_valid_signature();
-+	if (test__start_subtest("verify_invalid_signature"))
-+		test_ecdsa_verify_invalid_signature();
-+	if (test__start_subtest("size_queries"))
-+		test_ecdsa_size_queries();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/ecdsa_verify.c b/tools/testing/selftests/bpf/progs/ecdsa_verify.c
-new file mode 100644
-index 000000000000..e2a94ff80774
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/ecdsa_verify.c
-@@ -0,0 +1,160 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+struct bpf_ecdsa_ctx;
-+extern struct bpf_ecdsa_ctx *
-+bpf_ecdsa_ctx_create(const struct bpf_dynptr *algo_name,
-+		     const struct bpf_dynptr *public_key, int *err) __ksym;
-+extern int bpf_ecdsa_verify(struct bpf_ecdsa_ctx *ctx,
-+			    const struct bpf_dynptr *message,
-+			    const struct bpf_dynptr *signature) __ksym;
-+extern int bpf_ecdsa_keysize(struct bpf_ecdsa_ctx *ctx) __ksym;
-+extern int bpf_ecdsa_digestsize(struct bpf_ecdsa_ctx *ctx) __ksym;
-+extern int bpf_ecdsa_maxsize(struct bpf_ecdsa_ctx *ctx) __ksym;
-+extern void bpf_ecdsa_ctx_release(struct bpf_ecdsa_ctx *ctx) __ksym;
-+
-+/* NIST P-256 test vector
-+ * This is a known valid ECDSA signature for testing purposes
-+ */
-+
-+/* Algorithm name for P-256 with p1363 format (standard r||s signature) */
-+char algo_p256[] = "p1363(ecdsa-nist-p256)";
-+
-+/* Public key in uncompressed format: 0x04 || x || y (65 bytes) */
-+unsigned char pubkey_p256[65] = {
-+	0x04, /* Uncompressed point indicator */
-+	/* X coordinate (32 bytes) */
-+	0x60, 0xfe, 0xd4, 0xba, 0x25, 0x5a, 0x9d, 0x31,
-+	0xc9, 0x61, 0xeb, 0x74, 0xc6, 0x35, 0x6d, 0x68,
-+	0xc0, 0x49, 0xb8, 0x92, 0x3b, 0x61, 0xfa, 0x6c,
-+	0xe6, 0x69, 0x62, 0x2e, 0x60, 0xf2, 0x9f, 0xb6,
-+	/* Y coordinate (32 bytes) */
-+	0x79, 0x03, 0xfe, 0x10, 0x08, 0xb8, 0xbc, 0x99,
-+	0xa4, 0x1a, 0xe9, 0xe9, 0x56, 0x28, 0xbc, 0x64,
-+	0xf2, 0xf1, 0xb2, 0x0c, 0x2d, 0x7e, 0x9f, 0x51,
-+	0x77, 0xa3, 0xc2, 0x94, 0xd4, 0x46, 0x22, 0x99
-+};
-+
-+/* Message hash (32 bytes) - SHA-256 of "sample" */
-+unsigned char message_hash[32] = {
-+	0xaf, 0x2b, 0xdb, 0xe1, 0xaa, 0x9b, 0x6e, 0xc1,
-+	0xe2, 0xad, 0xe1, 0xd6, 0x94, 0xf4, 0x1f, 0xc7,
-+	0x1a, 0x83, 0x1d, 0x02, 0x68, 0xe9, 0x89, 0x15,
-+	0x62, 0x11, 0x3d, 0x8a, 0x62, 0xad, 0xd1, 0xbf
-+};
-+
-+/* Valid signature r || s (64 bytes) */
-+unsigned char valid_signature[64] = {
-+	/* r component (32 bytes) */
-+	0xef, 0xd4, 0x8b, 0x2a, 0xac, 0xb6, 0xa8, 0xfd,
-+	0x11, 0x40, 0xdd, 0x9c, 0xd4, 0x5e, 0x81, 0xd6,
-+	0x9d, 0x2c, 0x87, 0x7b, 0x56, 0xaa, 0xf9, 0x91,
-+	0xc3, 0x4d, 0x0e, 0xa8, 0x4e, 0xaf, 0x37, 0x16,
-+	/* s component (32 bytes) */
-+	0xf7, 0xcb, 0x1c, 0x94, 0x2d, 0x65, 0x7c, 0x41,
-+	0xd4, 0x36, 0xc7, 0xa1, 0xb6, 0xe2, 0x9f, 0x65,
-+	0xf3, 0xe9, 0x00, 0xdb, 0xb9, 0xaf, 0xf4, 0x06,
-+	0x4d, 0xc4, 0xab, 0x2f, 0x84, 0x3a, 0xcd, 0xa8
-+};
-+
-+/* Invalid signature (modified r component) for negative test */
-+unsigned char invalid_signature[64] = {
-+	/* r component (32 bytes) - first byte modified */
-+	0xff, 0xd4, 0x8b, 0x2a, 0xac, 0xb6, 0xa8, 0xfd,
-+	0x11, 0x40, 0xdd, 0x9c, 0xd4, 0x5e, 0x81, 0xd6,
-+	0x9d, 0x2c, 0x87, 0x7b, 0x56, 0xaa, 0xf9, 0x91,
-+	0xc3, 0x4d, 0x0e, 0xa8, 0x4e, 0xaf, 0x37, 0x16,
-+	/* s component (32 bytes) */
-+	0xf7, 0xcb, 0x1c, 0x94, 0x2d, 0x65, 0x7c, 0x41,
-+	0xd4, 0x36, 0xc7, 0xa1, 0xb6, 0xe2, 0x9f, 0x65,
-+	0xf3, 0xe9, 0x00, 0xdb, 0xb9, 0xaf, 0xf4, 0x06,
-+	0x4d, 0xc4, 0xab, 0x2f, 0x84, 0x3a, 0xcd, 0xa8
-+};
-+
-+/* Test results */
-+int verify_result = -1;
-+int verify_invalid_result = -1;
-+int ctx_create_status = -1;
-+int keysize_result = -1;
-+int digestsize_result = -1;
-+int maxsize_result = -1;
-+
-+SEC("syscall")
-+int test_ecdsa_verify_valid(void *ctx)
-+{
-+	struct bpf_ecdsa_ctx *ecdsa_ctx;
-+	struct bpf_dynptr algo_ptr, key_ptr, msg_ptr, sig_ptr;
-+	int err = 0;
-+
-+	bpf_dynptr_from_mem(algo_p256, sizeof(algo_p256) - 1, 0, &algo_ptr);
-+	bpf_dynptr_from_mem(pubkey_p256, sizeof(pubkey_p256), 0, &key_ptr);
-+
-+	ecdsa_ctx = bpf_ecdsa_ctx_create(&algo_ptr, &key_ptr, &err);
-+	if (!ecdsa_ctx) {
-+		ctx_create_status = err;
-+		return 0;
-+	}
-+	ctx_create_status = 0;
-+
-+	bpf_dynptr_from_mem(message_hash, sizeof(message_hash), 0, &msg_ptr);
-+	bpf_dynptr_from_mem(valid_signature, sizeof(valid_signature), 0, &sig_ptr);
-+
-+	verify_result = bpf_ecdsa_verify(ecdsa_ctx, &msg_ptr, &sig_ptr);
-+
-+	bpf_ecdsa_ctx_release(ecdsa_ctx);
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int test_ecdsa_verify_invalid(void *ctx)
-+{
-+	struct bpf_ecdsa_ctx *ecdsa_ctx;
-+	struct bpf_dynptr algo_ptr, key_ptr, msg_ptr, sig_ptr;
-+	int err = 0;
-+
-+	bpf_dynptr_from_mem(algo_p256, sizeof(algo_p256) - 1, 0, &algo_ptr);
-+	bpf_dynptr_from_mem(pubkey_p256, sizeof(pubkey_p256), 0, &key_ptr);
-+
-+	ecdsa_ctx = bpf_ecdsa_ctx_create(&algo_ptr, &key_ptr, &err);
-+	if (!ecdsa_ctx)
-+		return 0;
-+
-+	bpf_dynptr_from_mem(message_hash, sizeof(message_hash), 0, &msg_ptr);
-+	bpf_dynptr_from_mem(invalid_signature, sizeof(invalid_signature), 0, &sig_ptr);
-+
-+	verify_invalid_result = bpf_ecdsa_verify(ecdsa_ctx, &msg_ptr, &sig_ptr);
-+
-+	bpf_ecdsa_ctx_release(ecdsa_ctx);
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int test_ecdsa_size_queries(void *ctx)
-+{
-+	struct bpf_ecdsa_ctx *ecdsa_ctx;
-+	struct bpf_dynptr algo_ptr, key_ptr;
-+	int err = 0;
-+
-+	bpf_dynptr_from_mem(algo_p256, sizeof(algo_p256) - 1, 0, &algo_ptr);
-+	bpf_dynptr_from_mem(pubkey_p256, sizeof(pubkey_p256), 0, &key_ptr);
-+
-+	ecdsa_ctx = bpf_ecdsa_ctx_create(&algo_ptr, &key_ptr, &err);
-+	if (!ecdsa_ctx)
-+		return 0;
-+
-+	keysize_result = bpf_ecdsa_keysize(ecdsa_ctx);
-+	digestsize_result = bpf_ecdsa_digestsize(ecdsa_ctx);
-+	maxsize_result = bpf_ecdsa_maxsize(ecdsa_ctx);
-+
-+	bpf_ecdsa_ctx_release(ecdsa_ctx);
-+
-+	return 0;
-+}
-+
-+char __license[] SEC("license") = "GPL";
+Yes this will be done as the next step.  My understanding is that
+your patch-set doesn't require this yet as all non-batching compressors
+will have a batch size of 1.
+
+But yes this certainly will be extended, not just with sequential
+processing, but we could also use pcrypt/cryptd to parallelise the
+compression across CPUs.
+
+Cheers,
 -- 
-2.51.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
