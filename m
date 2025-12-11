@@ -1,113 +1,102 @@
-Return-Path: <linux-crypto+bounces-18907-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-18910-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E16EACB53F6
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Dec 2025 09:57:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB68CB54CF
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Dec 2025 10:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A502A3001610
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Dec 2025 08:57:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9691A30380CB
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Dec 2025 09:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BAE2FD7B4;
-	Thu, 11 Dec 2025 08:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BD7303CA0;
+	Thu, 11 Dec 2025 08:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="DtLZgl/p"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HhTnm4SQ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06D82FBE10;
-	Thu, 11 Dec 2025 08:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D16303C85
+	for <linux-crypto@vger.kernel.org>; Thu, 11 Dec 2025 08:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765442877; cv=none; b=t12FktvSTTrqwflOAH54l3VZFAr19cIehb/7Ojoc0M9qmGAoQ2QTcrTMgP4sdyNkyEvVFtXGLTdvzzQp1ZvmonMrgPmZP46v1oLa5+JxanT5VFXviYUtiw8sbhNavagxtigN9CdUidIwHmKd1Zd7aCPCi6DmMv3GqjsCrCqbK2E=
+	t=1765443225; cv=none; b=Xym/LlCIdcVW0Tdf4s6ADZKrHIC1s0LFOhgQF/XGzP/Rn87n3S0K1P8pt1gktCqtsRaobgTtt5pWNm3rRgiAvW0jgJHJYvn6pWpBM3PIyHs4IQCp92CN6emvJb3ORwq7xfQ+GKcdfWLE/B9oj+gP9leqnTdGf+qfzHxURds1ltg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765442877; c=relaxed/simple;
-	bh=3uzMfys7REjFcw5rJ8WnoE2DXjU5x0qD9qatsnWhg6s=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=H/tdSHZBMq71rgkt3kpnlgINCTSqDgLRZAqeKXvLDr/ClryiF4vL9jLPPCrAPFe13JOhsoWqBHzXBPrSifnm001X3KCMI6Qs6QC2uJjhU40b9xnd/RHYa9dY89D+frcc6U1UlTI5K1OuRQkev7aokmNRjD45Dddb2YKJW16yPgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=DtLZgl/p; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1765442873;
-	bh=4YuQt/ViTsd3OTZlMf2fjHbcSpDjnD7vrDHlgaLMC7Q=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=DtLZgl/pzLlAKfeYBIFJAGq+mv8J6I5TrFfyrELEqhyHJG09MbGTKdzaI0m92ywHx
-	 2MQRN0ioXDZBYRrhbN/rfR6CIR+I47pP4z+Lkvli+gD3eYeV3xdvkokIhn6fZCYShX
-	 /L6U0sF/Ht/XcG4wFFgWZVLd3Bzsuwt9SqbdM5VV1leb0cZVX+WWNd/GNHx6Y5hhTu
-	 Rjp2LmxLo83y96h8HPz6nVv2bNjBzSpIZgYi48iW0I7y/eETOqkoWOBQOj2Gd2WE4j
-	 11CxHJJ9ct6uQO1CIWocS6QRvCseG26HsU4KGYFGemSoCE3BLGBJpCYPr00sOiwKyy
-	 R6QQN/Jr1usPA==
-Received: from [127.0.1.1] (fs98a57d9c.tkyc007.ap.nuro.jp [152.165.125.156])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 05A557D6BB;
-	Thu, 11 Dec 2025 16:47:48 +0800 (AWST)
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-Date: Thu, 11 Dec 2025 17:45:58 +0900
-Subject: [PATCH RFC 16/16] dt-bindings: mfd: Document smp-memram node for
- AST2600 SCU
+	s=arc-20240116; t=1765443225; c=relaxed/simple;
+	bh=pOFcKPk5DQIfMlC2wHMkmX070SjBf47kHS0w4TqaQv8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lMVKL3H0n0zcrOTJJZ3wYVWH0QLvEXjWD56RlfD4Ji0S15Bxyb6R645jdc60FY7YhVUGyGCsHYUWd3Py80iTmV1gVT9H1/b5EKrWNhoBDvoNd1kk05LfkSWmCX0UT1biC/y6+MjXVw2JC9WKIVy9qym999EcMj3QN7L98aeUBLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HhTnm4SQ; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765443211;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wGL7AIJxmq201kkii3CXEVTm6gVDaQiDrS4KCLR0obs=;
+	b=HhTnm4SQPrHpqnArhhmkiVdZ/XJSdy0J8d/zjaxhmoHitTOax5ViYpczSkiRCLzjfH1QHF
+	8xxnsWTS8Dqc+wvYD9piDhXbj8OiuXAUinLkTQdDTb/A++FtpDdkXYNLBUQHERjsAdNFyA
+	aSf4MpLfDGpQHxZd+ZWv4ZmHJgfaNIk=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] crypto: scompress - Use crypto_unregister_scomps in crypto_register_scomps
+Date: Thu, 11 Dec 2025 09:52:51 +0100
+Message-ID: <20251211085251.799114-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251211-dev-dt-warnings-all-v1-16-21b18b9ada77@codeconstruct.com.au>
-References: <20251211-dev-dt-warnings-all-v1-0-21b18b9ada77@codeconstruct.com.au>
-In-Reply-To: <20251211-dev-dt-warnings-all-v1-0-21b18b9ada77@codeconstruct.com.au>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Linus Walleij <linusw@kernel.org>
-Cc: Joel Stanley <joel@jms.id.au>, linux-hwmon@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
- openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org, 
- linux-mmc@vger.kernel.org, linux-crypto@vger.kernel.org, 
- linux-iio@vger.kernel.org, Andrew Jeffery <andrew@codeconstruct.com.au>
-X-Mailer: b4 0.14.3
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The platform initialisation code for the AST2600 implements the custom
-SMP bringup protocol, and searches for the relevant compatible. As a
-consequence, define the requisite node and the compatible string, which
-in-turn tidies up the dtb check results.
+Replace the for loop with a call to crypto_unregister_scomps(). Return
+'ret' immediately and remove the goto statement to simplify the error
+handling code.  No functional changes.
 
-Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
- .../devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml    | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Changes in v2:
+- Leave crypto_unregister_scomps() as is (Herbert)
+- Link to v1: https://lore.kernel.org/lkml/20251210132548.569689-2-thorsten.blum@linux.dev/
+---
+ crypto/scompress.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml b/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml
-index da1887d7a8fe..3406b98c4d0b 100644
---- a/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml
-+++ b/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml
-@@ -130,6 +130,24 @@ patternProperties:
-           - description: silicon id information registers
-           - description: unique chip id registers
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index 1a7ed8ae65b0..8d70c5ec6f8b 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -383,17 +383,13 @@ int crypto_register_scomps(struct scomp_alg *algs, int count)
  
-+  '^smp-memram@[0-9a-f]+$':
-+    description: Memory region used for the AST2600's custom SMP bringup protocol
-+    type: object
-+    additionalProperties: false
-+
-+    properties:
-+      compatible:
-+        const: "aspeed,ast2600-smpmem"
-+
-+      reg:
-+        description:
-+          The SMP memory region
-+        maxItems: 1
-+
-+    required:
-+      - compatible
-+      - reg
-+
- required:
-   - compatible
-   - reg
-
+ 	for (i = 0; i < count; i++) {
+ 		ret = crypto_register_scomp(&algs[i]);
+-		if (ret)
+-			goto err;
++		if (ret) {
++			crypto_unregister_scomps(algs, i);
++			return ret;
++		}
+ 	}
+ 
+ 	return 0;
+-
+-err:
+-	for (--i; i >= 0; --i)
+-		crypto_unregister_scomp(&algs[i]);
+-
+-	return ret;
+ }
+ EXPORT_SYMBOL_GPL(crypto_register_scomps);
+ 
 -- 
-2.47.3
+Thorsten Blum <thorsten.blum@linux.dev>
+GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
 
 
