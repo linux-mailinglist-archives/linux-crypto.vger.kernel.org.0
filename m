@@ -1,98 +1,98 @@
-Return-Path: <linux-crypto+bounces-19008-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19011-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F8DCBCDAC
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 08:54:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E3B7CBD05F
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 09:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D5078300768B
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 07:54:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6CE9D300C6CC
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 08:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40694313530;
-	Mon, 15 Dec 2025 07:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5604E3321C7;
+	Mon, 15 Dec 2025 08:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b="OLZPeoN9"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b="sC8snx2b"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from shrimp.cherry.relay.mailchannels.net (shrimp.cherry.relay.mailchannels.net [23.83.223.164])
+Received: from purple.birch.relay.mailchannels.net (purple.birch.relay.mailchannels.net [23.83.209.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E682192FA;
-	Mon, 15 Dec 2025 07:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.223.164
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14473321BC;
+	Mon, 15 Dec 2025 08:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.150
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765785263; cv=pass; b=XdTkX1IQ4VG5WbVH6rcIqZ4aPSu3qtNOw25x2El1lAS0gQ0Vkl4vCySC9QM+M9yZrNBGm4x18b6m/7fMjP1OcQD6v1uib2R+KMqeYTpO/odVIRA2snpqV7P29Ms1JFmClGwD5rOO3Rbg2GgH0oOYAaf9sxdbbcPoNexbH2Xv2FU=
+	t=1765788508; cv=pass; b=fu0hxsa+IObdszHLi35fOnzGpXh0gGUjYSAPgwJ884XdjUK1uTg/PGlVWhgilzzi12JgUOmn1g4kKIyN4DKwjT/FB5HmZq5Jux562svHK33Lv3UQO5tWIcuSR18s21L7hn62uSnVw2Gj2h1AhQ26IUNQwKsQ068rqzyZlE8CVh8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765785263; c=relaxed/simple;
-	bh=cM0BsJnqjjsyjtg+ingidQDSEIkIM66/KPIrKRlR7WI=;
+	s=arc-20240116; t=1765788508; c=relaxed/simple;
+	bh=5hRQ+6Xjj7Ub1HlBqBP+GF+RQzaO8L1L3sPQtWmATXc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fZfiiv2cOw3pVodmBqN7jCclcbwAcyqNYzac+dCDNGG1UPr1YBYzz0sQ4hsLefe/oROEgQuTXrn0ZHGoJbuEjadeo23Rgn0ilfAuXa4BeHCmWVnw+nSsEKaWSAIGtrq0ABZIwgrhvIucVuMLs4cHhP9UMw/Eb9xoaWajji75tDQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id; spf=pass smtp.mailfrom=kriptograf.id; dkim=pass (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b=OLZPeoN9; arc=pass smtp.client-ip=23.83.223.164
+	 In-Reply-To:To:Cc; b=hsJA3ZlQQyfB8HeuSkl8UvSIHiSlgFelK92cQHdpCoNECXPLGvHr2DrvPp4RL+oRVwZB3toxLYY58XGxVOic24F4SF3x/tHyAZp340pag9ZxvxjJjSfiWNVA1Hnb0jxjdK7VArgm0gEge3+07zT/aTLsfUrCCKzFQf2fWAw3wnA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id; spf=pass smtp.mailfrom=kriptograf.id; dkim=pass (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b=sC8snx2b; arc=pass smtp.client-ip=23.83.209.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kriptograf.id
 X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id C205958163F;
-	Mon, 15 Dec 2025 07:54:13 +0000 (UTC)
-Received: from vittoria.id.domainesia.com (trex-green-7.trex.outbound.svc.cluster.local [100.103.182.69])
+	by relay.mailchannels.net (Postfix) with ESMTP id 90141460E08;
+	Mon, 15 Dec 2025 07:54:14 +0000 (UTC)
+Received: from vittoria.id.domainesia.com (trex-green-4.trex.outbound.svc.cluster.local [100.103.186.183])
 	(Authenticated sender: nlkw2k8yjw)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 8A751581ADE;
+	by relay.mailchannels.net (Postfix) with ESMTPA id E31DC461597;
 	Mon, 15 Dec 2025 07:54:11 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1765785253;
-	b=p0YOedyr8E7NnMXmRIYopBaeRshuKScLvX2sdzALcgePtlCbznUA4CEy3mLHRpy+9lhV0J
-	iZQvSqqu9HjhLCbmrdQs6kN14K6RYf1zgDMIwAYFYElRzLYJEZnyyouq6Ylwazeni1DL1L
-	GiL0GqlQ4N5UOft7YruyEY6DQSGcS5XEeepyIkCYMRZFhS3mBIKmCvSsG4ltpG5AhVyGgq
-	U2B0/WoyHs99R1PG7XoG5UYx//FieoiUEFK5hAQKyC6UPGX16+tOoaODKwWaB+a9FO6nIj
-	yPOQdDm0Md+cf3msFfK9mE215SWICNt2Wt3/sVfIPI81iRvp/vuNRfR+98Xxcg==
+	t=1765785254;
+	b=ckOAwivJ51q7ciMcRHULuptuv/zwNLCBn9erXEXem+e+cGFsKHBaQkf3u4sfeh0XWRqnej
+	LNRhfwivJnJvAtzILYzEw2bXw7HK/cb5jJ0nHm3byaeCLPrYLAMNFGpIgrgeg1r+TxcykJ
+	4JfRJJ+2DbZIQlqS/WyUILI0wG7vMz7CkzJSKZsS92LoUW3VElyoyK2kTa2e0ipWDVvu2z
+	431m1Is9OQrwJ4p3Nj78l+3dxlPZpBC5gO0Io1QZHz6pnCHh9hKxyYseWt1rKzr7vc1Uw1
+	FCOfElFLzR+VBhzN4uJ5KK3vohNs22MOBuCDqwRjNYLOHMCYFGiTrG8XO4UZ2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
-	s=arc-2022; t=1765785253;
+	s=arc-2022; t=1765785254;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=GyXXtIsElCQM2HeNKvn4EkzNkPWkma7bfMXtQs5tlUc=;
-	b=QtCGi2jKDkevcQGBVW7jbOlib4RURNeXKX+mJwQDynBDWxZUvt7FMIeeFkf9NH3vBZlSsK
-	0GVZZnlzizvkP4VW1I89s6/Y3PjuiH0KvrS6ybkIfMFFIb8bgo835StxoMeO6O2rvxGyz4
-	0FGgdM+/ZMy1LGQhSWD8LGeWuqUrvOSAj7xBN09RjPNDRWmUJTMzmpqxNcB9l8ACQ2Lx54
-	TyfxEaOgd/gFJ0dBePXDuRbtZp11BaUtsMlNQvQBGrlYYKfc5bbG5OsITd843x/77Rz2QA
-	jZgjQTPEMshxMLoMWF5A5Z87/qqcU20JdnANar0hb5XYAzssGWu6bukZmDhTsA==
+	bh=KUKfIFqcekPBdjqhL8GJz6t56c2cLGnaAFlYfu7gY0w=;
+	b=wVTA57dLdDMe/YQntU9QmO6wa3nvud04M9Fq4lKfnZNMbXkZpGtj5ygDwa1DcrabKcWIzV
+	brikrmLbUGEY1Y67hZVWmlKx8xCuLDCJjf4/O/1aWAzWw++crsa4MMc58v14fiDxPFsssv
+	1SoYecS47K8Oq5PiGrdWFHT0MBgvqI2VJk8b1Qmj7p15PAXgRYdo9Ve4yjm5H4VUxCLWZW
+	GNE6EDAyvkDwPKRcVZm3JNK1owJKSlVPrCPruy5kF9KljZ3b2ZQzH7EJJhdPRQHM9MY/Iz
+	a/vRFya4C03Az+ZHbdI/NuFVr9APx32V/qciEwXM9eq8FJSVAmT3ZETRGWFxvg==
 ARC-Authentication-Results: i=1;
-	rspamd-659888d77d-xv5gs;
+	rspamd-659888d77d-l96jv;
 	auth=pass smtp.auth=nlkw2k8yjw smtp.mailfrom=rusydi.makarim@kriptograf.id
 X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
 X-MC-Relay: Neutral
 X-MailChannels-SenderId: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
 X-MailChannels-Auth-Id: nlkw2k8yjw
-X-Trail-Madly: 22e50ed52746eda7_1765785253697_1903247113
-X-MC-Loop-Signature: 1765785253697:1628576377
-X-MC-Ingress-Time: 1765785253696
+X-Company-Illegal: 63fb58e818c0df34_1765785254496_468568549
+X-MC-Loop-Signature: 1765785254495:2230306666
+X-MC-Ingress-Time: 1765785254495
 Received: from vittoria.id.domainesia.com (vittoria.id.domainesia.com
  [36.50.77.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.103.182.69 (trex/7.1.3);
-	Mon, 15 Dec 2025 07:54:13 +0000
+	by 100.103.186.183 (trex/7.1.3);
+	Mon, 15 Dec 2025 07:54:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=kriptograf.id; s=default; h=Cc:To:In-Reply-To:References:Message-Id:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GyXXtIsElCQM2HeNKvn4EkzNkPWkma7bfMXtQs5tlUc=; b=OLZPeoN9vNk/MvQ+u8Psp/F/N9
-	qB5pFdLD9bGre3ys2UQ115fJoefODHvunjUIG2wvgGvgU8Yv7T7Y0apB4LuMjlhqNv1d6y01+wIs9
-	lVpMPcPrS/0Ni02n7GdBeoeWPq0LLQjOLa4xvBRQizfeyRT1bNIRpHKApSJH7kHRDcaRFfLA7ZjZ1
-	EdBaRjex4OQAsnbyE86TpHerprnXubE2xYpVfsG3kWBZ/hJdfeW5/9/lQKnUGQ6FyfDQ/7ReTe+Js
-	vpC6Js8AvGmMa6AiE/C1wV/BQWchJwVxm0oxvvphDF5cVUO61NqLmO4nmNltu7MQ0WEoAP2ANxSvG
-	57GBwKOA==;
+	bh=KUKfIFqcekPBdjqhL8GJz6t56c2cLGnaAFlYfu7gY0w=; b=sC8snx2blrGL6lzS0TTOUvsKgt
+	/PFgYJyuGrdaqVQcBqL2LrcNUAub9zmabWKPGCYddTOXV+MosEtp1gQIvvS3H482M807e8kwc7DFJ
+	9UpfF4gy4JK7l6MIlzTzvCink8S4ZSdi+CcL9gktysj1vp4srwFrvHpCPB4HEF8igKKPXgt4y/fiJ
+	sNFikSI1fDyIRZm0OZPkQaTPWYBsyeq2Bvfu9ngSUQ8VNb8e/AMUHXDFnVKqH4qHnMGButaoF36wm
+	I5O7gP345TBuYho5u+1AYBhcFpO/xvKc2/CL4ge3ge4WRpOGWE3yeRcrKZ4s/nAONQXI5vZN5FeDT
+	Cwa97WWw==;
 Received: from [182.253.89.89] (port=19977 helo=Rusydis-MacBook-Air.local)
 	by vittoria.id.domainesia.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.99)
 	(envelope-from <rusydi.makarim@kriptograf.id>)
-	id 1vV3PF-0000000FQZW-2GcM;
-	Mon, 15 Dec 2025 14:54:08 +0700
+	id 1vV3PF-0000000FQZW-3Tjg;
+	Mon, 15 Dec 2025 14:54:09 +0700
 From: "Rusydi H. Makarim" <rusydi.makarim@kriptograf.id>
-Date: Mon, 15 Dec 2025 14:54:35 +0700
-Subject: [PATCH 2/3] lib/crypto: Initial implementation of Ascon-Hash256
+Date: Mon, 15 Dec 2025 14:54:36 +0700
+Subject: [PATCH 3/3] crypto: Crypto API implementation of Ascon-Hash256
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -101,7 +101,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251215-ascon_hash256-v1-2-24ae735e571e@kriptograf.id>
+Message-Id: <20251215-ascon_hash256-v1-3-24ae735e571e@kriptograf.id>
 References: <20251215-ascon_hash256-v1-0-24ae735e571e@kriptograf.id>
 In-Reply-To: <20251215-ascon_hash256-v1-0-24ae735e571e@kriptograf.id>
 To: Herbert Xu <herbert@gondor.apana.org.au>, 
@@ -112,244 +112,137 @@ Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
 X-Mailer: b4 0.14.3
 X-AuthUser: rusydi.makarim@kriptograf.id
 
-	    initial implementation of Ascon-Hash256
+	This commit implements Ascon-Hash256 for Crypto API
 
 Signed-off-by: Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
 ---
- include/crypto/ascon_hash.h |   2 +-
- lib/crypto/Kconfig          |   8 +++
- lib/crypto/Makefile         |   5 ++
- lib/crypto/ascon_hash.c     | 154 ++++++++++++++++++++++++++++++++++++++++++++
- lib/crypto/hash_info.c      |   2 +
- 5 files changed, 170 insertions(+), 1 deletion(-)
+ crypto/Kconfig      |  7 +++++
+ crypto/Makefile     |  1 +
+ crypto/ascon_hash.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 94 insertions(+)
 
-diff --git a/include/crypto/ascon_hash.h b/include/crypto/ascon_hash.h
-index bb3561a745a9..c03a1414eec9 100644
---- a/include/crypto/ascon_hash.h
-+++ b/include/crypto/ascon_hash.h
-@@ -18,7 +18,7 @@
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 2e5b195b1b06..e671b5575535 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1000,6 +1000,13 @@ config CRYPTO_SHA3
+ 	help
+ 	  SHA-3 secure hash algorithms (FIPS 202, ISO/IEC 10118-3)
  
- /*
-  * The standard of Ascon permutation in NIST SP 800-232 specifies 16 round
-- * constants to accomodate potential functionality extensions in the future
-+ * constants to accommodate potential functionality extensions in the future
-  * (see page 2).
-  */
- static const u64 ascon_p_rndc[] = {
-diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
-index 6871a41e5069..5f39ed6746de 100644
---- a/lib/crypto/Kconfig
-+++ b/lib/crypto/Kconfig
-@@ -223,6 +223,14 @@ config CRYPTO_LIB_SHA3_ARCH
- 	default y if ARM64 && KERNEL_MODE_NEON
- 	default y if S390
- 
-+config CRYPTO_LIB_ASCON_HASH
-+	tristate
-+	select CRYPTO_LIB_UTILS
++config CRYPTO_ASCON_HASH
++	tristate "Ascon-Hash"
++	select CRYPTO_HASH
++	select CRYPTO_LIB_ASCON_HASH
 +	help
-+	  The Ascon-Hash library functions. Select this if your module uses any of
-+	  the functions from <crypto/ascon_hash.h>
++	  Ascon-Hash secure hash algorithms (NIST SP 800-232)
 +
-+
- config CRYPTO_LIB_SM3
- 	tristate
- 
-diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
-index 330ab65b29c4..6657ea3d8771 100644
---- a/lib/crypto/Makefile
-+++ b/lib/crypto/Makefile
-@@ -297,6 +297,11 @@ endif # CONFIG_CRYPTO_LIB_SHA3_ARCH
- 
- ################################################################################
- 
-+obj-$(CONFIG_CRYPTO_LIB_ASCON_HASH) += libascon_hash.o
-+libascon_hash-y := ascon_hash.o
-+
-+################################################################################
-+
- obj-$(CONFIG_MPILIB) += mpi/
- 
- obj-$(CONFIG_CRYPTO_SELFTESTS_FULL)		+= simd.o
-diff --git a/lib/crypto/ascon_hash.c b/lib/crypto/ascon_hash.c
+ config CRYPTO_SM3_GENERIC
+ 	tristate "SM3 (ShangMi 3)"
+ 	select CRYPTO_HASH
+diff --git a/crypto/Makefile b/crypto/Makefile
+index 16a35649dd91..a697a92d2092 100644
+--- a/crypto/Makefile
++++ b/crypto/Makefile
+@@ -82,6 +82,7 @@ obj-$(CONFIG_CRYPTO_SHA3) += sha3.o
+ obj-$(CONFIG_CRYPTO_SM3_GENERIC) += sm3_generic.o
+ obj-$(CONFIG_CRYPTO_STREEBOG) += streebog_generic.o
+ obj-$(CONFIG_CRYPTO_WP512) += wp512.o
++obj-$(CONFIG_CRYPTO_ASCON_HASH) += ascon_hash.o
+ CFLAGS_wp512.o := $(call cc-option,-fno-schedule-insns)  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=79149
+ obj-$(CONFIG_CRYPTO_BLAKE2B) += blake2b.o
+ obj-$(CONFIG_CRYPTO_ECB) += ecb.o
+diff --git a/crypto/ascon_hash.c b/crypto/ascon_hash.c
 new file mode 100644
-index 000000000000..e435a0e72195
+index 000000000000..2fa5e762fbc1
 --- /dev/null
-+++ b/lib/crypto/ascon_hash.c
-@@ -0,0 +1,154 @@
++++ b/crypto/ascon_hash.c
+@@ -0,0 +1,86 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Ascon-Hash library functions
++ * Crypto API support for Ascon-Hash256
++ * (https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-232.pdf)
 + *
-+ * Copyright (c) 2025 Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
++ * Copyright (C) Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
 + */
 +
-+#include <linux/module.h>
++#include <crypto/internal/hash.h>
 +#include <crypto/ascon_hash.h>
-+#include <crypto/utils.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
 +
++#define ASCON_HASH256_CTX(desc) ((struct ascon_hash256_ctx *)shash_desc_ctx(desc))
 +
-+static inline void ascon_round(u64 s[ASCON_STATE_WORDS], u64 C)
++static int crypto_ascon_hash256_init(struct shash_desc *desc)
 +{
-+	u64 t[ASCON_STATE_WORDS];
-+
-+	// pC
-+	s[2] ^= C;
-+
-+	// pS
-+	s[0] ^= s[4];
-+	s[4] ^= s[3];
-+	s[2] ^= s[1];
-+	t[0] = s[0] ^ (~s[1] & s[2]);
-+	t[1] = s[1] ^ (~s[2] & s[3]);
-+	t[2] = s[2] ^ (~s[3] & s[4]);
-+	t[3] = s[3] ^ (~s[4] & s[0]);
-+	t[4] = s[4] ^ (~s[0] & s[1]);
-+	t[1] ^= t[0];
-+	t[0] ^= t[4];
-+	t[3] ^= t[2];
-+	t[2] = ~t[2];
-+
-+	// pL
-+	s[0] = t[0] ^ ror64(t[0], 19) ^ ror64(t[0], 28);
-+	s[1] = t[1] ^ ror64(t[1], 61) ^ ror64(t[1], 39);
-+	s[2] = t[2] ^ ror64(t[2],  1) ^ ror64(t[2], 6);
-+	s[3] = t[3] ^ ror64(t[3], 10) ^ ror64(t[3], 17);
-+	s[4] = t[4] ^ ror64(t[4],  7) ^ ror64(t[4], 41);
++	ascon_hash256_init(ASCON_HASH256_CTX(desc));
++	return 0;
 +}
 +
-+static inline void ascon_p12_generic(struct ascon_state *state)
++static int crypto_ascon_hash256_update(struct shash_desc *desc, const u8 *data,
++				       unsigned int len)
 +{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(state->words); ++i)
-+		state->native_words[i] = le64_to_cpu(state->words[i]);
-+
-+	for (i = 0; i < 12; ++i)
-+		ascon_round(state->native_words, ascon_p_rndc[16 - 12 + i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(state->words); ++i)
-+		state->words[i] = cpu_to_le64(state->native_words[i]);
++	ascon_hash256_update(ASCON_HASH256_CTX(desc), data, len);
++	return 0;
 +}
 +
-+static void __maybe_unused ascon_hash256_absorb_blocks_generic(
-+	struct ascon_state *state, const u8 *in, size_t nblocks)
++static int crypto_ascon_hash256_final(struct shash_desc *desc, u8 *out)
 +{
-+	do {
-+		for (size_t i = 0; i < ASCON_HASH256_BLOCK_SIZE; i += 8)
-+			state->words[i / 8] ^= get_unaligned((__le64 *)&in[i]);
-+		ascon_p12_generic(state);
-+		in += ASCON_HASH256_BLOCK_SIZE;
-+	} while (--nblocks);
++	ascon_hash256_final(ASCON_HASH256_CTX(desc), out);
++	return 0;
 +}
 +
-+#define ascon_p12 ascon_p12_generic
-+#define ascon_hash256_absorb_blocks ascon_hash256_absorb_blocks_generic
-+
-+void ascon_hash256_init(struct ascon_hash256_ctx *asc_hash256_ctx)
++static int crypto_ascon_hash256_digest(struct shash_desc *desc, const u8 *data,
++				       unsigned int len, u8 *out)
 +{
-+	struct __ascon_hash_ctx *ctx = &asc_hash256_ctx->ctx;
-+
-+	ctx->state.words[0] = ASCON_HASH256_IV;
-+	ctx->state.words[1] = 0;
-+	ctx->state.words[2] = 0;
-+	ctx->state.words[3] = 0;
-+	ctx->state.words[4] = 0;
-+	ctx->absorb_offset = 0;
-+	ascon_p12(&ctx->state);
++	ascon_hash256(data, len, out);
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(ascon_hash256_init);
 +
-+void ascon_hash256_update(struct ascon_hash256_ctx *asc_hash256_ctx, const u8 *in,
-+			    size_t in_len)
++static int crypto_ascon_hash256_export_core(struct shash_desc *desc, void *out)
 +{
-+	struct __ascon_hash_ctx *ctx = &asc_hash256_ctx->ctx;
-+	u8 absorb_offset = ctx->absorb_offset;
-+
-+	WARN_ON_ONCE(absorb_offset >= ASCON_HASH256_BLOCK_SIZE);
-+
-+	if (absorb_offset && absorb_offset + in_len >= ASCON_HASH256_BLOCK_SIZE) {
-+		crypto_xor(&ctx->state.bytes[absorb_offset], in,
-+			   ASCON_HASH256_BLOCK_SIZE - absorb_offset);
-+		in += ASCON_HASH256_BLOCK_SIZE - absorb_offset;
-+		in_len -= ASCON_HASH256_BLOCK_SIZE - absorb_offset;
-+		ascon_p12(&ctx->state);
-+		absorb_offset = 0;
-+	}
-+
-+	if (in_len >= ASCON_HASH256_BLOCK_SIZE) {
-+		size_t nblocks = in_len / ASCON_HASH256_BLOCK_SIZE;
-+
-+		ascon_hash256_absorb_blocks(&ctx->state, in, nblocks);
-+		in += nblocks * ASCON_HASH256_BLOCK_SIZE;
-+		in_len -= nblocks * ASCON_HASH256_BLOCK_SIZE;
-+	}
-+
-+	if (in_len) {
-+		crypto_xor(&ctx->state.bytes[absorb_offset], in, in_len);
-+		absorb_offset += in_len;
-+
-+	}
-+	ctx->absorb_offset = absorb_offset;
++	memcpy(out, ASCON_HASH256_CTX(desc), sizeof(struct ascon_hash256_ctx));
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(ascon_hash256_update);
 +
-+void ascon_hash256_final(struct ascon_hash256_ctx *asc_hash256_ctx,
-+			   u8 out[ASCON_HASH256_DIGEST_SIZE])
++static int crypto_ascon_hash256_import_core(struct shash_desc *desc,
++					    const void *in)
 +{
-+	struct __ascon_hash_ctx *ctx = &asc_hash256_ctx->ctx;
-+
-+	// padding
-+	ctx->state.bytes[ctx->absorb_offset] ^= 0x01;
-+	ascon_p12(&ctx->state);
-+
-+	// squeezing
-+	size_t len = ASCON_HASH256_DIGEST_SIZE;
-+
-+	while (len > ASCON_HASH256_RATE) {
-+		memcpy(out, ctx->state.bytes, ASCON_HASH256_RATE);
-+		ascon_p12(&ctx->state);
-+		out += ASCON_HASH256_RATE;
-+		len -= ASCON_HASH256_RATE;
-+	}
-+	memcpy(out, ctx->state.bytes, ASCON_HASH256_RATE);
-+	memzero_explicit(asc_hash256_ctx, sizeof(*asc_hash256_ctx));
++	memcpy(ASCON_HASH256_CTX(desc), in, sizeof(struct ascon_hash256_ctx));
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(ascon_hash256_final);
 +
++static struct shash_alg algs[] = { {
++	.digestsize = ASCON_HASH256_DIGEST_SIZE,
++	.init = crypto_ascon_hash256_init,
++	.update = crypto_ascon_hash256_update,
++	.final = crypto_ascon_hash256_final,
++	.digest = crypto_ascon_hash256_digest,
++	.export_core = crypto_ascon_hash256_export_core,
++	.import_core = crypto_ascon_hash256_import_core,
++	.descsize = sizeof(struct ascon_hash256_ctx),
++	.base.cra_name = "ascon-hash256",
++	.base.cra_driver_name = "ascon-hash256-lib",
++	.base.cra_blocksize = ASCON_HASH256_BLOCK_SIZE,
++	.base.cra_module = THIS_MODULE,
++} };
 +
-+void ascon_hash256(const u8 *in, size_t in_len,
-+		   u8 out[ASCON_HASH256_DIGEST_SIZE])
++static int __init crypto_ascon_hash256_mod_init(void)
 +{
-+	struct ascon_hash256_ctx ctx;
-+
-+	ascon_hash256_init(&ctx);
-+	ascon_hash256_update(&ctx, in, in_len);
-+	ascon_hash256_final(&ctx, out);
++	return crypto_register_shashes(algs, ARRAY_SIZE(algs));
 +}
-+EXPORT_SYMBOL_GPL(ascon_hash256);
++module_init(crypto_ascon_hash256_mod_init);
 +
-+MODULE_DESCRIPTION("Ascon-Hash256 library functions");
++static void __exit crypto_ascon_hash256_mod_exit(void)
++{
++	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
++}
++module_exit(crypto_ascon_hash256_mod_exit);
++
 +MODULE_LICENSE("GPL");
-diff --git a/lib/crypto/hash_info.c b/lib/crypto/hash_info.c
-index 9a467638c971..49ce182c6d08 100644
---- a/lib/crypto/hash_info.c
-+++ b/lib/crypto/hash_info.c
-@@ -32,6 +32,7 @@ const char *const hash_algo_name[HASH_ALGO__LAST] = {
- 	[HASH_ALGO_SHA3_256]    = "sha3-256",
- 	[HASH_ALGO_SHA3_384]    = "sha3-384",
- 	[HASH_ALGO_SHA3_512]    = "sha3-512",
-+	[HASH_ALGO_ASCON_HASH256] = "ascon-hash256",
- };
- EXPORT_SYMBOL_GPL(hash_algo_name);
- 
-@@ -59,5 +60,6 @@ const int hash_digest_size[HASH_ALGO__LAST] = {
- 	[HASH_ALGO_SHA3_256]    = SHA3_256_DIGEST_SIZE,
- 	[HASH_ALGO_SHA3_384]    = SHA3_384_DIGEST_SIZE,
- 	[HASH_ALGO_SHA3_512]    = SHA3_512_DIGEST_SIZE,
-+	[HASH_ALGO_ASCON_HASH256] = ASCON_HASH256_DIGEST_SIZE,
- };
- EXPORT_SYMBOL_GPL(hash_digest_size);
++MODULE_DESCRIPTION("Crypto API support for Ascon-Hash256");
++
++MODULE_ALIAS_CRYPTO("ascon-hash256");
++MODULE_ALIAS_CRYPTO("ascon-hash256-lib");
 
 -- 
 2.52.0
