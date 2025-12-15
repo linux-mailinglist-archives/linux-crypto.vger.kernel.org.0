@@ -1,147 +1,140 @@
-Return-Path: <linux-crypto+bounces-19015-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19010-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9831CBD45D
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 10:51:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 753A6CBCDDF
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 08:55:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 605553017F32
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 09:48:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3EDA3300DCBC
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 07:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFA8291C3F;
-	Mon, 15 Dec 2025 09:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3A432C93F;
+	Mon, 15 Dec 2025 07:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b="OOkIzjkp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jPnTKiDp"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from bumble.maple.relay.mailchannels.net (bumble.maple.relay.mailchannels.net [23.83.214.25])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDBD6242D70;
-	Mon, 15 Dec 2025 09:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.214.25
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765792123; cv=pass; b=bvdzh1yFoXmxxeoG7YCYwh29yV37fzDEZzvA8bo7EqKL2ngn5Yg9cnQcLUlj4gScGBzCK4Zh7cT/jTk04+BAE4fLbhGsZ96DYuBA4bEXfQpQwTIxiaTMRLfH5LlqzgnsRCAQ3sRNBArayMb/yEkJjJDy6RbIqtyfI6k7ebzg4p8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765792123; c=relaxed/simple;
-	bh=pL37RT0Nu/UP12N4iTxb1vMQJ6iZJ0QyBBXPUUM6x3U=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=VO1u60h9n2S0ERpB8JwToHWxBQNY9kVFrHsBsht2Y3jbsEkbRHmzYkeGd64EJ/E6XxBEl3DRxSAk64QXBNdkT5qaowfHRSUTgKPKrDLPZbVHdwFyOCpql4R2cwlt5hfHn2qrzBWJO8dJiqm3GPWZBaz8L4mg5GG/0WTHcQ/qn+8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id; spf=pass smtp.mailfrom=kriptograf.id; dkim=pass (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b=OOkIzjkp; arc=pass smtp.client-ip=23.83.214.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kriptograf.id
-X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 1366B560E6E;
-	Mon, 15 Dec 2025 07:54:13 +0000 (UTC)
-Received: from vittoria.id.domainesia.com (trex-green-3.trex.outbound.svc.cluster.local [100.103.169.235])
-	(Authenticated sender: nlkw2k8yjw)
-	by relay.mailchannels.net (Postfix) with ESMTPA id D73D2560E4E;
-	Mon, 15 Dec 2025 07:54:10 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1765785252;
-	b=vZk+mlnjh1n/V0+O5UL99GHMsum0V8BOLjFQh50LzVcrgwSP+NaVc5yvQf2ofgYt5TFyid
-	dKtT8G2ElPdUNrhrUlOmALccCTufWRlZyj71jp2p1gaulscv2ZxNG9wnQcGXMg/Kx0zVZ5
-	zgNhNZyEsWQmDSLWDuPFAh9p+yrDfcWC2LK2FpwdKo6w9Wt2TyBC4Q/e/d3OLl0WFTBs2p
-	oymT6TkbwWHdD9QByszcjpOEIQW1IC5elWCRZLGvTrMixpXPDP7OWPNOj/9mhQxkYAdptQ
-	eFq+2nAoWpsJ6rq76UhD/HOlgD2X/eTNpytEDSisExLJPsI5l1EAPnkDzdsjXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1765785252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:dkim-signature;
-	bh=GRheD0q0c/ab+q0p0muzeRufKeVVdaml7eu6FnXPid0=;
-	b=WZkSUmqefrqyml3Ev7JRF05NB4p31RcoZmy74AmBlmxMjDMWfYq13AavYc2kM4YF4WCY8V
-	Q5NVVtktkzCKX1Bz5NTIgwSobWNi/4SkLqHT1QYlzIgW1arEm1Qj/pakNaQkDLZ0dNKWBq
-	j3pzFi08jCkVR3e3a8SlZ81TEiNhK+wbsHS8GxoGKZ9pX4QNRsUwzGeLjf7wuoiu8SJ6DP
-	yWqsqiiurfH5RNnV6rC4d4Nn44KFgOFWfYtGJR1htiIAPlYE6gd6fUNRSDhW5K7xTy4O6P
-	V5fpv/3F0faGVWl9ByDUTLzBmMboRQ86xoH0pil+5qFaWyHn5J6Qizr4qWvpmg==
-ARC-Authentication-Results: i=1;
-	rspamd-659888d77d-j78qb;
-	auth=pass smtp.auth=nlkw2k8yjw smtp.mailfrom=rusydi.makarim@kriptograf.id
-X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
-X-MailChannels-Auth-Id: nlkw2k8yjw
-X-Shade-Juvenile: 1d68f5b9634493ea_1765785252985_1273595822
-X-MC-Loop-Signature: 1765785252985:2314616666
-X-MC-Ingress-Time: 1765785252984
-Received: from vittoria.id.domainesia.com (vittoria.id.domainesia.com
- [36.50.77.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.103.169.235 (trex/7.1.3);
-	Mon, 15 Dec 2025 07:54:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kriptograf.id; s=default; h=Cc:To:Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-Id:Date:Subject:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GRheD0q0c/ab+q0p0muzeRufKeVVdaml7eu6FnXPid0=; b=OOkIzjkp0n62XncAS+ZkF7vpS3
-	GiHNkbCFamPriTafsz0AOtdbTQ5rcNkiE//kh8zClp8PMilxPR9Ijivym66avKews/+HNQNK3ZWDL
-	5gpCfVe4nKIuiQ/jeIgk5XZlI5+ieDNJ+RGSp/sHM8cbNbNJ/22S5LwkAEzOLLz0WF1hZEkqtHq7O
-	AdahkQY6G2D50dbYxqIhTULa2Na2pdHhAkuECYLASvnj51MdRaKF6efiMEykEYVbK7XNSbOjgrBAg
-	5TZq4C+XoGpgkR1MqnxHpRL48M87KdPN8PVjLTn3XbGxeFh2GIY2ZrE9Rv1MTuOT04rv/dMsxJP2Z
-	XDkf5DhA==;
-Received: from [182.253.89.89] (port=19977 helo=Rusydis-MacBook-Air.local)
-	by vittoria.id.domainesia.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.99)
-	(envelope-from <rusydi.makarim@kriptograf.id>)
-	id 1vV3PE-0000000FQZW-3UFs;
-	Mon, 15 Dec 2025 14:54:08 +0700
-From: "Rusydi H. Makarim" <rusydi.makarim@kriptograf.id>
-Subject: [PATCH 0/3] Implementation of Ascon-Hash256
-Date: Mon, 15 Dec 2025 14:54:33 +0700
-Message-Id: <20251215-ascon_hash256-v1-0-24ae735e571e@kriptograf.id>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6392328B73
+	for <linux-crypto@vger.kernel.org>; Mon, 15 Dec 2025 07:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765785286; cv=none; b=rffQHfWZUsLxe0VnkmLLe5nJRYSPz0yZR/lCgmAcP9fZ/NpXcy98QKMPdBjY6zBIv58GOaBKjriv28hAzuZmqWlQnu5sr1ljQsZqPpJFWx5ipAwWUXlvT1Z9CvWI1cQKbcOByoE7qljfoK4ZHtJuN8AiIn1ub35Vwo56EgvGSe8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765785286; c=relaxed/simple;
+	bh=E30zbqw/DatD5imenKddlu5X4ygrCVqqajHRtSIb61g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YIiU7vh4e8wh1wqELvbhlCH7fWd6EYvMn/XCm4hzhWJHLv4nK1QLEMBfCihdqllx12vfK3WcMo5iuV8dTXoM83lHZm9AA1OTTpPDv4M13OYKCqvFfJv1PwctzGXPvrTYHtv5CKXa540VToXBRK2fk225L3rO5f/NT/g+yd896QA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jPnTKiDp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62AB4C19424
+	for <linux-crypto@vger.kernel.org>; Mon, 15 Dec 2025 07:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765785286;
+	bh=E30zbqw/DatD5imenKddlu5X4ygrCVqqajHRtSIb61g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=jPnTKiDpmMT04qwUki9f7ZwNkdxdveiIWl934aXXv9v2kt+ZTjb8KkNUvtF26rIMh
+	 dTjIXUa4ZgEKjQTIlx3XxuGGvznUxXgL6GaOXuVykxljrSbf4NW8kjD1jagfdAmwpD
+	 o6ooACN3+vhKzSFisW8rQaLryZUP04DAqrHeEH0/77MYMwnwFHwA2iMV6PlAGlgm8H
+	 CU5sw6TVdqQZdGZRcMrJvPvL/nvwM1U3d5eGXwBKkgKOH8doTnDzSrF8TiIYB4nLVq
+	 c+/Dqf8Wk23AU739OvY988mzDDL5T1r/SzUI8QaBJ62wIjsuIFpRp6vZlDdh2Xm+AK
+	 nqGqYMLLaEzjg==
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-34c708702dfso904558a91.1
+        for <linux-crypto@vger.kernel.org>; Sun, 14 Dec 2025 23:54:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUw3FalH0YnGAaye5FN6YsTSMZwgLqaZAeXZ5PbhbGuFTDYGv/ZzF63oe/NyIWPKAAA0vRjsULEUXeWQ3Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQPGJksCV2/CMP2GSADh8LLpsBtuffn55ymvNQ8twyHhxk99Yp
+	iYDyHR4TunyozjMmlr5rvGiACc0vQVeZbBy4o25gjoq1/Nd4mTZSoRJMum5mVMPAHjeTp42PKFp
+	OLCxvBv+QyEoZ4yx88ZeODsb/qA1vBuc=
+X-Google-Smtp-Source: AGHT+IEY9Qcz49LYyQqEAUelrBl+X2gueHl8vQNtIR2vIYjPwsPH+B/0MrnYAD+Kyxfw2b75WsN5vjtnPWGg87QeZBc=
+X-Received: by 2002:a17:90b:3c4f:b0:340:c179:3666 with SMTP id
+ 98e67ed59e1d1-34abd6c02cfmr7983221a91.8.1765785285912; Sun, 14 Dec 2025
+ 23:54:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MMQqAMAxA0atIZgtNrIpeRUSqRpulSgMiiHe3O
- L7h/weUk7BCXzyQ+BKVI2ZgWcASfNzZyJoNZKlGQme8LkecgtdAdWNa67Cym8OZOsjNmXiT+/8
- N4/t+gjhYkF8AAAA=
-X-Change-ID: 20251214-ascon_hash256-704130f41b29
-To: Herbert Xu <herbert@gondor.apana.org.au>, 
- "David S. Miller" <davem@davemloft.net>, Eric Biggers <ebiggers@kernel.org>, 
- "Jason A. Donenfeld" <Jason@zx2c4.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
- "Rusydi H. Makarim" <rusydi.makarim@kriptograf.id>
-X-Mailer: b4 0.14.3
-X-AuthUser: rusydi.makarim@kriptograf.id
+References: <DETXT7QI62KE.F3CGH2VWX1SC@cknow-tech.com> <20251209223417.112294-1-ebiggers@kernel.org>
+ <DEUFDH7FJURL.3J0FN5I19VV8F@cknow-tech.com> <CAMj1kXEQkB9MWB+PAi4XE_MuBt0ScitxTsKMDo1-7Cp-=xXOpw@mail.gmail.com>
+ <20251212054020.GB4838@sol>
+In-Reply-To: <20251212054020.GB4838@sol>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 15 Dec 2025 16:54:34 +0900
+X-Gmail-Original-Message-ID: <CAMj1kXHVq1NWA28jKxBrHHi1JOPoGXEamC7uMgTOmFwzmcYxRA@mail.gmail.com>
+X-Gm-Features: AQt7F2qXhVr5OpktRHt7yVwu384BIXMp0tpqIhhUDEHp0V7UDx3ZjeXmSEiyyJU
+Message-ID: <CAMj1kXHVq1NWA28jKxBrHHi1JOPoGXEamC7uMgTOmFwzmcYxRA@mail.gmail.com>
+Subject: Re: [PATCH] crypto: arm64/ghash - Fix incorrect output from ghash-neon
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Diederik de Haas <diederik@cknow-tech.com>, linux-crypto@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, "Jason A . Donenfeld" <Jason@zx2c4.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, linux-arm-kernel@lists.infradead.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-This patch implements Ascon-Hash256. Ascon-Hash256 is a hash function as a part
-	of the Ascon-Based Lightweight Cryptography Standards for Constrained Devices,
-	published as NIST SP 800-232 (https://csrc.nist.gov/pubs/sp/800/232/final).
+On Fri, 12 Dec 2025 at 06:40, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, Dec 10, 2025 at 06:31:44PM +0900, Ard Biesheuvel wrote:
+> > On Wed, 10 Dec 2025 at 18:22, Diederik de Haas <diederik@cknow-tech.com> wrote:
+> > >
+> > > On Tue Dec 9, 2025 at 11:34 PM CET, Eric Biggers wrote:
+> > > > Commit 9a7c987fb92b ("crypto: arm64/ghash - Use API partial block
+> > > > handling") made ghash_finup() pass the wrong buffer to
+> > > > ghash_do_simd_update().  As a result, ghash-neon now produces incorrect
+> > > > outputs when the message length isn't divisible by 16 bytes.  Fix this.
+> > >
+> > > I was hoping to not have to do a 'git bisect', but this is much better
+> > > :-D I can confirm that this patch fixes the error I was seeing, so
+> > >
+> > > Tested-by: Diederik de Haas <diederik@cknow-tech.com>
+> > >
+> > > > (I didn't notice this earlier because this code is reached only on CPUs
+> > > > that support NEON but not PMULL.  I haven't yet found a way to get
+> > > > qemu-system-aarch64 to emulate that configuration.)
+> > >
+> > > https://www.qemu.org/docs/master/system/arm/raspi.html indicates it can
+> > > emulate various Raspberry Pi models. I've only tested it with RPi 3B+
+> > > (bc of its wifi+bt chip), but I wouldn't be surprised if all RPi models
+> > > would have this problem? Dunno if QEMU emulates that though.
+> > >
+> >
+> > All 64-bit RPi models except the RPi5 are affected by this, as those
+> > do not implement the crypto extensions. So I would expect QEMU to do
+> > the same.
+> >
+> > It would be nice, though, if we could emulate this on the mach-virt
+> > machine model too. It should be fairly trivial to do, so if there is
+> > demand for this I can look into it.
+>
+> I'm definitely interested in it.  I'm already testing multiple "-cpu"
+> options, and it's easy to add more.
+>
+> With qemu-system-aarch64 I'm currently only using "-M virt", since the
+> other machine models I've tried don't boot with arm64 defconfig,
+> including "-M raspi3b" and "-M raspi4b".
+>
+> There may be some tricks I'm missing.  Regardless, expanding the
+> selection of available CPUs for "-M virt" would be helpful.  Either by
+> adding "real" CPUs that have "interesting" combinations of features, or
+> by just allowing turning features off like
+> "-cpu max,aes=off,pmull=off,sha256=off".  (Certain features like sve can
+> already be turned off in that way, but not the ones relevant to us.)
+>
 
-Signed-off-by: Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
----
-Rusydi H. Makarim (3):
-      lib/crypto: Add KUnit test vectors for Ascon-Hash256
-      lib/crypto: Initial implementation of Ascon-Hash256
-      crypto: Crypto API implementation of Ascon-Hash256
+There are some architectural rules around which combinations of crypto
+extensions are permitted:
+- PMULL implies AES, and there is no way for the ID registers to
+describe a CPU that has PMULL but not AES
+- SHA256 implies SHA1 (but the ID register fields are independent)
+- SHA3 and SHA512 both imply SHA256+SHA1
+- SVE versions are not allowed to be implemented unless the plain NEON
+version is implemented as well
+-  FEAT_Crypto has different meanings for v8.0, v8.2 and v9.x
 
- crypto/Kconfig                         |   7 +
- crypto/Makefile                        |   1 +
- crypto/ascon_hash.c                    |  86 ++++++++++++
- include/crypto/ascon_hash.h            |  97 ++++++++++++++
- lib/crypto/Kconfig                     |   8 ++
- lib/crypto/Makefile                    |   5 +
- lib/crypto/ascon_hash.c                | 154 +++++++++++++++++++++
- lib/crypto/hash_info.c                 |   2 +
- lib/crypto/tests/Kconfig               |   9 ++
- lib/crypto/tests/Makefile              |   1 +
- lib/crypto/tests/ascon_hash-testvecs.h | 235 +++++++++++++++++++++++++++++++++
- lib/crypto/tests/ascon_hash_kunit.c    |  33 +++++
- 12 files changed, 638 insertions(+)
----
-base-commit: 92de2d349e02c2dd96d8d1b7016cc78cf80fc085
-change-id: 20251214-ascon_hash256-704130f41b29
+So it would be much easier, also in terms of future maintenance, to
+have a simple 'crypto=off' setting that applies to all emulated CPU
+models, given that disabling all crypto on any given compliant CPU
+will never result in something that the architecture does not permit.
 
-Best regards,
--- 
-Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
-
+Would that work for you?
 
