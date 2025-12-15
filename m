@@ -1,176 +1,147 @@
-Return-Path: <linux-crypto+bounces-19009-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19015-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6211BCBCDD3
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 08:54:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9831CBD45D
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 10:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8F172301918E
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 07:54:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 605553017F32
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 09:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D4732BF2F;
-	Mon, 15 Dec 2025 07:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFA8291C3F;
+	Mon, 15 Dec 2025 09:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UyjrkH6K"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b="OOkIzjkp"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bumble.maple.relay.mailchannels.net (bumble.maple.relay.mailchannels.net [23.83.214.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240C430E82B;
-	Mon, 15 Dec 2025 07:54:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765785267; cv=none; b=FGamO8XXnM/QVtcLsaxVS/YkcrtN941U32wyMRnriYLYGr9fynRmXl8SHXqZ/t0Vb6bFeA8f0gEhKXBjbQyN2SmfUsYmFt5TMHkXtf6DbZHTprnyaDXVuwG+N1K2CFaSEEh62NAMbaYmCYAIKl6S2XjXrKPWynBXRXUCzFW1Rws=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765785267; c=relaxed/simple;
-	bh=v/92elu0+HvI8sObJNUPXdOl7LjF+U9jY1BY0X5X81M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHFcx4Sv+o64YYpvTXIoPB1wqMm7zI9VX8Jlrq/7TRxJ8hxIyV6GQkm5871DWen/IbVvQtXohl3a8nTSh6FapNMSh+WzrqzKDg3Xwjhf42/0NCiGa5J+VWuRVE3nGx0ki2/aSfrCP3PwxJQBgDS2Y3YqGogFDSclbjDa8rRjETc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UyjrkH6K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22802C19421;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDBD6242D70;
+	Mon, 15 Dec 2025 09:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.214.25
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765792123; cv=pass; b=bvdzh1yFoXmxxeoG7YCYwh29yV37fzDEZzvA8bo7EqKL2ngn5Yg9cnQcLUlj4gScGBzCK4Zh7cT/jTk04+BAE4fLbhGsZ96DYuBA4bEXfQpQwTIxiaTMRLfH5LlqzgnsRCAQ3sRNBArayMb/yEkJjJDy6RbIqtyfI6k7ebzg4p8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765792123; c=relaxed/simple;
+	bh=pL37RT0Nu/UP12N4iTxb1vMQJ6iZJ0QyBBXPUUM6x3U=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=VO1u60h9n2S0ERpB8JwToHWxBQNY9kVFrHsBsht2Y3jbsEkbRHmzYkeGd64EJ/E6XxBEl3DRxSAk64QXBNdkT5qaowfHRSUTgKPKrDLPZbVHdwFyOCpql4R2cwlt5hfHn2qrzBWJO8dJiqm3GPWZBaz8L4mg5GG/0WTHcQ/qn+8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id; spf=pass smtp.mailfrom=kriptograf.id; dkim=pass (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b=OOkIzjkp; arc=pass smtp.client-ip=23.83.214.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kriptograf.id
+X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 1366B560E6E;
 	Mon, 15 Dec 2025 07:54:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765785266;
-	bh=v/92elu0+HvI8sObJNUPXdOl7LjF+U9jY1BY0X5X81M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UyjrkH6KtnThxV3unDn7bby/GiiSiQSPftVpABjisSWU2uFJUOSoLOiJ1XOF8YjOp
-	 I40Nc0tRoSWwyXZw3oFdsyqnAaagma7510sWIAUaNrX4+PjLfSRLD+et/jmtmNvL+p
-	 fd4Yahc3vd/qAeYLCUCQr2QPTBPU15ibXG263IfBgtMJdpwq5a9dE2n/RsAVjJh07f
-	 tBknFVn5nsVHGveX55SVFDgvPqaXIiTsXroBhscCr8hxdkkc2/x2GJwzqKuPDYEuTo
-	 2nEzH829pMn8wb+YSsr4CldmREQ2VzSqT1cZK03HP02QTa8mhN+yfwFBVy6LBXOcO0
-	 DVK3rvhjXpeNg==
-Date: Mon, 15 Dec 2025 16:54:11 +0900
-From: Sumit Garg <sumit.garg@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>
-Cc: Jens Wiklander <jens.wiklander@linaro.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Sumit Garg <sumit.garg@oss.qualcomm.com>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Jan Kiszka <jan.kiszka@siemens.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	David Howells <dhowells@redhat.com>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Peter Huewe <peterhuewe@gmx.de>, op-tee@lists.trustedfirmware.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	arm-scmi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-integrity@vger.kernel.org,
-	keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-	Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH v1 00/17] tee: Use bus callbacks instead of driver
- callbacks
-Message-ID: <aT--ox375kg2Mzh-@sumit-X1>
-References: <cover.1765472125.git.u.kleine-koenig@baylibre.com>
+Received: from vittoria.id.domainesia.com (trex-green-3.trex.outbound.svc.cluster.local [100.103.169.235])
+	(Authenticated sender: nlkw2k8yjw)
+	by relay.mailchannels.net (Postfix) with ESMTPA id D73D2560E4E;
+	Mon, 15 Dec 2025 07:54:10 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
+	t=1765785252;
+	b=vZk+mlnjh1n/V0+O5UL99GHMsum0V8BOLjFQh50LzVcrgwSP+NaVc5yvQf2ofgYt5TFyid
+	dKtT8G2ElPdUNrhrUlOmALccCTufWRlZyj71jp2p1gaulscv2ZxNG9wnQcGXMg/Kx0zVZ5
+	zgNhNZyEsWQmDSLWDuPFAh9p+yrDfcWC2LK2FpwdKo6w9Wt2TyBC4Q/e/d3OLl0WFTBs2p
+	oymT6TkbwWHdD9QByszcjpOEIQW1IC5elWCRZLGvTrMixpXPDP7OWPNOj/9mhQxkYAdptQ
+	eFq+2nAoWpsJ6rq76UhD/HOlgD2X/eTNpytEDSisExLJPsI5l1EAPnkDzdsjXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1765785252;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:dkim-signature;
+	bh=GRheD0q0c/ab+q0p0muzeRufKeVVdaml7eu6FnXPid0=;
+	b=WZkSUmqefrqyml3Ev7JRF05NB4p31RcoZmy74AmBlmxMjDMWfYq13AavYc2kM4YF4WCY8V
+	Q5NVVtktkzCKX1Bz5NTIgwSobWNi/4SkLqHT1QYlzIgW1arEm1Qj/pakNaQkDLZ0dNKWBq
+	j3pzFi08jCkVR3e3a8SlZ81TEiNhK+wbsHS8GxoGKZ9pX4QNRsUwzGeLjf7wuoiu8SJ6DP
+	yWqsqiiurfH5RNnV6rC4d4Nn44KFgOFWfYtGJR1htiIAPlYE6gd6fUNRSDhW5K7xTy4O6P
+	V5fpv/3F0faGVWl9ByDUTLzBmMboRQ86xoH0pil+5qFaWyHn5J6Qizr4qWvpmg==
+ARC-Authentication-Results: i=1;
+	rspamd-659888d77d-j78qb;
+	auth=pass smtp.auth=nlkw2k8yjw smtp.mailfrom=rusydi.makarim@kriptograf.id
+X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
+X-MailChannels-Auth-Id: nlkw2k8yjw
+X-Shade-Juvenile: 1d68f5b9634493ea_1765785252985_1273595822
+X-MC-Loop-Signature: 1765785252985:2314616666
+X-MC-Ingress-Time: 1765785252984
+Received: from vittoria.id.domainesia.com (vittoria.id.domainesia.com
+ [36.50.77.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.103.169.235 (trex/7.1.3);
+	Mon, 15 Dec 2025 07:54:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kriptograf.id; s=default; h=Cc:To:Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GRheD0q0c/ab+q0p0muzeRufKeVVdaml7eu6FnXPid0=; b=OOkIzjkp0n62XncAS+ZkF7vpS3
+	GiHNkbCFamPriTafsz0AOtdbTQ5rcNkiE//kh8zClp8PMilxPR9Ijivym66avKews/+HNQNK3ZWDL
+	5gpCfVe4nKIuiQ/jeIgk5XZlI5+ieDNJ+RGSp/sHM8cbNbNJ/22S5LwkAEzOLLz0WF1hZEkqtHq7O
+	AdahkQY6G2D50dbYxqIhTULa2Na2pdHhAkuECYLASvnj51MdRaKF6efiMEykEYVbK7XNSbOjgrBAg
+	5TZq4C+XoGpgkR1MqnxHpRL48M87KdPN8PVjLTn3XbGxeFh2GIY2ZrE9Rv1MTuOT04rv/dMsxJP2Z
+	XDkf5DhA==;
+Received: from [182.253.89.89] (port=19977 helo=Rusydis-MacBook-Air.local)
+	by vittoria.id.domainesia.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.99)
+	(envelope-from <rusydi.makarim@kriptograf.id>)
+	id 1vV3PE-0000000FQZW-3UFs;
+	Mon, 15 Dec 2025 14:54:08 +0700
+From: "Rusydi H. Makarim" <rusydi.makarim@kriptograf.id>
+Subject: [PATCH 0/3] Implementation of Ascon-Hash256
+Date: Mon, 15 Dec 2025 14:54:33 +0700
+Message-Id: <20251215-ascon_hash256-v1-0-24ae735e571e@kriptograf.id>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1765472125.git.u.kleine-koenig@baylibre.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MMQqAMAxA0atIZgtNrIpeRUSqRpulSgMiiHe3O
+ L7h/weUk7BCXzyQ+BKVI2ZgWcASfNzZyJoNZKlGQme8LkecgtdAdWNa67Cym8OZOsjNmXiT+/8
+ N4/t+gjhYkF8AAAA=
+X-Change-ID: 20251214-ascon_hash256-704130f41b29
+To: Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Biggers <ebiggers@kernel.org>, 
+ "Jason A. Donenfeld" <Jason@zx2c4.com>, Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
+ "Rusydi H. Makarim" <rusydi.makarim@kriptograf.id>
+X-Mailer: b4 0.14.3
+X-AuthUser: rusydi.makarim@kriptograf.id
 
-On Thu, Dec 11, 2025 at 06:14:54PM +0100, Uwe Kleine-König wrote:
-> Hello,
-> 
-> the objective of this series is to make tee driver stop using callbacks
-> in struct device_driver. These were superseded by bus methods in 2006
-> (commit 594c8281f905 ("[PATCH] Add bus_type probe, remove, shutdown
-> methods.")) but nobody cared to convert all subsystems accordingly.
-> 
-> Here the tee drivers are converted. The first commit is somewhat
-> unrelated, but simplifies the conversion (and the drivers). It
-> introduces driver registration helpers that care about setting the bus
-> and owner. (The latter is missing in all drivers, so by using these
-> helpers the drivers become more correct.)
-> 
-> The patches #4 - #17 depend on the first two, so if they should be
-> applied to their respective subsystem trees these must contain the first
-> two patches first.
+This patch implements Ascon-Hash256. Ascon-Hash256 is a hash function as a part
+	of the Ascon-Based Lightweight Cryptography Standards for Constrained Devices,
+	published as NIST SP 800-232 (https://csrc.nist.gov/pubs/sp/800/232/final).
 
-Thanks Uwe for your efforts to clean up the boilerplate code for TEE bus
-drivers.
+Signed-off-by: Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
+---
+Rusydi H. Makarim (3):
+      lib/crypto: Add KUnit test vectors for Ascon-Hash256
+      lib/crypto: Initial implementation of Ascon-Hash256
+      crypto: Crypto API implementation of Ascon-Hash256
 
-> 
-> Note that after patch #2 is applied, unconverted drivers provoke a
-> warning in driver_register(), so it would be good for the user
-> experience if the whole series goes in during a single merge window.
+ crypto/Kconfig                         |   7 +
+ crypto/Makefile                        |   1 +
+ crypto/ascon_hash.c                    |  86 ++++++++++++
+ include/crypto/ascon_hash.h            |  97 ++++++++++++++
+ lib/crypto/Kconfig                     |   8 ++
+ lib/crypto/Makefile                    |   5 +
+ lib/crypto/ascon_hash.c                | 154 +++++++++++++++++++++
+ lib/crypto/hash_info.c                 |   2 +
+ lib/crypto/tests/Kconfig               |   9 ++
+ lib/crypto/tests/Makefile              |   1 +
+ lib/crypto/tests/ascon_hash-testvecs.h | 235 +++++++++++++++++++++++++++++++++
+ lib/crypto/tests/ascon_hash_kunit.c    |  33 +++++
+ 12 files changed, 638 insertions(+)
+---
+base-commit: 92de2d349e02c2dd96d8d1b7016cc78cf80fc085
+change-id: 20251214-ascon_hash256-704130f41b29
 
-+1
+Best regards,
+-- 
+Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
 
-I suggest the whole series goes via the Jens tree since there shouldn't
-be any chances for conflict here.
-
-> So
-> I guess an immutable branch containing the frist three patches that can
-> be merged into the other subsystem trees would be sensible.
-> 
-> After all patches are applied, tee_bus_type can be made private to
-> drivers/tee as it's not used in other places any more.
-> 
-
-Feel free to make the tee_bus_type private as the last patch in the series
-such that any followup driver follows this clean approach.
-
--Sumit
-
-> Best regards
-> Uwe
-> 
-> Uwe Kleine-König (17):
->   tee: Add some helpers to reduce boilerplate for tee client drivers
->   tee: Add probe, remove and shutdown bus callbacks to tee_client_driver
->   tee: Adapt documentation to cover recent additions
->   hwrng: optee - Make use of module_tee_client_driver()
->   hwrng: optee - Make use of tee bus methods
->   rtc: optee: Migrate to use tee specific driver registration function
->   rtc: optee: Make use of tee bus methods
->   efi: stmm: Make use of module_tee_client_driver()
->   efi: stmm: Make use of tee bus methods
->   firmware: arm_scmi: optee: Make use of module_tee_client_driver()
->   firmware: arm_scmi: Make use of tee bus methods
->   firmware: tee_bnxt: Make use of module_tee_client_driver()
->   firmware: tee_bnxt: Make use of tee bus methods
->   KEYS: trusted: Migrate to use tee specific driver registration
->     function
->   KEYS: trusted: Make use of tee bus methods
->   tpm/tpm_ftpm_tee: Make use of tee specific driver registration
->   tpm/tpm_ftpm_tee: Make use of tee bus methods
-> 
->  Documentation/driver-api/tee.rst             | 18 +----
->  drivers/char/hw_random/optee-rng.c           | 26 ++----
->  drivers/char/tpm/tpm_ftpm_tee.c              | 31 +++++---
->  drivers/firmware/arm_scmi/transports/optee.c | 32 +++-----
->  drivers/firmware/broadcom/tee_bnxt_fw.c      | 30 ++-----
->  drivers/firmware/efi/stmm/tee_stmm_efi.c     | 25 ++----
->  drivers/rtc/rtc-optee.c                      | 27 ++-----
->  drivers/tee/tee_core.c                       | 84 ++++++++++++++++++++
->  include/linux/tee_drv.h                      | 12 +++
->  security/keys/trusted-keys/trusted_tee.c     | 17 ++--
->  10 files changed, 164 insertions(+), 138 deletions(-)
-> 
-> 
-> base-commit: 7d0a66e4bb9081d75c82ec4957c50034cb0ea449
-> -- 
-> 2.47.3
-> 
 
