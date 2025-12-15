@@ -1,73 +1,73 @@
-Return-Path: <linux-crypto+bounces-19026-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19022-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09391CBE4F0
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 15:36:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A8BCBE424
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 15:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 35E0D3005038
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 14:36:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 50F7D3045A53
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Dec 2025 14:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0249310784;
-	Mon, 15 Dec 2025 14:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E3A833ADB3;
+	Mon, 15 Dec 2025 14:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mandrillapp.com header.i=@mandrillapp.com header.b="PryMCp9m";
-	dkim=pass (2048-bit key) header.d=vates.tech header.i=thomas.courrege@vates.tech header.b="dfhJb4mR"
+	dkim=pass (2048-bit key) header.d=mandrillapp.com header.i=@mandrillapp.com header.b="jGllSDAK";
+	dkim=pass (2048-bit key) header.d=vates.tech header.i=thomas.courrege@vates.tech header.b="Q/iO2aXO"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail186-20.suw21.mandrillapp.com (mail186-20.suw21.mandrillapp.com [198.2.186.20])
+Received: from mail187-17.suw11.mandrillapp.com (mail187-17.suw11.mandrillapp.com [198.2.187.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3414430BB88
-	for <linux-crypto@vger.kernel.org>; Mon, 15 Dec 2025 14:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.2.186.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0550733A6FB
+	for <linux-crypto@vger.kernel.org>; Mon, 15 Dec 2025 14:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.2.187.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765808835; cv=none; b=fSbUNIg8cYUYPzjNRk662yEOdJb5N8uTfXVXBV8S8FkKtStcLTOBzK+WW3prlSsT/2XoTqbWDsGxZK8mewZpdPLgK9nFu34udDZxPURGAwe2zBsXs62Uve+6/mYEXFZjUe5dsboBH4tpjWhoPwIlJ1sdbVeL2ZrEePzGbWCZvYc=
+	t=1765808071; cv=none; b=gU95SGtxcRYM+V68p1TW/IY5V70wdOd9sFs7XqUv7bQ05b6oCk/Xm9DWQW+qJSIbjU3JFsJbCgfPMvrdUYuRO7VW7Tk7v6dzo8GxTvOe5bR1cAjDmAjMBvSkcgkJ5UOZxhj85NkW7LFXtzAbSClWU5FqJEh6zyc5CnfKptF8Eko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765808835; c=relaxed/simple;
-	bh=Xsq5EDj6JfdjBo56zuK3UD6TH0S3xwNLkauF1xvaPg8=;
-	h=From:Subject:To:Cc:Message-Id:Date:MIME-Version:Content-Type; b=V4Svtst84pW/9SCZrRvcJCqMD3NTaU8NuAMwu6WIPTmFDGdb8Eqh7qA8dYUSz08xc0E0uhzms9J5f0FS9srf0W2xqO3pp8WmGaSR44g32UJaMAe55JoAJi/JgkiZTjZWwy/wYqPZ13UyqDo770/LNo1aOO101afSEIhP2vMe5Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vates.tech; spf=pass smtp.mailfrom=bounce.vates.tech; dkim=pass (2048-bit key) header.d=mandrillapp.com header.i=@mandrillapp.com header.b=PryMCp9m; dkim=pass (2048-bit key) header.d=vates.tech header.i=thomas.courrege@vates.tech header.b=dfhJb4mR; arc=none smtp.client-ip=198.2.186.20
+	s=arc-20240116; t=1765808071; c=relaxed/simple;
+	bh=r4pR/WZWgxpWH4YZ0HxKYJaXnqglOE1l6sGyaVhvDZQ=;
+	h=From:Subject:To:Cc:Message-Id:Date:MIME-Version:Content-Type; b=Pl2U/cQHxysVYaIY/lgvG1odoQnDCC+46Ew8GfYUuHd4u8YWpCZxv1If3U69YiqOn82xzaFZ50j3KzaGlgjnTgR36gjUwWgYlee8I1yH6/uoQwzkjE0heiTtgnCLk44/f3tu9a20sql/ved9q5/KEei3Z5Pikpth5OrRI6k4vnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vates.tech; spf=pass smtp.mailfrom=bounce.vates.tech; dkim=pass (2048-bit key) header.d=mandrillapp.com header.i=@mandrillapp.com header.b=jGllSDAK; dkim=pass (2048-bit key) header.d=vates.tech header.i=thomas.courrege@vates.tech header.b=Q/iO2aXO; arc=none smtp.client-ip=198.2.187.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vates.tech
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.vates.tech
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mandrillapp.com;
-	s=mte1; t=1765807778; x=1766077778;
-	bh=Y0vmCttgVu2ttB7leVpGoBwWuJAwz/ma4WmOx09m+TY=;
+	s=mte1; t=1765808069; x=1766078069;
+	bh=MQWFgBdoUX1kknCFzw0JsezB1mvx5zyVSGtfO5OP/iE=;
 	h=From:Subject:To:Cc:Message-Id:Feedback-ID:Date:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:CC:Date:Subject:From;
-	b=PryMCp9mHpP/8AlSSJwoXHKkrTOfsZxV1QiwP2bZo+wIudDrK42Yu4e0MsKu01obZ
-	 +PLjT/z+2rsPqdtTCzU2V0VgV9seINMKUutmnyZk4bxfE8XfD7yQ/izQvKMtJJuD5R
-	 xpY/tADK8+XpqMZyOecYt1wlB/16D5kotVamdSekzb83n27smhJAZXV9Dqy6RBSGsA
-	 jPodOr2pLDde6iLkeHgEQ6+bnZHwBIbhbg2/KYN4xZgeNwPY/PaYQhxUZ1kisOmXhk
-	 w3MCNeNOxA1UTt92PoN5cUvMWbDTXQwr1NUcbBzVlH/dd9uwgaI0rQCvjxq5Lgmkh3
-	 0Kgu8LyqFdYgw==
+	b=jGllSDAKrGdCf6k1BpPnf3wIEyOGlVtDkO2Z9lbRLagXAIw+klaTxf2P5wPhFu+wv
+	 x3GARbACpkXuRaWNSppa7dNpu0TuMn5bduhOb28yWSvbTFoSJttwR1dOEcQEgVeAhx
+	 hkq9vigei0iDDXuAnEpr+hV3q6HY0VaYftacN4ThuYD22tYyoxxL6F+AuqHIJW91pA
+	 QgmX95cJKOA7VHyS/gXUFupYM+R2Ysd2YtmNCVl0YUctB1WvO3Tgvyqxo3LV04I+3A
+	 4ffUM3FcOu4mbI+g98YsGXULP2m8GRLBatr6pxaXyr97WhZmPjWCHRWSbeGJBiwkRH
+	 EP8wZxKPX1C3A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vates.tech; s=mte1;
-	t=1765807778; x=1766068278; i=thomas.courrege@vates.tech;
-	bh=Y0vmCttgVu2ttB7leVpGoBwWuJAwz/ma4WmOx09m+TY=;
+	t=1765808069; x=1766068569; i=thomas.courrege@vates.tech;
+	bh=MQWFgBdoUX1kknCFzw0JsezB1mvx5zyVSGtfO5OP/iE=;
 	h=From:Subject:To:Cc:Message-Id:Feedback-ID:Date:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:CC:Date:Subject:From;
-	b=dfhJb4mRNKd1gKrxPsy1X9z+oLryktSS64AvtM57CgKJLHi/VR7lpPUEvk6Lsu5pn
-	 TnQHCJREBvhff2GHVAm1s5pctl4FhzqisxCEjZKcR2FtoRqsAfaA5eL1/xF1wTETve
-	 32ukPlwo4HvivYuXcGI/GRMeTItElnP/Eg4QCSmcpicyHqZ91sZcYNFjoEGanSqu2M
-	 hzmUCiyKFLJeWq7OEqa66EEDeQ3g+y2TOuvS/Zbfegf1K9UjZZxNgep5jwL5EQSM3Q
-	 Adpmh6KwN/tA0YD/2uqgmcIhIEi0OhdmTs3p1vvNY5ouV5mb1OhYWOHOzd3JXOOui3
-	 G4T7aVHyy6ZnA==
-Received: from pmta10.mandrill.prod.suw01.rsglab.com (localhost [127.0.0.1])
-	by mail186-20.suw21.mandrillapp.com (Mailchimp) with ESMTP id 4dVMPt0N86zFCWqfd
-	for <linux-crypto@vger.kernel.org>; Mon, 15 Dec 2025 14:09:38 +0000 (GMT)
+	b=Q/iO2aXOcIVt+PnazbkMiKw54+AJrk8A2Qo6ckKlK3dmfOE++lpXVx8j8lQnV/Iyp
+	 1i0A3MX7mYh7tinNLgQXWZRoX2ZvZL+gdCg9o5TEGn8VcXEaQn0xAjc2PJRXOxk2dS
+	 CVTdupxLtkOi5dDN2XG0gJAQrnuP25gRlvZs7l01hGkThtt9cpC1Q73tF5N4x7vhqb
+	 ipYEsBDKk7fs8ZTzSJKYMU/l7BDHMSHhjuVrTOoV0nDO44L9LKwem7uhni+3Ch7YV7
+	 OUm92inCuWc9N5m0v+fgDMSt12Q7r+XRb320WPtxdmasGzefv2tLWeP3eKDzQqfrn0
+	 rUwdnWORxKkgA==
+Received: from pmta09.mandrill.prod.suw01.rsglab.com (localhost [127.0.0.1])
+	by mail187-17.suw11.mandrillapp.com (Mailchimp) with ESMTP id 4dVMWT0crtzRKVFXv
+	for <linux-crypto@vger.kernel.org>; Mon, 15 Dec 2025 14:14:29 +0000 (GMT)
 From: "Thomas Courrege" <thomas.courrege@vates.tech>
 Subject: =?utf-8?Q?[PATCH=20v3]=20KVM:=20SEV:=20Add=20KVM=5FSEV=5FSNP=5FHV=5FREPORT=5FREQ=20command?=
-Received: from [37.26.189.201] by mandrillapp.com id 07511c038109413485978fe042592cd0; Mon, 15 Dec 2025 14:09:37 +0000
+Received: from [37.26.189.201] by mandrillapp.com id 5ae4059d44794185ba00ec745c629ef8; Mon, 15 Dec 2025 14:14:29 +0000
 X-Mailer: git-send-email 2.52.0
 X-Bm-Milter-Handled: 4ffbd6c1-ee69-4e1b-aabd-f977039bd3e2
-X-Bm-Transport-Timestamp: 1765807777356
+X-Bm-Transport-Timestamp: 1765808068580
 To: ashish.kalra@amd.com, corbet@lwn.net, herbert@gondor.apana.org.au, john.allen@amd.com, nikunj@amd.com, pbonzini@redhat.com, seanjc@google.com, thomas.lendacky@amd.com
-Cc: thomas.courrege@vates.tech, kvm@vger.kernel.org, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
-Message-Id: <20251215140926.2820110-1-thomas.courrege@vates.tech>
+Cc: kvm@vger.kernel.org, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org, "Thomas Courrege" <thomas.courrege@vates.tech>
+Message-Id: <20251215141417.2821412-1-thomas.courrege@vates.tech>
 X-Native-Encoded: 1
-X-Report-Abuse: =?UTF-8?Q?Please=20forward=20a=20copy=20of=20this=20message,=20including=20all=20headers,=20to=20abuse@mandrill.com.=20You=20can=20also=20report=20abuse=20here:=20https://mandrillapp.com/contact/abuse=3Fid=3D30504962.07511c038109413485978fe042592cd0?=
+X-Report-Abuse: =?UTF-8?Q?Please=20forward=20a=20copy=20of=20this=20message,=20including=20all=20headers,=20to=20abuse@mandrill.com.=20You=20can=20also=20report=20abuse=20here:=20https://mandrillapp.com/contact/abuse=3Fid=3D30504962.5ae4059d44794185ba00ec745c629ef8?=
 X-Mandrill-User: md_30504962
 Feedback-ID: 30504962:30504962.20251215:md
-Date: Mon, 15 Dec 2025 14:09:37 +0000
+Date: Mon, 15 Dec 2025 14:14:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -83,12 +83,12 @@ ioctl for SNP guests.
 
 Signed-off-by: Thomas Courrege <thomas.courrege@vates.tech>
 ---
- .../virt/kvm/x86/amd-memory-encryption.rst    | 27 ++++++++
+ .../virt/kvm/x86/amd-memory-encryption.rst    | 27 +++++++++
  arch/x86/include/uapi/asm/kvm.h               |  9 +++
- arch/x86/kvm/svm/sev.c                        | 61 +++++++++++++++++++
+ arch/x86/kvm/svm/sev.c                        | 60 +++++++++++++++++++
  drivers/crypto/ccp/sev-dev.c                  |  1 +
  include/linux/psp-sev.h                       | 31 ++++++++++
- 5 files changed, 129 insertions(+)
+ 5 files changed, 128 insertions(+)
 
 diff --git a/Documentation/virt/kvm/x86/amd-memory-encryption.rst b/Documentation/virt/kvm/x86/amd-memory-encryption.rst
 index 1ddb6a86ce7f..083ed487764e 100644
@@ -156,10 +156,10 @@ index 7ceff6583652..464146bed784 100644
  	__u64 policy;
  	__u8 gosvw[16];
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index f59c65abe3cf..da8d0e13d4ac 100644
+index f59c65abe3cf..ba7a07d132ff 100644
 --- a/arch/x86/kvm/svm/sev.c
 +++ b/arch/x86/kvm/svm/sev.c
-@@ -2261,6 +2261,64 @@ static int snp_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+@@ -2261,6 +2261,63 @@ static int snp_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
  	return rc;
  }
  
@@ -178,7 +178,6 @@ index f59c65abe3cf..da8d0e13d4ac 100644
 +		return -ENOTTY;
 +	if (copy_from_user(&params, u_params, sizeof(params)))
 +		return -EFAULT;
-+	printk("params.report_len: %llu\n", params.report_len);
 +
 +	if (params.report_len < rsp_size)
 +		return -ENOSPC;
@@ -202,7 +201,7 @@ index f59c65abe3cf..da8d0e13d4ac 100644
 +		goto e_free_rsp;
 +
 +	if (!report_rsp->status)
-+	rsp_size += report_rsp->report_size;
++		rsp_size += report_rsp->report_size;
 +
 +	if (params.report_len < rsp_size) {
 +		rsp_size = sizeof(*report_rsp);
@@ -224,7 +223,7 @@ index f59c65abe3cf..da8d0e13d4ac 100644
  struct sev_gmem_populate_args {
  	__u8 type;
  	int sev_fd;
-@@ -2672,6 +2730,9 @@ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
+@@ -2672,6 +2729,9 @@ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
  	case KVM_SEV_SNP_LAUNCH_FINISH:
  		r = snp_launch_finish(kvm, &sev_cmd);
  		break;
