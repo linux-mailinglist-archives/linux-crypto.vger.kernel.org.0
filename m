@@ -1,86 +1,62 @@
-Return-Path: <linux-crypto+bounces-19147-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19150-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C89DCC5626
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Dec 2025 23:41:44 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7A3CC57D6
+	for <lists+linux-crypto@lfdr.de>; Wed, 17 Dec 2025 00:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 827293051161
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Dec 2025 22:41:09 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 75E573004636
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Dec 2025 23:35:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA24233F8D4;
-	Tue, 16 Dec 2025 22:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78597340A47;
+	Tue, 16 Dec 2025 23:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="gEz+VZQ6"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="iC1pwE9x";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="vxdeZVVq"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A0933D6DB;
-	Tue, 16 Dec 2025 22:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39ADF340298;
+	Tue, 16 Dec 2025 23:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765924863; cv=none; b=sVjiJvl+I8jqu5jpErSDc9sfBd0TnIwILJ6mi8doXVp+TOs1KoMRAbVCPcVQnNo0joeR4BUA8Mx/OPeKdolaD8an/i1RJBb6hlfpE/Zdv7u3YSBgi9Xq8CRUtk79TFKIgQ9xVNDUwOxqzGAQvVgKpHkMZZHQC51UUfRj1cu7OBc=
+	t=1765928119; cv=none; b=OkdCpSKL7sFXisl2sBGdN/1NzDbO+KR0JEstj1T3enCWMYQua+863HysDE/6QffJckeksMgAes1PINdwzL+uxksqd8HhlFBkHGMzB3VbdGt5nqrgCORf+0LB3DlMmDFJZqYgJg0USTMeDOCQRyUUsYlu4chuZH+HXxm0QldFIxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765924863; c=relaxed/simple;
-	bh=F4nBlBidqUY4wHY3UGyVfOGJUkba0Ns3cRLyrEueVek=;
+	s=arc-20240116; t=1765928119; c=relaxed/simple;
+	bh=hElMxZN6madVOLZUpVWQnR5ezR9Pb3h6YGBFX8iptjg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rs0qznhrVTuogcAOaNG3gaJ2MIf2cvfS/XR46kEiQoJqDxNTIr+hwhXIlzsC1CjlZNaQEWfDzU6I35FhdTZUwem04t5MV5KrvPYt5vf2JQTvyHWHnS9HSkKG7Wl9yCdyNch8n2Jrhb5Yo9e0tRg5Td7CS8O+7k161WUr/9uSYCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=gEz+VZQ6; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id A083BC1A589;
-	Tue, 16 Dec 2025 22:40:34 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 209CB6071C;
-	Tue, 16 Dec 2025 22:40:59 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 02EF2102F01D0;
-	Tue, 16 Dec 2025 23:40:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1765924853; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=p40JSqlhbKdTItQZ+N/qAEwTU4k0uQat5nJYxSbGhm4=;
-	b=gEz+VZQ6ruzh1HRxC6RBi7LjHCvppYTRhjSCI+zapFY1BzdKjLykGIsoA+5dBrQxDW8p3m
-	OO1KwL8BA9dUrfh/AdzYfd9Y0GtQTaE7Qx9epEG776yjviUNFaOmfXz0auLuvfgyGfZBs4
-	jg8UrJJR7F8+UxRR9S+lpyS5W0Lo9j+3mteypwPXsIov4vyid4eYLE1VneqbZCqE4y9mir
-	O9MX7eg1GKbkCaKcv88nJ1IEgNOswmDwo9Eb6quJhGj+1ooWoNYiiC50Dnga3zaMrim7JD
-	qqxuFChNMU86OjnuZ0tHCLLnG2SD3rpM14oOugDkAu14dGdUJzv2QVmksSuuqg==
-Date: Tue, 16 Dec 2025 23:40:46 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Robert Marko <robert.marko@sartura.hr>, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org,
-	nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
-	Steen.Hegelund@microchip.com, daniel.machon@microchip.com,
-	UNGLinuxDriver@microchip.com, herbert@gondor.apana.org.au,
-	davem@davemloft.net, vkoul@kernel.org, linux@roeck-us.net,
-	andi.shyti@kernel.org, lee@kernel.org, andrew+netdev@lunn.ch,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	linusw@kernel.org, olivia@selenic.com, radu_nicolae.pirea@upb.ro,
-	richard.genoud@bootlin.com, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-	richardcochran@gmail.com, wsa+renesas@sang-engineering.com,
-	romain.sioen@microchip.com, Ryan.Wanner@microchip.com,
-	lars.povlsen@microchip.com, tudor.ambarus@linaro.org,
-	charan.pedumuru@microchip.com, kavyasree.kotagiri@microchip.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-clk@vger.kernel.org, mwalle@kernel.org,
-	luka.perkov@sartura.hr
-Subject: Re: [PATCH v2 04/19] dt-bindings: arm: move AT91 to generic
- Microchip binding
-Message-ID: <2025121622404642e6f789@mail.local>
-References: <20251215163820.1584926-1-robert.marko@sartura.hr>
- <20251215163820.1584926-4-robert.marko@sartura.hr>
- <202512161628415e9896d1@mail.local>
- <CA+HBbNFG+xNokn5VY5G6Cgh41NZ=KteRi0D9c0B15xb77mzv8w@mail.gmail.com>
- <202512161726449fe42d71@mail.local>
- <20251216-underarm-trapped-626f16d856f5@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MFCbzCGUztcVTyXJ+bKCG6/UGZy5WxQCA8y8h04nbLZGIsykv40AUjddCEhrnSPF1Vp7rwSCqZLWXtqlbjNU8fGbPhiZ9oaRNuF5qAMfJQXKCcg8xeaqH0I4/Lps3vwBq5IjpzyW6QmYF7gRIg+GHsZq5IyN9GnXt0IzMqOsV2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=iC1pwE9x; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=vxdeZVVq; arc=none smtp.client-ip=135.148.138.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
+DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1765927913; bh=5ZvrxNYmFb5iZ4LBGKZ9dfO
+	gxcUrSIPIEo34R1M81w0=; b=iC1pwE9xG0gfv+/SDglrAM+gkoNn9QDGdXTWJKcOQohHKubEAV
+	iWYTb+M0jLf2vqOaTjSkUwPbB45Ie9/eCICL76IrzP7T01dWZaE3S+0+MBPrd9C2CKg+f1hxgQV
+	5VBvrchTP1g1z4t83Bjt1NF9fvCGAAxS+bDW2kNY4sHy4GHJDcm0dwIoffJGqXwpkYjF8e70qci
+	P8oW6IR7lQ1drmWwfBpKMAuFbB2Cb/zf3uF+XdU8fbHYLMA00SgDBE/P1Jm+RlccFIpYYykEF1A
+	LP6ACDsyaZ/pTzexkEgMIJ9FFlB7HfyTR2OUnfjBN9XdPx4nLo3ATqnvxdTtccoSIRA==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1765927913; bh=5ZvrxNYmFb5iZ4LBGKZ9dfO
+	gxcUrSIPIEo34R1M81w0=; b=vxdeZVVqU7fZxRkmo0se1f9i3Y2AudOhxz0FhRhcuncEufUX0T
+	t3ITnfLZiWsRfn0yPw4cgzAYQpvZWnobmCCg==;
+Date: Tue, 16 Dec 2025 18:31:53 -0500
+From: Daniel Hodges <daniel@danielhodges.dev>
+To: Song Liu <song@kernel.org>
+Cc: Daniel Hodges <git@danielhodges.dev>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
+	vadim.fedorenko@linux.dev, yatsenko@meta.com, martin.lau@linux.dev, eddyz87@gmail.com, 
+	haoluo@google.com, jolsa@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, yonghong.song@linux.dev, herbert@gondor.apana.org.au, 
+	davem@davemloft.net, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add SHA hash kfunc for
+ cryptographic hashing
+Message-ID: <mgkjpyvhv5lnk5qwsj5q7f7e5zcxkmucefoik5n5c4c5otjrhi@5xjigugmoith>
+References: <20251208030117.18892-1-git@danielhodges.dev>
+ <20251208030117.18892-4-git@danielhodges.dev>
+ <CAPhsuW7n2aZQ6ORA60xQd91rieXtbLbheBzKAhfLiwkRCHBzqA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -90,46 +66,55 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251216-underarm-trapped-626f16d856f5@spud>
-X-Last-TLS-Session-Version: TLSv1.3
+In-Reply-To: <CAPhsuW7n2aZQ6ORA60xQd91rieXtbLbheBzKAhfLiwkRCHBzqA@mail.gmail.com>
 
-On 16/12/2025 19:21:27+0000, Conor Dooley wrote:
-> On Tue, Dec 16, 2025 at 06:26:44PM +0100, Alexandre Belloni wrote:
-> > On 16/12/2025 17:56:20+0100, Robert Marko wrote:
-> > > On Tue, Dec 16, 2025 at 5:29 PM Alexandre Belloni
-> > > <alexandre.belloni@bootlin.com> wrote:
-> > > >
-> > > > On 15/12/2025 17:35:21+0100, Robert Marko wrote:
-> > > > > Create a new binding file named microchip.yaml, to which all Microchip
-> > > > > based devices will be moved to.
-> > > > >
-> > > > > Start by moving AT91, next will be SparX-5.
-> > > >
-> > > > Both lines of SoCs are designed by different business units and are
-> > > > wildly different and while both business units are currently owned by
-> > > > the same company, there are no guarantees this will stay this way so I
-> > > > would simply avoid merging both.
-> > > 
-> > > Hi Alexandre,
-> > > 
-> > > The merge was requested by Conor instead of adding a new binding for LAN969x [1]
-> > > 
-> > > [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20251203122313.1287950-2-robert.marko@sartura.hr/
-> > > 
-> > 
-> > I would still keep them separate, SparX-5 is closer to what is
-> > devicetree/bindings/mips/mscc.txt than to any atmel descended SoCs.
+On Wed, Dec 17, 2025 at 06:58:43AM +0900, Song Liu wrote:
+> On Sun, Dec 7, 2025 at 7:01 PM Daniel Hodges <git@danielhodges.dev> wrote:
+> [...]
+> > +
+> > +       if (!ctx->type->hash)
+> > +               return -EOPNOTSUPP;
+> > +
+> > +       data_len = __bpf_dynptr_size(data_kern);
+> > +       out_len = __bpf_dynptr_size(out_kern);
+> > +
+> > +       if (data_len == 0)
+> > +               return -EINVAL;
+> > +
+> > +       if (!ctx->type->digestsize)
+> > +               return -EOPNOTSUPP;
+> > +
+> > +       unsigned int digestsize = ctx->type->digestsize(ctx->tfm);
 > 
-> If you don't want the sparx-5 stuff in with the atmel bits, that's fine,
-> but I stand over my comments about this lan969x stuff not getting a file
-> of its own.
-> Probably that means putting it in the atmel file, alongside the lan966x
-> boards that are in there at the moment.
-
-I'm fine with this.
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> ./scripts/checkpatch.pl will complain about this:
+> 
+> WARNING: Missing a blank line after declarations
+> #109: FILE: kernel/bpf/crypto.c:387:
+> +       unsigned int digestsize = ctx->type->digestsize(ctx->tfm);
+> +       if (out_len < digestsize)
+> 
+> Please run ./scripts/checkpatch.pl on all the patches. It also highlights
+> some other issues, such as we need to update the MAINTAINERS file.
+> 
+> Also, we don't want variable declaration in the middle of a code
+> block.
+> 
+> > +       if (out_len < digestsize)
+> > +               return -EINVAL;
+> > +
+> [...]
+> >  static const struct btf_kfunc_id_set crypt_kfunc_set = {
+> > @@ -383,6 +442,7 @@ static int __init crypto_kfunc_init(void)
+> >         ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &crypt_kfunc_set);
+> >         ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT, &crypt_kfunc_set);
+> >         ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &crypt_kfunc_set);
+> > +       ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &crypt_kfunc_set);
+> 
+> This enables all kfuncs in crypt_kfunc_set for BPF_PROG_TYPE_SYSCALL.
+> We need a clear explanation why this is needed.
+> 
+> Thanks,
+> Song
+Sounds good! It might take me a day or so for the next set as I'm
+traveling.
 
