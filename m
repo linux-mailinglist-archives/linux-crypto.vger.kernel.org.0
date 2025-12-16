@@ -1,131 +1,113 @@
-Return-Path: <linux-crypto+bounces-19146-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19148-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 804E8CC55DB
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Dec 2025 23:35:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC85CC5676
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Dec 2025 23:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B9F1E300248E
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Dec 2025 22:35:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 852DC30343D4
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Dec 2025 22:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48D133F38E;
-	Tue, 16 Dec 2025 22:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2266C33F8CC;
+	Tue, 16 Dec 2025 22:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKl/8QNt"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UtJIEklL"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C4B322B62
-	for <linux-crypto@vger.kernel.org>; Tue, 16 Dec 2025 22:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4642E92B3;
+	Tue, 16 Dec 2025 22:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765924535; cv=none; b=AiS6qStUvYSGLQKz0PdCRUj859mT7tFK3oCuRr2mQGAeJtZOI3Qj6D34uaG4TgJ9PGyKLXKEtSWwOU7y+DZnwZO4Xbw9LRw63qDGBnPjZqNWfS3a9P96ibwpZcrIDSiUfjXrrMCPbrIj8llC4PflH4m9q9caup05oig+V84LgFg=
+	t=1765925404; cv=none; b=Pbo/6Hz56fvRvpXOtFos76OTERJAZyRXa9bfZWR4QAbkGln77S6MKjVjQXPcFJoS5PbQD2NEXwXafufWkVLHnt0vW42NwFuYWW68m3eTlvOUc+UpLlc41LyCnV535MfqwQNzmP/lpK9NnU8BtdajkHRvsgd3xCFp2z7m6THQ8X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765924535; c=relaxed/simple;
-	bh=czyYHRS63XCenO0w0GUKXH28DzdMgrammOLJASI/vGo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YNE1GnePILKJHhODMkQV9t9AvHeQ3q/0rrVgKdrEteuL7eSWq5hNFsRtW3pMm12N//naTNgE7QT09iAeZIouSUpkA3zVKDB2BWsrdyZOoS8cwc6+CHmIsO+8xhmuI0Tmv9jMLMcUwma/wq43cSDW+Rp+nV16wo9KG5KZQvTIx8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKl/8QNt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34454C19422
-	for <linux-crypto@vger.kernel.org>; Tue, 16 Dec 2025 22:35:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765924535;
-	bh=czyYHRS63XCenO0w0GUKXH28DzdMgrammOLJASI/vGo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=RKl/8QNtPcyroMjYJBWHMeeUdN+gUTJgu1o0FfOuHD7c7/WRyPy71xjvEd+mKQNwh
-	 g1MgjhHnHu74oHjyONO/1fM5DzTEEan+crk5ILnqsF1NRYbVl1R6fOEpyz2DOSV/qg
-	 EOorPj45VoogdDcLI2TQQ+rvyDf71FmOmD4tyotfTS1M7tfYxnSBIXUjRFKwE/EtQr
-	 e8SZomf8FLwX46CJyn5NBBra+11nZmZT1+YDaLUXhEBzJeUvuyPvnOGXCwWDd1W+vj
-	 AGeM6j2kZ//xFwKHZPVzkkbe7+Z29MOyQCxL7sWJhTaXWKbSyPrBcjwYFRpkdarbmc
-	 H+vPheeBLnZGg==
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-88a347c424aso35340136d6.0
-        for <linux-crypto@vger.kernel.org>; Tue, 16 Dec 2025 14:35:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUT7uwhFkmXhMNTg1h6KQJmw28RD+eJmJNuouHzp1nWEVGbw5cznBz4TsmZxTAD7MuFFM3zp+iMOYN+CEM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2kLLTjb8RpzsZAaKk3EoHYNHZHiL43PDwA/3mcz7ipFOeCEhN
-	DaiCyTSS9uY2dOiZjdegdxByMDzT9ZZwDT2ilbpjtRVG8l4hTyp+K3Lh422G8fOpsjIkm2llalh
-	dyixHl620XxdRQ3IHoYHnUDAhddfLfsI=
-X-Google-Smtp-Source: AGHT+IFz5ZjeW33eep+I2TgddDjdwVyMg5n9B2cfhADNZvODCb2I/BAuA+yW3Xv7A3GiqJ4+10phrkX9Tnum/+suErk=
-X-Received: by 2002:a05:6214:5c03:b0:880:3e03:3939 with SMTP id
- 6a1803df08f44-8887e16e24fmr247957316d6.64.1765924534387; Tue, 16 Dec 2025
- 14:35:34 -0800 (PST)
+	s=arc-20240116; t=1765925404; c=relaxed/simple;
+	bh=SFPOamL0cQPXqkLhodBhCDXvus3KxGNWMnm+9DocSlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ME0J/ODmGrNQS1QoXY+UNv0O+ZC6mrpW8HJIQ2khfAAuJq5Ne6Iro8waYBofp2cpUdgWQP180aM8RnG/oudcDjhLxz0Y2psoM6trjaOxJZVeoG7oFr+7KPu7910mHjYppMtfabeVbWdQfh3Bq3C0EKX8JO/y28bQFEjt0LDFMdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UtJIEklL; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 4EBE11A221C;
+	Tue, 16 Dec 2025 22:40:16 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 19F146071C;
+	Tue, 16 Dec 2025 22:40:16 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 331B8102F01D0;
+	Tue, 16 Dec 2025 23:40:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1765924813; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=YjySOHXxChpeAIXP7WiviiCVM3iOHIkW8SnbIAyhMbg=;
+	b=UtJIEklL707ymXV/8HCjyKT+EobGjo9ZqL/vbQfvhhbRyudL/xWnk2Mv+F8druWzsb494W
+	cAmzshRPqJbM87ZkegTVdkAF+kU0MP8ZKGR+jKn2V1G7n2aqLHnh8yafzrJVDXwf/veoBk
+	eYMp4u61D4wTi1PjSEGEi5NBxjyfP3SaP+OKlRRy+/+FdG3sDT2neGe0O9iwWwk7hmi0zV
+	9ar5gz1PnvOx5hBjGQYpUJWnpW97kiCMulKZZMkCFVa8ZlHmkfOQghjw74oEjWm9wUmZMK
+	JfDi9BzBOBDMLQ0ddmoVO4T2fyd6QhWUN2EQUglFcqDbXV7XKtEaiL2/RtkmWg==
+Date: Tue, 16 Dec 2025 23:40:00 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Robert Marko <robert.marko@sartura.hr>
+Cc: Conor Dooley <conor@kernel.org>, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, nicolas.ferre@microchip.com,
+	claudiu.beznea@tuxon.dev, Steen.Hegelund@microchip.com,
+	daniel.machon@microchip.com, UNGLinuxDriver@microchip.com,
+	herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
+	linux@roeck-us.net, andi.shyti@kernel.org, lee@kernel.org,
+	andrew+netdev@lunn.ch, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, linusw@kernel.org, olivia@selenic.com,
+	radu_nicolae.pirea@upb.ro, richard.genoud@bootlin.com,
+	gregkh@linuxfoundation.org, jirislaby@kernel.org,
+	mturquette@baylibre.com, sboyd@kernel.org, richardcochran@gmail.com,
+	wsa+renesas@sang-engineering.com, romain.sioen@microchip.com,
+	Ryan.Wanner@microchip.com, lars.povlsen@microchip.com,
+	tudor.ambarus@linaro.org, kavyasree.kotagiri@microchip.com,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-clk@vger.kernel.org, mwalle@kernel.org,
+	luka.perkov@sartura.hr
+Subject: Re: [PATCH v2 04/19] dt-bindings: arm: move AT91 to generic
+ Microchip binding
+Message-ID: <202512162240006f3ddfdf@mail.local>
+References: <20251215163820.1584926-1-robert.marko@sartura.hr>
+ <20251215163820.1584926-4-robert.marko@sartura.hr>
+ <202512161628415e9896d1@mail.local>
+ <CA+HBbNFG+xNokn5VY5G6Cgh41NZ=KteRi0D9c0B15xb77mzv8w@mail.gmail.com>
+ <202512161726449fe42d71@mail.local>
+ <20251216-underarm-trapped-626f16d856f5@spud>
+ <CA+HBbNFq=+uWp05YD08EQtaOhrN9FCBAtnOAsOJc4dNfoJRfxA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208030117.18892-1-git@danielhodges.dev> <20251208030117.18892-6-git@danielhodges.dev>
-In-Reply-To: <20251208030117.18892-6-git@danielhodges.dev>
-From: Song Liu <song@kernel.org>
-Date: Wed, 17 Dec 2025 07:35:22 +0900
-X-Gmail-Original-Message-ID: <CAPhsuW5OKja2U5x-X_N_F7DN7D_RAZYf9ryoMb4RBHtKKSidhw@mail.gmail.com>
-X-Gm-Features: AQt7F2pQgGvpbiEFuf2dY0FESexCpC01QqhZkEXtdKJIyoLAtx09Eo6pMKaNpPI
-Message-ID: <CAPhsuW5OKja2U5x-X_N_F7DN7D_RAZYf9ryoMb4RBHtKKSidhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/6] bpf: Add ECDSA signature verification kfuncs
-To: Daniel Hodges <git@danielhodges.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, vadim.fedorenko@linux.dev, yatsenko@meta.com, 
-	martin.lau@linux.dev, eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	yonghong.song@linux.dev, herbert@gondor.apana.org.au, davem@davemloft.net, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+HBbNFq=+uWp05YD08EQtaOhrN9FCBAtnOAsOJc4dNfoJRfxA@mail.gmail.com>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Mon, Dec 8, 2025 at 5:43=E2=80=AFPM Daniel Hodges <git@danielhodges.dev>=
- wrote:
->
-> Add context-based ECDSA signature verification kfuncs:
-> - bpf_ecdsa_ctx_create(): Creates reusable ECDSA context with public key
-> - bpf_ecdsa_verify(): Verifies signatures using the context
-> - bpf_ecdsa_ctx_acquire(): Increments context reference count
-> - bpf_ecdsa_ctx_release(): Releases context with RCU safety
->
-> The ECDSA implementation supports NIST curves (P-256, P-384, P-521) and
-> uses the kernel's crypto_sig API. Public keys must be in uncompressed
-> format (0x04 || x || y), and signatures are in r || s format.
->
-> Signed-off-by: Daniel Hodges <git@danielhodges.dev>
-> ---
->  kernel/bpf/crypto.c | 230 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 230 insertions(+)
->
-> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-> index 47e6a43a46d4..138abe58e87e 100644
-> --- a/kernel/bpf/crypto.c
-> +++ b/kernel/bpf/crypto.c
-> @@ -9,6 +9,7 @@
->  #include <linux/scatterlist.h>
->  #include <linux/skbuff.h>
->  #include <crypto/skcipher.h>
-> +#include <crypto/sig.h>
->
->  struct bpf_crypto_type_list {
->         const struct bpf_crypto_type *type;
-> @@ -57,6 +58,21 @@ struct bpf_crypto_ctx {
->         refcount_t usage;
->  };
->
-> +#if IS_ENABLED(CONFIG_CRYPTO_ECDSA)
-> +/**
-> + * struct bpf_ecdsa_ctx - refcounted BPF ECDSA context structure
-> + * @tfm:       The crypto_sig transform for ECDSA operations
-> + * @rcu:       The RCU head used to free the context with RCU safety
-> + * @usage:     Object reference counter. When the refcount goes to 0, th=
-e
-> + *             memory is released with RCU safety.
-> + */
-> +struct bpf_ecdsa_ctx {
-> +       struct crypto_sig *tfm;
-> +       struct rcu_head rcu;
-> +       refcount_t usage;
-> +};
-> +#endif
+On 16/12/2025 20:35:49+0100, Robert Marko wrote:
+> Hi Conor,
+> What do you think about renaming the SparX-5 binding and adding LAN969x to that?
+> Cause both are from the current Microchip and from the same UNG
+> business unit, with
+> probably more generations to follow.
+> 
+> LAN969x does not really belong in Atmel bindings to me, but I am flexible.
+> 
 
-Can we use bpf_crypto_ctx for ECDSA?
+On the contrary, this is the one that is based on the "previously atmel"
+BU SoCs. It is a sama7 with a microchip UNG switch while SparX-5 looks
+more like a microsemi chip with ARM64 cores instead of mips.
 
-Thanks,
-Song
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
