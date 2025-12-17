@@ -1,98 +1,73 @@
-Return-Path: <linux-crypto+bounces-19189-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19191-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B92C0CC9C9B
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 00:19:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F97CC9D2C
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 00:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9D1C630505A4
-	for <lists+linux-crypto@lfdr.de>; Wed, 17 Dec 2025 23:18:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C563F30341F2
+	for <lists+linux-crypto@lfdr.de>; Wed, 17 Dec 2025 23:45:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25812EB5D4;
-	Wed, 17 Dec 2025 23:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAE42DA768;
+	Wed, 17 Dec 2025 23:45:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBaT4sxa"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="f2BYzEhB"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BABE330305
-	for <linux-crypto@vger.kernel.org>; Wed, 17 Dec 2025 23:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1342367AC;
+	Wed, 17 Dec 2025 23:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766013528; cv=none; b=twvDWYA5vDqeun/OaXkY828o0vYVt3qpP7m5CffyPnuwBcmU0itEbnvLDU6ShPfW7fAuuPdbFCXtWh1Xm7nweM75XnEtXZEfS0TPHq4lI4e0S1NsL4fkovd34Px3T0NDDwIecYSCT6OZsbPQsX2Q846abHZU/H97iH250/1K0bU=
+	t=1766015117; cv=none; b=VfEIf8++9DQ1/j8JsS9V1jugdvzQTb77u5bRy+j4jrKHmIvMV0KHJ7jjxAEnw7xt2e5QXXG8cqDE4IfzeGjWB7Fr0gMZrcQrPhywP9YSuIdI+sEJBRpfLWZN0wTcjvy4Nd7924p5BNmR7Vp1qEniSqJltXRCqI2lYIhexNl32Nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766013528; c=relaxed/simple;
-	bh=C1X5R0T9A6CrUnxpIm/QVXVuRULmzTp597QRk97zyjM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OX2bq2e0Cn+5T4JfYY83/QUXoQU0tS86k8eY7YP5kd93XhDiLcqmAzEEYvvkn/oi5VbD0o1WxEj4zgqW3zxCzaNvklOdgH8hdlqbPOUHLNiPgnPpJQDvt62Y+UzznHFEmEfREZVPMvKBBco6pFZQh9aUpJ3cFDJXBTtG2sURikA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VBaT4sxa; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-597de27b241so17498e87.2
-        for <linux-crypto@vger.kernel.org>; Wed, 17 Dec 2025 15:18:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766013524; x=1766618324; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZvc3rVI0di0d/Re6Le5Bvc+vMvJtdhpmIxMnxjb6tA=;
-        b=VBaT4sxaHFvfVHw/0PNR0mma9L9CQCE0t1LZsPF9klP2ecyZEgzKiX754iClqRnz0f
-         GmmYZH9YBVrmYyy8S74MtCYaKuLLOE2twPEfhgrGbfkH8UXctcxVy2vj9OV5ntO4+YDt
-         N24t/STd7wbl7G92s0Ny+GD1Htd8YjaiuuS7DGr+Iv8Q9IUwNUEXilozkJvTMnE86WQu
-         MnZ+OnIJvOTufXzIWehEwX5Rn+kCV2O/NoVJ2bWPv2EgbMUdijMRcUlXoqnDdN/RqdV2
-         qtSKWp2M81Sd6yvPFFJro9CHX/HMKbmz3BzLch4xdn6FHJrroyI4t4EVNBxfQxTI6t+V
-         6rDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766013524; x=1766618324;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=AZvc3rVI0di0d/Re6Le5Bvc+vMvJtdhpmIxMnxjb6tA=;
-        b=RnkpfL/dYfMdHkG5Drhpl0ujhQF4ZiYM63+amvySm1BxMzAeg+3Sc2acW6AHMs8rJ/
-         KDGTwUvuicYc45Xs+QS2+q9aDs3SwycvQhAWBBoi+7x6GBNOzbCvVykUpKhieTHHPryW
-         i8+zUf8/iCvNAYkz+DIs/ecqhUkjyI1u+weLF7WO7lVbpC2OW9VK/1QGm9WsMMOHT0/o
-         Y0mn0WgOx0iejD2vTqJ38gRPRKucXAwJe5xnul8/9nxXCXfWrGQjDBH9W1flPEQNRG5w
-         XEu4BtDyzl0mV7uKWGaF4ZJWunDQm/sCk5p44HqzCCVku2ywnqAB51mrGW7GqUTRM2pb
-         kDTg==
-X-Forwarded-Encrypted: i=1; AJvYcCUjXl7R3kCYEDDi7kj04JFjjn/DtiGcsq+mKdZkEdVAcCSEnOJMBYneMMLaDsTu/D6ENg5/7nHILJ/csPU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIPHx5DVcowK5MJJVfXait3gjMhDJUW9y6lXo8mB2za3Vo8fy3
-	rB+L3/NLAW3kFBkszgPK8+XZjXFAVwGprYOBx//i79QsqC+PBVRHE7aS
-X-Gm-Gg: AY/fxX66BicTtpZrWm77Fblb+XYw9hWBImSvJY3UmM2N/GW7eGUaOUwzpkLdxShWZpx
-	Mu3W3JIJa1KPF2BmFvYr/d14kLenRBzt69T1oLMaY1mMaVHGvc3UX2G1Lqj3ZIAalt6L/QbvlYO
-	tyasJbIZDOIAD93PnvorBRKYdv5Do43P3N7d30rYnekIAejxVPixrBqMntcQrt5poDV3VLYlEXp
-	SWOmYWwXgUegFsWXb44n208uv9yeFF2R/SinhqScmA4UHUUCVGet3he3py3kLCeAN3IUS+xDVzR
-	9W2qWDt6S7O7VNdelvPshcbujzg7pLKrrMzIWy4LjrMI5oA1yIgM5F4yHjb8E4ar3OZ7qp2HcfN
-	MqkhRZW+paGtLyMj2s5qCT12Bqh9w85Xq90DtBLq+CV1xTDyZRrmTp/pQEULd0LCc2mie1dJgLw
-	xPwK+yaL1b
-X-Google-Smtp-Source: AGHT+IFoFgIAi9PMNEfIKCxeozWxswujwd1S6MJvMAmdk00BzJYAqN7Mqo6fE4Jz6OZ88KHyEwKy2w==
-X-Received: by 2002:a05:6512:3ba2:b0:598:edd4:d68 with SMTP id 2adb3069b0e04-598faa5a3bamr5789014e87.28.1766013524025;
-        Wed, 17 Dec 2025 15:18:44 -0800 (PST)
-Received: from localhost ([194.190.17.114])
-        by smtp.gmail.com with UTF8SMTPSA id 38308e7fff4ca-381134b5011sm2807821fa.3.2025.12.17.15.18.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Dec 2025 15:18:42 -0800 (PST)
-From: Askar Safin <safinaskar@gmail.com>
-To: mpatocka@redhat.com
-Cc: Dell.Client.Kernel@dell.com,
-	dm-devel@lists.linux.dev,
-	linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-lvm@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-pm@vger.kernel.org,
-	linux-raid@vger.kernel.org,
-	lvm-devel@lists.linux.dev,
-	pavel@ucw.cz,
-	rafael@kernel.org,
-	gmazyland@gmail.com
-Subject: Re: [RFC PATCH 2/2] swsusp: make it possible to hibernate to device mapper devices
-Date: Thu, 18 Dec 2025 02:18:37 +0300
-Message-ID: <20251217231837.157443-1-safinaskar@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <b32d0701-4399-9c5d-ecc8-071162df97a7@redhat.com>
-References: <b32d0701-4399-9c5d-ecc8-071162df97a7@redhat.com>
+	s=arc-20240116; t=1766015117; c=relaxed/simple;
+	bh=FSAWjKfiYlIaOFKkJJMQ0DwcxDZ2QuCkAongut8bT3k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MyJXzab+uJtdt432FeXzhIiVRk8+T1WvJfPDPa2K89FftLsjUE9UwVRbAWnL/3j/fJN0tXD56GqnaLDfxng4ellYa9tsFmLyiKttRNcvpV8rRWXYnkXGDuZ2FnzbMY2X8LMMYjYfqTwWlHDsaC+uWt1xezYKvTeDHNixzOdbnZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=f2BYzEhB; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BHMNQur3691296;
+	Wed, 17 Dec 2025 23:45:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=pRlZxKN6cZjMLf7FsCjeQ5Zsys1UM
+	vhS1bG0w8it7ow=; b=f2BYzEhB7irzwEZJjNDsq+5C4rowVpvqDT0XGxGKTRlqJ
+	cJspcxEzZM+RwnvbOz9eWxbYEiG1eT5uHAimfedvhQ1nU8QSS8s1EZm/w87EnFw6
+	juKDcWaeVuZVUCKp4yk8f0PZOnPN2Gb135UveOEb0BzIygBuvXRFDpTHiX3Bfgha
+	uN7tWMRZTEqv43FT2ieDWqlNb9/IyQpCmP+BPAAdn3tbEBQ97xBarRgHUgcm9UhS
+	lJTERi4+9pt0+rKWD/XhMJEs1KS+s/V1BjIWGAWD24cE+nI7yutime1xIK35z0b/
+	V2T0Yaf9jI4ypnpYBeFRs6cruHNh/S+1nBuPXtdJw==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4b0xja6xnf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Dec 2025 23:45:09 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BHN21rO022487;
+	Wed, 17 Dec 2025 23:45:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4b0xkn7bxx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 17 Dec 2025 23:45:08 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5BHNj8SZ012536;
+	Wed, 17 Dec 2025 23:45:08 GMT
+Received: from bur-virt-x6-2-100.us.oracle.com (bur-virt-x6-2-100.us.oracle.com [10.153.92.40])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4b0xkn7bx4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 17 Dec 2025 23:45:08 +0000
+From: Ross Philipson <ross.philipson@oracle.com>
+To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc: ebiggers@kernel.org, Jason@zx2c4.com, ardb@kernel.org,
+        ross.philipson@oracle.com, dpsmith@apertussolutions.com,
+        kanth.ghatraju@oracle.com, andrew.cooper3@citrix.com,
+        trenchboot-devel@googlegroups.com
+Subject: [PATCH] crypto: lib/sha1 - use __DISABLE_EXPORTS for SHA1 library
+Date: Wed, 17 Dec 2025 15:38:26 -0800
+Message-ID: <20251217233826.1761939-1-ross.philipson@oracle.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -100,40 +75,56 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-12-17_03,2025-12-17_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
+ definitions=main-2512170191
+X-Authority-Analysis: v=2.4 cv=TbWbdBQh c=1 sm=1 tr=0 ts=69434085 b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
+ a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8
+ a=t1JBmMD2VwWszxNfJCEA:9 cc=ntf awl=host:13654
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjE3MDE5MCBTYWx0ZWRfXwajUwJnimeTz
+ 2kCmjj2cUMXwGHCq/8lU16x7nDAMOOvIE9b7mhR+222PBip+blksfxISJtBqX/WCcygZwUgxftz
+ x+QpwPovzND6pqLHYPIQD3hZBuD+NOZoxnVSsgM9xa6zxZgB4g2aLCVZ3TVHcDgCt6d68uocm7j
+ TdVXe7DfoNGxXRlLBHsyED+YmCHtd9E/AJTd/L2K8bFKo1k6qxiYVnSAhNRyfhZhBDMDoQ2dpSC
+ hfu98dvfZUI5/syNqDlXfHhjzaNagkxmTGjHNN2p48d/jauMZNJRVFJP8nOOaC1Zvwy/D/zlgL0
+ 2b69leMhB0z38rOcKM4eU9wKRmY9zMDmz/gXgvKTgXO+Ux5gnmlWpgI2bsvOUJXdvIuYuab04gi
+ IkFF59GMPK3HwkONRFv6wfMPhCiKpX0Euot84gCwoYDyCeW9U/Q=
+X-Proofpoint-ORIG-GUID: 8os9z9u9h2oAFAbiPOZJL5GZhoqq5Bsl
+X-Proofpoint-GUID: 8os9z9u9h2oAFAbiPOZJL5GZhoqq5Bsl
 
-Mikulas Patocka <mpatocka@redhat.com>:
-> Askar Safin requires swap and hibernation on the dm-integrity device mapper
-> target because he needs to protect his data.
+Allow the SHA1 library code in lib/crypto/sha1.c to be used in a pre-boot
+environments. Use the __DISABLE_EXPORTS macro to disable function exports and
+define the proper values for that environment as was done earlier for SHA256.
 
-Hi, Mikulas, Milan and others.
+This issue was brought up during the review of the Secure Launch v15 patches
+that use SHA1 in a pre-boot environment (link in tags below). This is being
+sent as a standalone patch to address this.
 
-I'm running swap on dm-integrity for 40 days.
+Link: https://lore.kernel.org/r/20251216002150.GA11579@quark
+Cc: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+---
+ lib/crypto/sha1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It runs mostly without problems.
-
-But yesterday my screen freezed for 4 minutes. And then continued to work
-normally.
-
-So, may I ask again a question: is swap on dm-integrity supposed to work
-at all? (I. e. swap partition on top of dm-integrity partition on top of
-actual disk partition.) (I'm talking about swap here, not about hibernation.)
-
-Mikulas Patocka said here https://lore.kernel.org/all/3f3d871a-6a86-354f-f83d-a871793a4a47@redhat.com/ :
-
-> Encrypted swap file is not supposed to work. It uses the loop device that 
-> routes the requests to a filesystem and the filesystem needs to allocate 
-> memory to process requests.
-
-> So, this is what happened to you - the machine runs out of memory, it 
-> needs to swap out some pages, dm-crypt encrypts the pages and generates 
-> write bios, the write bios are directed to the loop device, the loop 
-> device directs them to the filesystem, the filesystem attempts to allocate 
-> more memory => deadlock.
-
-Does the same apply to dm-integrity?
-
-I. e. is it possible that write to dm-integrity will lead to allocation?
-
+diff --git a/lib/crypto/sha1.c b/lib/crypto/sha1.c
+index 52788278cd17..e5a9e1361058 100644
+--- a/lib/crypto/sha1.c
++++ b/lib/crypto/sha1.c
+@@ -154,7 +154,7 @@ static void __maybe_unused sha1_blocks_generic(struct sha1_block_state *state,
+ 	memzero_explicit(workspace, sizeof(workspace));
+ }
+ 
+-#ifdef CONFIG_CRYPTO_LIB_SHA1_ARCH
++#if defined(CONFIG_CRYPTO_LIB_SHA1_ARCH) && !defined(__DISABLE_EXPORTS)
+ #include "sha1.h" /* $(SRCARCH)/sha1.h */
+ #else
+ #define sha1_blocks sha1_blocks_generic
 -- 
-Askar Safin
+2.43.7
+
 
