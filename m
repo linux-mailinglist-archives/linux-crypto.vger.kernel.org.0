@@ -1,56 +1,54 @@
-Return-Path: <linux-crypto+bounces-19190-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19192-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30AFBCC9D22
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 00:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 82309CC9DAA
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 01:01:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F14DD3034EE6
-	for <lists+linux-crypto@lfdr.de>; Wed, 17 Dec 2025 23:44:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7DED33037885
+	for <lists+linux-crypto@lfdr.de>; Wed, 17 Dec 2025 23:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820E633064E;
-	Wed, 17 Dec 2025 23:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E253271EC;
+	Wed, 17 Dec 2025 23:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uNOL7TKS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tmvs+vBw"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3360C81732;
-	Wed, 17 Dec 2025 23:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A133101A6;
+	Wed, 17 Dec 2025 23:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766015090; cv=none; b=qlWxPXv7Rv2Yh7cjftP5V5swHy1PDixcIR6aMo17YGYup8LjPwiVzMg9iH8lqm8qbARKKOYSjzIwX/U1GrnO49MG82NXfaeMBmuvUmm4sXa1urU0LDaRohwJa9KvaHyjl52k4JDLu77t9Az0AA3N+yumFpGR5+tsvwNn2tRsN4Q=
+	t=1766015867; cv=none; b=P9DFcyCam3tO9uik/YcaXjfNgUBRSQxziPUscboWhvFUF0LQ77Pf7QaKYL+lD2oT5P7imuucYxKtDg1Hbzyyq22g/SfbAsw2JGe+0vm1PEBjk80uLu5/xS/v258A9JhKCMpocbTguzP6pgm7BDAzXci1kPsVPNs20i+sYyhWZtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766015090; c=relaxed/simple;
-	bh=VUAafnoaqbtHyXLgpU6Otv3PPLrn+szmWYJeszdskFk=;
+	s=arc-20240116; t=1766015867; c=relaxed/simple;
+	bh=0MQVXoPZt5do7P7n7SWEqJce27v0zvKvJL9bInS7rq8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d4Re33Yho9GwG5Mo7q6n7H+pcG3sW9lgUTF4EY1blroMmpkY+SKoBS0KRszeLH8NI2PzuIPiXYXbW2JbBdIfL21NPo9DGSoE/RPHZmNrdSXLdE5mjsZqw3QpJ8+A3HM1u8vMZjiXysRWFJltjWoitHWbXW3BSQeEMCKNWGQYVZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uNOL7TKS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8182DC4CEF5;
-	Wed, 17 Dec 2025 23:44:49 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZV7VyIv2cRbWIos8tbU9w25WWL18iPq5jGvGE7UjrhefK30kK/dDFt+A1nRhVm6aB4JtYwV9MOBqBeqZvkC9LRdZOyBWkA95qAv5/jZjxFZ+jjtDtlhyqJnl9F1NScSN9cVowZTOiU9q1haK5S/Kx8P80GYkZUtUr7XieVBMG5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tmvs+vBw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2DD9C116B1;
+	Wed, 17 Dec 2025 23:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766015089;
-	bh=VUAafnoaqbtHyXLgpU6Otv3PPLrn+szmWYJeszdskFk=;
+	s=k20201202; t=1766015867;
+	bh=0MQVXoPZt5do7P7n7SWEqJce27v0zvKvJL9bInS7rq8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uNOL7TKSCM8jbS+7WIvchfQnx6yI86ubBK75XFYj5311Cf8ACXti0apcIionfQgb8
-	 Jye1yGUb8cSpW2wpfQTtSl11TefhEyZg2HRqUwQyCS4nX/8k/Kponv7tQMdQM3Kmr3
-	 4Iur+XyjLuztf/5LONuxAe33SygksoXrbrF9x+32KCe8qCkV72FVYpVt7puss2gsGG
-	 U1hKZpfVc+HT8SsurMrr3ghB1MLLbi6HNTALsXFOGHQTguSeHqWUFfZjdQDInUo9/n
-	 f4+1cLIjgF3uavJwFtP59XoPWvKAWgzxKdCPm6j66fISufUk8fuNXGQw21nAf6KJ/P
-	 PJyAsCghJWt3g==
-Date: Wed, 17 Dec 2025 23:44:47 +0000
+	b=Tmvs+vBwefHZC9rjP+BGSEP17ne6/SUGvmaWPwJBCbaZDsD6B0hD5asyuttFy8DDB
+	 dcepLRaU0vSmdShbQQ08Ha2vL4NikBEfQrAauMYcdwbIW3isXkeAG0vodfXAKqtlOH
+	 K2FcjPDA4jvy13wI5uFtP457OWac2Hp9yJz5rxHl7MU1FomkqFpHWqvUU19ngGE5Wp
+	 JyA0dmvPcR/cw3WbdmMdmF5ZVCVxlW3UZlUWqkn30iqNi+iOhUGJ8HjIRv6O8Lw57F
+	 tz9XdIE717X1a2YUKkqX/j96+ytsa7zSj+zglN5rpms/D/xHvGaXj+ookfgsWd+Bu5
+	 5EzV2ZdNf9p5A==
+Date: Wed, 17 Dec 2025 23:57:45 +0000
 From: Eric Biggers <ebiggers@kernel.org>
-To: David Ahern <dsahern@kernel.org>
-Cc: Stephen Hemminger <stephen@networkplumber.org>,
-	linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH iproute2-next v2] lib/bpf_legacy: Use userspace SHA-1
- code instead of AF_ALG
-Message-ID: <20251217234447.GA89113@google.com>
-References: <20250929194648.145585-1-ebiggers@kernel.org>
- <20251112040719.GB2832160@google.com>
- <59755b49-fb81-41bf-8875-17e0215f1d8e@kernel.org>
+To: Ross Philipson <ross.philipson@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	Jason@zx2c4.com, ardb@kernel.org, dpsmith@apertussolutions.com,
+	kanth.ghatraju@oracle.com, andrew.cooper3@citrix.com,
+	trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH] crypto: lib/sha1 - use __DISABLE_EXPORTS for SHA1 library
+Message-ID: <20251217235745.GB89113@google.com>
+References: <20251217233826.1761939-1-ross.philipson@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -59,44 +57,46 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <59755b49-fb81-41bf-8875-17e0215f1d8e@kernel.org>
+In-Reply-To: <20251217233826.1761939-1-ross.philipson@oracle.com>
 
-On Sun, Nov 16, 2025 at 10:45:47AM -0700, David Ahern wrote:
-> On 11/11/25 9:07 PM, Eric Biggers wrote:
-> > [Adding David Ahern.  I overlooked that iproute2 has separate
-> > maintainers for the main tree and the next tree.]
-> > 
-> > On Mon, Sep 29, 2025 at 12:46:48PM -0700, Eric Biggers wrote:
-> >> Add a basic SHA-1 implementation to lib/, and make lib/bpf_legacy.c use
-> >> it to calculate SHA-1 digests instead of the previous AF_ALG-based code.
-> >>
-> >> This eliminates the dependency on AF_ALG, specifically the kernel config
-> >> options CONFIG_CRYPTO_USER_API_HASH and CONFIG_CRYPTO_SHA1.
-> >>
-> >> Over the years AF_ALG has been very problematic, and it is also not
-> >> supported on all kernels.  Escalating to the kernel's privileged
-> >> execution context merely to calculate software algorithms, which can be
-> >> done in userspace instead, is not something that should have ever been
-> >> supported.  Even on kernels that support it, the syscall overhead of
-> >> AF_ALG means that it is often slower than userspace code.
-> >>
-> >> Let's do the right thing here, and allow people to disable AF_ALG
-> >> support (or not enable it) on systems where iproute2 is the only user.
-> >>
-> >> Acked-by: Ard Biesheuvel <ardb@kernel.org>
-> >> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> > 
-> > Stephen and David, any interest in applying this patch?
-> > 
-> > - Eric
+On Wed, Dec 17, 2025 at 03:38:26PM -0800, Ross Philipson wrote:
+> Allow the SHA1 library code in lib/crypto/sha1.c to be used in a pre-boot
+> environments. Use the __DISABLE_EXPORTS macro to disable function exports and
+> define the proper values for that environment as was done earlier for SHA256.
 > 
-> I do not have a strong opinion in either direction.
+> This issue was brought up during the review of the Secure Launch v15 patches
+> that use SHA1 in a pre-boot environment (link in tags below). This is being
+> sent as a standalone patch to address this.
 > 
-> If we are going to entertain removing AF_ALG code, we should apply the
-> patch to iproute2-next at the beginning of a dev cycle to give maximum
-> time for testing before it rolls out.
+> Link: https://lore.kernel.org/r/20251216002150.GA11579@quark
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+> ---
+>  lib/crypto/sha1.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/crypto/sha1.c b/lib/crypto/sha1.c
+> index 52788278cd17..e5a9e1361058 100644
+> --- a/lib/crypto/sha1.c
+> +++ b/lib/crypto/sha1.c
+> @@ -154,7 +154,7 @@ static void __maybe_unused sha1_blocks_generic(struct sha1_block_state *state,
+>  	memzero_explicit(workspace, sizeof(workspace));
+>  }
+>  
+> -#ifdef CONFIG_CRYPTO_LIB_SHA1_ARCH
+> +#if defined(CONFIG_CRYPTO_LIB_SHA1_ARCH) && !defined(__DISABLE_EXPORTS)
+>  #include "sha1.h" /* $(SRCARCH)/sha1.h */
+>  #else
+>  #define sha1_blocks sha1_blocks_generic
 
-Any insight into when that would be?
+Shouldn't this be part of the patchset that needs this?
+
+Also, when __DISABLE_EXPORTS is defined, only the functionality actually
+used by pre-boot environments should be included.  HMAC support for
+example probably isn't needed.
+
+The commit title is also misleading.  How about:
+"lib/crypto: sha1: Add support for pre-boot environments".
 
 - Eric
 
