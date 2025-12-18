@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-19216-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19210-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF720CCC140
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 14:45:45 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A33ACCC11E
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 14:45:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 56EA8305A4A1
-	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 13:45:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2BDC830253F8
+	for <lists+linux-crypto@lfdr.de>; Thu, 18 Dec 2025 13:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C21339701;
-	Thu, 18 Dec 2025 13:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987CA3370F4;
+	Thu, 18 Dec 2025 13:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="0bwocHr9"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="d/WhTcWP"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
+Received: from canpmsgout09.his.huawei.com (canpmsgout09.his.huawei.com [113.46.200.224])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D73337BB5;
-	Thu, 18 Dec 2025 13:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA1E313532;
+	Thu, 18 Dec 2025 13:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.224
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766065510; cv=none; b=uhquxPQcO2G4nSQEC6wtFiNk8y/Ni3jhqEPwwzQuQJAfsoy9R+NK1ffjXBG7R2b1WQ6Rf/8ncOIcSrlv9B7zJrbPlaT5x0f4vZ4TCIdBf1SlgA2THIvd4eKbwsTbBcXRdnNeVxbe9P2Zd0uBgXWUYib/cPbwoTFm9QZJgP4Lkhs=
+	t=1766065502; cv=none; b=BqPg3YjNNmRiXj9XKjxNXiSzPEkZ9frb7XYszOSKFCWrWKViLMAYlDjSaLCpsprixTx5p3F3qUhSObqHv+f//NUD6ktulply8EZvuLj6RL2oZKHd2St/nvXaNTjMSjvsKW21e2PC1s5G/I17r9OMHcaUEsWMP3T48SAKSUMzQQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766065510; c=relaxed/simple;
-	bh=k3PYUYldUkanueYrxhEs6PniLYm1z8jMAYgNS2K3c0s=;
+	s=arc-20240116; t=1766065502; c=relaxed/simple;
+	bh=V18kuphHSHzn2zX8MMTtK/qAaqWWCRgnickhv3tFHOQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OAO6wirfiCDlOCMwJxJo47x0uURPxbdlY6UqnhoibOjlSUJCBU40qnheFs/4BRtO41iqtDRpioPqY59fAiGlsSd52nvV1rGeAiR94/UW2Dms1tH3O4LyPibwUeKOYexxEyKNVnluawuuVFgIyduADnkn6vhyJOZArGJk56IMbDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=0bwocHr9; arc=none smtp.client-ip=113.46.200.223
+	 MIME-Version:Content-Type; b=cFdZAQY4SR6PtwTbzdWNQUDwdh9DKPUiBDPK3Akgfxzrfhp/jPnRcG4EV8BVEzzzh5IFz6/R54lRHAPF/RsiBem0knHJ5BDskahOzQKbc8z8hXPkt++FzH7VXEGONws7YA7Y0+DsGEfwIqKWDgYxgw47H55nAbValcEsJpsoSwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=d/WhTcWP; arc=none smtp.client-ip=113.46.200.224
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=EVgLOcV4IdojDzzGUqNKzPkGJA5NdIs2RtJoshkEBuc=;
-	b=0bwocHr9qLh0iZfJcUdXGA4rMo93F5EP7hILnwje6kcR/F0saF+2KEzCC/1ST6e/dPNOVuIXh
-	aTqThLWspby+MeiS3e+pEPGv35V7x3ZFKal573HtrR0vJhxzGv0Qh2KdacyUgKWos7/mG8MEdGT
-	2B/g2e8IORshKUDRBVJ9wdA=
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4dXBfS6zpGzmV69;
-	Thu, 18 Dec 2025 21:41:52 +0800 (CST)
-Received: from dggemv712-chm.china.huawei.com (unknown [10.1.198.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id 042711400F4;
+	bh=6W7GIh3IV/ccDQPpHaulZvlBfuw92uwjW8mqbE1A7JE=;
+	b=d/WhTcWPM8Mwb/Sg10B+mRQAAtTC8VfHxueR2j3o5z2QxfXfZWlbrCDWId4merTt3AwhGtK8w
+	NbrEjVqCYvlWa6Vyw86kz1/IPCSPYmjwTBGCAen+4vypJzqes+jhjn7+1uyBg2yHZN7LR9YBjj5
+	4cfaAAO7Q5dZX18aZunojt0=
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by canpmsgout09.his.huawei.com (SkyGuard) with ESMTPS id 4dXBfV3z9vz1cyPb;
+	Thu, 18 Dec 2025 21:41:54 +0800 (CST)
+Received: from dggemv705-chm.china.huawei.com (unknown [10.3.19.32])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6EAA914010D;
 	Thu, 18 Dec 2025 21:44:57 +0800 (CST)
 Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv712-chm.china.huawei.com (10.1.198.32) with Microsoft SMTP Server
+ dggemv705-chm.china.huawei.com (10.3.19.32) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 18 Dec 2025 21:44:56 +0800
+ 15.2.1544.11; Thu, 18 Dec 2025 21:44:57 +0800
 Received: from localhost.huawei.com (10.90.31.46) by
  kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -56,9 +56,9 @@ CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
 	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>, <lizhi206@huawei.com>,
 	<taoqi10@huawei.com>
-Subject: [PATCH v4 07/11] crypto: hisilicon/qm - add reference counting to queues for tfm kernel reuse
-Date: Thu, 18 Dec 2025 21:44:48 +0800
-Message-ID: <20251218134452.1125469-8-huangchenghai2@huawei.com>
+Subject: [PATCH v4 08/11] crypto: hisilicon/qm - optimize device selection priority based on queue ref count and NUMA distance
+Date: Thu, 18 Dec 2025 21:44:49 +0800
+Message-ID: <20251218134452.1125469-9-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20251218134452.1125469-1-huangchenghai2@huawei.com>
 References: <20251218134452.1125469-1-huangchenghai2@huawei.com>
@@ -73,170 +73,81 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
  kwepemq200001.china.huawei.com (7.202.195.16)
 
-Add reference counting to queues. When all queues are occupied, tfm
-will reuse queues with the same algorithm type that have already
-been allocated in the kernel. The corresponding queue will be
-released when the reference count reaches 1.
+Add device sorting criteria to prioritize devices with fewer
+references and closer NUMA distances. Devices that are fully
+occupied will not be prioritized for use.
 
-Reviewed-by: Longfang Liu <liulongfang@huawei.com>
 Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 65 +++++++++++++++++++++++++++--------
- include/linux/hisi_acc_qm.h   |  1 +
- 2 files changed, 52 insertions(+), 14 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 35 +++++++++++++++++++++++++----------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 4cdb443e2889..3883b6176213 100644
+index 3883b6176213..7b9ef40ee5c9 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -2002,7 +2002,38 @@ static void hisi_qm_unset_hw_reset(struct hisi_qp *qp)
- 	*addr = 0;
+@@ -3592,6 +3592,20 @@ void hisi_qm_free_qps(struct hisi_qp **qps, int qp_num)
  }
+ EXPORT_SYMBOL_GPL(hisi_qm_free_qps);
  
--static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
-+static struct hisi_qp *find_shareable_qp(struct hisi_qm *qm, u8 alg_type, bool is_in_kernel)
++static void qm_insert_sorted(struct list_head *head, struct hisi_qm_resource *res)
 +{
-+	struct device *dev = &qm->pdev->dev;
-+	struct hisi_qp *share_qp = NULL;
-+	struct hisi_qp *qp;
-+	u32 ref_count = ~0;
-+	int i;
++	struct hisi_qm_resource *tmp;
++	struct list_head *n = head;
 +
-+	if (!is_in_kernel)
-+		goto queues_busy;
-+
-+	for (i = 0; i < qm->qp_num; i++) {
-+		qp = &qm->qp_array[i];
-+		if (qp->is_in_kernel && qp->alg_type == alg_type && qp->ref_count < ref_count) {
-+			ref_count = qp->ref_count;
-+			share_qp = qp;
++	list_for_each_entry(tmp, head, list) {
++		if (res->distance < tmp->distance) {
++			n = &tmp->list;
++			break;
 +		}
 +	}
-+
-+	if (share_qp) {
-+		share_qp->ref_count++;
-+		return share_qp;
-+	}
-+
-+queues_busy:
-+	dev_info_ratelimited(dev, "All %u queues of QM are busy and no shareable queue\n",
-+			     qm->qp_num);
-+	atomic64_inc(&qm->debug.dfx.create_qp_err_cnt);
-+	return ERR_PTR(-EBUSY);
++	list_add_tail(&res->list, n);
 +}
 +
-+static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type, bool is_in_kernel)
+ static void free_list(struct list_head *head)
  {
- 	struct device *dev = &qm->pdev->dev;
- 	struct hisi_qp *qp;
-@@ -2013,12 +2044,9 @@ static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
- 		return ERR_PTR(-EPERM);
+ 	struct hisi_qm_resource *res, *tmp;
+@@ -3647,11 +3661,12 @@ static int qm_get_and_start_qp(struct hisi_qm *qm, int qp_num, struct hisi_qp **
+ static int hisi_qm_sort_devices(int node, struct list_head *head,
+ 				struct hisi_qm_list *qm_list)
+ {
+-	struct hisi_qm_resource *res, *tmp;
++	struct hisi_qm_resource *res;
+ 	struct hisi_qm *qm;
+-	struct list_head *n;
+ 	struct device *dev;
+ 	int dev_node;
++	LIST_HEAD(non_full_list);
++	LIST_HEAD(full_list);
+ 
+ 	list_for_each_entry(qm, &qm_list->list, list) {
+ 		dev = &qm->pdev->dev;
+@@ -3666,16 +3681,16 @@ static int hisi_qm_sort_devices(int node, struct list_head *head,
+ 
+ 		res->qm = qm;
+ 		res->distance = node_distance(dev_node, node);
+-		n = head;
+-		list_for_each_entry(tmp, head, list) {
+-			if (res->distance < tmp->distance) {
+-				n = &tmp->list;
+-				break;
+-			}
+-		}
+-		list_add_tail(&res->list, n);
++
++		if (qm->qp_in_used == qm->qp_num)
++			qm_insert_sorted(&full_list, res);
++		else
++			qm_insert_sorted(&non_full_list, res);
  	}
  
--	if (qm->qp_in_used == qm->qp_num) {
--		dev_info_ratelimited(dev, "All %u queues of QM are busy!\n",
--				     qm->qp_num);
--		atomic64_inc(&qm->debug.dfx.create_qp_err_cnt);
--		return ERR_PTR(-EBUSY);
--	}
-+	/* Try to find a shareable queue when all queues are busy */
-+	if (qm->qp_in_used == qm->qp_num)
-+		return find_shareable_qp(qm, alg_type, is_in_kernel);
- 
- 	qp_id = idr_alloc_cyclic(&qm->qp_idr, NULL, 0, qm->qp_num, GFP_ATOMIC);
- 	if (qp_id < 0) {
-@@ -2034,10 +2062,10 @@ static struct hisi_qp *qm_create_qp_nolock(struct hisi_qm *qm, u8 alg_type)
- 
- 	qp->event_cb = NULL;
- 	qp->req_cb = NULL;
--	qp->qp_id = qp_id;
- 	qp->alg_type = alg_type;
--	qp->is_in_kernel = true;
-+	qp->is_in_kernel = is_in_kernel;
- 	qm->qp_in_used++;
-+	qp->ref_count = 1;
- 
- 	return qp;
- }
-@@ -2059,7 +2087,7 @@ static struct hisi_qp *hisi_qm_create_qp(struct hisi_qm *qm, u8 alg_type)
- 		return ERR_PTR(ret);
- 
- 	down_write(&qm->qps_lock);
--	qp = qm_create_qp_nolock(qm, alg_type);
-+	qp = qm_create_qp_nolock(qm, alg_type, false);
- 	up_write(&qm->qps_lock);
- 
- 	if (IS_ERR(qp))
-@@ -2458,7 +2486,6 @@ static int hisi_qm_uacce_get_queue(struct uacce_device *uacce,
- 	qp->uacce_q = q;
- 	qp->event_cb = qm_qp_event_notifier;
- 	qp->pasid = arg;
--	qp->is_in_kernel = false;
- 
++	list_splice_tail(&non_full_list, head);
++	list_splice_tail(&full_list, head);
++
  	return 0;
  }
-@@ -3532,6 +3559,9 @@ static void qm_release_qp_nolock(struct hisi_qp *qp)
- {
- 	struct hisi_qm *qm = qp->qm;
  
-+	if (--qp->ref_count)
-+		return;
-+
- 	qm->qp_in_used--;
- 	idr_remove(&qm->qp_idr, qp->qp_id);
- }
-@@ -3551,7 +3581,9 @@ void hisi_qm_free_qps(struct hisi_qp **qps, int qp_num)
- 	down_write(&qps[0]->qm->qps_lock);
- 
- 	for (i = qp_num - 1; i >= 0; i--) {
--		qm_stop_qp_nolock(qps[i]);
-+		if (qps[i]->ref_count == 1)
-+			qm_stop_qp_nolock(qps[i]);
-+
- 		qm_release_qp_nolock(qps[i]);
- 	}
- 
-@@ -3580,12 +3612,15 @@ static int qm_get_and_start_qp(struct hisi_qm *qm, int qp_num, struct hisi_qp **
- 
- 	down_write(&qm->qps_lock);
- 	for (i = 0; i < qp_num; i++) {
--		qps[i] = qm_create_qp_nolock(qm, alg_type[i]);
-+		qps[i] = qm_create_qp_nolock(qm, alg_type[i], true);
- 		if (IS_ERR(qps[i])) {
- 			ret = -ENODEV;
- 			goto stop_and_free;
- 		}
- 
-+		if (qps[i]->ref_count != 1)
-+			continue;
-+
- 		ret = qm_start_qp_nolock(qps[i], 0);
- 		if (ret) {
- 			qm_release_qp_nolock(qps[i]);
-@@ -3598,7 +3633,9 @@ static int qm_get_and_start_qp(struct hisi_qm *qm, int qp_num, struct hisi_qp **
- 
- stop_and_free:
- 	for (i--; i >= 0; i--) {
--		qm_stop_qp_nolock(qps[i]);
-+		if (qps[i]->ref_count == 1)
-+			qm_stop_qp_nolock(qps[i]);
-+
- 		qm_release_qp_nolock(qps[i]);
- 	}
- 	up_write(&qm->qps_lock);
-diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index 4cf418a41fe4..26032d98e9bd 100644
---- a/include/linux/hisi_acc_qm.h
-+++ b/include/linux/hisi_acc_qm.h
-@@ -472,6 +472,7 @@ struct hisi_qp {
- 	u16 pasid;
- 	struct uacce_queue *uacce_q;
- 
-+	u32 ref_count;
- 	spinlock_t qp_lock;
- 	struct instance_backlog backlog;
- 	const void **msg;
 -- 
 2.33.0
 
