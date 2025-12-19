@@ -1,82 +1,138 @@
-Return-Path: <linux-crypto+bounces-19270-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19274-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05601CCEBAD
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Dec 2025 08:11:44 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EDE2CCF0A0
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Dec 2025 09:51:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C473C300E3EE
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Dec 2025 07:10:18 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C77D7300FA62
+	for <lists+linux-crypto@lfdr.de>; Fri, 19 Dec 2025 08:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C997D2D8370;
-	Fri, 19 Dec 2025 07:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="SxVjGFwW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109732DA75B;
+	Fri, 19 Dec 2025 08:51:53 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [61.152.208.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8FD14F112;
-	Fri, 19 Dec 2025 07:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB3F21C163
+	for <linux-crypto@vger.kernel.org>; Fri, 19 Dec 2025 08:51:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.152.208.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766128217; cv=none; b=kfrC2KnOT6JDAXPKrlvKgnGIe0fiJjew8KVnu6Kk+5rHOFevJythIF3nlIAjHD3dkIla0rEGBC68ID+5+e+gpYt8IdHUxGyP1TLxvgs0v9/AOv/aynf+zz4r68GX0/TH+LLyzFu91nqRXKANbrJsKSIN5n4wMzqzG/XGWqsVKx4=
+	t=1766134312; cv=none; b=PqOMAzTB25+KkpWZ8N8POEGyWDfrYa8w+GHyK3PR+yTE6X7BtJygDKttkdtE0Gex0251W2hu3xyGtxMmQW0mrHBGvQ+COH8O/sjPLRt2U7DYgRPMjZj3AZnhZGkwvogXNc4OHZttNCw7JSn3B7BUDHf5bahpEKZ1+KQsB4Ae23c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766128217; c=relaxed/simple;
-	bh=tthodktePkZw6QWs36L2wTy3x3xoJzO7EagOdaEqud4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qxrCGBMNq/YNpFAJImgW4YfZcNxtPU59ef1ORSZvM880kTHn7r9bDjzLuRc9L+wj9OZIF1OjdOgYa8KSZTQU5/fUNmlZh0ODagiiTcbHLQnFye2coUTuYw11jFWwNTcxdaxKhh7J/FRfjeRITTMGxtSB4Cuk6Fly/MdQpzqHnZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=SxVjGFwW; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=0IdTEIJic/n+vUotbAdvyVrSN8GI4BHbcbwGgmGsDX4=; 
-	b=SxVjGFwW7PDfb6EtVylzQLHOgQPASbXYqZ6QHZNjB4Biw5DnA5At9V42nsiFPfMIo31Pg/0iVsj
-	1+bGae7zxqRRgT1OsnzqdOZuCa7BOdf0A/yb9+dwUz99buiGx/ZMxrjhDsuixIDYr/VmO0eDPnkUw
-	ZM8B14tDyp36LP14fp0mI0iaOhq3EJ6m2eu/TheMXwjtUQ99oL7qLsC9N+M5tfehj33PXDRH9HWp5
-	LfIuNULsrOVFcZ41E+V+PyiNseIQ/Y4gZtFP34fCIHRinj/Pg1B6NTXpOMIly+SeHBjbm7s2Wv2hD
-	gIFo6wcewiqt9QVR1ZEpop0IELug2lYSz/eA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vWUcq-00BEkB-1A;
-	Fri, 19 Dec 2025 15:10:09 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 19 Dec 2025 15:10:08 +0800
-Date: Fri, 19 Dec 2025 15:10:08 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: algapi - Use crypto_unregister_algs in
- crypto_register_algs
-Message-ID: <aUT6UC1WmtiDCmXl@gondor.apana.org.au>
-References: <20251211101555.802559-1-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1766134312; c=relaxed/simple;
+	bh=ecq8bqhVdV9cK8MEsLyMUO2l9TkGGc5XrfJctuTcCkk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mtGxIDEmNY1t+wq4MCgR3MXoZBaO79EaGwDEyW3jn9gl8U/+Uaj92kUYatQjMSQ9mQY3XsFXFKpoOZE7t3vaojWyz5kCeIKBnZAL+Uqe6NwZsOK7EEreCwwPPoI6v+bY9bgx6Qm2QQtqi2UFR0zXK6DIZYqKzEoHK3+POzjCfDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=61.152.208.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1766134276-1eb14e3d89fb300002-Xm9f1P
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id 4v3ZK2DTwu9Gi4ef (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Fri, 19 Dec 2025 16:51:44 +0800 (CST)
+X-Barracuda-Envelope-From: AlanSong-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from ZXSHMBX1.zhaoxin.com (10.28.252.163) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.59; Fri, 19 Dec
+ 2025 16:51:20 +0800
+Received: from ZXSHMBX1.zhaoxin.com ([fe80::936:f2f9:9efa:3c85]) by
+ ZXSHMBX1.zhaoxin.com ([fe80::936:f2f9:9efa:3c85%7]) with mapi id
+ 15.01.2507.059; Fri, 19 Dec 2025 16:51:20 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from DESKTOP-A4I8D8T.zhaoxin.com (10.32.65.156) by
+ ZXBJMBX02.zhaoxin.com (10.29.252.6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.59; Fri, 19 Dec 2025 16:03:19 +0800
+From: AlanSong-oc <AlanSong-oc@zhaoxin.com>
+To: <herbert@gondor.apana.org.au>, <ebiggers@kernel.org>, <Jason@zx2c4.com>,
+	<ardb@kernel.org>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <CobeChen@zhaoxin.com>, <TonyWWang-oc@zhaoxin.com>, <YunShen@zhaoxin.com>,
+	<GeorgeXue@zhaoxin.com>, <LeoLiu-oc@zhaoxin.com>, <HansHu@zhaoxin.com>,
+	AlanSong-oc <AlanSong-oc@zhaoxin.com>
+Subject: [PATCH v2 0/2] lib/crypto: x86/sha: Add PHE Extensions support
+Date: Fri, 19 Dec 2025 16:03:04 +0800
+X-ASG-Orig-Subj: [PATCH v2 0/2] lib/crypto: x86/sha: Add PHE Extensions support
+Message-ID: <cover.1766131281.git.AlanSong-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251211101555.802559-1-thorsten.blum@linux.dev>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX02.zhaoxin.com (10.29.252.6)
+X-Moderation-Data: 12/19/2025 4:51:18 PM
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1766134276
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 2214
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -1.62
+X-Barracuda-Spam-Status: No, SCORE=-1.62 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=BSF_SC0_SA085b
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.151782
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
+	0.40 BSF_SC0_SA085b         Custom Rule SA085b
 
-On Thu, Dec 11, 2025 at 11:15:55AM +0100, Thorsten Blum wrote:
-> Replace the for loop with a call to crypto_unregister_algs(). Return
-> 'ret' immediately and remove the goto statement to simplify the error
-> handling code.
-> 
-> In crypto_unregister_algs(), unregister the algorithms in reverse order.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->  crypto/algapi.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
+For Zhaoxin processors, the XSHA1 instruction requires the total memory
+allocated at %rdi register must be 32 bytes, while the XSHA1 and
+XSHA256 instruction doesn't perform any operation when %ecx is zero.
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Due to these requirements, the current padlock-sha driver does not work
+correctly with Zhaoxin processors. It cannot pass the self-tests and
+therefore does not activate the driver on Zhaoxin processors. This issue
+has been reported in Debian [1]. The self-tests fail with the
+following messages [2]:
+
+alg: shash: sha1-padlock-nano test failed (wrong result) on test vector 0, =
+cfg=3D"init+update+final aligned buffer"
+alg: self-tests for sha1 using sha1-padlock-nano failed (rc=3D-22)
+------------[ cut here ]------------
+
+alg: shash: sha256-padlock-nano test failed (wrong result) on test vector 0=
+, cfg=3D"init+update+final aligned buffer"
+alg: self-tests for sha256 using sha256-padlock-nano failed (rc=3D-22)
+------------[ cut here ]------------
+
+To enable XSHA1 and XSHA256 instruction support on Zhaoxin processors,
+this series adds PHE Extensions support to lib/crypto for SHA-1 and
+SHA-256, following the suggestion in [3].
+
+v1 link is below:
+https://lore.kernel.org/linux-crypto/20250611101750.6839-1-AlanSong-oc@zhao=
+xin.com/
+
+---
+v1->v2: Add Zhaoxin support to lib/crypto instead of extending
+        the existing padlock-sha driver
+
+[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D1103397
+[2] https://linux-hardware.org/?probe=3D271fabb7a4&log=3Ddmesg
+[3] https://lore.kernel.org/linux-crypto/aUI4CGp6kK7mxgEr@gondor.apana.org.=
+au/
+
+AlanSong-oc (2):
+  lib/crypto: x86/sha1: PHE Extensions optimized SHA1 transform function
+  lib/crypto: x86/sha256: PHE Extensions optimized SHA256 transform
+    function
+
+ lib/crypto/Makefile             |  6 ++-
+ lib/crypto/x86/sha1-phe-asm.S   | 71 +++++++++++++++++++++++++++++++++
+ lib/crypto/x86/sha1.h           | 20 ++++++++++
+ lib/crypto/x86/sha256-phe-asm.S | 70 ++++++++++++++++++++++++++++++++
+ lib/crypto/x86/sha256.h         | 20 ++++++++++
+ 5 files changed, 185 insertions(+), 2 deletions(-)
+ create mode 100644 lib/crypto/x86/sha1-phe-asm.S
+ create mode 100644 lib/crypto/x86/sha256-phe-asm.S
+
+--=20
+2.34.1
+
 
