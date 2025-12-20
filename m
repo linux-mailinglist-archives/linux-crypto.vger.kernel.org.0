@@ -1,152 +1,171 @@
-Return-Path: <linux-crypto+bounces-19375-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19377-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30610CD20D2
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Dec 2025 22:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 922A9CD2686
+	for <lists+linux-crypto@lfdr.de>; Sat, 20 Dec 2025 04:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 611C3305B7FC
-	for <lists+linux-crypto@lfdr.de>; Fri, 19 Dec 2025 21:49:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 70462301C96B
+	for <lists+linux-crypto@lfdr.de>; Sat, 20 Dec 2025 03:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2881C2D3A60;
-	Fri, 19 Dec 2025 21:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FF9284890;
+	Sat, 20 Dec 2025 03:50:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wxzxqX9N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6T1wVxO"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEAA273D6D
-	for <linux-crypto@vger.kernel.org>; Fri, 19 Dec 2025 21:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AE71D90DF;
+	Sat, 20 Dec 2025 03:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766180954; cv=none; b=uc+kB8AAp3zzAHysne6emaA50E6MdVR5KXwlaLJZ4f/gNhYj1adDay0hFc8EXvh9Y97txWF7Tx27sSN5al4rDSUIZSSGVFeDjnxn3difRd+B+vDbhdIhRf2oXqzaHadIUjogY/Ju5hi/PJsjNftqJdaaOpGJj3stedIvG0h5v30=
+	t=1766202644; cv=none; b=p5l1zYnCZ1QY6sFJd6eZlDrfQhE80ilf93j9rsNj2ZwcwBcz55VUCJNuLPzZXyKKgvsYQpdmlDLpeCHBSf3n2KWGUU5MDC5K3bzMKlzPK1UFXA/TQsHi8hyLhqMp93AyyU0pHywksCVnmPVN3omu7orEjk0+r3yy36sMGTsIr1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766180954; c=relaxed/simple;
-	bh=k9J0WFzlkYtCk1RXVJs8ICS2UcS46vYMNi/KF0RXH0A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I1sskR2pVAHwXjnAW1kWbe8IdO+U2xTvI65KYvxfLHUvzL3OhOh2CDoZibik1XM6SfgmvwWVBsuF7K27xgpr2shdH6BkLerC38DdKImwGpML0SCxjH+qkTwc+AlrTaDumhrYNdG1c0IBHDcaZWQiWEMVB0kmznho7dN6cMVYgtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wxzxqX9N; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-34c718c5481so2113215a91.3
-        for <linux-crypto@vger.kernel.org>; Fri, 19 Dec 2025 13:49:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1766180952; x=1766785752; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NzDuEDjTM8ZWLDMfL/9YFXqkNSYfSWOUAvfjFgQokA0=;
-        b=wxzxqX9NTO+ux5QSAcxOM6N4IFypnQhbKmPscGrkLhB0JOtlA75xFwJBn3T/ndKGFF
-         dGu73fTDFG1w7J7q09Rt2RIg0RiPTxdyLZAi9Yo7VnX4CCGDbs+Al8VT5I+bWlMi2RSa
-         2FbFx4vLCJK8j0nAmNQv4ZuhoB8LqGTKjzRN5XBCWHSTJLbQiVTuCIkipaAoML/6gSY1
-         JVw//ZcP0nWpjLQ/CeXnGTPTOumpHJ4dU8U8gMyF3aTjQe321HLJGcUCIclL0o8h2+BZ
-         7p+xcyKOMxVFgvpAYQBtWCVrv8RzLkh0A5kz4oHK0cAt/eZmsHmkQgBgG6tbS+FLp400
-         uL7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766180952; x=1766785752;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NzDuEDjTM8ZWLDMfL/9YFXqkNSYfSWOUAvfjFgQokA0=;
-        b=vA1q0ni+mTu4SZaXS9kavEUCAKx9swvGs/sKvaKqUdledYA9RG9NlrGiboNWOAUi/q
-         LrPPRMdpP7TdbTdnxo7SDtFpcasyqDdiXvYXA2nG1cetZJInhH5pmZGQqhlX3RYu6dKL
-         JtbXf2lp5db9jmunBsOm+nfIfw0dU7ttlTSMt5WGrexcrGKTIry6/rkaClPLlIFgL8K7
-         1eFvUaKh2pY4x6UaO/fBcZjjXLsCO2+QbwjrDqiapN3NGvf+xi66LGC/GuEifU8ceu8M
-         ph0m4JulF9hHv50lgNcRvalRqtqmcYGp06/GvGkw4iHpoHY3/gMOwTDHs2FKhUISM/co
-         gAdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUg90c5VEI7CN1dgU1tZL5bqg4yTCtnhj0G65f0wPXats8385GOxrkwJblR1EZWyP34YY/piOqz4DpeplU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YygtcIuar07m6mokYDdxYPZW7kOt0nc3jNzXattQMJ/26jrcbvX
-	XwHU3iXwEe3kATQxagk7FQPqu8H1XinaBvVoGIF2mgqqUS1pSxVjHMH0PH5OzRyzHKxHatWkzq4
-	4k7QpyEsE/pLVwWk08WCxxmtjOmlRiAebqRpklzG5
-X-Gm-Gg: AY/fxX4GI7IT3H+Jjq9jAFQbFcEwVaBH45mRXzpOQ0sTgqzvizKdDCtQ0e4WU2LGGW9
-	K3sqspTbj9UfQLHM26rKimkGSfSQZuuS8zha7s7nW0PGWQwiXxCgjueCLVe8W1qUl89OQ6ku9gL
-	zm4e+MLQpKmzUGOCyDTXnKceLyHri0JRqiYm75eqHV+eAor80f/q7jmzqAA9Oog9rdjID1JE++e
-	XUXLpzBtZlSDdq3uzkk9EBD4Tvu3uvCF47fzvxEbE/5UPVgdMTgrT87o7qMzXaPh8+sinYr7b8x
-	KvRCcTKcH1Gb3WqYbiXJ4+GHnNs=
-X-Google-Smtp-Source: AGHT+IH1wb+RKJ6da97DpXPpqA5MRT8qx5b7FDx5k2pjduqaEcwfYWMMGR5Rn4FLqe1i8Vtg4dzqeBXKvhP326Y4ZH8=
-X-Received: by 2002:a05:7022:213:b0:11a:4016:44a5 with SMTP id
- a92af1059eb24-121722de1e1mr5781198c88.24.1766180951816; Fri, 19 Dec 2025
- 13:49:11 -0800 (PST)
+	s=arc-20240116; t=1766202644; c=relaxed/simple;
+	bh=MrMds3utW8eAWwtDygjBW2IqUKEl4oFRSbnzbCmLv7o=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=tT+MTwmkER0Ek2Bzi0uaPE96voC3zNtkcaDEuo4W0aGsXnCFD/w4wjfMAKGUtvO3U0Uoa7J+a75M3U3JXTl8J67Vtz9g2gPtu8kx+UWRJoG1iYU3C0GyUN1CDKhu+6F6s6Ym+S/RlX2h9ZgPO0cfHJ4pu8y1w5nG80xekxSzqTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6T1wVxO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8542DC4CEF5;
+	Sat, 20 Dec 2025 03:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766202644;
+	bh=MrMds3utW8eAWwtDygjBW2IqUKEl4oFRSbnzbCmLv7o=;
+	h=From:Date:Subject:To:Cc:From;
+	b=f6T1wVxO5/BnJq19l7xlgAyL3t9t8ZSt2+XcG4Xt0o9yqBk+n+LBR873K82UEMCXl
+	 lkfR8Zpz8/N1i7IIYwt+Tc+8IzUYETOiO0bV66IP5ZMX8J1AhEVldltoAUOJNr+WRk
+	 zHO5xpGEf3QFGsu4ITn05+cn7tnbD/IOVa4/MpNr4XzfM5dSPa22Db5vTSL6xxx/o/
+	 B8MJhXIqZu3ahd6sLKfGsiGn4/GLfq724WN96Ec5lxwcoi5yUgONt0F960cnfvapTd
+	 N5TmTWnUVbbA5RmTlWz1l2cPkFJl1liEFAR3sl+TETJsIj4in68nOozTvxBhEbL+By
+	 2OqfopSQTgzqw==
+From: Daniel Gomez <da.gomez@kernel.org>
+Date: Sat, 20 Dec 2025 04:50:31 +0100
+Subject: [PATCH] KEYS: replace -EEXIST with -EBUSY
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251219154418.3592607-1-elver@google.com> <20251219154418.3592607-9-elver@google.com>
- <17723ae6-9611-4731-905c-60dab9fb7102@acm.org> <CANpmjNO0B_BBse12kAobCRBK0D2pKkSu7pKa5LQAbdzBZa2xcw@mail.gmail.com>
- <0088cc8c-b395-4659-854f-a6cc5df626ed@gmail.com>
-In-Reply-To: <0088cc8c-b395-4659-854f-a6cc5df626ed@gmail.com>
-From: Marco Elver <elver@google.com>
-Date: Fri, 19 Dec 2025 22:48:35 +0100
-X-Gm-Features: AQt7F2rGv_yg31bAGJRVSa1c9k6UbjL-L12dGmORxx_mEF1TxDypAURYmp5bQlk
-Message-ID: <CANpmjNN4JNG1OSWfGd2fAqTyYQ+Re7Czn796WD-47TwmuECxaQ@mail.gmail.com>
-Subject: Re: [PATCH v5 08/36] locking/rwlock, spinlock: Support Clang's
- context analysis
-To: Bart Van Assche <bart.vanassche@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
-	Chris Li <sparse@chrisli.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, 
-	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Ian Rogers <irogers@google.com>, 
-	Jann Horn <jannh@google.com>, Joel Fernandes <joelagnelf@nvidia.com>, 
-	Johannes Berg <johannes.berg@intel.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Josh Triplett <josh@joshtriplett.org>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <kees@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
-	Thomas Graf <tgraf@suug.ch>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
-	kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20251220-dev-module-init-eexists-keyring-v1-1-a2f23248c300@samsung.com>
+X-B4-Tracking: v=1; b=H4sIAAYdRmkC/x2NwQqDMBAFf0X27EISlIq/UnpQ89RFG0tWRRH/3
+ dDjMDBzkSIKlOrsoohdVJaQwOYZdWMTBrD4xOSMK62zFXvs/F38NicTZGXgEF2VJ5xRwsBla0z
+ lX+jbwlCq/CJ6Of6H9+e+HxemqPNxAAAA
+X-Change-ID: 20251218-dev-module-init-eexists-keyring-5b008d7efb40
+To: David Howells <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>, 
+ Ignat Korchagin <ignat@cloudflare.com>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Jarkko Sakkinen <jarkko@kernel.org>, Paul Moore <paul@paul-moore.com>, 
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
+ Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+ Aaron Tomlin <atomlin@atomlin.com>, Lucas De Marchi <demarchi@kernel.org>, 
+ keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, 
+ linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, Daniel Gomez <da.gomez@samsung.com>
+X-Mailer: b4 0.15-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3333; i=da.gomez@samsung.com;
+ h=from:subject:message-id; bh=q4cI0aBVoXHVJKhjzx9eP5SA50zhMHGoxrB7LDqV3kk=;
+ b=owEBbQKS/ZANAwAIAUCeo8QfGVH7AcsmYgBpRh0PGnY21kDDwXOVauY8RTS22ihvwD0eaIfmf
+ LMLk8+ZhcKJAjMEAAEIAB0WIQTvdRrhHw9z4bnGPFNAnqPEHxlR+wUCaUYdDwAKCRBAnqPEHxlR
+ +wa0D/4xxAMBT8H1iUmQHNZewuG0zfcL0uHrZ4rgUTrfKRV7AuL9BlOhEGfLmU88ORKPQBzDn2o
+ rzMJF6+V0/1lJ3Q3+qCabABUADW50OaouR8mNzXsg+tpxOXg8IC1rJe+u4awcuQOsaoO43b1slK
+ mZm3lsR7gb6mZWc8DjEu9yrzqZB82df1N6AdVZ+3mnj/ar9R9lymNNILHpp/W5RFy2DDkcD26Rv
+ coGeKkdvHsFDyZpf46Y2K+YXHbu07FL6gX/7Ho9GYVCF4BdFy8GJjiihUZ7zQXcqAt3H1Cl60Y/
+ lGnEtQZnFeixpWRlYO4vUMnwV43AErB49Nm1AB6EhM3ZVsMhcBKz680y/VqxHE8UnJxQFP5qI4M
+ yYgzqy/v8W+sN1FD7kW1AEDSxmKVnJR3ZyP4JrH8kOo5Vlvg2edb/3yBdOyD8rY8tGxNHq9rrT1
+ wyRNdFBtcjH/CoGsmYFq9AYs+vEqyHP2CJYHupXnE4q2TIUG0RFATLLzKIREXRQ0DhLKXwXRROf
+ At+x3LxriA0mN4fFA8pAMlz0v/5kHM5PNZrCXYDbgxqdSEwN6mmCs2N5EhSA9AgFgSthpUF4tPc
+ 7LcAcaasdDpqoszbNavgk10dTc9R5kcTtRUNv+3OBmzJMWRAHTXmHx5de6F1JrgZO6LpiMjzDG5
+ AXv0xrgDZdSlx7w==
+X-Developer-Key: i=da.gomez@samsung.com; a=openpgp;
+ fpr=B2A7A9CFDD03B540FF58B27185F56EA4E9E8138F
 
-On Fri, 19 Dec 2025 at 22:34, Bart Van Assche <bart.vanassche@gmail.com> wrote:
->
-> On 12/19/25 2:02 PM, Marco Elver wrote:
-> > On Fri, 19 Dec 2025 at 21:26, Bart Van Assche <bvanassche@acm.org> wrote:
-> >> On 12/19/25 7:39 AM, Marco Elver wrote:
-> >>> - extern void do_raw_read_lock(rwlock_t *lock) __acquires(lock);
-> >>> + extern void do_raw_read_lock(rwlock_t *lock) __acquires_shared(lock);
-> >>
-> >> Given the "one change per patch" rule, shouldn't the annotation fixes
-> >> for rwlock operations be moved into a separate patch?
-> >>
-> >>> -typedef struct {
-> >>> +context_lock_struct(rwlock) {
-> >>>        arch_rwlock_t raw_lock;
-> >>>    #ifdef CONFIG_DEBUG_SPINLOCK
-> >>>        unsigned int magic, owner_cpu;
-> >>> @@ -31,7 +31,8 @@ typedef struct {
-> >>>    #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> >>>        struct lockdep_map dep_map;
-> >>>    #endif
-> >>> -} rwlock_t;
-> >>> +};
-> >>> +typedef struct rwlock rwlock_t;
-> >>
-> >> This change introduces a new globally visible "struct rwlock". Although
-> >> I haven't found any existing "struct rwlock" definitions, maybe it's a
-> >> good idea to use a more unique name instead.
-> >
-> > This doesn't actually introduce a new globally visible "struct
-> > rwlock", it's already the case before.
-> > An inlined struct definition in a typedef is available by its struct
-> > name, so this is not introducing a new name
-> > (https://godbolt.org/z/Y1jf66e1M).
->
-> Please take another look. The godbolt example follows the pattern
-> "typedef struct name { ... } name_t;". The "name" part is missing from
-> the rwlock_t definition. This is why I wrote that the above code
-> introduces a new global struct name.
+From: Daniel Gomez <da.gomez@samsung.com>
 
-You're right. My point only applies to "typedef struct spinlock ..."
+The -EEXIST error code is reserved by the module loading infrastructure
+to indicate that a module is already loaded. When a module's init
+function returns -EEXIST, userspace tools like kmod interpret this as
+"module already loaded" and treat the operation as successful, returning
+0 to the user even though the module initialization actually failed.
+
+This follows the precedent set by commit 54416fd76770 ("netfilter:
+conntrack: helper: Replace -EEXIST by -EBUSY") which fixed the same
+issue in nf_conntrack_helper_register().
+
+Affected modules:
+  * pkcs8_key_parser x509_key_parser asymmetric_keys dns_resolver
+  * nvme_keyring pkcs7_test_key rxrpc turris_signing_key
+
+Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
+---
+The error code -EEXIST is reserved by the kernel module loader to
+indicate that a module with the same name is already loaded. When a
+module's init function returns -EEXIST, kmod interprets this as "module
+already loaded" and reports success instead of failure [1].
+
+The kernel module loader will include a safety net that provides -EEXIST
+to -EBUSY with a warning [2], and a documentation patch has been sent to
+prevent future occurrences [3].
+
+These affected code paths were identified using a static analysis tool
+[4] that traces -EEXIST returns to module_init(). The tool was developed
+with AI assistance and all findings were manually validated.
+
+Link: https://lore.kernel.org/all/aKEVQhJpRdiZSliu@orbyte.nwl.cc/ [1]
+Link: https://lore.kernel.org/all/20251013-module-warn-ret-v1-0-ab65b41af01f@intel.com/ [2]
+Link: https://lore.kernel.org/all/20251218-dev-module-init-eexists-modules-docs-v1-0-361569aa782a@samsung.com/ [3]
+Link: https://gitlab.com/-/snippets/4913469 [4]
+---
+ crypto/asymmetric_keys/asymmetric_type.c | 2 +-
+ security/keys/key.c                      | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/crypto/asymmetric_keys/asymmetric_type.c b/crypto/asymmetric_keys/asymmetric_type.c
+index 348966ea2175..2c6f3a725102 100644
+--- a/crypto/asymmetric_keys/asymmetric_type.c
++++ b/crypto/asymmetric_keys/asymmetric_type.c
+@@ -634,7 +634,7 @@ int register_asymmetric_key_parser(struct asymmetric_key_parser *parser)
+ 		if (strcmp(cursor->name, parser->name) == 0) {
+ 			pr_err("Asymmetric key parser '%s' already registered\n",
+ 			       parser->name);
+-			ret = -EEXIST;
++			ret = -EBUSY;
+ 			goto out;
+ 		}
+ 	}
+diff --git a/security/keys/key.c b/security/keys/key.c
+index 3bbdde778631..ed597660f72e 100644
+--- a/security/keys/key.c
++++ b/security/keys/key.c
+@@ -1219,7 +1219,7 @@ EXPORT_SYMBOL(generic_key_instantiate);
+  *
+  * Register a new key type.
+  *
+- * Returns 0 on success or -EEXIST if a type of this name already exists.
++ * Returns 0 on success or -EBUSY if a type of this name already exists.
+  */
+ int register_key_type(struct key_type *ktype)
+ {
+@@ -1228,7 +1228,7 @@ int register_key_type(struct key_type *ktype)
+ 
+ 	memset(&ktype->lock_class, 0, sizeof(ktype->lock_class));
+ 
+-	ret = -EEXIST;
++	ret = -EBUSY;
+ 	down_write(&key_types_sem);
+ 
+ 	/* disallow key types with the same name */
+
+---
+base-commit: 8f0b4cce4481fb22653697cced8d0d04027cb1e8
+change-id: 20251218-dev-module-init-eexists-keyring-5b008d7efb40
+
+Best regards,
+--  
+Daniel Gomez <da.gomez@samsung.com>
+
 
