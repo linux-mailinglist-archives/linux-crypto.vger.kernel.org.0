@@ -1,80 +1,80 @@
-Return-Path: <linux-crypto+bounces-19386-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19387-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C174CD32C2
-	for <lists+linux-crypto@lfdr.de>; Sat, 20 Dec 2025 17:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4770ACD32CE
+	for <lists+linux-crypto@lfdr.de>; Sat, 20 Dec 2025 17:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 420B93014A2E
-	for <lists+linux-crypto@lfdr.de>; Sat, 20 Dec 2025 15:59:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CABA5302B748
+	for <lists+linux-crypto@lfdr.de>; Sat, 20 Dec 2025 15:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32CBC2BE625;
-	Sat, 20 Dec 2025 15:59:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A27B2D23AD;
+	Sat, 20 Dec 2025 15:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vYorhRZi"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="t89qnMYA"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012035.outbound.protection.outlook.com [52.101.48.35])
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011016.outbound.protection.outlook.com [40.93.194.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213412C0297;
-	Sat, 20 Dec 2025 15:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D8F2D3737;
+	Sat, 20 Dec 2025 15:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.16
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766246380; cv=fail; b=h/3Z4qDuuFZPuTQGAAuyLk6dtG5c9Ypb9PUBAEMK1PjWjdMhW1CpyAvlXinBlzzWbXEEEtF3HD2JvpBaLpPV1tiKcxWO7yoalgFk5llHZ/nDlVL2K/aAoIPZdUrFFUvKUzpMsI0oIKwt6nE2Fj8BQrvsZrfa+/HLY+yX5PUGMF8=
+	t=1766246382; cv=fail; b=Cb5brlwBic4flBpfgm/jM16WdMmNg4R7o34/+3Lsh/WfE6fzeDNFEmyd0bd+Y32P9KLW56P0vxMunyFkyB/o6JHTgtJgUKzFsTRV+nTEI3r3PSxo55LjyvigyS4iDI39c6fMq61D0js4oAOz3AE8BDvQ2JGNjugGP7B+AModEC4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766246380; c=relaxed/simple;
-	bh=VJTkF9Cp/Y0KePsNCOhcC6bNXhjzqYdH4+fGJZ/ftnc=;
+	s=arc-20240116; t=1766246382; c=relaxed/simple;
+	bh=NqH2kSzw+JYkMvua2p5v5z0aPKcjoThfhdpbhMAVn1A=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pfUYnOvoNenh8KvPHDa4gCdSAGiu21IhHfiK5qWqbJQcLtkeqQZqkgIA88h1GIkw0NP8HH3WFHZbQFiVzFXh1tITVGDOdg11N7xbQWNDTwU3mHZQ7GnHiQm3Bd8uykhZTzhl66j1Wk7ACnxoji8tG190GSuBMdxnp7DCSbi4I80=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=vYorhRZi; arc=fail smtp.client-ip=52.101.48.35
+	 MIME-Version:Content-Type; b=DUt8wZcSArh9KjxRwsXhzbU6Kl0s+CbqQeFx7x22oKEcxLYf6TKpuMJtiQhedaKBCAn2HpVMWbYCMz+Ggx+W52czofdFfFpR1d6hDMsD+4JtOXgpxPvdMl7DZNfahUNBOdMiua/C8LKa1C9/TsoyPdPo69ijPQuiTRGmwuKiEBU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=t89qnMYA; arc=fail smtp.client-ip=40.93.194.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=bEZYtzTT3+HSrAEVGGwkrUWA1RLeqK7NiIRgwwcpV0aB863XfdWzkEiMGsgROw0yKebkXeyiUZq69+xEKoTUYETnd9/jPahVQ77cppO1dDJIpDKiCFbyRQgZeo2TWEgT3EChOeGjQany7X+M9Mr0Sl8uBA5EBVblcofkhG81ML//LhaOJTnmPeCPxGRizuwueNWZxpTkF4ZRb/GzWgYnQib/lzrRc0u5IqtGP+5ZZd7X9L5KiNAsSkfFdbgSu5DhuX0onHyeT8Hvi4TsNPIgVcIujGGnuRPP/XbpHMjeetk3f+37xuRQHHBddBuAPzAlA6C5a8hbmnb+ZgrJ0MhgYA==
+ b=uY8eH2udI5WFNxJT4EeTW1DoEWIHVWDAbm8/db18QbWUIoUQmmwLePeSCnOEDcCjHB4b6J6ucjQcy8QC+qntILkVTK8EMc5UCEcKrkc9Aq/bVn1ZSUt7K1+CHARDgRz1O0fo1J/2xgxAU42LGMIjPzOmQyK1vvdi43MbYJNcrFanoVJFdaUE6a1pbx2m0Df0u7UyOLDsAe2ETh2llzUBD+8MtptDq3ed8bnHd8r7lpT9XwTi8ZHnNHVSoWHNbsH34ZvoX6M1J108+7udChZYEOgxOE1jKedkX48oRxU2taAv4QgKCtck7HboeLWztafjBwpmTjvHJA7xWLBxzMU8OA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QSGMAmRKX+TVoKxri6llQq8l7QLjdPa6WW2JOzwouCY=;
- b=S4cwDTbOGTnSYxM1KVuyxSZlzbZKECWLN46sYj5WmVNpkmYsqOJNW36EgDvOJjp1UmIAwqNWJuDcLn3JM+yo9zbQJ5H5ZwzFLsN0OT9ArCN9gFaU7q0R/K+bp6zsBQuj9I+i402JyerRxHV7aihnTSPnsYkZFsKcWSwQX3uGy35kk+yM3iry0yJA6DXmPx0fQyFMU1z2tc+eapZ15LrPlW3yYG+XOmq1Qz1Nyt/b0qEQg8XXR00PoyWHcn2qTEJiSUA50ki4p7NmndKPCClAOH35C08lx8kFkWue7TIg/pQdNG5uvJnXYjMB2zpyl6NC4tRqBK/RhoiUPJ2IOGxnXA==
+ bh=/hXY/Xgwn2ah/OT2EVksB0yo1qCE1vpluyQy4Uj7mR4=;
+ b=ZtdxfZff5MQZ4r/yM1zsRhoK+Z4QnQWoq7HppjvY6lG64QPiVZ+I/UE76SS1mI6R8ks9ed3mR2yucQhO9gKOZKPFGH2Jt/Sl65Wyy+DjqAMbwiOMRy4SmJoaA3WvjU8YZRwkKtWseNdTj9+YAjPKvGN+SuJ78/h72CejK8ll4wnk7XjNU/otIq02LIgx3/QD9teaKvw1RLiERK7IgqitGRd5chjv05nyhCycubHCm8R+s8wDX1X/XWxmeb5BkXyEeDBX/hZRX6WlliSeAUVkGDjam9k9EGpovwWJARR7n88u7VoKXG1CtxB0M22YRh3L90NJA8xEhnuuDhUGeErJCA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QSGMAmRKX+TVoKxri6llQq8l7QLjdPa6WW2JOzwouCY=;
- b=vYorhRZiDykeH9VsZrAp5g9S8JlX/RFIgO3hT1jTlHlvmPhwB9+pNmKwILlTpWzTkf8SfYjwiPQRAfOQRzZkWLF2dWRNYLZWFvve3pyqO4TQ531+3k8FpSqs/swMdQXmI5IbZ4iz9VFrwm/ccEmSkCgxjKAu75pAOoY9jnsOX1g=
-Received: from SA9P221CA0008.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::13)
- by SJ2PR12MB9210.namprd12.prod.outlook.com (2603:10b6:a03:561::11) with
+ bh=/hXY/Xgwn2ah/OT2EVksB0yo1qCE1vpluyQy4Uj7mR4=;
+ b=t89qnMYAdxz8M2bVD/DBH3ul2p4VkQCOenvvcX6Jxu/vOP0F39anx+q6NwoPTI3vFrUl2lNaNETMwcAN3UiVxQDwUGdKWi7OHwGA7GzwkQtMYw8Xq71MaVQrjiulDeTxDbGOBtp1FcEfBTX2GZ8Poz9TVXRLS2qy/Id907p373o=
+Received: from PH3PEPF0000409E.namprd05.prod.outlook.com (2603:10b6:518:1::4e)
+ by PH7PR12MB8053.namprd12.prod.outlook.com (2603:10b6:510:279::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.10; Sat, 20 Dec
- 2025 15:59:30 +0000
-Received: from SA2PEPF00003F64.namprd04.prod.outlook.com
- (2603:10b6:806:25:cafe::7b) by SA9P221CA0008.outlook.office365.com
- (2603:10b6:806:25::13) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9434.9 via Frontend Transport; Sat,
- 20 Dec 2025 15:59:29 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.9; Sat, 20 Dec
+ 2025 15:59:33 +0000
+Received: from CY4PEPF0000EE36.namprd05.prod.outlook.com
+ (2a01:111:f403:f912::2) by PH3PEPF0000409E.outlook.office365.com
+ (2603:1036:903:49::3) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9456.8 via Frontend Transport; Sat,
+ 20 Dec 2025 15:59:33 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- SA2PEPF00003F64.mail.protection.outlook.com (10.167.248.39) with Microsoft
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ CY4PEPF0000EE36.mail.protection.outlook.com (10.167.242.42) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9434.6 via Frontend Transport; Sat, 20 Dec 2025 15:59:29 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9434.6 via Frontend Transport; Sat, 20 Dec 2025 15:59:32 +0000
+Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Sat, 20 Dec
- 2025 09:59:28 -0600
+ 2025 09:59:32 -0600
 Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb10.amd.com
  (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Sat, 20 Dec
- 2025 09:59:28 -0600
+ 2025 09:59:31 -0600
 Received: from xhdharshj40.xilinx.com (10.180.168.240) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Sat, 20 Dec 2025 07:59:25 -0800
+ Transport; Sat, 20 Dec 2025 07:59:28 -0800
 From: Harsh Jain <h.jain@amd.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
@@ -82,10 +82,11 @@ To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<mounika.botcha@amd.com>, <sarat.chand.savitala@amd.com>,
 	<michal.simek@amd.com>, <linux-arm-kernel@lists.infradead.org>,
 	<jay.buddhabhatti@amd.com>
-CC: Harsh Jain <h.jain@amd.com>
-Subject: [PATCH v2 03/14] firmware: zynqmp: Add helper API to self discovery the device
-Date: Sat, 20 Dec 2025 21:28:54 +0530
-Message-ID: <20251220155905.346790-4-h.jain@amd.com>
+CC: Harsh Jain <h.jain@amd.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 04/14] dt-bindings: crypto: Mark zynqmp-aes as Deprecated
+Date: Sat, 20 Dec 2025 21:28:55 +0530
+Message-ID: <20251220155905.346790-5-h.jain@amd.com>
 X-Mailer: git-send-email 2.49.1
 In-Reply-To: <20251220155905.346790-1-h.jain@amd.com>
 References: <20251220155905.346790-1-h.jain@amd.com>
@@ -99,141 +100,89 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00003F64:EE_|SJ2PR12MB9210:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1739c37-e9de-4ef8-85be-08de3fe0c1e7
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE36:EE_|PH7PR12MB8053:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a1b26c9-8ad2-4d89-5158-08de3fe0c42b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|36860700013|82310400026|921020;
+	BCL:0;ARA:13230040|376014|36860700013|82310400026|1800799024|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?HSE+WscVxbB8oAt1KUsLn5EqU/Lv7PV7MOST5oJlB7nx3r+ELiF1htspsxLL?=
- =?us-ascii?Q?vv177JNLPeq0lrGlo++D0q99326IpDU24mqo4WzRv4pmu/iTHNeZc6igaGNO?=
- =?us-ascii?Q?V9YaTdlZKFJ2pJOyJvyViIKT9LqJXU53mLm76C2oariNnOkmRFJTo80IkIpp?=
- =?us-ascii?Q?9nCjspWvFD1yA4W4MkqfHZVAArHbHh7owZQjU2S+U3VYPWbb9PwgxVChLm3m?=
- =?us-ascii?Q?dx+4Co/F2bAnXKwARjmFpvvh+cTybPqr1+VHbL+4W9iibqLO7Rp44LGmPAoq?=
- =?us-ascii?Q?tO6WJNqRyp7SzZOfvRSh2CWpqA5utnWXGp95ZssdVU7s36bcjFmXYe9s0T14?=
- =?us-ascii?Q?exNnmZd6k/Gk1yJjevNtBSN43dchnEYffxz/0EclI6aIIOd4tKYqfRYzneUQ?=
- =?us-ascii?Q?HcisjKszZi78Zvvlv8rGSdn5VYY1XU5ds027jCY/mRQmHK1MS/Dz0SwL3bV2?=
- =?us-ascii?Q?Xv3qhMgfsgg5QbH7lOpDyEBOq2In0GHNktwO1srbCY8/GTgWzXwajL8cZmAn?=
- =?us-ascii?Q?MZ/LVI+q+/EX33bUjSyOIGHrmMyDtw0FVUyr5712VaewIhyfzB1ZHSW6OtOD?=
- =?us-ascii?Q?BAJUE10YhO3gu++F2PX1CkVQbUKMk/xbGU/wTmC9m1mU6LejOUIRV8IlCC6S?=
- =?us-ascii?Q?1aXjECmtKeE4+JGHroF2R9WvUS+mjc2W14nr9AYFy3uPEgLEl48KZ391XvT7?=
- =?us-ascii?Q?hpFf2cvTf0KeP1bYETIO5WjRZjQG4cDJvUnsumXxR5vIgTVzLG9TTP47uI6+?=
- =?us-ascii?Q?/3Am1qNXuu+ymrJRo4AwT+OEwfd3YcSB5LViOU/U53rSvVBJO09LvabpwE6m?=
- =?us-ascii?Q?yvwGd+v72ANIvhFZ9blq+eJ45hLZ0NLtEkskoy/fmRPYFYjqGeDr5SmDyWSU?=
- =?us-ascii?Q?jM0vwKKMFNzfE5WEkWBT7LxuiJdgRRnAdVOdJM7Pb8oP6ijXl1ePtdk9jdC4?=
- =?us-ascii?Q?5UJBxFMdTHcPnSYKnAVd6bQoof8tvjVJJhe/dhyphOcdww3iEVkPLWT68DFD?=
- =?us-ascii?Q?rB36fQgnPkLr8u0qfqCItWrKIcDMVHD3lTV5BYPi9EydWxWXyUwAT6Lu7Z+A?=
- =?us-ascii?Q?1WbTKBAscts9zlSjMI1fGXf/r+6Htc0mR5r7/QRxp7uppq8QNhLUgQMyHsIk?=
- =?us-ascii?Q?rPJK/8B/1QoV4jTE2wGtGAgv/26/ILP/sWdMXabBfyBfTb1Y6kLSg7mahfQI?=
- =?us-ascii?Q?5Oo3T53fVf8RkSj8H7BIrDHUmfbhvgXCPpBa7wxQAopOE5+MSoPQlTQrk4ho?=
- =?us-ascii?Q?rBtwYwNDqTQg1HVfOOgigDAYj5xcq9Pjn4piTN2WBz6cL0N8S/ZiUm5T+LG8?=
- =?us-ascii?Q?Sdi113jHXaBSeQ3fTH5uCGx67HxEIImQ9Af4kcfVfvs6j102niAFgahKCpQb?=
- =?us-ascii?Q?viFn9FGu7LBpcVNs6AjzFUhSknhRzTHyvW6QY0DqHErwWqg5sGZQV6J/rxHG?=
- =?us-ascii?Q?O5xuJhNGa3AUmZznWcTAjZxkwuz97DSPOhaFSOGDE7R9LMaN3C4EhrDrE0FA?=
- =?us-ascii?Q?HHHD3qhEQG//hU9voGOTKFhhzbb9ehorVw4EHxzuJt50HoYcFOpvTnMiBLVb?=
- =?us-ascii?Q?YdosF3quvI7k/UhD2r2UJBvtBR/FL9gWAi6fC1qM?=
+	=?us-ascii?Q?+kKXox4kpDmTqeIHt2G2PJ+5tSW6jNwnabi7WNv+nYR6pulGZF6t4RfWVNuf?=
+ =?us-ascii?Q?5HPNv2atjeSNYmvFzlzwile1lz8wf6bZV9JFZt6jvVhcGgBK8lPEBoHLnhyF?=
+ =?us-ascii?Q?nTJg8cBDkMJU3Ci2Mg1+Q/kETl2vadIl4lWUsPs3xzjUiOjgBhSyrAOui3Yt?=
+ =?us-ascii?Q?IZ9r34Rw6vg1Z/mz1aHu42JvtLjMBOiL2oNEp5zYMoNgyNf1OfRtZ36XEnyW?=
+ =?us-ascii?Q?oUt1EPM4pcwG4DNg3mkDf8+oH+YVQX+NWh9wvnNprpM7M/h6WTw1Lp1Gu4Uc?=
+ =?us-ascii?Q?4GMRcyqAsD+jfeGnxd2wpKlrQ1UF9Xwx+dxv2FD5B9IY49I+5D0uf6Wk6Pi4?=
+ =?us-ascii?Q?OsK7wnl3REGfBF/z32oYqd0NWJIpHMm5zIeREAm9Hdiw940gCw+mzPyrGcmf?=
+ =?us-ascii?Q?jM+b+5U16mzC85IGiy7fy+zJi1K5DNAj9TITrHBRDFHrSwBfsrzlWE383UR3?=
+ =?us-ascii?Q?+g/xLjzxOoiCcd+yA2ymSBSRrrNGktykqeotPVCQcrALJTktKzHUAaps4G8Q?=
+ =?us-ascii?Q?b0cWPelsbFRLBBL97TBylHJkuh908tixj3ehnOyVZEN1MNHWU9FGpBYM+gSv?=
+ =?us-ascii?Q?ORUxtDgj+p9L0pRCreXJO2LJ9Jg65CZaaPvlYMu+B+6uWKijPXXqeX/n0LzR?=
+ =?us-ascii?Q?npDNh1taPI7gMOp0QBL3XoDo/IeLaal7ySPsYQDm6sVwIGzDev/2/M+w3hKq?=
+ =?us-ascii?Q?/FSwFix7dZakiN2gGWthCMFH32479rA6PtMMD580XMaxTsFmd5167gJ8Gyir?=
+ =?us-ascii?Q?XCde7XkMGikIliV7aMZ2iWP4iwMer7FEfM3YazPT7R9BOLLDbyPY0Gy9x5tO?=
+ =?us-ascii?Q?M4IhJtTIA6b4OnVE9cMlmtftTaoDkxPptNFAheDeg75VeU379nQXFBgjh6Dn?=
+ =?us-ascii?Q?nPHR6CcL+rgGbYlalNwqdnZn6hFZD3nK39Wv5d3A6/3dL7cKfrapZyZ//m6W?=
+ =?us-ascii?Q?JGJcCDdihZdLXnhbuH18LCit8OGZ+AQKa9HG1pP+LRN2Pp2eilmt1vC9oRz6?=
+ =?us-ascii?Q?Js0i1XUAplMR8PTIgHNqvGXgSWHs1RGnHRHsfOvk2C7YsRgE9ob2qGRmhA8/?=
+ =?us-ascii?Q?7k2DuFeJVeXwjgvoVENjMckrxiplr1XNw9c3ROxUd6RT2u8k9dIduREEtnv2?=
+ =?us-ascii?Q?28K8PSYCCJbVxjf1KEeyFI+3j6hndZgz9mwIjjc8ah89fDuzCVtIDhMwr7CB?=
+ =?us-ascii?Q?y3Y4T1UF1ApA642KXAmgNTflh8576+upYO0kee/8xWoPnZMK0LcyIwJMnn/N?=
+ =?us-ascii?Q?SHI5erHwo9BF+l8wbA/TVxnw2YslaxN+neU9m+Nulmdc/YBs/xlkydC7ZHOx?=
+ =?us-ascii?Q?IOV07OF9brBnyhsrVRS2Gq7Q8sdKg15Jm7phzjWxwehWWNTmUDCePId17UD3?=
+ =?us-ascii?Q?W4KHlRvrfIgRQC0k4fZELAYkyDFsK9+z3wMnVDoubcDCPk2uraperoDxoG5I?=
+ =?us-ascii?Q?bBBsYvo1qelDfklZKamSihINvsWNb3JqR4YnsLHrqEKPF2V/jmV8H6FE5kwq?=
+ =?us-ascii?Q?eOifggxmJ1FXrr4kz/MavA4YQOfH36tICOsnzPUs4FISoCSd6I1EbbUWRlfb?=
+ =?us-ascii?Q?U6nAqXejaAv2RWApTZ6y6jXqKnDCVKUwlmL7M0vP?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(1800799024)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(36860700013)(82310400026)(1800799024)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2025 15:59:29.0941
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2025 15:59:32.8711
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1739c37-e9de-4ef8-85be-08de3fe0c1e7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a1b26c9-8ad2-4d89-5158-08de3fe0c42b
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00003F64.namprd04.prod.outlook.com
+	CY4PEPF0000EE36.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9210
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8053
 
-Add API to get SoC version and family info.
+zynqmp-aes-gcm updated to self discover, corresponding dt binding
+can be mark deprecated.
 
 Signed-off-by: Harsh Jain <h.jain@amd.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/firmware/xilinx/zynqmp-crypto.c     | 31 +++++++++++++++++++++
- include/linux/firmware/xlnx-zynqmp-crypto.h | 19 +++++++++++++
- 2 files changed, 50 insertions(+)
+ Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.yaml   | 2 ++
+ .../bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml          | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/firmware/xilinx/zynqmp-crypto.c b/drivers/firmware/xilinx/zynqmp-crypto.c
-index ea9cac6a1052..6d17cb8b27b3 100644
---- a/drivers/firmware/xilinx/zynqmp-crypto.c
-+++ b/drivers/firmware/xilinx/zynqmp-crypto.c
-@@ -57,3 +57,34 @@ int zynqmp_pm_sha_hash(const u64 address, const u32 size, const u32 flags)
- 	return zynqmp_pm_invoke_fn(PM_SECURE_SHA, NULL, 4, upper_addr, lower_addr, size, flags);
- }
- EXPORT_SYMBOL_GPL(zynqmp_pm_sha_hash);
-+
-+/**
-+ * xlnx_get_crypto_dev_data() - Get crypto dev data of platform
-+ * @feature_map:       List of available feature map of all platform
-+ *
-+ * Return: Returns crypto dev data, either address crypto dev or ERR PTR
-+ */
-+void *xlnx_get_crypto_dev_data(struct xlnx_feature *feature_map)
-+{
-+	struct xlnx_feature *feature;
-+	u32 pm_family_code;
-+	int ret;
-+
-+	/* Get the Family code and sub family code of platform */
-+	ret = zynqmp_pm_get_family_info(&pm_family_code);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+
-+	feature = feature_map;
-+	for (; feature->family; feature++) {
-+		if (feature->family == pm_family_code) {
-+			ret = zynqmp_pm_feature(feature->feature_id);
-+			if (ret < 0)
-+				return ERR_PTR(ret);
-+
-+			return feature->data;
-+		}
-+	}
-+	return ERR_PTR(-ENODEV);
-+}
-+EXPORT_SYMBOL_GPL(xlnx_get_crypto_dev_data);
-diff --git a/include/linux/firmware/xlnx-zynqmp-crypto.h b/include/linux/firmware/xlnx-zynqmp-crypto.h
-index f9eb523ba6a0..cb08f412e931 100644
---- a/include/linux/firmware/xlnx-zynqmp-crypto.h
-+++ b/include/linux/firmware/xlnx-zynqmp-crypto.h
-@@ -9,9 +9,23 @@
- #ifndef __FIRMWARE_XLNX_ZYNQMP_CRYPTO_H__
- #define __FIRMWARE_XLNX_ZYNQMP_CRYPTO_H__
+diff --git a/Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.yaml b/Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.yaml
+index 8aead97a585b..20134d1d0f49 100644
+--- a/Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.yaml
++++ b/Documentation/devicetree/bindings/crypto/xlnx,zynqmp-aes.yaml
+@@ -14,6 +14,8 @@ description: |
+   The ZynqMP AES-GCM hardened cryptographic accelerator is used to
+   encrypt or decrypt the data with provided key and initialization vector.
  
-+/**
-+ * struct xlnx_feature - Feature data
-+ * @family:	Family code of platform
-+ * @subfamily:	Subfamily code of platform
-+ * @feature_id:	Feature id of module
-+ * @data:	Collection of all supported platform data
-+ */
-+struct xlnx_feature {
-+	u32 family;
-+	u32 feature_id;
-+	void *data;
-+};
++deprecated: true
 +
- #if IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE)
- int zynqmp_pm_aes_engine(const u64 address, u32 *out);
- int zynqmp_pm_sha_hash(const u64 address, const u32 size, const u32 flags);
-+void *xlnx_get_crypto_dev_data(struct xlnx_feature *feature_map);
- #else
- static inline int zynqmp_pm_aes_engine(const u64 address, u32 *out)
- {
-@@ -23,6 +37,11 @@ static inline int zynqmp_pm_sha_hash(const u64 address, const u32 size,
- {
- 	return -ENODEV;
- }
-+
-+static inline void *xlnx_get_crypto_dev_data(struct xlnx_feature *feature_map)
-+{
-+	return ERR_PTR(-ENODEV);
-+}
- #endif
+ properties:
+   compatible:
+     const: xlnx,zynqmp-aes
+diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+index ab8f32c440df..9b6066c7ffe4 100644
+--- a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
++++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+@@ -104,6 +104,7 @@ properties:
+       used to encrypt or decrypt the data with provided key and initialization
+       vector.
+     type: object
++    deprecated: true
  
- #endif /* __FIRMWARE_XLNX_ZYNQMP_CRYPTO_H__ */
+ required:
+   - compatible
 -- 
 2.49.1
 
