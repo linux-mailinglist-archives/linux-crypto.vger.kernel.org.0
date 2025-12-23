@@ -1,169 +1,196 @@
-Return-Path: <linux-crypto+bounces-19428-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19430-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2BFCCD9CC4
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Dec 2025 16:38:21 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6BFCDA755
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Dec 2025 21:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2680130393F2
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Dec 2025 15:36:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 63AB230253E6
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Dec 2025 20:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D76634F497;
-	Tue, 23 Dec 2025 15:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DBD8321F48;
+	Tue, 23 Dec 2025 20:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sartura.hr header.i=@sartura.hr header.b="lDOkL1Fy"
+	dkim=pass (2048-bit key) header.d=sartura.hr header.i=@sartura.hr header.b="sp/p1grd"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F9434F24D
-	for <linux-crypto@vger.kernel.org>; Tue, 23 Dec 2025 15:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F5334B196
+	for <linux-crypto@vger.kernel.org>; Tue, 23 Dec 2025 20:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766503779; cv=none; b=Ip4LiUMDIW88fqAbp/8ZRIoffLLb1lWcgKvE6kOkAAMuQSl9PxlytB1VQWrZP2506REKnfgkU3wnoaRzT6dBoKbGX67K+XaNoJIIG05ACUb8q7nwItDL8BvKcWnwG9H35fKwRbO1jxUHsYjIBVWnGVzwNkDSXqAoMdZE9UDK9iM=
+	t=1766521182; cv=none; b=QnOisdgtutwc3fQ2jdrq7Efy9SpiFB3uCn4uQEcj9s8hYI7Y+zZ3DXsRqsmYDrSlAgyPsxoCYPDuQbSHrN1jawqvj/jVFeCVA9HO/c4CAL16KndsxyeW+M8RxLzUupGkNw/mGkHgomS4fl7D4wwns0riiZTCYvf48kgBBpNox/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766503779; c=relaxed/simple;
-	bh=UJ4a8K9wry/JPIeGH5DwpGba6bA4R4gax6qub7x2SY4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uuhjHWMaxXcoCXHavqtD1NFBQETl5MnY75XU7fkeoOYBlv1J8/Anhfun9twYNW1NoSgLZ5pgxxsq61HWPMHWKZNZWmic3S6d0mDSahX189VrIV7gSurNT1PiDTV4Hfr7dWJNM0dskDyCBMkqEBSgIfTZGGULnBq1UwlmZM/dBxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sartura.hr; spf=pass smtp.mailfrom=sartura.hr; dkim=pass (2048-bit key) header.d=sartura.hr header.i=@sartura.hr header.b=lDOkL1Fy; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1766521182; c=relaxed/simple;
+	bh=dIzeT2bAtbNpWCzGPjuV3B4HClIyvUup/5uZSPzsL1M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NhFAqnV5v6soTNpkapUozP6kY0Nzj50jqFVX5TkTXzS8sJXHW7QyExlMVkVx4YrWJK+nWH79tm3mwQR4jHnIzLxSTVkuTc4FT/DXD9iT0jLhZ5CzEIzPMnW+F9H+zAm+AwAGHJ+efSqxygYsehqoxx9SHa85MZQIsuj3Y8BLCbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sartura.hr; spf=pass smtp.mailfrom=sartura.hr; dkim=pass (2048-bit key) header.d=sartura.hr header.i=@sartura.hr header.b=sp/p1grd; arc=none smtp.client-ip=209.85.210.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sartura.hr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sartura.hr
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b7ffa421f1bso1055613466b.0
-        for <linux-crypto@vger.kernel.org>; Tue, 23 Dec 2025 07:29:35 -0800 (PST)
+Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-7fc0c1d45a4so4885366b3a.0
+        for <linux-crypto@vger.kernel.org>; Tue, 23 Dec 2025 12:19:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1766503774; x=1767108574; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cLjISIOInag6cJNCp9GAXmtvydDuwUZOD3O+6EuGMpA=;
-        b=lDOkL1FyHZFJ/9/OvPdkMyYxnkNuTkuKFAJlUBUCP6HN0MqcClWvGh955PsXfCG+TE
-         XTJ9K//mvDtqzzy+8UpL1y6RStVl9cIPSZrvePcdWuCn+ocgGrIKDtG9+54W1w2//ou8
-         OA5XU6YHOGYGLPwmx49l4TBtdurcyXq+U5KGyoNvmaVZMCeozr9d58t7zZ1j+zZEQDsh
-         Kf3pekwyW72hmnLuSoSmitxCpGyWf6IWLHLSubohN8Q1uFEJ0jlLdVAnxp2afKolq/Di
-         Hpo3XANTXWdDsDg7UaN6dPqi5wLfeRPeuisBuru1875FAqqqDaYDIxgxJJ2SJLG7SJGQ
-         +dlw==
+        d=sartura.hr; s=sartura; t=1766521179; x=1767125979; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g1vfXs4RxjLrMI0+CYv1SSuI1FXB9RtpNik5CYzHMIg=;
+        b=sp/p1grd5lkwv7sdu7MGJVw2B0P0H5QVE8/lQhc+Z2UZNVOBBoNa5ucm40go5i/fj9
+         3bRj50JzDaFFJsr8MI2FZzYTHMYcmCqt9nTPUe/PVXN/Ps5bwDnjgwZbERarBuwr46lB
+         OuKPXCXNsGCklL60xZHfTLjhhnEY5kVGOl2EbzI7+pE0JMk7XTcTMKO3iF8NqtWdSiPq
+         CtXHKt9XfTwL4LnbC9WBGzL1k8xf/LnpbWEJ8S0okPTAwOoUaB65017hanldfEULAnHn
+         jvXLRNVzVHerjoc6u2P31IfxpTha4cFgFpF8CMffs77aGOMk+4Me/DGg/qiGyEx6ff9o
+         EWtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766503774; x=1767108574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=cLjISIOInag6cJNCp9GAXmtvydDuwUZOD3O+6EuGMpA=;
-        b=AjK6k/jk+npJPsPvL5Dr/DjcNxbroFJerWEGSlKfRSa/5+RvUpYd5+BalY6Jxi+/40
-         zHrEEQ1btM7FR8JVFhgQw0yiad8w5CE4rZCf/2N6GDi5EXLgtrdudK5tPcrBrw0un+xa
-         +KhqZU3V4s2OO8xkbVLJIzw3UY/fnjt2u5FOcN9dcSngo0Z3BNFqTtemw8L7x1KiO1g2
-         PupTy0hBwEAmgBtlV27UKReOALM3zK1ZV8ZO5Ux9/BN96kXNPj3TVd6kCZZSe+NQiobw
-         7rCDvRY8YuWvCDBxUZNS+u/I8DJ90ep8d3iTLyDGcFQSYiqeT/ciAjhFSI/ID6/9AG6s
-         aTAg==
-X-Forwarded-Encrypted: i=1; AJvYcCVCuyzRMaLRi7ZnleFgi7uweRM+m0RwffJQFE/thpr4q1CrTR22K7uZAGg37ewfJ5oJl7DlvzXCXWvnsxI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyX5zvM7b4aHpya8jxR2w5ZptnWUCcLdgzvfNoAd6RsjNIeuG13
-	1Fr9qaPhcSfAIe+EptBR+lKZdIlWqCtzer9ZP7DaCKNP9Kt7fTNWhQyZohEhouaotph0gMO4enX
-	2YbBEA6SarWLAHJ+Ic9gUJx+gQwZKcemEq38nRcHAcw==
-X-Gm-Gg: AY/fxX5Sbhv8njqBE4NvrKtY6NozD9c4z6ZeF4VByyuV/JBfdV42VEda6G0YXNre2tQ
-	JM947uyDVn2QId0AUb+fcjAxIkR9XySECfaya6DXXRuvyAKHauKbvLO34a6oagHGO6oeTcXwPh4
-	LQ9dGS/MIR7O5CIc7C7gS3aScNfCfkOyJPsqxYFDsHWfdFL21jNpTX0ay8pX9Gs1ysm8YCpNmbv
-	0HEIe4UJQ89ryR7xYDMEUL94zClicmQxWVuyZpHEAnT/8CVwmd11yZ1hO0cIlcDN3gnxIOxvJF/
-	O9FYK5lo1liQNrb3oW7FTaC9cKl0sCQJYInp1op6aAJxeFcS2g==
-X-Google-Smtp-Source: AGHT+IE+xxKz9WunQGu5xp3nWvZrKUFIZLNano4iauMvK7wBVyl981tNBySUR5mcD+g4BmTew6KluXuH/rQplznm+8E=
-X-Received: by 2002:a17:906:30d4:b0:b7c:cc8d:14f4 with SMTP id
- a640c23a62f3a-b8020400995mr1538956066b.4.1766503773539; Tue, 23 Dec 2025
- 07:29:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1766521179; x=1767125979;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g1vfXs4RxjLrMI0+CYv1SSuI1FXB9RtpNik5CYzHMIg=;
+        b=Q8O21YKM4RRTo+dnqeGsXjqwwV4rFqcwbNCLQft849xjo4998WeNIQ6fh+VdGSQvrT
+         WETLsXaP00MghIB1pfDIVaD9tZhDO99iUW2eDryFZAwjVd+A7g41qp67aXmLBiszSEH8
+         f01X/7iRP9ZQvQHjrZ7tUgtLZyYkR25iGptgGxEymAR9dqSjd1rdsuWOJHKKFKCMR7/8
+         +kh4Ju8bas86lZ+JKJ+xlVhcPCVMaRdnmcKGXWmZhv+k1ELq5Pd3Jn9bbfA7nc4G2xxH
+         5mCqZaCUzKzpyCVNJQPVKIAKibcVfQM5d6PxIietmsom2kgwUZ+HVMMAwTnlcIfZmWNV
+         21QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVByVO1S0hI5Ar21XJju7+RpmhkusnEb/4HJuhX64scVJ+ivezJJEcmLxAYp0fqa5kCERojVRCUVJ/XVzw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YywcERBJbDAh4TBJlgcyOAcROyp2zV8LZOpWNCCZED53YJPpQO+
+	jhylPvufCssBVt0n3sgIuPTCz+atn7NeldD9HYUOw0KKVP9xJFEzqw6lN3CdClgN+Ms=
+X-Gm-Gg: AY/fxX67tWwGRURBUmAYAyuc9bV75JMlZgNPFnD4USvNiZeAizVHFMOV/FK7LCkRJYv
+	Dm6hZzCYYBl5KO+xZrCXFVxbJcIo4NKEOmhmt/o/XoDDcxtVfDVXz/QctZ6VtH9uwAB5Hzm7xZY
+	tnacOoHHEaxOdhfPLqrxukiQd/BxKASK5FbJJtSwv14Av0SXdpdbc78S2LpgDqV3gyooedJrWkP
+	qqfP5b6INNeGd36++WV3U7GbIXfMlhIof7ZFdhWm52gny4/Dtm54+HvpqQdO8TX7TphMgyn0xm2
+	UpUxSlMmAo81lcd362nG45PXhGG0NHuYYbD3B+K2lWbwOyY3hJY2uRx3qyPgP7lGye15Jg/pt9b
+	9EMXSlzTzlyVnoBgElbQWOe7eJgzeQPlrn6cIBYblsGwX7B1iEs4SByyjg9xYF1MKfTnPrsk6vl
+	1M9syOYGwTh99IUSKFhtfFqXKqlfbnkfFDKHOS2LFDRYw3w0jzQKW+S0KQeXjxy1U8YHCQIsOOo
+	j6QBe8r
+X-Google-Smtp-Source: AGHT+IElu2DeQr7IoImhfsWaHg06ftf4nZ3LUQN+WUZ/izPfinsCvzTpfHsJa/ze8aScZK07T0eUkA==
+X-Received: by 2002:a05:6a20:918d:b0:35d:d477:a801 with SMTP id adf61e73a8af0-376a7eed254mr14238755637.13.1766521179192;
+        Tue, 23 Dec 2025 12:19:39 -0800 (PST)
+Received: from fedora (dh207-15-53.xnet.hr. [88.207.15.53])
+        by smtp.googlemail.com with ESMTPSA id 41be03b00d2f7-c1e7cbfa619sm12567549a12.36.2025.12.23.12.19.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Dec 2025 12:19:38 -0800 (PST)
+From: Robert Marko <robert.marko@sartura.hr>
+To: robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com,
+	claudiu.beznea@tuxon.dev,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	vkoul@kernel.org,
+	andi.shyti@kernel.org,
+	lee@kernel.org,
+	andrew+netdev@lunn.ch,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linusw@kernel.org,
+	Steen.Hegelund@microchip.com,
+	daniel.machon@microchip.com,
+	UNGLinuxDriver@microchip.com,
+	olivia@selenic.com,
+	radu_nicolae.pirea@upb.ro,
+	richard.genoud@bootlin.com,
+	gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	broonie@kernel.org,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	lars.povlsen@microchip.com,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-clk@vger.kernel.org
+Cc: luka.perkov@sartura.hr,
+	Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v3 00/15] Add support for Microchip LAN969x
+Date: Tue, 23 Dec 2025 21:16:11 +0100
+Message-ID: <20251223201921.1332786-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251215163820.1584926-1-robert.marko@sartura.hr>
- <20251215163820.1584926-18-robert.marko@sartura.hr> <20251216-endorse-password-ae692dda5a9c@spud>
- <CA+HBbNF-=W7A3Joftsqn+A6s170sqOZ77jpS105s5HPqkskQzA@mail.gmail.com> <20251223-chrome-simile-8cf1e9afe155@spud>
-In-Reply-To: <20251223-chrome-simile-8cf1e9afe155@spud>
-From: Robert Marko <robert.marko@sartura.hr>
-Date: Tue, 23 Dec 2025 16:29:22 +0100
-X-Gm-Features: AQt7F2rjEyMDZrOpK1oplok3NPPf4ZxKJg97_UNzU27UIMOHDSKt5OOOHzhM_mA
-Message-ID: <CA+HBbNFhVVoaiVJtH-fB3Wmeh6O3C_H=bwz2vBDR2MO4o0qy_w@mail.gmail.com>
-Subject: Re: [PATCH v2 18/19] dt-bindings: arm: microchip: document EV23X71A board
-To: Conor Dooley <conor@kernel.org>
-Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
-	claudiu.beznea@tuxon.dev, Steen.Hegelund@microchip.com, 
-	daniel.machon@microchip.com, UNGLinuxDriver@microchip.com, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org, 
-	linux@roeck-us.net, andi.shyti@kernel.org, lee@kernel.org, 
-	andrew+netdev@lunn.ch, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, linusw@kernel.org, olivia@selenic.com, 
-	radu_nicolae.pirea@upb.ro, richard.genoud@bootlin.com, 
-	gregkh@linuxfoundation.org, jirislaby@kernel.org, mturquette@baylibre.com, 
-	sboyd@kernel.org, richardcochran@gmail.com, wsa+renesas@sang-engineering.com, 
-	romain.sioen@microchip.com, Ryan.Wanner@microchip.com, 
-	lars.povlsen@microchip.com, tudor.ambarus@linaro.org, 
-	kavyasree.kotagiri@microchip.com, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
-	linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, 
-	linux-clk@vger.kernel.org, mwalle@kernel.org, luka.perkov@sartura.hr
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 23, 2025 at 3:43=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Tue, Dec 23, 2025 at 11:34:55AM +0100, Robert Marko wrote:
-> > On Tue, Dec 16, 2025 at 6:32=E2=80=AFPM Conor Dooley <conor@kernel.org>=
- wrote:
-> > >
-> > > On Mon, Dec 15, 2025 at 05:35:35PM +0100, Robert Marko wrote:
-> > > > Microchip EV23X71A board is an LAN9696 based evaluation board.
-> > > >
-> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/arm/microchip.yaml | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/arm/microchip.yaml b=
-/Documentation/devicetree/bindings/arm/microchip.yaml
-> > > > index 910ecc11d5d7..b20441edaac7 100644
-> > > > --- a/Documentation/devicetree/bindings/arm/microchip.yaml
-> > > > +++ b/Documentation/devicetree/bindings/arm/microchip.yaml
-> > > > @@ -239,6 +239,14 @@ properties:
-> > > >            - const: microchip,lan9668
-> > > >            - const: microchip,lan966
-> > > >
-> > > > +      - description: The LAN969x EVB (EV23X71A) is a 24x 1G + 4x 1=
-0G
-> > > > +          Ethernet development system board.
-> > > > +      - items:
-> > > > +          - enum:
-> > > > +              - microchip,ev23x71a
-> > > > +              - microchip,lan9696
-> > >
-> > > This looks wrong, unless "microchip,lan9696" is a board (which I susp=
-ect
-> > > it isn't).
-> >
-> > Hi,
-> > No, LAN9696 is the exact SoC SKU used on the board.
-> > I will drop it in v3.
->
-> Instead of dropping it, this should become an items list with 3 consts I
-> think.
+This series adds support for the Microchip LAN969x switch SoC family.
 
-Ok, that lines up with what other boards in the binding do, will do that in=
- v3.
+Series is a bit long since after discussions in previous versions, it was
+recommended[1][2] to add SoC specific compatibles for device nodes so it
+includes the required bindings updates.
 
-Regards,
-Robert
+[1] https://lore.kernel.org/all/20251203-splendor-cubbyhole-eda2d6982b46@spud/
+[2] https://lore.kernel.org/all/173412c8-c2fb-4c38-8de7-5b1c2eebdbf9@microchip.com/
+[3] https://lore.kernel.org/all/20251203-duly-leotard-86b83bd840c6@spud/
 
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 
+Changes in v3:
+* Pick Acked-by from Conor
+* Drop HWMON binding as it was picked into hwmon already
+* Document EV23X71A into AT91 binding
+* Drop SparX-5 and AT91 bindings merge
+* Apply remark from Conor on DMA binding regarding merging cases
 
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura d.d.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+Changes in v2:
+* Change LAN969x wildcards to LAN9691 in patches
+* Split SoC DTSI and evaluation board patches
+* Add the suggested binding changes required for SoC specific compatibles
+* Merge SparX-5 and AT91 bindings as suggested[3]
+
+Robert Marko (15):
+  include: dt-bindings: add LAN969x clock bindings
+  dt-bindings: usb: Add Microchip LAN969x support
+  dt-bindings: mfd: atmel,sama5d2-flexcom: add microchip,lan9691-flexcom
+  dt-bindings: serial: atmel,at91-usart: add microchip,lan9691-usart
+  dt-bindings: spi: at91: add microchip,lan9691-spi
+  dt-bindings: i2c: atmel,at91sam: add microchip,lan9691-i2c
+  dt-bindings: rng: atmel,at91-trng: add microchip,lan9691-trng
+  dt-bindings: crypto: atmel,at91sam9g46-aes: add microchip,lan9691-aes
+  dt-bindings: crypto: atmel,at91sam9g46-sha: add microchip,lan9691-sha
+  dt-bindings: dma: atmel: add microchip,lan9691-dma
+  dt-bindings: net: mscc-miim: add microchip,lan9691-miim
+  dt-bindings: pinctrl: pinctrl-microchip-sgpio: add LAN969x
+  arm64: dts: microchip: add LAN969x support
+  dt-bindings: arm: AT91: document EV23X71A board
+  arm64: dts: microchip: add EV23X71A board
+
+ .../devicetree/bindings/arm/atmel-at91.yaml   |   6 +
+ .../crypto/atmel,at91sam9g46-aes.yaml         |   1 +
+ .../crypto/atmel,at91sam9g46-sha.yaml         |   1 +
+ .../bindings/dma/atmel,sama5d4-dma.yaml       |   4 +-
+ .../bindings/i2c/atmel,at91sam-i2c.yaml       |   1 +
+ .../bindings/mfd/atmel,sama5d2-flexcom.yaml   |   1 +
+ .../devicetree/bindings/net/mscc,miim.yaml    |  11 +-
+ .../pinctrl/microchip,sparx5-sgpio.yaml       |  20 +-
+ .../bindings/rng/atmel,at91-trng.yaml         |   1 +
+ .../bindings/serial/atmel,at91-usart.yaml     |   1 +
+ .../bindings/spi/atmel,at91rm9200-spi.yaml    |   1 +
+ .../bindings/usb/microchip,lan9691-dwc3.yaml  |  68 ++
+ arch/arm64/boot/dts/microchip/Makefile        |   1 +
+ arch/arm64/boot/dts/microchip/lan9691.dtsi    | 487 +++++++++++
+ .../boot/dts/microchip/lan9696-ev23x71a.dts   | 757 ++++++++++++++++++
+ include/dt-bindings/clock/microchip,lan9691.h |  24 +
+ 16 files changed, 1376 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/usb/microchip,lan9691-dwc3.yaml
+ create mode 100644 arch/arm64/boot/dts/microchip/lan9691.dtsi
+ create mode 100644 arch/arm64/boot/dts/microchip/lan9696-ev23x71a.dts
+ create mode 100644 include/dt-bindings/clock/microchip,lan9691.h
+
+-- 
+2.52.0
+
 
