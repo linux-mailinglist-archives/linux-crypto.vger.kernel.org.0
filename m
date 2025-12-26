@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-19462-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19460-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60A54CDE2E9
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 01:38:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A898FCDE2EC
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 01:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BBB133001604
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 00:38:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2EE323008EB0
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 00:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43E582E63C;
-	Fri, 26 Dec 2025 00:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF0C5733E;
+	Fri, 26 Dec 2025 00:38:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="NplpmI47"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="Ew/F23Le"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EF410E3
-	for <linux-crypto@vger.kernel.org>; Fri, 26 Dec 2025 00:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB1B2E63C
+	for <linux-crypto@vger.kernel.org>; Fri, 26 Dec 2025 00:38:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766709520; cv=none; b=dRrL8LMBY8DrTb2qW7EA3jQI6HVjyNN1D0NOGJ3nbjKw4E3v2SWYpjxD2Lsw86JtzvA6Jp7Q9XsYXznDgSRIQIx1gnZ8niZTGpMrzz7kLQtvTNLhGAXqfaeDOorD7VNcaB/UoRA6+WyHtdArfoNSDPkvxWkMhFcyOOzjeFvHBvU=
+	t=1766709518; cv=none; b=bq6HAPoHGkMBAaVs8bD5G3vu7+eYvqKkfmMtViw0pTNHPz/BKTX7anrSVHXtDa5gD1akGpOoexjDHDmpvxJShHrh+K7IQNlzFox+LpOnRbSBlNAOnVbRhGf8EUkfcnOStdAxhlPAKlXR0B4bevwovfKFqoFzM0LgExEjxEBMjx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766709520; c=relaxed/simple;
-	bh=A2aqbJ/gxOHq+PdOw00dvo2hkkqQhOJr86ESqRDO0AQ=;
-	h=Date:Message-ID:In-Reply-To:References:From:Subject:To:Cc; b=mnIULsIT3IobqUuMRz7SEhVW/iuM8vVIBOKC1n5zzfycEsT37TLE1gjXVVzttVEXGeBYWay57S3m9sIFJg47mHSo6DmaY3rAF5tRocINl7pvHiKJxAgLvYxiW9tX280+iCTdYHfyHi1sIZj9gCf7PiWJgPKUVV0w7eWrd5Y+TwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=NplpmI47; arc=none smtp.client-ip=180.181.231.80
+	s=arc-20240116; t=1766709518; c=relaxed/simple;
+	bh=xVNxNiqdsWnu2sbONYkEuqBQ/o7hOnYLNVYwKLE75HI=;
+	h=Date:Message-ID:In-Reply-To:References:From:Subject:To:Cc; b=CVRiSjt7PvIZ7rs1bsgftib15u0J4SdiAY5JT0JjMWJq4DN8+A5Sw9twmL061oYGZJKQRREqGTplnMmWfeo7W9fpPn/RgXLRfkbPI0rtgFuZ9Apr2qwpwVZwGuyk1ZqTaKvAJLt8A81Gzze/DcAtfLqUI8PLooz9u4FimGBviA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=Ew/F23Le; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=Cc:To:Subject:From:References:In-Reply-To:
 	Message-ID:Date:cc:to:subject:message-id:date:from:content-type:mime-version:
-	reply-to; bh=ojir2qU/0QMQ1JvI7qWaceIfsgwkcbc/6wy+wIgu9Uc=; b=NplpmI47ANRFrTYt
-	CwMuTxBXZIQ/+HUKtuF3JoY1MoICD2vc5dBi3cF5YUgl4KVvLcCiUVruKHjJ6Kk3IP2t6VVrohJ/A
-	py9VrnyV9EKDG59Y1u9JY/hh9CgcMWuTQEsySGss8iR8fh16KDysXKUVJRRa8JfpiE+C7ZBlib9pp
-	kZUYdDdCUTH4L2CR8lC6XRM8Vy+IYBlcPgjhPp3tpAzTElpb5aosXOsNpeIPNycXCQE5jeny0P4M8
-	YF4rxbK8Xat4DlL5iR0hbKAS3d0Y3nPPCv1+aZN4aRYuQ2folSdzo1RhenLCOSkxWAPlEmJnJ0tNy
-	aKRxzaxBac19XhkFXw==;
+	reply-to; bh=bBJXp324EjRbt4hdgARc7ZA8O7oMICZ/6QuN6KbeNhM=; b=Ew/F23LeOGuuGCLG
+	qGNEujZohz/8w/0tYB5ZUrouGVDPGJcMOHlRqFYMNjU4Tjt9ZEbA96nu4XP/4b7ZDoLgpBNlLDL25
+	MdvBcBRhUb7zNV0W151bBNywY40iE2UVPG9blNVCjQkvr7JHK7ad3yTyuqgFZm7SmQx45VlI4xVR+
+	8K+OoJGZGTLNTOv0Clbp9/N4wgwPiVRvuitAIBgEJ3sYGfupAmS8VlvB8hFMq8QLJBpgrmMQqVu4g
+	dSZVHpKWUnXf/VzkpAJnnx+hn6xPVGy1gqxRjOxRfcdB8nfGMxl9PIR3qEgJrzHXzbRPJfNUUsBtj
+	7rKrUGiggMvuoucBSQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vYvqd-00CY7q-27;
-	Fri, 26 Dec 2025 08:38:28 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Dec 2025 08:38:27 +0800
-Date: Fri, 26 Dec 2025 08:38:27 +0800
-Message-ID: <0533ee1ec37d82fd22a74921cf6a1f3dc9d022b0.1766709379.git.herbert@gondor.apana.org.au>
+	id 1vYvqf-00CY83-38;
+	Fri, 26 Dec 2025 08:38:30 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Dec 2025 08:38:29 +0800
+Date: Fri, 26 Dec 2025 08:38:29 +0800
+Message-ID: <9aab007e003c291a549a0b1794854d5d83f9da27.1766709379.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1766709379.git.herbert@gondor.apana.org.au>
 References: <cover.1766709379.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 2/3] crypto: acomp - Add bit to indicate segmentation support
+Subject: [PATCH 3/3] crypto: acomp - Add trivial segmentation wrapper
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: yosry.ahmed@linux.dev, nphamcs@gmail.com, chengming.zhou@linux.dev, Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 Precedence: bulk
@@ -56,63 +56,114 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 
-Add a bit to the crypto_alg flags to indicate support for segmentation.
-Also add a helper for acomp to test whether a given tfm supports
-segmentation.
+Add a trivial segmentation wrapper that only supports compression
+with a segment count of exactly one.
+
+The reason is that the first user zswap will only allocate the
+extra memory if the underlying algorithm supports segmentation,
+and otherwise only one segment will be given at a time.
+
+Having this wrapper means that the same calling convention can
+be used for all algorithms, regardless of segmentation support.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- include/crypto/algapi.h             | 5 +++++
- include/crypto/internal/acompress.h | 5 +++++
- include/linux/crypto.h              | 3 +++
- 3 files changed, 13 insertions(+)
+ crypto/acompress.c         | 25 ++++++++++++++++++++++---
+ include/crypto/acompress.h |  1 +
+ 2 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
-index 05deea9dac5e..7d406cfe5751 100644
---- a/include/crypto/algapi.h
-+++ b/include/crypto/algapi.h
-@@ -280,6 +280,11 @@ static inline bool crypto_tfm_req_virt(struct crypto_tfm *tfm)
- 	return tfm->__crt_alg->cra_flags & CRYPTO_ALG_REQ_VIRT;
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index be28cbfd22e3..d97a90a5ee46 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -170,8 +170,13 @@ static void acomp_save_req(struct acomp_req *req, crypto_completion_t cplt)
+ 
+ 	state->compl = req->base.complete;
+ 	state->data = req->base.data;
++	state->unit_size = req->unit_size;
++	state->flags = req->base.flags & (CRYPTO_ACOMP_REQ_SRC_VIRT |
++					  CRYPTO_ACOMP_REQ_DST_VIRT);
++
+ 	req->base.complete = cplt;
+ 	req->base.data = state;
++	req->unit_size = 0;
  }
  
-+static inline bool crypto_tfm_req_seg(struct crypto_tfm *tfm)
-+{
-+	return tfm->__crt_alg->cra_flags & CRYPTO_ALG_REQ_SEG;
-+}
-+
- static inline u32 crypto_request_flags(struct crypto_async_request *req)
+ static void acomp_restore_req(struct acomp_req *req)
+@@ -180,6 +185,7 @@ static void acomp_restore_req(struct acomp_req *req)
+ 
+ 	req->base.complete = state->compl;
+ 	req->base.data = state->data;
++	req->unit_size = state->unit_size;
+ }
+ 
+ static void acomp_reqchain_virt(struct acomp_req *req)
+@@ -198,9 +204,6 @@ static void acomp_virt_to_sg(struct acomp_req *req)
  {
- 	return req->flags & ~CRYPTO_TFM_REQ_ON_STACK;
-diff --git a/include/crypto/internal/acompress.h b/include/crypto/internal/acompress.h
-index 2d97440028ff..366dbdb987e8 100644
---- a/include/crypto/internal/acompress.h
-+++ b/include/crypto/internal/acompress.h
-@@ -188,6 +188,11 @@ static inline bool crypto_acomp_req_virt(struct crypto_acomp *tfm)
- 	return crypto_tfm_req_virt(&tfm->base);
+ 	struct acomp_req_chain *state = &req->chain;
+ 
+-	state->flags = req->base.flags & (CRYPTO_ACOMP_REQ_SRC_VIRT |
+-					  CRYPTO_ACOMP_REQ_DST_VIRT);
+-
+ 	if (acomp_request_src_isvirt(req)) {
+ 		unsigned int slen = req->slen;
+ 		const u8 *svirt = req->svirt;
+@@ -248,6 +251,10 @@ static int acomp_reqchain_finish(struct acomp_req *req, int err)
+ {
+ 	acomp_reqchain_virt(req);
+ 	acomp_restore_req(req);
++
++	if (req->unit_size)
++		req->dst->length = err ?: req->dlen;
++
+ 	return err;
  }
  
-+static inline bool crypto_acomp_req_seg(struct crypto_acomp *tfm)
-+{
-+	return crypto_tfm_req_seg(&tfm->base);
-+}
+@@ -272,6 +279,9 @@ static int acomp_do_req_chain(struct acomp_req *req, bool comp)
+ {
+ 	int err;
+ 
++	if (req->unit_size && req->slen > req->unit_size)
++		return -ENOSYS;
 +
- void crypto_acomp_free_streams(struct crypto_acomp_streams *s);
- int crypto_acomp_alloc_streams(struct crypto_acomp_streams *s);
+ 	acomp_save_req(req, acomp_reqchain_done);
  
-diff --git a/include/linux/crypto.h b/include/linux/crypto.h
-index a2137e19be7d..89b9c3f87f4d 100644
---- a/include/linux/crypto.h
-+++ b/include/linux/crypto.h
-@@ -139,6 +139,9 @@
- /* Set if the algorithm cannot have a fallback (e.g., phmac). */
- #define CRYPTO_ALG_NO_FALLBACK		0x00080000
+ 	err = acomp_do_one_req(req, comp);
+@@ -287,6 +297,13 @@ int crypto_acomp_compress(struct acomp_req *req)
  
-+/* Set if the algorithm supports segmentation. */
-+#define CRYPTO_ALG_REQ_SEG		0x00100000
-+
- /* The high bits 0xff000000 are reserved for type-specific flags. */
+ 	if (acomp_req_on_stack(req) && acomp_is_async(tfm))
+ 		return -EAGAIN;
++	if (req->unit_size) {
++		if (!acomp_request_issg(req))
++			return -EINVAL;
++		if (crypto_acomp_req_seg(tfm))
++			return crypto_acomp_reqtfm(req)->compress(req);
++		return acomp_do_req_chain(req, true);
++	}
+ 	if (crypto_acomp_req_virt(tfm) || acomp_request_issg(req))
+ 		return crypto_acomp_reqtfm(req)->compress(req);
+ 	return acomp_do_req_chain(req, true);
+@@ -299,6 +316,8 @@ int crypto_acomp_decompress(struct acomp_req *req)
  
- /*
+ 	if (acomp_req_on_stack(req) && acomp_is_async(tfm))
+ 		return -EAGAIN;
++	if (req->unit_size)
++		return -ENOSYS;
+ 	if (crypto_acomp_req_virt(tfm) || acomp_request_issg(req))
+ 		return crypto_acomp_reqtfm(req)->decompress(req);
+ 	return acomp_do_req_chain(req, false);
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index 0f1334168f1b..965eab7738ba 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -67,6 +67,7 @@ struct acomp_req_chain {
+ 		struct folio *dfolio;
+ 	};
+ 	u32 flags;
++	u32 unit_size;
+ };
+ 
+ /**
 -- 
 2.47.3
 
