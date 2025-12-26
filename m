@@ -1,51 +1,54 @@
-Return-Path: <linux-crypto+bounces-19459-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19461-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB63CDE2E6
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 01:38:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9EC5CDE2EF
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 01:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BACD33007FC2
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 00:38:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9296C3009F8D
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Dec 2025 00:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D58370809;
-	Fri, 26 Dec 2025 00:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407B22E63C;
+	Fri, 26 Dec 2025 00:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="NxMW8Qsx"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="YuO7IYGf"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FADA1C695
-	for <linux-crypto@vger.kernel.org>; Fri, 26 Dec 2025 00:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15AC5464D
+	for <linux-crypto@vger.kernel.org>; Fri, 26 Dec 2025 00:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766709517; cv=none; b=eax3DTOJx+rTFiQIrImAFjLNnouxdyHz3jan9pyrsQnNNNyWf82JBDDByjueZ2oqMPfu0qRJ7ipExQu/Qanw/JKSy+hvgaC9Prz4BHrf+ETtlssy1mVR3fm1O6tPN1iF9s+sHoEPaOtQAF+xq0lt1lZ0ytwHNmUVGRZX6NGJIP4=
+	t=1766709519; cv=none; b=DdLD1144ofe2vEdKmoN+Z6f/ReKccFWi2Gk1eEb1twFvKMSirfsN96M2g9ggqGw6L6unRYq/493jOX+SdwCwzDiBoXeFbyq3aOC1u91PAFbFRNqbKJfHmMKDfaiod7eACgpt7kctGRqFmjWc59LOjLwqEDyRggdkOoOdHe2ML/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766709517; c=relaxed/simple;
-	bh=1U1BeDwk8rP0Kx+H6mfGncFfE5g7C2FhV8hvC1vcYyo=;
-	h=Date:Message-ID:From:Subject:To:Cc; b=jDhG6GUEJVlYIeXmfjU1Zfbirysa5X7nTQT1xxzS4JOjCGMtinr22nO6JfuhR+HJBEcJBfvsU4WWu5egvLQMDwN/ijK0UMvH0O+m9hrkU1o5kdsYcQGfa599V7EqM2PxuyhBggEN2VTqp8Xy1rZ8zyWThdANzH1uViexmeTqg48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=NxMW8Qsx; arc=none smtp.client-ip=180.181.231.80
+	s=arc-20240116; t=1766709519; c=relaxed/simple;
+	bh=P2E41+jB7chfJxVv0QbxiYnG1IOSZ9kULiROpAN8asI=;
+	h=Date:Message-ID:In-Reply-To:References:From:Subject:To:Cc; b=DVvun7W1JCXv2f55KuRz8delAVGpjufoeX9nbiGte4SGQNk2hw94CkgFkc9/61OmaMQI4FN6/NS/w4OEtFsBBLN61V3xi3OHyKK7TvCdMVHlzlTY4z/PgtejOXcsRGHVEfOQ7mqmPuHyzxJ6JrpNTcSbd+ZN0NHCQRQciKmTd7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=YuO7IYGf; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=Cc:To:Subject:From:Message-ID:Date:cc:to:
-	subject:message-id:date:from:content-type:in-reply-to:references:mime-version
-	:reply-to; bh=sDXtI5CIaDi4PBETsXiFYDaLVc3DtB6P0GruglBPDmc=; b=NxMW8QsxPQtNHWu
-	eylMzF5LV3ZuBB9dsQvIDE/GU08Om5K53QYNKU9oP1dxEiXWWp0JCqA1UrQRB7hhq6LE5y4P57cBf
-	HdLJnHD/w0f4MnJ5aSgoV5AZoSdfzWnyUNo07xvx+rD7/ZeSXE5/mdbwHtbM6hjZBWVP7AFI5ijay
-	zxgh44nQuj/LF1V3b9ZseLJQGr3fK0wX+UpWJdQTXeOj5G+NqKh64x1SOJR+IqULofK++tEsppMht
-	ch4d8JGHdn0ywXpj9iWMzLcbdJlMdoBxOXLDkN+m3TiNJYKwTXy2sLOIl0QglehHdC4+jXv8QSl3r
-	GNe26oBe7xJnDSmzS8w==;
+	d=gondor.apana.org.au; s=h01; h=Cc:To:Subject:From:References:In-Reply-To:
+	Message-ID:Date:cc:to:subject:message-id:date:from:content-type:mime-version:
+	reply-to; bh=y8VLx11pNosaPBbmk98BXJQc1kgij7aVUDvbrn8CCG4=; b=YuO7IYGfWTgmZ+xw
+	z/lmYVYrwk5/pfcuAg9y+UZbAK72OzXmLiCgE9qx2Yu+wHwUpEdlN4qlBkq+Fq40M+xyY9ooJU48R
+	NG1l+91SE01zqC+pf3onw5jDgAR7/w4IuR0UbToFmlJ/nsyzyBVEgk8d0IxlHhbwgy72SvjOCIrFW
+	a8hLJkFUzW2lgjhuHgXkgiNrz7AI9oIi9UCvJMKOojbUpWfU5x7W7CCJ8LrBmcR0FUL8MEVYnZKt3
+	Idzs3YSAntlDnqASyzgNhye4jFLqoTurhvyEumnv+4vrAkK7XFTYJp87fI15ERpV5SZ51OB7GdhPz
+	FpmIU1KkO5Yb4KenZQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vYvqZ-00CY7W-01;
-	Fri, 26 Dec 2025 08:38:24 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Dec 2025 08:38:22 +0800
-Date: Fri, 26 Dec 2025 08:38:22 +0800
-Message-ID: <cover.1766709379.git.herbert@gondor.apana.org.au>
+	id 1vYvqb-00CY7e-15;
+	Fri, 26 Dec 2025 08:38:26 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Dec 2025 08:38:25 +0800
+Date: Fri, 26 Dec 2025 08:38:25 +0800
+Message-ID: <9565daceae6efbac8ba35c291e7f9370ecfc83d6.1766709379.git.herbert@gondor.apana.org.au>
+In-Reply-To: <cover.1766709379.git.herbert@gondor.apana.org.au>
+References: <cover.1766709379.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 0/3] crypto: acomp - Add segmentation API for compression
+Subject: [PATCH 1/3] crypto: acomp - Define a unit_size in struct acomp_req to
+ enable batching.
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: yosry.ahmed@linux.dev, nphamcs@gmail.com, chengming.zhou@linux.dev, Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 Precedence: bulk
@@ -54,26 +57,94 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 
-This patch adds segmentation support for compression and provides a
-wrapper for existing algorithms so that they can accept a single
-segment while returning the compressed length or error through
-the dst SG list length.
+From: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
 
-Herbert Xu (2):
-  crypto: acomp - Add bit to indicate segmentation support
-  crypto: acomp - Add trivial segmentation wrapper
+We add a new @unit_size data member to struct acomp_req along with a
+helper function acomp_request_set_unit_size() for kernel modules to set
+the unit size to use while breaking down the request's src/dst
+scatterlists.
 
-Kanchana P Sridhar (1):
-  crypto: acomp - Define a unit_size in struct acomp_req to enable
-    batching.
+An acomp_alg can implement batching by using the @req->unit_size to
+break down the SG lists passed in via @req->dst and/or @req->src, to
+submit individual @req->slen/@req->unit_size compress jobs or
+@req->dlen/@req->unit_size decompress jobs, for batch compression and
+batch decompression respectively.
 
- crypto/acompress.c                  | 25 ++++++++++++++++---
- include/crypto/acompress.h          | 37 +++++++++++++++++++++++++++++
- include/crypto/algapi.h             |  5 ++++
- include/crypto/internal/acompress.h |  5 ++++
- include/linux/crypto.h              |  3 +++
- 5 files changed, 72 insertions(+), 3 deletions(-)
+In case of batch compression, the folio's pages for the batch can be
+retrieved from the @req->src scatterlist by using an struct sg_page_iter
+after determining the number of pages as @req->slen/@req->unit_size.
 
+Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Kanchana P Sridhar <kanchana.p.sridhar@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ include/crypto/acompress.h | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index 9eacb9fa375d..0f1334168f1b 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -79,6 +79,7 @@ struct acomp_req_chain {
+  * @dvirt:	Destination virtual address
+  * @slen:	Size of the input buffer
+  * @dlen:	Size of the output buffer and number of bytes produced
++ * @unit_size:  Unit size for the request for use in batching
+  * @chain:	Private API code data, do not use
+  * @__ctx:	Start of private context data
+  */
+@@ -94,6 +95,7 @@ struct acomp_req {
+ 	};
+ 	unsigned int slen;
+ 	unsigned int dlen;
++	unsigned int unit_size;
+ 
+ 	struct acomp_req_chain chain;
+ 
+@@ -328,9 +330,43 @@ static inline void acomp_request_set_callback(struct acomp_req *req,
+ {
+ 	flgs &= ~CRYPTO_ACOMP_REQ_PRIVATE;
+ 	flgs |= req->base.flags & CRYPTO_ACOMP_REQ_PRIVATE;
++	req->unit_size = 0;
+ 	crypto_request_set_callback(&req->base, flgs, cmpl, data);
+ }
+ 
++/**
++ * acomp_request_set_unit_size() -- Sets the unit size for the request.
++ *
++ * As suggested by Herbert Xu, this is a new helper function that enables
++ * batching for zswap, IPComp, etc.
++ *
++ * Example usage model:
++ *
++ * A module like zswap that wants to use batch compression of @nr_pages with
++ * crypto_acomp must create an output SG table for the batch, initialized to
++ * contain @nr_pages SG lists. Each scatterlist is mapped to the nth
++ * destination buffer for the batch.
++ *
++ * An acomp_alg can implement batching by using the @req->unit_size to
++ * break down the SG lists passed in via @req->dst and/or @req->src, to
++ * submit individual @req->slen/@req->unit_size compress jobs or
++ * @req->dlen/@req->unit_size decompress jobs, for batch compression and
++ * batch decompression respectively.
++ *
++ * This API must be called after acomp_request_set_callback(),
++ * which sets @req->unit_size to 0.
++ *
++ * @du would be PAGE_SIZE for zswap, it could be the MTU for IPsec.
++ *
++ * @req:	asynchronous compress request
++ * @du:		data unit size of the input buffer scatterlist.
++ */
++static inline void acomp_request_set_unit_size(struct acomp_req *req,
++					       unsigned int du)
++{
++	req->unit_size = du;
++}
++
+ /**
+  * acomp_request_set_params() -- Sets request parameters
+  *
 -- 
 2.47.3
 
