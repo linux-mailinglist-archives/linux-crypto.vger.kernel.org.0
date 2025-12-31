@@ -1,250 +1,172 @@
-Return-Path: <linux-crypto+bounces-19537-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19539-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981B9CEBB2E
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Dec 2025 10:34:38 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30094CEC034
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Dec 2025 14:12:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AEA1B3011F8E
-	for <lists+linux-crypto@lfdr.de>; Wed, 31 Dec 2025 09:34:36 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 32E28300DABA
+	for <lists+linux-crypto@lfdr.de>; Wed, 31 Dec 2025 13:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11EC30F927;
-	Wed, 31 Dec 2025 09:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A583233ED;
+	Wed, 31 Dec 2025 13:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b="TZvtkQFR"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SiNOf5hC"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mistyrose.cherry.relay.mailchannels.net (mistyrose.cherry.relay.mailchannels.net [23.83.223.121])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD5C16EB42;
-	Wed, 31 Dec 2025 09:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.223.121
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767173674; cv=pass; b=CZcP7XQ4wAKULH9T+FFLMPPbbTWfg0oTZgoRgbvycZgHto6IlDxeKIUV4ABsSqwbgrpdO2OXEStaylYqGkJf46/ZrBTp5pBEAm7gcDe5xddVmw63UQg9iaCIGHcuU+Y5uTFqfG/qyGY/Y4uYhv0NkZhR6lZt3K5FpJidIb9cLMM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767173674; c=relaxed/simple;
-	bh=kPPUJ+cqjClWMAxV0R7r5VQvviTHQeABLvERa3yuvhY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=IVCSj/Gz/ZeSuyKT5kpvrQH83VvNMF9UKCBs9DMCsQwhD60p9cfeDWFltpJmnrAKQxIwQJJ98CoCK6VkTYp2YTfFZNZ5CWGQIpVNBBire5rXgx7FycXrUiG3XMhdopCNl/tumkY1X3JvFmXRuNk7JmzsBNxD660VhO2snnPXqis=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id; spf=pass smtp.mailfrom=kriptograf.id; dkim=pass (2048-bit key) header.d=kriptograf.id header.i=@kriptograf.id header.b=TZvtkQFR; arc=pass smtp.client-ip=23.83.223.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kriptograf.id
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kriptograf.id
-X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 85E977412DA;
-	Wed, 31 Dec 2025 09:25:18 +0000 (UTC)
-Received: from vittoria.id.domainesia.com (trex-green-8.trex.outbound.svc.cluster.local [100.105.72.72])
-	(Authenticated sender: nlkw2k8yjw)
-	by relay.mailchannels.net (Postfix) with ESMTPA id B9B3974121B;
-	Wed, 31 Dec 2025 09:25:15 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1767173117;
-	b=jvw68y2Kfc81KZdBrkZjqYrJS/B40ez7xMmvbBxAdn+XaMMCwdX3iOsg/VCN9k46+hBmfA
-	JtMuGND1o2PttRMKYx+GSJNFx0mHLCrA0jklynsNWsk170pIm2BbgXqzuefS+/xfaNsk1D
-	XsMVqFuFzLUnmb9zfyYNQlrEMxdF/c0D0PLUp8LWUlB1lfRGOYzyoJGLN3KbjPpHMUMnOT
-	9U77pxHMv3K1ltcRZTh4H6gM97cDpvAE0UHc9ZIYAgQ0p8AgKPR9lxGPa+JnAdD0751OYM
-	RoRGDgzvdjjzjfkUgd/zi766saertfdBrDo7+GoaMuUkuGXYA+LCnEB+d9/WNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1767173117;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=QW97PjJBrkA2EKQOCRqnHZDdmpNJ/eB9tI5pbcNEAWA=;
-	b=i3J6jGOkfGk5ZoqjwOBdwbIPbOzbU4J2lWnN6aLwXga9AQsR0tP3loEYjMI3DGPcLOkDU4
-	YsK5ZQOagjpoxdSkpDRLT540L9T/nSMtmwm5msJ/HMuCUOqEOvR3NvOevbd2+RtRjn41Rr
-	KeNVcuDAYJwPxBUDKi+B0uS2/qSCSH9uvxjS6DL81EkjS9y2NKF2elQ9x+BMDrdrw2P9VC
-	idbU0yLziH6Hl35iDtsHKuwvmdBSGJqKnGoYMOOG+LHGYwNRCvS5EqRUP/IyusWJoC26dg
-	/D3d22TnQczCClqb5v1cdTI34NXNj47SC+afCnDrm+Dy83/J5XiV4FfMMayctA==
-ARC-Authentication-Results: i=1;
-	rspamd-69599c6f48-klbvj;
-	auth=pass smtp.auth=nlkw2k8yjw smtp.mailfrom=rusydi.makarim@kriptograf.id
-X-Sender-Id: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
-X-MC-Relay: Junk
-X-MailChannels-SenderId: nlkw2k8yjw|x-authuser|rusydi.makarim@kriptograf.id
-X-MailChannels-Auth-Id: nlkw2k8yjw
-X-Shoe-Trouble: 4ae519731d110a46_1767173117855_1544193225
-X-MC-Loop-Signature: 1767173117855:619337112
-X-MC-Ingress-Time: 1767173117855
-Received: from vittoria.id.domainesia.com (vittoria.id.domainesia.com
- [36.50.77.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.105.72.72 (trex/7.1.3);
-	Wed, 31 Dec 2025 09:25:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kriptograf.id; s=default; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=QW97PjJBrkA2EKQOCRqnHZDdmpNJ/eB9tI5pbcNEAWA=; b=TZvtkQFR0m/d0jaQppnIbBVB8c
-	cHPoXmCGND7JojH4Yt8EkjcMXKqDCmeyA89tJVPn2B+KbNq0ji9hXwdIsxWQ2Gp1uj5FSP5Vw9fzw
-	Iei3UoiFF1bWCl9PgG0YhrrEKglTVnJuG0/+Rf/l2YTAB/KHNQKG50gCvCkswhUT2ygoZi0COGpuz
-	WDL3JCJfmKuBBI97p0svOUxzc9DU7dbMFDW0y7NSRTf4iRkLft0n5P+gWNkocnkY/6uuMkkvPFRIa
-	HRleLxzhFAq2TTQ0mFke4uVWXrsgx1bE9SOBP0n2q/WjyeWQT70+gdnakzb3ukZJB5VggsvkPBTBV
-	71/RvYZA==;
-Received: from [182.253.89.89] (port=29807 helo=Rusydis-MacBook-Air.local)
-	by vittoria.id.domainesia.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.99)
-	(envelope-from <rusydi.makarim@kriptograf.id>)
-	id 1vasSA-0000000B53Y-2GVX;
-	Wed, 31 Dec 2025 16:25:13 +0700
-From: "Rusydi H. Makarim" <rusydi.makarim@kriptograf.id>
-Date: Wed, 31 Dec 2025 16:25:37 +0700
-Subject: [PATCH v2 3/3] crypto: Crypto API implementation of Ascon-Hash256
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A3C1E0DCB
+	for <linux-crypto@vger.kernel.org>; Wed, 31 Dec 2025 13:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767186756; cv=none; b=gwScU6f8FAJR9wnlCSx9MkaD+L5/aSWV5PhuWd6PbEc/FE1Ma2Req1Fntx4wN/x3o1fQSCaGMadQPpDtd5+IIVUjXCx41n2e1bqANSyVpHxHKniRenlvGHDE9wOzn3K/XyS3+jXmwoKooVMZsPEBHdRuRZs432QihJ+xEauDka8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767186756; c=relaxed/simple;
+	bh=+Rj9uS/xKO+b+rZgqDTkOPQ7AM9H+O0zY3sW6JnGIaQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HUJ657lZ7AV2UjjbdmZDQjqTMvMelCaVEq4yGJd/rWNDb5seuYq1v7xhmmVzeXYJP2QRJxqEwUfefUK7rp++q0rvgg88DH01sw0dZ2ghafZR5bXw3O3emtcO3VxXWIa3sIys070E7yT0ebSw/i7NePEIPZmY42TgBnRmkl8mEDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SiNOf5hC; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47d538fafdfso3024575e9.1
+        for <linux-crypto@vger.kernel.org>; Wed, 31 Dec 2025 05:12:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1767186751; x=1767791551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fke3G5rSH2WPZ2DuQdyfqEfEpoI6l76uJNtI0EpEhAo=;
+        b=SiNOf5hCQAQ9lih0xDGV7gjR7CfpmOO8AB3s9IeITfpaC328pdo654nC3FNIfPPnYB
+         fkd5qD9q+HvWSq536C6BhTSPieAbHLipRfLKE21iDDYtDmghplktpIhdpDtdORPciAcZ
+         LQpQ8PKMM8Q6/YUI7t1QvsKoPzRYURS1J27f9/F31nTEFyFQlVX8XQzAr1xtRLQ39GkB
+         REQ15nkajDKe1xg9zkDXa/UH9tt1LtbNShtNDDvRc1UpIXkWn8dwnUZCTvot/hexmBta
+         XggYEqQC1GM23pJ7GQgNCAuwh+5a70MQJiobGXUg7XwbkgAb1lDG3040If49qmyX801q
+         2gDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767186751; x=1767791551;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Fke3G5rSH2WPZ2DuQdyfqEfEpoI6l76uJNtI0EpEhAo=;
+        b=abkpLndpV4m68gu7if1a1Pblk6dTBcIjNFXfhQOt70Dls4b40lMqBTlqRqQJGqAkzY
+         lGIWC0ITHrrt4iiQ+nOKDyPJkcqjSQV8ltlDTTT0KW9LJYHmZ6EP/29oXv2TRbac/nNt
+         U08OXx7pCVkJ/BZhyAak94TjCp8GC532YWp2iFX7TrMDnBfR5ul/nKX7+KKCvo1LcYKM
+         JEuUz0sRzF016PH4+Paqpvd4p8zyvuB3XR0TxBfJwasNNtcZvEyqMQX7iu0+Qhw16h47
+         t6fKbUToez/54zvGtfkQkj4A6UCxcdeP5SkQgZFLDbwcWGbzbU7lRrTFlnjgcdIaKMkZ
+         ouRA==
+X-Forwarded-Encrypted: i=1; AJvYcCW8R1fMPmaxYIHub17b6Su6wdXpaaIDP/NGanwVHf1XH7AeZzscGCpXVC0OVg8RlCjsQhN9f5RSwob+rXc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxqs0AL1MIM8LLvKIJDmsTxQTFcaBpgFWrKled5YqhvXXq4yp7I
+	Pi3QgsapSMWS/YEdG/3xQ5zXsqZGdtR0U1RU0CWfmEJF2MUeTkZXANcemPL4e2/CCQw=
+X-Gm-Gg: AY/fxX4qUpQI8sObzx+F9ZmUoC9ML6a0ToUmUOLIgvLv7axCL81oViBcbYhCC+OZBJn
+	czcWd8gFJjORBKeC6X3vTjXy9LGciU3Qdmt1J2dqw06uvmGWCN8XJW+9Af+LPGcdbLfzLwfSY1b
+	xXAMQqiiY+bB/SCTcPINmOtP6fn2kcWKtCpjF/fkiwrU7EdKtfFt3TTQHV2yrR9inUN7zQ1Si+c
+	mzqskRwglEqFEXJsxT6GY/4SiJQ16cB9eCanCDGEufWAHenIKaf+2njwQi7JDUMGaUpIfAE2CAI
+	7bG0hwD6smStccFli5FImSvdkI7WYupvjZTc+rkYYLVVeHiE/SJj7WfIIyVN6Be2IPJ00d4nnbI
+	aWe/1Zy6t9vq+CU5+uJcxjrmAlQp46qmMVkhObQwKNVftgPyxKaA5cpTVBigC1V8QFbVLcJdqDw
+	kQlVkE5Es55fqF2ACLsxfxEIZA0wY/UAKf1YmBNGFk1P3HW5xTHQPqlKO16JCsF69pGRi4lGgIm
+	rWO
+X-Google-Smtp-Source: AGHT+IF4mp6GOV5G6x95wPZOhGbqasawR+ZO3M57T/TzQMfUeMdF8kArZ+ePMOUwA5I3JuKmTuDssg==
+X-Received: by 2002:a05:600c:3e0b:b0:477:9c73:268a with SMTP id 5b1f17b1804b1-47d195b3d55mr287631655e9.6.1767186751342;
+        Wed, 31 Dec 2025 05:12:31 -0800 (PST)
+Received: from mordecai (dynamic-2a00-1028-83b8-1e7a-3010-3bd6-8521-caf1.ipv6.o2.cz. [2a00:1028:83b8:1e7a:3010:3bd6:8521:caf1])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47be3a20af0sm269524875e9.4.2025.12.31.05.12.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Dec 2025 05:12:30 -0800 (PST)
+Date: Wed, 31 Dec 2025 14:12:24 +0100
+From: Petr Tesarik <ptesarik@suse.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Jason Wang <jasowang@redhat.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>,
+ Eugenio =?UTF-8?B?UMOpcmV6?= <eperezma@redhat.com>, "James E.J. Bottomley"
+ <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, Gerd Hoffmann <kraxel@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Stefano Garzarella
+ <sgarzare@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Leon Romanovsky
+ <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ linux-doc@vger.kernel.org, linux-crypto@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-scsi@vger.kernel.org,
+ iommu@lists.linux.dev, kvm@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH RFC 00/13] fix DMA aligment issues around virtio
+Message-ID: <20251231141224.56d4ce56@mordecai>
+In-Reply-To: <cover.1767089672.git.mst@redhat.com>
+References: <cover.1767089672.git.mst@redhat.com>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251231-ascon_hash256-v2-3-ffc88a0bab4d@kriptograf.id>
-References: <20251231-ascon_hash256-v2-0-ffc88a0bab4d@kriptograf.id>
-In-Reply-To: <20251231-ascon_hash256-v2-0-ffc88a0bab4d@kriptograf.id>
-To: Herbert Xu <herbert@gondor.apana.org.au>, 
- "David S. Miller" <davem@davemloft.net>, Eric Biggers <ebiggers@kernel.org>, 
- "Jason A. Donenfeld" <Jason@zx2c4.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
- "Rusydi H. Makarim" <rusydi.makarim@kriptograf.id>
-X-Mailer: b4 0.14.3
-X-AuthUser: rusydi.makarim@kriptograf.id
 
-This commit implements Ascon-Hash256 for Crypto API
+On Tue, 30 Dec 2025 05:15:42 -0500
+"Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-Signed-off-by: Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
----
- crypto/Kconfig      |  7 +++++
- crypto/Makefile     |  1 +
- crypto/ascon_hash.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 94 insertions(+)
+> Cong Wang reported dma debug warnings with virtio-vsock
+> and proposed a patch, see:
+> 
+> https://lore.kernel.org/all/20251228015451.1253271-1-xiyou.wangcong@gmail.com/
+> 
+> however, the issue is more widespread.
+> This is an attempt to fix it systematically.
+> Note: i2c and gio might also be affected, I am still looking
+> into it. Help from maintainers welcome.
+> 
+> Early RFC, compile tested only. Sending for early feedback/flames.
+> Cursor/claude used liberally mostly for refactoring, and english.
+> 
+> DMA maintainers, could you please confirm the DMA core changes
+> are ok with you?
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 2e5b195b1b06..e671b5575535 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1000,6 +1000,13 @@ config CRYPTO_SHA3
- 	help
- 	  SHA-3 secure hash algorithms (FIPS 202, ISO/IEC 10118-3)
- 
-+config CRYPTO_ASCON_HASH
-+	tristate "Ascon-Hash"
-+	select CRYPTO_HASH
-+	select CRYPTO_LIB_ASCON_HASH
-+	help
-+	  Ascon-Hash secure hash algorithms (NIST SP 800-232)
-+
- config CRYPTO_SM3_GENERIC
- 	tristate "SM3 (ShangMi 3)"
- 	select CRYPTO_HASH
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 16a35649dd91..a697a92d2092 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -82,6 +82,7 @@ obj-$(CONFIG_CRYPTO_SHA3) += sha3.o
- obj-$(CONFIG_CRYPTO_SM3_GENERIC) += sm3_generic.o
- obj-$(CONFIG_CRYPTO_STREEBOG) += streebog_generic.o
- obj-$(CONFIG_CRYPTO_WP512) += wp512.o
-+obj-$(CONFIG_CRYPTO_ASCON_HASH) += ascon_hash.o
- CFLAGS_wp512.o := $(call cc-option,-fno-schedule-insns)  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=79149
- obj-$(CONFIG_CRYPTO_BLAKE2B) += blake2b.o
- obj-$(CONFIG_CRYPTO_ECB) += ecb.o
-diff --git a/crypto/ascon_hash.c b/crypto/ascon_hash.c
-new file mode 100644
-index 000000000000..2fa5e762fbc1
---- /dev/null
-+++ b/crypto/ascon_hash.c
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Crypto API support for Ascon-Hash256
-+ * (https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-232.pdf)
-+ *
-+ * Copyright (C) Rusydi H. Makarim <rusydi.makarim@kriptograf.id>
-+ */
-+
-+#include <crypto/internal/hash.h>
-+#include <crypto/ascon_hash.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+
-+#define ASCON_HASH256_CTX(desc) ((struct ascon_hash256_ctx *)shash_desc_ctx(desc))
-+
-+static int crypto_ascon_hash256_init(struct shash_desc *desc)
-+{
-+	ascon_hash256_init(ASCON_HASH256_CTX(desc));
-+	return 0;
-+}
-+
-+static int crypto_ascon_hash256_update(struct shash_desc *desc, const u8 *data,
-+				       unsigned int len)
-+{
-+	ascon_hash256_update(ASCON_HASH256_CTX(desc), data, len);
-+	return 0;
-+}
-+
-+static int crypto_ascon_hash256_final(struct shash_desc *desc, u8 *out)
-+{
-+	ascon_hash256_final(ASCON_HASH256_CTX(desc), out);
-+	return 0;
-+}
-+
-+static int crypto_ascon_hash256_digest(struct shash_desc *desc, const u8 *data,
-+				       unsigned int len, u8 *out)
-+{
-+	ascon_hash256(data, len, out);
-+	return 0;
-+}
-+
-+static int crypto_ascon_hash256_export_core(struct shash_desc *desc, void *out)
-+{
-+	memcpy(out, ASCON_HASH256_CTX(desc), sizeof(struct ascon_hash256_ctx));
-+	return 0;
-+}
-+
-+static int crypto_ascon_hash256_import_core(struct shash_desc *desc,
-+					    const void *in)
-+{
-+	memcpy(ASCON_HASH256_CTX(desc), in, sizeof(struct ascon_hash256_ctx));
-+	return 0;
-+}
-+
-+static struct shash_alg algs[] = { {
-+	.digestsize = ASCON_HASH256_DIGEST_SIZE,
-+	.init = crypto_ascon_hash256_init,
-+	.update = crypto_ascon_hash256_update,
-+	.final = crypto_ascon_hash256_final,
-+	.digest = crypto_ascon_hash256_digest,
-+	.export_core = crypto_ascon_hash256_export_core,
-+	.import_core = crypto_ascon_hash256_import_core,
-+	.descsize = sizeof(struct ascon_hash256_ctx),
-+	.base.cra_name = "ascon-hash256",
-+	.base.cra_driver_name = "ascon-hash256-lib",
-+	.base.cra_blocksize = ASCON_HASH256_BLOCK_SIZE,
-+	.base.cra_module = THIS_MODULE,
-+} };
-+
-+static int __init crypto_ascon_hash256_mod_init(void)
-+{
-+	return crypto_register_shashes(algs, ARRAY_SIZE(algs));
-+}
-+module_init(crypto_ascon_hash256_mod_init);
-+
-+static void __exit crypto_ascon_hash256_mod_exit(void)
-+{
-+	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+}
-+module_exit(crypto_ascon_hash256_mod_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Crypto API support for Ascon-Hash256");
-+
-+MODULE_ALIAS_CRYPTO("ascon-hash256");
-+MODULE_ALIAS_CRYPTO("ascon-hash256-lib");
+Before anyone else runs into the same issue as I did: This patch series
+does not apply cleanly unless you first apply commit b148e85c918a
+("virtio_ring: switch to use vring_virtqueue for virtqueue_add
+variants") from the mst/vhost/vhost branch.
 
--- 
-2.52.0
+But if you go to the trouble of adding the mst/vhost remote, then the
+above-mentioned branch also contains this patch series, and it's
+probably the best place to find the patched code...
+
+Now, let me set out for review.
+
+Petr T
+
+> Thanks!
+> 
+> 
+> Michael S. Tsirkin (13):
+>   dma-mapping: add __dma_from_device_align_begin/end
+>   docs: dma-api: document __dma_align_begin/end
+>   dma-mapping: add DMA_ATTR_CPU_CACHE_CLEAN
+>   docs: dma-api: document DMA_ATTR_CPU_CACHE_CLEAN
+>   dma-debug: track cache clean flag in entries
+>   virtio: add virtqueue_add_inbuf_cache_clean API
+>   vsock/virtio: fix DMA alignment for event_list
+>   vsock/virtio: use virtqueue_add_inbuf_cache_clean for events
+>   virtio_input: fix DMA alignment for evts
+>   virtio_scsi: fix DMA cacheline issues for events
+>   virtio-rng: fix DMA alignment for data buffer
+>   virtio_input: use virtqueue_add_inbuf_cache_clean for events
+>   vsock/virtio: reorder fields to reduce struct padding
+> 
+>  Documentation/core-api/dma-api-howto.rst  | 42 +++++++++++++
+>  Documentation/core-api/dma-attributes.rst |  9 +++
+>  drivers/char/hw_random/virtio-rng.c       |  2 +
+>  drivers/scsi/virtio_scsi.c                | 18 ++++--
+>  drivers/virtio/virtio_input.c             |  5 +-
+>  drivers/virtio/virtio_ring.c              | 72 +++++++++++++++++------
+>  include/linux/dma-mapping.h               | 17 ++++++
+>  include/linux/virtio.h                    |  5 ++
+>  kernel/dma/debug.c                        | 26 ++++++--
+>  net/vmw_vsock/virtio_transport.c          |  8 ++-
+>  10 files changed, 172 insertions(+), 32 deletions(-)
+> 
 
 
