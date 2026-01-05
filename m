@@ -1,117 +1,154 @@
-Return-Path: <linux-crypto+bounces-19717-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19721-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB570CF84BE
-	for <lists+linux-crypto@lfdr.de>; Tue, 06 Jan 2026 13:22:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57247CF8C93
+	for <lists+linux-crypto@lfdr.de>; Tue, 06 Jan 2026 15:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id CC872302F189
-	for <lists+linux-crypto@lfdr.de>; Tue,  6 Jan 2026 12:21:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9272330807C2
+	for <lists+linux-crypto@lfdr.de>; Tue,  6 Jan 2026 14:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3C92F616E;
-	Tue,  6 Jan 2026 12:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694152FF16F;
+	Tue,  6 Jan 2026 14:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XxIX/Uc6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KgQ2TVFX"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7714C81;
-	Tue,  6 Jan 2026 12:21:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2242882A1
+	for <linux-crypto@vger.kernel.org>; Tue,  6 Jan 2026 14:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767702099; cv=none; b=qG+lXnY7dRA9httSw2891+hwsOtmLJJv6ifDvPL9hoYgVyvUfSOlSbj3qXFGLYap7GbdD+1/Z/maZOvngXa9nQybzvrkM3quQtDERY+MrI3B1RYQy/OFI1MXw7xMGT4cghfJciyxeIVELvBlv8xH2G4yKBINn/WRo4DgxTjOc28=
+	t=1767709424; cv=none; b=EFfFJS/aXHw9c3YFUKy7iSNzoQbM50Y2t1EjrMjb9RXKUwxnsCxqOr/EYITjHWGTMwLgqSxwopcVySStaSCEXRoVJkjJ4ea7naS9TDnYyZ+cmcqSoOoMVgzl5hzyqkF9dnyTzjA3NRAAtBiJw6JDCsdPiNYjwa/dxOOibmvLx9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767702099; c=relaxed/simple;
-	bh=zKoDQhppgeJZ9g12tU8EVyMA0qPWRL9mN42OuCpgg2o=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=iVPXsc+CJoh9r+1NjpphV0KlTEQGJzUwPngwxqBR61OaMDRZsjAiad9U9qNePaL3pA1tYGPpkAitUr221YDv4vC+GQt8a5yf3J7GAbkplLx3+QLtHYItSTfKrog86wRFUQFLT/5SPmukJRbPUNy9q3y6G5WKC8Lp3GqC1nHcMnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XxIX/Uc6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67B30C116C6;
-	Tue,  6 Jan 2026 12:21:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767702099;
-	bh=zKoDQhppgeJZ9g12tU8EVyMA0qPWRL9mN42OuCpgg2o=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=XxIX/Uc67pW2srZGfx7L0M+e9v4WJplWlh+0kQ17cQgE3TXo+brUPnDmZLyRtoSUt
-	 NS+uIwMPQZ70cpM6y22JW6jE/dRqSDBuoaKh3TDd4eQ4IT4Jx15VdWTziP2iWd7hyT
-	 8OX2eLY4it+aWALZe6uARyvIyLy21rDK0Ye78wOqq/EzQrYHKYcMeEdEu4Z4w+nezL
-	 tzp4dBFmmOQZQbNRn7ffWbWe0RozvMjSW0zRQdrMreHOK30MtxQyiBnLFJ206BIfbe
-	 8CnAyOGc9R4FmPtyuFsNwRGbSDB0oM4sgN4C+vBUFcob0xOC+hjUtYbCLlYNR7KL28
-	 4JA9Jx+fmQb/A==
-From: Mark Brown <broonie@kernel.org>
-To: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
- claudiu.beznea@tuxon.dev, herbert@gondor.apana.org.au, davem@davemloft.net, 
- vkoul@kernel.org, andi.shyti@kernel.org, lee@kernel.org, 
- andrew+netdev@lunn.ch, edumazet@google.com, kuba@kernel.org, 
- pabeni@redhat.com, linusw@kernel.org, Steen.Hegelund@microchip.com, 
- daniel.machon@microchip.com, UNGLinuxDriver@microchip.com, 
- olivia@selenic.com, radu_nicolae.pirea@upb.ro, richard.genoud@bootlin.com, 
- gregkh@linuxfoundation.org, jirislaby@kernel.org, 
- lars.povlsen@microchip.com, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
- linux-i2c@vger.kernel.org, netdev@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org, 
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, 
- Robert Marko <robert.marko@sartura.hr>
-Cc: luka.perkov@sartura.hr
-In-Reply-To: <20251229184004.571837-1-robert.marko@sartura.hr>
-References: <20251229184004.571837-1-robert.marko@sartura.hr>
-Subject: Re: (subset) [PATCH v4 00/15] Add support for Microchip LAN969x
-Message-Id: <176770209215.32810.211066871008391751.b4-ty@kernel.org>
-Date: Tue, 06 Jan 2026 12:21:32 +0000
+	s=arc-20240116; t=1767709424; c=relaxed/simple;
+	bh=lVULV5GfaJFN2tASGfIP17U8gJhLLwXEwGtmS7IVzcI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A9xRmbeWp63zsbHMf0Klj07UzmQ41Xo+xPqyq/7+kM1QSykab7o8lf0+Ld1nDd9JU5rVQ2MHe5I/4ZLJ4lBxEiIfXj1laxLp3wHMyd3mdzCVZMaV5BG/+b8BnVQXwmWauiCwUV51Tjcb31BTvLwtQSP+YZ5CZAYWbcMhr1OclZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KgQ2TVFX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767709421;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0OqzwyCKSkjy5BfIhkLbUQnq0t0kB+MbQfPUkbaaRNY=;
+	b=KgQ2TVFXG9XBymsZDrHLteM6kvW3U4AEtbf7D9dyRV3tA9Up+eWZIRIzqSH6rMWbgn2NBd
+	fUhkxeqVmU/rqC8Xo2oyGuItSv94wcZnVC1trW7x5Mz0OK/E7oU1AZA6xFIKUKWyGuGxwe
+	MEgWW8zlNkyPU2uG7aYMPLV2hDGmXwQ=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-119-bni8fjkMOieXIdoRKDxuwg-1; Tue,
+ 06 Jan 2026 09:23:39 -0500
+X-MC-Unique: bni8fjkMOieXIdoRKDxuwg-1
+X-Mimecast-MFC-AGG-ID: bni8fjkMOieXIdoRKDxuwg_1767709416
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 343971955F3E;
+	Tue,  6 Jan 2026 14:23:32 +0000 (UTC)
+Received: from localhost (unknown [10.2.16.158])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id DB52419560AB;
+	Tue,  6 Jan 2026 14:23:29 +0000 (UTC)
+Date: Mon, 5 Jan 2026 13:19:39 -0500
+From: Stefan Hajnoczi <stefanha@redhat.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jason Wang <jasowang@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Petr Tesarik <ptesarik@suse.com>,
+	Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Bartosz Golaszewski <brgl@kernel.org>, linux-doc@vger.kernel.org,
+	linux-crypto@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-scsi@vger.kernel.org, iommu@lists.linux.dev,
+	kvm@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 10/15] virtio_scsi: fix DMA cacheline issues for events
+Message-ID: <20260105181939.GA59391@fedora>
+References: <cover.1767601130.git.mst@redhat.com>
+ <8801aeef7576a155299f19b6887682dd3a272aba.1767601130.git.mst@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-47773
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="TgzbTybhuc4Vbyp1"
+Content-Disposition: inline
+In-Reply-To: <8801aeef7576a155299f19b6887682dd3a272aba.1767601130.git.mst@redhat.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Mon, 29 Dec 2025 19:37:41 +0100, Robert Marko wrote:
-> This series adds support for the Microchip LAN969x switch SoC family.
-> 
-> Series is a bit long since after discussions in previous versions, it was
-> recommended[1][2] to add SoC specific compatibles for device nodes so it
-> includes the required bindings updates.
-> 
-> [1] https://lore.kernel.org/all/20251203-splendor-cubbyhole-eda2d6982b46@spud/
-> [2] https://lore.kernel.org/all/173412c8-c2fb-4c38-8de7-5b1c2eebdbf9@microchip.com/
-> [3] https://lore.kernel.org/all/20251203-duly-leotard-86b83bd840c6@spud/
-> [4] https://lore.kernel.org/all/756ead5d-8c9b-480d-8ae5-71667575ab7c@kernel.org/
-> 
-> [...]
 
-Applied to
+--TgzbTybhuc4Vbyp1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+On Mon, Jan 05, 2026 at 03:23:29AM -0500, Michael S. Tsirkin wrote:
+> @@ -61,7 +62,7 @@ struct virtio_scsi_cmd {
+> =20
+>  struct virtio_scsi_event_node {
+>  	struct virtio_scsi *vscsi;
+> -	struct virtio_scsi_event event;
+> +	struct virtio_scsi_event *event;
+>  	struct work_struct work;
+>  };
+> =20
+> @@ -89,6 +90,11 @@ struct virtio_scsi {
+> =20
+>  	struct virtio_scsi_vq ctrl_vq;
+>  	struct virtio_scsi_vq event_vq;
+> +
+> +	__dma_from_device_group_begin();
+> +	struct virtio_scsi_event events[VIRTIO_SCSI_EVENT_LEN];
+> +	__dma_from_device_group_end();
 
-Thanks!
+If the device emits two events in rapid succession, could the CPU see
+stale data for the second event because it already holds the cache line
+for reading the first event?
 
-[04/15] dt-bindings: spi: at91: add microchip,lan9691-spi
-        commit: 96d337436fe0921177a6090aeb5bb214753654fc
+In other words, it's not obvious to me that the DMA warnings are indeed
+spurious and should be silenced here.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+It seems safer and simpler to align and pad the struct virtio_scsi_event
+field in struct virtio_scsi_event_node rather than packing these structs
+into a single array here they might share cache lines.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Stefan
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--TgzbTybhuc4Vbyp1
+Content-Type: application/pgp-signature; name=signature.asc
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAEBCgAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmlcALoACgkQnKSrs4Gr
+c8hxKAgAntRCUOkAR5sJ85qdfsRgS5doxT9/NXPvgLJJuioZ7uhZ5gZoJlDI03Jd
+hAhz7RZQq0egV90TXQcX+aVTCMEoVFBZs9myLPSn3+P2aJI58FiFGQtA0EmzWkA5
+sjTyB+Fn5GvsA5yoatFgYoqr0Fc6xPDTWWkgqMkg2nmMjdbnR9taetiYfcW8FdHu
+eZmLE0d8xc2KhR/HMfz11L+fk1oXF94bZyqM98sOXkzqWgXK0vyd4UK/atflMQMv
+QInPClb3ErPbr27EQixAwC6yR40bvPArKxVFbJEYWYm1uP4fprxUVZD6VfmeTMZZ
+vJCcbmW4I0BK/ICRg+hCVzw3tAAmjg==
+=RvL+
+-----END PGP SIGNATURE-----
+
+--TgzbTybhuc4Vbyp1--
 
 
