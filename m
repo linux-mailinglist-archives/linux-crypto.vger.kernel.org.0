@@ -1,167 +1,125 @@
-Return-Path: <linux-crypto+bounces-19761-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19763-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59BA0CFE19E
-	for <lists+linux-crypto@lfdr.de>; Wed, 07 Jan 2026 14:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FAF0CFE2BA
+	for <lists+linux-crypto@lfdr.de>; Wed, 07 Jan 2026 15:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 21E403069D58
-	for <lists+linux-crypto@lfdr.de>; Wed,  7 Jan 2026 13:50:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DBF1C3078095
+	for <lists+linux-crypto@lfdr.de>; Wed,  7 Jan 2026 14:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C2132ED31;
-	Wed,  7 Jan 2026 13:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3747032ED32;
+	Wed,  7 Jan 2026 13:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="lWviJchN";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="ReiK0p8r"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z/HZXvtI"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB1332ED27
-	for <linux-crypto@vger.kernel.org>; Wed,  7 Jan 2026 13:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B843432ED2C
+	for <linux-crypto@vger.kernel.org>; Wed,  7 Jan 2026 13:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767793669; cv=none; b=fItbgFUFUU045sLyOaRRELpOJAGOkffp+SSwYtsl0iLoF8hVO95mSJXTFdSYwNKALTJnQUAGme3WdHf8Ey/c0WalZMI/NcmLHGgxrf6RHel0sq4AqdBHpuFAC5k/deBKX5ClPHxJ5rmnf9cCCviOZlpA3nwrqyWZHFbJ+SdFJh4=
+	t=1767794020; cv=none; b=WF8boe03rkAJLVo03pKnwq6TDfKV6O93ZMdgQHWJJO8AgUzkC38tMaD9/gSx9wfNTKZV22gf/D2eieiuqhDbfiHW0rPQ4eibUfNm3JPF5xP0x9l8JsYj2So2qcqTlhAyXns2xsFc7jv0M6rXwrs1U1CrDzcd2V0sgyYRpkYgDro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767793669; c=relaxed/simple;
-	bh=VGE45WNxQDTO014blHHjIi5tZVWuHW3PG7dXHce6NLg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WmBSz21I9E+3xSSf0vHS2Sig4ghVgeha3tXOTO7q9BcIKKM7JY24tIZaz50dYGtfwBYDASiY24uXXn+OcOls2LzmO6GU6n/L3zGAdmngWpuO8nFrGD6UwcacRbgW27f8saw1WdrKBxd5vCQgUoDxot9lPZQRWe4CZqvLNnZnIaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=lWviJchN; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=ReiK0p8r; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6078dqEv2577905
-	for <linux-crypto@vger.kernel.org>; Wed, 7 Jan 2026 13:47:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	UgZSlnstuL+bWNOM3fLTFdzNQEvh4E0HKjNHVKtgJqc=; b=lWviJchNA/PsdJa2
-	68HBFGAAEZATXJ31rW+2RG6l43QqyyRaxzF684XJltEXQSM/ozKObb9cw4aBVQpH
-	aWTUCpkY7u9lVShSCiU8NyIbZtzl+Kb5NljkVbDKlx3x6xLL3ZME8NFKgL2XZNHz
-	XWqL3dpqT74RhVzHVCJyvzBDMRPw2zZhrXr1qGLIPo04Htpt+kHmU7pzXK121ySt
-	46ymjU6S0c79H1QjB4Qn33d/6CC1z1vlTugIxOV6l9O+WuApMaVjuEbkYi1VJN2d
-	sLswJmRgRDpritd/ExnaDdVPkFVGh3WOHJxQD42tNFMuka43qg7ikNffbNf8XaD6
-	YpCB/Q==
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com [209.85.222.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bhm658w5k-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-crypto@vger.kernel.org>; Wed, 07 Jan 2026 13:47:32 +0000 (GMT)
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b222111167so38858285a.1
-        for <linux-crypto@vger.kernel.org>; Wed, 07 Jan 2026 05:47:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1767793652; x=1768398452; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UgZSlnstuL+bWNOM3fLTFdzNQEvh4E0HKjNHVKtgJqc=;
-        b=ReiK0p8rv6lbD4R1+H4CcSbkWKoBEZEQNOz7h5ZTQiuh41UBCPzS9p1/KiRx/nEar3
-         KMwiGmXLRR5AC18mK8Osi3xUwh1sQkzaDYt5gmiHzb8MHg9lha0O+5uzRpaB8so5X8IZ
-         XuLcD+UBFYXE96gjcxccFSkBd3Bd4m0t+Jd0mf/O+Um8w7lggIueVoOzug30GnCu4yfq
-         XAWg7rIhP6sD1FFzau/xX9CIIr45q7SHRVyJ3nMsaYzq6CwjilW6TWIPwuTJY203MJth
-         Tvw5aDOnNcOiLNYU50rjkwlTyQt0jcMNRJjMwPe6uWUj5IXKFQpKOb0Pi+AcDg+QtHQB
-         9Obg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767793652; x=1768398452;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UgZSlnstuL+bWNOM3fLTFdzNQEvh4E0HKjNHVKtgJqc=;
-        b=IS7Irh4QE9OUaoFbjkO+RCXKzjJl3QG77x2HeGSvdCyVLP1sI5PMx3y9soTeu7q7hy
-         G516zxWI52LUJC2oWG0wwjK/uKlB7euq4OU1Xfapk8AfVyW43NPpUfuBForNNTpe3HPf
-         e7LfLIUl5KGog1IBmE33WKYDFhrqDOoyrEzV4mE0ZDVcAN1bIeeSF1XoB8bTReagPZ+v
-         9tgoC4u6F7G0ecqA62DRornDtD110eDtd3gjAbzeiHP0jUdUTEVFlz0oDlZelvmM78JD
-         /DUk5mD4sqvqYGNjqioEm/hUJgu7dxk7yGfqy6gdgHKlVmg8KAfG81jtHFSLnk32LnUb
-         fQ5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUYea7dOVQxjFweVjVJ0mKTOsDCu2xybD3EAzTlzOTyRXj8axUu3AVWbNotXgLGoQtwQHE8pwIJns8Eemg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw87aMgZunkj9e2KwbnOc7dYAdcXrwsS8vd85V6JlcxONF0dDmF
-	ZlBV+MjmpJkrCNmz85IlZ6JjnhxlM7JfA1pBL2CgkvEnEXDvx3mmr4C3SZd1X3u3zPGWf5+jhmg
-	nBRnnsgZSUkUFkFLxdXqRh8+UaXKFany0w+pbDeuTQ3i9mnO5OEeXcxUeO+54zAw1N2E=
-X-Gm-Gg: AY/fxX5iCOgQwrimU1KRv1ehSAy2iOBqAwi9w587gd30GA12OBSRQW03+ZJx/BWs8Zj
-	LOgnMTPehM4CYFbcCGvYz6VqFdapKwcGmhVGs44ljM3fAsWhQx2udgDm0Tc+kQBYI/eOcPUqdzM
-	NxvHdEkbC6Mjq4iPo+yHk+GywfyhQDjelkAV6oHtOVp1RjBURyr0qU7YxkyuVmbwLhGOwbIK+7K
-	XSKb+aZQMNH0l53XsCVOELVdznORXNnvv0SnO7tJYD1QQVYdCtP6xF1nLjAsFfAC7UjzOEe3Gsb
-	YOHpaXqnhiWsTliEfm7nFvW1ULQnD4/wj/M1Mb/8z9td5b0x5TpG3pzwiBeUVneZbsBwSkIhGX3
-	a1C+TvzjciI35UUmAPG1M45nhtFKbB0zufcRPZIHLJf8HfMxgu2nRy/60V5UuojvcmCo=
-X-Received: by 2002:a05:622a:143:b0:4f1:b3c0:2ae7 with SMTP id d75a77b69052e-4ffb49a0042mr24372051cf.6.1767793652357;
-        Wed, 07 Jan 2026 05:47:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEqSd85JPwhEJMYgx6YhAsjKJYD9xSuGfuAYyKuY5Za86pnaJzUy8cquRaa93zxCj87b0H2UA==
-X-Received: by 2002:a05:622a:143:b0:4f1:b3c0:2ae7 with SMTP id d75a77b69052e-4ffb49a0042mr24371741cf.6.1767793651855;
-        Wed, 07 Jan 2026 05:47:31 -0800 (PST)
-Received: from [192.168.119.254] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507bf6d5e0sm4665696a12.31.2026.01.07.05.47.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jan 2026 05:47:31 -0800 (PST)
-Message-ID: <0b27c56c-3aac-4b26-80f5-f8cc52abb66d@oss.qualcomm.com>
-Date: Wed, 7 Jan 2026 14:47:26 +0100
+	s=arc-20240116; t=1767794020; c=relaxed/simple;
+	bh=Saoed4Dc0jee0b/UVY9YgHw7inzzEj3jNE7uJVi9Qqc=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=MlvxNQP7YeXpMXxRLV8IsY2DlQY1ZrPw2yjHQY2ScglGrH5pdmx1azfIEv4xwPTHy3OL+eVi0bgBYPucWhzS+q9ga8QfsZ6Tez9E99d4LXTnUyT7/kGGSkGik0vXfetFU16JV51b+sL+lxFPIfJfxM6BYRcvztYQBMDhXn1R3fM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z/HZXvtI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767794016;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vrzn+Ssn7p217lIFP+Z2b99FMmHrz8aKK4bxB98oF7g=;
+	b=Z/HZXvtI2Cy0ajw22KE1ZAvWsxTgQVU+6mNUOafpOTo/IHzyij5hl1jb5SCX2ApGY+fX6a
+	XXz+4KSCLmJ4TViI2wW2LbaZn92ssjidSbJnFOJzRWMaKVSb2VFaybK7ztynt5zCNw/ARe
+	qtyz3cezNfbYbZEpWalj6FnsUnVp04k=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-275-8Lk2NEKkMymD6xf9Lhi8pA-1; Wed,
+ 07 Jan 2026 08:53:32 -0500
+X-MC-Unique: 8Lk2NEKkMymD6xf9Lhi8pA-1
+X-Mimecast-MFC-AGG-ID: 8Lk2NEKkMymD6xf9Lhi8pA_1767794010
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 89EEB18002C2;
+	Wed,  7 Jan 2026 13:53:29 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.4])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 43EF818004D8;
+	Wed,  7 Jan 2026 13:53:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <CALrw=nFj9OEsREJ8Kxox3U6N8y=e00ZawxEkCPOb5-6_k=7+nQ@mail.gmail.com>
+References: <CALrw=nFj9OEsREJ8Kxox3U6N8y=e00ZawxEkCPOb5-6_k=7+nQ@mail.gmail.com> <20260105152145.1801972-1-dhowells@redhat.com> <20260105152145.1801972-3-dhowells@redhat.com>
+To: Ignat Korchagin <ignat@cloudflare.com>
+Cc: dhowells@redhat.com, Lukas Wunner <lukas@wunner.de>,
+    Jarkko Sakkinen <jarkko@kernel.org>,
+    Herbert Xu <herbert@gondor.apana.org.au>,
+    Eric Biggers <ebiggers@kernel.org>,
+    Luis Chamberlain <mcgrof@kernel.org>,
+    Petr Pavlu <petr.pavlu@suse.com>, Daniel Gomez <da.gomez@kernel.org>,
+    Sami Tolvanen <samitolvanen@google.com>,
+    "Jason A . Donenfeld" <Jason@zx2c4.com>,
+    Ard Biesheuvel <ardb@kernel.org>,
+    Stephan Mueller <smueller@chronox.de>, linux-crypto@vger.kernel.org,
+    keyrings@vger.kernel.org, linux-modules@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 2/8] pkcs7: Allow the signing algo to calculate the digest itself
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] phy: qcom-qmp-ufs: Add Milos support
-To: Luca Weiss <luca.weiss@fairphone.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
- <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>, Vinod Koul <vkoul@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Konrad Dybcio <konradybcio@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org
-References: <20260107-milos-ufs-v1-0-6982ab20d0ac@fairphone.com>
- <20260107-milos-ufs-v1-4-6982ab20d0ac@fairphone.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20260107-milos-ufs-v1-4-6982ab20d0ac@fairphone.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authority-Analysis: v=2.4 cv=XpL3+FF9 c=1 sm=1 tr=0 ts=695e63f4 cx=c_pps
- a=HLyN3IcIa5EE8TELMZ618Q==:117 a=FpWmc02/iXfjRdCD7H54yg==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=6H0WHjuAAAAA:8 a=EUspDBNiAAAA:8
- a=RTUAgidmgk2qeza8I2cA:9 a=QEXdDO2ut3YA:10 a=bTQJ7kPSJx9SKPbeHEYW:22
- a=Soq9LBFxuPC4vsCAQt-j:22
-X-Proofpoint-ORIG-GUID: 3cCSN6siG8bXRnG3q8vzFhz75ck6PLx7
-X-Proofpoint-GUID: 3cCSN6siG8bXRnG3q8vzFhz75ck6PLx7
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA3MDEwMyBTYWx0ZWRfX1LC/NJyWscr7
- mVU6fQ+g2pIGAm3CK4fqn6T+2UlpXmMc1p0831e4OrsTm3LfHcN4UtdtSfSqBn3Oip3QVk6V7W/
- EVZZ6gqSuj2Ios4mbg75NKoeyLHsQXFG/09iTtyt1xjz+d1ZYt4KMtkCgXWiFxwguyUimximRqk
- hLllXBGM42AS7NIQoJrPFLVF08Z6njXLPdzLmvHUsOaTBL7rt7kw2f8AFIfec2arMgSHzwnlqFy
- 6nv/vNeAA+31n8PP78pvpNe4X2yfUGHdwh6IdpQh5+I5LRzZxj8UR+O+Iyrp1PMPaOSWmYjP+ZD
- uSam+Cr1QqmTHa0290fgelYLlo/60fzEg62pB1lahsIzhJbm4LPq3NxW6OTQZi/2ruA4tva1lBc
- YQupLlbUIbVf6zTotJzuOIJqMzOYD7nCQCUvXCyCoh1aU2lJgLVtDdSdUd0sqb9XyzEQjNKgrn1
- JcC/LYzRkGVrixE/VKw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-07_01,2026-01-06_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 bulkscore=0 clxscore=1015 suspectscore=0 priorityscore=1501
- adultscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2512120000 definitions=main-2601070103
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2366239.1767794004.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 07 Jan 2026 13:53:24 +0000
+Message-ID: <2366240.1767794004@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On 1/7/26 9:05 AM, Luca Weiss wrote:
-> Add the init sequence tables and config for the UFS QMP phy found in the
-> Milos SoC.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
+Ignat Korchagin <ignat@cloudflare.com> wrote:
 
-Matches the latest hw team recommendations!
+> > +                       ret =3D -ENOMEM;
+> > +                       sig->digest =3D kmalloc(umax(sinfo->authattrs_=
+len, sig->digest_size),
+> > +                                             GFP_KERNEL);
+> =
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+> Can we refactor this so we allocate the right size from the start.
 
-Konrad
+The problem is that we don't know the right size until we've tried parsing=
+ it.
+
+> Alternatively, should we just unconditionally use this approach
+> "overallocating" some times?
+
+In some ways, what I'd rather do is push the hash calculation down into th=
+e
+crypto/ layer for all public key algos.
+
+Also, we probably don't actually need to copy the authattrs, just retain a
+pointer into the source buffer and the length since we don't intend to kee=
+p
+the digest around beyond the verification procedure.  So I might be able t=
+o
+get away with just a flag saying I don't need to free it.
+
+However, there's an intermediate hash if there are authattrs, so I will ne=
+ed
+to store that somewhere - though that could be allocated on demand.
+
+David
 
 
