@@ -1,107 +1,130 @@
-Return-Path: <linux-crypto+bounces-19783-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19784-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C268D0274F
-	for <lists+linux-crypto@lfdr.de>; Thu, 08 Jan 2026 12:41:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA490D02757
+	for <lists+linux-crypto@lfdr.de>; Thu, 08 Jan 2026 12:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 526AE30B7AF5
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jan 2026 11:23:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6F78A30E2E2B
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jan 2026 11:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537FC3ACA60;
-	Thu,  8 Jan 2026 11:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134B148756F;
+	Thu,  8 Jan 2026 11:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qMSvc9ks"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FKrFN2xD"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from bali.collaboradmins.com (bali.collaboradmins.com [148.251.105.195])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB813A4AC1;
-	Thu,  8 Jan 2026 11:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.251.105.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6347E352C5F
+	for <linux-crypto@vger.kernel.org>; Thu,  8 Jan 2026 11:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767870165; cv=none; b=Vb2T0Bch/jdF9ZnO9Bz1O2j5uBGBa6/kGSERQ78OOjzWemLYil/CPKLoDZRIIac9CowHkYz0IWvAwYA1juE26x5ga+j4pgVqYsMxe7ArXI9gP4QEtIwX5hdJImFidrVqNUIWHip6XSy0IcZt7zH/xoMRPgy795ediPj/fNwdpTs=
+	t=1767871109; cv=none; b=Lic1FEtXn+tOCCR9z0L3i6jnwsjV4RuuTbfaGeRCTRs7420CCuMLtVpKKi3pJYmld1Do/sgmtOpZv+Xx6YXVrXCxnekbCZCPzj2uCaYiXrK6tNKyXDrq/6nYZ9Ec/kbzfKgsRRKg7GXDo8yX8lFl/t6Z7qvwFDEbneArHr4zkXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767870165; c=relaxed/simple;
-	bh=2+DvUYmYV9U/Yj8ZST1r0/xHoFeYFSLopr9bIm8GCoo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=THBqfGPr0BFZh2qU0us4RAseT+uaHocj4QBfWviKV8w5STQonNnR7/iNhClUPwqvo9M5SWI2bQpoLctHa4MxlJ3RqcE0KUgZAbripw0GfU6B4vhSagm4UUVz1zr7uAjcolyZN54PSAd0WSr7BNZ7AOSsPp65olzpe+5p6WoHy5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=qMSvc9ks; arc=none smtp.client-ip=148.251.105.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1767870151;
-	bh=2+DvUYmYV9U/Yj8ZST1r0/xHoFeYFSLopr9bIm8GCoo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qMSvc9ks6g7641gm1YJtSjKbwTP7DWfNV+86VME4OIhW7DFPi7RblvD7CiXkbY8pT
-	 Pb+O9clCJuV8nhiCQXDpuKaWJzhi6rGfgBOjA1jAqsa7TgIDz+k0WVvmRq/K3F2+3O
-	 z6tpwjseHX/RNSZcOzp3BYm/aw7nA62xftTP0TXueV/xfcEiXhtxGNT50njuNXavD1
-	 sFjcDWjVUbS1ZL7Sf4xwBWu1E7safjVralqz2YgV7lNOM34Yp086SfbYChYFhGO52j
-	 OS6gaEfxOR+JotyD2akXoOVe9k3SsS4JjY92272to6orZvBJe/diUoeF7jWVlQd/oO
-	 oV2ojqGhJqTZA==
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id 0DABD17E152C;
-	Thu,  8 Jan 2026 12:02:31 +0100 (CET)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: krzk+dt@kernel.org
-Cc: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	robh@kernel.org,
-	conor+dt@kernel.org,
-	andrew@lunn.ch,
-	gregory.clement@bootlin.com,
-	sebastian.hesselbarth@gmail.com,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	atenart@kernel.org,
-	linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	kernel@collabora.com
-Subject: [PATCH 4/4] arm64: dts: mediatek: mt7986a: Change compatible for SafeXcel crypto
-Date: Thu,  8 Jan 2026 12:02:23 +0100
-Message-ID: <20260108110223.20008-5-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260108110223.20008-1-angelogioacchino.delregno@collabora.com>
-References: <20260108110223.20008-1-angelogioacchino.delregno@collabora.com>
+	s=arc-20240116; t=1767871109; c=relaxed/simple;
+	bh=VpDKvPaUx6cNZ4vYu7itFP8eZbOdqv/lfWhWVNX9fIs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TuEc7uB8LNPOyn9Q9ZLkCYcnjW6z0cEZbllA4coMVW6ujmgqH6mIJLyUIH+MWkrMCYxaYi9XG9nMDK/43w8O49uEdtLLWFnn0Y5SIr2y/u6WWUDSUjtSZIWOYIy6wjKrj0WFYW/Gik69U13zpDEm/SzHkkmD7P4SjrqhAzE+o8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FKrFN2xD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98531C19422
+	for <linux-crypto@vger.kernel.org>; Thu,  8 Jan 2026 11:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767871108;
+	bh=VpDKvPaUx6cNZ4vYu7itFP8eZbOdqv/lfWhWVNX9fIs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FKrFN2xD2ADoANZ95fpEAwuMc7tCXesfeWHPmH04OC7rEd2MZQW2jT/xb2KR8zLgw
+	 0tm2GeyG6lnEEoQGOH2RjPfP0TnprZLL7YkO3PtGW/GtelIsuselBcb4O01F+uE8gj
+	 hYg3pWpa/Swf9xlmEN1Ix6o2DvG2BSqwG8LYKxeC2NU75vrXqJNkDp0+7jVZpxM2UD
+	 1GWiNDkDln0/kfnIuXxrZ29WwD7NVyhv0FbJXvNitrIgepOPKFJ3VzGzdvDjGkQcB5
+	 cLqi578mGu24fQpK3Z0PL/YKoewQ5tcmIoKsJ3uO27jt3/zPGxNVdE80vgFUgz59vH
+	 Ve1mTUk8LeN5g==
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2a0bae9aca3so23051185ad.3
+        for <linux-crypto@vger.kernel.org>; Thu, 08 Jan 2026 03:18:28 -0800 (PST)
+X-Gm-Message-State: AOJu0YzzO1y4+4ZC75KlW8Cj0sYfwOQfmiwuYqleb3cPUd0poD5I/c3r
+	dDp4v7kStJHhlb2Aqst/pKazt2dtfFGWJ20jUqPLIvsHTH7gNE+yCz9Y7gjRkky2oeLjNqasjKs
+	mhSLcPZujK6HXeQDGYMVLxbAua/mlePU=
+X-Google-Smtp-Source: AGHT+IF1qiNf1y52mI5Zwar63TQL83t5OGZvo+C+hx6OKT6cTCR8dn+q3XVA2VQufc3U10kFhcBPlIyNYQSkqkyZ12U=
+X-Received: by 2002:a17:902:f54f:b0:298:29e0:5f32 with SMTP id
+ d9443c01a7336-2a3ee451ec2mr52902105ad.15.1767871108173; Thu, 08 Jan 2026
+ 03:18:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260107052023.174620-1-ebiggers@kernel.org>
+In-Reply-To: <20260107052023.174620-1-ebiggers@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 8 Jan 2026 12:18:16 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEXyDN+uZHuNKQ9YuaezHeQhp8+Hsu1n67zLk9MSv+L4g@mail.gmail.com>
+X-Gm-Features: AQt7F2o2V2O1M9W2awFPviAiDkbkrja1Wr6gBaYYf5jNLofZorvceIO4r_TtIS8
+Message-ID: <CAMj1kXEXyDN+uZHuNKQ9YuaezHeQhp8+Hsu1n67zLk9MSv+L4g@mail.gmail.com>
+Subject: Re: [PATCH] lib/crypto: aes: Fix missing MMU protection for AES S-box
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	"Jason A . Donenfeld" <Jason@zx2c4.com>, Herbert Xu <herbert@gondor.apana.org.au>, stable@vger.kernel.org, 
+	Qingfang Deng <dqfext@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Following the changes in the binding for the SafeXcel crypto
-engine, add a SoC specific compatible to the existing crypto
-node and, while at it, also change the fallback compatible to
-inside-secure,safexcel-eip97ies as the eip97 one is deprecated.
+On Wed, 7 Jan 2026 at 06:22, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> __cacheline_aligned puts the data in the ".data..cacheline_aligned"
+> section, which isn't marked read-only i.e. it doesn't receive MMU
+> protection.  Replace it with ____cacheline_aligned which does the right
+> thing and just aligns the data while keeping it in ".rodata".
+>
+> Fixes: b5e0b032b6c3 ("crypto: aes - add generic time invariant AES cipher")
+> Cc: stable@vger.kernel.org
+> Reported-by: Qingfang Deng <dqfext@gmail.com>
+> Closes: https://lore.kernel.org/r/20260105074712.498-1-dqfext@gmail.com/
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> ---
+>
+> This patch is targeting libcrypto-fixes
+>
+>  lib/crypto/aes.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oops
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-index 7790601586cc..9693f62fd013 100644
---- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-@@ -231,7 +231,7 @@ trng: rng@1020f000 {
- 		};
- 
- 		crypto: crypto@10320000 {
--			compatible = "inside-secure,safexcel-eip97";
-+			compatible = "mediatek,mt7986-crypto", "inside-secure,safexcel-eip97ies";
- 			reg = <0 0x10320000 0 0x40000>;
- 			interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
--- 
-2.52.0
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
+> diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
+> index b57fda3460f1..102aaa76bc8d 100644
+> --- a/lib/crypto/aes.c
+> +++ b/lib/crypto/aes.c
+> @@ -11,11 +11,11 @@
+>
+>  /*
+>   * Emit the sbox as volatile const to prevent the compiler from doing
+>   * constant folding on sbox references involving fixed indexes.
+>   */
+> -static volatile const u8 __cacheline_aligned aes_sbox[] = {
+> +static volatile const u8 ____cacheline_aligned aes_sbox[] = {
+>         0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5,
+>         0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
+>         0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0,
+>         0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
+>         0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc,
+> @@ -46,11 +46,11 @@ static volatile const u8 __cacheline_aligned aes_sbox[] = {
+>         0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
+>         0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68,
+>         0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16,
+>  };
+>
+> -static volatile const u8 __cacheline_aligned aes_inv_sbox[] = {
+> +static volatile const u8 ____cacheline_aligned aes_inv_sbox[] = {
+>         0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38,
+>         0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb,
+>         0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87,
+>         0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb,
+>         0x54, 0x7b, 0x94, 0x32, 0xa6, 0xc2, 0x23, 0x3d,
+>
+> base-commit: fdfa4339e805276a458a5df9d6caf0b43ad4c439
+> --
+> 2.52.0
+>
 
