@@ -1,109 +1,148 @@
-Return-Path: <linux-crypto+bounces-19808-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19811-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3948D03AC6
-	for <lists+linux-crypto@lfdr.de>; Thu, 08 Jan 2026 16:09:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC292D048BC
+	for <lists+linux-crypto@lfdr.de>; Thu, 08 Jan 2026 17:51:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 48B62305CA8B
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jan 2026 14:40:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B0F0434DA741
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jan 2026 15:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A709F4F49B6;
-	Thu,  8 Jan 2026 14:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF317304976;
+	Thu,  8 Jan 2026 15:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sp2KudkH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OqkeDQS8"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154324F49B4
-	for <linux-crypto@vger.kernel.org>; Thu,  8 Jan 2026 14:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45D726159E
+	for <linux-crypto@vger.kernel.org>; Thu,  8 Jan 2026 15:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767883184; cv=none; b=EciTXF3Tw7GMJQPZpBilfLzTQtiEhpu+PIUTwTL1rbL2ibmthC0CligrWXWKl4hFHI0wwgBlCimgJDlw1vhd6qib1x2sgPof28LHT0eAVKYDWIWirMxE17Gmxtq97MIpx9fGB8CvaqlXo6Ff3Y+hb73TlR5V9Q9rVKDrDZfRPZc=
+	t=1767886185; cv=none; b=jGtj6P2PUzubmkG4u5k8yFTA8F1J/2gnCrdEZwcBWy53qqhFv8QURwNG1dXII1WCDQJkIQHINd2HKe5utuxHCDmBjB8TiqPEbwTRyepkY6GCT7gh+hdL5UEFhDPG0IMu2Il//3RFncSCpQectrS8EDaT3wmlCenBQiciX6hkgkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767883184; c=relaxed/simple;
-	bh=zqlpV6DbTKoCGK9NC+KbLnPIVMlnijqGp9q56WaghPU=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=XUdXG+PyzyGcuJ5swecNNegZ6VM8uiNm1LjEb04vUc26aqR9yLDliA7uRzJmpUhfh7FzSG/pJUnk7Rrtcm8+vbswKi0/FUMwprDRIeXo0VuC5jADeQFrO87F1D5VpIwlDiI0y/64So/IcDsbUlPnyOvFzhtmton5Qb+2+5zkoyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sp2KudkH; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767883182;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xavvcy3ylIyhXK0YnQ/tlLr+yZsLJAzxUsW092yA/h4=;
-	b=Sp2KudkH5kUKQ2b33xXpRKKTAyhse6e8eYtlfdoCaO5iilR1rYNr/ausTcF67NraXUZl5A
-	B5qmPM8w/3xCjPcd7F+kBlbq9cXR0Jw3uGzytQNXtVyal9aGYqnUwj/yghdl+ldVlRNbPR
-	XEv5OvZog68PxrewgFDcAHU4hvbKHOQ=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-658-T0-hkGQwNvOxYkaU7lh8-A-1; Thu,
- 08 Jan 2026 09:39:37 -0500
-X-MC-Unique: T0-hkGQwNvOxYkaU7lh8-A-1
-X-Mimecast-MFC-AGG-ID: T0-hkGQwNvOxYkaU7lh8-A_1767883174
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 191D01956095;
-	Thu,  8 Jan 2026 14:39:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.4])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2679E1800109;
-	Thu,  8 Jan 2026 14:39:26 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <aV-t3m-ZxAcEqZmq@kernel.org>
-References: <aV-t3m-ZxAcEqZmq@kernel.org> <20260105152145.1801972-1-dhowells@redhat.com> <20260105152145.1801972-7-dhowells@redhat.com>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: dhowells@redhat.com, Lukas Wunner <lukas@wunner.de>,
-    Ignat Korchagin <ignat@cloudflare.com>,
-    Herbert Xu <herbert@gondor.apana.org.au>,
-    Eric Biggers <ebiggers@kernel.org>,
-    Luis Chamberlain <mcgrof@kernel.org>,
-    Petr Pavlu <petr.pavlu@suse.com>, Daniel Gomez <da.gomez@kernel.org>,
-    Sami Tolvanen <samitolvanen@google.com>,
-    "Jason A . Donenfeld" <Jason@zx2c4.com>,
-    Ard Biesheuvel <ardb@kernel.org>,
-    Stephan Mueller <smueller@chronox.de>, linux-crypto@vger.kernel.org,
-    keyrings@vger.kernel.org, linux-modules@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    Tadeusz Struk <tadeusz.struk@intel.com>,
-    "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v11 6/8] crypto: Add RSASSA-PSS support
+	s=arc-20240116; t=1767886185; c=relaxed/simple;
+	bh=PZM7IniYMAo5kXWH+f83z5lk9V7whTGc+Zav90N+FIk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sieXtR/REq6ZUR9MiyNJiizFXMaomlWNNy/avu9FVqXA8PuX1U+p0fualj8yMQnslU1tSI0VqYoHARfOu4k3QaziIpcPgZsVtRdhjBpXdvGPbncp5RWwl+992SkUEKdWZPm8f1c+eO01uQdD9Atna/mq9sSTFq1/MLSmnPPJH/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OqkeDQS8; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-431048c4068so1238288f8f.1
+        for <linux-crypto@vger.kernel.org>; Thu, 08 Jan 2026 07:29:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767886182; x=1768490982; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U5ChSEmLnLNsNK8tqFRJB97uYY8DzSAS4oYXQU5f5qU=;
+        b=OqkeDQS87IrDcLH/x5BrJhwLxsoFwr2yVkUSZUfhJ6Lf6kc7C7EChORkbaWuyQXAIA
+         jhiuRtfMdIGK13mVrJ1vqkyixeOe2nk30/orUPT4x19da6YWfJaFHNQVAu/eGaoJ0q7T
+         pzWW/oe42fO/jGfq8Kdexjx+WhpMq+xfzejWB+6wm0nWz8fmHEaPTHEdNzNurNtmpCW8
+         YD9cNLlnSCL9BZDaJi8dp+iGV177061GYXZPBIP5/xppT59089LsVieY73LX1g+6kf3Q
+         viPG0lLH7gtxcGuEBnqICkgYEYBGMvk1HYkREmcuPuys3V/tM+UFWdw6+Cx+Wci1R3c9
+         97NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767886182; x=1768490982;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U5ChSEmLnLNsNK8tqFRJB97uYY8DzSAS4oYXQU5f5qU=;
+        b=j31aFGZrszlyCkIP91eVYj4NQ5FYVFufV+KMMleBNPcbwNc+mBB97vPFJyR0YRBCAR
+         LRsVE1cOIh3aCgdY36TnxmhAsY/NwT++dS5MMHIf6vJMrUR+vXpmxK70BcPA80De6YDw
+         IPiCBIVPv/FhViqgnxBXtdghDB4FFlth+IpZ1qh0flPg3bpzs2YXthI4WhLPBLimfQj/
+         sI4ZVywlyLwdjy50Ow/K9oKa9T9SzuZuwm395yheMRVDiE74kYqgBPJQR7wseaBtW9Hx
+         milsJsBqUuiFbR4EmuiCKk/O/Zdw+m9TlEkgPPnMc8JkNbZy7CKy9uM4xoanYOK0fU8Q
+         OJMA==
+X-Gm-Message-State: AOJu0Yx+z6W9LFfUjxx70mcVs7CsVQNVla3o1CSWYgqIjgx5cWLiC36n
+	oJEwXg71L3y3sRWQHB0eDdvQg+pnOwluvYue72jf+9tN8KXPLvyeXqhS
+X-Gm-Gg: AY/fxX7vmQUhKD7p9+M4jKoVijr224JAI/to6MPsKRM7zJ/kRny+cx27gj55ekj+eF2
+	HD+QpmBe+5NyixkGfIIe4rcCmTLlT1xkuiVw34nFuQY7l4BjAOMIbu4QkLSonshq/kWeDXs1u2S
+	GwSW7SA/6x5auUWFaOPjKeC2hkpXBkRCK5mCFOqkKblbmVM3eDSYBhmAdl9ylhwvzSDZMaM4r29
+	5Qe9/CjgMOg8nCLK8GpogQ4ygGTSuSUakbmFIZca3ohNd20fL7wrnCwkI+QyDuXgTgsQnTgi9/p
+	DLxvhGPDcCu8rSlK9IRstcOyNGNTxf//CBgxitK077trQZ6TdPHrx/6HOeOjSHAx79e7kd6V5ba
+	oSETV8rVfAc/j+nrzQchPXnUWkXrq0YdQBlLzYV2LT+/RcMwY467sBRFGF3NS5Ej9UWjBlqwwyk
+	fbC6NXwsNKRjoM22KY8nbcTRCS4KA74BJCRAgk8rVVqjZ5sTWq64n/jS1DHG6AnJR4i6c=
+X-Google-Smtp-Source: AGHT+IFsZpezcOX9qDzdQ9ZZpGTmZa+ip1VSoIaoagCftHX6xs0soMPXnQ33AN6ogpLNs/5iLLlIeA==
+X-Received: by 2002:a05:6000:4012:b0:430:f736:7cc with SMTP id ffacd0b85a97d-432c362bf8emr7304857f8f.1.1767886181933;
+        Thu, 08 Jan 2026 07:29:41 -0800 (PST)
+Received: from ptb-02009389.paris.inria.fr (wifi-pro-82-106.paris.inria.fr. [128.93.82.106])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5fe67csm16730909f8f.40.2026.01.08.07.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jan 2026 07:29:41 -0800 (PST)
+From: Ella Ma <alansnape3058@gmail.com>
+To: thomas.lendacky@amd.com,
+	john.allen@amd.com,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	arnd@arndb.de
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	julia.lawall@inria.fr,
+	Ella Ma <alansnape3058@gmail.com>
+Subject: [PATCH] drivers/crypto/ccp/ccp-ops.c: Fix a crash due to incorrect cleanup usage of kfree
+Date: Thu,  8 Jan 2026 16:29:06 +0100
+Message-Id: <20260108152906.56497-1-alansnape3058@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2745023.1767883164.1@warthog.procyon.org.uk>
-Date: Thu, 08 Jan 2026 14:39:24 +0000
-Message-ID: <2745024.1767883164@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Transfer-Encoding: 8bit
 
-Jarkko Sakkinen <jarkko@kernel.org> wrote:
+Annotating a local pointer variable, which will be assigned with the
+kmalloc-family functions, with the `__cleanup(kfree)` attribute will
+make the address of the local variable, rather than the address returned
+by kmalloc, passed to kfree directly and lead to a crash due to invalid
+deallocation of stack address. According to other places in the repo,
+the correct usage should be `__free(kfree)`. The code coincidentally
+compiled because the parameter type `void *` of kfree is compatible with
+the desired type `struct { ... } **`.
 
-> > +struct rsassa_pss_ctx {
-> > +	struct crypto_akcipher *rsa;
-> > +	unsigned int	key_size;
-> > +	unsigned int	salt_len;
-> > +	char		*pss_hash;
-> > +	char		*mgf1_hash;
-> > +};
-> 
-> Just a nit but I would not align these fields as it does not serve any
-> purpose here.
+Fixes: a71475582ada ("crypto: ccp - reduce stack usage in ccp_run_aes_gcm_cmd")
+Signed-off-by: Ella Ma <alansnape3058@gmail.com>
+---
 
-It makes them easier to read.
+I don't have the machine to actually test the changed place. So I tried
+locally with a simple test module. The crash happens right when the
+module is being loaded.
 
-David
+```C
+#include <linux/init.h>
+#include <linux/module.h>
+MODULE_LICENSE("GPL");
+static int __init custom_init(void) {
+  printk(KERN_INFO "Crash reproduce for drivers/crypto/ccp/ccp-ops.c");
+  int *p __cleanup(kfree) = kzalloc(sizeof(int), GFP_KERNEL);
+  *p = 42;
+  return 0;
+}
+static void __exit custom_exit(void) {}
+module_init(custom_init);
+module_exit(custom_exit);
+```
+
+BESIDES, scripts/checkpatch.pl reports a coding style issue originally
+existing in the code, `sizeof *wa`, I fixed this together in this patch.
+
+ drivers/crypto/ccp/ccp-ops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
+index d78865d9d5f0..f80a92006666 100644
+--- a/drivers/crypto/ccp/ccp-ops.c
++++ b/drivers/crypto/ccp/ccp-ops.c
+@@ -642,7 +642,7 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
+ 		struct ccp_data dst;
+ 		struct ccp_data aad;
+ 		struct ccp_op op;
+-	} *wa __cleanup(kfree) = kzalloc(sizeof *wa, GFP_KERNEL);
++	} *wa __free(kfree) = kzalloc(sizeof(*wa), GFP_KERNEL);
+ 	unsigned int dm_offset;
+ 	unsigned int authsize;
+ 	unsigned int jobid;
+-- 
+2.34.1
 
 
