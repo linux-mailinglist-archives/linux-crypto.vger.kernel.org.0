@@ -1,86 +1,141 @@
-Return-Path: <linux-crypto+bounces-19810-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19790-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E5CD03994
-	for <lists+linux-crypto@lfdr.de>; Thu, 08 Jan 2026 15:58:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF16D044BE
+	for <lists+linux-crypto@lfdr.de>; Thu, 08 Jan 2026 17:20:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 20B233038D81
-	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jan 2026 14:55:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A7AC6311D338
+	for <lists+linux-crypto@lfdr.de>; Thu,  8 Jan 2026 15:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356D62DC76F;
-	Thu,  8 Jan 2026 14:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAD343901D;
+	Thu,  8 Jan 2026 11:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="sfgH9SDD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FsUitO0Y"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8ED1DE8A4;
-	Thu,  8 Jan 2026 14:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BEFE434888
+	for <linux-crypto@vger.kernel.org>; Thu,  8 Jan 2026 11:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767883966; cv=none; b=WXwhGS/3VqARYo42Yha3dWXx/L7pbJoiMOjf8PpjCnuy9teSnIZrApRJ3YRnBbL71D95XrxdqkqVr+7RL/UpLIQpGfX6YixXC4AFbY57tmahQhacT98VdLt/FXBTho6SMfnkRKEmtsrcuAKQBuXLl4KQHBh1HwqnUZxmbOyLhFU=
+	t=1767873228; cv=none; b=HoaI8s7cU0fGudSMrVVDhfe9/XQtJkuQeGuUTGvRMSn/43NyyvpPKOnP8wSy+fmxYUv5d9vCuNxbykBgZFmymsEqWYmElK8fSIkyrQTFkGWk8rcExyyT42mlHDaYy8ERPZ+8r0Gj3tFtHN4xSy0bJMR2dpao+FJXxegIhS9xigs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767883966; c=relaxed/simple;
-	bh=REctfFUcNFnjAlrVe1U10jUaKWccUMTijX0We6uL7+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enTrHAryQ7PpkmqgQhPcg7gbPKBD3aT3/RbdOFbsVoMgowwJjQ1gtWsuU8r3J+bZr8f0ZxuEMPzC+jrM61YiaI4D+mgFTi8hYNlNJ+Wu+RC/AXAoEzx+1Z0e2pBVyBbG4Qs2AQ0dOQTmwZOu+7rL5cyi5fSrRhl+vx0xBAVSedw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=sfgH9SDD; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=5RMxX8fLudzgzeaK8Hxa/jVqGVI3C6mJxtJKkvtOXWM=; b=sfgH9SDDp9NHn9HDL2Qa5RRGQb
-	aPYiNW/CMH3y50KuXB+F2eWH7m7hdmM0w52cPzR7Q1QsnMLcmcVPA7ahlWtSmWQUj+blZ58Vyb7si
-	sqBUI5kxMY7in/N15dSdqgbEKH6i+xi3qVaSVfTxcHlkOsdfrXYghOf4y73nwWWFlNrU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1vdrNE-001xse-J5; Thu, 08 Jan 2026 15:52:28 +0100
-Date: Thu, 8 Jan 2026 15:52:28 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: krzk+dt@kernel.org, herbert@gondor.apana.org.au, davem@davemloft.net,
-	robh@kernel.org, conor+dt@kernel.org, gregory.clement@bootlin.com,
-	sebastian.hesselbarth@gmail.com, matthias.bgg@gmail.com,
-	atenart@kernel.org, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH 1/4] dt-bindings: crypto: inside-secure,safexcel: Mandate
- only ring IRQs
-Message-ID: <c65c2f98-7530-470c-b288-d135fd621005@lunn.ch>
-References: <20260108110223.20008-1-angelogioacchino.delregno@collabora.com>
- <20260108110223.20008-2-angelogioacchino.delregno@collabora.com>
+	s=arc-20240116; t=1767873228; c=relaxed/simple;
+	bh=iFCG7cUXp5lgrTaa1rFHALg5zWZCz3Ir9J5mhxvVhGU=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=c89VHQ6Ubww6mhz4RFpFkF/Y4OWQR/VxyURheMStPgTdM+OB7RVDe1r+5few+RfditkcIE+uff40Zp0P2Yw+KyJX/rySlYPUKAeBfUxATnBD4ebqEQFTqMZNMfGGRRsXZHrex+9288NXLjgHm8BKca07JIYGgXhRijudWnFkOBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FsUitO0Y; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767873222;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R0I495xTJzwmy9iUkDFB4XYvwVDzM06omcaB5Fshsr4=;
+	b=FsUitO0YHVxHumXCXJ/gEA34q4Ids9t+Zg8halqIFmAWKmv9uVeh198FsoNAyj1x6c4p08
+	WogfNH6gynpGT6WzWFpQTssPx7LF9m0tdgVI9QfgsVEJdX732QIvmsTFZmK+Lm1NipPucJ
+	1SxFMGvrhgpZFbFWxOpj4uD80+zottQ=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-471-j17384aYN-mkzy7pjJ8o3w-1; Thu,
+ 08 Jan 2026 06:53:39 -0500
+X-MC-Unique: j17384aYN-mkzy7pjJ8o3w-1
+X-Mimecast-MFC-AGG-ID: j17384aYN-mkzy7pjJ8o3w_1767873217
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E680518003FD;
+	Thu,  8 Jan 2026 11:53:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.4])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9D65730002D1;
+	Thu,  8 Jan 2026 11:53:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <CALrw=nHMm0Br9iaMyCQwbujb-vus3nsA-__1Nw=UG-an=B_jtg@mail.gmail.com>
+References: <CALrw=nHMm0Br9iaMyCQwbujb-vus3nsA-__1Nw=UG-an=B_jtg@mail.gmail.com> <20260105152145.1801972-1-dhowells@redhat.com> <20260105152145.1801972-8-dhowells@redhat.com>
+To: Ignat Korchagin <ignat@cloudflare.com>
+Cc: dhowells@redhat.com, Lukas Wunner <lukas@wunner.de>,
+    Jarkko Sakkinen <jarkko@kernel.org>,
+    Herbert Xu <herbert@gondor.apana.org.au>,
+    Eric Biggers <ebiggers@kernel.org>,
+    Luis Chamberlain <mcgrof@kernel.org>,
+    Petr Pavlu <petr.pavlu@suse.com>, Daniel Gomez <da.gomez@kernel.org>,
+    Sami Tolvanen <samitolvanen@google.com>,
+    "Jason A . Donenfeld" <Jason@zx2c4.com>,
+    Ard Biesheuvel <ardb@kernel.org>,
+    Stephan Mueller <smueller@chronox.de>, linux-crypto@vger.kernel.org,
+    keyrings@vger.kernel.org, linux-modules@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 7/8] pkcs7, x509: Add RSASSA-PSS support
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260108110223.20008-2-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2719441.1767873207.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 08 Jan 2026 11:53:27 +0000
+Message-ID: <2719442.1767873207@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Thu, Jan 08, 2026 at 12:02:20PM +0100, AngeloGioacchino Del Regno wrote:
-> Not all IP implementations of EIP97 and EIP197 have the EIP and
-> MEM interrupts hooked up to the SoC, and those are not required
-> for functionality as status for both can be polled (and anyway
-> there's even no real need to poll, but that's another story).
-> 
-> As an example of this, the MediaTek MT7968A and MT7986B SoCs do
-> not have those two interrupts hooked up to their irq controlller.
-> 
-> For this reason, make the EIP and MEM interrupt optional.
+Ignat Korchagin <ignat@cloudflare.com> wrote:
 
-It seems like the order of these patches is the wrong way around. You
-should first add the device specific compatibles, and then update the
-constrains based on those compatibles, so that the marvell variants
-continue to require 6 interrupts, but the mediatek versions only
-require 4.
+> > +       case OID_id_rsassa_pss:
+> > +               goto rsassa_pss;
+> ...
+> > +rsassa_pss:
+> > +       if (!ctx->algo_params || !ctx->algo_params_size) {
+> > +               pr_debug("RSASSA-PSS sig algo without parameters\n");
+> > +               return -EBADMSG;
+> > +       }
+> > +
+> > +       err =3D rsassa_parse_sig_params(sig, ctx->algo_params, ctx->al=
+go_params_size);
+> > +       if (err < 0)
+> > +               return err;
+> > +
+> > +       sig->pkey_algo =3D "rsa";
+> > +       sig->encoding =3D "emsa-pss";
+> > +       goto out;
+> >  }
+> =
 
-	Andrew
+> I really don't like this. Is it possible to factor this out to a
+> separate function and just call here? Should the factored function
+> even be part of the implementation somehow?
+
+I'll move the check into rsassa_parse_sig_params() and then move the remai=
+ning
+code back into the switch case.  That also means that x509_note_sig_algo()
+doesn't need the check either.  It does change the pr_fmt value seen by th=
+e
+pr_debug(), but that's probably fine.
+
+> >         ctx->last_oid =3D look_up_OID(value, vlen);
+> >         if (ctx->last_oid =3D=3D OID__NR) {
+> > -               char buffer[50];
+> > +               char buffer[56];
+> >                 sprint_oid(value, vlen, buffer, sizeof(buffer));
+> =
+
+> I've seen this elsewhere in the crypto code (namely in ECC) but is it
+> generally a good idea to declare long buffers on the stack?
+
+It's not all that long (7 words on a 64-bit machine - similarish to a func=
+tion
+call), and the output of sprint_oid() is limited to it.
+
+David
+
 
