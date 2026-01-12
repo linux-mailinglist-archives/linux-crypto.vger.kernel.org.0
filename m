@@ -1,105 +1,106 @@
-Return-Path: <linux-crypto+bounces-19942-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19944-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67674D1518F
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 20:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A2BFD151C8
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 20:43:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0BC0B301E595
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 19:39:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 51B6D303F0DD
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 19:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680D731B833;
-	Mon, 12 Jan 2026 19:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2484C30FC37;
+	Mon, 12 Jan 2026 19:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mFWTTgxX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eVyLx8NQ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E8E1311C33;
-	Mon, 12 Jan 2026 19:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9067632
+	for <linux-crypto@vger.kernel.org>; Mon, 12 Jan 2026 19:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768246769; cv=none; b=EexXb8PT+857TPNsTgZbQ/FefPj3rDbTewiRSTzG/oc26UFBJ2XifWxQmjfzBPEXoNGv9Ca3sk98wftTirJCYE6NwEOZP8u0JWyQ3J3EimMxUcM0TvKJqHUz2PfLigI364VdF3CFl9D9cCPTcAO9FuIlUUD9SWHHNrxAaYJEMek=
+	t=1768247027; cv=none; b=TJG71znaWFU/1XwSUNUQfD346ngSbCfeIpmlikVX0fgpKSv7Be3KU9ccTATOUXFYmtkroWhYJTgWfHW+9S+pKdKfenKW+HACeuco9FgJgSaZZR07e4B3FyRSdwZSZHNr225ykFMp7O3sZknx+L4Z6itxj8Xb2twvT9An/x8T/IQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768246769; c=relaxed/simple;
-	bh=LURN05d3CU/QZ1spSz5FkUTEj3L7mOXS6iR5PRWHVqY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V6RJ/+qUGeXzX0WJqG0MYsVJ5hu0paVdjZAIynKzlIlt19P6GjWI5tVZQcpcen4wlrSzaVuGTnn0JeLUPepV6UMl/yU95HKkylCx4+WO1LeffafjMT1INguHLo9nIyPa99iaqPAmFhYd9Z+IAO7tO7X5ToEXwv4hICXvrBhRfyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mFWTTgxX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95302C116D0;
-	Mon, 12 Jan 2026 19:39:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768246768;
-	bh=LURN05d3CU/QZ1spSz5FkUTEj3L7mOXS6iR5PRWHVqY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mFWTTgxXkotZ0ofJBiqS9DXmNvTtyl0BeMYinX7moA67NgrridSjzZbnGlBxWPdyE
-	 uSDZEOxvYm1eZRbWVg1f2Np2vPLq7nYsOMo/dAqF+Ds8ESMKz7BriQRSH1in7oSjPN
-	 zKNFc523lkucWU0u+RvReEJBDhM+3DTBuopWzGhRnfeKmShnLGlAiT/WFHWvo96OiA
-	 b0lgRuDJnFT8AFhNxcDqeqnpUSpwJ32ZqR0AarD0GCVKFoSAQ59kZaiVaqrh20ZzmL
-	 wSlnSkhMdf0qyqw6aM1vixZIDGYaT9C6sjI/i4LCYjtibD148IxieB7Liy1e7AIM+j
-	 RqeO9eD9MTHEA==
-Date: Mon, 12 Jan 2026 11:39:02 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: syzbot <syzbot+703d8a2cd20971854b06@syzkaller.appspotmail.com>
-Cc: davem@davemloft.net, herbert@gondor.apana.org.au,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in adiantum_crypt
-Message-ID: <20260112193902.GB1952@sol>
-References: <692f9906.a70a0220.d98e3.01ae.GAE@google.com>
+	s=arc-20240116; t=1768247027; c=relaxed/simple;
+	bh=MAxVjP6c4Om6u8vsm6jVY6NUCkgy7e4h2yG64mnXs5A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WqSqpyOF7CyMZ+GW8LJL9Ls8HlZHFwWitmAmEhsGLD/gVwhUkq6i8QZ9WHfjpqn7BHv86G3sRxg0VahR+GVvDtQj4cI9CmSzI2c5exyUPpDH73Rxkoenv+7xnEuP8nD+W9tI1yHbicnXwX5QAgbCRlqbatek0nsV/J4s1wzv/Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eVyLx8NQ; arc=none smtp.client-ip=74.125.82.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-11f42e97229so10475970c88.0
+        for <linux-crypto@vger.kernel.org>; Mon, 12 Jan 2026 11:43:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768247026; x=1768851826; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MAxVjP6c4Om6u8vsm6jVY6NUCkgy7e4h2yG64mnXs5A=;
+        b=eVyLx8NQsDXwFxULbC6lIB8aRSFZssJy4HqpWRrlKnX3I6McmdO1XXMQR0zlHqDBbz
+         6KsDmNBBsWAAzmWAdG+UGE+X9CriTVZafVKTzhrXf1pRlRMFMzYBR0j3d8pltOZvcjeG
+         ENNWb0dL+yTqrUBfkqve+Tpdx5oQPL99zANdQNfGlzFqixXIj6qEg51N/eOiUizQqj7X
+         J444QhQaCyym2EwyapBFq2yE3iwjpJdJDEV8eEuraHMNfQEymFNdbCIqqXct5wpHq6kJ
+         2qGDcX74iNoRdjaODIYkoenmmtfxdVjIe7sN07dRNL522Qrg2ENdXA44DMKuySOZvRoU
+         F+Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768247026; x=1768851826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=MAxVjP6c4Om6u8vsm6jVY6NUCkgy7e4h2yG64mnXs5A=;
+        b=WDAmiSfPkhGNWsQIp3vkJkAGqP+mUfjkDVm3GfHAvevDU0hHoVC8OKaSbz9xgH7Bnk
+         rGpVPioqT2mC3NmvyB2nUtI8/+9nNCORV96xc6vEmxdVqHQ2goSgQugHEjrI2uIaCQyx
+         jyAUDx6O016L3oBnV9uy3o/TxB5cxb7/jj4sjbrL4StE0Vn9ZPYLAMumvFYUrSELZ17u
+         C0xv3TmMZbNGIHj1nkrcENZf+tEzhCg7Tb4uK8PIBHksvmAXmwk0lH8+cAMIfsqlRpoU
+         8Q8eNhqT+Z2UyhPc4cyatHfrhSq+hDWNToh9GJriY/qXjn315Q2D0KjrbFIKQnv90Qhi
+         iflg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxzVSmFovH7Mmm+w5oTq5hIbwetkKznxPNJaLpA99sDDh7ct3y5N3YphIbHPoAHq7nRLX57hHm/M16CW0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdPncQrQiGEoSqvkrcHhaTY5whBYLDE4fMwWm/XoPpVkam7fEq
+	vnv0fFr7V42zXxlRpgTrDnoyrBXgRhiKqT8VSKPcwEeh/ZyfU75mGLmfP75G2o/i5urKTg3agjH
+	UrfTI+78JClXaPh15dAL+3zw/sUOAunE=
+X-Gm-Gg: AY/fxX74FfuTHZ4o4pEzfCwM2iokItOAfTjswjE7qaZU++soCwUO2W6DHxprn26J/IF
+	9kJv3ZLCs2gARuzjmSmNKv70NK+d9J9aFw5K/g9sUjZ2D28qU1xsLTLcqRRfKJnK0vCKb4YhAOP
+	NobakXhcw/F+KlvICTf5OQHLWqnKZvTm6ebWotuVWzyQ48g8uz9zZ7aLN7Zi3Knv0YjN0QsCgD3
+	Sy58PVVc+kXZeo2BWu96yUU7IFTY0TU2NXUi/Cqyw7UQd2Yye16j9d1W1KgwZ88IFt2sKMv
+X-Google-Smtp-Source: AGHT+IFh5tn+kU9IHfrTDs0YlDSC03bvGBEomnygmpEiizRJP6bN5S//rn0KLdIYBN2zkqKUpA3Hh5rzgVkX84e+Dw4=
+X-Received: by 2002:a05:7022:220d:b0:11b:ca88:c4f9 with SMTP id
+ a92af1059eb24-121f8ab9c96mr18145001c88.2.1768247025780; Mon, 12 Jan 2026
+ 11:43:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <692f9906.a70a0220.d98e3.01ae.GAE@google.com>
+References: <20260112192827.25989-1-ethan.w.s.graham@gmail.com>
+In-Reply-To: <20260112192827.25989-1-ethan.w.s.graham@gmail.com>
+From: Ethan Graham <ethan.w.s.graham@gmail.com>
+Date: Mon, 12 Jan 2026 20:43:34 +0100
+X-Gm-Features: AZwV_QjnGtbKh0drXweXXMzt0JXRbTQf5yAyudSCZCAyLdJxE_GC_2wiEvkNplw
+Message-ID: <CANgxf6xKrawktF4wPQOs08q5Ob9N_Ff7-=f_hRiZ9yKq4LN0oA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] KFuzzTest: a new kernel fuzzing framework
+To: ethan.w.s.graham@gmail.com, glider@google.com
+Cc: akpm@linux-foundation.org, andreyknvl@gmail.com, andy@kernel.org, 
+	andy.shevchenko@gmail.com, brauner@kernel.org, brendan.higgins@linux.dev, 
+	davem@davemloft.net, davidgow@google.com, dhowells@redhat.com, 
+	dvyukov@google.com, ebiggers@kernel.org, elver@google.com, 
+	gregkh@linuxfoundation.org, herbert@gondor.apana.org.au, ignat@cloudflare.com, 
+	jack@suse.cz, jannh@google.com, johannes@sipsolutions.net, 
+	kasan-dev@googlegroups.com, kees@kernel.org, kunit-dev@googlegroups.com, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, lukas@wunner.de, mcgrof@kernel.org, rmoar@google.com, 
+	shuah@kernel.org, sj@kernel.org, skhan@linuxfoundation.org, 
+	tarasmadan@google.com, wentaoz5@illinois.edu, raemoar63@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 02, 2025 at 05:57:26PM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    6cf62f0174de Merge tag 'char-misc-6.18-rc8' of git://git.k..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1727df42580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=61a9bf3cc5d17a01
-> dashboard link: https://syzkaller.appspot.com/bug?extid=703d8a2cd20971854b06
-> compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bfa112580000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=169e422c580000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/fb216361ff9c/disk-6cf62f01.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/eb55e25eb970/vmlinux-6cf62f01.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5110f00a1a4e/bzImage-6cf62f01.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/7a62729c5268/mount_0.gz
->   fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=16dd8112580000)
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+703d8a2cd20971854b06@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in subshift lib/crypto/aes.c:150 [inline]
-> BUG: KMSAN: uninit-value in aes_encrypt+0x1239/0x1960 lib/crypto/aes.c:283
->  subshift lib/crypto/aes.c:150 [inline]
->  aes_encrypt+0x1239/0x1960 lib/crypto/aes.c:283
->  aesti_encrypt+0x7d/0xf0 crypto/aes_ti.c:31
->  cipher_crypt_one+0x120/0x2e0 crypto/cipher.c:75
->  crypto_cipher_encrypt_one+0x33/0x40 crypto/cipher.c:82
->  adiantum_crypt+0x939/0xe60 crypto/adiantum.c:383
->  adiantum_encrypt+0x33/0x40 crypto/adiantum.c:419
->  crypto_skcipher_encrypt+0x18a/0x1e0 crypto/skcipher.c:195
->  fscrypt_crypt_data_unit+0x38e/0x590 fs/crypto/crypto.c:139
->  fscrypt_encrypt_pagecache_blocks+0x430/0x900 fs/crypto/crypto.c:197
+On Mon, Jan 12, 2026 at 8:28=E2=80=AFPM Ethan Graham <ethan.w.s.graham@gmai=
+l.com> wrote:
+>
+> This patch series introduces KFuzzTest, a lightweight framework for
+> creating in-kernel fuzz targets for internal kernel functions.
+>
 
-ext4 sometimes encrypts uninitialized memory.  Duplicate of already-
-reported bug, see https://lore.kernel.org/r/20251210022202.GB4128@sol/
-
-#syz dup: KMSAN: uninit-value in fscrypt_crypt_data_unit
-
-- Eric
+Adding Rae Moar to the thread (rmoar@google.com bounced).
 
