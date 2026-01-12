@@ -1,51 +1,50 @@
-Return-Path: <linux-crypto+bounces-19894-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19891-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54ADD136C0
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 16:04:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DC9D136FF
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 16:05:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A51E930AEC7D
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 14:56:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D2193309D0C0
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 14:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EDCA2DEA75;
-	Mon, 12 Jan 2026 14:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58BF2D8DD4;
+	Mon, 12 Jan 2026 14:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Jvvp8D/P"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="mfM7M73s"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from bali.collaboradmins.com (bali.collaboradmins.com [148.251.105.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68F72D9780;
-	Mon, 12 Jan 2026 14:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A822D4B68;
+	Mon, 12 Jan 2026 14:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.251.105.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768229766; cv=none; b=bC+KLjLd5tYvR6aZP1D1kdTwH9AGpUuSxq0OjchiGlFLoGrrSurBvnUfselJrQRI51vCGVee62evq6u53/OI93iyu9frJzMfC97Jha6S/ApXjBMTFb/fgYGcnL60YVKYUJxqn+Q3otJdF6JxxMQW/eVybKCJtEHLCqTmSW6XUQk=
+	t=1768229764; cv=none; b=Eas/WVgt0TrzTW/P3v31rV07JhX1A64VSs06sgZdxflUHKs+ZGy2MIKhp2jRzhrxRmao5jnViWfXTCLxZqOrNpkIFwiVZmomg5tbwjK5qeeEJvtw6JcQx7CEfi4GW6nNbketEZNmqPy6tI826cTyCKlEftLnl5k1BG/G+WB+OXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768229766; c=relaxed/simple;
-	bh=gw1VaxWzqkyKrA2KxIUxIvewB29jkb6zfBD6Cnr2AVI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CPPhI/zagAubHj98Ep1lAs8gw16by7Aw5/HWeZKCTzuiLQNhcWqIsuavz2ndq7AEUggdsaOYXVWRbR/zqaSXsYdiVRa8QiY6UrT6wwXpZ9T4sRXBEGKpBmHB/h6/TDeV/tTdrnrerbhW7RL/9h6V0F1qJvWqOBSrVNW6DXyiQgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Jvvp8D/P; arc=none smtp.client-ip=148.251.105.195
+	s=arc-20240116; t=1768229764; c=relaxed/simple;
+	bh=tCoHB+9VbDLSgUJNKgtCaz1rSx1hAZupwzWxkTySq3w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L9RbyS0EL3qxf9fM0cGBQpWH/7g5q0xjlhc94OIQTNxsTOfvi9s76jJBWyEpdn4wVBOcRc+uV4vfv/bPuLPGlV8FOdy3eiZQS2XCzGl6r1A4M537x5h5BqcAfE4siq6BCYUxg+98jb9G4sGLPN5lBa3QL7Df4mj2oee0qlPzRx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=mfM7M73s; arc=none smtp.client-ip=148.251.105.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1768229763;
-	bh=gw1VaxWzqkyKrA2KxIUxIvewB29jkb6zfBD6Cnr2AVI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jvvp8D/P+mDkgw+JICaE/Z1AYqoyAAOjofI/lF7k9/a/WA8mOhDNBsq1MO7wgAJmS
-	 1Rf4Bk0oNTk7nETQ4hAp+kCViyilQBVWXqk7w7tJPkCf7ZvJ6XeJvwPi4xFIqVNPhy
-	 sbFPD4ZDI7eflyQoGZI4Yb6eqR1gYSST5MDyVvweUDu3DnUyRnLSVzZGP/nK1ksFkk
-	 i9DsC8gOM/4QYoK83hg5Cd4sSuv3cNF3pMk43nBelWHHtQwb/9yz74N+iz4dH80i1c
-	 y1o3sQLkzoR06eGbAyseWGzWgKSlnWIov5VIjXPLC/saPgE/YwcpSuqCiBImcnRHLD
-	 2mWzb5by9/JPA==
+	s=mail; t=1768229761;
+	bh=tCoHB+9VbDLSgUJNKgtCaz1rSx1hAZupwzWxkTySq3w=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mfM7M73s6rzWwjFv4SPWhwSA7Cq3+Wfcd+DcGC3yyHIZWvo1mKOmxGucpe9M/K1+8
+	 Qcnu6Q6uALbI6wIB1GP1gHNvmwB2ljpv6BCPlbI54ZvyRKTHns1608Eht4cVCnrTzB
+	 3osoub6Ljl8+HR6nCVNZGZrNwUOEA+LaMiXscdnxMkiirmefM7iy6jp6pFyFnUAqxZ
+	 eVXw5YErKOQ4GUI7uxlg4iidRNSiiG5Vssa6V/LxMG9wM58deyv0MHdOeFA7NcXseX
+	 1SgvgTzgUF+C7IvzcG1weTRzr3yapMGHFkgb+6DwL+KC3/yCB9KhC5ySeYuYRtlbEb
+	 SfJi6L0BoXfog==
 Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id D527117E11FF;
-	Mon, 12 Jan 2026 15:56:02 +0100 (CET)
+	by bali.collaboradmins.com (Postfix) with ESMTPSA id 9791317E0333;
+	Mon, 12 Jan 2026 15:56:00 +0100 (CET)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: krzk+dt@kernel.org
 Cc: herbert@gondor.apana.org.au,
@@ -64,12 +63,10 @@ Cc: herbert@gondor.apana.org.au,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com
-Subject: [PATCH v2 3/4] arm64: dts: marvell: Add SoC specific compatibles to SafeXcel crypto
-Date: Mon, 12 Jan 2026 15:55:57 +0100
-Message-ID: <20260112145558.54644-4-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v2 0/4] Fixes for EIP97/EIP197 binding and devicetrees
+Date: Mon, 12 Jan 2026 15:55:54 +0100
+Message-ID: <20260112145558.54644-1-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260112145558.54644-1-angelogioacchino.delregno@collabora.com>
-References: <20260112145558.54644-1-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -78,44 +75,27 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Following the changes in the binding for the SafeXcel crypto
-engine, add SoC specific compatibles to the existing nodes in
-Armada 37xx and CP11x.
+Changes in v2:
+ - Reorder commits
+ - Change to restrict interrupts/interrupt-names minItems to MediaTek only
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi  | 3 ++-
- arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+This series adds SoC compatibles to the EIP97/EIP197 binding, and also
+fixes all of the devicetrees to actually declare those in their nodes.
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index c612317043ea..87f9367aec12 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -427,7 +427,8 @@ xor11 {
- 			};
- 
- 			crypto: crypto@90000 {
--				compatible = "inside-secure,safexcel-eip97ies";
-+				compatible = "marvell,armada-3700-crypto",
-+					     "inside-secure,safexcel-eip97ies";
- 				reg = <0x90000 0x20000>;
- 				interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
- 					     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
-diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-index d9d409eac259..39599171d51b 100644
---- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-@@ -512,7 +512,8 @@ CP11X_LABEL(sdhci0): mmc@780000 {
- 		};
- 
- 		CP11X_LABEL(crypto): crypto@800000 {
--			compatible = "inside-secure,safexcel-eip197b";
-+			compatible = "marvell,armada-cp110-crypto",
-+				     "inside-secure,safexcel-eip197b";
- 			reg = <0x800000 0x200000>;
- 			interrupts = <88 IRQ_TYPE_LEVEL_HIGH>,
- 				<89 IRQ_TYPE_LEVEL_HIGH>,
+The only platforms using this binding are Marvell and MediaTek.
+
+AngeloGioacchino Del Regno (4):
+  dt-bindings: crypto: inside-secure,safexcel: Add SoC compatibles
+  dt-bindings: crypto: inside-secure,safexcel: Mandate only ring IRQs
+  arm64: dts: marvell: Add SoC specific compatibles to SafeXcel crypto
+  arm64: dts: mediatek: mt7986a: Change compatible for SafeXcel crypto
+
+ .../crypto/inside-secure,safexcel.yaml        | 22 +++++++++++++++++++
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  3 ++-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |  3 ++-
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi     |  2 +-
+ 4 files changed, 27 insertions(+), 3 deletions(-)
+
 -- 
 2.52.0
 
