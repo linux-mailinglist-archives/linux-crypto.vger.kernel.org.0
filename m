@@ -1,50 +1,100 @@
-Return-Path: <linux-crypto+bounces-19874-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19876-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 377FAD11833
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 10:33:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC8AD11DEB
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 11:30:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D0705307EA09
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 09:30:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1822A3016BA9
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 10:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EEF26561E;
-	Mon, 12 Jan 2026 09:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B95FA2D0601;
+	Mon, 12 Jan 2026 10:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="mKcniPiC";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="Bu4u0C4a"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB2D246770
-	for <linux-crypto@vger.kernel.org>; Mon, 12 Jan 2026 09:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07732BEC34
+	for <linux-crypto@vger.kernel.org>; Mon, 12 Jan 2026 10:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768210229; cv=none; b=oVrCJnl0MHS+bAR8+ohb10nAKPA0azudbNj2jgo94sReZh+CRRi6Dlu5hv9AJTlqYAwSuV5/hVR2+r1TQNKSughGoohtgOksDk1I393BD8c4xdJvgKapZTlk9bk+oXU2AFY5bqaqUmrQBPqnGfbs+AbZD4wv//eSXAlWVLPICGw=
+	t=1768213801; cv=none; b=ChWgYQtTUDXEEhGgWsxMI12Nc5I5bDc2OZlHSciJqZRPqowxjV2TRwWHSAOg7B+8pNWiL1dNDnWRmFV6jjULpi9bE03JGULjD8QfOmYKKAMcmJfZO1vA0G1wc3rhMnSNo2rPbFb0czXe/i2Y42ThNcWA9b6tH8kdIgLwNyEA2B8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768210229; c=relaxed/simple;
-	bh=muqEyrrFZNCXzAct5ZGS75CS/yaNxalGdlGvJP2/Yjc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Naxhi4O1lW/5tSl6Lo1VymSUhjGhUlawyLYLwk4/VSCzwfIFjUQr8LYAb0/b08i0t1QGqCtAKTMjFJXZBVugryB1jijTO8riClDvUYsHFI1ruNaOB8XIGAk6djZcOMvnEGZTZZ/4Y35rrnc+Ft/yPJhxTf9P22Ea612JyIEl4Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1768209497-086e2306f614c40001-Xm9f1P
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id Bzr6BW985YcYbLuh (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 12 Jan 2026 17:18:17 +0800 (CST)
-X-Barracuda-Envelope-From: AlanSong-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from ZXSHMBX1.zhaoxin.com (10.28.252.163) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.59; Mon, 12 Jan
- 2026 17:18:17 +0800
-Received: from ZXSHMBX1.zhaoxin.com ([fe80::936:f2f9:9efa:3c85]) by
- ZXSHMBX1.zhaoxin.com ([fe80::936:f2f9:9efa:3c85%7]) with mapi id
- 15.01.2507.059; Mon, 12 Jan 2026 17:18:17 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from [10.32.65.156] (10.32.65.156) by ZXBJMBX02.zhaoxin.com
- (10.29.252.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.59; Mon, 12 Jan
- 2026 17:12:41 +0800
-Message-ID: <c4c74973-93c6-4c89-bf1c-33ca8521d251@zhaoxin.com>
-Date: Mon, 12 Jan 2026 17:12:40 +0800
+	s=arc-20240116; t=1768213801; c=relaxed/simple;
+	bh=zxYqm0zQueh0U0yDRbTPD4QtsJ7Bx27wmqHwL5z/+7A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Oz6wkwIJstBBFIdIQsUL6SyfiiJb/SAixsszWFfjh3oRNUNvtw72bCkGIw6hAcVpSnDZEjm9b4K1Y8fSP0Vu0TfgBGkuqhyofSYLHFRIcSLHcoEy0Vhne/abgNIjS7vDoOULBnNBxdRcp4OGii9wecDgQ1dwXe9KqWGEJ1Uk2sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=mKcniPiC; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=Bu4u0C4a; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60C7Bk3f2788278
+	for <linux-crypto@vger.kernel.org>; Mon, 12 Jan 2026 10:29:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	bxMVnP7klhF7zuicFFjZTjp3gwEJfISaysxyhwsH6zU=; b=mKcniPiCqKedrd1a
+	ZUavt6rBtOP9PeRqG2qVS49oIRhL6AIthCiVoVjr8f2DbNgTRdVTW0+4NdwzwiTz
+	mFnrtTo4ozC736ydacctG+gIxMusfsYN3gmym7B6h/Mv4BJJNTfl7NMK72cPBA/D
+	lIWXR/U47x8G8F/Jy5k9RlNIJdrByd6jRvT15zXcKVSq1TYUcRNzMqjSkjNAFLho
+	1qQYnEuDtZw7atGKh9tu+dUdvwVqYvL1z9/JK8LvjzbMQ8FytlMWyR75dfZWknmj
+	2SULBr9nOtM/PrKw16HaGYI6Gw6oqExCw5lS46DsF9OWAeNPF/wQwaS74TFB5AGP
+	5ZKobQ==
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com [209.85.222.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bke3e4n41-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-crypto@vger.kernel.org>; Mon, 12 Jan 2026 10:29:58 +0000 (GMT)
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-8b10c2ea0b5so213059885a.0
+        for <linux-crypto@vger.kernel.org>; Mon, 12 Jan 2026 02:29:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1768213798; x=1768818598; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bxMVnP7klhF7zuicFFjZTjp3gwEJfISaysxyhwsH6zU=;
+        b=Bu4u0C4amzGQv55u6EpOQEEtFY7GRKj/YEvL1WGKy9IDYmL0ok+uRwq6SUwCwSIF6P
+         zUexIOpD7hmL4rI/W7mSYNXP+G/HsCW4HPiMSzEnYWSxlM6c42UFQ+xkTOV5D/7T49Ro
+         iH5RkVsFF3iF0B2HYOc8+TIxfBNRACHF00fWdPVK/zARO8ovPrrTEkHZK/ud4X3RBcls
+         z4mOQv4FOANPI4wzAY37fNF8KTNM85MbuAhZq455jf5brrViMRvC8VSNDjKGNNx88Mwp
+         HCIV2ZU13kUscx/01ArB0ukr1K6y652JTFNJva8x9715ydtQHyz9xjJV+sCFXZZfwlP8
+         7Smw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768213798; x=1768818598;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bxMVnP7klhF7zuicFFjZTjp3gwEJfISaysxyhwsH6zU=;
+        b=ngy9t5h5WE1i75yus6jeHvBVS6px1hAToiaijdG6xX5XlyHlZuMoi/8YDOrRSSJjcH
+         02MXNjbn2qMXWU9vFuAUwBIhjTbgoVsAz5ENIhp+P/NmWNaaWalzIh2/3udGvRVCRtlb
+         MC6XlLXGHfkG2BOu01usE86HbcNPkNdSelCrrVX7EusJMF9HjAdPJ+uUhA0k5SH2Tu/o
+         74Z5Rl9cPeGNaOS0cNyJO6olvoMM52WjgvBDVayR4WP8kz/pyJ7QAdR7XLnFb+m2nKpv
+         xw10oK5dryfYNWrh3+DLyR+xLz8i4gJjVgYVwg1iu0sCEJxJWyJQAVTsbRZ1ANuRg4po
+         /RKw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9fMVce1WFlHKy7vTnPcqxqZ0y1gpp8DHKCiCnsdssbZycQOMFc4mDAfDjqbfz8AP4xFFODpmuxKASc+s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWBKXYXeeQCs+NNKLJNHogIhkQ8j4e6DwfNM+09DzVnCIoF683
+	UatzB+FQY//Tf8OEenPSB9DjMbc7thk7Zu9WpMNgFuwEwK3oYf6EAdj9PqGgaWQO/aJLrqlavah
+	MmK+E9tSy4HUqyrGk2L02+/pCL2oGuxwILOIjh2iIGPfoxfrkXCoklCj2P8veo0O4w2o=
+X-Gm-Gg: AY/fxX7Vg4LN9+CBIyWO4w28X/twwC3KiiaCPqT78EAff23dfS2QKeu4ExtymcxFZ5E
+	WKmfk+fTdoXxFXcNHlgCF0e2pxGrqxwp/hUzUqpwE786/vuV4dA2qwrHkuPSwb/+NMnVI8SkifV
+	aqcJ0Ci+aU8pl9/gSiySAUOCn5Oq3oW1Fq4az5KC4sw0LrpdIpCldlgCrukkX7HB2Hy3TuAwbhy
+	bQujHVP3SG/mQJ8+5ZSRFn/RFnEtaXWVe1WKe5qcCG8jFpbP1qwSzw+6NPSsH+MUN0d2MjWqfmF
+	3Z3hqvpIMOGxFdpJSMYEx64+mmfkTER7hSxVHIVT0HBErpi2SZLMpkCuXSZvyYhkCmpMFhkEcjh
+	jer+BE6jDjbWxTuvirjZFS8CjHUHgbz1IWR2CNtXLfWTQ1qEDFPNjdqDH8BHYB6hACBY=
+X-Received: by 2002:a05:620a:4150:b0:8be:7dd7:f041 with SMTP id af79cd13be357-8c3893dc319mr1707034585a.7.1768213798010;
+        Mon, 12 Jan 2026 02:29:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFYkinKvuUhGe4V4yaanPySErY45GVSf7HQse7lAC+h88C4FKeCk2VIkqMj67TZjna5NhPTaQ==
+X-Received: by 2002:a05:620a:4150:b0:8be:7dd7:f041 with SMTP id af79cd13be357-8c3893dc319mr1707031185a.7.1768213797514;
+        Mon, 12 Jan 2026 02:29:57 -0800 (PST)
+Received: from [192.168.119.254] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b86fee09163sm593221066b.26.2026.01.12.02.29.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jan 2026 02:29:56 -0800 (PST)
+Message-ID: <ccbaff51-d7fa-4b22-8d4e-02bea5d8a529@oss.qualcomm.com>
+Date: Mon, 12 Jan 2026 11:29:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -52,88 +102,181 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] lib/crypto: x86/sha: Add PHE Extensions support
-To: Eric Biggers <ebiggers@kernel.org>
-X-ASG-Orig-Subj: Re: [PATCH v2 0/2] lib/crypto: x86/sha: Add PHE Extensions support
-CC: <herbert@gondor.apana.org.au>, <Jason@zx2c4.com>, <ardb@kernel.org>,
-	<linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<CobeChen@zhaoxin.com>, <TonyWWang-oc@zhaoxin.com>, <YunShen@zhaoxin.com>,
-	<GeorgeXue@zhaoxin.com>, <LeoLiu-oc@zhaoxin.com>, <HansHu@zhaoxin.com>
-References: <cover.1766131281.git.AlanSong-oc@zhaoxin.com>
- <20251219183357.GA1602@sol>
-From: AlanSong-oc <AlanSong-oc@zhaoxin.com>
-In-Reply-To: <20251219183357.GA1602@sol>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX02.zhaoxin.com (10.29.252.6)
-X-Moderation-Data: 1/12/2026 5:18:15 PM
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1768209497
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://mx2.zhaoxin.com:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 2490
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -1.62
-X-Barracuda-Spam-Status: No, SCORE=-1.62 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=BSF_SC0_SA085b
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.152921
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
-	0.40 BSF_SC0_SA085b         Custom Rule SA085b
+Subject: Re: [PATCH 5/6] arm64: dts: qcom: milos: Add UFS nodes
+To: Luca Weiss <luca.weiss@fairphone.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley
+ <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>, Vinod Koul <vkoul@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org
+References: <20260107-milos-ufs-v1-0-6982ab20d0ac@fairphone.com>
+ <20260107-milos-ufs-v1-5-6982ab20d0ac@fairphone.com>
+ <2486dc4b-71f3-4cd9-8139-b397407d7e4d@linaro.org>
+ <543d9e55-c858-40f9-8785-c9f636850120@linaro.org>
+ <DFMH8W40TCJ0.XCTHNRJFJE4T@fairphone.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+In-Reply-To: <DFMH8W40TCJ0.XCTHNRJFJE4T@fairphone.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: V9xtsP-lbt4mTGaNj3MUwHwOqbfwW4gv
+X-Proofpoint-ORIG-GUID: V9xtsP-lbt4mTGaNj3MUwHwOqbfwW4gv
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEyMDA4MiBTYWx0ZWRfX3n4tnndSWHDf
+ Oe6cD8W7xNhO94IxEpcCOkA1QgbXpoEXgGqBx1rTqtL7Y+ptE6cejtw5WI330I/snuSXtEFHMMH
+ hYjfCQpT+6SoVUzY2UpgtuEzz6yJ/YjtU2dJh/IPLmjNwMrbulg3ozwXSxXT727z8ovgPjpzbhg
+ De2h2V/7/pCNjqLJNx5RxlFhpclGymTTgEA/S9qgxv1m4H5o/ye0lPMOFC3SyRXUtfh3bUsZ58r
+ H4r7C/3DfLchdQ0w6kB9h+8IHqQpU0y4AjPw9ebU7DaF0cbmWS/CFLjorcutvEq3OUbii8yA8bq
+ t7eCP14xXrT8Z7l3iYD1tirfs7qEib7546MOsv8F7daLL6//n4eJJakSbnUOqx6g6u67ccNDxVL
+ 7mcflaWnzGaPpV08MCHRPQUbMJj9NhJ5ufwg1FR+C3JsCJS2JRta410O6jaLMVCtlT9f2pAozP5
+ McVX1qN2ZdynRTr9spA==
+X-Authority-Analysis: v=2.4 cv=Dckaa/tW c=1 sm=1 tr=0 ts=6964cd26 cx=c_pps
+ a=hnmNkyzTK/kJ09Xio7VxxA==:117 a=FpWmc02/iXfjRdCD7H54yg==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=6H0WHjuAAAAA:8 a=7X8Kw1P6343en4nalX4A:9
+ a=ZPF2tL_FRqzNxS05:21 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=PEH46H7Ffwr30OY-TuGO:22 a=Soq9LBFxuPC4vsCAQt-j:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-12_03,2026-01-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 suspectscore=0 bulkscore=0 impostorscore=0 spamscore=0
+ adultscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2512120000
+ definitions=main-2601120082
 
-On 12/20/2025 2:33 AM, Eric Biggers wrote:
+On 1/12/26 9:45 AM, Luca Weiss wrote:
+> Hi Neil,
 > 
-> On Fri, Dec 19, 2025 at 04:03:04PM +0800, AlanSong-oc wrote:
->> For Zhaoxin processors, the XSHA1 instruction requires the total memory
->> allocated at %rdi register must be 32 bytes, while the XSHA1 and
->> XSHA256 instruction doesn't perform any operation when %ecx is zero.
->>
->> Due to these requirements, the current padlock-sha driver does not work
->> correctly with Zhaoxin processors. It cannot pass the self-tests and
->> therefore does not activate the driver on Zhaoxin processors. This issue
->> has been reported in Debian [1]. The self-tests fail with the
->> following messages [2]:
->>
->> alg: shash: sha1-padlock-nano test failed (wrong result) on test vector 0, cfg="init+update+final aligned buffer"
->> alg: self-tests for sha1 using sha1-padlock-nano failed (rc=-22)
->> ------------[ cut here ]------------
->>
->> alg: shash: sha256-padlock-nano test failed (wrong result) on test vector 0, cfg="init+update+final aligned buffer"
->> alg: self-tests for sha256 using sha256-padlock-nano failed (rc=-22)
->> ------------[ cut here ]------------
+> On Mon Jan 12, 2026 at 9:26 AM CET, Neil Armstrong wrote:
+>> On 1/7/26 14:53, Neil Armstrong wrote:
+>>> Hi,
+>>>
+>>> On 1/7/26 09:05, Luca Weiss wrote:
+>>>> Add the nodes for the UFS PHY and UFS host controller, along with the
+>>>> ICE used for UFS.
+>>>>
+>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>>> ---
+>>>>   arch/arm64/boot/dts/qcom/milos.dtsi | 127 +++++++++++++++++++++++++++++++++++-
+>>>>   1 file changed, 124 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/milos.dtsi b/arch/arm64/boot/dts/qcom/milos.dtsi
+>>>> index e1a51d43943f..0f69deabb60c 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/milos.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/milos.dtsi
+>>>> @@ -797,9 +797,9 @@ gcc: clock-controller@100000 {
+>>>>                    <&sleep_clk>,
+>>>>                    <0>, /* pcie_0_pipe_clk */
+>>>>                    <0>, /* pcie_1_pipe_clk */
+>>>> -                 <0>, /* ufs_phy_rx_symbol_0_clk */
+>>>> -                 <0>, /* ufs_phy_rx_symbol_1_clk */
+>>>> -                 <0>, /* ufs_phy_tx_symbol_0_clk */
+>>>> +                 <&ufs_mem_phy 0>,
+>>>> +                 <&ufs_mem_phy 1>,
+>>>> +                 <&ufs_mem_phy 2>,
+>>>>                    <0>; /* usb3_phy_wrapper_gcc_usb30_pipe_clk */
+>>>>               #clock-cells = <1>;
+>>>> @@ -1151,6 +1151,127 @@ aggre2_noc: interconnect@1700000 {
+>>>>               qcom,bcm-voters = <&apps_bcm_voter>;
+>>>>           };
+>>>> +        ufs_mem_phy: phy@1d80000 {
+>>>> +            compatible = "qcom,milos-qmp-ufs-phy";
+>>>> +            reg = <0x0 0x01d80000 0x0 0x2000>;
+>>>> +
+>>>> +            clocks = <&rpmhcc RPMH_CXO_CLK>,
+>>>> +                 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
+>>>> +                 <&tcsr TCSR_UFS_CLKREF_EN>;
+>>>> +            clock-names = "ref",
+>>>> +                      "ref_aux",
+>>>> +                      "qref";
+>>>> +
+>>>> +            resets = <&ufs_mem_hc 0>;
+>>>> +            reset-names = "ufsphy";
+>>>> +
+>>>> +            power-domains = <&gcc UFS_MEM_PHY_GDSC>;
+>>>> +
+>>>> +            #clock-cells = <1>;
+>>>> +            #phy-cells = <0>;
+>>>> +
+>>>> +            status = "disabled";
+>>>> +        };
+>>>> +
+>>>> +        ufs_mem_hc: ufshc@1d84000 {
+>>>> +            compatible = "qcom,milos-ufshc", "qcom,ufshc", "jedec,ufs-2.0";
+>>>> +            reg = <0x0 0x01d84000 0x0 0x3000>;
+>>>> +
+>>>> +            interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH 0>;
+>>>> +
+>>>> +            clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
+>>>> +                 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
+>>>> +                 <&gcc GCC_UFS_PHY_AHB_CLK>,
+>>>> +                 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
+>>>> +                 <&tcsr TCSR_UFS_PAD_CLKREF_EN>,
+>>>> +                 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
+>>>> +                 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
+>>>> +                 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
+>>>> +            clock-names = "core_clk",
+>>>> +                      "bus_aggr_clk",
+>>>> +                      "iface_clk",
+>>>> +                      "core_clk_unipro",
+>>>> +                      "ref_clk",
+>>>> +                      "tx_lane0_sync_clk",
+>>>> +                      "rx_lane0_sync_clk",
+>>>> +                      "rx_lane1_sync_clk";
+>>>> +
+>>>> +            resets = <&gcc GCC_UFS_PHY_BCR>;
+>>>> +            reset-names = "rst";
+>>>> +
+>>>> +            interconnects = <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
+>>>> +                     &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
+>>>> +                    <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
+>>>> +                     &cnoc_cfg SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
+>>>> +            interconnect-names = "ufs-ddr",
+>>>> +                         "cpu-ufs";
+>>>> +
+>>>> +            power-domains = <&gcc UFS_PHY_GDSC>;
+>>>> +            required-opps = <&rpmhpd_opp_nom>;
+>>>> +
+>>>> +            operating-points-v2 = <&ufs_opp_table>;
+>>>> +
+>>>> +            iommus = <&apps_smmu 0x60 0>;
+>>>
+>>> dma-coherent ?
 > 
-> This cover letter is misleading, as those self-test failures will still
-> exist regardless of this patch series.
-
-Indeed, those self-test failures will still occur even with this patch
-series. I will add a separate commit in this series to restrict probing
-of the padlock-sha driver on Zhaoxin processors based on the CPU family,
-and explain the reason for those failures in that commit.
-
->> To enable XSHA1 and XSHA256 instruction support on Zhaoxin processors,
->> this series adds PHE Extensions support to lib/crypto for SHA-1 and
->> SHA-256, following the suggestion in [3].
->>
->> v1 link is below:
->> https://lore.kernel.org/linux-crypto/20250611101750.6839-1-AlanSong-oc@zhaoxin.com/
 > 
-> Please run the sha1 and sha256 KUnit test suites
-> (CRYPTO_LIB_SHA1_KUNIT_TEST and CRYPTO_LIB_SHA256_KUNIT_TEST) before and
-> after this series, with the benchmark enabled (CRYPTO_LIB_BENCHMARK),
-> and show the results.  For this series to be considered, the tests need
-> to pass and there needs to be a significant performance improvement.
+> Given that downstream volcano.dtsi has dma-coherent in the ufshc@1d84000
+> node, looks like this is missing in my patch.
 
-In the next revision of this patch, I will add the KUnit test suite
-results as well as benchmark results for SHA1 and SHA256.
+Seems that way
 
-Please accept my apologies for the delayed response due to
-administrative procedures. Thank you for your review and valuable
-suggestions.
+>>>
+>>> and no MCQ support ?
+> 
+> Not sure, I could only find one reference to MCQ on createpoint for
+> milos, but given there's no mcq_sqd/mcq_vs reg defined downstream, and I
+> couldn't find anything for the same register values in the .FLAT file, I
+> don't think Milos has MCQ? Feel free to prove me wrong though.
+> 
+>>
+>> So, people just ignore my comment ?
+>>
+>> Milos is based on SM8550, so it should have dma-coherent, for the MCQ
+>> I hope they used the fixed added to the SM8650 UFS controller for MCQ.
+> 
+> Not sure what this should mean regarding MCQ...
 
-Best Regards
-AlanSong-oc
+This platform doesn't support MCQ
 
+Konrad
 
