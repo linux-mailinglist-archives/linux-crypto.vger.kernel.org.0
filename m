@@ -1,101 +1,77 @@
-Return-Path: <linux-crypto+bounces-19941-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-19943-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49DF3D15102
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 20:35:15 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0855BD151D1
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 20:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7D2E9303ADED
-	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 19:35:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 24A1830318FD
+	for <lists+linux-crypto@lfdr.de>; Mon, 12 Jan 2026 19:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC227320CD6;
-	Mon, 12 Jan 2026 19:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD33133C50A;
+	Mon, 12 Jan 2026 19:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qkEcPXJW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BdrjP8rr"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2ED3242C0;
-	Mon, 12 Jan 2026 19:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B04339878;
+	Mon, 12 Jan 2026 19:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768246511; cv=none; b=gaOvj3zkc3PNuw/KdC1xswGAwYbB5mRjDCBkviBTRcLwOMBTSXkdqSSvLu+1rJO2+SIryHdpScZZsSbHwyrTJVjpHbbhaTnIFLG4FJENjFYk5gnBAXolP9B8robLN+1z45hZjdUMWolGbLDqjWPQx43uxC7JQ3+OZkJxqOcSDcU=
+	t=1768246916; cv=none; b=dO4R9tui+B49zVGWyWeBV4MTluzdDJNYYgs5yi0LqGfF1EGITMUFYXfVsB88A52tozhDp4b4TyMSUZLOL2Lnch1LIg1ErE785r3Je/TdzQP4RMCArDasQGj1DVEgHZkFC/vxXFcMj/gRckppKWjMGYDROs8DHanW8cpsa/GCfQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768246511; c=relaxed/simple;
-	bh=ZUv9WOpoHSeCX9aDulOlpT8OUBsrCsexexznfgOSVEo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ODXdHNou1n43qRrl1IWW1of1bp/FTEsjOlYcjtv3Fnwb2qaqalFms/GRXSUcqOpnRxRbNyqVzE2OslfPg9+oIAdKp6X2hv0XWeii48LXLFgKjEHVlf0B80o2tRgRiRonAnKGNI0nirU2rEyU7gq5+EqUWLS4cn96wtBFX1hpW48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qkEcPXJW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCB19C116D0;
-	Mon, 12 Jan 2026 19:35:10 +0000 (UTC)
+	s=arc-20240116; t=1768246916; c=relaxed/simple;
+	bh=jXXnRFAkcb4K1vgRE51siMG7Rs8YLTeospsnKLwFyJM=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=L3XUFFoVyMB04lOu9AWm4Z1CRf+FyQkMtzxNfjoYhmWaWo5xchxlntu/hSYB5K8W4il4eS5E2vgtwcgTYpjRFe8sn6Gx8CkAome9dUUSJ4/dAt72J12+wFFDpG/LUVPqugNd+tgnqY0EfV4bUaIkr2oR76xaSdHcvA3qcRYVj/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BdrjP8rr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47AFEC16AAE;
+	Mon, 12 Jan 2026 19:41:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768246511;
-	bh=ZUv9WOpoHSeCX9aDulOlpT8OUBsrCsexexznfgOSVEo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qkEcPXJWfvwYKw+qy3NDNf7Z/OyAoDvn3EtR2/iOKYwezSds2lZ/qOklle1QZf/RS
-	 0n0M/se6V2RScgyCVWHzoKqAuHBkLG+npgnZ/hkQNaUmdEMS8SMqc5iNRI3hM305pe
-	 5G4XuZI2hC2R2kGkAuwkn1s2N+qZuxDVtg0X7ixCwoqRSly1h/nTzUF/ZDmv7lOLzh
-	 3kpZQAFEhWTeMBp5aqTUXVSShJkCmIDCZqoj1MUyTL0F8E1sBOlG+e1Qkq99awf+XC
-	 L3aF8KO7N2Glp16xy++xBV238ItTYL3GJZmfRQvhL2B+JiGkP6QbxCBCuNGy5JTRtn
-	 bv/7KB6FxaUjA==
-Date: Mon, 12 Jan 2026 11:34:45 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: AlanSong-oc <AlanSong-oc@zhaoxin.com>
-Cc: herbert@gondor.apana.org.au, Jason@zx2c4.com, ardb@kernel.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	CobeChen@zhaoxin.com, TonyWWang-oc@zhaoxin.com, YunShen@zhaoxin.com,
-	GeorgeXue@zhaoxin.com, LeoLiu-oc@zhaoxin.com, HansHu@zhaoxin.com,
-	x86@kernel.org
-Subject: Re: [PATCH v2 1/2] lib/crypto: x86/sha1: PHE Extensions optimized
- SHA1 transform function
-Message-ID: <20260112193445.GA1952@sol>
-References: <cover.1766131281.git.AlanSong-oc@zhaoxin.com>
- <aa8ed72a109480887bdb3f3b36af372eadf0e499.1766131281.git.AlanSong-oc@zhaoxin.com>
- <20251219181805.GA1797@sol>
- <7aa1603d-6520-414a-a2a1-3a5289724814@zhaoxin.com>
+	s=k20201202; t=1768246916;
+	bh=jXXnRFAkcb4K1vgRE51siMG7Rs8YLTeospsnKLwFyJM=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=BdrjP8rrronFFwrKjzneh79Ws3mUmPQCtfGdQx/mlZ5z1TL+f00usxKwD1Jv93Lgk
+	 T1xBC5qqOr1uwjQRTj7S0mXLM6IvhPJoxrBFO40gi0SHPh3JpjMgdXNBe0/oHEThZj
+	 8FXJhBm3aKjadc6Va8LRWO8uafTrKwZr9T9w7FNkEKz0v2AL75AW90Mszh02B8PvXr
+	 3rSxgSX0epzfcCwmlhTrPNhkUKHsEjzwPpla81OQi8hG/EXpLxbx92zde6Q9eESBmy
+	 MyJuCVloSqM20a0Hbt+AjYOKYv3QUvu1fC7ViRX4OwuIOB8py+/GHgmzDBoWnHhDQt
+	 bjQ5oAzWlmWpg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 78ADA380CFC3;
+	Mon, 12 Jan 2026 19:38:31 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto library fixes for v6.19-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20260111193909.GA4348@quark>
+References: <20260111193909.GA4348@quark>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20260111193909.GA4348@quark>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/libcrypto-for-linus
+X-PR-Tracked-Commit-Id: 74d74bb78aeccc9edc10db216d6be121cf7ec176
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7143203341dccbca809ba0a8e72239ea4652ace6
+Message-Id: <176824671012.1091852.7378273717811695975.pr-tracker-bot@kernel.org>
+Date: Mon, 12 Jan 2026 19:38:30 +0000
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Herbert Xu <herbert@gondor.apana.org.au>, Jie Zhan <zhanjie9@hisilicon.com>, Qingfang Deng <dqfext@gmail.com>, Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7aa1603d-6520-414a-a2a1-3a5289724814@zhaoxin.com>
 
-On Mon, Jan 12, 2026 at 05:12:01PM +0800, AlanSong-oc wrote:
-> > Is it supported in both 32-bit and 64-bit modes?  Your patch doesn't
-> > check for CONFIG_64BIT.  Should it?  New optimized assembly code
-> > generally should be 64-bit only.
-> 
-> The XSHA1 and XSHA256 are supported in both 32-bit and 64-bit modes.
-> Since newly optimized assembly code is typically 64-bit only, and XSHA1
-> and XSHA256 fully support 64-bit mode, an explicit CONFIG_64BIT check
-> should not required.
+The pull request you sent on Sun, 11 Jan 2026 11:39:09 -0800:
 
-Right, all the x86-optimized SHA-1 and SHA-256 code is already 64-bit
-specific, due to CONFIG_CRYPTO_LIB_SHA1_ARCH and
-CONFIG_CRYPTO_LIB_SHA256_ARCH being enabled only when CONFIG_x86_64=y.
-So there's no need to check for 64-bit again.
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/libcrypto-for-linus
 
-> > What is the difference between X86_FEATURE_PHE and X86_FEATURE_PHE_EN,
-> > and why are both needed?
-> 
-> The X86_FEATURE_PHE indicates the presence of the XSHA1 and XSHA256
-> instructions, whereas the X86_FEATURE_PHE_EN indicates that these
-> instructions are enabled for normal use.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7143203341dccbca809ba0a8e72239ea4652ace6
 
-I still don't understand the difference.
+Thank you!
 
-If you look at the other CPU feature flags, like X86_FEATURE_SHA_NI for
-example, there's just a single flag for the feature.  We don't have
-X86_FEATURE_SHA_NI and X86_FEATURE_SHA_NI_EN.  If the CPU supports the
-feature but the kernel decides it can't or shouldn't be used for
-whatever reason, the kernel just doesn't set the flag.  There's no
-separate flag that tracks the CPU support independently.
-
-Why can't the PHE flag work the same way?
-
-- Eric
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
