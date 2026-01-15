@@ -1,183 +1,219 @@
-Return-Path: <linux-crypto+bounces-20018-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20011-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C649BD28E19
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jan 2026 22:53:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68AD2D28E32
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jan 2026 22:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3A104302009B
-	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jan 2026 21:52:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 329F4309780D
+	for <lists+linux-crypto@lfdr.de>; Thu, 15 Jan 2026 21:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E3B32E73D;
-	Thu, 15 Jan 2026 21:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BC032C949;
+	Thu, 15 Jan 2026 21:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FVml89hH"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UXvwWXRu"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1EFA32D7FA
-	for <linux-crypto@vger.kernel.org>; Thu, 15 Jan 2026 21:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBF5329C7E;
+	Thu, 15 Jan 2026 21:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768513938; cv=none; b=ZchxtWxDd0Ubvm2RSKNMYD7E0yzATSEGibPJ28fRhUmFHifdCwJ8UMzILgKArZr9FMLJb5L1rIuGL1as5U09xLSNJGS1a9cA7VdMfs0DUF1L691+UH6mKdztq3DNifK3a2MW2/kub+P9IS2hA4L/ynRYwUbj4zzNqjZzCy8A9Xg=
+	t=1768513897; cv=none; b=BIJxTg3ZPNpzRMQT57BvSNXmWY3W+qsWNcuin7L5H6CGAevunNl3V2YrYl6IlP8K+ILier/tN2Mif2AwSHneImmxaW5g3NGZPvmIP+jfVstM9Vpq5KktKtdbAHNh41tEhVr8IW0c+cBxksolWbnkBHigHevo2npWk3J59kjoYcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768513938; c=relaxed/simple;
-	bh=26Ku/3MAM9rlhlUV9gJjcK/jLqBAxHcARq/ODpqghxo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uB9BGDoVIpy0sHz2rq/9STcEdWglsZZnEipdVFFOKxTVqBZuB4UfW6tqmO2AY6JeoMRhShCcIu/OIHDjEDWEec9zjPko3tWQhdDNqKUcmPSUBpLGAvXakJ7ILIR6IfmIlIhiXSOAbsuC1wxf2SCJhbFQ8CpP3GFnERIpAXiW+Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FVml89hH; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768513930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T28k94VpOQSmmR3GIa8Y/1zMVZOhRHqV17VLDzYabDY=;
-	b=FVml89hHWQmhLd7uxnvRwcCSK6QnJ5Ka7OaspbNz1KcDjktbAtqybQ9GKP9eKDpj+R0QRY
-	jJeUiWrql9lo8jsvBBCX1WmthnJq7OitpGIhLB+NqbCbrKyh4jkgOJO5jdrV1MMIY9N0Rh
-	lWteIcrKg+sJuLENPcHrwX3OXcVKol0=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-204-hfKDrujmNxW5NtyNIV1yaw-1; Thu,
- 15 Jan 2026 16:52:05 -0500
-X-MC-Unique: hfKDrujmNxW5NtyNIV1yaw-1
-X-Mimecast-MFC-AGG-ID: hfKDrujmNxW5NtyNIV1yaw_1768513923
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4D0CF1956052;
-	Thu, 15 Jan 2026 21:52:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk.com (unknown [10.42.28.4])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 82F00180049F;
-	Thu, 15 Jan 2026 21:51:59 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: Lukas Wunner <lukas@wunner.de>,
-	Ignat Korchagin <ignat@cloudflare.com>
-Cc: David Howells <dhowells@redhat.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Daniel Gomez <da.gomez@kernel.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Stephan Mueller <smueller@chronox.de>,
-	linux-crypto@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v12 10/10] x509, pkcs7: Limit crypto combinations that may be used for module signing
-Date: Thu, 15 Jan 2026 21:50:52 +0000
-Message-ID: <20260115215100.312611-11-dhowells@redhat.com>
-In-Reply-To: <20260115215100.312611-1-dhowells@redhat.com>
-References: <20260115215100.312611-1-dhowells@redhat.com>
+	s=arc-20240116; t=1768513897; c=relaxed/simple;
+	bh=eDbG7oIDNSBtxQtDeXKavorlmOv3MxYeICQgBGWqZxc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=boAF/PwGJp3hxYFcvxe8/0p3MqljbR0pCQpNMfVdpUmJQRtEbVfSU/5z+5ooFUYcTzwrXjFZ9w6G8teSuD2a9KPCH+wyGBE7+OvntcAAZPNx3UUe14SD07W1RjM7XB9T6HDRnQ0vYqZTS0pJOv14UMT9gLqNOAD+rKk47pHb8lY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UXvwWXRu; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60FIU2mL023089;
+	Thu, 15 Jan 2026 21:51:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=wdu6jg
+	KLuaiifUu91W4tE9nmGxoPUXK86sfttdjrE/Y=; b=UXvwWXRuhdSQatVZERK7AS
+	h0NBHa0CON4EdR9mqBUor9Thm074bN7Gqp3H6fULoOaWNI4imYu2qjsPABDzQIDI
+	TQBqqPICchJjTYvsavM6ONaBDewlNj6XnpFl8xUEpDbLswYS7m/omtixqO0z0/Jg
+	Q/58NBaZepnlja1pFNh7X350NyMmWBorbuxw/BmWQPYmmqT3KEi9io/yloLDH9DS
+	IjYk5rFhIi4wLsSPnCMKAEyGXR2V44RTL7kN0ZpMQMgZyw3zOhIyl/JvP1Z0xf4I
+	tT9w44ZFHSNDbM4JMPzom8YYM9wCirxwaz7+LmTmwPjJStTD83QxpHB7gUrQBRkA
+	==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkd6ege7w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Jan 2026 21:51:28 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60FKNX18002536;
+	Thu, 15 Jan 2026 21:51:27 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bm13t2uvh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Jan 2026 21:51:27 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60FLpPXw51053038
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Jan 2026 21:51:26 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D97C220043;
+	Thu, 15 Jan 2026 21:51:25 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AA74D20040;
+	Thu, 15 Jan 2026 21:51:25 +0000 (GMT)
+Received: from [9.111.195.181] (unknown [9.111.195.181])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 15 Jan 2026 21:51:25 +0000 (GMT)
+Message-ID: <76089e1f-dfc9-44e8-8e16-b965cd43d848@linux.ibm.com>
+Date: Thu, 15 Jan 2026 22:51:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] lib/crypto: tests: Add KUnit tests for AES
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>, "Jason A . Donenfeld"
+ <Jason@zx2c4.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+References: <20260115183831.72010-1-dengler@linux.ibm.com>
+ <20260115183831.72010-2-dengler@linux.ibm.com> <20260115204332.GA3138@quark>
+From: Holger Dengler <dengler@linux.ibm.com>
+Content-Language: de-DE, en-US
+In-Reply-To: <20260115204332.GA3138@quark>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6vg3yQIfphF_h_P6a8XVvGzLLEj6L-7V
+X-Authority-Analysis: v=2.4 cv=LLxrgZW9 c=1 sm=1 tr=0 ts=69696160 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=Kmv_wObzDGlLTcwL_M8A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE1MDE3MSBTYWx0ZWRfXzs47HKSNRyr6
+ g4m+6sydJmowNKUPjdVdpeOIbZ/aJd3NRBWijvvl/IFPZokcqGd72pxKxfgqf25Mr2SwPlEBgM5
+ ErSMsItitWR2mqwr2XLIcl7wySQu9MSwVaxor/tWE7x93UyFcDsRklRDSix6/pnJZFXcN+FWK6x
+ azy5G2/r/VO31dq0Xgnpem3lZ1rhHLM0ocikxci9fDparaOzJIvTwf+oxZ6rKf8TKIkSxFsx5f7
+ TmB3SU/+l4wcXYpoZFkAgnayJtN3XGSEU2Hqp9imrxHUkpGDCOsTO4ES+AjD5NvgRxAyVbDpSkm
+ C4T833JBMbLkkkv5tjvTufPTHyVG/4lr497mVeB7ojesLYYX8joYPsN9wgFacE1QizGnX/ZfuV0
+ bxX9HeEBZ5Ha6ffKuXiyDWyWWJjXNcowtapsujuvBPDQJ3WedRSkLgc97G5LcUeXeGgrKs3NJpD
+ p7QsN7jLEdwweGNqvSA==
+X-Proofpoint-ORIG-GUID: 6vg3yQIfphF_h_P6a8XVvGzLLEj6L-7V
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-15_06,2026-01-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601150171
 
-Limit the set of crypto combinations that may be used for module signing as
-no indication of hash algorithm used for signing is added to the hash of
-the data, so in theory a data blob hashed with a different algorithm can be
-substituted provided it has the same hash output.
+On 15/01/2026 21:43, Eric Biggers wrote:
+> On Thu, Jan 15, 2026 at 07:38:31PM +0100, Holger Dengler wrote:
+>> Add a KUnit test suite for AES library functions, including KAT and
+>> benchmarks.
+>>
+>> Signed-off-by: Holger Dengler <dengler@linux.ibm.com>
+> 
+> The cover letter had some more information.  Could you put it in the
+> commit message directly?  Normally cover letters aren't used for a
+> single patch: the explanation should just be in the patch itself.
 
-This also rejects the use of less secure algorithms.
+Ok, I'll move the explanation to the commit message. I assume that the example
+output of the test can be dropped?
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Lukas Wunner <lukas@wunner.de>
-cc: Ignat Korchagin <ignat@cloudflare.com>
-cc: Stephan Mueller <smueller@chronox.de>
-cc: Eric Biggers <ebiggers@kernel.org>
-cc: Herbert Xu <herbert@gondor.apana.org.au>
-cc: keyrings@vger.kernel.org
-cc: linux-crypto@vger.kernel.org
----
- crypto/asymmetric_keys/public_key.c | 51 +++++++++++++++++++++++++++--
- 1 file changed, 49 insertions(+), 2 deletions(-)
+>> diff --git a/lib/crypto/tests/aes-testvecs.h b/lib/crypto/tests/aes-testvecs.h
+>> new file mode 100644
+>> index 000000000000..dfa528db7f02
+>> --- /dev/null
+>> +++ b/lib/crypto/tests/aes-testvecs.h
+>> @@ -0,0 +1,78 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _AES_TESTVECS_H
+>> +#define _AES_TESTVECS_H
+>> +
+>> +#include <crypto/aes.h>
+>> +
+>> +struct buf {
+>> +	size_t blen;
+>> +	u8 b[];
+>> +};
+> 
+> 'struct buf' is never used.
 
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-index 13a5616becaa..78e1194de71c 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -24,6 +24,48 @@ MODULE_DESCRIPTION("In-software asymmetric public-key subtype");
- MODULE_AUTHOR("Red Hat, Inc.");
- MODULE_LICENSE("GPL");
- 
-+struct public_key_restriction {
-+	const char	*pkey_algo;	/* Signing algorithm (e.g. "rsa") */
-+	const char	*pkey_enc;	/* Signature encoding (e.g. "pkcs1") */
-+	const char	*hash_algo;	/* Content hash algorithm (e.g. "sha256") */
-+};
-+
-+static const struct public_key_restriction public_key_restrictions[] = {
-+	/* algo			encoding	hash */
-+	{ "rsa",		"pkcs1",	"sha256" },
-+	{ "rsa",		"pkcs1",	"sha384" },
-+	{ "rsa",		"pkcs1",	"sha512" },
-+	{ "rsa",		"emsa-pss",	"sha512" },
-+	{ "ecdsa",		"x962",		"sha512" },
-+	{ "ecrdsa",		"raw",		"sha512" },
-+	{ "mldsa44",		"raw",		"sha512" },
-+	{ "mldsa65",		"raw",		"sha512" },
-+	{ "mldsa87",		"raw",		"sha512" },
-+	/* ML-DSA may also do its own hashing over the entire message. */
-+	{ "mldsa44",		"raw",		"-" },
-+	{ "mldsa65",		"raw",		"-" },
-+	{ "mldsa87",		"raw",		"-" },
-+};
-+
-+/*
-+ * Determine if a particular key/hash combination is allowed.
-+ */
-+static int is_public_key_sig_allowed(const struct public_key_signature *sig)
-+{
-+	for (int i = 0; i < ARRAY_SIZE(public_key_restrictions); i++) {
-+		if (strcmp(public_key_restrictions[i].pkey_algo, sig->pkey_algo) != 0)
-+			continue;
-+		if (strcmp(public_key_restrictions[i].pkey_enc, sig->encoding) != 0)
-+			continue;
-+		if (strcmp(public_key_restrictions[i].hash_algo, sig->hash_algo) != 0)
-+			continue;
-+		return 0;
-+	}
-+	pr_warn_once("Public key signature combo (%s,%s,%s) rejected\n",
-+		     sig->pkey_algo, sig->encoding, sig->hash_algo);
-+	return -EKEYREJECTED;
-+}
-+
- /*
-  * Provide a part of a description of the key for /proc/keys.
-  */
-@@ -391,12 +433,17 @@ int public_key_verify_signature(const struct public_key *pkey,
- 	bool issig;
- 	int ret;
- 
--	pr_devel("==>%s()\n", __func__);
--
- 	BUG_ON(!pkey);
- 	BUG_ON(!sig);
- 	BUG_ON(!sig->s);
- 
-+	ret = is_public_key_sig_allowed(sig);
-+	if (ret < 0)
-+		return ret;
-+
-+	pr_devel("==>%s(%s,%s,%s)\n",
-+		 __func__, sig->pkey_algo, sig->encoding, sig->hash_algo);
-+
- 	/*
- 	 * If the signature specifies a public key algorithm, it *must* match
- 	 * the key's actual public key algorithm.
+This is a left-over, will be removed in the next series.
+
+> 
+>> +static const struct aes_testvector aes128_kat = {
+> 
+> Where do these test vectors come from?  All test vectors should have a
+> documented source.
+
+ok, I will add this information as well.
+
+>> +static void benchmark_aes(struct kunit *test, const struct aes_testvector *tv)
+>> +{
+>> +	const size_t num_iters = 10000000;
+> 
+> 10000000 iterations is too many.  That's 160 MB of data in each
+> direction per AES key length.  Some CPUs without AES instructions can do
+> only ~20 MB AES per second.  In that case, this benchmark would take 16
+> seconds to run per AES key length, for 48 seconds total.
+> 
+> hash-test-template.h and crc_kunit.c use 10000000 / (len + 128)
+> iterations.  That would be 69444 in this case (considering len=16),
+> which is less than 1% of the iterations you've used.  Choosing a number
+> similar to that would seem more appropriate.
+> 
+> Ultimately these are just made-up numbers.  But I think we should aim
+> for the benchmark test in each KUnit test suite to take less than a
+> second or so.  The existing tests roughly achieve that, whereas it seems
+> this one can go over it by quite a bit due to the 10000000 iterations.
+
+As we have a fixed length, I would go stay with a fix value for the iterations
+(instead of calculating it based on len).
+
+The benchmark has a separate loop for encrypt and decrypt, so I will do the
+half iterations on encrypt and the other half on decrypt. I will also reduce
+the iterations for the warm-ups.
+
+What about 100 iterations for each warm-up and 500.000 iterations for each
+real measurement? Means processing 2x 8MiB with preemption disabled.
+
+>> +	kunit_info(test, "enc (iter. %zu, duration %lluns)",
+>> +		   num_iters, t_enc);
+>> +	kunit_info(test, "enc (len=%zu): %llu MB/s",
+>> +		   (size_t)AES_BLOCK_SIZE,
+>> +		   div64_u64((u64)AES_BLOCK_SIZE * num_iters * NSEC_PER_SEC,
+>> +			     (t_enc ?: 1) * SZ_1M));
+>> +
+>> +	kunit_info(test, "dec (iter. %zu, duration %lluns)",
+>> +		   num_iters, t_dec);
+>> +	kunit_info(test, "dec (len=%zu): %llu MB/s",
+>> +		   (size_t)AES_BLOCK_SIZE,
+>> +		   div64_u64((u64)AES_BLOCK_SIZE * num_iters * NSEC_PER_SEC,
+>> +			     (t_dec ?: 1) * SZ_1M));
+> 
+> Maybe delete the first line of each pair, and switch from power-of-2
+> megabytes to power-of-10?  That would be consistent with how the other
+> crypto and CRC benchmarks print their output.
+> 
+>> +MODULE_DESCRIPTION("KUnit tests and benchmark aes library");
+> 
+> "aes library" => "for the AES library"
+
+ok
+
+-- 
+Mit freundlichen Grüßen / Kind regards
+Holger Dengler
+--
+IBM Systems, Linux on IBM Z Development
+dengler@linux.ibm.com
 
 
