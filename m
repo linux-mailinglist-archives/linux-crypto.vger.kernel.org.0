@@ -1,179 +1,82 @@
-Return-Path: <linux-crypto+bounces-20030-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20032-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DDF7D2B372
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jan 2026 05:12:14 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82709D2C4D0
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jan 2026 07:05:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7DBD93058A32
-	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jan 2026 04:11:50 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C2C5D30127B4
+	for <lists+linux-crypto@lfdr.de>; Fri, 16 Jan 2026 06:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8BA344037;
-	Fri, 16 Jan 2026 04:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B9934D3B0;
+	Fri, 16 Jan 2026 06:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K8fHH1x5"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="UdvLe9Iq"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F280C33F386;
-	Fri, 16 Jan 2026 04:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7E134B43D;
+	Fri, 16 Jan 2026 06:05:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768536710; cv=none; b=HG9PhB5RYXwrzBGrFxI/o7/yhbRe0hr9OBTN3zhBweGOpftkdykxKB5/gEMM6AtlUMY72j87R1GDSjWpHILsXuDbZOvgLpeLEyQCijUIBS9PLRwhuGQugzehPws+wVI88/Qs5hZ0ghLlkszT8CCxf9Ms/ShL7L9mYJS+RODgCE8=
+	t=1768543506; cv=none; b=AgHP22Io8wMeGkxS7SOm+/VuCpk1xQ/UzTgtqree+bycKSro+vDxLE+xzS7firIOx4XHnIh922/zbHhFbAuD/Aznyx33MJDxYAxl42hnX5qHqCnFAJCVsNTrAeGGmji9/43QF2Hgn0sBnBnz1/sYUZImtQ/gZ2bbFOovEbzGZBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768536710; c=relaxed/simple;
-	bh=Hh5waHPwNk1sRu4s4FEAwm1VSrHS3qZRw6FAv1Jzalk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jJtto2Cv+5VoULmkavfPTSICK9zN0KwcMjDJJk07Cgxa64d74PGobbgHcCGrqcaWtaeHbR+szuyF3Gp5xBJlbQxjO7m1v/B7OE+txsoZ0rm40kxBvezkgDkEOHMGH3jhnB0EELf6Hm4aOCy9xd/Lf/NGahYKGh/pv2sUX7EKBy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K8fHH1x5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F9CCC19421;
-	Fri, 16 Jan 2026 04:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768536709;
-	bh=Hh5waHPwNk1sRu4s4FEAwm1VSrHS3qZRw6FAv1Jzalk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K8fHH1x5c3bTgrkHaoxpGayDwc9DFu/u/BL0uLYMxqIE+coRt8fZHIl2Jb+THh+vE
-	 AV0iTp+p4pDD9Je9WmABJ07LGBjnI0OzQtAiolnIqvwWJslrqpoO7qvaNxIx0+W3cN
-	 8d8FV9wFTTb6ic5Qfq0n7YmMKqAlUrMxOIA9GkVugyXbAnXqz3+fgc/3tKNiFub/jq
-	 KdRQWrSLghdJQWtbOEaBqFRdcIjoSk1qVu/hNAVjRHFA0zReQKSfbcHai1irmBi8YP
-	 VC1q9HdhzA35WVR9T3vkPVnZivDhYnDA8ATlOOavE2YJgU++FD45aHt6c9nux0Us4w
-	 nkWPfFpYhkVGQ==
-From: "Mario Limonciello (AMD)" <superm1@kernel.org>
-To: Tom Lendacky <thomas.lendacky@amd.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Rijo Thomas <Rijo-john.Thomas@amd.com>
-Cc: John Allen <john.allen@amd.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Hans de Goede <hansg@kernel.org>,
-	linux-crypto@vger.kernel.org (open list:AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER),
-	platform-driver-x86@vger.kernel.org (open list:AMD PMF DRIVER),
-	Lars Francke <lars.francke@gmail.com>,
-	Yijun Shen <Yijun.Shen@dell.com>,
-	Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-	"Mario Limonciello (AMD)" <superm1@kernel.org>,
-	Yijun Shen <Yijun.Shen@Dell.com>
-Subject: [PATCH v6 5/5] crypto: ccp - Send PSP_CMD_TEE_RING_DESTROY when PSP_CMD_TEE_RING_INIT fails
-Date: Thu, 15 Jan 2026 22:11:32 -0600
-Message-ID: <20260116041132.153674-6-superm1@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260116041132.153674-1-superm1@kernel.org>
-References: <20260116041132.153674-1-superm1@kernel.org>
+	s=arc-20240116; t=1768543506; c=relaxed/simple;
+	bh=IqQle2c3cLnajUOmPP3yALG8YwDQmxF7C6hk7yOpfoA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JSEShI3+gIO1rl6AP89S5s61bApFOb6Z9jruljgIwMvgQPNa0zP8az1fZhV+EiSYy/NbMGmAoy8ctIkFMmNE0hFJZi0UE2/2+/toM7IKQNfXgg+8y3sX0xekEtqrnEkEvVMGR0PICP1yxEzz7Bn0dtgV/IO9/SHIvPQC8q7gUnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=UdvLe9Iq; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=0ZyB5zAD9FMNH022ny69PadGUOzgneEmsRQhRBlpFjU=; 
+	b=UdvLe9IqAdgcZqWxQEPDvxjApYxVgKox6gukwm7TYfI2CTTOSfQDksYn3NxxF7PA369TX7XPLpM
+	bqCS1/2c4cUyvz/QzbDUOC7j9lk/gEGZv7LdBjGJNXDiUfxuzyREwAWodTDt3fOWtm914ZD8ppWrs
+	Vpvrh9UdaUjTObr/mz6o+TG/YvJOIF9W4F4MOBygiO+8uC/RihIPuzx3oUfmofAvIg5f2vRZh/Kv9
+	Sr6qE0rbowsG2vBEst/I29aVhHoqxTe+757ta6RzepkoP8sCHItJKtmpYBtz0jqUmEnygh9QEwDuA
+	0XBwcV0lyiveeFXJfHl6/gLnRrAnP8gWgBHg==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1vgcwz-00HDMs-0F;
+	Fri, 16 Jan 2026 14:04:50 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Jan 2026 14:04:49 +0800
+Date: Fri, 16 Jan 2026 14:04:49 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Thomas Fourier <fourier.thomas@gmail.com>
+Cc: George Cherian <gcherian@marvell.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Daney <david.daney@cavium.com>, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: cavium: fix dma_free_coherent() size
+Message-ID: <aWnVAavYGnsLHUCD@gondor.apana.org.au>
+References: <20251218095647.45214-2-fourier.thomas@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251218095647.45214-2-fourier.thomas@gmail.com>
 
-The hibernate resume sequence involves loading a resume kernel that is just
-used for loading the hibernate image before shifting back to the existing
-kernel.
+On Thu, Dec 18, 2025 at 10:56:45AM +0100, Thomas Fourier wrote:
+> The size of the buffer in alloc_command_queues() is
+> curr->size + CPT_NEXT_CHUNK_PTR_SIZE, so used that length for
+> dma_free_coherent().
+> 
+> Fixes: c694b233295b ("crypto: cavium - Add the Virtual Function driver for CPT")
+> Signed-off-by: Thomas Fourier <fourier.thomas@gmail.com>
+> ---
+>  drivers/crypto/cavium/cpt/cptvf_main.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-During that hibernate resume sequence the resume kernel may have loaded
-the ccp driver.  If this happens the resume kernel will also have called
-PSP_CMD_TEE_RING_INIT but it will never have called
-PSP_CMD_TEE_RING_DESTROY.
-
-This is problematic because the existing kernel needs to re-initialize the
-ring.  One could argue that the existing kernel should call destroy
-as part of restore() but there is no guarantee that the resume kernel did
-or didn't load the ccp driver.  There is also no callback opportunity for
-the resume kernel to destroy before handing back control to the existing
-kernel.
-
-Similar problems could potentially exist with the use of kdump and
-crash handling. I actually reproduced this issue like this:
-
-1) rmmod ccp
-2) hibernate the system
-3) resume the system
-4) modprobe ccp
-
-The resume kernel will have loaded ccp but never destroyed and then when
-I try to modprobe it fails.
-
-Because of these possible cases add a flow that checks the error code from
-the PSP_CMD_TEE_RING_INIT call and tries to call PSP_CMD_TEE_RING_DESTROY
-if it failed.  If this succeeds then call PSP_CMD_TEE_RING_INIT again.
-
-Fixes: f892a21f51162 ("crypto: ccp - use generic power management")
-Reported-by: Lars Francke <lars.francke@gmail.com>
-Closes: https://lore.kernel.org/platform-driver-x86/CAD-Ua_gfJnQSo8ucS_7ZwzuhoBRJ14zXP7s8b-zX3ZcxcyWePw@mail.gmail.com/
-Tested-by: Yijun Shen <Yijun.Shen@Dell.com>
-Signed-off-by: Mario Limonciello (AMD) <superm1@kernel.org>
----
-v5:
- * Add retry=true for the retry case (Shyam)
-v4:
- * Add tag (Yijun)
- * Move and rename PSP_TEE_STS_RING_BUSY (Ilpo)
-v3:
- * Add a comment (Tom)
- * Add a define for busy condition (Shyam)
- * Rename label (Shyam)
- * Upgrade message to info (Shyam)
- * Use a helper that validates result for destroy command (Shyam)
----
- drivers/crypto/ccp/tee-dev.c | 14 ++++++++++++++
- include/linux/psp.h          |  1 +
- 2 files changed, 15 insertions(+)
-
-diff --git a/drivers/crypto/ccp/tee-dev.c b/drivers/crypto/ccp/tee-dev.c
-index ef1430f86ad62..92ffa412622a2 100644
---- a/drivers/crypto/ccp/tee-dev.c
-+++ b/drivers/crypto/ccp/tee-dev.c
-@@ -113,6 +113,7 @@ static int tee_init_ring(struct psp_tee_device *tee)
- {
- 	int ring_size = MAX_RING_BUFFER_ENTRIES * sizeof(struct tee_ring_cmd);
- 	struct tee_init_ring_cmd *cmd;
-+	bool retry = false;
- 	unsigned int reg;
- 	int ret;
- 
-@@ -135,6 +136,7 @@ static int tee_init_ring(struct psp_tee_device *tee)
- 	/* Send command buffer details to Trusted OS by writing to
- 	 * CPU-PSP message registers
- 	 */
-+retry_init:
- 	ret = psp_mailbox_command(tee->psp, PSP_CMD_TEE_RING_INIT, cmd,
- 				  TEE_DEFAULT_CMD_TIMEOUT, &reg);
- 	if (ret) {
-@@ -145,6 +147,18 @@ static int tee_init_ring(struct psp_tee_device *tee)
- 	}
- 
- 	if (FIELD_GET(PSP_CMDRESP_STS, reg)) {
-+		/*
-+		 * During the hibernate resume sequence driver may have gotten loaded
-+		 * but the ring not properly destroyed. If the ring doesn't work, try
-+		 * to destroy and re-init once.
-+		 */
-+		if (!retry && FIELD_GET(PSP_CMDRESP_STS, reg) == PSP_TEE_STS_RING_BUSY) {
-+			dev_info(tee->dev, "tee: ring init command failed with busy status, retrying\n");
-+			if (tee_send_destroy_cmd(tee)) {
-+				retry = true;
-+				goto retry_init;
-+			}
-+		}
- 		dev_err(tee->dev, "tee: ring init command failed (%#010lx)\n",
- 			FIELD_GET(PSP_CMDRESP_STS, reg));
- 		tee_free_ring(tee);
-diff --git a/include/linux/psp.h b/include/linux/psp.h
-index 92e60aeef21e1..b337dcce1e991 100644
---- a/include/linux/psp.h
-+++ b/include/linux/psp.h
-@@ -18,6 +18,7 @@
-  * and should include an appropriate local definition in their source file.
-  */
- #define PSP_CMDRESP_STS		GENMASK(15, 0)
-+#define  PSP_TEE_STS_RING_BUSY 0x0000000d  /* Ring already initialized */
- #define PSP_CMDRESP_CMD		GENMASK(23, 16)
- #define PSP_CMDRESP_RESERVED	GENMASK(29, 24)
- #define PSP_CMDRESP_RECOVERY	BIT(30)
+Patch applied.  Thanks.
 -- 
-2.43.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
