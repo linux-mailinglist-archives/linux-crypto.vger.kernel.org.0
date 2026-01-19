@@ -1,189 +1,163 @@
-Return-Path: <linux-crypto+bounces-20106-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20109-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A3CD39D78
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 05:25:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2512D3A358
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 10:41:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 58C5330076A5
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 04:25:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 18DE4302C86A
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 09:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8CC32417FB;
-	Mon, 19 Jan 2026 04:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D304356A1B;
+	Mon, 19 Jan 2026 09:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="Sbh6Edqy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="0ZVnr76k"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="37uQbcQ1"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46FD197A7D;
-	Mon, 19 Jan 2026 04:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4240D354ACC
+	for <linux-crypto@vger.kernel.org>; Mon, 19 Jan 2026 09:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768796700; cv=none; b=dzwuEEmA3m6wIrAtUsxFUXfEF/qTQDfoytz9wG+Ee9IC/liNEMEe61U6E40u/UIwIZbCStOtWDeLrkDhiQFdVDbi6bi4xFaPOy7fEwt+AWL6cjyaIF/AnnFL/ekbI72OvqDgJKNvzYO+4MJGDON2VMxgQTvgmFGTGfXECyJjDCI=
+	t=1768815648; cv=none; b=LA1ZEbz+HukjEsXd4cWGQ0K0aCiKeaAYG5o40D16B89G1Up9FXiic6LuzmspxnLHAciof4XlZu/VZy6P4N6O6NwKoNAl5UUepQ4C/v0sHx64TrPrg7eSdbYj/qOtOw18pPLOmZkQpARHkRyHBcFj5jt+cXftUsqFd8ZNNznyvFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768796700; c=relaxed/simple;
-	bh=HdSZCarGGS3RuGsKep6hC7LR7qDsWU4SWvZnwDUELpk=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=TkzxGicH5e1G8IAkxj2cS1MnFn0imo2PmiHGCo9G3tcASd/GX9dosQrYC/U0R0zyjdA+D+Vs+XUl0mBJ8rQhVG4HKSJOpk23OrZ6D2l7ysEe21fHUQYRGjPzwBlQjgVc52Ja2fLbN2y1VaSaRcy03uFz5neCpR3lyCgRwZ5jQL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=Sbh6Edqy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=0ZVnr76k; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfout.phl.internal (Postfix) with ESMTP id BC74EEC0684;
-	Sun, 18 Jan 2026 23:24:56 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-02.internal (MEProxy); Sun, 18 Jan 2026 23:24:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to; s=fm2; t=
-	1768796696; x=1768883096; bh=w4J1Lzoj001fG0Dd8Z4gKIcNfCsBwsKpnYS
-	5sVzQybM=; b=Sbh6Edqy5uN86z9VVPbrNkciPQkfvtZP6HjypI+HJn9mO/S94oT
-	xxtkP5iFoDKPRowxx3PmUke9K9f0UgDHwfHqj/wuYnFZRdCJhTuNF5sreetzyXUa
-	z9FReR5bNF2emNOftvXsBz+HcXJfIpLoqUT5dJyqHIT/tA1xlGc93gF/dFlFDqNW
-	5cP3MkBqrEWU3MWo/oR9KlGuCvlzTHDPQynQp647+2lh3ClHmDZBFSqjVMCn8ZYo
-	KK7WGXoacFN7m0s7DHKxz3Cz1HiaprvvbroGSl4Xj9+8MFejY7BY02CgQx42jUHX
-	Ll7GRYJAzFokeJS9IHRMZQb3h/7P1lADJYA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768796696; x=
-	1768883096; bh=w4J1Lzoj001fG0Dd8Z4gKIcNfCsBwsKpnYS5sVzQybM=; b=0
-	ZVnr76k17K31SGYBRrq05Vbhv7ngIWaWSRA+S9zWwevbvLlA0dR2Lt3idN0l/GQF
-	n0oPnOsXavaEqpwTMNNPj79D3DGaz8jwXn3IYiDfMtN99pgZT6PIZu6NEuabM2Vx
-	CK2hgwkD2lHPeJkND92ILUrDruL8gNeFvCgcLeke+BcReia/o+eWlVsjvMPpM7Ow
-	S1Ae93f4zvv1v42yqSlchLhtNmDw4TkgzWE+6538wPOCLakc44goB5P9hClKZMjg
-	CyZ51n0jssnCOQSr1xMIjAW9dGOyYIm/PGUU8jh4FI6e8PGj9tsCN7wJwF5ECOIN
-	Avg5In7Q+vnikD9quTzpw==
-X-ME-Sender: <xms:GLJtaRKyEdXzmPqgktMiaigYQypMNuRivdcsJ7ivQlWWgVM9MqioaQ>
-    <xme:GLJtaTJ1HzzH6m-2sMPnHidUaDImJi4CGoR2OPlb9uRxH4H7F1wb43xRGETaTRlmF
-    JMVR_c0zoleXhWfP1Kqqz8BA_SxfVxRimI0NiBMIeZnF17Gcws>
-X-ME-Received: <xmr:GLJtaUg7iNYcfsO2L1KKQUt-OeC5pQizt692kvDVfyPSf89kGooAkjmD9ZReHXJ8fYq1rBewsKkK8bCuSdMhkLVVL6A6ZRvcCQmIShQHZXrE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufeeiiedtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurheptgfgggfhvfevufgjfhffkfhrsehtqhertddttdejnecuhfhrohhmpefpvghilheu
-    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
-    epleejtdefgeeukeeiteduveehudevfeffvedutefgteduhfegvdfgtdeigeeuudejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
-    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepuddtpdhmohguvgepshhmthhp
-    ohhuthdprhgtphhtthhopehlihhnuhigqdhnfhhssehvghgvrhdrkhgvrhhnvghlrdhorh
-    hgpdhrtghpthhtoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehlihhnuhigqdgtrhihphhtohesvhhgvghrrdhkvghrnhgvlh
-    drohhrghdprhgtphhtthhopegthhhutghkrdhlvghvvghrsehorhgrtghlvgdrtghomhdp
-    rhgtphhtthhopehtrhhonhgumhihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjlh
-    grhihtohhnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegvsghighhgvghrsheskhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtoheprghnnhgrsehkvghrnhgvlhdrohhrghdprhgtph
-    htthhopegstghougguihhngheshhgrmhhmvghrshhprggtvgdrtghomh
-X-ME-Proxy: <xmx:GLJtaVP-FZaumHFuXl5HiPb_M95k9xVB-eMcFNrlS7YDuiZsfrFMXQ>
-    <xmx:GLJtaXqd2qGXKA8WADVZpPKvpB3YYjRC_OfV39wa_LerJnOb0cCF8Q>
-    <xmx:GLJtaf4uga64WAdrLRpuVIG4MD6kOsxAinRoCZi384IDqRtuiX_Dgw>
-    <xmx:GLJtadh5r-rLEcCz6cczkcqxccA4dqA-3pzd8QLXNrzAOtjkLTk3iA>
-    <xmx:GLJtaefUZ4e9Innv7uARva7GUZu9hGJV_8NXw7GTPOL21a9lgCipmVFU>
-Feedback-ID: iab3e480c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 18 Jan 2026 23:24:53 -0500 (EST)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1768815648; c=relaxed/simple;
+	bh=LFRNb1gEQo9FV1jLi6+eyd+fRn/YHv3OptpdwWFbVxE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Co2zlrnF00kEMQevar6omF+xgZraCt7Qx+2/ODDfzC9bix8lC/gl41EhNXN1BIfXSHMTe/6zV/6PrtQy5RVV6ktfU256FtkCIBmIIXDkFWEoE3RxG64J5izec0eMUTTefn4HOetOnkTguaEWouyL0QHwsioWIVpvssZXNAVLdz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=37uQbcQ1; arc=none smtp.client-ip=209.85.128.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
+Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-4801c1056c7so18620675e9.2
+        for <linux-crypto@vger.kernel.org>; Mon, 19 Jan 2026 01:40:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1768815646; x=1769420446; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Tir03/0eTjGqYap+VXkH/YQyday94uYso0Z0/c7DdeU=;
+        b=37uQbcQ1CKqDDkAdb1lkP+I8pU0UDUltDhqfAVpP5SPDcQYJlViZ3k3dBVEq0WO12m
+         cIQccXy65LtV3IQv6H2M1jM4r7qEmkHAgILU6jRxF63kky97kNdQvKiE44GmhP27jDpp
+         mg5IPaWxJXg92hXihjlaEAo8Qw6TGqtc8JdJ7B9zk6nXT4dS9isbTmf2IzKi0P6Em1UJ
+         cwuT6tb5G0EslSIjR9kl6/E8R3TvBamDcsup8v/Xbqlm6ntQhsM0hI7cJiG2zwppXp1x
+         lPQaGz1ZK0Q1/17NzOKTPoJhh8MZSRzU+xrLLg2G8MGBcIboKCU67EwBDWVmM1cNsRUD
+         m9oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768815646; x=1769420446;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tir03/0eTjGqYap+VXkH/YQyday94uYso0Z0/c7DdeU=;
+        b=iruXkmRE8Wqal8feDp09WkY3OBW0GHqw1OodKJfoInYgziFGlC2/GIaXOf/iiCnMfL
+         mtgcLA86EHCjsDFTOG3iVcmDkBW+UaNr1ZGturMQRW9EgNSa6gQ2LzlK1AWAehe0MhJW
+         TfYdajRIsUwzyIpRL13KBt6VgNdwfc4PI19fsflwhyPCBej0zydHRk0e+wvMY9yBTR0U
+         OVZWrrDjTBV5Hvwuba1EsNXtcQYZuSGLI0RNro/8E7XyZBnCn/DiYfUwg5LuD5bcx+qV
+         /HxmLhIO2oTPMoaLr0xRp2PdMIsbhA3Yykr257O2rAq8sDz1dN+vNijbSxy1b4ISIn1z
+         dgSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUSidUgI6QAPzVLbIwyIiZ1obvXYLj2pvbXHWX5OU4h6lDfJVNe8tjX9slLRyq0yTn+j01c5Y5C24bjUow=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvJw2HVZcsoKNa76sY2WZtGzx5+K9NEkvFZFtRj95vcP5VCD3c
+	ucxGZw8caVFFf5CWmO4tMYX8vNGxEA7x1v8n157iafG3H4JuHxIIwceH5Ko+LZRTxVK1cLY2Q4D
+	YFg==
+X-Received: from wmbil25.prod.google.com ([2002:a05:600c:a599:b0:46e:1e57:dbd6])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:358e:b0:470:fe3c:a3b7
+ with SMTP id 5b1f17b1804b1-4801e2f3083mr136239335e9.5.1768815645684; Mon, 19
+ Jan 2026 01:40:45 -0800 (PST)
+Date: Mon, 19 Jan 2026 10:05:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: NeilBrown <neilb@ownmail.net>
-To: "Benjamin Coddington" <bcodding@hammerspace.com>
-Cc: "Chuck Lever" <chuck.lever@oracle.com>, "Jeff Layton" <jlayton@kernel.org>,
- "Trond Myklebust" <trondmy@kernel.org>, "Anna Schumaker" <anna@kernel.org>,
- "Eric Biggers" <ebiggers@kernel.org>, "Rick Macklem" <rick.macklem@gmail.com>,
- linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] kNFSD Signed Filehandles
-In-reply-to: <8C67F451-980D-4739-B044-F8562B2A8B74@hammerspace.com>
-References: <cover.1768573690.git.bcodding@hammerspace.com>,
- <176861309837.16766.10645274004289940807@noble.neil.brown.name>,
- <8C67F451-980D-4739-B044-F8562B2A8B74@hammerspace.com>
-Date: Mon, 19 Jan 2026 15:24:49 +1100
-Message-id: <176879668905.16766.5840486885381698639@noble.neil.brown.name>
-Reply-To: NeilBrown <neil@brown.name>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.457.g6b5491de43-goog
+Message-ID: <20260119094029.1344361-1-elver@google.com>
+Subject: [PATCH tip/locking/core 0/6] compiler-context-analysis: Scoped init guards
+From: Marco Elver <elver@google.com>
+To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>, 
+	Christoph Hellwig <hch@lst.de>, Steven Rostedt <rostedt@goodmis.org>, Bart Van Assche <bvanassche@acm.org>, 
+	kasan-dev@googlegroups.com, llvm@lists.linux.dev, 
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 17 Jan 2026, Benjamin Coddington wrote:
-> On 16 Jan 2026, at 20:24, NeilBrown wrote:
->=20
-> > On Sat, 17 Jan 2026, Benjamin Coddington wrote:
-> >> The following series enables the linux NFS server to add a Message
-> >> Authentication Code (MAC) to the filehandles it gives to clients.  This
-> >> provides additional protection to the exported filesystem against fileha=
-ndle
-> >> guessing attacks.
-> >>
-> >> Filesystems generate their own filehandles through the export_operation
-> >> "encode_fh" and a filehandle provides sufficient access to open a file
-> >> without needing to perform a lookup.  An NFS client holding a valid
-> >> filehandle can remotely open and read the contents of the file referred =
-to
-> >> by the filehandle.
-> >
-> > A *trusted* NFS client holding a valid filehandle can remotely access
-> > the corresponding file without reference to access-path restrictions
-> > that might be imposed by the ancestor directories or the server exports.
->=20
-> Mind if I use your words next time?  I'm thinking that most of this
-> cover-letter should end up in the docs.
+Current context analysis treats lock_init() as implicitly "holding" the
+lock to allow initializing guarded members. This causes false-positive
+"double lock" reports if the lock is acquired immediately after
+initialization in the same scope; for example:
 
-Please do!
+	mutex_init(&d->mtx);
+	/* ... counter is guarded by mtx ... */
+	d->counter = 0;  /* ok, but mtx is now "held" */
+	...
+	mutex_lock(&d->mtx); /* warning: acquiring mutex already held */
 
-> >
-> > Iterating a 32 bit generation number would be expected to take a long
-> > time to succeed - except that they tend to cluster early.  Though in
-> > your example the msb is 1!
->=20
-> Trond posited that with a 1ms round-trip and 50 parallel GETATTRs it only
-> takes one day.
->=20
-> > Do you have exploit code which demonstrates unauthorised access to a
-> > given inode number?  What runtime?  Could attack-detection in the server
-> > be a simple effective counter-measure?  Should we do that anyway?
->=20
-> Yes, its a modification of t_open_by_handle_at.c example program in the
-> open_by_handle_at(2) man page.  On my single system NFS client and server
-> with a local mount, I averaged 16usec per open, and discovered my target
-> filehandle in less than an hour.  I didn't have any network latency to worry
-> about, but I think it still shows its possible and a determined attacker can
-> do it.
+This series proposes a solution to this by introducing scoped init
+guards which Peter suggested, using the guard(type_init)(&lock) or
+scoped_guard(type_init, ..) interface. This explicitly marks init scope
+where we can initialize guarded members. With that we can revert the
+"implicitly hold" after init annotations, which allows use after
+initialization scope as follows:
 
-This information would be useful to include in the cover letter/documentation.
+	scoped_guard(mutex_init, &d->mtx) {
+		d->counter = 0;
+	}
+	...
+	mutex_lock(&d->mtx); /* ok */
 
->=20
-> The server could be modified to notice elevated counts of error returns for
-> a client and then try to notify about it.   But, I don't think it will be
-> simple - I imagine it would need a lot of tunable (how many failed fh, at
-> what rate..  etc) because you need to tune the system to make a signal from
-> the noise of regular operations and returns.  That tuning can be worked
-> around by a very determined attacker.  You end up in a behavior
-> detection/modification feedback loop and the server's not guaranteed to
-> catch everything.  Still it would be another layer of defense-in-depth that
-> would have value.
+Note: Scoped guarded initialization remains optional, and normal
+initialization can still be used if no guarded members are being
+initialized. Another alternative is to just disable context analysis to
+initialize guarded members with `context_unsafe(var = init)` or adding
+the `__context_unsafe(init)` function attribute (the latter not being
+recommended for non-trivial functions due to lack of any checking):
 
-I would like to explore this, at least for the defense-in-depth
-rationale.  Maybe it would also supply some protection wehn sign_fh
-isn't enabled.
+	mutex_init(&d->mtx);
+	context_unsafe(d->counter = 0);  /* ok */
+	...
+	mutex_lock(&d->mtx);
 
-We would need to monitor the result of exportfs_decode_fh_raw() for
-stale vs non-stale, and if the proportion of stale filehandles (on a
-given export) exceeds some low threshold (1%?) over a modest time period
-(5 minutes?) then .... what?
+This series is an alternative to the approach in [1]:
 
-I don't think a hard fail would be a good idea, but maybe serialise
-future requests from that auth_domain and impose a delay on any stale
-filehandles until the proportion drops below some lower threshold??
+   * Scoped init guards (this series): Sound interface, requires use of
+     guard(type_init)(&lock) or scoped_guard(type_init, ..) for guarded
+     member initialization.
 
-Does anyone else thinks this would be worth pursuing?
+   * Reentrant init [1]: Less intrusive, type_init() just works, and
+     also allows guarded member initialization with later lock use in
+     the same function. But unsound, and e.g. misses double-lock bugs
+     immediately after init, trading false positives for false negatives.
 
-Thanks,
-NeilBrown
+[1] https://lore.kernel.org/all/20260115005231.1211866-1-elver@google.com/
+
+Marco Elver (6):
+  cleanup: Make __DEFINE_LOCK_GUARD handle commas in initializers
+  compiler-context-analysis: Introduce scoped init guards
+  kcov: Use scoped init guard
+  crypto: Use scoped init guard
+  tomoyo: Use scoped init guard
+  compiler-context-analysis: Remove __assume_ctx_lock from initializers
+
+ Documentation/dev-tools/context-analysis.rst | 30 ++++++++++++++++++--
+ crypto/crypto_engine.c                       |  2 +-
+ crypto/drbg.c                                |  2 +-
+ include/linux/cleanup.h                      |  8 +++---
+ include/linux/compiler-context-analysis.h    |  9 ++----
+ include/linux/local_lock.h                   |  8 ++++++
+ include/linux/local_lock_internal.h          |  4 +--
+ include/linux/mutex.h                        |  4 ++-
+ include/linux/rwlock.h                       |  3 +-
+ include/linux/rwlock_rt.h                    |  1 -
+ include/linux/rwsem.h                        |  6 ++--
+ include/linux/seqlock.h                      |  6 +++-
+ include/linux/spinlock.h                     | 17 ++++++++---
+ include/linux/spinlock_rt.h                  |  1 -
+ include/linux/ww_mutex.h                     |  1 -
+ kernel/kcov.c                                |  2 +-
+ lib/test_context-analysis.c                  | 22 ++++++--------
+ security/tomoyo/common.c                     |  2 +-
+ 18 files changed, 80 insertions(+), 48 deletions(-)
+
+-- 
+2.52.0.457.g6b5491de43-goog
+
 
