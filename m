@@ -1,144 +1,182 @@
-Return-Path: <linux-crypto+bounces-20108-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20116-lists+linux-crypto=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-crypto@lfdr.de
 Delivered-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF8AD3A2F8
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 10:29:00 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD1DD3A82B
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 13:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2AF0E303C5BD
-	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 09:27:38 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E37E63002174
+	for <lists+linux-crypto@lfdr.de>; Mon, 19 Jan 2026 12:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A913559D9;
-	Mon, 19 Jan 2026 09:27:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E87359F85;
+	Mon, 19 Jan 2026 12:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="qzI+jUV4"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MnfZAd6J"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BC63559DC;
-	Mon, 19 Jan 2026 09:27:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359483596EB;
+	Mon, 19 Jan 2026 12:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768814844; cv=none; b=W0KGtznTlMZoXi5ynPIvad+T8TX1h/0cg8R8rb+eU5TjSMmDaAX7qoWlSMrgaR0jIBDUzB64+rNGua3OnpZa+PMhHmq/ckE6V+enGF179plfzJCfprLrtWLH6TeLk3l8TtGzxf8SlLBvvntOT1v+kHJcD545zF/aH6ksab72Yww=
+	t=1768824742; cv=none; b=jD6H1nly2DSAOuHFUCURHp4Y8K3k//f14CtYMQkZ2s7Y4biZqdYLRecM8Hco0LSWnnCUY2a4ny8JQqUmphnxl8YGpIw3M0ZqE6TAM8qNvHAW7up75hNTxj8+r1RHDpOXG4UMUILYHC9ZWUpbM5+ZnzhYABG7FMAlVAakcN1XliE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768814844; c=relaxed/simple;
-	bh=FnDqYCqY4eMQu1KfJO2diG09+hGAQVkPBUCJXUeIZ0A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=A8pTliKXcsBGELtl96Dp9tYPAWppxTrrkUtzXBtWzJshG6ZdtyukpgRfiRWEYtr/jnwUk1k4lIR7yAq2+lH6Olls78v8mvTN5RYC8yRuatjQSEHb+U00CxtnAzjfhZGp/xXB0AUKzQhmoYlDRx3XpidkrwJDH8A9UthnDLAGwsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=qzI+jUV4; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1768814842; x=1800350842;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FnDqYCqY4eMQu1KfJO2diG09+hGAQVkPBUCJXUeIZ0A=;
-  b=qzI+jUV4F4r188AbBTHdpLNnjp1d8gSJoR3wif7ABt6XpEmfDpbNSJdP
-   CYUxz4vHcOZpqvThGgUwjtsX1Z0Xp+R2YuM88k+MbX75KhJsrWmQ8fyA7
-   a35ZK54PLMnDt1p4VsC0nwtpiDtbNNuN3H/qDKkDaCb3d8sp4yBjisL/1
-   eCK0hKTrwfstcHptvJGebQpIgTWe2f0fcWOsx96GRGsQW4M5CzrfJfTbz
-   6PlKYgldruDc6rncmL7lw5pX0KJ2Utd6UTeDTpD48f3BL2fWDjiwETQtl
-   ox2Wqw0zwb8CpSkmjZEiObe1Aj6W2OAdKrpDmHlQSUi+YGmKbnKzgvlxJ
-   w==;
-X-CSE-ConnectionGUID: i0zijf1nTfiJcIl2a1rGow==
-X-CSE-MsgGUID: 5Vc33klYRPeu5OUwKZF+zg==
-X-IronPort-AV: E=Sophos;i="6.21,237,1763449200"; 
-   d="scan'208";a="219379894"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Jan 2026 02:27:15 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.58; Mon, 19 Jan 2026 02:26:44 -0700
-Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.58 via Frontend
- Transport; Mon, 19 Jan 2026 02:26:40 -0700
-Message-ID: <bc019bd8-34d3-420e-8519-09700437fb01@microchip.com>
-Date: Mon, 19 Jan 2026 10:26:39 +0100
+	s=arc-20240116; t=1768824742; c=relaxed/simple;
+	bh=5u9c1V+dg8IJ067D8G/PQyCBLwEK5tVx2fI/lU9yh4g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YKE4VbQhwKMCezWMVWFtOMViR9XcCkt3euDaInugCYwv6TEGN7+bHhvb1xKQbgONRX5qsKuNjEbhCWSeL52cpStdn60Xd8Q7Tj/RWBDuiUKUKRkL4YKn0r4LGhB6PZzUMsPOrCe69sR3zU4AkRu2UCXJmdbCx1zaTSRBAg4YT7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MnfZAd6J; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60ILlD69027362;
+	Mon, 19 Jan 2026 12:12:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=mU2qTNeVPMeZ9eEF2dj3vCu8GXcgQX96+7u8gPQI0
+	SU=; b=MnfZAd6Jq04CkOoOygqAemJzYLW5gQvGt245xaTYyakG0XfS6zAPjzi7u
+	4zQ5eXOhXoVesxglE35cR4cRHUX+Wlx7s1JdB2x3voZxubQo5g7CBnYaGYG7ncvU
+	HVpTDFpyxfj6r/97/jX9Me2/Mrh8x8eGRxykSwlib32RyNLJSAipyqLbA0995d98
+	Smpr4JplKtVFUTiSvk386iggdFrZJp5PXp5tcBpfjVYl4I6XzLgIHf+bWsadaId+
+	Hwhl2wGaH3ILYczEgrarcs5hNhidZBO6ag1YNJrtKgDVbSsLe/hLji/WXXqA6SH+
+	bFZ4zfwbgY4XqhAvluAMWSK2oaqcA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4br0uf7jtu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Jan 2026 12:12:15 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60JC6jfY007456;
+	Mon, 19 Jan 2026 12:12:15 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4br0uf7jtk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Jan 2026 12:12:15 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60JA1wfp024610;
+	Mon, 19 Jan 2026 12:12:14 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4brxarcx5j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Jan 2026 12:12:14 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60JCCAP547645132
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 Jan 2026 12:12:10 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 45E7220043;
+	Mon, 19 Jan 2026 12:12:10 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0CE5F20040;
+	Mon, 19 Jan 2026 12:12:10 +0000 (GMT)
+Received: from ibm.com (unknown [9.111.163.233])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 19 Jan 2026 12:12:09 +0000 (GMT)
+From: Holger Dengler <dengler@linux.ibm.com>
+To: Eric Biggers <ebiggers@kernel.org>,
+        David Laight <david.laight.linux@gmail.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>, "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Holger Dengler <dengler@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v2 0/1] lib/crypto: tests: KUnit test-suite for AES
+Date: Mon, 19 Jan 2026 13:12:09 +0100
+Message-ID: <20260119121210.2662-1-dengler@linux.ibm.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 9/9] crypto: atmel: Use dmaengine_prep_config_single()
- API
-To: Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>, Manivannan
- Sadhasivam <mani@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?=
-	<kwilczynski@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Bjorn
- Helgaas <bhelgaas@google.com>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg
-	<sagi@grimberg.me>, Chaitanya Kulkarni <kch@nvidia.com>, Herbert Xu
-	<herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea
-	<claudiu.beznea@tuxon.dev>, Koichiro Den <den@valinux.co.jp>, Niklas Cassel
-	<cassel@kernel.org>
-CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-	<mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-	<linux-crypto@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<imx@lists.linux.dev>
-References: <20260105-dma_prep_config-v3-0-a8480362fd42@nxp.com>
- <20260105-dma_prep_config-v3-9-a8480362fd42@nxp.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Content-Language: en-US, fr
-Organization: microchip
-In-Reply-To: <20260105-dma_prep_config-v3-9-a8480362fd42@nxp.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XkADxooyrlSRI-PE07fbsG9i_x3nMtwn
+X-Proofpoint-ORIG-GUID: QgSSW2wn3xCzW5AuZ-eJ5NED4TQfXp0j
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE5MDA5NyBTYWx0ZWRfXwOnQBHvFbdjG
+ zTeSnZHAM0Oh8bTH+ghCngp+al/kmCEmzWT/Oj1/iwwzlvveIcftRZIEnCJ4ZyX3yEp6Db3Qe20
+ xulA7KPUGJ+diSJF+lzG189NGUx+9IGsiSuAu11jo5VzZz3wWZkbyoMqApCfkI1Joba+0bu8Uit
+ voozQTpzR0pN9xr+qBKiiydFOZFswoxa7tEXSEjrRmjqINuET1OnB8PHNcTkfqikEulBB7uOreQ
+ KGgRQkotz2RFY3jyxO/JNQ/d564q05g1n4hYu9wyGRzugwkXYHpRg8eLaBUHO79HQRTYqAZyOqO
+ BYIvCuXBeO2GIKpJtbW+ZQhm+FE24iOeLoUonix1FL64xQxQ7jzSK9xLj5S0GL7pRZUqsakIipo
+ qncoFbVpuEpYY6XkEVbhWraRSQSUl9FrdEcmTpKNUmJVNGzBhju7DecKK8aqeuCqTzrK4bVMmuU
+ z45+5kHimAWZjl47jvQ==
+X-Authority-Analysis: v=2.4 cv=bopBxUai c=1 sm=1 tr=0 ts=696e1f9f cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=26R-6R9DoGBErhHyASgA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-19_02,2026-01-19_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 bulkscore=0 adultscore=0 suspectscore=0 impostorscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2601150000
+ definitions=main-2601190097
 
-On 05/01/2026 at 23:46, Frank Li wrote:
-> Using new API dmaengine_prep_config_single() to simple code.
-> 
-> No functional change.
-> 
-> Tested-by: Niklas Cassel <cassel@kernel.org>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+The following patch adds a kunit tests for the aes library.
 
-Looks good to me:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Changes since v1 [1]:
+- move information from cover-letter to commit message
+- remove unused struct buf
+- add reference to the KAT source
+- restructure the benchmark
+  - reduce the number of iterations for warm-up and benchmark
+  - measure each aes operation and take the minimal measurement for the
+    bandwidth calculation
+  - normalize bandwidth to MB (power of 10) instead of MiB (power of 2)
 
-Thanks, best regards,
-   Nicolas
+Changes since RFC [2]:
+- reorder entries in Kconfig/Makefile alphabetically
+- fail (instead of skip) in case of failures in key preparation
+- replace local constant definitions
+- replace macros with helper functions
 
-> ---
->   drivers/crypto/atmel-aes.c | 10 +++-------
->   1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
-> index 3a2684208dda9ee45d71b4bc2958be293a4fb6fe..e300672ffd7185b0f5bf356c2376681537047def 100644
-> --- a/drivers/crypto/atmel-aes.c
-> +++ b/drivers/crypto/atmel-aes.c
-> @@ -795,7 +795,6 @@ static int atmel_aes_dma_transfer_start(struct atmel_aes_dev *dd,
->          struct dma_slave_config config;
->          dma_async_tx_callback callback;
->          struct atmel_aes_dma *dma;
-> -       int err;
-> 
->          memset(&config, 0, sizeof(config));
->          config.src_addr_width = addr_width;
-> @@ -820,12 +819,9 @@ static int atmel_aes_dma_transfer_start(struct atmel_aes_dev *dd,
->                  return -EINVAL;
->          }
-> 
-> -       err = dmaengine_slave_config(dma->chan, &config);
-> -       if (err)
-> -               return err;
-> -
-> -       desc = dmaengine_prep_slave_sg(dma->chan, dma->sg, dma->sg_len, dir,
-> -                                      DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-> +       desc = dmaengine_prep_config_sg(dma->chan, dma->sg, dma->sg_len, dir,
-> +                                       DMA_PREP_INTERRUPT | DMA_CTRL_ACK,
-> +                                       &config);
->          if (!desc)
->                  return -ENOMEM;
-> 
-> 
-> --
-> 2.34.1
-> 
+[1] https://lore.kernel.org/linux-crypto/20260115183831.72010-1-dengler@linux.ibm.com
+[2] https://lore.kernel.org/linux-crypto/20260114153138.4896-1-dengler@linux.ibm.com
+
+Example output of the aes_kunit test-suite:
+
+[  316.380919] KTAP version 1
+[  316.380923] 1..1
+[  316.380964]     KTAP version 1
+[  316.380965]     # Subtest: aes
+[  316.380966]     # module: aes_kunit
+[  316.380968]     1..9
+[  316.381071]     ok 1 test_aes128_encrypt
+[  316.381129]     ok 2 test_aes128_decrypt
+[  316.381186]     ok 3 test_aes192_encrypt
+[  316.381248]     ok 4 test_aes192_decrypt
+[  316.381309]     ok 5 test_aes256_encrypt
+[  316.381367]     ok 6 test_aes256_decrypt
+[  316.381411]     # benchmark_aes128: enc (len=16): 500 MB/s
+[  316.381414]     # benchmark_aes128: dec (len=16): 500 MB/s
+[  316.381447]     ok 7 benchmark_aes128
+[  316.381491]     # benchmark_aes192: enc (len=16): 500 MB/s
+[  316.381494]     # benchmark_aes192: dec (len=16): 484 MB/s
+[  316.381529]     ok 8 benchmark_aes192
+[  316.381572]     # benchmark_aes256: enc (len=16): 484 MB/s
+[  316.381574]     # benchmark_aes256: dec (len=16): 484 MB/s
+[  316.381608]     ok 9 benchmark_aes256
+[  316.381610] # aes: pass:9 fail:0 skip:0 total:9
+[  316.381612] # Totals: pass:9 fail:0 skip:0 total:9
+[  316.381614] ok 1 aes
+
+Holger Dengler (1):
+  lib/crypto: tests: Add KUnit tests for AES
+
+ lib/crypto/tests/Kconfig        |  12 +++
+ lib/crypto/tests/Makefile       |   1 +
+ lib/crypto/tests/aes-testvecs.h |  77 ++++++++++++++++
+ lib/crypto/tests/aes_kunit.c    | 150 ++++++++++++++++++++++++++++++++
+ 4 files changed, 240 insertions(+)
+ create mode 100644 lib/crypto/tests/aes-testvecs.h
+ create mode 100644 lib/crypto/tests/aes_kunit.c
+
+
+base-commit: 47753e09a15d9fd7cdf114550510f4f2af9333ec
+-- 
+2.51.0
 
 
