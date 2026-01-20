@@ -1,164 +1,125 @@
-Return-Path: <linux-crypto+bounces-20184-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20185-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KEDfHLutb2nxEwAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20184-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 17:30:51 +0100
+	id YJ3BHRm4b2kBMQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20185-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:15:05 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A17747903
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 17:30:51 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE97A485FB
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:15:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 60F7680A11D
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 16:10:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BC378965FD0
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 16:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EF246AECC;
-	Tue, 20 Jan 2026 15:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A85477E30;
+	Tue, 20 Jan 2026 15:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RmIXS04L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tda9PqQf"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB31466B72;
-	Tue, 20 Jan 2026 15:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10D11C01;
+	Tue, 20 Jan 2026 15:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768924228; cv=none; b=AWdD3tahAExMNQLNYLVhdUevh+2zJkvLNsbb9ZC++QH9z/T1YjiN4OQJD0iEAyw3cIdN7Qr4naxTgAdhOslrxTzwcKTBL+cSRTAX4zkMdnYaCS69i6jGx5zEkv1Eit1bKNe5xWk720FMx+QL+UUK/BK1aAw+m/EmP7+sEyJAHH8=
+	t=1768924430; cv=none; b=TcuZoxpRafURRHCXlCud8gzxMfX06LGlz7oBkt5yrTDcCJ94BsyLQEeB7IYaOMfJfCkVyz9lgU6sZTLAqH4AbHsrCcFrxo9zpdNcY2D+KCQ6/l/JoRlKvC4QeZCj0lQTJQw9zGxlRL1w2t6uMjlbV3s0b7C/XMr85qlATfPsDvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768924228; c=relaxed/simple;
-	bh=LKRmFLYmVpfCIH+4mOxV/Sn0Uf+Kg1tNr4flB+0XpUk=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=B2nFZRF9eKRTAyFDzR7wh9xPC4I50xhdisCs6nte+nOIw4bscUBeUhQhF0RM5gVZs3ftrOjYUdijfZKY/UHW6/c6kDE4mloJE6afs/LsFyw7WxMY5mR1Jq1J2Kw0HnleGGn7OtmkxgOVBPx4FYiu0kBXjkdFTxDB6lamyG05Rp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RmIXS04L; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768924225; x=1800460225;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=LKRmFLYmVpfCIH+4mOxV/Sn0Uf+Kg1tNr4flB+0XpUk=;
-  b=RmIXS04LpsE9Ee0++d7rDyF7r5CMNf/FbKBf28ILhlSxY1ejxQbevoY3
-   ngrl2GJRXuzrmFE0nNVNIFe0B8STXNHcHE/qvkya3NLJwVsST9P/axQtg
-   e1v/pFIAxHN9koBfywZ+M8jyBo+LdtNZwg0ZVfItxScu/7Z5XH4PeHLhp
-   DrGBVjmupRvjiZvX9G7JxM6Dd9PFm+S5IIKKK4hv7gMFzeJLWQvazpIDH
-   pUSaNadRbeDArvsJapnfyIvgbk3FnILV1ixdZwGCzazBMyKv/uhHIccJH
-   RzSR7V+5oUdeAe9N6rzDf0WmNaQ2zN6/q/SnAtfi/AdtiJ6LYGhfj4tJ3
-   A==;
-X-CSE-ConnectionGUID: CeSPzKs7TTqaq336pfAoKQ==
-X-CSE-MsgGUID: 75Qn1GiuQUSC1SLH7cohbQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11677"; a="74004267"
-X-IronPort-AV: E=Sophos;i="6.21,240,1763452800"; 
-   d="scan'208";a="74004267"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2026 07:50:24 -0800
-X-CSE-ConnectionGUID: so59NhtSQ6SjR7eCoEl13A==
-X-CSE-MsgGUID: XdbfPwMcRhOWpT2nMsOZ3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,240,1763452800"; 
-   d="scan'208";a="229091953"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.10])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2026 07:50:20 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 20 Jan 2026 17:50:17 +0200 (EET)
-To: "Mario Limonciello (AMD)" <superm1@kernel.org>
-cc: Tom Lendacky <thomas.lendacky@amd.com>, 
-    Herbert Xu <herbert@gondor.apana.org.au>, 
-    Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
-    Rijo Thomas <Rijo-john.Thomas@amd.com>, John Allen <john.allen@amd.com>, 
-    "David S . Miller" <davem@davemloft.net>, Hans de Goede <hansg@kernel.org>, 
-    "open list:AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER" <linux-crypto@vger.kernel.org>, 
-    "open list:AMD PMF DRIVER" <platform-driver-x86@vger.kernel.org>, 
-    Lars Francke <lars.francke@gmail.com>, Yijun Shen <Yijun.Shen@dell.com>, 
-    Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
-Subject: Re: [PATCH v6 0/5] Fixes for PMF and CCP drivers after S4
-In-Reply-To: <20260116041132.153674-1-superm1@kernel.org>
-Message-ID: <93beb504-e6f0-00f5-d974-6293f51839d5@linux.intel.com>
-References: <20260116041132.153674-1-superm1@kernel.org>
+	s=arc-20240116; t=1768924430; c=relaxed/simple;
+	bh=2lyQ956y/cjzj/E2Ndhkr/nFnx1nEeiq4PAxUbapuuU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=ZVJIHOfGIoHuSYYBKcFyBvCQdYwBWhBItxuZBWeZecRtSMsT2wn2NVAyAM6EM9MicQ5PFAJCq+9k0wiX3UWVtNQtguWVnPwyoj3B+DBJtaRLdBPZdsxj1xnlR7I1WjorqAmkoUHzPyeyOTT6m9tOm7AwR3hEZF3XiXrtS7+iVk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tda9PqQf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DF38C2BCB6;
+	Tue, 20 Jan 2026 15:53:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768924430;
+	bh=2lyQ956y/cjzj/E2Ndhkr/nFnx1nEeiq4PAxUbapuuU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=tda9PqQf6mdU5ZN2ASc03cnbHIaazXkfER9jbCeHOVDKmaYXcnps15COS5KzH9sk9
+	 q8b4Aa0lwNs26Nrq6ObHD2+UYOeAUb+PmoWGV4v5Rf0qj/hRiRV4irKDn7SxXLsI+X
+	 A4C8phW1WNMqXH4vQKTyAJm2LWz5zZCMnVB4HfGGA+q2YSbruVNNX+9c3/nu6Xi8ZW
+	 7biB1Ph8RRFoUdg7mXSUjARCaQhrJ3IcDgm92qSiY8USKG5kSK4pQSSiSljFezBN7H
+	 tatat8ZmbUyGWWnHJ2hZCQ3YnD6MOGK2P+BYCAfmLdIcWadbT8fFTEyV7Dv9shvaDl
+	 ZSEpuqTQeljdA==
+From: Lee Jones <lee@kernel.org>
+To: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
+ claudiu.beznea@tuxon.dev, herbert@gondor.apana.org.au, davem@davemloft.net, 
+ vkoul@kernel.org, andi.shyti@kernel.org, lee@kernel.org, 
+ andrew+netdev@lunn.ch, edumazet@google.com, kuba@kernel.org, 
+ pabeni@redhat.com, linusw@kernel.org, Steen.Hegelund@microchip.com, 
+ daniel.machon@microchip.com, UNGLinuxDriver@microchip.com, 
+ olivia@selenic.com, radu_nicolae.pirea@upb.ro, richard.genoud@bootlin.com, 
+ gregkh@linuxfoundation.org, jirislaby@kernel.org, broonie@kernel.org, 
+ lars.povlsen@microchip.com, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org, 
+ linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, 
+ Robert Marko <robert.marko@sartura.hr>
+Cc: luka.perkov@sartura.hr, Conor Dooley <conor.dooley@microchip.com>
+In-Reply-To: <20251229184004.571837-3-robert.marko@sartura.hr>
+References: <20251229184004.571837-3-robert.marko@sartura.hr>
+Subject: Re: (subset) [PATCH v4 02/15] dt-bindings: mfd:
+ atmel,sama5d2-flexcom: add microchip,lan9691-flexcom
+Message-Id: <176892442293.2297977.2838802915163703902.b4-ty@kernel.org>
+Date: Tue, 20 Jan 2026 15:53:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.15-dev-52d38
 X-Spamd-Result: default: False [-0.46 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[amd.com,gondor.apana.org.au,davemloft.net,kernel.org,vger.kernel.org,gmail.com,dell.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20184-lists,linux-crypto=lfdr.de];
-	TO_DN_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20185-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[intel.com,none];
-	DKIM_TRACE(0.00)[intel.com:+];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	RCPT_COUNT_TWELVE(0.00)[40];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ilpo.jarvinen@linux.intel.com,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[lee@kernel.org,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-crypto];
 	MID_RHS_MATCH_FROM(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,linux.intel.com:mid,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 3A17747903
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,dt,netdev];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: DE97A485FB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 15 Jan 2026, Mario Limonciello (AMD) wrote:
+On Mon, 29 Dec 2025 19:37:43 +0100, Robert Marko wrote:
+> Add binding documentation for Microchip LAN969x.
+> 
+> 
 
-> Lars Francke reported that the PMF driver fails to work afer S4 with:
->   ccp 0000:c3:00.2: tee: command 0x5 timed out, disabling PSP
-> 
-> This is because there is a TA loaded to the TEE environment that
-> is lost during S4.  The TEE rings need to be reinitialized and the
-> TA needs to be reloaded.
-> 
-> This series adds those flows to the PMF and CCP drivers.
-> 
-> v5->v6:
->  * Fix Tom's feedback on patch 3/5
-> 
-> Mario Limonciello (AMD) (4):
->   crypto: ccp - Declare PSP dead if PSP_CMD_TEE_RING_INIT fails
->   crypto: ccp - Add an S4 restore flow
->   crypto: ccp - Factor out ring destroy handling to a helper
->   crypto: ccp - Send PSP_CMD_TEE_RING_DESTROY when PSP_CMD_TEE_RING_INIT
->     fails
-> 
-> Shyam Sundar S K (1):
->   platform/x86/amd/pmf: Prevent TEE errors after hibernate
-> 
->  drivers/crypto/ccp/psp-dev.c          | 11 +++++
->  drivers/crypto/ccp/sp-dev.c           | 12 ++++++
->  drivers/crypto/ccp/sp-dev.h           |  3 ++
->  drivers/crypto/ccp/sp-pci.c           | 16 ++++++-
->  drivers/crypto/ccp/tee-dev.c          | 56 ++++++++++++++++++------
->  drivers/crypto/ccp/tee-dev.h          |  1 +
->  drivers/platform/x86/amd/pmf/core.c   | 62 ++++++++++++++++++++++++++-
->  drivers/platform/x86/amd/pmf/pmf.h    | 10 +++++
->  drivers/platform/x86/amd/pmf/tee-if.c | 12 ++----
->  include/linux/psp.h                   |  1 +
->  10 files changed, 161 insertions(+), 23 deletions(-)
+Applied, thanks!
 
-I've applied this to the review-ilpo-next branch (and reorganized the 
-NPU metrics to come after this series as these seemed to have a context 
-conflict).
+[02/15] dt-bindings: mfd: atmel,sama5d2-flexcom: add microchip,lan9691-flexcom
+        commit: 41d1f3cf1f52c75f72ce1a3e2f2ee82e7c6eb59a
 
--- 
- i.
+--
+Lee Jones [李琼斯]
 
 
