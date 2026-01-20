@@ -1,224 +1,251 @@
-Return-Path: <linux-crypto+bounces-20177-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20179-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CJJrHQS/b2kOMQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20177-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:44:36 +0100
+	id sNgxHYDDb2lsMQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20179-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 19:03:44 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF97248C50
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:44:35 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBE874907F
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 19:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5DED8727195
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 15:07:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1F1C79050EF
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 15:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B6D46AEE4;
-	Tue, 20 Jan 2026 14:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD46746AF2E;
+	Tue, 20 Jan 2026 14:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z49z8EHS"
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="UkIRZ1G4";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="Ujhyk9sQ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEB046AECB
-	for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 14:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F135C44B678
+	for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 14:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768920738; cv=none; b=PUhtCpdUxSCD3iyoymfimzIhdeH3atOJc+suyAlZJ7KBlxwT0ivY1wXMPgmjZUhFb0TXOlsctTlto10FCs2tzYWEtVpvLilGE3hkETtt35/kxcGPNnrJPmMyL5B9E6dzEw+OAA0G3IZZYSH8ktXZZ+kosd69e3CnA3d4fXWl/OI=
+	t=1768920770; cv=none; b=YkV5jtgPSQZU4Qu/1WuQYyMpKrlWIaNVDUSph57BGm4k/lauHw+PbI+JefmpU3yu+Qs5we5s3KJHQt9sXlKo2IHXS67Nau5bCl9thiGjOP4AThZJCMbOqbBYpKEBk/19Lfql83CpsnLaztF1WYJmyVJwXti81lGHW4ikwPth6G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768920738; c=relaxed/simple;
-	bh=h7knfspR3Ir1UVvoWpg+bi9rqNy2bB9eq2BYBUvGfGs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uVg/gfq+Ez1/xem7x+jLvAK4zsAXxg7C/+kZtOAhTaJUECmrdtEi7ytEbsYEiIcCt0jMFsyRKcOvD62EcXpUZrCezn+MHQet2G1T3UlFGmosywYCn91V8kpvCymBZAaL+hmXYqJ6wPHYeIJbYiIDQg/+lwvE4zw+NK3WYehWs9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z49z8EHS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768920736;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9qZO8xa9s9Et02ra1tPoQRn1/avY/YJzUAJ+C3oYdYM=;
-	b=Z49z8EHSOQEQag5glIFimJWC/Q4m5FXlhWj1YEXiXKakmsiM1mcmYgCugrK1x2BdXAp4af
-	BaQIID1ACAD3+GtaDwjj2MB/YnKP9tsRUg1iX20l1A0tdpOZOLNChaWGX1OuOnQsnlYijZ
-	looyQhdT8QJyQt07L+V5yRE1dIS8fj4=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-281-bCDKbSl1PfC7z-icvcOssA-1; Tue,
- 20 Jan 2026 09:52:14 -0500
-X-MC-Unique: bCDKbSl1PfC7z-icvcOssA-1
-X-Mimecast-MFC-AGG-ID: bCDKbSl1PfC7z-icvcOssA_1768920732
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 89ACE1956058;
-	Tue, 20 Jan 2026 14:52:12 +0000 (UTC)
-Received: from warthog.procyon.org.uk.com (unknown [10.42.28.2])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 46F5219560AB;
-	Tue, 20 Jan 2026 14:52:07 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: Lukas Wunner <lukas@wunner.de>,
-	Ignat Korchagin <ignat@cloudflare.com>
-Cc: David Howells <dhowells@redhat.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Daniel Gomez <da.gomez@kernel.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Stephan Mueller <smueller@chronox.de>,
-	linux-crypto@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v13 11/12] x509, pkcs7: Limit crypto combinations that may be used for module signing
-Date: Tue, 20 Jan 2026 14:50:57 +0000
-Message-ID: <20260120145103.1176337-12-dhowells@redhat.com>
-In-Reply-To: <20260120145103.1176337-1-dhowells@redhat.com>
-References: <20260120145103.1176337-1-dhowells@redhat.com>
+	s=arc-20240116; t=1768920770; c=relaxed/simple;
+	bh=YblBCSIO+Ze+wW74gpCOTjlIUF9aS7ZvTbmSmHD67Bc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kcRpFnbtvHq2e0aIAhggYPyad62a4e34GJDmbcBYv8rfVqNfJ6A9gL94ZT58JDe4AC2idAUeYT3VTZB+PORp6ip/5be74qd6RjsKXe+7KnpPJnGGDM4CzV/w7vifM3pdVE7w3JBcCmnQNPnrQEeYE95h+35ntz9xQS7o23tl0Xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=UkIRZ1G4; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=Ujhyk9sQ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60KEk9x01408547
+	for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 14:52:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=qcppdkim1; bh=ZgHrGhKoJPUcO1Zkr5HE9E2/
+	XP1B6ll6VlqYUNqZux8=; b=UkIRZ1G4RJdh5FiKLLcXcE0ptLhxgnPZFJhJFJQz
+	7hrUlHbmMPf2cW5yBpGiUPBDX5Ge6EqjecjwzbqHEKX14OqtaCvwOdXBYFiztJCS
+	aF15JpCL9iyIFsaixCtS5WsRkx088RP0onUTvXgS9mvtjp1Kv+AnnVCRe6CLdQg1
+	APiwP173WVJ9Q0umBxqK9fi4qmPWbI6e2NUzW0U+p9XKTZ+xki2LROgq13xTMy2S
+	ac/Ch6KYd2FC7KstduBhpODXeoAaxNsWr0RvfHMaIokqdEIiB1oPEQ7EcpDNcQ6R
+	KAgZezL6FsOcVsWxSyG2XkPU4PMHojo0FmERpZ6OpO+FDw==
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com [209.85.222.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bt4y2sdfj-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 14:52:48 +0000 (GMT)
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-8c52c67f65cso137101085a.1
+        for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 06:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1768920767; x=1769525567; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZgHrGhKoJPUcO1Zkr5HE9E2/XP1B6ll6VlqYUNqZux8=;
+        b=Ujhyk9sQhR+1vu0e+S74gaRtvWCvQJ/+eeK2Zs2UK3hitZHPLeKeaZSMO7LRyPF+j3
+         /7xeD92u5w8/e66fm0CwUgne0faURqNOh8yWLr3rFU4+WNg3u42+gWpAPNgNbmHOsvva
+         hl04A/Kfyi+SHS6oQ4eRL9bu0juJJBjHcXwQI6Zrg1DFOGxxQH+t7o9abqQmJheA3mVp
+         09hj3wEV3w6/oK58S1GQS1vzqRJihOF8wikOMyWYC0DSXWPAUHxoZ7sm5wXqAEHn1Qxx
+         Ec+ZSLj53FpwN3xGgnUQwEM7+wBQVEdG7rPhpgajfaYN9eQWtcz82OMWUaQ82hPYqOKP
+         1znw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768920767; x=1769525567;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZgHrGhKoJPUcO1Zkr5HE9E2/XP1B6ll6VlqYUNqZux8=;
+        b=p9XM+6T/byRE0lMqkrkjHMVSyCgtp+Do2KD3fl9Kd9uurXsQabhBl9RVe/FFSUSbmV
+         IYso1An+wJTo6NvscUmhUP1e0AftJQw5/Lj/UiAHQWi+6SbQ2aeGPkIiUoR8g6L+wK+n
+         CVrRnPbQqx8bwHuusl0JGWjkNONPhTCZPeKd0zIwL5c04Zo0c7ymGsEwO5umPoXy+Wqh
+         t/QNyEY/B0Cxs0jis/d8+I9ZzXxbBNoXuvTkJezBPtkZ/Ld0Tv/A1orZN0NB/UK9Jnpo
+         6LVgjgxLLjFgXCjERU+1hLS/oqTxicrWJVqkv/kynTkzrEeRgmibSO58E8qYYyhqWIqO
+         X5Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCXUaUhn52KrMKxli+COD5wArz1SFQnMe0HyF45KZUW5mBAhnwXzbZf+KuZIT3dlrPaBuA/e1BpP6oVOSpk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywfj26N5gikO/u/eaphrQ9kn8azY29oRnEUVRhWymdflmAZbW3v
+	JS7AMEBXke3xfMgQs+SqDSt4pzqsKVesLFUolKi8Ujth/v0R7i/2yD1IOlO4to/lwb6T9EHHCps
+	+P8HairQhYJ6olEycdvUbmUd8nJ+eiaOar9QhMmaI0+Pl83FfTZq0Vk+G2aYP2TTm5TE=
+X-Gm-Gg: AY/fxX7hK6zDLbQTBIZIKC1F3SSG0HrgXVxTpQ6tGx9HE8GjRqXzFdQCOWW+DyCYUK+
+	qVXIdA1Zl16Pj582/Xyl4PpY7Ivcwlcn+tUMDgqpmXTZtQVLtm7Ucsw+Ufqrmgc61s4aekQ2JUq
+	WBrj7HTuIX1JyuchXaXGKrTUOLZJF7FBXFUnY5slzbl8f51k2DnkyXBug+ecgltzXO6VzaWnbJD
+	YPWaZjzU8iAadCTPWNtPd6ZzCZ71ZirDbjRUyL4MNfTUq9j3O4PVWX3VX6vywuQ4fl8y+MYxvkx
+	3JjUM49wPTa219XqqQkW9gwpPFYQ89jJ3ALskDPt6HWw8QJXrSRTwuQobfSxBu7zLvfTXKlZ7t4
+	zcMaDToN9eDIpMP36sImaFiLO
+X-Received: by 2002:a05:620a:3944:b0:8c5:2ce6:dca with SMTP id af79cd13be357-8c6a68d3547mr1953251185a.6.1768920766946;
+        Tue, 20 Jan 2026 06:52:46 -0800 (PST)
+X-Received: by 2002:a05:620a:3944:b0:8c5:2ce6:dca with SMTP id af79cd13be357-8c6a68d3547mr1953245885a.6.1768920766241;
+        Tue, 20 Jan 2026 06:52:46 -0800 (PST)
+Received: from oss.qualcomm.com ([86.121.163.152])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43596b62700sm761202f8f.42.2026.01.20.06.52.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jan 2026 06:52:45 -0800 (PST)
+Date: Tue, 20 Jan 2026 16:52:43 +0200
+From: Abel Vesa <abel.vesa@oss.qualcomm.com>
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>, Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org,
+        Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Subject: Re: [PATCH v2 5/6] arm64: dts: qcom: milos: Add UFS nodes
+Message-ID: <7zdyb2wnojudnrnomnx4aiwvni3e6i52kfioflb3gslztsizkw@ofvvkvrv5f3s>
+References: <20260112-milos-ufs-v2-0-d3ce4f61f030@fairphone.com>
+ <20260112-milos-ufs-v2-5-d3ce4f61f030@fairphone.com>
+ <zvagnaxqgrpm6bagw6zuov4oi6o4b7vmy673oh5st22tec2swl@abvblxgray2s>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Spamd-Result: default: False [-0.46 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <zvagnaxqgrpm6bagw6zuov4oi6o4b7vmy673oh5st22tec2swl@abvblxgray2s>
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTIwMDEyMyBTYWx0ZWRfXxoXe6v9kNL4Q
+ HWw4lojGDkdts8LdGmrIPvgDBUs/EqZsORccgw+KvaZqlsvvNxvUlWwKTSyHLxncZVDhUyUgpC3
+ SCpgcgxHUWWbQ/5obC5G4qOtN7MqgMPFE4Wzq6I7bObQN/Fcvaybar+PEzenu1pU2eU7WI6xbTl
+ 2KWHtJCvLX7HWfyU0B16VQCKwG462GvmRE/yWGZYTP/qHHDjfON/XdtdJ17V8gw6daTTyr7tJGB
+ 2PHqH20dFCHo417GaltB5+ztcxADFJZ/TufxML95P0zQpOE5GL/Ifanft51W+SkOmGqzgi1ybey
+ hQmuQRmdWZWD8hM5yLNsHObB1OzuwHW95gCwRgghHH2ux8QTgH9XlW+clRO+IZBeHRBza9KZBph
+ s27Wr+SPO7abbQ7ytrGjSToeg/z5/ATR4JA6yfz5Ue1YQUbozYrpXz6NN4rMxviHu/aqiAZcqaO
+ V1mwi2q2Nee+9eVNiLg==
+X-Authority-Analysis: v=2.4 cv=Ds1bOW/+ c=1 sm=1 tr=0 ts=696f96c0 cx=c_pps
+ a=50t2pK5VMbmlHzFWWp8p/g==:117 a=RUlelSpolvTNyr7Sls5SJA==:17
+ a=kj9zAlcOel0A:10 a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=EUspDBNiAAAA:8 a=6H0WHjuAAAAA:8
+ a=3ktymktcbobz44Ac5DoA:9 a=CjuIK1q_8ugA:10 a=IoWCM6iH3mJn3m4BftBB:22
+ a=Soq9LBFxuPC4vsCAQt-j:22
+X-Proofpoint-GUID: zqV_KOKHRpLHnybz7RosXlDDHFhkIOzx
+X-Proofpoint-ORIG-GUID: zqV_KOKHRpLHnybz7RosXlDDHFhkIOzx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.20,FMLib:17.12.100.49
+ definitions=2026-01-20_04,2026-01-20_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 malwarescore=0 clxscore=1015 impostorscore=0 spamscore=0
+ phishscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
+ definitions=main-2601200123
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	DMARC_POLICY_ALLOW(0.00)[redhat.com,quarantine];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20179-lists,linux-crypto=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20177-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[qualcomm.com,reject];
+	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,qualcomm.com:email,qualcomm.com:dkim,oss.qualcomm.com:dkim,1d80000:email,1d84000:email,0.25.240.160:email];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[abel.vesa@oss.qualcomm.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCVD_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wunner.de:email,cloudflare.com:email,chronox.de:email,apana.org.au:email,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: CF97248C50
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: CBE874907F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Limit the set of crypto combinations that may be used for module signing as
-no indication of hash algorithm used for signing is added to the hash of
-the data, so in theory a data blob hashed with a different algorithm can be
-substituted provided it has the same hash output.
+On 26-01-20 16:49:26, Abel Vesa wrote:
+> On 26-01-12 14:53:18, Luca Weiss wrote:
+> > Add the nodes for the UFS PHY and UFS host controller, along with the
+> > ICE used for UFS.
+> > 
+> > Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > ---
+> >  arch/arm64/boot/dts/qcom/milos.dtsi | 129 +++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 126 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/milos.dtsi b/arch/arm64/boot/dts/qcom/milos.dtsi
+> > index e1a51d43943f..7c8a84bfaee1 100644
+> > --- a/arch/arm64/boot/dts/qcom/milos.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/milos.dtsi
+> > @@ -1151,6 +1151,129 @@ aggre2_noc: interconnect@1700000 {
+> >  			qcom,bcm-voters = <&apps_bcm_voter>;
+> >  		};
+> >  
+> > +		ufs_mem_phy: phy@1d80000 {
+> > +			compatible = "qcom,milos-qmp-ufs-phy";
+> > +			reg = <0x0 0x01d80000 0x0 0x2000>;
+> > +
+> > +			clocks = <&rpmhcc RPMH_CXO_CLK>,
+> > +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
+> > +				 <&tcsr TCSR_UFS_CLKREF_EN>;
+> > +			clock-names = "ref",
+> > +				      "ref_aux",
+> > +				      "qref";
+> > +
+> > +			resets = <&ufs_mem_hc 0>;
+> > +			reset-names = "ufsphy";
+> > +
+> > +			power-domains = <&gcc UFS_MEM_PHY_GDSC>;
+> > +
+> > +			#clock-cells = <1>;
+> > +			#phy-cells = <0>;
+> > +
+> > +			status = "disabled";
+> > +		};
+> > +
+> > +		ufs_mem_hc: ufshc@1d84000 {
+> > +			compatible = "qcom,milos-ufshc", "qcom,ufshc", "jedec,ufs-2.0";
+> > +			reg = <0x0 0x01d84000 0x0 0x3000>;
+> > +
+> > +			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH 0>;
+> > +
+> > +			clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
+> > +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
+> > +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
+> > +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
+> > +				 <&tcsr TCSR_UFS_PAD_CLKREF_EN>,
+> 
+> Maybe I'm looking at the wrong documentation, but it doesn't seem to exist
+> such clock on Milos. It does exist on SM8650 though. So maybe the TCSR CC
+> driver is not really that much compatible between these two platforms.
+> 
+> I take it that the UFS works. Maybe because the actual TCSR UFS clkref
+> is left enabled at boot?
 
-This also rejects the use of less secure algorithms.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Lukas Wunner <lukas@wunner.de>
-cc: Ignat Korchagin <ignat@cloudflare.com>
-cc: Stephan Mueller <smueller@chronox.de>
-cc: Eric Biggers <ebiggers@kernel.org>
-cc: Herbert Xu <herbert@gondor.apana.org.au>
-cc: keyrings@vger.kernel.org
-cc: linux-crypto@vger.kernel.org
----
- crypto/asymmetric_keys/public_key.c | 55 +++++++++++++++++++++++++++--
- 1 file changed, 53 insertions(+), 2 deletions(-)
-
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-index 13a5616becaa..90b98e1a952d 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -24,6 +24,52 @@ MODULE_DESCRIPTION("In-software asymmetric public-key subtype");
- MODULE_AUTHOR("Red Hat, Inc.");
- MODULE_LICENSE("GPL");
- 
-+struct public_key_restriction {
-+	const char	*pkey_algo;	/* Signing algorithm (e.g. "rsa") */
-+	const char	*pkey_enc;	/* Signature encoding (e.g. "pkcs1") */
-+	const char	*hash_algo;	/* Content hash algorithm (e.g. "sha256") */
-+};
-+
-+static const struct public_key_restriction public_key_restrictions[] = {
-+	/* algo			encoding	hash */
-+	{ "rsa",		"pkcs1",	"sha256" },
-+	{ "rsa",		"pkcs1",	"sha384" },
-+	{ "rsa",		"pkcs1",	"sha512" },
-+	{ "rsa",		"emsa-pss",	"sha512" },
-+	{ "ecdsa",		"x962",		"sha256" },
-+	{ "ecdsa",		"x962",		"sha384" },
-+	{ "ecdsa",		"x962",		"sha512" },
-+	{ "ecrdsa",		"raw",		"sha256" },
-+	{ "ecrdsa",		"raw",		"sha384" },
-+	{ "ecrdsa",		"raw",		"sha512" },
-+	{ "mldsa44",		"raw",		"sha512" },
-+	{ "mldsa65",		"raw",		"sha512" },
-+	{ "mldsa87",		"raw",		"sha512" },
-+	/* ML-DSA may also do its own hashing over the entire message. */
-+	{ "mldsa44",		"raw",		"-" },
-+	{ "mldsa65",		"raw",		"-" },
-+	{ "mldsa87",		"raw",		"-" },
-+};
-+
-+/*
-+ * Determine if a particular key/hash combination is allowed.
-+ */
-+static int is_public_key_sig_allowed(const struct public_key_signature *sig)
-+{
-+	for (int i = 0; i < ARRAY_SIZE(public_key_restrictions); i++) {
-+		if (strcmp(public_key_restrictions[i].pkey_algo, sig->pkey_algo) != 0)
-+			continue;
-+		if (strcmp(public_key_restrictions[i].pkey_enc, sig->encoding) != 0)
-+			continue;
-+		if (strcmp(public_key_restrictions[i].hash_algo, sig->hash_algo) != 0)
-+			continue;
-+		return 0;
-+	}
-+	pr_warn_once("Public key signature combo (%s,%s,%s) rejected\n",
-+		     sig->pkey_algo, sig->encoding, sig->hash_algo);
-+	return -EKEYREJECTED;
-+}
-+
- /*
-  * Provide a part of a description of the key for /proc/keys.
-  */
-@@ -391,12 +437,17 @@ int public_key_verify_signature(const struct public_key *pkey,
- 	bool issig;
- 	int ret;
- 
--	pr_devel("==>%s()\n", __func__);
--
- 	BUG_ON(!pkey);
- 	BUG_ON(!sig);
- 	BUG_ON(!sig->s);
- 
-+	ret = is_public_key_sig_allowed(sig);
-+	if (ret < 0)
-+		return ret;
-+
-+	pr_devel("==>%s(%s,%s,%s)\n",
-+		 __func__, sig->pkey_algo, sig->encoding, sig->hash_algo);
-+
- 	/*
- 	 * If the signature specifies a public key algorithm, it *must* match
- 	 * the key's actual public key algorithm.
-
+Oh, nevemind. I think I was looking at the wrong SoC.
 
