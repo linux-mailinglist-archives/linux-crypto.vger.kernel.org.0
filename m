@@ -1,113 +1,113 @@
-Return-Path: <linux-crypto+bounces-20156-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20158-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJ6YM/Szb2nHMAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20156-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 17:57:24 +0100
+	id iAHSHDyvb2lBGgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20158-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 17:37:16 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC3848147
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 17:57:24 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A9147B8B
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 17:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 37F11947BDF
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 14:24:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DCE5C76740A
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 14:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1D44418F0;
-	Tue, 20 Jan 2026 14:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FBE439016;
+	Tue, 20 Jan 2026 14:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ubYTugLH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Brw6E2iT"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E98B4418ED
-	for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 14:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6717C34028B
+	for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 14:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.171
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768918415; cv=pass; b=IPuwcbNf8hIMFlDd6wii48R2vB/xhkh9o7RvX7x1QypVvYM/0eH2EG7BZg9YouKIo+YBejTPr+/flo6pBnBkp+7jPPCjtqFYWQz7AnUeutSAzSJxu/+6wIfWfWJbK4Vmv/q5mtj/C03mbIwprBwdDvyAxtoQ6jUxHqkt6UD0NKw=
+	t=1768919207; cv=pass; b=logpSg6kmdAnOkEzhIUlwX324jnlraI5NyDrcQfhEK4GCF2PNJL+uFlx2u/naddx1BhnX8f6Xy+ociSYW4HfJCHN8jmuft7IgMmG9F4SuxK4OBpjwL5Eoq6s7iwFv+IHRmWGkyF/Umybn39mx4gu45JmuPtI5YQqldZlUKCtu9g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768918415; c=relaxed/simple;
-	bh=TbZbO+fx6iRdUpF4L5EkzdrM0Mo3gbhoq53Zn14NnpI=;
+	s=arc-20240116; t=1768919207; c=relaxed/simple;
+	bh=iRq3V9TGTshUsvROKLlwVrfXJ6Y0o2eUwLmYrdqr/HA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SMDONeGOhiuUlGaOUBiPisMSOTwEvinf4D1GClK4biKhLdDOeI3xwUHx1xrKKAqKpfTK3w2AWI4qehQIh8dBYH+T3eAfWubYsjtJAYMER9aufnXwbDIvntJ4YsfhlGIyoOMzf0X+Xt/crtOR9cvjXNjdEDJV1gd13oVbtw7G+lw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ubYTugLH; arc=pass smtp.client-ip=209.85.222.173
+	 To:Cc:Content-Type; b=uW57vJ2w0OoDIqwpZyYxdEAOn0AnHGRvLz/fV+4dwKmGcVgB2BW3RjUsQzlBUUPWhcpvA4ufLacAHeH1KL12YJdHxm/3O5cAq+SAmnl38tyPFHV9iHamiv9O+CmJt50JLGDrFZPl5PVvVUxi7qVckJTdLxV5zHlLz7aOfC/zwzc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Brw6E2iT; arc=pass smtp.client-ip=209.85.160.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-8c52f15c5b3so620376585a.3
-        for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 06:13:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768918412; cv=none;
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-50150bc7731so82132331cf.1
+        for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 06:26:46 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768919205; cv=none;
         d=google.com; s=arc-20240605;
-        b=kx2aJh81o5622UWEP8O6PHf5IR/UO/IyQkw8YKcZMFmlFdPjGgE/RMxGAulEEk68+t
-         41VRrU/Pld/A7fgSDZH9ctlSX0S4bjD0CKFPL/Skoa8MOT9oacB621z/8ZfvEYY97Ocs
-         13kK6Bk8WIKSCNGaEvsLQgjyWfnt5lTFcQzOeRmtGBRimUeWsrgHnoeP3tgty19eFkDM
-         aED3h/+Nrv7RYCweTGD24uQDE1OujM3zkbg83A8bgKg2CVTYHXiR+iA6v6a5t2vxffZb
-         EnOzsSIrno34ZIFK58cnBpUfOn/VUzSXLwleJ3KSYHf8pxqse6Y08AkZgzbVUYV/nzuC
-         jyPg==
+        b=hw48WOgIVNwuYTYPTzBcPRqJz6ijTg6+jp8JQisUzclSqcCc3z8LMOOC48kw4CHCUQ
+         ShaTgJVpLmoecetXlA6SKysG8egWFn4USLcn8Zr/Crq0ufbOS8GCtGKS23yTz0ctjYWE
+         ubJdabArrF/yfYz0D29b9xSB/UGV3x4DoHsMG2FHhkP3TlQ3eD8vO+e5BIN4OszM8h7y
+         zSwh4QeBo9bgSTj9k3MCslUdGXf532xG/eFddnKAuy9840QRqFHxwrUx2MVDC98cuztC
+         LM1IB9qKYt3kuEW3ifeOzLTZZE9JaBBwSq8aUTQa7fep+HB9zDVTXcMzU33b6iaSypAz
+         KNbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=IdYE5jdvNdfk3sHI8GmEWBpt99cM9oMrMqemVzHltu4=;
-        fh=WtJLEzQ+nJrpW4eOQ4nCRRzKPNZZ/QvpZsR7rtrxy2I=;
-        b=jVzOUl8XVpz/Fa7ZgmVSyRTyhN2XTAJligi4cXB4orGMQNFvQ7qpDEPvo+0eNcs8SZ
-         MscSSUj0XeoEq7wnOt8SYYZd9MQMhvPsJMwZSKVpJ6Xzj71RnbCqnpiAWSS8Ucxp0ksY
-         IZFeS9ZaJBW6qCzhXwelwfsQPlCckk8yzLQcU5u2RqKosrhS7ZuiQ6u7PnlBxlpzKG+/
-         pBNMdo+GFP0aqB6lpPYLJVJ8Lws1bm/X/PFWtkkyNAMHkuJ+L7Eo+CJwYNjqFmOrN5hW
-         MkCGhSpCTunlTqbMKBnojXAfxCLWt7zEPyWzRWxwnFtBl/m96iqp45ORtbOT/mTO4Elh
-         wk3A==;
+        bh=iRq3V9TGTshUsvROKLlwVrfXJ6Y0o2eUwLmYrdqr/HA=;
+        fh=+o/jVbwjKVH4GusK8heQ+o1cOrwmegH2cwZUAWH3vTo=;
+        b=gy39Ws4poEiurh2qJLmePz1wghiNMzPjasp0RrkGAsksFwJ0UCi8bAc/W0D2x10ITG
+         RUyL3IUTNOybp6E4TIkNi7PhCnvIdj6O3t/DgD+AMCFTwuaIvN+tMTG2WlCSvRFR/3W/
+         mWdNeWRGGqqTEZ+T1Ik2xjq6CBAUBWrq6yRwzf8PaLc9bd25vgsmrWfAm+khkiyt/55G
+         aI+Wr6efrvpr9+A5QySbJf98tyRUiQeA9xtljfH4Wx5cLIiMNGRiQgW6Ie1Qy8mOb+Dg
+         pCuJDKj0qhthcEkWUkpZkSEoeTN7oqSUSvic21GLZc6Z6sYPWRmb4siSKgJwx3QQy5gC
+         XIZw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768918412; x=1769523212; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1768919205; x=1769524005; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IdYE5jdvNdfk3sHI8GmEWBpt99cM9oMrMqemVzHltu4=;
-        b=ubYTugLHLKD5qHk7wxeCXwvzvGEzDc9STp3csWfmDxWVGAC0tPES7Y0kHcQNteRK4o
-         D+CMhVLKTo3H5jP23G4qVJuXucrgrhoRQDSfaZS6PyfZGUuSGOGiLnuyhV00XZbA5dhH
-         To6PlZxnxT/OUDJbVcPMl+YSy0qj4xWK7EZr2TcN9FES7G5eENDTkVXuYhaABtpi7Q0s
-         4F8mF3V76FgL3sC+LJERu4yW+eLp9O2KQ0BoSqOqYb4pD8KudsuH4Mp6E/zlCl9fYdhe
-         qN+IjvXCWw0xHr/PmMBZftS79eOOjaz7kznHRa0haSy/IGR4w8bFbYnkIIcWaTybBms2
-         WnEw==
+        bh=iRq3V9TGTshUsvROKLlwVrfXJ6Y0o2eUwLmYrdqr/HA=;
+        b=Brw6E2iT9/kCrJWwixUvT9umTzNjcJNJEnF3JyDh0Lt7IyX7M4vhwZEw2UNBL9wwyV
+         ynGgcvC++G07EarpGzF9RmGvy6EgQ/j6ZfE8DYmRCFQQDW+qFohlKnmpBPLbRUpkVtvk
+         J5VIr/xQZXD1h8CyU5ic2Jcm4dVLmVYujv76jjwv+46kmJCLRG3GKN+3iuVmikspi2EQ
+         jAU4xpMo8mxlKkGZ0FchXAwEYDodD2nyE13Iuo0W3EJ7noiAFIonPG+o2zpLPzK9ckvq
+         GBxwF0tWC32ZKzAKbNulrqVC1/D8elKGw6987GGFuof0J0sp8c2B6e8SeTxgAvD+sVrJ
+         rKfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768918412; x=1769523212;
+        d=1e100.net; s=20230601; t=1768919205; x=1769524005;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=IdYE5jdvNdfk3sHI8GmEWBpt99cM9oMrMqemVzHltu4=;
-        b=mI44W+nye6esWA0KK6KASZawdRP9jDWR8t+3dA0mt6h4nJcjky/Au25krX1SrvLixF
-         EC2zvfLrXl+FLTl/rmV6AX4d2jMTAwpOQD+7GVI7OdPCW4BsQpNMp2E6ERvzOGzF69PQ
-         ZigPRNWy1MZhhTstNQhCNtIZfTfaYFzqQcW7T/xgvCZEFi3Ee8WNKNXnOHN7H2qF18Cl
-         PwkLxDELSS1x4r7ApPK8YtbOr9oWG/z2lJzCeG5/nXQDgMiqupxHH1JZi209+KS7kng3
-         g1P1uvo04lxt0KbxrwLZYaRPkq1+mD4+1rF+mLDg0SNJBIjnhVkg9+Ve6VjjcwJdJs/v
-         HY1g==
-X-Forwarded-Encrypted: i=1; AJvYcCUsBZ28NZA+iM7dixsbr6FAwpq28ZEox6kwQfJFywZmd4kpRC84WJgoOXwuE7bl1LpS2WSJ3VrB+IpwF7U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZUl7r4ipZ+xi44XkqIQFk6uBqflkVkl/vprG+O6lBLgp0n5S2
-	gk4O5G6b3EPybjW1ctlkLTHwPn9OXBucLx5VllNTlSn/gqbZ7aM+U1xzz3uQO4GJXfvD0uxB8R5
-	5uwRWd4DWvFsFM+wufFgNVYebTvnLsiB6MPJ5D8/n
-X-Gm-Gg: AZuq6aJQuRHk8qJ62qXoWcUAzD6xT183WIFsLkDWdPCtjE3iIXBAuycV9tDBP3krjHm
-	VVtzjzaHWOzcRvUJWBKrn15gkOwHJ1lHAXXFW7zrHMuKAO0J/H5OP3plM47UpyQp8XqnXGNA0WO
-	uCdinVNhY0QDEnpDuDJj0kiXbuzKqHrmkaFVSejWWr1r13h3GmeaoV/hAODsagp5myG8BtZfuHG
-	cKq6Xgi0blF/JLlfft2TQN1C3L2VLEPVz2F+cSs8qXdbqJAvu0IDqLyzjQH2on05iRL7oKchD5I
-	836uEyVwnXNCu/r2w7CSOkf/IBvryKYaGFA=
-X-Received: by 2002:a05:6214:202b:b0:894:68cf:49fc with SMTP id
- 6a1803df08f44-89468cf5432mr19791426d6.23.1768918411939; Tue, 20 Jan 2026
- 06:13:31 -0800 (PST)
+        bh=iRq3V9TGTshUsvROKLlwVrfXJ6Y0o2eUwLmYrdqr/HA=;
+        b=GC5GPC2Jw1Ph3uR1QSUikEBRZVsHgWcH+vdgm8phsiKoukVYNZgxYY93Rm928knn7T
+         9NsSBUtG4HjFKwQsjCdbHSwwMCDR0PsNoaHhO5AtzQDPXlKaFu8GWgP5+qtsHTddrRp5
+         0bdvd7jSt3iuMCkpdUZeCNdtaqfwvSnPZsqsbiP0wQKB5Erhum9qJweu4bVGTpH0KLiy
+         ljRBrwmwT5ysk17Ib0P3yljQIsD6Qd8T8fPgoLydd+cuhsypJSi7uxAXc16L6zFsRDb3
+         /T5+FAgr2Vd5ogolTJljetVOCT8445NhA6onUWOa9n/QM+eq5EQkYkxaGwMpRtYoBJ1V
+         u7kg==
+X-Forwarded-Encrypted: i=1; AJvYcCW0nqmFJrYW5SIvRjDEPOhmiZv7CLPdxD6nGq004QNAlR5uzAjkxYnUB7DbpBSpeARpTu7ocGd71/F8UA4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywy0W6WkOHjLPJswpHLiW1Iat1DNo9WgJQhQUm7ASAju5cTxeXq
+	N6OaFQmoOjlbT7O0KrE0pQU/4Ab0hfNMygT7zWIBfdew31hvOH1esgf0fAw22On0ShfpGrm4ma1
+	xXIOFriIEx4fXPUSngXzgOzBschDQgSIllE5lh6Ju
+X-Gm-Gg: AY/fxX63ZhpFhSFXln9xAq/tSQrJysSsXWWy1RTUNYVxeYXi99WJo2Krm2o+dVHOsyz
+	PVRutlBJcJ9Gd/XW0kbP5C0bEWtrnAFDudg6Zv34Fx0iiDvFX1JRxV1F/HTj6REd8Y0dKcYCcEr
+	p0sbwSgiWyBRE0JFOfnSFhgVlb18X41JafHe+0Wt8nQUkD9xYs2C6cz+ax3mGgv2yputp+GajxI
+	VCNd8QVBKtYaZ7kaR4zPvSzGvvrMHCauEZVkJPFEVtDAZqxeN3o9zN4eg9aDypLxb/6PRIZxtgL
+	X9x3KDqAGbc+EcFFjVWTwRKT
+X-Received: by 2002:ac8:7d56:0:b0:501:426b:d497 with SMTP id
+ d75a77b69052e-502a1f2213fmr247099121cf.52.1768919204813; Tue, 20 Jan 2026
+ 06:26:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260112192827.25989-1-ethan.w.s.graham@gmail.com> <20260112192827.25989-7-ethan.w.s.graham@gmail.com>
-In-Reply-To: <20260112192827.25989-7-ethan.w.s.graham@gmail.com>
+References: <20260112192827.25989-1-ethan.w.s.graham@gmail.com>
+In-Reply-To: <20260112192827.25989-1-ethan.w.s.graham@gmail.com>
 From: Alexander Potapenko <glider@google.com>
-Date: Tue, 20 Jan 2026 15:12:55 +0100
-X-Gm-Features: AZwV_QhSRG2StFyNZkwjvq48dDIr-HhWGfUMqppHNhj04WZytkphQv9nwByXueo
-Message-ID: <CAG_fn=VdRkSjvhO7wz7_PEznBOFgLjHCr2hSXwrKoO-hpMqTzg@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] MAINTAINERS: add maintainer information for KFuzzTest
+Date: Tue, 20 Jan 2026 15:26:07 +0100
+X-Gm-Features: AZwV_QhNTGTWINIBPMZao5ljKIiGVxjHAO6q_kPP3h9eB_FkxoIYM4qby5HyYlU
+Message-ID: <CAG_fn=W6wdFHYsEqkS37iWOkJUZqS0LUEg-N2HWo+3Rw-76v4A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] KFuzzTest: a new kernel fuzzing framework
 To: Ethan Graham <ethan.w.s.graham@gmail.com>
 Cc: akpm@linux-foundation.org, andreyknvl@gmail.com, andy@kernel.org, 
 	andy.shevchenko@gmail.com, brauner@kernel.org, brendan.higgins@linux.dev, 
@@ -130,7 +130,7 @@ X-Spamd-Result: default: False [-0.46 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20156-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20158-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
@@ -147,47 +147,38 @@ X-Spamd-Result: default: False [-0.46 / 15.00];
 	DMARC_POLICY_ALLOW(0.00)[google.com,reject];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 6EC3848147
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 26A9147B8B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 On Mon, Jan 12, 2026 at 8:28=E2=80=AFPM Ethan Graham <ethan.w.s.graham@gmai=
 l.com> wrote:
 >
-> Add myself as maintainer and Alexander Potapenko as reviewer for
-> KFuzzTest.
+> This patch series introduces KFuzzTest, a lightweight framework for
+> creating in-kernel fuzz targets for internal kernel functions.
 >
-> Signed-off-by: Ethan Graham <ethan.w.s.graham@gmail.com>
-> Acked-by: Alexander Potapenko <glider@google.com>
+> The primary motivation for KFuzzTest is to simplify the fuzzing of
+> low-level, relatively stateless functions (e.g., data parsers, format
+> converters) that are difficult to exercise effectively from the syscall
+> boundary. It is intended for in-situ fuzzing of kernel code without
+> requiring that it be built as a separate userspace library or that its
+> dependencies be stubbed out.
 >
-> ---
-> PR v4:
-> - Remove reference to the kfuzztest-bridge tool that has been removed
-> PR v3:
-> - Update MAINTAINERS to reflect the correct location of kfuzztest-bridge
->   under tools/testing as pointed out by SeongJae Park.
-> ---
-> ---
->  MAINTAINERS | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6dcfbd11efef..0119816d038d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13641,6 +13641,13 @@ F:     include/linux/kfifo.h
->  F:     lib/kfifo.c
->  F:     samples/kfifo/
->
-> +KFUZZTEST
-> +M:  Ethan Graham <ethan.w.s.graham@gmail.com>
-> +R:  Alexander Potapenko <glider@google.com>
-> +F:  include/linux/kfuzztest.h
-> +F:  lib/kfuzztest/
-> +F:  Documentation/dev-tools/kfuzztest.rst
+> Following feedback from the Linux Plumbers Conference and mailing list
+> discussions, this version of the framework has been significantly
+> simplified. It now focuses exclusively on handling raw binary inputs,
+> removing the complexity of the custom serialization format and DWARF
+> parsing found in previous iterations.
 
-Please also add samples/kfuzztest here.
+Thanks, Ethan!
+I left some comments, but overall I think we are almost there :)
+
+A remaining open question is how to handle concurrent attempts to
+write data to debugfs.
+Some kernel functions may not support reentrancy, so we'll need to
+either document this limitation or implement proper per-test case
+locking.
 
