@@ -1,728 +1,181 @@
-Return-Path: <linux-crypto+bounces-20181-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20183-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +P2iL8u1b2nHMAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20181-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:05:15 +0100
+	id CC/eF4PBb2lsMQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20183-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:55:15 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29194483F2
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:05:15 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC3C48EC4
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 18:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 917BF94411E
-	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 15:22:21 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5FB68804876
+	for <lists+linux-crypto@lfdr.de>; Tue, 20 Jan 2026 16:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA10144CF5E;
-	Tue, 20 Jan 2026 15:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB484219E9;
+	Tue, 20 Jan 2026 15:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aeKb9eXx"
+	dkim=pass (2048-bit key) header.d=chronox.de header.i=@chronox.de header.b="bCzb2rRK";
+	dkim=permerror (0-bit key) header.d=chronox.de header.i=@chronox.de header.b="jWAayJC6"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05EE44A715
-	for <linux-crypto@vger.kernel.org>; Tue, 20 Jan 2026 15:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768921468; cv=none; b=VAlOhkz6DF3wCfWQmPlTKzYxu65h9KmveQ0kRvJLbm2cfobNb34qJ8irNT1SfETQ63mjbRrzS2awYi8EEJPgXsRTfIiMZWg2eQDqt8HY1GiLL7VXMPb+JO/GLNr0FjlMxK8svCKXhHKsECPUDv2atcyMODh0xDPvrALWP42YEIU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768921468; c=relaxed/simple;
-	bh=tYMIXoNs7RLmE9EbJZd1a3k4/fGnkHUee6sJ+AGZnv8=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=DO0iGKdTwG6fGSg3rF97EEcPeOs9csfNbUSjmOnAh8VMjdqpi8SsFJwhDVzT19i7G9EHAOFxtkZ2hkw0OMtSJdjH7UX6ek6FB5h9fnuSV717cL4Wi+r+v07XtbtQOD04fN08VyQ61sD/1cNGmII/YSCFPvXZVnuAUFV74E0NjTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aeKb9eXx; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768921465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnr591BgrQ+PqF+y6uG/C+LNFozW+JGmENxSfQ88pUs=;
-	b=aeKb9eXxh6Lpf+3sdYJ3FTMOGxbpYXBaq4rzlzbUBzEajZ9CZOctVT1Fw3El7k+Tj1UM/Q
-	qkBNB3EXT+kkAxl48F4IBsX7jzCH+VypKcuLi5SYD3eQNWSST62qFc6E7oeMdx6i0rwjxb
-	QfWhKHQp1qhtWY83bDysXYhoRD9WUfA=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-542-ScQzAoHyNaayIPMq8OyJhw-1; Tue,
- 20 Jan 2026 10:04:22 -0500
-X-MC-Unique: ScQzAoHyNaayIPMq8OyJhw-1
-X-Mimecast-MFC-AGG-ID: ScQzAoHyNaayIPMq8OyJhw_1768921459
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 37170195606D;
-	Tue, 20 Jan 2026 15:04:19 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.2])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 146BD19560A2;
-	Tue, 20 Jan 2026 15:04:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20260119185125.GA11957@sol>
-References: <20260119185125.GA11957@sol> <1010414.1768841311@warthog.procyon.org.uk>
-To: Eric Biggers <ebiggers@kernel.org>,
-    Stephan Mueller <smueller@chronox.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23A2C38E5FB;
+	Tue, 20 Jan 2026 15:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768923791; cv=pass; b=fPNz1ne+alKWfYpvKkRAB8fXltORxEmvkydro4CEN1QRHuLipQcQO4lrm3o2FDB6XeyZ10enj0eTrFuH1DE9se5lRYfF/8FTC+6Edt7TX3wZEVAMXawUaYz7CtvsnYkOD95Ie4v2cPJkrltRaBeX9kuvi/j/NkTdB23T9CrxiDI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768923791; c=relaxed/simple;
+	bh=hx2vvZMrEltWCKlhhOXO6GQxyjEInyfUEh3ubtofyDA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f7fmxh8EzT8qIec24p8+ooEVsXiwkhYUM4VM1Jws/sPDOWOPx7wGvL7CaAnmurquuf9nbzemVlUxZun1KMhEMmCc0+l0pcw3wXY/UDk/QSLUUOUE+DkOowLrdKaGTQFxnr8Vh+KZgmRDutldA2XcpkuDiTRQpRCplXC2sWfSyBo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chronox.de; spf=none smtp.mailfrom=chronox.de; dkim=pass (2048-bit key) header.d=chronox.de header.i=@chronox.de header.b=bCzb2rRK; dkim=permerror (0-bit key) header.d=chronox.de header.i=@chronox.de header.b=jWAayJC6; arc=pass smtp.client-ip=85.215.255.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chronox.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=chronox.de
+ARC-Seal: i=1; a=rsa-sha256; t=1768923769; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=hUm5tZY+5WS09L4JjaRYD4Vif0QQsv+cfufGpvB68NIxVV01rAOtnXxinrSFOl5sor
+    tJM1v6oh4vVG5HLM8dVcB+9ehC2urNz3DPYn5LsyPlsjAjGoteIPvnzVeARlpc4Z27ql
+    g8rq06J6MveiugiSx0e4e7YxOQtKp0HGVEXLsGz74KXKBNF0crA1D7t7RDE/51TWFF0N
+    QYZ7sReQpNrsY5q+1K3yYZeNeou6MkE0YdTob4zg4Z0ViQ931nXq4x0+HsDde/BDbGWR
+    6JR86Jy2YutPEv/uI0+96HDlQ/TxZRd+G/SaP5poStIh7LCepiC8e4QJOzp4YOXbCVw3
+    P4Fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1768923769;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=hx2vvZMrEltWCKlhhOXO6GQxyjEInyfUEh3ubtofyDA=;
+    b=rJS9JFtOdT0UJ6Y2BRqKN24ilb8MfjIxS1vHYLgbN3ZnmkTvSAH03IspzhexN5TQhb
+    GoyXxT4DNPg3PRJibhjctMqCYzE7Ep0dcS4B48NxTRtJgVsnDqSYTrA62ThpyjRBpG3V
+    y3tLEGMbZUzgMakU8SqY3yw/mCiQOF6DXPog1WfmTSPTwXMCbcTBYwldz9hm4h9Loa9n
+    r4TpQboRFV95nbGNa1yR5v2YFhaZ3mZDn6UgPkg8jlqNac/CrTVlF9ry2nh3/vACMQva
+    BM3ii+exTDKoneSeGo33ZiAMiacyHcGgRd0CKGNHQCG4tjI7jJHuqhvjIRJMKAr/Fi3A
+    g8CA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1768923769;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=hx2vvZMrEltWCKlhhOXO6GQxyjEInyfUEh3ubtofyDA=;
+    b=bCzb2rRK27nxlVeqq5lnUU8+kZs2xaUNgXabeOqMIoG3vGg+mina6mxyh3e8nDbcpJ
+    X+WMRFc+1unvSl4MjhpQS3hTbjTqyJi/lABi9iKyXsyHf6r1RSYUYM55r0Gu89H4/3js
+    hlgp2LVtYLODm8X63+n9s/3zJ0PFFb/NdioMgdRii7ZIqoz1RjfqN+GSjVd01DxzdRnL
+    z1/kKq75kyd+4bSLf9GD5+L6N7hY1NDESdjSei6I4GfBYUbmR7DCSr3Novzck4iG0Uq/
+    NbNDXd/CY6NGe46darjv6z+xyD6KVOwGw26AG9zixbE2w8NL2X3hDbaE9Eg2Pi/Vt42S
+    1QKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1768923769;
+    s=strato-dkim-0003; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=hx2vvZMrEltWCKlhhOXO6GQxyjEInyfUEh3ubtofyDA=;
+    b=jWAayJC6MSRtt/lIy5pVtTe9LNiHSo7tiFr8HMDwe7Er8j1AOztQfLD/qS+3ddKaFZ
+    0/MoChpnjqLUi59bolAA==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXDYJPSfPhE="
+Received: from tauon.localnet
+    by smtp.strato.de (RZmta 54.1.0 DYNA|AUTH)
+    with ESMTPSA id ffd25f20KFgm26L
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 20 Jan 2026 16:42:48 +0100 (CET)
+From: Stephan Mueller <smueller@chronox.de>
+To: Eric Biggers <ebiggers@kernel.org>, David Howells <dhowells@redhat.com>
 Cc: dhowells@redhat.com, linux-crypto@vger.kernel.org,
-    linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-    "Jason A . Donenfeld" <Jason@zx2c4.com>,
-    Herbert Xu <herbert@gondor.apana.org.au>
-Subject: Python script to generate X509/CMS from NIST testcases
+ linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: Python script to generate X509/CMS from NIST testcases
+Date: Tue, 20 Jan 2026 16:42:47 +0100
+Message-ID: <10662580.0AQdONaE2F@tauon>
+In-Reply-To: <1176796.1768921455@warthog.procyon.org.uk>
+References:
+ <20260119185125.GA11957@sol> <1010414.1768841311@warthog.procyon.org.uk>
+ <1176796.1768921455@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1176795.1768921455.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 20 Jan 2026 15:04:15 +0000
-Message-ID: <1176796.1768921455@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Spamd-Result: default: False [-1.96 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+Content-Type: text/plain; charset="utf-8"
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[chronox.de:s=strato-dkim-0002,chronox.de:s=strato-dkim-0003];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_POLICY_ALLOW(0.00)[redhat.com,quarantine];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	TAGGED_FROM(0.00)[bounces-20181-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20183-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[chronox.de,reject];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[chronox.de:+];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[smueller@chronox.de,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,x509_gen.py:url]
-X-Rspamd-Queue-Id: 29194483F2
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,chronox.de:dkim]
+X-Rspamd-Queue-Id: 0FC3C48EC4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Eric, Stephan,
+Am Dienstag, 20. Januar 2026, 16:04:15 Mitteleurop=C3=A4ische Normalzeit sc=
+hrieb=20
+David Howells:
 
-In case it turns out to be useful to you as a template, here's a script th=
-at I
-wrote to package NIST ML-DSA testcases from JSON files into rudimentary X.=
-509,
-message and CMS signature files and also to produce a C file that contains
-those blobs packaged into u8 arrays with a table listing them all.
+Hi David,
 
-It also tries to verify each testcase with "openssl smime" - except that t=
+> Hi Eric, Stephan,
+>=20
+> In case it turns out to be useful to you as a template, here's a script t=
 hat
-doesn't work too will for ML-DSA (it did work for RSASSA-PSS, but that's
-another script).
+> I wrote to package NIST ML-DSA testcases from JSON files into rudimentary
+> X.509, message and CMS signature files and also to produce a C file that
+> contains those blobs packaged into u8 arrays with a table listing them al=
+l.
+>=20
+> It also tries to verify each testcase with "openssl smime" - except that
+> that doesn't work too will for ML-DSA (it did work for RSASSA-PSS, but
+> that's another script).
+>=20
 
-David
----
-#!/usr/bin/python3
-#
-# Generate X.509 certificates and CMS messages from NIST ML-DSA SigVer tes=
-t
-# vectors (e.g. prompt.json).
+Thank you very much for this reference.
 
-import os
-import sys
-import datetime
-import subprocess
-import asn1tools
-import json
+Also, in case it is useful for you as well: I just completed the work on=20
+adopting the sbsigntools to PQC [1]. This would support the adoption of the=
+=20
+shim bootloader to use PQC algorithms that is started at [2]. The coding in=
+=20
+[2] is completed to the extend that it compiles as PE/COFF executable. Now =
+I=20
+am working through the testing and adopt it to use the updated sbsigntools.
 
-if len(sys.argv) < 3:
-    print("Format x509_gen.py <prompt.json> <expectedResults.json>", file=3D=
-sys.stderr)
-    exit(2)
+[1] https://github.com/smuellerDD/leancrypto/tree/master/apps/src#secure-bo=
+ot-signing-tools-supporting-pqc
 
-OID_rsaEncryption               =3D "1.2.840.113549.1.1.1"
-OID_sha1WithRSAEncryption       =3D "1.2.840.113549.1.1.5"
-OID_id_mgf1                     =3D "1.2.840.113549.1.1.8"
-OID_id_rsassa_pss               =3D "1.2.840.113549.1.1.10"
-OID_sha256WithRSAEncryption     =3D "1.2.840.113549.1.1.11"
-OID_sha384WithRSAEncryption     =3D "1.2.840.113549.1.1.12"
-OID_sha512WithRSAEncryption     =3D "1.2.840.113549.1.1.13"
-OID_sha224WithRSAEncryption     =3D "1.2.840.113549.1.1.14"
-OID_sha1                        =3D "1.3.14.3.2.26"
-OID_sha256                      =3D "2.16.840.1.101.3.4.2.1"
-OID_sha384                      =3D "2.16.840.1.101.3.4.2.2"
-OID_sha512                      =3D "2.16.840.1.101.3.4.2.3"
-OID_sha224                      =3D "2.16.840.1.101.3.4.2.4"
-OID_commonName                  =3D "2.5.4.3"
-OID_subjectKeyIdentifier        =3D "2.5.29.14"
-OID_keyUsage                    =3D "2.5.29.15"
-OID_basicConstraints            =3D "2.5.29.19"
-OID_data                        =3D "1.2.840.113549.1.7.1"
-OID_signed_data                 =3D "1.2.840.113549.1.7.2"
-OID_id_ml_dsa_44                =3D "2.16.840.1.101.3.4.3.17"
-OID_id_ml_dsa_65                =3D "2.16.840.1.101.3.4.3.18"
-OID_id_ml_dsa_87                =3D "2.16.840.1.101.3.4.3.19"
+[2] https://github.com/smuellerDD/shim/tree/leancrypto2
 
-##########################################################################=
-#####
-#
-# ASN.1 definitions
-#
-##########################################################################=
-#####
-RSA =3D asn1tools.compile_string("""
-Rsa DEFINITIONS ::=3D BEGIN
-RsaPubKey ::=3D SEQUENCE {
-	n INTEGER,
-	e INTEGER
-}
-RSASSA-PSS-params ::=3D SEQUENCE {
-	hashAlgorithm      [0] HashAlgorithm,
-	maskGenAlgorithm   [1] MaskGenAlgorithm,
-	saltLength         [2] INTEGER,
-	trailerField       [3] TrailerField OPTIONAL
-}
-HashAlgorithm ::=3D AlgorithmIdentifier
-MaskGenAlgorithm ::=3D AlgorithmIdentifier
-TrailerField ::=3D INTEGER
-AlgorithmIdentifier ::=3D SEQUENCE {
-	algorithm	OBJECT IDENTIFIER,
-	parameters	ANY OPTIONAL
-}
-END""", 'der')
+Ciao
+Stephan
 
-#-------------------------------------------------------------------------=
------
-# X.509
-#
-X509 =3D asn1tools.compile_string("""
-X509 DEFINITIONS ::=3D BEGIN
-Certificate ::=3D SEQUENCE {
-	tbsCertificate		TBSCertificate,
-	signatureAlgorithm	AlgorithmIdentifier,
-	signature		BIT STRING
-	}
-TBSCertificate ::=3D SEQUENCE {
-	version           [ 0 ]	Version,
-	serialNumber		CertificateSerialNumber,
-	signature		AlgorithmIdentifier,
-	issuer			Name,
-	validity		Validity,
-	subject			Name,
-	subjectPublicKeyInfo	SubjectPublicKeyInfo,
-	issuerUniqueID    [ 1 ]	IMPLICIT UniqueIdentifier OPTIONAL,
-	subjectUniqueID   [ 2 ]	IMPLICIT UniqueIdentifier OPTIONAL,
-	extensions        [ 3 ]	Extensions OPTIONAL
-	}
-Version ::=3D INTEGER
-CertificateSerialNumber ::=3D INTEGER
-AlgorithmIdentifier ::=3D SEQUENCE {
-	algorithm		OBJECT IDENTIFIER,
-	parameters		ANY OPTIONAL
-}
-Name ::=3D SEQUENCE OF RelativeDistinguishedName
-RelativeDistinguishedName ::=3D SET OF AttributeValueAssertion
-AttributeValueAssertion ::=3D SEQUENCE {
-	attributeType		OBJECT IDENTIFIER,
-	attributeValue		UTF8String -- Really ANY
-	}
-Validity ::=3D SEQUENCE {
-	notBefore		Time,
-	notAfter		Time
-	}
-Time ::=3D CHOICE {
-	utcTime			UTCTime,
-	generalTime		GeneralizedTime
-	}
-SubjectPublicKeyInfo ::=3D SEQUENCE {
-	algorithm		AlgorithmIdentifier,
-	subjectPublicKey	BIT STRING
-	}
-UniqueIdentifier ::=3D BIT STRING
-Extensions ::=3D SEQUENCE OF Extension
-Extension ::=3D SEQUENCE {
-	extnid			OBJECT IDENTIFIER,
-	critical		BOOLEAN,
-	extnValue		OCTET STRING
-	}
-END""", 'der')
-
-#-------------------------------------------------------------------------=
------
-# PKCS#7
-#
-PKCS7 =3D asn1tools.compile_string("""
-PKCS7 DEFINITIONS ::=3D BEGIN
-PKCS7ContentInfo ::=3D SEQUENCE {
-	contentType	ContentType,
-	content		[0] EXPLICIT SignedData OPTIONAL
-}
-ContentType ::=3D OBJECT IDENTIFIER
-SignedData ::=3D SEQUENCE {
-	version			INTEGER,
-	digestAlgorithms	DigestAlgorithmIdentifiers,
-	contentInfo		ContentInfo,
-	certificates		CHOICE {
-		certSet		[0] IMPLICIT ExtendedCertificatesAndCertificates,
-		certSequence	[2] IMPLICIT Certificates
-	} OPTIONAL,
-	crls CHOICE {
-		crlSet		[1] IMPLICIT CertificateRevocationLists,
-		crlSequence	[3] IMPLICIT CRLSequence
-	} OPTIONAL,
-	signerInfos		SignerInfos
-}
-ContentInfo ::=3D SEQUENCE {
-	contentType	ContentType,
-	content		[0] EXPLICIT Data OPTIONAL
-}
-Data ::=3D ANY
-DigestAlgorithmIdentifiers ::=3D CHOICE {
-	daSet			SET OF DigestAlgorithmIdentifier,
-	daSequence		SEQUENCE OF DigestAlgorithmIdentifier
-}
-DigestAlgorithmIdentifier ::=3D SEQUENCE {
-	algorithm   OBJECT IDENTIFIER,
-	parameters  ANY OPTIONAL
-}
-ExtendedCertificatesAndCertificates ::=3D SET OF ExtendedCertificateOrCert=
-ificate
-ExtendedCertificateOrCertificate ::=3D CHOICE {
-  certificate		Certificate,
-  extendedCertificate	[0] IMPLICIT ExtendedCertificate
-}
-ExtendedCertificate ::=3D Certificate
-Certificates ::=3D SEQUENCE OF Certificate
-CertificateRevocationLists ::=3D SET OF CertificateList
-CertificateList ::=3D SEQUENCE OF Certificate
-CRLSequence ::=3D SEQUENCE OF CertificateList
-Certificate ::=3D BOOLEAN -- This really needs to be ANY, but asn1tools ex=
-plodes
-SignerInfos ::=3D CHOICE {
-	siSet		SET OF SignerInfo,
-	siSequence	SEQUENCE OF SignerInfo
-}
-SignerInfo ::=3D SEQUENCE {
-	version			INTEGER,
-	sid			SignerIdentifier,
-	digestAlgorithm		DigestAlgorithmIdentifier,
-	authenticatedAttributes	CHOICE {
-		aaSet		[0] IMPLICIT SetOfAuthenticatedAttribute,
-		aaSequence	[2] EXPLICIT SEQUENCE OF AuthenticatedAttribute
-	} OPTIONAL,
-	digestEncryptionAlgorithm
-				DigestEncryptionAlgorithmIdentifier,
-	encryptedDigest		EncryptedDigest,
-	unauthenticatedAttributes CHOICE {
-		uaSet		[1] IMPLICIT SET OF UnauthenticatedAttribute,
-		uaSequence	[3] IMPLICIT SEQUENCE OF UnauthenticatedAttribute
-	} OPTIONAL
-}
-SignerIdentifier ::=3D CHOICE {
-	issuerAndSerialNumber IssuerAndSerialNumber,
-        subjectKeyIdentifier [0] IMPLICIT SubjectKeyIdentifier
-}
-IssuerAndSerialNumber ::=3D SEQUENCE {
-	issuer			Name,
-	serialNumber		CertificateSerialNumber
-}
-CertificateSerialNumber ::=3D INTEGER
-SubjectKeyIdentifier ::=3D OCTET STRING
-SetOfAuthenticatedAttribute ::=3D SET OF AuthenticatedAttribute
-AuthenticatedAttribute ::=3D SEQUENCE {
-	type			OBJECT IDENTIFIER,
-	values			SET OF ANY
-}
-UnauthenticatedAttribute ::=3D SEQUENCE {
-	type			OBJECT IDENTIFIER,
-	values			SET OF ANY
-}
-DigestEncryptionAlgorithmIdentifier ::=3D SEQUENCE {
-	algorithm		OBJECT IDENTIFIER,
-	parameters		ANY OPTIONAL
-}
-EncryptedDigest ::=3D OCTET STRING
-Name ::=3D SEQUENCE OF RelativeDistinguishedName
-RelativeDistinguishedName ::=3D SET OF AttributeValueAssertion
-AttributeValueAssertion ::=3D SEQUENCE {
-	attributeType		OBJECT IDENTIFIER,
-	attributeValue		UTF8String -- Really ANY
-}
-END""", 'der')
-
-##########################################################################=
-#####
-#
-# Write a C data array from a bytestring.
-#
-##########################################################################=
-#####
-def write_c_hexarray(cfile, name, data):
-    cfile.write("static const u8 " + name + "[] __initconst =3D {\n")
-    need_close =3D False
-    for i in range(0, len(data)):
-        if not need_close:
-            cfile.write("\t\"")
-            need_close =3D True
-        cfile.write("\\x{:02x}".format(data[i]))
-        if i & 0xf =3D=3D 0xf:
-            cfile.write("\"\n")
-            need_close =3D False
-    if need_close:
-            cfile.write("\"\n")
-    cfile.write("};\n")
-
-vector_table =3D list()
-
-def write_c(cfile, name, x509, data, pkcs7, result):
-    write_c_hexarray(cfile, name + "_key", x509)
-    write_c_hexarray(cfile, name + "_data", data)
-    write_c_hexarray(cfile, name + "_sig", pkcs7)
-    cfile.write("\n")
-
-    vector_table.append("\t{\n");
-    vector_table.append("\t\t.name\t\t=3D \"" + name + "\",\n");
-    vector_table.append("\t\t.key\t\t=3D "  + name + "_key,\n");
-    vector_table.append("\t\t.data\t\t=3D " + name + "_data,\n");
-    vector_table.append("\t\t.sig\t\t=3D "  + name + "_sig,\n");
-    vector_table.append("\t\t.key_len\t=3D sizeof("  + name + "_key) - 1,\=
-n");
-    vector_table.append("\t\t.data_len\t=3D sizeof("  + name + "_data) - 1=
-,\n");
-    vector_table.append("\t\t.sig_len\t=3D sizeof("  + name + "_sig) - 1,\=
-n");
-    vector_table.append("\t\t.pass\t\t=3D " + result + ",\n");
-    vector_table.append("\t},\n");
-
-def write_c_table(cfile, basename):
-    cfile.write("const struct nist_test_vector " + basename + "[] __initco=
-nst =3D {\n")
-    for i in vector_table:
-        cfile.write(i)
-    cfile.write("};\n")
-
-
-##########################################################################=
-#####
-#
-# Create an X.509 certificate to hold an RSA public key and create a detac=
-hed
-# PKCS#7 message to carry a signature created with it.
-#
-##########################################################################=
-#####
-def create_rsa_key(n, e):
-    """Create an RSA public key"""
-    pubkey =3D RSA.encode("RsaPubKey", {
-        'n' : rsa_n,
-        'e' : rsa_e
-        })
-
-def create_rsassa_params(salt_len, digest_alg):
-    """Create the parameters for RSASSA-PSS"""
-    mgf1_params =3D RSA.encode("AlgorithmIdentifier", {
-        'algorithm'         : digest_alg,
-        'parameters'        : None
-    })
-
-    sig_params =3D RSA.encode("RSASSA-PSS-params", {
-            'hashAlgorithm'         : {
-                'algorithm'         : digest_alg,
-                'parameters'        : None
-            },
-            'maskGenAlgorithm'      : {
-                'algorithm'         : OID_id_mgf1,
-                'parameters'        : mgf1_params
-                },
-            'saltLength'            : salt_len,
-        })
-
-def create_cert_and_sig(basename, count, pubkey, signature, sig_params, co=
-ntent,
-                        digest_alg, sig_alg, result, cfile):
-    serial =3D 0x1234000 + count
-
-    # Create an X.509 certificate
-    x509 =3D X509.encode("Certificate", {
-        'tbsCertificate' : {
-            'version'           : 2,
-            'serialNumber'      : serial,
-            'signature' : {
-                'algorithm'         : sig_alg,
-                'parameters'        : sig_params
-            },
-            'issuer' : [
-                [
-                    {
-                        'attributeType' : OID_commonName,
-                        'attributeValue' : "Fred"
-                    }
-                ]
-            ],
-            'validity' : {
-                'notBefore' : ('utcTime',     datetime.datetime(2026, 1, 1=
-)),
-                'notAfter'  : ('generalTime', datetime.datetime(2199, 1, 1=
-)),
-            },
-            'subject' : [
-                [
-                    {
-                        'attributeType' : OID_commonName,
-                        'attributeValue' : basename
-                    }
-                ]
-            ],
-            'subjectPublicKeyInfo' : {
-                'algorithm' : {
-                    'algorithm'         : sig_alg,
-                    'parameters'        : None
-                },
-                'subjectPublicKey' : (pubkey, len(pubkey)*8)
-            },
-            'extensions' : [
-                {
-                    'extnid'	: OID_basicConstraints,
-                    'critical'	: True,
-                    'extnValue'	: b'\x30\x00'
-                }, {
-                    'extnid'	: OID_keyUsage,
-                    'critical'	: False,
-                    'extnValue'	: b'\x03\x02\x07\x80'
-                }, {
-                    'extnid'	: OID_subjectKeyIdentifier,
-                    'critical'	: False,
-                    'extnValue'	: bytes.fromhex("04142B73932CF06C341AA72CC=
-EA4E0AC35A96CCC{:04x}".format(count)),
-                },
-            ]
-        },
-        'signatureAlgorithm' :  {
-            'algorithm'         : sig_alg,
-            'parameters'        : sig_params
-        },
-        'signature' : (signature, len(signature)*8)
-    })
-
-    # Create a detached PKCS#7 message to use as a signature carrier
-    pkcs7 =3D PKCS7.encode("PKCS7ContentInfo", {
-        'contentType'               : OID_signed_data,
-        'content' : {
-            'version'		: 1,
-            'digestAlgorithms' : ( 'daSet', [
-                {
-                    'algorithm'         : digest_alg,
-                    'parameters'        : None
-                }
-            ]),
-            'contentInfo' : {
-                'contentType'               : OID_data
-            },
-            'signerInfos' : ('siSet', [
-                {
-                    'version'		: 1,
-                    'sid' : (
-                        'issuerAndSerialNumber', {
-                            'issuer'		: [
-                                [
-                                    {
-                                        'attributeType' : OID_commonName,
-                                        'attributeValue' : "Fred"
-                                    }
-                                ]
-                            ],
-                            'serialNumber' : serial
-                        }
-                    ),
-                    'digestAlgorithm' : {
-                        'algorithm'         : digest_alg,
-                    },
-                    'digestEncryptionAlgorithm' : {
-                        'algorithm'         : sig_alg,
-                        'parameters'        : sig_params
-                    },
-                    'encryptedDigest'	: signature,
-                }
-            ])
-        }
-    })
-
-    out =3D open(basename + ".x509", "wb")
-    out.write(x509)
-    out.close()
-
-    out =3D open(basename + ".p7s", "wb")
-    out.write(pkcs7)
-    out.close()
-
-    out =3D open(basename + ".data", "wb")
-    out.write(content)
-    out.close()
-
-    write_c(cfile, basename, x509, content, pkcs7, result)
-
-##########################################################################=
-#####
-#
-# Parse FIPS JSON vector file
-#
-##########################################################################=
-#####
-
-vecfilename =3D sys.argv[1]
-vecf =3D open(vecfilename, "r")
-testdata =3D json.load(vecf);
-vecf.close()
-
-expfilename =3D sys.argv[2]
-expf =3D open(expfilename, "r")
-expected =3D json.load(expf);
-expf.close()
-
-cfile =3D open("nist_testdata.c", "w")
-
-def badfile(msg):
-    print(vecfilename + ": " + msg, file=3Dsys.stderr);
-    exit(3)
-def skipg(tgid, msg):
-    print("skipping tgId=3D" + str(tgid) + ": " + msg, file=3Dsys.stderr)
-def skipc(tcid, msg):
-    print("skipping tcId=3D" + str(tcid) + ": " + msg, file=3Dsys.stderr)
-
-if testdata["mode"] !=3D "sigVer":
-    badfile("Only sigVer files supported")
-
-if testdata["algorithm"] !=3D "ML-DSA":
-    badfile("Unsupported algo " + testdata["algorithm"])
-
-if expected["algorithm"] !=3D testdata["algorithm"] or \
-   expected["revision"] !=3D testdata["revision"] or \
-   expected["vsId"] !=3D testdata["vsId"] or \
-   expected["mode"] !=3D testdata["mode"]:
-    badfile("Doesn't match expected data file")
-
-rname =3D "nist-"
-rname +=3D testdata["algorithm"].replace("-", "").lower() + "-"
-rname +=3D testdata["revision"].lower()
-rname =3D rname.replace("-", "_")
-count =3D 0
-
-results =3D dict()
-for tgroup in expected["testGroups"]:
-    for test in tgroup["tests"]:
-        tcid =3D test["tcId"]
-        results[tcid] =3D test["testPassed"]
-
-for tgroup in testdata["testGroups"]:
-    tgid =3D tgroup["tgId"]
-
-    if tgroup["testType"] !=3D "AFT":
-        skipg(tgid, "Not an Algorithm Functional Test")
-        continue
-
-    if tgroup["signatureInterface"] =3D=3D "external":
-        if tgroup["preHash"] =3D=3D "preHash":
-            skipg(tgid, "Pre-hashing required")
-            continue
-        if tgroup["preHash"] !=3D "pure":
-            skipg(tgid, "Not pure")
-            continue
-    else:
-        if tgroup["externalMu"]:
-            skipg(tgid, "External-mu required")
-            continue
-        #json.dump(tgroup, sys.stdout)
-        #skipg(tgid, "Internal")
-        #continue
-
-    if tgroup["parameterSet"] =3D=3D "ML-DSA-44":
-        sig_algo =3D OID_id_ml_dsa_44
-        hash_algo =3D None
-    elif tgroup["parameterSet"] =3D=3D "ML-DSA-65":
-        sig_algo =3D OID_id_ml_dsa_65
-        hash_algo =3D None
-    elif tgroup["parameterSet"] =3D=3D "ML-DSA-87":
-        sig_algo =3D OID_id_ml_dsa_87
-        hash_algo =3D None
-    else:
-        badfile("Unsupported algo " + testdata["algorithm"])
-
-    for test in tgroup["tests"]:
-        tcid =3D test["tcId"]
-        pubkey =3D bytes.fromhex(test["pk"])
-        message =3D bytes.fromhex(test["message"])
-        signature =3D bytes.fromhex(test["signature"])
-        sig_params =3D None
-
-        try:
-            if test["hashAlg"] =3D=3D "SHA1":
-                digest_algo =3D OID_sha1
-            elif test["hashAlg"] =3D=3D "SHA224":
-                digest_algo =3D OID_sha224
-            elif test["hashAlg"] =3D=3D "SHA256":
-                digest_algo =3D OID_sha256
-            elif test["hashAlg"] =3D=3D "SHA384":
-                digest_algo =3D OID_sha384
-            elif test["hashAlg"] =3D=3D "SHA512":
-                digest_algo =3D OID_sha512
-            else:
-                skipc("Unknown algo:", test["hashAlg"])
-                continue
-        except KeyError:
-            if testdata["algorithm"] !=3D "ML-DSA":
-                skipc("No hash algo")
-                continue
-            digest_algo =3D OID_sha512
-
-        result =3D results[tcid]
-        if result:
-            result_val =3D "true"
-        else:
-            result_val =3D "false"
-
-        name =3D rname + "_" + str(tcid);
-        create_cert_and_sig(name, tcid,
-                            pubkey, signature, sig_params, message,
-                            digest_algo,
-                            sig_algo,
-                            result_val,
-                            cfile)
-        count +=3D 1
-
-        os.environ["LD_LIBRARY_PATH"] =3D "/data/openssl/build/"
-        status =3D subprocess.run([ "/data/openssl/build/apps/openssl",
-                                  "smime", "-verify", "-binary",
-                                  "-inform", "DER", "-in", name + ".p7s",
-                                  "-content", name + ".data",
-                                  "-certfile", name + ".x509",
-                                  "-nointern",
-                                  "-noverify",
-                                  "-out", "/dev/null"
-                                 ],
-                                capture_output =3D True)
-
-        if status.returncode !=3D 0:
-            print("tcId=3D" + str(tcid) +
-                  ": Unexpected failure", name, status.returncode)
-            #sys.stderr.buffer.write(status.stderr)
-            #exit(4)
-        else:
-            print("tcId=3D" + str(tcid) + ": Success", name)
-
-write_c_table(cfile, rname)
-
-print("Wrote", count, "test vectors");
 
 
