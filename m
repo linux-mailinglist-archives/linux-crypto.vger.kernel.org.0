@@ -1,123 +1,184 @@
-Return-Path: <linux-crypto+bounces-20221-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20222-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kIa1Fa48cGmgXAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20221-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 03:40:46 +0100
+	id CDggLG2LcGkEYQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20222-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 09:16:45 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D845C4FEC9
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 03:40:45 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E967535CB
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 09:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4D77EBC3732
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 02:39:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CAE50767BE5
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 08:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820F7320A31;
-	Wed, 21 Jan 2026 02:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDC7449EB4;
+	Wed, 21 Jan 2026 08:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zsc44AFd"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ZdVhO9OQ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1D6304BBD;
-	Wed, 21 Jan 2026 02:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768963137; cv=none; b=XNVr0msRZgpKwoJdFqsbFiTWlL79T8SplgVi8k8XIarnny3DeUp2ycm5wl3iltuHgQHg6l/QrqNbEoe07mkx2i28Pn/GqJ+xukpjE0MVXabMcR1Z8pa+EaflBRt5Vodueei2CnW4q9/7hsNEZFwzFjwyEHtiLD8RB7AaTtSVGPw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768963137; c=relaxed/simple;
-	bh=foy09YRZdpfh+UcvVsh4GRT12EVN+LC1837tCHo1aB0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fbgiu2fdhdH8yjuBGjYUjEo8tKX+edQe3nNJuZrq7rXquwxRKtkUxaR1HQT5tmH/ZdK/Q2eFsriIqpsiapq5UI0Ho/m45lcDVnKojMJ9GFdYuFAp0LaZSfAICXdeBUrkd+YN3fh7hJoLuVV9dLC7vKPW38lGiz7+IdFSofRCQ3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zsc44AFd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CD04C16AAE;
-	Wed, 21 Jan 2026 02:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768963137;
-	bh=foy09YRZdpfh+UcvVsh4GRT12EVN+LC1837tCHo1aB0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Zsc44AFdV6aDzxB8ptj2ODzyAk7zE3+OCht8aqOT44hN5GbKU+JeVpIbIrn2g/GN8
-	 4/fLK+lG8MCcwcUWkqCxxClmt4EX2qoraqPd/JAeH1SlBV9HKWW+58XoYxQRkGK02U
-	 /016TPWTUAhYJzlFkKtl3gm4wDQNZMMX+hJtuoOIESP6Wan3HxnFcZ1Hy8BjAFDHjd
-	 GEdyz6rTKNlkUZs0XDFRNsIzU0BoVZ44kHTR3qmB3Ph/PObQMuPxJA5kyq75BLCExQ
-	 C66UzmFDFHMukn8rFhja+D6XJ2RQZoTOSMedQitO2/WKhsPfJOS6nM2nEMQ/cIseuz
-	 7fh0vyKP4VmCg==
-Date: Tue, 20 Jan 2026 18:38:54 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Robert Marko <robert.marko@sartura.hr>
-Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev, herbert@gondor.apana.org.au, davem@davemloft.net,
- lee@kernel.org, andrew+netdev@lunn.ch, edumazet@google.com,
- pabeni@redhat.com, Steen.Hegelund@microchip.com,
- daniel.machon@microchip.com, UNGLinuxDriver@microchip.com,
- linusw@kernel.org, olivia@selenic.com, richard.genoud@bootlin.com,
- radu_nicolae.pirea@upb.ro, gregkh@linuxfoundation.org,
- richardcochran@gmail.com, horatiu.vultur@microchip.com,
- Ryan.Wanner@microchip.com, tudor.ambarus@linaro.org,
- kavyasree.kotagiri@microchip.com, lars.povlsen@microchip.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
- luka.perkov@sartura.hr
-Subject: Re: [PATCH v5 10/11] dt-bindings: net: sparx5: do not require phys
- when RGMII is used
-Message-ID: <20260120183854.7d081aec@kernel.org>
-In-Reply-To: <20260115114021.111324-11-robert.marko@sartura.hr>
-References: <20260115114021.111324-1-robert.marko@sartura.hr>
-	<20260115114021.111324-11-robert.marko@sartura.hr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D504418F8
+	for <linux-crypto@vger.kernel.org>; Wed, 21 Jan 2026 08:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768983126; cv=pass; b=cB52jPTPeEwUprZtUqNs6KPBGXNRVPvNzVqqkRMSaOhasuT1N8wceqPDANkZ/5/tk+c+ik7z0oQ7YVIJRl7c9iMzoqSd4jVC2UHmOOVdWhWXTE0jDuWy5kzHbBt/7vL4w4ASoK7wRyGK+wRtmdIJ1svNoh3TS8prdI/eIdwS8G8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768983126; c=relaxed/simple;
+	bh=NcPcHijqCx7t3zPi3d2W+9QUjcbq1aI+GVwFFFeFbq4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dpExtbEDMocdfckdts4UtNdv15IPNkkJNWcTrrKa7B7RW5IMqBqVwXDv6s+BHngWebHJBGoEw/7j/msQAGn+KjGe6SCZZCa33FBxrOwow1Y/pCJYnnn9rQz1QzWZZWSjNZ2tD41kQckLSeX4mKceBtNKgMRbiUg2fYfuXWb0PPI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ZdVhO9OQ; arc=pass smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-59b76844f89so6102759e87.1
+        for <linux-crypto@vger.kernel.org>; Wed, 21 Jan 2026 00:12:04 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768983123; cv=none;
+        d=google.com; s=arc-20240605;
+        b=H/S7VuJFCo7H2gNDQKE2XWDIOxNau5p82xbZxfJ41OYNOy/eQp0FA8q/eqPy0jAot9
+         Wcy/oI3WcdYY152bkZRvnOECuGU8wA73kjwXJYSnJ8QV2JOnozWxhTVPwAgPjimcI42q
+         iIxOLgkxETBmuEset1D3dHv/tyYJc2nfVgccYDNVjFOjeDYg+BCft5+sXFI83xW9ivXk
+         tWgSSpuUl0m9tZCJBYJK33aIpwE3vw8jBIV0evFjGG/qbefTFGarNBXlDuJQER2gSANP
+         f7qzZNvrig8fgSrygAEfyMDHS8KFfViu1WFyjAdt6eryXQlJXC6OtiCIqnVJZ8nJUfYy
+         kymg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=7fXCBugNbG8UpDEmEOBmP8ra4Bif5NvnVW2PAsTZKdM=;
+        fh=LpvceIx5u5xZX41Hrgxuqbcp6DSu0YeawH40ccTtj28=;
+        b=Xj8AGUWKB90fOS04+5IIdX4F8234s8JiVGGjF1DEG9sCUuyfdOYJdvDzEstaysfj8O
+         plhYaW+eObJEcY/VtGZ+uRakS/pw02cCCgwN/d6RNT9xztHJB0UqdmZ9x57KfBjjx3F0
+         rD4CCRvGetf06H+h2F0AgJJ/zyY+ZP00u3xMnWgE8c8VUufkxB+KJRikf3HThZNYt4Cj
+         VS4hRyZooL3Pr0tZZUv8DiCbBbVc2O0SlWXGJNnClEQlaxi9qsm75qJUQNjoxic6M2S3
+         FlULB6/4qUlaFQFipk0tGkCW/rq4OnFTIGtL/W5fr0XBv645u8J+mjye9iYZkmfJMKR8
+         7/1Q==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1768983123; x=1769587923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7fXCBugNbG8UpDEmEOBmP8ra4Bif5NvnVW2PAsTZKdM=;
+        b=ZdVhO9OQUc0wiKmBFlmD8k8TUGqsMUSipCPOvNPYADDKeiTc6sa99VIgDi2FHKkZ/U
+         Awkh2QH5dLTlkwim2U0tmBzoezXZIt391oDRSB8q2+eF46TUcVLaE5lyHBezcI0rGyGX
+         3gRH2QPt/ybJ8oj79BkHF/V87RMdLtTZx/m3mQPAaxSwc3316N9I+ufcZQa/FAOHBKrx
+         KkDqoxXHMtVYME+lgECQbFbuNoTnZztld4VI8sgtKWgUzM01s/I6jl0t28uH8S7NCGDj
+         cKdh0oboHRLvXVG6ac6s4kUaodyOt0hTQG5dVDS3n4mumRZ3/0/OgbiW1TKMj8abHGzo
+         z98Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768983123; x=1769587923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=7fXCBugNbG8UpDEmEOBmP8ra4Bif5NvnVW2PAsTZKdM=;
+        b=F7+UvRfBAQRWJ6QxKOQBzHu67uoTOjM4j3kIn6bn6yFo8977uLSMqgN320BmhIpG6/
+         A53lS85gcwviIuQxG1HlL82xZ1M3/aJ9oEJuOpW7IXvuyEOTiggC1rH9/tvltxSrt3a+
+         XPlcxwWkxD43JzYEULa4wuRx9rfKB4N2MVHJ6wJyVOuEPgl4QZNTD/YBx3lIzbtJp2Qd
+         KTDieHeIVZdMfVwLLuYX8e1W94zOPIbxdRJC1vHlgKircuxfc7UdifP3Vgz++Ku/dc+a
+         COUt0rF1WuJH491J2jaFHTgllKjxNXKUPu0A6WW2WPyFdH/ci0kCAZVP/P/Rfeswp6QD
+         6dtA==
+X-Forwarded-Encrypted: i=1; AJvYcCWfAgg7stIel3fW90WjNMM+jUX1husOJgKz8wf0k+n1rfr1DkPo9TqDCfXHq3ocMuffhfB5feiiqByGjMg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhpFWoHkV16IQlQ4t0Jtp4rn7vN6wIKfduzS77FhrLy7jqbGGs
+	tSspuGLO22CrR91FJyT5aZg30D5a87BqAEpVWtB23xasBVddFMzHexqEYP/aYf9F9Fa0uU6rQh7
+	OMw8sPSA6fmiFm5nrEK0xsNUsAlvEi2rDMFUPQv5xSQ==
+X-Gm-Gg: AZuq6aI6YS8kEw5oo+7GULldeaPQeSinYCKKZgfxft9jcZYAdsxTtTHrkBYO4dTHTWq
+	bckouGH21vQFG/ZqSNOaVFzzZHT07R2d26F/sFYgQtbHWs81IaqFs+ETJg3Mplxxa8KkWkS4pl7
+	SD+YVMWIgo2blrAQ5rbj6fBsWVuxw3pBOKieKUFmAHFhx+F+w53pK6PikDwMZNIf18guXY12jpB
+	YAyXdvrA0eKXMXequsGoVFUyhowuwIzQcFYG6ox7fQvs+WU18Pkk/tzLxZe6ZsB6yfylmqzPT2N
+	F9YI1d4rSYM62aiGVC0npkAAOGYF
+X-Received: by 2002:a05:6512:138f:b0:59a:183c:4863 with SMTP id
+ 2adb3069b0e04-59baeeb1d8cmr5444078e87.8.1768983122854; Wed, 21 Jan 2026
+ 00:12:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+References: <20260120224108.GC6191@quark> <20260120145103.1176337-1-dhowells@redhat.com>
+ <20260120145103.1176337-8-dhowells@redhat.com> <1416722.1768950957@warthog.procyon.org.uk>
+ <20260120233617.GA10653@quark>
+In-Reply-To: <20260120233617.GA10653@quark>
+From: Ignat Korchagin <ignat@cloudflare.com>
+Date: Wed, 21 Jan 2026 08:11:51 +0000
+X-Gm-Features: AZwV_QiRbs3OO4qM3uwaFGGNt_nfptg6k5-iiQUJvwUGMqgS-PCFW0-TncfBeF8
+Message-ID: <CALrw=nGHEf3zT0yb2ybpH58ah4dT4_H11TseDL7Fs-w7RBY6hQ@mail.gmail.com>
+Subject: Re: [PATCH v13 07/12] crypto: Add RSASSA-PSS support
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: David Howells <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
+	Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	"Jason A . Donenfeld" <Jason@zx2c4.com>, Ard Biesheuvel <ardb@kernel.org>, Stephan Mueller <smueller@chronox.de>, 
+	linux-crypto@vger.kernel.org, keyrings@vger.kernel.org, 
+	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Tadeusz Struk <tadeusz.struk@intel.com>, "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-8.96 / 15.00];
+	WHITELIST_DMARC(-7.00)[cloudflare.com:D:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_DKIM_ALLOW(-0.20)[cloudflare.com:s=google09082023];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,microchip.com,bootlin.com,tuxon.dev,gondor.apana.org.au,davemloft.net,lunn.ch,google.com,redhat.com,selenic.com,upb.ro,linuxfoundation.org,gmail.com,linaro.org,vger.kernel.org,lists.infradead.org,sartura.hr];
-	TAGGED_FROM(0.00)[bounces-20221-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20222-lists,linux-crypto=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	RCPT_COUNT_TWELVE(0.00)[36];
+	DMARC_POLICY_ALLOW(0.00)[cloudflare.com,reject];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	DKIM_TRACE(0.00)[cloudflare.com:+];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ignat@cloudflare.com,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt,netdev];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: D845C4FEC9
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,cloudflare.com:dkim,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 1E967535CB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 15 Jan 2026 12:37:35 +0100 Robert Marko wrote:
-> LAN969x has 2 dedicated RGMII ports, so regular SERDES lanes are not used
-> for RGMII.
-> 
-> So, lets not require phys to be defined when any of the rgmii phy-modes are
-> set.
+On Tue, Jan 20, 2026 at 11:36=E2=80=AFPM Eric Biggers <ebiggers@kernel.org>=
+ wrote:
+>
+> On Tue, Jan 20, 2026 at 11:15:57PM +0000, David Howells wrote:
+> > Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > > As I mentioned in another reply, error-prone string parsing isn't a
+> > > great choice.  C has native support for function parameters.
+> >
+> > But is constrained that it has to work with KEYCTL_PKEY_VERIFY's info
+> > parameter.
+>
+> The cover letter of this patchset summarizes it as "These patches add
+> ML-DSA module signing and RSASSA-PSS module signing."  Adding
+> KEYCTL_PKEY_VERIFY support for these algorithms would be a significant
+> new UAPI feature that would need its own justification and its own
+> documentation and test updates.
+>
+> However, it was established pretty clearly in past discussions that
+> KEYCTL_PKEY_* are a mistake and basically exist only for backwards
+> compatibility with iwd.
 
-Applied, thanks!
+I disagree that it was "established". It is some folks opinion here,
+but I find it quite useful and hope it would be actually extended by
+good algorithm support.
+
+> So I don't understand why you're advocating for adding new features to
+> them.
+>
+> - Eric
 
