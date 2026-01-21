@@ -1,290 +1,306 @@
-Return-Path: <linux-crypto+bounces-20232-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20234-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KNNvNSwYcWmodQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20232-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 19:17:16 +0100
+	id +OyuKpcmcWmqewAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20234-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 20:18:47 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C01345B279
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 19:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 21AF75BFC9
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 20:18:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 93333B2C89C
-	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 16:39:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C7EB0B0C5DF
+	for <lists+linux-crypto@lfdr.de>; Wed, 21 Jan 2026 17:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B41248C415;
-	Wed, 21 Jan 2026 16:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEE137F74B;
+	Wed, 21 Jan 2026 17:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="Flv4vHc+"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d7CAJriX"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013066.outbound.protection.outlook.com [52.101.83.66])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218183ED13E;
-	Wed, 21 Jan 2026 16:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769013026; cv=fail; b=G4bdKiKavoXdYYZfLgqstkUHBcd78GgAJcyvFEKXSQrt2CKGyN/44geyaMuyJT0FndqUiJL/ugvIyLXsZT6vXUd1Wut1h9dyjD13UZGfFSBkkj7z6VY2WjANBubRWDU7utM4ccbpjlq+/AB/gz9YAjkgRgs3bnzPKsUHcu6k7zA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769013026; c=relaxed/simple;
-	bh=qfLhiwWAhSRzyg1EwsvU1aASnNlBbDBjH2RVshaC6Mg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=DxVyXlN2zayMZ8xiJ69c+NQhY++qCHBaGeXUvX76pS6NPbPki7x8dVRg5jDfuey/xjTUf3d568w0jcxFqqpp4ePheRwQOFDx2LQwDiEAYcQbdwA+mBlXfVajG+c6N/leZn5X5K3fxujvQT9J3d4Wzlg4JOoK24gUkUhCgRfE7ac=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=Flv4vHc+; arc=fail smtp.client-ip=52.101.83.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Y5yxRDTbwhuh2VI+ocoVUXDnPXyVPU85LLyrdkhfVS3Y0ScDUXFjx9zdW+5OgP6jvlK56sRcAWALXB252lGmc/eCvijqmLAPn9FGZHDbY6TbnfLjAfVWv4ydnqFeuv0MVxMbPbJNnoHGsbB4ZZOxAllBZ919zOPxeN6goUtyJy0F4x0OMpRYY4lXZl/m8cQGDNNhL1+47UpbvZs+3ZAKcfIBsiC2VtPKZX7BqCmbcL5cH6h/Uf/tyKSNReXAfsMP5cipt9KzuCPsMFSojW48ZPU6o1o+15xxe79XXOdivNCOGeU3UuweqomFYVD9JhU3Gdh83PRmVjBOrOg0khZnUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yPa6c4nUVPvl2AfDWomDGQDuHSSHWzia3s24AFuNzCw=;
- b=L+hk5av73Rayrzyolm8Eypw7Kk9BcvLpqBKXslGDT81CrP+jeceW77L9fPbnp+NHHUlSMdiNLFtJ5zMapEeu2U03vXNqooAhpUEaI5Z3r03juI3ImbxU5lGlyt4SC+4i832NkhhN5zL1QAYJF5o8I+TcI9QH3eV/aueoBaf3TTcqKzRF35x6Bt3Vt9RtJkR0gj/6TZDMuvzz4H67GO7BGU1P4SfYX2sQcHf0mraVKicJmtl9MV1lNL0ZlBS8coJU++Xt/18xMpPOk1otXoSWl8/cUE0f06k4daKM1SO9C8mvzw+VafxHD34/l1vvcbQ048rnNoNrTRMQFzr2BZrYzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yPa6c4nUVPvl2AfDWomDGQDuHSSHWzia3s24AFuNzCw=;
- b=Flv4vHc+lG5v0kJ8TX6pcpxM7DYsbHpPplR13fk96M/SNEpAL59xXJjuHGCxxVSn41E1I5wetuHcEI3HLYjkqxO2RiRJecTqBw14jHSGcpRA7EnU4nyqX9M5R4jDRNrkcl6a+h9yVRw3h5iEfk7N3XdlhHvDNsRkj7CwrB8PZkdQUuP1PYkz4uPnsmNSFY1OIkMJYVpzo9pVPK7/HaqPyNwNxKr105aUhjGHpFo53dr0whtEG8/qZIYDH3kicqobznbsNhmjkPgAxPRBDoVVijq+3UQ0XHXoVVhI54NNHNxq518DuyKVnAHrfQ6uOstAB39m3kMucJXUi01LminvWg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8951.eurprd04.prod.outlook.com (2603:10a6:10:2e2::22)
- by DBBPR04MB7897.eurprd04.prod.outlook.com (2603:10a6:10:1e7::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.11; Wed, 21 Jan
- 2026 16:30:20 +0000
-Received: from DU2PR04MB8951.eurprd04.prod.outlook.com
- ([fe80::753c:468d:266:196]) by DU2PR04MB8951.eurprd04.prod.outlook.com
- ([fe80::753c:468d:266:196%4]) with mapi id 15.20.9520.011; Wed, 21 Jan 2026
- 16:30:19 +0000
-Date: Wed, 21 Jan 2026 11:30:09 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Vinod Koul <vkoul@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2A84340D9E;
+	Wed, 21 Jan 2026 17:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769017859; cv=none; b=e6/a26ua+L7fTPGGAr6KVaksgqmITTIaSv1+nVf/0if2WaL+NOdPrTYvf4FOeD4gAPneWJytxzBRERjg79OLz8NSiZI0+yn55Tgm2eBSxxMBRbcEJkrCsjGvoGIyhTXnyZDIj8MShcomeV7iftfV9ZltlwaMw7FqSyiBu94b5wo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769017859; c=relaxed/simple;
+	bh=3MYiRsfmJspvl/SoswP+hUfE8ou4Z+5WbA9yfdIRxl8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uxyXywD2YfUtrto09DFjyssJonLOPnVYJsoLK4EYBHlcfCdv0TfCa/ognOv2R4zcBb/jb24kmAbHLibPXHtZC6CPsMBxtWM1+D22bsToq3zCvKIUZBNFUeUoqVMalPIzwEbwmTwcjYUrkcsi7fZlYnNNS16R3XNW+aoOqDr5Xuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d7CAJriX; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1769017856; x=1800553856;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3MYiRsfmJspvl/SoswP+hUfE8ou4Z+5WbA9yfdIRxl8=;
+  b=d7CAJriXKe4JYGUJbfDsC/NKds+6hyFqQA04ll3vsVMRgVbAF00cZ6uE
+   xzBvnTYwaW6aWY6eOUmjFtTsKF4zWOYDgfzU9ruVdnWl4USE2rPIkwPyW
+   Ddjp8z99ywiHVIsg9FJSnJrN/Si/gdbeABnLcMsT8jOUOtFC7r8mLs5KQ
+   9pOloHTyYb/8zqPIO7hcwwBmLM82m6fibPtc2waXPfDznzgWhPR+bkOAz
+   hpU9FHRhbtntnLpBb63t8lauHnayvL9tDKbv9Y5gib0pzSf8amCbTJqVN
+   EkGKsHyIAZ1KgZn8DB3JxB3/WSdaHXyrWGfhu/uVRWFVD44w8kJF3gxz2
+   A==;
+X-CSE-ConnectionGUID: 6eYtpoZ7Q7ik/7lsfP2WcA==
+X-CSE-MsgGUID: veqiXJW7QzaOUimjxMz9pw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11678"; a="81359611"
+X-IronPort-AV: E=Sophos;i="6.21,242,1763452800"; 
+   d="scan'208";a="81359611"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2026 09:50:55 -0800
+X-CSE-ConnectionGUID: tOvd/WTMRkaB/9UPRysoMA==
+X-CSE-MsgGUID: OKccG1LuQCyNjYxKe0uJPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,242,1763452800"; 
+   d="scan'208";a="206935246"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by fmviesa009.fm.intel.com with ESMTP; 21 Jan 2026 09:50:51 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vicLx-00000000RW1-0t8L;
+	Wed, 21 Jan 2026 17:50:49 +0000
+Date: Thu, 22 Jan 2026 01:50:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chunyan Zhang <zhangchunyan@iscas.ac.cn>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Koichiro Den <den@valinux.co.jp>, Niklas Cassel <cassel@kernel.org>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org,
-	mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	imx@lists.linux.dev, Damien Le Moal <dlemoal@kernel.org>
-Subject: Re: [PATCH v3 0/9] dmaengine: Add new API to combine configuration
- and descriptor preparation
-Message-ID: <aXD/EYqhhRJEN8oy@lizhi-Precision-Tower-5810>
-References: <20260105-dma_prep_config-v3-0-a8480362fd42@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260105-dma_prep_config-v3-0-a8480362fd42@nxp.com>
-X-ClientProxiedBy: SJ0PR13CA0107.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::22) To DU2PR04MB8951.eurprd04.prod.outlook.com
- (2603:10a6:10:2e2::22)
+	"David S . Miller" <davem@davemloft.net>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-riscv@lists.infradead.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Chunyan Zhang <zhang.lyra@gmail.com>
+Subject: Re: [PATCH] crypto: aegis128: Add RISC-V vector SIMD implementation
+Message-ID: <202601220110.ontiS30n-lkp@intel.com>
+References: <20260121101923.64657-1-zhangchunyan@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|DBBPR04MB7897:EE_
-X-MS-Office365-Filtering-Correlation-Id: 17b93377-01a9-4ca6-00bf-08de590a5dfe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|52116014|19092799006|7416014|38350700014|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?1UPKYGRC3JCX8vTqxqR99BBEcQy94W/RQytFisVmzYEIugLZ9XPRGXLTZj/+?=
- =?us-ascii?Q?SOdlBdtlnL3EtZyYQFf3HErHLHcfTGYgyUTBwo5laF/c57AKDorPOwErncqv?=
- =?us-ascii?Q?Jhc7m0iM1ne4ya88fiR9g304I3G2j/D3cNRHE9EsVg2jIEeLp/LzfmcFHyJq?=
- =?us-ascii?Q?of5jMF6YSfhZVQeepkTph4vvnVy1cVe0CA5ZHKxrsPvGM7BzoslraEVnaxCY?=
- =?us-ascii?Q?Wk/xz2SA+VVDSuW8pbQGYBbR9XBT4UGqBoXJFdNvgAJh7WRO4ccOrWuq4IDQ?=
- =?us-ascii?Q?B8jhV7UaX4oS9xRQkzMBvq99CUVWFLJL/OvVyO3sPb1WVf/+UXCMACq8vtsz?=
- =?us-ascii?Q?Dd3SGcfro5eZUfsODwaNo//HMp3YVWRTvcqjrbgb39yKKpVun0ZVO6ZZwR1W?=
- =?us-ascii?Q?CgTQTwtHpPBGNii9ZweZVy2F/3+iwx5ZHv+NIDzQT2p4sStDVD+35Q0Ni6sx?=
- =?us-ascii?Q?rbF8MFcQ/Ie8nzdw6BcBH0Ecpeh4nHphttx8XwY/LFXleGFH/ikv99zr+rKj?=
- =?us-ascii?Q?NbL/lIcrNfCYkeEBm9FpwSulQQRVz6zx1c0wevxrHSzqEYOzUGD+ND4NxMoW?=
- =?us-ascii?Q?7tyJ8w/kpXBWdAY1PQdP0cYRB/YAqsbQ0mpAfxPo0Rqrsar65DCOrM8C9dXy?=
- =?us-ascii?Q?tmsRglpr/35alhC8BKAB8txjCdFJZZpw0wn6qKWe9kST/f6wHwzETLV22PVE?=
- =?us-ascii?Q?1a+fWMp0j540gKz5itXknS9cYp2076EzRx209PZhQojclyUAoZ9NskepB85O?=
- =?us-ascii?Q?30PD+SnLBwukJi6KMkpVMSdo4KPlQtkJBQcdVekkAl//ibFZq3+bO4iRE5r4?=
- =?us-ascii?Q?nZxaj0LlXeM+wm9udEPybwmGiCSC/VeXnR49mMARKuvUTmi37dHz4RW2GS0n?=
- =?us-ascii?Q?EOzeySrmEaUlmaU7mDkkJ1QuyHQ0IHxVXX/9rFcJHbC2f1m8Vo1p3EbG3H8v?=
- =?us-ascii?Q?FrnQbo46UjVbEKHOIjG3hYAKT0B9xq/eKZ8LH1fy1fbzQcClMbDsae9v1sH5?=
- =?us-ascii?Q?QAWEte06ykbFN8xc0e1snlXvkHw8quX7MsyMAFrqCGSGImSzuVO4dxvYdZTp?=
- =?us-ascii?Q?wyqd6G7+RMMNtOG55upCaUbSayvWRlE/RDoVzdikDqc5+BxzZ5dUkDt3nz/R?=
- =?us-ascii?Q?VF7Ye6Bb3OB7Ec8kddNVA7/zsEJ3Mubw2U59g0GS1IhYfHqSQ4zIIwBR/7Sm?=
- =?us-ascii?Q?K5fqUq9HsjkqNaz6SF8ecPs6cGOv85sn7wriM6Jweq2lGpt3d4qnc2Dj3gXq?=
- =?us-ascii?Q?78zhvT9NgEuQrWmt9ovpHfpqHELQ+yLZdf3t98UcbTFFTpasYZ4yKcxtCpt0?=
- =?us-ascii?Q?5TZXud62DXECwPfbPx2Yspri4i2Zgmq6Y+ozdISwTOsZMfETvRATfZh0I1PM?=
- =?us-ascii?Q?edbP3rPp93d2qUh1aEyK5fg+V+MH+Py8v+tXM3HgQhqO6G8HRRZ79Oejf08i?=
- =?us-ascii?Q?FX/TQwzApaC4oMpuxlFuX7dugW4ZRLtVA2EtOM/QCvh3XNSVTxKZnBn1SwVb?=
- =?us-ascii?Q?yGSOP4gqtjBpnTUDMZvYu3pHDn9I6UJ8Q+0jMo4fcXTOJZF9IM+unYQF4RaS?=
- =?us-ascii?Q?XSWac78uZVnN0ZtJOp+l3MGtXVDOXQCLsCwcp1e2rnCNQcnTf4/69jXjrf3C?=
- =?us-ascii?Q?vMyxLsZb86By9Xntzhr70B4nm+Fr9TbslhURlf5XrBPp?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(52116014)(19092799006)(7416014)(38350700014)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?csqkhSw2MsoEZJ+xTuhr6S6wwIVqn7S+83Xe1wiBPSZRMgEqNssWaYc5qObu?=
- =?us-ascii?Q?9xAp2icZ0q4fvfn64P0+dLCMQykbDxBO4nJB4d7cY2z6EAddDW9wxN2E6Hsj?=
- =?us-ascii?Q?j6u91l072a5lN78ds8mnTgCixAf3FDotFlUVPCZBc2k/xX+ODOlqM+XfS5hF?=
- =?us-ascii?Q?IC67bL86w7sMcV1OT6maA4Pf6W5zNVvIxKXjvjGPk6Iv4+7xf78kpR4a+YcY?=
- =?us-ascii?Q?YG8/I3KCqrmk5GB42eInS9DKQAb0jynFQFUpow2ZXUImmjm1mojLWFKz+oG1?=
- =?us-ascii?Q?xOz3FK01Iws4qwpFma5jeB1aI2VHOHLD7f1LJHGgvrx3pJZ63PJnlCEdHtiQ?=
- =?us-ascii?Q?zhAuOz8BUhejj0MLfXiqihQrxf3exC5u0Mnjb492dOV8/jwDn+cLksGjgOLO?=
- =?us-ascii?Q?QeG1FH5Pbwj1gw25HTNHr4ltZjzN5h6DrHiiESsdeE+HRNMCRsx0t+ou7Dbj?=
- =?us-ascii?Q?iufba6dlayODhYnJKk2t90phFnJ1h3hhQBggn8cgNWCeeABlYeK09fzkpFPw?=
- =?us-ascii?Q?DAAVujK3I8q0uUs9FKNUfM6LCEQ/jon69JeYz8GTCtHzZheDowQVxW6wcP8H?=
- =?us-ascii?Q?h8V01atY5ViE4vuPDVhtid+yNOgpAZDQGJ/tkNivsns+04QR26TQryyONK+N?=
- =?us-ascii?Q?TGgQk6KGqMEW8Mt/FqBvaGRkpb1STIQR1U6dyQJzXvuhUx+3kcjgz1gYTiPk?=
- =?us-ascii?Q?FA+kofPYOQq5W84s9axazWDwjlu5ftcdG9LNqZwDLf+NeEzNsJWOMBGvHqiF?=
- =?us-ascii?Q?EkDGHcQ7iCmXSbDKSIzgMedIaZH8yNctt0AGhlq9qi8pVgAUgUsHWD6SU6LU?=
- =?us-ascii?Q?m/2zWY3KYzmn6yrO/pP9kFJ8U6uI/pQ58aTe65dKId+faWCXYz3xndHEjfe9?=
- =?us-ascii?Q?MbxP6iyQjg1N3JhFqI0SLYB987lTNf5vJTGCgqdDPeNNjs1T9UMmwXsiw4E9?=
- =?us-ascii?Q?XUHaU3Mdg1JrIl77FWYfsRDKGLBn35fLNF1ASjFopSGeNaDYHHIuu4kmiK95?=
- =?us-ascii?Q?8b1BdT4fCj/PFsaFqZhTYa3G9IY4xmlL5FbyvgjS1v5t0aCzNO12TnH+Tt5R?=
- =?us-ascii?Q?HDn0s06O0AK5jqw0abVK75fZj9uR8mMS7c8m3rpB0cc7yZWPqUCmVWL0N4Ss?=
- =?us-ascii?Q?MnhhHsJrb8031qaFajM9UOaH5WIJcPEdAHg3Q3I2+Jk77f1Cxa365PG/CHXG?=
- =?us-ascii?Q?8/7lzFmg6kvUSiytfVfvpwEnQboSfTz8PGislWIaFJCJ6vGSKdV1kHf83TjN?=
- =?us-ascii?Q?EBcW6G7fsF09VJTnS00F2qscDcg4DkA6fVt7EppUcI7CBvCdy/3P0X6/icVe?=
- =?us-ascii?Q?87W12WP8lfZFggzfSl4iicUU8W0yTnvFg+u1sr9yZiM4bFcJezG6BgutdfdW?=
- =?us-ascii?Q?J6p+hNy3Z928ro4Nfs8M7IcXnF+PfeV2iTMsFfA636P8ic6LzXPe9O+rhUAk?=
- =?us-ascii?Q?pM4aOfQPRfZX2/+yxXdEeNU4z5FwtCXrDBSC1Z8rjaCBNrzxor4FXY+fYjEJ?=
- =?us-ascii?Q?+YTbFyGyviVTdZl7kyF7CqsxUQpvhNMj2M3K//D8bstGk72I2CiyvkXvDnLD?=
- =?us-ascii?Q?RSpvnuihME+SFsEDTDzWwq93xjqjMhrbg+zdA0nVJi4taPrLNfQgQBXzSJHN?=
- =?us-ascii?Q?RjJcr7gCRAOsWmoT+3AtfxKYmffvPkJ6W8V9hVNEg+HJxCpfpyHEiz8PbtUE?=
- =?us-ascii?Q?Ts3PWxrTlaoKZluL8LHMv8B95D6ZkRLl3dhQWGLkOAcm0RH4Pu5OrDGrXpb+?=
- =?us-ascii?Q?jrrpHlASDQ=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17b93377-01a9-4ca6-00bf-08de590a5dfe
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8951.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2026 16:30:19.6733
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oSolUvmJg8Uzr9UQyijFgYgpj4o/9mH1nNPJao51sBnKdo4hKZxcnHVrYHWw6U+zNa48lF5k5pp2usdaDeu/dg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7897
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260121101923.64657-1-zhangchunyan@iscas.ac.cn>
 X-Spamd-Result: default: False [0.54 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[nxp.com:s=selector1];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20232-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[lists.linux.dev,lists.infradead.org,vger.kernel.org,gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[25];
-	DMARC_POLICY_ALLOW(0.00)[nxp.com,none];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20234-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[intel.com,none];
+	DKIM_TRACE(0.00)[intel.com:+];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[Frank.li@nxp.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[nxp.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nxp.com:email,nxp.com:dkim,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: C01345B279
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 21AF75BFC9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Jan 05, 2026 at 05:46:50PM -0500, Frank Li wrote:
-> Previously, configuration and preparation required two separate calls. This
-> works well when configuration is done only once during initialization.
->
-> However, in cases where the burst length or source/destination address must
-> be adjusted for each transfer, calling two functions is verbose.
->
-> 	if (dmaengine_slave_config(chan, &sconf)) {
-> 		dev_err(dev, "DMA slave config fail\n");
-> 		return -EIO;
-> 	}
->
-> 	tx = dmaengine_prep_slave_single(chan, dma_local, len, dir, flags);
->
-> After new API added
->
-> 	tx = dmaengine_prep_config_single(chan, dma_local, len, dir, flags, &sconf);
->
-> Additional, prevous two calls requires additional locking to ensure both
-> steps complete atomically.
->
->     mutex_lock()
->     dmaengine_slave_config()
->     dmaengine_prep_slave_single()
->     mutex_unlock()
->
-> after new API added, mutex lock can be moved. See patch
->      nvmet: pci-epf: Use dmaengine_prep_config_single_safe() API
->
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+Hi Chunyan,
 
-Vinod:
-	Can you take care these patches? At least first 2 patches! So
-I can did more clean up at next kernel release.
+kernel test robot noticed the following build errors:
 
-Frank
+[auto build test ERROR on herbert-cryptodev-2.6/master]
+[also build test ERROR on herbert-crypto-2.6/master linus/master v6.19-rc6 next-20260120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> Changes in v3:
-> - collect review tags
-> - create safe version in framework
-> - Link to v2: https://lore.kernel.org/r/20251218-dma_prep_config-v2-0-c07079836128@nxp.com
->
-> Changes in v2:
-> - Use name dmaengine_prep_config_single() and dmaengine_prep_config_sg()
-> - Add _safe version to avoid confuse, which needn't additional mutex.
-> - Update document/
-> - Update commit message. add () for function name. Use upcase for subject.
-> - Add more explain for remove lock.
-> - Link to v1: https://lore.kernel.org/r/20251208-dma_prep_config-v1-0-53490c5e1e2a@nxp.com
->
-> ---
-> Frank Li (9):
->       dmaengine: Add API to combine configuration and preparation (sg and single)
->       dmaengine: Add safe API to combine configuration and preparation
->       PCI: endpoint: pci-epf-test: Use dmaenigne_prep_config_single() to simplify code
->       dmaengine: dw-edma: Use new .device_prep_config_sg() callback
->       dmaengine: dw-edma: Pass dma_slave_config to dw_edma_device_transfer()
->       nvmet: pci-epf: Remove unnecessary dmaengine_terminate_sync() on each DMA transfer
->       nvmet: pci-epf: Use dmaengine_prep_config_single_safe() API
->       PCI: epf-mhi: Use dmaengine_prep_config_single() to simplify code
->       crypto: atmel: Use dmaengine_prep_config_single() API
->
->  Documentation/driver-api/dmaengine/client.rst |   9 ++
->  drivers/crypto/atmel-aes.c                    |  10 +--
->  drivers/dma/dmaengine.c                       |   3 +
->  drivers/dma/dw-edma/dw-edma-core.c            |  41 ++++++---
->  drivers/nvme/target/pci-epf.c                 |  21 ++---
->  drivers/pci/endpoint/functions/pci-epf-mhi.c  |  52 ++++--------
->  drivers/pci/endpoint/functions/pci-epf-test.c |   8 +-
->  include/linux/dmaengine.h                     | 117 ++++++++++++++++++++++++--
->  8 files changed, 177 insertions(+), 84 deletions(-)
-> ---
-> base-commit: 8f0b4cce4481fb22653697cced8d0d04027cb1e8
-> change-id: 20251204-dma_prep_config-654170d245a2
->
-> Best regards,
-> --
-> Frank Li <Frank.Li@nxp.com>
->
+url:    https://github.com/intel-lab-lkp/linux/commits/Chunyan-Zhang/crypto-aegis128-Add-RISC-V-vector-SIMD-implementation/20260121-184354
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20260121101923.64657-1-zhangchunyan%40iscas.ac.cn
+patch subject: [PATCH] crypto: aegis128: Add RISC-V vector SIMD implementation
+config: riscv-randconfig-001-20260121 (https://download.01.org/0day-ci/archive/20260122/202601220110.ontiS30n-lkp@intel.com/config)
+compiler: clang version 16.0.6 (https://github.com/llvm/llvm-project 7cbf1a2591520c2491aa35339f227775f4d3adf6)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260122/202601220110.ontiS30n-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202601220110.ontiS30n-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+>> crypto/aegis128-rvv.c:21:2: error: call to undeclared function 'kernel_vector_begin'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_begin();
+           ^
+>> crypto/aegis128-rvv.c:23:2: error: call to undeclared function 'kernel_vector_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_end();
+           ^
+   crypto/aegis128-rvv.c:28:2: error: call to undeclared function 'kernel_vector_begin'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_begin();
+           ^
+   crypto/aegis128-rvv.c:30:2: error: call to undeclared function 'kernel_vector_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_end();
+           ^
+   crypto/aegis128-rvv.c:36:2: error: call to undeclared function 'kernel_vector_begin'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_begin();
+           ^
+   crypto/aegis128-rvv.c:38:2: error: call to undeclared function 'kernel_vector_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_end();
+           ^
+   crypto/aegis128-rvv.c:44:2: error: call to undeclared function 'kernel_vector_begin'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_begin();
+           ^
+   crypto/aegis128-rvv.c:46:2: error: call to undeclared function 'kernel_vector_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_end();
+           ^
+   crypto/aegis128-rvv.c:57:2: error: call to undeclared function 'kernel_vector_begin'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_begin();
+           ^
+   crypto/aegis128-rvv.c:60:2: error: call to undeclared function 'kernel_vector_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           kernel_vector_end();
+           ^
+   10 errors generated.
+--
+>> crypto/aegis128-rvv-inner.c:317:10: warning: unknown option, expected 'push', 'pop', 'rvc', 'norvc', 'relax' or 'norelax' [-Winline-asm]
+                         ".option  arch,+v\n"
+                          ^
+   <inline asm>:2:9: note: instantiated into assembly here
+   .option arch,+v
+           ^
+>> crypto/aegis128-rvv-inner.c:318:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vsetivli zero, 0x10, e8, m1, ta, ma\n"
+                          ^
+   <inline asm>:3:1: note: instantiated into assembly here
+   vsetivli        zero, 0x10, e8, m1, ta, ma
+   ^
+   crypto/aegis128-rvv-inner.c:319:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vle8.v   v0, (%[const0])\n"
+                          ^
+   <inline asm>:4:1: note: instantiated into assembly here
+   vle8.v  v0, (a5)
+   ^
+   crypto/aegis128-rvv-inner.c:320:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vle8.v   v1, (%[const1])\n"
+                          ^
+   <inline asm>:5:1: note: instantiated into assembly here
+   vle8.v  v1, (s1)
+   ^
+   crypto/aegis128-rvv-inner.c:321:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vse8.v   v0, (%[block2])\n"
+                          ^
+   <inline asm>:6:1: note: instantiated into assembly here
+   vse8.v  v0, (a1)
+   ^
+   crypto/aegis128-rvv-inner.c:322:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vse8.v   v1, (%[block1])\n"
+                          ^
+   <inline asm>:7:1: note: instantiated into assembly here
+   vse8.v  v1, (a0)
+   ^
+   crypto/aegis128-rvv-inner.c:323:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vle8.v   v2, (%[iv])\n"
+                          ^
+   <inline asm>:8:1: note: instantiated into assembly here
+   vle8.v  v2, (a2)
+   ^
+   crypto/aegis128-rvv-inner.c:324:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vle8.v   v3, (%[key])\n"
+                          ^
+   <inline asm>:9:1: note: instantiated into assembly here
+   vle8.v  v3, (s2)
+   ^
+   crypto/aegis128-rvv-inner.c:325:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vxor.vv  v0, v0, v3\n"
+                          ^
+   <inline asm>:10:1: note: instantiated into assembly here
+   vxor.vv v0, v0, v3
+   ^
+   crypto/aegis128-rvv-inner.c:326:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vxor.vv  v1, v1, v3\n"
+                          ^
+   <inline asm>:11:1: note: instantiated into assembly here
+   vxor.vv v1, v1, v3
+   ^
+   crypto/aegis128-rvv-inner.c:327:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vxor.vv  v2, v2, v3\n"
+                          ^
+   <inline asm>:12:1: note: instantiated into assembly here
+   vxor.vv v2, v2, v3
+   ^
+   crypto/aegis128-rvv-inner.c:328:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vse8.v   v2, (%[block0])\n"
+                          ^
+   <inline asm>:13:1: note: instantiated into assembly here
+   vse8.v  v2, (s3)
+   ^
+   crypto/aegis128-rvv-inner.c:329:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vse8.v   v2, (%[kiv])\n"
+                          ^
+   <inline asm>:14:1: note: instantiated into assembly here
+   vse8.v  v2, (s6)
+   ^
+   crypto/aegis128-rvv-inner.c:330:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vse8.v   v0, (%[block3])\n"
+                          ^
+   <inline asm>:15:1: note: instantiated into assembly here
+   vse8.v  v0, (a3)
+   ^
+   crypto/aegis128-rvv-inner.c:331:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vse8.v   v1, (%[block4])\n"
+                          ^
+   <inline asm>:16:1: note: instantiated into assembly here
+   vse8.v  v1, (a4)
+   ^
+   crypto/aegis128-rvv-inner.c:82:10: warning: unknown option, expected 'push', 'pop', 'rvc', 'norvc', 'relax' or 'norelax' [-Winline-asm]
+                         ".option  arch,+v\n"
+                          ^
+   <inline asm>:2:9: note: instantiated into assembly here
+   .option arch,+v
+           ^
+   crypto/aegis128-rvv-inner.c:83:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vsetivli zero, 0x10, e8, m1, ta, ma\n"
+                          ^
+   <inline asm>:3:1: note: instantiated into assembly here
+   vsetivli        zero, 0x10, e8, m1, ta, ma
+   ^
+   crypto/aegis128-rvv-inner.c:84:10: error: instruction requires the following: 'V' (Vector Extension for Application Processors), 'Zve32x' or 'Zve64x' (Vector Extensions for Embedded Processors)
+                         "vle8.v   v13, (%[rev32qu16])\n"
+                          ^
+   <inline asm>:4:1: note: instantiated into assembly here
+   vle8.v  v13, (a0)
+
+
+vim +/kernel_vector_begin +21 crypto/aegis128-rvv.c
+
+    16	
+    17	void crypto_aegis128_init_simd(struct aegis_state *state,
+    18				       const union aegis_block *key,
+    19				       const u8 *iv)
+    20	{
+  > 21		kernel_vector_begin();
+    22		crypto_aegis128_init_rvv(state, key, iv);
+  > 23		kernel_vector_end();
+    24	}
+    25	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
