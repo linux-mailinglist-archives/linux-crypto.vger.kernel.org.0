@@ -1,179 +1,128 @@
-Return-Path: <linux-crypto+bounces-20274-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20275-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4L31KuJ0cmlpkwAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20274-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 Jan 2026 20:05:06 +0100
+	id R8W9ETfbcmmNqgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20275-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Jan 2026 03:21:43 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 468846CE09
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 Jan 2026 20:05:06 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63B36F8B1
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Jan 2026 03:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 41A7E300A778
-	for <lists+linux-crypto@lfdr.de>; Thu, 22 Jan 2026 19:02:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CADC3300E158
+	for <lists+linux-crypto@lfdr.de>; Fri, 23 Jan 2026 02:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F8F389E01;
-	Thu, 22 Jan 2026 19:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9291D31ED69;
+	Fri, 23 Jan 2026 02:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmdtNk10"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="NKRYvNqj"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0159288535;
-	Thu, 22 Jan 2026 19:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F562882CE;
+	Fri, 23 Jan 2026 02:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769108572; cv=none; b=l0jEHI8XwbZl1d9KRrz0A8Vcs7KUYp+VXUzpIjJCPmOM+Mos4NjT8AJm6dRD/PH5WL3Wyz5emaOva0U/iKgfVsWYlVwVC9yGWd2sFg5glBhrYZAoXqdEPzfvco75P9P8Kiecy+yBjbnZG/GDU28dirEUCqGosCWWIwcRvqPGdQU=
+	t=1769134896; cv=none; b=on+xl/oTRSauAxpmdc/25KMnitBv1Avw2VqraDbxQ8l/Hk43tf78ZgcTfw0caDYYK7VKo1Ox8Bk0TjAjCXFuzcjhR5MtBo4Tnk5DykJSSxSVk2mEjYPHhyIYleO4rooOfW2V4ViyIQWX9jq/iCRmB14q9mHoUeSF/jAH0tqWOXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769108572; c=relaxed/simple;
-	bh=ce50hnOQNrf+9Fc6360+QPsx3Q1PXwDGAYQhSaIzh90=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=LaLXdhKCDvusPl81f45/qDCTk024rsKIqjqssHfT6loIxH3Th7C3TKAi8wGz+OR+iuxjC3wlW90F3d5FMue9Wp6ow8U5+ozii8pP8LAsMw+YRPxWWg/3RwC/b400vcYsvboq7Yzx7mlnHUjOf8A5nE2pbQERO55kvfYpbLRYpU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kmdtNk10; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FFB7C116C6;
-	Thu, 22 Jan 2026 19:02:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769108571;
-	bh=ce50hnOQNrf+9Fc6360+QPsx3Q1PXwDGAYQhSaIzh90=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=kmdtNk10ACp5PRa2QHgt+bgwtt1ZsP3jA6yv01ZYFyIPhqEFJGLkYt/trdQnbiv6t
-	 BtdCNnf0BOo7DRMOmGwvIsdAxP35gQo7b+nUIrRxjzmqyMQMMn7DUGnH4cUzF7L1QA
-	 JvipZI5f3/dt+j4Y2wd/ktIVEFkQ1cqHw4yL/2A4vaKZpmtJNRFQTyW1TPcAwNcpPy
-	 QMAZDdoNP4A9dev7hQ6M2gVs9cPk53JEcNefUd4DdYx4RLgnd2UtDqa7WJtEL7jn05
-	 RB0m0L2LyCZ19G/R8O9k43/Pr6S+BaGJ1uJRr48TlacPdo0YjREj5Kvtv8RE3ZbWAh
-	 Isa93vDfpsWNQ==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id EBD90F40068;
-	Thu, 22 Jan 2026 14:02:49 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Thu, 22 Jan 2026 14:02:49 -0500
-X-ME-Sender: <xms:WXRyacIwDbC-MJ2delOQLvOP4h0mRiAwKsOcm-GNvzsy5xWhc4IF0Q>
-    <xme:WXRyaW_i0tnjMWSvlG_khTj33spWmFYdZpS4fZJ8u6lbOiPRv90P0obn0bnR78p3c
-    jFiV9d712_Y-5NEi9ANWggux1MrX8o47FwqJ-UKUxzL9QSnLLXaeg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddugeeileehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhuhgt
-    khcunfgvvhgvrhdfuceotggvlheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrh
-    hnpefhffekffeftdfgheeiveekudeuhfdvjedvfedvueduvdegleekgeetgfduhfefleen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegthhhutg
-    hklhgvvhgvrhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudeifeegleel
-    leehledqfedvleekgeegvdefqdgtvghlpeepkhgvrhhnvghlrdhorhhgsehfrghsthhmrg
-    hilhdrtghomhdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopehnvghilhessghrohifnhdrnhgrmhgvpdhrtghpthhtoheprhhitghkrdhmrg
-    gtkhhlvghmsehgmhgrihhlrdgtohhmpdhrtghpthhtohepsggtohguughinhhgsehhrghm
-    mhgvrhhsphgrtggvrdgtohhmpdhrtghpthhtoheprghnnhgrsehkvghrnhgvlhdrohhrgh
-    dprhgtphhtthhopegvsghighhgvghrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    jhhlrgihthhonheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepthhrohhnughmhieskh
-    gvrhhnvghlrdhorhhgpdhrtghpthhtoheptghhuhgtkhdrlhgvvhgvrhesohhrrggtlhgv
-    rdgtohhmpdhrtghpthhtoheplhhinhhugidqtghrhihpthhosehvghgvrhdrkhgvrhhnvg
-    hlrdhorhhg
-X-ME-Proxy: <xmx:WXRyadxPaNLj8AmS8DVt037xNa96N1aGk7BmVC004wPwS2oZWTkZKA>
-    <xmx:WXRyaZETK3Ld9b_U9TBAN6UQ3IsX6D3H6hhIsXKx-beQqdqbfc7aAA>
-    <xmx:WXRyaSvU6N_0apHAdLsxfjldgd52nMmUusz5ZHONulNwbP4I4DkRMA>
-    <xmx:WXRyaZA1E5nCHWwGi7xcY4KjazW3a5SrHyIWwUfG6zGfakKGYzpwoQ>
-    <xmx:WXRyadDEl_b39geJfP7ttqm1VDfFJHL65vkoZfQJl55D5M1pr-zWG0FR>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id CF5D7780076; Thu, 22 Jan 2026 14:02:49 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1769134896; c=relaxed/simple;
+	bh=J/hRVIHdbO78lI4x/CjBK6nAgwdgepw8gjhBlVrRuEY=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=VDOYmOHaMIQ/j+GX5+dm1xA0CFmKR7YW12+KKMXPcejoeze9hekH9P8AlU0tOucdy4nxaAsK3kZ9ryjR+5iz/y5G9Z8PZqRsVRPj3TcQszwbOxx+2y7GtqziRqALN3e50QbYEFqVzLqPsej9tvgw497J4vxvLyABXLiXYj9DElY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=NKRYvNqj; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=Content-Type:MIME-Version:Message-ID:Subject:
+	To:From:Date:cc:to:subject:message-id:date:from:content-type:in-reply-to:
+	references:reply-to; bh=eENmoeO6f9ueJbEgaPAwi/m5vPQfknRTxN6aLpmkHns=; b=NKRYv
+	NqjeW/6z3M4phO3rdrwqZNK2usjf+33A4pBrAH3BYwTFqPCJWbMKafZ1RYYr27kwc1Rjmmc0b7Uex
+	dYVUZWOeEW08aRJoFMzkwOb9cjYy9Yv80NRDwa/iN+1Sj3+RcsGBCPZPebknHdR4PSHX33KJB7i2f
+	cyBUxvYlCvlqb5uEUEYPXATgBLtj8vNzKpOQataSuCqixZHbpvvDVetBo8Pjbc/DjTZw5r7iqqmj/
+	E3tR5QpL01b35BtDD+R4JEhcyKO8oqo8a4ocAsJRJ9Ob/nDMWf3NSu26L8TtZGo/BH+dWK31JcC+0
+	FG4uJJF4PQqrsa8pDXhUxnD8j1g6g==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1vj6nF-001TEK-1C;
+	Fri, 23 Jan 2026 10:21:02 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 23 Jan 2026 10:21:01 +0800
+Date: Fri, 23 Jan 2026 10:21:01 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [GIT PULL] Crypto Fixes for 6.19
+Message-ID: <aXLbDbSraxaYgfym@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A1vGOqVGteog
-Date: Thu, 22 Jan 2026 14:01:43 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Benjamin Coddington" <bcodding@hammerspace.com>,
- "Jeff Layton" <jlayton@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>
-Cc: NeilBrown <neil@brown.name>, "Trond Myklebust" <trondmy@kernel.org>,
- "Anna Schumaker" <anna@kernel.org>, "Eric Biggers" <ebiggers@kernel.org>,
- "Rick Macklem" <rick.macklem@gmail.com>, linux-nfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-crypto@vger.kernel.org
-Message-Id: <df581ada-007b-4729-8ac0-19be90dcbfd7@app.fastmail.com>
-In-Reply-To: <6D390E12-0EF1-4830-A67F-9C8614E924B7@hammerspace.com>
-References: <cover.1769026777.git.bcodding@hammerspace.com>
- <6d7bfccbaf082194ea257749041c19c2c2385cce.1769026777.git.bcodding@hammerspace.com>
- <e299b7c6-9d37-4ffe-8d45-a95d92e33406@app.fastmail.com>
- <0D5F8EA8-D77E-4F56-9EA6-8D6FC2F2CD37@hammerspace.com>
- <9c5e9e07-b370-4c71-9dd6-8b6a3efe32c7@kernel.org>
- <5EBC1684-ECA5-497A-8892-9317B44186EC@hammerspace.com>
- <b4b88c29299dde052a8864e7104a40eb616a26ad.camel@kernel.org>
- <6D390E12-0EF1-4830-A67F-9C8614E924B7@hammerspace.com>
-Subject: Re: [PATCH v2 1/3] NFSD: Add a key for signing filehandles
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.65 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	FREEMAIL_CC(0.00)[brown.name,kernel.org,gmail.com,vger.kernel.org];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[app.fastmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20274-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-20275-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.995];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.992];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 468846CE09
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:mid,gondor.apana.org.au:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
+X-Rspamd-Queue-Id: D63B36F8B1
 X-Rspamd-Action: no action
 
+Hi Linus:
 
+The following changes since commit 961ac9d97be72267255f1ed841aabf6694b17454:
 
-On Thu, Jan 22, 2026, at 1:20 PM, Benjamin Coddington wrote:
-> On 22 Jan 2026, at 7:38, Jeff Layton wrote:
->
->> On Wed, 2026-01-21 at 17:56 -0500, Benjamin Coddington wrote:
->>>
->>> Adding instructions to unload the nfsd module would be full of footguns,
->>> depend on other features/modules and config options, and guaranteed to
->>> quickly be out of date.  It might be enough to say the system should be
->>> restarted.  The only reason for replacing the key is (as you've said) that
->>> it was compromised.  That should be rare and serious enough to justify
->>> restarting the server.
->>>
->>
->> This sounds like crazy-pants talk.
->>
->> Why do we need to unload nfsd.ko to change the key? Also, what will you
->> do about folks who don't build nfsd as a module?
->>
->> Personally, I think just disallowing key changes while the nfs server
->> is running should be sufficient. If someone wants to shut down the
->> threads and then change the key on the next startup, then I don't see
->> why that shouldn't be allowed.
->
-> Sounds good.  Chuck are you alright with this?
+  crypto: qat - fix duplicate restarting msg during AER error (2025-12-29 08:44:14 +0800)
 
-I hadn't thought of the "nfsd.ko is built in" case. Oops.
+are available in the Git repository at:
 
-Yes, I think it's fine to keep the fh_key value locked only while
-the server is running, much like most of the other NFSD settings.
-It might be the best we can reasonably do, and it will certainly
-be easier to document!
+  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git tags/v6.19-p4
 
+for you to fetch changes up to 2397e9264676be7794f8f7f1e9763d90bd3c7335:
 
+  crypto: authencesn - reject too-short AAD (assoclen<8) to match ESP/ESN spec (2026-01-20 14:38:48 +0800)
+
+----------------------------------------------------------------
+This push contains the following changes:
+
+- Add assoclen check in authencesn.
+----------------------------------------------------------------
+
+Taeyang Lee (1):
+      crypto: authencesn - reject too-short AAD (assoclen<8) to match ESP/ESN spec
+
+ crypto/authencesn.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+Thanks,
 -- 
-Chuck Lever
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
