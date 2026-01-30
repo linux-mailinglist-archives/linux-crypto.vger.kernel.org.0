@@ -1,132 +1,145 @@
-Return-Path: <linux-crypto+bounces-20484-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20485-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6G0iKN+7fGlVOgIAu9opvQ
-	(envelope-from <linux-crypto+bounces-20484-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jan 2026 15:10:39 +0100
+	id YLDTFgHEfGmgOgIAu9opvQ
+	(envelope-from <linux-crypto+bounces-20485-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jan 2026 15:45:21 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D322BB750
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jan 2026 15:10:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E76D8BBB41
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jan 2026 15:45:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D212A30055A7
-	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jan 2026 14:10:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 060CA300CC2C
+	for <lists+linux-crypto@lfdr.de>; Fri, 30 Jan 2026 14:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCB131A069;
-	Fri, 30 Jan 2026 14:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33CF32938D;
+	Fri, 30 Jan 2026 14:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SkoWOFyB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K+PUyfqC"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F9B327AC31
-	for <linux-crypto@vger.kernel.org>; Fri, 30 Jan 2026 14:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A567E322B87
+	for <linux-crypto@vger.kernel.org>; Fri, 30 Jan 2026 14:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769782237; cv=none; b=s0zL1iyMtdFGN1qiwCkCxfrdY1jdEfZmvGqwitg6uQBnwoMOvVYseSx++QuOr1Axotd+/tf9784PFz3Uy2KGDACOlCQ+QGRT2y6xIB+fL/dUhuO+p8GxHzDNUfYjExX30qbfr10CV3yPN6t+xuYG+RneXwqHHLbpEs7rmw/c+ts=
+	t=1769784308; cv=none; b=tRkCsKC7kd7erlsSOjylFwEwODur16YW5hSGlJdDPZb2LQcm0IqPAJJhJf+ZsfVo043Ry/uBmgz7qwCtp3k6l3QtbCT2G4ei1gXeLo4lHjBkPB5dempVZ1IoOjEA1SjuQlNQjEO2/SUYkDLXetTbE02mJYDi+pCocji/A5BHgSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769782237; c=relaxed/simple;
-	bh=rmhZ5sOTwbtWVJbmT/uMxFq2nJwHusyhn+cZ3ChqXsU=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=urwmx3T0mglNJioqG7P8U4w2opcpUhh1c837+vOoRDf+OXvMLRgUcLicuHNVIgCGvmIgCx4uKsMHrXUMD41h1V9PBBN3csRuls5aj8cJA8KSo1Mi1vGa/iYn7OdEdFfb23kkwDEElV0+meGXebMFLYfqO+A5tmo8OMrxqlOsXnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SkoWOFyB; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1769782235;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rmhZ5sOTwbtWVJbmT/uMxFq2nJwHusyhn+cZ3ChqXsU=;
-	b=SkoWOFyBExgSS1TdkVr+ASABVj+kmuzUel8bOPr6FpKtsMk49zlUPNnzYpwz88Ay2ZaoVr
-	aX2qS0CgQo8PiypF1oe0vFdHgY7Dzgq3v19awphNWTzK/JiByt8d+Iq13vGJrBfM6+64W4
-	4KneMdoM0La4ILriooB50+Gx3Z2aAMo=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-383-g_mBxJh8MMqC7doZp1gvbg-1; Fri,
- 30 Jan 2026 09:10:30 -0500
-X-MC-Unique: g_mBxJh8MMqC7doZp1gvbg-1
-X-Mimecast-MFC-AGG-ID: g_mBxJh8MMqC7doZp1gvbg_1769782228
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7B5EC1956095;
-	Fri, 30 Jan 2026 14:10:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.44.33.164])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0CF3319560A2;
-	Fri, 30 Jan 2026 14:10:22 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <aXrKaTem9nnWNuGV@Rk>
-References: <aXrKaTem9nnWNuGV@Rk> <1783975.1769190197@warthog.procyon.org.uk>
-To: Coiby Xu <coxu@redhat.com>
-Cc: dhowells@redhat.com, Mimi Zohar <zohar@linux.ibm.com>,
-    Simo Sorce <simo@redhat.com>,
-    Roberto Sassu <roberto.sassu@huawei.com>,
-    Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-    Eric Snowberg <eric.snowberg@oracle.com>,
-    Eric Biggers <ebiggers@kernel.org>, linux-integrity@vger.kernel.org,
-    linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-    linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: IMA and PQC
+	s=arc-20240116; t=1769784308; c=relaxed/simple;
+	bh=SbeIFy3aGm/yv9ATqXhsMJS7c0Yz2TFMRQZhyVjzOXw=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=HBAjGEXdo5psqv6DkI2d+iUfODXEBBMANjNW4SKPRSkxBy8/i/82ZvvHR+zEru1mro6eKtRkGFW67NrBo2KcCLpGL2oa+Q2v0B+BON3YtVHIjUXcNm3dIK9FVdnMgsVvd5ZKYW6ipfgyxRXc/AXjcHh5AkrLgLECq+duwJ/uQEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K+PUyfqC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 244CFC4AF09
+	for <linux-crypto@vger.kernel.org>; Fri, 30 Jan 2026 14:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769784308;
+	bh=SbeIFy3aGm/yv9ATqXhsMJS7c0Yz2TFMRQZhyVjzOXw=;
+	h=Date:From:To:In-Reply-To:References:Subject:From;
+	b=K+PUyfqCWQTfvYXg2orBLGkVYmLXGYZfxNd2cRsb4Ss14EUNhiYDYAuobAa8EfCs4
+	 9jlc5boYoegQ5BqrdTwm2HQvR4CSTx85u66izsLzs3V0LfAM2aUMIWfI59gxS2STlh
+	 A56Ndh48SBSxjeKdbvdqEI612rUV/nTFAHlIy8vNp4iNpW/N2WomC5ZrYcjwRsJIPU
+	 qL3xchvlLh5EqJmpCJA0K1Z9m9Kbj3KyqMDrP925cQHcP6V5p0D03UBk77qygJXkIf
+	 MwSyl9f7hwsOOpqqcFmqj4gbh2i0eXW5atBxqZ0fwKQX5Kp+MRjrhlKQD5P1ArWR/5
+	 93QlG/CO426vw==
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 25051F4007C;
+	Fri, 30 Jan 2026 09:45:07 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-10.internal (MEProxy); Fri, 30 Jan 2026 09:45:07 -0500
+X-ME-Sender: <xms:88N8ab6YVW1u_rS0LO5rEgPieAct4SnQB9vAvDncjYwrW5TjTfkykQ>
+    <xme:88N8abuQY-PtZzBFehdSgbaTH6njvkG1wt12LY7SB_olPmBSg_75dRHPN7SAKNlqg
+    Lb9pmvrMs0ydeaMK8h1eYcrpSa055esJ1WCsrXw8hreiQ9EYrAXXg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduieelfedvucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvffkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhutghk
+    ucfnvghvvghrfdcuoegtvghlsehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnh
+    epheehjeelgeffffeihfduudevudeghfehheefhffgueeluedufeetjeduhfdukeelnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhuhgtkh
+    hlvghvvghrodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieefgeelleel
+    heelqdefvdelkeeggedvfedqtggvlheppehkvghrnhgvlhdrohhrghesfhgrshhtmhgrih
+    hlrdgtohhmpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuthdprhgtphht
+    thhopehlihhonhgvlhgtohhnshduleejvdesghhmrghilhdrtghomhdprhgtphhtthhope
+    hlihhnuhigqdgtrhihphhtohesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthho
+    pehlihhnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpth
+    htoheplhhinhhugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:88N8aVnqPhtUyuDj55XfgOw1HsPcug0GnG-FyNvvdFsQBUh1FEqaqQ>
+    <xmx:88N8aXukjnN7w33KFH2m1xCWjLq3eD4SpIwzA4YfLeHdKzRV0L7_KA>
+    <xmx:88N8aT8d-UkQNntusCuR7AVHRKybbLSZTB51n_aHpIyanAT1kGbtUQ>
+    <xmx:88N8aRM4DW1Vi8ZmUJiVYZynB58nBgRoAvgphL4Ncw0Ke9cHQT3ORQ>
+    <xmx:88N8aRGvm691w9Wxqa8_obbDiS-4hb7zOIMx21KA46elaBFqgoM0JG9O>
+Feedback-ID: ifa6e4810:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id F30DB780077; Fri, 30 Jan 2026 09:45:06 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2265996.1769782221.1@warthog.procyon.org.uk>
-Date: Fri, 30 Jan 2026 14:10:21 +0000
-Message-ID: <2265997.1769782221@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-ThreadId: AvBI4pOdhfek
+Date: Fri, 30 Jan 2026 09:43:42 -0500
+From: "Chuck Lever" <cel@kernel.org>
+To: "Lionel Cons" <lionelcons1972@gmail.com>, linux-nfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-crypto@vger.kernel.org
+Message-Id: <263079d7-bed3-4417-8b7d-cb534da90a2c@app.fastmail.com>
+In-Reply-To: 
+ <CAPJSo4XhEOGncxBRZcOL6KmyBRY+pERiCLUkWzN7Zw+8oUmXGg@mail.gmail.com>
+References: <cover.1769026777.git.bcodding@hammerspace.com>
+ <0aaa9ca4fd3edc7e0d25433ad472cb873560bf7d.1769026777.git.bcodding@hammerspace.com>
+ <CAPJSo4XhEOGncxBRZcOL6KmyBRY+pERiCLUkWzN7Zw+8oUmXGg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] NFSD: Sign filehandles
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.15 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[redhat.com,linux.ibm.com,huawei.com,gmail.com,oracle.com,kernel.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-20484-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	XM_UA_NO_VERSION(0.01)[];
+	TAGGED_FROM(0.00)[bounces-20485-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,app.fastmail.com:mid];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_THREE(0.00)[4];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8D322BB750
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: E76D8BBB41
 X-Rspamd-Action: no action
 
-Coiby Xu <coxu@redhat.com> wrote:
 
-> Take latest fresh CentOS Stream 10 x86_64 KVM guest as example, without any
-> file system optimization, extra ~189MB disk space is needed if all files in
-> /usr signed using by ML-DSA-65 where the disk size is 50G.
+On Fri, Jan 30, 2026, at 7:58 AM, Lionel Cons wrote:
+> 1. CPU load: Linux NFSv4 servers consume LOTS of CPU time, which has
+> become a HUGE problem for hosting them on embedded hardware (so no
+> realistic NFSv4 server performance on an i.mx6 or RISC/V machine). And
+> this has become much worse in the last two years.
 
-Is that storing raw signatures rather than PKCS#7 wrapped signatures?
+If this is a general concern, please take the time to collect some data
+and file a full regression report.
 
-David
+Also note that signed file handles are enabled by administrative settings
+that default "off". There will be little to no additional CPU load if you
+choose not to use them.
 
+-- 
+Chuck Lever
 
