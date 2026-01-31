@@ -1,67 +1,65 @@
-Return-Path: <linux-crypto+bounces-20499-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20498-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0Ec2EbdtfWmTSAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-20499-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 03:49:27 +0100
+	id yMYFAq1tfWmTSAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-20498-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 03:49:17 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFD46C058E
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 03:49:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E966C0587
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 03:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F33FD303D72F
+	by sea.lore.kernel.org (Postfix) with ESMTP id 40046303605A
 	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 02:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB5B31A572;
-	Sat, 31 Jan 2026 02:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751FC26CE17;
+	Sat, 31 Jan 2026 02:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="O+8c0mX0"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="Kg6B7wFm"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A07930F957;
-	Sat, 31 Jan 2026 02:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0282D8391;
+	Sat, 31 Jan 2026 02:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769827727; cv=none; b=kRsFY9qX/xBoAk/20Qm9Z4D0PJnHrLAjyB86lfgDTDaO6ScAlCBovZVSbT0qNznBu8Z54U6Q21SrvmN6SYJzeybB9MZYEWWIGyRTTPX5tQPxV+hx/5pDsfbyvwSWuHd0375MF7KCzKlI6wXyAYJ5sxD99ma8pfDIIjP1U0Modbc=
+	t=1769827726; cv=none; b=ZLk5WbdaVmfKJkL4qt3YegcRJw8P6+6QQhK2ng3kip6qoj3UL3ba0mge6XrUqsQHcshGJbkwJWbvZUz7YVc6YZA7BaTBtKMebxSHpGWaS7UzrrZhiC0h5P2NcPmT/JxyWe0/diR6Nyp4LFG09HDoBYmi/FS2kgnYgFWj9eFT2CE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769827727; c=relaxed/simple;
-	bh=g+4AiQposzrilp+nizOy3u9YT6zltgTmGEQ5KCXFxNA=;
+	s=arc-20240116; t=1769827726; c=relaxed/simple;
+	bh=eqRfFrSF3twsT2P/vmqxBiww2a+dpE5b0x0vURQ2kEs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ujMBDB1aphVsPYvIsfracYccgRMMNZPh3UwTOb1WyXfKGB99OLm9bowT/ap3lhV3lqa/0Ub9Ut61d9cxbSSwmb6APrkq7hjylTykWhP4gjNwTjtnk8BYDWVTepGV3F/VurGisl3+SZ9JRUiDOTCAy44egbMgqV7YVD41QBw+cEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=O+8c0mX0; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=E4Ihxsjia76M7aOaBPuNWwvnRBkYOmxrpa9nYSXEh0p1yg/GHHQLaaal/vI6z0CZd2htpbxcWaERjnHm0c/aDSU7o1QLhhqIG/lKq4DFAxpnP1YU95lfAd7YR3F2+IljvQWFuy3+Rp9Nk2Igy2jKOvDUDVWnRBwwW/sM2nV5KmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=Kg6B7wFm; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=ykINfR+68595rbydHn6nTQMnB5GoHxZgrU275cHex9c=; 
-	b=O+8c0mX09K+V1RawkhytBx8jZqlVw7Ah/1SBBsVzh9QQiphRIJdqV8a6h+KHop7h2mcC3iSgDce
-	oWjYZb/gyMXLpqV5UJMGF6xQXBiNeZn1QZgDDsKGXUvdNTa2Zmn1wIBFfd6fXLXj+O793g554Df28
-	1Q/2mr3bOAQmcScDidTW+fsTsRqAs/T/sQHXxPLaSCmj+c427GhUNFuRtvnCARSgC+BLOuso+PQQQ
-	hJkprPR3IYIqbQi+gitcBSRVG7FvueB2PQpDYEv09FRAemhHm02sVnG2UUFnuZFh9B3OZ61Ot8odW
-	p8oT1b0bUp7obduwG15WPW1Gpu52+7VYrItQ==;
+	from:content-type:reply-to; bh=DcR7qHARxwiPKYODcuVg7nYzyVOtu546pX/yRM+hS1Y=; 
+	b=Kg6B7wFmSuIAb/wsEBnodG22PsO2hcNbZxYYXljAq4QC0Pt24JEeJ2xp96q37UfzQeStzIad1HL
+	yYkR94+OzYBoF16UC4SGMj934Db5goDQ2PuQd19hbeY727y5VgiASRMWelshVyymjyclaIPh1P5vc
+	j3d022IMPoMTzgqQZBb4liyjDCa3wUo2Mf+E3Rto7AoTyQ/RbZpugfQPSmSXMpq71fi0UFY0+/5T3
+	MyyRuikDdh64DgUjKi9qGhFALsvrq5OZSQrDeTHOJd+RoMz78evHMf72RBFbVR2ZbC1/k3EUy3hid
+	N6QMOLUBDRCgCcJ/uPSRwVdLceUOWiVetjng==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vm126-003RrU-0m;
-	Sat, 31 Jan 2026 10:48:23 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 31 Jan 2026 10:48:22 +0800
-Date: Sat, 31 Jan 2026 10:48:22 +0800
+	id 1vm12I-003Rrb-1F;
+	Sat, 31 Jan 2026 10:48:35 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 31 Jan 2026 10:48:34 +0800
+Date: Sat, 31 Jan 2026 10:48:34 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	linux-crypto@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: stm32 - Remove unnecessary checks before calling
- memcpy
-Message-ID: <aX1tdmQERL25z2Al@gondor.apana.org.au>
-References: <20260109142039.220729-2-thorsten.blum@linux.dev>
+To: Ella Ma <alansnape3058@gmail.com>
+Cc: thomas.lendacky@amd.com, john.allen@amd.com, davem@davemloft.net,
+	arnd@arndb.de, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, julia.lawall@inria.fr,
+	Markus.Elfring@web.de, Tom Lendacky <thomas.lendacky@gmail.com>
+Subject: Re: [PATCH v2] crypto: ccp - Fix a crash due to incorrect cleanup
+ usage of kfree
+Message-ID: <aX1tgpqjtIby9tav@gondor.apana.org.au>
+References: <20260108152906.56497-1-alansnape3058@gmail.com>
+ <20260109151724.58799-1-alansnape3058@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -70,47 +68,83 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260109142039.220729-2-thorsten.blum@linux.dev>
+In-Reply-To: <20260109151724.58799-1-alansnape3058@gmail.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[davemloft.net,gmail.com,foss.st.com,linux.intel.com,vger.kernel.org,st-md-mailman.stormreply.com,lists.infradead.org];
+	FREEMAIL_CC(0.00)[amd.com,davemloft.net,arndb.de,vger.kernel.org,inria.fr,web.de,gmail.com];
+	TAGGED_FROM(0.00)[bounces-20498-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	TAGGED_FROM(0.00)[bounces-20499-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gondor.apana.org.au:mid,gondor.apana.org.au:dkim,apana.org.au:url,apana.org.au:email,linux.dev:email]
-X-Rspamd-Queue-Id: BFD46C058E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:mid,gondor.apana.org.au:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
+X-Rspamd-Queue-Id: 5E966C0587
 X-Rspamd-Action: no action
 
-On Fri, Jan 09, 2026 at 03:20:36PM +0100, Thorsten Blum wrote:
-> memcpy() can be safely called with size 0, which is a no-op. Remove the
-> unnecessary checks before calling memcpy().
+On Fri, Jan 09, 2026 at 04:17:24PM +0100, Ella Ma wrote:
+> Annotating a local pointer variable, which will be assigned with the
+> kmalloc-family functions, with the `__cleanup(kfree)` attribute will
+> make the address of the local variable, rather than the address returned
+> by kmalloc, passed to kfree directly and lead to a crash due to invalid
+> deallocation of stack address. According to other places in the repo,
+> the correct usage should be `__free(kfree)`. The code coincidentally
+> compiled because the parameter type `void *` of kfree is compatible with
+> the desired type `struct { ... } **`.
 > 
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> Fixes: a71475582ada ("crypto: ccp - reduce stack usage in ccp_run_aes_gcm_cmd")
+> Signed-off-by: Ella Ma <alansnape3058@gmail.com>
+> Acked-by: Tom Lendacky <thomas.lendacky@gmail.com>
 > ---
->  drivers/crypto/stm32/stm32-hash.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> Changes in v2:
+> - Update the subject prefix as suggested by Markus
+> 
+> 
+> I don't have the machine to actually test the changed place. So I tried
+> locally with a simple test module. The crash happens right when the
+> module is being loaded.
+> 
+> ```C
+> #include <linux/init.h>
+> #include <linux/module.h>
+> MODULE_LICENSE("GPL");
+> static int __init custom_init(void) {
+>   printk(KERN_INFO "Crash reproduce for drivers/crypto/ccp/ccp-ops.c");
+>   int *p __cleanup(kfree) = kzalloc(sizeof(int), GFP_KERNEL);
+>   *p = 42;
+>   return 0;
+> }
+> static void __exit custom_exit(void) {}
+> module_init(custom_init);
+> module_exit(custom_exit);
+> ```
+> 
+> BESIDES, scripts/checkpatch.pl reports a coding style issue originally
+> existing in the code, `sizeof *wa`, I fixed this together in this patch.
+> 
+>  drivers/crypto/ccp/ccp-ops.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
