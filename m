@@ -1,64 +1,63 @@
-Return-Path: <linux-crypto+bounces-20509-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20510-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gCcKOl5wfWmzSAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-20509-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 04:00:46 +0100
+	id IEZyCStwfWmzSAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-20510-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 03:59:55 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 657FEC070B
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 04:00:46 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA2DFC06F4
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 03:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E9129303B4C3
-	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 02:59:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1AEA6300748A
+	for <lists+linux-crypto@lfdr.de>; Sat, 31 Jan 2026 02:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461983358AF;
-	Sat, 31 Jan 2026 02:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886FD3358AF;
+	Sat, 31 Jan 2026 02:59:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="JyViUGvV"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="gwEPAofH"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 853AD334685;
-	Sat, 31 Jan 2026 02:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50122DC789;
+	Sat, 31 Jan 2026 02:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769828387; cv=none; b=GttNCaTI/CahdWu1aGjycd/QQ33uDWhbpUElmvKLUlIemWso4KnfTR9SbKl04Pa3bZ6Fui6d+jNXRyqaTx5kG1BeokVn3O0sBuA7s/kR5wf/YO3Eoi+72O3Axb82V0JRWKrwWL2y3A1LXN8cgc7Fe/Lv3sburSMtkNKpYOFv8/4=
+	t=1769828392; cv=none; b=D8jW4USD5GWO2URUYtLPolLOgPVaV+2I7up2eCznwlNLLKHeeshwkZ7d4kNF6d4UoXMANmWk0FMHCn1s0XV6eXWY/RlYliW302aTRqzTG91+X8ptlGPUzl4GXvyzmKz7TpD3gtk4ByC2zHpuTLiUg5rPbQvCoPu752UeFcVVTtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769828387; c=relaxed/simple;
-	bh=Eb4shFWJjr9LhVdHxFF+XZmsV2z6pBmt8QF8UIbLth4=;
+	s=arc-20240116; t=1769828392; c=relaxed/simple;
+	bh=oL6NBlRP6LiTXPTzbDVaE1aDBOFxP/SCmaHcwWK4t8o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HTU+FVxXGcngIiZbT/J4NUIeRKE0dpC5FVYH8Zp/6IRB6ASeqcKcdV2R8HE7xOcNI2yskwXoJDPtHin8PzRImUtDBAu7JLCeEJXvMbhk3FIceUEOoDAVecccCV/P8jk6pFj5U2cleUJTBfvA018SPT/UAo9oPXJ3u/lbWwn2PfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=JyViUGvV; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=GisnnvE1P9qkbshzXOR97De5m6HiP5YobisysvzjIhfemaPHXesnfPs2NesLbvR7Eh+jDJ9bCEXkifVp9oiWlsJGWVWUiWkmb82vPzC/vtr8KPnXCAjfHpmVEMrfiZosT1rszdVZO04CNa1PaFEV9ZOdbPXxLuZKLxlhWfp5D8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=gwEPAofH; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=+QmJ2GqR/1olnQQYjEwpaNyqv77UJ5XHL8AcSNCoFlo=; 
-	b=JyViUGvVz1E09GB3U5/XLYbXI49A++vzbZ/JDYLpCSmWIFyUVjoccgheNBcSVoNnueOB6aiPFEW
-	8lPIoFvKrzrGR/Uh0KyZ3zM4G3PhbawPOe1DA+0dbnFc1K9WfjBVooJYVnziIMFdWKxxbGHlapMt3
-	V7/vq6e5oxY5YMbfbJhpD8nUJ3oMdiV3jDD6ZgvjMSTI+xanXA35w1wudalHN/tlIdPI3K/SaHPUD
-	3nwgazXntJk2tldHdtVqnUbDhQJTY0vLuUj2LQFENMyG3TVhDLBbs+KN5QQJJo4jOaZkJ1/emltAG
-	qh6Yzqnn8kmRTUUBRqYNOwI2Yha4TI1alezQ==;
+	from:content-type:reply-to; bh=OPZk+hja2WdnmqK7k60I128twSDa4RF4sPlvNqZThsA=; 
+	b=gwEPAofHAqcqhUzIcFpVDBpDRc95jCMHSWLcOtqrDAjfIdDdEss7AtOEe2AyiSV58Rd02TmGWFi
+	Id61/Ehn/9hlElfmwkas4ppO0fIs5u5c8cT5aU00Zo0Muh7pJ6ovo13C9AicxmZo1StcrIQK0OePy
+	69SsQTwFN3rlC0zYuJ6nni1N5CdiUZgwEAnKZHyhMkZhpXW9qK0VFdrOVd9U8pBaD12GZNVVsDyoy
+	u13qDpgFunGnFDNbDhepK4bQoa3pB3CS7fW2Isf4hOL/IiF/2++4tQzbQfJ8vdE4h+6wwGuRsiM8x
+	31+EbD8ZhoqihCS0d6tNgXoBb/3oUZhBt1AQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vm1D3-003S3K-2q;
-	Sat, 31 Jan 2026 10:59:42 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 31 Jan 2026 10:59:41 +0800
-Date: Sat, 31 Jan 2026 10:59:41 +0800
+	id 1vm1D9-003S3Q-0R;
+	Sat, 31 Jan 2026 10:59:48 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 31 Jan 2026 10:59:47 +0800
+Date: Sat, 31 Jan 2026 10:59:47 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Chenghai Huang <huangchenghai2@huawei.com>
 Cc: davem@davemloft.net, linux-kernel@vger.kernel.org,
 	linux-crypto@vger.kernel.org, fanghao11@huawei.com,
 	liulongfang@huawei.com, qianweili@huawei.com,
 	wangzhou1@hisilicon.com
-Subject: Re: [PATCH V2] crypto: hisilicon/trng - support tfms sharing the
- device
-Message-ID: <aX1wHQVReC4g55vH@gondor.apana.org.au>
-References: <20260117071821.1786428-1-huangchenghai2@huawei.com>
+Subject: Re: [PATCH 0/4] crypto: hisilicon/qm - fix several mailbox issues
+Message-ID: <aX1wI7ghvy7-Q-Ii@gondor.apana.org.au>
+References: <20260117101806.2172918-1-huangchenghai2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -67,12 +66,12 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260117071821.1786428-1-huangchenghai2@huawei.com>
+In-Reply-To: <20260117101806.2172918-1-huangchenghai2@huawei.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -81,7 +80,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20509-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20510-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -89,36 +88,49 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gondor.apana.org.au:mid,gondor.apana.org.au:dkim,apana.org.au:url,apana.org.au:email,huawei.com:email]
-X-Rspamd-Queue-Id: 657FEC070B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email,gondor.apana.org.au:mid,gondor.apana.org.au:dkim]
+X-Rspamd-Queue-Id: BA2DFC06F4
 X-Rspamd-Action: no action
 
-On Sat, Jan 17, 2026 at 03:18:21PM +0800, Chenghai Huang wrote:
-> From: Weili Qian <qianweili@huawei.com>
+On Sat, Jan 17, 2026 at 06:18:02PM +0800, Chenghai Huang wrote:
+> These patchset fix several issues for mailbox handling in the
+> hisilicon/qm crypto accelerator driver:
+> 1. Fix the memory barrier order in mailbox operations to ensure data is
+> up-to-date before hardware access.
+> 2. Remove unnecessary architecture-related code, as the driver is
+> exclusively used on ARM64.
+> 3. Use 128-bit atomic read to replace the current mailbox operations
+> in the driver. Since the PF and VFs share the mmio memory of the
+> mailbox, mailbox mmio memory access needs to be atomic. Because the
+> stp and ldp instructions do not guarantee atomic access to mmio memory
+> on all hardware, the current assembly implementation is placed in the
+> driver.
+> 4. Increase the mailbox wait time for queue and function stop commands
+> to match the hardware processing timeout.
 > 
-> Since the number of devices is limited, and the number
-> of tfms may exceed the number of devices, to ensure that
-> tfms can be successfully allocated, support tfms
-> sharing the same device.
+> ---
+> Chenghai Huang (1):
+>   crypto: hisilicon/qm - move the barrier before writing to the mailbox
+>     register
 > 
-> Fixes: e4d9d10ef4be ("crypto: hisilicon/trng - add support for PRNG")
-> Signed-off-by: Weili Qian <qianweili@huawei.com>
-> Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
-> ---
-> Changes in v2:
-> - Move the device lock to the hisi_trng_generate(), unlock after
->   generating a block of random numbers, to prevent one thread from
->   hogging the lock.
-> ---
->  drivers/crypto/hisilicon/trng/trng.c | 121 +++++++++++++++++++--------
->  1 file changed, 86 insertions(+), 35 deletions(-)
+> Weili Qian (3):
+>   crypto: hisilicon/qm - remove unnecessary code in qm_mb_write()
+>   crypto: hisilicon/qm - obtain the mailbox configuration at one time
+>   crypto: hisilicon/qm - increase wait time for mailbox
+> 
+>  drivers/crypto/hisilicon/qm.c | 177 +++++++++++++++++++++-------------
+>  include/linux/hisi_acc_qm.h   |   1 +
+>  2 files changed, 113 insertions(+), 65 deletions(-)
+> 
+> -- 
+> 2.33.0
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
