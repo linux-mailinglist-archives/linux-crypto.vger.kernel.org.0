@@ -1,160 +1,147 @@
-Return-Path: <linux-crypto+bounces-20531-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20532-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wFS9ABKDf2m6sQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-20531-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 01 Feb 2026 17:45:06 +0100
+	id oLWnJWKUf2lotwIAu9opvQ
+	(envelope-from <linux-crypto+bounces-20532-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 01 Feb 2026 18:58:58 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B79DC68AC
-	for <lists+linux-crypto@lfdr.de>; Sun, 01 Feb 2026 17:45:04 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5239C6DBD
+	for <lists+linux-crypto@lfdr.de>; Sun, 01 Feb 2026 18:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5E49D30013A2
-	for <lists+linux-crypto@lfdr.de>; Sun,  1 Feb 2026 16:45:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 12C3F3003E9B
+	for <lists+linux-crypto@lfdr.de>; Sun,  1 Feb 2026 17:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2072B26B756;
-	Sun,  1 Feb 2026 16:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1E626B2D2;
+	Sun,  1 Feb 2026 17:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QM5EXaUD"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DsN4ltz4"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828FFA59
-	for <linux-crypto@vger.kernel.org>; Sun,  1 Feb 2026 16:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524CE1D5170
+	for <linux-crypto@vger.kernel.org>; Sun,  1 Feb 2026 17:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769964297; cv=none; b=BYT/iNmFu79qgL8ieAGrRCdCJ+I+lcJOCsMb9VbKXOdKlzGYfYFS5jyvOYbiLFD7yAuSoSgIVxAnynrrxal6OAFSypgHY9fixd2ft4MjRsCz576h8UzND7RuJhgyxMEG5rrfhFnR131O4sdIWHoKXTr38jGcPzzeJ4OlDhZxi2o=
+	t=1769968648; cv=none; b=MzDnrROTitmPdbeW+HfSTSddbBvK7PIfXtJJN9gKtALR3if+dn4THnLv92nP6wNmCYr/UHB9SxG4Ej4JAmWKT1TyxgwTZLLYMeE1YlQEs2izCglG/ipbL6MOsYgb0pExHFiIVWyCYf3RqR1M9eNM5L6aNeU84F0Xk2EcZ25kC4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769964297; c=relaxed/simple;
-	bh=giD2F5UNmFMG6o6l+i3XLP9MRphNPKugSUu8GN9qHPs=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=n/OOj5FG091xHxi1GnuPRPxKWk1Di8ZzmrCfvyiZybnokWtUcoyYzmDykBm61KcjTz7S8DGGsDXbiV2jN5l7RqFGbqwiduNoNjV0i+cm6vhJ+Af0CDMQgBPYzxkh+x45KqPJDHvMO3yd6QBL6x0bnAlgvNGljCpBiMH4GJmktfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QM5EXaUD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1769964295;
+	s=arc-20240116; t=1769968648; c=relaxed/simple;
+	bh=HRBBj0nPq7qU55R3IPHOngXEvBb3wwpPQ7k4n533wrc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=csJculBFqjrp4RL9N/Yet8fwIXshWoM4jUeG/0rOh4xr7VxsTEoQ03wP2kgwp9NzGntcsu/6qJLQBx5goC4LacCCJCHAe35vI/ZHiuVtWabvkMz3nM5s6q9gSdp9moUwbcKIvCbcA0+WDSWltSQ+f6oU77WMU2N5WSkpUZ4ZGcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DsN4ltz4; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1769968644;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gbjcDMK0rcsgbZ0bOwqzZviKflLW8sOigcLXjjdEPsU=;
-	b=QM5EXaUDPSfk9JZ0odX+l8dnbMGgMOifCyy20SNIaNEukcrYhzhY2rv5/UNPsIZ01EVSC+
-	2GdbCGhv+qEuyelX5zJvFo+YvV29Br+cr6wL0WAmV33SGw+DAUtDT/GLR5zIjfKX9zMBUf
-	Erocqe28omEQRQjUid+//g4EOZ9tUy8=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-120-zX-rT8bBOY-cMQsxbWZZig-1; Sun,
- 01 Feb 2026 11:44:52 -0500
-X-MC-Unique: zX-rT8bBOY-cMQsxbWZZig-1
-X-Mimecast-MFC-AGG-ID: zX-rT8bBOY-cMQsxbWZZig_1769964290
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4F2321956094;
-	Sun,  1 Feb 2026 16:44:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.44.33.164])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D556E30001A7;
-	Sun,  1 Feb 2026 16:44:43 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <SN6PR02MB415708C0A6E2EB1B5C7BBFB0D49CA@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <SN6PR02MB415708C0A6E2EB1B5C7BBFB0D49CA@SN6PR02MB4157.namprd02.prod.outlook.com> <20260126142931.1940586-1-dhowells@redhat.com> <20260126142931.1940586-7-dhowells@redhat.com>
-To: Michael Kelley <mhklinux@outlook.com>,
-    Sami Tolvanen <samitolvanen@google.com>
-Cc: dhowells@redhat.com, Lukas Wunner <lukas@wunner.de>,
-    Ignat Korchagin <ignat@cloudflare.com>,
-    Jarkko Sakkinen <jarkko@kernel.org>,
-    Herbert Xu <herbert@gondor.apana.org.au>,
-    Eric Biggers <ebiggers@kernel.org>,
-    Luis Chamberlain <mcgrof@kernel.org>,
-    Petr Pavlu <petr.pavlu@suse.com>, Daniel Gomez <da.gomez@kernel.org>,
-    "Jason
- A . Donenfeld" <Jason@zx2c4.com>,
-    Ard Biesheuvel <ardb@kernel.org>,
-    Stephan Mueller <smueller@chronox.de>,
-    "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-    "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-    "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v15 6/7] modsign: Enable ML-DSA module signing
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=pWD89ORk2rwOefxQ8yqPj9t/reTFvE2D7mE1erXtzWc=;
+	b=DsN4ltz47LFzz+FP/6VNpbbyaIEC9zf/s79KNqe87N94SixmnHa3t6G7J79WVBeF7LDMm+
+	NwuY13MHSZD0DoKuTEdDT+jafWLoxAyTO7NjekmNnx0O5uQw9lgaXMUM4cR0OVHN3dLT2r
+	VWz+jgBnnGYQ9Rf81ITJ4aZADyxVlIs=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: img-hash - Use unregister_ahashes in img_{un}register_algs
+Date: Sun,  1 Feb 2026 18:56:33 +0100
+Message-ID: <20260201175632.662976-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2315763.1769964282.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Sun, 01 Feb 2026 16:44:42 +0000
-Message-ID: <2315764.1769964282@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20531-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FREEMAIL_TO(0.00)[outlook.com,google.com];
+	TAGGED_FROM(0.00)[bounces-20532-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[outlook.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,warthog.procyon.org.uk:mid]
-X-Rspamd-Queue-Id: 0B79DC68AC
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E5239C6DBD
 X-Rspamd-Action: no action
 
-Michael Kelley <mhklinux@outlook.com> wrote:
+Replace the for loops with calls to crypto_unregister_ahashes(). In
+img_register_algs(), return 'err' immediately and remove the goto
+statement to simplify the error handling code.
 
-> I'm building linux-next20260130, which has this patch, and get the follo=
-wing errors:
-> =
+Convert img_unregister_algs() to a void function since its return value
+is never used.
 
->   HOSTCC  scripts/sign-file
-> scripts/sign-file.c: In function 'main':
-> scripts/sign-file.c:282:25: error: 'CMS_NO_SIGNING_TIME' undeclared (fir=
-st use in this function)
-> ...
-> The problem is that I'm running on Ubuntu 20.04, with this openssl:
-> =
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ drivers/crypto/img-hash.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-> # openssl version
-> OpenSSL 1.1.1f  31 Mar 2020 =
-
-
-The problem probably isn't this patch, it's almost certainly due to:
-
-  d7afd65b4acc7 ("sign-file: Use only the OpenSSL CMS API for signing")
-
-in the modules tree.  It removes support for PKCS#7 signature generation.
-
-Were you using PKCS#7 with SHA1?
-
-David
+diff --git a/drivers/crypto/img-hash.c b/drivers/crypto/img-hash.c
+index f22c12e36b56..7195c37dd102 100644
+--- a/drivers/crypto/img-hash.c
++++ b/drivers/crypto/img-hash.c
+@@ -870,25 +870,18 @@ static int img_register_algs(struct img_hash_dev *hdev)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(img_algs); i++) {
+ 		err = crypto_register_ahash(&img_algs[i]);
+-		if (err)
+-			goto err_reg;
++		if (err) {
++			crypto_unregister_ahashes(img_algs, i);
++			return err;
++		}
+ 	}
+-	return 0;
+ 
+-err_reg:
+-	for (; i--; )
+-		crypto_unregister_ahash(&img_algs[i]);
+-
+-	return err;
++	return 0;
+ }
+ 
+-static int img_unregister_algs(struct img_hash_dev *hdev)
++static void img_unregister_algs(struct img_hash_dev *hdev)
+ {
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(img_algs); i++)
+-		crypto_unregister_ahash(&img_algs[i]);
+-	return 0;
++	crypto_unregister_ahashes(img_algs, ARRAY_SIZE(img_algs));
+ }
+ 
+ static void img_hash_done_task(unsigned long data)
+-- 
+Thorsten Blum <thorsten.blum@linux.dev>
+GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
 
 
