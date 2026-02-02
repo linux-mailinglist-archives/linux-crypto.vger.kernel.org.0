@@ -1,193 +1,219 @@
-Return-Path: <linux-crypto+bounces-20543-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20546-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oM4dI6mXgGnL/gIAu9opvQ
-	(envelope-from <linux-crypto+bounces-20543-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Feb 2026 13:25:13 +0100
+	id 6JpBLMi6gGl3AgMAu9opvQ
+	(envelope-from <linux-crypto+bounces-20546-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Feb 2026 15:55:04 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 300DDCC522
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Feb 2026 13:25:13 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68EC1CDAF5
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Feb 2026 15:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 59CCB300908C
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Feb 2026 12:25:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CC8CD307DFCC
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Feb 2026 14:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B033644D2;
-	Mon,  2 Feb 2026 12:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0AE437417F;
+	Mon,  2 Feb 2026 14:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="g9lvvJQq";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="hFmOyD9O"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="D/yzLSnd";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="sm7t7iWp"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE4E359704
-	for <linux-crypto@vger.kernel.org>; Mon,  2 Feb 2026 12:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DF0372B2F;
+	Mon,  2 Feb 2026 14:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770035108; cv=none; b=PMvv3SZhT0FUSqwBEhdpE0RggpfTvnMhR6CENx5hKfE+ltgB07Yl2wUqDc2d8S1fxT0lRV0w4CzU4FgGnv57OU0lCwsxtP6KxFajzXZNdsB7hGFicN/CT7dpsknThxsmChZVQKFs4XbIdCuCnpjRA9ou7zXg9R0y3suiuU9EKVk=
+	t=1770043719; cv=none; b=H0HJYv6RRi+Blk49tZbSPj4obuSG614+gQZzfX5MUYhnKVTLUcLjDfg2CoAmTH/n9I95S8utY4RHjCtmXpoq05DkI4+H0MvfE0sgLD+YIq1JBEFHKeP5cqDQIK6gbFD45qYGpCyONkYHTjXSMLlJ/r3u9fLgJaKW7HLZoOWHR+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770035108; c=relaxed/simple;
-	bh=gUCF9+jSXyb3JIC6GV9eR70rJwXnnHWNLadFygf+hu0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=roWWCbwBkvbGSgjkyB3+7lPU+w8Vf5wd/xsu9dGSo3LG/V8HJBBEhTqino11hbx8D5xQlDGJ+WqQ+yy5cIuW3BwnwbKZAmKHTzIQRsQYbXBP76RDehVS3wBk9sCLLm82GvAN9eB5WB323x5NOrEZrRHT12ewT50NC+24E9lrZP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=g9lvvJQq; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=hFmOyD9O; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6128AKLN769243
-	for <linux-crypto@vger.kernel.org>; Mon, 2 Feb 2026 12:25:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	xI/twei90NFc37s8BZBKjsNGdHURMt/JPbtCf1osmek=; b=g9lvvJQqF+7AKUg6
-	4z7/PjIQ72WmlWUz0HZTyXGlA9ixxwvHSEIFOlM5VRN8rsruCRLUwuFpwJtmCoN2
-	D+v5DC1e4neZOJBLR+PgqyXAjZ2oZceXY1v1qKYHazMoTdvpB8vlWchpMG1Oq91S
-	r5YQDnuW4J2l7ansf8VXSX2nRabFidAj2hgO+qg5UYjD8TXD8F2AoTm4VPIKCpB+
-	/EKnlPVZ86bMP676PFPa+XOgLodZ0xEpaSgbxOTuIhBQI/sP5+HFKIjVvj4iWgoP
-	atqtAi2Ct6+ODW5jEyyoMhCCPo3BLZau1YhAQ0/FG2pMCxN3wI4lFt8mn4s+iXAC
-	mSyJwQ==
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com [209.85.222.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4c1aredaab-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-crypto@vger.kernel.org>; Mon, 02 Feb 2026 12:25:05 +0000 (GMT)
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8c522c44febso95754285a.0
-        for <linux-crypto@vger.kernel.org>; Mon, 02 Feb 2026 04:25:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1770035105; x=1770639905; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xI/twei90NFc37s8BZBKjsNGdHURMt/JPbtCf1osmek=;
-        b=hFmOyD9OEYsiJakumR/4u9hjOf1uZWCAY77U2pMQ6jPnMwu4WxcatTl4CRLFggxSUD
-         nGuE91yTwKmuxkdx+30HoQ/wWG8ANxP27+Y8wS93tPV9rSFTsIOxkDta4PaseXackdjU
-         eQMmgp5dOy1PiqsOAyFR9IJUDVX00qrmD6tiZrILIt3n4OW2ZZFtdrYV1Hge2AYyL761
-         4IfRR6WsQDpiW3it5JZAt7yjMm4OhDMVYVnKAORhwotpbuGHnJhOjh3L5/4AeUuF5X7a
-         O6UGWxuFUTFiCZ1WoOPXsUMWe472NvWk9m+XHpTpzOKUaeqtaLG2wCrVClaldsvjedB0
-         F+ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770035105; x=1770639905;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xI/twei90NFc37s8BZBKjsNGdHURMt/JPbtCf1osmek=;
-        b=YC4P5bWcAzg8W1h3vycREuWKUIk078eV0v4c9DKCJDMKX9vPEweZOCAcFSAYgb36Eu
-         rTfBZjUdHR/x80EmqMwXbTp3IrVupTipEuL5cK/bmnZT7PPxyY/SVoBh6hSFP7KvMLiu
-         KMASBYbZqHSbiMmftuv9oryppTKOnrL3ZykxNqM5M7LxFKfpOJChQ0FRq+NqUqUCdoK8
-         l86i7qWpgFjrCTkB/6Pq7l/M1WPHfLIDljDmLmwX0l32tb6AeMIymY1/Eyrq9j2yJXl+
-         YkzMk9qa6KI7w4Tb+E3R1uP9LC7WHCa39WGQleftwLyo2yry23JuupnD+de4JtvOfXwc
-         YjFw==
-X-Gm-Message-State: AOJu0YzJFzQb6xy2bmeZPhjZvaRtY4JNvpmlV0gOTPlVsJDR3aGbNIGJ
-	DARrYmtz3I40EnCKBCTq/IkTgmRkgUVCIZeOJCu9onSz8hFKT65CzXXLCCTy5nr1PUmTBSCsnUm
-	iPmMQL1XJVAAjwygcsbTt3z7sBofiv8m3sfu0M10+5JmIJUWgrFxbXVaWbeOiKXuVCYcDShhjyK
-	U=
-X-Gm-Gg: AZuq6aIZGZCI7U+kOicyv6/9VyxcqS40chb8cygpflnvbgfxjx9Cn3s+3vKeMJnXRv5
-	s4n4ngZellExydJarew9pfUxEXRiaZgUiFyb+FSqaQ8LOI0yhHA8tqTvc68KVeSVign7IhZNK3t
-	dnhEJhM6biIpInOULTo9HilX0jkyryA2sR8TLimcY+WvDOAtm4O8uMS9Jfuhs3gRSUInPJKSb2S
-	ivzKnGGu8AGxVQ/fgaWLGiCRqChCfpDa6mz0RE/4UtN6VzdY7pr8+viCSyX+4PjjkBHYI/1nl7a
-	wiDZFeiGityJXBCbtphBN9GzXPKQ6B/D4rwjrpCIJ8vFw4Sej6cXQmroNmTTgNPQxdzGaUrDQ0G
-	LF0e7agBc5z7/7+ve+WqjVdjFHwjLMSN0Tt12iuXEfrgWsHTzWOFqlnPXQDYEhjtxuvk=
-X-Received: by 2002:a05:620a:31a4:b0:89f:5a1b:1ec9 with SMTP id af79cd13be357-8c9eb25aa3amr1079736585a.1.1770035105234;
-        Mon, 02 Feb 2026 04:25:05 -0800 (PST)
-X-Received: by 2002:a05:620a:31a4:b0:89f:5a1b:1ec9 with SMTP id af79cd13be357-8c9eb25aa3amr1079734385a.1.1770035104740;
-        Mon, 02 Feb 2026 04:25:04 -0800 (PST)
-Received: from [192.168.119.254] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-658b469e6b2sm7608999a12.26.2026.02.02.04.25.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Feb 2026 04:25:03 -0800 (PST)
-Message-ID: <b5d7ac9d-64f1-4666-a950-d79347854ad9@oss.qualcomm.com>
-Date: Mon, 2 Feb 2026 13:25:01 +0100
+	s=arc-20240116; t=1770043719; c=relaxed/simple;
+	bh=tvgxc8JUhYHVQskjNh2lFMtm8fiUYFyyz2Lm+2YV8CU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KtvZq3bBACHjRwEvwRhqsBFRERAdJg6Kkz22grUXGcmkpUqa21sLgwbcBXchS0woWHpqGAJU2f9oQZzDLAQsY06fTo4LPtuXsooHUBP+YkZDa2so53Hyzpx6A4Zosf8ZjOjMjsqCvaGtCi315c/ISqLtGnXoBCscDlx3NPG6Unw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=D/yzLSnd; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=sm7t7iWp; arc=none smtp.client-ip=135.148.138.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
+DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1770043670; bh=vwCfCSOo288wo7Cg/q4gnbK
+	kQrjz53HR1oEH/OY05lE=; b=D/yzLSndpRENn0FOHViHjWVqUgwzUzs95hAHciYZP7SfwWod5F
+	bHoyJbVJsCVFvv+eKxr4KFL0Nbp+fDHyq8c55vurPhqffr6KHZWNjXOO/uLXXRGfxscmTgfqVV2
+	F/CAVriWQGj+WJ9pYVO47mFuO+ziH7L+L1SwQh4BZ+PnlFnF76ifZ7/pkzr2ZU2kr8kw5zzIhU5
+	MAALZROo5UK8ay2eQDPMAotp4vpdkptveifWk/vU3KbHmCJKIGeSO1NHwGz7Jp/5liKsdNikMDe
+	HdbMZN1r1a9WuBhR9OHKTFPHbjN64SkuvoZOo3d/0Rvy6WEUX+gvS47nafGPObpWffw==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1770043670; bh=vwCfCSOo288wo7Cg/q4gnbK
+	kQrjz53HR1oEH/OY05lE=; b=sm7t7iWpKSFhws6/MwTtNgUcIUPp6JIZDaG37305sRj7StUQb8
+	DgpkRRNJ+CMYYqtMOU9LpRUkQyPMcLeJYnDw==;
+From: Daniel Hodges <git@danielhodges.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	vadim.fedorenko@linux.dev,
+	song@kernel.org,
+	yatsenko@meta.com,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	yonghong.song@linux.dev,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Daniel Hodges <git@danielhodges.dev>
+Subject: [PATCH bpf-next v7 0/4] Add cryptographic hash and signature verification kfuncs to BPF
+Date: Mon,  2 Feb 2026 09:47:45 -0500
+Message-ID: <20260202144749.22932-1-git@danielhodges.dev>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] crypto: qce - Add runtime PM and interconnect
- bandwidth scaling support
-To: Udit Tiwari <quic_utiwari@quicinc.com>, herbert@gondor.apana.org.au,
-        thara.gopinath@gmail.com, davem@davemloft.net
-Cc: linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_neersoni@quicinc.com
-References: <20251120062443.2016084-1-quic_utiwari@quicinc.com>
- <a2c6cbdb-a114-423f-a315-6e5e9ab84e5a@oss.qualcomm.com>
- <ec9e420a-932d-4265-8cac-dee003933898@quicinc.com>
- <c1749b86-0016-4314-9497-04e952683060@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <c1749b86-0016-4314-9497-04e952683060@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authority-Analysis: v=2.4 cv=NNfYOk6g c=1 sm=1 tr=0 ts=698097a2 cx=c_pps
- a=HLyN3IcIa5EE8TELMZ618Q==:117 a=FpWmc02/iXfjRdCD7H54yg==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=5YqSPhDMRtzW0TTUFusA:9 a=QEXdDO2ut3YA:10
- a=QYH75iMubAgA:10 a=bTQJ7kPSJx9SKPbeHEYW:22
-X-Proofpoint-GUID: GXkbRfqovgDHTYmBA0Qkb8Be9sRbNPCx
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjAyMDA5NiBTYWx0ZWRfX9bSwQkf/0vtz
- KIJ9eSEg7NTR/SrEa/YwDKxgplztyyfztu9z3t3+pAlkxrCAjNNWP/t+vvK1a44A+e02O/3eE2O
- M9qrN+aHYWF6OryngtMLIREl2wAWjU3x/fWA+cKeC/+7OdzYW1BgIKLXd6cRdSciPSJH2x1YxbL
- syjn383ikKvUjiq/VLjf+Rou5DzxgTNEt9J/RmASQcgVEjZDoy1q2XQ9wT+M2llwk3cUb5/x+HB
- wAXbYgADO4bSS5PamXSQaJd07e5SEBOAGeA5lIIgob33GTsYZQDD1vU6XIzoNftBfl2FaqC9ioT
- ugi9thJWRMyXLT+qwDpJ3Mgx2/VzLlRWk3lDbz5FOB222V2Uji4APtSUc7w5IVSez0ObHtibb98
- fD+jsY6kCNR3mNqjdZxa2v98MJz+PGUdVgHwhZlxR1vu+LhYUjqi9mN/hJ0JitCfywO5kV8AlCA
- E4RLXd2kUupSGAM9VCA==
-X-Proofpoint-ORIG-GUID: GXkbRfqovgDHTYmBA0Qkb8Be9sRbNPCx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-02_04,2026-01-30_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501
- clxscore=1015 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
- malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
- definitions=main-2602020096
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qualcomm.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[danielhodges.dev,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[danielhodges.dev:s=202510r,danielhodges.dev:s=202510e];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[quicinc.com,gondor.apana.org.au,gmail.com,davemloft.net];
-	TAGGED_FROM(0.00)[bounces-20543-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
 	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20546-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,iogearbox.net,linux.dev,meta.com,gmail.com,google.com,fomichev.me,gondor.apana.org.au,davemloft.net,vger.kernel.org,danielhodges.dev];
+	DKIM_TRACE(0.00)[danielhodges.dev:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oss.qualcomm.com:mid,oss.qualcomm.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,qualcomm.com:dkim];
+	FROM_NEQ_ENVFROM(0.00)[git@danielhodges.dev,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[konrad.dybcio@oss.qualcomm.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 300DDCC522
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,danielhodges.dev:mid,danielhodges.dev:dkim]
+X-Rspamd-Queue-Id: 68EC1CDAF5
 X-Rspamd-Action: no action
 
-On 1/27/26 5:27 AM, Udit Tiwari wrote:
-> Hi Konrad,
-> 
-> Gentle ping on this.
-> 
-> Do you have any further thoughts on my previous reply regarding the PM runtime optimization? I am happy to spin a v6 if you view it as a blocker; otherwise, I would appreciate it if this could be considered for merging as-is.
+This patch series enhances BPF's cryptographic functionality by introducing
+kernel functions for SHA hashing and ECDSA signature verification. The changes
+enable BPF programs to verify data integrity and authenticity across
+networking, security, and observability use cases.
 
-Sorry for not getting back to you on this in time.
+The series addresses two gaps in BPF's cryptographic toolkit:
 
-I'd prefer if you used these helpers, as otherwise there's a lot
-of unnecessary goto-noise
+1. Cryptographic hashing - supports content verification and message digest
+   preparation
+2. Asymmetric signature verification - allows validation of signed data
+   without requiring private keys in the datapath
 
-Konrad
+Use cases include:
+- Verifying signed network packets or application data in XDP/TC programs
+- Integrity checks within tracing and security monitoring
+- Zero-trust security models with BPF-based credential verification
+- Content-addressed storage in BPF-based filesystems
+
+The implementation leverages existing BPF patterns: it uses bpf_dynptr for
+memory safety, reuses kernel crypto libraries (lib/crypto/sha256.c and
+crypto/ecdsa.c) rather than reimplementing algorithms, and provides
+context-based APIs supporting multiple program types.
+
+v1: https://lore.kernel.org/bpf/20251117211413.1394-1-git@danielhodges.dev/
+
+v2: https://lore.kernel.org/bpf/20251205173923.31740-1-git@danielhodges.dev/
+- Fixed redundant __bpf_dynptr_is_rdonly() checks (Vadim)
+- Added BPF hash algorithm type registration module in crypto/ subsystem
+- Added CONFIG_CRYPTO_HASH2 guards around bpf_crypto_hash() kfunc and its
+  BTF registration, matching the pattern used for CONFIG_CRYPTO_ECDSA
+- Added mandatory digestsize validation for hash operations
+
+v3: https://lore.kernel.org/bpf/20251208030117.18892-1-git@danielhodges.dev/
+- Fixed patch ordering - header changes now in separate first commit before
+  crypto module to ensure bisectability (bot+bpf-ci)
+- Fixed type mismatch - changed u32 to u64 for dynptr sizes in
+  bpf_crypto_hash() to match __bpf_dynptr_size() return type (Mykyta)
+- Added CONFIG_CRYPTO_ECDSA to selftest config (Song)
+- Refactored test code duplication with setup_skel() helper (Song)
+- Added copyright notices to all new files
+
+v4: https://lore.kernel.org/bpf/20260105173755.22515-1-git@danielhodges.dev/
+- Reused common bpf_crypto_ctx structure for hash and signature operations
+  instead of separate context types (Song)
+- Fixed integer truncation in bpf_crypto_hash when data_len > UINT_MAX
+- Corrected KF_RCU flags for ECDSA kfuncs (only bpf_ecdsa_verify needs KF_RCU)
+- Updated MAINTAINERS file in test patches
+- Refactored selftests to use crypto_common.h for kfunc declarations
+
+v5: https://lore.kernel.org/bpf/20260120184701.23082-1-git@danielhodges.dev/
+- Fixed bisectability: moved bpf_crypto_type_id enum and type_id field
+  introduction to the hash module commit, before it's used by hash kfunc
+- Renamed kfuncs from bpf_ecdsa_* to bpf_sig_* since signature verification
+  is not ECDSA-specific (Vadim)
+- Added NULL checks in bpf_crypto_sig wrapper functions for optional
+  digest_size and max_size callbacks to prevent NULL pointer dereference
+- Added extra validation in bpf_sig_digestsize/bpf_sig_maxsize kfuncs to
+  return -EOPNOTSUPP when underlying algorithm returns 0
+- Renamed test files from ecdsa_verify to sig_verify for consistency
+
+v6: https://lore.kernel.org/bpf/20260124174349.16861-1-git@danielhodges.dev/
+- Fixed bisectability issue flagged by CI: squash hash module and hash kfunc
+  commits so NULL checks in bpf_crypto_ctx_create() are present before the
+  hash type is registered (bot+bpf-ci)
+- Squash signature module and signature kfunc commits for the same reason
+- This reduces the series from 7 to 4 commits while preserving all functionality
+- Added type_id checks to bpf_crypto_encrypt() and bpf_crypto_decrypt() to
+  prevent NULL pointer dereference when called with non-skcipher contexts
+
+v7: https://github.com/kernel-patches/bpf/pull/10922
+- Moved crypto/bpf_crypto_skcipher.c type_id assignment from signature patch
+  to hash patch for better logical organization
+- Added missing CONFIG_CRYPTO_SIG, CONFIG_CRYPTO_SIG2, CONFIG_CRYPTO_ECDSA,
+  and CONFIG_CRYPTO_ECRDSA to selftest config to ensure signature verification
+  tests can build properly
+
+Daniel Hodges (4):
+  bpf: Add hash kfunc for cryptographic hashing
+  selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  bpf: Add signature verification kfuncs
+  selftests/bpf: Add tests for signature verification kfuncs
+
+ MAINTAINERS                                   |   6 +
+ crypto/Makefile                               |   6 +
+ crypto/bpf_crypto_shash.c                     |  96 ++++++
+ crypto/bpf_crypto_sig.c                       |  89 ++++++
+ crypto/bpf_crypto_skcipher.c                  |   1 +
+ include/linux/bpf_crypto.h                    |  13 +
+ kernel/bpf/crypto.c                           | 210 ++++++++++++-
+ tools/testing/selftests/bpf/config            |   6 +
+ .../selftests/bpf/prog_tests/crypto_hash.c    | 210 +++++++++++++
+ .../selftests/bpf/prog_tests/sig_verify.c     | 163 ++++++++++
+ .../selftests/bpf/progs/crypto_common.h       |   8 +
+ .../testing/selftests/bpf/progs/crypto_hash.c | 231 ++++++++++++++
+ .../testing/selftests/bpf/progs/sig_verify.c  | 286 ++++++++++++++++++
+ 13 files changed, 1316 insertions(+), 9 deletions(-)
+ create mode 100644 crypto/bpf_crypto_shash.c
+ create mode 100644 crypto/bpf_crypto_sig.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sig_verify.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sig_verify.c
+
+-- 
+2.52.0
+
 
