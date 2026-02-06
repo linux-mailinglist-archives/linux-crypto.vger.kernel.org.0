@@ -1,81 +1,69 @@
-Return-Path: <linux-crypto+bounces-20615-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20616-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wEdLAlHChGnG4wMAu9opvQ
-	(envelope-from <linux-crypto+bounces-20615-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Feb 2026 17:16:17 +0100
+	id OI3fFB64hWmOFgQAu9opvQ
+	(envelope-from <linux-crypto+bounces-20616-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 06 Feb 2026 10:45:02 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D5ACF51AF
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Feb 2026 17:16:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FD7FC34A
+	for <lists+linux-crypto@lfdr.de>; Fri, 06 Feb 2026 10:45:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7FA98301CCC4
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Feb 2026 16:16:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1066B3095C87
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Feb 2026 09:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6202442188A;
-	Thu,  5 Feb 2026 16:16:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF25E35F8DE;
+	Fri,  6 Feb 2026 09:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UATxMK2L"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="nog5pwgg"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA3F2C0F91;
-	Thu,  5 Feb 2026 16:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718322D0C63;
+	Fri,  6 Feb 2026 09:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770308164; cv=none; b=NNegc2KOnmGrSQrb6Vv6g8IB8oI0hjoNwyEZe/oQDdnL1ROYX6cnBQZoWTrC2O5XN2/FCpvGJ93BO3Pd1famGWMRK0tMh40jmyyZr/E4p7KYRznQoXDYSB7vQJv5fz3Y41dIbiTMDjhgAXt21BkO0yKWSlQg4dYo7aWFZL3CJxY=
+	t=1770370753; cv=none; b=WljW9yjtECX5QuS99FI67AY1aSXLcg6yUFqGnU7OWqNZuI9dr8ZeC4S1TQmVaM0tZzyBuJQ5aD4ESacBTUHza804WKQRCIYzVsbDBR0L62ywIz3C9NU4JiQ3w5ojoHk8B3z6b6S74e6gckX95u0CAYq118y6JgfiwmIUA/V1YJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770308164; c=relaxed/simple;
-	bh=zfpUg2iTjUL5OJw3y5RnQaAYqivYKuOCIM2vg3TZvbk=;
+	s=arc-20240116; t=1770370753; c=relaxed/simple;
+	bh=0KZ6Rc67mshf/8RIcAojjUEyfHIp6PTSvrY4xifGwKo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kzwqn8aIZs45+0WIK+tPSal5p3cJM3vog8LwB6eIzQiWMCdke+ofZ8+jFb93P4aIfdt6y18ahczFkWhudHdmZ2/qs/yYLcjZZqVmdJCBFtXONGsKMphLV1Z0etiw35PACPFrL8Ol5n7saRiWLzv8nXKh5oXs3l1b+2h3TFW7UFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UATxMK2L; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770308164; x=1801844164;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zfpUg2iTjUL5OJw3y5RnQaAYqivYKuOCIM2vg3TZvbk=;
-  b=UATxMK2LjEeIZKK7sDzDCx3+nJxTKUWjLXmr8X3+H3AOfmDrAKyXujve
-   P3ijCYDlgjtTTTCJkwr9QbBAKoRq2+4rkDWdYUeHbzfaRp6JMJsMNXG9I
-   HVovItyOh9egCyIjN2nQxi/CQuWRrOEB9M8jxWGOd44TTQw8Tiz4q5N7C
-   rz/kTB0O91aQu8EdYD8l6Dg0DEx0aJPPDrHwPWyzGxwj6hCgmfKP2qYNJ
-   ig/QZQB2XQbkvs6opDfs+/Lr9I4srnylBFD1b9RbfdgyaaG93aT4hearR
-   W4cfIh945nOw30TOLFZnCr0iDnFLbFcQtWJy6ceES0L8FJYOk9pREL8t3
-   A==;
-X-CSE-ConnectionGUID: N501MhTNSjSdAKcy25kpKA==
-X-CSE-MsgGUID: 4Sg83mWSTtKRCccwoiUU2Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11692"; a="75364822"
-X-IronPort-AV: E=Sophos;i="6.21,274,1763452800"; 
-   d="scan'208";a="75364822"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2026 08:15:57 -0800
-X-CSE-ConnectionGUID: BpF+q1jXRlK4x1kAk4fAgA==
-X-CSE-MsgGUID: dg+e1BL2QJ2Fd0X8CWBZdQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,274,1763452800"; 
-   d="scan'208";a="215547961"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO localhost) ([10.245.244.142])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2026 08:15:52 -0800
-Date: Thu, 5 Feb 2026 18:15:50 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: WangYuli <wangyuli@aosc.io>
-Cc: mario.limonciello@amd.com, thomas.lendacky@amd.com, john.allen@amd.com,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	mika.westerberg@linux.intel.com, jsd@semihalf.com,
-	andi.shyti@kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	bp@alien8.de, ashish.kalra@amd.com, markhas@chromium.org,
-	jarkko.nikula@linux.intel.com, wsa@kernel.org,
-	WangYuli <wangyl5933@chinaunicom.cn>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: designware: Enable PSP semaphore for AMDI0010
- and fix probe deferral
-Message-ID: <aYTCNi7-cPA1ECdM@smile.fi.intel.com>
-References: <20260205114451.30445-1-wangyuli@aosc.io>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hLTGBu9Q8d9X/PB3WiSTfSJlKeVegRs58k33kx0JxIuFCNw7c3ENhgHhjXODV8yUyZ6B3tUDUX+pOC/1MSs7TDZ6QVjG01hA8wge3UtZBmcB4sVIwFb/mJVz3qacpZMF/BukNSgAQWLOz/i1FEEbKpP79t1Zt2q25kWCjRTMGjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=nog5pwgg; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=gs9mZiOaseQgaZ/0S1QUwDW3mhpZfUYWbeh60dWS5ww=; 
+	b=nog5pwggdvKS52Em/got38xwqoN/m9dtAkynypMb+xS66Qv/mWxYy12kxCyczwuSHtX8aySsAk6
+	+n1we1MTO8ubClfUXpwgs8N9bMHXCAxP62sGBx9E/C+JodpCChk9zCTxjI0tpF49DA1u49HQJZmdx
+	yFxXS9o4Kt7+42z/8Cl81zH0V029BCcSsgDhpqEtM+U6x2Gns1fwzWxXPtFSpQof/oyHZPaF9kcn/
+	oacH6+CBO22u5IBchY7XYW7/xcRiYbZXKcEXr3DoJI99wXhRK6W0lFBypyQH2oDEVcxMKE2vS8Pdp
+	YJ8da5xBckwCdCnMKMgF5o6JL6ykMR/Ax5yQ==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1voHbA-004xZ0-2V;
+	Fri, 06 Feb 2026 16:53:57 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Feb 2026 16:53:56 +0800
+Date: Fri, 6 Feb 2026 16:53:56 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: T Pratham <t-pratham@ti.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Manorit Chawdhry <m-chawdhry@ti.com>,
+	Kamlesh Gurudasani <kamlesh@ti.com>,
+	Shiva Tripathi <s-tripathi1@ti.com>,
+	Kavitha Malarvizhi <k-malarvizhi@ti.com>,
+	Vishal Mahaveer <vishalm@ti.com>,
+	Praneeth Bajjuri <praneeth@ti.com>, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/3] crypto: ti - Add support for AES-CTR in DTHEv2
+ driver
+Message-ID: <aYWsJAmf05EdotTX@gondor.apana.org.au>
+References: <20260120144408.606911-1-t-pratham@ti.com>
+ <20260120144408.606911-2-t-pratham@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -84,49 +72,73 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260205114451.30445-1-wangyuli@aosc.io>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+In-Reply-To: <20260120144408.606911-2-t-pratham@ti.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	DKIM_TRACE(0.00)[intel.com:+];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20615-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20616-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andriy.shevchenko@linux.intel.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,smile.fi.intel.com:mid,intel.com:dkim]
-X-Rspamd-Queue-Id: 9D5ACF51AF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 41FD7FC34A
 X-Rspamd-Action: no action
 
-On Thu, Feb 05, 2026 at 07:44:51PM +0800, WangYuli wrote:
+On Tue, Jan 20, 2026 at 08:14:06PM +0530, T Pratham wrote:
+>
+> +	/*
+> +	 * CTR mode can operate on any input length, but the hardware
+> +	 * requires input length to be a multiple of the block size.
+> +	 * We need to handle the padding in the driver.
+> +	 */
+> +	if (ctx->aes_mode == DTHE_AES_CTR && req->cryptlen % AES_BLOCK_SIZE) {
+> +		struct scatterlist *sg;
+> +		int i = 0;
+> +		unsigned int curr_len = 0;
+> +
+> +		len -= req->cryptlen % AES_BLOCK_SIZE;
+> +		src_nents = sg_nents_for_len(req->src, len);
+> +		dst_nents = sg_nents_for_len(req->dst, len);
+> +
+> +		/*
+> +		 * Need to truncate the src and dst to len, else DMA complains.
+> +		 * Lengths restored at end
+> +		 */
+> +		for_each_sg(req->src, sg, src_nents - 1, i) {
+> +			curr_len += sg->length;
+> +		}
+> +		curr_len += sg->length;
+> +		src_bkup_len = sg->length;
+> +		sg->length -= curr_len % AES_BLOCK_SIZE;
 
-Don't send patches too quickly. Leave some time for others to have a chance
-to review. This version not anyhow better than v1. Please, refer to the v1
-discussion.
+Please don't modify the SG lists since they may be used elsewhere.
+There is no harm in mapping a bit more data than what you will
+end up using.
 
+Just truncate the length written to the hardware instead.
+
+Thanks,
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
