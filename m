@@ -1,65 +1,62 @@
-Return-Path: <linux-crypto+bounces-20624-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20626-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2NHfFnDJhWnAGAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-20624-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 06 Feb 2026 11:58:56 +0100
+	id yJJsFZTJhWnAGAQAu9opvQ
+	(envelope-from <linux-crypto+bounces-20626-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 06 Feb 2026 11:59:32 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E478AFCE9A
-	for <lists+linux-crypto@lfdr.de>; Fri, 06 Feb 2026 11:58:55 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75D71FCED6
+	for <lists+linux-crypto@lfdr.de>; Fri, 06 Feb 2026 11:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B01A0300558B
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Feb 2026 10:58:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8BA18300E444
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Feb 2026 10:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C946392C51;
-	Fri,  6 Feb 2026 10:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DE5393DE9;
+	Fri,  6 Feb 2026 10:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="f+sdyDzh"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="LUAk3D4C"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49943612FE;
-	Fri,  6 Feb 2026 10:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5113939C6;
+	Fri,  6 Feb 2026 10:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770375531; cv=none; b=bvoUxb9EUcC97LJwLjI0iAkynbXfF7LUXgIYgaSSZA8z5GTIeFZA0JcMNWUhyxqZ3UfFB0L0fZngHkg2PHFR/zjadh4cK38HZBUwUXukVt2czJts+RxblP57YdNuL5Sb4MJL70ek+RtwFQZKsuA8gfVILb7JqQVGp6mQ9JYVdKQ=
+	t=1770375551; cv=none; b=s9DvAStvuCM/UmBV66ZtlfhyDgdX+e20CdRzZn3kD9fFfuvzh854vWPcs44/iKa0dVdMUG/YroTWGdWkyBjTA0h5OFyXeGrc5DwSwrqWevPNcOTmb7hH1yHz3F8VRo8BIOjzP5MhMv/EHeA06o/Toz6+f3JiWrQ0tNsD+pQdDqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770375531; c=relaxed/simple;
-	bh=qCgd+NGrc+WY7VNlDf02HQqWh0CoSFHBfITKM35Kglo=;
+	s=arc-20240116; t=1770375551; c=relaxed/simple;
+	bh=4H3nTF4QBbLa68ngUo4Z9QDiucpatCUi4qQH1hQlwFM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qRpTyHoPGGunWjVYQ5746TykHnv2i9xNxIgBEhTsqWg4XqGs8C3LGetss6qx2OYMCRiTNmNVHqC7X7MNkVWwVNeeudqqKt8qLfHKQ7aYI4rkQjrtggN2ZCwJjmCnIdcLq+E6/VixAQ1PxIS8DmOcCB7U3V3dLKYmnHropJWtUzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=f+sdyDzh; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=syLbPN5fT4BPsCYv02h3zLw1FzqkxXFXiKz/K372MbCFjO2sKEuTXyO6cKZPUhhLtBfTSw5yvfc/lPwsebcwbYzF78VUAvQ5g6smi373kQpvkcNF03qv+0R2N0XWvjn29BCS5bdDmxv3aiOuIvSkW1pWCmvSvky4RsDlIuWxf5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=LUAk3D4C; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=s6PtmROzd+O5nnBGS1z+1XPE++3x1xM/uYQ3FTegpig=; 
-	b=f+sdyDzhPnXhAHbmjoz7F5jqlUJAHke1M4DzR5WLsbftfgrKV4QuLSEK26w+SyCV4KUMy5Fl0Es
-	yCXTBOwWUuW6/Jc3hT7QM6I4mnmwE3ysXH5Yq2G6im6h2vdr/WT40lm1Qq/azWlc5wAak+JiquIba
-	qeJxZFn0RSInlqt+26sORY+0I3Lh/oG46RrBxcRISjQ8DEndNtY7qWuuoY5Hz0O97KrB4rojwc3Mi
-	LIJtMVBw6kNPSwqYValqPeF/6u0eGgRaX+uQ+DbTZBzXwXzzo4vBQhR8cOSQ+rF5sTMuNwBHBmSot
-	TvHSuDJ6048W+3eadAbkYNhx3jF/UpIxy6KA==;
+	from:content-type:reply-to; bh=4DLjTXJ8stSk+vJPHJeJ0wEhnfBhVsOkH2x6uhGqd+E=; 
+	b=LUAk3D4CgDf6EO6m6e0l+nlk1HUCvhkKgnX5wLmBhAGdJuQ29KD0SzxiDwNTU9JkUALPoVidV6F
+	PyB6u76ezRlcCqH0yTTLm1oscx4GGWwWSphIMXApTiIeShYkR/eAF5jMjLEMSalyZ/CcAle5ca2Vr
+	Qil2jqSqOCUlVWWNtTyMcuwWS9af61SPxJjfkOD6jQCtObwHcVruHugxfHkezDfA7sSYx71rlxPmh
+	Fyf0tRArO0UDsRHO9HhVv9H2ihRJgRgyDz3r037Tiam6QYQimD7ZuUcdlxMne37PKHhPv/wLN1qxY
+	7BnDUmYobTc+qA1ZldsDlOO+lZSy2akobTWA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1voJXj-004zUe-28;
-	Fri, 06 Feb 2026 18:58:32 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Feb 2026 18:58:31 +0800
-Date: Fri, 6 Feb 2026 18:58:31 +0800
+	id 1voJXr-004zV8-0g;
+	Fri, 06 Feb 2026 18:58:40 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 06 Feb 2026 18:58:39 +0800
+Date: Fri, 6 Feb 2026 18:58:39 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: atmel - Use unregister_{aeads,ahashes,skciphers}
-Message-ID: <aYXJV-XUwtAEXfz2@gondor.apana.org.au>
-References: <20260126174704.237141-1-thorsten.blum@linux.dev>
+Cc: Neil Horman <nhorman@tuxdriver.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: rng - Use unregister_rngs in register_rngs
+Message-ID: <aYXJXxI3jlfa4_WG@gondor.apana.org.au>
+References: <20260126175018.237812-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -68,51 +65,46 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260126174704.237141-1-thorsten.blum@linux.dev>
+In-Reply-To: <20260126175018.237812-2-thorsten.blum@linux.dev>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20626-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20624-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:url,apana.org.au:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,gondor.apana.org.au:mid,gondor.apana.org.au:dkim]
-X-Rspamd-Queue-Id: E478AFCE9A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,gondor.apana.org.au:mid,gondor.apana.org.au:dkim,apana.org.au:url,apana.org.au:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 75D71FCED6
 X-Rspamd-Action: no action
 
-On Mon, Jan 26, 2026 at 06:47:03PM +0100, Thorsten Blum wrote:
-> Replace multiple for loops with calls to crypto_unregister_aeads(),
-> crypto_unregister_ahashes(), and crypto_unregister_skciphers().
-> 
-> Remove the definition of atmel_tdes_unregister_algs() because it is
-> equivalent to calling crypto_unregister_skciphers() directly, and the
-> function parameter 'struct atmel_tdes_dev *' is unused anyway.
+On Mon, Jan 26, 2026 at 06:50:18PM +0100, Thorsten Blum wrote:
+> Replace the for loop with a call to crypto_unregister_rngs(). Return
+> 'ret' immediately and remove the goto statement to simplify the error
+> handling code.  No functional changes.
 > 
 > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
->  drivers/crypto/atmel-aes.c  | 17 ++++++-----------
->  drivers/crypto/atmel-sha.c  | 27 ++++++++++-----------------
->  drivers/crypto/atmel-tdes.c | 25 ++++++-------------------
->  3 files changed, 22 insertions(+), 47 deletions(-)
+>  crypto/rng.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 
 Patch applied.  Thanks.
 -- 
