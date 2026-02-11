@@ -1,164 +1,215 @@
-Return-Path: <linux-crypto+bounces-20711-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20712-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0GW5JHO6jGlgsgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20711-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 18:20:51 +0100
+	id oIH9JjP9jGn4wgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20712-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 23:05:39 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2CBE12690A
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 18:20:50 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D3E127F34
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 23:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EC07930131F2
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 17:20:29 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8D6F5303541C
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 22:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53184158535;
-	Wed, 11 Feb 2026 17:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE5B31815D;
+	Wed, 11 Feb 2026 22:05:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="qG8oYq2u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABf9170z"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0C442049
-	for <linux-crypto@vger.kernel.org>; Wed, 11 Feb 2026 17:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE2630E83F
+	for <linux-crypto@vger.kernel.org>; Wed, 11 Feb 2026 22:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770830429; cv=none; b=LZKu3T+FkzZzTU3lqM0yT2WyQTo6xfaeAnpB4tdxpd1ei2ecgFIuuYpi5J2pxwpGnA8WiPCRdtruhfcUklZI5f773yoU6QVfKXBZZRbkMtwcHaJ/lro3LC9lCNF0KBq8lbC0soPgTgxTHvcUS3e3CKSxtIhUGcxa6ZgXm/O8t7s=
+	t=1770847533; cv=none; b=qojQ56CdFqEqmR2joR80iWLBV4JYrbh7iIhPBOnVS+I9JHhcv8bFIRLq6/VL4bXEpQWeyZt0uYXqYepgu1frNc+feAhS458TiPjZ4psY3AOOKcSDf+YQR3elUGrkAEyes84bNhy2cv6cbKj6TrMq5mmFZgXuWQzy4VxdgtB51KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770830429; c=relaxed/simple;
-	bh=m3wXLJLiAnf5L1nLpoGpVPvqvPzIjyzQBCh6lxzUvDQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=JgD38awQE8F3HqaTFhWhfCkUlJO/M4Pvgv/B4+VjJK2I+oiqRphFEljtrGzufJyAbzuaxHHZnvZd/oFRtY8AvyznvhnAPGOzXYDW81zLbkYe01n2/+6h+aFgxHkEqkoYQJKZ0HjuT0S1QFdQ2TXE0cBNc8bcJHa6qV7k4O0k/ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=qG8oYq2u; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1770830428; x=1802366428;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=m3wXLJLiAnf5L1nLpoGpVPvqvPzIjyzQBCh6lxzUvDQ=;
-  b=qG8oYq2uT3ZsICexPljCrnkMRmtZuB9jSon6myZPhghgTrgpGrp3H/3l
-   aprGAnV+/4acApiWzelpxAK1UGpDo7u0mVrb1SE5rdotHoaNKyN6pOYlH
-   3d8Ne10XRQ8+jR9OFgbhbXFUcPXcd9FmwV8zEjMa+gEf04Uw5qkPwljgi
-   eLHd/KfyxdRnOFt+YEwk1D0RzvHbDEl8+1DLaOJvoq6LOklG3Wq2tlnve
-   q6h6yAn9KkdLRPUSceyFQGwnADlId0hiJiWCsH2rR7/Yq7d3UdEM7RYB6
-   pUbWxC4vDPOBjDqwibEgomqS4LBn2OM40Xo1kykxn88+a8QzANFiPaU7y
-   w==;
-X-CSE-ConnectionGUID: 3uqK18o6SxKNJj+wGx10bQ==
-X-CSE-MsgGUID: Bygq3nTvRFS6P44h1XwMig==
-X-IronPort-AV: E=Sophos;i="6.21,285,1763449200"; 
-   d="scan'208";a="53269188"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2026 10:20:21 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.87.151) by
- chn-vm-ex4.mchp-main.com (10.10.87.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.35; Wed, 11 Feb 2026 10:19:31 -0700
-Received: from [10.10.179.162] (10.10.85.11) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.58 via Frontend
- Transport; Wed, 11 Feb 2026 10:19:31 -0700
-Message-ID: <4b44aa36-cbee-4f19-90d7-0591d8e4ae90@microchip.com>
-Date: Wed, 11 Feb 2026 10:20:17 -0700
+	s=arc-20240116; t=1770847533; c=relaxed/simple;
+	bh=TwwUO04dGqFYl7FBMT/0KdV3iyGcEzy/h2J4D+lHVW0=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=eg9fXBbeLbhAhMcv8n9GQo6st/rCuKlq8UFRe/+FlDDgNlwgBJPko9OoX1VqberFN84z2KVpG6m9VN3NtIMqSCfmvwYkvF63xGnn5tUrqzvxbYoKovvjel/22Iv3jX962jw/YFkO7jVv3NqsepHlZIIad9G8WrLJyg4MKbU2Slw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABf9170z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEEDFC4AF09;
+	Wed, 11 Feb 2026 22:05:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770847533;
+	bh=TwwUO04dGqFYl7FBMT/0KdV3iyGcEzy/h2J4D+lHVW0=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=ABf9170zn76atTbBiwaYM114Ip3pn23kaBZufP4D3t7vmBu0S8RJ8o7BEaShsrAv2
+	 Ku1qUbwYbnXh2nbGvP2t0S/nH4QqXgkfrWoWPHNDvebt0zA/uE6++SVqHe3yc+c2RX
+	 EbbEfVXjvQ3Vcq/sMIs/bKnLT+i2y5W24iMMjrZf79F+dfbJJhoxxargkKwKD902vq
+	 fPq1YGV9Or2J5AQTPSkVgPRsKvms+sQyQaQEjI6IWX0d8LNt/kznd0cBjTin5L56+a
+	 eyIbV6CCMt2XNLiuIXD0xEW3Wq57JFlbvkeGIntU37fnXIDL9/HlAw0FWSdqBdlWpB
+	 dGR05QqInP+FQ==
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 9DF4CF40068;
+	Wed, 11 Feb 2026 17:05:31 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-10.internal (MEProxy); Wed, 11 Feb 2026 17:05:31 -0500
+X-ME-Sender: <xms:K_2MaeN1831T_ilEmsELlhi2D3K55ootnOaRgJSSQoeqw7Y_OXCF5A>
+    <xme:K_2MaXz3Zb-9Tmiq5_nm-Ei7ybtMr2WghtCCVbK-4MP6UlyltCwNy2VG6GSx19JAP
+    ur1JHLfM0p_it0RpRR_RCQg3f88W0eQp89xDz-Wnrt5h9qcL8zKE30>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvtdefjedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhuhgt
+    khcunfgvvhgvrhdfuceotggvlheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrh
+    hnpeejvefhudehleetvdejhfejvefghfelgeejvedvgfduuefffeegtdejuefhiedukeen
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomheptghhuhgtkhhlvghvvghrodhmvghsmhhtphgruhht
+    hhhpvghrshhonhgrlhhithihqdduieefgeelleelheelqdefvdelkeeggedvfedqtggvlh
+    eppehkvghrnhgvlhdrohhrghesfhgrshhtmhgrihhlrdgtohhmpdhnsggprhgtphhtthho
+    peduuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepnhgvihhlsegsrhhofihnrd
+    hnrghmvgdprhgtphhtthhopehrihgtkhdrmhgrtghklhgvmhesghhmrghilhdrtghomhdp
+    rhgtphhtthhopegstghougguihhngheshhgrmhhmvghrshhprggtvgdrtghomhdprhgtph
+    htthhopegrnhhnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvggsihhgghgvrhhs
+    sehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjlhgrhihtohhnsehkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehtrhhonhgumhihsehkvghrnhgvlhdrohhrghdprhgtphhtthho
+    pegthhhutghkrdhlvghvvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhopehlihhnuh
+    igqdgtrhihphhtohesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:K_2MaYXtP9S9VSIJVQx3gCtdO9vnF0Bma-50LanoFzuUlevBK1b1nA>
+    <xmx:K_2MaYYKa9hpvzl7qjF_4EozP929zgUCFxDOtf-qZ0A_gT0IX5nN8Q>
+    <xmx:K_2MaXwY4QDG8hkWuCLqXqchw5AS9tXTpgzvDL_dIrl4H8NLnaIQUg>
+    <xmx:K_2MaQ0S1ehCjpAcBneUoiNQCk_U1JSv7ZmLmDHZANd39NT018ce1Q>
+    <xmx:K_2MaQn0dsGXilqStsFgmzqua6ddjaKwISWfNcErcbr6Lmmf9apbS8Me>
+Feedback-ID: ifa6e4810:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 74A7E780070; Wed, 11 Feb 2026 17:05:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: AFALG with TLS on Openssl questions
-From: Ryan Wanner <ryan.wanner@microchip.com>
-To: <herbert@gondor.apana.org.au>
-CC: <linux-crypto@vger.kernel.org>, <davem@davemloft.net>
-References: <25e13e64-f39c-44b4-9877-1e3b6caed458@microchip.com>
- <aXw8-J2KRklumOa8@gondor.apana.org.au>
- <6768ba1e-8051-4623-8d9a-4c3835011755@microchip.com>
-Content-Language: en-US
-In-Reply-To: <6768ba1e-8051-4623-8d9a-4c3835011755@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
+X-ThreadId: ASi17ho3PCMk
+Date: Wed, 11 Feb 2026 17:05:04 -0500
+From: "Chuck Lever" <cel@kernel.org>
+To: "Benjamin Coddington" <bcodding@hammerspace.com>,
+ "Chuck Lever" <chuck.lever@oracle.com>, "Jeff Layton" <jlayton@kernel.org>,
+ NeilBrown <neil@brown.name>, "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>, "Eric Biggers" <ebiggers@kernel.org>,
+ "Rick Macklem" <rick.macklem@gmail.com>
+Cc: linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-crypto@vger.kernel.org
+Message-Id: <f75f0d1b-9feb-4a0e-8c4e-4825f59f8053@app.fastmail.com>
+In-Reply-To: 
+ <cb46e1aee9656be5f3692e239300148813b5c05d.1770828956.git.bcodding@hammerspace.com>
+References: <cover.1770828956.git.bcodding@hammerspace.com>
+ <cb46e1aee9656be5f3692e239300148813b5c05d.1770828956.git.bcodding@hammerspace.com>
+Subject: Re: [PATCH v6 3/3] NFSD: Sign filehandles
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.65 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[microchip.com,reject];
-	R_DKIM_ALLOW(-0.20)[microchip.com:s=mchp];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	XM_UA_NO_VERSION(0.01)[];
+	TAGGED_FROM(0.00)[bounces-20712-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,microchip.com:mid,microchip.com:dkim,microchip.com:email];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryan.wanner@microchip.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20711-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FREEMAIL_TO(0.00)[hammerspace.com,oracle.com,kernel.org,brown.name,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[microchip.com:+]
-X-Rspamd-Queue-Id: B2CBE12690A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: B4D3E127F34
 X-Rspamd-Action: no action
 
-On 1/30/26 07:51, Ryan.Wanner@microchip.com wrote:
-> On 1/29/26 22:09, Herbert Xu wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On Thu, Jan 29, 2026 at 09:28:51AM -0700, Ryan Wanner wrote:
->>> Hello,
->>>
->>> I am working on kernel v6.12 and trying to use
->>> authenc(hmac(sha256),cbc(aes)) for a TLS connection. The driver I am
->>> using atmel-aes.c and atmel-sha.c both do support this and I did pass
->>> the kernel self tests for these drivers.
->>>
->>> It seems that afalg does not call the authenc part of this driver, but
->>> seems to call aes separately even though authenc is detected registered
->>> and tested. Can I get confirmation if this is supported in afalg? From
->>> what I understand afalg does not support hashes but cryptodev does. I
->>> see cryptodev call both sha and aes while afalg just calls aes.
->>>
->>> I do have CRYPTO_DEV_ATMEL_AUTHENC=y CRYPTO_USER_API_HASH=y
->>> CRYPTO_USER_API_SKCIPHER=y CRYPTO_USER=y this is a SAMA7G54, ARM CORTEX-A7.
->>>
->>> I also would like to know if authenc(hmac(sha512),gcm(aes)) is
->>> supported? I would like to add that to the driver as well but due to the
->>> issues I highlighted above and no selftest suite for authenc gcm I do
->>> not know a good way to verify the driver integrates with the crypto system.
->>
->> It certainly should work.  I suggest that you check /proc/crypto
->> and see if your driver algorithm is registered at the correct
->> priority for it to be used in preference to the software algorithm.
->>
+On Wed, Feb 11, 2026, at 12:09 PM, Benjamin Coddington wrote:
+> NFS clients may bypass restrictive directory permissions by using
+> open_by_handle() (or other available OS system call) to guess the
+> filehandles for files below that directory.
+
+> diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+> index 68b629fbaaeb..3bab2ad0b21f 100644
+> --- a/fs/nfsd/nfsfh.c
+> +++ b/fs/nfsd/nfsfh.c
+
+> @@ -236,13 +288,18 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst 
+> *rqstp, struct net *net,
+>  	/*
+>  	 * Look up the dentry using the NFS file handle.
+>  	 */
+> -	error = nfserr_badhandle;
+> -
+>  	fileid_type = fh->fh_fileid_type;
 > 
+> -	if (fileid_type == FILEID_ROOT)
+> +	if (fileid_type == FILEID_ROOT) {
 
-Re-sending question due to email bounceback error.
+Still need a comment here explaining why ROOT is exempt from
+file handle signing checks.
 
-Is there a optimal priority? I have tried setting it to 4000 and 300
-both give the same behavior.
 
-Another qurestion about af_alg and algif_aead. Are these supported by
-opnessl? I am using openssl 3.2.4 and only see aes-*-cbc supported with
-the config that I mentioned above is this correct? And does af_alg
-support hash acceleration?
+>  		dentry = dget(exp->ex_path.dentry);
+> -	else {
+> +	} else {
+> +		if (exp->ex_flags & NFSEXP_SIGN_FH && fh_verify_mac(fhp, net)) {
+> +			trace_nfsd_set_fh_dentry_badmac(rqstp, fhp, -EKEYREJECTED);
+> +			goto out;
+> +		} else {
+> +			data_left -= sizeof(u64)/4;
+> +		}
 
-Thank you,
-Ryan
+The data_left bug identified during v5 review:
+https://lore.kernel.org/linux-nfs/8574c412-31fb-4810-a675-edf72240ae29@oracle.com/
 
->  > Cheers,
->> --
->> Email: Herbert Xu <herbert@gondor.apana.org.au>
->> Home Page: http://gondor.apana.org.au/~herbert/
->> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
->>
+does not appear to be addressed in v6 3/3. Likewise, the
+"sizeof(u64)/4" has not been replaced by a symbolic constant.
 
+Additionally, the goto out path when MAC verification fails has an
+error value problem in the !NOSUBTREECHECK case:
+
+    error = nfsd_setuser_and_check_port(rqstp, cred, exp);
+    if (error)
+        goto out;
+    /* error is now nfs_ok (0) */
+    ...
+    if (exp->ex_flags & NFSEXP_SIGN_FH && fh_verify_mac(fhp, net)) {
+        trace_nfsd_set_fh_dentry_badmac(...);
+        goto out;   /* returns nfs_ok */
+    }
+
+nfsd_set_fh_dentry() returns 0 without setting fhp->fh_dentry or
+fhp->fh_export. The caller __fh_verify() then proceeds with:
+
+    dentry = fhp->fh_dentry;   /* NULL */
+    exp = fhp->fh_export;      /* NULL */
+    check_pseudo_root(dentry, exp);
+
+check_pseudo_root() dereferences exp on its first line:
+
+    if (!(exp->ex_flags & NFSEXP_V4ROOT))
+
+Can this NULL dereference occur for signed exports that also have
+subtree checking enabled?
+
+
+> +
+>  		dentry = exportfs_decode_fh_raw(exp->ex_path.mnt, fid,
+>  						data_left, fileid_type, 0,
+>  						nfsd_acceptable, exp);
+
+
+-- 
+Chuck Lever
 
