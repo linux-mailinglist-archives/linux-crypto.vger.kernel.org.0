@@ -1,164 +1,121 @@
-Return-Path: <linux-crypto+bounces-20705-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20706-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0MLhOjayjGlLsQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-20705-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 17:45:42 +0100
+	id kPIgFmCzjGlLsQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-20706-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 17:50:40 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24DDA12648B
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 17:45:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D418E12651E
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 17:50:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7FCF230055FD
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 16:45:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 23B863057495
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Feb 2026 16:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08C7345743;
-	Wed, 11 Feb 2026 16:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3808826ED45;
+	Wed, 11 Feb 2026 16:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=thorondor.fr header.i=@thorondor.fr header.b="eICYbdjl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bUYm0Lvp"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail.thorondor.fr (unknown [82.66.128.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5413C344DAA;
-	Wed, 11 Feb 2026 16:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.66.128.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF092F6910
+	for <linux-crypto@vger.kernel.org>; Wed, 11 Feb 2026 16:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770828337; cv=none; b=OfR56lzL58Jv7VGCD74O8ATDQ/9eaGNR+xKhme+WefjqtVIvvSMOhwg1ybMzvU8lX3dEOK8C0V4I3SAbMDMkjGqSdmAjRsAmRYGrm5k9pxDPc6rs7Um4EauHRY18WvCeBmi+ozKLYDDOxxo9BditRCvqI7JEocFBSbIBcgJGv18=
+	t=1770828450; cv=none; b=ud9ccczmj7jbwI7ed8EPeSOEJE7Dmg6adVOikjWRIonosSxOXepTCigefCSoL7yQu/eHoq9BGj4RfRk2YBlAQi87185t0QznfLI6hl5TmYlWLGxe+4UGbWJYLNC76HMEB93cxSHTC4fD8PUUxAph2WTBfUfBeHNDLlH8/9kkL58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770828337; c=relaxed/simple;
-	bh=idCVNzxeGorW16JtFn2b9Rbbcvhjhg05WWwYU68FgJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=FjXFS4BxbysPS0OlktWm+VsdHWxvDDFyQ7NZP5NDpAq2sjdy256i8+UU/pbj4Rx1V8AUHlfkBhkmXHdW1qVFQ27LO+eAPYz6EXj/zHz3sqVJa6r7LExZwmeNxGsGLkxsBOXbgYEn7WFhWCjvrwkdFoTCM9wB9oRdBuMlloFizTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorondor.fr; spf=pass smtp.mailfrom=thorondor.fr; dkim=pass (2048-bit key) header.d=thorondor.fr header.i=@thorondor.fr header.b=eICYbdjl; arc=none smtp.client-ip=82.66.128.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorondor.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thorondor.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=thorondor.fr; s=mail;
-	t=1770827862; bh=idCVNzxeGorW16JtFn2b9Rbbcvhjhg05WWwYU68FgJ0=;
-	h=Subject:From:To:Cc:References:In-Reply-To;
-	b=eICYbdjlej+ar6HewNVlINgnmlxsvFBBc2LKU7ZDJZQaHflpb2WrL26m1JDNbtUU+
-	 yvVamQgpFEyBdnpcVqR5/Rj4Ax5lErX8AyzxhJhXQDlL6tMrdNPmfYfw+ggjfAwsba
-	 TYqLPW2w19FCDkzPSuZ7jb0XkH4YzS/maVpT7nl7E6fft2f+ZVMPmFs08RHrefdP9e
-	 AG4itcCPamqpt3OFA+cjWIlHGrlFQZ0iaOuyM5G5hB0ZjkYUVqRzTfeNf2Pb5Pa1v2
-	 x0FQu/CKrFmPZuzxGBroyrVgl20LeQDfikBGY8caj4IsF65MFvCs0ZxpTPq/RUv34e
-	 F2As9KVKFHLKQ==
-Message-ID: <421a20ea-2788-493d-8f25-497880c04a7e@thorondor.fr>
-Date: Wed, 11 Feb 2026 17:37:41 +0100
+	s=arc-20240116; t=1770828450; c=relaxed/simple;
+	bh=6tT5JR2+mxZcE0qfU4XovEwaBeUCjefHu/HQsjDXXRQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=k67TARPm+5TocGckPqfrhJDLSmqTonbz+ZioraguWEm6y4RTEUGMYiWyfoBiTC5ibFNCmavBO6rpk2Sls7j88GJwVGh63hV9Hd6x65BVIHaxOIgPTH5gZAntiUnHDyaprd5Y7NDt/FIlY2iGrlyBKLFIhNesnhNTKSVrkZW/aQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bUYm0Lvp; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2a94369653aso73107005ad.1
+        for <linux-crypto@vger.kernel.org>; Wed, 11 Feb 2026 08:47:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1770828448; x=1771433248; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BLVUVRl8y+39Clu7ugddgpxNZE8kBHF6JKudZmEKj7Y=;
+        b=bUYm0Lvp8IfPdHyeguh1lQMA1ktHx9haKkfR+jd/yhjDCXZg3y6OVSwu5uRA3RIQ69
+         q0gOled+wc+ilUFYV0B42IHHxKs7QiTk5Jt6430bmo4zUdTO2/iCXt88dcpVeoMwwckB
+         6MFoOkIKmToSfR1F+kFg3WnaoCYumE+TWc5D7pk0LLiCHHQUkCfGf5vwZXrIkfHlldA1
+         PIQuHGkCDjL3cgdfEwuAuhrvb9PP1PFX8sh7xvX/sZLuac+uKDWq05jDzIZQgIUHhQYC
+         6tlUkTUCPKRtxrwGbG6CJm0JBFcJtMrm6P5aDAomzwz0zsEXbpzJYZGG3GSSBkodPFJd
+         vwlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770828448; x=1771433248;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BLVUVRl8y+39Clu7ugddgpxNZE8kBHF6JKudZmEKj7Y=;
+        b=o9UyKPXRYAZt8/TbvpqyxwJ3Lfx1aWObkcEzFAeb4wTYQa9iOUABqUReB4h58SRMKp
+         7/EQ7Go6XmEwISz6bMeUotwhGwbfOIQh1bOz1DwXR3WWWj7FDMqsvmdG5ZJvBLYI7Xej
+         B3+Xif782HsLc9/r0IucQAsvPLyZS1nxjbSPA57vwzyK5anW0PYvu285EeYOcqTNdbsy
+         Mhv3HnGJhQOn8yqB3tx0oOabrzGnlENMqtAByqoXFwEOD9TJvwJ1N89h+6lekVdoTGNh
+         cii2rqT6ZAjFr6XGxLuP7v1wdboxLQKj9qf3v3cJAiL8HDPp9gtD5FX0Kf5j+m6CWJ7n
+         N52A==
+X-Forwarded-Encrypted: i=1; AJvYcCXdySxxkIWC4Dgikp1NVzoWToNx5QhHnRsBw1hWoFAmjdWISKHxFBhnrPxaZ8xBR/k34aZs/78ty1i/MUw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGC/SA3qPzPM1TpCUOGKXkx/p4kJrSV83Dik7ee2dVj+/U0s7X
+	dEte8R5pngISBMPxDqNRsc0772B9+lcxv40pTiLh27x7gV1U97rKdnceaquMRT7MVpUlg3FObFO
+	fcSSklg==
+X-Received: from pjqf3.prod.google.com ([2002:a17:90a:a783:b0:356:7a39:db8a])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2d84:b0:354:bedf:8e64
+ with SMTP id 98e67ed59e1d1-3568f2b7d65mr63493a91.5.1770828448379; Wed, 11 Feb
+ 2026 08:47:28 -0800 (PST)
+Date: Wed, 11 Feb 2026 08:47:26 -0800
+In-Reply-To: <421a20ea-2788-493d-8f25-497880c04a7e@thorondor.fr>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH v6 0/1] KVM: SEV: Add KVM_SEV_SNP_HV_REPORT_REQ command
-From: Thomas Courrege <thomas.courrege@thorondor.fr>
-To: ashish.kalra@amd.com, seanjc@google.com, thomas.lendacky@amd.com
-Cc: kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, x86@kernel.org
+Mime-Version: 1.0
 References: <20260128194956.314678-1-thomas.courrege@thorondor.fr>
- <4d286692-3e29-4e8d-b6d9-f04ceb748499@thorondor.fr>
-Content-Language: en-US
-In-Reply-To: <4d286692-3e29-4e8d-b6d9-f04ceb748499@thorondor.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ <4d286692-3e29-4e8d-b6d9-f04ceb748499@thorondor.fr> <421a20ea-2788-493d-8f25-497880c04a7e@thorondor.fr>
+Message-ID: <aYyynvi-alYQ1-_5@google.com>
+Subject: Re: [PATCH v6 0/1] KVM: SEV: Add KVM_SEV_SNP_HV_REPORT_REQ command
+From: Sean Christopherson <seanjc@google.com>
+To: Thomas Courrege <thomas.courrege@thorondor.fr>
+Cc: ashish.kalra@amd.com, thomas.lendacky@amd.com, kvm@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="us-ascii"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[thorondor.fr,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[thorondor.fr:s=mail];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	MV_CASE(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[thorondor.fr:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20705-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20706-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[google.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.courrege@thorondor.fr,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_NEQ_ENVFROM(0.00)[seanjc@google.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 24DDA12648B
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D418E12651E
 X-Rspamd-Action: no action
 
+On Wed, Feb 11, 2026, Thomas Courrege wrote:
+> Gentle ping
 
-
-On 29-01-2026 11:35, Thomas Courrege wrote:
->
-> -- 
-> Regards,
-> Thomas
-> On 28-01-2026 20:49, Thomas Courrege wrote:
->> Overview
->> --------
->> The SEV-SNP Firmware ABI allows the hypervisor to request an
->> attestation report via the SEV_CMD_SNP_HV_REPORT_REQ firmware command.
-> This allow KVM to expose more of AMD’s SEV‑SNP features.
->
-> It also allow developers to easily request attestation.
-> It could maybe be use by some cloud provider to easily provide an
-> attestation report through their API, in case the Guest doesn't respond
-> fast enough or even to compare the reports.
->> Testing
->> -------
->> For testing this via QEMU, please use the following tree:
->>         https://github.com/Th0rOnDoR/qemu
->>
->> Patch History
->> -------------
->> v5 -> v6:
->> Fix typos issues in documentation
->>
->> v4 -> v5:
->> Set variables in reverse christmas tree order
->> Fix and clean the rsp_size logic
->>
->> v3 -> v4:
->> Add newline in documentation to avoid a warning
->> Add base commit
->>
->> v2 -> v3:
->> Add padding to structure, code format
->> Write back the full MSG_REPORT_RSP structure
->> Remove the memzero_explicit for the report
->>
->> v1 -> v2:
->> Renaming, code format
->> Zeroes the report before returning
->>
->>
->> Any feedback is appreciated.
->>
->> Thanks,
->> Thomas
->>
->>
->> Thomas Courrege (1):
->>   KVM: SEV: Add KVM_SEV_SNP_HV_REPORT_REQ command
->>
->>  .../virt/kvm/x86/amd-memory-encryption.rst    | 28 +++++++++
->>  arch/x86/include/uapi/asm/kvm.h               |  9 +++
->>  arch/x86/kvm/svm/sev.c                        | 63 +++++++++++++++++++
->>  drivers/crypto/ccp/sev-dev.c                  |  1 +
->>  include/linux/psp-sev.h                       | 31 +++++++++
->>  5 files changed, 132 insertions(+)
->>
->>
->> base-commit: e89f0e9a0a007e8c3afb8ecd739c0b3255422b00
-
-Gentle ping
-
-Regards,
-Thomas
-
+Sorry, we're in a merge window so this won't get any attention for at least several
+weeks.  See Documentation/process/maintainer-kvm-x86.rst for details.
 
