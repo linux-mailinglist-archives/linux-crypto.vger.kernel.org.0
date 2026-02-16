@@ -1,146 +1,162 @@
-Return-Path: <linux-crypto+bounces-20905-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20906-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MmVKFUI/kml8sQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-20905-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 15 Feb 2026 22:48:50 +0100
+	id YNzKOYJ/kmmTuQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-20906-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Feb 2026 03:22:58 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B350B13FCF4
-	for <lists+linux-crypto@lfdr.de>; Sun, 15 Feb 2026 22:48:49 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F1381409F6
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Feb 2026 03:22:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5E1FE300A4E4
-	for <lists+linux-crypto@lfdr.de>; Sun, 15 Feb 2026 21:48:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D94783002334
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Feb 2026 02:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816AA2580EE;
-	Sun, 15 Feb 2026 21:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182E72459E7;
+	Mon, 16 Feb 2026 02:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nLGda3Vz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="guWfMa7d"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D2B1C69D
-	for <linux-crypto@vger.kernel.org>; Sun, 15 Feb 2026 21:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E523EBF10;
+	Mon, 16 Feb 2026 02:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771192127; cv=none; b=YWvgOSLpw/0RWilDYEBKgZdYYMWfBSfnf49hIhhqvzfbwCU+zq5ed4oTmK5Vv86wWcPlGtmmE9/0Vo5w2/WQozu9X62oaKkIkTCUYk1EoxRsXhO6QnG1dCO8wSG+ZA3m4Am5wWAaEZ0cv1B60+7COnSFb4VLjYyFIAmZmuTQTUA=
+	t=1771208574; cv=none; b=FUCzlYAldLPlVZ8wmooLMxfooHbNmvbSy5iR7MmQUYNqke+AHO8/n1tV4tdTSqAgTuSbAsF6SpchRhDqIdmppXfU+vLso4GBujS6lOfiAqS5gyV0Z7PxUxeR9Gf5NJYCKAxJnqHLFX585byYSExhjUGTblUTllDHNmcSC6zKWdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771192127; c=relaxed/simple;
-	bh=QJw44MwvpOuGRv3GT8g3Dmz6RLDQVI45QEd/BEkgkGo=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=u3gDNZ5p1e5A94H/aXC358DnWElAQstw8ey35uvhP4AbD6aRTCtHhCZ6jKQcxDtZlOdXNoHPNgLAeIa0hScolsDE2t7+ij/5KxVRtqgi6y3R1k3iCb1388suDtn0D0IB5q3+ewbRRa+oSkW/Bqho4n1gquPcakaAyzS3AojRWcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nLGda3Vz; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1771192122;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=98u/mhEqw/mlD21bgRdDI+M2Mw8p79SKwci4AWwqc9s=;
-	b=nLGda3Vzr5Y5NM5gJVHotmPxaWHDgePF6zCsEFeovvzIdPqJYOMW19qUuGfzdT0wYmzpe9
-	YxdTYmunGjeNjmbKJAkCtf7+cN+4AQ7U8nELfjj5s6fryPRsui7iGe+i/v9mXcHSyQLS8W
-	9T29ib2rctwBUsNvk/DyjXBiXDb+c0s=
+	s=arc-20240116; t=1771208574; c=relaxed/simple;
+	bh=9PcyAaYKWFup8CH5YLUPtBnRj9L9MKnKJpJNN19ck64=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nSCOBoTlV9x9XpMNxhVAsS7afLpvDaiYqWY+9aoE8WDoEEGo++K6Zd61S9yoHvSwPCkgQ4kaIDU0Wkj3HztZ7DfaK15uE3AXP8savRA9M1kzpjUb+gjTAbarAtQICSJl35uljW2WoeignFnL5jfSZwQbTem66fDTd6OKigFAEAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=guWfMa7d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F95CC4CEF7;
+	Mon, 16 Feb 2026 02:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771208574;
+	bh=9PcyAaYKWFup8CH5YLUPtBnRj9L9MKnKJpJNN19ck64=;
+	h=From:To:Cc:Subject:Date:From;
+	b=guWfMa7dytMR+iBG6TVwpD+VfoIj72cYrSdhs9HGklYk+K5HOu5/wX+3Tn9BUcJSj
+	 9BOxXBS+ZS/ShSqympgLhvLXKpgrhcL7uXKtzXde1gDo+pb/yxckRhItAneLQo77pG
+	 YejxMkHQ1Axereq9F8XqNfwkOMdAIEGw8QAP+kzoA/tolWRk7xK4C7xwLCDQTOmLUD
+	 QIz3aXCL2bOR/C9zl3KSJslQsWknCFZdulSAOoVReTEZbo9U7gZE4uBmPxqn2+Zq0Y
+	 tXbFoKSCUEuyeZ9V1W5RM2q1K4iC0JJe2uWMI5difhR3e4l3AzEgevvfe1Mh2dJdeh
+	 Bp/tgu54UydYQ==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	linuxppc-dev@lists.ozlabs.org,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH] lib/crypto: powerpc/aes: Fix rndkey_from_vsx() on big endian CPUs
+Date: Sun, 15 Feb 2026 18:21:04 -0800
+Message-ID: <20260216022104.332991-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.4\))
-Subject: Re: [PATCH] crypto: atmel-sha204a - Fix OTP sysfs read and error
- handling
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Thorsten Blum <thorsten.blum@linux.dev>
-In-Reply-To: <CAFXKEHbCrp57ruvCF2TXXcnoJF93Z5bdUd7Nt5WtM9_abtc66w@mail.gmail.com>
-Date: Sun, 15 Feb 2026 22:48:07 +0100
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- stable@vger.kernel.org,
- linux-crypto@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2E9C85C9-AD05-4BB3-A945-5ADECCB5C7E4@linux.dev>
-References: <20260215124125.465162-2-thorsten.blum@linux.dev>
- <CAFXKEHbCrp57ruvCF2TXXcnoJF93Z5bdUd7Nt5WtM9_abtc66w@mail.gmail.com>
-To: Lothar Rubusch <l.rubusch@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20905-lists,linux-crypto=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	TAGGED_FROM(0.00)[bounces-20906-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: B350B13FCF4
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8F1381409F6
 X-Rspamd-Action: no action
 
-On 15. Feb 2026, at 22:09, Lothar Rubusch wrote:
-> I tried to verify your patch on hardware today, unfortunately it did
-> not work for me.
->=20
-> My setup works with current atsha204a module in the below described =
-way. When
-> trying to dump the OTP zone on exactly the same hardware with a =
-patched module,
-> it only prints '0' and nothing more, see below.
->=20
-> [...]
+I finally got a big endian PPC64 kernel to boot in QEMU.  The PPC64 VSX
+optimized AES library code does work in that case, with the exception of
+rndkey_from_vsx() which doesn't take into account that the order in
+which the VSX code stores the round key words depends on the endianness.
+So fix rndkey_from_vsx() to do the right thing on big endian CPUs.
 
-Hi Lothar,
+Fixes: 7cf2082e74ce ("lib/crypto: powerpc/aes: Migrate POWER8 optimized code into library")
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+ lib/crypto/powerpc/aes.h | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-thank you for your feedback. I made a small mistake in the return value
-where I forgot to add the previous length 'len'. Sorry about that!
+diff --git a/lib/crypto/powerpc/aes.h b/lib/crypto/powerpc/aes.h
+index 42e0a993c619..f8cbd3c7578f 100644
+--- a/lib/crypto/powerpc/aes.h
++++ b/lib/crypto/powerpc/aes.h
+@@ -93,22 +93,24 @@ static inline bool is_vsx_format(const struct p8_aes_key *key)
+ {
+ 	return key->nrounds != 0;
+ }
+ 
+ /*
+- * Convert a round key from VSX to generic format by reflecting the 16 bytes,
+- * and (if apply_inv_mix=true) applying InvMixColumn to each column.
++ * Convert a round key from VSX to generic format by reflecting all 16 bytes (if
++ * little endian) or reflecting each 4-byte word (if big endian), and (if
++ * apply_inv_mix=true) applying InvMixColumn to each column.
+  *
+  * It would be nice if the VSX and generic key formats would be compatible.  But
+  * that's very difficult to do, with the assembly code having been borrowed from
+  * OpenSSL and also targeted to POWER8 rather than POWER9.
+  *
+  * Fortunately, this conversion should only be needed in extremely rare cases,
+  * possibly not at all in practice.  It's just included for full correctness.
+  */
+ static void rndkey_from_vsx(u32 out[4], const u32 in[4], bool apply_inv_mix)
+ {
++	const bool be = IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
+ 	u32 k0 = swab32(in[0]);
+ 	u32 k1 = swab32(in[1]);
+ 	u32 k2 = swab32(in[2]);
+ 	u32 k3 = swab32(in[3]);
+ 
+@@ -116,14 +118,14 @@ static void rndkey_from_vsx(u32 out[4], const u32 in[4], bool apply_inv_mix)
+ 		k0 = inv_mix_columns(k0);
+ 		k1 = inv_mix_columns(k1);
+ 		k2 = inv_mix_columns(k2);
+ 		k3 = inv_mix_columns(k3);
+ 	}
+-	out[0] = k3;
+-	out[1] = k2;
+-	out[2] = k1;
+-	out[3] = k0;
++	out[0] = be ? k0 : k3;
++	out[1] = be ? k1 : k2;
++	out[2] = be ? k2 : k1;
++	out[3] = be ? k3 : k0;
+ }
+ 
+ static void aes_preparekey_arch(union aes_enckey_arch *k,
+ 				union aes_invkey_arch *inv_k,
+ 				const u8 *in_key, int key_len, int nrounds)
 
-Unfortunately, I don't have the hardware right now to test this - could
-you try if it works with the following change?
-
-Thanks,
-Thorsten
-
-
-diff --git a/drivers/crypto/atmel-sha204a.c =
-b/drivers/crypto/atmel-sha204a.c
-index 793c8d739a0a..431672517dba 100644
---- a/drivers/crypto/atmel-sha204a.c
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -134,7 +134,7 @@ static ssize_t otp_show(struct device *dev,
-
-	for (i =3D 0; i < OTP_ZONE_SIZE; i++)
-		len +=3D sysfs_emit_at(buf, len, "%02X", otp[i]);
--	return sysfs_emit_at(buf, len, "\n");
-+	return len + sysfs_emit_at(buf, len, "\n");
-}
-static DEVICE_ATTR_RO(otp);
+base-commit: 64275e9fda3702bfb5ab3b95f7c2b9b414667164
+-- 
+2.53.0
 
 
