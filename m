@@ -1,218 +1,205 @@
-Return-Path: <linux-crypto+bounces-20966-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-20968-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EEr9Ai0blmntaAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-20966-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Feb 2026 21:03:57 +0100
+	id MEcAJEcllmn0bAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-20968-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Feb 2026 21:47:03 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC541594F7
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Feb 2026 21:03:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A2A815989F
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Feb 2026 21:47:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 55F3F3025906
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Feb 2026 20:03:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 03940302BE97
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Feb 2026 20:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DDD6199920;
-	Wed, 18 Feb 2026 20:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3EE0320A0E;
+	Wed, 18 Feb 2026 20:46:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="OpxqkiwA"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="bJpqkk9/"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679552F261C
-	for <linux-crypto@vger.kernel.org>; Wed, 18 Feb 2026 20:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771445023; cv=pass; b=GKSKlL9a8imMhlBM8ITxoii/w3O088iCWfC1o/g3cGYzJ75RmcsXCCKS261pySjYlM5gpE7v5zLh4SlAPvwndq/6xLWsMCan2Uvi/dlsX//V0q7oXy0ptQXGqUk3UWDFzusKemYpjnOHYmmL+LsdS2p05+q3MxSqWshNYbV5CRU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771445023; c=relaxed/simple;
-	bh=A9RFDZyZgqlQJkBPPEH0bt0olncW7jJuhWCZ9JoO/s8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fuGFOUWqnN6N/dYP9rpqgKXicuZL7m3ihWbVGeTKUaEfOzNHFyODasUlGfDvgCaDgsoCwUDaoPdSNgAv4QfRZ/qBaAaGRRi9HIx9Ex/4NJAwBp/jG4YpaEoISZNdzgvRDOt9DlbC3XgOLssAAD91jDIWFbXLEG6xCzqhs0OxjNk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=OpxqkiwA; arc=pass smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-59e64657f0cso289953e87.2
-        for <linux-crypto@vger.kernel.org>; Wed, 18 Feb 2026 12:03:41 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771445020; cv=none;
-        d=google.com; s=arc-20240605;
-        b=U9UG00LEkw5zGDZTdfx7xBo2f5KyJUaVBNZAFu6KoV5jrKeY2Z+o4YIMJU2bQ7SObB
-         evURviPTcROskT8YTnH5GLE5iJvutcX41x5qNciIS1EpusmpsHWQhbY99dGxIlz2+FZw
-         YG8tj9FRbrEQDb9jDUNQ3LAAm5bhYanYtd01oHhvwWLySeS76AFpJKTl4P6Pdfoc/zuZ
-         TTMoDZbf7I/y1W5e4HtBhWbEjQgUqIQ/JIYTw5u9QUyuMPkcfxx2uGqfHmZM/7EXg892
-         JStQKxcOqfMPuk8Z3Zsf5TJOsI8QjRorJIUe4RXV9EoCo1AQsD/I1hslyJh5qmDOyGo7
-         h88Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Vcy7R/11wcjfKOQI7WogUozCzX0mH6u0BCoPreJyb8U=;
-        fh=bvCaqGwbnYjpNxlUe62RNfhWzmmTCxzPKthfyxgSVkE=;
-        b=LDgDFUrSE29Qcqyju5F/rpy9vfKue0b9C+Wq098oORGCtUK74h75QeTqlJjS9HC8dD
-         rfRfTKAAL/55IX9HLsfwHUVNIUcVZpZ8neSd3rdcQhB4wm9wb/pfpC9OJvXiuFgg1LvB
-         rXZDPlwmAz4vGEx6hgPTqQJWElpXT+i0mg3R4CnLmOqxoZ2iY3ahzA076hS4R7DE/FGH
-         Sm9695h7PpPmGVFfIHcKLu/FR20dx5y5f6yH0YcETBkOB2IJPNmW+TGjckSjNiGcP+m4
-         fe2T2ggasXRDWngzbcPAHAJ+0HLNkcPzwdcNPA8c4l3Z6VPk4Yc7QSxELi0vZ+r+hv7z
-         HP5A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1771445020; x=1772049820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vcy7R/11wcjfKOQI7WogUozCzX0mH6u0BCoPreJyb8U=;
-        b=OpxqkiwAUUWIfdMsKeV4jtOeUyJ54S5Q3gIl6IWomGB28pWLQ43/VZ2PPrPiJLFn6l
-         geHXyDnsYHJCBuvKcKva6n0DQffN04OwxU/4M7eC72DW8P+FW9TGf76yQTqVcGZ39RB9
-         xSDwuctxDlLpZnWMrM5/OMqLl4fuqhU/Np7zLrUC/rK+nDca8x9sisN+VjggnR/U1YVf
-         BBaMNVWeYHdlS8zYxYiGoqtDsVTeqXx6Ku5JCJYMqYMej/Cvi+xikyOHdKCyULiuHfKS
-         +s/YQnj8cyCckPBiCdB4cJhUF50hvTz95aJYnjMKO+epQEN4w6GWsNcRW1q7xuJ1RV2C
-         VEig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771445020; x=1772049820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Vcy7R/11wcjfKOQI7WogUozCzX0mH6u0BCoPreJyb8U=;
-        b=mTP0H2bM0NJ6ajsZswGO6EZVjYwOcPgKRzBQv3Lh3pNrXkZPfpM8JPz4FWDyy2BYF1
-         8+0bSuMQ67mOPxnmpVMekT5pEk0Usk5VDtnuTXtlJe48xTa0JZL/nwZzLgqGsHhUUvPX
-         /6wZ4D6g9stgryESWM9VVhBoq6odIeTa/AReb7NkqHDUjSYkfLI49SRDxAGJ8i6WxdWe
-         0PSocU/qaysVfxEVk2mFe/W2nG84yeUTIrQTqqClrWjXQ4Dyt5TkqGewk81aZ6pBG4MF
-         n46ozsJ2WaEqEeQyTll+Lw/gmiYu5KbNAbOK2y7d9N/LjOueSuvTOZqVzGoJtKlPjdgv
-         DGMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhJR2twASmOVGEGzQwpZx7z+SkIJwhWA7goIrrMvFhCI5Z3jMhFWdvUkSxz82SdDgUpXKOiTVYcyDy4yo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwuJHVrxDCi/1qlri24yltKj/kQCXd4SkNC8cYIgPXOyOGtavzk
-	3YFyS/68nJVT8f8+rK/0yYA4ImYWETOfnA6cVSi+x2RxLlmcUEdHSW8hM3Tg4Xx6TxL+N7h0PUT
-	+kfMZquR8R98FgYov+iSxFpGTI6A9VuO3OGIVbdySxyH1WZf7tWPxgg==
-X-Gm-Gg: AZuq6aJFRQTJgN0fMT4Vv69IVccGruAGIXi/mcA0v22hmKOTMgO0L/qyEuAtqZaK+/w
-	omrxSiTOLyamuKM0Nh5V2oDawdyxSFhi0aSUtmlKEGryQMLQruIhCGxlzRMnHG+WcNKXZwCZter
-	yI29lxXN521zYTPDix0I44ZmZRrFtOBLqgWekeQCn0weDKGcEF5mSt78TQ7Qenp77JXsB32KYuU
-	R7ZpX1tA/EKEyZUQS5Ls9Ku16MXUKum3rvBxEpDI7s9wDXzIcNe6T1ge0TnVQ0Ia/MLcAOlKWkD
-	rITF6CKi4wYBGxo=
-X-Received: by 2002:a05:6512:3992:b0:59f:6edb:b7ea with SMTP id
- 2adb3069b0e04-59f6edbb86bmr4081097e87.42.1771445019417; Wed, 18 Feb 2026
- 12:03:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C5F311C32;
+	Wed, 18 Feb 2026 20:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771447615; cv=none; b=kjzfDjwTUHMdH1Z/fo0KDEZFvfZBiIUMon0P5AbaEgBhQN73o/iEAOiN2lFkGcZK28nytQXhnptB7M//GgsVpdv+IQa4nUSKBE64FpluPmKrRUVKvuMGenfxkDJgBu9MZhL3PHKjj0s968Rq8VtV6g6r11B6RgImXK7XrRIR4YM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771447615; c=relaxed/simple;
+	bh=ecP1w21ZzTWQNiel3buvd0Vxebpdlm8NAS7MCNpLiuc=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=IvIX/LUl5NcEbl0wq7XvfCb78hMdyzIPj/NQsUE42GXcxqNrmqf8A1X6YwLKt/Tc9pHzpi3032vMwaOFFGz0S2CzJeP+830t7QAaOGhc/0kZ7p4mx3DeJ6wGNB4W3f6eKdwY5dbJ+hS3xObWUhhfuEM9LNP/52uZGr4lThIikXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=bJpqkk9/; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 61IKTSZs2293374
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 18 Feb 2026 12:29:29 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 61IKTSZs2293374
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2026012301; t=1771446572;
+	bh=2gPzya6BB0Sl+zzXsDx+pwzRpOh2oc+CKQ8HWLmwgWE=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=bJpqkk9/AJoFly8m3Npd1K3kPS9DEfbjAuwr8tbmbMS1bEJyUYtu57rgx9c7gdLqj
+	 NPU6TneU8ckfJRMVa/Wk9aMku2aXMaw2xttjgShJG4kD/0bM6oD4Wzh7MR1sEXLoq7
+	 f0a4f/s8UxlbT8mR3dQdNIdvWJS5Ps+6wEJ6lrlRdchEylHXT0tDZftWn5tp3t3+rI
+	 ggN/M8XpcT1GncUmxQSgzpCpFaMl+aSGoA5zTlmxu2OlArCgi8oFpMjADDrqpTRM/v
+	 iQkxDFl8gsNk5jRKM+IaQRWLI3I/0fpi6Ld9f+mQn1YUyPEmJcat0W/jfzazbYF8/R
+	 8X1ZhDkxbpAIw==
+Date: Wed, 18 Feb 2026 12:29:22 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Andy Lutomirski <luto@amacapital.net>, Ard Biesheuvel <ardb@kernel.org>
+CC: "Daniel P. Smith" <dpsmith@apertussolutions.com>,
+        Ross Philipson <ross.philipson@oracle.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
+        linux-efi@vger.kernel.org, iommu@lists.linux.dev,
+        dave.hansen@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com,
+        peterhuewe@gmx.de, Jarkko Sakkinen <jarkko@kernel.org>, jgg@ziepe.ca,
+        nivedita@alum.mit.edu, Herbert Xu <herbert@gondor.apana.org.au>,
+        davem@davemloft.net, corbet@lwn.net, ebiederm@xmission.com,
+        dwmw2@infradead.org, baolu.lu@linux.intel.com,
+        kanth.ghatraju@oracle.com, andrew.cooper3@citrix.com,
+        trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH v15 00/28] x86: Secure Launch support for Intel TXT
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CALCETrUE8c-dxRWhtHKz_PojwZuWMXJSzOsFQf2vt5LS3ATwpA@mail.gmail.com>
+References: <20251215233316.1076248-1-ross.philipson@oracle.com> <b5f2b5a5-b984-4ed3-a023-c06d634f9146@app.fastmail.com> <1ffd3cb5-2c76-4371-a067-3e4849907d80@apertussolutions.com> <49d169bf-0ad2-49be-b7d7-fceb9e7f831a@app.fastmail.com> <CALCETrUE8c-dxRWhtHKz_PojwZuWMXJSzOsFQf2vt5LS3ATwpA@mail.gmail.com>
+Message-ID: <1BBD7449-8420-43FD-930B-A4E1BA38FFC6@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251215233316.1076248-1-ross.philipson@oracle.com>
- <b5f2b5a5-b984-4ed3-a023-c06d634f9146@app.fastmail.com> <1ffd3cb5-2c76-4371-a067-3e4849907d80@apertussolutions.com>
- <49d169bf-0ad2-49be-b7d7-fceb9e7f831a@app.fastmail.com>
-In-Reply-To: <49d169bf-0ad2-49be-b7d7-fceb9e7f831a@app.fastmail.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Wed, 18 Feb 2026 12:03:27 -0800
-X-Gm-Features: AaiRm50K0AfYUHogK4D4rjv3z3w5Xga5sdt_IpbZg6dO6uXxKWdtAoPp16KXxJI
-Message-ID: <CALCETrUE8c-dxRWhtHKz_PojwZuWMXJSzOsFQf2vt5LS3ATwpA@mail.gmail.com>
-Subject: Re: [PATCH v15 00/28] x86: Secure Launch support for Intel TXT
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: "Daniel P. Smith" <dpsmith@apertussolutions.com>, 
-	Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-efi@vger.kernel.org, iommu@lists.linux.dev, dave.hansen@linux.intel.com, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	"H . Peter Anvin" <hpa@zytor.com>, mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com, 
-	peterhuewe@gmx.de, Jarkko Sakkinen <jarkko@kernel.org>, jgg@ziepe.ca, nivedita@alum.mit.edu, 
-	Herbert Xu <herbert@gondor.apana.org.au>, davem@davemloft.net, corbet@lwn.net, 
-	ebiederm@xmission.com, dwmw2@infradead.org, baolu.lu@linux.intel.com, 
-	kanth.ghatraju@oracle.com, andrew.cooper3@citrix.com, 
-	trenchboot-devel@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	R_DKIM_ALLOW(-0.20)[amacapital-net.20230601.gappssmtp.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[zytor.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[zytor.com:s=2026012301];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20968-lists,linux-crypto=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[amacapital.net];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20966-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[apertussolutions.com,oracle.com,vger.kernel.org,kernel.org,lists.infradead.org,lists.linux.dev,linux.intel.com,linutronix.de,redhat.com,alien8.de,srcf.ucam.org,hansenpartnership.com,gmx.de,ziepe.ca,alum.mit.edu,gondor.apana.org.au,davemloft.net,lwn.net,xmission.com,infradead.org,citrix.com,googlegroups.com];
 	RCPT_COUNT_TWELVE(0.00)[31];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[apertussolutions.com,oracle.com,vger.kernel.org,kernel.org,lists.infradead.org,lists.linux.dev,linux.intel.com,linutronix.de,redhat.com,alien8.de,zytor.com,srcf.ucam.org,hansenpartnership.com,gmx.de,ziepe.ca,alum.mit.edu,gondor.apana.org.au,davemloft.net,lwn.net,xmission.com,infradead.org,citrix.com,googlegroups.com];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[luto@amacapital.net,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[amacapital-net.20230601.gappssmtp.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hpa@zytor.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[zytor.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amacapital-net.20230601.gappssmtp.com:dkim,tandasat.github.io:url]
-X-Rspamd-Queue-Id: 8CC541594F7
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amacapital.net:email,zytor.com:mid,zytor.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3A2A815989F
 X-Rspamd-Action: no action
 
-On Thu, Feb 12, 2026 at 12:40=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> w=
-rote:
+On February 18, 2026 12:03:27 PM PST, Andy Lutomirski <luto@amacapital=2Ene=
+t> wrote:
+>On Thu, Feb 12, 2026 at 12:40=E2=80=AFPM Ard Biesheuvel <ardb@kernel=2Eor=
+g> wrote:
+>>
+>> On Thu, 12 Feb 2026, at 20:49, Daniel P=2E Smith wrote:
+>> > On 2/9/26 09:04, Ard Biesheuvel wrote:
+>> =2E=2E=2E
+>> >> Surprisingly, even when doing a secure launch, the EFI runtime servi=
+ces still work happily, which means (AIUI) that code that was excluded from=
+ the D-RTM TCB is still being executed at ring 0? Doesn't this defeat D-RTM=
+ entirely in the case some exploit is hidden in the EFI runtime code? Shoul=
+d we measure the contents of EfiRuntimeServicesCode regions too?
+>> >
+>> > Yes, in fact in the early days I specifically stated that we should
+>> > provide for the ability to measure the RS blocks=2E Particularly if y=
+ou
+>> > are not in an environment where you can isolate the calls to RS from =
+the
+>> > TCB=2E While the RS can pose runtime corruption risks, the larger con=
+cern
+>> > is integrating the D-RTM validation of the Intel System Resources
+>> > Defense (ISRD), aka SMI isolation/SMM Supervisor, provided by the Int=
+el
+>> > System Security Report (ISSR)=2E Within the ISSR is a list of memory
+>> > regions which the SMM Policy Shim (SPS) restricts a SMI handler's acc=
+ess
+>> > when running=2E This allows a kernel to restrict what access a SMI ha=
+ndler
+>> > are able to reach, thus allowing them to be removed from the TCB when
+>> > the appropriate guards are put in place=2E
+>> >
+>> > If you are interested in understanding these further, Satoshi Tanda h=
+as
+>> > probably the best technical explanation without Intel market speak=2E
+>> >
+>> > ISRD: https://tandasat=2Egithub=2Eio/blog/2024/02/29/ISRD=2Ehtml
+>> > ISSR: https://tandasat=2Egithub=2Eio/blog/2024/03/18/ISSR=2Ehtml
+>> >
+>>
+>> Thanks, I'll take a look at those=2E
+>>
+>> But would it be better to disable the runtime services by default when =
+doing a secure launch? PREEMPT_RT already does the same=2E
 >
-> On Thu, 12 Feb 2026, at 20:49, Daniel P. Smith wrote:
-> > On 2/9/26 09:04, Ard Biesheuvel wrote:
-> ...
-> >> Surprisingly, even when doing a secure launch, the EFI runtime service=
-s still work happily, which means (AIUI) that code that was excluded from t=
-he D-RTM TCB is still being executed at ring 0? Doesn't this defeat D-RTM e=
-ntirely in the case some exploit is hidden in the EFI runtime code? Should =
-we measure the contents of EfiRuntimeServicesCode regions too?
-> >
-> > Yes, in fact in the early days I specifically stated that we should
-> > provide for the ability to measure the RS blocks. Particularly if you
-> > are not in an environment where you can isolate the calls to RS from th=
-e
-> > TCB. While the RS can pose runtime corruption risks, the larger concern
-> > is integrating the D-RTM validation of the Intel System Resources
-> > Defense (ISRD), aka SMI isolation/SMM Supervisor, provided by the Intel
-> > System Security Report (ISSR). Within the ISSR is a list of memory
-> > regions which the SMM Policy Shim (SPS) restricts a SMI handler's acces=
-s
-> > when running. This allows a kernel to restrict what access a SMI handle=
-r
-> > are able to reach, thus allowing them to be removed from the TCB when
-> > the appropriate guards are put in place.
-> >
-> > If you are interested in understanding these further, Satoshi Tanda has
-> > probably the best technical explanation without Intel market speak.
-> >
-> > ISRD: https://tandasat.github.io/blog/2024/02/29/ISRD.html
-> > ISSR: https://tandasat.github.io/blog/2024/03/18/ISSR.html
-> >
+>So I have a possible way to disable EFI runtime service without losing
+>the ability to write EFI vars=2E  We come up with a simple file format
+>to store deferred EFI var updates and we come up with a place to put
+>it so that we find it early-ish in boot the next time around=2E  (This
+>could be done via integration with systemd-boot or shim some other
+>boot loader or it could actually be part of the kernel=2E)  And then,
+>instead of writing variables directly, we write them to the deferred
+>list and then update them on reboot (before TXT launch, etc)=2E  [0]
+>This would be a distincly nontrivial project and would not work for
+>all configurations=2E
 >
-> Thanks, I'll take a look at those.
+>As a maybe less painful option, we could disable EFI runtime services
+>but have a root-writable thing in sysfs that (a) turns them back on
+>but (b) first extends a PCR to say that they're turned back on=2E
 >
-> But would it be better to disable the runtime services by default when do=
-ing a secure launch? PREEMPT_RT already does the same.
+>(Or someone could try running runtime services at CPL3=2E=2E=2E)
+>
+>[0] I have thought for years that Intel and AMD should do this on
+>their end, too=2E  Keep the sensitive part of SMI flash entirely locked
+>after boot and, instead of using magic SMM stuff to validate that
+>write attempts have the appropriate permissions and signatures, queue
+>them up as deferred upates and validate the signatures on the next
+>boot before locking flash=2E
+>
 
-So I have a possible way to disable EFI runtime service without losing
-the ability to write EFI vars.  We come up with a simple file format
-to store deferred EFI var updates and we come up with a place to put
-it so that we find it early-ish in boot the next time around.  (This
-could be done via integration with systemd-boot or shim some other
-boot loader or it could actually be part of the kernel.)  And then,
-instead of writing variables directly, we write them to the deferred
-list and then update them on reboot (before TXT launch, etc).  [0]
-This would be a distincly nontrivial project and would not work for
-all configurations.
+*If* a physical EFI partition exists there is a lot to be said for this ap=
+proach=2E
 
-As a maybe less painful option, we could disable EFI runtime services
-but have a root-writable thing in sysfs that (a) turns them back on
-but (b) first extends a PCR to say that they're turned back on.
+The only issue with this that I can see is for things like network or CD/D=
+VD booting where there isn't necessarily any EFI boot partition, it might n=
+ot be writable, or it might not be persistent (e=2Eg=2E http booting typica=
+lly uses a ramdisk, like the old Linux initrd=2E)
 
-(Or someone could try running runtime services at CPL3...)
+Even *if* there is a back channel to the boot server, it would require the=
+ OS to know what it is and how to get to it=2E Maybe we need to consider st=
+andardizing a protocol for uploads to the boot server, but that doesn't sol=
+ve the boot from readonly media, or legacy boot server setups =2E=2E=2E and=
+ boot server infrastructure is something that changes slowly at best=2E
 
-[0] I have thought for years that Intel and AMD should do this on
-their end, too.  Keep the sensitive part of SMI flash entirely locked
-after boot and, instead of using magic SMM stuff to validate that
-write attempts have the appropriate permissions and signatures, queue
-them up as deferred upates and validate the signatures on the next
-boot before locking flash.
+Just *reading out* the EFI variables doesn't have that issue, of course; w=
+e can do that in the EFI stub (and pass them onward to kexec kernels etc us=
+ing the setup_data protocol=2E)
+
+
 
