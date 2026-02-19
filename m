@@ -1,63 +1,64 @@
-Return-Path: <linux-crypto+bounces-21025-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21026-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EJeALQeAl2kOzQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-21025-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Feb 2026 22:26:31 +0100
+	id ONyHHW+Il2nOzwIAu9opvQ
+	(envelope-from <linux-crypto+bounces-21026-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Feb 2026 23:02:23 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A84162C85
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Feb 2026 22:26:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF6916302D
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Feb 2026 23:02:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 11375303B2C2
-	for <lists+linux-crypto@lfdr.de>; Thu, 19 Feb 2026 21:26:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 47EF63031E94
+	for <lists+linux-crypto@lfdr.de>; Thu, 19 Feb 2026 22:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FED632937A;
-	Thu, 19 Feb 2026 21:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D03030C62D;
+	Thu, 19 Feb 2026 22:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s8KM43Xh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kIrCqCYN"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EAE329363;
-	Thu, 19 Feb 2026 21:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD4F2673AA;
+	Thu, 19 Feb 2026 22:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771536373; cv=none; b=gZiJPqHylE1qBgDLLij3mZwCruzYEsmmU3chjRMcuP92/iiouBz8wXSPvbGDgwtDcW33RRbsPPOcIdtwrZ3upMtsk5HIX3yyYTHcBRqdrFpCv2ND3EG2qPSP2HZSNtYF7puOk+im9xv66gsmxdWi3n04lyf/YWoJzRC+pHc1yFQ=
+	t=1771538533; cv=none; b=VIN8IO2FjC2+V6UTkCR8iu+PfbzGQ8q5ROAJEMMwWUPi8EZE/phehxpx2EPSgRCy+RcvuWXHHqsymUiVwWeDI9HwRPTGxzUhOa+/b+4KMhJ78A6Acy17kXFLBQxzmOWCCkZMpHi6gQcX6yUn5ASSYr2WBbXG/saj54kZcH/f6JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771536373; c=relaxed/simple;
-	bh=k3eIOjmh31KGZ2V8juxtChJ2D5hufhrXBQDrTquxias=;
+	s=arc-20240116; t=1771538533; c=relaxed/simple;
+	bh=i4s5I7+0DySZg05blGIiMhp5ILHD+X+eP+E1bMlRf28=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rXRlFWsHqdy71k/5FwSDkdgDKcq9mHNLJrA5b//FGEy0l75QeF5zLY3Zktzldhl9PO3BeeTVbriDaWBsaUxwYMkxXL+goNgM06tMaQ5CfjwQlyt7K/ED0zeBV15x58m3rp5e0/jv0QceZMhK04we3yQ3zeMmc+8IuuOvmbUbP9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s8KM43Xh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5FF7C4CEF7;
-	Thu, 19 Feb 2026 21:26:12 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jy6YQ9x0KENzB7+hBGYRWEckqXPwuWoa6bURRvvdj+qSn/knKMGuUIUYz+pdPGS3+08ITSMJiwNsYlqxPLWKY13N61rCRl52hezdQJil1PKOjInI0uK+O2fknSaDmkr/YCu/IhDYkJ0XbxT+QBYFzTV9D8qLHkKW/tJrUMBbQyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kIrCqCYN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90DB1C4CEF7;
+	Thu, 19 Feb 2026 22:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771536373;
-	bh=k3eIOjmh31KGZ2V8juxtChJ2D5hufhrXBQDrTquxias=;
+	s=k20201202; t=1771538533;
+	bh=i4s5I7+0DySZg05blGIiMhp5ILHD+X+eP+E1bMlRf28=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s8KM43XhU0arShApnLbNpQww9PEWG6/97TNtfrZH0HjUr+Z4brlGSTbbhezLDlMsp
-	 7jRtxA5Rb4YgrJdXftmRS7RSuHwZjfCEaShZ5FtoJ0qqtroxhhFs1/HQflZDllFqPo
-	 9nRUFgJP23iqKE7nTRZZ5tPo4o8sh6y7sVtPMyMLMxtHrHMDKpsI2kyWe1NJFem/hT
-	 XNDR9844+LCMGcGqyKi6tFGesrq2mhy6kfLQrVZLi0Y3wUY7qGNdWilcEnfwkN2cwy
-	 f2kW9UBgKQYQ+i4F9p5tDpmxIH8q86oGB2a2jQraPI0fjzf1YZxBUH6oNNqyKXrYL6
-	 ROaXgwKdprhpA==
-Date: Thu, 19 Feb 2026 13:26:11 -0800
+	b=kIrCqCYNBgDL27CfO2GlC4purKVTbFYTe2fvm08v5SA9/v0q/5aR8e5X/1PZh5BnS
+	 ih+F6QsNAXcd+7+6J6NUY86hWqm0nez6C5U1uBXS4ZU3F8UjNRkb+hFB9/zypXRCm1
+	 6RqDFJTEBxQpZfPHQ9FCMVZI/IcYxkaXxW4vEI9814YayfPkCuLFHWXoX638WMNQIQ
+	 1ADrzHQs/lJOY96JCnLdxNNQY1+bg5rfMzalpXPiTluzrHCP/r8FuWfBJ6x/yGyTKM
+	 DE7rDAKw5wHAB1aMvfEtdGU16jq4BH9OjXKNoz1XnFq+iTQKAI+O5RGVG7RgIDv3r3
+	 nxAuPH+Z1mgTQ==
+Date: Thu, 19 Feb 2026 14:02:11 -0800
 From: Eric Biggers <ebiggers@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
-	linux-wireless@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 03/15] crypto: arm64/aes - Fix 32-bit aes_mac_update()
- arg treated as 64-bit
-Message-ID: <20260219212611.GA32578@quark>
+	linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 14/15] wifi: mac80211: Use AES-CMAC library in
+ ieee80211_aes_cmac()
+Message-ID: <20260219220211.GB32578@quark>
 References: <20260218213501.136844-1-ebiggers@kernel.org>
- <20260218213501.136844-4-ebiggers@kernel.org>
- <21d30582-9cb2-4e7a-9aa8-36e16aa45ff9@app.fastmail.com>
+ <20260218213501.136844-15-ebiggers@kernel.org>
+ <c3b53ea083fa26c863c6a954d13bbd2ef91e1732.camel@sipsolutions.net>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -66,25 +67,25 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <21d30582-9cb2-4e7a-9aa8-36e16aa45ff9@app.fastmail.com>
+In-Reply-To: <c3b53ea083fa26c863c6a954d13bbd2ef91e1732.camel@sipsolutions.net>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21025-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21026-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
@@ -94,44 +95,60 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 68A84162C85
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sipsolutions.net:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1FF6916302D
 X-Rspamd-Action: no action
 
-On Thu, Feb 19, 2026 at 10:23:39AM +0100, Ard Biesheuvel wrote:
-> On Wed, 18 Feb 2026, at 22:34, Eric Biggers wrote:
-> > Since the 'enc_after' argument to neon_aes_mac_update() and
-> > ce_aes_mac_update() has type 'int', it needs to be accessed using the
-> > corresponding 32-bit register, not the 64-bit register.  The upper half
-> > of the corresponding 64-bit register may contain garbage.
+On Thu, Feb 19, 2026 at 12:00:03PM +0100, Johannes Berg wrote:
+> On Wed, 2026-02-18 at 13:35 -0800, Eric Biggers wrote:
+> > Now that AES-CMAC has a library API, convert the mac80211 AES-CMAC
+> > packet authentication code to use it instead of a "cmac(aes)"
+> > crypto_shash.  This has multiple benefits, such as:
+> > 
+> > - It's faster.  The AES-CMAC code is now called directly, without
+> >   unnecessary overhead such as indirect calls.
+> > 
+> > - MAC calculation can no longer fail.
+> > 
+> > - The AES-CMAC key struct is now a fixed size, allowing it to be
+> >   embedded directly into 'struct ieee80211_key' rather than using a
+> >   separate allocation.  Note that although this increases the size of
+> >   the 'u.cmac' field of 'struct ieee80211_key', it doesn't cause it to
+> >   exceed the size of the largest variant of the union 'u'.  Therefore,
+> >   the size of 'struct ieee80211_key' itself is unchanged.
+> > 
 > 
-> How could that happen? Setting the 32-bit alias of a GPR clears the upper half.
+> Looks good to me in principle, I suppose we should test it? :)
 
-The ABI doesn't guarantee that the upper 32 bits are cleared.  Try the
-following:
+Yes, I don't expect any issues, but testing of this patch would be
+appreciated.  I don't know how to test every kernel subsystem.
 
-void g(unsigned int a);
+> > +		err = aes_cmac_preparekey(&key->u.aes_cmac.key, key_data,
+> > +					  key_len);
+> > +		if (err) {
+> >  			kfree(key);
+> >  			return ERR_PTR(err);
+> >  		}
+> 
+> Pretty sure that can't fail, per the documentation for
+> aes_prepareenckey() and then aes_cmac_preparekey(), but it doesn't
+> really matter. We can only get here with a key with size checked by
+> cfg80211_validate_key_settings() already.
 
-void f(unsigned long long a)
-{
-	g((unsigned int)a);
-}
+aes_cmac_preparekey() indeed always succeeds when passed a valid key
+length, as documented in its kerneldoc.  But in this case I recommend
+just checking the error code anyway, since ieee80211_key_alloc() can
+already fail for other reasons (i.e., it needs the ability to report
+errors anyway) and the key length isn't a compile-time constant here.
 
-Both gcc and clang generate code that simply tail-calls g(), leaving the
-upper 32 bits unchanged rather than zeroing them as per the cast:
+> Since you're probably going to send it through the crypto tree:
+> 
+> Acked-by: Johannes Berg <johannes@sipsolutions.net>
 
-0000000000000000 <f>:
-       0: 14000000     	b	0x0 <f>
-
-So it's possible.  Now, it's certainly unlikely to happen in practice,
-as the real code doesn't use truncating casts like that, and the
-instructions that write to the 32-bit registers clear the upper 64 bits
--- as you noted and as I've noted before in similar fixes (e.g.
-https://lore.kernel.org/r/20251102234209.62133-2-ebiggers@kernel.org/).
-
-So does it really matter?  Probably not.  However, given that the
-correct behavior wasn't *guaranteed*, I think that to be safe we should
-continue to consider patches like this to be bugfixes.
+For library conversions like this I've usually been taking the library
+itself through libcrypto-next, then sending the subsystem conversions
+afterwards for subsystem maintainers to take in the next release.  But
+I'd also be glad to just take this alongside the library itself.
 
 - Eric
 
