@@ -1,140 +1,144 @@
-Return-Path: <linux-crypto+bounces-21053-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21054-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EpkpOdv7mWnvXgMAu9opvQ
-	(envelope-from <linux-crypto+bounces-21053-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 19:39:23 +0100
+	id WFmOM/kBmmmnXwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-21054-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 20:05:29 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E9F16D8BF
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 19:39:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3465316D9DF
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 20:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 294F130225BF
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 18:39:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AE1A6302FA9C
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 19:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA3B3074AE;
-	Sat, 21 Feb 2026 18:39:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D91E231A21;
+	Sat, 21 Feb 2026 19:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaYk4LfZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EdeceEfM"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA80423817E;
-	Sat, 21 Feb 2026 18:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA6416FC5
+	for <linux-crypto@vger.kernel.org>; Sat, 21 Feb 2026 19:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771699158; cv=none; b=CTt5NaS3IzJD/3c1wzNbo00AqakpAxoW+XY71vf9KJKLqZrEqbnMy3GgTzow9AxYid7FTPLvOTb11qbwJXqDjZEfzzaoS52XjmzQOoRChBavfx5Pa/rj6Ip+4J3bfky/iwwqtLO1amr5iXfI7dWCQDDNXaPkIzWLzvizyJM8Hg8=
+	t=1771700727; cv=none; b=KZlYbxKehVnUKkCceTBX9WhizVuS8kbD1jCTxGu1J/7QleCxwbw2IHw6xRWanq+YWPjrQ0W48nlX/f3lsiF0qHyWai8QUviAjbXdpSUFGwjhWoLMmuyoV7KOExf7uuHKqzemo1EpeEeHJ0UYkLF5ZvTxUXQhS0aTGwZQ4V6qvJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771699158; c=relaxed/simple;
-	bh=oHTqtRK/kESzEKZXKvO9UOIIAMLiorWYXqa+qfEi7UY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mP9oeJHLSjXpP/QeCAnWhnupeMbSoDU8U7d2LtQQi3uwG6lHHm0F0zQjdHyAmUZ0l+TkmX1ypCzwGPGR7iVsM9EUuYY+QYm2d79NCFQO17yYpsN7iY9XYMgfnU9OTWYazhg6YE3UqxpkdSsUzhUGW8MfDZ5KfasDC4lochr4qn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CaYk4LfZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9186DC4CEF7;
-	Sat, 21 Feb 2026 18:39:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771699157;
-	bh=oHTqtRK/kESzEKZXKvO9UOIIAMLiorWYXqa+qfEi7UY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CaYk4LfZYLAwCa2G4ShO28S//AZShSKjMu9Inc8/i7L59AIZQdMzuDhfcEKppvmaM
-	 F07lGDF0w9gk+GQLIyJQchDxHb9pfyGdBwwlBZwoUQUNCKM4SxzYFlwcvD+93gPs6Y
-	 QNvRysG+89rV34JiaLnTDNuFppQ90gb+a0BOIUQd9NvUQOL5MM+fD2wxnlpg6tw9pz
-	 oE02QSoyJRN6XA1gZb7OGyiGvGHChHWDkQ8OC/yYvRMRlGlR0jzI1EHhhsAz/k44TP
-	 uRKIelIhVPJlU+zNUK79QgdlKHIb2z1VPMfO+6U+146fRg2zmJasxoGLfLbEO5BOT4
-	 usiGvwi2T/BEw==
-Date: Sat, 21 Feb 2026 10:39:15 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Manas <ghandatmanas@gmail.com>
-Cc: davem@davemloft.net, herbert@gondor.apana.org.au,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1771700727; c=relaxed/simple;
+	bh=gKuYwENYrceJVeDntO1G4tFGAIwXGxYQRoFfN+PoFfw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C0gZxj0H4CIrLilwNBRQLIbdvPEZ3rGtqLTjQmqk/yQRfm1yfNhuhNmgKoY5fXJSFNElY7YYe+MPjH5aDCnJ+DzoeQEMvQv88NKg0UoGybrtgbbViFk8v1f9i9Ciy0k6zeRIaCayiLr/SPcBEbFusMTtHE0aek7QjhiAv5mefzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EdeceEfM; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1771700713;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=yLDQ4G+6GFW4iU0X3Mnjq0LBajt/MPm52sZH7eipsqY=;
+	b=EdeceEfMPT/HNqUYPO72We4yfdggi2cTnMn+D9wm8fmzCRykKB02TV1XcWa1PEM8cZ0qGc
+	/dQT1pGeA/XzITZ3FExKB89rkc5WM+q1A9D3ZEtpAi2UhafgqS30Eq2OetAXTFGFZxncvu
+	mxyxvvVZ9zb4B4VlTCxK7hF1BaZCI0E=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Lothar Rubusch <l.rubusch@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Linus Walleij <linusw@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
 	stable@vger.kernel.org,
-	Rakshit Awasthi <rakshitawasthi17@gmail.com>
-Subject: Re: [PATCH] Crypto : Fix Null deref in scatterwalk_pagedone
-Message-ID: <20260221183915.GA2536@quark>
-References: <20260221151041.65141-1-ghandatmanas@gmail.com>
+	linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: atmel-sha204a - Fix potential UAF and memory leak in remove path
+Date: Sat, 21 Feb 2026 20:04:25 +0100
+Message-ID: <20260221190424.85984-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260221151041.65141-1-ghandatmanas@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-21054-lists,linux-crypto=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21053-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[davemloft.net,gondor.apana.org.au,vger.kernel.org,gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com,gondor.apana.org.au,davemloft.net,microchip.com,bootlin.com,tuxon.dev,kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F1E9F16D8BF
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,linux.dev:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3465316D9DF
 X-Rspamd-Action: no action
 
-On Sat, Feb 21, 2026 at 08:40:41PM +0530, Manas wrote:
-> `sg_next` can return NULL which causes NULL deref in
-> `scatterwalk_start`
-> 
-> Reported-by: Manas Ghandat <ghandatmanas@gmail.com>
-> Reported-by: Rakshit Awasthi <rakshitawasthi17@gmail.com>
-> Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
-> Signed-off-by: Rakshit Awasthi <rakshitawasthi17@gmail.com>
-> ---
->  include/crypto/scatterwalk.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/crypto/scatterwalk.h b/include/crypto/scatterwalk.h
-> index 32fc4473175b..abbb67391710 100644
-> --- a/include/crypto/scatterwalk.h
-> +++ b/include/crypto/scatterwalk.h
-> @@ -78,7 +78,8 @@ static inline void scatterwalk_pagedone(struct scatter_walk *walk, int out,
->  		page = sg_page(walk->sg) + ((walk->offset - 1) >> PAGE_SHIFT);
->  		flush_dcache_page(page);
->  	}
-> -
-> +	if (sg_next(walk->sg) == NULL)
-> +		return;
->  	if (more && walk->offset >= walk->sg->offset + walk->sg->length)
->  		scatterwalk_start(walk, sg_next(walk->sg));
+Do not return early from atmel_sha204a_remove() when the device is busy.
+Instead, flush the I2C workqueue before teardown to prevent a potential
+UAF if a queued callback runs while the device is being removed.
 
-First, this patch doesn't apply to the mainline kernel.  This seems to
-be a patch against an older version.
+Also ensure sysfs entries are removed and ->hwrng.priv is freed, to
+prevent a memory leak during removal. Change the log level from emerg
+to warn because the system is still usable.
 
-Second, 'sg_next(walk->sg)' returning NULL during the line
-'scatterwalk_start(walk, sg_next(walk->sg));' means that the end of the
-scatterlist has been reached, despite more data needing to be processed.
-For example, this could happen if some in-kernel user asked to encrypt
-200 bytes from a scatterlist containing only 100 bytes.  But that would
-be a bug in the code that requested the invalid encryption operation in
-the first place, not here.  It would need to be fixed there.
+Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+Compile-tested only.
+---
+ drivers/crypto/atmel-sha204a.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-What is the full call stack of the crash?  That would point to what
-actually needs to be fixed.
+diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
+index 0fcf4a39de27..3afad915aae3 100644
+--- a/drivers/crypto/atmel-sha204a.c
++++ b/drivers/crypto/atmel-sha204a.c
+@@ -190,10 +190,10 @@ static void atmel_sha204a_remove(struct i2c_client *client)
+ {
+ 	struct atmel_i2c_client_priv *i2c_priv = i2c_get_clientdata(client);
+ 
+-	if (atomic_read(&i2c_priv->tfm_count)) {
+-		dev_emerg(&client->dev, "Device is busy, will remove it anyhow\n");
+-		return;
+-	}
++	if (atomic_read(&i2c_priv->tfm_count))
++		dev_warn(&client->dev, "Device is busy, will remove it anyhow\n");
++
++	atmel_i2c_flush_queue();
+ 
+ 	sysfs_remove_group(&client->dev.kobj, &atmel_sha204a_groups);
+ 
+-- 
+Thorsten Blum <thorsten.blum@linux.dev>
+GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
 
-- Eric
 
