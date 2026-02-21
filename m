@@ -1,156 +1,121 @@
-Return-Path: <linux-crypto+bounces-21051-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21052-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ECDaCR3LmWkXWwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-21051-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 16:11:25 +0100
+	id 0C4UBmPhmWnuXAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-21052-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 17:46:27 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8169716D1F7
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 16:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7042316D4E4
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 17:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 73E593013D4A
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 15:11:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DD3D13046BA1
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Feb 2026 16:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B95B81C5D77;
-	Sat, 21 Feb 2026 15:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329FF33123A;
+	Sat, 21 Feb 2026 16:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xw+i1+24"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="bkBjKWaQ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB65219FF
-	for <linux-crypto@vger.kernel.org>; Sat, 21 Feb 2026 15:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D9232ED20;
+	Sat, 21 Feb 2026 16:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771686681; cv=none; b=fcCUi6JRJtOkpke5zpAp+0JGJ5WVwNpgrtolUrEISzQjjqs6xX5vsjcCU4QDroAYgYJpTIGMq7mGhJNsUlRtr1jlEc+nC8vW4VwliNhz8X0pZ7B1Zg9GfCyfQPm2JZaxCSLQc7Ak3JayuM/nFNNDLZIluPR/CP5Rx8byMIz66k8=
+	t=1771692381; cv=none; b=gh/8NYsIv2Hi4L8Sqyj4WzDCQYaawiPsAYVGPf3SXQjkgB41DAF5aFPSixtUm+SLponu2fkl+KbcZp3ud0ZK67+n+z1W5NVDHWnZqbvbtGIsWfsOpwbc+YSjoJ+0ZJrIkFFGlm89Zn5zlev7cmV7kSU0SsZF8PjNvL/eqPj+T6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771686681; c=relaxed/simple;
-	bh=31YwMowNkuM4idkQhWbY+/kiCcVdVFVM42qTq+Hc+Og=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kqx4EwbguOUX9ORo46Dcp6l52qQ3HrQfjrZIqaSgu7JyZP3Ct5wTL90n7KqU6ZGyapAU7q6ORcupULgBLP/A7eM2McDKMmnbNg0xZ6CsLRzI7XyuAnX0jiFw+EhGMY3afIkhLG6DlaOuS2fj0Spg6xFd2hbaCJ+79j6Rr7e/itM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xw+i1+24; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2aad1bb5058so32258785ad.0
-        for <linux-crypto@vger.kernel.org>; Sat, 21 Feb 2026 07:11:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771686680; x=1772291480; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZ1v4uZYYfrFz53g2OEyCTHVBc4Ni9iWSFPy2XJU9Bc=;
-        b=Xw+i1+24a7ShCNdUHTu3QJ6UUyUHuTHUrHuO+kNehuHppUQBNb+uSzQOl7w6Lwtn5p
-         w4B8kzrBuYt7oCq4itdLHvYTdFPlh68tcTNqidcJtBC/bAB5x9umqtv1HILIe+wjAv9o
-         /9YpP+PGMSNDg/qfE00m1FUVCYvqBjzxVcAuLtGtlHdO/lmM6ibgZL0XaUagS+SQzgYv
-         VlX2wB11hgTFVgmhBl+tOHqCJ30BudirxCUNVJS7MMIbOOqRdJk4zAe704WkiCWP6OPi
-         HJPgssQb2qVtlZhirZCPmoEUXTJ/CbgILsheUKTGVra9PCT9WTF8oE58AbcBZzPzznuj
-         qp8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771686680; x=1772291480;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nZ1v4uZYYfrFz53g2OEyCTHVBc4Ni9iWSFPy2XJU9Bc=;
-        b=tGvFhXc+ojKY4f6ANVtH7uaxb/q1WUGM1OnJVEfqiva6NG1rS13rL8/LsanUBjifD+
-         oe7HVAt71j//TRPulfJDDTt4pbWoGn/gHiEPgSvHcNWT4QMePHgpBC1Wrck8YZFKcDx5
-         swbDpmURwlsvLKVwnMC1t4vyhm+mRHYp8CBH1YtPRF/JxR710mASu022oPW/+hbb7WQC
-         l9K8uoh+59mKACjXMs7HiKe4sYeb3Ji0YcwzPfGJaRIeuGdwtEsMqc9N6Q9e9jKupasS
-         v+9RArZId/7eK/CrTx6TqUOhtALGQsBZLQETNMp/AEJeChEo1KH13zbCQrEg7o8lArZu
-         iZoA==
-X-Gm-Message-State: AOJu0YxUkMTmN8OeFI67mTqrr1HgHPUD0avHlmNp1ITv/WJfKjuwpQpc
-	wRopWFx/XNtbTNkqCFC22OwhukH9RsY41UbWsSbjvFoG4MzvNPIpjYIP
-X-Gm-Gg: AZuq6aID/GBzhrlLuocRnP0Ux2GCXtr5gSlaE3mQZnDyQG60++8hvnZaFuAnTX5oq7y
-	wNO0TiWJRZPIVrS+xJaHvl23wDHTurziU+kZwWkk+Lq8oBhkcET7ezHvPW1hqS8NKssC01Gw+r9
-	GOLpmZAwGWTrvx7Fw0bCDm+8BofRtQbi/VTKk3MsJEI936pVa7pf9XS7+VHGBWkDMz8cFopoyfW
-	7hmt59BvGvuNk01osow9k5k0zPxIceksuUWOzCDdmmG7ahB7LMxHR7T9uFhIBAt1/Jr1d2QndvD
-	CA/thG4jvUc4uKi0DmUtcVnvNkfpnsCgkhppC6UA+nJc5uJamUf57BigYSkmMNBq+U8aYRs8Xyn
-	8Gg8DNpLg132o0My7mPRqcmplez88i/RBHkxXW09lb3GXPeNqjtz6dM7n8szbbtMPdPkpUgQpC1
-	+hNhg9DHqwgcsNvfdyIa4=
-X-Received: by 2002:a17:902:d50b:b0:2aa:fad8:7474 with SMTP id d9443c01a7336-2ad744ec585mr29723225ad.33.1771686679877;
-        Sat, 21 Feb 2026 07:11:19 -0800 (PST)
-Received: from lmao.. ([2405:201:2c:5868:cba9:7936:c19a:9313])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad7500e346sm34517345ad.49.2026.02.21.07.11.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Feb 2026 07:11:19 -0800 (PST)
-From: Manas <ghandatmanas@gmail.com>
-To: davem@davemloft.net,
-	herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1771692381; c=relaxed/simple;
+	bh=sNnQ4sopjYQ1yJKmMLbRZIuVu0+ZJZ5N+cxYWsYodvA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=URy2LzECr/zVYQmJghxUQzhknpJA85TR4y0hv7Ibjgjpg84C8N3mNVFyxnS+KOvF6JO/1HqWlFdruX8kOPno26Zm9RoNsewUCTQKSbFpTzxAJXejh+w58v1N5zo+eziCZ6tUeqisG0TC9/CXSdOPsvN5w+rRTgcW1eKyDuH6Zmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=bkBjKWaQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42549C4CEF7;
+	Sat, 21 Feb 2026 16:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1771692380;
+	bh=sNnQ4sopjYQ1yJKmMLbRZIuVu0+ZJZ5N+cxYWsYodvA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bkBjKWaQ7jo0dp7VzuKfGImYauJIiE4j2DPgVRgIXsu/kTwSfiE9lNzyx7JQPcNGD
+	 cg4SrKBmE3XsynC3n0+ia+OTb9ODGWNk2gno3pgYLUoORgoDhuQ74lq08VBj0LQCmN
+	 7kxrzoLEsfyx4Jypp255sly8OmC3R7jnczkjWwbM=
+Date: Sat, 21 Feb 2026 17:46:16 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Manas <ghandatmanas@gmail.com>
+Cc: davem@davemloft.net, herbert@gondor.apana.org.au,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org,
-	Manas <ghandatmanas@gmail.com>,
 	Rakshit Awasthi <rakshitawasthi17@gmail.com>
-Subject: [PATCH] Crypto : Fix Null deref in scatterwalk_pagedone
-Date: Sat, 21 Feb 2026 20:40:41 +0530
-Message-ID: <20260221151041.65141-1-ghandatmanas@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Subject: Re: [PATCH] Crypto : Fix Null deref in scatterwalk_pagedone
+Message-ID: <2026022123-happy-unsure-b638@gregkh>
+References: <20260221151041.65141-1-ghandatmanas@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260221151041.65141-1-ghandatmanas@gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [2.34 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-21051-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21052-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[davemloft.net,gondor.apana.org.au,vger.kernel.org,gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ghandatmanas@gmail.com,linux-crypto@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[linuxfoundation.org:+];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_SOME(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8169716D1F7
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linuxfoundation.org:dkim]
+X-Rspamd-Queue-Id: 7042316D4E4
 X-Rspamd-Action: no action
 
-`sg_next` can return NULL which causes NULL deref in
-`scatterwalk_start`
+On Sat, Feb 21, 2026 at 08:40:41PM +0530, Manas wrote:
+> `sg_next` can return NULL which causes NULL deref in
+> `scatterwalk_start`
 
-Reported-by: Manas Ghandat <ghandatmanas@gmail.com>
-Reported-by: Rakshit Awasthi <rakshitawasthi17@gmail.com>
-Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
-Signed-off-by: Rakshit Awasthi <rakshitawasthi17@gmail.com>
----
- include/crypto/scatterwalk.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+How can it return NULL in this case?
 
-diff --git a/include/crypto/scatterwalk.h b/include/crypto/scatterwalk.h
-index 32fc4473175b..abbb67391710 100644
---- a/include/crypto/scatterwalk.h
-+++ b/include/crypto/scatterwalk.h
-@@ -78,7 +78,8 @@ static inline void scatterwalk_pagedone(struct scatter_walk *walk, int out,
- 		page = sg_page(walk->sg) + ((walk->offset - 1) >> PAGE_SHIFT);
- 		flush_dcache_page(page);
- 	}
--
-+	if (sg_next(walk->sg) == NULL)
-+		return;
- 	if (more && walk->offset >= walk->sg->offset + walk->sg->length)
- 		scatterwalk_start(walk, sg_next(walk->sg));
- }
--- 
-2.43.0
+> Reported-by: Manas Ghandat <ghandatmanas@gmail.com>
+> Reported-by: Rakshit Awasthi <rakshitawasthi17@gmail.com>
+> Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+> Signed-off-by: Rakshit Awasthi <rakshitawasthi17@gmail.com>
 
+Reported by isn't needed if you sign off on a patch.  But you got the
+order wrong here for the signed off by lines, please read the
+documentation.
+
+
+<formletter>
+
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
+
+</formletter>
 
