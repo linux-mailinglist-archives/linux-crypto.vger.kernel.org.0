@@ -1,43 +1,44 @@
-Return-Path: <linux-crypto+bounces-21094-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21091-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gD7yK3X3nGlkMQQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21094-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Feb 2026 01:57:25 +0100
+	id NWl7D9LXnGkFLwQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21091-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 23:42:26 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5BB1805EB
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Feb 2026 01:57:24 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33EF817E7FB
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 23:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 54CEF31898DE
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Feb 2026 00:55:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8BBE83003BFE
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 22:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B197C238C3B;
-	Tue, 24 Feb 2026 00:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F76637B41A;
+	Mon, 23 Feb 2026 22:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="SvPqBqoI"
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="fPCmWdO4"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-m10214.netease.com (mail-m10214.netease.com [154.81.10.214])
+Received: from mail-m12894.netease.com (mail-m12894.netease.com [103.209.128.94])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E07223DE7;
-	Tue, 24 Feb 2026 00:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=154.81.10.214
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2453EBF10;
+	Mon, 23 Feb 2026 22:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.209.128.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771894520; cv=none; b=lSCQecTmajtUKC8ePqvfQUCacBHgECY9MVSi252sU8wzifC9SEgMqziDEE2gbyZ6ceX3Imouhj2I3HiMwozhXyPsjDvy2q4R8ilv97pFh+aIciZzHdW02bYnStKf4IbYBSevy38JWAtFdurDiJshIQpjhzGYzH6ID+aB2MW3G14=
+	t=1771886540; cv=none; b=cVm9dAeUWDQMxMdjoLBEsoe1vpbvtSQbu6ii5ucRDVL+Abh1EXzNTiPpPbpx0kCRbqzQrPQX/CSPbZJYCPl+X4nKBFIlMj5GbDChBj1oPKBms+Rc3yXfjqLgwpWA272k/4QlSJSLUvFBEpSAfKdUo4Emo/w67wNQ6PtnXrNyOBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771894520; c=relaxed/simple;
-	bh=8WzlflZ34qKm3b5d02I3sYaBSLAexfVSpezxBgpifBI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=c0me3mUuzlErpDXy0OjNiQ1ARrRpDPcM8ljMnHq7TW5ldvrMk4TGSRu4qVidElfH9do17Nzo2F7qYgdDEMD3aTYAqZptIFwl0FhX7SvtNXnMvNE2EReo9BYnaKcpQ8v/poxBVT/2YOkjgp0hmz0WlPS1JcI/7qvjYgrMQE0iPmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=SvPqBqoI; arc=none smtp.client-ip=154.81.10.214
+	s=arc-20240116; t=1771886540; c=relaxed/simple;
+	bh=dmfaszMEYmcFbIGu5+t9u2mnRjwEyesJMnrckrtQ3Yk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=D9ouXFNOMov1HAAgLGH5nKau3p4h3fxKSYSdln5m1EJVXeC2ilnPzACCqJBLEYn0aEg/4XG3nvLbSuPNYKOqaspI/JSr3p3kUY5ZIE0Fzi/Dn+Wi+Hb+yKyDG25OZk6eBpwwOIMCGG1vhaVyjTTy5z5yzoZOxU87VyLjNTkALBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=fPCmWdO4; arc=none smtp.client-ip=103.209.128.94
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
 Received: from localhost.localdomain (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 34b40457d;
-	Mon, 23 Feb 2026 23:51:57 +0800 (GMT+08:00)
+	by smtp.qiye.163.com (Hmail) with ESMTP id 34b40458c;
+	Mon, 23 Feb 2026 23:52:36 +0800 (GMT+08:00)
 From: Shawn Lin <shawn.lin@rock-chips.com>
-To: Antoine Tenart <atenart@kernel.org>,
+To: Srujana Challa <schalla@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	davem@davemloft.net
 Cc: linux-crypto@vger.kernel.org,
@@ -45,21 +46,21 @@ Cc: linux-crypto@vger.kernel.org,
 	Philipp Stanner <phasta@kernel.org>,
 	linux-pci@vger.kernel.org,
 	Shawn Lin <shawn.lin@rock-chips.com>
-Subject: [PATCH 17/37] crypto: safexcel: Replace pci_alloc_irq_vectors() with pcim_alloc_irq_vectors()
-Date: Mon, 23 Feb 2026 23:51:50 +0800
-Message-Id: <1771861910-88163-1-git-send-email-shawn.lin@rock-chips.com>
+Subject: [PATCH 18/37] crypto: octeontx2: Replace pci_alloc_irq_vectors() with pcim_alloc_irq_vectors()
+Date: Mon, 23 Feb 2026 23:52:31 +0800
+Message-Id: <1771861951-88488-1-git-send-email-shawn.lin@rock-chips.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1771860581-82092-1-git-send-email-shawn.lin@rock-chips.com>
 References: <1771860581-82092-1-git-send-email-shawn.lin@rock-chips.com>
-X-HM-Tid: 0a9c8b333de609cckunma0e2a033987a79
+X-HM-Tid: 0a9c8b33d4e109cckunm9ea00323987b2a
 X-HM-MType: 1
 X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGhhLHVZPQxpPQx8fSE1OTkJWFRQJFh
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGk5PTVZJQ0pMQxoZHUkYSUhWFRQJFh
 	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
 	hVSktLVUpCS0tZBg++
 DKIM-Signature: a=rsa-sha256;
-	b=SvPqBqoIKCJ5Fh92JioddDZ6IPavGqxBmDIFVU+H4SVb8h3jIygbncHCUNN+jHNY2HuDiOVrgLqCiHbJHtd2tZqc0gwWpbfOghrHWEvHje838d753QD/mEj/+M3CZm/0xWNo7Ufzs348lD8nQbTUgtykafQR8PQRoqqFh9Q3iv0=; s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-	bh=Jv8sx4V8Kx94pQbsGOseu8/K3SdNRp4HhMI/8Hu2kN8=;
+	b=fPCmWdO4i4Ye1WiSbjDtUQm/tOXm4WcOO7R6bjrpZjUVfLjIoIJE2sb0gZ5B11OPZPLuqYDLAuW2J+n4yj3iutiU/XpkAX//6u7zu9Q/uk6xeai+gWMhhjG4nCJB5wwkFqowpKZMWiIwMrysYF6hl0Dfkx7EMMz8ITCopVGPR08=; s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=0WR8SeGxieLjXEFRKbzi8dpAR6wzWdHho70pdmXl2m4=;
 	h=date:mime-version:subject:message-id:from;
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -72,7 +73,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[rock-chips.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[rock-chips.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -81,26 +82,27 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21094-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21091-lists,linux-crypto=lfdr.de];
 	DKIM_TRACE(0.00)[rock-chips.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[shawn.lin@rock-chips.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:email]
-X-Rspamd-Queue-Id: DC5BB1805EB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,rock-chips.com:mid,rock-chips.com:dkim,rock-chips.com:email,marvell.com:email]
+X-Rspamd-Queue-Id: 33EF817E7FB
 X-Rspamd-Action: no action
 
 pcim_enable_device() no longer automatically manages IRQ vectors via devres.
 Drivers must now manually call pci_free_irq_vectors() for cleanup. Alternatively,
 pcim_alloc_irq_vectors() should be used.
 
-To: Antoine Tenart <atenart@kernel.org>
+To: Srujana Challa <schalla@marvell.com>
+To: Bharat Bhushan <bbhushan2@marvell.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>
 To: davem@davemloft.net
 Cc: linux-crypto@vger.kernel.org
@@ -110,28 +112,38 @@ Cc: linux-pci@vger.kernel.org
 Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
 ---
 
- drivers/crypto/inside-secure/safexcel.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c | 2 +-
+ drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/inside-secure/safexcel.c
-index c3b2b22..4e4991e 100644
---- a/drivers/crypto/inside-secure/safexcel.c
-+++ b/drivers/crypto/inside-secure/safexcel.c
-@@ -1596,10 +1596,10 @@ static int safexcel_probe_generic(void *pdev,
- 		 */
- 		struct pci_dev *pci_pdev = pdev;
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
+index f54f905..fbcc65c 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
+@@ -774,7 +774,7 @@ static int otx2_cptpf_probe(struct pci_dev *pdev,
+ 		goto clear_drvdata;
+ 	}
  
--		ret = pci_alloc_irq_vectors(pci_pdev,
--					    priv->config.rings + 1,
--					    priv->config.rings + 1,
--					    PCI_IRQ_MSI | PCI_IRQ_MSIX);
-+		ret = pcim_alloc_irq_vectors(pci_pdev,
-+					     priv->config.rings + 1,
-+					     priv->config.rings + 1,
-+					     PCI_IRQ_MSI | PCI_IRQ_MSIX);
- 		if (ret < 0) {
- 			dev_err(dev, "Failed to allocate PCI MSI interrupts\n");
- 			return ret;
+-	err = pci_alloc_irq_vectors(pdev, num_vec, num_vec, PCI_IRQ_MSIX);
++	err = pcim_alloc_irq_vectors(pdev, num_vec, num_vec, PCI_IRQ_MSIX);
+ 	if (err < 0) {
+ 		dev_err(dev, "Request for %d msix vectors failed\n",
+ 			RVU_PF_INT_VEC_CNT);
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
+index c1c44a7b..3f4d791 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
+@@ -42,8 +42,8 @@ static int cptvf_register_interrupts(struct otx2_cptvf_dev *cptvf)
+ 		return -EINVAL;
+ 
+ 	/* Enable MSI-X */
+-	ret = pci_alloc_irq_vectors(cptvf->pdev, num_vec, num_vec,
+-				    PCI_IRQ_MSIX);
++	ret = pcim_alloc_irq_vectors(cptvf->pdev, num_vec, num_vec,
++				     PCI_IRQ_MSIX);
+ 	if (ret < 0) {
+ 		dev_err(&cptvf->pdev->dev,
+ 			"Request for %d msix vectors failed\n", num_vec);
 -- 
 2.7.4
 
