@@ -1,150 +1,182 @@
-Return-Path: <linux-crypto+bounces-21091-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21072-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id NWl7D9LXnGkFLwQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21091-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 23:42:26 +0100
+	id kCM0DiZ5nGlfIAQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21072-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 16:58:30 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33EF817E7FB
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 23:42:25 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7D7179336
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 16:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8BBE83003BFE
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 22:42:22 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2C1753038724
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 15:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F76637B41A;
-	Mon, 23 Feb 2026 22:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B65E2F6565;
+	Mon, 23 Feb 2026 15:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="fPCmWdO4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IUmEVtwM"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-m12894.netease.com (mail-m12894.netease.com [103.209.128.94])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2453EBF10;
-	Mon, 23 Feb 2026 22:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.209.128.94
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67CE2F1FEF
+	for <linux-crypto@vger.kernel.org>; Mon, 23 Feb 2026 15:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771886540; cv=none; b=cVm9dAeUWDQMxMdjoLBEsoe1vpbvtSQbu6ii5ucRDVL+Abh1EXzNTiPpPbpx0kCRbqzQrPQX/CSPbZJYCPl+X4nKBFIlMj5GbDChBj1oPKBms+Rc3yXfjqLgwpWA272k/4QlSJSLUvFBEpSAfKdUo4Emo/w67wNQ6PtnXrNyOBc=
+	t=1771862294; cv=none; b=U62MBirfp9UazOgU0lX57QTfN826gWa57vwHiglxVJxKClajpyJTR+32PB5B71Mxdn4WeLg1EJfnvSY/zTJVDRQw7JJJwkYP2q1IA0pVjvhLbcm8vPU/qtR0Uh5aYVgcqAFMBk+EitnCXLPC8OcjLaDyULhyFW2b9I+6d+WgCHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771886540; c=relaxed/simple;
-	bh=dmfaszMEYmcFbIGu5+t9u2mnRjwEyesJMnrckrtQ3Yk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=D9ouXFNOMov1HAAgLGH5nKau3p4h3fxKSYSdln5m1EJVXeC2ilnPzACCqJBLEYn0aEg/4XG3nvLbSuPNYKOqaspI/JSr3p3kUY5ZIE0Fzi/Dn+Wi+Hb+yKyDG25OZk6eBpwwOIMCGG1vhaVyjTTy5z5yzoZOxU87VyLjNTkALBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=fPCmWdO4; arc=none smtp.client-ip=103.209.128.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-Received: from localhost.localdomain (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 34b40458c;
-	Mon, 23 Feb 2026 23:52:36 +0800 (GMT+08:00)
-From: Shawn Lin <shawn.lin@rock-chips.com>
-To: Srujana Challa <schalla@marvell.com>,
-	Bharat Bhushan <bbhushan2@marvell.com>,
+	s=arc-20240116; t=1771862294; c=relaxed/simple;
+	bh=mQnuDEKWShZxHCAe3ZafiMoJtQlBKAfcOErwkIASlsg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jBArTqZAfwIHVv4jtRl6cNi5/+jWG3pYyrV4OnAzd8u4AOEx4+0Bv2relQm7jQbXbQnnc6/rR3FUfeCNR0lV5t/Ryae6SZlR9SJGt+tuPXAEBCKuWS0rS4DKrcZhzKWnUgy1W++I1aPPB4qNGdrG2zcaNurWQ9qtxSvOfa38qtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IUmEVtwM; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1771862288;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HDCuQsJdgvN7tW2QCN8u4ujpqzhZbbHYre6HGExVag8=;
+	b=IUmEVtwMzz2jn1gShMhiue1sI5aqaPZARoKVbocXcNWm9PGW2fbcBH2zG3U311p4gWNeXl
+	VEYDt33spMT6wOMZPmgeFDLdm2ksBpnAS2ajY5hOPzMu2hWfK2dt95pOk0PGMTkRiqo3TK
+	rfkv0Bgl8Oxchc+cAh0PrYXxJke4XxY=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Thara Gopinath <thara.gopinath@gmail.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	davem@davemloft.net
-Cc: linux-crypto@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Stanner <phasta@kernel.org>,
-	linux-pci@vger.kernel.org,
-	Shawn Lin <shawn.lin@rock-chips.com>
-Subject: [PATCH 18/37] crypto: octeontx2: Replace pci_alloc_irq_vectors() with pcim_alloc_irq_vectors()
-Date: Mon, 23 Feb 2026 23:52:31 +0800
-Message-Id: <1771861951-88488-1-git-send-email-shawn.lin@rock-chips.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1771860581-82092-1-git-send-email-shawn.lin@rock-chips.com>
-References: <1771860581-82092-1-git-send-email-shawn.lin@rock-chips.com>
-X-HM-Tid: 0a9c8b33d4e109cckunm9ea00323987b2a
-X-HM-MType: 1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGk5PTVZJQ0pMQxoZHUkYSUhWFRQJFh
-	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
-	hVSktLVUpCS0tZBg++
-DKIM-Signature: a=rsa-sha256;
-	b=fPCmWdO4i4Ye1WiSbjDtUQm/tOXm4WcOO7R6bjrpZjUVfLjIoIJE2sb0gZ5B11OPZPLuqYDLAuW2J+n4yj3iutiU/XpkAX//6u7zu9Q/uk6xeai+gWMhhjG4nCJB5wwkFqowpKZMWiIwMrysYF6hl0Dfkx7EMMz8ITCopVGPR08=; s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-	bh=0WR8SeGxieLjXEFRKbzi8dpAR6wzWdHho70pdmXl2m4=;
-	h=date:mime-version:subject:message-id:from;
+	"David S. Miller" <davem@davemloft.net>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-crypto@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: qce - Replace snprintf("%s") with strscpy
+Date: Mon, 23 Feb 2026 16:57:55 +0100
+Message-ID: <20260223155756.340931-1-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[rock-chips.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[rock-chips.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-21072-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,gondor.apana.org.au,davemloft.net];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21091-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[rock-chips.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shawn.lin@rock-chips.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.997];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,rock-chips.com:mid,rock-chips.com:dkim,rock-chips.com:email,marvell.com:email]
-X-Rspamd-Queue-Id: 33EF817E7FB
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: CE7D7179336
 X-Rspamd-Action: no action
 
-pcim_enable_device() no longer automatically manages IRQ vectors via devres.
-Drivers must now manually call pci_free_irq_vectors() for cleanup. Alternatively,
-pcim_alloc_irq_vectors() should be used.
+Replace snprintf("%s", ...) with the faster and more direct strscpy().
 
-To: Srujana Challa <schalla@marvell.com>
-To: Bharat Bhushan <bbhushan2@marvell.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-To: davem@davemloft.net
-Cc: linux-crypto@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Philipp Stanner <phasta@kernel.org>
-Cc: linux-pci@vger.kernel.org
-Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
+ drivers/crypto/qce/aead.c     | 6 +++---
+ drivers/crypto/qce/sha.c      | 6 +++---
+ drivers/crypto/qce/skcipher.c | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
- drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c | 2 +-
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-index f54f905..fbcc65c 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-@@ -774,7 +774,7 @@ static int otx2_cptpf_probe(struct pci_dev *pdev,
- 		goto clear_drvdata;
- 	}
+diff --git a/drivers/crypto/qce/aead.c b/drivers/crypto/qce/aead.c
+index 97b56e92ea33..1647d2329982 100644
+--- a/drivers/crypto/qce/aead.c
++++ b/drivers/crypto/qce/aead.c
+@@ -5,6 +5,7 @@
+  */
+ #include <linux/dma-mapping.h>
+ #include <linux/interrupt.h>
++#include <linux/string.h>
+ #include <crypto/gcm.h>
+ #include <crypto/authenc.h>
+ #include <crypto/internal/aead.h>
+@@ -768,9 +769,8 @@ static int qce_aead_register_one(const struct qce_aead_def *def, struct qce_devi
  
--	err = pci_alloc_irq_vectors(pdev, num_vec, num_vec, PCI_IRQ_MSIX);
-+	err = pcim_alloc_irq_vectors(pdev, num_vec, num_vec, PCI_IRQ_MSIX);
- 	if (err < 0) {
- 		dev_err(dev, "Request for %d msix vectors failed\n",
- 			RVU_PF_INT_VEC_CNT);
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-index c1c44a7b..3f4d791 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-@@ -42,8 +42,8 @@ static int cptvf_register_interrupts(struct otx2_cptvf_dev *cptvf)
- 		return -EINVAL;
+ 	alg = &tmpl->alg.aead;
  
- 	/* Enable MSI-X */
--	ret = pci_alloc_irq_vectors(cptvf->pdev, num_vec, num_vec,
--				    PCI_IRQ_MSIX);
-+	ret = pcim_alloc_irq_vectors(cptvf->pdev, num_vec, num_vec,
-+				     PCI_IRQ_MSIX);
- 	if (ret < 0) {
- 		dev_err(&cptvf->pdev->dev,
- 			"Request for %d msix vectors failed\n", num_vec);
+-	snprintf(alg->base.cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(alg->base.cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->drv_name);
++	strscpy(alg->base.cra_name, def->name);
++	strscpy(alg->base.cra_driver_name, def->drv_name);
+ 
+ 	alg->base.cra_blocksize		= def->blocksize;
+ 	alg->chunksize			= def->chunksize;
+diff --git a/drivers/crypto/qce/sha.c b/drivers/crypto/qce/sha.c
+index 71b748183cfa..87071f315088 100644
+--- a/drivers/crypto/qce/sha.c
++++ b/drivers/crypto/qce/sha.c
+@@ -6,6 +6,7 @@
+ #include <linux/device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/interrupt.h>
++#include <linux/string.h>
+ #include <crypto/internal/hash.h>
+ 
+ #include "common.h"
+@@ -489,9 +490,8 @@ static int qce_ahash_register_one(const struct qce_ahash_def *def,
+ 	base->cra_module = THIS_MODULE;
+ 	base->cra_init = qce_ahash_cra_init;
+ 
+-	snprintf(base->cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(base->cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->drv_name);
++	strscpy(base->cra_name, def->name);
++	strscpy(base->cra_driver_name, def->drv_name);
+ 
+ 	INIT_LIST_HEAD(&tmpl->entry);
+ 	tmpl->crypto_alg_type = CRYPTO_ALG_TYPE_AHASH;
+diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
+index ffb334eb5b34..b9a931037fdc 100644
+--- a/drivers/crypto/qce/skcipher.c
++++ b/drivers/crypto/qce/skcipher.c
+@@ -7,6 +7,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/interrupt.h>
+ #include <linux/moduleparam.h>
++#include <linux/string.h>
+ #include <linux/types.h>
+ #include <linux/errno.h>
+ #include <crypto/aes.h>
+@@ -446,9 +447,8 @@ static int qce_skcipher_register_one(const struct qce_skcipher_def *def,
+ 
+ 	alg = &tmpl->alg.skcipher;
+ 
+-	snprintf(alg->base.cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(alg->base.cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->drv_name);
++	strscpy(alg->base.cra_name, def->name);
++	strscpy(alg->base.cra_driver_name, def->drv_name);
+ 
+ 	alg->base.cra_blocksize		= def->blocksize;
+ 	alg->chunksize			= def->chunksize;
 -- 
-2.7.4
+Thorsten Blum <thorsten.blum@linux.dev>
+GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
 
 
