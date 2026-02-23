@@ -1,180 +1,349 @@
-Return-Path: <linux-crypto+bounces-21070-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21099-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2GozOQlunGmcGAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21070-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 16:11:05 +0100
+	id uN6qBHEhnWnuMwQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21099-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Feb 2026 04:56:33 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6341F178859
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 16:11:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 933A018182A
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Feb 2026 04:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0672B303FAB7
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 15:06:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1BFE630957B5
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Feb 2026 03:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8AE36074B;
-	Mon, 23 Feb 2026 15:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E49273816;
+	Tue, 24 Feb 2026 03:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dG48SW0b"
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="jy81/F5N"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mail-m1973176.qiye.163.com (mail-m1973176.qiye.163.com [220.197.31.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB7B35B645;
-	Mon, 23 Feb 2026 15:06:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADB619E97F;
+	Tue, 24 Feb 2026 03:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771859203; cv=none; b=XhCu2PgzaM2h6ExBfyx5//sYs0Cy9AfrCHodDCerZODPr+9IIeGtnt8ie7M/KkT/9+4AYf19v1WUle3KfmEzY/LYqMlvbruxtjtrSL70HDd1FZb6Ut5XGKmiFCow30Zo8XvMpY6B20JTEH0+gf+vIik7rXs57poE7X3Nq6CWir8=
+	t=1771905364; cv=none; b=OCKVPLunGXdApGoqxMBCsyiWW85UfYrQmmRUpFhgAbNMYCKFjEGZqqBF4i8eDMs6s2Ym2kpCCHu/MXIRG88I+pKAmbMmK6akpf1TQRlfpFHWG4sGPXFCVrRWzRS94pDgKewgGJXoGLQ9AmwGlcVVOYPHYw0dOdJxnEAqXEt1lU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771859203; c=relaxed/simple;
-	bh=CKrHYBD8suFxrxSi9DamntzJhthvYGfiYJJVSaOhJic=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KQBx1c32YLqyVts4AGp+t4DbWj5X5eb1VYpQTkvrB5Zl5jLwhbcMaWKXAIUjs9iiUw3Za5ZGBh+KsGrqo4ykUR0+HfHTl7XwLmXVUk6ak2S0Z3EKr+t07+DNlD7ZMn/d7ySXOipilt+615LDx3bONjzjw1kNPQXqxokPdaccaCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dG48SW0b; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1771859201; x=1803395201;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=CKrHYBD8suFxrxSi9DamntzJhthvYGfiYJJVSaOhJic=;
-  b=dG48SW0bgcDuczFGciYPI/aNA7e+rdc7ipn+PbVu6/pVylzQon1TjKJG
-   /dLccXsxJbCJdHiTsNtJ6p4Qi6EiBTdoUgsbT/1+sdRM5wS6rtYvnUAnk
-   NERmZc3lyZU9RBLQ3G+GVNlWkqAM9E3RvSGCO+dl4zdjtbg7pxYaYYPTT
-   pU4J7HaObJUhHBf5YVyHq7Xguefh4VLRQGFaO+/5znZKtXXM8XGo9baRi
-   BBwUFL1L7S056hJnrDJKAWB12y0edb4kMUJdjmTLG3jMiGXPArGpyreI8
-   JSMTqBD2EShL+w5cqbDCPZY8deQQkXjlN1GwwENO+q1pcCiXlBJAX84/3
-   A==;
-X-CSE-ConnectionGUID: LDOr3VLfQb2VWq67G9dosg==
-X-CSE-MsgGUID: 58oEsijzSz+jqipoyKgOUA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11710"; a="90263263"
-X-IronPort-AV: E=Sophos;i="6.21,306,1763452800"; 
-   d="scan'208";a="90263263"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2026 07:06:40 -0800
-X-CSE-ConnectionGUID: y6aS34q/S6Cz/VjDvrGEtA==
-X-CSE-MsgGUID: P2bUdkHQRrmrY2LAah1T6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,306,1763452800"; 
-   d="scan'208";a="253313289"
-Received: from dalessan-mobl3.ger.corp.intel.com (HELO dalessan-mobl3.intel.com) ([10.245.244.6])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2026 07:06:37 -0800
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-To: linux-kernel@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	s=arc-20240116; t=1771905364; c=relaxed/simple;
+	bh=KoW38T6cNEmKidxotZXPZubVy4KOQgupYxDAJ1370F0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Y5XubMPPbLGeHX8Fh2KZBVr3SxsA4/y5kqFIPvxtjD4X15XdyT4B0OWriZv2zm+E9bCaqByqmDMQY3u6N9M3p3w9TgwvdEOZgdlgPAqu8ka8a9cr3Dx7TDNNkLZvlaJL+THNv3ge+6Fih+5pvABqlZMaTf8aX7L0eqRQgZefC14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=jy81/F5N; arc=none smtp.client-ip=220.197.31.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+Received: from localhost.localdomain (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 34b37f769;
+	Mon, 23 Feb 2026 23:31:09 +0800 (GMT+08:00)
+From: Shawn Lin <shawn.lin@rock-chips.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	"Vaibhaav Ram T . L" <vaibhaavram.tl@microchip.com>,
+	Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+	Even Xu <even.xu@intel.com>,
+	Xinpeng Sun <xinpeng.sun@intel.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Zhou Wang <wangzhou1@hisilicon.com>,
+	Longfang Liu <liulongfang@huawei.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Jijie Shao <shaojijie@huawei.com>,
+	Jian Shen <shenjian15@huawei.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Jeff Hugo <jeff.hugo@oss.qualcomm.com>,
+	Oded Gabbay <ogabbay@kernel.org>,
+	Maciej Falkowski <maciej.falkowski@linux.intel.com>,
+	Karol Wachowski <karol.wachowski@linux.intel.com>,
+	Min Ma <mamin506@gmail.com>,
+	Lizhi Hou <lizhi.hou@amd.com>,
+	Andreas Noever <andreas.noever@gmail.com>,
+	Mika Westerberg <westeri@kernel.org>,
+	Tomasz Jeznach <tjeznach@rivosinc.com>,
 	Will Deacon <will@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Paul J . Murphy" <paul.j.murphy@intel.com>,
-	"Paul J . Murphy" <paul.j.murphy@linux.intel.com>,
-	Prabhjot Khurana <prabhjot.khurana@intel.com>,
-	Mark Gross <mgross@linux.intel.com>,
-	Declan Murphy <declan.murphy@intel.com>,
-	linux-arm-kernel@lists.infradead.org,
+	Xinliang Liu <xinliang.liu@linaro.org>,
+	Tian Tao <tiantao6@hisilicon.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Srujana Challa <schalla@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	Antoine Tenart <atenart@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Raag Jadav <raag.jadav@intel.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Andy Shevchenko <andy@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Robert Richter <rric@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Bingbu Cao <bingbu.cao@intel.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	linux-input@vger.kernel.org,
+	linux-i3c@lists.infradead.org,
+	dmaengine@vger.kernel.org,
+	Philipp Stanner <phasta@kernel.org>,
+	netdev@vger.kernel.org,
+	nic_swsd@realtek.com,
+	linux-arm-msm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-usb@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-riscv@lists.infradead.org,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	linux-cxl@vger.kernel.org,
 	linux-crypto@vger.kernel.org,
-	Daniele Alessandrelli <daniele.alessandrelli@gmail.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: [PATCH] MAINTAINERS: Remove Daniele Alessandrelli as Keem Bay maintainer
-Date: Mon, 23 Feb 2026 15:06:22 +0000
-Message-ID: <20260223150622.268245-1-daniele.alessandrelli@intel.com>
-X-Mailer: git-send-email 2.53.0
+	platform-driver-x86@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	mhi@lists.linux.dev,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>,
+	linux-i2c@vger.kernel.org,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	linux-spi@vger.kernel.org,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-pci@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	Shawn Lin <shawn.lin@rock-chips.com>
+Subject: [PATCH 0/37] PCI/MSI: Enforce explicit IRQ vector management by removing devres auto-free
+Date: Mon, 23 Feb 2026 23:29:39 +0800
+Message-Id: <1771860581-82092-1-git-send-email-shawn.lin@rock-chips.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0a9c8b20307709cckunm6946b3c79862a6
+X-HM-MType: 1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ0oaHlZPHx5OTE0YQkJPHxlWFRQJFh
+	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSUJDQ0
+	xVSktLVUtZBg++
+DKIM-Signature: a=rsa-sha256;
+	b=jy81/F5Ni9q9/bSyZWlJabD1XxAXELPL9UhibFZyMz9WyzEiB5iEDVH0Ye8gCgDrz+TXTgJ8mWQ6QgQDO5+xpeOsxh+rOYDNTZc0JKdQU/fj9M+S4Jnb31IUAfPQnG6b/8K1G5LiNjlbXGROoXvc1DCKurZLBq/IoT1lOI+FLR8=; s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=BcUR/HoijHqinvoMXUQVA7vidPdOPQAH0voVT1QIHOY=;
+	h=date:mime-version:subject:message-id:from;
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[rock-chips.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[rock-chips.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[arm.com,kernel.org,davemloft.net,intel.com,linux.intel.com,lists.infradead.org,vger.kernel.org,gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21070-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[daniele.alessandrelli@intel.com,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21099-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	FREEMAIL_TO(0.00)[google.com,microchip.com,intel.com,linux.intel.com,kernel.org,bootlin.com,hisilicon.com,huawei.com,marvell.com,lunn.ch,gmail.com,davemloft.net,oss.qualcomm.com,amd.com,rivosinc.com,linaro.org,stgolabs.net,gondor.apana.org.au,linuxfoundation.org,microsemi.com,deltatee.com];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[arndb.de,kernel.org,vger.kernel.org,lists.infradead.org,realtek.com,lists.freedesktop.org,lists.linux.dev,gmail.com,ffwll.ch,linux.intel.com,semihalf.com,zonque.org,linux.dev,rock-chips.com];
+	DKIM_TRACE(0.00)[rock-chips.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shawn.lin@rock-chips.com,linux-crypto@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[87];
+	TAGGED_RCPT(0.00)[linux-crypto,netdev];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,intel.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6341F178859
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 933A018182A
 X-Rspamd-Action: no action
 
-I'm leaving Intel soon. Remove myself as maintainer of Keem Bay
-architecture and related crypto drivers.
+This patch series addresses a long-standing design issue in the PCI/MSI
+subsystem where the implicit, automatic management of IRQ vectors by
+the devres framework conflicts with explicit driver cleanup, creating
+ambiguity and potential resource management bugs.
 
-The INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER has no replacement
-maintainer available, so mark it as Orphan.
+==== The Problem: Implicit vs. Explicit Management ====
+Historically, `pcim_enable_device()` not only manages standard PCI resources
+(BARs) via devres but also implicitly triggers automatic IRQ vector management
+by setting a flag that registers `pcim_msi_release()` as a cleanup action.
 
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
----
+This creates an ambiguous ownership model. Many drivers follow a pattern of:
+1. Calling `pci_alloc_irq_vectors()` to allocate interrupts.
+2. Also calling `pci_free_irq_vectors()` in their error paths or remove routines.
 
-This patch involves two subsystems (ARM and Crypto). Not sure
-who should pick it up; should I split it into two separate patches
-instead?
+When such a driver also uses `pcim_enable_device()`, the devres framework may
+attempt to free the IRQ vectors a second time upon device release, leading to
+a double-free. Analysis of the tree shows this hazardous pattern exists widely,
+while 35 other drivers correctly rely solely on the implicit cleanup.
 
- MAINTAINERS | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+==== The Solution: Making Management Explicit ====
+This series enforces a clear, predictable model:
+1.  New Managed API (Patch 1/37): Introduces pcim_alloc_irq_vectors() and
+    pcim_alloc_irq_vectors_affinity(). Drivers that desire devres-managed IRQ
+    vectors should use these functions, which set the is_msi_managed flag and
+    ensure automatic cleanup.
+2.  Patches 2 through 36 convert each driver that uses pcim_enable_device() alongside
+    pci_alloc_irq_vectors() and relies on devres for IRQ vector cleanup to instead
+    make an explicit call to pcim_alloc_irq_vectors().
+3.  Core Change (Patch 37/37): With the former cleanup, now modifies pcim_setup_msi_release()
+    to check only the is_msi_managed flag. This decouples automatic IRQ cleanup from
+    pcim_enable_device(). IRQ vectors allocated via pci_alloc_irq_vectors*()
+    are now solely the driver's responsibility to free with pci_free_irq_vectors().
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b8d8a5c41597..d82693faa94b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2913,7 +2913,6 @@ F:	include/linux/soc/ixp4xx/qmgr.h
- 
- ARM/INTEL KEEMBAY ARCHITECTURE
- M:	Paul J. Murphy <paul.j.murphy@intel.com>
--M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
- S:	Maintained
- F:	Documentation/devicetree/bindings/arm/intel,keembay.yaml
- F:	arch/arm64/boot/dts/intel/keembay-evm.dts
-@@ -12984,8 +12983,7 @@ F:	Documentation/devicetree/bindings/display/intel,keembay-display.yaml
- F:	drivers/gpu/drm/kmb/
- 
- INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER
--M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
--S:	Maintained
-+S:	Orphan
- F:	Documentation/devicetree/bindings/crypto/intel,keembay-ocs-aes.yaml
- F:	drivers/crypto/intel/keembay/Kconfig
- F:	drivers/crypto/intel/keembay/Makefile
-@@ -12994,7 +12992,6 @@ F:	drivers/crypto/intel/keembay/ocs-aes.c
- F:	drivers/crypto/intel/keembay/ocs-aes.h
- 
- INTEL KEEM BAY OCS ECC CRYPTO DRIVER
--M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
- M:	Prabhjot Khurana <prabhjot.khurana@intel.com>
- M:	Mark Gross <mgross@linux.intel.com>
- S:	Maintained
-@@ -13004,7 +13001,6 @@ F:	drivers/crypto/intel/keembay/Makefile
- F:	drivers/crypto/intel/keembay/keembay-ocs-ecc.c
- 
- INTEL KEEM BAY OCS HCU CRYPTO DRIVER
--M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
- M:	Declan Murphy <declan.murphy@intel.com>
- S:	Maintained
- F:	Documentation/devicetree/bindings/crypto/intel,keembay-ocs-hcu.yaml
+With these changes, we clear ownership model: Explicit resource management eliminates
+ambiguity and follows the "principle of least surprise." New drivers choose one model and
+be consistent.
+- Use `pci_alloc_irq_vectors()` + `pci_free_irq_vectors()` for explicit control.
+- Use `pcim_alloc_irq_vectors()` for devres-managed, automatic cleanup.
+
+==== Testing And Review ====
+1. This series is only compiled test with allmodconfig.
+2. Given the substantial size of this patch series, I have structured the mailing
+   to facilitate efficient review. The cover letter, the first patch and the last one will be sent
+   to all relevant mailing lists and key maintainers to ensure broad visibility and
+   initial feedback on the overall approach. The remaining subsystem-specific patches
+   will be sent only to the respective subsystem maintainers and their associated
+   mailing lists, reducing noise.
+
+Please help review it, much thanks!
+
+
+
+Shawn Lin (37):
+  PCI/MSI: Add Devres managed IRQ vectors allocation
+  mmc: cavium: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  media: ipu6: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  gpio: merrifield: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  PCI: switchtec: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  PCI: vmd: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  spi: spi-pci1xxxx: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  spi: pxa2xx: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  i2c: amd-mp2: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  i2c: mchp-pci1xxxx: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  i2c: thunderx: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  i2c: designware: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  bus: mhi: host: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  serial: 8250_mid: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  serial: 8250_exar: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  platform/x86/intel: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  crypto: safexcel: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  crypto: octeontx2: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  cxl/pci: Replace pci_alloc_irq_vectors() with pcim_alloc_irq_vectors()
+  drm/hisilicon/hibmc: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  iommu/riscv: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  thunderbolt: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  accel/amdxdna: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  accel/ivpu: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  accel/qaic: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  net: stmmac: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  r8169: Replace pci_alloc_irq_vectors() with pcim_alloc_irq_vectors()
+  net: thunder_bgx: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  net: hibmcge: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  mfd: intel-lpss: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  dmaengine: hsu: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  dmaengine: hisilicon: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  i3c: mipi-i3c-hci-pci: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  HID: intel-ish-ipc: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  HID: Intel-thc-hid: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  misc: microchip: pci1xxxx: Replace pci_alloc_irq_vectors() with
+    pcim_alloc_irq_vectors()
+  PCI/MSI: Only check is_msi_managed in pcim_setup_msi_release()
+
+ drivers/accel/amdxdna/aie2_pci.c                   |  2 +-
+ drivers/accel/ivpu/ivpu_drv.c                      |  2 +-
+ drivers/accel/qaic/qaic_drv.c                      |  4 ++--
+ drivers/bus/mhi/host/pci_generic.c                 |  3 ++-
+ drivers/crypto/inside-secure/safexcel.c            |  8 +++----
+ drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c |  2 +-
+ drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c |  4 ++--
+ drivers/cxl/pci.c                                  |  8 ++-----
+ drivers/dma/hisi_dma.c                             |  3 +--
+ drivers/dma/hsu/pci.c                              |  2 +-
+ drivers/gpio/gpio-merrifield.c                     |  2 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c    |  4 ++--
+ drivers/hid/intel-ish-hid/ipc/pci-ish.c            |  2 +-
+ .../intel-thc-hid/intel-quicki2c/pci-quicki2c.c    |  2 +-
+ drivers/i2c/busses/i2c-amd-mp2-pci.c               |  2 +-
+ drivers/i2c/busses/i2c-designware-pcidrv.c         |  2 +-
+ drivers/i2c/busses/i2c-mchp-pci1xxxx.c             |  2 +-
+ drivers/i2c/busses/i2c-thunderx-pcidrv.c           |  2 +-
+ drivers/i3c/master/mipi-i3c-hci/mipi-i3c-hci-pci.c |  2 +-
+ drivers/iommu/riscv/iommu-pci.c                    |  4 ++--
+ drivers/media/pci/intel/ipu6/ipu6.c                |  2 +-
+ drivers/mfd/intel-lpss-pci.c                       |  2 +-
+ drivers/misc/mchp_pci1xxxx/mchp_pci1xxxx_gp.c      |  2 +-
+ drivers/mmc/host/cavium-thunderx.c                 |  2 +-
+ drivers/net/ethernet/cavium/thunder/thunder_bgx.c  |  4 ++--
+ drivers/net/ethernet/hisilicon/hibmcge/hbg_irq.c   |  4 ++--
+ drivers/net/ethernet/realtek/r8169_main.c          |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c  |  6 ++---
+ drivers/pci/controller/vmd.c                       |  4 ++--
+ drivers/pci/msi/api.c                              | 26 ++++++++++++++++++++++
+ drivers/pci/msi/msi.c                              |  4 +---
+ drivers/pci/switch/switchtec.c                     |  6 ++---
+ drivers/platform/x86/intel/ehl_pse_io.c            |  2 +-
+ drivers/spi/spi-pci1xxxx.c                         |  4 ++--
+ drivers/spi/spi-pxa2xx-pci.c                       |  2 +-
+ drivers/thunderbolt/nhi.c                          |  6 ++---
+ drivers/tty/serial/8250/8250_exar.c                |  2 +-
+ drivers/tty/serial/8250/8250_mid.c                 |  2 +-
+ include/linux/pci.h                                | 22 ++++++++++++++++++
+ 39 files changed, 104 insertions(+), 62 deletions(-)
+
 -- 
-2.52.0
+2.7.4
 
 
