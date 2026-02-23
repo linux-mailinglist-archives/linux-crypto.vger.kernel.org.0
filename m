@@ -1,265 +1,152 @@
-Return-Path: <linux-crypto+bounces-21084-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21086-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eOA8C2KRnGnRJQQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21084-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 18:41:54 +0100
+	id eFjiAZbGnGknKQQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21086-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 22:28:54 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD07C17AF91
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 18:41:53 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765E317D995
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 22:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C255630D8E18
-	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 17:38:58 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6FC4930517DA
+	for <lists+linux-crypto@lfdr.de>; Mon, 23 Feb 2026 21:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F45433439D;
-	Mon, 23 Feb 2026 17:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0AB378D72;
+	Mon, 23 Feb 2026 21:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NvMPcrsr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VQTSMin/"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4553328ED;
-	Mon, 23 Feb 2026 17:38:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2EE33C52A;
+	Mon, 23 Feb 2026 21:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771868336; cv=none; b=S0TDDsvzZx6kNRvbVQgbRkKM8whhRbD1pOF1b8Qh5ncKju18ZJ1Hbz9RP1NOs8xq/4FSDTMxBza9tuPy2PsrFsjUP0OGDCBVC8QmRHJamUDbiq4ImrTmyQTQgGChdBN6PvUreolfdM3m83/vBxR7LVSjmBMoheYxCv95brtT2aM=
+	t=1771882127; cv=none; b=I0HRYu6uH7/KOdZWnLr8UiDnp6yyYIuOPc30lLe6LnXOaUi7uVe26jye2oGkRAkRiA1T+ktSm8vHACAgX3BLCtFbfKRyPHaCgg7x40VEBe4XhHBcoRD2POrQP/vrFFEcu7LhZHGtRHoL9x4Bcn8D0uCi98GtjRMOEbNuq8hAbjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771868336; c=relaxed/simple;
-	bh=OFs+F2i4fpeRmsTH7tUJ5hO0npgCDxBo25FPhTX/hFs=;
+	s=arc-20240116; t=1771882127; c=relaxed/simple;
+	bh=6BWCpxN467P4dyN5eoO5k0IXEao0FX3AzWwouvG6AzY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FE0pNcsIdieHenKdz4s0nolqaxsrB3RIVp71Iabx+AgxS75Z5+p/sIj9saDfKA97vI9w7LRFRfYShrGoDlpMBS2btFk5miAzjNNuM0oxvFeZjOXtPCxARM2sACeTlCqWH0jJIlKbNeP5II3760TLhyAk6qLk8VEY7qaBCBoSV4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NvMPcrsr; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1771868335; x=1803404335;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=OFs+F2i4fpeRmsTH7tUJ5hO0npgCDxBo25FPhTX/hFs=;
-  b=NvMPcrsrscxq4yCJYNHBwma5dXpYiaLlpl5YaiHU4AbKmW1dss4zVpgH
-   eKc6wHV4HSpKqyOZ8UlLVlghXkur2gCHm4j/0tVPiKMiMs8WIyTYBU/2a
-   6yowW4cOU55qzj4P1UFjG06x85lKFyOgcBuajicG0+hQ7xUZWW5IVie0T
-   CzejcQppfEPzmSpHn0vPl0BWBUbMvv0s0ke5e+Qjssqu807Hmk7eyaE7j
-   rAcT4p6XKH7FNn0xujYAvGZ00DAcOtrZCn+DLE46UjHdqz7MQNGpBv4ef
-   eZ4zNkJ8cO1QoE+PCo+ORxkR4NcdogZJ2/EBVMiLNS/FtyyTrgvpBtjZv
-   g==;
-X-CSE-ConnectionGUID: jsfaBeNbRdOcjkAScBt/AA==
-X-CSE-MsgGUID: qC3ahawxSriUb3w5OK63yQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11710"; a="73050398"
-X-IronPort-AV: E=Sophos;i="6.21,307,1763452800"; 
-   d="scan'208";a="73050398"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2026 09:38:54 -0800
-X-CSE-ConnectionGUID: i7eZdD4uRr+gNr/ct2htpA==
-X-CSE-MsgGUID: B0cv0ytAS2ClRPRHaDlf4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,307,1763452800"; 
-   d="scan'208";a="214708424"
-Received: from abityuts-desk.ger.corp.intel.com (HELO localhost) ([10.245.245.222])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2026 09:38:36 -0800
-Date: Mon, 23 Feb 2026 19:38:33 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Shawn Lin <shawn.lin@rock-chips.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"Vaibhaav Ram T . L" <vaibhaavram.tl@microchip.com>,
-	Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
-	Even Xu <even.xu@intel.com>, Xinpeng Sun <xinpeng.sun@intel.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Zhou Wang <wangzhou1@hisilicon.com>,
-	Longfang Liu <liulongfang@huawei.com>,
-	Vinod Koul <vkoul@kernel.org>, Lee Jones <lee@kernel.org>,
-	Jijie Shao <shaojijie@huawei.com>,
-	Jian Shen <shenjian15@huawei.com>,
-	Sunil Goutham <sgoutham@marvell.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Jeff Hugo <jeff.hugo@oss.qualcomm.com>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	Maciej Falkowski <maciej.falkowski@linux.intel.com>,
-	Karol Wachowski <karol.wachowski@linux.intel.com>,
-	Min Ma <mamin506@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>,
-	Andreas Noever <andreas.noever@gmail.com>,
-	Mika Westerberg <westeri@kernel.org>,
-	Tomasz Jeznach <tjeznach@rivosinc.com>,
-	Will Deacon <will@kernel.org>,
-	Xinliang Liu <xinliang.liu@linaro.org>,
-	Tian Tao <tiantao6@hisilicon.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Srujana Challa <schalla@marvell.com>,
-	Bharat Bhushan <bbhushan2@marvell.com>,
-	Antoine Tenart <atenart@kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=rsWFQuQYT2ccErUT4gqVvug6yPkwzkeY5TNc2JL6mZo77wxtCNjsBSW4uC2BmXKUJ7eJyIdUoAwrDb1KkIntlv4AUZhoFpA1IB8xot4OnT3XKI6099XCrY9UxAKx7e7rCglTko9Jc/sVb/RG9reoRZWkxwNYC4lrVuWzrtXGQLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VQTSMin/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 697D0C116C6;
+	Mon, 23 Feb 2026 21:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771882126;
+	bh=6BWCpxN467P4dyN5eoO5k0IXEao0FX3AzWwouvG6AzY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VQTSMin/rySHdNw1qv6QqInzrBz8ugXCsHyGhJzEBHqAJ79ihP31sS9Fh1wTaQf75
+	 ktJv7aJ6Z/B306tadSuT1z4nrJD4/AuPh2s0kxtomYtDEHd16vGjEskB14S+sjn0jB
+	 2IHv4vsjC+suPCFwtedKZVF0oAeIW/5mtTpwRHCBugAFAwgW1ogJ9ef3IVCAavuJzZ
+	 xvXkrheuicxBxL+LLJbvi4nzFJIEEo2Teoe5XTiH2hOwUWQ0ouqZ+lowj3/wFF36s3
+	 zm+1gMo+895d78oQljgJJ1zrD8etGyd+Z7wRsp+FbqOA3QR1cBnRxrhwlqdB3D5vPi
+	 jivuft6R2UJUQ==
+Date: Mon, 23 Feb 2026 13:28:44 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	Raag Jadav <raag.jadav@intel.com>, Hans de Goede <hansg@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Andy Shevchenko <andy@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Robert Richter <rric@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Bingbu Cao <bingbu.cao@intel.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
-	Benjamin Tissoires <bentiss@kernel.org>,
-	linux-input@vger.kernel.org, linux-i3c@lists.infradead.org,
-	dmaengine@vger.kernel.org, Philipp Stanner <phasta@kernel.org>,
-	netdev@vger.kernel.org, nic_swsd@realtek.com,
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-usb@vger.kernel.org, iommu@lists.linux.dev,
-	linux-riscv@lists.infradead.org, David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>, linux-cxl@vger.kernel.org,
-	linux-crypto@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-	linux-serial@vger.kernel.org, mhi@lists.linux.dev,
-	Jan Dabros <jsd@semihalf.com>, linux-i2c@vger.kernel.org,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	linux-spi@vger.kernel.org,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-pci@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: Re: [PATCH 0/37] PCI/MSI: Enforce explicit IRQ vector management by
- removing devres auto-free
-Message-ID: <aZyQmc7nOt87jitX@smile.fi.intel.com>
-References: <1771860581-82092-1-git-send-email-shawn.lin@rock-chips.com>
- <CAHp75VeWD5A0r7-Uayyte1ZXXxdhLixd+z_y0xNeki0N+Ro=jQ@mail.gmail.com>
- <cb878741-7b61-b72c-5a72-6ed6d5091b1f@rock-chips.com>
+	linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 00/15] AES-CMAC library
+Message-ID: <20260223212844.GA2132@quark>
+References: <20260218213501.136844-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cb878741-7b61-b72c-5a72-6ed6d5091b1f@rock-chips.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+In-Reply-To: <20260218213501.136844-1-ebiggers@kernel.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[gmail.com,google.com,microchip.com,intel.com,linux.intel.com,kernel.org,bootlin.com,hisilicon.com,huawei.com,marvell.com,lunn.ch,davemloft.net,oss.qualcomm.com,amd.com,rivosinc.com,linaro.org,stgolabs.net,gondor.apana.org.au,linuxfoundation.org,microsemi.com,deltatee.com,arndb.de,vger.kernel.org,lists.infradead.org,realtek.com,lists.freedesktop.org,lists.linux.dev,ffwll.ch,semihalf.com,zonque.org,linux.dev];
-	TAGGED_FROM(0.00)[bounces-21084-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andriy.shevchenko@linux.intel.com,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[87];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_FROM(0.00)[bounces-21086-lists,linux-crypto=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:dkim,smile.fi.intel.com:mid,rock-chips.com:email]
-X-Rspamd-Queue-Id: BD07C17AF91
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 765E317D995
 X-Rspamd-Action: no action
 
-On Tue, Feb 24, 2026 at 12:09:37AM +0800, Shawn Lin wrote:
-> 在 2026/02/23 星期一 23:50, Andy Shevchenko 写道:
-> > On Mon, Feb 23, 2026 at 5:32 PM Shawn Lin <shawn.lin@rock-chips.com> wrote:
-> > > 
-> > > This patch series addresses a long-standing design issue in the PCI/MSI
-> > > subsystem where the implicit, automatic management of IRQ vectors by
-> > > the devres framework conflicts with explicit driver cleanup, creating
-> > > ambiguity and potential resource management bugs.
-> > > 
-> > > ==== The Problem: Implicit vs. Explicit Management ====
-> > > Historically, `pcim_enable_device()` not only manages standard PCI resources
-> > > (BARs) via devres but also implicitly triggers automatic IRQ vector management
-> > > by setting a flag that registers `pcim_msi_release()` as a cleanup action.
-> > > 
-> > > This creates an ambiguous ownership model. Many drivers follow a pattern of:
-> > > 1. Calling `pci_alloc_irq_vectors()` to allocate interrupts.
-> > > 2. Also calling `pci_free_irq_vectors()` in their error paths or remove routines.
-> > > 
-> > > When such a driver also uses `pcim_enable_device()`, the devres framework may
-> > > attempt to free the IRQ vectors a second time upon device release, leading to
-> > > a double-free. Analysis of the tree shows this hazardous pattern exists widely,
-> > > while 35 other drivers correctly rely solely on the implicit cleanup.
-> > 
-> > Is this confirmed? What I read from the cover letter, this series was
-> > only compile-tested, so how can you prove the problem exists in the
-> > first place?
+On Wed, Feb 18, 2026 at 01:34:46PM -0800, Eric Biggers wrote:
+> This series can also be retrieved from:
 > 
-> Yes, it's confirmed. My debug of a double free issue of a out-of-tree
-> PCIe wifi driver which uses
-> pcim_enable_device + pci_alloc_irq_vectors + pci_free_irq_vectors expose
-> it. And we did have a TODO to cleanup this hybrid usage, targeted in
-> this cycle[1] suggested by Philipp:
-
-Okay, fair enough. I think this bit was missing in the cover letter.
-
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/log/?h=msi
-
-> > > ==== The Solution: Making Management Explicit ====
-> > > This series enforces a clear, predictable model:
-> > > 1.  New Managed API (Patch 1/37): Introduces pcim_alloc_irq_vectors() and
-> > >      pcim_alloc_irq_vectors_affinity(). Drivers that desire devres-managed IRQ
-> > >      vectors should use these functions, which set the is_msi_managed flag and
-> > >      ensure automatic cleanup.
-> > > 2.  Patches 2 through 36 convert each driver that uses pcim_enable_device() alongside
-> > >      pci_alloc_irq_vectors() and relies on devres for IRQ vector cleanup to instead
-> > >      make an explicit call to pcim_alloc_irq_vectors().
-> > > 3.  Core Change (Patch 37/37): With the former cleanup, now modifies pcim_setup_msi_release()
-> > >      to check only the is_msi_managed flag. This decouples automatic IRQ cleanup from
-> > >      pcim_enable_device(). IRQ vectors allocated via pci_alloc_irq_vectors*()
-> > >      are now solely the driver's responsibility to free with pci_free_irq_vectors().
-> > > 
-> > > With these changes, we clear ownership model: Explicit resource management eliminates
-> > > ambiguity and follows the "principle of least surprise." New drivers choose one model and
-> > > be consistent.
-> > > - Use `pci_alloc_irq_vectors()` + `pci_free_irq_vectors()` for explicit control.
-> > > - Use `pcim_alloc_irq_vectors()` for devres-managed, automatic cleanup.
-> > 
-> > Have you checked previous attempts? Why is your series better than those?
+>     git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git aes-cmac-v1
 > 
-> There seems not previous attempts.
+> This series adds support for AES CBC-based MACs to the crypto library,
+> specifically AES-CMAC, AES-XCBC-MAC, and AES-CBC-MAC.  The
+> implementation is fully optimized with the existing
+> architecture-optimized AES code, either single-block AES en/decryption
+> or arm64's neon_aes_mac_update() and ce_aes_mac_update().  As usual,
+> optimizations are now enabled by default as well.
+> 
+> AES-CMAC support will be useful for at least the SMB client and server,
+> and the bluetooth and mac80211 drivers.  Patches 8-15 convert these
+> users to use the crypto library API instead of crypto_shash, though
+> these patches will likely go in via subsystem trees later.  They result
+> in some significant simplifications and performance improvements.
+> 
+> As usual, a KUnit test suite, FIPS self-test, and traditional crypto API
+> wrapper algorithms are included as well.
+> 
+> Note that I'm also planning to add additional AES modes to the library.
+> This is just an initial set of AES modes to get things started.
+> Notably, with the SMB client and server already using the SHA* and MD5
+> libraries, "cmac(aes)" was the only remaining use of crypto_shash there.
+> So it makes sense to take care of that.
+> 
+> Eric Biggers (15):
+>   lib/crypto: aes: Add support for CBC-based MACs
+>   crypto: aes - Add cmac, xcbc, and cbcmac algorithms using library
+>   crypto: arm64/aes - Fix 32-bit aes_mac_update() arg treated as 64-bit
+>   lib/crypto: arm64/aes: Move assembly code for AES modes into libaes
+>   lib/crypto: arm64/aes: Migrate optimized CBC-based MACs into library
+>   lib/crypto: tests: Add KUnit tests for CBC-based MACs
+>   lib/crypto: aes: Add FIPS self-test for CMAC
+>   smb: client: Use AES-CMAC library for SMB3 signature calculation
+>   smb: client: Remove obsolete cmac(aes) allocation
+>   smb: client: Make generate_key() return void
+>   smb: client: Drop 'allocate_crypto' arg from smb*_calc_signature()
+>   ksmbd: Use AES-CMAC library for SMB3 signature calculation
+>   Bluetooth: SMP: Use AES-CMAC library API
+>   wifi: mac80211: Use AES-CMAC library in ieee80211_aes_cmac()
+>   wifi: mac80211: Use AES-CMAC library in aes_s2v()
 
-Maybe we are looking to the different projects...
+Applied patches 1-7 and 14-15 to
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=libcrypto-next
 
-https://lore.kernel.org/all/?q=pcim_alloc_irq_vectors
+Patches 8-13 (smb client, smb server, and bluetooth) can go in via
+subsystem trees later.
 
-> > > ==== Testing And Review ====
-> > > 1. This series is only compiled test with allmodconfig.
-> > > 2. Given the substantial size of this patch series, I have structured the mailing
-> > >     to facilitate efficient review. The cover letter, the first patch and the last one will be sent
-> > >     to all relevant mailing lists and key maintainers to ensure broad visibility and
-> > >     initial feedback on the overall approach. The remaining subsystem-specific patches
-> > >     will be sent only to the respective subsystem maintainers and their associated
-> > >     mailing lists, reducing noise.
+I edited "lib/crypto: arm64/aes: Move assembly code for AES modes into
+libaes" to update the file comments to remove the file paths.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+- Eric
 
