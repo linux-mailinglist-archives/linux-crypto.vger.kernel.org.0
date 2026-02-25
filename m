@@ -1,64 +1,64 @@
-Return-Path: <linux-crypto+bounces-21172-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21173-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2PuuHR5ln2lRagQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21172-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 22:09:50 +0100
+	id ONSsHnRkn2lRagQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21173-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 22:07:00 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1909619DA6F
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 22:09:45 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F39419D9BF
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 22:06:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 575EA301DBAC
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:06:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4C733306A32A
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D5530DEC4;
-	Wed, 25 Feb 2026 21:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0E030F94B;
+	Wed, 25 Feb 2026 21:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WTFwMrLu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ugwRTs0D"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F782765F8;
-	Wed, 25 Feb 2026 21:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B987303A04;
+	Wed, 25 Feb 2026 21:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772053598; cv=none; b=W1OiEJyNuPlXKsr0XbwINNMexjhls344jPWk2Qt5lMMEQAQTanlaFkJZ+IplHRLZMjFuAYbIr4OEOI6IXt+5bM8PZbpoY389Q4G3UhRDMnNrGjb0H6WE3GXkJ09yvyFwdekcw4pJxu7jzXftZNtsAFrmGAKgRGJadr8hX9SPdGI=
+	t=1772053602; cv=none; b=LhN9sd//AlFNAQeQ42iztgDvPrOFh6fJW9Q+kPUkdk0bUkvZp8ps9xMMDF5BpsJhr0u+T5dfpeMb20rwIbZWe7NotOPIXb627AgICFyeOtG46ra0sWCFeUc1B8i1KTytN0fUCB38Y9Cnd+aJH8VqmJ/B8NijIxH9a7JFZBPIhWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772053598; c=relaxed/simple;
-	bh=VDN0B3i60kdGknCicyOAy8pUfSpGZbZG1PnMApje9gg=;
+	s=arc-20240116; t=1772053602; c=relaxed/simple;
+	bh=dgVUcg5h0F/5rdQgXU6jWV/I3Z8iC65i5+Eqs9p8nXs=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=CqOIU8U6NfPvVkp1DUXi4qpleyEgjJDYtIfL/bJFjtQrORyht6L7kFyqsLAAk8DCbEVf/FNaAxVpXROYfwyo8gwGe8Tckvv3IOWL/2wrL13fSzsl3cVTgLs5rXiOvhfOgYuhdqz2RC4aYvG+CoucNz96g0hcTbgWft4NOsT2bkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WTFwMrLu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC38C116D0;
-	Wed, 25 Feb 2026 21:06:35 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=hiHXV3jT5nsqR6cr3Z8xmbVpx0BQjHzT6HTX2/k+tRQ/cW8CLkaMxMOlohxBXgkLTkN9U1h1w63SB9eumIxBqeQ7UJw2cQwIMr1mszue/3hO6SUczCWmv9mCIWQAgND2Cgo3iaDKdOjhhfqxHiyEIm/R2RYkQ01x9fOx3J5DRvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ugwRTs0D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B95CCC116D0;
+	Wed, 25 Feb 2026 21:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772053598;
-	bh=VDN0B3i60kdGknCicyOAy8pUfSpGZbZG1PnMApje9gg=;
+	s=k20201202; t=1772053601;
+	bh=dgVUcg5h0F/5rdQgXU6jWV/I3Z8iC65i5+Eqs9p8nXs=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=WTFwMrLuY4WY03upjs9E2xXPP/liuf6/wNp09KR93mrWo13Lj7codE1b8SXVYnBDA
-	 JimUXLDcAs9lyorktKxvRZYa1cVW8meleil1Lj1uX1AgMRdrpC7yU6lKKF9Lhpk4QY
-	 f8QavAKIQbo6BBmh940EAwhwuRU/SRWcpBb/4rpovowt1S8JQXRtX2V+pNjJexwopZ
-	 kpELoQQsU8vJib+3IP6qaUdgsF609N00ZhFGb9lFpDifcuA/qPEB3w6NeD99kDTAtS
-	 bXl2gV1QohDxunlUkEkn3OHtSyzv7bIveLv/My2dvR5kCkGkUixIGHaboCsZGIMB/V
-	 YIEk3s4sjmFPQ==
-Content-Type: multipart/mixed; boundary="===============0063423508216283793=="
+	b=ugwRTs0D8xDEBxAPXPTRj1sk9quW659aQDtIFlQTPc502a/rMoTtrzdufXQik7jLQ
+	 ACCH6cK79I0WHaNyd/eph9KWYr0Qppt/I3IkIg+8qZPYjeecBectcs5GhE9xXmVDt2
+	 /ylHNnae0nT44Q6j5D8LwTEafT4FKNU/FkoEuYrGB//7eVyKnNQj8ztnT3xqxvNL2F
+	 MxGnJINMstRiB8XI6kYYscgg6IcymYCZ4rLcDktQvEinoIufU17JOrSJdauIVDT46U
+	 dn+FEcQhE3okGiJcztJnJu7AXjLfeWJWNYUJ6vzJ2LnzsqAoofgiQDO8sdcClA+iY6
+	 3qvGoP/lktGhw==
+Content-Type: multipart/mixed; boundary="===============2090170065257609829=="
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <8764e69fa3f63a498f9e0008f6936efdeeb0d17546b31b416f22da7ffdb40cac@mail.kernel.org>
-In-Reply-To: <20260225202935.31986-4-git@danielhodges.dev>
-References: <20260225202935.31986-4-git@danielhodges.dev>
-Subject: Re: [PATCH bpf-next v8 3/4] bpf: Add signature verification kfuncs
+Message-Id: <bf515a9784c17b9b0dcfeff987e9cc7c328fc6d330cdb97b1cfe77448eafcc27@mail.kernel.org>
+In-Reply-To: <20260225202935.31986-2-git@danielhodges.dev>
+References: <20260225202935.31986-2-git@danielhodges.dev>
+Subject: Re: [PATCH bpf-next v8 1/4] bpf: Add hash kfunc for cryptographic hashing
 From: bot+bpf-ci@kernel.org
 To: git@danielhodges.dev,bpf@vger.kernel.org,linux-crypto@vger.kernel.org,linux-kernel@vger.kernel.org,linux-kselftest@vger.kernel.org
 Cc: ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,vadim.fedorenko@linux.dev,song@kernel.org,yatsenko@meta.com,martin.lau@linux.dev,eddyz87@gmail.com,haoluo@google.com,jolsa@kernel.org,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,yonghong.song@linux.dev,herbert@gondor.apana.org.au,davem@davemloft.net,git@danielhodges.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 25 Feb 2026 21:06:35 +0000 (UTC)
+Date: Wed, 25 Feb 2026 21:06:39 +0000 (UTC)
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -66,7 +66,7 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	CTYPE_MIXED_BOGUS(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[multipart/mixed,text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -75,43 +75,99 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,linux-crypto@vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-21172-lists,linux-crypto=lfdr.de,bpf-ci];
+	TAGGED_FROM(0.00)[bounces-21173-lists,linux-crypto=lfdr.de,bpf-ci];
 	MIME_TRACE(0.00)[0:+,1:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCPT_COUNT_TWELVE(0.00)[30];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-0.997];
 	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NO_DN(0.00)[];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	BLOCKLISTDE_FAIL(0.00)[100.90.174.1:server fail,10.30.226.201:query timed out,172.234.253.10:query timed out];
+	BLOCKLISTDE_FAIL(0.00)[100.90.174.1:server fail,10.30.226.201:server fail,172.105.105.114:server fail];
 	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.kernel.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1909619DA6F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.kernel.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9F39419D9BF
 X-Rspamd-Action: no action
 
---===============0063423508216283793==
+--===============2090170065257609829==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-> Add enum bpf_crypto_type_id for runtime type checking to ensure
-> operations are performed on the correct crypto context type. The enum
-> values are assigned to all crypto type modules (skcipher, hash, sig).
+> diff --git a/crypto/bpf_crypto_shash.c b/crypto/bpf_crypto_shash.c
+> --- /dev/null
+> +++ b/crypto/bpf_crypto_shash.c
+> @@ -0,0 +1,96 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> +#include <linux/types.h>
+> +#include <linux/module.h>
+> +#include <linux/bpf_crypto.h>
+> +#include <crypto/hash.h>
+> +
+> +struct bpf_shash_ctx {
+> +	struct crypto_shash *tfm;
+> +	struct shash_desc desc;
+> +};
 
-This paragraph appears to be inaccurate. The enum bpf_crypto_type_id and
-all three values (BPF_CRYPTO_TYPE_SKCIPHER, BPF_CRYPTO_TYPE_HASH,
-BPF_CRYPTO_TYPE_SIG) were added in the earlier commit ddee9f01e40e
-("bpf: Add hash kfunc for cryptographic hashing"), along with the
-type_id field in struct bpf_crypto_type and the assignment to the
-skcipher module.
+[ ... ]
 
-Should this paragraph be removed or reworded to reflect what this
-commit actually introduces?
+> +static void *bpf_crypto_shash_alloc_tfm(const char *algo)
+> +{
+
+[ ... ]
+
+> +	ctx->tfm = tfm;
+> +	ctx->desc.tfm = tfm;
+> +
+> +	return ctx;
+> +}
+
+[ ... ]
+
+> +static int bpf_crypto_shash_hash(void *tfm, const u8 *data, u8 *out,
+> +				 unsigned int len)
+> +{
+> +	struct bpf_shash_ctx *ctx = tfm;
+> +
+> +	return crypto_shash_digest(&ctx->desc, data, len, out);
+> +}
+
+bpf_crypto_shash_alloc_tfm() creates one bpf_shash_ctx per
+bpf_crypto_ctx, with a single embedded shash_desc. Multiple BPF
+programs can acquire references to the same bpf_crypto_ctx
+concurrently via bpf_crypto_ctx_acquire() (which just does
+refcount_inc_not_zero), and the hash kfunc is marked KF_RCU which
+provides no mutual exclusion.
+
+When two CPUs call bpf_crypto_hash() with the same context, both
+end up in crypto_shash_digest() using the same desc:
+
+  CPU0                           CPU1
+  bpf_crypto_hash(ctx)           bpf_crypto_hash(ctx)
+    bpf_crypto_shash_hash()        bpf_crypto_shash_hash()
+      crypto_shash_digest(desc)      crypto_shash_digest(desc)
+        alg->digest(desc, ...)         alg->digest(desc, ...)
+        // writes desc->__ctx          // writes desc->__ctx
+        memset(desc->__ctx, 0)         memset(desc->__ctx, 0)
+
+crypto_shash_op_and_zero() in crypto/shash.c writes to
+shash_desc_ctx(desc) via the algorithm callback and then zeroes it
+with memset. Both CPUs race on this buffer, producing silently
+corrupted hash output.
+
+The existing encrypt/decrypt path does not have this problem because
+crypto_lskcipher_encrypt() treats the tfm as read-only (the key
+schedule is pre-computed) and the mutable IV state is passed
+per-call through the siv dynptr.
+
+Would it make sense to allocate a shash_desc per-call on the stack,
+or use a per-cpu descriptor, to avoid this race?
 
 > diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
 > --- a/kernel/bpf/crypto.c
@@ -119,22 +175,26 @@ commit actually introduces?
 
 [ ... ]
 
-> @@ -438,6 +549,12 @@ __bpf_kfunc int bpf_sig_maxsize(struct bpf_crypto_ctx *ctx)
->  #if IS_ENABLED(CONFIG_CRYPTO_HASH2)
->  BTF_ID_FLAGS(func, bpf_crypto_hash, KF_RCU)
->  #endif
-> +#if IS_ENABLED(CONFIG_CRYPTO_SIG2)
-> +BTF_ID_FLAGS(func, bpf_sig_verify, KF_RCU)
-> +BTF_ID_FLAGS(func, bpf_sig_keysize)
-> +BTF_ID_FLAGS(func, bpf_sig_digestsize)
-> +BTF_ID_FLAGS(func, bpf_sig_maxsize)
-> +#endif
+> +#if IS_ENABLED(CONFIG_CRYPTO_HASH2)
+> +/**
+> + * bpf_crypto_hash() - Compute hash using configured context
+> + * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
+> + * @data:	bpf_dynptr to the input data to hash. Must be a trusted pointer.
+> + * @out:	bpf_dynptr to the output buffer. Must be a trusted pointer.
+> + *
+> + * Computes hash of the input data using the crypto context. The output buffer
+> + * must be at least as large as the digest size of the hash algorithm.
+> + */
+> +__bpf_kfunc int bpf_crypto_hash(struct bpf_crypto_ctx *ctx,
+> +				const struct bpf_dynptr *data,
+> +				const struct bpf_dynptr *out)
+> +{
 
-This isn't a bug, but the existing kfuncs in this file follow the
-bpf_crypto_ naming convention: bpf_crypto_encrypt, bpf_crypto_decrypt,
-bpf_crypto_hash. The new kfuncs use bpf_sig_ instead. Would
-bpf_crypto_sig_verify (and similar) be more consistent for API
-discoverability?
+[ ... ]
+
+> +	return ctx->type->hash(ctx->tfm, data_ptr, out_ptr, data_len);
+> +}
+> +#endif /* CONFIG_CRYPTO_HASH2 */
 
 
 ---
@@ -143,11 +203,11 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/22414975518
 
-AI-authorship-score: medium
-AI-authorship-explanation: Formulaic boilerplate code and polished commit message suggest possible AI assistance, but iterative v1-v8 development with lore interaction and a human-like commit message inaccuracy pattern indicate primarily human authorship.
-issues-found: 2
-issue-severity-score: low
-issue-severity-explanation: Commit message inaccuracy about enum addition and kfunc naming inconsistency are documentation and style issues with no runtime impact.
+AI-authorship-score: low
+AI-authorship-explanation: Eight revision iterations with active reviewer engagement on lore.kernel.org and incremental changes addressing feedback are consistent with human-driven development.
+issues-found: 1
+issue-severity-score: medium
+issue-severity-explanation: Data race on shared shash_desc in bpf_crypto_hash() produces silently corrupted cryptographic hash output when two CPUs use the same context concurrently, which could affect integrity checking and authentication use cases.
 
---===============0063423508216283793==--
+--===============2090170065257609829==--
 
