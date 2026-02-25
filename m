@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-21167-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21170-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WKEGHsJbn2lRagQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21167-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:29:54 +0100
+	id 8EzxIelbn2lRagQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21170-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:30:33 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FBA619D395
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:29:53 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2871319D3E1
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C4F943013716
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 20:29:50 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D338D303B1B8
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 20:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F2C30DEA5;
-	Wed, 25 Feb 2026 20:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF0F30F93C;
+	Wed, 25 Feb 2026 20:30:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="Q8CjVEgM";
-	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="eC+t3KsH"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="IjlkowB9";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="j0qS/JM2"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744B1182B7;
-	Wed, 25 Feb 2026 20:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE1030F946;
+	Wed, 25 Feb 2026 20:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772051386; cv=none; b=CLud2P5uMCqFntb9vmdzNiznRcR6CKoGX1ar7HdCBQuw/8AAewRQkXJNT4fJYfdrMwIIzLj2+cW/W0r4fvjBZNcL51LhOAufoi8FmmDR61qttfi9npGO1ZiksqrngzwhH2Aquxs4kLrXV0DuCcEs+OQnyJyqzm/qwJJG/TaAp70=
+	t=1772051419; cv=none; b=H1fQHEFa1oLPZNVpn90h5fCqzvLDg1YhMLCGVdkOJClghoGkNsidLw+YU4Oms+8vpfElqH5GyDEmmp5BmxKMRQSkm0TTLJFvmPlBg7qSQtKLOLv66GY/AnDAgW8Z0ywiulsMH7Kq7dr6PWsGFWw46AaVPF6JsVeOxx5UjgAT8mY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772051386; c=relaxed/simple;
-	bh=MsjBP+XADbnF2pGp+2ZYR3FW34IqUtLzh0Krsr1pUWg=;
+	s=arc-20240116; t=1772051419; c=relaxed/simple;
+	bh=I6fQnmZYbBhAaXVi7RByGUlMStM2yuGL7dCHJPyidEk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=snCP98xTzyzhDLpky4pFllbnGUrnZdf0fPDKKqkudthZIM7G9q+kb7QaujraTWpz5Lcy9prQmBwoWHSZtEbeRSi9yLvZoI2wGt6ODhjjMHtdB7x+nK8qtS6ZvBAZap1Efi9CYObrfkq6mW+whKmR0jkkxarXFscoOWQFhHV4IR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=Q8CjVEgM; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=eC+t3KsH; arc=none smtp.client-ip=135.148.138.8
+	 MIME-Version; b=AZ2WHbsQKMY5fLUUfSbCJwz2YXDOrJcRYpkcGY/s8LGK2d9tsK7Wb7KrDvDosbJwc7kaECBPc8v82YSHT7SqabIMo0n7U1xxAD+xPHj/nDL4cMddaXAXL3+E91f5/rHTZ8Rtl58E1mHmdkkI/EmzYLRr+8rur3QrT/qd6RAg8yI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=IjlkowB9; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=j0qS/JM2; arc=none smtp.client-ip=135.148.138.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
 DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Date:Subject:To:From; t=1772051376; bh=PCmcFIzhjnC9egGss+/wXYW
-	qg/CtCSq4+JEDJ67Gi8g=; b=Q8CjVEgMx+wbWePMjVJemh4cmhVePvhQX2m3209eMrULgJj6dD
-	1+Y1NWW/GD5I1LWxeYVOKzp0QPdKC0s8vJTI98p6hFhZoz5IwpPfETJL+ndBjJcObDVLQoI/xYv
-	inBcfj2hSVXf3RVkSjwK2OtWM5roqQI8K5ZW9M4U0y1+D9o/Rd2ysMbw0tallRQ9CXL8c/3lhpD
-	OdLBhKdnVU1zZj2j3VawrrzNQ7wzxdTsQU4f+BVDo009PQwUiNDsfReUm782OCnAoy1C6OQSs7t
-	K5vyImEDXFOCi0/DFdtnxawad6JV0MQW7/+dJ1NjD9wTEKtVPD8YWpxVZIcQBBtzWYQ==;
+	h=Message-ID:Date:Subject:To:From; t=1772051377; bh=16GK25G+FFZ50AoU3JQz4YT
+	ia8aK6AF95jQlAsL+gPs=; b=IjlkowB94imzc/HNvC5CKk/kyLIXKrCT2qCUHjROYDTQ5u6hHn
+	DrwH+UCLDcrmfoV4r4ks2uYwvzb1lbI0xxCtCCHyJXlWtFFRU4KgFA6MuFCxUvFzrHMEZodXvb8
+	ti+Dun/rNpjgk8xFB+JlN3pNxPeQIgPZq6nQTCEajLtjp4+Z74J3+OOLmXsSOf0rFAnUW4A74wY
+	Sm3hilqKSIjQW6JBL9ZkI8yxFSFyN212cdow9XUDH1Sdcau7mCAzpMt7aHIpZa4dE+9tc5Pc3nP
+	UFXlQB6gkksNdEFUtcWNC3KP0fVQXy6HCcnDBlXSAvrAi9GsKa4Rcq29Cflx583D29g==;
 DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Date:Subject:To:From; t=1772051376; bh=PCmcFIzhjnC9egGss+/wXYW
-	qg/CtCSq4+JEDJ67Gi8g=; b=eC+t3KsHksvQ6o9Wdn2RFDOkol/mMsfRgL/zGSWhuV/3AOe+L8
-	B9z5mu1AYkoKsrAeud1D61jymSS/+slEcnCw==;
+	h=Message-ID:Date:Subject:To:From; t=1772051377; bh=16GK25G+FFZ50AoU3JQz4YT
+	ia8aK6AF95jQlAsL+gPs=; b=j0qS/JM2zu8pZ+qb5gAefgQimq1vyonvvZerLCC03AjLKzqsZ1
+	TWbKkAub9mT3qx2V7GHFIGTOTPNyfNMp1GBA==;
 From: Daniel Hodges <git@danielhodges.dev>
 To: bpf@vger.kernel.org,
 	linux-crypto@vger.kernel.org,
@@ -68,9 +68,9 @@ Cc: ast@kernel.org,
 	herbert@gondor.apana.org.au,
 	davem@davemloft.net,
 	Daniel Hodges <git@danielhodges.dev>
-Subject: [PATCH bpf-next v8 1/4] bpf: Add hash kfunc for cryptographic hashing
-Date: Wed, 25 Feb 2026 15:29:32 -0500
-Message-ID: <20260225202935.31986-2-git@danielhodges.dev>
+Subject: [PATCH bpf-next v8 2/4] selftests/bpf: Add tests for bpf_crypto_hash kfunc
+Date: Wed, 25 Feb 2026 15:29:33 -0500
+Message-ID: <20260225202935.31986-3-git@danielhodges.dev>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260225202935.31986-1-git@danielhodges.dev>
 References: <20260225202935.31986-1-git@danielhodges.dev>
@@ -88,7 +88,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[danielhodges.dev,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[danielhodges.dev:s=202510r,danielhodges.dev:s=202510e];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -98,7 +98,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21167-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21170-lists,linux-crypto=lfdr.de];
 	FREEMAIL_CC(0.00)[kernel.org,iogearbox.net,linux.dev,meta.com,gmail.com,google.com,fomichev.me,gondor.apana.org.au,davemloft.net,danielhodges.dev];
 	DKIM_TRACE(0.00)[danielhodges.dev:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -107,369 +107,523 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	NEURAL_HAM(-0.00)[-0.979];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,danielhodges.dev:mid,danielhodges.dev:dkim,danielhodges.dev:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4FBA619D395
+	NEURAL_HAM(-0.00)[-0.980];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,danielhodges.dev:mid,danielhodges.dev:dkim,danielhodges.dev:email]
+X-Rspamd-Queue-Id: 2871319D3E1
 X-Rspamd-Action: no action
 
-Add bpf_crypto_shash module that registers a hash type with the BPF
-crypto infrastructure, enabling BPF programs to access kernel hash
-algorithms through a unified interface.
+Add selftests to validate the bpf_crypto_hash works properly. The tests
+verify both correct functionality and proper error handling.
 
-The bpf_crypto_type interface is extended with hash-specific callbacks:
-   - alloc_tfm: Allocates crypto_shash context with proper descriptor size
-   - free_tfm: Releases hash transform and context memory
-   - has_algo: Checks algorithm availability via crypto_has_shash()
-   - hash: Performs single-shot hashing via crypto_shash_digest()
-   - digestsize: Returns the output size for the hash algorithm
-   - get_flags: Exposes transform flags to BPF programs
-
-Add bpf_crypto_hash() kfunc that works with any hash algorithm
-registered in the kernel's crypto API through the BPF crypto type
-system. This enables BPF programs to compute cryptographic hashes for
-use cases such as content verification, integrity checking, and data
-authentication.
-
-Update bpf_crypto_ctx_create() to support keyless operations:
-   - Hash algorithms don't require keys, unlike ciphers
-   - Only validates key presence if type->setkey is defined
-   - Conditionally sets IV/state length for cipher operations only
+Test Data:
+All tests use the well-known NIST test vector input "abc" and validate
+against the standardized expected outputs for each algorithm. This ensures
+the BPF kfunc wrappers correctly delegate to the kernel crypto library.
 
 Signed-off-by: Daniel Hodges <git@danielhodges.dev>
 ---
- MAINTAINERS                  |  1 +
- crypto/Makefile              |  3 ++
- crypto/bpf_crypto_shash.c    | 96 ++++++++++++++++++++++++++++++++++++
- crypto/bpf_crypto_skcipher.c |  1 +
- include/linux/bpf_crypto.h   |  9 ++++
- kernel/bpf/crypto.c          | 93 ++++++++++++++++++++++++++++++----
- 6 files changed, 194 insertions(+), 9 deletions(-)
- create mode 100644 crypto/bpf_crypto_shash.c
+ MAINTAINERS                                   |   2 +
+ tools/testing/selftests/bpf/config            |   2 +
+ .../selftests/bpf/prog_tests/crypto_hash.c    | 210 ++++++++++++++++
+ .../selftests/bpf/progs/crypto_common.h       |   2 +
+ .../testing/selftests/bpf/progs/crypto_hash.c | 231 ++++++++++++++++++
+ 5 files changed, 447 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crypto_hash.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 55af015174a5..6c78aae1bc6c 100644
+index 6c78aae1bc6c..fd72648719a7 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -4801,6 +4801,7 @@ BPF [CRYPTO]
- M:	Vadim Fedorenko <vadim.fedorenko@linux.dev>
- L:	bpf@vger.kernel.org
- S:	Maintained
-+F:	crypto/bpf_crypto_shash.c
+@@ -4805,6 +4805,8 @@ F:	crypto/bpf_crypto_shash.c
  F:	crypto/bpf_crypto_skcipher.c
  F:	include/linux/bpf_crypto.h
  F:	kernel/bpf/crypto.c
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 04e269117589..4db6a76d4c3e 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -32,6 +32,9 @@ obj-$(CONFIG_CRYPTO_ECHAINIV) += echainiv.o
- crypto_hash-y += ahash.o
- crypto_hash-y += shash.o
- obj-$(CONFIG_CRYPTO_HASH2) += crypto_hash.o
-+ifeq ($(CONFIG_BPF_SYSCALL),y)
-+obj-$(CONFIG_CRYPTO_HASH2) += bpf_crypto_shash.o
-+endif
++F:	tools/testing/selftests/bpf/prog_tests/crypto_hash.c
++F:	tools/testing/selftests/bpf/progs/crypto_hash.c
  
- obj-$(CONFIG_CRYPTO_AKCIPHER2) += akcipher.o
- obj-$(CONFIG_CRYPTO_SIG2) += sig.o
-diff --git a/crypto/bpf_crypto_shash.c b/crypto/bpf_crypto_shash.c
+ BPF [DOCUMENTATION] (Related to Standardization)
+ R:	David Vernet <void@manifault.com>
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 24855381290d..dcfdca7daea3 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -13,6 +13,8 @@ CONFIG_BPF_SYSCALL=y
+ CONFIG_CGROUP_BPF=y
+ CONFIG_CRYPTO_HMAC=y
+ CONFIG_CRYPTO_SHA256=y
++CONFIG_CRYPTO_SHA512=y
++CONFIG_CRYPTO_HASH2=y
+ CONFIG_CRYPTO_USER_API=y
+ CONFIG_CRYPTO_USER_API_HASH=y
+ CONFIG_CRYPTO_USER_API_SKCIPHER=y
+diff --git a/tools/testing/selftests/bpf/prog_tests/crypto_hash.c b/tools/testing/selftests/bpf/prog_tests/crypto_hash.c
 new file mode 100644
-index 000000000000..6e9b0d757ec9
+index 000000000000..0c78b5f46c9c
 --- /dev/null
-+++ b/crypto/bpf_crypto_shash.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/tools/testing/selftests/bpf/prog_tests/crypto_hash.c
+@@ -0,0 +1,210 @@
++// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <linux/types.h>
-+#include <linux/module.h>
-+#include <linux/bpf_crypto.h>
-+#include <crypto/hash.h>
 +
-+struct bpf_shash_ctx {
-+	struct crypto_shash *tfm;
-+	struct shash_desc desc;
++#include <test_progs.h>
++#include <errno.h>
++#include "crypto_hash.skel.h"
++
++/* NIST test vectors for SHA-256("abc") */
++static const unsigned char expected_sha256[32] = {
++	0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea,
++	0x41, 0x41, 0x40, 0xde, 0x5d, 0xae, 0x22, 0x23,
++	0xb0, 0x03, 0x61, 0xa3, 0x96, 0x17, 0x7a, 0x9c,
++	0xb4, 0x10, 0xff, 0x61, 0xf2, 0x00, 0x15, 0xad
 +};
 +
-+static void *bpf_crypto_shash_alloc_tfm(const char *algo)
++/* NIST test vectors for SHA-384("abc") */
++static const unsigned char expected_sha384[48] = {
++	0xcb, 0x00, 0x75, 0x3f, 0x45, 0xa3, 0x5e, 0x8b,
++	0xb5, 0xa0, 0x3d, 0x69, 0x9a, 0xc6, 0x50, 0x07,
++	0x27, 0x2c, 0x32, 0xab, 0x0e, 0xde, 0xd1, 0x63,
++	0x1a, 0x8b, 0x60, 0x5a, 0x43, 0xff, 0x5b, 0xed,
++	0x80, 0x86, 0x07, 0x2b, 0xa1, 0xe7, 0xcc, 0x23,
++	0x58, 0xba, 0xec, 0xa1, 0x34, 0xc8, 0x25, 0xa7
++};
++
++/* NIST test vectors for SHA-512("abc") */
++static const unsigned char expected_sha512[64] = {
++	0xdd, 0xaf, 0x35, 0xa1, 0x93, 0x61, 0x7a, 0xba,
++	0xcc, 0x41, 0x73, 0x49, 0xae, 0x20, 0x41, 0x31,
++	0x12, 0xe6, 0xfa, 0x4e, 0x89, 0xa9, 0x7e, 0xa2,
++	0x0a, 0x9e, 0xee, 0xe6, 0x4b, 0x55, 0xd3, 0x9a,
++	0x21, 0x92, 0x99, 0x2a, 0x27, 0x4f, 0xc1, 0xa8,
++	0x36, 0xba, 0x3c, 0x23, 0xa3, 0xfe, 0xeb, 0xbd,
++	0x45, 0x4d, 0x44, 0x23, 0x64, 0x3c, 0xe8, 0x0e,
++	0x2a, 0x9a, 0xc9, 0x4f, 0xa5, 0x4c, 0xa4, 0x9f
++};
++
++static struct crypto_hash *setup_skel(void)
 +{
-+	struct bpf_shash_ctx *ctx;
-+	struct crypto_shash *tfm;
++	struct crypto_hash *skel;
 +
-+	tfm = crypto_alloc_shash(algo, 0, 0);
-+	if (IS_ERR(tfm))
-+		return tfm;
-+
-+	ctx = kzalloc(sizeof(*ctx) + crypto_shash_descsize(tfm), GFP_KERNEL);
-+	if (!ctx) {
-+		crypto_free_shash(tfm);
-+		return ERR_PTR(-ENOMEM);
++	skel = crypto_hash__open_and_load();
++	if (!skel) {
++		/* Skip if kfuncs not available (CONFIG_CRYPTO_HASH2 not set) */
++		if (errno == ENOENT || errno == EINVAL) {
++			test__skip();
++			return NULL;
++		}
++		ASSERT_OK_PTR(skel, "crypto_hash__open_and_load");
++		return NULL;
 +	}
 +
-+	ctx->tfm = tfm;
-+	ctx->desc.tfm = tfm;
-+
-+	return ctx;
++	return skel;
 +}
 +
-+static void bpf_crypto_shash_free_tfm(void *tfm)
++static void test_sha256_basic(void)
 +{
-+	struct bpf_shash_ctx *ctx = tfm;
++	struct crypto_hash *skel;
++	int err, prog_fd;
 +
-+	crypto_free_shash(ctx->tfm);
-+	kfree(ctx);
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	skel = setup_skel();
++	if (!skel)
++		return;
++
++	prog_fd = bpf_program__fd(skel->progs.test_sha256);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_sha256");
++	ASSERT_EQ(skel->data->sha256_status, 0, "sha256_status");
++	ASSERT_EQ(memcmp(skel->bss->sha256_output, expected_sha256, 32), 0,
++		  "sha256_output_match");
++
++	crypto_hash__destroy(skel);
 +}
 +
-+static int bpf_crypto_shash_has_algo(const char *algo)
++static void test_sha384_basic(void)
 +{
-+	return crypto_has_shash(algo, 0, 0);
++	struct crypto_hash *skel;
++	int err, prog_fd;
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	skel = setup_skel();
++	if (!skel)
++		return;
++	prog_fd = bpf_program__fd(skel->progs.test_sha384);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_sha384");
++	ASSERT_EQ(skel->data->sha384_status, 0, "sha384_status");
++	ASSERT_EQ(memcmp(skel->bss->sha384_output, expected_sha384, 48), 0,
++		  "sha384_output_match");
++
++	crypto_hash__destroy(skel);
 +}
 +
-+static int bpf_crypto_shash_hash(void *tfm, const u8 *data, u8 *out,
-+				 unsigned int len)
++static void test_sha512_basic(void)
 +{
-+	struct bpf_shash_ctx *ctx = tfm;
++	struct crypto_hash *skel;
++	int err, prog_fd;
 +
-+	return crypto_shash_digest(&ctx->desc, data, len, out);
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	skel = setup_skel();
++	if (!skel)
++		return;
++
++	prog_fd = bpf_program__fd(skel->progs.test_sha512);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_sha512");
++	ASSERT_EQ(skel->data->sha512_status, 0, "sha512_status");
++	ASSERT_EQ(memcmp(skel->bss->sha512_output, expected_sha512, 64), 0,
++		  "sha512_output_match");
++
++	crypto_hash__destroy(skel);
 +}
 +
-+static unsigned int bpf_crypto_shash_digestsize(void *tfm)
++static void test_sha256_invalid_params(void)
 +{
-+	struct bpf_shash_ctx *ctx = tfm;
++	struct crypto_hash *skel;
++	int err, prog_fd;
 +
-+	return crypto_shash_digestsize(ctx->tfm);
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	skel = setup_skel();
++	if (!skel)
++		return;
++
++	prog_fd = bpf_program__fd(skel->progs.test_sha256_zero_len);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_zero_len");
++	ASSERT_EQ(skel->data->sha256_status, 0, "zero_len_rejected");
++
++	crypto_hash__destroy(skel);
 +}
 +
-+static u32 bpf_crypto_shash_get_flags(void *tfm)
++static void test_hash_with_key_rejected(void)
 +{
-+	struct bpf_shash_ctx *ctx = tfm;
++	struct crypto_hash *skel;
++	int err, prog_fd;
 +
-+	return crypto_shash_get_flags(ctx->tfm);
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	skel = setup_skel();
++	if (!skel)
++		return;
++
++	prog_fd = bpf_program__fd(skel->progs.test_hash_with_key_rejected);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_hash_with_key_rejected");
++	ASSERT_EQ(skel->data->hash_with_key_status, 0, "hash_with_key_rejected");
++
++	crypto_hash__destroy(skel);
 +}
 +
-+static const struct bpf_crypto_type bpf_crypto_shash_type = {
-+	.alloc_tfm	= bpf_crypto_shash_alloc_tfm,
-+	.free_tfm	= bpf_crypto_shash_free_tfm,
-+	.has_algo	= bpf_crypto_shash_has_algo,
-+	.hash		= bpf_crypto_shash_hash,
-+	.digestsize	= bpf_crypto_shash_digestsize,
-+	.get_flags	= bpf_crypto_shash_get_flags,
-+	.owner		= THIS_MODULE,
-+	.type_id	= BPF_CRYPTO_TYPE_HASH,
-+	.name		= "hash",
++static void test_hash_output_too_small(void)
++{
++	struct crypto_hash *skel;
++	int err, prog_fd;
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	skel = setup_skel();
++	if (!skel)
++		return;
++
++	prog_fd = bpf_program__fd(skel->progs.test_hash_output_too_small);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_hash_output_too_small");
++	ASSERT_EQ(skel->data->hash_output_too_small_status, 0, "hash_output_too_small");
++
++	crypto_hash__destroy(skel);
++}
++
++static void test_hash_on_skcipher_ctx(void)
++{
++	struct crypto_hash *skel;
++	int err, prog_fd;
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	skel = setup_skel();
++	if (!skel)
++		return;
++
++	prog_fd = bpf_program__fd(skel->progs.test_hash_on_skcipher_ctx);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_hash_on_skcipher_ctx");
++	ASSERT_EQ(skel->data->hash_on_skcipher_status, 0, "hash_on_skcipher_rejected");
++
++	crypto_hash__destroy(skel);
++}
++
++void test_crypto_hash(void)
++{
++	if (test__start_subtest("sha256_basic"))
++		test_sha256_basic();
++	if (test__start_subtest("sha384_basic"))
++		test_sha384_basic();
++	if (test__start_subtest("sha512_basic"))
++		test_sha512_basic();
++	if (test__start_subtest("sha256_invalid_params"))
++		test_sha256_invalid_params();
++	if (test__start_subtest("hash_with_key_rejected"))
++		test_hash_with_key_rejected();
++	if (test__start_subtest("hash_output_too_small"))
++		test_hash_output_too_small();
++	if (test__start_subtest("hash_on_skcipher_ctx"))
++		test_hash_on_skcipher_ctx();
++}
+diff --git a/tools/testing/selftests/bpf/progs/crypto_common.h b/tools/testing/selftests/bpf/progs/crypto_common.h
+index 57dd7a68a8c3..2f04f08f890b 100644
+--- a/tools/testing/selftests/bpf/progs/crypto_common.h
++++ b/tools/testing/selftests/bpf/progs/crypto_common.h
+@@ -15,6 +15,8 @@ int bpf_crypto_encrypt(struct bpf_crypto_ctx *ctx, const struct bpf_dynptr *src,
+ 		       const struct bpf_dynptr *dst, const struct bpf_dynptr *iv) __ksym;
+ int bpf_crypto_decrypt(struct bpf_crypto_ctx *ctx, const struct bpf_dynptr *src,
+ 		       const struct bpf_dynptr *dst, const struct bpf_dynptr *iv) __ksym;
++int bpf_crypto_hash(struct bpf_crypto_ctx *ctx, const struct bpf_dynptr *data,
++		    const struct bpf_dynptr *out) __ksym;
+ 
+ struct __crypto_ctx_value {
+ 	struct bpf_crypto_ctx __kptr * ctx;
+diff --git a/tools/testing/selftests/bpf/progs/crypto_hash.c b/tools/testing/selftests/bpf/progs/crypto_hash.c
+new file mode 100644
+index 000000000000..0258fdbe3e71
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/crypto_hash.c
+@@ -0,0 +1,231 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++#include "bpf_kfuncs.h"
++#include "crypto_common.h"
++
++unsigned char test_input[3] = "abc";
++
++/* Expected SHA-256 hash of "abc" */
++/* ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61 f20015ad */
++unsigned char expected_sha256[32] = {
++	0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea,
++	0x41, 0x41, 0x40, 0xde, 0x5d, 0xae, 0x22, 0x23,
++	0xb0, 0x03, 0x61, 0xa3, 0x96, 0x17, 0x7a, 0x9c,
++	0xb4, 0x10, 0xff, 0x61, 0xf2, 0x00, 0x15, 0xad
 +};
 +
-+static int __init bpf_crypto_shash_init(void)
++/* Output buffers for test results */
++unsigned char sha256_output[32] = {};
++unsigned char sha384_output[48] = {};
++unsigned char sha512_output[64] = {};
++unsigned char small_output[16] = {}; /* Intentionally small for output_too_small test */
++
++int sha256_status = -1;
++int sha384_status = -1;
++int sha512_status = -1;
++int hash_with_key_status = -1;
++int hash_output_too_small_status = -1;
++int hash_on_skcipher_status = -1;
++
++SEC("syscall")
++int test_sha256(void *ctx)
 +{
-+	return bpf_crypto_register_type(&bpf_crypto_shash_type);
-+}
++	struct bpf_dynptr input_ptr, output_ptr;
++	struct bpf_crypto_ctx *hash_ctx;
++	struct bpf_crypto_params params = {
++		.type = "hash",
++		.algo = "sha256",
++		.key_len = 0,
++	};
++	int err = 0;
 +
-+static void __exit bpf_crypto_shash_exit(void)
-+{
-+	int err = bpf_crypto_unregister_type(&bpf_crypto_shash_type);
-+
-+	WARN_ON_ONCE(err);
-+}
-+
-+module_init(bpf_crypto_shash_init);
-+module_exit(bpf_crypto_shash_exit);
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Hash algorithm support for BPF");
-diff --git a/crypto/bpf_crypto_skcipher.c b/crypto/bpf_crypto_skcipher.c
-index a88798d3e8c8..79d310fbcc48 100644
---- a/crypto/bpf_crypto_skcipher.c
-+++ b/crypto/bpf_crypto_skcipher.c
-@@ -63,6 +63,7 @@ static const struct bpf_crypto_type bpf_crypto_lskcipher_type = {
- 	.statesize	= bpf_crypto_lskcipher_statesize,
- 	.get_flags	= bpf_crypto_lskcipher_get_flags,
- 	.owner		= THIS_MODULE,
-+	.type_id	= BPF_CRYPTO_TYPE_SKCIPHER,
- 	.name		= "skcipher",
- };
- 
-diff --git a/include/linux/bpf_crypto.h b/include/linux/bpf_crypto.h
-index a41e71d4e2d9..cf2c66f9782b 100644
---- a/include/linux/bpf_crypto.h
-+++ b/include/linux/bpf_crypto.h
-@@ -3,6 +3,12 @@
- #ifndef _BPF_CRYPTO_H
- #define _BPF_CRYPTO_H
- 
-+enum bpf_crypto_type_id {
-+	BPF_CRYPTO_TYPE_SKCIPHER = 1,
-+	BPF_CRYPTO_TYPE_HASH,
-+	BPF_CRYPTO_TYPE_SIG,
-+};
-+
- struct bpf_crypto_type {
- 	void *(*alloc_tfm)(const char *algo);
- 	void (*free_tfm)(void *tfm);
-@@ -11,10 +17,13 @@ struct bpf_crypto_type {
- 	int (*setauthsize)(void *tfm, unsigned int authsize);
- 	int (*encrypt)(void *tfm, const u8 *src, u8 *dst, unsigned int len, u8 *iv);
- 	int (*decrypt)(void *tfm, const u8 *src, u8 *dst, unsigned int len, u8 *iv);
-+	int (*hash)(void *tfm, const u8 *data, u8 *out, unsigned int len);
- 	unsigned int (*ivsize)(void *tfm);
- 	unsigned int (*statesize)(void *tfm);
-+	unsigned int (*digestsize)(void *tfm);
- 	u32 (*get_flags)(void *tfm);
- 	struct module *owner;
-+	enum bpf_crypto_type_id type_id;
- 	char name[14];
- };
- 
-diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-index 51f89cecefb4..3b2b0d06f1b2 100644
---- a/kernel/bpf/crypto.c
-+++ b/kernel/bpf/crypto.c
-@@ -139,7 +139,7 @@ __bpf_kfunc_start_defs();
-  * It may return NULL if no memory is available.
-  * @params:	pointer to struct bpf_crypto_params which contains all the
-  *		details needed to initialise crypto context.
-- * @params__sz:	size of steuct bpf_crypto_params usef by bpf program
-+ * @params__sz:	size of struct bpf_crypto_params used by bpf program
-  * @err:	integer to store error code when NULL is returned.
-  */
- __bpf_kfunc struct bpf_crypto_ctx *
-@@ -171,7 +171,12 @@ bpf_crypto_ctx_create(const struct bpf_crypto_params *params, u32 params__sz,
- 		goto err_module_put;
- 	}
- 
--	if (!params->key_len || params->key_len > sizeof(params->key)) {
-+	/* Hash operations don't require a key, but cipher operations do */
-+	if (params->key_len > sizeof(params->key)) {
-+		*err = -EINVAL;
-+		goto err_module_put;
++	hash_ctx = bpf_crypto_ctx_create(&params, sizeof(params), &err);
++	if (!hash_ctx) {
++		sha256_status = err;
++		return 0;
 +	}
-+	if (!params->key_len && type->setkey) {
- 		*err = -EINVAL;
- 		goto err_module_put;
- 	}
-@@ -195,16 +200,23 @@ bpf_crypto_ctx_create(const struct bpf_crypto_params *params, u32 params__sz,
- 			goto err_free_tfm;
- 	}
- 
--	*err = type->setkey(ctx->tfm, params->key, params->key_len);
--	if (*err)
--		goto err_free_tfm;
-+	if (params->key_len) {
-+		if (!type->setkey) {
-+			*err = -EINVAL;
-+			goto err_free_tfm;
-+		}
-+		*err = type->setkey(ctx->tfm, params->key, params->key_len);
-+		if (*err)
-+			goto err_free_tfm;
- 
--	if (type->get_flags(ctx->tfm) & CRYPTO_TFM_NEED_KEY) {
--		*err = -EINVAL;
--		goto err_free_tfm;
-+		if (type->get_flags(ctx->tfm) & CRYPTO_TFM_NEED_KEY) {
-+			*err = -EINVAL;
-+			goto err_free_tfm;
-+		}
- 	}
- 
--	ctx->siv_len = type->ivsize(ctx->tfm) + type->statesize(ctx->tfm);
-+	if (type->ivsize && type->statesize)
-+		ctx->siv_len = type->ivsize(ctx->tfm) + type->statesize(ctx->tfm);
- 
- 	refcount_set(&ctx->usage, 1);
- 
-@@ -325,6 +337,9 @@ __bpf_kfunc int bpf_crypto_decrypt(struct bpf_crypto_ctx *ctx,
- 	const struct bpf_dynptr_kern *dst_kern = (struct bpf_dynptr_kern *)dst;
- 	const struct bpf_dynptr_kern *siv_kern = (struct bpf_dynptr_kern *)siv__nullable;
- 
-+	if (ctx->type->type_id != BPF_CRYPTO_TYPE_SKCIPHER)
-+		return -EINVAL;
 +
- 	return bpf_crypto_crypt(ctx, src_kern, dst_kern, siv_kern, true);
- }
- 
-@@ -346,9 +361,64 @@ __bpf_kfunc int bpf_crypto_encrypt(struct bpf_crypto_ctx *ctx,
- 	const struct bpf_dynptr_kern *dst_kern = (struct bpf_dynptr_kern *)dst;
- 	const struct bpf_dynptr_kern *siv_kern = (struct bpf_dynptr_kern *)siv__nullable;
- 
-+	if (ctx->type->type_id != BPF_CRYPTO_TYPE_SKCIPHER)
-+		return -EINVAL;
++	bpf_dynptr_from_mem(test_input, sizeof(test_input), 0, &input_ptr);
++	bpf_dynptr_from_mem(sha256_output, sizeof(sha256_output), 0, &output_ptr);
 +
- 	return bpf_crypto_crypt(ctx, src_kern, dst_kern, siv_kern, false);
- }
- 
-+#if IS_ENABLED(CONFIG_CRYPTO_HASH2)
-+/**
-+ * bpf_crypto_hash() - Compute hash using configured context
-+ * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
-+ * @data:	bpf_dynptr to the input data to hash. Must be a trusted pointer.
-+ * @out:	bpf_dynptr to the output buffer. Must be a trusted pointer.
-+ *
-+ * Computes hash of the input data using the crypto context. The output buffer
-+ * must be at least as large as the digest size of the hash algorithm.
-+ */
-+__bpf_kfunc int bpf_crypto_hash(struct bpf_crypto_ctx *ctx,
-+				const struct bpf_dynptr *data,
-+				const struct bpf_dynptr *out)
-+{
-+	const struct bpf_dynptr_kern *data_kern = (struct bpf_dynptr_kern *)data;
-+	const struct bpf_dynptr_kern *out_kern = (struct bpf_dynptr_kern *)out;
-+	unsigned int digestsize;
-+	u64 data_len, out_len;
-+	const u8 *data_ptr;
-+	u8 *out_ptr;
-+
-+	if (ctx->type->type_id != BPF_CRYPTO_TYPE_HASH)
-+		return -EINVAL;
-+
-+	if (!ctx->type->hash)
-+		return -EOPNOTSUPP;
-+
-+	data_len = __bpf_dynptr_size(data_kern);
-+	out_len = __bpf_dynptr_size(out_kern);
-+
-+	if (data_len == 0 || data_len > UINT_MAX)
-+		return -EINVAL;
-+
-+	if (!ctx->type->digestsize)
-+		return -EOPNOTSUPP;
-+
-+	digestsize = ctx->type->digestsize(ctx->tfm);
-+	if (out_len < digestsize)
-+		return -EINVAL;
-+
-+	data_ptr = __bpf_dynptr_data(data_kern, data_len);
-+	if (!data_ptr)
-+		return -EINVAL;
-+
-+	out_ptr = __bpf_dynptr_data_rw(out_kern, out_len);
-+	if (!out_ptr)
-+		return -EINVAL;
-+
-+	return ctx->type->hash(ctx->tfm, data_ptr, out_ptr, data_len);
++	sha256_status = bpf_crypto_hash(hash_ctx, &input_ptr, &output_ptr);
++	bpf_crypto_ctx_release(hash_ctx);
++	return 0;
 +}
-+#endif /* CONFIG_CRYPTO_HASH2 */
 +
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(crypt_init_kfunc_btf_ids)
-@@ -365,6 +435,9 @@ static const struct btf_kfunc_id_set crypt_init_kfunc_set = {
- BTF_KFUNCS_START(crypt_kfunc_btf_ids)
- BTF_ID_FLAGS(func, bpf_crypto_decrypt, KF_RCU)
- BTF_ID_FLAGS(func, bpf_crypto_encrypt, KF_RCU)
-+#if IS_ENABLED(CONFIG_CRYPTO_HASH2)
-+BTF_ID_FLAGS(func, bpf_crypto_hash, KF_RCU)
-+#endif
- BTF_KFUNCS_END(crypt_kfunc_btf_ids)
- 
- static const struct btf_kfunc_id_set crypt_kfunc_set = {
-@@ -389,6 +462,8 @@ static int __init crypto_kfunc_init(void)
- 	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &crypt_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT, &crypt_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &crypt_kfunc_set);
-+	/* Register for SYSCALL programs to enable testing and debugging */
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &crypt_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL,
- 					       &crypt_init_kfunc_set);
- 	return  ret ?: register_btf_id_dtor_kfuncs(bpf_crypto_dtors,
++SEC("syscall")
++int test_sha384(void *ctx)
++{
++	struct bpf_dynptr input_ptr, output_ptr;
++	struct bpf_crypto_ctx *hash_ctx;
++	struct bpf_crypto_params params = {
++		.type = "hash",
++		.algo = "sha384",
++		.key_len = 0,
++	};
++	int err = 0;
++
++	hash_ctx = bpf_crypto_ctx_create(&params, sizeof(params), &err);
++	if (!hash_ctx) {
++		sha384_status = err;
++		return 0;
++	}
++
++	bpf_dynptr_from_mem(test_input, sizeof(test_input), 0, &input_ptr);
++	bpf_dynptr_from_mem(sha384_output, sizeof(sha384_output), 0, &output_ptr);
++
++	sha384_status = bpf_crypto_hash(hash_ctx, &input_ptr, &output_ptr);
++	bpf_crypto_ctx_release(hash_ctx);
++	return 0;
++}
++
++SEC("syscall")
++int test_sha512(void *ctx)
++{
++	struct bpf_dynptr input_ptr, output_ptr;
++	struct bpf_crypto_ctx *hash_ctx;
++	struct bpf_crypto_params params = {
++		.type = "hash",
++		.algo = "sha512",
++		.key_len = 0,
++	};
++	int err = 0;
++
++	hash_ctx = bpf_crypto_ctx_create(&params, sizeof(params), &err);
++	if (!hash_ctx) {
++		sha512_status = err;
++		return 0;
++	}
++
++	bpf_dynptr_from_mem(test_input, sizeof(test_input), 0, &input_ptr);
++	bpf_dynptr_from_mem(sha512_output, sizeof(sha512_output), 0, &output_ptr);
++
++	sha512_status = bpf_crypto_hash(hash_ctx, &input_ptr, &output_ptr);
++	bpf_crypto_ctx_release(hash_ctx);
++	return 0;
++}
++
++SEC("syscall")
++int test_sha256_zero_len(void *ctx)
++{
++	struct bpf_dynptr input_ptr, output_ptr;
++	struct bpf_crypto_ctx *hash_ctx;
++	struct bpf_crypto_params params = {
++		.type = "hash",
++		.algo = "sha256",
++		.key_len = 0,
++	};
++	int err = 0;
++	int ret;
++
++	hash_ctx = bpf_crypto_ctx_create(&params, sizeof(params), &err);
++	if (!hash_ctx) {
++		sha256_status = err;
++		return 0;
++	}
++
++	bpf_dynptr_from_mem(test_input, 0, 0, &input_ptr);
++	bpf_dynptr_from_mem(sha256_output, sizeof(sha256_output), 0, &output_ptr);
++
++	ret = bpf_crypto_hash(hash_ctx, &input_ptr, &output_ptr);
++	sha256_status = (ret == -22) ? 0 : ret;
++	bpf_crypto_ctx_release(hash_ctx);
++	return 0;
++}
++
++SEC("syscall")
++int test_hash_with_key_rejected(void *ctx)
++{
++	struct bpf_crypto_ctx *hash_ctx;
++	struct bpf_crypto_params params = {
++		.type = "hash",
++		.algo = "sha256",
++		.key_len = 16, /* Hash algorithms don't support keys */
++	};
++	int err = 0;
++
++	/* Set some dummy key data */
++	params.key[0] = 0x01;
++	params.key[1] = 0x02;
++
++	hash_ctx = bpf_crypto_ctx_create(&params, sizeof(params), &err);
++	if (!hash_ctx) {
++		/* Expected: should fail with -EINVAL (-22) */
++		hash_with_key_status = (err == -22) ? 0 : err;
++		return 0;
++	}
++
++	/* Should not reach here - context creation should have failed */
++	hash_with_key_status = -1;
++	bpf_crypto_ctx_release(hash_ctx);
++	return 0;
++}
++
++SEC("syscall")
++int test_hash_output_too_small(void *ctx)
++{
++	struct bpf_dynptr input_ptr, output_ptr;
++	struct bpf_crypto_ctx *hash_ctx;
++	struct bpf_crypto_params params = {
++		.type = "hash",
++		.algo = "sha256",
++		.key_len = 0,
++	};
++	int err = 0;
++	int ret;
++
++	hash_ctx = bpf_crypto_ctx_create(&params, sizeof(params), &err);
++	if (!hash_ctx) {
++		hash_output_too_small_status = err;
++		return 0;
++	}
++
++	bpf_dynptr_from_mem(test_input, sizeof(test_input), 0, &input_ptr);
++	bpf_dynptr_from_mem(small_output, sizeof(small_output), 0, &output_ptr);
++
++	ret = bpf_crypto_hash(hash_ctx, &input_ptr, &output_ptr);
++	/* Expected: should fail with -EINVAL (-22) */
++	hash_output_too_small_status = (ret == -22) ? 0 : ret;
++	bpf_crypto_ctx_release(hash_ctx);
++	return 0;
++}
++
++SEC("syscall")
++int test_hash_on_skcipher_ctx(void *ctx)
++{
++	struct bpf_dynptr input_ptr, output_ptr;
++	struct bpf_crypto_ctx *cipher_ctx;
++	struct bpf_crypto_params params = {
++		.type = "skcipher",
++		.algo = "ecb(aes)",
++		.key_len = 16,
++	};
++	int err = 0;
++	int ret;
++
++	params.key[0] = 0x00; params.key[1] = 0x01; params.key[2] = 0x02; params.key[3] = 0x03;
++	params.key[4] = 0x04; params.key[5] = 0x05; params.key[6] = 0x06; params.key[7] = 0x07;
++	params.key[8] = 0x08; params.key[9] = 0x09; params.key[10] = 0x0a; params.key[11] = 0x0b;
++	params.key[12] = 0x0c; params.key[13] = 0x0d; params.key[14] = 0x0e; params.key[15] = 0x0f;
++
++	cipher_ctx = bpf_crypto_ctx_create(&params, sizeof(params), &err);
++	if (!cipher_ctx) {
++		hash_on_skcipher_status = err;
++		return 0;
++	}
++
++	bpf_dynptr_from_mem(test_input, sizeof(test_input), 0, &input_ptr);
++	bpf_dynptr_from_mem(sha256_output, sizeof(sha256_output), 0, &output_ptr);
++
++	ret = bpf_crypto_hash(cipher_ctx, &input_ptr, &output_ptr);
++	/* Expected: should fail with -EINVAL (-22) due to type_id mismatch */
++	hash_on_skcipher_status = (ret == -22) ? 0 : ret;
++	bpf_crypto_ctx_release(cipher_ctx);
++	return 0;
++}
++
++char __license[] SEC("license") = "GPL";
 -- 
 2.52.0
 
