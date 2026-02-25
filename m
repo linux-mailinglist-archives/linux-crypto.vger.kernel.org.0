@@ -1,140 +1,224 @@
-Return-Path: <linux-crypto+bounces-21166-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21169-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6PsWLak6n2m5ZQQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21166-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 19:08:41 +0100
+	id eOlxNhBcn2lRagQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21169-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:31:12 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A6719C08D
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 19:08:41 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9180E19D40D
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 21:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 01EAF3151E66
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 18:06:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3434D30900F7
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Feb 2026 20:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68322EA168;
-	Wed, 25 Feb 2026 18:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2612E30FF1D;
+	Wed, 25 Feb 2026 20:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lV5K2XPX"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="Lxsmc7YD";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="jBPawLHR"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76DF82E3397;
-	Wed, 25 Feb 2026 18:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A1030FC37;
+	Wed, 25 Feb 2026 20:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772042761; cv=none; b=o65WNUlhG6Tb7FxKGY0U9ulLdyGiWDThVu2TfjbboZLtvf/A5sRdTnOUfjI12Zd27dAv5qzmU/ldUqcHHut45MpU8TYcw21VXvIchRkpauImE3XCneWXd47fqw6wflXDtkD86Ho8zeHpENKW4uNzQPrHYM13BCncefeBTlmcous=
+	t=1772051412; cv=none; b=r4KxPqBFtBr4l7SprzSyScgAiGsxbjig3YIzGgcul6PokZnxfaqR/ooBejoJZPFJHzvPPiJvL0d7AeUAN4/34Tyb08i1pCAENbjnW1qedtF4Qlzru5rW9hG5SgOR7xVmc2zBzeBQYlj7+rfuz4jwXRWW01juznpTAiW1qh29PzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772042761; c=relaxed/simple;
-	bh=YB6d0VUqMffIUrv91jAOHnTGBUBEMBtpj9+Ww1jhiJc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y3DKXVG6mTayoHCJd59lfU7mTuAQrmYMQR3DhAJjFDtWBd2CkuGXIU/5WK1jvULg9YVevSYV8IDD49vZ2xjn5xfNnS1S7cQfurRhUSdOW1tgfUS31zYxmzUKqa8JdxClP75BR+jGg+eqQpSfJpFXSbuw7Ie80Bts22zJd75UOA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lV5K2XPX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95425C116D0;
-	Wed, 25 Feb 2026 18:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772042761;
-	bh=YB6d0VUqMffIUrv91jAOHnTGBUBEMBtpj9+Ww1jhiJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lV5K2XPXMHCr52eBxVhUjKUYmk825lbHp6fxibfqCvS5SE2fZ1V7NJZGialt9+fwi
-	 /Voqv5LNKkoXdV26NRujTM2PEXWcYS8aTig8epWkjnPdHXrT+KtJkeh/a48XSUcYk7
-	 D3TBY8UPKvLH/taMKTEGWEJlPVOJQiaLl45nzIe4d4vD2i/1mx+CEQ3K1fQGfUQBH+
-	 MCYRbxHpXBdSiI7/u6ZVthdCUumzFVDgck3MhVz6cVL2SwWr4cmUHrPA3Xj828MG3R
-	 DLJoqY0B4movPtbIGTqEyRMO8YFe8HJ3VCzKJ2CVxqvNUVZXi1DS7DtIaYNzLr9jVv
-	 Xo03vDAoozRTQ==
-Date: Wed, 25 Feb 2026 11:05:57 -0700
-From: Tycho Andersen <tycho@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Ashish Kalra <ashish.kalra@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	John Allen <john.allen@amd.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 3/4] crypto/ccp: support setting RAPL_DIS in SNP_INIT_EX
-Message-ID: <aZ86BZWi-GLiHvmt@tycho.pizza>
-References: <20260223162900.772669-1-tycho@kernel.org>
- <20260223162900.772669-4-tycho@kernel.org>
- <aZyC89v9JAVEPeLt@google.com>
- <aZzRVXp_E3cMcgtX@tycho.pizza>
- <aZ3k01UObX03Sv-n@google.com>
+	s=arc-20240116; t=1772051412; c=relaxed/simple;
+	bh=4jnbcmael5qBgaF1gqxkO853WBkZDyaOLTkDkyFGMLA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A2dltvbgdj4If67HUVU7z7BySgnYotxjZ0gtuIPURIMarq+yDvDD0IrCF3EevEVFmUskfuLjW9j4WDysYDz8fR9ShQ3DYvoOuTaFXF+h0+npsYK/u/ed1ef+2xrw4avqPlCqVArH6e1MEdV9b6Pz+IF0fwbRmj9NJgmh1674EBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=Lxsmc7YD; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=jBPawLHR; arc=none smtp.client-ip=135.148.138.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
+DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1772051376; bh=My9u5birv1kH34rIhZEQUrP
+	wuoM51T+G223wO8ZqYNs=; b=Lxsmc7YDX2A3i4xpr5PL8ZQ+c5pJlMNP8HRqzWLni9CjvbzoSt
+	8Nn1VHcpAs08pSyMhoM2AisVRUGkQiWeMK3ovwdJgB01UnifCrtiGf4hUvtzdfoEXk1ReRtGzaI
+	h+RwkIp1tl9D3acsuvazTNzv/rEmb2JnNNWnrkJFfbzYUn3av2mlEDRJPyTFgtBls1v+I189CE9
+	5uR47P0xn1sh5o6WEo2nM5JOc6o2/wJeznnbWn/46NGoaHUAs8Qzkg1z6DqQQgH54fyIvfbsWD8
+	wiPiQwP7zag+fnaowd7WRuNvzf6/lQvdguWc7vpTJLm2Gtcq0fe5qfkbm66CM3L0kXQ==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1772051376; bh=My9u5birv1kH34rIhZEQUrP
+	wuoM51T+G223wO8ZqYNs=; b=jBPawLHRybL34wukcf5AN8AQfTgFJwRCelnwp5fYh9LoTACZfG
+	53TxW/fX0CtAd/xpAyLuw9R9WelHmdzWi5CA==;
+From: Daniel Hodges <git@danielhodges.dev>
+To: bpf@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	vadim.fedorenko@linux.dev,
+	song@kernel.org,
+	yatsenko@meta.com,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	yonghong.song@linux.dev,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	Daniel Hodges <git@danielhodges.dev>
+Subject: [PATCH bpf-next v8 0/4] Add cryptographic hash and signature verification kfuncs to BPF
+Date: Wed, 25 Feb 2026 15:29:31 -0500
+Message-ID: <20260225202935.31986-1-git@danielhodges.dev>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aZ3k01UObX03Sv-n@google.com>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[danielhodges.dev,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[danielhodges.dev:s=202510r,danielhodges.dev:s=202510e];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21166-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21169-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,iogearbox.net,linux.dev,meta.com,gmail.com,google.com,fomichev.me,gondor.apana.org.au,davemloft.net,danielhodges.dev];
+	DKIM_TRACE(0.00)[danielhodges.dev:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[git@danielhodges.dev,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tycho@kernel.org,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tycho.pizza:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 21A6719C08D
+	NEURAL_HAM(-0.00)[-0.971];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[danielhodges.dev:mid,danielhodges.dev:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9180E19D40D
 X-Rspamd-Action: no action
 
-On Tue, Feb 24, 2026 at 09:50:11AM -0800, Sean Christopherson wrote:
-> On Mon, Feb 23, 2026, Tycho Andersen wrote:
-> > On Mon, Feb 23, 2026 at 08:40:19AM -0800, Sean Christopherson wrote:
-> > > On Mon, Feb 23, 2026, Tycho Andersen wrote:
-> > > > From: "Tycho Andersen (AMD)" <tycho@kernel.org>
-> > > > 
-> > > > The kernel allows setting the RAPL_DIS policy bit, but had no way to set
-> > > 
-> > > Please actually say what RAPL_DIS is and does, and explain why this is the
-> > > correct approach.  I genuinely have no idea what the impact of this patch is,
-> > > (beyond disabling something, obviously).
-> > 
-> > Sure, the easiest thing is probably to quote the firmware PDF:
-> > 
-> >     Some processors support the Running Average Power Limit (RAPL)
-> >     feature which provides information about power utilization of
-> >     software. RAPL can be disabled using the RAPL_DIS flag in
-> >     SNP_INIT_EX to disable RAPL while SNP firmware is in the INIT
-> >     state. Guests may require that RAPL is disabled by using the
-> >     POLICY.RAPL_DIS guest policy flag.
-> 
-> Ah, I assume this about disabling RAPL to mitigate a potential side channel?  If
-> so, please call that out in the changelog.
-> 
-> And does this disable RAPL for _everything_?  Or does it just disable RAPL for
-> SNP VMs?  If it's the former, then burying this in drivers/crypto/ccp/sev-dev.c
-> feels wrong.
+This patch series enhances BPF's cryptographic functionality by introducing
+kernel functions for SHA hashing and ECDSA signature verification. The changes
+enable BPF programs to verify data integrity and authenticity across
+networking, security, and observability use cases.
 
-Presumably you're right on both counts, but I've asked our firmware
-team to clarify exactly what happens.
+The series addresses two gaps in BPF's cryptographic toolkit:
 
-I guess that means it should be kvm-amd.rapl_disable?
+1. Cryptographic hashing - supports content verification and message digest
+   preparation
+2. Asymmetric signature verification - allows validation of signed data
+   without requiring private keys in the datapath
 
-Thanks,
+Use cases include:
+- Verifying signed network packets or application data in XDP/TC programs
+- Integrity checks within tracing and security monitoring
+- Zero-trust security models with BPF-based credential verification
+- Content-addressed storage in BPF-based filesystems
 
-Tycho
+The implementation leverages existing BPF patterns: it uses bpf_dynptr for
+memory safety, reuses kernel crypto libraries (lib/crypto/sha256.c and
+crypto/ecdsa.c) rather than reimplementing algorithms, and provides
+context-based APIs supporting multiple program types.
+
+v1: https://lore.kernel.org/bpf/20251117211413.1394-1-git@danielhodges.dev/
+
+v2: https://lore.kernel.org/bpf/20251205173923.31740-1-git@danielhodges.dev/
+- Fixed redundant __bpf_dynptr_is_rdonly() checks (Vadim)
+- Added BPF hash algorithm type registration module in crypto/ subsystem
+- Added CONFIG_CRYPTO_HASH2 guards around bpf_crypto_hash() kfunc and its
+  BTF registration, matching the pattern used for CONFIG_CRYPTO_ECDSA
+- Added mandatory digestsize validation for hash operations
+
+v3: https://lore.kernel.org/bpf/20251208030117.18892-1-git@danielhodges.dev/
+- Fixed patch ordering - header changes now in separate first commit before
+  crypto module to ensure bisectability (bot+bpf-ci)
+- Fixed type mismatch - changed u32 to u64 for dynptr sizes in
+  bpf_crypto_hash() to match __bpf_dynptr_size() return type (Mykyta)
+- Added CONFIG_CRYPTO_ECDSA to selftest config (Song)
+- Refactored test code duplication with setup_skel() helper (Song)
+- Added copyright notices to all new files
+
+v4: https://lore.kernel.org/bpf/20260105173755.22515-1-git@danielhodges.dev/
+- Reused common bpf_crypto_ctx structure for hash and signature operations
+  instead of separate context types (Song)
+- Fixed integer truncation in bpf_crypto_hash when data_len > UINT_MAX
+- Corrected KF_RCU flags for ECDSA kfuncs (only bpf_ecdsa_verify needs KF_RCU)
+- Updated MAINTAINERS file in test patches
+- Refactored selftests to use crypto_common.h for kfunc declarations
+
+v5: https://lore.kernel.org/bpf/20260120184701.23082-1-git@danielhodges.dev/
+- Fixed bisectability: moved bpf_crypto_type_id enum and type_id field
+  introduction to the hash module commit, before it's used by hash kfunc
+- Renamed kfuncs from bpf_ecdsa_* to bpf_sig_* since signature verification
+  is not ECDSA-specific (Vadim)
+- Added NULL checks in bpf_crypto_sig wrapper functions for optional
+  digest_size and max_size callbacks to prevent NULL pointer dereference
+- Added extra validation in bpf_sig_digestsize/bpf_sig_maxsize kfuncs to
+  return -EOPNOTSUPP when underlying algorithm returns 0
+- Renamed test files from ecdsa_verify to sig_verify for consistency
+
+v6: https://lore.kernel.org/bpf/20260124174349.16861-1-git@danielhodges.dev/
+- Fixed bisectability issue flagged by CI: squash hash module and hash kfunc
+  commits so NULL checks in bpf_crypto_ctx_create() are present before the
+  hash type is registered (bot+bpf-ci)
+- Squash signature module and signature kfunc commits for the same reason
+- This reduces the series from 7 to 4 commits while preserving all functionality
+- Added type_id checks to bpf_crypto_encrypt() and bpf_crypto_decrypt() to
+  prevent NULL pointer dereference when called with non-skcipher contexts
+
+v7: https://lore.kernel.org/bpf/20260202144749.22932-1-git@danielhodges.dev/
+- Moved crypto/bpf_crypto_skcipher.c type_id assignment from signature patch
+  to hash patch for better logical organization
+- Added missing CONFIG_CRYPTO_SIG, CONFIG_CRYPTO_SIG2, CONFIG_CRYPTO_ECDSA,
+  and CONFIG_CRYPTO_ECRDSA to selftest config to ensure signature verification
+  tests can build properly
+
+v8:
+- Fixed bpf_sig_keysize() documentation to correctly state return value is
+  in bits, not bytes, matching the underlying crypto_sig_keysize() API
+  (bot+bpf-ci)
+
+Daniel Hodges (4):
+  bpf: Add hash kfunc for cryptographic hashing
+  selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  bpf: Add signature verification kfuncs
+  selftests/bpf: Add tests for signature verification kfuncs
+
+ MAINTAINERS                                   |   6 +
+ crypto/Makefile                               |   6 +
+ crypto/bpf_crypto_shash.c                     |  96 ++++++
+ crypto/bpf_crypto_sig.c                       |  89 ++++++
+ crypto/bpf_crypto_skcipher.c                  |   1 +
+ include/linux/bpf_crypto.h                    |  13 +
+ kernel/bpf/crypto.c                           | 210 ++++++++++++-
+ tools/testing/selftests/bpf/config            |   6 +
+ .../selftests/bpf/prog_tests/crypto_hash.c    | 210 +++++++++++++
+ .../selftests/bpf/prog_tests/sig_verify.c     | 163 ++++++++++
+ .../selftests/bpf/progs/crypto_common.h       |   8 +
+ .../testing/selftests/bpf/progs/crypto_hash.c | 231 ++++++++++++++
+ .../testing/selftests/bpf/progs/sig_verify.c  | 286 ++++++++++++++++++
+ 13 files changed, 1316 insertions(+), 9 deletions(-)
+ create mode 100644 crypto/bpf_crypto_shash.c
+ create mode 100644 crypto/bpf_crypto_sig.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sig_verify.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sig_verify.c
+
+--
+2.52.0
+
 
