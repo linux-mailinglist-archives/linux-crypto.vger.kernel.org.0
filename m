@@ -1,143 +1,160 @@
-Return-Path: <linux-crypto+bounces-21193-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21194-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wOLgEo7zn2kyfAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21193-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 08:17:34 +0100
+	id KGikAvz/n2n3fAQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21194-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 09:10:36 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4AF81A1B87
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 08:17:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85FC61A2530
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 09:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E7F3D301FF82
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 07:17:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A8A8D3045E2E
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 08:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4902738BF90;
-	Thu, 26 Feb 2026 07:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0138387599;
+	Thu, 26 Feb 2026 08:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ch/vhgji"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sg-1-103.ptr.blmpb.com (sg-1-103.ptr.blmpb.com [118.26.132.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5AB63876A5;
-	Thu, 26 Feb 2026 07:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23D518DF9D
+	for <linux-crypto@vger.kernel.org>; Thu, 26 Feb 2026 08:07:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772090250; cv=none; b=SvDYYM88Xg0lnVAF/2u8Hmefi6fBol55YJNUBtYg2JFUgq1WmnNtwt6/yypBo70K/cZqZSWS13LulCngdEQzU3pfUdRgAex/j0QzZW/ZaBheNeP6TUvV7I1kD1IlTuRA3RbV3NRIUEebqk2gA5CFkOcaRj4sGEyV6jfHTle2GLA=
+	t=1772093249; cv=none; b=OhY2XA0/usbENOVocTsnaW2ilUvrtCwC/9/IQzSGvpO6HCNsNIvfO9hRHJLBH+tAwGxZPbOq8CuuDav2VWHkgmV77feqHfoMcEntTO1hEEd5zubqhQQan/CpP93vIb72IDVsg3VlYOoiHamCP6pRrLFUHCOgS93N+urccYFEQZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772090250; c=relaxed/simple;
-	bh=hAuYZQIr9N/o7uDEdBaSaPZ0TbhyTQANp3RRYiMFIp8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Laf7qcnX8x+LQcOSS1GQX1i9pZKpwiRlVdbaZlNQv45XTnycioOemmJtUPs0+Gs6i/HjAlMzm82JZxmmIAkrtbhbD7th4qhxmiUoqnWkN8SGFWGV2aFGmfWwwCbCa1QAEudJOuuIFnPXGgNcPo3p0RyGrTyEE0WfSTCbIwZFgdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.95.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384
-	 client-signature ECDSA (secp384r1) client-digest SHA384)
-	(Client CN "*.hostsharing.net", Issuer "GlobalSign GCC R6 AlphaSSL CA 2025" (verified OK))
-	by bmailout1.hostsharing.net (Postfix) with ESMTPS id EA29A20201A0;
-	Thu, 26 Feb 2026 08:17:18 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id E49DB25ED1; Thu, 26 Feb 2026 08:17:18 +0100 (CET)
-Date: Thu, 26 Feb 2026 08:17:18 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Kepplinger-Novakovic Martin <Martin.Kepplinger-Novakovic@ginzinger.com>
-Cc: "ebiggers@google.com" <ebiggers@google.com>,
-	"horia.geanta@nxp.com" <horia.geanta@nxp.com>,
-	"pankaj.gupta@nxp.com" <pankaj.gupta@nxp.com>,
-	"gaurav.jain@nxp.com" <gaurav.jain@nxp.com>,
-	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"ignat@cloudflare.com" <ignat@cloudflare.com>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] crypto: caam - RSA encrypt doesn't always complete new
- data in out_buf
-Message-ID: <aZ_zfnKVnTaG_4bk@wunner.de>
-References: <6029acc0f0ddfe25e2537c2866d54fd7f54bc182.camel@ginzinger.com>
- <aZ296wd7fLE6X3-U@wunner.de>
- <e1d7ad1106dbb259f7c61bdd1910ac9f08012725.camel@ginzinger.com>
- <aZ3Uqaec79TUrP2I@wunner.de>
- <e36dd6fa756015ec1f2a16002fabfa941c33d367.camel@ginzinger.com>
- <aZ6vF1CHpcp5d5qk@wunner.de>
- <5f9c1e7ec61065a2665a2ec70338e05e551435d4.camel@ginzinger.com>
+	s=arc-20240116; t=1772093249; c=relaxed/simple;
+	bh=XcL9pmAEfGRCN/6Z6lSkX9ogPH00OwuPMDnW23l8+yQ=;
+	h=Cc:From:Subject:Mime-Version:Message-Id:To:Date:Content-Type; b=A0ahCRG5UFmSyiGqmAdOuQKso7pPAvqkzrP50AfaRZkHX6fiS+zwabMnAiMOrbSWuCKDedLTzzEpWgZtqVlbmRrtIC3PIivES+BEG6ZmLMO/dEJw6GeE7XutdrAX8x8DKPd94BeueXTL88Hq0ms05GreX4LJ/PaxIN+PqUsZ/uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ch/vhgji; arc=none smtp.client-ip=118.26.132.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=2212171451; d=bytedance.com; t=1772093241; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=vJSuFht6RGC0nbWiuHrS0TWGPPOqhhbCvK2ylT/s2oo=;
+ b=ch/vhgjionf34lxOXzy+MFR+5+mY9H0+ZZe782PeTPnpWVgfSAiHDdB4+6C1QO0J1ind0W
+ +c1khqIJ08TUGMzGoXsH5Ef+q/Zwa1XhvR3v2mbh15uoFPkm6PF4LRls2teNuvmR74ILVD
+ 8f/CRSL3+9zxXO1EcXXZrcbEWNBR3PYwmisq9xjSAE3pjJSrIn0cHRHLShiAIU3h9JBNon
+ ksgtc5Mh2Tk+S3HAmq3cEzvdHkvfQULbOwaTFtLz4m933OeDTdIanlzLLAtiQmaro4a8z5
+ MLVXn8CixVhvu4mz6AYv6Sj60F+22s5BjtxaVk3OCIs3A2AtpbmL9SEhrhUdIw==
+X-Lms-Return-Path: <lba+2699fff37+e0b9d7+vger.kernel.org+zhouchuyi@bytedance.com>
+Cc: <linux-crypto@vger.kernel.org>, "Chuyi Zhou" <zhouchuyi@bytedance.com>
+From: "Chuyi Zhou" <zhouchuyi@bytedance.com>
+Subject: [PATCH v2] padata: Remove cpu online check from cpu add and removal
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f9c1e7ec61065a2665a2ec70338e05e551435d4.camel@ginzinger.com>
+Mime-Version: 1.0
+Message-Id: <20260226080703.3157990-1-zhouchuyi@bytedance.com>
+Content-Transfer-Encoding: 7bit
+To: <herbert@gondor.apana.org.au>, <steffen.klassert@secunet.com>, 
+	<daniel.m.jordan@oracle.com>
+Date: Thu, 26 Feb 2026 16:07:03 +0800
+X-Original-From: Chuyi Zhou <zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
+Content-Type: text/plain; charset=UTF-8
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MV_CASE(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[bytedance.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[bytedance.com:s=2212171451];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21193-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21194-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[wunner.de: no valid DMARC record];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lukas@wunner.de,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	R_DKIM_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C4AF81A1B87
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhouchuyi@bytedance.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[bytedance.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bytedance.com:mid,bytedance.com:dkim,bytedance.com:email,oracle.com:email]
+X-Rspamd-Queue-Id: 85FC61A2530
 X-Rspamd-Action: no action
 
-On Wed, Feb 25, 2026 at 08:47:07AM +0000, Kepplinger-Novakovic Martin wrote:
-> Am Mittwoch, dem 25.02.2026 um 09:13 +0100 schrieb Lukas Wunner:
-> > On Wed, Feb 25, 2026 at 08:02:08AM +0000, Kepplinger-Novakovic Martin wrote:
-> > > ok I can confirm: "git checkout 2f1f34c1bf7b^" indeed is ok and
-> > > 2f1f34c1bf7b is bad.
-> > > 
-> > > It's not the same behaviour I described (from v6.18/v6.19. that could be
-> > > a combination of bugs) because on 2f1f34c1bf7b regdb cert verify succeeds,
-> > > only dm-verity fails
-> > 
-> > Hm, I assume CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API=n magically
-> > makes the issue go away?
-> 
-> correct. where I see that specific issue (on 2f1f34c1bf7b and v6.7)
-> "caam_jr 2142000.jr: 40000013: DECO: desc idx 0: Header Error.
-> Invalid length or parity, or certain other problems."
-> it then goes away.
-> 
-> on v6.18 CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API=n doesn't seem to help
-> and I see the bugreport's behaviour.
+During the CPU offline process, the dying CPU is cleared from the
+cpu_online_mask in takedown_cpu(). After this step, various CPUHP_*_DEAD
+callbacks are executed to perform cleanup jobs for the dead CPU, so this
+cpu online check in padata_cpu_dead() is unnecessary.
 
-I note that for the RSA verification, since 8552cb04e083 the same buffer
-in memory is used for source and destination of RSA encrypt operation
-invoked by crypto/rsassa-pkcs1.c.
+Similarly, when executing padata_cpu_online() during the
+CPUHP_AP_ONLINE_DYN phase, the CPU has already been set in the
+cpu_online_mask, the action even occurs earlier than the
+CPUHP_AP_ONLINE_IDLE stage.
 
-That's fine for the RSA software implementation in crypto/rsa.c but
-I could very well imagine it causes problems with an RSA accelerator,
-particularly because rsa_edesc_alloc() in drivers/crypto/caam/caampkc.c
-now maps the same buffer with DMA_TO_DEVICE and then DMA_FROM_DEVICE.
+Remove this unnecessary cpu online check in __padata_add_cpu() and
+__padata_remove_cpu().
 
-On v6.19, 8552cb04e083 seems to revert cleanly.  Could you try that
-and see if it helps?  Be sure to set CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API=n
-and CONFIG_CRYPTO_DEV_FSL_CAAM_PKC_API=y so that we focus on the RSA
-issue for now.  We can look at the ahash one afterwards.
+Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+Acked-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+---
+ kernel/padata.c | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
-Thanks,
-
-Lukas
+diff --git a/kernel/padata.c b/kernel/padata.c
+index aa66d91e20f9..53460f714065 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -732,32 +732,22 @@ EXPORT_SYMBOL(padata_set_cpumask);
+ 
+ static int __padata_add_cpu(struct padata_instance *pinst, int cpu)
+ {
+-	int err = 0;
+-
+-	if (cpumask_test_cpu(cpu, cpu_online_mask)) {
+-		err = padata_replace(pinst);
++	int err = padata_replace(pinst);
+ 
+-		if (padata_validate_cpumask(pinst, pinst->cpumask.pcpu) &&
+-		    padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+-			__padata_start(pinst);
+-	}
++	if (padata_validate_cpumask(pinst, pinst->cpumask.pcpu) &&
++	    padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
++		__padata_start(pinst);
+ 
+ 	return err;
+ }
+ 
+ static int __padata_remove_cpu(struct padata_instance *pinst, int cpu)
+ {
+-	int err = 0;
+-
+-	if (!cpumask_test_cpu(cpu, cpu_online_mask)) {
+-		if (!padata_validate_cpumask(pinst, pinst->cpumask.pcpu) ||
+-		    !padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
+-			__padata_stop(pinst);
+-
+-		err = padata_replace(pinst);
+-	}
++	if (!padata_validate_cpumask(pinst, pinst->cpumask.pcpu) ||
++	    !padata_validate_cpumask(pinst, pinst->cpumask.cbcpu))
++		__padata_stop(pinst);
+ 
+-	return err;
++	return padata_replace(pinst);
+ }
+ 
+ static inline int pinst_has_cpu(struct padata_instance *pinst, int cpu)
+-- 
+2.20.1
 
