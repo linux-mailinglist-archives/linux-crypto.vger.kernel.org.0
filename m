@@ -1,36 +1,37 @@
-Return-Path: <linux-crypto+bounces-21214-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21215-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AKOOCrJgoGmMiwQAu9opvQ
-	(envelope-from <linux-crypto+bounces-21214-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 16:03:14 +0100
+	id WM+lHlFeoGleiwQAu9opvQ
+	(envelope-from <linux-crypto+bounces-21215-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 15:53:05 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5C001A82E7
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 16:03:08 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC2D1A7FDA
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 15:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2129930091DF
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 14:46:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6652430B0A19
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Feb 2026 14:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828073D4111;
-	Thu, 26 Feb 2026 14:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086113D905F;
+	Thu, 26 Feb 2026 14:46:16 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527563D5225;
-	Thu, 26 Feb 2026 14:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBAF3D9045;
+	Thu, 26 Feb 2026 14:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772117174; cv=none; b=cDhr48nQReRQb0zmZYS4gS6NNrk/i8DuWhc4XouvwwnTsPmEWjiJEpFUEyFSvaciMFHfzyJkYAJME/GuI3jIRifEFey6F1QMsy0HCGMVhTPz3dVjHHm+/ogPwyD57Qng4bg7G4jEZqG3LeD46GZena1UIfAlC8s1QF7tIRtfD+s=
+	t=1772117175; cv=none; b=FdsFCLW26PhEhhXoXaqY2ndrj6X3zK7rgV0sOfFDepki5yVSc2b4gvLQxKJetG57pEouSEBb2txbidnszrUUlrcQjMoKUjKGoyhRU8dix+QiS8T22Pc+NFTf3pVBYxNp0dkS4D9DM/Fn7PpTkGtlPiMqePv2Uh8ltB8fY7GoGk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772117174; c=relaxed/simple;
-	bh=dOx7L9FMXSNyyO9RDoQZeW4I5roMbAYAp6pktIjCurw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AeepFRFEuN/uQrTjXmw7l5z+OLsxDtni6WsuH0jJyyvtvALhPonWp/Rp7Mv00hna50Q6xNiMpeJAryEkgOzJmsdpH/lJvQw6IalgQ3KBx0OBD+0Su2ZdY8mRT+iUeIZo5zEL2KwAxPxLvjrIUeIs4bWvc6BIFBORmtrtnBLzmfI=
+	s=arc-20240116; t=1772117175; c=relaxed/simple;
+	bh=kR1hjMinjNvTwkQ2I8iZSR/aiZt5ZceOZNw87uJHnC4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=d5x+EBqnbRuYTJhilce6NSopLwC0YbysItB4otpxAiFcDmUeKnyFkaIeLYaAC1HTUIENWV1foIQc1TIea0o/Tlu9YM6JZLHDxd5eLoD6XRN4tIdrjGv4zShnNJz6ZJPKH9CHQYEe+QDA+pVaTPV26DhEVmpWprymjMGKeGdQ11o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1573C116C6;
-	Thu, 26 Feb 2026 14:46:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 556A3C19422;
+	Thu, 26 Feb 2026 14:46:14 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Eric Biggers <ebiggers@kernel.org>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
@@ -38,10 +39,12 @@ To: Eric Biggers <ebiggers@kernel.org>,
 Cc: linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 0/5] crypto: Drop stale usages in various help texts
-Date: Thu, 26 Feb 2026 15:46:04 +0100
-Message-ID: <cover.1772116160.git.geert+renesas@glider.be>
+Subject: [PATCH 1/5] crypto: Clean up CRYPTO_BLAKE2B usage
+Date: Thu, 26 Feb 2026 15:46:05 +0100
+Message-ID: <98b983d2f2bddf0e5e8e1c970446c3c64527ef89.1772116160.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1772116160.git.geert+renesas@glider.be>
+References: <cover.1772116160.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -54,66 +57,54 @@ X-Spamd-Result: default: False [0.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[glider.be];
+	TAGGED_FROM(0.00)[bounces-21215-lists,linux-crypto=lfdr.de,renesas];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21214-lists,linux-crypto=lfdr.de,renesas];
-	RSPAMD_URIBL_FAIL(0.00)[linux-m68k.org:query timed out];
+	DMARC_NA(0.00)[glider.be];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	RSPAMD_EMAILBL_FAIL(0.00)[geert.linux-m68k.org:query timed out];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[geert@glider.be,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-0.970];
 	MID_RHS_MATCH_FROM(0.00)[];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.986];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto,renesas];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,glider.be:mid,linux-m68k.org:email]
-X-Rspamd-Queue-Id: B5C001A82E7
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,glider.be:mid,glider.be:email,blake2.net:url]
+X-Rspamd-Queue-Id: 1EC2D1A7FDA
 X-Rspamd-Action: no action
 
-	Hi all,
+Btrfs stopped using this BLAKE2b implementations in commit
+fe11ac191ce0ad91 ("btrfs: switch to library APIs for checksums").
 
-This patch series drops stale references to subsystems that are using
-various crypto algoritms.  It was triggered by "make oldconfig" in
-v7.0-rc1 showing new prompts about BLAKE2b, SHA-256, xxHash, and CRC32c
-algorithms.  When querying these symbols, the corresponding help texts
-incorrectly claim they are used by btrfs.
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ crypto/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-Notw that even if correct, there is no need for such references, as all
-users should select the needed symbols anyway.
-
-Geert Uytterhoeven (5):
-  crypto: Drop stale CRYPTO_BLAKE2B usage
-  crypto: Drop stale CRYPTO_SHA256 usage
-  crypto: Drop stale CRYPTO_XXHASH usage
-  crypto: Drop stale CRYPTO_CRC32C usage
-  crypto: Drop stale CRYPTO_CRC32 usage
-
- crypto/Kconfig | 9 ---------
- 1 file changed, 9 deletions(-)
-
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index e2b4106ac961eb52..8bc95e69faa5557a 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -876,8 +876,6 @@ config CRYPTO_BLAKE2B
+ 	  - blake2b-384
+ 	  - blake2b-512
+ 
+-	  Used by the btrfs filesystem.
+-
+ 	  See https://blake2.net for further information.
+ 
+ config CRYPTO_CMAC
 -- 
 2.43.0
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
 
