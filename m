@@ -1,48 +1,48 @@
-Return-Path: <linux-crypto+bounces-21330-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21331-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CFTDF4qdo2l2IQUAu9opvQ
-	(envelope-from <linux-crypto+bounces-21330-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 02:59:38 +0100
+	id MINsOoWfo2k3IQUAu9opvQ
+	(envelope-from <linux-crypto+bounces-21331-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 03:08:05 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1212C1CC85E
-	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 02:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9182B1CD08E
+	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 03:08:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 21AE63024B12
-	for <lists+linux-crypto@lfdr.de>; Sun,  1 Mar 2026 01:54:09 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B0F0930217FB
+	for <lists+linux-crypto@lfdr.de>; Sun,  1 Mar 2026 02:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5A930F52A;
-	Sun,  1 Mar 2026 01:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870032D979C;
+	Sun,  1 Mar 2026 02:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F9tH+X83"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E76EfzvF"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2DA302165;
-	Sun,  1 Mar 2026 01:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FD82673AA;
+	Sun,  1 Mar 2026 02:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772329970; cv=none; b=tce1jzLRYl4S/AA/f+P1FO+5Mqoc/ZbmQ70ctogOjrJ1EIoHk5O9YOTxfXeUQybUijJK5aowiYSlHccqMk//w3FPVVtSpHLUnw+08tvzY2jpoGc6NPK/CEoimFJpI3Po3Rx0h44T6CrC9Xvm0WE9WZWPA/wjCGb8rKW1TLRnU7s=
+	t=1772330558; cv=none; b=koWgn3Zjlv4LpUbiltxKBl8VYrAkHxVxSUyVaS1UeF1yE4gS7YSTPoxntB5upNqR+AoqpmqeccDPRk1XRjZY9FF4qL9cmo+p/WeMvUJ2BezXXdirws1Y2jRIcH2ucUVRgi+Jg73iWDBtn9061DM53Dqy42lrWr+lXxUXU2pXth4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772329970; c=relaxed/simple;
-	bh=dnQbL4zJDKzoriq6ePiOoCGht+7q2cSFSjD+tVG8rnA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nMWdYkaIbVmLPq7AK9krYMMoIOhgkmTFJWj+obUsUvMbmXEl9tMQzF7IoB0wQSfnobgS6Cs75OiWC62SmNPCk6I9k6AsObSz5J3++MsJXcfqryNX3fci5cwi8xvZ1LYOjItYgMctGIY1XQtliFG24IbLdAvT+Zlbnj+x7jB4Tao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F9tH+X83; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E52C19421;
-	Sun,  1 Mar 2026 01:52:49 +0000 (UTC)
+	s=arc-20240116; t=1772330558; c=relaxed/simple;
+	bh=JKW9bFE7w6IuU9cJT2I+i+nEdFMx6HAUbjvVjmH5b5E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Or87H7136FwVM+iOe+wSH6iIROY0eUzcw13ZmbYNilYzCrPePQ9hSQkNAfwDEleA4plv56f+M9YQFNuxNz+4r/hYA0GY9ZhsvSwnG+sbEPHaR++tZmOe5TcvwioKf8smX/EHlEckEEPrOU9gzX/HZfhNUm0ADeS2ho+eT6xn8q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E76EfzvF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85657C19421;
+	Sun,  1 Mar 2026 02:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772329970;
-	bh=dnQbL4zJDKzoriq6ePiOoCGht+7q2cSFSjD+tVG8rnA=;
+	s=k20201202; t=1772330558;
+	bh=JKW9bFE7w6IuU9cJT2I+i+nEdFMx6HAUbjvVjmH5b5E=;
 	h=From:To:Cc:Subject:Date:From;
-	b=F9tH+X835u2+rFC9RmITcw+jOSGzy+88Kgd2k0ZE8zUR8wQBNnLF8xS7S3I2kX5nw
-	 GlbQT/Ehghu0ZGU88foZ5N83OV0dlh8Gk8ygMAsbG5VV0Vn28tOKKZVgo44tKcAShF
-	 4ywknD1wYxWvOwQYwuVUp/IX5isXQ6V3EMB91XIGzFatPE3CJNU3a0nJUBh9ZW9+Jw
-	 zZ5uZfhJEx9Pf3A/4/PB1eACc4YisU/+TYJff+F0hvRhgi4b2g8u0YFdMeVvnvuq5I
-	 gAQ1Cq+udQuLquSJKsljnS/sbT47ixnLOMNzJ/WcyIl3YOoN3dz8RWiHIl+UdDsMxv
-	 IlqHAL6VSd76g==
+	b=E76EfzvFX/S4e5GJlf3XZGBAq6dEOfUDWwOlpn5z/PGa3xbJoMrtahxSNthlKJeNI
+	 GHahaUwjcyGva5mvmrh+Ui5ty6KfHtPOPqk9fQHAUH5qul43rhR4NgFTEVRlFSQntH
+	 Pe4LBGsTBfR+b6J6fDyNiZU9OM75SZIt6oDXfXPFYvxgCsq0wWxkoq1IdnWBE1yZaj
+	 omaBG/C68Y5Ph/0ScisqsQRlxlTQznV6VCQgaTUSEmOXMNqbmE8tFUXw/VP3yHy6r4
+	 0aSPLxM1PG8oGvKpXn0NnIFRuwlaqaGu+p9HHh5yQtbW9bNWb5qVmp1O6ZozR3/hU5
+	 bc6+I6p8Q2uQg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	maobibo@loongson.cn
@@ -50,9 +50,9 @@ Cc: Jason Wang <jasowang@redhat.com>,
 	"Michael S. Tsirkin" <mst@redhat.com>,
 	virtualization@lists.linux.dev,
 	linux-crypto@vger.kernel.org
-Subject: FAILED: Patch "crypto: virtio: Add spinlock protection with virtqueue notification" failed to apply to 5.15-stable tree
-Date: Sat, 28 Feb 2026 20:52:48 -0500
-Message-ID: <20260301015248.1719424-1-sashal@kernel.org>
+Subject: FAILED: Patch "crypto: virtio: Add spinlock protection with virtqueue notification" failed to apply to 5.10-stable tree
+Date: Sat, 28 Feb 2026 21:02:36 -0500
+Message-ID: <20260301020236.1730405-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -75,7 +75,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21330-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21331-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
@@ -90,11 +90,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[loongson.cn:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1212C1CC85E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,loongson.cn:email]
+X-Rspamd-Queue-Id: 9182B1CD08E
 X-Rspamd-Action: no action
 
-The patch below does not apply to the 5.15-stable tree.
+The patch below does not apply to the 5.10-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
