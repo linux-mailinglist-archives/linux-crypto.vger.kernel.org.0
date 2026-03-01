@@ -1,89 +1,64 @@
-Return-Path: <linux-crypto+bounces-21337-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21342-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QCn2MVAspGnZZgUAu9opvQ
-	(envelope-from <linux-crypto+bounces-21337-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 13:08:48 +0100
+	id WFg/GkNipGnIfAUAu9opvQ
+	(envelope-from <linux-crypto+bounces-21342-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 16:58:59 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9531CF87E
-	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 13:08:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFFC91D082D
+	for <lists+linux-crypto@lfdr.de>; Sun, 01 Mar 2026 16:58:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 15384301546D
-	for <lists+linux-crypto@lfdr.de>; Sun,  1 Mar 2026 12:08:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BA8FE301DBA2
+	for <lists+linux-crypto@lfdr.de>; Sun,  1 Mar 2026 15:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A681E3203A0;
-	Sun,  1 Mar 2026 12:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A21A2877C3;
+	Sun,  1 Mar 2026 15:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MlgJVs6I"
+	dkim=pass (1024-bit key) header.d=onet.pl header.i=@onet.pl header.b="ounlYqP0"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpo67.poczta.onet.pl (smtpo67.poczta.onet.pl [141.105.16.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF582D7812
-	for <linux-crypto@vger.kernel.org>; Sun,  1 Mar 2026 12:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5AA2C0296;
+	Sun,  1 Mar 2026 15:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.16.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772366888; cv=none; b=KBgPsbXX3RVHASWGYV6evR94ctbsxOcWzHEz9uvSgrtdTzKR62/ujTe5BbEdo7UMHSvuk/U/TyOvc5+CLPnSz7mexjBTW4/auryt6N2PdLlfRUuqFtvXoN9/Y7/bMnpl9lNMDh/NSRLJ7WGih+IxM94XMYpaCwJypjilGvkUF2s=
+	t=1772380594; cv=none; b=hcPy83MCNNrPLCLrfaO7TVMQ0EFQBkgJcdGn0KBm7x58aILJPI4qPtQ2pY//mvdWy2EdXSlOIyW5F2LTRSIhRkmUncYm46biLaSocl7E8OUjot1kSL0O7povh/BSEhK1LESGsbrEsSZx8fw/kpriw3DmnA6uCaDwjMAspKzhU3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772366888; c=relaxed/simple;
-	bh=cuvQUE2Fhntyo9wZzFh6Sr6QfYFezsxo+UdSSyYB44w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l8r2tjLWbixp8iEuDXv3bVGM0XYUot5+ZWdEH391XqymXRRSIGuHw2gn+x1U3n3pvxp+i9jQovuBfPYoWFP04uKDjtZYlhVkZ9mssthDttLY5zpiPVzFftxGRrgayHAmXwmjoVPVwNPhYDLx6kgyUeGDjG/KSIoJBWiDcPdgx20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MlgJVs6I; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-82748095892so1473892b3a.0
-        for <linux-crypto@vger.kernel.org>; Sun, 01 Mar 2026 04:08:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772366887; x=1772971687; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qG1HgotwU2avY/4uG3n4wNhHxPZiFDdyIpVyiHq5gWs=;
-        b=MlgJVs6IDPPF2YdwSDQtX9E5OrdhIO/10jF7XYiAzs1e3vYUXFmi1hJHW7PDNd0WnD
-         4+eHjL1v2crZ/Wsk+gugcfDXZ9DnZvyfaeKmvCKpowGjdrBtga5pcEtOLYlcf0+u0ZKG
-         veBn0z4F3ou9xodTgslYxDj3v+O39neGcQ6l1+/LCIWUwrwVFWMQBrr1+8MGpKFbqR8e
-         KdB7V9I+iunSl0PT6ydg5iHaPv9iN0AboEolDv7gBKlUoZLSz2g+hBoMI1EZ7OTDG5Td
-         Q4l3R/ri7ZHvwQj5t5auNtTmbqVVwi7Hg8BNmTFIlYFJ8PWYUZi+FcLKUxJX6679thJP
-         xniQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772366887; x=1772971687;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qG1HgotwU2avY/4uG3n4wNhHxPZiFDdyIpVyiHq5gWs=;
-        b=fgxAVj5wpGsYJgTPRUdpf2YrSTKSa1EnZIHbdDWEU9wGJy4FSr4alpaKy41Q9KHka+
-         IgFfPvmCzvmXJl7RBP1nZlpfoL/L/BPZDoJwxBUexDHliOYqrkziycFDYH6zgXaSwxoe
-         aQ0BpaVGgaCJXKcKEjOOL5QNmVIxKSgC3rkhGjcWb2ygGd6Gh/4hJDOekMBUgKYYGH1C
-         PiNLReFvV+kjlLaXG2lvBUrGY1AI9t1oeGFbKsVavGf5st4oUcYCRy9JdnsHdhUMLaZs
-         Fxc/rTfAjrY942ZK19iEiw3YJWIq1ngICXDEg0jqKDJpi1tacJRG+TQxPeDx//m0v2ic
-         bN3A==
-X-Gm-Message-State: AOJu0YwVQfbXX/upoHG/zbfafSGuM4wkprBYKanRQRrTha2X2gocd6DW
-	eykS/61XHWqeZSBlBL1vmbPFjWGIbvJ5YKEgt68dPxGP3UZ0scMbHxSQ/bgYhZxC
-X-Gm-Gg: ATEYQzzf7vR+Yz5Q+HS69PKZPv+brdX0Zm/LC7bH1b6ThBd3fYybu+Yx2TwuTvmJACm
-	w5BwBhgSM4fQ1QQxOTTOpaS5SnSIa42kVfW53L85JDpM3yAi21RSVcubuq1LiqwVmkN1OqX53WM
-	9mCKcs4vqi4N0dP8iJz09vHTmfCSHDOUs6D1W6lLa87CbVpEq5x8MtICPowlpZUYTw+XVgC7o7c
-	+XC3DygUGQR4ke+7w/p65XXn58rS2I35uMMGtPVrDNQt0s81rDgRIuIfRT+apj3d52Rej3s/NiR
-	JLWC65eaZBiD5TnOGVcxmwEqSTOGTfqw8ZemXpRl6FrGqaZHEUCsvDbobqnS+VQOHrM8XYcpPCW
-	otD37yTOXMz7yqf2zDorEZK+kVkFuZhYlIqSSjIV8mHCK1Q5c3IFBY/9ZseRE3N8TD1bINQtb4C
-	kQYwpl3NSJiqIahQWQ+sTM2/PaugPiRPcYSd40R62sX7C89X6Gyj8I+FoZmm6Z/E3zZK0h8nOE+
-	fHOGd0D0SqhOzLp/A7eQdHgKcTtErb8UgGJdTDnvg==
-X-Received: by 2002:aa7:88d6:0:b0:824:9eaf:54ea with SMTP id d2e1a72fcca58-8274d977cb2mr7122908b3a.28.1772366886513;
-        Sun, 01 Mar 2026 04:08:06 -0800 (PST)
-Received: from fedora.domain.name ([2401:4900:1c80:eb23:e561:7e2a:9fa:6245])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8273a088517sm10228077b3a.65.2026.03.01.04.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2026 04:08:05 -0800 (PST)
-From: Rajveer Chaudhari <rajveer.chaudhari.linux@gmail.com>
+	s=arc-20240116; t=1772380594; c=relaxed/simple;
+	bh=k8pt3kbiLV10Ptlbz9dVNen28S1k1bxEpJWepo4HhQU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BsXud1iVWCWApEgXIk12nVfRVVXCHr3wckQaYHoHL5CvjBBwsGuXdtWa2geB11VTV3vS7JKcco6qFh+HWBePKrZLyckZj7FrqDQlLhhnVImFDb13gRnocAq3rysR+oAE0kbzBlrVzt65IPTHSoZn2GeTlRGUqdisxiM3oEZ96Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onet.pl; spf=pass smtp.mailfrom=onet.pl; dkim=pass (1024-bit key) header.d=onet.pl header.i=@onet.pl header.b=ounlYqP0; arc=none smtp.client-ip=141.105.16.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onet.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onet.pl
+Received: from laptop-olek.lan (83.24.116.171.ipv4.supernova.orange.pl [83.24.116.171])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: aleksaander@onet.pl)
+	by smtp.poczta.onet.pl (Onet) with ESMTPSA id 4fP67657lSz1y1Q;
+	Sun,  1 Mar 2026 16:53:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onet.pl; s=2011;
+	t=1772380441; bh=JNic++b0CHLHkvSoxiBl7njduC/qk14bmoBYjaOnaC0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ounlYqP0niPtBMNhulCozlKpdBuSHNKnJH41/hTvvSGtmb1ABT2InkIZzFMLiGPpx
+	 87FPYhDMiDgcaYwqvwxtOFPTYDF5RV/GY7QKjUQvaolHppf1YV/kz3hJnOmyvJNiAX
+	 X3P5cSBZQrCo+acYu6LPHbbir4pTh3jVlSuWJz+w=
+From: Aleksander Jan Bajkowski <aleksaander@onet.pl>
 To: herbert@gondor.apana.org.au,
-	davem@davemloft.net
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Rajveer Chaudhari <rajveer.chaudhari.linux@gmail.com>
-Subject: [PATCH v2] crypto: drbg - convert to guard(mutex)
-Date: Sun,  1 Mar 2026 17:37:43 +0530
-Message-ID: <20260301120743.27041-1-rajveer.chaudhari.linux@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	davem@davemloft.net,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH 1/5] crypto: testmgr - Add test vectors for authenc(hmac(sha1),rfc3686(ctr(aes)))
+Date: Sun,  1 Mar 2026 16:53:38 +0100
+Message-ID: <20260301155351.5840-1-aleksaander@onet.pl>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -92,100 +67,304 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[onet.pl,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_DKIM_ALLOW(-0.20)[onet.pl:s=2011];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[wp.pl];
+	TAGGED_FROM(0.00)[bounces-21342-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21337-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[rajveerchaudharilinux@gmail.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gondor.apana.org.au,davemloft.net,gmail.com,foss.st.com,vger.kernel.org,st-md-mailman.stormreply.com,lists.infradead.org];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_FROM(0.00)[onet.pl];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[aleksaander@onet.pl,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[onet.pl:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2A9531CF87E
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[onet.pl:mid,onet.pl:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,wp.pl:email]
+X-Rspamd-Queue-Id: AFFC91D082D
 X-Rspamd-Action: no action
 
-Replaced old manual mutex locking/unlocking with
-new safe guard(mutex) in drbg_instantiate().
-This ensures mutex gets unlocked on every return and prevents deadlocks.
+From: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-Signed-off-by: Rajveer Chaudhari <rajveer.chaudhari.linux@gmail.com>
----
-v2: Fix linux/ header ordering alphabetically
----
- crypto/drbg.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+Test vectors were generated starting from existing RFC3686(CTR(AES)) test
+vectors and adding HMAC(SHA1) computed with software implementation.
+Then, the results were double-checked on Mediatek MT7986 (safexcel).
+Platform pass self-tests.
 
-diff --git a/crypto/drbg.c b/crypto/drbg.c
-index 1d433dae9955..5dba9be568bd 100644
---- a/crypto/drbg.c
-+++ b/crypto/drbg.c
-@@ -100,8 +100,9 @@
- #include <crypto/drbg.h>
- #include <crypto/df_sp80090a.h>
- #include <crypto/internal/cipher.h>
--#include <linux/kernel.h>
-+#include <linux/cleanup.h>
- #include <linux/jiffies.h>
-+#include <linux/kernel.h>
- #include <linux/string_choices.h>
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ crypto/testmgr.c |   6 +-
+ crypto/testmgr.h | 221 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 226 insertions(+), 1 deletion(-)
+
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index c4770b87551d..91831b548062 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -4136,8 +4136,12 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 		}
+ 	}, {
+ 		.alg = "authenc(hmac(sha1),rfc3686(ctr(aes)))",
+-		.test = alg_test_null,
++		.generic_driver = "authenc(hmac-sha1-lib,rfc3686(ctr(aes-generic)))",
++		.test = alg_test_aead,
+ 		.fips_allowed = 1,
++		.suite = {
++			.aead = __VECS(hmac_sha1_aes_ctr_rfc3686_tv_temp)
++		}
+ 	}, {
+ 		.alg = "authenc(hmac(sha224),cbc(aes))",
+ 		.generic_driver = "authenc(hmac-sha224-lib,cbc(aes-generic))",
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index 8ee15a3e0ed1..d232417c20a1 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -14873,6 +14873,227 @@ static const struct aead_testvec hmac_sha1_aes_cbc_tv_temp[] = {
+ 	},
+ };
  
- /***************************************************************
-@@ -1349,7 +1350,7 @@ static int drbg_instantiate(struct drbg_state *drbg, struct drbg_string *pers,
- 
- 	pr_devel("DRBG: Initializing DRBG core %d with prediction resistance "
- 		 "%s\n", coreref, str_enabled_disabled(pr));
--	mutex_lock(&drbg->drbg_mutex);
-+	guard(mutex)(&drbg->drbg_mutex);
- 
- 	/* 9.1 step 1 is implicit with the selected DRBG type */
- 
-@@ -1370,7 +1371,7 @@ static int drbg_instantiate(struct drbg_state *drbg, struct drbg_string *pers,
- 
- 		ret = drbg_alloc_state(drbg);
- 		if (ret)
--			goto unlock;
-+			return ret;
- 
- 		ret = drbg_prepare_hrng(drbg);
- 		if (ret)
-@@ -1384,15 +1385,9 @@ static int drbg_instantiate(struct drbg_state *drbg, struct drbg_string *pers,
- 	if (ret && !reseed)
- 		goto free_everything;
- 
--	mutex_unlock(&drbg->drbg_mutex);
--	return ret;
--
--unlock:
--	mutex_unlock(&drbg->drbg_mutex);
- 	return ret;
- 
- free_everything:
--	mutex_unlock(&drbg->drbg_mutex);
- 	drbg_uninstantiate(drbg);
- 	return ret;
- }
++static const struct aead_testvec hmac_sha1_aes_ctr_rfc3686_tv_temp[] = {
++	{ /* RFC 3686 Case 1 */
++#ifdef __LITTLE_ENDIAN
++		.key    = "\x08\x00"		/* rta length */
++			  "\x01\x00"		/* rta type */
++#else
++		.key    = "\x00\x08"		/* rta length */
++			  "\x00\x01"		/* rta type */
++#endif
++			  "\x00\x00\x00\x14"	/* enc key length */
++			  "\x00\x00\x00\x00\x00\x00\x00\x00"
++			  "\x00\x00\x00\x00\x00\x00\x00\x00"
++			  "\x00\x00\x00\x00"
++			  "\xae\x68\x52\xf8\x12\x10\x67\xcc"
++			  "\x4b\xf7\xa5\x76\x55\x77\xf3\x9e"
++			  "\x00\x00\x00\x30",
++		.klen	= 8 + 20 + 20,
++		.iv	= "\x00\x00\x00\x00\x00\x00\x00\x00",
++		.assoc	= "\x00\x00\x00\x00\x00\x00\x00\x00",
++		.alen	= 8,
++		.ptext	= "Single block msg",
++		.plen	= 16,
++		.ctext	= "\xe4\x09\x5d\x4f\xb7\xa7\xb3\x79"
++			  "\x2d\x61\x75\xa3\x26\x13\x11\xb8"
++			  "\x70\xdc\x6b\x62\x43\xa1\x2f\x08"
++			  "\xf1\xec\x93\x7d\x69\xb2\x8e\x1f"
++			  "\x0a\x97\x39\x86",
++		.clen	= 16 + 20,
++	}, { /* RFC 3686 Case 2 */
++#ifdef __LITTLE_ENDIAN
++		.key    = "\x08\x00"		/* rta length */
++			  "\x01\x00"		/* rta type */
++#else
++		.key    = "\x00\x08"		/* rta length */
++			  "\x00\x01"		/* rta type */
++#endif
++			  "\x00\x00\x00\x14"	/* enc key length */
++			  "\x20\x21\x22\x23\x24\x25\x26\x27"
++			  "\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
++			  "\x30\x31\x32\x33"
++			  "\x7e\x24\x06\x78\x17\xfa\xe0\xd7"
++			  "\x43\xd6\xce\x1f\x32\x53\x91\x63"
++			  "\x00\x6c\xb6\xdb",
++		.klen	= 8 + 20 + 20,
++		.iv	= "\xc0\x54\x3b\x59\xda\x48\xd9\x0b",
++		.assoc	= "\xc0\x54\x3b\x59\xda\x48\xd9\x0b",
++		.alen	= 8,
++		.ptext	= "\x00\x01\x02\x03\x04\x05\x06\x07"
++			  "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"
++			  "\x10\x11\x12\x13\x14\x15\x16\x17"
++			  "\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f",
++		.plen	= 32,
++		.ctext	= "\x51\x04\xa1\x06\x16\x8a\x72\xd9"
++			  "\x79\x0d\x41\xee\x8e\xda\xd3\x88"
++			  "\xeb\x2e\x1e\xfc\x46\xda\x57\xc8"
++			  "\xfc\xe6\x30\xdf\x91\x41\xbe\x28"
++			  "\x6b\x7b\x4d\x39\x36\x1c\x12\x5f"
++			  "\x72\xd2\x88\xb2\x26\xa6\xa6\xb5"
++			  "\x1d\x3a\x49\xa6",
++		.clen	= 32 + 20,
++	}, { /* RFC 3686 Case 3 */
++#ifdef __LITTLE_ENDIAN
++		.key    = "\x08\x00"		/* rta length */
++			  "\x01\x00"		/* rta type */
++#else
++		.key    = "\x00\x08"		/* rta length */
++			  "\x00\x01"		/* rta type */
++#endif
++			  "\x00\x00\x00\x14"	/* enc key length */
++			  "\x11\x22\x33\x44\x55\x66\x77\x88"
++			  "\x99\xaa\xbb\xcc\xdd\xee\xff\x11"
++			  "\x22\x33\x44\x55"
++			  "\x76\x91\xbe\x03\x5e\x50\x20\xa8"
++			  "\xac\x6e\x61\x85\x29\xf9\xa0\xdc"
++			  "\x00\xe0\x01\x7b",
++		.klen	= 8 + 20 + 20,
++		.iv	= "\x27\x77\x7f\x3f\x4a\x17\x86\xf0",
++		.assoc	= "\x27\x77\x7f\x3f\x4a\x17\x86\xf0",
++		.alen	= 8,
++		.ptext	= "\x00\x01\x02\x03\x04\x05\x06\x07"
++			  "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"
++			  "\x10\x11\x12\x13\x14\x15\x16\x17"
++			  "\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
++			  "\x20\x21\x22\x23",
++		.plen	= 36,
++		.ctext	= "\xc1\xcf\x48\xa8\x9f\x2f\xfd\xd9"
++			  "\xcf\x46\x52\xe9\xef\xdb\x72\xd7"
++			  "\x45\x40\xa4\x2b\xde\x6d\x78\x36"
++			  "\xd5\x9a\x5c\xea\xae\xf3\x10\x53"
++			  "\x25\xb2\x07\x2f"
++			  "\x2c\x86\xa0\x90\x8e\xc1\x02\x1d"
++			  "\x51\xdc\xd6\x21\xc7\x30\xcc\x32"
++			  "\x38\x55\x47\x64",
++		.clen	= 36 + 20,
++	}, { /* RFC 3686 Case 4 */
++#ifdef __LITTLE_ENDIAN
++		.key    = "\x08\x00"		/* rta length */
++			  "\x01\x00"		/* rta type */
++#else
++		.key    = "\x00\x08"		/* rta length */
++			  "\x00\x01"		/* rta type */
++#endif
++			  "\x00\x00\x00\x1c"	/* enc key length */
++			  "\x00\x00\x00\x00\x00\x00\x00\x00"
++			  "\x00\x00\x00\x00\x00\x00\x00\x00"
++			  "\x00\x00\x00\x00"
++			  "\x16\xaf\x5b\x14\x5f\xc9\xf5\x79"
++			  "\xc1\x75\xf9\x3e\x3b\xfb\x0e\xed"
++			  "\x86\x3d\x06\xcc\xfd\xb7\x85\x15"
++			  "\x00\x00\x00\x48",
++		.klen	= 8 + 20 + 28,
++		.iv	= "\x36\x73\x3c\x14\x7d\x6d\x93\xcb",
++		.assoc	= "\x36\x73\x3c\x14\x7d\x6d\x93\xcb",
++		.alen	= 8,
++		.ptext	= "Single block msg",
++		.plen	= 16,
++		.ctext	= "\x4b\x55\x38\x4f\xe2\x59\xc9\xc8"
++			  "\x4e\x79\x35\xa0\x03\xcb\xe9\x28"
++			  "\xe9\x4e\x49\xf0\x6b\x8d\x58\x2b"
++			  "\x26\x7f\xf3\xab\xeb\x2f\x74\x2f"
++			  "\x45\x43\x64\xc1",
++		.clen	= 16 + 20,
++	}, { /* RFC 3686 Case 5 */
++#ifdef __LITTLE_ENDIAN
++		.key    = "\x08\x00"		/* rta length */
++			  "\x01\x00"		/* rta type */
++#else
++		.key    = "\x00\x08"		/* rta length */
++			  "\x00\x01"		/* rta type */
++#endif
++			  "\x00\x00\x00\x1c"	/* enc key length */
++			  "\x20\x21\x22\x23\x24\x25\x26\x27"
++			  "\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
++			  "\x30\x31\x32\x33"
++			  "\x7c\x5c\xb2\x40\x1b\x3d\xc3\x3c"
++			  "\x19\xe7\x34\x08\x19\xe0\xf6\x9c"
++			  "\x67\x8c\x3d\xb8\xe6\xf6\xa9\x1a"
++			  "\x00\x96\xb0\x3b",
++		.klen	= 8 + 20 + 28,
++		.iv	= "\x02\x0c\x6e\xad\xc2\xcb\x50\x0d",
++		.assoc	= "\x02\x0c\x6e\xad\xc2\xcb\x50\x0d",
++		.alen	= 8,
++		.ptext	= "\x00\x01\x02\x03\x04\x05\x06\x07"
++			  "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"
++			  "\x10\x11\x12\x13\x14\x15\x16\x17"
++			  "\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f",
++		.plen	= 32,
++		.ctext	= "\x45\x32\x43\xfc\x60\x9b\x23\x32"
++			  "\x7e\xdf\xaa\xfa\x71\x31\xcd\x9f"
++			  "\x84\x90\x70\x1c\x5a\xd4\xa7\x9c"
++			  "\xfc\x1f\xe0\xff\x42\xf4\xfb\x00"
++			  "\xab\xc4\xfa\x6d\x20\xe1\xce\x72"
++			  "\x0e\x92\x4e\x97\xaa\x4d\x30\x84"
++			  "\xb6\xd8\x4d\x3b",
++		.clen	= 32 + 20,
++	}, { /* RFC 3686 Case 7 */
++#ifdef __LITTLE_ENDIAN
++		.key    = "\x08\x00"		/* rta length */
++			  "\x01\x00"		/* rta type */
++#else
++		.key    = "\x00\x08"		/* rta length */
++			  "\x00\x01"		/* rta type */
++#endif
++			  "\x00\x00\x00\x24"	/* enc key length */
++			  "\x00\x00\x00\x00\x00\x00\x00\x00"
++			  "\x00\x00\x00\x00\x00\x00\x00\x00"
++			  "\x00\x00\x00\x00"
++			  "\x77\x6b\xef\xf2\x85\x1d\xb0\x6f"
++			  "\x4c\x8a\x05\x42\xc8\x69\x6f\x6c"
++			  "\x6a\x81\xaf\x1e\xec\x96\xb4\xd3"
++			  "\x7f\xc1\xd6\x89\xe6\xc1\xc1\x04"
++			  "\x00\x00\x00\x60",
++		.klen	= 8 + 20 + 36,
++		.iv	= "\xdb\x56\x72\xc9\x7a\xa8\xf0\xb2",
++		.assoc	= "\xdb\x56\x72\xc9\x7a\xa8\xf0\xb2",
++		.alen	= 8,
++		.ptext	= "Single block msg",
++		.plen	= 16,
++		.ctext	= "\x14\x5a\xd0\x1d\xbf\x82\x4e\xc7"
++			  "\x56\x08\x63\xdc\x71\xe3\xe0\xc0"
++			  "\x3d\x6c\x23\x27\xda\x0e\x7f\x29"
++			  "\xfd\x8d\x3c\x1b\xf7\x7a\x63\xd9"
++			  "\x7e\x0f\xe9\xf6",
++		.clen	= 16 + 20,
++	}, { /* RFC 3686 Case 8 */
++#ifdef __LITTLE_ENDIAN
++		.key    = "\x08\x00"		/* rta length */
++			  "\x01\x00"		/* rta type */
++#else
++		.key    = "\x00\x08"		/* rta length */
++			  "\x00\x01"		/* rta type */
++#endif
++			  "\x00\x00\x00\x24"	/* enc key length */
++			  "\x20\x21\x22\x23\x24\x25\x26\x27"
++			  "\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
++			  "\x30\x31\x32\x33"
++			  "\xf6\xd6\x6d\x6b\xd5\x2d\x59\xbb"
++			  "\x07\x96\x36\x58\x79\xef\xf8\x86"
++			  "\xc6\x6d\xd5\x1a\x5b\x6a\x99\x74"
++			  "\x4b\x50\x59\x0c\x87\xa2\x38\x84"
++			  "\x00\xfa\xac\x24",
++		.klen	= 8 + 20 + 36,
++		.iv	= "\xc1\x58\x5e\xf1\x5a\x43\xd8\x75",
++		.assoc	= "\xc1\x58\x5e\xf1\x5a\x43\xd8\x75",
++		.alen	= 8,
++		.ptext	= "\x00\x01\x02\x03\x04\x05\x06\x07"
++			  "\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"
++			  "\x10\x11\x12\x13\x14\x15\x16\x17"
++			  "\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f",
++		.plen	= 32,
++		.ctext	= "\xf0\x5e\x23\x1b\x38\x94\x61\x2c"
++			  "\x49\xee\x00\x0b\x80\x4e\xb2\xa9"
++			  "\xb8\x30\x6b\x50\x8f\x83\x9d\x6a"
++			  "\x55\x30\x83\x1d\x93\x44\xaf\x1c"
++			  "\xe7\xee\x22\xa4\xdd\xbf\x5d\x44"
++			  "\x3b\x43\x1c\x69\x55\x11\xd5\xad"
++			  "\x14\x5f\x44\xa6",
++		.clen	= 32 + 20,
++	},
++};
++
+ static const struct aead_testvec hmac_sha1_ecb_cipher_null_tv_temp[] = {
+ 	{ /* Input data from RFC 2410 Case 1 */
+ #ifdef __LITTLE_ENDIAN
 -- 
-2.53.0
+2.47.3
 
 
