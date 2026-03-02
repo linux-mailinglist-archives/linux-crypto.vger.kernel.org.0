@@ -1,122 +1,123 @@
-Return-Path: <linux-crypto+bounces-21389-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21390-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cBEeEBGCpWl1CgYAu9opvQ
-	(envelope-from <linux-crypto+bounces-21389-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 13:26:57 +0100
+	id KDHZEwCFpWl+DAYAu9opvQ
+	(envelope-from <linux-crypto+bounces-21390-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 13:39:28 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FA11D8541
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 13:26:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E10F21D8CC2
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 13:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9519E3030ED6
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2026 12:25:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B9AD9308BF9D
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2026 12:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3049636C9C5;
-	Mon,  2 Mar 2026 12:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E1F3B3C1E;
+	Mon,  2 Mar 2026 12:26:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="kGWQ4xGb"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="eoDZElef"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14ADE32A3FD;
-	Mon,  2 Mar 2026 12:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B093B3BEF;
+	Mon,  2 Mar 2026 12:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772454312; cv=none; b=Vfeq7yA2Qg29F5SNL/amvWDVnTDzXiB6qMKT9o3rTfNi62tBHUrCG24HMh7fN6Y5kE+zlG5g76V0UATgeWF48AI9Kmin+TKlJjUb6ktvCJRCX/Av11R9B+A3O3GWDUMK+Nri49VODobaVn0KSeBnK9IhxE80p5ZMgVhDjFQxh2E=
+	t=1772454379; cv=none; b=adVHoNy2eJUDQey+ojBDOJPS2yKGGmOOu7CYRl7MbQJPgPekHtwB+GD3Ty9YMOOTnvfcW4CfUGEuKLGK38eK1I/ECWp1ClxDjwBAX4dRtrU5q517NQ1uupBHGL7dOEiNMWxFDk5ItezjycYz52wAVD2sipbysVCSK3NwiHGmGNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772454312; c=relaxed/simple;
-	bh=YdiS28IRdEMZtT3oGRf8x9y4j+O25ZgArtbVJIo14hA=;
+	s=arc-20240116; t=1772454379; c=relaxed/simple;
+	bh=RVfsxgTlhH0JmZwUCJXcBzOXQy7zP4FBhDhUvUOB5Q0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o2Bz5uqQdZhkR/tbeuUjGZ2ZqEhHPr0rV600yYn4bZ7h829p738rQ4r/whO/R6bhUEEFSEYqafIrDFmYIvC0GmA0rBn/3bpXwFN/uQf36tFkh+wAN8qBuMxWmsSaK9Y+qKq/2cRrISHgFHQhxLBQiFQf3R5uxh0cLRwkTVhjA8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=kGWQ4xGb; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=K1Mb23q07GCOY8/8oC+qbxHhmUyZ/mRxzH9S3bK7CKWlvZGFMaihPKOUbLN0rJ/+b0d31oHQcOGGvMI3+lC2aTwWuMc+ph6E3oqxC7zB9o/YQao6HI9wDCD6wSiY97OE98W6C6pfbj3cTJfxndu0J+bLWap+/HgUwndFqXTRcj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=eoDZElef; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=svS5G4tud4NFJgwF8QjTNMoi9+m0eQcVhlhPlVj4Bc8=; 
-	b=kGWQ4xGbZQfp3H3Wl7naamqAUKEHP/oGfkW34Rnj5Dfwyk2mseVWx4wENPXJQBTtaCTR+29emnc
-	H2irG5eXDNOPSnBr+Jx1IZ2P0t7aHEbqVp33EN2oF89TktUJVj2cb+w7Xm1vSk6FLtZO9OrhtNRSa
-	8rsjrVtehUEpRAuPU+BPyfvtBNfs5Ly/1i3y8S9fSRtqIQzXbYMxgxmnQSurWRv+q50xtG2U1y8D9
-	JCvQPrye/hkEWM08xB9LGSfE1TwSJvbJ6ffxPi2AM6Wxbr2VAyP/vUpCZTra4hkqpH1iTOqS4V6mf
-	XwsQJzpM7T4ujpkhU5weY8TZVSBoDDLBjvsw==;
+	from:content-type:reply-to; bh=JCf2dHrA2iWaWPU4fEd7CeTt13nQg+INWuJr+P4W4uI=; 
+	b=eoDZElefMPXMBIePXRIfKIQ9jcsmjhxJ9LWnQTStlFADXeN6Wx8bdgo+ZM8qZAM+rdVlHH022ZU
+	zd3bSY/OzrIJTkJLjTDj6BTY53/dTN2F+lgOriCL11JphXcw8icOQIes1NYRCZeytVDuEzyLwwYyN
+	CUHcDKXCdVINHSU8cu3mQ3kN/bT63bW7/IJ0XzJK2GEwWMYyc0Z4mmrcjvpIJ7eLkWhFmEqo5NIJJ
+	687AvelxyBjMaXUEOy/x4sDWwJgENYV0EM4gp1eTkY88brI5rBGfqtvpu6IrnUXmT0FUHYsFvnPCV
+	Unx3MU/wtXcX876zbvQxZS7opeKIigVVqQPw==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vx2KW-00AlCx-0J;
-	Mon, 02 Mar 2026 20:24:57 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 02 Mar 2026 21:24:56 +0900
-Date: Mon, 2 Mar 2026 21:24:56 +0900
+	id 1vx2Ld-00AlE0-10;
+	Mon, 02 Mar 2026 20:26:06 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 02 Mar 2026 21:26:05 +0900
+Date: Mon, 2 Mar 2026 21:26:05 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Rajveer Chaudhari <rajveer.chaudhari.linux@gmail.com>
-Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Subject: Re: [PATCH] crypto: drbg - convert to guard(mutex)
-Message-ID: <aaWBmE5H6HrDq7u3@gondor.apana.org.au>
-References: <20260207232925.80976-1-rajveer.chaudhari.linux@gmail.com>
- <aaJfDsCLKfy34dSP@gondor.apana.org.au>
- <CANS1UbimhOWVzVORMpe-vbec7qcWi=d6VyPo-D-nBXdr0NouRQ@mail.gmail.com>
+To: Joachim Vandersmissen <git@jvdsn.com>
+Cc: Jeff Barnes <jeffbarnes@linux.microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Jeff Barnes <jeffbarnes@microsoft.com>
+Subject: Re: [PATCH] crypto: aead: add service indicator flag for RFC4106
+ AES-GCM
+Message-ID: <aaWB3RkW4AeJ-c9z@gondor.apana.org.au>
+References: <20260129-fips-gcm-clean-v1-v1-1-43e17dc20a1a@microsoft.com>
+ <aXw9Wj19ZX6dpNHW@gondor.apana.org.au>
+ <ce1d34d9-23f9-4d1e-b790-6af75d1555ed@linux.microsoft.com>
+ <aaKtujHwV0zDFWxi@gondor.apana.org.au>
+ <a73a2556-3fa3-45fc-bf06-a62e8367e953@jvdsn.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CANS1UbimhOWVzVORMpe-vbec7qcWi=d6VyPo-D-nBXdr0NouRQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a73a2556-3fa3-45fc-bf06-a62e8367e953@jvdsn.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:?];
-	TAGGED_FROM(0.00)[bounces-21389-lists,linux-crypto=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21390-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_SPAM(0.00)[0.998];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	DMARC_DNSFAIL(0.00)[apana.org.au : SPF/DKIM temp error,quarantine];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_TEMPFAIL(0.00)[gondor.apana.org.au:s=h01];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gondor.apana.org.au:mid,apana.org.au:url,apana.org.au:email]
-X-Rspamd-Queue-Id: 11FA11D8541
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gondor.apana.org.au:mid,gondor.apana.org.au:dkim,apana.org.au:url,apana.org.au:email]
+X-Rspamd-Queue-Id: E10F21D8CC2
 X-Rspamd-Action: no action
 
-On Sun, Mar 01, 2026 at 05:16:24PM +0530, Rajveer Chaudhari wrote:
+On Sun, Mar 01, 2026 at 02:41:28PM -0600, Joachim Vandersmissen wrote:
 >
-> Yes, this is safe. I traced through all functions called by
-> drbg_uninstantiate():
+> However, Cryptographic Module Validation Program has also recently made it
+> clear that xxhash64 cannot be FIPS approved the way it is currently
+> implemented in the kernel. Even though the designers of xxhash publicly
+> state that it is a non-cryptographic hash, the kernel offers it as part of
+> the shash interface, the same interface as the approved algorithms. The
+> interface / API also has "crypto" in the name, which according to CMVP
+> implies security. CMVP feels that there could be confusion with the approved
+> hash algorithms, so there needs to be some indication that xxhash64 is not
+> FIPS approved. I think blocking xxhash64 in FIPS mode would break btrfs,
+> where it is used for checksumming.
 
-Even if it happens to be safe we still shouldn't do it unless it is
-actually required for correctness.  We've had many dead-locks
-caused by freeing resources while holding a mutex used for
-allocation.
- 
-> In fact, holding the mutex during drbg_uninstantiate() is
-> more correct than the original, as it prevents another thread from
-> accessing the drbg state while it is being freed on the error path.
-
-It's either correct or not.  If the mutex is required for
-freeing resources please point out the race condition without
-it.
+xxhash64 should be converted to lib/crypto and removed from the
+Crypto API.
 
 Thanks,
 -- 
