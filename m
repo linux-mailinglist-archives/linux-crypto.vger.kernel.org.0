@@ -1,152 +1,126 @@
-Return-Path: <linux-crypto+bounces-21388-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21389-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UCLcBjt3pWkNBgYAu9opvQ
-	(envelope-from <linux-crypto+bounces-21388-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 12:40:43 +0100
+	id cBEeEBGCpWl1CgYAu9opvQ
+	(envelope-from <linux-crypto+bounces-21389-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 13:26:57 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72E261D7A20
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 12:40:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FA11D8541
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 13:26:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2ED86305583A
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2026 11:35:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9519E3030ED6
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2026 12:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7BC361DB4;
-	Mon,  2 Mar 2026 11:35:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3049636C9C5;
+	Mon,  2 Mar 2026 12:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n98X3Sgk"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="kGWQ4xGb"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9397345CA0
-	for <linux-crypto@vger.kernel.org>; Mon,  2 Mar 2026 11:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14ADE32A3FD;
+	Mon,  2 Mar 2026 12:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772451330; cv=none; b=lr3ku0aXHfNUsZty82HBZtMWBuPMEkzRyqu+8LEEWMIiBDfaEwPvbkLrL+7gTjecfZxj2xg8aAHsIQ6obHI3eg2qdw/Pwu5eXhgOlN5zzHUzsaVSr1w1C/5v1EbdmCaWRyKIDTGnH+2a82w+JnOWYAfIYTctoqlTBRXFbn98WW0=
+	t=1772454312; cv=none; b=Vfeq7yA2Qg29F5SNL/amvWDVnTDzXiB6qMKT9o3rTfNi62tBHUrCG24HMh7fN6Y5kE+zlG5g76V0UATgeWF48AI9Kmin+TKlJjUb6ktvCJRCX/Av11R9B+A3O3GWDUMK+Nri49VODobaVn0KSeBnK9IhxE80p5ZMgVhDjFQxh2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772451330; c=relaxed/simple;
-	bh=uZGhgmgY/szr/GX6ytm1P8SBL355y+ixAQH0XTZooKY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QWnwKea7p77cQJHYEJl61b0ZeEC3nhhppLC8LR26beUlSsZDgt44PVq6AqVB32pJ2jB8IbSZuvBpPSvP76+GiZSjY76FT++IQp2LEZr2GupEg2JS3QQPZxwiJjAy9SpujZci/2zvc5WvdvrWcoCjPrd1rBB0+11ZHIW5eYhEuFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n98X3Sgk; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772451316;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=x8ZpHLE2DRQLPnRzyw4GcR84TR9av1pRIf3eL+I1eqE=;
-	b=n98X3SgkBiMc3l6BBSzaTwypSynKYS+uy42RXkskKRtfS9ifkfKCKqMWFWzeNL0CiRNBAz
-	Rdm1L9/1yV0Y3MnobMwN0p/bYt9eGNrdGWTPnloHmJJwC62Hm62IeZhBBSaA82zmIzRc6Z
-	ucz7pOPu9hVUVIY89Q+RXprMlp/SXy8=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Thara Gopinath <thara.gopinath@gmail.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	linux-crypto@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: qce - Remove return variable and unused assignments
-Date: Mon,  2 Mar 2026 12:34:53 +0100
-Message-ID: <20260302113453.938998-2-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1772454312; c=relaxed/simple;
+	bh=YdiS28IRdEMZtT3oGRf8x9y4j+O25ZgArtbVJIo14hA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o2Bz5uqQdZhkR/tbeuUjGZ2ZqEhHPr0rV600yYn4bZ7h829p738rQ4r/whO/R6bhUEEFSEYqafIrDFmYIvC0GmA0rBn/3bpXwFN/uQf36tFkh+wAN8qBuMxWmsSaK9Y+qKq/2cRrISHgFHQhxLBQiFQf3R5uxh0cLRwkTVhjA8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=kGWQ4xGb; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=svS5G4tud4NFJgwF8QjTNMoi9+m0eQcVhlhPlVj4Bc8=; 
+	b=kGWQ4xGbZQfp3H3Wl7naamqAUKEHP/oGfkW34Rnj5Dfwyk2mseVWx4wENPXJQBTtaCTR+29emnc
+	H2irG5eXDNOPSnBr+Jx1IZ2P0t7aHEbqVp33EN2oF89TktUJVj2cb+w7Xm1vSk6FLtZO9OrhtNRSa
+	8rsjrVtehUEpRAuPU+BPyfvtBNfs5Ly/1i3y8S9fSRtqIQzXbYMxgxmnQSurWRv+q50xtG2U1y8D9
+	JCvQPrye/hkEWM08xB9LGSfE1TwSJvbJ6ffxPi2AM6Wxbr2VAyP/vUpCZTra4hkqpH1iTOqS4V6mf
+	XwsQJzpM7T4ujpkhU5weY8TZVSBoDDLBjvsw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1vx2KW-00AlCx-0J;
+	Mon, 02 Mar 2026 20:24:57 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 02 Mar 2026 21:24:56 +0900
+Date: Mon, 2 Mar 2026 21:24:56 +0900
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Rajveer Chaudhari <rajveer.chaudhari.linux@gmail.com>
+Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Subject: Re: [PATCH] crypto: drbg - convert to guard(mutex)
+Message-ID: <aaWBmE5H6HrDq7u3@gondor.apana.org.au>
+References: <20260207232925.80976-1-rajveer.chaudhari.linux@gmail.com>
+ <aaJfDsCLKfy34dSP@gondor.apana.org.au>
+ <CANS1UbimhOWVzVORMpe-vbec7qcWi=d6VyPo-D-nBXdr0NouRQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANS1UbimhOWVzVORMpe-vbec7qcWi=d6VyPo-D-nBXdr0NouRQ@mail.gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,gondor.apana.org.au,davemloft.net];
-	TAGGED_FROM(0.00)[bounces-21388-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-0.998];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:?];
+	TAGGED_FROM(0.00)[bounces-21389-lists,linux-crypto=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,linux.dev:email]
-X-Rspamd-Queue-Id: 72E261D7A20
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	NEURAL_SPAM(0.00)[0.998];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	DMARC_DNSFAIL(0.00)[apana.org.au : SPF/DKIM temp error,quarantine];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_TEMPFAIL(0.00)[gondor.apana.org.au:s=h01];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gondor.apana.org.au:mid,apana.org.au:url,apana.org.au:email]
+X-Rspamd-Queue-Id: 11FA11D8541
 X-Rspamd-Action: no action
 
-In qce_aead_done(), the return variable 'ret' is no longer used - remove
-it. And qce_aead_prepare_dst_buf() jumps directly to 'dst_tbl_free:' on
-error and returns 'sg' - drop the useless 'ret' assignments.
+On Sun, Mar 01, 2026 at 05:16:24PM +0530, Rajveer Chaudhari wrote:
+>
+> Yes, this is safe. I traced through all functions called by
+> drbg_uninstantiate():
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- drivers/crypto/qce/aead.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Even if it happens to be safe we still shouldn't do it unless it is
+actually required for correctness.  We've had many dead-locks
+caused by freeing resources while holding a mutex used for
+allocation.
+ 
+> In fact, holding the mutex during drbg_uninstantiate() is
+> more correct than the original, as it prevents another thread from
+> accessing the drbg state while it is being freed on the error path.
 
-diff --git a/drivers/crypto/qce/aead.c b/drivers/crypto/qce/aead.c
-index 97b56e92ea33..67a87a7d6abd 100644
---- a/drivers/crypto/qce/aead.c
-+++ b/drivers/crypto/qce/aead.c
-@@ -35,7 +35,6 @@ static void qce_aead_done(void *data)
- 	u32 status;
- 	unsigned int totallen;
- 	unsigned char tag[SHA256_DIGEST_SIZE] = {0};
--	int ret = 0;
- 
- 	diff_dst = (req->src != req->dst) ? true : false;
- 	dir_src = diff_dst ? DMA_TO_DEVICE : DMA_BIDIRECTIONAL;
-@@ -79,8 +78,7 @@ static void qce_aead_done(void *data)
- 	} else if (!IS_CCM(rctx->flags)) {
- 		totallen = req->cryptlen + req->assoclen - ctx->authsize;
- 		scatterwalk_map_and_copy(tag, req->src, totallen, ctx->authsize, 0);
--		ret = memcmp(result_buf->auth_iv, tag, ctx->authsize);
--		if (ret) {
-+		if (memcmp(result_buf->auth_iv, tag, ctx->authsize)) {
- 			pr_err("Bad message error\n");
- 			error = -EBADMSG;
- 		}
-@@ -144,16 +142,12 @@ qce_aead_prepare_dst_buf(struct aead_request *req)
- 
- 		sg = qce_sgtable_add(&rctx->dst_tbl, &rctx->adata_sg,
- 				     rctx->assoclen);
--		if (IS_ERR(sg)) {
--			ret = PTR_ERR(sg);
-+		if (IS_ERR(sg))
- 			goto dst_tbl_free;
--		}
- 		/* dst buffer */
- 		sg = qce_sgtable_add(&rctx->dst_tbl, msg_sg, rctx->cryptlen);
--		if (IS_ERR(sg)) {
--			ret = PTR_ERR(sg);
-+		if (IS_ERR(sg))
- 			goto dst_tbl_free;
--		}
- 		totallen = rctx->cryptlen + rctx->assoclen;
- 	} else {
- 		if (totallen) {
+It's either correct or not.  If the mutex is required for
+freeing resources please point out the race condition without
+it.
+
+Thanks,
 -- 
-Thorsten Blum <thorsten.blum@linux.dev>
-GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
