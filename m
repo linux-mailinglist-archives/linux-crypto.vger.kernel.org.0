@@ -1,99 +1,98 @@
-Return-Path: <linux-crypto+bounces-21368-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21369-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ADDxFSpcpWlc+QUAu9opvQ
-	(envelope-from <linux-crypto+bounces-21368-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 10:45:14 +0100
+	id GGcrI3lcpWk3+gUAu9opvQ
+	(envelope-from <linux-crypto+bounces-21369-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 10:46:33 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5E171D5B5A
-	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 10:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6AB81D5BC4
+	for <lists+linux-crypto@lfdr.de>; Mon, 02 Mar 2026 10:46:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EDFBB301E971
-	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2026 09:44:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB55A301467D
+	for <lists+linux-crypto@lfdr.de>; Mon,  2 Mar 2026 09:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F0B387358;
-	Mon,  2 Mar 2026 09:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5BE38F63F;
+	Mon,  2 Mar 2026 09:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EP1zsVKN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="XgUrZgKu";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EP1zsVKN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="XgUrZgKu"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ii+j2bEV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0d7+T7Ad";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ii+j2bEV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0d7+T7Ad"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD5472631
-	for <linux-crypto@vger.kernel.org>; Mon,  2 Mar 2026 09:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE06738CFEB
+	for <linux-crypto@vger.kernel.org>; Mon,  2 Mar 2026 09:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772444678; cv=none; b=bSC3Qy0mf2dVUO1rbDX0XpnGFY2ORUKuAApdlqgcZ9mlnJPxyQirZNY8nbmttq2jGV0CrjCj9qKnpB9Y4GBMf3F9rUzebPsqnxZD8sG1UKYjCJV+CkGi7eHdzfgKj9JhjCuh4L2jexkHA9VUuZfR5KnZmd5kh3OCYBXC356sVGE=
+	t=1772444708; cv=none; b=DsRExU/PN4JsrfFPJeuEtY1Ntr3s1sOxc0Prz1eQBA6f5vJPHs1ff4egAikZ6Oc9VWsG+D0+upnhkJN49bPY5q0/3S4+AkJkmOGogdBCoz+kb5yCK1U+lTc+7Fv7gkJogqtYsMH3dKpEdEOwX9LNxrw+iW82f3grUa4fa44DY7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772444678; c=relaxed/simple;
-	bh=N6fJIPYnUqfVKoiqNISsVrNlA6oiqT8WsQUJu7jAw3g=;
+	s=arc-20240116; t=1772444708; c=relaxed/simple;
+	bh=OvYr1g6hbso7sJ2LKzpEUT3mbBurs4F3H6WiUNLqQq8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tV2/hbsAlummRsK7NOR1uK4rCYihB5Ax20weyyBraZHg4HwDYFxRNhcHhGe2LTBosu72tApGtTG6V3jXCHciJsOseeNuXy6DwfhWlDakxI5A5u5i5jss3ZqVyzd8WMnlbHQvn59/k3N9fxMYX1wDNzlVz2UtBeyBfz0gNV7SI2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EP1zsVKN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=XgUrZgKu; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EP1zsVKN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=XgUrZgKu; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=VcTEz6Sv2v7qGVcIcg1z8HD3ttGfnNckXSnUpLjt9f7Z39UZw6tAHXpJNoMqrSvAzHauhXfmbAlezl16akc4i2YsQhZ1V3zVzwAeZcN9SR4jTPPaG3N04+uMco4hhwgI+SqdLv/6y6il2/1+yxjG2R08E8Q2Nq+aGalt7K6wO84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ii+j2bEV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0d7+T7Ad; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ii+j2bEV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0d7+T7Ad; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4BA053F374;
-	Mon,  2 Mar 2026 09:44:35 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 167193F576;
+	Mon,  2 Mar 2026 09:45:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1772444675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772444706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w8XttDxywmg5Qj2nmpy3Yg0g0Qe73kllRxnPHj3uWzY=;
-	b=EP1zsVKNilw5Ged4erOEJ8/L2Ll3mgRWE+I200fYVNwtmV587TUK833AJXhNlSPi+hrEHh
-	fKK5sC3/856xVrAlwA64yNb9/YIlg20mv7WpLiUXz8HLWoxr/x+0ndwG6lxJRkSy7JOnZV
-	DQCXZxCNOBFVo95Q3o2hMpxtmIWZGDk=
+	bh=qBVko8jLwSyS0O7PNlS7odM9qMV2t3vljohaDoZTuWI=;
+	b=ii+j2bEVXfkXHolhfmnZDnHkpgIHZm9rBe3fha4PKkhYdBuXKOMPOmuNK7GrdG0bBtIETh
+	EiI+6RwvBXl2nz2MY6eHl2NtJem6sLjCQegk0xU5yPhup7MyHgc9yq+ddELZsjdEjmu2qm
+	Ec4IUH/hIEFciFPit8yINxwi4e7oMRE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1772444675;
+	s=susede2_ed25519; t=1772444706;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w8XttDxywmg5Qj2nmpy3Yg0g0Qe73kllRxnPHj3uWzY=;
-	b=XgUrZgKu8Q7SFq03o/9N2WhjFzisD2hIIXkjwxgo1311Kht91YBGsqqR0nLSy9Av1U4zkf
-	T3CbeFRi04X0UdCA==
+	bh=qBVko8jLwSyS0O7PNlS7odM9qMV2t3vljohaDoZTuWI=;
+	b=0d7+T7Ad2VJKtLdw5LxrmT9bgYKp+EtFXfFFwVjNed58tLWf1ZoEeEQdRQWbM+sbzw1HJI
+	fLvIhfObUH14HSCg==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=EP1zsVKN;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=XgUrZgKu
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1772444675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772444706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w8XttDxywmg5Qj2nmpy3Yg0g0Qe73kllRxnPHj3uWzY=;
-	b=EP1zsVKNilw5Ged4erOEJ8/L2Ll3mgRWE+I200fYVNwtmV587TUK833AJXhNlSPi+hrEHh
-	fKK5sC3/856xVrAlwA64yNb9/YIlg20mv7WpLiUXz8HLWoxr/x+0ndwG6lxJRkSy7JOnZV
-	DQCXZxCNOBFVo95Q3o2hMpxtmIWZGDk=
+	bh=qBVko8jLwSyS0O7PNlS7odM9qMV2t3vljohaDoZTuWI=;
+	b=ii+j2bEVXfkXHolhfmnZDnHkpgIHZm9rBe3fha4PKkhYdBuXKOMPOmuNK7GrdG0bBtIETh
+	EiI+6RwvBXl2nz2MY6eHl2NtJem6sLjCQegk0xU5yPhup7MyHgc9yq+ddELZsjdEjmu2qm
+	Ec4IUH/hIEFciFPit8yINxwi4e7oMRE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1772444675;
+	s=susede2_ed25519; t=1772444706;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w8XttDxywmg5Qj2nmpy3Yg0g0Qe73kllRxnPHj3uWzY=;
-	b=XgUrZgKu8Q7SFq03o/9N2WhjFzisD2hIIXkjwxgo1311Kht91YBGsqqR0nLSy9Av1U4zkf
-	T3CbeFRi04X0UdCA==
+	bh=qBVko8jLwSyS0O7PNlS7odM9qMV2t3vljohaDoZTuWI=;
+	b=0d7+T7Ad2VJKtLdw5LxrmT9bgYKp+EtFXfFFwVjNed58tLWf1ZoEeEQdRQWbM+sbzw1HJI
+	fLvIhfObUH14HSCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D0D93EA69;
-	Mon,  2 Mar 2026 09:44:35 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D7B4A3EA6C;
+	Mon,  2 Mar 2026 09:45:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ptqNCgNcpWmYAQAAD6G6ig
-	(envelope-from <hare@suse.de>); Mon, 02 Mar 2026 09:44:35 +0000
-Message-ID: <49cb0779-562e-4966-a819-344cd0bd7a9a@suse.de>
-Date: Mon, 2 Mar 2026 10:44:34 +0100
+	id DzEgNCFcpWlhAgAAD6G6ig
+	(envelope-from <hare@suse.de>); Mon, 02 Mar 2026 09:45:05 +0000
+Message-ID: <9c3be754-25d0-4de4-9f4e-2108eea9efba@suse.de>
+Date: Mon, 2 Mar 2026 10:45:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -101,7 +100,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/21] nvme-auth: add NVME_AUTH_MAX_DIGEST_SIZE constant
+Subject: Re: [PATCH 02/21] nvme-auth: common: constify static data
 To: Eric Biggers <ebiggers@kernel.org>, linux-nvme@lists.infradead.org,
  Chaitanya Kulkarni <kch@nvidia.com>, Sagi Grimberg <sagi@grimberg.me>,
  Christoph Hellwig <hch@lst.de>
@@ -109,14 +108,14 @@ Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
  Ard Biesheuvel <ardb@kernel.org>, "Jason A . Donenfeld" <Jason@zx2c4.com>,
  Herbert Xu <herbert@gondor.apana.org.au>
 References: <20260302075959.338638-1-ebiggers@kernel.org>
- <20260302075959.338638-2-ebiggers@kernel.org>
+ <20260302075959.338638-3-ebiggers@kernel.org>
 Content-Language: en-US
 From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20260302075959.338638-2-ebiggers@kernel.org>
+In-Reply-To: <20260302075959.338638-3-ebiggers@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-X-Spam-Score: -4.51
+X-Spam-Score: -4.30
 X-Spam-Level: 
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
@@ -132,7 +131,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21368-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21369-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -145,19 +144,17 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.de:mid,suse.de:dkim,suse.de:email]
-X-Rspamd-Queue-Id: A5E171D5B5A
+X-Rspamd-Queue-Id: E6AB81D5BC4
 X-Rspamd-Action: no action
 
 On 3/2/26 08:59, Eric Biggers wrote:
-> Define a NVME_AUTH_MAX_DIGEST_SIZE constant and use it in the
-> appropriate places.
+> Fully constify the dhgroup_map and hash_map arrays.  Remove 'const' from
+> individual fields, as it is now redundant.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 > ---
->   drivers/nvme/common/auth.c | 6 ++----
->   drivers/nvme/host/auth.c   | 6 +++---
->   include/linux/nvme.h       | 5 +++++
->   3 files changed, 10 insertions(+), 7 deletions(-)
+>   drivers/nvme/common/auth.c | 12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
 > 
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 
