@@ -1,89 +1,89 @@
-Return-Path: <linux-crypto+bounces-21483-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21485-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WB9KOfSLpmnMRAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21483-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:21:24 +0100
+	id 4MLZMnqMpmnMRAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21485-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:23:38 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BA01EA12C
-	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:21:24 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 266961EA1DA
+	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 34D60304AA03
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2026 07:20:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 604D230E80EE
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2026 07:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA03375F9E;
-	Tue,  3 Mar 2026 07:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E999138644E;
+	Tue,  3 Mar 2026 07:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="KngH7Lv5"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="RgcjmMT7"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11012000.outbound.protection.outlook.com [52.101.53.0])
+Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010029.outbound.protection.outlook.com [52.101.56.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915D43019A6
-	for <linux-crypto@vger.kernel.org>; Tue,  3 Mar 2026 07:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.53.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718AB285C8B
+	for <linux-crypto@vger.kernel.org>; Tue,  3 Mar 2026 07:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.29
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772522454; cv=fail; b=s32/k++FZwemfzPwaq8Ztx+cmS5LXvfL2LOPZZGGpbv11PAY2kLv8EX9cd+M2hG1oIu8u6rSNyw+kEDRKpPfHkxnelR/XOlpVedl9qx+s0/+BCBj/NXLgmKPPhfsNtpK4pXMMTBjIUMNTYHnCcEpL/HUvQ63sF0t5X3JVCctHjo=
+	t=1772522469; cv=fail; b=nusIBl9WArQtH3PMQn68puFzQJ+b5D7Qokkej7jsRkEnkiGocwLIZGJITlGeYssJ1Vdp/M0TXz79wGYRWNhvKOq17t5zJqNy5R810iFGHKgXbQzK8DvOPF6Z0tyW9CZBz7Opbjdgz77PJLlOv6kumWmaxG53hIzccqm5ztctN0g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772522454; c=relaxed/simple;
-	bh=35uKdkGhIFwvqd9mGWuc/7OTV23+OlaOlj/peY0PMf0=;
+	s=arc-20240116; t=1772522469; c=relaxed/simple;
+	bh=FEKtOiu+RGhoD4OY79E5lbTIkTHiTq6lvhhRmrqGLL0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Y4eaMS8OtVxHl/+BHWxeacIV+Xepd5xn9Y7N7J4t97cDutdAGAtz9ir9aYf5XCnWDEP1HAwUZkQyUfZqWu0nK2YeY8d1P3PKWItwD6Gvv8Emfq/li7Ny95x4tiB5A31o7/JVp/NhXaLFD1mFSXtQAwijc270rl1Sj6aw0MrvX/o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=KngH7Lv5; arc=fail smtp.client-ip=52.101.53.0
+	 MIME-Version:Content-Type; b=LCuDX8MaeLKHvqWeZvTXpW0vgwxK2DZ112wcVok9X9k9leFlBJt3lFs4t8U6xRTvsMRp4Q62ytN2BhyfmYMP3s2RIxzOGRZb0Lk/xAh5YpHDvZQ+GwA8OZrWvZyvGRwdoJr0iKjnbazKdcGzkR27cn5LDZegPwcAXhjOd6JbPWk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=RgcjmMT7; arc=fail smtp.client-ip=52.101.56.29
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=oi7m8AF8kzg5TCKdHDLDNuAf+Jyq96wbnDAHtH9jj0FAsGAuCGBnnlQXV7LhOVKM//8wTew7XTybRFv04P8tzQIQj4ZovshwkVg8+qO2jrtb2hVr8PYIAeNxDTDaPvYuJ9iFC5iCqD6G4DS4vjF7+nrHT3lOvGJris3HlS81MD+AgMK/6BBNcSgYobI5BpB9L53Pjd/Fh8upJLhiaXO1zZOY1yvKoF2m9lpcE1I0cPQDd8xSxCTL2zOFvBaBh2FENYzH5OUzk36rVifVpQBZWiP1MNyLPYG0zF+NwDjERmr95q/PzoNFUHSirAF5ef/MRc8VGo7T1bG6Ui2DiwF+cg==
+ b=YrkNUVu6lGr96PZih3WME/hK/WnFyAxxxSDxw+OCJfL+tM7u3mrYtj3vILB56rTpEcggfZLDIZh+fvDntNiLFvPeJM14JR8CTYyZ8cjQxmIrVk3mhBY7JFRvqxvLYR5HxOpxORBzUon8XJzKlk1CUljAfyuASkgBL7YPLMpX/uB+7vxONBCXJkijOsNhrDOwFE1+c7IgHVyRgDm73LhbkwruEssPbpEP9GlnYV+kBk1DJcYCB5mTwByw06+LZIBTcP3pXtI7Ao61PC7FkGHVf0Jqy6ih9AcaSsk9CRfhVwj/FRIBKyadN+Zj3MO7nu/tWnl8F2bUJxM7uXHpIk42mg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1a6tSSZpYKwqDFMVFTHdaEkf859zFfw/dqAIeBBBDzA=;
- b=VvRfQ/QRM3jeCINDnBia2alQd1mqVUIQuFC/aRe68YM6jqEQ7uCJL5WF8BOngPk6XQVK8ZznQoL2/+nDIu99lMkF1v3sJDTpfX383uT8UvzPpcSZVcphr5kWUGUvQ3Uu+UWTaGSv6pjZ+xji2FEDq6FCQKk44+vMxaDZnpj8zzgUa6P2Av75H6YLIyeeVzxXBhwx/lTrEHTdvqdPHfQnnloD+w+dw8qHdXOcmMP3Xz4IOJO6ZWEPHtdeV/HNUithiiB+UkUwik6ji+t46bpcE1gJEuGDQS2hJqfLnXgxGMjiI7Q/wMTHkpEhOCuaaWp5ZreJD9PDOBT4G7snd2ZBqA==
+ bh=yXAYG7jq7pNgpVprsS63nli59Su+juyYTsPg7lNc3gY=;
+ b=KmAwTZLSUckYqvwHFHVveLezPXGNshV6BYzQo0JLwP23QQ2bgCN03lh40RfED1aBru+58iN3r7Z+CD0hbYjzWCzNgy3s58GAnnTdsc63yDNAlEME/iHPaBLPkwxOedBQYQnYL5Mxl9rcuvV+FQketFSWuZrQaCYeEUgpRui1wMebDOS/juvNLYwgmPHrGd/DApqQuhK4JmqAj49+04whDBasiMTrk63mA056t9KOF6Hs/3bNpLzrVDb7cvwAzbeE6CrU5KSni1iIiLfvpyAnx1iIiF6ophoipYmzZjERRQyF0tNt5YvTvegjFaGffZ92I9VHyMiyZtSTIp2jv9Vprg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1a6tSSZpYKwqDFMVFTHdaEkf859zFfw/dqAIeBBBDzA=;
- b=KngH7Lv5oEUeLCCwEW/kZ6TpjsvHbaxCAGojvoV2qG9ZQHbSbULHNNaYgdXcm+A0+8Vy3qOXTP27ccI+zZI8iMt2UABRfoovF5MHMotPnxAQneoXYkzDDc7L8keeKKitoKrEcNr03Y2QoNzw0pelg8pqMgaNVFL8vsQAhytIl+A=
-Received: from BY1P220CA0026.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:5c3::17)
- by IA1PR12MB9498.namprd12.prod.outlook.com (2603:10b6:208:594::15) with
+ bh=yXAYG7jq7pNgpVprsS63nli59Su+juyYTsPg7lNc3gY=;
+ b=RgcjmMT7VaMeuE3nzpDaMHvp5C5STJESgew9Z7zxRWi6VZOo0buPw1CPynSuOmD/LOx3ZUoIhIawgoF4UVviDG4+w2Lh2L8RD1OPBwYbNNLY+D7Njga9R3vjIcNTlcMB5QS6O7KQgDFKyXtUKhzeCXDOraegqb+6J4CyzghDyBU=
+Received: from BLAPR03CA0121.namprd03.prod.outlook.com (2603:10b6:208:32e::6)
+ by DS0PR12MB8480.namprd12.prod.outlook.com (2603:10b6:8:159::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.22; Tue, 3 Mar
- 2026 07:20:49 +0000
-Received: from MWH0EPF000C6184.namprd02.prod.outlook.com
- (2603:10b6:a03:5c3:cafe::ff) by BY1P220CA0026.outlook.office365.com
- (2603:10b6:a03:5c3::17) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9654.22 via Frontend Transport; Tue,
- 3 Mar 2026 07:20:52 +0000
+ 2026 07:21:03 +0000
+Received: from BN3PEPF0000B371.namprd21.prod.outlook.com
+ (2603:10b6:208:32e:cafe::67) by BLAPR03CA0121.outlook.office365.com
+ (2603:10b6:208:32e::6) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9654.21 via Frontend Transport; Tue,
+ 3 Mar 2026 07:20:47 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- MWH0EPF000C6184.mail.protection.outlook.com (10.167.249.116) with Microsoft
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ BN3PEPF0000B371.mail.protection.outlook.com (10.167.243.168) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9654.16 via Frontend Transport; Tue, 3 Mar 2026 07:20:48 +0000
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9700.0 via Frontend Transport; Tue, 3 Mar 2026 07:21:02 +0000
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Tue, 3 Mar
- 2026 01:20:46 -0600
+ 2026 01:20:48 -0600
 Received: from xhdharshj40.xilinx.com (10.180.168.240) by satlexmb08.amd.com
  (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Tue, 3 Mar 2026 01:20:44 -0600
+ Transport; Tue, 3 Mar 2026 01:20:47 -0600
 From: Harsh Jain <h.jain@amd.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<linux-crypto@vger.kernel.org>, <mounika.botcha@amd.com>,
 	<sarat.chand.savitala@amd.com>, <michal.simek@amd.com>
 CC: Harsh Jain <h.jain@amd.com>
-Subject: [PATCH 5/6] crypto: zynqmp-sha: Save dma bit mask value in driver context
-Date: Tue, 3 Mar 2026 12:49:52 +0530
-Message-ID: <20260303071953.149252-6-h.jain@amd.com>
+Subject: [PATCH 6/6] crypto: zynqmp-sha: Add sha3-384 support for AMD/Xilinx Versal device
+Date: Tue, 3 Mar 2026 12:49:53 +0530
+Message-ID: <20260303071953.149252-7-h.jain@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260303071953.149252-1-h.jain@amd.com>
 References: <20260303071953.149252-1-h.jain@amd.com>
@@ -97,31 +97,31 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000C6184:EE_|IA1PR12MB9498:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7d85d5d3-8738-4da5-75e3-08de78f56487
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B371:EE_|DS0PR12MB8480:EE_
+X-MS-Office365-Filtering-Correlation-Id: 32756490-d4c4-4920-8a4a-08de78f56cca
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|82310400026|36860700013;
+	BCL:0;ARA:13230040|1800799024|376014|82310400026|36860700013|7142099003;
 X-Microsoft-Antispam-Message-Info:
-	L1E0dJicO5LUo1dM7GUdBPVzraTW3cOL0PO/idrmGrzIdvln4Khyf0s6fkqQ96bp9WBElOBav+XXzZaWQGEXtI7guRS03BTuZazux4CR/57MDJjIiuGnOdKuPPqIWnjEwS/oVK0V+AX/+OqgbY8is1SELE7qea/ILZo8xZerOV4XSFTbX8nQxT9TjGe1l9/rppakzMebMhlpt8xVuBz134o5DDipkJRFTHrjkUZCBiYplnK55cLW8igcWhnosgijy9mHaPXwtyrqW0fBWVBwiD7cceWkmh9vp3oOnK4C+QTmr7BShziO5lCaSCgWWQoZllYNiF9U0kRnQ7JXq540aR3DZbW39cfdTV9uGvehspeD0wK9eAgGR8afxmhu/NR5VUV9uGYXBlCWdIsSQWp48VR/ls5US2opoKaMB2o65Z06LaMImTOiwMPcuXt62L47OV1KWeBJhI4XpRcCZZiOcSaazPkzCydQ1y7FJAaPHy99vRo0CERCiwV3hxBrlMGU9Z5GHc2RXhAxP2ywYttayo3Ix8TQe1hjtvQkjpchWnZ6Rh3nMbp10SEmbgmco7iiwDixsLrwJXo6pLY9q5R3Y5JhPQD8jmveFllnJS1F75OZrs4dpxCMUbwfW8SEvoGlWlB2/crgNsNQXHXkkipbRHK2W3vn6oBeYp36u+V4z+NSdBrmNdYgwaomoNOIoBCdbbFTvwJWdAkbgLoHRznOaWKMXRosWgxBmWgYwODPZ9AEXTrIiRkfFkpi/edDNpOaF2f9/hDoIVzDkFiflyaHp4e+eQypnd7PVFzAMCTIiEQ0m9WX8TKaM9gFUSmtOCSQ
+	YM8Jmfb4JGZHydMX1bsWYGbrZijUSGpyeP7p6ljKZf4b2YDVaTXT5vkLOy205t9lqcYE7gkxL1wFvo6OqT4kzxIO1tqtuKtwBsPQKM6L9sIsp30nC/dmsOq9hQgfQkUx9I+zBloCZ9CZ/+v//dm0ugTR/mHF17y6VUtLrrlvoZ6inIEHlXbpiTzxSaf+L8BOq9BRN+tgM1igwBW7FeICADqTX4WulhEIK2PX899pjt1pDbn03PuSF9xtCiFji+zgJhm5gHIocD9Y40t39jeNEH9poZHFHC3Pn1vD3TFCezgrzFV1usvtbW+FptZbdg4iyIcA7MKSYKxijmfPrfMhiqg8Ynz/MYDdXP2NKt/gJU1oHkKwwvXaEd9h/8UlJiK7Sov1rB7Tx+XamGQShVkcwcPy+6Q9MzNLa4T2sPsJYMOSnOT/CewE33sk1M0cOXOdqvezohpbqVwRwE8dgkiEfzXdWgXPNGncI/u8P0tmSxYNAEhFYJdkYf2DTNvesKClXZNS3wy0VR2k+uqcXiU2XfDL7c5g9WaIdCqTGCcF7mZaxd20G0UrQsOy82vuN7zadLthKft0OoiILi4qoC7UwybKfshXAKPJPhexEUgPiMNFhPQxCczqkZVZFfdKO/wVIj5Tg2NUAAtvhJjLD68OYWMbjyZOWFautwAZs5fuYU2zUQ/zsCpl/R/eGMGEDSFRF4tBMg7QFficCSVUoR8TqdF37//BcDBryLkOpGYtAUiycZUoWGlMN7YcSNr3ysTN8QBnkU1f7c8EviAHI++drcAzbdRejyNTu4oumspXhCLepn4xFLPPCH+Kf7mcnwFu3muxG13kZWr7HiP5oBmM4g==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(36860700013);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(376014)(82310400026)(36860700013)(7142099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	eb3S+2rnjAoYN6dicQ+TMm6bQ2MX2lsOe+99Upy/+mOGoK4L4AIexY+kGxwWUNwONJ7QnkcbaekJFESpaigGE6VPKtybtemIroKqEC8z5F56vdgs33pe/rEMMpJTJ3EFFneDU2824XwKCZDunOt5PotqYJ2FbTp7ic1YVMcLgH+GDrjsnzItSafWZYisFPd7dNXrpQOgLnlMVyU/lpjJFQ55Mq/CF0OsUDJA2AHJXWXqA8tyIjRIut++r4ogQR3q86RlDjdUNF6s8AQlWCTWc5Mf9pGZpOcfojXkH9YJrADaFzof2cLMRRII9cjbzth+lcqmiT5rnvJLKlAiNsw64jC9S8534g1mXaBnn6wLR2/TSLO28Km4NPBjX0WC98sAZfdCLweE49OaRAK1mpeP5I7TrS60J6r9y9h8uPCFDg51Mv/V+39inRJb6I307j8x
+	LOgfEA4svzdmxW0lzbfc5N5pIipLv202QIWRuXkbS+xTkTF8XvX88a73D++OkG6jWBz8h9qDa3qUOIpMQxcEz/7G6MX4MNZ56mOEqVSYOEW2/r0vzxX8GPgtPVuZx8qVTcZI2jmtNsi11aOxMXA8zOOmS7U51RR2MajUws2bRbYjkhQ6VDBeimzVIt/6RaZ4ClZ1yEdrMefzwO/msQK4Z7WBcl0aadEBZZw4iO3XrS3QSZ1ZAyV+d0YOG2jrNYhR48xKDYzlCpZ8gAvl/AdZj1cPt8EJVLLbVNmOMtuprMD52dCRev7LdRcbIjpgRCgC9HGweu4ppQJqos5ZjiHJQw1ONDc9Y2++AhugMbC/WsN4AQ60jUia3xeAh4y6D3Ln81bpbQ+HVhdPR+jyGHwv25glfURDEzAkSAZbzy0WtjmKPQd4QJPIeMseR9bD4Zwz
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 07:20:48.0770
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 07:21:02.0338
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d85d5d3-8738-4da5-75e3-08de78f56487
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32756490-d4c4-4920-8a4a-08de78f56cca
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000C6184.namprd02.prod.outlook.com
+	BN3PEPF0000B371.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB9498
-X-Rspamd-Queue-Id: 76BA01EA12C
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8480
+X-Rspamd-Queue-Id: 266961EA1DA
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
@@ -129,17 +129,17 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21483-lists,linux-crypto=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,amd.com:dkim,amd.com:email,amd.com:mid];
+	TAGGED_FROM(0.00)[bounces-21485-lists,linux-crypto=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:dkim,amd.com:email,amd.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[amd.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[h.jain@amd.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
@@ -151,43 +151,177 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Action: no action
 
-Save dma mask in driver context. It will allow upcoming Versal sha3-384 to
-use different value.
+Adds SHA3 driver support for the Xilinx Versal SoC.
+Versal SoC SHA3 engine does not support context export, Accordingly cannot
+handle parallel request. For unsupported cases it is using fallback.
+For digest, the calculation of SHA3 hash is done by the hardened
+SHA3 accelerator in Versal.
 
 Signed-off-by: Harsh Jain <h.jain@amd.com>
 ---
- drivers/crypto/xilinx/zynqmp-sha.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/crypto/xilinx/zynqmp-sha.c | 119 ++++++++++++++++++++++++++++-
+ 1 file changed, 118 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/xilinx/zynqmp-sha.c b/drivers/crypto/xilinx/zynqmp-sha.c
-index 74e95df5eefc..72b405758200 100644
+index 72b405758200..b418c917ab02 100644
 --- a/drivers/crypto/xilinx/zynqmp-sha.c
 +++ b/drivers/crypto/xilinx/zynqmp-sha.c
-@@ -31,6 +31,7 @@ struct xilinx_sha_drv_ctx {
- 	struct ahash_engine_alg sha3_384;
- 	struct crypto_engine *engine;
- 	struct device *dev;
-+	u8 dma_addr_size;
+@@ -18,8 +18,17 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
++#define CONTINUE_PACKET		BIT(31)
++#define FIRST_PACKET		BIT(30)
++#define FINAL_PACKET		0
++#define RESET			0
+ #define ZYNQMP_DMA_BIT_MASK		32U
++#define VERSAL_DMA_BIT_MASK		64U
+ #define ZYNQMP_DMA_ALLOC_FIXED_SIZE	0x1000U
++#define VERSAL_SHA3_INVALID_PARAM		0x08U
++#define VERSAL_SHA3_STATE_MISMATCH_ERROR	0x0AU
++#define VERSAL_SHA3_FINISH_ERROR		0x07U
++#define VERSAL_SHA3_PMC_DMA_UPDATE_ERROR	0x04U
+ 
+ enum zynqmp_sha_op {
+ 	ZYNQMP_SHA3_INIT = 1,
+@@ -209,6 +218,67 @@ static int zynqmp_sha_digest(struct ahash_request *req)
+ 	return ret;
+ }
+ 
++static int versal_sha_fw_error_decode(int status)
++{
++	switch (status) {
++	case VERSAL_SHA3_INVALID_PARAM:
++		pr_err("ERROR: On invalid parameter\n");
++		return -EINVAL;
++	case VERSAL_SHA3_STATE_MISMATCH_ERROR:
++		pr_err("ERROR: SHA3 state mismatch error\n");
++		return -EINVAL;
++	case VERSAL_SHA3_FINISH_ERROR:
++		pr_err("ERROR: SHA3 finish error\n");
++		return -EIO;
++	case VERSAL_SHA3_PMC_DMA_UPDATE_ERROR:
++		pr_err("ERROR: SHA3 PMC DMA update error\n");
++		return -EIO;
++	default:
++		pr_err("ERROR: Unknown SHA3 FW error code: %u\n", status);
++		return -EIO;
++	}
++}
++
++static int versal_sha_digest(struct ahash_request *req)
++{
++	int update_size, ret, flag = FIRST_PACKET;
++	unsigned int processed = 0;
++	unsigned int remaining_len;
++	unsigned int fw_status = 0;
++
++	remaining_len = req->nbytes;
++	while (remaining_len) {
++		if (remaining_len >= ZYNQMP_DMA_ALLOC_FIXED_SIZE)
++			update_size = ZYNQMP_DMA_ALLOC_FIXED_SIZE;
++		else
++			update_size = remaining_len;
++
++		sg_pcopy_to_buffer(req->src, sg_nents(req->src), ubuf, update_size, processed);
++		flush_icache_range((unsigned long)ubuf,
++				   (unsigned long)ubuf + update_size);
++
++		flag |= CONTINUE_PACKET;
++		ret = versal_pm_sha_hash(update_dma_addr, 0,
++					 update_size | flag, &fw_status);
++		if (ret)
++			return versal_sha_fw_error_decode(fw_status);
++
++		remaining_len -= update_size;
++		processed += update_size;
++		flag = RESET;
++	}
++
++	flag |= FINAL_PACKET;
++	ret = versal_pm_sha_hash(0, final_dma_addr, flag, &fw_status);
++	if (ret)
++		return versal_sha_fw_error_decode(fw_status);
++
++	memcpy(req->result, fbuf, SHA3_384_DIGEST_SIZE);
++	memzero_explicit(fbuf, SHA3_384_DIGEST_SIZE);
++
++	return 0;
++}
++
+ static int handle_zynqmp_sha_engine_req(struct crypto_engine *engine, void *req)
+ {
+ 	int err;
+@@ -221,6 +291,18 @@ static int handle_zynqmp_sha_engine_req(struct crypto_engine *engine, void *req)
+ 	return 0;
+ }
+ 
++static int handle_versal_sha_engine_req(struct crypto_engine *engine, void *req)
++{
++	int err;
++
++	err = versal_sha_digest(req);
++	local_bh_disable();
++	crypto_finalize_hash_request(engine, req, err);
++	local_bh_enable();
++
++	return 0;
++}
++
+ static struct xilinx_sha_drv_ctx zynqmp_sha3_drv_ctx = {
+ 	.sha3_384.base = {
+ 		.init = zynqmp_sha_init,
+@@ -252,7 +334,36 @@ static struct xilinx_sha_drv_ctx zynqmp_sha3_drv_ctx = {
+ 	.dma_addr_size = ZYNQMP_DMA_BIT_MASK,
  };
  
- struct xilinx_sha_tfm_ctx {
-@@ -248,6 +249,7 @@ static struct xilinx_sha_drv_ctx zynqmp_sha3_drv_ctx = {
- 	.sha3_384.op = {
- 		.do_one_request = handle_zynqmp_sha_engine_req,
+-
++static struct xilinx_sha_drv_ctx versal_sha3_drv_ctx = {
++	.sha3_384.base = {
++		.init = zynqmp_sha_init,
++		.update = zynqmp_sha_update,
++		.final = zynqmp_sha_final,
++		.finup = zynqmp_sha_finup,
++		.digest = sha_digest,
++		.export = zynqmp_sha_export,
++		.import = zynqmp_sha_import,
++		.halg = {
++			.base.cra_init = zynqmp_sha_init_tfm,
++			.base.cra_exit = zynqmp_sha_exit_tfm,
++			.base.cra_name = "sha3-384",
++			.base.cra_driver_name = "versal-sha3-384",
++			.base.cra_priority = 300,
++			.base.cra_flags = CRYPTO_ALG_KERN_DRIVER_ONLY |
++				CRYPTO_ALG_ALLOCATES_MEMORY |
++				CRYPTO_ALG_NEED_FALLBACK,
++			.base.cra_blocksize = SHA3_384_BLOCK_SIZE,
++			.base.cra_ctxsize = sizeof(struct xilinx_sha_tfm_ctx),
++			.base.cra_module = THIS_MODULE,
++			.statesize = sizeof(struct sha3_state),
++			.digestsize = SHA3_384_DIGEST_SIZE,
++		}
++	},
++	.sha3_384.op = {
++		.do_one_request = handle_versal_sha_engine_req,
++	},
++	.dma_addr_size = VERSAL_DMA_BIT_MASK,
++};
+ 
+ static struct xlnx_feature sha_feature_map[] = {
+ 	{
+@@ -260,6 +371,12 @@ static struct xlnx_feature sha_feature_map[] = {
+ 		.feature_id = PM_SECURE_SHA,
+ 		.data = &zynqmp_sha3_drv_ctx,
  	},
-+	.dma_addr_size = ZYNQMP_DMA_BIT_MASK,
++	{
++		.family = PM_VERSAL_FAMILY_CODE,
++		.feature_id = XSECURE_API_SHA3_UPDATE,
++		.data = &versal_sha3_drv_ctx,
++	},
++	{ /* sentinel */ }
  };
  
- 
-@@ -273,7 +275,7 @@ static int zynqmp_sha_probe(struct platform_device *pdev)
- 		return PTR_ERR(sha3_drv_ctx);
- 	}
- 
--	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(ZYNQMP_DMA_BIT_MASK));
-+	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(sha3_drv_ctx->dma_addr_size));
- 	if (err < 0) {
- 		dev_err(dev, "No usable DMA configuration\n");
- 		return err;
+ static int zynqmp_sha_probe(struct platform_device *pdev)
 -- 
 2.34.1
 
