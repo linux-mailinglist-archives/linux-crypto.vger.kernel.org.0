@@ -1,93 +1,93 @@
-Return-Path: <linux-crypto+bounces-21480-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21482-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0HC6J/eLpmnMRAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21480-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:21:27 +0100
+	id UNPLOBiMpmnMRAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21482-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:22:00 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FF0A1EA13B
-	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:21:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9059E1EA167
+	for <lists+linux-crypto@lfdr.de>; Tue, 03 Mar 2026 08:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EC112306B2DB
-	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2026 07:20:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 795EB30AC5FE
+	for <lists+linux-crypto@lfdr.de>; Tue,  3 Mar 2026 07:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5ABB37DE87;
-	Tue,  3 Mar 2026 07:20:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B3037DE8E;
+	Tue,  3 Mar 2026 07:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="4Gme96Uy"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="rpLAAFUm"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11010046.outbound.protection.outlook.com [52.101.85.46])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012004.outbound.protection.outlook.com [52.101.43.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC3E375F9E
-	for <linux-crypto@vger.kernel.org>; Tue,  3 Mar 2026 07:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D46738643B
+	for <linux-crypto@vger.kernel.org>; Tue,  3 Mar 2026 07:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.4
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772522443; cv=fail; b=SxNtdY/ucTTg+3QnoM5Qgb86HDbMvSqlYcRHvkc+9PPcqyfkRnOX+9UOHHRi7LnSEGUY694NqL8I056mQ0G7JLIJAaR5jNPvLc7Ry9S9wth0YqwzvbQm3y5bQLuE98o3RrschthyomjIEFlMxDEk0zUqenq9+eoSoCInEdlyq/k=
+	t=1772522451; cv=fail; b=IxFBjkPr3BppPk2mR1mM2Cpsjk6YnJa8zA0z8/8R34nRnx2rPz0GnW3bJNelIVlrz+6tIQWcqXW3woDQquYsKrhsSNPZA7XZ/7J748VgsOlxqbigwi63sTxx6kOsfFbY0sa+axC2fejgcXJIH/q9PqVd/CS0TC8JgsAISuzs+rI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772522443; c=relaxed/simple;
-	bh=vMAHSdjqCPiM6q3fjsHx4pWYJ+Mhhts0ZgjczAR5PTk=;
+	s=arc-20240116; t=1772522451; c=relaxed/simple;
+	bh=NYOo7463AV9snGGm+8sq7o8jCXvZDDSbuHLpWEr/a78=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZSsfEwtMkwD59ZZTCGarUr9Q27AnsnIvGp87Q+GGNYC/6UxUo7Ok+ZNat9sBdy4pcUhfeP06gFiatyF2vQ32aLlo3sSVorp4+af8ellHpA1byWzol5rZ/Y7HaX86NkV70gpLOZ4IrU4xLVflt97iQThee7k3mLAIWGlxElh8MVg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=4Gme96Uy; arc=fail smtp.client-ip=52.101.85.46
+	 MIME-Version:Content-Type; b=gSVBfF7URYovZI/ZOj82oT/pRCI/ulOVSscHJeyljdacIZ3jgOsxCVWi2G35kw3k9Tc0eHLdCoeGBaphsTdfTxLE5PznmKmAjeHA8+Mp83SW9t9SDsdqpkMAeMsuCvi7nR3+xIXeQa68m1QsuTZTJlaj9Yr9LOqNFF2to0Tmxzc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=rpLAAFUm; arc=fail smtp.client-ip=52.101.43.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ituJ2iUy4Hi1ehmbyUqYCpEhYyldG5TYQP9GFZbaMj4dDpbs39IikoNFbixEPxa5HS7S7WyS3fKZMcG9EcWFGE2CusGizZ9XW9/TyThG2TC4QoMVhBf6aAPd5OWeeKqGzi7rzTcyTAETtnEd2unzGvoox6bGDuWiy2/GYEpThxsl7CtKc+bfIZak8kKP9INzmTUdAwArWaQO4O+TPcQfgFg8C8BZiIHq7/m+H7LwyPERy7KR0JL+m0+CEFeFt/sG0r2FxxJFnmyiwGLN9fNhPpWFgWZuK4fxbJabVIhH/w7gPMsPP1WCXO/48+RubJsbbEFpuel5gphlZ9sPbTk8LA==
+ b=d1530tJV5pO/UqdN8UbBXSelhlyEL/JIiIEsz7246U2c8C91kmI8YZ9w6l6t6Ow/HifBMN/slgERY9BNGTNfg8fYDlhmR4TXIjP2PURMegdoW5qxePw4WAMDgVglC9f4R5SVrm+tA74ZXngh/ZzZWnilqZg0qa6Vxgrm51F3YIGaS114Z6htoS5+pOHLsLbvq8xi+yLRG4B8ILNs5gejctKVHKFMOcg1sb/KlOIs4o+1gm7CeMJ4WehrYkDBNAox2oMN+bDkBnDrHcVOxymJq1nVMs+kUz/I36zZhJnkxmLF1KUpVVzieWUBHL6dfv2lh9FiW1F7iA9ynu6OL0rahg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A6PbFoxTMZ2NeSDdY4OpFvajrNTXS0bmuhx4Z6lzjtQ=;
- b=RSxXOGWXbzPtSRT2aZGpqckGuyfj52mIe9S+q16cVNvaa9YD8ipDyNYpoDGKyyNqRIdDr0xKGWOWbaa5n4bnP/8f/MVDnjLYtMm4WXPfUjps3jvXz2mVYvvh7oGSncVXq8pWwgmlpmErEylKNn8hjbjOnf2Hf/1dj+GWHgCZnPZSb8uzkQyUJSl0uuOKGp2etpSWL2ZsjsdGVMp+8bYsF8xY01U8PbwHEk7VlQ55j2CL5ZuY6l4at2wr375+yGCK4wTq7h0MK8w7DNHR79OHUztEbRvxruI3ViiMhf5GmD3m2kfMxMyV1a+qVyj8h52kCHGVuDeeuz5l5QWR0i4MzQ==
+ bh=G6fATKdjtVLC8XUq92pEWy6GY+xdcAjZD0OVI0hizjs=;
+ b=W/P5IYIpESUr4aHFkGngNf9HBiK+CpyvI7NeMuFWz9FJJ/Jp9UBDBZSZ62/XQVHB62iaVqHDznL4uIINp4iqn/KeuZHBqmDBrkYJBDoESdj+Y4pVigCEe9avpk8zxsNbOB268cqtW8H4cHy/64mPp3oY3XP173XYVah8ayjBIs+hqmfvxWTGPGx53OA9nK8MRH9CDKg3HDbFxhrKyqhX3JlUV8padTEXJrNxSNygEb63eRR3NWTqtK7NaPWMXfv5Nb23+zASuO/aT40JZbWljsNJDDwkLcnsEdnECDmLTeqOne321lFzbrjQBzlA+7mW/wS0PSAv20LIMXMLL7+QuA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A6PbFoxTMZ2NeSDdY4OpFvajrNTXS0bmuhx4Z6lzjtQ=;
- b=4Gme96UyZYE77yIKSsPWd3W/T7pYEE4Nhva/iLc9aY6hg3mucrzkPUnzUvQuYUJlawAXc+KNqpGrTzIVTa7EUyVlhLPFajmDSnI45o33nJCCvp7mbal1lDFcFSTdRqrD25p7FayfQe8v5uACh4ytunMwju1rYpIvdSW567pvUUM=
-Received: from BL1PR13CA0412.namprd13.prod.outlook.com (2603:10b6:208:2c2::27)
- by DS0PR12MB6462.namprd12.prod.outlook.com (2603:10b6:8:c6::19) with
+ bh=G6fATKdjtVLC8XUq92pEWy6GY+xdcAjZD0OVI0hizjs=;
+ b=rpLAAFUmxRmkHDFOYLl1niWvxmIlfP7WRJ6Bxti47P5CrW+r022AscLNlzjlKlXOJsAqWMwmdcUbqfZSLDdFX7VyqkoVTyjVCYcA8S6yY9ylaaGqU9xZDWv4yaQxMvxKo51YVEd2snPfKUPNPUraBnH32GEbPbMzhb6/AB9YZpY=
+Received: from BYAPR08CA0007.namprd08.prod.outlook.com (2603:10b6:a03:100::20)
+ by IA0PR12MB7626.namprd12.prod.outlook.com (2603:10b6:208:438::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.21; Tue, 3 Mar
- 2026 07:20:38 +0000
-Received: from BN3PEPF0000B36E.namprd21.prod.outlook.com
- (2603:10b6:208:2c2:cafe::53) by BL1PR13CA0412.outlook.office365.com
- (2603:10b6:208:2c2::27) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9654.22 via Frontend Transport; Tue,
- 3 Mar 2026 07:20:32 +0000
+ 2026 07:20:42 +0000
+Received: from MWH0EPF000C6185.namprd02.prod.outlook.com
+ (2603:10b6:a03:100:cafe::f) by BYAPR08CA0007.outlook.office365.com
+ (2603:10b6:a03:100::20) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9654.18 via Frontend Transport; Tue,
+ 3 Mar 2026 07:20:42 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- BN3PEPF0000B36E.mail.protection.outlook.com (10.167.243.165) with Microsoft
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ MWH0EPF000C6185.mail.protection.outlook.com (10.167.249.117) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9700.0 via Frontend Transport; Tue, 3 Mar 2026 07:20:37 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9654.16 via Frontend Transport; Tue, 3 Mar 2026 07:20:41 +0000
+Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Tue, 3 Mar
- 2026 01:20:37 -0600
+ 2026 01:20:39 -0600
 Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb10.amd.com
  (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Tue, 3 Mar
- 2026 01:20:37 -0600
+ 2026 01:20:39 -0600
 Received: from xhdharshj40.xilinx.com (10.180.168.240) by satlexmb08.amd.com
  (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Tue, 3 Mar 2026 01:20:35 -0600
+ Transport; Tue, 3 Mar 2026 01:20:37 -0600
 From: Harsh Jain <h.jain@amd.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
 	<linux-crypto@vger.kernel.org>, <mounika.botcha@amd.com>,
 	<sarat.chand.savitala@amd.com>, <michal.simek@amd.com>
 CC: Harsh Jain <h.jain@amd.com>
-Subject: [PATCH 1/6] crypto: xilinx: zynamp-sha: Update the driver to make it as self discoverable
-Date: Tue, 3 Mar 2026 12:49:48 +0530
-Message-ID: <20260303071953.149252-2-h.jain@amd.com>
+Subject: [PATCH 2/6] crypto: zynqmp-sha: Change algo type from shash to ahash
+Date: Tue, 3 Mar 2026 12:49:49 +0530
+Message-ID: <20260303071953.149252-3-h.jain@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260303071953.149252-1-h.jain@amd.com>
 References: <20260303071953.149252-1-h.jain@amd.com>
@@ -101,31 +101,31 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B36E:EE_|DS0PR12MB6462:EE_
-X-MS-Office365-Filtering-Correlation-Id: 24fa984e-4f52-4f8c-27ba-08de78f55e59
+X-MS-TrafficTypeDiagnostic: MWH0EPF000C6185:EE_|IA0PR12MB7626:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7dadfc04-0840-41c4-7b7b-08de78f56085
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|376014;
+	BCL:0;ARA:13230040|36860700013|376014|82310400026|1800799024|7142099003;
 X-Microsoft-Antispam-Message-Info:
-	3E/2RlUte4MAFPsOAU+/p2GihGU8p0K3tcrRGEnKa6MiXlf26L6gnDcxwM8RsFAwQcmys44/coMVTdiMzB7ril58TyUMygZhtsQ7AnK6X3ZgEEamy69/Wbehmm2S1YaRUAbfDjN1cBd7ELuOXTD6hRH5NLExVGvSafts+MszcoQlKx+uomTRAmhdO3Ooj4SBorBft1iRhuopt7+PiIvRoYhCBvClK7i9PSDjKCsnHibqBkaA2XbcFUXAYQ+gAZfU+XfGuFjCxJIKN4lnvbpOgYrbd2Nv3eNRt3TUDgWDikTHnBH9nHq/lAflVC+lkUBMm/BwQAcHkWLfnOw5woxbcF0eefcbesQ6xF09Hw9ZXZfbP4EGuu4hvXkdIDsS2kaja/O95jWYPgdNf1wtEAoDpMDduiyLKtLfimVx/4NOrC4W6pQsBOvpJVK3TmW8VXijT5p6Zz05K4R4ypDioOYWWo4j/sdR785F+L2L8BPZ7LdXym2m3Rm/bx+O3++Ap+icV2t8LkxP7RFLnqygzOa01z3SX5Zzw3zv4l6DDO6TmQABWgIiaeRJpbArDnPuiFtcH8Id6uZP0cOq8mfz9mOT7d4bthduERN9b8fXIAvA7WJ9QX+9lMQ4DX+108v8+Fr8I8AEXt1JYnn7I7AZtH5izIiS8bCeHvLHAmTd6v7vq2KR5ALnOfsy3dAhNNP49hU/empfVNQSx/7jP7JQgwY6LqYlwiH7IswNKPC5HKaXrg0J6aDlSrzp6Su5sBVq/gAre24yvuK6u/lZNND1LkX9BqL8Cti9oXReWo4J1Zp+h588Hu5f0uRIyn5VqgFx5WTRjGjLgCJA4tL/qhvUv0tBow==
+	jzm2s0t8YKd3dceWYDF03iOhrPWrx+wylKD0Zsvupo4+Hx9G/HVZXH+oHRPcFNotcVHCqMDW3KQQX2okPieWGD04qHYttLNFpu/NahZYO3wpZ87tMNlP3WNE1pGNR4zjZ/aDnahLFaPAnwSOHEe9B2pplCb6QspQBRiiH6EiOZOjQg2LUZZi5cxjjyAh5OmHh2f+wFSOlFPuRGsCvOZhBI/yqwKEsQ+PBFSsm2QyiVoLeI4KTOJnYJdZwAa7/VxCvhAdF4zG1eXSQxBPB0jCy2T1ply9opmfAe+QZ7VzOo3TavHx0vdcFnR8QXfXLT2o3Z0CfPXPU/Vu+EZ9viHa+KL9as+S6RomEaXUwGwwsD4JF/vDSRg9MRNxdcvCatXfpKoiuDqgVThXSN+9CL+uKcifpMUqwHJJLudcmUluKNZoMK5x5RTrG68lCuXs+JGEUFSUIIvk5g4tf5c5vS+Sxc8teMbKIj4ZBan0phy3/DfvgUg0F2yaxAiqJQ/scEeKHD9erHaN7PI1pydd/Gmito+RfpBE5yV5FXWRC0uL+SFqLKclpgtC6z7Hk4rrZAVT41CVyV8+94LWXAdWcHjlw3oTkbS1Ls0nQNSOWsvUfbFDcH8sfpttCd0KB3LfzeJx/x2xwLHrJ4sFIUfBJB2e0NwfSSWc/QwuT5PoP1BJhh71x8QiYN1nuFo+0F5WHVX6+tqWASeUFHwFypQtgC1sQyNISHFTm1Q2vQH1EwrQRjhC6GcfJHDWECu4SgDMzoX6MItO2NSaij7Xj83UGrQavyEnYcxSUV6duBMDfNeQkIp3aJds7NGZZ57q0vL9VKUN2xgC1Jq6zEyHw+OT7ZDUbQ==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(376014);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(1800799024)(7142099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	440m1k2Exo+1hqCO1z/fgBKr5Y3ZqDXeu9fX43oapPfZJjqkQl+SX18hYBfApF0+VUcMuDBSHEJSIdZUG7yGr9doSYeoOhMDsyuIxr8KRghvlPGE2k1qYmVjRcHjje8pH4MHpvgH7giJoifY6JRLgqQ0dqrSkARFhi8Yxox8+VfuDBm28oezsT8bjxGf8mAxNx8b/3GmtMx23ENMtZOrJX9AuW2tNUg5C97n4YLgUL7hVMg69DWeYGF9YeTPI8YIGYEUd51Bby4rXwKWy16nHBFDbbe5gyQBewNaeAIMgOcyusVc3GCwSFbBIBmxVoNOFRxOU6faNAMLNUzQmC+WGERNFNth2hiXHTsMgjgKEH9vxojBFCN1WjFerptdQaJQ3EF1jOchqOPqbXKfbdKaip2yJUubzx9zTaz2nxFdFnoxRoZDKVNVwPLcqvYzbo9G
+	tYWX6oKjeEBJwAwfwOeE1n6emogFB4K4FQ7jfRYyeaol4fMorR9zY5Vflsl1mY9RYwRTlEXcNj7jUC3ApTPAftb6TAcPjbeQvh0UXWBjtNea9ZhtRvVX7XTrU8IUT1WTvEBlgGm7ZOt3w1QUDMiEgtpjRfyaj4bVWkUn/EZVUz6KW1JDSRWQxgswgTleUPkU8+s/cIHLbE4zXB/+vY7W7vHTap8dpparQI2n4h+fFe+u5JQ89uy6fg6FUtcuH/gcRpwaa+aQ7740wDlwYq3WJlgfs6Qp79qTiIfRZ/v58FcLXSIE2nYucOSzhqBpLkl20EJnxO/pJ92DaNJ5qhf7Xn1imxK1dscdrEEcguIx6o0i3MLpKzRT3rsQKTq/qxJiZUn1P2QS1QjBWs6B2uy+KQ4eUOEvRv582ooDR+KLCRx6ObCERTpM33Kd/OV+bWmd
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 07:20:37.7980
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 07:20:41.3535
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24fa984e-4f52-4f8c-27ba-08de78f55e59
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7dadfc04-0840-41c4-7b7b-08de78f56085
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B36E.namprd21.prod.outlook.com
+	MWH0EPF000C6185.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6462
-X-Rspamd-Queue-Id: 2FF0A1EA13B
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7626
+X-Rspamd-Queue-Id: 9059E1EA167
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
@@ -133,182 +133,419 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21480-lists,linux-crypto=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:dkim,amd.com:email,amd.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,sha3_drv_ctx.dev:url,xilinx.com:email];
+	TAGGED_FROM(0.00)[bounces-21482-lists,linux-crypto=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:dkim,amd.com:email,amd.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[amd.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[h.jain@amd.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Action: no action
 
-From: Mounika Botcha <mounika.botcha@amd.com>
+descsize in shash type has size limit, For driver which fallback does
+not fit in shash type. Change the algo type from shash to ahash.
+Also adds crypto engine support to serialize the requests.
 
-Update driver to self discover the device.
-
-Signed-off-by: Mounika Botcha <mounika.botcha@amd.com>
 Signed-off-by: Harsh Jain <h.jain@amd.com>
 ---
- drivers/crypto/xilinx/zynqmp-sha.c | 85 +++++++++++++++++++++---------
- 1 file changed, 61 insertions(+), 24 deletions(-)
+ drivers/crypto/xilinx/zynqmp-sha.c | 258 +++++++++++++++++++----------
+ 1 file changed, 171 insertions(+), 87 deletions(-)
 
 diff --git a/drivers/crypto/xilinx/zynqmp-sha.c b/drivers/crypto/xilinx/zynqmp-sha.c
-index 5813017b6b79..1d6b7f971111 100644
+index 1d6b7f971111..cd951e692dd9 100644
 --- a/drivers/crypto/xilinx/zynqmp-sha.c
 +++ b/drivers/crypto/xilinx/zynqmp-sha.c
-@@ -162,7 +162,7 @@ static int zynqmp_sha_digest(struct shash_desc *desc, const u8 *data, unsigned i
- 		return __zynqmp_sha_digest(desc, data, len, out);
- }
+@@ -2,8 +2,10 @@
+ /*
+  * Xilinx ZynqMP SHA Driver.
+  * Copyright (c) 2022 Xilinx Inc.
++ * Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
+  */
+ #include <crypto/internal/hash.h>
++#include <crypto/engine.h>
+ #include <crypto/sha3.h>
+ #include <linux/cacheflush.h>
+ #include <linux/cleanup.h>
+@@ -14,7 +16,6 @@
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/spinlock.h>
+ #include <linux/platform_device.h>
  
--static struct zynqmp_sha_drv_ctx sha3_drv_ctx = {
-+static struct zynqmp_sha_drv_ctx zynqmp_sha3_drv_ctx = {
- 	.sha3_384 = {
- 		.init = zynqmp_sha_init,
- 		.update = zynqmp_sha_update,
-@@ -185,17 +185,26 @@ static struct zynqmp_sha_drv_ctx sha3_drv_ctx = {
- 	}
+ #define ZYNQMP_DMA_BIT_MASK		32U
+@@ -27,164 +28,230 @@ enum zynqmp_sha_op {
  };
  
-+static struct xlnx_feature sha_feature_map[] = {
-+	{
-+		.family = PM_ZYNQMP_FAMILY_CODE,
-+		.feature_id = PM_SECURE_SHA,
-+		.data = &zynqmp_sha3_drv_ctx,
-+	},
+ struct zynqmp_sha_drv_ctx {
+-	struct shash_alg sha3_384;
++	struct ahash_engine_alg sha3_384;
++	struct crypto_engine *engine;
+ 	struct device *dev;
+ };
+ 
+ struct zynqmp_sha_tfm_ctx {
+ 	struct device *dev;
+-	struct crypto_shash *fbk_tfm;
++	struct crypto_ahash *fbk_tfm;
 +};
 +
- static int zynqmp_sha_probe(struct platform_device *pdev)
- {
-+	struct zynqmp_sha_drv_ctx *sha3_drv_ctx;
- 	struct device *dev = &pdev->dev;
- 	int err;
--	u32 v;
++struct zynqmp_sha_desc_ctx {
++	struct ahash_request fallback_req;
+ };
  
- 	/* Verify the hardware is present */
--	err = zynqmp_pm_get_api_version(&v);
--	if (err)
--		return err;
+ static dma_addr_t update_dma_addr, final_dma_addr;
+ static char *ubuf, *fbuf;
+ 
+-static DEFINE_SPINLOCK(zynqmp_sha_lock);
 -
-+	sha3_drv_ctx = xlnx_get_crypto_dev_data(sha_feature_map);
-+	if (IS_ERR(sha3_drv_ctx)) {
-+		dev_err(dev, "SHA is not supported on the platform\n");
-+		return PTR_ERR(sha3_drv_ctx);
-+	}
+-static int zynqmp_sha_init_tfm(struct crypto_shash *hash)
++static int zynqmp_sha_init_tfm(struct crypto_tfm *tfm)
+ {
+-	const char *fallback_driver_name = crypto_shash_alg_name(hash);
+-	struct zynqmp_sha_tfm_ctx *tfm_ctx = crypto_shash_ctx(hash);
+-	struct shash_alg *alg = crypto_shash_alg(hash);
+-	struct crypto_shash *fallback_tfm;
++	const char *fallback_driver_name = crypto_tfm_alg_name(tfm);
++	struct zynqmp_sha_tfm_ctx *tfm_ctx = crypto_tfm_ctx(tfm);
++	struct hash_alg_common *alg = crypto_hash_alg_common(__crypto_ahash_cast(tfm));
++	struct crypto_ahash *fallback_tfm;
+ 	struct zynqmp_sha_drv_ctx *drv_ctx;
  
- 	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(ZYNQMP_DMA_BIT_MASK));
- 	if (err < 0) {
-@@ -203,19 +212,13 @@ static int zynqmp_sha_probe(struct platform_device *pdev)
- 		return err;
- 	}
+-	drv_ctx = container_of(alg, struct zynqmp_sha_drv_ctx, sha3_384);
++	drv_ctx = container_of(alg, struct zynqmp_sha_drv_ctx, sha3_384.base.halg);
+ 	tfm_ctx->dev = drv_ctx->dev;
  
--	err = crypto_register_shash(&sha3_drv_ctx.sha3_384);
--	if (err < 0) {
--		dev_err(dev, "Failed to register shash alg.\n");
--		return err;
+ 	/* Allocate a fallback and abort if it failed. */
+-	fallback_tfm = crypto_alloc_shash(fallback_driver_name, 0,
++	fallback_tfm = crypto_alloc_ahash(fallback_driver_name, CRYPTO_ALG_TYPE_SHASH,
+ 					  CRYPTO_ALG_NEED_FALLBACK);
+ 	if (IS_ERR(fallback_tfm))
+ 		return PTR_ERR(fallback_tfm);
+ 
+-	if (crypto_shash_descsize(hash) <
+-	    crypto_shash_statesize(tfm_ctx->fbk_tfm)) {
+-		crypto_free_shash(fallback_tfm);
+-		return -EINVAL;
 -	}
 -
--	sha3_drv_ctx.dev = dev;
--	platform_set_drvdata(pdev, &sha3_drv_ctx);
-+	sha3_drv_ctx->dev = dev;
-+	platform_set_drvdata(pdev, sha3_drv_ctx);
+ 	tfm_ctx->fbk_tfm = fallback_tfm;
++	crypto_ahash_set_statesize(__crypto_ahash_cast(tfm),
++				   crypto_ahash_statesize(fallback_tfm));
++	crypto_ahash_set_reqsize(__crypto_ahash_cast(tfm),
++				 crypto_ahash_reqsize(tfm_ctx->fbk_tfm) +
++				 sizeof(struct zynqmp_sha_desc_ctx));
  
- 	ubuf = dma_alloc_coherent(dev, ZYNQMP_DMA_ALLOC_FIXED_SIZE, &update_dma_addr, GFP_KERNEL);
- 	if (!ubuf) {
- 		err = -ENOMEM;
--		goto err_shash;
-+		return err;
+ 	return 0;
+ }
+ 
+-static void zynqmp_sha_exit_tfm(struct crypto_shash *hash)
++static void zynqmp_sha_exit_tfm(struct crypto_tfm *tfm)
+ {
+-	struct zynqmp_sha_tfm_ctx *tfm_ctx = crypto_shash_ctx(hash);
++	struct zynqmp_sha_tfm_ctx *tfm_ctx = crypto_tfm_ctx(tfm);
+ 
+-	crypto_free_shash(tfm_ctx->fbk_tfm);
++	if (tfm_ctx->fbk_tfm) {
++		crypto_free_ahash(tfm_ctx->fbk_tfm);
++		tfm_ctx->fbk_tfm = NULL;
++	}
++
++	memzero_explicit(tfm_ctx, sizeof(struct zynqmp_sha_tfm_ctx));
+ }
+ 
+-static int zynqmp_sha_continue(struct shash_desc *desc,
+-			       struct shash_desc *fbdesc, int err)
++static int zynqmp_sha_init(struct ahash_request *req)
+ {
+-	err = err ?: crypto_shash_export(fbdesc, shash_desc_ctx(desc));
+-	shash_desc_zero(fbdesc);
+-	return err;
++	struct zynqmp_sha_desc_ctx *dctx = ahash_request_ctx(req);
++	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
++	struct zynqmp_sha_tfm_ctx *tctx = crypto_ahash_ctx(tfm);
++
++	ahash_request_set_tfm(&dctx->fallback_req, tctx->fbk_tfm);
++	dctx->fallback_req.base.flags = req->base.flags &
++		CRYPTO_TFM_REQ_MAY_SLEEP;
++	return crypto_ahash_init(&dctx->fallback_req);
+ }
+ 
+-static int zynqmp_sha_init(struct shash_desc *desc)
++static int zynqmp_sha_update(struct ahash_request *req)
+ {
+-	struct zynqmp_sha_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
+-	struct crypto_shash *fbtfm = tctx->fbk_tfm;
+-	SHASH_DESC_ON_STACK(fbdesc, fbtfm);
+-	int err;
++	struct zynqmp_sha_desc_ctx *dctx = ahash_request_ctx(req);
++	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
++	struct zynqmp_sha_tfm_ctx *tctx = crypto_ahash_ctx(tfm);
++
++	ahash_request_set_tfm(&dctx->fallback_req, tctx->fbk_tfm);
++	dctx->fallback_req.base.flags = req->base.flags &
++		CRYPTO_TFM_REQ_MAY_SLEEP;
++	dctx->fallback_req.nbytes = req->nbytes;
++	dctx->fallback_req.src = req->src;
++	return crypto_ahash_update(&dctx->fallback_req);
++}
+ 
+-	fbdesc->tfm = fbtfm;
+-	err = crypto_shash_init(fbdesc);
+-	return zynqmp_sha_continue(desc, fbdesc, err);
++static int zynqmp_sha_final(struct ahash_request *req)
++{
++	struct zynqmp_sha_desc_ctx *dctx = ahash_request_ctx(req);
++	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
++	struct zynqmp_sha_tfm_ctx *tctx = crypto_ahash_ctx(tfm);
++
++	ahash_request_set_tfm(&dctx->fallback_req, tctx->fbk_tfm);
++	dctx->fallback_req.base.flags = req->base.flags &
++		CRYPTO_TFM_REQ_MAY_SLEEP;
++	dctx->fallback_req.result = req->result;
++	return crypto_ahash_final(&dctx->fallback_req);
+ }
+ 
+-static int zynqmp_sha_update(struct shash_desc *desc, const u8 *data, unsigned int length)
++static int zynqmp_sha_finup(struct ahash_request *req)
+ {
+-	struct zynqmp_sha_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
+-	struct crypto_shash *fbtfm = tctx->fbk_tfm;
+-	SHASH_DESC_ON_STACK(fbdesc, fbtfm);
+-	int err;
++	struct zynqmp_sha_desc_ctx *dctx = ahash_request_ctx(req);
++	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
++	struct zynqmp_sha_tfm_ctx *tctx = crypto_ahash_ctx(tfm);
++
++	ahash_request_set_tfm(&dctx->fallback_req, tctx->fbk_tfm);
++	dctx->fallback_req.base.flags = req->base.flags &
++		CRYPTO_TFM_REQ_MAY_SLEEP;
+ 
+-	fbdesc->tfm = fbtfm;
+-	err = crypto_shash_import(fbdesc, shash_desc_ctx(desc)) ?:
+-	      crypto_shash_update(fbdesc, data, length);
+-	return zynqmp_sha_continue(desc, fbdesc, err);
++	dctx->fallback_req.nbytes = req->nbytes;
++	dctx->fallback_req.src = req->src;
++	dctx->fallback_req.result = req->result;
++
++	return crypto_ahash_finup(&dctx->fallback_req);
+ }
+ 
+-static int zynqmp_sha_finup(struct shash_desc *desc, const u8 *data, unsigned int length, u8 *out)
++static int zynqmp_sha_import(struct ahash_request *req, const void *in)
+ {
+-	struct zynqmp_sha_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
+-	struct crypto_shash *fbtfm = tctx->fbk_tfm;
+-	SHASH_DESC_ON_STACK(fbdesc, fbtfm);
++	struct zynqmp_sha_desc_ctx *dctx = ahash_request_ctx(req);
++	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
++	struct zynqmp_sha_tfm_ctx *tctx = crypto_ahash_ctx(tfm);
++
++	ahash_request_set_tfm(&dctx->fallback_req, tctx->fbk_tfm);
++	dctx->fallback_req.base.flags = req->base.flags &
++		CRYPTO_TFM_REQ_MAY_SLEEP;
++	return crypto_ahash_import(&dctx->fallback_req, in);
++}
+ 
+-	fbdesc->tfm = fbtfm;
+-	return crypto_shash_import(fbdesc, shash_desc_ctx(desc)) ?:
+-	       crypto_shash_finup(fbdesc, data, length, out);
++static int zynqmp_sha_export(struct ahash_request *req, void *out)
++{
++	struct zynqmp_sha_desc_ctx *dctx = ahash_request_ctx(req);
++	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
++	struct zynqmp_sha_tfm_ctx *tctx = crypto_ahash_ctx(tfm);
++
++	ahash_request_set_tfm(&dctx->fallback_req, tctx->fbk_tfm);
++	dctx->fallback_req.base.flags = req->base.flags &
++		CRYPTO_TFM_REQ_MAY_SLEEP;
++	return crypto_ahash_export(&dctx->fallback_req, out);
+ }
+ 
+-static int __zynqmp_sha_digest(struct shash_desc *desc, const u8 *data,
+-			       unsigned int len, u8 *out)
++static int sha_digest(struct ahash_request *req)
+ {
+-	unsigned int remaining_len = len;
++	struct crypto_tfm *tfm = crypto_ahash_tfm(crypto_ahash_reqtfm(req));
++	struct hash_alg_common *alg = crypto_hash_alg_common(__crypto_ahash_cast(tfm));
++	struct zynqmp_sha_drv_ctx *drv_ctx;
++
++	drv_ctx = container_of(alg, struct zynqmp_sha_drv_ctx, sha3_384.base.halg);
++	return crypto_transfer_hash_request_to_engine(drv_ctx->engine, req);
++}
++
++static int zynqmp_sha_digest(struct ahash_request *req)
++{
++	unsigned int processed = 0;
++	unsigned int remaining_len;
+ 	int update_size;
+ 	int ret;
+ 
++	remaining_len = req->nbytes;
+ 	ret = zynqmp_pm_sha_hash(0, 0, ZYNQMP_SHA3_INIT);
+ 	if (ret)
+ 		return ret;
+ 
+-	while (remaining_len != 0) {
+-		memzero_explicit(ubuf, ZYNQMP_DMA_ALLOC_FIXED_SIZE);
+-		if (remaining_len >= ZYNQMP_DMA_ALLOC_FIXED_SIZE) {
++	while (remaining_len) {
++		if (remaining_len >= ZYNQMP_DMA_ALLOC_FIXED_SIZE)
+ 			update_size = ZYNQMP_DMA_ALLOC_FIXED_SIZE;
+-			remaining_len -= ZYNQMP_DMA_ALLOC_FIXED_SIZE;
+-		} else {
++		else
+ 			update_size = remaining_len;
+-			remaining_len = 0;
+-		}
+-		memcpy(ubuf, data, update_size);
++		sg_pcopy_to_buffer(req->src, sg_nents(req->src), ubuf, update_size, processed);
+ 		flush_icache_range((unsigned long)ubuf, (unsigned long)ubuf + update_size);
+ 		ret = zynqmp_pm_sha_hash(update_dma_addr, update_size, ZYNQMP_SHA3_UPDATE);
+ 		if (ret)
+ 			return ret;
+ 
+-		data += update_size;
++		remaining_len -= update_size;
++		processed += update_size;
  	}
  
- 	fbuf = dma_alloc_coherent(dev, SHA3_384_DIGEST_SIZE, &final_dma_addr, GFP_KERNEL);
-@@ -224,24 +227,30 @@ static int zynqmp_sha_probe(struct platform_device *pdev)
+ 	ret = zynqmp_pm_sha_hash(final_dma_addr, SHA3_384_DIGEST_SIZE, ZYNQMP_SHA3_FINAL);
+-	memcpy(out, fbuf, SHA3_384_DIGEST_SIZE);
++	memcpy(req->result, fbuf, SHA3_384_DIGEST_SIZE);
+ 	memzero_explicit(fbuf, SHA3_384_DIGEST_SIZE);
+ 
+ 	return ret;
+ }
+ 
+-static int zynqmp_sha_digest(struct shash_desc *desc, const u8 *data, unsigned int len, u8 *out)
++static int handle_zynqmp_sha_engine_req(struct crypto_engine *engine, void *req)
+ {
+-	scoped_guard(spinlock_bh, &zynqmp_sha_lock)
+-		return __zynqmp_sha_digest(desc, data, len, out);
++	int err;
++
++	err = zynqmp_sha_digest(req);
++	local_bh_disable();
++	crypto_finalize_hash_request(engine, req, err);
++	local_bh_enable();
++
++	return 0;
+ }
+ 
+ static struct zynqmp_sha_drv_ctx zynqmp_sha3_drv_ctx = {
+-	.sha3_384 = {
++	.sha3_384.base = {
+ 		.init = zynqmp_sha_init,
+ 		.update = zynqmp_sha_update,
++		.final = zynqmp_sha_final,
+ 		.finup = zynqmp_sha_finup,
+-		.digest = zynqmp_sha_digest,
+-		.init_tfm = zynqmp_sha_init_tfm,
+-		.exit_tfm = zynqmp_sha_exit_tfm,
+-		.descsize = SHA3_384_EXPORT_SIZE,
+-		.digestsize = SHA3_384_DIGEST_SIZE,
+-		.base = {
+-			.cra_name = "sha3-384",
+-			.cra_driver_name = "zynqmp-sha3-384",
+-			.cra_priority = 300,
+-			.cra_flags = CRYPTO_ALG_KERN_DRIVER_ONLY |
+-				     CRYPTO_ALG_NEED_FALLBACK,
+-			.cra_blocksize = SHA3_384_BLOCK_SIZE,
+-			.cra_ctxsize = sizeof(struct zynqmp_sha_tfm_ctx),
+-			.cra_module = THIS_MODULE,
++		.digest = sha_digest,
++		.export = zynqmp_sha_export,
++		.import = zynqmp_sha_import,
++		.halg = {
++			.digestsize = SHA3_384_DIGEST_SIZE,
++			.statesize = sizeof(struct sha3_state),
++			.base.cra_init = zynqmp_sha_init_tfm,
++			.base.cra_exit = zynqmp_sha_exit_tfm,
++			.base.cra_name = "sha3-384",
++			.base.cra_driver_name = "zynqmp-sha3-384",
++			.base.cra_priority = 300,
++			.base.cra_flags = CRYPTO_ALG_KERN_DRIVER_ONLY |
++				CRYPTO_ALG_ALLOCATES_MEMORY |
++				CRYPTO_ALG_NEED_FALLBACK,
++			.base.cra_blocksize = SHA3_384_BLOCK_SIZE,
++			.base.cra_ctxsize = sizeof(struct zynqmp_sha_tfm_ctx),
++			.base.cra_module = THIS_MODULE,
+ 		}
+-	}
++	},
++	.sha3_384.op = {
++		.do_one_request = handle_zynqmp_sha_engine_req,
++	},
+ };
+ 
++
++
+ static struct xlnx_feature sha_feature_map[] = {
+ 	{
+ 		.family = PM_ZYNQMP_FAMILY_CODE,
+@@ -227,14 +294,30 @@ static int zynqmp_sha_probe(struct platform_device *pdev)
  		goto err_mem;
  	}
  
-+	err = crypto_register_shash(&sha3_drv_ctx->sha3_384);
-+	if (err < 0) {
-+		dev_err(dev, "Failed to register shash alg.\n");
-+		goto err_mem1;
+-	err = crypto_register_shash(&sha3_drv_ctx->sha3_384);
++	sha3_drv_ctx->engine = crypto_engine_alloc_init(dev, 1);
++	if (!sha3_drv_ctx->engine) {
++		dev_err(dev, "Cannot alloc Crypto engine\n");
++		err = -ENOMEM;
++		goto err_engine;
 +	}
++
++	err = crypto_engine_start(sha3_drv_ctx->engine);
++	if (err) {
++		dev_err(dev, "Cannot start AES engine\n");
++		goto err_start;
++	}
++
++	err = crypto_engine_register_ahash(&sha3_drv_ctx->sha3_384);
+ 	if (err < 0) {
+-		dev_err(dev, "Failed to register shash alg.\n");
+-		goto err_mem1;
++		dev_err(dev, "Failed to register sha3 alg.\n");
++		goto err_start;
+ 	}
++
  	return 0;
  
--err_mem:
--	dma_free_coherent(sha3_drv_ctx.dev, ZYNQMP_DMA_ALLOC_FIXED_SIZE, ubuf, update_dma_addr);
-+err_mem1:
-+	dma_free_coherent(dev, SHA3_384_DIGEST_SIZE, fbuf, final_dma_addr);
+-err_mem1:
++err_start:
++	crypto_engine_exit(sha3_drv_ctx->engine);
++err_engine:
+ 	dma_free_coherent(dev, SHA3_384_DIGEST_SIZE, fbuf, final_dma_addr);
  
--err_shash:
--	crypto_unregister_shash(&sha3_drv_ctx.sha3_384);
-+err_mem:
-+	dma_free_coherent(dev, ZYNQMP_DMA_ALLOC_FIXED_SIZE, ubuf, update_dma_addr);
+ err_mem:
+@@ -248,9 +331,10 @@ static void zynqmp_sha_remove(struct platform_device *pdev)
+ 	struct zynqmp_sha_drv_ctx *sha3_drv_ctx;
  
- 	return err;
- }
- 
- static void zynqmp_sha_remove(struct platform_device *pdev)
- {
--	sha3_drv_ctx.dev = platform_get_drvdata(pdev);
-+	struct zynqmp_sha_drv_ctx *sha3_drv_ctx;
- 
--	dma_free_coherent(sha3_drv_ctx.dev, ZYNQMP_DMA_ALLOC_FIXED_SIZE, ubuf, update_dma_addr);
--	dma_free_coherent(sha3_drv_ctx.dev, SHA3_384_DIGEST_SIZE, fbuf, final_dma_addr);
--	crypto_unregister_shash(&sha3_drv_ctx.sha3_384);
-+	sha3_drv_ctx = platform_get_drvdata(pdev);
-+	dma_free_coherent(sha3_drv_ctx->dev, ZYNQMP_DMA_ALLOC_FIXED_SIZE, ubuf, update_dma_addr);
-+	dma_free_coherent(sha3_drv_ctx->dev, SHA3_384_DIGEST_SIZE, fbuf, final_dma_addr);
-+	crypto_unregister_shash(&sha3_drv_ctx->sha3_384);
+ 	sha3_drv_ctx = platform_get_drvdata(pdev);
++	crypto_engine_unregister_ahash(&sha3_drv_ctx->sha3_384);
++	crypto_engine_exit(sha3_drv_ctx->engine);
+ 	dma_free_coherent(sha3_drv_ctx->dev, ZYNQMP_DMA_ALLOC_FIXED_SIZE, ubuf, update_dma_addr);
+ 	dma_free_coherent(sha3_drv_ctx->dev, SHA3_384_DIGEST_SIZE, fbuf, final_dma_addr);
+-	crypto_unregister_shash(&sha3_drv_ctx->sha3_384);
  }
  
  static struct platform_driver zynqmp_sha_driver = {
-@@ -252,7 +261,35 @@ static struct platform_driver zynqmp_sha_driver = {
- 	},
- };
- 
--module_platform_driver(zynqmp_sha_driver);
-+static struct platform_device *platform_dev;
-+
-+static int __init sha_driver_init(void)
-+{
-+	int ret;
-+
-+	ret = platform_driver_register(&zynqmp_sha_driver);
-+	if (ret)
-+		return ret;
-+
-+	platform_dev = platform_device_register_simple(zynqmp_sha_driver.driver.name,
-+						       0, NULL, 0);
-+	if (IS_ERR(platform_dev)) {
-+		ret = PTR_ERR(platform_dev);
-+		platform_driver_unregister(&zynqmp_sha_driver);
-+	}
-+
-+	return ret;
-+}
-+
-+static void __exit sha_driver_exit(void)
-+{
-+	platform_device_unregister(platform_dev);
-+	platform_driver_unregister(&zynqmp_sha_driver);
-+}
-+
-+module_init(sha_driver_init);
-+module_exit(sha_driver_exit);
-+
- MODULE_DESCRIPTION("ZynqMP SHA3 hardware acceleration support.");
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Harsha <harsha.harsha@xilinx.com>");
 -- 
 2.34.1
 
