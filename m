@@ -1,171 +1,189 @@
-Return-Path: <linux-crypto+bounces-21567-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21568-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sNzYCOwYqGkVoAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21567-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 04 Mar 2026 12:35:08 +0100
+	id UA7kIa8iqGl3ogAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21568-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 04 Mar 2026 13:16:47 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D8A51FF0DF
-	for <lists+linux-crypto@lfdr.de>; Wed, 04 Mar 2026 12:35:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DAA1FF901
+	for <lists+linux-crypto@lfdr.de>; Wed, 04 Mar 2026 13:16:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0CB713040A8E
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Mar 2026 11:34:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BF627303F7E7
+	for <lists+linux-crypto@lfdr.de>; Wed,  4 Mar 2026 12:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1E2350A37;
-	Wed,  4 Mar 2026 11:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P8pZhTA6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD66E3A453A;
+	Wed,  4 Mar 2026 12:15:23 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C112E3451AE;
-	Wed,  4 Mar 2026 11:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A58636C9FA;
+	Wed,  4 Mar 2026 12:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772624087; cv=none; b=mx9xFt2wT1IKYyJpzt0zaztJJrQalBuwioy4hbSoFAIsx7dbwpaI88OVYQMXE2C/kkfIzvNmc1jr9f9SPtXICJIpFwwyPVmZeGkf0oIDciflBYgBWAe9JQ2sNEKHGxkZXR7tNIJ0VziqanuLR0nSXQ/MzMb1NcEXvc+BmaCLLNg=
+	t=1772626523; cv=none; b=e1ucGl3w5BOku4wMPGZZhNiOy0I8YtkJOIvuIZ6f+aPzfTlNqY+80pZYVMPo/bhauJqO2jI2X6omDAUOMz3iBdCMUPwuv/OfGGuQuRCMSVV8j2mpN/yJ74STqWBsIEkHeNzrOLIKKqchvlJHM6O1EuaFTsgXkqnhtxkCVCwUXUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772624087; c=relaxed/simple;
-	bh=8ynUVUDyth5bSt/By20k6bJWU9I97gy1nrt2iENQfHY=;
+	s=arc-20240116; t=1772626523; c=relaxed/simple;
+	bh=QNXVSOW9tFdALkmjVYn4GHOL44CBLZoDEykweptmIyM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GbQyEfjCN5gKpjRRnKySdPnOIVI9Af8fo6huOQSuhDQH4+537r6k8rxn23osxpjbTVXqzKvw+vHhiek7eiu6O/VMXXIRHDtbIToq9SPbAvtgOUXuYMqbfKUnd5xqUdBbAv1Frd6clYVb7moGVHa/IxICBVMh/sTROGK5qPfCAP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P8pZhTA6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04F1FC19423;
-	Wed,  4 Mar 2026 11:34:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772624087;
-	bh=8ynUVUDyth5bSt/By20k6bJWU9I97gy1nrt2iENQfHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P8pZhTA6EhprRj40CnGqbIRNhfj1qcvYxaVvXz9neh16grGyd57KyQXsPDmzkzyzd
-	 pyo4tgOInkzbL1RPptLdgqPHLZ9pFvN2R/rO4nQy0pivE3AGYgBC5A7UST7SRpGAmO
-	 auQa8sQp/G8i0Wd6U9qmRYUJyI697qHud/eii+OZ4YG+RthlAqAP3V2I+FCJttXueO
-	 c346ig/LwSV5U81xG8gs34KXaYaPW4/HeaWYtlYqYi4hajinmEBduJjQCosAgX5jmx
-	 dgTgYGycoZ7lEzPR84ocX84KLvrUVxYrCMa2+eE1u8vTE0CTkHpgLuf4/Il2MZw/Dv
-	 rdtWvNpCZLndQ==
-Date: Wed, 4 Mar 2026 12:34:45 +0100
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Olivia Mackall <olivia@selenic.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Sean Wang <sean.wang@mediatek.com>, linux-crypto@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=hSE3yWWJrXHwsuaiAWgeUnRu/yX1O1XyCcSmss5T0hXDZMdJcMR95O/XAfSYOCObN1NuUD5/bLwKSPAFPxtos/uvBAg+77RQohy1tukoGN5e+erMXzqWq04S8YT/RaxC9US8npzVZI9IpxYXy0dOot9xQ1nSS7kjWdZw+2vnedA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.99)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1vxl84-000000002yZ-1O0K;
+	Wed, 04 Mar 2026 12:15:04 +0000
+Date: Wed, 4 Mar 2026 12:14:52 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Sean Wang <sean.wang@mediatek.com>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
 Subject: Re: [PATCH 1/2] dt-bindings: rng: mtk-rng: add SMC-based TRNG
  variants
-Message-ID: <20260304-defiant-echidna-of-examination-b1e798@quoll>
+Message-ID: <aagiPIgoosVqsA0t@makrotopia.org>
 References: <04622e0bc917aed4145a9a3b50b61f343fc89312.1772585683.git.daniel@makrotopia.org>
+ <20260304-defiant-echidna-of-examination-b1e798@quoll>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <04622e0bc917aed4145a9a3b50b61f343fc89312.1772585683.git.daniel@makrotopia.org>
-X-Rspamd-Queue-Id: 7D8A51FF0DF
+In-Reply-To: <20260304-defiant-echidna-of-examination-b1e798@quoll>
+X-Rspamd-Queue-Id: E8DAA1FF901
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21567-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21568-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_CC(0.00)[selenic.com,gondor.apana.org.au,kernel.org,gmail.com,collabora.com,mediatek.com,vger.kernel.org,lists.infradead.org];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	DMARC_NA(0.00)[makrotopia.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.943];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[krzk@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[daniel@makrotopia.org,linux-crypto@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,makrotopia.org:mid]
 X-Rspamd-Action: no action
 
-On Wed, Mar 04, 2026 at 12:55:27AM +0000, Daniel Golle wrote:
-> diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.yaml b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-> index 7e8dc62e5d3a6..6074758552ac3 100644
-> --- a/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-> +++ b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-> @@ -11,12 +11,15 @@ maintainers:
->  
->  properties:
->    $nodename:
-> -    pattern: "^rng@[0-9a-f]+$"
-> +    pattern: "^rng(@[0-9a-f]+)?$"
->  
->    compatible:
->      oneOf:
->        - enum:
->            - mediatek,mt7623-rng
-> +          - mediatek,mt7981-rng
-> +          - mediatek,mt7987-rng
-> +          - mediatek,mt7988-rng
+On Wed, Mar 04, 2026 at 12:34:45PM +0100, Krzysztof Kozlowski wrote:
+> On Wed, Mar 04, 2026 at 12:55:27AM +0000, Daniel Golle wrote:
+> > diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.yaml b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+> > index 7e8dc62e5d3a6..6074758552ac3 100644
+> > --- a/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+> > +++ b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+> > @@ -11,12 +11,15 @@ maintainers:
+> >  
+> >  properties:
+> >    $nodename:
+> > -    pattern: "^rng@[0-9a-f]+$"
+> > +    pattern: "^rng(@[0-9a-f]+)?$"
+> >  
+> >    compatible:
+> >      oneOf:
+> >        - enum:
+> >            - mediatek,mt7623-rng
+> > +          - mediatek,mt7981-rng
+> > +          - mediatek,mt7987-rng
+> > +          - mediatek,mt7988-rng
+> 
+> Not compatible with each other?
 
-Not compatible with each other?
+MT7623 is the original hardware first supported in Linux. It can be
+accessed via MMIO and requires the clock to be enabled by Linux.
 
->        - items:
->            - enum:
->                - mediatek,mt7622-rng
-> @@ -38,9 +41,22 @@ properties:
->  
->  required:
->    - compatible
-> -  - reg
-> -  - clocks
-> -  - clock-names
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          not:
+Starting with MT7981 and followed by MT7988 and MT7987 it is
+technically the same hardware, but on those ARMv8 SoCs TF-A assigns
+the MMIO range of the TRNG to only be accessible from within the
+secure/trusted land, and TF-A provides a (vendor-specific) API
+allowing non-trusted land (ie. Linux) to acquire random bytes.
 
-Use rather positive list, so drop "not:" and use cntains for only one
-compatible - mediatek,mt7623-rng.
+With MT7986 they made the unlucky choice to initially allow direct
+access to the MMIO range, but later updates to TF-A then also locked
+it to secure/trusted land, offering the same API as on the newer SoCs.
+So for MT7986 the driver has to try and figure out which convention to
+use.
 
-> +            contains:
-> +              enum:
-> +                - mediatek,mt7981-rng
-> +                - mediatek,mt7987-rng
-> +                - mediatek,mt7988-rng
-> +    then:
-> +      required:
-> +        - reg
-> +        - clocks
-> +        - clock-names
->  
->  additionalProperties: false
->  
-> @@ -53,3 +69,7 @@ examples:
->              clocks = <&infracfg CLK_INFRA_TRNG>;
->              clock-names = "rng";
->      };
-> +  - |
-> +    rng {
-> +            compatible = "mediatek,mt7981-rng";
 
-Use four spaces for indentation.
+> 
+> >        - items:
+> >            - enum:
+> >                - mediatek,mt7622-rng
+> > @@ -38,9 +41,22 @@ properties:
+> >  
+> >  required:
+> >    - compatible
+> > -  - reg
+> > -  - clocks
+> > -  - clock-names
+> > +
+> > +allOf:
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          not:
+> 
+> Use rather positive list, so drop "not:" and use cntains for only one
+> compatible - mediatek,mt7623-rng.
 
-> +    };
-> -- 
-> 2.53.0
+Ack.
+
+> 
+> > +            contains:
+> > +              enum:
+> > +                - mediatek,mt7981-rng
+> > +                - mediatek,mt7987-rng
+> > +                - mediatek,mt7988-rng
+> > +    then:
+> > +      required:
+> > +        - reg
+> > +        - clocks
+> > +        - clock-names
+> >  
+> >  additionalProperties: false
+> >  
+> > @@ -53,3 +69,7 @@ examples:
+> >              clocks = <&infracfg CLK_INFRA_TRNG>;
+> >              clock-names = "rng";
+> >      };
+> > +  - |
+> > +    rng {
+> > +            compatible = "mediatek,mt7981-rng";
+> 
+> Use four spaces for indentation.
+
+Oh sorry, I knew that actually but forgot...
+
 
