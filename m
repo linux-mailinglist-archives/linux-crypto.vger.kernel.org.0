@@ -1,131 +1,155 @@
-Return-Path: <linux-crypto+bounces-21623-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21624-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WKkQKl3RqWmYFgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21623-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 19:54:21 +0100
+	id KPWnCMnXqWl5GAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21624-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 20:21:45 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0328721726C
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 19:54:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E91D217684
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 20:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7258B310A6FE
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 18:51:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A4B9130FE613
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 19:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FA92D9ECD;
-	Thu,  5 Mar 2026 18:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8BF13043C8;
+	Thu,  5 Mar 2026 19:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X6GTZefc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BejCJ/N3"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB192D0603
-	for <linux-crypto@vger.kernel.org>; Thu,  5 Mar 2026 18:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8F027EFEE;
+	Thu,  5 Mar 2026 19:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772736718; cv=none; b=DxImBzDzKFcFJNZ+pbp9xruwS02flP/ewTW1y4sE67RzMEF2MgUxYbK7uwge2Q2PaDC3u4vJ4g0pqaiEW6Lc7HnJEdxVUdX94BA0lqwt8v7KcmM9nnXeBngiOIaj9X5bFBpXE4Zsh1+xpEEPPkr6HkI3/3UiWMGdg0KDQwYEzUo=
+	t=1772738330; cv=none; b=iAQvH19HwAPfVhKDfJ4whd9xCXlRW7ymFNO+N8R8gCqKxlrVXQLOiBRg8Mub15ES3bnQXPvvblF0pE7ifO1U7PD5AmlqdF4Fw1Wlz3xYvjWRxHphJlfJQ683QaNNHxwwPMzMG3fGvXLos6isalLTT/huj34lg6TA3UYo6Q7p0Vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772736718; c=relaxed/simple;
-	bh=JqEgc6a1cs+nj+ck/t9SCDhtRFcvyOJetV94MLsJRL8=;
+	s=arc-20240116; t=1772738330; c=relaxed/simple;
+	bh=7bW3zVCUcKx/uUThhITnhEOsb5qrvu2vw31CflHamwo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X7gul1vkK0kCkDuWoLMYKZZ/nEBE02Uov54tLPBxcALF6xMD+WDwazdqyrf/qXhlhXTceRFrUvWunRGlHt3wLNvL8yWpouS7NNftsNFmm58T7CAQFgnn9znmQ0AE4VI22/8jMhuGx1ccuN3jeXhwpqO4N651+ymmQD3Gp7wO49A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X6GTZefc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E36B6C116C6;
-	Thu,  5 Mar 2026 18:51:57 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=vFVf+XkVwaJqujyqXHd+eMqvtBgqpthD6564HPcwF/08iTSUkBeJK1sbCpxG0Zp421guQh1HPkq38EagBDifrol+uv6jMHBsOAoijyKpg2j53oOwf+dQVdc8DeJVTLkj5ME+WAQpEaoRPtialwZdcxJTLylE+dtqBqJ805w6fGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BejCJ/N3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9916C116C6;
+	Thu,  5 Mar 2026 19:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772736718;
-	bh=JqEgc6a1cs+nj+ck/t9SCDhtRFcvyOJetV94MLsJRL8=;
+	s=k20201202; t=1772738330;
+	bh=7bW3zVCUcKx/uUThhITnhEOsb5qrvu2vw31CflHamwo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=X6GTZefcsxdd40zJcb85Awqh0+CTZ5LGTO+kENHKPaiffQuqB5PLc5OZgZDFx4hhB
-	 GYIiB/rwB/ZmTp8/L/g453gzZmRSX7zrtitXOlopKQ/7JGfS9fhkIyYbFEziv5zJjV
-	 jI2jOdiHdrs9HhHr5WPbl8yFltSQh9cJSCO7mWXjoRlwZ5fj1WxAYzz2L4tUJWwKee
-	 d/ulwS9G35Sgw/aUXqtsMkBdltHNZhKe7ohwtyQDkYLRWQXf/CTtDZS/wmnSEa1DvW
-	 MHPbIeTU4ike3oCknVblesODZcZnkEeIDzqUZUFGjRCzW9ugDhY2yBuMTBX90zmRJb
-	 hP9yujb7hHO5g==
-Date: Thu, 5 Mar 2026 10:51:56 -0800
+	b=BejCJ/N3uIRMlbA7yZOF5u0HjAQ4esHMQvxLQAKwCcxZJv9kTA2sLsoHx6YYrS7C3
+	 erny1fOLlvik+FLXoeH4gPG3hQCshv79AGqpgHiHwZsX2Z/WlG3kMXWxsMPMsE88jH
+	 rZ6yiA6aMCesIjR5ko6fbivzS6vPwJPzGjY2wWghcHhNI2W48CUri3+Vw+i2bxXPKV
+	 qm4tXqSt59bJxBbpfaO/Xd3XlFX8PWbjgzdbrr4391oxVaQRcNbVucFCiNdXgQVDkn
+	 ZjxbISwZHVeH8hoqWEFZ9xc1Dm4Rg0979e7ZKfyuGbcA1iVwC2stZHVcI8DcJjvsp1
+	 W/QMtXpOAq5ZQ==
+Date: Thu, 5 Mar 2026 11:18:48 -0800
 From: Eric Biggers <ebiggers@kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Subject: Re: [PATCH v3 0/5] pkcs7: better handling of signed attributes
-Message-ID: <20260305185156.GD2796@quark>
-References: <20260225211907.7368-1-James.Bottomley@HansenPartnership.com>
- <20260226021331.GA55502@quark>
- <3900433c727c1e7ab6e131003de7ca53bb0d23d1.camel@HansenPartnership.com>
- <20260305075511.GA155793@sol>
- <ba545f3db317ba3410b8fb9f5bab9e72be1854b6.camel@HansenPartnership.com>
+To: AlanSong-oc <AlanSong-oc@zhaoxin.com>
+Cc: herbert@gondor.apana.org.au, davem@davemloft.net, Jason@zx2c4.com,
+	ardb@kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, x86@kernel.org, CobeChen@zhaoxin.com,
+	TonyWWang-oc@zhaoxin.com, YunShen@zhaoxin.com,
+	GeorgeXue@zhaoxin.com, LeoLiu-oc@zhaoxin.com, HansHu@zhaoxin.com
+Subject: Re: [PATCH v3 2/3] lib/crypto: x86/sha1: PHE Extensions optimized
+ SHA1 transform function
+Message-ID: <20260305191848.GE2796@quark>
+References: <20260116071513.12134-1-AlanSong-oc@zhaoxin.com>
+ <20260116071513.12134-3-AlanSong-oc@zhaoxin.com>
+ <20260118003120.GF74518@quark>
+ <220d9651-3edc-4dc1-9086-e3482d2d5da3@zhaoxin.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ba545f3db317ba3410b8fb9f5bab9e72be1854b6.camel@HansenPartnership.com>
-X-Rspamd-Queue-Id: 0328721726C
+In-Reply-To: <220d9651-3edc-4dc1-9086-e3482d2d5da3@zhaoxin.com>
+X-Rspamd-Queue-Id: 9E91D217684
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21623-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21624-lists,linux-crypto=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Thu, Mar 05, 2026 at 09:46:42AM -0500, James Bottomley wrote:
-> On Wed, 2026-03-04 at 23:55 -0800, Eric Biggers wrote:
-> > On Thu, Feb 26, 2026 at 07:43:54AM -0500, James Bottomley wrote:
-> > > > If this is for some out-of-tree module, we don't do that.
-> > > > 
-> > > > I'll also note that we should generally be aiming to simplify the
-> > > > PKCS#7 signature verification code, not making it even more
-> > > > complex.
-> > > 
-> > > I'm fine with the general goal, but since the current code verifies
-> > > the signature, pulls out the message hash and other attributes,
-> > > compares the message against the MessageDigest one and then frees
-> > > the whole structure it's a bit hard to see how the current goal can
-> > > be achieved without extracting at least the first part of that ...
-> > > but if you have   suggestion, I'm happy to implement.
-> > 
-> > Sure, just incorporate your auxiliary data into the actual message
-> > being signed and verified.  Something like:
-> >     
-> >     program_len || program || hash*
+On Thu, Mar 05, 2026 at 09:37:01AM +0800, AlanSong-oc wrote:
+> > Also, the spec describes all four registers as both input and output
+> > registers.  Yet your inline asm marks %rax and %rcx as inputs only.
 > 
-> We can't do that because the second hash is for the LSM.  If there's no
-> LSM then we need the signature to pass the current eBPF signature check
-> because the second hash will be verified by the loader, which means the
-> program hash and nothing else must be in the messageDigest attr.
+> Thank you for pointing this question out.
 > 
+> On the one hand, when the '+' constraint modifier is applied to an
+> operand, it is treated as both an input and an output operand.
+> Therefore, %rsi and %rdi are considered input operands as well.
+> 
+> On the other hand, after the instruction executes, the values in %rax,
+> %rsi, and %rcx are modified. These registers should therefore use the
+> '+' constraint modifier to inform the compiler that their values are
+> updated by the assembly code. We cannot rely on clobbers to indicate
+> that the values of input operands are modified following the suggestion
+> by gcc manual. However, since %rax is initialized with a constant value,
+> it does not need the '+' constraint modifier. It should can simply be
+> specified as an input operand.
+> 
+> In addition, although %rdi itself is not modified by the instruction but
+> the memory it references may be updated, a "memory" clobber should be
+> added to notify the compiler about possible memory side effects.
+> 
+> The corrected inline assembly should be written as follows:
+> 
+>     asm volatile(".byte 0xf3,0x0f,0xa6,0xc8" /* REP XSHA1 */
+>                 : "+S"(data), "+c"(nblocks)
+>                 : "a"((long)-1), "D"(dst)
+>                 : "memory");
 
-Why does the loader need to verify the signature if the kernel has to do
-it anyway, and why does the loader need to skip verifying the maps?
+If the instruction both reads and writes %rax, then the constraint needs
+to be "+a", even if the C code doesn't use the updated value.  Otherwise
+the compiler can assume that the value stored in %rax is unchanged and
+optimize the code accordingly, for example by not reinitializing %rax if
+the constant -1 is needed again later on.
+
+Yes, this means you'll need to move the constant -1 to a local variable.
+
+> > As before, all these comments apply to the SHA-256 patch too.
+> 
+> Surely, I will also apply all of the suggestions mentioned above to the
+> SHA-256 patch.
+
+I also have to ask: are you sure you need SHA-1 to be optimized at all?
+SHA-1 has been deprecated for a long time.  Most users have moved to
+SHA-256 and other stronger algorithms, and those that haven't need to
+move very soon.  There's little value in adding new optimized code for
+SHA-1.
+
+How about simplifying your patch to just SHA-256?  Then we can focus on
+the one that's actually important and not on the deprecated SHA-1.
 
 - Eric
 
