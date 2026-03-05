@@ -1,205 +1,165 @@
-Return-Path: <linux-crypto+bounces-21608-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21609-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WJymAIdzqWnH7AAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21608-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 13:13:59 +0100
+	id aLT+Eal5qWl77wAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21609-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 13:40:09 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E7A211647
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 13:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B58B2211D2A
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 13:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4DBEA304F232
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 12:01:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F2F1830525DF
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 12:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE0039B4A9;
-	Thu,  5 Mar 2026 12:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BCE39E6F9;
+	Thu,  5 Mar 2026 12:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YAq1R3xx"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ftTR59Xo"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50B439EF05
-	for <linux-crypto@vger.kernel.org>; Thu,  5 Mar 2026 11:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3234739E196;
+	Thu,  5 Mar 2026 12:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772712001; cv=none; b=jVH+Jagl+4g4EKBvW4K+9WJZepBtPQuozO4mJd/KvjV+BLqGJTIUZe+BFdtvf9jhrJObMd2AbPHtwDYOwnOf/qoGk9A7JxTITqbdhMzf7av5lpq/R5BIz6SCjRUqazwDtM4yR9nFpqG/af3kHVo/iZrF8+nwbrwyziLbC2KjibU=
+	t=1772714232; cv=none; b=gDiWw1ZUZ8fli5s2BCqxAJmutVANoZfx7E2eJfRiclwuR5nKkgwoL4v7rqk3ao0Yw9Vf0D/yhCFhgcNwrVwUzUxQZL/HE9dhAZlLPCk20lhz9dKsdkFAC1DsPPy7dwp6xIGPHLRy8Zq5OPQMDqMsCIL/lDGcVYtEu6jxrcSkjOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772712001; c=relaxed/simple;
-	bh=JjDjRMzh2S/8YB/HCuTF4SumXBtbSBGAlMdISgp8C0U=;
+	s=arc-20240116; t=1772714232; c=relaxed/simple;
+	bh=RgGyNNdqIjOgrAqL+GlweCLk+LqtKtjZYUw3vDQn6y8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c40ayo2QfiO+TO0rtxBKtKTcoyQNLwzBMZ9DL4oru31M8PBffHDuf0dpvwA9huSvnG3k4JJ5mr6VMSg/5H2xvWAWufMUNQkWZlkxrh7Lojo52LcdC5zMtuGkj75LwcjycR3BnG1rXuAIYr2Q2WMh8qRMn6m+IQLrrzNk9zaCgmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YAq1R3xx; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4833115090dso81190255e9.3
-        for <linux-crypto@vger.kernel.org>; Thu, 05 Mar 2026 03:59:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1772711998; x=1773316798; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gCREg50bz8e+v9Ahd+19Jw+eYOKRxSn1rxNuRLV4cFo=;
-        b=YAq1R3xxVSTOHOmBAwtBH6/y61jQ0vDIyps5+UMuERYYQHuwJUWle7przFQT5vVrFv
-         3xoFtPx0YchAjcnpIKXsEhZyhdNJnJynfwRAuaXoV9Q20fYdsrTXVHAiR8XUDRBQonTY
-         gJYtXbytwHhySW4i3gizDvN4E2kAUYYzLy4MvNGAUYLKytPbV9/LRXS/c5V6Xspdx0pn
-         Y/RaDkXhCHvhjgtBqzV7uve5ZPj22y3uhpe9XEZIkWue8rFqOlvOE7BigeOh/CICYIBk
-         +w7JVk0aHFoA1l1uu/62xalO8JgwvCtqHpcjkF0/8c1lv4QjEma1tSlvcn9q/QqYZXMl
-         Ppxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772711998; x=1773316798;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gCREg50bz8e+v9Ahd+19Jw+eYOKRxSn1rxNuRLV4cFo=;
-        b=DERvosKzDlFkEeXX8QA3rH/jnYQHubtqxZME3Ud7dqau3cpCINfDpGkewNdL1jK2tS
-         pzkORBkoTDDugWJmgAZ4bhcgCyBTMpCMK8f7bY0THNjGHQxOUmYKUGAJ0aVFrVNBQy1y
-         W24pq/DwCqUINT8s9QTIuJ19L1rehwNntX2cBfJDpzCXC3zZXS3jn40QxutsC9E1E7Rp
-         IwObwputhJ9K9sAsCHlCDzFHJ4GycsN1abt4XSkM66LN4CKZugvZeNs8Ph0Faa/Cc+Eu
-         F4sE2IMfRJONH4kevTpozou7SJnHz53NWDgJ8bbE70P6VXnb+G177ElyKErsQkxaVII/
-         xXPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWxHsj4W6ZOTcD8JD8o5nOfUJxbMu02ObGkB/RfFaSKhK3oeHulAgCRDBzr4pqqktkrd2zZ/oya1FKEvQ0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxkTy0s9sKvxHQM4Ot5pfv11X/RdARZvLn7f4PJ36Zo7DMyHd/p
-	/D2hZZw8l/UAxsv9GT2gEVgYm6lxEBmwGPnwuvAhJY1xAVU+APK0e9K0Jd4VyDreW5o=
-X-Gm-Gg: ATEYQzw/heh5evVvnENULfDzR+L6S3oqBA5jtxxSwPgVM9MP5k3S99d63XPFxVXIhTW
-	DMHytxRDkBbEDwoksMh50rxGWv3nFdN1XkmtqRNN6z6N46HhJzJBD88Dpvqofq9Ukp7OReDuq8p
-	Z2z1+zHlRzuI8rbi5j/X4vteCl68qiSz+R2hPpUkpInNG9eNgVla/gtWolt2Cq9jkJxePZQ2NZX
-	o6roIwsY4R3L1PEuGKWx29ty54XP3YRy2lz8s6s6FPrHsrNU9GKD3AM/L943bYd0V5iGTJG9Bj8
-	mns9U/ypLlr5QtPkP4ygqCIJcOOz0etkgKLYb2aKUZXklDV0EskFi3YMwGGDVUp/IAr3xTkj7DN
-	v05zr/art5hM12sim5zYuBjRLjNuqQmPT6XgVhS31EouuWigvyGrUd+t1OHBWJ5DpHQibUtWrW6
-	f2h8Y8k96D/zrCbbUqiR4WNndCrG9p
-X-Received: by 2002:a05:600c:1d05:b0:485:17a7:b9cc with SMTP id 5b1f17b1804b1-48519888633mr100850055e9.18.1772711997970;
-        Thu, 05 Mar 2026 03:59:57 -0800 (PST)
-Received: from linaro.org ([77.64.146.193])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439b8807a4esm29845684f8f.4.2026.03.05.03.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2026 03:59:57 -0800 (PST)
-Date: Thu, 5 Mar 2026 12:59:47 +0100
-From: Stephan Gerhold <stephan.gerhold@linaro.org>
-To: Bartosz Golaszewski <brgl@kernel.org>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Thara Gopinath <thara.gopinath@gmail.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Udit Tiwari <quic_utiwari@quicinc.com>,
-	Daniel Perez-Zoghbi <dperezzo@quicinc.com>,
-	Md Sadre Alam <mdalam@qti.qualcomm.com>,
-	Dmitry Baryshkov <lumag@kernel.org>,
-	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-	Michal Simek <michal.simek@amd.com>, Frank Li <Frank.Li@kernel.org>,
-	dmaengine@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
-	Bjorn Andersson <andersson@kernel.org>
-Subject: Re: [PATCH RFC v11 00/12] crypto/dmaengine: qce: introduce BAM
- locking and use DMA for register I/O
-Message-ID: <aalwMwN3qMlzrql5@linaro.org>
-References: <20260302-qcom-qce-cmd-descr-v11-0-4bf1f5db4802@oss.qualcomm.com>
- <scr5qvxa7f7k22pms4c6k5gwiky7lhssrw6qryfngexlek44g2@rayinnnwqgbt>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kNKhyiTssfMvZPUsvbpQ5+9iL1+XmctKbC502mneu+zGtPTvGGInkPRMdfMLc8rH9vu6CTYXLWab9JzBUnT16q4NyfTrKxRAZnFBYWpZgQa9qxfokMvpwEoB7+Wy8us4dpmtdFyXxdN2TvdI2TcNrI+o2bENm0rgyD6h3O/oZ5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ftTR59Xo; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8242D40E0169;
+	Thu,  5 Mar 2026 12:37:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ZuA0T_DorMHJ; Thu,  5 Mar 2026 12:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1772714218; bh=FdLGhI+DKtaC+bV/1yMll/XT7I8JFxUD3aTMY78plpA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ftTR59XoXE0SLEETFfVID/cp83ClrywO1Qf9vg3EiTu3FsJlGuwqRs/ZNEbnMizVY
+	 +vk0wC/55+dx8MzeOFHFMDQ4LD04kFDgJrLD2f0dFXOEZEENeEC0e2lAUfbCpdFbI1
+	 tqWAVMNomvwKIgUENf1eqh8A8vMyFPx7pUHHudRMD+BEUldKH+jJA+Q7Ige+BIolbK
+	 ko0rctrW89EM9bGxWhqwEoZ+++/3sXuCGDd3ia3sgm7/F/eYOGFvIQtsOh3z5Y4SxC
+	 62HFqZfqMsDEjwwYBHT6AF3InAvepFU3ZQPV0Ep/VxzxIfWdqlzTQMnnqzibR7ZyqM
+	 fzALAKXDa2TYbruVF+i/DPfwvI3bAQiQkvKhSngLeTxVBMG0riqBxRX58HwuuM7I6e
+	 4hqpuJuFa4SbSvrr3ECtYwkingN6JlgqamFtJFC+Rg3jxxuNpSV6vPJ/0f+i455psz
+	 WWBLYFMXWLPoQ2q6zgZMLoB/72VEETAzy7wyMNlWIc7jVWH1hrKet4ur+uGs7IMvNa
+	 1+QapLbaji1Myah5cX+vkzfuTFXz0Zk6q9rJHTZxhc0B+XMUOyFdvVP/kAAewJxvb+
+	 g/7zprUNfojCgBXgh2NbybOqyAU4PIFN09GZIipzgiZqT2RCil33IQ5JoZo8PDRLSW
+	 RpvqDJo9JLTrpab9Yiq+tay0=
+Received: from zn.tnic (pd9530d5e.dip0.t-ipconnect.de [217.83.13.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with UTF8SMTPSA id CC89940E0031;
+	Thu,  5 Mar 2026 12:36:24 +0000 (UTC)
+Date: Thu, 5 Mar 2026 13:36:18 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ashish Kalra <Ashish.Kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: tglx@kernel.org, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, peterz@infradead.org,
+	thomas.lendacky@amd.com, herbert@gondor.apana.org.au,
+	davem@davemloft.net, ardb@kernel.org, pbonzini@redhat.com,
+	aik@amd.com, Michael.Roth@amd.com, KPrateek.Nayak@amd.com,
+	Tycho.Andersen@amd.com, Nathan.Fontenot@amd.com, jackyli@google.com,
+	pgonda@google.com, rientjes@google.com, jacobhxu@google.com,
+	xin@zytor.com, pawan.kumar.gupta@linux.intel.com,
+	babu.moger@amd.com, dyoung@redhat.com, nikunj@amd.com,
+	john.allen@amd.com, darwi@linutronix.de,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	kvm@vger.kernel.org, linux-coco@lists.linux.dev
+Subject: Re: [PATCH v2 1/7] x86/cpufeatures: Add X86_FEATURE_AMD_RMPOPT
+ feature flag
+Message-ID: <20260305123618.GFaal4whNN9VMxMWLA@fat_crate.local>
+References: <cover.1772486459.git.ashish.kalra@amd.com>
+ <219ebbd57ac1d99fc5ea055431f7a8396021c2c2.1772486459.git.ashish.kalra@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <scr5qvxa7f7k22pms4c6k5gwiky7lhssrw6qryfngexlek44g2@rayinnnwqgbt>
-X-Rspamd-Queue-Id: 95E7A211647
+In-Reply-To: <219ebbd57ac1d99fc5ea055431f7a8396021c2c2.1772486459.git.ashish.kalra@amd.com>
+X-Rspamd-Queue-Id: B58B2211D2A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linaro.org,none];
+	DMARC_POLICY_ALLOW(-0.50)[alien8.de,none];
+	R_DKIM_ALLOW(-0.20)[alien8.de:s=alien8];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linaro.org:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[oss.qualcomm.com,kernel.org,lwn.net,gmail.com,gondor.apana.org.au,davemloft.net,quicinc.com,qti.qualcomm.com,amd.com,vger.kernel.org,lists.infradead.org];
-	TAGGED_FROM(0.00)[bounces-21608-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21609-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linaro.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	DKIM_TRACE(0.00)[alien8.de:+];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[stephan.gerhold@linaro.org,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[codelinaro.org:url,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linaro.org:dkim,linaro.org:mid]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bp@alien8.de,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[alien8.de:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,amd.com:url,amd.com:email]
 X-Rspamd-Action: no action
 
-On Tue, Mar 03, 2026 at 06:13:56PM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Mar 02, 2026 at 04:57:13PM +0100, Bartosz Golaszewski wrote:
-> > NOTE: Please note that even though this is version 11, I changed the
-> > prefix to RFC as this is an entirely new approach resulting from
-> > discussions under v9. I AM AWARE of the existing memory leaks in the
-> > last patch of this series - I'm sending it because I want to first
-> > discuss the approach and get a green light from Vinod as well as Mani
-> > and Bjorn. Especially when it comes to communicating the address for the
-> > dummy rights from the client to the BAM driver.
-> > /NOTE
-> > 
-> > Currently the QCE crypto driver accesses the crypto engine registers
-> > directly via CPU. Trust Zone may perform crypto operations simultaneously
-> > resulting in a race condition. To remedy that, let's introduce support
-> > for BAM locking/unlocking to the driver. The BAM driver will now wrap
-> > any existing issued descriptor chains with additional descriptors
-> > performing the locking when the client starts the transaction
-> > (dmaengine_issue_pending()). The client wanting to profit from locking
-> > needs to switch to performing register I/O over DMA and communicate the
-> > address to which to perform the dummy writes via a call to
-> > dmaengine_slave_config().
-> > 
+On Mon, Mar 02, 2026 at 09:35:19PM +0000, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 > 
-> Thanks for moving the LOCK/UNLOCK bits out of client to the BAM driver. It looks
-> neat now. I understand the limitation that for LOCK/UNLOCK, BAM needs to perform
-> a dummy write to an address in the client register space. So in this case, you
-> can also use the previous metadata approach to pass the scratchpad register to
-> the BAM driver from clients. The BAM driver can use this register to perform
-> LOCK/UNLOCK.
+> Add a flag indicating whether RMPOPT instruction is supported.
 > 
-> It may sound like I'm suggesting a part of your previous design, but it fits the
-> design more cleanly IMO. The BAM performs LOCK/UNLOCK on its own, but it gets
-> the scratchpad register address from the clients through the metadata once.
+> RMPOPT is a new instruction designed to minimize the performance
+> overhead of RMP checks on the hypervisor and on non-SNP guests by
+> allowing RMP checks to be skipped when 1G regions of memory are known
+> not to contain any SEV-SNP guest memory.
 > 
-> It is very unfortunate that the IP doesn't accept '0' address for LOCK/UNLOCK or
-> some of them cannot append LOCK/UNLOCK to the actual CMD descriptors passed from
-> the clients. These would've made the code/design even more cleaner.
+> For more information on the RMPOPT instruction, see the AMD64 RMPOPT
+> technical documentation. [1]
 > 
+> Link: https://docs.amd.com/v/u/en-US/69201_1.00_AMD64_RMPOPT_PUB [1]
 
-I was staring at the downstream drivers for QCE (qce50.c?) [1] for a bit
-and my impression is that they manage to get along without dummy writes.
-It's a big mess, but it looks like they always have some commands
-(depending on the crypto operation) that they are sending anyway and
-they just assign the LOCK/UNLOCK flag to the command descriptor of that.
+Please do not add URLs to documents on corporate sites because latter change
+notoriously fast, resulting in dead links. Instead, quote the document title
+so that anyone looking for it, can find it after a web search engine has
+indexed it.
 
-It is similar for the second relevant user of the LOCK/UNLOCK flags, the
-QPIC NAND driver (msm_qpic_nand.c in downstream [2], qcom_nandc.c in
-mainline), it is assigned as part of the register programming sequence
-instead of using a dummy write. In addition, the UNLOCK flag is
-sometimes assigned to a READ command descriptor rather than a WRITE.
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 2 +-
+>  arch/x86/kernel/cpu/scattered.c    | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-@Bartosz: Can we get by without doing any dummy writes?
-If not, would a dummy read perhaps be less intrusive than a dummy write?
+Btw, looking further in the set, the first several patches are for tip and
+then KVM ones come.
 
-Thanks,
-Stephan
+I'm thinking, when the time comes, I'll give you, Sean, an immutable branch
+which you can merge.
 
-[1]: https://git.codelinaro.org/clo/la/platform/vendor/qcom/opensource/securemsm-kernel/-/blob/sec-kernel.lnx.14.16.r4-rel/crypto-qti/qce50.c
-[2]: https://git.codelinaro.org/clo/la/kernel/msm-5.15/-/blob/kernel.lnx.5.15.r46-rel/drivers/mtd/devices/msm_qpic_nand.c#L542-562
+Right?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
