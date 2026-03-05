@@ -1,115 +1,156 @@
-Return-Path: <linux-crypto+bounces-21630-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21633-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id vbFRFrjfqWmaGwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21630-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 20:55:36 +0100
+	id EN3lNlPiqWl1HAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21633-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 21:06:43 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6946217D50
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 20:55:35 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7B2F217FAA
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 21:06:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A50EB3025142
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 19:55:33 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 751EC302C6CF
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 20:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44ECB3E123D;
-	Thu,  5 Mar 2026 19:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9AC2D661C;
+	Thu,  5 Mar 2026 20:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kVMsnii0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mVorKT1x"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0873A2FFDE2;
-	Thu,  5 Mar 2026 19:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA74A3ED5BE;
+	Thu,  5 Mar 2026 20:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772740530; cv=none; b=UfKSW2sAfzJN3dTlT3Rw8HrG4WxNQgQUsaYu/7Ha93qQNmZ6iq+M+0dlGfNL2gnHrdm2U7n52Y6QvAeTk/1l7mWMOGOFbX6Y4a0drcj9oCtQOGg4dd7cFMJDlzfT7sENLCcG3MwCII5vN7tm3Zsl2ltxJK4lajivMYqeqTXFlZ0=
+	t=1772740844; cv=none; b=hf7K8shcUXZiMkam3RlcWVmRSBF/diMbcgii8gu8z++aXPbYKb3JNsPy5+sUdKvl7NgQ/L6ImTaXXaFwnCGUz5DB/KyTuIrDbK1JP7mspu/0/QOwaOtVIi/030rb7z7Y7kOcmE+Opw046Pv0yV95xb9CcZfJEfdrhEzTjDya/2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772740530; c=relaxed/simple;
-	bh=iKnMN8w1eS1scDXpgBOWnJmy3TBURduZQpQq7kaVz3A=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=X9J5GbBEOeNJ3paJjKxb/gLvohvvQlqzbg5Bf3DOWv9SBdfJKD/DSqSMOpTReECpDxQy+zLCs7ZjhNFwYhGXkmPbaJbzZxCSHo1mo2tuvBYPmqK7PnIsAMde/lhddVGYocYM/Y57xOWjbZQkCfBBuARMAWW5PhzMi3uaDlQVodg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kVMsnii0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B4A4C116C6;
-	Thu,  5 Mar 2026 19:55:29 +0000 (UTC)
+	s=arc-20240116; t=1772740844; c=relaxed/simple;
+	bh=xphpQByXIbnNH7X7R8HuZoZkSzH6oDGzFy5gh9MGIvs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=g2YRnePFuWWldnjTFUcBPf0QATsRDt6sW/ap0b/uNclaBBmp1gWE8eNPJaeuONUCS8aoNscdDvdTjB6c5UsoGjLwd0bqj4qJt9nLizfoCVzXRlnTKljZLeWkJ5adgjLrY5+ZEsHzNg2PJUXgrt2WvTsXR8SWAuGyBLNu6p7WHNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mVorKT1x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC64C116C6;
+	Thu,  5 Mar 2026 20:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772740529;
-	bh=iKnMN8w1eS1scDXpgBOWnJmy3TBURduZQpQq7kaVz3A=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=kVMsnii0Zm2LOjRjWNW2Qyga9u6HQX3VN+90hHUepu1rY7x0AuJmiiu0tPQrq0Y7I
-	 Cm3QsEg0sg8ffb4il5HMWXbmcH6bkMWJ9dMON3qMbFzas15dhU+c1SBGBjy7zu3C+n
-	 CsSCWTpvK4AtOoWkA9qBrrh9dR23VSoQHF9P1BAsE5Nh+emEYRyBOKK5BFm9m61Waq
-	 PRDlw3VyzYzOBxRYN2TseIMVndKceO0mV1+8bb7zNfe0TrZvCdP0OnOyHIIC1Djf3s
-	 LQioHuI3UKEcbFnzmZSjzAm9ROKpnwhF/ocSWl5qpJYUOhLLBXOZtwS3jB3abxvqmV
-	 9Fvpems/WDuWQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA2853808200;
-	Thu,  5 Mar 2026 19:55:30 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto library fixes for v7.0-rc3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20260305184254.GA2796@quark>
-References: <20260305184254.GA2796@quark>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20260305184254.GA2796@quark>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/libcrypto-for-linus
-X-PR-Tracked-Commit-Id: 3875ceb592d3cb23dc932165cc1eeb74cf4dc319
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6a42ff33f38d171a6bf8304f6323c43e8a0ed9b6
-Message-Id: <177274052925.3268027.11524898076411931576.pr-tracker-bot@kernel.org>
-Date: Thu, 05 Mar 2026 19:55:29 +0000
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com, Ard Biesheuvel <ardb@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Herbert Xu <herbert@gondor.apana.org.au>, Aleksander Jan Bajkowski <olek2@wp.pl>, David Gow <david@davidgow.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Geert Uytterhoeven <geert+renesas@glider.be>
+	s=k20201202; t=1772740844;
+	bh=xphpQByXIbnNH7X7R8HuZoZkSzH6oDGzFy5gh9MGIvs=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=mVorKT1xS9QEG/N1aCEZT0UWqhAG/N/fc5r4aIwcvXKppGFK3//Nfby74ivZRJskH
+	 cVcrQ0Qt4GNIE7PJzTA03dKNcw/1ma3InemGFsYlRaxq+oDKqHD4FmXcSMFB5vZAwT
+	 U6szf6qee23EI03Guh57jKwzuttVyJmQ2vKusuBEy38luCJ2JavoFU8L0HUbCkyDKd
+	 1/9JTH4wf2So0LFfcZStuSIev9vilDjnh/rZ3C1o954kM6wKrzJUNKzACJfIR5iqJR
+	 cYn0qErx1QqStYULQvQlxI+9SJP0+A9IlkC85NokLtcyKlkBddRDGUXV4dNIrPh5st
+	 FNWQSWr9PHKHQ==
+Message-ID: <d7c83ef5-c7f7-4401-9032-5a86844b6d82@kernel.org>
+Date: Thu, 5 Mar 2026 21:00:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-X-Rspamd-Queue-Id: C6946217D50
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: crypto: eip93: add clock gate and
+ reset line
+To: Aleksander Jan Bajkowski <olek2@wp.pl>, ansuelsmth@gmail.com,
+ herbert@gondor.apana.org.au, davem@davemloft.net, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, lorenzo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20260305195903.59776-1-olek2@wp.pl>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 a/A=
+In-Reply-To: <20260305195903.59776-1-olek2@wp.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: D7B2F217FAA
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,googlegroups.com,kernel.org,zx2c4.com,gondor.apana.org.au,wp.pl,davidgow.net,linux-m68k.org,glider.be];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21633-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21630-lists,linux-crypto=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	FREEMAIL_TO(0.00)[wp.pl,gmail.com,gondor.apana.org.au,davemloft.net,collabora.com,kernel.org,lists.infradead.org,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[krzk@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,renesas];
-	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-The pull request you sent on Thu, 5 Mar 2026 10:42:54 -0800:
+On 05/03/2026 20:53, Aleksander Jan Bajkowski wrote:
+> Add the clock gate and reset line, both of which are available
+> on the Airoha AN7581. Both properties are mandatory.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/libcrypto-for-linus
+Why are mandatory? We see that from the diff, you must explain WHY you
+are doing things.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6a42ff33f38d171a6bf8304f6323c43e8a0ed9b6
+Also, that's ABI break without that explanation.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Best regards,
+Krzysztof
 
