@@ -1,199 +1,139 @@
-Return-Path: <linux-crypto+bounces-21598-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21601-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SFs9LjiyqGlMwgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21598-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 04 Mar 2026 23:29:12 +0100
+	id PsxXItcgqWkL2gAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21601-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 07:21:11 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F28F20892F
-	for <lists+linux-crypto@lfdr.de>; Wed, 04 Mar 2026 23:29:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1702420B732
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 07:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 79DE63026A68
-	for <lists+linux-crypto@lfdr.de>; Wed,  4 Mar 2026 22:29:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BCF683045645
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 06:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88157394792;
-	Wed,  4 Mar 2026 22:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OU3WRITI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234EC29DB9A;
+	Thu,  5 Mar 2026 06:20:56 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4968E384244;
-	Wed,  4 Mar 2026 22:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A2A29AAFD
+	for <linux-crypto@vger.kernel.org>; Thu,  5 Mar 2026 06:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772663347; cv=none; b=cEtvn7jnCGOHDZU7Paz8wmP5f/f2zaAHjpv7hTyvhAOd9XkxI9oZaiT6P6Bk+3t9Mb0L1hfeM3wI7jMVL/oM1GxdUxfVqHPxbcCTxhD8MQ0Si1SCkR55HEDs0yZ02RI2gBv0Afu8ZVxb5f4PzcoDgRDyZa6NYCXj+ghmwCvPKpU=
+	t=1772691655; cv=none; b=Tu5CovrnVBXbEHvZllu9WtVIo+2mDSNHUPrMsySrZBcqIj+q0u5a79smEgJ9x4+opy1OKgC4KUNK2UxetYFC4AqF/iDoTWZVZZgry28tDLQmXE1Aw2A8vRCBwc7xUbg6Aauku582K806LOaNqmTp+2lHTuKMR1gm7QMWlgML4WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772663347; c=relaxed/simple;
-	bh=ORYQQGNYlwnQgy888AgkqY1bU5sv3cRTXo0nb+aOkbU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sj69HTKAlBonuf6FpM28xFL6DT2ADmfxD08S35ZfPcs6wE9+WaN1HJW3mvCQ99Cx9k36d0w7WSv4QLG3AtVH+PdnoIHs6uUvUVz4/XezrQUuBQ4od73oMvNpAjvUCfh7sGm9QRUEjGsqYtDsZ9u2/zljWN+U6ZWKLcomnYk2+HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OU3WRITI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55AD0C4CEF7;
-	Wed,  4 Mar 2026 22:29:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772663347;
-	bh=ORYQQGNYlwnQgy888AgkqY1bU5sv3cRTXo0nb+aOkbU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OU3WRITIa8Au08wJ1jU2p9dBP01IwGSkDOCxNBL7XgBg6trhBqfW4Ma4uATYqAA9L
-	 3ejgoDmg66mLFvZab4yEK1JF5QHuEDe6vcg7cH290T7LdhLrtp0LXXstY9WgkQK1b3
-	 bIOThJ+xB6KrTCwwKCZuYoZ7vSuqGoCCm+7RvlXw1X+/XnXsNYE1FLGAKIxNGStdXa
-	 P5MrB9tsMPJuk6qnOJNV0luFGZa0zafeMF19a7WtioPcW1+SQzTzVbEU2Hk2qlxW9u
-	 OJSOemr7f22VbMRG6Vk5xBjr2DVGzuDTBtkkdh1xpelWs1ohTyOWIlzo/7wYYGlnPR
-	 GG4+tsXGtc+aQ==
-Date: Wed, 4 Mar 2026 22:29:02 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc: ansuelsmth@gmail.com, herbert@gondor.apana.org.au, davem@davemloft.net,
-	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	lorenzo@kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: eip93: add clock gate and reset
- line
-Message-ID: <20260304-thinner-ungraded-67d7472b6c0b@spud>
-References: <20260303193923.85242-1-olek2@wp.pl>
- <20260304-hardship-abreast-7a2d58cbe446@spud>
- <f9b266d7-f545-4088-b6c5-a0cc8676d60c@wp.pl>
+	s=arc-20240116; t=1772691655; c=relaxed/simple;
+	bh=DpE1EIq3D1AgNWW87thKIvs7DLv9tz4RbqJo6Th9Xvs=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=A0lhjYSUFNWgmzP8inU+mP8HmYWstkgpNms/Srix8YiMJQ6j2X619sWQHH9cVWKQXiSJ6MXHoUkXlSB5R8Ile8zGE3Y5PrUDoWFDTs6lUCR92NA2DP3wYySeXhisOA/fxlXMQMRD7/QKxwcAF6c/oExK76ryj+VDrONiLPUf1MY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1772690930-086e235c8457ad0001-Xm9f1P
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id HafJTd7l5Uizxp6O (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 05 Mar 2026 14:08:50 +0800 (CST)
+X-Barracuda-Envelope-From: AlanSong-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from ZXSHMBX1.zhaoxin.com (10.28.252.163) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.59; Thu, 5 Mar
+ 2026 14:08:49 +0800
+Received: from ZXSHMBX1.zhaoxin.com ([fe80::936:f2f9:9efa:3c85]) by
+ ZXSHMBX1.zhaoxin.com ([fe80::936:f2f9:9efa:3c85%7]) with mapi id
+ 15.01.2507.059; Thu, 5 Mar 2026 14:08:49 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from [10.32.65.156] (10.32.65.156) by ZXBJMBX02.zhaoxin.com
+ (10.29.252.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.59; Thu, 5 Mar
+ 2026 09:36:55 +0800
+Message-ID: <0a26d6f2-ea17-434d-8298-bb047c399803@zhaoxin.com>
+Date: Thu, 5 Mar 2026 09:36:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RUXrRWyOYYwphHi5"
-Content-Disposition: inline
-In-Reply-To: <f9b266d7-f545-4088-b6c5-a0cc8676d60c@wp.pl>
-X-Rspamd-Queue-Id: 5F28F20892F
+User-Agent: Mozilla Thunderbird
+From: AlanSong-oc <AlanSong-oc@zhaoxin.com>
+Subject: Re: [PATCH v3 1/3] crypto: padlock-sha - Disable for Zhaoxin
+ processor
+To: Eric Biggers <ebiggers@kernel.org>
+X-ASG-Orig-Subj: Re: [PATCH v3 1/3] crypto: padlock-sha - Disable for Zhaoxin
+ processor
+CC: <herbert@gondor.apana.org.au>, <davem@davemloft.net>, <Jason@zx2c4.com>,
+	<ardb@kernel.org>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <x86@kernel.org>, <CobeChen@zhaoxin.com>,
+	<TonyWWang-oc@zhaoxin.com>, <YunShen@zhaoxin.com>, <GeorgeXue@zhaoxin.com>,
+	<LeoLiu-oc@zhaoxin.com>, <HansHu@zhaoxin.com>
+References: <20260116071513.12134-1-AlanSong-oc@zhaoxin.com>
+ <20260116071513.12134-2-AlanSong-oc@zhaoxin.com>
+ <20260118000947.GE74518@quark>
+In-Reply-To: <20260118000947.GE74518@quark>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX02.zhaoxin.com (10.29.252.6)
+X-Moderation-Data: 3/5/2026 2:08:48 PM
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1772690930
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://mx2.zhaoxin.com:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 514
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.155399
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
+X-Rspamd-Queue-Id: 1702420B732
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.26 / 15.00];
-	SIGNED_PGP(-2.00)[];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21598-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[wp.pl];
+	NEURAL_HAM(-0.00)[-0.987];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.998];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[conor@kernel.org,linux-crypto@vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,gondor.apana.org.au,davemloft.net,collabora.com,kernel.org,lists.infradead.org,vger.kernel.org];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,wp.pl:email,1e004000:email]
+	RCPT_COUNT_TWELVE(0.00)[14];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[AlanSong-oc@zhaoxin.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,zhaoxin.com:mid,zhaoxin.com:email];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21601-lists,linux-crypto=lfdr.de];
+	DMARC_NA(0.00)[zhaoxin.com];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
+On 1/18/2026 8:09 AM, Eric Biggers wrote:
+> 
+> On Fri, Jan 16, 2026 at 03:15:11PM +0800, AlanSong-oc wrote:
+>>
+>> Signed-off-by: AlanSong-oc <AlanSong-oc@zhaoxin.com>
+> 
+> Since this is a bug fix, please add Fixes and Cc stable tags.
+> 
 
---RUXrRWyOYYwphHi5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I will add Fixes and CC stable tags in the next version of the patch.
 
-On Wed, Mar 04, 2026 at 10:46:41PM +0100, Aleksander Jan Bajkowski wrote:
-> Hi Conor,
->=20
-> On 3/4/26 20:08, Conor Dooley wrote:
-> > On Tue, Mar 03, 2026 at 08:39:17PM +0100, Aleksander Jan Bajkowski wrot=
-e:
-> > > Add the clock gate and reset line, both of which are available
-> > > on the Airoha AN7581. Both properties are optional.
-> > Why are they optional?
->=20
-> No reason. In theory, a hardware designer could connect the reset
-> to a fixed input signal. In practice, all SoCs on the market have
-> a built-in reset and clock controller. I can mark them as required
-> in the next revision.
+Please accept my apologies for the delayed response due to
+administrative procedures and the recent holidays. Thank you for your
+review and valuable suggestions.
 
-Right, the reset could be optional on some systems, but sounds like it
-is always there on the an7581. The clock is probably mandatory always.
-I think you should make it required in the binding, but not in the
-driver since that needs to work with existing devicetrees.
-Technically this is an ABI break (new required property), so at least
-mention in the commit message that you're aware of this.
-
-
->=20
-> > > Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
-> > > ---
-> > >   .../crypto/inside-secure,safexcel-eip93.yaml         | 12 +++++++++=
-+++
-> > >   1 file changed, 12 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/crypto/inside-secure,s=
-afexcel-eip93.yaml b/Documentation/devicetree/bindings/crypto/inside-secure=
-,safexcel-eip93.yaml
-> > > index 997bf9717f9e..058454b679b4 100644
-> > > --- a/Documentation/devicetree/bindings/crypto/inside-secure,safexcel=
--eip93.yaml
-> > > +++ b/Documentation/devicetree/bindings/crypto/inside-secure,safexcel=
--eip93.yaml
-> > > @@ -48,6 +48,12 @@ properties:
-> > >     interrupts:
-> > >       maxItems: 1
-> > > +  clocks:
-> > > +    maxItems: 1
-> > > +
-> > > +  resets:
-> > > +    maxItems: 1
-> > > +
-> > >   required:
-> > >     - compatible
-> > >     - reg
-> > > @@ -57,11 +63,17 @@ additionalProperties: false
-> > >   examples:
-> > >     - |
-> > > +    #include <dt-bindings/clock/en7523-clk.h>
-> > >       #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > +    #include <dt-bindings/reset/airoha,en7581-reset.h>
-> > >       crypto@1e004000 {
-> > >         compatible =3D "airoha,en7581-eip93", "inside-secure,safexcel=
--eip93ies";
-> > >         reg =3D <0x1fb70000 0x1000>;
-> > > +      clocks =3D <&scuclk EN7523_CLK_CRYPTO>;
-> > > +
-> > >         interrupts =3D <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +      resets =3D <&scuclk EN7581_CRYPTO_RST>;
-> > >       };
-> > > --=20
-> > > 2.47.3
-> > >=20
-> Best regards,
-> Aleksander
->=20
->=20
-
---RUXrRWyOYYwphHi5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaaiyLQAKCRB4tDGHoIJi
-0ibOAQCXhDFN8QSYrxF47Qb/oFi3wBnPBFiMdgbEvxrc67IdFAEAyO/3v3UV4NE5
-KvSZXTUIkTs0eodNUYw8zdjOzJ0vQAE=
-=6PiR
------END PGP SIGNATURE-----
-
---RUXrRWyOYYwphHi5--
+Best Regards
+AlanSong-oc
 
