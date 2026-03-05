@@ -1,151 +1,115 @@
-Return-Path: <linux-crypto+bounces-21632-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21630-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QBHAEffgqWnDGwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21632-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 21:00:55 +0100
+	id vbFRFrjfqWmaGwEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21630-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 20:55:36 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB229217E75
-	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 21:00:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6946217D50
+	for <lists+linux-crypto@lfdr.de>; Thu, 05 Mar 2026 20:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4A1B2300A316
-	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 20:00:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A50EB3025142
+	for <lists+linux-crypto@lfdr.de>; Thu,  5 Mar 2026 19:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB133EB7F7;
-	Thu,  5 Mar 2026 19:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44ECB3E123D;
+	Thu,  5 Mar 2026 19:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="KwhuQA6G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kVMsnii0"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E393FB059
-	for <linux-crypto@vger.kernel.org>; Thu,  5 Mar 2026 19:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0873A2FFDE2;
+	Thu,  5 Mar 2026 19:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772740760; cv=none; b=kSd1chH40oNtQ/7hVcl6v+AqbU1fHyjT1Q6m7HyGXDuQ+oS+md/rDLWintCKRwDdTWZP8F+WD8DBHcrRek2MQvtEWFfQCVAqSjrWGq4VHoYx+G+r/13XK3yzUoRcFM3YlqNMZH39NsA5a4BpevUpGHswq2NUKQm0ErUuOk21x54=
+	t=1772740530; cv=none; b=UfKSW2sAfzJN3dTlT3Rw8HrG4WxNQgQUsaYu/7Ha93qQNmZ6iq+M+0dlGfNL2gnHrdm2U7n52Y6QvAeTk/1l7mWMOGOFbX6Y4a0drcj9oCtQOGg4dd7cFMJDlzfT7sENLCcG3MwCII5vN7tm3Zsl2ltxJK4lajivMYqeqTXFlZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772740760; c=relaxed/simple;
-	bh=fcA8XSTeu115N9PUnt2hlsZJz7kgu2mWp1bBGaqNijU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sPovZySGd4mcK2YwghPVWAle0yEUtvK3ISH7qVsFECV1wJdWy2tP3UZS4jM8pcbS/W6NbTXUB/0xxBcCUAgeVJvZVqdzOb2AijdOuCBnZRnSD0KWSW/OE7zWCoZFMVqZ4yJwlL5VMy6b9bAJe2yhZX5ph9V8ASaOOc4Q/skKUvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=KwhuQA6G; arc=none smtp.client-ip=212.77.101.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wp.pl
-Received: (wp-smtpd smtp.wp.pl 18178 invoked from network); 5 Mar 2026 20:59:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=20241105;
-          t=1772740748; bh=UZ5ElGs4yDjDl9zUzhOrvjxZKl8oYf69gNiHnYY/vp0=;
-          h=From:To:Subject;
-          b=KwhuQA6G1v8VHcwAdkzeKB0Jd617Ax7zMA450fs72GLxUEvDqepotNfJVqNqmUrxb
-           WZ544pJS6d7bKpb4AdvpXUgYCbyWjwYP88O8h/JAN+MNdDR4jnVJBWnHHN1bzdFIrI
-           uoB1p74t1ZEVy0SR47a3NRmYQll4R7moXSRXygHGH3j0xJjQO1Jz1/BmKkpA2Df2CT
-           //3gM3tmEPSmVC1m4Ja8jSZjhtLVzbBxRbX0NdTWHeoQ7yr/cTdKWvd4tnoA5NR6Qc
-           QHseuxno8SequcRZUlFOgpFgduN6lo1v+jPE0Xz1ZY34EHmC+PgmYz6xdunD3AqaVV
-           4U+vuhftNLRmA==
-Received: from 83.24.116.171.ipv4.supernova.orange.pl (HELO laptop-olek.lan) (olek2@wp.pl@[83.24.116.171])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with TLS_AES_256_GCM_SHA384 encrypted SMTP
-          for <ansuelsmth@gmail.com>; 5 Mar 2026 20:59:08 +0100
-From: Aleksander Jan Bajkowski <olek2@wp.pl>
-To: ansuelsmth@gmail.com,
-	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	lorenzo@kernel.org,
-	olek2@wp.pl,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: dts: airoha: en7581: add crypto offload support
-Date: Thu,  5 Mar 2026 20:53:11 +0100
-Message-ID: <20260305195903.59776-2-olek2@wp.pl>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260305195903.59776-1-olek2@wp.pl>
-References: <20260305195903.59776-1-olek2@wp.pl>
+	s=arc-20240116; t=1772740530; c=relaxed/simple;
+	bh=iKnMN8w1eS1scDXpgBOWnJmy3TBURduZQpQq7kaVz3A=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=X9J5GbBEOeNJ3paJjKxb/gLvohvvQlqzbg5Bf3DOWv9SBdfJKD/DSqSMOpTReECpDxQy+zLCs7ZjhNFwYhGXkmPbaJbzZxCSHo1mo2tuvBYPmqK7PnIsAMde/lhddVGYocYM/Y57xOWjbZQkCfBBuARMAWW5PhzMi3uaDlQVodg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kVMsnii0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B4A4C116C6;
+	Thu,  5 Mar 2026 19:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772740529;
+	bh=iKnMN8w1eS1scDXpgBOWnJmy3TBURduZQpQq7kaVz3A=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=kVMsnii0Zm2LOjRjWNW2Qyga9u6HQX3VN+90hHUepu1rY7x0AuJmiiu0tPQrq0Y7I
+	 Cm3QsEg0sg8ffb4il5HMWXbmcH6bkMWJ9dMON3qMbFzas15dhU+c1SBGBjy7zu3C+n
+	 CsSCWTpvK4AtOoWkA9qBrrh9dR23VSoQHF9P1BAsE5Nh+emEYRyBOKK5BFm9m61Waq
+	 PRDlw3VyzYzOBxRYN2TseIMVndKceO0mV1+8bb7zNfe0TrZvCdP0OnOyHIIC1Djf3s
+	 LQioHuI3UKEcbFnzmZSjzAm9ROKpnwhF/ocSWl5qpJYUOhLLBXOZtwS3jB3abxvqmV
+	 9Fvpems/WDuWQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA2853808200;
+	Thu,  5 Mar 2026 19:55:30 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto library fixes for v7.0-rc3
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20260305184254.GA2796@quark>
+References: <20260305184254.GA2796@quark>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20260305184254.GA2796@quark>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/libcrypto-for-linus
+X-PR-Tracked-Commit-Id: 3875ceb592d3cb23dc932165cc1eeb74cf4dc319
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6a42ff33f38d171a6bf8304f6323c43e8a0ed9b6
+Message-Id: <177274052925.3268027.11524898076411931576.pr-tracker-bot@kernel.org>
+Date: Thu, 05 Mar 2026 19:55:29 +0000
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com, Ard Biesheuvel <ardb@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Herbert Xu <herbert@gondor.apana.org.au>, Aleksander Jan Bajkowski <olek2@wp.pl>, David Gow <david@davidgow.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Geert Uytterhoeven <geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 303be36492603e776a8e2b4ea6b63e57
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000009 [Ido0]                               
-X-Rspamd-Queue-Id: DB229217E75
+X-Rspamd-Queue-Id: C6946217D50
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[wp.pl,none];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[wp.pl:s=20241105];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_TO(0.00)[gmail.com,gondor.apana.org.au,davemloft.net,collabora.com,kernel.org,wp.pl,lists.infradead.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21632-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,googlegroups.com,kernel.org,zx2c4.com,gondor.apana.org.au,wp.pl,davidgow.net,linux-m68k.org,glider.be];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[wp.pl];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21630-lists,linux-crypto=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[olek2@wp.pl,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[wp.pl:+];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wp.pl:dkim,wp.pl:email,wp.pl:mid,1e004000:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,renesas];
+	FROM_NO_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Add support for the built-in cryptographic accelerator. This accelerator
-supports 3DES, AES (128/192/256 bit), ARC4, MD5, SHA1, SHA224, and SHA256.
-It also supports full IPSEC, SRTP and TLS offload.
+The pull request you sent on Thu, 5 Mar 2026 10:42:54 -0800:
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
-v2:
-- drop extra new lines between properties
----
- arch/arm64/boot/dts/airoha/en7581.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/libcrypto-for-linus
 
-diff --git a/arch/arm64/boot/dts/airoha/en7581.dtsi b/arch/arm64/boot/dts/airoha/en7581.dtsi
-index ff6908a76e8e..5621473f5155 100644
---- a/arch/arm64/boot/dts/airoha/en7581.dtsi
-+++ b/arch/arm64/boot/dts/airoha/en7581.dtsi
-@@ -300,6 +300,15 @@ rng@1faa1000 {
- 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		crypto@1e004000 {
-+			compatible = "airoha,en7581-eip93",
-+				"inside-secure,safexcel-eip93ies";
-+			reg = <0x0 0x1fb70000 0x0 0x1000>;
-+			clocks = <&scuclk EN7523_CLK_CRYPTO>;
-+			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-+			resets = <&scuclk EN7581_CRYPTO_RST>;
-+		};
-+
- 		system-controller@1fbf0200 {
- 			compatible = "airoha,en7581-gpio-sysctl", "syscon",
- 				     "simple-mfd";
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6a42ff33f38d171a6bf8304f6323c43e8a0ed9b6
+
+Thank you!
+
 -- 
-2.47.3
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
