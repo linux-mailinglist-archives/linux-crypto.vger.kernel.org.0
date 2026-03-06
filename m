@@ -1,135 +1,157 @@
-Return-Path: <linux-crypto+bounces-21651-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21652-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AN5ELUBWqmnwPgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21651-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 06 Mar 2026 05:21:20 +0100
+	id 6OOAHGlqqmlORAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21652-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 06 Mar 2026 06:47:21 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30FB921B740
-	for <lists+linux-crypto@lfdr.de>; Fri, 06 Mar 2026 05:21:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2A7C21BCCD
+	for <lists+linux-crypto@lfdr.de>; Fri, 06 Mar 2026 06:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1CA0D301F798
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Mar 2026 04:21:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9FF1C3045A9A
+	for <lists+linux-crypto@lfdr.de>; Fri,  6 Mar 2026 05:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1470256C8B;
-	Fri,  6 Mar 2026 04:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40939221540;
+	Fri,  6 Mar 2026 05:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PeTTD7DN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AWrVqOSC"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2560246782
-	for <linux-crypto@vger.kernel.org>; Fri,  6 Mar 2026 04:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5BD280035
+	for <linux-crypto@vger.kernel.org>; Fri,  6 Mar 2026 05:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772770875; cv=none; b=eQAU8+l5ELdR7XRFtUTdzsrnn8iPXoIUIh6TgcbMhaZgdmWBIBXLMR9HNqVn+DnFCK8+ApvkppbJuLKJBpTjCUAksb6K7oWI9Q3im1/9Pa7ubSVqVTWA4gqm+uYz4IEPbLys9YLXPi00SbaDukYiYGMEFlGCiByA3/hCP27iFMw=
+	t=1772775999; cv=none; b=W1Zjpx5FLZ8OSny1QeEQND9s2nDi28rX7zaH94keSWc+G4jpQVXMZA5C0UW8x7NS4CFEvdNT36zOowR/wscyDJgaIs43ziM3Es9XG+YYpdShOBrNuT+bQq+WbDzC8dVxRdCHuCa0V921g4G5KiNrPIQ/mURLYv6Y6O0mkW1UMHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772770875; c=relaxed/simple;
-	bh=9TYwZmiRf8dZ5EAaLBDgpJSmCARfHq8YxVEnnsjN4Vs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p1soxcuXD5w6PC0QjjiAGVGhHrdYvd4WKN13p7dB5qTdvzz4juEsKU13MXQdAKDfTpT2SLR1LDyhIHWRWy8v0Qia1t7GI1Fkg1O44aqpFtRtWLhLMfhn+7P3Zrr/0zHQN0XGE06S2jNOwUMBTs+xb3CBsVGKCJJ1rqhCH9254TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PeTTD7DN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15E31C4CEF7;
-	Fri,  6 Mar 2026 04:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772770875;
-	bh=9TYwZmiRf8dZ5EAaLBDgpJSmCARfHq8YxVEnnsjN4Vs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PeTTD7DNbwfhYeMvuguTDtf8+zb1Ur6IN47mDCWMUS6OsgB6rRDz/Ejs/ok0gwNns
-	 GUKGpy9It/z0yK6zTVldXkGo8gPaJDDIiE55hUk8G31yWn/GZgZRCRD6oQ4LMfuEsi
-	 olROakPBokMw4fOgZsHUHUyhNDubCbZ2YICIol7OeQR9+eey+DDjnxgSgiRr2ZumM1
-	 XVhZIpr2vYnbpWd5sb1WsboaMuwUUq5HkxeGnPYYbgw6uieobfluQalQ29eVUIZLbw
-	 ZXZHFeKLjzChlYGpS2GbVbU99I98QfSDr5tIr/ZdKaGIFLciQEElQJ/WFwrbezrv6G
-	 mfEb+iSQWrIew==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Neil Horman <nhorman@tuxdriver.com>
-Subject: [PATCH] MAINTAINERS: remove outdated entry for crypto/rng.c
-Date: Thu,  5 Mar 2026 20:19:15 -0800
-Message-ID: <20260306041915.286379-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1772775999; c=relaxed/simple;
+	bh=zzdM36DZXzpqXW2HCeVuTJfRUIds6cQ/vA2K83YiHiQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=atlzjy6yiM0XU4ea/ihsKx68mRZnmUFOtk7uC9K2w2WbJ0d1YWI2zwWD0SlLjKNfzM0Q5pQYAdYS7XrUWJdsIv/YscZ6oQFAP/YcT11JBSZnts8gMxFePsm/r0/fvUVrQwEnNaBj5wr7JUpNAdnmMU7u6uqlKsYDRYry6SvMlF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AWrVqOSC; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-c738b98bfd9so774155a12.3
+        for <linux-crypto@vger.kernel.org>; Thu, 05 Mar 2026 21:46:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772775997; x=1773380797; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8/SUdjzXEhgvW5puvAWCH8rFOth0bt7gLsKBvzrE17w=;
+        b=AWrVqOSCF4tVsH3LKrViS0TBB/mCu+XfuJLol9byqdNwtRINAUv//iKW+aoip1jfRt
+         dmR7waQY43sMsRDjIgZLU9mBhJ7RJ+KaZr95nKslNdwNxrMWS6GBMlan2DI6JnXzDjha
+         Wazc/ANKIq3syQxP5u7N43MZnD4iCfybFbTIZILDhOu4Ukz74x+HpuBVCkUgBCNQMnhC
+         8UmN7yOHo53i7Vg4eaMkvD9m6B8HbHHqT7InQomZpVDV1YQxxLD+KKOLr1WEMBjCNW1v
+         ITc/VlT2RLKSD0A4kPGpDFE+U9eABBuSTIy4TbqVOnKaMcbxmEQOmxkyaavC4hi9GWzr
+         Km0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772775997; x=1773380797;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8/SUdjzXEhgvW5puvAWCH8rFOth0bt7gLsKBvzrE17w=;
+        b=lMzxlVv/ITZuqq2+76dOqrfUDLheNjoPx9XF2ArnqYsjK6Zpw05uXIgYPF73vbze9R
+         d6z4pd+yfwK6kNWMwHDk9sC7ktU7Uq2v5Q19Su6fnuAzQUMxu3Qcm19dIEBeFUX+u8g4
+         T1SyLNBm6zThKCWNhoaUR2JbBY7fsO3tnB7hQSC/Br46RTvtfN8QmJOqXFihiT5TySMj
+         wI/bR3QxoDKUS4H+t4hr88i5tGP8E52A1R7JPnX/U+wD0rJc+Q9TKloeocXQlmgFqE+3
+         gAvITRDC56uF2aOe2I1c8nG9QI0QrXXWr13rrtNdn2MV2hBCqt6MSv1J39DaWUcWo5eg
+         MnnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqyLTS0LWTY48DcrPwOvdGJV6UhGYsbaJrwt4qPjPhOjWE43Ar6MGgekH163Lu2WM8dvW7oMVfh4qrTKw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxA/iK511PorQ937XbUY9Hb7JfrGiEU8YBKNuDdIUTT/S53n/6m
+	bLrLacRgazjjzNQZj8tiWBtypv+GZjChweSz79c2N2iCDBZc9JI2I1GR
+X-Gm-Gg: ATEYQzyDqD7ClTmeyWnjkrQpg3qgdupiqKkz3iTfyjR3ZI5KA/wvQGUNqhGyPVYpLXU
+	C9EljqMXKdvUysFZufMeeFQb3zKGC3r/Sad7A1socHACnIGb3KHihBKDxHQyAY+FppHYrfF8Vb9
+	B/PDM4NdELKBRey/2Ra1Tp4ycQvLhh/YDv59cdyFpDc3VdS7iqX8y+8tru7e67/+Ymz1abW3jiT
+	X5oTrciuiK2akHx66A9mxqvqAMREW8jFdLV/7EiXkBCm1TY6iS6ZgtvXhpoRZYnZa0pCYMQ2m5i
+	Bzh60HafBBmBknCN0VDtfrqdlejhuKVBk6Dzojd1eNVJrE12N2rwVxFhhQPKuaTnZ52qTaMPOLa
+	3T+BFkxNjaddhfegBwY/xu2xE2qZFSjgy9FYJvJ3BICa/Gr7uxDPy5ub2HPWiwAgCyTGRgDGviJ
+	hA9PsW7P2DHgtSSZElDeKD1HXy0b/Oauwx4YlL7cGtgzhW1VURtDa2XN9G8W2bx2M=
+X-Received: by 2002:a05:6300:4045:b0:38e:9405:beff with SMTP id adf61e73a8af0-398590de607mr1154590637.65.1772775997179;
+        Thu, 05 Mar 2026 21:46:37 -0800 (PST)
+Received: from eric-acer (36-225-117-207.dynamic-ip.hinet.net. [36.225.117.207])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c739e182d72sm424979a12.25.2026.03.05.21.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Mar 2026 21:46:36 -0800 (PST)
+Date: Fri, 6 Mar 2026 13:46:33 +0800
+From: Cheng-Yang Chou <yphbchou0911@gmail.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: herbert@gondor.apana.org.au, davem@davemloft.net,
+	catalin.marinas@arm.com, will@kernel.org,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, jserv@ccns.ncku.edu.tw
+Subject: Re: [PATCH 1/1] crypto: arm64/aes-neonbs - Move key expansion off
+ the stack
+Message-ID: <aapqOeRMJDmYc4lc@eric-acer>
+References: <20260305183229.150599-1-yphbchou0911@gmail.com>
+ <20260305183229.150599-2-yphbchou0911@gmail.com>
+ <20260305193847.GG2796@quark>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 30FB921B740
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260305193847.GG2796@quark>
+X-Rspamd-Queue-Id: D2A7C21BCCD
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21651-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21652-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[yphbchou0911@gmail.com,linux-crypto@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FROM_HAS_DN(0.00)[]
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Lore shows no emails from Neil on linux-crypto since 2020.  Without the
-listed person being active, this MAINTAINERS entry provides no value,
-and actually is a bit confusing because while it is called the
-"CRYPTOGRAPHIC RANDOM NUMBER GENERATOR", it is not the CRNG that is
-normally used (drivers/char/random.c) which has a separate entry.
-Remove this entry, so crypto/rng.c will just be covered by "CRYPTO API".
+Hi Eric,
 
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
+On Thu, Mar 05, 2026 at 11:38:47AM -0800, Eric Biggers wrote:
+> Instead of memzero_explicit() followed by kfree(), just use
+> kfree_sensitive().
+> 
+> Also, single patches should not have a cover letter.  Just send a single
+> patch email with all the details in the patch itself.
+> 
+> As for the actual change, I guess it's okay for now.  Ideally we'd
+> refactor the aes-bs key preparation to not need temporary space.
 
-This patch is targeting cryptodev/master
+Thanks for the feedback.
+I'll send a v2 to address your comments.
 
- MAINTAINERS | 6 ------
- 1 file changed, 6 deletions(-)
+The arm implementation also allocates struct crypto_aes_ctx on the
+stack in aesbs_setkey(). Should I include a fix for it as well?
+Note that I can only test on arm64.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 55af015174a5..31bd5bf05ac2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6828,16 +6828,10 @@ CRYPTO SPEED TEST COMPARE
- M:	Wang Jinchao <wangjinchao@xfusion.com>
- L:	linux-crypto@vger.kernel.org
- S:	Maintained
- F:	tools/crypto/tcrypt/tcrypt_speed_compare.py
- 
--CRYPTOGRAPHIC RANDOM NUMBER GENERATOR
--M:	Neil Horman <nhorman@tuxdriver.com>
--L:	linux-crypto@vger.kernel.org
--S:	Maintained
--F:	crypto/rng.c
--
- CS3308 MEDIA DRIVER
- M:	Hans Verkuil <hverkuil@kernel.org>
- L:	linux-media@vger.kernel.org
- S:	Odd Fixes
- W:	http://linuxtv.org
+Also, I'd be happy to help with the refactoring if you can point me
+in the right direction.
 
-base-commit: 1eb6c478f1edc4384d8fea765cd13ac01199e8b5
 -- 
-2.53.0
-
+Thanks,
+Cheng-Yang
 
