@@ -1,148 +1,119 @@
-Return-Path: <linux-crypto+bounces-21670-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21676-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gAI8FoJQq2nZcAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21670-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 06 Mar 2026 23:09:06 +0100
+	id 9iWjE8Svq2lCfgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21676-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 07 Mar 2026 05:55:32 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A860C228330
-	for <lists+linux-crypto@lfdr.de>; Fri, 06 Mar 2026 23:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E93722A2A8
+	for <lists+linux-crypto@lfdr.de>; Sat, 07 Mar 2026 05:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A09213029ACD
-	for <lists+linux-crypto@lfdr.de>; Fri,  6 Mar 2026 22:09:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 659443033F81
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 Mar 2026 04:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16C1346AF2;
-	Fri,  6 Mar 2026 22:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDFD536895E;
+	Sat,  7 Mar 2026 04:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gIQJYEcq"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="oDxr7nho"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1441F4615
-	for <linux-crypto@vger.kernel.org>; Fri,  6 Mar 2026 22:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF4A368277
+	for <linux-crypto@vger.kernel.org>; Sat,  7 Mar 2026 04:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772834941; cv=none; b=tiuQKG9d0YzaAM0o7CegAcN4gAJr10SjMW6GIPmQ1nqq0YA1mdcH6M+7AtU/1Z4zgoejJyj2WcF71Un/iMjeIDX63IPeme11d0pSPLa0FZfwf9oTgbcfJ9Wh/uoswbCxQ7ZASzW6XnIR2l1+H+OxjVYxbO+D6WbBhBEO7fIKNW4=
+	t=1772859325; cv=none; b=gXbTl+kGTPfAIr+4tTa/bnio+iXhuSxVtMXeOV2/+cLBJ2P9i0/Brj/AG/hYvEK3MCmX/zrqhmpYqUwq1h7ArJfqDW4TFqAET42Tgen+iODllyYzyC2nonOA2WwCLieRSdRIimv2su6FrQmSXsA83rwY9JpvzuMAxJcr1kRRtqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772834941; c=relaxed/simple;
-	bh=WPEhKQmsV5Iyry/qGkL0+CGFFzMLg/imLmfAHIEGhWY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xw2U1/7cKPWjj3XUEVxv/KkIYiQFS7AiipM5UetRR22GiploCQAnTMl++ePzT9oVNeoAs/lHjW0fE+7muh+JDd962PBRKlKR8Xgp8pP2sNbL5li8DDVmZ0A/cjG1ezRhCwKgduFCGwoFdqY4RFjURF/3Nw68zJbzLMe2/gl+B+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gIQJYEcq; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1772834940; x=1804370940;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WPEhKQmsV5Iyry/qGkL0+CGFFzMLg/imLmfAHIEGhWY=;
-  b=gIQJYEcqPVhUP50FQQF5drn2N2PW3dzpMLGtpRcv1S08AZquhG5VQwvk
-   QmAuiwKGIFxWcy7fg/qDCq/PsSW0K13UfQZ2R0kiiK+BdrehsNphiZWUD
-   W9T+rlRwEEeIHqGrLqLtO/xgZRlkKSCWSZg922dI0eul8GLYEeTD9SErZ
-   uiYA1pPpxhz+14Yw1FmWyqbMrOeCAHLDRN4iHujuh5GenoLrLoht2JM1b
-   1wX4S0DGT8GxUfyLp8WCRlsarNWYtrOPxumEoRK/tUvYPdNUEBUnjexn7
-   Oia1DOcBMv3jLLhEuonh1HfMNxzEfI7n0qlL16BZVEMlFl+Kk93n3+dfe
-   Q==;
-X-CSE-ConnectionGUID: ACD4iXuIQ1eiYNhhiELgeg==
-X-CSE-MsgGUID: oXP7q/6RQWCpBqlg4fDoeA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11721"; a="73649682"
-X-IronPort-AV: E=Sophos;i="6.23,105,1770624000"; 
-   d="scan'208";a="73649682"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2026 14:09:00 -0800
-X-CSE-ConnectionGUID: TkMLw01aQoefQ7AiNoQ3Zw==
-X-CSE-MsgGUID: TPAqlWTJSgOXU2pVrtr1dg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,105,1770624000"; 
-   d="scan'208";a="219074850"
-Received: from silpixa00401971.ir.intel.com ([10.20.226.106])
-  by orviesa009.jf.intel.com with ESMTP; 06 Mar 2026 14:08:59 -0800
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	qat-linux@intel.com,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 1/8] crypto: iaa - fix per-node CPU counter reset in rebalance_wq_table()
-Date: Sat,  7 Mar 2026 03:09:56 +0000
-Message-ID: <20260307031003.28499-1-giovanni.cabiddu@intel.com>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1772859325; c=relaxed/simple;
+	bh=wJuLBwtfOWkCL/Bdq/IkoPQlvPknEemntdr4oNvsmcs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iur3TC+6PRLIEhyRY7etkgQn72dJmOJcyE0mQsDMIO3qr0R4anBv0/DcLb8dmz1T6MC2BboBmztbQc0jcL+J0ymAD4tvDiPRc3S1cX6cdMpBTcT28oqsqAiS2022g6IqlnqOcsmnDecYlWJTXkYajj3qgZVM2Nu/4kq7yI17Fh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=oDxr7nho; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=a9Ffc54MZsxWrWbemDVNJ3PL5DDdE/sA8SMDKbeD5xo=; 
+	b=oDxr7nho9gdil1lXGjKz9wcg388Hexj+Ejkifm3uf9cR8lsdtZFrs6+AdrNzjqAZhQ5daMZhCuK
+	RuE5ikTRQ5ivgmHCdUOwWZvO1DkjtoZx1Ln1rWYjVmjWNZlswXz8imkcStiIizW/HUuyDSGARRimk
+	M+CGo4+iHUsKmwc3k+2bs/RXRKlbSoN2AAnzaocpFn5DeLtvOS8zBo7X6A2zOUZ7zzCXdKnnI0i9p
+	ywdkfrcEMSMXGYbBO3zn6jKacAK7/Ik2z0XdRGTvuk3TaH++0FDxLEbDDAUwm+/5v3nj4L9WcC4Ij
+	8u23NWacTHmLDGF3o9ErzyZvJkvs3HsvSD2g==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1vyjgv-00CJHt-1b;
+	Sat, 07 Mar 2026 12:55:06 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 07 Mar 2026 13:55:05 +0900
+Date: Sat, 7 Mar 2026 13:55:05 +0900
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Sun Chaobo <suncoding913@gmail.com>
+Cc: linux-crypto@vger.kernel.org
+Subject: Re: [PATCH]  crypto: fix spelling errors in comments
+Message-ID: <aauvqWqXqzu_pZYS@gondor.apana.org.au>
+References: <20260224033756.78693-1-suncoding913@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: A860C228330
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260224033756.78693-1-suncoding913@gmail.com>
+X-Rspamd-Queue-Id: 2E93722A2A8
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [3.34 / 15.00];
-	DATE_IN_FUTURE(4.00)[5];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21670-lists,linux-crypto=lfdr.de];
-	HAS_ORG_HEADER(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[giovanni.cabiddu@intel.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_FROM(0.00)[bounces-21676-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:email,intel.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.970];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
 X-Rspamd-Action: no action
 
-The cpu counter used to compute the IAA device index is reset to zero
-at the start of each NUMA node iteration. This causes CPUs on every
-node to map starting from IAA index 0 instead of continuing from the
-previous node's last index. On multi-node systems, this results in all
-nodes mapping their CPUs to the same initial set of IAA devices,
-leaving higher-indexed devices unused.
+On Tue, Feb 24, 2026 at 11:37:56AM +0800, Sun Chaobo wrote:
+> Fix several spelling mistakes in comments across the following files:
+> 
+> - crypto/tcrypt.c: Correct "intentionaly" to "intentionally"
+> - crypto/xts.c: Correct "mutliple" to "multiple"
+> 
+> No functional change.
+> 
+> Signed-off-by: Sun Chaobo <suncoding913@gmail.com>
+> ---
+>  crypto/tcrypt.c | 2 +-
+>  crypto/xts.c    | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Move the cpu counter initialization before the for_each_node_with_cpus()
-loop so that the IAA index computation accumulates correctly across all
-nodes.
+Please merge this patch with your previous one.
 
-Fixes: 714ca27e9bf4 ("crypto: iaa - Optimize rebalance_wq_table()")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index 547abf453d4a..f62b994e18e5 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -906,8 +906,8 @@ static void rebalance_wq_table(void)
- 		return;
- 	}
- 
-+	cpu = 0;
- 	for_each_node_with_cpus(node) {
--		cpu = 0;
- 		node_cpus = cpumask_of_node(node);
- 
- 		for_each_cpu(node_cpu, node_cpus) {
-
-base-commit: a861d7b937a278f462a70311670ab1f13febb6d8
+Thanks,
 -- 
-2.53.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
