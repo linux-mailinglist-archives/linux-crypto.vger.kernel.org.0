@@ -1,134 +1,146 @@
-Return-Path: <linux-crypto+bounces-21695-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21696-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WBa8B7MorGlSmAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21695-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 07 Mar 2026 14:31:31 +0100
+	id eMCNL/dErGlLoQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21696-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 07 Mar 2026 16:32:07 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D51422BF93
-	for <lists+linux-crypto@lfdr.de>; Sat, 07 Mar 2026 14:31:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 691F022C6B2
+	for <lists+linux-crypto@lfdr.de>; Sat, 07 Mar 2026 16:32:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1EBB53023DD2
-	for <lists+linux-crypto@lfdr.de>; Sat,  7 Mar 2026 13:31:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 51CDD301588B
+	for <lists+linux-crypto@lfdr.de>; Sat,  7 Mar 2026 15:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65944212542;
-	Sat,  7 Mar 2026 13:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78512D876A;
+	Sat,  7 Mar 2026 15:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uVARBis+"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C03726290;
-	Sat,  7 Mar 2026 13:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3072D274641
+	for <linux-crypto@vger.kernel.org>; Sat,  7 Mar 2026 15:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772890286; cv=none; b=jIGXEMqFMZjU9UaYIASCY/lwNerftyL1ahKxcfxUn34Zl1XM7vDrfxqAO3KxjOohUVr6vXsh6/Zl/1TlNULTjcvc1KRR7BEDMs6HZ5JTXXce51I/YqpzT2iVOQQ6df4rnEsSucPyDp89WHkBBzPCqg7RC/fJtPTlW6Iqbi84s/w=
+	t=1772897523; cv=none; b=ZVV8FAfQEfutBSwjMHaeuL+ycQ2q635ocTKqLZ1pVnG6ACUvJmcjMtGTfV7ps2V+1DZaaIuPB9rWgYbdr8poMjMKMGIqu6ROaMl9kDMZYHsAPlABt/oudJmKX+YulV+bknC9f2TSgm18M6CKuwA+gmivsave8f9knez2/+GyZcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772890286; c=relaxed/simple;
-	bh=wDdHuvzNSXU/hID5H4bNu26FaFTMUqGvFoTfECzEspM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rU2U9XY9hzMb1iEzRQPizu+luacbhvEWhD9apXOPSETwvnOswbog6GUo1St+uBqvpQ6q63IS8IAqA9D9jsnpRwLqpfDg3LX8U0j79xncBNGzy9OAtx24E85ta6CB5i1KQlmSaeqA5owTetquk2elLl0s48RXeZJ39nYziZfcaFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384
-	 client-signature ECDSA (secp384r1) client-digest SHA384)
-	(Client CN "*.hostsharing.net", Issuer "GlobalSign GCC R6 AlphaSSL CA 2025" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 156FF2020ABD;
-	Sat, 07 Mar 2026 14:31:14 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 0E9334F240; Sat,  7 Mar 2026 14:31:14 +0100 (CET)
-Date: Sat, 7 Mar 2026 14:31:14 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Kepplinger-Novakovic Martin <Martin.Kepplinger-Novakovic@ginzinger.com>,
-	"ebiggers@google.com" <ebiggers@google.com>,
-	"horia.geanta@nxp.com" <horia.geanta@nxp.com>,
-	"pankaj.gupta@nxp.com" <pankaj.gupta@nxp.com>,
-	"gaurav.jain@nxp.com" <gaurav.jain@nxp.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"ignat@cloudflare.com" <ignat@cloudflare.com>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] crypto: caam - RSA encrypt doesn't always complete new
- data in out_buf
-Message-ID: <aawoonmcpvx58hL3@wunner.de>
-References: <6029acc0f0ddfe25e2537c2866d54fd7f54bc182.camel@ginzinger.com>
- <aZ296wd7fLE6X3-U@wunner.de>
- <e1d7ad1106dbb259f7c61bdd1910ac9f08012725.camel@ginzinger.com>
- <aZ3Uqaec79TUrP2I@wunner.de>
- <e36dd6fa756015ec1f2a16002fabfa941c33d367.camel@ginzinger.com>
- <aZ6vF1CHpcp5d5qk@wunner.de>
- <5f9c1e7ec61065a2665a2ec70338e05e551435d4.camel@ginzinger.com>
- <aZ_zfnKVnTaG_4bk@wunner.de>
- <aau4hTzIYEVKyAT3@gondor.apana.org.au>
+	s=arc-20240116; t=1772897523; c=relaxed/simple;
+	bh=12uNODLktx6BEfkMaGGtrq9ZKRAKF85Ng0piF3rogU0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mrajeeiFsD3iCI9XNDUaKsYa2VHemFbsb2CoBQV0V3zZ6b39WUjDXXUeEMJLk6/eWAwd9GmWYaOZdJg81uDiEXO+TRxM+nRaYgzKlIFMPA0OMltkVkCy/U91SSMWkBywLjYymnEGcdznvFU0M93TbcZWNZaZ3O42nmkzNfbgaD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uVARBis+; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772897510;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WCkjlMOHTdO7UOxucKf2A+R16ZfIHUwM/0MaXiSsIN4=;
+	b=uVARBis+gT927/YxV8BaJDN81E2SICI9F76QBhCWq94eRk8hxiuEuD1McgUcyCOczUm5TE
+	IHSNJyLVMkvSf++yawmVaBO5XYZyv+DarnbjyVhWWOWzc4J4CGF0kj8mYyybQ81UMsn9OL
+	C6ILaD6SCar5i72ubQHBkIJ/x1ELH20=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	=?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>,
+	Nicolas Royer <nicolas@eukrea.com>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	stable@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: atmel-tdes - fix DMA sync direction
+Date: Sat,  7 Mar 2026 16:31:10 +0100
+Message-ID: <20260307153109.321147-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aau4hTzIYEVKyAT3@gondor.apana.org.au>
-X-Rspamd-Queue-Id: 6D51422BF93
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1847; i=thorsten.blum@linux.dev; h=from:subject; bh=12uNODLktx6BEfkMaGGtrq9ZKRAKF85Ng0piF3rogU0=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJlrXPZ+vaQmmt7/c0Na2mPHlOvzvgWs+rpIIjLpd3FW3 ysLlSKzjlIWBjEuBlkxRZYHs37M8C2tqdxkErETZg4rE8gQBi5OAZhISyIjQ7O8+/O89zbth+e1 Hpp0cKvQ8+LaGUsjfuo83rbUa+75Z9cY/spOYlrM439627n1igGyTz98On/91hqRKcHFUje77pz mC2cAAA==
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 691F022C6B2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21695-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[wunner.de: no valid DMARC record];
-	MIME_TRACE(0.00)[0:+];
-	NEURAL_SPAM(0.00)[0.320];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_FROM(0.00)[bounces-21696-lists,linux-crypto=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[3];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lukas@wunner.de,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	R_DKIM_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-0.979];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Sat, Mar 07, 2026 at 02:32:53PM +0900, Herbert Xu wrote:
-> On Thu, Feb 26, 2026 at 08:17:18AM +0100, Lukas Wunner wrote:
-> > That's fine for the RSA software implementation in crypto/rsa.c but
-> > I could very well imagine it causes problems with an RSA accelerator,
-> > particularly because rsa_edesc_alloc() in drivers/crypto/caam/caampkc.c
-> > now maps the same buffer with DMA_TO_DEVICE and then DMA_FROM_DEVICE.
-> 
-> That's definitely not good.  It needs to handle in-place encryption
-> by using DMA_BIDIRECTIONAL.  If the hardware is not capable of that
-> then an extra copy must be performed by the driver.
+Before DMA output is consumed by the CPU, ->dma_addr_out must be synced
+with dma_sync_single_for_cpu() instead of dma_sync_single_for_device().
+Using the wrong direction can return stale cache data on non-coherent
+platforms.
 
-Okay.  However in the latest hexdump provided by Martin (on Feb 26),
-the data returned from the caam RSA accelerator is byte-swapped.
-i.MX6 does seem to be capable of big endian mode, but I guess
-peripherals still use little endian and so it would be necessary
-to postprocess (i.e. byte-swap) the buffer in caampkc.c if the CPU
-is running in big endian mode.
+Fixes: 13802005d8f2 ("crypto: atmel - add Atmel DES/TDES driver")
+Fixes: 1f858040c2f7 ("crypto: atmel-tdes - add support for latest release of the IP (0x700)")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ drivers/crypto/atmel-tdes.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-It's unclear to me whether the byte swap issue is the only problem
-or whether there's a DMA issue on top.  Martin hasn't responded to
-my latest e-mail yet and without someone willing to answer questions
-or test patches, I can't help any further here as I don't have such a
-device myself.
+diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
+index 278c0df3c92f..643e507f9c02 100644
+--- a/drivers/crypto/atmel-tdes.c
++++ b/drivers/crypto/atmel-tdes.c
+@@ -294,8 +294,8 @@ static int atmel_tdes_crypt_pdc_stop(struct atmel_tdes_dev *dd)
+ 		dma_unmap_sg(dd->dev, dd->out_sg, 1, DMA_FROM_DEVICE);
+ 		dma_unmap_sg(dd->dev, dd->in_sg, 1, DMA_TO_DEVICE);
+ 	} else {
+-		dma_sync_single_for_device(dd->dev, dd->dma_addr_out,
+-					   dd->dma_size, DMA_FROM_DEVICE);
++		dma_sync_single_for_cpu(dd->dev, dd->dma_addr_out,
++					dd->dma_size, DMA_FROM_DEVICE);
+ 
+ 		/* copy data */
+ 		count = atmel_tdes_sg_copy(&dd->out_sg, &dd->out_offset,
+@@ -619,8 +619,8 @@ static int atmel_tdes_crypt_dma_stop(struct atmel_tdes_dev *dd)
+ 			dma_unmap_sg(dd->dev, dd->out_sg, 1, DMA_FROM_DEVICE);
+ 			dma_unmap_sg(dd->dev, dd->in_sg, 1, DMA_TO_DEVICE);
+ 		} else {
+-			dma_sync_single_for_device(dd->dev, dd->dma_addr_out,
+-				dd->dma_size, DMA_FROM_DEVICE);
++			dma_sync_single_for_cpu(dd->dev, dd->dma_addr_out,
++						dd->dma_size, DMA_FROM_DEVICE);
+ 
+ 			/* copy data */
+ 			count = atmel_tdes_sg_copy(&dd->out_sg, &dd->out_offset,
+-- 
+Thorsten Blum <thorsten.blum@linux.dev>
+GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
 
-Thanks,
-
-Lukas
 
