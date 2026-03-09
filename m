@@ -1,143 +1,163 @@
-Return-Path: <linux-crypto+bounces-21723-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21724-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eNn9Le68rmn6IQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-21723-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 09 Mar 2026 13:28:30 +0100
+	id eHCJJAHbrmm/JQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-21724-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 09 Mar 2026 15:36:49 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35C19238D21
-	for <lists+linux-crypto@lfdr.de>; Mon, 09 Mar 2026 13:28:30 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F38F923A9F7
+	for <lists+linux-crypto@lfdr.de>; Mon, 09 Mar 2026 15:36:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 262203073D96
-	for <lists+linux-crypto@lfdr.de>; Mon,  9 Mar 2026 12:21:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 47E56301AABB
+	for <lists+linux-crypto@lfdr.de>; Mon,  9 Mar 2026 14:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C40733711D;
-	Mon,  9 Mar 2026 12:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72DC73BED46;
+	Mon,  9 Mar 2026 14:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PeoW3o/G"
+	dkim=pass (2048-bit key) header.d=thorondor.fr header.i=@thorondor.fr header.b="OEG9kjzv"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.thorondor.fr (unknown [82.66.128.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096F138F941;
-	Mon,  9 Mar 2026 12:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A4F246774;
+	Mon,  9 Mar 2026 14:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.66.128.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773058854; cv=none; b=mYn/W0rKz3Yuq2pOmNUoaKgk6Ln9xaKM4ETa74mzMV+GpT5wF9t928LH53LfPmn6u34LSm41emXEgVClJFUC3hC2RLQAGflAABd+0lCofPp8fclD4WadN64FJAWUUfxqiLpes9Au/s/tgYi8WzWqmO3F+k95evXqub9r8B1Gsow=
+	t=1773067005; cv=none; b=PMdtu7HevizvAU6QtklrRMzB99W07iQ7fVx4G0EVFLAB7KhnBuQeT1Gp9M30cTCoafN7mVhtw5tKXYtpuOpqlOJ1e+7Ag+c8NXus57LPLWsS//MKqFJco8fTUGCLyWbtZSaG90swaA2JQbbpnvpjF8K9g0utubix30OGh7CMfls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773058854; c=relaxed/simple;
-	bh=fL3hLVnTFB1ULsWHX1c38wG7D5BZu0jsxXjZxMC9DHg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G+ArwJKeXpZxJK/F8g0PNSUtDxzAtpWUNvdtKSr/b/zJZyXeCvV9kvEQ7zXuNGSJT0Aknr/91w2XM+OVpCkkHzkVGMFeujuEByoJXaITDbFby0pzquzxhYSlw0hPnrbvJsbzeN0vhoIXs45NtWxL/mbjm7NrBNcFwOt8gGoeQPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PeoW3o/G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A243C4CEF7;
-	Mon,  9 Mar 2026 12:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773058853;
-	bh=fL3hLVnTFB1ULsWHX1c38wG7D5BZu0jsxXjZxMC9DHg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PeoW3o/Gov8/ZSTsI0rXXDkBR70WIdoWPz0gxW6lA+51RkHnpAKsejEo9Vrlyw2II
-	 IlFH+AIC/uh6SqmxgMDXQfl65RTkHF5D5arAbzeFSu0s0QX7+Z7uljrLiJ8L5y8plu
-	 Az2ypS0GzM2l0WIFcqo3HBUqAmC0NMO++Rtn05J6ztKR3FWfNPkBlnO6FHOAWCk96m
-	 QmtN7Dr5Xa6CPJfjnxyJ3Gi5nLZqJob+WhGmZLuLQnSher3Je0nLpeXm27C8SX3DAF
-	 Wc+e+jOtb4iU5Isn6qHkTDPrdwlVBzUNS1roHpi20WhzItPbUPxWmTD1AixCj0/eiD
-	 b542wsL9qvwQA==
-Date: Mon, 9 Mar 2026 17:50:38 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Harshal Dev <harshal.dev@oss.qualcomm.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, 
-	"David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
-	Abel Vesa <abel.vesa@oss.qualcomm.com>, cros-qcom-dts-watchers@chromium.org, 
-	Brian Masney <bmasney@redhat.com>, Neeraj Soni <neeraj.soni@oss.qualcomm.com>, 
-	Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>, linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] soc: qcom: ice: Add explicit power-domain and
- clock voting calls for ICE
-Message-ID: <4tq4cyc3m7eguydrvriiygsumzrfmqkrrm3pwieixivzx7fvle@kuemcabrb4xd>
-References: <20260123-qcom_ice_power_and_clk_vote-v1-0-e9059776f85c@qti.qualcomm.com>
- <20260123-qcom_ice_power_and_clk_vote-v1-11-e9059776f85c@qti.qualcomm.com>
- <vimd3tbnu4mr2uqporj7d4fv23aq2cb6e5een43yz5spe4u2xx@ufyzb2lzlc6j>
- <b32c7091-b2c4-443d-b58e-759b471f67db@oss.qualcomm.com>
- <4a76fuanyf45d56p64qmc7c3qcovbzt7jc27uern4lr4bchl6n@l6buzvakrrcg>
- <320ff1c6-34ed-4b6f-b0f8-db79a14b7101@oss.qualcomm.com>
+	s=arc-20240116; t=1773067005; c=relaxed/simple;
+	bh=7qcA1ra2Byw2cymy6cg1YIgLBaGD6tJpt4IkB60n3NU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NaIJYNl790WGdrz8ZYf5HGaWPY2Osj9/LCPlTvDuVThZf+3gM5r3+r0HxCUF5o+b59g7/KEV1BE8TFC91rr2yQla/5b6aetpYXtXJIdcoJuxxp5LqXF1dDCnjI49DjcRrG4hAUErTFP2nKFCaKRi9UzxsSegjNWQlAgQq3FDAcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorondor.fr; spf=pass smtp.mailfrom=thorondor.fr; dkim=pass (2048-bit key) header.d=thorondor.fr header.i=@thorondor.fr header.b=OEG9kjzv; arc=none smtp.client-ip=82.66.128.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorondor.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thorondor.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=thorondor.fr; s=mail;
+	t=1773066995; bh=7qcA1ra2Byw2cymy6cg1YIgLBaGD6tJpt4IkB60n3NU=;
+	h=Subject:To:Cc:References:From:In-Reply-To;
+	b=OEG9kjzvYp1Is3sbUeYwLYZ1QJ9ZVZskPwf78r1ZT6dz2UvR7UhNb1sFdkQaO/lqQ
+	 ze/z6wbTLzWOJhpLPeaUl3sqBBYH9j2BBYMVKTOXSJip1FfotQguBM6v5PyksStTiJ
+	 fex+1JcaV6sEMIAy3lGdxlic6zOMcVe+LPdxb9NJfqaPY7Apdbp4HrnHkFgxMHD3k4
+	 QbKnbb1m0e8o38n8bVuGulvNZpjHlxGh+/TxFUiYZsdqD8k/tb229aPw/8kelLgJiN
+	 QLekutJblLi/5OlhMYvU91EOsT6eG856RJMWNSu1R+epN0JYsJSL8jCHg2+xaC8B4t
+	 3PjqaMq013Agg==
+Message-ID: <aa49739b-0432-4d20-afbe-c63dd7c5608a@thorondor.fr>
+Date: Mon, 9 Mar 2026 15:36:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH v7 0/1] KVM: SEV: Add KVM_SEV_SNP_HV_REPORT_REQ command
+To: Thomas Courrege <thomas.courrege@thorondor.fr>, ashish.kalra@amd.com,
+ corbet@lwn.net, herbert@gondor.apana.org.au, john.allen@amd.com,
+ nikunj@amd.com, pbonzini@redhat.com, seanjc@google.com,
+ thomas.lendacky@amd.com
+Cc: kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20260302143626.289792-1-thomas.courrege@thorondor.fr>
+Content-Language: en-US
+From: Thomas Courrege <thomas.courrege@thorondor.fr>
+In-Reply-To: <20260302143626.289792-1-thomas.courrege@thorondor.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <320ff1c6-34ed-4b6f-b0f8-db79a14b7101@oss.qualcomm.com>
-X-Rspamd-Queue-Id: 35C19238D21
+X-Rspamd-Queue-Id: F38F923A9F7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[thorondor.fr,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[thorondor.fr:s=mail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21723-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-21724-lists,linux-crypto=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.967];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mani@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	DKIM_TRACE(0.00)[thorondor.fr:+];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thomas.courrege@thorondor.fr,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.944];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,thorondor.fr:dkim,thorondor.fr:mid]
 X-Rspamd-Action: no action
 
-On Mon, Mar 09, 2026 at 05:29:34PM +0530, Harshal Dev wrote:
 
-[...]
+On 02-03-2026 15:36, Thomas Courrege wrote:
+> Overview
+> ========
+> The SEV-SNP Firmware ABI allows the hypervisor to request an
+> attestation report via the SEV_CMD_SNP_HV_REPORT_REQ firmware command.
+>
+> This allow KVM to expose more of AMD’s SEV‑SNP features.
+>
+> It also allow developers to easily request attestation.
+> It could maybe be use by some cloud provider to easily provide an
+> attestation report through their API, in case the Guest doesn't respond
+> fast enough or even to compare the reports.
+>
+> Testing
+> =======
+> For testing this via QEMU, please use the following tree:
+>         https://github.com/Th0rOnDoR/qemu
+>
+> Patch History
+> =============
+> v6 -> v7:
+> Rebase after 7.0 merge window
+>
+> v5 -> v6:
+> Fix typos issues in documentation
+>
+> v4 -> v5:
+> Set variables in reverse christmas tree order
+> Fix and clean the rsp_size logic
+>
+> v3 -> v4:
+> Add newline in documentation to avoid a warning
+> Add base commit
+>
+> v2 -> v3:
+> Add padding to structure, code format
+> Write back the full MSG_REPORT_RSP structure
+> Remove the memzero_explicit for the report
+>
+> v1 -> v2:
+> Renaming, code format
+> Zeroes the report before returning
+>
+>
+> Any feedback is appreciated.
+>
+> Thanks,
+> Thomas
+>
+> Thomas Courrege (1):
+>   KVM: SEV: Add KVM_SEV_SNP_HV_REPORT_REQ command
+>
+>  .../virt/kvm/x86/amd-memory-encryption.rst    | 27 ++++++++
+>  arch/x86/include/uapi/asm/kvm.h               |  9 +++
+>  arch/x86/kvm/svm/sev.c                        | 63 +++++++++++++++++++
+>  drivers/crypto/ccp/sev-dev.c                  |  1 +
+>  include/linux/psp-sev.h                       | 31 +++++++++
+>  5 files changed, 131 insertions(+)
+>
+>
+> base-commit: 55365ab85a93edec22395547cdc7cbe73a98231b
+Gentle ping.
 
-> >> As per discussion on the DT binding patch, I can do this once we decide to break the
-> >> DT backward compatibility with a subsequent patch which makes both clocks mandatory.
-> >> For v2, I am planning to continue to treat the 'iface' clock as optional via
-> >> devm_clk_get_optional() API.
-> >>
-> > 
-> > Even if you do not mark 'iface' as 'required', this API will work just fine. It
-> > will get and enable whatever clocks defined in the DT node. It is upto the
-> > binding to define, what all should be present.
-> 
-> Agreed Manivannan, however, I realize that for legacy DT bindings, where ICE instance is
-> specified as part of the UFS/EMMC driver node, qcom_ice_create() receives the storage
-> device, if we call devm_clk_bulk_get_all_enabled() then all clocks specified in the
-> storage node would be returned and enabled. However, qcom_ice_create() should only enable
-> clocks relevant for ICE operation, i.e., core and iface clocks. iface being optional
-> for the time being as discussed.
-> 
-
-Yikes! This design is too ugly... But anyhow, we have to live with it.
-
-> And so, for suspend() and resume() as well, it seems I will have to continue with preparing
-> and enabling/disabling both the clocks individually.
-> 
-
-Ok fine.
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+Thanks,
+Thomas
 
