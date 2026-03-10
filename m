@@ -1,48 +1,48 @@
-Return-Path: <linux-crypto+bounces-21804-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21805-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gCfVLZh2sGnJjQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-21804-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 20:52:56 +0100
+	id EMgnN512sGnJjQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-21805-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 20:53:01 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 704A5257353
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 20:52:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A069F257378
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 20:53:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9743D3065AE0
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 19:52:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AAB863069667
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 19:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FD7378D74;
-	Tue, 10 Mar 2026 19:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7063A1696;
+	Tue, 10 Mar 2026 19:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cs6MPMmG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pwx+09U5"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955ED36166E;
-	Tue, 10 Mar 2026 19:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BCC397E78;
+	Tue, 10 Mar 2026 19:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773172371; cv=none; b=fOForn80ws4Re3DHyQhkVLFzYKFjcMSq0NEZlPwCidkHKxL0dfpVLElt89tXljxG18iXhTD6hvLB6EHepCzyo/50F33eVDez3RM8m0vZNL55Anz3qyu8Z8FwWZOQIV1Yq15r2Hafrj9p+dxFRfXrf4ob9NmLH8UhO95gfx5tBbE=
+	t=1773172374; cv=none; b=BUROKu426H8mlU0YhBvRjFbm8oRQalW/oc6jyfmqCwRB1THzDv9/ddt2GvXCO8c35D3zfm+hyb5CYjouHxOd7MmklPQboz41DIiZDsYc+F+bYQKcr+Rmx1BeLliETgBAJMQLFcFpKKG9m3CsH09bJweKtwL1BETh2BRd3o/zvxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773172371; c=relaxed/simple;
-	bh=ZljlsaZrVSABj0WGZEN8HZRXYNDW4ztD1TIc/UZ7+Kk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BqzMk62YnndS5p4Nes3fcxusufnm+2jmsUK7ecsaXs+Bj+r60+YK8wGMIgWdXvvazUrjhnwWxerptyuYxAtE/QMHI2+zSjhfewpedMVWvYs5JH++iVSFb7vmz5zfcQVcIUlDQkN8t0CHoPrsa0a0/+ugBYBevUONKYni+/cQTpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cs6MPMmG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F7C0C19425;
-	Tue, 10 Mar 2026 19:52:50 +0000 (UTC)
+	s=arc-20240116; t=1773172374; c=relaxed/simple;
+	bh=gEcQt7kI3jCVHAVlGSZt7rwDr5bcYt2UEfYoFXsMnIg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZollNjTEBLF1vwAVDLcLQ3pF/ZyWJh9eVcSDL0dN1XChcb+9qeDMNNgMHwUypq4LiVmOIOhs16y9LeuKryab0itlUBc7uqDnJuD8O5JbmOQsJfoSzT2tGYb9B6RLsYp7ReD2H6lA5wSNqBC3Esq7gZ8tBUDfDeOVoumLxvwIbAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pwx+09U5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330C1C19423;
+	Tue, 10 Mar 2026 19:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773172371;
-	bh=ZljlsaZrVSABj0WGZEN8HZRXYNDW4ztD1TIc/UZ7+Kk=;
+	s=k20201202; t=1773172373;
+	bh=gEcQt7kI3jCVHAVlGSZt7rwDr5bcYt2UEfYoFXsMnIg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Cs6MPMmGHMYfD/AiCuUY7uIQLSIDd3Z2gPNs8zfogm2eus4YkCknrocxGIlCVzY0A
-	 KZwvvhir7j/VevZm9IJI3okcHQFUzmRwL0NCa1hJQ19Ej4SWIik4iEU2gZBgxQUPe9
-	 IY5C4gTEl/pzLueiu4WBGnbBUwvT2oAGfuJeubJfcj1LSr2MBJybXL2PQF6HlAhcFK
-	 fShxnCVKqKrtqxljPVxswzOwwRofVCV7LY/eegI5tguQKwpHdML06XgoSiBZ5iOte2
-	 fdkdiVHaMVLYrkdZkGpkOcO6D1qxJTHmUWaZ6EqSo7jGKOZhifKeuFUTN94Y1FN3e2
-	 yYHUVbpClmbUQ==
+	b=pwx+09U5efNS/F8ix3h9GweHfuIxPcQMBNX78h4nGwtwDRpIJdsQ7/5k47kt9yySD
+	 AtqAAd7jYe2rSXxyS4PX2kZ8PvYN9qPTwItwLJQ5LZL4q5D534VzUvoGDnMB8jvkaK
+	 7AnGh4ixSEediXOP7SZtJbODG9fWfCD3OYGjw2FE0o/SU50TfRhX4cACCTCtsYa7wk
+	 KJCq/99ofGDK0Kx/P/1rOJFP38ZnmHreqPf7d7AwN16hP9dd7GZrdgmh5tcEgVn6jA
+	 cjeWUqDvf8AAXKYjzCclH9XFz9R7dpyhABlqdB6FiHwRon29bWMt/n1zeuY7KXGgBx
+	 DuUOwBhQNfKdQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: stable@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
@@ -50,9 +50,9 @@ Cc: linux-crypto@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>,
 	Namjae Jeon <linkinjeon@kernel.org>,
 	Steve French <stfrench@microsoft.com>
-Subject: [PATCH 6.18] ksmbd: Compare MACs in constant time
-Date: Tue, 10 Mar 2026 12:52:14 -0700
-Message-ID: <20260310195214.70843-1-ebiggers@kernel.org>
+Subject: [PATCH 6.12] ksmbd: Compare MACs in constant time
+Date: Tue, 10 Mar 2026 12:52:51 -0700
+Message-ID: <20260310195251.70880-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -61,25 +61,25 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 704A5257353
+X-Rspamd-Queue-Id: A069F257378
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21804-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21805-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
@@ -109,15 +109,15 @@ Signed-off-by: Steve French <stfrench@microsoft.com>
  3 files changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/fs/smb/server/Kconfig b/fs/smb/server/Kconfig
-index 098cac98d31e6..6200c71298f66 100644
+index cabe6a843c6a0..da0187e76cf1c 100644
 --- a/fs/smb/server/Kconfig
 +++ b/fs/smb/server/Kconfig
-@@ -11,10 +11,11 @@ config SMB_SERVER
+@@ -9,10 +9,11 @@ config SMB_SERVER
+ 	select CRYPTO
+ 	select CRYPTO_MD5
  	select CRYPTO_HMAC
  	select CRYPTO_ECB
- 	select CRYPTO_LIB_ARC4
  	select CRYPTO_LIB_DES
- 	select CRYPTO_LIB_SHA256
 +	select CRYPTO_LIB_UTILS
  	select CRYPTO_SHA256
  	select CRYPTO_CMAC
@@ -125,7 +125,7 @@ index 098cac98d31e6..6200c71298f66 100644
  	select CRYPTO_AEAD2
  	select CRYPTO_CCM
 diff --git a/fs/smb/server/auth.c b/fs/smb/server/auth.c
-index b4020bb55a268..f92b2f3dc6de0 100644
+index b3d121052408c..5d5a8166d3cc9 100644
 --- a/fs/smb/server/auth.c
 +++ b/fs/smb/server/auth.c
 @@ -11,10 +11,11 @@
@@ -155,7 +155,7 @@ index b4020bb55a268..f92b2f3dc6de0 100644
  		ksmbd_release_crypto_ctx(ctx);
  	kfree(construct);
 diff --git a/fs/smb/server/smb2pdu.c b/fs/smb/server/smb2pdu.c
-index bf8c480594367..f82d6c6b94101 100644
+index ac8248479cba2..44ccf1a0e1212 100644
 --- a/fs/smb/server/smb2pdu.c
 +++ b/fs/smb/server/smb2pdu.c
 @@ -2,10 +2,11 @@
@@ -170,7 +170,7 @@ index bf8c480594367..f82d6c6b94101 100644
  #include <linux/syscalls.h>
  #include <linux/namei.h>
  #include <linux/statfs.h>
-@@ -8879,11 +8880,11 @@ int smb2_check_sign_req(struct ksmbd_work *work)
+@@ -8808,11 +8809,11 @@ int smb2_check_sign_req(struct ksmbd_work *work)
  
  	if (ksmbd_sign_smb2_pdu(work->conn, work->sess->sess_key, iov, 1,
  				signature))
@@ -183,7 +183,7 @@ index bf8c480594367..f82d6c6b94101 100644
  	}
  
  	return 1;
-@@ -8967,11 +8968,11 @@ int smb3_check_sign_req(struct ksmbd_work *work)
+@@ -8896,11 +8897,11 @@ int smb3_check_sign_req(struct ksmbd_work *work)
  	iov[0].iov_len = len;
  
  	if (ksmbd_sign_smb3_pdu(conn, signing_key, iov, 1, signature))
@@ -197,7 +197,7 @@ index bf8c480594367..f82d6c6b94101 100644
  
  	return 1;
 
-base-commit: 6258e292d7463f96d0f06dff2a39093a54c9d16f
+base-commit: 39b686f8d57d7506af7789e915fe7fd103b0fe57
 -- 
 2.53.0
 
