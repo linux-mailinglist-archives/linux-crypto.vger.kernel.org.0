@@ -1,60 +1,86 @@
-Return-Path: <linux-crypto+bounces-21768-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21769-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kPBnJlzkr2lwdQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-21768-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 10:29:00 +0100
+	id uBFpGGwosGn1ggIAu9opvQ
+	(envelope-from <linux-crypto+bounces-21769-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 15:19:24 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E725C248664
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 10:28:53 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39EE0251BB4
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 15:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1302B301A29C
-	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 09:28:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 34A8130DB9AA
+	for <lists+linux-crypto@lfdr.de>; Tue, 10 Mar 2026 14:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3004E43D4EF;
-	Tue, 10 Mar 2026 09:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="FGH/mSFO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFAA391E76;
+	Tue, 10 Mar 2026 14:00:35 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC48313E10
-	for <linux-crypto@vger.kernel.org>; Tue, 10 Mar 2026 09:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DACE38D6AE;
+	Tue, 10 Mar 2026 14:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773134923; cv=none; b=FRi7SVHFRbZhieYwe51st46eF5mAeyMoYIVYzdqszFJ3gv0btCHA3wAAylyM70BHxXhPW1naA9PWH+Xdfwm4h/pS2vp7lhbKy+NGfnpQ3sZHlAiGQpG/FeS9EoU5aPXeEziwAOyBRs+uwvscvHAtF3aRf/gCkwUXvhBjc5AIDDU=
+	t=1773151235; cv=none; b=dTigyRm/6no5hNC/1+W4GVG3r23clSRFPz5aSpwCehvfZN1ZoTdFsH1QWvGcM9b5SHoHkCWk5ULUPPSUUZJCR4w3ebz5dINBCU/FIwS4ZcoxWuW9di4Kafc7tYy+3Bp5uh4RTmgY/3pPKUOGDxdduLxp38/1rXkEzDU1CoIQT7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773134923; c=relaxed/simple;
-	bh=Iq+CMdj5TRyEMGx0pRH7GGi3ap8UCWNG8U4lvHHUY6E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=OaOPj/ECCm8vJeO4Qd+SqdxxsquNtYRJsFKgWJknfMHSscmv4MEz9sl4uwWLM3MsGU+kI+1VpOC9xsJ/DFnIVGWLo7R9zo249QLXpD0djHrNTSIAfeCsI4Eff+HEwhM1aL+diXjqTChYlgE+hAy17+CSv4U56p4ConRgZwCAYBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=FGH/mSFO; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=Content-Type:MIME-Version:Message-ID:Subject:
-	Cc:To:From:Date:cc:to:subject:message-id:date:from:content-type:in-reply-to:
-	references:reply-to; bh=ngP83g0YvT//3KocYj6ICwrJLalxQCzr+AcdYQR6dMs=; b=FGH/m
-	SFOcWZDbdcebEQ4SI7/UfNqWCde+/nWYSyVeCd5l0YJvs6AL0IplBJCzUn2RzquhxJSRxh675tMKm
-	3jqaueidqcnkNuo+b6K0n1y4R26ZkSZXC+QAWRHtWVx5cM38gzGp61PoYXffOC73RM4SKS9XQdVFD
-	DJYHlJmqildCUrHY2E1C0fxjjc/EDbgoMz4kvDUExqekKjrkjLxdTF+2rRs+p/2T/vWkOBQ7cQbHv
-	yOvEa2m8+GaGWb0Irio7vtntcz/6/BATaMFpoOAjYbug7QSKz0LTU5tmNe348cMF34OEouehYVkxY
-	nTKhb8uoaJzUA4gxtcFEJgNbfIULg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vztO9-00D5wt-2Y;
-	Tue, 10 Mar 2026 17:28:30 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 10 Mar 2026 18:28:29 +0900
-Date: Tue, 10 Mar 2026 18:28:29 +0900
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-	Akhil R <akhilrajeev@nvidia.com>
-Cc: Guangwu Zhang <guazhang@redhat.com>
-Subject: [PATCH] crypto: tegra - Disable softirqs before finalizing request
-Message-ID: <aa_kPXrFeOmhydP6@gondor.apana.org.au>
+	s=arc-20240116; t=1773151235; c=relaxed/simple;
+	bh=9cKCbksrXdq7qQIbd19mcsGEruocKNk/N9O3kK26goI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y5M/knTJZpROdKPf4OzTi7qwkwVZqS5+ihgieGpmmHOd7QEIWm0k9DPUkYGohGCwo9NAcKR89qanOPhBJ3eg97MabfWwZEiP8fCalLs15dI6W3J8aUPGt5Zwr4nPIClZrQh9iWTgpHoAtd1bmyeHpsceC5ddHHLsTuCRrav3NTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 9EFDD68C4E; Tue, 10 Mar 2026 15:00:21 +0100 (CET)
+Date: Tue, 10 Mar 2026 15:00:20 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 09/25] xor: move generic implementations out of
+ asm-generic/xor.h
+Message-ID: <20260310140020.GA8490@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-10-hch@lst.de> <20260228071521.GK65277@quark> <20260303160911.GI7021@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,119 +89,45 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Rspamd-Queue-Id: E725C248664
+In-Reply-To: <20260303160911.GI7021@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Rspamd-Queue-Id: 39EE0251BB4
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:?];
-	TAGGED_FROM(0.00)[bounces-21768-lists,linux-crypto=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_ALL(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	R_DKIM_TEMPFAIL(0.00)[gondor.apana.org.au:s=h01];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	DMARC_DNSFAIL(0.00)[apana.org.au : SPF/DKIM temp error,quarantine];
-	NEURAL_HAM(-0.00)[-0.906];
+	FREEMAIL_CC(0.00)[lst.de,linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
+	TAGGED_FROM(0.00)[bounces-21769-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	NEURAL_SPAM(0.00)[0.162];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCPT_COUNT_GT_50(0.00)[56];
 	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,apana.org.au:url,apana.org.au:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,lst.de:mid]
 X-Rspamd-Action: no action
 
-Softirqs must be disabled when calling the finalization fucntion on
-a request.
+On Tue, Mar 03, 2026 at 05:09:11PM +0100, Christoph Hellwig wrote:
+> And earlier version did this, but it's a bit ugly.  What I might
+> consider is to require architectures that provide optimized version
+> to opt into any generic one they want to use.  This would require
+> extra kconfig symbols, but be a lot cleaner overall.
 
-Reported-by: Guangwu Zhang <guazhang@redhat.com>
-Fixes: 0880bb3b00c8 ("crypto: tegra - Add Tegra Security Engine driver")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/drivers/crypto/tegra/tegra-se-aes.c b/drivers/crypto/tegra/tegra-se-aes.c
-index 0e07d0523291..8b91f00b9c31 100644
---- a/drivers/crypto/tegra/tegra-se-aes.c
-+++ b/drivers/crypto/tegra/tegra-se-aes.c
-@@ -4,6 +4,7 @@
-  * Crypto driver to handle block cipher algorithms using NVIDIA Security Engine.
-  */
- 
-+#include <linux/bottom_half.h>
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
-@@ -333,7 +334,9 @@ static int tegra_aes_do_one_req(struct crypto_engine *engine, void *areq)
- 		tegra_key_invalidate_reserved(ctx->se, key2_id, ctx->alg);
- 
- out_finalize:
-+	local_bh_disable();
- 	crypto_finalize_skcipher_request(se->engine, req, ret);
-+	local_bh_enable();
- 
- 	return 0;
- }
-@@ -1261,7 +1264,9 @@ static int tegra_ccm_do_one_req(struct crypto_engine *engine, void *areq)
- 		tegra_key_invalidate_reserved(ctx->se, rctx->key_id, ctx->alg);
- 
- out_finalize:
-+	local_bh_disable();
- 	crypto_finalize_aead_request(ctx->se->engine, req, ret);
-+	local_bh_enable();
- 
- 	return 0;
- }
-@@ -1347,7 +1352,9 @@ static int tegra_gcm_do_one_req(struct crypto_engine *engine, void *areq)
- 		tegra_key_invalidate_reserved(ctx->se, rctx->key_id, ctx->alg);
- 
- out_finalize:
-+	local_bh_disable();
- 	crypto_finalize_aead_request(ctx->se->engine, req, ret);
-+	local_bh_enable();
- 
- 	return 0;
- }
-@@ -1745,7 +1752,9 @@ static int tegra_cmac_do_one_req(struct crypto_engine *engine, void *areq)
- 	if (tegra_key_is_reserved(rctx->key_id))
- 		tegra_key_invalidate_reserved(ctx->se, rctx->key_id, ctx->alg);
- 
-+	local_bh_disable();
- 	crypto_finalize_hash_request(se->engine, req, ret);
-+	local_bh_enable();
- 
- 	return 0;
- }
-diff --git a/drivers/crypto/tegra/tegra-se-hash.c b/drivers/crypto/tegra/tegra-se-hash.c
-index 4a298ace6e9f..79f1e5c9b729 100644
---- a/drivers/crypto/tegra/tegra-se-hash.c
-+++ b/drivers/crypto/tegra/tegra-se-hash.c
-@@ -4,6 +4,7 @@
-  * Crypto driver to handle HASH algorithms using NVIDIA Security Engine.
-  */
- 
-+#include <linux/bottom_half.h>
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
-@@ -546,7 +547,9 @@ static int tegra_sha_do_one_req(struct crypto_engine *engine, void *areq)
- 	}
- 
- out:
-+	local_bh_disable();
- 	crypto_finalize_hash_request(se->engine, req, ret);
-+	local_bh_enable();
- 
- 	return 0;
- }
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I looked into this, but because the static_call requires a default
+version I gave up on it for now.  In theory we could build just
+a single generic one for that and make the others optional, but
+that feels a bit odd.
 
