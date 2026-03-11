@@ -1,52 +1,53 @@
-Return-Path: <linux-crypto+bounces-21827-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21826-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eOLbKG0UsWkZqgIAu9opvQ
-	(envelope-from <linux-crypto+bounces-21827-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Mar 2026 08:06:21 +0100
+	id wKsuCzAUsWkZqgIAu9opvQ
+	(envelope-from <linux-crypto+bounces-21826-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Mar 2026 08:05:20 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C6F25D391
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Mar 2026 08:06:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7D9425D2E0
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Mar 2026 08:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E5F8F31CEF39
-	for <lists+linux-crypto@lfdr.de>; Wed, 11 Mar 2026 07:05:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A7F1B3165642
+	for <lists+linux-crypto@lfdr.de>; Wed, 11 Mar 2026 07:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86991377038;
-	Wed, 11 Mar 2026 07:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A12337701C;
+	Wed, 11 Mar 2026 07:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="U7eno6iJ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s0MZyizq"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBAA3783BD;
-	Wed, 11 Mar 2026 07:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E5C27470;
+	Wed, 11 Mar 2026 07:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773212709; cv=none; b=Jb7IaRYv+vrHw2E1MCNZ2f0UhvU3WKGEJJtb0hQpJsDrPnosxRumk1wRoDXR2YTCjkeGxJRLE81NjdJtnNDuL8tyKELsDBJtJZ3aNx1p3dlFXIpO5k3pAOMdAE5eFm6nkikWiOkufrCtO3tpE1MPCqSwlDGXG22GFuG9csbybE8=
+	t=1773212705; cv=none; b=P9FLRZLe9fPSGsbbZDWcAyzqnZ4Iiu+qjSY1PLjcvpIPQ2LLEVmIyg//8sr7g9lNJG9IgN4cgx5REDR5brT2IFYP9y9PjOzGzDXk47hiYYyiHYOjesBW9GuDzNDvmSJwKrMoWyy45H+Kd9njXTueM+4HT5Sp2/Fle1J547/O9Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773212709; c=relaxed/simple;
-	bh=Xr2NS+Z+MofXCcGVHIYSe4z+OYqNscadbrVLgzonAs4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UDCvHsCH17HXO/5jJ8wB0MJy3fC0g90VcwoyrjnJmtmXCoWKYvbZn2eyNR68ABpu7Tsg8r0Ky/NCPbdSOdhPm+oUZtHmzPRj7KL16oSA8xqUILfjkfvBTL4KLORTWksEEW5YoqgMgDI94LedzuDT26YjeAZCoi0t68vSVdPUTTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=U7eno6iJ; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1773212705; c=relaxed/simple;
+	bh=BonflUDoxa9Vif6kaTe/UCbVEYjZil2vrjq6waM85IA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sGatwiMtEs+s0irD3Et4qPtE5cUYObmt8Fqtymoxy3ziq5KfooO5a6heG0SV4qDC93kcmKo/7jve2R004rBLsZMoVuD4gGHLF8pKQ4YSEvhg7YFxw0hMEijdz+hArxU0efy7BUxzCqnUCFsZxVuCmO6pK3+LBTkYgoxKYI2ZB5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=s0MZyizq; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=Hc8oVC0rraqJ+8Vr8bqmJfI6i82OBNZtjhcVJAFoc/s=; b=U7eno6iJONJITPXT1in741nyMw
-	Fiv9M6CVRvVdPRJZ1dpGzKZ4zdRP6Zb8Oo81v23bKwHx9LEmAnWRHQ/HABrjjKh4isc4Ry+PWTKDe
-	ReyVrnw5h1uKGlaun6hQuoczvsL2rxXwQYW474p7/KdXBoXlDZ8j4SUmBJSSl1lSkKQ4NiPl7SKbk
-	zTA7N9wbM4m/vCuv7KFhRuagCarxtdrlgbYEFmPqC1tS653hV4OsNY0kp5L2xkZ3NN+ceb0v7k3kU
-	NdxdUcyNZD/EZbId8gz30iKzAceTnG8/WtSDJxQInMbqtyX5BUUQkjN8uO8sG/EUGlpSHtZXsQv3o
-	0QXDgsfQ==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
+	:Reply-To:Content-Type:Content-ID:Content-Description;
+	bh=7WrAq85hb5EzAI0QdwS9kx5aUTvTK9+Z0/VmDcCQjL8=; b=s0MZyizq9xr8dSahIjPy3JQ3t4
+	uZrLmV1klhNA8C9uxNhWEXjJOJeMZnlKw3znv9GV6B0XIoaFnb4W8MpAlx+ZoFrNLfENzyw4IUbYD
+	Wq4mASelRboH3kdslwRtyhYn2p0i+1vJ7q/Ut0Xvjt4J0WgD12518VxGvcKZh+0w7PSx+WBJEjias
+	BACqiJd2lFSoefmJICAgzdDwne2nZKhDDJ722UuahWBb2EYpYNdCdljWbpvQqFVO6hnr++92lVCfc
+	Mt3wHcE17EjBuPpNbn5mCtAly02z6CRU1aLBmMxy+EnnepAktVccxpP45xGpT94yzOpEny/G7OKJy
+	KzuVxk/w==;
 Received: from [212.243.42.10] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0DcK-0000000Ay6i-41SA;
-	Wed, 11 Mar 2026 07:04:29 +0000
+	id 1w0DcV-0000000Ay7p-13ZO;
+	Wed, 11 Mar 2026 07:04:39 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -104,10 +105,12 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: cleanup the RAID5 XOR library v2
-Date: Wed, 11 Mar 2026 08:03:32 +0100
-Message-ID: <20260311070416.972667-1-hch@lst.de>
+Subject: [PATCH 01/27] xor: assert that xor_blocks is not from preemptible user context
+Date: Wed, 11 Mar 2026 08:03:33 +0100
+Message-ID: <20260311070416.972667-2-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260311070416.972667-1-hch@lst.de>
+References: <20260311070416.972667-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -116,26 +119,26 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Rspamd-Queue-Id: 12C6F25D391
+X-Rspamd-Queue-Id: A7D9425D2E0
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.06 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_CC(0.00)[linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,mit.edu,zx2c4.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	TAGGED_FROM(0.00)[bounces-21827-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21826-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[infradead.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-crypto@vger.kernel.org];
@@ -145,135 +148,34 @@ X-Spamd-Result: default: False [-0.06 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,lst.de:mid,infradead.org:dkim,infradead.org:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,lst.de:mid,lst.de:email,infradead.org:dkim]
 X-Rspamd-Action: no action
 
-Hi all,
+Most of the optimized xor_blocks versions require FPU/vector registers,
+which generally are not supported in interrupt context.
 
-the XOR library used for the RAID5 parity is a bit of a mess right now.
-The main file sits in crypto/ despite not being cryptography and not
-using the crypto API, with the generic implementations sitting in
-include/asm-generic and the arch implementations sitting in an asm/
-header in theory.  The latter doesn't work for many cases, so
-architectures often build the code directly into the core kernel, or
-create another module for the architecture code.
+Both callers already are in user context, so enforce this at the highest
+level.
 
-Changes this to a single module in lib/ that also contains the
-architecture optimizations, similar to the library work Eric Biggers
-has done for the CRC and crypto libraries later.  After that it changes
-to better calling conventions that allow for smarter architecture
-implementations (although none is contained here yet), and uses
-static_call to avoid indirection function call overhead.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ crypto/xor.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-A git tree is also available here:
+diff --git a/crypto/xor.c b/crypto/xor.c
+index f39621a57bb3..676d7401af43 100644
+--- a/crypto/xor.c
++++ b/crypto/xor.c
+@@ -28,6 +28,8 @@ xor_blocks(unsigned int src_count, unsigned int bytes, void *dest, void **srcs)
+ {
+ 	unsigned long *p1, *p2, *p3, *p4;
+ 
++	lockdep_assert_preemption_enabled();
++
+ 	p1 = (unsigned long *) srcs[0];
+ 	if (src_count == 1) {
+ 		active_template->do_2(bytes, dest, p1);
+-- 
+2.47.3
 
-    git://git.infradead.org/users/hch/misc.git xor-improvements
-
-Gitweb:
-
-    https://git.infradead.org/?p=users/hch/misc.git;a=shortlog;h=refs/heads/xor-improvements
-
-Changes since v1:
- - use lockdep_assert_preemption_enabled()
- - improve the commit message for the initial um xor.h cleanup
- - further clean up the um arch specific header
- - add SPDX identifier to the new build system files
- - use bool for xor_forced
- - fix an incorrect printk level conversion from warn to info
- - include xor_impl.h in xor-neon.c
- - remove unused exports for riscv
- - simply move the sparc code instead of splititng it
- - simplify the makefile for the x86-specific implementations
- - remove stray references to xor_blocks in crypto/async_tx
- - rework __DO_XOR_BLOCKS to avoid (theoretical) out of bounds references
- - improve the kerneldoc API documentration for xor_gen()
- - spell the name of the srcs argument to xor_gen correctly in xor.h
- - add a kunit test, and a new random helper for it.
-
-Diffstat:
- arch/arm64/include/asm/xor.h              |   73 --
- arch/loongarch/include/asm/xor.h          |   68 --
- arch/loongarch/include/asm/xor_simd.h     |   34 -
- arch/loongarch/lib/xor_simd_glue.c        |   72 --
- arch/powerpc/include/asm/xor.h            |   47 -
- arch/powerpc/include/asm/xor_altivec.h    |   22 
- arch/powerpc/lib/xor_vmx.h                |   22 
- arch/powerpc/lib/xor_vmx_glue.c           |   63 --
- arch/riscv/include/asm/xor.h              |   68 --
- arch/s390/include/asm/xor.h               |   21 
- arch/sparc/include/asm/xor.h              |    9 
- arch/um/include/asm/xor.h                 |   24 
- arch/x86/include/asm/xor_64.h             |   28 -
- b/arch/alpha/Kconfig                      |    1 
- b/arch/arm/Kconfig                        |    1 
- b/arch/arm/lib/Makefile                   |    5 
- b/arch/arm64/Kconfig                      |    1 
- b/arch/arm64/lib/Makefile                 |    6 
- b/arch/loongarch/Kconfig                  |    1 
- b/arch/loongarch/lib/Makefile             |    2 
- b/arch/powerpc/Kconfig                    |    1 
- b/arch/powerpc/lib/Makefile               |    5 
- b/arch/riscv/Kconfig                      |    1 
- b/arch/riscv/lib/Makefile                 |    1 
- b/arch/s390/Kconfig                       |    1 
- b/arch/s390/lib/Makefile                  |    2 
- b/arch/sparc/Kconfig                      |    1 
- b/arch/sparc/include/asm/asm-prototypes.h |    1 
- b/arch/sparc/lib/Makefile                 |    2 
- b/arch/um/Kconfig                         |    1 
- b/arch/x86/Kconfig                        |    1 
- b/crypto/Kconfig                          |    2 
- b/crypto/Makefile                         |    1 
- b/crypto/async_tx/async_xor.c             |   34 -
- b/drivers/char/random.c                   |   26 -
- b/fs/btrfs/raid56.c                       |   27 -
- b/include/asm-generic/Kbuild              |    1 
- b/include/linux/raid/xor.h                |   27 -
- b/include/linux/random.h                  |    1 
- b/lib/Kconfig                             |    1 
- b/lib/Makefile                            |    2 
- b/lib/raid/Kconfig                        |   19 
- b/lib/raid/Makefile                       |    3 
- b/lib/raid/xor/Makefile                   |   43 +
- b/lib/raid/xor/alpha/xor.c                |   46 -
- b/lib/raid/xor/alpha/xor_arch.h           |   22 
- b/lib/raid/xor/arm/xor-neon-glue.c        |   19 
- b/lib/raid/xor/arm/xor-neon.c             |   22 
- b/lib/raid/xor/arm/xor.c                  |  105 ----
- b/lib/raid/xor/arm/xor_arch.h             |   22 
- b/lib/raid/xor/arm64/xor-neon-glue.c      |   26 +
- b/lib/raid/xor/arm64/xor-neon.c           |   94 +--
- b/lib/raid/xor/arm64/xor-neon.h           |    6 
- b/lib/raid/xor/arm64/xor_arch.h           |   21 
- b/lib/raid/xor/loongarch/xor_arch.h       |   33 +
- b/lib/raid/xor/loongarch/xor_simd_glue.c  |   37 +
- b/lib/raid/xor/powerpc/xor_arch.h         |   22 
- b/lib/raid/xor/powerpc/xor_vmx.c          |   40 -
- b/lib/raid/xor/powerpc/xor_vmx.h          |   10 
- b/lib/raid/xor/powerpc/xor_vmx_glue.c     |   28 +
- b/lib/raid/xor/riscv/xor-glue.c           |   25 +
- b/lib/raid/xor/riscv/xor.S                |    4 
- b/lib/raid/xor/riscv/xor_arch.h           |   17 
- b/lib/raid/xor/s390/xor.c                 |   15 
- b/lib/raid/xor/s390/xor_arch.h            |   13 
- b/lib/raid/xor/sparc/xor-sparc32.c        |   32 -
- b/lib/raid/xor/sparc/xor-sparc64-glue.c   |   48 -
- b/lib/raid/xor/sparc/xor-sparc64.S        |   10 
- b/lib/raid/xor/sparc/xor_arch.h           |   35 +
- b/lib/raid/xor/tests/Makefile             |    3 
- b/lib/raid/xor/tests/xor_kunit.c          |  180 +++++++
- b/lib/raid/xor/um/xor_arch.h              |    2 
- b/lib/raid/xor/x86/xor-avx.c              |   52 --
- b/lib/raid/xor/x86/xor-mmx.c              |  120 +---
- b/lib/raid/xor/x86/xor-sse.c              |  105 +---
- b/lib/raid/xor/x86/xor_arch.h             |   36 +
- b/lib/raid/xor/xor-32regs-prefetch.c      |  267 ++++++++++
- b/lib/raid/xor/xor-32regs.c               |  217 ++++++++
- b/lib/raid/xor/xor-8regs-prefetch.c       |  146 +++++
- b/lib/raid/xor/xor-8regs.c                |  103 ++++
- b/lib/raid/xor/xor-core.c                 |  191 +++++++
- b/lib/raid/xor/xor_impl.h                 |   60 ++
- crypto/xor.c                              |  174 -------
- include/asm-generic/xor.h                 |  738 ------------------------------
- 84 files changed, 1840 insertions(+), 2078 deletions(-)
 
