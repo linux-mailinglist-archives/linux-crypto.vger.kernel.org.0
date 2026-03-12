@@ -1,82 +1,82 @@
-Return-Path: <linux-crypto+bounces-21905-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21906-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wDBLFLoas2mDSAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21905-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 20:57:46 +0100
+	id yCf+EZobs2mDSAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21906-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 21:01:30 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5BCB27860D
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 20:57:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A75DA278687
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 21:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DBD23302BF7B
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 19:57:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BECE7317A902
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 20:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE606396576;
-	Thu, 12 Mar 2026 19:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D5C401A1B;
+	Thu, 12 Mar 2026 20:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0Vdwkhvl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3Cggo0bH"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A58A38CFEC
-	for <linux-crypto@vger.kernel.org>; Thu, 12 Mar 2026 19:57:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084953FFACD
+	for <linux-crypto@vger.kernel.org>; Thu, 12 Mar 2026 20:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773345460; cv=none; b=Q1gY/VbU90ce5ISeCicvmdRWRzdoHNB7/jqj9qvKFUTQgTVk8j0fzuq8MP/fPvkp6+Y0LiumSEybEEG8mVP1xN4fsZrTf4BxpwgGZxlRZabkSGVjxpaUQ+PAyl1YdqCtrHGW/Rt9hCcYgDU/gcXA4vR4fGCCjy0qxNbsxyFmdiM=
+	t=1773345626; cv=none; b=tHR/smv2bEjO5XDMwKKyQkWiUfeOaCaMUOPnwa0GLHN0uxfbIEA+BUJLxhpIs0RiqgdvbHSfhPW6ki8OUcwQ6KfQ+A6Uiax3vXrrx6OTbLLJ6dR310vAwiOwdGhp2OjMxhLIQe080/whT3O1sgCvxHcYvhT5igtv/BX8yKY9uT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773345460; c=relaxed/simple;
-	bh=Zjn60P3a0MCfpYmnVXPwkjc1nebYDYCx2P+hOpnFyjI=;
+	s=arc-20240116; t=1773345626; c=relaxed/simple;
+	bh=yx36+WojFqYM9ZBQ6m6lheFZOEsenIDxuibwk4DnuyA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=qD5AzoeMVt+EgJseuzQ4JaFmDDe2ZUTvX0oU83aQ7Uluu901tGVP9X9zf88x2HBUhVsLHnna5/ANQvhH6cHNtEy48OT01gAz3BMnuZHc16VbQNVOSpsmS9Iv8srZmYpqAHbF5XXQOQ0FvQqyck2qy06YKlTFeXAdd8KSVT9Ao00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0Vdwkhvl; arc=none smtp.client-ip=209.85.215.201
+	 To:Cc:Content-Type; b=gxKQ0SiR/80Tzd2u2mjJ0gEXDGwww59K1yaUTBV7cw34vuuaKfTjTEoQlPFBQVcA4kVcLr7lo8IPpJ+9kYyaA2rjy0IoQIszFmcePXerOKBCCB55dgNpYTZXi/kl2UOg1SFDKlnXPKONRwNmd4F2ESexheoLUUVCwM+cRxxauBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3Cggo0bH; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-c7385a1476aso792310a12.2
-        for <linux-crypto@vger.kernel.org>; Thu, 12 Mar 2026 12:57:38 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2aea7747aeeso15697905ad.2
+        for <linux-crypto@vger.kernel.org>; Thu, 12 Mar 2026 13:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1773345458; x=1773950258; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1773345624; x=1773950424; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8vBcIi+K8mVx0/9gUKAput/MKyloCRnekYK1lqbAehg=;
-        b=0Vdwkhvl7hDD8k8xnDdErblUj7xH5+sn+oS5Fpt5XHHa2/u3XzSykXSf360d0AtF42
-         ydih+VYcuimkUGIuvpM2rrbTyRTbfZ+q4D7lLYVKV0f3IJ9WgeA+JGjBCBE+CFu4vHEq
-         siht/0ZFtMKFmARiC0mIH622HNIWWquIVQi1/OozhXFOMDODsdK17LKW9WYnNPzIpc1W
-         hFWLtBJWRmOkohezLwCvTsb9jEmY0wkgHTAH1QJLJ/IoIkvqEvQ7PaKflzOjY9hzm7vZ
-         ObNlS8sJOuskzxgOl0mKroW9apBPVUqC0Cxo+XPua76U4F3YYogXsATcZH4T/79FWR6G
-         Q0vw==
+        bh=yx36+WojFqYM9ZBQ6m6lheFZOEsenIDxuibwk4DnuyA=;
+        b=3Cggo0bHyZGbZjcflfFZbcJQScXCMF8lxzcYVRvkcY09oYjIq6bnE8S35e8iIo7uHX
+         rd3olUzfqNDvb595uXwxXI9VUSFoZWQH9Ohm+A43uke3aGKHGvk3D0wti16NMDx5ZUEf
+         bgZXKbmk7ABWosvpeS9bGvYHd+VflOnz+mYIwBGtixMlh5COUkFD6TCx4xNaNNJRTphq
+         OW/XI5F++HXNNJn0m0xBeCyx+Q4/CcZa0ySHy9MlL28nttq743+KzDZPEPUR5C4X0+eZ
+         icqzBGcdNBH53WG7SCXEYLUSKrZWWfhvhA8weD1iQK9ugLlMukLMATqA3jCWFRt7d3Qj
+         0D+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773345458; x=1773950258;
+        d=1e100.net; s=20230601; t=1773345624; x=1773950424;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8vBcIi+K8mVx0/9gUKAput/MKyloCRnekYK1lqbAehg=;
-        b=TeitygHEYUrZ8Hgc1vbneN4QU5ebrY9VGEAvVKAtDkMgONGNQHjVPyhYVOLbwFXT8h
-         G84aF8yn4/IKs7/vJ3HQQVXOuekqrUMhm1ONzs2oSjl8haVMUnwXTPCeTeAMgHL7lpfK
-         k7hytOY4SN4CWB7tzGQG01+C6hsYBg59GwpffC9npQkKoKkBed6Yf5I4KJyC+U2LabqF
-         3kPlhruz4iT5s3gD/PcRBg8lkiLb99zNGR0gSyfpd5Y7QoDl7xmJikYsQYuupk7HP0WF
-         eKBlwu7c4FsLIeAQ9x2cSJWg8LZrPPggRl6mkWb0elnoQpPiiPC1Jjur+bcz6+zzaYLh
-         iShQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUwzvs0HuNsohK/AX/gJQepJ+8zQjgpEC9JN7P0gaeCv3lxHfYggdu2whiK4ZOE8BMVu3p/S7ftBMmnNd8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDS4RtEgVoJvwteDOk8BvwHYk5Ra8C+QaxoYSyu0UZQCtpbFPr
-	yDBjczRPPeAVyRgqPw5hrjwNjC9QM8TgtZyKO0SfjJ70N+V8cgZpqy/OY5vtK07+CgvBnM+ZTh/
-	bFt7smw==
-X-Received: from pfch18.prod.google.com ([2002:a05:6a00:1712:b0:829:9a65:4170])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:2e99:b0:827:2ee0:411f
- with SMTP id d2e1a72fcca58-82a196f6386mr650133b3a.4.1773345457771; Thu, 12
- Mar 2026 12:57:37 -0700 (PDT)
-Date: Thu, 12 Mar 2026 12:57:36 -0700
-In-Reply-To: <20260303191509.1565629-5-tycho@kernel.org>
+        bh=yx36+WojFqYM9ZBQ6m6lheFZOEsenIDxuibwk4DnuyA=;
+        b=VCR7Ol4X7zN4hfLHsxhjuLvA+TsXYP3Qj9BI8bbDYnnmKtkFp5ZOMaSIDXSLzQA/GF
+         zhHQz/FjiAu1dnHvQTrkhk3mv463dWstOU+Oxpvm8vfDvNzxfoREuvwnLxrh3Mvykpr5
+         pf1hWmhH+r1YmkIfn0NJegCxrBbBEEeDfTnHqLHkZjaEeaZdQ9GgjNIpik3S2srgVW9g
+         sIwjT0X6XKEXkvgxCb0OMdJsIiUFVU0GciGKJqrea6uIt2Z7IpLiUCKMKChRPFM+eT0v
+         DQ2izR3rIu3F6qDuFKQu1lb/RcLUs58m1S08g4dnI7e3WbbaKEI7oc/E1Y/1kKC+BKEm
+         JObA==
+X-Forwarded-Encrypted: i=1; AJvYcCUu55/UaANHSnUE0nY640k2Pn+PKPrhwzZFETB75TCBZZsLOFgIsZ0QpPJaMh9HD9WifUNosDH+fxaQnXA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMg5e3qsuIjPy41ZM+fqhurX4QhRQkjsG6F68yX/TfYWtjfBFb
+	rLdpwGwbOtkw/ItkB+VTyZ5i9H5Wi5hpEXW/RDKZVeDPHqka4YPoGLA1nM4eSl4whGCh0hQu/ns
+	CNTmcpQ==
+X-Received: from plbi18.prod.google.com ([2002:a17:903:20d2:b0:2ae:47b3:aceb])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:94d:b0:2ae:3afc:eb38
+ with SMTP id d9443c01a7336-2aecaacf9efmr6172755ad.41.1773345623956; Thu, 12
+ Mar 2026 13:00:23 -0700 (PDT)
+Date: Thu, 12 Mar 2026 13:00:22 -0700
+In-Reply-To: <20260303191509.1565629-6-tycho@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20260303191509.1565629-1-tycho@kernel.org> <20260303191509.1565629-5-tycho@kernel.org>
-Message-ID: <abMasOy0A0OAwnJd@google.com>
-Subject: Re: [PATCH 4/5] kvm/sev: mask off firmware unsupported vm types
+References: <20260303191509.1565629-1-tycho@kernel.org> <20260303191509.1565629-6-tycho@kernel.org>
+Message-ID: <abMbVi8zTgt0XaE9@google.com>
+Subject: Re: [PATCH 5/5] selftests/kvm: teach sev_*_test about revoking VM types
 From: Sean Christopherson <seanjc@google.com>
 To: Tycho Andersen <tycho@kernel.org>
 Cc: Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -93,19 +93,20 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
 	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21905-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21906-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[21];
 	DKIM_TRACE(0.00)[google.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[seanjc@google.com,linux-crypto@vger.kernel.org];
@@ -113,50 +114,13 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: E5BCB27860D
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A75DA278687
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-KVM: SEV:
+KVM: selftests:
 
-On Tue, Mar 03, 2026, Tycho Andersen wrote:
-> From: "Tycho Andersen (AMD)" <tycho@kernel.org>
-> 
-> In some configurations not all VM types are supported by the firmware.
-> Reflect this information in the supported_vm_types that KVM exports.
-> 
-> Link: https://lore.kernel.org/all/aZyLIWtffvEnmtYh@google.com/
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Tycho Andersen (AMD) <tycho@kernel.org>
-> ---
->  arch/x86/kvm/svm/sev.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index f941d48626d3..eeae39af63a9 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2976,6 +2976,8 @@ void __init sev_set_cpu_caps(void)
->  		supported_vm_types |= BIT(KVM_X86_SNP_VM);
->  	}
->  
-> +	supported_vm_types &= sev_firmware_supported_vm_types();
-> +
->  	kvm_caps.supported_vm_types |= supported_vm_types;
-
-To save one whole line (two, counting whitespace!), and to guard against future
-changes, I vote for:
-
-	kvm_caps.supported_vm_types |= supported_vm_types &
-				       sev_firmware_supported_vm_types();
-
-or if parentheses would make it clearer:
-
-	kvm_caps.supported_vm_types |= (supported_vm_types &
-				        sev_firmware_supported_vm_types());
-
-I spent a silly amount of time fiddling with the code to try and avoid the local
-variable, and failed.
+(though selftests/kvm is totally fine, but since you need to respin anyways...)
 
