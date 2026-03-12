@@ -1,235 +1,292 @@
-Return-Path: <linux-crypto+bounces-21892-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21894-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eNAHN1zosmljQwAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21892-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 17:22:52 +0100
+	id WEzbKlrnsmljQwAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21894-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 17:18:34 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2F8227583D
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 17:22:51 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A2EF2756CB
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 17:18:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id DE71A3040B31
-	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 16:11:50 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A05FF300DEDD
+	for <lists+linux-crypto@lfdr.de>; Thu, 12 Mar 2026 16:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED3D3F166B;
-	Thu, 12 Mar 2026 16:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E33639C01C;
+	Thu, 12 Mar 2026 16:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="l2gYrfQM"
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="H6xwub8s"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012040.outbound.protection.outlook.com [40.93.195.40])
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572881F4180;
-	Thu, 12 Mar 2026 16:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773331908; cv=fail; b=hHAmzz4N6aQHwXUmFzMFG/qj353isYLO/ClQDJBERRLVsrYo8+J5O/DTEYEbUxE+31/y9a/FWDCMQLG5csSIRgbxBugECOTAap84MwOBMqmvA8ImMf/qB2M5t12Of7OMb91t2x6W0gM0QUvyhK+MBDUGLG/TsYZjMeDFjeNJ8Wk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773331908; c=relaxed/simple;
-	bh=DsiOYo5SWuJKS85jiVhlBgs2JyNjLQyUdIuG7U1mTpw=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=rdSZM0ieQfYbQmzHFX0RZQfb+0TYGefNLGyEiESYDa49KKNB6Jyqi52CsuaJ4orvsCv/4E6Eh1BYqzyRz3IXmE1No/q5flj0FKqZYVuS5XKPDo1BW5IKu2t1NqH6u7Bxav7JUmsf31iOVejkafFhr25/eKeoHC+B6cObw307HBE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=l2gYrfQM; arc=fail smtp.client-ip=40.93.195.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Uj+sq9jmmUxMUmphadSwBQ8dcQx0788oe88iNrlBTFU8CmR8FTOEAcS9m0fnQDTUnPstuAnV55c4clAZzA62yeRDZswSf3fVtNurSoO9270OXyml73YjACzwp9KiYvq+M6S+KA93OS9vV5dLItcppyELfIjghEoGJjRixk7GqcLvaSiCAPZDv/H65MhR5q+Cb4LdmrpmOnCsRPYuxizHE6QuLPnZUaRpsBxbbJWKLg9E6kkNoJHkpXq4z+hwvgESLrUiPLigQef4RIMOP5UnXrItihW1wHSTG8Q763KqdTry1QjsA+XHNhY361TOg5G1zruadWyO5FCfPUhNGJwP0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n+WHgxfpdyiGZ1TiDFxSSmW2rkJXGxiAoJpRjRXPnh0=;
- b=O/JVRWhMb7KkmH9rN+vOiqFzdZPvt2LYRWTk5wMVYM/22j9Oa9kUin0ZYVtlOKYvKsnHMDjGynNv1FaU7ow2espgxdgPpc+FZEF0CB8T37oYiz2ZhZQomgOapu+rkxVlNoMzYpltwhqZrlXlGWqhlR++aHj8eKW6TVYisw1G+Gq/MRA2nGz64Z7yTXTEXyO9lUG3CyGZw5qrflOcvVJOo4ovQqr0atydv24YndX4N69RB0d27gNf32PYjs+4NY62bYxx1uIXHSzEdcd5Qscad3bpbZY9L0lypydsQx/SzljkN5lSWsHibCgAQH8uqtG7TOAcaV1OuwJOXkwV1raW2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n+WHgxfpdyiGZ1TiDFxSSmW2rkJXGxiAoJpRjRXPnh0=;
- b=l2gYrfQM6Z2/gXIIxD32qM4Usxv0UNpYnpfRzfc+GXSfEbKvy8G9YIsbpQq+risq9LTxo7Ao0Gc93eWg3MUT8fLLfuqS/eZ9NXb1WPu9/wigS0CAxjs0h82MXFy0NuUECbMfpkNy9uJPlwNO+ca3ATpMphYCqX7pL0+BgX7zmHYPYQI/1S6tOHMvbfHmiNDTsMrQyNmCVkqGGxzQDE6hcFRqhScYrgKn9KcbILD+JlFY2fClhQvlCedCYH9mmghcOnQWDFVwxfsF3js6NeZk++E6y4QIBx+uwkqXuOULxLgUgjPjclu4gL3TXN7Us429dsVnkOqIeJIqAly+7IWqJg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from PH0PR12MB8800.namprd12.prod.outlook.com (2603:10b6:510:26f::12)
- by PH7PR12MB6466.namprd12.prod.outlook.com (2603:10b6:510:1f6::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9700.11; Thu, 12 Mar
- 2026 16:11:35 +0000
-Received: from PH0PR12MB8800.namprd12.prod.outlook.com
- ([fe80::f79d:ddc5:2ad7:762d]) by PH0PR12MB8800.namprd12.prod.outlook.com
- ([fe80::f79d:ddc5:2ad7:762d%4]) with mapi id 15.20.9723.000; Thu, 12 Mar 2026
- 16:11:35 +0000
-From: Yury Norov <ynorov@nvidia.com>
-To: Yury Norov <yury.norov@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Eric Biggers <ebiggers@kernel.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Ard Biesheuvel <ardb@kernel.org>
-Cc: Yury Norov <ynorov@nvidia.com>,
-	linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: [PATCH v2] lib: crypto: fix comments for count_leading_zeros()
-Date: Thu, 12 Mar 2026 12:11:32 -0400
-Message-ID: <20260312161133.249374-1-ynorov@nvidia.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BN0PR07CA0014.namprd07.prod.outlook.com
- (2603:10b6:408:141::7) To PH0PR12MB8800.namprd12.prod.outlook.com
- (2603:10b6:510:26f::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561132E3FE;
+	Thu, 12 Mar 2026 16:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773332312; cv=none; b=JJ+jZurxZ6KiJGpwousht1sygQccqfRPk15/EPxAzcJS4hIWezGrTG45ohOdNiSpTAA0NaM4pphtJ7Rr/n6ype1AzG145ooQH1uiYpnxMMhU8KhsXb1a/WwpaOO1jp5kn8OcWiNyTnFrRIT26e+xn0KjHrYy+iJHmovqEl2wkHU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773332312; c=relaxed/simple;
+	bh=jHQXCTGTEh81pGQI5ovCtV4BR7vo7kiocBIpGSB/6V8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Ko61riavGhDrGDEI/5oPwqPfsR5hUzGxeKFi4LZ7/Y2Ms/GVxs+jDE1B//AgEpF8XHM/WTM8erI5GFftffwzVF5dtzQqRtP8MhIF168ICYblerlHxG0xpHdQKKLPpmHOXTbQASV+qtOngnuw7uOdfVLA/o1FcA/ReVqAlDVv5+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=H6xwub8s; arc=none smtp.client-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-Id:Date:Subject:From:Reply-To:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=OTO8aN3iiCYIWs8KCCxCePBEVrjIPE/e0Hifk4yYCbs=; b=H6xwub8suN//TdZAwGQz+qXYCm
+	lUsI9hnfLFEhhMbdLfUp292iZllkN7vVi0wcyCSuwRqB9tO8U7BBY45IZqHiHZLY+QmLP5BPg6MmC
+	wy8QWod9Dgi9HF4rvfOxOwPDlqh82mu1nDsm26YzbRD5TS3yoc9lD9oQcxcbE3jdh/mpfxBiZIzDA
+	f9tn5aZWgerIrHZAR9TYDwxI65bB+NpIDMyiz5pn6J3U3sEWae/D743Uj7oh3xEAToRATn++Kgj0n
+	WclR3H8KpIvbj4D2VrdB7g9dv8uHUmXGUajEPaRuReVmxk6P8M4sJ4KUTnc8xbLxZXE8wIwa+z/ip
+	5XXfHUjQ==;
+Received: from authenticated user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.94.2)
+	(envelope-from <leitao@debian.org>)
+	id 1w0ijw-004fNl-Cu; Thu, 12 Mar 2026 16:18:24 +0000
+From: Breno Leitao <leitao@debian.org>
+Subject: [PATCH RFC 0/5] workqueue: add WQ_AFFN_CACHE_SHARD affinity scope
+Date: Thu, 12 Mar 2026 09:12:01 -0700
+Message-Id: <20260312-workqueue_sharded-v1-0-2c43a7b861d0@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR12MB8800:EE_|PH7PR12MB6466:EE_
-X-MS-Office365-Filtering-Correlation-Id: a64bee54-0244-495e-1d57-08de805208ab
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|10070799003|1800799024|18002099003|56012099003;
-X-Microsoft-Antispam-Message-Info:
-	al2XZugcU0XAwGSa4ZSJ3nTdggz7+8B5dOeAS+Cwdzq2Aec0JnnKXekskPJchSKsUXVYJr63+aMy2JRea/iMBROgHNK4LoxVw84uRybyJAxesIlAa28LpeMShOZ59dc8x32bQstOqOpzXeQRgoJ0kkP8/EFxlozCHDktS8/ccmNPc9gnltFYWi9JXAo9ubCnvLImPUIDJupo2saWM4mFjwTNNponlpfWkwCzSxUH9vuwPP4Xv7UIAvULEQZnwb2pKoAfbud9gscNDQQHEvEpAhoR99sRpmvKp1XzjB4ckqhQPJf4wFaX7ZFJnvg1F7R5FniiVHFT946Xq6958iSLk2+4uljAtyuKw4y7rVGXs2t37g89pmrU+YouR4Hw7kIm4+V3XkmXuS2OliSr+jLnbql8At6SSCxAGvj+70Xkg8bsQQSTjXTJE8leU3bg1UQNvb31UZHQMZ6XgGYPPxJNde3rgLzIIV+b2VjBfHVEg8VtRo5gT4jNxQCGOrcfu40Mxx0jEjIk1y69vfSGMsNAYPqsK8tx3EhFjS1oFLPA7Ij6WchMM+5wkqfBw2U9mhDxjo+Ywx7fDDZPTsxsAadd4/6R086wktHbrR47oi6scKsBx9I7vPxV6/+yfZq1xTs2P+VEzp3WQpOx6/ciog6GieF4/2BfmweMvE7kYwWmjgPX0AIZ4/NKWq+I5G8etZM0LF/PwEj+IrHnhY6Ys4PTNEQZpdGBgcNwyrqXar6RRtwpQxLpT/2bCjKKbOj1YEuW
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB8800.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(10070799003)(1800799024)(18002099003)(56012099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?LojlCyGW6dQp8P9y3ZqoKjLSKATpjmbpP3w0epUpHmkcdp9Ty3Jmi/2ud2cW?=
- =?us-ascii?Q?adXT/ILN/k1LltxpJ0d68OdTz1JzojgEerFjVeKrf/21j47vhFQiQwcrV9JR?=
- =?us-ascii?Q?r/bL+syWUSBlfwmmPWxP0kAw7lDlDrNOwx43PMLYkeuyv8wIMX5gcvGkJn9R?=
- =?us-ascii?Q?mDn9JxjlJGk48y/HLgOV5hgOgdWh8b99qR+rfZstAPchcb48cCaBSRo5QnKr?=
- =?us-ascii?Q?6R4biKn2cB8kFRm9GBpIPCF4uMusdjmUMQags97WZv9Car5I8fSUxCyG62Fn?=
- =?us-ascii?Q?EOu8VVGfKfOG/wnDK02VuoS0p1bLClxyObUN0TDbWv3+XGOH5uI+3WMN5Yht?=
- =?us-ascii?Q?r5GoZZ27pC5RvM6NEzx+NxYAuHE93AxEGbYOHa7+iIvqVIpJrIdG/3d1g176?=
- =?us-ascii?Q?2QrIxQbv0wX+ynoJaSrK4zr6booIdjCpymrCPd/EN7kHWkUQSejAkKtTAyXl?=
- =?us-ascii?Q?RIXdtDHMmq+7Ej5+OgEIhbfh4TxgWZYj4UNWMcXNIegciKiWm/qvMvlSloXA?=
- =?us-ascii?Q?oDU0HzowGfLakkBvBjZyx6w7CZNY/07dOWGfP45L1bknOvn+HfweHTTFrDT1?=
- =?us-ascii?Q?7zB/eSB6cg7xOP/rnr3IZ6Z+N2AQonpuclKQQ0GrScD92rgRZftL9RLoJPPT?=
- =?us-ascii?Q?HDSN62zw8D20FzE6MCINkBf8Z6ZkGZSwGj2beRC6+PQoxMZ/2QXDyyndu+fj?=
- =?us-ascii?Q?LL0Jo4GjaheafkEpAhkjbFnBxJ5DSRZ1nVTmxFhecjaFFiawJGB/drn2s4Qt?=
- =?us-ascii?Q?4kNpc4CgKYLcj0q6RzlxV9+EYFrEcx+fxS2F2q0d2IHVHAjKL9Bse55e1dlC?=
- =?us-ascii?Q?r7YKz52dHofDcd5z4oYn4Yi8wqUcHhRcbgfI7ZXRZnRKE4sAfa4VfyozaxyU?=
- =?us-ascii?Q?YlLD0kW1uM2v0jWYcswfPKAG9DmXpPlj+tUtJRiJxPr0L4V0cgwxEILjl7ip?=
- =?us-ascii?Q?cPmX5prmXV43UPksk8t5cxgJD82FL9iVfxrfnHlMv/T/RlluZQ3n0gnNWuN/?=
- =?us-ascii?Q?u71Uq6oILy2Yhvs8V8rn3d9T/3bX8xWHiwCqTXRD+e2Q0/QbmUNqK4W6PQjT?=
- =?us-ascii?Q?o4ZglDBJMalwjH0x77oLDZXiwxdNceIrYP25WWGys5zAqS7KBkZGaCGuVvTm?=
- =?us-ascii?Q?EvmDOrqHBHu7Sn/n4QGt2amME4ntCBFicg7TtEU0msPmvKNP8lkukNu3hWlm?=
- =?us-ascii?Q?yvoq8t8aqmpNUyfN8K//XtegzgWbmfjU8Rk6VxGaN58E/frKrqERB0yQogi1?=
- =?us-ascii?Q?aVgNxCfMEpa1g1WsqqbpVz6XwWxBZFzc2b7aMemY6ohCWctqTw41+R192dlm?=
- =?us-ascii?Q?5JOqcBK+s9bfx6gsFmjmjVkJBu7A1/Iime/U45jiV5JpvW4Njg2XU8uDu+fO?=
- =?us-ascii?Q?lMrIm4+mlJJHD9HfOfO7oInpkPMb+1Ffzpjgd4DXVhGMEDDW4HXWcLDr8RpD?=
- =?us-ascii?Q?XyxZkM6uysblSIZzflXtsHn9Rbpwid7bF7xsv6dR9LaejAcYnKJf+JlJmiJt?=
- =?us-ascii?Q?zLi+ou+0/pZT/A0D18xIjxYUeJx1GAcPIbjiOYzoytbE5887NlJV6t+3moFr?=
- =?us-ascii?Q?UZcVD9ZSoYJpnOdZ7soFczRWIg1BI0mUw9k3vNFpF0hCpwXdKDguGW6Q/q1m?=
- =?us-ascii?Q?a0xd1ljFsC0KrBgH9F/Sq0BMSG+r5/E6ekvfcSMIH5+7Mp0r28SyOKkGmess?=
- =?us-ascii?Q?OUyMwqtqM3VPg9WX9qvgkh5B/Y4/CBT7dzUN6I812NBp6sQTPcaHDC3gnrNy?=
- =?us-ascii?Q?SWJLW5BwgVaRU+exK5+RrdHv0YDk4ZejW7y9wnfl4LkVvgdHPM79?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a64bee54-0244-495e-1d57-08de805208ab
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB8800.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2026 16:11:35.6229
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6AftXAx/j5CAuj21y5vGLTSzhOzRZVBh6Xqni06zqwSfeqCIfirn+U9PdP6fAsZzrZgZaxcSgrAJlIDfpJnmcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6466
-X-Spamd-Result: default: False [2.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIANLlsmkC/yXMQQrCMBAF0KsMf91ATLE22Qo9gFsRaZvRjkKrE
+ 6NC6d1F3b7Fm5FYhRMCzVB+SpJpRKBVQeiHdjyzkYhAcNZVtrTevCa93jNnPqah1cjRuNJt/Lr
+ iuvYdCsJN+STv37nHrtni8MeUuwv3j++GZfkASvaug3oAAAA=
+X-Change-ID: 20260309-workqueue_sharded-2327956e889b
+To: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, puranjay@kernel.org, 
+ linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+ linux-fsdevel@vger.kernel.org, Michael van der Westhuizen <rmikey@meta.com>, 
+ kernel-team@meta.com, Chuck Lever <chuck.lever@oracle.com>, 
+ Breno Leitao <leitao@debian.org>
+X-Mailer: b4 0.15-dev-363b9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10065; i=leitao@debian.org;
+ h=from:subject:message-id; bh=jHQXCTGTEh81pGQI5ovCtV4BR7vo7kiocBIpGSB/6V8=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBpsudLBKWu+8dlXvB6aT4PksjwFqZq3Q7NJnERw
+ OmPvHxXEUSJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCabLnSwAKCRA1o5Of/Hh3
+ bWCFD/9EdT9lnOWzTfLJRsJG0tso2iZnhWhTupiGaiwGMgYUtjBQU8GW6WiIyObhlW4cnSaU3n/
+ L3qK4mt+wggvzWyf4UDb5LyNaQaYUEpIaMlPtPzuKbmO1VVZK56coXyzzEZHDYWsSAZ2Zcp3Nbg
+ 7bYlmWuv5Ry2pozm9qh2j+KzgO/ZkQluDsQ02XtiYVa1/JVfTtFjHKHbuBYxwwdoPbZDwBrqyBW
+ S85GCMsdaALaG68HTU7oAAOtOw1eIYq0WzVA2Uspn5L8SFilYnN5996azOJ6WrzrzgerPe2J/Er
+ dfVzAxr1K4vDIe0D8q+RmNPMDC8Pyu60OSSajMDzxavplR8avJF9CTSWh0CF8RyFgojReSZGowL
+ BPyBLMmWc+kRXVJi+IQXRI/+Ku/lhaTVliumz15PPYd4B88pof1V4llvHDfGEaU7tfoF27cQZiB
+ 0DYOqfl3R9o3Y4F5Zo+8nRRIiNroYlJQezd2FxOUuN8Y4AlHrRMnxPniQdGgMwHtvix/+02/BSh
+ ZSDbMELkqd+/d2RV9p6oB8zfCRqwsUg1HNbUvNQqe3FJigCgTTnxKBsgCxvkUmdW6ijE5ULysHY
+ 40bfYzldMFroyALSO0Gng4dJ09K1J8bh0Lh0HlhX5Lkty4m2HpyzXyAJNDmB7B3GSeeLurnHpWb
+ wsX7Lk4eTKUt43w==
+X-Developer-Key: i=leitao@debian.org; a=openpgp;
+ fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
+X-Debian-User: leitao
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_ALLOW(-0.20)[debian.org:s=smtpauto.stravinsky];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[kernel.org,gmail.com,linux-foundation.org];
 	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[debian.org];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,linux.intel.com,rasmusvillemoes.dk,kernel.org,zx2c4.com];
-	TAGGED_FROM(0.00)[bounces-21892-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21894-lists,linux-crypto=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ynorov@nvidia.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[leitao@debian.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[debian.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: F2F8227583D
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 3A2EF2756CB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-count_leading_zeros() is based on fls(), which is defined for x == 0,
-contrary to ffs() family. The comment in crypto/mpi erroneously states
-that the function may return undef in such case.
+TL;DR: Some modern processors have many CPUs per LLC (L3 cache), and
+unbound workqueues using the default affinity (WQ_AFFN_CACHE) collapse
+to a single worker pool, causing heavy spinlock (pool->lock) contention.
+Create a new affinity (WQ_AFFN_CACHE_SHARD) that caps each pool at
+wq_cache_shard_size CPUs (default 8).
 
-Fix the comment together with the outdated function signature, and now
-that COUNT_LEADING_ZEROS_0 is not referenced in the codebase, get rid of
-it too.
+Problem
+=======
 
-Signed-off-by: Yury Norov <ynorov@nvidia.com>
+Some modern systems have many CPUs sharing one LLC. Here are some examples I have
+access to:
+
+ * NVIDIA Grace CPU: 72 real CPUs per LLC
+ * Intel(R) Xeon(R) Gold 6450C: 59 SMT threads per LLC
+ * Intel(R) Xeon(R) Platinum 8321HC: 51 SMT threads per LLC
+
+On these systems, the default unbound workqueue uses the WQ_AFFN_CACHE
+affinity, which results in just a single pool for the whole system (when
+all the CPUs share the same LLC as the systems above).
+
+This causes contention on pool->lock, potentially affecting IO
+performance (btrfs, writeback, etc)
+
+When profiling an IO-intensive usercache at Meta, I found significant
+contention on __queue_work(), making it one of the top 5 contended
+locks.
+
+Additionally, Chuck Lever recently reported this problem:
+
+	"For example, on a 12-core system with a single shared L3 cache running
+	NFS over RDMA with 12 fio jobs, perf shows approximately 39% of CPU
+	cycles spent in native_queued_spin_lock_slowpath, nearly all from
+	__queue_work() contending on the single pool lock.
+
+	On such systems WQ_AFFN_CACHE, WQ_AFFN_SMT, and WQ_AFFN_NUMA
+	scopes all collapse to a single pod."
+
+Link: https://lore.kernel.org/all/20260203143744.16578-1-cel@kernel.org/
+
+Solution
+========
+
+Tejun suggested solving this problem by creating an intermediate
+affinity level (aka cache_shard), which would shard the WQ_AFFN_CACHE
+using a heuristic, avoiding collapsing all those affinity levels to
+a single pod.
+
+Solve this by creating an intermediate sharded cache affinity, and use
+it as the default one.
+
+Micro benchmark
+===============
+
+To test its benefit, I created a microbenchmark (part of this series)
+that enqueues work (queue_work) in a loop and reports the latency.
+
+  Benchmark on NVIDIA Grace (72 CPUs, single LLC, 50k items/thread):
+
+    cpu          3248519 items/sec p50=10944    p90=11488    p95=11648 ns
+    smt          3362119 items/sec p50=10945    p90=11520    p95=11712 ns
+    cache_shard  3629098 items/sec p50=6080     p90=8896     p95=9728 ns (NEW) **
+    cache        708168 items/sec  p50=44000    p90=47104    p95=47904 ns
+    numa         710559 items/sec  p50=44096    p90=47265    p95=48064 ns
+    system       718370 items/sec  p50=43104    p90=46432    p95=47264 ns
+
+Same benchmark on Intel 8321HC.
+
+    cpu          2831751 items/sec p50=3909     p90=9222     p95=11580 ns
+    smt          2810699 items/sec p50=2229     p90=4928     p95=5979 ns
+    cache_shard  1861028 items/sec p50=4874     p90=8423     p95=9415 ns (NEW)
+    cache        591001 items/sec p50=24901     p90=29865    p95=31169 ns
+    numa         590431 items/sec p50=24901     p90=29819    p95=31133 ns
+    system       591912 items/sec p50=25049     p90=29916    p95=31219 ns
+
+(** It is still unclear why cache_shard is "better" than SMT on
+Grace/ARM. The result is constantly reproducible, though. Still
+investigating it)
+
+Block benchmark
+===============
+
+Host: Intel(R) Xeon(R) D-2191A CPU @ 1.60GHz (16 Cores - 32 SMT)
+
+In order to stress the workqueue, I am running fio on a dm-crypt device.
+
+  1) Create a plain dm-crypt device on top of NVMe
+   * cryptsetup creates an encrypted block device (/dev/mapper/crypt_nvme) on top
+     of a raw NVMe drive. All I/O to this device goes through kcryptd — dm-crypt's
+     workqueue that handles AES encryption/decryption of every data block.
+
+   # cryptsetup open --type plain -c aes-xts-plain64 -s 256 /dev/nvme0n1 crypt_nvme -d -
+
+  2) Run fio
+   * fio hammers the encrypted device with 36 threads (one per CPU), each doing
+     128-deep 4K _buffered_ I/O for 10 seconds. This generates massive workqueue
+     pressure — every I/O completion triggers a kcryptd work item to encrypt or
+     decrypt data.
+
+   # fio --filename=/dev/mapper/crypt_nvme \
+         --ioengine=io_uring --direct=0 \
+         --bs=4k --iodepth=128 \
+         --numjobs=$(nproc) --runtime=10 \
+         --time_based --group_reporting
+
+Running this for ~3 hours:
+
+  ┌────────────┬────────────────────────┬────────────────────────┬───────────┬────────┬─────────────────┐
+  │ Workload   │       Avg cache        │    Avg cache_shard     │ Avg delta │ Stddev │  2-sigma range  │
+  ├────────────┼────────────────────────┼────────────────────────┼───────────┼────────┼─────────────────┤
+  │ randread   │ 389 MiB/s (99.6k IOPS) │ 413 MiB/s (106k IOPS)  │ +5.9%     │ 3.3%   │ -0.7% to +12.5% │
+  ├────────────┼────────────────────────┼────────────────────────┼───────────┼────────┼─────────────────┤
+  │ randwrite  │ 622 MiB/s (159k IOPS)  │ 614 MiB/s (157k IOPS)  │ -1.3%     │ 0.9%   │ -3.1% to +0.5%  │
+  ├────────────┼────────────────────────┼────────────────────────┼───────────┼────────┼─────────────────┤
+  │ randrw     │ 240 MiB/s (61.4k IOPS) │ 250 MiB/s (64.1k IOPS) │ +4.3%     │ 3.4%   │ -2.5% to +11.1% │
+  └────────────┴────────────────────────┴────────────────────────┴───────────┴────────┴─────────────────┘
+
+Same results for buffered IO:
+
+  ┌───────────┬────────────────────────┬────────────────────────┬───────────┬────────┬────────────────┐
+  │ Workload  │       Avg cache        │    Avg cache_shard     │ Avg delta │ Stddev │ 2-sigma range  │
+  ├───────────┼────────────────────────┼────────────────────────┼───────────┼────────┼────────────────┤
+  │ randread  │ 559 MiB/s (143k IOPS)  │ 577 MiB/s (148k IOPS)  │ +3.1%     │ 1.3%   │ +0.5% to +5.7% │
+  ├───────────┼────────────────────────┼────────────────────────┼───────────┼────────┼────────────────┤
+  │ randwrite │ 437 MiB/s (112k IOPS)  │ 431 MiB/s (110k IOPS)  │ -1.5%     │ 1.0%   │ -3.5% to +0.5% │
+  ├───────────┼────────────────────────┼────────────────────────┼───────────┼────────┼────────────────┤
+  │ randrw    │ 272 MiB/s (69.7k IOPS) │ 273 MiB/s (69.8k IOPS) │ +0.1%     │ 1.5%   │ -2.9% to +3.1% │
+  └───────────┴────────────────────────┴────────────────────────┴───────────┴────────┴────────────────┘
+
+(randwrite result seems to be noise (!?))
+
+Patchset organization
+=====================
+
+This series adds a new WQ_AFFN_CACHE_SHARD affinity scope that
+subdivides each LLC into groups of at most wq_cache_shard_size CPUs
+(default 8, tunable via boot parameter), providing an intermediate
+option between per-LLC and per-SMT-core granularity.
+
+On top of the feature, this patchset also prepares the code for the new
+cache_shard affinity, and creates a stress test for workqueue.
+
+Then, make this new cache affinity the default one.
+
+On systems with 8 or fewer CPUs per LLC, CACHE_SHARD produces a single
+shard covering the entire LLC, making it functionally identical to the
+previous CACHE default. The sharding only activates when an LLC has more
+than 8 CPUs.
+
 ---
-v1: https://lore.kernel.org/all/20260310211021.95362-1-ynorov@nvidia.com/
-v2: cleanup trailing whitespaces, tweak comments (Andy)
+Breno Leitao (5):
+      workqueue: fix parse_affn_scope() prefix matching bug
+      workqueue: add WQ_AFFN_CACHE_SHARD affinity scope
+      workqueue: set WQ_AFFN_CACHE_SHARD as the default affinity scope
+      workqueue: add test_workqueue benchmark module
+      tools/workqueue: add CACHE_SHARD support to wq_dump.py
 
- include/linux/count_zeros.h | 4 +---
- lib/crypto/mpi/longlong.h   | 8 ++++----
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ include/linux/workqueue.h  |   1 +
+ kernel/workqueue.c         |  72 ++++++++++--
+ lib/Kconfig.debug          |  10 ++
+ lib/Makefile               |   1 +
+ lib/test_workqueue.c       | 275 +++++++++++++++++++++++++++++++++++++++++++++
+ tools/workqueue/wq_dump.py |   3 +-
+ 6 files changed, 352 insertions(+), 10 deletions(-)
+---
+base-commit: b29fb8829bff243512bb8c8908fd39406f9fd4c3
+change-id: 20260309-workqueue_sharded-2327956e889b
 
-diff --git a/include/linux/count_zeros.h b/include/linux/count_zeros.h
-index 5b8ff5ac660d..4e5680327ece 100644
---- a/include/linux/count_zeros.h
-+++ b/include/linux/count_zeros.h
-@@ -18,7 +18,7 @@
-  *
-  * If the MSB of @x is set, the result is 0.
-  * If only the LSB of @x is set, then the result is BITS_PER_LONG-1.
-- * If @x is 0 then the result is COUNT_LEADING_ZEROS_0.
-+ * If @x is 0 then the result is BITS_PER_LONG.
-  */
- static inline int count_leading_zeros(unsigned long x)
- {
-@@ -28,8 +28,6 @@ static inline int count_leading_zeros(unsigned long x)
- 		return BITS_PER_LONG - fls64(x);
- }
- 
--#define COUNT_LEADING_ZEROS_0 BITS_PER_LONG
--
- /**
-  * count_trailing_zeros - Count the number of zeros from the LSB forwards
-  * @x: The value
-diff --git a/lib/crypto/mpi/longlong.h b/lib/crypto/mpi/longlong.h
-index b6fa1d08fb55..a5ef41c8f85d 100644
---- a/lib/crypto/mpi/longlong.h
-+++ b/lib/crypto/mpi/longlong.h
-@@ -66,12 +66,12 @@
-  * denominator).  Like udiv_qrnnd but the numbers are signed.  The quotient
-  * is rounded towards 0.
-  *
-- * 5) count_leading_zeros(count, x) counts the number of zero-bits from the
-+ * 5) count_leading_zeros(x) counts the number of zero-bits from the
-  * msb to the first non-zero bit in the UWtype X.  This is the number of
-- * steps X needs to be shifted left to set the msb.  Undefined for X == 0,
-- * unless the symbol COUNT_LEADING_ZEROS_0 is defined to some value.
-+ * steps X needs to be shifted left to set the msb.
-+ * count_leading_zeros(0) == BITS_PER_LONG
-  *
-- * 6) count_trailing_zeros(count, x) like count_leading_zeros, but counts
-+ * 6) count_trailing_zeros() like count_leading_zeros(), but counts
-  * from the least significant end.
-  *
-  * 7) add_ssaaaa(high_sum, low_sum, high_addend_1, low_addend_1,
--- 
-2.43.0
+Best regards,
+--  
+Breno Leitao <leitao@debian.org>
 
 
