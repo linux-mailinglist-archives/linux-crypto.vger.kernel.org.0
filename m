@@ -1,65 +1,64 @@
-Return-Path: <linux-crypto+bounces-21950-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21952-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ABQxGi3vtGm/uQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21950-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:16:29 +0100
+	id MFr1DF7vtGm/uQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21952-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:17:18 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E609428BC09
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:16:28 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 332D328BC2F
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5ABC23017DE7
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:16:28 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 63ABE301514D
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0969D34F244;
-	Sat, 14 Mar 2026 05:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CA61A9FAB;
+	Sat, 14 Mar 2026 05:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="nMY2+lNV"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="VL7CNb6l"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9415A33C502;
-	Sat, 14 Mar 2026 05:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2052334F24F;
+	Sat, 14 Mar 2026 05:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773465386; cv=none; b=u0aoz3vngK3BeTvkKbhYIGJ7fQcLBdiAPY6I/Gy+GKYKsUpPPIxdBkYTLA3v31CLzG4dhRmG+ctIuD8eiUn1sgs1F8qlAGZ8nGt/uT9ook327iavF4RSNiRrQhvRyiOqPxa/Xd5G4BxTGNCyWKENzEm895P3KwaxLJ7TwfqLAu4=
+	t=1773465432; cv=none; b=ZCB+/rna2n76Yzc/BqnE5q/VOskG3iF6DKkjOwvRNKfFpbEjOtXbhaiHRUbcS/869kPlEdbY6Ktj0vb6+l5RSLA5xGqfx2z0yCRGCHJMovd7r4e3UUjhkEazssT07L/YGhC8pIpIqjLIo0GBQ3zPkm9Z3hLnZOExhYGnlXoek50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773465386; c=relaxed/simple;
-	bh=wrPW9TNHxhpC1tBaxZcp6Al7mlvJAK+WSvhrriXbyUE=;
+	s=arc-20240116; t=1773465432; c=relaxed/simple;
+	bh=VNQ8X49n67mjJKYjJ70gXZn0OBW27zKUg/noshol8ns=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AEFRD/KSpW/pesjY5Lw1ThKnMR47Af8DtYpzw8g6r2YCDsRxhabZQKxfc9qGJ1cJqL/vdPEf+tLRpFbf4CZYuLkcY2iBnQtp8FsQ8+jB8tL/tdn40AqJdvU+auJ8rblDmwtQKruUtesqIVCFPjzZssNRFcCKq6mYHu59Xenp+Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=nMY2+lNV; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=LFfknwbFNv7Kae7Wb+9gvlcmSGFbgkKUgqlXJBV4R5pG9VnY32Ptn0jT4gtUMBnxCvNULCaqtcK3hDbgTBl3YumeJz2Zup7GwM9vlg3QJYp/tPlxZKF1ae2FW3CTsFIUEsxjcoDSsWAMSdbOon1QQ1ki1STntLMCvG5escYMTD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=VL7CNb6l; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=8+8Qfz1GfNnypKtO2TrFMNiJS9vAmz9Qi030oGKVImk=; 
-	b=nMY2+lNVRuLu2+6Wg4aCwzVkQMXSFamqOsQfvtLkAvvf2oJqUV9P0WiSTRc4MbOvAMgSwZvdLFW
-	QIbiduzxCz/hyKHmCFvnYl69AsL71kheZ05T+OIicZHjpfvWzvdVh5R02jmAh8YwZhgTNtHGQv+65
-	3SWkTkJQtKd/r81ZCLKSWGBQuzW/J0xyK22FoKgT4aPf78RwQIA5Rg++YAJq7m5VSWZK1ZobvKhoW
-	cl8lRN2Ank1HPwuCSydq7X4fQTfUdQmVUyIhNRybEeXiJyraYV0apWz9Lux0sF6v5SEGnaKQKcevQ
-	nsuIRMa7XD26MI3IXDlKJz4J3MFcujTEkQlg==;
+	from:content-type:reply-to; bh=EJmMBFmPGqTHkDwG1rY3Bg/JhJ5nB1wazIAAkQAXfx0=; 
+	b=VL7CNb6lp2XD/NcSdTvMXNT2X57OWml7UIRIHUL8ATFY3RP3+6UAbn7Q5DcE09I/KebSnOwt/T/
+	SAKA7Afa8hKcKxvVYGn4ehAAfUt3ZI7YbSKJswq8TfR1CVgA57sLxQvJHnDW4RCT+ovR4qZ7tZo0Y
+	wcKlT12vrHjge7iPoHj1UpqOfve35HdQlxqllfUk5aAuD5begJFDslFC0EdbXpeJrolECDWUbSoL4
+	WeDJ60F3sTEgBA4ZuuerXkYPLrdOozK/NiYT5ume2XkGcH0QLCDOcW8zqlebww9ZVBPrljWNbzpAn
+	wxcWLtENIamp9FIIk4rS8E+HpztP3Libc/hw==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w1HMH-00ELBI-0S;
-	Sat, 14 Mar 2026 13:16:18 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 14:16:17 +0900
-Date: Sat, 14 Mar 2026 14:16:17 +0900
+	id 1w1HMt-00ELBR-0i;
+	Sat, 14 Mar 2026 13:16:56 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 14:16:55 +0900
+Date: Sat, 14 Mar 2026 14:16:55 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org,
-	Kristen Accardi <kristen.c.accardi@intel.com>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Remove bouncing maintaner for IAA driver
-Message-ID: <abTvIYissJyO7cZU@gondor.apana.org.au>
-References: <20260305172133.3115510-1-dave.hansen@linux.intel.com>
- <1cb80a0f-d704-48a1-9d81-02b6c56d7b84@intel.com>
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc: davem@davemloft.net, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com, linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] crypto: testmgr - Add test vectors for
+ authenc(hmac(sha1),rfc3686(ctr(aes)))
+Message-ID: <abTvRwX7p0msmGI8@gondor.apana.org.au>
+References: <20260305201036.63280-1-olek2@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -68,46 +67,55 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1cb80a0f-d704-48a1-9d81-02b6c56d7b84@intel.com>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <20260305201036.63280-1-olek2@wp.pl>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	TAGGED_FROM(0.00)[bounces-21950-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FREEMAIL_CC(0.00)[davemloft.net,gmail.com,foss.st.com,vger.kernel.org,st-md-mailman.stormreply.com,lists.infradead.org];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	TAGGED_FROM(0.00)[bounces-21952-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[wp.pl];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: E609428BC09
+X-Rspamd-Queue-Id: 332D328BC2F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 05, 2026 at 09:32:56AM -0800, Dave Hansen wrote:
-> On 3/5/26 09:21, Dave Hansen wrote:
-> > This maintainer's email is now bouncing. Remove them.
+On Thu, Mar 05, 2026 at 09:08:20PM +0100, Aleksander Jan Bajkowski wrote:
+> Test vectors were generated starting from existing RFC3686(CTR(AES)) test
+> vectors and adding HMAC(SHA1) computed with software implementation.
+> Then, the results were double-checked on Mediatek MT7986 (safexcel).
+> Platform pass self-tests.
 > 
-> ... and I'm a doofus. I'm not sending things via my normal workflow and
-> I missed:
-> 
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> ---
+> v2:
+> - rename aes-generic -> aes-lib
+> ---
+>  crypto/testmgr.c |   6 +-
+>  crypto/testmgr.h | 221 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 226 insertions(+), 1 deletion(-)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
