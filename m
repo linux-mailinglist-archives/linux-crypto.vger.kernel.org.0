@@ -1,68 +1,64 @@
-Return-Path: <linux-crypto+bounces-21935-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21936-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IBi1DbDhtGmYtwAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21935-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:18:56 +0100
+	id ccAzL2nntGmPuAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21936-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:43:21 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DB2828B8C4
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:18:55 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4D8528B988
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8C91D30752D2
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 04:18:33 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 424683011508
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 04:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9547633F377;
-	Sat, 14 Mar 2026 04:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E25329C67;
+	Sat, 14 Mar 2026 04:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="kBQINsA8"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="OIkLqHBP"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6293A33A70A;
-	Sat, 14 Mar 2026 04:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF952269CE6
+	for <linux-crypto@vger.kernel.org>; Sat, 14 Mar 2026 04:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773461910; cv=none; b=Xqo1E7uFb5y3Tt3H3K+5Wt4vG20OqUh8WVAXTLtBY6ZQqUkJ2qntIV8RfG697jAY9SWDrydmjCJNtvD7REh94D3Xs8KJ1sC8crgkA7jLVix2SKJ3pqj6GaL1YqTVpfEfAMcNIpZ0Oj+8XTwxZO6cYk1QjKBOeeVeupTExDNQnvo=
+	t=1773463394; cv=none; b=Ni+qgbQzm9bYzVRU9s//o/dxc/ksNWD2fQmoiGz96mmR+xoKBA8v6cXhqK0LDnmnLK3FkGtANseva/oiFG0FXB298DCYWNYopydfd+RXOJrcxGqKsA4zwOVVNu9S9f8MY2VGpyHNzswHxZfWrTS6AuMtdDGAVJ1e6Dot1PmW5wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773461910; c=relaxed/simple;
-	bh=fJznUYTq3RwWZa+fxGGn5iQIwwsCX6YKJ1NXVw8KmyU=;
+	s=arc-20240116; t=1773463394; c=relaxed/simple;
+	bh=sFho3O30Le7KbNw4w40wZUArV1ruxth795zGX93sZRM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K1ygsNFyiN9kqoAwKQfYMEG76ZgWIU10oxwFV2jGEtJTE81lBjQ9UlHUnvX5ZYBN6PSnsf876bjwZX398wxP0FZzMw6IHfMV3000LelOc3iQqFIuaHYyQe22feRgGSXeI8L1Qv2Tuj2Ijo+1axU6fC3cvPxauVFOwP0d8NPVq6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=kBQINsA8; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=d2myZuYliqglImqMx+v0qRFx+gxI4LKSaUy9dKoHiokWELTMWalJ8afgrk0TpeljaMhwo0jt/5iuiyLWeJLU21VjMD+ENabgfITCI8QuyMKXDg8pUZ8MU/ZnbG99vrbNJzLCdSczSP6oJdV8E+IcAVkwRcQjJBAUQZXI/XDSlT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=OIkLqHBP; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=beBHipiBLGBskqYpaEQxbecGZ7A9t6EKqQ5iaWL8ofU=; 
-	b=kBQINsA8Ayjj9cYKT7OiAyx9CBBWNi7DUBA0dz5L/kHhshEspBsJv7ftdL6MveE6ryVUjY94SoU
-	Id3V4jPhqW+J3zIrW/Oh9McM3k7Vbt/4BDxYxAoDvystUYomd5JR7AvcqJS4FvRbz35ONIJlJb8BP
-	XzoFev9ocAde2PJx7qWCKE5K/yjLC9VLk6Ue2/HUDJt5t+73wh6H4jS79dtjcKvxPtq7wQ2yiouD8
-	R/QBpVUwA3+9WguecFNJcykTwV3qh3fxNYHAdk7OwRPwU+rdlN7IqNl/5bJO1vNSlO/E7Smmi95bH
-	rpye9GO3sOE+3Jr+ctcPg+4/rCTJBYGcQO3w==;
+	from:content-type:reply-to; bh=R8e1irycja7YA3R558/UBXZuuI971LmvO1hUjVVS0H0=; 
+	b=OIkLqHBP1V3n5/C4BH2NrGG1p+30c9edcGVWKc5h7dhHZbzfb6y+6iK6LyAwQm8hshfoSsBcDeX
+	NlmhG1gEYt1qqtxhI8l/OCbjRc9k+QexnYlJIojYnI1ysUQLA2LZMODCTHfvfiAu8I/cDdzxVwdLp
+	aAJLca4jQQ8jz4ZrX+uRLtI5WU1PayC7e5/9ru3pKwAIRmqDi5X6OpJmX7ZYOg2i5yK9Tf5GCNW5Z
+	CB+Xo2R8rT0ytDnALJjvmF9O3AeRf7eustiitT6ybKgNtILspizYMnXy9cp7BhKXdlO+NEjAZEbgy
+	rXkh+nb00niYiAzdGc8r63Tx3Ivcfm6z/umQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w1GRb-00EKe3-0x;
-	Sat, 14 Mar 2026 12:17:44 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 13:17:43 +0900
-Date: Sat, 14 Mar 2026 13:17:43 +0900
+	id 1w1GqC-00EKqz-17;
+	Sat, 14 Mar 2026 12:43:09 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 13:43:08 +0900
+Date: Sat, 14 Mar 2026 13:43:08 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Lothar Rubusch <l.rubusch@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Linus Walleij <linusw@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	stable@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: atmel-sha204a - Fix potential UAF and memory
- leak in remove path
-Message-ID: <abThZ1cBEv8de9eA@gondor.apana.org.au>
-References: <20260221190424.85984-2-thorsten.blum@linux.dev>
+To: Harsh Jain <h.jain@amd.com>
+Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
+	mounika.botcha@amd.com, sarat.chand.savitala@amd.com,
+	michal.simek@amd.com
+Subject: Re: [PATCH 2/6] crypto: zynqmp-sha: Change algo type from shash to
+ ahash
+Message-ID: <abTnXEe-sm5kzXCH@gondor.apana.org.au>
+References: <20260303071953.149252-1-h.jain@amd.com>
+ <20260303071953.149252-3-h.jain@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -71,65 +67,46 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260221190424.85984-2-thorsten.blum@linux.dev>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+In-Reply-To: <20260303071953.149252-3-h.jain@amd.com>
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[gmail.com,davemloft.net,microchip.com,bootlin.com,tuxon.dev,kernel.org,vger.kernel.org,lists.infradead.org];
-	TAGGED_FROM(0.00)[bounces-21935-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21936-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
-X-Rspamd-Queue-Id: 8DB2828B8C4
+	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:email,apana.org.au:url]
+X-Rspamd-Queue-Id: A4D8528B988
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, Feb 21, 2026 at 08:04:25PM +0100, Thorsten Blum wrote:
+On Tue, Mar 03, 2026 at 12:49:49PM +0530, Harsh Jain wrote:
 >
-> diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-> index 0fcf4a39de27..3afad915aae3 100644
-> --- a/drivers/crypto/atmel-sha204a.c
-> +++ b/drivers/crypto/atmel-sha204a.c
-> @@ -190,10 +190,10 @@ static void atmel_sha204a_remove(struct i2c_client *client)
->  {
->  	struct atmel_i2c_client_priv *i2c_priv = i2c_get_clientdata(client);
->  
-> -	if (atomic_read(&i2c_priv->tfm_count)) {
-> -		dev_emerg(&client->dev, "Device is busy, will remove it anyhow\n");
-> -		return;
-> -	}
-> +	if (atomic_read(&i2c_priv->tfm_count))
-> +		dev_warn(&client->dev, "Device is busy, will remove it anyhow\n");
-> +
-> +	atmel_i2c_flush_queue();
+> -static int zynqmp_sha_init_tfm(struct crypto_shash *hash)
+> +static int zynqmp_sha_init_tfm(struct crypto_tfm *tfm)
 
-How about only checking tfm_count after flushing the queue?
+Please don't use the obsolete cra_init functions.  You should
+use the ahash-specific init_tfm hook instead.
 
-Removing a device that's in use isn't really something that should
-trigger a kernel warning, unless it leads to an unrecovereable
-problem.
-
-Cheers,
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
