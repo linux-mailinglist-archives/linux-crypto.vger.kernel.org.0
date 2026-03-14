@@ -1,133 +1,136 @@
-Return-Path: <linux-crypto+bounces-21934-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21931-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IJ1+D4XdtGnWtgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21934-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:01:09 +0100
+	id uPk1NkLdtGnAtgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21931-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:00:02 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D3A728B855
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:01:08 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0258428B81D
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:00:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 84B953072DA8
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 04:00:57 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 66794301BDDB
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 04:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 754BD272E56;
-	Sat, 14 Mar 2026 04:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58913314B6E;
+	Sat, 14 Mar 2026 03:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fmNP1SNc"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="Fcn+p5E+"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D35330B0E;
-	Sat, 14 Mar 2026 04:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCEB23A562;
+	Sat, 14 Mar 2026 03:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773460853; cv=none; b=oJE+dMWIMS3mSOE/Zay1KglzbkhSoIXbTSxTgCohoobq0dWOqR6Mc15uQdNuKtHbUtP0ODVfG18icOUTdcBONuC4jWegiaW8OlHlz5ga+WTuwUeseThIZPK1fuCtxlDQc5Q1UvF3Rc4MTeaRP54hsL4Yr7aK59uGZTLR83A6qNU=
+	t=1773460795; cv=none; b=MnoZ55My/9zNyR8K0ZRRhpIgnUoAod63CcIYxcSaQgVdBJIxEmbzSym/lq5Rg7okbbP5DGLKQ+Quq+tYk/hJiKJcdlYtRZWjvGFMuhXIlbXRmQdJpSawcWRWgZcAyzsPpoL9IwbjYY4CezEkqfQoJibFT4+gIdLeJYFaVEHXLjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773460853; c=relaxed/simple;
-	bh=BBYPVx30vdvlzUB8hYKKaqRTPVaq4MVEjgs2oxmEHCs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZTbVYuHEWRgkOrVTDejwxh5HCoEnKIK71Txhstm18h9nEWMuuESD6I7sk8VmQGdOSFEh4ZzBnaJWjFwCQMY6ja7xjERShcV1BGv3aXml/P9JFvJcQdN/6Ct8eHc1oIro6sUpbgB0WaVNsBZZVFqkr/hd2Y9Ko1v9Efk/wOQfum8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fmNP1SNc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0722FC116C6;
-	Sat, 14 Mar 2026 04:00:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773460853;
-	bh=BBYPVx30vdvlzUB8hYKKaqRTPVaq4MVEjgs2oxmEHCs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fmNP1SNcmNtBRth70dpMTnKuoshXttYiKiwlcnwr9WPZ7ZSkpdOIaGG/3uR3Zp0oO
-	 iQtFgunrGw5Y3W+G4uwGLlAJB37FJG1/rQi0XKIKlJwfq0TIHCeqQFlRyfU1cIIcJb
-	 y8dCpKEmznNUT6JEXgv08sQYt3kBDyVq4fePsL0PjNBAWi3Eo+TsM/8irvwMarBFud
-	 Wki/aTIn3my5Np+YeoAe0uXyZJMTBIGqBkMgxiIpc2wFTXk9l+QFimwOoCiQR7L9Bl
-	 uYEKrLpgORIusBSolD4xDxvT844PmbPm7H04lz3bC8xqaZO5kqPkn9lwbd6cHURPmP
-	 ZwRZ0pA7Hlxvw==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>, kunit-dev@googlegroups.com,
-	Brendan Higgins Brendan Higgins <"brendan.higgins@linux.devbrendan.higgins"@linux.dev>,
-	David Gow <david@davidgow.net>,
-	Rae Moar <"raemoar63@gmail.comRaeMoarraemoar63"@gmail.com>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 2/2] kunit: configs: Enable all crypto library tests in all_tests.config
-Date: Fri, 13 Mar 2026 20:59:27 -0700
-Message-ID: <20260314035927.51351-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260314035927.51351-1-ebiggers@kernel.org>
-References: <20260314035927.51351-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1773460795; c=relaxed/simple;
+	bh=LNFPZFCsJ9qnXTSR0XPC9X3Z+OPlOB7Jsfoc3tz5qi8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ESTB7bVeUjEY5IYHnmZiWLCUCsfzwfdpjx2rrRJywNbNZvQv6AQdvzpLU5kqdQUJwWJIA43qkoki463nZv75P27fipGeS4y/y1UMsfENZqNXutD73Ja1UafVBHQNH7QmdMhgzny8CJlXdfBTwwUzI+W8m8e/bNpeonGS8BqR2PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=Fcn+p5E+; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=FfxZ+pbix1CPfROYdCwHKZBewzv/U0sU5yp1lK36dek=; 
+	b=Fcn+p5E+qXNkKeiPWI1OX7uyHLEJY8c1K1D4qPOPJUiIr6oRXQ6LH1NSm1bBFmOsMRTYsW9jvTe
+	H1Q6bGKYpaXygFgc7HGSg9ZGOcW6rNCTQQVKsZLUwWtzwUONw5WfjVrpHPW/5P++Kd0WuL0Rb7nJd
+	bNtml9xOb5aQMbmFh3N0PPFaDW7hLXai978bZj+vCkFmGvYw2o0ND5iUipd2zT8F2uaGviyb3LglZ
+	mmw5tiuaIODaOlGfsri/qyF1B6l7XpQcAqhWeQ/e4sxbN+vwYoYC5ljdbEWGfAWZ98fVsbktppS9m
+	Z2mELhWDtuw/7j4vZJ/o9Ltr2amnvZZS4BeA==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1w1GA1-00EKWg-1P;
+	Sat, 14 Mar 2026 11:59:34 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 12:59:33 +0900
+Date: Sat, 14 Mar 2026 12:59:33 +0900
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: T Pratham <t-pratham@ti.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Manorit Chawdhry <m-chawdhry@ti.com>,
+	Kamlesh Gurudasani <kamlesh@ti.com>,
+	Shiva Tripathi <s-tripathi1@ti.com>,
+	Kavitha Malarvizhi <k-malarvizhi@ti.com>,
+	Vishal Mahaveer <vishalm@ti.com>,
+	Praneeth Bajjuri <praneeth@ti.com>, linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] crypto: ti - Add support for SHA224/256/384/512
+ in DTHEv2 driver
+Message-ID: <abTdJSPtLYN0VJWm@gondor.apana.org.au>
+References: <20260226131103.3560884-1-t-pratham@ti.com>
+ <20260226131103.3560884-2-t-pratham@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [3.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_REJECT(1.00)[signature check failed: fail, {[1] = sig:subspace.kernel.org:reject}];
-	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260226131103.3560884-2-t-pratham@ti.com>
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	MIME_TRACE(0.00)[0:+];
-	NEURAL_SPAM(0.00)[0.440];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21934-lists,linux-crypto=lfdr.de];
-	R_DKIM_REJECT(0.00)[kernel.org:s=k20201202];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,zx2c4.com,gondor.apana.org.au,googlegroups.com,linux.dev,davidgow.net,gmail.com];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:-];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	TAGGED_FROM(0.00)[bounces-21931-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kunit.py:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8D3A728B855
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0258428B81D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The new option CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT enables all the
-crypto library code that has KUnit tests, causing CONFIG_KUNIT_ALL_TESTS
-to enable all these tests.  Add this option to all_tests.config so that
-kunit.py will run them when passed the --alltests option.
+On Thu, Feb 26, 2026 at 06:41:01PM +0530, T Pratham wrote:
+>
+> +static int dthe_hash_export(struct ahash_request *req, void *out)
+> +{
+> +	struct dthe_hash_req_ctx *rctx = ahash_request_ctx(req);
+> +	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
+> +	struct dthe_tfm_ctx *ctx = crypto_ahash_ctx(tfm);
+> +	union {
+> +		u8 *u8;
+> +		u64 *u64;
+> +	} p = { .u8 = out };
+> +
+> +	memcpy(out, rctx->phash, ctx->phash_size);
+> +	p.u8 += ctx->phash_size;
+> +	put_unaligned(rctx->digestcnt[0], p.u64++);
+> +	if (ctx->phash_size >= SHA512_DIGEST_SIZE)
+> +		put_unaligned(rctx->digestcnt[1], p.u64++);
+> +
+> +	return 0;
+> +}
 
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- tools/testing/kunit/configs/all_tests.config | 2 ++
- 1 file changed, 2 insertions(+)
+The hash state must always be exported, even right after initialisation.
+So you need to export the initial SHA stats if phash_available is
+false.
 
-diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-index 422e186cf3cf1..6910b07082da2 100644
---- a/tools/testing/kunit/configs/all_tests.config
-+++ b/tools/testing/kunit/configs/all_tests.config
-@@ -42,10 +42,12 @@ CONFIG_DAMON_PADDR=y
- 
- CONFIG_REGMAP_BUILD=y
- 
- CONFIG_AUDIT=y
- 
-+CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=y
-+
- CONFIG_PRIME_NUMBERS=y
- 
- CONFIG_SECURITY=y
- CONFIG_SECURITY_APPARMOR=y
- CONFIG_SECURITY_LANDLOCK=y
+Cheers,
 -- 
-2.53.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
