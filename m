@@ -1,64 +1,60 @@
-Return-Path: <linux-crypto+bounces-21948-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21949-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OBvnAf/vtGm/uQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21948-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:19:59 +0100
+	id ONmvDBvwtGm/uQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21949-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:20:27 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FFCB28BC8E
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:19:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D04528BC9D
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:20:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 456B8306F39D
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:15:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1B28C30817D5
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C51934F250;
-	Sat, 14 Mar 2026 05:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F50B34EF11;
+	Sat, 14 Mar 2026 05:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="syf/7lFL"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="g15OuUcF"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04CB1A9FAB;
-	Sat, 14 Mar 2026 05:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E2F1A9FAB
+	for <linux-crypto@vger.kernel.org>; Sat, 14 Mar 2026 05:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773465332; cv=none; b=Cd0zbHK9LnMloHNq67JqdiwsRuZmvB8gVIt0su9TPjwF4EOijzzO9WzY434xTlI13qjSsXHhfPQAeyPzsNrz7OM0/4pOqWbzdHlM1e+KJSzF8yXsoDwAokrcBL92Jgzx+lIXm8dIRsaUhZnyxZR+Qi+sOHhWD6OZbrZ62Qv0iOI=
+	t=1773465373; cv=none; b=nlO6LN8v7qIaNimZ742Cf3Shf0z9qc45VmT6pUqIhCs30Y2TX3cyMqRgiMylJ4pREFDoSzSL6MOO2QMdRIrNtX332rMIwB6d3xdtHxkwRfYr3JH9wyNMJj5dlG1Lqx13pyH46l8moOqk7T3NXNqdCk5mHOj/BHebR1BWOy0Q2MQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773465332; c=relaxed/simple;
-	bh=e+Y21tF4OIiiT5Iy82jCbjwEcnWMkIhsBSYFwD1SCmY=;
+	s=arc-20240116; t=1773465373; c=relaxed/simple;
+	bh=12o/HG11CudirfU0TkEdIPweXENwrsAUAA7FpVCP0y8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eG3e761M6yitKW1QB+OhQ6CjF4tRcK8v2fKmiGWRyqY42pfZXk9zADADFc/lZmDeU+l5h3D7pmcW9f030yYkjoVQQnJNh2gI8FYBXVXZtEKLIT+9FkUb+qkJPRLqulVzHzWrzbLtpiaS6cGaz3yoMkwUQ+JTSyppDAgZY5Pwvz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=syf/7lFL; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=SOrvthDhStCVBk2c92OUJSgL0cRa2QTt1Tf+0Bt2OHkZ7eNFFH9I0EZPnx8Bq5MavHrwBZ1XSwfpk6PVAtXtkrb8rsvvHJmu5NXPtA5Nn8yOYygCP63bHpSkVxCuULkQWyg6O0ZbWCigvUQdbqeJGI9F/fFVZ9jAr1u17KPzdGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=g15OuUcF; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=fMBFDSt8SNA5Bj4132vhLk7iNDRMu/frJuoe4oSzxaQ=; 
-	b=syf/7lFLSEGaYF4UqtHC/GRe7YCpWZdChV+tA8HfR/lkG0IaS0dovC3rzyBLfbHSXEGokowBBsT
-	/IQNv0+wW6zMrHba4q00EDdSeBQaZqpVqY6bYBjYc3hiQI44qFHoFLBH0ZQZfbHoKPg5IlDzFpuqv
-	RBKS/KbIU1DZtJAdREaowMute6TNNjWEbht0tPl50uJ+ep05Zo55LcDYDZ36OxKvMkbsNq7xUscn9
-	M1L9zUFTrJ1TYNj9KOyh6bIhlF2qedEBG4Ruq5PybSfvPyTTvDYzaj7HNl1/uw/vll2d2AQR4TUFT
-	DqEDiKejZ8MzeWNK9+PxC8zFkqtfJsGmeN0g==;
+	from:content-type:reply-to; bh=aYsiJm+cVNjpPB5eB68gcD41Q1iL9CSLRQdu295HLIc=; 
+	b=g15OuUcFglof5m6NsSB9qfhT29Bv9G7Ht0w/C9Ux/rR08m2q+3jbLXvSP1XUNFvaG3ecErxvINT
+	9tjFQsx4GwUNALeuqk4iJrli0NxRKQZpLTo31VddenSqd3inW0LWv0sXeW8KC+rg1WLmShx6gF0vr
+	mmkAfI1BetOWRmtemeo57ucmnrP7vPlKHG3qquRqH+K95MSBjkk+bWjQ4RDUKuaAogTBPkJ5W4B+S
+	Sm50CYtX3LmcAc5XxLFPsk0spZgYHhrcaD7Ccg17AOeg9Li/FubWUNId1DUsEbTVZEBEFCXvnVrlU
+	84N98lsUSpGKOIpi5XpYy1y2/lmxpYc1QWSQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w1HLS-00ELAf-2w;
-	Sat, 14 Mar 2026 13:15:28 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 14:15:26 +0900
-Date: Sat, 14 Mar 2026 14:15:26 +0900
+	id 1w1HM8-00ELBC-0V;
+	Sat, 14 Mar 2026 13:16:09 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 14:16:08 +0900
+Date: Sat, 14 Mar 2026 14:16:08 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Ashish Kalra <ashish.kalra@amd.com>, John Allen <john.allen@amd.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Tycho Andersen <tycho@kernel.org>,
-	Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH] crypto: ccp - Fix leaking the same page twice
-Message-ID: <abTu7tacXIMi3lNc@gondor.apana.org.au>
-References: <20260304203934.3217058-1-linux@roeck-us.net>
+To: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
+Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com
+Subject: Re: [PATCH 0/2] crypto: qat - GEN6 firmware loading fixes
+Message-ID: <abTvGNgmwL77Hl5F@gondor.apana.org.au>
+References: <20260305085955.66293-1-suman.kumar.chakraborty@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -67,62 +63,63 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260304203934.3217058-1-linux@roeck-us.net>
+In-Reply-To: <20260305085955.66293-1-suman.kumar.chakraborty@intel.com>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21949-lists,linux-crypto=lfdr.de];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	TAGGED_FROM(0.00)[bounces-21948-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 6FFCB28BC8E
+X-Rspamd-Queue-Id: 8D04528BC9D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 04, 2026 at 12:39:34PM -0800, Guenter Roeck wrote:
-> Commit 551120148b67 ("crypto: ccp - Fix a case where SNP_SHUTDOWN is
-> missed") fixed a case where SNP is left in INIT state if page reclaim
-> fails. It removes the transition to the INIT state for this command and
-> adjusts the page state management.
+On Thu, Mar 05, 2026 at 08:58:57AM +0000, Suman Kumar Chakraborty wrote:
+> This small series addresses firmware loading reliability on QAT GEN6
+> devices.
 > 
-> While doing this, it added a call to snp_leak_pages() after a call to
-> snp_reclaim_pages() failed. Since snp_reclaim_pages() already calls
-> snp_leak_pages() internally on the pages it fails to reclaim, calling
-> it again leaks the exact same page twice.
+> The first patch fixes inconsistent whitespace in the macro definitions
+> in qat_hal.c, switching from mixed tabs and spaces to tabs throughout.
 > 
-> Fix by removing the extra call to snp_leak_pages().
+> The second patch adds a hardware-required minimum 3 us delay during
+> the acceleration engine reset sequence for GEN6 devices. Without this
+> delay, firmware loading may fail intermittently. Earlier generations
+> are unaffected.
 > 
-> The problem was found by an experimental code review agent based on
-> gemini-3.1-pro while reviewing backports into v6.18.y.
+> Suman Kumar Chakraborty (2):
+>   crypto: qat - fix indentation of macros in qat_hal.c
+>   crypto: qat - fix firmware loading failure for GEN6 devices
 > 
-> Assisted-by: Gemini:gemini-3.1-pro
-> Fixes: 551120148b67 ("crypto: ccp - Fix a case where SNP_SHUTDOWN is missed")
-> Cc: Tycho Andersen (AMD) <tycho@kernel.org>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  drivers/crypto/ccp/sev-dev.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  .../intel/qat/qat_common/adf_accel_engine.c   |  7 +++++
+>  .../qat/qat_common/icp_qat_fw_loader_handle.h |  1 +
+>  drivers/crypto/intel/qat/qat_common/qat_hal.c | 27 ++++++++++---------
+>  3 files changed, 23 insertions(+), 12 deletions(-)
+> 
+> 
+> base-commit: 3f61a0a3491596d6973e132848fead2dc5fa7ad1
+> -- 
+> 2.52.0
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
