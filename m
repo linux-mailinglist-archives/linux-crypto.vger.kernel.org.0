@@ -1,65 +1,66 @@
-Return-Path: <linux-crypto+bounces-21945-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21946-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OItVMkbutGm/uQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-21945-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:12:38 +0100
+	id mNb3EWrutGm/uQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-21946-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:13:14 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E06D28BB7A
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A77A428BB98
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 06:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8EA13304C0B0
-	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:12:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8FBA3304D244
+	for <lists+linux-crypto@lfdr.de>; Sat, 14 Mar 2026 05:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E143368B1;
-	Sat, 14 Mar 2026 05:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69DAE32694E;
+	Sat, 14 Mar 2026 05:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="CebeX5Xs"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="MeQ95VN4"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A65230270;
-	Sat, 14 Mar 2026 05:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E02230270;
+	Sat, 14 Mar 2026 05:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773465126; cv=none; b=YL6PPnTKbtql8ntmEDbxl1Z0tt2z+5DFnzJlTQcYzBD5lgxKxIWKO1IZO7des2n1TSM2hLHoXRL/5FitlGylHAEsu41A7sVmc25dyKEnlPz20MvBSbwXkrfPChWW5UOau5EKXgp/fU4YJxW6Kc/uw8LNRB1zJlFCsvinJX7D39o=
+	t=1773465159; cv=none; b=rmgaYff04yU+AssK+280K1Sb2stGaM/JzgLnqF41ogWI6OxXWbP4rzcHIuLunltkIvmWOAbNLn7DvnvTJdTbJaOSTc0+HEVIv3gkOKf3G5+ksTzh8c5Qef4S9fiTF3nBZ/rcCxoUFSsrGgWX7wYPNPm3BZNit1TIAcdoTUB55sE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773465126; c=relaxed/simple;
-	bh=p06AXyoo1Q/rpTNUqebpnpLgDCWzFv8UA25q24bvcOk=;
+	s=arc-20240116; t=1773465159; c=relaxed/simple;
+	bh=JLqacoEXAMnbLwhIRWJWcC7ay4epBLiUxyBReIZ6U+c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e5+tAumUFcrfP/9eNey2JRyqcGe8XsA1fS0G42Wur6kf+WOx+5ZlDArMPVMSaHtuaTi5RKQYAyKKyugC99pQ06YrhMYNIVw9nzNCUUSg1VC06vC7LM4ENP+MAwBbTsVv4+d+0DHslOtgueasjPAu3fN3dHKZVevkMkNzTFxdkt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=CebeX5Xs; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=rYeemWZotrabdabt5jWCZlr3r2tdQTT9Z44goO853lUM4ZSycYXVnG8u65B+wLs5A3+4/OMcYyePhb+/WwXsXwkM9BpJCwzgGhesSH7aH3MOBT/9akl/4GD91Jp/b6cr4rV/hPKPcV6d+h+dkKHmJj+VBE3dvlW2ArUdsQNOeUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=MeQ95VN4; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=/qTAXHbi8wFOK4Xven3Jy2oD3hr9BGnd48GuXiXwDkw=; 
-	b=CebeX5XsrXyoZbxNL5JXZtac21WNi/Ii2vit9eIZqq0JkJUp0ENFTW3BDjZH/UfTyQ/0PS6NI/y
-	bcQxEEKwC83345K16jO/3Y+G7ZEHufbRabH9UIHWaGKKpDcEfKjxWdBMlY7zDeKAAA8ogq7tvXiu0
-	A9Hw31SnXy6BXfXeF/ncsukXYqYrXZwfjv/7hztrmJNmyNnDED4IJ84KTTyQVdVUlKlLgsYbMfkk3
-	4vnqRM4NWDhqhqd13Wjayae68QaPQLO2cGR/LyHl6LDqGIo65PIhtIGdtdoz5ly1Ji5Hv1TelwIYl
-	3WBntw562CLftSj99zudb6CWCzMDIEY2KTLg==;
+	from:content-type:reply-to; bh=SWX8mp/QqIVkCzDjkHiTCaW5kLocZdjN2u/rdkiH+HM=; 
+	b=MeQ95VN4n3ha+2BwoFwvHpHFv7MI+O9MLJjW/VzZXhLMKOs2r4JUFzB2s4dBHs5Be66yuodVSQ3
+	LUM980kIpB3EQpQDGrV45J8O7hKoOgXXVsmBJP++aryZ4A5xrd56LjDL7LRdzQ0r1nVEQb14L6iC1
+	5ChMbuL/fB95xetB8Ujw6cFFuDAbk6QsDE+mMCRTyY/gfLZVpQmruqWBzEkCG2fXL7KG8j7bNkT0Y
+	cqCrOprtC6Y3CbQ0aBBUuRcSQxpHoLZBvARc4HYpGv3LXrxMuguAKNoCx1++K5P3vwPamz1UWbzKs
+	EUCAB+xyotFoEP//+1aZ3pMoMqOzWoSnOY6w==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w1HHy-00EL7k-1c;
-	Sat, 14 Mar 2026 13:11:51 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 14:11:50 +0900
-Date: Sat, 14 Mar 2026 14:11:50 +0900
+	id 1w1HIV-00EL8L-2v;
+	Sat, 14 Mar 2026 13:12:24 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Mar 2026 14:12:23 +0900
+Date: Sat, 14 Mar 2026 14:12:23 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Joachim Vandersmissen <git@jvdsn.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-crypto@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: testmgr - block Crypto API xxhash64 in FIPS mode
-Message-ID: <abTuFto8Tc3mhRRe@gondor.apana.org.au>
-References: <20260303060509.246038-1-git@jvdsn.com>
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc: davem@davemloft.net, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com, atenart@kernel.org,
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: crypto: inside-secure,safexcel: add
+ compatible for MT7981
+Message-ID: <abTuNxU_qoQO2nUI@gondor.apana.org.au>
+References: <20260303185451.70794-1-olek2@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -68,7 +69,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260303060509.246038-1-git@jvdsn.com>
+In-Reply-To: <20260303185451.70794-1-olek2@wp.pl>
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -78,45 +79,43 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	FREEMAIL_CC(0.00)[davemloft.net,gmail.com,foss.st.com,vger.kernel.org,st-md-mailman.stormreply.com,lists.infradead.org];
-	TAGGED_FROM(0.00)[bounces-21945-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[davemloft.net,kernel.org,gmail.com,collabora.com,vger.kernel.org,lists.infradead.org];
+	TAGGED_FROM(0.00)[bounces-21946-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[wp.pl];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 2E06D28BB7A
+X-Rspamd-Queue-Id: A77A428BB98
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 03, 2026 at 12:05:09AM -0600, Joachim Vandersmissen wrote:
-> xxhash64 is not a cryptographic hash algorithm, but is offered in the
-> same API (shash) as actual cryptographic hash algorithms such as
-> SHA-256. The Cryptographic Module Validation Program (CMVP), managing
-> FIPS certification, believes that this could cause confusion. xxhash64
-> must therefore be blocked in FIPS mode.
+On Tue, Mar 03, 2026 at 07:53:49PM +0100, Aleksander Jan Bajkowski wrote:
+> The MT7981 as well as the MT7986 have a built-in EIP-97 crypto accelerator.
+> This commit adds a compatible string for MT7981.
 > 
-> The only usage of xxhash64 in the kernel is btrfs. Commit fe11ac191ce0
-> ("btrfs: switch to library APIs for checksums") recently modified the
-> btrfs code to use the lib/crypto API, avoiding the Kernel Cryptographic
-> API. Consequently, the removal of xxhash64 from the Crypto API in FIPS
-> mode should now have no impact on btrfs usage.
-> 
-> Signed-off-by: Joachim Vandersmissen <git@jvdsn.com>
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > ---
->  crypto/testmgr.c | 1 -
->  1 file changed, 1 deletion(-)
+> v3:
+> - drop oneOf
+> v2:
+> - just add compatible strings
+> ---
+>  .../devicetree/bindings/crypto/inside-secure,safexcel.yaml   | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
