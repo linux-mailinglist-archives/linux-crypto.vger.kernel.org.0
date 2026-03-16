@@ -1,114 +1,129 @@
-Return-Path: <linux-crypto+bounces-21986-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21987-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8OboOihruGn5dgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21986-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2026 21:42:16 +0100
+	id iPlJJbVuuGn5dgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21987-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2026 21:57:25 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 551252A04EB
-	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2026 21:42:16 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70F5F2A075B
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2026 21:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EDE67300E398
-	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2026 20:42:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9CE4530205E1
+	for <lists+linux-crypto@lfdr.de>; Mon, 16 Mar 2026 20:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B5F3EE1DB;
-	Mon, 16 Mar 2026 20:42:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EB535B136;
+	Mon, 16 Mar 2026 20:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qoro5yMK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cr8b3vkC"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D104E3ED5B2;
-	Mon, 16 Mar 2026 20:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D09735A3B8;
+	Mon, 16 Mar 2026 20:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773693733; cv=none; b=Y0wZ/4nwQTJy14mbwsDy8u6v3vxIlPGFDDEnOFTxI/weQWkenZxrNfbBAa+BBFSq9DuXvhf2xfHzYrFS1X9r0YpN8jm86YLHUs5axuwABB5oXlmzzON4VbpaO/nuWYfBVmifUWpYrJYScK1qYsIsx0AWU+8Vcj5fxaIDbz+rSm4=
+	t=1773694637; cv=none; b=O0HmmYFKHbYcKRb8D7KD7dzNIFZsts5uVxXp7tv2U81U9WrsFlHT7l/mEnJVmi2cuTEeQOLvbIYijaWU33RvDDhf/wz6ENklThsDjGFmoiHDPEtP4d5Q68JEtdrLed7JcWn+V4wG+OJLF6gSLo+QbYGeSx8ReDk1mDC6GDE9aDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773693733; c=relaxed/simple;
-	bh=y9nSUavmq2qfyNgwjVX9IqHGrA+3BGRBXOrdK7EtY0M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=WnZI68CcztNpZCMxICQBGEIbPyGRfcr2ooED2slYYXaOUW7yfnvt/FiuzC62P6uw3WwI1Ua1Kavre1BfSGAMGOH8rU4OhKEyKSuTbeVEc8RX0nvAdaD1fabCieLHQ9g0s8gpkoj7gbykCIyJKTqFc2qPpKqHRbdeAEM5p+WxX/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qoro5yMK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 356CFC19424;
-	Mon, 16 Mar 2026 20:42:13 +0000 (UTC)
+	s=arc-20240116; t=1773694637; c=relaxed/simple;
+	bh=BIMIJjlsbjMMxSdGDsLQSWVZoKzAT6k9eS4F/MOxtiA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OyUIkFOalZem75u2I1dg3gmERifZFz7P3nLiaTJOGVzjTUMgg010Gm8g7ggyh50ssa9kBPSvdlJYWR0ar4scJjbaNfISu5TNmwjSaEUFziqMBcXDFaCovbjzSS56XaT+cHC9dEeUJYsOHS0gXm9fPejVCGIMiog5i+AIKtmulj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cr8b3vkC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC60C19421;
+	Mon, 16 Mar 2026 20:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773693733;
-	bh=y9nSUavmq2qfyNgwjVX9IqHGrA+3BGRBXOrdK7EtY0M=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Qoro5yMKlIfmbm7vP8ooiisDSQpJ3JIQX/huSoKL2f5gmFuFCvAgknyGtsmTBBlgi
-	 nfb+4c98BNBgME1XMMEoigTECT3HaAp8VBd/o8KdHcCM5Mgc6lj6+XyXdWmmaZgkxp
-	 xlCeG2rhAsfFHoJNRH6zCCfIO9MIL2tlNcGJZ6JA4ZlgMq+2JaFT/WQaoaeuU5kGtN
-	 f4wdGqqGtzWvuCfY/i9PqEp4hEBRdS/hgHSAZeNh7DAcg9trn9m3imRsB7S+7w2xP0
-	 OU5cLMyOHdRSIYk4R1S7B4IQ9bjS1kJl1x5klw821LArduWPignjAAg6X8cgtWCHX4
-	 U72jSO+p53ALw==
-Date: Mon, 16 Mar 2026 13:42:11 -0700
+	s=k20201202; t=1773694636;
+	bh=BIMIJjlsbjMMxSdGDsLQSWVZoKzAT6k9eS4F/MOxtiA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Cr8b3vkC8BCKgg1p/5ByHoGYCkOy9FvKAXlKa+mkmN3diG3wpj0D/WTSN9XlLEf8a
+	 mGzj2IYVt3s+owJhFOcJcbu/2o/MXgTgKmxDqI3bNXZaB7LIpAZ3bkyT74j0yfAUx4
+	 tNZCXV5HmlVwAHasMigrNXocf+Hq6c0cHcOVjbXi1Umvr9szTh/5C5SKIpxGzgduAq
+	 ilwzX14P1QfIbsBf+clhlUMDWJUP/nj1Oj6vJM770qpkjQyT0COTNOWO/W9hK8sWuU
+	 awuyaBniBJa3LQCM9wr6C+oZINi5CgbfglHslA64600XB48J3XYEBnZhoP3vQXxSiR
+	 fA+Mp1wAnc5aw==
 From: Eric Biggers <ebiggers@kernel.org>
-To: Andreas Larsson <andreas@gaisler.com>,
-	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Subject: Does the SPARC optimized crypto and CRC code actually work?
-Message-ID: <20260316204211.GA2661@quark>
+To: linux-kernel@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH] crypto: crc32c - Remove another outdated comment
+Date: Mon, 16 Mar 2026 13:56:59 -0700
+Message-ID: <20260316205659.17936-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUBJECT_ENDS_QUESTION(1.00)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21986-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21987-lists,linux-crypto=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_THREE(0.00)[4];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 551252A04EB
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 70F5F2A075B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi,
+This code just calls crc32c(), which has a number of different
+implementations, not just the byte-at-a-time table-based one.
 
-The Linux kernel contains various SPARC crypto opcodes optimized
-functions in lib/crypto/sparc/, lib/crc/sparc/, and arch/sparc/crypto/.
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
 
-As the kernel's crypto and CRC code has been refactored over time, we've
-been updating how the SPARC optimized code is integrated accordingly.
-However, QEMU doesn't support the SPARC crypto opcodes, which means that
-even though I (and maybe others) been running the tests on SPARC kernels
-in QEMU, this doesn't actually execute the SPARC optimized code.
+This patch is targeting crc-next
 
-So I have to ask: is someone in the SPARC community actually testing
-this code regularly?  That includes running all the KUnit tests for
-crypto and CRC as well as the traditional crypto self-tests.
+ crypto/crc32c.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-If not, then unless QEMU support is forthcoming I'd suggest we drop this
-code to avoid issues on SPARC systems.  The generic code is much better
-tested and we know that it works on any architecture, including SPARC.
-Correctness is the first priority, especially for cryptography.
+diff --git a/crypto/crc32c.c b/crypto/crc32c.c
+index 1eff54dde2f7..3754985ab948 100644
+--- a/crypto/crc32c.c
++++ b/crypto/crc32c.c
+@@ -47,15 +47,10 @@ struct chksum_ctx {
+ 
+ struct chksum_desc_ctx {
+ 	u32 crc;
+ };
+ 
+-/*
+- * Steps through buffer one byte at a time, calculates reflected
+- * crc using table.
+- */
+-
+ static int chksum_init(struct shash_desc *desc)
+ {
+ 	struct chksum_ctx *mctx = crypto_shash_ctx(desc->tfm);
+ 	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
+ 
 
-- Eric
+base-commit: c13cee2fc7f137dd25ed50c63eddcc578624f204
+-- 
+2.53.0
+
 
