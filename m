@@ -1,135 +1,147 @@
-Return-Path: <linux-crypto+bounces-22022-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22023-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uIk2Mh45uWlYvwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-22022-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 12:21:02 +0100
+	id WK2gBNQ7uWkowQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-22023-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 12:32:36 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F21A2A8A42
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 12:21:02 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40A3D2A8D88
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 12:32:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F2E873041D6F
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 11:20:55 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0B57E301C587
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 11:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6D43750DD;
-	Tue, 17 Mar 2026 11:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36813ACA61;
+	Tue, 17 Mar 2026 11:32:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="au04Iwaq"
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="p/FpDRti"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8AA37648B
-	for <linux-crypto@vger.kernel.org>; Tue, 17 Mar 2026 11:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C2534F486;
+	Tue, 17 Mar 2026 11:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773746452; cv=none; b=DwxQqc7Lw9U4W234alQa98E3ZY3VupJxqD2pGx4VSgCleuU/4nUQSyTHXIQ5LBv4XVa3tLZorTGTUTTSfeMFH58QaDkOxHsk16gO04RgqdBcaiTUSqtLjdcwDsNmC7BHfjRBWQEIB1ETZAv8++vbh57W0p76u60NvWvQc708ujI=
+	t=1773747141; cv=none; b=s3wIi+RQJOQujWKa49xdHvuEzhJJ05vf7GZGu9FesNrm/43998OyvrN2aBMtOQkamX+IsrlKM3PJxA4Z3n3zG7BvDgeX6NPKtkRAGKo0or8ZKNUN+P3iWuV0jRq0V6NI5OWc84Z60e5eN4odmwj25O/87TmFSAhUCOISKLnq244=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773746452; c=relaxed/simple;
-	bh=pOAJ7gTT2gW3rIbyM1AFAzko/De87b7KJmIKhZOX4RU=;
+	s=arc-20240116; t=1773747141; c=relaxed/simple;
+	bh=UWTSvxAlGGuyS5z7VDcNiiCEiejhuiDa72AmOtpQApU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HW2fQKCCLKdJlxh8dR1WxCbKpOlwMAHE+ySZKJu4qodvpXxHd0RCc/xJBZswn4lxGIVKPz2uWWORceTSSUc05oG1OGZjhyrw1NBt1GIl9u7nnx6LkJGTm8LWaLg3TFpWjBIPCIcDv4dqz5PJZqTyHLNJN6kFGryPeWVo9H2FDW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=au04Iwaq; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 17 Mar 2026 12:20:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773746438;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fJ19JX+Fdfvgr+LNxpY/TOqvYP2YRwuZtSMmPJ3oyp4=;
-	b=au04IwaquZL/9L402rl9GkDbdHPdZDGzWMebJ8y0SVeq0gIrOG8fHY5jnHIxEQdMGRFUAF
-	Y2G10qY+H+5rOpeTEUsauUiBKBmfmyLqtIXq+EZ+34p0RmM33EGevjqIHUE/R6W8RzV+OQ
-	XOYEeugQEjPKVe+Vg4leqmT42xtW7qA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-	Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Gaurav Jain <gaurav.jain@nxp.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Kim Phillips <kim.phillips@freescale.com>,
-	Yuan Kang <Yuan.Kang@freescale.com>, stable@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: caam - remove HMAC key hex dumps from
- hash_digest_key
-Message-ID: <abk4_r-KUYIhvyNL@linux.dev>
-References: <20260306111204.302544-1-thorsten.blum@linux.dev>
- <abTqefme_iApfHZi@gondor.apana.org.au>
+	 Content-Type:Content-Disposition:In-Reply-To; b=J1oD7D2ovSysKrgcEe3R95MsWyTAyDnYr7D7Ld/1BytkkbBAhol8KMqRoiqo66JeqQI1B3JB0mKs7vmrcfn0j5aDmHlgcJOcopDE/pxlP6N2WCfwMeJT0neHkUR6rMrpkh5ilUqdWLXMMcIZ+xPyXsl+Dicpe+0iLLyaxo34UzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=p/FpDRti; arc=none smtp.client-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-ID:Content-Description;
+	bh=G31hXcPOimlJCCwoNzpI+vMSEg4NhwVwk7ZC9FRItGU=; b=p/FpDRti6QDbdeGLC8WP1aLSA9
+	8mGebtDKU6c9PWFsrVDBAKvOhg482Y3wK/hbjGD7wmvHgDctqvMoYjf8n6FChNr+iPcfPbekLcyDK
+	/scCPKuq2jzUUswxUAft7i8JBQB/ZHOMwB99qrmN4G2bdgJrKpSE6AO0wAphXOLkNgo8Hn40BuiD1
+	PNq6EutYi/SYAn2oTSieXqYTb2ramKgaT4sHgYM+zwSp+8kY4WTkCk9/XZ7Pow3NPKJC5ylYvra18
+	HJon4uLXOK53n9d4LBPyk6sjT0FeiqiaqxKmnOW4oojqKQ7Ss74slyD1z5CofinYH922a7OydlVEx
+	SoBY2lQg==;
+Received: from authenticated user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.94.2)
+	(envelope-from <leitao@debian.org>)
+	id 1w2Sem-002qz6-CT; Tue, 17 Mar 2026 11:32:15 +0000
+Date: Tue, 17 Mar 2026 04:32:09 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, puranjay@kernel.org, 
+	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Michael van der Westhuizen <rmikey@meta.com>, kernel-team@meta.com, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH RFC 0/5] workqueue: add WQ_AFFN_CACHE_SHARD affinity scope
+Message-ID: <abk6PMrSDcb-yXZ9@gmail.com>
+References: <20260312-workqueue_sharded-v1-0-2c43a7b861d0@debian.org>
+ <6b952e7087c5fd8f040b692a92374871@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <abTqefme_iApfHZi@gondor.apana.org.au>
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6b952e7087c5fd8f040b692a92374871@kernel.org>
+X-Debian-User: leitao
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_DKIM_ALLOW(-0.20)[debian.org:s=smtpauto.stravinsky];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22022-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22023-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[debian.org];
+	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,vger.kernel.org,kernel.org,meta.com,oracle.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DKIM_TRACE(0.00)[debian.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leitao@debian.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: 4F21A2A8A42
+	RCPT_COUNT_SEVEN(0.00)[11];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 40A3D2A8D88
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, Mar 14, 2026 at 01:56:25PM +0900, Herbert Xu wrote:
-> On Fri, Mar 06, 2026 at 12:12:03PM +0100, Thorsten Blum wrote:
-> > Stop dumping sensitive HMAC key bytes (original and reduced keys) in
-> > hash_digest_key() to avoid leaking secrets when debug logging is
-> > enabled.
-> > 
-> > Fixes: 045e36780f11 ("crypto: caam - ahash hmac support")
-> > Fixes: 3f16f6c9d632 ("crypto: caam/qi2 - add support for ahash algorithms")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> > ---
-> >  drivers/crypto/caam/caamalg_qi2.c | 5 -----
-> >  drivers/crypto/caam/caamhash.c    | 6 ------
-> >  2 files changed, 11 deletions(-)
-> 
-> What is the rationale for this? When debugging is enabled, all
-> sorts of things could be dumped, e.g., passwords.
+Hello Tejun,
 
-This is not specifically about caam, but (debug) logging of potentially
-sensitive key material should generally be avoided, imho. Some other
-recent examples:
+On Fri, Mar 13, 2026 at 07:57:20AM -1000, Tejun Heo wrote:
+> Hello,
+>
+> Applied 1/5. Some comments on the rest:
+>
+> - The sharding currently splits on CPU boundary, which can split SMT
+>   siblings across different pods. The worse performance on Intel compared
+>   to SMT scope may be indicating exactly this - HT siblings ending up in
+>   different pods. It'd be better to shard on core boundary so that SMT
+>   siblings always stay together.
 
-https://lore.kernel.org/lkml/20260227230008.858641-2-thorsten.blum@linux.dev/
-https://lore.kernel.org/lkml/20260303132552.65235-2-thorsten.blum@linux.dev/
-https://lore.kernel.org/lkml/20260303190350.78705-2-thorsten.blum@linux.dev/
+Thank you for the insight. I'll modify the sharding to operate at the
+core boundary rather than at the SMT/thread level to ensure sibling CPUs
+remain in the same pod.
 
-> Is there a scenario where production systems will run with debugging
-> enabled in caam?
+> - How was the default shard size of 8 picked? There's a tradeoff
+> between the number of kworkers created and locality. Can you also
+> report the number of kworkers for each configuration? And is there
+> data on different shard sizes? It'd be useful to see how the numbers
+> change across e.g. 4, 8, 16, 32.
 
-I don't know - possibly.
+The choice of 8 as the default shard size was somewhat arbitrary – it was
+selected primarily to generate initial data points.
+
+I'll run tests with different shard sizes and report the results.
+
+I'm currently working on finding a suitable workload with minimal noise.
+Testing on real NVMe devices shows significant jitter that makes analysis
+difficult. I've also been experimenting with nullblk, but haven't had much
+success yet.
+
+If you have any suggestions for a reliable workload or benchmark, I'd
+appreciate your input.
+
+> - Can you also test on AMD machines? Their CCD topology (16 or 32
+> threads per LLC) would be a good data point.
+
+Absolutely, I'll test on AMD machines as well.
 
 Thanks,
-Thorsten
+--breno
 
