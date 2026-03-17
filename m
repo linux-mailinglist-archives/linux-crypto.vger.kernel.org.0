@@ -1,59 +1,59 @@
-Return-Path: <linux-crypto+bounces-21991-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21992-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mHGmCcfTuGkpjwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21991-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 05:08:39 +0100
+	id SgLiK8jduGlSkgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21992-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 05:51:20 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 882632A3770
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 05:08:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1A52A3D34
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 05:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 349823025926
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 04:08:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D432D3021E5D
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 04:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3770346FB5;
-	Tue, 17 Mar 2026 04:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E99366828;
+	Tue, 17 Mar 2026 04:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S3dJ/qO5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kTQl+5Nl"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C443624B3;
-	Tue, 17 Mar 2026 04:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF4521D599;
+	Tue, 17 Mar 2026 04:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773720496; cv=none; b=FppcPB1dqQrHiDy8RjUPjMl8Lr5aajXJSkXXWuX+hbBu7FieIlB0To89O1QCsd4lvoh7xSnGTaEw3T1O57rJQo64AHc1OutnbCelcV3EVX8uoelqs/0zqJtDn/H8ROa/LZpWzm536wbBxGvJui1dw+3ni0gUF9C3qnNIivLekus=
+	t=1773723077; cv=none; b=peXnpWD4/xlyK1YQgxr5Lo5nbezGglM/tUG692HW0/ZjrQCz58EXMD5HoA03fqzXKGlO1zMM3NLKUhBOCnQXHfr/c6OFzEr1wloyn29bADTex4KhPOn9VzulN3OH1kn8MohxiiQd3k1zNA5Q7oiYfh+8YIEXtijj3RqNs7kFLz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773720496; c=relaxed/simple;
-	bh=fagMUb9NepIotkIBKwsYh9ObQp2uTwtsi/Ou/4zYDWA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FqJ20H8nPkm1Pz8xKV0Y2ugafsh+V5Ov8uda4VcOB6vma/MNNoap2V8xfCa7JjIX7HD91iQ68ioIX0y+NhmzzCzVDmgB0lr4bfq+Jj71WZ0BiNVjWNNyqoyE/vPXQFEd9lXN3fQWun8LK84aJDVNB9VDv6GKQs1OD0q/dn5gUiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S3dJ/qO5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9165C4CEF7;
-	Tue, 17 Mar 2026 04:08:15 +0000 (UTC)
+	s=arc-20240116; t=1773723077; c=relaxed/simple;
+	bh=6wmzA6YeKKYQRTyDXyQWVPMulEEjCgindg0VmxPV6V8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZmMnot8N7ontUsBjamdp7Dvq0i2Njs8HSBE8vdRYTgRfiFQXDJmMGe6GpHooJvX9iMRgqNZYYJ+b+r/kHkKsWV2PYBFksCHTcIuFPHunMwHVLkD8JueaOA8PmW9LFqLxdQK8HTMkvzyGEW8dg/FHqTv8EkvfTCjzMrd3Ax3RHbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kTQl+5Nl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F59C2BC86;
+	Tue, 17 Mar 2026 04:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773720496;
-	bh=fagMUb9NepIotkIBKwsYh9ObQp2uTwtsi/Ou/4zYDWA=;
+	s=k20201202; t=1773723076;
+	bh=6wmzA6YeKKYQRTyDXyQWVPMulEEjCgindg0VmxPV6V8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=S3dJ/qO5NcZrB5zH5mBQ8jFKITtF4rnMi0R1iuOf+FRoMbU5q77yChiRDQ78LVJLI
-	 7/DjNXRRGdMTrYVPNCfk4O3HKvIVdxghd5k2IWYzvk+8ZlMvCf2Ex52kNOgWSMkzZK
-	 TdS68wX+lcwEKtuZvUdsN28jup62uDbCv4+3f12qyoKHbqhg3gRCeKo3g/TFUnK9j9
-	 YIHkB0CRhkHnQ7XNdcfgdqrNNeaJu/SjE0ev8JPjVg4VbU5gim2IOey88qlgTwt8na
-	 rsdrnDQSIdpVfEgSSB4nXR6j1QOwXpeuj77hEPiReeOjYGIuXsccGiAAEOU29crg+e
-	 vjaQi/eLcMYUA==
+	b=kTQl+5NlPAyy2Q+qZwNe+TJAIgpLhmi4l3wxOMBcNsDMn6te04Uy4JEmZe6aDD+TP
+	 oGsdhWv+KC2jz1VqcyKGoYgXoCSZLY3fiEdGc2sghbBcQTv+ewI/JNKCPpyl6VqkWB
+	 nPWE6dVmKM1UWSUNFqjeivNNfbeF5eiRKOY/OOv+ecMZAwf3W++EJbod+7E3HLNokO
+	 IUYVL/7/TqOeIra9rbjxYbOSOfpl80wbUFZOO0RvWxgU1zb1MdFKBRxSvxj+KLE0Uq
+	 YE+WZ2aYDmGsPEybxOyhBgI7aR1fqWujTShlVm1DvZNpmUrDJU2cjYeXXV5+sgdmak
+	 +zKRioypK1yIA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Ard Biesheuvel <ardb@kernel.org>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	kunit-dev@googlegroups.com,
+	linuxppc-dev@lists.ozlabs.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH] lib/crypto: tests: Drop the default to CRYPTO_SELFTESTS
-Date: Mon, 16 Mar 2026 21:06:26 -0700
-Message-ID: <20260317040626.5697-1-ebiggers@kernel.org>
+Subject: [PATCH] lib/crypto: powerpc: Add powerpc/aesp8-ppc.S to clean-files
+Date: Mon, 16 Mar 2026 21:49:25 -0700
+Message-ID: <20260317044925.104184-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -67,13 +67,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21991-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21992-lists,linux-crypto=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -82,174 +82,45 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.999];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 882632A3770
+X-Rspamd-Queue-Id: 0B1A52A3D34
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Defaulting the crypto KUnit tests to KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-instead of simply KUNIT_ALL_TESTS was originally intended to make it
-easy to enable all the crypto KUnit tests.  This additional default is
-nonstandard for KUnit tests, though, and it can cause all the KUnit
-tests to be built-in unexpectedly if CRYPTO_SELFTESTS is set.  It also
-constitutes a back-reference to crypto/ from lib/crypto/, which is
-something that we should be avoiding in order to get clean layering.
+Make the generated file powerpc/aesp8-ppc.S be removed by 'make clean'.
 
-Now that we provide a lib/crypto/.kunitconfig file that enables all
-crypto KUnit tests, let's consider that to be the supported way to
-enable all these tests, and drop the default of CRYPTO_SELFTESTS.
-
+Fixes: 7cf2082e74ce ("lib/crypto: powerpc/aes: Migrate POWER8 optimized code into library")
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
+ lib/crypto/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-This patch is targeting libcrypto-next
+diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
+index 725eef05b758..dc7a56f7287d 100644
+--- a/lib/crypto/Makefile
++++ b/lib/crypto/Makefile
+@@ -53,10 +53,13 @@ endif # CONFIG_PPC
+ libaes-$(CONFIG_RISCV) += riscv/aes-riscv64-zvkned.o
+ libaes-$(CONFIG_SPARC) += sparc/aes_asm.o
+ libaes-$(CONFIG_X86) += x86/aes-aesni.o
+ endif # CONFIG_CRYPTO_LIB_AES_ARCH
+ 
++# clean-files must be defined unconditionally
++clean-files += powerpc/aesp8-ppc.S
++
+ ################################################################################
+ 
+ obj-$(CONFIG_CRYPTO_LIB_AESCFB)			+= libaescfb.o
+ libaescfb-y					:= aescfb.o
+ 
 
- lib/crypto/tests/Kconfig | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/lib/crypto/tests/Kconfig b/lib/crypto/tests/Kconfig
-index 0d71de3da15d..144b98fcbb50 100644
---- a/lib/crypto/tests/Kconfig
-+++ b/lib/crypto/tests/Kconfig
-@@ -1,117 +1,117 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- 
- config CRYPTO_LIB_AES_CBC_MACS_KUNIT_TEST
- 	tristate "KUnit tests for AES-CMAC, AES-XCBC-MAC, and AES-CBC-MAC" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_AES_CBC_MACS
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the AES-CMAC, AES-XCBC-MAC, and AES-CBC-MAC message
- 	  authentication codes.
- 
- config CRYPTO_LIB_BLAKE2B_KUNIT_TEST
- 	tristate "KUnit tests for BLAKE2b" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_BLAKE2B
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the BLAKE2b cryptographic hash function.
- 
- config CRYPTO_LIB_BLAKE2S_KUNIT_TEST
- 	tristate "KUnit tests for BLAKE2s" if !KUNIT_ALL_TESTS
- 	depends on KUNIT
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	# No need to depend on CRYPTO_LIB_BLAKE2S here, as that option doesn't
- 	# exist; the BLAKE2s code is always built-in for the /dev/random driver.
- 	help
- 	  KUnit tests for the BLAKE2s cryptographic hash function.
- 
- config CRYPTO_LIB_CURVE25519_KUNIT_TEST
- 	tristate "KUnit tests for Curve25519" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_CURVE25519
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the Curve25519 Diffie-Hellman function.
- 
- config CRYPTO_LIB_MD5_KUNIT_TEST
- 	tristate "KUnit tests for MD5" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_MD5
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the MD5 cryptographic hash function and its
- 	  corresponding HMAC.
- 
- config CRYPTO_LIB_MLDSA_KUNIT_TEST
- 	tristate "KUnit tests for ML-DSA" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_MLDSA
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the ML-DSA digital signature algorithm.
- 
- config CRYPTO_LIB_NH_KUNIT_TEST
- 	tristate "KUnit tests for NH" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_NH
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	help
- 	  KUnit tests for the NH almost-universal hash function.
- 
- config CRYPTO_LIB_POLY1305_KUNIT_TEST
- 	tristate "KUnit tests for Poly1305" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_POLY1305
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the Poly1305 library functions.
- 
- config CRYPTO_LIB_POLYVAL_KUNIT_TEST
- 	tristate "KUnit tests for POLYVAL" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_POLYVAL
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the POLYVAL library functions.
- 
- config CRYPTO_LIB_SHA1_KUNIT_TEST
- 	tristate "KUnit tests for SHA-1" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_SHA1
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the SHA-1 cryptographic hash function and its
- 	  corresponding HMAC.
- 
- # Option is named *_SHA256_KUNIT_TEST, though both SHA-224 and SHA-256 tests are
- # included, for consistency with the naming used elsewhere (e.g. CRYPTO_SHA256).
- config CRYPTO_LIB_SHA256_KUNIT_TEST
- 	tristate "KUnit tests for SHA-224 and SHA-256" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_SHA256
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the SHA-224 and SHA-256 cryptographic hash functions
- 	  and their corresponding HMACs.
- 
- # Option is named *_SHA512_KUNIT_TEST, though both SHA-384 and SHA-512 tests are
- # included, for consistency with the naming used elsewhere (e.g. CRYPTO_SHA512).
- config CRYPTO_LIB_SHA512_KUNIT_TEST
- 	tristate "KUnit tests for SHA-384 and SHA-512" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_SHA512
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the SHA-384 and SHA-512 cryptographic hash functions
- 	  and their corresponding HMACs.
- 
- config CRYPTO_LIB_SHA3_KUNIT_TEST
- 	tristate "KUnit tests for SHA-3" if !KUNIT_ALL_TESTS
- 	depends on KUNIT && CRYPTO_LIB_SHA3
--	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
-+	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the SHA3 cryptographic hash and XOF functions,
- 	  including SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE128 and
- 	  SHAKE256.
-
-base-commit: 44a3873df8114546a76ead737f64b57ae7676cc2
+base-commit: ebba09f198078b7a2565004104ef762d1148e7f0
 -- 
 2.53.0
 
