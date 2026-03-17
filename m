@@ -1,161 +1,111 @@
-Return-Path: <linux-crypto+bounces-21989-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-21990-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uGWoICnDuGlWjAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-21989-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 03:57:45 +0100
+	id ME7wIkbPuGlfjgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-21990-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 04:49:26 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D689E2A2F97
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 03:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43F272A3588
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 04:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 190DA30315CF
-	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 02:55:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AD111303011F
+	for <lists+linux-crypto@lfdr.de>; Tue, 17 Mar 2026 03:45:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DAD52BEFEE;
-	Tue, 17 Mar 2026 02:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40514314B6E;
+	Tue, 17 Mar 2026 03:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nroach44.id.au header.i=@nroach44.id.au header.b="g1xk3dJM";
-	dkim=pass (2048-bit key) header.d=nroach44.id.au header.i=@nroach44.id.au header.b="g1xk3dJM";
-	dkim=pass (2048-bit key) header.d=nroach44.id.au header.i=@nroach44.id.au header.b="JP2J5s6l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nWzM+OJx"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from arcturus.nroach44.id.au (arcturus.nroach44.id.au [45.32.188.33])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CB2199949;
-	Tue, 17 Mar 2026 02:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.32.188.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026DE31353B;
+	Tue, 17 Mar 2026 03:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773716118; cv=none; b=OH3H9tDBRJmvV2M+MtselNM6iUBUgZ9E2oM/xhex+NDSnU+y4wWKy4Xk6XU/nEASOimvnp+EplQPcsvXijDjXrOVI1PwmmmoJdj+hvZGjUUQFEhF7ncbIREeFf05mu4uoUc6ueemq6//jYmZFmgeQrKTv+4CcMpvmEoR13E+Npo=
+	t=1773719142; cv=none; b=aXXt1eejTRBXdEPuGi4zOH4EBsKvcdqSuQOmgwbizXjxI93lj2ubKK4z/h8PzAq+IBenkLMJJ3Fl6MCBOX0Li8akCpXBeLf4G15iieiJCC+wStZrfjHqkZ5Bc7CxALhjTOmvnhRaVhP/Ngex9d2J5smTAjWelW3xrhA8YvnMZWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773716118; c=relaxed/simple;
-	bh=WBxbirtXgTFP2VO7Ap9qDqDninnQarfWnxFphtwYMok=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JcnshG55nSK8mBLOFce/4trbXhImhzSfXo+ew+AdChTqG1VAx1hraZfoNxdSnqjGs4kEn676Kgz4Jd5VvRIfeDC2HeyTVjktEa8TAlspYX58Rf44EhWCu4WJ8uRG7CqsTGVieBM0kgoWfxZR7Z76qEkUHn7+mMKOwailHCVqL0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nroach44.id.au; spf=pass smtp.mailfrom=nroach44.id.au; dkim=pass (2048-bit key) header.d=nroach44.id.au header.i=@nroach44.id.au header.b=g1xk3dJM; dkim=pass (2048-bit key) header.d=nroach44.id.au header.i=@nroach44.id.au header.b=g1xk3dJM; dkim=pass (2048-bit key) header.d=nroach44.id.au header.i=@nroach44.id.au header.b=JP2J5s6l; arc=none smtp.client-ip=45.32.188.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nroach44.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nroach44.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nroach44.id.au;
-	s=dYX2HNEqNNRL; t=1773715741;
-	bh=WBxbirtXgTFP2VO7Ap9qDqDninnQarfWnxFphtwYMok=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=g1xk3dJMeyU11DO8+6BWu1PkqqcelwnS6VNs/CWcHSvLNr4AC02beHmLxDSx7WptI
-	 zf1BMr5YW9Ctz3dLqzBnaX0rzs3r3xknUxUYUttWkoNq/+UYcJ6mJD2wIH8gwIaIpu
-	 lZkYm6irFP75/vu26zC4fdR2UDlgh47+PkndZFxha/qJtOSq9x7NCYI+OxinKH4ctr
-	 4JrlA7mq0Kik12iycHmNWZPIQefdgBajUX0ZJoeEzgnipgqgVTr9POTDBrtuZOqiJQ
-	 GCbrIY3O7Gwj4F1RNsEbFf7s25YJE3LvW/GAkYR9bMmiKRLxeFD0Mkti0lQmPDExnS
-	 5sx7dZavDD5/w==
-Received: from arcturus.nroach44.id.au (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by arcturus.nroach44.id.au (Postfix) with ESMTPS id 91D0430E95;
-	Tue, 17 Mar 2026 10:49:01 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nroach44.id.au;
-	s=dYX2HNEqNNRL; t=1773715741;
-	bh=WBxbirtXgTFP2VO7Ap9qDqDninnQarfWnxFphtwYMok=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=g1xk3dJMeyU11DO8+6BWu1PkqqcelwnS6VNs/CWcHSvLNr4AC02beHmLxDSx7WptI
-	 zf1BMr5YW9Ctz3dLqzBnaX0rzs3r3xknUxUYUttWkoNq/+UYcJ6mJD2wIH8gwIaIpu
-	 lZkYm6irFP75/vu26zC4fdR2UDlgh47+PkndZFxha/qJtOSq9x7NCYI+OxinKH4ctr
-	 4JrlA7mq0Kik12iycHmNWZPIQefdgBajUX0ZJoeEzgnipgqgVTr9POTDBrtuZOqiJQ
-	 GCbrIY3O7Gwj4F1RNsEbFf7s25YJE3LvW/GAkYR9bMmiKRLxeFD0Mkti0lQmPDExnS
-	 5sx7dZavDD5/w==
-Received: by arcturus.nroach44.id.au (Postfix, from userid 5555)
-	id 723EB3168E; Tue, 17 Mar 2026 10:49:01 +0800 (AWST)
-X-Spam-Level: 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nroach44.id.au;
-	s=dYX2HNEqNNRL; t=1773715734;
-	bh=WBxbirtXgTFP2VO7Ap9qDqDninnQarfWnxFphtwYMok=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JP2J5s6l142aPSILmiqSHKSx7HuUp4QaBlVsjeo3KUFows0BEHG/VwVWMaZ3iQVeB
-	 uZHdZV3G9DgW0gjbGjeffNmp0WJ4qA3cIsP6U6A0PN+tI6wv/oi6WfAL7jiMAVuQDh
-	 D7jzoGXGViLc6HZ1cq6d8DO3CzQhakGt8W6cLJ+gLcNZUvkEIKgnfnYWQY9KdY9/1G
-	 HaFAqsII7TecAkVjwsamy2NJMUvZrq9TqJRYAnzA5t/1apLZHUbhgG1C1Rey7pwhIg
-	 92MfTKQJaVxwJvLiQPnsiUILspdpTYvBRTPZoyQ+UHJYoKE3P08eU5gXR9v8YqXHV+
-	 G/Hx1JHQfJBYQ==
-Received: from [IPV6:2403:5814:4228:10:3a62:38:7f97:4cc] (unknown [IPv6:2403:5814:4228:10:3a62:38:7f97:4cc])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by arcturus.nroach44.id.au (Postfix) with ESMTPSA id C88F030E95;
-	Tue, 17 Mar 2026 10:48:53 +0800 (AWST)
-Message-ID: <ca9ba2ec-849c-4f86-8ac9-274ac4b5f885@nroach44.id.au>
-Date: Tue, 17 Mar 2026 10:48:52 +0800
+	s=arc-20240116; t=1773719142; c=relaxed/simple;
+	bh=yP//LXP0yhYsMTrCo6kiuueFfEOJz8sdsLEYQ85ngj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LGUAB9gIoDpm+8Pk9LTmJ2l5N9cezfL+1YICUL8OnBNso4OSWsnSwCZctHUJQdcmhG3HgLZYtfoKxJN0urK4/kaDFGCuchBIhAX+dyEedBNPnc/vdkpql5E8+kkfYy3TfA3x9jg0tra+Je3AzjBIX4UTlh0VjjABl4Wrkk58Rx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nWzM+OJx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DED4C4CEF7;
+	Tue, 17 Mar 2026 03:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773719141;
+	bh=yP//LXP0yhYsMTrCo6kiuueFfEOJz8sdsLEYQ85ngj4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nWzM+OJxjMu86d6mcSF25H2FT2DHr0/3GWsfoESHGgG3r9IGDu9Qg4ffKNcnmBJ7d
+	 semjD3o4S9JyzdUDcJYJluxcdeD4AIbsIZKVBJxbaTu8j3QgD4WQtSLc/7Yfr+2pBb
+	 hmYQKNgfnD1HJHW9XGjEQ2BXjY2cDi9oRGOeuVgb8nfs+5gHpIlEF/3k6kDcltDOTU
+	 eap24m4ebZcRF7ckjk5KCFO1QRT1KNlgP75BRplQGSeGGF6ANqMAkhgGkJd9LlQX3B
+	 FVstmMyQj2Y01ZgggSZGUf8lBU79eWjrQE/e5f5qnbDff+VG0/lVmNXL+454WM2A16
+	 ZHajepEgZHO2Q==
+Date: Tue, 17 Mar 2026 03:45:39 +0000
+From: Eric Biggers <ebiggers@kernel.org>
+To: Nathaniel Roach <nroach44@nroach44.id.au>
+Cc: Andreas Larsson <andreas@gaisler.com>,
+	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: Re: Does the SPARC optimized crypto and CRC code actually work?
+Message-ID: <20260317034539.GA2705965@google.com>
+References: <20260316204211.GA2661@quark>
+ <ca9ba2ec-849c-4f86-8ac9-274ac4b5f885@nroach44.id.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Does the SPARC optimized crypto and CRC code actually work?
-To: Eric Biggers <ebiggers@kernel.org>, Andreas Larsson
- <andreas@gaisler.com>, "David S. Miller" <davem@davemloft.net>,
- sparclinux@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-References: <20260316204211.GA2661@quark>
-Content-Language: en-US
-From: Nathaniel Roach <nroach44@nroach44.id.au>
-In-Reply-To: <20260316204211.GA2661@quark>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca9ba2ec-849c-4f86-8ac9-274ac4b5f885@nroach44.id.au>
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	SUBJECT_ENDS_QUESTION(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[nroach44.id.au,quarantine];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[nroach44.id.au:s=dYX2HNEqNNRL];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21989-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[nroach44.id.au:+];
-	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21990-lists,linux-crypto=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nroach44@nroach44.id.au,linux-crypto@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nroach44.id.au:dkim,nroach44.id.au:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D689E2A2F97
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 43F272A3588
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 17/3/26 04:42, Eric Biggers wrote:
-> Hi,
->
-> The Linux kernel contains various SPARC crypto opcodes optimized
-> functions in lib/crypto/sparc/, lib/crc/sparc/, and arch/sparc/crypto/.
->
-> As the kernel's crypto and CRC code has been refactored over time, we've
-> been updating how the SPARC optimized code is integrated accordingly.
-> However, QEMU doesn't support the SPARC crypto opcodes, which means that
-> even though I (and maybe others) been running the tests on SPARC kernels
-> in QEMU, this doesn't actually execute the SPARC optimized code.
->
-> So I have to ask: is someone in the SPARC community actually testing
-> this code regularly?  That includes running all the KUnit tests for
-> crypto and CRC as well as the traditional crypto self-tests.
->
-> If not, then unless QEMU support is forthcoming I'd suggest we drop this
-> code to avoid issues on SPARC systems.  The generic code is much better
-> tested and we know that it works on any architecture, including SPARC.
-> Correctness is the first priority, especially for cryptography.
->
-> - Eric
->
-I've been testing some of the PCI changes that have come through on my 
-T5-2. I'll happily add some tests for the crypto functions, I've just 
-got no idea how to do so.
+On Tue, Mar 17, 2026 at 10:48:52AM +0800, Nathaniel Roach wrote:
+> I've been testing some of the PCI changes that have come through on my T5-2.
+> I'll happily add some tests for the crypto functions, I've just got no idea
+> how to do so.
+
+Well, try enabling all KUnit tests in lib/crc/ and lib/crypto/, as well
+as CONFIG_CRYPTO_SELFTESTS=y and CONFIG_CRYPTO_SELFTESTS_FULL=y.
+
+However, will this be a regular testing run, or only a one-off run?  If
+it will only be one-off, we'll quickly be back to where we started.
+
+We need regular testing on either hardware or QEMU.
+
+- Eric
 
