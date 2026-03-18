@@ -1,56 +1,52 @@
-Return-Path: <linux-crypto+bounces-22092-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22093-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WK3tDCGYumnSXgIAu9opvQ
-	(envelope-from <linux-crypto+bounces-22092-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 13:18:41 +0100
+	id WOkLMK2bumnaZQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-22093-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 13:33:49 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF402BB567
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 13:18:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC162BB88A
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 13:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8352C305F66D
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 12:16:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5E134308C611
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 12:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF783793B0;
-	Wed, 18 Mar 2026 12:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8893D6466;
+	Wed, 18 Mar 2026 12:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="VfxU2J70"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZakMuvHZ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E6AE373C02;
-	Wed, 18 Mar 2026 12:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3E53AEF5A
+	for <linux-crypto@vger.kernel.org>; Wed, 18 Mar 2026 12:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773836180; cv=none; b=GWCZGHDRhfmytDzXqPIj0u6+lF4MS6Y/n/UYEXwY5ZAiqaAeuzxruQEAcv6EOq94hVQpoH5CyjzLiCdOfqS3okLwDMj8/6hj+glhHwu3ZFPOcc7R1Tnjg4HlhVIunAQTsnS5VdGmKU3yFVK4xBVBme4rS+Rk78hjuxUAV4CJcN4=
+	t=1773836972; cv=none; b=uGYGTTRyDTLYIwSiTM0ECRr74PIykaOi5q749BMWnb5e/MdK/LwXyAQSR83PWknZC3ItfKaXBiwxJKcnO2jb0gpRBKf1PkghCb9lkWFD3ZJvUySGl8ZmjjXCDqe2XCLtJz5tcSYADQddrT0Y6l8BMa/SpidmqqcOjjbxmmkdpZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773836180; c=relaxed/simple;
-	bh=uOreDMcqeQ466bTFq/zQ6/ClqMUrdjfwsTzWUrk94MQ=;
+	s=arc-20240116; t=1773836972; c=relaxed/simple;
+	bh=N0hZfNuCwxur62Dhe9eZWTzvJYSym3qOI+8A1UclxuQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l1zjylytF7xxW8/fMCxDFFrzm4CyZaEqNZhnEW3hCXVngY0HBKm2PiYetM7+NlHr6H9+nI1tAO4b5TB0L9Ff8aQaIBaUuQv5v5mrNsbfZqlDg4aisHubYIMzh7dhuC1SiB0/XqncSLUCDUMdvlDgb9uW0GYg1xYaCD4EQoKfj6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=VfxU2J70; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=vSw5ZKHs4fnsQKYg95wz84FMtjXdALmHHoPImRYM7PM=; 
-	b=VfxU2J70/Z4sdWlJn5t3cWV61dQeDZgLbZdzadge+lQ2jA/gdExw0iQCye4vcf8gohGrVRy3Ugc
-	CueZXN+ilHNyWtOqMaPKSAgkyGh8sL8tmr+I3v3UAw87X7/A2ibv6dVMKEVqR6PMNQ+k3bUidulRv
-	mMyssAXhXdH5vsF4jAz7zslrNvw1U3sznvyHsf7GiCgM/P2mrFDzBMLW5faLYRMympjqXaVJ0bUpL
-	gsz6Hi8h6jBCMWeRgs48hIEMKeJ3izlgQZQ8uUHBYg8SBYA90to052wKOb8tugtLgyPXssA4d9/BN
-	3SFsXNJetdKAPfmbo1Z6Xp+8gOf4ZJQ0V7Xg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w2pog-00FQTD-1D;
-	Wed, 18 Mar 2026 20:16:03 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 18 Mar 2026 21:16:02 +0900
-Date: Wed, 18 Mar 2026 21:16:02 +0900
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Thorsten Blum <thorsten.blum@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gjeYLU3w8vY9zDlY0dbgBD3OJwdzFXrTViuaT08JqhWuxtp9b7vwu0RFi2o66LZK3PuP2mLPkK3m3Lk9u/QwFwU9q5WQozTuBJA8dXVEoFphYByMKRjxvVj/c/5HmV+uDBxLAGzoJM7iD9a/CwUDeU3cTNPD7DVLpTIZ4zMDFao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZakMuvHZ; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 18 Mar 2026 13:29:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773836959;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q2GdGv5dmSzHUDnW0c1bGqLqX8yfm9FaWipGd7a7als=;
+	b=ZakMuvHZcfTJM3L6Wkc9KE1AUB/1Ew7nYxMs88YJKRah6rkshZIvI5lBOJ+KbphmKzb0Xf
+	3zB5/PeFwg9qYZnSrwuP1aWN0WAVjogoczY9ikyWC0axJBaTFXzQvVai0OesQGs4P2Arnf
+	XcyIZtX+dgnxheNY/rzZ82apQrzpc9Q=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
 	Pankaj Gupta <pankaj.gupta@nxp.com>,
 	Gaurav Jain <gaurav.jain@nxp.com>,
@@ -60,12 +56,13 @@ Cc: Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
 	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] crypto: caam - remove HMAC key hex dumps from
  hash_digest_key
-Message-ID: <abqXgt5x232kEPUj@gondor.apana.org.au>
+Message-ID: <abqal8qyPbsmpM6p@linux.dev>
 References: <20260306111204.302544-1-thorsten.blum@linux.dev>
  <abTqefme_iApfHZi@gondor.apana.org.au>
  <abk4_r-KUYIhvyNL@linux.dev>
  <abpYWkDzofozlOWp@gondor.apana.org.au>
  <abqUQxdoH7zuszZQ@linux.dev>
+ <abqXgt5x232kEPUj@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -74,53 +71,52 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <abqUQxdoH7zuszZQ@linux.dev>
+In-Reply-To: <abqXgt5x232kEPUj@gondor.apana.org.au>
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	TAGGED_FROM(0.00)[bounces-22093-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22092-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url]
-X-Rspamd-Queue-Id: BAF402BB567
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid]
+X-Rspamd-Queue-Id: 1AC162BB88A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 18, 2026 at 01:02:11PM +0100, Thorsten Blum wrote:
->
-> My main concern is that with CONFIG_DYNAMIC_DEBUG enabled, which doesn't
-> require DEBUG, these raw key dumps can still be turned on at runtime in
-> a deployed kernel.
+On Wed, Mar 18, 2026 at 09:16:02PM +0900, Herbert Xu wrote:
+> On Wed, Mar 18, 2026 at 01:02:11PM +0100, Thorsten Blum wrote:
+> >
+> > My main concern is that with CONFIG_DYNAMIC_DEBUG enabled, which doesn't
+> > require DEBUG, these raw key dumps can still be turned on at runtime in
+> > a deployed kernel.
+> > 
+> > If we want to keep the dumps for debug-only kernels, then #ifdef DEBUG
+> > plus print_hex_dump() might be a good compromise.
 > 
-> If we want to keep the dumps for debug-only kernels, then #ifdef DEBUG
-> plus print_hex_dump() might be a good compromise.
+> Exactly.  Having sensitive information printed with DYNAMIC_DEBUG
+> is arguably a problem, but putting them behind DEBUG is definitely
+> OK.
 
-Exactly.  Having sensitive information printed with DYNAMIC_DEBUG
-is arguably a problem, but putting them behind DEBUG is definitely
-OK.
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Ok, thanks.  I'll send a v2 soon using print_hex_dump() guarded by
+#ifdef DEBUG.
 
