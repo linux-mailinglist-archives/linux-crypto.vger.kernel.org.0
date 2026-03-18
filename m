@@ -1,208 +1,196 @@
-Return-Path: <linux-crypto+bounces-22094-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22096-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kErjD3WzumlWawIAu9opvQ
-	(envelope-from <linux-crypto+bounces-22094-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 15:15:17 +0100
+	id QD3pAkHNummfcAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-22096-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 17:05:21 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 966162BCD43
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 15:15:16 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 128E72BEF15
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 17:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1730B316FFB9
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 14:00:58 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C4DB730A9F21
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 15:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5619C3D9DBE;
-	Wed, 18 Mar 2026 14:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MKyqGsgy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550B53976BF;
+	Wed, 18 Mar 2026 15:39:39 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A4F3D75CC;
-	Wed, 18 Mar 2026 14:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87DD3B4E8C;
+	Wed, 18 Mar 2026 15:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.246.120.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773842455; cv=none; b=sWXxmcjPDTzfkIHKdYuu2dYLGIosaVqs5YmdJ5rUW7pQniYMfcQ1OUZ2shIBSGttE9P7o2UphASHzgnKzQLJS/zsXoGIrGjH+MkKmbLSxaz0v3gN3dLUysZMuQyg6FDD78hqvOddVm7evY+vZzaegeSD8+HPIhLGtoyxO9C5mW8=
+	t=1773848378; cv=none; b=k1p6NXh7hRsPjNTasSiNxaxUXFpeO94bWBjk98jaVYO9wEGRqMQLwO8Uq5K8KKRRuSwQnRBEWeExFtI03P4JO9p82sfAJ2iffdVEvCQM0m2kQHSzihDXPuvfmRA//b2YT/ia/5cxFRwfR6fxlvNz3Up7aMsv85RStcHNyjcjcUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773842455; c=relaxed/simple;
-	bh=020bNbPxue9Ilj1XDYV7WD3t5nrPlSRlYGRp0SsYYMo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HrQsLt4qPYsMDBmR3GX7lgvD0qHr/bvC1nkFtoPmKH63ZVi4baLOK20io6sQ+r0jQ/e2ShqYB/0NBtdgOPIHlW5VjfrswM/dl1xKXLatuvJllx8NfyQ7U+mJfddtow5GNiMgvna5n+GBSqEBLbi3O8+jP+EUzfZgIknTJq8AgQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MKyqGsgy; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1773842453; x=1805378453;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=020bNbPxue9Ilj1XDYV7WD3t5nrPlSRlYGRp0SsYYMo=;
-  b=MKyqGsgylIh1h99ed37W9YXwOO1jJlRqVwLvLAOCR+PXERqG7+XZ2sjP
-   5TGFqpmqOPGbI4GwOg7tCquXnFEiZeWv/glcpO0eTkN67gF10bRwy71Wv
-   XphwyhLKxEHXnOFDzZVTfrd39YOnIZwUf2Zbv8gpKYfD/7BrhdvF0beOF
-   N8YXcsBekKOBxPgH0TmRmGvskO2VOatHORCzy71ni72pzXuNSruOdSV2B
-   tk6rH7Al+8yNDQhM+VghkYevuKmPlOr97JO7WQ4IQf1hj3S4xGoP60knO
-   7HxcaU4LfZuhuCDVhNH93W6bIU6MmKXzP8uF29WP28pjNTq2CEN6AD5UK
-   w==;
-X-CSE-ConnectionGUID: Kt84rvcsQKeI0EhLgn03cw==
-X-CSE-MsgGUID: ZbqrkznfQ463wA01T9xuFg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11733"; a="85591921"
-X-IronPort-AV: E=Sophos;i="6.23,127,1770624000"; 
-   d="scan'208";a="85591921"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2026 07:00:53 -0700
-X-CSE-ConnectionGUID: veXwXH8MSBS3SbVil14Siw==
-X-CSE-MsgGUID: FHFSZgihSTObCHLOC37lyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,127,1770624000"; 
-   d="scan'208";a="226765480"
-Received: from rchatre-mobl4.amr.corp.intel.com (HELO [10.125.108.223]) ([10.125.108.223])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2026 07:00:52 -0700
-Message-ID: <bd7d39d9-b3f7-4de8-abc2-8ffe3d2730e6@intel.com>
-Date: Wed, 18 Mar 2026 07:00:51 -0700
+	s=arc-20240116; t=1773848378; c=relaxed/simple;
+	bh=9biZ7RHXjgNdFYYFQWCNAHvjg2IqE29+EF9hdALNpTc=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=OUKCEVz2VZDRNQkpxNkc5FS+NAymCHwlFTANO8zWVZux8oRaXqFh04a//1UY9phpcdB+NRfJKyTWix7UQsan4l4z5mCxRPNv0qLDUxdXf5fAjtYaBtQnFI+hnh2prdG2O6mhG5boVKz+llt9d0O6ipNBssSqgV13d7/1hcpxalc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rptu.de; spf=pass smtp.mailfrom=rptu.de; arc=none smtp.client-ip=131.246.120.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rptu.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rptu.de
+Received: from smtpclient.apple (ip5f58e5b0.dynamic.kabel-deutschland.de [95.88.229.176])
+	(authenticated bits=0)
+	by mailgw1.uni-kl.de (8.17.1.9/8.17.1.9/Debian-2+deb12u2) with ESMTPSA id 62IFXD1K1820072
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 18 Mar 2026 16:33:21 +0100
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/7] x86/sev: add support for RMPOPT instruction
-To: "Kalra, Ashish" <ashish.kalra@amd.com>,
- Sean Christopherson <seanjc@google.com>
-Cc: tglx@kernel.org, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- peterz@infradead.org, thomas.lendacky@amd.com, herbert@gondor.apana.org.au,
- davem@davemloft.net, ardb@kernel.org, pbonzini@redhat.com, aik@amd.com,
- Michael.Roth@amd.com, KPrateek.Nayak@amd.com, Tycho.Andersen@amd.com,
- Nathan.Fontenot@amd.com, jackyli@google.com, pgonda@google.com,
- rientjes@google.com, jacobhxu@google.com, xin@zytor.com,
- pawan.kumar.gupta@linux.intel.com, babu.moger@amd.com, dyoung@redhat.com,
- nikunj@amd.com, john.allen@amd.com, darwi@linutronix.de,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- kvm@vger.kernel.org, linux-coco@lists.linux.dev
-References: <cover.1772486459.git.ashish.kalra@amd.com>
- <8dc0198f1261f5ae4b16388fc1ffad5ddb3895f9.1772486459.git.ashish.kalra@amd.com>
- <aahH4XARlftClMrQ@google.com>
- <7ab8d3af-b4f5-481c-ab2e-059ddd7e718e@intel.com>
- <0fbb94ad-bfcf-4fbe-bf40-d79051d67ad8@amd.com>
- <6a4f4ecf-ffc0-43a9-98d4-06235b42063e@amd.com>
- <d7ba3790-a959-4150-87e0-c87dea4d09c5@intel.com>
- <cc9bf918-a14b-4619-a084-3f424fa16ea1@amd.com>
- <5102edd8-8eaa-4688-b3f7-3004c4cbc8f3@intel.com>
- <cdedb126-777a-4e40-a5a5-93aa5dbc38aa@amd.com>
-Content-Language: en-US
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <cdedb126-777a-4e40-a5a5-93aa5dbc38aa@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.500.181\))
+Subject: Re: [PATCH] x86: enable Data Operand Independent Timing Mode
+From: =?utf-8?Q?Marvin_H=C3=A4user?= <haeuser@rptu.de>
+In-Reply-To: <851920c5-31c9-ddd9-3e2d-57d379aa0671@intel.com>
+Date: Wed, 18 Mar 2026 16:33:02 +0100
+Cc: Eric Biggers <ebiggers@kernel.org>, Jann Horn <jannh@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Roxana Bradescu <roxabee@chromium.org>, Adam Langley <agl@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <33E64985-BE38-49D6-AB1C-CD7CFC1D08F1@rptu.de>
+References: <20230125012801.362496-1-ebiggers@kernel.org>
+ <14506678-918f-81e1-2c26-2b347ff50701@intel.com>
+ <CAG48ez1NaWarARJj5SBdKKTYFO2MbX7xO75Rk0Q2iK8LX4BwFA@mail.gmail.com>
+ <394c92e2-a9aa-37e1-7a34-d7569ac844fd@intel.com>
+ <CAG48ez0ZK3pMqkto4DTZPNyddYcv8jPHQDNhYoFEPvSRLf80fQ@mail.gmail.com>
+ <e37a17c4-8611-6d1d-85ad-fcd04ff285e1@intel.com> <Y9MAvhQYlOe4l2BM@gmail.com>
+ <8b2771ce-9cfa-54cc-de6b-e80ce7af0a93@intel.com>
+ <16e3217b-1561-51ea-7514-014e27240402@intel.com>
+ <Y9oMmYWzy7mlk3D9@sol.localdomain>
+ <c5809098-9066-d90d-1bcc-108a11525cac@intel.com>
+ <851920c5-31c9-ddd9-3e2d-57d379aa0671@intel.com>
+To: Dave Hansen <dave.hansen@intel.com>
+X-Mailer: Apple Mail (2.3864.500.181)
+X-Spam-Score:  (-2.9)
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[rptu.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	TAGGED_FROM(0.00)[bounces-22094-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
+	TAGGED_FROM(0.00)[bounces-22096-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
+	NEURAL_HAM(-0.00)[-0.943];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	R_DKIM_NA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dave.hansen@intel.com,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[haeuser@rptu.de,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:dkim,intel.com:mid]
-X-Rspamd-Queue-Id: 966162BCD43
+	APPLE_MAILER_COMMON(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email]
+X-Rspamd-Queue-Id: 128E72BEF15
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Thanks for the additional performance numbers!
+Hi all,
 
-On 3/16/26 12:03, Kalra, Ashish wrote:
-> Again, looking at the numbers above, what are your suggestions for 
-> 
-> 1). using the kthread approach OR 
+As I haven=E2=80=99t found any news on the list or the tree, I'd like to =
+inquire whether
+there=E2=80=99s been any updates on the situation.
 
-I don't like the kthread approach. The kernel has a billion features. If
-each one gets a kthread or kthread-per-$SOMETHING, we'll spend all of
-our RAM on kthread task_structs and stacks.
+> On 3. Feb 2023, at 17:25, Dave Hansen <dave.hansen@intel.com> wrote:
+>=20
+> There are some other crazier choices like adding ABI to toggle DOITM =
+for
+> userspace, but I'm not sure they're even worth discussing.
 
-> 2). probably scheduling it for later execution after SNP guest termination via a workqueue OR
+Sorry if I misunderstood something, but isn=E2=80=99t that basically the =
+only effective
+way to use DOITM? DDP is not active in kernel mode regardless of DOITM =
+and the
+FSFP documentation says that existing mitigations for SSB and such =
+=E2=80=9Cusually=E2=80=9D
+will also be sufficient for FSFP. I assume in absence of KERNEL_SSBD, =
+the other
+existing mitigations would simply be augmented as necessary, rather than
+enabling something alike KERNEL_FSFPD. But I may be totally mistaken =
+here.
+I further assume variable-latency instruction semantics still do not =
+apply, so
+to my understanding, FSFP is the only potential concern to the kernel, =
+and it=E2=80=99s
+not that bad.
 
-I think there are two different issues:
+Meanwhile, DDP is active in userspace and potentially violates the =E2=80=9C=
+no
+secret-dependent memory accesses=E2=80=9D constant-time programming rule =
+at the
+microarchitectural level. While real-world risk is up for debate, for =
+truly
+constant-time execution it must never trigger on memory that contains =
+secrets.
+To my knowledge, the only way to achieve this right now is to turn it =
+off. The
+Intel documentation also recommends against turning it off generally. =
+So, either
+there must be an opt-out per-process (and the processes should be mostly
+isolated regarding computation on secrets, otherwise all other =
+operations face
+the performance penalty as well), or there must be a dynamic toggle like =
+there
+is for prctl() speculation control. As ARM has basically the same thing, =
+I=E2=80=99m not
+sure there=E2=80=99s much benefit in relaxing the semantics (but there =
+might be in
+making it accessible in userspace).
 
-1. What asynchronous kernel mechanism is used to execute the RMPOPT?
-2. How does that mechanism get triggered?
+OT/Motivation: DDP has a rarely talked about implication from the =
+prefetching
+window. Namely, when accessing non-secret memory adjacent to secret =
+memory, it
+can activate on secret memory even when it is never accessed while DDP =
+is
+enabled. There are multiple solutions to this, e.g., to place guard =
+pages around
+secret memory and trust DDPs will fault and back off. Another way is to =
+make
+sure secret memory is never mapped while DDPs are active. I=E2=80=99m =
+playing around
+with this at the moment because unmapping secret memory also would mean =
+that
+mitigations like SLH only need to be applied to code that can execute =
+while
+secret memory is mapped. This can be achieved with pkeys, but it =
+requires some
+extra work to ensure no process=E2=80=99s secret memory pkey allows =
+reads while DDPs are
+on, even during context switches. Maybe more on that to come, maybe not, =
+but I
+wanted to provide my motivation in this. :)
 
-For #1, I think schedule_work() is the place to start. You need more
-justification on why it needs a dedicated kthread.
+> My inclination is to wait a couple of weeks to see which way DOITM is
+> headed and if the definition is likely to get changed.
 
-For #2, I say just schedule some delayed work on every SEV-SNP
-private=>shared conversion to do RMPOPT. Schedule it out 1 second or 10
-seconds or _something_. If work is scheduled and you convert another
-page, cancel it and push it out another 1 or 10 seconds.
+The Intel documentation seems to be fairly stable, so I assume not much =
+happened
+on the hardware/ISA side?
 
-> 3). use some additional data structure like a bitmap to track 1G pages in guest_memfd 
-> to do the RMP re-optimizations.
+Thank you!
 
-That's an optimization that can be added later.
-
-Whatever you do, it's going to need trigger points and asynchronous
-work. There will always be ways to get the work amount down, but the
-worst case will always be there.
+Best regards,
+Marvin=
 
