@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-22082-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22083-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wGnBHv5Tumm8UQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-22082-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 08:27:58 +0100
+	id oJVwNtZVumm8UQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-22083-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 08:35:50 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1606B2B6EDF
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 08:27:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E7712B7047
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 08:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5B2893018F3A
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 07:27:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3A593301A704
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 07:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD0C363C59;
-	Wed, 18 Mar 2026 07:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF88E35DA7F;
+	Wed, 18 Mar 2026 07:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LGPYidkB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RDKfKavl"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBBF4A02;
-	Wed, 18 Mar 2026 07:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2051A073F;
+	Wed, 18 Mar 2026 07:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773818875; cv=none; b=WyRpXowx+maQ/p0HVJy+3EyQEatknNSI/KKgRXrjQONVWQqEUnk9JwDHNTbcbfpj1GPSQ8M+3crZo7KiclF6Z7pjmalzunq3zMMJaqL7UrpJU6TFSiow/iqVobHahieSrPkQdJ8RNNZRZcFY4R3IcZX0We7wLYCcHIwUKUSfa0U=
+	t=1773819217; cv=none; b=sbbDyCy1gMF8BWrs8gm3YU2ezz908l1+cRT+HmvxAFbAyv35dV7sB9hs7e2jIm4X7Jq7wzd9HLocbM2/gJtenZXA214Sh5/iLiDLidbwTL5XQRu7X/Y/Gohgzxp38YCzEvf+tMQuH4n+yshKtU7yuOpF5OZcsGxazQF8FJKXhPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773818875; c=relaxed/simple;
-	bh=9KOY1nL3nM5oHC06cNZLWG4jfzV229N1Dxx64QAQ2ig=;
+	s=arc-20240116; t=1773819217; c=relaxed/simple;
+	bh=ScRK7G/j4sFH55VvieNmUsTongM7CZ2Vp3tQOPnFgyU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cz2MzQXhr/sO6VRdZ//X6VQsG9VXbMqvJfD9vnqBCSQHX9tsrfldjytoUYEoMSmeeJ3eANB8hAY8Hl3WqP4QEdrJii/h0E5RJiI6oRE4svAuxcYHZaYKuZWzSKQ0RLFUy6ybNu1NcKJCjQPklDc478Oy/Gh7SlG6lBK0bSn1YvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LGPYidkB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBFE1C19421;
-	Wed, 18 Mar 2026 07:27:48 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=IPt+e1QA45+zr+UjAWPVqJHIubDR7P4n+gg1kg313iLGCVZdD/j92DmR7FBka1cDKByVMnYvGyIpfUCnl/VZoH2AEL4vd3oai22QME05wZyJSkZK02v3gCcSrddDx8dKcO7LbAomiVzBLuxAXA7BzImL3vI3VKM+oMgir6g/qao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RDKfKavl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3696FC19421;
+	Wed, 18 Mar 2026 07:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773818874;
-	bh=9KOY1nL3nM5oHC06cNZLWG4jfzV229N1Dxx64QAQ2ig=;
+	s=k20201202; t=1773819217;
+	bh=ScRK7G/j4sFH55VvieNmUsTongM7CZ2Vp3tQOPnFgyU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LGPYidkBRDrXbXww+t7uM2u9jhwqh5w3C4+rr86POcEfcghabvM9eT1lIcbCMlYvb
-	 mGDw257235MEbkGF2B0GLD0vjC6YjCOZ8RYesAOZ16pOckwbpKyH5pNfMGR/CBUmoP
-	 o1e5vEas9xeguSbHxy/O/yRVP+Fvbx86pU+hJef1bR9CngQD9npfq6GR5/hF1tCZjE
-	 bXdktndVRGZX3vZGPSFjSztx3/mh61qNlnXkkozswqWk8sMADwX2MKlFE/DqByhPEh
-	 AFtNKfPUbaZR7kc0W3YB75tWSnAx7hfK93FCl4ewrgTeTNLJ8B2vKxQrkC4Ehu6q9T
-	 SnNAHuYGnZEEQ==
-Message-ID: <ce0213a0-ee09-4c09-a974-ea490326607f@kernel.org>
-Date: Wed, 18 Mar 2026 08:27:46 +0100
+	b=RDKfKavl5jjxOQf/aX7HLjw7nFcZ9BADqXsmLSW17v1RxUDoNS3TuHso+2HwuXGTP
+	 Tky49iLy1yxiP21gv230KhRj+CiTqCEfixn/PTeXtudlmOmzqLzmJhLm1RN4XuDXrf
+	 ZIta7e7cV9izJWFTa/qRG8JAbDsAdDsXn3YHMOkeZUnLMdnIVoh5GFZaznmS0c3JgU
+	 WvBMIN13VRfNmYqdHJLyhXSNvhphB6kv1MEK/IrSowRd7zt0sBrqQkqaOB2bGq6XPz
+	 KsiuMCOH3q3/pVcia7EuSigfGfAaKnRnJgtZggTGniJITV2BVOeT+xZVbc3/8mjdbs
+	 mCNcV1bk+xHUQ==
+Message-ID: <8863f38b-51df-43ea-995c-08b9fb04f4dc@kernel.org>
+Date: Wed, 18 Mar 2026 08:33:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -53,11 +53,10 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/12] dt-bindings: crypto: qcom,ice: Require
- power-domain and iface clk
-To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
- Harshal Dev <harshal.dev@oss.qualcomm.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+Subject: Re: [PATCH v3 12/12] soc: qcom: ice: Allow explicit votes on 'iface'
+ clock for ICE
+To: Harshal Dev <harshal.dev@oss.qualcomm.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
  "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
  <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
@@ -65,13 +64,15 @@ Cc: Herbert Xu <herbert@gondor.apana.org.au>,
  Abel Vesa <abel.vesa@oss.qualcomm.com>,
  Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>,
  cros-qcom-dts-watchers@chromium.org, Eric Biggers <ebiggers@google.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
  Jingyi Wang <jingyi.wang@oss.qualcomm.com>,
  Tengfei Fan <tengfei.fan@oss.qualcomm.com>,
  Bartosz Golaszewski <brgl@kernel.org>, David Wronek <davidwronek@gmail.com>,
  Luca Weiss <luca.weiss@fairphone.com>,
  Neil Armstrong <neil.armstrong@linaro.org>,
  Melody Olvera <quic_molvera@quicinc.com>,
- Alexander Koskovich <akoskovich@pm.me>, Brian Masney <bmasney@redhat.com>,
+ Alexander Koskovich <akoskovich@pm.me>
+Cc: Brian Masney <bmasney@redhat.com>,
  Neeraj Soni <neeraj.soni@oss.qualcomm.com>,
  Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>,
  linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
@@ -79,8 +80,7 @@ Cc: Herbert Xu <herbert@gondor.apana.org.au>,
  Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
  Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
 References: <20260317-qcom_ice_power_and_clk_vote-v3-0-53371dbabd6a@oss.qualcomm.com>
- <20260317-qcom_ice_power_and_clk_vote-v3-2-53371dbabd6a@oss.qualcomm.com>
- <7dqo6qbpwgltnf7xfgiogfdpb6f34fpwsxuksdpphjqjljzsr6@hwqv7wjarob5>
+ <20260317-qcom_ice_power_and_clk_vote-v3-12-53371dbabd6a@oss.qualcomm.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -126,23 +126,24 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <7dqo6qbpwgltnf7xfgiogfdpb6f34fpwsxuksdpphjqjljzsr6@hwqv7wjarob5>
+In-Reply-To: <20260317-qcom_ice_power_and_clk_vote-v3-12-53371dbabd6a@oss.qualcomm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22082-lists,linux-crypto=lfdr.de];
+	URIBL_MULTI_FAIL(0.00)[qualcomm.com:server fail,sea.lore.kernel.org:server fail];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22083-lists,linux-crypto=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gondor.apana.org.au,davemloft.net,kernel.org,oss.qualcomm.com,chromium.org,google.com,gmail.com,fairphone.com,linaro.org,quicinc.com,pm.me,redhat.com,vger.kernel.org];
+	FREEMAIL_TO(0.00)[oss.qualcomm.com,gondor.apana.org.au,davemloft.net,kernel.org,chromium.org,google.com,gmail.com,fairphone.com,linaro.org,quicinc.com,pm.me];
 	RCPT_COUNT_TWELVE(0.00)[30];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -155,40 +156,36 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1606B2B6EDF
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[qualcomm.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7E7712B7047
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 17/03/2026 16:13, Dmitry Baryshkov wrote:
-> On Tue, Mar 17, 2026 at 02:50:41PM +0530, Harshal Dev wrote:
->> Update the DT bindings for inline-crypto engine to require the power-domain
->> and iface clock for Eliza and Milos.
+On 17/03/2026 10:20, Harshal Dev wrote:
+> Since Qualcomm inline-crypto engine (ICE) is now a dedicated driver
+> de-coupled from the QCOM UFS driver, it explicitly votes for its required
+> clocks during probe. For scenarios where the 'clk_ignore_unused' flag is
+> not passed on the kernel command line, to avoid potential unclocked ICE
+> hardware register access during probe the ICE driver should additionally
+> vote on the 'iface' clock.
+> Also update the suspend and resume callbacks to handle un-voting and voting
+> on the 'iface' clock.
 > 
-> Again, this mostly duplicates the subject (and your last paragraph).
-> Either drop it or move it there.
-> 
->>
->> If the 'clk_ignore_unused' flag is not passed on the kernel command line,
->> the unused 'iface' clock could be disabled by the kernel before ICE can
->> probe. This leads to unclocked ICE hardware register accces being observed
->> during ICE driver probe. On the other hand, If the 'pd_ignore_unused' flag
->> is not passed on the kernel command line, the unused UFS_PHY_GDSC power
->> domain could be disabled by the kernel before ICE probes. This results in
->> a 'stuck' clock issue being observed when ICE attempts to enable the
->> 'core' clock.
-> 
-> What's the difference from the previous patch?
+> Fixes: 2afbf43a4aec6 ("soc: qcom: Make the Qualcomm UFS/SDCC ICE a dedicated driver")
+> Signed-off-by: Harshal Dev <harshal.dev@oss.qualcomm.com>
+> ---
+>  drivers/soc/qcom/ice.c | 17 +++++++++++++++--
 
-There is no, it's just completely missing the point of development cycle
-and ignoring multiple of my feedbacks.
+Why the driver patch is after the DTS patches? It is explicitly
+documented as no-go.
 
-I asked to POST A PATCH targeting current RC. One patch. Current RC, not
-next.
-
-How is this supposed to be merged without the first one? How do anyone
-here imagine this is supposed to work when applying to the tree?
+You do not understand how patches are being applied and you think you
+can fix inherent problems in bisectability by creating incorrect order
+of patches. No, you cannot. Read maintainer soc profile and entire
+development-process document, so you understand how patches are applied,
+what are branches, what is current RC and how kernel is effectively
+released.
 
 Best regards,
 Krzysztof
