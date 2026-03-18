@@ -1,177 +1,204 @@
-Return-Path: <linux-crypto+bounces-22104-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22105-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wA07KdEDu2kgeQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-22104-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 20:58:09 +0100
+	id iCozJGgIu2mceQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-22105-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 21:17:44 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 647AC2C2460
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 20:58:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C32A2C26B5
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 21:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 16561301428A
-	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 19:57:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 29863303DAA2
+	for <lists+linux-crypto@lfdr.de>; Wed, 18 Mar 2026 20:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E133F7E87;
-	Wed, 18 Mar 2026 19:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="qdue4iyL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="3GxasUMD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD08361DB6;
+	Wed, 18 Mar 2026 20:17:17 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78ADD291C10;
-	Wed, 18 Mar 2026 19:57:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E38D014D719;
+	Wed, 18 Mar 2026 20:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.246.120.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773863846; cv=none; b=lLf5b1ekFHBdme5lrudxlmXZGI1joPPy+BVdsi1m6mpG57cnP+xSkbbK8zg8omZKPf263qYMTNnBpvyxL9vHVDSO6MJZU3ozgnHEJ2vW8ZNZl43UBgUg1zk19JCXtKC3XR45m2GuqPn1JoMQi+5ANPC1t3EazhlONnW4oo4cLfE=
+	t=1773865037; cv=none; b=awxEp5MK8Pv2G6PIPGAPsH0Yewor8VPKUi4R6FbV6WNmzzJlLh9gxG1DPQ0zW4F2oJBD0kbTKE1Nz1dl/gsTSwuo7FnEUsr2JyzvvGQzZvLCrxCp3/3tjCAcAP7Qjx2Yl3CR9xORlBG8v5Do905OIcPr5zJm3SKZoV7Q8YYieMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773863846; c=relaxed/simple;
-	bh=LidL4J9zLPkbYvfBgGkS/sMRcTCfLgpiUPfrnQgIiu8=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=JwfS5kv0YUqGe+0/TPC6q06VvEyuvC4mpRBAH8VtQopPl5zddPQUjbB5AWoMiAFeHGIwPHhUBjqZgwZIDlliCL0uVw/CH2hD8LU1kuq1LcqI6NT8giL+nW7AT5QKuCcaiE7BoOMkAz3Jv3EIB7K96qEIAwecgTHeQfZw4WIV4Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=qdue4iyL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=3GxasUMD; arc=none smtp.client-ip=202.12.124.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 3E72B1D0012B;
-	Wed, 18 Mar 2026 15:57:23 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Wed, 18 Mar 2026 15:57:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1773863843;
-	 x=1773950243; bh=Hv2JDo/h3dfYJP5SOe3RfmBdCEK5P70Y0N/U3cfXu7c=; b=
-	qdue4iyLJH2itNTeoiC6rvqyp+8/f2K2h2OJdsjfCJn3RY2fMbJWXtctt3p48VfQ
-	tROnvLx4ymcHxRDwRF1bb7Sm20SdW3YeYJqJyOym92kmEInghmodAXkM/jye3Fu4
-	p6x/UOJ35i2G8mW0FLNK2UR8BBLBJcANSCFBTDnm89kNV/TqxWbCAU4rFuxTSH99
-	jjb9SDGHNDtTXqjZNNh7yGQnzlzu2ZlZ1ezZ50nXXLnfhsWXJx+PyuFHty1NP927
-	2ZASb9OCeUaATVtOArrDM/ZHwwhprAp6HrNWyqBKGc/AN6+lFZUvZJ0GeImvpLuE
-	Af6IDX1jHD33HtjtwvqafA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1773863843; x=
-	1773950243; bh=Hv2JDo/h3dfYJP5SOe3RfmBdCEK5P70Y0N/U3cfXu7c=; b=3
-	GxasUMD3Qu1Cm48Y3fXL6bV47hKG5DAifxsAbyrtr8bASFRhrfD57sXwp9TocQYU
-	KiA4oE8brWQhXqbIpyVLeLJXdbkD+7Fji66y/WcAXBI0o6jJAGXxWavvTWXdttSC
-	2umfu8K2kZgDAjpnimUrEbA7OEr+AUB4bIP0Atdvnt9A49RG1/cgBdUBDAoSSd/D
-	UVzq+dYBvqaP5hc5TG9XwG9n30UlDvUEEkUYja3MsqwSDJ288h+TCDWwxXMZMvD2
-	m7N6kiMJJejburQdLomcnRf3e34Gmpt81g17HM/XFfSDxkZDZUYNiZH6GJ8DkJSU
-	wlN8NZqf9JQR5YvaUO9wg==
-X-ME-Sender: <xms:ogO7abov_C-TYtcFn5jsq57w-jRBTB0Wh0xPYwGkG1Y1qMF6-I8NNA>
-    <xme:ogO7aQdCSCiS24vPYS9DhLNz0hbmcoaA8j3gPIebvOhJXCEJWNdnqRUFnc-fJAQ3_
-    hYxuVR5qkUCfK8WLKebzsiCQtwy64x-0i5K5EtBuGzcAogn5Hot-Ro>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeftdehtdefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepudehpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopegtohhlihhnrdhirdhkihhnghesghhmrghilhdrtghomhdprhgtph
-    htthhopeguihhonhhnrghglhgriigvsehgohhoghhlvgdrtghomhdprhgtphhtthhopegt
-    vggurhhitgdrgihinhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhdrjhdrfi
-    hilhhlihgrmhhssehinhhtvghlrdgtohhmpdhrtghpthhtoheprghruggssehkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopegrrhhnugeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    epvggsihhgghgvrhhssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmhhhirhgrmhgr
-    theskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepiihhohhuhihuhhgrnhhgsehkhihlih
-    hnohhsrdgtnh
-X-ME-Proxy: <xmx:ogO7aevMUU2i_g-gDC57m0pzheDluLCZgW6j-dECYEoaBK-_n-taGw>
-    <xmx:ogO7aT7VPVBOivpokpAPz5D1SBE0kYY7qYlbnF4jzGzlJws7V055Rw>
-    <xmx:ogO7aZjv9HFUWqnFGEW9huNyxXbzYbuneZK48kXEc9Kym_LjE6dJTA>
-    <xmx:ogO7aVljPpv9GxIMBC_YYAvVy5IOC8L553sajU3o4pq4tHJj3NFNjg>
-    <xmx:owO7aYBIsb0Kp6qpNAfdL0mMWW0qBlhJJ0K8LLd8myWY3j9Vj9T77TqW>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 3D6C4700065; Wed, 18 Mar 2026 15:57:22 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1773865037; c=relaxed/simple;
+	bh=OOvaqkoWgMwW/DtOxPXAjFjVHwZYzAZ6X3fYu1spxbU=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=aC1l4tATwP6Fn1U5jYr+lfedZRoDMfF/hM0I8+QXr5Eckoe7ELClEUNKmXm5mK/23KsqcERzm06OUfXApfGVvyZwZn7P208wxVySi2u0a6Ll9VUwOzYTAqhniAIOe0RFZU6hrRvhE62gysmPmZvRZeyH7Naqnj3vCxUJ2hln/dY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rptu.de; spf=pass smtp.mailfrom=rptu.de; arc=none smtp.client-ip=131.246.120.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rptu.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rptu.de
+Received: from smtpclient.apple (ip5f58e5b0.dynamic.kabel-deutschland.de [95.88.229.176])
+	(authenticated bits=0)
+	by mailgw1.uni-kl.de (8.17.1.9/8.17.1.9/Debian-2+deb12u2) with ESMTPSA id 62IKGNGt2277528
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 18 Mar 2026 21:16:31 +0100
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-ThreadId: ArlFyPd34Br3
-Date: Wed, 18 Mar 2026 20:57:01 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Eric Biggers" <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
-Cc: "Arnd Bergmann" <arnd@kernel.org>,
- "Dan Williams" <dan.j.williams@intel.com>,
- "Dionna Amalie Glaze" <dionnaglaze@google.com>,
- "Cedric Xing" <cedric.xing@intel.com>,
- "Andrew Morton" <akpm@linux-foundation.org>, "Zi Li" <zi.li@linux.dev>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Lance Yang" <lance.yang@linux.dev>, "Zhou Yuhang" <zhouyuhang@kylinos.cn>,
- "Colin Ian King" <colin.i.king@gmail.com>,
- "Ard Biesheuvel" <ardb@kernel.org>, linux-coco@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Message-Id: <dc124ea8-05b8-42d2-93ad-d265e0ecf585@app.fastmail.com>
-In-Reply-To: <20260318164233.19800-1-ebiggers@kernel.org>
-References: <20260318164233.19800-1-ebiggers@kernel.org>
-Subject: Re: [PATCH] sample/tsm-mr: Use SHA-2 library APIs
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.65 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.500.181\))
+Subject: Re: [PATCH] x86: enable Data Operand Independent Timing Mode
+From: =?utf-8?Q?Marvin_H=C3=A4user?= <haeuser@rptu.de>
+In-Reply-To: <D5B3C493-BADA-4906-BB34-E5D60182F611@rptu.de>
+Date: Wed, 18 Mar 2026 21:16:13 +0100
+Cc: Eric Biggers <ebiggers@kernel.org>, Jann Horn <jannh@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Roxana Bradescu <roxabee@chromium.org>, Adam Langley <agl@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A5C6AB74-7E6B-4E4E-9836-45DF18F671DD@rptu.de>
+References: <20230125012801.362496-1-ebiggers@kernel.org>
+ <14506678-918f-81e1-2c26-2b347ff50701@intel.com>
+ <CAG48ez1NaWarARJj5SBdKKTYFO2MbX7xO75Rk0Q2iK8LX4BwFA@mail.gmail.com>
+ <394c92e2-a9aa-37e1-7a34-d7569ac844fd@intel.com>
+ <CAG48ez0ZK3pMqkto4DTZPNyddYcv8jPHQDNhYoFEPvSRLf80fQ@mail.gmail.com>
+ <e37a17c4-8611-6d1d-85ad-fcd04ff285e1@intel.com> <Y9MAvhQYlOe4l2BM@gmail.com>
+ <8b2771ce-9cfa-54cc-de6b-e80ce7af0a93@intel.com>
+ <16e3217b-1561-51ea-7514-014e27240402@intel.com>
+ <Y9oMmYWzy7mlk3D9@sol.localdomain>
+ <c5809098-9066-d90d-1bcc-108a11525cac@intel.com>
+ <851920c5-31c9-ddd9-3e2d-57d379aa0671@intel.com>
+ <33E64985-BE38-49D6-AB1C-CD7CFC1D08F1@rptu.de>
+ <7dfb5fe7-295f-4a29-a633-c2907a1fdb60@intel.com>
+ <D5B3C493-BADA-4906-BB34-E5D60182F611@rptu.de>
+To: Dave Hansen <dave.hansen@intel.com>
+X-Mailer: Apple Mail (2.3864.500.181)
+X-Spam-Score:  (-2.9)
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[arndb.de,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[arndb.de:s=fm3,messagingengine.com:s=fm1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[rptu.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	TAGGED_FROM(0.00)[bounces-22104-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22105-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FREEMAIL_CC(0.00)[kernel.org,intel.com,google.com,linux-foundation.org,linux.dev,kylinos.cn,gmail.com,lists.linux.dev,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
+	NEURAL_HAM(-0.00)[-0.921];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	R_DKIM_NA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[arnd@arndb.de,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[arndb.de:+,messagingengine.com:+];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FROM_NEQ_ENVFROM(0.00)[haeuser@rptu.de,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	NEURAL_HAM(-0.00)[-0.341];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,app.fastmail.com:mid,messagingengine.com:dkim,arndb.de:dkim,arndb.de:email]
-X-Rspamd-Queue-Id: 647AC2C2460
+	APPLE_MAILER_COMMON(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:email,gofetch.fail:url]
+X-Rspamd-Queue-Id: 0C32A2C26B5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 18, 2026, at 17:42, Eric Biggers wrote:
-> Given that tsm_mr_sample has a particular set of algorithms that it
-> wants, just use the library APIs for those algorithms rather than
-> crypto_shash.  This is more straightforward and a bit more efficient.
->
-> This fixes an issue where this module failed to build due to the kconfig
-> options CRYPTO and CRYPTO_HASH not being selected.  Also, even if it
-> built, crypto_alloc_shash() could fail at runtime due to the needed
-> algorithms not being available.
->
-> The library functions simply use direct linking.  So if it builds, which
-> it will due to the kconfig options being enabled, they are available.
->
-> Fixes: f6953f1f9ec4 ("tsm-mr: Add tsm-mr sample code")
-> Fixes: 44a3873df811 ("coco/guest: Remove unneeded selection of CRYPTO")
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> ---
->
-> I'd like to take this via libcrypto-next, as that is where
-> "coco/guest: Remove unneeded selection of CRYPTO" is.
+(CC, sorry for resending, my client converted the e-mail to rich text by =
+accident)
 
-Thanks for fixing this! It is indeed nicer than the fix
-I sent earlier today.
+> On 18. Mar 2026, at 16:44, Dave Hansen <dave.hansen@intel.com> wrote:
+>=20
+> I'd summarize it like this: lots of meetings, no updates.
+>=20
+> IMNHO (and not speaking for my employer) DOITM itself is dead. There's
+> almost no chance of Linux ever doing anything with the existing, =
+public
+> DOITM architecture.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Thanks for the quick update!
+
+Well, I am not sure this changes much. So, DOITM has always been more or =
+less
+an alias for (DDPD_U | PSFD) (surprisingly, I don=E2=80=99t think the =
+documentation
+mentions FSFP is disabled in DOITM?) and will likely remain exactly =
+that.
+
+It might still make sense for the kernel to have some general DIT =
+control.
+Not only does ARM have DIT with a definition analogous to DOITM. The =
+only
+real-world implementation of ARM DIT I know of, Apple silicon, also =
+toggles
+their DDP alongside the core DIT semantics (starting with Apple M3) [1]. =
+This
+makes it roughly equivalent to Intel DOITM. Apple, for their =
+implementation,
+recommends toggling DIT for crypto code rather than per-process =
+protection [2].
+Of course, ARM=E2=80=99s doesn=E2=80=99t need a syscall.
+
+So, to my understanding, DDP (and FSFP?) would still need to become =
+=E2=80=9Cbugs=E2=80=9D in
+the kernel to be independent of SSBD (unsure there is a strong benefit, =
+but
+the documentation says there are alternative mitigations to SSB). The =
+same is
+true for MCDT, which appears to be an actual bug (userspace can apply
+mitigations, so the kernel should just report whether the CPU is =
+affected; or
+is that not desired?). As Intel DOITM and Apple DIT have done, it still =
+makes
+sense to classify DDP under the DIT umbrella, because it=E2=80=99s the =
+only =E2=80=9Cbug=E2=80=9D
+that leaks your secrets by design. So a general kernel DIT control =
+should
+toggle it, regardless of DOITM=E2=80=99s future. This would also allow =
+adding DDP-like
+optimizations with separate kill switches in the future, if necessary =
+(though
+that=E2=80=99s exactly the problem DOITM would solve).
+
+OT: I think applications may benefit from an opt-out speculation =
+mitigation
+control. By that I don=E2=80=99t mean that every process has all =
+mitigations applied
+by default and has to proactively disable them, but that a process makes =
+an
+=E2=80=9Capply sensible mitigations=E2=80=9D syscall, agnostic to what =
+these particular
+mitigations are. If an application has manual hardening, it can then opt =
+out
+of a specific heavyweight kernel mitigation (e.g., it may be happy with =
+lfence
+over SSBD, or it may not be affected by a particular =E2=80=9Cbug=E2=80=9D=
+ by design).
+Of course, this can be implemented in userspace by having a shared =
+library that
+keeps up with in-kernel mitigations and applies them considering the
+application-provided opt-out list. Otherwise, code remains vulnerable to =
+novel
+=E2=80=9Cbugs=E2=80=9D until updated. I=E2=80=99m not sure whether an =
+in-kernel mechanism or a shared
+library would be the way to go. For mitigations that are low-risk but =
+high-cost,
+there could still be a separate opt-in. I just feel like the OS is the =
+best
+suited entity to make that decision when a new =E2=80=9Cbug=E2=80=9D =
+drops.
+
+Best regards,
+Marvin
+
+[1] https://gofetch.fail/files/gofetch.pdf
+
+[2] =
+https://developer.apple.com/documentation/xcode/writing-arm64-code-for-app=
+le-platforms=
 
