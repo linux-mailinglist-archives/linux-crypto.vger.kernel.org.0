@@ -1,155 +1,214 @@
-Return-Path: <linux-crypto+bounces-22154-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22156-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8AGoELpjvWlF9gIAu9opvQ
-	(envelope-from <linux-crypto+bounces-22154-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 16:11:54 +0100
+	id +BnsKSmLvWnY+wIAu9opvQ
+	(envelope-from <linux-crypto+bounces-22156-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 19:00:09 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D00042DC680
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 16:11:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C9DC2DF0A4
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 19:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C0085305FAF4
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 15:06:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A16D330F2F85
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 17:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7596E3A3839;
-	Fri, 20 Mar 2026 15:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3BC3CFF5A;
+	Fri, 20 Mar 2026 17:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NcLxmILw"
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="dHifkCS+"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E071E3803D6
-	for <linux-crypto@vger.kernel.org>; Fri, 20 Mar 2026 15:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F6B3D34B2;
+	Fri, 20 Mar 2026 17:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774019186; cv=none; b=QUsq3iRW/eCN/o5VrxV9e/+G8WKoqyjyszfSK0zdGp7gWz+5cl1f+zWkUeYOrIfcYqpoVpTkGnd2FSMDNDsgS4Ub5LT4+X8WOJl0ffT9vQAyuYtBjvuGG3vsMfUkwqKukbbO9ve4zUrXEuCH7St0Ogiact+kdILbzjV2yEeCdNc=
+	t=1774029433; cv=none; b=QLw59og42WeH2LrlqS7SR9hUPzG7HOX+eXT1SxCwepuLH4wgxDZElqh8K+zgucKj5m3lpHMJ8CHKKMtfu2/BH8wjLquLZa7AK5nCNmHOBw+pBIoSVxn9zE6/37vMbzNMPLDA1/Hl/dpjAuqRByxUAbJWclPKIONxcgRKAXWY3Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774019186; c=relaxed/simple;
-	bh=DvpAtXbZitiq7MQ3g4MX7pj97XkM96ETYqAuNBHUsI8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aKoweIPVXxr517qkTBhN9sSOn1iMnR2IbP5bBYT0CkvKmq85tXRV+wgxOPndLzmiSCUixBoSot6O95hS40Vn9MUTqXv0kroZG1VdQ2C1pWoyi1Bcz/0NtGOX/S2KpSA4flHAkjBZ2ehGVLWROmtjU83ZcgeuikmNIZp6Q2cyKv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NcLxmILw; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 20 Mar 2026 16:06:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1774019173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PM0ecKAgG32QvB1q4aNjle0Vk2lnfC0MirltUTa1XaE=;
-	b=NcLxmILw2TOdpNaObDp5OgcX9bNJH2V5AALnfEbAl2pNVhALD6ziRtUXejDg+29FQGKQLp
-	TrwRNU0wwUFk5L5L9zeRyrJj5UoCoNQyQ/cwcssFf5XfD+x5kxWEbePikVbap/czQdCMUa
-	vG9osed2XollmYfkkBuneNIRfZbT5fM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Haren Myneni <haren@us.ibm.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] crypto: nx - Fix packed layout in struct
- nx842_crypto_header
-Message-ID: <ab1iXryB4x0YwA3w@linux.dev>
-References: <abnmUvHzhgS9xA-m@kspp>
+	s=arc-20240116; t=1774029433; c=relaxed/simple;
+	bh=El5ibJ79wHlp/UQyQg10sj63O6vV45KV3KVRT42VTaQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=sukm/wzzcIZ5TVebXqEPhmS2Q3QEEZqr/PPFsBtrakHrRiINVyv+PoMaZRICKrjL2RGX1eIofG3bMfOALIqtdt5NEp01r+sGdzITuFwSe6XhgSBmAhQme6ClpeP9yh8tlb2jUD0fe3o1Y6CBJovgBXC/9mkl58tFZG71O9vPf/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=dHifkCS+; arc=none smtp.client-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-Id:Date:Subject:From:Reply-To:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=xNzfgZE3GvOiZ8lnfvpmq6wiqYLCeS1daD7szf0/GSI=; b=dHifkCS+/8LbdLoqIRxfkbw40M
+	u2D3FkrvAu5HCoT+veawSELv8EZCGaX/+21fJOZToA8QEReUas+SPp9WCQttMgQqtqAffYGdigBrs
+	XmXW/SaIkYyXODAEYkfoXquz1m1Uh7zeIvm8ZzdFwIH158i0Joz9vXNV848pzzcnQc6i/c5Gkadzx
+	JPEXtyy/I1xhNuMksWVMek/87ktNtEHi1LZK3SAZ6blQSGCydc7aMfEeasSbwcRlp6llywS2kqREq
+	aDIfnP4zj1JKXZ5OUsscZUmE7I5HgUJr9OPmFunZHaX1FRpqivF80BW5SQPP0qFz76raKSHvg3GT6
+	FHohfHag==;
+Received: from authenticated user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.94.2)
+	(envelope-from <leitao@debian.org>)
+	id 1w3e5p-005Nef-SG; Fri, 20 Mar 2026 17:57:04 +0000
+From: Breno Leitao <leitao@debian.org>
+Subject: [PATCH v2 0/5] workqueue: Introduce a sharded cache affinity scope
+Date: Fri, 20 Mar 2026 10:56:26 -0700
+Message-Id: <20260320-workqueue_sharded-v2-0-8372930931af@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <abnmUvHzhgS9xA-m@kspp>
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAEuKvWkC/23Nyw6CMBCF4VdpZk1NOyi3le9hiGnpCNWE6hRQQ
+ 3h3A7p0eZI/35khEnuKUIkZmCYffeihEpgIaDrTtyS9g0oAKsxUqkr5DHx7jDTSOXaGHTmJKeb
+ lIaOiKC0kAu5MF//azFP93XG0V2qGFVqLzsch8Hs7nfTa/XyNf/xJSyWx2acmt0WmnTo6st70u
+ 8At1MuyfADyghqXxQAAAA==
+X-Change-ID: 20260309-workqueue_sharded-2327956e889b
+To: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, puranjay@kernel.org, 
+ linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+ linux-fsdevel@vger.kernel.org, Michael van der Westhuizen <rmikey@meta.com>, 
+ kernel-team@meta.com, Chuck Lever <chuck.lever@oracle.com>, 
+ Breno Leitao <leitao@debian.org>
+X-Mailer: b4 0.15-dev-363b9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6032; i=leitao@debian.org;
+ h=from:subject:message-id; bh=El5ibJ79wHlp/UQyQg10sj63O6vV45KV3KVRT42VTaQ=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBpvYprvZl176tK78m4VrjPORFM6f0Ln/+yYwobN
+ 3ddatwOAPOJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCab2KawAKCRA1o5Of/Hh3
+ bawtD/4j+QLuOMawIhP4kc/Z6B1Hh91k2iqu1hle2iDyejlGhaSHlqZW7bEI4DvRrtrn5Fp1fy9
+ bnKaczvs5uFqQ6EN9BrBPQp5NaexUdEsQ3pkEzsqZiOSGb344q/pVpXDTEvCxgihsgg02FoLGa+
+ UWnjtBPorWWRF5P2cknGeBrNA1nHIea64ra+WlWfTCd4Y6z4pG0EcAGgn1Xt9rj+HeB5xCPnXZg
+ JCs7b2qLf+7FbmH28YmHXOaTi+GL6HcE9HIGEZQsrDM9bAAMLeayncOYS69mkI15z5VdIpwMCXb
+ /VlYGHxVuiuNCOf31qkCf/BUBEjPEWOTZeumeR7W9/8fk3nqq44Xb3m7JDN3Mh431ph1pYsnnUx
+ Bupjt2zLTDT+kCPyZFmdVyyANb53UvvWD7QSBf8sSI4g9rDNufgn+QuTjSYM4m7Vg5eW0xuE3u5
+ HmVIi3FWSxXbXjL8paAkjTIvOzSKA0X8Fl5oXx0Od7gqRUnpJTZsj2QwLHuzf5B4Ln8FFawW/cU
+ Z8EUcj0Tz+8rvDtiDq0LXvLpKg56K8qjAJ8HWDmpO/6JEHAsYixz6YUhchuuyLGrkjrkhttXRsu
+ g21kcJYpavMryaXnnpTuCSIUnd5F7HBsId9Qbnk1TEZwLeqbzts21YpmgB4LVp+FOOG7PJiEHhy
+ wsZzPERwWYGo67g==
+X-Developer-Key: i=leitao@debian.org; a=openpgp;
+ fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
+X-Debian-User: leitao
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_DKIM_ALLOW(-0.20)[debian.org:s=smtpauto.stravinsky];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22154-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[us.ibm.com,linux.ibm.com,ellerman.id.au,gmail.com,kernel.org,gondor.apana.org.au,davemloft.net,lists.ozlabs.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[kernel.org,gmail.com,linux-foundation.org];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[debian.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22156-lists,linux-crypto=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.980];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[leitao@debian.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[debian.org:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D00042DC680
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 0C9DC2DF0A4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 17, 2026 at 05:40:02PM -0600, Gustavo A. R. Silva wrote:
-> struct nx842_crypto_header is declared with the __packed attribute,
-> however	the fields grouped with struct_group_tagged() were not packed.
-> This caused the grouped header portion of the structure to lose the
-> packed layout guarantees of the containing structure.
-> 
-> Fix this by replacing struct_group_tagged() with __struct_group(...,
-> ..., __packed, ...) so the grouped fields are packed, and the original
-> layout is preserved, restoring the intended packed layout of the
-> structure.
-> 
-> Before changes:
-> struct nx842_crypto_header {
-> 	union {
-> 		struct {
-> 			__be16     magic;                /*     0     2 */
-> 			__be16     ignore;               /*     2     2 */
-> 			u8         groups;               /*     4     1 */
-> 		};                                       /*     0     6 */
-> 		struct nx842_crypto_header_hdr hdr;      /*     0     6 */
-> 	};                                               /*     0     6 */
-> 	struct nx842_crypto_header_group group[];        /*     6     0 */
-> 
-> 	/* size: 6, cachelines: 1, members: 2 */
-> 	/* last cacheline: 6 bytes */
-> } __attribute__((__packed__));
-> 
-> After changes:
-> struct nx842_crypto_header {
-> 	union {
-> 		struct {
-> 			__be16     magic;                /*     0     2 */
-> 			__be16     ignore;               /*     2     2 */
-> 			u8         groups;               /*     4     1 */
-> 		} __attribute__((__packed__));           /*     0     5 */
-> 		struct nx842_crypto_header_hdr hdr;      /*     0     5 */
-> 	};                                               /*     0     5 */
-> 	struct nx842_crypto_header_group group[];        /*     5     0 */
-> 
-> 	/* size: 5, cachelines: 1, members: 2 */
-> 	/* last cacheline: 5 bytes */
-> } __attribute__((__packed__));
-> 
-> Fixes: 1e6b251ce175 ("crypto: nx - Avoid -Wflex-array-member-not-at-end warning")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/crypto/nx/nx-842.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+TL;DR: Some modern processors have many CPUs per LLC (L3 cache), and
+unbound workqueues using the default affinity (WQ_AFFN_CACHE) collapse
+to a single worker pool, causing heavy spinlock (pool->lock) contention.
+Create a new affinity (WQ_AFFN_CACHE_SHARD) that caps each pool at
+wq_cache_shard_size CPUs (default 8).
 
-Reviewed-by: Thorsten Blum <thorsten.blum@linux.dev>
+Changes from RFC:
+
+* wq_cache_shard_size is in terms of cores (not vCPU). So,
+  wq_cache_shard_size=8 means the pool will have 8 cores and their siblings,
+  like 16 threads/CPUs if SMT=1
+
+* Got more data:
+
+  - AMD EPYC: All means are within ~1 stdev of zero. The deltas are
+    indistinguishable from noise. Shard scoping has no measurable effect
+    regardless of shard size. This is justified due to AMD EPYC having
+    11 L3 domains and lock contention not being a problem:
+
+  - ARM: A strong, consistent signal. At shard sizes 8 and 16 the mean
+    improvement is ~7% with relatively tight stdev (~1–2%) at write,
+    meaning the gain is real and reproducible across all IO engines.
+    Even shard size 4 shows a solid +3.5% with the tightest stdev
+    (0.97%).
+
+    Reads: Small shard sizes (2, 4) show a slight regression of
+    ~1.3–1.7% (low stdev, so consistent). Larger shard sizes (8, 16)
+    flip to a modest +1.4% gain, though shard_size=8 reads have high
+    variance (stdev 2.79%) driven by a single outliers (which seems
+    noise)
+
+  - Sweet spot: Shard size 8 to 16 offers the best overall profile
+    — highest write gain (6.95%) with the lowest write stdev (1.18%),
+    plus a consistent read gain (1.42%, stdev 0.70%), no impact on
+    Intel.
+
+* ARM (NVIDIA Grace - Neoverse V2 - single L3 domain: CPUs 0-71)
+
+  ┌────────────┬────────────┬─────────────┬───────────┬────────────┐
+  │ Shard Size │ Write Mean │ Write StDev │ Read Mean │ Read StDev │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 2          │ +0.75%     │ 1.32%       │ -1.28%    │ 0.45%      │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 4          │ +3.45%     │ 0.97%       │ -1.73%    │ 0.52%      │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 8          │ +6.72%     │ 1.97%       │ +1.38%    │ 2.79%      │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 16         │ +6.95%     │ 1.18%       │ +1.42%    │ 0.70%      │
+  └────────────┴────────────┴─────────────┴───────────┴────────────┘
+
+ * Intel (AMD EPYC 9D64 88-Core Processor - 11 L3 domains, 8 Cores / 16 vCPUs each)
+
+  ┌────────────┬────────────┬─────────────┬───────────┬────────────┐
+  │ Shard Size │ Write Mean │ Write StDev │ Read Mean │ Read StDev │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 2          │ +3.22%     │ 1.90%       │ -0.08%    │ 0.72%      │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 4          │ +0.92%     │ 1.59%       │ +0.67%    │ 2.33%      │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 8          │ +1.75%     │ 1.47%       │ -0.42%    │ 0.72%      │
+  ├────────────┼────────────┼─────────────┼───────────┼────────────┤
+  │ 16         │ +1.22%     │ 1.72%       │ +0.43%    │ 1.32%      │
+  └────────────┴────────────┴─────────────┴───────────┴────────────┘
+
+---
+Changes in v2:
+- wq_cache_shard_size is in terms of cores (not vCPU)
+- Link to v1: https://patch.msgid.link/20260312-workqueue_sharded-v1-0-2c43a7b861d0@debian.org
+
+---
+Breno Leitao (5):
+      workqueue: fix typo in WQ_AFFN_SMT comment
+      workqueue: add WQ_AFFN_CACHE_SHARD affinity scope
+      workqueue: set WQ_AFFN_CACHE_SHARD as the default affinity scope
+      tools/workqueue: add CACHE_SHARD support to wq_dump.py
+      workqueue: add test_workqueue benchmark module
+
+ include/linux/workqueue.h  |   3 +-
+ kernel/workqueue.c         | 110 +++++++++++++++++-
+ lib/Kconfig.debug          |  10 ++
+ lib/Makefile               |   1 +
+ lib/test_workqueue.c       | 277 +++++++++++++++++++++++++++++++++++++++++++++
+ tools/workqueue/wq_dump.py |   3 +-
+ 6 files changed, 401 insertions(+), 3 deletions(-)
+---
+base-commit: 1adb306427e971ccac25b19410c9f068b92bd583
+change-id: 20260309-workqueue_sharded-2327956e889b
+
+Best regards,
+--  
+Breno Leitao <leitao@debian.org>
+
 
