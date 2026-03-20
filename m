@@ -1,436 +1,163 @@
-Return-Path: <linux-crypto+bounces-22151-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22153-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gLIQCCYnvWmr6wIAu9opvQ
-	(envelope-from <linux-crypto+bounces-22151-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 11:53:26 +0100
+	id GI0sBpUvvWmI7QIAu9opvQ
+	(envelope-from <linux-crypto+bounces-22153-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 12:29:25 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21C7E2D91EA
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 11:53:25 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D7232D991B
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 12:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7A7B1301C685
-	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 10:51:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F7BB30F70BD
+	for <lists+linux-crypto@lfdr.de>; Fri, 20 Mar 2026 11:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4336A38736C;
-	Fri, 20 Mar 2026 10:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292D43A6B82;
+	Fri, 20 Mar 2026 11:26:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QWmD7QEw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hcswx/hs"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012005.outbound.protection.outlook.com [40.107.209.5])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6616A36826B;
-	Fri, 20 Mar 2026 10:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.5
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774003881; cv=fail; b=NFkBhRwiuclqmUbIfDvYIZnGvwFNi75TfB5iQmiBaHY/ksuX2lVa5M7KE202aYHnQ0HB1AJC7+2dgG/EPNk4UhA8weriAE4rwuhnHY669Z0XaVq+g1oT+4Ejdd/gY35d9DZZzF2WHxqX28Jxkztue/aWy4KXzZ2FHxmH0IzvpQk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774003881; c=relaxed/simple;
-	bh=eP4Da17reIjcVzMCsJLSbBGsPWbA0+QPd7lK5mNrojg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VgnYUykj3GaMGLbStJ+uVjETZmaD1JaME4NTDlwG4OpZhGhbULqKXhKiLbYbCUIUeIKOdRK/k3jrARjk51nZQlD5TnDyjkb0qE0LlJY/eDBbNc4WXRuBBegrIKPKaanatPZEuzBrQ4Ilz2XrRE6YjIQqAMO/q75uyQql1ebKfPY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=QWmD7QEw; arc=fail smtp.client-ip=40.107.209.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Z0qtq529cAaNwMD/2ok/r4hYKOzfuouGqzigtq7thy1XuIJjg12bPnsLcwAFLQVE96Fk2qNRJ6uU8MLG+kfV3bW9FDMU16nUA07tMxvp5HN/3/IRCh/Nhkosy5igxx1WkGMxWcSlRevp9tOy9oAL7EnwH7Oc/LhrN0bztmCBslU7B7v7WZDgZOXsgeWUB88X4OPrcyfp1Uq0fJ2DHtnVqWE7MfBZRNvLFsoL3XuHYOC8+zH+/Y2lQstkTJagadEPi1sKFZ257P98Qbvu3oHdfQmxZ3P4xxOpINJEGkhmItJxrgncs99VZQkJX0+HdW8gtO1tqYCDGS5bAxyEQnfcog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VD3pxF2vP5WAg6PFiXFypNF/Ffeyb/gsNuq4Hm00pkk=;
- b=Oir1icsBAn8eYc852fXJ4qHf+lRdorSQfKMVU/TBp+1d5lxflD/ibreAnStouaa+C5ljmu5D7xdlkHfnp0LbBFza0LMBbad0LLaZ//JJ/EpOWO8se3XgMLZOZ9fb3yXWLfbrSrsnYVvdhNbuLQxuOgGo2dMisXQ4rKc7bGeFxr+RILjAhTpyGT/VAIEIRMU5KFr/3OEoCfgmX+gkgDdSW7nhsX1vwTd/JH67pzpJB2jR6hEWbqGBMz1GzYLGwrEZwfbnfe4xRciZuCjykExV3JAmzN01i/myphgZcrfJrv6INXxXat+1iNL0/JuVRK3scgtkrL7qIdGycHt6jdTxLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.23.194) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VD3pxF2vP5WAg6PFiXFypNF/Ffeyb/gsNuq4Hm00pkk=;
- b=QWmD7QEwWjMe7R2mNeu1LHScf9pkxTOVQYl2U6KvxDeB+mRZYKadKgI9waRRk9XF0HPAkaG90xpiQ7sMfxc6RqJtlMG2l2+6TIX95PCBulPCij/PV8FZ1fYgcRYt6T5GixzVk82AbDAkj2JvtLhB4ZxyhZGpbFjfOm196+oszOM=
-Received: from BY3PR05CA0006.namprd05.prod.outlook.com (2603:10b6:a03:254::11)
- by PH3PPF0A29BA37B.namprd10.prod.outlook.com (2603:10b6:518:1::787) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9700.18; Fri, 20 Mar
- 2026 10:51:17 +0000
-Received: from SJ1PEPF00001CE9.namprd03.prod.outlook.com
- (2603:10b6:a03:254::4) by BY3PR05CA0006.outlook.office365.com
- (2603:10b6:a03:254::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9723.23 via Frontend Transport; Fri,
- 20 Mar 2026 10:51:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.194)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.23.194 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.23.194; helo=lewvzet200.ext.ti.com; pr=C
-Received: from lewvzet200.ext.ti.com (198.47.23.194) by
- SJ1PEPF00001CE9.mail.protection.outlook.com (10.167.242.25) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9723.19 via Frontend Transport; Fri, 20 Mar 2026 10:51:16 +0000
-Received: from DLEE209.ent.ti.com (157.170.170.98) by lewvzet200.ext.ti.com
- (10.4.14.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 20 Mar
- 2026 05:51:15 -0500
-Received: from DLEE214.ent.ti.com (157.170.170.117) by DLEE209.ent.ti.com
- (157.170.170.98) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 20 Mar
- 2026 05:51:15 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE214.ent.ti.com
- (157.170.170.117) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Fri, 20 Mar 2026 05:51:15 -0500
-Received: from pratham-Workstation-PC (pratham-workstation-pc.dhcp.ti.com [10.24.69.191])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 62KApEO24191043;
-	Fri, 20 Mar 2026 05:51:14 -0500
-From: T Pratham <t-pratham@ti.com>
-To: T Pratham <t-pratham@ti.com>, Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-CC: Manorit Chawdhry <m-chawdhry@ti.com>, Kamlesh Gurudasani <kamlesh@ti.com>,
-	Shiva Tripathi <s-tripathi1@ti.com>, Kavitha Malarvizhi
-	<k-malarvizhi@ti.com>, Vishal Mahaveer <vishalm@ti.com>, Praneeth Bajjuri
-	<praneeth@ti.com>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v11 2/2] crypto: ti - Add support for AES-CCM in DTHEv2 driver
-Date: Fri, 20 Mar 2026 16:20:52 +0530
-Message-ID: <20260320105052.3931552-3-t-pratham@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260320105052.3931552-1-t-pratham@ti.com>
-References: <20260320105052.3931552-1-t-pratham@ti.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AA238B15B;
+	Fri, 20 Mar 2026 11:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774005979; cv=none; b=e5bUof6gASp77CWAM/DnlAaxTJnop3I7DL56rqS8LtoNGuG/FSYKadd7O7uXIOEsRDL4LAJAMvbFPNABaklnG/sNTMDqppO2+U3Fx0S1gc9HpVjw9YVf0i7DguCB+SFoQQK98IsO3dBIVL8CVnM2kgQAP4AIx3p2DvJeLeqv2zs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774005979; c=relaxed/simple;
+	bh=uuHxpvvk+KMKo/NMJwYXrb2UA5H+9aWt/1abSvlkJdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SZgQOo/RzbH3H7kogV1nM2Jbs7yFLt+qcEh4i05W3txtCHQd1j3TRO+LWddVmA6UUXneHyAKR8na8WbPr6Hjq0MdnKzG3dVbt5nxbBn0psJ9loEXePIo0/03ghHdVNJSI0TtK0dyPgsusyCCuznyUpf+/TJgG1EebU189mBl8DE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hcswx/hs; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774005978; x=1805541978;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uuHxpvvk+KMKo/NMJwYXrb2UA5H+9aWt/1abSvlkJdM=;
+  b=hcswx/hsOKMsA7ysfXjCA7daemcXTHlHwlmB1UY67oiCU/lFrLZRcgKe
+   EbYfsQC4U+YI3sT8b9mzaKk49LInLUmtXKBrh6eoh8TPHYnrOY9uwRUFm
+   dPXAU9SKVS7vQR5Sx+/6AE5X5+2yTcrJAplyk4s9rkZVP3TTAmiWchGld
+   /qx2fTeIjABFqbemdARnaldGtyh9E5d0YDsDL9FIFf9UBfumvT9FLUZQg
+   UY1+bPF8TH+Ce65zWG0X+rrDKWnfbVaYeiF2CQjEXN4S9HnHOR6Gagk9W
+   H38DK2gMaNsuMYI0am0ZbgqnZsf9egs6WfjHwpWyx4xQqiUTzVFh9r4AM
+   A==;
+X-CSE-ConnectionGUID: KkpzZ+YzQ5GGz4QbYhXo8Q==
+X-CSE-MsgGUID: Z4MDuuFpSEe96l7LQ2gBow==
+X-IronPort-AV: E=McAfee;i="6800,10657,11734"; a="85403920"
+X-IronPort-AV: E=Sophos;i="6.23,130,1770624000"; 
+   d="scan'208";a="85403920"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2026 04:25:57 -0700
+X-CSE-ConnectionGUID: AvowKarpTfSGc8EpGWTeew==
+X-CSE-MsgGUID: GUsOegipRcWhO/OUdJAmFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,130,1770624000"; 
+   d="scan'208";a="227988118"
+Received: from lkp-server02.sh.intel.com (HELO a51c2a36b9df) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 20 Mar 2026 04:25:53 -0700
+Received: from kbuild by a51c2a36b9df with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1w3Xvq-000000002Ij-46fk;
+	Fri, 20 Mar 2026 11:24:53 +0000
+Date: Fri, 20 Mar 2026 19:22:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Demian Shulhan <demyansh@gmail.com>, ebiggers@kernel.org,
+	ardb@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Demian Shulhan <demyansh@gmail.com>
+Subject: Re: [PATCH] lib/crc: arm64: add NEON accelerated CRC64-NVMe
+ implementation
+Message-ID: <202603201958.gFoHxLV7-lkp@intel.com>
+References: <20260317065425.2684093-1-demyansh@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE9:EE_|PH3PPF0A29BA37B:EE_
-X-MS-Office365-Filtering-Correlation-Id: 45b99707-8b87-4e89-0c38-08de866e9c90
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|1800799024|82310400026|376014|56012099003|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	nJg9SyMda1RzHNK0eWDNHjlljLeyQzEjHNCVG1PZPUMf/bYV8kHsi5EYe7W71LWa/cm2yX1AuE/qWnWRzIUfJ5QafpZrIhBxvQb1F5/E1PjRzZu+ccYAUnPQWLhfcG9j7KXx513arEIOmVqQZK3J9hkMsQpOOerjMGRY4BifdKJhZfPAwA4dbEYkV4aWlWrpdcq0M9UYtl3kynQl48hPc0697lCju+gz4TNn28OXQnz/VhY7VD/2EJlF99b6XfviNNHyr1gfi2WnENPFfbhM37NNevjLFNKE4Lnv5CgvUzZ1BmJeRv9+/UVc6dYZEIwwSUesYAoUui3GmlLua0sFkaRoex82Af/rIVDT7btsFFyRh3YPgCuAwiCjULyOVCNA0g/YHLSvSGHxZ1Fh5j7fs2RXK2SBkah0mhbHD6UE8doEhXfQJkGG5z85uYo1Eo+W1J02gdAkEBLPUxy9l8lwLQY+5pJlzS50gllwtaUk7aybGbiSGtVi8Etggw94H43PRw2xHDJohFzSKfg1JTBfvz81KfjYNsMhxHYAwKPJWRzCudbDwmZeu1sdTA3Y+Wu1Tu+nsjzX0G7rWLEhd+GkzCIsDrgtGHprRKOwByqOom5W8BweRnd656oUyr45gdhGc+2Hl3Tai5nUP8D0qoyM69DnE/sKhIAyTTKPb3oK6quflQVK8SuzSkXGYAHzcsNjVMUc4fvo2U4azV4sgUE9R5+WmrmnDaz4EV5hB04yjFPzrs8aB6nv7XPWGRWDSfbEduDHlQ2wQ/5pGlNGU8WA+g==
-X-Forefront-Antispam-Report:
-	CIP:198.47.23.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet200.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(1800799024)(82310400026)(376014)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	oAZP+qv6ivYhaMYw1JB5LcNGqySYufmuEKUhRJ4Bv8orMC1+oCT8awZ1WeD2zGYlxNpXpIvfI3AarTu4s29zaoFK+HFNlV73UHdnDdbR/E+UooFfOHV1k7bWwEfy9Ji0zpYlgqwdWEGjqB4Yplq8X9DkecE2LgqpHYhMqdHvc8/xnXW8oIvDsm5oJQyF8irDr1AFWF+FdLkYekajwVW4fDOitdYHlnMDU3Vk6IH1bvFx5F3T068bRcb5yDLb6w71DZjQLIHX8V8uV86iwB/NYeCeWxCM6SOPWY+yF3yE/O66Hf6uWrxPrRlFrqDQ0gQ1uXU4qZHEhMJdzaH2FXzrVPQ2d40FCkahjKLvCIzoW1nbboBaNWhrD/p9gsj4sst+D/NnFMLVQ3EuHWFUoVdxX63KkfUE66QNPdeMXIEJG2+YCeSNzA359k1U2msIsjXk
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2026 10:51:16.3167
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45b99707-8b87-4e89-0c38-08de866e9c90
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.194];Helo=[lewvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00001CE9.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH3PPF0A29BA37B
-X-Spamd-Result: default: False [1.34 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260317065425.2684093-1-demyansh@gmail.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[ti.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[ti.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22151-lists,linux-crypto=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ti.com:dkim,ti.com:email,ti.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[ti.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[t-pratham@ti.com,linux-crypto@vger.kernel.org];
+	FREEMAIL_CC(0.00)[lists.linux.dev,vger.kernel.org,gmail.com];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,kernel.org];
+	TAGGED_FROM(0.00)[bounces-22153-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	NEURAL_HAM(-0.00)[-0.988];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.962];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCVD_COUNT_SEVEN(0.00)[10]
-X-Rspamd-Queue-Id: 21C7E2D91EA
+	RCPT_COUNT_SEVEN(0.00)[8];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 5D7232D991B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-AES-CCM is an AEAD algorithm supporting both encryption and
-authentication of data. This patch introduces support for AES-CCM AEAD
-algorithm in the DTHEv2 driver.
+Hi Demian,
 
-Signed-off-by: T Pratham <t-pratham@ti.com>
----
- drivers/crypto/ti/Kconfig         |   1 +
- drivers/crypto/ti/dthev2-aes.c    | 140 ++++++++++++++++++++++++++----
- drivers/crypto/ti/dthev2-common.h |   1 +
- 3 files changed, 126 insertions(+), 16 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/drivers/crypto/ti/Kconfig b/drivers/crypto/ti/Kconfig
-index 221e483737439..1a3a571ac8cef 100644
---- a/drivers/crypto/ti/Kconfig
-+++ b/drivers/crypto/ti/Kconfig
-@@ -9,6 +9,7 @@ config CRYPTO_DEV_TI_DTHEV2
- 	select CRYPTO_CTR
- 	select CRYPTO_XTS
- 	select CRYPTO_GCM
-+	select CRYPTO_CCM
- 	select SG_SPLIT
- 	help
- 	  This enables support for the TI DTHE V2 hw cryptography engine
-diff --git a/drivers/crypto/ti/dthev2-aes.c b/drivers/crypto/ti/dthev2-aes.c
-index 5583386decbef..eb5cd902dfb59 100644
---- a/drivers/crypto/ti/dthev2-aes.c
-+++ b/drivers/crypto/ti/dthev2-aes.c
-@@ -16,6 +16,7 @@
- 
- #include "dthev2-common.h"
- 
-+#include <linux/bitfield.h>
- #include <linux/delay.h>
- #include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
-@@ -69,6 +70,7 @@ enum aes_ctrl_mode_masks {
- 	AES_CTRL_CTR_MASK = BIT(6),
- 	AES_CTRL_XTS_MASK = BIT(12) | BIT(11),
- 	AES_CTRL_GCM_MASK = BIT(17) | BIT(16) | BIT(6),
-+	AES_CTRL_CCM_MASK = BIT(18) | BIT(6),
- };
- 
- #define DTHE_AES_CTRL_MODE_CLEAR_MASK		~GENMASK(28, 5)
-@@ -81,6 +83,11 @@ enum aes_ctrl_mode_masks {
- 
- #define DTHE_AES_CTRL_CTR_WIDTH_128B		(BIT(7) | BIT(8))
- 
-+#define DTHE_AES_CCM_L_FROM_IV_MASK		GENMASK(2, 0)
-+#define DTHE_AES_CCM_M_BITS			GENMASK(2, 0)
-+#define DTHE_AES_CTRL_CCM_L_FIELD_MASK		GENMASK(21, 19)
-+#define DTHE_AES_CTRL_CCM_M_FIELD_MASK		GENMASK(24, 22)
-+
- #define DTHE_AES_CTRL_SAVE_CTX_SET		BIT(29)
- 
- #define DTHE_AES_CTRL_OUTPUT_READY		BIT_MASK(0)
-@@ -96,6 +103,8 @@ enum aes_ctrl_mode_masks {
- #define AES_BLOCK_WORDS				(AES_BLOCK_SIZE / sizeof(u32))
- #define AES_IV_WORDS				AES_BLOCK_WORDS
- #define DTHE_AES_GCM_AAD_MAXLEN			(BIT_ULL(32) - 1)
-+#define DTHE_AES_CCM_AAD_MAXLEN			(BIT(16) - BIT(8))
-+#define DTHE_AES_CCM_CRYPT_MAXLEN		(BIT_ULL(61) - 1)
- #define POLL_TIMEOUT_INTERVAL			HZ
- 
- static int dthe_cipher_init_tfm(struct crypto_skcipher *tfm)
-@@ -275,6 +284,13 @@ static void dthe_aes_set_ctrl_key(struct dthe_tfm_ctx *ctx,
- 	case DTHE_AES_GCM:
- 		ctrl_val |= AES_CTRL_GCM_MASK;
- 		break;
-+	case DTHE_AES_CCM:
-+		ctrl_val |= AES_CTRL_CCM_MASK;
-+		ctrl_val |= FIELD_PREP(DTHE_AES_CTRL_CCM_L_FIELD_MASK,
-+				       (iv_in[0] & DTHE_AES_CCM_L_FROM_IV_MASK));
-+		ctrl_val |= FIELD_PREP(DTHE_AES_CTRL_CCM_M_FIELD_MASK,
-+				       ((ctx->authsize - 2) >> 1) & DTHE_AES_CCM_M_BITS);
-+		break;
- 	}
- 
- 	if (iv_in) {
-@@ -756,10 +772,6 @@ static int dthe_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 	if (keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_192 && keylen != AES_KEYSIZE_256)
- 		return -EINVAL;
- 
--	ctx->aes_mode = DTHE_AES_GCM;
--	ctx->keylen = keylen;
--	memcpy(ctx->key, key, keylen);
--
- 	crypto_sync_aead_clear_flags(ctx->aead_fb, CRYPTO_TFM_REQ_MASK);
- 	crypto_sync_aead_set_flags(ctx->aead_fb,
- 				   crypto_aead_get_flags(tfm) &
-@@ -768,6 +780,38 @@ static int dthe_aead_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int
- 	return crypto_sync_aead_setkey(ctx->aead_fb, key, keylen);
- }
- 
-+static int dthe_gcm_aes_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int keylen)
-+{
-+	struct dthe_tfm_ctx *ctx = crypto_aead_ctx(tfm);
-+	int ret;
-+
-+	ret = dthe_aead_setkey(tfm, key, keylen);
-+	if (ret)
-+		return ret;
-+
-+	ctx->aes_mode = DTHE_AES_GCM;
-+	ctx->keylen = keylen;
-+	memcpy(ctx->key, key, keylen);
-+
-+	return ret;
-+}
-+
-+static int dthe_ccm_aes_setkey(struct crypto_aead *tfm, const u8 *key, unsigned int keylen)
-+{
-+	struct dthe_tfm_ctx *ctx = crypto_aead_ctx(tfm);
-+	int ret;
-+
-+	ret = dthe_aead_setkey(tfm, key, keylen);
-+	if (ret)
-+		return ret;
-+
-+	ctx->aes_mode = DTHE_AES_CCM;
-+	ctx->keylen = keylen;
-+	memcpy(ctx->key, key, keylen);
-+
-+	return ret;
-+}
-+
- static int dthe_aead_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
- {
- 	struct dthe_tfm_ctx *ctx = crypto_aead_ctx(tfm);
-@@ -990,14 +1034,18 @@ static int dthe_aead_run(struct crypto_engine *engine, void *areq)
- 		writel_relaxed(1, aes_base_reg + DTHE_P_AES_AUTH_LENGTH);
- 	}
- 
--	if (req->iv) {
--		memcpy(iv_in, req->iv, GCM_AES_IV_SIZE);
-+	if (ctx->aes_mode == DTHE_AES_GCM) {
-+		if (req->iv) {
-+			memcpy(iv_in, req->iv, GCM_AES_IV_SIZE);
-+		} else {
-+			iv_in[0] = 0;
-+			iv_in[1] = 0;
-+			iv_in[2] = 0;
-+		}
-+		iv_in[3] = 0x01000000;
- 	} else {
--		iv_in[0] = 0;
--		iv_in[1] = 0;
--		iv_in[2] = 0;
-+		memcpy(iv_in, req->iv, AES_IV_SIZE);
- 	}
--	iv_in[3] = 0x01000000;
- 
- 	/* Clear key2 to reset previous GHASH intermediate data */
- 	for (int i = 0; i < AES_KEYSIZE_256 / sizeof(u32); ++i)
-@@ -1084,20 +1132,55 @@ static int dthe_aead_crypt(struct aead_request *req)
- 	struct dthe_data *dev_data = dthe_get_dev(ctx);
- 	struct crypto_engine *engine;
- 	unsigned int cryptlen = req->cryptlen;
-+	bool is_zero_ctr = true;
- 
- 	/* In decryption, last authsize bytes are the TAG */
- 	if (!rctx->enc)
- 		cryptlen -= ctx->authsize;
- 
-+	if (ctx->aes_mode == DTHE_AES_CCM) {
-+		/*
-+		 * For CCM Mode, the 128-bit IV contains the following:
-+		 * | 0 .. 2 | 3 .. 7 | 8 .. (127-8*L) | (128-8*L) .. 127 |
-+		 * |   L-1  |  Zero  |     Nonce      |      Counter     |
-+		 * L needs to be between 2-8 (inclusive), i.e. 1 <= (L-1) <= 7
-+		 * and the next 5 bits need to be zeroes. Else return -EINVAL
-+		 */
-+		u8 *iv = req->iv;
-+		u8 L = iv[0];
-+
-+		/* variable L stores L-1 here */
-+		if (L < 1 || L > 7)
-+			return -EINVAL;
-+		/*
-+		 * DTHEv2 HW can only work with zero initial counter in CCM mode.
-+		 * Check if the initial counter value is zero or not
-+		 */
-+		for (int i = 0; i < L + 1; ++i) {
-+			if (iv[AES_IV_SIZE - 1 - i] != 0) {
-+				is_zero_ctr = false;
-+				break;
-+			}
-+		}
-+	}
-+
- 	/*
- 	 * Need to fallback to software in the following cases due to HW restrictions:
- 	 * - Both AAD and plaintext/ciphertext are zero length
--	 * - AAD length is more than 2^32 - 1 bytes
--	 * PS: req->cryptlen is currently unsigned int type, which causes the above condition
--	 * tautologically false. If req->cryptlen were to be changed to a 64-bit type,
--	 * the check for this would need to be added below.
-+	 * - For AES-GCM, AAD length is more than 2^32 - 1 bytes
-+	 * - For AES-CCM, AAD length is more than 2^16 - 2^8 bytes
-+	 * - For AES-CCM, plaintext/ciphertext length is more than 2^61 - 1 bytes
-+	 * - For AES-CCM, AAD length is non-zero but plaintext/ciphertext length is zero
-+	 * - For AES-CCM, the initial counter (last L+1 bytes of IV) is not all zeroes
-+	 *
-+	 * PS: req->cryptlen is currently unsigned int type, which causes the second and fourth
-+	 * cases above tautologically false. If req->cryptlen is to be changed to a 64-bit
-+	 * type, the check for these would also need to be added below.
- 	 */
--	if (req->assoclen == 0 && cryptlen == 0)
-+	if ((req->assoclen == 0 && cryptlen == 0) ||
-+	    (ctx->aes_mode == DTHE_AES_CCM && req->assoclen > DTHE_AES_CCM_AAD_MAXLEN) ||
-+	    (ctx->aes_mode == DTHE_AES_CCM && cryptlen == 0) ||
-+	    (ctx->aes_mode == DTHE_AES_CCM && !is_zero_ctr))
- 		return dthe_aead_do_fallback(req);
- 
- 	engine = dev_data->engine;
-@@ -1222,7 +1305,7 @@ static struct aead_engine_alg aead_algs[] = {
- 	{
- 		.base.init			= dthe_aead_init_tfm,
- 		.base.exit			= dthe_aead_exit_tfm,
--		.base.setkey			= dthe_aead_setkey,
-+		.base.setkey			= dthe_gcm_aes_setkey,
- 		.base.setauthsize		= dthe_aead_setauthsize,
- 		.base.maxauthsize		= AES_BLOCK_SIZE,
- 		.base.encrypt			= dthe_aead_encrypt,
-@@ -1244,6 +1327,31 @@ static struct aead_engine_alg aead_algs[] = {
- 		},
- 		.op.do_one_request = dthe_aead_run,
- 	}, /* GCM AES */
-+	{
-+		.base.init			= dthe_aead_init_tfm,
-+		.base.exit			= dthe_aead_exit_tfm,
-+		.base.setkey			= dthe_ccm_aes_setkey,
-+		.base.setauthsize		= dthe_aead_setauthsize,
-+		.base.maxauthsize		= AES_BLOCK_SIZE,
-+		.base.encrypt			= dthe_aead_encrypt,
-+		.base.decrypt			= dthe_aead_decrypt,
-+		.base.chunksize			= AES_BLOCK_SIZE,
-+		.base.ivsize			= AES_IV_SIZE,
-+		.base.base = {
-+			.cra_name		= "ccm(aes)",
-+			.cra_driver_name	= "ccm-aes-dthev2",
-+			.cra_priority		= 299,
-+			.cra_flags		= CRYPTO_ALG_TYPE_AEAD |
-+						  CRYPTO_ALG_KERN_DRIVER_ONLY |
-+						  CRYPTO_ALG_ASYNC |
-+						  CRYPTO_ALG_NEED_FALLBACK,
-+			.cra_blocksize		= 1,
-+			.cra_ctxsize		= sizeof(struct dthe_tfm_ctx),
-+			.cra_reqsize		= sizeof(struct dthe_aes_req_ctx),
-+			.cra_module		= THIS_MODULE,
-+		},
-+		.op.do_one_request = dthe_aead_run,
-+	}, /* CCM AES */
- };
- 
- int dthe_register_aes_algs(void)
-diff --git a/drivers/crypto/ti/dthev2-common.h b/drivers/crypto/ti/dthev2-common.h
-index 8514f0df8ac3d..d4a3b9c18bbc1 100644
---- a/drivers/crypto/ti/dthev2-common.h
-+++ b/drivers/crypto/ti/dthev2-common.h
-@@ -39,6 +39,7 @@ enum dthe_aes_mode {
- 	DTHE_AES_CTR,
- 	DTHE_AES_XTS,
- 	DTHE_AES_GCM,
-+	DTHE_AES_CCM,
- };
- 
- /* Driver specific struct definitions */
+[auto build test WARNING on ebiggers/crc-next]
+[also build test WARNING on linus/master v7.0-rc4 next-20260319]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Demian-Shulhan/lib-crc-arm64-add-NEON-accelerated-CRC64-NVMe-implementation/20260318-003936
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git crc-next
+patch link:    https://lore.kernel.org/r/20260317065425.2684093-1-demyansh%40gmail.com
+patch subject: [PATCH] lib/crc: arm64: add NEON accelerated CRC64-NVMe implementation
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20260320/202603201958.gFoHxLV7-lkp@intel.com/config)
+compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260320/202603201958.gFoHxLV7-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202603201958.gFoHxLV7-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> lib/crc/arm64/crc64-neon-inner.c:20:5: warning: no previous prototype for function 'crc64_nvme_arm64_c' [-Wmissing-prototypes]
+      20 | u64 crc64_nvme_arm64_c(u64 crc, const u8 *p, size_t len)
+         |     ^
+   lib/crc/arm64/crc64-neon-inner.c:20:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      20 | u64 crc64_nvme_arm64_c(u64 crc, const u8 *p, size_t len)
+         | ^
+         | static 
+   1 warning generated.
+
+
+vim +/crc64_nvme_arm64_c +20 lib/crc/arm64/crc64-neon-inner.c
+
+    19	
+  > 20	u64 crc64_nvme_arm64_c(u64 crc, const u8 *p, size_t len)
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
