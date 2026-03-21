@@ -1,64 +1,67 @@
-Return-Path: <linux-crypto+bounces-22194-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22195-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UKUPKPxavmmYNQMAu9opvQ
-	(envelope-from <linux-crypto+bounces-22194-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 09:46:52 +0100
+	id mCZVIzpbvmmYNQMAu9opvQ
+	(envelope-from <linux-crypto+bounces-22195-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 09:47:54 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084F82E436E
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 09:46:51 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 933BC2E4387
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 09:47:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A27F430315D9
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 08:45:36 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5FA413015ED6
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 08:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CAE2FE58C;
-	Sat, 21 Mar 2026 08:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CC62C3261;
+	Sat, 21 Mar 2026 08:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="YXhogfG9"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="hGZtU65a"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9326A3033E8;
-	Sat, 21 Mar 2026 08:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5187463B9;
+	Sat, 21 Mar 2026 08:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774082735; cv=none; b=ovk4duEuRfNGcjkqMiwsWMnErFMppW9ypUkCR6bpc/9XiNy0X0IdfuNv1hiOD9aOPnhvdc+2bCgo2x55DCz26mInfVIv8vwVY6Yrmj0C9xmrvxYgW0zPqTExb49rWdUqmjkaq5Wx6WhwHqPYRbD305ZazqWl+xfqDTOuf0ud/Eo=
+	t=1774082864; cv=none; b=fQ6fL2UJSqVouXlTl4Hm66Qav+CawTgqLVp7zyzTlesBmavX21PPIkDjuHW7Zp+/djg40tayYwPCxdXhG0UR7vBRlltIVP2+OiKKlyM+4YJWASVwfIfIZFtB++ykZvuexTES8I9ucmPzqiiRcnJ2u+d4IVXgxdZoqEnNRn3jVMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774082735; c=relaxed/simple;
-	bh=OKTQfELRYID6vE4tQzS65b7TSaaOAHO71ih2uRe5sR0=;
+	s=arc-20240116; t=1774082864; c=relaxed/simple;
+	bh=zMxNpJEX1tje3qAn3gofcFe7zsudK0mfHnAIxiq6Lbw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=puJ+ENDcLzcousb1J7J45roX2cERQe3ZT7SXBlfq38+Ojs4ZlwcWw20tIJoxRx2o4tstPJ3iwfWOORsituAaGuppDqIKu+05MdPpTmI/L0yUIv36OBW/Uvhru+fxaZ7cd7/mUEEaQVehXT0YvWG5As5GvrpGxvcW1ca+nJJjxQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=YXhogfG9; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=lJmcRkT24yD/qayEmiUS5B8tm/bHtvcDnHDu5nZ51qsdFrmcvrEW52OPl5VRoZ/5OyeDmr/UyV5/DJ0MlGYsRjApGCN2dD5kGeEuW/9vphQdTKKjWij3wMnzoXZ2PHmyV0txqcqVjfATA7O0sQxQfCOvWq/vsKRAAikFgnMwQiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=hGZtU65a; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=8T+NsjaDW002RQbG324HKtRN5L0ElniBz1VCGexWRiU=; 
-	b=YXhogfG9wmpQP73LRdolSKYyfTZhtI2xGzkrYSRM1iPihIMmtnpVFxad5EE5SYbgW7FL7WWoDCV
-	htixOk9tTMCe0KraHNMsbs/N9voiEvrAm/434rAua1iz22VpgEiiatVG0XUfsBgG7BNpwULrO8ZuI
-	DJI0qM11KuUh3Khh7vat/cnZVuEBBGwRHjRH0bxLUBvzWTWmCwnNfsUydBxzvhK0hObL/R75fopqf
-	awWun2I3XT11n8oc+xicWO78nDXX+69rHeHyW9EejZ1ClKrTI6s9W/fCo3TtMSQDpVuNwZloRoA1l
-	I9oVW5juLUN63nkieDpYSskNiXj3Db/J3eZg==;
+	from:content-type:reply-to; bh=GAYI36BuyLNtFwWJ/mVzmo5kO6+XzauuqvOp/jdB/BM=; 
+	b=hGZtU65aSlNzhszzUX62kqapg82S8od4wk2niylkubjcIWYINWO6v7Im/SD6cOWxnS4OUD3/oLV
+	PxmzOXyOq1iH6gAaaQuky4RtTEO6AvJDK/JK7igpJjz6iRiCGPnoj8fzp+0rJuswEJ2t1MGOC/v0h
+	K+XnS8WsFi6VVOYIY+7gek2ZM49hTW9/TvU2kLYa8J0qWWoaNIHau62a5DQm0ebfooGTO3vsdi/pC
+	HtmQ8YPH5poAWvKBK8+FGtQix/IcN5eAncL1fotSvXL5VhSRrYpT69wpZB2IKYJCousVCE9ZU1Wp7
+	3bDQhC2y2QQOXwzvceDhIbCL5xEc9xVQ7y4Q==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w3rxL-00GJ7c-1F;
-	Sat, 21 Mar 2026 16:45:16 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 21 Mar 2026 17:45:15 +0900
-Date: Sat, 21 Mar 2026 17:45:15 +0900
+	id 1w3rzJ-00GJ8e-0s;
+	Sat, 21 Mar 2026 16:47:18 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 21 Mar 2026 17:47:17 +0900
+Date: Sat, 21 Mar 2026 17:47:17 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Jesper Nilsson <jesper.nilsson@axis.com>,
-	Lars Persson <lars.persson@axis.com>,
-	"David S. Miller" <davem@davemloft.net>, linux-arm-kernel@axis.com,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: artpec6 - use memcpy_and_pad to simplify
- prepare_hash
-Message-ID: <ab5amyOaC3GeCOtI@gondor.apana.org.au>
-References: <20260309211119.81778-3-thorsten.blum@linux.dev>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Cyrille Pitchen <cyrille.pitchen@atmel.com>, stable@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: atmel-aes - Fix 3-page memory leak in
+ atmel_aes_buff_cleanup
+Message-ID: <ab5bFYWKvBakbESr@gondor.apana.org.au>
+References: <20260311020733.250288-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -67,11 +70,11 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260309211119.81778-3-thorsten.blum@linux.dev>
+In-Reply-To: <20260311020733.250288-3-thorsten.blum@linux.dev>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -80,7 +83,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22194-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22195-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -88,26 +91,28 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,linux.dev:email]
-X-Rspamd-Queue-Id: 084F82E436E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,apana.org.au:email,apana.org.au:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 933BC2E4387
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Mar 09, 2026 at 10:11:21PM +0100, Thorsten Blum wrote:
-> Use memcpy_and_pad() instead of memcpy() followed by memset() to
-> simplify artpec6_crypto_prepare_hash().
+On Wed, Mar 11, 2026 at 03:07:35AM +0100, Thorsten Blum wrote:
+> atmel_aes_buff_init() allocates 4 pages using __get_free_pages() with
+> ATMEL_AES_BUFFER_ORDER, but atmel_aes_buff_cleanup() frees only the
+> first page using free_page(), leaking the remaining 3 pages. Use
+> free_pages() with ATMEL_AES_BUFFER_ORDER to fix the memory leak.
 > 
-> Also fix a duplicate word in a comment and remove a now-redundant one.
-> 
+> Fixes: bbe628ed897d ("crypto: atmel-aes - improve performances of data transfer")
+> Cc: stable@vger.kernel.org
 > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
->  drivers/crypto/axis/artpec6_crypto.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+>  drivers/crypto/atmel-aes.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
