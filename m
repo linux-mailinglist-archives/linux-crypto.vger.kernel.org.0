@@ -1,138 +1,128 @@
-Return-Path: <linux-crypto+bounces-22186-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22187-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QKUxAqlCvmmhKwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-22186-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 08:03:05 +0100
+	id ALEbAQdOvmnJMAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-22187-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 08:51:35 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 732E92E3E77
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 08:03:04 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4895E2E4072
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 08:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CD3F1303A6DC
-	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 07:00:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6A5EB3017DFA
+	for <lists+linux-crypto@lfdr.de>; Sat, 21 Mar 2026 07:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF382FCC0E;
-	Sat, 21 Mar 2026 07:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347A33451A6;
+	Sat, 21 Mar 2026 07:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Ml42oneU"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="IDJbV8pl"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7F72E54A2;
-	Sat, 21 Mar 2026 07:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3CB423BCF7
+	for <linux-crypto@vger.kernel.org>; Sat, 21 Mar 2026 07:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774076444; cv=none; b=XIxhwGMTWhyDa1MoexdJQ7dPuR/cmTeXei5bc54UkOsiMlheiH5GScKNMj+aGeaipHax16OkMLBBFogZZpIR0k0ihm50K6Pxn4Qi7poFu7zJJnjwhGgyc2XFeJCHeAU4SlLznvmmvzDnLULVGCbqtggfctYlBBazaRrNcv1xRew=
+	t=1774079489; cv=none; b=J2gF2hKSW8zgyfNVeWheYVzuUa0Uj3Zfea52u65wcgGBKgcAocZS6ITCPYyA6y1itsPJuLDtGJiv9dRq9XlXrZpcmc3VPbqHkWRFoXt2mJ6TlX7p9RH1Jju1k2P/AZFmoI9s+sL+VOaC+/PVJbHwiRcHUEslA8nL4Ju8hq9Fzmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774076444; c=relaxed/simple;
-	bh=Hw/9wNhMIczfJ9HmMrPBR6G1rbXsM14mDMwtamhP+NE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KFrLdJVssMT3tnI3QkOk6qiatAKL+s/kgKTBjm8BstupS73gr5zWmWEogM4B/J9YyrPsP8BjLmLPxlx8t3VQimLl3YpTnOMcQAjNMxCo+HAWUQn9Sk0mlOZ5LErb57xe1QCuWEMBlTXMKCF7MU5oUxAxkmtcSEsbsOdC9WSYzUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Ml42oneU; arc=none smtp.client-ip=113.46.200.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=ccjKJ5DSx0AZxwVSNJgOMAlQhUPKyRXRleTS5xa369g=;
-	b=Ml42oneU5mmHXDSVdF4piBTMWZwrBiZLKMyvnOuOpvPnQHr1TZ9X9EWYLGNw/EIvze4lIqNms
-	476EpGBtv6PNZQZlPyYA6nES2KHe6cDy5mBbRwFu8HMsG9Al2KEh4Erqi4c4KL2PeKmeYu+OP+r
-	VJm31cLuBN6izld70VzTceA=
-Received: from mail.maildlp.com (unknown [172.19.163.0])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4fd9DH1b4szpStX;
-	Sat, 21 Mar 2026 14:55:11 +0800 (CST)
-Received: from dggemv712-chm.china.huawei.com (unknown [10.1.198.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id EB55540561;
-	Sat, 21 Mar 2026 15:00:39 +0800 (CST)
-Received: from kwepemq200001.china.huawei.com (7.202.195.16) by
- dggemv712-chm.china.huawei.com (10.1.198.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 21 Mar 2026 15:00:39 +0800
-Received: from localhost.huawei.com (10.90.31.46) by
- kwepemq200001.china.huawei.com (7.202.195.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 21 Mar 2026 15:00:39 +0800
-From: Chenghai Huang <huangchenghai2@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
-	<linwenkai6@hisilicon.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH] crypto: hisilicon/sec2 - prevent req used-after-free for sec
-Date: Sat, 21 Mar 2026 15:00:38 +0800
-Message-ID: <20260321070038.2023844-1-huangchenghai2@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1774079489; c=relaxed/simple;
+	bh=r3V5N2pu5UtOLib8YjsGS5ZER19EOkbXw+o8LN8NNpM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=XUeJTIiCEahAFk0hqXKiVs/QIpp1RU2kZ6PlVL3ScDXMNVIn18Gm2Po58QQ3h6SRuNWL3BGT1GBNxZW2HMRQJjPwOvdl4aZwn9p5HXpvZRL5ark0igF02hnNlEaM1eeszL79lNCXNEQbl5Qwu/1OpnODH4zWvH1/2SkjLRjp5fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=IDJbV8pl; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:from:
+	content-type:references:reply-to;
+	bh=EsRKAslWsF1TJRCjN2EOIDK0oIc24TGSlhjZVS/UP3Q=; b=IDJbV8plunavJzoCc+aFD+SOQu
+	J4twXBQD1uyWjGWvch+KPiZnTZJQHXcShrgxUpZNzn/d57YF575KWlJkUeVD81G4Cy67FxDdzKjzU
+	QsasdrTNWqdsN6KniSS65KdsfuormTjdSa2XHtldolsKADNnFvMGzLPWogPr2wFZN47qm0d/xHnGJ
+	RFCTUG+LRq1vSe/9gGdmqwY46Z+NT9vrU1zQ3KS3meDie39h4E7Ph7MDvkDeg1zHc2Ls5jxj6UV6w
+	sa/1jYcsTnayVSCSLXw8G9bpRzyL5VB1HArihN9peQFoGDuwkNlFmr8nnFJz3wbyJONVX2dTJXrfc
+	LJCtignw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1w3r76-00GIdk-2T;
+	Sat, 21 Mar 2026 15:51:17 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 21 Mar 2026 16:51:16 +0900
+Date: Sat, 21 Mar 2026 16:51:16 +0900
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Mieczyslaw Nalewaj <namiltd@yahoo.com>
+Cc: linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] crypto: inside-secure/eip93 - correct ecb(des-eip93) typo
+Message-ID: <ab5N9LgbrgD14QJP@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- kwepemq200001.china.huawei.com (7.202.195.16)
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1003432575.1235274.1773572703895@mail.yahoo.com>
+X-Newsgroups: apana.lists.os.linux.cryptoapi
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_SEVEN(0.00)[7];
-	FROM_NEQ_ENVFROM(0.00)[huangchenghai2@huawei.com,linux-crypto@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22186-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[huawei.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	TAGGED_FROM(0.00)[bounces-22187-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[yahoo.com];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[hisilicon.com:email,huawei.com:dkim,huawei.com:email,huawei.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 732E92E3E77
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4895E2E4072
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Wenkai Lin <linwenkai6@hisilicon.com>
+Mieczyslaw Nalewaj <namiltd@yahoo.com> wrote:
+> Correct the typo in the name "ecb(des-eip93)".
+> 
+> Signed-off-by: Mieczyslaw Nalewaj <namiltd@yahoo.com>
+> ---
+> drivers/crypto/inside-secure/eip93/eip93-cipher.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/crypto/inside-secure/eip93/eip93-cipher.c b/drivers/crypto/inside-secure/eip93/eip93-cipher.c
+> index 7893c15..4dd7ab7 100644
+> --- a/drivers/crypto/inside-secure/eip93/eip93-cipher.c
+> +++ b/drivers/crypto/inside-secure/eip93/eip93-cipher.c
+> @@ -320,7 +320,7 @@ struct eip93_alg_template eip93_alg_ecb_des = {
+> .ivsize = 0,
+> .base = {
+> .cra_name = "ecb(des)",
+> - .cra_driver_name = "ebc(des-eip93)",
+> + .cra_driver_name = "ecb(des-eip93)",
+> .cra_priority = EIP93_CRA_PRIORITY,
+> .cra_flags = CRYPTO_ALG_ASYNC |
+> CRYPTO_ALG_KERN_DRIVER_ONLY,
 
-During packet transmission, if the system is under heavy load,
-the hardware might complete processing the packet and free the
-request memory (req) before the transmission function finishes.
-If the software subsequently accesses this req, a use-after-free
-error will occur. The qp_ctx memory exists throughout the packet
-sending process, so replace the req with the qp_ctx.
+This appears to be space-damaged.  Please resubmit.
 
-Fixes: f0ae287c5045 ("crypto: hisilicon/sec2 - implement full backlog mode for sec")
-Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
-Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 15174216d8c4..2471a4dd0b50 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -230,7 +230,7 @@ static int qp_send_message(struct sec_req *req)
- 
- 	spin_unlock_bh(&qp_ctx->req_lock);
- 
--	atomic64_inc(&req->ctx->sec->debug.dfx.send_cnt);
-+	atomic64_inc(&qp_ctx->ctx->sec->debug.dfx.send_cnt);
- 	return -EINPROGRESS;
- }
- 
+Thanks,
 -- 
-2.33.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
