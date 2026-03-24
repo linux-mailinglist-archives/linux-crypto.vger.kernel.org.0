@@ -1,48 +1,49 @@
-Return-Path: <linux-crypto+bounces-22344-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22345-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YFGlCHm6wmlilAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22344-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 17:23:21 +0100
+	id 8L4CHCC6wmlilAQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22345-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 17:21:52 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4B92318EDC
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 17:23:20 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1154E318EAE
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 17:21:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D81B930911C2
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 16:13:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BE614300DF62
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 16:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E2823CEBB8;
-	Tue, 24 Mar 2026 16:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E558137C0E6;
+	Tue, 24 Mar 2026 16:13:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XUH1YR3o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CoN99dX6"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303CE37C0E6;
-	Tue, 24 Mar 2026 16:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84093D5651;
+	Tue, 24 Mar 2026 16:13:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774368800; cv=none; b=oIdvtxicatUIUb7b6+6xXoqq93Xb7351jPXdH1RA94VPTZIZkufkJWAG6YRGJq2on+RaD818YDJluahY4jvOsPTNx2tJSz+qs0YxORxHZf3ippxIUypEL4Hgra889okCx4QZwvihYcSahAeDKcuq2JKB6gOMdVG07JZVj6eFc/o=
+	t=1774368802; cv=none; b=MF0uTTwuZnscwc8SYsoXNzWV/yrqfWeFqjqdjAepNHbSkznXEtmW55oXu5/CsPBGhZ1739wRsS8uQfGKGKv38w9i071cyGBbe1SKddX0Yh0wPna7QvPej7QGkY+Dm13mZt3HFDM/qVHdP0nzmKHEWKxY3rIIbEFhis1hGOC64B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774368800; c=relaxed/simple;
-	bh=PoiSMYrW+yD2zMRAl8N97TugmYcrcOKYQDwPLlxE3tI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sugZqrrsiq+f1OU6I+8QaPXvGjbbk88219z2xIJQBNA/JfGALOOXSMh6h1M0EXjST4OZ4Ltr2tjYTw2b4GsXHIznXu1DSUAaDDx1S1q0VOdJLte7/wT/tBrcZHiZJ97zI/5BnYbBfrW2p4jhaJGFaQxWc7lOntyzZ0DTTBy9b/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XUH1YR3o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 877C1C19424;
-	Tue, 24 Mar 2026 16:13:17 +0000 (UTC)
+	s=arc-20240116; t=1774368802; c=relaxed/simple;
+	bh=q3LEwBb48yBUwAP/JStffirx0olu9s+cHwEqdRIrL1A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Jl34BuyZ4aUKIpZL2oNvG8hTUra6RdEJLcYK8KcupMe1emdCy9qTaCjsibSRgAV+EQS34F3h4fbow9eLBUJVxvQXaOlkYBdc+IG5v2hRFt0Rs2ediqCu6KGFcETHECrHCEU+HfDKFYyG/kGVyA/VeJGWKNKwP2FWxZ7vOGUF/Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CoN99dX6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1377DC2BCB4;
+	Tue, 24 Mar 2026 16:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774368799;
-	bh=PoiSMYrW+yD2zMRAl8N97TugmYcrcOKYQDwPLlxE3tI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XUH1YR3oJJcRqUjdBn1lqgKfC18draAB4uCNTw5aWi11gWt759UGkFOsHiycZ2jrE
-	 1zc8QH9w9iktxnv4wgKouFBg1gzbuJKf6pWx0+q6JHuwujeO5Si4OwdrU2QgEchEM1
-	 NY1aMDc2SPyQQ4pWU/1Wz1ExctDxhah3VCrZASFGTEj6cIcXyv97KCWpmCQcfj39r5
-	 c0li/wW0WBCCVMBhQvnO99QJUZeSJ67FB4wc1O+gHjtTe/NFwPRPZcE3Nbk8bioMWU
-	 lXF8zk/WjEmjOKRrtZsoGyrFPaVityAVAW+Ec2Af7JsY/yzL9kEQI9ZchK9UsDieyE
-	 GoDPXLZBrwWXw==
+	s=k20201202; t=1774368802;
+	bh=q3LEwBb48yBUwAP/JStffirx0olu9s+cHwEqdRIrL1A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=CoN99dX61S0MN07uvDxl1PC8tuJRWkSSAD1h/KOqSnQ9XqcFDgrWqW3tsmrr3jqzt
+	 Df8ySJrrL9Cx7jABG4fmE8ZyNRigdRMkF5S04OKRdznKiOMcB2h3weIQFjRE7KgRUd
+	 VKhE0qpXypxsKKXInRWCTYZMPG60vltLesgaOMHLp1na9fHz5owpTp78xa7a8Rm0Cl
+	 FhwxxDI7C9qFbVmOqJhYgJ/TNzV8uKoLhDy5sWavl04ArQBdSmU+Xt6NjpddjVXghD
+	 FGuYVh4Gv4Dh/fCbemnOt6buaZTqBf1K0FY6pBQhEkPD8NJT8pDyOr8mkrJ1E9I8w4
+	 OKELOpkOCoVqw==
 From: Tycho Andersen <tycho@kernel.org>
 To: Thomas Gleixner <tglx@kernel.org>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -66,10 +67,12 @@ To: Thomas Gleixner <tglx@kernel.org>,
 Cc: linux-kernel@vger.kernel.org,
 	linux-crypto@vger.kernel.org,
 	"Tycho Andersen (AMD)" <tycho@kernel.org>
-Subject: [PATCH v4 0/7] Move SNP initialization to the CCP driver
-Date: Tue, 24 Mar 2026 10:12:54 -0600
-Message-ID: <20260324161301.1353976-1-tycho@kernel.org>
+Subject: [PATCH v4 1/7] x86/sev: Create a function to clear/zero the RMP
+Date: Tue, 24 Mar 2026 10:12:55 -0600
+Message-ID: <20260324161301.1353976-2-tycho@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260324161301.1353976-1-tycho@kernel.org>
+References: <20260324161301.1353976-1-tycho@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -82,18 +85,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22344-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22345-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_TWELVE(0.00)[22];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tycho@kernel.org,linux-crypto@vger.kernel.org];
@@ -103,42 +106,89 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D4B92318EDC
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1154E318EAE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: "Tycho Andersen (AMD)" <tycho@kernel.org>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-Changes are:
-* commit message fixes: snp -> sev, add arch/x86/ to path, capitalize things
-* rename snp_set_hsave_pa() -> clear_hsave_pa(), since it's clearing the register
-* snp_prepare_for_snp_init() -> snp_prepare()
-* snp_x86_shutdown() -> snp_shutdown()
-* 0 -> NULL, drop a newline in snp_shutdown()
-* carry Herbert's acks as appropriate
+In preparation for delayed SNP initialization and disablement on shutdown,
+create a function, clear_rmp(), that clears the RMP bookkeeping area
+and the RMP entries.
 
-v3 is here: https://lore.kernel.org/all/20260317162157.150842-1-tycho@kernel.org/
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Tycho Andersen (AMD) <tycho@kernel.org>
+---
+ arch/x86/virt/svm/sev.c | 41 +++++++++++++++++++++++++++--------------
+ 1 file changed, 27 insertions(+), 14 deletions(-)
 
-Tom Lendacky (2):
-  x86/sev: Create a function to clear/zero the RMP
-  crypto/ccp: Update HV_FIXED page states to allow freeing of memory
-
-Tycho Andersen (AMD) (5):
-  x86/sev: Create snp_prepare()
-  x86/sev: Create snp_shutdown()
-  x86/sev, crypto/ccp: Move SNP init to ccp driver
-  x86/sev, crypto/ccp: Move HSAVE_PA setup to arch/x86/
-  crypto/ccp: Implement SNP x86 shutdown
-
- arch/x86/include/asm/sev.h   |   4 ++
- arch/x86/virt/svm/sev.c      | 111 ++++++++++++++++++++++++-----------
- drivers/crypto/ccp/sev-dev.c |  62 ++++++++++---------
- include/linux/psp-sev.h      |   5 +-
- 4 files changed, 120 insertions(+), 62 deletions(-)
-
-
-base-commit: 2ca26dad836fb4cd18694ef85af7a71d2878b239
+diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+index e35fac0a8a3d..025606969823 100644
+--- a/arch/x86/virt/svm/sev.c
++++ b/arch/x86/virt/svm/sev.c
+@@ -242,6 +242,32 @@ void __init snp_fixup_e820_tables(void)
+ 	}
+ }
+ 
++static void clear_rmp(void)
++{
++	unsigned int i;
++	u64 val;
++
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
++		return;
++
++	/* Clearing the RMP while SNP is enabled will cause an exception */
++	rdmsrq(MSR_AMD64_SYSCFG, val);
++	if (WARN_ON_ONCE(val & MSR_AMD64_SYSCFG_SNP_EN))
++		return;
++
++	memset(rmp_bookkeeping, 0, RMPTABLE_CPU_BOOKKEEPING_SZ);
++
++	for (i = 0; i < rst_max_index; i++) {
++		struct rmp_segment_desc *desc;
++
++		desc = rmp_segment_table[i];
++		if (!desc)
++			continue;
++
++		memset(desc->rmp_entry, 0, desc->size);
++	}
++}
++
+ static bool __init alloc_rmp_segment_desc(u64 segment_pa, u64 segment_size, u64 pa)
+ {
+ 	u64 rst_index, rmp_segment_size_max;
+@@ -484,7 +510,6 @@ static bool __init setup_rmptable(void)
+  */
+ int __init snp_rmptable_init(void)
+ {
+-	unsigned int i;
+ 	u64 val;
+ 
+ 	if (WARN_ON_ONCE(!cc_platform_has(CC_ATTR_HOST_SEV_SNP)))
+@@ -504,19 +529,7 @@ int __init snp_rmptable_init(void)
+ 	if (val & MSR_AMD64_SYSCFG_SNP_EN)
+ 		goto skip_enable;
+ 
+-	/* Zero out the RMP bookkeeping area */
+-	memset(rmp_bookkeeping, 0, RMPTABLE_CPU_BOOKKEEPING_SZ);
+-
+-	/* Zero out the RMP entries */
+-	for (i = 0; i < rst_max_index; i++) {
+-		struct rmp_segment_desc *desc;
+-
+-		desc = rmp_segment_table[i];
+-		if (!desc)
+-			continue;
+-
+-		memset(desc->rmp_entry, 0, desc->size);
+-	}
++	clear_rmp();
+ 
+ 	/* MtrrFixDramModEn must be enabled on all the CPUs prior to enabling SNP. */
+ 	on_each_cpu(mfd_enable, NULL, 1);
 -- 
 2.53.0
 
