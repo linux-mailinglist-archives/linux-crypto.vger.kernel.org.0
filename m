@@ -1,70 +1,72 @@
-Return-Path: <linux-crypto+bounces-22340-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22341-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0P36Dud3wmnqdAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22340-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 12:39:19 +0100
+	id +MccMpd4wmnqdAQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22341-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 12:42:15 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DCE03076DD
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 12:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CEF91307771
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 12:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 03B3C3035C79
-	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 11:27:40 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6B43E300E185
+	for <lists+linux-crypto@lfdr.de>; Tue, 24 Mar 2026 11:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95C63E6381;
-	Tue, 24 Mar 2026 11:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B19C37649D;
+	Tue, 24 Mar 2026 11:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E/GXtiNH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NGuPAsZ8"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9663E558F
-	for <linux-crypto@vger.kernel.org>; Tue, 24 Mar 2026 11:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDB736B061
+	for <linux-crypto@vger.kernel.org>; Tue, 24 Mar 2026 11:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774351655; cv=none; b=tUAGdbAiKmQGX9CbJ9le+eGL/dloatmSxLfXZ7Fn+F+gkVSzstxMk5T2xFIDUw5IVI64DqkiyeD5UobKfI9PO+8fJEVT+tc3TqJ1szpEjKniU6hkJ79bJxsfJooefItLHtBYh85Svr49WOhSFBJd7EUkAlRU1Cpi5gN9O/R6j20=
+	t=1774351858; cv=none; b=o0gsaeghg3Bz+UwDfFggrWzISfyL0ZDh6vKOgQY/panrzwcA8bf3O4QUjy7yU6NFfgwFn/t5x/UMsWbA2/52yudYoGCPeR1tbZsuCulk13KUb6bQOtUxCdJ+R4+XLsVSjbApOtTdkoi9otg24p7vllbosfp3Y343k6vYe7Gw/3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774351655; c=relaxed/simple;
-	bh=j2OPAl+SveGv2rqOW2bNGBFPaFwznwlHpIiFdQ6UZ88=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tEoA5+7b3UWn194ZT9CMG+SQLSR/40XLryLh/j/n5RP3LoXhKVimXqaS6s1A+rOmGx/EllJZHXNHGf4iyeUrWPNZixxMnXBA0ohbTGuY+t4HOLUsqbxV4XaweAa3p+ylLMo/wd2VWu127F1bSCQ8K7+NVKi7JHMkfXxl/Hy5/dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E/GXtiNH; arc=none smtp.client-ip=95.215.58.176
+	s=arc-20240116; t=1774351858; c=relaxed/simple;
+	bh=vPxq+kwNauRf7+FdEQZdHhioB7gTXlEFVlQI/Wsnh0U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jCw/ok+C0kptsHoknpdiM0vEj4zrED8QeA30FsvHvdtS6kWuhCkgfmwknCVKn+gtotxOKy7UovWDQqkGT273sptkhe8U0C8PmiZY3PSJ8N79NgkqOCx9dA8x9UDQR47zke+L7DBMan92eiplZ8ijjQoOTYT8TZJvvqOS1FKLR90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NGuPAsZ8; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1774351652;
+	t=1774351845;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=rD8r+L4ewlCmSe6Mc1BgIUAya3UWUPOpi16rXKFsJGo=;
-	b=E/GXtiNHq41iQVw39I0E4iRYYd2z+wED+YpqsON6vPaEJ9SqySyVZC0M1UqBv3EW+X/FsN
-	V8uiN20s7ZoxfFKW037gthdvccBsjlxORzPqUgZhrasJABpdwBDVcjSNiFXd0pnnetj+h4
-	B8TZAtXpzjo5/C3PpaeYrb4G1xMzcgg=
+	bh=g2u86yZ54gLY4J+6y84IxVHrLSMcs4f0aO1EZba6QgA=;
+	b=NGuPAsZ8HwMWbYKqqBI4EauNFXT8wcTueodPAU9dgd/8o+RPUR1xadER5XbVtGS3lmf8bF
+	RzKXDQV4axAD92BGokTCi7JIMTYidMrFhroAAPO92MEM0V9EMFFUBZQcHY1ez+JFPswMpW
+	3RO4NZlB/aCTo0vsOiQLpcwYWPWpLuk=
 From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
+To: Tom Lendacky <thomas.lendacky@amd.com>,
+	John Allen <john.allen@amd.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	"David S. Miller" <davem@davemloft.net>
 Cc: Thorsten Blum <thorsten.blum@linux.dev>,
 	linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: hifn_795x - Replace snprintf("%s") with strscpy
-Date: Tue, 24 Mar 2026 12:27:05 +0100
-Message-ID: <20260324112703.94917-3-thorsten.blum@linux.dev>
+Subject: [PATCH] crypto: ccp - Replace snprintf("%s") with strscpy
+Date: Tue, 24 Mar 2026 12:30:07 +0100
+Message-ID: <20260324113006.95171-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1467; i=thorsten.blum@linux.dev; h=from:subject; bh=j2OPAl+SveGv2rqOW2bNGBFPaFwznwlHpIiFdQ6UZ88=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJmHStlPHkqoPSvwNjovtvb3O9+GT4taYjecsukISPi/Q UKulyGzo5SFQYyLQVZMkeXBrB8zfEtrKjeZROyEmcPKBDKEgYtTACZi/ZzhD3/Hw7vtixTep8n9 uTyn1Z6hxnP7y6idt4KWsIjoHvg0Zwkjw/Y/66+xvcz32s23t6GMiyNPXeBqXXjlk7XH7xceei3 sygUA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5620; i=thorsten.blum@linux.dev; h=from:subject; bh=vPxq+kwNauRf7+FdEQZdHhioB7gTXlEFVlQI/Wsnh0U=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJmHSvctCb+WeVfpfcdzrYdBt2pulZ91Ddsi+VPnHZsXj 4OGu0xyRwkLgxgXg6yYIsuDWT9m+JbWVG4yidgJM4eVCWQIAxenAExE/AYjw91HSj3f9235kG36 QPuDzGWRMPaPM9qndx/p3iPJO2m50iSG74Gbtp6zcojedPz6B585EYZhlosq6tLeXd/B8eFkQ/8 9LgA=
 X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
@@ -72,64 +74,156 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22340-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22341-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: 3DCE03076DD
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: CEF91307771
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Replace snprintf("%s", ...) with the faster and more direct strscpy().
-Check if the return value is less than 0 to detect string truncation.
+Replace snprintf("%s") with the faster and more direct strscpy().
 
 Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
- drivers/crypto/hifn_795x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/crypto/ccp/ccp-crypto-aes-galois.c | 6 +++---
+ drivers/crypto/ccp/ccp-crypto-aes-xts.c    | 6 +++---
+ drivers/crypto/ccp/ccp-crypto-aes.c        | 5 ++---
+ drivers/crypto/ccp/ccp-crypto-des3.c       | 5 ++---
+ drivers/crypto/ccp/ccp-crypto-rsa.c        | 6 +++---
+ drivers/crypto/ccp/ccp-crypto-sha.c        | 5 ++---
+ 6 files changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/crypto/hifn_795x.c b/drivers/crypto/hifn_795x.c
-index edf36f6add52..afea061c3070 100644
---- a/drivers/crypto/hifn_795x.c
-+++ b/drivers/crypto/hifn_795x.c
-@@ -15,6 +15,7 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
+diff --git a/drivers/crypto/ccp/ccp-crypto-aes-galois.c b/drivers/crypto/ccp/ccp-crypto-aes-galois.c
+index b1dbb8cea559..f73be408c98c 100644
+--- a/drivers/crypto/ccp/ccp-crypto-aes-galois.c
++++ b/drivers/crypto/ccp/ccp-crypto-aes-galois.c
+@@ -11,6 +11,7 @@
+ #include <linux/sched.h>
+ #include <linux/delay.h>
  #include <linux/scatterlist.h>
 +#include <linux/string.h>
- #include <linux/highmem.h>
  #include <linux/crypto.h>
- #include <linux/hw_random.h>
-@@ -2256,8 +2257,7 @@ static int hifn_alg_alloc(struct hifn_device *dev, const struct hifn_alg_templat
- 	alg->alg.init = hifn_init_tfm;
+ #include <crypto/internal/aead.h>
+ #include <crypto/algapi.h>
+@@ -223,9 +224,8 @@ static int ccp_register_aes_aead(struct list_head *head,
+ 	/* Copy the defaults and override as necessary */
+ 	alg = &ccp_aead->alg;
+ 	*alg = *def->alg_defaults;
+-	snprintf(alg->base.cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(alg->base.cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->driver_name);
++	strscpy(alg->base.cra_name, def->name);
++	strscpy(alg->base.cra_driver_name, def->driver_name);
+ 	alg->base.cra_blocksize = def->blocksize;
  
- 	err = -EINVAL;
--	if (snprintf(alg->alg.base.cra_name, CRYPTO_MAX_ALG_NAME,
--		     "%s", t->name) >= CRYPTO_MAX_ALG_NAME)
-+	if (strscpy(alg->alg.base.cra_name, t->name) < 0)
- 		goto out_free_alg;
- 	if (snprintf(alg->alg.base.cra_driver_name, CRYPTO_MAX_ALG_NAME,
- 		     "%s-%s", t->drv_name, dev->name) >= CRYPTO_MAX_ALG_NAME)
-@@ -2367,7 +2367,7 @@ static int hifn_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	ret = crypto_register_aead(alg);
+diff --git a/drivers/crypto/ccp/ccp-crypto-aes-xts.c b/drivers/crypto/ccp/ccp-crypto-aes-xts.c
+index 93f735d6b02b..0e3f08fefed4 100644
+--- a/drivers/crypto/ccp/ccp-crypto-aes-xts.c
++++ b/drivers/crypto/ccp/ccp-crypto-aes-xts.c
+@@ -12,6 +12,7 @@
+ #include <linux/sched.h>
+ #include <linux/delay.h>
+ #include <linux/scatterlist.h>
++#include <linux/string.h>
+ #include <crypto/aes.h>
+ #include <crypto/xts.h>
+ #include <crypto/internal/skcipher.h>
+@@ -239,9 +240,8 @@ static int ccp_register_aes_xts_alg(struct list_head *head,
  
- 	INIT_LIST_HEAD(&dev->alg_list);
+ 	alg = &ccp_alg->alg;
  
--	snprintf(dev->name, sizeof(dev->name), "%s", name);
-+	strscpy(dev->name, name);
- 	spin_lock_init(&dev->lock);
+-	snprintf(alg->base.cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(alg->base.cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->drv_name);
++	strscpy(alg->base.cra_name, def->name);
++	strscpy(alg->base.cra_driver_name, def->drv_name);
+ 	alg->base.cra_flags	= CRYPTO_ALG_ASYNC |
+ 				  CRYPTO_ALG_ALLOCATES_MEMORY |
+ 				  CRYPTO_ALG_KERN_DRIVER_ONLY |
+diff --git a/drivers/crypto/ccp/ccp-crypto-aes.c b/drivers/crypto/ccp/ccp-crypto-aes.c
+index 685d42ec7ade..a4827f273822 100644
+--- a/drivers/crypto/ccp/ccp-crypto-aes.c
++++ b/drivers/crypto/ccp/ccp-crypto-aes.c
+@@ -305,9 +305,8 @@ static int ccp_register_aes_alg(struct list_head *head,
+ 	/* Copy the defaults and override as necessary */
+ 	alg = &ccp_alg->alg;
+ 	*alg = *def->alg_defaults;
+-	snprintf(alg->base.cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(alg->base.cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->driver_name);
++	strscpy(alg->base.cra_name, def->name);
++	strscpy(alg->base.cra_driver_name, def->driver_name);
+ 	alg->base.cra_blocksize = def->blocksize;
+ 	alg->ivsize = def->ivsize;
  
- 	for (i = 0; i < 3; ++i) {
+diff --git a/drivers/crypto/ccp/ccp-crypto-des3.c b/drivers/crypto/ccp/ccp-crypto-des3.c
+index 91b1189c47de..8a2f82851c93 100644
+--- a/drivers/crypto/ccp/ccp-crypto-des3.c
++++ b/drivers/crypto/ccp/ccp-crypto-des3.c
+@@ -193,9 +193,8 @@ static int ccp_register_des3_alg(struct list_head *head,
+ 	/* Copy the defaults and override as necessary */
+ 	alg = &ccp_alg->alg;
+ 	*alg = *def->alg_defaults;
+-	snprintf(alg->base.cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(alg->base.cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-			def->driver_name);
++	strscpy(alg->base.cra_name, def->name);
++	strscpy(alg->base.cra_driver_name, def->driver_name);
+ 	alg->base.cra_blocksize = def->blocksize;
+ 	alg->ivsize = def->ivsize;
+ 
+diff --git a/drivers/crypto/ccp/ccp-crypto-rsa.c b/drivers/crypto/ccp/ccp-crypto-rsa.c
+index a14f85512cf4..17179d9149b1 100644
+--- a/drivers/crypto/ccp/ccp-crypto-rsa.c
++++ b/drivers/crypto/ccp/ccp-crypto-rsa.c
+@@ -10,6 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/sched.h>
+ #include <linux/scatterlist.h>
++#include <linux/string.h>
+ #include <linux/crypto.h>
+ #include <crypto/algapi.h>
+ #include <crypto/internal/rsa.h>
+@@ -257,9 +258,8 @@ static int ccp_register_rsa_alg(struct list_head *head,
+ 
+ 	alg = &ccp_alg->alg;
+ 	*alg = *def->alg_defaults;
+-	snprintf(alg->base.cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(alg->base.cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->driver_name);
++	strscpy(alg->base.cra_name, def->name);
++	strscpy(alg->base.cra_driver_name, def->driver_name);
+ 	ret = crypto_register_akcipher(alg);
+ 	if (ret) {
+ 		pr_err("%s akcipher algorithm registration error (%d)\n",
+diff --git a/drivers/crypto/ccp/ccp-crypto-sha.c b/drivers/crypto/ccp/ccp-crypto-sha.c
+index fa3ae8e78f6f..704e9017f7f0 100644
+--- a/drivers/crypto/ccp/ccp-crypto-sha.c
++++ b/drivers/crypto/ccp/ccp-crypto-sha.c
+@@ -484,9 +484,8 @@ static int ccp_register_sha_alg(struct list_head *head,
+ 	halg->statesize = sizeof(struct ccp_sha_exp_ctx);
+ 
+ 	base = &halg->base;
+-	snprintf(base->cra_name, CRYPTO_MAX_ALG_NAME, "%s", def->name);
+-	snprintf(base->cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s",
+-		 def->drv_name);
++	strscpy(base->cra_name, def->name);
++	strscpy(base->cra_driver_name, def->drv_name);
+ 	base->cra_flags = CRYPTO_ALG_ASYNC |
+ 			  CRYPTO_ALG_ALLOCATES_MEMORY |
+ 			  CRYPTO_ALG_KERN_DRIVER_ONLY |
 
