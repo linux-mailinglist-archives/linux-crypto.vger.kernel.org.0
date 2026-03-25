@@ -1,58 +1,57 @@
-Return-Path: <linux-crypto+bounces-22376-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22379-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KKXLIM/Yw2mluQQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22376-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 13:45:03 +0100
+	id gEXYAjYGxGnOvQQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22379-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 16:58:46 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6EAA32518E
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 13:45:02 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id A32A13288F7
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 16:58:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7D62531850CE
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 12:26:25 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9D0FC3006B60
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 15:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E7A3D2FFD;
-	Wed, 25 Mar 2026 12:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D083EAC6E;
+	Wed, 25 Mar 2026 15:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EF5MXwAS"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="RHklxLfi"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094C53D1CAA
-	for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 12:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8933E9580;
+	Wed, 25 Mar 2026 15:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774441582; cv=none; b=oz+TpYVuSOX8hmYUht6SngGiwrabY9Iwrekh/pUKG3DUI3GUklf+reluIkCoMEgd+LtjEFKCkK469yWLUuhOwarVYYSftEZE3QN5G/oMPaCFUI+65SPqx0kQiAy4hp08JkAmbM6DABmOgi2PQ8MBNJAZRu/13ipc38bYzxZ0Nqc=
+	t=1774454316; cv=none; b=Rf8l0BmT10S+p9Q1SwbmldrlK8vBBAc1Wvn0OQ6G7l8MMhZ9PjZfEDZ3sAp63FrOKI46h8Ol/DqnNOJa7INwIxMmhfY82xYJYx0Qpz1d7WxFRsqOSSnLTnl17/LEfK0jwnYB7/a2Yo4/33uFmOSNU6lhMokMTuoTm4z/qwWbI/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774441582; c=relaxed/simple;
-	bh=NZmy9A71+mGjb0JyggN74KFegUmUlepYAcOg34BAaFw=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:Cc:
-	 In-Reply-To:Content-Type; b=YN8PcT/+fZ8fu3EtkYMjQPMVsQ08oQ4ZpIk+A7tSjiT2SwN5rK7sX6CqhuLybFSXhmbuZS/O21hLBzCcqKGSjLcDfCpiAPHzeYxd8ZW+DsHW9L8KLAAjMwEEmom+SKJH7r9ausjiW5D6Xm5IhpHAvZ1Y3xyzilxV1f1fBkuoqVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EF5MXwAS; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id C38201A2F86;
-	Wed, 25 Mar 2026 12:26:19 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9137C601E2;
-	Wed, 25 Mar 2026 12:26:19 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 882C910451362;
-	Wed, 25 Mar 2026 13:26:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774441578; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=Nsz0GR6Zk0VoXYbxqVh2SRpOfgafRwZhwcA2/A7RPXA=;
-	b=EF5MXwASWIYiahatIX3d0Mo/1pBcLlgzcwZ0RYJmtK3/S9xwyWTEu2h5YFT4hR1SafkZby
-	tj04jSrlt57xTQDZ/1n4QbL/mNTyi5O9PeC/ucUnLCoLqCiIOThjaB1JkMzlN6WXdyGO+X
-	07V8nxfwQS0rXkwfKC8HRbUydvzhWK3FakHHJ2KeXD9poL9hzz4T6DUJfHekHskUoEY/VF
-	vHzSLjbnTVv26B+8qeTITwbjvV7Yri0ZFejHF/CBHSnJJSyAHFjbFJWiO3kXJ2BKTb4zZi
-	AbetPhsgpnJQOxGQVLtAuqlpc5Q+/iYykuIeiFRdnx0Qw7pKz4PNxMW1TQPT+Q==
-Message-ID: <b53feadd-8246-43cf-a768-740cb73d2553@bootlin.com>
-Date: Wed, 25 Mar 2026 13:26:16 +0100
+	s=arc-20240116; t=1774454316; c=relaxed/simple;
+	bh=3xxfI6gRTrix+3bAjHjl+NqvLIsP+3Ljt4acojJrtbk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UXkurVSZsy/o9Z9tSPnzrSAAjCoveZHpl57DcBhGxHkZ7MQh3O+uwHTe9sPDY1hwYQ+jVlsCr/EB9rQbjCAtGjP5zjzvT2VGwdIcvA7HQmCR/uILU4XzvYicVPJ8lF6QUQHTgtRdAh18q9hSr/4DMYsofmCNqwOT+Td8/d1gj/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=RHklxLfi; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPV6:2601:646:8081:9481:619:3ffd:957c:6748] ([IPv6:2601:646:8081:9481:619:3ffd:957c:6748])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 62PFE0CM3057644
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 25 Mar 2026 08:14:01 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 62PFE0CM3057644
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2026022301; t=1774451646;
+	bh=m+c64TX9TAStG5n4QBbOwBHxDLYCJ+PjBNcVbNtGMx8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RHklxLfiOlJf6ydmRmJruDGnJeWMZSbz2TgxABeLCgguQaUbYsc9vR9kpgjAtaRk6
+	 D7BSdsEd+lvAoCQg+RbZcvgtOjl5ikAs97OdfN6AYdowAx+SkUCmf/8a7rxvIX1199
+	 n1C53Bc4syiY0JVf3wcgOdQFaGlli8ZPulCYU+tqXHoikLbqaKaukH46nBwaABbmkR
+	 FqzyBozoAq6ydYU475wWtUu9yg9VB2ezfO6KFROa2nbUotE425BtfRIaR4mJKhTxf8
+	 dVWONsYwf/QQWCyfrPeHYwfZmG0pn9A7Kw7p2V6FDiyY1iJynsS0qMGEvvGfkQIYvu
+	 dNPPZv5PxcbxQ==
+Message-ID: <59d1d178-c141-4229-81e9-a6c23fa81f2f@zytor.com>
+Date: Wed, 25 Mar 2026 08:13:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -60,82 +59,80 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Need some clarification about CRYPTO_AHASH_ALG_BLOCK_ONLY
-From: Paul Louvel <paul.louvel@bootlin.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>
-References: <4f93481a-a0e5-4a9f-8aae-00d3189ccc58@bootlin.com>
-Content-Language: en-US
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <4f93481a-a0e5-4a9f-8aae-00d3189ccc58@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 02/17] raid6: remove __KERNEL__ ifdefs
+To: Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+        Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Song Liu <song@kernel.org>,
+        Yu Kuai <yukuai@alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com>,
+        Li Nan <linan122@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-raid@vger.kernel.org
+References: <20260324064115.3217136-1-hch@lst.de>
+ <20260324064115.3217136-3-hch@lst.de>
+Content-Language: en-US, sv-SE
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <20260324064115.3217136-3-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
+	DMARC_POLICY_ALLOW(-0.50)[zytor.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[zytor.com:s=2026022301];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22376-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	DKIM_TRACE(0.00)[bootlin.com:+];
-	RCPT_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-22379-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,gmail.com,dabbelt.com,eecs.berkeley.edu,ghiti.fr,redhat.com,alien8.de,linux.intel.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
+	RCPT_COUNT_TWELVE(0.00)[43];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hpa@zytor.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[zytor.com:+];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bootlin.com:dkim,bootlin.com:mid,bootlin.com:url]
-X-Rspamd-Queue-Id: E6EAA32518E
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,zytor.com:dkim,zytor.com:mid]
+X-Rspamd-Queue-Id: A32A13288F7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello,
+On 2026-03-23 23:40, Christoph Hellwig wrote:
+> With the test code ported to kernel space, none of this is required.
 
-I forgot to include the maintainers in the initial e-mail.
+I really *really* don't like this.
 
-Additional link to the source code :
-https://elixir.bootlin.com/linux/v7.0-rc1/source/crypto/ahash.c#L467
+The ability of running in user space is really useful when it comes to
+developing new code for new platforms, which happens often enough for this code.
 
-Thank you,
-Paul.
-
-On 3/20/26 10:42 AM, Paul Louvel wrote:
-> Hello,
->
-> I have stumbled across a flag defined in include/crypto/internal/hash.h : 
-> CRYPTO_AHASH_ALG_BLOCK_ONLY.
-> To get more information about what exact behavior this flag do, I read the 
-> crypto_ahash_update function.
-> From the looks of it, it seems that the API will call the tfm update if there 
-> is enough bytes (and by enough I mean at least a block size), from the 
-> internal buffer and the incoming ahash_request.
-> In this case, I find the BLOCK_ONLY naming a bit of a misnomer, since it only 
-> guarantee you than req->nbytes will be at least a block size.
-> I initially though that the API would only give a request that are a multiple 
-> of the block size.
->
-> This flag, among others, are relatively recent.
-> I think adding documentation about these flags would be a great idea.
->
-> Regards,
-> Paul.
->
--- 
-Paul Louvel, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+	-hpa
 
 
