@@ -1,138 +1,265 @@
-Return-Path: <linux-crypto+bounces-22379-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22377-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gEXYAjYGxGnOvQQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22379-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 16:58:46 +0100
+	id 8Op4FdECxGnOvQQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22377-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 16:44:17 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id A32A13288F7
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 16:58:45 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594613284A7
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 16:44:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9D0FC3006B60
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 15:58:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C3E6C3110450
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 15:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D083EAC6E;
-	Wed, 25 Mar 2026 15:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A13A1CD1E4;
+	Wed, 25 Mar 2026 15:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="RHklxLfi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dEelH2eT"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8933E9580;
-	Wed, 25 Mar 2026 15:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB4839A7FE;
+	Wed, 25 Mar 2026 15:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774454316; cv=none; b=Rf8l0BmT10S+p9Q1SwbmldrlK8vBBAc1Wvn0OQ6G7l8MMhZ9PjZfEDZ3sAp63FrOKI46h8Ol/DqnNOJa7INwIxMmhfY82xYJYx0Qpz1d7WxFRsqOSSnLTnl17/LEfK0jwnYB7/a2Yo4/33uFmOSNU6lhMokMTuoTm4z/qwWbI/o=
+	t=1774452310; cv=none; b=NS9wRMfTVkZHzKDs/Q11YPSt4XZloYCGfBLyMww5vqLYGFjGdUfAGsJfcFYyfLV3uQCI2CejAZD4IrAIXIFMaA2pQuHFD6tT6ixr+GexiztYQ+aL1I0bD1OMqBoYgK530IFLIqD6RBE9V660ydWrEHtMOUPsc0q+dZvZrmptso4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774454316; c=relaxed/simple;
-	bh=3xxfI6gRTrix+3bAjHjl+NqvLIsP+3Ljt4acojJrtbk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UXkurVSZsy/o9Z9tSPnzrSAAjCoveZHpl57DcBhGxHkZ7MQh3O+uwHTe9sPDY1hwYQ+jVlsCr/EB9rQbjCAtGjP5zjzvT2VGwdIcvA7HQmCR/uILU4XzvYicVPJ8lF6QUQHTgtRdAh18q9hSr/4DMYsofmCNqwOT+Td8/d1gj/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=RHklxLfi; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [IPV6:2601:646:8081:9481:619:3ffd:957c:6748] ([IPv6:2601:646:8081:9481:619:3ffd:957c:6748])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 62PFE0CM3057644
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 25 Mar 2026 08:14:01 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 62PFE0CM3057644
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2026022301; t=1774451646;
-	bh=m+c64TX9TAStG5n4QBbOwBHxDLYCJ+PjBNcVbNtGMx8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=RHklxLfiOlJf6ydmRmJruDGnJeWMZSbz2TgxABeLCgguQaUbYsc9vR9kpgjAtaRk6
-	 D7BSdsEd+lvAoCQg+RbZcvgtOjl5ikAs97OdfN6AYdowAx+SkUCmf/8a7rxvIX1199
-	 n1C53Bc4syiY0JVf3wcgOdQFaGlli8ZPulCYU+tqXHoikLbqaKaukH46nBwaABbmkR
-	 FqzyBozoAq6ydYU475wWtUu9yg9VB2ezfO6KFROa2nbUotE425BtfRIaR4mJKhTxf8
-	 dVWONsYwf/QQWCyfrPeHYwfZmG0pn9A7Kw7p2V6FDiyY1iJynsS0qMGEvvGfkQIYvu
-	 dNPPZv5PxcbxQ==
-Message-ID: <59d1d178-c141-4229-81e9-a6c23fa81f2f@zytor.com>
-Date: Wed, 25 Mar 2026 08:13:55 -0700
+	s=arc-20240116; t=1774452310; c=relaxed/simple;
+	bh=sI6cjAIO1yZ54Gqe2yyUZeshtZbWqpAlSGw4L5lRmzk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GW9ldIb9fsQggkygD51oGBay06GZz3uyF8Py4Af+3TxIV2Ev0f3923I4BC//uOENWgdrkjRSc+syP2R9Ld3k81LNGhHic8CwJqwsOcxeNSJcYfWiUd4zRfo+e2Pyed8YSu+wE1wthi01AvPuhPHB7MIrR9pYsLbLs4kDv5Qwg/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dEelH2eT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C57FC116C6;
+	Wed, 25 Mar 2026 15:25:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774452310;
+	bh=sI6cjAIO1yZ54Gqe2yyUZeshtZbWqpAlSGw4L5lRmzk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dEelH2eT5mI+c6A7F+qjo0dLLdE+xa197XUVe60Mhv0mnAGmz3EUpb0SMesUh77FN
+	 rJsqcC7DSPfuv6KCfeUqXTHkQTtVBvwgKOVqoIajkpjdR4PupLRDeu85R9dUUB8JXK
+	 gio07OmXnBtRgIE6r6GGuzVjX8MkhW6fldH2JsWPQXzENPAbOlur1Swt9Tpi8UVk36
+	 iddHFWastQZqwC0neCEzxzrApvImZSjirzsgS3oj/kVfoHuamMKMTJXpBE5V/hK7k/
+	 C3kv90fsQkBskE2P5ihN1/sqU/mYqqNpnW9jNhx95rHbNDN0Bg0nqEe39jWQuLOnGT
+	 VlbjGuqrBJETA==
+Date: Wed, 25 Mar 2026 09:25:05 -0600
+From: Tycho Andersen <tycho@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ashish Kalra <ashish.kalra@amd.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	John Allen <john.allen@amd.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Kishon Vijay Abraham I <kvijayab@amd.com>,
+	Alexey Kardashevskiy <aik@amd.com>,
+	Nikunj A Dadhania <nikunj@amd.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Kim Phillips <kim.phillips@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v4 0/7] Move SNP initialization to the CCP driver
+Message-ID: <acP-UdjBy06MnBgY@tycho.pizza>
+References: <20260324161301.1353976-1-tycho@kernel.org>
+ <6A6AA56D-6B4C-4C32-A639-18C14BC0C358@alien8.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/17] raid6: remove __KERNEL__ ifdefs
-To: Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-        Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        Song Liu <song@kernel.org>,
-        Yu Kuai <yukuai@alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com>,
-        Li Nan <linan122@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-raid@vger.kernel.org
-References: <20260324064115.3217136-1-hch@lst.de>
- <20260324064115.3217136-3-hch@lst.de>
-Content-Language: en-US, sv-SE
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20260324064115.3217136-3-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6A6AA56D-6B4C-4C32-A639-18C14BC0C358@alien8.de>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[zytor.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[zytor.com:s=2026022301];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22379-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,gmail.com,dabbelt.com,eecs.berkeley.edu,ghiti.fr,redhat.com,alien8.de,linux.intel.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	RCPT_COUNT_TWELVE(0.00)[43];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22377-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tycho@kernel.org,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hpa@zytor.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[zytor.com:+];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,zytor.com:dkim,zytor.com:mid]
-X-Rspamd-Queue-Id: A32A13288F7
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,sashiko.dev:url]
+X-Rspamd-Queue-Id: 594613284A7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 2026-03-23 23:40, Christoph Hellwig wrote:
-> With the test code ported to kernel space, none of this is required.
+On Wed, Mar 25, 2026 at 09:07:42AM +0000, Borislav Petkov wrote:
+> Sachiko has some questions:
+> 
+> https://sashiko.dev/#/patchset/20260324161301.1353976-1-tycho%40kernel.org
 
-I really *really* don't like this.
+Interesting, review-prompts directly didn't complain about these,
 
-The ability of running in user space is really useful when it comes to
-developing new code for new platforms, which happens often enough for this code.
+> Could this lead to a NULL pointer dereference in clear_rmp() if
+> setup_rmptable() fails during early boot?
+>
+> If setup_rmptable() returns false (for example, if the BIOS did not
+> reserve memory for the RMP table), it exits without allocating
+> rmp_bookkeeping or rmp_segment_table, but leaves the CC_ATTR_HOST_SEV_SNP
+> platform attribute active.
 
-	-hpa
+If setup_rmptable() fails, snp_rmptable_init() returns -ENOSYS and
+iommu_snp_enable() clears CC_ATTR_HOST_SEV_SNP.
+__sev_snp_init_locked() checks CC_ATTR_HOST_SEV_SNP before doing
+anything else, so I think this is not possible.
 
+You did complain about this call chain before off-list though, maybe
+we should clear CC_ATTR_HOST_SEV_SNP in more places directly vs.
+returning an errno to make it more obvious?
+
+> Is there a race condition with CPU hotplug here?
+>
+> Since snp_prepare() lacks cpus_read_lock() protection, a CPU could
+> come online exactly between the two passes, missing the mfd_enable step
+> but receiving snp_enable.
+
+I think it makes sense to do the operations on the same set of CPUs
+even if we don't support hotplug. I will resend with
+cpus_read_lock().
+
+> Additionally, without a CPU hotplug state callback (such as
+> cpuhp_setup_state()), any CPUs brought online after snp_prepare()
+> completes will miss these MSR configurations completely. If an SNP
+> guest is later scheduled on one of these uninitialized CPUs, will it cause
+> hardware exceptions?
+
+Yes, WONTFIX.
+
+> Can deferring this call cause a NULL pointer dereference? Previously,
+> snp_prepare() was called only after setup_rmptable() succeeded. By
+> moving it to the CCP driver, it may be called unconditionally as long
+> as CC_ATTR_HOST_SEV_SNP is true, even if setup_rmptable() was skipped
+> or failed. Does clear_rmp() inside snp_prepare() safely handle the
+> uninitialized rmp_bookkeeping pointer?
+
+Same as above, CC_ATTR_HOST_SEV_SNP should perhaps be cleared in more
+places.
+
+> Also, moving snp_prepare() out of early boot might expand the window for
+> CPU hotplug events. Does this create an asymmetry where newly onlined
+> CPUs miss the MSR_AMD64_SYSCFG_SNP_EN configuration applied by
+> on_each_cpu(snp_enable, NULL, 1) because the SEV subsystem lacks a CPU
+> hotplug callback? Could this cause host crashes when KVM schedules VMs
+> on these uninitialized CPUs?
+
+Same as above, WONTFIX.
+
+> Additionally, does deferring SNP enablement in the hardware coordinate
+> with the IOMMU feature degradation? The AMD IOMMU driver evaluates
+> amd_iommu_snp_en at early boot and permanently disables identity mapping
+> domains and IOMMUv2. Will the system suffer this permanent penalty even
+> if the CCP driver is never loaded?
+
+This is about the bios setting:
+
+        amd_iommu_snp_en = check_feature(FEATURE_SNP);
+        if (!amd_iommu_snp_en) {
+                pr_warn("SNP: IOMMU SNP feature not enabled, SNP cannot be supported.\n");
+                goto disable_snp;
+        }
+
+so I don't think the question really makes sense.
+
+> Could placing snp_prepare() here cause prolonged blocking of all SEV
+> operations? Since __sev_snp_init_locked() holds sev_cmd_mutex, the long
+> execution time of clear_rmp() (which zeroes the entire RMP table and scales
+> with system RAM) might block SEV firmware ioctls and VM lifecycle operations
+> globally for several seconds.
+
+Yes, it does :). Actually the firmware call is the expensive part, not
+the rmp zeroing, but it definitely blocks for a while.
+
+> This isn't a bug introduced by this commit, but if SEV initialization
+> fails and KVM is actively running normal VMs, could a userspace process
+> trigger this code path via /dev/sev ioctls (e.g., SEV_PDH_GEN) and zero out
+> MSR_VM_HSAVE_PA globally? Would the next VMRUN execution for an active VM
+> trigger a general protection fault and crash the host?
+
+Oof, yes. I wonder if we shouldn't set psp_dead = true if
+sev_platform_init() sees an error. After this series, if
+the error is e.g. init_ex_path failure, you can unload, fix the
+failure, and try again.
+
+>  	if (sev_version_greater_or_equal(SNP_MIN_API_MAJOR, 52)) {
+[ ... ]
+>  		memset(&data, 0, sizeof(data));
+[ ... ]
+>  		data.tio_en = tio_supp && sev_tio_enabled && amd_iommu_sev_tio_supported();
+[ ... ]
+>  	} else {
+>  		cmd = SEV_CMD_SNP_INIT;
+>  		arg = NULL;
+>  	}
+> This isn't a bug introduced by this commit, but is the stack variable
+> data left uninitialized when taking the else branch? Since data.tio_en is
+> later evaluated unconditionally, could stack garbage cause it to evaluate
+> to true, leading to erroneous attempts to allocate pages and initialize
+> SEV-TIO on unsupported hardware?
+
+No, arg is the actual pointer passed, and it is set to NULL. non-EX
+init doesn't support TIO anyway...
+
+> Also, regarding the bounds check in snp_filter_reserved_mem_regions()
+> called via walk_iomem_res_desc(): does the check
+> if ((range_list->num_elements * 16 + 8) > PAGE_SIZE)
+> allow an off-by-one heap buffer overflow?
+>
+> If range_list->num_elements is 255, 255 * 16 + 8 = 4088, which is <= 4096.
+> Writing range->base (8 bytes) fills 4088-4095, but writing range->page_count
+> (4 bytes) would write to 4096-4099, overflowing the kzalloc-allocated
+> PAGE_SIZE buffer.
+
+Yes, this also looks real, and needs:
+
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 939fa8aa155c..3642226c0fc0 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -1328,10 +1328,11 @@ static int snp_filter_reserved_mem_regions(struct resource *rs, void *arg)
+ 	size_t size;
+ 
+ 	/*
+-	 * Ensure the list of HV_FIXED pages that will be passed to firmware
+-	 * do not exceed the page-sized argument buffer.
++	 * Ensure the list of HV_FIXED pages including the one we are about to
++	 * use that will be passed to firmware do not exceed the page-sized
++	 * argument buffer.
+ 	 */
+-	if ((range_list->num_elements * sizeof(struct sev_data_range) +
++	if (((range_list->num_elements + 1) * sizeof(struct sev_data_range) +
+ 	     sizeof(struct sev_data_range_list)) > PAGE_SIZE)
+ 		return -E2BIG;
+
+I have another bug that review-prompts found unrelated to this series.
+I can put the two fixes above with that or include them here, let me
+know what you prefer. Either way I'll resend one more with
+cpus_read_lock().
+
+Thanks,
+
+Tycho
 
