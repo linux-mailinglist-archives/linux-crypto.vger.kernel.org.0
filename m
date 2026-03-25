@@ -1,83 +1,94 @@
-Return-Path: <linux-crypto+bounces-22380-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22382-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GM/jOYoOxGk+vgQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22380-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 17:34:18 +0100
+	id mDECNE8jxGmZwgQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22382-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 19:02:55 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B1A32915F
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 17:34:18 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C1C932A3FC
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 19:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3F8FF31BD440
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 16:23:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7B923305F537
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 18:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2AD3DA7E1;
-	Wed, 25 Mar 2026 16:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17AE3A75A4;
+	Wed, 25 Mar 2026 18:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dErEMNCQ"
+	dkim=pass (1024-bit key) header.d=theori.io header.i=@theori.io header.b="YELG1uVR"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED1E3E928D
-	for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 16:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774455833; cv=none; b=UABUE0G4Ac5ItWJzM7Xfg9cmaudE8E2o7toE9xIyQJyATJ9JGGVH07eL/CoRlNhI1Ygfv54wIJSyz+QhCjFB/elfIoUO87zbHqpLki3ht2qMXcRVb9KK+8wpmL9Fkt2jEnry4N4XA458aMKm9ix7Fyy0cNZctOHEnMrkUIVIOXs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774455833; c=relaxed/simple;
-	bh=nO86jVfdQ63Cy3MQ5IB90yb3gxkkrH+dYp7vjBgXzjM=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D3440F8D7
+	for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 18:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774461605; cv=pass; b=saRATmCT4shgoHHmFTPeD21EZNbUeaeRA62Ve7lSspcJy7MYYf9qVxj3M/uRSA/cjtSNpUu+tZxZUS9rWAib9K5073N/8NLPQCFGMz/frRheXRsIgDVn7FYsTre+y323nNnkou+n5aTCSGp6zhIkD/n0QsuQEV6oylkmNa9yPO8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774461605; c=relaxed/simple;
+	bh=b22F29d92okOuVhFZjzjJ3Mw4gc1RIWD7RrO6Frnx5Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U/5+OP0F8tKDihTxEY6LTbuEa2/zt2YmaMmKVWAfbe+PzdRmT9CeFAQVNqqNVNsgglgFHuM8O9tSe1720i3OoH8bF/xTm93w2VfUBSMWQ06MOi54UdcX6v0W4XMi+iaHsA7trBMWFWKacvJMQUMcWlcZSA9Ny2ds+FdFCcFAVVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dErEMNCQ; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b980785a0bfso389079966b.3
-        for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 09:23:51 -0700 (PDT)
+	 To:Cc:Content-Type; b=BsqjobqYuoMIn6xSPZw1u/mVu3FEsrF2zWm9knttHD5CivdV4OSwPbh2ddN9wWxjWzSDwmZ8nZa/bhiHOo9Y/vs3Kk27qkk8d0QW1u4cqDPhPmIbbleW2OX3QEnUxSAll1PJV/orFF0duGtNeiiCxAUAXrt5TGKlg1I7+dCA+uw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=theori.io; spf=pass smtp.mailfrom=theori.io; dkim=pass (1024-bit key) header.d=theori.io header.i=@theori.io header.b=YELG1uVR; arc=pass smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=theori.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theori.io
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-439b9b1900bso60377f8f.1
+        for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 11:00:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774461602; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Q5sJ4UbIbDXZXjuNeZEawqFzaFuWWxzimtGtbhSj6NcE3xNkjZ4ks1t/O4dlCtbCPU
+         lLbau4ahXfmkNWbu/h8Ka3t9uZADEQIAimG3nPHD3cxxobydD5A7yjAT4cd2HXe/ZE26
+         Oi8hqaXq8Vz4uWpNEYKgNFveJMuttxKkMuKOhgGkhW/xJVHpKTd3shGOck6O4rpSPVI/
+         /pQ19zvJEbeL5pzgCZVucp0vezxsVnMnYSSldNLcJyGObYFDCKO11tquPk6tyiHC4fnf
+         8SSE1M3mX2mzNk1ATJOsSA8DkFbLrCRiB/RnLjzwhQaKgACl3asORyb4/CrAjBlqB7Aq
+         vSuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=OvANr5VJGTIvIepqdzwF8TZzJNuHZQnFTWL0easjFTc=;
+        fh=CuoFY8wqoeDTMQCrrHQwFswDkfUb3zP2XhjVmuT5HqI=;
+        b=A9DY+hm4+96v0R9Kdc+rAsFKEGgInRt99dRT1Lafzcl0utXbHUc1n8WSokFaNEazhA
+         nqnmSSHRd7jJZ0gWYEq5jHmVSm/rzgZ/44wyv1dmQcYM8GpzFk1PfaIZ1+W/p+rID3s0
+         4vtr/rkT/FK/6Nbz2ghkjCmN2NfhtuRTHGVul+AgNUPAD9PnKWol9W/lyz3fS29BtrZu
+         p3vR5PIcQkSpA5TNEcVBrc5Wx671SmRNWXuV/5kVy/t5ntJLFqCfl+tCKOmg/tS+WzVM
+         Z1XNiqKqbnso3aUyBDU1/iVPNjlgKusAILXwSc/pKGbkpFji0ZmpURMmfMsKRi4q2X+K
+         OsiQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1774455829; x=1775060629; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xqRumgqylqhdvOolgAnZpUvCcbCRYsHI+2vuXt4pFJ0=;
-        b=dErEMNCQ480Bb/YNjqWnZfDSV6befDLBk4n1ho9rlQbBuluDQ0Yue7+3RnpFnd9KIF
-         lC0VZRrf0QRu2l9SLiAJzuAyYx5lmYv+XLBj71Tqo1DQ/5UFjvF7B7QTx3gIQiCCfTNl
-         nrqrfsdUDXVEFHSMCebHj9EbkjmHVDMlXBTdo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774455829; x=1775060629;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=theori.io; s=google; t=1774461602; x=1775066402; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xqRumgqylqhdvOolgAnZpUvCcbCRYsHI+2vuXt4pFJ0=;
-        b=myFAh34L06k82uRP6HyZAC1wqeFnrJNAAIwY+iOBT6xaabdwwXnT5jsU3ZAjGGnIsI
-         LnXJaHzCmCQ3zBwG1z4Yv5Z58udGutIcU7B2/OUjIwpJgD2hViBur2UOUeAzHAchAeie
-         nHlu758IHsntHg2vH/a4gvuH7CO53wPPo9r2SPOosZ9Oxn4VAVYW5AG+zyBE78sRNkMf
-         qcuwQDaj6+SW2tvAIcOakNdqRNGVTF9I6PW4GeVKH9aJiNHd38zlr4Om4mUX7YmkWfs5
-         9JZY8v1LZ2DKgadW8uE3SoGQz2XQhFVMt3/cs4n0C6MOr34pCpa2makfhYireGy5d237
-         JsKA==
-X-Gm-Message-State: AOJu0YwGr8eBw3nq1WRYZ0Vae/vZspJjXDMo25+m+IBxm9992dsWb5GN
-	nl9crgLOutQoe2w6E9snTk5MH4pIkU3GzRr9ob3Q8PUhYfMHvLoP6AjgCSg7bCSiE2t5JMAf7Vl
-	u5+CkrLg=
-X-Gm-Gg: ATEYQzw5SL3xUbRVHw/RWo29itMgZYgfWLd2O8giR3rPGG0xuNuhFiKSRbEOVYEPvN7
-	gTEIfd7hZceqOJafjDPpZAK8RjUuZuvlXDkIohyQBwzJ0JEatLYDq6Kwkvs8yNwqzEtMHjRRG0a
-	bSMCkdwIcNEahXqs2eCk40b7qWUVvi0BSj0AQi3ymc1SZsMyU1oa7JvVU8W+xWWDh41lX+e97q1
-	dWuOtnVhFSRcpAFYyhq2mHR2oK4/S3mCPsGe8y5bthAfGgE5mM859tI7K7zuX3zRxQB+iib9zAR
-	5H1ah95TrTZLCOGyu4Qvj6Jffc1CPIHlUkBfedmYVjxr1XJi3Yneb4Dp9P91B0h6tnH+NkQXNUA
-	q+xQoMsznOnKsXvA6Uo/URlq/eXG4gm4Bh53LS7rqtoBuJVe06hqTfFIWx69KcKM4s7O21o/zq2
-	9yo/D5XtPQV5RIB2spcp2mkk3iL31QsoXTfxL4iMxw6wGybmHmsaf4UaG6Nry4QVKLzQ6+4Gw=
-X-Received: by 2002:a17:906:f5a2:b0:b97:c719:14d4 with SMTP id a640c23a62f3a-b9a542527f8mr277233466b.29.1774455829516;
-        Wed, 25 Mar 2026 09:23:49 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b9b202192desm6900366b.2.2026.03.25.09.23.48
-        for <linux-crypto@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Mar 2026 09:23:49 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-661d20c9787so3964154a12.0
-        for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 09:23:48 -0700 (PDT)
-X-Received: by 2002:a05:6402:52c7:b0:66a:5c2:51cc with SMTP id
- 4fb4d7f45d1cf-66a82618054mr2725783a12.4.1774455828155; Wed, 25 Mar 2026
- 09:23:48 -0700 (PDT)
+        bh=OvANr5VJGTIvIepqdzwF8TZzJNuHZQnFTWL0easjFTc=;
+        b=YELG1uVRZOU6vcNbriBRsEpc4FMnK0jtAoOzqg6mQINOIumdrWi+vxExbf2ye3l+Z3
+         QDuD4k7KKBcTf/4+qANYKRfAj3D8i/Zjmk3WJbqvXVGFEPEMwPdAm/wvScbQArLLRhvk
+         AMocRhnsBY4uEupj72CU9l3euisqJzMcM+pSs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774461602; x=1775066402;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=OvANr5VJGTIvIepqdzwF8TZzJNuHZQnFTWL0easjFTc=;
+        b=dY8LY9l8gGddqPJ76+LrRNeE6UuGywAzDYVvrlANbYhiQlWl2hhC0Gkq0ihNAmYIhA
+         rzfinQ5VzlT8K1NvZ46sr6fQxla2Ca6W5fuAZ7+ovKJ49Vkp55nm29CVoZt3FaFhRGEK
+         leaFSBljKZwh9EheOfGQnBXgAqPEvxe8xQippPG2KAAUzYq1c8SRyPWCMYjY7PPdNX/y
+         lGAKjSETQIF0V/LoyZ0EgPHjWf88BUC9GIv7lxYTzNLEV9DkH1QxBwHuEVSzhNVDIZpJ
+         +/MTOuRQyCuhfB02MGvh/Y9qtUNWpCws2k6v9eOGFjc3oExIvN9P+IoqwnlKXLfz1BYL
+         hAOw==
+X-Gm-Message-State: AOJu0YwCiov1otOgSOVFju0tyIWvu8Rc+nIBjH/AOOq2VUBjd13HqkpU
+	fTABaPHSNvwQgrPiboq0HrUvV8tq0MwOb9sSehA+NOjk4Q3+xSPkRkaWxuzLQyuDwXq6uhY5TCo
+	YtIUcHNPnDv7rQp/z4xzBCLroRV+xFF6b3p2IKHZp+w==
+X-Gm-Gg: ATEYQzytu7Ne7GM+h4vRl8Tx/jMzAh33yD7cK8GHj8KUZDvuZKCcvQCiXlJCohXMwge
+	Qv7DWUi86AwZcy7Ch9mxftE5nEZk3LKV19iUA3yMbKowfXcYkh5iSI6iKWVCEJx/JYdKEBbqlI7
+	PP9E1XZ0e+vLvvSqXCd0qRkR50Cj/gs1TnocIU9qdsfwsLojHSK5l4zBNhdA9vVWRObFrcLfW5n
+	FpzWkU0dMxbcpPT6HwvlJE+IvRHUHotqk8TwCicdHwBDYmiyHx+vcPTJrPTEtF1cdZ7bl7E2DwL
+	7VNj7c2V/QchEcE=
+X-Received: by 2002:a05:6000:1a54:b0:43b:8f54:5ed3 with SMTP id
+ ffacd0b85a97d-43b8f545ee6mr2608458f8f.34.1774461602077; Wed, 25 Mar 2026
+ 11:00:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -86,72 +97,140 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <acOpDrnN3cVfiASk@gondor.apana.org.au>
 In-Reply-To: <acOpDrnN3cVfiASk@gondor.apana.org.au>
-From: Linus Torvalds <torvalds@linuxfoundation.org>
-Date: Wed, 25 Mar 2026 09:23:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiEzzo=LQ4TasUqFDkSYYAXa3VT6PvLx+AS8asOEA6hng@mail.gmail.com>
-X-Gm-Features: AQROBzCvobMTeSr66Doog6JxPYO6sueQRqpfgG5bNFV_fR0cItaL4yWoGy3wQ-4
-Message-ID: <CAHk-=wiEzzo=LQ4TasUqFDkSYYAXa3VT6PvLx+AS8asOEA6hng@mail.gmail.com>
+From: Taeyang Lee <0wn@theori.io>
+Date: Thu, 26 Mar 2026 02:59:24 +0900
+X-Gm-Features: AQROBzD6aMQ6_rJ9Y0j2EJIPgFp60u1NJGUCvoXOYr4sPY6KvNJLd_i_vwSTKc8
+Message-ID: <CAH-2XvLZD_-CVQT0omao2+GrdQt1Loq+oo4X6q=0NUAeUk==1w@mail.gmail.com>
 Subject: Re: [PATCH] crypto: authencesn - Copy high sequence number from src
  after out-of-place decryption
 To: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>, 
-	Taeyang Lee <0wn@theori.io>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Greg KH <gregkh@linuxfoundation.org>, davem@davemloft.net, 
+	Linus Torvalds <torvalds@linuxfoundation.org>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Greg KH <gregkh@linuxfoundation.org>, davem@davemloft.net, 
 	Brian Pak <bpak@theori.io>, Juno Im <juno@theori.io>, Jungwon Lim <setuid0@theori.io>
 Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=google];
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[theori.io:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22380-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	DMARC_NA(0.00)[theori.io];
+	TAGGED_FROM(0.00)[bounces-22382-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[theori.io:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[torvalds@linuxfoundation.org,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[0wn@theori.io,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 50B1A32915F
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,mail.gmail.com:mid,xint.io:url,theori.io:dkim,theori.io:email,theori.io:url,apana.org.au:email,apana.org.au:url]
+X-Rspamd-Queue-Id: 4C1C932A3FC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 25 Mar 2026 at 02:21, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+Hi Herbert, Thanks for the patch.
+
+On Wed, Mar 25, 2026 at 6:21=E2=80=AFPM Herbert Xu <herbert@gondor.apana.or=
+g.au> wrote:
+>
+> When decrypting data that is not in-place (src !=3D dst), there is
+> no need to save the high-order sequence bits in dst as it could
+> simply be re-copied from the source.
+
+I don't think checking only `src !=3D dst` is sufficient for the issue I
+reported.
+
+In the AF_ALG AEAD decrypt path, the child AEAD request is intentionally
+set up to look in-place: `req->src =3D=3D req->dst` on the RX SGL head, and
+the TX-backed authentication-tag pages are then chained behind that RX
+SGL. So from authencesn's point of view this still takes the `src =3D=3D ds=
+t`
+path, while `dst[assoclen + cryptlen]` can still resolve to TX-backed
+pages, including splice()/MSG_SPLICE_PAGES-backed page-cache pages.
+
+> Reported-by: Taeyang Lee <0wn@theori.io>
+> Fixes: 104880a6b470 ("crypto: authencesn - Convert to new AEAD interface"=
+)
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+>
+> diff --git a/crypto/authencesn.c b/crypto/authencesn.c
+> index 542a978663b9..fae8c1dbf495 100644
+> --- a/crypto/authencesn.c
+> +++ b/crypto/authencesn.c
+> @@ -215,9 +215,12 @@ static int crypto_authenc_esn_decrypt_tail(struct ae=
+ad_request *req,
+>                 goto decrypt;
 >
 >         /* Move high-order bits of sequence number back. */
 > -       scatterwalk_map_and_copy(tmp, dst, 4, 4, 0);
-> -       scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 0);
+> -       scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 0)=
+;
 > -       scatterwalk_map_and_copy(tmp, dst, 0, 8, 1);
-> +       if (req->src == dst) {
+> +       if (req->src =3D=3D dst) {
 > +               scatterwalk_map_and_copy(tmp, dst, 4, 4, 0);
-> +               scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 0);
+> +               scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptle=
+n, 4, 0);
 > +               scatterwalk_map_and_copy(tmp, dst, 0, 8, 1);
 > +       } else
 > +               memcpy_sglist(dst, req->src, 8);
+>
+>         if (crypto_memneq(ihash, ohash, authsize))
+>                 return -EBADMSG;
+> @@ -273,10 +276,12 @@ static int crypto_authenc_esn_decrypt(struct aead_r=
+equest *req)
+>         if (!authsize)
+>                 goto tail;
+>
+> -       /* Move high-order bits of sequence number to the end. */
+>         scatterwalk_map_and_copy(tmp, dst, 0, 8, 0);
+>         scatterwalk_map_and_copy(tmp, dst, 4, 4, 1);
+> -       scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 1)=
+;
+> +       if (req->src =3D=3D dst) {
+> +               /* Move high-order bits of sequence number to the end. */
+> +               scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptle=
+n, 4, 1);
+> +       }
+>
+>         sg_init_table(areq_ctx->dst, 2);
+>         dst =3D scatterwalk_ffwd(areq_ctx->dst, dst, 4);
 
-Side note: can we please just get rid of the horrid
-scatterwalk_map_and_copy() when making changes to code?
+More fundamentally, I think the root cause is that authencesn decrypt
+uses caller-owned req->dst as scratch storage at all. During decrypt it
+writes both into the reserved destination AAD area and into the first bytes
+past the documented AEAD decrypt output region.
 
-That function is disgusting. It's really hard to see which direction it copies.
+Per the AEAD API, even in the out-of-place case space must be reserved in
+the destination for AAD, but that area is not supposed to be written.
+So my preference would be to fix this in authencesn itself by removing the
+decrypt-side `req->dst` scratch usage entirely and keeping the
+ESN temporary state in private per-request memory.
 
-At least with memcpy_to/from_sglist() the function name and the order
-of the arguments gives a better hint of what the code is trying to do.
+Thanks,
 
-This code is all very hard to read even _without_ the code being
-intentionally obfuscated with that horrid interface.
 
-                  Linus
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+
+
+--
+___
+
+Taeyang Lee, Security Researcher
+Theori, Inc. / Xint Code
+Website. www.theori.io / xint.io
+Email. 0wn@theori.io
 
