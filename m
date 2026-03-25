@@ -1,150 +1,169 @@
-Return-Path: <linux-crypto+bounces-22373-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22375-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sBNzFMJ3w2ktrAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22373-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 06:50:58 +0100
+	id yIwgDWmww2nAtAQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22375-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 10:52:41 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7E7631FF7C
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 06:50:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF40322762
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 10:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1D5A630862D2
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 05:49:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2EEA8301571E
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 09:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DE131690E;
-	Wed, 25 Mar 2026 05:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A0F38D6A4;
+	Wed, 25 Mar 2026 09:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ef9EjFV2"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Jx8UEjkl"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CEB315D46;
-	Wed, 25 Mar 2026 05:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45033382E7;
+	Wed, 25 Mar 2026 09:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774417761; cv=none; b=C6ZN8ffI/7yBzxlUWxRfe7PgjY1kUNAkYZ5VFVLbOF0d7YrAShrmm0GFz6Ji/qz5XTaVcE90eDAk++C3jukNk/cjLGCY/3VrOBjadxNL8WLVZw3bNtLF6O7PnavuinJsUCCUE4sbPxm+N87fhgJt0wB7rbkghugf3mpkc4/YiHs=
+	t=1774432189; cv=none; b=M99Xjn3/TskzDpQ8D0uwaCrhLA1iA6tb6p/seinBfVUQP79Fhk5pQaUyG7/Gew7MtyGFdECKJrcLwTuk3cxxqROTLAUdxFGk3G6Nfp4qhNlnyZMhMKMP3hsFSILEHwqKbJkIzjYOFO6quhhFN+UiU7Boi3ODKNi/EfnbCBRYq3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774417761; c=relaxed/simple;
-	bh=yNSLxXr/frsV5stEmBs7+zyttMOjHGrN+gV+hUbXI9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qmfpnXvrI1em5QNEl6OXghB3Xu0mGfHv/qdIjSR/UAdLrno7LmisikM2gd3XqpbHykkSNfEYkwTT64A48jRz4VkSdn0xAIFkRb3+NXSPORlwaBm38DyPqH0nBmHaZK+h73eG9zwpA2yvN7yxFuhZ9eidEnAh9GYcpnyZf9OgcpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ef9EjFV2; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774417760; x=1805953760;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yNSLxXr/frsV5stEmBs7+zyttMOjHGrN+gV+hUbXI9Q=;
-  b=ef9EjFV2KF35c5pe2REys5JZRpnu2Kq2NlhIXJtalfthUsVThg9yASH7
-   naAbnOCMb4yyBxyyFrXmqm0Jw7Yll48AeYqj9vFi4s/1DQyBA/dT1Ljki
-   IRlT4JPl33i459H8QVC3yXfRxsqz1fpi10oe9te1dRh8Fp/Rm9yCUCQJI
-   KwDtR8vBP5DHxEY8YL+HXz8nkQ5gkY1CwBYPaJ2NSqR3j3l+nGG8gKJWk
-   L631HjfGc6QLC1ZoVC7+nPDDlFaXPD48KdtNvDPtHkvE/8ScB5PcOWiPP
-   qoVo5K7kbo1zXMvVDtUGENnGKNXTsZ4qrX0/A2vyeI3qa8rKY377KvB2f
-   w==;
-X-CSE-ConnectionGUID: R8rd2/KsTvOGkB3zdj+sbw==
-X-CSE-MsgGUID: cpHiU6fORx6na0WB7EqBcA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="86142218"
-X-IronPort-AV: E=Sophos;i="6.23,139,1770624000"; 
-   d="scan'208";a="86142218"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2026 22:49:19 -0700
-X-CSE-ConnectionGUID: IDYujCNzTFGNI2v+lvvJRg==
-X-CSE-MsgGUID: o8t92k2tS9ijjKQUFLbf7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,139,1770624000"; 
-   d="scan'208";a="228647091"
-Received: from lkp-server01.sh.intel.com (HELO 3905d212be1b) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 24 Mar 2026 22:49:17 -0700
-Received: from kbuild by 3905d212be1b with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1w5H7C-000000006GH-30uo;
-	Wed, 25 Mar 2026 05:49:14 +0000
-Date: Wed, 25 Mar 2026 13:48:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: Eric Biggers <ebiggers@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-crypto@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v2] crypto: cryptomgr - Select algorithm types only when
- CRYPTO_SELFTESTS
-Message-ID: <202603251327.8QCIZ1bS-lkp@intel.com>
-References: <20260324050123.9494-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1774432189; c=relaxed/simple;
+	bh=cjUh84v06t+5duH/JkRGgIHlc5Nd7VmjKA1DabpKZzM=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=Vkp59NFtqi0UcSkRZfTQoJTVqKLFgZNRG5yxpLuLZ4EBjaJPHN5b4rN4k57fiAvPDZIaUYJp10yF42zyXrEdj3A7UXIMzzoVWyRykd3F/X4NISY4NrLbB0HJ9y/8zmUhVwRF/lQpGlkkvY7xi9U+J39qyKMdbNmWWrVvePcU+1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Jx8UEjkl; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E5FD140E0222;
+	Wed, 25 Mar 2026 09:49:43 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id DL2YnFTbJOvb; Wed, 25 Mar 2026 09:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1774432177; bh=opSuZ+nsbfDVXSO0zZ3CqmEhBPTMnFclYwOe7hnJzjY=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=Jx8UEjklj2eZQBaIFoxv0oTQssN5+uDjycqG6lg6j2qTmKI01oydPP+BbH3kPy9YF
+	 CBATsQm0atYNOg/K2+2IXpDWwVSHea/L3tPkE9FMo9sn/jZrKhZdYdPisTYiwNGO1w
+	 kJE/47MKnQG7KCQwO4Bt1O18cLlB0Kc2BTeDWawXRuVBA0egkJhiS05HEKij4H3JFD
+	 KN56s+4nVsmzaTJYin6jVv9HS2TFrvLYXFkQw+aXMI24sIu0Q5OCp7QsSP9Kb+ijr3
+	 65SGP5KV/DlGCL3fuczM3ZDYflyPutQecyln65ZIF+yCdOzDRW7itaePNqASGoT1t5
+	 +fwWZQKucvoFjh2ZyTokSqxQMxDsNvJXtQmjuLCkzI5q9e8GxhN3WmQMu9AITqQZEv
+	 xjo7YGTu3h2CfLVVsBxVCtZrGMbAN/90ojZnUAsVyRx5dyqS4tjPcOoCr9balSSBO1
+	 8CI0+MAZc9pJYOXeBNQv0OjL6Ped1mjhmdt2D+MNov7mRW0+4ZqfNLK1LkBqn26qFp
+	 2Lc2uE6QQ9Mfizy4QlryMZQdzDL2cjkkEZV1cfmpI85JBEGejxpSMTkiJvtL2SRplc
+	 3AGdXHNx5CNWEvlu4yhmEp5vJ2dFsFNtuLkwFpQ9IrYI+wwwVrX64zSXtqd1cNXT+F
+	 NXsKXfQjIaE5VTumCo1xmVkM=
+Received: from ehlo.thunderbird.net (unknown [IPv6:2a02:3033:266:68d6:b127:ed1d:b692:3857])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 07DBA40E015B;
+	Wed, 25 Mar 2026 09:49:15 +0000 (UTC)
+Date: Wed, 25 Mar 2026 09:07:42 +0000
+From: Borislav Petkov <bp@alien8.de>
+To: Tycho Andersen <tycho@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Ashish Kalra <ashish.kalra@amd.com>, Tom Lendacky <thomas.lendacky@amd.com>,
+ John Allen <john.allen@amd.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>, Ard Biesheuvel <ardb@kernel.org>,
+ Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Kishon Vijay Abraham I <kvijayab@amd.com>,
+ Alexey Kardashevskiy <aik@amd.com>, Nikunj A Dadhania <nikunj@amd.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Kim Phillips <kim.phillips@amd.com>, Sean Christopherson <seanjc@google.com>
+CC: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+ "Tycho Andersen (AMD)" <tycho@kernel.org>
+Subject: Re: [PATCH v4 0/7] Move SNP initialization to the CCP driver
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20260324161301.1353976-1-tycho@kernel.org>
+References: <20260324161301.1353976-1-tycho@kernel.org>
+Message-ID: <6A6AA56D-6B4C-4C32-A639-18C14BC0C358@alien8.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260324050123.9494-1-ebiggers@kernel.org>
-X-Spamd-Result: default: False [-1.16 / 15.00];
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[alien8.de,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[alien8.de:s=alien8];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22373-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22375-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[alien8.de:+];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bp@alien8.de,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[01.org:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:dkim,intel.com:email,intel.com:mid]
-X-Rspamd-Queue-Id: C7E7631FF7C
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[alien8.de:dkim,alien8.de:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sashiko.dev:url]
+X-Rspamd-Queue-Id: 8FF40322762
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Eric,
+On March 24, 2026 4:12:54 PM UTC, Tycho Andersen <tycho@kernel=2Eorg> wrote=
+:
+>From: "Tycho Andersen (AMD)" <tycho@kernel=2Eorg>
+>
+>Changes are:
+>* commit message fixes: snp -> sev, add arch/x86/ to path, capitalize thi=
+ngs
+>* rename snp_set_hsave_pa() -> clear_hsave_pa(), since it's clearing the =
+register
+>* snp_prepare_for_snp_init() -> snp_prepare()
+>* snp_x86_shutdown() -> snp_shutdown()
+>* 0 -> NULL, drop a newline in snp_shutdown()
+>* carry Herbert's acks as appropriate
+>
+>v3 is here: https://lore=2Ekernel=2Eorg/all/20260317162157=2E150842-1-tyc=
+ho@kernel=2Eorg/
+>
+>Tom Lendacky (2):
+>  x86/sev: Create a function to clear/zero the RMP
+>  crypto/ccp: Update HV_FIXED page states to allow freeing of memory
+>
+>Tycho Andersen (AMD) (5):
+>  x86/sev: Create snp_prepare()
+>  x86/sev: Create snp_shutdown()
+>  x86/sev, crypto/ccp: Move SNP init to ccp driver
+>  x86/sev, crypto/ccp: Move HSAVE_PA setup to arch/x86/
+>  crypto/ccp: Implement SNP x86 shutdown
+>
+> arch/x86/include/asm/sev=2Eh   |   4 ++
+> arch/x86/virt/svm/sev=2Ec      | 111 ++++++++++++++++++++++++-----------
+> drivers/crypto/ccp/sev-dev=2Ec |  62 ++++++++++---------
+> include/linux/psp-sev=2Eh      |   5 +-
+> 4 files changed, 120 insertions(+), 62 deletions(-)
+>
+>
+>base-commit: 2ca26dad836fb4cd18694ef85af7a71d2878b239
 
-kernel test robot noticed the following build errors:
+Sachiko has some questions:
 
-[auto build test ERROR on f9bbd547cfb98b1c5e535aab9b0671a2ff22453a]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Eric-Biggers/crypto-cryptomgr-Select-algorithm-types-only-when-CRYPTO_SELFTESTS/20260324-131705
-base:   f9bbd547cfb98b1c5e535aab9b0671a2ff22453a
-patch link:    https://lore.kernel.org/r/20260324050123.9494-1-ebiggers%40kernel.org
-patch subject: [PATCH v2] crypto: cryptomgr - Select algorithm types only when CRYPTO_SELFTESTS
-config: i386-randconfig-053-20260325 (https://download.01.org/0day-ci/archive/20260325/202603251327.8QCIZ1bS-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260325/202603251327.8QCIZ1bS-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202603251327.8QCIZ1bS-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> ld.lld: error: undefined symbol: crypto_register_acomps
-   >>> referenced by qat_comp_algs.c:258 (drivers/crypto/intel/qat/qat_common/qat_comp_algs.c:258)
-   >>>               drivers/crypto/intel/qat/qat_common/qat_comp_algs.o:(qat_comp_algs_register) in archive vmlinux.a
---
->> ld.lld: error: undefined symbol: crypto_unregister_acomps
-   >>> referenced by qat_comp_algs.c:267 (drivers/crypto/intel/qat/qat_common/qat_comp_algs.c:267)
-   >>>               drivers/crypto/intel/qat/qat_common/qat_comp_algs.o:(qat_comp_algs_unregister) in archive vmlinux.a
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+https://sashiko=2Edev/#/patchset/20260324161301=2E1353976-1-tycho%40kernel=
+=2Eorg
+--=20
+Small device=2E Typos and formatting crap
 
