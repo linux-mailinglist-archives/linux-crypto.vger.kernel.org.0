@@ -1,149 +1,141 @@
-Return-Path: <linux-crypto+bounces-22374-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22376-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mHBhGK+qw2nAtAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22374-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 10:28:15 +0100
+	id KKXLIM/Yw2mluQQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22376-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 13:45:03 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8038D322380
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 10:28:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6EAA32518E
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 13:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2664630C5554
-	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 09:21:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7D62531850CE
+	for <lists+linux-crypto@lfdr.de>; Wed, 25 Mar 2026 12:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7843C2FFFBE;
-	Wed, 25 Mar 2026 09:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E7A3D2FFD;
+	Wed, 25 Mar 2026 12:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="ZTA3QvyD"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EF5MXwAS"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BE0347529
-	for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 09:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094C53D1CAA
+	for <linux-crypto@vger.kernel.org>; Wed, 25 Mar 2026 12:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774430487; cv=none; b=pNTkXWaV433hT60VNp469RgHoikQgudcScFCKvAatnHs99QSSPzFTmlzyH0oXWR7R+mEAh6u214Zqx9KSQRRnFY3PIDNmLcRRSk8BMIYJRf0ArbNQpR2X+G+lbh1zjCG3x5kw+xwXYbSdYhWRr7Z1PqSvoUHtRxIg+O6hv4X4as=
+	t=1774441582; cv=none; b=oz+TpYVuSOX8hmYUht6SngGiwrabY9Iwrekh/pUKG3DUI3GUklf+reluIkCoMEgd+LtjEFKCkK469yWLUuhOwarVYYSftEZE3QN5G/oMPaCFUI+65SPqx0kQiAy4hp08JkAmbM6DABmOgi2PQ8MBNJAZRu/13ipc38bYzxZ0Nqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774430487; c=relaxed/simple;
-	bh=yn0STF3JWslMIFaEtKs2oeohCikAWPAxZo1+m2aeTBA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=pkyTuryrZnm3vSSlM1Y3yUW5G7hZ6a9TUcEXQVeqhiac4Y5sKobyncJSnAU49AZv95jsw3tbOW4r6rEXC2RCrlxSLoF0tV5A6V4jxyiqADQWAu6ZXFXMexb19p6JKaGgHhOXFKMJKnNcnn2KonpUhjNShIX/8ASzZPmGuFfG4F0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ZTA3QvyD; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=Content-Type:MIME-Version:Message-ID:Subject:
-	Cc:To:From:Date:cc:to:subject:message-id:date:from:content-type:in-reply-to:
-	references:reply-to; bh=3pkRqEmiS6zscwY2U3KrqngeGwVsgNDqgY23jea2wvw=; b=ZTA3Q
-	vyDACKEWkhz0VxElJcWQ1ce8bUrWof7Zbx7HQa/mk0fllE96JqTVksa2hmgiubMoYFzqHIIrjvDB2
-	7rKrd1lQKndm49wKFPz11dTThZeArcz7WB6370TedmdbNkakFPJAFUSCEg+q0164XrHnkC2ubRzie
-	7OnYwVsc3erZyMjz+Q1hYqmyktahDsJqQowJiFCKsMUDm29fP9JnWcTiEEaK3kbO3eAQ0jU5SndYs
-	vB7AvSSPVLD9nsILHR7K1LQqb0MmaBLA0CcMRiauQEjIKz7wYTUWK6o+sShR49AhhT8J0iwkjpsGx
-	QWp217x9tsne7/z9jps2x5FlSmzOA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w5K0x-000vl4-0g;
-	Wed, 25 Mar 2026 17:21:19 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 25 Mar 2026 18:21:18 +0900
-Date: Wed, 25 Mar 2026 18:21:18 +0900
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Cc: Eric Biggers <ebiggers@kernel.org>,
-	Linus Torvalds <torvalds@linuxfoundation.org>,
-	Taeyang Lee <0wn@theori.io>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Greg KH <gregkh@linuxfoundation.org>, davem@davemloft.net,
-	Brian Pak <bpak@theori.io>, Juno Im <juno@theori.io>,
-	Jungwon Lim <setuid0@theori.io>
-Subject: [PATCH] crypto: authencesn - Copy high sequence number from src
- after out-of-place decryption
-Message-ID: <acOpDrnN3cVfiASk@gondor.apana.org.au>
+	s=arc-20240116; t=1774441582; c=relaxed/simple;
+	bh=NZmy9A71+mGjb0JyggN74KFegUmUlepYAcOg34BAaFw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:Cc:
+	 In-Reply-To:Content-Type; b=YN8PcT/+fZ8fu3EtkYMjQPMVsQ08oQ4ZpIk+A7tSjiT2SwN5rK7sX6CqhuLybFSXhmbuZS/O21hLBzCcqKGSjLcDfCpiAPHzeYxd8ZW+DsHW9L8KLAAjMwEEmom+SKJH7r9ausjiW5D6Xm5IhpHAvZ1Y3xyzilxV1f1fBkuoqVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EF5MXwAS; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id C38201A2F86;
+	Wed, 25 Mar 2026 12:26:19 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9137C601E2;
+	Wed, 25 Mar 2026 12:26:19 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 882C910451362;
+	Wed, 25 Mar 2026 13:26:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1774441578; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=Nsz0GR6Zk0VoXYbxqVh2SRpOfgafRwZhwcA2/A7RPXA=;
+	b=EF5MXwASWIYiahatIX3d0Mo/1pBcLlgzcwZ0RYJmtK3/S9xwyWTEu2h5YFT4hR1SafkZby
+	tj04jSrlt57xTQDZ/1n4QbL/mNTyi5O9PeC/ucUnLCoLqCiIOThjaB1JkMzlN6WXdyGO+X
+	07V8nxfwQS0rXkwfKC8HRbUydvzhWK3FakHHJ2KeXD9poL9hzz4T6DUJfHekHskUoEY/VF
+	vHzSLjbnTVv26B+8qeTITwbjvV7Yri0ZFejHF/CBHSnJJSyAHFjbFJWiO3kXJ2BKTb4zZi
+	AbetPhsgpnJQOxGQVLtAuqlpc5Q+/iYykuIeiFRdnx0Qw7pKz4PNxMW1TQPT+Q==
+Message-ID: <b53feadd-8246-43cf-a768-740cb73d2553@bootlin.com>
+Date: Wed, 25 Mar 2026 13:26:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: Need some clarification about CRYPTO_AHASH_ALG_BLOCK_ONLY
+From: Paul Louvel <paul.louvel@bootlin.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>
+References: <4f93481a-a0e5-4a9f-8aae-00d3189ccc58@bootlin.com>
+Content-Language: en-US
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <4f93481a-a0e5-4a9f-8aae-00d3189ccc58@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22374-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22376-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DKIM_TRACE(0.00)[bootlin.com:+];
+	RCPT_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url,theori.io:email,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
-X-Rspamd-Queue-Id: 8038D322380
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bootlin.com:dkim,bootlin.com:mid,bootlin.com:url]
+X-Rspamd-Queue-Id: E6EAA32518E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-When decrypting data that is not in-place (src != dst), there is
-no need to save the high-order sequence bits in dst as it could
-simply be re-copied from the source.
+Hello,
 
-Reported-by: Taeyang Lee <0wn@theori.io>
-Fixes: 104880a6b470 ("crypto: authencesn - Convert to new AEAD interface")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+I forgot to include the maintainers in the initial e-mail.
 
-diff --git a/crypto/authencesn.c b/crypto/authencesn.c
-index 542a978663b9..fae8c1dbf495 100644
---- a/crypto/authencesn.c
-+++ b/crypto/authencesn.c
-@@ -215,9 +215,12 @@ static int crypto_authenc_esn_decrypt_tail(struct aead_request *req,
- 		goto decrypt;
- 
- 	/* Move high-order bits of sequence number back. */
--	scatterwalk_map_and_copy(tmp, dst, 4, 4, 0);
--	scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 0);
--	scatterwalk_map_and_copy(tmp, dst, 0, 8, 1);
-+	if (req->src == dst) {
-+		scatterwalk_map_and_copy(tmp, dst, 4, 4, 0);
-+		scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 0);
-+		scatterwalk_map_and_copy(tmp, dst, 0, 8, 1);
-+	} else
-+		memcpy_sglist(dst, req->src, 8);
- 
- 	if (crypto_memneq(ihash, ohash, authsize))
- 		return -EBADMSG;
-@@ -273,10 +276,12 @@ static int crypto_authenc_esn_decrypt(struct aead_request *req)
- 	if (!authsize)
- 		goto tail;
- 
--	/* Move high-order bits of sequence number to the end. */
- 	scatterwalk_map_and_copy(tmp, dst, 0, 8, 0);
- 	scatterwalk_map_and_copy(tmp, dst, 4, 4, 1);
--	scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 1);
-+	if (req->src == dst) {
-+		/* Move high-order bits of sequence number to the end. */
-+		scatterwalk_map_and_copy(tmp + 1, dst, assoclen + cryptlen, 4, 1);
-+	}
- 
- 	sg_init_table(areq_ctx->dst, 2);
- 	dst = scatterwalk_ffwd(areq_ctx->dst, dst, 4);
+Additional link to the source code :
+https://elixir.bootlin.com/linux/v7.0-rc1/source/crypto/ahash.c#L467
+
+Thank you,
+Paul.
+
+On 3/20/26 10:42 AM, Paul Louvel wrote:
+> Hello,
+>
+> I have stumbled across a flag defined in include/crypto/internal/hash.h : 
+> CRYPTO_AHASH_ALG_BLOCK_ONLY.
+> To get more information about what exact behavior this flag do, I read the 
+> crypto_ahash_update function.
+> From the looks of it, it seems that the API will call the tfm update if there 
+> is enough bytes (and by enough I mean at least a block size), from the 
+> internal buffer and the incoming ahash_request.
+> In this case, I find the BLOCK_ONLY naming a bit of a misnomer, since it only 
+> guarantee you than req->nbytes will be at least a block size.
+> I initially though that the API would only give a request that are a multiple 
+> of the block size.
+>
+> This flag, among others, are relatively recent.
+> I think adding documentation about these flags would be a great idea.
+>
+> Regards,
+> Paul.
+>
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Paul Louvel, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
