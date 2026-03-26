@@ -1,79 +1,75 @@
-Return-Path: <linux-crypto+bounces-22419-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22420-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sOxAE8f7xGny5QQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22419-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 10:26:31 +0100
+	id IOw9KdX6xGny5QQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22420-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 10:22:29 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B37513324C9
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 10:26:30 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35064332366
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 10:22:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EAC5C31A432C
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 09:13:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8F8CB3126FC3
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 09:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BE93B8D7F;
-	Thu, 26 Mar 2026 09:13:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8993B8D7F;
+	Thu, 26 Mar 2026 09:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="UktIlGpl"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="ckVuESrW"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD3A3603F8;
-	Thu, 26 Mar 2026 09:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EE23603F8;
+	Thu, 26 Mar 2026 09:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774516411; cv=none; b=bDNPxgQK5vb06WqwPv/WuKSL1xQtzYIMQRr5tcCPQg3Bnp3o029+AtXXME+PeUYMMXxF2RRUb5JiJ6A0Fu7SN9eCntABqazJ8jN+6isfgrDnU7gU8NS5kP9ihonv2JkRPJJlJ8iPGyRaWPhYsgWNMGihkt1hvq82jeqh92j04TI=
+	t=1774516424; cv=none; b=ap6EbY7RgUFDc6BN9ZHcz0qjYFUyWdlN3HiLbB/S8lTppe5FRVGa1031ZhAOPef4rRnsQG3370RPHuT3bWetbpFQFAfWyti5IuWQ6LphH3ujMPR12gB8YHdA9Gqf2wZScIAliU1OWIElvN7RWE1sWQ46/isV1RE7FpTFSQh1wvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774516411; c=relaxed/simple;
-	bh=UcGOaUW4vIMDim6Du3h8RwTOk9PaaLsY2ZDdFlp2acA=;
+	s=arc-20240116; t=1774516424; c=relaxed/simple;
+	bh=TkjcpSbGaKVmBl031mSS6ieanqz+GuZBMOqtcqFwr+g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qXdheJdvru9jahZUdatdg0gimSYphNNEcOEC/pKq3QF7/BlEoloPJMyPWC0LM1XV9KWYyygH8VACfmJP/tS5OkYJxHVsb8TeNjZH4k/US9Jpp4CST9IgUGUQGUmMU+1JYRUB5H9T7xhbUAUngF942faXokZ1yWCnxLwPoSM5hZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=UktIlGpl; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=N+Od382TsmFW+DZhM8M154trNELdBcTvU8+D8ZTNFWXkZ196UHwfEnl9ehn3yGv3kIPDfMCMv8oje97KksN1p0cnSUXRWx1RhZMy7DEdJGlpbJ4DBkdsktFThujna1QNV7IkodZ+IgJj3DHVcI7UOM5HfUa7NwibGlr9a6avJHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ckVuESrW; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=xXlozw5ZxvJtkL5U8Gx0ZwZfsv7OX27yb2mdCK68AQs=; 
-	b=UktIlGplI9MSTiPdbAO/nKO85jnsiwwrAXVsrzMyBsCmglzFoXEXSzYtGejivSKk1igiciNGJzg
-	DERUFh1klWuM1cW+rQ0Ifue9g2P8TNwMIP1RaZe9xZovynwz7NXL2HJXO2gM/YyegZpNlvAcwb5fE
-	3HueSqf0JKPJ9nOTVO8a7Q8GO7W38Zf08zaSgA1ZmIwzyVStBhsu3dbMKTKNF8f2KRRgcPBCuYQAX
-	rJPxYfhkKTJWY4J5Z3Nlt2GDd+9MJTFwDSjv41a3qrNKGzLpPbmDfVPSpTRPLja5GYOgOTnN6T8Q4
-	I08VRB7RXA0yqPyC4Q9u3KAgewD68WhuhmiA==;
+	from:content-type:reply-to; bh=XKaq7aORbC/ZEtWldVF64pO4QPNHEjZ4d3bJU/Rxw3k=; 
+	b=ckVuESrWWHWhkoaItMn7Ll2wA5crY4z3t8vkibiMm8UeDJgpuhiAi8eQZrcQrwnYYdfgAF8uOzP
+	z/63JuaTgzWm85q6LMIM9DJ6CSaUN2jFeS6FIYbdzPFRB08q17HKIDXCna08eo1lCQe8aPzktUh57
+	2N4eyYW7NYOMXkQo2dG4sMllC3ddAI1BrbR6FuJ2KnQc/SH+E/Lcyokkf3vI6tn0IKfbVDExMxI3l
+	3eehXVi2+CzLfiOcSe17Hc+oywoC6hoTS4VBq6e7crHppYVmsbXH7N2PZHGxHAOs8KGIUVLgI4pHC
+	UYjYj8ZEAafT7NBRABFN4zIcmEuRFNFesALQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w5gMq-001FqR-20;
-	Thu, 26 Mar 2026 17:13:24 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 26 Mar 2026 18:13:23 +0900
-Date: Thu, 26 Mar 2026 18:13:23 +0900
+	id 1w5gN6-001Fqb-1M;
+	Thu, 26 Mar 2026 17:13:40 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 26 Mar 2026 18:13:39 +0900
+Date: Thu, 26 Mar 2026 18:13:39 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Paul Bunyan <pbunyan@redhat.com>,
-	Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Gaurav Jain <gaurav.jain@nxp.com>, linux-crypto@vger.kernel.org,
-	NXP S32 Linux Team <s32@nxp.com>, imx@lists.linux.dev
-Subject: Re: [PATCH] crypto: caam - fix overflow on long hmac keys
-Message-ID: <acT4swDknzAK2eBL@gondor.apana.org.au>
-References: <20260317102514.3882809-1-horia.geanta@nxp.com>
- <20260317102514.3882809-2-horia.geanta@nxp.com>
+To: Mikulas Patocka <mpatocka@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+	Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+	Benjamin Marzinski <bmarzins@redhat.com>, dm-devel@lists.linux.dev
+Subject: Re: [PATCH] crypto-deflate: fix spurious -ENOSPC
+Message-ID: <acT4w_1OifZthFYs@gondor.apana.org.au>
+References: <f6a1465f-c4f1-6847-9e3c-d7225bad4059@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260317102514.3882809-2-horia.geanta@nxp.com>
+In-Reply-To: <f6a1465f-c4f1-6847-9e3c-d7225bad4059@redhat.com>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -82,7 +78,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22419-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22420-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -90,31 +86,59 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url,nxp.com:email]
-X-Rspamd-Queue-Id: B37513324C9
+	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:email,apana.org.au:url,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 35064332366
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 17, 2026 at 12:25:14PM +0200, Horia Geantă wrote:
-> When a key longer than block size is supplied, it is copied and then
-> hashed into the real key.  The memory allocated for the copy needs to
-> be rounded to DMA cache alignment, as otherwise the hashed key may
-> corrupt neighbouring memory.
+On Wed, Mar 25, 2026 at 04:31:38PM +0100, Mikulas Patocka wrote:
+> Hi Herbert
 > 
-> The copying is performed using kmemdup, however this leads to an overflow:
-> reading more bytes (aligned_len - keylen) from the keylen source buffer.
-> Fix this by replacing kmemdup with kmalloc, followed by memcpy.
+> I am developing a new device mapper target that compresses data and I 
+> found a bug in crypto/deflate.c that it sometimes returns -ENOSPC even if 
+> the decompressed data fits into the destination buffer. I'm submitting 
+> this patch to fix it.
 > 
-> Fixes: 199354d7fb6e ("crypto: caam - Remove GFP_DMA and add DMA alignment padding")
-> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+> Mikulas
+> 
+> 
+> From: Mikulas Patocka <mpatocka@redhat.com>
+> 
+> The code in deflate_decompress_one may erroneously return -ENOSPC even if
+> it didn't run out of output space. The error happens under this
+> condition:
+> 
+> - Suppose that there are two input pages, the compressed data fits into
+>   the first page and the zlib checksum is placed in the second page.
+> 
+> - The code iterates over the first page, decompresses the data and fully
+>   fills the destination buffer, zlib_inflate returns Z_OK becuse zlib
+>   hasn't seen the checksum yet.
+> 
+> - The outer do-while loop is iterated again, acomp_walk_next_src sets the
+>   input parameters to the second page containing the checksum.
+> 
+> - We go into the inner do-while loop, execute "dcur =
+>   acomp_walk_next_dst(&walk);". "dcur" is zero, so we break out of the
+>   loop and return -ENOSPC, despite the fact that the decompressed data
+>   fit into the destination buffer.
+> 
+> In order to fix this bug, this commit changes the logic when to report
+> the -ENOSPC error. We report the error if the destination buffer is empty
+> *and* if zlib_inflate didn't make any progress consuming the input
+> buffer. If zlib_inflate consumes the trailing checksum, we see that it
+> made progress and we will not return -ENOSPC.
+> 
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+> 
 > ---
->  drivers/crypto/caam/caamalg_qi2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  crypto/deflate.c |   11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 
 Patch applied.  Thanks.
 -- 
