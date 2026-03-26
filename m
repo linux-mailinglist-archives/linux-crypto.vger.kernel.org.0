@@ -1,49 +1,49 @@
-Return-Path: <linux-crypto+bounces-22399-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22401-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EPnyOh18xGlXzgQAu9opvQ
-	(envelope-from <linux-crypto+bounces-22399-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 01:21:49 +0100
+	id SHIwM2p7xGlXzgQAu9opvQ
+	(envelope-from <linux-crypto+bounces-22401-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 01:18:50 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6AE32D9E7
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 01:21:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 576F532D9A9
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 01:18:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7253E3105D20
-	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 00:17:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 49ED13057C4C
+	for <lists+linux-crypto@lfdr.de>; Thu, 26 Mar 2026 00:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BAF1E5207;
-	Thu, 26 Mar 2026 00:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51A0269CE6;
+	Thu, 26 Mar 2026 00:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eweshMVU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sQiXmush"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7D3249E5;
-	Thu, 26 Mar 2026 00:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DB925A359;
+	Thu, 26 Mar 2026 00:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774484216; cv=none; b=iFBxTTIvdm7+XtD2DY9sWuPUhZZPV7eUgmZ/oElwRhU4dbqiyiounYr/VdzNWSXgUbcNEFMnpuM8QWvxcfi1gWi7Mh4oJDLl/gysGBdO1FANY0jgLcqkI9GMbdanB5ZKlGBm7SqsOP2NQ1l/dO2+AKFseDsJny7a1zLm4vAunDQ=
+	t=1774484221; cv=none; b=aSuoGw+ellrPRsnuFlGnJy2prbjOAvcteTj3JWEyMovMAPNTdscoKfSAn2zDCaFMqMyQA0lDkiCZ+cSn5kLGJR7t/DHk0gnW2vCWmlrhiNxhdDKXxd86Xg7x/nO7Nppr0YmbtHhc9JtR2SE0QjS75/egDh12lNR8KOnZGNmKh4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774484216; c=relaxed/simple;
-	bh=nmi817YIkL7ox8Zps1fGLGLUBGKM1rMUbPb1VZNqjPI=;
+	s=arc-20240116; t=1774484221; c=relaxed/simple;
+	bh=gVYWGgvTQTyAkbaUOqtJ9FGKedJjaLzRIhTRebmsS/I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cLBGhryN7erSxzCaGQxYvHmplTzzvmIC/h6BYdeTERNnAFbEv+1nTYV1uVkwvju/1uxVBNrmTMCBMH5YF31MzM2tX9FNgxTl3nPteSGU6ht3oSqboZ70eDUbTan9DAIa+elHwGk4YXXhlOZRUwcLohTALlcT96cHVGvA+hjomy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eweshMVU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBC12C4CEF7;
-	Thu, 26 Mar 2026 00:16:53 +0000 (UTC)
+	 MIME-Version; b=PCbp6F0rRt+YV5NFp9vWaNect67bukWz4PQUmgsOk8fKzAKCj+13n3KeL34t5uoaR2I2q1WJNGaaBOlweZfaibXW9PH5Y3me36eO9y5hTUdtMW9uF+CRnCdt3W8GvvECW37K2Mh1o7lSIVpkbIYe5Kf6fS7smmOEll2NVKEQ4c8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sQiXmush; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F05BC2BC9E;
+	Thu, 26 Mar 2026 00:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774484214;
-	bh=nmi817YIkL7ox8Zps1fGLGLUBGKM1rMUbPb1VZNqjPI=;
+	s=k20201202; t=1774484217;
+	bh=gVYWGgvTQTyAkbaUOqtJ9FGKedJjaLzRIhTRebmsS/I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eweshMVUCXMzZRRsI7njXxgeBTjXcBMKmJpoNC9jNCZyfIr/4c6DKo7DSLf6uvq1k
-	 9nnVRPEEgZXPRynSM/FGx6iVXPuKub2TSg1cxv6UFO0l/lMrKT5I+dUXOnVWexp75y
-	 OP6UApBY4y3/iW5rdcQb5x8o11niALeP1VbrEXHd+pHos7Xe/mm0NW7/B7UREFpOIS
-	 fLHgnPM84IHjtgXG4A2O5HuLOTAv52gYBehRnlmhEgvjDXOWt1wMLkfpx5YD8zLYh4
-	 bD/d10NJ8BVjITNfjDwzme3S9VAsIgw76Bnp8dBuNAG6VS31zPB1nLoKIPU55852lh
-	 q8vYqS42XkyaQ==
+	b=sQiXmushjRFX85aNxUbM1ZY/DZ9tCednwHffvuZpzNAz6H1CQYDBPoRlG7BJOfsrB
+	 5pCV1uq9LOaPchar9h6aSsMn62Wn3c+FNVenl9JOZ7CcGgHqRMzb9vA/V+4RtXQM/k
+	 tbM1sKRhICww+Byp4h4J/qXfH32VNkH4X+MfIJCbbQ+tlVaDELjW596dFUdiig6hgG
+	 tMRAAwVCC/nz/qmRQ7DlaRl9KXBM+6wx/hqrv6P/el3JPUt0lZF24u4jAywzOWC9Pe
+	 FQYYfOBul4KKTVUF5O8bLXqHGmoXqfuQq1o8RRPdf0z/VAzL+P3emfqnG0aB3b3dIL
+	 sQAJG3N/Jcv+A==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
 	Herbert Xu <herbert@gondor.apana.org.au>
@@ -51,9 +51,9 @@ Cc: linux-kernel@vger.kernel.org,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Stephan Mueller <smueller@chronox.de>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 09/11] crypto: rng - Make crypto_stdrng_get_bytes() use normal RNG in non-FIPS mode
-Date: Wed, 25 Mar 2026 17:15:05 -0700
-Message-ID: <20260326001507.66500-10-ebiggers@kernel.org>
+Subject: [PATCH 10/11] crypto: fips - Depend on CRYPTO_DRBG=y
+Date: Wed, 25 Mar 2026 17:15:06 -0700
+Message-ID: <20260326001507.66500-11-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260326001507.66500-1-ebiggers@kernel.org>
 References: <20260326001507.66500-1-ebiggers@kernel.org>
@@ -69,18 +69,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22399-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22401-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
@@ -90,105 +90,49 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4C6AE32D9E7
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 576F532D9A9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-"stdrng" is needed only in "FIPS mode".  Therefore, make
-crypto_stdrng_get_bytes() delegate to either the normal Linux RNG or to
-"stdrng", depending on the current mode.
+Currently, the callers of crypto_stdrng_get_bytes() do 'select
+CRYPTO_RNG_DEFAULT', which does 'select CRYPTO_DRBG_MENU'.
 
-This will eliminate the need to built the SP800-90A DRBG and its
-dependencies into CRYPTO_FIPS=n kernels.
+However, due to the change in how crypto_stdrng_get_bytes() is
+implemented, CRYPTO_DRBG_MENU is now needed only when CRYPTO_FIPS.
+
+But, 'select CRYPTO_DRBG_MENU if CRYPTO_FIPS' would cause a recursive
+dependency, since CRYPTO_FIPS 'depends on CRYPTO_DRBG'.
+
+Solve this by just making CRYPTO_FIPS depend on CRYPTO_DRBG=y (rather
+than CRYPTO_DRBG i.e. CRYPTO_DRBG=y || CRYPTO_DRBG=m).  The distros that
+use CRYPTO_FIPS=y already set CRYPTO_DRBG=y anyway, which makes sense.
+
+This makes the CRYPTO_RNG_DEFAULT symbol (and its corresponding
+selection of CRYPTO_DRBG_MENU) unnecessary.  A later commit removes it.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- crypto/rng.c         |  4 ++--
- include/crypto/rng.h | 15 +++++++++++++--
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ crypto/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/crypto/rng.c b/crypto/rng.c
-index f52f4793f9ea..1d4b9177bad4 100644
---- a/crypto/rng.c
-+++ b/crypto/rng.c
-@@ -140,11 +140,11 @@ static void crypto_put_default_rng(void)
- 	mutex_lock(&crypto_default_rng_lock);
- 	crypto_default_rng_refcnt--;
- 	mutex_unlock(&crypto_default_rng_lock);
- }
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index e2b4106ac961..80492538e1f7 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -23,11 +23,11 @@ if CRYPTO
  
--int crypto_stdrng_get_bytes(void *buf, unsigned int len)
-+int __crypto_stdrng_get_bytes(void *buf, unsigned int len)
- {
- 	int err;
+ menu "Crypto core or helper"
  
- 	err = crypto_get_default_rng();
- 	if (err)
-@@ -152,11 +152,11 @@ int crypto_stdrng_get_bytes(void *buf, unsigned int len)
- 
- 	err = crypto_rng_get_bytes(crypto_default_rng, buf, len);
- 	crypto_put_default_rng();
- 	return err;
- }
--EXPORT_SYMBOL_GPL(crypto_stdrng_get_bytes);
-+EXPORT_SYMBOL_GPL(__crypto_stdrng_get_bytes);
- 
- #if defined(CONFIG_CRYPTO_RNG) || defined(CONFIG_CRYPTO_RNG_MODULE)
- int crypto_del_default_rng(void)
- {
- 	int err = -EBUSY;
-diff --git a/include/crypto/rng.h b/include/crypto/rng.h
-index f61e037afed9..07f494b2c881 100644
---- a/include/crypto/rng.h
-+++ b/include/crypto/rng.h
-@@ -10,10 +10,12 @@
- #define _CRYPTO_RNG_H
- 
- #include <linux/atomic.h>
- #include <linux/container_of.h>
- #include <linux/crypto.h>
-+#include <linux/fips.h>
-+#include <linux/random.h>
- 
- struct crypto_rng;
- 
- /**
-  * struct rng_alg - random number generator definition
-@@ -55,22 +57,31 @@ struct rng_alg {
- 
- struct crypto_rng {
- 	struct crypto_tfm base;
- };
- 
-+int __crypto_stdrng_get_bytes(void *buf, unsigned int len);
-+
- /**
-  * crypto_stdrng_get_bytes() - get cryptographically secure random bytes
-  * @buf: output buffer holding the random numbers
-  * @len: length of the output buffer
-  *
-  * This function fills the caller-allocated buffer with random numbers using the
-- * highest-priority "stdrng" algorithm in the crypto_rng subsystem.
-+ * normal Linux RNG if fips_enabled=0, or the highest-priority "stdrng"
-+ * algorithm in the crypto_rng subsystem if fips_enabled=1.
-  *
-  * Context: May sleep
-  * Return: 0 function was successful; < 0 if an error occurred
-  */
--int crypto_stdrng_get_bytes(void *buf, unsigned int len);
-+static inline int crypto_stdrng_get_bytes(void *buf, unsigned int len)
-+{
-+	might_sleep();
-+	if (fips_enabled)
-+		return __crypto_stdrng_get_bytes(buf, len);
-+	return get_random_bytes_wait(buf, len);
-+}
- 
- /**
-  * DOC: Random number generator API
-  *
-  * The random number generator API is used with the ciphers of type
+ config CRYPTO_FIPS
+ 	bool "FIPS 200 compliance"
+-	depends on CRYPTO_DRBG && CRYPTO_SELFTESTS
++	depends on CRYPTO_DRBG=y && CRYPTO_SELFTESTS
+ 	depends on (MODULE_SIG || !MODULES)
+ 	help
+ 	  This option enables the fips boot option which is
+ 	  required if you want the system to operate in a FIPS 200
+ 	  certification.  You should say no unless you know what
 -- 
 2.53.0
 
