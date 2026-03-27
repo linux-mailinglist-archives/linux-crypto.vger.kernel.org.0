@@ -1,60 +1,59 @@
-Return-Path: <linux-crypto+bounces-22527-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22528-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OGzoCSXlxmmjPwUAu9opvQ
-	(envelope-from <linux-crypto+bounces-22527-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 21:14:29 +0100
+	id SBs2KlzlxmnrPwUAu9opvQ
+	(envelope-from <linux-crypto+bounces-22528-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 21:15:24 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C443634AB48
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 21:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F7F34ABCE
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 21:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ED14830ED3A1
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 20:10:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E320310B6AF
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 20:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA422392C48;
-	Fri, 27 Mar 2026 20:10:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82F1393DF2;
+	Fri, 27 Mar 2026 20:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kB/mZr73"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="2xAXeYlc"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E48391504;
-	Fri, 27 Mar 2026 20:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4A0392C4B;
+	Fri, 27 Mar 2026 20:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774642252; cv=none; b=Bn28IVOUC9qdaRUsEaJfYkNkZW4MmsP/iWDLbVaqJk/iAVk/iaSWC+Y1TTZYOL2Cg9+bdcYTwrPVf5QLn9s2ce85yRR1cPp8GDpwrE9t5MGAwaCmc/iv6SGn3fJ60fsKFqwtkhhwJcZWhQwiQEIYnH4sjnvWrZMA6EQiL8Qt5/k=
+	t=1774642255; cv=none; b=BTyn6yiFnuXWHjdak9twhx75mojuEGyew7o2SEIvEB9QhOEVHOSwruS2SH/Iz+HN9xFGr2IGE3KhaLB7Vwfqa1CPFsiNs1MbRF9Abp216NR+NsuHXclufw2lBjkJz+nDwwOSvwGi+2IuDAWptsC2LToPKej1C6xtH81nbH/AiVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774642252; c=relaxed/simple;
-	bh=Cl0hRXwYePEWxGxJz07oIc8M/6J4o9Yg2Wo2jED1xyk=;
+	s=arc-20240116; t=1774642255; c=relaxed/simple;
+	bh=yOafjVFOKW6zrotbALbaw1A8cYq6BLe+Fi3zFv/LbCU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FQF0fvOOlShnmAD+MWSJEKOh1Wz41k+35n9sOlx9WlvafQcFNhOp2mfzLj+CqxbJHsEMzSpqfqXJKUuEJfiYnEu4Q7ZlZc2LQWt2kma3z13f5GQEGoDccKgUM5PVMGfQwxBc8qCuMzqjm1Tl4PdGqVxlRQ4JsNSppBolUdaIHYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kB/mZr73; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:To:Cc; b=hvTxFQQ3X8nJkM+KvIRHRyGot0vTsDShvLG4MnnymU4bYTyNzXMITTxz+/NYw5xZyz93zZPWOmiu4ogWNM5DMBzYtv5JNY/iMIgP0C0JXyzwFqs094QZryru/iImfS/ZVV8foQWjJFqSu0T6BRGkFwCqgWjPJ2v9EyL5VMz0+zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=2xAXeYlc; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id D3FA5C58755;
-	Fri, 27 Mar 2026 20:11:16 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 637231A3031;
+	Fri, 27 Mar 2026 20:10:51 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0B43B60268;
-	Fri, 27 Mar 2026 20:10:48 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 700AE10451AD3;
-	Fri, 27 Mar 2026 21:10:43 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 34E5060268;
+	Fri, 27 Mar 2026 20:10:51 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6654010451AF7;
+	Fri, 27 Mar 2026 21:10:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774642246; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1774642250; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=bk7M/kBCihyHtLEm7h7jmSARtbZ2A1p+Dp2oMN0Iedw=;
-	b=kB/mZr730/FEdUo/BmeU5RaTieAK0DwrqDp6WhtkzLZmtbFoKLHPlB2l8nMsYlUFpYfJ/k
-	lEWIxAAN6BWqmDoWyNd3fGaDI/iwz5zT+RYl9c3+yyttbNVp+Kn3+/DFtimLwLq984KssP
-	JXpdtbmvJdQv3ezm0KIWFDBc8gxKzADmlqH9T+DE5g2mQcGFbrjjh26/2eaD9QB/eR3Cf2
-	IzJVKLb/5SFui4smWD/fMMineevya8SoPIC+xYFAr2wWyBT982QPook5VPFHyx1i/kIEJg
-	wJa4bSEZ/XvMJ5mpt67+F3GjsBukqh3sfF0oW1C45ibDDe8dh4qI+PXToIyQUw==
+	bh=mBs4tOA5jzY9GXFpfbtVqcNMinyS6IW1J+L41OKuwoU=;
+	b=2xAXeYlccuP9mqpArLBXM11iR8JFplbq7kh9Qa7Y7avKFCJkx6fGejA/+yA+hnFJr4YjKs
+	eB2jR7VbJRbg8GkK0Ie3cKSO24FI4xqffRD7qM0gWLADje7GWpO8tr/d3qTegWH72+V5ma
+	0rlA9CKMgbp3uQNgIzHDUw4tAX4ZvURznu3ztMUPV7S2Lao/4O2wjPaufFj2x5IxU7//rD
+	GQtZJ+eu002u42EX2YMA/6dC+FxlTDMyWk2wW1IcdFMsHHZvCEzuaHDctKZXoysA3Dhx6s
+	yuBE0NZffeYEo1LO/xVY72HPC/FvMXeUJK33kzX5sXFauttv32btQGYhMM/2Qw==
 From: "Miquel Raynal (Schneider Electric)" <miquel.raynal@bootlin.com>
-Date: Fri, 27 Mar 2026 21:09:29 +0100
-Subject: [PATCH 07/16] clk: tests: Add Kunit testing for
- of_clk_get_parent_name()
+Date: Fri, 27 Mar 2026 21:09:30 +0100
+Subject: [PATCH 08/16] clk: Improve a couple of comments
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,7 +62,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260327-schneider-v7-0-rc1-crypto-v1-7-5e6ff7853994@bootlin.com>
+Message-Id: <20260327-schneider-v7-0-rc1-crypto-v1-8-5e6ff7853994@bootlin.com>
 References: <20260327-schneider-v7-0-rc1-crypto-v1-0-5e6ff7853994@bootlin.com>
 In-Reply-To: <20260327-schneider-v7-0-rc1-crypto-v1-0-5e6ff7853994@bootlin.com>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -96,7 +95,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22527-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22528-lists,linux-crypto=lfdr.de];
 	FREEMAIL_TO(0.00)[baylibre.com,kernel.org,selenic.com,gondor.apana.org.au,ti.com,davemloft.net,gmail.com,glider.be];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
@@ -109,48 +108,48 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[miquel.raynal@bootlin.com,linux-crypto@vger.kernel.org];
 	DKIM_TRACE(0.00)[bootlin.com:+];
-	NEURAL_HAM(-0.00)[-0.969];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-crypto,dt,renesas];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:email,bootlin.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,clk_parse_clkspec_1_init_data.name:url]
-X-Rspamd-Queue-Id: C443634AB48
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:email,bootlin.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 09F7F34ABCE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Make sure this helper is never broken, especially since we will soon
-make some changes in it.
+Avoid mentioning the function names directly in the comments, it makes
+them easily out of sync with the rest of the code. Use a more generic
+wording.
 
+Suggested-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Miquel Raynal (Schneider Electric) <miquel.raynal@bootlin.com>
 ---
- drivers/clk/clk_test.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/clk/clk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/clk_test.c b/drivers/clk/clk_test.c
-index b814b45f1f7e..8a17ad0d185f 100644
---- a/drivers/clk/clk_test.c
-+++ b/drivers/clk/clk_test.c
-@@ -3651,9 +3651,19 @@ static void clk_parse_clkspec_with_incorrect_index_and_name(struct kunit *test)
- 	KUNIT_EXPECT_TRUE(test, IS_ERR(hw));
- }
- 
-+static void clk_parse_and_get_parent_name(struct kunit *test)
-+{
-+	struct clk_parse_clkspec_ctx *ctx = test->priv;
-+
-+	KUNIT_EXPECT_STREQ(test,
-+			   of_clk_get_parent_name(ctx->cons_np, 0),
-+			   clk_parse_clkspec_1_init_data.name);
-+}
-+
- static struct kunit_case clk_parse_clkspec_test_cases[] = {
- 	KUNIT_CASE(clk_parse_clkspec_with_correct_index_and_name),
- 	KUNIT_CASE(clk_parse_clkspec_with_incorrect_index_and_name),
-+	KUNIT_CASE(clk_parse_and_get_parent_name),
- 	{}
- };
- 
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 1795246b10a0..591c0780b61e 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -5213,7 +5213,7 @@ static int of_parse_clkspec(const struct device_node *np, int index,
+ 		/*
+ 		 * For named clocks, first look up the name in the
+ 		 * "clock-names" property.  If it cannot be found, then index
+-		 * will be an error code and of_parse_phandle_with_args() will
++		 * will be an error code and the OF phandle parser will
+ 		 * return -EINVAL.
+ 		 */
+ 		if (name)
+@@ -5286,7 +5286,7 @@ of_clk_get_hw_from_clkspec(struct of_phandle_args *clkspec)
+  *
+  * This function looks up a struct clk from the registered list of clock
+  * providers, an input is a clock specifier data structure as returned
+- * from the of_parse_phandle_with_args() function call.
++ * from the OF phandle parser.
+  */
+ struct clk *of_clk_get_from_provider(struct of_phandle_args *clkspec)
+ {
 
 -- 
 2.51.1
