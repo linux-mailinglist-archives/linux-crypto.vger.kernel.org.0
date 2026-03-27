@@ -1,62 +1,64 @@
-Return-Path: <linux-crypto+bounces-22490-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22492-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wP9WAgNYxmmMIwUAu9opvQ
-	(envelope-from <linux-crypto+bounces-22490-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:12:19 +0100
+	id 6JmAJVhYxmkrJAUAu9opvQ
+	(envelope-from <linux-crypto+bounces-22492-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:13:44 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B74134240F
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:12:18 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DC1034248F
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4280B3100606
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 10:08:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 58E9E3118F7E
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 10:08:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E564C3AB26E;
-	Fri, 27 Mar 2026 10:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429CC3AEF24;
+	Fri, 27 Mar 2026 10:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="Q06Huj5L"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="H/afi3co"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525C03AA4FB
-	for <linux-crypto@vger.kernel.org>; Fri, 27 Mar 2026 10:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1453A9DB6;
+	Fri, 27 Mar 2026 10:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774606082; cv=none; b=eFNc3G0Ld7QtWl6ACxtvzMIMo4d8IkrGJIKmP0BzqhjPbKRLKDh/zd8oTGkiHSVKraKoosuh0BS4WBdJ5NcpMXZ7ZPsJnW9gXmGqyq2tTG80PrMGZ1EBvYLzOdIsrmaeaBBY/j1iIHmsXVqv/mm6hFu0yppwD9ZS5Ufm0kRRbE8=
+	t=1774606115; cv=none; b=Ml7qvBOidDjJtG+7ABSvLArpNok4k7ia6yCbwo1pK66vLqzuKjfGYumfD+qIH8is+oDy8NwreKLmNwxhLfitLTz+9HdDeKx6nGpaUiI0Gsz61223RWwBWhiPae3MZ1QEWIHKuqMywPgqTn9jOMF3I3LizqmXOOdqd3zVg+5nyRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774606082; c=relaxed/simple;
-	bh=trohYpCrH5P64yD8RCZbWUNyLjtN0S/H316Yx9jgcDE=;
+	s=arc-20240116; t=1774606115; c=relaxed/simple;
+	bh=puSl2yO9ZV9CVTozCqExjoi36fG0VGLPyyZZn/LlpZ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hvjkgBPTolRk4KOVqDiohCofAr8rYL/Ln2NcHSS9bdBzBsZgf6QRwNo1VvYZoTSn8sxBV+Nn4wJEHS/w58qnFOg8IORK1dFDoCBj/PvwfdfeQcC21Ib6WKCwi2eTxg8NDEtTbhlyMAGYnu/MOzc05pDDqjczSBItgTigUg4GV8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=Q06Huj5L; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=PP9g8iYLtD3NU2fKz1GXp7RESAaYtUXb5sjhhzp6BmU6werERhDtCkA4s8gOsn9JChk5GVcbhSQEdeT+KLaLgIxtwDSc5EsLNM2dRDSKLj1YVkgvu9pkf0Os4L3UoFJ0/j2FJiF6IerSp0Keu6HM3kUpWFkgmpO+7zohmD1lMPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=H/afi3co; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=4mQ0vDncZfLC7sCTnVpYXmsY2LhtQB5ou7F3gxEW3zw=; 
-	b=Q06Huj5LZ1VH6YbFRHq05e5YXznAVfld4vzLO40s33Cbi0IWgF1lH8BwddyCZD5VeMOjuLpEYVB
-	OtohhRoIrnHClHwQW0PljLqG864j/6mhKfWEHP+Ib0MsR9v119M7owI+0Zi7/zCBMp/TGSrJM8osZ
-	dRx7u/DqUiBByqgdSwBP4A05N45BqhTl6Il2yy0TZcOZpVlFp+evyFMjDwatgsauyXPgF6WnMada8
-	7jHwC5tZJdGJ6emxbhpkk8Q3sFqpJcKhqB19oe+daTCTBTJ/G1iqI6Wtzn75Wlwl7kSDYSNC5VOjU
-	Fitj2x0Ewefmbgv9ET02Rujo9CI+ejLfkSFA==;
+	from:content-type:reply-to; bh=AzWhhK4eypW2x0fSnkzpK6RerezFsNCiDwe+T8oeXdU=; 
+	b=H/afi3co8SjSAQvj7/xp1Gw0//RvM0gbu7N+aeSZfyH7Zc0wcsg79e0eSM33lHu2PQyn+SZfpeZ
+	uzYPVVKCx2B9ZbsQ2juVUZpR2XUtkE4AMmIq6FCduRKwS+8ZjTb9PI9QXDVoWS0dLqWc8CPpL/MwN
+	O1wSv9U9L5stxIFFn/JprphFPxgWpGi7Up2oOvdvJgC5KZy90/nt9sxyD25u3TnrXdAXm8eke2up8
+	JZsfMzmiHUMbzGikFyJu4CJ2sRuQgsFUmsG8LVNWly3lqNt2q13twYd+AdfdyA4KEXFWEw0ez5qwT
+	dF3YpvTydz0/zlEQHxpj0a1TnQVtVn8l0JKQ==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w63hC-001bnl-2f;
-	Fri, 27 Mar 2026 18:07:58 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Mar 2026 19:07:57 +0900
-Date: Fri, 27 Mar 2026 19:07:57 +0900
+	id 1w63hQ-001bnv-1f;
+	Fri, 27 Mar 2026 18:08:12 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Mar 2026 19:08:11 +0900
+Date: Fri, 27 Mar 2026 19:08:11 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: Re: [PATCH v2] crypto: qat - add anti-rollback support for GEN6
- devices
-Message-ID: <acZW_SD6KbtYksIh@gondor.apana.org.au>
-References: <20260319110331.248189-1-suman.kumar.chakraborty@intel.com>
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc: davem@davemloft.net, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com, linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: testmgr - Add test vectors for
+ authenc(hmac(md5),rfc3686(ctr(aes)))
+Message-ID: <acZXC_Sj_54PLIQs@gondor.apana.org.au>
+References: <20260319171128.10566-1-olek2@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -65,91 +67,51 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260319110331.248189-1-suman.kumar.chakraborty@intel.com>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <20260319171128.10566-1-olek2@wp.pl>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[davemloft.net,gmail.com,foss.st.com,vger.kernel.org,st-md-mailman.stormreply.com,lists.infradead.org];
+	TAGGED_FROM(0.00)[bounces-22492-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	FREEMAIL_TO(0.00)[wp.pl];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-22490-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:email,apana.org.au:email,apana.org.au:url,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
-X-Rspamd-Queue-Id: 5B74134240F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,wp.pl:email,apana.org.au:email,apana.org.au:url]
+X-Rspamd-Queue-Id: 0DC1034248F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 19, 2026 at 11:02:57AM +0000, Suman Kumar Chakraborty wrote:
-> Anti-Rollback (ARB) is a QAT GEN6 hardware feature that prevents loading
-> firmware with a Security Version Number (SVN) lower than an authorized
-> minimum. This protects against downgrade attacks by ensuring that only
-> firmware at or above a committed SVN can run on the acceleration device.
+On Thu, Mar 19, 2026 at 06:11:21PM +0100, Aleksander Jan Bajkowski wrote:
+> Test vectors were generated starting from existing RFC3686(CTR(AES)) test
+> vectors and adding HMAC(MD5) computed with software implementation.
+> Then, the results were double-checked on Mediatek MT7986 (safexcel).
+> Platform pass self-tests.
 > 
-> During firmware loading, the driver checks the SVN validation status via
-> a hardware CSR. If the check reports a failure, firmware authentication
-> is aborted. If it reports a retry status, the driver reissues the
-> authentication command up to a maximum number of retries.
-> 
-> Extend the firmware admin interface with two new messages,
-> ICP_QAT_FW_SVN_READ and ICP_QAT_FW_SVN_COMMIT, to query and commit the
-> SVN, respectively. Integrate the SVN check into the firmware
-> authentication path in qat_uclo.c so the driver can react to
-> anti-rollback status during device bring-up.
-> 
-> Expose SVN information to userspace via a new sysfs attribute group,
-> qat_svn, under the PCI device directory. The group provides read-only
-> attributes for the active, enforced minimum, and permanent minimum SVN
-> values, as well as a write-only commit attribute that allows a system
-> administrator to commit the currently active SVN as the new authorized
-> minimum.
-> 
-> This is based on earlier work by Ciunas Bennett.
-> 
-> Signed-off-by: Suman Kumar Chakraborty <suman.kumar.chakraborty@intel.com>
-> Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 > ---
-> v1->v2
-> - Replaced "Secure" with "Security" in the required files as SVN
->   means Security version number.
-> - Style changes in adf_anti_rb.h
-> 
->  .../ABI/testing/sysfs-driver-qat_svn          | 114 +++++++++++++++
->  .../intel/qat/qat_6xxx/adf_6xxx_hw_data.c     |  16 +++
->  .../intel/qat/qat_6xxx/adf_6xxx_hw_data.h     |   6 +
->  drivers/crypto/intel/qat/qat_common/Makefile  |   2 +
->  .../intel/qat/qat_common/adf_accel_devices.h  |   2 +
->  .../crypto/intel/qat/qat_common/adf_admin.c   |  70 +++++++++
->  .../crypto/intel/qat/qat_common/adf_admin.h   |   2 +
->  .../crypto/intel/qat/qat_common/adf_anti_rb.c |  66 +++++++++
->  .../crypto/intel/qat/qat_common/adf_anti_rb.h |  37 +++++
->  .../crypto/intel/qat/qat_common/adf_init.c    |   3 +
->  .../intel/qat/qat_common/adf_sysfs_anti_rb.c  | 133 ++++++++++++++++++
->  .../intel/qat/qat_common/adf_sysfs_anti_rb.h  |  11 ++
->  .../qat/qat_common/icp_qat_fw_init_admin.h    |  15 +-
->  .../crypto/intel/qat/qat_common/qat_uclo.c    |  25 +++-
->  14 files changed, 497 insertions(+), 5 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-qat_svn
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_anti_rb.c
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_anti_rb.h
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_anti_rb.c
->  create mode 100644 drivers/crypto/intel/qat/qat_common/adf_sysfs_anti_rb.h
+>  crypto/testmgr.c |   7 ++
+>  crypto/testmgr.h | 207 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 214 insertions(+)
 
 Patch applied.  Thanks.
 -- 
