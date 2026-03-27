@@ -1,68 +1,64 @@
-Return-Path: <linux-crypto+bounces-22489-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22491-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6Da+E/pWxmmMIwUAu9opvQ
-	(envelope-from <linux-crypto+bounces-22489-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:07:54 +0100
+	id 8NE8OBZYxmmMIwUAu9opvQ
+	(envelope-from <linux-crypto+bounces-22491-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:12:38 +0100
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id A46703422DA
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:07:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65230342435
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 11:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4C7BF305D608
-	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 10:07:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 19AAE31065CA
+	for <lists+linux-crypto@lfdr.de>; Fri, 27 Mar 2026 10:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E603A7F56;
-	Fri, 27 Mar 2026 10:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0093A7F6E;
+	Fri, 27 Mar 2026 10:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="fCwsOXor"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="hKZpKWU/"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923973624B5;
-	Fri, 27 Mar 2026 10:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6204B3A9D8B;
+	Fri, 27 Mar 2026 10:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774606024; cv=none; b=ss8y3oIrOWvTYsiWWruDTcEB0KZWRyPKNiVAeM+6b1hVs0QSpPjF0mIMACD7J+dSSaB83g7QpzgQssxDvHoG48uZCINz+k8XgwzppepS4YfgO2iLGKmmiGkzaV+f8fgsi1tkStPATuXgpeKLEkqvjwkCxjjdx9cYlbpueTzdSRg=
+	t=1774606090; cv=none; b=NKd3gR2D9QNOnE+AnQVtqloqR+lrXy51p5Dg8vXknyGVW9Vfs15grZBjvF2mHCZFQF8aPtOZ4AcHLkFWvvMRBHswUneq6rQCCJQh7AIPuC5g2yqm1jTKx++aR9XfB5X5gV3FAcbHfwVSmZrFnZmVDNe7JS+GPHvuw00zA9HKRVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774606024; c=relaxed/simple;
-	bh=7ZoZM6Aa/5n3vq5O0G5Jt3216oup94Q2NSc6Y7+mw04=;
+	s=arc-20240116; t=1774606090; c=relaxed/simple;
+	bh=L+JgwnWLDN3uRDc+NgvfbQAm3PktQTCcAb0yx2MKqyc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ufto1lLMpE/0NLRoYkBo2aNNkxNBX5PEptJgdvKLsgMFvyfsqOWKsFWIvCRfvX7zLFmMzdzbQjAxsQ5jaRWJQNnSSSXdD+VywaT94JbD7HMw3OX5vCTOW+uiUc6zSOMJH2e5bBL4br0d01hgSnr8AOCkzwyaWwC+rNWS24c/vBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=fCwsOXor; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=fOwXDSnyJlA4ySP41kwFn9DuWqCO5Kmlec48DJnZjpuNtcDEp/+/hJWwI3lArTGhoh0GrjeHsopCaCIIodhFZl8fkRyFo0BG7cUaRIHfuvQaxEtPwCc9hGk2gAeCYowBQhPeIz95DKXjnSr7KbtEvZEE2JVr7RADQzynZp8LKzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=hKZpKWU/; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=lOW6hBhzRdBbEJxmwfJeE8L+H5z0momZPOfQVcGg08I=; 
-	b=fCwsOXorstWIWwmDXDlY7q3VI9hWP0uLLCP2mJH61FAWwmJocqU8uCt/P77Ntn9Bswc/Rzwp2N8
-	5rp3f/4HWk54mhGNO+cuqxd+bw6ieYrTr9pExoRmGjw5fwP/ONplWtWtlfKQZjk+Cp3vFuwUPMJR2
-	1WmETXAdGMihYhDXQ4etl8F3A7D6bV10rkhPIxbZkSgb3dgF4FWR9rtA4q3TRqk1nTmzZ5ktDZVER
-	MQx03liEuDQJKY9mPBWHRXAhrtbNgLDCc9dpA8q/dGgDG1/cwCPTlsUOtEwmqnGUO6bUvwRBj6ygf
-	0Nds4UhPoAzkgMGUf3d80TwkVVycA7e7g0uA==;
+	from:content-type:reply-to; bh=cF1fSvUuR884LY7hLBJBWYXz4/12ZfhoA6VKeSLx2Eo=; 
+	b=hKZpKWU/XYK6aAlEy5E08zL7lDoeGkNacn0ruINq/al0hj0eBiU02apvz9SccKprJOtthjkK0g9
+	ei3uPQ2zwNBLVHkffY+sbPhNWnyl1pQeUs6ZTR36e+F1gEvm1BbXoeQjL9n3FFVHjWle/C2CDbPQ4
+	TCe9NLv6kEou/t8M60ZVYLvjitbE61HMtGlzzywuDpdMmn4miu4840tSN27Y/6e6/MQ2N6WUOupjj
+	TLqp142Nr0D0pfikbQ5PTCcuG0zi+uvj05BdUsYsHpMKmRVkpyrGa1avmZzz846FCG8AljPbu7sSZ
+	+F0B65RSro2J0ylUsxnBIN0Ir0fP2HgGi4YA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w63g7-001bmd-12;
-	Fri, 27 Mar 2026 18:06:51 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Mar 2026 19:06:50 +0900
-Date: Fri, 27 Mar 2026 19:06:50 +0900
+	id 1w63h0-001bne-2c;
+	Fri, 27 Mar 2026 18:07:46 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Mar 2026 19:07:45 +0900
+Date: Fri, 27 Mar 2026 19:07:45 +0900
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Haren Myneni <haren@us.ibm.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] crypto: nx - Fix packed layout in struct
- nx842_crypto_header
-Message-ID: <acZWugqQs1PBgojz@gondor.apana.org.au>
-References: <abnmUvHzhgS9xA-m@kspp>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	linux-kernel@vger.kernel.org,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] printk: add print_hex_dump_devel()
+Message-ID: <acZW8a32BRV_grUL@gondor.apana.org.au>
+References: <20260319092932.208939-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -71,89 +67,49 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <abnmUvHzhgS9xA-m@kspp>
+In-Reply-To: <20260319092932.208939-3-thorsten.blum@linux.dev>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	FREEMAIL_CC(0.00)[us.ibm.com,linux.ibm.com,ellerman.id.au,gmail.com,kernel.org,davemloft.net,lists.ozlabs.org,vger.kernel.org];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22489-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22491-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url]
-X-Rspamd-Queue-Id: A46703422DA
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url,linux.dev:email,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
+X-Rspamd-Queue-Id: 65230342435
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 17, 2026 at 05:40:02PM -0600, Gustavo A. R. Silva wrote:
-> struct nx842_crypto_header is declared with the __packed attribute,
-> however	the fields grouped with struct_group_tagged() were not packed.
-> This caused the grouped header portion of the structure to lose the
-> packed layout guarantees of the containing structure.
+On Thu, Mar 19, 2026 at 10:29:32AM +0100, Thorsten Blum wrote:
+> Add print_hex_dump_devel() as the hex dump equivalent of pr_devel(),
+> which emits output only when DEBUG is enabled, but keeps call sites
+> compiled otherwise.
 > 
-> Fix this by replacing struct_group_tagged() with __struct_group(...,
-> ..., __packed, ...) so the grouped fields are packed, and the original
-> layout is preserved, restoring the intended packed layout of the
-> structure.
-> 
-> Before changes:
-> struct nx842_crypto_header {
-> 	union {
-> 		struct {
-> 			__be16     magic;                /*     0     2 */
-> 			__be16     ignore;               /*     2     2 */
-> 			u8         groups;               /*     4     1 */
-> 		};                                       /*     0     6 */
-> 		struct nx842_crypto_header_hdr hdr;      /*     0     6 */
-> 	};                                               /*     0     6 */
-> 	struct nx842_crypto_header_group group[];        /*     6     0 */
-> 
-> 	/* size: 6, cachelines: 1, members: 2 */
-> 	/* last cacheline: 6 bytes */
-> } __attribute__((__packed__));
-> 
-> After changes:
-> struct nx842_crypto_header {
-> 	union {
-> 		struct {
-> 			__be16     magic;                /*     0     2 */
-> 			__be16     ignore;               /*     2     2 */
-> 			u8         groups;               /*     4     1 */
-> 		} __attribute__((__packed__));           /*     0     5 */
-> 		struct nx842_crypto_header_hdr hdr;      /*     0     5 */
-> 	};                                               /*     0     5 */
-> 	struct nx842_crypto_header_group group[];        /*     5     0 */
-> 
-> 	/* size: 5, cachelines: 1, members: 2 */
-> 	/* last cacheline: 5 bytes */
-> } __attribute__((__packed__));
-> 
-> Fixes: 1e6b251ce175 ("crypto: nx - Avoid -Wflex-array-member-not-at-end warning")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
->  drivers/crypto/nx/nx-842.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  include/linux/printk.h | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
