@@ -1,150 +1,120 @@
-Return-Path: <linux-crypto+bounces-22572-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22574-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kHqCCaIrymmQ5wUAu9opvQ
-	(envelope-from <linux-crypto+bounces-22572-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2026 09:52:02 +0200
+	id KIc7JCRBymky7AUAu9opvQ
+	(envelope-from <linux-crypto+bounces-22574-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2026 11:23:48 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FCFE356ADE
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2026 09:52:01 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3A8F3581AA
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2026 11:23:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 26F453018AF9
-	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2026 07:49:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 13AE730160EC
+	for <lists+linux-crypto@lfdr.de>; Mon, 30 Mar 2026 09:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14F03A7F4C;
-	Mon, 30 Mar 2026 07:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6ED383C66;
+	Mon, 30 Mar 2026 09:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kf+NQfW6"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="pCtl85fV"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810DA39E18F
-	for <linux-crypto@vger.kernel.org>; Mon, 30 Mar 2026 07:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A85C2C21EE;
+	Mon, 30 Mar 2026 09:17:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774856940; cv=none; b=VLhL89PalZsDdAKy3zTIlOh4i7r1Y7QFclsbxVzM//7+zB6fjkfuByBHigTtmitX32MSxVFVhdvwD4xnSiGGQH6UAIKEpWPhdFUWaUML4ftLffB/rdLlgOHGPy80Qfn+ssRnow9dZ1rjXL6b9nJCO6lM65ck554h0Xw76LENPTo=
+	t=1774862278; cv=none; b=uhaX4G88PdzEG24L7vu0s3qIQpK8vhqgB+5I+1avPAzyesllEa1r/dBaVHdnUTFR9UdEviORfAxLDXuV7rwDxPW36pQuGnRO6ckiEhgbL2IfXF/jPl55EEKFvdsn4HhjOBcXyAqM8BdKCE4m5TVm1smZ67fbd7fl+nD58o5023c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774856940; c=relaxed/simple;
-	bh=lD2Z6zQIgevKi2IqTHqInMxXV0jeIeXVIIwGCfGmDSU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OKAvJtdLtL1g22IeGJVCEgOGDXBHpfxY1lr1TOqVZJjvsGe1xp3nHGzI7kMN8alehjRXILIxWgbf77bDI31JkoWxNhgYExFHyrwfGZEbUIp6y3dZzbc9lwgO8JXDpqYYDdJ55tECMoCXRAQCksZWN/oTCAq3ApVXrZIKqZvjRoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kf+NQfW6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6451FC2BCB2
-	for <linux-crypto@vger.kernel.org>; Mon, 30 Mar 2026 07:49:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774856940;
-	bh=lD2Z6zQIgevKi2IqTHqInMxXV0jeIeXVIIwGCfGmDSU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=kf+NQfW6DdHb+ZdGOOxI66nekPvZ1tzokGCWXtUurIGyRdYRJL1CKQkzf5u3ByNwV
-	 ANh/jdCwHDpbELE6GzHv0jIG4u0x4pi5ZHEVM9L5lu/A4ijVABN5c2iYxLdGBqSQ4u
-	 Qrz5RiC2/+/hdjDDWIiWDjmb6ADBS0V2gFjbCU8Ur4QY9FLtJl5Cyo7dn5UQ3WOSfa
-	 9cRNCj3T4O9BsG1Pm6RgTACFucHUzU89MMsde5HgzDACeDjpY3PD0u5dYw2eCL9EFA
-	 fmMGrO59NYDrNhHRlxhXgqbxsTsDuwhQiaIyczRh0cQHsHi6PX7e2xN+h4recSULVJ
-	 nwJC44BpFaE3Q==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-38b3ee785a5so34714081fa.1
-        for <linux-crypto@vger.kernel.org>; Mon, 30 Mar 2026 00:49:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXnTXr1DNXUhH276hDQfpTgdHC7U5Mc08TIHkiEZrzOhBRirCrV5VpGv3JzularNTlMSnxIGFa+yRFarfs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3h0qU2vJKHzdglFT18Z2FmL9FP2LyvnBsImAYC9iz97PdnuTc
-	3hf8D+NWcEzkBRusGdijIWeXvciT4/WjTdFfqdARmu/n+5gn1VfPL1AWap5VdflmaIh9H1DGZjE
-	3RyMjLYTOCbC1V02BHUP9Y6yzR+p4DWLLswZHycMFnQ==
-X-Received: by 2002:a2e:8a87:0:b0:38b:f838:dcd0 with SMTP id
- 38308e7fff4ca-38c756d2050mr31367251fa.3.1774856938701; Mon, 30 Mar 2026
- 00:48:58 -0700 (PDT)
+	s=arc-20240116; t=1774862278; c=relaxed/simple;
+	bh=eo2F6IByeg7TMJu94lVkFvqCB8Rm1o+fhRKaxK7pK8s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZI99hevs7F+3HUl5/ycfEwDSxpCrXppEvJH7qbg6Lfm/iy7eMorDnBNUoR+UStnEagq3seWkh97+ut7nHNA4xbpqvRoTZtCL1Vk4cDbw/GH7D8x8QjSfvwKg3BD1v1HwbOn67FCNoasE0jbo8Pm7X0mWVFuvQwr1VPAxY2yZGYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=pCtl85fV; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=zUwEBaG9uQ3dYUOCSfxdYyIp/VwIgG+fgAgoqoHEw7s=; 
+	b=pCtl85fVKvJ4gT8TC0bbHnVsIG4tjKeAj5ZU70JfKTbYx8dNtGB3xzBNhk17ypp8+h3FPZA3x5V
+	n+tFi3zI3+U0SjwkmOEu30E5j1SwEcwNSDxlroMzDOOCLPiXyMEFgG99jEtEJgCu2PSza+KIY6zeN
+	HU9GKQ00oh8lIgiM3aW8560cW9QkTHJzLGroXkMq4sOI2pkf/dd2p5wd/ih8HO1ZVx+T1PDuiMEwH
+	Vkayki76rrjQRJONtCCllWUjfblnHGFlHGXppTcN4vL51EY4o6fITxtGs6Wta1a0eBBD19EmFHcyy
+	hwfrPwGKhqNIp2eM1JDdN4wqrt5d127md5/w==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1w77qc-002Fdh-2B;
+	Mon, 30 Mar 2026 16:46:06 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 30 Mar 2026 17:46:05 +0900
+Date: Mon, 30 Mar 2026 17:46:05 +0900
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc: davem@davemloft.net, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com, linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] crypto: testmgr - Add test vectors for
+ authenc(hmac(md5),cbc(aes))
+Message-ID: <aco4TfqpfWBZ1UIm@gondor.apana.org.au>
+References: <20260303184916.69132-1-olek2@wp.pl>
+ <abToanZh-mkEjmJ-@gondor.apana.org.au>
+ <c2a3dc2e-8d4a-4a59-ac5a-ca22be705488@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260323-qcom-qce-cmd-descr-v14-0-f323af411274@oss.qualcomm.com>
-In-Reply-To: <20260323-qcom-qce-cmd-descr-v14-0-f323af411274@oss.qualcomm.com>
-From: Bartosz Golaszewski <brgl@kernel.org>
-Date: Mon, 30 Mar 2026 09:48:47 +0200
-X-Gmail-Original-Message-ID: <CAMRc=Mek-OrzG5B6cJnz0ZVRn1paUYVdgf67LAJC_GKCzfU6qg@mail.gmail.com>
-X-Gm-Features: AQROBzDctCw49nI4ZpKxOYPIv3NwI9Us8xjc3cHh8fG92eva9b9SctdyfBh_Ryc
-Message-ID: <CAMRc=Mek-OrzG5B6cJnz0ZVRn1paUYVdgf67LAJC_GKCzfU6qg@mail.gmail.com>
-Subject: Re: [PATCH v14 00/12] crypto/dmaengine: qce: introduce BAM locking
- and use DMA for register I/O
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Thara Gopinath <thara.gopinath@gmail.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	"David S. Miller" <davem@davemloft.net>, Udit Tiwari <quic_utiwari@quicinc.com>, 
-	Md Sadre Alam <mdalam@qti.qualcomm.com>, Dmitry Baryshkov <lumag@kernel.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Stephan Gerhold <stephan.gerhold@linaro.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>, 
-	Michal Simek <michal.simek@amd.com>, Frank Li <Frank.Li@kernel.org>, dmaengine@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
-	Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2a3dc2e-8d4a-4a59-ac5a-ca22be705488@wp.pl>
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22572-lists,linux-crypto=lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,lwn.net,gmail.com,gondor.apana.org.au,davemloft.net,quicinc.com,qti.qualcomm.com,linaro.org,amd.com,vger.kernel.org,lists.infradead.org,oss.qualcomm.com];
+	FREEMAIL_CC(0.00)[davemloft.net,gmail.com,foss.st.com,vger.kernel.org,st-md-mailman.stormreply.com,lists.infradead.org];
+	TAGGED_FROM(0.00)[bounces-22574-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[wp.pl];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[qualcomm.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 7FCFE356ADE
+	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:email,apana.org.au:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
+X-Rspamd-Queue-Id: B3A8F3581AA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Mar 23, 2026 at 4:17=E2=80=AFPM Bartosz Golaszewski
-<bartosz.golaszewski@oss.qualcomm.com> wrote:
+On Fri, Mar 27, 2026 at 06:03:48PM +0100, Aleksander Jan Bajkowski wrote:
 >
-> This iteration is quite similar to v12 but uses the BAM's NWD bit on
-> data descriptors as suggested by Stephan. To that end, there are some
-> more changes like reversing the order of command and data descriptors
-> queuedy by the QCE driver.
->
-> Currently the QCE crypto driver accesses the crypto engine registers
-> directly via CPU. Trust Zone may perform crypto operations simultaneously
-> resulting in a race condition. To remedy that, let's introduce support
-> for BAM locking/unlocking to the driver. The BAM driver will now wrap
-> any existing issued descriptor chains with additional descriptors
-> performing the locking when the client starts the transaction
-> (dmaengine_issue_pending()). The client wanting to profit from locking
-> needs to switch to performing register I/O over DMA and communicate the
-> address to which to perform the dummy writes via a call to
-> dmaengine_desc_attach_metadata().
->
-> In the specific case of the BAM DMA this translates to sending command
-> descriptors performing dummy writes with the relevant flags set. The BAM
-> will then lock all other pipes not related to the current pipe group, and
-> keep handling the current pipe only until it sees the the unlock bit.
->
+> Checked the crypto tree, and this patch still isn't applied. I've sent
+> multiple test vectors, and you're probably referring to a another patch.
+> Should I send it again, or will you accept it as is?
+> 
+> By the way, that's the last one. As of now, all my routers have the missing
+> vectors added :)
 
-Hi Vinod et al!
-
-Any chance of this making v7.1? Stephan, Mani: any objections to the
-current approach?
-
-Bart
+Thanks I'll put the patch back into the queue.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
