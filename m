@@ -1,80 +1,80 @@
-Return-Path: <linux-crypto+bounces-22653-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22655-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iF+qJ8CFy2l4IgYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22653-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 10:28:48 +0200
+	id 2JEBId+Fy2l4IgYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22655-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 10:29:19 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8EA13661B4
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 10:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2504366204
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 10:29:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7C5813098CD3
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 08:21:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9FA0B30B5482
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 08:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF6AF3DBD60;
-	Tue, 31 Mar 2026 08:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D427136D512;
+	Tue, 31 Mar 2026 08:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OVz/Y51f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QcF001pf"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C483CA48F
-	for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 08:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B083D904C
+	for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 08:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774945280; cv=none; b=VuJ9IRsrYoVPRSm1sSGyGrrXW7OGCNRbJ/N5xXP90E2fcP69o22UoyLQTXqvnyFo+FhOA5AN+fWFyGlqQE70t8GVwPRStE5sDHly8cyc4Q7soB5a+gL8WyHLCgG3wzsqoqM9eB71Rqt9wT/uHIlM7T0qdcOGDg7sjmmXJZMYp6Y=
+	t=1774945281; cv=none; b=OjNyI/4ORIAmXEI7SykC9KT8/pw6QvIl9+wxdvjmX4/wp0ovlr/TNhfdZp3mz42V+mMMFkRZnQ/fycIKelkecM2VA/sx9ls31Gp1pc/ZpmYbLUXCU6pZkUBSk+wE2/gBGdhqSZzOHDYeUI828wk4O2bHFJEiwM+t4D0I0dMqktE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774945280; c=relaxed/simple;
-	bh=8IgV1on/CYjRoqaNPKrhP/jyDrUspemaCDxzCZHev6c=;
+	s=arc-20240116; t=1774945281; c=relaxed/simple;
+	bh=X8pf/RdhoihV+vUE+GHa2UaVGVZmQs8OtVynhGYcOlk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QbtRvyXrIXVdva58N5HAfxol8JckmlFWUZyC3lTw6Ol66qvWmNe4cGGZXIMyvjXBfxBxk7vJMbONG1mwcLKj19azFqSLMQz91+o8zGr7iGGNIC7NeMI5yUMS5lcP/wvOFw4abt/xTva4d7BQNk4M0KFXDhYQQgEekH1a/ErWElI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OVz/Y51f; arc=none smtp.client-ip=209.85.128.45
+	 MIME-Version; b=mIHHn8rtSnj/K4omAPdEwzAcVkv4ueJTCu5h76npHTvH66XWs7QdBDZzJy48hG26td+fZFYSVEaYLnq3NNsI9JG1ku185xDGezGuwcQRfTk7yT9AZau99wFCP3l42sn1s0sHOVmIkXk+3gQ2olvEMxPK4gwq3qr01YeXbh4aFbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QcF001pf; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4853a5ffc05so11516675e9.0
-        for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 01:21:19 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4853a5ffc05so11516725e9.0
+        for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 01:21:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774945278; x=1775550078; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1774945279; x=1775550079; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZlXweF85hjs0Cz7hgZ4Sc8jEj+2x0ePWSuvmjZUgVoc=;
-        b=OVz/Y51fQxzM9AEi/DIJuUxGcsOy1/jYZ0tEvclQb+SHqh+e9Xm2Tv2lXecb3OJbbM
-         kls+b2Mb/jVPDVIFRlnlcbhtiyIdZkBhSfHCVfzg3NGUMtt4q9JM4q9IdfRwTsUUZFCb
-         Yeb+QYaAkM8SI0PIMXThNFlXV+U5mv1VCCpBe4RsqJ0Ad1Y5bsRyjMNjAyZrCIPtlGq6
-         OV1gga4jCdKV8r40nFWkgoAfId/6zuzrEBaLDo3aWTuYYuMDsn72X/2IcMrOa0mady/x
-         cCRp++jG7MOiUBS+hHB8nN8meMv0YQYtoVeFacV/ySp6ISD1I0KrtNk5vuOFGol2irFe
-         7A+A==
+        bh=2GwQ4+C9ATAPLFcmqTbKzY7v6j7eVjPD9TBcAmNWpQc=;
+        b=QcF001pfW4yu/KPbpiqGMsS0cDwkTJFIy1IyPKGeqYgPW3ryXGClY66FJlp2B2Tf0C
+         IV3iHkQvh0bz0gaCM8CcVl/PhWk48RTcWhXN7k7Z9HBHBdO3okE8Bm64J0wO+nyEuHNR
+         oUZZjHHiJ6nkZyp2Mq99aZLcJRRWQs171yxQ9FowbfbbdBGp2HyR4Qzoytm7jXFo+bhb
+         P/n7oRisG8+tAgyEcwsZzHrWXT7kTPWrKdKkj52GV2fC3gHihjdnDcVGd/E5zitTnLfO
+         zIZfF2ASn1gVNIVKbm1gOr5KGm5YBMye09/rQBBcRV56W5iRVVx4hQmM7KthOpoxMFqP
+         /Wgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774945278; x=1775550078;
+        d=1e100.net; s=20251104; t=1774945279; x=1775550079;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ZlXweF85hjs0Cz7hgZ4Sc8jEj+2x0ePWSuvmjZUgVoc=;
-        b=WFqlWSD6VpXRTagyUt+WBX3yRxNxtAwpYPgXrR46Os1FJL2evnJX8B4ctvvBaRnP09
-         kU9Dc7baL56q7BZFgx4Lt9cAj387FFYIcdlPX65jHWkwR+VQv0V87AffbPJ+Wh5oatvw
-         cHb7L7msh8I0rTIVpoa3Fzyg0UmyQW7Vcb5nTtNSrBoMCT6u7Z6LpXa+brjabRN/4R35
-         J/kvd+PyldOw4bQOi/EuABL39rxmx87iKAeYY7rJ7bbe60L8HnrOOxTSolcBxEZGsgU3
-         emGf0IIR3keCpcwocy6DorTejNfTztjd9vU4IeFrF+kQ0nfUZriZs4c77VDNHYEO+q5s
-         uVeQ==
-X-Gm-Message-State: AOJu0YyRWHyO5ha6pGhr2n/rDlA3zWtfxfI5NgYL32waMRlyiuuOw7Nf
-	b16Cabq0urww6lPY3WVtzqpoC+GrQVphPIZQiPZoDaDZUNZ2k3Oc4fBS
-X-Gm-Gg: ATEYQzxR5Yavx31fVeOeqPt84/+D9TFPLK/KA/9yMpx0Ir2SrK2i8O13dHraag4gYcS
-	8j5+o43OLzECeceBovyYQCBArlMZgK/LSEfFH7Taum6IxuX4oxwEDNhbtXY8EPDAqCnvgCpQ6hZ
-	E6/PWLCZmpWERAYx4B8dracE0HDwxLaRj0i3bfvspdWnnMeS903EAqQFIFFWznRXUKVHKwppJjt
-	v5QYSq+U83bHMIx40k0LATE6XSYgglHevpeadUQeCtXiSy764bILI8KvtrPudftwsNM8l18Xpxy
-	Ehu2uAYBSQaOS8zNww1ifafh0k6fnMHuV06E604Jql2dkq7qewtIXzxUAzNHM274nLu4eX8J0gq
-	0Lm0kII7W2ahmtPcRjao3p9i1ev9sN+emjU6HP3RsZUUDS652OkNSckYpR8yTxx7Q9eq8Y3CSx8
-	WGRuS+l0VG+ZmFE8fTQsgJEPmOYz3MaGSOlQsAcFcoxROcytIVbuQMHF6Pa9H4vPw=
-X-Received: by 2002:a05:600c:1f8d:b0:47a:94fc:d063 with SMTP id 5b1f17b1804b1-48727d6fc1cmr150113965e9.1.1774945277374;
-        Tue, 31 Mar 2026 01:21:17 -0700 (PDT)
+        bh=2GwQ4+C9ATAPLFcmqTbKzY7v6j7eVjPD9TBcAmNWpQc=;
+        b=GSpD968VTPKF5c8QgtNlxN1emPrQpCNo0kOOQvSUHQ53FyheDFVAd1N7j8SX7uCnvd
+         ygQFiAdpLA8EPtxk5t8W+WIqYCLsoz4mTAkqs5mfXIZ9J+q81xUW3FSjxcLa3zyf1UKd
+         nMtF4cwcVvQh8uubHnFPOW3NAsNQvNgMcnabPK3oz6u6jXT7NK6b5we0zibhq30i/Rlt
+         DynPymmLnN/QrOKCYiY2nZDlknAn4pkYECshnK18tE4Pw5kF9HpZ36yDrCB2opYJTL7+
+         SFecjf/do1U1Ldpyur+Kx+W5Ikf/pvzcjpyAdCqF40J558bc0p1vMls/MO7hf18rNhv4
+         S2zg==
+X-Gm-Message-State: AOJu0YzV0veS8Fxp79I6vPZV2m/uL6eavCS0KeOdRafF7gCRwJYY1VPI
+	P0AOH812ePiYfRftc8HLtxXEo+0d7BQniuIR3yaozy3gKW5OjnkxkHLH
+X-Gm-Gg: ATEYQzzB8UkGXchbNWy6nvyYop0niYB2PhSfNnFU+xiNokjTnaxkhxV3PUDUb3VwiMk
+	q1fPGVEjyAgPh4xGlHtQdRMDh3nfgpRbVXRp5lkphTdXc3iZmaP++Ht5znGEUZtXfFdgV8IuUJC
+	aY8MsySm5n2lochIX0qRd7FPzQ98y0eDU3WTURUxInHfkubWkcg+oXkNemDLoNxYom79A5aBWW0
+	7GqjLo0Lgixzbh1+N+QfNsj2n8k9hmvX/pr8/1blxFZjA7XSOO9P/ArKMamYoefG72f8V1R89ak
+	bomA3zwAVRlG3IXJ1TrTesU6VvPgpDo+7b/EGGDN01VaJFtbef+GQ+fBOhwwQ2SF30nEF+AagrI
+	s3CI5p9bJ7Tdq6pO0qs/3ch+3vYfDm6r4qRbaRriPEZxz2YjGnQVMu6VJgF6CvqpfDKtb9ED8NL
+	NlBgP7Q6dotyTBmiLtLrTOSSzo/pJvMidjM+6+fFzuQEexBsKwsorOJo6eryy0sJY=
+X-Received: by 2002:a05:600c:4f09:b0:477:9c9e:ec7e with SMTP id 5b1f17b1804b1-48727ef6489mr109750975e9.6.1774945278456;
+        Tue, 31 Mar 2026 01:21:18 -0700 (PDT)
 Received: from menon.v.cablecom.net (84-74-0-139.dclient.hispeed.ch. [84.74.0.139])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4887ad8d28bsm14542485e9.10.2026.03.31.01.21.16
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4887ad8d28bsm14542485e9.10.2026.03.31.01.21.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2026 01:21:17 -0700 (PDT)
+        Tue, 31 Mar 2026 01:21:18 -0700 (PDT)
 From: Lothar Rubusch <l.rubusch@gmail.com>
 To: herbert@gondor.apana.org.au,
 	davem@davemloft.net,
@@ -87,9 +87,9 @@ Cc: linux-crypto@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	l.rubusch@gmail.com
-Subject: [PATCH v2 1/3] crypto: atmel-sha204a - fix memory leak at non-blocking RNG work_data
-Date: Tue, 31 Mar 2026 08:21:03 +0000
-Message-Id: <20260331082105.697468-2-l.rubusch@gmail.com>
+Subject: [PATCH v2 2/3] crypto: atmel-sha204a - fix truncated 32-byte blocking read
+Date: Tue, 31 Mar 2026 08:21:04 +0000
+Message-Id: <20260331082105.697468-3-l.rubusch@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260331082105.697468-1-l.rubusch@gmail.com>
 References: <20260331082105.697468-1-l.rubusch@gmail.com>
@@ -105,7 +105,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -116,7 +116,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-22653-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22655-lists,linux-crypto=lfdr.de];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
@@ -130,105 +130,78 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	MID_RHS_MATCH_FROM(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E8EA13661B4
+X-Rspamd-Queue-Id: E2504366204
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The driver allocated memory for work_data in the non-blocking read
-path but never free'd it again. After first read-out the memory pointer
-seemed to be recycled and never was allocated again, due to some errors
-in the logic, so that the leak was not growing.
+The ATSHA204A returns a 35-byte packet consisting of a 1-byte count,
+32 bytes of entropy, and a 2-byte CRC. The current blocking read
+implementation was incorrectly copying data starting from the
+count byte, leading to offset data and truncated entropy.
 
-Add kfree(work_data) in the completion callback on error. then add
-kfree(work_data) after the data is consumed in the subsequent read
-call. Finally ensure atomic_dec() is called only after the data has
-been consumed or an error occurred to prevent race conditions.
+Additionally, the chip requires significant execution time to
+generate random numbers, going by the datasheet. Reading the I2C bus
+too early results in the chip NACK-ing or returning a partial buffer
+followed by zeros.
+
+Verification:
+Tests before showed repeadetly reading only 8 bytes of entropy:
+$ head -c 32 /dev/hwrng | hexdump -C
+00000000  02 28 85 b3 47 40 f2 ee  00 00 00 00 00 00 00 00  |.(..G@..........|
+00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000020
+
+After this patch applied, the result will be as follows:
+$ head -c 32 /dev/hwrng | hexdump -C
+00000000  5a fc 3f 13 14 68 fe 06  68 0a bd 04 83 6e 09 69  |Z.?..h..h....n.i|
+00000010  75 ff cf 87 10 84 3b c9  c1 df ae eb 45 53 4c c3  |u.....;.....ESL.|
+00000020
+
+Fix these issues by:
+Increase cmd.msecs to 30ms to provide sufficient execution time. Then
+set cmd.rxsize to RANDOM_RSP_SIZE (35 bytes) to capture the entire
+hardware response. Eventually, correct the memcpy() offset to index 1 of
+the data buffer to skip the count byte and retrieve exactly 32 bytes of
+entropy.
 
 Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
 Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
 ---
- drivers/crypto/atmel-sha204a.c | 44 +++++++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 17 deletions(-)
+ drivers/crypto/atmel-sha204a.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index 98d1023007e3..1baf4750d311 100644
+index 1baf4750d311..350ba8618c69 100644
 --- a/drivers/crypto/atmel-sha204a.c
 +++ b/drivers/crypto/atmel-sha204a.c
-@@ -24,15 +24,20 @@ static void atmel_sha204a_rng_done(struct atmel_i2c_work_data *work_data,
- 	struct atmel_i2c_client_priv *i2c_priv = work_data->ctx;
- 	struct hwrng *rng = areq;
+@@ -18,6 +18,9 @@
+ #include <linux/workqueue.h>
+ #include "atmel-i2c.h"
  
--	if (status)
-+	if (status) {
- 		dev_warn_ratelimited(&i2c_priv->client->dev,
- 				     "i2c transaction failed (%d)\n",
- 				     status);
-+		kfree(work_data);
-+		rng->priv = 0;
-+		atomic_dec(&i2c_priv->tfm_count);
-+		return;
-+	}
- 
- 	rng->priv = (unsigned long)work_data;
--	atomic_dec(&i2c_priv->tfm_count);
- }
- 
++#define ATMEL_RNG_BLOCK_SIZE 32
++#define ATMEL_RNG_EXEC_TIME 30
 +
- static int atmel_sha204a_rng_read_nonblocking(struct hwrng *rng, void *data,
- 					      size_t max)
+ static void atmel_sha204a_rng_done(struct atmel_i2c_work_data *work_data,
+ 				   void *areq, int status)
  {
-@@ -41,31 +46,36 @@ static int atmel_sha204a_rng_read_nonblocking(struct hwrng *rng, void *data,
- 
+@@ -91,13 +94,15 @@ static int atmel_sha204a_rng_read(struct hwrng *rng, void *data, size_t max,
  	i2c_priv = container_of(rng, struct atmel_i2c_client_priv, hwrng);
  
--	/* keep maximum 1 asynchronous read in flight at any time */
--	if (!atomic_add_unless(&i2c_priv->tfm_count, 1, 1))
--		return 0;
--
-+	/* Verify if data available from last run */
- 	if (rng->priv) {
- 		work_data = (struct atmel_i2c_work_data *)rng->priv;
- 		max = min(sizeof(work_data->cmd.data), max);
- 		memcpy(data, &work_data->cmd.data, max);
--		rng->priv = 0;
--	} else {
--		work_data = kmalloc_obj(*work_data, GFP_ATOMIC);
--		if (!work_data) {
--			atomic_dec(&i2c_priv->tfm_count);
--			return -ENOMEM;
--		}
--		work_data->ctx = i2c_priv;
--		work_data->client = i2c_priv->client;
+ 	atmel_i2c_init_random_cmd(&cmd);
++	cmd.msecs = ATMEL_RNG_EXEC_TIME;
++	cmd.rxsize = RANDOM_RSP_SIZE;
  
--		max = 0;
-+		/* Now, free memory */
-+		kfree(work_data);
-+		rng->priv = 0;
-+		atomic_dec(&i2c_priv->tfm_count);
-+		return max;
- 	}
+ 	ret = atmel_i2c_send_receive(i2c_priv->client, &cmd);
+ 	if (ret)
+ 		return ret;
  
-+	/* When a request is still in-flight but not processed */
-+	if (atomic_read(&i2c_priv->tfm_count) > 0)
-+		return 0;
-+
-+	/* Start a new request */
-+	work_data = kmalloc_obj(*work_data, GFP_ATOMIC);
-+	if (!work_data)
-+		return -ENOMEM;
-+
-+	atomic_inc(&i2c_priv->tfm_count);
-+	work_data->ctx = i2c_priv;
-+	work_data->client = i2c_priv->client;
-+
- 	atmel_i2c_init_random_cmd(&work_data->cmd);
- 	atmel_i2c_enqueue(work_data, atmel_sha204a_rng_done, rng);
+-	max = min(sizeof(cmd.data), max);
+-	memcpy(data, cmd.data, max);
++	max = min_t(size_t, ATMEL_RNG_BLOCK_SIZE, max);
++	memcpy(data, &cmd.data[1], max);
  
--	return max;
-+	return 0;
+ 	return max;
  }
- 
- static int atmel_sha204a_rng_read(struct hwrng *rng, void *data, size_t max,
 -- 
 2.39.5
 
