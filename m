@@ -1,160 +1,95 @@
-Return-Path: <linux-crypto+bounces-22660-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22661-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WCHsF9y8y2kwKwYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22660-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 14:23:56 +0200
+	id +PhgDWHmy2myMQYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22661-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 17:21:05 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C81FE3696C0
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 14:23:55 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDDE736B937
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 17:21:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D8F16301859F
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 12:22:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4E10D30DAD3C
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 15:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6ED33E1222;
-	Tue, 31 Mar 2026 12:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hofufR+S"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B3D40245F;
+	Tue, 31 Mar 2026 15:16:59 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75F13E1216
-	for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 12:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB17B3126DF;
+	Tue, 31 Mar 2026 15:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774959741; cv=none; b=Lr/gGUf3w4Cn+u603y6c3vuSIO+vtG5ANVdVtEoLldUnx+BFb/kMPrBC0wCIzeokbhnmSWdx+bJ5GX44sqJy6bnxxJZyo/3ydZrbfUQpIMWt4zwB5F6knQdsuuZmfvVcLVNYY6whT1u83Sg8lshe/fyhfLDT8hleMytoLP69n2A=
+	t=1774970219; cv=none; b=LqbDHwARz2+dAXpgxrpj1ilE7W04s+24z5AD/hwgi52CmaDODdP+/2XrsMQKg9Fb2O6qXwJ1olUo7oFzWOYOSt69cPtfaSMhqsIrG0GG36Jv3PNsksdTZDHnsmFkXyacQawWeWUTBsYSxvXGoRxOGget3AuCzoNP+9XlZwBNJOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774959741; c=relaxed/simple;
-	bh=yBZY08O+PquoIPkc9X1R3mmq3ZSMTpZWXuFFS2nK6Eo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Iajw9jn2ZO2Udw+sjDJOY/zVQGJCE5spM43uDPs8f22iaY8uZJztJ1NzdHtpkJMv/zn0m4E7rbP2mp6E77kZnf+104mYPqJL+ygfL447bMJ3h+AX3EznbkBAyWqGZyAYmZgnvkXRVViwAiBust9KTaxNNaUr9kapjIEqqBzPtbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hofufR+S; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4887ca8e529so5326275e9.0
-        for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 05:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774959738; x=1775564538; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=R8DsriGRZc/vlEI1YAFmA+byoc1+oLgtee4dpAnNTZY=;
-        b=hofufR+S07q6x1DJ2I8xz9+0B1SSTOonrLkb/h9bpmBT6HJ9HPOs5mDEqrHeq/2ibd
-         NjMapTPg2SodMAl95Buz170U0GfjlOH7NvLM99frZOQZufKMgytrm4hlXRGxprnkWtAP
-         xpTRZ7xLdBs5umnrwIhyqNJ6qETOqE3umtqvbpeBR0G4xhOs8IGYzYmkTU4wWZHENs7E
-         eC5XXAYWIKcSk5AJmXlUGtuNUYNgoqZYgdP9IBgjvhjAXfjOKa5g+tKiYbukinNjvphz
-         86hz4/rllTS6FmJM5BVA8easeT1Dd+/qh11sZJMZqOs4eLytugdnxGMA1D1MAUHlAQxB
-         stXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774959738; x=1775564538;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R8DsriGRZc/vlEI1YAFmA+byoc1+oLgtee4dpAnNTZY=;
-        b=YFpRD0kaW4VP+b1gNA6yLb3oKj+gXACkxY+pD0y+TBJKcAUNLA9KGgy6xO/AR4+Wqf
-         vFLAs72ArlY6in338beNHAFDAcDzXisNcP/D9F868Ik+7Q6LOv8faffjN4xGnSCXfMFh
-         gl1N//fCWLw+VgECsT6Q1WCzrdOEplpRCbrPL1vzv1MtZ9OnHA56Gqtdg7guet5O6dnM
-         U1B2rxafuxmKuacEd7fgHeeQ80nx3WMnSetP5QrrvwkJ+COowiF8Cq8p9ZHuUA16RYsI
-         NuRROAz+sgHpA1DuRUXGqsCLUbAyb+MNbm9hKXtyAmbVkUX0Kao/XQDhQAlIVv4JAVhW
-         qB8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV7k/J9Mv623Cfq0I1JZ31EY1s0na8rMk5hKPiUVJjhYXoIv270LDaPWxmJ0wxPHKoaLiAqYvSb6GKn0/A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzvSE3k2Vt9cEJDGiAYiJpdXJFcfRdSfsqRBqospWt3NO5mPYo/
-	pByuM7HexJe79o1s11E7Hc8/4ONGUHMsm/9Q1BGztziNWUMqhsTKwx4A
-X-Gm-Gg: ATEYQzxRPjYm+pHk1Q9eWDMcmHtoCI5KK7XhGRupa/ylCzQMVIhMOY3uoSta/VTZd2R
-	MEkLQ2p4L0Eoonqv1x2l7QnkjNMG8K4eB0Tmy+kusRfL33+5S8hL88BFVy1l6HvJ17nLBaZMD8R
-	8LakX6sIvkCfoagCf6UP/bN+1e1j72c4H9ZRykr54WxgWydfDwxBdQOdHLawHPxVGtSXxpTMyET
-	/NgaF2lLc2IQ8RyCkf63u0nLgPh5ItxWGFR6dz0MGVDYfes2LqlZv7n49HwR53nGz4fUGb/gCmb
-	7qleo8RG5O2Tat92q7YgTfU+wm80iWunex+9Ut6z1I/VWZy+MA+0nQ4qj7gdwgr/CgLbaYwi9/v
-	8o485YLQ0j+NlWB+kSq+QmLfxObXdXvKya+zPkvacvgtBPCfvsbnlktLi3eVFcDD6b/beDvX8y8
-	FCEKG2IVxJxjCMiNZ1G03phIaEGsYEu9HOBsWI7X5Q8vPufA6Jx3TWQPU=
-X-Received: by 2002:a05:600c:83c3:b0:485:3428:774c with SMTP id 5b1f17b1804b1-48878281a4cmr56435855e9.4.1774959737714;
-        Tue, 31 Mar 2026 05:22:17 -0700 (PDT)
-Received: from nixos-office (195-23-151-163.net.novis.pt. [195.23.151.163])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4887aecf6e6sm16977185e9.13.2026.03.31.05.22.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2026 05:22:17 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From: Julian Braha <julianbraha@gmail.com>
-To: dhowells@redhat.com,
-	rusty@rustcorp.com.au
-Cc: lukas@wunner.de,
-	ignat@linux.win,
-	keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Julian Braha <julianbraha@gmail.com>
-Subject: [PATCH] keys: cleanup dead code in Kconfig for FIPS_SIGNATURE_SELFTEST
-Date: Tue, 31 Mar 2026 13:22:14 +0100
-Message-ID: <20260331122214.103145-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.51.2
+	s=arc-20240116; t=1774970219; c=relaxed/simple;
+	bh=BvYJMv6jCryhNn7Soq6PFp6s/tK+JHRyrI6npMZTO5E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YyIuyoo3rSlgGlA6H6+xOdi+5Lbc/6RCoOweyF+XoKdg0hdV/Ee3pg703O78auLwcdpUQQshChpveDHhPR6Bwe+uN0FEC37+oNkVdT31EAyfzmlNPlQXfNt7A2wZYyF6aGkeAdNN1z3kOp1BnO1/Nnd+lZ9Yieljf2+2z1hmV0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 0BF1B68BFE; Tue, 31 Mar 2026 17:16:54 +0200 (CEST)
+Date: Tue, 31 Mar 2026 17:16:53 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-raid@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [PATCH v2 0/5] xor/arm: Replace vectorized version with
+ intrinsics
+Message-ID: <20260331151653.GA8011@lst.de>
+References: <20260331074940.55502-7-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260331074940.55502-7-ardb+git@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spamd-Result: default: False [0.14 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[wunner.de,linux.win,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-22660-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[julianbraha@gmail.com,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22661-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,git];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C81FE3696C0
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-crypto@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.958];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	R_DKIM_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email,lst.de:mid]
+X-Rspamd-Queue-Id: CDDE736B937
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-There is already an 'if ASYMMETRIC_KEY_TYPE' condition wrapping
-FIPS_SIGNATURE_SELFTEST, making the 'depends on' statement a
-duplicate dependency (dead code).
+Looks good:
 
-I propose leaving the outer 'if ASYMMETRIC_KEY_TYPE...endif' and removing
-the individual 'depends on' statement.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-This dead code was found by kconfirm, a static analysis tool for Kconfig.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- crypto/asymmetric_keys/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
-index e50bd9b3e27b..6a2f664046ef 100644
---- a/crypto/asymmetric_keys/Kconfig
-+++ b/crypto/asymmetric_keys/Kconfig
-@@ -95,7 +95,6 @@ config FIPS_SIGNATURE_SELFTEST
- 	  verification code, using some built in data.  This is required
- 	  for FIPS.
- 	depends on KEYS
--	depends on ASYMMETRIC_KEY_TYPE
- 	depends on PKCS7_MESSAGE_PARSER=X509_CERTIFICATE_PARSER
- 	depends on X509_CERTIFICATE_PARSER
- 	depends on CRYPTO_RSA
--- 
-2.51.2
+I think some of the intrinsics patches were also in your crc64 series,
+so I'm not sure how to be merge this.
 
 
