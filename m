@@ -1,158 +1,129 @@
-Return-Path: <linux-crypto+bounces-22642-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22643-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GJ9iOzNuy2npHgYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22642-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 08:48:19 +0200
+	id wItpCRluy2npHgYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22643-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 08:47:53 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 744D23649B4
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 08:48:19 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F53C3649A6
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 08:47:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3733930157D2
-	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 06:46:53 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 29CAE300D56D
+	for <lists+linux-crypto@lfdr.de>; Tue, 31 Mar 2026 06:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0A8382285;
-	Tue, 31 Mar 2026 06:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95D0257821;
+	Tue, 31 Mar 2026 06:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXsRnYym"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C07+twf7"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4271136EA9B
-	for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 06:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB4D27A462
+	for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 06:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774939612; cv=none; b=s3sbdNQzS9SXMMzffMUfEFvrFLReIxTO0OhKwKMTInGdAmO51e9tYfGX2/ytMRj+R5bepC5vYQ8zE2e0QcO3BuqwqXl2WAXB/rXLrqz77D5HwQALk+2y3fI376wjNKb7NVvcnbB+9sDJSyVEoYxqrniLMHmh3qzenF1YV4fqAjM=
+	t=1774939665; cv=none; b=JZ7/pZnRCIkkN+6636aS17Jp2L7CdlDt9XqYQLdG4zqVq1n0WXLYEmzJNh0YYQbwQyOZifs90qqvrr71rzSlCk4OwCjeom7dCRsbUrlu66rtZRNj7Cp3dUHvzjwb/9rdAcHlB8FAQHeUa+ebBQAyIwGOzC5lHiulcWfGhYp63bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774939612; c=relaxed/simple;
-	bh=wTYbKATF02gHL0BNmh4jiIrPFPGv6EmLaO3h0rzG3u0=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=WlTWO5JlsLIx8HOtfO/uSmxt8V05tUTk1tmVfx4L474g/lJyZrVp89Egk4kBO3pwUZYJNlurHdxuaKaHDDiFo/Rn+aCXOmxNYnlwOgU9uyCCyS6atZ1i2+DGZEJtjut8Nu1xDnqu85mS6NVIlLDhFyfW4Z/y9VSWogkUolt8dOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXsRnYym; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6D69C19424
-	for <linux-crypto@vger.kernel.org>; Tue, 31 Mar 2026 06:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774939612;
-	bh=wTYbKATF02gHL0BNmh4jiIrPFPGv6EmLaO3h0rzG3u0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=VXsRnYymoME9kKLEVXNGVH2ntuZHuHLSUvsL/xw5rzsRiUeZIrW6kzy9kiCAagCKy
-	 pmWJRWBW64LY5219Sj8RbPlhSy8LLKZauUU3/4o73FASWReqMpYlbOhkkiZRh1fhUi
-	 ywXMC2XyqcGYWcySE871sL/Xejd4w+5nmMdAG+pXJYBZkKOdwTEZ3z0aAadCHICt83
-	 SJIiJum7lRR0bvrITf9QDKsrF0l9AXlhvU+yU7qsZ5GT+ijHRaiIYN+pGkyD/ArqPY
-	 Rl2rEwNlBe0uJJmKwGD9nK48yTHeOmqjY2QMu5kUlId9WUee2oMDhu8hFmt+ZeMSu5
-	 aBw1lipq8shXA==
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id E8B69F40076;
-	Tue, 31 Mar 2026 02:46:50 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-01.internal (MEProxy); Tue, 31 Mar 2026 02:46:50 -0400
-X-ME-Sender: <xms:2m3LadZ6990gFEY53WPCCZQmyz8wb2yBNxGITQ0PxhsRXOePW4iwwQ>
-    <xme:2m3LafNkkofmZJCyU9uJSs8GQgtohxWtAOctPxz6wffD5Z5tCpp0jk611pMQU60zy
-    HZc9VxPB4oNoAKgdqfdKhelUZDq0CoywZzJw6yGa2dWor0zBqkFiA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefgeduvddtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrugcu
-    uehivghshhgvuhhvvghlfdcuoegrrhgusgeskhgvrhhnvghlrdhorhhgqeenucggtffrrg
-    htthgvrhhnpedvueehiedtvedtleekuddutefgffdtleetfeetveejveejieehfefhjeei
-    jeefudenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieejtdehtddtjeel
-    qdeffedvudeigeduhedqrghruggspeepkhgvrhhnvghlrdhorhhgseifohhrkhhofhgrrh
-    gurdgtohhmpdhnsggprhgtphhtthhopeehpdhmohguvgepshhmthhpohhuthdprhgtphht
-    thhopehhvghrsggvrhhtsehgohhnughorhdrrghprghnrgdrohhrghdrrghupdhrtghpth
-    htohepvggsihhgghgvrhhssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhig
-    qdgtrhihphhtohesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
-    igqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjrghs
-    ohhnseiigidvtgegrdgtohhm
-X-ME-Proxy: <xmx:2m3LaVHn8PHPALwBhnQHLOBl-NFtAANNwrbcAZfM7JrQP2vDvv2jKQ>
-    <xmx:2m3LaTqz_tPGD3tRzM53CFFNzlJ_QqAnk846NO8PPF9a0SfivZzspw>
-    <xmx:2m3LaeY6ZgT6Fy8mxKbLYEHsLeI6I2QM2Li6nw55S-DTtpTBXLfupA>
-    <xmx:2m3LacXWqQebsyKItlzKRFyp8BcF92VO0Yfhxtxjb90Y-VXsGFhXXw>
-    <xmx:2m3LaX_m6bu6pEkP2EbNO4ulD9VxiwI8lHUOSpi-B5bx_NB8UWvN_Mdh>
-Feedback-ID: ice86485a:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id C7987700065; Tue, 31 Mar 2026 02:46:50 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1774939665; c=relaxed/simple;
+	bh=8DPyNr+dkT1z3DWXsiNlNh5fnlsp2ats5a6xm4LK2Y0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BUs2YCYWjDKYztbPc4bj+AgMsKlkGkpoErN9A9ADSiRm28O06eWFrY9bJ9MA6+mQ+32GSIJFdHvnwDMoGwgampUGULtE88mDwV/MJ7UKDor6wliiEUe6FQHDciIXGzgPpEDZAk+uVz4PqJbhBpQ7Wg78VIJArxunO2qetoKpyEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=C07+twf7; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=afivXW2PTC36kmyMDBN3SIricSfoCKcEeqYymXRdbNI=; b=C07+twf7CgOQFRK8STZQ4F0WMm
+	PL/U2F2SMWVvUSc/E0+v2A2JFiyl69bkL+qIYeog/CruzwK4owdxcjUuNgUUSDvKZ3tYubAfp7UYJ
+	U4dRFt+bUX46tlrHN15prTBCWC79Z2rk4ZxRJtTkZACO+4E0OALxaW6Mh8ndZcG2QvD0YlvEE87iJ
+	FTju0fnkSOPvbvQGvKSXO2gmtPWKRGTYPWIvezzp3KyScmFM+W+UnAasxcesetV4Jj19MJcyOdF7g
+	gIm1KWkvwIN6Uoi4IetOhZOTJ0KkTSLq3BxOvr8kS5wWvqH3LAKUfI6gIjoSP/iS8WjRsuPEGPUGL
+	yETDV4/w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w7St4-0000000CP8w-1Lgd;
+	Tue, 31 Mar 2026 06:47:42 +0000
+Date: Mon, 30 Mar 2026 23:47:42 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Demian Shulhan <demyansh@gmail.com>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [PATCH 5/5] lib/crc: arm: Enable arm64's NEON intrinsics
+ implementation of crc64
+Message-ID: <actuDkpYbzLj0sI8@infradead.org>
+References: <20260330144630.33026-7-ardb@kernel.org>
+ <20260330144630.33026-12-ardb@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A1cFwBCEjsB7
-Date: Tue, 31 Mar 2026 08:46:30 +0200
-From: "Ard Biesheuvel" <ardb@kernel.org>
-To: "Eric Biggers" <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, "Jason A . Donenfeld" <Jason@zx2c4.com>,
- "Herbert Xu" <herbert@gondor.apana.org.au>
-Message-Id: <0bf31d9e-7d61-4ab6-b7f2-6f00a9b17ce4@app.fastmail.com>
-In-Reply-To: <20260331024414.51545-1-ebiggers@kernel.org>
-References: <20260331024414.51545-1-ebiggers@kernel.org>
-Subject: Re: [PATCH] lib/crypto: aescfb: Don't disable IRQs during AES block encryption
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.15 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260330144630.33026-12-ardb@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-22643-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22642-lists,linux-crypto=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[app.fastmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,gmail.com,kernel.org];
 	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_NEQ_ENVFROM(0.00)[ardb@kernel.org,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	NEURAL_HAM(-0.00)[-0.982];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 744D23649B4
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,infradead.org:dkim,infradead.org:mid]
+X-Rspamd-Queue-Id: 1F53C3649A6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+>  	depends on CRC64 && CRC_OPTIMIZATIONS
+> +	default y if ARM && KERNEL_MODE_NEON && !(CPU_BIG_ENDIAN && CC_IS_CLANG)
 
+It would be useful to throw in a comment here why it is disabled for
+big-endian on clang.
 
-On Tue, 31 Mar 2026, at 04:44, Eric Biggers wrote:
-> aes_encrypt() now uses AES instructions when available instead of always
-> using table-based code.  AES instructions are constant-time and don't
-> benefit from disabling IRQs as a constant-time hardening measure.
->
-> In fact, on two architectures (arm and riscv) disabling IRQs is
-> counterproductive because it prevents the AES instructions from being
-> used.  (See the may_use_simd() implementation on those architectures.)
->
-> Therefore, let's remove the IRQ disabling/enabling and leave the choice
-> of constant-time hardening measures to the AES library code.
->
-> Note that currently the arm table-based AES code (which runs on arm
-> kernels that don't have ARMv8 CE) disables IRQs, while the generic
-> table-based AES code does not.  So this does technically regress in
-> constant-time hardening when that generic code is used.  But as
-> discussed in commit a22fd0e3c495 ("lib/crypto: aes: Introduce improved
-> AES library") I think just leaving IRQs enabled is the right choice.
-> Disabling them is slow and can cause problems, and AES instructions
-> (which modern CPUs have) solve the problem in a much better way anyway.
->
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> ---
->  lib/crypto/aescfb.c | 25 +++----------------------
->  1 file changed, 3 insertions(+), 22 deletions(-)
->
+> +#define crc64_be_arch crc64_be_generic
+> +
+> +static inline u64 crc64_nvme_arch(u64 crc, const u8 *p, size_t len)
+> +{
+> +	if (len >= 128 && static_branch_likely(&have_pmull) &&
+> +	    likely(may_use_simd())) {
+> +		do {
+> +			size_t chunk = min_t(size_t, len & ~15, SZ_4K);
+> +
+> +			scoped_ksimd()
+> +				crc = crc64_nvme_arm64_c(crc, p, chunk);
+> +
+> +			p += chunk;
+> +			len -= chunk;
+> +		} while (len >= 128);
+> +	}
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+From reading the earlier patches, I'll assume arm SIMD code is
+non-preemptable and thus you want the chunking here?  Maybe add
+a little comment explaining that?
 
 
