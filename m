@@ -1,59 +1,59 @@
-Return-Path: <linux-crypto+bounces-22735-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22736-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SEDsHML4zmn7sAYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22735-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 01:16:18 +0200
+	id iMurDx/6zmn7sAYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22736-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 01:22:07 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40E7038F191
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 01:16:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B876138F296
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 01:22:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6F14F30331C3
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Apr 2026 23:13:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0643830A04DF
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Apr 2026 23:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06843F7E66;
-	Thu,  2 Apr 2026 23:12:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22493F23B2;
+	Thu,  2 Apr 2026 23:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tRI4AqK8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iaWifGZV"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B368635F8B9;
-	Thu,  2 Apr 2026 23:12:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9429F3CBE6B;
+	Thu,  2 Apr 2026 23:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775171533; cv=none; b=o8Id7AQaat8XxcX825i91Q8lJw8TEJtEHDeAa0y6lLu939sSa3qH5e4KsHC2IVu+bkkl42ZcIro5ftBRJpRsug3hzauXXzXuRG+XVmtTweqiE/z8FMRoxcMQPGJTWtSj9lYyMyZz4viwmVrneUl6sy4aN2Y9A0SfzS0O8sIKjRM=
+	t=1775171558; cv=none; b=f94vAqHx7HUNkemDVac2qtB65trqdmf4zKRgx8qIrJXufCNmpoQ9adFrlHXvvpcuCDG6zKuSWn5QPP9ebypI9r+rpa6p9wfS/EAfnoHgILxAG8ISZt6mY5AYoL4S/5jHkg2sA9B0KYc8I4HBKyQEMXu0oeRDzdqrxxVUOUVy/YQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775171533; c=relaxed/simple;
-	bh=AlQcHq0q3oR6NEiP4jcaPQ2aCDBphhzMdw3wZ91g/MU=;
+	s=arc-20240116; t=1775171558; c=relaxed/simple;
+	bh=4KoKXeuV+gv1aO4Hc4y0VUJ5jWRGUCNj0cNm6N4ZxKs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i7SPFKClzDIIm62+2qe6ufzzf44Zw9T87NRT6xhcZy4SBdJF6PmyO/wPBNCaoFNPurCyGWVsqNapax/yHQITBj6RiPc9g5dlq0zA48Q+ZmToknq0HPuu4u/Av4Zd25vuYC0779zEtQfIjqOI8YIUYNni/9naMPdj5+/67W0RYkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tRI4AqK8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF4BC116C6;
-	Thu,  2 Apr 2026 23:12:12 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=fyTyGJg3k7ao0EWaVaNMFc/AKqek39KqucwHuVNnCFtSGyerpSZsNmW9XG/5waPmqcfuTKHk+Cgh+QNcZFf4vJVAO3RyyTL2sylpCi9BV5c1j08CpZmzg9N9BBv/V+0HT8O79T5jg9gov/yHG7ymTWAE2VJHYFy1VWr9YNou2Mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iaWifGZV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF0EC116C6;
+	Thu,  2 Apr 2026 23:12:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775171533;
-	bh=AlQcHq0q3oR6NEiP4jcaPQ2aCDBphhzMdw3wZ91g/MU=;
+	s=k20201202; t=1775171558;
+	bh=4KoKXeuV+gv1aO4Hc4y0VUJ5jWRGUCNj0cNm6N4ZxKs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tRI4AqK8e/TacyNpwXSTBMfh2L3lbi6A+5ll/Pju1P9ZQdw2GhsNNw6idKf2EEZa6
-	 lpGpcYt/GSBDUXNGvefebyTOVUzGdklJWMZt7JZBVc4ciOuISjuHyvYxbM3RVSok9d
-	 h8Bp6ghwWoEjX2meOTGuxfpnprt40657QSAF1DrhmkX21yWWtL/k/+6+c7E+4ptOk+
-	 5NBLV+xMPVIj6oEvfhztnlW03n6YOtRGgqMw1V1MoWoImr1a2pnme5hYI22O9bwlWV
-	 ByKe9dqEbF51zKX5hB70HDxn2CSu5QzzPDazLKWxOK3g3ii4c2btwkpIZwqRYySz/b
-	 Bw8FCpQpTnmsQ==
-Date: Thu, 2 Apr 2026 16:12:09 -0700
+	b=iaWifGZVegT9SpOETXhU9V6uvCm/vc1EoEXUbbs1dDKy6k83jfr2k8pXcTd5tPnLc
+	 GJx5Gr9+Qxvu2BVupi5HhTXnXl9TFApco+3XYr4clHdfBKDSj/UaGDQ4eFlimH14c+
+	 +P1jBqErFJJVw04wRB7aXRUvpcGuuDIUiITHjcE9LSRxXRwnTfG/VEOhLFoaB2HAuy
+	 A9m1Ud9W77BQlEBfrNagbd9CvehzlmuzBYpghs9iBWTI1x7V5osQlxYoS0deas46vO
+	 aW2ROXaWzvJXeGSeyfsvIN119EV3AVBOqFO2OIvjEqva++Ii8O3fa2unMG3ZYmBGAv
+	 4Ee9KbmrNGJyQ==
+Date: Thu, 2 Apr 2026 16:12:34 -0700
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/9] lib/crypto: arm64: Remove obsolete chunking logic
-Message-ID: <20260402231209.GD2910@quark>
-References: <20260401000548.133151-1-ebiggers@kernel.org>
+Subject: Re: [PATCH] lib/crypto: arm64: Assume a little-endian kernel
+Message-ID: <20260402231234.GE2910@quark>
+References: <20260401003331.144065-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,20 +62,20 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260401000548.133151-1-ebiggers@kernel.org>
+In-Reply-To: <20260401003331.144065-1-ebiggers@kernel.org>
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22735-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22736-lists,linux-crypto=lfdr.de];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -86,26 +86,23 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 40E7038F191
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B876138F296
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 31, 2026 at 05:05:39PM -0700, Eric Biggers wrote:
-> Since commit aefbab8e77eb ("arm64: fpsimd: Preserve/restore kernel mode
-> NEON at context switch"), kernel-mode NEON sections have been
-> preemptible on arm64.  And since commit 7dadeaa6e851 ("sched: Further
-> restrict the preemption modes"), voluntary preemption is no longer
-> supported on arm64 either.  Therefore, there's no longer any need to
-> limit the length of kernel-mode NEON sections on arm64.
+On Tue, Mar 31, 2026 at 05:33:31PM -0700, Eric Biggers wrote:
+> Since support for big-endian arm64 kernels was removed, the CPU_LE()
+> macro now unconditionally emits the code it is passed, and the CPU_BE()
+> macro now unconditionally discards the code it is passed.
 > 
-> This series simplifies the code in lib/crypto/arm64/ accordingly by
-> using longer kernel-mode NEON sections instead of multiple shorter ones.
+> Simplify the assembly code in lib/crypto/arm64/ accordingly.
 > 
-> This series is targeting libcrypto-next.
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> ---
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=libcrypto-next
 
