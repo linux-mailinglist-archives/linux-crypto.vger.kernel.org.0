@@ -1,62 +1,62 @@
-Return-Path: <linux-crypto+bounces-22751-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22752-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wOy0IEYSz2nXsgYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22751-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:05:10 +0200
+	id kH3KMf0Sz2nXsgYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22752-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:08:13 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3021B38FCFB
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:05:09 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAA4138FD5C
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:08:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6EFFC301DDC4
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 01:05:09 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 34FEA303B46A
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 01:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC4D202C48;
-	Fri,  3 Apr 2026 01:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5D923BD06;
+	Fri,  3 Apr 2026 01:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="lwco94i8"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="ceIs9GZT"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4444A26E142
-	for <linux-crypto@vger.kernel.org>; Fri,  3 Apr 2026 01:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6EB267AF2;
+	Fri,  3 Apr 2026 01:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775178308; cv=none; b=IyI5K1i5DKrRfWVKfZeImbX22gQ+e5bOoWQ0lmZL7DV+1RALAn0T0I5CYH0sFGbY55jjMCORZ0A1yMJWqbMkwLCO9OqKoBR2J6CRsWGl0LpioZGTFGDofYFsDfhcJzVReIIpYuWH4Yph6+BZGrwFIPI4BE8zByGXwwrgLT15qrY=
+	t=1775178357; cv=none; b=GeqBxb3imh02htWrnGM12eBJ6OuTKuzQtnkbcABLSJ6/xdGR6T2dzzefdhudQTJ5izqFLq//N+P6Z++gtWv8SuNaaecwOCAMcLkQxAvcoZVxwe09lEHXYFC9NDM2si+mkvAazIzwZ5mseIhbxjAqufv34yklvdSOxXoeFssHW2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775178308; c=relaxed/simple;
-	bh=hiknWIVNKJXRbWCUou+KuAYyBuL39DFxqzH50IDaQGc=;
+	s=arc-20240116; t=1775178357; c=relaxed/simple;
+	bh=5enYkb26ImBotZHMWbIyApwM0/CTaxr5EfEIXqvL3oc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n2lFP+rR5zH+XIeQfTowwwbVgMMLGm2dJM2pRmUQK1c9t8WnVNT0qv19gj3AUF/QCsss352T9TTAuMKrd99vGzyV7W0zdK3TINKIUNp3kkBGWPcDrl+8dotqvfc+kyR99K7vfZJ/38IMpYqEXlxPNl5h03jmqTv12jwLsO2uR+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=lwco94i8; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=J8zcAtHil/i6zjcfoc/AS05GFXI/O121+R5Gvr8pgsf7+Lws0BnAzMmj+RC1culqSA+vCtnpSNsBxEi/JfTAHREvxJvHkFfrlBK/y0O/YZKw5dw1nRfbx/4JZoaffDEaGUmrbQUkZrYtYmBXV25Mi/TzQ8d0Im3MMK87tGRcYeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ceIs9GZT; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=NeKIUlTPKeJW4kqyi5LJU5kHBG00DM7ucKYq35YkI/Y=; 
-	b=lwco94i8m7uVkW5hBk/34+MVJ+n1DhvUMTS6iOV/GBSf1xSTUv4qxP8lScmxjdB23q5eRKiZay8
-	gDyRfCQ3CLIRK1G00APe4eBoMDU/CIxq8pj7JF8bcdhfbvX13kHIoJACp4dcqzLPY4DEZCeubGid+
-	a3M1IoXr7ZreXM0WqWF2Z0fyMzk6IKpXb6FdeOcnZ4AuWKQsBpSxQjXUaHP4fx8P7XJAXO3+iW6E7
-	VDtZdT2fbheu863Xp7PXbhdDlvQ+lwc/Gn/cfUSGWlYbjnKS5ZENRpvWuTI1rztumL2yspqan//lc
-	35zD0+yOiL7+VirQmqznVf+2yDFqOthxzBAA==;
+	from:content-type:reply-to; bh=IO9PAf7GiboQfN7tMcKHwXbPSg1kG4PLH4y/GW18OMI=; 
+	b=ceIs9GZTFKdKxMDALYvyAlu4BqX3ZsKE8lyiB3OCN+9MaRdCNQswICNL8l/hpE08fA4LMcGXO0J
+	idr5uId5nIKGvUHNEUg+Psqe9Vfhv7zqUHzJysr9OuVEdMuTDYF35AiWBzB5R4TWuJiOgliMv/2jd
+	vi0kCxJtEnn9DWq3n5Gcv6QKzcJWrhWNOhR6Sxjsr/qcMBCzrxNAE0c6njLWisB3qDMAczLuZZtWh
+	nbqqbW99VjUSZPO0kvlywOaKrCxEHMKEkwLh7E6CLvXcSoJwvr8G0HDz3v2l2lKAH49VFiE33AhuS
+	1iLQH/WllMIVxXe5KqgDn27ghPHBcXm4r0Tg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w8SYd-003Qzb-2O;
-	Fri, 03 Apr 2026 09:05:03 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 Apr 2026 09:05:02 +0800
-Date: Fri, 3 Apr 2026 09:05:02 +0800
+	id 1w8SZR-003R0T-26;
+	Fri, 03 Apr 2026 09:05:53 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 Apr 2026 09:05:52 +0800
+Date: Fri, 3 Apr 2026 09:05:52 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc: vinicius.gomes@intel.com, kristen.c.accardi@intel.com,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: iaa - fix per-node CPU counter reset in
- rebalance_wq_table()
-Message-ID: <ac8SPlFhiQx7OChZ@gondor.apana.org.au>
-References: <20260324182912.123665-1-giovanni.cabiddu@intel.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Stephan Mueller <smueller@chronox.de>
+Subject: Re: [PATCH 00/11] Stop pulling DRBG code into non-FIPS kernels
+Message-ID: <ac8ScCXxWfaCx-9T@gondor.apana.org.au>
+References: <20260326001507.66500-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -65,25 +65,25 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260324182912.123665-1-giovanni.cabiddu@intel.com>
+In-Reply-To: <20260326001507.66500-1-ebiggers@kernel.org>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	TAGGED_FROM(0.00)[bounces-22752-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-22751-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
@@ -91,30 +91,56 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,intel.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url]
-X-Rspamd-Queue-Id: 3021B38FCFB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,apana.org.au:email,apana.org.au:url]
+X-Rspamd-Queue-Id: BAA4138FD5C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 24, 2026 at 06:29:05PM +0000, Giovanni Cabiddu wrote:
-> The cpu counter used to compute the IAA device index is reset to zero
-> at the start of each NUMA node iteration. This causes CPUs on every
-> node to map starting from IAA index 0 instead of continuing from the
-> previous node's last index. On multi-node systems, this results in all
-> nodes mapping their CPUs to the same initial set of IAA devices,
-> leaving higher-indexed devices unused.
+On Wed, Mar 25, 2026 at 05:14:56PM -0700, Eric Biggers wrote:
+> Most kernels have CRYPTO_FIPS=n but still include crypto/drbg.c and
+> everything it depends on, including crypto/jitterentropy.c.
 > 
-> Move the cpu counter initialization before the for_each_node_with_cpus()
-> loop so that the IAA index computation accumulates correctly across all
-> nodes.
+> This dependency bloat happens because some kernel code gets random bytes
+> from "stdrng" in the crypto_rng API instead of from get_random_bytes().
+> (This is apparently done for FIPS certification reasons.)  Then, that
+> pulls crypto/drbg.c to provide a "stdrng" implementation.
 > 
-> Fixes: 714ca27e9bf4 ("crypto: iaa - Optimize rebalance_wq_table()")
-> Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> ---
->  drivers/crypto/intel/iaa/iaa_crypto_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This series fixes the dependency bloat by making "stdrng" be used only
+> in FIPS mode, and get_random_bytes_wait() be used otherwise.
+> 
+> This series is targeting cryptodev/master.
+> 
+> Eric Biggers (11):
+>   crypto: rng - Add crypto_stdrng_get_bytes()
+>   crypto: dh - Use crypto_stdrng_get_bytes()
+>   crypto: ecc - Use crypto_stdrng_get_bytes()
+>   crypto: geniv - Use crypto_stdrng_get_bytes()
+>   crypto: hisilicon/hpre - Use crypto_stdrng_get_bytes()
+>   crypto: intel/keembay-ocs-ecc - Use crypto_stdrng_get_bytes()
+>   net: tipc: Use crypto_stdrng_get_bytes()
+>   crypto: rng - Unexport "default RNG" symbols
+>   crypto: rng - Make crypto_stdrng_get_bytes() use normal RNG in
+>     non-FIPS mode
+>   crypto: fips - Depend on CRYPTO_DRBG=y
+>   crypto: rng - Don't pull in DRBG when CRYPTO_FIPS=n
+> 
+>  crypto/Kconfig                                |  9 +------
+>  crypto/dh.c                                   |  8 +-----
+>  crypto/ecc.c                                  | 11 +++-----
+>  crypto/geniv.c                                |  8 +-----
+>  crypto/rng.c                                  | 23 ++++++++++++-----
+>  drivers/crypto/hisilicon/hpre/hpre_crypto.c   | 12 ++-------
+>  .../crypto/intel/keembay/keembay-ocs-ecc.c    | 17 +++----------
+>  include/crypto/rng.h                          | 25 ++++++++++++++++---
+>  net/tipc/crypto.c                             | 13 ++--------
+>  9 files changed, 53 insertions(+), 73 deletions(-)
+> 
+> 
+> base-commit: f9bbd547cfb98b1c5e535aab9b0671a2ff22453a
+> -- 
+> 2.53.0
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
