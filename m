@@ -1,68 +1,68 @@
-Return-Path: <linux-crypto+bounces-22772-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22771-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qABqM+rsz2lF1wYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22772-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 18:38:02 +0200
+	id sMaAOi7rz2lF1wYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22771-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 18:30:38 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C829396839
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 18:38:02 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CE97396691
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 18:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 629833093D14
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 16:31:14 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AFDBD3027131
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 16:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190D334FF59;
-	Fri,  3 Apr 2026 16:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3B53CCFA3;
+	Fri,  3 Apr 2026 16:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="N0L3FCMx"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="exD5dii/"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9B430EF6B;
-	Fri,  3 Apr 2026 16:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6056034EF1B;
+	Fri,  3 Apr 2026 16:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775233868; cv=none; b=HhOaB32+kaCIzi4fetE7LTUjXhLHPA8XGaEFPNCo7zJtJ3OUaGBCQAlIvjSknR7C/3Db5hnBnRxtIoPQzNHmsbZyz+yGi4djtjlIZ8sJoodbRxpu4qE6smRZEUfYVN/njVwxYrozYEUF+trySbumW+7sS2nQ96HH68SehgnwXWk=
+	t=1775233833; cv=none; b=gY/DTeJz47/Di7V+k/m9egwan3OXxwUrPLamJJ2VTKtQtpKpRp6N5APq/35EiTWSZJN+R5eo0OZVpGjFj2eabrhR0/wqXkKsdgbOaO0DcFBKD5Re/lcaNtWbXe5wWonLfeJQXZFVXsS0BBDAKeAm5S5Nzl+jcmJz7Z3CwPMcCeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775233868; c=relaxed/simple;
-	bh=vAu5xDULmUDVRflPCz8uMYqeqlNDlanNU9eapaLwCXM=;
+	s=arc-20240116; t=1775233833; c=relaxed/simple;
+	bh=hnXbTiCURWkWhcJukdVHDLVwJkYC/OiQhhQ6AqQbxkw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=hAYrVh+pTLmc4rUuQu+EMd4RQs54LBdNIMmble6cqmTmrl9QhXyLKEZEIX7vfHHEahXYgqTrmggo1riz8/sXPptQKuvNfsi27kEctYG5om1XBvy0Qwf5n3+GHhwwRDTPlPH6VTPmykM2RdruzjxEVluAAGDIMMU5F0cKMOGcCuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=N0L3FCMx; arc=none smtp.client-ip=68.232.154.123
+	 In-Reply-To:Content-Type; b=iEq12xQw8a7s5YGPVhIHIRqVepEjr+seE2DKQ6UcfpcchGl/gUwaRrwshuSKpkn+1lBO/5l+fUMQktxfj8QiOEeLNUvkjZkQ+xuLIWFp81g3YveKSCGbsHt6hnu8066G3zQ8LFL/M0CoW24ZUGSOgrTYV33FiYIHt8SafYJuPmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=exD5dii/; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1775233867; x=1806769867;
+  t=1775233832; x=1806769832;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=vAu5xDULmUDVRflPCz8uMYqeqlNDlanNU9eapaLwCXM=;
-  b=N0L3FCMxVLB/CNWWbbGn9UDurnroJXa7oNSmhy0ukMtGOUkb8jbVMGlu
-   YXsvBhZK3yrcrfdehRG7GIvC6jxmc+bLFuD5vCqmRkNf7Pa1irFLMZygI
-   wy4QC+2/LeX3rKfZdl+/CkhH6eAjO/sYMDHLBqWWrh7JIysspXM2U567/
-   A605+OFnaxGB5jsZZUGoc1szseZrYDXtxykfru/EuyajT6wpPD4DK/Rqw
-   bdUvJ9k8HS9ZKqKiSxXhZwD4ULVZFsSMnxTvhBoUPOS/3UBDdDENM9bnE
-   leNZ+19zLk5KeQM2NSBjcJVewp2IQqRoeDBQbHB2qqM75blHoZiWaUTAh
-   g==;
-X-CSE-ConnectionGUID: E/PdIr15RDaZGqnfevhQgw==
-X-CSE-MsgGUID: DgoYrBvXTna9L4fcG6YzCQ==
+  bh=hnXbTiCURWkWhcJukdVHDLVwJkYC/OiQhhQ6AqQbxkw=;
+  b=exD5dii/xUIPongdKWdnaM1VVn9zkmh6u4elrKJd2OBWZ3FODW4VkDS8
+   4uqU4Qxf1M2j7i4zuzgOI4kJRiYRFV1kboq8mBEF4NmkbyTpc4WNP8BPM
+   BSZUdsOm9pohRymvB8pJ2kaHmcJd1gJaC+USiHA0VlQokH/b+NyHM1Nqa
+   PUTtLqsJ4N74QzixQzDZrrFRiYyIwNSTexfBxYCObvJolhTs5VxCL3I9O
+   LKLwCb5FFOiZWktHcJT+9RlJ3iQ/WRGqMEuBlwHesgWARF3vgvR/s/mlT
+   5MdY3BOGylFrBrDcVXK3xJRUTttlIlszTLdSLxgtwQ1GTp/bdkVv4tgsW
+   Q==;
+X-CSE-ConnectionGUID: dUDUSQJ+T8aeZQq9X6+uCg==
+X-CSE-MsgGUID: iUmQc9GxQcS1JvNTZT1BOQ==
 X-IronPort-AV: E=Sophos;i="6.23,158,1770620400"; 
-   d="scan'208";a="222904266"
+   d="scan'208";a="222904307"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2026 09:30:04 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.87.151) by
- chn-vm-ex4.mchp-main.com (10.10.87.33) with Microsoft SMTP Server
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Apr 2026 09:30:31 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.35; Fri, 3 Apr 2026 09:29:32 -0700
+ 15.1.2507.58; Fri, 3 Apr 2026 09:30:13 -0700
 Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex04.mchp-main.com
  (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.58 via Frontend
- Transport; Fri, 3 Apr 2026 09:29:30 -0700
-Message-ID: <0fdf436d-af96-4798-8099-31469217ac86@microchip.com>
-Date: Fri, 3 Apr 2026 18:29:29 +0200
+ Transport; Fri, 3 Apr 2026 09:30:11 -0700
+Message-ID: <29b697cf-90ae-4239-898b-2026dbf368dc@microchip.com>
+Date: Fri, 3 Apr 2026 18:30:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -70,7 +70,8 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] crypto: atmel-ecc - add Thorsten Blum as maintainer
+Subject: Re: [PATCH 2/2] crypto: atmel-sha204a - add Thorsten Blum as
+ maintainer
 To: Thorsten Blum <thorsten.blum@linux.dev>, Herbert Xu
 	<herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea
@@ -78,23 +79,24 @@ To: Thorsten Blum <thorsten.blum@linux.dev>, Herbert Xu
 CC: <linux-crypto@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>
 References: <20260403112135.903162-5-thorsten.blum@linux.dev>
+ <20260403112135.903162-7-thorsten.blum@linux.dev>
 From: Nicolas Ferre <nicolas.ferre@microchip.com>
 Content-Language: en-US, fr
 Organization: microchip
-In-Reply-To: <20260403112135.903162-5-thorsten.blum@linux.dev>
+In-Reply-To: <20260403112135.903162-7-thorsten.blum@linux.dev>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[microchip.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[microchip.com:s=mchp];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22772-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22771-lists,linux-crypto=lfdr.de];
 	HAS_ORG_HEADER(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[microchip.com:+];
@@ -104,45 +106,49 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[nicolas.ferre@microchip.com,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,microchip.com:dkim,microchip.com:email,microchip.com:mid,linux.dev:email,tuxon.dev:email]
-X-Rspamd-Queue-Id: 2C829396839
+	DBL_BLOCKED_OPENRESOLVER(0.00)[microchip.com:dkim,microchip.com:email,microchip.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email]
+X-Rspamd-Queue-Id: 7CE97396691
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 On 03/04/2026 at 13:21, Thorsten Blum wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> Add Thorsten Blum as maintainer of the atmel-ecc driver.
+> Add a MAINTAINERS entry for the atmel-sha204a driver and Thorsten Blum
+> as maintainer.
 > 
 > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 
 Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
+Thanks Thorsten for taking care of those components.
+
+Best regards,
+   Nicolas
+
 > ---
->   MAINTAINERS | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
+>   MAINTAINERS | 6 ++++++
+>   1 file changed, 6 insertions(+)
 > 
 > diff --git a/MAINTAINERS b/MAINTAINERS
-> index c3fe46d7c4bc..c23110384b91 100644
+> index c23110384b91..7317d80592cf 100644
 > --- a/MAINTAINERS
 > +++ b/MAINTAINERS
-> @@ -17216,9 +17216,10 @@ F:     Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
->   F:     drivers/media/platform/microchip/microchip-csi2dc.c
+> @@ -17197,6 +17197,12 @@ S:     Supported
+>   F:     Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
+>   F:     drivers/spi/spi-at91-usart.c
 > 
->   MICROCHIP ECC DRIVER
+> +MICROCHIP ATSHA204A DRIVER
 > +M:     Thorsten Blum <thorsten.blum@linux.dev>
->   L:     linux-crypto@vger.kernel.org
-> -S:     Orphan
-> -F:     drivers/crypto/atmel-ecc.*
+> +L:     linux-crypto@vger.kernel.org
 > +S:     Maintained
-> +F:     drivers/crypto/atmel-ecc.c
-> 
->   MICROCHIP EIC DRIVER
+> +F:     drivers/crypto/atmel-sha204a.c
+> +
+>   MICROCHIP AUDIO ASOC DRIVERS
 >   M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   M:     Andrei Simion <andrei.simion@microchip.com>
 
 
