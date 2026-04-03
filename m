@@ -1,48 +1,50 @@
-Return-Path: <linux-crypto+bounces-22766-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22767-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MOa5IOajz2mZyQYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22766-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 13:26:30 +0200
+	id yM6dICejz2mZyQYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22767-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 13:23:19 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 633C0393A79
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 13:26:27 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 559EB393A44
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 13:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6A894304226A
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 11:22:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7FFD9300E5BE
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 11:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686D83B27C9;
-	Fri,  3 Apr 2026 11:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EBE93B47C2;
+	Fri,  3 Apr 2026 11:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iRD+eydy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z/Zf9lqt"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE3B3914E0
-	for <linux-crypto@vger.kernel.org>; Fri,  3 Apr 2026 11:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4A93859F8
+	for <linux-crypto@vger.kernel.org>; Fri,  3 Apr 2026 11:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775215366; cv=none; b=rcdI9B3EO/3xZIDhBwhO/55UJpmTR5VRBpyPqzkw1SEKwEWaHSnCnnYgpeRVKKdSiaBPE+vRqP5anFUCqzUK/TkZ9vqujDx5+Pi7MfiLUPibXUAuOEtGH1Vhev7iuY25mrZoCzqwTEmAYfqKcrEbgnp/ws71HzdtA/ODMk4321c=
+	t=1775215393; cv=none; b=UfP20lC4iPp/FQKScdW4neNdBgRJwp/aNyNPQwU+U+lc4mvJzC7oG2wM9jteX3M8S9UN7Mx/0OMqHb/ApuIE9sPfDExghwpm8h5GuUZjWzVm+FqZI4Ojn/C61DnO/8QMrB3qzB8Zgg/mYPsendCkrl1AXJOLNTp4bxbiYz2jq2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775215366; c=relaxed/simple;
-	bh=aRAzUf5gemmdK5F+5MKPd01K/sBf7Mnx4XljF9Dm4sc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nWliEyVvt3jk3jm+1o8Uic/T7ZqDxrBbI4uENtJWIz/A/nK7B5PfLk+TelkyRu2VNMrUUX4HKr0vVGHeramN2GyBvdyFhfAdEW4jfN6ToQhbUEYQlOk1I2xXVxQozal4orHF1zqQAQFOJYGoCHeu7UQhaZyFdPrSD/oDhiRbPt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iRD+eydy; arc=none smtp.client-ip=95.215.58.176
+	s=arc-20240116; t=1775215393; c=relaxed/simple;
+	bh=cSJ3Ql1kXpO/gB5LFObrJvyNWLgO2lBRtMbPwrgRPyU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DiNS/EhFIUwt69TdXwnGJS6t3oknDCyr8Qu14BWBzNQGVO7XqrA5/mJQKFIXLGUUixa4SSFb0KBlId69Ahhc3YqW97/rjlTBQj56l5XFOej09JfCOR2XxWZ0wI6EP4cLZoKEsSMhyilOXN+OO83oeHrb86964aQx+ya4iPFDzJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z/Zf9lqt; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1775215361;
+	t=1775215388;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+rPShtDZMIHf5R4iGqfjObtCM/Idw2gV5jz+EjoaDW4=;
-	b=iRD+eydya6bC8b8h8sM/FmclSJ4CGjAHcaxJG5lvk3w4C/WtotVjjVTVSRfC7//ldB4eFF
-	pF/xn9RmEIheT+obXZt2K9y2kLXuYdz0kHUp4VWxioPuyQ4I/lLyHTxpQmcPnmTZjnwYvE
-	D4YrLr7nomj/k5A5P5fsNBHwQsZKWzA=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s3JuxB+/G6y3udfdt5Fiil7AyJojWZfgqeS6B/HYrYI=;
+	b=Z/Zf9lqt4f9XlMRl66ZxF6HW9wVwId5eNYruIMuBtIRIktZ8pw6HSCNlf6K2xgIRvsyjFe
+	LH9BksYZFquQXmNzGdLykHauuq+ZVokFLhhFZxAU89/WEh4z3B/hdjYetequPQr7/Ol/2i
+	THWI0H9JPM1amPfRF9QsxNgV6WhjIeE=
 From: Thorsten Blum <thorsten.blum@linux.dev>
 To: Herbert Xu <herbert@gondor.apana.org.au>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -53,16 +55,18 @@ Cc: linux-crypto@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Thorsten Blum <thorsten.blum@linux.dev>
-Subject: [PATCH 1/2] crypto: atmel-ecc - add Thorsten Blum as maintainer
-Date: Fri,  3 Apr 2026 13:21:37 +0200
-Message-ID: <20260403112135.903162-5-thorsten.blum@linux.dev>
+Subject: [PATCH 2/2] crypto: atmel-sha204a - add Thorsten Blum as maintainer
+Date: Fri,  3 Apr 2026 13:21:39 +0200
+Message-ID: <20260403112135.903162-7-thorsten.blum@linux.dev>
+In-Reply-To: <20260403112135.903162-5-thorsten.blum@linux.dev>
+References: <20260403112135.903162-5-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=734; i=thorsten.blum@linux.dev; h=from:subject; bh=aRAzUf5gemmdK5F+5MKPd01K/sBf7Mnx4XljF9Dm4sc=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJnnF+3vPLyMWXdqy271Q7O7HjzU+LdVL87ZIzNqwUpfn gWWCm3hHaUsDGJcDLJiiiwPZv2Y4VtaU7nJJGInzBxWJpAhDFycAjCRN/KMDPcXhibFivC7lodG frDUa5wt1/HA1eGbqp5Z/F7VDTfeFzEyPPgUxeu74VGt7/eyg3PzJi2oeNV5Q6j49d8clx3aRmI djAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=765; i=thorsten.blum@linux.dev; h=from:subject; bh=cSJ3Ql1kXpO/gB5LFObrJvyNWLgO2lBRtMbPwrgRPyU=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJnnF+03VW9nzgu9+23C1HV+GisO2NpcaN279YNB/Y3d/ 2YXHDHq6ChlYRDjYpAVU2R5MOvHDN/SmspNJhE7YeawMoEMYeDiFICJzM9k+MV0dN/um0vj106R mfj0/zaLCzcmRF4PkN91a3p/yJ4d6x6wMfzharYVm/b7flHs4dqMh7u0T/cWXWX8eD/95uT6n5d X+xzkBgA=
 X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -71,7 +75,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -80,9 +84,9 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22766-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22767-lists,linux-crypto=lfdr.de];
 	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
@@ -92,33 +96,34 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[9];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tuxon.dev:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: 633C0393A79
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tuxon.dev:email,linux.dev:dkim,linux.dev:email,linux.dev:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,microchip.com:email]
+X-Rspamd-Queue-Id: 559EB393A44
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Add Thorsten Blum as maintainer of the atmel-ecc driver.
+Add a MAINTAINERS entry for the atmel-sha204a driver and Thorsten Blum
+as maintainer.
 
 Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
- MAINTAINERS | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index c3fe46d7c4bc..c23110384b91 100644
+index c23110384b91..7317d80592cf 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -17216,9 +17216,10 @@ F:	Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
- F:	drivers/media/platform/microchip/microchip-csi2dc.c
+@@ -17197,6 +17197,12 @@ S:	Supported
+ F:	Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
+ F:	drivers/spi/spi-at91-usart.c
  
- MICROCHIP ECC DRIVER
++MICROCHIP ATSHA204A DRIVER
 +M:	Thorsten Blum <thorsten.blum@linux.dev>
- L:	linux-crypto@vger.kernel.org
--S:	Orphan
--F:	drivers/crypto/atmel-ecc.*
++L:	linux-crypto@vger.kernel.org
 +S:	Maintained
-+F:	drivers/crypto/atmel-ecc.c
- 
- MICROCHIP EIC DRIVER
++F:	drivers/crypto/atmel-sha204a.c
++
+ MICROCHIP AUDIO ASOC DRIVERS
  M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
+ M:	Andrei Simion <andrei.simion@microchip.com>
 
