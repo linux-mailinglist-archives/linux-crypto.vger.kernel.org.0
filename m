@@ -1,62 +1,62 @@
-Return-Path: <linux-crypto+bounces-22743-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22745-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SJpzBNsRz2nXsgYAu9opvQ
-	(envelope-from <linux-crypto+bounces-22743-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:03:23 +0200
+	id uMKcFeIRz2nXsgYAu9opvQ
+	(envelope-from <linux-crypto+bounces-22745-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:03:30 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 716AB38FC9E
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:03:22 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBF5738FCAD
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Apr 2026 03:03:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 47375303502A
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 01:03:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 189E2301E9BD
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Apr 2026 01:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E6122E3F0;
-	Fri,  3 Apr 2026 01:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D4C270EDF;
+	Fri,  3 Apr 2026 01:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="QUjXaz6Q"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="VrRTTO4a"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795BE78F3A
-	for <linux-crypto@vger.kernel.org>; Fri,  3 Apr 2026 01:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706D978F3A
+	for <linux-crypto@vger.kernel.org>; Fri,  3 Apr 2026 01:03:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775178198; cv=none; b=ZbxnCGOEoRVlxZAqFXGoodOTVZXvZE/Egx1mFZGQjPFq0Pwt80RakiPQyR/HO9V3N8jaXpPzo0r997qHNAjhoo58eZX7hnlJBm5GzSJf/q7ZK0RAlU29AvSe8RXwfqkCj0RBWOO87a6CZ3n8V/esl4mlOQrQhrZNqBEWr1vNwcA=
+	t=1775178204; cv=none; b=LjmLZGVfQ3Ogorq5xbtKaCE28lvos+RvIA6jixv1PFe2VmgXz/duL1Y7IGWT2EH6TQ6MMFTGWKCr9qk/x6X1WTZ55kkzibsV1HYyg7i7pqQ3kQkeK2el/H0pz88NV2Gj+/OOfVhkmBAFgRWJerQjZUnOManJ3OYkLQYJ9BZxeaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775178198; c=relaxed/simple;
-	bh=/lMlPCpLGMO7b9kQmAijgcydxInwa5GA1SxvKRgouww=;
+	s=arc-20240116; t=1775178204; c=relaxed/simple;
+	bh=50+udKKbWTX1x4K3rA+7PlgGvctdvPu/wrAYeOQjCqs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JItB5SXKGg4TpRX3DuxFGWb5m4eK0T1Ew4txEgHhDyIBJ3LtjT6GAXd8QaZVqfwLOTkyotmJXQVOjJbkkLbz77BwFOffhjMwC0bp5zzMiIyaWYP0MK529+BLPbYruRQUXMb+dCcaJ67YeAqCWR3Mc760CF1rPAB8zgURLJvuDKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=QUjXaz6Q; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=jc3s8ezFwMWo/qWJus21GQfkTtf7dU0hJfUWpspM9lFiEdt5qOY8MbES90vDGnncs4MtlammsuL21FBY36FdUCf6xxVSKDbYPc6IYLF8KClRCzMx4sqlOla6Hir9wXLgShD+dibtjdA/7YMrd/Fqc1HpaAoX+/oAcKOco/4Ls+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=VrRTTO4a; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=alDfLKhE6HZXHRAf5YBR+J0hFP3fEMuTuPvk4Z8uZBc=; 
-	b=QUjXaz6QsPT7ZpM3x7Jq3UjLPrHJ12TU8U+fDTZTUCoCK9MzrAVDSPQuDW+SOIXwIXJ3SqwBdAq
-	y04O36RkFwcjlduohULcHnF0ck4hVTXHkrgXcT85BOGP1yrOttdd6/8y7uMUFzkuDsVoP4DiAS7jN
-	KywNl/Vx/qyVVqDA8H2+1L3Y4M9ktKG3lECoVRHAHVdnV+hWVfdRPCFdeBw3OFmE2O26pxMRgg3DC
-	9QQsNaa0Jm0fU8kNqC1SSqECufE0EGJ0iJHDJUyxUmr5d06Ku5mr6xXUDhALBOTMMvv6Qs6K7QXhC
-	gQDleG5bH0aCOWIYX7qLqoi5pHpTguicWYyA==;
+	from:content-type:reply-to; bh=J1wvmRp6NMrNvCMkg0wAkSVk8XC9OfRjASJGcw09Xg0=; 
+	b=VrRTTO4aJlECb9TsM+VOwdm1lRUZ+AsENMN1OiPWpoJs5KIuUwWjtWbCNXYaufKNcFWUbORT1ju
+	wYZFanPZUNF5Pfo7lrmwOpIWNC90HMl7dzSh0gte887acO65Oqcq6wmiFuovAEZSmcTHZQ6ID15KO
+	NUrxAjO/qNO01TkkthX1MWCbUjzDU3Dq9ssBK1dc9gJFICxTf7no6N7qmMBChVwnAROawoj2hW+T/
+	9B1F/n4uzN+aOJM9n3MwL5U8/XDBePK8KTwLRWgecSdZK1rhSlu9lxnHdNlic7SXuDDBd5JcYi09p
+	60fVj0px9vV5SQRx86FTQDgisgI2DNoB5RqA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1w8SWq-003Qwp-30;
-	Fri, 03 Apr 2026 09:03:12 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 Apr 2026 09:03:11 +0800
-Date: Fri, 3 Apr 2026 09:03:11 +0800
+	id 1w8SWy-003Qwx-0o;
+	Fri, 03 Apr 2026 09:03:20 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 Apr 2026 09:03:19 +0800
+Date: Fri, 3 Apr 2026 09:03:19 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Ahsan Atta <ahsan.atta@intel.com>
 Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
 	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: Re: [PATCH] crypto: qat - disable 4xxx AE cluster when lead engine
+Subject: Re: [PATCH] crypto: qat - disable 420xx AE cluster when lead engine
  is fused off
-Message-ID: <ac8Rz666yGXpU9N2@gondor.apana.org.au>
-References: <20260324111112.227158-1-ahsan.atta@intel.com>
+Message-ID: <ac8R1yLXy3M9UqC3@gondor.apana.org.au>
+References: <20260324111234.227329-1-ahsan.atta@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -65,12 +65,12 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260324111112.227158-1-ahsan.atta@intel.com>
+In-Reply-To: <20260324111234.227329-1-ahsan.atta@intel.com>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -78,11 +78,11 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-22743-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22745-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
@@ -91,12 +91,12 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:email]
-X-Rspamd-Queue-Id: 716AB38FC9E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,intel.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EBF5738FCAD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 24, 2026 at 11:11:12AM +0000, Ahsan Atta wrote:
+On Tue, Mar 24, 2026 at 11:12:34AM +0000, Ahsan Atta wrote:
 > The get_ae_mask() function only disables individual engines based on
 > the fuse register, but engines are organized in clusters of 4. If the
 > lead engine of a cluster is fused off, the entire cluster must be
@@ -108,10 +108,10 @@ On Tue, Mar 24, 2026 at 11:11:12AM +0000, Ahsan Atta wrote:
 > 
 > Signed-off-by: Ahsan Atta <ahsan.atta@intel.com>
 > Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> Fixes: 8c8268166e834 ("crypto: qat - add qat_4xxx driver")
+> Fixes: fcf60f4bcf54 ("crypto: qat - add support for 420xx devices")
 > ---
->  .../crypto/intel/qat/qat_4xxx/adf_4xxx_hw_data.c   | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
+>  .../intel/qat/qat_420xx/adf_420xx_hw_data.c   | 20 +++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
 
 Patch applied.  Thanks.
 -- 
