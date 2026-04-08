@@ -1,123 +1,149 @@
-Return-Path: <linux-crypto+bounces-22854-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22856-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uCdgCzIO1mmfAwgAu9opvQ
-	(envelope-from <linux-crypto+bounces-22854-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:13:38 +0200
+	id qPA8NEIh1mklBQgAu9opvQ
+	(envelope-from <linux-crypto+bounces-22856-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 11:34:58 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89563B8D2B
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:13:37 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88D3E3B9EDC
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 11:34:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1F0EC3018ACB
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2026 08:10:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CC5913015A6E
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2026 09:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEE539B978;
-	Wed,  8 Apr 2026 08:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC23A37B02D;
+	Wed,  8 Apr 2026 09:34:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="nZWzoBmZ"
+	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="ymtEqxe6"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from mx1.secunet.com (mx1.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C7637F8AE;
-	Wed,  8 Apr 2026 08:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0E4224B04;
+	Wed,  8 Apr 2026 09:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.96.220.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775635808; cv=none; b=OFTGPcEWwY8YKtSxnbtsbruA0P3biGxbrCi9b2TiXzQFlD1vsaji2by+HsczFUzXQr7/2uG7EFkRFHxGFNFp0XOqlo565XCI0wL0Ikl5dhGVu9kwqeW12mOXRDmWzjdmK6rmvB/iP3espiSY2sRm/93W+bg9drnvJkt2ku5wc0c=
+	t=1775640889; cv=none; b=aaGLJzr91Y9N6AtAGwHCD1fZDIdWiiW87ge6+qAkM9a4805vx7/aPlFSHiJ1opC7K2aV2eAhTHFH0xvBQhWbq12MaBPbYe6YxBAaKE0eagh+FxcvpRp5f+r10JPdyZUP9b0yQ3W5vEGzghgmMwgqUBpiiVRxbIn5lLG2fIFevO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775635808; c=relaxed/simple;
-	bh=dO4bHNRPUKlKtwpt0obegHQbTntRcNbACjSuqqYdhnA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qKoaqqNtKWh9Ftb1zD8hqGLyvDJqlpIulcqMIh57xbPJe3Qz5KdoOPXxCvcfWRpJJE/onjEfPYNCjdTZXXqmW1SWPdaNDkWr1ezDJNHTzGP1U47rTPLYMzFUpGMrhLBK/bMp04ZY+4o6qM0Cg0xhifL38s33tvOhxTVQyIiYi2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=nZWzoBmZ; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=QEIvcTtiGRvK23zLPZf15u4o7zaJgmjEMQaoZVRypx8=; 
-	b=nZWzoBmZaHGX/HIl2o/RktOGugr36Y+JXcBY9zHFLA4MoJRynxUHzyv/UKKmprJh+E0hJ0SCTO0
-	H9l5XjqSmP1h7UYjWYI4ugvQ3uefVL+/o2Z/RjAprpVEOUpcrw7o8a/bH4/mxp/GhkCc6XjG+iLZ2
-	hVlg6WFYkS4oMNzFkX9Ug0Xd4szT7VRPEqJe74b00vQg9z8WAJBJLhcjHQLZEs94roIFTzHPhGV/P
-	c/OprzuqyP5v4p1V8X2RsQZWwgyaSYaFCE8qd/Fnl26CdHFq1NykxG/10Dk+dfGQgvFKHyfmvU1yd
-	jRnmAO01F+owIDfD5CUDj9+kvxPIef8jbHkw==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wANZZ-004dJ0-10;
-	Wed, 08 Apr 2026 16:09:57 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 08 Apr 2026 16:09:56 +0800
-Date: Wed, 8 Apr 2026 16:09:56 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
+	s=arc-20240116; t=1775640889; c=relaxed/simple;
+	bh=R/b1bc5OVvwE31LlF+wFK+5d+Ru91KTenrJH4/xCRr4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jgaWfyFmY+wmBiYr8Rc8e8nhg2TO7Cl1MILyMTmRjovHRtpL760NuGuIUV4Z1Yt1gePOBrtM0SBysUKcMkOlA1ulUdFRxendN6mNdFJkFu1ghyds5Xteib+JBmJKSvlFHlw6jq1SNqgKmdyQbWqyohEsBOQ+WkIzl0PmInHt9do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=ymtEqxe6; arc=none smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=secunet.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=secunet.com
+Received: from localhost (localhost [127.0.0.1])
+	by mx1.secunet.com (Postfix) with ESMTP id F2BF020728;
+	Wed,  8 Apr 2026 11:34:46 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from mx1.secunet.com ([127.0.0.1])
+ by localhost (mx1.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id AbnceWvLlMfr; Wed,  8 Apr 2026 11:34:46 +0200 (CEST)
+Received: from EXCH-01.secunet.de (rl1.secunet.de [10.32.0.231])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.secunet.com (Postfix) with ESMTPS id 21BA2201D5;
+	Wed,  8 Apr 2026 11:34:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.secunet.com 21BA2201D5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
+	s=202301; t=1775640886;
+	bh=zS79HN+MwePvO/pYvOblADFlSrM4jAhkaN0vzpnyOS8=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+	b=ymtEqxe69DCmzevK5Ljizo2/qDSyJgxcb9M4EGhl2jM5po49jngpcItxeADk2mAd1
+	 GPdwysYdHLIeXsgjl8OVk8Rlf7zrZlmHwapuUKWRoEeoe2mJeTe0k7u8YnFG+PlpEn
+	 PrbZslM/YrlOghjS1u3Om/dtKhFA03FUG4pM8vnb7IO7foyQkZH1hC8AWH+hLdqYW+
+	 nkkKGCuoa2dVWzUMn7+TohzR+xZxFpMwRYHxn22bq7SK6Zv2yBeQAIYwWKS/7Noo+j
+	 Q5OTu6x0TUsGOgoei9FG2DlP5UM9RwLpsqg3RPcBO/JkpPShGtV/suoh+qE4ku+mcx
+	 5Ojrkn30wNGEg==
+Received: from secunet.com (10.182.7.193) by EXCH-01.secunet.de (10.32.0.171)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 8 Apr
+ 2026 11:34:45 +0200
+Received: (nullmailer pid 95933 invoked by uid 1000);
+	Wed, 08 Apr 2026 09:34:44 -0000
+Date: Wed, 8 Apr 2026 11:34:44 +0200
+From: Steffen Klassert <steffen.klassert@secunet.com>
 To: Eric Biggers <ebiggers@kernel.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>,
-	linux-wireless@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH wireless-next v2 6/6] crypto: Remove michael_mic from
- crypto_shash API
-Message-ID: <adYNVB3n358xm_s8@gondor.apana.org.au>
-References: <20260408030651.80336-1-ebiggers@kernel.org>
- <20260408030651.80336-7-ebiggers@kernel.org>
+CC: <netdev@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, "David
+ S. Miller" <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH ipsec-next] xfrm: Drop support for HMAC-RIPEMD-160
+Message-ID: <adYhND1MsLgR1ZLg@secunet.com>
+References: <20260405011513.64909-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20260408030651.80336-7-ebiggers@kernel.org>
+In-Reply-To: <20260405011513.64909-1-ebiggers@kernel.org>
+X-ClientProxiedBy: EXCH-01.secunet.de (10.32.0.171) To EXCH-01.secunet.de
+ (10.32.0.171)
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	DMARC_POLICY_ALLOW(-0.50)[secunet.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[secunet.com:s=202301];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22854-lists,linux-crypto=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,secunet.com:dkim,secunet.com:mid];
+	TAGGED_FROM(0.00)[bounces-22856-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	TO_DN_SOME(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[secunet.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[steffen.klassert@secunet.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,apana.org.au:email,apana.org.au:url,linux-m68k.org:email]
-X-Rspamd-Queue-Id: C89563B8D2B
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 88D3E3B9EDC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 07, 2026 at 08:06:51PM -0700, Eric Biggers wrote:
-> Remove the "michael_mic" crypto_shash algorithm, since it's no longer
-> used.  Its only users were wireless drivers, which have now been
-> converted to use the michael_mic() function instead.
+On Sat, Apr 04, 2026 at 06:15:13PM -0700, Eric Biggers wrote:
+> Drop support for HMAC-RIPEMD-160 from IPsec to reduce the UAPI surface
+> and simplify future maintenance.  It's almost certainly unused.
 > 
-> It makes sense that no other users ever appeared: Michael MIC is an
-> insecure algorithm that is specific to WPA TKIP, which itself was an
-> interim security solution to replace the broken WEP standard.
+> RIPEMD-160 received some attention in the early 2000s when SHA-* weren't
+> quite as well established.  But it never received much adoption outside
+> of certain niches such as Bitcoin.
 > 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> It's actually unclear that Linux + IPsec + HMAC-RIPEMD-160 has *ever*
+> been used, even historically.  When support for it was added in 2003, it
+> was done so in a "cleanup" commit without any justification [1].  It
+> didn't actually work until someone happened to fix it 5 years later [2].
+> That person didn't use or test it either [3].  Finally, also note that
+> "hmac(rmd160)" is by far the slowest of the algorithms in aalg_list[].
+> 
+> Of course, today IPsec is usually used with an AEAD, such as AES-GCM.
+> But even for IPsec users still using a dedicated auth algorithm, they
+> almost certainly aren't using, and shouldn't use, HMAC-RIPEMD-160.
+> 
+> Thus, let's just drop support for it.  Note: no kconfig update is
+> needed, since CRYPTO_RMD160 wasn't actually being selected anyway.
+> 
+> References:
+>   [1] linux-history commit d462985fc1941a47
+>       ("[IPSEC]: Clean up key manager algorithm handling.")
+>   [2] linux commit a13366c632132bb9
+>       ("xfrm: xfrm_algo: correct usage of RIPEMD-160")
+>   [3] https://lore.kernel.org/all/1212340578-15574-1-git-send-email-rueegsegger@swiss-it.ch
+> 
 > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-Please feel free to take this via the wireless tree.
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Applied, thanks a lot Eric!
 
