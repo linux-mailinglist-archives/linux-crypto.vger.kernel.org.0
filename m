@@ -1,178 +1,138 @@
-Return-Path: <linux-crypto+bounces-22855-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22852-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sHBtCLoP1mmxAwgAu9opvQ
-	(envelope-from <linux-crypto+bounces-22855-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:20:10 +0200
+	id QF6TBfQM1mmfAwgAu9opvQ
+	(envelope-from <linux-crypto+bounces-22852-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:08:20 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A40D3B8E75
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:20:09 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E4763B8BE7
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:08:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5A2443011BDF
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2026 08:13:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A4BF03022603
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2026 08:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E5D38E5CE;
-	Wed,  8 Apr 2026 08:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0446B39C624;
+	Wed,  8 Apr 2026 08:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="m0jFcrU1"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout05.his.huawei.com (canpmsgout05.his.huawei.com [113.46.200.220])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B9E36D50D
-	for <linux-crypto@vger.kernel.org>; Wed,  8 Apr 2026 08:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30CF397698;
+	Wed,  8 Apr 2026 08:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775636015; cv=none; b=G3YpQe6d3LfSgYCuEJH09qnGGvxFSs1UkHPew+ulQNb6S2heF4H5f+mJu+T52AjHFv7UUJqTclWztAm2onvqAlnYAm/Ebr4iUbAupqhZl66iaIgdaEiSkwc2ipoV+yZTXsMZDsANQW+DpHeSvHD4jrtDGxK9pAaGHS1EQfu7LJQ=
+	t=1775635668; cv=none; b=q8Ypkf3q3GkJVGcTX496NUtCECVvTVgasnLKB6kBS5XIIMKWyP5TRWCknsmlpP9KxLGAiopMqv+XWeXHpgHJ5U2z/4H8iZs3Nlm59vkJOPnkOOKXzAK6XyXTEggKhQBiH+mqh3gW04jlAczUz1JPwIEzcvMHhIJnKTOCDFk89nA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775636015; c=relaxed/simple;
-	bh=OO8/V/ieRVIAY7OerP7B4Q+EVWmrnJ0uFfqR67sUp4A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fbzMe8Tnu9KfPNt8U6tN6H+xgWuauUhYsfZUUbSRrWsQLHWciUKxlYVF0hzFuq7BNNrf0G4a5dChDDFMghrfAJ9uQdvos4aT1ir3tSvEhiVL+uOMp3zh/D1GRU6Y/C4nrzxcIUDl4fle5xnCVi42mXt5RY7kA/SgUSpZhi0Cmi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-50d87c138e1so36113371cf.1
-        for <linux-crypto@vger.kernel.org>; Wed, 08 Apr 2026 01:13:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775636012; x=1776240812;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9UVrHD1kGj3aaIesoTisHRRJzYnLIrQ82+sB6XN35Xo=;
-        b=aNhXi9gOYfS0b4VZOSCft+VKjsBWeisk8F9yfDozhu3OsDyW0BEJ0IHaLfvM9glF0T
-         IoW35PGPUeyNraagvoroEvdQKE/5kgsHvcqf5xxrCoAx3/xTj0aLXmFwYIxA+oev6+U4
-         oY7QJ62Qxz/eC2rdzEdYKhzNW2YusuY0CbG0RN+4lxfoUd6EV8PDjZOFkej83M2VTUJL
-         gsBFNMFSl9GAeuM6czrPrmZutRRFzM9irZH1dagRrOZLFViWGm0ZB7EYtpiFI0iMKUlN
-         raVhrN6pyNRQf4a3LGyYz3oVubTd0SDarwvWQSpw0gG1QGh1EtOs/m+X2CZ3SaiCDZtr
-         nHag==
-X-Forwarded-Encrypted: i=1; AJvYcCVeI+Geb2Hma/bYgCDMNWTI4JvRuVWZoOAuY/v46S8Z9GNn5iYmP6kos01GYScjGbISQgNMS8ODo92kSxw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxu0WN4Zev0v7LnP14+ShyF/muC/8rChM3Ims75yZdLKXntkBeC
-	lC+ihNKFxCEjnDpRo7bDU1FASf8315CoCLt79Bb1F99PoivH7TbduXT7GWC1Vilj
-X-Gm-Gg: AeBDievyars6zSmuJJO37GWGLC1x+kVa/ChZq1ZcuDBTMnfg9+ougnpm6mke1I7yjS2
-	uGTYAAcvD2QAAomTwbuH6wy9Ri+OaTDZH6EUrLCpQFglX8lV5tM2huq2VPwOl4f4rZjGN1TjNUn
-	B6Tl/plKZsIKV/P4l5nypgmglowR+KIdinY1hKGHG1uM5HxipojB/j/CTCNbpAGY/5UHZxSci2j
-	FsD5yF3T7g/NhMZO5FPIEjwTRwnMhjrn9EJXfeOHstsR2vY+goPoxI/tpwKiEn7M58gZaCbWws/
-	d3r3wNs+ntOV+cmtJGylV7HveuZVKlqir3WaB3748idKcg6Tr6JLPObVr3cmNt16ZXbw8MLBnys
-	c+XP9cgi4p0YRfCvhXXlxASQduir734Bp/gknO/4ayvVNgQswrZHxUUxAZ4rZeqAr8/yqInRLv4
-	agcs1yK0wYf4VhIBkfC7rIHUuhcOaVJ5g6yx8EdRxuNbXPYCoD0jo/G0UnhFzzibaq
-X-Received: by 2002:a05:622a:2511:b0:50d:8960:d68a with SMTP id d75a77b69052e-50d8960deefmr183390481cf.43.1775636011970;
-        Wed, 08 Apr 2026 01:13:31 -0700 (PDT)
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com. [209.85.160.174])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50dac753208sm23028821cf.20.2026.04.08.01.13.31
-        for <linux-crypto@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2026 01:13:31 -0700 (PDT)
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-50d87c138e1so36113231cf.1
-        for <linux-crypto@vger.kernel.org>; Wed, 08 Apr 2026 01:13:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVsRpXkJnpUY5+1cKeo/bavx4WvzH3RcfVSjDolYJ3ZmMmKgi/S5NebXD76DbNSXsAtxW5QQSK1ZZNTzTo=@vger.kernel.org
-X-Received: by 2002:a05:6102:5486:b0:602:ac40:969d with SMTP id
- ada2fe7eead31-605a5125dbemr8047885137.30.1775635529642; Wed, 08 Apr 2026
- 01:05:29 -0700 (PDT)
+	s=arc-20240116; t=1775635668; c=relaxed/simple;
+	bh=pQ/poFH3FHgZsLUSUCy8sfb2prMRFfFY/Beh5sSQzRw=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=AvkZLAoTb9PG34AvFlIjoskkJUyH/BxZXZXYGpJYFJ4CdlHH7z4o7DTO0hUxbPpAguJp9Qch6WgBxIahQ2sdYXdZDCjCmJfqr5vitssxQn2J4437SlQwAsoWni3EiPwji2Xor49PyiQLNHC85bCr1nq7P5tpWIcXPYXM/jW6IEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=m0jFcrU1; arc=none smtp.client-ip=113.46.200.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=yDnwTnpB7RqrkOrBP4zO/1DeewnHWTgIU1dzZOBqu3k=;
+	b=m0jFcrU1ZU4cDCDbo8mJBzL9EVgTzn1DukboBNJFwLT/E+D90zssGx5sIUITY8961SUwKCpPB
+	FlKWkbV6mw9TNLITuduZmSddFCi++7devkWHGArLZKVgzylNxlQ7+WRj2IVMRp4JnZwMxArNImi
+	0buVFAc7yOJmxK5F3dbfHpw=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4frFrJ14cYz12LCq;
+	Wed,  8 Apr 2026 16:01:20 +0800 (CST)
+Received: from dggpemf500015.china.huawei.com (unknown [7.185.36.143])
+	by mail.maildlp.com (Postfix) with ESMTPS id 31ABC40576;
+	Wed,  8 Apr 2026 16:07:42 +0800 (CST)
+Received: from [10.67.121.110] (10.67.121.110) by
+ dggpemf500015.china.huawei.com (7.185.36.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 8 Apr 2026 16:07:41 +0800
+Subject: Re: [PATCH 0/5] crypto: hisilicon - series of cleanups and format
+ fixes for hisilicon driver
+To: Chenghai Huang <huangchenghai2@huawei.com>, <herbert@gondor.apana.org.au>,
+	<davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<fanghao11@huawei.com>, <qianweili@huawei.com>, <wangzhou1@hisilicon.com>,
+	<yinzhushuai@huawei.com>
+References: <20260330062531.2976138-1-huangchenghai2@huawei.com>
+From: liulongfang <liulongfang@huawei.com>
+Message-ID: <7b23bd5e-9a3c-f7cc-7d23-11efb75b08e7@huawei.com>
+Date: Wed, 8 Apr 2026 16:07:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260327-schneider-v7-0-rc1-crypto-v1-0-5e6ff7853994@bootlin.com> <20260327-schneider-v7-0-rc1-crypto-v1-12-5e6ff7853994@bootlin.com>
-In-Reply-To: <20260327-schneider-v7-0-rc1-crypto-v1-12-5e6ff7853994@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 8 Apr 2026 10:05:18 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWr5OT0iAbZMgDAizO9KnhmyUN3hsqFnp+JYRao4aKu_A@mail.gmail.com>
-X-Gm-Features: AQROBzB7FKSpqL9vAEkvQ3NeO0nTGrKiA5rUbk_QvEvIe1vD5_FZ5lwMa_3wMnk
-Message-ID: <CAMuHMdWr5OT0iAbZMgDAizO9KnhmyUN3hsqFnp+JYRao4aKu_A@mail.gmail.com>
-Subject: Re: [PATCH 12/16] irqchip/eip201-aic: Add support for Safexcel
- EIP-201 AIC
-To: "Miquel Raynal (Schneider Electric)" <miquel.raynal@bootlin.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thomas Gleixner <tglx@kernel.org>, Olivia Mackall <olivia@selenic.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Jayesh Choudhary <j-choudhary@ti.com>, 
-	"David S. Miller" <davem@davemloft.net>, Christian Marangi <ansuelsmth@gmail.com>, 
-	Antoine Tenart <atenart@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Pascal EBERHARD <pascal.eberhard@se.com>, 
-	Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [0.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+In-Reply-To: <20260330062531.2976138-1-huangchenghai2@huawei.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemf500015.china.huawei.com (7.185.36.143)
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22855-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[linux-m68k.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[baylibre.com,kernel.org,selenic.com,gondor.apana.org.au,ti.com,davemloft.net,gmail.com,bootlin.com,se.com,sang-engineering.com,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22852-lists,linux-crypto=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[geert@linux-m68k.org,linux-crypto@vger.kernel.org];
-	NEURAL_SPAM(0.00)[0.102];
-	R_DKIM_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt,renesas];
+	FROM_NEQ_ENVFROM(0.00)[liulongfang@huawei.com,linux-crypto@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux-m68k.org:email,bootlin.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 7A40D3B8E75
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RBL_SEM_IPV6_FAIL(0.00)[2600:3c0a:e001:db::12fc:5321:query timed out];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:dkim,huawei.com:email,huawei.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9E4763B8BE7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Miquel,
+On 2026/3/30 14:25, Chenghai Huang wrote:
+> 1.Fixed a format string type mismatch issue identified through static
+> analysis and code review, which could have caused display errors.
+> 2.A const qualifier addition to improve type safety.
+> 3.Removing unnecessary else statements after a return.
+> 4.Removal of redundant variable initializations that are overwritten
+> before their first use.
+> 5.A cleanup of unused and non-public APIs to shrink the public interface
+> and remove dead code.
+> 
+> Chenghai Huang (4):
+>   crypto: hisilicon/qm - add const qualifier to info_name in struct
+>     qm_cmd_dump_item
+>   crypto: hisilicon/qm - remove else after return
+>   crypto: hisilicon/qm - drop redundant variable initialization
+>   crypto: hisilicon - remove unused and non-public APIs for qm and sec
+> 
+> Zhushuai Yin (1):
+>   crypto: hisilicon - fix the format string type error
+> 
+>  drivers/crypto/hisilicon/debugfs.c       | 22 +++++++++++-----------
+>  drivers/crypto/hisilicon/qm.c            | 16 ++++++++--------
+>  drivers/crypto/hisilicon/sec2/sec.h      |  2 --
+>  drivers/crypto/hisilicon/sec2/sec_main.c |  2 +-
+>  include/linux/hisi_acc_qm.h              |  2 --
+>  5 files changed, 20 insertions(+), 24 deletions(-)
+> 
+Reviewed-by: Longfang Liu <liulongfang@huawei.com>
 
-On Fri, 27 Mar 2026 at 21:11, Miquel Raynal (Schneider Electric)
-<miquel.raynal@bootlin.com> wrote:
-> Describe the EIP-201 Advanced Interrupt Controller from Inside Secure,
-> typically found in a bigger block named EIP-150. This controller is
-> rather simple and is driven using the generic irqchip model. Its
-> own interrupt domain is limited to just a few interrupts connected to
-> other inner blocks, such as a Random Number Generator and a Public Key
-> Accelerator.
->
-> The one I used receives only rising edge interrupts and uses its own
-> logic to track them. It is theoretically possible to wire devices with
-> level interrupts, but not in the context of the EIP-150.
->
-> Signed-off-by: Miquel Raynal (Schneider Electric) <miquel.raynal@bootlin.com>
-
-Thanks for your patch!
-
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -826,4 +826,12 @@ config SUNPLUS_SP7021_INTC
->           chained controller, routing all interrupt source in P-Chip to
->           the primary controller on C-Chip.
->
-> +config SAFEXCEL_EIP201_AIC
-> +        tristate "Safexcel EIP201 AIC"
-
-Is there any platform dependency that could be added here?
-
-> +       select IRQ_DOMAIN
-> +       help
-> +         Support for the Advanced Interrupt Controller (AIC) typically
-> +         inside Safexcel EIP150 IPs, gathering Public Key Accelerator
-> +         and True Random Number Generator interrupts.
-> +
->  endmenu
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks.
 
