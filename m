@@ -1,120 +1,178 @@
-Return-Path: <linux-crypto+bounces-22851-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22855-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wD/DCk8F1mkbAwgAu9opvQ
-	(envelope-from <linux-crypto+bounces-22851-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 09:35:43 +0200
+	id sHBtCLoP1mmxAwgAu9opvQ
+	(envelope-from <linux-crypto+bounces-22855-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:20:10 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4858B3B85D6
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 09:35:41 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A40D3B8E75
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Apr 2026 10:20:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0E340307E600
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2026 07:29:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5A2443011BDF
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Apr 2026 08:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEB93806A3;
-	Wed,  8 Apr 2026 07:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="PvP9sar0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E5D38E5CE;
+	Wed,  8 Apr 2026 08:13:35 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE8C33987;
-	Wed,  8 Apr 2026 07:28:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B9E36D50D
+	for <linux-crypto@vger.kernel.org>; Wed,  8 Apr 2026 08:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775633294; cv=none; b=Tlw7G0uzlbsMQyJXZAsON3B4BqR9aTsnjwQQFZ0ld/B6OkAxzScMTFrtgo7GK0vMpzfYxnH19f3AtF2jo2q5uejhGxEziXjzo5SjkBGECkX1DRECsgw8Z9vBfp/oqL2jKTEEIHe4ZfcY//HSoSoJrLT8TGd+YZamLw/EqsXTTmA=
+	t=1775636015; cv=none; b=G3YpQe6d3LfSgYCuEJH09qnGGvxFSs1UkHPew+ulQNb6S2heF4H5f+mJu+T52AjHFv7UUJqTclWztAm2onvqAlnYAm/Ebr4iUbAupqhZl66iaIgdaEiSkwc2ipoV+yZTXsMZDsANQW+DpHeSvHD4jrtDGxK9pAaGHS1EQfu7LJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775633294; c=relaxed/simple;
-	bh=lO6Q+OOGXZ3NnrvZnKZzoHiyVE4EbXb7A+U70s9zza8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=e4IYamL8t2+BBbqnNil4mZZpUZ9fcdqyERFQz/wDcMKAalq7112HW/fvHbBI9DuNXEwb0YEUhvFzKo2+U9rVT19Rly/FYaeUVtuT8HOVBrbY9e7eMeU49r6igt1nBet37ij0ln3vSAsMElzq/EtLzE7vPiC8dEyQzdECDalQ6to=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=PvP9sar0; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=OTO3GfwSPFxFuPEaKyiSyGBlJanpijRNbTF2J9u7oUk=;
-	t=1775633293; x=1776842893; b=PvP9sar0C0qUC7PTxreddPJviD8p/NyTRcE9Lzrlj0hEUOv
-	MVVXvQhH8NJXufbGeWXkXgEiR0bpY7X0YsDHm+IHK+VFE3EdyIzvpmeN+6gWOMlxWIvysV5Z/le8u
-	OC/zM4HAIUKBoaAvqGL15imVgaqsLE5Vde7ncoTloUwNRj+VHD9brJyHNpPW94kHjGsJSlEK+8VL5
-	zFLhdzRKQOQiEtNOchz4GUEMeC35cIhV1p+P2cj8yjJyQOm2usdB+uBYOt9lur/VGsjurVT6ynt7o
-	J2tJwanhb4tlCPmPaXXXZSurzk/1fL519rK5s73xuHCCY/6GviYt8l5ezBohdArw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1wANKc-0000000E6Pw-0UJK;
-	Wed, 08 Apr 2026 09:28:10 +0200
-Message-ID: <12181d5540b99b4dac83fc5b602f2256f6bb62c5.camel@sipsolutions.net>
-Subject: Re: [PATCH wireless-next v2 0/6] Consolidate Michael MIC code into
- cfg80211
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-wireless@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
-Date: Wed, 08 Apr 2026 09:28:09 +0200
-In-Reply-To: <20260408071323.GA157920@sol>
-References: <20260408030651.80336-1-ebiggers@kernel.org>
-	 <56798292be29f3e76e88c837d41eff0cb9f8b36a.camel@sipsolutions.net>
-	 <20260408071323.GA157920@sol>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	s=arc-20240116; t=1775636015; c=relaxed/simple;
+	bh=OO8/V/ieRVIAY7OerP7B4Q+EVWmrnJ0uFfqR67sUp4A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fbzMe8Tnu9KfPNt8U6tN6H+xgWuauUhYsfZUUbSRrWsQLHWciUKxlYVF0hzFuq7BNNrf0G4a5dChDDFMghrfAJ9uQdvos4aT1ir3tSvEhiVL+uOMp3zh/D1GRU6Y/C4nrzxcIUDl4fle5xnCVi42mXt5RY7kA/SgUSpZhi0Cmi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-50d87c138e1so36113371cf.1
+        for <linux-crypto@vger.kernel.org>; Wed, 08 Apr 2026 01:13:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775636012; x=1776240812;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9UVrHD1kGj3aaIesoTisHRRJzYnLIrQ82+sB6XN35Xo=;
+        b=aNhXi9gOYfS0b4VZOSCft+VKjsBWeisk8F9yfDozhu3OsDyW0BEJ0IHaLfvM9glF0T
+         IoW35PGPUeyNraagvoroEvdQKE/5kgsHvcqf5xxrCoAx3/xTj0aLXmFwYIxA+oev6+U4
+         oY7QJ62Qxz/eC2rdzEdYKhzNW2YusuY0CbG0RN+4lxfoUd6EV8PDjZOFkej83M2VTUJL
+         gsBFNMFSl9GAeuM6czrPrmZutRRFzM9irZH1dagRrOZLFViWGm0ZB7EYtpiFI0iMKUlN
+         raVhrN6pyNRQf4a3LGyYz3oVubTd0SDarwvWQSpw0gG1QGh1EtOs/m+X2CZ3SaiCDZtr
+         nHag==
+X-Forwarded-Encrypted: i=1; AJvYcCVeI+Geb2Hma/bYgCDMNWTI4JvRuVWZoOAuY/v46S8Z9GNn5iYmP6kos01GYScjGbISQgNMS8ODo92kSxw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxu0WN4Zev0v7LnP14+ShyF/muC/8rChM3Ims75yZdLKXntkBeC
+	lC+ihNKFxCEjnDpRo7bDU1FASf8315CoCLt79Bb1F99PoivH7TbduXT7GWC1Vilj
+X-Gm-Gg: AeBDievyars6zSmuJJO37GWGLC1x+kVa/ChZq1ZcuDBTMnfg9+ougnpm6mke1I7yjS2
+	uGTYAAcvD2QAAomTwbuH6wy9Ri+OaTDZH6EUrLCpQFglX8lV5tM2huq2VPwOl4f4rZjGN1TjNUn
+	B6Tl/plKZsIKV/P4l5nypgmglowR+KIdinY1hKGHG1uM5HxipojB/j/CTCNbpAGY/5UHZxSci2j
+	FsD5yF3T7g/NhMZO5FPIEjwTRwnMhjrn9EJXfeOHstsR2vY+goPoxI/tpwKiEn7M58gZaCbWws/
+	d3r3wNs+ntOV+cmtJGylV7HveuZVKlqir3WaB3748idKcg6Tr6JLPObVr3cmNt16ZXbw8MLBnys
+	c+XP9cgi4p0YRfCvhXXlxASQduir734Bp/gknO/4ayvVNgQswrZHxUUxAZ4rZeqAr8/yqInRLv4
+	agcs1yK0wYf4VhIBkfC7rIHUuhcOaVJ5g6yx8EdRxuNbXPYCoD0jo/G0UnhFzzibaq
+X-Received: by 2002:a05:622a:2511:b0:50d:8960:d68a with SMTP id d75a77b69052e-50d8960deefmr183390481cf.43.1775636011970;
+        Wed, 08 Apr 2026 01:13:31 -0700 (PDT)
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com. [209.85.160.174])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50dac753208sm23028821cf.20.2026.04.08.01.13.31
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Apr 2026 01:13:31 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-50d87c138e1so36113231cf.1
+        for <linux-crypto@vger.kernel.org>; Wed, 08 Apr 2026 01:13:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVsRpXkJnpUY5+1cKeo/bavx4WvzH3RcfVSjDolYJ3ZmMmKgi/S5NebXD76DbNSXsAtxW5QQSK1ZZNTzTo=@vger.kernel.org
+X-Received: by 2002:a05:6102:5486:b0:602:ac40:969d with SMTP id
+ ada2fe7eead31-605a5125dbemr8047885137.30.1775635529642; Wed, 08 Apr 2026
+ 01:05:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spamd-Result: default: False [-2.16 / 15.00];
+References: <20260327-schneider-v7-0-rc1-crypto-v1-0-5e6ff7853994@bootlin.com> <20260327-schneider-v7-0-rc1-crypto-v1-12-5e6ff7853994@bootlin.com>
+In-Reply-To: <20260327-schneider-v7-0-rc1-crypto-v1-12-5e6ff7853994@bootlin.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 8 Apr 2026 10:05:18 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWr5OT0iAbZMgDAizO9KnhmyUN3hsqFnp+JYRao4aKu_A@mail.gmail.com>
+X-Gm-Features: AQROBzB7FKSpqL9vAEkvQ3NeO0nTGrKiA5rUbk_QvEvIe1vD5_FZ5lwMa_3wMnk
+Message-ID: <CAMuHMdWr5OT0iAbZMgDAizO9KnhmyUN3hsqFnp+JYRao4aKu_A@mail.gmail.com>
+Subject: Re: [PATCH 12/16] irqchip/eip201-aic: Add support for Safexcel
+ EIP-201 AIC
+To: "Miquel Raynal (Schneider Electric)" <miquel.raynal@bootlin.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Olivia Mackall <olivia@selenic.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Jayesh Choudhary <j-choudhary@ti.com>, 
+	"David S. Miller" <davem@davemloft.net>, Christian Marangi <ansuelsmth@gmail.com>, 
+	Antoine Tenart <atenart@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Pascal EBERHARD <pascal.eberhard@se.com>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[sipsolutions.net,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[sipsolutions.net:s=mail];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22851-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22855-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[linux-m68k.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[sipsolutions.net:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[johannes@sipsolutions.net,linux-crypto@vger.kernel.org];
+	FREEMAIL_CC(0.00)[baylibre.com,kernel.org,selenic.com,gondor.apana.org.au,ti.com,davemloft.net,gmail.com,bootlin.com,se.com,sang-engineering.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[geert@linux-m68k.org,linux-crypto@vger.kernel.org];
+	NEURAL_SPAM(0.00)[0.102];
+	R_DKIM_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,sipsolutions.net:dkim,sipsolutions.net:mid]
-X-Rspamd-Queue-Id: 4858B3B85D6
+	TAGGED_RCPT(0.00)[linux-crypto,dt,renesas];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux-m68k.org:email,bootlin.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 7A40D3B8E75
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 2026-04-08 at 00:13 -0700, Eric Biggers wrote:
-> On Wed, Apr 08, 2026 at 08:32:12AM +0200, Johannes Berg wrote:
-> > So five out of six patches are wireless, should I apply the crypto one
-> > too?
->=20
-> It doesn't conflict with anything in linux-next, so it would be possible
-> to take it too.  Maybe wait a day or two and see if Herbert acks it.
+Hi Miquel,
 
-Sounds good. I've picked up the other 5 now already, but for me that
-actually made the CRYPTO_MICHAEL_MIC Kconfig symbol show up as a prompt,
-which is a bit unfortunate perhaps. But should be gone soon either way
-:)
+On Fri, 27 Mar 2026 at 21:11, Miquel Raynal (Schneider Electric)
+<miquel.raynal@bootlin.com> wrote:
+> Describe the EIP-201 Advanced Interrupt Controller from Inside Secure,
+> typically found in a bigger block named EIP-150. This controller is
+> rather simple and is driven using the generic irqchip model. Its
+> own interrupt domain is limited to just a few interrupts connected to
+> other inner blocks, such as a Random Number Generator and a Public Key
+> Accelerator.
+>
+> The one I used receives only rising edge interrupts and uses its own
+> logic to track them. It is theoretically possible to wire devices with
+> level interrupts, but not in the context of the EIP-150.
+>
+> Signed-off-by: Miquel Raynal (Schneider Electric) <miquel.raynal@bootlin.com>
 
-Thanks!
+Thanks for your patch!
 
-johannes
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -826,4 +826,12 @@ config SUNPLUS_SP7021_INTC
+>           chained controller, routing all interrupt source in P-Chip to
+>           the primary controller on C-Chip.
+>
+> +config SAFEXCEL_EIP201_AIC
+> +        tristate "Safexcel EIP201 AIC"
+
+Is there any platform dependency that could be added here?
+
+> +       select IRQ_DOMAIN
+> +       help
+> +         Support for the Advanced Interrupt Controller (AIC) typically
+> +         inside Safexcel EIP150 IPs, gathering Public Key Accelerator
+> +         and True Random Number Generator interrupts.
+> +
+>  endmenu
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
