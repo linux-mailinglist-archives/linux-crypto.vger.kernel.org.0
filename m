@@ -1,62 +1,62 @@
-Return-Path: <linux-crypto+bounces-22985-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22986-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YKOLETwN3WkOZQkAu9opvQ
-	(envelope-from <linux-crypto+bounces-22985-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 17:35:24 +0200
+	id YHYkGXYO3WkOZQkAu9opvQ
+	(envelope-from <linux-crypto+bounces-22986-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 17:40:38 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C3E3EE098
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 17:35:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC403EE188
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 17:40:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2F3FD303C007
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 15:30:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5CCFF302DB4D
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 15:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5353E1236;
-	Mon, 13 Apr 2026 15:30:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B723E122D;
+	Mon, 13 Apr 2026 15:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bfhbd2sL"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gvEodDXy"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C63F3BA248;
-	Mon, 13 Apr 2026 15:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D17E1A680E;
+	Mon, 13 Apr 2026 15:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776094206; cv=none; b=dgR5XnkPQQcD01XVkDKrsaEzW5wjc/sOKBUOY27rLwhfz2wEvAv/byHmY2J7j5vKdWhmJbnKxN1R64R8C7ABoDAueFhbs7vi1Yp1jwl76t5cp4q/GBDP70/zlknxsi1gfiKeYG5lcQSwEC2//86j9/+Mq/vWdlGt5+Vou4BYq28=
+	t=1776094399; cv=none; b=kBx3rId8VtVCRtnPhw7b49MUtY/cu5V6qOuT5L6lFriPd8wNwNsOjb/CvvO3/+1Sq5ROW9DoEE0GVbYXm7HEGIyKNgG/nLFnCQtF+4NUgxtBlLRKGxrC5fKat18k6u88h4yMBV0sHCFgsvZwnxl/hLf6squt+fihnQjO2VugmDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776094206; c=relaxed/simple;
-	bh=A/tyFuZQFYTYsk5yepZic+9iJmMgnVldp43vNUqBGF8=;
+	s=arc-20240116; t=1776094399; c=relaxed/simple;
+	bh=NQ57pLTyv1RobAbU0dr2msaGqFcjF8MGivOACrwgK2Y=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dRUpGj8N0CVaHSCMNGv7FHExjW9YimvNy35++QtdcRuP5SyB4fuXwu/KR9SXIScuBm1Y9Hb5bgSbEfG7Wws0ZX97wY3skgbZWuaa8KV0zMI7VMO+6IevH2iAE7BgbISUjW3/XBxiPdHxAXIWbr2WiwE4yNFGZwcxwqpULNQAZVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bfhbd2sL; arc=none smtp.client-ip=90.155.92.199
+	 Content-Type:MIME-Version; b=o/5znYLr9xR7IFRD+Su5vxwUQ9jz0N3g8Rsltb5Reog85EC93zxUrq37HgB3DDZUu5axmm39yQo/xfdnhnTTqwd/AogutIW9dJ7BtypbgAUh8PbzjW2+i1Cb38WJwXyaXZbhTdr88+PRBx3hJlpG+/H0KpkfAK7ZvprbmSPyQRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gvEodDXy; arc=none smtp.client-ip=90.155.92.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Type:References:
 	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=A/tyFuZQFYTYsk5yepZic+9iJmMgnVldp43vNUqBGF8=; b=bfhbd2sL8t75c5rug3uBwuxg5P
-	LuWR8p2uSlhmLvoC75s7TYMX1lfdHXhQNJF2OG0QXGhVA74ED4L05Ui2YgH9chIQJTBVRJcaDXkdQ
-	PoO6uYPpDnqy8MenOCTFbkRMKQS78wCprJ3tkgPda8HAMffpT54zL852bGYOCnflkc2nDFvdBn0cR
-	8vP+E7+2CaxiOsjddnC2m+sVdQvAC0f34xjQErQU8sm5+txqnL/HeNOtCoI1QzVGmD8hBCUOicCZO
-	Sdtu+YLC1PADFf5yRRMpMGrKPzY0Wz8LlL1valPv8PoqQKRDiHRNlNkJrhES2TYrKiZoLqunJos/G
-	lcviTgFA==;
+	bh=pMyc546A8Vk0VhSxh5jSMOtHszp9PyQiNzOlGW+Tlac=; b=gvEodDXyVRhr3ht5KLvvYUHruq
+	Vr6/Nk8hYRocARm5fuOZlMoKF+85eiOOvk45UWaJEUhV71TuTffj9ccPPnvJsusON6fJc5Grsy5jI
+	iNNAvdI28ex09hHo60SsASOsHG9j1//cpT5bdeKExgSUokyNtM/888qR2IIJJJn5k0YY4ZHvZ/iUY
+	JYS9o9fm8cesNcUDQtQkHs5oojlgzNoY+sKaw+Kqth7jk3I7NtkAAk1lZIJtE46y3HsqbFIeXRzUn
+	UNa7OJ6p8M3XCoCofzGj4msg6NLCmsGATi2zcxDsbslkmxZrkCEEoEdgUxSWU6wiTsaySOA61u8BB
+	0y1VEngg==;
 Received: from [213.122.4.78] (helo=u09cd745991455d.ant.amazon.com)
 	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wCJEX-0000000H2ae-13Uv;
-	Mon, 13 Apr 2026 15:29:53 +0000
-Message-ID: <aa07b2a812255473ca6f1ca0c872a983ee24728e.camel@infradead.org>
-Subject: Re: [patch 10/38] arcnet: Remove function timing code
+	id 1wCJHl-0000000H2um-3OE9;
+	Mon, 13 Apr 2026 15:33:13 +0000
+Message-ID: <7a48b636cb3146f4f7134c6d4fe42070ac2edb43.camel@infradead.org>
+Subject: Re: [patch 15/38] ptp: ptp_vmclock: Replace get_cycles() usage
 From: David Woodhouse <dwmw2@infradead.org>
 To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, 
- Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, Lu Baolu
- <baolu.lu@linux.intel.com>,  iommu@lists.linux.dev,
- linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
+Cc: Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, Lu Baolu
+ <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, Michael Grzeschik
+ <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, 
+ linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
+ linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>, 
  linux-mm@kvack.org, Bernie Thompson <bernie@plugable.com>, 
  linux-fbdev@vger.kernel.org, Theodore Tso <tytso@mit.edu>, 
  linux-ext4@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
@@ -76,12 +76,12 @@ Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
  linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, 
  linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
  sparclinux@vger.kernel.org
-Date: Mon, 13 Apr 2026 16:29:51 +0100
-In-Reply-To: <20260410120318.253872322@kernel.org>
+Date: Mon, 13 Apr 2026 16:33:12 +0100
+In-Reply-To: <20260410120318.592237447@kernel.org>
 References: <20260410120044.031381086@kernel.org>
-	 <20260410120318.253872322@kernel.org>
+	 <20260410120318.592237447@kernel.org>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-kGTl9uf920QcQo+U2JVg"
+	boundary="=-vt+GQ8cE1r98bSrQsw7r"
 User-Agent: Evolution 3.52.3-0ubuntu1.1 
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -95,62 +95,74 @@ X-Spamd-Result: default: False [-2.76 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
 	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22985-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22986-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[48];
-	FREEMAIL_CC(0.00)[pengutronix.de,vger.kernel.org,arndb.de,kernel.org,linux.intel.com,lists.linux.dev,gondor.apana.org.au,kvack.org,plugable.com,mit.edu,linux-foundation.org,gmail.com,google.com,googlegroups.com,alumni.ethz.ch,zx2c4.com,linaro.org,armlinux.org.uk,lists.infradead.org,arm.com,linux-m68k.org,lists.linux-m68k.org,southpole.se,gmx.de,ellerman.id.au,lists.ozlabs.org,linux.ibm.com,davemloft.net];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	HAS_ATTACHMENT(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[dwmw2@infradead.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[infradead.org:+];
+	FREEMAIL_CC(0.00)[arndb.de,kernel.org,linux.intel.com,lists.linux.dev,pengutronix.de,vger.kernel.org,gondor.apana.org.au,kvack.org,plugable.com,mit.edu,linux-foundation.org,gmail.com,google.com,googlegroups.com,alumni.ethz.ch,zx2c4.com,linaro.org,armlinux.org.uk,lists.infradead.org,arm.com,linux-m68k.org,lists.linux-m68k.org,southpole.se,gmx.de,ellerman.id.au,lists.ozlabs.org,linux.ibm.com,davemloft.net];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: C4C3E3EE098
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,infradead.org:email,infradead.org:mid,amazon.co.uk:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: AFC403EE188
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
---=-kGTl9uf920QcQo+U2JVg
+--=-vt+GQ8cE1r98bSrQsw7r
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, 2026-04-10 at 14:19 +0200, Thomas Gleixner wrote:
-> ARCNET is a museums piece and the function timing can be done with
-> ftrace. Remove the cruft.
+> get_cycles() is not really well defined and similar to other usaage of th=
+e
+> underlying hardware CPU counters the PTP vmclock should use an explicit
+> interface as well.
+>=20
+> Implement ptp_vmclock_read_cpu_counter() in arm64 and x86 and simplify th=
+e
+> Kconfig selection while at it.
+>=20
+> No functional change.
 >=20
 > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> Cc: netdev@vger.kernel.org
-> ---
-> =C2=A0drivers/net/arcnet/arc-rimi.c=C2=A0 |=C2=A0=C2=A0=C2=A0 4 ++--
-> =C2=A0drivers/net/arcnet/arcdevice.h |=C2=A0=C2=A0 20 +------------------=
--
-> =C2=A0drivers/net/arcnet/com20020.c=C2=A0 |=C2=A0=C2=A0=C2=A0 6 ++----
-> =C2=A0drivers/net/arcnet/com90io.c=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 6 ++--=
---
-> =C2=A0drivers/net/arcnet/com90xx.c=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 4 ++--
-> =C2=A05 files changed, 9 insertions(+), 31 deletions(-)
+> Cc: David Woodhouse <dwmw2@infradead.org>
 
-Acked-by: David Woodhouse <dwmw2@infradead.org>
+Acked-by: David Woodhouse <dwmw@amazon.co.uk>
 
-By coincidence, I took the last of my ARCNET cards to the tip just this
-morning...
+Although I might follow up with a change to make this...
 
---=-kGTl9uf920QcQo+U2JVg
+> +static inline u64 ptp_vmclock_read_cpu_counter(void)
+> +{
+> +	return cpu_feature_enabled(X86_FEATURE_TSC) ? rdtsc() : 0;
+> +}
+> +
+
+... depend on TSC_RELIABLE=C2=B9, since if the guest doesn't believe that i=
+t
+is, then the guest shouldn't be trying to use it as the basis for
+precise timing.
+
+=C2=B9 (Or... one of the other zoo of TSC flags for the gradually reducing
+brokenness over the years...)
+
+--=-vt+GQ8cE1r98bSrQsw7r
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -229,22 +241,22 @@ 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
-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
+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
-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
+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
 
 
---=-kGTl9uf920QcQo+U2JVg--
+--=-vt+GQ8cE1r98bSrQsw7r--
 
