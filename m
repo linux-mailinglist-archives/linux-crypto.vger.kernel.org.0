@@ -1,112 +1,127 @@
-Return-Path: <linux-crypto+bounces-22973-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-22974-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MLWCLrva22mlHgkAu9opvQ
-	(envelope-from <linux-crypto+bounces-22973-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Apr 2026 19:47:39 +0200
+	id SMs3Hr2D3GnnSAkAu9opvQ
+	(envelope-from <linux-crypto+bounces-22974-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 07:48:45 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58C903E5353
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Apr 2026 19:47:39 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18EC53E7925
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 07:48:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0324230036D4
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Apr 2026 17:46:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 264873018D4B
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Apr 2026 05:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3734B3624C2;
-	Sun, 12 Apr 2026 17:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7AX11qV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F5E307AC7;
+	Mon, 13 Apr 2026 05:47:49 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44D53002B9;
-	Sun, 12 Apr 2026 17:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7222773E5;
+	Mon, 13 Apr 2026 05:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776015978; cv=none; b=BWIXoCRw3zy2KsSxqW+hboti5ALvZhCy9w7ySw0k+qhZ69JK3G+JbBqeIcNHqJPWeXHA5OKQVOFarGxZ7RDLbKlGIep89MXCUkCmc2Xla1XjSgOFB2j5dJe94AUJRKL/dkAE/sfTClisH2muglRgl2dB27AUXAP5/3U1T+OwpIA=
+	t=1776059269; cv=none; b=QeSSnTQ5WCx2Uj3fQdKD5vClqnMl+kAXwHmoQSJ7Xs9dksD57pMKsWjzf8ew395QnU6gG7A8xHfQ/5HRlSo+Ooelzk2PAceFZkBb0WVjZnWcwVm+2JFeL9NF5PCSnBjDXXtyzGERfi8IpNVFQRf0vUsE4RLqWnt795LtRmapbk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776015978; c=relaxed/simple;
-	bh=HzmO/jj/bJOqj6Ogx7VC0J0njP0OL/yz2qVzwYeg3AQ=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=SU/cJxsx7BZ7DBSqxiwF2w9mKmKluVayb6WrhAKN7AJ5pR/jbPPxtyK8Hkg7NexZAZqN9nvS28G/wqCPJDEQWmDOirr4swacJlDMe3swT0ggD1jGDMsI1vYPwaSl+yV1/8OulgQG43G2Xe4ody8iY4RmwJ0dM50h6tHi4T/V2AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7AX11qV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA638C19425;
-	Sun, 12 Apr 2026 17:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776015978;
-	bh=HzmO/jj/bJOqj6Ogx7VC0J0njP0OL/yz2qVzwYeg3AQ=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=e7AX11qV4ju8sHf7eXQxWLqTFPSfyZ0Tmj6UtMSAI4k8a744HDn27xZYYP65xmycT
-	 nJLJi8dstppuaw4uCnI5X0FSww1O7Rp4pcRk56aF8XBBRFfHx7CsStx+ud7aqp1Drp
-	 y2BE0gAANc/4Zj/RAGVrtnzN8wbXr8IWuOw+fUqXC8fAMSvb9jVoCxtUWIx1hrsTUN
-	 iFaaliv1usvrCqkGGe3zVbzPxzpeTcNloID3cYmtUYf6jwF7Sq5PzjsCkdvp+Y4C46
-	 pGjj6KkC+/94yRMpG0ib3s6JJkM5kLx+M7ESeEO+RGnr9O1zpsmZXI6woyShrdyYmM
-	 2U83hbZHJwJ+w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CFF33809A8C;
-	Sun, 12 Apr 2026 17:45:52 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Fixes for 7.0
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <adswvtLQx42MYSX8@gondor.apana.org.au>
-References: <adswvtLQx42MYSX8@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
-X-PR-Tracked-Message-Id: <adswvtLQx42MYSX8@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 tags/v7.0-p5
-X-PR-Tracked-Commit-Id: 3d14bd48e3a77091cbce637a12c2ae31b4a1687c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8648ac819d4bc08f7d2a1e0bc9ec2d83de31f19d
-Message-Id: <177601595112.3355117.13925223333091399304.pr-tracker-bot@kernel.org>
-Date: Sun, 12 Apr 2026 17:45:51 +0000
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+	s=arc-20240116; t=1776059269; c=relaxed/simple;
+	bh=YxepDZzylg7DLxJ1UuKV5wvO8y/p14MplYX7PzmcQ08=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=MWbOo9tARfrBcn9eCmjchtLcu1r1J5lRuBc0zX4vTTkBRHjrM005QWIXYzagKgVmbOA1+vcY/1KRpr+8fALLgx5V8fd5yZ9xvRcO92MT2JFxDdxJKKXegRxQ3RbBl/dgtmtyV2UHqPH0cPMUsH8IqkMp1AyutpAbh+2ZqvUfQSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 2FA4892009C; Mon, 13 Apr 2026 07:47:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 283D292009B;
+	Mon, 13 Apr 2026 06:47:45 +0100 (BST)
+Date: Mon, 13 Apr 2026 06:47:45 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Thomas Gleixner <tglx@kernel.org>
+cc: LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+    x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, 
+    Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, 
+    linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
+    linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>, 
+    linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>, 
+    Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, 
+    Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>, 
+    Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
+    Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+    Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org, 
+    "Jason A. Donenfeld" <Jason@zx2c4.com>, 
+    Richard Henderson <richard.henderson@linaro.org>, 
+    linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>, 
+    linux-arm-kernel@lists.infradead.org, 
+    Catalin Marinas <catalin.marinas@arm.com>, 
+    Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
+    Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
+    linux-openrisc@vger.kernel.org, Helge Deller <deller@gmx.de>, 
+    linux-parisc@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
+    linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>, 
+    linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, 
+    linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+    sparclinux@vger.kernel.org
+Subject: Re: [patch 28/38] mips: Select ARCH_HAS_RANDOM_ENTROPY
+In-Reply-To: <20260410120319.462206386@kernel.org>
+Message-ID: <alpine.DEB.2.21.2604130638270.29980@angie.orcam.me.uk>
+References: <20260410120044.031381086@kernel.org> <20260410120319.462206386@kernel.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-X-Spamd-Result: default: False [-0.66 / 15.00];
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22973-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22974-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DMARC_NA(0.00)[orcam.me.uk];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,arndb.de,kernel.org,linux.intel.com,lists.linux.dev,pengutronix.de,gondor.apana.org.au,kvack.org,infradead.org,plugable.com,mit.edu,linux-foundation.org,gmail.com,google.com,googlegroups.com,alumni.ethz.ch,zx2c4.com,linaro.org,armlinux.org.uk,lists.infradead.org,arm.com,linux-m68k.org,lists.linux-m68k.org,southpole.se,gmx.de,ellerman.id.au,lists.ozlabs.org,linux.ibm.com,davemloft.net];
+	RCPT_COUNT_TWELVE(0.00)[49];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_NO_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[macro@orcam.me.uk,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-crypto@vger.kernel.org]
-X-Rspamd-Queue-Id: 58C903E5353
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,angie.orcam.me.uk:mid]
+X-Rspamd-Queue-Id: 18EC53E7925
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The pull request you sent on Sun, 12 Apr 2026 13:42:22 +0800:
+On Fri, 10 Apr 2026, Thomas Gleixner wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 tags/v7.0-p5
+> The only solution for now is to uninline random_get_entropy().  Fix up all
+> other dependencies on the content of asm/timex.h in those files which
+> really depend on it.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8648ac819d4bc08f7d2a1e0bc9ec2d83de31f19d
+ Oh dear!  I'd yet have to fully evaluate the consequences, but offhand 
+this has clearly turned what compiles to a single CPU instruction on the 
+vast majority of MIPS platforms into an expensive function call, possibly 
+also changing the caller from a leaf to a nested function with all the 
+associated execution penalty.  Is there no other way?
 
-Thank you!
+ Cf. commit 06947aaaf9bf ("MIPS: Implement random_get_entropy with CP0 
+Random").
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  Maciej
 
