@@ -1,125 +1,181 @@
-Return-Path: <linux-crypto+bounces-23005-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23006-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AOjvLD0i3mk1ngkAu9opvQ
-	(envelope-from <linux-crypto+bounces-23005-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Apr 2026 13:17:17 +0200
+	id eEwAJ4g23mlxpQkAu9opvQ
+	(envelope-from <linux-crypto+bounces-23006-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Apr 2026 14:43:52 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E45D03F9389
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Apr 2026 13:17:10 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91853FA16D
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Apr 2026 14:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 03E8A301168E
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Apr 2026 11:17:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0BD923023516
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Apr 2026 12:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310503DA7C5;
-	Tue, 14 Apr 2026 11:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B3C3E6388;
+	Tue, 14 Apr 2026 12:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="KEU0GU0F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h822cIK1"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA6A3914F0;
-	Tue, 14 Apr 2026 11:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240BB3D6463
+	for <linux-crypto@vger.kernel.org>; Tue, 14 Apr 2026 12:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776165424; cv=none; b=dIitQ9oU5Mf3O2kgrFR/vEGsNAIJAMgJwIDazLcxCfNhgnSXdDDf0qXEDsXibowITocDzKXmMrGo2j1NSbTIjpM8xvlamujdY9mI2iqRan5QqaCKVkvPp3c2lOJhrOSfGgG0r9u1NFq747amQlllflNkLKPwzlfl8SouRxTChlc=
+	t=1776170352; cv=none; b=QoK0iNz30T0VCp7tRaNPt4JmdH5enJkKZdbBH2fBud3TebtrW+3NihaYsI8FuIIwdApX+7ayqZtffSlgld2eiQ0QAr0eMyVQo5wiF2M46gsmLEuYz/B74/zESvFKMfoxOSquDsfQX6/AWbT8s0UwW2QnlOrUOzIyW3z4OQ37mmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776165424; c=relaxed/simple;
-	bh=tnSETDCgBj8UM0Ny7d5jOq8TMDd3NcVy67Q/ltBadYI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H3NFQ5gLtTe2sdgN1Y+bkOweFzkHcYHBwSWZoEMXsDZDZ+6uA58RJl8reVPFX+uSeHRZH51nslushWo0WJdnuESn6qvD9oLx16QPXq2R63BUJ3Xd9Jn9+EkWWtfo3EgeDIPG0KYRtVUzww8nsTqjiF2wzuJQ8o6JoDphrjedr3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=KEU0GU0F; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=M/1Cl1M9mS/TId0xoFqflfEvIxM7Sb8tWX4TogxlKPk=; 
-	b=KEU0GU0FFiqfLpEFBtReTaollVQ9U1i5vH6JPyjFICdMZZKuwnIX2iYsKon2LrHS1Dh8TP9oZrA
-	Hp8+/eEdMlbMYxTiemDfid4e6BFqwFZGpXd1jQ9n4hXHzI+J/cXg6SzEJ/Iw+7sZAXPrcCTlQZIUR
-	5m6p4rligW3XuLiJirKp11DUOBhpGM1jUPE6y4RNqDc2t3Sm03tJx+eThpv23HwmZUOxpfQS93DdG
-	E+sK3KGMrqV9BqDCgIc4mNCj6yUYsdrxfAxP9XM2ZBhFV40NUAWlUG2x3AUIlNbcQ0hfpaOwo57zT
-	W41fiXDM+XLhVt2D6T2rjIWfqbXEVZ2ssMjQ==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wCbLo-00609n-08;
-	Tue, 14 Apr 2026 19:16:55 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 14 Apr 2026 19:16:54 +0800
-Date: Tue, 14 Apr 2026 19:16:54 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Pavitrakumar Managutte <pavitrakumarm@vayavyalabs.com>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, robh@kernel.org, conor+dt@kernel.org,
-	Ruud.Derwig@synopsys.com, manjunath.hadli@vayavyalabs.com,
-	adityak@vayavyalabs.com, navami.telsang@vayavyalabs.com,
-	bhoomikak@vayavyalabs.com
-Subject: Re: [PATCH v11 2/4] crypto: spacc - Add SPAcc ahash support
-Message-ID: <ad4iJhEM-ZwgadBh@gondor.apana.org.au>
-References: <20260318071808.817074-1-pavitrakumarm@vayavyalabs.com>
- <20260318071808.817074-3-pavitrakumarm@vayavyalabs.com>
- <acZL65nbtfMCPHhq@gondor.apana.org.au>
- <CALxtO0nFEG2Lm18Fnb=YVQfy4-Qjb5+WtOxsHNOwYTy2Kzyb4g@mail.gmail.com>
- <CALxtO0kj4JfL94qY-radGcLwMeTnq4NQF7vPqs6giuhBinvALw@mail.gmail.com>
+	s=arc-20240116; t=1776170352; c=relaxed/simple;
+	bh=lNn5jvrxlKSG0/5B/U0tSygzuJ+RkoFr9+I8Xu5aVQ8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f1tk1X3OPuNsOJCWq8MxF2mNhCA6Mi4Kef/bQ5k4L+rqg8k1LydNcg2ENCYjb6GnLVn5D9U0Is+FwiSMnwH6zV6cSWwbZ+A+mA7hpqikrUE9JrV+SY9NKpxG8SEqeKrraIF0TFuEyOHh/aY1euNeRRv98lmCsvBgwYIPTXwK86E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h822cIK1; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2b25cf1b5f0so36564235ad.3
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Apr 2026 05:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1776170350; x=1776775150; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LqWzHM9f5XbHVj9TeBcnNeNR71vENRDJp955u8OEAcw=;
+        b=h822cIK1k4F3eiz+mJo8fjedaC3pWXPCEdGjKfzrbS4PknOIpBU+cVVx4yj/J01wuT
+         tZT1Q1wCCQa2TJXgBZWe9JP32HnTITLbOOM9D6iOOQAxecp0rAGTxywiNH7iq4U6wVD6
+         KpYWadKD26DVSw+zM2hVvpDrKhyK/tQT5NULB9qAe+Kp/a/A+qdHvL8SF2tyo8D3HEja
+         AxAvkhn19HXItFJC54MwqR9Qg2sOb1Bv4yXAMju9rpFDCknsQJ2sogoxzN9ZVlJ8grVE
+         RhHn7+FoLU+4B2Nq8ODuxUn5vgyr1zUIBP9d28SqFKfoDuXFmeimFcbpOgmFJKAhFqtA
+         9l6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776170350; x=1776775150;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LqWzHM9f5XbHVj9TeBcnNeNR71vENRDJp955u8OEAcw=;
+        b=JsrDBR7RSqPLqYWwLN7uPiOg55N3eJuhfozuuK650EmP9ekl7/7DxjOru1p+7HEEQS
+         G7ZAifdXJ1a+o3S8N68uVodtw+Pn6DrFCsKnOEqHV9uI6GoQTsURjO5GHP/zOTnTHKaL
+         d5wdQehQtIaH8oHxsyTOoHuHHDgPwE6o8zE9QeTnmNzDf8OatIRELwpJCVV8aSDq3sV7
+         EnHV5WG1xcggG/yDNG/T8mffSCl5TYk+n1XEFTP1AICDEh9UhWffIw5/Nrv0UyJX/iqn
+         UnMRL/iAyYvc8azVk5OAGpe+4SEXPowyFgIWKywJnZt/tUqKiscnPFkurDvw1jHLwzLo
+         zOJA==
+X-Forwarded-Encrypted: i=1; AFNElJ9Kn2CUJIfLNHmtKT/YeD1Lpq9PJki+W3L9yJcTtQSfkjYTqxrlPMh0O16r3Li7aVgfyIOpKBtF+gH44YQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0TWOQan0r0wZsBEIVrVF3d5yE1Plg1tzSm2pweEhYG/4rErOD
+	cTb3Mg5voHTze98NoeTxkkUQwBpC5XsIpuuSf/jcFUr63r12dOGY/7rv
+X-Gm-Gg: AeBDieu6ViSDwU8qS3Id5kxEDpfvH1ssDvSW+jWpatsKn4YTy4I3wamBzbqbSx4YHgz
+	tQq1+sE9ljJGyJdKKlV70JlPtqzWaWYBbDBHKqVd9RmRPnxty6RvC10ss3qaaSyWsB1RymQcDsN
+	slm3Matmi43cTlElB4f+DnyDVERkCnCbRhEMlrwoNjtuu+FH5N3XzGjOzEuvN2Gogjigk7wKtZK
+	ovi/GxcFwomhwXzkpLS26QWAfxL4NL2enlD58vTZ+HJI31NQfuM4QF1rm47z9WkG0TR32OWPGic
+	VgwjPXApvpXHVUVmVulJSlksppwvikDxb1+x7WFn8v2x4LoVQ92PD/VEJuQJr4nx75kwgCotjVz
+	gSRcWVymyqM0JFlz/Jjddq3+2cye5J5Wgap/E7lta/qJ8allXJ7tX4/mrEjaIkINOULw7F19bp/
+	ErWceA+W4pnFGquuEGRgyl0g==
+X-Received: by 2002:a17:903:3c2f:b0:2ad:d0ff:2ed4 with SMTP id d9443c01a7336-2b2d591b8cbmr174221755ad.6.1776170350383;
+        Tue, 14 Apr 2026 05:39:10 -0700 (PDT)
+Received: from lgs.. ([112.224.67.108])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b2d4dd610esm145281365ad.20.2026.04.14.05.39.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2026 05:39:09 -0700 (PDT)
+From: Guangshuo Li <lgs201920130244@gmail.com>
+To: Srujana Challa <schalla@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Thorsten Blum <thorsten.blum@linux.dev>,
+	Guangshuo Li <lgs201920130244@gmail.com>,
+	Kees Cook <kees@kernel.org>,
+	Lukasz Bartosik <lbartosik@marvell.com>,
+	Suheil Chandran <schandran@marvell.com>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH] crypto: octeontx2: fix IRQ vector leak in otx2_cptpf_probe()
+Date: Tue, 14 Apr 2026 20:38:57 +0800
+Message-ID: <20260414123857.3162673-1-lgs201920130244@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALxtO0kj4JfL94qY-radGcLwMeTnq4NQF7vPqs6giuhBinvALw@mail.gmail.com>
-X-Spamd-Result: default: False [0.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	NEURAL_SPAM(0.00)[0.912];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:?];
-	TAGGED_FROM(0.00)[bounces-23005-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-23006-lists,linux-crypto=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[marvell.com,gondor.apana.org.au,davemloft.net,linux.dev,gmail.com,kernel.org,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	FROM_HAS_DN(0.00)[];
-	R_DKIM_TEMPFAIL(0.00)[gondor.apana.org.au:s=h01];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[lgs201920130244@gmail.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
-	DMARC_DNSFAIL(0.00)[apana.org.au : SPF/DKIM temp error,quarantine];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E45D03F9389
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E91853FA16D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 14, 2026 at 03:58:16PM +0530, Pavitrakumar Managutte wrote:
-> Hi Herbert,
->    If the above snip looks good, I can push that and some more code
-> clean-ups/improvements as part of V12 patchset. Do let me know.
-> 
-> Below are the code fixes and improvements
-> 1. Multi-device safety handling - All packed up inside priv
-> 2. Minor code polishes
-> 3. memzero_explicit inside setkey, spacc_compute_xcbc_key etc.
-> 4. Algo registration clean-ups
+otx2_cptpf_probe() allocates MSI-X vectors with pci_alloc_irq_vectors()
+before initializing the AF-PF mailbox, registering mailbox interrupts
+and setting up the PF device.
 
-I would prefer if you left out sm3 for now.  If it really mattered
-someone would move it to lib/crypto.
+When cptpf_afpf_mbox_init(), cptpf_register_afpf_mbox_intr(),
+cptpf_device_init(), cn10k_cptpf_lmtst_init(),
+otx2_cpt_init_eng_grps(), sysfs_create_group() or
+otx2_cpt_register_dl() fails after IRQ vectors have been allocated
+successfully, the function unwinds mailbox, interrupt and engine group
+state, but fails to free the allocated IRQ vectors.
 
-Thanks,
+The issue was identified by a static analysis tool I developed and
+confirmed by manual review. Add a dedicated error path to call
+pci_free_irq_vectors() after pci_alloc_irq_vectors() succeeds.
+
+Fixes: 83ffcf78627f ("crypto: octeontx2 - add mailbox communication with AF")
+Cc: stable@vger.kernel.org
+Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
+---
+ drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
+index 346d1345f11c..059f702dbf5c 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
+@@ -783,7 +783,7 @@ static int otx2_cptpf_probe(struct pci_dev *pdev,
+ 	/* Initialize AF-PF mailbox */
+ 	err = cptpf_afpf_mbox_init(cptpf);
+ 	if (err)
+-		goto clear_drvdata;
++		goto free_irq_vectors;
+ 	/* Register mailbox interrupt */
+ 	err = cptpf_register_afpf_mbox_intr(cptpf);
+ 	if (err)
+@@ -826,6 +826,8 @@ static int otx2_cptpf_probe(struct pci_dev *pdev,
+ 	cptpf_disable_afpf_mbox_intr(cptpf);
+ destroy_afpf_mbox:
+ 	cptpf_afpf_mbox_destroy(cptpf);
++free_irq_vectors:
++	pci_free_irq_vectors(pdev);
+ clear_drvdata:
+ 	pci_set_drvdata(pdev, NULL);
+ 	return err;
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.43.0
+
 
