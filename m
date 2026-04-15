@@ -1,117 +1,113 @@
-Return-Path: <linux-crypto+bounces-23029-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23030-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uK0HJLoN4GmzcAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23029-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 00:14:18 +0200
+	id 2CgnKCEU4GmPcQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23030-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 00:41:37 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 275164087BF
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 00:14:14 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB8CF408C00
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 00:41:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C8B3D30875F8
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Apr 2026 22:13:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EEDE831A792D
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Apr 2026 22:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5464B386564;
-	Wed, 15 Apr 2026 22:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A6025C818;
+	Wed, 15 Apr 2026 22:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqYXvbiJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMsOvvRx"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A2917A2EA;
-	Wed, 15 Apr 2026 22:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827F5372ECD;
+	Wed, 15 Apr 2026 22:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776291224; cv=none; b=a2hMUUl6db6EwsKzqUdBNmgtiVqT5SDhLYgPNMy/mf5SBJfIOfpSqjchZT8hCsky9+XP8p4FOoTu4BwJjDsF1/LJ4Au3Sywz5kaN2e3p6D7gTXc/QsxaEnJzgZUqxJngOpVaqwHmIef6DMBChxfm0zGwoR5sDsNYIqkSxsR8P5U=
+	t=1776292693; cv=none; b=MScD5IxWo6ZiTy6+p0n+tUDc/6x4RUmeWPFlPBDC1Vdg3jrlafIl+62it0vbYz7dk21wEZUXbSr1rm6XbUqrAIuooYb1s845100VivdV0K2YJVEClU4OFwI+JgBpVnChz2BzSF/NJPQYaKzNmVS/+ELOIUe+V++dJOAas72TMHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776291224; c=relaxed/simple;
-	bh=Ri/2rRxTy0OrCH3pbbm+vOIszfKTcETUyYT3jYCGOyU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P65xr0oJKArbGpQ0nBLe66g8ju0rswT5iu3MxQcBtt6dJgw1RpZv27Fhu1GeJnKI5sAvB4N6o/2A1tO0jlDiUDgsV0SYIMFRslAvVWBE7FAUMJYDFJ/MuRwQ/5CCilnaDgUHJ1mmIttl/yBeq8N7q1yNIYPCtTgEWOvar3x/4ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqYXvbiJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC77C19424;
-	Wed, 15 Apr 2026 22:13:43 +0000 (UTC)
+	s=arc-20240116; t=1776292693; c=relaxed/simple;
+	bh=qAXB9kfU6vrVAnsuyDw8EssopauOMlJcS8RfOAZ0YIo=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=GcUt5RAkKTAnfMPyQwmOJwjhX+b7CJKQa6iN1dSxsOfS/OV1a0ZmzDiuD3TdjHcvP974tnySj9TnIjT2t+kLRgGnkBu4c8Df8yWM5YTT8r+QGpJUQE4S6m39dlb04m2aj1acr15pyq+VSYazbGhiIVKwiomFbPQikY3IFivJcx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lMsOvvRx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4697BC2BCB0;
+	Wed, 15 Apr 2026 22:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776291223;
-	bh=Ri/2rRxTy0OrCH3pbbm+vOIszfKTcETUyYT3jYCGOyU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dqYXvbiJSPi1N8zBxtUAwNxmGDzvk0zd968yUScxP8slRNccogn1HnLCgdlOfGG3v
-	 EFgFgSnMBo61G7tmac5vPgVCQzrY61FEX+3TTMsIzL9fxB659pAalOrCOIPAcvmfhb
-	 ZJJLpM6oLVj8xNJ4udOO8ojsImpHX55457Zp4oU9+tc0HI7LWIcVywrahOO4j6T2LT
-	 VYLDWXzaPyq10Jb7zKacqF50sDsN4RkX1WabXYMnfEkAFJDu9wJpjZOHHGaRInxuHK
-	 drWkjev3r+7O3sbhzEIwv0amkQqxHw8R2sOGj9eBUhueic5QS/04AyTDMC45h6DXaX
-	 2LFifeg05viBw==
-Date: Wed, 15 Apr 2026 17:13:41 -0500
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	Konrad Dybcio <konradybcio@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Thara Gopinath <thara.gopinath@gmail.com>,
-	devicetree@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: qcom-qce: Add Qualcomm Eliza QCE
-Message-ID: <177629121955.793028.12836250636771941736.robh@kernel.org>
-References: <20260407-crypto-qcom-eliza-v1-0-40f61a1454a2@oss.qualcomm.com>
- <20260407-crypto-qcom-eliza-v1-1-40f61a1454a2@oss.qualcomm.com>
+	s=k20201202; t=1776292693;
+	bh=qAXB9kfU6vrVAnsuyDw8EssopauOMlJcS8RfOAZ0YIo=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=lMsOvvRxWu0Xeau9ihgi9ppc0VpT3htAsNUlQBF8mN2LzNZl9uq6BcaJyJIiTplQB
+	 JnWv/EHBR6PdLgF3phpQdanxhT0dGCkZya9tMfm9m9zsqgwlwRt9yJK5B4xPDhpWTT
+	 37EkqDUVhraICVopByJULW5y5RfCdKwG8urDJCDyA3W8idScRayCm8oszGmh+GiTY7
+	 8MVKGc56AehtAarERBgz410j5HU2xI33c5QL9X++fWs9VkgNIRR8gQ/Bw5tRdKYzCP
+	 VnexSHO+oZu99JqYHhF53Jf0ywwKIaO25Sq7ToQbmLQqLfXMI92QNOTFfjEx1sYgcN
+	 zz6V56GR+6pfQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B9F03380A963;
+	Wed, 15 Apr 2026 22:37:43 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto Update for 7.1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <ad7u9gGDjLBaFt1_@gondor.apana.org.au>
+References: <ad7u9gGDjLBaFt1_@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ad7u9gGDjLBaFt1_@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 tags/v7.1-p1
+X-PR-Tracked-Commit-Id: 8879a3c110cb8ca5a69c937643f226697aa551d9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: aec2f682d47c54ef434b2d440992626d80b1ebdc
+Message-Id: <177629266228.2482053.14151573363715646187.pr-tracker-bot@kernel.org>
+Date: Wed, 15 Apr 2026 22:37:42 +0000
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260407-crypto-qcom-eliza-v1-1-40f61a1454a2@oss.qualcomm.com>
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gondor.apana.org.au,vger.kernel.org,kernel.org,gmail.com,davemloft.net];
-	TAGGED_FROM(0.00)[bounces-23029-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23030-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[robh@kernel.org,linux-crypto@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-crypto@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,qualcomm.com:email]
-X-Rspamd-Queue-Id: 275164087BF
+	NEURAL_HAM(-0.00)[-0.998];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EB8CF408C00
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+The pull request you sent on Wed, 15 Apr 2026 09:50:46 +0800:
 
-On Tue, 07 Apr 2026 15:51:42 +0200, Krzysztof Kozlowski wrote:
-> Document the QCE crypto engine on Qualcomm Eliza SoC, fully compatible
-> with earlier generations.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-> ---
->  Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 tags/v7.1-p1
 
-Acked-by: Rob Herring (Arm) <robh@kernel.org>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/aec2f682d47c54ef434b2d440992626d80b1ebdc
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
