@@ -1,162 +1,117 @@
-Return-Path: <linux-crypto+bounces-23028-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23029-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KIPLGkft32kCagAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23028-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Apr 2026 21:55:51 +0200
+	id uK0HJLoN4GmzcAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23029-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 00:14:18 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C454F40774C
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Apr 2026 21:55:50 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 275164087BF
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 00:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6042A3104A3C
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Apr 2026 19:54:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C8B3D30875F8
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Apr 2026 22:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89729378D87;
-	Wed, 15 Apr 2026 19:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5464B386564;
+	Wed, 15 Apr 2026 22:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stwm.de header.i=@stwm.de header.b="gv+MnD7O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqYXvbiJ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from email.studentenwerk.mhn.de (email.studentenwerk.mhn.de [141.84.225.229])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA63B3806AB;
-	Wed, 15 Apr 2026 19:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.84.225.229
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A2917A2EA;
+	Wed, 15 Apr 2026 22:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776282887; cv=none; b=OqR3kdFNi4+CgM8zvWECuGok3ZFS6Owsu+229VIgw9X3OB3o7Gv0peVms9QRix+beY+CeUUJAteW1jfFAACG5VBW6JOXlJvb7auyAund2Sr/yI5NGpNZUviYIkVrSlhcH09A1O7sJ4HVpQ84Z9gbOVLsQr/ZxFzxPrN70D8MbE8=
+	t=1776291224; cv=none; b=a2hMUUl6db6EwsKzqUdBNmgtiVqT5SDhLYgPNMy/mf5SBJfIOfpSqjchZT8hCsky9+XP8p4FOoTu4BwJjDsF1/LJ4Au3Sywz5kaN2e3p6D7gTXc/QsxaEnJzgZUqxJngOpVaqwHmIef6DMBChxfm0zGwoR5sDsNYIqkSxsR8P5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776282887; c=relaxed/simple;
-	bh=GqI2Gs9OUJa6V6yXJkbo24YkX1gE9FSjCe3QzKGxOdU=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=gwJMJjmoCE+qq/BTxWSiPQ6SH2WxFQrucjfvv6awEvnH6ABR8iNnxMisnZFNZB1plZCFB+4JHWSmzLQ8T+vJ+BhnBD9/si0JbFEFjBBx325mU59IGS+mATqAEajON69s+ilRZZDKKNC8l4HdjnqnQEJ5L4TOrnPDtFw6D4WrQQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stwm.de; spf=pass smtp.mailfrom=stwm.de; dkim=pass (2048-bit key) header.d=stwm.de header.i=@stwm.de header.b=gv+MnD7O; arc=none smtp.client-ip=141.84.225.229
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stwm.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stwm.de
-Received: from mailhub.studentenwerk.mhn.de (mailhub.studentenwerk.mhn.de [127.0.0.1])
-	by email.studentenwerk.mhn.de (Postfix) with ESMTPS id 4fwsL26jd3zRhRp;
-	Wed, 15 Apr 2026 21:54:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwm.de; s=stwm-20170627;
-	t=1776282874;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3g3rnn+9sRXXC9cy6rVtmbBlrKkv+ND1FL9Xo7oJwj8=;
-	b=gv+MnD7Ou9kVvudMniwF5TsAp+cl7PQM9M+f8Xui8243g6b7GbyhAp/VCCCuvTjNO1JicM
-	RVsyhHbp0RG3Nb66t30oOZFJKBVVdeNyWqu8ot1Et3VubOBqVVyYlP0CZDbPLeYm+UmYLf
-	GIBF3vCV5MqlJu/4UAV3bFsIRCNmyO5FnDGmvZlelvSRo5DMiuiPGZOYBf2XgD0Arx5NaG
-	dInblpHlopZN7JfJTwhtQXkMnOB79PgQP97ZEE0KtmwgS2zFObVtVh9ggdzXCI4gmk7p2J
-	yYIMxi+7tBlQCD2DaywpPVO5oZZLu7XXIFpMExYu/ACcm1eT6yfqc8pvT6dsEg==
+	s=arc-20240116; t=1776291224; c=relaxed/simple;
+	bh=Ri/2rRxTy0OrCH3pbbm+vOIszfKTcETUyYT3jYCGOyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P65xr0oJKArbGpQ0nBLe66g8ju0rswT5iu3MxQcBtt6dJgw1RpZv27Fhu1GeJnKI5sAvB4N6o/2A1tO0jlDiUDgsV0SYIMFRslAvVWBE7FAUMJYDFJ/MuRwQ/5CCilnaDgUHJ1mmIttl/yBeq8N7q1yNIYPCtTgEWOvar3x/4ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqYXvbiJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC77C19424;
+	Wed, 15 Apr 2026 22:13:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776291223;
+	bh=Ri/2rRxTy0OrCH3pbbm+vOIszfKTcETUyYT3jYCGOyU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dqYXvbiJSPi1N8zBxtUAwNxmGDzvk0zd968yUScxP8slRNccogn1HnLCgdlOfGG3v
+	 EFgFgSnMBo61G7tmac5vPgVCQzrY61FEX+3TTMsIzL9fxB659pAalOrCOIPAcvmfhb
+	 ZJJLpM6oLVj8xNJ4udOO8ojsImpHX55457Zp4oU9+tc0HI7LWIcVywrahOO4j6T2LT
+	 VYLDWXzaPyq10Jb7zKacqF50sDsN4RkX1WabXYMnfEkAFJDu9wJpjZOHHGaRInxuHK
+	 drWkjev3r+7O3sbhzEIwv0amkQqxHw8R2sOGj9eBUhueic5QS/04AyTDMC45h6DXaX
+	 2LFifeg05viBw==
+Date: Wed, 15 Apr 2026 17:13:41 -0500
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	Konrad Dybcio <konradybcio@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Thara Gopinath <thara.gopinath@gmail.com>,
+	devicetree@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: crypto: qcom-qce: Add Qualcomm Eliza QCE
+Message-ID: <177629121955.793028.12836250636771941736.robh@kernel.org>
+References: <20260407-crypto-qcom-eliza-v1-0-40f61a1454a2@oss.qualcomm.com>
+ <20260407-crypto-qcom-eliza-v1-1-40f61a1454a2@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 15 Apr 2026 21:54:34 +0200
-From: Wolfgang Walter <linux@stwm.de>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, Sasha Levin
- <sashal@kernel.org>, Linux Crypto Mailing List
- <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH] crypto: authencesn - Fix src offset when decrypting
- in-place
-In-Reply-To: <ad7QGhjPKRh-Vvm5@gondor.apana.org.au>
-References: <2026041152-boaster-patrol-1918@gregkh>
- <b397c5b34ed7484aad6e0acf7e1319c6@stwm.de>
- <ad7QGhjPKRh-Vvm5@gondor.apana.org.au>
-Message-ID: <9225cb77b2c7e71f209865bada94beb1@stwm.de>
-X-Sender: linux@stwm.de
-Organization: =?UTF-8?Q?Studierendenwerk_M=C3=BCnchen_Oberbayern?=
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260407-crypto-qcom-eliza-v1-1-40f61a1454a2@oss.qualcomm.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[stwm.de,quarantine];
-	R_DKIM_ALLOW(-0.20)[stwm.de:s=stwm-20170627];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gondor.apana.org.au,vger.kernel.org,kernel.org,gmail.com,davemloft.net];
+	TAGGED_FROM(0.00)[bounces-23029-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	HAS_ORG_HEADER(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-23028-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[linux@stwm.de,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[stwm.de:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[stwm.de:email,stwm.de:dkim,stwm.de:mid,apana.org.au:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C454F40774C
+	FROM_NEQ_ENVFROM(0.00)[robh@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,qualcomm.com:email]
+X-Rspamd-Queue-Id: 275164087BF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello,
 
-Am 2026-04-15 01:39, schrieb Herbert Xu:
-> On Tue, Apr 14, 2026 at 06:52:22PM +0200, Wolfgang Walter wrote:
->> Hello,
->> 
->> with 6.12.18 ipsec stopped working for us. After reverting commit
->> 
->> commit 153d5520c3f9fd62e71c7e7f9e34b59cf411e555.
->> Author: Herbert Xu <herbert@gondor.apana.org.au>
->> Date:   Fri Mar 27 15:04:17 2026 +0900
->> 
->>     crypto: authencesn - Do not place hiseq at end of dst for 
->> out-of-place
->> decryption
+On Tue, 07 Apr 2026 15:51:42 +0200, Krzysztof Kozlowski wrote:
+> Document the QCE crypto engine on Qualcomm Eliza SoC, fully compatible
+> with earlier generations.
 > 
-> Yes this is broken.  Please try this patch:
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> ---8<---
-> The src SG list offset wasn't set properly when decrypting in-place,
-> fix it.
-> 
-> Reported-by: Wolfgang Walter <linux@stwm.de>
-> Fixes: e02494114ebf ("crypto: authencesn - Do not place hiseq at end of 
-> dst for out-of-place decryption")
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> diff --git a/crypto/authencesn.c b/crypto/authencesn.c
-> index c0a01d738d9b..af3d584e584f 100644
-> --- a/crypto/authencesn.c
-> +++ b/crypto/authencesn.c
-> @@ -228,9 +228,11 @@ static int crypto_authenc_esn_decrypt_tail(struct 
-> aead_request *req,
-> 
->  decrypt:
-> 
-> -	if (src != dst)
-> -		src = scatterwalk_ffwd(areq_ctx->src, src, assoclen);
->  	dst = scatterwalk_ffwd(areq_ctx->dst, dst, assoclen);
-> +	if (req->src == req->dst)
-> +		src = dst;
-> +	else
-> +		src = scatterwalk_ffwd(areq_ctx->src, src, assoclen);
-> 
->  	skcipher_request_set_tfm(skreq, ctx->enc);
->  	skcipher_request_set_callback(skreq, flags,
 
-Applied the patch on v6.18.22, and ipsec works again.
+Acked-by: Rob Herring (Arm) <robh@kernel.org>
 
-Thanks,
--- 
-Wolfgang Walter
-Studierendenwerk München Oberbayern
-Anstalt des öffentlichen Rechts
 
