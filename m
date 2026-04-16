@@ -1,74 +1,74 @@
-Return-Path: <linux-crypto+bounces-23083-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23085-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IH9fFUJw4Wk1tQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23083-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 01:26:58 +0200
+	id eDsMIqhw4Wk1tQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23085-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 01:28:40 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D68841591E
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 01:26:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3305C41596A
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 01:28:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 989D93153070
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 23:23:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8B45931CFB5E
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 23:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0493A3805;
-	Thu, 16 Apr 2026 23:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E5A3A3E65;
+	Thu, 16 Apr 2026 23:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wNgtltwl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PzwauzUp"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E583A3802
-	for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 23:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59503A0E8E
+	for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 23:23:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776381829; cv=none; b=abCQg7CFOliURufzPKOyDM5Z29Zl3v9FV9DrKHE3feOBya2zh6Pp2KZ9dxpW9F9ybQSf0QIfHg2x1kUg8q3vId+7RBAwKMMA5Pa++u5NghMCMLALuXjVqswaWTWgq6qGaLH2JyuGjJvEzuU3v0ULWdRFtOYga+kBl5DNZuW6j6I=
+	t=1776381836; cv=none; b=OWKWdpVqna6tNg6ouyO2+Ckhhfqzc5+yAYQAnwo5rwC46q7EYqkKJ7o/GEEGHYx+m9PHFytC7kfEwxkTR8tQJE/yBis3q16tBXpGPZy9+dCu106pj5evTjheJne0onqN1qd8YOG45NUjG7zhJJXy7Jz5sTAsQ8JmEWoScRahas4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776381829; c=relaxed/simple;
-	bh=zKm4jq2+Ev4Sd7cYDHKHfbI/oMMYXorfvBJC06pU4MY=;
+	s=arc-20240116; t=1776381836; c=relaxed/simple;
+	bh=5y9MQzmnNdA8fG73zq4cTMXDW78U5CKZAEWBePI7SwQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iuOBIoFvIzASHMXZ+3c1nEE+bjfzBd3+x/Y7tStlhYWUqxf9azfAwzz1M5jImbYGupHUdisT7LfUVr7Nf15E2cNM4c5nyZ88oEn6k4sOl8VZ3a6sdOM5NAvsBIQDb+KjQma4J0wiotVh/GFuHH/Q/crn0Gxnvx1xF/0byQkeoKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wNgtltwl; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=gXkwmLW28FUw2HvnUUHgnatogka0o2lV2E7DwVtHh1PG1XWnEyJLdMUKeoZtDMYsf3gSoGVJS/zee9iYwXxF/IO/k3Cuacpxx/wpgUzrfXLgdtkuaeyQWRUAIE3+Xp2jX8sDAQQ6AUkXEQNatOQlzyvYNsaQtbJdPITS28aRZEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PzwauzUp; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-358e95e81aeso472655a91.0
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 16:23:48 -0700 (PDT)
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-82cf8dcd079so66590b3a.1
+        for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 16:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1776381827; x=1776986627; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1776381829; x=1776986629; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=jdKPTqMov8cbfemJo4nynbMk23/qpGeXeEBr2ivwq2M=;
-        b=wNgtltwlPHR7ofdEbgL01zPz7+zQKZKEEgGED+irQdlbrazUeZ/pd1nHYdKmAKd5bS
-         5DluXPgk+t0eSKC8TqsOQFTNLrT9uxzZ3nSIKHf69Se/0ZNwcfswo4ezhbMAnG8qBvV7
-         wYM9kfyHBuVoiwkGMmgFgl6ux61yYs3WoAl5QmhWw4/jHwkN/2tNkP1clgsAhWzgMJ85
-         9ASswKIyo+2QeSAIousThIWFrBtH7kHgNBXVE0aj1wjdwhl+irV+T/nxKwecNO0y8eKu
-         Fz0A/xp3LzfntpXRPuv8RkNK1E4F01GUrzCSXAy01XFdxgYvwJmWQle9w1X4I6O2O+YC
-         1cmg==
+        bh=I8i9cxkTxORgkUnwzKhG1n+FrAvtgU2d9BkG0Hg1zPQ=;
+        b=PzwauzUpASwgA6Rj6RSH/q/ggEzXA3HKTbyVkWG1uAoF3sCfi5COqAqDYQLeCpn8GT
+         NLwfGNqeffYtBy0zYjeWImLvN9NxX54tQNlmwiO/OTfwi3SDKtCaQnc6a8UlQqS+wTsS
+         NVuxPsev8iFHCre7Z3bnpSpLY2Ch+GfV616PsqcIVojJPkI9dVlQpIJBgSJz91GOvwIs
+         67AZbA+PcbdOZ1q0E0mGZL27mjX/AioEbWFK0zOrYJAoSBrck4SK8F5pljwHnlitY1LZ
+         S81Mu3d3ToOI+eiXviqP8b6v9LLYUyWwWJqzrpiqDiDpPVES+JMxJ0iuG7hG1aImBmwi
+         ZNrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776381827; x=1776986627;
+        d=1e100.net; s=20251104; t=1776381829; x=1776986629;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jdKPTqMov8cbfemJo4nynbMk23/qpGeXeEBr2ivwq2M=;
-        b=RkVx72K7YVmqtxk3Nak0h3Tw8iI1Cgun+WL/rFVx7jbpNmb1VJbaRmGCch07AY8eBq
-         G1CahBZOImT/qG28K7GqnFtzKZ2fMJULEVj3mfxp/YoUa36GrRib/A2DJd1gOjl6Zd2V
-         4RzslgqlxZbBt/kalFLH7DuYkrCiWlUO7wgRhC/lGhXBbiJxu6gMKyaJTXCWgf/KELHj
-         njK9U4xtORJNFDQWiTxasjETr+h/OVjBUH+eRFYk8ItOl47XyVnuS4BQx7vUOU301hX9
-         hJyqmx+EnwnJ+PTa5lWQZp/m1OEUljbKOZ2xtv3Ae20nEU7ttA/4HrmSOsjbLjg3D3jk
-         kLSQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/kosApgy5+rfhIzy+IaKy9oxSbMQ0K6cGR2Q8aCaNf8LisXWsonLXc1qR1c8wOdBazcnYCap0K3Qh+Adw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxy7J9GrlfRB9Qdu3uBll+Mc3/ubBNEQVmo4+WFIgF/dgSH9w5r
-	FMRD9l/WJDPFJXfgYYZU7CKgJJ6qCxjraFZlisWxQjWsZRlo0ynuQ1vjF9aSbw+b5RFh0aoXUeE
-	JREiATg==
-X-Received: from pgac12.prod.google.com ([2002:a05:6a02:294c:b0:c76:8acb:773d])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:5288:b0:359:fe72:3559
- with SMTP id 98e67ed59e1d1-3614048b1aemr440448a91.21.1776381827205; Thu, 16
- Apr 2026 16:23:47 -0700 (PDT)
+        bh=I8i9cxkTxORgkUnwzKhG1n+FrAvtgU2d9BkG0Hg1zPQ=;
+        b=HNFn5TXxmTt1xIlR0gBZeA/5uRfHA8GzvWuYaP3Iq8PcOqTYYMRrY83kurJr815Hh6
+         oO/jd4rdXpo+0DBRxqfMJVC0L5qgqHQae9iCz4ySrsTZOlDkPs6chyaErebmCKEhPGC4
+         D1B85t03gWRIDwxh1qLrFunJM+Bx8UIEwHRwsEmSK91hCUEV2rpMjcFSwiUK1sVFXpFR
+         H4nL60IUbMiwvaT3TOKfqAuelEuNK+/0HDMN0+jbAwYxepQNNrHzWPcaZzLO0AMT8llO
+         Lt3ePw/9kolbWHnlbp00z9c12qfv4PaGIktkpspijE4Cz9IgYDDn0C8Ja9Nmpd2MbJhr
+         kfKg==
+X-Forwarded-Encrypted: i=1; AFNElJ+f6MMdZGu9Vwwz7l0VuZwJCwDEOyfYnXwVBI++BZX+w8QefbaYvshucaw5/9htyoUl3SI1ItcmL3/cqBE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUX2xWYrgKFEfFAGD4bVdId8SwhxNDIKIoGekahLHWIJH+yEOk
+	bk3icCspMi+0F0xg2SpgOgItyHLgU6id9odV3fc/EoE8syBFx35kWRxVnnIFPAJarYMriLPijGA
+	OD2cSWQ==
+X-Received: from pfbdo20.prod.google.com ([2002:a05:6a00:4a14:b0:82f:120:fd71])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:928b:b0:82c:212a:a9b5
+ with SMTP id d2e1a72fcca58-82f8c8df69fmr245291b3a.36.1776381829092; Thu, 16
+ Apr 2026 16:23:49 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 16 Apr 2026 16:23:27 -0700
+Date: Thu, 16 Apr 2026 16:23:28 -0700
 In-Reply-To: <20260416232329.3408497-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -78,8 +78,9 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260416232329.3408497-1-seanjc@google.com>
 X-Mailer: git-send-email 2.54.0.rc1.513.gad8abe7a5a-goog
-Message-ID: <20260416232329.3408497-6-seanjc@google.com>
-Subject: [PATCH v3 5/7] KVM: SEV: Don't advertise support for unusable VM types
+Message-ID: <20260416232329.3408497-7-seanjc@google.com>
+Subject: [PATCH v3 6/7] KVM: SEV: Don't advertise VM types that are disabled
+ by firmware
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
 	Ashish Kalra <ashish.kalra@amd.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
@@ -94,18 +95,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
 	MV_CASE(0.50)[];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23083-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23085-lists,linux-crypto=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amd.com:url];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[seanjc@google.com,linux-crypto@vger.kernel.org];
@@ -116,80 +117,48 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	HAS_REPLYTO(0.00)[seanjc@google.com];
 	REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 9D68841591E
+X-Rspamd-Queue-Id: 3305C41596A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Commit 0aa6b90ef9d7 ("KVM: SVM: Add support for allowing zero SEV ASIDs")
-made it possible to make it impossible to use SEV VMs by not allocating
-them any ASIDs.
+From: Tycho Andersen <tycho@kernel.org>
 
-Commit 6c7c620585c6 ("KVM: SEV: Add SEV-SNP CipherTextHiding support") did
-the same thing for SEV-ES.
+As called out in a footnote for a recent SNP vulnerability[1], it is
+possible for a specific flavor of SEV+ to be disabled by the firmware even
+when the flavor is fully supported by the CPU and platform:
 
-Do not export KVM_X86_SEV(_ES)_VM as supported types if in either of these
-situations, so that userspace can use them to determine what is actually
-supported by the current kernel configuration.
+  Applying mitigation CVE-2025-48514 will result in disabling SEV-ES when
+  SEV-SNP is enabled.
 
-Also move the buildup to a local variable so it is easier to add additional
-masking in future patches.
+Restrict KVM's set of supported VM types based on the VM types that are
+fully supported by firmware to avoid over-reporting what KVM can actually
+support.  Like KVM's handling of ASID space exhaustion, don't modify KVM's
+CPUID capabilities, as the CPU/platform still supports the underlying
+technology and clearing e.g. SEV_ES while advertising SEV_SNP would confuse
+KVM and userspace.
 
-Link: https://lore.kernel.org/all/aZyLIWtffvEnmtYh@google.com/
+Link: https://www.amd.com/en/resources/product-security/bulletin/amd-sb-3023.html [1]
+Link: https://lore.kernel.org/all/aZyLIWtffvEnmtYh@google.com
 Suggested-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Tycho Andersen (AMD) <tycho@kernel.org>
-[sean: land code in sev_hardware_setup()]
+[sean: rewrite changelog to provide details on why/how this can happen]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/sev.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ arch/x86/kvm/svm/sev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index dfeb660b8f5d..0971cf652b0b 100644
+index 0971cf652b0b..ab386aa0c284 100644
 --- a/arch/x86/kvm/svm/sev.c
 +++ b/arch/x86/kvm/svm/sev.c
-@@ -3062,6 +3062,7 @@ void __init sev_hardware_setup(void)
- 	bool sev_snp_supported = false;
- 	bool sev_es_supported = false;
- 	bool sev_supported = false;
-+	u32 vm_types = 0;
- 
- 	if (!sev_enabled || !npt_enabled || !nrips)
- 		goto out;
-@@ -3195,24 +3196,26 @@ void __init sev_hardware_setup(void)
- 		}
- 	}
- 
--	if (sev_supported)
--		kvm_caps.supported_vm_types |= BIT(KVM_X86_SEV_VM);
--	if (sev_es_supported)
--		kvm_caps.supported_vm_types |= BIT(KVM_X86_SEV_ES_VM);
-+	if (sev_supported && min_sev_asid <= max_sev_asid)
-+		vm_types |= BIT(KVM_X86_SEV_VM);
-+	if (sev_es_supported && min_sev_es_asid <= max_sev_es_asid)
-+		vm_types |= BIT(KVM_X86_SEV_ES_VM);
+@@ -3202,6 +3202,7 @@ void __init sev_hardware_setup(void)
+ 		vm_types |= BIT(KVM_X86_SEV_ES_VM);
  	if (sev_snp_supported)
--		kvm_caps.supported_vm_types |= BIT(KVM_X86_SNP_VM);
-+		vm_types |= BIT(KVM_X86_SNP_VM);
-+
-+	kvm_caps.supported_vm_types |= vm_types;
+ 		vm_types |= BIT(KVM_X86_SNP_VM);
++	vm_types &= sev_firmware_supported_vm_types();
  
- 	if (boot_cpu_has(X86_FEATURE_SEV))
- 		pr_info("SEV %s (ASIDs %u - %u)\n",
--			sev_str_feature_state(sev_supported, min_sev_asid <= max_sev_asid),
-+			sev_str_feature_state(sev_supported, vm_types & BIT(KVM_X86_SEV_VM)),
- 			min_sev_asid, max_sev_asid);
- 	if (boot_cpu_has(X86_FEATURE_SEV_ES))
- 		pr_info("SEV-ES %s (ASIDs %u - %u)\n",
--			sev_str_feature_state(sev_es_supported, min_sev_es_asid <= max_sev_es_asid),
-+			sev_str_feature_state(sev_es_supported, vm_types & BIT(KVM_X86_SEV_ES_VM)),
- 			min_sev_es_asid, max_sev_es_asid);
- 	if (boot_cpu_has(X86_FEATURE_SEV_SNP))
- 		pr_info("SEV-SNP %s (ASIDs %u - %u)\n",
--			sev_str_feature_state(sev_snp_supported, true),
-+			sev_str_feature_state(sev_snp_supported, vm_types & BIT(KVM_X86_SNP_VM)),
- 			min_snp_asid, max_snp_asid);
+ 	kvm_caps.supported_vm_types |= vm_types;
  
- 	sev_enabled = sev_supported;
 -- 
 2.54.0.rc1.513.gad8abe7a5a-goog
 
