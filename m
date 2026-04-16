@@ -1,203 +1,163 @@
-Return-Path: <linux-crypto+bounces-23043-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23045-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OP6SNtrB4Gm8lgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23043-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 13:02:50 +0200
+	id WLZYL+nJ4GkdmAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23045-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 13:37:13 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 899E440D188
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 13:02:50 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C24640D7A4
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 13:37:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E3CE63060C8E
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 11:01:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 48F343150A1F
+	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 11:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2F03A6B65;
-	Thu, 16 Apr 2026 11:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fLyXElgf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489D43A759B;
+	Thu, 16 Apr 2026 11:30:05 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCC539183C
-	for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 11:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B254C3A7F5D
+	for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 11:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776337307; cv=none; b=BH9KT2+CqjpkdtAaUasjME7KSbRLK1OrzYOGVeLiOOxMgeW8ftjV/Uzf3hoCBZKsgWXyX0n0TCSiZ8W+t8bF8Ah5OkzfkEKAtVU6ODYMFVjeQlS0nw0Oj+FCe2P+aPiFANkEb8ZlDZAh12KuOk2BSnDaK9xeBUzk96iZwge2vUk=
+	t=1776339004; cv=none; b=FgZGDSYuZFOOA3JIDXS1XABvrlmZuWzt+zYEUEyaGzPOKX9gQwjV23bz+1ji/wcvAbRYfR/QoQPYXQE35n/vMZJFkPobdU+8ws4OQjg9h0XWkBEt/ng5+jKRMH7ExqhSOmL3aXDrT+WOk2DHxw9gfjdbPttkA+UAd2Tir3j8lLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776337307; c=relaxed/simple;
-	bh=PM6HxBGY/uLlU1yBOXRA/GDCOAXJaEkAZa8B3LSKqVs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jRuDlodRsO+vQmwWw8kJhb+DBHmJIxwfcYUab7HVzIscD8rukYciDiQTMHy5B0+eklBrL+9e0n2XykY0VbRDLK6uxBdLh/NJPDkyUu7QVnwrk9u/+bSM2Qn+Ua0ktP1GtamEvAQNjzQtHkmbxFqv4WV2yBZ5ptZc+PPU09Hcdlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fLyXElgf; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1776339004; c=relaxed/simple;
+	bh=FSgVIzpnraycKQsxAztrNgNSM9On/XU1ftEj+pCL/gg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bebFiN876NVU8bRPTJS2twwKFRfy7yWmKhfNtLS1ieI00A7ulKHM4OKLkRmWMVdq5IsdNiWbS9HnsBq1y4KSlX6/1VQFCfvy5cM/IyStICkhUzNkswiWkLZXsGtH5M5ei8ZpEV4hpfjDBRnt932+wPdJAtARexfSvl71wd/r+Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2ad21f437eeso3380635ad.0
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 04:01:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776337306; x=1776942106; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jfu3qCPkJ7YryG+WcH1SeIojzYRxn2U/dbTCrcamzw=;
-        b=fLyXElgftCXR51ZLVEWRptTfBOYkpUo5OwBY7RXmSO3tVrxxgVc59Je37IgmeN0qT/
-         vVNavTwRHo6KqG1DX3Mcf7zoIrhExKsttIRbVjVn4Smel/MSVrPnnT8kVscFM/Bn5AK3
-         4y4OwjWUUzDW+0sjDJBBOQ+vgruUXP55SsslNnb7+vOstpOgnPg4/nGyR0lzey+Im24w
-         JQxRLWsfb2UrHId8KdOv4skLfNv5N+nuMa81mYnIFQsuG7EPbDI85DQrYpij7WnqG7Ej
-         P2cGXx0k1BbDBzFVSEztXJn+NER0qmyjKu+HFTDEtQANoTxxK2KGeb02WR9jqILKJUSU
-         +8Dg==
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-4670464029eso4446555b6e.2
+        for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 04:30:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776337306; x=1776942106;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20251104; t=1776339000; x=1776943800;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2jfu3qCPkJ7YryG+WcH1SeIojzYRxn2U/dbTCrcamzw=;
-        b=couS4/zGB+VKdB6MG2z0C09EzpDMwPeZwz0t071YkOtwN10WAXWmLHIJIZxj7+qZfj
-         DUuWqJqQwsTTUYl9uxuOtvGPhbZv+TIBKsBBYO/z4iZAS/VPeVhfvq4O7iO2DJ1w2pFv
-         Sh8Y6npd/xnQKLCddHmUqwGjGNhes5w9EV9mw8vZp982vygObmD9yBUluCYR9/oj4+pk
-         GgH8JzrUlTWg7P71jTFFlnGLhKV0wZwrPIXmjOHw2kYrohxWzKKLnv1+GDLjQNTkcmc9
-         oRpsfPjGDN7zS6dlgyd4Tnyzo+2xOVPCIq9uytcXImh7KLdC/nR6zLDiJoVTp6NvYlOK
-         r20g==
-X-Forwarded-Encrypted: i=1; AFNElJ+iFF9PDXZRS/h5qed1yOddpgYtapWamt+snaS+h9Sv7d7XV7DJLF8OXTaDzFR90ORhLOj75HzIk5tuwUE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/XtEPyb/L46xqtzMC6zQra5VMx7hKrokUj+Dk63fdfdBXW1Br
-	VBRk1wVREp8KrYwDuE1H2BCR3xyiA8Git1cZXC2ZzJJFukhSExh5Ctnt
-X-Gm-Gg: AeBDievxwNYaUX7Ka2jrFGjhiLOf8JxdSG7B+rL4g3Ga1A9YaQYIKkKKiII2hpbE39H
-	DLpz986jeB3WQ1moBDjTyP6xYFMw+/2t7qfxAc3fj1VKlkLTj111HdJMFVN/2BlErsoiHWgRqPx
-	k3nY/RK3j2XnGWQkKAvj7RGKVCxqgKgPlMQxuZf5/BYcAlQOmn8Sbsn+W+wfz9a/m0AkAiavQDI
-	RFw9R4LezF1L+09d0o153M8WN9QLaEu4tjYe4WCpxuvm9x6mPAvLbnVdYIJRNCsSxLVMW0H0M5A
-	FeyGwyhoB7xKJz5YE9rfIyw3ry6d67vWCNqRI/fLHrPEtddrKobT8ZcZT++kfEu+Mqp2y7Xe0Mr
-	oDZHWcuQhRLCb/5EjXZytlaJLgtG2WSKaDxI4XUWsy1ICFBrZQ2BFliXv1Ro9F7dls8brII5HI2
-	S02nvTMhtt/9j3NGOIHXtY5wggqewQYbF9woP8NNGpETnZpg==
-X-Received: by 2002:a17:903:200e:b0:2b0:ac1e:9730 with SMTP id d9443c01a7336-2b5eaae081dmr22286065ad.14.1776337305794;
-        Thu, 16 Apr 2026 04:01:45 -0700 (PDT)
-Received: from LAPTOP-TU1AT3C0 ([2402:f000:4:1008:809:ffff:fff8:74d5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b4782b113esm66949675ad.71.2026.04.16.04.01.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2026 04:01:45 -0700 (PDT)
-From: Zhang Xiaolei <zxl434815272@gmail.com>
-To: corbet@lwn.net,
-	ebiggers@kernel.org,
-	andersson@kernel.org,
-	mathieu.poirier@linaro.org
-Cc: ardb@kernel.org,
-	skhan@linuxfoundation.org,
-	linux-crypto@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Zhang Xiaolei <zxl434815272@gmail.com>
-Subject: [PATCH] docs: staging: fix various typos and grammar issues
-Date: Thu, 16 Apr 2026 18:58:53 +0800
-Message-ID: <20260416105854.788-1-zxl434815272@gmail.com>
-X-Mailer: git-send-email 2.53.0.windows.2
+        bh=AptjVPQ97g683jPGYCmYUacoTRTAG/3/TQY5t1TSdkk=;
+        b=eEQ76WqFcfUK849r009aaDSlMhO+384MpMjlHtgNJFx8qq+A84rg4wYXtQ0vOTqI7G
+         DgxYcceG4R4nexgw8nxDxAmsbE2j3PpZ8u+bpe/80ZGAixI5r2OaRsY2D4jCLCb9SQp5
+         gdpnWQnw9BS2wt6L64rz1taUI28xhgVkavDMGq3mqsU1Zrvi0waEvnzb45Im6WhHc3r9
+         7MOrJTls5AO8bwDa0PW9mR+ysYg8x/8M7tcIaMJNlW63+riuK0RGlZfUZ3d1nua2UpDd
+         kCcQmVLln/cRV0MTZuefKd6QAZfIG2CIFjrkMECWwXHh15V2BY2y/JVuY8DHA5UM3sHt
+         SSuw==
+X-Forwarded-Encrypted: i=1; AFNElJ+F28dOFPoOH3uFHA48XDAyAA++HTmMvL3xThps4KaDwQ0EJt/mJDMWdQf3ASJvfaPIg55/qb86sGfhMhE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8W59lSUJeNa4ZUH8hBXKERgj8WVgpsT8PKEMcIW8T22FOyAh3
+	afFxDl1tk+W9PB0joSAmRJX5/JSXZ3n6YBpBjuZDPprzFBYCPd582/ZCs/4iuDdH
+X-Gm-Gg: AeBDieveyOOurgiTm8Fm2FwVabEPwG4ZKVtEAwka3drtrl7TH/OKN0CypBpIc+hm9EC
+	2p8f3jZ2JMryjNl3ZZlZEdkJ7rJ4Ry9rqrLa7bFkhl4X6NPVmqnu8AwhEHQTWdWsLPQK3Nrf/ro
+	Rc+CP7Tziv5iRUyrWikYO+1v7EicBmTCa9MW5JoolfeNWqiptaMkqq3VxPHHMn0+uGtHGMpUzJW
+	ojM085+4oliZHlVN7Qegj9sqpc/svw2/pa3olPkw1c3YdTkd9slygEGB4GxMuXzDAWJzrln72Na
+	uc32ICRCEXSEilIvysfhSsQEi+vWoBLk3tvYyvIK4g5zKME1H6txtZir3EyOZGAlwm4wX1VoyBJ
+	PHGgHQ1mKSpcDIOXSGQ0Fxl6d80+qosf+7TYiRAZLVNYx3cnyyEoiFl3M82u9ZP4AwgipceHhCR
+	xVANmk1KNWPsAyFFcqy6DN8NJV3kY9buxJCWYp+mi3HbelHpAXPyXoTyW04pB6yU56sUBnz/8=
+X-Received: by 2002:a05:6808:6f88:b0:467:2926:1231 with SMTP id 5614622812f47-4789ef13d68mr14274993b6e.33.1776339000449;
+        Thu, 16 Apr 2026 04:30:00 -0700 (PDT)
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com. [209.85.161.53])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-4797a38afd5sm2502543b6e.8.2026.04.16.04.30.00
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2026 04:30:00 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-68207984e66so4360208eaf.2
+        for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 04:30:00 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+DSb/gWshuAbleHzZpZhtng0OMv3dTtG5wagCBq3FWIl0JDDjbEi6j4CRZ6Pw216ao4oXTNfFwM5z+jjM=@vger.kernel.org
+X-Received: by 2002:a05:6122:788:b0:56f:1ed6:1d29 with SMTP id
+ 71dfb90a1353d-56f3bca6059mr11244615e0c.9.1776338533353; Thu, 16 Apr 2026
+ 04:22:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+References: <20260410120044.031381086@kernel.org> <20260410120317.910770161@kernel.org>
+In-Reply-To: <20260410120317.910770161@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 16 Apr 2026 13:22:02 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX1aShz8esbYzJ7T-0Na6++_Yi315aCiUx0Cnsgod5uUg@mail.gmail.com>
+X-Gm-Features: AQROBzBwwjc8yd10cT00Tu5Dl2qrCYQStWr3Lcobhh8coMrpPeCH9vhBSNokYJk
+Message-ID: <CAMuHMdX1aShz8esbYzJ7T-0Na6++_Yi315aCiUx0Cnsgod5uUg@mail.gmail.com>
+Subject: Re: [patch 05/38] treewide: Remove CLOCK_TICK_RATE
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, 
+	Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, 
+	Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
+	linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org, 
+	David Woodhouse <dwmw2@infradead.org>, Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, 
+	Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer <t.sailer@alumni.ethz.ch>, 
+	linux-hams@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, 
+	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
+	Catalin Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, 
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, 
+	Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, 
+	Paul Walmsley <pjw@kernel.org>, linux-riscv@lists.infradead.org, 
+	Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,arndb.de,kernel.org,linux.intel.com,lists.linux.dev,pengutronix.de,gondor.apana.org.au,kvack.org,infradead.org,plugable.com,mit.edu,linux-foundation.org,gmail.com,google.com,googlegroups.com,alumni.ethz.ch,zx2c4.com,linaro.org,armlinux.org.uk,lists.infradead.org,arm.com,lists.linux-m68k.org,southpole.se,gmx.de,ellerman.id.au,lists.ozlabs.org,linux.ibm.com,davemloft.net];
+	TAGGED_FROM(0.00)[bounces-23045-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,linuxfoundation.org,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-23043-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DMARC_NA(0.00)[linux-m68k.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[48];
 	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zxl434815272@gmail.com,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	NEURAL_HAM(-0.00)[-0.999];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_NEQ_ENVFROM(0.00)[geert@linux-m68k.org,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.992];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	R_DKIM_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 899E440D188
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux-m68k.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 6C24640D7A4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Fix a few typographical and grammatical issues across several
-staging documentation files to improve readability:
-- crc32.rst: replace "decide in" with "decide on"
-- lzo.rst: replace "independent on" with "independent of"
-- remoteproc.rst: fix word order in dependent clause
-- static-keys.rst: add hyphen to "low-level"
+On Fri, 10 Apr 2026 at 14:18, Thomas Gleixner <tglx@kernel.org> wrote:
+> This has been scheduled for removal more than a decade ago and the comments
+> related to it have been dutifully ignored. The last dependencies are gone.
+>
+> Remove it along with various now empty asm/timex.h files.
+>
+> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 
-Signed-off-by: Zhang Xiaolei <zxl434815272@gmail.com>
----
- Documentation/staging/crc32.rst       | 2 +-
- Documentation/staging/lzo.rst         | 2 +-
- Documentation/staging/remoteproc.rst  | 2 +-
- Documentation/staging/static-keys.rst | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+>  arch/m68k/include/asm/timex.h       |   15 ---------------
 
-diff --git a/Documentation/staging/crc32.rst b/Documentation/staging/crc32.rst
-index 64f3dd430a6c..fc0d9564b99c 100644
---- a/Documentation/staging/crc32.rst
-+++ b/Documentation/staging/crc32.rst
-@@ -119,7 +119,7 @@ the byte-at-a-time table method, popularized by Dilip V. Sarwate,
- v.31 no.8 (August 1988) p. 1008-1013.
- 
- Here, rather than just shifting one bit of the remainder to decide
--in the correct multiple to subtract, we can shift a byte at a time.
-+on the correct multiple to subtract, we can shift a byte at a time.
- This produces a 40-bit (rather than a 33-bit) intermediate remainder,
- and the correct multiple of the polynomial to subtract is found using
- a 256-entry lookup table indexed by the high 8 bits.
-diff --git a/Documentation/staging/lzo.rst b/Documentation/staging/lzo.rst
-index f65b51523014..2d48b2667dd2 100644
---- a/Documentation/staging/lzo.rst
-+++ b/Documentation/staging/lzo.rst
-@@ -75,7 +75,7 @@ Description
-      are called under the assumption that a certain number of bytes follow
-      because it has already been guaranteed before parsing the instructions.
-      They just have to "refill" this credit if they consume extra bytes. This
--     is an implementation design choice independent on the algorithm or
-+     is an implementation design choice independent of the algorithm or
-      encoding.
- 
- Versions
-diff --git a/Documentation/staging/remoteproc.rst b/Documentation/staging/remoteproc.rst
-index 5c226fa076d6..c117b060e76c 100644
---- a/Documentation/staging/remoteproc.rst
-+++ b/Documentation/staging/remoteproc.rst
-@@ -24,7 +24,7 @@ handlers, and then all rpmsg drivers will then just work
- (for more information about the virtio-based rpmsg bus and its drivers,
- please read Documentation/staging/rpmsg.rst).
- Registration of other types of virtio devices is now also possible. Firmwares
--just need to publish what kind of virtio devices do they support, and then
-+just need to publish what kind of virtio devices they support, and then
- remoteproc will add those devices. This makes it possible to reuse the
- existing virtio drivers with remote processor backends at a minimal development
- cost.
-diff --git a/Documentation/staging/static-keys.rst b/Documentation/staging/static-keys.rst
-index b0a519f456cf..e8dc3a87c381 100644
---- a/Documentation/staging/static-keys.rst
-+++ b/Documentation/staging/static-keys.rst
-@@ -90,7 +90,7 @@ out-of-line true branch. Thus, changing branch direction is expensive but
- branch selection is basically 'free'. That is the basic tradeoff of this
- optimization.
- 
--This lowlevel patching mechanism is called 'jump label patching', and it gives
-+This low-level patching mechanism is called 'jump label patching', and it gives
- the basis for the static keys facility.
- 
- Static key label API, usage and examples
--- 
-2.53.0.windows.2
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
