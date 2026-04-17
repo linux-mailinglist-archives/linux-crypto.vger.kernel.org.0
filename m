@@ -1,198 +1,166 @@
-Return-Path: <linux-crypto+bounces-23084-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23086-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KH32E8lv4WlHtQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23084-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 01:24:57 +0200
+	id iM04MNh94WmdtwAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23086-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 02:24:56 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46044158D0
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 01:24:56 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 266CA415CD0
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 02:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 863E430B06E7
-	for <lists+linux-crypto@lfdr.de>; Thu, 16 Apr 2026 23:23:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6CED13035265
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 00:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546A63A1A56;
-	Thu, 16 Apr 2026 23:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7A9481B1;
+	Fri, 17 Apr 2026 00:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y3lUCtue"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tsXuyWmT"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18543A1E9F
-	for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 23:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EBD763CB;
+	Fri, 17 Apr 2026 00:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776381835; cv=none; b=mwx4kvQ8MlccEn0giONj/pcqRyQJgUsdqYNk+iFvV7c8Dyiz8sW+DOjvWYblhIR8r0pIgY/unMLyvhSDes11PUKy/+MP4cARaeD/UCNwWtmUHLakz8p0HPrjJtEBaTMYoITsGx4dQPakxwiGsb2EBeI7a070sTK/U6nKv5mpIFY=
+	t=1776385491; cv=none; b=PIluADZjGkSpLcfqo7HDGD9DjZp2ria7Rgq0Nq2T6BHYKK/sNeQduDU7CZdYApMEtOFcIoCjRJ9rEoaw6E/9lThVlIEzJmTzNxl+t5uPzFJO9aA5b/pAPmoZzxOu27crXmxbTqwe1123LaGjLJfXcLZDDZNe/seUkpH9EdEbsmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776381835; c=relaxed/simple;
-	bh=z9lIX9DuyErNsdEarWQrJGrRTnr2frPfAGsuiIhhPJ8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Sp/uMupHS4zXpm8PAB6HvChzPiBTtoz0ZjlwGrF/RV2V2K9tDr0a4KvOW6HETtO4AxU6/KHoHnBNxMcJrQCJNTWSW2NMb6MRFrvkAgC5AM0ppKiZ0+2EFdqlZgzVbeRrPVHahy+w8VFRw6H9bbuRud0MNkkUG87keIcVOeiOr3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y3lUCtue; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-82f71437218so67264b3a.2
-        for <linux-crypto@vger.kernel.org>; Thu, 16 Apr 2026 16:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1776381831; x=1776986631; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=zAK6S4K1O30Zc7+4RITzFic55CfupiQzind/IcIwTPU=;
-        b=Y3lUCtueEg9o845zn/Z2+HHYEBQ8uEUQg1ZnM+doXc6i4fXP2GR+Xyt4a3Vv/6DtBz
-         aJ0rjAJE1w7mZiPGyqtu4wv25rb5bZsa2aXXCs9SdV9Av7BrXVuaAsWN34uY+dDD841g
-         4LnoNvbe5y4wwKlGmRJgbRB/Tu9H1fI7CJ/XWXfTU6GWRwYrNhSSSBjzU7JKuahV/+LU
-         g7hFOMnwGAHeFXnbKJISS9lGc6xHml43ivWwmQapSI3NSpW/MvKjQYE6YuCHGllYgEKx
-         UrNhLfWCfl8hgeyropwG4Oeu7ay7HAaYQJz6obWCDEOwJWp+tAcjitWbGOh9opM+Cj5O
-         RGRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776381831; x=1776986631;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zAK6S4K1O30Zc7+4RITzFic55CfupiQzind/IcIwTPU=;
-        b=Ferzb57rUDTTyiY3/s1d3h3xT7/qMhiJ3Rpq/DDSr2futiIIc2WrCn/TOb29yiAADm
-         3KAp2jVVc4QN24fWihdK/8jhEJB5BCO8UkqtjFn4WZ2TJ/i/ktL8EB8zMZE7Qj+/UG25
-         x7QEx7QwE6xq489gVxbQQ9ekInDey2ao7dkHicJUU0dag5lNWERq/rh4kL3M9s+aQxyQ
-         Cgcf5ZSm0w46xXpqOmT43oj8IcBdamZZgsneRSqB7Rt7swzXfoOVhCUEaAuTsAHI8CCK
-         cj8P31ddA5On/Ngu5ORqepbEw9Sx41fklB1jnJSeBtMWcA0lazpcBQY3Aezj1imUFMrK
-         Sm7Q==
-X-Forwarded-Encrypted: i=1; AFNElJ87RHInBWkKmtz9hqr21N3aiEtOTJpjhMFU3BeuLDUKCPLBphM14vL7mF4vIXA51CZJedy0HOpgkApS+uY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxzf8X/xtu32vNy0iF/JsaetdKb593iq31m776HPLKn7DGAwNqX
-	llQ0mwRdBRHu0S6RNf4xFldA2YLmvYT5VnoKdtmFeF03Zv72AIfL5d9Z9KUsbXA4Q4msseO0cVq
-	cAQsZlw==
-X-Received: from pfbmb8.prod.google.com ([2002:a05:6a00:7608:b0:82f:60a5:8a3d])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:18aa:b0:82c:eb46:acb9
- with SMTP id d2e1a72fcca58-82f8c961f8amr240636b3a.24.1776381831072; Thu, 16
- Apr 2026 16:23:51 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 16 Apr 2026 16:23:29 -0700
-In-Reply-To: <20260416232329.3408497-1-seanjc@google.com>
+	s=arc-20240116; t=1776385491; c=relaxed/simple;
+	bh=y6LTZHncCej35ex2qI+cmlgV4pN0OztUwdHZgg34Av4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HiHAMOOI4GwCcmWbwr2JCl7688jkpkf/7flHCd+Qa8KNGeQWqEKLghuzo0BR7xN3Eq+sBWPqXUAdou/FCpABIA9hyyct7tXHna0+/Gb80lTFpRrSNFMuT7ylkDG9RCwmo5jlCvFr/wBrtz7Gj49n05WYcmtLV7nk65VKGocKykI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tsXuyWmT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB931C2BCAF;
+	Fri, 17 Apr 2026 00:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776385491;
+	bh=y6LTZHncCej35ex2qI+cmlgV4pN0OztUwdHZgg34Av4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=tsXuyWmTR4qJmHkfE6fjbc4g/gI67qzujeEOjk8lqAkyabNYiEt9TnT1rWKvi+sXt
+	 y/WASPpvaiirgHrYAwAxJhik8sD6X+eQnk3liP2oTdsFYuIKnGVF5wzDLCnZcb/yeL
+	 amkiw1CEL9+mq26q721Rf6RBVW3Dp+ggq5xniRNmSNa6IZkDMVILFs+uaOftDMqDCP
+	 qYlqztwn2hTwb0ix8lNW5rYj5gYOsa/8XQVzK26nEcg6TL2V7D3NQpt5fA0LenFXnj
+	 OxVRpFDMj3XmrJaV+6pdGG0nR7tefy9b6zMDnA1B73bWu+msquFwPpXM6XsKEpm6+P
+	 BYvFgQdYrvW1Q==
+From: Tejun Heo <tj@kernel.org>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	Thomas Graf <tgraf@suug.ch>,
+	David Vernet <void@manifault.com>,
+	Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>
+Cc: Emil Tsalapatis <emil@etsalapatis.com>,
+	linux-crypto@vger.kernel.org,
+	sched-ext@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH for-7.1-fixes 1/2] rhashtable: add no_sync_grow option
+Date: Thu, 16 Apr 2026 14:24:48 -1000
+Message-ID: <20260417002449.2290577-1-tj@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260416232329.3408497-1-seanjc@google.com>
-X-Mailer: git-send-email 2.54.0.rc1.513.gad8abe7a5a-goog
-Message-ID: <20260416232329.3408497-8-seanjc@google.com>
-Subject: [PATCH v3 7/7] KVM: selftests: Teach sev_*_test about revoking VM types
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Ashish Kalra <ashish.kalra@amd.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	John Allen <john.allen@amd.com>
-Cc: kvm@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Tycho Andersen <tycho@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23084-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_FROM(0.00)[bounces-23086-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[seanjc@google.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	HAS_REPLYTO(0.00)[seanjc@google.com];
-	REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: C46044158D0
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 266CA415CD0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Tycho Andersen <tycho@kernel.org>
+The sync grow path on insert calls get_random_u32() and kvmalloc(), both of
+which take regular spinlocks and are unsafe under raw_spinlock_t. Add an
+opt-in flag that skips the >100% grow check; inserts always succeed by
+appending to the chain, and the deferred worker still grows at >75% load.
 
-Instead of using CPUID, use the VM type bit to determine support, since
-those now reflect the correct status of support by the kernel and firmware
-configurations.
+sched_ext already uses rhashtable under raw_spinlock_t and is technically
+broken, though hard to hit in practice because the tables stay small.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Tycho Andersen (AMD) <tycho@kernel.org>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Cc: stable@vger.kernel.org # prerequisite for the next sched_ext fix
+Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- tools/testing/selftests/kvm/x86/sev_init2_tests.c  | 14 ++++++--------
- .../testing/selftests/kvm/x86/sev_migrate_tests.c  |  2 +-
- tools/testing/selftests/kvm/x86/sev_smoke_test.c   |  4 ++--
- 3 files changed, 9 insertions(+), 11 deletions(-)
+Hello,
 
-diff --git a/tools/testing/selftests/kvm/x86/sev_init2_tests.c b/tools/testing/selftests/kvm/x86/sev_init2_tests.c
-index b238615196ad..97bd036b4f1c 100644
---- a/tools/testing/selftests/kvm/x86/sev_init2_tests.c
-+++ b/tools/testing/selftests/kvm/x86/sev_init2_tests.c
-@@ -136,16 +136,14 @@ int main(int argc, char *argv[])
- 		    kvm_check_cap(KVM_CAP_VM_TYPES), 1 << KVM_X86_SEV_VM);
+The follow-up sched_ext patch is a fix targeting sched_ext/for-7.1-fixes
+which I'd like to send Linus's way sooner than later. Would it be okay
+to route both patches through sched_ext/for-7.1-fixes? If you'd prefer
+to route the rhashtable change differently, that works too. Please let
+me know, thanks.
+
+Based on linus/master (3cd8b194bf34).
+
+ include/linux/rhashtable-types.h | 2 ++
+ include/linux/rhashtable.h       | 5 ++++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/rhashtable-types.h b/include/linux/rhashtable-types.h
+index 015c8298bebc..555eea6077f8 100644
+--- a/include/linux/rhashtable-types.h
++++ b/include/linux/rhashtable-types.h
+@@ -50,6 +50,7 @@ typedef int (*rht_obj_cmpfn_t)(struct rhashtable_compare_arg *arg,
+  * @max_size: Maximum size while expanding
+  * @min_size: Minimum size while shrinking
+  * @automatic_shrinking: Enable automatic shrinking of tables
++ * @no_sync_grow: Skip sync grow on insert (allows inserts under raw_spinlock_t)
+  * @hashfn: Hash function (default: jhash2 if !(key_len % 4), or jhash)
+  * @obj_hashfn: Function to hash object
+  * @obj_cmpfn: Function to compare key with object
+@@ -62,6 +63,7 @@ struct rhashtable_params {
+ 	unsigned int		max_size;
+ 	u16			min_size;
+ 	bool			automatic_shrinking;
++	bool			no_sync_grow;
+ 	rht_hashfn_t		hashfn;
+ 	rht_obj_hashfn_t	obj_hashfn;
+ 	rht_obj_cmpfn_t		obj_cmpfn;
+diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
+index 0480509a6339..a977a597d288 100644
+--- a/include/linux/rhashtable.h
++++ b/include/linux/rhashtable.h
+@@ -197,11 +197,14 @@ static inline bool rht_shrink_below_30(const struct rhashtable *ht,
+  * rht_grow_above_100 - returns true if nelems > table-size
+  * @ht:		hash table
+  * @tbl:	current table
++ *
++ * Returns false if the caller opted out of synchronous grow.
+  */
+ static inline bool rht_grow_above_100(const struct rhashtable *ht,
+ 				      const struct bucket_table *tbl)
+ {
+-	return atomic_read(&ht->nelems) > tbl->size &&
++	return !ht->p.no_sync_grow &&
++		atomic_read(&ht->nelems) > tbl->size &&
+ 		(!ht->p.max_size || tbl->size < ht->p.max_size);
+ }
  
- 	TEST_REQUIRE(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_VM));
--	have_sev_es = kvm_cpu_has(X86_FEATURE_SEV_ES);
-+	have_sev_es = kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_ES_VM);
- 
--	TEST_ASSERT(have_sev_es == !!(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_ES_VM)),
--		    "sev-es: KVM_CAP_VM_TYPES (%x) does not match cpuid (checking %x)",
--		    kvm_check_cap(KVM_CAP_VM_TYPES), 1 << KVM_X86_SEV_ES_VM);
-+	TEST_ASSERT(!have_sev_es || kvm_cpu_has(X86_FEATURE_SEV_ES),
-+		    "sev-es: SEV_ES_VM supported without SEV_ES in CPUID");
- 
--	have_snp = kvm_cpu_has(X86_FEATURE_SEV_SNP);
--	TEST_ASSERT(have_snp == !!(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SNP_VM)),
--		    "sev-snp: KVM_CAP_VM_TYPES (%x) indicates SNP support (bit %d), but CPUID does not",
--		    kvm_check_cap(KVM_CAP_VM_TYPES), KVM_X86_SNP_VM);
-+	have_snp = kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SNP_VM);
-+	TEST_ASSERT(!have_snp || kvm_cpu_has(X86_FEATURE_SEV_SNP),
-+		    "sev-snp: SNP_VM supported without SEV_SNP in CPUID");
- 
- 	test_vm_types();
- 
-diff --git a/tools/testing/selftests/kvm/x86/sev_migrate_tests.c b/tools/testing/selftests/kvm/x86/sev_migrate_tests.c
-index 6b0928e69051..42bc023d5193 100644
---- a/tools/testing/selftests/kvm/x86/sev_migrate_tests.c
-+++ b/tools/testing/selftests/kvm/x86/sev_migrate_tests.c
-@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
- 
- 	TEST_REQUIRE(kvm_cpu_has(X86_FEATURE_SEV));
- 
--	have_sev_es = kvm_cpu_has(X86_FEATURE_SEV_ES);
-+	have_sev_es = kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_ES_VM);
- 
- 	if (kvm_has_cap(KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM)) {
- 		test_sev_migrate_from(/* es= */ false);
-diff --git a/tools/testing/selftests/kvm/x86/sev_smoke_test.c b/tools/testing/selftests/kvm/x86/sev_smoke_test.c
-index 8bd37a476f15..f3c39335ff39 100644
---- a/tools/testing/selftests/kvm/x86/sev_smoke_test.c
-+++ b/tools/testing/selftests/kvm/x86/sev_smoke_test.c
-@@ -249,10 +249,10 @@ int main(int argc, char *argv[])
- 
- 	test_sev_smoke(guest_sev_code, KVM_X86_SEV_VM, 0);
- 
--	if (kvm_cpu_has(X86_FEATURE_SEV_ES))
-+	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_ES_VM))
- 		test_sev_smoke(guest_sev_es_code, KVM_X86_SEV_ES_VM, SEV_POLICY_ES);
- 
--	if (kvm_cpu_has(X86_FEATURE_SEV_SNP))
-+	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SNP_VM))
- 		test_sev_smoke(guest_snp_code, KVM_X86_SNP_VM, snp_default_policy());
- 
- 	return 0;
 -- 
-2.54.0.rc1.513.gad8abe7a5a-goog
+2.53.0
 
 
