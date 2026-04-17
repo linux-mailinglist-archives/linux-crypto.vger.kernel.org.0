@@ -1,64 +1,64 @@
-Return-Path: <linux-crypto+bounces-23087-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23088-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ACjgH9t94WmdtwAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23087-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 02:24:59 +0200
+	id qGfJCFiC4WlmuAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23088-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 02:44:08 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 805D5415CDD
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 02:24:58 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C839415D45
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 02:44:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id DFF1A301D20D
-	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 00:24:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B9C9E305E9AF
+	for <lists+linux-crypto@lfdr.de>; Fri, 17 Apr 2026 00:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C750D1B4F0A;
-	Fri, 17 Apr 2026 00:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43CB1EFFB7;
+	Fri, 17 Apr 2026 00:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qXv1HusL"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="eLB3z0xd"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87732199920;
-	Fri, 17 Apr 2026 00:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2D570818;
+	Fri, 17 Apr 2026 00:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776385492; cv=none; b=HwiHLE4ZMeCVHRR9BJv8suSilSrEPvwAKfQWwzKwbvqgoOH1A6ntlidg63aYv0Rfui1OGxrnM3g5Pv0VTRcPG54TueK8FeX1Z8dMw5QrPU/v1gxdPnMLwAW/wqXRDmV3H5itthEFmX3jGr6VWnggptOnHHUByMGN9UG4Yeiy14k=
+	t=1776386631; cv=none; b=JEx4wExbppd2IcgiRjzInl4C4xTmTlbZmgfK45v6H/sRhGaihDj5wS9sCjhFA1YfuPEkbByEB1PWYHd5GBCW5Uj8sk4iGBoVLI15bgrLnVvf9ep2vbDlw/zGdXgf2CcCGUC948Ji6lquiN6ooZuk9pGBXyAyNFaZkmIZJp3ADwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776385492; c=relaxed/simple;
-	bh=+KJ9XVlACVv6ZdQkETY1VRfo9BaCSRo7KefX3MmZ6a8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EjoxLdyy8uF6wjBLqRszXed8d+X8Z8abK1dAGeNIKs3C1PhPZCc+I0/JQmhoiDnoviiVkCPXdYPufyW6p+/nyccoCpokYD/MEZqwdxR3ALFZzJ99stkOU+wU+IGU5jIg9ffA6LEQm/72zjAUGIP4ZJLY4lhP+U7auY8iqcVocxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qXv1HusL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15408C2BCAF;
-	Fri, 17 Apr 2026 00:24:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776385492;
-	bh=+KJ9XVlACVv6ZdQkETY1VRfo9BaCSRo7KefX3MmZ6a8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qXv1HusLbMbC+OOnW1UGS3FWvZk0Qc4Q4MxVHJOfti2x8WgbRMmPOi6d+/EPWiudM
-	 wJVFOxnZWKGWKh3TM798JUPplLO6RntqeHIHqiGRzYppGYPCklJDeWU60NE4X68YIe
-	 xpTWz8fdXdOf3qSh+8hQhM4/o74/Ab8tBWkSEeWfcdJvDfFyedd3CczY3oWM+06R8Z
-	 cMLFt2SEOJEJnW8HnSy8XBRHSIPysBZcFAxNlYGblQ/oXl2CS02EpAU+4aM3tDUOdC
-	 yMO8W9Xc2vQwlMJK6hfGY0haWlAc2/n/+1a7r8QufJXKqu4BZX0RieoUxg9iTbE9p4
-	 NXgyggPNjKidA==
-From: Tejun Heo <tj@kernel.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	Thomas Graf <tgraf@suug.ch>,
-	David Vernet <void@manifault.com>,
+	s=arc-20240116; t=1776386631; c=relaxed/simple;
+	bh=v+wfAooU1Emvk6pVjZHqLQbnpWKbxUrHwikqbkiqf84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=snIDEI3SBtyxv6YzgWgguQX56GZ3dQoTquUa+ngF2KVz4uuvc155+4YBcXucRxZirhBww3Xuizsk6UnIbx06e0tGyiUqR4Grw9wxv0lgBGtYRUX+OtASATqolYbjKqZFATiJywJiFj0qp7gJINf03Bjmgu3c8xdJ6WJyVcNfMlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=eLB3z0xd; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=rb4zdcy7gU59NwdvxFW/DDCpXK4L3st6LO2Db2/M+pI=; 
+	b=eLB3z0xdawd0dycFE6EKTkWmm+CCYkjWVvrFQdDBS+Tx5yByVEadgvQTV0GF5RTCK3UXglztIWe
+	ycRzyBYbZh6ac2hpxEcjaIGzZ13/q6jZihWUkRF9KxScLRQZSZcQ3XxUknfzd/7HzMAxUbIy1cOJX
+	P84+vD1E0pmM07ULanZ7MKkHp5sLp+H5u6iuRww56OzeTQ5u1y0717NVjhTBSmVKAhT53UOYBCylc
+	iPpSBAvuzs8Q4498VfIEUQW4y9DLSBu9jk4OB+iIV1AmfLHgBgxzoM2nQkNi2h+5j+18zeoSmNH/r
+	Iu4FMFdlUJ+bLw1h3gqWMh3n+Og9ItkdZHZg==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1wDXIw-006gam-0B;
+	Fri, 17 Apr 2026 08:43:31 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 17 Apr 2026 08:43:30 +0800
+Date: Fri, 17 Apr 2026 08:43:30 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Tejun Heo <tj@kernel.org>
+Cc: Thomas Graf <tgraf@suug.ch>, David Vernet <void@manifault.com>,
 	Andrea Righi <arighi@nvidia.com>,
-	Changwoo Min <changwoo@igalia.com>
-Cc: Emil Tsalapatis <emil@etsalapatis.com>,
-	linux-crypto@vger.kernel.org,
-	sched-ext@lists.linux.dev,
+	Changwoo Min <changwoo@igalia.com>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	linux-crypto@vger.kernel.org, sched-ext@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH for-7.1-fixes 2/2] sched_ext: mark scx_sched_hash and dsq_hash no_sync_grow
-Date: Thu, 16 Apr 2026 14:24:49 -1000
-Message-ID: <20260417002449.2290577-2-tj@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260417002449.2290577-1-tj@kernel.org>
+Subject: Re: [PATCH for-7.1-fixes 1/2] rhashtable: add no_sync_grow option
+Message-ID: <aeGCMkdg5Fgv8UMS@gondor.apana.org.au>
 References: <20260417002449.2290577-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -66,72 +66,53 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260417002449.2290577-1-tj@kernel.org>
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23087-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23088-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 805D5415CDD
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:url,apana.org.au:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1C839415D45
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Both are inserted/removed under raw_spinlock_t (scx_sched_lock and dsq->lock
-respectively). rhashtable's sync grow path is unsafe under raw_spinlock_t.
-Set no_sync_grow so inserts only ever take the bucket bit-spin lock; the
-deferred worker continues to grow the table.
+On Thu, Apr 16, 2026 at 02:24:48PM -1000, Tejun Heo wrote:
+> The sync grow path on insert calls get_random_u32() and kvmalloc(), both of
 
-Fixes: f0e1a0643a59 ("sched_ext: Implement BPF extensible scheduler class")
-Fixes: 25037af712eb ("sched_ext: Add rhashtable lookup for sub-schedulers")
-Cc: stable@vger.kernel.org # v6.11+
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- kernel/sched/ext.c | 2 ++
- 1 file changed, 2 insertions(+)
+Where does the sync grow path call kvmalloc? I think it's supposed
+to use GFP_ATOMIC kmalloc only.  Only the normal growth path does
+the kvmalloc for a linear hash table.  The emergency path is supposed
+to do page-by-page allocations to minimise failures.
 
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 012ca8bd70fb..3f1467fde075 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -32,6 +32,7 @@ static const struct rhashtable_params scx_sched_hash_params = {
- 	.key_len		= sizeof_field(struct scx_sched, ops.sub_cgroup_id),
- 	.key_offset		= offsetof(struct scx_sched, ops.sub_cgroup_id),
- 	.head_offset		= offsetof(struct scx_sched, hash_node),
-+	.no_sync_grow		= true,	/* inserted under scx_sched_lock */
- };
- 
- static struct rhashtable scx_sched_hash;
-@@ -122,6 +123,7 @@ static const struct rhashtable_params dsq_hash_params = {
- 	.key_len		= sizeof_field(struct scx_dispatch_q, id),
- 	.key_offset		= offsetof(struct scx_dispatch_q, id),
- 	.head_offset		= offsetof(struct scx_dispatch_q, hash_node),
-+	.no_sync_grow		= true,	/* removed under dsq->lock */
- };
- 
- static LLIST_HEAD(dsqs_to_free);
+As to get_random_u32, we can probably avoid doing it for emergency
+growing and continue to reuse the existing seed.
+
+Thanks,
 -- 
-2.53.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
