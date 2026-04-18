@@ -1,54 +1,54 @@
-Return-Path: <linux-crypto+bounces-23150-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23151-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MDokDaXg4mmy/gAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23150-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 18 Apr 2026 03:38:45 +0200
+	id 8MlLE1Ph4mnl/gAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23151-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 18 Apr 2026 03:41:39 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E646D41F9D8
-	for <lists+linux-crypto@lfdr.de>; Sat, 18 Apr 2026 03:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE2FB41F9EC
+	for <lists+linux-crypto@lfdr.de>; Sat, 18 Apr 2026 03:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id ED7153039DA3
-	for <lists+linux-crypto@lfdr.de>; Sat, 18 Apr 2026 01:38:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7165930387F3
+	for <lists+linux-crypto@lfdr.de>; Sat, 18 Apr 2026 01:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6198285CBC;
-	Sat, 18 Apr 2026 01:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E6CD28D830;
+	Sat, 18 Apr 2026 01:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="ltFk2qqu"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="RlxsR6Xp"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A3528466C;
-	Sat, 18 Apr 2026 01:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055981482E8;
+	Sat, 18 Apr 2026 01:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776476319; cv=none; b=RkCs9ZXSquFfPdFgEbfJw/BdXEvZj9NmTLKatcqPq1EMQSN5ib7tO9WIVN83b40v6VB6mAQJKZtgrHLpVpiKSl/rKP9ueii8Gg4S6ILKGbI6MgCbuld/5WChJwcjPSdOTHAMO0gIbwAvgonChP5tE/6jYVsfhe/AMvSz5YEJgz4=
+	t=1776476495; cv=none; b=CHAXF5A4nuI3iLsYmsfuI3OrCldFhbpScU5W6MLJTTBiKvsfP9VaP+XvTmA1lqnIfaeOAmRb18NiR2/JpwwZNhdALB3wtqoTw2xf4TYnrfay3StwpXSOuOAuBlII3ajJv6j+eF/ezTkw9yxQWaF1rkt7k/uFUnpskuR0hz/xMZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776476319; c=relaxed/simple;
-	bh=/aNmjqf6EvkJP4ECg2FcVs4BvEpojMzJKwfiqkfzVuA=;
+	s=arc-20240116; t=1776476495; c=relaxed/simple;
+	bh=4Xq/cJ44OWUumZgX9+G0hWRKks70N9NUDwCz6AXZO0s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lnFV3P5PZHpQ0/YkorwzYo9ls8fBQ+NEzvq+zqTs/x4PEtJ+XEoHhh3FRv+nu9XmCmAQ7mhejg+1ouU5xjGpQxt1JJD6UYK147/kgonCNtLUJJVe3kby3eeurntMY4x0ov3nvL5R77J0Oohk1RXlber2QDEhZK92H5ppWjRL7oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ltFk2qqu; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=SCuUCiVQm6TlmtgiKJbzTLyEtnCAmy7BUdWQBCL8TRrPid5jeaOFIuHceMV11Sx+CsjSweI0fLooOQsIdecWh66iF/LgutkJmD39LtxfJj8x3KXMnG51HmpKGAHgPC70U9JofQGLU5+DF2y82Sq7igXJTim54WUSo/7PfLISHXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=RlxsR6Xp; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=1kOeSpjI0RlgPhVeNdHhHtVDLezjB3cfliHkX3ITdPU=; 
-	b=ltFk2qqu9dBx4OWYOUscoecqlZVrGByV314KSR/ecadt44h6TVLgEDlSLjV3MJbymfj2yFUGY0z
-	ywWwjonn2mHwGzpjyrMR3wgk8N482YtX1NSfDs4hnHSAirFPWtGWR3WmejtfdARIAx5y2C2Jss2hf
-	vrYXX7VPecZCfzvWdWzniDS88dZXEUYyRtAtcXTNY0H7kYOYONXNpDemB/KzBMeRD9oHzlUTJrhKt
-	OirQNOMsMZAP3s6WZVoF2vMAkOMFeOGmK1PNtchSjl2Bk+p0lRuB1783tfqc1VJz4WCR0wwgXjfSc
-	oIB+d0IMRPKmFbbas8jUtZ9TUVxQIwuCDH2w==;
+	from:content-type:reply-to; bh=fiDBBu8GV/YzXljOLTx4bQ8tBIaNQqliR7ja2BAoEG8=; 
+	b=RlxsR6XpHCrPOsfn0YizHn4lPoG5Gey6/RiARcLFHCoa0IiE416XkYBhi44XtUdutB3j9gYWC/T
+	kTjGkQO6pM3cv8cr+16qZa6eu6elOWEbLl5+B3ZGbz4GsvDTIfQioXZTG2Eu5Ldcm5OFkwem9AsCh
+	P+SPOeEjD36DwOhDXHhf6EhWOzIIuwI1b4UJcW2+kDbWOEXs96g64uqerXmhZ1LpMry/hbPDkhuRW
+	I97TlZ7vlce5nSdUJikEyU/I0JjKyRp0ZGGU8ytgDGtmN4CLkRHpa0zExnFmH3S5v4NWSzS7absEC
+	uzNcNRAoX1n4kji3NR/R8+vl/iMwBTIB3X6Q==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wDudY-006wAf-28;
-	Sat, 18 Apr 2026 09:38:21 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 18 Apr 2026 09:38:20 +0800
-Date: Sat, 18 Apr 2026 09:38:20 +0800
+	id 1wDugT-006wBY-2b;
+	Sat, 18 Apr 2026 09:41:22 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 18 Apr 2026 09:41:21 +0800
+Date: Sat, 18 Apr 2026 09:41:21 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Tejun Heo <tj@kernel.org>
 Cc: Thomas Graf <tgraf@suug.ch>, David Vernet <void@manifault.com>,
@@ -58,10 +58,9 @@ Cc: Thomas Graf <tgraf@suug.ch>, David Vernet <void@manifault.com>,
 	linux-crypto@vger.kernel.org, sched-ext@lists.linux.dev,
 	linux-kernel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
 	netdev@vger.kernel.org, NeilBrown <neil@brown.name>
-Subject: [PATCH] rhashtable: Restore insecure_elasticity toggle
-Message-ID: <aeLgjAeJuidWNy3N@gondor.apana.org.au>
-References: <20260417002449.2290577-1-tj@kernel.org>
- <aeGCMkdg5Fgv8UMS@gondor.apana.org.au>
+Subject: [v2 PATCH] rhashtable: Restore insecure_elasticity toggle
+Message-ID: <aeLhQRFPEY24ySIq@gondor.apana.org.au>
+References: <aeGCMkdg5Fgv8UMS@gondor.apana.org.au>
  <aeGElQ-TcCclEHwo@slm.duckdns.org>
  <aeGIsGi9fBqu9EZT@gondor.apana.org.au>
  <aeHjjGEhlikSsxCX@slm.duckdns.org>
@@ -70,6 +69,7 @@ References: <20260417002449.2290577-1-tj@kernel.org>
  <aeLT8eB_xfzLxqbI@gondor.apana.org.au>
  <aeLV6aDhM0-S4oQ1@slm.duckdns.org>
  <aeLWH_HgSHF4buiJ@gondor.apana.org.au>
+ <aeLgjAeJuidWNy3N@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aeLWH_HgSHF4buiJ@gondor.apana.org.au>
+In-Reply-To: <aeLgjAeJuidWNy3N@gondor.apana.org.au>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
@@ -87,7 +87,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23150-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23151-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -104,11 +104,13 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E646D41F9D8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
+X-Rspamd-Queue-Id: BE2FB41F9EC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+This one actually compiles.
+---8<---
 Some users of rhashtable cannot handle insertion failures, and
 are happy to accept the consequences of a hash table that having
 very long chains.
@@ -142,7 +144,7 @@ index 015c8298bebc..72082428d6c6 100644
  	rht_hashfn_t		hashfn;
  	rht_obj_hashfn_t	obj_hashfn;
 diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
-index 0480509a6339..c793849d3f61 100644
+index 0480509a6339..7def3f0f556b 100644
 --- a/include/linux/rhashtable.h
 +++ b/include/linux/rhashtable.h
 @@ -821,14 +821,15 @@ static __always_inline void *__rhashtable_insert_fast(
@@ -150,7 +152,7 @@ index 0480509a6339..c793849d3f61 100644
  	}
  
 -	if (elasticity <= 0)
-+	if (elasticity <= 0 && !params->insecure_elasticity)
++	if (elasticity <= 0 && !params.insecure_elasticity)
  		goto slow_path;
  
  	data = ERR_PTR(-E2BIG);
@@ -159,12 +161,12 @@ index 0480509a6339..c793849d3f61 100644
  
 -	if (unlikely(rht_grow_above_100(ht, tbl)))
 +	if (unlikely(rht_grow_above_100(ht, tbl)) &&
-+	    !params->insecure_elasticity)
++	    !params.insecure_elasticity)
  		goto slow_path;
  
  	/* Inserting at head of list makes unlocking free. */
 diff --git a/lib/rhashtable.c b/lib/rhashtable.c
-index 6074ed5f66f3..b60d55e5b19b 100644
+index 6074ed5f66f3..fb2b7bc137ba 100644
 --- a/lib/rhashtable.c
 +++ b/lib/rhashtable.c
 @@ -538,7 +538,7 @@ static void *rhashtable_lookup_one(struct rhashtable *ht,
@@ -172,7 +174,7 @@ index 6074ed5f66f3..b60d55e5b19b 100644
  	}
  
 -	if (elasticity <= 0)
-+	if (elasticity <= 0 && !ht->p->insecure_elasticity)
++	if (elasticity <= 0 && !ht->p.insecure_elasticity)
  		return ERR_PTR(-EAGAIN);
  
  	return ERR_PTR(-ENOENT);
@@ -182,7 +184,7 @@ index 6074ed5f66f3..b60d55e5b19b 100644
  
 -	if (unlikely(rht_grow_above_100(ht, tbl)))
 +	if (unlikely(rht_grow_above_100(ht, tbl)) &&
-+	    !ht->p->insecure_elasticity)
++	    !ht->p.insecure_elasticity)
  		return ERR_PTR(-EAGAIN);
  
  	head = rht_ptr(bkt, tbl, hash);
