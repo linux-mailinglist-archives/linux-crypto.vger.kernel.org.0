@@ -1,123 +1,183 @@
-Return-Path: <linux-crypto+bounces-23178-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23179-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SKgVNm2P5Gk9WwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23178-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 19 Apr 2026 10:16:45 +0200
+	id NnEjIyqZ5GnvXAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23179-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 19 Apr 2026 10:58:18 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CFCB42361F
-	for <lists+linux-crypto@lfdr.de>; Sun, 19 Apr 2026 10:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BE41423772
+	for <lists+linux-crypto@lfdr.de>; Sun, 19 Apr 2026 10:58:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ADB453014134
-	for <lists+linux-crypto@lfdr.de>; Sun, 19 Apr 2026 08:16:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0DB51300D96F
+	for <lists+linux-crypto@lfdr.de>; Sun, 19 Apr 2026 08:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC2E337689;
-	Sun, 19 Apr 2026 08:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ATjQnqa3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45135372EF3;
+	Sun, 19 Apr 2026 08:58:14 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA8F28000F
-	for <linux-crypto@vger.kernel.org>; Sun, 19 Apr 2026 08:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4B92EF67A
+	for <linux-crypto@vger.kernel.org>; Sun, 19 Apr 2026 08:58:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776586598; cv=none; b=fSm+gnznofQiOqBAEwlpHT3h1kzKhfIdBxNF2alcewUpJcjsKKQcAoHMVJOmWq0E1YSU13syu4RKDyj8Z8Or1lMuEcVZyBCLFX0xhuUEdo+lG2PlzlYqevKMWwKOLkvQmf6SCnBfMt6vXk6Fuj8GfxJQ7+Knoa6H6hbsuj9cinE=
+	t=1776589094; cv=none; b=Ay1QBOnhvGTzbxLbqA6HUjGGwRZ3niSCzoYfJFUiYwapvgRzFx3VGk+Emcef+YWr6x8yM3T6YZu8r5ZJPQ2bhANLF5ze+VwDZQMkDY4nqlba1raAnNC6OKUZnQtZE8qzh3AVt8iZVekgf+lg+4sXz6fmrmgO1nQR2Z1UH5mxxNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776586598; c=relaxed/simple;
-	bh=ZAd+IFCa9tZH5vzsuiUNeNba8lEtkX8vemyuywiscs0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i7QrhcHyLv7RMF9C7W+HnBDeuiNEgZmxczlmYR/tvAsWQrirYASyfvQGp9NYunfaeh0d8h5uX7oNimf1MD28fb9t4y7HhIWA3dRfIa2NAcYlliIWF4uw/eqanm546uUc686oSt5K4pgl/udQ3z93ZCpJlIOC3UVwgDY94jwGtbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ATjQnqa3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 385DEC2BCAF
-	for <linux-crypto@vger.kernel.org>; Sun, 19 Apr 2026 08:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776586598;
-	bh=ZAd+IFCa9tZH5vzsuiUNeNba8lEtkX8vemyuywiscs0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ATjQnqa3/boYdJ63gWBAI6DpeXnJ1Ha6sGbcmc8hs1oklqwpL6t4jWxI0f0f4+Q2P
-	 u3GnkaGF59e8QeStNmXilPFvAgZ7y2SB5JzUE5SmMldmHsZj/7troSe0xmiizcw8W0
-	 A/Fue5MjjgRkBH+brXtSHl5KjEm4j9DJhTKDcApVCRHj8Uhq5wJnPxY38y/MOpZho2
-	 x88WP2ezvSZP9tmzxbx2xFfsDxT25nPyKfiWYAEj5KTH2/p0ULb30iwJ32eZZxOD+q
-	 Pfj4tUsmOloGwe4l3hTpI95h4YP7fbvp/Nx+jS8CNiVNfYELaUnea3eMBq3wdXnHiK
-	 0ul56XU8A9QJg==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-675ab2bde61so108960a12.0
-        for <linux-crypto@vger.kernel.org>; Sun, 19 Apr 2026 01:16:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ8p1SJuE27VSF/6nfJDkXtNvG9bksG6XQeuC685uwXfqn+k8E7jAKESYtnaz4iIy4TBWu7h7bWkvIGRY3w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPSZ6pgCSOGZyIOvzbhFZe0TVSVkgVwthU2vcIAoZp5Q2sRsp7
-	UMgUmwi5mGEKDYJuPRhd9eQx4YWyGYRdFGS+g0crP+wqXTqVikPYA1C/WC5ll7iklHoJpwnUGwM
-	MEU2Yb2a+SZBoibu+OLh1CyuGh0Lrj48=
-X-Received: by 2002:a05:6402:325a:b0:672:158d:9de4 with SMTP id
- 4fb4d7f45d1cf-672bfdc8c14mr3002401a12.14.1776586596796; Sun, 19 Apr 2026
- 01:16:36 -0700 (PDT)
+	s=arc-20240116; t=1776589094; c=relaxed/simple;
+	bh=CW1n9Wwlzi6fk3j2wVZvWPHgvyQGgUhT9byM1dD9Sb8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iqROl54nWqwd81u1x5L7EMx1hYCw89oXCLwXZmMSRiRMHTRhdYed80OM0OSbEfFxhA9L1kDpIJRUp2MneR/9foDNQ/pT9Kw5Ao6l77m51YZs66GlVOtrWGqqwSrblA5gUPAVWwTBYMOpZYUzzUPHcK8crZiWZv/Mxe7LvtlLT1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=162.243.161.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lzu.edu.cn
+Received: from enjou-Legion-Y7000P-2019.coin-barley.ts.net (unknown [172.23.56.36])
+	by app1 (Coremail) with SMTP id ygmowACXDwAOmeRpThjUAA--.14325S2;
+	Sun, 19 Apr 2026 16:57:50 +0800 (CST)
+From: Ren Wei <n05ec@lzu.edu.cn>
+To: linux-crypto@vger.kernel.org
+Cc: herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	smueller@chronox.de,
+	yuantan098@gmail.com,
+	yifanwucs@gmail.com,
+	tomapufckgml@gmail.com,
+	bird@lzu.edu.cn,
+	tr0jan@lzu.edu.cn,
+	kanolyc@gmail.com,
+	ldy3087146292@gmail.com,
+	n05ec@lzu.edu.cn,
+	enjou1224@outlook.com
+Subject: [PATCH v2 1/2] crypto: algif_aead - snapshot IV for async AEAD requests
+Date: Sun, 19 Apr 2026 16:52:59 +0800
+Message-ID: <43955efb67bf85481da7457b73bd30539d8e5d79.1776578475.git.enjou1224@outlook.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260418221707.67972-1-ebiggers@kernel.org>
-In-Reply-To: <20260418221707.67972-1-ebiggers@kernel.org>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Sun, 19 Apr 2026 17:16:24 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-g5E0hd63QBOhcZGx=KTe1unGRvO8iG+aQrctSyf7jrg@mail.gmail.com>
-X-Gm-Features: AQROBzC7I1NiVlK1mnmba71tTfBdEbCO96YGQ7tM90Z8yYOaVhayMgG7K860Qkw
-Message-ID: <CAKYAXd-g5E0hd63QBOhcZGx=KTe1unGRvO8iG+aQrctSyf7jrg@mail.gmail.com>
-Subject: Re: [PATCH v2] ksmbd: Use AES-CMAC library for SMB3 signature calculation
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-cifs@vger.kernel.org, Steve French <smfrench@gmail.com>, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Ard Biesheuvel <ardb@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, Tom Talpey <tom@talpey.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:ygmowACXDwAOmeRpThjUAA--.14325S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF13AFyrXw4xKr1rZFykuFg_yoW5ZryUpF
+	WxCayDtFykJ348KFn5JFWxZr45ArZ3AFW7WrZ5Gw17WrnagrsYy3srtFyY9F129Fy8GrWF
+	vFWqyrs09w13ZrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB01xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
+	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+	w2AFwI0_Jw0_GFylc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY2
+	0_Gr4l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQABCWnjRWACWgASss
+X-Spamd-Result: default: False [-0.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,kernel.org,chromium.org,talpey.com];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23178-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[linkinjeon@kernel.org,linux-crypto@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 1CFCB42361F
+	NEURAL_HAM(-0.00)[-0.997];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[lzu.edu.cn];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TO_DN_NONE(0.00)[];
+	FREEMAIL_CC(0.00)[gondor.apana.org.au,davemloft.net,chronox.de,gmail.com,lzu.edu.cn,outlook.com];
+	TAGGED_FROM(0.00)[bounces-23179-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[]
+X-Rspamd-Queue-Id: 7BE41423772
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sun, Apr 19, 2026 at 7:18=E2=80=AFAM Eric Biggers <ebiggers@kernel.org> =
-wrote:
->
-> Now that AES-CMAC has a library API, convert ksmbd_sign_smb3_pdu() to
-> use it instead of a "cmac(aes)" crypto_shash.
->
-> The result is simpler and faster code.  With the library there's no need
-> to dynamically allocate memory, no need to handle errors, and the
-> AES-CMAC code is accessed directly without inefficient indirect calls
-> and other unnecessary API overhead.
->
-> Acked-by: Namjae Jeon <linkinjeon@kernel.org>
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-Applied it to #ksmbd-for-next-next.
-Thanks!
+From: Douya Le <ldy3087146292@gmail.com>
+
+AF_ALG AEAD AIO requests currently use the socket-wide IV buffer during
+request processing.  For async requests, later socket activity can
+update that shared state before the original request has fully
+completed, which can lead to inconsistent IV handling.
+
+Snapshot the IV into per-request storage when preparing the AEAD
+request, so in-flight operations no longer depend on mutable socket
+state.
+
+Fixes: d887c52d6ae4 ("crypto: algif_aead - overhaul memory management")
+Cc: stable@kernel.org
+Reported-by: Yuan Tan <yuantan098@gmail.com>
+Reported-by: Yifan Wu <yifanwucs@gmail.com>
+Reported-by: Juefei Pu <tomapufckgml@gmail.com>
+Reported-by: Xin Liu <bird@lzu.edu.cn>
+Co-developed-by: Luxing Yin <tr0jan@lzu.edu.cn>
+Signed-off-by: Luxing Yin <tr0jan@lzu.edu.cn>
+Tested-by: Yucheng Lu <kanolyc@gmail.com>
+Signed-off-by: Douya Le <ldy3087146292@gmail.com>
+Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+Signed-off-by: ENJOU1224 <enjou1224@outlook.com>
+---
+changes in v2:
+  - split the original combined fix and keep only the algif_aead IV
+    snapshot change in this patch
+  - rebase onto the current crypto-2.6 tree context after the recent
+    algif_aead async-path updates
+  - v1 Link: https://lore.kernel.org/all/9ccd66d3acbdb4fec21e58c3167fc51eec4b63d2.1775841543.git.ldy3087146292@gmail.com
+
+ crypto/algif_aead.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/crypto/algif_aead.c b/crypto/algif_aead.c
+index f8bd45f7dc83..cb651ab58d62 100644
+--- a/crypto/algif_aead.c
++++ b/crypto/algif_aead.c
+@@ -72,8 +72,10 @@ static int _aead_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	struct af_alg_ctx *ctx = ask->private;
+ 	struct crypto_aead *tfm = pask->private;
+ 	unsigned int as = crypto_aead_authsize(tfm);
++	unsigned int ivsize = crypto_aead_ivsize(tfm);
+ 	struct af_alg_async_req *areq;
+ 	struct scatterlist *rsgl_src, *tsgl_src = NULL;
++	void *iv;
+ 	int err = 0;
+ 	size_t used = 0;		/* [in]  TX bufs to be en/decrypted */
+ 	size_t outlen = 0;		/* [out] RX bufs produced by kernel */
+@@ -125,10 +127,14 @@ static int _aead_recvmsg(struct socket *sock, struct msghdr *msg,
+ 
+ 	/* Allocate cipher request for current operation. */
+ 	areq = af_alg_alloc_areq(sk, sizeof(struct af_alg_async_req) +
+-				     crypto_aead_reqsize(tfm));
++				     crypto_aead_reqsize(tfm) + ivsize);
+ 	if (IS_ERR(areq))
+ 		return PTR_ERR(areq);
+ 
++	iv = (u8 *)aead_request_ctx(&areq->cra_u.aead_req) +
++	     crypto_aead_reqsize(tfm);
++	memcpy(iv, ctx->iv, ivsize);
++
+ 	/* convert iovecs of output buffers into RX SGL */
+ 	err = af_alg_get_rsgl(sk, msg, flags, areq, outlen, &usedpages);
+ 	if (err)
+@@ -187,7 +193,7 @@ static int _aead_recvmsg(struct socket *sock, struct msghdr *msg,
+ 
+ 	/* Initialize the crypto operation */
+ 	aead_request_set_crypt(&areq->cra_u.aead_req, tsgl_src,
+-			       areq->first_rsgl.sgl.sgt.sgl, used, ctx->iv);
++			       areq->first_rsgl.sgl.sgt.sgl, used, iv);
+ 	aead_request_set_ad(&areq->cra_u.aead_req, ctx->aead_assoclen);
+ 	aead_request_set_tfm(&areq->cra_u.aead_req, tfm);
+ 
+-- 
+2.51.0
+
 
